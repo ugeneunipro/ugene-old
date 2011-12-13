@@ -53,7 +53,7 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
         grayIcon = QIcon(":external_tool_support/images/ncbi_gray.png");
         warnIcon = QIcon(":external_tool_support/images/ncbi_warn.png");
     }
-    assert((name == FORMATDB_TOOL_NAME)||(name == MAKEBLASTDB_TOOL_NAME));
+    assert((name == FORMATDB_TOOL_NAME)||(name == CUDA_FORMATDB_TOOL_NAME)||(name == MAKEBLASTDB_TOOL_NAME)||(name == GPU_MAKEBLASTDB_TOOL_NAME));
     if(name == FORMATDB_TOOL_NAME){
 #ifdef Q_OS_WIN
     executableFileName="formatdb.exe";
@@ -70,6 +70,20 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
 
     versionRegExp=QRegExp("formatdb (\\d+\\.\\d+\\.\\d+)");
     toolKitName="BLAST";
+    }else if(name == CUDA_FORMATDB_TOOL_NAME){
+#ifdef Q_OS_WIN
+    executableFileName="CUDA-formatdb.exe";
+#else
+    #ifdef Q_OS_LINUX
+    executableFileName="CUDA-formatdb";
+    #endif
+#endif
+    validMessage="formatdb";
+    description=tr("The <i>formatdb</i> formats protein or"
+        " nucleotide source databases before these databases"
+        " can be searched by <i>blastall</i>.");
+
+    toolKitName="CUDA-BLAST";
     }else if(name == MAKEBLASTDB_TOOL_NAME){
 #ifdef Q_OS_WIN
     executableFileName="makeblastdb.exe";
@@ -85,6 +99,21 @@ FormatDBSupport::FormatDBSupport(const QString& name, const QString& path) : Ext
                    " can be searched by other BLAST+ tools.");
     versionRegExp=QRegExp("Application to create BLAST databases, version (\\d+\\.\\d+\\.\\d+\\+?)");
     toolKitName="BLAST+";
+    }else if(name == GPU_MAKEBLASTDB_TOOL_NAME){
+#ifdef Q_OS_WIN
+    executableFileName="makeblastdb.exe";
+#else
+    #ifdef Q_OS_LINUX
+    executableFileName="makeblastdb";
+    #endif
+#endif
+    validationArguments<<"-help";
+    validMessage="-sort_volumes";
+    description=tr("The <i>makeblastdb</i> formats protein or"
+                   " nucleotide source databases before these databases"
+                   " can be searched by other BLAST+ tools.");
+    versionRegExp=QRegExp("Application to create BLAST databases, version (\\d+\\.\\d+\\.\\d+\\+?)");
+    toolKitName="GPU-BLAST+";
     }
 }
 

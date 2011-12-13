@@ -62,6 +62,16 @@
            </item>
            <item>
             <property name="text">
+             <string>gpu-blastp</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>cuda-blastp</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>blastx</string>
             </property>
            </item>

@@ -129,6 +129,7 @@ void BlastAllWorkerFactory::init() {
     Attribute* gaAttr= new Attribute(ga, BaseTypes::BOOL_TYPE(), false, QVariant(true));
     gaAttr->addRelation(new VisibilityRelation(BLASTALL_PROGRAM_NAME, "blastn"));
     gaAttr->addRelation(new VisibilityRelation(BLASTALL_PROGRAM_NAME, "blastp"));
+    gaAttr->addRelation(new VisibilityRelation(BLASTALL_PROGRAM_NAME, "cuda-blastp"));
     gaAttr->addRelation(new VisibilityRelation(BLASTALL_PROGRAM_NAME, "blastx"));
     gaAttr->addRelation(new VisibilityRelation(BLASTALL_PROGRAM_NAME, "tblastn"));
     a << gaAttr;
@@ -161,6 +162,7 @@ void BlastAllWorkerFactory::init() {
         QVariantMap m;
         m["blastn"] = "blastn";
         m["blastp"] = "blastp";
+        m["cuda-blastp"] = "cuda-blastp";
         m["blastx"] = "blastx";
         m["tblastn"] = "tblastn";
         m["tblastx"] = "tblastx";
@@ -379,7 +381,7 @@ Task* BlastAllWorker::tick() {
         }
     }
     else {
-        if(cfg.programName == "blastp" || cfg.programName == "tblastn") {
+        if(cfg.programName == "blastp" || cfg.programName == "cuda-blastp" || cfg.programName == "tblastn") {
             return new FailTask(tr("Selected BLAST search with amino acid input sequence"));
         }
     }

@@ -26,6 +26,7 @@
 #include <U2Gui/ObjectViewModel.h>
 
 #define BLASTALL_TOOL_NAME "BlastAll"
+#define CUDA_BLASTP_TOOL_NAME "CUDA-BlastP"
 #define BLASTALL_TMP_DIR    "blast_all"
 
 namespace U2 {

@@ -65,13 +65,15 @@ BlastPlusSupportRunDialog::BlastPlusSupportRunDialog(U2SequenceObject* _dnaso, Q
     wdgt->setMinimumHeight(150);
     verticalLayout_4->addWidget(wdgt);
 
+    programName->removeItem(3);//cuda-blastp
     if(dnaso->getAlphabet()->getType() == DNAAlphabet_AMINO){
         programName->removeItem(0);//blastn
-        programName->removeItem(1);//blastx
-        programName->removeItem(2);//tblastx
+        programName->removeItem(2);//blastx
+        programName->removeItem(3);//tblastx
         settings.isNucleotideSeq=false;
     }else{
         programName->removeItem(1);//blastp
+        programName->removeItem(1);//gpu-blastp
         programName->removeItem(2);//tblastn
         settings.isNucleotideSeq=true;
     }
@@ -103,6 +105,11 @@ bool BlastPlusSupportRunDialog::checkToolPath(){
              (AppContext::getExternalToolRegistry()->getByName(BLASTP_TOOL_NAME)->getPath().isEmpty())){
         needSetToolPath=true;
         toolName=BLASTP_TOOL_NAME;
+
+    }else if((programName->currentText() == "gpu-blastp") &&
+             (AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->getPath().isEmpty())){
+        needSetToolPath=true;
+        toolName=GPU_BLASTP_TOOL_NAME;
 
     }else if((programName->currentText() == "blastx") &&
              (AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->getPath().isEmpty())){
@@ -200,6 +207,8 @@ BlastPlusWithExtFileSpecifySupportRunDialog::BlastPlusWithExtFileSpecifySupportR
     QBoxLayout* parentLayout = qobject_cast<QBoxLayout*>(this->layout());
     assert(parentLayout);
     parentLayout->insertWidget(0, inputFileGroupBox);
+
+    programName->removeItem(3);//cuda-blastp
 
     databasePathLineEdit->setText(lastDBPath);
     baseNameLineEdit->setText(lastDBName);
@@ -323,6 +332,11 @@ bool BlastPlusWithExtFileSpecifySupportRunDialog::checkToolPath(){
              (AppContext::getExternalToolRegistry()->getByName(BLASTP_TOOL_NAME)->getPath().isEmpty())){
         needSetToolPath=true;
         toolName=BLASTP_TOOL_NAME;
+
+    }else if((programName->currentText() == "gpu-blastp") &&
+             (AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->getPath().isEmpty())){
+        needSetToolPath=true;
+        toolName=GPU_BLASTP_TOOL_NAME;
 
     }else if((programName->currentText() == "blastx") &&
              (AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->getPath().isEmpty())){

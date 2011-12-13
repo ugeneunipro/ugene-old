@@ -112,6 +112,7 @@ void BlastPlusWorkerFactory::init() {
     Attribute* gaAttr= new Attribute(ga, BaseTypes::BOOL_TYPE(), false, QVariant(true));
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"blastn"));
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"blastp"));
+    gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"gpu-blastp"));
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"blastx"));
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"tblastn"));
     a << gaAttr;
@@ -129,6 +130,7 @@ void BlastPlusWorkerFactory::init() {
         QVariantMap m;
         m["blastn"] = "blastn";
         m["blastp"] = "blastp";
+        m["gpu-blastp"] = "gpu-blastp";
         m["blastx"] = "blastx";
         m["tblastn"] = "tblastn";
         m["tblastx"] = "tblastx";
@@ -231,6 +233,8 @@ Task* BlastPlusWorker::tick() {
             AppContext::getExternalToolRegistry()->getByName(BLASTN_TOOL_NAME)->setPath(path);
         }else if(cfg.programName == "blastp"){
             AppContext::getExternalToolRegistry()->getByName(BLASTP_TOOL_NAME)->setPath(path);
+        }else if(cfg.programName == "gpu-blastp"){
+            AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->setPath(path);
         }else if(cfg.programName == "blastx"){
             AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->setPath(path);
         }else if(cfg.programName == "tblastn"){
@@ -266,7 +270,7 @@ Task* BlastPlusWorker::tick() {
         }
     }
     else {
-        if(cfg.programName == "blastp" || cfg.programName == "tblastn") {
+        if(cfg.programName == "blastp" || cfg.programName == "gpu-blastp" || cfg.programName == "tblastn") {
             return new FailTask(tr("Selected BLAST search with amino acid input sequence"));
         }
     }
@@ -304,7 +308,7 @@ Task* BlastPlusWorker::tick() {
     Task * t=NULL;
     if(cfg.programName == "blastn"){
         t = new BlastNPlusSupportTask(cfg);
-    }else if(cfg.programName == "blastp"){
+    }else if(cfg.programName == "blastp" || cfg.programName == "gpu-blastp"){
         t = new BlastPPlusSupportTask(cfg);
     }else if(cfg.programName == "blastx"){
         t = new BlastXPlusSupportTask(cfg);

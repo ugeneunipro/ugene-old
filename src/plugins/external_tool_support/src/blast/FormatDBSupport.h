@@ -26,7 +26,9 @@
 #include "utils/ExternalToolSupportAction.h"
 
 #define FORMATDB_TOOL_NAME "FormatDB"
+#define CUDA_FORMATDB_TOOL_NAME "CUDA-FormatDB"
 #define MAKEBLASTDB_TOOL_NAME "MakeBLASTDB"
+#define GPU_MAKEBLASTDB_TOOL_NAME "GPU-MakeBLASTDB"
 namespace U2 {
 
 class FormatDBSupport : public ExternalTool {

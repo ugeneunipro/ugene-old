@@ -27,6 +27,7 @@
 
 #define BLASTN_TOOL_NAME "BlastN"
 #define BLASTP_TOOL_NAME "BlastP"
+#define GPU_BLASTP_TOOL_NAME "GPU-BlastP"
 #define BLASTX_TOOL_NAME "BlastX"
 #define TBLASTN_TOOL_NAME "TBlastN"
 #define TBLASTX_TOOL_NAME "TBlastX"

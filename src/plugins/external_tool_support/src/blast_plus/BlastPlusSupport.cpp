@@ -89,6 +89,18 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
     description="The <i>blastp</i> tool searches a protein database \
                 using a protein query.";
     versionRegExp=QRegExp("Protein-Protein BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
+    }else if(name == GPU_BLASTP_TOOL_NAME){
+#ifdef Q_OS_WIN
+    executableFileName="blastp.exe";
+#else
+    #ifdef Q_OS_LINUX
+    executableFileName="blastp";
+    #endif
+#endif
+    validMessage="[-gpu boolean]";
+    description="The <i>blastp</i> tool searches a protein database \
+                using a protein query.";
+    versionRegExp=QRegExp("Protein-Protein BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
     }else if(name == BLASTX_TOOL_NAME){
 #ifdef Q_OS_WIN
     executableFileName="blastx.exe";
@@ -139,7 +151,11 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
     description="";
     versionRegExp=QRegExp("Reverse Position Specific BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
     }
-    toolKitName="BLAST+";
+    if(name == GPU_BLASTP_TOOL_NAME) {
+        toolKitName="GPU-BLAST+";
+    } else {
+        toolKitName="BLAST+";
+    }
     lastDBName="";
     lastDBPath="";
 }
@@ -294,7 +310,7 @@ void BlastPlusSupportContext::sl_showDialog() {
             Task * t=NULL;
             if(settings.programName == "blastn"){
                 t = new BlastNPlusSupportTask(settings);
-            }else if(settings.programName == "blastp"){
+            }else if(settings.programName == "blastp" || settings.programName == "gpu-blastp"){
                 t = new BlastPPlusSupportTask(settings);
             }else if(settings.programName == "blastx"){
                 t = new BlastXPlusSupportTask(settings);

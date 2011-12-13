@@ -363,7 +363,7 @@ void BlastPlusSupportMultiTask::prepare(){
         Task * t=NULL;
         if(settings.programName == "blastn"){
             t = new BlastNPlusSupportTask(settings);
-        }else if(settings.programName == "blastp"){
+        }else if(settings.programName == "blastp" || settings.programName == "gpu-blastp"){
             t = new BlastPPlusSupportTask(settings);
         }else if(settings.programName == "blastx"){
             t = new BlastXPlusSupportTask(settings);

@@ -152,18 +152,32 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     FormatDBSupport* formatDBTool = new FormatDBSupport(FORMATDB_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(formatDBTool);
 
+    //FormatDB from CUDA-BlastP
+    FormatDBSupport* cudaFormatDBTool = new FormatDBSupport(CUDA_FORMATDB_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(cudaFormatDBTool);
+
     //MakeBLASTDB from BLAST+
     FormatDBSupport* makeBLASTDBTool = new FormatDBSupport(MAKEBLASTDB_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(makeBLASTDBTool);
+
+    //MakeBLASTDB from GPU-BLAST+
+    FormatDBSupport* gpuMakeBLASTDBTool = new FormatDBSupport(GPU_MAKEBLASTDB_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(gpuMakeBLASTDBTool);
 
     //BlastAll
     BlastAllSupport* blastallTool = new BlastAllSupport(BLASTALL_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(blastallTool);
 
+    //CUDA-BlastP
+    BlastAllSupport* cudaBlastPTool = new BlastAllSupport(CUDA_BLASTP_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(cudaBlastPTool);
+
     BlastPlusSupport* blastNPlusTool = new BlastPlusSupport(BLASTN_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(blastNPlusTool);
     BlastPlusSupport* blastPPlusTool = new BlastPlusSupport(BLASTP_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(blastPPlusTool);
+    BlastPlusSupport* gpuBlastPPlusTool = new BlastPlusSupport(GPU_BLASTP_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(gpuBlastPPlusTool);
     BlastPlusSupport* blastXPlusTool = new BlastPlusSupport(BLASTX_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(blastXPlusTool);
     BlastPlusSupport* tBlastNPlusTool = new BlastPlusSupport(TBLASTN_TOOL_NAME);

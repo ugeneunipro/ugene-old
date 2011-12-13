@@ -255,7 +255,7 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
     }
     assert(selectedItems.length()==1);
     QString name=selectedItems.at(0)->text(0);
-    if((selectedItems.at(0)->text(0) != "BLAST") && (selectedItems.at(0)->text(0) != "BLAST+") && (selectedItems.at(0)->text(0) != "Bowtie")){
+    if((selectedItems.at(0)->text(0) != "BLAST") && (selectedItems.at(0)->text(0) != "CUDA-BLAST") && (selectedItems.at(0)->text(0) != "BLAST+") && (selectedItems.at(0)->text(0) != "GPU-BLAST+") && (selectedItems.at(0)->text(0) != "Bowtie")){
         descriptionTextEdit->setText(AppContext::getExternalToolRegistry()->getByName(selectedItems.at(0)->text(0))->getDescription());
         if(!externalToolsInfo[selectedItems.at(0)->text(0)].version.isEmpty()){
             descriptionTextEdit->setText(descriptionTextEdit->toHtml()+tr("<br>Version: ")+externalToolsInfo[selectedItems.at(0)->text(0)].version);
@@ -268,7 +268,16 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
                           "BLAST can be used to infer functional and evolutionary relationships between sequences as well as help identify members of gene families."));
 
     }
+    if(selectedItems.at(0)->text(0) == "CUDA-BLAST"){
+        descriptionTextEdit->setText(tr("The <i>Basic Local Alignment Search Tool</i> (BLAST) finds regions of local similarity between sequences. "
+                           "The program compares nucleotide or protein sequences to sequence databases and calculates the statistical significance of matches. "
+                          "BLAST can be used to infer functional and evolutionary relationships between sequences as well as help identify members of gene families."));
+
+    }
     if(selectedItems.at(0)->text(0) == "BLAST+"){
+        descriptionTextEdit->setText(tr("<i>BLAST+</i> is a new version of the BLAST package from the NCBI."));
+    }
+    if(selectedItems.at(0)->text(0) == "GPU-BLAST+"){
         descriptionTextEdit->setText(tr("<i>BLAST+</i> is a new version of the BLAST package from the NCBI."));
     }
     if(selectedItems.at(0)->text(0) == "Bowtie"){

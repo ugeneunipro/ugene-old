@@ -95,6 +95,9 @@ ExternalToolRunTask* BlastPPlusSupportTask::createBlastPlusTask(){
     {
         arguments << "-window_size" << QString::number(settings.windowSize);
     }
+    if(settings.programName == "gpu-blastp") {
+        arguments << "-gpu" << "t";
+    }
     //I always get error from BLAST+:
     //ncbi-blast-2.2.24+-src/c++/src/corelib/ncbithr.cpp", line 649: Fatal: ncbi::CThread::Run()
     //- Assertion failed: (0) CThread::Run() -- system does not support threads
@@ -109,6 +112,10 @@ ExternalToolRunTask* BlastPPlusSupportTask::createBlastPlusTask(){
 
     algoLog.trace("Blastall arguments: "+arguments.join(" "));
     logParser=new ExternalToolLogParser();
-    return new ExternalToolRunTask(BLASTP_TOOL_NAME, arguments, logParser);
+    if(settings.programName == "gpu-blastp") {
+        return new ExternalToolRunTask(GPU_BLASTP_TOOL_NAME, arguments, logParser);
+    } else {
+        return new ExternalToolRunTask(BLASTP_TOOL_NAME, arguments, logParser);
+    }
 }
 }//namespace
