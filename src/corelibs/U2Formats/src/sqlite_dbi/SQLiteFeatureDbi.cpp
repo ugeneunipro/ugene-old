@@ -53,10 +53,10 @@ void SQLiteFeatureDbi::initSqlSchema(U2OpStatus& os) {
 #define FDBI_FIELDS QString("f.id, f.parent, f.sequence, f.rversion, f.lversion, f.strand, f.start, f.len ")
 class SqlFeatureRSLoader : public SqlRSLoader<U2Feature> {
 public:
-    U2Feature load(SQLiteQuery* q) { 
+    U2Feature load(SQLiteQuery* q) {
         return loadStatic(q);
     }
-    
+
     static U2Feature loadStatic(SQLiteQuery* q) {
         U2Feature res;
         //parent, sequence, rversion, lversion, strand, start, len
@@ -77,13 +77,14 @@ U2Feature SQLiteFeatureDbi::getFeature(const U2DataId& featureId, U2OpStatus& os
     DBI_TYPE_CHECK(featureId, U2Type::Feature, os, res);
 
     SQLiteQuery q("SELECT " + FDBI_FIELDS + " FROM Feature AS f WHERE id = ?1", db, os);
+    q.bindDataId(1, featureId);
     q.execute();
     CHECK_OP(os, res);
-    
+
     res = SqlFeatureRSLoader::loadStatic(&q);
     return res;
 }
-    
+
 static void add (QString& buf, const QString& str, const QString& op, int& n) {
     if (!buf.isEmpty()) {
         buf += " AND ";
@@ -104,7 +105,7 @@ static QString toSqlCompareOp(ComparisonOp op) {
         case ComparisonOp_GET : res = ">="; break;
         case ComparisonOp_LT  : res = "<";  break;
         case ComparisonOp_LET : res = "<="; break;
-        default: res = "?"; break;                                    
+        default: res = "?"; break;
     }
     return res;
 }
@@ -130,7 +131,7 @@ SQLiteQuery* SQLiteFeatureDbi::createFeatureQuery(const QString& selectPart, con
     } else if (fq.topLevelOnly) {
         add(wherePart, "f.parentFeatureId", "=", n);
     }
-    
+
     bool useSequence = !fq.sequenceId.isEmpty();
     if (useSequence) {
         DBI_TYPE_CHECK(fq.parentFeatureId, U2Type::Sequence, os, NULL);
@@ -146,11 +147,11 @@ SQLiteQuery* SQLiteFeatureDbi::createFeatureQuery(const QString& selectPart, con
     if (useKeyValue) {
         add(wherePart, "fk.value", toSqlCompareOp(fq.keyValueCompareOp) , n);
     }
-    
+
     bool useRegion = fq.intersectRegion.length > 0;
     if (useRegion) {
-        add(wherePart, QString("(fr.start < ?%2 AND fr.gend > ?%1) AND fr.id = f.id ")
-            .arg(fq.intersectRegion.startPos).arg(fq.intersectRegion.endPos()), "", n);
+        add(wherePart, QString("(fr.start < ?%2 AND fr.gend > ?%1) AND fr.id = f.id ").arg(n + 1).arg(n + 2), "", n);
+        n += 2;
     }
 
     bool useKeyTable = useKeyName || useKeyValue;
@@ -180,21 +181,25 @@ SQLiteQuery* SQLiteFeatureDbi::createFeatureQuery(const QString& selectPart, con
     SQLiteQuery* q = new SQLiteQuery(fullQuery, db, os);
     int m = 0;
     if (useSequence) {
-        q->bindDataId(m++, fq.sequenceId);
+        q->bindDataId(++m, fq.sequenceId);
     }
     if (useParent) {
-        q->bindDataId(m++, fq.parentFeatureId);
+        q->bindDataId(++m, fq.parentFeatureId);
     } else if (fq.topLevelOnly) {
-        q->bindDataId(m++, U2DataId());
+        q->bindDataId(++m, U2DataId());
     }
     if (useKeyName) {
-        q->bindString(m++, fq.keyName);
+        q->bindString(++m, fq.keyName);
     }
     if (useKeyValue) {
-        q->bindString(m++, fq.keyValue);
+        q->bindString(++m, fq.keyValue);
+    }
+    if (useRegion) {
+        q->bindInt64(++m, fq.intersectRegion.startPos);
+        q->bindInt64(++m, fq.intersectRegion.endPos());
     }
     return q;
-    
+
 }
 
 qint64 SQLiteFeatureDbi::countFeatures(const FeatureQuery& fq, U2OpStatus& os) {
@@ -205,7 +210,7 @@ qint64 SQLiteFeatureDbi::countFeatures(const FeatureQuery& fq, U2OpStatus& os) {
 
 
 U2DbiIterator<U2Feature>* SQLiteFeatureDbi::getFeatures(const FeatureQuery& fq, U2OpStatus& os) {
-    SQLiteQuery* q = createFeatureQuery("SELECT ", fq, true, os);
+    SQLiteQuery* q = createFeatureQuery("SELECT " + FDBI_FIELDS, fq, true, os);
     CHECK_OP_EXT(os, delete q, NULL);
     return new SqlRSIterator<U2Feature>(q, new SqlFeatureRSLoader(), NULL, U2Feature(), os);
 }
@@ -237,7 +242,7 @@ void SQLiteFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKe
         addKeyCommon(qk, feature.id, key);
         CHECK_OP(os, );
     }
-    
+
     qr.bindDataId(1, feature.id);
     qr.bindInt64(2, feature.location.region.startPos);
     qr.bindInt64(3, feature.location.region.endPos());
@@ -248,7 +253,7 @@ void SQLiteFeatureDbi::addKey(const U2DataId& featureId, const U2FeatureKey& key
     SQLiteQuery qk("INSERT INTO FeatureKey(feature, key, value) VALUES(?1, ?2, ?3)"  , db, os);
     addKeyCommon(qk, featureId, key);
 }
-    
+
 void SQLiteFeatureDbi::removeAllKeys(const U2DataId& featureId, const QString& keyName, U2OpStatus& os) {
     DBI_TYPE_CHECK(featureId, U2Type::Feature, os, );
 
