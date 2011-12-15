@@ -188,7 +188,7 @@ void GTest_ORFMarkerTask::prepare() {
     settings.complementTT = tr.getComplTranslation();
     settings.proteinTT = tr.getAminoTranslation();
     settings.searchRegion = U2Region(0, mySequence->getSequenceLength());
-	task = new ORFFindTask(settings, mySequence->getWholeSequenceData());
+	task = new ORFFindTask(settings, mySequence->getSequenceRef());
     addSubTask(task);
 }
 

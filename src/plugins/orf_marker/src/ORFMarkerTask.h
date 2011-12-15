@@ -54,9 +54,9 @@ public:
  class FindORFsToAnnotationsTask: public Task {
      Q_OBJECT
  public:
-     FindORFsToAnnotationsTask(AnnotationTableObject* aobj, const DNASequence& seq, 
+     FindORFsToAnnotationsTask(AnnotationTableObject* aobj,const U2EntityRef& entityRef, 
          const ORFAlgorithmSettings& settings, const QString& groupName = QString());
-     
+	 
      void run();
      ReportResult report();
      
@@ -66,7 +66,7 @@ public:
      ORFFindTask*                       fTask;
      ORFAlgorithmSettings               cfg;
     QString                             groupName;
-     const DNASequence&                 dna;
+     U2EntityRef						entityRef;
  };
  
  

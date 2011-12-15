@@ -24,6 +24,7 @@
 
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
+#include <U2Core/DNASequenceObject.h>
 
 #include "ORFFinder.h"
 
@@ -34,21 +35,21 @@ namespace U2 {
 class U2ALGORITHM_EXPORT ORFFindTask : public Task, public ORFFindResultsListener {
     Q_OBJECT
 public:
-    ORFFindTask(const ORFAlgorithmSettings& s, const QByteArray& seq);
+    ORFFindTask(const ORFAlgorithmSettings& s,const U2EntityRef& entityRef);
 
-    virtual void run();
+	virtual void run();
     virtual void onResult(const ORFFindResult& r);
 
     QList<ORFFindResult> popResults();
 
     const ORFAlgorithmSettings& getSettings() const {return config;}
-
-private:
-    ORFAlgorithmSettings config;
-    QList<ORFFindResult> newResults;
+private:	
+	ORFAlgorithmSettings config;
+	U2EntityRef entityRef;
+	QList<ORFFindResult> newResults;
     QMutex lock;
-    QByteArray sequence;
 };
+
 
 } //namespace
 

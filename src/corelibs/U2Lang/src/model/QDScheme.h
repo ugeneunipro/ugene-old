@@ -227,7 +227,9 @@ public:
     bool removeActor(QDActor* a);
     void removeConstraint(QDConstraint* constraint);
     const DNASequence& getSequence() const { return dna; }
+	U2EntityRef getEntityRef() const {return entityRef;}
     void setSequence(const DNASequence& sequence) { dna = sequence; }
+	void setEntityRef(const U2EntityRef& _entityRef ){entityRef = _entityRef;}
     const QList<QDActor*>& getActors() const { return actors; }
     QList<QDConstraint*> getConstraints() const;
     QList<QDConstraint*> getConstraints(QDSchemeUnit const* su1, QDSchemeUnit const* su2) const;
@@ -260,6 +262,7 @@ private:
     QList<QDActor*> actors;
     QMap< QString, QList<QDActor*> > actorGroups;
     QMap< QString, int > actorGroupReqNum;
+	U2EntityRef entityRef;
     DNASequence dna;
     QDStrandOption strand;
 };

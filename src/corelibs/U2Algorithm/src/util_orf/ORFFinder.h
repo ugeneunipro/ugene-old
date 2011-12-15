@@ -24,6 +24,7 @@
 
 #include <U2Core/U2Region.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/DNASequenceObject.h>
 
 #include <QtCore/QList>
 
@@ -133,12 +134,10 @@ public:
 
 class U2ALGORITHM_EXPORT ORFFindAlgorithm {
 public:
-
     static void find(
         ORFFindResultsListener* rl,
         const ORFAlgorithmSettings& config,
-        const char* sequence, 
-        int seqLen, 
+        U2EntityRef& entityRef, 
         int& stopFlag, 
         int& percentsCompleted);
 };

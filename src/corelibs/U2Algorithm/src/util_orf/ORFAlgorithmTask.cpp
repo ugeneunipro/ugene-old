@@ -29,21 +29,20 @@ namespace U2 {
 
 #define MAX_RESULTS 100000
 
-ORFFindTask::ORFFindTask(const ORFAlgorithmSettings& s, const QByteArray& seq) 
-: Task (tr("ORF find"), TaskFlag_None), config(s), sequence(seq)
+ORFFindTask::ORFFindTask(const ORFAlgorithmSettings& s,const U2EntityRef& _entityRef) 
+: Task (tr("ORF find"), TaskFlag_None),config(s),entityRef(_entityRef)
 {
     GCOUNTER( cvar, tvar, "ORFFindTask" );
     tpm = Progress_Manual;
     assert(config.proteinTT && config.proteinTT->isThree2One());
 }
 
-void ORFFindTask::run() {
-    ORFFindAlgorithm::find(dynamic_cast<ORFFindResultsListener*>(this),
-        config,
-        sequence.constData(),
-        sequence.size(),
-        stateInfo.cancelFlag,
-        stateInfo.progress);
+void ORFFindTask::run(){
+	ORFFindAlgorithm::find(dynamic_cast<ORFFindResultsListener*>(this),
+		config,
+		entityRef,
+		stateInfo.cancelFlag,
+		stateInfo.progress);
 }
 
 void ORFFindTask::onResult(const ORFFindResult& r) {
@@ -68,6 +67,4 @@ QList<ORFFindResult> ORFFindTask::popResults() {
 }
 
 } //namespace
-
-
 

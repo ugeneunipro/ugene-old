@@ -248,17 +248,18 @@ Task* ORFWorker::tick() {
 
     U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+
     if (NULL == seqObj.get()) {
         return NULL;
     }
-    DNASequence seq = seqObj->getWholeSequence();
     
-    if (!seq.isNull() && seq.alphabet->getType() == DNAAlphabet_NUCL) {
+	DNAAlphabet* alphabet = seqObj->getAlphabet(); 
+    if (alphabet && alphabet->getType() == DNAAlphabet_NUCL) {
         ORFAlgorithmSettings config(cfg);
-        config.searchRegion.length = seq.length();
+        config.searchRegion.length = seqObj->getSequenceLength();
         if (config.strand != ORFAlgorithmStrand_Direct) {
             QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-                lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
+                lookupTranslation(alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
             if (!compTTs.isEmpty()) {
                 config.complementTT = compTTs.first();
             } else {
@@ -266,14 +267,14 @@ Task* ORFWorker::tick() {
             }
         }
         config.proteinTT = AppContext::getDNATranslationRegistry()->
-            lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_AMINO, transId);
+            lookupTranslation(alphabet, DNATranslationType_NUCL_2_AMINO, transId);
         if (config.proteinTT) {
-            Task* t = new ORFFindTask(config, QByteArray(seq.constData(), seq.length()));
+            Task* t = new ORFFindTask(config,seqObj->getEntityRef());
             connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
             return t;
         }
     }
-    QString err = tr("Bad sequence supplied to ORFWorker: %1").arg(seq.getName());
+    QString err = tr("Bad sequence supplied to ORFWorker: %1").arg(seqObj->getSequenceName());
     //if (failFast) {
         return new FailTask(err);
     /*} else {

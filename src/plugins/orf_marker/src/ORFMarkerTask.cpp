@@ -27,6 +27,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/Settings.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "ORFMarkerTask.h"
 
@@ -81,11 +82,11 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
 //////////////////////////////////////////////////////////////////////////
 // find ORFS and save 2 annotations task
 
-FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj, const DNASequence& seq, 
-    const ORFAlgorithmSettings& settings, const QString& gName )
-  :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), groupName(gName), dna(seq)
+FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj,const U2EntityRef& _entityRef, 
+													 const ORFAlgorithmSettings& settings, const QString& gName )
+  :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), entityRef(_entityRef), groupName(gName)
 {
-    fTask = new ORFFindTask(cfg, dna.seq);
+    fTask = new ORFFindTask(cfg, entityRef);
     addSubTask(fTask);
 }
 
@@ -151,7 +152,7 @@ Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnno
         cfg.searchRegion = U2Region(0, dnaObj->getSequenceLength());
     }
     
-    Task* task = new FindORFsToAnnotationsTask(aObj, dnaObj->getWholeSequence(), cfg );
+    Task* task = new FindORFsToAnnotationsTask(aObj, dnaObj->getSequenceRef(), cfg );
 
     return task;
     

@@ -261,7 +261,7 @@ void ORFDialog::runTask() {
         return;
     }
 
-    task = new ORFFindTask(s, ctx->getSequenceObject()->getWholeSequenceData());
+    task = new ORFFindTask(s, ctx->getSequenceObject()->getEntityRef());
     
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     updateState();
@@ -338,7 +338,7 @@ void ORFDialog::accept()
 		const CreateAnnotationModel& m = ac->getModel();
 		AnnotationTableObject* aObj = m.getAnnotationObject();
 		FindORFsToAnnotationsTask* orfTask = 
-			new FindORFsToAnnotationsTask(aObj, ctx->getSequenceObject()->getWholeSequence(),s, m.groupName);
+			new FindORFsToAnnotationsTask(aObj, ctx->getSequenceObject()->getEntityRef(),s, m.groupName);
 		AppContext::getTaskScheduler()->registerTopLevelTask(orfTask);
 	}
     QDialog::accept();
