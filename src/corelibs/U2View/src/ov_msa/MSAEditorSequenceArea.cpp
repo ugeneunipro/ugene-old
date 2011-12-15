@@ -1473,7 +1473,7 @@ void MSAEditorSequenceArea::sl_addSeqFromProject()
             }
             U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
             if (seqObj) {
-                msaObject->addRow(seqObj->getWholeSequenceData(), 0);
+                msaObject->addRow(seqObj->getWholeSequence());
                 cancelSelection();
             }
         }
