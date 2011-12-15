@@ -1169,32 +1169,32 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="102"/>
-        <source>Chain Length</source>
+        <source>Chain length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="122"/>
-        <source>Subsampling Frequence</source>
+        <source>Subsampling frequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="129"/>
-        <source>Burn-in Length</source>
+        <source>Burn-in length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="136"/>
-        <source>Heated Chains</source>
+        <source>Heated chains</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="143"/>
-        <source>Heated Chain Temp</source>
+        <source>Heated chain temp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/MrBayesDialog.ui" line="150"/>
-        <source>Random Seed</source>
+        <source>Random seed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
