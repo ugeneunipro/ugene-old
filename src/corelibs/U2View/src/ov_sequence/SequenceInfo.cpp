@@ -83,9 +83,15 @@ void SequenceInfo::sl_onFocusChanged(ADVSequenceWidget* /* prevWidget */, ADVSeq
 QString SequenceInfo::getStrLengthOfSeqInFocus()
 {
     ADVSequenceObjectContext* activeSequenceContext = annotatedDnaView->getSequenceInFocus();
-    SAFE_POINT(activeSequenceContext != 0, "There is no sequence in focus!", "");
 
-    return QString::number(activeSequenceContext->getSequenceLength());
+    if (activeSequenceContext != 0)
+    {
+        return QString::number(activeSequenceContext->getSequenceLength());
+    }
+    else
+    {
+        return QString("");
+    }
 }
 
 
