@@ -52,6 +52,11 @@ public:
     */
     virtual U2DbiIterator<U2Feature>* getFeatures(const FeatureQuery& q, U2OpStatus& os);
 
+    /**
+        Returns all keys of a specified feature
+    */
+    virtual QList<U2FeatureKey> getFeatureKeys(const U2DataId& featureId, U2OpStatus& os);
+
     
     
     /**
