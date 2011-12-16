@@ -219,14 +219,14 @@ U2DbiIterator<U2Feature>* SQLiteFeatureDbi::getFeatures(const FeatureQuery& fq, 
 }
 
 QList<U2FeatureKey> SQLiteFeatureDbi::getFeatureKeys(const U2DataId& featureId, U2OpStatus& os) {
-    SQLiteQuery q("SELECT name, value FROM FeatureKeys WHERE feature = ?1", db, os);
+    SQLiteQuery q("SELECT name, value FROM FeatureKey WHERE feature = ?1", db, os);
     q.bindDataId(1, featureId);
     CHECK_OP(os, QList<U2FeatureKey>());
     QList<U2FeatureKey> result;
     while(q.step()) {
         U2FeatureKey key;
-        key.name = q.getCString(1);
-        key.value = q.getCString(2);
+        key.name = q.getCString(0);
+        key.value = q.getCString(1);
         result.append(key);
     }
     return result;
