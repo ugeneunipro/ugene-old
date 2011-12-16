@@ -92,7 +92,7 @@ static void add (QString& buf, const QString& str, const QString& op, int& n) {
     buf += str;
     if (!op.isEmpty()) {
         n++;
-        buf += op; + "?" + QString::number(n);
+        buf += op + "?" + QString::number(n);
     }
 }
 
@@ -127,9 +127,9 @@ SQLiteQuery* SQLiteFeatureDbi::createFeatureQuery(const QString& selectPart, con
     bool useParent = !fq.parentFeatureId.isEmpty();
     if (useParent) {
         DBI_TYPE_CHECK(fq.parentFeatureId, U2Type::Feature, os, NULL);
-        add(wherePart, "f.parentFeatureId", "=", n);
+        add(wherePart, "f.parent", "=", n);
     } else if (fq.topLevelOnly) {
-        add(wherePart, "f.parentFeatureId", "=", n);
+        add(wherePart, "f.parent", "=", n);
     }
 
     bool useSequence = !fq.sequenceId.isEmpty();
@@ -150,7 +150,7 @@ SQLiteQuery* SQLiteFeatureDbi::createFeatureQuery(const QString& selectPart, con
 
     bool useRegion = fq.intersectRegion.length > 0;
     if (useRegion) {
-        add(wherePart, QString("(fr.start < ?%2 AND fr.gend > ?%1) AND fr.id = f.id ").arg(n + 1).arg(n + 2), "", n);
+        add(wherePart, QString("(fr.start < ?%2 AND fr.end > ?%1) AND fr.id = f.id ").arg(n + 1).arg(n + 2), "", n);
         n += 2;
     }
 
@@ -177,7 +177,10 @@ SQLiteQuery* SQLiteFeatureDbi::createFeatureQuery(const QString& selectPart, con
         tablesPart+=", FeatureLocationRTreeIndex AS fr";
     }
 
-    QString fullQuery = selectPart + " FROM " + tablesPart + " WHERE " + wherePart;
+    QString fullQuery = selectPart + " FROM " + tablesPart;
+    if(!wherePart.isEmpty()) {
+        fullQuery += " WHERE " + wherePart;
+    }
     SQLiteQuery* q = new SQLiteQuery(fullQuery, db, os);
     int m = 0;
     if (useSequence) {
