@@ -408,8 +408,13 @@ private:
                 return false;
             }
         } else {
-            if(!parseLocationDescriptor(location)) {
-                return false;
+            while(true) {
+                if(!parseLocationDescriptor(location)) {
+                    return false;
+                }
+                if(!match(Token::COMMA)) {
+                    break;
+                }
             }
         }
         return true;
