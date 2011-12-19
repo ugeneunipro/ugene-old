@@ -34,7 +34,8 @@ class AnnotationData;
 
 namespace Genbank {
 
-class U2FORMATS_EXPORT LocationParser {
+class U2FORMATS_EXPORT LocationParser : public QObject {
+    Q_OBJECT
 public:
     static void parseLocation(const char* str, int len, U2Location& location);
 
