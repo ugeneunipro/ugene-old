@@ -203,8 +203,9 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         ExternalToolSupportAction* makeBLASTDBAction= new ExternalToolSupportAction(tr("BLAST+ make DB..."), this, QStringList(MAKEBLASTDB_TOOL_NAME));
         connect(makeBLASTDBAction, SIGNAL(triggered()), makeBLASTDBTool, SLOT(sl_runWithExtFileSpecify()));
 
-        blastallTool->getViewContext()->setParent(this);
-        blastallTool->getViewContext()->init();
+        BlastAllSupportContext *blastAllViewContext = new BlastAllSupportContext(this);
+        blastAllViewContext->setParent(this);
+        blastAllViewContext->init();
 
         ExternalToolSupportAction* blastallAction= new ExternalToolSupportAction(tr("BLAST Search..."), this, QStringList(BLASTALL_TOOL_NAME));
         connect(blastallAction, SIGNAL(triggered()), blastallTool, SLOT(sl_runWithExtFileSpecify()));

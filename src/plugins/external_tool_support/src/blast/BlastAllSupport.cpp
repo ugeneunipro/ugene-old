@@ -54,7 +54,7 @@ namespace U2 {
 BlastAllSupport::BlastAllSupport(const QString& name, const QString& path) : ExternalTool(name, path)
 {
     if (AppContext::getMainWindow()) {
-        viewCtx = new BlastAllSupportContext(this);
+        viewCtx = NULL; // new BlastAllSupportContext(this);
         icon = QIcon(":external_tool_support/images/ncbi.png");
         grayIcon = QIcon(":external_tool_support/images/ncbi_gray.png");
         warnIcon = QIcon(":external_tool_support/images/ncbi_warn.png");
