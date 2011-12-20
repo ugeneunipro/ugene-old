@@ -270,7 +270,7 @@ int main(int argc, char **argv)
     QString transFile[] = {
         cmdlineTransl,
         userAppSettings->getTranslationFile(),
-        "transl_" + QLocale::system().name(),
+        "transl_" + QLocale::system().name().left(2),
         "transl_en"
     };
     bool trOK = false;
