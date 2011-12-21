@@ -289,12 +289,16 @@ QString DigestSequenceTask::generateReport() const
     res+=tr("<br>Generated %1 fragments.").arg(results.count());
     int counter = 1;
     foreach (const SharedAnnotationData& sdata, results) {
-        int startPos = sdata->location->regions.first().startPos;
-        int endPos = sdata->location->regions.first().endPos();
+        int startPos = sdata->location->regions.first().startPos + 1;
+        int endPos = sdata->location->regions.last().endPos();
+		int len = 0;
+		foreach (const U2Region& r, sdata->location->regions) {
+			len += r.endPos() - r.startPos;	
+		}
         res+=tr("<br><br>&nbsp;&nbsp;&nbsp;&nbsp;%1:&nbsp;&nbsp;&nbsp;&nbsp;From %3 (%2) To %5 (%4) - %6 bp ").arg(counter)
                   .arg(startPos).arg(sdata->findFirstQualifierValue(QUALIFIER_LEFT_TERM))
                   .arg(endPos).arg(sdata->findFirstQualifierValue(QUALIFIER_RIGHT_TERM))
-                   .arg(endPos - startPos + 1);   
+                   .arg(len);   
         ++counter;
     }
 
