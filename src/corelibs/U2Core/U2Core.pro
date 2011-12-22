@@ -68,7 +68,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/DBXRefRegistry.h \
            src/globals/DocumentFormatConfigurators.h \
            src/globals/ExternalToolRegistry.h \
-           src/globals/FormatSettings.h \
            src/globals/global.h \
            src/globals/GUrl.h \
            src/globals/Identifiable.h \
@@ -201,7 +200,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/DBXRefRegistry.cpp \
            src/globals/DocumentFormatConfigurators.cpp \
            src/globals/ExternalToolRegistry.cpp \
-           src/globals/FormatSettings.cpp \
            src/globals/GUrl.cpp \
            src/globals/Log.cpp \
            src/globals/LogCache.cpp \

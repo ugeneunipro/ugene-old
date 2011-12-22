@@ -26,7 +26,6 @@
 
 namespace U2 {
 
-class FormatAppsSettings;
 class NetworkConfiguration;
 class UserAppsSettings;
 class AppResourcePool;
@@ -48,14 +47,11 @@ public:
 
     TestRunnerSettings* getTestRunnerSettings() const {return trs;}
 
-    FormatAppsSettings* getFormatAppsSettings() const {return formatSettings;}
-
 protected:
     NetworkConfiguration*   nc;
     UserAppsSettings*       userAppsSettings;
     AppResourcePool*        ri;
     TestRunnerSettings*     trs;
-    FormatAppsSettings*   formatSettings;
 };
 
 }//namespace

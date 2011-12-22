@@ -169,24 +169,20 @@ void TextWriter::data2doc(Document* doc, const QVariantMap& data) {
     }
 }
 
-static U2SequenceObject *addSeqObject(Document* doc, const DNASequence& seq) {
+static void addSeqObject(Document* doc, const DNASequence& seq) {
     if (seq.alphabet == NULL || seq.length() == 0 || doc->findGObjectByName(seq.getName())) {
-        return NULL;
+        return;
     }
     algoLog.trace(QString("Adding seq [%1] to %3 doc %2").arg(seq.getName()).arg(doc->getURLString()).arg(doc->getDocumentFormat()->getFormatName()));
 
-    U2SequenceObject *dna = NULL;
     if (doc->getDocumentFormat()->isObjectOpSupported(doc, DocumentFormat::DocObjectOp_Add, GObjectTypes::SEQUENCE)) {
         U2OpStatus2Log os;
         U2EntityRef seqRef = U2SequenceUtils::import(doc->getDbiRef(), seq, os);
-        CHECK_OP(os, NULL);
-        dna = new U2SequenceObject(seq.getName(), seqRef);
-        doc->addObject(dna);
+        CHECK_OP(os, );
+        doc->addObject(new U2SequenceObject(seq.getName(), seqRef));
     } else {
         algoLog.trace("Failed to add sequence object to document: op is not supported!");
     }
-
-    return dna;
 }
 
 /*************************************
@@ -297,7 +293,7 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
     QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
     U2SequenceObject* dna = qobject_cast<U2SequenceObject*>(doc->findGObjectByName(seq.getName()));
     if (!dna && !seq.isNull()) {
-        dna = addSeqObject(doc, seq);
+        addSeqObject(doc, seq);
     }
     if (!atl.isEmpty()) {
         AnnotationTableObject* att = NULL;

@@ -30,9 +30,6 @@
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/SequenceUtils.h>
-#include <U2Core/U1AnnotationUtils.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
 
 
 #include "U2SequenceUtils.h"
@@ -184,16 +181,10 @@ U2EntityRef U2SequenceUtils::import(const U2DbiRef& dbiRef, const DNASequence& s
 
 U2SequenceImporter::U2SequenceImporter() {
     insertBlockSize = DEFAULT_SEQUENCE_INSERT_BLOCK_SIZE;
-    currentLength = 0;
-    isUnfinishedRegion = false;
-    caseAnnsMode = NO_CASE_ANNS;
 }
 
 U2SequenceImporter::U2SequenceImporter(qint64 _insertBlockSize) : insertBlockSize(_insertBlockSize) {
     insertBlockSize = qMin((qint64)10, insertBlockSize);
-    currentLength = 0;
-    isUnfinishedRegion = false;
-    caseAnnsMode = NO_CASE_ANNS;
 }
 
 U2SequenceImporter::~U2SequenceImporter() {
@@ -213,10 +204,6 @@ void U2SequenceImporter::startSequence(const U2DbiRef& dbiRef, const QString& vi
     sequence = U2Sequence();
     sequence.visualName = visualName;
     sequence.circular = circular;
-
-    currentLength = 0;
-    isUnfinishedRegion = false;
-    annList.clear();
     
     con.dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
     CHECK_OP(os, );
@@ -249,11 +236,6 @@ void U2SequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus& os) 
     }
 
     _addBlock2Buffer(data, len, os);
-
-    if (caseAnnsMode != NO_CASE_ANNS) {
-        annList << U1AnnotationUtils::getCaseAnnotations(data, len, currentLength, isUnfinishedRegion, unfinishedRegion, LOWER_CASE == caseAnnsMode);
-        currentLength += len;
-    }
 }
 
 void U2SequenceImporter::addSequenceBlock(const U2EntityRef& sequenceRef, const U2Region& r, U2OpStatus& os) {
@@ -273,7 +255,6 @@ void U2SequenceImporter::addDefaultSymbolsBlock(int n, U2OpStatus& os) {
     char defaultChar = U2AlphabetUtils::getDefaultSymbol(sequence.alphabet);
     QByteArray a(n, defaultChar);
     _addBlock2Buffer(a.data(), a.size(), os);
-    currentLength += n;
 }
 
 
@@ -310,32 +291,7 @@ U2Sequence U2SequenceImporter::finalizeSequence(U2OpStatus& os) {
     _addBuffer2Db(os);
     LOG_OP(os);
     con.close(os);
-    if (caseAnnsMode != NO_CASE_ANNS) {
-        annList << U1AnnotationUtils::finalizeUnfinishedRegion(isUnfinishedRegion, unfinishedRegion, LOWER_CASE == caseAnnsMode);
-
-        if (1 == annList.size()) {
-            const QVector<U2Region> &regs = annList.first()->getRegions();
-            if (1 == regs.size()) {
-                U2Region reg = regs.first();
-                if (0 == reg.startPos && sequence.length == reg.length) {
-                    annList.clear();
-                }
-            }
-        }
-    }
     return sequence;
-}
-
-void U2SequenceImporter::setCaseAnnotationsMode(CaseAnnotationsMode mode) {
-    caseAnnsMode = mode;
-}
-
-bool U2SequenceImporter::isCaseAnnotationsModeOn() const {
-    return caseAnnsMode != NO_CASE_ANNS;
-}
-
-QList<Annotation*> &U2SequenceImporter::getCaseAnnotations() {
-    return annList;
 }
 
 } //namespace

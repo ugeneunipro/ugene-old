@@ -21,7 +21,6 @@
 
 #include "AppSettingsImpl.h"
 
-#include <U2Core/FormatSettings.h>
 #include <U2Core/NetworkConfiguration.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/AppResources.h>
@@ -35,7 +34,6 @@ AppSettingsImpl::AppSettingsImpl() {
     ri = new AppResourcePool();
     userAppsSettings = new UserAppsSettings();
     trs = new TestRunnerSettings();
-    formatSettings = new FormatAppsSettings();
 }
 
 AppSettingsImpl::~AppSettingsImpl() {

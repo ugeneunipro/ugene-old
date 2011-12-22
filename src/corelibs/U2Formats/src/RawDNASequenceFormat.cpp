@@ -29,7 +29,6 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 
 #include <U2Core/TextUtils.h>
@@ -47,14 +46,10 @@ RawDNASequenceFormat::RawDNASequenceFormat(QObject* p) : DocumentFormat(p, Docum
     formatDescription = tr("Raw sequence file - a whole content of the file is treated either as a single nucleotide or peptide sequence UGENE will remove all non-alphabetic chars from the result sequence");
 }
 
-#define GObjectHint_CaseAnns   "use-case-annotations"
-static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& objects, const QVariantMap& fs, U2OpStatus& os) {
+
+static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& objects, U2OpStatus& os) {
 	static const int READ_BUFF_SIZE = 4096;
-	U2SequenceImporter  seqImporter;
-    if (fs.keys().contains(GObjectHint_CaseAnns)) {
-        CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(fs.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
-        seqImporter.setCaseAnnotationsMode(mode);
-    }
+	U2SequenceImporter  seqImporter; 
 
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
@@ -104,15 +99,12 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
 	U2Sequence u2seq = seqImporter.finalizeSequence(os);
 	CHECK_OP(os, );
 
-    GObjectReference sequenceRef(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE);
-    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
-
 	objects << new U2SequenceObject(u2seq.visualName,U2EntityRef(dbiRef, u2seq.id));
 }
 
 Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
 	QList<GObject*> objects;
-        load(io, dbiRef, objects, fs, os);
+        load(io, dbiRef, objects, os);
 	CHECK_OP(os, NULL);
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
     return doc;
@@ -130,9 +122,8 @@ FormatCheckResult RawDNASequenceFormat::checkRawData(const QByteArray& rawData, 
 }
 
 void RawDNASequenceFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
-    QList<GObject*> objects = d->findGObjectByType(GObjectTypes::SEQUENCE);
-    assert(objects.size() == 1);
-    GObject* obj = objects.first();
+    assert(d->getObjects().size() ==1);
+    GObject* obj = d->getObjects().first();
     U2SequenceObject* so = qobject_cast<U2SequenceObject*>(obj);
     assert(so!=NULL);
     PlainTextFormat::storeRawData(so->getWholeSequenceData(), os, io);

@@ -22,13 +22,11 @@
 #ifndef _U2_SEQUENCE_UTILS_H_
 #define _U2_SEQUENCE_UTILS_H_
 
-#include <U2Core/FormatSettings.h>
 #include <U2Core/U2Sequence.h>
 #include <U2Core/U2DbiUtils.h>
 
 namespace U2 {
 
-class Annotation;
 class DNASequence;
 class DNATranslation;
 
@@ -72,27 +70,16 @@ public:
     U2Sequence finalizeSequence(U2OpStatus& os);
     U2AlphabetId getAlphabet() const {return sequence.alphabet;}
 
-    void setCaseAnnotationsMode(CaseAnnotationsMode mode);
-    bool isCaseAnnotationsModeOn() const;
-    QList<Annotation*> &getCaseAnnotations();
-
 private:
     void _addBlock2Buffer(const char* data, qint64 len, U2OpStatus& os);
     void _addBlock2Db(const char* data, qint64 len, U2OpStatus& os);
     void _addBuffer2Db(U2OpStatus& os);
 
-    DbiConnection       con;
-    qint64              insertBlockSize;
+    DbiConnection   con;
+    qint64          insertBlockSize;
     
-    U2Sequence          sequence;
-    QByteArray          sequenceBuffer;
-
-    // for lower case annotations
-    qint64              currentLength;
-    QList<Annotation*>  annList;
-    bool                isUnfinishedRegion;
-    U2Region            unfinishedRegion;
-    CaseAnnotationsMode caseAnnsMode;
+    U2Sequence      sequence;
+    QByteArray      sequenceBuffer;
 
 };
 

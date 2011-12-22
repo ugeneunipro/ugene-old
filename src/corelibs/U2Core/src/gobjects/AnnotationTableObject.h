@@ -140,17 +140,11 @@ public:
     QString getQualifiersTip(int maxRows, U2SequenceObject* = NULL, DNATranslation* complTT = NULL, DNATranslation* aminoTT = NULL) const;
     
     static bool annotationLessThan(Annotation *first, Annotation *second);
-
-    bool isCaseAnnotation() const;
-    void setCaseAnnotation(bool caseAnnotation);
-
-    void resetObject() {obj = NULL;}
     
 private:
     AnnotationTableObject*                  obj;
     SharedAnnotationData                    d;
     QList<AnnotationGroup*>                 groups;
-    bool                                    caseAnnotation;
 };
 
 

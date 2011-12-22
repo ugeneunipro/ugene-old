@@ -35,7 +35,6 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2AttributeUtils.h>
@@ -367,7 +366,7 @@ void GenbankPlainTextFormat::readHeaderAttributes(QVariantMap& tags, DbiConnecti
 
 static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString& locustFromHeader);
 static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& os);
-static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> lowerCaseRegs, U2OpStatus& os);
+static void writeSequence(IOAdapter* io, U2SequenceObject* ao, U2OpStatus& os);
 static void prepareMultiline(QString& lineToChange, int spacesOnLineStart, bool newLineAtTheEnd = true, int maxLineLen = 79);
 
 
@@ -488,8 +487,7 @@ void GenbankPlainTextFormat::storeDocument(Document* doc, IOAdapter* io, U2OpSta
 
         if (so) {
             //todo: store sequence alphabet!
-            QList<U2Region> lowerCaseRegs = U1AnnotationUtils::getRelatedLowerCaseRegions(so, aos);
-            writeSequence(io, so, lowerCaseRegs, os);
+            writeSequence(io, so, os);
             CHECK_OP(os, );
         }
 
@@ -612,12 +610,6 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
     qStableSort(sortedAnnotations.begin(), sortedAnnotations.end(), annotationLessThanByRegion);
     for(int i = 0; i < sortedAnnotations.size(); ++i) {
         Annotation * a = sortedAnnotations.at(i); assert(a != NULL);
-        QString aName = a->getAnnotationName();
-
-        if (aName == U1AnnotationUtils::lowerCaseAnnotationName
-            || aName == U1AnnotationUtils::upperCaseAnnotationName) {
-                continue;
-        }
         
         //write name of the feature
         len = io->writeBlock(spaceLine, 5);
@@ -625,6 +617,7 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
             si.setError(GenbankPlainTextFormat::tr("Error writing document"));
             return;
         }
+        QString aName = a->getAnnotationName();
         
         GBFeatureKey key = GBFeatureUtils::getKey(aName);
         const QString& keyStr = key == GBFeatureKey_UNKNOWN ? defaultKey: aName;
@@ -684,12 +677,12 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
     }
 }
 
-static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> lowerCaseRegs, U2OpStatus& si) {
+static void writeSequence(IOAdapter* io, U2SequenceObject* ao, U2OpStatus& si) {
     static const int charsInLine = 60;
 
     QByteArray seq = ao->getWholeSequenceData();
     int slen = seq.length();
-    const char* sequence = U1AnnotationUtils::applyLowerCaseRegions(seq.data(), 0, slen, 0, lowerCaseRegs);
+    const char* sequence = seq.constData();
     const char* spaces = TextUtils::SPACE_LINE.constData();
     QByteArray num;
     bool ok = true;
@@ -698,7 +691,6 @@ static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> l
         si.setError(L10N::errorWritingFile(ao->getDocument()->getURL()));
         return;
     }
-
     for (int pos = 0; pos < slen; pos+=charsInLine) {
         num.setNum(pos+1);
 

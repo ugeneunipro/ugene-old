@@ -22,7 +22,6 @@
 #include "AppSettingsGUIImpl.h"
 #include "AppSettingsDialogController.h"
 
-#include "format_settings/FormatSettingsGUIController.h"
 #include "network_settings/NetworkSettingsGUIController.h"
 #include "user_apps_settings/UserApplicationsSettingsGUIController.h"
 #include "resource_settings/ResourceSettingsGUIController.h"
@@ -96,7 +95,6 @@ void AppSettingsGUIImpl::registerBuiltinPages() {
     registerPage(new UserApplicationsSettingsPageController());
     registerPage(new ResourceSettingsGUIPageController());
     registerPage(new NetworkSettingsPageController());
-    registerPage(new FormatSettingsGUIPageController());
 }
 
 }//namespace
