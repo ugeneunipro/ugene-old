@@ -64,7 +64,7 @@ unix {
 win32 {
     !debug_and_release|build_pass {
         CONFIG(release, debug|release) {
-            NSIS_LINE = "!define ProductVersion $${UGENE_VERSION}
+            NSIS_LINE = "!define ProductVersion $${UGENE_VERSION}"
             NSIS_FILE = $${DESTDIR}/version.nsis
                         
             NSIS_LINE = $$replace(NSIS_LINE, "\\.","_")
@@ -72,7 +72,7 @@ win32 {
             
             system (echo $${NSIS_LINE} > $${NSIS_FILE})
             
-            NSIS_LINE = "!define PrintableVersion $${UGENE_VERSION}
+            NSIS_LINE = "!define PrintableVersion $${UGENE_VERSION}"
             system (echo $${NSIS_LINE} >> $${NSIS_FILE})
         }
     }

@@ -2,10 +2,6 @@ include (U2View.pri)
 
 # Input
 HEADERS += src/WebWindow.h \
-           _tmp/ui/ui_CreateFileIndexDialog.h \
-           _tmp/ui/ui_UIndexExportToNewFileDialog.h \
-           _tmp/ui/ui_UIndexViewHeaderItemWidget.h \
-           _tmp/ui/ui_UIndexViewWidget.h \
            src/ov_assembly/AssemblyBrowser.h \
            src/ov_assembly/AssemblyBrowserFactory.h \
            src/ov_assembly/AssemblyBrowserSettings.h \

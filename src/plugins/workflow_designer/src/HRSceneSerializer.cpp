@@ -151,7 +151,7 @@ static QString metaData(WorkflowScene * scene, const HRSchemaSerializer::NamesMa
     }
     if(schema.hasPortAliases()) {
         res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::PORT_ALIASES_START, HRSchemaSerializer::NO_NAME, 
-            HRSchemaSerializer::schemaPortAliases(schema.getProcesses(), nmap, scene->getPortAliases()), 2);
+            HRSchemaSerializer::schemaPortAliases(nmap, scene->getPortAliases()), 2);
     }
     res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::VISUAL_START, HRSchemaSerializer::NO_NAME, visualData(scene->items(), nmap), 2);
     return res;

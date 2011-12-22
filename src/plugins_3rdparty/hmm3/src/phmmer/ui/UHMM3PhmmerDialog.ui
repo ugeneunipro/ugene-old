@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>UHMM3PhmmerDialog</class>
- <widget class="QDialog" name="UHMM3PhmmerDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="UHMM3PhmmerDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,49 +10,41 @@
     <height>302</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTabWidget" name="mainTabWidget" >
-     <property name="currentIndex" >
+    <widget class="QTabWidget" name="mainTabWidget">
+     <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="inputAndOutputTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>625</width>
-        <height>260</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="inputAndOutputTab">
+      <attribute name="title">
        <string>input and output</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3" >
+      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2" >
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QLabel" name="queryLabel" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+          <widget class="QLabel" name="queryLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>Query sequence file:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="queryLineEdit" />
+          <widget class="QLineEdit" name="queryLineEdit"/>
          </item>
          <item>
-          <widget class="QToolButton" name="queryToolButton" >
-           <property name="text" >
+          <widget class="QToolButton" name="queryToolButton">
+           <property name="text">
             <string>...</string>
            </property>
           </widget>
@@ -59,13 +52,13 @@
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2" >
+        <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <spacer name="verticalSpacer" >
-           <property name="orientation" >
+          <spacer name="verticalSpacer">
+           <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeHint" stdset="0" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
              <height>5</height>
@@ -74,13 +67,13 @@
           </spacer>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout" >
+          <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <spacer name="horizontalSpacer" >
-             <property name="orientation" >
+            <spacer name="horizontalBottomSpacer">
+             <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" stdset="0" >
+             <property name="sizeHint" stdset="0">
               <size>
                <width>40</width>
                <height>20</height>
@@ -89,15 +82,15 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="okPushButton" >
-             <property name="text" >
+            <widget class="QPushButton" name="okPushButton">
+             <property name="text">
               <string>search</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="cancelPushButton" >
-             <property name="text" >
+            <widget class="QPushButton" name="cancelPushButton">
+             <property name="text">
               <string>cancel</string>
              </property>
             </widget>
@@ -108,51 +101,43 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="reportingTresholdsTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>625</width>
-        <height>218</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="reportingTresholdsTab">
+      <attribute name="title">
        <string>reporting tresholds</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_11" >
+      <layout class="QVBoxLayout" name="verticalLayout_11">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_10" >
+        <layout class="QVBoxLayout" name="verticalLayout_10">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_14" >
+          <layout class="QHBoxLayout" name="horizontalLayout_14">
            <item>
-            <widget class="QRadioButton" name="useEvalTresholdsButton" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+            <widget class="QRadioButton" name="useEvalTresholdsButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>report domains &lt;= this E-value threshold:</string>
              </property>
-             <property name="checked" >
+             <property name="checked">
               <bool>true</bool>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="domESpinBox" >
-             <property name="prefix" >
+            <widget class="QSpinBox" name="domESpinBox">
+             <property name="prefix">
               <string>1E+</string>
              </property>
-             <property name="minimum" >
+             <property name="minimum">
               <number>-999</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>1</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>1</number>
              </property>
             </widget>
@@ -160,26 +145,26 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_17" >
+          <layout class="QHBoxLayout" name="horizontalLayout_17">
            <item>
-            <widget class="QRadioButton" name="useScoreTresholdsButton" >
-             <property name="enabled" >
+            <widget class="QRadioButton" name="useScoreTresholdsButton">
+             <property name="enabled">
               <bool>true</bool>
              </property>
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
-              <string>report domains >= this score treshold:</string>
+             <property name="text">
+              <string>report domains &gt;= this score treshold:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="scoreTresholdDoubleSpin" >
-             <property name="enabled" >
+            <widget class="QDoubleSpinBox" name="scoreTresholdDoubleSpin">
+             <property name="enabled">
               <bool>false</bool>
              </property>
             </widget>
@@ -187,26 +172,26 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_18" >
+          <layout class="QHBoxLayout" name="horizontalLayout_18">
            <item>
-            <widget class="QCheckBox" name="domZCheckBox" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+            <widget class="QCheckBox" name="domZCheckBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string> set number of significant seqs, for domain E-value calculation:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="domZDoubleSpinBox" >
-             <property name="enabled" >
+            <widget class="QDoubleSpinBox" name="domZDoubleSpinBox">
+             <property name="enabled">
               <bool>false</bool>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <double>999999999.000000000000000</double>
              </property>
             </widget>
@@ -216,11 +201,11 @@
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_4" >
-         <property name="orientation" >
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>236</height>
@@ -230,45 +215,37 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="scoringSystemTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>625</width>
-        <height>218</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="scoringSystemTab">
+      <attribute name="title">
        <string>scoring system</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5" >
+      <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4" >
+        <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3" >
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="QLabel" name="popenLabel" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+            <widget class="QLabel" name="popenLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>gap open probability:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="popenDoubleSpinBox" >
-             <property name="maximum" >
+            <widget class="QDoubleSpinBox" name="popenDoubleSpinBox">
+             <property name="maximum">
               <double>0.500000000000000</double>
              </property>
-             <property name="singleStep" >
+             <property name="singleStep">
               <double>0.010000000000000</double>
              </property>
-             <property name="value" >
+             <property name="value">
               <double>0.020000000000000</double>
              </property>
             </widget>
@@ -276,29 +253,29 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4" >
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
-            <widget class="QLabel" name="pextendLabel" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+            <widget class="QLabel" name="pextendLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>gap extend probability:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="pextendDoubleSpinBox" >
-             <property name="maximum" >
+            <widget class="QDoubleSpinBox" name="pextendDoubleSpinBox">
+             <property name="maximum">
               <double>0.990000000000000</double>
              </property>
-             <property name="singleStep" >
+             <property name="singleStep">
               <double>0.050000000000000</double>
              </property>
-             <property name="value" >
+             <property name="value">
               <double>0.400000000000000</double>
              </property>
             </widget>
@@ -308,11 +285,11 @@
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_2" >
-         <property name="orientation" >
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>312</height>
@@ -322,82 +299,74 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="accHeuristicsTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>625</width>
-        <height>218</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="accHeuristicsTab">
+      <attribute name="title">
        <string>acceleration heuristics</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_6" >
+      <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="QCheckBox" name="nobiasCheckBox" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+        <widget class="QCheckBox" name="nobiasCheckBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string> turn off composition bias filter</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="nonull2CheckBox" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+        <widget class="QCheckBox" name="nonull2CheckBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>turn off biased composition score corrections</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="maxCheckBox" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+        <widget class="QCheckBox" name="maxCheckBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Turn all heuristic filters off (less speed, more power)</string>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_10" >
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
          <item>
-          <widget class="QLabel" name="f2Label" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+          <widget class="QLabel" name="f2Label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>Viterbi filter treshold:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="f2DoubleSpinBox" >
-           <property name="decimals" >
+          <widget class="QDoubleSpinBox" name="f2DoubleSpinBox">
+           <property name="decimals">
             <number>5</number>
            </property>
-           <property name="minimum" >
+           <property name="minimum">
             <double>-999999999.000000000000000</double>
            </property>
-           <property name="maximum" >
+           <property name="maximum">
             <double>999999999.000000000000000</double>
            </property>
           </widget>
@@ -405,32 +374,32 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_9" >
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
          <item>
-          <widget class="QLabel" name="f1Label" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+          <widget class="QLabel" name="f1Label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>MSV filter treshold:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="f1DoubleSpinBox" >
-           <property name="decimals" >
+          <widget class="QDoubleSpinBox" name="f1DoubleSpinBox">
+           <property name="decimals">
             <number>5</number>
            </property>
-           <property name="minimum" >
+           <property name="minimum">
             <double>-999999999.000000000000000</double>
            </property>
-           <property name="maximum" >
+           <property name="maximum">
             <double>999999999.000000000000000</double>
            </property>
-           <property name="value" >
+           <property name="value">
             <double>0.020000000000000</double>
            </property>
           </widget>
@@ -438,29 +407,29 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_11" >
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
          <item>
-          <widget class="QLabel" name="f3Label" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+          <widget class="QLabel" name="f3Label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>Forward filter treshold:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="f3DoubleSpinBox" >
-           <property name="decimals" >
+          <widget class="QDoubleSpinBox" name="f3DoubleSpinBox">
+           <property name="decimals">
             <number>5</number>
            </property>
-           <property name="minimum" >
+           <property name="minimum">
             <double>-999999999.000000000000000</double>
            </property>
-           <property name="maximum" >
+           <property name="maximum">
             <double>999999999.000000000000000</double>
            </property>
           </widget>
@@ -468,11 +437,11 @@
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_3" >
-         <property name="orientation" >
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>211</height>
@@ -482,51 +451,43 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="evalCalibrationTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>625</width>
-        <height>218</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="evalCalibrationTab">
+      <attribute name="title">
        <string>e-value calibration</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_8" >
+      <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_7" >
+        <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_19" >
+          <layout class="QHBoxLayout" name="horizontalLayout_19">
            <item>
-            <widget class="QLabel" name="emlLabel" >
-             <property name="enabled" >
+            <widget class="QLabel" name="emlLabel">
+             <property name="enabled">
               <bool>true</bool>
              </property>
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>length of sequences for MSV Gumbel mu fit:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="emlSpinBox" >
-             <property name="enabled" >
+            <widget class="QSpinBox" name="emlSpinBox">
+             <property name="enabled">
               <bool>true</bool>
              </property>
-             <property name="minimum" >
+             <property name="minimum">
               <number>1</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>999999999</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>200</number>
              </property>
             </widget>
@@ -534,35 +495,35 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_20" >
+          <layout class="QHBoxLayout" name="horizontalLayout_20">
            <item>
-            <widget class="QLabel" name="emnLabel" >
-             <property name="enabled" >
+            <widget class="QLabel" name="emnLabel">
+             <property name="enabled">
               <bool>true</bool>
              </property>
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>number of sequences for MSV Gumbel mu fit:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="emnSpinBox" >
-             <property name="enabled" >
+            <widget class="QSpinBox" name="emnSpinBox">
+             <property name="enabled">
               <bool>true</bool>
              </property>
-             <property name="minimum" >
+             <property name="minimum">
               <number>1</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>999999999</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>200</number>
              </property>
             </widget>
@@ -570,29 +531,29 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_12" >
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
            <item>
-            <widget class="QLabel" name="evlLabel" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+            <widget class="QLabel" name="evlLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>length of sequences for Viterbi Gumbel mu fit:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="evlSpinBox" >
-             <property name="minimum" >
+            <widget class="QSpinBox" name="evlSpinBox">
+             <property name="minimum">
               <number>1</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>999999999</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>200</number>
              </property>
             </widget>
@@ -600,29 +561,29 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_13" >
+          <layout class="QHBoxLayout" name="horizontalLayout_13">
            <item>
-            <widget class="QLabel" name="evnLabel" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+            <widget class="QLabel" name="evnLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>number of sequences for Viterbi Gumbel mu fit:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="evnSpinBox" >
-             <property name="minimum" >
+            <widget class="QSpinBox" name="evnSpinBox">
+             <property name="minimum">
               <number>1</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>999999999</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>200</number>
              </property>
             </widget>
@@ -630,29 +591,29 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_15" >
+          <layout class="QHBoxLayout" name="horizontalLayout_15">
            <item>
-            <widget class="QLabel" name="eflLabel" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+            <widget class="QLabel" name="eflLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>length of sequences for Forward exp tail mu fit:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="eflSpinBox" >
-             <property name="minimum" >
+            <widget class="QSpinBox" name="eflSpinBox">
+             <property name="minimum">
               <number>1</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>999999999</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>100</number>
              </property>
             </widget>
@@ -660,29 +621,29 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_16" >
+          <layout class="QHBoxLayout" name="horizontalLayout_16">
            <item>
-            <widget class="QLabel" name="efnLabel" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+            <widget class="QLabel" name="efnLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>number of sequences for Forward exp tail mu fit:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="efnSpinBox" >
-             <property name="minimum" >
+            <widget class="QSpinBox" name="efnSpinBox">
+             <property name="minimum">
               <number>1</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>999999999</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>200</number>
              </property>
             </widget>
@@ -690,32 +651,32 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_21" >
+          <layout class="QHBoxLayout" name="horizontalLayout_21">
            <item>
-            <widget class="QLabel" name="label" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+            <widget class="QLabel" name="label">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>tail mass for Forward exponential tail mu fit:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="eftDoubleSpinBox" >
-             <property name="minimum" >
+            <widget class="QDoubleSpinBox" name="eftDoubleSpinBox">
+             <property name="minimum">
               <double>0.010000000000000</double>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <double>0.990000000000000</double>
              </property>
-             <property name="singleStep" >
+             <property name="singleStep">
               <double>0.010000000000000</double>
              </property>
-             <property name="value" >
+             <property name="value">
               <double>0.040000000000000</double>
              </property>
             </widget>
@@ -725,11 +686,11 @@
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_5" >
-         <property name="orientation" >
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>172</height>
@@ -739,42 +700,34 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="otherTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>625</width>
-        <height>218</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="otherTab">
+      <attribute name="title">
        <string>other</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_12" >
+      <layout class="QVBoxLayout" name="verticalLayout_12">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_9" >
+        <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_22" >
+          <layout class="QHBoxLayout" name="horizontalLayout_22">
            <item>
-            <widget class="QLabel" name="seedLabel" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+            <widget class="QLabel" name="seedLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>random generator seed:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="seedSpinBox" >
-             <property name="maximum" >
+            <widget class="QSpinBox" name="seedSpinBox">
+             <property name="maximum">
               <number>999999999</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>42</number>
              </property>
             </widget>
@@ -782,16 +735,16 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_23" >
+          <layout class="QHBoxLayout" name="horizontalLayout_23">
            <item>
-            <spacer name="horizontalSpacer" >
-             <property name="orientation" >
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeType" >
+             <property name="sizeType">
               <enum>QSizePolicy::Fixed</enum>
              </property>
-             <property name="sizeHint" stdset="0" >
+             <property name="sizeHint" stdset="0">
               <size>
                <width>10</width>
                <height>20</height>
@@ -800,14 +753,14 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="seedAddLabel" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+            <widget class="QLabel" name="seedAddLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>* if 0: one-time arbitrary seed used</string>
              </property>
             </widget>
@@ -817,11 +770,11 @@
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_6" >
-         <property name="orientation" >
+        <spacer name="verticalSpacer_6">
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>312</height>

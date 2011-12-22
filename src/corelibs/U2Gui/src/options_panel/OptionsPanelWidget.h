@@ -38,7 +38,7 @@ namespace U2 {
 class OptionsScrollArea : public QScrollArea
 {
 public:
-    OptionsScrollArea(QObject* parent = 0);
+    OptionsScrollArea();
 
     /** Ensures that the scroll area would have an appropriate width */
     virtual QSize sizeHint() const;
@@ -54,7 +54,7 @@ class OptionsPanelWidget : public QFrame
     Q_OBJECT
 public:
     /** Constructor. Initializes the layout and style of the widget */
-    OptionsPanelWidget(QObject* parent = 0);
+    OptionsPanelWidget();
 
     /** Creates a new header image widget and owns it by putting it into the layout */
     GroupHeaderImageWidget* createHeaderImageWidget(const QPixmap& image);

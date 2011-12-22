@@ -84,7 +84,7 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
 
 FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj,const U2EntityRef& _entityRef, 
 													 const ORFAlgorithmSettings& settings, const QString& gName )
-  :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), entityRef(_entityRef), groupName(gName)
+  :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), groupName(gName), entityRef(_entityRef)
 {
     fTask = new ORFFindTask(cfg, entityRef);
     addSubTask(fTask);

@@ -189,7 +189,7 @@ public:
     static QString dataflowDefinition(const QList<Actor*> & procs, const NamesMap & nmap);
     static QString iterationsDefinition(const QList<Iteration> & iterations, const NamesMap & nmap, bool checkDummyIteration = true);
     static QString schemaParameterAliases(const QList<Actor*> & procs, const NamesMap& nmap);
-    static QString schemaPortAliases(const QList<Actor*> &procs, const NamesMap &nmap, const QList<PortAlias> &portAliases);
+    static QString schemaPortAliases(const NamesMap &nmap, const QList<PortAlias> &portAliases);
     static NamesMap generateElementNames(const QList<Actor*>& procs);
     static QString schema2String(const Schema & schema, const Metadata * meta, bool copyMode = false);
 

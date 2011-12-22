@@ -461,8 +461,6 @@ void PWMSearchDialogController::runTask() {
         queue[i].second.complOnly = complOnly;
     }
 
-    int len = reg.length;
-
     sl_onClearList();
 
     QByteArray seq = ctx->getSequenceData(reg);

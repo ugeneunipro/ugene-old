@@ -27,8 +27,7 @@
 namespace U2 {
 
 
-OptionsScrollArea::OptionsScrollArea(QObject* parent)
-{
+OptionsScrollArea::OptionsScrollArea() {
     setWidgetResizable(true);
     setStyleSheet("border-style: none;");
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -43,7 +42,7 @@ QSize OptionsScrollArea::sizeHint() const
 }
 
 
-OptionsPanelWidget::OptionsPanelWidget(QObject* parent)
+OptionsPanelWidget::OptionsPanelWidget()
 {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
 

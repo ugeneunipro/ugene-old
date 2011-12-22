@@ -103,7 +103,6 @@
   <zorder>exportSequenceCheck</zorder>
   <zorder>buttonBox</zorder>
   <zorder>formatsBox</zorder>
-  <zorder>horizontalSpacer</zorder>
   <zorder>buttonBox</zorder>
  </widget>
  <resources/>

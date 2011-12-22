@@ -52,22 +52,22 @@ public:
 };
 
  class FindORFsToAnnotationsTask: public Task {
-     Q_OBJECT
+    Q_OBJECT
  public:
-     FindORFsToAnnotationsTask(AnnotationTableObject* aobj,const U2EntityRef& entityRef, 
+    FindORFsToAnnotationsTask(AnnotationTableObject* aobj,const U2EntityRef& entityRef,
          const ORFAlgorithmSettings& settings, const QString& groupName = QString());
 	 
-     void run();
-     ReportResult report();
+    void run();
+    ReportResult report();
      
  private:
-     QList<SharedAnnotationData>        aData;
-     QPointer<AnnotationTableObject>    aObj;
-     ORFFindTask*                       fTask;
-     ORFAlgorithmSettings               cfg;
+    QList<SharedAnnotationData>         aData;
+    QPointer<AnnotationTableObject>     aObj;
+    ORFFindTask*                        fTask;
+    ORFAlgorithmSettings                cfg;
     QString                             groupName;
-     U2EntityRef						entityRef;
- };
+    U2EntityRef                         entityRef;
+};
  
  
 class ORFAutoAnnotationsUpdater : public AutoAnnotationsUpdater {

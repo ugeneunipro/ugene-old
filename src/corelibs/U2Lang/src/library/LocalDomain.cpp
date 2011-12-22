@@ -221,7 +221,7 @@ U2::Workflow::WorkerState SimplestSequentialScheduler::getWorkerState( ActorId i
         } else if (someReady) {
             return WorkerReady;
         } else {
-            assert(someDone);
+            assert(someDone); Q_UNUSED(someDone);
             return WorkerDone;
         }
     } else {

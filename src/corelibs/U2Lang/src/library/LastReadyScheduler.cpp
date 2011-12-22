@@ -127,7 +127,7 @@ WorkerState LastReadyScheduler::getWorkerState(ActorId id) {
         } else if (someReady) {
             return WorkerReady;
         } else {
-            assert(someDone);
+            assert(someDone); Q_UNUSED(someDone);
             return WorkerDone;
         }
     } else {

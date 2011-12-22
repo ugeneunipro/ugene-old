@@ -69,8 +69,7 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BowtieBuildSettings.ui \
          src/ui/BwaBuildSettings.ui \
          src/ui/BwaSettings.ui \
-    	 src/ui/BowtieBuildSettings.ui \
-	 src/ui/MrBayesDialog.ui
+         src/ui/MrBayesDialog.ui
 SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/ExternalToolRunTask.cpp \
            src/ExternalToolSupportPlugin.cpp \

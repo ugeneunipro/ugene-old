@@ -27,9 +27,9 @@
 namespace U2 {
 
 
-OptionsPanel::OptionsPanel(QObject* parent)
+OptionsPanel::OptionsPanel(QObject* parent) : QObject(parent)
 {
-    widget = new OptionsPanelWidget(this);
+    widget = new OptionsPanelWidget();
 }
 
 

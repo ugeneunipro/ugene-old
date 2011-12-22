@@ -1656,7 +1656,7 @@ static QString metaData(const Schema & schema, const HRSchemaSerializer::NamesMa
     }
     if(schema.hasPortAliases()) {
         res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::PORT_ALIASES_START, HRSchemaSerializer::NO_NAME, 
-            HRSchemaSerializer::schemaPortAliases(schema.getProcesses(), nmap, schema.getPortAliases()), 2);
+            HRSchemaSerializer::schemaPortAliases(nmap, schema.getPortAliases()), 2);
     }
 
     res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::VISUAL_START, HRSchemaSerializer::NO_NAME, visualData(schema, nmap), 2);
@@ -1693,7 +1693,7 @@ QString HRSchemaSerializer::schemaParameterAliases(const QList<Actor*> & procs, 
     return res;
 }
 
-QString HRSchemaSerializer::schemaPortAliases(const QList<Actor*> &procs, const NamesMap &nmap, const QList<PortAlias> &portAliases) {
+QString HRSchemaSerializer::schemaPortAliases(const NamesMap &nmap, const QList<PortAlias> &portAliases) {
     QString res;
 
     foreach (const PortAlias &portAlias, portAliases) {
