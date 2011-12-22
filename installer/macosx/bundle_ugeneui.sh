@@ -1,9 +1,11 @@
 PRODUCT_NAME="ugeneui"
+PRODUCT_DISPLAY_NAME="UGENE"
 
 VERSION=`cat ../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{print $2}'`
 BUILD_DIR=./ugeneui_bundle
 RELEASE_DIR=../../src/_release
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
+TARGET_APP_DIR_RENAMED="$BUILD_DIR/${PRODUCT_DISPLAY_NAME}.app/"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
 PATH_TO_QT="/usr/local/Trolltech/Qt-4.7.4/lib"
 
@@ -110,6 +112,8 @@ fi
 echo
 echo macdeployqt running...
 macdeployqt "$TARGET_APP_DIR" 
+
+mv "$TARGET_APP_DIR" "$TARGET_APP_DIR_RENAMED"
 
 if [ ! "$1" ] 
    then

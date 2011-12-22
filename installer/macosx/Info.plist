@@ -3,11 +3,14 @@
 <plist version="0.9">
 
 <dict>
-    <key>CFBundleName</key>
+    <key>CFBundleDisplayName</key>
     <string>Unipro UGENE</string>
 
+    <key>CFBundleName</key>
+    <string>UGENE</string>
+
     <key>CFBundleIconFile</key>
-    <string>ugene_mac.icns</string>
+    <string>ugeneui.icns</string>
 
     <key>CFBundlePackageType</key>
     <string>APPL</string>
@@ -19,7 +22,7 @@
     <string>Unipro, Russia</string>
 
     <key>CFBundleExecutable</key>
-    <string>ugene.sh</string>
+    <string>ugeneui</string>
 
 </dict>
 </plist>

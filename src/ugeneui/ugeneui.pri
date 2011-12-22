@@ -51,6 +51,7 @@ win32 {
 
 macx {
     RC_FILE = images/ugeneui.icns
+    QMAKE_INFO_PLIST = ../../installer/macosx/Info.plist
 }
 
 
