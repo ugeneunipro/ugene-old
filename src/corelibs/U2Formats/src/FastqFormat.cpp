@@ -30,6 +30,7 @@
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SequenceUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include "DocumentFormatUtils.h"
 #include "FastqFormat.h"
@@ -149,7 +150,8 @@ static bool readBlock( QByteArray & block, IOAdapter * io, U2OpStatus & ti, qint
 /**
  * FASTQ format specification: http://maq.sourceforge.net/fastq.shtml
  */
-static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os,
+#define GObjectHint_CaseAnns   "use-case-annotations"
+static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os,
                  int gapSize, int predictedSize, QString& writeLockReason) {
      writeLockReason.clear();
      QByteArray readBuff, secondBuff;
@@ -166,9 +168,16 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QLis
 
      TmpDbiObjects dbiObjects(dbiRef, os);
 
+     // for lower case annotations
+     GObjectReference sequenceRef;
+
      qint64 sequenceStart = 0;
 
 	 U2SequenceImporter seqImporter;
+     if (hints.keys().contains(GObjectHint_CaseAnns)) {
+         CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(hints.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
+         seqImporter.setCaseAnnotationsMode(mode);
+     }
 
 	 int seqNumber = 0;
 
@@ -190,6 +199,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QLis
 				names.insert(objName);
 				seqImporter.startSequence(dbiRef,objName,false,os);
 				CHECK_OP(os,);
+                sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);
 		 }
 
          //read sequence
@@ -241,6 +251,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QLis
 			 objects << seqObj;
 			 dbiObjects.objects << seqObj->getSequenceRef().entityId;
 			 seqObj->setQuality(DNAQuality(qualityScores));
+
+             U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
          }
      }
 
@@ -256,6 +268,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QLis
 
 	 dbiObjects.objects << u2seq.id;
 
+     U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
 	 objects << new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
 	 objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(docUrl, headers, u2seq, mergedMapping, os);
      if (headers.size() > 1) {
@@ -272,7 +285,7 @@ Document* FastqFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
     int predictedSize = qMax(100*1000, DocumentFormatUtils::getMergedSize(hints, gapSize==-1 ? 0 : io->left()));
 
     QString lockReason;
-    load(io, dbiRef, io->getURL(), objects, os, gapSize, predictedSize, lockReason);
+    load(io, dbiRef, _hints, io->getURL(), objects, os, gapSize, predictedSize, lockReason);
 
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     DocumentFormatUtils::updateFormatHints(objects, hints);

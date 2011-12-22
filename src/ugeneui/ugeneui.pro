@@ -26,6 +26,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/shtirlitz/Shtirlitz.h \
            src/task_view/TaskStatusBar.h \
            src/task_view/TaskViewController.h \
+           src/app_settings/format_settings/FormatSettingsGUIController.h \
            src/app_settings/logview_settings/LogSettingsGUIController.h \
            src/app_settings/network_settings/NetworkSettingsGUIController.h \
            src/app_settings/resource_settings/ResourceSettingsGUIController.h \
@@ -39,6 +40,7 @@ FORMS += src/app_settings/ui/AppSettingsDialog.ui \
          src/project_support/ui/SequenceReadingModeSelectorDialog.ui \
          src/project_view/ui/ProjectViewWidget.ui \
          src/script/ui/ScriptLibraryEditor.ui \
+         src/app_settings/format_settings/ui/FormatSettingsWidget.ui \
          src/app_settings/logview_settings/ui/LogSettingsWidget.ui \
          src/app_settings/network_settings/ui/NetworkSettingsWidget.ui \
          src/app_settings/resource_settings/ui/ResourceSettingsWidget.ui \
@@ -69,6 +71,7 @@ SOURCES += src/Main.cpp \
            src/shtirlitz/Shtirlitz.cpp \
            src/task_view/TaskStatusBar.cpp \
            src/task_view/TaskViewController.cpp \
+           src/app_settings/format_settings/FormatSettingsGUIController.cpp \
            src/app_settings/logview_settings/LogSettingsGUIController.cpp \
            src/app_settings/network_settings/NetworkSettingsGUIController.cpp \
            src/app_settings/resource_settings/ResourceSettingsGUIController.cpp \

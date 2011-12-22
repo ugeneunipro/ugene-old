@@ -38,6 +38,7 @@
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 namespace U2 {
 
@@ -115,8 +116,9 @@ FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUr
     return res;
 }
 
+#define GObjectHint_CaseAnns   "use-case-annotations"
 #define READ_BUFF_SIZE  4096
-static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects,
+static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, QList<GObject*>& objects,
                  int gapSize, QString& writeLockReason, U2OpStatus& os) 
 {
     static char fastaHeaderStartChar = '>';
@@ -134,6 +136,9 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects
     QVector<U2Region> mergedMapping;
 
     TmpDbiObjects dbiObjects(dbiRef, os);
+
+    // for lower case annotations
+    GObjectReference sequenceRef;
     
     //skip leading whites if present
     bool lineOk = true;
@@ -141,6 +146,11 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects
     io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
 
     U2SequenceImporter seqImporter;
+    if (fs.keys().contains(GObjectHint_CaseAnns)) {
+        CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(fs.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
+        seqImporter.setCaseAnnotationsMode(mode);
+    }
+
     qint64 sequenceStart = 0;
     int sequenceNumber = 0;
     while (!os.isCoR()) {
@@ -160,6 +170,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects
             names.insert(objName);
             seqImporter.startSequence(dbiRef, objName, false, os);
             CHECK_OP(os, );
+
+            sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);
         } 
         if (sequenceNumber >= 1 && merge) {
             seqImporter.addDefaultSymbolsBlock(gapSize, os);
@@ -174,6 +186,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects
             }
             len = TextUtils::remove(buff, len, TextUtils::WHITES);
             buff[len] = 0;
+
             seqImporter.addBlock(buff, len, os);
             sequenceLen += len;
             CHECK_OP(os, );
@@ -196,6 +209,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects
             
             objects << new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id));
             CHECK_OP(os, );
+
+            U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
         }
         sequenceStart += sequenceLen;
         sequenceNumber++;
@@ -212,6 +227,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects
     CHECK_OP(os, );
     dbiObjects.objects << seq.id;
 
+    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
     objects << new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id));
     objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(docUrl, headers, seq, mergedMapping, os);
     if (headers.size() > 1) {
@@ -229,7 +245,7 @@ Document* FastaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
     int gapSize = qBound(-1, DocumentFormatUtils::getMergeGap(fs), 1000 * 1000);
     
     QString lockReason;
-    load(io, dbiRef, objects, gapSize, lockReason, os);
+    load(io, dbiRef, _fs, objects, gapSize, lockReason, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs, lockReason);

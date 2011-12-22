@@ -34,6 +34,8 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2SequenceUtils.h>
 
 namespace U2 {
 
@@ -69,8 +71,9 @@ FormatCheckResult PDWFormat::checkRawData(const QByteArray& rawData, const GUrl&
     return hasBinaryBlocks ? FormatDetection_NotMatched : FormatDetection_HighSimilarity;
 }
 
+#define GObjectHint_CaseAnns   "use-case-annotations"
 #define READ_BUFF_SIZE  4096
-void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os, 
+void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os, 
                      U2SequenceObject*& seqObj, AnnotationTableObject*& annObj)
 {
     
@@ -82,6 +85,12 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, 
     bool isCircular = false;
     QString seqName(docUrl.baseFileName());
     QList<Annotation*> annotations;
+
+    U2SequenceImporter seqImporter;
+    if (fs.keys().contains(GObjectHint_CaseAnns)) {
+        CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(fs.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
+        seqImporter.setCaseAnnotationsMode(mode);
+    }
     
     while (!os.isCoR()) {
         //read header
@@ -105,7 +114,19 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const GUrl& docUrl, 
                 loi.name = seqName;
                 dnaSeq.info.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
             }
-            seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, seqName, objects, dnaSeq, os);
+
+            seqImporter.startSequence(dbiRef, dnaSeq.getName(), dnaSeq.circular, os);
+            seqImporter.addBlock(seq.constData(), seq.length(), os);
+            U2Sequence u2seq = seqImporter.finalizeSequence(os);
+            CHECK_OP(os, );
+
+            seqObj = new U2SequenceObject(seqName, U2EntityRef(dbiRef, u2seq.id));
+            seqObj->setSequenceInfo(dnaSeq.info);
+            objects << seqObj;
+
+            GObjectReference sequenceRef(io->getURL().getURLString(), seqName, GObjectTypes::SEQUENCE);
+            U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
+
             break;
         } else if (readBuff.startsWith(PDW_CIRCULAR_TAG)) {
             QByteArray val = readPdwValue(readBuff, PDW_CIRCULAR_TAG);
@@ -138,7 +159,7 @@ Document* PDWFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     QVariantMap fs = _fs;
     QList<GObject*> objects;
     
-    load(io, dbiRef, io->getURL(), objects, os, seqObj, annObj);
+    load(io, dbiRef, _fs, io->getURL(), objects, os, seqObj, annObj);
 
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     

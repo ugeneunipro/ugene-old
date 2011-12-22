@@ -32,7 +32,9 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2SequenceUtils.h>
 
 namespace U2{
 
@@ -119,6 +121,40 @@ static QString fromEscapedString( const QString & val ) {
     return ret;
 }
 
+U2SequenceObject *importSequence(DNASequence &sequence, const QString &objName, QList<GObject*>& objects, U2SequenceImporter &seqImporter, const U2DbiRef& dbiRef, U2OpStatus& os) {
+    seqImporter.startSequence(dbiRef, sequence.getName(), sequence.circular, os);
+    CHECK_OP(os, NULL);
+    seqImporter.addBlock(sequence.seq.constData(), sequence.seq.length(), os);
+    CHECK_OP(os, NULL);
+    U2Sequence u2seq = seqImporter.finalizeSequence(os);
+    CHECK_OP(os, NULL);
+
+    U2SequenceObject *seqObj = new U2SequenceObject(objName, U2EntityRef(dbiRef, u2seq.id));
+    seqObj->setSequenceInfo(sequence.info);
+    objects << seqObj;
+
+    return seqObj;
+}
+
+void addAnnotations(QList<Annotation*> &annList, QList<GObject*>& objects, QSet<AnnotationTableObject*> &atoSet, const QString &seqName) {
+    if (!annList.isEmpty()) {
+        QString atoName = seqName + FEATURES_TAG;
+        AnnotationTableObject *ato = NULL;
+        foreach(GObject *ob, objects){
+            if(ob->getGObjectName() == atoName){
+                ato = (AnnotationTableObject *)ob;
+            }
+        }
+        if (NULL == ato) {
+            ato = new AnnotationTableObject(atoName);
+            objects.append(ato);
+            atoSet.insert(ato);
+        }
+        ato->addAnnotations(annList);
+    }
+}
+
+#define GObjectHint_CaseAnns   "use-case-annotations"
 void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os){
     Q_UNUSED(hints);
     gauto_array<char> buff = new char[READ_BUFF_SIZE];
@@ -131,6 +167,12 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     QMap <QString, U2SequenceObject*> seqMap;
     //header validation
     validateHeader(words);
+
+    U2SequenceImporter seqImporter;
+    if (hints.keys().contains(GObjectHint_CaseAnns)) {
+        CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(hints.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
+        seqImporter.setCaseAnnotationsMode(mode);
+    }
 
     int lineNumber = 1;
     QMap<QString,Annotation*> joinedAnnotations;
@@ -151,11 +193,13 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                 objName = headerName + SEQUENCE_TAG;
                 DNASequence sequence(objName, seq);
                 sequence.info.insert(DNAInfo::FASTA_HDR, objName);
-                U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objName, objects, sequence, os);
+                U2SequenceObject *seqObj = importSequence(sequence, objName, objects, seqImporter, dbiRef, os);
                 CHECK_OP(os, );
+
                 SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
                 dbiObjects.objects << seqObj->getSequenceRef().entityId;
                 seqMap.insert(objName, seqObj);
+                addAnnotations(seqImporter.getCaseAnnotations(), objects, atoSet, headerName);
                 headerName = words.join(" ").remove(">");
                 seq = "";
             } else {
@@ -288,7 +332,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         DNASequence sequence(objName, seq);
         sequence.info.insert(DNAInfo::FASTA_HDR, objName);
         sequence.info.insert(DNAInfo::ID, objName);
-        U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, objName, objects, sequence, os);
+        U2SequenceObject *seqObj = importSequence(sequence, objName, objects, seqImporter, dbiRef, os);
         if (os.hasError()) {
             qDeleteAll(seqMap.values());
             seqMap.clear();
@@ -297,6 +341,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
         seqMap.insert(objName, seqObj);
         dbiObjects.objects << seqObj->getSequenceRef().entityId;
+        addAnnotations(seqImporter.getCaseAnnotations(), objects, atoSet, headerName);
     }
     
     //linking annotation tables with corresponding sequences
@@ -411,6 +456,11 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
              }
          }
          foreach(const Annotation *ann, aList){
+            QString aName = ann->getAnnotationName();
+            if (aName == U1AnnotationUtils::lowerCaseAnnotationName
+                || aName == U1AnnotationUtils::upperCaseAnnotationName) {
+                continue;
+            }
             QStringList row = cleanRow;
             QVector<U2Region> location = ann->getRegions();
             QVector<U2Qualifier> qualVec = ann->getQualifiers();
@@ -430,7 +480,7 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
                 row[3] = QString::number(r.startPos + 1);
                 row[4] = QString::number(r.endPos());
                 row[2] = (ann->getGroups().first())->getGroupName();
-                QString additionalQuals = "name=" + escapeBadCharacters(ann->getAnnotationName());
+                QString additionalQuals = "name=" + escapeBadCharacters(aName);
                 //filling fields with qualifiers data
                 foreach(U2Qualifier q, qualVec){
                     if(q.name == "source"){
@@ -462,6 +512,7 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
         }
         foreach(GObject *s, sequences){
             U2SequenceObject *dnaso = qobject_cast<U2SequenceObject*>(s);
+            QList<U2Region> lowerCaseRegs = U1AnnotationUtils::getRelatedLowerCaseRegions(dnaso, atos);
             QString fastaHeader = dnaso->getGObjectName();
             int tagSize = QString(SEQUENCE_TAG).size(), headerSize = fastaHeader.size();
             fastaHeader = fastaHeader.left(headerSize - tagSize);  //removing previously added tag
@@ -474,7 +525,7 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
             }
             
             DNASequence wholeSeq = dnaso->getWholeSequence();
-            const char* seq = wholeSeq.constData();
+            const char* seq = U1AnnotationUtils::applyLowerCaseRegions(wholeSeq.seq.data(), 0, wholeSeq.length(), 0, lowerCaseRegs);
             int len = wholeSeq.length();
             for (int i = 0; i < len; i += SAVE_LINE_LEN ) {
                 int chunkSize = qMin( SAVE_LINE_LEN, len - i );
