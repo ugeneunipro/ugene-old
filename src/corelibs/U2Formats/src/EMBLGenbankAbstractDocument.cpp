@@ -79,7 +79,7 @@ Document* EMBLGenbankAbstractDocument::loadDocument(IOAdapter* io, const U2DbiRe
 const QString EMBLGenbankAbstractDocument::UGENE_MARK("UNIMARK");
 const QString EMBLGenbankAbstractDocument::DEFAULT_OBJ_NAME("unnamed");
 
-
+#define GObjectHint_CaseAnns   "use-case-annotations"
 void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QList<GObject*>& objects, QVariantMap& fs, U2OpStatus& os, QString& writeLockReason) {
     writeLockReason.clear();
 
@@ -92,6 +92,11 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     QStringList contigs;
 	QVector<U2Region> mergedMapping;
 	U2SequenceImporter seqImporter;
+    if (fs.keys().contains(GObjectHint_CaseAnns)) {
+        CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(fs.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
+        seqImporter.setCaseAnnotationsMode(mode);
+    }
+
     
     QSet<QString> usedNames;
     bool toolMark = false;
@@ -199,7 +204,10 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 					if (annotationsObject!=NULL) {				
 						sequenceRef.objName = seqObj->getGObjectName();
 						annotationsObject->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));					
-					}
+                    } else {
+                        sequenceRef.objName = seqObj->getGObjectName();
+                    }
+                    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, annotationsObject);
 
                     readHeaderAttributes(data.tags, con, seqObj);
                     toolMark = data.tags.contains(UGENE_MARK); //the mark might be added in the readHeaderAttributes method
@@ -240,6 +248,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
         mergedAnnotations->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
         objects.append(mergedAnnotations);
     }
+    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, mergedAnnotations);
 
 }
 

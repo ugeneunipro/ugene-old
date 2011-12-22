@@ -58,6 +58,26 @@ public:
     For example, location JOIN(N..SeqSize - 1, 0..M) is splitted. **/
     static  bool isSplitted(const U2Location& location, const U2Region& seqRange);
 
+    /**
+     * Return a list of lower/upper case annotations for @data sequence
+     * If an annotation is placed from some symbol till the end of the sequence
+     * then @isUnfinishedRegion == true and @unfinishedRegion keep this unfinished region
+     */
+    static QList<Annotation*> getCaseAnnotations(const char *data, int dataLen, int globalOffset, bool &isUnfinishedRegion, U2Region &unfinishedRegion, bool isLowerCaseSearching);
+
+    static QList<Annotation*> finalizeUnfinishedRegion(bool isUnfinishedRegion, U2Region &unfinishedRegion, bool isLowerCaseSearching);
+
+    /**
+     * If @annotationsObject is NULL then it creates a new annotation object
+     */
+    static void addAnnotations(QList<GObject*> &objects, QList<Annotation*> &annList, const GObjectReference &sequenceRef, AnnotationTableObject *annotationsObject);
+
+    static QList<U2Region> getRelatedLowerCaseRegions(const U2SequenceObject *so, const QList<GObject*> &anns);
+
+    static char *applyLowerCaseRegions(char *seq, qint64 first, qint64 len, qint64 globalOffset, const QList<U2Region> &regs);
+
+    static QString lowerCaseAnnotationName;
+    static QString upperCaseAnnotationName;
 
 };
 

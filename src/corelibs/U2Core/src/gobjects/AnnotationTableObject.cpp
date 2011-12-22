@@ -36,7 +36,7 @@
 
 namespace U2 {
 
-Annotation::Annotation(SharedAnnotationData _d): obj(NULL), d(_d)
+Annotation::Annotation(SharedAnnotationData _d): obj(NULL), d(_d), caseAnnotation(false)
 {
 }
 
@@ -311,6 +311,14 @@ void Annotation::replaceRegions(const QVector<U2Region>& regions) {
         AnnotationModification md(AnnotationModification_LocationChanged, this);
         obj->emit_onAnnotationModified(md);
     }
+}
+
+bool Annotation::isCaseAnnotation() const {
+    return caseAnnotation;
+}
+
+void Annotation::setCaseAnnotation(bool caseAnnotation) {
+    this->caseAnnotation = caseAnnotation;
 }
 
 //////////////////////////////////////////////////////////////////////////

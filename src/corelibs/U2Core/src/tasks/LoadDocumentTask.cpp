@@ -21,7 +21,9 @@
 
 #include "LoadDocumentTask.h"
 
+#include <U2Core/FormatSettings.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Log.h>
 #include <U2Core/ResourceTracker.h>
@@ -53,6 +55,7 @@
 #include <QtGui/QApplication>
 
 #define GObjectHint_NamesList  "gobject-hint-names-list"
+#define GObjectHint_CaseAnns   "use-case-annotations"
 
 namespace U2 {
 
@@ -225,6 +228,10 @@ void LoadDocumentTask::init() {
     CHECK_EXT(format != NULL,  setError(tr("Document format is NULL!")), );
     CHECK_EXT(iof != NULL, setError(tr("IO adapter factory is NULL!")), );
     documentDescription = url.getURLString();
+    if (format->getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE)) {
+        CaseAnnotationsMode mode = AppContext::getAppSettings()->getFormatAppsSettings()->getCaseAnnotationsMode();
+        hints[GObjectHint_CaseAnns] = qVariantFromValue<CaseAnnotationsMode>(mode);
+    }
 }
 
 LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {

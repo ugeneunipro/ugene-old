@@ -54,7 +54,7 @@ private:
 
     static QByteArray readPdwValue(const QByteArray& readBuf, const QByteArray& valueName);
 
-    void load(IOAdapter* io, const U2DbiRef& ref, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& ti, 
+    void load(IOAdapter* io, const U2DbiRef& ref, const QVariantMap& fs, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& ti, 
         U2SequenceObject*& dnaObj, AnnotationTableObject*& aObj);
     
     QString formatName;
