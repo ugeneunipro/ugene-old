@@ -75,14 +75,23 @@ MAlignment MSAUtils::seq2ma(const QList<DNASequence>& list, U2OpStatus& os) {
     return ma;
 }
 
-MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os) {
+MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool useGenbankHeader) {
     QList<DNASequence> dnaList;
     foreach(GObject* obj, list) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
         if (dnaObj == NULL) {
             continue;
         }
-        dnaList << dnaObj->getWholeSequence();
+        if (useGenbankHeader) {
+            DNASequence seq = dnaObj->getWholeSequence();
+            QString sourceName = dnaObj->getStringAttribute(DNAInfo::SOURCE);
+            if (!sourceName.isEmpty()) {
+                seq.setName(sourceName);
+            }
+            dnaList << seq;
+        } else {
+            dnaList << dnaObj->getWholeSequence();
+        }
     }
     return seq2ma(dnaList, os);
 }

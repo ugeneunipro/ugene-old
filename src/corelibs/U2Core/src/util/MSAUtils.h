@@ -38,7 +38,7 @@ public:
 
     static bool equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QByteArray& pattern);
     
-    static MAlignment seq2ma(const QList<GObject*>& dnas, U2OpStatus& os);
+    static MAlignment seq2ma(const QList<GObject*>& dnas, U2OpStatus& os, bool useGenbankHeader = false);
 
     static MAlignment seq2ma(const QList<DNASequence>& dnas, U2OpStatus& os);
 

@@ -33,6 +33,7 @@
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Lang/WorkflowEnv.h>
 
+#include "GenomeAlignerSettingsController.h"
 #include "GenomeAlignerTask.h"
 #include "GenomeAlignerWorker.h"
 
@@ -69,6 +70,10 @@ public:
 };
 
 GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE genome aligner"), tr("Assembly DNA to reference sequence") ) {
+    if (AppContext::getMainWindow()) {
+        AppContext::getAppSettingsGUI()->registerPage(new GenomeAlignerSettingsPageController());
+    }
+
     // Register GenomeAligner algorithm
     DnaAssemblyAlgRegistry* registry = AppContext::getDnaAssemblyAlgRegistry();
     

@@ -359,6 +359,15 @@ void GenbankPlainTextFormat::readHeaderAttributes(QVariantMap& tags, DbiConnecti
     con.dbi->getAttributeDbi()->createStringAttribute(headerAttr, os);
     CHECK_OP(os, );
 
+    if (tags.keys().contains(DNAInfo::SOURCE)) {
+        DNASourceInfo soi = qVariantValue<DNASourceInfo>(tags.value(DNAInfo::SOURCE));
+        if (!soi.name.isEmpty()) {
+            U2StringAttribute sourceAttr(so->getSequenceRef().entityId, DNAInfo::SOURCE, soi.name);
+            con.dbi->getAttributeDbi()->createStringAttribute(sourceAttr, os);
+            CHECK_OP(os, );
+        }
+    }
+
     tags.insert(UGENE_MARK, ""); //to allow writing
 }
 

@@ -19,8 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include "GenomeAlignerTask.h"
 #include "GenomeAlignerIndex.h"
+#include "GenomeAlignerSettingsController.h"
+#include "GenomeAlignerTask.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
@@ -59,12 +60,12 @@ GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaA
     readSlider->setMaximum(systemSize);
     readSlider->setValue(systemSize*2/3);
 
-    QString tempIndexDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("aligner");
-    QDir tempDir(tempIndexDir);
-    if (!tempDir.exists()) {
-        tempDir.mkpath(tempIndexDir);
+    QString indexDirPath = GenomeAlignerSettingsUtils::getIndexDir();
+    QDir indexDir(indexDirPath);
+    if (!indexDir.exists()) {
+        indexDir.mkpath(indexDirPath);
     }
-    indexDirEdit->setText(tempIndexDir);
+    indexDirEdit->setText(indexDirPath);
 
     partSizeLabel->setText(QByteArray::number(partSlider->value()) + " Mb");
     indexSizeLabel->setText(QByteArray::number(partSlider->value()*13) + " Mb");

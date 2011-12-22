@@ -27,7 +27,7 @@
 namespace U2 {
 
 FormatSettingsGUIPageController::FormatSettingsGUIPageController(QObject* p) 
-: AppSettingsGUIPageController(tr("File format"), APP_SETTINGS_ADVANCED, p)
+: AppSettingsGUIPageController(tr("File format"), APP_SETTINGS_FORMAT, p)
 {
 }
 

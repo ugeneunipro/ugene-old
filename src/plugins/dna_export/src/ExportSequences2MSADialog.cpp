@@ -38,6 +38,7 @@ namespace U2 {
 ExportSequences2MSADialog::ExportSequences2MSADialog(QWidget* p, const QString& defaultUrl): QDialog(p) {
     setupUi(this);    
     addToProjectFlag = true;
+    useGenbankHeader = false;
 
     SaveDocumentGroupControllerConfig conf;
     conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
@@ -62,6 +63,7 @@ void ExportSequences2MSADialog::accept() {
     url = saveContoller->getSaveFileName();
     format = saveContoller->getFormatIdToSave();
     addToProjectFlag = addToProjectBox->isChecked();
+    useGenbankHeader = genbankBox->isChecked();
 
     QDialog::accept();
 }

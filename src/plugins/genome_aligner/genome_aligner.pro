@@ -10,12 +10,15 @@ HEADERS += src/BuildSArraySettingsWidget.h \
            src/GenomeAlignerIO.h \
            src/GenomeAlignerPlugin.h \
            src/GenomeAlignerSearchQuery.h \
+           src/GenomeAlignerSettingsController.h \
            src/GenomeAlignerSettingsWidget.h \
            src/GenomeAlignerTask.h \
            src/GenomeAlignerWorker.h \
            src/GenomeAlignerWriteTask.h \
            src/SuffixSearchCUDA.h
-FORMS += src/ui/BuildSuffixArraySettings.ui src/ui/GenomeAlignerSettings.ui
+FORMS += src/ui/BuildSuffixArraySettings.ui \
+         src/ui/GenomeAlignerSettings.ui \
+         src/ui/GenomeAlignerSettingsWidget.ui
 SOURCES += src/BuildSArraySettingsWidget.cpp \
            src/GenomeAlignerCMDLineTask.cpp \
            src/GenomeAlignerFindTask.cpp \
@@ -25,6 +28,7 @@ SOURCES += src/BuildSArraySettingsWidget.cpp \
            src/GenomeAlignerIO.cpp \
            src/GenomeAlignerPlugin.cpp \
            src/GenomeAlignerSearchQuery.cpp \
+           src/GenomeAlignerSettingsController.cpp \
            src/GenomeAlignerSettingsWidget.cpp \
            src/GenomeAlignerTask.cpp \
            src/GenomeAlignerWorker.cpp \

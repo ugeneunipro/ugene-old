@@ -262,13 +262,6 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
         QMessageBox::critical(NULL, L10N::errorTitle(), tr("No sequence objects selected!"));
         return;
     }
-
-    U2OpStatusImpl os;
-    MAlignment ma = MSAUtils::seq2ma(sequenceObjects, os);
-    if (os.hasError()) {
-        QMessageBox::critical(NULL, L10N::errorTitle(), os.getError());
-        return;
-    }
     
     QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN)->getSupportedDocumentFileExtensions().first();
     GUrl seqUrl = sequenceObjects.first()->getDocument()->getURL();
@@ -278,6 +271,13 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
     d.setWindowTitle(exportSequencesAsAlignmentAction->text());
     int rc = d.exec();
     if (rc != QDialog::Accepted) {
+        return;
+    }
+
+    U2OpStatusImpl os;
+    MAlignment ma = MSAUtils::seq2ma(sequenceObjects, os, d.useGenbankHeader);
+    if (os.hasError()) {
+        QMessageBox::critical(NULL, L10N::errorTitle(), os.getError());
         return;
     }
     QString objName = GUrl(d.url).baseFileName();

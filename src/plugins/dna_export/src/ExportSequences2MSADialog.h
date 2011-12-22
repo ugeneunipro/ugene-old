@@ -46,6 +46,7 @@ public:
     QString url;
     DocumentFormatId format;
     bool    addToProjectFlag;
+    bool    useGenbankHeader;
 
 private:    
     SaveDocumentGroupController* saveContoller;

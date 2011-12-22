@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>483</width>
-    <height>126</height>
+    <height>153</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,6 +55,13 @@
      </property>
      <property name="checked">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="genbankBox">
+     <property name="text">
+      <string>Use Genbank &quot;SOURCE&quot; tags as a name of sequences (for Genbank sequences only)</string>
      </property>
     </widget>
    </item>
