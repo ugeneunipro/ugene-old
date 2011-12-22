@@ -60,7 +60,8 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
     if (NULL == currentFormat) {
         foundExt = (lastSuffix == currentFormatId);
     } else {
-        foreach (QString supExt, currentFormat->getSupportedDocumentFileExtensions()) {
+        QStringList extensions(currentFormat->getSupportedDocumentFileExtensions()); extensions<<newFormat->getSupportedDocumentFileExtensions();
+        foreach (QString supExt, extensions) {
             if (lastSuffix == supExt) {
                 foundExt = true;
                 break;
