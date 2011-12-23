@@ -38,7 +38,7 @@ public:
     ORFFindTask(const ORFAlgorithmSettings& s,const U2EntityRef& entityRef);
 
 	virtual void run();
-    virtual void onResult(const ORFFindResult& r);
+    virtual void onResult(const ORFFindResult& r, U2OpStatus& oss);
 
     QList<ORFFindResult> popResults();
 

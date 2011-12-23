@@ -379,6 +379,7 @@ void ORFDialog::getSettings(ORFAlgorithmSettings& s)
 	s.includeStopCodon = ckIncStopCodon->isChecked();
     s.circularSearch = ckCircularSearch->isChecked();
     s.minLen = (ckMinLen->isChecked()) ? sbMinLen->value() : 0;
+	s.maxResult2Search = (maxResult->isChecked()) ? maxResultField->value() : INT_MAX;
 
     //setup search region
     s.searchRegion = getCompleteSearchRegion(&isRegionOk);

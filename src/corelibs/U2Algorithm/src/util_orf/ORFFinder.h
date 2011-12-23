@@ -83,7 +83,7 @@ public:
 class U2ALGORITHM_EXPORT ORFFindResultsListener {
 public:
     virtual ~ORFFindResultsListener(){}
-    virtual void onResult(const ORFFindResult& r) = 0;
+    virtual void onResult(const ORFFindResult& r, U2OpStatus& os) = 0;
 };
 
 enum ORFAlgorithmStrand {
@@ -121,14 +121,14 @@ public:
     bool                        allowOverlap;
 	bool						includeStopCodon;
     bool                        circularSearch;
+	int							maxResult2Search;
     static const QString        ANNOTATION_GROUP_NAME;
     // strand string ids
     static const QString        STRAND_DIRECT;
     static const QString        STRAND_COMPL;
     static const QString        STRAND_BOTH; 
     static QString              getStrandStringId(ORFAlgorithmStrand strand);
-    static ORFAlgorithmStrand   getStrandByStringId(const QString& id);
-
+    static ORFAlgorithmStrand   getStrandByStringId(const QString& id);	
 };
 
 

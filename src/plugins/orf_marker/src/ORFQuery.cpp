@@ -46,6 +46,7 @@ static const QString INIT_ATTR("starts-with-init");
 static const QString FIT_ATTR("stop-codon");
 static const QString ALT_ATTR("alt-start");
 static const QString MAX_LENGTH_ATTR("max-length");
+static const QString RES_ATTR("max-result-attribute");
 
 QDORFActor::QDORFActor(QDActorPrototype const* proto) : QDActor(proto) {
     units["orf"] = new QDSchemeUnit(this);
@@ -119,6 +120,7 @@ Task* QDORFActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     settings.mustFit = params.value(FIT_ATTR)->getAttributePureValue().toBool();
     settings.mustInit = params.value(INIT_ATTR)->getAttributePureValue().toBool();
     settings.allowAltStart = params.value(ALT_ATTR)->getAttributePureValue().toBool();
+	settings.maxResult2Search = params.value(RES_ATTR)->getAttributePureValue().toInt();
 
     settings.searchRegion = U2Region(0, dnaSeq.length());
 
@@ -201,6 +203,7 @@ QDORFActorPrototype::QDORFActorPrototype() {
      "               accordingly to the current translation table.\n", 0, QApplication::UnicodeUTF8));
      Descriptor mld(MAX_LENGTH_ATTR, QDORFActor::tr("Max length"), QDORFActor::tr("Maximum length of annotation allowed."));
      Descriptor fd(FIT_ATTR, QDORFActor::tr("Require stop codon"), QDORFActor::tr("Require stop codon"));
+	 Descriptor mr(RES_ATTR,QDORFActor::tr("Max result"),QDORFActor::tr("Find results not achieved by specified count"));
 
      attributes << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));
      attributes << new Attribute(ld, BaseTypes::NUM_TYPE(), true, QVariant(100));
@@ -208,6 +211,7 @@ QDORFActorPrototype::QDORFActorPrototype() {
      attributes << new Attribute(ad, BaseTypes::BOOL_TYPE(), false, QVariant(false));
      attributes << new Attribute(mld, BaseTypes::NUM_TYPE(), true, QVariant(QDActor::DEFAULT_MAX_RESULT_LENGTH));
      attributes << new Attribute(fd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+	 attributes << new Attribute(mr,BaseTypes::NUM_TYPE(),true,100000);
 
      QMap<QString, PropertyDelegate*> delegates;
 

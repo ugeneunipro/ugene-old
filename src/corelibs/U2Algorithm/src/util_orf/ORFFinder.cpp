@@ -25,6 +25,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Algorithm/DynTable.h>
 #include <U2Algorithm/RollingArray.h>
+#include <U2Core/Task.h>
 
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
@@ -54,9 +55,11 @@ void ORFFindAlgorithm::find(
                             int& stopFlag, 
                             int& percentsCompleted)
 {
-	U2SequenceObject dnaSeq("sequence",entityRef);
+	assert(cfg.maxResult2Search >= 0);
+	assert(cfg.proteinTT && cfg.proteinTT->isThree2One());
 
-    assert(cfg.proteinTT && cfg.proteinTT->isThree2One());
+	TaskStateInfo os;
+	U2SequenceObject dnaSeq("sequence",entityRef);
 
 	const int BLOCK_READ_FROM_DB = 128000;
 	int seqPointer = 0;
@@ -84,7 +87,7 @@ void ORFFindAlgorithm::find(
             }
         }
         qint64 end = cfg.searchRegion.endPos();
-        for(qint64 i = cfg.searchRegion.startPos; i < end && !stopFlag; i++, leftTillPercent--,++seqPointer) {
+        for(qint64 i = cfg.searchRegion.startPos; i < end && !stopFlag && !os.isCoR(); i++, leftTillPercent--,++seqPointer) {
 			if((seqPointer % BLOCK_READ_FROM_DB) == 0){ // query to db
 				sequence.clear();
 				sequence.append(dnaSeq.getSequenceData(U2Region(i,qMin(end - i,(qint64)BLOCK_READ_FROM_DB+3))));
@@ -98,7 +101,7 @@ void ORFFindAlgorithm::find(
 					if (cfg.includeStopCodon) {
 						len+=3;
 					}
-                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(initiator, len), frame));
+                    if (len>=minLen && !os.isCoR()) rl->onResult(ORFFindResult(U2Region(initiator, len), frame),os);
                 }
                 initiators->clear();
                 if (!mustInit) {
@@ -119,7 +122,7 @@ void ORFFindAlgorithm::find(
             }
         }
 
-        if(circularSearch && !stopFlag){
+        if(circularSearch && !stopFlag && !os.isCoR()){
             //circular
             qint64 regLen = end - cfg.searchRegion.startPos;
             qint64 minInitiator = end;
@@ -134,7 +137,7 @@ void ORFFindAlgorithm::find(
                 }
             }
 			seqPointer = 0;
-            for(qint64 i = cfg.searchRegion.startPos; i < minInitiator && !stopFlag && initiatorsRemain; i++,++seqPointer) {
+            for(qint64 i = cfg.searchRegion.startPos; i < minInitiator && !stopFlag && initiatorsRemain && !os.isCoR(); i++,++seqPointer) {
 				if( (seqPointer %BLOCK_READ_FROM_DB) == 0){ // query to db
 					sequence.clear();
 					sequence.append(dnaSeq.getSequenceData(U2Region(i,qMin(qint64(minInitiator - i),qint64(BLOCK_READ_FROM_DB+3)))));
@@ -145,8 +148,8 @@ void ORFFindAlgorithm::find(
                 if (!initiators->isEmpty() && aTT->isStopCodon(sequence.data() + seqPointer)) {
                     foreach(int initiator, *initiators) {
                         int len = regLen + i - initiator;
-                        if (len>=minLen){                            
-                            rl->onResult(ORFFindResult(U2Region(initiator, end-initiator), U2Region(cfg.searchRegion.startPos, i), frame));
+                        if (len>=minLen && !os.isCoR()){                            
+                            rl->onResult(ORFFindResult(U2Region(initiator, end-initiator), U2Region(cfg.searchRegion.startPos, i), frame),os);
                         }
                     }
                     initiators->clear();
@@ -154,13 +157,13 @@ void ORFFindAlgorithm::find(
             }
         }
 
-        if (!mustFit && !stopFlag) {
+        if (!mustFit && !stopFlag && !os.isCoR()) {
             //check if non-terminated ORFs remained
             for (int i=0; i<3;i++) {
                 foreach(int initiator, start[i]) {
                     int len = end - initiator - i;
                     len -= len%3;
-                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(initiator, len), i + 1));
+                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(initiator, len), i + 1),os);
                 }
             }
          }
@@ -178,7 +181,7 @@ void ORFFindAlgorithm::find(
         }
         qint64 end = cfg.searchRegion.startPos;
 		seqPointer = 0;
-        for(int i = cfg.searchRegion.endPos()-1; i >= end && !stopFlag;i--, leftTillPercent--,seqPointer++) {
+        for(int i = cfg.searchRegion.endPos()-1; i >= end && !stopFlag && !os.isCoR();i--, leftTillPercent--,seqPointer++) {
 			if((seqPointer % BLOCK_READ_FROM_DB) == 0){// query to db
 				sequence.clear();
 				QByteArray tmp;
@@ -198,7 +201,7 @@ void ORFFindAlgorithm::find(
 						ind -= 3;
                         len += 3;
 					}
-                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(ind+1, len), frame - 3));
+                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(ind+1, len), frame - 3),os);
                 }
                 initiators->clear();
                 if (!mustInit) {
@@ -218,7 +221,7 @@ void ORFFindAlgorithm::find(
                 leftTillPercent = onePercentLen;
             }
         }
-        if(circularSearch && !stopFlag){
+        if(circularSearch && !stopFlag && !os.isCoR()){
             int regLen = cfg.searchRegion.endPos() - cfg.searchRegion.startPos;
             int maxInitiator = -1;
             bool initiatorsRemain = false;
@@ -232,7 +235,7 @@ void ORFFindAlgorithm::find(
                 }
             }
 			seqPointer = 0;
-            for(qint64 i = cfg.searchRegion.endPos()-1; i >= maxInitiator && !stopFlag && initiatorsRemain; i--,seqPointer++) {
+            for(qint64 i = cfg.searchRegion.endPos()-1; i >= maxInitiator && !stopFlag && initiatorsRemain && !os.isCoR(); i--,seqPointer++) {
 				if((seqPointer % BLOCK_READ_FROM_DB) == 0){// query to db
 					sequence.clear();
 					QByteArray tmp;
@@ -248,21 +251,21 @@ void ORFFindAlgorithm::find(
                     foreach(int initiator, *initiators) {
                         int len = regLen + initiator - i ;
                         if (len>=minLen){                            
-                            rl->onResult(ORFFindResult(U2Region(i+1, cfg.searchRegion.endPos()-(i+1)), U2Region(end, initiator+1), frame - 3));
+                            rl->onResult(ORFFindResult(U2Region(i+1, cfg.searchRegion.endPos()-(i+1)), U2Region(end, initiator+1), frame - 3),os);
                         }
                     }
                     initiators->clear();
                 }
             }
         }
-        if (!mustFit && !stopFlag) {
+        if (!mustFit && !stopFlag && !os.isCoR()) {
             //check if non-terminated ORFs remained
             for (int i=0; i<3;i++) {
                 foreach(int initiator, start[i]) {
                     int ind = end + i%3;
                     int len = initiator - ind;
                     len -= len%3;
-                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(ind, len), i - 3));
+                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(ind, len), i - 3),os);
                 }
             }
         }

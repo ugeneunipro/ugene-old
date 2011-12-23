@@ -58,6 +58,7 @@ static const QString FIT_ATTR("require-stop-codon");
 static const QString INIT_ATTR("require-init-codon");
 static const QString ALT_ATTR("allow-alternative-codons");
 static const QString ISC_ATTR("include-stop-codon");
+static const QString RES_ATTR("max-result-attribute");
 
 const QString ORFWorkerFactory::ACTOR_ID("orf-search");
 
@@ -87,6 +88,7 @@ void ORFWorkerFactory::init() {
             "               Allow ORFs starting with alternative initiation codons,\n"
             "               accordingly to the current translation table.\n", 0, QApplication::UnicodeUTF8));
         Descriptor isc(ISC_ATTR, ORFWorker::tr("Include stop codon"), ORFWorker::tr("The result annotation will includes stop codon if this option is set"));
+		Descriptor mr(RES_ATTR,ORFWorker::tr("Max result"),ORFWorker::tr("Find results not achieved by specified count"));
         
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("ORF"));
         a << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));
@@ -96,7 +98,7 @@ void ORFWorkerFactory::init() {
         a << new Attribute(ind, BaseTypes::BOOL_TYPE(), false, QVariant(true));
         a << new Attribute(ad, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         a << new Attribute(isc, BaseTypes::BOOL_TYPE(), false, QVariant(false));
-
+		a << new Attribute(mr,BaseTypes::NUM_TYPE(),true,100000);
 
     }
 
@@ -235,6 +237,7 @@ Task* ORFWorker::tick() {
     cfg.mustInit = actor->getParameter(INIT_ATTR)->getAttributeValue<bool>();
     cfg.allowAltStart = actor->getParameter(ALT_ATTR)->getAttributeValue<bool>();
     cfg.includeStopCodon = actor->getParameter(ISC_ATTR)->getAttributeValue<bool>();
+	cfg.maxResult2Search = actor->getParameter(RES_ATTR)->getAttributeValue<int>(); 
     resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
     if(resultName.isEmpty()){
         algoLog.error(tr("ORF: result name is empty, default name used"));

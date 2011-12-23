@@ -167,6 +167,8 @@ void GTest_ORFMarkerTask::init(XMLTestFormat *tf, const QDomElement& el) {
         settings.circularSearch = false;
     }
 
+	settings.maxResult2Search = INT_MAX;
+
     QString strTranslationId = el.attribute(TRANSLATION_ID_ATTR);
     if (strTranslationId.isEmpty()) {
         failMissingValue(TRANSLATION_ID_ATTR);

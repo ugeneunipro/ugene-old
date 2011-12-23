@@ -43,6 +43,7 @@ const QString ORFSettingsKeys::MUST_INIT("orf_finder/must_init");
 const QString ORFSettingsKeys::SEARCH_REGION("orf_finder/region");
 const QString ORFSettingsKeys::INCLUDE_STOP_CODON("orf_finder/incldue_stop_codon");
 const QString ORFSettingsKeys::CIRCULAR_SEARCH("orf_finder/circular_search");
+const QString ORFSettingsKeys::MAX_RESULT("orf_finder/max_result");
 
 
 void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
@@ -56,6 +57,7 @@ void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
     s->setValue(ORFSettingsKeys::CIRCULAR_SEARCH, cfg.circularSearch);
     s->setValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::getStrandStringId(cfg.strand));
 	s->setValue(ORFSettingsKeys::INCLUDE_STOP_CODON, cfg.includeStopCodon);
+	s->setValue(ORFSettingsKeys::MAX_RESULT,cfg.maxResult2Search);
 }
 
 void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
@@ -65,6 +67,7 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
     cfg.allowOverlap = s->getValue(ORFSettingsKeys::ALLOW_OVERLAP, false).toBool();
     cfg.circularSearch = s->getValue(ORFSettingsKeys::CIRCULAR_SEARCH, false).toBool();
     cfg.minLen = s->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt();
+	cfg.maxResult2Search =  s->getValue(ORFSettingsKeys::MAX_RESULT,200000).toInt();
 
     QString strandId = s->getValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::STRAND_BOTH).toString();
     cfg.strand = ORFAlgorithmSettings::getStrandByStringId(strandId);

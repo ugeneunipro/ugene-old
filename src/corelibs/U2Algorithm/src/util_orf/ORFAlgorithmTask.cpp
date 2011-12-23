@@ -27,8 +27,6 @@
 
 namespace U2 {
 
-#define MAX_RESULTS 100000
-
 ORFFindTask::ORFFindTask(const ORFAlgorithmSettings& s,const U2EntityRef& _entityRef) 
 : Task (tr("ORF find"), TaskFlag_None),config(s),entityRef(_entityRef)
 {
@@ -45,13 +43,11 @@ void ORFFindTask::run(){
 		stateInfo.progress);
 }
 
-void ORFFindTask::onResult(const ORFFindResult& r) {
+void ORFFindTask::onResult(const ORFFindResult& r, U2OpStatus& os) {
     QMutexLocker locker(&lock);
-    if (newResults.size() > MAX_RESULTS) {
-        if (!isCanceled()) {
-            stateInfo.setError(  tr("Number of results exceeds %1").arg(MAX_RESULTS) );
-            cancel();
-        }
+    if (newResults.size() > config.maxResult2Search) {
+		os.setCanceled(true);
+		algoLog.info(QString("Max result {%1} is achieved").arg(config.maxResult2Search));
         return;
     }
     assert((r.region.length + r.joinedRegion.length) % 3 == 0);
