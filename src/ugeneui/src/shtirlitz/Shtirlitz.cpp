@@ -125,7 +125,7 @@ void Shtirlitz::wakeup() {
     } 
 
     // Check if previous report was sent more than a week ago
-    if( !allVersionsFirstLaunch  ) {
+    if( !allVersionsFirstLaunch && enabledByUser ) {
         QVariant prevDateQvar = AppContext::getSettings()->getValue( SETTINGS_PREVIOUS_REPORT_DATE );
         QDate prevDate = prevDateQvar.toDate();
         int daysPassed = prevDate.isValid() ? prevDate.daysTo(QDate::currentDate()) : 0;
