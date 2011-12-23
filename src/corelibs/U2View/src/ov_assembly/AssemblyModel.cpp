@@ -246,7 +246,17 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
             connect(refDoc, SIGNAL(si_loadedStateChanged()), SLOT(sl_referenceDocLoadedStateChanged()));
         } else { // no document at project -> create doc, add it to project and load it
             t = createLoadReferenceAndAddToProjectTask(crossRef);
-            SAFE_POINT(t, "Failed to load reference sequence!",);
+            if (NULL == t) {
+                QString refUrl = crossRef.dataRef.dbiRef.dbiId;
+                QString refName = crossRef.dataRef.entityId;
+
+                QMessageBox::warning(QApplication::activeWindow(), tr("Warning"),
+                    tr("A file '%1' with the reference sequence '%2' not found!\n"
+                    "Try to open another file with a reference sequence and associate it with the assembly.").arg(refUrl).arg(refName),
+                    QMessageBox::Ok, QMessageBox::Ok);
+
+                sl_unassociateReference();
+            }
         }
         
         // 4. run task and wait for finished in referenceLoaded()
