@@ -246,7 +246,14 @@ void ConvertToSQLiteDialog::accept() {
                 ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
                 return;
             }
-        }        
+        }
+        QFileInfo destinationDir(QFileInfo(destinationUrl.getURLString()).path());
+        if(!destinationDir.isWritable()) {
+            ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
+            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination directory '%1' is not writable, please choose different destination URL").arg(destinationDir.path()));
+            return;
+        }
+
         if(QFile::exists(destinationUrl.getURLString())) {
             int result = QMessageBox::question(this, windowTitle(), 
                                                BAMDbiPlugin::tr("Destination file already exists.\n"
