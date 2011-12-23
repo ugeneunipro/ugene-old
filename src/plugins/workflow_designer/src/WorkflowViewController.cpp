@@ -1511,6 +1511,7 @@ Schema WorkflowScene::getSchema() const {
     }
     schema.setActorBindingsGraph(graph);
     schema.setPortAliases(portAliases);
+    schema.setTypeName(includedTypeName);
 
     return schema;
 }
@@ -1749,6 +1750,14 @@ void WorkflowScene::setIterated(bool iterated, const Iteration &defaultIteration
         iterations.clear();
         iterations.append(defaultIteration);
     }
+}
+
+QString WorkflowScene::getTypeName() const {
+    return includedTypeName;
+}
+
+void WorkflowScene::setTypeName(const QString &typeName) {
+    this->includedTypeName = typeName;
 }
 
 void WorkflowScene::sl_openDocuments() {

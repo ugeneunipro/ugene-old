@@ -87,6 +87,9 @@ public:
      * This hidden iteration is @defaultIteration.
      */
     void setIterated(bool iterated, const Iteration &defaultIteration = Iteration(tr("Default iteration")));
+
+    QString getTypeName() const;
+    void setTypeName(const QString &typeName);
     
 public slots:
     void sl_deleteItem();
@@ -128,6 +131,7 @@ private:
     QList<PortAlias> portAliases;
     // if it isn't iterated then there are one iteration and it isn't shown to a user
     bool iterated;
+    QString includedTypeName;
     
 }; // WorkflowScene
 

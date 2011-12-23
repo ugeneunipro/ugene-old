@@ -52,6 +52,7 @@ Schema & Schema::operator =( const Schema & other ) {
     graph = (NULL == other.graph) ? NULL : new ActorBindingsGraph(*(other.graph));
     deepCopy = false;
     portAliases = other.portAliases;
+    includedTypeName = other.includedTypeName;
     return *this;
 }
 
@@ -193,6 +194,14 @@ bool Schema::addPortAlias(const PortAlias &newAlias) {
 
 void Schema::setPortAliases(const QList<PortAlias> &aliases) {
     portAliases = aliases;
+}
+
+QString Schema::getTypeName() const {
+    return includedTypeName;
+}
+
+void Schema::setTypeName(const QString &typeName) {
+    this->includedTypeName = typeName;
 }
 
 using namespace std;

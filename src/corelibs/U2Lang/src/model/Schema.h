@@ -93,6 +93,9 @@ public:
 
     // replaces dummy processes (schema-processes) by his schemas and set up correct links
     bool expand();
+
+    QString getTypeName() const;
+    void setTypeName(const QString &typeName);
     
 private:
     // set of actors
@@ -112,6 +115,8 @@ private:
     ActorBindingsGraph *graph;
     // keeps new names of ports (and inner slots) for includes
     QList<PortAlias> portAliases;
+    // if you include this schema to another schema then here is new type name
+    QString includedTypeName;
 
 private:
     void setAliasedAttributes(Actor *proc, Actor *subProc);

@@ -114,7 +114,7 @@ static QString linkVisualData(WorkflowBusItem * link) {
 }
 
 static QString visualData(const QList<QGraphicsItem*> & items, const HRSchemaSerializer::NamesMap& nmap) {
-    assert(!items.isEmpty());
+//    assert(!items.isEmpty());
     QString res;
     
     foreach( QGraphicsItem * item, items ) {
@@ -167,7 +167,7 @@ static QString bodyItself(WorkflowScene * scene) {
     res += HRSchemaSerializer::actorBindings(schema.getActorBindingsGraph(), nmap);
     res += HRSchemaSerializer::dataflowDefinition(schema.getProcesses(), nmap);
     res += HRSchemaSerializer::iterationsDefinition(schema.getIterations(), nmap);
-    res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::META_START, HRSchemaSerializer::NO_NAME, metaData(scene, nmap));
+    res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::META_START, scene->getTypeName(), metaData(scene, nmap));
     return res;
 }
 
@@ -454,6 +454,13 @@ static void parseVisual(WorkflowSceneReaderData & data) {
 }
 
 static void parseMeta(WorkflowSceneReaderData & data) {
+    QString tok = data.tokenizer.look();
+    if (HRSchemaSerializer::BLOCK_START != tok) {
+        data.scene->setTypeName(tok);
+        data.tokenizer.take();
+    }
+
+    data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
     while (data.tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
         QString tok = data.tokenizer.take();
         if (HRSchemaSerializer::PARAM_ALIASES_START == tok) {
@@ -536,7 +543,6 @@ static void parseBodyItself(WorkflowSceneReaderData & data) {
         QString tok = tokenizer.take();
         QString nextTok = tokenizer.look();
         if(tok == HRSchemaSerializer::META_START) {
-            tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             parseMeta(data);
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
         } else if(tok == HRSchemaSerializer::DOT_ITERATION_START) {

@@ -525,8 +525,14 @@ enum IncludeElementType {
 void HRSchemaSerializer::parseIncludes(Tokenizer &tokenizer, QList<QString> includedUrls) {
     tokenizer.assertToken(INCLUDE);
     QString path = tokenizer.take();
-    tokenizer.assertToken(INCLUDE_AS);
-    QString actorName = tokenizer.take();
+    QString actorName;
+    bool includeAs = false;
+    QString tok = tokenizer.look();
+    if (INCLUDE_AS == tok) {
+        tokenizer.assertToken(INCLUDE_AS);
+        includeAs = true;
+        actorName = tokenizer.take();
+    }
     
     // read the file content
     QString ext = GUrl(path).lastFileSuffix();
@@ -556,7 +562,11 @@ void HRSchemaSerializer::parseIncludes(Tokenizer &tokenizer, QList<QString> incl
             if (NULL == cfg) {
                 throw ReadFailed(tr("File '%1' contains mistakes").arg(path));
             }
-            cfg->name = actorName;
+            if (includeAs) {
+                cfg->name = actorName;
+            } else {
+                actorName = cfg->name;
+            }
             cfg->filePath = path;
             proto = IncludedProtoFactory::getExternalToolProto(cfg);
         } else {
@@ -571,12 +581,20 @@ void HRSchemaSerializer::parseIncludes(Tokenizer &tokenizer, QList<QString> incl
             QMap<ActorId, ActorId> procMap;
             error = string2Schema(rawData, schema, NULL, &procMap, newUrlList);
             if (NULL != schema && error.isEmpty()) {
+                if (includeAs) {
+                    schema->setTypeName(actorName);
+                } else {
+                    actorName = schema->getTypeName();
+                }
                 proto = IncludedProtoFactory::getSchemaActorProto(schema, actorName, path);
             }
         }
     } else if(rawData.startsWith(HRSchemaSerializer::OLD_XML_HEADER)) {
         includeType = SCRIPT;
         proto = ScriptWorkerSerializer::string2actor(rawData, actorName, error, path);
+        if (!includeAs && NULL != proto) {
+            actorName = proto->getDisplayName();
+        }
     } else {
         throw ReadFailed(tr("Unknown file format: '%1'").arg(path));
     }
@@ -1146,6 +1164,13 @@ static void parseVisual(WorkflowSchemaReaderData & data) {
 }
 
 static void parseMeta(WorkflowSchemaReaderData & data) {
+    QString tok = data.tokenizer.look();
+    if (HRSchemaSerializer::BLOCK_START != tok) {
+        data.schema->setTypeName(tok);
+        data.tokenizer.take();
+    }
+
+    data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
     while(data.tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
         QString tok = data.tokenizer.take();
         if(HRSchemaSerializer::PARAM_ALIASES_START == tok) {
@@ -1180,7 +1205,6 @@ static void parseBody(WorkflowSchemaReaderData & data) {
         QString tok = tokenizer.take();
         QString next = tokenizer.look();
         if(tok == HRSchemaSerializer::META_START) {
-            tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             parseMeta(data);
             tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
         } else if(tok == HRSchemaSerializer::DOT_ITERATION_START) {
@@ -1750,7 +1774,7 @@ static QString bodyItself(const Schema & schema, bool copyMode) {
     res += HRSchemaSerializer::actorBindings(schema.getActorBindingsGraph(), nmap, copyMode);
     res += HRSchemaSerializer::dataflowDefinition(schema.getProcesses(), nmap);
     res += HRSchemaSerializer::iterationsDefinition(schema.getIterations(), nmap, false);
-    res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::META_START, HRSchemaSerializer::NO_NAME, metaData(schema, nmap));
+    res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::META_START, schema.getTypeName(), metaData(schema, nmap));
     return res;
 }
 
