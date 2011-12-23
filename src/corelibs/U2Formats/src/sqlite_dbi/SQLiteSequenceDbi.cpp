@@ -68,7 +68,6 @@ U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2Op
 
 QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) {
     GTIMER(c1, t1, "SQLiteSequenceDbi::getSequenceData");
-    GCOUNTER(c2, t2, "SQLiteSequenceDbi::getSequenceData -> calls");
     QByteArray res;
     //TODO: check mem-overflow, compare region.length with sequence length!
     // res.reserve(region.length);
