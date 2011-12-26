@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-enum U2CORE_EXPORT CaseAnnotationsMode {
+enum CaseAnnotationsMode {
     LOWER_CASE,
     UPPER_CASE,
     NO_CASE_ANNS
