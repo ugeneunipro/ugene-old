@@ -119,10 +119,10 @@ void DetView::updateActions() {
     bool visible = isVisible();
 
     bool hasComplement = ctx->getComplementTT()!=NULL;
-    showComplementAction->setEnabled(hasComplement && visible);
+    showComplementAction->setEnabled(hasComplement );
 
     bool hasAmino = ctx->getAminoTT()!=NULL; 
-    showTranslationAction->setEnabled(hasAmino && visible);
+    showTranslationAction->setEnabled(hasAmino );
 }
 
 void DetView::showEvent(QShowEvent * e) {
@@ -210,6 +210,9 @@ void DetView::sl_sequenceChanged(){
 }
 
 void DetView::sl_translationRowsChanged(){
+	if(isHidden()){
+		setHidden(false);
+	}
     QVector<bool> visibleRows = getSequenceContext()->getTranslationRowsVisibleStatus();
     bool anyFrame = false;
     foreach(bool b, visibleRows){
@@ -222,7 +225,12 @@ void DetView::sl_translationRowsChanged(){
         return;
     }
     if(!showTranslationAction->isChecked()){
-        sl_showTranslationToggle(true);
+		if(!getSequenceContext()->isRowChoosed()){
+			sl_showTranslationToggle(true);
+		}
+		else{
+			showTranslationAction->setChecked(true);
+		}
     }
 
     updateScrollBar();

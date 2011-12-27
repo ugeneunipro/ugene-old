@@ -57,7 +57,7 @@ public:
     DNAAlphabet* getAlphabet() const;
     QByteArray getSequenceData(const U2Region& r) const;
     U2EntityRef getSequenceRef() const;
-
+	bool		isRowChoosed()   ;
 
     DNASequenceSelection*   getSequenceSelection() const {return selection;}
     
@@ -110,6 +110,8 @@ private:
     QSet<AnnotationTableObject*>    annotations;
     QSet<AnnotationTableObject*>    autoAnnotations;
     bool                            clarifyAminoTT;
+	bool							rowChoosed;
+
 };
 
 } //namespace

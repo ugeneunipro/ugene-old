@@ -209,10 +209,13 @@ bool ADVSingleSequenceWidget::isViewCollapsed() const {
     return collapsed;
 }
 
-void ADVSingleSequenceWidget::setViewCollapsed(bool v) {
-    foreach(GSequenceLineView* seqView, lineViews) {
-        seqView->setHidden(v);
-    }
+void ADVSingleSequenceWidget::setViewCollapsed(bool v) {   
+	if (ttButton != NULL) {
+		getSequenceContext()->setTranslationsVisible(!v);
+	}
+	foreach(GSequenceLineView* seqView, lineViews) {
+		seqView->setHidden(v);
+	}
     updateMinMaxHeight();
 }
 
@@ -229,11 +232,12 @@ void ADVSingleSequenceWidget::setPanViewCollapsed(bool v) {
     zoomToRangeAction->setDisabled( isPanViewCollapsed() );
 }
 
-void ADVSingleSequenceWidget::setDetViewCollapsed(bool v) {
-    detView->setHidden(v);
+void ADVSingleSequenceWidget::setDetViewCollapsed(bool v) {    
     if (ttButton != NULL) {
-        ttButton->setDisabled(v);
+		getSequenceContext()->setTranslationsVisible(!v);
     }
+	detView->setHidden(v);
+	
     updateMinMaxHeight();
 }
 

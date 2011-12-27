@@ -38,7 +38,7 @@
 namespace U2 {
 
 ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2SequenceObject* obj) 
-: QObject(v), view(v), seqObj(obj), aminoTT(NULL), complTT(NULL), selection(NULL), translations(NULL), visibleFrames(NULL)
+: QObject(v), view(v), seqObj(obj), aminoTT(NULL), complTT(NULL), selection(NULL), translations(NULL), visibleFrames(NULL),rowChoosed(false)
 {
     selection = new DNASequenceSelection(seqObj, this);
     clarifyAminoTT = false;
@@ -312,7 +312,13 @@ QSet<AnnotationTableObject*> ADVSequenceObjectContext::getAnnotationObjects(bool
 
 void ADVSequenceObjectContext::sl_toggleTranslations(){
     translationRowsStatus.clear();
+	rowChoosed = true;
     emit si_translationRowsChanged();
+	rowChoosed = false;
+}
+
+bool ADVSequenceObjectContext::isRowChoosed(){
+	return rowChoosed;
 }
 
 QVector<bool> ADVSequenceObjectContext::getTranslationRowsVisibleStatus(){
