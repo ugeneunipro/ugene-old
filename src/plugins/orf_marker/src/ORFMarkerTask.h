@@ -47,6 +47,7 @@ public:
 	static const QString INCLUDE_STOP_CODON;
     static const QString CIRCULAR_SEARCH;
 	static const QString MAX_RESULT;
+	static const QString IS_RESULT_LIMITED;
 	
     static void save(const ORFAlgorithmSettings& cfg, Settings* st);
     static void read(ORFAlgorithmSettings& cfg, const Settings* st);

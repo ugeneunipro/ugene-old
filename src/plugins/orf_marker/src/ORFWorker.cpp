@@ -59,6 +59,7 @@ static const QString INIT_ATTR("require-init-codon");
 static const QString ALT_ATTR("allow-alternative-codons");
 static const QString ISC_ATTR("include-stop-codon");
 static const QString RES_ATTR("max-result-attribute");
+static const QString LIMIT_ATTR("limit-results");
 
 const QString ORFWorkerFactory::ACTOR_ID("orf-search");
 
@@ -89,6 +90,7 @@ void ORFWorkerFactory::init() {
             "               accordingly to the current translation table.\n", 0, QApplication::UnicodeUTF8));
         Descriptor isc(ISC_ATTR, ORFWorker::tr("Include stop codon"), ORFWorker::tr("The result annotation will includes stop codon if this option is set"));
 		Descriptor mr(RES_ATTR,ORFWorker::tr("Max result"),ORFWorker::tr("Find results not achieved by specified count"));
+		Descriptor lr(LIMIT_ATTR,ORFWorker::tr("Limit results"),ORFWorker::tr("The amount of results will be limited id that option is setted"));
         
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("ORF"));
         a << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));
@@ -98,8 +100,8 @@ void ORFWorkerFactory::init() {
         a << new Attribute(ind, BaseTypes::BOOL_TYPE(), false, QVariant(true));
         a << new Attribute(ad, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         a << new Attribute(isc, BaseTypes::BOOL_TYPE(), false, QVariant(false));
-		a << new Attribute(mr,BaseTypes::NUM_TYPE(),true,100000);
-
+		a << new Attribute(mr,BaseTypes::NUM_TYPE(),false,100000);
+		a << new Attribute(lr,BaseTypes::BOOL_TYPE(),false,QVariant(true));
     }
 
     Descriptor desc(ACTOR_ID, ORFWorker::tr("ORF Marker"), 

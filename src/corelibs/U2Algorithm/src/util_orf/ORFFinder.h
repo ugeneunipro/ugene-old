@@ -122,6 +122,7 @@ public:
 	bool						includeStopCodon;
     bool                        circularSearch;
 	int							maxResult2Search;
+	bool						isResultsLimited;
     static const QString        ANNOTATION_GROUP_NAME;
     // strand string ids
     static const QString        STRAND_DIRECT;

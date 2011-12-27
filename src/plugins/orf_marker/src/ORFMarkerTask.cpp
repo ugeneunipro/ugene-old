@@ -44,7 +44,7 @@ const QString ORFSettingsKeys::SEARCH_REGION("orf_finder/region");
 const QString ORFSettingsKeys::INCLUDE_STOP_CODON("orf_finder/incldue_stop_codon");
 const QString ORFSettingsKeys::CIRCULAR_SEARCH("orf_finder/circular_search");
 const QString ORFSettingsKeys::MAX_RESULT("orf_finder/max_result");
-
+const QString ORFSettingsKeys::IS_RESULT_LIMITED("orf_finder/is_result_limited");
 
 void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
     s->setValue(ORFSettingsKeys::AMINO_TRANSL, cfg.proteinTT->getTranslationId());
@@ -58,6 +58,7 @@ void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
     s->setValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::getStrandStringId(cfg.strand));
 	s->setValue(ORFSettingsKeys::INCLUDE_STOP_CODON, cfg.includeStopCodon);
 	s->setValue(ORFSettingsKeys::MAX_RESULT,cfg.maxResult2Search);
+	s->setValue(ORFSettingsKeys::IS_RESULT_LIMITED,cfg.isResultsLimited);
 }
 
 void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
@@ -68,6 +69,7 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
     cfg.circularSearch = s->getValue(ORFSettingsKeys::CIRCULAR_SEARCH, false).toBool();
     cfg.minLen = s->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt();
 	cfg.maxResult2Search =  s->getValue(ORFSettingsKeys::MAX_RESULT,200000).toInt();
+	cfg.isResultsLimited = s->getValue(ORFSettingsKeys::IS_RESULT_LIMITED,true).toBool();
 
     QString strandId = s->getValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::STRAND_BOTH).toString();
     cfg.strand = ORFAlgorithmSettings::getStrandByStringId(strandId);

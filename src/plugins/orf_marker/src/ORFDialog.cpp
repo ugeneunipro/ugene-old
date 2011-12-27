@@ -357,6 +357,8 @@ void ORFDialog::initSettings()
     sbMinLen->setValue(s.minLen);
 	ckIncStopCodon->setChecked(s.includeStopCodon);
     ckCircularSearch->setChecked(s.circularSearch);
+	maxResultField->setValue(s.maxResult2Search);
+	maxResult->setChecked(s.isResultsLimited);
     if (s.strand == ORFAlgorithmStrand_Direct) {
         rbDirect->setChecked(true);
     } else if (s.strand == ORFAlgorithmStrand_Complement) {
@@ -379,7 +381,8 @@ void ORFDialog::getSettings(ORFAlgorithmSettings& s)
 	s.includeStopCodon = ckIncStopCodon->isChecked();
     s.circularSearch = ckCircularSearch->isChecked();
     s.minLen = (ckMinLen->isChecked()) ? sbMinLen->value() : 0;
-	s.maxResult2Search = (maxResult->isChecked()) ? maxResultField->value() : INT_MAX;
+	s.maxResult2Search = maxResultField->value();
+	s.isResultsLimited = maxResult->isChecked();
 
     //setup search region
     s.searchRegion = getCompleteSearchRegion(&isRegionOk);

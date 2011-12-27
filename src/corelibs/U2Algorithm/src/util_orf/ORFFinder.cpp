@@ -157,13 +157,13 @@ void ORFFindAlgorithm::find(
             }
         }
 
-        if (!mustFit && !stopFlag && !os.isCoR()) {
+        if (!mustFit && !stopFlag ) {
             //check if non-terminated ORFs remained
             for (int i=0; i<3;i++) {
                 foreach(int initiator, start[i]) {
                     int len = end - initiator - i;
                     len -= len%3;
-                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(initiator, len), i + 1),os);
+                    if (len>=minLen && !os.isCoR()) rl->onResult(ORFFindResult(U2Region(initiator, len), i + 1),os);
                 }
             }
          }
@@ -201,7 +201,7 @@ void ORFFindAlgorithm::find(
 						ind -= 3;
                         len += 3;
 					}
-                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(ind+1, len), frame - 3),os);
+                    if (len>=minLen && !os.isCoR()) rl->onResult(ORFFindResult(U2Region(ind+1, len), frame - 3),os);
                 }
                 initiators->clear();
                 if (!mustInit) {
@@ -250,7 +250,7 @@ void ORFFindAlgorithm::find(
                 if (!initiators->isEmpty() && aTT->isStopCodon(sequence.data()+seqPointer)) {
                     foreach(int initiator, *initiators) {
                         int len = regLen + initiator - i ;
-                        if (len>=minLen){                            
+                        if (len>=minLen && !os.isCoR()){                            
                             rl->onResult(ORFFindResult(U2Region(i+1, cfg.searchRegion.endPos()-(i+1)), U2Region(end, initiator+1), frame - 3),os);
                         }
                     }
@@ -258,14 +258,14 @@ void ORFFindAlgorithm::find(
                 }
             }
         }
-        if (!mustFit && !stopFlag && !os.isCoR()) {
+        if (!mustFit && !stopFlag ) {
             //check if non-terminated ORFs remained
             for (int i=0; i<3;i++) {
                 foreach(int initiator, start[i]) {
                     int ind = end + i%3;
                     int len = initiator - ind;
                     len -= len%3;
-                    if (len>=minLen) rl->onResult(ORFFindResult(U2Region(ind, len), i - 3),os);
+                    if (len>=minLen && !os.isCoR()) rl->onResult(ORFFindResult(U2Region(ind, len), i - 3),os);
                 }
             }
         }

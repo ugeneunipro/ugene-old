@@ -47,6 +47,7 @@ static const QString FIT_ATTR("stop-codon");
 static const QString ALT_ATTR("alt-start");
 static const QString MAX_LENGTH_ATTR("max-length");
 static const QString RES_ATTR("max-result-attribute");
+static const QString LIMIT_ATTR("limit-results");
 
 QDORFActor::QDORFActor(QDActorPrototype const* proto) : QDActor(proto) {
     units["orf"] = new QDSchemeUnit(this);
@@ -204,6 +205,7 @@ QDORFActorPrototype::QDORFActorPrototype() {
      Descriptor mld(MAX_LENGTH_ATTR, QDORFActor::tr("Max length"), QDORFActor::tr("Maximum length of annotation allowed."));
      Descriptor fd(FIT_ATTR, QDORFActor::tr("Require stop codon"), QDORFActor::tr("Require stop codon"));
 	 Descriptor mr(RES_ATTR,QDORFActor::tr("Max result"),QDORFActor::tr("Find results not achieved by specified count"));
+	 Descriptor lr(LIMIT_ATTR,QDORFActor::tr("Limit results"),QDORFActor::tr("The amount of results will be limited id that option is setted"));
 
      attributes << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));
      attributes << new Attribute(ld, BaseTypes::NUM_TYPE(), true, QVariant(100));
@@ -211,7 +213,8 @@ QDORFActorPrototype::QDORFActorPrototype() {
      attributes << new Attribute(ad, BaseTypes::BOOL_TYPE(), false, QVariant(false));
      attributes << new Attribute(mld, BaseTypes::NUM_TYPE(), true, QVariant(QDActor::DEFAULT_MAX_RESULT_LENGTH));
      attributes << new Attribute(fd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
-	 attributes << new Attribute(mr,BaseTypes::NUM_TYPE(),true,100000);
+	 attributes << new Attribute(mr,BaseTypes::NUM_TYPE(),false,100000);
+	 attributes << new Attribute(lr,BaseTypes::BOOL_TYPE(),false,QVariant(true));
 
      QMap<QString, PropertyDelegate*> delegates;
 
