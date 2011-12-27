@@ -54,6 +54,7 @@ public:
     QFont font;
     QString path;
     QString externalToolCfgDir;
+    QString includedElementsDir;
     QColor color;
     bool showEmptyPorts;
     bool runSchemaInSeparateProcess;
@@ -74,6 +75,7 @@ public:
 private slots:
     void sl_getDirectory();
     void sl_getExternalToolCfgDir();
+    void sl_getIncludedElementsDir();
     void sl_getColor();
 };
 

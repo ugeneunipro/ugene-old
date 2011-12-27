@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>487</width>
-    <height>465</height>
+    <height>497</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -143,6 +143,27 @@
         </item>
         <item>
          <widget class="QToolButton" name="extToolDirButton">
+          <property name="text">
+           <string notr="true">...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Directory for included schema elements</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLineEdit" name="includedlDirEdit"/>
+        </item>
+        <item>
+         <widget class="QToolButton" name="includedDirButton">
           <property name="text">
            <string notr="true">...</string>
           </property>

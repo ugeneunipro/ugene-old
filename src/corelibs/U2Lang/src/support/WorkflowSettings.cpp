@@ -47,6 +47,7 @@ namespace U2 {
 #define RUN_IN_SEPARATE_PROC SETTINGS + "runInSeparateProcess"
 #define CMDLINE_UGENE_PATH SETTINGS + "cmdlineUgenePath"
 #define EXTERNAL_TOOL_WORKER_PATH SETTINGS + "externalToolWorkerPath"
+#define INCLUDED_WORKER_PATH SETTINGS + "includedWorkerPath"
 
 Watcher* const WorkflowSettings::watcher = new Watcher;
 
@@ -242,6 +243,19 @@ QString WorkflowSettings::getCmdlineUgenePath() {
 
 void WorkflowSettings::setCmdlineUgenePath(const QString & path) {
     AppContext::getSettings()->setValue(CMDLINE_UGENE_PATH, path);
+}
+
+void WorkflowSettings::setIncludedElementsDirectory(const QString &newDir) {
+    AppContext::getSettings()->setValue(INCLUDED_WORKER_PATH, newDir);
+}
+
+const QString WorkflowSettings::getIncludedElementsDirectory() {
+    Settings *s = AppContext::getSettings();
+    GUrl url(s->fileName());
+    QString defaultPath = url.dirPath();
+    defaultPath += "/IncludedWorkers/";
+    QString path = s->getValue(INCLUDED_WORKER_PATH, defaultPath).toString();
+    return path;
 }
 
 }//namespace

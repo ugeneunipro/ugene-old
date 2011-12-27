@@ -48,6 +48,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/Log.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Lang/IncludedProtoFactory.h>
 
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowManager.h>
@@ -368,7 +369,56 @@ void CoreLib::initExternalToolsWorkers() {
         }
         file.close();
     }
-} 
+}
+
+void CoreLib::initIncludedWorkers() {
+    QString path = WorkflowSettings::getIncludedElementsDirectory();
+    QDir dir(path);
+    if(!dir.exists()) {
+        return;
+    }
+    dir.setNameFilters(QStringList() << "*.uwl");
+    QFileInfoList fileList = dir.entryInfoList();
+
+    foreach(const QFileInfo& fileInfo, fileList) {
+        // read file content
+        QString url = fileInfo.filePath();
+        QFile file(url);
+        file.open(QIODevice::ReadOnly);
+        QString data = file.readAll().data();
+        file.close();
+
+        // parse schema from data
+        QList<QString> urlList;
+        urlList << url;
+        Schema *schema = new Schema();
+        QMap<ActorId, ActorId> procMap;
+        QString error = HRSchemaSerializer::string2Schema(data, schema, NULL, &procMap, urlList);
+
+        // generate proto from schema
+        ActorPrototype *proto = NULL;
+        QString actorName;
+        if (error.isEmpty()) {
+            actorName = schema->getTypeName();
+            proto = IncludedProtoFactory::getSchemaActorProto(schema, actorName, url);
+        }
+
+        if (NULL != proto) {
+            // register the new proto
+            if (IncludedProtoFactory::isRegistered(actorName)) {
+                bool isEqualProtos = IncludedProtoFactory::isRegisteredTheSameProto(actorName, proto);
+                if (!isEqualProtos) {
+                    coreLog.error(tr("Another worker with this name is already registered: %1").arg(actorName));
+                } else {
+                    coreLog.trace(tr("The actor '%1' has been already registered").arg(actorName));
+                }
+            } else {
+                WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_INCLUDES(), proto);
+                WorkflowEnv::getSchemaActorsRegistry()->registerSchema(schema->getTypeName(), schema);
+            }
+        }
+    }
+}
 
 
 } // Workflow namespace

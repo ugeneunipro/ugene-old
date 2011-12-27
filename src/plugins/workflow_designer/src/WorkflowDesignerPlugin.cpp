@@ -99,6 +99,7 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
     
     registerCMDLineHelp();
     processCMDLineOptions();  
+    Workflow::CoreLib::initIncludedWorkers();
 }
 
 void WorkflowDesignerPlugin::processCMDLineOptions() {

@@ -49,6 +49,7 @@ AppSettingsGUIPageState* WorkflowSettingsPageController::getSavedState() {
     state->color = WorkflowSettings::getBGColor();
     state->runSchemaInSeparateProcess = WorkflowSettings::runInSeparateProcess();
     state->externalToolCfgDir = WorkflowSettings::getExternalToolDirectory();
+    state->includedElementsDir = WorkflowSettings::getIncludedElementsDirectory();
     return state;
 }
 
@@ -64,6 +65,7 @@ void WorkflowSettingsPageController::saveState(AppSettingsGUIPageState* s) {
     WorkflowSettings::setBGColor(state->color);
     WorkflowSettings::setRunInSeparateProcess(state->runSchemaInSeparateProcess);
     WorkflowSettings::setExternalToolDirectory(state->externalToolCfgDir);
+    WorkflowSettings::setIncludedElementsDirectory(state->includedElementsDir);
 }
 
 AppSettingsGUIPageWidget* WorkflowSettingsPageController::createWidget(AppSettingsGUIPageState* state) {
@@ -78,6 +80,7 @@ WorkflowSettingsPageWidget::WorkflowSettingsPageWidget(WorkflowSettingsPageContr
     styleCombo->addItem(U2::WorkflowView::tr("Extended"), ItemStyles::EXTENDED);
     connect(dirButton, SIGNAL(clicked()), SLOT(sl_getDirectory()));
     connect(extToolDirButton, SIGNAL(clicked()), SLOT(sl_getExternalToolCfgDir()));
+    connect(includedDirButton, SIGNAL(clicked()), SLOT(sl_getIncludedElementsDir()));
     colorWidget->setMinimumHeight(label->height());
     colorWidget->installEventFilter(this);
 #ifdef RUN_WORKFLOW_IN_THREADS
@@ -137,6 +140,7 @@ void WorkflowSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     colorWidget->setPalette(pal);
     runInSeparateProcessBox->setChecked(state->runSchemaInSeparateProcess);
     extToolDirEdit->setText(state->externalToolCfgDir);
+    includedlDirEdit->setText(state->includedElementsDir);
 }
 
 AppSettingsGUIPageState* WorkflowSettingsPageWidget::getState(QString& ) const {
@@ -151,6 +155,7 @@ AppSettingsGUIPageState* WorkflowSettingsPageWidget::getState(QString& ) const {
     state->color = colorWidget->palette().color(colorWidget->backgroundRole());
     state->runSchemaInSeparateProcess = runInSeparateProcessBox->isChecked();
     state->externalToolCfgDir = extToolDirEdit->text();
+    state->includedElementsDir = includedlDirEdit->text();
     return state;
 }
 
@@ -164,6 +169,19 @@ void WorkflowSettingsPageWidget::sl_getExternalToolCfgDir() {
     if(dialog.exec() == QDialog::Accepted) {
         QString dir = dialog.selectedFiles().first();
         extToolDirEdit->setText(dir + "/");
+    }
+}
+
+void WorkflowSettingsPageWidget::sl_getIncludedElementsDir() {
+    QString url = WorkflowSettings::getIncludedElementsDirectory();
+
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::Directory);
+    dialog.setViewMode(QFileDialog::List);
+    dialog.setDirectory(url);
+    if(dialog.exec() == QDialog::Accepted) {
+        QString dir = dialog.selectedFiles().first();
+        includedlDirEdit->setText(dir + "/");
     }
 }
 

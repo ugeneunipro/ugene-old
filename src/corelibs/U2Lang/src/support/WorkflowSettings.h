@@ -80,6 +80,9 @@ public:
 
     static void setExternalToolDirectory(const QString &newDir);
     static const QString getExternalToolDirectory();
+
+    static void setIncludedElementsDirectory(const QString &newDir);
+    static const QString getIncludedElementsDirectory();
     
     static Watcher * const watcher;
 };
