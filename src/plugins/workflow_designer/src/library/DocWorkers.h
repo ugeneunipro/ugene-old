@@ -96,6 +96,16 @@ public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };
 
+class GFFWriter : public BaseDocWriter {
+    Q_OBJECT
+public:
+    GFFWriter(Actor* a) : BaseDocWriter(a, BaseDocumentFormats::GFF){}
+protected:
+    virtual void data2doc(Document*, const QVariantMap&);
+public:
+    static void data2document(Document*, const QVariantMap&, WorkflowContext*);
+};
+
 
 // generic sequence writer
 class SeqWriter : public BaseDocWriter {

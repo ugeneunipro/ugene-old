@@ -322,6 +322,67 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
 }
 
 /*************************************
+ * GFFWriter
+ *************************************/
+void GFFWriter::data2doc(Document* doc, const QVariantMap& data) {
+    data2document(doc, data, context);
+}
+
+void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
+    U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (seqObj.get() == NULL) {
+        return;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
+
+    QMapIterator<QString, QVariant> it(seq.info);
+    while (it.hasNext()) {
+        it.next();
+        if ( !(it.value().type() == QVariant::String || it.value().type() == QVariant::StringList) ) {
+            seq.info.remove(it.key());
+        }
+    }
+
+    QString annotationName;
+    if (seq.getName().isEmpty()) {
+        int num = doc->findGObjectByType(GObjectTypes::SEQUENCE).size();
+        seq.setName(QString("unknown sequence %1").arg(num));
+        int featuresNum = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE).size();
+        annotationName = QString("unknown features %1").arg(featuresNum);
+    } else {
+        annotationName = seq.getName() + " features";
+    }
+
+    QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
+    U2SequenceObject* dna = qobject_cast<U2SequenceObject*>(doc->findGObjectByName(seq.getName()));
+    if (!dna && !seq.isNull()) {
+        dna = addSeqObject(doc, seq);
+    }
+    if (!atl.isEmpty()) {
+        AnnotationTableObject* att = NULL;
+        if (dna) {
+            QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dna, GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, doc->getObjects(), UOF_LoadedOnly);
+            att = relAnns.isEmpty() ? NULL : qobject_cast<AnnotationTableObject*>(relAnns.first());
+        }
+        if (!att) {
+            att = qobject_cast<AnnotationTableObject*>(doc->findGObjectByName(annotationName));
+            if (NULL == att) {
+                doc->addObject(att = new AnnotationTableObject(annotationName));
+                if (dna) {
+                    att->addObjectRelation(dna, GObjectRelationRole::SEQUENCE);
+                }
+            }
+            algoLog.trace(QString("Adding features [%1] to GFF doc %2").arg(annotationName).arg(doc->getURLString()));
+        }
+        foreach(SharedAnnotationData sad, atl) {
+            att->addAnnotation(new Annotation(sad), QString());
+        }
+    }
+}
+
+
+/*************************************
 * SeqWriter
 *************************************/
 void SeqWriter::data2doc(Document* doc, const QVariantMap& data){
@@ -337,7 +398,9 @@ void SeqWriter::data2doc(Document* doc, const QVariantMap& data){
         FastQWriter::data2document( doc, data, context );    
     } else if( fid == BaseDocumentFormats::RAW_DNA_SEQUENCE ) {
         RawSeqWriter::data2document( doc, data, context );
-    } else {
+    }else if( fid == BaseDocumentFormats::GFF ) {
+        GFFWriter::data2document( doc, data, context );
+    }else {
         assert(0);
         ioLog.error(QString("Unknown data format for writing: %1").arg(fid));
     }
