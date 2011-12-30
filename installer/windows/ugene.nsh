@@ -116,7 +116,7 @@ Section "Build"
     File "${ReleaseBuildDir}\transl_en.qm"
     File "${ReleaseBuildDir}\transl_ru.qm"
     File "${ReleaseBuildDir}\transl_cs.qm"
-    File "${ReleaseBuildDir}\transl_cn.qm"
+    File "${ReleaseBuildDir}\transl_zh.qm"
     File "includes\*.*"
 
     SetOutPath $INSTDIR\data
