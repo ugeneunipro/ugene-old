@@ -31,6 +31,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/AnnotationTableObject.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -225,7 +226,6 @@ bool LoadDotPlotTask::loadDotPlot(QTextStream &stream, int fileSize) {
     return true;
 }
 
-
 DotPlotLoadDocumentsTask::DotPlotLoadDocumentsTask(QString firstF, int firstG, QString secondF, int secondG, bool view)
 : Task(tr("DotPlot loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel)), noView(!view)
 {
@@ -317,6 +317,127 @@ DotPlotLoadDocumentsTask::~DotPlotLoadDocumentsTask() {
             delete doc;
         }
    }
+}
+
+DotPlotFilterTask::DotPlotFilterTask(ADVSequenceObjectContext* _sequenceX, ADVSequenceObjectContext* _sequenceY, 
+                                     const QMultiMap<FilterIntersectionParameter, QString>& _annotationNames, QList<DotPlotResults>* _initialResults, QList<DotPlotResults>* _filteredResults
+                                     ,FilterType _type)
+:Task(tr("Applying filter to dotplot"), TaskFlag_None)
+,sequenceX(_sequenceX)
+,sequenceY(_sequenceY)
+,annotationNames(_annotationNames)
+,initialResults(_initialResults)
+,filteredResults(_filteredResults)
+,fType(_type)
+,progressStep(0.0)
+,progressFloatValue(0.0)
+{
+    tpm = Progress_Manual;
+}
+
+void DotPlotFilterTask::run(){
+    stateInfo.progress = 0;
+    int size = initialResults->size();
+    copyInitialResults();
+    progressStep = 100/(float)size;
+    switch(fType){
+        case All: 
+            break;
+        case Features:
+                    progressStep /= 2;
+
+                    createSuperRegionsList(sequenceX, SequenceX);
+                    //qSort(filteredResults->begin(), filteredResults->end(), DPResultLessThenX); //TODO: possible optimization
+                    filterForCurrentSuperRegions(SequenceX);
+
+                    createSuperRegionsList(sequenceY, SequenceY);
+                    filterForCurrentSuperRegions(SequenceY);
+
+            break;
+    }
+}
+
+Task::ReportResult DotPlotFilterTask::report(){
+    SAFE_POINT(filteredResults, "There are no filtered results", ReportResult_Finished);
+    SAFE_POINT(initialResults, "There are no initial results", ReportResult_Finished);
+
+    switch(fType){
+        case All: 
+            {
+               copyInitialResults();
+            }
+            break;
+        case Features:
+            {
+                if (isCanceled()){
+                    copyInitialResults();
+                }
+            }
+            break;
+    }  
+
+    return ReportResult_Finished;
+}
+
+void DotPlotFilterTask::createSuperRegionsList(ADVSequenceObjectContext* seq, FilterIntersectionParameter currentIntersParam){
+    superRegions.clear();
+    if(isCanceled()){
+        return;
+    }
+
+    QSet<AnnotationTableObject*> aTableSet = seq->getAnnotationObjects(true);
+    QList<Annotation*> selectedAnnotations;
+    QStringList cursequenceAnnotationNames = annotationNames.values(currentIntersParam);
+    if(cursequenceAnnotationNames.isEmpty()){
+        return;
+    }
+
+    foreach(const QString aName, cursequenceAnnotationNames){
+        foreach(AnnotationTableObject* at, aTableSet){
+            at->selectAnnotationsByName(aName, selectedAnnotations);
+        }
+    }
+
+    foreach(Annotation* a, selectedAnnotations){
+            superRegions += a->getRegions();
+    }
+
+    superRegions = U2Region::join(superRegions);
+}
+
+void DotPlotFilterTask::filterForCurrentSuperRegions(FilterIntersectionParameter currentIntersParam){
+    int vectorI = 0;
+    int vectSize = superRegions.size();
+    if(vectSize == 0){
+        return;
+    }
+
+    QList<DotPlotResults>::iterator it;
+
+    for (it = filteredResults->begin(); it != filteredResults->end() && !isCanceled(); ){
+        progressFloatValue += progressStep; 
+        stateInfo.progress = (int)progressFloatValue;
+        bool noIntersect = true;
+        for(vectorI = 0; vectorI < vectSize; vectorI++){
+            if(it->intersectRegion(superRegions[vectorI], currentIntersParam)){
+                noIntersect = false;
+                break;
+            }
+        }
+        if(noIntersect){
+            it = filteredResults->erase(it);
+        }else{
+            ++it;
+        }
+    }
+}
+
+void DotPlotFilterTask::copyInitialResults(){
+    int size = initialResults->size();
+    filteredResults->clear();
+    foreach(DotPlotResults r, *initialResults){
+        filteredResults->append(r);
+    }
 }
 
 } // namespace

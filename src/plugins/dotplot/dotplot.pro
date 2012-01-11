@@ -4,17 +4,20 @@ include (dotplot.pri)
 HEADERS += src/DotPlotSplitter.h \
            src/DotPlotDialog.h \
            src/DotPlotFilesDialog.h \
+           src/DotPlotFilterDialog.h \
            src/DotPlotTasks.h \
            src/DotPlotClasses.h \
            src/DotPlotWidget.h \
            src/DotPlotPlugin.h
 
 FORMS +=   src/ui/DotPlotDialog.ui \
+           src/ui/DotPlotFilterDialog.ui \
            src/ui/DotPlotFilesDialog.ui
 
 SOURCES += src/DotPlotSplitter.cpp \
            src/DotPlotDialog.cpp \
            src/DotPlotFilesDialog.cpp \
+           src/DotPlotFilterDialog.cpp \
            src/DotPlotTasks.cpp \
            src/DotPlotClasses.cpp \
            src/DotPlotWidget.cpp \

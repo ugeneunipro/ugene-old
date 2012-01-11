@@ -62,13 +62,15 @@ private:
     QList<DotPlotWidget*> dotPlotList;
 
     bool locked;
-    QToolButton *syncLockButton, *aspectRatioButton, *zoomInButton, *zoomOutButton, *resetZoomingButton, *zoomToButton, *handButton, *selButton;
+    QToolButton *syncLockButton, *filterButton, *aspectRatioButton, *zoomInButton, *zoomOutButton, 
+        *resetZoomingButton, *zoomToButton, *handButton, *selButton;
 
     void updateButtonState();
     void checkLockButtonState();
 
 private slots:
     void sl_toggleSyncLock(bool);
+    void sl_toggleFilter();
     void sl_toggleAspectRatio(bool);
     void sl_toggleSel();
     void sl_toggleHand();

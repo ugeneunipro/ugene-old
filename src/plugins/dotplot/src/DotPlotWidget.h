@@ -80,6 +80,8 @@ public:
 
     void setSequences(U2SequenceObject* seqX, U2SequenceObject* seqY);
 
+    
+
 signals:
     void si_removeDotPlot();
     void si_dotPlotChanged(ADVSequenceObjectContext*, ADVSequenceObjectContext*, float, float, QPointF);
@@ -87,6 +89,7 @@ signals:
 
 public slots:
     bool sl_showSettingsDialog(bool disableLoad = false);
+    void sl_filter();
 
 private slots:
     void sl_taskFinished(Task*);
@@ -127,7 +130,7 @@ private:
     float shiftX, shiftY;
     int minLen, identity;
 
-    bool pixMapUpdateNeeded, deleteDotPlotFlag;
+    bool pixMapUpdateNeeded, deleteDotPlotFlag, filtration;
 
     Task *dotPlotTask;
     QPixmap *pixMap;
@@ -142,12 +145,15 @@ private:
 
     DotPlotResultsListener*         dpDirectResultListener;
     DotPlotRevComplResultsListener* dpRevComplResultsListener;
+    QList<DotPlotResults>*          dpFilteredResults;       
+    QList<DotPlotResults>*          dpFilteredResultsRevCompl;    
 
     QAction *showSettingsDialogAction;
     QAction *saveImageAction;
     QAction *saveDotPlotAction;
     QAction *loadDotPlotAction;
     QAction *deleteDotPlotAction;
+    QAction *filterDotPlotAction;
 
     int textSpace;
     static const int defaultTextSpace = 30;

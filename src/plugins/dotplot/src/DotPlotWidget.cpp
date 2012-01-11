@@ -22,6 +22,7 @@
 #include "DotPlotWidget.h"
 #include "DotPlotDialog.h"
 #include "DotPlotTasks.h"
+#include "DotPlotFilterDialog.h"
 
 #include <U2Core/MultiTask.h>
 #include <U2Core/AppContext.h>
@@ -62,10 +63,19 @@ DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
     minLen(100), identity(100),
     pixMapUpdateNeeded(true), deleteDotPlotFlag(false), dotPlotTask(NULL), pixMap(NULL), miniMap(NULL),
     nearestRepeat(NULL),
-    clearedByRepitSel(false)
+    clearedByRepitSel(false), filtration(false)
 {
     dpDirectResultListener = new DotPlotResultsListener();
     dpRevComplResultsListener = new DotPlotRevComplResultsListener();
+    dpFilteredResults = new QList<DotPlotResults>();
+    dpFilteredResultsRevCompl = new QList<DotPlotResults>();
+    foreach(DotPlotResults dpR, *dpDirectResultListener->dotPlotList){
+        dpFilteredResults->append(dpR);
+    }
+
+    foreach(DotPlotResults dpR, *dpRevComplResultsListener->dotPlotList){
+        dpFilteredResultsRevCompl->append(dpR);
+    }
 
     QFontMetrics fm = QPainter(this).fontMetrics();
     int minTextSpace = fm.width(" 00000 ");
@@ -122,6 +132,10 @@ void DotPlotWidget::initActionsAndSignals() {
     deleteDotPlotAction = new QAction(tr("Remove"), this);
     connect(deleteDotPlotAction, SIGNAL(triggered()), SLOT(sl_showDeleteDialog()));
 
+    filterDotPlotAction = new QAction(tr("Filter Results"), this);
+    connect(filterDotPlotAction, SIGNAL(triggered()), SLOT(sl_filter()));
+
+
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskFinished(Task*)));
 
     foreach (ADVSequenceWidget *advSeqWidget, dnaView->getSequenceWidgets()) {
@@ -162,6 +176,7 @@ DotPlotWidget::~DotPlotWidget() {
     delete saveDotPlotAction;
     delete loadDotPlotAction;
     delete deleteDotPlotAction;
+    delete filterDotPlotAction;
     delete pixMap;
 
     if (dotPlotTask) {
@@ -169,6 +184,8 @@ DotPlotWidget::~DotPlotWidget() {
     }
     delete dpDirectResultListener;
     delete dpRevComplResultsListener;
+    delete dpFilteredResults;
+    delete dpFilteredResultsRevCompl;
 }
 
 
@@ -188,6 +205,7 @@ void DotPlotWidget::buildPopupMenu(QMenu *m) const {
         saveMenu->addAction(loadDotPlotAction);
 
         dotPlotMenu->setIcon(QIcon(":dotplot/images/dotplot.png"));
+        dotPlotMenu->addAction(filterDotPlotAction);
         dotPlotMenu->addAction(showSettingsDialogAction);
         dotPlotMenu->addMenu(saveMenu);
         dotPlotMenu->addAction(deleteDotPlotAction);
@@ -326,12 +344,27 @@ void DotPlotWidget::sl_taskFinished(Task *task) {
     if (!dpDirectResultListener->stateOk || !dpRevComplResultsListener->stateOk) {
         DotPlotDialogs::tooManyResults();
     }
+    if(!filtration){
+        foreach(DotPlotResults dpR, *dpDirectResultListener->dotPlotList){
+            dpFilteredResults->append(dpR);
+        }
+
+        //inverted
+        if(inverted){
+            foreach(DotPlotResults dpR, *dpRevComplResultsListener->dotPlotList){
+                    dpFilteredResultsRevCompl->append(dpR);
+            }
+        }
+    }
+    filtration = false;
     dotPlotTask = NULL;
     dpDirectResultListener->setTask(NULL);
     dpRevComplResultsListener->setTask(NULL);
     
     seqXCache.clear();
     seqYCache.clear();
+
+    
 
     if (deleteDotPlotFlag) {
         deleteDotPlotFlag = false;
@@ -767,7 +800,7 @@ void DotPlotWidget::pixMapUpdate() {
     // draw to the dotplot direct results
     if (direct) {
         pixp.setPen(dotPlotDirectColor);
-        foreach(const DotPlotResults &r, *dpDirectResultListener->dotPlotList) {
+        foreach(const DotPlotResults &r, *dpFilteredResults) {
 
             if (!getLineToDraw(r, &line, ratioX, ratioY)) {
                 continue;
@@ -780,7 +813,7 @@ void DotPlotWidget::pixMapUpdate() {
     // draw to the dotplot inverted results
     if (inverted) {
         pixp.setPen(dotPlotInvertedColor);
-        foreach(const DotPlotResults &r, *dpRevComplResultsListener->dotPlotList) {
+        foreach(const DotPlotResults &r, *dpFilteredResultsRevCompl) {
 
             if (!getLineToDraw(r, &line, ratioX, ratioY, true)) {
                 continue;
@@ -1432,7 +1465,8 @@ const DotPlotResults* DotPlotWidget::findNearestRepeat(const QPoint &p) {
     bool first = true;
 
     Q_ASSERT (dpDirectResultListener);
-    foreach (const DotPlotResults &r, *dpDirectResultListener->dotPlotList) {
+    //foreach (const DotPlotResults &r, *dpDirectResultListener->dotPlotList) {
+    foreach (const DotPlotResults &r, *dpFilteredResults) {
 
         float halfLen = r.len/(float)2;
         float midX = r.x + halfLen;
@@ -1452,7 +1486,8 @@ const DotPlotResults* DotPlotWidget::findNearestRepeat(const QPoint &p) {
     }
 
     Q_ASSERT (dpRevComplResultsListener);
-    foreach (const DotPlotResults &r, *dpRevComplResultsListener->dotPlotList) {
+    //foreach (const DotPlotResults &r, *dpRevComplResultsListener->dotPlotList) {
+    foreach (const DotPlotResults &r, *dpFilteredResultsRevCompl) {
 
         float halfLen = r.len/(float)2;
         float midX = r.x + halfLen;
@@ -1683,8 +1718,6 @@ void DotPlotWidget::mousePressEvent(QMouseEvent *e) {
 // return real coords on the dotplot
 QPointF DotPlotWidget::unshiftedUnzoomed(const QPointF &p) const {
 
-    //Q_ASSERT(zoom.manhattanLength()>0);
-
     return QPointF((p.x() - shiftX)/zoom.x(), (p.y() - shiftY)/zoom.y());
 }
 
@@ -1767,6 +1800,44 @@ void DotPlotWidget::setSequences(U2SequenceObject* seqX, U2SequenceObject* seqY)
     }
     if(seqY != NULL) {
         sequenceY = dnaView->getSequenceContext(seqY);
+    }
+}
+
+void DotPlotWidget::sl_filter(){
+
+    DotPlotFilterDialog d(QApplication::activeWindow(), sequenceX, sequenceY);
+    if(d.exec()){
+        Q_ASSERT(dpDirectResultListener);
+        Q_ASSERT(sequenceX);
+        Q_ASSERT(sequenceY);
+
+        QList<Task*> tasks;
+
+        Task* directT = new DotPlotFilterTask(sequenceX, 
+            sequenceY, 
+            d.getFeatureNames(), 
+            dpDirectResultListener->dotPlotList, 
+            dpFilteredResults, 
+            d.getFilterType());
+        tasks << directT;
+
+        //inverted
+        if(inverted){
+            Task* recComplT = new DotPlotFilterTask(sequenceX, 
+                sequenceY, 
+                d.getFeatureNames(), 
+                dpRevComplResultsListener->dotPlotList, 
+                dpFilteredResultsRevCompl, 
+                d.getFilterType());
+            tasks << recComplT;
+        }
+
+        dotPlotTask = new MultiTask("Filtration", tasks);
+
+        filtration = true;
+
+        TaskScheduler* ts = AppContext::getTaskScheduler();
+        ts->registerTopLevelTask(dotPlotTask);
     }
 }
 

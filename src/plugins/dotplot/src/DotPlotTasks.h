@@ -23,7 +23,10 @@
 #define _U2_DOT_PLOT_TASKS_H_
 
 #include "DotPlotClasses.h"
+#include "DotPlotFilterDialog.h"
+
 #include <U2Core/Task.h>
+#include <U2View/ADVSequenceObjectContext.h>
 
 #include <QtCore/QTextStream>
 
@@ -113,6 +116,35 @@ private:
 
 signals:
     void si_stateChanged(Task* task);
+};
+
+//
+class DotPlotFilterTask : public Task{
+public:
+    DotPlotFilterTask(ADVSequenceObjectContext* _sequenceX, ADVSequenceObjectContext* _sequenceY, 
+        const QMultiMap<FilterIntersectionParameter, QString>& _annotationNames, QList<DotPlotResults>* _initialResults, QList<DotPlotResults>* _filteredResults
+        ,FilterType _type);
+
+    void run();
+
+    ReportResult report();
+
+private:
+    ADVSequenceObjectContext* sequenceX; 
+    ADVSequenceObjectContext* sequenceY; 
+    QMultiMap<FilterIntersectionParameter, QString> annotationNames;
+    QList<DotPlotResults>* initialResults;
+    QList<DotPlotResults>* filteredResults;
+    QList<DotPlotResults> tempResults;
+    FilterType fType;
+    float progressStep;
+    float progressFloatValue;
+
+    QVector<U2Region> superRegions;
+
+    void createSuperRegionsList(ADVSequenceObjectContext* seq, FilterIntersectionParameter currentIntersParam);
+    void filterForCurrentSuperRegions(FilterIntersectionParameter currentIntersParam);
+    void copyInitialResults();
 };
 
 } // namespace

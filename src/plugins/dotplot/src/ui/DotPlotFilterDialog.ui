@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DotPlotFilterDialog</class>
+ <widget class="QDialog" name="DotPlotFilterDialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>547</width>
+    <height>401</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dotplot</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/repeat_finder/repeats_image</normaloff>:/repeat_finder/repeats_image</iconset>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="paramsBox">
+     <property name="title">
+      <string>Dotplot parameters</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="noFiltrationRadio">
+        <property name="toolTip">
+         <string>No filtration applied</string>
+        </property>
+        <property name="text">
+         <string>No Filtration</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="featuresRadio">
+        <property name="toolTip">
+         <string>Show results that intersect the features</string>
+        </property>
+        <property name="text">
+         <string>Features Intersection</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QGroupBox" name="intersectionParams">
+        <property name="title">
+         <string>Intersection Parameters</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="1" column="0" rowspan="5" colspan="2">
+          <widget class="QTreeWidget" name="featuresTree">
+           <column>
+            <property name="text">
+             <string>Feature Name</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="allButton">
+           <property name="toolTip">
+            <string>Select all names</string>
+           </property>
+           <property name="text">
+            <string>Select All</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QPushButton" name="invertButton">
+           <property name="toolTip">
+            <string>Invert the current selection</string>
+           </property>
+           <property name="text">
+            <string>Invert Selection</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QPushButton" name="clearButton">
+           <property name="toolTip">
+            <string>Clear the current selection</string>
+           </property>
+           <property name="text">
+            <string>Clear Selection</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="3">
+          <widget class="QLabel" name="FeaturesSelection">
+           <property name="toolTip">
+            <string>Select names of the features to intersection</string>
+           </property>
+           <property name="text">
+            <string>Features Selection</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>featuresTree</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="2">
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="2">
+          <widget class="QPushButton" name="differentButton">
+           <property name="toolTip">
+            <string>Select only different names</string>
+           </property>
+           <property name="text">
+            <string>Different Only</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="startButton">
+       <property name="text">
+        <string>OK</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelButton">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>noFiltrationRadio</tabstop>
+  <tabstop>featuresRadio</tabstop>
+  <tabstop>startButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+  <tabstop>featuresTree</tabstop>
+  <tabstop>allButton</tabstop>
+  <tabstop>differentButton</tabstop>
+  <tabstop>invertButton</tabstop>
+  <tabstop>clearButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>startButton</sender>
+   <signal>clicked()</signal>
+   <receiver>DotPlotFilterDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>453</x>
+     <y>390</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>270</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>DotPlotFilterDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>536</x>
+     <y>390</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>270</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

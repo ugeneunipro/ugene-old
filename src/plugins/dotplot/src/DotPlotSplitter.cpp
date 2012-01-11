@@ -21,6 +21,10 @@
 
 #include "DotPlotSplitter.h"
 #include "DotPlotWidget.h"
+#include "DotPlotFilterDialog.h"
+
+#include <U2Gui/HBar.h>
+#include <U2View/AnnotatedDNAView.h>
 
 #include <QtCore/QString>
 #include <QtCore/QPair>
@@ -31,10 +35,6 @@
 #include <QtGui/QMenu>
 
 #include <QtGui/QToolButton>
-//#include <QtGui/QToolBar>
-//#include <U2View/ADVSingleSequenceWidget.h>
-#include <U2Gui/HBar.h>
-#include <U2View/AnnotatedDNAView.h>
 
 namespace U2 {
 
@@ -49,7 +49,9 @@ DotPlotSplitter::DotPlotSplitter(AnnotatedDNAView* a)
     layout->setSpacing(0);
     layout->setContentsMargins(0,0,3,0);
 
+
     syncLockButton = createToolButton(":core/images/sync_lock.png", tr("Multiple view synchronization lock"), SLOT(sl_toggleSyncLock(bool)));
+    filterButton = createToolButton(":dotplot/images/filter.png", tr("Filter results"), SLOT(sl_toggleFilter()), false);
     aspectRatioButton = createToolButton(":dotplot/images/aspectRatio.png", tr("Keep aspect ratio"), SLOT(sl_toggleAspectRatio(bool)));
     zoomInButton = createToolButton(":core/images/zoom_in.png", tr("Zoom in (<b> + </b>)"), SLOT(sl_toggleZoomIn()), false);
     zoomOutButton = createToolButton(":core/images/zoom_out.png", tr("Zoom out (<b> - </b>)"), SLOT(sl_toggleZoomOut()), false);
@@ -60,6 +62,9 @@ DotPlotSplitter::DotPlotSplitter(AnnotatedDNAView* a)
 
     syncLockButton->setAutoRaise(true);
     syncLockButton->setAutoFillBackground(true);
+
+    filterButton->setAutoRaise(true);
+    filterButton->setAutoFillBackground(true);
 
     aspectRatioButton->setAutoRaise(true);
 
@@ -82,6 +87,7 @@ DotPlotSplitter::DotPlotSplitter(AnnotatedDNAView* a)
     buttonToolBar->setMovable(false);
     buttonToolBar->setStyleSheet("background: ");
 
+    buttonToolBar->addWidget(filterButton);
     buttonToolBar->addWidget(syncLockButton);
 //  buttonToolBar->addWidget(aspectRatioButton); // todo: not implemented yet
     buttonToolBar->addWidget(zoomInButton);
@@ -133,6 +139,7 @@ QToolButton *DotPlotSplitter::createToolButton(const QString& iconPath, const QS
 DotPlotSplitter::~DotPlotSplitter() {
 
     delete syncLockButton;
+    delete filterButton;
     delete aspectRatioButton;
     delete zoomInButton;
     delete zoomOutButton;
@@ -225,6 +232,14 @@ void DotPlotSplitter::buildPopupMenu(QMenu *m) {
 void DotPlotSplitter::sl_toggleSyncLock(bool l) {
 
     locked = l;
+}
+
+void DotPlotSplitter::sl_toggleFilter(){
+    foreach (DotPlotWidget *w, dotPlotList) {
+        Q_ASSERT(w);
+        w->sl_filter();
+        break; //todo: support several widgets
+    }
 }
 
 void DotPlotSplitter::sl_toggleAspectRatio(bool aspectRatio) {

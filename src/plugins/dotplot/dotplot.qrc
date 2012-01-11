@@ -5,5 +5,6 @@
         <file>images/cursor.png</file>
         <file>images/exit.png</file>
         <file>images/hand_icon.png</file>
+        <file>images/filter.png</file>
     </qresource>
 </RCC>

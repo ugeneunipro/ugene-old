@@ -22,7 +22,10 @@
 #ifndef _U2_DOT_PLOT_CLASSES_H_
 #define _U2_DOT_PLOT_CLASSES_H_
 
+#include "DotPlotFilterDialog.h"
+
 #include <U2Algorithm/RepeatFinderSettings.h>
+#include <U2Core/U2Region.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QPainter>
@@ -60,12 +63,33 @@ public:
     static void tooManyResults();
 };
 
+
+
 struct DotPlotResults {
     DotPlotResults(): x(0), y(0), len(0){};
     DotPlotResults(int _x, int _y, int _len):x(_x), y(_y), len(_len){};
 
     int x, y, len;
+
+    inline bool intersectRegion(const U2Region& r, const FilterIntersectionParameter& currentIntersParam){
+        qint64 sd = - r.startPos;
+        if(currentIntersParam == SequenceY){
+            sd += y;
+        }else{
+            sd += x;
+        }
+        return (sd >= 0) ? (sd < r.length) : (-sd < len);
+        
+    }
 };
+
+static bool DPResultLessThenX(DotPlotResults& r1, DotPlotResults& r2){
+    return r1.x < r2.x;
+}
+
+static bool DPResultLessThenY(DotPlotResults& r1, DotPlotResults& r2){
+    return r1.y < r2.y;
+}
 
 // Listener which collect results from an algorithm
 class DotPlotResultsListener : public RFResultsListener {
