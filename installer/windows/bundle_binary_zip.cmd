@@ -28,7 +28,7 @@ REM copy translations
 copy %RELEASE_DIR%\transl_en.qm %OUTPUT_DIR%
 copy %RELEASE_DIR%\transl_ru.qm %OUTPUT_DIR%
 copy %RELEASE_DIR%\transl_cs.qm %OUTPUT_DIR%
-copy %RELEASE_DIR%\transl_cn.qm %OUTPUT_DIR%
+copy %RELEASE_DIR%\transl_zh.qm %OUTPUT_DIR%
 
 REM copy data
 svn export %U_ROOT%\data %OUTPUT_DIR%\data

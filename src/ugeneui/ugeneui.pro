@@ -77,4 +77,7 @@ SOURCES += src/Main.cpp \
            src/app_settings/resource_settings/ResourceSettingsGUIController.cpp \
            src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp
 RESOURCES += ugeneui.qrc
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/chinese.ts \
+                transl/czech.ts \
+                transl/english.ts \
+                transl/russian.ts

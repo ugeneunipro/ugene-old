@@ -49,7 +49,7 @@ echo copying translations
 cp -v $RELEASE_DIR/transl_en.qm "$TARGET_APP_DIR"
 cp -v $RELEASE_DIR/transl_ru.qm "$TARGET_APP_DIR"
 cp -v $RELEASE_DIR/transl_cs.qm "$TARGET_APP_DIR"
-cp -v $RELEASE_DIR/transl_cn.qm "$TARGET_APP_DIR"
+cp -v $RELEASE_DIR/transl_zh.qm "$TARGET_APP_DIR"
 
 
 echo copying data dir
