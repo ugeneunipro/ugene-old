@@ -79,6 +79,7 @@ public:
     QList<SharedAnnotationData> importTandemAnnotations(const QList<Tandem>& tandems, const quint32 seqStart, const bool showOverlapped);
 
 private:
+    DNASequence         mainSeq;
     QString             annName;
     QString             annGroup;
     GObjectReference    annObjRef;

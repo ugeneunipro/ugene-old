@@ -36,12 +36,13 @@ const int FindTandemsTaskSettings::DEFAULT_MIN_TANDEM_SIZE = 9;
 
 FindTandemsToAnnotationsTask::FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq, const QString& _an, const QString& _gn, const GObjectReference& _aor):
 Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), annName(_an), annGroup(_gn), annObjRef(_aor){
+    mainSeq = seq;
     setVerboseLogMode(true);
     if (annObjRef.isValid()) {
         LoadUnloadedDocumentTask::addLoadingSubtask(this, 
             LoadDocumentTaskConfig(true, annObjRef, new LDTObjectFactory(this)));
     }
-    addSubTask(new TandemFinder(s, seq));
+    addSubTask(new TandemFinder(s, mainSeq));
 }
 
 QList<Task*> FindTandemsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
