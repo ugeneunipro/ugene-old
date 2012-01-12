@@ -27,6 +27,9 @@
 
 namespace U2 {
 
+#define SEQUENCE_TAG " sequence"    //tag for sequence object
+#define FEATURES_TAG " features"    //tag for annotation table
+
 class IOAdapter;
 
 class U2FORMATS_EXPORT  GFFFormat : public DocumentFormat {

@@ -39,9 +39,7 @@
 namespace U2{
 
 #define READ_BUFF_SIZE 4096         //file reader buffer size
-#define SEQUENCE_TAG " sequence"    //tag for sequence object
-#define FEATURES_TAG " features"    //tag for annotation table
-#define SAVE_LINE_LEN 70                 //line length for 
+#define SAVE_LINE_LEN 70            //line length for 
 
 GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlags_SW, QStringList("gff")){
     formatName = tr("GFF");

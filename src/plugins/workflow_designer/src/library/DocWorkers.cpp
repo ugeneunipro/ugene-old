@@ -44,6 +44,7 @@
 #include <U2Core/AppContext.h>
 
 #include <U2Formats/EMBLGenbankAbstractDocument.h>
+#include <U2Formats/GFFFormat.h>
 
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/CoreLibConstants.h>
@@ -336,14 +337,6 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
     }
     DNASequence seq = seqObj->getWholeSequence();
 
-    QMapIterator<QString, QVariant> it(seq.info);
-    while (it.hasNext()) {
-        it.next();
-        if ( !(it.value().type() == QVariant::String || it.value().type() == QVariant::StringList) ) {
-            seq.info.remove(it.key());
-        }
-    }
-
     QString annotationName;
     if (seq.getName().isEmpty()) {
         int num = doc->findGObjectByType(GObjectTypes::SEQUENCE).size();
@@ -351,7 +344,7 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
         int featuresNum = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE).size();
         annotationName = QString("unknown features %1").arg(featuresNum);
     } else {
-        annotationName = seq.getName() + " features";
+        annotationName = seq.getName().replace(SEQUENCE_TAG, FEATURES_TAG);
     }
 
     QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
