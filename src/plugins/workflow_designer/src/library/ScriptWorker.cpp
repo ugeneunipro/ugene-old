@@ -67,11 +67,12 @@ void ScriptWorkerTask::run() {
 
     WorkflowScriptLibrary::initEngine(engine);
     QScriptValue scriptResultValue = ScriptTask::runScript(engine, scriptVars, script->getScriptText(), stateInfo);
-    result = scriptResultValue.toVariant();
     if(engine->hasUncaughtException()) {
-        result = engine->uncaughtException().toVariant();
-        stateInfo.setError(tr("Error in line ") + QString::number(engine->uncaughtExceptionLineNumber()) + ":" + result.toString().split(":").last());
+		scriptResultValue = engine->uncaughtException();
+        QString message = scriptResultValue.toString();
+        stateInfo.setError(tr("Error in line ") + QString::number(engine->uncaughtExceptionLineNumber()) + ":" + message.split(":").last());
     }
+	result = scriptResultValue.toVariant();
 
     if(engine->globalObject().property("list").toBool()) {
         isList = true;
