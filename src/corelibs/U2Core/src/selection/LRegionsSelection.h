@@ -40,6 +40,8 @@ public:
 
     void removeRegion(const U2Region& r);
 
+    void setRegion(const U2Region& r);
+
     virtual bool isEmpty() const {return regions.isEmpty();}
 
     virtual void clear();

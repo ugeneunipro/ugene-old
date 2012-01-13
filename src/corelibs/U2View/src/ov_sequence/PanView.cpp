@@ -316,10 +316,7 @@ void PanView::sl_onAnnotationSettingsChanged(const QStringList& changedSettings)
 
 
 void PanView::setSelection(const U2Region& r) {
-    ctx->getSequenceSelection()->clear();
-    if (r.length!=0) {
-        ctx->getSequenceSelection()->addRegion(r);
-    }
+    ctx->getSequenceSelection()->setRegion(r);
 }
 
 void PanView::onVisibleRangeChanged(bool signal) {

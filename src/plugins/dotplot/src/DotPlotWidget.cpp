@@ -1370,8 +1370,7 @@ void DotPlotWidget::sequencesCoordsSelection(const QPointF &start, const QPointF
             Q_ASSERT(s);
 
             if ( ((int)(endX-startX) > 0) && (s == sequenceX)) {
-                s->getSequenceSelection()->clear();
-                s->getSequenceSelection()->addRegion(U2Region(startX, endX-startX));
+                s->getSequenceSelection()->setRegion(U2Region(startX, endX-startX));
 
                 w->centerPosition(startX);
             }

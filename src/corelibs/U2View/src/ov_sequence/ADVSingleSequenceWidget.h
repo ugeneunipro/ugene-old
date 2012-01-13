@@ -165,6 +165,9 @@ private:
     void addRulersMenu(QMenu& m);
     void addSelectMenu(QMenu& m);
 
+    /** Used by several other functions to set new selected region */
+    void setSelectedRegion(const U2Region& region);
+
     virtual GSequenceLineView* findSequenceViewByPos(const QPoint& globalPos) const;
 
     virtual void addZoomMenu(const QPoint& globalPos, QMenu* m);

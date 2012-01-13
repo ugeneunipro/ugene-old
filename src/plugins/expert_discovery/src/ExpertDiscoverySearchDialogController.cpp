@@ -254,9 +254,8 @@ void ExpertDiscoverySearchDialogController::sl_onResultActivated(QTreeWidgetItem
     Q_UNUSED(col);
     assert(i);
     ExpertDiscoveryResultItem* item = static_cast<ExpertDiscoveryResultItem*>(i);
-    DNASequenceSelection* sel = ctx->getSequenceSelection();
-    sel->clear();
-    sel->addRegion(item->res.region);
+
+    ctx->getSequenceSelection()->setRegion(item->res.region);
 }
 
 

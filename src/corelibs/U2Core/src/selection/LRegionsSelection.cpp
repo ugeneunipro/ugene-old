@@ -52,10 +52,22 @@ void LRegionsSelection::removeRegion(const U2Region& r) {
     emit si_selectionChanged(this, emptyLRegions, tmpRemoved);
 }
 
+void LRegionsSelection::setRegion(const U2Region& r)
+{
+    if (r.length == 0)
+    {
+        clear();
+        return;
+    }
+    QVector<U2Region> newRegions;
+    newRegions << r;
+    setSelectedRegions(newRegions);
+}
+
 void LRegionsSelection::setSelectedRegions(const QVector<U2Region>& newSelection) {
     QVector<U2Region> tmpRemoved = regions;
     regions = newSelection;
-    emit si_selectionChanged(this, newSelection, tmpRemoved);    
+    emit si_selectionChanged(this, newSelection, tmpRemoved);
 }
 
 } //namespace

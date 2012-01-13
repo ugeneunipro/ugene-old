@@ -540,9 +540,9 @@ void FindDialog::importResults() {
 void FindDialog::sl_onResultActivated(QListWidgetItem* i, bool setCurPos) {
     assert(i);
     FRListItem* item = static_cast<FRListItem*>(i);
-    DNASequenceSelection* sel = ctx->getSequenceSelection();
-    sel->clear();
-    sel->addRegion(item->res.region);
+
+    ctx->getSequenceSelection()->setRegion(item->res.region);
+
     if (setCurPos) {
         sbCurrentPos->setValue(item->res.region.startPos + 1);
     }

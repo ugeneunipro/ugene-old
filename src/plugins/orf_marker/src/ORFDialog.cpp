@@ -308,9 +308,9 @@ void ORFDialog::sl_onResultActivated(QTreeWidgetItem* i, int col) {
     Q_UNUSED(col);
     assert(i!=NULL);
     ORFListItem* item = static_cast<ORFListItem*>(i);
-    DNASequenceSelection* sel = ctx->getSequenceSelection();
-    sel->clear();
-    sel->addRegion(item->res.region);
+
+    ctx->getSequenceSelection()->setRegion(item->res.region);
+
     /*  TODO: if (item->res.frame < 0) {
         ctx->getDetView()->setCenterPos(item->res.region.endPos() - 1);
     } else {

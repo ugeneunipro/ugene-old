@@ -504,9 +504,8 @@ void PWMSearchDialogController::sl_onResultActivated(QTreeWidgetItem* i, int col
     Q_UNUSED(col);
     assert(i);
     WeightMatrixResultItem* item = static_cast<WeightMatrixResultItem*>(i);
-    DNASequenceSelection* sel = ctx->getSequenceSelection();
-    sel->clear();
-    sel->addRegion(item->res.region);
+
+    ctx->getSequenceSelection()->setRegion(item->res.region);
 }
 
 void PWMSearchDialogController::loadFile(QString filename) {

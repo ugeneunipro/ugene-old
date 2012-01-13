@@ -256,7 +256,6 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent * me) {
                 }
                 //select region
                 if (expandAnnotationSelectionToSequence) {
-                    ctx->getSequenceSelection()->clear();
                     U2Region regionToSelect;
                     foreach(const AnnotationSelectionData& asd, asel->getSelection()) {
                         AnnotationTableObject* aobj = asd.annotation->getGObject();
@@ -272,7 +271,7 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent * me) {
                         }
                         regionToSelect = regionToSelect.length == 0 ? aregion : U2Region::containingRegion(regionToSelect, aregion);
                     }
-                    ctx->getSequenceSelection()->addRegion(regionToSelect);
+                    ctx->getSequenceSelection()->setRegion(regionToSelect);
                 }
             }
         }

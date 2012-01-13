@@ -342,9 +342,8 @@ void SiteconSearchDialogController::sl_onResultActivated(QTreeWidgetItem* i, int
     Q_UNUSED(col);
     assert(i);
     SiteconResultItem* item = static_cast<SiteconResultItem*>(i);
-    DNASequenceSelection* sel = ctx->getSequenceSelection();
-    sel->clear();
-    sel->addRegion(item->res.region);
+
+    ctx->getSequenceSelection()->setRegion(item->res.region);
 }
 
 

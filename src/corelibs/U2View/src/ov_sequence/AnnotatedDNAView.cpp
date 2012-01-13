@@ -954,10 +954,7 @@ void AnnotatedDNAView::updateState(const AnnotatedDNAViewState& s) {
         }
         U2Region wholeSeq(0, seqCtx->getSequenceLength());
         U2Region finalSel = reg.intersect(wholeSeq);
-        seqCtx->getSequenceSelection()->clear();
-        if (!finalSel.isEmpty()) {
-            seqCtx->getSequenceSelection()->addRegion(finalSel);
-        }
+        seqCtx->getSequenceSelection()->setRegion(finalSel);
     }
     foreach(ADVSequenceWidget* sw, seqViews) {
         sw->updateState(s.stateData);

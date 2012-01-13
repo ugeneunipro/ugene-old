@@ -500,8 +500,10 @@ void ADVSingleSequenceWidget::sl_onSelectRange() {
     QDialog dlg(this);
     dlg.setModal(true);
     dlg.setWindowTitle(tr("Select range"));
+
     ADVSequenceObjectContext* ctx = getSequenceContext();
-    DNASequenceSelection* selection=ctx->getSequenceSelection();
+    DNASequenceSelection* selection = ctx->getSequenceSelection();
+
     RangeSelector* rs;
     qint64 wholeSeqLen = ctx->getSequenceLength();
     if (selection->isEmpty()) {
@@ -513,8 +515,7 @@ void ADVSingleSequenceWidget::sl_onSelectRange() {
     int rc = dlg.exec();
     if (rc == QDialog::Accepted) {
         U2Region r(rs->getStart() - 1, rs->getEnd() - rs->getStart() + 1);
-        ctx->getSequenceSelection()->clear();
-        getSequenceSelection()->addRegion(r);
+        setSelectedRegion(r);
         if (!detView->getVisibleRange().intersects(r)) {
             detView->setCenterPos(r.startPos);
         }
@@ -543,17 +544,16 @@ QVector<U2Region> ADVSingleSequenceWidget::getSelectedAnnotationRegions(int max)
 void ADVSingleSequenceWidget::sl_onSelectInRange() {
     QVector<U2Region> selRegs = getSelectedAnnotationRegions(3);
     assert(selRegs.size() == 2);
-    
+
     const U2Region& r1 = selRegs.at(0);
     const U2Region& r2 = selRegs.at(1);
     assert(!r1.intersects(r2));
-    
+
     U2Region r;
     r.startPos = qMin(r1.endPos(), r2.endPos());
     r.length = qMax(r1.startPos, r2.startPos) - r.startPos;
-    
-    getSequenceContext()->getSequenceSelection()->clear();
-    getSequenceContext()->getSequenceSelection()->addRegion(r);
+
+    setSelectedRegion(r);
 }
 
 void ADVSingleSequenceWidget::sl_onSelectOutRange() {
@@ -561,8 +561,13 @@ void ADVSingleSequenceWidget::sl_onSelectOutRange() {
     assert(!selRegs.isEmpty());
     U2Region r = U2Region::containingRegion(selRegs);
 
-    getSequenceContext()->getSequenceSelection()->clear();
-    getSequenceContext()->getSequenceSelection()->addRegion(r);
+    setSelectedRegion(r);
+}
+
+void ADVSingleSequenceWidget::setSelectedRegion(const U2Region& region)
+{
+    getSequenceContext()->getSequenceSelection()->setRegion(region);
+    
 }
 
 void ADVSingleSequenceWidget::sl_zoomToRange() {

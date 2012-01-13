@@ -129,10 +129,7 @@ void GSequenceLineView::sl_onScrollBarMoved(int pos) {
 
 void GSequenceLineView::setSelection(const U2Region& r) {
     SAFE_POINT(r.startPos >=0 && r.endPos() <= seqLen, QString("Selection is out of range! [%2, len: %3]").arg(r.startPos).arg(r.length),);
-    ctx->getSequenceSelection()->clear();
-    if (r.length!=0) {
-        ctx->getSequenceSelection()->addRegion(r);
-    }
+    ctx->getSequenceSelection()->setRegion(r);
 }
 
 void GSequenceLineView::addSelection(const U2Region& r) {
