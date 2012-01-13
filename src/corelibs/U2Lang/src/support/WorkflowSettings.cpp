@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
+#include <U2Core/Log.h>
 
 #include <QtCore/QSettings>
 #include <QtCore/QDir>
@@ -226,18 +227,64 @@ void WorkflowSettings::setScriptingMode(bool md) {
 }
 
 bool WorkflowSettings::runInSeparateProcess() {
-    return AppContext::getSettings()->getValue(RUN_IN_SEPARATE_PROC, QVariant(false)).value<bool>();
-}
-
-bool WorkflowSettings::hasRunInSeparateProcess() {
-    return AppContext::getSettings()->contains(RUN_IN_SEPARATE_PROC);
+	if (!AppContext::isGUIMode()) {
+		return false; //for command line mode ugene runs workflows in threads
+	}
+	
+    bool res = AppContext::getSettings()->getValue(RUN_IN_SEPARATE_PROC, QVariant(true)).value<bool>();
+	if (res) {
+		QString path = getCmdlineUgenePath();
+		res = !path.isEmpty();
+	}
+	return res;
 }
 
 void WorkflowSettings::setRunInSeparateProcess(bool m) {
     return AppContext::getSettings()->setValue(RUN_IN_SEPARATE_PROC, m);
 }
 
+
+static QStringList generateCandidatesWithExt(const QString & path) {
+    QStringList res;
+    res << path;
+    res << path + ".exe";
+    return res;
+}
+
+static QStringList generateCandidates(const QString & prefix) {
+    QStringList res;
+    res << generateCandidatesWithExt(prefix + "/" + "ugene");
+    res << generateCandidatesWithExt(prefix + "/" + "ugened");
+    res << generateCandidatesWithExt(prefix + "/" + "ugenecl");
+    res << generateCandidatesWithExt(prefix + "/" + "ugenecld");
+    return res;
+}
+
+static QString lookupCmdlineUgenePath() {
+    QString executableDir = QCoreApplication::applicationDirPath();
+    QStringList candidates(generateCandidates(executableDir));
+    foreach(const QString & candidate, candidates) {
+        if(QFile::exists(candidate)) {
+            return candidate;
+        }
+    }
+    return QString();
+}
+
+static bool lookupDone = false;
+
 QString WorkflowSettings::getCmdlineUgenePath() {
+	if (!AppContext::getSettings()->contains(CMDLINE_UGENE_PATH)) {
+		if (lookupDone) {
+			return QString();
+		}
+		QString path = lookupCmdlineUgenePath();
+		if (path.isEmpty()) {
+			coreLog.info(tr("Command line UGENE path not found, a possibility to run in separate process will be disabled"));
+			return QString();
+		}
+		setCmdlineUgenePath(path);
+	}
     return AppContext::getSettings()->getValue(CMDLINE_UGENE_PATH).value<QString>();
 }
 

@@ -191,17 +191,11 @@ void MuscleMSAEditorContext::sl_align() {
     
     
     AlignGObjectTask* muscleTask = NULL;
-// if not defined -> we have two options, otherwise run in threads
-#ifndef RUN_WORKFLOW_IN_THREADS
-    if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
+    if(WorkflowSettings::runInSeparateProcess()) {
         muscleTask = new MuscleGObjectRunFromSchemaTask(obj, s);
     } else {
         muscleTask = new MuscleGObjectTask(obj, s);
     }
-#else
-    muscleTask = new MuscleGObjectTask(obj, s);
-#endif // RUN_WORKFLOW_IN_THREADS
-
     if (dlg.translateToAmino()) {
         AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, muscleTask));
     } else {

@@ -83,11 +83,7 @@ WorkflowSettingsPageWidget::WorkflowSettingsPageWidget(WorkflowSettingsPageContr
     connect(includedDirButton, SIGNAL(clicked()), SLOT(sl_getIncludedElementsDir()));
     colorWidget->setMinimumHeight(label->height());
     colorWidget->installEventFilter(this);
-#ifdef RUN_WORKFLOW_IN_THREADS
-    runInSeparateProcessBox->setVisible(false);
-#else
-    runInSeparateProcessBox->setVisible(Version::appVersion().isDevVersion);
-#endif // RUN_WORKFLOW_IN_THREADS
+//    runInSeparateProcessBox->setVisible(Version::appVersion().isDevVersion);
 }
 
 void WorkflowSettingsPageWidget::sl_getDirectory() {

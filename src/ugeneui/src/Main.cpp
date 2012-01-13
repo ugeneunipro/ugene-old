@@ -76,7 +76,6 @@
 #include <U2Lang/WorkflowEnvImpl.h>
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowSettings.h>
-#include <U2Lang/WorkflowRunTask.h>
 #include <U2Lang/QueryDesignerRegistry.h>
 
 #include <U2Remote/DistributedComputingUtil.h>
@@ -464,28 +463,24 @@ int main(int argc, char **argv)
     GUITestBase *tb = new GUITestBase();
     appContext->setGUITestBase(tb);
     
-#ifndef RUN_WORKFLOW_IN_THREADS
-    CheckCmdlineUgeneUtils::setCmdlineUgenePath();
-#endif // RUN_WORKFLOW_IN_THREADS
-    
     if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_TEST)) {
-    QStringList urls = CMDLineRegistryUtils::getPureValues();
+		QStringList urls = CMDLineRegistryUtils::getPureValues();
 
-    if(urls.isEmpty() && AppContext::getAppSettings()->getUserAppsSettings()->openLastProjectAtStartup()) {
-        QString lastProject = ProjectLoaderImpl::getLastProjectURL();
-        if (!lastProject.isEmpty()) {
-            urls << lastProject;
-        }
-    }
+		if(urls.isEmpty() && AppContext::getAppSettings()->getUserAppsSettings()->openLastProjectAtStartup()) {
+			QString lastProject = ProjectLoaderImpl::getLastProjectURL();
+			if (!lastProject.isEmpty()) {
+				urls << lastProject;
+			}
+		}
 
-    if( !urls.isEmpty() ) {
-        // defer loading until all plugins/services loaded
-        QObject::connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), 
-            new TaskStarter( new OpenWithProjectTask(urls) ), SLOT( registerTask() ) );
-        
-    }
-    }
-    
+		if( !urls.isEmpty() ) {
+			// defer loading until all plugins/services loaded
+			QObject::connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), 
+				new TaskStarter( new OpenWithProjectTask(urls) ), SLOT( registerTask() ) );
+
+		}
+	}
+
     registerCoreServices();
 #ifdef _DEBUG 
     GUITestService *guiTestService = new GUITestService();

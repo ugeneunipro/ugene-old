@@ -488,15 +488,11 @@ QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
             config.regionToAlign = U2Region(0, mAObject->getLength());
         }
 
-#ifndef RUN_WORKFLOW_IN_THREADS
-        if (WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
+        if (WorkflowSettings::runInSeparateProcess()) {
             muscleGObjectTask = new MuscleGObjectRunFromSchemaTask(mAObject, config);
         } else {
             muscleGObjectTask = new MuscleGObjectTask(mAObject, config);
         }
-#else
-        muscleGObjectTask = new MuscleGObjectTask(mAObject, config);
-#endif // RUN_WORKFLOW_IN_THREADS
         assert(muscleGObjectTask != NULL);
         res.append(muscleGObjectTask);
     } else if (subTask == muscleGObjectTask){
@@ -525,7 +521,6 @@ Task::ReportResult MuscleWithExtFileSpecifySupportTask::report(){
     return ReportResult_Finished;
 }
 
-#ifndef RUN_WORKFLOW_IN_THREADS
 
 //////////////////////////////////
 //MuscleGObjectRunFromSchemaTask
@@ -564,7 +559,5 @@ MuscleGObjectRunFromSchemaTask::MuscleGObjectRunFromSchemaTask(MAlignmentObject 
     }
     addSubTask(new SimpleMSAWorkflow4GObjectTask(QString("Workflow wrapper '%1'").arg(tName), o, conf));
 }
-
-#endif // RUN_WORKFLOW_IN_THREADS
 
 } //namespace

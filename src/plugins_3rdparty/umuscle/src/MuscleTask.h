@@ -151,7 +151,6 @@ private:
     MuscleTaskSettings  config;
 };
 
-#ifndef RUN_WORKFLOW_IN_THREADS
 /**
  * runs muscle from cmdline schema in separate process
  * using data/cmdline/align.uwl schema
@@ -172,7 +171,6 @@ private:
     MuscleTaskSettings config;
 };
 
-#endif // RUN_WORKFLOW_IN_THREADS
 
 }//namespace
 #endif

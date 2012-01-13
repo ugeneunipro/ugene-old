@@ -172,7 +172,6 @@ Task::ReportResult KalignGObjectTask::report() {
 ///////////////////////////////////
 //KalignGObjectRunFromSchemaTask
 
-#ifndef RUN_WORKFLOW_IN_THREADS
 
 KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * o, const KalignTaskSettings & c) 
 : AlignGObjectTask("", TaskFlags_NR_FOSCOE,o), config(c)
@@ -191,8 +190,6 @@ KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject 
     conf.schemaArgs<< QString("--gap-terminal-penalty=%1").arg(config.termGapPenalty);
     addSubTask(new SimpleMSAWorkflow4GObjectTask(QString("Workflow wrapper '%1'").arg(tName), o, conf));
 }
-
-#endif // RUN_WORKFLOW_IN_THREADS
 
 //////////////////////////////////////////////////////////////////////////
 /// KAlignWithExtFileSpecifySupportTask
@@ -219,16 +216,13 @@ void KAlignAndSaveTask::prepare() {
     MAlignmentObject* mAObject = qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
     assert(mAObject!=NULL);
 
-#ifndef RUN_WORKFLOW_IN_THREADS
-    if(WorkflowSettings::runInSeparateProcess() && !WorkflowSettings::getCmdlineUgenePath().isEmpty()) {
+    if(WorkflowSettings::runInSeparateProcess()) {
         kalignGObjectTask = new KalignGObjectRunFromSchemaTask(mAObject, config);
     } else {
         kalignGObjectTask = new KalignGObjectTask(mAObject, config);
     }
-#else
-    kalignGObjectTask = new KalignGObjectTask(mAObject, config);
-#endif // RUN_WORKFLOW_IN_THREADS
-    assert(kalignGObjectTask != NULL);
+
+	assert(kalignGObjectTask != NULL);
     addSubTask(kalignGObjectTask);
 }
 

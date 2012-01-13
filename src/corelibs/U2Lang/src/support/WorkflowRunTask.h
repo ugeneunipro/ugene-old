@@ -180,11 +180,6 @@ private:
     
 }; // WorkflowRunInProcessMonitorTask
 
-class U2LANG_EXPORT CheckCmdlineUgeneUtils {
-public:
-    static void setCmdlineUgenePath();
-    
-}; // CheckCmdlineUgeneTask
 
 } //namespace
 

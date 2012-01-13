@@ -39,7 +39,8 @@ signals:
 
 #define SETTINGS QString("workflowview/")
 
-class U2LANG_EXPORT WorkflowSettings {
+class U2LANG_EXPORT WorkflowSettings : public QObject {
+	Q_OBJECT
 public:
     static bool showGrid();
     static void setShowGrid(bool v);
@@ -73,7 +74,6 @@ public:
     
     static bool runInSeparateProcess();
     static void setRunInSeparateProcess(bool m);
-    static bool hasRunInSeparateProcess();
     
     static void setCmdlineUgenePath(const QString & path);
     static QString getCmdlineUgenePath();

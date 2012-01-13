@@ -764,44 +764,4 @@ int RunCmdlineWorkflowTask::getMsgPassed(const QString & ids) {
     return msgPassed.value(ids, 0);
 }
 
-
-/**************************
- * CheckCmdlineUgeneUtils
- **************************/
-static QStringList generateCandidatesWithExt(const QString & path) {
-    QStringList res;
-    res << path;
-    res << path + ".exe";
-    return res;
-}
-
-static QStringList generateCandidates(const QString & prefix) {
-    QStringList res;
-    res << generateCandidatesWithExt(prefix + "/" + "ugene");
-    res << generateCandidatesWithExt(prefix + "/" + "ugened");
-    res << generateCandidatesWithExt(prefix + "/" + "ugenecl");
-    res << generateCandidatesWithExt(prefix + "/" + "ugenecld");
-    return res;
-}
-
-static QString getCmdlineUgenePath() {
-    QString executableDir = QCoreApplication::applicationDirPath();
-    QStringList candidates(generateCandidates(executableDir));
-    foreach(const QString & candidate, candidates) {
-        if(QFile::exists(candidate)) {
-            return candidate;
-        }
-    }
-    coreLog.info(WorkflowRunTask::tr("Command line UGENE path not found, a possibility to run in separate process will be disabled"));
-    return QString();
-}
-
-void CheckCmdlineUgeneUtils::setCmdlineUgenePath() {
-    QString path = getCmdlineUgenePath();
-    WorkflowSettings::setCmdlineUgenePath(path);
-    if(!WorkflowSettings::hasRunInSeparateProcess()) {
-        WorkflowSettings::setRunInSeparateProcess(!path.isEmpty());
-    }
-}
-
 }//namespace

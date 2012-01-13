@@ -94,7 +94,6 @@ public:
     KalignTaskSettings          config;
 };
 
-#ifndef RUN_WORKFLOW_IN_THREADS
 /**
 * runs kalign from cmdline schema in separate process
 * using data/cmdline/align-kalign.uwl schema
@@ -115,7 +114,6 @@ private:
     KalignTaskSettings      config;
 };
 
-#endif // RUN_WORKFLOW_IN_THREADS
 
 
 class KAlignAndSaveTask : public Task {
