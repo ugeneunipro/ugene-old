@@ -87,32 +87,32 @@
     <message>
         <location filename="../src/util/ui/AuthentificationDialog.ui" line="14"/>
         <source>Authentification </source>
-        <translation type="unfinished"></translation>
+        <translation>身份认证</translation>
     </message>
     <message>
         <location filename="../src/util/ui/AuthentificationDialog.ui" line="20"/>
         <source>Enter name:</source>
-        <translation type="unfinished"></translation>
+        <translation>用户名：</translation>
     </message>
     <message>
         <location filename="../src/util/ui/AuthentificationDialog.ui" line="43"/>
         <source>Enter password:</source>
-        <translation type="unfinished"></translation>
+        <translation>密码：</translation>
     </message>
     <message>
         <location filename="../src/util/ui/AuthentificationDialog.ui" line="98"/>
         <source>OK</source>
-        <translation type="unfinished">确定</translation>
+        <translation>确定</translation>
     </message>
     <message>
         <location filename="../src/util/ui/AuthentificationDialog.ui" line="105"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="../src/util/ui/AuthentificationDialog.ui" line="114"/>
         <source>Remember me</source>
-        <translation type="unfinished"></translation>
+        <translation>记住我</translation>
     </message>
 </context>
 <context>
@@ -178,8 +178,8 @@
     <message>
         <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="54"/>
         <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="82"/>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="117"/>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="185"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="124"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="192"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -189,42 +189,47 @@
         <translation>创建新的注释表</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="92"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="89"/>
+        <source>Use auto-annotations table</source>
+        <translation>使用自动注释表</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="99"/>
         <source>Annotation parameters</source>
         <translation>注释参数</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="104"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="111"/>
         <source>Group name</source>
         <translation>组名称</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="114"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="121"/>
         <source>Predefined group names</source>
         <translation type="unfinished">已定义的组名称</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="134"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="141"/>
         <source>Annotation name</source>
         <translation>注释名称</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="148"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="155"/>
         <source>Predefined annotation names</source>
         <translation type="unfinished">已定义的注释名称</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="168"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="175"/>
         <source>Location</source>
         <translation>位置</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="175"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="182"/>
         <source>Annotation location in GenBank format</source>
         <translation>在 GenBank 格式中的注释位置</translation>
     </message>
     <message>
-        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="182"/>
+        <location filename="../src/util/ui/CreateAnnotationWidget.ui" line="189"/>
         <source>Add/remove complement flag</source>
         <translation>添加/移除反链标记</translation>
     </message>
@@ -335,7 +340,7 @@
     <message>
         <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="104"/>
         <source>You can download multiple items by separting IDs with space or semicolon.</source>
-        <translation type="unfinished"></translation>
+        <translation>您可以下载多个条目，使用空格或分号将 ID 号隔开。</translation>
     </message>
     <message>
         <location filename="../src/util/ui/DownloadRemoteFileDialog.ui" line="142"/>
@@ -635,57 +640,57 @@
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="14"/>
         <source>Script editor</source>
-        <translation type="unfinished"></translation>
+        <translation>脚本编辑器</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="22"/>
         <source>Used script</source>
-        <translation type="unfinished"></translation>
+        <translation>使用过的脚本</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="32"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="41"/>
         <source>Script text</source>
-        <translation type="unfinished"></translation>
+        <translation>脚本代码</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="59"/>
         <source>Check syntax</source>
-        <translation type="unfinished"></translation>
+        <translation>检查语法</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="66"/>
         <source>Save</source>
-        <translation type="unfinished">保存</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="86"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>清空</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="93"/>
         <source>Save as..</source>
-        <translation type="unfinished"></translation>
+        <translation>另存为..</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="100"/>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>完成</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="107"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="../src/util/ui/ScriptEditorDialog.ui" line="114"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>行：</translation>
     </message>
 </context>
 <context>
@@ -750,17 +755,17 @@
     <message>
         <location filename="../src/util/ui/TextEditorDialog.ui" line="19"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>值：</translation>
     </message>
     <message>
         <location filename="../src/util/ui/TextEditorDialog.ui" line="44"/>
         <source>OK</source>
-        <translation type="unfinished">确定</translation>
+        <translation>确定</translation>
     </message>
     <message>
         <location filename="../src/util/ui/TextEditorDialog.ui" line="54"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -852,17 +857,17 @@
         <location filename="../src/util/AuthenticationDialog.cpp" line="55"/>
         <location filename="../src/util/AuthenticationDialog.cpp" line="58"/>
         <source>Error!</source>
-        <translation type="unfinished">错误!</translation>
+        <translation>错误!</translation>
     </message>
     <message>
         <location filename="../src/util/AuthenticationDialog.cpp" line="55"/>
         <source>User name is not set.</source>
-        <translation type="unfinished"></translation>
+        <translation>未设置用户名。</translation>
     </message>
     <message>
         <location filename="../src/util/AuthenticationDialog.cpp" line="58"/>
         <source>Password is not set.</source>
-        <translation type="unfinished"></translation>
+        <translation>未设置密码。</translation>
     </message>
 </context>
 <context>
@@ -896,54 +901,54 @@
         <translation>&lt;auto&gt;</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="168"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="174"/>
         <source>Save file</source>
         <translation>保存文件</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="215"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="221"/>
         <source>Select annotation saving parameters</source>
         <translation type="unfinished">选择保存注释的参数</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="218"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="224"/>
         <source>Document is already added to the project: &apos;%1&apos;</source>
         <translation>文件已经被添加到工程: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="224"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="230"/>
         <source>Illegal folder: %1</source>
         <translation>非法的文件夹: %1</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="230"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="236"/>
         <source>Annotation name is empty</source>
         <translation>注释的名称为空</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="235"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="241"/>
         <source>Annotation name is too long!
 Maximum allowed size: %1 (Genbank format compatibility issue)</source>
         <translation>注释的名称过长!
 允许的最大长度: %1 (能兼容 Genbank 格式)</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="240"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="246"/>
         <source>Illegal annotation name</source>
         <translation>非法的注释名称</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="245"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="251"/>
         <source>Group name is empty</source>
         <translation>组名称为空</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="250"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="256"/>
         <source>Illegal group name</source>
         <translation>非法的组名称</translation>
     </message>
     <message>
-        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="254"/>
+        <location filename="../src/util/CreateAnnotationWidgetController.cpp" line="260"/>
         <source>Invalid location! Location must be in GenBank format.
 Simple examples:
 1..10
@@ -1017,24 +1022,24 @@ complement(5..15)</translation>
     <message>
         <location filename="../src/util/DialogUtils.cpp" line="68"/>
         <source>Error</source>
-        <translation type="unfinished">错误</translation>
+        <translation>错误</translation>
     </message>
     <message>
         <location filename="../src/util/DialogUtils.cpp" line="68"/>
         <source>Project is locked</source>
-        <translation type="unfinished"></translation>
+        <translation>该工程已被锁定</translation>
     </message>
     <message>
         <location filename="../src/util/DialogUtils.cpp" line="85"/>
         <location filename="../src/util/DialogUtils.cpp" line="123"/>
         <location filename="../src/util/DialogUtils.cpp" line="140"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation>所有文件</translation>
     </message>
     <message>
         <location filename="../src/util/DialogUtils.cpp" line="159"/>
         <source>Export alignment image</source>
-        <translation type="unfinished"></translation>
+        <translation>导出比对图片</translation>
     </message>
 </context>
 <context>
@@ -1151,18 +1156,18 @@ complement(5..15)</translation>
         <location filename="../src/util/DialogUtils.cpp" line="172"/>
         <location filename="../src/util/DialogUtils.cpp" line="178"/>
         <source>Select file(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>选择文件</translation>
     </message>
 </context>
 <context>
     <name>U2::GObjectView</name>
     <message>
-        <location filename="../src/ObjectViewModel.cpp" line="109"/>
+        <location filename="../src/ObjectViewModel.cpp" line="112"/>
         <source>Object is already added to view %1!</source>
         <translation>对象已经被添加到视图 %1!</translation>
     </message>
     <message>
-        <location filename="../src/ObjectViewModel.cpp" line="123"/>
+        <location filename="../src/ObjectViewModel.cpp" line="126"/>
         <source>Can&apos;t add object: %1</source>
         <translation>不能添加对象: %1</translation>
     </message>
@@ -1343,22 +1348,22 @@ complement(5..15)</translation>
         <location filename="../src/util/PositionSelector.cpp" line="40"/>
         <location filename="../src/util/PositionSelector.cpp" line="85"/>
         <source>Go!</source>
-        <translation type="unfinished"></translation>
+        <translation>跳转!</translation>
     </message>
     <message>
         <location filename="../src/util/PositionSelector.cpp" line="41"/>
         <source>Go to position</source>
-        <translation type="unfinished"></translation>
+        <translation>跳转到</translation>
     </message>
     <message>
         <location filename="../src/util/PositionSelector.cpp" line="71"/>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>位置</translation>
     </message>
     <message>
         <location filename="../src/util/PositionSelector.cpp" line="90"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -1402,7 +1407,7 @@ complement(5..15)</translation>
     <message>
         <location filename="../src/util/ProjectTreeController.cpp" line="90"/>
         <source>Add object to document</source>
-        <translation type="unfinished"></translation>
+        <translation>将对象添加到文件</translation>
     </message>
     <message>
         <location filename="../src/util/ProjectTreeController.cpp" line="94"/>
@@ -1412,11 +1417,11 @@ complement(5..15)</translation>
     <message>
         <location filename="../src/util/ProjectTreeController.cpp" line="100"/>
         <source>Remove object from document</source>
-        <translation type="unfinished"></translation>
+        <translation>从文件中移除对象</translation>
     </message>
     <message>
         <location filename="../src/util/ProjectTreeController.cpp" line="103"/>
-        <location filename="../src/util/ProjectTreeController.cpp" line="577"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="584"/>
         <source>Load selected documents</source>
         <translation>导入选择的文件</translation>
     </message>
@@ -1461,63 +1466,68 @@ complement(5..15)</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="424"/>
-        <source>The name should be not empty and not longer than %1 characters</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/util/ProjectTreeController.cpp" line="428"/>
+        <source>The name must be not empty and not longer than %1 characters</source>
+        <translation>名称不能为空，也不能长于 %1 个字符</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="429"/>
-        <source>Duplicate names are not allowed</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/util/ProjectTreeController.cpp" line="432"/>
+        <source>Duplicate object names are not allowed</source>
+        <translation>不能出现重复的名称</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="497"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="436"/>
+        <source>The name can&apos;t contain any of the following characters: %1</source>
+        <translation>名称不能包含下列字符：%1</translation>
+    </message>
+    <message>
+        <location filename="../src/util/ProjectTreeController.cpp" line="504"/>
         <source>Existing document</source>
-        <translation>文件已存在</translation>
+        <translation>已存在的文件</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="500"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="507"/>
         <source>Add</source>
         <translation>添加</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="505"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="512"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="510"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="517"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="578"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="585"/>
         <source>Unload selected documents</source>
         <translation>卸载选择的文件</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="580"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="587"/>
         <source>Load selected objects</source>
         <translation>导入选择的对象</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="581"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="588"/>
         <source>Unload selected objects</source>
         <translation>卸载选择的对象</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="1225"/>
-        <location filename="../src/util/ProjectTreeController.cpp" line="1297"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1232"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1304"/>
         <source>[loading %1%]</source>
         <translation>[正在导入 %1%]</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="1241"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1248"/>
         <source>Locks:</source>
         <translation>锁定:</translation>
     </message>
     <message>
-        <location filename="../src/util/ProjectTreeController.cpp" line="1244"/>
+        <location filename="../src/util/ProjectTreeController.cpp" line="1251"/>
         <source>Project is locked</source>
         <translation>工程已被锁定</translation>
     </message>
@@ -1528,32 +1538,32 @@ complement(5..15)</translation>
         <location filename="../src/util/RangeSelector.cpp" line="40"/>
         <location filename="../src/util/RangeSelector.cpp" line="119"/>
         <source>Ok</source>
-        <translation type="unfinished">确定</translation>
+        <translation>确定</translation>
     </message>
     <message>
         <location filename="../src/util/RangeSelector.cpp" line="74"/>
         <source>Min</source>
-        <translation type="unfinished"></translation>
+        <translation>最小</translation>
     </message>
     <message>
         <location filename="../src/util/RangeSelector.cpp" line="78"/>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation>最大</translation>
     </message>
     <message>
         <location filename="../src/util/RangeSelector.cpp" line="96"/>
         <source>Range:</source>
-        <translation type="unfinished"></translation>
+        <translation>范围：</translation>
     </message>
     <message>
         <location filename="../src/util/RangeSelector.cpp" line="108"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/util/RangeSelector.cpp" line="125"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -1561,59 +1571,59 @@ complement(5..15)</translation>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="63"/>
         <source>Whole sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>整条序列</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="65"/>
         <source>Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>已选择的区域</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="68"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>自定义</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="71"/>
         <source>Set minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>设置最小值</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="80"/>
         <source>Set maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>设置最大值</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="92"/>
         <location filename="../src/util/RegionSelector.cpp" line="110"/>
         <source>Region</source>
-        <translation type="unfinished"></translation>
+        <translation>区域</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="97"/>
         <location filename="../src/util/RegionSelector.cpp" line="117"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="248"/>
         <source>Invalid sequence region!</source>
-        <translation type="unfinished"></translation>
+        <translation>序列区域非法！</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="254"/>
         <source>Invalid Start position of region</source>
-        <translation type="unfinished"></translation>
+        <translation>起点位置非法</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="261"/>
         <source>Invalid End position of region</source>
-        <translation type="unfinished"></translation>
+        <translation>终点位置非法</translation>
     </message>
     <message>
         <location filename="../src/util/RegionSelector.cpp" line="267"/>
         <source>Start position is greater than End position</source>
-        <translation type="unfinished"></translation>
+        <translation>起点位置比终点还大</translation>
     </message>
 </context>
 <context>
@@ -1657,12 +1667,12 @@ complement(5..15)</translation>
     <message>
         <location filename="../src/util/ScaleBar.cpp" line="39"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/util/ScaleBar.cpp" line="46"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
 </context>
 <context>
@@ -1670,43 +1680,43 @@ complement(5..15)</translation>
     <message>
         <location filename="../src/util/ScriptEditorDialog.cpp" line="88"/>
         <source>File is too large %1</source>
-        <translation type="unfinished"></translation>
+        <translation>文件太大 %1</translation>
     </message>
     <message>
         <location filename="../src/util/ScriptEditorDialog.cpp" line="105"/>
         <source>Select script to open</source>
-        <translation type="unfinished"></translation>
+        <translation>选择要打开的脚本</translation>
     </message>
     <message>
         <location filename="../src/util/ScriptEditorDialog.cpp" line="124"/>
         <source>Script is empty!</source>
-        <translation type="unfinished"></translation>
+        <translation>脚本为空！</translation>
     </message>
     <message>
         <location filename="../src/util/ScriptEditorDialog.cpp" line="128"/>
         <source>Save script to file</source>
-        <translation type="unfinished"></translation>
+        <translation>保存脚本</translation>
     </message>
     <message>
         <location filename="../src/util/ScriptEditorDialog.cpp" line="148"/>
         <source>Script files</source>
-        <translation type="unfinished"></translation>
+        <translation>脚本文件</translation>
     </message>
     <message>
         <location filename="../src/util/ScriptEditorDialog.cpp" line="159"/>
         <source>Script syntax check failed! Line: %1, error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>语法有错误！行：%1,错误：%2</translation>
     </message>
     <message>
         <location filename="../src/util/ScriptEditorDialog.cpp" line="160"/>
         <location filename="../src/util/ScriptEditorDialog.cpp" line="162"/>
         <source>Check result</source>
-        <translation type="unfinished"></translation>
+        <translation>检查结果</translation>
     </message>
     <message>
         <location filename="../src/util/ScriptEditorDialog.cpp" line="162"/>
         <source>Syntax is OK!</source>
-        <translation type="unfinished"></translation>
+        <translation>语法正确！</translation>
     </message>
 </context>
 <context>

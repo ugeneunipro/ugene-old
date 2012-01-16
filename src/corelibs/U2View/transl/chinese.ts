@@ -290,63 +290,52 @@
 <context>
     <name>CreateFileIndexDialog</name>
     <message>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="17"/>
         <source>Create index file</source>
-        <translation>创建索引文件</translation>
+        <translation type="obsolete">创建索引文件</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="29"/>
         <source>File(s) to index:</source>
-        <translation>要索引的文件:</translation>
+        <translation type="obsolete">要索引的文件:</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="36"/>
         <source>File(s) to index separated by semicolon</source>
-        <translation>选择要索引的文件，用分号隔开</translation>
+        <translation type="obsolete">选择要索引的文件，用分号隔开</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="46"/>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="71"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="53"/>
         <source>File to store index:</source>
-        <translation>存储索引的文件:</translation>
+        <translation type="obsolete">存储索引的文件:</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="60"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Path to output index file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;选择输出的存储索引文件的路径&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="78"/>
         <source>Compress</source>
-        <translation>压缩</translation>
+        <translation type="obsolete">压缩</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="88"/>
         <source>Add to project</source>
-        <translation>添加到工程</translation>
+        <translation type="obsolete">添加到工程</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="129"/>
         <source>Ok</source>
-        <translation>确定</translation>
+        <translation type="obsolete">确定</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/CreateFileIndexDialog.ui" line="139"/>
         <source>Cancel</source>
-        <translation>取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
 </context>
 <context>
@@ -1012,17 +1001,17 @@ Do you want to replace it?</source>
         <translation>输入和输出</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="528"/>
+        <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="527"/>
         <source>Remote run...</source>
         <translation>远程运行...</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="538"/>
+        <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="537"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="545"/>
+        <location filename="../src/util_smith_waterman/ui/SmithWatermanDialogBase.ui" line="544"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -1127,52 +1116,60 @@ Do you want to replace it?</source>
     </message>
 </context>
 <context>
+    <name>U2</name>
+    <message>
+        <location filename="../src/ov_sequence/ADVGraphModel.cpp" line="141"/>
+        <source>Default color</source>
+        <translation>默认颜色</translation>
+    </message>
+</context>
+<context>
     <name>U2::ADVAnnotationCreation</name>
     <message>
         <location filename="../src/ov_sequence/ADVAnnotationCreation.cpp" line="81"/>
         <source>New annotation...</source>
-        <translation>新的注视...</translation>
+        <translation>新的注释...</translation>
     </message>
 </context>
 <context>
     <name>U2::ADVClipboard</name>
     <message>
-        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="58"/>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="62"/>
         <source>Copy sequence</source>
         <translation>复制原始序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="61"/>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="65"/>
         <source>Copy translation</source>
         <translation>复制翻译序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="64"/>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="68"/>
         <source>Copy reverse complement sequence</source>
         <translation>复制反链序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="67"/>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="71"/>
         <source>Copy reverse complement translation</source>
         <translation>复制反链的翻译序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="70"/>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="74"/>
         <source>Copy annotation sequence</source>
         <translation>复制注释的序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="71"/>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="75"/>
         <source>Copy annotation sequence translation</source>
         <translation>复制注释的序列的翻译</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="104"/>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="108"/>
         <source>Error!</source>
         <translation>错误!</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="228"/>
+        <location filename="../src/ov_sequence/ADVClipboard.cpp" line="235"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
@@ -1188,12 +1185,12 @@ Do you want to replace it?</source>
 <context>
     <name>U2::ADVSequenceObjectContext</name>
     <message>
-        <location filename="../src/ov_sequence/ADVSequenceObjectContext.cpp" line="190"/>
+        <location filename="../src/ov_sequence/ADVSequenceObjectContext.cpp" line="202"/>
         <source>Amino translation</source>
         <translation>蛋白质翻译</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSequenceObjectContext.cpp" line="191"/>
+        <location filename="../src/ov_sequence/ADVSequenceObjectContext.cpp" line="203"/>
         <source>Translation frames</source>
         <translation>翻译框架</translation>
     </message>
@@ -1201,58 +1198,58 @@ Do you want to replace it?</source>
 <context>
     <name>U2::ADVSingleSequenceHeaderWidget</name>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="809"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="816"/>
         <source>Alphabet: &lt;b&gt;%1&lt;/b&gt;</source>
         <translation>类型： &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="810"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="817"/>
         <source> Sequence size: &lt;b&gt;%1&lt;/b&gt;</source>
         <translation>序列长度： &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="811"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="818"/>
         <source> File:&amp;nbsp;&lt;b&gt;%1&lt;/b&gt;</source>
         <translation>文件：&amp;nbsp;&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="864"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="871"/>
         <source>Toggle view</source>
         <translatorcomment>激活视图</translatorcomment>
         <translation>Toggle view</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="868"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="875"/>
         <source>Remove sequence</source>
         <translation>移除序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="946"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="953"/>
         <source>raw</source>
         <translation>原始序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="949"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="956"/>
         <source>amino</source>
         <translation>蛋白质</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="954"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="961"/>
         <source>dna</source>
         <translation>DNA</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="956"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="963"/>
         <source>dna ext</source>
         <translation>DNA 扩展</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="958"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="965"/>
         <source>rna</source>
         <translation>RNA</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="960"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="967"/>
         <source>rna ext</source>
         <translation>RNA 扩展</translation>
     </message>
@@ -1260,107 +1257,107 @@ Do you want to replace it?</source>
 <context>
     <name>U2::ADVSingleSequenceWidget</name>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="78"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="79"/>
         <source>Select sequence region...</source>
         <translation>选择序列区域...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="84"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="85"/>
         <source>Sequence region...</source>
         <translation>序列区域...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="87"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="88"/>
         <source>Sequence between selected annotations</source>
         <translation>位于选中的注释之间的序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="90"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="91"/>
         <source>Sequence around selected annotations</source>
         <translation>位于选中的注释附近的序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="93"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="94"/>
         <source>Zoom to range..</source>
         <translation>缩放至范围..</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="96"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="97"/>
         <source>Create new ruler...</source>
         <translation>创建新的标尺...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="159"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="160"/>
         <source>Capture screen</source>
         <translation>截屏</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="337"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="342"/>
         <source>Zoom</source>
         <translation>缩放</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="414"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="419"/>
         <source>Select</source>
         <translation>选择</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="428"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="433"/>
         <source>Rulers...</source>
         <translation>标尺...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="438"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="443"/>
         <source>Remove &apos;%1&apos;</source>
         <translation>移除 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="497"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="502"/>
         <source>Select range</source>
         <translation>选择范围</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="564"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="571"/>
         <source>Zoom to range</source>
         <translation>缩放至范围</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="756"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="763"/>
         <source>Show all views</source>
         <translation>显示所有视图</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="756"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="763"/>
         <source>Hide all views</source>
         <translation>隐藏所有视图</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="757"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="764"/>
         <source>Show zoom view</source>
         <translation>显示缩放视图</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="757"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="764"/>
         <source>Hide zoom view</source>
         <translation>隐藏缩放视图</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="758"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="765"/>
         <source>Show details view</source>
         <translation>显示细节视图</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="758"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="765"/>
         <source>Hide details view</source>
         <translation>隐藏细节视图</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="759"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="766"/>
         <source>Show overview</source>
         <translation type="unfinished">显示标尺</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="759"/>
+        <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="766"/>
         <source>Hide overview</source>
         <translation type="unfinished">隐藏标尺</translation>
     </message>
@@ -1453,12 +1450,12 @@ Do you want to replace it?</source>
         <translation type="unfinished">显示所有标尺</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSyncViewManager.cpp" line="574"/>
+        <location filename="../src/ov_sequence/ADVSyncViewManager.cpp" line="571"/>
         <source>Hide %1</source>
         <translation>隐藏 %1</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/ADVSyncViewManager.cpp" line="576"/>
+        <location filename="../src/ov_sequence/ADVSyncViewManager.cpp" line="573"/>
         <source>Show %1</source>
         <translation>显示 %1</translation>
     </message>
@@ -1466,113 +1463,112 @@ Do you want to replace it?</source>
 <context>
     <name>U2::AnnotatedDNAView</name>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="108"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="107"/>
         <source>Annotations highlighting...</source>
         <translation>注释高亮显示...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="111"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="110"/>
         <source>Go to position...</source>
         <translation>跳转到位置...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="126"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="125"/>
         <source>Find pattern...</source>
         <translation>查找模式...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="131"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="130"/>
         <source>Insert subsequence...</source>
         <translation>插入子序列...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="134"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="133"/>
         <source>Remove subsequence...</source>
         <translation>移除子序列...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="137"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="136"/>
         <source>Replace subsequence...</source>
         <translation>替换子序列...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="140"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="139"/>
         <source>Selected sequence from view</source>
         <translation>从视图中选择序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="143"/>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="475"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="142"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="512"/>
         <source>Reverse complement sequence</source>
         <translation>互补序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="146"/>
         <source>Statistics</source>
-        <translation>统计</translation>
+        <translation type="obsolete">统计</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="277"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="317"/>
         <source>Error!</source>
         <translation>错误!</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="422"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="459"/>
         <source>Analyze</source>
         <translation>分析</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="432"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="469"/>
         <source>Add</source>
         <translation>添加</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="438"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="475"/>
         <source>Export</source>
         <translation>导出</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="444"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="481"/>
         <source>Align</source>
         <translation>比对</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="450"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="487"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="460"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="497"/>
         <source>Edit sequence</source>
         <translation>编辑序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="477"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="514"/>
         <source>Reverse sequence</source>
         <translation>反转序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="623"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="660"/>
         <source>Disable &apos;%1&apos; highlighting</source>
         <translation>禁用 &apos;%1&apos; 高亮</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="625"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="662"/>
         <source>Enable &apos;%1&apos; highlighting</source>
         <translation>启用 &apos;%1&apos; 高亮</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="681"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="717"/>
         <source>Select sequence to associate annotations with:</source>
         <translation>选择序列以与注释相关联：</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="697"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="733"/>
         <source>No sequence object found for annotations</source>
         <translation>没有选择相应的序列对象</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="758"/>
+        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="794"/>
         <source>Go To</source>
         <translation>转到</translation>
     </message>
@@ -1588,130 +1584,140 @@ Do you want to replace it?</source>
 <context>
     <name>U2::AnnotationsTreeView</name>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="95"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="97"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="95"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="97"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="140"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="142"/>
         <source>Objects with annotations...</source>
         <translation>与注释相关的对象...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="143"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="145"/>
         <source>Selected objects with annotations from view</source>
         <translation>从视图中选择与注释相关的对象</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="149"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="151"/>
         <source>Selected annotations and qualifiers</source>
         <translation>选择注释和属性值</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="155"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1045"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="157"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1076"/>
         <source>Copy qualifier text</source>
         <translation>复制属性文本</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="158"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1049"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="160"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1080"/>
         <source>Copy qualifier URL</source>
         <translation>复制属性 URL</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="161"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1054"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="163"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1085"/>
         <source>Toggle column</source>
         <translation>激活列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="164"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="166"/>
         <source>Hide column</source>
         <translation>隐藏列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="168"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="763"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="170"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="777"/>
         <source>Copy column text</source>
         <translation>复制列文本</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="171"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="777"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="173"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="791"/>
         <source>copy column URL</source>
         <translation>复制列 URL</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="174"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="176"/>
         <source>Edit item</source>
         <translation>编辑条目</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="180"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="182"/>
         <source>Edit qualifier</source>
         <translation>编辑属性</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="186"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="188"/>
         <source>View qualifier</source>
         <translation>查看属性</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="192"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="194"/>
         <source>Qualifier...</source>
         <translation>属性...</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="769"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="200"/>
+        <source>Make auto-annotations persistent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="783"/>
         <source>Copy column &apos;%1&apos; text</source>
         <translation>复制列 &apos;%1&apos; 的文本</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="772"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="786"/>
         <source>Copy &apos;%1&apos; annotation location</source>
         <translation>复制注释 &apos;%1&apos; 的位置</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="781"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="795"/>
         <source>Copy column &apos;%1&apos; URL</source>
         <translation>复制列 &apos;%1&apos; 的 URL</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="803"/>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1055"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="817"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1086"/>
         <source>Hide &apos;%1&apos; column</source>
         <translation>隐藏 &apos;%1&apos; 列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1045"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1076"/>
         <source>Copy qualifier &apos;%1&apos; value</source>
         <translation>复制属性 &apos;%1&apos; 的值</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1049"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1080"/>
         <source>Copy qualifier &apos;%1&apos; URL</source>
         <translation>复制属性 &apos;%1&apos; 的 URL</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1055"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1086"/>
         <source>Add &apos;%1&apos; column</source>
         <translation>添加 &apos;%1&apos; 列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1666"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1697"/>
         <source>Rename group</source>
         <translation>重命名分组</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1706"/>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1737"/>
         <source>Rename qualifier</source>
         <translation>重命名属性</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1843"/>
+        <source>Create permanent annotation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1861,79 +1867,79 @@ Do you want to replace it?</source>
         <translation>内部错误：只有带文档的序列才能添加到拼接序列浏览器中</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="163"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="157"/>
         <source>- Reference sequence is %1 than assembly</source>
         <translation>- 参考序列要比组装片段 %1</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="163"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="157"/>
         <source>lesser</source>
         <translation>短</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="163"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="157"/>
         <source>bigger</source>
         <translation>长</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="166"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="160"/>
         <source>- Reference and assembly names not match</source>
         <translation>参考序列和组装片段的名字不匹配</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="182"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="176"/>
         <source>
   Continue?</source>
         <translation>
   要继续吗？</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="184"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="178"/>
         <source>Errors</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="489"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="484"/>
         <source>Zoom in</source>
         <translation>放大</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="492"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="487"/>
         <source>Zoom out</source>
         <translation>缩小</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="495"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="490"/>
         <source>Linear</source>
         <translation>线性</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="497"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="492"/>
         <source>Logarithmic</source>
         <translation>对数</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="503"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="498"/>
         <source>Show coordinates on ruler</source>
         <translation>在标尺上显示坐标</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="507"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="502"/>
         <source>Export as image</source>
         <translation>导出图像</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="510"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="505"/>
         <source>Show assembly information</source>
         <translation>显示拼接信息</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="513"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="508"/>
         <source>Export assembly to SAM format</source>
         <translation>导出为 SAM 格式</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="519"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="514"/>
         <source>&apos;%1&apos; Contig Information</source>
         <translation>&apos;%1&apos; Contig 信息</translation>
     </message>
@@ -1954,7 +1960,7 @@ Do you want to replace it?</source>
 <context>
     <name>U2::AssemblyBrowserUi</name>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="779"/>
+        <location filename="../src/ov_assembly/AssemblyBrowser.cpp" line="775"/>
         <source>Assembly has no mapped reads. Nothing to visualize.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1962,251 +1968,283 @@ Do you want to replace it?</source>
 <context>
     <name>U2::AssemblyCellRendererFactoryRegistry</name>
     <message>
-        <location filename="../src/ov_assembly/AssemblyCellRenderer.cpp" line="406"/>
+        <location filename="../src/ov_assembly/AssemblyCellRenderer.cpp" line="505"/>
         <source>Nucleotide</source>
         <translation>核酸</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyCellRenderer.cpp" line="408"/>
+        <location filename="../src/ov_assembly/AssemblyCellRenderer.cpp" line="507"/>
         <source>Difference</source>
         <translation>差异</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyCellRenderer.cpp" line="410"/>
+        <location filename="../src/ov_assembly/AssemblyCellRenderer.cpp" line="509"/>
         <source>Strand direction</source>
         <translation>链的方向</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_assembly/AssemblyCellRenderer.cpp" line="511"/>
+        <source>Paired reads</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::AssemblyCoverageGraph</name>
+    <message>
+        <location filename="../src/ov_assembly/AssemblyCoverageGraph.cpp" line="60"/>
+        <source>Background is rendering...</source>
+        <translation type="unfinished">正在显示背景...</translation>
     </message>
 </context>
 <context>
     <name>U2::AssemblyDensityGraph</name>
     <message>
-        <location filename="../src/ov_assembly/AssemblyDensityGraph.cpp" line="61"/>
         <source>Background is rendering...</source>
-        <translation>正在显示背景...</translation>
+        <translation type="obsolete">正在显示背景...</translation>
     </message>
 </context>
 <context>
     <name>U2::AssemblyModel</name>
     <message>
-        <location filename="../src/ov_assembly/AssemblyModel.cpp" line="251"/>
+        <location filename="../src/ov_assembly/AssemblyModel.cpp" line="235"/>
         <source>No active project found!</source>
         <translation>没有找到活动的项目！</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyModel.cpp" line="313"/>
+        <location filename="../src/ov_assembly/AssemblyModel.cpp" line="253"/>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_assembly/AssemblyModel.cpp" line="254"/>
+        <source>A file &apos;%1&apos; with the reference sequence &apos;%2&apos; not found!
+Try to open another file with a reference sequence and associate it with the assembly.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_assembly/AssemblyModel.cpp" line="298"/>
         <source>Errors</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyModel.cpp" line="314"/>
-        <source>Remove association with &apos;%1&apos; assembly</source>
+        <location filename="../src/ov_assembly/AssemblyModel.cpp" line="299"/>
+        <source>Remove association of &apos;%1&apos; sequence with &apos;%2&apos; assembly?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_assembly/AssemblyModel.cpp" line="384"/>
+        <source>Reference document is not ready!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::AssemblyReadsArea</name>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="80"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="83"/>
         <source>Copy read information to clipboard</source>
         <translation>将片段信息复制到剪贴板</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="83"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="86"/>
         <source>Export</source>
         <translation>导出</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="90"/>
         <source>Coloring parameter</source>
-        <translation>颜色参数</translation>
+        <translation type="obsolete">颜色参数</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="111"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="114"/>
         <source>Lock here</source>
         <translation>在此锁定</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="114"/>
-        <source>Read shadowing</source>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="93"/>
+        <source>Reads highlighting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="116"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="117"/>
+        <source>Reads shadowing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="119"/>
         <source>Disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="118"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="121"/>
         <source>Free</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="120"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="123"/>
         <source>Centered</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="128"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="131"/>
         <source>Jump to locked base</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="247"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="250"/>
         <source>Shift+move mouse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="247"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="250"/>
         <source>Zoom the Assembly Overview to selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="248"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="251"/>
         <source>Ctrl+wheel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="248"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="251"/>
         <source>Zoom the Assembly Overview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="249"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="252"/>
         <source>Alt+click</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="249"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="252"/>
         <source>Zoom the Assembly Overview in 100x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="250"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="253"/>
         <source>Wheel+move mouse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="250"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="253"/>
         <source>Move the Assembly Overview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="251"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="254"/>
         <source>Wheel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="251"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="254"/>
         <source>Zoom the Reads Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="252"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="255"/>
         <source>Double-click</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="252"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="255"/>
         <source>Zoom in the Reads Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="253"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="256"/>
         <source>+/-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="253"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="256"/>
         <source>Zoom in/Zoom out the Reads Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="254"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="257"/>
         <source>Click+move mouse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="254"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="257"/>
         <source>Move the Reads Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="255"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="258"/>
         <source>Arrow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="255"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="258"/>
         <source>Move one base in the corresponding direction in the Reads Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="256"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="259"/>
         <source>Ctrl+arrow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="256"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="259"/>
         <source>Move one page in the corresponding direction in the Reads Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="257"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="260"/>
         <source>Page up/Page down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="257"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="260"/>
         <source>Move one page up/down in the Reads Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="258"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="261"/>
         <source>Home/End</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="258"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="261"/>
         <source>Move to the beginning/end of the assembly in the Reads Area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="259"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="262"/>
         <source>Ctrl+G</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="259"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="262"/>
         <source>Focus to the &lt;i&gt;Go to position&lt;/i&gt; field on the toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="267"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="270"/>
         <source>&lt;a href=&quot;%1&quot;&gt;Zoom in to see the reads&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="271"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="274"/>
         <source>Please wait until overview rendering is finished, or &lt;a href=&quot;%1&quot;&gt;zoom in to see the reads&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="273"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="276"/>
         <source> or choose one of the well-covered regions:&lt;br&gt;&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="279"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="282"/>
         <source>&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Region&lt;/td&gt;&lt;td&gt;Approx.&amp;nbsp;coverage&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="288"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="291"/>
         <source>&lt;td align=&quot;center&quot;&gt;%4&lt;/td&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="860"/>
+        <location filename="../src/ov_assembly/AssemblyReadsArea.cpp" line="880"/>
         <source>Locked to base</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2229,7 +2267,7 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyReadsAreaHint.cpp" line="159"/>
+        <location filename="../src/ov_assembly/AssemblyReadsAreaHint.cpp" line="163"/>
         <source>Unmapped</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2239,7 +2277,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/ov_assembly/AssemblyReferenceArea.cpp" line="48"/>
         <source>Unassociate</source>
-        <translation type="unfinished"></translation>
+        <translation>解除关联</translation>
     </message>
     <message>
         <location filename="../src/ov_assembly/AssemblyReferenceArea.cpp" line="74"/>
@@ -2250,9 +2288,19 @@ Do you want to replace it?</source>
 <context>
     <name>U2::AutoAnnotationsADVAction</name>
     <message>
-        <location filename="../src/ov_sequence/AutoAnnotationUtils.cpp" line="39"/>
+        <location filename="../src/ov_sequence/AutoAnnotationUtils.cpp" line="41"/>
         <source>Automatic Annotations Highlighting</source>
         <translation>自动高亮显示注释</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/AutoAnnotationUtils.cpp" line="53"/>
+        <source>Select all</source>
+        <translation>选择全部</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/AutoAnnotationUtils.cpp" line="56"/>
+        <source>Deselect all</source>
+        <translation>取消全部所选</translation>
     </message>
 </context>
 <context>
@@ -2331,30 +2379,24 @@ Do you want to replace it?</source>
 <context>
     <name>U2::CreateFileIndexDialog</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="141"/>
         <source>Select files</source>
-        <translation>选择文件</translation>
+        <translation type="obsolete">选择文件</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="156"/>
         <source>Select index file to create</source>
-        <translation>选择要创建的索引文件</translation>
+        <translation type="obsolete">选择要创建的索引文件</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="170"/>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="175"/>
         <source>Error!</source>
-        <translation>错误!</translation>
+        <translation type="obsolete">错误!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="170"/>
         <source>No input files supplied!</source>
-        <translation>未提供输入文件！</translation>
+        <translation type="obsolete">未提供输入文件！</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="175"/>
         <source>Invalid output file name!</source>
-        <translation>输出文件的名称非法！</translation>
+        <translation type="obsolete">输出文件的名称非法！</translation>
     </message>
 </context>
 <context>
@@ -2399,110 +2441,111 @@ Do you want to replace it?</source>
 <context>
     <name>U2::CreateSubalignimentDialogController</name>
     <message>
-        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="114"/>
+        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="111"/>
         <source>Select file to save...</source>
         <translation>选择要保存的文件...</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="143"/>
+        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="140"/>
         <source>Directory to save is not exists</source>
         <translation>要保存到的目录不存在</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="147"/>
+        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="144"/>
         <source>No path specified</source>
         <translation>未指定路径</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="151"/>
+        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="148"/>
         <source>Filename to save is empty</source>
         <translation>要保存的文件名为空</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="161"/>
-        <source>Start position must be greater than end position</source>
-        <translation>起始位置必须小于终止位置</translation>
+        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="158"/>
+        <source>Start position must be less than end position!</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="167"/>
+        <source>Start position must be greater than end position</source>
+        <translation type="obsolete">起始位置必须小于终止位置</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="164"/>
         <source>Entered region not contained in current sequence</source>
         <translation>您输入的区域没有包含在当前序列中</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="174"/>
+        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="171"/>
         <source>You must select at least one sequence</source>
         <translation>您至少需要选择一条序列</translation>
     </message>
 </context>
 <context>
+    <name>U2::CreateSubalignmentAndOpenViewTask</name>
+    <message>
+        <location filename="../src/ov_msa/CreateSubalignimentDialogController.cpp" line="194"/>
+        <source>Create sub-alignment and open view: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::DNAStatProfileTask</name>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="1116"/>
         <source>Generate sequence statistics profile</source>
-        <translation>生成序列统计文档</translation>
+        <translation type="obsolete">生成序列统计文档</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="1132"/>
         <source>Sequence Statistics</source>
-        <translation>序列统计</translation>
+        <translation type="obsolete">序列统计</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="1135"/>
         <source>Sequence file:</source>
-        <translation>序列文件：</translation>
+        <translation type="obsolete">序列文件：</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="1136"/>
         <source>Sequence length:</source>
-        <translation>序列长度：</translation>
+        <translation type="obsolete">序列长度：</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="1144"/>
         <source>Symbol counts</source>
-        <translation>残基数目</translation>
+        <translation type="obsolete">残基数目</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="1145"/>
         <source>Symbol percents %</source>
-        <translation>残基比例 %</translation>
+        <translation type="obsolete">残基比例 %</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="1158"/>
         <source>Dinucleotide counts</source>
-        <translation>二核苷酸数目</translation>
+        <translation type="obsolete">二核苷酸数目</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="1159"/>
         <source>Dinucleotide percents %</source>
-        <translation>二核苷酸比例 %</translation>
+        <translation type="obsolete">二核苷酸比例 %</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/AnnotatedDNAView.cpp" line="1173"/>
         <source>Statistics for %1 sequence</source>
-        <translation>序列 %1 的统计信息</translation>
+        <translation type="obsolete">序列 %1 的统计信息</translation>
     </message>
 </context>
 <context>
     <name>U2::DetView</name>
     <message>
-        <location filename="../src/ov_sequence/DetView.cpp" line="56"/>
+        <location filename="../src/ov_sequence/DetView.cpp" line="57"/>
         <source>Show complement strand</source>
         <translation>显示互补链</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/DetView.cpp" line="59"/>
+        <location filename="../src/ov_sequence/DetView.cpp" line="60"/>
         <source>Show amino translations</source>
         <translation>显示蛋白质翻译</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/DetView.cpp" line="237"/>
         <source>warning</source>
-        <translation>警告</translation>
+        <translation type="obsolete">警告</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/DetView.cpp" line="237"/>
         <source>Select at least one visible row for translations</source>
-        <translation>至少要选择一条序列以用于显示蛋白质翻译</translation>
+        <translation type="obsolete">至少要选择一条序列以用于显示蛋白质翻译</translation>
     </message>
 </context>
 <context>
@@ -2646,90 +2689,90 @@ Please, check your plugin list.</source>
 <context>
     <name>U2::FindDialog</name>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="177"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="178"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="177"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="178"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="196"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="197"/>
         <source>Progress %1%. Current position %2 </source>
         <translation>查找进度：%1%。当前位置：%2</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="198"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="199"/>
         <source>Results found %1</source>
         <translation>找到 %1 个结果</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="253"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="254"/>
         <source>Question?</source>
         <translation>问题？</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="253"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="254"/>
         <source>The end of the search region is reached. Restart?</source>
         <translation>已经找到搜索区末尾了。要从头查找吗？</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="361"/>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="374"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="362"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="375"/>
         <source>Error!</source>
         <translation>错误!</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="361"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="362"/>
         <source>Search pattern is empty</source>
         <translation>查找模式为空</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="374"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="375"/>
         <source>Pattern length is greater than search range</source>
         <translation>查找模式的长度已经超过搜索范围的长度了</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="396"/>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="406"/>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="416"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="397"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="407"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="417"/>
         <source>Warning!</source>
         <translation>警告！</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="396"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="397"/>
         <source>Search pattern contains symbols that are out of the active alphabet range. Continue anyway?</source>
         <translation>要查找的模式中出现了与当前序列类型不相应的字符。要继续查找吗？</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="406"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="407"/>
         <source>The seach settings were changed from the last search. Clean old results?</source>
         <translation>搜索设置已经发生了改变，要清空以往的搜索结果吗？</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="416"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="417"/>
         <source>Results list contains results from the previous search. Clear?</source>
         <translation>搜索结果列表中包含以前的搜索结果，要清空它们吗？</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="611"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="612"/>
         <source>%1 overlaps filtered, %2 results left.</source>
         <translation>已过滤掉 %1 个重复条目，留下 %2 个条目。</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="621"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="622"/>
         <source>yes</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="622"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="623"/>
         <source>no</source>
         <translation>否</translation>
     </message>
     <message>
-        <location filename="../src/util_find_dialog/FindDialog.cpp" line="623"/>
+        <location filename="../src/util_find_dialog/FindDialog.cpp" line="624"/>
         <source>[%1 %2]    translation: %3    complement: %4</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2747,7 +2790,7 @@ Please, check your plugin list.</source>
         <translation>图形</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/GSequenceGraphView.cpp" line="195"/>
+        <location filename="../src/ov_sequence/GSequenceGraphView.cpp" line="193"/>
         <source>%1 [%2, %3], Window: %4, Step %5</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2766,6 +2809,24 @@ Please, check your plugin list.</source>
         <location filename="../src/ov_sequence/GraphMenu.cpp" line="91"/>
         <source>Graphs</source>
         <translation>图形</translation>
+    </message>
+</context>
+<context>
+    <name>U2::GraphSettingsDialog</name>
+    <message>
+        <location filename="../src/ov_sequence/GraphSettingsDialog.cpp" line="69"/>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/GraphSettingsDialog.cpp" line="70"/>
+        <source>Ok</source>
+        <translation type="unfinished">确定</translation>
+    </message>
+    <message>
+        <location filename="../src/ov_sequence/GraphSettingsDialog.cpp" line="82"/>
+        <source>Graph Settings</source>
+        <translation type="unfinished">图形设置</translation>
     </message>
 </context>
 <context>
@@ -2854,97 +2915,97 @@ Please select file to align.</source>
 <context>
     <name>U2::MSAEditor</name>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="101"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="104"/>
         <source>Zoom In</source>
         <translation>放大</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="104"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="107"/>
         <source>Zoom Out</source>
         <translation>缩小</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="107"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="110"/>
         <source>Zoom To Selection</source>
         <translation>缩放以适合选区</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="110"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="113"/>
         <source>Reset Zoom</source>
         <translation>重置缩放</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="113"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="116"/>
         <source>Change Font</source>
         <translation>改变字体</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="116"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="119"/>
         <source>Build Tree</source>
         <translation>构建树</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="235"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="238"/>
         <source>Calculate phy tree</source>
         <translation>计算系统树</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="236"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="239"/>
         <source>No algorithms for building phylogenetic tree are available.</source>
         <translation>没有可用的构建系统树的算法。</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="319"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="326"/>
         <source>Select font for alignment</source>
         <translation>选择显示比对的字体</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="370"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="377"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="375"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="382"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="380"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="387"/>
         <source>Export</source>
         <translation>导出</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="385"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="392"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="393"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="400"/>
         <source>Align</source>
         <translation>比对</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="399"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="406"/>
         <source>Tree</source>
         <translation>树</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="406"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="413"/>
         <source>Advanced</source>
         <translation>高级</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="411"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="418"/>
         <source>Statistics</source>
         <translation>统计</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="417"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="424"/>
         <source>Add</source>
         <translation>添加</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="433"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="440"/>
         <source>Export as image</source>
         <translation>导出图像</translation>
     </message>
@@ -3079,17 +3140,17 @@ Please select file to align.</source>
         <translation>将选区替换为互补序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1082"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1081"/>
         <source>Colors</source>
         <translation>颜色</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1126"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1125"/>
         <source>Go To</source>
         <translation>转到</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1444"/>
+        <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="1443"/>
         <source>Open file with sequences</source>
         <translation>打开序列文件</translation>
     </message>
@@ -3150,7 +3211,7 @@ Please select file to align.</source>
 <context>
     <name>U2::MSAEditorUI</name>
     <message>
-        <location filename="../src/ov_msa/MSAEditor.cpp" line="560"/>
+        <location filename="../src/ov_msa/MSAEditor.cpp" line="567"/>
         <source>Consensus</source>
         <translation>一致性序列</translation>
     </message>
@@ -3209,7 +3270,7 @@ Please select file to align.</source>
         <translation>未找到组装对象</translation>
     </message>
     <message>
-        <location filename="../src/ov_assembly/AssemblyBrowserFactory.cpp" line="150"/>
+        <location filename="../src/ov_assembly/AssemblyBrowserFactory.cpp" line="151"/>
         <source>Cannot open assembly browser for %1: model length should be &gt; 0</source>
         <translation>无法打开 %1：长度必须 &gt; 0</translation>
     </message>
@@ -3217,12 +3278,12 @@ Please select file to align.</source>
 <context>
     <name>U2::OpenMSAEditorTask</name>
     <message>
-        <location filename="../src/ov_msa/MSAEditorTasks.cpp" line="85"/>
+        <location filename="../src/ov_msa/MSAEditorTasks.cpp" line="86"/>
         <source>Multiple alignment object not found</source>
         <translation>未找到多序列比对</translation>
     </message>
     <message>
-        <location filename="../src/ov_msa/MSAEditorTasks.cpp" line="90"/>
+        <location filename="../src/ov_msa/MSAEditorTasks.cpp" line="91"/>
         <source>Opening MSA editor for object: %1</source>
         <translation>打开比对编辑器：%1</translation>
     </message>
@@ -3238,7 +3299,7 @@ Please select file to align.</source>
 <context>
     <name>U2::OpenSavedMSAEditorTask</name>
     <message>
-        <location filename="../src/ov_msa/MSAEditorTasks.cpp" line="148"/>
+        <location filename="../src/ov_msa/MSAEditorTasks.cpp" line="144"/>
         <source>Alignment object not found: %1</source>
         <translation>未找到比对：%1</translation>
     </message>
@@ -3254,7 +3315,7 @@ Please select file to align.</source>
 <context>
     <name>U2::OpenSavedTreeViewerTask</name>
     <message>
-        <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="144"/>
+        <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="141"/>
         <source>DNA sequence object not found: %1</source>
         <translation>未找到 DNA 序列：%1</translation>
     </message>
@@ -3262,12 +3323,12 @@ Please select file to align.</source>
 <context>
     <name>U2::OpenTreeViewerTask</name>
     <message>
-        <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="84"/>
+        <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="85"/>
         <source>Phylogenetic tree object not found</source>
         <translation>未找到系统树</translation>
     </message>
     <message>
-        <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="89"/>
+        <location filename="../src/ov_phyltree/TreeViewerTasks.cpp" line="90"/>
         <source>Opening tree viewer for object %1</source>
         <translation>打开查看器：%1</translation>
     </message>
@@ -3275,19 +3336,16 @@ Please select file to align.</source>
 <context>
     <name>U2::OpenUIndexViewerTask</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewerTasks.cpp" line="41"/>
         <source>Index object is null</source>
-        <translation>索引对象为空</translation>
+        <translation type="obsolete">索引对象为空</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewerTasks.cpp" line="48"/>
         <source>Document is null or loaded</source>
-        <translation>文档为空，或者已被载入</translation>
+        <translation type="obsolete">文档为空，或者已被载入</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewerTasks.cpp" line="74"/>
         <source>Opening index viewer for object %1</source>
-        <translation>为对象 %1 打开索引查看器</translation>
+        <translation type="obsolete">为对象 %1 打开索引查看器</translation>
     </message>
 </context>
 <context>
@@ -3298,12 +3356,12 @@ Please select file to align.</source>
         <translation>开启注释密度图</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="376"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="378"/>
         <source>Position </source>
         <translation>位置</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/Overview.cpp" line="386"/>
+        <location filename="../src/ov_sequence/Overview.cpp" line="388"/>
         <source>Annotation density </source>
         <translation>注释密度</translation>
     </message>
@@ -3311,77 +3369,77 @@ Please select file to align.</source>
 <context>
     <name>U2::PanView</name>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="108"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="109"/>
         <source>Zoom In</source>
         <translation>放大</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="111"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="112"/>
         <source>Zoom Out</source>
         <translation>缩小</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="114"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="115"/>
         <source>Zoom to Selection</source>
         <translation>缩放以适合选区</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="117"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="118"/>
         <source>Zoom to Whole Sequence</source>
         <translation>缩放以适合整条序列</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="123"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="124"/>
         <source>Show All Rows</source>
         <translation>显示所有注释类别行</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="127"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="128"/>
         <source>+1 Row</source>
         <translation>增加 1 行</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="130"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="131"/>
         <source>-1 Row</source>
         <translation>减少 1 行</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="133"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="134"/>
         <source>+5 Rows</source>
         <translation>增加 5 行</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="136"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="137"/>
         <source>-5 Rows</source>
         <translation>减少 5 行</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="139"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="140"/>
         <source>Reset Rows Number</source>
         <translation>重置行数</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="152"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="153"/>
         <source>Manage Rows in Zoom View</source>
         <translation>管理缩放视图中的行数</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="154"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="155"/>
         <source>Show Main Ruler</source>
         <translation>显示主标尺</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="159"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="160"/>
         <source>Show Custom Rulers</source>
         <translation>显示自定义标尺</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="473"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="476"/>
         <source>range change request: [%1, %2]</source>
         <translation>请改变范围：[%1, %2]</translation>
     </message>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="753"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="756"/>
         <source>empty</source>
         <translation>空的</translation>
     </message>
@@ -3389,7 +3447,7 @@ Please select file to align.</source>
 <context>
     <name>U2::PanViewRenderArea</name>
     <message>
-        <location filename="../src/ov_sequence/PanView.cpp" line="848"/>
+        <location filename="../src/ov_sequence/PanView.cpp" line="851"/>
         <source>[%1 %2]</source>
         <translation></translation>
     </message>
@@ -3397,12 +3455,12 @@ Please select file to align.</source>
 <context>
     <name>U2::SecStructDialog</name>
     <message>
-        <location filename="../src/util_sec_struct_predict/SecStructDialog.cpp" line="65"/>
+        <location filename="../src/util_sec_struct_predict/SecStructDialog.cpp" line="66"/>
         <source>Region</source>
         <translation>区域</translation>
     </message>
     <message>
-        <location filename="../src/util_sec_struct_predict/SecStructDialog.cpp" line="66"/>
+        <location filename="../src/util_sec_struct_predict/SecStructDialog.cpp" line="67"/>
         <source>Structure Type</source>
         <translation>结构类型</translation>
     </message>
@@ -3658,236 +3716,183 @@ Please select file to align.</source>
 <context>
     <name>U2::UIndexExportToNewFileDialogImpl</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexExportToNewFileDialogImpl.cpp" line="46"/>
         <source>Select file to export</source>
-        <translation>选择要保存的文件</translation>
+        <translation type="obsolete">选择要保存的文件</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexExportToNewFileDialogImpl.cpp" line="56"/>
         <source>Error</source>
-        <translation>错误</translation>
+        <translation type="obsolete">错误</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexExportToNewFileDialogImpl.cpp" line="56"/>
         <source>Illegal file name</source>
-        <translation>文件名非法</translation>
+        <translation type="obsolete">文件名非法</translation>
     </message>
 </context>
 <context>
     <name>U2::UIndexSupport</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="64"/>
         <source>Index large file(s)...</source>
-        <translation>索引大文件...</translation>
+        <translation type="obsolete">索引大文件...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="84"/>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="94"/>
         <source>Error!</source>
-        <translation>错误!</translation>
+        <translation type="obsolete">错误!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="84"/>
         <source>Cannot write output file: unknown io adapter for %1</source>
-        <translation>无法写入文件：发生了未知的 IO 接口错误：%1</translation>
+        <translation type="obsolete">无法写入文件：发生了未知的 IO 接口错误：%1</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexSupport.cpp" line="94"/>
         <source>Cannot read input file: unknown io adapter for %1</source>
-        <translation>无法读取文件：发生了未知的 IO 接口错误：%1</translation>
+        <translation type="obsolete">无法读取文件：发生了未知的 IO 接口错误：%1</translation>
     </message>
 </context>
 <context>
     <name>U2::UIndexViewHeaderItemWidgetImpl</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="39"/>
-        <source>[All values] filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="40"/>
         <source>[Starts with] filter </source>
-        <translation>开始于</translation>
+        <translation type="obsolete">开始于</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="41"/>
         <source>[Ends with] filter</source>
-        <translation>结束于</translation>
+        <translation type="obsolete">结束于</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="42"/>
         <source>[Contains] filter</source>
-        <translation>包含</translation>
+        <translation type="obsolete">包含</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="43"/>
         <source>[Equal] filter</source>
-        <translation>等于</translation>
+        <translation type="obsolete">等于</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="44"/>
         <source>[Not equal] filter</source>
-        <translation>不等于</translation>
+        <translation type="obsolete">不等于</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="45"/>
         <source>[Greater than] filter</source>
-        <translation>大于</translation>
+        <translation type="obsolete">大于</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="46"/>
         <source>[Lower than] filter</source>
-        <translation>小于</translation>
+        <translation type="obsolete">小于</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="47"/>
         <source>[In range] filter</source>
-        <translation>范围</translation>
+        <translation type="obsolete">范围</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="67"/>
-        <source>Select new key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="69"/>
         <source>Enter a filter value</source>
-        <translation>输入过滤的值</translation>
+        <translation type="obsolete">输入过滤的值</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="70"/>
         <source>Enter a string value</source>
-        <translation>输入一个字符串</translation>
+        <translation type="obsolete">输入一个字符串</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="71"/>
         <source>Enter a number value</source>
-        <translation>输入一个数字</translation>
+        <translation type="obsolete">输入一个数字</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="72"/>
         <source>Enter a lower bound</source>
-        <translation>输入一个下限边界</translation>
+        <translation type="obsolete">输入一个下限边界</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="73"/>
         <source>Enter an upper bound</source>
-        <translation>输入一个上限边界</translation>
+        <translation type="obsolete">输入一个上限边界</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="183"/>
         <source>Error</source>
-        <translation>错误</translation>
+        <translation type="obsolete">错误</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="183"/>
         <source>The value can&apos;t be empty</source>
-        <translation>该值不能为空</translation>
+        <translation type="obsolete">该值不能为空</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="221"/>
         <source>Error!</source>
-        <translation>错误!</translation>
+        <translation type="obsolete">错误!</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewHeaderItemWidgetImpl.cpp" line="221"/>
         <source>Upper bound must be greater than lower</source>
-        <translation>上限必须大于下限</translation>
+        <translation type="obsolete">上限必须大于下限</translation>
     </message>
 </context>
 <context>
     <name>U2::UIndexViewWidgetImpl</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="38"/>
         <source>No filter selected</source>
-        <translation>未选择过滤规则</translation>
+        <translation type="obsolete">未选择过滤规则</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="39"/>
         <source>Document Format</source>
-        <translation>文件格式</translation>
+        <translation type="obsolete">文件格式</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="40"/>
         <source>URL</source>
-        <translation>URL</translation>
+        <translation type="obsolete">URL</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="41"/>
         <source>None</source>
-        <translation>没有</translation>
+        <translation type="obsolete">没有</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="42"/>
         <source>Hide column</source>
-        <translation>隐藏列</translation>
+        <translation type="obsolete">隐藏列</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="43"/>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="340"/>
         <source>Remove column</source>
-        <translation>移除列</translation>
+        <translation type="obsolete">移除列</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="44"/>
         <source>No hidden columns</source>
-        <translation>不隐藏列</translation>
+        <translation type="obsolete">不隐藏列</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="45"/>
         <source>Show hidden columns:</source>
-        <translation>显示隐藏列：</translation>
+        <translation type="obsolete">显示隐藏列：</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="46"/>
         <source>column </source>
-        <translation>列 </translation>
+        <translation type="obsolete">列 </translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="47"/>
         <source>Add column</source>
-        <translation>添加列</translation>
+        <translation type="obsolete">添加列</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewWidgetImpl.cpp" line="195"/>
         <source>Complex rule</source>
-        <translation>复杂规则</translation>
+        <translation type="obsolete">复杂规则</translation>
     </message>
 </context>
 <context>
     <name>U2::UIndexViewer</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="75"/>
         <source>Export </source>
-        <translation>导出</translation>
+        <translation type="obsolete">导出</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="77"/>
         <source>Save selection to a new file</source>
-        <translation>将选择内容保存到新文件</translation>
+        <translation type="obsolete">将选择内容保存到新文件</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="108"/>
         <source>Error</source>
-        <translation>错误</translation>
+        <translation type="obsolete">错误</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewer.cpp" line="108"/>
         <source>No items selected</source>
-        <translation>未选择条目</translation>
+        <translation type="obsolete">未选择条目</translation>
     </message>
 </context>
 <context>
     <name>U2::UIndexViewerFactory</name>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewerFactory.cpp" line="43"/>
         <source>Index viewer</source>
-        <translation>索引查看器</translation>
+        <translation type="obsolete">索引查看器</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/UIndexViewerFactory.cpp" line="90"/>
         <source>Open multiple views</source>
-        <translation>打开多个视图</translation>
+        <translation type="obsolete">打开多个视图</translation>
     </message>
 </context>
 <context>
@@ -3973,70 +3978,58 @@ Please select file to align.</source>
 <context>
     <name>UIndexExportToNewFileDialog</name>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexExportToNewFileDialog.ui" line="13"/>
         <source>Export indexed document</source>
-        <translation>导出索引文件</translation>
+        <translation type="obsolete">导出索引文件</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexExportToNewFileDialog.ui" line="27"/>
         <source>Export file</source>
-        <translation>导出到文件</translation>
+        <translation type="obsolete">导出到文件</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexExportToNewFileDialog.ui" line="37"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexExportToNewFileDialog.ui" line="44"/>
         <source>compress file</source>
-        <translation>压缩文件</translation>
+        <translation type="obsolete">压缩文件</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexExportToNewFileDialog.ui" line="97"/>
         <source>Ok</source>
-        <translation>确定</translation>
+        <translation type="obsolete">确定</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexExportToNewFileDialog.ui" line="107"/>
         <source>Cancel</source>
-        <translation>取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
 </context>
 <context>
     <name>UIndexViewHeaderItemWidget</name>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexViewHeaderItemWidget.ui" line="20"/>
         <source>Create annotation</source>
-        <translation>创建注释</translation>
+        <translation type="obsolete">创建注释</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexViewHeaderItemWidget.ui" line="59"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
     <name>UIndexViewWidget</name>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexViewWidget.ui" line="19"/>
         <source>Create annotation</source>
-        <translation>创建注释</translation>
+        <translation type="obsolete">创建注释</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexViewWidget.ui" line="32"/>
         <source>Manage columns</source>
-        <translation>管理列</translation>
+        <translation type="obsolete">管理列</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexViewWidget.ui" line="35"/>
         <source>Manage columns button</source>
-        <translation type="unfinished">管理列标签</translation>
+        <translation type="obsolete">管理列标签</translation>
     </message>
     <message>
-        <location filename="../src/util_ov_indexview/ui/UIndexViewWidget.ui" line="38"/>
         <source>&gt;</source>
-        <translation>&gt;</translation>
+        <translation type="obsolete">&gt;</translation>
     </message>
 </context>
 <context>
