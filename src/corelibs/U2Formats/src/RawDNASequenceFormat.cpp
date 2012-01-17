@@ -47,14 +47,11 @@ RawDNASequenceFormat::RawDNASequenceFormat(QObject* p) : DocumentFormat(p, Docum
     formatDescription = tr("Raw sequence file - a whole content of the file is treated either as a single nucleotide or peptide sequence UGENE will remove all non-alphabetic chars from the result sequence");
 }
 
-#define GObjectHint_CaseAnns   "use-case-annotations"
+
 static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& objects, const QVariantMap& fs, U2OpStatus& os) {
-	static const int READ_BUFF_SIZE = 4096;
-	U2SequenceImporter  seqImporter;
-    if (fs.keys().contains(GObjectHint_CaseAnns)) {
-        CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(fs.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
-        seqImporter.setCaseAnnotationsMode(mode);
-    }
+    static const int READ_BUFF_SIZE = 4096;
+
+    U2SequenceImporter  seqImporter(fs);
 
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
@@ -68,52 +65,52 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
     writer.open(QIODevice::WriteOnly);
     bool ok = true;
     int len = 0;
-	bool isStarted = false;
+    bool isStarted = false;
 
     while (ok && (len = io->readBlock(buff, READ_BUFF_SIZE)) > 0) {
-		seq.clear();
-		bool isSeek = writer.seek(0);
+        seq.clear();
+        bool isSeek = writer.seek(0);
                 assert(isSeek); Q_UNUSED(isSeek);
         if (os.isCoR()) {
             break;
         }
-		
+        
         for (int i=0; i<len && ok; i++) {
             char c = buff[i];
             if (ALPHAS[(uchar)c]) {
                 ok = writer.putChar(c);
             }
         }
-		if(seq.size()>0 && isStarted == false ){
-			isStarted = true;
-			seqImporter.startSequence(dbiRef,"Sequence",false,os);
-		}
-		if(isStarted){
-			seqImporter.addBlock(seq.data(),seq.size(),os);
-		}
-		if (os.isCoR()) {
-			break;
-		}
+        if(seq.size()>0 && isStarted == false ){
+            isStarted = true;
+            seqImporter.startSequence(dbiRef,"Sequence",false,os);
+        }
+        if(isStarted){
+            seqImporter.addBlock(seq.data(),seq.size(),os);
+        }
+        if (os.isCoR()) {
+            break;
+        }
         os.setProgress(io->getProgress());
     }
     writer.close();
 
     CHECK_OP(os, );
 
-	CHECK_EXT(isStarted == true, os.setError(RawDNASequenceFormat::tr("Sequence is empty")), );
-	U2Sequence u2seq = seqImporter.finalizeSequence(os);
-	CHECK_OP(os, );
+    CHECK_EXT(isStarted == true, os.setError(RawDNASequenceFormat::tr("Sequence is empty")), );
+    U2Sequence u2seq = seqImporter.finalizeSequence(os);
+    CHECK_OP(os, );
 
     GObjectReference sequenceRef(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE);
     U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
 
-	objects << new U2SequenceObject(u2seq.visualName,U2EntityRef(dbiRef, u2seq.id));
+    objects << new U2SequenceObject(u2seq.visualName,U2EntityRef(dbiRef, u2seq.id));
 }
 
 Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
-	QList<GObject*> objects;
+    QList<GObject*> objects;
         load(io, dbiRef, objects, fs, os);
-	CHECK_OP(os, NULL);
+    CHECK_OP(os, NULL);
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
     return doc;
 }

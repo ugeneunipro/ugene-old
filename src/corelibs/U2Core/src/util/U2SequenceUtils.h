@@ -61,8 +61,8 @@ public:
 /** Class used to efficiently import sequence into DBI */
 class U2CORE_EXPORT U2SequenceImporter {
 public:
-    U2SequenceImporter();
-    U2SequenceImporter(qint64 _insertBlockSize);
+    U2SequenceImporter(const QVariantMap& fs = QVariantMap());
+    U2SequenceImporter(qint64 _insertBlockSize, const QVariantMap& fs = QVariantMap());
     virtual ~U2SequenceImporter();
     
     void startSequence(const U2DbiRef& dbiRef, const QString& visualName, bool circular, U2OpStatus& os);

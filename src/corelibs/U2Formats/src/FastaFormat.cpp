@@ -116,7 +116,7 @@ FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUr
     return res;
 }
 
-#define GObjectHint_CaseAnns   "use-case-annotations"
+
 #define READ_BUFF_SIZE  4096
 static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, QList<GObject*>& objects,
                  int gapSize, QString& writeLockReason, U2OpStatus& os) 
@@ -145,11 +145,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     static QBitArray nonWhites = ~TextUtils::WHITES;
     io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
 
-    U2SequenceImporter seqImporter;
-    if (fs.keys().contains(GObjectHint_CaseAnns)) {
-        CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(fs.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
-        seqImporter.setCaseAnnotationsMode(mode);
-    }
+    U2SequenceImporter seqImporter(fs);
 
     qint64 sequenceStart = 0;
     int sequenceNumber = 0;

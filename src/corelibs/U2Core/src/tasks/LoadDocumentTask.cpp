@@ -55,7 +55,6 @@
 #include <QtGui/QApplication>
 
 #define GObjectHint_NamesList  "gobject-hint-names-list"
-#define GObjectHint_CaseAnns   "use-case-annotations"
 
 namespace U2 {
 
@@ -230,7 +229,7 @@ void LoadDocumentTask::init() {
     documentDescription = url.getURLString();
     if (format->getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE)) {
         CaseAnnotationsMode mode = AppContext::getAppSettings()->getFormatAppsSettings()->getCaseAnnotationsMode();
-        hints[GObjectHint_CaseAnns] = qVariantFromValue<CaseAnnotationsMode>(mode);
+        hints[GObjectHint_CaseAnns] = (int)mode;
     }
 }
 

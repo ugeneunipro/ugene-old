@@ -71,12 +71,11 @@ FormatCheckResult PDWFormat::checkRawData(const QByteArray& rawData, const GUrl&
     return hasBinaryBlocks ? FormatDetection_NotMatched : FormatDetection_HighSimilarity;
 }
 
-#define GObjectHint_CaseAnns   "use-case-annotations"
+
 #define READ_BUFF_SIZE  4096
 void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os, 
                      U2SequenceObject*& seqObj, AnnotationTableObject*& annObj)
 {
-    
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
@@ -86,12 +85,8 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
     QString seqName(docUrl.baseFileName());
     QList<Annotation*> annotations;
 
-    U2SequenceImporter seqImporter;
-    if (fs.keys().contains(GObjectHint_CaseAnns)) {
-        CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(fs.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
-        seqImporter.setCaseAnnotationsMode(mode);
-    }
-    
+    U2SequenceImporter seqImporter(fs);
+
     while (!os.isCoR()) {
         //read header
         len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);

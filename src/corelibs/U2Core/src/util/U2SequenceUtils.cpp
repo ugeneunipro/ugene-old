@@ -182,18 +182,46 @@ U2EntityRef U2SequenceUtils::import(const U2DbiRef& dbiRef, const DNASequence& s
 // U2SequenceImporter
 #define DEFAULT_SEQUENCE_INSERT_BLOCK_SIZE (4*1024*1024)
 
-U2SequenceImporter::U2SequenceImporter() {
+
+/**
+ * If GObjectHint_CaseAnns is present in the QVariantMap (it should be stored as int),
+ * then the method verifies the value and returns it (if it is correct).
+ * Otherwise, returns NO_CASE_ANNS.
+ */
+static CaseAnnotationsMode getCaseAnnotationsModeHint(const QVariantMap& fs)
+{
+    if (fs.keys().contains(GObjectHint_CaseAnns))
+    {
+        QVariant caseAnnsVariant = fs.value(GObjectHint_CaseAnns);
+        SAFE_POINT(caseAnnsVariant.canConvert<int>(), "Can't convert a case annotations hint!", NO_CASE_ANNS);
+
+        bool conversionIsOK = 0;
+        int caseAnnsInt = caseAnnsVariant.toInt(&conversionIsOK);
+        SAFE_POINT(conversionIsOK, "Can't convert a case annotations hint to int!", NO_CASE_ANNS);
+
+        SAFE_POINT((caseAnnsInt == LOWER_CASE) || (caseAnnsInt == UPPER_CASE) || (caseAnnsInt == NO_CASE_ANNS),
+            "Incorrect value of a case annotation hint!",
+            NO_CASE_ANNS);
+
+        return (CaseAnnotationsMode)caseAnnsInt;
+    }
+
+    return NO_CASE_ANNS;
+}
+
+
+U2SequenceImporter::U2SequenceImporter(const QVariantMap& fs) {
     insertBlockSize = DEFAULT_SEQUENCE_INSERT_BLOCK_SIZE;
     currentLength = 0;
     isUnfinishedRegion = false;
-    caseAnnsMode = NO_CASE_ANNS;
+    caseAnnsMode = getCaseAnnotationsModeHint(fs);
 }
 
-U2SequenceImporter::U2SequenceImporter(qint64 _insertBlockSize) : insertBlockSize(_insertBlockSize) {
+U2SequenceImporter::U2SequenceImporter(qint64 _insertBlockSize, const QVariantMap& fs) : insertBlockSize(_insertBlockSize) {
     insertBlockSize = qMin((qint64)10, insertBlockSize);
     currentLength = 0;
     isUnfinishedRegion = false;
-    caseAnnsMode = NO_CASE_ANNS;
+    caseAnnsMode = getCaseAnnotationsModeHint(fs);
 }
 
 U2SequenceImporter::~U2SequenceImporter() {
@@ -230,15 +258,15 @@ void U2SequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus& os) 
     DNAAlphabet* oldAl = U2AlphabetUtils::getById(sequence.alphabet);
     DNAAlphabet* resAl = blockAl;
     if (oldAl != NULL) {
-		if(oldAl->getType() == DNAAlphabet_AMINO && resAl->getType() == DNAAlphabet_NUCL){
-			resAl = oldAl;
-		}
-		else if(resAl->getType() == DNAAlphabet_AMINO && oldAl->getType() == DNAAlphabet_NUCL){
-			oldAl = resAl;
-		}
-		else{
-			resAl = U2AlphabetUtils::deriveCommonAlphabet(blockAl, oldAl);
-		}
+        if(oldAl->getType() == DNAAlphabet_AMINO && resAl->getType() == DNAAlphabet_NUCL){
+            resAl = oldAl;
+        }
+        else if(resAl->getType() == DNAAlphabet_AMINO && oldAl->getType() == DNAAlphabet_NUCL){
+            oldAl = resAl;
+        }
+        else{
+            resAl = U2AlphabetUtils::deriveCommonAlphabet(blockAl, oldAl);
+        }
         CHECK_EXT(resAl!=NULL, os.setError(U2SequenceUtils::tr("Failed to derive sequence alphabet!")), );
     } 
     

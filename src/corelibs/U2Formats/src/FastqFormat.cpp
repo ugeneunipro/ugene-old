@@ -150,7 +150,6 @@ static bool readBlock( QByteArray & block, IOAdapter * io, U2OpStatus & ti, qint
 /**
  * FASTQ format specification: http://maq.sourceforge.net/fastq.shtml
  */
-#define GObjectHint_CaseAnns   "use-case-annotations"
 static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os,
                  int gapSize, int predictedSize, QString& writeLockReason) {
      writeLockReason.clear();
@@ -173,13 +172,9 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
 
      qint64 sequenceStart = 0;
 
-	 U2SequenceImporter seqImporter;
-     if (hints.keys().contains(GObjectHint_CaseAnns)) {
-         CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(hints.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
-         seqImporter.setCaseAnnotationsMode(mode);
-     }
+     U2SequenceImporter seqImporter(hints);
 
-	 int seqNumber = 0;
+     int seqNumber = 0;
 
      while (!os.isCoR()) {
          //read header
@@ -192,29 +187,29 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
              break;
          }
 
-		 QString headerLine = QString::fromLatin1(readBuff.data()+1, readBuff.length()-1);
+         QString headerLine = QString::fromLatin1(readBuff.data()+1, readBuff.length()-1);
 
-		 if (merge == false   || seqNumber == 0){		
-				QString objName = (merge) ? "Sequence" : TextUtils::variate(headerLine, "_", names)  ;
-				names.insert(objName);
-				seqImporter.startSequence(dbiRef,objName,false,os);
-				CHECK_OP(os,);
+         if (merge == false   || seqNumber == 0){		
+                QString objName = (merge) ? "Sequence" : TextUtils::variate(headerLine, "_", names);
+                names.insert(objName);
+                seqImporter.startSequence(dbiRef,objName,false,os);
+                CHECK_OP(os,);
                 sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);
-		 }
+         }
 
          //read sequence
-		 if (merge && sequence.length() > 0) {
-					seqImporter.addDefaultSymbolsBlock(gapSize,os);
-					sequenceStart += sequence.length();
-					sequenceStart+=gapSize;
-					CHECK_OP(os,);
-		 }
+         if (merge && sequence.length() > 0) {
+                    seqImporter.addDefaultSymbolsBlock(gapSize,os);
+                    sequenceStart += sequence.length();
+                    sequenceStart+=gapSize;
+                    CHECK_OP(os,);
+         }
          sequence.clear();  
          if(!readUntil(sequence, io, os, SEQ_QUAL_SEPARATOR)) {
             break;
          }
          seqImporter.addBlock(sequence.data(),sequence.length(),os);
-		 CHECK_OP(os,);
+         CHECK_OP(os,);
 
          // read +<seqname>
          secondBuff.clear();
@@ -244,13 +239,13 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
              mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
          } else {
              U2Sequence u2seq = seqImporter.finalizeSequence(os);
-			 CHECK_OP(os,);
+             CHECK_OP(os,);
 
-			 U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
+             U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
 
-			 objects << seqObj;
-			 dbiObjects.objects << seqObj->getSequenceRef().entityId;
-			 seqObj->setQuality(DNAQuality(qualityScores));
+             objects << seqObj;
+             dbiObjects.objects << seqObj->getSequenceRef().entityId;
+             seqObj->setQuality(DNAQuality(qualityScores));
 
              U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
          }
@@ -263,14 +258,14 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
      if (!merge) {
          return;
      }
-	 U2Sequence u2seq = seqImporter.finalizeSequence(os);
-	 CHECK_OP(os,);
+     U2Sequence u2seq = seqImporter.finalizeSequence(os);
+     CHECK_OP(os,);
 
-	 dbiObjects.objects << u2seq.id;
+     dbiObjects.objects << u2seq.id;
 
      U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
-	 objects << new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
-	 objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(docUrl, headers, u2seq, mergedMapping, os);
+     objects << new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
+     objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(docUrl, headers, u2seq, mergedMapping, os);
      if (headers.size() > 1) {
          writeLockReason = DocumentFormat::MERGED_SEQ_LOCK;
      }

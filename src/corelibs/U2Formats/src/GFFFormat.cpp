@@ -152,7 +152,7 @@ void addAnnotations(QList<Annotation*> &annList, QList<GObject*>& objects, QSet<
     }
 }
 
-#define GObjectHint_CaseAnns   "use-case-annotations"
+
 void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os){
     Q_UNUSED(hints);
     gauto_array<char> buff = new char[READ_BUFF_SIZE];
@@ -166,11 +166,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     //header validation
     validateHeader(words);
 
-    U2SequenceImporter seqImporter;
-    if (hints.keys().contains(GObjectHint_CaseAnns)) {
-        CaseAnnotationsMode mode = qVariantValue<CaseAnnotationsMode>(hints.value(GObjectHint_CaseAnns, NO_CASE_ANNS));
-        seqImporter.setCaseAnnotationsMode(mode);
-    }
+    U2SequenceImporter seqImporter(hints);
 
     int lineNumber = 1;
     QMap<QString,Annotation*> joinedAnnotations;
