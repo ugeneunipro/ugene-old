@@ -152,6 +152,41 @@ void addAnnotations(QList<Annotation*> &annList, QList<GObject*>& objects, QSet<
     }
 }
 
+// This function works as QString::split(), however it doesn't take 
+// into account separator inside of quoted string
+
+static QStringList splitGffAttributes(const QString& line, char sep) {
+    QStringList result;
+    QString buf;
+    int len = line.length();
+    bool insideOfQuotes = false;
+
+    for ( int i = 0; i < len; ++i) {
+
+        char c = line.at(i).toAscii();
+
+        if ( c == '\"' ) {
+            insideOfQuotes = !insideOfQuotes;
+        } 
+
+        if ( c == sep && !insideOfQuotes ) {
+            if (!buf.isEmpty()) {
+                result.append(buf);
+                buf.clear();
+            }
+
+        } else {
+            buf += c;
+        }
+    }
+
+    if (!buf.isEmpty()) {
+        result.append(buf);
+    }
+
+    return result;
+}
+
 
 void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os){
     Q_UNUSED(hints);
@@ -237,37 +272,41 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
             bool newJoined = false;
             QString id;
             if(words[8] != "."){
-                QStringList pairs = words[8].split(";", QString::SkipEmptyParts);
+                QStringList pairs = splitGffAttributes(words[8], ';'); 
                 foreach(QString p, pairs){
-                    QStringList qual = p.split("=", QString::SkipEmptyParts);
-                    if(qual.size() != 2){
-                        os.setError(tr("Parsing error: one of the qualifiers in attributes are incorrect at line %1").arg(lineNumber));
-                        return;
-                    }
-                    qual[0] = fromEscapedString(qual[0]);
-                    qual[1] = fromEscapedString(qual[1]);
-                    if(qual[0] == "name"){
-                        annName = qual[1];
-                    }else{
-                        d->qualifiers.append(U2Qualifier(qual[0], qual[1]));
-                        if(qual[0] == "ID"){
-                            id = qual[1];
-                            if(joinedAnnotations.contains(id)){
-                                a = *(joinedAnnotations.find(id));
-                                bool hasIntersections = range.findIntersectedRegion(a->getRegions())!=-1;
-                                if(hasIntersections){
-                                    ioLog.info(tr("Wrong location for joined annotation at line %1. Line was skipped.").arg(lineNumber));
-                                } else {
-                                    a->addLocationRegion(range);
+                    QStringList qual = splitGffAttributes(p, '=');
+                    if(qual.size() == 1){
+                        // save field as single attribute
+                        d->qualifiers.append( U2Qualifier("attr", qual.first()) );
+                    } else if (qual.size() == 2) {
+                        qual[0] = fromEscapedString(qual[0]);
+                        qual[1] = fromEscapedString(qual[1]);
+                        if(qual[0] == "name"){
+                            annName = qual[1];
+                        }else{
+                            d->qualifiers.append(U2Qualifier(qual[0], qual[1]));
+                            if(qual[0] == "ID"){
+                                id = qual[1];
+                                if(joinedAnnotations.contains(id)){
+                                    a = *(joinedAnnotations.find(id));
+                                    bool hasIntersections = range.findIntersectedRegion(a->getRegions())!=-1;
+                                    if(hasIntersections){
+                                        ioLog.info(tr("Wrong location for joined annotation at line %1. Line was skipped.").arg(lineNumber));
+                                    } else {
+                                        a->addLocationRegion(range);
+                                    }
+                                }else{
+                                    newJoined = true;
                                 }
-                            }else{
-                                newJoined = true;
                             }
-                        }
+                        } 
+                    } else {
+                        os.setError(tr("Parsing error: incorrect attributes field %1 at line %2").arg(p).arg(lineNumber));
+                        return;
                     }
                 }
             }
-            
+
             //if annotation joined, don't rewrite it data
             if(a == NULL){
                 a = new Annotation(d);
