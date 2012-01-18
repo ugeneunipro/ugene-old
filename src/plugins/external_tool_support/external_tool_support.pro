@@ -127,4 +127,6 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
 	   src/mrbayes/MrBayesTask.cpp \
 	   src/mrbayes/MrBayesTests.cpp 
 RESOURCES += external_tool_support.qrc
-TRANSLATIONS += transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/chinese.ts \
+                transl/english.ts \
+                transl/russian.ts

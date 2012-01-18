@@ -163,6 +163,24 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>FormatSettingsWidget</name>
+    <message>
+        <location filename="../src/app_settings/format_settings/ui/FormatSettingsWidget.ui" line="14"/>
+        <source>Format settings</source>
+        <translation>格式设置</translation>
+    </message>
+    <message>
+        <location filename="../src/app_settings/format_settings/ui/FormatSettingsWidget.ui" line="20"/>
+        <source>Sequence annotations</source>
+        <translation>序列注释</translation>
+    </message>
+    <message>
+        <location filename="../src/app_settings/format_settings/ui/FormatSettingsWidget.ui" line="32"/>
+        <source>Create annotations for case switchings:</source>
+        <translation>注释序列大小写字母区域：</translation>
+    </message>
+</context>
+<context>
     <name>LogSettingsWidget</name>
     <message>
         <location filename="../src/app_settings/logview_settings/ui/LogSettingsWidget.ui" line="14"/>
@@ -535,7 +553,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::AppSettingsGUIImpl</name>
     <message>
-        <location filename="../src/app_settings/AppSettingsGUIImpl.cpp" line="40"/>
+        <location filename="../src/app_settings/AppSettingsGUIImpl.cpp" line="41"/>
         <source>Preferences...</source>
         <translation>首选项...</translation>
     </message>
@@ -769,6 +787,32 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>U2::FormatSettingsGUIPageController</name>
+    <message>
+        <location filename="../src/app_settings/format_settings/FormatSettingsGUIController.cpp" line="30"/>
+        <source>File Format</source>
+        <translation>文件格式</translation>
+    </message>
+</context>
+<context>
+    <name>U2::FormatSettingsGUIPageWidget</name>
+    <message>
+        <location filename="../src/app_settings/format_settings/FormatSettingsGUIController.cpp" line="57"/>
+        <source>Don&apos;t use case annotations</source>
+        <translation>不区分大小写</translation>
+    </message>
+    <message>
+        <location filename="../src/app_settings/format_settings/FormatSettingsGUIController.cpp" line="58"/>
+        <source>Use lower case annotations</source>
+        <translation>标注小写字母区域</translation>
+    </message>
+    <message>
+        <location filename="../src/app_settings/format_settings/FormatSettingsGUIController.cpp" line="59"/>
+        <source>Use upper case annotations</source>
+        <translation>标注大写字母区域</translation>
+    </message>
+</context>
+<context>
     <name>U2::GTest_ExportProject</name>
     <message>
         <location filename="../src/project_support/ProjectTasksGui.cpp" line="446"/>
@@ -876,57 +920,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="64"/>
         <source>close_active_view_statustip</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭活动视图</translation>
     </message>
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="67"/>
         <source>close_all_mdi_windows</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭所有文档窗口</translation>
     </message>
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="68"/>
         <source>close_all_mdi_windows_statustip</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭所有文档窗口</translation>
     </message>
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="71"/>
         <source>tile_mdi_windows</source>
-        <translation type="unfinished"></translation>
+        <translation>平铺文档窗口</translation>
     </message>
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="72"/>
         <source>tile_mdi_windows_statustip</source>
-        <translation type="unfinished"></translation>
+        <translation>平铺文档窗口</translation>
     </message>
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="75"/>
         <source>cascade_mdi_windows</source>
-        <translation type="unfinished"></translation>
+        <translation>层叠文档窗口</translation>
     </message>
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="76"/>
         <source>cascade_mdi_windows_statustip</source>
-        <translation type="unfinished"></translation>
+        <translation>层叠文档窗口</translation>
     </message>
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="79"/>
         <source>next_mdi_window</source>
-        <translation type="unfinished"></translation>
+        <translation>下一个文档窗口</translation>
     </message>
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="80"/>
         <source>next_mdi_window_statustip</source>
-        <translation type="unfinished"></translation>
+        <translation>下一个文档窗口</translation>
     </message>
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="84"/>
         <source>previous_mdi_window</source>
-        <translation type="unfinished"></translation>
+        <translation>上一个文档窗口</translation>
     </message>
     <message>
         <location filename="../src/main_window/MDIManagerImpl.cpp" line="85"/>
         <source>previous_mdi_window_statustip</source>
-        <translation type="unfinished"></translation>
+        <translation>上一个文档窗口</translation>
     </message>
 </context>
 <context>
@@ -1159,12 +1203,12 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/plugin_viewer/PluginViewerImpl.h" line="39"/>
         <source>plugin_viewer_sname</source>
-        <translation type="unfinished"></translation>
+        <translation>名称</translation>
     </message>
     <message>
         <location filename="../src/plugin_viewer/PluginViewerImpl.h" line="39"/>
         <source>plugin_viewer_sdesc</source>
-        <translation type="unfinished"></translation>
+        <translation>描述</translation>
     </message>
 </context>
 <context>
@@ -1210,7 +1254,7 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="74"/>
         <source>&amp;New project...</source>
-        <translation type="unfinished"></translation>
+        <translation>新建工程(&amp;N)...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="80"/>
@@ -1295,7 +1339,7 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="393"/>
         <source>Failed to open new instance of UGENE</source>
-        <translation type="unfinished"></translation>
+        <translation>无法打开新的 UGENE 项</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="399"/>
@@ -1315,12 +1359,12 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="605"/>
         <source>new_project_default_name</source>
-        <translation type="unfinished"></translation>
+        <translation>新工程默认名称</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="607"/>
         <source>new_project_default_file</source>
-        <translation type="unfinished"></translation>
+        <translation>新工程默认文件</translation>
     </message>
 </context>
 <context>
@@ -1341,17 +1385,17 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_support/ProjectServiceImpl.cpp" line="149"/>
         <source>&amp;Save all</source>
-        <translation type="unfinished"></translation>
+        <translation>全部保存(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectServiceImpl.cpp" line="155"/>
         <source>Save project &amp;as...</source>
-        <translation type="unfinished"></translation>
+        <translation>将工程另存为(&amp;A)...</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectServiceImpl.cpp" line="158"/>
         <source>&amp;Close project</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭工程(&amp;C)</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectServiceImpl.cpp" line="164"/>
@@ -1364,12 +1408,12 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_support/ProjectServiceImpl.cpp" line="49"/>
         <source>project_sname</source>
-        <translation type="unfinished"></translation>
+        <translation>名称</translation>
     </message>
     <message>
         <location filename="../src/project_support/ProjectServiceImpl.cpp" line="49"/>
         <source>project_sdesc</source>
-        <translation type="unfinished"></translation>
+        <translation>描述</translation>
     </message>
 </context>
 <context>
@@ -1377,12 +1421,12 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="309"/>
         <source>projectview_sname</source>
-        <translation type="unfinished"></translation>
+        <translation>名称</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="309"/>
         <source>projectview_sdesc</source>
-        <translation type="unfinished"></translation>
+        <translation>描述</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="354"/>
@@ -1392,7 +1436,7 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="359"/>
         <source>save_selected_modified_docs_action</source>
-        <translation type="unfinished"></translation>
+        <translation>保存修改过的文件</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="362"/>
@@ -1407,7 +1451,7 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="535"/>
         <source>unnamed_project_name</source>
-        <translation type="unfinished"></translation>
+        <translation>未命名的工程</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="563"/>
@@ -1417,17 +1461,17 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="632"/>
         <source>active_views_menu</source>
-        <translation type="unfinished"></translation>
+        <translation>激活视图</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="685"/>
         <source>activate_view_action_%1</source>
-        <translation type="unfinished"></translation>
+        <translation>激活视图 %1</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="695"/>
         <source>open_view_action_%1</source>
-        <translation type="unfinished"></translation>
+        <translation>打开视图 %1</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="704"/>
@@ -1437,27 +1481,27 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="725"/>
         <source>open_view_submenu_%1</source>
-        <translation type="unfinished"></translation>
+        <translation>打开视图 %1</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="752"/>
         <source>add_to_view_action_%1</source>
-        <translation type="unfinished"></translation>
+        <translation>添加到视图 %1</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="795"/>
         <source>open_view_menu</source>
-        <translation type="unfinished"></translation>
+        <translation>打开视图</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="796"/>
         <source>add_to_view_menu</source>
-        <translation type="unfinished"></translation>
+        <translation>添加到视图</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="860"/>
         <source>error_adding_object_to_view_title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">错误</translation>
     </message>
     <message>
         <location filename="../src/project_view/ProjectViewImpl.cpp" line="906"/>
@@ -1682,7 +1726,7 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/task_view/TaskStatusBar.cpp" line="158"/>
         <source>running_task_%1</source>
-        <translation type="unfinished"></translation>
+        <translation>运行人物 %1</translation>
     </message>
     <message>
         <location filename="../src/task_view/TaskStatusBar.cpp" line="160"/>
@@ -1692,22 +1736,22 @@ Do you want view online documentation?</source>
     <message>
         <location filename="../src/task_view/TaskStatusBar.cpp" line="167"/>
         <source>_info_%1</source>
-        <translation type="unfinished"></translation>
+        <translation>信息 %1</translation>
     </message>
     <message>
         <location filename="../src/task_view/TaskStatusBar.cpp" line="172"/>
         <source>num_tasks_%1_num_reports_%2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 个任务，%2 个报告</translation>
     </message>
     <message>
         <location filename="../src/task_view/TaskStatusBar.cpp" line="174"/>
         <source>num_tasks_%1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 个任务</translation>
     </message>
     <message>
         <location filename="../src/task_view/TaskStatusBar.cpp" line="247"/>
         <source>%1 notification(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 个提醒</translation>
     </message>
 </context>
 <context>
