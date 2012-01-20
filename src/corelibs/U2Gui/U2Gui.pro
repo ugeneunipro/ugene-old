@@ -72,6 +72,7 @@ FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/MultipartDocFormatConfiguratorWidget.ui \
          src/util/ui/ProjectTreeItemSelectorDialogBase.ui \
          src/util/ui/RemovePartFromSequenceDialog.ui \
+         src/util/ui/RangeSelectionDialog.ui \
          src/util/ui/ScriptEditorDialog.ui \
          src/util/ui/SeqPasterWidget.ui \
          src/util/ui/TextEditorDialog.ui

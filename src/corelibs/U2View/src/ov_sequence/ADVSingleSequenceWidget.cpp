@@ -497,30 +497,31 @@ void ADVSingleSequenceWidget::addADVSequenceWidgetAction(ADVSequenceWidgetAction
 }
 
 void ADVSingleSequenceWidget::sl_onSelectRange() {
-    QDialog dlg(this);
-    dlg.setModal(true);
-    dlg.setWindowTitle(tr("Select range"));
 
     ADVSequenceObjectContext* ctx = getSequenceContext();
     DNASequenceSelection* selection = ctx->getSequenceSelection();
 
-    RangeSelector* rs;
     qint64 wholeSeqLen = ctx->getSequenceLength();
-    if (selection->isEmpty()) {
-        rs = new RangeSelector(&dlg, 1, wholeSeqLen, wholeSeqLen, true);
-    } else {
-        U2Region selReg = selection->getSelectedRegions().first();
-        rs = new RangeSelector(&dlg, selReg.startPos + 1, selReg.endPos(), wholeSeqLen, true);
-    }
-    int rc = dlg.exec();
-    if (rc == QDialog::Accepted) {
-        U2Region r(rs->getStart() - 1, rs->getEnd() - rs->getStart() + 1);
-        setSelectedRegion(r);
-        if (!detView->getVisibleRange().intersects(r)) {
-            detView->setCenterPos(r.startPos);
+    const QVector<U2Region>& seqRegions = selection->getSelectedRegions();
+    MultipleRangeSelector mrs(this, seqRegions, wholeSeqLen);
+    
+    if(mrs.exec() == QDialog::Accepted){
+        QVector<U2Region> curRegions = mrs.getSelectedRegions();
+        if(curRegions.isEmpty()){
+            return;
+        }
+        if(curRegions.size() == 1){
+            U2Region r = curRegions.first();
+            setSelectedRegion(r);
+            if (!detView->getVisibleRange().intersects(r)) {
+                detView->setCenterPos(r.startPos);
+            }
+        }else{
+            getSequenceContext()->getSequenceSelection()->setSelectedRegions(curRegions);
         }
     }
-    delete rs;
+
+
 }
 
 QVector<U2Region> ADVSingleSequenceWidget::getSelectedAnnotationRegions(int max) {

@@ -20,6 +20,9 @@
  */
 
 #include "RangeSelector.h"
+#include "ui/ui_RangeSelectionDialog.h"
+
+#include <U2Formats/GenbankLocationParser.h>
 
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
@@ -32,8 +35,18 @@
 namespace U2 {
 
 RangeSelector::RangeSelector(QWidget* p, int s, int e) 
-: QWidget(p), rangeStart(s), rangeEnd(e), startEdit(NULL), endEdit(NULL), dialog(NULL), autoclose(false) 
+: QWidget(p)
+,rangeStart(s)
+,rangeEnd(e)
+,startEdit(NULL)
+,endEdit(NULL)
+,minButton(NULL)
+,maxButton(NULL)
+,rangeLabel(NULL)
+,dialog(NULL)
+,autoclose(false)
 {
+
     init();
     
     QToolButton* goButton = new QToolButton(this);
@@ -45,6 +58,8 @@ RangeSelector::RangeSelector(QWidget* p, int s, int e)
 
 void RangeSelector::init() {
     int w = qMax(((int)log10((double)rangeEnd))*10, 70);
+
+
 
     startEdit = new QLineEdit(this);
     startEdit->setValidator(new QIntValidator(1, len, startEdit));
@@ -70,11 +85,11 @@ void RangeSelector::init() {
     endEdit->setText(QString::number(rangeEnd));
     connect(endEdit, SIGNAL(returnPressed()), SLOT(sl_onReturnPressed()));
 
-    QToolButton* minButton = new QToolButton(this);
+    minButton = new QToolButton(this);
     minButton->setText(tr("Min"));
     connect(minButton, SIGNAL(clicked(bool)), SLOT(sl_onMinButtonClicked(bool)));
 
-    QToolButton* maxButton = new QToolButton(this);
+    maxButton = new QToolButton(this);
     maxButton->setText(tr("Max"));
     connect(maxButton, SIGNAL(clicked(bool)), SLOT(sl_onMaxButtonClicked(bool)));
 
@@ -91,10 +106,8 @@ void RangeSelector::init() {
         l->setMargin(0);
     }
 
-    setLayout(l);
-
-    QLabel* rangeLabel = new QLabel(tr("Range:"), this);
-    rangeLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
+    rangeLabel = new QLabel(tr("Range:"), this);
+    rangeLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
     startEdit->setObjectName("start_edit_line");
     endEdit->setObjectName("end_edit_line");
@@ -108,11 +121,21 @@ void RangeSelector::init() {
     l->addWidget(new QLabel(tr("-"), this));
     l->addWidget(endEdit);
     l->addWidget(maxButton);
+
+    setLayout(l);
 }
 
 RangeSelector::RangeSelector(QDialog* d, int s, int e, int _len, bool a) 
-: QWidget(d), rangeStart(s), rangeEnd(e), len(_len), startEdit(NULL), endEdit(NULL), dialog(d), autoclose(a)
+: QWidget(d), rangeStart(s), rangeEnd(e), len(_len)
+,startEdit(NULL)
+,endEdit(NULL)
+,minButton(NULL)
+,maxButton(NULL)
+,rangeLabel(NULL)
+,dialog(d)
+,autoclose(a)
 {
+
     init();
 
     QPushButton* okButton = new QPushButton(this);
@@ -142,7 +165,6 @@ RangeSelector::RangeSelector(QDialog* d, int s, int e, int _len, bool a)
     dialog->setLayout(l2);
     dialog->resize(l2->minimumSize());
 }
-
 
 RangeSelector::~RangeSelector(){ 
 //    printf("DELETED\n");
@@ -199,6 +221,139 @@ int RangeSelector::getEnd() const {
     int v = endEdit->text().toInt(&ok);
     assert(ok);
     return v;
+}
+
+
+MultipleRangeSelector::MultipleRangeSelector(QWidget* _parent, const QVector<U2Region>& _regions, int _seqLen)
+:QDialog(_parent)
+,seqLen(_seqLen)
+,selectedRanges(_regions)
+{
+
+    ui = new Ui_RangeSelectionDialog;
+    ui->setupUi(this);
+
+    {
+        ui->startEdit->setValidator(new QIntValidator(1, seqLen, ui->startEdit));
+        ui->endEdit->setValidator(new QIntValidator(1, seqLen, ui->endEdit));
+
+        int w = qMax(((int)log10((double)seqLen))*10, 70);
+
+        ui->startEdit->setMinimumWidth(w);
+        ui->endEdit->setMinimumWidth(w);
+
+        if(selectedRanges.isEmpty()){
+            ui->startEdit->setText(QString::number(1));
+            ui->endEdit->setText(QString::number(seqLen));
+        }else{
+            U2Region firstRegion = selectedRanges.first();
+            ui->startEdit->setText(QString::number(firstRegion.startPos + 1));
+            ui->endEdit->setText(QString::number(firstRegion.endPos()));
+        }
+    }
+
+    {
+        QString loc;
+        if(selectedRanges.isEmpty()){
+            loc = QString("1..%1").arg(seqLen);
+        }else{
+            loc = Genbank::LocationParser::buildLocationString(selectedRanges);
+        }
+        ui->multipleRegionEdit->setText(loc);
+    }
+    {
+        ui->minButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_Z));
+        ui->maxButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_X));
+
+        connect(ui->startEdit, SIGNAL(returnPressed()), SLOT(sl_returnPressed()));
+        connect(ui->endEdit, SIGNAL(returnPressed()), SLOT(sl_returnPressed()));
+        connect(ui->multipleRegionEdit, SIGNAL(returnPressed()), SLOT(sl_returnPressed()));
+        connect(ui->minButton, SIGNAL(clicked()), SLOT(sl_minButton()));
+        connect(ui->maxButton, SIGNAL(clicked()), SLOT(sl_maxButton()));
+
+        connect(ui->buttonGroup, SIGNAL(buttonClicked ( QAbstractButton * )), SLOT(sl_buttonClicked(QAbstractButton*)));
+        ui->singleButton->toggle();
+        sl_buttonClicked(ui->singleButton);
+    }
+}
+
+MultipleRangeSelector::~MultipleRangeSelector(){
+    delete ui;
+}
+
+void MultipleRangeSelector::accept(){
+    if(ui->singleButton->isChecked()){
+        bool ok = false;
+        int v1 = ui->startEdit->text().toInt(&ok);
+        if (!ok || v1 < 1 || v1 > seqLen) {
+            return;
+        }
+        int v2 = ui->endEdit->text().toInt(&ok);
+        if (!ok || v2 < v1 || v2 > seqLen) {
+            return;
+        }    
+        QDialog::accept();
+    }else{
+        QByteArray locEditText = ui->multipleRegionEdit->text().toAscii();
+        U2Location currentLocation;
+        Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation);
+        if(currentLocation->isEmpty()){
+            return;
+        }
+        QDialog::accept();        
+    }
+}
+
+void MultipleRangeSelector::sl_buttonClicked(QAbstractButton* b){
+    bool singleMode = b == ui->singleButton;
+
+    ui->labelS1->setEnabled(singleMode);
+    ui->labelS2->setEnabled(singleMode);
+    ui->startEdit->setEnabled(singleMode);
+    ui->endEdit->setEnabled(singleMode);
+    ui->minButton->setEnabled(singleMode);
+    ui->maxButton->setEnabled(singleMode);
+
+    ui->labelM1->setEnabled(!singleMode);
+    ui->multipleRegionEdit->setEnabled(!singleMode);
+}
+
+QVector<U2Region> MultipleRangeSelector::getSelectedRegions(){
+    QVector<U2Region> currentRegions;
+
+    if(ui->singleButton->isChecked()){
+        bool ok = false;
+        int st = ui->startEdit->text().toInt(&ok);
+        assert(ok);
+
+        int en = ui->endEdit->text().toInt(&ok);
+        assert(ok);
+
+        U2Region r(st-1, en - st + 1);
+        currentRegions.append(r);
+
+    }else{
+        QByteArray locEditText = ui->multipleRegionEdit->text().toAscii();
+        U2Location currentLocation;
+        Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation);
+
+        assert(!currentLocation->isEmpty());
+
+        currentRegions = U2Region::join(currentLocation->regions);
+    }
+
+    return currentRegions;
+}
+
+void MultipleRangeSelector::sl_minButton(){
+    ui->startEdit->setText(QString::number(1));   
+}
+void MultipleRangeSelector::sl_maxButton(){
+    ui->endEdit->setText(QString::number(seqLen));
+}
+
+void MultipleRangeSelector::sl_returnPressed(){
+    accept();
 }
 
 } //namespace
