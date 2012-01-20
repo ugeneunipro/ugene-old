@@ -48,11 +48,11 @@ QDCDDActor::QDCDDActor(QDActorPrototype const* proto) : QDActor(proto) {
 }
 
 int QDCDDActor::getMaxResultLen() const {
-    return cfg->getParameter(MAX_RES_LEN)->getAttributeValue<int>();
+    return cfg->getParameter(MAX_RES_LEN)->getAttributeValueWithoutScript<int>();
 }
 
 int QDCDDActor::getMinResultLen() const {
-    return cfg->getParameter(MIN_RES_LEN)->getAttributeValue<int>();
+    return cfg->getParameter(MIN_RES_LEN)->getAttributeValueWithoutScript<int>();
 }
 
 QString QDCDDActor::getText() const {
@@ -65,8 +65,8 @@ Task* QDCDDActor::getAlgorithmTask(const QVector<U2Region>& location) {
     settings.dbChoosen = "cdd";
     settings.params = "db=cdd"; //to do: supply db choice
 
-    int evalue = cfg->getParameter(EXPECT)->getAttributeValue<int>();
-    int maxHits = 500;//cfg->getParameter(MAX_HITS)->getAttributeValue<int>();
+    int evalue = cfg->getParameter(EXPECT)->getAttributeValueWithoutScript<int>();
+    int maxHits = 500;//cfg->getParameter(MAX_HITS)->getAttributeValueWithoutScript<int>();
     addParametr(settings.params, ReqParams::cdd_hits, maxHits);
     addParametr(settings.params, ReqParams::cdd_eValue, evalue);
 
@@ -121,9 +121,9 @@ void QDCDDActor::sl_onAlgorithmTaskFinished() {
     }
     offsetMap.clear();
 
-    int minLen = cfg->getParameter(MIN_RES_LEN)->getAttributeValue<int>();
-    int maxLen = cfg->getParameter(MAX_RES_LEN)->getAttributeValue<int>();
-    const QString& qualVal = cfg->getParameter(QUAL_ATTR)->getAttributeValue<QString>();
+    int minLen = cfg->getParameter(MIN_RES_LEN)->getAttributeValueWithoutScript<int>();
+    int maxLen = cfg->getParameter(MAX_RES_LEN)->getAttributeValueWithoutScript<int>();
+    const QString& qualVal = cfg->getParameter(QUAL_ATTR)->getAttributeValueWithoutScript<QString>();
     foreach(const SharedAnnotationData& ad, res) {
         const U2Region& reg = ad->location->regions.first();
         if (reg.length < minLen || reg.length > maxLen) {

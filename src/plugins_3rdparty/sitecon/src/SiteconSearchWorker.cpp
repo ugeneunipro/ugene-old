@@ -178,11 +178,11 @@ void SiteconSearchWorker::init() {
     dataPort->addComplement(output);
     output->addComplement(dataPort);
 
-    strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>());
-    cfg.minPSUM = actor->getParameter(SCORE_ATTR)->getAttributeValue<int>();
-    cfg.minE1 = actor->getParameter(E1_ATTR)->getAttributeValue<double>();
-    cfg.maxE2 = actor->getParameter(E2_ATTR)->getAttributeValue<double>();
-    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
+    strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
+    cfg.minPSUM = actor->getParameter(SCORE_ATTR)->getAttributeValue<int>(context);
+    cfg.minE1 = actor->getParameter(E1_ATTR)->getAttributeValue<double>(context);
+    cfg.maxE2 = actor->getParameter(E2_ATTR)->getAttributeValue<double>(context);
+    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
 }
 
 bool SiteconSearchWorker::isReady() {

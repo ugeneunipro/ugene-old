@@ -61,7 +61,7 @@ QList< QPair<QString,QString> > QDRepeatActor::saveConfiguration() const {
     for (int i=0; i<res.size(); i++) {
         QPair<QString, QString>& attr = res[i];
         if (attr.first==a->getId()) {
-            RFAlgorithm alg = RFAlgorithm(a->getAttributeValue<int>());
+            RFAlgorithm alg = RFAlgorithm(a->getAttributeValueWithoutScript<int>());
             switch (alg) {
             case RFAlgorithm_Auto:
                 attr.second = ALGO_AUTO;
@@ -101,11 +101,11 @@ void QDRepeatActor::loadConfiguration(const QList< QPair<QString,QString> >& str
 }
 
 int QDRepeatActor::getMinResultLen() const {
-    return cfg->getParameter(LEN_ATTR)->getAttributeValue<int>();
+    return cfg->getParameter(LEN_ATTR)->getAttributeValueWithoutScript<int>();
 }
 
 int QDRepeatActor::getMaxResultLen() const {
-    return cfg->getParameter(MAX_LEN_ATTR)->getAttributeValue<int>();
+    return cfg->getParameter(MAX_LEN_ATTR)->getAttributeValueWithoutScript<int>();
 }
 
 QString QDRepeatActor::getText() const {
@@ -114,10 +114,10 @@ QString QDRepeatActor::getText() const {
 
     inverted = QString("<a href=%1>%2</a>").arg(INVERT_ATTR).arg(inverted);
 
-    int identity = cfg->getParameter(IDENTITY_ATTR)->getAttributeValue<int>();
+    int identity = cfg->getParameter(IDENTITY_ATTR)->getAttributeValueWithoutScript<int>();
     QString identityStr = QString("<a href=%1>%2%</a>").arg(IDENTITY_ATTR).arg(identity);
 
-    int minLen = cfg->getParameter(LEN_ATTR)->getAttributeValue<int>();
+    int minLen = cfg->getParameter(LEN_ATTR)->getAttributeValueWithoutScript<int>();
     QString minLenStr = QString("<a href=%1>%2</a>").arg(LEN_ATTR).arg(minLen);
 
     QString doc = QDRepeatActor::tr("Finds <u>%1</u> repeats."
@@ -133,13 +133,13 @@ Task* QDRepeatActor::getAlgorithmTask(const QVector<U2Region>& location) {
     assert(scheme);
     Task* t = NULL;
 
-    settings.algo = RFAlgorithm(cfg->getParameter(ALGO_ATTR)->getAttributeValue<int>());
-    settings.minLen = cfg->getParameter(LEN_ATTR)->getAttributeValue<int>();
-    int identity = cfg->getParameter(IDENTITY_ATTR)->getAttributeValue<int>();
+    settings.algo = RFAlgorithm(cfg->getParameter(ALGO_ATTR)->getAttributeValueWithoutScript<int>());
+    settings.minLen = cfg->getParameter(LEN_ATTR)->getAttributeValueWithoutScript<int>();
+    int identity = cfg->getParameter(IDENTITY_ATTR)->getAttributeValueWithoutScript<int>();
     settings.setIdentity(identity);
-    settings.nThreads = cfg->getParameter(THREADS_ATTR)->getAttributeValue<int>();
-    settings.inverted = cfg->getParameter(INVERT_ATTR)->getAttributeValue<bool>();
-    settings.filterNested = cfg->getParameter(NESTED_ATTR)->getAttributeValue<bool>();
+    settings.nThreads = cfg->getParameter(THREADS_ATTR)->getAttributeValueWithoutScript<int>();
+    settings.inverted = cfg->getParameter(INVERT_ATTR)->getAttributeValueWithoutScript<bool>();
+    settings.filterNested = cfg->getParameter(NESTED_ATTR)->getAttributeValueWithoutScript<bool>();
 
     QDDistanceConstraint* dc = static_cast<QDDistanceConstraint*>(paramConstraints.first());
     settings.minDist = dc->getMin();

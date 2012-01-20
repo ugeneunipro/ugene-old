@@ -77,9 +77,9 @@ bool WriteAnnotationsWorker::isReady() {
 }
 
 Task * WriteAnnotationsWorker::tick() {
-    QString formatId = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId())->getAttributeValue<QString>();
+    QString formatId = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
     DocumentFormat * format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
-    SaveDocFlags fl(actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>());
+    SaveDocFlags fl(actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context));
     if( formatId != CSV_FORMAT_ID && format == NULL ) {
         return new FailTask(tr("Unrecognized formatId: '%1'").arg(formatId));
     }
@@ -87,7 +87,7 @@ Task * WriteAnnotationsWorker::tick() {
     while(annotationsPort->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(annotationsPort);
         
-        QString filepath = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>();
+        QString filepath = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
         filepath = filepath.isEmpty() ? inputMessage.getData().toMap().value(BaseSlots::URL_SLOT().getId()).value<QString>() : filepath;
         if (filepath.isEmpty()) {
             return new FailTask(tr("Unspecified URL to write %1").arg(formatId));
@@ -95,7 +95,7 @@ Task * WriteAnnotationsWorker::tick() {
         QStringList exts = formatId == CSV_FORMAT_ID ? QStringList("csv") : format->getSupportedDocumentFileExtensions();
         filepath = GUrlUtils::ensureFileExt(filepath, exts).getURLString();
         
-        QString objName = actor->getParameter(ANNOTATIONS_NAME)->getAttributeValue<QString>();
+        QString objName = actor->getParameter(ANNOTATIONS_NAME)->getAttributeValue<QString>(context);
         if(objName.isEmpty()) {
             objName = ANNOTATIONS_NAME_DEF_VAL;
             coreLog.details(tr("Annotations name not specified. Default value used: '%1'").arg(objName));
@@ -132,7 +132,7 @@ Task * WriteAnnotationsWorker::tick() {
                 return new FailTask(ti.getError());
             }
             taskList << new ExportAnnotations2CSVTask(att->getAnnotations(), QByteArray(), NULL, false, filepath, fl.testFlag(SaveDoc_Append)
-                , actor->getParameter(SEPARATOR)->getAttributeValue<QString>());
+                , actor->getParameter(SEPARATOR)->getAttributeValue<QString>(context));
         } else {
             fl |= SaveDoc_DestroyAfter;
             IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filepath));

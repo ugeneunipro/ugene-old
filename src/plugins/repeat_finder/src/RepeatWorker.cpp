@@ -182,16 +182,16 @@ bool RepeatWorker::isReady() {
 
 Task* RepeatWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.algo = RFAlgorithm(actor->getParameter(ALGO_ATTR)->getAttributeValue<int>());
-    cfg.minLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>();
-    cfg.minDist = actor->getParameter(MIN_DIST_ATTR)->getAttributeValue<int>();
-    cfg.maxDist = actor->getParameter(MAX_DIST_ATTR)->getAttributeValue<int>();
-    int identity = actor->getParameter(IDENTITY_ATTR)->getAttributeValue<int>();
+    cfg.algo = RFAlgorithm(actor->getParameter(ALGO_ATTR)->getAttributeValue<int>(context));
+    cfg.minLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
+    cfg.minDist = actor->getParameter(MIN_DIST_ATTR)->getAttributeValue<int>(context);
+    cfg.maxDist = actor->getParameter(MAX_DIST_ATTR)->getAttributeValue<int>(context);
+    int identity = actor->getParameter(IDENTITY_ATTR)->getAttributeValue<int>(context);
     cfg.setIdentity(identity);
-    cfg.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>();
-    cfg.inverted = actor->getParameter(INVERT_ATTR)->getAttributeValue<bool>();
-    cfg.filterNested = actor->getParameter(NESTED_ATTR)->getAttributeValue<bool>();
-    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
+    cfg.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>(context);
+    cfg.inverted = actor->getParameter(INVERT_ATTR)->getAttributeValue<bool>(context);
+    cfg.filterNested = actor->getParameter(NESTED_ATTR)->getAttributeValue<bool>(context);
+    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
     if(resultName.isEmpty()){
         resultName = "repeat_unit";
         algoLog.error(tr("result name is empty, default name used"));

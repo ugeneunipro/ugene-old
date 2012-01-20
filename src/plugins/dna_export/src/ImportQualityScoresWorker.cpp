@@ -120,8 +120,8 @@ ImportPhredQualityWorker::ImportPhredQualityWorker(Actor* a) : BaseWorker(a), in
 void ImportPhredQualityWorker::init() {
     input = ports.value(BasePorts::IN_SEQ_PORT_ID());
     output = ports.value(BasePorts::OUT_SEQ_PORT_ID());
-    fileName = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>();
-    type = DNAQuality::getDNAQualityTypeByName( actor->getParameter(QUALITY_TYPE_ATTR)->getAttributeValue<QString>() );
+    fileName = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+    type = DNAQuality::getDNAQualityTypeByName( actor->getParameter(QUALITY_TYPE_ATTR)->getAttributeValue<QString>(context) );
 }
 
 bool ImportPhredQualityWorker::isReady() {

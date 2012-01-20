@@ -148,16 +148,16 @@ void HMMSearchWorker::init() {
     seqPort->addComplement(output);
     output->addComplement(seqPort);
 
-    float domENum = actor->getParameter(DOM_E_ATTR)->getAttributeValue<int>();
+    float domENum = actor->getParameter(DOM_E_ATTR)->getAttributeValue<int>(context);
     if(domENum > 0) {
         algoLog.details(tr("Power of e-value must be less or equal to zero. Using default value: 1e-1"));
         domENum = -1;
     }
     cfg.domE = pow(10, domENum);
     
-    cfg.domT = (float)actor->getParameter(DOM_T_ATTR)->getAttributeValue<double>();
-    cfg.eValueNSeqs = actor->getParameter(NSEQ_ATTR)->getAttributeValue<int>();
-    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
+    cfg.domT = (float)actor->getParameter(DOM_T_ATTR)->getAttributeValue<double>(context);
+    cfg.eValueNSeqs = actor->getParameter(NSEQ_ATTR)->getAttributeValue<int>(context);
+    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
     if(resultName.isEmpty()){
         algoLog.details(tr("Value for attribute name is empty, default name used"));
         resultName = "hmm_signal";

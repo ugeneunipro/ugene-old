@@ -121,11 +121,11 @@ bool SequenceSplitWorker::isReady() {
 Task * SequenceSplitWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(seqPort);
     
-    cfg.translate = actor->getParameter( TRANSLATE_ATTR )->getAttributeValue<bool>();
-    cfg.complement = actor->getParameter( COMPLEMENT_ATTR )->getAttributeValue<bool>();
-    cfg.extLeft = actor->getParameter( EXTEND_LEFT_ATTR )->getAttributeValue<int>();
-    cfg.extRight = actor->getParameter( EXTEND_RIGHT_ATTR )->getAttributeValue<int>();
-    cfg.gapLength = actor->getParameter( GAP_LENGTH_ATTR )->getAttributeValue<int>();
+    cfg.translate = actor->getParameter( TRANSLATE_ATTR )->getAttributeValue<bool>(context);
+    cfg.complement = actor->getParameter( COMPLEMENT_ATTR )->getAttributeValue<bool>(context);
+    cfg.extLeft = actor->getParameter( EXTEND_LEFT_ATTR )->getAttributeValue<int>(context);
+    cfg.extRight = actor->getParameter( EXTEND_RIGHT_ATTR )->getAttributeValue<int>(context);
+    cfg.gapLength = actor->getParameter( GAP_LENGTH_ATTR )->getAttributeValue<int>(context);
     cfg.gapSym = '-'; //FIXME
     QVariantMap qm = inputMessage.getData().toMap();
     

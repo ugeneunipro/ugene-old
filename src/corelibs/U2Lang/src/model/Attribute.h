@@ -35,6 +35,8 @@
 #include <U2Lang/Datatype.h>
 #include <U2Lang/Descriptor.h>
 #include <U2Lang/ScriptLibrary.h>
+#include <U2Lang/WorkflowContext.h>
+#include <U2Lang/WorkflowScriptEngine.h>
 
 namespace U2 {
 
@@ -96,8 +98,12 @@ public:
 
     
     // base realization without scripting. to support scripting for other types: see template realizations
-    template<typename T> T getAttributeValue() const {
+    template<typename T> T getAttributeValue(Workflow::WorkflowContext *) const {
         return getAttributeValueWithoutScript<T>();
+    }
+
+    template<typename T> T getAttributeValueWithoutScript() const {
+        return value.value<T>();
     }
     
     const AttributeScript & getAttributeScript() const;
@@ -122,10 +128,6 @@ public:
 
     
 private:
-    template<typename T> T getAttributeValueWithoutScript() const {
-        return value.value<T>();
-    }
-    
     void debugCheckAttributeId() const;
     
 protected:
@@ -149,12 +151,12 @@ protected:
 
 // getAttributeValue function realizations with scripting support
 template<>
-inline QString Attribute::getAttributeValue() const {
+inline QString Attribute::getAttributeValue(Workflow::WorkflowContext *ctx) const {
     if( scriptData.isEmpty() ) {
         return getAttributeValueWithoutScript<QString>();
     }
     // run script
-    QScriptEngine engine;
+    WorkflowScriptEngine engine(ctx);
     QMap<QString, QScriptValue> scriptVars;
     foreach( const Descriptor & key, scriptData.getScriptVars().uniqueKeys() ) {
         assert(!key.getId().isEmpty());
@@ -183,12 +185,12 @@ inline QString Attribute::getAttributeValue() const {
 }
 
 template<>
-inline int Attribute::getAttributeValue() const {
+inline int Attribute::getAttributeValue(Workflow::WorkflowContext *ctx) const {
     if( scriptData.isEmpty() ) {
         return getAttributeValueWithoutScript<int>();
     }
 
-    QScriptEngine engine;
+    WorkflowScriptEngine engine(ctx);
     QMap<QString, QScriptValue> scriptVars;
     foreach( const Descriptor & key, scriptData.getScriptVars().uniqueKeys() ) {
         assert(!key.getId().isEmpty());

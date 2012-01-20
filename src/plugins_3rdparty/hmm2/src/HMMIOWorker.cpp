@@ -210,7 +210,7 @@ Worker* HMMIOWorkerFactory::createWorker(Actor* a) {
 
 void HMMReader::init() {
     output = ports.value(HMM_OUT_PORT_ID);
-    urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>());
+    urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
 }
 
 Task* HMMReader::tick() {
@@ -240,8 +240,8 @@ void HMMWriter::init() {
 
 Task* HMMWriter::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>();
-    fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>();
+    url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+    fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
     QVariantMap data = inputMessage.getData().toMap();
     
     plan7_s* hmm = data.value(HMMLib::HMM2_SLOT.getId()).value<plan7_s*>();

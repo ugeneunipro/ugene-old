@@ -137,11 +137,11 @@ QDFindPolyActor::QDFindPolyActor( QDActorPrototype const* proto ) : QDActor(prot
 }
 
 int QDFindPolyActor::getMinResultLen() const {
-    return cfg->getParameter(MIN_LEN_ATTR)->getAttributeValue<int>();
+    return cfg->getParameter(MIN_LEN_ATTR)->getAttributeValueWithoutScript<int>();
 }
 
 int QDFindPolyActor::getMaxResultLen() const {
-    return cfg->getParameter(MAX_LEN_ATTR)->getAttributeValue<int>();
+    return cfg->getParameter(MAX_LEN_ATTR)->getAttributeValueWithoutScript<int>();
 }
 
 QString QDFindPolyActor::getText() const {
@@ -163,7 +163,7 @@ Task* QDFindPolyActor::getAlgorithmTask( const QVector<U2Region>& location ) {
         }
     }
 
-    QString baseStr = cfg->getParameter(BASE_ATTR)->getAttributeValue<QString>();
+    QString baseStr = cfg->getParameter(BASE_ATTR)->getAttributeValueWithoutScript<QString>();
 
     if (baseStr.size()!=1) {
         QString err = tr("'%1' error. Incorrect value of 'Base' parameter.").arg(cfg->getLabel());
@@ -172,7 +172,7 @@ Task* QDFindPolyActor::getAlgorithmTask( const QVector<U2Region>& location ) {
 
     settings.ch = baseStr.at(0).toAscii();
 
-    int percent = cfg->getParameter(PERCENT_ATTR)->getAttributeValue<int>();
+    int percent = cfg->getParameter(PERCENT_ATTR)->getAttributeValueWithoutScript<int>();
     if (percent < 50 || percent > 100) {
         algoLog.error(tr("'%1' error. Percent parameter should be not less than 50% not higher than 100%. Setting up default value: 90%."));
         settings.percent = 90;
@@ -180,7 +180,7 @@ Task* QDFindPolyActor::getAlgorithmTask( const QVector<U2Region>& location ) {
         settings.percent = percent;
     }
 
-    int minLen = cfg->getParameter(MIN_LEN_ATTR)->getAttributeValue<int>();
+    int minLen = cfg->getParameter(MIN_LEN_ATTR)->getAttributeValueWithoutScript<int>();
     if (minLen<5 || minLen>sequence.length()) {
         QString err = tr("'%1' error. Min length should be not less than 5 and not higher than sequence length.").arg(cfg->getLabel());
         return new FailTask(err);

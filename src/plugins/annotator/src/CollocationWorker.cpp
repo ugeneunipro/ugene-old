@@ -61,7 +61,7 @@ const QString CollocationWorkerFactory::ACTOR_ID("collocated-annotation-search")
 class CollocationValidator : public ConfigurationValidator {
 public:
     virtual bool validate(const Configuration* cfg, QStringList& output) const {
-        QString annotations = cfg->getParameter(ANN_ATTR)->getAttributeValue<QString>();
+        QString annotations = cfg->getParameter(ANN_ATTR)->getAttributeValueWithoutScript<QString>();
         QSet<QString> names = QSet<QString>::fromList(annotations.split(QRegExp("\\W+"), QString::SkipEmptyParts));
         if (names.size() < 2) {
             output.append(CollocationWorker::tr("At least 2 annotations are required for collocation search."));
@@ -181,11 +181,11 @@ bool CollocationWorker::isReady() {
 
 Task* CollocationWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.distance = actor->getParameter(LEN_ATTR)->getAttributeValue<int>();
-    cfg.st = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>() ? 
+    cfg.distance = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
+    cfg.st = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>(context) ? 
         CollocationsAlgorithm::NormalSearch : CollocationsAlgorithm::PartialSearch;
-    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
-    QString annotations = actor->getParameter(ANN_ATTR)->getAttributeValue<QString>();
+    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
+    QString annotations = actor->getParameter(ANN_ATTR)->getAttributeValue<QString>(context);
     names = QSet<QString>::fromList(annotations.split(QRegExp("\\W+"), QString::SkipEmptyParts));
     QVariantMap qm = inputMessage.getData().toMap();
 

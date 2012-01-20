@@ -213,21 +213,21 @@ bool BlastPlusWorker::isReady() {
 
 Task* BlastPlusWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.programName=actor->getParameter(BLASTPLUS_PROGRAM_NAME)->getAttributeValue<QString>();
-    cfg.databaseNameAndPath=actor->getParameter(BLASTPLUS_DATABASE_PATH)->getAttributeValue<QString>() +"/"+
-                            actor->getParameter(BLASTPLUS_DATABASE_NAME)->getAttributeValue<QString>();
+    cfg.programName=actor->getParameter(BLASTPLUS_PROGRAM_NAME)->getAttributeValue<QString>(context);
+    cfg.databaseNameAndPath=actor->getParameter(BLASTPLUS_DATABASE_PATH)->getAttributeValue<QString>(context) +"/"+
+                            actor->getParameter(BLASTPLUS_DATABASE_NAME)->getAttributeValue<QString>(context);
     cfg.isDefaultCosts=true;
     cfg.isDefaultMatrix=true;
     cfg.isDefautScores=true;
-    cfg.expectValue=actor->getParameter(BLASTPLUS_EXPECT_VALUE)->getAttributeValue<double>();
-    cfg.groupName=actor->getParameter(BLASTPLUS_GROUP_NAME)->getAttributeValue<QString>();
+    cfg.expectValue=actor->getParameter(BLASTPLUS_EXPECT_VALUE)->getAttributeValue<double>(context);
+    cfg.groupName=actor->getParameter(BLASTPLUS_GROUP_NAME)->getAttributeValue<QString>(context);
     if(cfg.groupName.isEmpty()){
         cfg.groupName="blast result";
     }
     cfg.wordSize=0;
-    cfg.isGappedAlignment=actor->getParameter(BLASTPLUS_GAPPED_ALN)->getAttributeValue<bool>();
+    cfg.isGappedAlignment=actor->getParameter(BLASTPLUS_GAPPED_ALN)->getAttributeValue<bool>(context);
 
-    QString path=actor->getParameter(BLASTPLUS_EXT_TOOL_PATH)->getAttributeValue<QString>();
+    QString path=actor->getParameter(BLASTPLUS_EXT_TOOL_PATH)->getAttributeValue<QString>(context);
     if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
         if(cfg.programName == "blastn"){
             AppContext::getExternalToolRegistry()->getByName(BLASTN_TOOL_NAME)->setPath(path);
@@ -244,7 +244,7 @@ Task* BlastPlusWorker::tick() {
         }
 
     }
-    path=actor->getParameter(BLASTPLUS_TMP_DIR_PATH)->getAttributeValue<QString>();
+    path=actor->getParameter(BLASTPLUS_TMP_DIR_PATH)->getAttributeValue<QString>(context);
     if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
         AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
     }
@@ -275,8 +275,8 @@ Task* BlastPlusWorker::tick() {
         }
     }
     cfg.needCreateAnnotations=false;
-    cfg.outputType=actor->getParameter(BLASTPLUS_OUT_TYPE)->getAttributeValue<int>();
-    cfg.outputOriginalFile=actor->getParameter(BLASTPLUS_ORIGINAL_OUT)->getAttributeValue<QString>();
+    cfg.outputType=actor->getParameter(BLASTPLUS_OUT_TYPE)->getAttributeValue<int>(context);
+    cfg.outputOriginalFile=actor->getParameter(BLASTPLUS_ORIGINAL_OUT)->getAttributeValue<QString>(context);
     if(cfg.outputType != 5 && cfg.outputOriginalFile.isEmpty()){
         return new FailTask(tr("Not selected BLAST output file"));
     }
@@ -327,7 +327,7 @@ void BlastPlusWorker::sl_taskFinished() {
 
     if(output) {
         QList<SharedAnnotationData> res = t->getResultedAnnotations();
-        QString annName = actor->getParameter(BLASTPLUS_GROUP_NAME)->getAttributeValue<QString>();
+        QString annName = actor->getParameter(BLASTPLUS_GROUP_NAME)->getAttributeValue<QString>(context);
         if(!annName.isEmpty()) {
             for(int i = 0; i<res.count();i++) {
                 res[i]->name = annName;

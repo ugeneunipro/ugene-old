@@ -90,7 +90,7 @@ CAP3Prompter::CAP3Prompter(Actor* p) : PrompterBase<CAP3Prompter>(p) {
 }
 
 QString CAP3Prompter::composeRichDoc() {
-    QString inputPath = target->getParameter(INPUT_FILE_PATH)->getAttributeValue<QString>();
+    QString inputPath = target->getParameter(INPUT_FILE_PATH)->getAttributeValueWithoutScript<QString>();
     QString doc = tr("Aligns long DNA reads from <u>%1</u> with \"<u>CAP3</u>\".")
         .arg(inputPath);
 
@@ -114,7 +114,7 @@ bool CAP3Worker::isReady() {
 
 Task* CAP3Worker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.inputFiles.append( actor->getParameter(INPUT_FILE_PATH)->getAttributeValue<QString>() );
+    cfg.inputFiles.append( actor->getParameter(INPUT_FILE_PATH)->getAttributeValue<QString>(context) );
 
     Task* t = new CAP3SupportTask(cfg);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));

@@ -62,7 +62,7 @@ static int ct = 0;
  * TextReader
  *************************************/
 void TextReader::init() {
-    urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>());
+    urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
 
     assert(ports.size() == 1);
     ch = ports.values().first();
@@ -97,7 +97,7 @@ Task *TextReader::tick() {
         if(!io->open(url,IOAdapterMode_Read)) {
             return new FailTask(tr("Can't load file %1").arg(url));
         }
-        if(actor->getParameter(BaseAttributes::READ_BY_LINES_ATTRIBUTE().getId())->getAttributeValue<bool>() == false) {
+        if(actor->getParameter(BaseAttributes::READ_BY_LINES_ATTRIBUTE().getId())->getAttributeValue<bool>(context) == false) {
             QByteArray buf;
             int read = 0;
             int offs = 0;

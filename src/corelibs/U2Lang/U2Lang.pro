@@ -35,8 +35,10 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/QueryDesignerRegistry.h \
            src/model/Schema.h \
            src/model/SchemaActorsRegistry.h \
+           src/model/WorkflowContext.h \
            src/model/WorkflowEnv.h \
            src/model/WorkflowManager.h \
+           src/model/WorkflowScriptEngine.h \
            src/model/WorkflowTransport.h \
            src/support/CoreLibConstants.h \
            src/support/HRSchemaSerializer.h \
@@ -79,8 +81,9 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/QueryDesignerRegistry.cpp \
            src/model/Schema.cpp \
            src/model/SchemaActorsRegistry.cpp \
+           src/model/WorkflowContext.cpp \
            src/model/WorkflowEnv.cpp \
-           src/model/WorkflowManager.cpp \
+           src/model/WorkflowScriptEngine.cpp \
            src/model/WorkflowTransport.cpp \
            src/support/CoreLibConstants.cpp \
            src/support/HRSchemaSerializer.cpp \

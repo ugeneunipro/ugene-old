@@ -124,7 +124,7 @@ bool Attribute::isEmpty() const {
 }
 
 bool Attribute::isEmptyString() const {
-    return value.type() == QVariant::String && getAttributeValue<QString>().isEmpty();
+    return value.type() == QVariant::String && getAttributeValueWithoutScript<QString>().isEmpty();
 }
 
 void Attribute::addRelation(const AttributeRelation *relation) {

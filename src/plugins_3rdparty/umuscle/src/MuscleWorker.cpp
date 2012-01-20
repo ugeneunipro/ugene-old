@@ -148,14 +148,14 @@ bool MuscleWorker::isReady() {
 
 Task* MuscleWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    int mode = actor->getParameter(MODE_ATTR)->getAttributeValue<int>();
+    int mode = actor->getParameter(MODE_ATTR)->getAttributeValue<int>(context);
     switch(mode) {
         case 0: DefaultModePreset().apply(cfg); break;
         case 1: LargeModePreset().apply(cfg); break;
         case 2: RefineModePreset().apply(cfg); break;
     }
-    cfg.stableMode = actor->getParameter(STABLE_ATTR)->getAttributeValue<bool>();
-    int maxIterations = actor->getParameter(MAX_ITERATIONS_ATTR)->getAttributeValue<int>();
+    cfg.stableMode = actor->getParameter(STABLE_ATTR)->getAttributeValue<bool>(context);
+    int maxIterations = actor->getParameter(MAX_ITERATIONS_ATTR)->getAttributeValue<int>(context);
     if(maxIterations >= 2) {
         cfg.maxIterations = maxIterations;
     }
@@ -165,7 +165,7 @@ Task* MuscleWorker::tick() {
         algoLog.error( tr("An empty MSA has been supplied to MUSCLE.") );
         return NULL;
     }
-    QString range = actor->getParameter(RANGE_ATTR)->getAttributeValue<QString>();
+    QString range = actor->getParameter(RANGE_ATTR)->getAttributeValue<QString>(context);
     if( range.isEmpty() || range == RANGE_ATTR_DEFAULT_VALUE ) {
         cfg.alignRegion = false;
         cfg.regionToAlign = U2Region(0, msa.getLength());

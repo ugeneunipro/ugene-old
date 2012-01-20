@@ -98,9 +98,17 @@ bool ScriptWorkerFactory::init(QList<DataTypePtr > input, QList<DataTypePtr > ou
     return true;
 }
 
+ScriptWorker::ScriptWorker(Actor *a)
+: BaseWorker(a), input(NULL), output(NULL)
+{
+    script = a->getScript();
+    engine = NULL;
+}
+
 void ScriptWorker::init() {
     input = ports.value(IN_PORT_ID);
     output = ports.value(OUT_PORT_ID);
+    engine = new WorkflowScriptEngine(context);
 }
 
 bool ScriptWorker::isReady() {
@@ -160,7 +168,7 @@ Task *ScriptWorker::tick() {
 
     getMessageAndSetupScriptValues(input);
 
-    Task *t = new ScriptWorkerTask(&engine, script);
+    Task *t = new ScriptWorkerTask(engine, script);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     return t;
 }
@@ -188,19 +196,15 @@ void ScriptWorker::sl_taskFinished() {
         //MAlignment ma = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<MAlignment>();
         map[desc.getId()] = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant();
     }
-    if(output) {
-        if(t->isList) {
-            QString varName = "out_" + BaseTypes::DNA_SEQUENCE_TYPE()->getId();
-            QList<DNASequence> seqs = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<QList<DNASequence> >();
-            //QList<DNASequence> seqs = t->getResult().value<QList<DNASequence> >();
-            foreach(DNASequence seq, seqs) {
-                QVariantMap message;
-                //message[ptr->getAllDescriptors().first().getId()] = QVariant::fromValue<DNASequence>(seq);
-                map[BaseTypes::DNA_SEQUENCE_TYPE()->getId()] = QVariant::fromValue<DNASequence>(seq);
+    if (output) {
+        if (t->isList) {
+            QString varName = "out_" + BaseSlots::DNA_SEQUENCE_SLOT().getId();
+            QList<U2DataId> seqs = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<QList<U2DataId> >();
+            foreach(U2DataId seqId, seqs) {
+                map[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = QVariant::fromValue<U2DataId>(seqId);
                 output->put(Message(ptr,map));
             }
-        }
-        else {
+        } else {
             QVariant scriptResult = t->getResult();
             output->put(Message(ptr,map));
         }
@@ -211,6 +215,9 @@ void ScriptWorker::sl_taskFinished() {
     }
 }
 
+void ScriptWorker::cleanup() {
+    delete engine;
+}
 
 } //namespace LocalWorkflow
 } //namespace U2

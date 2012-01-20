@@ -111,12 +111,12 @@ QString QDWMActor::getText() const {
     case QDStrand_ComplementOnly: strandName = tr("complement strand"); break;
     }
 
-    QString profileUrl = params.value(PROFILE_URL_ATTR)->getAttributeValue<QString>();
+    QString profileUrl = params.value(PROFILE_URL_ATTR)->getAttributeValueWithoutScript<QString>();
     if (profileUrl.isEmpty()) {
         profileUrl = "unset";
     }
     profileUrl = QString("<a href=%1>%2</a>").arg(PROFILE_URL_ATTR).arg(profileUrl);
-    int score = params.value(SCORE_ATTR)->getAttributeValue<int>();
+    int score = params.value(SCORE_ATTR)->getAttributeValueWithoutScript<int>();
     QString scoreStr = QString("<a href=%1>%2%</a>").arg(SCORE_ATTR).arg(score);
     
     QString doc = tr("Searches TFBS with all profiles from <u>%1</u> "
@@ -134,8 +134,8 @@ Task* QDWMActor::getAlgorithmTask(const QVector<U2Region>& location) {
     QMap<QString, Attribute*> params = cfg->getParameters();
 
     WeightMatrixSearchCfg config;
-    config.minPSUM = params.value(SCORE_ATTR)->getAttributeValue<int>();
-    const QString& modelUrl = params.value(PROFILE_URL_ATTR)->getAttributeValue<QString>();
+    config.minPSUM = params.value(SCORE_ATTR)->getAttributeValueWithoutScript<int>();
+    const QString& modelUrl = params.value(PROFILE_URL_ATTR)->getAttributeValueWithoutScript<QString>();
 
     if (dnaSeq.alphabet->getType() == DNAAlphabet_NUCL) {        
         config.complOnly = strand == QDStrand_ComplementOnly;

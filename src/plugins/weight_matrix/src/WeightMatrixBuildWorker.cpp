@@ -140,8 +140,8 @@ Task* PWMatrixBuildWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
     mtype = PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE();
     QVariantMap data = inputMessage.getData().toMap();
-    cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>();
-    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>() ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
+    cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>(context);
+    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
     const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
     Task* t = new PWMatrixBuildTask(cfg, ma);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
@@ -231,7 +231,7 @@ Task* PFMatrixBuildWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
     mtype = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
     QVariantMap data = inputMessage.getData().toMap();
-    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>() ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
+    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
     const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
     Task* t = new PFMatrixBuildTask(cfg, ma);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
@@ -336,8 +336,8 @@ Task* PFMatrixConvertWorker::tick() {
     QVariantMap data = inputMessage.getData().toMap();
     PWMatrix model = data.value(PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE_ID).value<PWMatrix>();
     QString url = data.value(BaseSlots::URL_SLOT().getId()).toString();
-    cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>();
-    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>() ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
+    cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>(context);
+    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
     const PFMatrix& ma = data.value(PFMatrixWorkerFactory::FMATRIX_SLOT.getId()).value<PFMatrix>();
     Task* t = new PWMatrixBuildTask(cfg, ma);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));

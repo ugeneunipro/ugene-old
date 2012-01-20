@@ -24,6 +24,7 @@
 
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
+#include <U2Lang/WorkflowScriptEngine.h>
 
 namespace U2 {
 
@@ -32,15 +33,15 @@ namespace LocalWorkflow {
 class ScriptWorkerTask: public Task {
     Q_OBJECT
 public:
-    ScriptWorkerTask(QScriptEngine *_engine, AttributeScript*  _script ):Task(tr("Script worker task"),TaskFlag_None), isList(false),engine(_engine),script(_script) {}
+    ScriptWorkerTask(WorkflowScriptEngine *_engine, AttributeScript*  _script ):Task(tr("Script worker task"),TaskFlag_None), isList(false),engine(_engine),script(_script) {}
     void run();
     QVariant getResult() const {return result;}
-    QScriptEngine *getEngine() {return engine;}
+    WorkflowScriptEngine *getEngine() {return engine;}
     bool isList;
 
 private:
     QVariant result;
-    QScriptEngine *engine;
+    WorkflowScriptEngine *engine;
     AttributeScript *script;
 };
 
@@ -55,12 +56,12 @@ protected:
 class ScriptWorker: public BaseWorker {
     Q_OBJECT
 public:
-    ScriptWorker(Actor *a): BaseWorker(a), input(NULL), output(NULL) {script = a->getScript();}
+    ScriptWorker(Actor *a);
     virtual void init();
     virtual bool isReady();
     virtual bool isDone();
     virtual Task* tick();
-    virtual void cleanup() {};
+    virtual void cleanup();
 
 private slots:
     void sl_taskFinished();
@@ -71,7 +72,7 @@ private:
     //QVariant scriptResult;
 
     CommunicationChannel *input, *output;
-    QScriptEngine engine;
+    WorkflowScriptEngine *engine;
     AttributeScript *script;  
 };
 

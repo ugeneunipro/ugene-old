@@ -86,7 +86,7 @@ Task* ExternalProcessWorker::tick() {
     foreach(Attribute *a, actor->getAttributes()) {
         int i = execString.indexOf(QRegExp("\\$" + a->getDisplayName() + "(\\W|$)"));
         if(i != -1) {
-            execString.replace(i, a->getDisplayName().size() + 1 , a->getAttributeValue<QString>()); //set parameters in command line with attributes values
+            execString.replace(i, a->getDisplayName().size() + 1 , a->getAttributeValue<QString>(context)); //set parameters in command line with attributes values
         }
     }
 

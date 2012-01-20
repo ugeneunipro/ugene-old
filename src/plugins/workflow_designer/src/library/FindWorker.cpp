@@ -269,14 +269,14 @@ Task* FindWorker::tick() {
     cfg.searchRegion.length = seq.length();
     
     // other parameters
-    cfg.maxErr = actor->getParameter(ERR_ATTR)->getAttributeValue<int>();
-    cfg.insDelAlg = actor->getParameter(ALGO_ATTR)->getAttributeValue<bool>();
-    cfg.useAmbiguousBases = actor->getParameter(AMBIGUOUS_ATTR)->getAttributeValue<bool>();
+    cfg.maxErr = actor->getParameter(ERR_ATTR)->getAttributeValue<int>(context);
+    cfg.insDelAlg = actor->getParameter(ALGO_ATTR)->getAttributeValue<bool>(context);
+    cfg.useAmbiguousBases = actor->getParameter(AMBIGUOUS_ATTR)->getAttributeValue<bool>(context);
 
-    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
+    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
     
     // translations
-    cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>());
+    cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
     if(cfg.strand != FindAlgorithmStrand_Direct /*&& seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
         QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
             lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
@@ -286,7 +286,7 @@ Task* FindWorker::tick() {
             cfg.strand = FindAlgorithmStrand_Direct;
         }
     }
-    if(actor->getParameter(AMINO_ATTR)->getAttributeValue<bool>()) {
+    if(actor->getParameter(AMINO_ATTR)->getAttributeValue<bool>(context)) {
         DNATranslationType tt = seq.alphabet->getType() == DNAAlphabet_NUCL ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
         QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(seq.alphabet, tt);
         if (!TTs.isEmpty()) {
@@ -295,7 +295,7 @@ Task* FindWorker::tick() {
     }
     
     // for each pattern run find task
-    QStringList ptrnStrs = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>().split(PATTERN_DELIMITER, QString::SkipEmptyParts);
+    QStringList ptrnStrs = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>(context).split(PATTERN_DELIMITER, QString::SkipEmptyParts);
     if(ptrnStrs.isEmpty()) {
         return new FailTask(tr("Empty pattern given"));
     }

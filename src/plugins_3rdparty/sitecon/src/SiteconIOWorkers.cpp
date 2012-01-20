@@ -202,7 +202,7 @@ QString SiteconWritePrompter::composeRichDoc() {
 
 void SiteconReader::init() {
     output = ports.value(SITECON_OUT_PORT_ID);
-    urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>());
+    urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
     mtype = SiteconWorkerFactory::SITECON_MODEL_TYPE();
 }
 
@@ -235,8 +235,8 @@ void SiteconWriter::init() {
 
 Task* SiteconWriter::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>();
-    fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>();
+    url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+    fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
     QVariantMap data = inputMessage.getData().toMap();
     SiteconModel model = data.value(SiteconWorkerFactory::SITECON_SLOT.getId()).value<SiteconModel>();
     

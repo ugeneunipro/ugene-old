@@ -305,7 +305,7 @@ void SchemaSerializer::updatePortBindings(const QList<Actor*> & procs) {
     foreach(Actor * actor, procs) {
         foreach(Port * p, actor->getInputPorts()) {
             IntegralBusPort * port = qobject_cast<IntegralBusPort*>(p);
-            QStrStrMap busMap = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValue<QStrStrMap>();
+            QStrStrMap busMap = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
             foreach(const QString & key, busMap.uniqueKeys()) {
                 QString val = busMap.value(key);
                 QStringList vals = val.split(":", QString::SkipEmptyParts);

@@ -209,10 +209,10 @@ Task* QDWorker::tick() {
     settings.dnaSequence = seq;
     settings.region = U2Region(0, seq.length());
     scheme->setSequence(settings.dnaSequence);
-    bool outputType = actor->getParameter(OUTPUT_ATTR)->getAttributeValue<bool>();
+    bool outputType = actor->getParameter(OUTPUT_ATTR)->getAttributeValueWithoutScript<bool>();
     if (outputType) {
         settings.outputType = QDRunSettings::Single;
-        settings.offset = actor->getParameter(OFFSET_ATTR)->getAttributeValue<int>();
+        settings.offset = actor->getParameter(OFFSET_ATTR)->getAttributeValueWithoutScript<int>();
     } else {
         settings.outputType = QDRunSettings::Group;
     }

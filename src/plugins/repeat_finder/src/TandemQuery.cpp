@@ -44,7 +44,7 @@ namespace {
 // QDTandemActor
 
 int QDTandemActor::getMinResultLen() const {
-    return cfg->getParameter(MIN_TANDEM_SIZE_ATTRIBUTE)->getAttributeValue<int>();
+    return cfg->getParameter(MIN_TANDEM_SIZE_ATTRIBUTE)->getAttributeValueWithoutScript<int>();
 }
 
 int QDTandemActor::getMaxResultLen() const {
@@ -53,10 +53,10 @@ int QDTandemActor::getMaxResultLen() const {
 
 QString QDTandemActor::getText() const {
 
-    int minPeriod = cfg->getParameter(MIN_PERIOD_ATTRIBUTE)->getAttributeValue<int>();
+    int minPeriod = cfg->getParameter(MIN_PERIOD_ATTRIBUTE)->getAttributeValueWithoutScript<int>();
     QString minPeriodString = QString("<a href=\"%1\">%2</a>").arg(MIN_PERIOD_ATTRIBUTE).arg(minPeriod);
 
-    int maxPeriod = cfg->getParameter(MAX_PERIOD_ATTRIBUTE)->getAttributeValue<int>();
+    int maxPeriod = cfg->getParameter(MAX_PERIOD_ATTRIBUTE)->getAttributeValueWithoutScript<int>();
     QString maxPeriodString = QString("<a href=\"%1\">%2</a>").arg(MAX_PERIOD_ATTRIBUTE).arg(maxPeriod);
 
     QString text = QDTandemActor::tr("Finds tandem repeats with periods from %1 to %2.").arg(minPeriodString).arg(maxPeriodString);
@@ -69,13 +69,13 @@ bool QDTandemActor::hasStrand() const {
 }
 
 Task *QDTandemActor::getAlgorithmTask(const QVector<U2Region> &location) {
-    settings.minPeriod = cfg->getParameter(MIN_PERIOD_ATTRIBUTE)->getAttributeValue<int>();
-    settings.maxPeriod = cfg->getParameter(MAX_PERIOD_ATTRIBUTE)->getAttributeValue<int>();
-    settings.algo = (TSConstants::TSAlgo)cfg->getParameter(ALGORITHM_ATTRIBUTE)->getAttributeValue<int>();
-    settings.minTandemSize = cfg->getParameter(MIN_TANDEM_SIZE_ATTRIBUTE)->getAttributeValue<int>();
-    settings.minRepeatCount = cfg->getParameter(MIN_REPEAT_COUNT_ATTRIBUTE)->getAttributeValue<int>();
-    settings.showOverlappedTandems = cfg->getParameter(SHOW_OVERLAPPED_TANDEMS_ATTRIBUTE)->getAttributeValue<bool>();
-    settings.nThreads = cfg->getParameter(N_THREADS_ATTRIBUTE)->getAttributeValue<int>();
+    settings.minPeriod = cfg->getParameter(MIN_PERIOD_ATTRIBUTE)->getAttributeValueWithoutScript<int>();
+    settings.maxPeriod = cfg->getParameter(MAX_PERIOD_ATTRIBUTE)->getAttributeValueWithoutScript<int>();
+    settings.algo = (TSConstants::TSAlgo)cfg->getParameter(ALGORITHM_ATTRIBUTE)->getAttributeValueWithoutScript<int>();
+    settings.minTandemSize = cfg->getParameter(MIN_TANDEM_SIZE_ATTRIBUTE)->getAttributeValueWithoutScript<int>();
+    settings.minRepeatCount = cfg->getParameter(MIN_REPEAT_COUNT_ATTRIBUTE)->getAttributeValueWithoutScript<int>();
+    settings.showOverlappedTandems = cfg->getParameter(SHOW_OVERLAPPED_TANDEMS_ATTRIBUTE)->getAttributeValueWithoutScript<bool>();
+    settings.nThreads = cfg->getParameter(N_THREADS_ATTRIBUTE)->getAttributeValueWithoutScript<int>();
 
     const DNASequence& dnaSeq = scheme->getSequence();
     Task *task = new Task(tr("TandemQDTask"), TaskFlag_NoRun);
@@ -120,7 +120,7 @@ QList<QPair<QString, QString> > QDTandemActor::saveConfiguration() const {
     for (int i = 0;i < result.size();i++) {
         QPair<QString, QString> &attribute = result[i];
         if (algorithmAttribute->getId() == attribute.first) {
-            TSConstants::TSAlgo algorithm = (TSConstants::TSAlgo)algorithmAttribute->getAttributeValue<int>();
+            TSConstants::TSAlgo algorithm = (TSConstants::TSAlgo)algorithmAttribute->getAttributeValueWithoutScript<int>();
             switch(algorithm) {
             case TSConstants::AlgoSuffix:
                 attribute.second = ALGORITHM_SUFFIX;

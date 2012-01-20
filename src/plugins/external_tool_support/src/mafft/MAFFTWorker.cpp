@@ -147,14 +147,14 @@ bool MAFFTWorker::isReady() {
 
 Task* MAFFTWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>();
-    cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>();
-    cfg.maxNumberIterRefinement=actor->getParameter(NUM_ITER)->getAttributeValue<int>();
-    QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>();
+    cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>(context);
+    cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>(context);
+    cfg.maxNumberIterRefinement=actor->getParameter(NUM_ITER)->getAttributeValue<int>(context);
+    QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>(context);
     if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
         AppContext::getExternalToolRegistry()->getByName(MAFFT_TOOL_NAME)->setPath(path);
     }
-    path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>();
+    path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>(context);
     if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
         AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
     }

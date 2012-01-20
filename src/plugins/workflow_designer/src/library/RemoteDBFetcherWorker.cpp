@@ -94,14 +94,14 @@ void RemoteDBFetcherWorker::init()
     output = ports.value(BasePorts::OUT_SEQ_PORT_ID());
     
     assert(dbid.isEmpty());
-    dbid = actor->getParameter(DBID_ID)->getAttributeValue<QString>();
+    dbid = actor->getParameter(DBID_ID)->getAttributeValue<QString>(context);
     if(RemoteDBFetcherFactory::cuteDbNames.values().contains(dbid.toLower())) {
         dbid = RemoteDBFetcherFactory::cuteDbNames.key(dbid.toLower());
         assert(!dbid.isEmpty());
     }
-    seqids = actor->getParameter(SEQID_ID)->getAttributeValue<QString>().split(";", QString::SkipEmptyParts);
+    seqids = actor->getParameter(SEQID_ID)->getAttributeValue<QString>(context).split(";", QString::SkipEmptyParts);
     
-    fullPathDir = actor->getParameter(PATH_ID)->getAttributeValue<QString>();
+    fullPathDir = actor->getParameter(PATH_ID)->getAttributeValue<QString>(context);
     if (fullPathDir == DEFAULT_PATH) {
         fullPathDir = LoadRemoteDocumentTask::getDefaultDownloadDirectory();
     }

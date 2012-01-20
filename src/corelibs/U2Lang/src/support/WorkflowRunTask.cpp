@@ -319,22 +319,9 @@ DocumentFormat *getDocumentFormatByProtoId(QString protoId) {
 static QStringList getOutputFiles(const QList<Actor*> & procs) {
     QStringList res;
     foreach(Actor *a, procs) {
-        // commented because of UGENE-537
-        //Attribute * formatAttr = a->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
         foreach(Attribute *attr, a->getProto()->getAttributes()) {
             if(attr->getId() == BaseAttributes::URL_OUT_ATTRIBUTE().getId()) {
-                QString str = a->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>();
-                // commented because of UGENE-537
-                /*DocumentFormat *format = NULL;
-                if (NULL != formatAttr) {
-                    QString formatId = formatAttr->getAttributeValue<QString>();
-                    format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
-                } else {
-                    format = getDocumentFormatByProtoId(a->getProto()->getId());
-                }
-                if (NULL != format) {
-                    str = GUrlUtils::ensureFileExt(GUrl(str), format->getSupportedDocumentFileExtensions()).getURLString();
-                }*/
+                QString str = a->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValueWithoutScript<QString>();
                 QUrl url(str);
                 if(url.isValid()) {
                     res << url.toString();

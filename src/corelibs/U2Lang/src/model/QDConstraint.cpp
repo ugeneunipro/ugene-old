@@ -46,11 +46,11 @@ QDDistanceConstraint::~QDDistanceConstraint() {
 }
 
 int QDDistanceConstraint::getMin() const {
-    return cfg->getParameter(QDConstraintController::MIN_LEN_ATTR)->getAttributeValue<int>();
+    return cfg->getParameter(QDConstraintController::MIN_LEN_ATTR)->getAttributeValueWithoutScript<int>();
 }
 
 int QDDistanceConstraint::getMax() const {
-    return cfg->getParameter(QDConstraintController::MAX_LEN_ATTR)->getAttributeValue<int>();
+    return cfg->getParameter(QDConstraintController::MAX_LEN_ATTR)->getAttributeValueWithoutScript<int>();
 }
 
 void QDDistanceConstraint::setMin(int min) {

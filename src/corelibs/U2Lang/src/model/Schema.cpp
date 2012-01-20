@@ -317,7 +317,7 @@ void Schema::replaceInLinksAndSlots(Actor *proc, const PortAlias &portAlias) {
 
             // replace slots links
             Attribute *a = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID);
-            QStrStrMap busMap = a->getAttributeValue<QStrStrMap>();
+            QStrStrMap busMap = a->getAttributeValueWithoutScript<QStrStrMap>();
             QStrStrMap subBusMap;
             foreach (const SlotAlias &slotAlias, portAlias.getSlotAliases()) {
                 subBusMap[slotAlias.getSourceSlotId()] = busMap[slotAlias.getAlias()];
@@ -348,7 +348,7 @@ void Schema::replaceOutSlots(Actor *origProc, const PortAlias &portAlias) {
     foreach (Actor *proc, procs) {
         foreach (Port *p, proc->getInputPorts()) {
             Attribute *a = p->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID);
-            QStrStrMap busMap = a->getAttributeValue<QStrStrMap>();
+            QStrStrMap busMap = a->getAttributeValueWithoutScript<QStrStrMap>();
             QStrStrMap newMap;
 
             QMapIterator<QString, QString> it(busMap);

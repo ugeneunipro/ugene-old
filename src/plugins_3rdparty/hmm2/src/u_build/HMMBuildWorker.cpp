@@ -215,19 +215,19 @@ Task* HMMBuildWorker::tick() {
         return t;
     } else { // hmm build task
         Message inputMessage = getMessageAndSetupScriptValues(input);
-        cfg.name = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
+        cfg.name = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
         if(cfg.name.isEmpty()){
             cfg.name = HMM_PROFILE_DEFAULT_NAME;
             algoLog.details(tr("Schema name not specified. Using default value: '%1'").arg(cfg.name));
         }
-        cfg.strategy = HMMBuildStrategy(actor->getParameter(MODE_ATTR)->getAttributeValue<int>());
-        calSettings.fixedlen = actor->getParameter(FIXEDLEN_ATTR)->getAttributeValue<int>();
-        calSettings.lenmean = actor->getParameter(LENMEAN_ATTR)->getAttributeValue<int>();
-        calSettings.nsample = actor->getParameter(NUM_ATTR)->getAttributeValue<int>();
-        calSettings.lensd = (float)actor->getParameter(LENDEV_ATTR)->getAttributeValue<double>();
-        calSettings.seed = actor->getParameter(SEED_ATTR)->getAttributeValue<int>();
-        calSettings.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>();
-        calibrate = actor->getParameter(CALIBRATE_ATTR)->getAttributeValue<bool>();
+        cfg.strategy = HMMBuildStrategy(actor->getParameter(MODE_ATTR)->getAttributeValue<int>(context));
+        calSettings.fixedlen = actor->getParameter(FIXEDLEN_ATTR)->getAttributeValue<int>(context);
+        calSettings.lenmean = actor->getParameter(LENMEAN_ATTR)->getAttributeValue<int>(context);
+        calSettings.nsample = actor->getParameter(NUM_ATTR)->getAttributeValue<int>(context);
+        calSettings.lensd = (float)actor->getParameter(LENDEV_ATTR)->getAttributeValue<double>(context);
+        calSettings.seed = actor->getParameter(SEED_ATTR)->getAttributeValue<int>(context);
+        calSettings.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>(context);
+        calibrate = actor->getParameter(CALIBRATE_ATTR)->getAttributeValue<bool>(context);
         const MAlignment& ma = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
         
         Task* t = new HMMBuildTask(cfg, ma);

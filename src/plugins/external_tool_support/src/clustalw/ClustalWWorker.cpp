@@ -206,43 +206,43 @@ bool ClustalWWorker::isReady() {
 
 Task* ClustalWWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>();
-    cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>();
-    cfg.gapDist=actor->getParameter(GAP_DIST)->getAttributeValue<float>();
-    cfg.endGaps=actor->getParameter(END_GAPS)->getAttributeValue<bool>();
-    cfg.noHGaps=actor->getParameter(NO_HGAPS)->getAttributeValue<bool>();
-    cfg.noPGaps=actor->getParameter(NO_PGAPS)->getAttributeValue<bool>();
-    if(actor->getParameter(ITERATION)->getAttributeValue<int>() != 0){
-        if(actor->getParameter(ITERATION)->getAttributeValue<int>() == 1){
+    cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>(context);
+    cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>(context);
+    cfg.gapDist=actor->getParameter(GAP_DIST)->getAttributeValue<float>(context);
+    cfg.endGaps=actor->getParameter(END_GAPS)->getAttributeValue<bool>(context);
+    cfg.noHGaps=actor->getParameter(NO_HGAPS)->getAttributeValue<bool>(context);
+    cfg.noPGaps=actor->getParameter(NO_PGAPS)->getAttributeValue<bool>(context);
+    if(actor->getParameter(ITERATION)->getAttributeValue<int>(context) != 0){
+        if(actor->getParameter(ITERATION)->getAttributeValue<int>(context) == 1){
             cfg.iterationType="TREE";
-        }else if(actor->getParameter(ITERATION)->getAttributeValue<int>() == 2){
+        }else if(actor->getParameter(ITERATION)->getAttributeValue<int>(context) == 2){
             cfg.iterationType="ALIGNMENT";
         }
-        if(actor->getParameter(NUM_ITERATIONS)->getAttributeValue<int>() != 3){
-            cfg.numIterations=actor->getParameter(NUM_ITERATIONS)->getAttributeValue<int>();
+        if(actor->getParameter(NUM_ITERATIONS)->getAttributeValue<int>(context) != 3){
+            cfg.numIterations=actor->getParameter(NUM_ITERATIONS)->getAttributeValue<int>(context);
         }
     }
-    if(actor->getParameter(MATRIX)->getAttributeValue<int>() == -1){
-        if(actor->getParameter(MATRIX)->getAttributeValue<int>() == 0){
+    if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == -1){
+        if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 0){
             cfg.matrix="IUB";
-        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>() == 1){
+        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 1){
             cfg.matrix="CLUSTALW";
-        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>() == 2){
+        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 2){
             cfg.matrix="BLOSUM";
-        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>() == 3){
+        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 3){
             cfg.matrix="PAM";
-        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>() == 4){
+        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 4){
             cfg.matrix="GONNET";
-        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>() == 5){
+        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 5){
             cfg.matrix="ID";
         }
     }
 
-    QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>();
+    QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>(context);
     if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
         AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->setPath(path);
     }
-    path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>();
+    path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>(context);
     if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
         AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
     }

@@ -71,7 +71,7 @@ QDSWActor::QDSWActor(QDActorPrototype const* proto) : QDActor(proto), algo(0) {
 }
 
 int QDSWActor::getMinResultLen() const {
-    return cfg->getParameter(PATTERN_ATTR)->getAttributeValue<QString>().toAscii().size()/2;
+    return cfg->getParameter(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toAscii().size()/2;
 }
 
 int QDSWActor::getMaxResultLen() const {
@@ -81,14 +81,14 @@ int QDSWActor::getMaxResultLen() const {
 QString QDSWActor::getText() const {
     QMap<QString, Attribute*> params = cfg->getParameters();
 
-    QString pattern = params.value(PATTERN_ATTR)->getAttributeValue<QString>().toAscii().toUpper();
+    QString pattern = params.value(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toAscii().toUpper();
     if (pattern.isEmpty()) {
         pattern = "unset";
     }
 
     pattern = QString("<a href=%1>%2</a>").arg(PATTERN_ATTR).arg(pattern);
 
-    int percentOfScore = params.value(SCORE_ATTR)->getAttributeValue<int>();
+    int percentOfScore = params.value(SCORE_ATTR)->getAttributeValueWithoutScript<int>();
     QString percentOfScoreStr = QString("<a href=%1>%2%</a>").arg(SCORE_ATTR).arg(percentOfScore);
     QString match = percentOfScore < 100 ? 
         QDSWActor::tr("matches with <u>at least %1 score</u>").arg(percentOfScoreStr) : QDSWActor::tr("exact matches");
@@ -127,27 +127,27 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
             settings.strand = StrandOption_ComplementOnly;
             break;
     }
-    settings.percentOfScore = params.value(SCORE_ATTR)->getAttributeValue<int>();
+    settings.percentOfScore = params.value(SCORE_ATTR)->getAttributeValueWithoutScript<int>();
     if(settings.percentOfScore<0&&settings.percentOfScore>100) {
         QString err = tr("%1: percent of score out of bounds.").arg(getParameters()->getLabel());
         return new FailTask(err);
     }
-    settings.gapModel.scoreGapExtd = params.value(GAPEXT_ATTR)->getAttributeValue<double>();
-    settings.gapModel.scoreGapOpen = params.value(GAPOPEN_ATTR)->getAttributeValue<double>();
-    mtrx = params.value(MATRIX_ATTR)->getAttributeValue<QString>();
+    settings.gapModel.scoreGapExtd = params.value(GAPEXT_ATTR)->getAttributeValueWithoutScript<double>();
+    settings.gapModel.scoreGapOpen = params.value(GAPOPEN_ATTR)->getAttributeValueWithoutScript<double>();
+    mtrx = params.value(MATRIX_ATTR)->getAttributeValueWithoutScript<QString>();
     settings.pSm = AppContext::getSubstMatrixRegistry()->getMatrix(mtrx);
-    QString filter = params.value(FILTER_ATTR)->getAttributeValue<QString>();
+    QString filter = params.value(FILTER_ATTR)->getAttributeValueWithoutScript<QString>();
     settings.resultFilter = AppContext::getSWResultFilterRegistry()->getFilter(filter);
     if(!settings.resultFilter) {
         QString err = tr("%1: incorrect result filter.").arg(getParameters()->getLabel());
         return new FailTask(err);
     }
-    settings.ptrn = params.value(PATTERN_ATTR)->getAttributeValue<QString>().toAscii().toUpper();
+    settings.ptrn = params.value(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toAscii().toUpper();
     if(settings.ptrn.isEmpty()) {
         QString err = tr("%1: pattern is empty.").arg(getParameters()->getLabel());
         return new FailTask(err);
     }
-    QString algName = params.value(ALGO_ATTR)->getAttributeValue<QString>();
+    QString algName = params.value(ALGO_ATTR)->getAttributeValueWithoutScript<QString>();
     algo = AppContext::getSmithWatermanTaskFactoryRegistry()->getFactory(algName);
     if(!algo) {
         QString err = tr("%1: can not find %2.")
@@ -170,7 +170,7 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
         }
     }
 
-    if (params.value(AMINO_ATTR)->getAttributeValue<bool>()) {
+    if (params.value(AMINO_ATTR)->getAttributeValueWithoutScript<bool>()) {
         DNATranslationType tt = (dnaSeq.alphabet->getType() == DNAAlphabet_NUCL) ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
         QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(dnaSeq.alphabet, tt);
         if (!TTs.isEmpty()) {

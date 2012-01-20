@@ -212,7 +212,7 @@ Task* GenerateDNAWorker::tick() {
     DNASequenceGeneratorConfig cfg;
     cfg.sequenceName = "Sequence ";
 
-    QString cs = actor->getParameter(CONTENT_ATTR)->getAttributeValue<QString>();
+    QString cs = actor->getParameter(CONTENT_ATTR)->getAttributeValue<QString>(context);
     if (cs == ContentIds::REFERENCE) {
         cfg.useRef = true;
     } else if (cs == ContentIds::MANUAL) {
@@ -222,16 +222,16 @@ Task* GenerateDNAWorker::tick() {
         return new FailTask(err);
     }
 
-    cfg.seed = actor->getParameter(SEED)->getAttributeValue<int>();
+    cfg.seed = actor->getParameter(SEED)->getAttributeValue<int>(context);
 
     if (cfg.useRef) {
-        cfg.refUrl = actor->getParameter(REFERENCE_ATTR)->getAttributeValue<QString>();
+        cfg.refUrl = actor->getParameter(REFERENCE_ATTR)->getAttributeValue<QString>(context);
         if (cfg.refUrl.isEmpty()) {
             QString err = tr("Reference url is not set.");
             return new FailTask(err);
         }
     } else {
-        if(actor->getParameter(ALGORITHM)->getAttributeValue<QString>() == "GC Skew") {
+        if(actor->getParameter(ALGORITHM)->getAttributeValue<QString>(context) == "GC Skew") {
             int percentA = qrand();
             int percentC = qrand();
             int percentT = qrand();
@@ -242,7 +242,7 @@ Task* GenerateDNAWorker::tick() {
             percentC = (float)percentC / sum * 100;
             percentT = (float)percentT / sum * 100;
             int CG = percentG + percentG;
-            float gcSkew = actor->getParameter(GC_SKEW)->getAttributeValue<float>();
+            float gcSkew = actor->getParameter(GC_SKEW)->getAttributeValue<float>(context);
             percentC = (1 - gcSkew)* CG / 2;
             percentG = percentC + gcSkew * CG;
             if(percentC < 0 || percentC > 100 || percentG < 0 || percentG > 100) {
@@ -254,10 +254,10 @@ Task* GenerateDNAWorker::tick() {
             cfg.content['G'] = percentG / 100.0;
             cfg.content['T'] = percentT / 100.0;
         } else {
-            int percentA = actor->getParameter(A_PERCENT_ATTR)->getAttributeValue<int>();
-            int percentC = actor->getParameter(C_PERCENT_ATTR)->getAttributeValue<int>();
-            int percentG = actor->getParameter(G_PERCENT_ATTR)->getAttributeValue<int>();
-            int percentT = actor->getParameter(T_PERCENT_ATTR)->getAttributeValue<int>();
+            int percentA = actor->getParameter(A_PERCENT_ATTR)->getAttributeValue<int>(context);
+            int percentC = actor->getParameter(C_PERCENT_ATTR)->getAttributeValue<int>(context);
+            int percentG = actor->getParameter(G_PERCENT_ATTR)->getAttributeValue<int>(context);
+            int percentT = actor->getParameter(T_PERCENT_ATTR)->getAttributeValue<int>(context);
             if (percentA<0 || percentC<0 || percentG<0 || percentT<0) {
                 QString err = tr("Base content must be between 0 and 100");
                 return new FailTask(err);
@@ -276,15 +276,15 @@ Task* GenerateDNAWorker::tick() {
         cfg.alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     }
     
-    cfg.length = actor->getParameter(LENGHT_ATTR)->getAttributeValue<int>();
-    cfg.window = actor->getParameter(WINDOW_SIZE)->getAttributeValue<int>();
+    cfg.length = actor->getParameter(LENGHT_ATTR)->getAttributeValue<int>(context);
+    cfg.window = actor->getParameter(WINDOW_SIZE)->getAttributeValue<int>(context);
 
     if (cfg.length < 10) {
         QString err = "'length' parameter value must be not less than 10";
         return new FailTask(err);
     }
 
-    cfg.numSeqs = actor->getParameter(SEQ_NUM_ATTR)->getAttributeValue<int>();
+    cfg.numSeqs = actor->getParameter(SEQ_NUM_ATTR)->getAttributeValue<int>(context);
 
     if (cfg.numSeqs < 1) {
         QString err = "Number of sequences to generate is less than 1";

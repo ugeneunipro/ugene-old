@@ -28,9 +28,11 @@
 
 namespace U2 {
 
+class WorkflowScriptEngine;
+
 class U2LANG_EXPORT WorkflowScriptLibrary {
 public:
-    static void initEngine(QScriptEngine * engine);
+    static void initEngine(WorkflowScriptEngine *engine);
     
     // ================== Sequence =======================
     static QScriptValue getSubsequence(QScriptContext *ctx, QScriptEngine *engine);

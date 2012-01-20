@@ -140,10 +140,10 @@ bool KalignWorker::isReady() {
 
 Task* KalignWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>();
-    cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>();
-    cfg.termGapPenalty=actor->getParameter(TERM_GAP_PENALTY)->getAttributeValue<float>();
-	cfg.secret=actor->getParameter(BONUS_SCORE)->getAttributeValue<float>();
+    cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>(context);
+    cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>(context);
+    cfg.termGapPenalty=actor->getParameter(TERM_GAP_PENALTY)->getAttributeValue<float>(context);
+	cfg.secret=actor->getParameter(BONUS_SCORE)->getAttributeValue<float>(context);
 
     MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
     if( msa.isEmpty() ) {

@@ -56,7 +56,7 @@ done(false), attachDoc2Proj(false) {
 }
 
 void BaseDocReader::init() {
-    QStringList urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>());
+    QStringList urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
     Project* p = AppContext::getProject();
     foreach(QString url, urls) {
         Document* doc = NULL;
@@ -169,16 +169,16 @@ Task* BaseDocWriter::tick() {
         
         Attribute * formatAttr = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
         if( formatAttr != NULL ) { // user sets format
-            QString formatId = formatAttr->getAttributeValue<QString>();
+            QString formatId = formatAttr->getAttributeValue<QString>(context);
             format = AppContext::getDocumentFormatRegistry()->getFormatById( formatId );
         }
         Attribute * urlAttribute = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
-        url = urlAttribute->getAttributeValue<QString>();
-        fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>();
+        url = urlAttribute->getAttributeValue<QString>(context);
+        fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
         fileMode |= SaveDoc_DestroyAfter;
         Attribute* a = actor->getParameter(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE().getId());
         if(a != NULL) {
-            append = a->getAttributeValue<bool>();
+            append = a->getAttributeValue<bool>(context);
         }
         QVariantMap data = inputMessage.getData().toMap();
         

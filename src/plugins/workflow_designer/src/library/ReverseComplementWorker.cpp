@@ -107,7 +107,7 @@ Task* RCWorker::tick() {
         return new FailTask(tr("Null sequence supplied to FindWorker: %1").arg(seq.getName()));
     }
 
-    QString type = actor->getParameter(OP_TYPE)->getAttributeValue<QString>();
+    QString type = actor->getParameter(OP_TYPE)->getAttributeValue<QString>(context);
     
     DNATranslation *complTT;
     if(!seq.alphabet->isNucleic()) {

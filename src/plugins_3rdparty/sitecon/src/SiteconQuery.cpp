@@ -52,7 +52,7 @@ QDSiteconActor::QDSiteconActor(QDActorPrototype const* proto) : QDActor(proto) {
 
 QString QDSiteconActor::getText() const {
     QString modelName;
-    const QString& urlStr = cfg->getParameter(MODEL_ATTR)->getAttributeValue<QString>();
+    const QString& urlStr = cfg->getParameter(MODEL_ATTR)->getAttributeValueWithoutScript<QString>();
     const QStringList& urls = WorkflowUtils::expandToUrls(urlStr);
 
     QString modelHyp = QString("<a href=%1>").arg(MODEL_ATTR);
@@ -74,7 +74,7 @@ QString QDSiteconActor::getText() const {
         modelName = tr("with all %1 %2 profiles</a>").arg(modelHyp).arg(modelName);
     }
 
-    QString scoreStr = tr("similarity %1%").arg(cfg->getParameter(SCORE_ATTR)->getAttributeValue<int>());
+    QString scoreStr = tr("similarity %1%").arg(cfg->getParameter(SCORE_ATTR)->getAttributeValueWithoutScript<int>());
     scoreStr = QString("<a href=%1>%2</a>").arg(SCORE_ATTR).arg(scoreStr);
     
     QString strandName;
@@ -98,12 +98,12 @@ Task* QDSiteconActor::getAlgorithmTask(const QVector<U2Region>& location) {
     Task* t = NULL;
     assert(!location.isEmpty());
 
-    const QString& urlStr = cfg->getParameter(MODEL_ATTR)->getAttributeValue<QString>();
+    const QString& urlStr = cfg->getParameter(MODEL_ATTR)->getAttributeValueWithoutScript<QString>();
     const QStringList& urls = WorkflowUtils::expandToUrls(urlStr);
 
-    settings.minPSUM = cfg->getParameter(SCORE_ATTR)->getAttributeValue<int>();
-    settings.minE1 = cfg->getParameter(E1_ATTR)->getAttributeValue<double>();
-    settings.maxE2 = cfg->getParameter(E2_ATTR)->getAttributeValue<double>();
+    settings.minPSUM = cfg->getParameter(SCORE_ATTR)->getAttributeValueWithoutScript<int>();
+    settings.minE1 = cfg->getParameter(E1_ATTR)->getAttributeValueWithoutScript<double>();
+    settings.maxE2 = cfg->getParameter(E2_ATTR)->getAttributeValueWithoutScript<double>();
     
     if(urls.isEmpty()) {
         QString err = tr("%1: incorrect sitecon model url(s)").arg(getParameters()->getLabel());

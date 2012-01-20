@@ -376,7 +376,7 @@ Task* SWWorker::tick() {
         return new FailTask(tr("Null sequence supplied to Smith-Waterman: %1").arg(seq.getName()));
     }
     // scoring matrix
-    QString mtrx = actor->getParameter(MATRIX_ATTR)->getAttributeValue<QString>();
+    QString mtrx = actor->getParameter(MATRIX_ATTR)->getAttributeValue<QString>(context);
     if(mtrx.isEmpty()){
         mtrx = "Auto";
     }
@@ -405,7 +405,7 @@ Task* SWWorker::tick() {
     }
 
     // pattern
-    QString ptrnStr = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>();
+    QString ptrnStr = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>(context);
     if(QFile::exists(ptrnStr)) {
         ptrnStr = readPatternsFromFile(ptrnStr);
     }
@@ -421,17 +421,17 @@ Task* SWWorker::tick() {
     cfg.globalRegion.length = seq.length();
 
     // score and gap model
-    cfg.percentOfScore = actor->getParameter(SCORE_ATTR)->getAttributeValue<int>();
+    cfg.percentOfScore = actor->getParameter(SCORE_ATTR)->getAttributeValue<int>(context);
     if(cfg.percentOfScore < 0 || cfg.percentOfScore > 100){
         algoLog.error(tr("Incorrect value: score value must lay between 0 and 100"));
         return new FailTask(tr("Incorrect value: score value must lay between 0 and 100"));
     }
 
-    cfg.gapModel.scoreGapExtd = actor->getParameter(GAPEXT_ATTR)->getAttributeValue<double>();
-    cfg.gapModel.scoreGapOpen = actor->getParameter(GAPOPEN_ATTR)->getAttributeValue<double>();
+    cfg.gapModel.scoreGapExtd = actor->getParameter(GAPEXT_ATTR)->getAttributeValue<double>(context);
+    cfg.gapModel.scoreGapOpen = actor->getParameter(GAPOPEN_ATTR)->getAttributeValue<double>(context);
 
     // filter
-    QString filter = actor->getParameter(FILTER_ATTR)->getAttributeValue<QString>();
+    QString filter = actor->getParameter(FILTER_ATTR)->getAttributeValue<QString>(context);
     cfg.resultFilter = AppContext::getSWResultFilterRegistry()->getFilter(filter);
     if(cfg.resultFilter == NULL){
         algoLog.error(tr("Incorrect value:  filter name incorrect, default value used")); //details level won't work
@@ -439,14 +439,14 @@ Task* SWWorker::tick() {
     }
 
     // annotation name
-    QString resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
+    QString resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
     if(resultName.isEmpty()){
         algoLog.error(tr("Incorrect value: result name is empty, default value used")); //details level won't work
         resultName = "misc_feature";
     }
 
     // translations
-    cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>());
+    cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
     if (cfg.strand != StrandOption_DirectOnly/* && seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
         QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
                                             lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
@@ -457,7 +457,7 @@ Task* SWWorker::tick() {
             cfg.strand = StrandOption_DirectOnly;
         }
     }
-    if (actor->getParameter(AMINO_ATTR)->getAttributeValue<bool>()) {
+    if (actor->getParameter(AMINO_ATTR)->getAttributeValue<bool>(context)) {
         DNATranslationType tt = seq.alphabet->getType() == DNAAlphabet_NUCL ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
         QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(seq.alphabet, tt);
         if (!TTs.isEmpty()) {
@@ -466,7 +466,7 @@ Task* SWWorker::tick() {
     }
 
     // algorithm
-    QString algName = actor->getParameter(ALGO_ATTR)->getAttributeValue<QString>();
+    QString algName = actor->getParameter(ALGO_ATTR)->getAttributeValue<QString>(context);
     SmithWatermanTaskFactory* algo = AppContext::getSmithWatermanTaskFactoryRegistry()->getFactory(algName);
     if (!algo) {
         return new FailTask(tr("SmithWaterman algorithm not found: %1").arg(algName));

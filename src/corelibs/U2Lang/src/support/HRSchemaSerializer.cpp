@@ -1279,7 +1279,7 @@ void HRSchemaSerializer::addEmptyValsToBindings(const QList<Actor*> & procs) {
     foreach(Actor * actor, procs) {
         foreach(Port * p, actor->getInputPorts()) {
             IntegralBusPort * port = qobject_cast<IntegralBusPort*>(p);
-            QStrStrMap busMap = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValue<QStrStrMap>();
+            QStrStrMap busMap = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
             DataTypePtr t = port->Port::getType();
             assert(t->isMap());
             QMap<Descriptor, DataTypePtr> typeMap = t->getDatatypesMap();
@@ -1599,7 +1599,7 @@ QString HRSchemaSerializer::dataflowDefinition(const QList<Actor*> & procs, cons
     QString res;
     foreach(Actor * actor, procs) {
         foreach(Port * inputPort, actor->getInputPorts()) {
-            QStrStrMap busMap = inputPort->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValue<QStrStrMap>();
+            QStrStrMap busMap = inputPort->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
             foreach( const QString & key, busMap.keys() ) {
                 QStringList srcList = busMap.value(key).split(";", QString::SkipEmptyParts);
                 foreach(QString src, srcList) {

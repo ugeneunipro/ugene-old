@@ -56,7 +56,7 @@ IntegralBus::IntegralBus(Port* p) : busType(p->getType()), complement(NULL), por
             return;
         }
         
-        busMap = a->getAttributeValue<QStrStrMap>();
+        busMap = a->getAttributeValueWithoutScript<QStrStrMap>();
         assert(!busMap.isEmpty());
         QMapIterator<QString, QString> it(busMap);
         while (it.hasNext()) {

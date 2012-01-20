@@ -93,7 +93,7 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
     
     int height = QFontMetrics(QFont()).height() + 6;
     const QList<Descriptor>& keys = to->getAllDescriptors();
-    QMap<QString,QString> bindingsMap = cfg->getParameter(propertyName)->getAttributeValue<QStrStrMap>();
+    QMap<QString,QString> bindingsMap = cfg->getParameter(propertyName)->getAttributeValueWithoutScript<QStrStrMap>();
     table->setRowCount(keys.size());
     
     int keysSz = keys.size();

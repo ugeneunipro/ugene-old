@@ -122,7 +122,7 @@ QList<Actor*> IntegralBusPort::getProducers(const QString& slot) {
     if(at == NULL) {
         return res;
     }
-    QStrStrMap busMap = at->getAttributeValue<QStrStrMap>();
+    QStrStrMap busMap = at->getAttributeValueWithoutScript<QStrStrMap>();
     QString slotValue = busMap.value(slot);
     QStringList vals = slotValue.split(";");
     foreach(QString val, vals) {
@@ -159,7 +159,7 @@ Actor* IntegralBusPort::getLinkedActorById(ActorId id) const {
 void IntegralBusPort::remap(const QMap<ActorId, ActorId>& m) {
     Attribute* a = getParameter(BUS_MAP_ATTR_ID);
     if (a) {
-        QStrStrMap busMap = a->getAttributeValue<QStrStrMap>();
+        QStrStrMap busMap = a->getAttributeValueWithoutScript<QStrStrMap>();
         IntegralBusType::remap(busMap, m);
         setParameter(BUS_MAP_ATTR_ID, qVariantFromValue<QStrStrMap>(busMap));
     }
@@ -169,7 +169,7 @@ void IntegralBusPort::setBusMapValue(const QString & slotId, const QString & val
     if( !isInput() ) {
         return;
     }
-    QStrStrMap busMap = getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValue<QStrStrMap>();
+    QStrStrMap busMap = getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
     if(busMap[slotId].isEmpty()) {
         busMap[slotId] = value;
     } else {
@@ -188,7 +188,7 @@ void IntegralBusPort::setupBusMap() {
     
     DataTypePtr from = bindings.uniqueKeys().first()->getType();
     QList<Descriptor> keys = to->getAllDescriptors();
-    QStrStrMap busMap = getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValue<QStrStrMap>();
+    QStrStrMap busMap = getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
     filterAmbiguousSlots(keys, to->getDatatypesMap(), busMap);
     foreach(const Descriptor & key, keys) {
         // FIXME: hack for not binding 'Location' slot
@@ -280,7 +280,7 @@ bool ScreenedSlotValidator::validate( const QStringList& screenedSlots, const In
             l.append(IntegralBusPort::tr("No input data supplied"));
             return false;
         }
-        QStrStrMap bm = vport->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValue<QStrStrMap>();
+        QStrStrMap bm = vport->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
         int busWidth = bm.size();
         QMap<QString, QStringList> listMap = getListMappings(bm, vport);
         // iterate over all producers and exclude valid mappings from bus bindings

@@ -133,7 +133,7 @@ QString CDSearchPrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
-    QString dbStr = target->getParameter(DATABASE_ATTR)->getAttributeValue<QString>();
+    QString dbStr = target->getParameter(DATABASE_ATTR)->getAttributeValueWithoutScript<QString>();
 
     QString doc = tr("For sequence %1 find conserved domains in database <u>%2</u>")
         .arg(producerName)
@@ -169,9 +169,9 @@ Task* CDSearchWorker::tick() {
         QString err = "Required amino acid input sequence";
         return new FailTask(err);
     }
-    settings.ev = actor->getParameter(EVALUE_ATTR)->getAttributeValue<float>();
+    settings.ev = actor->getParameter(EVALUE_ATTR)->getAttributeValue<float>(context);
 
-    settings.dbName = actor->getParameter(DATABASE_ATTR)->getAttributeValue<QString>();
+    settings.dbName = actor->getParameter(DATABASE_ATTR)->getAttributeValue<QString>(context);
 
     bool local = actor->getParameter(LOCAL_ATTR)->getAttributePureValue().toBool();
     CDSearchFactory* factory = NULL;
@@ -181,7 +181,7 @@ Task* CDSearchWorker::tick() {
             QString err = tr("'External tools' plugin has to be loaded.");
             return new FailTask(err);
         }
-        settings.localDbFolder = actor->getParameter(DB_PATH_ATTR)->getAttributeValue<QString>();
+        settings.localDbFolder = actor->getParameter(DB_PATH_ATTR)->getAttributeValue<QString>(context);
     } else { // remote
         factory = AppContext::getCDSFactoryRegistry()->getFactory(CDSearchFactoryRegistry::RemoteSearch);
         if (!factory) {
@@ -198,7 +198,7 @@ Task* CDSearchWorker::tick() {
 void CDSearchWorker::sl_taskFinished(Task*) {
     if(output) {
         QList<SharedAnnotationData> res = cds->getCDSResults();
-        QString annName = actor->getParameter(ANNOTATION_ATTR)->getAttributeValue<QString>();
+        QString annName = actor->getParameter(ANNOTATION_ATTR)->getAttributeValue<QString>(context);
         if(!annName.isEmpty()) {
             for(int i = 0; i<res.count();i++) {
                 res[i]->name = annName;

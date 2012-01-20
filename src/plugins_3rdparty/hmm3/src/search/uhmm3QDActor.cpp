@@ -61,11 +61,11 @@ UHMM3QDActor::UHMM3QDActor( QDActorPrototype const* proto ) : QDActor(proto) {
 }
 
 int UHMM3QDActor::getMinResultLen() const {
-    return cfg->getParameter(MIN_LEN)->getAttributeValue<int>();
+    return cfg->getParameter(MIN_LEN)->getAttributeValueWithoutScript<int>();
 }
 
 int UHMM3QDActor::getMaxResultLen() const {
-    return cfg->getParameter(MAX_LEN)->getAttributeValue<int>();
+    return cfg->getParameter(MAX_LEN)->getAttributeValueWithoutScript<int>();
 }
 
 QString UHMM3QDActor::getText() const {
@@ -77,30 +77,30 @@ Task* UHMM3QDActor::getAlgorithmTask( const QVector<U2Region>& location ) {
     const char* seq = dnaSeq.seq.constData();
 
     QMap<QString, Attribute*> params = cfg->getParameters();
-    QString hmmFileStr = params.value(PROFILE_ATTR)->getAttributeValue<QString>();
+    QString hmmFileStr = params.value(PROFILE_ATTR)->getAttributeValueWithoutScript<QString>();
     QStringList hmmFiles = hmmFileStr.split(QRegExp("\\s*;\\s*"));
 
     Task* t = new Task(tr("QD HMM3 search"), TaskFlag_NoRun);
 
     UHMM3SearchTaskSettings stngs;
 
-    float domENum = cfg->getParameter(DOM_E_ATTR)->getAttributeValue<int>();
-    bool filterByEvalue = cfg->getParameter(USE_EVAL)->getAttributeValue<bool>();
+    float domENum = cfg->getParameter(DOM_E_ATTR)->getAttributeValueWithoutScript<int>();
+    bool filterByEvalue = cfg->getParameter(USE_EVAL)->getAttributeValueWithoutScript<bool>();
     if (filterByEvalue) {
         stngs.inner.domE = pow(10, domENum);
         stngs.inner.domT = OPTION_NOT_SET;
     } else {
-        stngs.inner.domT = cfg->getParameter(DOM_T_ATTR)->getAttributeValue<double>();
+        stngs.inner.domT = cfg->getParameter(DOM_T_ATTR)->getAttributeValueWithoutScript<double>();
     }
     
-    stngs.inner.domZ = cfg->getParameter(NSEQ_ATTR)->getAttributeValue<double>();
-    stngs.inner.noBiasFilter = cfg->getParameter(NO_BIAS_ATTR)->getAttributeValue<bool>();
-    stngs.inner.noNull2 = cfg->getParameter(NO_NULL_ATTR)->getAttributeValue<bool>();
-    stngs.inner.doMax = cfg->getParameter(DO_MAX_ATTR)->getAttributeValue<bool>();
-    stngs.inner.f1 = (float)cfg->getParameter(F1_ATTR)->getAttributeValue<double>();
-    stngs.inner.f2 = (float)cfg->getParameter(F2_ATTR)->getAttributeValue<double>();
-    stngs.inner.f3 = (float)cfg->getParameter(F3_ATTR)->getAttributeValue<double>();
-    stngs.inner.seed = cfg->getParameter(SEED_ATTR)->getAttributeValue<int>();
+    stngs.inner.domZ = cfg->getParameter(NSEQ_ATTR)->getAttributeValueWithoutScript<double>();
+    stngs.inner.noBiasFilter = cfg->getParameter(NO_BIAS_ATTR)->getAttributeValueWithoutScript<bool>();
+    stngs.inner.noNull2 = cfg->getParameter(NO_NULL_ATTR)->getAttributeValueWithoutScript<bool>();
+    stngs.inner.doMax = cfg->getParameter(DO_MAX_ATTR)->getAttributeValueWithoutScript<bool>();
+    stngs.inner.f1 = (float)cfg->getParameter(F1_ATTR)->getAttributeValueWithoutScript<double>();
+    stngs.inner.f2 = (float)cfg->getParameter(F2_ATTR)->getAttributeValueWithoutScript<double>();
+    stngs.inner.f3 = (float)cfg->getParameter(F3_ATTR)->getAttributeValueWithoutScript<double>();
+    stngs.inner.seed = cfg->getParameter(SEED_ATTR)->getAttributeValueWithoutScript<int>();
 
     foreach(QString hmmFile, hmmFiles) {
         foreach(U2Region r, location) {
@@ -153,7 +153,7 @@ void UHMM3QDActor::sl_evChanged(int i) {
 }
 
 void UHMM3QDActor::updateEditor() {
-    int val = cfg->getParameter(DOM_E_ATTR)->getAttributeValue<int>();
+    int val = cfg->getParameter(DOM_E_ATTR)->getAttributeValueWithoutScript<int>();
     sl_evChanged(val);
 }
 

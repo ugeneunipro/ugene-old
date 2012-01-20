@@ -67,7 +67,7 @@ bool ImportAnnotationsWorker::isReady() {
 Task * ImportAnnotationsWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(inPort);
     QList<QString> urls = WorkflowUtils::expandToUrls(
-        actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>());
+        actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
     
     QList<Task*> loadTasks;
     foreach(const QString & url, urls) {

@@ -149,19 +149,19 @@ bool RemoteBLASTWorker::isReady() {
 }
 
 Task* RemoteBLASTWorker::tick() {
-    if((actor->getParameter(ANNOTATION_NAME)->getAttributeValue<QString>()).isEmpty()){
+    if((actor->getParameter(ANNOTATION_NAME)->getAttributeValue<QString>(context)).isEmpty()){
         algoLog.details(tr("Annotations name is empty, default name used"));
     }
     
     Message inputMessage = getMessageAndSetupScriptValues(input);
     //cfg.minrl = 0;
     //cfg.maxrl = 3000;
-    cfg.dbChoosen = actor->getParameter(DATABASE)->getAttributeValue<QString>().split("-").last();
+    cfg.dbChoosen = actor->getParameter(DATABASE)->getAttributeValue<QString>(context).split("-").last();
     cfg.aminoT = NULL;
 
-    int evalue = actor->getParameter(EXPECT)->getAttributeValue<int>();
-    int maxHits = actor->getParameter(MAX_HITS)->getAttributeValue<int>();
-    bool shortSeq = actor->getParameter(SHORT_SEQ)->getAttributeValue<bool>();
+    int evalue = actor->getParameter(EXPECT)->getAttributeValue<int>(context);
+    int maxHits = actor->getParameter(MAX_HITS)->getAttributeValue<int>(context);
+    bool shortSeq = actor->getParameter(SHORT_SEQ)->getAttributeValue<bool>(context);
 
     if(evalue <= 0 ){
         algoLog.error(tr("Incorrect value for 'e-value' parameter, default value passed to schema"));
@@ -237,8 +237,8 @@ void RemoteBLASTWorker::sl_taskFinished() {
     }
 
     if(output) {
-        if(actor->getParameter(DATABASE)->getAttributeValue<QString>() != "ncbi-cdd") {
-            QString url = actor->getParameter(ORIGINAL_OUT)->getAttributeValue<QString>();
+        if(actor->getParameter(DATABASE)->getAttributeValue<QString>(context) != "ncbi-cdd") {
+            QString url = actor->getParameter(ORIGINAL_OUT)->getAttributeValue<QString>(context);
             if(!url.isEmpty()) {
                 IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::LOCAL_FILE );
                 IOAdapter * io = iof->createIOAdapter();
@@ -251,7 +251,7 @@ void RemoteBLASTWorker::sl_taskFinished() {
         }
 
         QList<SharedAnnotationData> res = t->getResultedAnnotations();
-        QString annName = actor->getParameter(ANNOTATION_NAME)->getAttributeValue<QString>();
+        QString annName = actor->getParameter(ANNOTATION_NAME)->getAttributeValue<QString>(context);
         if(!annName.isEmpty()) {
             for(int i = 0; i<res.count();i++) {
                 res[i]->name = annName;

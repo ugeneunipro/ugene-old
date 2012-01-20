@@ -233,19 +233,19 @@ bool ORFWorker::isReady() {
 
 Task* ORFWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>());
-    cfg.minLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>();
-    cfg.mustFit = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>();
-    cfg.mustInit = actor->getParameter(INIT_ATTR)->getAttributeValue<bool>();
-    cfg.allowAltStart = actor->getParameter(ALT_ATTR)->getAttributeValue<bool>();
-    cfg.includeStopCodon = actor->getParameter(ISC_ATTR)->getAttributeValue<bool>();
-	cfg.maxResult2Search = actor->getParameter(RES_ATTR)->getAttributeValue<int>(); 
-    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>();
+    cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
+    cfg.minLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
+    cfg.mustFit = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>(context);
+    cfg.mustInit = actor->getParameter(INIT_ATTR)->getAttributeValue<bool>(context);
+    cfg.allowAltStart = actor->getParameter(ALT_ATTR)->getAttributeValue<bool>(context);
+    cfg.includeStopCodon = actor->getParameter(ISC_ATTR)->getAttributeValue<bool>(context);
+	cfg.maxResult2Search = actor->getParameter(RES_ATTR)->getAttributeValue<int>(context); 
+    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
     if(resultName.isEmpty()){
         algoLog.error(tr("ORF: result name is empty, default name used"));
         resultName = "misc_feature";
     }
-    transId = actor->getParameter(ID_ATTR)->getAttributeValue<QString>();
+    transId = actor->getParameter(ID_ATTR)->getAttributeValue<QString>(context);
     if (cfg.minLen < 0){
         algoLog.error(tr("ORF: Incorrect value: min-length must be greater then zero"));
         return new FailTask(tr("Incorrect value: min-length must be greater then zero"));

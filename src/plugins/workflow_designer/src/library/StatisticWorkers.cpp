@@ -99,22 +99,22 @@ Task* DNAStatWorker::tick() {
     gcAnn->name = "statistics";
     gcAnn->location->regions << U2Region( 0, dna.seq.size());
 
-    if(actor->getParameter(GCCONTENT)->getAttributeValue<bool>()) {
+    if(actor->getParameter(GCCONTENT)->getAttributeValue<bool>(context)) {
         float gcContent = calcGCContent(dna.seq);
         gcAnn->qualifiers.push_back(U2Qualifier("gc-content", QString::number(gcContent*100) + "%"));
     }
 
-    if(actor->getParameter(GC1CONTENT)->getAttributeValue<bool>()) {
+    if(actor->getParameter(GC1CONTENT)->getAttributeValue<bool>(context)) {
         float gc1Content = calcGC1Content(dna.seq);
         gcAnn->qualifiers.push_back(U2Qualifier("gc1-content", QString::number(gc1Content*100) + "%"));
     }
 
-    if(actor->getParameter(GC2CONTENT)->getAttributeValue<bool>()) {
+    if(actor->getParameter(GC2CONTENT)->getAttributeValue<bool>(context)) {
         float gc2Content = calcGC2Content(dna.seq);
         gcAnn->qualifiers.push_back(U2Qualifier("gc2-content", QString::number(gc2Content*100) + "%"));
     }
 
-    if(actor->getParameter(GC3CONTENT)->getAttributeValue<bool>()) {
+    if(actor->getParameter(GC3CONTENT)->getAttributeValue<bool>(context)) {
         float gc3Content = calcGC3Content(dna.seq);
         gcAnn->qualifiers.push_back(U2Qualifier("gc3-content", QString::number(gc3Content*100) + "%"));
     }

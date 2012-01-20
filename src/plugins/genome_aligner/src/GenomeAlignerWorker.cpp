@@ -146,19 +146,19 @@ void GenomeAlignerWorker::init() {
     //TODO: PREBUILT INDEX
     //settings.setCustomValue(GenomeAlignerTask::OPTION_PREBUILT_INDEX, true);
     settings.prebuiltIndex = true;
-    bool absMismatches = actor->getParameter(ABS_OR_PERC_MISMATCHES_ATTR)->getAttributeValue<bool>();
+    bool absMismatches = actor->getParameter(ABS_OR_PERC_MISMATCHES_ATTR)->getAttributeValue<bool>(context);
     settings.setCustomValue(GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES, absMismatches);
-    int nMismatches = actor->getParameter(MISMATCHES_ATTR)->getAttributeValue<int>();
+    int nMismatches = actor->getParameter(MISMATCHES_ATTR)->getAttributeValue<int>(context);
     settings.setCustomValue(GenomeAlignerTask::OPTION_MISMATCHES, nMismatches);
-    int ptMismatches = actor->getParameter(PERCENT_MISMATCHES_ATTR)->getAttributeValue<int>();
+    int ptMismatches = actor->getParameter(PERCENT_MISMATCHES_ATTR)->getAttributeValue<int>(context);
     settings.setCustomValue(GenomeAlignerTask::OPTION_PERCENTAGE_MISMATCHES, ptMismatches);
-    bool alignReverse = actor->getParameter(REVERSE_ATTR)->getAttributeValue<bool>();
+    bool alignReverse = actor->getParameter(REVERSE_ATTR)->getAttributeValue<bool>(context);
     settings.setCustomValue(GenomeAlignerTask::OPTION_ALIGN_REVERSED, alignReverse);
-    bool best = actor->getParameter(BEST_ATTR)->getAttributeValue<bool>();
+    bool best = actor->getParameter(BEST_ATTR)->getAttributeValue<bool>(context);
     settings.setCustomValue(GenomeAlignerTask::OPTION_BEST, best);
-    int qual = actor->getParameter(QUAL_ATTR)->getAttributeValue<int>();
+    int qual = actor->getParameter(QUAL_ATTR)->getAttributeValue<int>(context);
     settings.setCustomValue(GenomeAlignerTask::OPTION_QUAL_THRESHOLD, qual);
-    bool gpu = actor->getParameter(GPU_ATTR)->getAttributeValue<bool>();
+    bool gpu = actor->getParameter(GPU_ATTR)->getAttributeValue<bool>(context);
     settings.setCustomValue(GenomeAlignerTask::OPTION_OPENCL, gpu);
 }
 
@@ -264,8 +264,8 @@ void GenomeAlignerBuildWorkerFactory::init() {
 
 void GenomeAlignerBuildWorker::init() {
     output = ports.value(INDEX_OUT_PORT_ID);
-    refSeqUrl = actor->getParameter(REFSEQ_URL_ATTR)->getAttributeValue<QString>();
-    indexUrl = actor->getParameter(INDEX_URL_ATTR)->getAttributeValue<QString>();
+    refSeqUrl = actor->getParameter(REFSEQ_URL_ATTR)->getAttributeValue<QString>(context);
+    indexUrl = actor->getParameter(INDEX_URL_ATTR)->getAttributeValue<QString>(context);
 
     settings.prebuiltIndex = false;
 }
@@ -354,7 +354,7 @@ void GenomeAlignerIndexReaderWorkerFactory::init() {
 
 void GenomeAlignerIndexReaderWorker::init() {
     output = ports.value(INDEX_OUT_PORT_ID);
-    indexUrl = actor->getParameter(INDEX_URL_ATTR)->getAttributeValue<QString>();
+    indexUrl = actor->getParameter(INDEX_URL_ATTR)->getAttributeValue<QString>(context);
 }
 
 bool GenomeAlignerIndexReaderWorker::isReady() {

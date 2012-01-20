@@ -76,23 +76,23 @@ bool Text2SequenceWorker::isReady() {
 
 Task * Text2SequenceWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(txtPort);
-    QString seqName = actor->getParameter(SEQ_NAME_ATTR_ID)->getAttributeValue<QString>();
+    QString seqName = actor->getParameter(SEQ_NAME_ATTR_ID)->getAttributeValue<QString>(context);
     if(seqName.isEmpty()) {
         return new FailTask(tr("Sequence name not set"));
     }
     if(tickedNum++ > 0) {
         seqName += QString::number(tickedNum);
     }
-    QString alId = actor->getParameter(ALPHABET_ATTR_ID)->getAttributeValue<QString>();
+    QString alId = actor->getParameter(ALPHABET_ATTR_ID)->getAttributeValue<QString>(context);
     if(alId.isEmpty()) {
         alId = ALPHABET_ATTR_ID_DEF_VAL;
     } else {
         alId = cuteAlIdNames.key(alId, alId);
     }
-    bool skipUnknown = actor->getParameter(SKIP_SYM_ATTR_ID)->getAttributeValue<bool>();
+    bool skipUnknown = actor->getParameter(SKIP_SYM_ATTR_ID)->getAttributeValue<bool>(context);
     QChar replaceChar;
     if(!skipUnknown) {
-        QString replaceStr = actor->getParameter(REPLACE_SYM_ATTR_ID)->getAttributeValue<QString>();
+        QString replaceStr = actor->getParameter(REPLACE_SYM_ATTR_ID)->getAttributeValue<QString>(context);
         assert(replaceStr.size() <= 1);
         if(replaceStr.isEmpty()) {
             return new FailTask(tr("skip flag should be set or replace character defined"));

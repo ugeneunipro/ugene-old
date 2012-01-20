@@ -64,8 +64,8 @@ Task* FilterAnnotationsWorker::tick() {
     QVariantMap qm = inputMessage.getData().toMap();
     inputAnns = qVariantValue<QList<SharedAnnotationData> >( qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()) );
 
-    bool accept = actor->getParameter( WHICH_FILTER_ATTR )->getAttributeValue<bool>();
-    QString namesStr = actor->getParameter( FILTER_NAMES_ATTR )->getAttributeValue<QString>();
+    bool accept = actor->getParameter( WHICH_FILTER_ATTR )->getAttributeValue<bool>(context);
+    QString namesStr = actor->getParameter( FILTER_NAMES_ATTR )->getAttributeValue<QString>(context);
 
     Task* t = new FilterAnnotationsTask(inputAnns, namesStr, accept);
     connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished()));

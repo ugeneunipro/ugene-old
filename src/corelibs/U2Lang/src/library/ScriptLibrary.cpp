@@ -30,11 +30,14 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/AnnotationData.h>
 
+#include <U2Lang/DbiDataStorage.h>
+#include <U2Lang/WorkflowScriptEngine.h>
+
 namespace U2 {
 
-void WorkflowScriptLibrary::initEngine(QScriptEngine * engine) {
+void WorkflowScriptLibrary::initEngine(WorkflowScriptEngine *engine) {
     QScriptValue foo = engine->globalObject();
-    
+
     foo.setProperty("subsequence",engine->newFunction(getSubsequence));
     foo.setProperty("complement", engine->newFunction(complement));
     foo.setProperty("size", engine->newFunction(sequenceSize));
@@ -47,7 +50,7 @@ void WorkflowScriptLibrary::initEngine(QScriptEngine * engine) {
     foo.setProperty("getMinimumQuality", engine->newFunction(getMinimumQuality));
     foo.setProperty("hasQuality",engine->newFunction(hasQuality));
     foo.setProperty("sequenceFromText", engine->newFunction(sequenceFromText));
-    
+
     foo.setProperty("createAlignment", engine->newFunction(createAlignment));
     foo.setProperty("sequenceFromAlignment",engine->newFunction(getSequenceFromAlignment));
     foo.setProperty("addToAlignment",engine->newFunction(addToAlignment));
@@ -56,11 +59,27 @@ void WorkflowScriptLibrary::initEngine(QScriptEngine * engine) {
     foo.setProperty("rowNum",engine->newFunction(rowNum));
     foo.setProperty("columnNum",engine->newFunction(columnNum));
     foo.setProperty("alignmentAlphabetType",engine->newFunction(alignmentAlphabetType));
-    
+
     foo.setProperty("annotatedRegions", engine->newFunction(getAnnotationRegion));
     foo.setProperty("addQualifier", engine->newFunction(addQualifier));
     foo.setProperty("getLocation", engine->newFunction(getLocation));
     foo.setProperty("filterByQualifier", engine->newFunction(filterByQualifier));
+}
+
+DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
+    WorkflowScriptEngine *wse = dynamic_cast<WorkflowScriptEngine*>(engine);
+    U2DataId seqId = ctx->argument(0).toVariant().value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(Workflow::StorageUtils::getSequenceObject(wse->getWorkflowContext()->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return DNASequence();
+    }
+    return seqObj->getWholeSequence();
+}
+
+U2DataId putSequence(QScriptEngine *engine, const DNASequence &seq) {
+    WorkflowScriptEngine *wse = dynamic_cast<WorkflowScriptEngine*>(engine);
+    Workflow::WorkflowContext *ctx = wse->getWorkflowContext();
+    return ctx->getDataStorage()->putSequence(seq);
 }
 
 QScriptValue WorkflowScriptLibrary::getSubsequence(QScriptContext *ctx, QScriptEngine *engine) {
@@ -70,7 +89,7 @@ QScriptValue WorkflowScriptLibrary::getSubsequence(QScriptContext *ctx, QScriptE
     else {
         int beg, end;
         QScriptValue calee = ctx->callee();
-        DNASequence dna = ctx->argument(0).toVariant().value<DNASequence>();
+        DNASequence dna = getSequence(ctx, engine, 0);
 
         try {
             beg = ctx->argument(1).toInt32(); 
@@ -83,8 +102,10 @@ QScriptValue WorkflowScriptLibrary::getSubsequence(QScriptContext *ctx, QScriptE
         if(dna.seq.isEmpty()) {
             return ctx->throwError(QObject::tr("Empty or invalid sequence"));
         }
-        DNASequence subsequence(dna.seq.mid(beg, end - beg),dna.alphabet);
-        calee.setProperty("res", engine->newVariant(QVariant::fromValue<DNASequence>(subsequence)));
+        QString newName(dna.getName() + "_" + QByteArray::number(beg) + "_" + QByteArray::number(end));
+        DNASequence subsequence(newName, dna.seq.mid(beg, end - beg),dna.alphabet);
+        U2DataId id = putSequence(engine, subsequence);
+        calee.setProperty("res", engine->newVariant(QVariant::fromValue<U2DataId>(id)));
         return calee.property("res");
     }
 }
@@ -96,7 +117,7 @@ QScriptValue WorkflowScriptLibrary::concatSequence(QScriptContext *ctx, QScriptE
     QByteArray result;
     DNAAlphabet *alph = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     for(int i = 0; i < ctx->argumentCount();i++) {
-        DNASequence dna = ctx->argument(0).toVariant().value<DNASequence>();
+        DNASequence dna = getSequence(ctx, engine, i);
         if(dna.seq.isEmpty()) {
             return ctx->throwError(QObject::tr("Empty or invalid sequence"));
         }
@@ -106,8 +127,9 @@ QScriptValue WorkflowScriptLibrary::concatSequence(QScriptContext *ctx, QScriptE
         result.append(dna.seq);
     }
     DNASequence concatenation("joined sequence", result, alph);
+    U2DataId id = putSequence(engine, concatenation);
     QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<DNASequence>(concatenation)));
+    calee.setProperty("res", engine->newVariant(QVariant::fromValue<U2DataId>(id)));
     return calee.property("res");
 }
 
@@ -116,7 +138,7 @@ QScriptValue WorkflowScriptLibrary::complement(QScriptContext *ctx, QScriptEngin
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    DNASequence dna = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence dna = getSequence(ctx, engine, 0);
     if(dna.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -127,8 +149,9 @@ QScriptValue WorkflowScriptLibrary::complement(QScriptContext *ctx, QScriptEngin
     DNATranslation *complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(dna.alphabet);
     complTT->translate(dna.seq.data(),dna.seq.size(), dna.seq.data(), dna.seq.size());
 
+    U2DataId id = putSequence(engine, dna);
     QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<DNASequence>(dna)));
+    calee.setProperty("res", engine->newVariant(QVariant::fromValue<U2DataId>(id)));
     return calee.property("res");
 }
 
@@ -137,7 +160,7 @@ QScriptValue WorkflowScriptLibrary::sequenceSize(QScriptContext *ctx, QScriptEng
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 0);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -153,7 +176,7 @@ QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 0);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -179,8 +202,9 @@ QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine
     aminoT->translate(seq.seq.data() + offset, seq.length() - offset, seq.seq.data(), seq.length());
     seq.seq.resize(seq.length()/3);
 
+    U2DataId id = putSequence(engine, seq);
     QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<DNASequence>(seq)));
+    calee.setProperty("res", engine->newVariant(QVariant::fromValue<U2DataId>(id)));
     return calee.property("res");
 }
 
@@ -189,7 +213,7 @@ QScriptValue WorkflowScriptLibrary::charAt(QScriptContext *ctx, QScriptEngine *e
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 0);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -207,12 +231,12 @@ QScriptValue WorkflowScriptLibrary::charAt(QScriptContext *ctx, QScriptEngine *e
     return calee.property("res");
 }
 
-QScriptValue WorkflowScriptLibrary::sequenceName(QScriptContext *ctx, QScriptEngine *) {
+QScriptValue WorkflowScriptLibrary::sequenceName(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 0);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -228,7 +252,7 @@ QScriptValue WorkflowScriptLibrary::alphabetType(QScriptContext *ctx, QScriptEng
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 0);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -246,23 +270,24 @@ QScriptValue WorkflowScriptLibrary::sequenceFromText(QScriptContext *ctx, QScrip
 
     QString text = ctx->argument(0).toString();
     //QString name = ctx->argument(1).toString();
-    DNASequence seq(text.toAscii());
+    DNASequence seq("sequence", text.toAscii());
     seq.alphabet = U2AlphabetUtils::findBestAlphabet(seq.seq);
     if(seq.alphabet->getId() == BaseDNAAlphabetIds::RAW()) {
         seq.seq = QByteArray();
     }
 
+    U2DataId id = putSequence(engine, seq);
     QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<DNASequence>(seq)));
+    calee.setProperty("res", engine->newVariant(QVariant::fromValue<U2DataId>(id)));
     return calee.property("res");
 }
 
-QScriptValue WorkflowScriptLibrary::isAmino(QScriptContext *ctx, QScriptEngine *) {
+QScriptValue WorkflowScriptLibrary::isAmino(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 0);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -273,12 +298,12 @@ QScriptValue WorkflowScriptLibrary::isAmino(QScriptContext *ctx, QScriptEngine *
     return calee.property("res");
 }
 
-QScriptValue WorkflowScriptLibrary::getMinimumQuality(QScriptContext *ctx, QScriptEngine *) {
+QScriptValue WorkflowScriptLibrary::getMinimumQuality(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 0);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -297,12 +322,12 @@ QScriptValue WorkflowScriptLibrary::getMinimumQuality(QScriptContext *ctx, QScri
     return calee.property("res");
 }
 
-QScriptValue WorkflowScriptLibrary::hasQuality(QScriptContext *ctx, QScriptEngine *) {
+QScriptValue WorkflowScriptLibrary::hasQuality(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 1) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 0);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -336,20 +361,21 @@ QScriptValue WorkflowScriptLibrary::getSequenceFromAlignment(QScriptContext *ctx
     aRow.simplify();
     QByteArray arr = aRow.toByteArray(aRow.getCoreLength());
     if(ctx->argumentCount() == 4) {
-        int beg = ctx->argument(1).toInt32();
-        int len = ctx->argument(2).toInt32();
+        int beg = ctx->argument(2).toInt32();
+        int len = ctx->argument(3).toInt32();
         if(beg <= 0 || beg > arr.length()) {
             return ctx->throwError(QObject::tr("Offset is out of range"));
         }
         if(len <= 0 || (beg + len) > arr.length()) {
             return ctx->throwError(QObject::tr("Length is out of range"));
         }
-        arr.mid(beg,len);
+        arr = arr.mid(beg,len);
     }
     DNASequence seq(aRow.getName(),arr,align.getAlphabet());
 
+    U2DataId id = putSequence(engine, seq);
     QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<DNASequence>(seq)));
+    calee.setProperty("res", engine->newVariant(QVariant::fromValue<U2DataId>(id)));
     return calee.property("res");
 }
 
@@ -396,7 +422,7 @@ QScriptValue WorkflowScriptLibrary::createAlignment(QScriptContext *ctx, QScript
     }
 
     MAlignment align;
-    DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 0);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -404,7 +430,7 @@ QScriptValue WorkflowScriptLibrary::createAlignment(QScriptContext *ctx, QScript
     align.addRow( MAlignmentRow(seq.getName(),seq.seq) );
 
     for(int i = 1; i < ctx->argumentCount(); i++) {
-        DNASequence seq = ctx->argument(i).toVariant().value<DNASequence>();
+        DNASequence seq = getSequence(ctx, engine, i);
         if(seq.seq.isEmpty()) {
             return ctx->throwError(QObject::tr("Empty or invalid sequence"));
         }
@@ -426,7 +452,7 @@ QScriptValue WorkflowScriptLibrary::addToAlignment(QScriptContext *ctx, QScriptE
 
     MAlignment align = ctx->argument(0).toVariant().value<MAlignment>();
 
-    DNASequence seq = ctx->argument(1).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 1);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -534,7 +560,7 @@ QScriptValue WorkflowScriptLibrary::getAnnotationRegion(QScriptContext *ctx, QSc
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    DNASequence seq = ctx->argument(0).toVariant().value<DNASequence>();
+    DNASequence seq = getSequence(ctx, engine, 0);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
@@ -546,7 +572,7 @@ QScriptValue WorkflowScriptLibrary::getAnnotationRegion(QScriptContext *ctx, QSc
     if(name.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty name"));
     }
-    QList<DNASequence> result;
+    QList<U2DataId> result;
 
     foreach(const SharedAnnotationData &ann, anns) {
         if(ann->name == name) {
@@ -569,14 +595,17 @@ QScriptValue WorkflowScriptLibrary::getAnnotationRegion(QScriptContext *ctx, QSc
                 res.append(partSeq);
             }
             resultedSeq.alphabet = seq.alphabet;
-            result << resultedSeq;
+            resultedSeq.setName(seq.getName() + "_" + name);
+
+            U2DataId id = putSequence(engine, resultedSeq);
+            result << id;
         }
     }
 
     QScriptValue calee = ctx->callee();
     QScriptValue flag = engine->globalObject();
     flag.setProperty("list", engine->newVariant(true));
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<QList<DNASequence> >(result)));
+    calee.setProperty("res", engine->newVariant(QVariant::fromValue<QList<U2DataId> >(result)));
     return calee.property("res");
 }
 

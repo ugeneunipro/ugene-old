@@ -138,16 +138,16 @@ bool SiteconBuildWorker::isReady() {
 Task* SiteconBuildWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(input);
     cfg.props = SiteconPlugin::getDinucleotiteProperties();
-    cfg.randomSeed = actor->getParameter(SEED_ATTR)->getAttributeValue<int>();
+    cfg.randomSeed = actor->getParameter(SEED_ATTR)->getAttributeValue<int>(context);
     if(cfg.randomSeed<0){
         return new FailTask(tr("Random seed can not be less zero"));
     }
-    cfg.secondTypeErrorCalibrationLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>();
+    cfg.secondTypeErrorCalibrationLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
     if(cfg.secondTypeErrorCalibrationLen<0){
         return new FailTask(tr("Calibration length can not be less zero"));
     }
-    cfg.weightAlg = SiteconWeightAlg(actor->getParameter(ALG_ATTR)->getAttributeValue<int>());
-    cfg.windowSize = actor->getParameter(WINDOW_ATTR)->getAttributeValue<int>();
+    cfg.weightAlg = SiteconWeightAlg(actor->getParameter(ALG_ATTR)->getAttributeValue<int>(context));
+    cfg.windowSize = actor->getParameter(WINDOW_ATTR)->getAttributeValue<int>(context);
     if(cfg.windowSize<0){
         return new FailTask(tr("Window size can not be less zero"));
     }

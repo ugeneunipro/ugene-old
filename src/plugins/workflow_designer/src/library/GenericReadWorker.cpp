@@ -57,7 +57,7 @@ namespace LocalWorkflow {
  **************************/
 void GenericMSAReader::init() {
     mtype = WorkflowEnv::getDataTypeRegistry()->getById(GenericMAActorProto::TYPE);
-    urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>());
+    urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
     assert(ports.size() == 1);
     ch = ports.values().first();
 }
@@ -167,12 +167,12 @@ void GenericSeqReader::init() {
     GenericMSAReader::init();
     mtype = WorkflowEnv::getDataTypeRegistry()->getById(GenericSeqActorProto::TYPE);
     GenericSeqActorProto::Mode mode = GenericSeqActorProto::Mode(actor->getParameter(
-                                                                    GenericSeqActorProto::MODE_ATTR)->getAttributeValue<int>());
+                                                                    GenericSeqActorProto::MODE_ATTR)->getAttributeValue<int>(context));
     if (GenericSeqActorProto::MERGE == mode) {
         QString mergeToken = DocumentReadingMode_SequenceMergeGapSize;
-        cfg[mergeToken] = actor->getParameter(GenericSeqActorProto::GAP_ATTR)->getAttributeValue<int>();
+        cfg[mergeToken] = actor->getParameter(GenericSeqActorProto::GAP_ATTR)->getAttributeValue<int>(context);
     }
-    selector.acc = actor->getParameter(GenericSeqActorProto::ACC_ATTR)->getAttributeValue<QString>();
+    selector.acc = actor->getParameter(GenericSeqActorProto::ACC_ATTR)->getAttributeValue<QString>(context);
 }
 
 void GenericSeqReader::sl_taskFinished() {

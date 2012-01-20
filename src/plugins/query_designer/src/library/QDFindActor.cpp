@@ -41,7 +41,7 @@ QDFindActor::QDFindActor(QDActorPrototype const* proto) : QDActor(proto) {
 }
 
 int QDFindActor::getMinResultLen() const {
-    return cfg->getParameter(PATTERN_ATTR)->getAttributeValue<QString>().length();
+    return cfg->getParameter(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().length();
 }
 
 int QDFindActor::getMaxResultLen() const {
@@ -49,7 +49,7 @@ int QDFindActor::getMaxResultLen() const {
 }
 
 QString QDFindActor::getText() const {
-    QString hypPtrn = cfg->getParameter(PATTERN_ATTR)->getAttributeValue<QString>().toUpper();
+    QString hypPtrn = cfg->getParameter(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toUpper();
 
     if (hypPtrn.isEmpty()) {
         hypPtrn = QString("&lt;<a href=%1>pattern</a>&gt;").arg(PATTERN_ATTR);
@@ -66,7 +66,7 @@ QString QDFindActor::getText() const {
 Task* QDFindActor::getAlgorithmTask(const QVector<U2Region>& location) {
     Task* t = new Task(tr("Find"), TaskFlag_NoRun);
     settings.sequence = scheme->getSequence().seq;
-    settings.pattern = cfg->getParameter(PATTERN_ATTR)->getAttributeValue<QString>().toAscii().toUpper();
+    settings.pattern = cfg->getParameter(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toAscii().toUpper();
 
     switch(getStrandToRun()) {
         case QDStrand_Both:

@@ -67,7 +67,7 @@ QString QDORFActor::getText() const {
             break;
     }
 
-    const QString& transId = cfg->getParameters().value(ID_ATTR)->getAttributeValue<QString>();
+    const QString& transId = cfg->getParameters().value(ID_ATTR)->getAttributeValueWithoutScript<QString>();
     QString ttName = AppContext::getDNATranslationRegistry()->
         lookupTranslation(AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()), DNATranslationType_NUCL_2_AMINO, transId)->getTranslationName();
     ttName = QString("<a href=%1>%2</a>").arg(ID_ATTR).arg(ttName);
@@ -87,7 +87,7 @@ QString QDORFActor::getText() const {
 
     int minLen = cfg->getParameter(LEN_ATTR)->getAttributePureValue().toInt();
     QString minLenStr = QString("<a href=%1>%2 bps</a>").arg(LEN_ATTR).arg(minLen);
-    int maxLen = cfg->getParameter(MAX_LENGTH_ATTR)->getAttributeValue<int>();
+    int maxLen = cfg->getParameter(MAX_LENGTH_ATTR)->getAttributeValueWithoutScript<int>();
     QString maxLenStr = QString("<a href=%1>%2 bps</a>").arg(MAX_LENGTH_ATTR).arg(maxLen);
 
     QString doc = QDORFActor::tr("Finds ORFs in <u>%1</u> using the <u>%2</u>."
@@ -135,7 +135,7 @@ Task* QDORFActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
         }
     }
 
-    const QString& transId = params.value(ID_ATTR)->getAttributeValue<QString>();
+    const QString& transId = params.value(ID_ATTR)->getAttributeValueWithoutScript<QString>();
     settings.proteinTT = AppContext::getDNATranslationRegistry()->
         lookupTranslation(dnaSeq.alphabet, DNATranslationType_NUCL_2_AMINO, transId);
 
@@ -179,11 +179,11 @@ void QDORFActor::sl_onAlgorithmTaskFinished(Task*) {
 }
 
 int QDORFActor::getMinResultLen() const {
-    return cfg->getParameter(LEN_ATTR)->getAttributeValue<int>();
+    return cfg->getParameter(LEN_ATTR)->getAttributeValueWithoutScript<int>();
 }
 
 int QDORFActor::getMaxResultLen() const {
-    return cfg->getParameter(MAX_LENGTH_ATTR)->getAttributeValue<int>();
+    return cfg->getParameter(MAX_LENGTH_ATTR)->getAttributeValueWithoutScript<int>();
 }
 QDORFActorPrototype::QDORFActorPrototype() {
      descriptor.setId("orf");
