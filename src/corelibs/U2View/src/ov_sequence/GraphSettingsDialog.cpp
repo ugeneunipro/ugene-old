@@ -99,10 +99,13 @@ void GraphSettingsDialog::sl_onPickColorButtonClicked()
 	QString colorName = colorButton->objectName();
 	QColor initial = colorMap.value(colorName);
 
-	QColor newColor = QColorDialog::getColor(initial, this);
-	colorMap[colorName] = newColor;
-	colorButton->setStyleSheet(QString(BACKGROUND_COLOR).arg(newColor.name()));
+    QColorDialog CD(initial, this);
 
+    if (CD.exec() == QDialog::Accepted){
+        QColor newColor = CD.selectedColor();
+        colorMap[colorName] = newColor;
+        colorButton->setStyleSheet(QString(BACKGROUND_COLOR).arg(newColor.name()));
+    }
 }
 
 void GraphSettingsDialog::sl_onCancelClicked()

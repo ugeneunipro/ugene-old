@@ -202,8 +202,8 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
 		max = comax;
 	}
 	
-	globalMin = qMin(globalMin, min);
-	globalMax = qMax(globalMax, max);
+	globalMin = min;
+	globalMax = max;
 
 	QPen graphPen(Qt::SolidLine);
 	if  (lineColors.contains(d->graphName)) {
@@ -261,50 +261,11 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
 		float fymin = comin;
 		float fymax = comax;
 		float fymid = (comin + comax)/2;
-		float fy;
+		float fy, fy2;
 		int prevFY = -1;
 		bool rp = false, lp = false;
 		int ymid = rect.bottom() - 1 - qRound((fymid - min) * kh);
-		if (points.useIntervals){
-			for (int i=0, n = nPoints; i < n; i++) {
-				fy = points.firstPoints[i];
-				if (fy == UNKNOWN_VAL) {
-					continue;
-				}
-				if (fy >= fymax) {
-					fy = fymax;
-				}
-				else {
-					if (fy <= fymin) fy = fymin;
-					else    fy = fymid;
-				}
-				int dy = qRound((fy - min) * kh);
-				assert(dy <= graphHeight);
-				int y = rect.bottom() - 1 - dy;
-				int x = rect.left() + i;
-				assert(y > rect.top() && y < rect.bottom());
-				p.drawLine(x, ymid , x, y);
-			}
-			for (int i=0, n = points.secondPoints.size(); i < n; i++) {
-				fy = points.secondPoints[i];
-				if (fy == UNKNOWN_VAL) {
-					continue;
-				}
-				if (fy >= fymax) {
-					fy = fymax;
-				}
-				else {
-					if (fy <= fymin) fy = fymin;
-					else    fy = fymid;
-				}
-				int dy = qRound((fy - min) * kh);
-				assert(dy <= graphHeight);
-				int y = rect.bottom() - 1 - dy;
-				int x = rect.left() + i;
-				assert(y > rect.top() && y < rect.bottom());
-				p.drawLine(x, ymid , x, y);
-			}
-		} else {
+        if(!points.useIntervals){
 			for (int i=0, n = points.firstPoints.size(); i < n; i++) {
 				fy = points.firstPoints[i];
 				rp = false;
@@ -315,11 +276,15 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
 				if (fy >= fymax) {
 					fy = fymax;
 					if (prevFY == int(fymid)) lp=true;
-				}
-				else {
+				}else if(fy < fymax && fy > fymin){
 					fy = fymid;
 					if (prevFY == int(fymax)) rp=true;
-				}
+                    if (prevFY == int(fymin)) lp=true;
+                }else{
+                    fy = fymin;
+                    if (prevFY == int(fymid)) lp=true;
+                }
+
 				int dy = qRound((fy - min) * kh);
 				assert(dy <= graphHeight);
 				int y = rect.bottom() - 1 - dy;
@@ -340,45 +305,65 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
 				prevX = x;
 				prevFY = (int) fy;
 			}
-			prevY = -1;
-			prevX = -1;
-			prevFY = -1;
-			for (int i=0, n = points.firstPoints.size(); i < n; i++) {
-				fy = points.firstPoints[i];
-				rp = false;
-				lp = false;
-				if (fy == UNKNOWN_VAL) {
-					continue;
-				}
-				if (fy <= fymin) {
-					fy = fymin;
-					if (prevFY == int(fymid)) lp=true;
-				}
-				else {
-					fy = fymid;
-					if (prevFY == int(fymin)) rp=true;
-				}
-				int dy = qRound((fy - min) * kh);
-				assert(dy <= graphHeight);
-				int y = rect.bottom() - 1 - dy;
-				int x = rect.left() + i;
-				if (lp) {
-					p.drawLine(prevX, prevY, x, prevY);
-					prevX = x;
-				}
-				if (rp) {
-					p.drawLine(prevX,prevY,prevX,y);
-					prevY = y;
-				}
-				assert(y > rect.top() && y < rect.bottom());
-				if (prevX!=-1){
-					p.drawLine(prevX, prevY , x, y);
-				}
-				prevY = y;
-				prevX = x;
-				prevFY = (int) fy;
-			}
-		}
+        }else{
+            for (int i=0, n = points.firstPoints.size(); i < n; i++) {
+                assert(points.firstPoints.size() == points.secondPoints.size());
+                fy = points.firstPoints[i], fy2 = points.secondPoints[i];
+                rp = false;
+                lp = false;
+                if (fy == UNKNOWN_VAL) {
+                    continue;
+                }
+                
+                assert(fy2 != UNKNOWN_VAL);
+                
+                if (fy2 >= fymax) {
+                    fy2 = fymax;
+                }else if(fy2 < fymax && fy2 > fymin){
+                    fy2 = fymid;
+                }else{
+                    fy2 = fymin;
+                }
+
+                if (fy >= fymax) {
+                    fy = fymax;
+                    if (prevFY == int(fymid)) lp=true;
+                }else if(fy < fymax && fy > fymin){
+                    fy = fymid;
+                    if (prevFY == int(fymax)) rp=true;
+                    if (prevFY == int(fymin)) lp=true;
+                }else{
+                    fy = fymin;
+                    if (prevFY == int(fymid)) lp=true;
+                }
+
+                int dy = qRound((fy - min) * kh);
+                assert(dy <= graphHeight);
+                int y = rect.bottom() - 1 - dy;
+                int x = rect.left() + i;
+                if (lp) {
+                    p.drawLine(prevX, prevY, x, prevY);
+                    prevX = x;
+                }
+                if (rp) {
+                    p.drawLine(prevX,prevY,prevX,y);
+                    prevY = y;
+                }
+                assert(y > rect.top() && y < rect.bottom());
+                if (prevX!=-1){
+                    p.drawLine(prevX, prevY , x, y);
+                }
+                if(fy != fy2){
+                    int dy2 = qRound((fy2 - min) * kh);
+                    int y2 = rect.bottom() - 1 - dy2;
+                    p.drawLine(x,y, x, y2);
+                }
+                prevY = y;
+                prevX = x;
+                prevFY = (int) fy;
+            }
+
+        }
 	}
 
 }
