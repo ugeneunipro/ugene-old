@@ -34,6 +34,11 @@ class U2LANG_EXPORT WorkflowScriptLibrary {
 public:
     static void initEngine(WorkflowScriptEngine *engine);
     
+    // ================== Misc =======================
+    static QScriptValue print(QScriptContext *ctx, QScriptEngine *);
+
+
+    // unrefactored obsolete deprecated functions
     // ================== Sequence =======================
     static QScriptValue getSubsequence(QScriptContext *ctx, QScriptEngine *engine);
     static QScriptValue concatSequence(QScriptContext *ctx, QScriptEngine *engine);

@@ -38,6 +38,9 @@ namespace U2 {
 void WorkflowScriptLibrary::initEngine(WorkflowScriptEngine *engine) {
     QScriptValue foo = engine->globalObject();
 
+    foo.setProperty("print", engine->newFunction(print));
+
+    // unrefactored obsolete deprecated functions
     foo.setProperty("subsequence",engine->newFunction(getSubsequence));
     foo.setProperty("complement", engine->newFunction(complement));
     foo.setProperty("size", engine->newFunction(sequenceSize));
@@ -65,6 +68,25 @@ void WorkflowScriptLibrary::initEngine(WorkflowScriptEngine *engine) {
     foo.setProperty("getLocation", engine->newFunction(getLocation));
     foo.setProperty("filterByQualifier", engine->newFunction(filterByQualifier));
 }
+
+QScriptValue WorkflowScriptLibrary::print(QScriptContext *ctx, QScriptEngine *) {
+    QString msg = "";
+    if(ctx->argument(0).isNumber()) {
+        msg = QString::number(ctx->argument(0).toInt32());
+    } else if(ctx->argument(0).isString()) {
+        msg = ctx->argument(0).toString();
+    } else if(ctx->argument(0).isBool()) {
+        if(ctx->argument(0).toBool()) {
+            msg = "true";
+        } else {
+            msg = "false";
+        }
+    }
+    scriptLog.info(msg);
+    return 0;
+}
+
+// unrefactored obsolete deprecated functions
 
 DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
     WorkflowScriptEngine *wse = dynamic_cast<WorkflowScriptEngine*>(engine);
