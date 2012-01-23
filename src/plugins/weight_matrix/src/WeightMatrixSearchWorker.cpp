@@ -175,8 +175,15 @@ Task* PWMatrixSearchWorker::tick() {
     if (models.isEmpty() || !modelPort->isEnded() || !dataPort->hasMessage()) {
         return NULL;
     }
-    DNASequence seq = dataPort->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<DNASequence>();
-    
+    Message inputMessage = getMessageAndSetupScriptValues(dataPort);
+    QVariantMap map = inputMessage.getData().toMap();
+    U2DataId seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    if (NULL == seqObj.get()) {
+        return NULL;
+    }
+    DNASequence seq = seqObj->getWholeSequence();
+
     if (!seq.isNull() && seq.alphabet->getType() == DNAAlphabet_NUCL) {
         WeightMatrixSearchCfg config(cfg);
         config.complOnly = (strand < 0);
