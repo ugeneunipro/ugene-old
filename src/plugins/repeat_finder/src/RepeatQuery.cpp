@@ -77,11 +77,21 @@ QList< QPair<QString,QString> > QDRepeatActor::saveConfiguration() const {
             }
         }
     }
+
+    QDDistanceConstraint* dc = static_cast<QDDistanceConstraint*>(paramConstraints.first());
+    int minDist = dc->getMin();
+    int maxDist = dc->getMax();
+    
+    res.append(qMakePair(MIN_DIST_ATTR, QString::number(minDist)));
+    res.append(qMakePair(MAX_DIST_ATTR, QString::number(maxDist)));
+
     return res;
 }
 
 void QDRepeatActor::loadConfiguration(const QList< QPair<QString,QString> >& strMap) {
     QDActor::loadConfiguration(strMap);
+    QString minDistStr;
+    QString maxDistStr;
     foreach(const StringAttribute& attr, strMap) {
         if (attr.first==ALGO_ATTR) {
             int alg;
@@ -96,7 +106,26 @@ void QDRepeatActor::loadConfiguration(const QList< QPair<QString,QString> >& str
                 alg = 2;
             }
             cfg->setParameter(ALGO_ATTR, qVariantFromValue(alg));
+        }else if (attr.first == MIN_DIST_ATTR){
+            minDistStr = attr.second;
+        }else if (attr.first == MAX_DIST_ATTR){
+            maxDistStr = attr.second;
         }
+    }
+
+    if(!minDistStr.isEmpty() && !maxDistStr.isEmpty()){
+        bool ok = false;
+        int minDist = minDistStr.toInt(&ok);
+        if(!ok){
+            return;
+        }
+        int maxDist = maxDistStr.toInt(&ok);
+        if(!ok || minDist > maxDist || paramConstraints.size() != 1){
+            return;
+        }
+        
+        paramConstraints.clear();
+        paramConstraints << new QDDistanceConstraint(units.values(), E2S, minDist, maxDist);
     }
 }
 
