@@ -130,7 +130,9 @@ enum TaskFlag {
     TaskFlag_MinimizeSubtaskErrorText = 1 << 23, //for TaskFlag_FailOnSubtaskError task minimizes the error text
                                                 // excluding task-names info from the text
 
-    TaskFlag_SuppressErrorNotification = 1 << 24 //for top level tasks only: if task fails, tells if notification is shown
+    TaskFlag_SuppressErrorNotification = 1 << 24, //for top level tasks only: if task fails, tells if notification is shown
+
+    TaskFlag_VerboseOnTaskCancel = 1 << 25 // when a task is cancelled, it is dumped to the log ('info' category)
 
 };
 
@@ -274,7 +276,11 @@ public:
     bool isErrorNotificationSuppressed() const { return flags.testFlag(TaskFlag_SuppressErrorNotification); }
         
     void setErrorNotificationSuppression(bool v) { setFlag(TaskFlag_SuppressErrorNotification, v); }
-    
+
+    bool isVerboseOnTaskCancel() const {return flags.testFlag(TaskFlag_VerboseOnTaskCancel); }
+
+    void setVerboseOnTaskCancel(bool v) { setFlag(TaskFlag_VerboseOnTaskCancel, v); }
+
     const TaskResources& getTaskResources() {return taskResources;}
 
     //WARN: if set to MAX_PARALLEL_SUBTASKS_AUTO, returns unprocessed value (MAX_PARALLEL_SUBTASKS_AUTO = 0)

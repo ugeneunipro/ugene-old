@@ -38,6 +38,7 @@ Task::Task(const QString& _name, TaskFlags f) {
     state       = State_New;
     tpm         = Progress_SubTasksBased;
     flags       = f;
+    setVerboseOnTaskCancel(true);
     taskId      = genTaskId();
     parentTask  = NULL;
     progressWeightAsSubtask = 1;

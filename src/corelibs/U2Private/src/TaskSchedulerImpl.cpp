@@ -683,7 +683,10 @@ void TaskSchedulerImpl::promoteTask(TaskInfo* ti, Task::State newState) {
                 if (tsi.hasError() && !tsi.cancelFlag) {
                     taskLog.error(tr("Task {%1} finished with error: %2").arg(task->getTaskName()).arg(tsi.getError()));
                 } else if (tsi.cancelFlag) {
-                    taskLog.info(tr("Task {%1} canceled").arg(ti->task->getTaskName()));
+                    if (ti->task->isVerboseOnTaskCancel())
+                    {
+                        taskLog.info(tr("Task {%1} canceled").arg(ti->task->getTaskName()));
+                    }
                 } else if (ti->task->isVerboseLogMode()) {
                     taskLog.info(tr("Task {%1} finished").arg(ti->task->getTaskName()));
                 }
