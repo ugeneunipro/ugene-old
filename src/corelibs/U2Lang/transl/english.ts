@@ -905,8 +905,8 @@
     <name>U2::Workflow::BaseAttributes</name>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="38"/>
-        <source>Input files</source>
-        <translation type="unfinished"></translation>
+        <source>Input file(s)</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="38"/>
@@ -960,8 +960,8 @@
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="61"/>
-        <source>Read input file by lines</source>
-        <translation type="unfinished"></translation>
+        <source>Reads the input file line by line.</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="65"/>

@@ -35,7 +35,7 @@ namespace U2 {
 namespace Workflow {
 
 const Descriptor BaseAttributes::URL_IN_ATTRIBUTE() {
-    return Descriptor(URL_IN_ATTR_ID, tr("Input files"), tr("Semicolon-separated list of paths to the input files."));
+    return Descriptor(URL_IN_ATTR_ID, tr("Input file(s)"), tr("Semicolon-separated list of paths to the input files"));
 }
 
 const Descriptor BaseAttributes::URL_OUT_ATTRIBUTE() {
@@ -58,7 +58,7 @@ const Descriptor BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE() {
 }
 
 const Descriptor BaseAttributes::READ_BY_LINES_ATTRIBUTE() {
-    return Descriptor(READ_BY_LINES_ATTR_ID, tr("Read by lines"), tr("Read input file by lines"));
+    return Descriptor(READ_BY_LINES_ATTR_ID, tr("Read by lines"), tr("Reads the input file line by line."));
 }
 
 const Descriptor BaseAttributes::FILE_MODE_ATTRIBUTE() {

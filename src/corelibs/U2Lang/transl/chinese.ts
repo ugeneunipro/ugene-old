@@ -905,12 +905,12 @@
     <name>U2::Workflow::BaseAttributes</name>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="38"/>
-        <source>Input files</source>
+        <source>Input file(s)</source>
         <translation>输入文件</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="38"/>
-        <source>Semicolon-separated list of paths to the input files.</source>
+        <source>Semicolon-separated list of paths to the input files</source>
         <translation>输入文件列表，用分号隔开。</translation>
     </message>
     <message>
@@ -960,7 +960,7 @@
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="61"/>
-        <source>Read input file by lines</source>
+        <source>Reads the input file line by line.</source>
         <translation>逐行读取输入文件</translation>
     </message>
     <message>

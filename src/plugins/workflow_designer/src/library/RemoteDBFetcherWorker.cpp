@@ -66,7 +66,9 @@ QString RemoteDBFetcherPrompter::composeRichDoc()
 {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QStringList seqids = getParameter(SEQID_ID).value<QString>().split(";", QString::SkipEmptyParts);
-    QString seq = seqids.size() > 1 ? RemoteDBFetcherWorker::tr("sequences") : RemoteDBFetcherWorker::tr("sequence");
+    QString seq = seqids.size() > 1 ?
+        RemoteDBFetcherWorker::tr("sequences identified with") :
+        RemoteDBFetcherWorker::tr("sequence identified with");
     QString seqidsStr = seqids.isEmpty() ? unsetStr : QString("<u>%1</u>").arg(seqids.join(", "));
     
     QString dbid = getParameter(DBID_ID).value<QString>();
@@ -74,9 +76,9 @@ QString RemoteDBFetcherPrompter::composeRichDoc()
     
     QString saveDir = getParameter(PATH_ID).value<QString>();
     saveDir = getHyperlink(PATH_ID, saveDir);
-    QString saveDirStr = RemoteDBFetcherWorker::tr("Save result to <u>%1</u> directory").arg(saveDir);
+    QString saveDirStr = RemoteDBFetcherWorker::tr("Save result to <u>%1</u> directory.").arg(saveDir);
     
-    return RemoteDBFetcherWorker::tr("Reads %1 identified with %2 from <u>%3</u> remote database. %4").
+    return RemoteDBFetcherWorker::tr("Reads %1 %2 from <u>%3</u> remote database. %4").
         arg(seq).
         arg(getHyperlink(SEQID_ID, seqidsStr)).
         arg(getHyperlink(DBID_ID, dbid)).
@@ -227,7 +229,7 @@ void RemoteDBFetcherFactory::init()
     dr->registerEntry(outType);
 
     Descriptor desc(ACTOR_ID,
-                    RemoteDBFetcherWorker::tr("Read from remote database"),
+                    RemoteDBFetcherWorker::tr("Read From Remote Database"),
                     RemoteDBFetcherWorker::tr("Reads sequences and annotations if any from a remote database."));
 
     QList<PortDescriptor*> pds;
@@ -244,17 +246,17 @@ void RemoteDBFetcherFactory::init()
     {
         Descriptor dbidd(DBID_ID,
                          RemoteDBFetcherWorker::tr("Database"),
-                         RemoteDBFetcherWorker::tr("The database to read from."));
+                         RemoteDBFetcherWorker::tr("The database to read from"));
         attrs << new Attribute(dbidd, BaseTypes::STRING_TYPE(), true, cuteDbNames.value(defaultDB, defaultDB));
 
         Descriptor seqidd(SEQID_ID,
-                         RemoteDBFetcherWorker::tr("Resource IDs"),
-                         RemoteDBFetcherWorker::tr("Semicolon-separated list of resource IDs in the database."));
+                         RemoteDBFetcherWorker::tr("Resource ID(s)"),
+                         RemoteDBFetcherWorker::tr("Semicolon-separated list of resource ID`s in the database"));
         attrs << new Attribute(seqidd, BaseTypes::STRING_TYPE(), true, "");
 
         Descriptor fullpathd(PATH_ID, 
                          RemoteDBFetcherWorker::tr("Save file to directory"), 
-                         RemoteDBFetcherWorker::tr("Directory to store sequence files loaded from a database."));
+                         RemoteDBFetcherWorker::tr("The directory to store sequence files loaded from a database"));
         attrs << new Attribute(fullpathd, BaseTypes::STRING_TYPE(), true, DEFAULT_PATH);
     }
     

@@ -1057,13 +1057,13 @@
     <name>U2::Workflow::BaseAttributes</name>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="38"/>
-        <source>Input files</source>
+        <source>Input file(s)</source>
         <translation>Входные файлы</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="38"/>
-        <source>Semicolon-separated list of paths to the input files.</source>
-        <translation>Пути к файлам входных данных.</translation>
+        <source>Semicolon-separated list of paths to the input files</source>
+        <translation>Список путей к входным файлам, разделенных ";".</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="42"/>
@@ -1112,8 +1112,8 @@
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="61"/>
-        <source>Read input file by lines</source>
-        <translation>Читать входной файл по строкам</translation>
+        <source>Reads the input file line by line.</source>
+        <translation>Выдает на выходной порт каждую строку входного файла по отдельности.</translation>
     </message>
     <message>
         <location filename="../src/library/BaseAttributes.cpp" line="65"/>
@@ -1290,10 +1290,6 @@
     <message>
         <source>Semicolon-separated list of paths to the input files.</source>
         <translation type="obsolete">Пути к файлам входных данных.</translation>
-    </message>
-    <message>
-        <source>Input files</source>
-        <translation type="obsolete">Входные файлы</translation>
     </message>
     <message>
         <source>Location of output data file</source>

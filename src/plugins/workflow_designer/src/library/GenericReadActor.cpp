@@ -60,7 +60,7 @@ const QString GenericMAActorProto::TYPE("generic.ma");
 
 GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLibConstants::GENERIC_READ_SEQ_PROTO_ID)
 {    
-    setDisplayName(U2::Workflow::CoreLib::tr("Read sequence"));
+    setDisplayName(U2::Workflow::CoreLib::tr("Read Sequence"));
     desc = U2::Workflow::CoreLib::tr("Reads sequences and annotations if any from local or remote files.");
     QMap<Descriptor, DataTypePtr> m;
     m[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
@@ -75,14 +75,14 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
                                             U2::Workflow::CoreLib::tr("A sequence of any type (nucleotide, protein).")), 
                                 seqTypeset, false, true);
     {
-        Descriptor md(GenericSeqActorProto::MODE_ATTR, SeqReadPrompter::tr("Mode"), 
-            SeqReadPrompter::tr("If the file contains more than one sequence, \"split\" mode sends them as is to output," 
-            "while \"merge\" appends all the sequences and outputs the sole merged sequence."));
+        Descriptor md(GenericSeqActorProto::MODE_ATTR, SeqReadPrompter::tr("Mode"),
+            SeqReadPrompter::tr("If the file contains more than one sequence, <i>Split</i> mode sends them \"as is\" to the output, " 
+            "while <i>Merge</i> appends all the sequences and outputs the sole merged sequence."));
         Descriptor gd(GenericSeqActorProto::GAP_ATTR, SeqReadPrompter::tr("Merging gap"), 
-            SeqReadPrompter::tr("In the \"merge\" mode, insert the specified number of gaps between original sequences."
-            "This is helpful e.g. to avoid finding false positives at the merge boundaries."));
+            SeqReadPrompter::tr("In <i>Merge</i> mode, the specified number of gaps are inserted between the original sequences. "
+            "This is helpful, for example, to avoid finding false positives at the merge boundaries."));
         Descriptor acd(GenericSeqActorProto::ACC_ATTR, SeqReadPrompter::tr("Accession filter"), 
-            SeqReadPrompter::tr("Only report sequence with the specified accession (id)."));
+            SeqReadPrompter::tr("Reports only sequences with the specified accession (id)."));
 
         attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
         attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, SPLIT);
@@ -91,9 +91,11 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
     }
 
     QMap<QString, PropertyDelegate*> delegates;
-    QVariantMap modeMap; 
-    modeMap[SeqReadPrompter::tr("Split")] = SPLIT;
-    modeMap[SeqReadPrompter::tr("Merge")] = MERGE;
+    QVariantMap modeMap;
+	QString splitStr = SeqReadPrompter::tr("Split");
+	QString mergeStr = SeqReadPrompter::tr("Merge");
+    modeMap[splitStr] = SPLIT;
+    modeMap[mergeStr] = MERGE;
     delegates[MODE_ATTR] = new ComboBoxDelegate(modeMap);
     {
         QVariantMap m; m["minimum"] = 0; m["maximum"] = INT_MAX;
@@ -110,7 +112,7 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
 
 GenericMAActorProto::GenericMAActorProto() : IntegralBusActorPrototype(CoreLibConstants::GENERIC_READ_MA_PROTO_ID) 
 {
-    setDisplayName(U2::Workflow::CoreLib::tr("Read alignment"));
+    setDisplayName(U2::Workflow::CoreLib::tr("Read Alignment"));
     desc = U2::Workflow::CoreLib::tr("Reads multiple sequence alignments (MSAs) from local or remote files."
         "<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).");
 

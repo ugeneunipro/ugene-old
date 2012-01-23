@@ -1560,34 +1560,34 @@ it is better to leave the list intact.</source>
     </message>
 </context>
 <context>
-    <name>U2::LocalWorkflow::RemoteDBFetcherPrompter</name>
-    <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="67"/>
-        <source>unset</source>
-        <translation type="unfinished"></translation>
-    </message>
+  <name>U2::LocalWorkflow::RemoteDBFetcherPrompter</name>
+  <message>
+    <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="67"/>
+    <source>unset</source>
+    <translation></translation>
+  </message>
 </context>
 <context>
     <name>U2::LocalWorkflow::RemoteDBFetcherWorker</name>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="69"/>
-        <source>sequences</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="70"/>
+        <source>sequences identified with</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="69"/>
-        <source>sequence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="77"/>
-        <source>Save result to &lt;u&gt;%1&lt;/u&gt; directory</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="71"/>
+        <source>sequence identified with</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="79"/>
-        <source>Reads %1 identified with %2 from &lt;u&gt;%3&lt;/u&gt; remote database. %4</source>
-        <translation type="unfinished"></translation>
+        <source>Save result to &lt;u&gt;%1&lt;/u&gt; directory.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="81"/>
+        <source>Reads %1 %2 from &lt;u&gt;%3&lt;/u&gt; remote database. %4</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="118"/>
@@ -1601,8 +1601,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="230"/>
-        <source>Read from remote database</source>
-        <translation type="unfinished"></translation>
+        <source>Read From Remote Database</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="231"/>
@@ -1621,18 +1621,18 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="247"/>
-        <source>The database to read from.</source>
-        <translation type="unfinished"></translation>
+        <source>The database to read from</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="251"/>
-        <source>Resource IDs</source>
-        <translation type="unfinished"></translation>
+        <source>Resource ID(s)</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="252"/>
-        <source>Semicolon-separated list of resource IDs in the database.</source>
-        <translation type="unfinished"></translation>
+        <source>Semicolon-separated list of resource ID`s in the database</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="256"/>
@@ -1641,8 +1641,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="257"/>
-        <source>Directory to store sequence files loaded from a database.</source>
-        <translation type="unfinished"></translation>
+        <source>The directory to store sequence files loaded from a database</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2130,8 +2130,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/CoreLib.cpp" line="182"/>
-        <source>Read plain text</source>
-        <translation type="unfinished"></translation>
+        <source>Read Plain Text</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/CoreLib.cpp" line="182"/>
@@ -2231,8 +2231,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="63"/>
-        <source>Read sequence</source>
-        <translation type="unfinished"></translation>
+        <source>Read Sequence</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="64"/>
@@ -2251,8 +2251,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="113"/>
-        <source>Read alignment</source>
-        <translation type="unfinished"></translation>
+        <source>Read Alignment</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="114"/>
@@ -2274,8 +2274,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="79"/>
-        <source>If the file contains more than one sequence, &quot;split&quot; mode sends them as is to output,while &quot;merge&quot; appends all the sequences and outputs the sole merged sequence.</source>
-        <translation type="unfinished"></translation>
+        <source>If the file contains more than one sequence, &lt;i&gt;Split&lt;/i&gt; mode sends them &quot;as is&quot; to the output, while &lt;i&gt;Merge&lt;/i&gt; appends all the sequences and outputs the sole merged sequence.</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="81"/>
@@ -2284,8 +2284,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="82"/>
-        <source>In the &quot;merge&quot; mode, insert the specified number of gaps between original sequences.This is helpful e.g. to avoid finding false positives at the merge boundaries.</source>
-        <translation type="unfinished"></translation>
+        <source>In &lt;i&gt;Merge&lt;/i&gt; mode, the specified number of gaps are inserted between the original sequences. This is helpful, for example, to avoid finding false positives at the merge boundaries.</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="84"/>
@@ -2294,8 +2294,18 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="85"/>
-        <source>Only report sequence with the specified accession (id).</source>
-        <translation type="unfinished"></translation>
+        <source>Reports only sequences with the specified accession (id).</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/library/GenericReadActor.cpp" line="95"/>
+        <source>Split</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/library/GenericReadActor.cpp" line="96"/>
+        <source>Merge</source>
+        <translation></translation>
     </message>
 </context>
 <context>

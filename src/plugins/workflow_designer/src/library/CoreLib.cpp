@@ -181,7 +181,7 @@ void CoreLib::init() {
         QList<PortDescriptor*> p; QList<Attribute*> a;
         a << new Attribute(BaseAttributes::READ_BY_LINES_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, false);
         
-        Descriptor acd(CoreLibConstants::READ_TEXT_PROTO_ID, tr("Read plain text"), tr("Reads text from local or remote files."));
+        Descriptor acd(CoreLibConstants::READ_TEXT_PROTO_ID, tr("Read Plain Text"), tr("Reads text from local or remote files."));
         p << new PortDescriptor(Descriptor(BasePorts::OUT_TEXT_PORT_ID(), tr("Plain text"), ""), dtl, false, true);
         IntegralBusActorPrototype* proto = new ReadDocActorProto(BaseDocumentFormats::PLAIN_TEXT, acd, p, a);
         proto->setPrompter(new ReadDocPrompter(tr("Reads text from <u>%1</u>.")));

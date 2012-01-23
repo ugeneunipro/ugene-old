@@ -291,7 +291,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/SchemaAliasesConfigurationDialog.ui" line="17"/>
         <source>Configure command line aliases</source>
-        <translation type="unfinished">Редактировать параметры запуска схемы черех консоль</translation>
+        <translation type="unfinished">Редактировать параметры запуска схемы через консоль</translation>
     </message>
     <message>
         <source>Objects</source>
@@ -1650,24 +1650,24 @@ it is better to leave the list intact.</source>
 <context>
     <name>U2::LocalWorkflow::RemoteDBFetcherWorker</name>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="69"/>
-        <source>sequences</source>
-        <translation>последовательности</translation>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="70"/>
+        <source>sequences identified with</source>
+        <translation>последовательности с идентификаторами</translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="69"/>
-        <source>sequence</source>
-        <translation>последовательность</translation>
-    </message>
-    <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="77"/>
-        <source>Save result to &lt;u&gt;%1&lt;/u&gt; directory</source>
-        <translation>Сохранить результат в директорию &lt;u&gt;%1&lt;/u&gt;</translation>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="71"/>
+        <source>sequence identified with</source>
+        <translation>последовательность с идентификатором</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="79"/>
-        <source>Reads %1 identified with %2 from &lt;u&gt;%3&lt;/u&gt; remote database. %4</source>
-        <translation>Прочитать %1 с идентификтором %2  из удаленной базы данных &lt;u&gt;%3&lt;/u&gt;. %4</translation>
+        <source>Save result to &lt;u&gt;%1&lt;/u&gt; directory.</source>
+        <translation>Сохранить результат в директорию &lt;u&gt;%1&lt;/u&gt;.</translation>
+    </message>
+    <message>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="81"/>
+        <source>Reads %1 %2 from &lt;u&gt;%3&lt;/u&gt; remote database. %4</source>
+        <translation>Прочитать %1 %2 из удаленной базы данных &lt;u&gt;%3&lt;/u&gt;. %4</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="118"/>
@@ -1681,13 +1681,13 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="230"/>
-        <source>Read from remote database</source>
+        <source>Read From Remote Database</source>
         <translation>Загрузить из удаленной базы данных</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="231"/>
         <source>Reads sequences and annotations if any from a remote database.</source>
-        <translation type="unfinished">Читaen последовательности и аннотации из удаленной базы данных.</translation>
+        <translation type="unfinished">Загружает последовательности (вместе с аннотациями) из удаленной базы данных.</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="235"/>
@@ -1701,28 +1701,29 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="247"/>
-        <source>The database to read from.</source>
-        <translation>База данных для чтения.</translation>
+        <source>The database to read from</source>
+        <translation>Выберите удаленную базу данных, из которой требуется загрузить данные.</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="251"/>
-        <source>Resource IDs</source>
-        <translation>ID</translation>
+        <source>Resource ID(s)</source>
+        <translation>Идентификаторы</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="252"/>
-        <source>Semicolon-separated list of resource IDs in the database.</source>
-        <translation>список ID в базе данных, разделенный точками с запятой.</translation>
+        <source>Semicolon-separated list of resource ID`s in the database</source>
+        <translation>Список идентификаторов ресурсов в базе данных. Различные значения отделяются друг от друга с помощью &quot;;&quot;.
+&lt;p&gt; Например: &quot;NC_001363;D11266&quot;.</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="256"/>
         <source>Save file to directory</source>
-        <translation>Сохранить файл в директорию</translation>
+        <translation>Сохранить в директорию</translation>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="257"/>
-        <source>Directory to store sequence files loaded from a database.</source>
-        <translation>Диретория в которую будет сохранены файлы, загруженные из базы данных.</translation>
+        <source>The directory to store sequence files loaded from a database</source>
+        <translation>Директория, в которую будут сохранены файлы, загруженные из базы данных.</translation>
     </message>
 </context>
 <context>
@@ -2239,7 +2240,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/CoreLib.cpp" line="182"/>
-        <source>Read plain text</source>
+        <source>Read Plain Text</source>
         <translation>Чтение текста</translation>
     </message>
     <message>
@@ -2386,27 +2387,23 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="63"/>
-        <source>Read sequence</source>
+        <source>Read Sequence</source>
         <translation>Чтение последовательности</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="104"/>
         <source>Reads sequence(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
-        <translation>Читает последовательнсоти из &lt;u&gt;%1&lt;/u&gt;.</translation>
+        <translation>Прочитать последовательности из &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="113"/>
-        <source>Read alignment</source>
+        <source>Read Alignment</source>
         <translation>Чтение множественного выравнивания</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="129"/>
         <source>Reads MSA(s) from &lt;u&gt;%1&lt;/u&gt;.</source>
-        <translation>Прочитать выравнивания из &lt;u&gt;%1&lt;/u&gt;.</translation>
-    </message>
-    <message>
-        <source>Read all sequences from &lt;u&gt;%1&lt;/u&gt; and output each in turn.</source>
-        <translation type="obsolete">Прочитать последовательности из &lt;u&gt;%1&lt;/u&gt;.</translation>
+        <translation>Прочитать множественные выравнивания из &lt;u&gt;%1&lt;/u&gt;.</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="75"/>
@@ -2461,8 +2458,8 @@ it is better to leave the list intact.</source>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="114"/>
         <source>Reads multiple sequence alignments (MSAs) from local or remote files.&lt;p&gt;Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).</source>
-        <translation>Считывает выравнивания из файлов, расположенных локально или удаленно.
-&lt;p&gt;Помимо чтения готовых выравниваний известных форматов, поддерживается автоматическое составление выравниваний из наборов последовательностей, которые могут быть прочитаны из файла любого подходящего формата. </translation>
+        <translation>Считывает множественные выравнивания из файлов, расположенных локально или удаленно.
+&lt;p&gt;Помимо чтения готовых выравниваний известных форматов, поддерживается автоматическое составление выравниваний из наборов последовательностей, которые могут быть прочитаны из файла любого подходящего формата (например,  FASTA или Genbank).</translation>
     </message>
     <message>
         <location filename="../src/library/CoreLib.cpp" line="222"/>
@@ -2470,17 +2467,9 @@ it is better to leave the list intact.</source>
         <translation>Запись всех входящих выравниваний в файл(ы) в формате Stockholm.</translation>
     </message>
     <message>
-        <source>Sequence reader</source>
-        <translation type="obsolete">Чтение последовательностей</translation>
-    </message>
-    <message>
         <location filename="../src/library/GenericReadActor.cpp" line="64"/>
         <source>Reads sequences and annotations if any from local or remote files.</source>
-        <translation>Считывает последовательности вместе с аннотациями из файлов, расположенных локально или удаленно.</translation>
-    </message>
-    <message>
-        <source>Alignment reader</source>
-        <translation type="obsolete">Чтение выравниваний</translation>
+        <translation>Считывает последовательности (вместе с аннотациями) из файлов, расположенных локально или удаленно.</translation>
     </message>
 </context>
 <context>
@@ -2492,36 +2481,38 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="79"/>
-        <source>If the file contains more than one sequence, &quot;split&quot; mode sends them as is to output,while &quot;merge&quot; appends all the sequences and outputs the sole merged sequence.</source>
-        <translation>При наличии более одной последовательности в файле, возможно выдавать их по одной либо сшить в одну объединённую последовательность.</translation>
+        <source>If the file contains more than one sequence, &lt;i&gt;Split&lt;/i&gt; mode sends them &quot;as is&quot; to the output, while &lt;i&gt;Merge&lt;/i&gt; appends all the sequences and outputs the sole merged sequence.</source>
+        <translation>При наличии более одной последовательности в файле режим &lt;i&gt;Разбиение&lt;/i&gt; отправляет их в исходном виде на выходной порт по одной,  в то время как режим &lt;i&gt;Сшивка&lt;/i&gt; соединяет все последовательности в одну и отправляет ее на выходной порт.</translation>
     </message>
     <message>
-        <location filename="../src/library/GenericReadActor.cpp" line="81"/>
+        <location filename="../src/library/GenericReadActor.cpp" line="81"/> 
         <source>Merging gap</source>
         <translation>Сшивка пропусками</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="82"/>
-        <source>In the &quot;merge&quot; mode, insert the specified number of gaps between original sequences.This is helpful e.g. to avoid finding false positives at the merge boundaries.</source>
-        <translation>В режиме сшивки, добавлять указанное число пропусков между исходными последовательностиями. Это, в частности, помогает избежать нахождения ложных совпадений или сигналов на границах сшивки  исходных последовательностей.</translation>
-    </message>
-    <message>
-        <source>Split</source>
-        <translation type="obsolete">Раздельные последовательности</translation>
-    </message>
-    <message>
-        <source>Merge</source>
-        <translation type="obsolete">Соединить последовательности в одну</translation>
+        <source>In &lt;i&gt;Merge&lt;/i&gt; mode, the specified number of gaps are inserted between the original sequences. This is helpful, for example, to avoid finding false positives at the merge boundaries.</source>
+        <translation>В режиме &lt;i&gt;Сшивка&lt;/i&gt; добавляется указанное число пропусков между исходными последовательностиями. Это, в частности, помогает избежать нахождения ложных совпадений или сигналов на границах сшивки исходных последовательностей.</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="84"/>
         <source>Accession filter</source>
-        <translation>Фильтр по Accession</translation>
+        <translation>Фильтр по идентификаторам</translation>
     </message>
     <message>
         <location filename="../src/library/GenericReadActor.cpp" line="85"/>
-        <source>Only report sequence with the specified accession (id).</source>
-        <translation>Выдавать только последовательности с указанным accession (id).</translation>
+        <source>Reports only sequences with the specified accession (id).</source>
+        <translation>Выдает последовательности только с указаными идентификаторами (Accession).</translation>
+    </message>
+    <message>
+        <location filename="../src/library/GenericReadActor.cpp" line="95"/>
+        <source>Split</source>
+        <translation>Разбиение</translation>
+    </message>
+    <message>
+        <location filename="../src/library/GenericReadActor.cpp" line="96"/>
+        <source>Merge</source>
+        <translation>Сшивка</translation>
     </message>
 </context>
 <context>
