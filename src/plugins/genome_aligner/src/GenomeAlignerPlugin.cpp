@@ -69,7 +69,7 @@ public:
     bool hasBuildIndexWidget() {return true;}
 };
 
-GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE genome aligner"), tr("Assembly DNA to reference sequence") ) {
+GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE Genome Aligner"), tr("Assembly DNA to reference sequence") ) {
     if (AppContext::getMainWindow()) {
         AppContext::getAppSettingsGUI()->registerPage(new GenomeAlignerSettingsPageController());
     }
@@ -79,7 +79,7 @@ GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE genome aligner"),
     
     bool guiMode = AppContext::getMainWindow();
     DnaAssemblyGUIExtensionsFactory* guiFactory = guiMode ? new GenomeAlignerGuiExtFactory(): NULL;
-    DnaAssemblyAlgorithmEnv* algo = new DnaAssemblyAlgorithmEnv("UGENE genome aligner", new GenomeAlignerTask::Factory, guiFactory, true, true);
+    DnaAssemblyAlgorithmEnv* algo = new DnaAssemblyAlgorithmEnv("UGENE Genome Aligner", new GenomeAlignerTask::Factory, guiFactory, true, true);
     bool res = registry->registerAlgorithm(algo);
     Q_UNUSED(res);
     assert(res);

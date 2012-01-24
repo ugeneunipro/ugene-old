@@ -328,6 +328,7 @@ void DnaAssemblyDialog::addGuiExtension() {
             customGUI->buildIndexUrl(refSeqEdit->text(), prebuiltIndex, error);
         }
         customGUI->show();
+        adjustSize();
     } else {
         adjustSize();
     }

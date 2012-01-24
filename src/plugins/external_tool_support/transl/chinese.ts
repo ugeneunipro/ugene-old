@@ -545,7 +545,7 @@ bowtie is somewhat slower when --best is specified.
     </message>
     <message>
         <location filename="../src/ui/BwaBuildSettings.ui" line="22"/>
-        <source>Algorithm (-a)</source>
+        <source>Index algorithm (-a)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

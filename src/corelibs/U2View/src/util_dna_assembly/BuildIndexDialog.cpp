@@ -133,7 +133,9 @@ void BuildIndexDialog::addGuiExtension() {
 			buildIndexUrl(refSeqEdit->text());
 		}
 		customGUI->show();
-	} else {
+        adjustSize();
+	} else 
+    {
 		adjustSize();
 	}
 }
@@ -182,9 +184,9 @@ void BuildIndexDialog::accept()
         }
     }
         if (refSeqEdit->text().isEmpty()) {
-		QMessageBox::information(this, tr("Build index"), tr("Reference sequence url is not set!") );
+		QMessageBox::information(this, tr("Build Index"), tr("Reference sequence url is not set!") );
 	} else if (indexFileNameEdit->text().isEmpty() ) {
-		QMessageBox::information(this, tr("Build index"), tr("Index file name is not set!") );
+		QMessageBox::information(this, tr("Build Index"), tr("Index file name is not set!") );
 	} else {   
 		genomePath.clear();
 		genomePath = refSeqEdit->text();

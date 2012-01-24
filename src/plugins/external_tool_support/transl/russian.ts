@@ -335,7 +335,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/BowtieSettings.ui" line="85"/>
-        <source>--maqerr</source>
+        <source>Maq error (--maqerr)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -533,7 +533,7 @@ bowtie is somewhat slower when --best is specified.
     </message>
     <message>
         <location filename="../src/ui/BwaBuildSettings.ui" line="22"/>
-        <source>Algorithm (-a)</source>
+        <source>Index algorithm (-a)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

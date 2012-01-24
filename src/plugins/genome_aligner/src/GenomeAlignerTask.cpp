@@ -50,7 +50,7 @@
 
 namespace U2 {
 
-const QString GenomeAlignerTask::taskName(tr("UGENE genome aligner"));
+const QString GenomeAlignerTask::taskName(tr("UGENE Genome Aligner"));
 const QString GenomeAlignerTask::OPTION_READS_READER("rreader");
 const QString GenomeAlignerTask::OPTION_READS_WRITER("rwriter");
 const QString GenomeAlignerTask::OPTION_ALIGN_REVERSED("align_reversed");

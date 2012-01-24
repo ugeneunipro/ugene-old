@@ -14,7 +14,9 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This parameter influences on the amount of parts the reference will be divided. It is better to make it bigger, but it influences on the amount of memory used during the aligning.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This parameter influences the number of parts the
+          reference will be divided. It is better to make it bigger, but it influences the
+          amount of memory used during the alignment.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -98,7 +100,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/GenomeAlignerSettings.ui" line="170"/>
-        <source>Use &quot;best&quot;-mode during the aligning</source>
+        <source>Use &quot;best&quot;-mode during the alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -118,7 +120,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/GenomeAlignerSettings.ui" line="260"/>
-        <source>Maximum memory for short reads:</source>
+        <source>Maximum memory for short reads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -127,7 +129,8 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;You can change the amount of memory that will be used for keeping short-reads during the aligning. It is better to make it bigger.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Allows one to decrease the load on the computer on one side and to increase the computation speed of the task on the other side.
+          &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -156,7 +159,9 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This parameter influences on the amount of parts the reference will be divided. It is better to make it bigger, but it influences on the amount of memory used during the aligning.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This parameter influences the number of parts the
+          reference will be divided. It is better to make it bigger, but it influences the
+          amount of memory used during the alignment.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -170,7 +175,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;You can choose a temporary directory for saving index files for the reference that will be built during the aligning. If you need to run this algorithm another time with the &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;equal reference&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; and with the &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;equal reference fragmentation parameter &lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;you can use this prebuilt index that will be located at this temporary directory.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;You can choose a temporary directory for saving index files for the reference that will be built during the alignment. If you need to run this algorithm one more time with the same reference and with the same reference fragmentation parameter, you can use this prebuilt index that will be located in the temporary directory. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -209,7 +214,7 @@ p, li { white-space: pre-wrap; }
     <name>U2</name>
     <message>
         <location filename="../src/GenomeAlignerTask.cpp" line="53"/>
-        <source>UGENE genome aligner</source>
+        <source>UGENE Genome Aligner</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -363,7 +368,7 @@ p, li { white-space: pre-wrap; }
     <name>U2::GenomeAlignerPlugin</name>
     <message>
         <location filename="../src/GenomeAlignerPlugin.cpp" line="71"/>
-        <source>UGENE genome aligner</source>
+        <source>UGENE Genome Aligner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -705,7 +710,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
     </message>
     <message>
         <location filename="../src/GenomeAlignerWorker.cpp" line="113"/>
-        <source>UGENE genome aligner</source>
+        <source>UGENE Genome Aligner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

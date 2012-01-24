@@ -27,7 +27,7 @@
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="20"/>
-        <source>Align short reads</source>
+        <source>Align Short Reads</source>
         <translation type="unfinished">Выравнивание на геном</translation>
     </message>
     <message>
@@ -81,7 +81,7 @@
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="89"/>
-        <source>Select the file in SAM format to write the result of alignment into. This parameter is &lt;b&gt;required&lt;/b&gt;.</source>
+        <source>File in UGENE database format or SAM format (if the box SAM output check), to write the result of the alignment into. This parameter is &lt;b&gt;required&lt;/b&gt;.</source>
         <translation type="unfinished">Результат сборки контигов в формате SAM.</translation>
     </message>
     <message>
@@ -91,7 +91,7 @@
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="117"/>
-        <source>Use an index file instead of a source reference sequence.</source>
+        <source>Use an index file instead of a reference sequence.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -182,7 +182,7 @@
     <name>BuildIndexFromRefDialog</name>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="26"/>
-        <source>Build index</source>
+        <source>Build Index</source>
         <translation type="unfinished">Построить индекс</translation>
     </message>
     <message>
@@ -2416,7 +2416,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="185"/>
         <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="187"/>
-        <source>Build index</source>
+        <source>Build Index</source>
         <translation type="unfinished">Построить индекс</translation>
     </message>
     <message>

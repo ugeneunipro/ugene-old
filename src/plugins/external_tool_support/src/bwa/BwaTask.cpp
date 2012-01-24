@@ -179,7 +179,7 @@ void BwaAssembleTask::LogParser::parseErrOutput(const QString &partOfLog) {
 
 // BwaTask
 
-const QString BwaTask::taskName = "Bwa";
+const QString BwaTask::taskName = "BWA";
 
 const QString BwaTask::OPTION_INDEX_ALGORITHM = "index-algorithm";
 const QString BwaTask::OPTION_N = "n";

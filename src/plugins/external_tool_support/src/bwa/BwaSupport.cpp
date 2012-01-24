@@ -47,7 +47,7 @@ BwaSupport::BwaSupport(const QString &name, const QString &path):
                    "that aligns relatively short nucleotide sequences "
                    "against a long reference sequence such as the human genome.");
     versionRegExp=QRegExp("Version: (\\d+\\.\\d+\\.\\d+-r\\d+)");
-    toolKitName="Bwa";
+    toolKitName="BWA";
 }
 
 } // namespace U2

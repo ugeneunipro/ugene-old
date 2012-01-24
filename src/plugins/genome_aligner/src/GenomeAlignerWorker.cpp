@@ -110,7 +110,7 @@ void GenomeAlignerWorkerFactory::init() {
     a << new Attribute(qual, BaseTypes::NUM_TYPE(), false/*required*/, 0);
     a << new Attribute(gpu, BaseTypes::BOOL_TYPE(), false/*required*/, false);
 
-    Descriptor desc(ACTOR_ID, GenomeAlignerWorker::tr("UGENE genome aligner"), 
+    Descriptor desc(ACTOR_ID, GenomeAlignerWorker::tr("UGENE Genome Aligner"), 
         GenomeAlignerWorker::tr("Unique UGENE algorithm for aligning short reads to reference genome"));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 

@@ -5,7 +5,7 @@
     <name>AssemblyToRefDialog</name>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="20"/>
-        <source>Align short reads</source>
+        <source>Align Short Reads</source>
         <translation>短序列片段比对</translation>
     </message>
     <message>
@@ -41,7 +41,7 @@
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="89"/>
-        <source>Select the file in SAM format to write the result of alignment into. This parameter is &lt;b&gt;required&lt;/b&gt;.</source>
+        <source>File in UGENE database format or SAM format (if the box SAM output check), to write the result of the alignment into. This parameter is &lt;b&gt;required&lt;/b&gt;.</source>
         <translation>选择一个 SAM 格式的文件用于写入比对结果。&lt;b&gt;该参数必选&lt;/b&gt;。</translation>
     </message>
     <message>
@@ -51,7 +51,7 @@
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="117"/>
-        <source>Use an index file instead of a source reference sequence.</source>
+        <source>Use an index file instead of a reference sequence.</source>
         <translation>使用索引文件来代替参考序列。</translation>
     </message>
     <message>
@@ -162,7 +162,7 @@
     <name>BuildIndexFromRefDialog</name>
     <message>
         <location filename="../src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui" line="26"/>
-        <source>Build index</source>
+        <source>Build Index</source>
         <translation>建立索引</translation>
     </message>
     <message>
@@ -2333,7 +2333,7 @@ Try to open another file with a reference sequence and associate it with the ass
     <message>
         <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="185"/>
         <location filename="../src/util_dna_assembly/BuildIndexDialog.cpp" line="187"/>
-        <source>Build index</source>
+        <source>Build Index</source>
         <translation>构建索引</translation>
     </message>
     <message>
