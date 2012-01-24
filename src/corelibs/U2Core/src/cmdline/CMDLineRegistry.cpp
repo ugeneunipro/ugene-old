@@ -84,6 +84,11 @@ CMDLineRegistry::CMDLineRegistry(const QStringList& arguments) {
                 pair.second = argument;
             }
         }
+        if (pair.second.length() > 1) {
+            if (pair.second.startsWith("\"") && pair.second.endsWith("\"")) {
+                pair.second = pair.second.mid(1, pair.second.length() - 2);
+            }
+        }
         params << pair;
     }
 }

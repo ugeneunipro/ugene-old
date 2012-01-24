@@ -32,6 +32,7 @@
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/TextObject.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 
@@ -62,9 +63,13 @@ bool ExternalProcessWorkerFactory::init(ExternalProcessConfig *cfg) {
     return true;
 }
 
-const QString ExternalProcessWorker::generateURL(const QString &extention, const QString &name) {
+const QString ExternalProcessWorker::generateAndCreateURL(const QString &extention, const QString &name) {
     QString url;
     QString path = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("wd_external");
+    QDir dir(path);
+    if (!dir.exists()) {
+        dir.mkpath(path);
+    }
     url = path + "/tmp" + name + QString::number(QDateTime::currentDateTime().toTime_t()) +  "." + extention;
     return url;
 }
@@ -95,7 +100,7 @@ Task* ExternalProcessWorker::tick() {
     foreach(const DataConfig& dataCfg, cfg->inputs) { //write all input data to files
         DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format);
         IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-        QString url = generateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
+        QString url = generateAndCreateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
         inputUrls << url;
         std::auto_ptr<Document> d(f->createNewLoadedDocument(iof, url, os));
         CHECK_OP(os, NULL);
@@ -154,7 +159,7 @@ Task* ExternalProcessWorker::tick() {
     }
 
     foreach(const DataConfig &dataCfg, cfg->outputs) { 
-        QString url1 = generateURL(AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format)->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
+        QString url1 = generateAndCreateURL(AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format)->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
         outputUrls.insert(url1, dataCfg);
 
         int ind = execString.indexOf(QRegExp("\\$" + dataCfg.attrName + "(\\W|$)"));
@@ -174,6 +179,14 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
     if(output && t->isFinished() && !t->hasError()) {
         QMap<QString, DataConfig>::iterator i;
         QVariantMap v;
+
+        /* This variable and corresponded code parts with it
+         * are temporary created for merging sequences.
+         * When standard multiplexing/merging tools will be created
+         * then the variable and code parts must be deleted.
+         */
+        QMap<QString, QList<U2EntityRef> > seqsForMergingBySlotId;
+
         for(i = outputUrls.begin(); i != outputUrls.end(); i++) {
             DataConfig cfg = i.value();
             QString url = i.key();
@@ -181,7 +194,9 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(cfg.format);
             IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
             U2OpStatus2Log os;
-            std::auto_ptr<Document> d(f->loadDocument(iof, url, QVariantMap(), os));
+            QVariantMap hints;
+            hints.insert(DocumentFormat::DBI_ALIAS_HINT, QString(WORKFLOW_SESSION_TMP_DBI_ALIAS));
+            std::auto_ptr<Document> d(f->loadDocument(iof, url, hints, os));
             
             if (os.hasError()) {
                 //coreLog.error(tr("Can't open document"));
@@ -200,9 +215,19 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             }
 
             if( cfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()){
-                U2SequenceObject *obj = static_cast<U2SequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
+                QList<GObject*> seqObjects = d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded);
                 DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
-                v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<DNASequence>(obj->getWholeSequence());
+                QString slotId = WorkflowUtils::getSlotDescOfDatatype(dataType).getId();
+                if (1 == seqObjects.size()) {
+                    GObject *obj = seqObjects.first();
+                    v[slotId] = obj->getEntityRef().entityId;
+                } else if (1 < seqObjects.size()) {
+                    QList<U2EntityRef> refs;
+                    foreach (GObject *obj, seqObjects) {
+                        refs << obj->getEntityRef();
+                    }
+                    seqsForMergingBySlotId.insert(slotId, refs);
+                }
             } else if(cfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
                 MAlignmentObject *obj =  static_cast<MAlignmentObject *> (d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT, UOF_LoadedAndUnloaded).first());
                 DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
@@ -245,7 +270,38 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
         outputUrls.clear();
         DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(OUTPUT_PORT_TYPE + cfg->name);
         
-        output->put(Message(dataType, v));
+        if (seqsForMergingBySlotId.isEmpty()) {
+            output->put(Message(dataType, v));
+        } else if (1 == seqsForMergingBySlotId.size()) {
+            // create a message for every sequence
+            QString slotId = seqsForMergingBySlotId.keys().first();
+            const QList<U2EntityRef> &refs= seqsForMergingBySlotId.value(slotId);
+            foreach(const U2EntityRef &eRef, refs) {
+                v[slotId] = eRef.entityId;
+                output->put(Message(dataType, v));
+            }
+        } else {
+            // merge every sequence group and send one message
+            U2SequenceImporter seqImporter = U2SequenceImporter(QVariantMap());
+            U2OpStatus2Log os;
+
+            foreach (const QString &slotId, seqsForMergingBySlotId.keys()) {
+                const QList<U2EntityRef> &refs= seqsForMergingBySlotId.value(slotId);
+                bool first = true;
+                foreach(const U2EntityRef &eRef, refs) {
+                    std::auto_ptr<U2SequenceObject> obj(new U2SequenceObject("tmp_name", eRef));
+                    if (first) {
+                        seqImporter.startSequence(eRef.dbiRef, slotId, false, os);
+                        first = false;
+                    }
+                    U2Region wholeSeq(0, obj->getSequenceLength());
+                    seqImporter.addSequenceBlock(eRef, wholeSeq, os);
+                }
+                U2Sequence seq = seqImporter.finalizeSequence(os);
+                v[slotId] = seq.id;
+            }
+            output->put(Message(dataType, v));
+        }
         bool isEnded = true;
         foreach(CommunicationChannel *ch, inputs) {
             isEnded = isEnded && ch->isEnded();

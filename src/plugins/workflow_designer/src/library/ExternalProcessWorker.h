@@ -53,7 +53,7 @@ private slots:
     void sl_onTaskFinishied();
     
 private:
-    const QString generateURL(const QString &extention, const QString &name);
+    const QString generateAndCreateURL(const QString &extention, const QString &name);
 
     CommunicationChannel *output;
     QList<CommunicationChannel *> inputs;

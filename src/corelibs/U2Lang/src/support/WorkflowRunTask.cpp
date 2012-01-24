@@ -577,7 +577,6 @@ static QString getLogLevelName(LogLevel l) {
 }
 
 void RunCmdlineWorkflowTask::prepare() {
-    
     QStringList args;
     // FIXME: use defined constants!
     args << QString("--task=%1").arg(conf.schemaPath);
@@ -585,7 +584,7 @@ void RunCmdlineWorkflowTask::prepare() {
     args << QString("--%1").arg(OUTPUT_PROGRESS_OPTION);
     args << "--lang=en";
     args << QString("--%1").arg(OUTPUT_ERROR_OPTION);
-    args << QString("--ini-file='%1'").arg(AppContext::getSettings()->fileName());
+    args << QString("--ini-file=\"%1\"").arg(AppContext::getSettings()->fileName());
     args << conf.args;
     
     if (!containsPrefix(args, "--log-level")) {
