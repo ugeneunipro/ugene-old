@@ -24,8 +24,8 @@
 
 #include "AssemblyModel.h"
 
+#include <U2Core/BackgroundTaskRunner.h>
 #include <U2Core/U2Region.h>
-#include "BackgroundTaskRunner.h"
 
 #include <QtCore/QVector>
 #include <QtCore/QSharedPointer>

@@ -12,7 +12,6 @@ HEADERS += src/WebWindow.h \
            src/ov_assembly/AssemblyReadsAreaHint.h \
            src/ov_assembly/AssemblyReferenceArea.h \
            src/ov_assembly/AssemblyRuler.h \
-           src/ov_assembly/BackgroundTaskRunner.h \
            src/ov_assembly/CoverageInfo.h \
            src/ov_assembly/CoveredRegionsManager.h \
            src/ov_assembly/ExportReadsDialog.h \
@@ -133,7 +132,6 @@ SOURCES += src/WebWindow.cpp \
            src/ov_assembly/AssemblyReadsAreaHint.cpp \
            src/ov_assembly/AssemblyReferenceArea.cpp \
            src/ov_assembly/AssemblyRuler.cpp \
-           src/ov_assembly/BackgroundTaskRunner.cpp \
            src/ov_assembly/CoverageInfo.cpp \
            src/ov_assembly/CoveredRegionsManager.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \

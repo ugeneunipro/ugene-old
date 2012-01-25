@@ -45,7 +45,7 @@ protected:
  * Stub containing Q_OBJECT macro, signals&slots. Classes with signal/slot related
  * stuff can't be templates, so everything needed for BackgroundTaskRunner is moved here
  */
-class BackgroundTaskRunner_base: public QObject {
+class U2CORE_EXPORT BackgroundTaskRunner_base: public QObject {
     Q_OBJECT
 public:
     virtual ~BackgroundTaskRunner_base();

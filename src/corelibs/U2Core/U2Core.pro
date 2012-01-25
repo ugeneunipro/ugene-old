@@ -127,6 +127,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/selection/TextSelection.h \
            src/tasks/AddDocumentTask.h \
            src/tasks/AddSequencesToAlignmentTask.h \
+           src/tasks/BackgroundTaskRunner.h \
            src/tasks/CopyDataTask.h \
            src/tasks/CreateAnnotationTask.h \
            src/tasks/DocumentProviderTask.h \
@@ -248,6 +249,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/selection/SelectionUtils.cpp \
            src/tasks/AddDocumentTask.cpp \
            src/tasks/AddSequencesToAlignmentTask.cpp \
+           src/tasks/BackgroundTaskRunner.cpp \
            src/tasks/CopyDataTask.cpp \
            src/tasks/CreateAnnotationTask.cpp \
            src/tasks/DocumentProviderTask.cpp \

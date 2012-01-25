@@ -7,20 +7,21 @@
 #include "ExpertDiscoveryCSUtil.h"
 #include "ExpertDiscoveryView.h"
 
-
-#include <U2Core/AppContext.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectSelection.h>
-#include <U2View/AnnotatedDNAView.h>
-
-#include <U2Core/Task.h>
-#include <U2Core/GObject.h>
-#include <U2Gui/ObjectViewTasks.h>
-#include <U2Core/GObjectReference.h>
-#include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/AnnotationData.h>
-#include <U2Core/SequenceWalkerTask.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/BackgroundTaskRunner.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObject.h>
+#include <U2Core/GObjectSelection.h>
+#include <U2Core/GObjectReference.h>
 #include <U2Core/U2Region.h>
+#include <U2Core/SequenceWalkerTask.h>
+#include <U2Core/Task.h>
+
+#include <U2Gui/ObjectViewTasks.h>
+
+#include <U2View/AnnotatedDNAView.h>
 
 #include <QtCore/QMutex>
 
@@ -191,7 +192,7 @@ private:
 };
 
 class ExpertDiscoverySignalsAutoAnnotationUpdater : public AutoAnnotationsUpdater{
-	Q_OBJECT
+    Q_OBJECT
 public:
     ExpertDiscoverySignalsAutoAnnotationUpdater();
     Task* createAutoAnnotationsUpdateTask(const AutoAnnotationObject* aa);
@@ -301,96 +302,6 @@ private:
     QString curSignalName;
 
     void addSignalMarkup(SequenceBase& rBase, MarkingBase& rAnn, bool isPos);
-};
-
-/**
- * Simple template task which allows to grab its result.
- * Intended to be used as a base class for tasks for BackgroundTaskRunner.
- */
-template<class Result>
-class BackgroundTask : public Task {
-public:
-    inline Result getResult() const {return result;};
-protected:
-    BackgroundTask(const QString& _name, TaskFlags f) : Task(_name, f){};
-    Result result;
-};
-
-
-/**
- * Stub containing Q_OBJECT macro, signals&slots. Classes with signal/slot related
- * stuff can't be templates, so everything needed for BackgroundTaskRunner is moved here
- */
-class BackgroundTaskRunner_base: public QObject {
-    Q_OBJECT
-public:
-    virtual ~BackgroundTaskRunner_base(){};
-    virtual void emitFinished(){emit(si_finished());};
-signals:
-    void si_finished();
-private slots:
-    virtual void sl_finished() = 0;
-};
-
-/**
- * Simple manager for background tasks. 
- * Allows running only one background task at a time, canceling previous task
- * when the new one is queued with run(). Emits si_finished() (defined in the base)
- * when the queued task is finished. Cancels current task in destructor.
- */
-template<class Result>
-class BackgroundTaskRunner : public BackgroundTaskRunner_base {
-public:
-    BackgroundTaskRunner() : task(0) {}
-
-    virtual ~BackgroundTaskRunner() {
-        if(task) {
-            task->cancel();
-        }
-    }
-
-    void run(BackgroundTask<Result> * newTask)  {
-        if(task) {
-            task->cancel();
-        }
-        task = newTask;
-        connect(task, SIGNAL(si_stateChanged()), SLOT(sl_finished()));
-        AppContext::getTaskScheduler()->registerTopLevelTask(task);
-    }
-
-    inline Result getResult() const {
-        if(task) {
-            return Result();
-        }
-        return result;
-    }
-
-    inline bool isFinished() {
-        return !task;
-    }
-
-private:
-    virtual void sl_finished() {
-        BackgroundTask<Result> * senderr = dynamic_cast<BackgroundTask<Result>*>(sender());
-        assert(senderr);
-        if(task != senderr) {
-            return;
-        }
-        if(Task::State_Finished != senderr->getState()) {
-            return;
-        }
-        result = task->getResult();
-        task = NULL;
-        emitFinished();
-    }
-
-private:
-    BackgroundTask<Result> * task;
-    Result result;
-
-private:
-    BackgroundTaskRunner(const BackgroundTaskRunner &);
-    BackgroundTaskRunner operator=(const BackgroundTaskRunner &);
 };
 
 struct ErrorsInfo{
