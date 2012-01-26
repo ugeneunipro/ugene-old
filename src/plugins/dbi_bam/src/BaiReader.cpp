@@ -32,6 +32,10 @@ BaiReader::BaiReader(IOAdapter &ioAdapter):
 {
 }
 
+// Undocumented extra bin with reference and reads info stored in chunks, mentioned here:
+// https://github.com/keithj/cl-sam/blob/master/src/bam-index-reader.lisp#L27
+static const unsigned int SAMTOOLS_KLUDGE_BIN = 37450;
+
 Index BaiReader::readIndex() {
     {
         QByteArray magic = readBytes(4);
@@ -66,7 +70,9 @@ Index BaiReader::readIndex() {
 //                }
                 chunks.append(Index::ReferenceIndex::Chunk(chunkBegin, chunkEnd));
             }
-            bins.append(Index::ReferenceIndex::Bin(bin, chunks));
+            if(bin != SAMTOOLS_KLUDGE_BIN) {
+                bins.append(Index::ReferenceIndex::Bin(bin, chunks));
+            }
         }
         int intervalsNumber = readInt32();
         if(intervalsNumber < 0) {

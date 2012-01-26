@@ -250,7 +250,7 @@ void ConvertToSQLiteDialog::accept() {
         QFileInfo destinationDir(QFileInfo(destinationUrl.getURLString()).path());
         if(!destinationDir.isWritable()) {
             ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
-            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination directory '%1' is not writable, please choose different destination URL").arg(destinationDir.path()));
+            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination directory '%1' is not writable, please choose different destination URL").arg(destinationDir.absoluteFilePath()));
             return;
         }
 
