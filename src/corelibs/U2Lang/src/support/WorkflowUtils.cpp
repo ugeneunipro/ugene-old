@@ -138,6 +138,7 @@ QStringList WorkflowUtils::expandToUrls(const QString& s) {
 
 bool WorkflowUtils::validate(const Schema& schema, QList<QListWidgetItem*>* infoList) {
     bool good = true;
+    std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
     foreach (Actor* a, schema.getProcesses()) {
         foreach(Port* p, a->getPorts()) {
             QStringList l;
@@ -151,6 +152,21 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QListWidgetItem*>* info
                     item->setData(ACTOR_REF, a->getId());
                     infoList->append(item);
                 }
+            }
+        }
+        if (a->getProto()->isScriptFlagSet()) {
+            QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(a->getScript()->getScriptText());
+            if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
+                if (infoList) {
+                    QListWidgetItem* item = new QListWidgetItem(a->getProto()->getIcon(), 
+                        tr("%1 : Script syntax check failed! Line: %2, error: %3")
+                        .arg(a->getLabel())
+                        .arg(syntaxResult.errorLineNumber())
+                        .arg(syntaxResult.errorMessage()));
+                    item->setData(ACTOR_REF, a->getId());
+                    infoList->append(item);
+                }
+                good = false;
             }
         }
     }
@@ -180,6 +196,7 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QListWidgetItem*>* info
 
 bool WorkflowUtils::validate(const Schema& schema, QList<QMap<int, QVariant> >* infoList) {
     bool good = true;
+    std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
     foreach (Actor* a, schema.getProcesses()) {
         foreach(Port* p, a->getPorts()) {
             QStringList l;
@@ -193,6 +210,21 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QMap<int, QVariant> >* 
                     item[ACTOR_REF] = a->getId();
                     infoList->append(item);
                 }
+            }
+        }
+        if (a->getProto()->isScriptFlagSet()) {
+            QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(a->getScript()->getScriptText());
+            if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
+                if (infoList) {
+                    QMap<int, QVariant> item;
+                    item[TEXT_REF] = tr("%1 : Script syntax check failed! Line: %2, error: %3")
+                        .arg(a->getLabel())
+                        .arg(syntaxResult.errorLineNumber())
+                        .arg(syntaxResult.errorMessage());
+                    item[ACTOR_REF] = a->getId();
+                    infoList->append(item);
+                }
+                good = false;
             }
         }
     }
@@ -223,12 +255,24 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QMap<int, QVariant> >* 
 // used in cmdline schema validating
 bool WorkflowUtils::validate( const Workflow::Schema& schema, QStringList & errs ) {
     bool good = true;
+    std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
     foreach (Actor* a, schema.getProcesses()) {
         foreach(Port* p, a->getPorts()) {
             QStringList l;
             good &= p->validate(l);
             foreach(const QString & s, l) {
                 errs.append(QString("%1 : %2").arg(a->getLabel()).arg(s));
+            }
+        }
+        if (a->getProto()->isScriptFlagSet()) {
+            QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(a->getScript()->getScriptText());
+            if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
+                errs <<
+                    tr("%1 : Script syntax check failed! Line: %2, error: %3")
+                    .arg(a->getLabel())
+                    .arg(syntaxResult.errorLineNumber())
+                    .arg(syntaxResult.errorMessage());
+                good = false;
             }
         }
     }
