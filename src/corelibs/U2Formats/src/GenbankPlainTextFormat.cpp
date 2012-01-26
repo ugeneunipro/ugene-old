@@ -368,6 +368,13 @@ void GenbankPlainTextFormat::readHeaderAttributes(QVariantMap& tags, DbiConnecti
         }
     }
 
+    if (tags.keys().contains(DNAInfo::ACCESSION)) {
+        QString acc = tags.value(DNAInfo::ACCESSION).toString();
+        U2StringAttribute accAttr(so->getSequenceRef().entityId, DNAInfo::ACCESSION, acc);
+        con.dbi->getAttributeDbi()->createStringAttribute(accAttr, os);
+        CHECK_OP(os, );
+    }
+
     tags.insert(UGENE_MARK, ""); //to allow writing
 }
 

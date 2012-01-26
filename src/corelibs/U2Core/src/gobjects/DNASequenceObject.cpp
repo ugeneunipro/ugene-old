@@ -286,6 +286,12 @@ QVariantMap U2SequenceObject::getSequenceInfo() const {
         resultingInfo.insert(DNAInfo::SOURCE, attr.value);
         CHECK_OP(os, QVariantMap());
     }
+
+    attr = U2AttributeUtils::findStringAttribute(con.dbi->getAttributeDbi(), entityRef.entityId, DNAInfo::ACCESSION, os);
+    if(attr.hasValidId()) {
+        resultingInfo.insert(DNAInfo::ACCESSION, attr.value);
+        CHECK_OP(os, QVariantMap());
+    }
     
     QString name = this->getSequenceName();
     if (!name.isEmpty()) {
