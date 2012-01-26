@@ -170,9 +170,28 @@ void TextWriter::data2doc(Document* doc, const QVariantMap& data) {
     }
 }
 
-static U2SequenceObject *addSeqObject(Document* doc, const DNASequence& seq) {
-    if (seq.alphabet == NULL || seq.length() == 0 || doc->findGObjectByName(seq.getName())) {
+static QString getUniqueObjectName(const Document *doc, const QString &name) {
+    QString result = name;
+    int num = 0;
+    bool found = false;
+    while (NULL != doc->findGObjectByName(result)) {
+        found = true;
+        num++;
+        result = name + QString("_%1").arg(num);
+    }
+    
+    return found ? result : name;
+}
+
+/**
+ * It can change sequence name for setting unique object name
+ */
+static U2SequenceObject *addSeqObject(Document* doc, DNASequence& seq) {
+    if (seq.alphabet == NULL || seq.length() == 0) {
         return NULL;
+    }
+    if (doc->findGObjectByName(seq.getName())) {
+        seq.setName(getUniqueObjectName(doc, seq.getName()));
     }
     algoLog.trace(QString("Adding seq [%1] to %3 doc %2").arg(seq.getName()).arg(doc->getURLString()).arg(doc->getDocumentFormat()->getFormatName()));
 
