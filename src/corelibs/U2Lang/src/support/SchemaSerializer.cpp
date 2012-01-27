@@ -369,7 +369,7 @@ QString SchemaSerializer::xml2schema(const QDomElement& projectElement, Schema* 
             script = new AttributeScript();
             script->setScriptText(scriptText);
         }
-        Actor* proc = proto->createInstance(script);
+        Actor* proc = proto->createInstance(id, script);
         readConfiguration(proc, procElement);
         readParamAliases( proc->getParamAliases(), procElement );
         proc->setLabel(procElement.attribute(NAME_ATTR));

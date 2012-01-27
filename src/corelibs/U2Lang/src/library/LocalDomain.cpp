@@ -27,6 +27,10 @@
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Core/Log.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/CMDLineRegistry.h>
+#include <U2Core/CMDLineUtils.h>
+
 namespace U2 {
 namespace LocalWorkflow {
 
@@ -132,8 +136,12 @@ SimplestSequentialScheduler::SimplestSequentialScheduler(Schema* sh) : schema(sh
 
 void SimplestSequentialScheduler::init() {
     foreach(Actor* a, schema->getProcesses()) {
-        a->castPeer<BaseWorker>()->setContext(context);
-        a->castPeer<BaseWorker>()->init();
+        BaseWorker *w = a->castPeer<BaseWorker>();
+        foreach (IntegralBus *bus, w->getPorts().values()) {
+            bus->setContext(context);
+        }
+        w->setContext(context);
+        w->init();
     }
 }
 
@@ -283,6 +291,44 @@ void SimpleQueue::setCapacity(int) {
 LocalDomainFactory::LocalDomainFactory() : DomainFactory(ID) {
 }
 
+// TODO: this function should be moved to WorkflowRunFromCMDLine.cpp
+// It must be called only once and save its result to some registry
+static QMap<QString, QMap<QString, QList<QString> > > getSlotsForPrint() {
+    QMap<QString, QMap<QString, QList<QString> > > forPrint;
+    CMDLineRegistry * cmdLineRegistry = AppContext::getCMDLineRegistry();
+
+    int printOpIdx = CMDLineRegistryUtils::getParameterIndex("print");
+    while (printOpIdx != -1) {
+        QString printSlot = cmdLineRegistry->getParameterValue("print", printOpIdx); // TODO: "print" == WorkflowDesignerPlugin::PRINT
+        printOpIdx++;
+        if (!printSlot.isEmpty()) {
+            QStringList tokens = printSlot.split(".");
+            if (3 == tokens.size()) {
+                QMap<QString, QList<QString> > ports = forPrint.value(tokens[0], QMap<QString, QList<QString> >());
+                QList<QString> slotS = ports.value(tokens[1], QList<QString>());
+                slotS.append(tokens[2]);
+                ports.insert(tokens[1], slotS);
+                forPrint.insert(tokens[0], ports);
+            }
+        } else {
+            printOpIdx = -1;
+        }
+    }
+    return forPrint;
+}
+
+static void addPrintSLots(IntegralBus *bus, Port *p) {
+    QMap<QString, QMap<QString, QList<QString> > > forPrint = getSlotsForPrint();
+    QString actorId = p->owner()->getId();
+    if (forPrint.contains(actorId)) {
+        QMap<QString, QList<QString> > ports = forPrint.value(actorId);
+        if (ports.contains(p->getId())) {
+            QList<QString> slotS = ports.value(p->getId());
+            bus->setPrintSlots(p->isInput(), slotS);
+        }
+    }
+}
+
 static CommunicationSubject* setupBus(Port* p) {
     QString id = p->getId();
     BaseWorker* worker = p->owner()->castPeer<BaseWorker>();
@@ -308,6 +354,7 @@ static CommunicationSubject* setupBus(Port* p) {
             }
         }
     }
+    addPrintSLots(bus, p);
     return subj;
 }
 

@@ -58,6 +58,8 @@ public:
     // after calling: set all needed values for running your worker
     // called from 'tick' and then setup worker params
     virtual Message getMessageAndSetupScriptValues( CommunicationChannel * channel );
+
+    QMap<QString, IntegralBus*> &getPorts() {return ports;}
     
 private:
     // bind values from input ports to script vars. 

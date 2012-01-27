@@ -638,6 +638,73 @@ static void setFlows(WorkflowSceneReaderData & data) {
     }
 }
 
+ActorId HRSceneSerializer::newActorId(const QString &id, const QList<Actor*> & procs) {
+    QString result = id;
+    int number = 0;
+    bool found = false;
+    foreach(Actor * actor, procs) {
+        if(actor->getId() == id) {
+            found = true;
+            number = qMax(number, 1);
+        } else {
+            int idx = actor->getId().lastIndexOf("-");
+            if (-1 != idx) {
+                QString left = actor->getId().left(idx);
+                if (id == left) {
+                    QString right = actor->getId().mid(idx + 1);
+                    bool ok = false;
+                    int num = right.toInt(&ok);
+                    if(ok) {
+                        found = true;
+                        number = qMax(number, num + 1);
+                    }
+                }
+            }
+        }
+    }
+
+    if (found) {
+        result += QString("-%1").arg(number);
+    }
+    return str2aid(result);
+}
+
+static void renameEqualActorIds(WorkflowSceneReaderData &data) {
+    QList<Actor*> defferentProcs;
+    foreach (QGraphicsItem *i, data.scene->items()) {
+        if (WorkflowProcessItemType == i->type()) {
+            WorkflowProcessItem *wi = dynamic_cast<WorkflowProcessItem*>(i);
+            if (!data.procMap.values().contains(wi)) {
+                defferentProcs << wi->getProcess();
+            }
+        }
+    }
+
+    QMap<ActorId, ActorId> nmap;
+    foreach (WorkflowProcessItem *wi, data.procMap.values()) {
+        Actor *proc = wi->getProcess();
+        ActorId newId = HRSceneSerializer::newActorId(proc->getId(), defferentProcs);
+        if (newId != proc->getId()) {
+            nmap[proc->getId()] = newId;
+            proc->setId(newId);
+        }
+        defferentProcs << proc;
+    }
+
+    QList<Iteration> newIterations;
+    foreach (const ActorId &oldId, nmap.keys()) {
+        ActorId newId = nmap.value(oldId);
+        foreach (Iteration it, data.iterations) {
+            if (it.cfg.contains(oldId)) {
+                QVariantMap val = it.cfg.take(oldId);
+                it.cfg[newId] = val;
+            }
+            newIterations << it;
+        }
+    }
+    data.iterations = newIterations;
+}
+
 QString HRSceneSerializer::string2Scene(const QString & bytes, WorkflowScene * scene, Metadata * meta, bool select, bool pasteMode, QList<QString> includedUrls) {
     try{
         WorkflowSceneReaderData data(bytes, scene, meta, select, pasteMode);

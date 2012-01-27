@@ -23,6 +23,7 @@
 #define _U2_WORKFLOW_INTEGRAL_BUS_H_
 
 #include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/WorkflowContext.h>
 #include <U2Lang/WorkflowTransport.h>
 
 namespace U2 {
@@ -63,6 +64,10 @@ public:
     
     QString getPortId() const {return portId;}
     DataTypePtr getBusType() const {return busType;}
+
+    void setPrintSlots(bool in, const QList<QString> &printSlots);
+
+    void setContext(WorkflowContext *context);
     
 protected:
     virtual Message composeMessage(const Message&);
@@ -84,6 +89,11 @@ protected:
     QString portId;
     //
     int takenMsgs;
+
+    // a content of these slots is printed to the standart output
+    QList<QString> printSlots;
+    ActorId actorId;
+    WorkflowContext *workflowContext;
     
 }; // IntegralBus
 

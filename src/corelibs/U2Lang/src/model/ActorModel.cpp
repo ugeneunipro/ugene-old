@@ -28,7 +28,8 @@ namespace Workflow {
 /**************************
  * Actor
  **************************/
-Actor::Actor(ActorPrototype* proto, AttributeScript * _script) : proto(proto), doc(NULL), script(_script), owner(ActorId()) {
+Actor::Actor(const ActorId &actorId, ActorPrototype* proto, AttributeScript * _script)
+: id(actorId), proto(proto), doc(NULL), script(_script) {
     if(script == NULL) {
         if(proto->isScriptFlagSet()) {
             script = new AttributeScript();
@@ -117,7 +118,11 @@ ActorPrototype * Actor::getProto() const {
 }
 
 ActorId Actor::getId() const {
-    return QString("%1").arg( (int) (size_t) this);
+    return id;
+}
+
+void Actor::setId(const ActorId &id) {
+    this->id = id;
 }
 
 QString Actor::getLabel() const {
@@ -253,8 +258,8 @@ Port* ActorPrototype::createPort(const PortDescriptor& d, Actor* p) {
     return new Port(d, p);
 }
 
-Actor* ActorPrototype::createInstance(AttributeScript *script, const QVariantMap& params) {
-    Actor* proc = new Actor(this, script);
+Actor* ActorPrototype::createInstance(const ActorId &actorId, AttributeScript *script, const QVariantMap& params) {
+    Actor* proc = new Actor(actorId, this, script);
 
     foreach(PortDescriptor* pd, getPortDesciptors()) {
         Port* p = createPort(*pd, proc);

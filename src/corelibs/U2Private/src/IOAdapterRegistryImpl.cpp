@@ -24,6 +24,7 @@
 #include <U2Core/LocalFileAdapter.h>
 #include <U2Core/HttpFileAdapter.h>
 #include <U2Core/VFSAdapter.h>
+#include <U2Core/StringAdapter.h>
 
 namespace U2 {
 
@@ -57,6 +58,7 @@ void IOAdapterRegistryImpl::init() {
     registerIOAdapter( new HttpFileAdapterFactory(this) );
     registerIOAdapter( new GzippedHttpFileAdapterFactory(this) );
     registerIOAdapter( new VFSAdapterFactory(this) );
+    registerIOAdapter( new StringAdapterFactory(this) );
 }
 
 }//namespace

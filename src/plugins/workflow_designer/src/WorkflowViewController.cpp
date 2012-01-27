@@ -1797,7 +1797,8 @@ static QString newActorName(ActorPrototype * proto, const QList<Actor*> & procs)
 
 Actor * WorkflowScene::createActor( ActorPrototype * proto, const QVariantMap & params ) {
     assert( NULL != proto );
-    Actor * actor = proto->createInstance( NULL, params );
+    ActorId id = HRSceneSerializer::newActorId(proto->getId(), getAllProcs());
+    Actor * actor = proto->createInstance(id, NULL, params );
     assert( NULL != actor );
     
     actor->setLabel(newActorName(proto, getAllProcs()));

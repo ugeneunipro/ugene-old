@@ -28,11 +28,19 @@
 #include <U2Lang/WorkflowIOTasks.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseSlots.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GObject.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/Settings.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/QVariantUtils.h>
+#include <U2Core/StringAdapter.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
@@ -513,6 +521,71 @@ QString WorkflowUtils::getParamIdFromHref( const QString& href ) {
         }
     }
     return id;
+}
+
+static void data2text(WorkflowContext *context, DocumentFormatId formatId, GObject *obj, QString &text) {
+    QList<GObject*> objList;
+    objList << obj;
+
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::STRING);
+    DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+    std::auto_ptr<Document> d(new Document(df, iof, GUrl(), context->getDataStorage()->getDbiRef(), false, objList));
+    StringAdapter *io = dynamic_cast<StringAdapter*>(iof->createIOAdapter());
+    io->open(GUrl(), IOAdapterMode_Write);
+    U2OpStatusImpl os;
+
+    df->storeDocument(d.get(), io, os);
+
+    text += io->getBuffer();
+    io->close();
+}
+
+#define STRING_TYPE QVariant::String
+#define SEQUENCE_TYPE QVariant::ByteArray
+#define MSA_TYPE QVariant::UserType
+#define ANNOTATIONS_TYPE QVariant::List
+
+void WorkflowUtils::print(const QString &slotString, const QVariant &data, WorkflowContext *context) {
+    QString text = slotString + ":\n";
+    QString type = QVariant::typeToName(data.type());
+    if (STRING_TYPE == data.type()) {
+        text += data.toString();
+    } else if (SEQUENCE_TYPE == data.type()) {
+        U2SequenceObject *obj = StorageUtils::getSequenceObject(context->getDataStorage(), data.value<U2DataId>());
+        data2text(context, BaseDocumentFormats::FASTA, obj, text);
+    } else {
+        bool annType = false;
+        bool hasAlignmentData = false;
+        QList<SharedAnnotationData> anns;
+        MAlignment al;
+        if (QVariant::List == data.type()) {
+            annType = true;
+            anns = QVariantUtils::var2ftl(data.toList());
+        } else {
+            anns = qVariantValue<QList<SharedAnnotationData> >(data);
+            if (anns.size() > 0 ) {
+                annType = true;
+            } else {
+                al = data.value<MAlignment>();
+                hasAlignmentData = !al.isEmpty();
+            }
+        }
+
+        if (annType) {
+            AnnotationTableObject *obj = new AnnotationTableObject("Slot annotations");
+            foreach(SharedAnnotationData d, anns) {
+                obj->addAnnotation(new Annotation(d));
+            }
+            data2text(context, BaseDocumentFormats::PLAIN_GENBANK, obj, text);
+        } else if (hasAlignmentData) {
+            al = data.value<MAlignment>();
+            MAlignmentObject *obj = new MAlignmentObject(al);
+            data2text(context, BaseDocumentFormats::CLUSTAL_ALN, obj, text);
+        } else {
+            text += "Nothing to print";
+        }
+    }
+    printf("\n%s\n", text.toAscii().data());
 }
 
 /*****************************

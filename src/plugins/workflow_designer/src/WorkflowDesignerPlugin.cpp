@@ -67,6 +67,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 
 const QString WorkflowDesignerPlugin::RUN_WORKFLOW              = "task";
 const QString WorkflowDesignerPlugin::REMOTE_MACHINE            = "task-remote-machine";
+const QString WorkflowDesignerPlugin::PRINT                     = "print";
 
 WorkflowDesignerPlugin::WorkflowDesignerPlugin() 
 : Plugin(tr("Workflow Designer"), tr("Workflow Designer allows to create complex computational workflows.")){
@@ -141,6 +142,13 @@ void WorkflowDesignerPlugin::registerCMDLineHelp() {
         tr("<task_name> [<task_parameter>=value ...]"));
 
     cmdLineRegistry->registerCMDLineHelpProvider( taskSection );
+
+    CMDLineHelpProvider * printSection = new CMDLineHelpProvider(
+        PRINT,
+        tr("Prints the content of the specified slot."),
+        tr("Prints the content of the specified slot. The incoming/outcoming content of"
+        " specified slot is printed to the standart output."),
+        tr("<actor_name>.<port_name>.<slot_name>"));
     
     //CMDLineHelpProvider * remoteMachineSectionArguments = new CMDLineHelpProvider( REMOTE_MACHINE, "<path-to-machine-file>");
     //CMDLineHelpProvider * remoteMachineSection = new CMDLineHelpProvider( REMOTE_MACHINE, tr("run provided tasks on given remote machine") );        

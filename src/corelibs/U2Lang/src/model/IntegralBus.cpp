@@ -23,6 +23,9 @@
 #include "IntegralBusType.h"
 
 #include <U2Core/Log.h>
+
+#include <U2Lang/WorkflowUtils.h>
+
 #include <limits.h>
 
 namespace U2 {
@@ -47,7 +50,9 @@ static QMap<QString, QStringList> getListMappings(const QStrStrMap& bm, const Po
 }
 
 
-IntegralBus::IntegralBus(Port* p) : busType(p->getType()), complement(NULL), portId(p->getId()), takenMsgs(0) {
+IntegralBus::IntegralBus(Port* p)
+: busType(p->getType()), complement(NULL), portId(p->getId()), takenMsgs(0), workflowContext(NULL) {
+    actorId = p->owner()->getId();
     QString name = p->owner()->getLabel() + "[" + p->owner()->getId()+"]";
     if (p->isInput()) {
         Attribute* a = p->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID);
@@ -131,6 +136,14 @@ Message IntegralBus::get() {
         }
     }
     //assert(busType->isMap() || result.size() == 1);
+    if (!printSlots.isEmpty()) {
+        foreach (const QString &key, result.keys()) {
+            if (printSlots.contains(key)) {
+                QString slotString = actorId + "." + portId + "." + key;
+                WorkflowUtils::print(slotString, result.value(key), workflowContext);
+            }
+        }
+    }
     QVariant data;
     if (busType->isMap()) {
         data.setValue(result);
@@ -178,6 +191,15 @@ void IntegralBus::put(const Message& m) {
     foreach(CommunicationChannel* ch, outerChannels) {
         ch->put(busMessage);
     }
+    if ( !printSlots.isEmpty() && (m.getData().type() == QVariant::Map) ) {
+        QVariantMap map = m.getData().toMap();
+        foreach (const QString &key, map.keys()) {
+            if (printSlots.contains(key)) {
+                QString slotString = actorId + "." + portId + "." + key;
+                WorkflowUtils::print(slotString, map.value(key), workflowContext);
+            }
+        }
+    }
 }
 
 int IntegralBus::hasMessage() const {
@@ -224,6 +246,14 @@ void IntegralBus::setEnded() {
     foreach(CommunicationChannel* ch, outerChannels) {
         ch->setEnded();
     }
+}
+
+void IntegralBus::setPrintSlots(bool in, const QList<QString> &printSlots) {
+        this->printSlots = printSlots;
+}
+
+void IntegralBus::setContext(WorkflowContext *context) {
+    workflowContext = context;
 }
 
 }//namespace Workflow

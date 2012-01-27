@@ -31,6 +31,7 @@ const IOAdapterId BaseIOAdapters::GZIPPED_LOCAL_FILE("local_file_gzip");
 const IOAdapterId BaseIOAdapters::HTTP_FILE( "http_file" );
 const IOAdapterId BaseIOAdapters::GZIPPED_HTTP_FILE( "http_file_gzip" );
 const IOAdapterId BaseIOAdapters::VFS_FILE( "memory_buffer" );
+const IOAdapterId BaseIOAdapters::STRING( "string" );
 
 
 qint64 IOAdapter::readUntil(char* buf, qint64 maxSize, 

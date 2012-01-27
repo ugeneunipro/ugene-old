@@ -659,7 +659,7 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
     }
     
     QString procScriptText = pairs.blockPairs.take(SCRIPT_ATTR);
-    Actor * proc = proto->createInstance(procScriptText.isEmpty() ? NULL : new AttributeScript(procScriptText));
+    Actor * proc = proto->createInstance(actorName, procScriptText.isEmpty() ? NULL : new AttributeScript(procScriptText));
     actorMap[actorName] = proc;
     
     QString procName = pairs.equalPairs.take(NAME_ATTR);
@@ -1761,7 +1761,7 @@ static QString generateElementName(Actor * proc, const QList<QString>& existing)
 HRSchemaSerializer::NamesMap HRSchemaSerializer::generateElementNames(const QList<Actor*>& procs) {
     QMap<ActorId, QString> nmap;
     foreach(Actor * proc, procs) {
-        nmap[proc->getId()] = generateElementName(proc, nmap.values());
+        nmap[proc->getId()] = proc->getId();//generateElementName(proc, nmap.values());
     }
     return nmap;
 }

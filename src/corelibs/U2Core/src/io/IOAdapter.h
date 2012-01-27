@@ -140,6 +140,7 @@ public:
     static const IOAdapterId HTTP_FILE;
     static const IOAdapterId GZIPPED_HTTP_FILE;
     static const IOAdapterId VFS_FILE;
+    static const IOAdapterId STRING;
 };
 
 

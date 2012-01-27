@@ -28,6 +28,7 @@
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/Schema.h>
+#include <U2Lang/WorkflowContext.h>
 
 class QListWidgetItem;
 
@@ -81,6 +82,8 @@ public:
     static Descriptor getSlotDescOfDatatype(const DataTypePtr & dt);
     
     static QString getParamIdFromHref(const QString& href);
+
+    static void print(const QString &slotString, const QVariant &data, WorkflowContext *context);
     
 private:
     static QStringList initExtensions();

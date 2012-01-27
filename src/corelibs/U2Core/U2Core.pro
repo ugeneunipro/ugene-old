@@ -105,6 +105,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/io/IOAdapter.h \
            src/io/LocalFileAdapter.h \
            src/io/RingBuffer.h \
+           src/io/StringAdapter.h \
            src/io/VFSAdapter.h \
            src/io/VirtualFileSystem.h \
            src/io/ZlibAdapter.h \
@@ -230,6 +231,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/io/HttpFileAdapter.cpp \
            src/io/IOAdapter.cpp \
            src/io/LocalFileAdapter.cpp \
+           src/io/StringAdapter.cpp \
            src/io/VFSAdapter.cpp \
            src/io/VirtualFileSystem.cpp \
            src/io/ZlibAdapter.cpp \

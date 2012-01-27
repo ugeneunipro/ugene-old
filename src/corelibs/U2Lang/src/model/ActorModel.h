@@ -76,8 +76,8 @@ public:
     
     // for drag'n'drop purposes
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap* = NULL) const;
-    
-    virtual Actor* createInstance(AttributeScript *script = NULL, const QVariantMap& params = QVariantMap());
+
+    virtual Actor* createInstance(const ActorId &actorId, AttributeScript *script = NULL, const QVariantMap& params = QVariantMap());
     
     void setScriptFlag(bool flag = true);
     bool isScriptFlagSet() {return isScript;}
@@ -136,9 +136,9 @@ public:
     
     ActorPrototype* getProto() const;
     
-    // currently, size_t(this) is used
-    // such id will change between 2 ugene launches
+    // this id is an actor block name at the *.uwl file
     ActorId getId() const;
+    void setId(const ActorId &id);
     
     QString getLabel() const;
     void setLabel(const QString& l);
@@ -182,10 +182,11 @@ signals:
     
 protected:
     friend class ActorPrototype;
-    Actor(ActorPrototype* proto, AttributeScript *script);
+    Actor(const ActorId &actorId, ActorPrototype* proto, AttributeScript *script);
     Actor(const Actor&);
     
 protected:
+    ActorId id;
     // name of actor
     // can be set by user
     // default is: 'proto->getDisplayName() actorId'

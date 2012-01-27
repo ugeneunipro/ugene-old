@@ -37,6 +37,8 @@ public:
                                 bool select = false, bool pasteMode = false, QList<QString> includedUrls = QList<QString>());
     
     static QString items2String(const QList<QGraphicsItem*> & items, const QList<Iteration> & iterations);
+
+    static ActorId newActorId(const QString &id, const QList<Actor*> &procs);
     
 }; // HRSceneSerializer
 

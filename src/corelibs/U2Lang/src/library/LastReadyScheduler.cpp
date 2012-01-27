@@ -37,8 +37,12 @@ LastReadyScheduler::~LastReadyScheduler() {
 
 void LastReadyScheduler::init() {
     foreach(Actor* a, schema->getProcesses()) {
-        a->castPeer<BaseWorker>()->setContext(context);
-        a->castPeer<BaseWorker>()->init();
+        BaseWorker *w = a->castPeer<BaseWorker>();
+        foreach (IntegralBus *bus, w->getPorts().values()) {
+            bus->setContext(context);
+        }
+        w->setContext(context);
+        w->init();
     }
 
     topologicSortedGraph = schema->getActorBindingsGraph()->getTopologicalSortedGraph(schema->getProcesses());

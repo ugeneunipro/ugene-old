@@ -126,7 +126,7 @@ QString SceneSerializer::xml2scene(const QDomElement& projectElement, WorkflowSc
             return WorkflowView::tr("Invalid content: unknown process type %1").arg(name);
         }
         
-        Actor* proc = proto->createInstance(NULL);
+        Actor* proc = proto->createInstance(id, NULL);
         actorMap[id] = proc;
         proc->setLabel(procElement.attribute(NAME_ATTR));
         if (NULL != proto->getEditor()) {
