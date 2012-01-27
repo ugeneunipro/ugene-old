@@ -588,6 +588,59 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, Workf
     printf("\n%s\n", text.toAscii().data());
 }
 
+bool WorkflowUtils::validateSchemaForIncluding(const Schema &s, QString &error) {
+    const QList<PortAlias> &portAliases = s.getPortAliases();
+    if (portAliases.isEmpty()) {
+        error = tr("The schema has not any aliased ports");
+        return false;
+    }
+
+    foreach (Actor *actor, s.getProcesses()) {
+        // check that free input ports are aliased
+        foreach (Port *port, actor->getPorts()) {
+            if (!port->isInput()) {
+                continue;
+            }
+            if (!port->getLinks().isEmpty()) {
+                continue;
+            }
+            bool aliased = false;
+            foreach (const PortAlias &alias, portAliases) {
+                if (alias.getSourcePort() == port) {
+                    if (alias.getSlotAliases().isEmpty()) {
+                        error = tr("The aliased port %1.%2 has no aliased slots").arg(actor->getLabel()).arg(port->getDisplayName());
+                        return false;
+                    } else {
+                        aliased = true;
+                        break;
+                    }
+                }
+            }
+            if (!aliased) {
+                error = tr("The free port %1.%2 is not aliased").arg(actor->getLabel()).arg(port->getId());
+                return false;
+            }
+        }
+
+        // check that every required attribute is aliased or has set value
+        const QMap<QString, QString> &paramAliases = actor->getParamAliases();
+        foreach (const QString &attrName, actor->getParameters().keys()) {
+            Attribute *attr = actor->getParameters().value(attrName);
+            if (attr->isRequiredAttribute()) {
+                if (!paramAliases.contains(attr->getId())) {
+                    QVariant val = attr->getAttributeValueWithoutScript<QVariant>();
+                    if (val.isNull()) {
+                        error = tr("The required parameter %1.%2 is empty and not aliased").arg(actor->getLabel()).arg(attr->getDisplayName());
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
 /*****************************
  * PrompterBaseImpl
  *****************************/

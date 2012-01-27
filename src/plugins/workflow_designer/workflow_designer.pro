@@ -5,6 +5,7 @@ HEADERS += src/ActorCfgModel.h \
            src/ChooseItemDialog.h \
            src/CreateScriptWorker.h \
            src/HRSceneSerializer.h \
+           src/ImportSchemaDialog.h \
            src/ItemViewStyle.h \
            src/IterationListWidget.h \
            src/PortAliasesConfigurationDialog.h \
@@ -51,6 +52,7 @@ HEADERS += src/ActorCfgModel.h \
 FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
          src/ui/ExternalProcessWorkerDialog.ui \
+         src/ui/ImportSchemaDialog.ui \
          src/ui/PortAliasesConfigurationDialog.ui \
          src/ui/SchemaAliasesConfigurationDialog.ui \
          src/ui/SchemaConfigurationDialog.ui \
@@ -61,6 +63,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/ChooseItemDialog.cpp \
            src/CreateScriptWorker.cpp \
            src/HRSceneSerializer.cpp \
+           src/ImportSchemaDialog.cpp \
            src/ItemViewStyle.cpp \
            src/IterationListWidget.cpp \
            src/PortAliasesConfigurationDialog.cpp \

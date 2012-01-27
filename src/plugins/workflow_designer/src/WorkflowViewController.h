@@ -210,6 +210,7 @@ private slots:
     void sl_configureIterations();
     void sl_configureParameterAliases();
     void sl_configurePortAliases();
+    void sl_importSchemaToElement();
 
     void sl_toggleLock(bool = true);
     void sl_createScript();
@@ -263,6 +264,7 @@ private:
     QAction* configureIterationsAction;
     QAction* configureParameterAliasesAction;
     QAction* configurePortAliasesAction;
+    QAction* importSchemaToElement;
     QAction* runAction;
     QAction* stopAction;
     QAction* validateAction;

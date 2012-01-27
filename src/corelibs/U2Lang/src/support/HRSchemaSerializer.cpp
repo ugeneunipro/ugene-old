@@ -38,6 +38,7 @@
 #include <U2Lang/SchemaSerializer.h>
 #include <U2Lang/ScriptWorkerSerializer.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/WorkflowUtils.h>
 
 
@@ -522,6 +523,33 @@ enum IncludeElementType {
     SCRIPT
 };
 
+static bool getAbsoluteIncludePath(QString &path) {
+    if (QFileInfo(path).isAbsolute()) {
+        return QFile::exists(path);
+    }
+    
+    QString absPath;
+    absPath = WorkflowSettings::getExternalToolDirectory() + path;
+    if (QFile::exists(absPath)) {
+        path = absPath;
+        return true;
+    }
+
+    absPath = WorkflowSettings::getUserDirectory() + path;
+    if (QFile::exists(absPath)) {
+        path = absPath;
+        return true;
+    }
+
+    absPath = WorkflowSettings::getIncludedElementsDirectory() + path;
+    if (QFile::exists(absPath)) {
+        path = absPath;
+        return true;
+    }
+
+    return false;
+}
+
 void HRSchemaSerializer::parseIncludes(Tokenizer &tokenizer, QList<QString> includedUrls) {
     tokenizer.assertToken(INCLUDE);
     QString path = tokenizer.take();
@@ -532,6 +560,10 @@ void HRSchemaSerializer::parseIncludes(Tokenizer &tokenizer, QList<QString> incl
         tokenizer.assertToken(INCLUDE_AS);
         includeAs = true;
         actorName = tokenizer.take();
+    }
+
+    if (!getAbsoluteIncludePath(path)) {
+        throw ReadFailed(tr("The included file '%1' doesn't exists").arg(path));
     }
     
     // read the file content
@@ -1496,12 +1528,30 @@ static QString elementsDefinitionBlock(Actor * actor, bool copyMode) {
     return res;
 }
 
+static QString tryGetRelativePath(const QString &path) {
+    QString dir;
+
+    if (path.startsWith(WorkflowSettings::getExternalToolDirectory())) {
+        dir = WorkflowSettings::getExternalToolDirectory();
+    } else if (path.startsWith(WorkflowSettings::getUserDirectory())) {
+        dir = WorkflowSettings::getUserDirectory();
+    } else if (path.startsWith(WorkflowSettings::getIncludedElementsDirectory())) {
+        dir = WorkflowSettings::getIncludedElementsDirectory();
+    }
+
+    if (dir.isEmpty()) {
+        return path;
+    } else {
+        return path.mid(dir.length());
+    }
+}
+
 QString HRSchemaSerializer::includesDefinition(const QList<Actor*> & procs) {
     QString res;
     foreach (Actor *proc, procs) {
         ActorPrototype *proto = proc->getProto();
         if (!proto->isStandardFlagSet()) {
-            res += HRSchemaSerializer::INCLUDE + " \"" + proto->getFilePath() + "\" ";
+            res += HRSchemaSerializer::INCLUDE + " \"" + tryGetRelativePath(proto->getFilePath()) + "\" ";
             res += HRSchemaSerializer::INCLUDE_AS + " \"" + proto->getId() + "\"" + NEW_LINE;
         }
     }

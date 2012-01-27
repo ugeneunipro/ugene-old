@@ -61,9 +61,11 @@
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseAttributes.h>
+#include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/ExternalToolCfg.h>
 #include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/IncludedProtoFactory.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/MapDatatypeEditor.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -79,6 +81,7 @@
 #include "ChooseItemDialog.h"
 #include "CreateScriptWorker.h"
 #include "HRSceneSerializer.h"
+#include "ImportSchemaDialog.h"
 #include "PortAliasesConfigurationDialog.h"
 #include "SceneSerializer.h"
 #include "SchemaAliasesConfigurationDialogImpl.h"
@@ -350,6 +353,10 @@ void WorkflowView::createActions() {
     configurePortAliasesAction->setIcon(QIcon(":workflow_designer/images/port_relationship.png"));
     connect(configurePortAliasesAction, SIGNAL(triggered()), SLOT(sl_configurePortAliases()));
 
+    importSchemaToElement = new QAction(tr("Import schema to element..."), this);
+    importSchemaToElement->setIcon(QIcon(":workflow_designer/images/import.png"));
+    connect(importSchemaToElement, SIGNAL(triggered()), SLOT(sl_importSchemaToElement()));
+
     iterationModeAction = new QAction(tr("Switch on/off iteration mode"), this);
     iterationModeAction->setIcon(QIcon(":workflow_designer/images/checked_tag.png"));
     iterationModeAction->setCheckable(true);
@@ -564,6 +571,7 @@ void WorkflowView::sl_toggleLock(bool b) {
     validateAction->setEnabled(b);
     configureParameterAliasesAction->setEnabled(b);
     configurePortAliasesAction->setEnabled(b);
+    importSchemaToElement->setEnabled(b);
     
     propertyEditor->setEnabled(b);
     palette->setEnabled(b);
@@ -705,6 +713,7 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     tb->addSeparator();
     tb->addAction(configureParameterAliasesAction);
     tb->addAction(configurePortAliasesAction);
+    tb->addAction(importSchemaToElement);
     tb->addSeparator();
     tb->addAction(iterationModeAction);
     tb->addAction(configureIterationsAction);
@@ -774,6 +783,7 @@ void WorkflowView::setupViewMenu(QMenu* m) {
     m->addSeparator();
     m->addAction(configureParameterAliasesAction);
     m->addAction(configurePortAliasesAction);
+    m->addAction(importSchemaToElement);
     m->addSeparator();
     m->addAction(iterationModeAction);
     m->addAction(configureIterationsAction);
@@ -1121,6 +1131,29 @@ void WorkflowView::sl_configurePortAliases() {
         }
 
         scene->setPortAliases(portAliases);
+    }
+}
+
+void WorkflowView::sl_importSchemaToElement() {
+    Schema s = scene->getSchema();
+    QString error;
+    if (WorkflowUtils::validateSchemaForIncluding(s, error)) {
+        ImportSchemaDialog d(this);
+        if (d.exec()) {
+            s.setTypeName(d.getTypeName());
+            QString text = HRSchemaSerializer::schema2String(s, NULL);
+
+            QString path = WorkflowSettings::getIncludedElementsDirectory()
+                + d.getTypeName() + "." + WorkflowUtils::WD_FILE_EXTENSIONS.first();
+            QFile file(path);
+            file.open(QIODevice::WriteOnly);
+            file.write(text.toAscii());
+
+            ActorPrototype *proto = IncludedProtoFactory::getSchemaActorProto(&s, d.getTypeName(), path);
+            WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_INCLUDES(), proto);
+        }
+    } else {
+        QMessageBox::critical(this, tr("Error"), error);
     }
 }
 
