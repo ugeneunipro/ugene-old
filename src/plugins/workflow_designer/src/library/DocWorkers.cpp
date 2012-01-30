@@ -170,7 +170,7 @@ void TextWriter::data2doc(Document* doc, const QVariantMap& data) {
     }
 }
 
-static QString getUniqueObjectName(const Document *doc, const QString &name) {
+static inline QString getUniqueObjectName(const Document *doc, const QString &name) {
     QString result = name;
     int num = 0;
     bool found = false;

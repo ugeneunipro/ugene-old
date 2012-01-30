@@ -98,6 +98,10 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
         }
         TmpDbiHandle dh(alias, os);
         CHECK_OP(os, NULL); 
+
+        DbiConnection con(dh.dbiRef, os); 
+        CHECK_OP(os, NULL);
+
         res = loadDocument(io.get(), dh.dbiRef, hints, os);
         CHECK_OP(os, NULL);
 

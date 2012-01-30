@@ -43,6 +43,8 @@ void SQLiteSequenceDbi::initSqlSchema(U2OpStatus& os) {
     SQLiteQuery("CREATE TABLE SequenceData (sequence INTEGER, sstart INTEGER NOT NULL, send INTEGER NOT NULL, data BLOB NOT NULL, "
         "FOREIGN KEY(sequence) REFERENCES Sequence(object) )", db, os).execute();
 
+    SQLiteQuery("CREATE INDEX SequenceData_sequence_send on SequenceData(sequence, send)", db, os).execute();
+
 }
 
 U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) {
@@ -159,9 +161,9 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
         // find all regions affected -> remove them
         // construct new regions from cuts from old regions and new dataToInsert
         // remove affected annotations or adjust their locations if possible
-    
+
     // find cropped parts
-    QByteArray leftCrop;
+    QByteArray leftCrop, rightCrop;
     SQLiteQuery leftQ("SELECT sstart FROM SequenceData WHERE sequence = ?1 AND sstart <= ?2 AND send >= ?2", db, os);
     leftQ.bindDataId(1, sequenceId);
     leftQ.bindInt64(2, regionToReplace.startPos);
@@ -169,48 +171,51 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
     if (os.hasError()) {
         return;
     }
-    if (cropLeftPos >= 0) {
-        leftCrop = getSequenceData(sequenceId, U2Region(cropLeftPos, regionToReplace.startPos - cropLeftPos), os);
-    } else {
+    bool emptySequence = (-1 == cropLeftPos);
+    if (emptySequence) {
         cropLeftPos = 0;
-    }
+    } else {
+        if (cropLeftPos >= 0) {
+            leftCrop = getSequenceData(sequenceId, U2Region(cropLeftPos, regionToReplace.startPos - cropLeftPos), os);
+        } else {
+            cropLeftPos = 0;
+        }
 
-    QByteArray rightCrop;
-    SQLiteQuery rightQ("SELECT send FROM SequenceData WHERE sequence = ?1 AND sstart <= ?2 AND send >= ?2", db, os);
-    rightQ.bindDataId(1, sequenceId);
-    rightQ.bindInt64(2, regionToReplace.endPos());
-    qint64 cropRightPos = rightQ.selectInt64(-1);
-    if (os.hasError()) {
-        return;
-    }
-    if (cropRightPos > 0) {
-        rightCrop = getSequenceData(sequenceId, U2Region(regionToReplace.endPos(), cropRightPos - regionToReplace.endPos()), os);
-    }
-    
-    // remove all affected regions
-    SQLiteQuery removeQ("DELETE FROM SequenceData WHERE sequence = ?1 "
-        " AND ((sstart >= ?2 AND sstart <= ?3) OR (?2 >= sstart  AND send >= ?2))", db, os);
-    removeQ.bindDataId(1, sequenceId);
-    removeQ.bindInt64(2, regionToReplace.startPos);
-    removeQ.bindInt64(3, regionToReplace.endPos());
-    removeQ.execute();
-    if (os.hasError()) {
-        return;
-    }
-
-    // now adjust 'sstart' & 'send' for all sequence regions on the right side of the insert
-    if (dataToInsert.length() != regionToReplace.length) {
-        qint64 d = dataToInsert.length() - regionToReplace.length;
-        SQLiteQuery updateQ("UPDATE SequenceData SET sstart = sstart + ?1, send = send + ?1 WHERE sequence = ?2 AND sstart >= ?3", db, os);
-        updateQ.bindInt64(1, d);
-        updateQ.bindDataId(2, sequenceId);
-        updateQ.bindInt64(3, regionToReplace.endPos());
-        updateQ.execute();
+        SQLiteQuery rightQ("SELECT send FROM SequenceData WHERE sequence = ?1 AND sstart <= ?2 AND send >= ?2", db, os);
+        rightQ.bindDataId(1, sequenceId);
+        rightQ.bindInt64(2, regionToReplace.endPos());
+        qint64 cropRightPos = rightQ.selectInt64(-1);
         if (os.hasError()) {
             return;
         }
-    }
+        if (cropRightPos > 0) {
+            rightCrop = getSequenceData(sequenceId, U2Region(regionToReplace.endPos(), cropRightPos - regionToReplace.endPos()), os);
+        }
 
+        // remove all affected regions
+        SQLiteQuery removeQ("DELETE FROM SequenceData WHERE sequence = ?1 "
+            " AND ((sstart >= ?2 AND sstart <= ?3) OR (?2 >= sstart  AND send >= ?2))", db, os);
+        removeQ.bindDataId(1, sequenceId);
+        removeQ.bindInt64(2, regionToReplace.startPos);
+        removeQ.bindInt64(3, regionToReplace.endPos());
+        removeQ.execute();
+        if (os.hasError()) {
+            return;
+        }
+
+        // now adjust 'sstart' & 'send' for all sequence regions on the right side of the insert
+        if (dataToInsert.length() != regionToReplace.length) {
+            qint64 d = dataToInsert.length() - regionToReplace.length;
+            SQLiteQuery updateQ("UPDATE SequenceData SET sstart = sstart + ?1, send = send + ?1 WHERE sequence = ?2 AND sstart >= ?3", db, os);
+            updateQ.bindInt64(1, d);
+            updateQ.bindDataId(2, sequenceId);
+            updateQ.bindInt64(3, regionToReplace.endPos());
+            updateQ.execute();
+            if (os.hasError()) {
+                return;
+            }
+        }
+    }
     // insert new regions
     QList<QByteArray> newDataToInsert = quantify(QList<QByteArray>() << leftCrop << dataToInsert << rightCrop);
     SQLiteQuery insertQ("INSERT INTO SequenceData(sequence, sstart, send, data) VALUES(?1, ?2, ?3, ?4)", db, os);
@@ -228,12 +233,18 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
         startPos += d.length();
     }
     // Update sequence object length;
-    SQLiteQuery lengthQ("SELECT MAX(send) FROM SequenceData WHERE sequence = ?1", db, os);
-    lengthQ.bindDataId(1, sequenceId);
-    qint64 newLength = lengthQ.selectInt64();
-    if (os.hasError()) {
-        return;
+    qint64 newLength;
+    if (emptySequence) {
+        newLength = dataToInsert.length();
+    } else {
+        SQLiteQuery lengthQ("SELECT MAX(send) FROM SequenceData WHERE sequence = ?1", db, os);
+        lengthQ.bindDataId(1, sequenceId);
+        newLength = lengthQ.selectInt64();
+        if (os.hasError()) {
+            return;
+        }
     }
+
     SQLiteQuery updateLengthQuery("UPDATE Sequence SET length = ?1 WHERE object = ?2", db, os);
     updateLengthQuery.bindInt64(1, newLength);
     updateLengthQuery.bindDataId(2, sequenceId);
