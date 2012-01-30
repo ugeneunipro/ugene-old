@@ -38,19 +38,21 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="useCustomSettingsBox">
-     <property name="text">
-      <string>Custom settings</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="title">
       <string>Custom settings</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
@@ -150,22 +152,6 @@
     <hint type="destinationlabel">
      <x>225</x>
      <y>216</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useCustomSettingsBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>groupBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>135</x>
-     <y>115</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>135</x>
-     <y>184</y>
     </hint>
    </hints>
   </connection>

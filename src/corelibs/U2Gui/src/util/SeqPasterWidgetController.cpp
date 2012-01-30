@@ -86,7 +86,7 @@ QString SeqPasterWidgetController::validate(){
     QByteArray seq = ((ui->sequenceEdit->document())->toPlainText()).toUtf8();
     seq=QString(seq).remove(QRegExp("\\s")).toAscii();
     DNAAlphabet *alph = NULL;
-    if(ui->useCustomSettingsBox->isChecked()){
+    if(ui->groupBox->isChecked()){
         alph = U2AlphabetUtils::getById((ui->alphabetBox->itemData(ui->alphabetBox->currentIndex())).toString());
     }else{
         if (preferred != NULL){
@@ -118,10 +118,10 @@ void SeqPasterWidgetController::sl_currentindexChanged( const QString& newText){
 }
 
 void SeqPasterWidgetController::disableCustomSettings(){
-    ui->useCustomSettingsBox->setChecked(false);
-    ui->useCustomSettingsBox->setDisabled(true);
-	ui->useCustomSettingsBox->hide();
+    ui->groupBox->setChecked(false);
+    ui->groupBox->setDisabled(true);
 	ui->groupBox->hide();
+	//ui->groupBox->hide();
 }
 
 void SeqPasterWidgetController::setPreferredAlphabet( DNAAlphabet *alp ){

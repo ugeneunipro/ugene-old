@@ -238,7 +238,7 @@
     <name>CreateDocumentFromTextDialog</name>
     <message>
         <location filename="../src/util/ui/CreateDocumentFromTextDialog.ui" line="14"/>
-        <source>Create document</source>
+        <source>Create Document</source>
         <translation>创建文件</translation>
     </message>
     <message>
