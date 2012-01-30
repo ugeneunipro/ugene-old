@@ -23,6 +23,7 @@
 #define _U2_WORKFLOW_READ_SEQ_WORKER_H_
 
 #include <U2Lang/LocalDomain.h>
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/MAlignment.h>
 
@@ -32,7 +33,8 @@ namespace LocalWorkflow {
 class DNASelector {
 public:
     //DNASelector(const QString& acc):acc(acc){}
-    bool matches(const DNASequence&);
+    bool matches(const DNASequence &);
+    bool objectMatches(const U2SequenceObject *);
     QString acc;
 };
 

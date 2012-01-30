@@ -90,7 +90,7 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
     }
 
     Document* res = NULL;
-    bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
+    bool useTmpDbi = true;//getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
     if (useTmpDbi) {
         QString alias = SESSION_TMP_DBI_ALIAS;
         if (hints.contains(DBI_ALIAS_HINT)) {

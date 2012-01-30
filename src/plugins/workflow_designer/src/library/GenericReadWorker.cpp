@@ -40,6 +40,8 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SequenceUtils.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -236,8 +238,7 @@ void LoadSeqTask::run() {
         QList<GObject*> annObjs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         foreach(GObject* go, seqObjs) {
             assert(go != NULL);
-            DNASequence dna = ((U2SequenceObject*)go)->getWholeSequence();
-            if (!selector->matches(dna)) {
+            if (!selector->objectMatches((U2SequenceObject*)go)) {
                 continue;
             }
             QVariantMap m;
@@ -282,14 +283,17 @@ void LoadSeqTask::run() {
         //             QString mergeToken = MERGE_MULTI_DOC_GAP_SIZE_SETTINGS;
         //             bool merge = cfg.contains(mergeToken);
         //             int gaps = cfg.value(mergeToken).toInt();
+        U2OpStatus2Log os;
         foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
             foreach(const DNASequence& s, MSAUtils::ma2seq(((MAlignmentObject*)go)->getMAlignment(), false)) {
                 if (!selector->matches(s)) {
                     continue;
                 }
                 QVariantMap m;
+                U2EntityRef seqRef = U2SequenceUtils::import(doc->getDbiRef(), s, os);
+                CHECK_OP(os, );
                 m.insert(BaseSlots::URL_SLOT().getId(), url);
-                m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<DNASequence>(s));
+                m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<U2DataId>(seqRef.entityId));
                 results.append(m);
             }
         }
@@ -307,6 +311,17 @@ bool DNASelector::matches( const DNASequence& dna) {
         return dna.info.value(DNAInfo::ACCESSION).toStringList().contains(acc);
     }
     return acc == dna.getName();
+}
+
+bool DNASelector::objectMatches( const U2SequenceObject *dna) {
+    if (acc.isEmpty()) {
+        return true;
+    }
+    QVariantMap info = dna->getSequenceInfo();
+    if (info.contains(DNAInfo::ACCESSION)) {
+        return info.value(DNAInfo::ACCESSION).toStringList().contains(acc);
+    }
+    return acc == dna->getSequenceName();
 }
 
 } // Workflow namespace
