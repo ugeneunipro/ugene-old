@@ -29,6 +29,7 @@
 #include "u_build/HMMBuildDialogController.h"
 #include "u_search/HMMSearchDialogController.h"
 #include "u_tests/uhmmerTests.h"
+#include "u_search/HMMSearchQDActor.h"
 #include "HMMIOWorker.h"
 
 #include <U2Gui/MainWindow.h>
@@ -107,6 +108,9 @@ uHMMPlugin::uHMMPlugin() : Plugin(tr("uhmm_plugin"), tr("uhmm_plugin_desc")), ct
         ctxADV->init();
     }
     LocalWorkflow::HMMLib::init();
+
+    QDActorPrototypeRegistry* qdpr = AppContext::getQDActorProtoRegistry();
+    qdpr->registerProto(new HMM2QDActorPrototype());
 
     //uHMMER Tests
     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();

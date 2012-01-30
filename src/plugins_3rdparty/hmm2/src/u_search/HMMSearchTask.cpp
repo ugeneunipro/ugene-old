@@ -14,33 +14,57 @@ namespace U2 {
 
 HMMSearchTask::HMMSearchTask(plan7_s* _hmm, const DNASequence& _seq, const UHMMSearchSettings& s)
 : Task("", TaskFlag_NoRun), 
-  hmm(_hmm), seq(_seq), settings(s), complTrans(NULL), aminoTrans(NULL) 
+  hmm(_hmm), seq(_seq), settings(s), complTrans(NULL), aminoTrans(NULL), fName(""), swTask(NULL), readHMMTask(NULL)
 {
     setTaskName(tr("HMM search with '%1'").arg(hmm->name));
     GCOUNTER( cvar, tvar, "HMM2 Search" );
 }
 
+HMMSearchTask::HMMSearchTask( const QString& hFile, const DNASequence& _seq, const UHMMSearchSettings& s )
+:Task("", TaskFlag_NoRun), 
+hmm(NULL), seq(_seq), settings(s), complTrans(NULL), aminoTrans(NULL), fName(hFile), swTask(NULL), readHMMTask(NULL)
+{
+    setTaskName(tr("HMM search"));
+    GCOUNTER( cvar, tvar, "HMM2 Search" );
+}
+
 void HMMSearchTask::prepare() {
-    if (!checkAlphabets(hmm->atype, seq.alphabet, complTrans, aminoTrans)) {
+
+    if( hasError() ) {
         return;
     }
-    SequenceWalkerConfig config;
-    config.seq = seq.seq.data();
-    config.seqSize = seq.seq.size();
-    config.complTrans = complTrans;
-    config.strandToWalk = complTrans == NULL ? StrandOption_DirectOnly : StrandOption_Both;
-    config.aminoTrans = aminoTrans;
-    config.overlapSize = 2 * hmm->M;
-    config.chunkSize = qMax(6 * hmm->M, settings.searchChunkSize);
-    if (settings.extraLen == -1) {
-        config.lastChunkExtraLen = config.chunkSize / 2;
+
+    if( NULL != hmm ) {
+        swTask = getSWSubtask();
+        if( NULL == swTask ) {
+            assert( hasError() );
+            return;
+        }
+        addSubTask( swTask );
     } else {
-        config.lastChunkExtraLen = settings.extraLen;
+        readHMMTask = new HMMReadTask(fName);
+        addSubTask( readHMMTask );
     }
-    
-    config.nThreads = MAX_PARALLEL_SUBTASKS_AUTO;
-    
-    addSubTask(new SequenceWalkerTask(config, this, tr("parallel_hmm_search_task")));
+//     if (!checkAlphabets(hmm->atype, seq.alphabet, complTrans, aminoTrans)) {
+//         return;
+//     }
+//     SequenceWalkerConfig config;
+//     config.seq = seq.seq.data();
+//     config.seqSize = seq.seq.size();
+//     config.complTrans = complTrans;
+//     config.strandToWalk = complTrans == NULL ? StrandOption_DirectOnly : StrandOption_Both;
+//     config.aminoTrans = aminoTrans;
+//     config.overlapSize = 2 * hmm->M;
+//     config.chunkSize = qMax(6 * hmm->M, settings.searchChunkSize);
+//     if (settings.extraLen == -1) {
+//         config.lastChunkExtraLen = config.chunkSize / 2;
+//     } else {
+//         config.lastChunkExtraLen = settings.extraLen;
+//     }
+//     
+//     config.nThreads = MAX_PARALLEL_SUBTASKS_AUTO;
+//     
+//     addSubTask(new SequenceWalkerTask(config, this, tr("parallel_hmm_search_task")));
 }
 
 
@@ -256,6 +280,60 @@ bool HMMSearchTask::checkAlphabets(int hmmAlType, DNAAlphabet* seqAl, DNATransla
     }
 
     return true;
+}
+
+SequenceWalkerTask* HMMSearchTask::getSWSubtask()
+{
+    assert( !hasError() );
+    assert( NULL != hmm );
+    
+    if (!checkAlphabets(hmm->atype, seq.alphabet, complTrans, aminoTrans)) {
+        return NULL;
+    }
+    SequenceWalkerConfig config;
+    config.seq = seq.seq.data();
+    config.seqSize = seq.seq.size();
+    config.complTrans = complTrans;
+    config.strandToWalk = complTrans == NULL ? StrandOption_DirectOnly : StrandOption_Both;
+    config.aminoTrans = aminoTrans;
+    config.overlapSize = 2 * hmm->M;
+    config.chunkSize = qMax(6 * hmm->M, settings.searchChunkSize);
+    if (settings.extraLen == -1) {
+        config.lastChunkExtraLen = config.chunkSize / 2;
+    } else {
+        config.lastChunkExtraLen = settings.extraLen;
+    }
+
+    config.nThreads = MAX_PARALLEL_SUBTASKS_AUTO;
+
+    return new SequenceWalkerTask(config, this, tr("parallel_hmm_search_task"));
+}
+
+QList< Task* > HMMSearchTask::onSubTaskFinished( Task* subTask )
+{
+    assert( NULL != subTask );
+    QList< Task* > res;
+    if( subTask->hasError() ) {
+        stateInfo.setError(subTask->getError());
+        return res;
+    }
+
+    if( readHMMTask == subTask ) {
+        hmm = readHMMTask->getHMM();
+        swTask = getSWSubtask();
+        if( NULL == swTask ) {
+            assert( hasError() );
+            return res;
+        }
+        res << swTask;
+    } else {
+        if( swTask != subTask ) {
+            assert( 0 && "undefined_subtask_finished" );
+        }
+    }
+
+    return res;
+
 }
 
 }//endif

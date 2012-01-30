@@ -353,23 +353,107 @@ You can use this option to generate reproducible results for different hmmcalibr
     <message>
         <location filename="../src/u_tests/uhmmerTests.cpp" line="574"/>
         <source>uhmmer-calibrate-subtask</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::HMM2QDActor</name>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="64"/>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="148"/>
+        <source>HMM2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="75"/>
+        <source>QD HMM2 search</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="81"/>
+        <source>Power of e-value must be less or equal to zero. Using default value: 1e-1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="149"/>
+        <source>Searches HMM signals in a sequence with one or more profile HMM2 and saves the results as annotations.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="155"/>
+        <source>Profile HMM</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="156"/>
+        <source>Semicolon-separated list of input HMM files.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="159"/>
+        <source>Min Length</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="160"/>
+        <source>Minimum length of a result region.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="163"/>
+        <source>Max Length</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="164"/>
+        <source>Maximum length of a result region.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="167"/>
+        <source>Filter by High E-value</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="168"/>
+        <source>Reports domains &amp;lt;= this E-value threshold in output.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="172"/>
+        <source>Filter by Low Score</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="173"/>
+        <source>Reports domains &amp;gt;= this score cutoff in output.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="176"/>
+        <source>Number of Sequences</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchQDActor.cpp" line="177"/>
+        <source>Specifies number of significant sequences. It is used for domain E-value calculations.</source>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>U2::HMMADVContext</name>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="255"/>
+        <location filename="../src/uHMMPlugin.cpp" line="259"/>
         <source>Search with HMM model...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="272"/>
+        <location filename="../src/uHMMPlugin.cpp" line="276"/>
         <source>error</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="272"/>
+        <location filename="../src/uHMMPlugin.cpp" line="276"/>
         <source>no_sequence_found</source>
         <translation>No sequences found</translation>
     </message>
@@ -509,7 +593,7 @@ You can use this option to generate reproducible results for different hmmcalibr
     <message>
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="213"/>
         <source>Incorrect input file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildDialogController.cpp" line="260"/>
@@ -784,9 +868,9 @@ You can use this option to generate reproducible results for different hmmcalibr
         <translation type="obsolete">Build HMM model from alignment</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="213"/>
+        <location filename="../src/uHMMPlugin.cpp" line="217"/>
         <source>Build HMMER2 profile</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -873,22 +957,27 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::HMMSearchTask</name>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="43"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="309"/>
         <source>parallel_hmm_search_task</source>
         <translation>Parallel HMM search</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="220"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="244"/>
         <source>invalid_hmm_alphabet_type</source>
         <translation>Invalid HMM alphabet!</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="224"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="27"/>
+        <source>HMM search</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="248"/>
         <source>invalid_sequence_alphabet_type</source>
         <translation>Invalid sequence alphabet!</translation>
     </message>
     <message>
-        <location filename="../src/u_search/HMMSearchTask.cpp" line="252"/>
+        <location filename="../src/u_search/HMMSearchTask.cpp" line="276"/>
         <source>can_t_find_amino</source>
         <translation>Amino translation is not available for the sequence alphabet!</translation>
     </message>
@@ -1053,12 +1142,12 @@ You can use this option to generate reproducible results for different hmmcalibr
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="207"/>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="208"/>
         <source>Incorrect value for seed parameter</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="221"/>
         <source>Schema name not specified. Using default value: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="63"/>
@@ -1260,12 +1349,12 @@ You can use this option to generate reproducible results for different hmmcalibr
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="153"/>
         <source>Power of e-value must be less or equal to zero. Using default value: 1e-1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="162"/>
         <source>Value for attribute name is empty, default name used</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="192"/>
@@ -1303,7 +1392,7 @@ You can use this option to generate reproducible results for different hmmcalibr
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="175"/>
         <source>unset</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="179"/>
@@ -1347,12 +1436,12 @@ You can use this option to generate reproducible results for different hmmcalibr
 <context>
     <name>U2::uHMMPlugin</name>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="79"/>
+        <location filename="../src/uHMMPlugin.cpp" line="80"/>
         <source>uhmm_plugin</source>
         <translation>HMM2</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="79"/>
+        <location filename="../src/uHMMPlugin.cpp" line="80"/>
         <source>uhmm_plugin_desc</source>
         <translation>Based on HMMER 2.3.2 package
 Biological sequence analysis using profile hidden Markov models</translation>
@@ -1370,38 +1459,38 @@ Biological sequence analysis using profile hidden Markov models</translation>
         <translation type="obsolete">HMM search</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="82"/>
+        <location filename="../src/uHMMPlugin.cpp" line="83"/>
         <source>Build HMM2 profile</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="85"/>
+        <location filename="../src/uHMMPlugin.cpp" line="86"/>
         <source>Calibrate profile with HMM2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="88"/>
+        <location filename="../src/uHMMPlugin.cpp" line="89"/>
         <source>Search with HMM2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="94"/>
+        <location filename="../src/uHMMPlugin.cpp" line="95"/>
         <source>HMMER tools</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="192"/>
+        <location filename="../src/uHMMPlugin.cpp" line="196"/>
         <source>error</source>
         <translation>Error!</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="192"/>
+        <location filename="../src/uHMMPlugin.cpp" line="196"/>
         <source>neither_annotatedview_nor_pv_selection_found</source>
         <translation>Error! 
 Select sequence in Project view or open sequence view</translation>
     </message>
     <message>
-        <location filename="../src/uHMMPlugin.cpp" line="98"/>
+        <location filename="../src/uHMMPlugin.cpp" line="99"/>
         <source>HMMER2 tools</source>
         <translation></translation>
     </message>

@@ -18,6 +18,7 @@ HEADERS += src/HMMIO.h \
            src/u_search/HMMSearchDialogController.h \
            src/u_search/HMMSearchTask.h \
            src/u_search/HMMSearchWorker.h \
+           src/u_search/HMMSearchQDActor.h \
            src/u_search/uhmmsearch.h \
            src/u_search/uhmmsearch_cell.h \
            src/u_search/uhmmsearch_opt.h \
@@ -64,6 +65,7 @@ SOURCES += src/HMMIO.cpp \
            src/u_search/HMMSearchDialogController.cpp \
            src/u_search/HMMSearchTask.cpp \
            src/u_search/HMMSearchWorker.cpp \
+           src/u_search/HMMSearchQDActor.cpp \
            src/u_search/uhmmsearch.cpp \
            src/u_search/uhmmsearch_cell.cpp \
            src/u_search/uhmmsearch_opt.cpp \
