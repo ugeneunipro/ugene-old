@@ -1135,22 +1135,29 @@ void WorkflowView::sl_configurePortAliases() {
 }
 
 void WorkflowView::sl_importSchemaToElement() {
-    Schema s = scene->getSchema();
+    Schema schema = scene->getSchema();
+
     QString error;
-    if (WorkflowUtils::validateSchemaForIncluding(s, error)) {
+    if (WorkflowUtils::validateSchemaForIncluding(schema, error)) {
         ImportSchemaDialog d(this);
         if (d.exec()) {
-            s.setTypeName(d.getTypeName());
-            QString text = HRSchemaSerializer::schema2String(s, NULL);
+            Schema *s = new Schema();
+            HRSchemaSerializer::deepCopy(schema, s);
+            QString typeName = d.getTypeName();
+
+            s->setTypeName(typeName);
+            QString text = HRSchemaSerializer::schema2String(*s, NULL);
 
             QString path = WorkflowSettings::getIncludedElementsDirectory()
-                + d.getTypeName() + "." + WorkflowUtils::WD_FILE_EXTENSIONS.first();
+                + typeName + "." + WorkflowUtils::WD_FILE_EXTENSIONS.first();
             QFile file(path);
             file.open(QIODevice::WriteOnly);
             file.write(text.toAscii());
+            file.close();
 
-            ActorPrototype *proto = IncludedProtoFactory::getSchemaActorProto(&s, d.getTypeName(), path);
+            ActorPrototype *proto = IncludedProtoFactory::getSchemaActorProto(s, typeName, path);
             WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_INCLUDES(), proto);
+            WorkflowEnv::getSchemaActorsRegistry()->registerSchema(typeName, s);
         }
     } else {
         QMessageBox::critical(this, tr("Error"), error);
@@ -1552,8 +1559,18 @@ void WorkflowScene::sl_deleteItem() {
     foreach(QGraphicsItem* it, selectedItems()) {
         switch (it->type()) {
             case WorkflowProcessItemType:
-                ids << qgraphicsitem_cast<WorkflowProcessItem*>(it)->getProcess()->getId();
+                WorkflowProcessItem *proc = qgraphicsitem_cast<WorkflowProcessItem*>(it);
+                ids << proc->getProcess()->getId();
                 items << it;
+
+                QList<Port*> ports = proc->getProcess()->getPorts();
+                QList<PortAlias>::iterator i = portAliases.begin();
+                for (; i != portAliases.end(); i++) {
+                    Port *p = const_cast<Port*>(i->getSourcePort());
+                    if (ports.contains(p)) {
+                        portAliases.erase(i);
+                    }
+                }
         }
     }
     modified |= !items.isEmpty();
@@ -1715,6 +1732,7 @@ void WorkflowScene::clearScene() {
             deleteList << wItem;
         }
     }
+    portAliases.clear();
 
     foreach(WorkflowProcessItem *item, deleteList) {
         removeItem(item);

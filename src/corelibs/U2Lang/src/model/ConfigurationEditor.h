@@ -74,6 +74,7 @@ public:
     PropertyDelegate(QObject * parent = 0) : QItemDelegate(parent) {}
     virtual ~PropertyDelegate() {}
     virtual QVariant getDisplayValue(const QVariant& v) const {return v;}
+    virtual PropertyDelegate *clone() {return new PropertyDelegate(parent());}
     
 }; // PropertyDelegate
 

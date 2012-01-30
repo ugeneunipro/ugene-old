@@ -178,15 +178,21 @@ ActorPrototype *IncludedProtoFactoryImpl::_getSchemaActorProto(Schema *schema, c
     QList<PortDescriptor*> portDescs;
     QList<Attribute*> attrs;
 
+    QMap< QString, PropertyDelegate* > delegateMap;
     QList<Actor*> procs = schema->getProcesses();
     foreach (Actor *proc, procs) {
         if (proc->hasParamAliases()) {
+            DelegateEditor *ed = (DelegateEditor*)(proc->getProto()->getEditor());
             QMap<QString, QString> paramAliases = proc->getParamAliases();
             foreach (QString attrId, paramAliases.keys()) {
                 Attribute *origAttr = proc->getParameter(attrId);
                 Descriptor attrDesc(paramAliases.value(attrId), paramAliases.value(attrId), origAttr->getDocumentation());
 
                 attrs << new Attribute(attrDesc, origAttr->getAttributeType(), origAttr->isRequiredAttribute(), origAttr->getAttributePureValue());
+                PropertyDelegate *d = ed->getDelegate(attrId);
+                if (NULL != d) {
+                    delegateMap[attrDesc.getId()] = d->clone();
+                }
             }
         }
     }
@@ -209,7 +215,7 @@ ActorPrototype *IncludedProtoFactoryImpl::_getSchemaActorProto(Schema *schema, c
 
     Descriptor desc(name, name, name);
     ActorPrototype *proto = new IntegralBusActorPrototype(desc, portDescs, attrs);
-    proto->setEditor( new DelegateEditor(QMap<QString, PropertyDelegate*>()) );
+    proto->setEditor(new DelegateEditor(delegateMap));
     proto->setIconPath(":workflow_designer/images/wd.png");
 
     proto->setPrompter( new LocalWorkflow::SchemaWorkerPrompter());

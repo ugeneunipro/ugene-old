@@ -106,6 +106,10 @@ public:
     virtual void setModelData(QWidget *editor, QAbstractItemModel *model,
         const QModelIndex &index) const;
 
+    virtual PropertyDelegate *clone() {
+        return new URLDelegate(FileFilter, type, multi, isPath, saveFile, parent(), fileFormat);
+    }
+
 public slots:
     void sl_showEditorButton( bool show );
     void sl_commit();
@@ -143,6 +147,10 @@ public:
 
     void setEditorProperty(const char* name, const QVariant& val);
 
+    virtual PropertyDelegate *clone() {
+        return new SpinBoxDelegate(spinProperties, parent());
+    }
+
 signals:
     void si_valueChanged(int);
 private:
@@ -164,6 +172,10 @@ public:
           const QModelIndex &index) const;
     QVariant getDisplayValue(const QVariant&) const;
 
+    virtual PropertyDelegate *clone() {
+        return new DoubleSpinBoxDelegate(spinProperties, parent());
+    }
+
 private:
     QVariantMap spinProperties;
 };
@@ -181,6 +193,10 @@ public:
       void setModelData(QWidget *editor, QAbstractItemModel *model,
           const QModelIndex &index) const;
       QVariant getDisplayValue(const QVariant&) const;
+
+      virtual PropertyDelegate *clone() {
+          return new ComboBoxDelegate(items, parent());
+      }
 
 signals:
     void si_valueChanged( const QString & newVal ) const;
@@ -225,6 +241,10 @@ public:
     QVariant getDisplayValue(const QVariant&) const;
 
     static QString createScriptHeader(const AttributeScript & attrScript);
+
+    virtual PropertyDelegate *clone() {
+        return new AttributeScriptDelegate(parent());
+    }
 private slots:
     void sl_comboActivated(int);
     
@@ -273,6 +293,10 @@ public:
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 
+    virtual PropertyDelegate *clone() {
+        return new StringListDelegate(parent());
+    }
+
 public slots:
     void sl_showEditorButton(bool show);
     void sl_commit();
@@ -303,6 +327,10 @@ public:
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const ;
 
+    virtual PropertyDelegate *clone() {
+        return new StringSelectorDelegate(initValue, f, parent());
+    }
+
 private slots:
     void sl_onClick();
     void sl_commit();
@@ -324,6 +352,10 @@ public:
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
     virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+
+    virtual PropertyDelegate *clone() {
+        return new CharacterDelegate(parent());
+    }
     
 }; // CharacterDelegate
 
