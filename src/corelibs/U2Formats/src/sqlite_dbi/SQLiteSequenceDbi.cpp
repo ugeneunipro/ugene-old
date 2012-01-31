@@ -73,8 +73,11 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
     QByteArray res;
     //TODO: check mem-overflow, compare region.length with sequence length!
     // res.reserve(region.length);
+
+    // Get all chunks that intersect the region
     SQLiteQuery q("SELECT sstart, send, data FROM SequenceData WHERE sequence = ?1 "
-            "AND  ((sstart >= ?2 AND sstart <= ?3) OR (?2 >= sstart AND send > ?2)) ORDER BY sstart", db, os);
+        "AND  (send >= ?2 AND sstart < ?3) ORDER BY sstart", db, os);
+
     q.bindDataId(1, sequenceId);
     q.bindInt64(2, region.startPos);
     q.bindInt64(3, region.endPos());
