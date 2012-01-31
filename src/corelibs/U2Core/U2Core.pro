@@ -159,6 +159,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U1AnnotationUtils.h \
            src/util/U2AlphabetUtils.h \
            src/util/U2AnnotationUtils.h \
+           src/util/U2AssemblyReadIterator.h \
            src/util/U2AssemblyUtils.h \
            src/util/U2AttributeUtils.h \
            src/util/U2Bits.h \
@@ -281,6 +282,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U1AnnotationUtils.cpp \
            src/util/U2AlphabetUtils.cpp \
            src/util/U2AnnotationUtils.cpp \
+           src/util/U2AssemblyReadIterator.cpp \
            src/util/U2AssemblyUtils.cpp \
            src/util/U2AttributeUtils.cpp \
            src/util/U2Bits.cpp \

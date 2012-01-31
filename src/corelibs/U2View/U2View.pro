@@ -15,7 +15,6 @@ HEADERS += src/WebWindow.h \
            src/ov_assembly/CoverageInfo.h \
            src/ov_assembly/CoveredRegionsManager.h \
            src/ov_assembly/ExportReadsDialog.h \
-           src/ov_assembly/ShortReadIterator.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
            src/ov_msa/ConsensusSelectorDialogController.h \
@@ -135,7 +134,6 @@ SOURCES += src/WebWindow.cpp \
            src/ov_assembly/CoverageInfo.cpp \
            src/ov_assembly/CoveredRegionsManager.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
-           src/ov_assembly/ShortReadIterator.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
            src/ov_msa/AlignmentLogo.cpp \
            src/ov_msa/ConsensusSelectorDialogController.cpp \

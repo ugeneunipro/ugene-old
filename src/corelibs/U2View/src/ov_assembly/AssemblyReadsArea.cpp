@@ -46,11 +46,11 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AddDocumentTask.h>
+#include <U2Core/U2AssemblyReadIterator.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
 #include "AssemblyBrowser.h"
-#include "ShortReadIterator.h"
 #include "ZoomableAssemblyOverview.h"
 #include "ExportReadsDialog.h"
 
@@ -389,7 +389,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             if(cigar.isEmpty()) {
                 cigar << U2CigarToken(U2CigarOp_M, readSequence.size());
             }
-            ShortReadIterator cigarIt(readSequence, cigar, firstVisibleBase);
+            U2AssemblyReadIterator cigarIt(readSequence, cigar, firstVisibleBase);
             int basesPainted = 0;
             for(int x_pix_offset = 0; cigarIt.hasNext() && basesPainted++ < readVisibleBases.length; x_pix_offset += cachedReads.letterWidth) {
                 GTIMER(c2, t2, "AssemblyReadsArea::drawReads -> cycle through one read");

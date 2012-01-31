@@ -21,7 +21,6 @@
 
 #include "AssemblyReadsAreaHint.h"
 #include "AssemblyReadsArea.h"
-#include "ShortReadIterator.h"
 
 #include <U2Core/U2AssemblyUtils.h>
 
