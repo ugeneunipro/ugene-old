@@ -109,7 +109,6 @@ private:
 
 private:
     ADVSequenceObjectContext*   ctx;
-    U2SequenceObject*          sequence;
 
     QString prevSearchString;
     int prevAlgorithm; //0 - 100%, 1-mismatch, 2-insdel

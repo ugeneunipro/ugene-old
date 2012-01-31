@@ -51,6 +51,7 @@ private:
 class HMM2QDActorPrototype : public QDActorPrototype {
 public:
     HMM2QDActorPrototype();
+    QIcon getIcon() const { return QIcon(":hmm2/images/hmmer_16.png"); }
     QDActor* createInstance() const { return new HMM2QDActor(this); }
 };
 

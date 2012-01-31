@@ -333,7 +333,7 @@ void FindDialog::tunePercentBox() {
 //line ed
 void FindDialog::sl_onSearchPatternChanged(const QString&) {
     if (leFind->text().length() > getCompleteSearchRegion().length) {//if pattern greater then search region
-        rs->setRegion(U2Region(0,sequence->getSequenceLength()));
+        rs->setRegion(U2Region(0,ctx->getSequenceLength()));
     }
     tunePercentBox();
     updateState();
