@@ -42,7 +42,7 @@ namespace U2 {
  *    symbol when iterating through them.
  * 4. Matches/mismatches (M/=/X) are treated normally.
  */
-class U2AssemblyReadIterator {
+class U2CORE_EXPORT U2AssemblyReadIterator {
 public:
     /**
      * Constructs iterator from raw data and CIGAR model. Iterations can be started
