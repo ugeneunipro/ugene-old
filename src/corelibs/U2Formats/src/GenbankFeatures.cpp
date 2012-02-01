@@ -261,6 +261,15 @@ const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
     return groups;
 }
 
+bool GBFeatureUtils::isFeatureHasNoValue(const QString& featureName)
+{
+    if (featureName == "pseudo")
+    {
+        return true;
+    }
+    return false;
+}
+
 GBFeatureKey GBFeatureUtils::getKey(const QString& text) {
 	QMutexLocker locker(&getKey_mutex);
     static QHash<QString, GBFeatureKey> keysByText;

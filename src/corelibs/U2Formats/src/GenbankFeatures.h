@@ -129,6 +129,9 @@ public:
     
     static GBFeatureKey getKey(const QString& text);
 
+    // Some features do not have values in GenBank (e.g. "/pseudo")
+    static bool isFeatureHasNoValue(const QString& featureName);
+
     static const QByteArray QUALIFIER_AMINO_STRAND;
     static const QByteArray QUALIFIER_AMINO_STRAND_YES;
     static const QByteArray QUALIFIER_AMINO_STRAND_NO;

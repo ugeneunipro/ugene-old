@@ -589,7 +589,14 @@ static void writeQualifier(const QString& name, const QString& val, IOAdapter* i
     if (num) {
         qstr = "/"+name+ "="+val;
     } else {
-        qstr = "/"+name+ "=\""+val+"\"";
+        if (GBFeatureUtils::isFeatureHasNoValue(name))
+        {
+            qstr = "/" + name;
+        }
+        else
+        {
+            qstr = "/" + name + "=\"" + val + "\"";
+        }
     }
     prepareMultiline(qstr, 21);
     len = io->writeBlock(qstr.toLocal8Bit());

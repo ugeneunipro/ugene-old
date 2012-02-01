@@ -42,6 +42,8 @@
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2SequenceDbi.h>
 
+#include <U2Formats/GenbankFeatures.h>
+
 #include <memory>
 
 namespace U2 {
@@ -261,14 +263,18 @@ static bool isNewQStart(const char* s, int l) {
         return false;
     }
     const QBitArray& WHITES = TextUtils::WHITES;
-    for (int i = QN_COL; i < l; i++) {
+    int i = QN_COL;
+    for (; i < l; i++) {
         char c = s[i];
         if (c == '=' && i > QN_COL) {
             return true;
         }
         if (WHITES[(uchar)c]) {
-            break;
+            return false;
         }
+    }
+    if (i == l){
+        return true; // qualifier without '=' char
     }
     return false;
 }
@@ -423,7 +429,7 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
             break;
         }
         for (; QN_COL < len && LINE_BREAKS[(uchar)cbuff[len-1]]; len--){}; //remove line breaks
-        int flen = len + readMultilineQualifier(io, cbuff+len, READ_BUFF_SIZE-len, len == maxAnnotationLineLen);
+        int flen = len + readMultilineQualifier(io, cbuff+len, READ_BUFF_SIZE-len, len >= maxAnnotationLineLen);
         //now the whole feature is in cbuff
         int valStart = A_COL + 1;
         for (; valStart < flen && cbuff[valStart] != '='; valStart++){}; //find '==' and valStart
@@ -434,6 +440,13 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
         for (; valStart < flen && WHITE_SPACES[(uchar)cbuff[flen-1]]; flen--){}; //trim value
         const char* qname = cbuff + QN_COL;
         int qnameLen = valStart - (QN_COL + 1);
+
+        // Check the case when a qualifier has no value
+        QString noValueQualifier = QString::fromLocal8Bit(qname, qnameLen + 1);
+        if (GBFeatureUtils::isFeatureHasNoValue(noValueQualifier)) {
+            qnameLen += 1;
+        }
+
         const char* qval = cbuff + valStart;
         int qvalLen = flen - valStart;
         bool removeQuotes = false;
