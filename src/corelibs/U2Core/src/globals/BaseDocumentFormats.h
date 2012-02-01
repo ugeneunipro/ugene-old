@@ -26,6 +26,9 @@
 
 namespace U2 {
 
+#define SEQUENCE_TAG " sequence"    //common tag for sequence object
+#define FEATURES_TAG " features"    //common tag for annotation table
+
 class DocumentFormat;
 
 class U2CORE_EXPORT BaseDocumentFormats {
