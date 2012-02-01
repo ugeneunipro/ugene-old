@@ -110,7 +110,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     int sequenceSize = 0;
     int fullSequenceSize = 0;
 
-    for (int i=0; !os.isCoR(); i++, ++num_sequence) {	
+    for (int i=0; !os.isCoR(); i++, ++num_sequence) {
         EMBLGenbankDataEntry data;
         st.entry = &data;
 
@@ -126,7 +126,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
         }
 
         if (merge && sequenceSize > 0 && num_sequence > 0) {
-                sequenceStart += sequenceSize ;
+                sequenceStart = fullSequenceSize - sequenceSize;
                 sequenceStart += gapSize;
                 fullSequenceSize += gapSize;
         }
