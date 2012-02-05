@@ -49,6 +49,14 @@ struct DigestSequenceTaskConfig {
 	bool searchForRestrictionSites;	
 };
 
+struct GenomicPosition {
+    GenomicPosition() : coord(-1), directStrand(true) {}
+    GenomicPosition(int crd, bool strnd ) : coord(crd), directStrand(strnd) {}
+    friend bool operator<(const GenomicPosition& left, const GenomicPosition& right); 
+
+    int coord;
+    bool directStrand;
+};
 
 class DigestSequenceTask : public Task {
     Q_OBJECT
@@ -72,7 +80,7 @@ private:
     AnnotationTableObject *sourceObj, *destObj;
     U2SequenceObject*  dnaObj;
     DigestSequenceTaskConfig cfg;
-	QMap<int, SEnzymeData> cutSiteMap;
+	QMap<GenomicPosition, SEnzymeData> cutSiteMap;
 	QList<SharedAnnotationData> results;
 
 };
