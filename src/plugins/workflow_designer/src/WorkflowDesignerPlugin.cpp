@@ -26,8 +26,6 @@
 #include "WorkflowSamples.h"
 
 #include "library/CoreLib.h"
-#include "library/PassFilterWorker.h"
-#include "library/MarkSequenceWorker.h"
 #include "library/IncludedProtoFactoryImpl.h"
 
 #include <util/SaveSchemaImageUtils.h>
@@ -78,8 +76,6 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
     }
     IncludedProtoFactory::init(new IncludedProtoFactoryImpl());
     Workflow::CoreLib::init();
-    LocalWorkflow::PassFilterWorkerFactory::init();
-    LocalWorkflow::MarkSequenceWorkerFactory::init();
 
     AppContext::getDocumentFormatRegistry()->registerFormat(new WorkflowDocFormat(this));
     

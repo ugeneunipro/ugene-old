@@ -39,6 +39,9 @@
 #include "ReverseComplementWorker.h"
 #include "MSA2SequenceWorker.h"
 #include "ExternalProcessWorker.h"
+#include "library/PassFilterWorker.h"
+#include "library/MarkSequenceWorker.h"
+#include "library/MultiplexerWorker.h"
 
 #include "RemoteDBFetcherWorker.h"
 
@@ -309,6 +312,9 @@ void CoreLib::init() {
     CDSearchWorkerFactory::init();
     DNAStatWorkerFactory::init();
     RCWorkerFactory::init();
+    PassFilterWorkerFactory::init();
+    MarkSequenceWorkerFactory::init();
+    MultiplexerWorkerFactory::init();
     initUsersWorkers();
     initExternalToolsWorkers();
 }

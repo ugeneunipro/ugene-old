@@ -39,6 +39,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/IncludedProtoFactoryImpl.h \
            src/library/MarkSequenceWorker.h \
            src/library/MSA2SequenceWorker.h \
+           src/library/MultiplexerWorker.h \
            src/library/PassFilterWorker.h \
            src/library/RemoteDBFetcherWorker.h \
            src/library/ReverseComplementWorker.h \
@@ -97,6 +98,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/IncludedProtoFactoryImpl.cpp \
            src/library/MarkSequenceWorker.cpp \
            src/library/MSA2SequenceWorker.cpp \
+           src/library/MultiplexerWorker.cpp \
            src/library/PassFilterWorker.cpp \
            src/library/RemoteDBFetcherWorker.cpp \
            src/library/ReverseComplementWorker.cpp \

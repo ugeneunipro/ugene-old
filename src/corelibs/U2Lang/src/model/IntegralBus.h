@@ -44,6 +44,8 @@ public:
     // reimplemented from CommunicationSubject
     virtual bool addCommunication(const QString& id, CommunicationChannel* ch);
     virtual CommunicationChannel* getCommunication(const QString& id);
+
+    void putWithoutContext(const Message& m);
     
     // reimplemented from CommunicationChannel
     virtual Message get();

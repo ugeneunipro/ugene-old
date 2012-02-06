@@ -209,6 +209,10 @@ class U2DESIGNER_EXPORT FileModeDelegate : public ComboBoxDelegate {
 public:
     FileModeDelegate(bool appendSupported, QObject *parent = 0);
     virtual ~FileModeDelegate() {}
+
+    virtual PropertyDelegate *clone() {
+        return new FileModeDelegate(3 == items.size(), parent());
+    }
 };
 
 class U2DESIGNER_EXPORT SchemaRunModeDelegate : public ComboBoxDelegate {
@@ -220,6 +224,10 @@ public:
 public:
     SchemaRunModeDelegate(QObject * parent = 0);
     virtual ~SchemaRunModeDelegate() {}
+
+    virtual PropertyDelegate *clone() {
+        return new SchemaRunModeDelegate(parent());
+    }
 
 public slots:
     void sl_valueChanged( const QString & val );

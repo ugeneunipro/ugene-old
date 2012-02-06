@@ -311,7 +311,12 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
         int featuresNum = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE).size();
         annotationName = QString("unknown features %1").arg(featuresNum);
     } else {
-        annotationName = seq.getName().replace(SEQUENCE_TAG, FEATURES_TAG);
+        QString seqName = seq.getName();
+        if (seqName.contains(SEQUENCE_TAG)) {
+            annotationName = seqName.replace(SEQUENCE_TAG, FEATURES_TAG);
+        } else {
+            annotationName = seqName + FEATURES_TAG;
+        }
     }
 
     QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());

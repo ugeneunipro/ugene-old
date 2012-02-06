@@ -62,7 +62,11 @@ IntegralBus::IntegralBus(Port* p)
         }
         
         busMap = a->getAttributeValueWithoutScript<QStrStrMap>();
-        assert(!busMap.isEmpty());
+        if (busMap.isEmpty()) {
+            ActorPrototype *proto = p->owner()->getProto();
+            assert(proto->isAllowsEmptyPorts());
+            Q_UNUSED(proto);
+        }
         QMapIterator<QString, QString> it(busMap);
         while (it.hasNext()) {
             it.next();
@@ -199,6 +203,12 @@ void IntegralBus::put(const Message& m) {
                 WorkflowUtils::print(slotString, map.value(key), workflowContext);
             }
         }
+    }
+}
+
+void IntegralBus::putWithoutContext(const Message& m) {
+    foreach(CommunicationChannel* ch, outerChannels) {
+        ch->put(m);
     }
 }
 

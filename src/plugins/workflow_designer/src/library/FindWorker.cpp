@@ -65,6 +65,7 @@ void FindWorkerFactory::init() {
 
     QMap<Descriptor, DataTypePtr> m;
     m[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
+    m[BaseSlots::TEXT_SLOT()] = BaseTypes::STRING_TYPE();
     DataTypePtr inSet(new MapDataType(Descriptor("regioned.sequence"), m));
     DataTypeRegistry* dr = WorkflowEnv::getDataTypeRegistry();
     assert(dr);
@@ -116,7 +117,7 @@ void FindWorkerFactory::init() {
             " and searches in the translated sequence."));
         
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
-        a << new Attribute(pd, BaseTypes::STRING_TYPE(), true);
+        a << new Attribute(pd, BaseTypes::STRING_TYPE(), false);
         a << new Attribute(ed, BaseTypes::NUM_TYPE(), false, 0);
         a << new Attribute(BaseAttributes::STRAND_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::STRAND_BOTH());
         a << new Attribute(ald, BaseTypes::BOOL_TYPE(), false, false);
@@ -186,7 +187,6 @@ QString FindPrompter::composeRichDoc() {
     cfg.strand = getStrand(getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId()).value<QString>());
     cfg.maxErr = getParameter(ERR_ATTR).toInt();
     cfg.insDelAlg = getParameter(ALGO_ATTR).toBool();
-    QString pattern = getHyperlink(PATTERN_ATTR, getRequiredParam(PATTERN_ATTR));
 
     QString strandName;
     switch (cfg.strand) {
@@ -221,12 +221,20 @@ QString FindPrompter::composeRichDoc() {
             .arg(getHyperlink(ERR_ATTR, cfg.maxErr));
     }
 
+    QString patternStr;
+    Actor* patternProd = input->getProducer(BaseSlots::TEXT_SLOT().getId());
+    if (NULL == patternProd) {
+        QString pattern = getHyperlink(PATTERN_ATTR, getRequiredParam(PATTERN_ATTR));
+        patternStr = tr("<u>%1</u> pattern(s)").arg(pattern);
+    } else {
+        patternStr = tr("patterns from <u>%1</u>").arg(patternProd->getLabel());
+    }
     QString doc = tr("Searches regions in each sequence from <u>%1</u>"
-        " similar to <u>%2</u> pattern(s).<br/>%3<br/>Searches in"
+        " similar to %2.<br/>%3<br/>Searches in"
         " <u>%4</u> of a %5sequence. Outputs the regions found"
         " annotated as <u>%6</u>.")
         .arg(seqName)
-        .arg(pattern)
+        .arg(patternStr)
         .arg(matches)
         .arg(strandName)
         .arg(searchInTranslationSelected)
@@ -295,7 +303,12 @@ Task* FindWorker::tick() {
     }
     
     // for each pattern run find task
-    QStringList ptrnStrs = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>(context).split(PATTERN_DELIMITER, QString::SkipEmptyParts);
+    QStringList ptrnStrs;
+    if (qm.contains(BaseSlots::TEXT_SLOT().getId())) {
+        ptrnStrs << qm.value(BaseSlots::TEXT_SLOT().getId()).toString();
+    } else {
+        ptrnStrs = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>(context).split(PATTERN_DELIMITER, QString::SkipEmptyParts);
+    }
     if(ptrnStrs.isEmpty()) {
         return new FailTask(tr("Empty pattern given"));
     }

@@ -87,6 +87,9 @@ public:
     bool isStandardFlagSet() {return isStandard;}
     bool isSchemaFlagSet() {return isSchema;}
     QString getFilePath() {return actorFilePath;}
+
+    bool isAllowsEmptyPorts() const {return allowsEmptyPorts;}
+    void setAllowsEmptyPorts(bool value) {allowsEmptyPorts = value;}
     
 protected:
     // create port and sets p as owner of new port
@@ -119,6 +122,8 @@ protected:
     QString actorFilePath;
     // actor can implement some big schema
     bool isSchema;
+
+    bool allowsEmptyPorts;
     
 }; // ActorPrototype
 

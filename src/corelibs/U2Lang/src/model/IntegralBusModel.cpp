@@ -307,8 +307,11 @@ bool ScreenedSlotValidator::validate( const QStringList& screenedSlots, const In
             }
         }
         if (busWidth == bm.size()) {
-            l.append(IntegralBusPort::tr("No input data supplied"));
-            good = false;
+            ActorPrototype *proto = vport->owner()->getProto();
+            if (!(0 == busWidth && proto->isAllowsEmptyPorts())) {
+                l.append(IntegralBusPort::tr("No input data supplied"));
+                good = false;
+            }
         }
         {
             QMapIterator<QString,QString> it(bm);
