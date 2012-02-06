@@ -84,10 +84,13 @@ AnnotationTableObject* DocumentFormatUtils::addAnnotationsForMergedU2Sequence(co
     }
 
     //save mapping info as annotations
-    for (int i = 0; i < contigNames.size(); i++) {
+    QStringList::const_iterator it = contigNames.begin();
+    for (int i = 0; it != contigNames.end(); i++, it++) {
         SharedAnnotationData d(new AnnotationData());
-        d->name = "contig";
+        d->name = QString("contig");
         d->location->regions << mergedMapping[i];
+        d->qualifiers << U2Qualifier("name", *it);
+        d->qualifiers << U2Qualifier("number", QString("%1").arg(i));
         ao->addAnnotation(new Annotation(d), NULL);
     }
     return ao;
