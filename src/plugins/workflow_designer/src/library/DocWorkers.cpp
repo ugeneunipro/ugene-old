@@ -283,6 +283,17 @@ void RawSeqWriter::data2document(Document* doc, const QVariantMap& data, Workflo
 /*************************************
  * GenbankWriter
  *************************************/
+static QString getAnnotationName(const QString &seqName) {
+    QString result = seqName;
+    if (result.contains(SEQUENCE_TAG)) {
+        result.replace(SEQUENCE_TAG, FEATURES_TAG);
+    } else {
+        result += FEATURES_TAG;
+    }
+
+    return result;
+}
+
 void GenbankWriter::data2doc(Document* doc, const QVariantMap& data) {
     data2document(doc, data, context);
 }
@@ -311,12 +322,7 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
         int featuresNum = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE).size();
         annotationName = QString("unknown features %1").arg(featuresNum);
     } else {
-        QString seqName = seq.getName();
-        if (seqName.contains(SEQUENCE_TAG)) {
-            annotationName = seqName.replace(SEQUENCE_TAG, FEATURES_TAG);
-        } else {
-            annotationName = seqName + FEATURES_TAG;
-        }
+        annotationName = getAnnotationName(seq.getName());
     }
 
     QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
@@ -368,7 +374,7 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
         int featuresNum = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE).size();
         annotationName = QString("unknown features %1").arg(featuresNum);
     } else {
-        annotationName = seq.getName().replace(SEQUENCE_TAG, FEATURES_TAG);
+        annotationName = getAnnotationName(seq.getName());
     }
 
     QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
