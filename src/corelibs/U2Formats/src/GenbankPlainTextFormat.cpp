@@ -243,7 +243,7 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
             continue;
         }
         if (st->hasKey("FEATURES") && st->readNextLine()) {
-            readAnnotations(st, fullSequenceLen);
+            readAnnotations(st, fullSequenceLen + gapSize);
             hasLine = true;
             continue;
         }

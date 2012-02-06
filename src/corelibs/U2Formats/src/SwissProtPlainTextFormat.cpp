@@ -174,7 +174,7 @@ bool SwissProtPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& se
           In general the feature table lists posttranslational modifications, binding sites, enzyme active sites, local secondary structure or other characteristics reported in the cited references.
         */
         if (st->hasKey("FT", 2)) {
-            readAnnotations(st, fullSequenceLen);
+            readAnnotations(st, fullSequenceLen + gapSize);
             hasLine = true;
             continue;
         }

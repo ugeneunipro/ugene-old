@@ -191,7 +191,7 @@ bool EMBLPlainTextFormat::readEntry(ParserState* st,U2SequenceImporter& seqImpor
         }
 
         if (st->hasKey("FT", 2)) {
-            readAnnotations(st, fullSequenceLen);
+            readAnnotations(st, fullSequenceLen + gapSize);
             hasLine = true;
             continue;
         }
