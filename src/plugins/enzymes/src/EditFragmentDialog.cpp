@@ -110,7 +110,6 @@ EditFragmentDialog::EditFragmentDialog( DNAFragment& fragment, QWidget* p )
 
 }
 
-
 void EditFragmentDialog::accept()
 {
     QByteArray lTermType = lBluntButton->isChecked() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
@@ -119,7 +118,7 @@ void EditFragmentDialog::accept()
     QByteArray rTermType = rBluntButton->isChecked() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY; 
     dnaFragment.setRightTermType(rTermType);
     
-    if (lCustomOverhangBox->isChecked()) {
+    if (lCustomOverhangBox->isChecked() && lStickyButton->isChecked()) {
         QLineEdit* lCustomOverhangEdit = lDirectRadioButton->isChecked() ? lDirectOverhangEdit : lComplOverhangEdit;
         QString leftOverhang = lCustomOverhangEdit->text();
 
@@ -143,7 +142,7 @@ void EditFragmentDialog::accept()
     
     }
     
-    if (rCustomOverhangBox->isChecked()) {
+    if (rCustomOverhangBox->isChecked() && rStickyButton->isChecked()) {
         QLineEdit* rCustomOverhangEdit = rDirectRadioButton->isChecked() ? rDirectOverhangEdit : rComplOverhangEdit;
         QString rightOverhang = rCustomOverhangEdit->text();
 
@@ -159,7 +158,7 @@ void EditFragmentDialog::accept()
         }
         
         QByteArray bRightOverhang = rightOverhang.toUpper().toAscii();
-        if ( lComplRadioButton->isChecked() ) {
+        if ( rComplRadioButton->isChecked() ) {
             transl->translate(bRightOverhang.data(), bRightOverhang.size());
         }
         dnaFragment.setRightOverhang(bRightOverhang);
