@@ -47,6 +47,7 @@ namespace U2 {
 #define MIN_DIST_CHECK_SETTINGS     QString("min_dist_check")
 #define MAX_DIST_CHECK_SETTINGS     QString("max_dist_check")
 #define INVERT_CHECK_SETTINGS       QString("invert_check")
+#define TANDEMS_CHECK_SETTINGS      QString("exclude_tandems_check")
 
 FindRepeatsTaskSettings FindRepeatsDialog::defaultSettings()
 {
@@ -59,6 +60,7 @@ FindRepeatsTaskSettings FindRepeatsDialog::defaultSettings()
     res.minDist = !minDistCheck ? 0 : (s->getValue(SETTINGS_ROOT + MIN_DIST_SETTINGS, 0).toInt());
     res.maxDist = !maxDistCheck ? 0 : (s->getValue(SETTINGS_ROOT + MAX_DIST_SETTINGS, 5000).toInt());
     res.inverted = (s->getValue(SETTINGS_ROOT + INVERT_CHECK_SETTINGS, false).toBool());
+    res.excludeTandems = (s->getValue(SETTINGS_ROOT + TANDEMS_CHECK_SETTINGS, false).toBool());
     return res;
 }
 
@@ -98,6 +100,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     minDistCheck->setChecked(s->getValue(SETTINGS_ROOT + MIN_DIST_CHECK_SETTINGS, true).toBool());
     maxDistCheck->setChecked(s->getValue(SETTINGS_ROOT + MAX_DIST_CHECK_SETTINGS, true).toBool());
     invertCheck->setChecked(s->getValue(SETTINGS_ROOT + INVERT_CHECK_SETTINGS, false).toBool());
+    excludeTandemsBox->setChecked(s->getValue(SETTINGS_ROOT + TANDEMS_CHECK_SETTINGS, false).toBool());
 
     connect(minLenHeuristicsButton, SIGNAL(clicked()), SLOT(sl_minLenHeuristics()));
     connect(hundredPercentButton, SIGNAL(clicked()), SLOT(sl_hundredPercent()));
@@ -252,6 +255,7 @@ void FindRepeatsDialog::accept() {
     settings.midRegionsToExclude = filterRegions;
     settings.reportReflected = false;
     settings.filterNested = !allowNestedCheck->isChecked();
+    settings.excludeTandems = excludeTandemsBox->isChecked();
     
     FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, sc->getSequenceObject()->getWholeSequence(), 
         cam.data->name, cam.groupName, cam.annotationObjectRef);
@@ -272,6 +276,7 @@ void FindRepeatsDialog::saveState() {
     bool minDistChecked = minDistCheck->isChecked();
     bool maxDistChecked = maxDistCheck->isChecked();
     bool invertChecked = invertCheck->isChecked();
+    bool tandemsChecked = excludeTandemsBox->isChecked();
 
     s->setValue(SETTINGS_ROOT + MIN_LEN_SETTINGS, minLen);
     s->setValue(SETTINGS_ROOT + IDENTITY_SETTINGS, identPerc);
@@ -280,6 +285,7 @@ void FindRepeatsDialog::saveState() {
     s->setValue(SETTINGS_ROOT + MIN_DIST_CHECK_SETTINGS, minDistChecked);
     s->setValue(SETTINGS_ROOT + MAX_DIST_CHECK_SETTINGS, maxDistChecked);
     s->setValue(SETTINGS_ROOT + INVERT_CHECK_SETTINGS, invertChecked);
+    s->setValue(SETTINGS_ROOT + TANDEMS_CHECK_SETTINGS, tandemsChecked);
 }
 
 quint64 FindRepeatsDialog::areaSize() const {

@@ -83,6 +83,7 @@ public:
                                         DNAAlphabet *al, int w,
                                         int mismatches = 0, RFAlgorithm alg = RFAlgorithm_Auto,
                                         int nThreads = MAX_PARALLEL_SUBTASKS_AUTO);
+    static char getUnknownChar(const DNAAlphabetType &type);
 
 protected:
     // adds single result to global results 

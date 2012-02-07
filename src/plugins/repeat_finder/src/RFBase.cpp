@@ -74,6 +74,10 @@ RFAlgorithmBase* RFAlgorithmBase::createTask(RFResultsListener* l, const char *s
 //////////////////////////////////////////////////////////////////////////
 // Task
 
+char RFAlgorithmBase::getUnknownChar(const DNAAlphabetType &type) {
+    return type == DNAAlphabet_AMINO ? 'X' : type==DNAAlphabet_NUCL ? 'N' : '\0';
+}
+
 RFAlgorithmBase::RFAlgorithmBase(RFResultsListener* l, const char* seqx, int sizex, const char* seqy, int sizey, 
                                  DNAAlphabetType seqType, int w, int k, TaskFlags flags) 
 : Task(tr("Find repeats"), flags), 
@@ -82,7 +86,7 @@ SEQ_TYPE(seqType), WINDOW_SIZE(w), K(k), C(w-k),
 resultsListener(l), reportReflected(true)
 {
     reflective = seqX == seqY && SIZE_X==SIZE_Y;
-    unknownChar = seqType == DNAAlphabet_AMINO ? 'X' : seqType==DNAAlphabet_NUCL ? 'N' : '\0';
+    unknownChar = getUnknownChar(seqType);
 }
 
 void RFAlgorithmBase::setRFResultsListener(RFResultsListener* newListener) {

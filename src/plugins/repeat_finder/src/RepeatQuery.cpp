@@ -42,6 +42,7 @@ static const QString NESTED_ATTR("filter-nested");
 static const QString ALGO_ATTR("algorithm");
 static const QString THREADS_ATTR("threads");
 static const QString MAX_LEN_ATTR("max-length");
+static const QString TANMEDS_ATTR("exclude-tandems");
     
 QDRepeatActor::QDRepeatActor(QDActorPrototype const* proto) : QDActor(proto) {
     simmetric = true;
@@ -169,6 +170,7 @@ Task* QDRepeatActor::getAlgorithmTask(const QVector<U2Region>& location) {
     settings.nThreads = cfg->getParameter(THREADS_ATTR)->getAttributeValueWithoutScript<int>();
     settings.inverted = cfg->getParameter(INVERT_ATTR)->getAttributeValueWithoutScript<bool>();
     settings.filterNested = cfg->getParameter(NESTED_ATTR)->getAttributeValueWithoutScript<bool>();
+    settings.excludeTandems = cfg->getParameter(TANMEDS_ATTR)->getAttributeValueWithoutScript<bool>();
 
     QDDistanceConstraint* dc = static_cast<QDDistanceConstraint*>(paramConstraints.first());
     settings.minDist = dc->getMin();
@@ -270,6 +272,7 @@ QDRepeatActorPrototype::QDRepeatActorPrototype() {
     Descriptor ald(ALGO_ATTR, QDRepeatActor::tr("Algorithm"), QDRepeatActor::tr("Control over variations of algorithm."));
     Descriptor thd(THREADS_ATTR, QDRepeatActor::tr("Parallel threads"), QDRepeatActor::tr("Number of parallel threads used for the task."));
     Descriptor mld(MAX_LEN_ATTR, QDRepeatActor::tr("Max length"), QDRepeatActor::tr("Maximum length of repeats."));
+    Descriptor tan(TANMEDS_ATTR, QDRepeatActor::tr("Exclude tandems"), QDRepeatActor::tr("Exclude tandems areas before find repeat task is run."));
 
     FindRepeatsTaskSettings stngs = FindRepeatsDialog::defaultSettings();
 
@@ -280,6 +283,7 @@ QDRepeatActorPrototype::QDRepeatActorPrototype() {
     attributes << new Attribute(ald, BaseTypes::NUM_TYPE(), false, stngs.algo);
     attributes << new Attribute(thd, BaseTypes::NUM_TYPE(), false, stngs.nThreads);
     attributes << new Attribute(mld, BaseTypes::NUM_TYPE(), true, QDActor::DEFAULT_MAX_RESULT_LENGTH);
+    attributes << new Attribute(tan, BaseTypes::BOOL_TYPE(), false, stngs.excludeTandems);
 
     QMap<QString, PropertyDelegate*> delegates;    
     {

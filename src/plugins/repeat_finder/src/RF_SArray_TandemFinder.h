@@ -61,7 +61,7 @@ public:
     int         minRepeatCount;
     int         accuracy;
     int         maxResults;
-    U2Region     seqRegion;
+    U2Region    seqRegion;
     bool        showOverlappedTandems;
 
     TSConstants::TSAlgo    algo;
@@ -74,15 +74,21 @@ class FindTandemsToAnnotationsTask : public Task {
 public:
     FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq, 
         const QString& annName, const QString& groupName, const GObjectReference& annObjRef);
+    FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq);
 
     QList<Task*> onSubTaskFinished(Task* subTask);
     QList<SharedAnnotationData> importTandemAnnotations(const QList<Tandem>& tandems, const quint32 seqStart, const bool showOverlapped);
 
+    QList<SharedAnnotationData> getResult() const {return result;}
+
 private:
+    bool                saveAnns;
     DNASequence         mainSeq;
     QString             annName;
     QString             annGroup;
     GObjectReference    annObjRef;
+
+    QList<SharedAnnotationData> result;
 };
 
 class TandemFinder: public Task, public SequenceWalkerCallback {

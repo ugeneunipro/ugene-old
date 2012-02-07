@@ -61,6 +61,7 @@ static const QString INVERT_ATTR("inverted");
 static const QString NESTED_ATTR("filter-nested");
 static const QString ALGO_ATTR("algorithm");
 static const QString THREADS_ATTR("threads");
+static const QString TANMEDS_ATTR("exclude-tandems");
 
 const QString RepeatWorkerFactory::ACTOR_ID("repeats-search");
 
@@ -89,6 +90,7 @@ void RepeatWorkerFactory::init() {
         Descriptor nsd(NESTED_ATTR, RepeatWorker::tr("Filter nested"), RepeatWorker::tr("Filter nested repeats."));
         Descriptor ald(ALGO_ATTR, RepeatWorker::tr("Algorithm"), RepeatWorker::tr("Control over variations of algorithm."));
         Descriptor thd(THREADS_ATTR, RepeatWorker::tr("Parallel threads"), RepeatWorker::tr("Number of parallel threads used for the task."));
+        Descriptor tan(TANMEDS_ATTR, RepeatWorker::tr("Exclude tandems"), RepeatWorker::tr("Exclude tandems areas before find repeat task is run."));
 
         FindRepeatsTaskSettings cfg = FindRepeatsDialog::defaultSettings();
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "repeat_unit");
@@ -100,6 +102,7 @@ void RepeatWorkerFactory::init() {
         a << new Attribute(nsd, BaseTypes::BOOL_TYPE(), false, cfg.filterNested);
         a << new Attribute(ald, BaseTypes::NUM_TYPE(), false, cfg.algo);
         a << new Attribute(thd, BaseTypes::NUM_TYPE(), false, cfg.nThreads);
+        a << new Attribute(tan, BaseTypes::BOOL_TYPE(), false, cfg.excludeTandems);
     }
 
     Descriptor desc(ACTOR_ID, RepeatWorker::tr("Find repeats"), 
@@ -191,6 +194,7 @@ Task* RepeatWorker::tick() {
     cfg.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>(context);
     cfg.inverted = actor->getParameter(INVERT_ATTR)->getAttributeValue<bool>(context);
     cfg.filterNested = actor->getParameter(NESTED_ATTR)->getAttributeValue<bool>(context);
+    cfg.excludeTandems = actor->getParameter(TANMEDS_ATTR)->getAttributeValue<bool>(context);
     resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
     if(resultName.isEmpty()){
         resultName = "repeat_unit";

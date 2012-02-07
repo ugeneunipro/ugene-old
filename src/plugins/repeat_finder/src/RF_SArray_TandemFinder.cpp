@@ -35,13 +35,20 @@ const int FindTandemsTaskSettings::DEFAULT_MIN_REPEAT_COUNT = 0;
 const int FindTandemsTaskSettings::DEFAULT_MIN_TANDEM_SIZE = 9;
 
 FindTandemsToAnnotationsTask::FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq, const QString& _an, const QString& _gn, const GObjectReference& _aor):
-Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), annName(_an), annGroup(_gn), annObjRef(_aor){
-    mainSeq = seq;
+Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(true), mainSeq(seq), annName(_an), annGroup(_gn), annObjRef(_aor)
+{
     setVerboseLogMode(true);
     if (annObjRef.isValid()) {
         LoadUnloadedDocumentTask::addLoadingSubtask(this, 
             LoadDocumentTaskConfig(true, annObjRef, new LDTObjectFactory(this)));
     }
+    addSubTask(new TandemFinder(s, mainSeq));
+}
+
+FindTandemsToAnnotationsTask::FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq)
+: Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(false), mainSeq(seq)
+{
+    setVerboseLogMode(true);
     addSubTask(new TandemFinder(s, mainSeq));
 }
 
@@ -54,11 +61,15 @@ QList<Task*> FindTandemsToAnnotationsTask::onSubTaskFinished(Task* subTask) {
     if (qobject_cast<TandemFinder*>(subTask)!=NULL){
         TandemFinder* tandemFinderTask = qobject_cast<TandemFinder*>(subTask);
         QList<SharedAnnotationData> annotations = importTandemAnnotations( tandemFinderTask->getResults(), tandemFinderTask->getSettings().seqRegion.startPos,  tandemFinderTask->getSettings().showOverlappedTandems );
-        if (!annotations.isEmpty()) {
-            algoLog.info(tr("Found %1 repeat regions").arg(annotations.size()));
-            Task* createTask = new CreateAnnotationsTask(annObjRef, annGroup, annotations);
-            createTask->setSubtaskProgressWeight(0);
-            res.append(createTask);
+        if (saveAnns) {
+            if (!annotations.isEmpty()) {
+                algoLog.info(tr("Found %1 repeat regions").arg(annotations.size()));
+                Task* createTask = new CreateAnnotationsTask(annObjRef, annGroup, annotations);
+                createTask->setSubtaskProgressWeight(0);
+                res.append(createTask);
+            }
+        } else {
+            result << annotations;
         }
     }
     return res;

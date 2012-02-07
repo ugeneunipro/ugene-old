@@ -39,7 +39,7 @@ class FindRepeatsTaskSettings {
 public:
     FindRepeatsTaskSettings() : minLen(2), mismatches(0), minDist(0), maxDist(0), 
         inverted(false), reportReflected(false), filterNested(true), maxResults(10*1000*100), 
-        algo(RFAlgorithm_Auto), nThreads(MAX_PARALLEL_SUBTASKS_AUTO){}
+        algo(RFAlgorithm_Auto), nThreads(MAX_PARALLEL_SUBTASKS_AUTO), excludeTandems(false) {}
 
     int                 minLen;
     int                 mismatches;
@@ -58,6 +58,7 @@ public:
 
     RFAlgorithm         algo;
     int                 nThreads;
+    bool                excludeTandems;
 
     void setIdentity(int percent) {mismatches = int((minLen / 100.0) * (100 - percent));}
     int  getIdentity() const {return qBound(50, int(100.0 - mismatches * 100. /minLen), 100);}
@@ -67,11 +68,13 @@ public:
 
 //WARNING: this task is suitable only for a single sequence processing -> check addResults x/y sorting
 class RevComplSequenceTask;
+class FindTandemsToAnnotationsTask;
 class FindRepeatsTask : public Task, public RFResultsListener {
 Q_OBJECT
 public:
     FindRepeatsTask(const FindRepeatsTaskSettings& s, const DNASequence& seq, const DNASequence& seq2);
 
+    void prepare();
     void run();
     ReportResult report();
     void cleanup();
@@ -90,7 +93,10 @@ protected:
     bool isFilteredByRegions(const RFResult& r);
     RFAlgorithmBase* createRFTask();
     void filterNestedRepeats();
+    Task *createRepeatFinderTask();
+    void filterTandems(const QList<SharedAnnotationData> &tandems, DNASequence &se);
 
+    bool                        oneSequence;
     FindRepeatsTaskSettings     settings;
     DNASequence                 seq1, seq2;
     QVector<RFResult>           results;
@@ -98,6 +104,8 @@ protected:
     RevComplSequenceTask*       revComplTask;
     RFAlgorithmBase*            rfTask;
     quint64                     startTime;
+    FindTandemsToAnnotationsTask *tandemTask1;
+    FindTandemsToAnnotationsTask *tandemTask2;
 };
 
 class FindRepeatsToAnnotationsTask : public Task {

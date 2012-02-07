@@ -23,6 +23,7 @@
 #include "RFBase.h"
 #include "RFDiagonal.h"
 #include "RFConstants.h"
+#include "RF_SArray_TandemFinder.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNATranslation.h>
@@ -63,15 +64,16 @@ void RevComplSequenceTask::cleanup() {
     complementSequence.seq.clear();
 }
 
-
 FindRepeatsTask::FindRepeatsTask(const FindRepeatsTaskSettings& s, const DNASequence& seq, const DNASequence& seq2) 
-: Task(tr("Find repeats in a single sequence"), TaskFlags_FOSCOE), settings(s), seq1(seq), seq2(seq2)
+: Task(tr("Find repeats in a single sequence"), TaskFlags_FOSCOE), settings(s),
+seq1(seq), seq2(seq2), tandemTask1(NULL), tandemTask2(NULL)
 {
     GCOUNTER( cvar, tvar, "FindRepeatsTask" );
     if (settings.seqRegion.length == 0) {
         settings.seqRegion= U2Region(0, seq1.length());
     }
-    if (QByteArray(seq1.constData()) == QByteArray(seq2.constData())) {
+    oneSequence = (seq1.seq == seq2.seq);
+    if (oneSequence) {
         settings.seq2Region = settings.seqRegion;
     }else {
         settings.seq2Region = U2Region(0, seq2.length());
@@ -80,15 +82,51 @@ FindRepeatsTask::FindRepeatsTask(const FindRepeatsTaskSettings& s, const DNASequ
     revComplTask = NULL;
     rfTask = NULL;
     startTime = GTimer::currentTimeMicros();
+}
+
+void FindRepeatsTask::prepare() {
+    if (settings.excludeTandems) {
+        FindTandemsTaskSettings s;
+        s.minPeriod = 2;
+        s.minRepeatCount = 3;
+        s.seqRegion = U2Region(0, seq1.length());
+        s.nThreads = settings.nThreads;
+
+        tandemTask1 = new FindTandemsToAnnotationsTask(s, seq1);
+        addSubTask(tandemTask1);
+        if (!oneSequence) {
+            tandemTask2 = new FindTandemsToAnnotationsTask(s, seq2);
+            addSubTask(tandemTask2);
+        }
+    } else {
+        Task *subTask = createRepeatFinderTask();
+        addSubTask(subTask);
+    }
+}
+
+Task *FindRepeatsTask::createRepeatFinderTask() {
     if (settings.inverted) {
         stateInfo.setDescription(tr("Rev-complementing sequence"));
         assert(seq1.alphabet->isNucleic());
         revComplTask = new RevComplSequenceTask(seq1, settings.seqRegion);
         revComplTask->setSubtaskProgressWeight(0);
-        addSubTask(revComplTask);
+        return revComplTask;
     } else {
         rfTask = createRFTask();
-        addSubTask(rfTask);
+        return rfTask;
+    }
+}
+
+void FindRepeatsTask::filterTandems(const QList<SharedAnnotationData> &tandems, DNASequence &seq) {
+    char unknownChar = RFAlgorithmBase::getUnknownChar(seq.alphabet->getType());
+    QByteArray gap;
+
+    foreach (const SharedAnnotationData &d, tandems) {
+        const QVector<U2Region> &regs = d->getRegions();
+        foreach (const U2Region &r, regs) {
+            gap.fill(unknownChar, r.length);
+            seq.seq.replace(r.startPos, r.length, gap);
+        }
     }
 }
 
@@ -97,11 +135,19 @@ QList<Task*> FindRepeatsTask::onSubTaskFinished(Task* subTask) {
     if (hasError() || isCanceled()) {
         return res;
     }
-    if (subTask == revComplTask) {
+    FindTandemsToAnnotationsTask *t = qobject_cast<FindTandemsToAnnotationsTask*>(subTask);
+    if (NULL != t) {
+        if (t == tandemTask1) {
+            filterTandems(t->getResult(), seq1);
+        } else {
+            filterTandems(t->getResult(), seq2);
+        }
+        res << createRepeatFinderTask();
+    } else if (subTask == revComplTask) {
         startTime = GTimer::currentTimeMicros();
         rfTask = createRFTask();
         res.append(rfTask);
-    } 
+    }
     return res;
 }
 
@@ -113,7 +159,7 @@ RFAlgorithmBase* FindRepeatsTask::createRFTask() {
     int seqXLen = settings.seqRegion.length;
     int seqYLen = settings.seqRegion.length;
 
-    if (QByteArray(seq1.constData()) != QByteArray(seq2.constData())) {
+    if (!oneSequence) {
         seqY = seq2.constData();
         seqYLen = seq2.length();
     }
