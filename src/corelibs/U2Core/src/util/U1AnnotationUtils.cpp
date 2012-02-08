@@ -255,7 +255,12 @@ void U1AnnotationUtils::addAnnotations(QList<GObject*> &objects, QList<Annotatio
 }
 
 QList<U2Region> U1AnnotationUtils::getRelatedLowerCaseRegions(const U2SequenceObject *so, const QList<GObject*> &anns) {
-    QList<GObject*> aos = GObjectUtils::findObjectsRelatedToObjectByRole(so, GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, anns, UOF_LoadedOnly);
+    QList<GObject*> aos;
+    if (so->getDocument()) {
+        aos = GObjectUtils::findObjectsRelatedToObjectByRole(so, GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, anns, UOF_LoadedOnly);
+    } else {
+        aos = anns;
+    }
 
     QList<U2Region> lowerCaseRegs;
     QList<U2Region> upperCaseRegs;

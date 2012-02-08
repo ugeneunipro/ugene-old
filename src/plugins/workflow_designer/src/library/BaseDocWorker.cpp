@@ -148,6 +148,9 @@ bool BaseDocWriter::isDone() {
 }
 
 void BaseDocWriter::cleanup() {
+    foreach (IOAdapter *io, adapters.values()) {
+        io->close();
+    }
 }
 
 void BaseDocWriter::init() {
@@ -161,85 +164,93 @@ bool BaseDocWriter::isReady() {
     return hasMsg || (ended && !done);
 }
 
+static bool openIOAdapter(IOAdapter *io, const QString &url, SaveDocFlags flags, const QSet<QString> &excludeList) {
+    if (flags.testFlag(SaveDoc_Roll)) {
+        TaskStateInfo ti;
+        if (!GUrlUtils::renameFileWithNameRoll(url, ti, excludeList)) {
+            return false;
+        }
+    }
+    IOAdapterMode mode = IOAdapterMode_Write;
+    if (flags.testFlag(SaveDoc_Append)) {
+        mode = IOAdapterMode_Append;
+    }
+    return io->open(url, mode);
+}
+
 #define GZIP_SUFFIX ".gz"
 
 Task* BaseDocWriter::tick() {
     while(ch->hasMessage()) {
+        { // get parameters
+            Attribute * formatAttr = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
+            if( formatAttr != NULL ) { // user sets format
+                QString formatId = formatAttr->getAttributeValue<QString>(context);
+                format = AppContext::getDocumentFormatRegistry()->getFormatById( formatId );
+            }
+            if(format == NULL) {
+                return new FailTask(tr("Document format not set"));
+            }
+
+            Attribute * urlAttribute = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
+            url = urlAttribute->getAttributeValue<QString>(context);
+            fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
+            fileMode |= SaveDoc_DestroyAfter;
+            Attribute* a = actor->getParameter(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE().getId());
+            if(a != NULL) {
+                append = a->getAttributeValue<bool>(context);
+            }
+        }
+
         Message inputMessage = getMessageAndSetupScriptValues(ch);
-        
-        Attribute * formatAttr = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
-        if( formatAttr != NULL ) { // user sets format
-            QString formatId = formatAttr->getAttributeValue<QString>(context);
-            format = AppContext::getDocumentFormatRegistry()->getFormatById( formatId );
-        }
-        Attribute * urlAttribute = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
-        url = urlAttribute->getAttributeValue<QString>(context);
-        fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
-        fileMode |= SaveDoc_DestroyAfter;
-        Attribute* a = actor->getParameter(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE().getId());
-        if(a != NULL) {
-            append = a->getAttributeValue<bool>(context);
-        }
         QVariantMap data = inputMessage.getData().toMap();
-        
-        if(format == NULL) {
-            return new FailTask(tr("Document format not set"));
-        }
-        
-        Document* doc = NULL;
+
         QString anUrl = url;
-        
         if (anUrl.isEmpty()) {
             anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
         }
-        
         if (anUrl.isEmpty()) {
             QString err = tr("Unspecified URL to write %1").arg(format->getFormatName());
             return new FailTask(err);
         }
-        
+
         // to avoid "c:/..." and "C:/..." on windows
         anUrl = QFileInfo(anUrl).absoluteFilePath();
-        
-        // set correct file extension
-        // commented because of UGENE-537
-        //GUrl path(anUrl);
-        //QStringList suffixList = format->getSupportedDocumentFileExtensions();
-        //QString suffix = /*path.completeFileSuffix();*/ path.lastFileSuffix();
-        //QString newSuffix = suffixList.first();
-        //if (suffix.contains("gz")) {
-        //    newSuffix.append(GZIP_SUFFIX);
-        //    suffix = path.completeFileSuffix();
-        //    suffix.remove(GZIP_SUFFIX);
-        //}
-        //if (!suffixList.contains(suffix)) {
-        //    path = path.dirPath() + "/" + path.baseFileName() + "." + newSuffix; 
-        //    anUrl = path.getURLString();
-        //    urlAttribute->setAttributeValue(anUrl);
-        //} 
-        
 
-        doc = docs.value(anUrl);
-        if (!doc) {
-            IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-            // commented because of UGENE-537
-            /*int count = ++counter[anUrl];
-            if(!append && count > 1) {
-                anUrl = GUrlUtils::prepareFileName(anUrl, count, format->getSupportedDocumentFileExtensions());
-            } else {
-                assert(count == 1);
-                anUrl = GUrlUtils::ensureFileExt(anUrl, format->getSupportedDocumentFileExtensions()).getURLString();
+        bool streaming = format->isStreamingSupport();
+        { // create a new adapter or document
+            bool createNewDoc = ( !append || !streaming ) && !docs.contains(anUrl);
+            bool createNewAdapter = append && streaming && !adapters.contains(anUrl);
+
+            IOAdapterFactory *iof = NULL;
+            if (createNewAdapter || createNewDoc) {
+                iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
+                if (createNewAdapter) {
+                    IOAdapter *io = iof->createIOAdapter();
+                    openIOAdapter(io, anUrl, SaveDocFlags(fileMode), usedUrls);
+                    ioLog.details(tr("Creating %1 [%2]").arg(io->getURL().getURLString()).arg(format->getFormatName()));
+                    usedUrls.insert(io->getURL().getURLString());
+                    adapters.insert(anUrl, io);
+                }
             }
-            urlAttribute->setAttributeValue(anUrl);*/
-            U2OpStatus2Log os;
-            QVariantMap hints;
-            hints.insert(DocumentFormat::DBI_ALIAS_HINT, QString(WORKFLOW_SESSION_TMP_DBI_ALIAS));
-            doc = format->createNewLoadedDocument(iof, anUrl, os, hints);
-            docs.insert(anUrl, doc);
+            if (createNewDoc) {
+                U2OpStatus2Log os;
+                QVariantMap hints;
+                hints.insert(DocumentFormat::DBI_ALIAS_HINT, QString(WORKFLOW_SESSION_TMP_DBI_ALIAS));
+                Document *doc = format->createNewLoadedDocument(iof, anUrl, os, hints);
+                docs.insert(anUrl, doc);
+            }
         }
-        data2doc(doc, data);
-        if (!append) {
-            break;
+
+        if (streaming && append) {
+            IOAdapter *io = adapters.value(anUrl);
+            storeEntry(io, data, ch->takenMessages());
+        } else {
+            Document *doc = docs.value(anUrl);
+            data2doc(doc, data);
+            if (!append) {
+                break;
+            }
         }
     }
     
@@ -252,26 +263,18 @@ Task* BaseDocWriter::tick() {
 
 Task* BaseDocWriter::processDocs()
 {
-    if(docs.isEmpty()) {
-        coreLog.error( "nothing to write: no documents" );
+    if(docs.isEmpty() && adapters.isEmpty()) {
+        coreLog.error(tr("nothing to write"));
+    }
+    if (docs.isEmpty()) {
         return NULL;
-        //return new FailTask("nothing to write: no documents");
     }
     QList<Task*> tlist;
     QMapIterator<QString, Document*> it(docs);
-    while (it.hasNext())
-    {
+    while (it.hasNext()) {
         it.next();
         Document* doc = it.value();
         QString anUrl = it.key();
-        //int count = ++counter[anUrl];
-        /*if (!append && count != 1) {
-            anUrl = GUrlUtils::prepareFileName(anUrl, count, format->getSupportedDocumentFileExtensions());
-        } else {
-            assert(count == 1);
-            anUrl = GUrlUtils::ensureFileExt(anUrl, format->getSupportedDocumentFileExtensions()).getURLString();
-        }*/
-        //doc->setURL(anUrl);
         ioLog.details(tr("Writing to %1 [%2]").arg(anUrl).arg(format->getFormatName()));
         tlist << new SaveDocumentTask(doc, SaveDocFlags(fileMode), DocumentUtils::getNewDocFileNameExcludesHint());
     }

@@ -291,67 +291,71 @@ Document* FastqFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
 #define SAVE_LINE_LEN 70
 
 void FastqFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& os) {
-    
     foreach (GObject* obj, d->getObjects()) {
         U2SequenceObject* seqObj = qobject_cast< U2SequenceObject* >( obj);
-        CHECK_EXT(seqObj!=NULL, os.setError(L10N::badArgument("NULL sequence" )), );
-        try {
-
-            //write header;
-            QByteArray block;
-
-            QString hdr = seqObj->getGObjectName();
-            block.append('@').append(hdr).append( '\n' );
-            if (io->writeBlock( block ) != block.length()) {
-                throw 0;
-            }
-            // write sequence
-            DNASequence wholeSeq = seqObj->getWholeSequence();
-            const char* seq = wholeSeq.constData();
-
-            int len = wholeSeq.length();
-            for (int i = 0; i < len; i += SAVE_LINE_LEN ) {
-                int chunkSize = qMin( SAVE_LINE_LEN, len - i );
-                if (io->writeBlock( seq + i, chunkSize ) != chunkSize
-                    || !io->writeBlock( "\n", 1 )) {
-                        throw 0;
-                }
-            }
-
-            //write transition
-            block.clear();
-            block.append("+\n");
-
-            if (io->writeBlock( block ) != block.length()) {
-                throw 0;
-            }
-
-            //write quality
-            QByteArray buf;
-            const char* quality = NULL;
-            if (wholeSeq.hasQualityScores()) {
-                quality = wholeSeq.quality.qualCodes.constData();
-                len = wholeSeq.quality.qualCodes.length();
-            } else {
-                // record the highest possible quality
-                buf.fill('I',len);
-                quality = buf.constData();
-            } 
-
-            for (int i = 0; i < len; i += SAVE_LINE_LEN ) {
-                int chunkSize = qMin( SAVE_LINE_LEN, len - i );
-                if (io->writeBlock( quality + i, chunkSize ) != chunkSize || !io->writeBlock( "\n", 1 )) {
-                        throw 0;
-                }
-            }
-
-        } catch (int) {
-            GUrl url = seqObj->getDocument() ? seqObj->getDocument()->getURL() : GUrl();
-            os.setError(L10N::errorWritingFile(url));
-        }
+        storeEntry(io, seqObj, QList<GObject*>(), os);
+        CHECK_OP(os, );
     }
 }
 
+void FastqFormat::storeEntry(IOAdapter *io, U2SequenceObject *seqObj, const QList<GObject*> &anns, U2OpStatus &os) {
+    Q_UNUSED(anns);
+
+    CHECK_EXT(seqObj!=NULL, os.setError(L10N::badArgument("NULL sequence" )), );
+    try {
+        //write header;
+        QByteArray block;
+
+        QString hdr = seqObj->getGObjectName();
+        block.append('@').append(hdr).append( '\n' );
+        if (io->writeBlock( block ) != block.length()) {
+            throw 0;
+        }
+        // write sequence
+        DNASequence wholeSeq = seqObj->getWholeSequence();
+        const char* seq = wholeSeq.constData();
+
+        int len = wholeSeq.length();
+        for (int i = 0; i < len; i += SAVE_LINE_LEN ) {
+            int chunkSize = qMin( SAVE_LINE_LEN, len - i );
+            if (io->writeBlock( seq + i, chunkSize ) != chunkSize
+                || !io->writeBlock( "\n", 1 )) {
+                    throw 0;
+            }
+        }
+
+        //write transition
+        block.clear();
+        block.append("+\n");
+
+        if (io->writeBlock( block ) != block.length()) {
+            throw 0;
+        }
+
+        //write quality
+        QByteArray buf;
+        const char* quality = NULL;
+        if (wholeSeq.hasQualityScores()) {
+            quality = wholeSeq.quality.qualCodes.constData();
+            len = wholeSeq.quality.qualCodes.length();
+        } else {
+            // record the highest possible quality
+            buf.fill('I',len);
+            quality = buf.constData();
+        } 
+
+        for (int i = 0; i < len; i += SAVE_LINE_LEN ) {
+            int chunkSize = qMin( SAVE_LINE_LEN, len - i );
+            if (io->writeBlock( quality + i, chunkSize ) != chunkSize || !io->writeBlock( "\n", 1 )) {
+                throw 0;
+            }
+        }
+
+    } catch (int) {
+        GUrl url = seqObj->getDocument() ? seqObj->getDocument()->getURL() : GUrl();
+        os.setError(L10N::errorWritingFile(url));
+    }
+}
 
 DNASequence *FastqFormat::loadSequence(IOAdapter* io, U2OpStatus& ti) {
     if( NULL == io || !io->isOpen() ) {

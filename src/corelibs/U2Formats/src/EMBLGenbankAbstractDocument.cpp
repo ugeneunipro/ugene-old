@@ -352,8 +352,6 @@ QString EMBLGenbankAbstractDocument::genObjectName(QSet<QString>& usedNames, con
         }
         if(t == GObjectTypes::ANNOTATION_TABLE) {
             name+=" features";
-        } else if (t == GObjectTypes::SEQUENCE) {
-            name+=" sequence";
         }
     }
     //now variate name if there are duplicates

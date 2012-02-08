@@ -47,6 +47,7 @@ class IOAdapter;
 class DocumentFormatConstraints;
 class GHints;
 class TmpDbiHandle;
+class U2SequenceObject;
 
 // Additional info about document format
 enum DocumentFormatFlag {
@@ -180,6 +181,13 @@ public:
     DocumentFormatFlags getFlags() const {return formatFlags;}
 
     bool checkFlags(DocumentFormatFlags flagsToCheck) const { return (formatFlags | flagsToCheck) == formatFlags;}
+
+    /**
+     * Streaming mode formats implement getSequence() and storeEntry() methods
+     */
+    virtual bool isStreamingSupport() {return false;}
+
+    virtual void storeEntry(IOAdapter *io, U2SequenceObject *seq, const QList<GObject*> &anns, U2OpStatus &os);
 
 protected:
     

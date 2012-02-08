@@ -35,6 +35,10 @@ public:
     
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
+    virtual bool isStreamingSupport() {return true;}
+
+    virtual void storeEntry(IOAdapter *io, U2SequenceObject *seq, const QList<GObject*> &anns, U2OpStatus &os);
+
 protected:
 
     bool readIdLine(ParserState*);

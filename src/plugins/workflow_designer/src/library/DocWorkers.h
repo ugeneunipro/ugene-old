@@ -62,8 +62,10 @@ public:
     FastaWriter(Actor* a) : BaseDocWriter(a, BaseDocumentFormats::FASTA){}
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
+    virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
+    static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
 };
 
 class GenbankWriter : public BaseDocWriter {
@@ -72,8 +74,10 @@ public:
     GenbankWriter(Actor* a) : BaseDocWriter(a, BaseDocumentFormats::PLAIN_GENBANK){}
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
+    virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
+    static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
 };
 
 class FastQWriter : public BaseDocWriter {
@@ -82,8 +86,10 @@ public:
     FastQWriter(Actor* a) : BaseDocWriter(a, BaseDocumentFormats::FASTQ){}
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
+    virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
+    static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
 };
 
 class RawSeqWriter : public BaseDocWriter {
@@ -92,8 +98,10 @@ public:
     RawSeqWriter(Actor* a) : BaseDocWriter(a, BaseDocumentFormats::RAW_DNA_SEQUENCE){}
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
+    virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
+    static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
 };
 
 class GFFWriter : public BaseDocWriter {
@@ -114,6 +122,7 @@ public:
     SeqWriter( Actor * a ) : BaseDocWriter(a) {}
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
+    virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
 };
 
 class MSAWriter : public BaseDocWriter {

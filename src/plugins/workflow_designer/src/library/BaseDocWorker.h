@@ -30,6 +30,7 @@ namespace U2 {
 
 class Document;
 class DocumentFormat;
+class IOAdapter;
 
 namespace LocalWorkflow {
 
@@ -72,15 +73,20 @@ public:
 
 protected:
     virtual void data2doc(Document*, const QVariantMap&) = 0;
+    virtual void storeEntry(IOAdapter *, const QVariantMap &, int) {}
     Task* processDocs();
 protected:
     CommunicationChannel* ch;
     DocumentFormat* format;
-    QMap<QString, Document*> docs;
     bool done, append;
     QString url;
     QMap<QString, int> counter;
     uint fileMode;
+    int messagesCount;
+
+    QMap<QString, Document*> docs;
+    QMap<QString, IOAdapter*> adapters;
+    QSet<QString> usedUrls;
 };
 
 }// Workflow namespace

@@ -135,5 +135,13 @@ void RawDNASequenceFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus&
     PlainTextFormat::storeRawData(so->getWholeSequenceData(), os, io);
 }
 
+void RawDNASequenceFormat::storeEntry(IOAdapter *io, U2SequenceObject *seq, const QList<GObject*> &anns, U2OpStatus &os) {
+    Q_UNUSED(anns);
+    PlainTextFormat::storeRawData(seq->getWholeSequenceData(), os, io);
+    CHECK_OP(os, );
+
+    io->writeBlock("\n", 1);
+}
+
 
 }//namespace

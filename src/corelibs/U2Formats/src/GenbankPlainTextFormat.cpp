@@ -423,7 +423,7 @@ static bool writeKeyword(IOAdapter* io, U2OpStatus& os, const QString& key, cons
 void GenbankPlainTextFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os) {
     QList<GObject*> seqs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
     QList<GObject*> anns = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-    int seqCounter = seqs.size();
+    //int seqCounter = seqs.size();
 
     while (!seqs.isEmpty() || !anns.isEmpty()) {
 
@@ -441,81 +441,86 @@ void GenbankPlainTextFormat::storeDocument(Document* doc, IOAdapter* io, U2OpSta
             aos << anns.takeFirst();
         }
 
-        //reading header attribute
-        QString locusFromAttributes;
-        QString gbHeader;
-        if(so){
-            U2OpStatus2Log os;
-            DbiConnection con(so->getSequenceRef().dbiRef, os);
-            CHECK_OP(os, );
-            U2AttributeDbi * attributeDbi = con.dbi->getAttributeDbi();
-            U2StringAttribute attr = U2AttributeUtils::findStringAttribute(attributeDbi, so->getSequenceRef().entityId, DNAInfo::GENBANK_HEADER, os);
-            if(attr.hasValidId()) {
-                gbHeader = attr.value;
-            }
+        storeEntry(io, so, aos, os);
+        CHECK_OP(os, );
+    }
+}
 
-            if(gbHeader.startsWith("LOCUS")){ //trim the first line
-                int locusStringEndIndex = gbHeader.indexOf("\n");
-                assert(locusStringEndIndex != -1);
-                locusFromAttributes = gbHeader.left(locusStringEndIndex);
-                gbHeader = gbHeader.mid(locusStringEndIndex+1);
-            }
+void GenbankPlainTextFormat::storeEntry(IOAdapter *io, U2SequenceObject *seq, const QList<GObject*> &anns, U2OpStatus &os) {
+    //reading header attribute
+    QString locusFromAttributes;
+    QString gbHeader;
+    if (seq) {
+        U2OpStatus2Log os;
+        DbiConnection con(seq->getSequenceRef().dbiRef, os);
+        CHECK_OP(os, );
+        U2AttributeDbi *attributeDbi = con.dbi->getAttributeDbi();
+        U2StringAttribute attr = U2AttributeUtils::findStringAttribute(attributeDbi, seq->getSequenceRef().entityId, DNAInfo::GENBANK_HEADER, os);
+        if(attr.hasValidId()) {
+            gbHeader = attr.value;
         }
-        // write mandatory locus string
-        QString locusString = genLocusString(aos, so, locusFromAttributes);
-        if (!writeKeyword(io, os, DNAInfo::LOCUS, locusString, false)) {
+
+        if(gbHeader.startsWith("LOCUS")){ //trim the first line
+            int locusStringEndIndex = gbHeader.indexOf("\n");
+            assert(locusStringEndIndex != -1);
+            locusFromAttributes = gbHeader.left(locusStringEndIndex);
+            gbHeader = gbHeader.mid(locusStringEndIndex+1);
+        }
+    }
+    // write mandatory locus string
+    QString locusString = genLocusString(anns, seq, locusFromAttributes);
+    if (!writeKeyword(io, os, DNAInfo::LOCUS, locusString, false)) {
+        return;
+    }
+    // write other keywords
+    if (seq) {
+        //header
+        io->writeBlock(gbHeader.toLocal8Bit());    
+
+        //             QList<StrPair> lst(formatKeywords(so));
+        //             foreach (const StrPair& p, lst) {
+        //                 if (!writeKeyword(io, os, p.first, p.second)) {
+        //                     return;
+        //                 }
+        //             }
+    }
+
+    //write tool mark
+    QList<GObject*> annsAndSeqObjs; annsAndSeqObjs<<anns; if (seq!=NULL) {annsAndSeqObjs<<seq;}
+    if (!annsAndSeqObjs.isEmpty()) {
+        QString unimark = annsAndSeqObjs[0]->getGObjectName();
+        /*if(annsAndSeqObjs[0]->getGObjectType() == GObjectTypes::SEQUENCE && seqCounter > 1){
+            unimark += " sequence";
+        }*/
+        if (!writeKeyword(io, os, UGENE_MARK, unimark, false)) {
             return;
         }
-        // write other keywords
-        if (so) {
-            //header
-            io->writeBlock(gbHeader.toLocal8Bit());    
-            
-//             QList<StrPair> lst(formatKeywords(so));
-//             foreach (const StrPair& p, lst) {
-//                 if (!writeKeyword(io, os, p.first, p.second)) {
-//                     return;
-//                 }
-//             }
-        }
-
-        //write tool mark
-        QList<GObject*> annsAndSeqObjs; annsAndSeqObjs<<aos; if (so!=NULL) {annsAndSeqObjs<<so;}
-        if (!annsAndSeqObjs.isEmpty()) {
-            QString unimark = annsAndSeqObjs[0]->getGObjectName();
-            if(annsAndSeqObjs[0]->getGObjectType() == GObjectTypes::SEQUENCE && seqCounter > 1){
-                unimark += " sequence";
-            }
-            if (!writeKeyword(io, os, UGENE_MARK, unimark, false)) {
+        for (int x=1; x < annsAndSeqObjs.size(); x++) {
+            if (!writeKeyword(io, os, QString(), annsAndSeqObjs[x]->getGObjectName(), false)) {
                 return;
             }
-            for (int x=1; x < annsAndSeqObjs.size(); x++) {
-                if (!writeKeyword(io, os, QString(), annsAndSeqObjs[x]->getGObjectName(), false)) {
-                    return;
-                }
-            }
         }
+    }
 
-        // write annotations
-        if (!aos.isEmpty()) {
-            writeAnnotations(io, aos, os);
-            CHECK_OP(os, );
-        }
+    // write annotations
+    if (!anns.isEmpty()) {
+        writeAnnotations(io, anns, os);
+        CHECK_OP(os, );
+    }
 
-        if (so) {
-            //todo: store sequence alphabet!
-            QList<U2Region> lowerCaseRegs = U1AnnotationUtils::getRelatedLowerCaseRegions(so, aos);
-            writeSequence(io, so, lowerCaseRegs, os);
-            CHECK_OP(os, );
-        }
+    if (seq) {
+        //todo: store sequence alphabet!
+        QList<U2Region> lowerCaseRegs = U1AnnotationUtils::getRelatedLowerCaseRegions(seq, anns);
+        writeSequence(io, seq, lowerCaseRegs, os);
+        CHECK_OP(os, );
+    }
 
-        // write last line marker
-        QByteArray lastLine("//\n");
-        qint64 len = io->writeBlock(lastLine);
-        if (len!=lastLine.size()) {
-            os.setError(L10N::errorWritingFile(doc->getURL()));
-            return;
-        }
+    // write last line marker
+    QByteArray lastLine("//\n");
+    qint64 len = io->writeBlock(lastLine);
+    if (len!=lastLine.size()) {
+        os.setError(L10N::errorWritingFile(io->getURL()));
+        return;
     }
 }
 

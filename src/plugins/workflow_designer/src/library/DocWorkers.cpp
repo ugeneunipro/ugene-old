@@ -216,6 +216,10 @@ void FastaWriter::data2doc(Document* doc, const QVariantMap& data) {
     data2document(doc, data, context);
 }
 
+void FastaWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
+    streamingStoreEntry(format, io, data, context, entryNum);
+}
+
 void FastaWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
     U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
@@ -237,11 +241,59 @@ void FastaWriter::data2document(Document* doc, const QVariantMap& data, Workflow
     addSeqObject(doc, seq);
 }
 
+inline static U2SequenceObject *getCopiedSequenceObject(const QVariantMap &data, WorkflowContext *context, U2OpStatus2Log &os) {
+    U2SequenceObject *dna = NULL;
+
+    if ( data.contains(BaseSlots::DNA_SEQUENCE_SLOT().getId()) ) {
+        U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            os.setError("Can't get sequence object");
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
+        U2EntityRef seqRef = U2SequenceUtils::import(seqObj->getEntityRef().dbiRef, seq, os);
+        CHECK_OP(os, NULL);
+
+        dna = new U2SequenceObject(seq.getName(), seqRef);
+    }
+
+    return dna;
+}
+
+void FastaWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum) {
+    U2OpStatus2Log os;
+    std::auto_ptr<U2SequenceObject> seqPtr(getCopiedSequenceObject(data, context, os));
+    CHECK_OP(os, );
+    U2SequenceObject *seq = seqPtr.get();
+    if (NULL == seq) {
+        return;
+    }
+
+    QString sequenceName = data.value(BaseSlots::FASTA_HEADER_SLOT().getId()).toString();
+    if (sequenceName.isEmpty()) {
+        sequenceName = seq->getGObjectName();
+        if (sequenceName.isEmpty()) {
+            sequenceName = QString("unknown sequence %1").arg(entryNum);
+        }
+    } else {
+        QVariantMap info = seq->getSequenceInfo();
+        info.insert(DNAInfo::FASTA_HDR, sequenceName);
+        seq->setSequenceInfo(info);
+    }
+    seq->setGObjectName(sequenceName);
+    format->storeEntry(io, seq, QList<GObject*>(), os);
+}
+
 /*************************************
 * FastQWriter
 *************************************/
 void FastQWriter::data2doc(Document* doc, const QVariantMap& data) {
     data2document(doc, data, context);
+}
+
+void FastQWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
+    streamingStoreEntry(format, io, data, context, entryNum);
 }
 
 void FastQWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
@@ -258,11 +310,29 @@ void FastQWriter::data2document(Document* doc, const QVariantMap& data, Workflow
     addSeqObject(doc, seq);
 }
 
+void FastQWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum) {
+    U2OpStatus2Log os;
+    std::auto_ptr<U2SequenceObject> seq(getCopiedSequenceObject(data, context, os));
+    CHECK_OP(os, );
+    if (NULL == seq.get()) {
+        return;
+    }
+
+    if (seq->getGObjectName().isEmpty()) {
+        seq->setGObjectName(QString("unknown sequence %1").arg(entryNum));
+    }
+    format->storeEntry(io, seq.get(), QList<GObject*>(), os);
+}
+
 /*************************************
  * RawSeqWriter
  *************************************/
 void RawSeqWriter::data2doc(Document* doc, const QVariantMap& data) {
     data2document(doc, data, context);
+}
+
+void RawSeqWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
+    streamingStoreEntry(format, io, data, context, entryNum);
 }
 
 // same as FastQWriter::data2document
@@ -280,10 +350,21 @@ void RawSeqWriter::data2document(Document* doc, const QVariantMap& data, Workflo
     addSeqObject(doc, seq);
 }
 
+void RawSeqWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int) {
+    U2OpStatus2Log os;
+    std::auto_ptr<U2SequenceObject> seq(getCopiedSequenceObject(data, context, os));
+    CHECK_OP(os, );
+    if (NULL == seq.get()) {
+        return;
+    }
+
+    format->storeEntry(io, seq.get(), QList<GObject*>(), os);
+}
+
 /*************************************
  * GenbankWriter
  *************************************/
-static QString getAnnotationName(const QString &seqName) {
+inline static QString getAnnotationName(const QString &seqName) {
     QString result = seqName;
     if (result.contains(SEQUENCE_TAG)) {
         result.replace(SEQUENCE_TAG, FEATURES_TAG);
@@ -296,6 +377,10 @@ static QString getAnnotationName(const QString &seqName) {
 
 void GenbankWriter::data2doc(Document* doc, const QVariantMap& data) {
     data2document(doc, data, context);
+}
+
+void GenbankWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
+    streamingStoreEntry(format, io, data, context, entryNum);
 }
 
 void GenbankWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
@@ -350,6 +435,35 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
             att->addAnnotation(new Annotation(sad), QString());
         }
     }
+}
+
+void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum) {
+    U2OpStatus2Log os;
+    std::auto_ptr<U2SequenceObject> seqPtr(getCopiedSequenceObject(data, context, os));
+    CHECK_OP(os, );
+    U2SequenceObject *seq = seqPtr.get();
+
+    QString annotationName;
+    if (NULL != seq) {
+        if (seq->getGObjectName().isEmpty()) {
+            seq->setGObjectName(QString("unknown sequence %1").arg(entryNum));
+            annotationName = QString("unknown features %1").arg(entryNum);
+        } else {
+            annotationName = getAnnotationName(seq->getGObjectName());
+        }
+    }
+
+    QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
+    QList<GObject*> anObjList;
+    if (!atl.isEmpty()) {
+        AnnotationTableObject* att = new AnnotationTableObject(annotationName);
+        anObjList << att;
+        foreach(SharedAnnotationData sad, atl) {
+            att->addAnnotation(new Annotation(sad), QString());
+        }
+    }
+
+    format->storeEntry(io, seq, anObjList, os);
 }
 
 /*************************************
@@ -424,6 +538,25 @@ void SeqWriter::data2doc(Document* doc, const QVariantMap& data){
     }else if( fid == BaseDocumentFormats::GFF ) {
         GFFWriter::data2document( doc, data, context );
     }else {
+        assert(0);
+        ioLog.error(QString("Unknown data format for writing: %1").arg(fid));
+    }
+}
+
+void SeqWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
+    if( format == NULL ) {
+        return;
+    }
+    DocumentFormatId fid = format->getFormatId();
+    if( fid == BaseDocumentFormats::FASTA ) {
+        FastaWriter::streamingStoreEntry(format, io, data, context, entryNum);
+    } else if( fid == BaseDocumentFormats::PLAIN_GENBANK ) {
+        GenbankWriter::streamingStoreEntry(format, io, data, context, entryNum);
+    } else if ( fid == BaseDocumentFormats::FASTQ) {
+        FastQWriter::streamingStoreEntry(format, io, data, context, entryNum);
+    } else if( fid == BaseDocumentFormats::RAW_DNA_SEQUENCE ) {
+        RawSeqWriter::streamingStoreEntry(format, io, data, context, entryNum);
+    } else {
         assert(0);
         ioLog.error(QString("Unknown data format for writing: %1").arg(fid));
     }

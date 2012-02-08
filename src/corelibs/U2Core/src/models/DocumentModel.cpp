@@ -175,6 +175,10 @@ bool DocumentFormat::checkConstraints(const DocumentFormatConstraints& c) const 
     return true;
 }
 
+void DocumentFormat::storeEntry(IOAdapter *, U2SequenceObject *, const QList<GObject*> &, U2OpStatus &os) {
+    os.setError("This document format does not support streaming mode");
+}
+
 bool DocumentFormat::isObjectOpSupported(const Document* d, DocObjectOp op, GObjectType t) const {
     assert(d->getDocumentFormat() == this);
 

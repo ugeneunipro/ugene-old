@@ -249,7 +249,7 @@ Document* FastaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
 }
 
 #define SAVE_LINE_LEN 70
-static void saveSequence(IOAdapter* io, const DNASequence& sequence, GObject*,  U2OpStatus& os) {
+static void saveSequence(IOAdapter* io, const DNASequence& sequence, U2OpStatus& os) {
     //writing header;
 
     // TODO better header out of info tags
@@ -282,12 +282,16 @@ void FastaFormat::storeDocument( Document* doc, IOAdapter* io, U2OpStatus& os ) 
     foreach( GObject* o, doc->getObjects() ) {
         QList<DNASequence> sequences = DocumentFormatUtils::toSequences(o);
         foreach(const DNASequence& s, sequences) {
-            saveSequence(io, s, o, os);
+            saveSequence(io, s, os);
             CHECK_OP(os, );
         }
     }
 }
 
+void FastaFormat::storeEntry(IOAdapter *io, U2SequenceObject *seq, const QList<GObject*> &anns, U2OpStatus &os) {
+    Q_UNUSED(anns);
+    saveSequence(io, seq->getWholeSequence(), os);
+}
 
 DNASequence *FastaFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
     static char fastaHeaderStartChar = '>';
@@ -337,7 +341,7 @@ DNASequence *FastaFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
 }
 
 void FastaFormat::storeSequence(const DNASequence& sequence, IOAdapter* io, U2OpStatus& os) {
-    saveSequence(io, sequence, NULL, os);
+    saveSequence(io, sequence, os);
 }
 
 }//namespace
