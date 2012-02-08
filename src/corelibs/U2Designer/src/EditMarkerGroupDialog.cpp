@@ -40,6 +40,7 @@ EditMarkerGroupDialog::EditMarkerGroupDialog(bool isNew, Marker *marker, QWidget
     {
         QStringList types;
         types << MarkerTypes::SEQ_LENGTH().getDisplayName(); typeIds << MarkerTypes::SEQ_LENGTH().getId();
+        types << MarkerTypes::SEQ_NAME().getDisplayName(); typeIds << MarkerTypes::SEQ_NAME().getId();
         types << MarkerTypes::ANNOTATION_COUNT().getDisplayName(); typeIds << MarkerTypes::ANNOTATION_COUNT().getId();
         //types << MarkerTypes::ANNOTATION_LENGTH().getDisplayName(); typeIds << MarkerTypes::ANNOTATION_LENGTH().getId();
         types << MarkerTypes::QUAL_INT_VALUE().getDisplayName(); typeIds << MarkerTypes::QUAL_INT_VALUE().getId();

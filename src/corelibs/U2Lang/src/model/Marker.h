@@ -39,6 +39,7 @@ class U2LANG_EXPORT MarkerTypes : public QObject {
     Q_OBJECT
 public:
     static const QString SEQ_LENGTH_MARKER_ID;
+    static const QString SEQ_NAME_MARKER_ID;
     static const QString ANNOTATION_COUNT_MARKER_ID;
     static const QString ANNOTATION_LENGTH_MARKER_ID;
     static const QString QUAL_INT_VALUE_MARKER_ID;
@@ -49,6 +50,7 @@ public:
     static MarkerDataType getDataTypeById(const QString &typeId);
 
     static const Descriptor SEQ_LENGTH();
+    static const Descriptor SEQ_NAME();
     static const Descriptor ANNOTATION_COUNT();
     static const Descriptor ANNOTATION_LENGTH();
     static const Descriptor QUAL_INT_VALUE();

@@ -35,6 +35,7 @@ static const QString FILENAME_SLOT_ID("filename-marker");
 namespace U2 {
 
 const QString MarkerTypes::SEQ_LENGTH_MARKER_ID("sequence-length");
+const QString MarkerTypes::SEQ_NAME_MARKER_ID("sequence-name");
 const QString MarkerTypes::ANNOTATION_COUNT_MARKER_ID("annotations-count");
 const QString MarkerTypes::ANNOTATION_LENGTH_MARKER_ID("annotation-length");
 const QString MarkerTypes::QUAL_INT_VALUE_MARKER_ID("qualifier-int-value");
@@ -57,7 +58,9 @@ MarkerDataType MarkerTypes::getDataTypeById(const QString &typeId) {
         return FLOAT;
     } else if (TEXT_MARKER_ID == typeId) {
         return STRING;
-    } else {
+    } else if(SEQ_NAME_MARKER_ID == typeId){
+        return STRING;
+    }else{
         assert(0);
         return MarkerDataType();
     }
@@ -65,6 +68,9 @@ MarkerDataType MarkerTypes::getDataTypeById(const QString &typeId) {
 
 const Descriptor MarkerTypes::SEQ_LENGTH() {
     return Descriptor(MarkerTypes::SEQ_LENGTH_MARKER_ID, tr("Length markers"), tr("Length markers group."));
+}
+const Descriptor MarkerTypes::SEQ_NAME() {
+    return Descriptor(MarkerTypes::SEQ_NAME_MARKER_ID, tr("Sequence name markers"), tr("Sequence name markers group."));
 }
 const Descriptor MarkerTypes::ANNOTATION_COUNT() {
     return Descriptor(MarkerTypes::ANNOTATION_COUNT_MARKER_ID, tr("Annotation count markers"), tr("Annotation count markers group."));
@@ -100,7 +106,9 @@ const Descriptor MarkerSlots::getSlotByMarkerType(const QString &markerId, const
         return Descriptor(slotName, slotName, tr("Qualifier float value marker."));
     } else if (markerId == MarkerTypes::TEXT_MARKER_ID) {
         return Descriptor(slotName, slotName, tr("Text marker."));
-    } else {
+    } else if(markerId == MarkerTypes::SEQ_NAME_MARKER_ID){
+        return Descriptor(slotName, slotName, tr("Sequence name marker."));
+    }else{
         assert(0);
         return Descriptor();
     }
@@ -314,7 +322,9 @@ QString SequenceMarker::getMarkingResult(const QVariant &object) {
 
     if (MarkerTypes::SEQ_LENGTH_MARKER_ID == type) {
         return Marker::getMarkingResult(seq.length());
-    } else {
+    } else if(MarkerTypes::SEQ_NAME_MARKER_ID == type){
+        return Marker::getMarkingResult(seq.getName());
+    }else{
         assert(0);
         return values.value(MarkerUtils::REST_OPERATION);
     }
