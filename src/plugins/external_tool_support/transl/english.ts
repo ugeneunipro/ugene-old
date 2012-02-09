@@ -700,7 +700,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="36"/>
-        <source>Input files (long DNA reads to assembly):</source>
+        <source>Input files (long DNA reads to assembly)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -725,7 +725,7 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="88"/>
-        <source>Result contig:</source>
+        <source>Result contig</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -745,17 +745,17 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="131"/>
-        <source>Band expansion size:</source>
+        <source>Band expansion size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="154"/>
-        <source>Overlap length cutoff:</source>
+        <source>Overlap length cutoff</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="174"/>
-        <source>Base quality cutoff for differences:</source>
+        <source>Base quality cutoff for differences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -765,42 +765,42 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="211"/>
-        <source>Base quality cutoff for clipping:</source>
+        <source>Base quality cutoff for clipping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="235"/>
-        <source>Max gap length in any overlap:</source>
+        <source>Max gap length in any overlap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="255"/>
-        <source>Max qscore sum at differences:</source>
+        <source>Max qscore sum at differences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="275"/>
-        <source>Overlap similarity score cutoff:</source>
+        <source>Overlap similarity score cutoff</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="282"/>
-        <source>Mismatch score factor:</source>
+        <source>Mismatch score factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="315"/>
-        <source>Gap penalty factor:</source>
+        <source>Gap penalty factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="332"/>
-        <source>Match score factor:</source>
+        <source>Match score factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/CAP3SupportDialog.ui" line="339"/>
-        <source>Max number of word matches:</source>
+        <source>Max number of word matches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

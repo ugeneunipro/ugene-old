@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>494</width>
+    <width>548</width>
     <height>430</height>
    </rect>
   </property>
@@ -19,11 +19,11 @@
   <property name="windowTitle">
    <string>Contig Assembly With CAP3</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_6">
+   <item row="0" column="0" colspan="3">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -33,7 +33,7 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Input files (long DNA reads to assembly):</string>
+          <string>Input files (long DNA reads to assembly)</string>
          </property>
         </widget>
        </item>
@@ -85,7 +85,7 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Result contig:</string>
+          <string>Result contig</string>
          </property>
         </widget>
        </item>
@@ -116,308 +116,412 @@
       <attribute name="title">
        <string>Advanced</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <property name="horizontalSpacing">
-          <number>10</number>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Clipping for poor regions</string>
          </property>
-         <property name="verticalSpacing">
-          <number>8</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Band expansion size:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QSpinBox" name="bandExpansionBox">
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="whatsThis">
-            <string/>
-           </property>
-           <property name="minimum">
-            <number>10</number>
-           </property>
-           <property name="value">
-            <number>20</number>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_12">
-           <property name="text">
-            <string>Overlap length cutoff:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QSpinBox" name="overlapLengthCutoffBox">
-           <property name="minimum">
-            <number>20</number>
-           </property>
-           <property name="maximum">
-            <number>100</number>
-           </property>
-           <property name="value">
-            <number>40</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Base quality cutoff for differences:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QSpinBox" name="baseQualityDiffCutoffBox">
-           <property name="minimum">
-            <number>15</number>
-           </property>
-           <property name="value">
-            <number>20</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="label_15">
-           <property name="text">
-            <string>Overlap percent identity cutoff</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QSpinBox" name="overlapPercentIdentityBox">
-           <property name="minimum">
-            <number>65</number>
-           </property>
-           <property name="maximum">
-            <number>100</number>
-           </property>
-           <property name="value">
-            <number>80</number>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Base quality cutoff for clipping:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QSpinBox" name="baseQualityClipCutoffBox">
-           <property name="minimum">
-            <number>5</number>
-           </property>
-           <property name="value">
-            <number>12</number>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QSpinBox" name="gapPenaltyFactorBox">
-           <property name="value">
-            <number>6</number>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="maxGapLengthInOverlapLabel">
-           <property name="text">
-            <string>Max gap length in any overlap:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QSpinBox" name="maxGapLengthBox">
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>100</number>
-           </property>
-           <property name="value">
-            <number>20</number>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>Max qscore sum at differences:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QSpinBox" name="maxQScoreDiffBox">
-           <property name="minimum">
-            <number>20</number>
-           </property>
-           <property name="maximum">
-            <number>1000</number>
-           </property>
-           <property name="value">
-            <number>200</number>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QLabel" name="OverlapSimilarityScoreCutoffLabel">
-           <property name="text">
-            <string>Overlap similarity score cutoff:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QLabel" name="label_11">
-           <property name="text">
-            <string>Mismatch score factor:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="3">
-          <widget class="QSpinBox" name="overlapSimilarityScoreCutoffBox">
-           <property name="minimum">
-            <number>400</number>
-           </property>
-           <property name="maximum">
-            <number>1000</number>
-           </property>
-           <property name="value">
-            <number>900</number>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="3">
-          <widget class="QSpinBox" name="mismatchScoreFactorBox">
-           <property name="minimum">
-            <number>-100</number>
-           </property>
-           <property name="maximum">
-            <number>-1</number>
-           </property>
-           <property name="value">
-            <number>-5</number>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>Gap penalty factor:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="3">
-          <widget class="QSpinBox" name="matchScoreFactorBox">
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="value">
-            <number>2</number>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="2">
-          <widget class="QLabel" name="MaxNumbeOfWordMismatchesBox">
-           <property name="text">
-            <string>Match score factor:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="2">
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Max number of word matches:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="3">
-          <widget class="QSpinBox" name="maxNumWordMatchesBox">
-           <property name="minimum">
-            <number>30</number>
-           </property>
-           <property name="maximum">
-            <number>1000</number>
-           </property>
-           <property name="value">
-            <number>300</number>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>Clipping range</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QSpinBox" name="clippingRangeBox">
-           <property name="minimum">
-            <number>6</number>
-           </property>
-           <property name="maximum">
-            <number>1000</number>
-           </property>
-           <property name="value">
-            <number>250</number>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
-          <widget class="QCheckBox" name="reverseReadsBox">
-           <property name="text">
-            <string>Assembly reverse reads</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Base quality cutoff for clipping (-c)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="baseQualityClipCutoffBox">
+            <property name="minimum">
+             <number>5</number>
+            </property>
+            <property name="value">
+             <number>12</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Clipping range (-y)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="clippingRangeBox">
+            <property name="minimum">
+             <number>6</number>
+            </property>
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>250</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+       <item row="0" column="1" colspan="2">
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>Length and percent identity of an overlap</string>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>143</height>
-          </size>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Overlap length cutoff (-o)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QSpinBox" name="overlapLengthCutoffBox">
+            <property name="minimum">
+             <number>20</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>40</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Overlap percent identity cutoff (-p)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QSpinBox" name="overlapPercentIdentityBox">
+            <property name="minimum">
+             <number>65</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>80</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Quality difference score of an overlap</string>
          </property>
-        </spacer>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Base quality cutoff for differences (-b)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="baseQualityDiffCutoffBox">
+            <property name="minimum">
+             <number>15</number>
+            </property>
+            <property name="value">
+             <number>20</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="maxQScoreDiffBox">
+            <property name="minimum">
+             <number>20</number>
+            </property>
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>200</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Max qscore sum at differences (-d)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="1" rowspan="2" colspan="2">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Other parameters</string>
+         </property>
+         <widget class="QSpinBox" name="bandExpansionBox">
+          <property name="geometry">
+           <rect>
+            <x>182</x>
+            <y>59</y>
+            <width>51</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="whatsThis">
+           <string/>
+          </property>
+          <property name="minimum">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>20</number>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_3">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>60</y>
+            <width>131</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Band expansion size (-a)</string>
+          </property>
+         </widget>
+         <widget class="QSpinBox" name="maxNumWordMatchesBox">
+          <property name="geometry">
+           <rect>
+            <x>182</x>
+            <y>28</y>
+            <width>51</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <number>30</number>
+          </property>
+          <property name="maximum">
+           <number>1000</number>
+          </property>
+          <property name="value">
+           <number>300</number>
+          </property>
+         </widget>
+         <widget class="QLabel" name="maxGapLengthInOverlapLabel">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>90</y>
+            <width>171</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Max gap length in any overlap (-f)</string>
+          </property>
+         </widget>
+         <widget class="QSpinBox" name="maxGapLengthBox">
+          <property name="geometry">
+           <rect>
+            <x>183</x>
+            <y>89</y>
+            <width>50</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="value">
+           <number>20</number>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="reverseReadsBox">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>200</y>
+            <width>161</width>
+            <height>30</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Assembly reverse reads (-r)</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_7">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>161</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Max number of word matches (-t)</string>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Similarity score of an overlap</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Mismatch score factor (-n)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="mismatchScoreFactorBox">
+            <property name="minimum">
+             <number>-100</number>
+            </property>
+            <property name="maximum">
+             <number>-1</number>
+            </property>
+            <property name="value">
+             <number>-5</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="OverlapSimilarityScoreCutoffLabel">
+            <property name="text">
+             <string>Overlap similarity score cutoff (-s)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QSpinBox" name="overlapSimilarityScoreCutoffBox">
+            <property name="minimum">
+             <number>400</number>
+            </property>
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>900</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Gap penalty factor (-g)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="MaxNumbeOfWordMismatchesBox">
+            <property name="text">
+             <string>Match score factor (-m)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="gapPenaltyFactorBox">
+            <property name="value">
+             <number>6</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="matchScoreFactorBox">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <number>2</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
     </widget>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+   <item row="1" column="0">
+    <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>365</width>
+       <height>21</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>Run</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>Cancel</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>baseQualityClipCutoffBox</tabstop>
+  <tabstop>clippingRangeBox</tabstop>
+  <tabstop>overlapLengthCutoffBox</tabstop>
+  <tabstop>overlapPercentIdentityBox</tabstop>
+  <tabstop>baseQualityDiffCutoffBox</tabstop>
+  <tabstop>maxQScoreDiffBox</tabstop>
+  <tabstop>maxNumWordMatchesBox</tabstop>
+  <tabstop>bandExpansionBox</tabstop>
+  <tabstop>maxGapLengthBox</tabstop>
+  <tabstop>matchScoreFactorBox</tabstop>
+  <tabstop>mismatchScoreFactorBox</tabstop>
+  <tabstop>gapPenaltyFactorBox</tabstop>
+  <tabstop>overlapSimilarityScoreCutoffBox</tabstop>
+  <tabstop>reverseReadsBox</tabstop>
+  <tabstop>pushButton_2</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>seqList</tabstop>
+  <tabstop>addButton</tabstop>
+  <tabstop>removeButton</tabstop>
+  <tabstop>removeAllButton</tabstop>
+  <tabstop>outputPathLineEdit</tabstop>
+  <tabstop>specifyOutputPathButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>pushButton_2</sender>
    <signal>accepted()</signal>
    <receiver>CAP3SupportDialog</receiver>
    <slot>accept()</slot>
@@ -433,7 +537,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>pushButton</sender>
    <signal>rejected()</signal>
    <receiver>CAP3SupportDialog</receiver>
    <slot>reject()</slot>
