@@ -31,8 +31,12 @@ QVariant VisibilityRelation::getAffectResult(const QVariant &influencingValue, c
 }
 
 QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const {
+    QString urlStr = dependentValue.toString();
+    if (urlStr.isEmpty()) {
+        return "";
+    }
     QString newFormatId = influencingValue.toString();
-    GUrl url(dependentValue.toString());
+    GUrl url(urlStr);
 
     DocumentFormat *currentFormat = AppContext::getDocumentFormatRegistry()->getFormatById(currentFormatId);
     DocumentFormat *newFormat = AppContext::getDocumentFormatRegistry()->getFormatById(newFormatId);
@@ -60,7 +64,12 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
     if (NULL == currentFormat) {
         foundExt = (lastSuffix == currentFormatId);
     } else {
-        QStringList extensions(currentFormat->getSupportedDocumentFileExtensions()); extensions<<newFormat->getSupportedDocumentFileExtensions();
+        QStringList extensions(currentFormat->getSupportedDocumentFileExtensions());
+        if (NULL == newFormat) {
+            extensions << newFormatId;
+        } else {
+            extensions << newFormat->getSupportedDocumentFileExtensions();
+        }
         foreach (QString supExt, extensions) {
             if (lastSuffix == supExt) {
                 foundExt = true;
