@@ -367,6 +367,49 @@ void ExternalProcessWorker::cleanup() {
     }
 }
 
+// a function from "qprocess.cpp"
+static QStringList parseCombinedArgString(const QString &program)
+{
+    QStringList args;
+    QString tmp;
+    int quoteCount = 0;
+    bool inQuote = false;
+
+    // handle quoting. tokens can be surrounded by double quotes
+    // "hello world". three consecutive double quotes represent
+    // the quote character itself.
+    for (int i = 0; i < program.size(); ++i) {
+        if (program.at(i) == QLatin1Char('"')) {
+            ++quoteCount;
+            if (quoteCount == 3) {
+                // third consecutive quote
+                quoteCount = 0;
+                tmp += program.at(i);
+            }
+            continue;
+        }
+        if (quoteCount) {
+            if (quoteCount == 1)
+                inQuote = !inQuote;
+            quoteCount = 0;
+        }
+        if (!inQuote && program.at(i).isSpace()) {
+            if (!tmp.isEmpty()) {
+                args += tmp;
+                tmp.clear();
+            }
+        } else {
+            tmp += program.at(i);
+        }
+    }
+    if (!tmp.isEmpty())
+        args += tmp;
+
+    return args;
+}
+
+#define WIN_LAUNCH_CMD_COMMAND "cmd /C "
+#define START_WAIT_MSEC 3000
 
 LaunchExternalToolTask::LaunchExternalToolTask(const QString &_execString):
 Task("Launch external process task", TaskFlag_None), execString(_execString)  {
@@ -384,9 +427,26 @@ void LaunchExternalToolTask::run() {
         execString = execString.split(">").first();
         externalProcess->setStandardOutputFile(output);
     }
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    externalProcess->setProcessEnvironment(env);
     externalProcess->start(execString);
 
-    if(!externalProcess->waitForStarted(3000)) {
+    bool startOk = externalProcess->waitForStarted(START_WAIT_MSEC);
+
+#ifdef Q_OS_WIN32
+    if(!startOk) {
+        QStringList args = parseCombinedArgString(execString);
+        if (!args.isEmpty()) {
+            QFileInfo fi(args.first());
+            if (!fi.isAbsolute()) {
+                externalProcess->start(WIN_LAUNCH_CMD_COMMAND + execString);
+                startOk = externalProcess->waitForStarted(START_WAIT_MSEC);
+            }
+        }
+    }
+#endif
+
+    if(!startOk) {
         stateInfo.setError(tr("Can't launch %1").arg(execString));
         return;
     }
