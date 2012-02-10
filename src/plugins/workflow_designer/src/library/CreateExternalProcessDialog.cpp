@@ -564,6 +564,7 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     connect(ui.inputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));
     connect(ui.outputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));
     connect(ui.attributesTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateAttributeModel(const QModelIndex &, const QModelIndex &)));
+    descr1 = ui.descr1TextEdit->toHtml();
     //validateNextPage();
 }
 
@@ -645,6 +646,7 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
     ui.descr2TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
     ui.descr3TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
     ui.descr4TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
+    descr1 = ui.descr1TextEdit->toHtml();
     editing = false;
 }
 
@@ -804,25 +806,45 @@ void CreateExternalProcessDialog::sl_generateTemplateString() {
     ui.templateLineEdit->setText(cmd);
 }
 
-void CreateExternalProcessDialog::sl_validateName( const QString &text) {
-    bool res = true;
-    if(text.isEmpty()) {
-        //QMessageBox::critical(this, title, tr("Please set the name for the new element."));
-        res =  false;
+bool CreateExternalProcessDialog::validateProcessName(const QString &name, QString &error) {
+    if(name.isEmpty()) {
+        error = tr("Please set the name for the new element.");
+        return false;
+    }
+
+    QRegExp spaces("\\s");
+    if(name.contains(spaces)) {
+        error = tr("Spaces in the element name.");
+        return false;
     }
 
     QRegExp invalidSymbols("\\W");
-    if(text.contains(invalidSymbols)) {
-        //QMessageBox::critical(this, title, tr("Invalid symbols in the element name."));
-        res =  false;
+    if(name.contains(invalidSymbols)) {
+        error = tr("Invalid symbols in the element name.");
+        return false;
     }
 
-    if(WorkflowEnv::getProtoRegistry()->getProto(text) && !editing) {
-        //QMessageBox::critical(this, title, tr("Element with this name already exists."));
-        res =  false;
+    if(WorkflowEnv::getProtoRegistry()->getProto(name) && !editing) {
+        error = tr("Element with this name already exists.");
+        return false;
     }
 
+    return true;
+}
+
+static QString statusTemplate = QString("<font color=\"%1\">%2</font>");
+void CreateExternalProcessDialog::sl_validateName( const QString &text) {
+    QString error;
+    bool res = validateProcessName(text, error);
+    
     button(QWizard::NextButton)->setEnabled(res);
+    QString statusStr;
+    if (res) {
+        statusStr = statusTemplate.arg("green").arg(tr("It is the correct name"));
+    } else {
+        statusStr = statusTemplate.arg("red").arg(error);
+    }
+    ui.descr1TextEdit->setText(descr1.arg(statusStr));
 }
 
 void CreateExternalProcessDialog::sl_validateCmdLine( const QString & text) {

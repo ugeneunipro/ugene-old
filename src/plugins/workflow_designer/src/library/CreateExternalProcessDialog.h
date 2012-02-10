@@ -67,6 +67,8 @@ private:
     ExternalProcessConfig *cfg;
     bool editing;
     static const int INFO_STRINGS_NUM = 5;
+    bool validateProcessName(const QString &name, QString &error);
+    QString descr1;
 };
 
 }
