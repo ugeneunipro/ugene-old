@@ -69,6 +69,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/Datatype.cpp \
            src/model/DbiDataStorage.cpp \
            src/model/Descriptor.cpp \
+           src/model/ExternalToolCfg.cpp \
            src/model/IncludedProtoFactory.cpp \
            src/model/IntegralBus.cpp \
            src/model/IntegralBusModel.cpp \

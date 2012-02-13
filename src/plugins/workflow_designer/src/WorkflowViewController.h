@@ -101,6 +101,9 @@ public slots:
     void centerView();
     void setHint(int i) {hint=i; update();}
     void sl_openDocuments();
+    void sl_updateDocs() {
+        emit configurationChanged();
+    }
 
 signals:
     void processItemAdded();
@@ -219,6 +222,7 @@ private slots:
     void sl_appendExternalToolWorker();
     void sl_protoDeleted(const QString& id);
     void sl_xmlSchemaLoaded(Task*);
+    void sl_editExternalTool();
     
 protected:
     bool onCloseEvent();
@@ -259,6 +263,7 @@ private:
     QAction* editScriptAction;
     QAction* externalToolAction;
     QAction* appendExternalTool;
+    QAction* editExternalToolAction;
     
     QAction* iterationModeAction;
     QAction* configureIterationsAction;

@@ -476,7 +476,7 @@ private:
 
 
 
-CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalProcessConfig *cfg):QWizard(p) {
+CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalProcessConfig *cfg):QWizard(p), initialCfg(NULL) {
     ui.setupUi(this);
     connect(ui.addInputButton, SIGNAL(clicked()), SLOT(sl_addInput()));
     connect(ui.addOutputButton, SIGNAL(clicked()), SLOT(sl_addOutput()));
@@ -513,6 +513,7 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     ui.inputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
     ui.outputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
 
+    initialCfg = new ExternalProcessConfig(*cfg);
     int ind = 0;
     foreach(const DataConfig &dataCfg, cfg->inputs) {
         ui.inputTableView->model()->insertRow(0, QModelIndex());
@@ -601,7 +602,7 @@ void CreateExternalProcessDialog::sl_deleteAttribute() {
     validateAttributeModel();
 }
 
-CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/ ): QWizard(p) {
+CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/ ): QWizard(p), initialCfg(NULL) {
     ui.setupUi(this);
     connect(ui.addInputButton, SIGNAL(clicked()), SLOT(sl_addInput()));
     connect(ui.addOutputButton, SIGNAL(clicked()), SLOT(sl_addOutput()));
@@ -650,6 +651,10 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
     editing = false;
 }
 
+CreateExternalProcessDialog::~CreateExternalProcessDialog() {
+    delete initialCfg;
+}
+
 void CreateExternalProcessDialog::accept() {
     CfgExternalToolModel *model;
     cfg = new ExternalProcessConfig();
@@ -680,6 +685,18 @@ void CreateExternalProcessDialog::accept() {
 
     if(!validate()) {
         return;
+    }
+
+    if (NULL != initialCfg) {
+        if (!(*initialCfg == *cfg)) {
+            int res = QMessageBox::question(this, tr("Warning"),
+                tr("You have changed the structure of the element (name, slots, attributes' names and types). "
+                "All elements on the scene would be removed. Do you really want to change it?"),
+                QMessageBox::Yes, QMessageBox::No);
+            if (QMessageBox::No == res) {
+                return;
+            }
+        }
     }
     
     QString str = HRSchemaSerializer::actor2String(cfg);

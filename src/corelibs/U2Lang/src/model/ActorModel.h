@@ -86,6 +86,7 @@ public:
     void setNonStandard(const QString &path);
     bool isStandardFlagSet() {return isStandard;}
     bool isSchemaFlagSet() {return isSchema;}
+    bool isExternalTool() {return !isStandard && !isSchema && !isScript;}
     QString getFilePath() {return actorFilePath;}
 
     bool isAllowsEmptyPorts() const {return allowsEmptyPorts;}

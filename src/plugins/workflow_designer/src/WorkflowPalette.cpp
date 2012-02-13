@@ -422,21 +422,25 @@ void WorkflowPalette::editElement() {
             LocalWorkflow::ScriptWorkerFactory::init(input, output, attrs, name, desc, dlg.getActorFilePath());
         }
     } else { //External process category
-        ExternalProcessConfig *cfg = WorkflowEnv::getExternalCfgRegistry()->getConfigByName(proto->getId());
+        ExternalProcessConfig *oldCfg = WorkflowEnv::getExternalCfgRegistry()->getConfigByName(proto->getId());
+        ExternalProcessConfig *cfg = new ExternalProcessConfig(*oldCfg);
         CreateExternalProcessDialog dlg(this, cfg);
         if(dlg.exec() == QDialog::Accepted) {
             cfg = dlg.config();
 
+            if (!(*oldCfg == *cfg)) {
+                if(oldName != cfg->name) {
+                    removeElement();
+                } else {
+                    QString id = proto->getId();
+                    emit si_protoDeleted(id);
+                    reg->unregisterProto(proto->getId());
+                }
+                LocalWorkflow::ExternalProcessWorkerFactory::init(cfg);
+            }
             WorkflowEnv::getExternalCfgRegistry()->unregisterConfig(oldName);
             WorkflowEnv::getExternalCfgRegistry()->registerExternalTool(cfg);
-            if(oldName != cfg->name) {
-                removeElement();
-            } else {
-                QString id = proto->getId();
-                emit si_protoDeleted(id);
-                reg->unregisterProto(proto->getId());
-            }
-            LocalWorkflow::ExternalProcessWorkerFactory::init(cfg);
+            emit si_protoChanged();
         }
     }
 }

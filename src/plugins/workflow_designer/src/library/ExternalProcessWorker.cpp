@@ -439,6 +439,9 @@ void LaunchExternalToolTask::run() {
         if (!args.isEmpty()) {
             QFileInfo fi(args.first());
             if (!fi.isAbsolute()) {
+                QString append = args.size() > 1 ? " ..." : "";
+                taskLog.error(tr("Can't run an executable file \"%1%2\". Try to run it as a cmd line command: \"%3%4\"")
+                    .arg(args.first()).arg(append).arg(WIN_LAUNCH_CMD_COMMAND + args.first()).arg(append));
                 externalProcess->start(WIN_LAUNCH_CMD_COMMAND + execString);
                 startOk = externalProcess->waitForStarted(START_WAIT_MSEC);
             }

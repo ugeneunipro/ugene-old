@@ -53,6 +53,7 @@ public slots:
 signals:
     void processSelected(Workflow::ActorPrototype*);
     void si_protoDeleted(const QString &);
+    void si_protoChanged();
     
 protected:
     void contextMenuEvent(QContextMenuEvent *e);

@@ -155,6 +155,7 @@ scriptingMode(false) {
     palette->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored));
     connect(palette, SIGNAL(processSelected(Workflow::ActorPrototype*)), SLOT(sl_selectProcess(Workflow::ActorPrototype*)));
     connect(palette, SIGNAL(si_protoDeleted(const QString&)), SLOT(sl_protoDeleted(const QString&)));
+    connect(palette, SIGNAL(si_protoChanged()), scene, SLOT(sl_updateDocs()));
     
     infoList = new QListWidget(this);
     connect(infoList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(sl_pickInfo(QListWidgetItem*)));
@@ -444,6 +445,11 @@ void WorkflowView::createActions() {
     externalToolAction->setIcon(QIcon(":workflow_designer/images/external_cmd_tool.png"));
     connect(externalToolAction, SIGNAL(triggered()), SLOT(sl_externalAction()));
 
+    editExternalToolAction = new QAction(tr("Edit the configuration of the external tool element..."),this);
+    editExternalToolAction->setIcon(QIcon(":workflow_designer/images/external_cmd_tool.png"));
+    editExternalToolAction->setEnabled(false); // because user need to select actor with script to enable it
+    connect(editExternalToolAction, SIGNAL(triggered()), SLOT(sl_editExternalTool()));
+
     appendExternalTool = new QAction(tr("Add element with command line tool..."), this);
     appendExternalTool->setIcon(QIcon(":workflow_designer/images/external_cmd_tool_add.png"));
     connect(appendExternalTool, SIGNAL(triggered()), SLOT(sl_appendExternalToolWorker()));
@@ -525,6 +531,36 @@ void WorkflowView::sl_editScript() {
                 script->setScriptText(scriptDlg.getScriptText());
                 scriptActor->setScript(script);
             }
+        }
+    }
+}
+
+void WorkflowView::sl_editExternalTool() {
+    QList<Actor *> selectedActors = scene->getSelectedProcItems();
+    if(selectedActors.size() == 1) {
+        ActorPrototype *proto = selectedActors.first()->getProto();
+
+        ExternalProcessConfig *oldCfg = WorkflowEnv::getExternalCfgRegistry()->getConfigByName(proto->getId());
+        ExternalProcessConfig *cfg = new ExternalProcessConfig(*oldCfg);
+        CreateExternalProcessDialog dlg(this, cfg);
+        if(dlg.exec() == QDialog::Accepted) {
+            cfg = dlg.config();
+
+            if (!(*oldCfg == *cfg)) {
+                if (oldCfg->name != cfg->name) {
+                    if (!QFile::remove(proto->getFilePath())) {
+                        uiLog.error(tr("Can't remove element %1").arg(proto->getDisplayName()));
+                    }
+                }
+                sl_protoDeleted(proto->getId());
+                WorkflowEnv::getProtoRegistry()->unregisterProto(proto->getId());
+                delete proto;
+
+                LocalWorkflow::ExternalProcessWorkerFactory::init(cfg);
+            }
+            WorkflowEnv::getExternalCfgRegistry()->unregisterConfig(oldCfg->name);
+            WorkflowEnv::getExternalCfgRegistry()->registerExternalTool(cfg);
+            scene->sl_updateDocs();
         }
     }
 }
@@ -846,6 +882,11 @@ void WorkflowView::setupContextMenu(QMenu* m) {
             AttributeScript *script = scriptActor->getScript();
             if(script) {
                 m->addAction(editScriptAction);
+            }
+
+            ActorPrototype *p = scriptActor->getProto();
+            if (p->isExternalTool()) {
+                m->addAction(editExternalToolAction);
             }
 
             m->addSeparator();
@@ -1351,6 +1392,7 @@ void WorkflowView::sl_editItem() {
 void WorkflowView::sl_onSelectionChanged() {
     QList<Actor*> actorsSelected = scene->getSelectedProcItems();
     editScriptAction->setEnabled(actorsSelected.size() == 1 && actorsSelected.first()->getScript() != NULL);
+    editExternalToolAction->setEnabled(actorsSelected.size() == 1 && actorsSelected.first()->getProto()->isExternalTool());
 }
 
 void WorkflowView::sl_exportScene() {

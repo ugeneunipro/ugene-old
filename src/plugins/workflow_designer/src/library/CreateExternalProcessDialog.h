@@ -38,6 +38,7 @@ class CreateExternalProcessDialog: public QWizard {
 public:
     CreateExternalProcessDialog(QWidget *p = NULL);
     CreateExternalProcessDialog(QWidget *p, ExternalProcessConfig *cfg);
+    ~CreateExternalProcessDialog();
     ExternalProcessConfig* config() const {return cfg;}
     bool validate();
     //bool isComplete() const;
@@ -64,6 +65,7 @@ private slots:
 
 private:
     Ui::CreateExternalProcessWorkerDialog ui;
+    ExternalProcessConfig *initialCfg;
     ExternalProcessConfig *cfg;
     bool editing;
     static const int INFO_STRINGS_NUM = 5;
