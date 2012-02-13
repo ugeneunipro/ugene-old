@@ -522,7 +522,7 @@
  <connections>
   <connection>
    <sender>pushButton_2</sender>
-   <signal>accepted()</signal>
+   <signal>clicked(bool)</signal>
    <receiver>CAP3SupportDialog</receiver>
    <slot>accept()</slot>
    <hints>
@@ -538,7 +538,7 @@
   </connection>
   <connection>
    <sender>pushButton</sender>
-   <signal>rejected()</signal>
+   <signal>clicked()</signal>
    <receiver>CAP3SupportDialog</receiver>
    <slot>reject()</slot>
    <hints>
