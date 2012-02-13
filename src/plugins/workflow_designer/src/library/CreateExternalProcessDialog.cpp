@@ -514,7 +514,29 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     ui.outputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
 
     initialCfg = new ExternalProcessConfig(*cfg);
+    init(cfg);
+
+    editing = true;
+    connect(ui.nameLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sl_validateName(const QString &)));
+    connect(ui.templateLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sl_validateCmdLine(const QString &)));
+    connect(ui.inputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));
+    connect(ui.outputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));
+    connect(ui.attributesTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateAttributeModel(const QModelIndex &, const QModelIndex &)));
+    descr1 = ui.descr1TextEdit->toHtml();
+    //validateNextPage();
+}
+
+static void clearModel(QAbstractItemModel *model) {
+    int count = model->rowCount();
+    while (count > 0) {
+        model->removeRow(0);
+        count--;
+    }
+}
+
+void CreateExternalProcessDialog::init(ExternalProcessConfig *cfg) {
     int ind = 0;
+    clearModel(ui.inputTableView->model());
     foreach(const DataConfig &dataCfg, cfg->inputs) {
         ui.inputTableView->model()->insertRow(0, QModelIndex());
         QModelIndex index = ui.inputTableView->model()->index(ind,0);
@@ -529,6 +551,7 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     }
 
     ind = 0;
+    clearModel(ui.outputTableView->model());
     foreach(const DataConfig &dataCfg, cfg->outputs) {
         ui.outputTableView->model()->insertRow(0, QModelIndex());
         QModelIndex index = ui.outputTableView->model()->index(ind,0);
@@ -543,6 +566,7 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     }
 
     ind = 0;
+    clearModel(ui.attributesTableView->model());
     foreach(const AttributeConfig &attrCfg, cfg->attrs) {
         ui.attributesTableView->model()->insertRow(0, QModelIndex());
         QModelIndex index = ui.attributesTableView->model()->index(ind,0);
@@ -558,15 +582,6 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     ui.descriptionTextEdit->setText(cfg->description);
     ui.templateLineEdit->setText(cfg->cmdLine);
     ui.prompterTextEdit->setText(cfg->templateDescription);
-
-    editing = true;
-    connect(ui.nameLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sl_validateName(const QString &)));
-    connect(ui.templateLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sl_validateCmdLine(const QString &)));
-    connect(ui.inputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));
-    connect(ui.outputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));
-    connect(ui.attributesTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateAttributeModel(const QModelIndex &, const QModelIndex &)));
-    descr1 = ui.descr1TextEdit->toHtml();
-    //validateNextPage();
 }
 
 void CreateExternalProcessDialog::sl_addInput() {
@@ -691,9 +706,13 @@ void CreateExternalProcessDialog::accept() {
         if (!(*initialCfg == *cfg)) {
             int res = QMessageBox::question(this, tr("Warning"),
                 tr("You have changed the structure of the element (name, slots, attributes' names and types). "
-                "All elements on the scene would be removed. Do you really want to change it?"),
-                QMessageBox::Yes, QMessageBox::No);
+                "All elements on the scene would be removed. Do you really want to change it?\n"
+                "You could also reset the dialog to the initial state."),
+                QMessageBox::Yes | QMessageBox::No | QMessageBox::Reset, QMessageBox::No);
             if (QMessageBox::No == res) {
+                return;
+            } else if (QMessageBox::Reset == res) {
+                init(initialCfg);
                 return;
             }
         }
