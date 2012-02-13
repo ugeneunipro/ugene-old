@@ -70,19 +70,7 @@ void WorkflowScriptLibrary::initEngine(WorkflowScriptEngine *engine) {
 }
 
 QScriptValue WorkflowScriptLibrary::print(QScriptContext *ctx, QScriptEngine *) {
-    QString msg = "";
-    if(ctx->argument(0).isNumber()) {
-        msg = QString::number(ctx->argument(0).toInt32());
-    } else if(ctx->argument(0).isString()) {
-        msg = ctx->argument(0).toString();
-    } else if(ctx->argument(0).isBool()) {
-        if(ctx->argument(0).toBool()) {
-            msg = "true";
-        } else {
-            msg = "false";
-        }
-    }
-    scriptLog.info(msg);
+    scriptLog.info(ctx->argument(0).toString());
     return 0;
 }
 
@@ -107,22 +95,35 @@ U2DataId putSequence(QScriptEngine *engine, const DNASequence &seq) {
 QScriptValue WorkflowScriptLibrary::getSubsequence(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 3) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
-    }
-    else {
+    }else {
         int beg, end;
         QScriptValue calee = ctx->callee();
         DNASequence dna = getSequence(ctx, engine, 0);
 
-        try {
-            beg = ctx->argument(1).toInt32(); 
-            end = ctx->argument(2).toInt32();            
+        QVariant var = ctx->argument(1).toVariant();
+        bool ok;
+        beg = var.toInt(&ok);
+        if(!ok) {
+            return ctx->throwError(QObject::tr("Second argument must be a number"));
         }
-        catch(...) {
-            return ctx->throwError(QObject::tr("Incorrect arguments"));
+
+        var = ctx->argument(2).toVariant();
+        end = var.toInt(&ok);
+        if(!ok) {
+            return ctx->throwError(QObject::tr("Third argument must be a number"));
         }
 
         if(dna.seq.isEmpty()) {
             return ctx->throwError(QObject::tr("Empty or invalid sequence"));
+        }
+        if(beg < 0 || beg >= dna.seq.length()){
+            return ctx->throwError(QObject::tr("Subsequence's start offset is out of range"));
+        }
+        if(end < 1 || end > dna.seq.length()){
+            return ctx->throwError(QObject::tr("Subsequence's end offset is out of range"));
+        }
+        if(end-beg < 1){
+            return ctx->throwError(QObject::tr("Invalid subsequence region"));
         }
         QString newName(dna.getName() + "_" + QByteArray::number(beg) + "_" + QByteArray::number(end));
         DNASequence subsequence(newName, dna.seq.mid(beg, end - beg),dna.alphabet);
@@ -194,7 +195,7 @@ QScriptValue WorkflowScriptLibrary::sequenceSize(QScriptContext *ctx, QScriptEng
 }
 
 QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine *engine) {
-    if(ctx->argumentCount() < 1 && ctx->argumentCount() > 2) {
+    if(ctx->argumentCount() < 1 || ctx->argumentCount() > 2) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
@@ -208,8 +209,10 @@ QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine
     }
     int offset = 0;
     if(ctx->argumentCount() == 2) {
-        offset = ctx->argument(1).toInt32();
-        if(offset < 0 && offset > 2) {
+        bool ok;
+        QVariant var = ctx->argument(1).toInt32();
+        offset = var.toInt(&ok); //no need to check OK because, if var not integer its changed to default value 
+        if(offset < 0 || offset > 2) {
             return ctx->throwError(QObject::tr("Offset must be from interval [0,2]"));
         }
     }
@@ -239,11 +242,14 @@ QScriptValue WorkflowScriptLibrary::charAt(QScriptContext *ctx, QScriptEngine *e
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
-    if(!ctx->argument(1).isNumber()) {
+    QVariant var = ctx->argument(1).toVariant();
+    bool ok;
+    int position = var.toInt(&ok);
+    if(!ok) {
         return ctx->throwError(QObject::tr("Second argument must be a number"));
     }
-    int position = ctx->argument(1).toInt32();
-    if(position > seq.length() || position < 0) {
+    
+    if(position >= seq.length() || position < 0) {
         return ctx->throwError(QObject::tr("Position is out of range"));
     }
 
@@ -371,11 +377,14 @@ QScriptValue WorkflowScriptLibrary::getSequenceFromAlignment(QScriptContext *ctx
     if(align.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid alignment"));
     }
-    if(!ctx->argument(1).isNumber()) {
+
+    bool ok;
+    QVariant var = ctx->argument(1).toVariant();
+    int row = var.toInt(&ok);
+    if(!ok) {
         return ctx->throwError(QObject::tr("Second argument must be a number"));
     }
-    int row = ctx->argument(1).toVariant().toInt();
-    if(row < 0 || row > align.getNumRows()) {
+    if(row < 0 || row >= align.getNumRows()) {
         return ctx->throwError(QObject::tr("Row is out of range"));
     }
 
@@ -383,8 +392,18 @@ QScriptValue WorkflowScriptLibrary::getSequenceFromAlignment(QScriptContext *ctx
     aRow.simplify();
     QByteArray arr = aRow.toByteArray(aRow.getCoreLength());
     if(ctx->argumentCount() == 4) {
-        int beg = ctx->argument(2).toInt32();
-        int len = ctx->argument(3).toInt32();
+        var = ctx->argument(2).toVariant();
+        int beg = var.toInt(&ok);
+        if(!ok) {
+            return ctx->throwError(QObject::tr("Third argument must be a number"));
+        }
+
+        var = ctx->argument(3).toVariant();
+        int len = var.toInt(&ok);
+        if(!ok) {
+            return ctx->throwError(QObject::tr("Fourth argument must be a number"));
+        }
+        
         if(beg <= 0 || beg > arr.length()) {
             return ctx->throwError(QObject::tr("Offset is out of range"));
         }
@@ -414,11 +433,10 @@ QScriptValue WorkflowScriptLibrary::findInAlignment(QScriptContext *ctx, QScript
     }
     int row = 0;
     QScriptValue val = ctx->argument(1);
-    if(val.isString()) {
-        name = val.toString();
+    name = val.toString();
+    if(!name.isEmpty()) {
         row = aln.getRowNames().indexOf(name);
-    }
-    else {
+    }else{
         seq = val.toVariant().value<DNASequence>();
         if(seq.seq.isEmpty()) {
             return ctx->throwError(QObject::tr("Empty or invalid sequence"));
@@ -515,10 +533,14 @@ QScriptValue WorkflowScriptLibrary::removeFromAlignment(QScriptContext *ctx, QSc
     if(aln.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid alignment"));
     }
-    if(!ctx->argument(1).isNumber()) {
+
+    QVariant var = ctx->argument(1).toVariant();
+    bool ok;
+    int row = var.toInt(&ok);
+    if(!ok) {
         return ctx->throwError(QObject::tr("Second argument must be a number"));
     }
-    int row = ctx->argument(1).toInt32();
+    
     if(row < 0 || row >= aln.getLength()) {
         return ctx->throwError(QObject::tr("Row is out of range"));
     }
@@ -711,10 +733,13 @@ QScriptValue WorkflowScriptLibrary::getLocation(QScriptContext *ctx, QScriptEngi
     if(anns.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid annotations"));
     }
-    if(!ctx->argument(1).isNumber()) {
+    QVariant var = ctx->argument(1).toVariant();
+    bool ok;
+    int num = var.toInt(&ok);
+    if(!ok) {
         return ctx->throwError(QObject::tr("Second argument must be a number"));
     }
-    int num = ctx->argument(1).toInt32();
+    
     if(num < 0 || num > anns.size()) {
         return ctx->throwError(QObject::tr("Index is out of range"));
     }

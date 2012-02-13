@@ -25,6 +25,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Core/CMDLineCoreOptions.h>
+#include <U2Lang/WorkflowSettings.h>
 
 #include "CMDLineTests.h"
 
@@ -33,6 +34,7 @@ namespace U2 {
 #define COMMON_DATA_DIR_ENV_ID "COMMON_DATA_DIR" 
 #define TEMP_DATA_DIR_ENV_ID   "TEMP_DATA_DIR" 
 #define CONFIG_FILE_ENV_ID "CONFIG_FILE"
+#define CONFIG_PROTOTYPE "PROTOTYPE"
 
 /************************
  * GTest_RunCMDLine
@@ -52,6 +54,23 @@ void GTest_RunCMDLine::init(XMLTestFormat *tf, const QDomElement& el) {
     setUgeneclPath();
     setArgs(el);
     proc = new QProcess(this);
+    QString protosPath = env->getVar(COMMON_DATA_DIR_ENV_ID) + "/" +  env->getVar(CONFIG_PROTOTYPE);
+    QDir protoDir(protosPath), userScriptsDir(WorkflowSettings::getUserDirectory());
+    QStringList filters;
+    filters << "*.usa";
+    protoDir.setNameFilters(filters);
+
+    QFileInfoList list = protoDir.entryInfoList();
+    for (int i = 0; i < list.size(); ++i) {
+        QFileInfo fIdest = list.at(i);
+        QFileInfo fItarget(userScriptsDir.path() + "/" + fIdest.fileName());
+        QString destPath = fIdest.absoluteFilePath(), targetPath = fItarget.absoluteFilePath();
+        if(!fItarget.exists()){
+            QFile::copy(fIdest.absoluteFilePath(), fItarget.absoluteFilePath());
+        }else if(fIdest.size() != fItarget.size()){
+            QFile::copy(fIdest.absoluteFilePath(), fItarget.absoluteFilePath());
+        }
+    }
 }
 
 void GTest_RunCMDLine::setArgs( const QDomElement & el ) {
