@@ -139,8 +139,11 @@ QString WorkflowRunTask::generateReport() const {
         
             qint64 startTimeSec = timeInfo.startTime/1000000;
             foreach(const QString &link, links) {
-                if (isValidFile(link, startTimeSec)) {
-                    res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
+                QStringList rolledLinks = GUrlUtils::getRolledFilesList(link, "_oldcopy");
+                foreach (const QString &rolledLink, rolledLinks) {
+                    if (isValidFile(rolledLink, startTimeSec)) {
+                        res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(rolledLink).arg(rolledLink);
+                    }
                 }
             }
         }
@@ -456,8 +459,11 @@ QString WorkflowRunInProcessTask::generateReport() const {
 
             qint64 startTimeSec = timeInfo.startTime/1000000;
             foreach(const QString &link, links) {
-                if (isValidFile(link, startTimeSec)) {
-                    res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(link).arg(link);
+                QStringList rolledLinks = GUrlUtils::getRolledFilesList(link, "_oldcopy");
+                foreach (const QString &rolledLink, rolledLinks) {
+                    if (isValidFile(rolledLink, startTimeSec)) {
+                        res += QString("<tr><td><a href=\"%1\">%2</a></td></tr>").arg(rolledLink).arg(rolledLink);
+                    }
                 }
             }
         }

@@ -76,9 +76,8 @@ bool GUrlUtils::renameFileWithNameRoll(const QString& original, TaskStateInfo& t
     }
 }
 
-
-QString GUrlUtils::rollFileName(const QString& originalUrl, const QString& rolledSuffix, const QSet<QString>& excludeList) {
-    QString pre = originalUrl, post; //pre and post url parts. A number will be placed between
+static void getPreNPost(const QString &originalUrl, QString &pre, QString &post) {
+    pre = originalUrl;
     int idx = pre.lastIndexOf(".");
 
     if (idx != -1) {
@@ -96,6 +95,26 @@ QString GUrlUtils::rollFileName(const QString& originalUrl, const QString& rolle
             pre.chop(extSuffix.length());
         }
     }
+}
+
+QStringList GUrlUtils::getRolledFilesList(const QString& originalUrl, const QString& rolledSuffix) {
+    QString pre, post; //pre and post url parts. A number will be placed between
+    getPreNPost(originalUrl, pre, post);
+
+    QString resultUrl = originalUrl;
+    int i = 0;
+    QStringList urls;
+    while (QFile::exists(resultUrl)) {
+        urls << resultUrl;
+        resultUrl = pre + rolledSuffix + QString("%1").arg(++i) + post;
+    }
+    return urls;
+}
+
+QString GUrlUtils::rollFileName(const QString& originalUrl, const QString& rolledSuffix, const QSet<QString>& excludeList) {
+    QString pre, post; //pre and post url parts. A number will be placed between
+    getPreNPost(originalUrl, pre, post);
+    
     QString resultUrl = originalUrl;
     int i = 0;
     while (QFile::exists(resultUrl) || excludeList.contains(resultUrl)) {

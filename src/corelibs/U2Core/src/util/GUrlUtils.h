@@ -52,6 +52,9 @@ public:
     // same as above but with empty suffix
     static QString  rollFileName(const QString& url, const QSet<QString>& excludeList) { return rollFileName(url, "", excludeList);}
 
+    // returns a list of existing files with rolled @originalUrl
+    static QStringList getRolledFilesList(const QString& originalUrl, const QString& rolledSuffix);
+
     // renames actual file by rolling its name
     static bool renameFileWithNameRoll(const QString& url, TaskStateInfo& ti, const QSet<QString>& excludeList = QSet<QString>(), Logger* log = NULL);
 
