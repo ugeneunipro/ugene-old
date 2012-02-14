@@ -1,7 +1,6 @@
 #ifndef _U2_PROJECT_UTILS_H_
 #define _U2_PROJECT_UTILS_H_
 
-#include <QString.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/U2OpStatus.h>
 
