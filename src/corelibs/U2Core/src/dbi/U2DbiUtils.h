@@ -74,7 +74,7 @@ class U2CORE_EXPORT TmpDbiHandle {
 public:
     TmpDbiHandle(const QString& alias, U2OpStatus& os);
     
-    TmpDbiHandle(const U2DbiRef& dbi);
+    TmpDbiHandle(const U2DbiRef& dbi, bool deallocate);
     
     ~TmpDbiHandle();
 

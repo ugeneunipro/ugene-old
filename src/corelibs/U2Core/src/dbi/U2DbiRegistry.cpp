@@ -40,10 +40,10 @@ namespace U2 {
     sessionDbiInitDone = false;
 }
 
-void U2DbiRegistry::initSessionDbi(const U2DbiRef& _dbiRef) {
+void U2DbiRegistry::initSessionDbi() {
     sessionDbiInitDone = true;
     U2OpStatus2Log os;
-    U2DbiRef dbiRef = _dbiRef;
+    U2DbiRef dbiRef = allocateTmpDbi(SESSION_TMP_DBI_ALIAS, os);
     CHECK_OP(os, );
     sessionDbiConnection = new DbiConnection(dbiRef, os);
 }
@@ -116,6 +116,10 @@ U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os) {
         }
     }
 
+    if (alias == SESSION_TMP_DBI_ALIAS && !sessionDbiInitDone) { //once used -> cache connection
+        initSessionDbi();
+    }
+
     U2DbiRef res;
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath();
     QString url = GUrlUtils::prepareTmpFileLocation(tmpDirPath, alias, "ugenedb", os);
@@ -132,11 +136,6 @@ U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os) {
 
     coreLog.trace("Allocated tmp dbi: " + res.dbiId);
     tmpDbis << TmpDbiRef(alias, res, 1);
-
-    if (alias == SESSION_TMP_DBI_ALIAS && !sessionDbiInitDone) { //once used -> cache connection
-        // Create the session connection
-        initSessionDbi(res);
-    }
 
     return res;
 }

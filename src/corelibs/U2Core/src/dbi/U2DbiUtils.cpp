@@ -101,12 +101,12 @@ TmpDbiHandle::TmpDbiHandle(const QString& alias, U2OpStatus& os)  {
     deallocate = false;
     dbiRef = AppContext::getDbiRegistry()->allocateTmpDbi(alias, os);
     CHECK_OP(os, );
+    deallocate = true;
 }
 
-TmpDbiHandle::TmpDbiHandle(const U2DbiRef& _dbiRef) 
-: dbiRef(_dbiRef)
+TmpDbiHandle::TmpDbiHandle(const U2DbiRef& _dbiRef, bool _deallocate)
+: dbiRef(_dbiRef), deallocate(_deallocate)
 {
-    deallocate = false;
 }
 
 TmpDbiHandle::~TmpDbiHandle () {
