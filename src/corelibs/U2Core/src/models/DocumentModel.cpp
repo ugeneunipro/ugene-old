@@ -208,7 +208,7 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
                    const QString& instanceModLockDesc)
                    : StateLockableTreeItem(), df(_df), io(_io), url(_url)
 {
-    dbiHandle = _dbiRef.isValid() ? new TmpDbiHandle(_dbiRef, tmpDbi) : NULL;
+    dbiHandle = _dbiRef.isValid() ? new TmpDbiHandle(_dbiRef) : NULL;
     ctxState = new GHintsDefaultImpl(hints);
     name = url.fileName();
     
@@ -229,7 +229,7 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
                    const QString& instanceModLockDesc)
                    : StateLockableTreeItem(), df(_df), io(_io), url(_url)
 {
-    dbiHandle = _dbiRef.isValid() ? new TmpDbiHandle(_dbiRef, tmpDbi) : NULL;
+    dbiHandle = _dbiRef.isValid() ? new TmpDbiHandle(_dbiRef) : NULL;
     ctxState = new GHintsDefaultImpl(hints);
     name = url.fileName();
 
@@ -247,7 +247,7 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
 }
 
 static void deallocateDbiResources(TmpDbiHandle* h, GObject* obj) {
-    CHECK(h != NULL && h->isValid() && h->deallocate, );
+    CHECK(h != NULL && h->isValid(), );
     U2OpStatus2Log os;
     DbiConnection con(h->dbiRef, os);
     CHECK_OP(os, );

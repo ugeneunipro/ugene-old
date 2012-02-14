@@ -70,7 +70,7 @@ public:
     QList<U2DbiRef> listTmpDbis() const;
 
 private:
-    void initSessionDbi();
+    void initSessionDbi(const U2DbiRef& dbiRef);
 
     QHash<U2DbiFactoryId, U2DbiFactory *>   factories;
     U2DbiPool*                              pool;
