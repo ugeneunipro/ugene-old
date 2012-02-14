@@ -23,6 +23,8 @@
 
 namespace U2 {
 
+DocumentFormatId DataConfig::StringValue = DocumentFormatId("string-value");
+
 bool DataConfig::operator ==(const DataConfig &other) const {
     return attrName == other.attrName
         && type == other.type

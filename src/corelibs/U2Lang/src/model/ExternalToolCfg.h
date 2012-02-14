@@ -43,6 +43,8 @@ public:
     QString description;
 
     bool operator ==(const DataConfig &other) const;
+
+    static DocumentFormatId StringValue;
 };
 
 class U2LANG_EXPORT AttributeConfig {

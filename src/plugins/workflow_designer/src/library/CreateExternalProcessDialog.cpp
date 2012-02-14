@@ -89,7 +89,7 @@ private:
 
 class CfgExternalToolModel: public QAbstractTableModel {
 public:
-    CfgExternalToolModel(QObject *obj = NULL): QAbstractTableModel(obj) {
+    CfgExternalToolModel(bool isInput, QObject *obj = NULL): QAbstractTableModel(obj), isInput(isInput) {
         init();
         /*CfgListItem *newItem = new CfgListItem();
         newItem->delegateForTypes = new ComboBoxDelegate(types);
@@ -204,7 +204,12 @@ public:
             switch(section) {
                 case 0: return CreateExternalProcessDialog::tr("Name for command line parameter");
                 case 1: return CreateExternalProcessDialog::tr("Type");
-                case 2: return CreateExternalProcessDialog::tr("Format");
+                case 2:
+                    if (isInput) {
+                        return CreateExternalProcessDialog::tr("Read as");
+                    } else {
+                        return CreateExternalProcessDialog::tr("Write as");
+                    }
                 case 3: return CreateExternalProcessDialog::tr("Description");
                 default: return QVariant();
             }
@@ -302,7 +307,10 @@ public:
         }
 
         DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_TEXT);
-        textFormat[df->getFormatName()] = df->getFormatId();
+        if (isInput) {
+            textFormat[tr("String value")] = DataConfig::StringValue;
+        }
+        textFormat[tr("Text file")] = df->getFormatId();
     }
 
     void initTypes() {
@@ -322,6 +330,7 @@ public:
     }
 
 private:
+    bool isInput;
     QList<CfgExternalToolItem*> items;
     QVariantMap types;
     QVariantMap seqFormatsW;
@@ -495,8 +504,8 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     ui.descr3TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
     ui.descr4TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
 
-    ui.inputTableView->setModel(new CfgExternalToolModel());
-    ui.outputTableView->setModel(new CfgExternalToolModel());
+    ui.inputTableView->setModel(new CfgExternalToolModel(true));
+    ui.outputTableView->setModel(new CfgExternalToolModel(false));
     ui.attributesTableView->setModel(new CfgExternalToolModelAttributes());
 
     ui.inputTableView->setItemDelegate(new ProxyDelegate());
@@ -633,8 +642,8 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
     connect(ui.nameLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sl_validateName(const QString &)));
     connect(ui.templateLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(sl_validateCmdLine(const QString &)));
 
-    ui.inputTableView->setModel(new CfgExternalToolModel());
-    ui.outputTableView->setModel(new CfgExternalToolModel());
+    ui.inputTableView->setModel(new CfgExternalToolModel(true));
+    ui.outputTableView->setModel(new CfgExternalToolModel(false));
     ui.attributesTableView->setModel(new CfgExternalToolModelAttributes());
 
     connect(ui.inputTableView->model(), SIGNAL(dataChanged ( const QModelIndex &, const QModelIndex &)), SLOT(validateDataModel(const QModelIndex &, const QModelIndex &)));

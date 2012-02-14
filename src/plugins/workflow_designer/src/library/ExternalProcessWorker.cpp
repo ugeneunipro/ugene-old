@@ -98,63 +98,71 @@ Task* ExternalProcessWorker::tick() {
     int i = 0;
     U2OpStatus2Log os;
     foreach(const DataConfig& dataCfg, cfg->inputs) { //write all input data to files
-        DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format);
-        IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-        QString url = generateAndCreateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
-        inputUrls << url;
-        std::auto_ptr<Document> d(f->createNewLoadedDocument(iof, url, os));
-        CHECK_OP(os, NULL);
-
         Message inputMessage = getMessageAndSetupScriptValues(inputs[i]);
         QVariantMap qm = inputMessage.getData().toMap();
-        if (dataCfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
-            U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-            U2SequenceObject *seqObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
-            if (NULL == seqObj) {
-                return NULL;
+        QString paramValue;
+
+        if (BaseTypes::STRING_TYPE()->getId() == dataCfg.type
+            && DataConfig::StringValue == dataCfg.format) {
+            paramValue = qm.value(BaseSlots::TEXT_SLOT().getId()).value<QString>();
+        } else {
+            DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format);
+            IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+            QString url = generateAndCreateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
+            inputUrls << url;
+            std::auto_ptr<Document> d(f->createNewLoadedDocument(iof, url, os));
+            CHECK_OP(os, NULL);
+
+            if (dataCfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
+                U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+                U2SequenceObject *seqObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
+                if (NULL == seqObj) {
+                    return NULL;
+                }
+                d->addObject(seqObj);
+            } else if(dataCfg.type == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
+                QList<SharedAnnotationData>  anns = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<QList<SharedAnnotationData> >();
+                AnnotationTableObject * aobj = new AnnotationTableObject("anns");
+                foreach(const SharedAnnotationData& ann, anns) {
+                    QStringList list;
+                    aobj->addAnnotation(new Annotation(ann));
+                }
+                d->addObject(aobj);
+            } else if(dataCfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
+                MAlignment ma = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+                d->addObject(new MAlignmentObject(ma));
+            } else if (dataCfg.type == SEQ_WITH_ANNS) {
+                U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+                U2SequenceObject *dnaObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
+                if (NULL == dnaObj) {
+                    return NULL;
+                }
+                d->addObject(dnaObj);
+                
+                QList<SharedAnnotationData>  anns = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<QList<SharedAnnotationData> >();
+                AnnotationTableObject * aobj = new AnnotationTableObject("anns");
+                foreach(const SharedAnnotationData& ann, anns) {
+                    aobj->addAnnotation(new Annotation(ann));
+                }
+                
+                d->addObject(aobj);
+                
+                QList<GObjectRelation> rel;
+                rel << GObjectRelation(GObjectReference(dnaObj), GObjectRelationRole::SEQUENCE);
+                aobj->setObjectRelations(rel);
+            } else if(dataCfg.type == BaseTypes::STRING_TYPE()->getId()) {
+                QString str = qm.value(BaseSlots::TEXT_SLOT().getId()).value<QString>();
+                d->addObject(new TextObject(str, "tmp_text_object"));
             }
-            d->addObject(seqObj);
-        } else if(dataCfg.type == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
-            QList<SharedAnnotationData>  anns = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<QList<SharedAnnotationData> >();
-            AnnotationTableObject * aobj = new AnnotationTableObject("anns");
-            foreach(const SharedAnnotationData& ann, anns) {
-                QStringList list;
-                aobj->addAnnotation(new Annotation(ann));
-            }
-            d->addObject(aobj);
-        } else if(dataCfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
-            MAlignment ma = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-            d->addObject(new MAlignmentObject(ma));
-        } else if (dataCfg.type == SEQ_WITH_ANNS) {
-            U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-            U2SequenceObject *dnaObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
-            if (NULL == dnaObj) {
-                return NULL;
-            }
-            d->addObject(dnaObj);
-            
-            QList<SharedAnnotationData>  anns = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<QList<SharedAnnotationData> >();
-            AnnotationTableObject * aobj = new AnnotationTableObject("anns");
-            foreach(const SharedAnnotationData& ann, anns) {
-                aobj->addAnnotation(new Annotation(ann));
-            }
-            
-            d->addObject(aobj);
-            
-            QList<GObjectRelation> rel;
-            rel << GObjectRelation(GObjectReference(dnaObj), GObjectRelationRole::SEQUENCE);
-            aobj->setObjectRelations(rel);
-        } else if(dataCfg.type == BaseTypes::STRING_TYPE()->getId()) {
-            QString str = qm.value(BaseSlots::TEXT_SLOT().getId()).value<QString>();
-            d->addObject(new TextObject(str, "tmp_text_object"));
+
+            f->storeDocument(d.get(), os);
+            CHECK_OP(os, NULL);
+            paramValue = url;
         }
-        
-        f->storeDocument(d.get(), os);
-        CHECK_OP(os, NULL);
 
         int ind = execString.indexOf(QRegExp("\\$" + dataCfg.attrName + "(\\W|$)"));
         if (ind != -1) {
-            execString.replace(ind, dataCfg.attrName.size() + 1 , url); 
+            execString.replace(ind, dataCfg.attrName.size() + 1 , paramValue); 
         }
     }
 
