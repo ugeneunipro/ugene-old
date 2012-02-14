@@ -191,6 +191,10 @@ void TaskViewDockWidget::sl_cancelTaskByButton() {
 }
 
 TVTreeItem* TaskViewDockWidget::findItem(Task* t, bool topLevelOnly) const {
+	if (!t) {
+		return NULL;
+	}
+
     for (int i=0, n = tree->topLevelItemCount(); i<n; i++) {
         QTreeWidgetItem* item = tree->topLevelItem(i);
         TVTreeItem* ti = static_cast<TVTreeItem*>(item);

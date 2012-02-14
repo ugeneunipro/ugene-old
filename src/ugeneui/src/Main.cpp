@@ -463,7 +463,7 @@ int main(int argc, char **argv)
     GUITestBase *tb = new GUITestBase();
     appContext->setGUITestBase(tb);
     
-    if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_TEST)) {
+    if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST)) {
 		QStringList urls = CMDLineRegistryUtils::getPureValues();
 
 		if(urls.isEmpty() && AppContext::getAppSettings()->getUserAppsSettings()->openLastProjectAtStartup()) {

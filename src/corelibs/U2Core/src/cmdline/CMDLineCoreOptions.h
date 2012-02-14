@@ -43,7 +43,7 @@ public:
     static const QString TEAMCITY_OUTPUT;
     static const QString LOG_FORMAT;
     static const QString LOG_LEVEL;
-    static const QString LAUNCH_TEST;
+    static const QString LAUNCH_GUI_TEST;
     static const QString USAGE;
         
 public:

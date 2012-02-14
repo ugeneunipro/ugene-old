@@ -1,45 +1,41 @@
-#ifndef _U2_GUI_TESTS_LAUNCHER_H_
-#define _U2_GUI_TESTS_LAUNCHER_H_
+#ifndef _U2_GUI_TEST_LAUNCHER_H_
+#define _U2_GUI_TEST_LAUNCHER_H_
 
 #include <U2Core/global.h>
 #include <U2Core/Task.h>
 #include <U2Core/MultiTask.h>
 #include <U2Gui/MainWindow.h>
 
-#include <QtGui>
-
-#include "GUITests.h"
-#include "ProjectViewTests.h"
-
-
 namespace U2 {
 
-class LaunchTestTask: public Task {
+class GUITest;
+
+class GUITestLauncher: public Task {
     Q_OBJECT
 public:
-    LaunchTestTask(GUITest* _t):Task(tr("Launch test"), TaskFlags_FOSCOE), t(_t) {}
-    void prepare();
-    void run();
-    ReportResult report();
+	GUITestLauncher();
 
-private:
-    GUITest *t;
-};
-
-class TestLauncher: public Task {
-    Q_OBJECT
-public:
-    TestLauncher(): Task("gui_test_launcher", TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled), testToLaunch(NULL) {}
-    void run();
-    QString generateReport() const;
+    virtual void run();
+    virtual QString generateReport() const;
 
 private:
     QList<GUITest *> tests;
-    GUITest* testToLaunch;
     QMap<QString, QString> results;
+
+	QStringList getTestProcessArguments(const QString &testName) const;
+
+	void firstTestRunCheck(const QString& testName);
+	QString performTest(const QString& testName) const;
+
+	QString readTestResult(const QByteArray& output) const;
+
+	bool initGUITestBase();
+	void updateProgress(int finishedCount);
+
+	void teamCityLogResult(const QString &testName, const QString &testResult) const;
+	bool testFailed(const QString &testResult) const;
 };
 
-
-}
+} // namespace
 
 #endif

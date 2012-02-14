@@ -7,10 +7,9 @@ HEADERS += src/GTest.h \
            src/TestRunnerSettings.h \
            src/xmltest/XMLTestFormat.h \
            src/xmltest/XMLTestUtils.h \
-           src/gui_tests/AboutDialogTests.h \
-           src/gui_tests/GUITests.h \
+           src/gui_tests/GUITest.h \
+           src/gui_tests/GUITestTask.h \
            src/gui_tests/GUITestService.h \
-           src/gui_tests/ProjectViewTests.h \
            src/gui_tests/GUITestLauncher.h \
            src/gui_tests/GUITestBase.h
 SOURCES += src/GTest.cpp \
@@ -18,10 +17,9 @@ SOURCES += src/GTest.cpp \
            src/TestRunnerTask.cpp \
            src/xmltest/XMLTestFormat.cpp \
            src/xmltest/XMLTestUtils.cpp \
-           src/gui_tests/AboutDialogTests.cpp \
-           src/gui_tests/GUITests.cpp \
+           src/gui_tests/GUITest.cpp \
+           src/gui_tests/GUITestTask.cpp \
            src/gui_tests/GUITestService.cpp \
-           src/gui_tests/ProjectViewTests.cpp \
            src/gui_tests/GUITestLauncher.cpp \
            src/gui_tests/GUITestBase.cpp
 

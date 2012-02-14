@@ -39,7 +39,7 @@ const QString CMDLineCoreOptions::TEST_THREADS  = "test-threads";
 const QString CMDLineCoreOptions::TEAMCITY_OUTPUT = "log-teamcity-out";
 const QString CMDLineCoreOptions::LOG_FORMAT    = "log-format";
 const QString CMDLineCoreOptions::LOG_LEVEL     = "log-level";
-const QString CMDLineCoreOptions::LAUNCH_TEST   = "gui-test";
+const QString CMDLineCoreOptions::LAUNCH_GUI_TEST   = "gui-test";
 const QString CMDLineCoreOptions::USAGE         = "usage";
 
 

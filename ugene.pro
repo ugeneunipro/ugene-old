@@ -58,7 +58,8 @@ SUBDIRS += \
           src/plugins/expert_discovery \
           src/plugins/remote_service \
           src/plugins/CoreTests \
-          src/plugins/api_tests
+          src/plugins/api_tests \
+          src/plugins/GUITestBase
 
 use_cuda() {
     SUBDIRS += src/plugins/cuda_support
