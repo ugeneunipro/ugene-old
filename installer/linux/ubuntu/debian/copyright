@@ -14,7 +14,7 @@ Modifications to the original source package:
 Upstream Author: UniPro <ugene@unipro.ru>
 
 Copyright:
-    Copyright (C) 2008-2011 by UniPro <ugene@unipro.ru>
+    Copyright (C) 2008-2012 by UniPro <ugene@unipro.ru>
         
 License:
     This suite of programs is free software. You can redistribute it
@@ -377,5 +377,5 @@ The Files src/corelibs/U2Private/src/StackWalker.cpp
 
 
 Packaging:
-    Copyright (C) 2008-2011 by Ivan Efremov <iefremov@unipro.ru>
+    Copyright (C) 2008-2012 by Ivan Efremov <iefremov@unipro.ru>
     released under the GPL.
