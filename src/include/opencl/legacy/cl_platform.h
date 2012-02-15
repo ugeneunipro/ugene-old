@@ -26,6 +26,8 @@
 #ifndef __CL_PLATFORM_H
 #define __CL_PLATFORM_H
 
+#ifdef OPENCL_SUPPORT
+
 #ifdef __APPLE__
     /* Contains #defines for AVAILABLE_MAC_OS_X_VERSION_10_6_AND_LATER below */
     #include <AvailabilityMacros.h>
@@ -1194,5 +1196,7 @@ typedef union
 #ifdef __cplusplus
 }
 #endif
+
+#endif /*OPENCL_SUPPORT*/
 
 #endif  /* __CL_PLATFORM_H  */

@@ -50,9 +50,13 @@ GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaA
     connect(readSlider, SIGNAL(valueChanged(int)), SLOT(sl_onReadSliderChanged(int)));
 
     buildIndexFileButton->toggle();
+#ifdef OPENCL_SUPPORT
     if (AppContext::getOpenCLGpuRegistry()->empty()) {
+#endif
         gpuBox->setEnabled(false);
+#ifdef OPENCL_SUPPORT
     }
+#endif
 
     systemSize = AppContext::getAppSettings()->getAppResourcePool()->getMaxMemorySizeInMB();
     partSlider->setEnabled(false);

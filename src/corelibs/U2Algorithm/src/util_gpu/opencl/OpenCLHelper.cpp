@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#ifdef OPENCL_SUPPORT
+
 #include "OpenCLHelper.h"
 
 #include <U2Core/Log.h>
@@ -246,3 +248,5 @@ namespace U2 {
         }
     }
 } //namespace
+
+#endif /* OPENCL_SUPPORT*/

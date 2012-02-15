@@ -22,6 +22,8 @@
 #ifndef __OPEN_CL_GPU_REGISTRY_H__
 #define __OPEN_CL_GPU_REGISTRY_H__
 
+#ifdef OPENCL_SUPPORT
+
 #include <QtCore/QHash>
 
 #include <U2Algorithm/OpenCLHelper.h>
@@ -112,5 +114,7 @@ private:
 };
 
 } //namespace
+
+#endif /*OPENCL_SUPPORT*/
 
 #endif //__OPEN_CL_GPU_REGISTRY_H__

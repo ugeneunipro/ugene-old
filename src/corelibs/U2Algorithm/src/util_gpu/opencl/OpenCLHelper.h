@@ -22,6 +22,8 @@
 #ifndef __OPENCL_HELPER__
 #define __OPENCL_HELPER__
 
+#ifdef OPENCL_SUPPORT
+
 #include <U2Core/global.h>
 
 #include <QtCore/QLibrary>
@@ -207,5 +209,7 @@ private:
 };
 
 }
+
+#endif /* OPENCL_SUPPORT */
 
 #endif //__OPENCL_HELPER__

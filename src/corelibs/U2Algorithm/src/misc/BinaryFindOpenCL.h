@@ -22,6 +22,8 @@
 #ifndef _U2_BINARYFINDOPENCL_H_
 #define _U2_BINARYFINDOPENCL_H_
 
+#ifdef OPENCL_SUPPORT
+
 #include <U2Core/AppContext.h>
 
 #include <U2Algorithm/OpenCLGpuRegistry.h>
@@ -64,6 +66,8 @@ private:
 };
 
 }//namespace
+
+#endif /*OPENCL_SUPPORT*/
 
 #endif // _U2_BINARYFINDOPENCL_H_
 

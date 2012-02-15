@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#ifdef OPENCL_SUPPORT
+
 #include "BinaryFindOpenCLTests.h"
 
 #include <U2Core/AppContext.h>
@@ -103,3 +105,4 @@ Task::ReportResult GTest_BinaryFindOpenCL::report(){
 
 } //namespace
 
+#endif /*OPENCL_SUPPORT*/

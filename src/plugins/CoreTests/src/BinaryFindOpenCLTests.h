@@ -22,6 +22,8 @@
 #ifndef __BINARY_FIND_OPENCL_TESTS_H__
 #define __BINARY_FIND_OPENCL_TESTS_H__
 
+#ifdef OPENCL_SUPPORT
+
 #include <QtCore/QVector>
 
 #include <U2Algorithm/BinaryFindOpenCL.h>
@@ -51,4 +53,7 @@ public:
 };
 
 } //namespace
+
+#endif /*OPENCL_SUPPORT*/
+
 #endif // __BINARY_FIND_OPENCL_TESTS_H__

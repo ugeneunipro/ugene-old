@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#ifdef OPENCL_SUPPORT
+
 #include "BinaryFindOpenCL.h"
 
 #include <U2Core/Log.h>
@@ -294,3 +296,5 @@ bool BinaryFindOpenCL::hasOPENCLError(int err, QString errorMessage) {
 }
 
 }//namespace
+
+#endif /*OPENCL_SUPPORT*/

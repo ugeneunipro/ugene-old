@@ -22,6 +22,8 @@
 #ifndef __OPENCL_UTILS_H__
 #define __OPENCL_UTILS_H__
 
+#ifdef OPENCL_SUPPORT
+
 #include "OpenCLHelper.h"
 
 #include <QtCore/QString>
@@ -41,6 +43,8 @@ public:
 };
 
 }//namespace
+
+#endif /*OPENCL_SUPPORT*/
 
 #endif //__OPENCL_UTILS_H__
 

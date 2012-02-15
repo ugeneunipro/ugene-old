@@ -26,6 +26,8 @@
 #ifndef __OPENCL_CL_H
 #define __OPENCL_CL_H
 
+#ifdef OPENCL_SUPPORT
+
 #include "cl_platform.h"
 
 #ifdef __cplusplus
@@ -988,6 +990,8 @@ extern CL_API_ENTRY void * CL_API_CALL clGetExtensionFunctionAddress(const char 
 #ifdef __cplusplus
 }
 #endif
+
+#endif /*OPENCL_SUPPORT*/
 
 #endif  /* __OPENCL_CL_H */
 

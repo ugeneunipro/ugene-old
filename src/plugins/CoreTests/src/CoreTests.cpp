@@ -140,7 +140,9 @@ void CoreTests::registerFactories() {
     registerFactory<GUrlTests>(xmlTestFormat);
 
     // BinaryFindOpencl tests
+#ifdef OPENCL_SUPPORT
     registerFactory<BinaryFindOpenCLTests>(xmlTestFormat);
+#endif
 
     // FindAlforithm tests
     registerFactory<FindAlgorithmTests>(xmlTestFormat);

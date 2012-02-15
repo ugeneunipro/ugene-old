@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#ifdef OPENCL_SUPPORT
+
 #include "OpenCLUtils.h"
 
 #include <QtCore/QFile>
@@ -76,3 +78,5 @@ cl_program OpenCLUtils::createProgramByResource(
 }
 
 }//namespace
+
+#endif /*OPENCL_SUPPORT*/

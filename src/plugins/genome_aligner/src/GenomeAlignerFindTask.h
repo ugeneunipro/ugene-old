@@ -82,7 +82,9 @@ public:
     void loadPartForAligning(int part);
     void getDataForAligning(int &first, int &length);
     void waitDataForAligning(int &first, int &length);
+#ifdef OPENCL_SUPPORT
     bool runOpenCLBinarySearch();
+#endif
 
     qint64 getIndexLoadTime() const {return indexLoadTime;}
 

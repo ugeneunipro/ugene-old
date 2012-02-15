@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#ifdef OPENCL_SUPPORT
+
 #include <algorithm>
 #include <functional>
 #include <QtCore/QtAlgorithms>
@@ -74,3 +76,5 @@ void OpenCLGpuRegistry::saveGpusSettings() const {
 }
 
 } //namespace
+
+#endif /*OPENCL_SUPPORT*/

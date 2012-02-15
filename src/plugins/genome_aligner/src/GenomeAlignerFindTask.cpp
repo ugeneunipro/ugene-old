@@ -168,6 +168,7 @@ void GenomeAlignerFindTask::waitDataForAligning(int &first, int &length) {
     }
 }
 
+#ifdef OPENCL_SUPPORT
 bool GenomeAlignerFindTask::runOpenCLBinarySearch() {
     QMutexLocker lock(&openCLMutex);
     if (!openCLFinished) {
@@ -186,6 +187,7 @@ bool GenomeAlignerFindTask::runOpenCLBinarySearch() {
 
     return true;
 }
+#endif
 
 GenomeAlignerFindTask::~GenomeAlignerFindTask() {
     delete[] bitMaskResults;
@@ -230,6 +232,7 @@ void ShortReadAligner::run() {
             return;
         }
         stateInfo.setProgress(stateInfo.getProgress() + 25/index->getPartCount());
+#ifdef OPENCL_SUPPORT
         if (alignContext->openCL) {
             if (!parent->runOpenCLBinarySearch()) {
                 return;
@@ -237,6 +240,7 @@ void ShortReadAligner::run() {
             bitMaskResults = parent->bitMaskResults;
             stateInfo.setProgress(stateInfo.getProgress() + 50/index->getPartCount());
         }
+#endif
 
         if (part > 0 || alignContext->openCL) {
             parent->getDataForAligning(first, length);

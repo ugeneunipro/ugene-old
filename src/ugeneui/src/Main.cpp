@@ -432,8 +432,10 @@ int main(int argc, char **argv)
     CudaGpuRegistry * cgr = new CudaGpuRegistry();
     appContext->setCudaGpuRegistry(cgr); 
 
+#ifdef OPENCL_SUPPORT
     OpenCLGpuRegistry * oclgr = new OpenCLGpuRegistry();
     appContext->setOpenCLGpuRegistry( oclgr );
+#endif
 
     RecentlyDownloadedCache* rdc = new RecentlyDownloadedCache();
     appContext->setRecentlyDownloadedCache(rdc);
@@ -588,7 +590,9 @@ int main(int argc, char **argv)
     delete cgr;
     appContext->setCudaGpuRegistry(NULL);
 
+#ifdef OPENCL_SUPPORT
     delete oclgr;
+#endif
     appContext->setOpenCLGpuRegistry(NULL);
 
     delete cmdLineRegistry;
