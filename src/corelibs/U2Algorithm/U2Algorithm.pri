@@ -3,6 +3,10 @@
 MODULE_ID=U2Algorithm
 include( ../../ugene_lib_common.pri )
 
+use_opencl(){
+    DEFINES += OPENCL_SUPPORT
+}
+
 UGENE_RELATIVE_DESTDIR = ''
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2ALGORITHM_DLL
 

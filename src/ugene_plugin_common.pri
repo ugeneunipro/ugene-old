@@ -1,12 +1,7 @@
 MODULE_ID=$${PLUGIN_ID}
 include (ugene_lib_common.pri)
 
-
 # This file is common for all UGENE plugins
-
-use_opencl(){
-    DEFINES += OPENCL_SUPPORT
-}
 
 UGENE_RELATIVE_DESTDIR = 'plugins'
 QT += network xml webkit svg

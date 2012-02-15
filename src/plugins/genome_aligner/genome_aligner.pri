@@ -6,6 +6,10 @@ PLUGIN_VENDOR=Unipro
 
 include( ../../ugene_plugin_common.pri )
 
+use_opencl(){
+    DEFINES += OPENCL_SUPPORT
+}
+
 #adding CUDA specific parameters
 use_cuda() {
     

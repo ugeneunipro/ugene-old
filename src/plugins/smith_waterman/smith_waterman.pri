@@ -69,4 +69,5 @@ use_cuda() {
 #adding OPENCL specific parameters
 use_opencl() {
     DEFINES += SW2_BUILD_WITH_OPENCL
+    DEFINES += OPENCL_SUPPORT
 }

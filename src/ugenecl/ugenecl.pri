@@ -1,6 +1,11 @@
 # include (ugenecl.pri)
 
 include( ../ugene_globals.pri )
+
+use_opencl(){
+    DEFINES += OPENCL_SUPPORT
+}
+
 UGENE_RELATIVE_DESTDIR = ''
 
 QT += xml network script webkit

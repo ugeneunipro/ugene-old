@@ -10,6 +10,7 @@ INCLUDEPATH += $$UGENE_OPENCL_INC_DIR
 PLUGIN_ID=opencl_support
 PLUGIN_NAME=OpenCL support
 PLUGIN_VENDOR=Unipro
+DEFINES += OPENCL_SUPPORT
 
 include( ../../ugene_plugin_common.pri )
 
