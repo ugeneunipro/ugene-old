@@ -66,7 +66,7 @@ private slots:
     void sl_selectProcess(bool checked = false);
     void rebuild();
     void editElement();
-    void removeElement();
+    bool removeElement();
 
 private:
     QTreeWidgetItem* createItemWidget(QAction* a);

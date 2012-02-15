@@ -363,14 +363,14 @@ void WorkflowPalette::contextMenuEvent(QContextMenuEvent *e)
     menu.exec(mapToGlobal(e->pos()));
 }
 
-void WorkflowPalette::removeElement() {
+bool WorkflowPalette::removeElement() {
     QMessageBox msg(this);
     msg.setWindowTitle("Remove element");
     msg.setText("Remove this element?");
     msg.addButton(QMessageBox::Ok);
     msg.addButton(QMessageBox::Cancel);
     if(msg.exec() == QMessageBox::Cancel) {
-        return;
+        return false;
     }
 
     ActorPrototype *proto = currentAction->data().value<ActorPrototype *>();
@@ -384,7 +384,7 @@ void WorkflowPalette::removeElement() {
     QFile::setPermissions(fileName, QFile::ReadOwner | QFile::WriteOwner);
     if(!QFile::remove(fileName)) {
         uiLog.error(tr("Can't remove element %1").arg(proto->getDisplayName()));
-        return;
+        return true;
     }
     
     QString id = proto->getId();
@@ -392,6 +392,7 @@ void WorkflowPalette::removeElement() {
     ActorPrototypeRegistry *reg = WorkflowEnv::getProtoRegistry();
     assert(reg);
     reg->unregisterProto(id);
+    return true;
 }
 
 void WorkflowPalette::editElement() {
@@ -430,7 +431,9 @@ void WorkflowPalette::editElement() {
 
             if (!(*oldCfg == *cfg)) {
                 if(oldName != cfg->name) {
-                    removeElement();
+                    if (removeElement()) {
+                        WorkflowEnv::getExternalCfgRegistry()->unregisterConfig(oldName);
+                    }
                 } else {
                     QString id = proto->getId();
                     emit si_protoDeleted(id);
@@ -438,7 +441,6 @@ void WorkflowPalette::editElement() {
                 }
                 LocalWorkflow::ExternalProcessWorkerFactory::init(cfg);
             }
-            WorkflowEnv::getExternalCfgRegistry()->unregisterConfig(oldName);
             WorkflowEnv::getExternalCfgRegistry()->registerExternalTool(cfg);
             emit si_protoChanged();
         }
