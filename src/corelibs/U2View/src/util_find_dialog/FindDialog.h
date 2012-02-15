@@ -27,11 +27,13 @@
 #include <U2Gui/RegionSelector.h>
 
 #include <ui/ui_FindDialogUI.h>
+#include <ui/ui_InfoRegExp.h>
 
 #include <QtCore/QList>
 #include <QtGui/QListWidget>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QCloseEvent>
+#include <QtGui/QPushButton>
 #include <QtCore/QTimer>
 
 namespace U2 {
@@ -47,6 +49,15 @@ class U2VIEW_EXPORT FindDialog : public QDialog, public Ui_FindDialogBase {
     friend class FindAlgorithmTask;
 
 public:
+	class U2VIEW_EXPORT RegExpInfoDialog: public QDialog, public Ui_AboutRegExp{
+	public:
+		RegExpInfoDialog(QWidget* parent):QDialog(parent){
+			setupUi(this);
+		}
+	};
+
+	
+
     static bool runDialog(ADVSequenceObjectContext* ctx);
 
 public slots:
@@ -73,7 +84,7 @@ private slots:
     // groups
     void sl_onSequenceTypeChanged();
     void sl_onStrandChanged();
-    void sl_onAlgorithmChanged();
+    void sl_onAlgorithmChanged(int);
 
     //spin box
     void sl_onMatchPercentChanged(int);
@@ -89,12 +100,13 @@ private slots:
     void sl_currentResultChanged(QListWidgetItem*, QListWidgetItem*);
 
     void sl_onRemoveOverlaps();
-
+	void sl_onInfoRegExpRequested();
 private:
     void connectGUI();
     void updateState();
     void updateStatus();
     void tunePercentBox();
+	void setAlgorithmSettingsGUI();
     
     bool checkState(bool forSingleShot);
     bool checkPrevSettings();
@@ -116,8 +128,21 @@ private:
     FindAlgorithmTask* task;
     QTimer* timer;
     U2Region initialSelection;
+	RegExpInfoDialog* regExpInfoDialog;
 
     RegionSelector* rs;
+
+	QHBoxLayout* layoutMismatch;
+	QLabel* lMatch;
+	QSpinBox* sbMatch;
+	QCheckBox* useAmbiguousBasesBox;
+	QHBoxLayout* layoutRegExpLen;
+	QCheckBox* boxUseMaxResultLen;
+	QSpinBox* boxMaxResultLen;
+	QHBoxLayout* layoutRegExpInfo;
+	QSpacerItem* spacerInfoRegExp;
+	QPushButton* infoRegExpButton;
+
 };
 
 }//namespace

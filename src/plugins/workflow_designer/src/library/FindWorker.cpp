@@ -186,7 +186,7 @@ QString FindPrompter::composeRichDoc() {
     FindAlgorithmSettings cfg;
     cfg.strand = getStrand(getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId()).value<QString>());
     cfg.maxErr = getParameter(ERR_ATTR).toInt();
-    cfg.insDelAlg = getParameter(ALGO_ATTR).toBool();
+	cfg.patternSettings = static_cast<FindAlgorithmPatternSettings>(getParameter(ALGO_ATTR).toInt());
 
     QString strandName;
     switch (cfg.strand) {
@@ -278,7 +278,7 @@ Task* FindWorker::tick() {
     
     // other parameters
     cfg.maxErr = actor->getParameter(ERR_ATTR)->getAttributeValue<int>(context);
-    cfg.insDelAlg = actor->getParameter(ALGO_ATTR)->getAttributeValue<bool>(context);
+    cfg.patternSettings = static_cast<FindAlgorithmPatternSettings> (actor->getParameter(ALGO_ATTR)->getAttributeValue<int>(context));
     cfg.useAmbiguousBases = actor->getParameter(AMBIGUOUS_ATTR)->getAttributeValue<bool>(context);
 
     resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);

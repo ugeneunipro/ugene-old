@@ -100,8 +100,10 @@ FindDialog::FindDialog(ADVSequenceObjectContext* context): QDialog(context->getA
     sbCurrentPos->setMaximum(seqLen);
     sbCurrentPos->setValue(rs->getRegion().startPos+1);
 
+	setAlgorithmSettingsGUI();
     connectGUI();
     updateState();
+	
     if (context->getComplementTT() == NULL) {
         rbDirect->setChecked(true);
     }
@@ -111,6 +113,9 @@ FindDialog::FindDialog(ADVSequenceObjectContext* context): QDialog(context->getA
     
     leFind->setFocus();
     lbResult->setSortingEnabled(true);
+	boxAlg->addItem(FindDialog::tr("InsDel"),FindAlgorithmPatternSettings_InsDel);
+	boxAlg->addItem(FindDialog::tr("Substitute"),FindAlgorithmPatternSettings_Subst);
+	boxAlg->addItem(FindDialog::tr("Regular expressions"),FindAlgorithmPatternSettings_RegExp);
 
     DNAAlphabet* al = ctx->getSequenceObject()->getAlphabet();
     useAmbiguousBasesBox->setEnabled(al->isNucleic());
@@ -119,6 +124,8 @@ FindDialog::FindDialog(ADVSequenceObjectContext* context): QDialog(context->getA
 
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskFinished(Task*)));
     connect(timer, SIGNAL(timeout()), SLOT(sl_onTimer()));
+
+	
 }
 
 void FindDialog::connectGUI() {
@@ -139,8 +146,6 @@ void FindDialog::connectGUI() {
     connect(rbBoth, SIGNAL(clicked()), SLOT(sl_onStrandChanged()));
     connect(rbDirect, SIGNAL(clicked()), SLOT(sl_onStrandChanged()));
     connect(rbComplement, SIGNAL(clicked()), SLOT(sl_onStrandChanged()));
-    connect(rbMismatchAlg, SIGNAL(clicked()), SLOT(sl_onAlgorithmChanged()));
-    connect(rbInsDelAlg, SIGNAL(clicked()), SLOT(sl_onAlgorithmChanged()));
 
     //match percent spin
     connect(sbMatch, SIGNAL(valueChanged(int)), SLOT(sl_onMatchPercentChanged(int)));
@@ -149,9 +154,13 @@ void FindDialog::connectGUI() {
     connect(rs, SIGNAL(si_regionChanged(const U2Region&)), SLOT(sl_onRegionChanged(const U2Region&)));
     connect(sbCurrentPos, SIGNAL(valueChanged(int)), SLOT(sl_onCurrentPosChanged(int)));
 
+	connect(boxAlg,SIGNAL(currentIndexChanged(int)),SLOT(sl_onAlgorithmChanged(int)));
+
     //results list
     connect(lbResult, SIGNAL(itemActivated(QListWidgetItem*)), SLOT(sl_onResultActivated(QListWidgetItem*)));
     connect(lbResult, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(sl_currentResultChanged(QListWidgetItem*, QListWidgetItem*)));
+
+	connect(infoRegExpButton,SIGNAL(clicked()),SLOT(sl_onInfoRegExpRequested()));
 
     lbResult->installEventFilter(this);
 }
@@ -182,8 +191,7 @@ void FindDialog::updateState() {
     rbBoth->setEnabled(!hasActiveTask && hasCompl);
     rbDirect->setEnabled(!hasActiveTask);
     rbComplement->setEnabled(!hasActiveTask && hasCompl);
-    rbMismatchAlg->setEnabled(!hasActiveTask);
-    rbInsDelAlg->setEnabled(!hasActiveTask);
+	boxAlg->setEnabled(!hasActiveTask);
 
     rs->setEnabled(!hasActiveTask);
     sbCurrentPos->setEnabled(!hasActiveTask);
@@ -211,6 +219,50 @@ bool FindDialog::eventFilter(QObject *obj, QEvent *ev) {
         }
     }
     return false;
+}
+
+void FindDialog::setAlgorithmSettingsGUI(){
+	layoutMismatch = new QHBoxLayout(this);
+	sbMatch = new QSpinBox(this);
+	sbMatch->setSuffix("%"); // percents
+	sbMatch->setMinimum(1);
+	sbMatch->setMaximum(100);
+	sbMatch->setSingleStep(1);
+	sbMatch->setValue(100);
+
+	lMatch = new QLabel(FindDialog::tr("Match percent"));
+	layoutAlgorithmSettings->addLayout(layoutMismatch);
+
+	layoutMismatch->addWidget(lMatch);
+	layoutMismatch->addWidget(sbMatch);
+
+	useAmbiguousBasesBox = new QCheckBox(FindDialog::tr("Search with ambigious bases"),this);
+	layoutAlgorithmSettings->addWidget(useAmbiguousBasesBox);
+
+	layoutRegExpLen = new QHBoxLayout(this);
+	boxUseMaxResultLen = new QCheckBox(FindDialog::tr("Limit result length"),this);
+	boxMaxResultLen = new QSpinBox(this);
+	boxMaxResultLen->setMaximum(0);
+	boxMaxResultLen->setMaximum(500);
+	boxMaxResultLen->setSingleStep(20);
+	layoutRegExpLen->addWidget(boxUseMaxResultLen);
+	layoutRegExpLen->addWidget(boxMaxResultLen);
+	layoutAlgorithmSettings->addLayout(layoutRegExpLen);
+
+	layoutRegExpInfo = new QHBoxLayout(this);
+	const int SPACER_WIDTH = 95;
+	const int SPACER_HEIGHT = 20;
+	spacerInfoRegExp = new QSpacerItem(SPACER_WIDTH,SPACER_HEIGHT,QSizePolicy::Fixed);
+	infoRegExpButton = new QPushButton(FindDialog::tr("More info"),this);
+	layoutRegExpInfo->addSpacerItem(spacerInfoRegExp);
+	layoutRegExpInfo->addWidget(infoRegExpButton);
+	layoutAlgorithmSettings->addLayout(layoutRegExpInfo);
+}
+
+void FindDialog::sl_onInfoRegExpRequested(){
+	regExpInfoDialog = new RegExpInfoDialog(this);
+	regExpInfoDialog->exec();
+	delete regExpInfoDialog;
 }
 
 void FindDialog::sl_onSaveAnnotations() {
@@ -346,7 +398,35 @@ void FindDialog::sl_onSequenceTypeChanged() {
 void FindDialog::sl_onStrandChanged() {
 }
 
-void FindDialog::sl_onAlgorithmChanged() {
+void FindDialog::sl_onAlgorithmChanged(int index) {
+	if(boxAlg->itemData(index).toInt() == FindAlgorithmPatternSettings_InsDel){
+		useAmbiguousBasesBox->setChecked(false);
+		boxUseMaxResultLen->setVisible(false);
+		boxMaxResultLen->setVisible(false);
+		infoRegExpButton->setVisible(false);
+		useAmbiguousBasesBox->setVisible(false);
+		sbMatch->setVisible(true);
+		lMatch->setVisible(true);
+	}
+	else if(boxAlg->itemData(index).toInt() == FindAlgorithmPatternSettings_Subst){
+		boxUseMaxResultLen->setVisible(false);
+		boxMaxResultLen->setVisible(false);
+		useAmbiguousBasesBox->setVisible(true);
+		infoRegExpButton->setVisible(false);
+		sbMatch->setVisible(true);
+		lMatch->setVisible(true);
+	}
+	else if(boxAlg->itemData(index).toInt() == FindAlgorithmPatternSettings_RegExp){
+
+		useAmbiguousBasesBox->setChecked(false);
+
+		sbMatch->setVisible(false);
+		lMatch->setVisible(false);
+		useAmbiguousBasesBox->setVisible(false);
+		infoRegExpButton->setVisible(true);
+		boxUseMaxResultLen->setVisible(true);
+		boxMaxResultLen->setVisible(true);
+	}
 }
 
 //spin box
@@ -392,7 +472,7 @@ bool FindDialog::checkState(bool forSingleShot) {
         assert(t!=NULL);
         al = t->getDstAlphabet();
     }
-    bool alphabetIsOk = TextUtils::fits(al->getMap(), pattern.toLocal8Bit().data(), pattern.size()) || useAmbiguousBasesBox->isChecked();
+    bool alphabetIsOk = TextUtils::fits(al->getMap(), pattern.toLocal8Bit().data(), pattern.size()) || useAmbiguousBasesBox->isChecked() || boxAlg->itemData(boxAlg->currentIndex()).toInt() == FindAlgorithmPatternSettings_RegExp;
     if (!alphabetIsOk) {
         int res = QMessageBox::warning(this, tr("Warning!"), tr("Search pattern contains symbols that are out of the active alphabet range. Continue anyway?"), QMessageBox::Yes, QMessageBox::No);
         if (res == QMessageBox::No) {
@@ -436,7 +516,7 @@ bool FindDialog::checkPrevSettings() {
     if (match != prevMatch) {
         return false;
     }
-    int alg = match == 100 ? 0 : rbMismatchAlg->isChecked() ? 1 : 2;
+    int alg = match == 100 ? 0 : (boxAlg->itemData(boxAlg->currentIndex()).toInt() == FindAlgorithmPatternSettings_Subst) ? 1 : 2;
     if (prevAlgorithm != alg) {
         return false;
     }
@@ -446,7 +526,7 @@ bool FindDialog::checkPrevSettings() {
 void FindDialog::savePrevSettings() {
     prevSearchString = leFind->text();
     prevMatch = sbMatch->value();
-    prevAlgorithm = prevMatch == 100 ? 0 : rbMismatchAlg->isChecked() ? 1 : 2;
+    prevAlgorithm = prevMatch == 100 ? 0 : (boxAlg->itemData(boxAlg->currentIndex()).toInt() == FindAlgorithmPatternSettings_Subst)  ? 1 : 2;
 }
 
 int FindDialog::getMaxErr() const {
@@ -474,19 +554,26 @@ void FindDialog::runTask(bool singleShot) {
     
     s.maxErr = getMaxErr();
     
-    s.insDelAlg = rbInsDelAlg->isChecked();
+    s.patternSettings = static_cast<FindAlgorithmPatternSettings> (boxAlg->itemData(boxAlg->currentIndex()).toInt());
     s.useAmbiguousBases = useAmbiguousBasesBox->isChecked();
-
+	s.maxResult2Find = boxUseMaxResult->isChecked() ? boxMaxResult->value() :  INT_MAX;
+	s.maxRegExpResult = boxUseMaxResultLen->isChecked() ? boxMaxResultLen->value() : 100000;
     //setup search region
     s.searchRegion = getCompleteSearchRegion();
 
+	int currentLen = 0;
     if (singleShot) { //TODO: loosing complementary strand here!
         int newStartPos = sbCurrentPos->value() - 1; //visual val is +1 to the last used current
         s.searchRegion.length-=(newStartPos - s.searchRegion.startPos);
         s.searchRegion.startPos = newStartPos;
+		if(lbResult->count() != 0){
+			FRListItem* rj = static_cast<FRListItem*>(lbResult->item(lbResult->count() - 1));
+			currentLen = rj->res.region.length;
+		}
     }
     
     task = new FindAlgorithmTask(s);
+	task->setCurrentLen(currentLen);
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     updateState();
     timer->start(400);

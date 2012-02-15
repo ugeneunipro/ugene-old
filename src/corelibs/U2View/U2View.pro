@@ -116,6 +116,7 @@ FORMS += src/ov_assembly/ui/ExportReadsDialog.ui \
          src/util_dna_assembly/ui/AssemblyToSamDialog.ui \
          src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui \
          src/util_find_dialog/ui/FindDialogUI.ui \
+         src/util_find_dialog/ui/InfoRegExp.ui \
          src/util_msa_align/ui/PerformAlignmentDialog.ui \
          src/util_sec_struct_predict/ui/SecStructDialog.ui \
          src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \

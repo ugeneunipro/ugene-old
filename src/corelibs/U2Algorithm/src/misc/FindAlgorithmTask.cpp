@@ -28,7 +28,7 @@
 namespace U2 {
 
 FindAlgorithmTask::FindAlgorithmTask(const FindAlgorithmTaskSettings& s) 
-: Task (tr("Find in sequence task"), TaskFlag_None), config(s), currentPos(0)
+: Task (tr("Find in sequence task"), TaskFlag_None), config(s), currentPos(0),currentLen(0)
 {
     GCOUNTER(cvar, tvar, "FindAlgorithmTask");
     tpm = Progress_Manual;
@@ -42,7 +42,7 @@ void FindAlgorithmTask::run() {
         config.proteinTT,
         config.complementTT,
         config.strand,
-        config.insDelAlg,
+        config.patternSettings,
         config.useAmbiguousBases,
         config.sequence.constData(),
         config.sequence.size(),
@@ -51,15 +51,21 @@ void FindAlgorithmTask::run() {
         config.pattern.length(),
         config.singleShot,
         config.maxErr,
+		config.maxRegExpResult,
         stateInfo.cancelFlag,
         stateInfo.progress,
-        currentPos);
+        currentPos,
+		currentLen);
 }
 
 void FindAlgorithmTask::onResult(const FindAlgorithmResult& r) {
-    lock.lock();
+	if(newResults.size() >= config.maxResult2Find){
+		stateInfo.cancelFlag = true;
+		return;
+	}
+    lock.lock();	
     newResults.append(r);
-    lock.unlock();
+	lock.unlock();	
 }
 
 QList<FindAlgorithmResult> FindAlgorithmTask::popResults() {
