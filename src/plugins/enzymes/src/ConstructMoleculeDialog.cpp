@@ -248,11 +248,8 @@ void ConstructMoleculeDialog::update()
                 QString overhang = items.at(0);
                 QString strand =  items.count() > 1 ? items.at(1) : QString();
                 
-                QColor color = Qt::red;
-                if (prevOverhang == overhang && strand != prevStrand) {
-                    color = Qt::green;
-                }
-
+                QColor color = prevOverhang == overhang && strand != prevStrand ? Qt::green : Qt::red;
+                
                 prevItem->setTextColor(2, color);
                 item->setTextColor(0, color);
             }
@@ -262,7 +259,11 @@ void ConstructMoleculeDialog::update()
         if (makeCircularBox->isChecked() && count > 0) {
             QTreeWidgetItem* first = molConstructWidget->topLevelItem(0);
             QTreeWidgetItem* last = molConstructWidget->topLevelItem(count - 1);
-            QColor color = first->text(0) == last->text(2) ? Qt::green : Qt::red;
+            QString  firstOverhang = first->text(0).split(" ").at(0);
+            QString lastOverhang = last->text(2).split(" ").at(0);
+            QString firstStrand = first->text(0).split(" ").at(1);
+            QString lastStrand = last->text(2).split(" ").at(1);
+            QColor color = firstOverhang == lastOverhang && firstStrand != lastStrand ? Qt::green : Qt::red;
             first->setTextColor(0, color);
             last->setTextColor(2, color);
         }
