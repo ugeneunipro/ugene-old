@@ -111,6 +111,7 @@
 #define GLOBAL_SETTINGS QString("global/")
 
 #define ENV_UGENE_DEV "UGENE_DEV"
+#define ENV_GUI_TEST "UGENE_GUI_TEST"
 
 #define PATH_PREFIX_DATA "data"
 #define PATH_PREFIX_SCRIPTS "scripts"

@@ -484,11 +484,12 @@ int main(int argc, char **argv)
 	}
 
     registerCoreServices();
-#ifdef _DEBUG 
-    GUITestService *guiTestService = new GUITestService();
-    Q_UNUSED(guiTestService);
-#endif
-    
+
+    if ( envList.contains(ENV_GUI_TEST+QString("=1")) ) {
+	    GUITestService *guiTestService = new GUITestService();
+		Q_UNUSED(guiTestService);
+	}
+
     if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {
         Shtirlitz::wakeup();
     }
