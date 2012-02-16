@@ -35,6 +35,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/FindWorker.h \
            src/library/GenericReadActor.h \
            src/library/GenericReadWorker.h \
+           src/library/GetFileListWorker.h \
            src/library/ImportAnnotationsWorker.h \
            src/library/IncludedProtoFactoryImpl.h \
            src/library/MarkSequenceWorker.h \
@@ -94,6 +95,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/FindWorker.cpp \
            src/library/GenericReadActor.cpp \
            src/library/GenericReadWorker.cpp \
+           src/library/GetFileListWorker.cpp \
            src/library/ImportAnnotationsWorker.cpp \
            src/library/IncludedProtoFactoryImpl.cpp \
            src/library/MarkSequenceWorker.cpp \

@@ -278,6 +278,7 @@ bool Marker::getMarkerStringResult(const QVariant &object, QVariantList &expr) {
         return obj.contains(val);
     } else if (MarkerUtils::REGEXP_OPERATION == operation) {
         QRegExp rx(val);
+        rx.setPatternSyntax(QRegExp::Wildcard);
 
         return rx.exactMatch(obj);
     }

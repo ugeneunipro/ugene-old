@@ -39,6 +39,7 @@
 #include "ReverseComplementWorker.h"
 #include "MSA2SequenceWorker.h"
 #include "ExternalProcessWorker.h"
+#include "library/GetFileListWorker.h"
 #include "library/PassFilterWorker.h"
 #include "library/MarkSequenceWorker.h"
 #include "library/MultiplexerWorker.h"
@@ -315,6 +316,7 @@ void CoreLib::init() {
     PassFilterWorkerFactory::init();
     MarkSequenceWorkerFactory::init();
     MultiplexerWorkerFactory::init();
+    GetFileListWorkerFactory::init();
     initUsersWorkers();
     initExternalToolsWorkers();
 }

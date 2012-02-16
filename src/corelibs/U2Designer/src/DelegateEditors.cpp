@@ -190,10 +190,15 @@ void URLLineEdit::browse(bool addFiles) {
     }
 
     QString name;
-    if(isPath){
-        lod.url = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
-    } else if (multi) {
-        QStringList lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lastDir, FileFilter);
+    if(isPath || multi){
+        QStringList lst;
+        if (isPath) {
+            QString dir = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
+            lst << dir;
+        } else {
+            lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lastDir, FileFilter);
+        }
+
         if (addFiles) {
             name = this->text();
             if (!lst.isEmpty()) {
