@@ -28,7 +28,8 @@
 namespace U2 {
 
 void OpenFastaFile::execute(U2OpStatus &os) {
-	GUrl url("test/_common_data/fasta/fa1.fa");
+	GUrl url(testDir + "_common_data/fasta/fa1.fa");
+
 	ProjectUtils::openFile(os, url);
 }
 
