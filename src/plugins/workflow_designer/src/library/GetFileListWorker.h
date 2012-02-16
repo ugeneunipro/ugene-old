@@ -61,7 +61,8 @@ private:
     QList<QString> dirUrls;
     bool absolute;
     bool recursive;
-    QString fileName;
+    QString includeFilter;
+    QString excludeFilter;
 }; // GetFileListWorker
 
 class GetFileListWorkerFactory : public DomainFactory {
@@ -77,14 +78,15 @@ public:
 class ScanDirectoryTask : public Task {
     Q_OBJECT
 public:
-    ScanDirectoryTask(const QString &dirPath, const QString &nameFilter, bool absolute, bool recursive);
+    ScanDirectoryTask(const QString &dirPath, const QString &includeFilter, const QString &excludeFilter, bool absolute, bool recursive);
     virtual void run();
 
     const QStringList &getResults() {return results;}
 
 private:
     QString dirPath;
-    QString nameFilter;
+    QString includeFilter;
+    QString excludeFilter;
     bool absolute;
     bool recursive;
     QStringList results;

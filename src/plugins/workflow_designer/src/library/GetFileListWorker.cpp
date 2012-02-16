@@ -42,7 +42,9 @@ static const QString OUT_PORT_ID("out-url");
 static const QString INPUT_PATH("in-path");
 static const QString ABSOLUTE_PATH("absolute");
 static const QString RECURSIVE("recursive");
-static const QString NAME_FILTER("name-filter");
+static const QString INCLUDE_NAME_FILTER("include-name-filter");
+static const QString EXCLUDE_NAME_FILTER("exclude-name-filter");
+
 
 /************************************************************************/
 /* Worker */
@@ -61,7 +63,8 @@ void GetFileListWorker::init() {
     dirUrls = WorkflowUtils::expandToUrls(actor->getParameter(INPUT_PATH)->getAttributeValue<QString>(context));
     absolute = actor->getParameter(ABSOLUTE_PATH)->getAttributeValue<bool>(context);
     recursive = actor->getParameter(RECURSIVE)->getAttributeValue<bool>(context);
-    fileName = actor->getParameter(NAME_FILTER)->getAttributeValue<QString>(context);
+    includeFilter = actor->getParameter(INCLUDE_NAME_FILTER)->getAttributeValue<QString>(context);
+    excludeFilter = actor->getParameter(EXCLUDE_NAME_FILTER)->getAttributeValue<QString>(context);
 }
 
 bool GetFileListWorker::isReady() {
@@ -70,7 +73,7 @@ bool GetFileListWorker::isReady() {
 
 Task *GetFileListWorker::tick() {
     if (cache.isEmpty() && !dirUrls.isEmpty()) {
-        Task *t = new ScanDirectoryTask(dirUrls.takeFirst(), fileName, absolute, recursive);
+        Task *t = new ScanDirectoryTask(dirUrls.takeFirst(), includeFilter, excludeFilter, absolute, recursive);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }
@@ -103,8 +106,9 @@ void GetFileListWorker::sl_taskFinished() {
 /************************************************************************/
 /* Task */
 /************************************************************************/
-ScanDirectoryTask::ScanDirectoryTask(const QString &dirPath, const QString &nameFilter, bool absolute, bool recursive)
-: Task(tr("Scan directory %1").arg(dirPath), TaskFlag_None), dirPath(dirPath), nameFilter(nameFilter), absolute(absolute), recursive(recursive)
+ScanDirectoryTask::ScanDirectoryTask(const QString &dirPath, const QString &incFilter, const QString &excFilter, bool absolute, bool recursive)
+: Task(tr("Scan directory %1").arg(dirPath), TaskFlag_None), dirPath(dirPath), includeFilter(incFilter),
+excludeFilter(excFilter), absolute(absolute), recursive(recursive)
 {
 
 }
@@ -120,8 +124,10 @@ void ScanDirectoryTask::run() {
         rootPath += "/";
     }
 
-    QRegExp regExp(nameFilter);
-    regExp.setPatternSyntax(QRegExp::Wildcard);
+    QRegExp incRx(includeFilter);
+    QRegExp excRx(excludeFilter);
+    incRx.setPatternSyntax(QRegExp::Wildcard);
+    excRx.setPatternSyntax(QRegExp::Wildcard);
 
 
     while (!unusedDirs.isEmpty()) {
@@ -134,11 +140,12 @@ void ScanDirectoryTask::run() {
         QFileInfoList nested;
         QFileInfoList files = scanDirectory(dir, nested);
         foreach (const QFileInfo &path, files) {
-            bool matched = false;
-            if (nameFilter.isEmpty()) {
-                matched = true;
-            } else if (regExp.exactMatch(path.fileName())) {
-                matched = true;
+            bool matched = true;
+            if (!includeFilter.isEmpty()) {
+                matched = incRx.exactMatch(path.fileName());
+            }
+            if (!excludeFilter.isEmpty()) {
+                matched = matched && !excRx.exactMatch(path.fileName());
             }
             if (matched) {
                 QString absPath = path.absoluteFilePath();
@@ -206,14 +213,18 @@ void GetFileListWorkerFactory::init() {
         Descriptor isRecursive(RECURSIVE,
             GetFileListWorker::tr("Recursive reading"),
             GetFileListWorker::tr("Get files from all nested directories or just from the current one"));
-        Descriptor fileName(NAME_FILTER,
-            GetFileListWorker::tr("File name filter"),
+        Descriptor includeFilter(INCLUDE_NAME_FILTER,
+            GetFileListWorker::tr("Include name filter"),
             GetFileListWorker::tr("Filter files by name using this name or this regular expression filter"));
+        Descriptor excludeFilter(EXCLUDE_NAME_FILTER,
+            GetFileListWorker::tr("Exclude name filter"),
+            GetFileListWorker::tr("Exclude files with this name or with this regular expression"));
 
         attrs << new Attribute(inPath, BaseTypes::STRING_TYPE(), true);
         attrs << new Attribute(isAbsolute, BaseTypes::BOOL_TYPE(), false, true);
         attrs << new Attribute(isRecursive, BaseTypes::BOOL_TYPE(), false, false);
-        attrs << new Attribute(fileName, BaseTypes::STRING_TYPE());
+        attrs << new Attribute(includeFilter, BaseTypes::STRING_TYPE());
+        attrs << new Attribute(excludeFilter, BaseTypes::STRING_TYPE());
     }
 
     QMap<QString, PropertyDelegate*> delegates;
@@ -260,18 +271,10 @@ QString GetFileListPrompter::composeRichDoc() {
         recursivity = tr(" ");
     }
 
-    QString nameFilter = getParameter(NAME_FILTER).toString();
-    QString filter;
-    if (nameFilter.isEmpty()) {
-        filter = tr(" ");
-    } else {
-        filter = tr(" filtering filenames by <u>%1</u>").arg(nameFilter);
-    }
-
     QString url = getHyperlink(INPUT_PATH, getURL(INPUT_PATH));
 
-    return tr("Gets%1the %2 paths of files from the <u>%3</u> directory%4")
-        .arg(recursivity).arg(relativity).arg(url).arg(filter);
+    return tr("Gets%1the %2 paths of files from the <u>%3</u> directory")
+        .arg(recursivity).arg(relativity).arg(url);
 }
 
 } // LocalWorkflow
