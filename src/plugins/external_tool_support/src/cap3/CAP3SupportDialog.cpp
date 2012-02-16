@@ -60,13 +60,26 @@ void CAP3SupportDialog::accept()
         settings.inputFiles.append( seqList->item(i)->text() );
     }
 
-    if (outputPathLineEdit->text().isEmpty() ) {
+    QString outputPath = outputPathLineEdit->text();
+    if (outputPath.isEmpty() ) {
         QMessageBox::information(this, windowTitle(),
             tr("Result contig file name is not set!") );
         return;
-    } 
+    }
+
+    if(QFileInfo(outputPath).exists()) {
+        int result = QMessageBox::question(this, windowTitle(),
+                                           tr("Destination file already exists.\n"
+                                              "To overwrite the file, press 'Replace'.\n"
+                                              "To save under other name press 'Cancel' and change name in 'Result contig' field."),
+                                           tr("Replace"),
+                                           tr("Cancel"));
+        if(result == 1) {
+            return;
+        }
+    }
     
-    settings.outputFilePath = outputPathLineEdit->text();
+    settings.outputFilePath = outputPath;
     settings.bandExpansionSize = bandExpansionBox->value();
     settings.baseQualityClipCutoff = baseQualityClipCutoffBox->value();
     settings.baseQualityDiffCutoff = baseQualityDiffCutoffBox->value();

@@ -123,6 +123,20 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
+        Project * p = AppContext::getProject();
+        Document * oldDoc = NULL;
+        // If document already in project, just open view if needed, it will be updated automatically
+        if(p != NULL && (oldDoc = p->findDocumentByURL(settings.outputFilePath)) != NULL) {
+            if(settings.openView) {
+                if(oldDoc->isLoaded()) {
+                    res.append(new OpenViewTask(oldDoc));
+                } else {
+                    res.append(new LoadUnloadedDocumentAndOpenViewTask(oldDoc));
+                }
+            }
+            return res;
+        }
+
         loadTmpDocumentTask=
                 new LoadDocumentTask(BaseDocumentFormats::ACE,
                                      settings.outputFilePath,
@@ -130,13 +144,13 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
         loadTmpDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTmpDocumentTask);
 
-    } else  if( subTask == loadTmpDocumentTask  ) {
+    } else if( subTask == loadTmpDocumentTask  ) {
         
         Document* doc = loadTmpDocumentTask->takeDocument();
         SAFE_POINT(doc != NULL, "Failed loading result document", res);
         
         if (doc->getObjects().size() == 0) {
-            // TODO: delete new file?
+            QFile::remove(doc->getURLString());
             delete doc;
             setError(tr("No assembly is found for provided reads"));
             return res;
@@ -147,7 +161,7 @@ QList<Task*> CAP3SupportTask::onSubTaskFinished(Task* subTask) {
             if (AppContext::getProject() == NULL) {
                 res.append( AppContext::getProjectLoader()->createNewProjectTask() );
             }
-            
+
             res.append(new AddDocumentAndOpenViewTask(doc));
         }
         
