@@ -649,8 +649,8 @@
         <translation type="obsolete">Translation</translation>
     </message>
     <message>
-        <source>strand_group</source>
-        <translation type="obsolete">Strand</translation>
+        <source>Strands</source>
+        <translation>Strand</translation>
     </message>
     <message>
         <source>strand_both</source>
@@ -661,16 +661,16 @@
         <translation type="obsolete">Search pattern in direct strand only</translation>
     </message>
     <message>
-        <source>strand_direct_label</source>
-        <translation type="obsolete">Direct</translation>
+        <source>Direct strand</source>
+        <translation>Direct</translation>
     </message>
     <message>
         <source>strand_complement_wit</source>
         <translation type="obsolete">Search pattern in complement strand only</translation>
     </message>
     <message>
-        <source>strand_complement_label</source>
-        <translation type="obsolete">Complement</translation>
+        <source>Complement strand</source>
+        <translation>Complement</translation>
     </message>
     <message>
         <source>algorithm_group</source>

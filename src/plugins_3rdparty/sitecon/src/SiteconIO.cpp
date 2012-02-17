@@ -107,7 +107,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
     STATE state = FILE_S;
     QString line = reader.readLine();
     if (line!=FILE_HEADER) {
-        si.setError(  tr("not_sitecon_model_file") );
+        si.setError(  tr("Not a sitecon model") );
         return model;
     }
     QSet<int> passedPropsAve;
@@ -142,11 +142,16 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
             break;
         } 
         switch(state) {
+            case FILE_S:
+                {
+                    model.description += line + '\n';
+                }
+                break;
             case SETTINGS_S:
                 {
                     int i = line.indexOf(' ');
                     if (i == -1) {
-                        si.setError(  tr("error_parsing_settings_line_%1").arg(line) );
+                        si.setError(  tr("Error parsing settings, line %1").arg(line) );
                         break;
                     }
                     QString name = line.left(i);
@@ -157,7 +162,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                     } else if (name == "W") {
                         model.settings.windowSize = val.toInt(&ok);
                         if (!ok) {
-                            si.setError(  tr("error_parsing_settings_window_size_%1").arg(line) );
+                            si.setError(  tr("Error parsing window size: %1").arg(line) );
                             break;
                         } 
                         model.matrix.resize(model.settings.windowSize-1);
@@ -170,19 +175,19 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                     } else if (name == "CLEN") {
                         model.settings.secondTypeErrorCalibrationLen = val.toInt(&ok);
                         if (!ok) {
-                            si.setError(  tr("error_parsing_calibration_len_%1").arg(line) );
+                            si.setError(  tr("Error parsing calibration len: %1").arg(line) );
                             break;
                         } 
                     } else if (name == "RSEED") {
                         model.settings.randomSeed = val.toInt(&ok);
                         if (!ok) {
-                            si.setError(  tr("error_parsing_rseed_%1").arg(line) );
+                            si.setError(  tr("Error parsing RSEED: %1").arg(line) );
                             break;
                         } 
                     } else if (name == "NSEQ") {
                         model.settings.numSequencesInAlignment = val.toInt(&ok);
                         if (!ok) {
-                            si.setError(  tr("error_parsing_nsequence_in_ali_%1").arg(line) );
+                            si.setError(  tr("Error parsing number of sequence in original alignment: %1").arg(line) );
                             break;
                         } 
                     } else if (name == "WALG") {
@@ -196,7 +201,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                         } else if (alg == 2) {
                             model.settings.weightAlg = SiteconWeightAlg_Alg2;
                         } else {
-                            si.setError(  tr("illegal_weight_alg_%1").arg(line) );
+                            si.setError(  tr("Illegal weight algorithm: %1").arg(line) );
                             break;
                         }
                     }
@@ -208,7 +213,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                 {
                     QStringList l = line.split(MATRIX_VAL_SEPARATOR);
                     if (l.size()-2 !=  model.settings.windowSize - 1) { //num values == size-2, modelLen = w-1
-                        si.setError(  tr("model_size_not_matched_%1_expected_%2").arg(l.size()-2).arg(model.settings.windowSize-1) );
+                        si.setError(  tr("Model size not matched: %1, expected: %2").arg(l.size()-2).arg(model.settings.windowSize-1) );
                         break;
                     }
                     QString propNum = l.first();
@@ -241,7 +246,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                         break;
                     }
                     if (idx == -1) {
-                        si.setError(  tr("property_not_recognized_%1").arg(line) );
+                        si.setError(  tr("Property not recognized: %1").arg(line) );
                         break;
                     }
                     //setup position specific value for property

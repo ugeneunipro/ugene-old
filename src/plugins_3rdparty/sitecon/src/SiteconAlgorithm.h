@@ -74,6 +74,7 @@ public:
     SiteconModel(){ deviationThresh = -1;}
     QString                 aliURL;
     QString                 modelName;
+    QString                 description;
     SiteconBuildSettings    settings;
     QVector<PositionStats>  matrix;
     QVector<float>          err1;

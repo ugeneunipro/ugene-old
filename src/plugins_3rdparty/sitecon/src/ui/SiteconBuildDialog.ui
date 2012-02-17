@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>sitecon_build_caption</string>
+   <string>SITECON build</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
@@ -18,7 +18,7 @@
      <item row="0" column="0" >
       <widget class="QLabel" name="inputLabel" >
        <property name="text" >
-        <string>input_ali</string>
+        <string>Input alignment (nucleic)</string>
        </property>
       </widget>
      </item>
@@ -35,7 +35,7 @@
      <item row="1" column="0" >
       <widget class="QLabel" name="outputLabel" >
        <property name="text" >
-        <string>out_profile</string>
+        <string>Output model</string>
        </property>
       </widget>
      </item>
@@ -54,16 +54,18 @@
    <item>
     <widget class="QGroupBox" name="optionsBox" >
      <property name="title" >
-      <string>options</string>
+      <string>Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" >
       <item row="0" column="0" >
        <widget class="QLabel" name="windowSizeLabel" >
         <property name="toolTip" >
-         <string>win_tip</string>
+         <string>Window is used to pick out the most important alignment region and is located at the center of the alignment.
+           Must be: windows size is not greater than TFBS alignment length,
+           recommended: windows size is not greater than 50 bp.</string>
         </property>
         <property name="text" >
-         <string>window_size</string>
+         <string>Window size</string>
         </property>
        </widget>
       </item>
@@ -89,7 +91,9 @@
          </size>
         </property>
         <property name="toolTip" >
-         <string>win_tip</string>
+         <string>Window is used to pick out the most important alignment region and is located at the center of the alignment.
+           Must be: windows size is not greater than TFBS alignment length,
+           recommended: windows size is not greater than 50 bp.</string>
         </property>
         <property name="alignment" >
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -111,10 +115,10 @@
       <item row="1" column="0" >
        <widget class="QLabel" name="windowSizeLabel_2" >
         <property name="toolTip" >
-         <string>seed_tip</string>
+         <string>The random seed, where &lt;n&gt; is a positive integer. You can use this option to generate reproducible results for different runs on the same data.</string>
         </property>
         <property name="text" >
-         <string>calibration_random_seed</string>
+         <string>Calibration random seed</string>
         </property>
        </widget>
       </item>
@@ -140,7 +144,7 @@
          </size>
         </property>
         <property name="toolTip" >
-         <string>seed_tip</string>
+         <string>The random seed, where &lt;n&gt; is a positive integer. You can use this option to generate reproducible results for different runs on the same data.</string>
         </property>
         <property name="alignment" >
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -162,10 +166,10 @@
       <item row="2" column="0" >
        <widget class="QLabel" name="windowSizeLabel_3" >
         <property name="toolTip" >
-         <string>seq_len_tip</string>
+         <string>Length of random synthetic sequences used to calibrate the profile. Should not be less than window size.</string>
         </property>
         <property name="text" >
-         <string>calibration_sequence_len</string>
+         <string>Calibration sequence length</string>
         </property>
        </widget>
       </item>
@@ -185,7 +189,7 @@
       <item row="2" column="2" >
        <widget class="QComboBox" name="calibrationSeqLenBox" >
         <property name="toolTip" >
-         <string>seq_len_tip</string>
+         <string>Length of random synthetic sequences used to calibrate the profile. Should not be less than window size.</string>
         </property>
         <property name="layoutDirection" >
          <enum>Qt::LeftToRight</enum>
@@ -221,10 +225,10 @@
       <item row="3" column="0" >
        <widget class="QLabel" name="label" >
         <property name="toolTip" >
-         <string>algo_tip</string>
+         <string>Optional feature, in most cases applying no weight will fit. In some cases choosing algorithm 2 will increase the recognition quality.</string>
         </property>
         <property name="text" >
-         <string>weight_alg</string>
+         <string>Weight algorithm</string>
         </property>
        </widget>
       </item>
@@ -244,7 +248,7 @@
       <item row="3" column="2" >
        <widget class="QComboBox" name="weightAlgCombo" >
         <property name="toolTip" >
-         <string>algo_tip</string>
+         <string>Optional feature, in most cases applying no weight will fit. In some cases choosing algorithm 2 will increase the recognition quality.</string>
         </property>
         <property name="layoutDirection" >
          <enum>Qt::LeftToRight</enum>
@@ -282,7 +286,7 @@
      <item>
       <widget class="QLabel" name="statusLabel" >
        <property name="text" >
-        <string>default_status</string>
+        <string>Default status</string>
        </property>
       </widget>
      </item>
@@ -302,14 +306,14 @@
      <item>
       <widget class="QPushButton" name="okButton" >
        <property name="text" >
-        <string>start_button</string>
+        <string>Build</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="cancelButton" >
        <property name="text" >
-        <string>cancel_butotn</string>
+        <string>Cancel</string>
        </property>
       </widget>
      </item>

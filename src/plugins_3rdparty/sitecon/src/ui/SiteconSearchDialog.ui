@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>550</width>
-    <height>427</height>
+    <height>494</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>sitecon_search_title</string>
+   <string>SITECON Search</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>sitecon_model_file</string>
+        <string>File with model</string>
        </property>
       </widget>
      </item>
@@ -40,10 +40,10 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="toolTip">
-        <string>min_err_tip</string>
+        <string>Recognition quality threshold, should be less than 100%. Choosing too low threshold will lead to recognition of too many TFBS recognised with too low trustworthiness. Choosing too high threshold may result in no TFBS recognised.</string>
        </property>
        <property name="text">
-        <string>error_level</string>
+        <string>Threshold</string>
        </property>
       </widget>
      </item>
@@ -56,13 +56,38 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>min_err_tip</string>
+        <string>Recognition quality threshold, should be less than 100%. Choosing too low threshold will lead to recognition of too many TFBS recognised with too low trustworthiness. Choosing too high threshold may result in no TFBS recognised.</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0">
+    <widget class="QTextEdit" name="descTextEdit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>60</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>532</width>
+       <height>60</height>
+      </size>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOn</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="1,1">
      <property name="spacing">
       <number>6</number>
@@ -85,13 +110,13 @@
         </size>
        </property>
        <property name="title">
-        <string>strand_group</string>
+        <string>Strands</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QRadioButton" name="rbBoth">
           <property name="text">
-           <string>strand_both</string>
+           <string>Both strands</string>
           </property>
           <property name="iconSize">
            <size>
@@ -110,10 +135,10 @@
            <string/>
           </property>
           <property name="whatsThis">
-           <string>strand_direct_wit</string>
+           <string>Search in direct strand only</string>
           </property>
           <property name="text">
-           <string>strand_direct_label</string>
+           <string>Direct strand</string>
           </property>
           <property name="iconSize">
            <size>
@@ -135,10 +160,10 @@
            <string/>
           </property>
           <property name="whatsThis">
-           <string>strand_complement_wit</string>
+           <string>Search in complement strand</string>
           </property>
           <property name="text">
-           <string>strand_complement_label</string>
+           <string>Complement strand</string>
           </property>
           <property name="iconSize">
            <size>
@@ -163,7 +188,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="3" column="0">
     <widget class="QTreeWidget" name="resultsTree">
      <property name="rootIsDecorated">
       <bool>false</bool>
@@ -173,44 +198,44 @@
      </property>
      <column>
       <property name="text">
-       <string>range</string>
+       <string>Range</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>strand</string>
+       <string>Strand</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>psum</string>
+       <string>PSUM</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>err1</string>
+       <string>First type error</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>err2</string>
+       <string>Second type error</string>
       </property>
      </column>
     </widget>
    </item>
-   <item>
+   <item row="4" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="pbClear">
        <property name="text">
-        <string>clear_results</string>
+        <string>Clear results</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pbSaveAnnotations">
        <property name="text">
-        <string>save_as_annotations</string>
+        <string>Save as annotations</string>
        </property>
       </widget>
      </item>
@@ -229,12 +254,12 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="5" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
       <widget class="QLabel" name="statusLabel">
        <property name="text">
-        <string>status</string>
+        <string>Ready</string>
        </property>
       </widget>
      </item>
@@ -254,14 +279,14 @@
      <item>
       <widget class="QPushButton" name="pbSearch">
        <property name="text">
-        <string>search</string>
+        <string>Search</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pbClose">
        <property name="text">
-        <string>cancel</string>
+        <string>Cancel</string>
        </property>
       </widget>
      </item>

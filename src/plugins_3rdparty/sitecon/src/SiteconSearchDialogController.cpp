@@ -197,7 +197,7 @@ void SiteconSearchDialogController::updateModel(const SiteconModel& m) {
     *model =  m;
     
     errLevelBox->clear();
-    
+    descTextEdit->setText(model->description);
     int pStart = -1;
     while (++pStart!=99) {
         if (model->err1[pStart]!=0 && model->err2[pStart]!=1) {

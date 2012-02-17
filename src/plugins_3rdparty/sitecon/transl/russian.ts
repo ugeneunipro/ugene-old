@@ -5,12 +5,12 @@
     <name>SiteconBuildDialog</name>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="13"/>
-        <source>sitecon_build_caption</source>
+        <source>SITECON build</source>
         <translation>Построение модели SITECON</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="21"/>
-        <source>input_ali</source>
+        <source>Input alignment (nucleic)</source>
         <translation>Входное выравнивание</translation>
     </message>
     <message>
@@ -21,17 +21,17 @@
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="38"/>
-        <source>out_profile</source>
+        <source>Output model</source>
         <translation>Результирующая модель</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="57"/>
-        <source>options</source>
+        <source>Options</source>
         <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="66"/>
-        <source>window_size</source>
+        <source>Window size</source>
         <translation>Размер окна</translation>
     </message>
     <message>
@@ -41,12 +41,12 @@
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="117"/>
-        <source>calibration_random_seed</source>
+        <source>Calibration random seed</source>
         <translation>Случайная затравка</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="168"/>
-        <source>calibration_sequence_len</source>
+        <source>Calibration sequence length</source>
         <translation>Длина калибровочной последовательности</translation>
     </message>
     <message>
@@ -71,22 +71,22 @@
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="227"/>
-        <source>weight_alg</source>
+        <source>Weight algorithm</source>
         <translation>Алгоритм весов</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="285"/>
-        <source>default_status</source>
+        <source>Default status</source>
         <translation> </translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="305"/>
-        <source>start_button</source>
+        <source>Build</source>
         <translation>Построить</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="312"/>
-        <source>cancel_butotn</source>
+        <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
@@ -103,28 +103,29 @@
         <location filename="../src/ui/SiteconBuildDialog.ui" line="63"/>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="92"/>
         <location filename="../src/SiteconBuildWorker.cpp" line="73"/>
-        <source>win_tip</source>
+        <source>Window is used to pick out the most important alignment region and is located at the center of the alignment.
+Must be: windows size is not greater than TFBS alignment length, recommended: windows size is not greater than 50 bp.</source>
         <translation>Размер окна должен быть не короче консенсуса для данного сайта но не более длины выравнивания.</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="165"/>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="188"/>
         <location filename="../src/SiteconBuildWorker.cpp" line="74"/>
-        <source>seq_len_tip</source>
+        <source>Length of random synthetic sequences used to calibrate the profile. Should not be less than window size.</source>
         <translation>Длина случайных синтетических последовательностей для калибрации профайла. Не должна быть меньше размера окна.</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="114"/>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="143"/>
         <location filename="../src/SiteconBuildWorker.cpp" line="75"/>
-        <source>seed_tip</source>
+        <source>The random seed, where &lt;n&gt; is a positive integer. You can use this option to generate reproducible results for different runs on the same data.</source>
         <translation>Случайная затравка. Использование этого параметра полезно для воспроизведения результата калибрации.</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="224"/>
         <location filename="../src/ui/SiteconBuildDialog.ui" line="247"/>
         <location filename="../src/SiteconBuildWorker.cpp" line="76"/>
-        <source>algo_tip</source>
+        <source>Optional feature, in most cases applying no weight will fit. In some cases choosing algorithm 2 will increase the recognition quality.</source>
         <translation>В большинстве случаев алгоритм без весов вполне адекватен. Использование других алгоритмов может улучшить качество распознавания в отдельных случаях.</translation>
     </message>
 </context>
@@ -132,12 +133,12 @@
     <name>SiteconSearchDialog</name>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="14"/>
-        <source>sitecon_search_title</source>
+        <source>SITECON search</source>
         <translation>Поиск сайтов связывания ТФ по модели SITECON</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="22"/>
-        <source>sitecon_model_file</source>
+        <source>File with model</source>
         <translation>Модель</translation>
     </message>
     <message>
@@ -147,99 +148,99 @@
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="46"/>
-        <source>error_level</source>
+        <source>Threshold</source>
         <translation>Минимальная ошибка</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="76"/>
-        <source>strand_group</source>
+        <source>Strands</source>
         <translation>Направление</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="82"/>
-        <source>strand_both</source>
+        <source>Both strands</source>
         <translation>Все</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="95"/>
-        <source>strand_direct_wit</source>
+        <source>Search in direct strand only</source>
         <translation>Искать ССТФ только в прямой последовательности</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="98"/>
-        <source>strand_direct_label</source>
+        <source>Direct strand</source>
         <translation>Только прямые</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="114"/>
-        <source>strand_complement_wit</source>
+        <source>Search in complement strand</source>
         <translation>Искать ССТФ только в комплeментарной последовательности</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="117"/>
-        <source>strand_complement_label</source>
+        <source>Complement strand</source>
         <translation>Только комплeментарные</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="142"/>
-        <source>range</source>
+        <source>Range</source>
         <translation>Регион</translation>
     </message>
     <message>
-        <source>sequence_range</source>
-        <translation type="obsolete">Вся последовательность</translation>
+        <source>Whole sequence</source>
+        <translation>Вся последовательность</translation>
     </message>
     <message>
-        <source>selection_range</source>
-        <translation type="obsolete">Селектированный регион</translation>
+        <source>Selection range</source>
+        <translation>Селектированный регион</translation>
     </message>
     <message>
-        <source>custom_range</source>
-        <translation type="obsolete">Указанный регион</translation>
+        <source>Custom range</source>
+        <translation>Указанный регион</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="147"/>
-        <source>strand</source>
+        <source>Strand</source>
         <translation>Стренд</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="152"/>
-        <source>psum</source>
+        <source>PSUM</source>
         <translation>Оценка</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="157"/>
-        <source>err1</source>
+        <source>First type error</source>
         <translation>Ошибка 1-го рода</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="162"/>
-        <source>err2</source>
+        <source>Second type error</source>
         <translation>Ошибка 2-го рода</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="172"/>
-        <source>clear_results</source>
+        <source>Clear results</source>
         <translation>Сбросить результаты</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="179"/>
-        <source>save_as_annotations</source>
+        <source>Save as annotations</source>
         <translation>Сохранить результаты</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="203"/>
-        <source>status</source>
-        <translation></translation>
+        <source>Ready</source>
+        <translation>Готово</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="223"/>
-        <source>search</source>
+        <source>Search</source>
         <translation>Искать</translation>
     </message>
     <message>
         <location filename="../src/ui/SiteconSearchDialog.ui" line="230"/>
-        <source>cancel</source>
+        <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
@@ -247,7 +248,7 @@
         <location filename="../src/ui/SiteconSearchDialog.ui" line="59"/>
         <location filename="../src/SiteconQuery.cpp" line="167"/>
         <location filename="../src/SiteconSearchWorker.cpp" line="84"/>
-        <source>min_err_tip</source>
+        <source>Recognition quality threshold, should be less than 100%. Choosing too low threshold will lead to recognition of too many TFBS recognised with too low trustworthiness. Choosing too high threshold may result in no TFBS recognised.</source>
         <translation>Нижний предел качества распознавания, величина более 60% но меньше 100%. Слишком низкий предел приведёт к нахождению большого числа ложных сигналов, чрезмерно высокий отбросит качественные результаты.</translation>
     </message>
 </context>
@@ -857,49 +858,49 @@
     <name>U2::SiteconIO</name>
     <message>
         <location filename="../src/SiteconIO.cpp" line="110"/>
-        <source>not_sitecon_model_file</source>
-        <translation type="unfinished"></translation>
+        <source>Not a sitecon model</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconIO.cpp" line="149"/>
-        <source>error_parsing_settings_line_%1</source>
-        <translation type="unfinished"></translation>
+        <source>Error parsing settings, line %1</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconIO.cpp" line="160"/>
-        <source>error_parsing_settings_window_size_%1</source>
-        <translation type="unfinished"></translation>
+        <source>Error parsing window size: %1</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconIO.cpp" line="173"/>
-        <source>error_parsing_calibration_len_%1</source>
-        <translation type="unfinished"></translation>
+        <source>Error parsing calibration len: %1</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconIO.cpp" line="179"/>
-        <source>error_parsing_rseed_%1</source>
-        <translation type="unfinished"></translation>
+        <source>Error parsing RSEED: %1</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconIO.cpp" line="185"/>
         <location filename="../src/SiteconIO.cpp" line="191"/>
-        <source>error_parsing_nsequence_in_ali_%1</source>
-        <translation type="unfinished"></translation>
+        <source>Error parsing number of sequence in original alignment: %1</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconIO.cpp" line="199"/>
-        <source>illegal_weight_alg_%1</source>
-        <translation type="unfinished"></translation>
+        <source>Illegal weight algorithm: %1</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconIO.cpp" line="211"/>
-        <source>model_size_not_matched_%1_expected_%2</source>
-        <translation type="unfinished"></translation>
+        <source>Model size not matched: %1, expected: %2</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconIO.cpp" line="244"/>
-        <source>property_not_recognized_%1</source>
-        <translation type="unfinished"></translation>
+        <source>Property not recognized: %1</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconIO.cpp" line="260"/>
