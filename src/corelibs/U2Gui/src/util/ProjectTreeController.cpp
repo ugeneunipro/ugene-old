@@ -1290,10 +1290,13 @@ bool ProjViewObjectItem::operator< ( const QTreeWidgetItem & other ) const {
 void ProjViewObjectItem::updateVisual(bool ) {
     QString text;
     GObjectType t = obj->getGObjectType();
-    bool unloaded = t == GObjectTypes::UNLOADED;
+	bool unloaded = t == GObjectTypes::UNLOADED;
+	bool allowSelectUnloaded = controller->getModeSettings().allowSelectUnloaded;
     if (unloaded) {
-        setDisabled(true);
-        t = qobject_cast<UnloadedObject*>(obj)->getLoadedObjectType();
+		if(!allowSelectUnloaded){
+			setDisabled(true);
+		}
+		t = qobject_cast<UnloadedObject*>(obj)->getLoadedObjectType();		
     }
     const GObjectTypeInfo& ti = GObjectTypes::getTypeInfo(t);
     text+="[" + ti.treeSign + "] ";

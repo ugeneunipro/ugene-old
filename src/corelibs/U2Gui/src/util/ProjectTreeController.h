@@ -87,7 +87,7 @@ class U2GUI_EXPORT ProjectTreeControllerModeSettings {
 public:
     ProjectTreeControllerModeSettings() 
         : allowMultipleSelection(true), readOnlyFilter(TriState_Unknown), loadTaskProvider(NULL), 
-        groupMode(ProjectTreeGroupMode_ByDocument), objectFilter(NULL), documentFilter(NULL), 
+        groupMode(ProjectTreeGroupMode_ByDocument),allowSelectUnloaded(false), objectFilter(NULL), documentFilter(NULL), 
         markActive(false){}
     
     QList<GObjectType>          objectTypesToShow;  // show only objects of specified type
@@ -98,6 +98,7 @@ public:
     TriState                    readOnlyFilter;     // unknown->all, true->filter(exclude) readonly, false -> keep only readonly
     LoadDocumentTaskProvider*   loadTaskProvider;   // use custom LoadDocumentTask factory instead of default
     ProjectTreeGroupMode        groupMode;          // group mode for objects
+	bool						allowSelectUnloaded; // ability to select unloaded objects
 
     //Note that objectFilter and documentFilter are called only on object add/remove ops!
     //WARN: object and document filters live-range is controlled by the side created these objects
