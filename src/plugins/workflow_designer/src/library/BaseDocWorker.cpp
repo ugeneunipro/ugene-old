@@ -182,6 +182,12 @@ static bool openIOAdapter(IOAdapter *io, const QString &url, SaveDocFlags flags,
 
 Task* BaseDocWriter::tick() {
     while(ch->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(ch);
+        QVariantMap data = inputMessage.getData().toMap();
+        if (data.isEmpty()) {
+            continue;
+        }
+
         { // get parameters
             Attribute * formatAttr = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
             if( formatAttr != NULL ) { // user sets format
@@ -201,9 +207,6 @@ Task* BaseDocWriter::tick() {
                 append = a->getAttributeValue<bool>(context);
             }
         }
-
-        Message inputMessage = getMessageAndSetupScriptValues(ch);
-        QVariantMap data = inputMessage.getData().toMap();
 
         QString anUrl = url;
         if (anUrl.isEmpty()) {

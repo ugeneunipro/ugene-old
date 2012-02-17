@@ -57,6 +57,7 @@ protected:
     CommunicationChannel *input, *output;
     QString resultName;
     QMap<Task*, QByteArray> patterns;
+    bool done;
 }; 
 
 class FindWorkerFactory : public DomainFactory {

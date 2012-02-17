@@ -34,6 +34,11 @@ enum MultiplexingRules {
     ONE_TO_ONE
 };
 
+enum EmptyDataAction {
+    TRUNCATE,
+    FILL_EMPTY
+};
+
 class MultiplexerPrompter : public PrompterBase<MultiplexerPrompter> {
     Q_OBJECT
 public:
@@ -62,15 +67,18 @@ private:
 
     bool done;
     uint rule;
+    uint onEmptyAction;
     bool hasMultiData;
     QVariantMap multiData;
 
     bool messagesInited;
     QList<QVariantMap> messages;
 
+    void shutDown();
     bool checkIfEnded();
     bool hasDataFotMultiplexing() const;
     void sendUnitedMessage(const QVariantMap &m1, QVariantMap &m2);
+    void multiplexManyMode();
 
 }; // MultiplexerWorker
 

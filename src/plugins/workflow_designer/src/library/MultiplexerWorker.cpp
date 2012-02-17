@@ -39,6 +39,7 @@ static const QString INPUT_PORT_2("input-data-2");
 static const QString OUTPUT_PORT("output-data");
 
 static const QString RULE_ID("multiplexing-rule");
+static const QString EMPTY_ACTION_ID("empty-input-action");
 
 /*******************************
  * MultiplexerWorker
@@ -50,6 +51,7 @@ MultiplexerWorker::MultiplexerWorker(Actor *p)
 
 void MultiplexerWorker::init() {
     rule = actor->getParameter(RULE_ID)->getAttributeValue<uint>(context);
+    onEmptyAction = actor->getParameter(EMPTY_ACTION_ID)->getAttributeValue<uint>(context);
 
     if (MANY_TO_ONE == rule) {
         inChannel1 = ports.value(INPUT_PORT_2);
@@ -95,10 +97,14 @@ bool MultiplexerWorker::isReady() {
     return ended1 && ended2;
 }
 
+void MultiplexerWorker::shutDown() {
+    outChannel->setEnded();
+    done = true;
+}
+
 bool MultiplexerWorker::checkIfEnded() {
     if (inChannel1->isEnded() && inChannel2->isEnded()) {
-        outChannel->setEnded();
-        done = true;
+        shutDown();
         return true;
     }
     return false;
@@ -108,65 +114,22 @@ bool MultiplexerWorker::hasDataFotMultiplexing() const {
     return inChannel1->hasMessage() || hasMultiData;
 }
 
-void MultiplexerWorker::sendUnitedMessage(const QVariantMap &m1, QVariantMap &m2) {
+inline void MultiplexerWorker::sendUnitedMessage(const QVariantMap &m1, QVariantMap &m2) {
     m2.unite(m1);
     outChannel->putWithoutContext(Message(outChannel->getBusType(), m2));
 }
 
 Task *MultiplexerWorker::tick() {
     if (ONE_TO_MANY == rule || MANY_TO_ONE == rule) {
-        if (!hasDataFotMultiplexing()) {
-            if (checkIfEnded()) {
-                return NULL;
-            }
-        }
-        QVariantMap m1;
-        if (hasMultiData) {
-            m1 = multiData;
-        } else {
-            if (inChannel1->hasMessage()) {
-                m1 = inChannel1->look().getData().toMap();
-                inChannel1->get(); // pop last message
-            }
-            hasMultiData = true;
-            multiData = m1;
-        }
-
-        if (messagesInited) {
-            if (messages.isEmpty()) {
-                QVariantMap m2;
-                sendUnitedMessage(m1, m2);
-            } else {
-                foreach (QVariantMap m2, messages) {
-                    sendUnitedMessage(m1, m2);
-                }
-            }
-            hasMultiData = false;
-            multiData.clear();
-        } else {
-            while (inChannel2->hasMessage()) {
-                QVariantMap m2 = inChannel2->look().getData().toMap();
-                inChannel2->get(); // pop last message
-                messages << m2;
-
-                sendUnitedMessage(m1, m2);
-            }
-            if (inChannel2->isEnded()) {
-                if (messages.isEmpty()) {
-                    QVariantMap m2;
-                    sendUnitedMessage(m1, m2);
-                }
-                messagesInited = true;
-                hasMultiData = false;
-                multiData.clear();
-            }
-        }
-        if (!hasMultiData && inChannel1->isEnded()) { // nothing else to multiplex
-            outChannel->setEnded();
-            done = true;
-        }
+        multiplexManyMode();
     } else if (ONE_TO_ONE == rule) {
         if (checkIfEnded()) {
+            return NULL;
+        }
+
+        bool bothData = inChannel1->hasMessage() && inChannel2->hasMessage();
+        if (!bothData && TRUNCATE == onEmptyAction) {
+            shutDown();
             return NULL;
         }
 
@@ -179,10 +142,74 @@ Task *MultiplexerWorker::tick() {
             m2 = inChannel2->look().getData().toMap();
             inChannel2->get();
         }
+
         sendUnitedMessage(m1, m2);
         checkIfEnded();
     }
     return NULL;
+}
+
+void MultiplexerWorker::multiplexManyMode() {
+    if (!hasDataFotMultiplexing()) {
+        if (checkIfEnded()) {
+            return;
+        }
+    }
+    QVariantMap m1;
+    if (hasMultiData) {
+        m1 = multiData;
+    } else {
+        if (inChannel1->hasMessage()) {
+            m1 = inChannel1->look().getData().toMap();
+            inChannel1->get(); // pop last message
+        } else if (TRUNCATE == onEmptyAction) {
+            shutDown();
+        }
+        hasMultiData = true;
+        multiData = m1;
+    }
+
+    if (messagesInited) {
+        if (messages.isEmpty()) {
+            if (TRUNCATE == onEmptyAction) {
+                shutDown();
+            } else {
+                QVariantMap m2;
+                sendUnitedMessage(m1, m2);
+            }
+        } else {
+            foreach (QVariantMap m2, messages) {
+                sendUnitedMessage(m1, m2);
+            }
+        }
+        hasMultiData = false;
+        multiData.clear();
+    } else {
+        while (inChannel2->hasMessage()) {
+            QVariantMap m2 = inChannel2->look().getData().toMap();
+            inChannel2->get(); // pop last message
+            messages << m2;
+
+            sendUnitedMessage(m1, m2);
+        }
+        if (inChannel2->isEnded()) {
+            if (messages.isEmpty()) {
+                if (TRUNCATE == onEmptyAction) {
+                    shutDown();
+                } else {
+                    QVariantMap m2;
+                    sendUnitedMessage(m1, m2);
+                }
+            }
+            messagesInited = true;
+            hasMultiData = false;
+            multiData.clear();
+        }
+    }
+    if (!hasMultiData && inChannel1->isEnded()) { // nothing else to multiplex
+        outChannel->setEnded();
+        done = true;
+    }
 }
 
 bool MultiplexerWorker::isDone() {
@@ -197,33 +224,49 @@ void MultiplexerWorker::cleanup() {
  *******************************/
 void MultiplexerWorkerFactory::init() {
     QList<PortDescriptor*> portDescs;
+    {
+        QMap<Descriptor, DataTypePtr> emptyTypeMap;
+        DataTypePtr emptyTypeSet(new MapDataType(Descriptor(EMPTY_TYPESET_ID), emptyTypeMap));
+
+        // input ports
+        Descriptor inputDesc1(INPUT_PORT_1, MultiplexerWorker::tr("First input data flow"), MultiplexerWorker::tr("First input data flow"));
+        Descriptor inputDesc2(INPUT_PORT_2, MultiplexerWorker::tr("Second input data flow"), MultiplexerWorker::tr("Second input data flow"));
+        portDescs << new PortDescriptor(inputDesc1, emptyTypeSet, true);
+        portDescs << new PortDescriptor(inputDesc2, emptyTypeSet, true);
+
+        // output port
+        Descriptor outputDesc(OUTPUT_PORT, MultiplexerWorker::tr("Multiplexed output data flow"), MultiplexerWorker::tr("Multiplexed output data flow"));
+        portDescs << new PortDescriptor(outputDesc, emptyTypeSet, false, true);
+    }
+
     QList<Attribute*> attrs;
+    {
+        // attributes
+        Descriptor ruleDesc(RULE_ID, MultiplexerWorker::tr("Multiplexing rule"), MultiplexerWorker::tr("Multiplexing rule"));
+        Descriptor actionDesc(EMPTY_ACTION_ID, MultiplexerWorker::tr("If empty input"), MultiplexerWorker::tr("How to multiplex the data if one of input ports produces no data"));
+
+        Attribute *ruleAttr = new Attribute(ruleDesc, BaseTypes::STRING_TYPE(), true, ONE_TO_ONE);
+        Attribute *actionAttr = new Attribute(actionDesc, BaseTypes::STRING_TYPE(), true, FILL_EMPTY);
+
+        attrs << ruleAttr;
+        attrs << actionAttr;
+    }
+
     QMap<QString, PropertyDelegate*> delegateMap;
+    {
+        // delegates
+        QVariantMap rules;
+        rules[MultiplexerWorker::tr("1 to many")] = ONE_TO_MANY;
+        rules[MultiplexerWorker::tr("Many to 1")] = MANY_TO_ONE;
+        rules[MultiplexerWorker::tr("1 to 1")] = ONE_TO_ONE;
 
-    QMap<Descriptor, DataTypePtr> emptyTypeMap;
-    DataTypePtr emptyTypeSet(new MapDataType(Descriptor(EMPTY_TYPESET_ID), emptyTypeMap));
+        QVariantMap actions;
+        actions[MultiplexerWorker::tr("Fill by empty values")] = FILL_EMPTY;
+        actions[MultiplexerWorker::tr("Truncate")] = TRUNCATE;
 
-    // input ports
-    Descriptor inputDesc1(INPUT_PORT_1, MultiplexerWorker::tr("First input data flow"), MultiplexerWorker::tr("First input data flow"));
-    Descriptor inputDesc2(INPUT_PORT_2, MultiplexerWorker::tr("Second input data flow"), MultiplexerWorker::tr("Second input data flow"));
-    portDescs << new PortDescriptor(inputDesc1, emptyTypeSet, true);
-    portDescs << new PortDescriptor(inputDesc2, emptyTypeSet, true);
-
-    // output port
-    Descriptor outputDesc(OUTPUT_PORT, MultiplexerWorker::tr("Multiplexed output data flow"), MultiplexerWorker::tr("Multiplexed output data flow"));
-    portDescs << new PortDescriptor(outputDesc, emptyTypeSet, false, true);
-
-    // attributes
-    Descriptor ruleDesc(RULE_ID, MultiplexerWorker::tr("Multiplexing rule"), MultiplexerWorker::tr("Multiplexing rule"));
-    Attribute *ruleAttr = new Attribute(ruleDesc, BaseTypes::STRING_TYPE(), true, ONE_TO_ONE);
-    attrs << ruleAttr;
-
-    // delegates
-    QVariantMap items;
-    items.insert(MultiplexerWorker::tr("1 to many"), ONE_TO_MANY);
-    items.insert(MultiplexerWorker::tr("Many to 1"), MANY_TO_ONE);
-    items.insert(MultiplexerWorker::tr("1 to 1"), ONE_TO_ONE);
-    delegateMap[RULE_ID] = new ComboBoxDelegate(items);
+        delegateMap[RULE_ID] = new ComboBoxDelegate(rules);
+        delegateMap[EMPTY_ACTION_ID] = new ComboBoxDelegate(actions);
+    }
    
     Descriptor protoDesc(MultiplexerWorkerFactory::ACTOR_ID,
         MultiplexerWorker::tr("Multiplexer"),

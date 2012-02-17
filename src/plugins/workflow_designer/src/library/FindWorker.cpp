@@ -252,13 +252,22 @@ FindWorker::FindWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {
 void FindWorker::init() {
     input = ports.value(BasePorts::IN_SEQ_PORT_ID());
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
+    done = false;
 }
 
 bool FindWorker::isReady() {
-    return (input && input->hasMessage());
+    if (isDone()) {
+        return false;
+    }
+    return (input && (input->hasMessage() || input->isEnded()));
 }
 
 Task* FindWorker::tick() {
+    if (!input->hasMessage()) {
+        output->setEnded();
+        done = true;
+        return NULL;
+    }
     Message inputMessage = getMessageAndSetupScriptValues(input);
     FindAlgorithmTaskSettings cfg;
     
@@ -352,7 +361,7 @@ void FindWorker::sl_taskFinished(Task* t) {
 }
 
 bool FindWorker::isDone() {
-    return !input || input->isEnded();
+    return done;
 }
 
 void FindWorker::cleanup() {
