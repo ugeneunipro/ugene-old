@@ -244,17 +244,17 @@ bool ExpertDiscoveryData::updateScores(){
     }
     
     pd.setLabelText(tr("Updating control sequences"));
-//     for (int i=0; i<conBase.getSize(); i++)
-//     {
-//         if (pd.wasCanceled())
-//             return false;
-//         Sequence& rSeq = conBase.getSequence(i);
-//         if (!rSeq.isHasScore())
-//         {
-//             updateScore(rSeq);
-//         }
-//         pd.setValue((100*(i+posBase.getSize() + negBase.getSize()))/sizeTotal);
-//     }
+    for (int i=0; i<conBase.getSize(); i++)
+    {
+        if (pd.wasCanceled())
+            return false;
+        Sequence& rSeq = conBase.getSequence(i);
+        if (!rSeq.isHasScore())
+        {
+            updateScore(rSeq);
+        }
+        pd.setValue((100*(i+posBase.getSize() + negBase.getSize()))/sizeTotal);
+    }
 
     return true;   
 }
@@ -745,11 +745,11 @@ bool ExpertDiscoveryData::generateRecognizationReportSignals(QString& resultText
     int i = 0;
     while (iter != rSelList.end()) {
         const Signal* pSignal = (*iter);
-        resultText.append(QString("<TD>%1</TD>").arg(i+1));
+        resultText.append(QString("<TR align=center><TD>%1</TD>").arg(i+1));
         resultText.append(QString("<TD>%1</TD>").arg(QString::fromStdString(pSignal->getName())));
         resultText.append(QString("<TD>%1</TD>").arg(pSignal->getPriorPosCoverage()/100));
         resultText.append(QString("<TD>%1</TD>").arg(pSignal->getPriorProbability()));
-        resultText.append(QString("<TD>%1</TD>").arg(pSignal->getPriorFisher()));
+        resultText.append(QString("<TD>%1</TD></TR>").arg(pSignal->getPriorFisher()));
         i++;
         iter++;
     }

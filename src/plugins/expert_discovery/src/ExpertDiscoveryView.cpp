@@ -152,9 +152,9 @@ void ExpertDiscoveryView::createActions(){
     loadMarkupAction->setIcon(QIcon(":expert_discovery/images/loadMarkup.png"));
     connect(loadMarkupAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryPosNegMrkDialog()));
 
-    //     loadControlMarkupAction = new QAction(tr("Load control sequences markup"), this);
-    //     loadControlMarkupAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeqAnnot.png"));
-    //     connect(loadControlMarkupAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryControlMrkDialog()));
+    loadControlMarkupAction = new QAction(tr("Load control sequences markup"), this);
+    loadControlMarkupAction->setIcon(QIcon(":expert_discovery/images/loadControlsSeqAnnot.png"));
+    connect(loadControlMarkupAction, SIGNAL(triggered()), SLOT(sl_showExpertDiscoveryControlMrkDialog()));
 
     generateFullReportAction = new QAction(tr("Generate recognition report"), this);
     generateFullReportAction->setIcon(QIcon(":expert_discovery/images/genRep.png"));
@@ -165,7 +165,7 @@ void ExpertDiscoveryView::createActions(){
     loadControlSeqAction->setEnabled(false);
     extractSignalsAction->setEnabled(false);
     loadMarkupAction->setEnabled(false);
-    //loadControlMarkupAction->setEnabled(false);
+    loadControlMarkupAction->setEnabled(false);
     generateFullReportAction->setEnabled(false);
 
 }
@@ -182,7 +182,7 @@ void ExpertDiscoveryView::sl_newDoc(){
     loadControlSeqAction->setEnabled(false);
     extractSignalsAction->setEnabled(false);
     loadMarkupAction->setEnabled(false);
-    /*loadControlMarkupAction->setEnabled(false);*/
+    loadControlMarkupAction->setEnabled(false);
     generateFullReportAction->setEnabled(false);
 
     d.setRecBound(0);
@@ -257,7 +257,7 @@ void ExpertDiscoveryView::sl_showExpertDiscoveryPosNegDialog(){
             tasks->addSubTask( AppContext::getProjectLoader()->createNewProjectTask() );
         }
 
-        ExpertDiscoveryLoadPosNegTask *t = new ExpertDiscoveryLoadPosNegTask(d.getFirstFileName(), d.getSecondFileName(), d.isGenerateNegative());
+        ExpertDiscoveryLoadPosNegTask *t = new ExpertDiscoveryLoadPosNegTask(d.getFirstFileName(), d.getSecondFileName(), d.isGenerateNegative(), d.getNegativePerPositive());
         connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadPosNegTaskStateChanged() ) );
         tasks->addSubTask(t);
     }
@@ -360,30 +360,30 @@ void ExpertDiscoveryView::sl_loadPosNegMrkTaskStateChanged(){
     extractSignalsAction->setEnabled(true);
 }
 
-// void ExpertDiscoveryView::sl_showExpertDiscoveryControlMrkDialog(){
-//     Task *tasks = new Task("Loading control sequences markups", TaskFlag_NoRun);
-// 
-//     ExpertDiscoveryControlMrkDialog dialog(QApplication::activeWindow());
-//     if (dialog.exec()) {
-// 
-//         ExpertDiscoveryLoadControlMrkTask *t = new ExpertDiscoveryLoadControlMrkTask(dialog.getFirstFileName(), d );
-//         connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadControlMrkTaskStateChanged() ) );
-//         tasks->addSubTask(t);
-//     }
-// 
-//     AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
-// }
-// void ExpertDiscoveryView::sl_loadControlMrkTaskStateChanged(){
-//     ExpertDiscoveryLoadControlMrkTask *loadTask = qobject_cast<ExpertDiscoveryLoadControlMrkTask*>(sender());
-//     if (!loadTask || !loadTask->isFinished()) {
-//         return;
-//     }
-// 
-//     if (loadTask->getStateInfo().hasError()) {
-//         ExpertDiscoveryErrors::markupLoadError();
-//         return;
-//     }
-// }
+void ExpertDiscoveryView::sl_showExpertDiscoveryControlMrkDialog(){
+    Task *tasks = new Task("Loading control sequences markups", TaskFlag_NoRun);
+
+    ExpertDiscoveryControlMrkDialog dialog(QApplication::activeWindow());
+    if (dialog.exec()) {
+
+        ExpertDiscoveryLoadControlMrkTask *t = new ExpertDiscoveryLoadControlMrkTask(dialog.getFirstFileName(), d );
+        connect( t, SIGNAL( si_stateChanged() ), SLOT( sl_loadControlMrkTaskStateChanged() ) );
+        tasks->addSubTask(t);
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(tasks);
+}
+void ExpertDiscoveryView::sl_loadControlMrkTaskStateChanged(){
+    ExpertDiscoveryLoadControlMrkTask *loadTask = qobject_cast<ExpertDiscoveryLoadControlMrkTask*>(sender());
+    if (!loadTask || !loadTask->isFinished()) {
+        return;
+    }
+
+    if (loadTask->getStateInfo().hasError()) {
+        ExpertDiscoveryErrors::markupLoadError();
+        return;
+    }
+}
 
 void ExpertDiscoveryView::initADVView(AnnotatedDNAView* adv){
     if(!adv){
@@ -501,7 +501,7 @@ void ExpertDiscoveryView::sl_updateAll(){
     loadControlSeqAction->setEnabled(enableActions);
     extractSignalsAction->setEnabled(enableActions);
     loadMarkupAction->setEnabled(enableActions);
-    /*loadControlMarkupAction->setEnabled(d.getConSeqBase().getSize() != 0);*/
+    loadControlMarkupAction->setEnabled(d.getConSeqBase().getSize() != 0);
     generateFullReportAction->setEnabled(enableActions);
 
 }
@@ -608,7 +608,7 @@ void ExpertDiscoveryView::sl_loadControlTaskStateChanged(){
 
     signalsWidget->updateSequenceBase(PIT_CONTROLSEQUENCEBASE);
 
-    /*loadControlMarkupAction->setEnabled(true);*/
+    loadControlMarkupAction->setEnabled(true);
 
 }
 
@@ -1054,7 +1054,7 @@ void ExpertDiscoveryViewWindow::setupMDIToolbar(QToolBar* tb){
     tb->addAction(curEdView->getLoadMarkupAction());
     tb->addSeparator();
     tb->addAction(curEdView->getLoadControlSeqAction());
-    //tb->addAction(curEdView->getLoadControlMarkupAction());
+    tb->addAction(curEdView->getLoadControlMarkupAction());
     tb->addSeparator();
     tb->addAction(curEdView->getExtractSignalsAction());
     tb->addSeparator();

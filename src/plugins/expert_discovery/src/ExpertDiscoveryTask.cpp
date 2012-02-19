@@ -34,6 +34,7 @@
 #include <U2Core/GHints.h>
 
 #include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
 
 #include <QtCore/QSet>
 #include <QtCore/QList>
@@ -44,11 +45,12 @@
 
 namespace U2 {
 
-ExpertDiscoveryLoadPosNegTask::ExpertDiscoveryLoadPosNegTask(QString firstF, QString secondF, bool generateNeg)
+ExpertDiscoveryLoadPosNegTask::ExpertDiscoveryLoadPosNegTask(QString firstF, QString secondF, bool generateNeg, int _negPerPositive)
 : Task(tr("ExpertDiscovery loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel)){
     firstFile = firstF;
     secondFile = secondF;
     this->generateNeg = generateNeg;
+	negPerPositive = _negPerPositive;
 }
 
 ExpertDiscoveryLoadPosNegTask::~ExpertDiscoveryLoadPosNegTask(){
@@ -154,7 +156,7 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
     }
 }
 
-#define NUMBER_OF_NEGATIVE_PER_POSITIVE 1000
+//#define NUMBER_OF_NEGATIVE_PER_POSITIVE 10
 QList<DNASequence> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList<GObject*> &objects){
     QList<DNASequence> neg;
     int acgtContent[4];
@@ -163,7 +165,7 @@ QList<DNASequence> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList
         if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
             U2SequenceObject* seq = (U2SequenceObject*)obj;
             calculateACGTContent(seq->getWholeSequence(),acgtContent);
-            for (int i = 0; i < NUMBER_OF_NEGATIVE_PER_POSITIVE; i++){
+            for (int i = 0; i < negPerPositive; i++){
                 QByteArray curArr = generateRandomSequence(acgtContent, seq->getSequenceLength());
                 QString name = seq->getGObjectName();
                 name = name.append(QString("_neg%1").arg(i));
@@ -177,7 +179,7 @@ QList<DNASequence> ExpertDiscoveryLoadPosNegTask::sequencesGenerator(const QList
                 QList<DNASequence> sequences = MSAUtils::ma2seq(ma, false);
                 foreach(DNASequence seq, sequences){
                     calculateACGTContent(seq,acgtContent);
-                    for (int i = 0; i < NUMBER_OF_NEGATIVE_PER_POSITIVE; i++){
+                    for (int i = 0; i < negPerPositive; i++){
                         QByteArray curArr = generateRandomSequence(acgtContent, seq.length());
                         QString name = seq.getName();
                         name = name.append(QString("_neg%1").arg(i));
@@ -472,12 +474,70 @@ bool ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(MarkingBa
 
 ExpertDiscoveryLoadControlMrkTask::ExpertDiscoveryLoadControlMrkTask(QString firstF, ExpertDiscoveryData& edD)
 : Task(tr("ExpertDiscovery loading"), TaskFlags(TaskFlag_NoRun | TaskFlag_FailOnSubtaskCancel))
-,edData(edD){
+,edData(edD)
+,conDoc(NULL){
     firstFile = firstF;
 }
 
 void ExpertDiscoveryLoadControlMrkTask::prepare(){
-    edData.loadControlSequenceAnnotation(firstFile);
+
+	QString strPosName = firstFile;
+	try {
+		if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
+			edData.loadControlSequenceAnnotation(strPosName);
+		} else  {
+			QList<FormatDetectionResult> curFormats = DocumentUtils::detectFormat(firstFile);
+			if (!curFormats.isEmpty()){
+				if(curFormats.first().format->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
+					GUrl url(strPosName);
+					IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
+					DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
+
+					conDoc = f->createNewUnloadedDocument(iof, url, stateInfo);
+					CHECK_OP(stateInfo, );
+					addSubTask(new LoadUnloadedDocumentTask(conDoc));
+
+				} else {
+					ifstream fConAnn(strPosName.toStdString().c_str());  
+					edData.getConMarkBase().load(fConAnn);
+				}
+			}
+		}
+	}
+	catch (exception& ex) {
+		edData.getConMarkBase().clear();
+		QString str = "Control annotation: ";
+		str += ex.what();
+		QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
+		mb.exec();
+		setError(str);
+		return;
+	}
+}
+
+Task::ReportResult ExpertDiscoveryLoadControlMrkTask::report(){
+	if (isCanceled() || hasError()) {
+		return ReportResult_Finished;
+	}
+
+	if(conDoc){
+		try {
+			if (!ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(edData.getConMarkBase(), edData.getConSeqBase(), conDoc))
+				throw std::exception();
+		}catch (exception& ex) {
+			edData.getConMarkBase().clear();
+			QString str = "Control annotation: ";
+			str += ex.what();
+			QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
+			mb.exec();
+			setError(str);
+			return ReportResult_Finished;
+		}
+	}
+
+	edData.getConSeqBase().setMarking(edData.getConMarkBase());
+
+	return ReportResult_Finished;
 }
 
 
@@ -1073,7 +1133,7 @@ ExpertDiscoveryGetRecognitionDataTask::ExpertDiscoveryGetRecognitionDataTask(Exp
 
 }
 void ExpertDiscoveryGetRecognitionDataTask::run(){
-    //isRecData = edData.recDataStorage.getRecognizationData(recData, &curSequence, edData.getSelectedSignalsContainer(), stateInfo);
+    isRecData = edData.recDataStorage.getRecognizationData(recData, &curSequence, edData.getSelectedSignalsContainer(), stateInfo);
 }
 
 ExpertDiscoverySaveDocumentTask::ExpertDiscoverySaveDocumentTask(ExpertDiscoveryData& data, const QString& fileName)
@@ -1377,4 +1437,49 @@ QList<ExpertDiscoverySearchResult> ExpertDiscoverySearchTask::takeResults() {
     return res;
 }
 
+
+
+ExpertDiscoveryExportSequences::ExpertDiscoveryExportSequences( const SequenceBase& _base )
+:Task(tr("Export Sequences Task"), TaskFlag_None)
+,base(_base)
+{
+
+}
+
+
+void ExpertDiscoveryExportSequences::prepare(){
+	QFileDialog saveRepDialog;
+	saveRepDialog.setFileMode(QFileDialog::AnyFile);
+	saveRepDialog.setNameFilter(tr("Fasta Files (*.fa *.fasta)"));
+	saveRepDialog.setViewMode(QFileDialog::Detail);
+	saveRepDialog.setAcceptMode(QFileDialog::AcceptSave);
+
+	if(saveRepDialog.exec()){
+		QStringList fileNames = saveRepDialog.selectedFiles();
+		if(fileNames.isEmpty()) return;
+
+		fileName = fileNames.first();
+	}
+
+		
+}
+
+void ExpertDiscoveryExportSequences::run()
+{
+
+	if(fileName.isEmpty() || isCanceled()){
+
+	}
+
+	ofstream out(fileName.toStdString().c_str());
+	
+	if(!out.is_open()){
+		QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
+		mb.exec();
+		return;
+	}
+
+	base.save(out);
+
+}
 }//namespace

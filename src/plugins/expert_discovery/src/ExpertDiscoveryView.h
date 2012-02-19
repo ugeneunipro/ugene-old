@@ -52,8 +52,8 @@ public:
 
 
 private slots:
-    //     void sl_showExpertDiscoveryControlMrkDialog();
-    //     void sl_loadControlMrkTaskStateChanged();
+    void sl_showExpertDiscoveryControlMrkDialog();
+    void sl_loadControlMrkTaskStateChanged();
 
     void sl_newDoc();
 

@@ -16,7 +16,7 @@ ExpertDiscoveryControlMrkDialog::ExpertDiscoveryControlMrkDialog(QWidget *parent
 
     connect(openFirstButton, SIGNAL(clicked()), SLOT(sl_openFirstFile()));
 
-    filter = DialogUtils::prepareFileFilter("Markup files", QStringList() << "xml");
+    filter = DialogUtils::prepareFileFilter("Markup files", QStringList() << "xml" << "gb");
 }
 
 void ExpertDiscoveryControlMrkDialog::accept(){

@@ -1,7 +1,9 @@
 #include "ExpertDiscoveryTreeWidgetsCtrl.h"
 
+#include "ExpertDiscoveryTask.h"
+
 #include <QStandardItemModel>
-#include<QMessageBox>
+#include <QMessageBox>
 #include <QtGui/QMouseEvent>
 
 
@@ -325,6 +327,7 @@ QMenu* EDProjectTree::chosePopupMen(EDProjectItem* pItem){
             return NULL;
         } 
         generateReportAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
+		exportToSequencesAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
         showFirstSequencesAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
         return popupMenuSequenceBase;
     }
@@ -409,6 +412,9 @@ void EDProjectTree::createPopupsAndActions(){
 
     generateReportAction = new QAction(tr("Generate report"), this);
     connect(generateReportAction, SIGNAL(triggered(bool)), SLOT(sl_generateReport()));
+
+	exportToSequencesAction = new QAction(tr("Export Sequences"), this);
+	connect(exportToSequencesAction, SIGNAL(triggered(bool)), SLOT(sl_exportSequences()));
 
     clearDisplayedAction = new QAction(tr("Clear displayed sequences area"), this);
     connect(clearDisplayedAction, SIGNAL(triggered(bool)), SLOT(sl_clearDisplayed()));
@@ -502,6 +508,7 @@ void EDProjectTree::createPopupsAndActions(){
 
     popupMenuSequenceBase = new QMenu(this);
     popupMenuSequenceBase->addAction(generateReportAction);
+	popupMenuSequenceBase->addAction(exportToSequencesAction);
     popupMenuSequenceBase->addAction(showFirstSequencesAction);
 }
 
@@ -1106,6 +1113,38 @@ void EDProjectTree::sl_generateReport(){
         return;
     }
     edData.generateRecognizationReport(pItem);
+}
+
+void EDProjectTree::sl_exportSequences(){
+	EDPISequenceBase* pItem = dynamic_cast<EDPISequenceBase*>(currentItem());
+	if (!pItem)
+	{
+		return;
+	}
+	//edData.generateRecognizationReport(pItem);
+
+	ExpertDiscoveryExportSequences *t = new ExpertDiscoveryExportSequences(pItem->getSequenceBase());
+
+	AppContext::getTaskScheduler()->registerTopLevelTask(t);
+// 	QFileDialog saveRepDialog;
+// 	saveRepDialog.setFileMode(QFileDialog::AnyFile);
+// 	saveRepDialog.setNameFilter(tr("Fasta Files (*.fa *.fasta)"));
+// 	saveRepDialog.setViewMode(QFileDialog::Detail);
+// 	saveRepDialog.setAcceptMode(QFileDialog::AcceptSave);
+// 
+// 	if(saveRepDialog.exec()){
+// 		QStringList fileNames = saveRepDialog.selectedFiles();
+// 		if(fileNames.isEmpty()) return;
+// 
+// 		QString fileName = fileNames.first();
+// 
+// 		GUrl URL(strNegName);
+// 		IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
+// 		DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
+// 
+// 		negDoc = f->createNewUnloadedDocument(iof, URL, stateInfo);
+// 		CHECK_OP(stateInfo,);
+// 		addSubTask(new LoadUnloadedDocumentTask(negDoc));
 }
 
 void EDProjectTree::sl_sortField(QAction* action){

@@ -50,6 +50,9 @@ Interval Marking::hasSignalAt(Interval interval, string name, string family) con
     to_upper(name);
     to_upper(family);
 
+	if(marking.empty() || marking.count(family) == 0){
+		return Interval();
+	}
 	MarkingData::const_iterator family_pos = marking.find(family);
 	if (family_pos==marking.end()) return Interval();
 	const FamilyMarking& family_marking = family_pos->second;

@@ -32,7 +32,7 @@ class Document;
 class ExpertDiscoveryLoadPosNegTask: public Task{
     Q_OBJECT
 public:
-    ExpertDiscoveryLoadPosNegTask(QString firstF, QString secondF, bool generateNeg);
+    ExpertDiscoveryLoadPosNegTask(QString firstF, QString secondF, bool generateNeg, int negPerPositive);
     ~ExpertDiscoveryLoadPosNegTask();
 
     void run(){};
@@ -45,6 +45,7 @@ public:
 private:
     QString firstFile, secondFile;
     bool generateNeg;
+	int negPerPositive;
     QList<Document*> docs;
 
     Document* loadFile(QString inFile);
@@ -90,6 +91,8 @@ public:
     void prepare();
     ReportResult report();
 
+	static bool loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc);
+
 private:
     QString firstFile, secondFile, thirdFile;
     bool generateDescr;
@@ -100,7 +103,7 @@ private:
     Document* posDoc;
     Document* negDoc;
 
-    bool loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc);
+    
     //Document* loadFile(QString inFile);
 
 signals:
@@ -114,10 +117,12 @@ public:
 
     void run(){};
     void prepare();
+	ReportResult report();
 
 private:
     QString firstFile;
     ExpertDiscoveryData& edData;
+	Document* conDoc;
 
     //Document* loadFile(QString inFile);
 
@@ -388,6 +393,17 @@ private:
     int                                 lenLeft;
     int                                 curLeft;
 };
+
+
+class ExpertDiscoveryExportSequences : public Task{
+public:
+	ExpertDiscoveryExportSequences(const SequenceBase& base);
+	void prepare();
+	void run();
+private:
+	const SequenceBase& base;
+	QString fileName;
+};   
 
         
 }//namespace

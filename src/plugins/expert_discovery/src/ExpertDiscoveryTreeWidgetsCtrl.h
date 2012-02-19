@@ -65,6 +65,7 @@ protected slots:
     void sl_showFirstSequences();
     void sl_setMetainfoBase();
     void sl_generateReport();
+	void sl_exportSequences();
     void sl_sortField(QAction* action);
     void sl_sortOrd(QAction* action);
 
@@ -111,6 +112,7 @@ private:
     QAction*    showSequenceAction;
     QAction*    addToShownAction;
     QAction*    generateReportAction;
+	QAction*    exportToSequencesAction;
     QAction*    clearDisplayedAction;
     QAction*    showFirstSequencesAction;
 
