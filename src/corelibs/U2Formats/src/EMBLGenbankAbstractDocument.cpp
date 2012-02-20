@@ -377,7 +377,7 @@ static void checkQuotes(const char* str, int len, bool& outerQuotes, bool& doubl
 }
 
 SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, char* cbuff, int len, 
-                                                                 int READ_BUFF_SIZE, U2OpStatus& si, int offset) 
+                                                                 int READ_BUFF_SIZE, U2OpStatus& si, int offset, int seqLen) 
 {
     AnnotationData* a = new AnnotationData();
     SharedAnnotationData f(a);
@@ -395,7 +395,7 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
         return SharedAnnotationData();
     }
 
-    Genbank::LocationParser::parseLocation(cbuff+21, qlen-21, a->location, offset == 0 ? -1 : offset);
+    Genbank::LocationParser::parseLocation(cbuff+21, qlen-21, a->location, seqLen);
     if (a->location->isEmpty()) {
         si.setError(EMBLGenbankAbstractDocument::tr("Error parsing location"));
         return SharedAnnotationData();
@@ -583,7 +583,7 @@ void EMBLGenbankAbstractDocument::readAnnotations(ParserState* st, int offset) {
             break;
         }
         //parsing feature;
-        SharedAnnotationData f = readAnnotation(st->io, st->buff, st->len, ParserState::READ_BUFF_SIZE, st->si, offset);
+        SharedAnnotationData f = readAnnotation(st->io, st->buff, st->len, ParserState::READ_BUFF_SIZE, st->si, offset, st->entry->seqLen);
         st->entry->features.push_back(f);
     } while (st->readNextLine());
 }

@@ -39,7 +39,7 @@ protected:
     bool readEntry(ParserState*, U2SequenceImporter&,int& seqSize,int& fullSeqSize,bool merge, int gapSize,U2OpStatus&);
     bool readSequence(ParserState*, U2SequenceImporter&, int&, int&, U2OpStatus&);
     void readAnnotations(ParserState*, int offset);
-    SharedAnnotationData readAnnotation(IOAdapter* io, char* cbuff, int contentLen, int bufSize, U2OpStatus& si, int offset);
+    SharedAnnotationData readAnnotation(IOAdapter* io, char* cbuff, int contentLen, int bufSize, U2OpStatus& si, int offset, int seqLen=-1);
     //void readAnnotations(ParserState*, int offset);
     QMap<QString, QString> tagMap;
 };
