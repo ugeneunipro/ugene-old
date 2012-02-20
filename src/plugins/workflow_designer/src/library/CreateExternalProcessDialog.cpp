@@ -485,7 +485,8 @@ private:
 
 
 
-CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalProcessConfig *cfg):QWizard(p), initialCfg(NULL) {
+CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalProcessConfig *cfg, bool lastPage)
+: QWizard(p), initialCfg(NULL), lastPage(lastPage) {
     ui.setupUi(this);
     connect(ui.addInputButton, SIGNAL(clicked()), SLOT(sl_addInput()));
     connect(ui.addOutputButton, SIGNAL(clicked()), SLOT(sl_addOutput()));
@@ -626,7 +627,8 @@ void CreateExternalProcessDialog::sl_deleteAttribute() {
     validateAttributeModel();
 }
 
-CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/ ): QWizard(p), initialCfg(NULL) {
+CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/ )
+: QWizard(p), initialCfg(NULL), lastPage(false) {
     ui.setupUi(this);
     connect(ui.addInputButton, SIGNAL(clicked()), SLOT(sl_addInput()));
     connect(ui.addOutputButton, SIGNAL(clicked()), SLOT(sl_addOutput()));
@@ -677,6 +679,15 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
 
 CreateExternalProcessDialog::~CreateExternalProcessDialog() {
     delete initialCfg;
+}
+
+void CreateExternalProcessDialog::showEvent(QShowEvent *event) {
+    QDialog::showEvent(event);
+    if (lastPage) {
+        for (int i=0; i<(pageIds().size()-1); i++) {
+            next();
+        }
+    }
 }
 
 void CreateExternalProcessDialog::accept() {

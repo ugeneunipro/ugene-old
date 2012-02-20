@@ -542,7 +542,7 @@ void WorkflowView::sl_editExternalTool() {
 
         ExternalProcessConfig *oldCfg = WorkflowEnv::getExternalCfgRegistry()->getConfigByName(proto->getId());
         ExternalProcessConfig *cfg = new ExternalProcessConfig(*oldCfg);
-        CreateExternalProcessDialog dlg(this, cfg);
+        CreateExternalProcessDialog dlg(this, cfg, true);
         if(dlg.exec() == QDialog::Accepted) {
             cfg = dlg.config();
 

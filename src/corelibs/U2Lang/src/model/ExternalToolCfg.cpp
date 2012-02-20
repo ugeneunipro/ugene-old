@@ -28,12 +28,14 @@ DocumentFormatId DataConfig::StringValue = DocumentFormatId("string-value");
 bool DataConfig::operator ==(const DataConfig &other) const {
     return attrName == other.attrName
         && type == other.type
-        && format == other.format;
+        && format == other.format
+        && description == other.description;
 }
 
 bool AttributeConfig::operator ==(const AttributeConfig &other) const {
     return attrName == other.attrName
-        && type == other.type;
+        && type == other.type
+        && description == other.description;
 }
 
 #define CHECK_EQ(expr1, expr2) \
@@ -46,6 +48,7 @@ bool ExternalProcessConfig::operator ==(const ExternalProcessConfig &other) cons
     CHECK_EQ(outputs.size(), other.outputs.size());
     CHECK_EQ(attrs.size(), other.attrs.size());
     CHECK_EQ(name, other.name);
+    CHECK_EQ(description, other.description);
 
     foreach (const DataConfig &in, inputs) {
         CHECK_EQ(other.inputs.contains(in), true);

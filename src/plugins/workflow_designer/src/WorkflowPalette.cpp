@@ -425,7 +425,7 @@ void WorkflowPalette::editElement() {
     } else { //External process category
         ExternalProcessConfig *oldCfg = WorkflowEnv::getExternalCfgRegistry()->getConfigByName(proto->getId());
         ExternalProcessConfig *cfg = new ExternalProcessConfig(*oldCfg);
-        CreateExternalProcessDialog dlg(this, cfg);
+        CreateExternalProcessDialog dlg(this, cfg, false);
         if(dlg.exec() == QDialog::Accepted) {
             cfg = dlg.config();
 
