@@ -190,11 +190,11 @@ void TandemFinder_Region::prepare(){
     Q_ASSERT(settings.minPeriod<=settings.maxPeriod);
     int period=1;
     for (; period<=16; period = period*2+1){
-        if (period*2<settings.minPeriod || period>settings.maxPeriod) continue;
+        if (period*2<settings.minPeriod || period>settings.maxPeriod || period>=seqSize) continue;
         addSubTask( new ExactSizedTandemFinder(sequence, seqSize, settings, period) );
     }
     {
-        if (period>settings.maxPeriod ) return;
+        if (period>settings.maxPeriod) return;
         addSubTask( new LargeSizedTandemFinder(sequence, seqSize, settings, period) );
     }
 //    setMaxParallelSubtasks(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
@@ -320,8 +320,11 @@ void ExactSizedTandemFinder::run(){
                 if (currentDiffPos+suffixOffset>sArrayLast || currentDiffPos[suffixOffset]-currentDiffPos[0]!=suffixOffset*diff){
 //                    currentDiffPos += suffixOffset;continue;
                 }else{
-                    const char* seq0 = seqCast(currentDiffPos,0);
-                    const char* seq1 = seqCast(currentDiffPos,suffixOffset);
+                    const char* seq0 = index->sarr2seq(currentDiffPos);//seqCast(currentDiffPos,0);
+                    const char* seq1 = index->sarr2seq(currentDiffPos+suffixOffset);//seqCast(currentDiffPos,suffixOffset);
+                    if(seq0 == NULL || seq1 == NULL){
+                        continue;
+                    }
                     // in the other words  prefix currentDiffPos[0]==currentDiffPos[suffixOffset]
                     if (comparePrefixChars(seq0,seq1)){
                         currentDiffPos = checkAndSpreadTandem(currentDiffPos,currentDiffPos+suffixOffset, diff);
@@ -340,7 +343,7 @@ bool ExactSizedTandemFinder::comparePrefixChars(const char* first,const char* se
     return strncmp(first,second,prefixLength)==0;
 }
 quint32* ExactSizedTandemFinder::checkAndSpreadTandem(const quint32* tandemStartIndex, const quint32* tandemLastIndex, quint32 repeatLen){
-    const char* tandemStart = seqCast(tandemStartIndex,0);
+    const char* tandemStart = index->sarr2seq(tandemStartIndex);//seqCast(tandemStartIndex,0);
 /*    const Tandem small_tandem(tandemStart - sequence, repeatLen, ((char*)tandemLastIndex[0]+repeatLen)-tandemStart);
     QMap<Tandem,Tandem>::iterator it = rawTandems.find(small_tandem);
     if (it!=rawTandems.end()){ // there are close tandems
@@ -359,7 +362,7 @@ quint32* ExactSizedTandemFinder::checkAndSpreadTandem(const quint32* tandemStart
         do{
             ++arrRunner;
         }while (arrRunner<sArrayLast && arrRunner[1]-arrRunner[0]==repeatLen);
-        while(!comparePrefixChars(tandemStart, seqCast(arrRunner,0))){
+        while(!comparePrefixChars(tandemStart, index->sarr2seq(arrRunner)/*seqCast(arrRunner,0)*/)){
             --arrRunner;
         }
     }
@@ -368,7 +371,7 @@ quint32* ExactSizedTandemFinder::checkAndSpreadTandem(const quint32* tandemStart
     if (false){
     }else{
         // in this case seqCast(tandemStartIndex,1)==seqCast(tandemStartIndex,0)+repeatLen
-        char* seqRunner = seqCast(arrRunner,0);
+        const char* seqRunner = index->sarr2seq(arrRunner);//seqCast(arrRunner,0);
         //move forward by 0.5-1.0 repeatlen to find exact lower bound
         const char* seqEnd = sequence + seqSize;
         while(seqRunner<=seqEnd-repeatLen && strncmp(tandemStart, seqRunner, repeatLen)==0 ){
@@ -505,8 +508,8 @@ void LargeSizedTandemFinder::run(){
                 if (currentDiffPos+suffixOffset>sArrayLast || currentDiffPos[suffixOffset]-currentDiffPos[0]!=suffixOffset*diff){
                     //                    currentDiffPos += suffixOffset;continue;
                 }else{
-                    const char* seq0 = seqCast(currentDiffPos,0);
-                    const char* seq1 = seqCast(currentDiffPos,suffixOffset);
+                    const char* seq0 = index->sarr2seq(currentDiffPos);//seqCast(currentDiffPos,0);
+                    const char* seq1 = index->sarr2seq(currentDiffPos+suffixOffset);//seqCast(currentDiffPos,suffixOffset);
                     // in the other words  prefix currentDiffPos[0]==currentDiffPos[1]
                     if (comparePrefixChars(seq0,seq1)){
                         currentDiffPos = checkAndSpreadTandem(currentDiffPos,currentDiffPos+suffixOffset, diff);
@@ -524,7 +527,7 @@ bool LargeSizedTandemFinder::comparePrefixChars(const char* first,const char* se
     return strncmp(first,second,prefixLength)==0;
 }
 quint32* LargeSizedTandemFinder::checkAndSpreadTandem(const quint32* tandemStartIndex, const quint32* tandemLastIndex, const unsigned repeatLen){
-    const char* tandemStart = seqCast(tandemStartIndex,0);
+    const char* tandemStart = index->sarr2seq(tandemStartIndex);//seqCast(tandemStartIndex,0);
 /*    const Tandem small_tandem(tandemStart - sequence, repeatLen, ((char*)tandemLastIndex[0]+repeatLen)-tandemStart);
     QMap<Tandem,Tandem>::iterator it = rawTandems.find(small_tandem);
     if (it!=rawTandems.end()){ // there are close tandems
@@ -543,7 +546,7 @@ quint32* LargeSizedTandemFinder::checkAndSpreadTandem(const quint32* tandemStart
         do{
             ++arrRunner;
         }while (arrRunner<sArrayLast && arrRunner[1]-arrRunner[0]==repeatLen);
-        while(!comparePrefixChars(tandemStart, seqCast(arrRunner,0))){
+        while(!comparePrefixChars(tandemStart, index->sarr2seq(arrRunner)/*seqCast(arrRunner,0)*/)){
             --arrRunner;
         }
     }
@@ -552,7 +555,7 @@ quint32* LargeSizedTandemFinder::checkAndSpreadTandem(const quint32* tandemStart
     if (false){
     }else{
         // in this case seqCast(tandemStartIndex,1)==seqCast(tandemStartIndex,0)+repeatLen
-        char* seqRunner = seqCast(arrRunner,0);
+        const char* seqRunner = index->sarr2seq(arrRunner);//seqCast(arrRunner,0);
         //move forward by 0.5-1.0 of repeat len to find exact lower bound
         const char* seqEnd = sequence + seqSize;
         while(seqRunner<=seqEnd-repeatLen && strncmp(tandemStart, seqRunner, repeatLen)==0 ){

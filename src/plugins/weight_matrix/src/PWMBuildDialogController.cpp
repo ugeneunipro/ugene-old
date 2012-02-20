@@ -81,9 +81,8 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
         return;
     }
 
-    QString inFile = QFileInfo(lod.url).absoluteFilePath();
-    inputEdit->setText(inFile);
     
+    QString inFile = QFileInfo(lod.url).absoluteFilePath();
     QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
         return;
@@ -106,7 +105,14 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
         }
     }
 
-    //DocumentFormat* format = formats.first();
+    if(format == NULL){
+        QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Could not detect format of the file. Files must be in supported malignment or sequence formats."));
+        mb.exec();
+        return;
+    }
+    
+    inputEdit->setText(inFile);
+
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(inFile));
     TaskStateInfo ti;
     QVariantMap hints;

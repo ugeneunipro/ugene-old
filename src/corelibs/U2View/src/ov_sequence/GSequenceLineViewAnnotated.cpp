@@ -448,7 +448,13 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation(QPainter& p, DrawAnnot
         bool rightTrim = visibleLocation.endPos()!= r.endPos();
         bool drawArrow = a->getStrand().isCompementary() ? !leftTrim : !rightTrim;
         if (drawSettings.drawAnnotationArrows && drawArrow ) {
-            addArrowPath(rectPath, annotationRect, a->getStrand().isCompementary());
+            bool isLeft = false;
+            if(ri == 1 && a->findFirstQualifierValue("rpt_type") == "inverted"){ //temporary solution for drawing inverted repeats correct
+                isLeft = true;
+            }else{
+                isLeft = a->getStrand().isCompementary();
+            }
+            addArrowPath(rectPath, annotationRect, isLeft);
         } /* else  {
             if (leftTrim) {
                 addTrimPath(rectPath, annotationRect, true);

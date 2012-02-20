@@ -49,7 +49,7 @@ public:
     void cleanup();
 
 private:
-    void addResult(int a, int s, int l);
+    void addResult(int a, int s, int l, int c);
     void calculate(RFSArrayWKSubtask* t);
     
 public:	

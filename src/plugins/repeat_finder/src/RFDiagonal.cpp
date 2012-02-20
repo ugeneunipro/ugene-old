@@ -108,7 +108,7 @@ void RFDiagonalWKSubtask::processDiagonal(int x, int y){
 
     assert(xseqMax - xseq >= 0 && yseqMax - yseq >= 0);
     while (xseq < xseqMax && yseq < yseqMax) {
-        int c = 0; //number of mismatches
+        int c = 0; //number of mismatches (temporary)
         for (const char* s = xseq - W; xseq > s && (c += (PCHAR_MATCHES(xseq, yseq) ? 0 : 1)) <= C; xseq--, yseq--){}
         if (c > C) {
             xseq += W;
@@ -123,7 +123,11 @@ void RFDiagonalWKSubtask::processDiagonal(int x, int y){
         while (len > W && !PCHAR_MATCHES(xseq, yseq)){len--; xseq++; yseq++;} //ensure that match with len > W starts with hit
         int step = len;
         while (len > W && !PCHAR_MATCHES(xseq + len - 1, yseq + len - 1)){len--;} //ensure that match with len > W ends with hit
-        RFResult r(xseq - dataX, yseq - dataY, len);
+        int allMatches = 0;
+        const char* xsqS = xseq;
+        const char* ysqS = yseq;
+        for(int i = len-1; i>=0; --i, xsqS++, ysqS++){allMatches += PCHAR_MATCHES(xsqS, ysqS)? 1 : 0;} //matches
+        RFResult r(xseq - dataX, yseq - dataY, len, allMatches);
         assert(owner->checkResult(r));
         diagResults.append(r);
         xseq += step + 1;

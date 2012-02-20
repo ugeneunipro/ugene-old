@@ -164,7 +164,7 @@ GObject* GObjectUtils::selectObjectByReference(const GObjectReference& r, const 
 }
 
 DNATranslation* GObjectUtils::findComplementTT(DNAAlphabet* al) {
-    if (!al->isNucleic()) {
+    if (!al || !al->isNucleic()) {
         return NULL;
     }
     return AppContext::getDNATranslationRegistry()->lookupComplementTranslation(al);

@@ -61,7 +61,7 @@ public:
     bool                excludeTandems;
 
     void setIdentity(int percent) {mismatches = int((minLen / 100.0) * (100 - percent));}
-    int  getIdentity() const {return qBound(50, int(100.0 - mismatches * 100. /minLen), 100);}
+    int  getIdentity(int mismatch = -1) const {return qBound(50, int(100.0 - (mismatch == -1 ? mismatches : mismatch) * 100. /minLen), 100);}
     bool hasRegionFilters() const {return !midRegionsToInclude.isEmpty() || !midRegionsToExclude.isEmpty() || !allowedRegions.isEmpty();}
 
 };
@@ -89,7 +89,7 @@ public:
 
 protected:
     void addResult(const RFResult& r);
-    void _addResult(int x, int y, int l);
+    void _addResult(int x, int y, int l, int c);
     bool isFilteredByRegions(const RFResult& r);
     RFAlgorithmBase* createRFTask();
     void filterNestedRepeats();
@@ -118,10 +118,11 @@ public:
     QList<SharedAnnotationData> importAnnotations();
 
 private:
-    QString             annName;
-    QString             annGroup;
-    GObjectReference    annObjRef;
-    FindRepeatsTask*    findTask;
+    QString                 annName;
+    QString                 annGroup;
+    GObjectReference        annObjRef;
+    FindRepeatsTask*        findTask;
+    FindRepeatsTaskSettings settings;
 };
 
 class RevComplSequenceTask : public Task {

@@ -97,7 +97,7 @@ void RFAlgorithmBase::setRFResultsListener(RFResultsListener* newListener) {
 // adds single result to global results 
 void RFAlgorithmBase::addToResults(const RFResult& r){
 #ifdef _DEBUG
-   // checkResult(r);
+    checkResult(r);
 #endif
     if (!resultsListener) {
         cancel();
@@ -106,14 +106,14 @@ void RFAlgorithmBase::addToResults(const RFResult& r){
     resultsListener->onResult(r);
     if (reflective && reportReflected) {
         assert(r.x!=r.y);
-        resultsListener->onResult(RFResult(r.y, r.x, r.l));
+        resultsListener->onResult(RFResult(r.y, r.x, r.l, r.c));
     }
 }
 
 // adds single result to global results 
 void RFAlgorithmBase::addToResults(const QVector<RFResult>& results) {
 #ifdef _DEBUG
- //   checkResults(results);
+    checkResults(results);
 #endif
     if (!resultsListener) {
         cancel();
@@ -128,7 +128,7 @@ void RFAlgorithmBase::addToResults(const QVector<RFResult>& results) {
                 assert(r.l == qMin(SIZE_X, SIZE_Y));
                 continue;
             }
-            complResults.append(RFResult(r.y, r.x, r.l));
+            complResults.append(RFResult(r.y, r.x, r.l, r.c));
         }
         resultsListener->onResults(complResults);
     }
@@ -181,10 +181,12 @@ bool RFAlgorithmBase::checkResult(const RFResult& r) {
 
     //check that for every window W inside of the result the match rate is valid
     int c = 0;
+    int allMatches = 0;
     for (int i=0; i < r.l; i++) {
         char cx = seqX[r.x + i];
         char cy = seqY[r.y + i];
         c+=CHAR_MATCHES(cx, cy) ? 0 : 1;
+        allMatches+=CHAR_MATCHES(cx, cy) ? 1 : 0;
             
         if (i >= int(WINDOW_SIZE)) {
             char cxp = seqX[r.x + i - WINDOW_SIZE];
@@ -193,6 +195,7 @@ bool RFAlgorithmBase::checkResult(const RFResult& r) {
         }
         assert(c <= C);
     }
+    assert(allMatches == r.c);
     return true;
 }
 

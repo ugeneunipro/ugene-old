@@ -53,7 +53,7 @@ public:
     
 private:
     void run(RFSArrayWSubtask* t);
-    void addResult(int a, int s, int l, RFSArrayWSubtask* t);
+    void addResult(int a, int s, int l, int c, RFSArrayWSubtask* t);
     void processBoundaryResults();
 
     static int getWGap(int w);

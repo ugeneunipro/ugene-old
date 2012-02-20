@@ -176,12 +176,13 @@ void RFSArrayWAlgorithm::calculate(RFSArrayWSubtask* t) {
             // now extend result forward
             const char* lastS = edge->lastS;
             const char* lastA = dataA + (lastS-dataS) + edge->diag;
-            for (;lastS < dataSEnd && lastA < dataAEnd && PCHAR_MATCHES(lastS, lastA); lastS++, lastA++){};
+            int allMatches = 0;
+            for (;lastS < dataSEnd && lastA < dataAEnd && PCHAR_MATCHES(lastS, lastA); lastS++, lastA++, allMatches++){};
             int len = lastS - edge->posS;
             if (len >= W) {
                 int s = edge->posS - dataS;
                 int a = edge->diag + s;
-                addResult(a, s, len, t);
+                addResult(a, s, len, allMatches, t);
             }
             edgePool.returnEdge(edge);
         }
@@ -268,14 +269,15 @@ void RFSArrayWAlgorithm::calculate(RFSArrayWSubtask* t) {
             next = edge->next;
             const char* lastS = edge->lastS;
             const char* lastA = dataA + (lastS-dataS) + edge->diag;
-            for (;lastS < dataSEnd && lastA < dataAEnd && PCHAR_MATCHES(lastS, lastA); lastS++, lastA++){}
+            int allMatches = 0;
+            for (;lastS < dataSEnd && lastA < dataAEnd && PCHAR_MATCHES(lastS, lastA); lastS++, lastA++, allMatches++){}
             edge->lastS = lastS;
 
             int len = edge->lastS - edge->posS;
             int s = edge->posS - dataS;
             int a = edge->diag + s;
             if (len >= W) {
-                addResult(a, s, len, t);
+                addResult(a, s, len, allMatches, t);
             }
             delete edge;
         }
@@ -322,15 +324,16 @@ void RFSArrayWAlgorithm::processBoundaryResults() {
             mergedResults.append(rj);
         }
     }
-    assert(checkResults(mergedResults));
+    //assert(checkResults(mergedResults));
     addToResults(mergedResults);
 }
 
 // ast: add one hit in sequence
-void RFSArrayWAlgorithm::addResult(int a, int s, int l, RFSArrayWSubtask* t) {
+void RFSArrayWAlgorithm::addResult( int a, int s, int l, int c, RFSArrayWSubtask* t )
+{
     bool boundary = nThreads > 1 && (s == 0 || s + l == t->sEnd - t->sStart); 
     s+=t->sStart;
-    RFResult r((arrayIsX ? a : s), (arrayIsX ? s : a), l);
+    RFResult r((arrayIsX ? a : s), (arrayIsX ? s : a), l, c);
     if (boundary) {
         QMutexLocker ml(&boundaryMutex);
         bresults.append(r);

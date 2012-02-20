@@ -36,8 +36,8 @@ enum RFAlgorithm {
 
 class RFResult {
 public:
-    RFResult() : x(0), y(0), l(0){}
-    RFResult(int _x, int _y, int _len) : x(_x), y(_y), l(_len){}
+    RFResult() : x(0), y(0), l(0), c(0){}
+    RFResult(int _x, int _y, int _len, int _c = 0) : x(_x), y(_y), l(_len){if(_c==0) c=l; else c = _c;} //if not specified, repeats have no mismatches
 
     bool operator==(const RFResult& r) const {return x == r.x && y == r.y && l == r.l;}
     bool operator!=(const RFResult& r) const {return !(*this == r);}
@@ -46,6 +46,7 @@ public:
     int x;
     int y;
     int l;
+    int c; //matches
 };
 
 class RFResultsListener {

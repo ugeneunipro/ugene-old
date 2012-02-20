@@ -256,6 +256,7 @@ void FindRepeatsTask::addResult(const RFResult& r) {
     int x = r.x + settings.seqRegion.startPos;
     int y = settings.inverted ? settings.seqRegion.endPos() - r.y - r.l : r.y + settings.seq2Region.startPos;
     int l = r.l;
+    int c = r.c;
     assert(x >= settings.seqRegion.startPos && x + r.l <= settings.seqRegion.endPos());
     assert(y >= settings.seq2Region.startPos && y + r.l <= settings.seq2Region.endPos());
 
@@ -266,24 +267,24 @@ void FindRepeatsTask::addResult(const RFResult& r) {
             // match if prefixes fits dist
             int plen = qAbs(x - y) - settings.minDist;
             if (plen  >= settings.minLen) {
-                _addResult(x, y, plen);
+                _addResult(x, y, plen, plen);
             }
             // match if suffixes fits dist
             int dlen = settings.minDist - dist;
             if (l - dlen >= settings.minLen) {
-                _addResult(x + dlen, y + dlen, l - dlen);
+                _addResult(x + dlen, y + dlen, l - dlen, l - dlen);
             }
         }
         return;
     }
-    _addResult(x, y, l);
+    _addResult(x, y, l, c);
 }
 
-void FindRepeatsTask::_addResult(int x, int y, int l) {
+void FindRepeatsTask::_addResult(int x, int y, int l, int c) {
     if (settings.reportReflected || x <= y) {
-        results.append(RFResult(x, y, l));
+        results.append(RFResult(x, y, l, c));
     } else {
-        results.append(RFResult(y, x, l));
+        results.append(RFResult(y, x, l, c));
     }
 }
 
@@ -362,7 +363,7 @@ bool FindRepeatsTask::isFilteredByRegions(const RFResult& r) {
 
 FindRepeatsToAnnotationsTask::FindRepeatsToAnnotationsTask(const FindRepeatsTaskSettings& s, const DNASequence& seq, 
                              const QString& _an, const QString& _gn, const GObjectReference& _aor)
-: Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), annName(_an), annGroup(_gn), annObjRef(_aor), findTask(NULL)
+: Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), annName(_an), annGroup(_gn), annObjRef(_aor), findTask(NULL), settings(s)
 {
     setVerboseLogMode(true);
     if (annObjRef.isValid()) {
@@ -404,11 +405,13 @@ QList<SharedAnnotationData> FindRepeatsToAnnotationsTask::importAnnotations() {
             ad->location->regions << l2 << l1;
         }
         int dist = qAbs(r.x - r.y) - r.l;
-        ad->qualifiers.append(U2Qualifier("repeat_len", QString::number(r.l)));
-            ad->qualifiers.append(U2Qualifier("repeat_dist", QString::number(dist)));
         if (findTask->getSettings().inverted) {
             ad->qualifiers.append(U2Qualifier("rpt_type", "inverted"));
         }
+        ad->qualifiers.append(U2Qualifier("repeat_len", QString::number(r.l)));
+            ad->qualifiers.append(U2Qualifier("repeat_dist", QString::number(dist)));
+            ad->qualifiers.append(U2Qualifier("repeat_homology(%)", QString::number(settings.getIdentity(r.l - r.c))));
+        
         res.append(ad);
     }
     return res;

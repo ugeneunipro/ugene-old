@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -225,6 +226,7 @@ DNAAlphabet* U2AlphabetUtils::deriveCommonAlphabet(DNAAlphabet* al1, DNAAlphabet
     if (al1  == al2) {
         return al1;
     }
+    SAFE_POINT(al1 != NULL && al2 != NULL, "Alphabet is NULL", NULL);
     if (al1->getType() != al2->getType()) {
         return getById(BaseDNAAlphabetIds::RAW());
     }

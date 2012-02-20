@@ -183,14 +183,14 @@ void RFSArrayWKAlgorithm::calculate(RFSArrayWKSubtask* t) {
             while (len > W && !PCHAR_MATCHES(startS + len - 1, startA + len - 1)){len--;} 
 
             //save result
-            addResult(a, s, len);
+            addResult(a, s, len, c);
             assert(len >= W);//a place for a break-point
         }
     }
 }
 
-void RFSArrayWKAlgorithm::addResult(int a, int s, int l) {
-    RFResult res((arrayIsX ? a : s), (arrayIsX ? s : a), l);
+void RFSArrayWKAlgorithm::addResult(int a, int s, int l, int c) {
+    RFResult res((arrayIsX ? a : s), (arrayIsX ? s : a), l, c);
     assert(checkResult(res));
     addToResults(res);
 }
