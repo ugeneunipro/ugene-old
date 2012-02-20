@@ -37,7 +37,8 @@ namespace Genbank {
 class U2FORMATS_EXPORT LocationParser : public QObject {
     Q_OBJECT
 public:
-    static void parseLocation(const char* str, int len, U2Location& location);
+    /**/
+    static void parseLocation(const char* str, int len, U2Location& location, qint64 seqlenForCircular = -1);
 
     static QString buildLocationString(const AnnotationData* a);
 

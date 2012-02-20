@@ -395,7 +395,7 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
         return SharedAnnotationData();
     }
 
-    Genbank::LocationParser::parseLocation(cbuff+21, qlen-21, a->location);
+    Genbank::LocationParser::parseLocation(cbuff+21, qlen-21, a->location, offset == 0 ? -1 : offset);
     if (a->location->isEmpty()) {
         si.setError(EMBLGenbankAbstractDocument::tr("Error parsing location"));
         return SharedAnnotationData();

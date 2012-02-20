@@ -208,6 +208,7 @@ public:
         join(false),
         order(false)
     {
+        seqLenForCircular = -1;
     }
 
     bool parse(U2Location &result) {
@@ -223,7 +224,11 @@ public:
         return true;
     }
 
+    void setSeqLenForCircular(quint64 val) { seqLenForCircular = val; }
 private:
+    quint64 seqLenForCircular;
+    
+
     bool parseNumber(quint64 &result) {
         if(lexer.peek().getType() != Token::NUMBER) {
             return false;
@@ -319,8 +324,15 @@ private:
                 }
             }
             if(!remoteEntry) { // ignore remote entries
-                location->regions.append(toRegion(firstBase, secondNumber));
-                location->regionType = U2LocationRegionType_Default;
+                if(seqLenForCircular != -1 && firstBase > secondNumber){
+                    location->regions.append(toRegion(1, secondNumber));
+                    location->regions.append(toRegion(firstBase, seqLenForCircular));
+                    location->regionType = U2LocationRegionType_Default;
+                    location->op = U2LocationOperator_Join;
+                }else{
+                    location->regions.append(toRegion(firstBase, secondNumber));
+                    location->regionType = U2LocationRegionType_Default;
+                }
             }
         } else if(match(Token::CARET)) {
             if(firstBaseIsFromRange) { // ranges are only allowed in spans
@@ -334,8 +346,15 @@ private:
                 return false;
             }
             if(!remoteEntry) { // ignore remote entries
-                location->regions.append(toRegion(firstBase, secondBase));
-                location->regionType = U2LocationRegionType_Site;
+                if(seqLenForCircular != -1 && firstBase > secondBase){
+                    location->regions.append(toRegion(1, secondBase));
+                    location->regions.append(toRegion(firstBase, seqLenForCircular));
+                    location->regionType = U2LocationRegionType_Default;
+                    location->op = U2LocationOperator_Join;
+                }else{
+                    location->regions.append(toRegion(firstBase, secondBase));
+                    location->regionType = U2LocationRegionType_Site;
+                }
             }
         } else {
             if(firstBaseIsFromRange) { // ranges are only allowed in spans
@@ -436,8 +455,10 @@ private:
 
 }
 
-void LocationParser::parseLocation(const char* _str, int _len, U2Location& location) {
+void LocationParser::parseLocation( const char* _str, int _len, U2Location& location, qint64 seqlenForCircular )
+{
     Parser parser(QByteArray(_str, _len));
+    parser.setSeqLenForCircular(seqlenForCircular);
     if(!parser.parse(location)) {
         location->regions.clear();
     }
