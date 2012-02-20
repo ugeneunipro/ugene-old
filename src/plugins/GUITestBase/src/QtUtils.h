@@ -1,3 +1,24 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
 #ifndef _U2_QT_UTILS_H_
 #define _U2_QT_UTILS_H_
 
@@ -49,6 +70,10 @@ public:
 	static void clickMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu);
 	static void clickContextMenu(U2OpStatus &os, const QString &menuName);
 	static void contextMenu(U2OpStatus &os, const QString &widgetName, const QPoint &pos = QPoint());
+
+	// expand top level menu "MW_MENU" and click on the item
+	// Example: clickMenuAction(os, ACTION__ABOUT, MWMENU_HELP);
+	static void clickMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName);
 
     //tree model
 	static void mouseClickOnItem(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());

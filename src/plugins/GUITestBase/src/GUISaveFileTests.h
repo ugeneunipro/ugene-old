@@ -19,18 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_APP_UTILS_H_
-#define _U2_GUI_APP_UTILS_H_
+#ifndef _U2_GUI_SAVE_FILE_TESTS_H_
+#define _U2_GUI_SAVE_FILE_TESTS_H_
 
-#include <U2Core/U2OpStatus.h>
+#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
-class AppUtils {
-public:
-	static void checkUGENETitle(U2OpStatus &os, const QString& title);
+class ProjectSaveAs : public GUITest {
+protected:
+	virtual void execute(U2OpStatus &os);
 };
 
-} // namespace
+} //namespace
 
 #endif

@@ -19,16 +19,19 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_APP_UTILS_H_
-#define _U2_GUI_APP_UTILS_H_
+#ifndef _U2_GUI_DIALOG_UTILS_H_
+#define _U2_GUI_DIALOG_UTILS_H_
 
 #include <U2Core/U2OpStatus.h>
+#include <QtGui/QMessageBox>
 
 namespace U2 {
 
-class AppUtils {
+class GUIDialogUtils {
 public:
-	static void checkUGENETitle(U2OpStatus &os, const QString& title);
+	static void clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b);
+
+	static void fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel = false);
 };
 
 } // namespace

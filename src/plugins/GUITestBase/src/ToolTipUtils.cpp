@@ -19,17 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#include "AppUtils.h"
+#include "ToolTipUtils.h"
 #include "QtUtils.h"
+#include "ProjectUtils.h"
 
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Core/DocumentSelection.h>
+#include <U2Core/GObjectSelection.h>
+#include <U2Gui/ProjectView.h>
+#include <U2Core/ProjectModel.h>
+
 namespace U2 {
 
-void AppUtils::checkUGENETitle(U2::U2OpStatus &os, const QString &title) {
+void ToolTipUtils::checkExistingToolTip(U2OpStatus &os, const QString& tooltip) {
 
-	QString ugeneTitle = AppContext::getMainWindow()->getQMainWindow()->windowTitle();
-	CHECK_SET_ERR(ugeneTitle == title, "UGENE title is <" + ugeneTitle + ">, not <" + title + ">");
+	QString t = getToolTip();
+	CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
+}
+
+void ToolTipUtils::checkProjectTreeToolTip(U2OpStatus &os, const QString& tooltip, int num) {
+
+	QPoint p = ProjectUtils::getTreeViewItemPosition(os, num);
+	QtUtils::moveTo(os, "documentTreeWidget", p);
+	QtUtils::sleep(1000);
+
+	QString t = getToolTip();
+	CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
+}
+
+QString ToolTipUtils::getToolTip() {
+
+	return QToolTip::text();
 }
 
 }

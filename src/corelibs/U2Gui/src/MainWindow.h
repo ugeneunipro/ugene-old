@@ -37,6 +37,7 @@ class QToolBar;
 class QMainWindow;
 
 // menu 
+#define MWMENU								"mw_menu_bar"
 #define MWMENU_FILE                         "mwmenu_file"
 #define MWMENU_ACTIONS                      "mwmenu_actions"
 #define MWMENU_SETTINGS                     "mwmenu_settings"
@@ -63,6 +64,7 @@ class QMainWindow;
 #define ACTION_PROJECTSUPPORT__NEW_PROJECT              "action_projectsupport__new_project"
 #define ACTION_PROJECTSUPPORT__OPEN_PROJECT             "action_projectsupport__open_project"
 #define ACTION_PROJECTSUPPORT__SAVE_PROJECT             "action_projectsupport__save_project"
+#define ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT          "action_projectsupport__save_as_project"
 #define ACTION_PROJECTSUPPORT__CLOSE_PROJECT            "action_projectsupport__close_project"
 #define ACTION_PROJECTSUPPORT__RECENT_PROJECTS_MENU     "action_projectsupport__recent_projects_menu"
 #define ACTION_PROJECTSUPPORT__EXPORT_PROJECT           "action_projectsupport__export_project"

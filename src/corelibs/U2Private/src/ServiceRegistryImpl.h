@@ -136,6 +136,8 @@ private:
     ServiceRegistryImpl* sr;
     Service* s;
     bool manual;
+
+	bool isGUITesting() const;
 };
 
 

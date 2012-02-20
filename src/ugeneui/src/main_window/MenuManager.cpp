@@ -28,7 +28,7 @@ namespace U2 {
 MWMenuManagerImpl::MWMenuManagerImpl(QObject* p, QMenuBar* mb) : QObject(p) 
 {
 	menuBar = mb;
-    menuBar->setObjectName("mw_menu_bar");
+    menuBar->setObjectName(MWMENU);
 	createTopLevelMenu(MWMENU_FILE, tr("File"));
 	createTopLevelMenu(MWMENU_ACTIONS, tr("Actions"), MWMENU_FILE);
 	createTopLevelMenu(MWMENU_SETTINGS, tr("Settings"), MWMENU_ACTIONS);

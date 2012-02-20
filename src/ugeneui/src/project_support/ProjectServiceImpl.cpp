@@ -153,6 +153,7 @@ Task::ReportResult ProjectServiceEnableTask::report() {
     connect(psi->saveAction, SIGNAL(triggered()), psi, SLOT(sl_save()));
 
     psi->saveAsAction = new QAction(tr("Save project &as..."), psi);
+	psi->saveAsAction->setObjectName(ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
     connect(psi->saveAsAction, SIGNAL(triggered()), psi, SLOT(sl_saveAs()));
 
     psi->closeProjectAction = new QAction(tr("&Close project"), psi);

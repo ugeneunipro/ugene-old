@@ -24,6 +24,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Core/PluginModel.h>
+#include <U2Core/CMDLineRegistry.h>
+#include <U2Core/CMDLineCoreOptions.h>
 
 #include <QtCore/QTimerEvent>
 
@@ -285,6 +287,11 @@ DisableServiceTask::DisableServiceTask(ServiceRegistryImpl* _sr, Service* _s, bo
 
 static QList<Service*> getDirectChilds(ServiceRegistryImpl* sr, ServiceType st);
 
+bool DisableServiceTask::isGUITesting() const {
+	CMDLineRegistry *cmdLine = AppContext::getCMDLineRegistry();
+	return cmdLine && cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST);
+}
+
 void DisableServiceTask::prepare() {
     sr->activeServiceTasks.push_back(this);
     const QList<Task*>& activeTopTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
@@ -293,8 +300,10 @@ void DisableServiceTask::prepare() {
         foreach(Task* t, activeTopTasks) {
             coreLog.details(tr("Active top-level task name: %1").arg(t->getTaskName()));
         }
-        stateInfo.setError(  tr("Active task was found") );
-        return;
+		if (!isGUITesting()) { // GUI Tests contain tests on closing Project which is Service
+	        stateInfo.setError(  tr("Active task was found") );
+			return;
+		}
     }
     if (!sr->services.contains(s)) {
         stateInfo.setError(  tr("Service is not registered: %1").arg(s->getName()) );

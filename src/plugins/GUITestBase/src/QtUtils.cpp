@@ -1,8 +1,30 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
 #include "QtUtils.h"
 #include <U2Test/GUITestBase.h>
 #include <U2Core/Task.h>
 
 #include <U2Core/U2SafePoints.h>
+#include <U2Gui/GUIUtils.h>
 
 namespace U2 {
 
@@ -400,30 +422,32 @@ void QtUtils::keySequence(QWidget *w, const QString &sequence, Qt::KeyboardModif
 }
 
 void QtUtils::expandTopLevelMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu) {
-    QMenuBar *parMenu = static_cast<QMenuBar*>(findWidgetByName(os, parentMenu));
+	QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
+	QAction *curAction = mw->findChild<QAction*>(menuName);
+	CHECK_SET_ERR(curAction != NULL, QString("Can't find action %1").arg(menuName));
+
+	QMenuBar *parMenu = static_cast<QMenuBar*>(findWidgetByName(os, parentMenu));
+	CHECK_SET_ERR(parMenu != NULL, QString("Menu %1 not found").arg(parentMenu));
     if(!parMenu->isVisible()) {
         return;
     }
 
-    QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
-    QAction *curAction = mw->findChild<QAction*>(menuName);
-	CHECK_SET_ERR(curAction != NULL, QString("Can't find action %1").arg(menuName));
-
     QPoint pos = parMenu->actionGeometry(curAction).center();
+
     moveTo(os, parentMenu, pos);
     mouseClick(os, parentMenu, Qt::LeftButton, pos);
 }
 
 void QtUtils::clickMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu) {
 
-    QMenu* parMenu = (QMenu*)findWidgetByName(os, parentMenu);
-	CHECK_SET_ERR(parMenu != NULL, QString("Menu %1 not found").arg(parentMenu));
-
     QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
     QAction *curAction = mw->findChild<QAction*>(menuName);
 	CHECK_SET_ERR(curAction != NULL, QString("Can't find action %1").arg(menuName));
 
+	QMenu* parMenu = (QMenu*)findWidgetByName(os, parentMenu);
+	CHECK_SET_ERR(parMenu != NULL, QString("Menu %1 not found").arg(parentMenu));
     QPoint pos = parMenu->actionGeometry(curAction).center();
+
     moveTo(os, parentMenu, pos);
     mouseClick(os, parentMenu, Qt::LeftButton, pos);
 }
@@ -468,6 +492,24 @@ void QtUtils::contextMenu(U2OpStatus &os, const QString &widgetName, const QPoin
     while(getContextMenu() == NULL) {
         sleep(1);
     }
+}
+
+void QtUtils::clickMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName) {
+
+	QtUtils::expandTopLevelMenu(os, menuName, MWMENU);
+	QtUtils::sleep(500);
+
+	MainWindow* mw = AppContext::getMainWindow();
+	QMenu* fileMenu = mw->getTopLevelMenu(menuName);
+	CHECK_SET_ERR(fileMenu != NULL, "No such menu: " + menuName);
+
+	QAction* neededAction = GUIUtils::findAction(fileMenu->actions(), actionName);
+	CHECK_SET_ERR(neededAction != NULL, "No such action " + actionName + " in the menu " + menuName);
+
+	neededAction->activate(QAction::Trigger);
+	QtUtils::expandTopLevelMenu(os, menuName, MWMENU);
+
+	sleep(500);
 }
 
 QMenu *QtUtils::getContextMenu() {

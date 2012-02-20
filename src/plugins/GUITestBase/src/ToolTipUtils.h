@@ -19,16 +19,19 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_APP_UTILS_H_
-#define _U2_GUI_APP_UTILS_H_
+#ifndef _U2_GUI_TOOLTIP_UTILS_H_
+#define _U2_GUI_TOOLTIP_UTILS_H_
 
 #include <U2Core/U2OpStatus.h>
 
 namespace U2 {
 
-class AppUtils {
+class ToolTipUtils {
 public:
-	static void checkUGENETitle(U2OpStatus &os, const QString& title);
+	static void checkExistingToolTip(U2OpStatus &os, const QString& tooltip);
+	static void checkProjectTreeToolTip(U2OpStatus &os, const QString& tooltip, int num = 0);
+
+	static QString getToolTip();
 };
 
 } // namespace

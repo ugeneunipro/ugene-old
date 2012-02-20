@@ -19,18 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_APP_UTILS_H_
-#define _U2_GUI_APP_UTILS_H_
-
-#include <U2Core/U2OpStatus.h>
+#include "GUISaveFileTests.h"
+#include "QtUtils.h"
+#include "ProjectUtils.h"
+#include "AppUtils.h"
+#include "ToolTipUtils.h"
+#include <U2Core/ProjectModel.h>
+#include <U2Gui/ObjectViewModel.h>
 
 namespace U2 {
 
-class AppUtils {
-public:
-	static void checkUGENETitle(U2OpStatus &os, const QString& title);
-};
+void ProjectSaveAs::execute(U2OpStatus &os) {
+
+ 	ProjectUtils::openFile(os, testDir+"_common_data/scenarios/project/proj1.uprj");
+	ProjectUtils::checkDocumentExists(os, "1CF7.PDB");
+	AppUtils::checkUGENETitle(os, "proj1 UGENE");
+
+	ProjectUtils::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
+	ProjectUtils::closeProject(os);
+
+	ProjectUtils::openFile(os, testDir+"_common_data/scenarios/sandbox/proj2.uprj");
+	ProjectUtils::checkDocumentExists(os, "1CF7.PDB");
+	AppUtils::checkUGENETitle(os, "proj2 UGENE");
+
+	ToolTipUtils::checkProjectTreeToolTip(os, "samples/PDB/1CF7.PDB", 0);
+}
 
 } // namespace
-
-#endif
