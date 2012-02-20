@@ -57,7 +57,7 @@ Document* GFFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     
-    Document* doc = new Document( this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects);
+    Document* doc = new Document( this, io->getFactory(), io->getURL(), dbiRef, objects);
     return doc;
 }
 

@@ -72,22 +72,28 @@ private: //TODO
 */
 class U2CORE_EXPORT TmpDbiHandle {
 public:
+    TmpDbiHandle();
+
     TmpDbiHandle(const QString& alias, U2OpStatus& os);
-    
-    TmpDbiHandle(const U2DbiRef& dbi, bool deallocate);
-    
+
+    TmpDbiHandle(const TmpDbiHandle& dbiHandle);
+
+    TmpDbiHandle& operator=(const TmpDbiHandle& dbiHandle);
+
     ~TmpDbiHandle();
 
     bool isValid() const {return dbiRef.isValid();}
-    
+
+    inline QString getAlias() const { return alias; }
+
+    inline U2DbiRef getDbiRef() const { return dbiRef; }
+
+private:
+    /** DBI alias */
+    QString             alias;
+
     /** DBI reference */
     U2DbiRef            dbiRef;
-
-    /** If true will close all DBI connection in destructor and remove DBI file */
-    bool                deallocate;
-
-private: //TODO
-    TmpDbiHandle & operator=(const TmpDbiHandle & dbiHandle);
 };
 
 class U2CORE_EXPORT TmpDbiObjects {

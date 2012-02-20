@@ -187,7 +187,7 @@ Document* ClustalWAlnFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
     load(io, objects, fs, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);    
     assert(objects.size() == 1);
-    return new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
+    return new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
 }
 
 #define MAX_LINE_LEN    80

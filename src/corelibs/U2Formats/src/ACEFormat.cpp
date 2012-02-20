@@ -503,7 +503,7 @@ Document* ACEFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
     
-    Document *doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objs, fs);
+    Document *doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);
 
     return doc;
 }

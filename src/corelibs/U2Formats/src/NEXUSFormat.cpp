@@ -686,7 +686,7 @@ Document* NEXUSFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
     QList<GObject*> objects = loadObjects(io, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     
-    Document *d = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
+    Document *d = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     return d;
 }
 

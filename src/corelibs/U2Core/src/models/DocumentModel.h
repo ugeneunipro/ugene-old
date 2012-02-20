@@ -283,14 +283,14 @@ public:
 
     //Creates document in unloaded state. Populates it with unloaded objects
     Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
-                    const U2DbiRef& _dbiRef, bool tmpDbi,
+                    const U2DbiRef& _dbiRef,
                     const QList<UnloadedObjectInfo>& unloadedObjects = QList<UnloadedObjectInfo>(),
                     const QVariantMap& hints = QVariantMap(), 
                     const QString& instanceModLockDesc = QString());
 
     //Creates document in loaded state. 
     Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, 
-                    const U2DbiRef& _dbiRef, bool tmpDbi,
+                    const U2DbiRef& _dbiRef,
                     const QList<GObject*>& objects, 
                     const QVariantMap& hints = QVariantMap(), 
                     const QString& instanceModLockDesc = QString());
@@ -363,6 +363,10 @@ public:
 
     const U2DbiRef& getDbiRef() const;
 
+    inline bool isDocumentOwnsDbiResources() const { return documentOwnsDbiResources; }
+
+    inline void setDocumentOwnsDbiResources(bool value) { documentOwnsDbiResources = value; }
+
     static void setupToEngine(QScriptEngine *engine);
 private:
     static QScriptValue toScriptValue(QScriptEngine *engine, Document* const &in);
@@ -382,13 +386,14 @@ protected:
     DocumentFormat* const       df;
     IOAdapterFactory* const     io;
     GUrl                        url;
-    TmpDbiHandle*               dbiHandle;
+    U2DbiRef                    dbiRef; // Default dbi ref for the document
 
     QString             name; /* display name == short pathname, excluding the path */
     QList<GObject*>     objects;
     GHints*             ctxState;
     QDateTime           lastUpdateTime;
-    
+    bool                documentOwnsDbiResources;
+
     StateLock*          modLocks[DocumentModLock_NUM_LOCKS];
     bool                loadStateChangeMode;
 

@@ -683,7 +683,7 @@ Document* StockholmFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
         if ( !uniFile ) {
             lockReason = DocumentFormat::CREATED_NOT_BY_UGENE;
         }
-        return new Document( this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs, lockReason );
+        return new Document( this, io->getFactory(), io->getURL(), dbiRef, objects, fs, lockReason );
     }
     catch ( const StockholmBaseException& e ) {
         os.setError(e.msg);

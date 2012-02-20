@@ -101,7 +101,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
     }
     renameObjectsIfNamesEqual(objects);
     
-    Document* d = new Document(this, io->getFactory(), io->getURL(), U2DbiRef(), false, objects, fs);
+    Document* d = new Document(this, io->getFactory(), io->getURL(), U2DbiRef(), objects, fs);
     return d;
 }
 

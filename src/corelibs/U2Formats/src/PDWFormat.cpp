@@ -159,7 +159,7 @@ Document* PDWFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     
     QString lockReason(DocumentFormat::CREATED_NOT_BY_UGENE);
-    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs, lockReason);
+    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs, lockReason);
 
     if (seqObj != NULL && annObj != NULL) {
         annObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);

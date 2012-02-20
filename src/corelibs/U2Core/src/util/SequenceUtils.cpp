@@ -157,7 +157,7 @@ Document* U1SequenceUtils::mergeSequences(const Document* doc, int mergeGap, U2O
     CHECK_OP(os, NULL);
     U2SequenceImporter seqImport;
     QString seqName = doc->getURL().fileName();
-    seqImport.startSequence(dbiHandle.dbiRef, seqName, false, os);
+    seqImport.startSequence(dbiHandle.getDbiRef(), seqName, false, os);
     CHECK_OP(os, NULL);
 
     AnnotationTableObject* annObj = new AnnotationTableObject(seqName + " annotations");
@@ -196,11 +196,10 @@ Document* U1SequenceUtils::mergeSequences(const Document* doc, int mergeGap, U2O
     }
     U2Sequence u2seq = seqImport.finalizeSequence(os);
     CHECK_OP(os, NULL);
-    dbiHandle.deallocate = false;
-    U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiHandle.dbiRef, u2seq.id));
+    U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiHandle.getDbiRef(), u2seq.id));
     QList<GObject*> objects; objects << seqObj << annObj;
     Document* resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), 
-        dbiHandle.dbiRef, dbiHandle.dbiRef.isValid(), objects, QVariantMap(), tr("File content was merged"));
+        dbiHandle.getDbiRef(), objects, QVariantMap(), tr("File content was merged"));
     doc->propagateModLocks(resultDoc);
     return resultDoc;
 }

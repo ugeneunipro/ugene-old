@@ -656,7 +656,7 @@ Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter
     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, sampleName + " chromatogram");
     objects.append(chromObj);
-    Document* doc = new Document(this, iof, url, dbiRef, dbiRef.isValid(), objects, fs);
+    Document* doc = new Document(this, iof, url, dbiRef, objects, fs);
     chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE));
     return doc;
 }

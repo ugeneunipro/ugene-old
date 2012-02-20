@@ -948,7 +948,7 @@ Document* PDBFormat::createDocumentFromBioStruct3D(const U2DbiRef& dbiRef, BioSt
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     
     objects.append(biostrucObj);
-    Document* doc = new Document(format, iof, url, dbiRef, dbiRef.isValid(), objects, fs);
+    Document* doc = new Document(format, iof, url, dbiRef, objects, fs);
 
     // set object relations
     QMap< AnnotationTableObject*, U2SequenceObject*>::const_iterator i;

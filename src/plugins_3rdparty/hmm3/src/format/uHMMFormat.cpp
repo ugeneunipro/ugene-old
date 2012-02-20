@@ -317,7 +317,7 @@ Document* UHMMFormat::loadDocument(IOAdapter* io, const U2DbiRef& targetDb, cons
     QList< GObject* > objects;
     loadAll( io, objects, os );
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
-    return new Document( this, io->getFactory(), io->getURL(), targetDb, targetDb.isValid(), objects, hints, WRITE_LOCK_REASON );
+    return new Document( this, io->getFactory(), io->getURL(), targetDb, objects, hints, WRITE_LOCK_REASON );
 }
 
 

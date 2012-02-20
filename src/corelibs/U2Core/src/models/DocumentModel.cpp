@@ -62,12 +62,12 @@ Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const G
         }
         TmpDbiHandle dh(alias, os);
         CHECK_OP(os, NULL);
-        dh.deallocate = false; //DBI will be deallocated by document..
-        tmpDbiRef = dh.dbiRef;
+        tmpDbiRef = dh.getDbiRef();
     }
 
-    Document* doc = new Document(this, iof, url, tmpDbiRef, tmpDbiRef.isValid(), QList<UnloadedObjectInfo>(), hints, QString());
+    Document* doc = new Document(this, iof, url, tmpDbiRef, QList<UnloadedObjectInfo>(), hints, QString());
     doc->setLoaded(true);
+    doc->setDocumentOwnsDbiResources(true);
     return doc;
 }
 
@@ -78,7 +78,7 @@ Document* DocumentFormat::createNewUnloadedDocument(IOAdapterFactory* iof, const
 {
     Q_UNUSED(os);
     U2DbiRef emptyDbiRef;
-    Document* doc = new Document(this, iof, url, emptyDbiRef, false, info, hints, instanceModLockDesc);
+    Document* doc = new Document(this, iof, url, emptyDbiRef, info, hints, instanceModLockDesc);
     return doc;
 }
 
@@ -90,25 +90,23 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
     }
 
     Document* res = NULL;
-    bool useTmpDbi = true;//getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
+
+    bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
     if (useTmpDbi) {
         QString alias = SESSION_TMP_DBI_ALIAS;
         if (hints.contains(DBI_ALIAS_HINT)) {
             alias = hints.value(DBI_ALIAS_HINT).toString();
         }
         TmpDbiHandle dh(alias, os);
-        CHECK_OP(os, NULL); 
-
-        DbiConnection con(dh.dbiRef, os); 
         CHECK_OP(os, NULL);
 
-        res = loadDocument(io.get(), dh.dbiRef, hints, os);
+        DbiConnection con(dh.getDbiRef(), os);
         CHECK_OP(os, NULL);
 
-        //DBI will be deallocated by document..
-        dh.deallocate = false;
+        res = loadDocument(io.get(), dh.getDbiRef(), hints, os);
+        CHECK_OP(os, NULL);
     } else {
-        res = loadDocument(io.get(), U2DbiRef(), hints, os);        
+        res = loadDocument(io.get(), U2DbiRef(), hints, os);
     }
     return res;
 }
@@ -203,16 +201,17 @@ bool DocumentFormat::isObjectOpSupported(const Document* d, DocObjectOp op, GObj
 ///Document
 
 Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, 
-                   const U2DbiRef& _dbiRef, bool tmpDbi,
+                   const U2DbiRef& _dbiRef,
                    const QList<UnloadedObjectInfo>& unloadedObjects,const QVariantMap& hints, 
                    const QString& instanceModLockDesc)
-                   : StateLockableTreeItem(), df(_df), io(_io), url(_url)
+                   : StateLockableTreeItem(), df(_df), io(_io), url(_url), dbiRef(_dbiRef)
 {
-    dbiHandle = _dbiRef.isValid() ? new TmpDbiHandle(_dbiRef, tmpDbi) : NULL;
+    documentOwnsDbiResources = false;
+
     ctxState = new GHintsDefaultImpl(hints);
     name = url.fileName();
     
-    qFill(modLocks, modLocks + DocumentModLock_NUM_LOCKS, (StateLock*)NULL);    
+    qFill(modLocks, modLocks + DocumentModLock_NUM_LOCKS, (StateLock*)NULL);
 
     loadStateChangeMode = true;
     addUnloadedObjects(unloadedObjects);
@@ -224,12 +223,13 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
 }
 
 Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, 
-                   const U2DbiRef& _dbiRef, bool tmpDbi,
+                   const U2DbiRef& _dbiRef,
                    const QList<GObject*>& _objects, const QVariantMap& hints, 
                    const QString& instanceModLockDesc)
-                   : StateLockableTreeItem(), df(_df), io(_io), url(_url)
+                   : StateLockableTreeItem(), df(_df), io(_io), url(_url), dbiRef(_dbiRef)
 {
-    dbiHandle = _dbiRef.isValid() ? new TmpDbiHandle(_dbiRef, tmpDbi) : NULL;
+    documentOwnsDbiResources = true;
+
     ctxState = new GHintsDefaultImpl(hints);
     name = url.fileName();
 
@@ -246,14 +246,20 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
     assert(!isModified());
 }
 
-static void deallocateDbiResources(TmpDbiHandle* h, GObject* obj) {
-    CHECK(h != NULL && h->isValid() && h->deallocate, );
-    U2OpStatus2Log os;
-    DbiConnection con(h->dbiRef, os);
-    CHECK_OP(os, );
+static void deallocateDbiResources(GObject* obj) {
+    SAFE_POINT(obj != NULL, "NULL object was provided!",);
     U2EntityRef objRef = obj->getEntityRef();
+
     if (objRef.isValid()) {
-        con.dbi->getObjectDbi()->removeObject(objRef.entityId, os);
+        U2DbiRef dbiRef = objRef.dbiRef;
+
+        if (dbiRef.isValid()) {
+            U2OpStatus2Log os;
+            DbiConnection con(dbiRef, os);
+            CHECK_OP(os, );
+
+            con.dbi->getObjectDbi()->removeObject(objRef.entityId, os);
+        }
     }
 }
 
@@ -266,16 +272,15 @@ Document::~Document() {
             delete sl;
         }
     }
-    
-    if ((NULL != dbiHandle) && (!dbiHandle->deallocate)) {
-        foreach(GObject* obj, objects) {
-            deallocateDbiResources(dbiHandle, obj);
+
+    if (isDocumentOwnsDbiResources()) {
+        foreach (GObject* obj, objects) {
+            deallocateDbiResources(obj);
             obj->setGHints(NULL);
         }
     }
 
     delete ctxState;
-    delete dbiHandle;
 }
 
 void Document::addObject(GObject* obj){
@@ -319,7 +324,7 @@ void Document::_removeObject(GObject* obj, bool deleteObjects) {
     emit si_objectRemoved(obj);
     
     if (deleteObjects) {
-        deallocateDbiResources(dbiHandle, obj);
+        deallocateDbiResources(obj);
         delete obj;
     }
 }
@@ -413,10 +418,11 @@ void Document::loadFrom(Document* sourceDoc) {
         modLocks[DocumentModLock_FORMAT_AS_INSTANCE] = new StateLock(dLock->getUserDesc());
         lockState(modLocks[DocumentModLock_FORMAT_AS_INSTANCE]);
     }
-    
-    delete dbiHandle;
-    dbiHandle = sourceDoc->dbiHandle;
-    sourceDoc->dbiHandle = NULL;
+
+    dbiRef = sourceDoc->dbiRef;
+    documentOwnsDbiResources = sourceDoc->isDocumentOwnsDbiResources();
+    sourceDoc->dbiRef = U2DbiRef();
+    sourceDoc->setDocumentOwnsDbiResources(false);
 
     QList<GObject*> sourceObjects = sourceDoc->getObjects();
     sourceDoc->unload(false);
@@ -583,9 +589,9 @@ bool Document::unload(bool deleteObjects) {
         unlockState(fl);
         modLocks[DocumentModLock_FORMAT_AS_INSTANCE] = NULL;
     }
-    
-    delete dbiHandle;
-    dbiHandle = NULL;
+
+    dbiRef = U2DbiRef();
+    documentOwnsDbiResources = false;
 
     setLoaded(false);
     
@@ -595,8 +601,7 @@ bool Document::unload(bool deleteObjects) {
 }
 
 const U2DbiRef& Document::getDbiRef() const {
-    static U2DbiRef emptyRef;
-    return dbiHandle == NULL ? emptyRef : dbiHandle->dbiRef;
+    return dbiRef;
 }
 
 void Document::setModified(bool modified, const QString& modType) {

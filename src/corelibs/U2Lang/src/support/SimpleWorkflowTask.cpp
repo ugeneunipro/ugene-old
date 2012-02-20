@@ -65,7 +65,7 @@ SimpleInOutWorkflowTask::SimpleInOutWorkflowTask(const SimpleInOutWorkflowTaskCo
 : DocumentProviderTask(tr("Run workflow: %1").arg(_conf.schemaName), TaskFlags_NR_FOSCOE), conf(_conf)
 {
     inDoc = new Document(BaseDocumentFormats::get(BaseDocumentFormats::FASTA), IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), 
-                        GUrl("unused"), U2DbiRef(), false, conf.objects, conf.inDocHints);
+                        GUrl("unused"), U2DbiRef(), conf.objects, conf.inDocHints);
     inDoc->setParent(this);
 }
 

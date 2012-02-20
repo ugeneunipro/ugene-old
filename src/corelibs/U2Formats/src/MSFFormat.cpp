@@ -219,7 +219,7 @@ Document* MSFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     load(io, objs, os);
 
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
-    return new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objs, fs);
+    return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);
 }
 
 static bool writeBlock(IOAdapter *io, Document* d, U2OpStatus& ti, const QByteArray& buf) {

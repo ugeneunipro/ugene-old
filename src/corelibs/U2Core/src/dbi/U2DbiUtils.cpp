@@ -97,22 +97,44 @@ DbiConnection::DbiConnection() : dbi(NULL) {
 //////////////////////////////////////////////////////////////////////////
 // TmpDbiHandle
 
-TmpDbiHandle::TmpDbiHandle(const QString& alias, U2OpStatus& os)  {
-    deallocate = false;
-    dbiRef = AppContext::getDbiRegistry()->allocateTmpDbi(alias, os);
-    CHECK_OP(os, );
-    deallocate = true;
+TmpDbiHandle::TmpDbiHandle() {
 }
 
-TmpDbiHandle::TmpDbiHandle(const U2DbiRef& _dbiRef, bool _deallocate)
-: dbiRef(_dbiRef), deallocate(_deallocate)
+TmpDbiHandle::TmpDbiHandle(const QString& _alias, U2OpStatus& os)
+    : alias(_alias)
 {
+    dbiRef = AppContext::getDbiRegistry()->attachTmpDbi(alias, os);
+}
+
+TmpDbiHandle::TmpDbiHandle(const TmpDbiHandle& dbiHandle) {
+    if (dbiHandle.isValid()) {
+        alias = dbiHandle.getAlias();
+        dbiRef = dbiHandle.getDbiRef();
+
+        U2OpStatus2Log os;
+        AppContext::getDbiRegistry()->attachTmpDbi(dbiHandle.getAlias(), os);
+    }
+}
+
+TmpDbiHandle& TmpDbiHandle::operator=(const TmpDbiHandle& dbiHandle) {
+    if (this != &dbiHandle) {
+        if (dbiHandle.isValid()) {
+            alias = dbiHandle.getAlias();
+            dbiRef = dbiHandle.getDbiRef();
+
+            U2OpStatus2Log os;
+            AppContext::getDbiRegistry()->attachTmpDbi(dbiHandle.getAlias(), os);
+        }
+    }
+
+    return *this;
 }
 
 TmpDbiHandle::~TmpDbiHandle () {
-    if (deallocate) {
+    if (isValid())
+    {
         U2OpStatus2Log os;
-        AppContext::getDbiRegistry()->deallocateTmpDbi(dbiRef, os);
+        AppContext::getDbiRegistry()->detachTmpDbi(alias, os);
     }
 }
 

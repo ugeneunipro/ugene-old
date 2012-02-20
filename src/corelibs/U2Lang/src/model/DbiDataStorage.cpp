@@ -47,9 +47,8 @@ bool DbiDataStorage::init() {
     U2OpStatusImpl os;
     dbiHandle = new TmpDbiHandle(WORKFLOW_SESSION_TMP_DBI_ALIAS, os);
     CHECK_OP(os, false);
-    dbiHandle->deallocate = true;
 
-    connection = new DbiConnection(dbiHandle->dbiRef, os);
+    connection = new DbiConnection(dbiHandle->getDbiRef(), os);
     CHECK_OP(os, false);
 
     return true;
@@ -57,7 +56,7 @@ bool DbiDataStorage::init() {
 
 U2DbiRef DbiDataStorage::getDbiRef() {
     assert(NULL != dbiHandle);
-    return dbiHandle->dbiRef;
+    return dbiHandle->getDbiRef();
 }
 
 U2Object *DbiDataStorage::getObject(const U2DataId &objectId, const U2DataType &type) {
@@ -81,7 +80,7 @@ U2DataId DbiDataStorage::putSequence(const DNASequence &dnaSeq) {
     assert(NULL != dbiHandle);
     
     U2OpStatusImpl os;
-    U2EntityRef ent = U2SequenceUtils::import(dbiHandle->dbiRef, dnaSeq, os);
+    U2EntityRef ent = U2SequenceUtils::import(dbiHandle->getDbiRef(), dnaSeq, os);
     CHECK_OP(os, U2DataId());
     
     return ent.entityId;

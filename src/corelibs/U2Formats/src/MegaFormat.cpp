@@ -53,7 +53,7 @@ Document* MegaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const 
     QList<GObject*> objs;
     load(io, objs, os);
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
-    return new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objs, fs);
+    return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);
 }
 
 void MegaFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {

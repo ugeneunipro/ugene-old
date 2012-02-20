@@ -72,7 +72,7 @@ Document* EMBLGenbankAbstractDocument::loadDocument(IOAdapter* io, const U2DbiRe
     CHECK_OP(os, NULL);
     
     DocumentFormatUtils::updateFormatHints(objects, fs);
-    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs, writeLockReason);
+    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs, writeLockReason);
     return doc;
 }
 

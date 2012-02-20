@@ -76,7 +76,7 @@ Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
     TextObject* to = new TextObject(text, "Text");
     QList<GObject*> objects;
     objects.append(to);
-    Document* d = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
+    Document* d = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     return d;
 }
 

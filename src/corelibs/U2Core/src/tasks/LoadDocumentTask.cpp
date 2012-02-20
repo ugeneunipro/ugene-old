@@ -395,7 +395,7 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(const Document* doc,
         objTypeConstraints.supportedObjectTypes << GObjectTypes::MULTIPLE_ALIGNMENT;
         bool makeReadOnly = !doc->getDocumentFormat()->checkConstraints(objTypeConstraints);
 
-        resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), U2DbiRef(), false, objects, hints, 
+        resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), U2DbiRef(), objects, hints, 
             makeReadOnly ? tr("Format does not support writing of alignments") : QString());
 
         doc->propagateModLocks(resultDoc);

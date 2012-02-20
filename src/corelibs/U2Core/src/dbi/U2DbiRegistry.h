@@ -63,14 +63,27 @@ public:
 
     U2DbiPool* getGlobalDbiPool() const {return pool;}
 
-    U2DbiRef allocateTmpDbi(const QString& alias, U2OpStatus& os);
+    /**
+    * Increases the "number of users"-counter for the dbi, if it exists.
+    * Otherwise, allocates the dbi and sets the counter to 1.
+    */
+    U2DbiRef attachTmpDbi(const QString& alias, U2OpStatus& os);
 
-    void deallocateTmpDbi(const U2DbiRef& ref, U2OpStatus& os);
+    /**
+    * Decreases the "number of users"-counter.
+    * Deallocates the dbi, if it becomes equal to 0.
+    */
+    void detachTmpDbi(const QString& alias, U2OpStatus& os);
 
     QList<U2DbiRef> listTmpDbis() const;
 
 private:
-    void initSessionDbi();
+    /** Creates the session connection and increases the counter for the dbi */
+    void initSessionDbi(TmpDbiRef& tmpDbiRef);
+
+    U2DbiRef allocateTmpDbi(const QString& alias, U2OpStatus& os);
+
+    void deallocateTmpDbi(const TmpDbiRef& ref, U2OpStatus& os);
 
     QHash<U2DbiFactoryId, U2DbiFactory *>   factories;
     U2DbiPool*                              pool;

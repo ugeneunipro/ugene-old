@@ -109,7 +109,7 @@ Document* WorkflowDocFormat::loadDocument(IOAdapter* io, const U2DbiRef& targetD
     QList<GObject*> objects;
     QString data = QString::fromUtf8(rawData.data(), rawData.size());
     objects.append(new WorkflowGObject(tr("Workflow Schema"), data));
-    return new Document(this, io->getFactory(), io->getURL(), targetDb, targetDb.isValid(), objects, hints);
+    return new Document(this, io->getFactory(), io->getURL(), targetDb, objects, hints);
 }
 
 void WorkflowDocFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& ) {

@@ -230,6 +230,7 @@ void LoadSeqTask::run() {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     cfg.insert(DocumentFormat::DBI_ALIAS_HINT, QString(WORKFLOW_SESSION_TMP_DBI_ALIAS));
     std::auto_ptr<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
+    doc->setDocumentOwnsDbiResources(false);
     CHECK_OP(stateInfo, );
 
     const QSet<GObjectType>& types = format->getSupportedObjectTypes();

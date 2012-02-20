@@ -40,12 +40,13 @@ namespace U2 {
     sessionDbiInitDone = false;
 }
 
-void U2DbiRegistry::initSessionDbi() {
+void U2DbiRegistry::initSessionDbi(TmpDbiRef& tmpDbiRef) {
     sessionDbiInitDone = true;
+
     U2OpStatus2Log os;
-    U2DbiRef dbiRef = allocateTmpDbi(SESSION_TMP_DBI_ALIAS, os);
-    CHECK_OP(os, );
-    sessionDbiConnection = new DbiConnection(dbiRef, os);
+    sessionDbiConnection = new DbiConnection(tmpDbiRef.dbiRef, os);
+
+    tmpDbiRef.nUsers++;
 }
 
 U2DbiRegistry::~U2DbiRegistry() {
@@ -53,7 +54,7 @@ U2DbiRegistry::~U2DbiRegistry() {
         U2DbiRef ref = sessionDbiConnection->dbi->getDbiRef();
         delete sessionDbiConnection;
         U2OpStatus2Log os;
-        deallocateTmpDbi(ref, os);
+        detachTmpDbi(SESSION_TMP_DBI_ALIAS, os);
     }
 
     coreLog.trace("Deallocating U2DbiRegistry");
@@ -64,7 +65,7 @@ U2DbiRegistry::~U2DbiRegistry() {
     }
     foreach(const TmpDbiRef& ref, tmpDbis) {
         U2OpStatus2Log os;
-        deallocateTmpDbi(ref.dbiRef, os);
+        detachTmpDbi(ref.alias, os);
     }
     qDeleteAll(factories.values());
 }
@@ -77,13 +78,41 @@ QList<U2DbiRef> U2DbiRegistry::listTmpDbis() const {
     return res;
 }
 
-void U2DbiRegistry::deallocateTmpDbi(const U2DbiRef& dbiRef, U2OpStatus& os) {
+U2DbiRef U2DbiRegistry::attachTmpDbi(const QString& alias, U2OpStatus& os) {
+    QMutexLocker m(&lock);
+
+    for (int i = 0; i < tmpDbis.size(); i++) {
+        TmpDbiRef& ref = tmpDbis[i];
+        if (ref.alias == alias) {
+            ref.nUsers++;
+            return ref.dbiRef;
+        }
+    }
+
+    coreLog.trace("Allocating a tmp dbi with alias: " + alias);
+    U2DbiRef dbiRef = allocateTmpDbi(alias, os);
+    CHECK_OP(os, U2DbiRef());
+
+    coreLog.trace("Allocated tmp dbi: " + dbiRef.dbiId);
+    TmpDbiRef tmpDbiRef= TmpDbiRef(alias, dbiRef, 1);
+
+    if (alias == SESSION_TMP_DBI_ALIAS && !sessionDbiInitDone) { //once used -> cache connection
+        initSessionDbi(tmpDbiRef);
+    }
+
+    tmpDbis << tmpDbiRef;
+
+    return dbiRef;
+}
+
+void U2DbiRegistry::detachTmpDbi(const QString& alias, U2OpStatus& os) {
     QMutexLocker l(&lock);
+
     int i = 0;
     bool found = false;
     for (;i < tmpDbis.size(); i++) {
         TmpDbiRef& ref = tmpDbis[i];
-        if (ref.dbiRef == dbiRef) {
+        if (ref.alias == alias) {
             found = true;
             ref.nUsers--;
             if (ref.nUsers > 0) {
@@ -93,32 +122,29 @@ void U2DbiRegistry::deallocateTmpDbi(const U2DbiRef& dbiRef, U2OpStatus& os) {
         }
     }
     if (!found) {
-        coreLog.error(tr("TMP dbi is not found: %1").arg(dbiRef.dbiId));
+        coreLog.error(tr("The tmp dbi is not found: %1").arg(alias));
         return;
     }
-    const TmpDbiRef& ref = tmpDbis.at(i);
-    coreLog.trace("Deallocating tmp dbi: " + dbiRef.dbiId + " with alias: " + ref.alias);
+
+    const TmpDbiRef& tmpDbiRef = tmpDbis.at(i);
+
+    coreLog.trace("Deallocating a tmp dbi " + tmpDbiRef.dbiRef.dbiId + " with alias: " + tmpDbiRef.alias);
+    deallocateTmpDbi(tmpDbiRef, os);
+
+    tmpDbis.removeAt(i);
+}
+
+void U2DbiRegistry::deallocateTmpDbi(const TmpDbiRef& ref, U2OpStatus& os) {
+    QMutexLocker l(&lock);
+
     pool->closeAllConnections(ref.dbiRef.dbiId, os);
     if (QFile::exists(ref.dbiRef.dbiId)) {
         QFile::remove(ref.dbiRef.dbiId);
     }
-    tmpDbis.removeAt(i);
 }
 
 U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os) {
     QMutexLocker m(&lock);
-    
-    for (int i = 0; i < tmpDbis.size(); i++) {
-        TmpDbiRef& ref = tmpDbis[i];
-        if (ref.alias == alias) {
-            ref.nUsers++;
-            return ref.dbiRef;
-        }
-    }
-
-    if (alias == SESSION_TMP_DBI_ALIAS && !sessionDbiInitDone) { //once used -> cache connection
-        initSessionDbi();
-    }
 
     U2DbiRef res;
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath();
@@ -130,12 +156,9 @@ U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os) {
 
     {
         // Create a tmp dbi file (the DbiConnection is opened with "bool create = true", and released)
-        DbiConnection con(res, true, os); 
+        DbiConnection con(res, true, os);
         CHECK_OP(os, U2DbiRef());
     }
-
-    coreLog.trace("Allocated tmp dbi: " + res.dbiId);
-    tmpDbis << TmpDbiRef(alias, res, 1);
 
     return res;
 }

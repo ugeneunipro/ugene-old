@@ -125,7 +125,7 @@ Document* BAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& ref, const QVar
             objects.push_back(new MAlignmentObject(alignment));
         }
         CHECK_OP(os, NULL);
-        return new Document(this, io->getFactory(), io->getURL(), ref, ref.isValid(), objects, hints, lockReason);
+        return new Document(this, io->getFactory(), io->getURL(), ref, objects, hints, lockReason);
     } catch(const Exception &e) {
         os.setError(e.getMessage());
         return NULL;

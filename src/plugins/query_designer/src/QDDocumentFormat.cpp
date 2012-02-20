@@ -78,7 +78,7 @@ Document* QDDocFormat::loadDocument(IOAdapter* io, const U2DbiRef& targetDb, con
     QList<GObject*> objects;
     QString data = QString::fromUtf8(rawData.data(), rawData.size());
     objects.append(new QDGObject(tr("Query Schema"), data));
-    return new Document(this, io->getFactory(), io->getURL(), targetDb, targetDb.isValid(), objects, hints);
+    return new Document(this, io->getFactory(), io->getURL(), targetDb, objects, hints);
 }
 
 void QDDocFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& ) {

@@ -49,7 +49,7 @@ static QList<GObject*> parseTrees(IOAdapter* io, U2OpStatus& si);
 Document* NewickFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     QList<GObject*> objects = parseTrees(io, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
-    Document* d = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
+    Document* d = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     return d;
 }
 

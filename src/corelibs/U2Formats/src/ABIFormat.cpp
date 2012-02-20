@@ -821,7 +821,7 @@ skip_bases:
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, "Chromatogram");
     objects.append(chromObj);
     objects.append(new TextObject(sequenceComment, "Info"));
-    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
+    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE));
     return doc;
 }

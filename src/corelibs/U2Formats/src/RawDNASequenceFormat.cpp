@@ -111,7 +111,7 @@ Document* RawDNASequenceFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiR
     QList<GObject*> objects;
         load(io, dbiRef, objects, fs, os);
     CHECK_OP(os, NULL);
-    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, dbiRef.isValid(), objects, fs);
+    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     return doc;
 }
 

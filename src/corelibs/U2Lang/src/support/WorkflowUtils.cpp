@@ -554,7 +554,7 @@ static void data2text(WorkflowContext *context, DocumentFormatId formatId, GObje
 
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::STRING);
     DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
-    std::auto_ptr<Document> d(new Document(df, iof, GUrl(), context->getDataStorage()->getDbiRef(), false, objList));
+    std::auto_ptr<Document> d(new Document(df, iof, GUrl(), context->getDataStorage()->getDbiRef(), objList));
     StringAdapter *io = dynamic_cast<StringAdapter*>(iof->createIOAdapter());
     io->open(GUrl(), IOAdapterMode_Write);
     U2OpStatusImpl os;
