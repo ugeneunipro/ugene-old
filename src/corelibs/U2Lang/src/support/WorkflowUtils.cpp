@@ -454,6 +454,31 @@ void WorkflowUtils::getLinkedActorsId(Actor *a, QList<QString> &linkedActors) {
     }
 }
 
+bool WorkflowUtils::isPathExist(const Port *src, const Port *dest) {
+    assert(src->isOutput());
+    assert(dest->isInput());
+    if (src == dest) {
+        return true;
+    }
+    Port *const src1 = const_cast<Port*>(src);
+
+    foreach (const Link *l, src->getLinks().values(src1)) {
+        const Port *p = l->destination();
+        if (l->source() != src) {
+            continue;
+        }
+        if (dest == p) {
+            return true;
+        } else {
+            bool result = isPathExist(p, dest);
+            if (result) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 Descriptor WorkflowUtils::getSlotDescOfDatatype(const DataTypePtr & dt) {
     QString dtId = dt->getId();
     if(dtId == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {

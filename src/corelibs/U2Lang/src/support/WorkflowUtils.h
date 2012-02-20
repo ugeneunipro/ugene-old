@@ -74,6 +74,8 @@ public:
     static QString findPathToSchemaFile(const QString & name);
 
     static void getLinkedActorsId(Actor *a, QList<QString> &linkedActors); //get list of ID's of all linked actors
+
+    static bool isPathExist(const Port *src, const Port *dest);
     
     static QString getStringForParameterDisplayRole(const QVariant & value);
     

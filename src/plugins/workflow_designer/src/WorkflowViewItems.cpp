@@ -616,6 +616,10 @@ static bool checkTypes(Port* p1, Port* p2) {
         }
     }
     if (idt->isMap() && odt->isMap()) {
+        if (idt->getDatatypesMap().isEmpty()) {
+            ActorPrototype *proto = ip->owner()->getProto();
+            return proto->isAllowsEmptyPorts();
+        }
         foreach(Descriptor d1, idt->getAllDescriptors()) {
             foreach(Descriptor d2, odt->getAllDescriptors()) {
                 if (idt->getDatatypeByDescriptor(d1) == odt->getDatatypeByDescriptor(d2)) return true;
@@ -660,10 +664,14 @@ WorkflowPortItem* WorkflowPortItem::checkBindCandidate(const QGraphicsItem* it) 
 WorkflowBusItem* WorkflowPortItem::tryBind(WorkflowPortItem* otherPit) {
     WorkflowBusItem* dit = NULL;
    
-    QList<QString> linkedActors;
     if (port->canBind(otherPit->getPort())) {
-        WorkflowUtils::getLinkedActorsId(port->owner(), linkedActors);
-        if(linkedActors.contains(otherPit->getPort()->owner()->getId())) {
+        Port *src = port;
+        Port *dest = otherPit->getPort();
+        if (port->isInput()) {
+            src = otherPit->getPort();
+            dest = port;
+        }
+        if (WorkflowUtils::isPathExist(src, dest)) {
             return NULL;
         }
 
