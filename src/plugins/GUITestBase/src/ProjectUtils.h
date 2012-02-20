@@ -51,6 +51,7 @@ public:
 	static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
 
 	static void closeProject(U2OpStatus &os, const CloseProjectSettings& = CloseProjectSettings());
+	static void openProjectView(U2OpStatus &os);
 
 	static void checkDocumentExists(U2OpStatus &os, const QString &documentName);
 

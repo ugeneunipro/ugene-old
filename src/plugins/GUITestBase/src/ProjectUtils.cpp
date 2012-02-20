@@ -98,6 +98,12 @@ void ProjectUtils::closeProject(U2OpStatus &os, const CloseProjectSettings& sett
 	}
 }
 
+void ProjectUtils::openProjectView(U2OpStatus &os) {
+
+	QtUtils::keyClick(os, MWMENU, Qt::Key_1, Qt::AltModifier);
+	QtUtils::sleep(500);
+}
+
 void ProjectUtils::closeProjectByHotkey(U2OpStatus &os) {
 
 	QtUtils::keyClick(os, MWMENU, Qt::Key_Q, Qt::ControlModifier);

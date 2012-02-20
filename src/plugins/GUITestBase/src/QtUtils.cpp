@@ -76,7 +76,7 @@ QWidget* QtUtils::findWidgetByTitle(U2OpStatus &os, const QString &title) {
 void QtUtils::moveTo(U2OpStatus &os, const QString &widgetName, const QPoint &_pos) {
     QWidget * w = findWidgetByName(os, widgetName);
     assert(w != NULL);
-    if(!w->isVisible()) {
+    if(!(w && w->isVisible())) {
         return;
     }
     QPoint pos = _pos;

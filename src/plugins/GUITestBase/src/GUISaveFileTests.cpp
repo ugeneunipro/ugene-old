@@ -31,18 +31,19 @@ namespace U2 {
 
 void ProjectSaveAs::execute(U2OpStatus &os) {
 
- 	ProjectUtils::openFile(os, testDir+"_common_data/scenarios/project/proj1.uprj");
-	ProjectUtils::checkDocumentExists(os, "1CF7.PDB");
-	AppUtils::checkUGENETitle(os, "proj1 UGENE");
+	ProjectUtils::openFile(os, testDir+"_common_data/scenarios/project/proj1.uprj");
+ 	ProjectUtils::checkDocumentExists(os, "1CF7.PDB");
+ 	AppUtils::checkUGENETitle(os, "proj1 UGENE");
 
-	ProjectUtils::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
-	ProjectUtils::closeProject(os);
+ 	ProjectUtils::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
+ 	ProjectUtils::closeProject(os);
 
-	ProjectUtils::openFile(os, testDir+"_common_data/scenarios/sandbox/proj2.uprj");
-	ProjectUtils::checkDocumentExists(os, "1CF7.PDB");
-	AppUtils::checkUGENETitle(os, "proj2 UGENE");
+ 	ProjectUtils::openFile(os, testDir+"_common_data/scenarios/sandbox/proj2.uprj");
+ 	ProjectUtils::checkDocumentExists(os, "1CF7.PDB");
+ 	AppUtils::checkUGENETitle(os, "proj2 UGENE");
 
-	ToolTipUtils::checkProjectTreeToolTip(os, "samples/PDB/1CF7.PDB", 0);
+	ProjectUtils::openProjectView(os);
+ 	ToolTipUtils::checkProjectTreeToolTip(os, "samples/PDB/1CF7.PDB", 0);
 }
 
 } // namespace
