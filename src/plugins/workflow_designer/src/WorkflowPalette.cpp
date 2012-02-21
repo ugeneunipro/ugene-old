@@ -429,17 +429,20 @@ void WorkflowPalette::editElement() {
         if(dlg.exec() == QDialog::Accepted) {
             cfg = dlg.config();
 
+            bool deleted = true;
             if (!(*oldCfg == *cfg)) {
                 if(oldName != cfg->name) {
-                    if (removeElement()) {
-                        WorkflowEnv::getExternalCfgRegistry()->unregisterConfig(oldName);
-                    }
+                    deleted = removeElement();
                 } else {
-                    QString id = proto->getId();
-                    emit si_protoDeleted(id);
+                    emit si_protoDeleted(proto->getId());
                     reg->unregisterProto(proto->getId());
+                    delete proto;
                 }
+
                 LocalWorkflow::ExternalProcessWorkerFactory::init(cfg);
+            }
+            if (deleted) {
+                WorkflowEnv::getExternalCfgRegistry()->unregisterConfig(oldName);
             }
             WorkflowEnv::getExternalCfgRegistry()->registerExternalTool(cfg);
             emit si_protoChanged();
