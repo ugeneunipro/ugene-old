@@ -9,6 +9,7 @@ HEADERS += src/GUITestBasePlugin.h \
            src/GUIDialogUtils.h \
            src/ToolTipUtils.h \
            src/AppUtils.h \
+           src/LogUtils.h \
            src/ProjectUtils.h
 
 SOURCES += src/GUITestBasePlugin.cpp \
@@ -19,4 +20,5 @@ SOURCES += src/GUITestBasePlugin.cpp \
            src/GUIDialogUtils.cpp \
            src/ToolTipUtils.cpp \
            src/AppUtils.cpp \
+           src/LogUtils.cpp \
            src/ProjectUtils.cpp

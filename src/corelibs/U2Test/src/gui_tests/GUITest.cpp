@@ -5,6 +5,7 @@
 namespace U2 {
 
 const QString GUITest::testDir = "../../test/";
+const QString GUITest::dataDir = "../../data/";
 
 void GUITest::launch(U2OpStatus &os) {
 

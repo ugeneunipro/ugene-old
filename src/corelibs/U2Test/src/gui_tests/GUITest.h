@@ -19,6 +19,7 @@ public:
     void setName(const QString &n) { name = n; }
 
     static const QString testDir;
+    static const QString dataDir;
 protected:
     virtual void execute(U2OpStatus &os) = 0;
 
