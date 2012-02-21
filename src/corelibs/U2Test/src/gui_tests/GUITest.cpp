@@ -8,7 +8,7 @@ const QString GUITest::testDir = "../../test/";
 
 void GUITest::launch(U2OpStatus &os) {
 
-	QThread *t = this->thread();
+    QThread *t = this->thread();
     moveToThread(QApplication::instance()->thread());
 
     execute(os);

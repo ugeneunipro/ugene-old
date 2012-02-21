@@ -18,31 +18,31 @@ typedef QMap<QString, GUITest*> GUITestMap;
 
 class U2TEST_EXPORT GUITestBase {
 public:
-	enum TestType {NORMAL, ADDITIONAL} type;
+    enum TestType {NORMAL, ADDITIONAL} type;
 
     virtual ~GUITestBase();
 
     bool registerTest(GUITest *test, TestType testType = NORMAL);
-	GUITest *getTest(const QString &name, TestType testType = NORMAL); // removes item from GUITestBase
+    GUITest *getTest(const QString &name, TestType testType = NORMAL); // removes item from GUITestBase
 
-	GUITests getTests(TestType testType = NORMAL);
+    GUITests getTests(TestType testType = NORMAL);
 
-	static const QString unnamedTestsPrefix;
+    static const QString unnamedTestsPrefix;
 
 private:
     GUITestMap tests;
-	GUITestMap additional; // GUI checks additional to the launched checks
+    GUITestMap additional; // GUI checks additional to the launched checks
 
-	GUITest *findTest(const QString &name, TestType testType);
+    GUITest *findTest(const QString &name, TestType testType);
 
-	GUITestMap &getMap(TestType testType);
+    GUITestMap &getMap(TestType testType);
 
-	QString getNextTestName(TestType testType);
+    QString getNextTestName(TestType testType);
 
-	bool isNewTest(GUITest *test, TestType testType);
-	void addTest(GUITest *test, TestType testType);
+    bool isNewTest(GUITest *test, TestType testType);
+    void addTest(GUITest *test, TestType testType);
 
-	QString nameUnnamedTest(GUITest* test, TestType testType);
+    QString nameUnnamedTest(GUITest* test, TestType testType);
 };
 
 }

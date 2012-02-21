@@ -37,26 +37,26 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 
 GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test Base")) {
 
-	GUITestBase *guiTestBase = AppContext::getGUITestBase();
+    GUITestBase *guiTestBase = AppContext::getGUITestBase();
 
-	registerTests(guiTestBase);
-	registerAdditionalChecks(guiTestBase);
+    registerTests(guiTestBase);
+    registerAdditionalChecks(guiTestBase);
 }
 
 void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
-	if (guiTestBase) {
-		guiTestBase->registerTest(new OpenFastaFile());
-		guiTestBase->registerTest(new ProjectSaveAs());
-	}
+    if (guiTestBase) {
+        guiTestBase->registerTest(new OpenFastaFile());
+        guiTestBase->registerTest(new ProjectSaveAs());
+    }
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
 
-	if (guiTestBase) {
-		guiTestBase->registerTest(new GUIInitialCheck(), GUITestBase::ADDITIONAL);
-		guiTestBase->registerTest(new GUILoadedCheck(), GUITestBase::ADDITIONAL);
-	}
+    if (guiTestBase) {
+        guiTestBase->registerTest(new GUIInitialCheck(), GUITestBase::ADDITIONAL);
+        guiTestBase->registerTest(new GUILoadedCheck(), GUITestBase::ADDITIONAL);
+    }
 }
 
 } //namespace

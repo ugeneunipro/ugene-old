@@ -30,15 +30,15 @@
 namespace U2 {
 
 void GUIInitialCheck::execute(U2OpStatus& os) {
-	QString activeWindowName = AppContext::getActiveWindowName();
-	CHECK_SET_ERR(activeWindowName.isEmpty(), "Active window name is not empty");
+    QString activeWindowName = AppContext::getActiveWindowName();
+    CHECK_SET_ERR(activeWindowName.isEmpty(), "Active window name is not empty");
 
-	QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
-	CHECK_SET_ERR(mainWindow->isActiveWindow(), "MainWindow is not active");
+    QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+    CHECK_SET_ERR(mainWindow->isActiveWindow(), "MainWindow is not active");
 }
 
 void GUILoadedCheck::execute(U2OpStatus &os) {
-	CHECK_SET_ERR(AppContext::getProjectView() == NULL && AppContext::getProject() == NULL, "There is a project");
+    CHECK_SET_ERR(AppContext::getProjectView() == NULL && AppContext::getProject() == NULL, "There is a project");
 }
 
 } // namespace

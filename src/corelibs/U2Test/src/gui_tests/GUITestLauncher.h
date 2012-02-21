@@ -13,7 +13,7 @@ class GUITest;
 class GUITestLauncher: public Task {
     Q_OBJECT
 public:
-	GUITestLauncher();
+    GUITestLauncher();
 
     virtual void run();
     virtual QString generateReport() const;
@@ -22,18 +22,18 @@ private:
     QList<GUITest *> tests;
     QMap<QString, QString> results;
 
-	QStringList getTestProcessArguments(const QString &testName) const;
+    QStringList getTestProcessArguments(const QString &testName) const;
 
-	void firstTestRunCheck(const QString& testName);
-	QString performTest(const QString& testName) const;
+    void firstTestRunCheck(const QString& testName);
+    QString performTest(const QString& testName) const;
 
-	QString readTestResult(const QByteArray& output) const;
+    QString readTestResult(const QByteArray& output) const;
 
-	bool initGUITestBase();
-	void updateProgress(int finishedCount);
+    bool initGUITestBase();
+    void updateProgress(int finishedCount);
 
-	void teamCityLogResult(const QString &testName, const QString &testResult) const;
-	bool testFailed(const QString &testResult) const;
+    void teamCityLogResult(const QString &testName, const QString &testResult) const;
+    bool testFailed(const QString &testResult) const;
 };
 
 } // namespace

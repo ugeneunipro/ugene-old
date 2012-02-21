@@ -33,76 +33,76 @@ const QString GUITestTask::successResult = "Success";
 
 GUITestTask::GUITestTask(GUITest* task) : Task(taskName, TaskFlags_FOSCOE) {
 
-	Q_ASSERT(task);
-	if (task) {
-		tests.append(task);
-	}
+    Q_ASSERT(task);
+    if (task) {
+        tests.append(task);
+    }
 }
 
 GUITestTask::~GUITestTask() {
 
-	qDeleteAll(tests);
+    qDeleteAll(tests);
 }
 
 void GUITestTask::prepare() {
 
-	Q_ASSERT(tests.size());
+    Q_ASSERT(tests.size());
     if (!tests.size()) {
-		setError("Empty test");
+        setError("Empty test");
     }
 
-	addChecks();
+    addChecks();
 }
 
 void GUITestTask::addChecks() {
 
-	GUITestBase* tb = AppContext::getGUITestBase();
-	Q_ASSERT(tb);
+    GUITestBase* tb = AppContext::getGUITestBase();
+    Q_ASSERT(tb);
 
-	GUITests additionalChecks = tb->getTests(GUITestBase::ADDITIONAL);
+    GUITests additionalChecks = tb->getTests(GUITestBase::ADDITIONAL);
 
-	additionalChecks.append(tests);
-	tests = additionalChecks;
+    additionalChecks.append(tests);
+    tests = additionalChecks;
 }
 
 void GUITestTask::run() {
 
-	foreach (GUITest *test, tests) {
-		launchTest(test);
+    foreach (GUITest *test, tests) {
+        launchTest(test);
 
-		if (hasError()) {
-			return;
-		}
-	}
+        if (hasError()) {
+            return;
+        }
+    }
 }
 
 void GUITestTask::launchTest(GUITest* test) {
 
-	Q_ASSERT(test);
+    Q_ASSERT(test);
 
-	TaskStateInfo os;
-	if (test) {
-		test->launch(os);
-	}
+    TaskStateInfo os;
+    if (test) {
+        test->launch(os);
+    }
 
-	setError(os.getError());
+    setError(os.getError());
 }
 
 Task::ReportResult GUITestTask::report() {
 
-	QString testResult = successResult;
+    QString testResult = successResult;
     if (hasError()) {
-		testResult = getError();
-	}
+        testResult = getError();
+    }
 
-	writeTestResult(testResult);
+    writeTestResult(testResult);
 
-	exit(0);
+    exit(0);
 }
 
 void GUITestTask::writeTestResult(const QString& result) const {
 
-	printf("%s\n", (QString(GUITESTING_REPORT_PREFIX) + ":" + result).toUtf8().data());
+    printf("%s\n", (QString(GUITESTING_REPORT_PREFIX) + ":" + result).toUtf8().data());
 }
 
 }

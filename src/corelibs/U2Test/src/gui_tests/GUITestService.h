@@ -21,39 +21,39 @@ class CMDLineRegistry;
 class U2TEST_EXPORT GUITestService: public Service {
     Q_OBJECT
 public:
-	enum LaunchOptions {NONE, RUN_ONE_TEST, RUN_ALL_TESTS};
+    enum LaunchOptions {NONE, RUN_ONE_TEST, RUN_ALL_TESTS};
 
     GUITestService(QObject *parent = NULL);
-	virtual ~GUITestService();
+    virtual ~GUITestService();
 
     void runTest(GUITests testsToRun);
 
 protected:
     virtual void serviceStateChangedCallback(ServiceState oldState, bool enabledStateChanged);
 
-	GUITest* getTest() const;
+    GUITest* getTest() const;
 
 public slots:
     void sl_registerService();
     void sl_registerTestLauncherTask();
-	void sl_taskStateChanged(Task*);
+    void sl_taskStateChanged(Task*);
 
 private:
     QAction *runTestsAction;
-	Task *testLauncher;
+    Task *testLauncher;
     GUITests testsToRun;
 
-	LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
-	bool launchedToTestGUI(CMDLineRegistry* cmdLine) const;
+    LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
+    bool launchedToTestGUI(CMDLineRegistry* cmdLine) const;
 
-	void registerGUITestTask() const;
-	void registerAllTestsTask();
-	void registerServiceTask();
+    void registerGUITestTask() const;
+    void registerAllTestsTask();
+    void registerServiceTask();
 
-	void addServiceMenuItem();
-	void deleteServiceMenuItem();
+    void addServiceMenuItem();
+    void deleteServiceMenuItem();
 
-	Task* createTestLauncherTask() const;
+    Task* createTestLauncherTask() const;
 };
 
 } // U2

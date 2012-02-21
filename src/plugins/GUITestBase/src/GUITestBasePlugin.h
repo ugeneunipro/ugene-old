@@ -34,8 +34,8 @@ public:
     GUITestBasePlugin();
 
 private:
-	void registerTests(GUITestBase *guiTestBase);
-	void registerAdditionalChecks(GUITestBase *guiTestBase);
+    void registerTests(GUITestBase *guiTestBase);
+    void registerAdditionalChecks(GUITestBase *guiTestBase);
 };
 
 } //namespace

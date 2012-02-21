@@ -42,20 +42,20 @@ QWidget* QtUtils::findWidgetByName(U2OpStatus &os, const QString &widgetName, co
         }
     }
 
-	QString errString = QString("Widget %1 not found").arg(widgetName);
-	CHECK_SET_ERR_RESULT(w != NULL, errString, NULL);
+    QString errString = QString("Widget %1 not found").arg(widgetName);
+    CHECK_SET_ERR_RESULT(w != NULL, errString, NULL);
 
     return w;
 }
 
 bool QtUtils::isWidgetExists(const QString &widgetName) {
     QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
-	if (!mw) {
-		return false;
-	}
+    if (!mw) {
+        return false;
+    }
 
-	QWidget *w = mw->findChild<QWidget*>(widgetName);
-	return (w != NULL && w->isVisible());
+    QWidget *w = mw->findChild<QWidget*>(widgetName);
+    return (w != NULL && w->isVisible());
 }
 
 QWidget* QtUtils::findWidgetByTitle(U2OpStatus &os, const QString &title) {
@@ -68,8 +68,8 @@ QWidget* QtUtils::findWidgetByTitle(U2OpStatus &os, const QString &title) {
         }
     }
 
-	QString errString = QString("Widget %1 not found").arg(title);
-	CHECK_SET_ERR_RESULT(false, errString, NULL);
+    QString errString = QString("Widget %1 not found").arg(title);
+    CHECK_SET_ERR_RESULT(false, errString, NULL);
 }
 
 
@@ -169,7 +169,7 @@ void QtUtils::keyClick(U2OpStatus &os, const QString &widgetName, int key, Qt::K
 
 void QtUtils::mousePress(QWidget *w, Qt::MouseButton button, const QPoint &_pos) {
     if (!w) {
-		return;
+        return;
     }
     QPoint pos = _pos;
     if(pos.isNull()) {
@@ -182,7 +182,7 @@ void QtUtils::mousePress(QWidget *w, Qt::MouseButton button, const QPoint &_pos)
 
 void QtUtils::mouseRelease(QWidget *w, Qt::MouseButton button, const QPoint &_pos) {
     if (!w) {
-		return;
+        return;
     }
     QPoint pos = _pos;
     if(pos.isNull()) {
@@ -200,7 +200,7 @@ void QtUtils::mouseClick(QWidget *w, Qt::MouseButton button, const QPoint &_pos)
 
 void QtUtils::mouseDbClick(QWidget *w, const QPoint &_pos) {
     if (!w) {
-		return;
+        return;
     }
     QPoint pos = _pos;
     if(pos.isNull()) {
@@ -213,7 +213,7 @@ void QtUtils::mouseDbClick(QWidget *w, const QPoint &_pos) {
 
 void QtUtils::keyPress(QWidget *w, int key, Qt::KeyboardModifiers modifiers, const QString &text) {
     if (!w) {
-		return;
+        return;
     }
     QKeyEvent *ke = new QKeyEvent(QEvent::KeyPress, key, modifiers, text);
     sendEvent(w, ke);
@@ -221,7 +221,7 @@ void QtUtils::keyPress(QWidget *w, int key, Qt::KeyboardModifiers modifiers, con
 
 void QtUtils::keyRelease(QWidget *w, int key, Qt::KeyboardModifiers modifiers) {
     if (!w) {
-		return;
+        return;
     }
     QKeyEvent *ke = new QKeyEvent(QEvent::KeyRelease, key, modifiers);
     sendEvent(w, ke);
@@ -422,12 +422,12 @@ void QtUtils::keySequence(QWidget *w, const QString &sequence, Qt::KeyboardModif
 }
 
 void QtUtils::expandTopLevelMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu) {
-	QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
-	QAction *curAction = mw->findChild<QAction*>(menuName);
-	CHECK_SET_ERR(curAction != NULL, QString("Can't find action %1").arg(menuName));
+    QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
+    QAction *curAction = mw->findChild<QAction*>(menuName);
+    CHECK_SET_ERR(curAction != NULL, QString("Can't find action %1").arg(menuName));
 
-	QMenuBar *parMenu = static_cast<QMenuBar*>(findWidgetByName(os, parentMenu));
-	CHECK_SET_ERR(parMenu != NULL, QString("Menu %1 not found").arg(parentMenu));
+    QMenuBar *parMenu = static_cast<QMenuBar*>(findWidgetByName(os, parentMenu));
+    CHECK_SET_ERR(parMenu != NULL, QString("Menu %1 not found").arg(parentMenu));
     if(!parMenu->isVisible()) {
         return;
     }
@@ -442,10 +442,10 @@ void QtUtils::clickMenu(U2OpStatus &os, const QString &menuName, const QString &
 
     QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
     QAction *curAction = mw->findChild<QAction*>(menuName);
-	CHECK_SET_ERR(curAction != NULL, QString("Can't find action %1").arg(menuName));
+    CHECK_SET_ERR(curAction != NULL, QString("Can't find action %1").arg(menuName));
 
-	QMenu* parMenu = (QMenu*)findWidgetByName(os, parentMenu);
-	CHECK_SET_ERR(parMenu != NULL, QString("Menu %1 not found").arg(parentMenu));
+    QMenu* parMenu = (QMenu*)findWidgetByName(os, parentMenu);
+    CHECK_SET_ERR(parMenu != NULL, QString("Menu %1 not found").arg(parentMenu));
     QPoint pos = parMenu->actionGeometry(curAction).center();
 
     moveTo(os, parentMenu, pos);
@@ -455,7 +455,7 @@ void QtUtils::clickMenu(U2OpStatus &os, const QString &menuName, const QString &
 void QtUtils::clickContextMenu(U2OpStatus &os, const QString &menuName) {
 
     QMenu* parMenu = getContextMenu();
-	CHECK_SET_ERR(parMenu != NULL, "Context menu not found");
+    CHECK_SET_ERR(parMenu != NULL, "Context menu not found");
 
     QList<QAction*> actions = parMenu->actions();
     QAction *curAction = NULL;
@@ -465,7 +465,7 @@ void QtUtils::clickContextMenu(U2OpStatus &os, const QString &menuName) {
             break;
         }
     }
-	CHECK_SET_ERR(curAction != NULL, QString("Can't find action %1").arg(menuName));
+    CHECK_SET_ERR(curAction != NULL, QString("Can't find action %1").arg(menuName));
 
     QPoint pos = parMenu->actionGeometry(curAction).center();
     QCursor::setPos(parMenu->mapToGlobal(pos));
@@ -477,9 +477,9 @@ void QtUtils::clickContextMenu(U2OpStatus &os, const QString &menuName) {
 
 void QtUtils::contextMenu(U2OpStatus &os, const QString &widgetName, const QPoint &_pos) {
     QWidget * w = findWidgetByName(os, widgetName);
-	if (!w) {
-		return;
-	}
+    if (!w) {
+        return;
+    }
 
     QPoint pos = _pos;
     if(pos.isNull()) {
@@ -496,32 +496,32 @@ void QtUtils::contextMenu(U2OpStatus &os, const QString &widgetName, const QPoin
 
 void QtUtils::clickMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName) {
 
-	QtUtils::expandTopLevelMenu(os, menuName, MWMENU);
-	QtUtils::sleep(500);
+    QtUtils::expandTopLevelMenu(os, menuName, MWMENU);
+    QtUtils::sleep(500);
 
-	MainWindow* mw = AppContext::getMainWindow();
-	QMenu* fileMenu = mw->getTopLevelMenu(menuName);
-	CHECK_SET_ERR(fileMenu != NULL, "No such menu: " + menuName);
+    MainWindow* mw = AppContext::getMainWindow();
+    QMenu* fileMenu = mw->getTopLevelMenu(menuName);
+    CHECK_SET_ERR(fileMenu != NULL, "No such menu: " + menuName);
 
-	QAction* neededAction = GUIUtils::findAction(fileMenu->actions(), actionName);
-	CHECK_SET_ERR(neededAction != NULL, "No such action " + actionName + " in the menu " + menuName);
+    QAction* neededAction = GUIUtils::findAction(fileMenu->actions(), actionName);
+    CHECK_SET_ERR(neededAction != NULL, "No such action " + actionName + " in the menu " + menuName);
 
-	neededAction->activate(QAction::Trigger);
-	QtUtils::expandTopLevelMenu(os, menuName, MWMENU);
+    neededAction->activate(QAction::Trigger);
+    QtUtils::expandTopLevelMenu(os, menuName, MWMENU);
 
-	sleep(500);
+    sleep(500);
 }
 
 QMenu *QtUtils::getContextMenu() {
-	return static_cast<QMenu*>(QApplication::activePopupWidget());
+    return static_cast<QMenu*>(QApplication::activePopupWidget());
 }
 
 QDialog* QtUtils::getActiveDialog() {
-	return static_cast<QDialog*>(QApplication::activeModalWidget());
+    return static_cast<QDialog*>(QApplication::activeModalWidget());
 }
 
 QWidget* QtUtils::getWidgetInFocus() {
-	return QApplication::focusWidget();
+    return QApplication::focusWidget();
 }
 
 void QtUtils::sendEvent(QObject *obj, QEvent *e) {
@@ -556,7 +556,7 @@ void QtUtils::sendEvent(QObject *obj, QEvent *e) {
 }
 
 void QtUtils::sleep( int msec ){
-	Waiter::await(msec);
+    Waiter::await(msec);
 }
 
 
@@ -616,8 +616,8 @@ void QtUtils::contextMenuOnItem(U2OpStatus &os, const QString &widgetName, const
 QPoint QtUtils::getItemPosition(U2OpStatus &os, const QString &itemName, const QString &treeName) {
     QTreeWidget *tree = static_cast<QTreeWidget*>(findWidgetByName(os, treeName));
 
-	QList<QTreeWidgetItem*> listItems = tree->findItems(itemName, Qt::MatchExactly | Qt::MatchRecursive);
-	CHECK_SET_ERR_RESULT(listItems.isEmpty() == false, QString("Item %1 not found").arg(itemName), QPoint());
+    QList<QTreeWidgetItem*> listItems = tree->findItems(itemName, Qt::MatchExactly | Qt::MatchRecursive);
+    CHECK_SET_ERR_RESULT(listItems.isEmpty() == false, QString("Item %1 not found").arg(itemName), QPoint());
 
     QTreeWidgetItem *item = tree->findItems(itemName, Qt::MatchExactly | Qt::MatchRecursive).first();
     if(!item) {
@@ -638,8 +638,8 @@ bool QtUtils::isItemExists(U2OpStatus &os, const QString &itemName, const QStrin
 void QtUtils::expandTreeItem(U2OpStatus &os, const QString &itemName, const QString &treeName){
     QTreeWidget *tree = static_cast<QTreeWidget*>(findWidgetByName(os, treeName));
 
-	QList<QTreeWidgetItem*> listItems = tree->findItems(itemName, Qt::MatchExactly | Qt::MatchRecursive);
-	CHECK_SET_ERR(listItems.isEmpty() == false, QString("Item %1 not found").arg(itemName));
+    QList<QTreeWidgetItem*> listItems = tree->findItems(itemName, Qt::MatchExactly | Qt::MatchRecursive);
+    CHECK_SET_ERR(listItems.isEmpty() == false, QString("Item %1 not found").arg(itemName));
 
     QTreeWidgetItem *item = tree->findItems(itemName, Qt::MatchExactly | Qt::MatchRecursive).first();
     QPoint pos = tree->visualItemRect(item).topLeft();

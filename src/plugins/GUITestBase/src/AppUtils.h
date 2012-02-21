@@ -28,7 +28,7 @@ namespace U2 {
 
 class AppUtils {
 public:
-	static void checkUGENETitle(U2OpStatus &os, const QString& title);
+    static void checkUGENETitle(U2OpStatus &os, const QString& title);
 };
 
 } // namespace

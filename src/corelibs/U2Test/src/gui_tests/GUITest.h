@@ -9,18 +9,18 @@ namespace U2 {
 class U2TEST_EXPORT GUITest: public QObject{
     Q_OBJECT
 public:
-	GUITest(const QString &_name = ""): QObject(NULL), name(_name) {} //parent must bu NULL to push object to main thread
+    GUITest(const QString &_name = ""): QObject(NULL), name(_name) {} //parent must bu NULL to push object to main thread
 
-	GUITest(GUITest* t): QObject(NULL), name(t->getName()) {}
+    GUITest(GUITest* t): QObject(NULL), name(t->getName()) {}
 
     void launch(U2OpStatus &os);
 
     QString getName() const { return name; }
-	void setName(const QString &n) { name = n; }
+    void setName(const QString &n) { name = n; }
 
-	static const QString testDir;
+    static const QString testDir;
 protected:
-	virtual void execute(U2OpStatus &os) = 0;
+    virtual void execute(U2OpStatus &os) = 0;
 
 private:
     QString name;

@@ -19,145 +19,145 @@ static Logger teamcityLog(ULOG_CAT_TEAMCITY);
 GUITestLauncher::GUITestLauncher()
 : Task("gui_test_launcher", TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled) {
 
-	tpm = Task::Progress_Manual;
+    tpm = Task::Progress_Manual;
 }
 
 void GUITestLauncher::run() {
 
-	if (!initGUITestBase()) {
-		return;
-	}
+    if (!initGUITestBase()) {
+        return;
+    }
 
-	int finishedCount = 0;
+    int finishedCount = 0;
     foreach(GUITest* t, tests) {
         if (isCanceled()) {
             return;
         }
 
-		Q_ASSERT(t);
-		if (t) {
-			QString testName = t->getName();
-			firstTestRunCheck(testName);
+        Q_ASSERT(t);
+        if (t) {
+            QString testName = t->getName();
+            firstTestRunCheck(testName);
 
-			QString testResult = performTest(testName);
-			results[testName] = testResult;
+            QString testResult = performTest(testName);
+            results[testName] = testResult;
 
-			teamCityLogResult(testName, testResult);
-		}
+            teamCityLogResult(testName, testResult);
+        }
 
-		updateProgress(finishedCount++);
+        updateProgress(finishedCount++);
     }
 }
 
 void GUITestLauncher::teamCityLogResult(const QString &testName, const QString &testResult) const {
 
-	teamcityLog.trace(QString("##teamcity[testStarted name='%1 : %2']").arg(testName, testName));
+    teamcityLog.trace(QString("##teamcity[testStarted name='%1 : %2']").arg(testName, testName));
 
-	if (testFailed(testResult)) {
-		teamcityLog.trace(QString("##teamcity[testFailed name='%1 : %2' message='%3' details='%3']").arg(testName, testName, testResult));
-	}
+    if (testFailed(testResult)) {
+        teamcityLog.trace(QString("##teamcity[testFailed name='%1 : %2' message='%3' details='%3']").arg(testName, testName, testResult));
+    }
 
-	teamcityLog.trace(QString("##teamcity[testFinished name='%1 : %2']").arg(testName, testName));
+    teamcityLog.trace(QString("##teamcity[testFinished name='%1 : %2']").arg(testName, testName));
 }
 
 bool GUITestLauncher::testFailed(const QString &testResult) const {
 
-	if (!testResult.contains("Success")) {
-		return true;
-	}
+    if (!testResult.contains("Success")) {
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 void GUITestLauncher::firstTestRunCheck(const QString& testName) {
 
-	QString testResult = results[testName];
-	Q_ASSERT(testResult.isEmpty());
+    QString testResult = results[testName];
+    Q_ASSERT(testResult.isEmpty());
 }
 
 bool GUITestLauncher::initGUITestBase() {
 
-	tests = AppContext::getGUITestBase()->getTests();
-	if (tests.isEmpty()) {
-		setError(tr("No tests to run"));
-		return false;
-	}
+    tests = AppContext::getGUITestBase()->getTests();
+    if (tests.isEmpty()) {
+        setError(tr("No tests to run"));
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 void GUITestLauncher::updateProgress(int finishedCount) {
 
-	int testsSize = tests.size();
-	if (testsSize) {
-		stateInfo.progress = finishedCount*100/testsSize;
-	}
+    int testsSize = tests.size();
+    if (testsSize) {
+        stateInfo.progress = finishedCount*100/testsSize;
+    }
 }
 
 QString GUITestLauncher::performTest(const QString& testName) const {
 
-	QString path = QCoreApplication::applicationFilePath();
+    QString path = QCoreApplication::applicationFilePath();
 
-	// ~QProcess is killing the process, will not return until the process is terminated.
-	QProcess process;
-	process.start(path, getTestProcessArguments(testName));
+    // ~QProcess is killing the process, will not return until the process is terminated.
+    QProcess process;
+    process.start(path, getTestProcessArguments(testName));
 
-	bool started = process.waitForStarted();
-	if (!started) {
-		return tr("An error occurred while starting UGENE: ") + process.errorString();
-	}
+    bool started = process.waitForStarted();
+    if (!started) {
+        return tr("An error occurred while starting UGENE: ") + process.errorString();
+    }
 
-	bool finished = process.waitForFinished(TIMEOUT);
-	QProcess::ExitStatus exitStatus = process.exitStatus();
+    bool finished = process.waitForFinished(TIMEOUT);
+    QProcess::ExitStatus exitStatus = process.exitStatus();
 
-	if (finished && (exitStatus == QProcess::NormalExit)) {
-		return readTestResult(process.readAllStandardOutput());
-	}
+    if (finished && (exitStatus == QProcess::NormalExit)) {
+        return readTestResult(process.readAllStandardOutput());
+    }
 
-	return tr("An error occurred while finishing UGENE: ") + process.errorString();
+    return tr("An error occurred while finishing UGENE: ") + process.errorString();
 }
 
 QStringList GUITestLauncher::getTestProcessArguments(const QString &testName) const {
 
-	return QStringList() << QString("--") + CMDLineCoreOptions::LAUNCH_GUI_TEST + "=" + testName;
+    return QStringList() << QString("--") + CMDLineCoreOptions::LAUNCH_GUI_TEST + "=" + testName;
 }
 
 QString GUITestLauncher::readTestResult(const QByteArray& output) const {
 
-	QString msg;
-	QTextStream stream(output, QIODevice::ReadOnly);
+    QString msg;
+    QTextStream stream(output, QIODevice::ReadOnly);
 
-	while(!stream.atEnd()) {
-		QString str = stream.readLine();
+    while(!stream.atEnd()) {
+        QString str = stream.readLine();
 
-		if (str.contains(GUITESTING_REPORT_PREFIX)) {
-			msg = str.split(":").last();
-			if (!msg.isEmpty()) {
-				break;
-			}
-		}
-	}
+        if (str.contains(GUITESTING_REPORT_PREFIX)) {
+            msg = str.split(":").last();
+            if (!msg.isEmpty()) {
+                break;
+            }
+        }
+    }
 
-	return msg;
+    return msg;
 }
 
 QString GUITestLauncher::generateReport() const {
 
-	QString res;
-	res += "<table width=\"100%\">";
-	res += QString("<tr><th>%1</th><th>%2</th></tr>").arg(tr("Test name")).arg(tr("Status"));
+    QString res;
+    res += "<table width=\"100%\">";
+    res += QString("<tr><th>%1</th><th>%2</th></tr>").arg(tr("Test name")).arg(tr("Status"));
 
-	QMap<QString, QString>::const_iterator i;
-	for (i = results.begin(); i != results.end(); ++i) {
-		QString color = "green";
-		if (testFailed(i.value())) {
-			color = "red";
-		}
-		res += QString("<tr><th><font color='%3'>%1</font></th><th><font color='%3'>%2</font></th></tr>").arg(i.key()).arg(i.value()).arg(color);
-	}
-	res+="</table>";
+    QMap<QString, QString>::const_iterator i;
+    for (i = results.begin(); i != results.end(); ++i) {
+        QString color = "green";
+        if (testFailed(i.value())) {
+            color = "red";
+        }
+        res += QString("<tr><th><font color='%3'>%1</font></th><th><font color='%3'>%2</font></th></tr>").arg(i.key()).arg(i.value()).arg(color);
+    }
+    res+="</table>";
 
-	return res;
+    return res;
 }
 
 }

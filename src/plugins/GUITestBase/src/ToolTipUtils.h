@@ -28,10 +28,10 @@ namespace U2 {
 
 class ToolTipUtils {
 public:
-	static void checkExistingToolTip(U2OpStatus &os, const QString& tooltip);
-	static void checkProjectTreeToolTip(U2OpStatus &os, const QString& tooltip, int num = 0);
+    static void checkExistingToolTip(U2OpStatus &os, const QString& tooltip);
+    static void checkProjectTreeToolTip(U2OpStatus &os, const QString& tooltip, int num = 0);
 
-	static QString getToolTip();
+    static QString getToolTip();
 };
 
 } // namespace

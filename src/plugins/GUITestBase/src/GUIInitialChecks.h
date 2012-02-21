@@ -28,12 +28,12 @@ namespace U2 {
 
 class GUIInitialCheck : public GUITest {
 protected:
-	virtual void execute(U2OpStatus &os);
+    virtual void execute(U2OpStatus &os);
 };
 
 class GUILoadedCheck : public GUITest {
 public:
-	virtual void execute(U2OpStatus &os);
+    virtual void execute(U2OpStatus &os);
 };
 
 } //namespace

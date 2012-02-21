@@ -34,23 +34,23 @@ namespace U2 {
 
 void ToolTipUtils::checkExistingToolTip(U2OpStatus &os, const QString& tooltip) {
 
-	QString t = getToolTip();
-	CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
+    QString t = getToolTip();
+    CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
 }
 
 void ToolTipUtils::checkProjectTreeToolTip(U2OpStatus &os, const QString& tooltip, int num) {
 
-	QPoint p = ProjectUtils::getTreeViewItemPosition(os, num);
-	QtUtils::moveTo(os, "documentTreeWidget", p);
-	QtUtils::sleep(1000);
+    QPoint p = ProjectUtils::getTreeViewItemPosition(os, num);
+    QtUtils::moveTo(os, "documentTreeWidget", p);
+    QtUtils::sleep(1000);
 
-	QString t = getToolTip();
-	CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
+    QString t = getToolTip();
+    CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
 }
 
 QString ToolTipUtils::getToolTip() {
 
-	return QToolTip::text();
+    return QToolTip::text();
 }
 
 }

@@ -12,22 +12,22 @@ class GUITest;
 class GUITestTask: public Task {
     Q_OBJECT
 public:
-	GUITestTask(GUITest* task);
-	virtual ~GUITestTask();
+    GUITestTask(GUITest* task);
+    virtual ~GUITestTask();
 
     virtual void prepare();
     virtual void run();
     virtual ReportResult report();
 
-	static const QString taskName;
-	static const QString successResult;
+    static const QString taskName;
+    static const QString successResult;
 private:
-	GUITests tests;
+    GUITests tests;
 
-	void writeTestResult(const QString &result) const;
-	void launchTest(GUITest* test);
+    void writeTestResult(const QString &result) const;
+    void launchTest(GUITest* test);
 
-	void addChecks();
+    void addChecks();
 };
 
 } // namespace

@@ -33,38 +33,38 @@ class Document;
 
 class ProjectUtils {
 public:
-	class OpenFileSettings {
-	public:
-		enum OpenMethod {DRAGDROP} openMethod;
-	};
+    class OpenFileSettings {
+    public:
+        enum OpenMethod {DRAGDROP} openMethod;
+    };
 
-	class CloseProjectSettings {
-	public:
-		enum SaveOnClose {NO, YES, CANCEL} saveOnClose;
-	};
+    class CloseProjectSettings {
+    public:
+        enum SaveOnClose {NO, YES, CANCEL} saveOnClose;
+    };
 
-	/*
-		opens a file using settings, checks if the document is loaded
-	*/
-	static void openFile(U2OpStatus &os, const GUrl &path, const OpenFileSettings& = OpenFileSettings());
+    /*
+        opens a file using settings, checks if the document is loaded
+    */
+    static void openFile(U2OpStatus &os, const GUrl &path, const OpenFileSettings& = OpenFileSettings());
 
-	static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
+    static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
 
-	static void closeProject(U2OpStatus &os, const CloseProjectSettings& = CloseProjectSettings());
-	static void openProjectView(U2OpStatus &os);
+    static void closeProject(U2OpStatus &os, const CloseProjectSettings& = CloseProjectSettings());
+    static void openProjectView(U2OpStatus &os);
 
-	static void checkDocumentExists(U2OpStatus &os, const QString &documentName);
+    static void checkDocumentExists(U2OpStatus &os, const QString &documentName);
 
-	static QPoint getTreeViewItemPosition(U2OpStatus &os, int num = 0);
+    static QPoint getTreeViewItemPosition(U2OpStatus &os, int num = 0);
 protected:
-	static void openFileDrop(U2OpStatus &os, const GUrl &path);
+    static void openFileDrop(U2OpStatus &os, const GUrl &path);
 
-	static void checkProjectExists(U2OpStatus &os);
+    static void checkProjectExists(U2OpStatus &os);
 
-	static Document* checkDocumentExists(U2OpStatus &os, const GUrl &url);
-	static void checkDocumentActive(U2OpStatus &os, Document *doc);
+    static Document* checkDocumentExists(U2OpStatus &os, const GUrl &url);
+    static void checkDocumentActive(U2OpStatus &os, Document *doc);
 
-	static void closeProjectByHotkey(U2OpStatus &os);
+    static void closeProjectByHotkey(U2OpStatus &os);
 };
 
 } // U2

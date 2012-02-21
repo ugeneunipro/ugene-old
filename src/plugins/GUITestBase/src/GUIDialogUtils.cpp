@@ -28,65 +28,65 @@ namespace U2 {
 
 void GUIDialogUtils::clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b) {
 
-	QWidget* activeModal = QApplication::activeModalWidget();
-	QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
-	if (!messageBox) {
-		return;
-	}
+    QWidget* activeModal = QApplication::activeModalWidget();
+    QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
+    if (!messageBox) {
+        return;
+    }
 
-	QAbstractButton* button = messageBox->button(b);
-	CHECK_SET_ERR(button != NULL, "There is no such button in messagebox");
+    QAbstractButton* button = messageBox->button(b);
+    CHECK_SET_ERR(button != NULL, "There is no such button in messagebox");
 
-	button->click();
-	QtUtils::sleep(500);
+    button->click();
+    QtUtils::sleep(500);
 }
 
 void GUIDialogUtils::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel) {
 
-	QWidget* w = QApplication::activeModalWidget();
-	if (!w) {
-		return;
-	}
+    QWidget* w = QApplication::activeModalWidget();
+    if (!w) {
+        return;
+    }
 
-	QWidget* activeW = QApplication::focusWidget();
-	QObject* activeWP = activeW->parent();
-	QObject* activeWPP = activeWP->parent();
+    QWidget* activeW = QApplication::focusWidget();
+    QObject* activeWP = activeW->parent();
+    QObject* activeWPP = activeWP->parent();
 
-	QList<QLineEdit*> lineEdits;
-	foreach (QObject *obj, activeWP->children()) {
-		QLineEdit *l = qobject_cast<QLineEdit*>(obj);
-		if (l) {
-			lineEdits.push_front(l);
-		}
-	}
+    QList<QLineEdit*> lineEdits;
+    foreach (QObject *obj, activeWP->children()) {
+        QLineEdit *l = qobject_cast<QLineEdit*>(obj);
+        if (l) {
+            lineEdits.push_front(l);
+        }
+    }
 
-	CHECK_SET_ERR(lineEdits.size() == 3, "There aren't 3 QLineEdits in SaveProjectAs dialog");
+    CHECK_SET_ERR(lineEdits.size() == 3, "There aren't 3 QLineEdits in SaveProjectAs dialog");
 
-	lineEdits[2]->setText(projectName);
-	lineEdits[0]->setText(projectFolder);
-	lineEdits[1]->setText(projectFile);
+    lineEdits[2]->setText(projectName);
+    lineEdits[0]->setText(projectFolder);
+    lineEdits[1]->setText(projectFile);
 
-	QList<QPushButton*> buttons;
-	foreach (QObject *obj, activeWPP->children()) {
-		QPushButton *b = qobject_cast<QPushButton*>(obj);
-		if (b) {
-			buttons.push_front(b);
-		}
-	}
+    QList<QPushButton*> buttons;
+    foreach (QObject *obj, activeWPP->children()) {
+        QPushButton *b = qobject_cast<QPushButton*>(obj);
+        if (b) {
+            buttons.push_front(b);
+        }
+    }
 
-	CHECK_SET_ERR(buttons.size() == 2, "There aren't 2 QPushButtons in SaveProjectAs dialog");
+    CHECK_SET_ERR(buttons.size() == 2, "There aren't 2 QPushButtons in SaveProjectAs dialog");
 
-	QPushButton* cancelButton = buttons[0];
-	QPushButton* saveButton = buttons[1];
+    QPushButton* cancelButton = buttons[0];
+    QPushButton* saveButton = buttons[1];
 
-	if (pressCancel) {
-		cancelButton->click();
-	}
-	else {
-		saveButton->click();
-	}
+    if (pressCancel) {
+        cancelButton->click();
+    }
+    else {
+        saveButton->click();
+    }
 
-	QtUtils::sleep(500);
+    QtUtils::sleep(500);
 }
 
 }
