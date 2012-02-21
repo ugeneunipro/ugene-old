@@ -29,6 +29,9 @@ namespace U2 {
 
 class GUIDialogUtils {
 public:
+    static void openExportProjectDialog(U2OpStatus &os);
+    static void checkExportProjectDialog(U2OpStatus &os, const QString& projectName);
+
     static void clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b);
 
     static void fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel = false);

@@ -26,6 +26,35 @@
 
 namespace U2 {
 
+void GUIDialogUtils::openExportProjectDialog(U2OpStatus &os) {
+
+    QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
+}
+
+void GUIDialogUtils::checkExportProjectDialog(U2OpStatus &os, const QString& projectName) {
+
+    QWidget* w = QApplication::activeModalWidget();
+    if (!w) {
+        return;
+    }
+
+    QWidget* activeW = QApplication::focusWidget();
+    CHECK_SET_ERR(activeW != NULL, "Not export project dialog");
+    QObject* activeWP = activeW->parent();
+    CHECK_SET_ERR(activeWP != NULL, "Not export project dialog");
+
+    QList<QLineEdit*> lineEdits;
+    foreach (QObject *obj, w->children()) {
+        QLineEdit *l = qobject_cast<QLineEdit*>(obj);
+        if (l) {
+            lineEdits.push_front(l);
+        }
+    }
+
+    CHECK_SET_ERR(lineEdits.size() > 0, "There is no lineEdit in dialog");
+    CHECK_SET_ERR(lineEdits[0]->text() == projectName, "Project name is not " + projectName);
+}
+
 void GUIDialogUtils::clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b) {
 
     QWidget* activeModal = QApplication::activeModalWidget();
