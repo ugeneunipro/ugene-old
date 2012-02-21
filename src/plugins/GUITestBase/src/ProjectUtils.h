@@ -47,6 +47,7 @@ public:
         opens a file using settings, checks if the document is loaded
     */
     static void openFile(U2OpStatus &os, const GUrl &path, const OpenFileSettings& = OpenFileSettings());
+    static void openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& = OpenFileSettings());
 
     static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
 
@@ -58,6 +59,7 @@ public:
     static QPoint getTreeViewItemPosition(U2OpStatus &os, int num = 0);
 protected:
     static void openFileDrop(U2OpStatus &os, const GUrl &path);
+    static void openFilesDrop(U2OpStatus &os, const QList<QUrl> &urls);
 
     static void checkProjectExists(U2OpStatus &os);
 

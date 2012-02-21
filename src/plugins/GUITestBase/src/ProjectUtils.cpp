@@ -35,15 +35,9 @@ namespace U2 {
 
 void ProjectUtils::openFile(U2OpStatus &os, const GUrl &path, const OpenFileSettings& settings) {
 
-    switch (settings.openMethod) {
-        case OpenFileSettings::DRAGDROP:
-        default:
-            openFileDrop(os, path);
-    }
+    QList<QUrl> urls; urls << path.getURLString();
+    openFiles(os, urls, settings);
 
-    QtUtils::sleep(3000);
-
-    checkProjectExists(os);
     Document* doc = checkDocumentExists(os, path);
     checkDocumentActive(os, doc);
 }
@@ -63,6 +57,23 @@ void ProjectUtils::checkDocumentExists(U2OpStatus &os, const QString &documentNa
     }
 
     os.setError("There is no document with name " + documentName);
+}
+
+void ProjectUtils::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& settings) {
+
+    switch (settings.openMethod) {
+        case OpenFileSettings::DRAGDROP:
+        default:
+            openFilesDrop(os, urls);
+    }
+
+    QtUtils::sleep(3000);
+    checkProjectExists(os);
+
+    foreach (QUrl path, urls) {
+        GUrl pathStr = path.toString();
+        checkDocumentExists(os, pathStr);
+    }
 }
 
 void ProjectUtils::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting) {
@@ -158,11 +169,16 @@ void ProjectUtils::checkDocumentActive(U2OpStatus &os, Document *doc) {
 
 void ProjectUtils::openFileDrop(U2OpStatus &os, const GUrl &path) {
 
-    QWidget* widget = AppContext::getMainWindow()->getQMainWindow();
-    QPoint widgetPos(widget->width()/2, widget->height()/2);
-
     QList<QUrl> urls;
     urls << path.getURLString();
+
+    openFilesDrop(os, urls);
+}
+
+void ProjectUtils::openFilesDrop(U2OpStatus &os, const QList<QUrl> &urls) {
+
+    QWidget* widget = AppContext::getMainWindow()->getQMainWindow();
+    QPoint widgetPos(widget->width()/2, widget->height()/2);
 
     QMimeData *mimeData = new QMimeData();
     mimeData->setUrls(urls);
@@ -176,7 +192,6 @@ void ProjectUtils::openFileDrop(U2OpStatus &os, const GUrl &path) {
     QDropEvent* dropEvent = new QDropEvent(widgetPos, dropActions, mimeData, mouseButtons, 0);
     QtUtils::sendEvent(widget, dropEvent);
 }
-
 
 QPoint ProjectUtils::getTreeViewItemPosition(U2OpStatus &os, int num) {
 
