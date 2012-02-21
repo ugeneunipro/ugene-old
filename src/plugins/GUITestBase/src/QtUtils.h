@@ -75,6 +75,9 @@ public:
     // Example: clickMenuAction(os, ACTION__ABOUT, MWMENU_HELP);
     static void clickMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName);
 
+    // returns NULL if not found
+    static QAction* getMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName);
+
     //tree model
     static void mouseClickOnItem(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
     static void mouseDbClickOnItem(U2OpStatus &os, const QString &widgetName, const QPoint &pos = QPoint());

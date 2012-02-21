@@ -496,20 +496,27 @@ void QtUtils::contextMenu(U2OpStatus &os, const QString &widgetName, const QPoin
 
 void QtUtils::clickMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName) {
 
+    QAction* neededAction = getMenuAction(os, actionName, menuName);
+    CHECK_SET_ERR(neededAction != NULL, "No such action " + actionName + " in the menu " + menuName);
+
+    neededAction->activate(QAction::Trigger);
+
+    sleep(500);
+}
+
+QAction* QtUtils::getMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName) {
+
     QtUtils::expandTopLevelMenu(os, menuName, MWMENU);
     QtUtils::sleep(500);
 
     MainWindow* mw = AppContext::getMainWindow();
-    QMenu* fileMenu = mw->getTopLevelMenu(menuName);
-    CHECK_SET_ERR(fileMenu != NULL, "No such menu: " + menuName);
+    QMenu* menu = mw->getTopLevelMenu(menuName);
+    CHECK_SET_ERR_RESULT(menu != NULL, "No such menu: " + menuName, false);
 
-    QAction* neededAction = GUIUtils::findAction(fileMenu->actions(), actionName);
-    CHECK_SET_ERR(neededAction != NULL, "No such action " + actionName + " in the menu " + menuName);
-
-    neededAction->activate(QAction::Trigger);
+    QAction* neededAction = GUIUtils::findAction(menu->actions(), actionName);
     QtUtils::expandTopLevelMenu(os, menuName, MWMENU);
 
-    sleep(500);
+    return neededAction;
 }
 
 QMenu *QtUtils::getContextMenu() {
