@@ -138,7 +138,7 @@ void SimplestSequentialScheduler::init() {
     foreach(Actor* a, schema->getProcesses()) {
         BaseWorker *w = a->castPeer<BaseWorker>();
         foreach (IntegralBus *bus, w->getPorts().values()) {
-            bus->setContext(context);
+            bus->setWorkflowContext(context);
         }
         w->setContext(context);
         w->init();

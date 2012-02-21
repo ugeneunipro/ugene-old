@@ -55,8 +55,8 @@ private slots:
 private:
     const QString generateAndCreateURL(const QString &extention, const QString &name);
 
-    CommunicationChannel *output;
-    QList<CommunicationChannel *> inputs;
+    IntegralBus *output;
+    QList<IntegralBus*> inputs;
     QString commandLine;
     ExternalProcessConfig *cfg;
 

@@ -27,6 +27,7 @@
 #include <U2Lang/WorkflowUtils.h>
 
 #include <limits.h>
+#include <QMutexLocker>
 
 namespace U2 {
 namespace Workflow {
@@ -54,6 +55,7 @@ IntegralBus::IntegralBus(Port* p)
 : busType(p->getType()), complement(NULL), portId(p->getId()), takenMsgs(0), workflowContext(NULL) {
     actorId = p->owner()->getId();
     QString name = p->owner()->getLabel() + "[" + p->owner()->getId()+"]";
+    contextMutex = new QMutex();
     if (p->isInput()) {
         Attribute* a = p->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID);
         if(a == NULL) {
@@ -187,6 +189,7 @@ Message IntegralBus::composeMessage(const Message& m) {
         assert(busMap.size() == 1);
         data.insert(busMap.values().first(), m.getData());
     }
+    context.clear();
     return Message(busType, data);
 }
 
@@ -262,8 +265,17 @@ void IntegralBus::setPrintSlots(bool in, const QList<QString> &printSlots) {
         this->printSlots = printSlots;
 }
 
-void IntegralBus::setContext(WorkflowContext *context) {
+void IntegralBus::setWorkflowContext(WorkflowContext *context) {
     workflowContext = context;
+}
+
+IntegralBus::~IntegralBus() {
+    delete contextMutex;
+}
+
+void IntegralBus::setContext(const QVariantMap& m) {
+    QMutexLocker lock(contextMutex);
+    context.unite(m);
 }
 
 }//namespace Workflow

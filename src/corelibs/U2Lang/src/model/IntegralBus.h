@@ -25,6 +25,7 @@
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowContext.h>
 #include <U2Lang/WorkflowTransport.h>
+#include <QMutex>
 
 namespace U2 {
 
@@ -40,6 +41,7 @@ class U2LANG_EXPORT IntegralBus : public QObject, public CommunicationSubject, p
     Q_OBJECT
 public:
     IntegralBus(Port* peer);
+    ~IntegralBus();
     
     // reimplemented from CommunicationSubject
     virtual bool addCommunication(const QString& id, CommunicationChannel* ch);
@@ -60,7 +62,7 @@ public:
     virtual void setCapacity(int) {}
     
     virtual QVariantMap getContext() const {return context;}
-    virtual void setContext(const QVariantMap& m) {context = m;}
+    virtual void setContext(const QVariantMap& m);
     
     virtual void addComplement(IntegralBus* b) {assert(!complement);complement = b;}
     
@@ -69,7 +71,7 @@ public:
 
     void setPrintSlots(bool in, const QList<QString> &printSlots);
 
-    void setContext(WorkflowContext *context);
+    void setWorkflowContext(WorkflowContext *context);
     
 protected:
     virtual Message composeMessage(const Message&);
@@ -96,6 +98,8 @@ protected:
     QList<QString> printSlots;
     ActorId actorId;
     WorkflowContext *workflowContext;
+
+    QMutex *contextMutex;
     
 }; // IntegralBus
 

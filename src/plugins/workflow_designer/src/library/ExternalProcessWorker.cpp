@@ -331,11 +331,14 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
 }
 
 void ExternalProcessWorker::init() {
-    foreach(const DataConfig& input, cfg->inputs) {
-        inputs << ports.value(input.attrName);
-    }
-
     output = ports.value(OUT_PORT_ID);
+
+    foreach(const DataConfig& input, cfg->inputs) {
+        IntegralBus *inBus = ports.value(input.attrName);
+        inputs << inBus;
+
+        inBus->addComplement(output);
+    }
 }
 
 bool ExternalProcessWorker::isReady() {
