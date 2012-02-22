@@ -26,6 +26,7 @@
 #include "GUIInitialChecks.h"
 #include "GUIOpenFileTests.h"
 #include "GUISaveFileTests.h"
+#include "GUIExportProjectTests.h"
 
 namespace U2 {
 
@@ -48,6 +49,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     if (guiTestBase) {
         guiTestBase->registerTest(new OpenFastaFile());
         guiTestBase->registerTest(new ProjectSaveAs());
+        guiTestBase->registerTest(new OpenMultipleFiles());
+        guiTestBase->registerTest(new ExportProject());
     }
 }
 

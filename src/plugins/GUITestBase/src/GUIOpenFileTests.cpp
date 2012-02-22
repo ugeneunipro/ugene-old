@@ -33,4 +33,18 @@ void OpenFastaFile::execute(U2OpStatus &os) {
     ProjectUtils::openFile(os, url);
 }
 
+void OpenMultipleFiles::execute(U2OpStatus &os) {
+
+    QList<QUrl> urls;
+    urls << QUrl(dataDir+"samples/Genbank/murine.gb");
+    urls << QUrl(dataDir+"samples/Genbank/sars.gb");
+    urls << QUrl(dataDir+"samples/Genbank/CVU55762.gb");
+    ProjectUtils::openFiles(os, urls);
+
+    ProjectUtils::checkDocumentExists(os, "murine.gb");
+    ProjectUtils::checkDocumentExists(os, "sars.gb");
+    ProjectUtils::checkDocumentExists(os, "CVU55762.gb");
+}
+
+
 } // namespace

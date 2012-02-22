@@ -31,6 +31,14 @@ protected:
     virtual void execute(U2OpStatus &os);
 };
 
+class OpenMultipleFiles : public GUITest {
+public:
+    OpenMultipleFiles() : GUITest("OpenFileTests_OpenMultipleFiles_0017"){}
+protected:
+    virtual void execute(U2OpStatus &os);
+};
+
+
 } //namespace
 
 #endif

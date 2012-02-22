@@ -47,3 +47,4 @@ void ProjectSaveAs::execute(U2OpStatus &os) {
 }
 
 } // namespace
+
