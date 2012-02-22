@@ -51,6 +51,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new ProjectSaveAs());
         guiTestBase->registerTest(new OpenMultipleFiles());
         guiTestBase->registerTest(new ExportProject());
+        guiTestBase->registerTest(new OpenCloseFastaFile());
     }
 }
 

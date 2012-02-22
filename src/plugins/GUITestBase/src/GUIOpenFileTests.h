@@ -38,6 +38,12 @@ protected:
     virtual void execute(U2OpStatus &os);
 };
 
+class OpenCloseFastaFile : public GUITest {
+public:
+    OpenCloseFastaFile () : GUITest("OpenFileTests_OpenCloseFastaFile_0030"){}
+protected:
+    void execute(U2OpStatus &os);
+};
 
 } //namespace
 

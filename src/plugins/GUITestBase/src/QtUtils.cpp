@@ -134,6 +134,7 @@ void QtUtils::mouseRelease(U2OpStatus &os, const QString &widgetName, Qt::MouseB
 
 void QtUtils::mouseClick(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &_pos) {
     mousePress(os, widgetName, button, _pos);
+    QtUtils::sleep(500);
     mouseRelease(os, widgetName, button, _pos);
 }
 
@@ -435,6 +436,7 @@ void QtUtils::expandTopLevelMenu(U2OpStatus &os, const QString &menuName, const 
     QPoint pos = parMenu->actionGeometry(curAction).center();
 
     moveTo(os, parentMenu, pos);
+    QtUtils::sleep(500);
     mouseClick(os, parentMenu, Qt::LeftButton, pos);
 }
 

@@ -24,6 +24,7 @@
 #include "ProjectUtils.h"
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/ObjectViewModel.h>
+#include "LogUtils.h"
 
 namespace U2 {
 
@@ -46,5 +47,19 @@ void OpenMultipleFiles::execute(U2OpStatus &os) {
     ProjectUtils::checkDocumentExists(os, "CVU55762.gb");
 }
 
+void OpenCloseFastaFile::execute(U2OpStatus &os)
+{
+    LogTracer log;
+    GUrl url(dataDir + "samples/FASTA/human_T1.fa");
+
+    ProjectUtils::openFile(os, url);
+
+    ProjectUtils::CloseProjectSettings button_to_press;
+    button_to_press.saveOnClose = ProjectUtils::CloseProjectSettings::CANCEL;
+
+    ProjectUtils::closeProject(os, button_to_press);
+
+    LogUtils::checkHasError(os, log);
+}
 
 } // namespace
