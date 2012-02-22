@@ -42,7 +42,7 @@ bool PVRowData::fitToRow(const QVector<U2Region>& location) {
     //assume locations are always in ascending order
     //usually annotations come in sorted by location 
     //first check the most frequent way
-    {
+    if (!ranges.isEmpty()) {
         const U2Region& l = location.first();
         const U2Region& r = ranges.last();
         if (l.startPos > r.endPos()) {

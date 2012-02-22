@@ -197,8 +197,20 @@ void DigestSequenceDialog::searchForAnnotatedEnzymes(ADVSequenceObjectContext* c
         grp->findAllAnnotationsInGroupSubTree(reSites);
         foreach (Annotation* a, reSites) {
             QString enzymeId = a->getAnnotationName();
-            annotatedEnzymes.insertMulti(enzymeId, a->getRegions().first() );
-            availableEnzymes.insert(enzymeId);
+            bool isDublicate = false;
+            if (annotatedEnzymes.contains(enzymeId)) {
+                QList<U2Region> regions = annotatedEnzymes.values(enzymeId);
+                foreach( U2Region region, regions) {
+                    if (region == a->getRegions().first()) {
+                        isDublicate = true;
+                        break;
+                    }
+                }
+            }
+            if (!isDublicate) {
+                annotatedEnzymes.insertMulti(enzymeId, a->getRegions().first() );
+                availableEnzymes.insert(enzymeId);
+            }
         }
 
     }
