@@ -3,7 +3,7 @@ BUILD_DIR=./ugenecl_bundle
 RELEASE_DIR=../../src/_release
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
-PATH_TO_QT="/usr/local/Trolltech/Qt-4.7.3/lib"
+PATH_TO_QT="/usr/local/Trolltech/Qt-4.7.4/lib"
 
 source bundle_common.sh
 
@@ -23,7 +23,7 @@ mkdir "${TARGET_EXE_DIR}/plugins"
 mkdir "${TARGET_EXE_DIR}/data"
 
 echo copying translations
-cp $RELEASE_DIR/transl_en.qm "$TARGET_EXE_DIR"
+cp $RELEASE_DIR/transl_*.qm "$TARGET_EXE_DIR"
 
 echo copying datadir
 cp -R "$RELEASE_DIR/../../data" "${TARGET_EXE_DIR}/"
@@ -65,7 +65,7 @@ echo copying plugins
 add-plugin annotator
 add-plugin ball
 add-plugin biostruct3d_view
-add-plugin bowtie
+#add-plugin bowtie
 add-plugin chroma_view
 add-plugin circular_view
 add-plugin remote_service
@@ -81,10 +81,10 @@ add-plugin hmm2
 add-plugin hmm3
 add-plugin kalign
 add-plugin orf_marker
-add-plugin query_designer
 add-plugin phylip
 add-plugin primer3
 add-plugin psipred
+add-plugin query_designer
 add-plugin remote_blast
 add-plugin repeat_finder
 add-plugin sitecon
@@ -93,6 +93,10 @@ add-plugin umuscle
 add-plugin weight_matrix
 add-plugin workflow_designer
 add-plugin opencl_support
+add-plugin dbi_bam
+#add-plugin dbi_file
+add-plugin ptools
+add-plugin dna_flexibility
 
 if [ "$1" == "-test" ]
     then
