@@ -49,6 +49,9 @@ public:
     QByteArray getWholeSequenceData() const;
     
     QByteArray getSequenceData(const U2Region& r) const;
+
+    /** Checks whether getting object from dbi can be performed correctly, error returned through U2OpStatus */
+    bool isValidDbiObject(U2OpStatus &os);
     
     void setWholeSequence(const DNASequence& seq);
 

@@ -150,6 +150,14 @@ QByteArray U2SequenceObject::getSequenceData(const U2Region& r) const {
     return res;
 }
 
+bool U2SequenceObject::isValidDbiObject(U2OpStatus &os) {
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, false);
+    con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os);
+    CHECK_OP(os, false);
+    return true;
+}
+
 void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& seq, U2OpStatus& os) {
 	// seq.alphabet == NULL - for tests.
     CHECK_EXT(seq.alphabet == getAlphabet() || seq.seq.isEmpty() || seq.alphabet == NULL, 

@@ -77,7 +77,7 @@ U2DataType SQLiteUtils::toType(const U2DataId& id) {
     if (id.size() < DATAID_MIN_LEN) {
         return 0;
     }
-    return *(qint64*)(id.constData() + TYPE_OFFSET);
+    return *(U2DataType*)(id.constData() + TYPE_OFFSET);
 }
 
 QByteArray SQLiteUtils::toDbExtra(const U2DataId& id) {

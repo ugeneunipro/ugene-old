@@ -37,6 +37,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QSet>
 
@@ -134,6 +136,10 @@ void OpenAnnotatedDNAViewTask::open() {
         GObject* obj = GObjectUtils::selectObjectByReference(r, allSequenceObjects, UOF_LoadedOnly);
         U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
         if (seqObj!=NULL) {
+            U2OpStatusImpl status;
+            seqObj->isValidDbiObject(status);
+            CHECK_OP_EXT(status, stateInfo.setError(tr("Error reading sequence object from dbi! URL: '%1'', name: '%2', error: %3").arg(r.docUrl).arg(r.objName).arg(status.getError())), );
+            
             seqObjects.append(seqObj);
             if (seqObjects.size() > MAX_SEQ_OBJS_PER_VIEW) {
                 uiLog.details(tr("Maximum number of objects per view reached: %1").arg(MAX_SEQ_OBJS_PER_VIEW));
