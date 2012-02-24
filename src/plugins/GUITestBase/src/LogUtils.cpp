@@ -28,6 +28,7 @@ namespace U2 {
 
 LogTracer::LogTracer()
 : wasError(false) {
+    moveToThread(LogServer::getInstance()->thread());
     connect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)), SLOT(sl_onMessage(const LogMessage&)));
 }
 
