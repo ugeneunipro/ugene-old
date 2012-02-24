@@ -33,6 +33,13 @@ protected:
     virtual void execute(U2OpStatus &os);
 };
 
+class NoExportMenuItem : public GUITest {
+public:
+    NoExportMenuItem(): GUITest("ExportProjectTests_ExportProject_0006"){}
+protected:
+    virtual void execute(U2OpStatus &os);
+};
+
 } //namespace
 
 #endif

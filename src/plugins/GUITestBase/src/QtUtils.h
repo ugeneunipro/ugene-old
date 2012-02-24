@@ -29,6 +29,7 @@
 #include <QtGui>
 #include <QtCore/QThread>
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
