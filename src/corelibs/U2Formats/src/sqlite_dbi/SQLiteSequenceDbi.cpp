@@ -82,6 +82,7 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
     q.bindInt64(2, region.startPos);
     q.bindInt64(3, region.endPos());
     qint64 pos = region.startPos;
+    qint64 regionLengthToRead = region.length;
     while (q.step()) {
         qint64 sstart = q.getInt64(0);
         qint64 send = q.getInt64(1);
@@ -89,9 +90,13 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
         QByteArray data = q.getBlob(2);
 
         int copyStart = pos - sstart;
-        int copyLength = qMin(region.length, length - copyStart);
+        int copyLength = qMin(regionLengthToRead, length - copyStart);
         res.append(data.constData() + copyStart, copyLength);
-        pos+=copyLength;
+        pos += copyLength;
+        regionLengthToRead -= copyLength;
+        SAFE_POINT(regionLengthToRead >= 0,
+            "An error occurred during reading sequence data from dbi.",
+            QByteArray());
     }
     return res;
 }
