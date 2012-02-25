@@ -42,7 +42,7 @@ void ExportProject::execute(U2OpStatus &os) {
 void NoExportMenuItem::execute( U2OpStatus &os ){
     AppUtils::checkUGENETitle(os, "UGENE");
     QAction *result = QtUtils::getMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
-    CHECK_SET_ERR(result != NULL, "Export menu item present in menu without any project created");
+    CHECK_SET_ERR(result == NULL, "Export menu item present in menu without any project created");
 }
 
 } // namespace
