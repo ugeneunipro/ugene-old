@@ -54,8 +54,6 @@ public:
     static void closeProject(U2OpStatus &os, const CloseProjectSettings& = CloseProjectSettings());
     static void openProjectView(U2OpStatus &os);
 
-    static void checkDocumentExists(U2OpStatus &os, const QString &documentName);
-
     static QPoint getTreeViewItemPosition(U2OpStatus &os, int num = 0);
 protected:
     static void openFileDrop(U2OpStatus &os, const GUrl &path);

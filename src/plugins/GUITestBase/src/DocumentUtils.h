@@ -19,33 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include "GUISaveFileTests.h"
-#include "QtUtils.h"
-#include "ProjectUtils.h"
-#include "AppUtils.h"
-#include "DocumentUtils.h"
-#include "ToolTipUtils.h"
-#include <U2Core/ProjectModel.h>
-#include <U2Gui/ObjectViewModel.h>
+#ifndef _U2_GUI_DOCUMENT_UTILS_H_
+#define _U2_GUI_DOCUMENT_UTILS_H_
+
+#include <U2Core/U2OpStatus.h>
 
 namespace U2 {
 
-void ProjectSaveAs::execute(U2OpStatus &os) {
+class GObjectView;
+class Document;
 
-    ProjectUtils::openFile(os, testDir+"_common_data/scenarios/project/proj1.uprj");
-    DocumentUtils::checkDocumentExists(os, "1CF7.PDB");
-    AppUtils::checkUGENETitle(os, "proj1 UGENE");
+class DocumentUtils {
+public:
+    // checks if the document with a given name is loaded in a view with a given factory Id
+    static void checkDocumentExists(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id = QString());
 
-    ProjectUtils::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
-    ProjectUtils::closeProject(os);
+    static Document* getDocument(U2OpStatus &os, const QString& documentName);
 
-    ProjectUtils::openFile(os, testDir+"_common_data/scenarios/sandbox/proj2.uprj");
-    DocumentUtils::checkDocumentExists(os, "1CF7.PDB");
-    AppUtils::checkUGENETitle(os, "proj2 UGENE");
+protected:
+    static GObjectView* getDocumentGObjectView(U2OpStatus &os, Document* d);
 
-    ProjectUtils::openProjectView(os);
-    ToolTipUtils::checkProjectTreeToolTip(os, "samples/PDB/1CF7.PDB", 0);
-}
+private:
+    static QList<GObjectView*> getAllGObjectViews();
+};
 
 } // namespace
 
+#endif

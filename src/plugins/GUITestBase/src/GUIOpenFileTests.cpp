@@ -25,6 +25,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/ObjectViewModel.h>
 #include "LogUtils.h"
+#include "DocumentUtils.h"
 
 namespace U2 {
 
@@ -42,9 +43,9 @@ void OpenMultipleFiles::execute(U2OpStatus &os) {
     urls << QUrl(dataDir+"samples/Genbank/CVU55762.gb");
     ProjectUtils::openFiles(os, urls);
 
-    ProjectUtils::checkDocumentExists(os, "murine.gb");
-    ProjectUtils::checkDocumentExists(os, "sars.gb");
-    ProjectUtils::checkDocumentExists(os, "CVU55762.gb");
+    DocumentUtils::checkDocumentExists(os, "murine.gb");
+    DocumentUtils::checkDocumentExists(os, "sars.gb");
+    DocumentUtils::checkDocumentExists(os, "CVU55762.gb");
 }
 
 void OpenCloseFastaFile::execute(U2OpStatus &os)

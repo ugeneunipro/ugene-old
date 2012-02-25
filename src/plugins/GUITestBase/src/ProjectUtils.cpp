@@ -42,23 +42,6 @@ void ProjectUtils::openFile(U2OpStatus &os, const GUrl &path, const OpenFileSett
     checkDocumentActive(os, doc);
 }
 
-void ProjectUtils::checkDocumentExists(U2OpStatus &os, const QString &documentName) {
-
-    Project* p = AppContext::getProject();
-    if (!p) {
-        return;
-    }
-
-    QList<Document*> docs = p->getDocuments();
-    foreach (Document *d, docs) {
-        if (d && (d->getName() == documentName)) {
-            return;
-        }
-    }
-
-    os.setError("There is no document with name " + documentName);
-}
-
 void ProjectUtils::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& settings) {
 
     switch (settings.openMethod) {
