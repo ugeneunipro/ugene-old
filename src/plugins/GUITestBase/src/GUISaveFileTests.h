@@ -27,6 +27,8 @@
 namespace U2 {
 
 class ProjectSaveAs : public GUITest {
+public:
+    ProjectSaveAs() : GUITest("SaveFileTests_ProjectSaveAs_0005"){}
 protected:
     virtual void execute(U2OpStatus &os);
 };

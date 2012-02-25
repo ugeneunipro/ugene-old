@@ -43,7 +43,6 @@ void ProjectSaveAs::execute(U2OpStatus &os) {
     DocumentUtils::checkDocumentExists(os, "1CF7.PDB");
     AppUtils::checkUGENETitle(os, "proj2 UGENE");
 
-    ProjectUtils::openProjectView(os);
     ToolTipUtils::checkProjectTreeToolTip(os, "samples/PDB/1CF7.PDB", 0);
 }
 
