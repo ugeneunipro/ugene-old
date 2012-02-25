@@ -40,7 +40,7 @@ void ToolTipUtils::checkExistingToolTip(U2OpStatus &os, const QString& tooltip) 
 
 void ToolTipUtils::checkProjectTreeToolTip(U2OpStatus &os, const QString& tooltip, int num) {
 
-    QWidget *documentTreeWidget = QtUtils::findWidgetByName(os, "documentTreeWidget");
+    QWidget *documentTreeWidget = QtUtils::findWidgetByName(os, "documentTreeWidget", "", false);
     if (!documentTreeWidget) {
         ProjectUtils::openProjectView(os);
     }

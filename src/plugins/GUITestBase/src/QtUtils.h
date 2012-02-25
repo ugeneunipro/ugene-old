@@ -89,7 +89,7 @@ public:
     static bool isItemExists(U2OpStatus &os, const QString &itemName, const QString &treeName);
     static void expandTreeItem(U2OpStatus &os, const QString &itemName, const QString &treeName);
 
-    static QWidget *findWidgetByName(U2OpStatus &os, const QString &widgetName, const QString &parentName = "");
+    static QWidget *findWidgetByName(U2OpStatus &os, const QString &widgetName, const QString &parentName = "", bool errorIfNull = true);
     static QWidget *findWidgetByTitle(U2OpStatus &os, const QString &widgetTitle);
     static bool isWidgetExists(const QString &widgetName);
     static QMenu   *getContextMenu();

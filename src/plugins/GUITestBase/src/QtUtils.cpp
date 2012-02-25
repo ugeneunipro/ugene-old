@@ -30,7 +30,7 @@ namespace U2 {
 
 #define WAIT_TIMEOUT    2000
 
-QWidget* QtUtils::findWidgetByName(U2OpStatus &os, const QString &widgetName, const QString &parentName) {
+QWidget* QtUtils::findWidgetByName(U2OpStatus &os, const QString &widgetName, const QString &parentName, bool errorIfNull) {
     QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
     QWidget *w = NULL;
     if(parentName.isEmpty()) {
@@ -42,8 +42,9 @@ QWidget* QtUtils::findWidgetByName(U2OpStatus &os, const QString &widgetName, co
         }
     }
 
-    QString errString = QString("Widget %1 not found").arg(widgetName);
-    CHECK_SET_ERR_RESULT(w != NULL, errString, NULL);
+    if (errorIfNull) {
+        CHECK_SET_ERR_RESULT(w != NULL, "Widget " + widgetName + " not found", NULL);
+    }
 
     return w;
 }
