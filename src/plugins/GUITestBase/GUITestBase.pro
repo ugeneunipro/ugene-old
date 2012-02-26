@@ -12,7 +12,8 @@ HEADERS += src/GUITestBasePlugin.h \
            src/AppUtils.h \
            src/DocumentUtils.h \
            src/LogUtils.h \
-           src/ProjectUtils.h
+           src/ProjectUtils.h \
+           src/ProjectTreeViewUtils.h
 
 SOURCES += src/GUITestBasePlugin.cpp \
            src/GUIInitialChecks.cpp \
@@ -25,4 +26,5 @@ SOURCES += src/GUITestBasePlugin.cpp \
            src/AppUtils.cpp \
            src/DocumentUtils.cpp \
            src/LogUtils.cpp \
-           src/ProjectUtils.cpp
+           src/ProjectUtils.cpp \
+           src/ProjectTreeViewUtils.cpp

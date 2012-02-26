@@ -21,11 +21,7 @@
 
 #include "ProjectUtils.h"
 #include "QtUtils.h"
-#include <QDropEvent>
-#include <QUrl>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/Task.h>
-#include <U2Test/GUITestBase.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -90,12 +86,6 @@ void ProjectUtils::closeProject(U2OpStatus &os, const CloseProjectSettings& sett
             GUIDialogUtils::clickMessageBoxButton(os, QMessageBox::Cancel);
             break;
     }
-}
-
-void ProjectUtils::openProjectView(U2OpStatus &os) {
-
-    QtUtils::keyClick(os, MWMENU, Qt::Key_1, Qt::AltModifier);
-    QtUtils::sleep(1000);
 }
 
 void ProjectUtils::closeProjectByHotkey(U2OpStatus &os) {
@@ -175,17 +165,5 @@ void ProjectUtils::openFilesDrop(U2OpStatus &os, const QList<QUrl> &urls) {
     QDropEvent* dropEvent = new QDropEvent(widgetPos, dropActions, mimeData, mouseButtons, 0);
     QtUtils::sendEvent(widget, dropEvent);
 }
-
-QPoint ProjectUtils::getTreeViewItemPosition(U2OpStatus &os, int num) {
-
-    QTreeWidget *tree = static_cast<QTreeWidget*>(QtUtils::findWidgetByName(os, "documentTreeWidget"));
-    CHECK_SET_ERR_RESULT(tree != NULL, QString("Tree Item not found").arg("documentTreeWidget"), QPoint());
-
-    QTreeWidgetItem *item = tree->topLevelItem(num);
-    CHECK_SET_ERR_RESULT(item != NULL, QString("Item %d not found").arg(QString::number(num)), QPoint());
-
-    return tree->visualItemRect(item).center();
-}
-
 
 } // U2

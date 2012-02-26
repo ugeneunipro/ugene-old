@@ -19,31 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#include "ToolTipUtils.h"
-#include "QtUtils.h"
-#include "ProjectTreeViewUtils.h"
+#ifndef _U2_GUI_PROJECT_TREE_VIEW_UTILS_H_
+#define _U2_GUI_PROJECT_TREE_VIEW_UTILS_H_
 
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatus.h>
+
+class QTreeWidget;
+class QTreeWidgetItem;
 
 namespace U2 {
 
-void ToolTipUtils::checkExistingToolTip(U2OpStatus &os, const QString& tooltip) {
+class ProjectTreeViewUtils {
+public:
+    // moves mouse cursor to the item num; opens project tree view if closed
+    static void moveTo(U2OpStatus &os, int num, int subItemNum = -1);
 
-    QString t = getToolTip();
-    CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
-}
+    static void checkExistingToolTip(U2OpStatus &os, const QString& tooltip);
 
-void ToolTipUtils::checkProjectTreeToolTip(U2OpStatus &os, const QString& tooltip, int num) {
+    static void openView(U2OpStatus &os);
+    static void toggleView(U2OpStatus &os);
 
-    ProjectTreeViewUtils::moveTo(os, num);
+    static QPoint getTreeViewItemPosition(U2OpStatus &os, int num = 0, int subItemNum = -1);
 
-    QString t = getToolTip();
-    CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
-}
+    static const QString widgetName;
 
-QString ToolTipUtils::getToolTip() {
+protected:
+    static QTreeWidget* getTreeWidget(U2OpStatus &os);
+    static QTreeWidgetItem* getTreeWidgetItem(U2OpStatus &os, int num, int subItemNum);
+};
 
-    return QToolTip::text();
-}
+} // namespace
 
-}
+#endif
