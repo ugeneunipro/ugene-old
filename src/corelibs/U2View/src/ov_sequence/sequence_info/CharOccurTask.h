@@ -49,7 +49,7 @@ private:
 };
 
 
-class CharOccurTask : public BackgroundTask<QList<CharOccurResult>>
+class CharOccurTask : public BackgroundTask< QList<CharOccurResult> >
 {
 public:
     CharOccurTask(const DNAAlphabet* alphabet, U2EntityRef seqRef, U2Region region);

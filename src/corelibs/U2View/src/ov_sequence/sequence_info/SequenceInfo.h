@@ -105,11 +105,11 @@ private:
 
     ShowHideSubgroupWidget* charOccurWidget;
     QLabel* charOccurLabel;
-    BackgroundTaskRunner<QList<CharOccurResult>> charOccurTaskRunner;
+    BackgroundTaskRunner< QList<CharOccurResult> > charOccurTaskRunner;
 
     ShowHideSubgroupWidget* dinuclWidget;
     QLabel* dinuclLabel;
-    BackgroundTaskRunner<QMap<QByteArray, qint64>> dinuclTaskRunner;
+    BackgroundTaskRunner< QMap<QByteArray, qint64> > dinuclTaskRunner;
 
     U2Region currentRegion;
 
