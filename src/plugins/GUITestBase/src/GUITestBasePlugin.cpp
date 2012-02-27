@@ -53,6 +53,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new ExportProject());
         guiTestBase->registerTest(new OpenCloseFastaFile());
         guiTestBase->registerTest(new NoExportMenuItem());
+        guiTestBase->registerTest(new OpenGzippedFile);
     }
 }
 

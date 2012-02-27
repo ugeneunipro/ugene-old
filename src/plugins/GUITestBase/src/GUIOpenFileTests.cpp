@@ -48,8 +48,7 @@ void OpenMultipleFiles::execute(U2OpStatus &os) {
     DocumentUtils::checkDocumentExists(os, "CVU55762.gb");
 }
 
-void OpenCloseFastaFile::execute(U2OpStatus &os)
-{
+void OpenCloseFastaFile::execute(U2OpStatus &os){
     LogTracer log;
     GUrl url(dataDir + "samples/FASTA/human_T1.fa");
 
@@ -61,6 +60,14 @@ void OpenCloseFastaFile::execute(U2OpStatus &os)
     ProjectUtils::closeProject(os, button_to_press);
 
     LogUtils::checkHasError(os, log);
+}
+
+
+void OpenGzippedFile::execute( U2OpStatus &os ){
+    GUrl url(testDir + "_common_data/fasta/fa1.fa.gz");
+
+    ProjectUtils::openFile(os, url);
+    DocumentUtils::checkDocumentExists(os, "fa1.fa.gz", "MSAEditor");
 }
 
 } // namespace

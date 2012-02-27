@@ -45,6 +45,13 @@ protected:
     void execute(U2OpStatus &os);
 };
 
+class OpenGzippedFile : public GUITest {
+public:
+    OpenGzippedFile () : GUITest("OpenFileTests_OpenCloseFastaFile_0009"){}
+protected:
+    void execute(U2OpStatus &os);
+};
+
 } //namespace
 
 #endif
