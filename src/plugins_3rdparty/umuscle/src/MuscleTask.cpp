@@ -169,7 +169,7 @@ void MuscleTask::doAlign(bool refine) {
         bool *existID = new bool[nSeq];
         memset(existID,0,sizeof(bool)*nSeq);
         for(int i=0, n = resNSeq; i < n; i++) {
-            ids[i] = ctx->output_uIds[i];
+            ids[i] = ctx->output_uIds ? ctx->output_uIds[i] : i;
             existID[ids[i]] = true;
         }
         if(config.stableMode) {
