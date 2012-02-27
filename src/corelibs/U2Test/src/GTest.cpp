@@ -131,7 +131,7 @@ static QString addExcludeTests(const QString & fullTestDirPath, const QString & 
 GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
     QFile f(url);
     if (!f.open(QIODevice::ReadOnly)) {
-        err = ("cant_open_file");
+        err = QString("cant_open_file %1").arg(url);
         return NULL;
     }
     QByteArray  xmlData = f.readAll();
