@@ -44,7 +44,7 @@ CharOccurResult::CharOccurResult(char _charInSequence, qint64 _numberOfOccurrenc
 CharOccurTask::CharOccurTask(const DNAAlphabet* _alphabet,
                              U2EntityRef _seqRef,
                              U2Region _region)
-    : BackgroundTask<QList<CharOccurResult>>(
+    : BackgroundTask< QList<CharOccurResult> >(
     "Calculating characters occurrence",
     TaskFlag_None),
       alphabet(_alphabet),

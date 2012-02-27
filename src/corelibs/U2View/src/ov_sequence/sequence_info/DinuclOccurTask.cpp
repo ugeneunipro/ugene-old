@@ -35,7 +35,7 @@ namespace U2 {
 DinuclOccurTask::DinuclOccurTask(const DNAAlphabet* _alphabet,
                                  const U2EntityRef _seqRef,
                                  U2Region _region)
-    : BackgroundTask<QMap<QByteArray, qint64>>(
+    : BackgroundTask< QMap<QByteArray, qint64> >(
     "Calculating dinculeotides occurrence",
     TaskFlag_None),
       alphabet(_alphabet),
