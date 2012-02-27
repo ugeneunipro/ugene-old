@@ -24,6 +24,7 @@
 #include "AssemblyBrowserFactory.h"
 #include "ZoomableAssemblyOverview.h"
 #include "AssemblyReferenceArea.h"
+#include "AssemblyConsensusArea.h"
 #include "AssemblyCoverageGraph.h"
 #include "AssemblyRuler.h"
 #include "AssemblyReadsArea.h"
@@ -731,6 +732,7 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
 
         zoomableOverview = new ZoomableAssemblyOverview(this, true); //zooming temporarily disabled -iefremov
         referenceArea = new AssemblyReferenceArea(this);
+        consensusArea = new AssemblyConsensusArea(this);
         coverageGraph = new AssemblyCoverageGraph(this);
         ruler = new AssemblyRuler(this);
         readsArea  = new AssemblyReadsArea(this, readsHBar, readsVBar);
@@ -745,12 +747,13 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
         readsLayout->setSpacing(0);
 
         readsLayout->addWidget(referenceArea, 0, 0);
-        readsLayout->addWidget(ruler, 1, 0);
-        readsLayout->addWidget(coverageGraph, 2, 0);
+        readsLayout->addWidget(consensusArea, 1, 0);
+        readsLayout->addWidget(ruler, 2, 0);
+        readsLayout->addWidget(coverageGraph, 3, 0);
 
-        readsLayout->addWidget(readsArea, 3, 0);
-        readsLayout->addWidget(readsVBar, 3, 1, 1, 1);
-        readsLayout->addWidget(readsHBar, 3, 0);
+        readsLayout->addWidget(readsArea, 4, 0);
+        readsLayout->addWidget(readsVBar, 4, 1, 1, 1);
+        readsLayout->addWidget(readsHBar, 4, 0);
 
         QWidget * readsLayoutWidget = new QWidget;
         readsLayoutWidget->setLayout(readsLayout);
@@ -762,6 +765,7 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
         connect(readsArea, SIGNAL(si_heightChanged()), zoomableOverview, SLOT(sl_visibleAreaChanged()));
         connect(readsArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
         connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
+        connect(consensusArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
         connect(coverageGraph, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
         connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
         connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), referenceArea, SLOT(sl_redraw()));

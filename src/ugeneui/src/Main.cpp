@@ -48,6 +48,7 @@
 #include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Algorithm/OpenCLGpuRegistry.h>
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
+#include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
@@ -387,6 +388,9 @@ int main(int argc, char **argv)
 
     MSAConsensusAlgorithmRegistry* msaConsReg = new MSAConsensusAlgorithmRegistry();
     appContext->setMSAConsensusAlgorithmRegistry(msaConsReg);
+    
+    AssemblyConsensusAlgorithmRegistry* assemblyConsReg = new AssemblyConsensusAlgorithmRegistry();
+    appContext->setAssemblyConsensusAlgorithmRegistry(assemblyConsReg);
 
     MSADistanceAlgorithmRegistry* msaDistReg = new MSADistanceAlgorithmRegistry();
     appContext->setMSADistanceAlgorithmRegistry(msaDistReg);

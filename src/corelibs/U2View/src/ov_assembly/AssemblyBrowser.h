@@ -179,6 +179,7 @@ private:
 class AssemblyOverview;
 class ZoomableAssemblyOverview;
 class AssemblyReferenceArea;
+class AssemblyConsensusArea;
 class AssemblyCoverageGraph;
 class AssemblyRuler;
 class AssemblyReadsArea;
@@ -200,8 +201,9 @@ public:
     
 private:
     AssemblyBrowser * browser;
-    ZoomableAssemblyOverview * zoomableOverview;        
+    ZoomableAssemblyOverview * zoomableOverview;
     AssemblyReferenceArea * referenceArea;
+    AssemblyConsensusArea * consensusArea;
     AssemblyCoverageGraph * coverageGraph;
     AssemblyRuler * ruler;
     AssemblyReadsArea * readsArea;

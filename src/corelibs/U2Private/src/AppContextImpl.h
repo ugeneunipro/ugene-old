@@ -173,6 +173,11 @@ public:
         msaDistanceAlgoRegistry = reg;
     }
 
+    void setAssemblyConsensusAlgorithmRegistry(AssemblyConsensusAlgorithmRegistry* reg) {
+        assert(reg == NULL || assemblyConsensusAlgoRegistry == NULL);
+        assemblyConsensusAlgoRegistry = reg;
+    }
+    
     void setPWMConversionAlgorithmRegistry(PWMConversionAlgorithmRegistry* reg) {
         assert(reg == NULL || pwmConversionAlgoRegistry == NULL);
         pwmConversionAlgoRegistry = reg;
@@ -279,6 +284,7 @@ protected:
     virtual CMDLineRegistry*                _getCMDLineRegistry() const {return cmdLineRegistry;}
     virtual MSAConsensusAlgorithmRegistry*  _getMSAConsensusAlgorithmRegistry() const {return msaConsensusAlgoRegistry;}
     virtual MSADistanceAlgorithmRegistry*  _getMSADistanceAlgorithmRegistry() const {return msaDistanceAlgoRegistry;}
+    virtual AssemblyConsensusAlgorithmRegistry*  _getAssemblyConsensusAlgorithmRegistry() const {return assemblyConsensusAlgoRegistry;}
     virtual PWMConversionAlgorithmRegistry* _getPWMConversionAlgorithmRegistry() const {return pwmConversionAlgoRegistry;}
     virtual VirtualFileSystemRegistry *     _getVirtualFileSystemRegistry() const { return virtualFileSystemRegistry; }
     virtual DnaAssemblyAlgRegistry*         _getDnaAssemblyAlgRegistry() const {return dnaAssemblyAlgRegistry; }
@@ -338,6 +344,7 @@ private:
     CMDLineRegistry* cmdLineRegistry;
     MSAConsensusAlgorithmRegistry* msaConsensusAlgoRegistry;
     MSADistanceAlgorithmRegistry* msaDistanceAlgoRegistry;
+    AssemblyConsensusAlgorithmRegistry* assemblyConsensusAlgoRegistry;
     PWMConversionAlgorithmRegistry* pwmConversionAlgoRegistry;
     VirtualFileSystemRegistry * virtualFileSystemRegistry;
     DnaAssemblyAlgRegistry* dnaAssemblyAlgRegistry;

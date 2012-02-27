@@ -6,6 +6,8 @@ HEADERS += src/WebWindow.h \
            src/ov_assembly/AssemblyBrowserFactory.h \
            src/ov_assembly/AssemblyBrowserSettings.h \
            src/ov_assembly/AssemblyCellRenderer.h \
+           src/ov_assembly/AssemblyConsensusArea.h \
+           src/ov_assembly/AssemblyConsensusTask.h \
            src/ov_assembly/AssemblyCoverageGraph.h \
            src/ov_assembly/AssemblyModel.h \
            src/ov_assembly/AssemblyReadsArea.h \
@@ -128,6 +130,8 @@ SOURCES += src/WebWindow.cpp \
            src/ov_assembly/AssemblyBrowserFactory.cpp \
            src/ov_assembly/AssemblyBrowserSettings.cpp \
            src/ov_assembly/AssemblyCellRenderer.cpp \
+           src/ov_assembly/AssemblyConsensusArea.cpp \
+           src/ov_assembly/AssemblyConsensusTask.cpp \
            src/ov_assembly/AssemblyCoverageGraph.cpp \
            src/ov_assembly/AssemblyModel.cpp \
            src/ov_assembly/AssemblyReadsArea.cpp \

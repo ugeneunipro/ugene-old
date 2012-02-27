@@ -46,6 +46,7 @@
 #include <U2Algorithm/MSAAlignAlgRegistry.h>
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
+#include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
 #include <U2Algorithm/OpenCLGpuRegistry.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 #include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
@@ -363,6 +364,9 @@ int main(int argc, char **argv)
 
     MSADistanceAlgorithmRegistry* msaDistReg = new MSADistanceAlgorithmRegistry();
     appContext->setMSADistanceAlgorithmRegistry(msaDistReg);
+    
+    AssemblyConsensusAlgorithmRegistry* assemblyConsReg = new AssemblyConsensusAlgorithmRegistry();
+    appContext->setAssemblyConsensusAlgorithmRegistry(assemblyConsReg);
 
     PWMConversionAlgorithmRegistry* pwmConvReg = new PWMConversionAlgorithmRegistry();
     appContext->setPWMConversionAlgorithmRegistry(pwmConvReg);

@@ -36,29 +36,38 @@ namespace U2 {
 
 class AssemblyBrowserUi;
 class AssemblyBrowser;
+class U2OpStatus;
 
-class AssemblyReferenceArea: public QWidget {
+// TODO: move class to separate file
+class AssemblySequenceArea : public QWidget {
     Q_OBJECT
 public:
-    AssemblyReferenceArea(AssemblyBrowserUi * ui);
+    AssemblySequenceArea(AssemblyBrowserUi * ui);
 
 protected:
+    virtual QByteArray getSequenceRegion(U2OpStatus &os) = 0;
+    virtual bool canDrawSequence() = 0;
+    virtual void drawSequence(QPainter & p);
+
+    QSharedPointer<AssemblyModel> getModel() const { return model; }
+    bool areCellsVisible() const;
+    U2Region getVisibleRegion() const;
+
     void paintEvent(QPaintEvent * e);
     void resizeEvent(QResizeEvent * e);
     void mouseMoveEvent(QMouseEvent * e);
-    void mousePressEvent(QMouseEvent* e);
     
 signals:
     void si_mouseMovedToPos(const QPoint &);
-    void si_unassociateReference();
     
-private slots:
+protected slots:
     void sl_redraw();
+    virtual void sl_offsetsChanged();
+    virtual void sl_zoomPerformed();
 
 private:
     void connectSlots();
     void drawAll();
-    void drawReference(QPainter & p);
 
 private:
     AssemblyBrowserUi * ui;
@@ -70,7 +79,24 @@ private:
     auto_ptr<AssemblyCellRenderer> cellRenderer;
 
     const static int FIXED_HEIGHT = 25;
+};
 
+class AssemblyReferenceArea: public AssemblySequenceArea {
+    Q_OBJECT
+public:
+    AssemblyReferenceArea(AssemblyBrowserUi * ui);
+
+protected:
+    virtual QByteArray getSequenceRegion(U2OpStatus &os);
+    virtual bool canDrawSequence();
+    virtual void drawSequence(QPainter & p);
+
+    void mousePressEvent(QMouseEvent* e);
+
+signals:
+    void si_unassociateReference();
+
+private:
     QMenu * referenceAreaMenu;
 };
 

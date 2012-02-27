@@ -86,6 +86,10 @@ QList<U2AssemblyRead> AssemblyModel::getReadsFromAssembly(const U2Region & r, qi
     return U2DbiUtils::toList(it.get());
 }
 
+U2DbiIterator<U2AssemblyRead>* AssemblyModel::getReads(const U2Region & r, U2OpStatus & os) {
+    return assemblyDbi->getReads(assembly.id, r, os);
+}
+
 void AssemblyModel::calculateCoverageStat(const U2Region & r, U2AssemblyCoverageStat & stat, U2OpStatus & os) {
     return assemblyDbi->calculateCoverage(assembly.id, r, stat, os);
 }

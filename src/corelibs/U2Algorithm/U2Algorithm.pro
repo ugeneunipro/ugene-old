@@ -43,6 +43,11 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/structural_alignment/StructuralAlignmentAlgorithm.h \
            src/structural_alignment/StructuralAlignmentAlgorithmFactory.h \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.h \
+           src/util_assembly_consensus/AssemblyConsensusAlgorithm.h \
+           src/util_assembly_consensus/AssemblyConsensusAlgorithmDefault.h \
+           src/util_assembly_consensus/AssemblyConsensusAlgorithmRegistry.h \
+           src/util_assembly_consensus/AssemblyConsensusUtils.h \
+           src/util_assembly_consensus/BuiltInAssemblyConsensusAlgorithms.h \
            src/util_msa_consensus/BuiltInConsensusAlgorithms.h \
            src/util_msa_consensus/MSAConsensusAlgorithm.h \
            src/util_msa_consensus/MSAConsensusAlgorithmClustal.h \
@@ -104,6 +109,11 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithm.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithmFactory.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.cpp \
+           src/util_assembly_consensus/AssemblyConsensusAlgorithm.cpp \
+           src/util_assembly_consensus/AssemblyConsensusAlgorithmDefault.cpp \
+           src/util_assembly_consensus/AssemblyConsensusAlgorithmRegistry.cpp \
+           src/util_assembly_consensus/AssemblyConsensusUtils.cpp \
+           src/util_assembly_consensus/BuiltInAssemblyConsensusAlgorithms.cpp \
            src/util_msa_consensus/BuiltInConsensusAlgorithms.cpp \
            src/util_msa_consensus/MSAConsensusAlgorithm.cpp \
            src/util_msa_consensus/MSAConsensusAlgorithmClustal.cpp \

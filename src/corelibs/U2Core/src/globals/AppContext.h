@@ -62,6 +62,7 @@ class RemoteMachineMonitor;
 class PhyTreeGeneratorRegistry;
 class CMDLineRegistry;
 class MSAConsensusAlgorithmRegistry;
+class AssemblyConsensusAlgorithmRegistry;
 class MSADistanceAlgorithmRegistry;
 class PWMConversionAlgorithmRegistry;
 class VirtualFileSystemRegistry;
@@ -163,6 +164,8 @@ public:
     static MSAConsensusAlgorithmRegistry* getMSAConsensusAlgorithmRegistry() {return getInstance()->_getMSAConsensusAlgorithmRegistry(); }
 
     static MSADistanceAlgorithmRegistry* getMSADistanceAlgorithmRegistry() {return getInstance()->_getMSADistanceAlgorithmRegistry(); }
+    
+    static AssemblyConsensusAlgorithmRegistry* getAssemblyConsensusAlgorithmRegistry() {return getInstance()->_getAssemblyConsensusAlgorithmRegistry(); }
 
     static PWMConversionAlgorithmRegistry* getPWMConversionAlgorithmRegistry() {return getInstance()->_getPWMConversionAlgorithmRegistry(); }
 
@@ -244,6 +247,7 @@ protected:
     virtual CMDLineRegistry*            _getCMDLineRegistry() const  = 0;
     virtual MSAConsensusAlgorithmRegistry* _getMSAConsensusAlgorithmRegistry() const = 0;
     virtual MSADistanceAlgorithmRegistry* _getMSADistanceAlgorithmRegistry() const = 0;
+    virtual AssemblyConsensusAlgorithmRegistry* _getAssemblyConsensusAlgorithmRegistry() const = 0;
     virtual PWMConversionAlgorithmRegistry* _getPWMConversionAlgorithmRegistry() const = 0;
     virtual VirtualFileSystemRegistry * _getVirtualFileSystemRegistry() const = 0;
     virtual DnaAssemblyAlgRegistry*     _getDnaAssemblyAlgRegistry() const = 0;

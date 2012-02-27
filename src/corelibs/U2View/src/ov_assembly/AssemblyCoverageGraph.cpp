@@ -57,7 +57,7 @@ void AssemblyCoverageGraph::drawAll() {
                 drawGraph(p);
                 redraw = false;
             } else {
-                p.drawText(cachedView.rect(), Qt::AlignCenter, tr("Background is rendering..."));
+                p.drawText(cachedView.rect(), Qt::AlignCenter, tr("Calculating coverage..."));
             }
         }
         QPainter p(this);

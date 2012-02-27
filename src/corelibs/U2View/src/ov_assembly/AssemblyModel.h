@@ -44,6 +44,7 @@ public:
     bool isEmpty() const;
 
     QList<U2AssemblyRead> getReadsFromAssembly(const U2Region & r, qint64 minRow, qint64 maxRow, U2OpStatus & os);
+    U2DbiIterator<U2AssemblyRead> * getReads(const U2Region & r, U2OpStatus & os);
 
     void calculateCoverageStat(const U2Region & r, U2AssemblyCoverageStat & stat, U2OpStatus & os);
 
