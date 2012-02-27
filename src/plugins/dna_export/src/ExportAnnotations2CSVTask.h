@@ -35,15 +35,18 @@ public:
     ExportAnnotations2CSVTask(
         const QList<Annotation*>& annotations,
         const QByteArray& sequence,
+        const QString& seqName,
         DNATranslation *complementTranslation,
-        bool exportSequence, const QString& url, bool append = false, QString sep = ",");
+        bool exportSequence, bool exportSequenceName, const QString& url, bool append = false, QString sep = ",");
 
     void run();
 private:
     QList<Annotation*> annotations;
     QByteArray sequence;
+    QString seqName;
     DNATranslation *complementTranslation;
     bool exportSequence;
+    bool exportSequenceName;
     QString url;
     bool append;
     QString separator;

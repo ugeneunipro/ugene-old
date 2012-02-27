@@ -38,6 +38,7 @@ public:
     
     QString filePath()const;
     bool exportSequence()const;
+    bool exportSequenceNames() const;
     void setExportSequenceVisible(bool value);
     
     QString fileFormat()const;

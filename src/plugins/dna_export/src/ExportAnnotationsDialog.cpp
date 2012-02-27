@@ -65,6 +65,7 @@ ExportAnnotationsDialog::ExportAnnotationsDialog(const QString & filename, QWidg
 
 void ExportAnnotationsDialog::sl_onFormatChanged(const QString & newFormat) {
     exportSequenceCheck->setEnabled(newFormat == CSV_FORMAT_ID);
+    exportSequenceNameCheck->setEnabled(newFormat == CSV_FORMAT_ID);
     QString ext(".");
     if(newFormat == CSV_FORMAT_ID) {
         ext.append(CSV_FORMAT_ID);
@@ -84,6 +85,10 @@ QString ExportAnnotationsDialog::filePath() const {
 
 bool ExportAnnotationsDialog::exportSequence()const {
     return exportSequenceCheck->isChecked();
+}
+
+bool ExportAnnotationsDialog::exportSequenceNames()const {
+    return exportSequenceNameCheck->isChecked();
 }
 
 void ExportAnnotationsDialog::changeEvent(QEvent *e) {
@@ -131,6 +136,7 @@ void ExportAnnotationsDialog::sl_onChooseFileButtonClicked() {
 
 void ExportAnnotationsDialog::setExportSequenceVisible( bool value ) {   
     exportSequenceCheck->setVisible(value);
+    exportSequenceNameCheck->setVisible(value);
 }
 
 QString ExportAnnotationsDialog::fileFormat() const {

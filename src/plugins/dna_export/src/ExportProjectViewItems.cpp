@@ -433,7 +433,7 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
     // run task
     Task * t = NULL;
     if(d.fileFormat() == ExportAnnotationsDialog::CSV_FORMAT_ID) {
-        t = new ExportAnnotations2CSVTask(annotations, QByteArray(),NULL, false, d.filePath());
+        t = new ExportAnnotations2CSVTask(annotations, QByteArray(), QString(), NULL, false, false, d.filePath());
     } else {
         t = ExportUtils::saveAnnotationsTask(d.filePath(), d.fileFormat(), annotations);
     }

@@ -36,16 +36,20 @@ namespace U2 {
 
 ExportAnnotations2CSVTask::ExportAnnotations2CSVTask(const QList<Annotation*>& annotations, 
                                                      const QByteArray& sequence,
+                                                     const QString& _seqName,
                                                      DNATranslation *complementTranslation,
                                                      bool exportSequence,
+                                                     bool _exportSeqName,
                                                      const QString& url, 
                                                      bool apnd,
                                                      QString sep)
 : Task(tr("Export2CSV"), TaskFlag_None),
     annotations(annotations),
     sequence(sequence),
+    seqName(_seqName),
     complementTranslation(complementTranslation),
     exportSequence(exportSequence),
+    exportSequenceName(_exportSeqName),
     url(url),
     append(apnd),
     separator(sep)
@@ -92,6 +96,9 @@ void ExportAnnotations2CSVTask::run() {
 	QHash<QString, int> columnIndices;
 	QStringList columnNames;
 	columnNames << 	tr("Group") << tr("Name") << tr("Start") <<  tr("End")  << tr("Length") << tr("Complementary");
+    if (exportSequenceName) {
+        columnNames << tr("Sequence name");
+    }
 	if (exportSequence) {
 		columnNames << tr("Sequence");
 	}
@@ -120,6 +127,9 @@ void ExportAnnotations2CSVTask::run() {
 			} else {
 				values << tr("no");
 			}
+            if(exportSequenceName){
+                values << seqName.toAscii();
+            }
 			if (exportSequence) {
 				QByteArray sequencePart = sequence.mid(region.startPos, region.length);
 				if (annotation->getStrand().isCompementary()) {
@@ -128,6 +138,7 @@ void ExportAnnotations2CSVTask::run() {
 				}
 				values << sequencePart;
 			}
+            
 			//add empty strings as default qualifier values
 			while (values.size() < columnNames.size()) {
 				values << QString();

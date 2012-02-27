@@ -464,7 +464,8 @@ void ADVExportContext::sl_saveSelectedAnnotations() {
     Task * t = NULL;
     if(d.fileFormat() == ExportAnnotationsDialog::CSV_FORMAT_ID) {
         t = new ExportAnnotations2CSVTask(annotationList, sequenceContext->getSequenceObject()->getWholeSequenceData(),
-            sequenceContext->getComplementTT(), d.exportSequence(), d.filePath());
+            sequenceContext->getSequenceObject()->getSequenceName(),
+            sequenceContext->getComplementTT(), d.exportSequence(), d.exportSequenceNames(), d.filePath());
     } else {
         t = ExportUtils::saveAnnotationsTask(d.filePath(), d.fileFormat(), annotationList);
     }
