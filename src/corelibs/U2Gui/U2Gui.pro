@@ -17,6 +17,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/options_panel/OptionsPanel.h \
            src/options_panel/OptionsPanelGroup.h \
            src/options_panel/OptionsPanelWidget.h \
+           src/options_panel/ShowHideSubgroupWidget.h \
            src/util/AddNewDocumentDialogController.h \
            src/util/AddNewDocumentDialogImpl.h \
            src/util/AnnotationSettingsDialogController.h \
@@ -89,6 +90,7 @@ SOURCES += src/MainWindow.cpp \
            src/options_panel/OptionsPanel.cpp \
            src/options_panel/OptionsPanelGroup.cpp \
            src/options_panel/OptionsPanelWidget.cpp \
+           src/options_panel/ShowHideSubgroupWidget.cpp \
            src/util/AddNewDocumentDialogImpl.cpp \
            src/util/AnnotationSettingsDialogImpl.cpp \
            src/util/AuthenticationDialog.cpp \

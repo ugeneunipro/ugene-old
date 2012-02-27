@@ -1,1 +1,1 @@
-#include "../../corelibs/U2View/src/ov_sequence/SequenceInfo.h"
+#include "../../corelibs/U2View/src/ov_sequence/sequence_info/SequenceInfo.h"
