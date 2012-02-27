@@ -27,7 +27,7 @@
 
 #include <U2Gui/ProjectView.h>
 #include <U2Core/ProjectModel.h>
-#include <QtGui/QTreeWidget.h>
+#include <QtGui/QTreeWidget>
 
 namespace U2 {
 
