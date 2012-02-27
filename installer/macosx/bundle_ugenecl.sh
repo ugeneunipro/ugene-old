@@ -58,6 +58,10 @@ add-library U2Remote
 add-library U2Test
 add-library U2View
 add-library ugenedb
+if [ "$1" == "-test" ]
+   then
+      add-library gtest
+fi
 
 echo
 echo copying plugins
@@ -100,6 +104,7 @@ add-plugin dna_flexibility
 
 if [ "$1" == "-test" ]
     then
+        add-plugin api_tests
         add-plugin CoreTests
 fi
 

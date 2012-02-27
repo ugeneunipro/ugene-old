@@ -58,6 +58,7 @@ changeCoreInstallNames () {
         install_name_tool -change libU2Test.1.dylib  @executable_path/libU2Test.1.dylib "$TARGET_EXE_DIR"/$1
         install_name_tool -change libU2View.1.dylib  @executable_path/libU2View.1.dylib "$TARGET_EXE_DIR"/$1
         install_name_tool -change libugenedb.1.dylib  @executable_path/libugenedb.1.dylib "$TARGET_EXE_DIR"/$1
+        install_name_tool -change libgtest.1.dylib  @executable_path/libgtest.1.dylib "$TARGET_EXE_DIR"/$1
   
    else
        echo "changeCoreInstallNames: no parameter passed."
