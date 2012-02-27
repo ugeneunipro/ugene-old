@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="core/" >
         <file>images/add_existing_document.png</file>
+        <file>images/arrow_down.png</file>
+        <file>images/arrow_right.png</file>
         <file>images/arrow_rotate_clockwise.png</file>
         <file>images/add_new_document.png</file>
         <file>images/add_gobject.png</file>
@@ -9,6 +11,7 @@
         <file>images/create_annotation_icon.png</file>
         <file>images/group_green_active.png</file>
         <file>images/info.png</file>
+        <file>images/progress.gif</file>
         <file>images/zoom_in.png</file>
         <file>images/zoom_out.png</file>
         <file>images/zoom_sel.png</file>

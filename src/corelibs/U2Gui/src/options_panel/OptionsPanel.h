@@ -39,7 +39,15 @@ class U2GUI_EXPORT OptionsPanel : public QObject
 {
     Q_OBJECT
 public:
+    /** Creates a new OptionsPanelWidget */
     OptionsPanel(QObject* parent = 0);
+
+    /**
+     * Normally, the OptionsPanelWidget is added to another widget and should be deleted
+     * when this widget is deleted, but if this hasn't happened by some reason, then
+     * the destructor deletes the object.
+     */
+    ~OptionsPanel();
 
     /** Add a new options panel group instance and corresponding widgets*/
     void addGroup(const QPixmap& headerImage, const QString& title, QWidget* optionsWidget);

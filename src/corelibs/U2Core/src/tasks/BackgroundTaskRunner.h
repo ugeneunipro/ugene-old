@@ -36,7 +36,9 @@ class BackgroundTask : public Task {
 public:
     inline Result getResult() const {return result;};
 protected:
-    BackgroundTask(const QString& _name, TaskFlags f) : Task(_name, f){};
+    BackgroundTask(const QString& _name, TaskFlags f) : Task(_name, f){
+        setVerboseOnTaskCancel(false); // do not add messages about the task canceling into the log
+    };
     Result result;
 };
 

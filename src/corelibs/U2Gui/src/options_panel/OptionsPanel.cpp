@@ -32,6 +32,13 @@ OptionsPanel::OptionsPanel(QObject* parent) : QObject(parent)
     widget = new OptionsPanelWidget();
 }
 
+OptionsPanel::~OptionsPanel()
+{
+    if (0 == widget->parentWidget()) {
+        delete widget;
+    }
+}
+
 
 QWidget* OptionsPanel::getMainWidget()
 {

@@ -150,6 +150,14 @@ QByteArray U2SequenceObject::getSequenceData(const U2Region& r) const {
     return res;
 }
 
+QByteArray U2SequenceObject::getSequenceData(const U2Region& r, U2OpStatus& os) const {
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, QByteArray());
+
+    QByteArray res = con.dbi->getSequenceDbi()->getSequenceData(entityRef.entityId, r, os);
+    return res;
+}
+
 bool U2SequenceObject::isValidDbiObject(U2OpStatus &os) {
     DbiConnection con(entityRef.dbiRef, os);
     CHECK_OP(os, false);

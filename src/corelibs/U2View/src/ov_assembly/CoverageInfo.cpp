@@ -33,7 +33,6 @@ CalcCoverageInfoTask::CalcCoverageInfoTask(const CalcCoverageInfoTaskSettings & 
 BackgroundTask<CoverageInfo>("Calculate assembly coverage", TaskFlag_None), settings(settings_)
 {
     tpm = Progress_Manual;
-    setVerboseOnTaskCancel(false);
 };
 
 void CalcCoverageInfoTask::run() {
