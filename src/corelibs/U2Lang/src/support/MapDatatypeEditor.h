@@ -45,9 +45,10 @@ public:
     virtual ~MapDatatypeEditor() {}
     virtual QWidget* getWidget();
     virtual void commit();
+    virtual QMap<QString,QString> getBindingsMap();
     int getOptimalHeight();
 
-private slots:
+protected slots:
     void sl_showDoc();
 signals:
     void si_showDoc(const QString&);
@@ -74,6 +75,9 @@ class U2LANG_EXPORT BusPortEditor : public MapDatatypeEditor {
 public:
     BusPortEditor(Workflow::IntegralBusPort* p);
     virtual ~BusPortEditor() {}
+    virtual void commit();
+    virtual QMap<QString,QString> getBindingsMap();
+
 protected:
     virtual QWidget* createGUI(DataTypePtr from, DataTypePtr to);
     Workflow::IntegralBusPort* port;

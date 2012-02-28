@@ -88,6 +88,12 @@ public:
     static void print(const QString &slotString, const QVariant &data, WorkflowContext *context);
 
     static bool validateSchemaForIncluding(const Schema &s, QString &error);
+
+    static void extractPathsFromBindings(QStrStrMap &busMap, SlotPathMap &pathMap);
+
+    static void applyPathsToBusMap(QStrStrMap &busMap, const SlotPathMap &pathMap);
+
+    static bool isBindingValid(const QList<Actor*> &procList, Port *endPort, const QString &binding, const QStringList &path);
     
 private:
     static QStringList initExtensions();

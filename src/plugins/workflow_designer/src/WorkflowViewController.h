@@ -104,6 +104,7 @@ public slots:
     void sl_updateDocs() {
         emit configurationChanged();
     }
+    void sl_refreshBindings();
 
 signals:
     void processItemAdded();

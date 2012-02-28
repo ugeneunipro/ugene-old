@@ -24,6 +24,8 @@
 
 #include <U2Lang/ActorModel.h>
 
+typedef QMap<QPair<QString, QString>, QStringList> SlotPathMap;
+
 namespace U2 {
 namespace Workflow {
 
@@ -42,6 +44,7 @@ class U2LANG_EXPORT IntegralBusPort : public Port {
 public:
     // attribute for busmap
     static const QString BUS_MAP_ATTR_ID;
+    static const QString PATHS_ATTR_ID;
     static const uint BLIND_INPUT = 1 << 16;
     
 public:
@@ -54,6 +57,11 @@ public:
     Actor* getProducer(const QString& slot);
     QList<Actor*> getProducers(const QString& slot);
     Actor* getLinkedActorById(ActorId id) const;
+    SlotPathMap getPaths() const;
+    QList<QStringList> getPathsBySlotsPair(const QString& dest, const QString& src) const;
+    void setPathsBySlotsPair(const QString& dest, const QString& src, const QList<QStringList> &paths);
+    void addPathBySlotsPair(const QString& dest, const QString& src, const QStringList &path);
+    void clearPaths();
     
     // find matching data and assign it
     void setupBusMap();
@@ -129,5 +137,6 @@ protected:
 
 typedef QMap<QString, QString> QStrStrMap;
 Q_DECLARE_METATYPE(QStrStrMap)
+Q_DECLARE_METATYPE(SlotPathMap)
 
 #endif

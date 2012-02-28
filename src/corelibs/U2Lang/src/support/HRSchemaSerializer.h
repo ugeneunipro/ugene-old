@@ -71,6 +71,7 @@ public:
     static const QString ITERATION_ID;
     static const QString PARAM_ALIASES_START;
     static const QString PORT_ALIASES_START;
+    static const QString PATH_THROUGH;
 
     // -------------- backward compatibility --------------
         static const QString ALIASES_HELP_START;

@@ -25,6 +25,7 @@
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseSlots.h>
+#include <U2Lang/IntegralBus.h>
 
 #include "IntegralBusModel.h"
 #include "IntegralBusType.h"
@@ -61,7 +62,7 @@ static Actor* getLinkedActor(ActorId id, Port* output) {
     return NULL;
 }
 
-static QMap<QString, QStringList> getListMappings(const QStrStrMap& bm, const Port* p) {
+static QMap<QString, QStringList> getListSlotsMappings(const QStrStrMap& bm, const Port* p) {
     assert(p->isInput());    
     DataTypePtr dt = p->getType();
     QMap<QString, QStringList> res;
@@ -82,9 +83,11 @@ static QMap<QString, QStringList> getListMappings(const QStrStrMap& bm, const Po
 }
 
 const QString IntegralBusPort::BUS_MAP_ATTR_ID = "bus-map";
+const QString IntegralBusPort::PATHS_ATTR_ID = "paths-through";
 
 IntegralBusPort::IntegralBusPort(const PortDescriptor& d, Actor* p) : Port(d,p), recursing(false) {
     addParameter(BUS_MAP_ATTR_ID, new Attribute(Descriptor(BUS_MAP_ATTR_ID), DataTypePtr()));
+    addParameter(PATHS_ATTR_ID, new Attribute(Descriptor(PATHS_ATTR_ID), DataTypePtr()));
 }
 
 DataTypePtr IntegralBusPort::getType() const {
@@ -97,9 +100,10 @@ DataTypePtr IntegralBusPort::getBusType() const {
     }
     recursing = true;
     IntegralBusType* t = new IntegralBusType(Descriptor(*this), QMap<Descriptor, DataTypePtr>());
+    bool addPath = owner()->getProto()->getInfluenceOnPathFlag();
     foreach (Port* p, owner()->getInputPorts()) {
         if ((p->getFlags()&BLIND_INPUT) == 0){
-            t->addInputs(p);
+            t->addInputs(p, addPath);
         }
     }
     t->addOutput(type, this);
@@ -156,7 +160,47 @@ Actor* IntegralBusPort::getLinkedActorById(ActorId id) const {
     return ret;
 }
 
+SlotPathMap IntegralBusPort::getPaths() const {
+    Attribute *a = this->getParameter(PATHS_ATTR_ID);
+    SlotPathMap map = a->getAttributeValueWithoutScript<SlotPathMap>();
+
+    return map;
+}
+
+QList<QStringList> IntegralBusPort::getPathsBySlotsPair(const QString& dest, const QString& src) const {
+    SlotPathMap map = getPaths();
+    QList<QStringList> list = map.values(QPair<QString, QString>(dest, src));
+
+    return list;
+}
+
+void IntegralBusPort::setPathsBySlotsPair(const QString& dest, const QString& src, const QList<QStringList> &paths) {
+    SlotPathMap map = getPaths();
+    QPair<QString, QString> key(dest, src);
+    map.remove(key);
+
+    foreach (const QStringList &path, paths) {
+        map.insertMulti(key, path);
+    }
+
+    this->setParameter(PATHS_ATTR_ID, qVariantFromValue<SlotPathMap>(map));
+}
+
+void IntegralBusPort::addPathBySlotsPair(const QString& dest, const QString& src, const QStringList &path) {
+    SlotPathMap map = getPaths();
+    QPair<QString, QString> key(dest, src);
+    map.insertMulti(key, path);
+
+    this->setParameter(PATHS_ATTR_ID, qVariantFromValue<SlotPathMap>(map));
+}
+
+void IntegralBusPort::clearPaths() {
+    SlotPathMap map;
+    this->setParameter(PATHS_ATTR_ID, qVariantFromValue<SlotPathMap>(map));
+}
+
 void IntegralBusPort::remap(const QMap<ActorId, ActorId>& m) {
+    // TODO: find the way this method is called. And work up the PATHS_ATTR_ID parameter
     Attribute* a = getParameter(BUS_MAP_ATTR_ID);
     if (a) {
         QStrStrMap busMap = a->getAttributeValueWithoutScript<QStrStrMap>();
@@ -258,7 +302,10 @@ void IntegralBusPort::setupBusMap() {
         }
     }
     
+    SlotPathMap pathMap;
+    WorkflowUtils::extractPathsFromBindings(busMap, pathMap);
     setParameter(BUS_MAP_ATTR_ID, qVariantFromValue<QStrStrMap>(busMap));
+    setParameter(PATHS_ATTR_ID, qVariantFromValue<SlotPathMap>(pathMap));
 }
 
 bool IntegralBusPort::validate(QStringList& l) const {
@@ -281,8 +328,10 @@ bool ScreenedSlotValidator::validate( const QStringList& screenedSlots, const In
             return false;
         }
         QStrStrMap bm = vport->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
+        SlotPathMap pm = vport->getParameter(IntegralBusPort::PATHS_ATTR_ID)->getAttributeValueWithoutScript<SlotPathMap>();
+        WorkflowUtils::applyPathsToBusMap(bm, pm);
         int busWidth = bm.size();
-        QMap<QString, QStringList> listMap = getListMappings(bm, vport);
+        QMap<QString, QStringList> listMap = getListSlotsMappings(bm, vport);
         // iterate over all producers and exclude valid mappings from bus bindings
         foreach(Port* p, vport->getLinks().uniqueKeys()) {
             assert(qobject_cast<IntegralBusPort*>(p));//TBD?

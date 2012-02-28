@@ -14,14 +14,15 @@
 #
 #
 #
+#
+
+
 
 workflow "Marking by length"{
 
     read-sequence {
         type:read-sequence;
         name:"Read Sequences";
-        merge-gap:10;
-        mode:0;
     }
     mark-sequence {
         type:mark-sequence;
@@ -39,16 +40,10 @@ workflow "Marking by length"{
     write-sequence {
         type:write-sequence;
         name:"Write 'Short' Sequences";
-        accumulate:true;
-        document-format:fasta;
-        write-mode:2;
     }
     write-sequence2 {
         type:write-sequence;
         name:"Write 'Long' Sequences";
-        accumulate:true;
-        document-format:fasta;
-        write-mode:2;
     }
 
     @mark-sequence.m1 {
@@ -61,21 +56,29 @@ workflow "Marking by length"{
     }
 
     .actor-bindings {
-        filter-by-values2.filtered-data->write-sequence2.in-sequence
         read-sequence.out-sequence->mark-sequence.in-sequence
         mark-sequence.out-marked-seq->filter-by-values.in-data
         mark-sequence.out-marked-seq->filter-by-values2.in-data
         filter-by-values.filtered-data->write-sequence.in-sequence
+        filter-by-values2.filtered-data->write-sequence2.in-sequence
     }
 
     read-sequence.annotations->mark-sequence.in-sequence.annotations
     read-sequence.sequence->mark-sequence.in-sequence.sequence
     mark-sequence.seq_length->filter-by-values.in-data.text
     mark-sequence.seq_length->filter-by-values2.in-data.text
-    read-sequence.annotations->write-sequence.in-sequence.annotations
-    read-sequence.sequence->write-sequence.in-sequence.sequence
-    read-sequence.annotations->write-sequence2.in-sequence.annotations
-    read-sequence.sequence->write-sequence2.in-sequence.sequence
+    read-sequence.annotations->write-sequence.in-sequence.annotations {
+        path-through:filter-by-values;
+    }
+    read-sequence.sequence->write-sequence.in-sequence.sequence {
+        path-through:filter-by-values;
+    }
+    read-sequence.annotations->write-sequence2.in-sequence.annotations {
+        path-through:filter-by-values2;
+    }
+    read-sequence.sequence->write-sequence2.in-sequence.sequence {
+        path-through:filter-by-values2;
+    }
 
     .iteration "Default iteration"{
         id:63;

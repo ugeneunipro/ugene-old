@@ -28,6 +28,7 @@
 #include <U2Lang/WorkflowIOTasks.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseSlots.h>
+#include <U2Lang/IntegralBus.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GObject.h>
 #include <U2Core/DocumentModel.h>
@@ -363,7 +364,7 @@ Descriptor WorkflowUtils::getCurrentMatchingDescriptor(const QList<Descriptor> &
         if (!currentVal.isEmpty()) {
             return Descriptor(currentVal, tr("<List of values>"), tr("List of values"));
         } else {
-            QString id;
+            /*QString id;
             bool first = true;
             for (int i=0; i<candidates.size(); i++) {
                 if (!first) {
@@ -372,12 +373,12 @@ Descriptor WorkflowUtils::getCurrentMatchingDescriptor(const QList<Descriptor> &
                 id += candidates[i].getId();
                 first = false;
             }
-            return Descriptor(id, tr("<List of values>"), tr("List of values"));
-            //return EMPTY_VALUES_DESC;
+            return Descriptor(id, tr("<List of values>"), tr("List of values"));*/
+            return EMPTY_VALUES_DESC;
         }
     } else {
         int idx = bindings.contains(key.getId()) ? candidates.indexOf(bindings.value(key.getId())) : 0;
-        return idx >= 0 ? candidates.at(idx) : candidates.first();
+        return idx >= 0 ? candidates.at(idx) : EMPTY_VALUES_DESC;
     }
 }
 
@@ -405,7 +406,7 @@ DataTypePtr WorkflowUtils::getFromDatatypeForBusport(IntegralBusPort * p, DataTy
     } else {
         //port is input and has links, go editing mode
         IntegralBusType* bt = new IntegralBusType(Descriptor(), QMap<Descriptor, DataTypePtr>());
-        bt->addInputs(p);
+        bt->addInputs(p, false);
         from = bt;
     }
     return from;
@@ -614,6 +615,15 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, Workf
 }
 
 bool WorkflowUtils::validateSchemaForIncluding(const Schema &s, QString &error) {
+    // TEMPORARY disallow filters element in includes
+    foreach (Actor *actor, s.getProcesses()) {
+        if (actor->getProto()->getInfluenceOnPathFlag()) {
+            error = tr("The %1 element is a filter. Sorry, but current version of "
+                "UGENE doesn't support of filters in the includes.").arg(actor->getLabel());
+            return false;
+        }
+    }
+
     const QList<PortAlias> &portAliases = s.getPortAliases();
     if (portAliases.isEmpty()) {
         error = tr("The schema has not any aliased ports");
@@ -664,6 +674,88 @@ bool WorkflowUtils::validateSchemaForIncluding(const Schema &s, QString &error) 
     }
 
     return true;
+}
+
+void WorkflowUtils::extractPathsFromBindings(QStrStrMap &busMap, SlotPathMap &pathMap) {
+    QString srcId;
+    QStringList path;
+    foreach (const QString &dest, busMap.keys()) {
+        QStringList srcs = busMap.value(dest).split(";");
+        foreach (const QString &src, srcs) {
+            BusMap::parseSource(src, srcId, path);
+            if (!path.isEmpty()) {
+                QPair<QString, QString> slotPair(dest, srcId);
+                busMap[dest] = srcId;
+                pathMap.insertMulti(slotPair, path);
+            }
+        }
+    }
+}
+
+void WorkflowUtils::applyPathsToBusMap(QStrStrMap &busMap, const SlotPathMap &pathMap) {
+    foreach (const QString &dest, busMap.keys()) {
+        QStringList newSrcs;
+
+        QStringList srcs = busMap.value(dest).split(";");
+        QStringList uniqList;
+        foreach(QString src, srcs) {
+            if (!uniqList.contains(src)) {
+                uniqList << src;
+            }
+        }
+
+        foreach (const QString &src, uniqList) {
+            QPair<QString, QString> slotPair(dest, src);
+            if (pathMap.contains(slotPair)) {
+                QList<QStringList> paths = pathMap.values(slotPair);
+                if (!paths.isEmpty()) {
+                    foreach (const QStringList &path, paths) {
+                        QString newSrc = src + ">" + path.join(",");
+                        newSrcs << newSrc;
+                    }
+                }
+            } else {
+                newSrcs << src;
+            }
+        }
+        busMap[dest] = newSrcs.join(";");
+    }
+}
+
+static bool pathExists(Actor *start, Port *end, QStringList path) {
+    path.removeOne(start->getId());
+
+    foreach (Port *p, start->getOutputPorts()) {
+        foreach (Port *out, p->getLinks().keys()) {
+            if (out == end) {
+                return path.isEmpty();
+            }
+            bool res = pathExists(out->owner(), end, path);
+            if (res) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool WorkflowUtils::isBindingValid(const QList<Actor*> &procList, Port *endPort, const QString &binding, const QStringList &path) {
+    Actor *start = NULL;
+    int pos = binding.indexOf(":");
+    if (-1 != pos) {
+        QString actorId = binding.left(pos);
+        foreach (Actor *p, procList) {
+            if (p->getId() == actorId) {
+                start = p;
+                break;
+            }
+        }
+    }
+    if (NULL == start) {
+        return false;
+    }
+
+    return pathExists(start, endPort, path);
 }
 
 /*****************************

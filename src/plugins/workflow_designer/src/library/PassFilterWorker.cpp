@@ -116,6 +116,7 @@ void PassFilterWorkerFactory::init() {
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     proto->setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
     proto->setPrompter(new PassFilterPrompter());
+    proto->setInfluenceOnPathFlag(true);
 
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATAFLOW(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new PassFilterWorkerFactory());

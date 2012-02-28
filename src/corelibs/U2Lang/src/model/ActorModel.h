@@ -91,6 +91,9 @@ public:
 
     bool isAllowsEmptyPorts() const {return allowsEmptyPorts;}
     void setAllowsEmptyPorts(bool value) {allowsEmptyPorts = value;}
+
+    bool getInfluenceOnPathFlag() const {return influenceOnPathFlag;}
+    void setInfluenceOnPathFlag(bool value) {influenceOnPathFlag = value;}
     
 protected:
     // create port and sets p as owner of new port
@@ -125,6 +128,7 @@ protected:
     bool isSchema;
 
     bool allowsEmptyPorts;
+    bool influenceOnPathFlag;
     
 }; // ActorPrototype
 

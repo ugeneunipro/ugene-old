@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include "IntegralBus.h"
 #include "IntegralBusType.h"
 #include "IntegralBusModel.h"
 
@@ -74,13 +75,41 @@ void IntegralBusType::remap(QStrStrMap& busMap, const QMap<ActorId, ActorId>& m)
     }
 }
 
-void IntegralBusType::addInputs(const Port* p) {
+inline static QString getNewDisplayName(const QString &oldName, const QString &procName, const QString &slotStr) {
+    QString slotId;
+    QStringList path;
+    QString result = oldName;
+    BusMap::parseSource(slotStr, slotId, path);
+    if (path.isEmpty()) {
+        result += " through " + procName;
+    } else {
+        result += ", " + procName;
+    }
+
+    return result;
+}
+
+void IntegralBusType::addInputs(const Port* p, bool addPaths) {
     if (p->isInput()) {
+        Actor *proc = p->owner();
+
         foreach(Port* peer, p->getLinks().uniqueKeys()) {
             DataTypePtr pt = peer->getType();
             if (qobject_cast<IntegralBusPort*>(peer)) {
                 assert(pt->isMap());
-                map.unite(pt->getDatatypesMap());
+                QMap<Descriptor, DataTypePtr> types = pt->getDatatypesMap();
+                if (addPaths) {
+                    foreach (Descriptor d, types.keys()) {
+                        DataTypePtr typePtr = types.value(d);
+                        QString newName = getNewDisplayName(d.getDisplayName(), proc->getLabel(), d.getId());
+                        QString newId = BusMap::getNewSourceId(d.getId(), proc->getId());
+                        d.setId(newId);
+                        d.setDisplayName(newName);
+                        map[d] = typePtr;
+                    }
+                } else {
+                    map.unite(types);
+                }
             } else {
                 addOutput(pt, peer);
             }

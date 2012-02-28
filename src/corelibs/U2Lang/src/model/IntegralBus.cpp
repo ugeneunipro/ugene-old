@@ -32,7 +32,146 @@
 namespace U2 {
 namespace Workflow {
 
-static QMap<QString, QStringList> getListMappings(const QStrStrMap& bm, const Port* p) {
+/************************************************************************/
+/* BusMap */
+/************************************************************************/
+static const QString PATH_SEPARATOR = QString(">");
+static const QString PATH_LIST_SEPARATOR = QString(",");
+
+BusMap::BusMap(const QStrStrMap &busMap, const QMap<QString, QStringList> &listMap, const SlotPathMap &paths)
+: input(true), busMap(busMap), listMap(listMap), paths(paths)
+{
+}
+
+BusMap::BusMap(const QStrStrMap &busMap, bool breaksDataflow, const QString &actorId)
+: input(false), busMap(busMap), breaksDataflow(breaksDataflow), actorId(actorId)
+{
+}
+
+inline void BusMap::parseSource(const QString &src, QString &srcId, QStringList &path) {
+    int sepPos = src.indexOf(PATH_SEPARATOR);
+    path.clear();
+    if (-1 != sepPos) {
+        srcId = src.left(sepPos);
+        foreach (const QString &procId, src.mid(sepPos + 1).split(PATH_LIST_SEPARATOR)) {
+            path << procId.trimmed();
+        }
+    } else {
+        srcId = src;
+    }
+}
+
+inline bool equalPaths(const SlotPathMap &allPaths, const QStringList &ipath, const QString &dest, const QString &src) {
+    QPair<QString, QString> slotPair(dest, src);
+    QList<QStringList> paths = allPaths.values(slotPair);
+
+    if (paths.isEmpty()) {
+        return ipath.isEmpty();
+    }
+
+    foreach (const QStringList &path, paths) {
+        if (path.size() == ipath.size()) {
+            foreach (const QString &id, ipath) {
+                if (!path.contains(id)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+QVariantMap BusMap::getMessageMap(CommunicationChannel* ch, QVariantMap &context) {
+    assert(input);
+    QVariantMap result;
+    Message m = ch->get();
+
+    assert(m.getData().type() == QVariant::Map);
+    QVariantMap imap = m.getData().toMap();
+    context.unite(imap);
+    QStringList ipath;
+    QString ikey;
+
+    foreach(QString src, imap.uniqueKeys()) {
+        QVariant ival = imap.value(src);
+
+        parseSource(src, ikey, ipath);
+        foreach(QString rkey, busMap.keys(ikey)) {
+            if (equalPaths(paths, ipath, rkey, ikey)) {
+                coreLog.trace("reducing bus from key="+ikey+" to="+rkey);
+                result[rkey] = ival;
+            }
+        }
+
+        QMapIterator<QString,QStringList> lit(listMap);
+        while (lit.hasNext())
+        {
+            lit.next();
+            QString rkey = lit.key();
+            assert(!lit.value().isEmpty());
+            if (lit.value().contains(src)) {
+                QVariantList vl = result[rkey].toList();
+                if (m.getType()->getDatatypeByDescriptor(src)->isList()) {
+                    vl += ival.toList();
+                    coreLog.trace("reducing bus key="+src+" to list of "+rkey);
+                } else {
+                    vl.append(ival);
+                    coreLog.trace("reducing bus key="+src+" to list element of "+rkey);
+                }
+                result[rkey] = vl;
+            }
+        }
+    }
+
+    return result;
+}
+
+QString BusMap::getNewSourceId(const QString &srcId, const QString &actorId) {
+    int sepPos = srcId.indexOf(PATH_SEPARATOR);
+    QString path = actorId;
+    QString res;
+    if (-1 != sepPos) {
+        path += PATH_LIST_SEPARATOR + srcId.mid(sepPos + 1);
+        res = srcId.left(sepPos);
+    } else {
+        res = srcId;
+    }
+    return res + PATH_SEPARATOR + path;
+}
+
+QVariantMap BusMap::composeMessageMap(const Message &m, const QVariantMap &context) {
+    assert(!input);
+    QVariantMap data;
+    if (breaksDataflow) {
+        foreach (const QString &key, context.keys()) {
+            data[getNewSourceId(key, actorId)] = context.value(key);
+        }
+    } else {
+        data = context;
+    }
+    if (m.getData().type() == QVariant::Map) {
+        QMapIterator<QString, QVariant> it(m.getData().toMap());
+        while (it.hasNext()) {
+            it.next();
+            QString key = busMap.value(it.key());
+            coreLog.trace("putting key="+key+" remapped from="+it.key());
+            data.insert(key, it.value());
+        }
+    } else {
+        assert(busMap.size() == 1);
+        data.insert(busMap.values().first(), m.getData());
+    }
+    return data;
+}
+
+/************************************************************************/
+/* IntegralBus */
+/************************************************************************/
+
+static QMap<QString, QStringList> getListMappings(const QStrStrMap& busMap, const SlotPathMap &pathMap, const Port* p) {
+    QStrStrMap bm = busMap;
+    WorkflowUtils::applyPathsToBusMap(bm, pathMap);
     assert(p->isInput());    
     DataTypePtr dt = p->getType();
     QMap<QString, QStringList> res;
@@ -63,38 +202,45 @@ IntegralBus::IntegralBus(Port* p)
             return;
         }
         
-        busMap = a->getAttributeValueWithoutScript<QStrStrMap>();
-        if (busMap.isEmpty()) {
+        QStrStrMap map = a->getAttributeValueWithoutScript<QStrStrMap>();
+        if (map.isEmpty()) {
             ActorPrototype *proto = p->owner()->getProto();
             assert(proto->isAllowsEmptyPorts());
             Q_UNUSED(proto);
         }
-        QMapIterator<QString, QString> it(busMap);
+        QMapIterator<QString, QString> it(map);
         while (it.hasNext()) {
             it.next();
             coreLog.trace(QString("%1 - input bus map key=%2 val=%3").arg(name).arg(it.key()).arg(it.value()));
         }
-        listMap = getListMappings(busMap, p);
 
+        IntegralBusPort *busPort = qobject_cast<IntegralBusPort*>(p);
+        SlotPathMap pathMap = busPort->getPaths();
+        QMap<QString, QStringList> listMap = getListMappings(map, pathMap, p);
+        busMap = new BusMap(map, listMap, pathMap);
     } else { // p is output
+        QStrStrMap map;
         IntegralBusPort* bp = qobject_cast<IntegralBusPort*>(p);
         DataTypePtr t = bp ? bp->getOwnType() : p->getType();
         if (t->isMap()) {
             foreach(Descriptor d, t->getAllDescriptors()) {
                 QString key = d.getId();
                 QString val = IntegralBusType::assignSlotDesc(d, p).getId();
-                busMap.insert(key, val);
+                map.insert(key, val);
             }
         } else {
             QString key = p->getId();
             QString val = IntegralBusType::assignSlotDesc(*p, p).getId();
-            busMap.insert(key, val);
+            map.insert(key, val);
         }
-        QMapIterator<QString, QString> it(busMap);
+        QMapIterator<QString, QString> it(map);
         while (it.hasNext()) {
             it.next();
             coreLog.trace(QString("%1 - output bus map key=%2 val=%3").arg(name).arg(it.key()).arg(it.value()));
         }
+
+        Actor *proc = p->owner();
+        busMap = new BusMap(map, proc->getProto()->getInfluenceOnPathFlag(), proc->getId());
     }
 }
 
@@ -111,37 +257,10 @@ Message IntegralBus::get() {
     QVariantMap result;
     context.clear();
     foreach (CommunicationChannel* ch, outerChannels) {
-        Message m = ch->get();
-        assert(m.getData().type() == QVariant::Map);
-        QVariantMap imap = m.getData().toMap();
-        context.unite(imap);
-        foreach(QString ikey, imap.uniqueKeys()) {
-            QVariant ival = imap.value(ikey);
-            foreach(QString rkey, busMap.keys(ikey)) {
-                coreLog.trace("reducing bus from key="+ikey+" to="+rkey);
-                result[rkey] = ival;
-            }
-            QMapIterator<QString,QStringList> lit(listMap);
-            while (lit.hasNext())
-            {
-                lit.next();
-                QString rkey = lit.key();
-                assert(!lit.value().isEmpty());
-                if (lit.value().contains(ikey)) {
-                    QVariantList vl = result[rkey].toList();
-                    if (m.getType()->getDatatypeByDescriptor(ikey)->isList()) {
-                        vl += ival.toList();
-                        coreLog.trace("reducing bus key="+ikey+" to list of "+rkey);
-                    } else {
-                        vl.append(ival);
-                        coreLog.trace("reducing bus key="+ikey+" to list element of "+rkey);
-                    }
-                    result[rkey] = vl;
-                }
-            }
-        }
+        QVariantMap midResult = busMap->getMessageMap(ch, context);
+        result.unite(midResult);
     }
-    //assert(busType->isMap() || result.size() == 1);
+
     if (!printSlots.isEmpty()) {
         foreach (const QString &key, result.keys()) {
             if (printSlots.contains(key)) {
@@ -176,19 +295,7 @@ Message IntegralBus::look() const {
 }
 
 Message IntegralBus::composeMessage(const Message& m) {
-    QVariantMap data(getContext());
-    if (m.getData().type() == QVariant::Map) {
-        QMapIterator<QString, QVariant> it(m.getData().toMap());
-        while (it.hasNext()) {
-            it.next();
-            QString key = busMap.value(it.key());
-            coreLog.trace("putting key="+key+" remapped from="+it.key());
-            data.insert(key, it.value());
-        }
-    } else {
-        assert(busMap.size() == 1);
-        data.insert(busMap.values().first(), m.getData());
-    }
+    QVariantMap data(busMap->composeMessageMap(m, getContext()));
     context.clear();
     return Message(busType, data);
 }
@@ -271,6 +378,7 @@ void IntegralBus::setWorkflowContext(WorkflowContext *context) {
 
 IntegralBus::~IntegralBus() {
     delete contextMutex;
+    delete busMap;
 }
 
 void IntegralBus::setContext(const QVariantMap& m) {

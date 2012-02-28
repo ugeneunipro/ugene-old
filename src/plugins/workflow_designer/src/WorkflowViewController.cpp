@@ -1641,9 +1641,60 @@ void WorkflowScene::sl_deleteItem() {
     }
     if (cfgModified) {
         controller->propertyEditor->resetIterations();
-        emit configurationChanged();
     }
+    sl_refreshBindings();
+    emit configurationChanged();
     update();
+}
+
+void WorkflowScene::sl_refreshBindings() {
+    QList<Actor*> procList = getAllProcs();
+    foreach (QGraphicsItem* it, items()) {
+        if (WorkflowPortItemType == it->type()) {
+            WorkflowPortItem *pItem = qgraphicsitem_cast<WorkflowPortItem*>(it);
+            if (pItem->getPort()->isOutput()) {
+                continue;
+            }
+
+            Attribute *b = pItem->getPort()->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID);
+            Attribute *p = pItem->getPort()->getParameter(IntegralBusPort::PATHS_ATTR_ID);
+            QStrStrMap busMap = b->getAttributeValueWithoutScript<QStrStrMap>();
+            SlotPathMap pathMap = p->getAttributeValueWithoutScript<SlotPathMap>();
+
+            foreach (const QString &dest, busMap.keys()) {
+                QString srcs = busMap.value(dest);
+                QStringList validSrcs;
+                foreach (const QString &src, srcs.split(";")) {
+                    QPair<QString, QString> slotPair(dest, src);
+                    bool hasOneValidPath = false;
+                    if (pathMap.contains(slotPair)) {
+                        QList<QStringList> validPaths;
+                        foreach (const QStringList &path, pathMap.values(slotPair)) {
+                            bool valid = WorkflowUtils::isBindingValid(procList, pItem->getPort(), src, path);
+                            if (valid) {
+                                validPaths << path;
+                            }
+                            hasOneValidPath = hasOneValidPath || valid;
+                        }
+                        pathMap.remove(slotPair);
+                        foreach (const QStringList &p, validPaths) {
+                            pathMap.insertMulti(slotPair, p);
+                        }
+                    } else {
+                        QStringList path;
+                        hasOneValidPath = WorkflowUtils::isBindingValid(procList, pItem->getPort(), src, path);
+                    }
+                    if (hasOneValidPath) {
+                        validSrcs << src;
+                    }
+                }
+
+                busMap[dest] = validSrcs.join(";");
+            }
+            b->setAttributeValue(qVariantFromValue(busMap));
+            p->setAttributeValue(qVariantFromValue(pathMap));
+        }
+    }
 }
 
 QList<Actor*> WorkflowScene::getSelectedProcItems() const {

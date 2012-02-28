@@ -40,7 +40,7 @@ public:
     IntegralBusType(const Descriptor& d, const QMap<Descriptor, DataTypePtr>& m);
     
     // add port's type to map
-    void addInputs(const Port* p);
+    void addInputs(const Port* p, bool addPaths);
     void addOutput(DataTypePtr, const Port* producer);
     
 public:

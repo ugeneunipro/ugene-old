@@ -18,14 +18,15 @@
 #
 #
 #
+#
+
+
 
 workflow "Marking by annotation number"{
 
     read-sequence {
         type:read-sequence;
         name:"Read Sequences";
-        merge-gap:10;
-        mode:0;
     }
     mark-sequence {
         type:mark-sequence;
@@ -43,16 +44,10 @@ workflow "Marking by annotation number"{
     write-sequence {
         type:write-sequence;
         name:"Write 'Good' Sequences";
-        accumulate:true;
-        document-format:fasta;
-        write-mode:2;
     }
     write-sequence2 {
         type:write-sequence;
         name:"Write 'Rest' Sequences";
-        accumulate:true;
-        document-format:fasta;
-        write-mode:2;
     }
 
     @mark-sequence.m1 {
@@ -64,33 +59,41 @@ workflow "Marking by annotation number"{
     }
 
     .actor-bindings {
-        filter-by-values2.filtered-data->write-sequence2.in-sequence
-        filter-by-values.filtered-data->write-sequence.in-sequence
+        read-sequence.out-sequence->mark-sequence.in-sequence
         mark-sequence.out-marked-seq->filter-by-values.in-data
         mark-sequence.out-marked-seq->filter-by-values2.in-data
-        read-sequence.out-sequence->mark-sequence.in-sequence
+        filter-by-values.filtered-data->write-sequence.in-sequence
+        filter-by-values2.filtered-data->write-sequence2.in-sequence
     }
 
     read-sequence.annotations->mark-sequence.in-sequence.annotations
     read-sequence.sequence->mark-sequence.in-sequence.sequence
     mark-sequence.annotation_count->filter-by-values.in-data.text
     mark-sequence.annotation_count->filter-by-values2.in-data.text
-    read-sequence.annotations->write-sequence.in-sequence.annotations
-    read-sequence.sequence->write-sequence.in-sequence.sequence
-    read-sequence.annotations->write-sequence2.in-sequence.annotations
-    read-sequence.sequence->write-sequence2.in-sequence.sequence
+    read-sequence.annotations->write-sequence.in-sequence.annotations {
+        path-through:filter-by-values;
+    }
+    read-sequence.sequence->write-sequence.in-sequence.sequence {
+        path-through:filter-by-values;
+    }
+    read-sequence.annotations->write-sequence2.in-sequence.annotations {
+        path-through:filter-by-values2;
+    }
+    read-sequence.sequence->write-sequence2.in-sequence.sequence {
+        path-through:filter-by-values2;
+    }
 
     .iteration "Default iteration"{
         id:30;
 
-        write-sequence {
-            document-format:genbank;
+        filter-by-values {
+            text:good;
         }
         filter-by-values2 {
             text:Rest;
         }
-        filter-by-values {
-            text:good;
+        write-sequence {
+            document-format:genbank;
         }
     }
     .meta {
@@ -152,10 +155,10 @@ workflow "Marking by annotation number"{
                 bounds:"-30 -30 80.25 80";
                 in-sequence.angle:215.096;
             }
-            read-sequence.out-sequence->mark-sequence.in-sequence {
-                text-pos:"-27.5 -24";
-            }
             filter-by-values2.filtered-data->write-sequence2.in-sequence {
+                text-pos:"-34 -6";
+            }
+            filter-by-values.filtered-data->write-sequence.in-sequence {
                 text-pos:"-34 -6";
             }
             mark-sequence.out-marked-seq->filter-by-values.in-data {
@@ -164,8 +167,8 @@ workflow "Marking by annotation number"{
             mark-sequence.out-marked-seq->filter-by-values2.in-data {
                 text-pos:"-43 -21";
             }
-            filter-by-values.filtered-data->write-sequence.in-sequence {
-                text-pos:"-34 -6";
+            read-sequence.out-sequence->mark-sequence.in-sequence {
+                text-pos:"-27.5 -24";
             }
         }
     }

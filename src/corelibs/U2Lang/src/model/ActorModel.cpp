@@ -328,7 +328,7 @@ ActorPrototype::ActorPrototype(const Descriptor& d,
                                const QList<PortDescriptor*>& ports, 
                                const QList<Attribute*>& attrs)
 : VisualDescriptor(d), attrs(attrs), ports(ports), ed(NULL), val(NULL), prompter(NULL),
-isScript(false), isStandard(true), isSchema(false), allowsEmptyPorts(false) {
+isScript(false), isStandard(true), isSchema(false), allowsEmptyPorts(false), influenceOnPathFlag(false) {
 }
 
 ActorPrototype::~ActorPrototype()

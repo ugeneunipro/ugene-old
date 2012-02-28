@@ -194,9 +194,9 @@ public:
     ActorBindingsGraph() {}
     virtual ~ActorBindingsGraph() {}
 
-    bool validateGraph(QString &message);
+    bool validateGraph(QString &message) const;
     bool addBinding(Port *source, Port *dest);
-    bool contains(Port *source, Port *dest);
+    bool contains(Port *source, Port *dest) const;
     void removeBinding(Port *source, Port *dest);
     const QMap<Port*, QList<Port*> > & getBindings() const;
     QMap<Port*, QList<Port*> > & getBindings();

@@ -32,6 +32,32 @@ namespace U2 {
 namespace Workflow {
 
 /**
+ * Keeps the type of the bus.
+ * Helps to convert messages for actors.
+ */
+class U2LANG_EXPORT BusMap {
+public:
+    BusMap(const QStrStrMap &busMap, const QMap<QString, QStringList> &listMap, const SlotPathMap &paths);
+    BusMap(const QStrStrMap &busMap, bool breaksDataflow, const QString &actorId);
+
+    QVariantMap getMessageMap(CommunicationChannel* ch, QVariantMap &context);
+    QVariantMap composeMessageMap(const Message &m, const QVariantMap &context);
+
+    static void parseSource(const QString &src, QString &srcId, QStringList &path);
+    static QString getNewSourceId(const QString &srcId, const QString &actorId);
+
+private:
+    bool input;
+
+    QStrStrMap busMap;
+    QMap<QString, QStringList> listMap;
+    SlotPathMap paths;
+
+    bool breaksDataflow;
+    QString actorId;
+};
+
+/**
  * represents communication channel for support passing data between actors
  * connected in transitive closure of schema graph
  * 
@@ -82,9 +108,7 @@ protected:
     // communications with other ports
     QMap<QString, CommunicationChannel*> outerChannels;
     // busmap of port integral bus is binded to
-    QStrStrMap busMap;
-    // 
-    QMap<QString, QStringList> listMap;
+    BusMap *busMap;
     // 
     QVariantMap context;
     // 

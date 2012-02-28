@@ -302,6 +302,8 @@ void Schema::setAliasedAttributes(Actor *proc, Actor *subProc) {
     subProc->getParamAliases() = newParamAliases;
 }
 
+typedef QPair<QString, QString> SlotPair;
+
 void Schema::replaceInLinksAndSlots(Actor *proc, const PortAlias &portAlias) {
     Port *port = proc->getPort(portAlias.getAlias());
     Actor *subProc = portAlias.getSourcePort()->owner();
@@ -315,14 +317,28 @@ void Schema::replaceInLinksAndSlots(Actor *proc, const PortAlias &portAlias) {
             graph->removeBinding(link->source(), port);
             graph->addBinding(link->source(), subPort);
 
-            // replace slots links
-            Attribute *a = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID);
-            QStrStrMap busMap = a->getAttributeValueWithoutScript<QStrStrMap>();
+            // replace slots links and paths
+            Attribute *b = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID);
+            Attribute *p = port->getParameter(IntegralBusPort::PATHS_ATTR_ID);
+            QStrStrMap busMap = b->getAttributeValueWithoutScript<QStrStrMap>();
+            SlotPathMap pathMap = p->getAttributeValueWithoutScript<SlotPathMap>();
             QStrStrMap subBusMap;
+            SlotPathMap subPathMap;
+
             foreach (const SlotAlias &slotAlias, portAlias.getSlotAliases()) {
                 subBusMap[slotAlias.getSourceSlotId()] = busMap[slotAlias.getAlias()];
+
+                foreach (const SlotPair &slotPair, pathMap.keys()) {
+                    if (slotAlias.getAlias() == slotPair.first) {
+                        SlotPair subPair(slotAlias.getSourceSlotId(), slotPair.second);
+                        foreach (const QStringList &p, pathMap.values(slotPair)) {
+                            subPathMap.insertMulti(subPair, p);
+                        }
+                    }
+                }
             }
             subPort->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->setAttributeValue(qVariantFromValue(subBusMap));
+            subPort->getParameter(IntegralBusPort::PATHS_ATTR_ID)->setAttributeValue(qVariantFromValue(subPathMap));
         }
     }
 }
@@ -466,7 +482,7 @@ void Metadata::reset() {
 /**************************
  * ActorBindingGraph
  **************************/
-bool ActorBindingsGraph::validateGraph(QString &) {
+bool ActorBindingsGraph::validateGraph(QString &) const {
     return true;
 }
 
@@ -483,9 +499,9 @@ bool ActorBindingsGraph::addBinding(Port *source, Port *dest) {
     return true;
 }
 
-bool ActorBindingsGraph::contains(Port *source, Port *dest) {
+bool ActorBindingsGraph::contains(Port *source, Port *dest) const {
     if (bindings.contains(source)) {
-        QList<Port*> &ports = bindings[source];
+        const QList<Port*> &ports = bindings[source];
         return ports.contains(dest);
     }
     return false;

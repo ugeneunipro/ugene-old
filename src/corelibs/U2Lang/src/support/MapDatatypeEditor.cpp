@@ -32,6 +32,7 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QToolButton>
 
+#include <U2Lang/IntegralBus.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/IntegralBusType.h>
 
@@ -93,7 +94,7 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
     
     int height = QFontMetrics(QFont()).height() + 6;
     const QList<Descriptor>& keys = to->getAllDescriptors();
-    QMap<QString,QString> bindingsMap = cfg->getParameter(propertyName)->getAttributeValueWithoutScript<QStrStrMap>();
+    QMap<QString, QString> bindingsMap = getBindingsMap();
     table->setRowCount(keys.size());
     
     int keysSz = keys.size();
@@ -142,6 +143,11 @@ QWidget* MapDatatypeEditor::createGUI(DataTypePtr from, DataTypePtr to) {
     connect(table, SIGNAL(itemSelectionChanged()), SLOT(sl_showDoc()));
     
     return widget;
+}
+
+QMap<QString, QString> MapDatatypeEditor::getBindingsMap() {
+    QMap<QString, QString> bindingsMap = cfg->getParameter(propertyName)->getAttributeValueWithoutScript<QStrStrMap>();
+    return bindingsMap;
 }
 
 int MapDatatypeEditor::getOptimalHeight() {
@@ -222,6 +228,43 @@ void BusPortEditor::handleDataChanged(const QModelIndex & topLeft, const QModelI
     commit();
 }
 
+void BusPortEditor::commit() {
+    SlotPathMap pathMap;
+    QMap<QString,QString> busMap;
+
+    QString srcId;
+    QStringList path;
+    if (table && !isInfoMode()) {
+        for (int i = 0; i < table->rowCount(); i++) {
+            QString key = table->item(i, KEY_COLUMN)->data(Qt::UserRole).value<Descriptor>().getId();
+            QString val = table->item(i, VALUE_COLUMN)->data(Qt::UserRole).value<Descriptor>().getId();
+
+            QStringList srcs;
+            foreach (const QString &src, val.split(";")) {
+                BusMap::parseSource(src, srcId, path);
+                srcs << srcId;
+
+                if (!path.isEmpty()) {
+                    QPair<QString, QString> slotPair(key, srcId);
+                    pathMap.insertMulti(slotPair, path);
+                }
+            }
+            busMap[key] = srcs.join(";");
+        }
+    }
+    cfg->setParameter(IntegralBusPort::BUS_MAP_ATTR_ID, qVariantFromValue<QStrStrMap>(busMap));
+    cfg->setParameter(IntegralBusPort::PATHS_ATTR_ID, qVariantFromValue<SlotPathMap>(pathMap));
+    sl_showDoc();
+}
+
+QMap<QString, QString> BusPortEditor::getBindingsMap() {
+    QMap<QString, QString> bindingsMap = cfg->getParameter(propertyName)->getAttributeValueWithoutScript<QStrStrMap>();
+    SlotPathMap pathMap = cfg->getParameter(IntegralBusPort::PATHS_ATTR_ID)->getAttributeValueWithoutScript<SlotPathMap>();
+    WorkflowUtils::applyPathsToBusMap(bindingsMap, pathMap);
+
+    return bindingsMap;
+}
+
 /*******************************
 * DescriptorListEditorDelegate
 *******************************/
@@ -249,6 +292,7 @@ void DescriptorListEditorDelegate::setEditorData(QWidget *editor,
             item->setCheckable(true); item->setEditable(false); item->setSelectable(false);
             item->setCheckState(curList.contains(d.getId())? Qt::Checked: Qt::Unchecked);
             item->setData(qVariantFromValue<Descriptor>(d));
+            item->setToolTip(d.getDisplayName());
             cm->setItem(i, item);
         }
         combo->setModel(cm);
@@ -257,10 +301,12 @@ void DescriptorListEditorDelegate::setEditorData(QWidget *editor,
         combo->setView(vw);
         //vw->setEditTriggers(QAbstractItemView::AllEditTriggers);
     } else {
+        QStandardItemModel *cm = qobject_cast<QStandardItemModel*>(combo->model());
         combo->clear();
         int currentIdx = 0;
         for (int i = 0; i < list.size(); ++i) {
             combo->addItem(list[i].getDisplayName(), qVariantFromValue<Descriptor>(list[i]));
+            cm->item(i)->setToolTip(list[i].getDisplayName());
             if (list[i] == current) {
                 currentIdx = i;
             }

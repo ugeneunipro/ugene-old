@@ -73,6 +73,7 @@ const QString HRSchemaSerializer::DASH                  = "-";
 const QString HRSchemaSerializer::ITERATION_ID          = "id";
 const QString HRSchemaSerializer::PARAM_ALIASES_START   = "parameter-aliases";
 const QString HRSchemaSerializer::PORT_ALIASES_START    = "port-aliases";
+const QString HRSchemaSerializer::PATH_THROUGH          = "path-through";
 
 // -------------- backward compatibility --------------
     const QString HRSchemaSerializer::ALIASES_HELP_START    = "help";
@@ -1127,7 +1128,31 @@ QPair<Port*, Port*> HRSchemaSerializer::parseDataflow(Tokenizer & tokenizer, con
     if(!descs.contains(destSlotId)) {
         throw ReadFailed(tr("Undefined slot id '%1' at '%2'").arg(destSlotId).arg(destTok));
     }
-    qobject_cast<IntegralBusPort*>(destPort)->setBusMapValue(destSlotId, actorMap.value(srcActorName)->getId() + ":" + srcSlotId);
+
+    IntegralBusPort *bus = qobject_cast<IntegralBusPort*>(destPort);
+    QString srcSlotString = actorMap.value(srcActorName)->getId() + ":" + srcSlotId;
+    bus->setBusMapValue(destSlotId, srcSlotString);
+
+    QString token = tokenizer.look();
+    if (BLOCK_START == token) {
+        tokenizer.assertToken(BLOCK_START);
+        ParsedPairs pairs(tokenizer);
+        tokenizer.assertToken(BLOCK_END);
+
+        if (pairs.equalPairs.contains(PATH_THROUGH)) {
+            QStringList path;
+            QString value = pairs.equalPairs.take(PATH_THROUGH);
+            foreach(QString p, value.split(",")) {
+                p = p.trimmed();
+                if (!actorMap.contains(p)) {
+                    throw ReadFailed(tr("Undefined actor id '%1' at '%2'").arg(p).arg(value));
+                }
+                path.append(p);
+            }
+
+            bus->addPathBySlotsPair(destSlotId, srcSlotString, path);
+        }
+    }
     return QPair<Port*, Port*>(srcPort, destPort);
 }
 
@@ -1650,18 +1675,38 @@ QString HRSchemaSerializer::dataflowDefinition(const QList<Actor*> & procs, cons
     foreach(Actor * actor, procs) {
         foreach(Port * inputPort, actor->getInputPorts()) {
             QStrStrMap busMap = inputPort->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
+            IntegralBusPort *busPort = qobject_cast<IntegralBusPort*>(inputPort);
+
             foreach( const QString & key, busMap.keys() ) {
                 QStringList srcList = busMap.value(key).split(";", QString::SkipEmptyParts);
+                QStringList uniqList;
                 foreach(QString src, srcList) {
-                    if(src.isEmpty()) { continue; }
-                    src = src.replace(COLON, DOT);
-                    ActorId srcActorId = parseAt(src, 0);
-                    if(containsProcWithId(procs, srcActorId)) {
-                        res += makeArrowPair(src.replace(srcActorId, nmap[srcActorId]),
-                                                nmap[actor->getId()] + DOT + inputPort->getId() + DOT + key) + NEW_LINE;
+                    if (!uniqList.contains(src)) {
+                        uniqList << src;
                     }
                 }
-                
+
+                foreach(QString src, uniqList) {
+                    if(src.isEmpty()) { continue; }
+                    QList<QStringList> paths = busPort->getPathsBySlotsPair(key, src);
+                    src = src.replace(COLON, DOT);
+                    ActorId srcActorId = parseAt(src, 0);
+
+                    if(containsProcWithId(procs, srcActorId)) {
+                        QString arrowPair = makeArrowPair(src.replace(srcActorId, nmap[srcActorId]),
+                            nmap[actor->getId()] + DOT + inputPort->getId() + DOT + key, 0);
+
+                        if (paths.isEmpty()) {
+                            res += makeIndent(1) + arrowPair + NEW_LINE;
+                        } else {
+                            foreach (const QStringList &path, paths) {
+                                QString pathString = path.join(", ");
+                                QString pair = makeEqualsPair(PATH_THROUGH, pathString, 2);
+                                res += makeBlock(arrowPair, NO_NAME, pair);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
