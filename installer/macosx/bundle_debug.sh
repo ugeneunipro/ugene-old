@@ -1,7 +1,7 @@
 PRODUCT_NAME="ugeneuid"
 
 VERSION=`cat ../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{print $2}'`
-BUILD_DIR=./ugeneuid_bundle
+BUILD_DIR=./debug_bundle
 DEBUG_DIR=../../src/_debug
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
@@ -33,6 +33,11 @@ echo copying data dir
 
 cp -R "$DEBUG_DIR/../../data" "${TARGET_EXE_DIR}/"
 find $TARGET_EXE_DIR -name ".svn" | xargs rm -rf
+
+echo copying console binary
+cp "$DEBUG_DIR/ugenecld.app/Contents/MacOS/ugenecld" "$TARGET_EXE_DIR"
+changeCoreInstallNames ugenecld
+changeQtInstallNames ugenecld
 
 #echo copying qt libraries - plugin dependencies
 #cp $PATH_TO_QT/libQtOpenGL_debug.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL_debug.4.dylib"
