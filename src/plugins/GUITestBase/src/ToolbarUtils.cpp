@@ -22,7 +22,7 @@
 #include "ToolbarUtils.h"
 #include "QtUtils.h"
 #include "QToolBar"
-#include "U2gui/MainWindow.h"
+#include "U2Gui/MainWindow.h"
 #include "QtUtils.h"
 #include "QAction"
 #include <U2Gui/GUIUtils.h>
