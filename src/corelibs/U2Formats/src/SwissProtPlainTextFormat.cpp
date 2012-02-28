@@ -375,7 +375,7 @@ SharedAnnotationData SwissProtPlainTextFormat::readAnnotation(IOAdapter* io, cha
             valQStr.append(QString::fromAscii(cbuff).split(QRegExp("\\n")).takeAt(0).mid(34));
         }else{
             for (; QN_COL < len && TextUtils::LINE_BREAKS[(uchar)cbuff[len-1]]; len--){}; //remove line breaks
-            int flen = len + readMultilineQualifier(io, cbuff+len, READ_BUFF_SIZE-len, len == maxAnnotationLineLen);
+            int flen = len + readMultilineQualifier(io, cbuff, READ_BUFF_SIZE-len, len == maxAnnotationLineLen, len);
             //now the whole feature is in cbuff
             int valStart = A_COL + 1;
             for (; valStart < flen && cbuff[valStart] != '='; valStart++){}; //find '==' and valStart
