@@ -343,7 +343,9 @@ void GSequenceLineView::wheelEvent(QWheelEvent *we) {
 }
 
 void GSequenceLineView::sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>& added, const QVector<U2Region>& removed) {
+    setFocus();
     if (visibleRange.intersects(added) || visibleRange.intersects(removed)) {
+        addUpdateFlags(GSLV_UF_FocusChanged);
         addUpdateFlags(GSLV_UF_SelectionChanged);
         update();
     }
