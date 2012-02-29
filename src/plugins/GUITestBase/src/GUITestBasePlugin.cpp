@@ -24,9 +24,7 @@
 #include <U2Test/GUITestBase.h>
 
 #include "GUIInitialChecks.h"
-#include "GUIOpenFileTests.h"
-#include "GUISaveFileTests.h"
-#include "GUIExportProjectTests.h"
+#include "tests/common_scenarios/project/Project.h"
 
 namespace U2 {
 
@@ -47,13 +45,13 @@ GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test 
 void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     if (guiTestBase) {
-        guiTestBase->registerTest(new OpenFastaFile());
-        guiTestBase->registerTest(new ProjectSaveAs());
-        guiTestBase->registerTest(new OpenMultipleFiles());
-        guiTestBase->registerTest(new ExportProject());
-        guiTestBase->registerTest(new OpenCloseFastaFile());
-        guiTestBase->registerTest(new NoExportMenuItem());
-        guiTestBase->registerTest(new OpenGzippedFile);
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0005());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0006());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0009());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0011());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0017());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0023());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0030());
     }
 }
 
