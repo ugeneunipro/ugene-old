@@ -88,6 +88,11 @@ void SequenceInfo::initLayout()
 
     mainLayout->addWidget(dinuclWidget);
 
+    // Make some labels selectable by a user (so he could copy them)
+    sequenceRegionLength->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    charOccurLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    dinuclLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+
     updateLayout();
 }
 
