@@ -624,15 +624,15 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
         QList<SharedAnnotationData> annotations;
         if(NULL != pair.getLeftPrimer())
         {
-            annotations.append(oligoToAnnotation("primer", *pair.getLeftPrimer(), U2Strand::Direct));
+            annotations.append(oligoToAnnotation("primer", *pair.getLeftPrimer(), pair.getProductSize(), U2Strand::Direct));
         }
         if(NULL != pair.getInternalOligo())
         {
-            annotations.append(oligoToAnnotation("internalOligo", *pair.getInternalOligo(), U2Strand::Direct));
+            annotations.append(oligoToAnnotation("internalOligo", *pair.getInternalOligo(), pair.getProductSize(), U2Strand::Direct));
         }
         if(NULL != pair.getRightPrimer())
         {
-            annotations.append(oligoToAnnotation("primer", *pair.getRightPrimer(), U2Strand::Complementary));
+            annotations.append(oligoToAnnotation("primer", *pair.getRightPrimer(), pair.getProductSize(), U2Strand::Complementary));
         }
         AppContext::getTaskScheduler()->registerTopLevelTask(
                 new CreateAnnotationsTask(aobj, groupName + "/pair " + QString::number(index + 1), annotations));
@@ -641,7 +641,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
     return ReportResult_Finished;
 }
 
-SharedAnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(QString title, const Primer &primer, U2Strand strand)
+SharedAnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(QString title, const Primer &primer, int productSize, U2Strand strand)
 {
     SharedAnnotationData annotationData(new AnnotationData());
     annotationData->name = title;
@@ -656,6 +656,8 @@ SharedAnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(QString title, 
     annotationData->qualifiers.append(U2Qualifier("gc%", QString::number(primer.getGcContent())));
     annotationData->qualifiers.append(U2Qualifier("any", QString::number(0.01*primer.getSelfAny())));
     annotationData->qualifiers.append(U2Qualifier("3'", QString::number(0.01*primer.getSelfEnd())));
+    annotationData->qualifiers.append(U2Qualifier("product_size", QString::number(productSize)));
+
     return annotationData;
 }
 
