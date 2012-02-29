@@ -67,7 +67,7 @@ GraphSettingsDialog::GraphSettingsDialog( GSequenceGraphDrawer* d, const U2Regio
 	}		
 	
 	QPushButton* cancelButton = new QPushButton(tr("Cancel"), this);
-	QPushButton* okButton = new QPushButton(tr("Ok"), this);
+	QPushButton* okButton = new QPushButton(tr("OK"), this);
 	buttonsLayout->addWidget(okButton);
 	buttonsLayout->addWidget(cancelButton);
 
