@@ -48,7 +48,7 @@ BusMap::BusMap(const QStrStrMap &busMap, bool breaksDataflow, const QString &act
 {
 }
 
-inline void BusMap::parseSource(const QString &src, QString &srcId, QStringList &path) {
+void BusMap::parseSource(const QString &src, QString &srcId, QStringList &path) {
     int sepPos = src.indexOf(PATH_SEPARATOR);
     path.clear();
     if (-1 != sepPos) {
