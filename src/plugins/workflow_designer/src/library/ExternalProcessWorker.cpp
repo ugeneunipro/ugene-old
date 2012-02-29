@@ -205,6 +205,7 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             QVariantMap hints;
             hints.insert(DocumentFormat::DBI_ALIAS_HINT, QString(WORKFLOW_SESSION_TMP_DBI_ALIAS));
             std::auto_ptr<Document> d(f->loadDocument(iof, url, hints, os));
+            d->setDocumentOwnsDbiResources(false);
             
             if (os.hasError()) {
                 //coreLog.error(tr("Can't open document"));
@@ -441,6 +442,7 @@ void LaunchExternalToolTask::run() {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     externalProcess->setProcessEnvironment(env);
     externalProcess->start(execString);
+    taskLog.details(tr("Running external process: %1").arg(execString));
 
     bool startOk = externalProcess->waitForStarted(START_WAIT_MSEC);
 
@@ -454,6 +456,7 @@ void LaunchExternalToolTask::run() {
                 taskLog.error(tr("Can't run an executable file \"%1%2\". Try to run it as a cmd line command: \"%3%4\"")
                     .arg(args.first()).arg(append).arg(WIN_LAUNCH_CMD_COMMAND + args.first()).arg(append));
                 externalProcess->start(WIN_LAUNCH_CMD_COMMAND + execString);
+                taskLog.details(tr("Running external process: %1").arg(WIN_LAUNCH_CMD_COMMAND + execString));
                 startOk = externalProcess->waitForStarted(START_WAIT_MSEC);
             }
         }
