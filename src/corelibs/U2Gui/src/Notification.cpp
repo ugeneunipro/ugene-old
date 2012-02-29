@@ -107,7 +107,7 @@ void Notification::generateCSSforCloseButton(bool isHovered) {
     
     css.append("border-radius: 3px;");
     css.append("background-position: center center;");
-    css.append("paddling: 2px 2px 2px 2px;");
+    css.append("padding: 2px 2px 2px 2px;");
     css.append(background);
     css.append("background-image: url(':core/images/close.png');");
     close->setStyleSheet(css);
