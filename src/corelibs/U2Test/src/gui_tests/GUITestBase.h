@@ -14,6 +14,14 @@
 
 namespace U2 {
 
+#define GUI_TEST_CLASS(className, quotedClassName) \
+    class className : public GUITest { \
+    public: \
+    className () : GUITest(QString(PREFIX) + quotedClassName){} \
+    protected: \
+        virtual void execute(U2OpStatus &os); \
+    };
+
 typedef QMap<QString, GUITest*> GUITestMap;
 
 class U2TEST_EXPORT GUITestBase {

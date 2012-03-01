@@ -28,52 +28,17 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_project {
 
-class test_0005 : public GUITest {
-public:
-    test_0005() : GUITest("test_0005"){}
-protected:
-    virtual void execute(U2OpStatus &os);
-};
+#define PREFIX "GUITest_common_scenarios_project_"
 
-class test_0006 : public GUITest {
-public:
-    test_0006 () : GUITest("test_0006"){}
-protected:
-    void execute(U2OpStatus &os);
-};
+GUI_TEST_CLASS (test_0005,"test_0005")
+GUI_TEST_CLASS (test_0006,"test_0006")
+GUI_TEST_CLASS (test_0009,"test_0009")
+GUI_TEST_CLASS (test_0011,"test_0011")
+GUI_TEST_CLASS (test_0017,"test_0017")
+GUI_TEST_CLASS (test_0023,"test_0023")
+GUI_TEST_CLASS (test_0030,"test_0030")
 
-class test_0009 : public GUITest {
-public:
-    test_0009 () : GUITest("test_0009"){}
-protected:
-    void execute(U2OpStatus &os);
-};
-
-class test_0011 : public GUITest {
-public:
-    test_0011 () : GUITest("test_0011"){}
-protected:
-    void execute(U2OpStatus &os);
-};
-
-class test_0017 : public GUITest {
-public:
-    test_0017() : GUITest("test_0017"){}
-protected:
-    virtual void execute(U2OpStatus &os);
-};
-
-class test_0023 : public GUITest {
-protected:
-    virtual void execute(U2OpStatus &os);
-};
-
-class test_0030 : public GUITest {
-public:
-    test_0030 () : GUITest("test_0030"){}
-protected:
-    void execute(U2OpStatus &os);
-};
+#undef PREFIX
 
 }
 
