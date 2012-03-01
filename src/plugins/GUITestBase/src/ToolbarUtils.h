@@ -32,25 +32,19 @@ public:
    
     static QToolBar* getToolbar(U2OpStatus &os, const QString &toolbarSysName);
 
-    //not neccessary? static void activateToolbarAction(U2OpStatus &os,const QString &actionName, const QToolBar *toolbar);
+    static void clickToolbarAction(U2OpStatus &os,const QString &actionName, const QToolBar *toolbar);
 
-    static void clickButtonOnToolbar(QToolBar* tb, const QString &buttonName);
-    static void pressButtonOnToolbar(QToolBar* tb, const QString &buttonName);
-    static void releaseButtonOnToolbar(QToolBar* tb, const QString &buttonName);
+    static void hoverToolbarAction(U2OpStatus &os,const QString &actionName, const QToolBar *toolbar);
 
-    static void clickButtonOnToolbarByActionName(QToolBar* tb, const QString &actionName);
-    static void pressButtonOnToolbarByActionName(QToolBar* tb, const QString &actionName);
-    static void releaseButtonOnToolbarByActionName(QToolBar* tb, const QString &actionName);
 
-    //for future: static QWidget* getWidgetFromToolbar(QToolBar* tb, const QString &widgetName);
+    //static void? clickButtonOnToolbar(QToolBar* tb, QString buttonSysName
 
 private:
 
     static QAction* getToolbarAction(U2OpStatus &os, const QString &actionName, const QToolBar *toolbar);
 
-    static QWidget* getToolbarWidgetByActionName(U2OpStatus &os, const QString &actionName, const QToolBar *toolbar);
 
-    static QWidget* getToolbarWidgetByName(U2OpStatus &os, const QString &widgetName, const QToolBar *toolbar)
+
 
 };
 
