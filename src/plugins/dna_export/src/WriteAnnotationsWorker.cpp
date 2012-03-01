@@ -148,7 +148,10 @@ Task * WriteAnnotationsWorker::tick() {
             IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filepath));
             DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
             U2OpStatusImpl os;
-            Document * doc = df->createNewLoadedDocument(iof, filepath, os);
+            QVariantMap hints;
+            U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
+            hints[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(dbiRef);
+            Document * doc = df->createNewLoadedDocument(iof, filepath, os, hints);
             CHECK_OP(os, new FailTask(os.getError()));
             att->setModified(false);
             doc->addObject(att); // savedoc task will delete doc -> doc will delete att

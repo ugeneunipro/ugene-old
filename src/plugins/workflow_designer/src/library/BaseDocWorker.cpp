@@ -225,7 +225,8 @@ Task* BaseDocWriter::tick() {
             if (createNewDoc) {
                 U2OpStatus2Log os;
                 QVariantMap hints;
-                hints.insert(DocumentFormat::DBI_ALIAS_HINT, QString(WORKFLOW_SESSION_TMP_DBI_ALIAS));
+                U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
+                hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
                 Document *doc = format->createNewLoadedDocument(iof, anUrl, os, hints);
                 docs.insert(anUrl, doc);
             }

@@ -203,7 +203,8 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
             U2OpStatus2Log os;
             QVariantMap hints;
-            hints.insert(DocumentFormat::DBI_ALIAS_HINT, QString(WORKFLOW_SESSION_TMP_DBI_ALIAS));
+            U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
+            hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
             std::auto_ptr<Document> d(f->loadDocument(iof, url, hints, os));
             d->setDocumentOwnsDbiResources(false);
             

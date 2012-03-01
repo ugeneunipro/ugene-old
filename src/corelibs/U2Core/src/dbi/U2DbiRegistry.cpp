@@ -134,6 +134,13 @@ void U2DbiRegistry::detachTmpDbi(const QString& alias, U2OpStatus& os) {
     tmpDbis.removeAt(i);
 }
 
+U2DbiRef U2DbiRegistry::getSessionTmpDbiRef(U2OpStatus &os) {
+    TmpDbiHandle dh(SESSION_TMP_DBI_ALIAS, os);
+    CHECK_OP(os, U2DbiRef());
+
+    return dh.getDbiRef();
+}
+
 void U2DbiRegistry::deallocateTmpDbi(const TmpDbiRef& ref, U2OpStatus& os) {
     QMutexLocker l(&lock);
 

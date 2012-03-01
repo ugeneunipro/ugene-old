@@ -224,7 +224,7 @@ void LoadSeqTask::run() {
     }
     ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    cfg.insert(DocumentFormat::DBI_ALIAS_HINT, QString(WORKFLOW_SESSION_TMP_DBI_ALIAS));
+    cfg.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
     std::auto_ptr<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
     doc->setDocumentOwnsDbiResources(false);
     CHECK_OP(stateInfo, );
@@ -287,7 +287,7 @@ void LoadSeqTask::run() {
                     continue;
                 }
                 QVariantMap m;
-                U2EntityRef seqRef = U2SequenceUtils::import(doc->getDbiRef(), s, os);
+                U2EntityRef seqRef = U2SequenceUtils::import(dbiRef, s, os);
                 CHECK_OP(os, );
                 m.insert(BaseSlots::URL_SLOT().getId(), url);
                 m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<U2DataId>(seqRef.entityId));

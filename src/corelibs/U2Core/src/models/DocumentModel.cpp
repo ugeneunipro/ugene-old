@@ -48,7 +48,7 @@ namespace U2 {
 
 const QString DocumentFormat::CREATED_NOT_BY_UGENE = DocumentFormat::tr( "The document is created not by UGENE" );
 const QString DocumentFormat::MERGED_SEQ_LOCK = DocumentFormat::tr( "Document sequences were merged" );
-const QString DocumentFormat::DBI_ALIAS_HINT("dbi_alias");
+const QString DocumentFormat::DBI_REF_HINT("dbi_alias");
 const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 
 
@@ -56,13 +56,12 @@ Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const G
     U2DbiRef tmpDbiRef;
     bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
     if (useTmpDbi) {
-        QString alias = SESSION_TMP_DBI_ALIAS;
-        if (hints.contains(DBI_ALIAS_HINT)) {
-            alias = hints.value(DBI_ALIAS_HINT).toString();
+        if (hints.contains(DBI_REF_HINT)) {
+            tmpDbiRef = hints.value(DBI_REF_HINT).value<U2DbiRef>();
+        } else {
+            tmpDbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
+            CHECK_OP(os, NULL);
         }
-        TmpDbiHandle dh(alias, os);
-        CHECK_OP(os, NULL);
-        tmpDbiRef = dh.getDbiRef();
     }
 
     Document* doc = new Document(this, iof, url, tmpDbiRef, QList<UnloadedObjectInfo>(), hints, QString());
@@ -93,17 +92,18 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
 
     bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
     if (useTmpDbi) {
-        QString alias = SESSION_TMP_DBI_ALIAS;
-        if (hints.contains(DBI_ALIAS_HINT)) {
-            alias = hints.value(DBI_ALIAS_HINT).toString();
+        U2DbiRef dbiRef;
+        if (hints.contains(DBI_REF_HINT)) {
+            dbiRef = hints.value(DBI_REF_HINT).value<U2DbiRef>();
+        } else {
+            dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
+            CHECK_OP(os, NULL);
         }
-        TmpDbiHandle dh(alias, os);
+
+        DbiConnection con(dbiRef, os);
         CHECK_OP(os, NULL);
 
-        DbiConnection con(dh.getDbiRef(), os);
-        CHECK_OP(os, NULL);
-
-        res = loadDocument(io.get(), dh.getDbiRef(), hints, os);
+        res = loadDocument(io.get(), dbiRef, hints, os);
         CHECK_OP(os, NULL);
     } else {
         res = loadDocument(io.get(), U2DbiRef(), hints, os);

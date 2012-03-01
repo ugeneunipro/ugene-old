@@ -100,7 +100,7 @@ class U2CORE_EXPORT DocumentFormat: public QObject {
 public:
     static const QString CREATED_NOT_BY_UGENE;
     static const QString MERGED_SEQ_LOCK;
-    static const QString DBI_ALIAS_HINT;
+    static const QString DBI_REF_HINT;
 
     enum DocObjectOp {
         DocObjectOp_Add,

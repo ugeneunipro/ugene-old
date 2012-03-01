@@ -77,6 +77,13 @@ public:
 
     QList<U2DbiRef> listTmpDbis() const;
 
+    /**
+    * Returns the reference to the tmp session dbi.
+    * If the last is not created yet then it would be created.
+    */
+    U2DbiRef getSessionTmpDbiRef(U2OpStatus &os);
+
+
 private:
     /** Creates the session connection and increases the counter for the dbi */
     void initSessionDbi(TmpDbiRef& tmpDbiRef);
