@@ -64,10 +64,6 @@ void GenericMSAReader::init() {
     ch = ports.values().first();
 }
 
-bool GenericMSAReader::isReady() {
-    return !isDone();
-}
-
 Task* GenericMSAReader::tick() {
     if (cache.isEmpty() && !urls.isEmpty()) {
         Task* t = createReadTask(urls.takeFirst());
@@ -78,14 +74,14 @@ Task* GenericMSAReader::tick() {
         ch->put(cache.takeFirst());
     }
     if (urls.isEmpty()) {
-        done = true;
+        setDone();
         ch->setEnded();
     }
     return NULL;
 }
 
 bool GenericMSAReader::isDone() {
-    return done && cache.isEmpty();
+    return BaseWorker::isDone() && cache.isEmpty();
 }
 
 void GenericMSAReader::sl_taskFinished() {

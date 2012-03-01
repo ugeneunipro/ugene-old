@@ -175,41 +175,47 @@ void CollocationWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool CollocationWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* CollocationWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.distance = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
-    cfg.st = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>(context) ? 
-        CollocationsAlgorithm::NormalSearch : CollocationsAlgorithm::PartialSearch;
-    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
-    QString annotations = actor->getParameter(ANN_ATTR)->getAttributeValue<QString>(context);
-    names = QSet<QString>::fromList(annotations.split(QRegExp("\\W+"), QString::SkipEmptyParts));
-    QVariantMap qm = inputMessage.getData().toMap();
-
-    U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence seq = seqObj->getWholeSequence();
-    
-    QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(qm.value(FEATURE_TABLE_SLOT).toList());
-    if (!seq.isNull() && !atl.isEmpty()) {
-        cfg.searchRegion.length = seq.length();
-        Task* t = new CollocationSearchTask(atl, names, cfg);
-        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-        return t;
-    } else {
-        // void tick
-        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), QVariant()));
-        if (input->isEnded()) {
-            output->setEnded();
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
         }
-        return NULL;
+        cfg.distance = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
+        cfg.st = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>(context) ? 
+            CollocationsAlgorithm::NormalSearch : CollocationsAlgorithm::PartialSearch;
+        resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
+        QString annotations = actor->getParameter(ANN_ATTR)->getAttributeValue<QString>(context);
+        names = QSet<QString>::fromList(annotations.split(QRegExp("\\W+"), QString::SkipEmptyParts));
+        QVariantMap qm = inputMessage.getData().toMap();
+
+        U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
+        
+        QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(qm.value(FEATURE_TABLE_SLOT).toList());
+        if (!seq.isNull() && !atl.isEmpty()) {
+            cfg.searchRegion.length = seq.length();
+            Task* t = new CollocationSearchTask(atl, names, cfg);
+            connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+            return t;
+        } else {
+            // void tick
+            output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), QVariant()));
+            if (input->isEnded()) {
+                output->setEnded();
+            }
+            return NULL;
+        }
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
+    return NULL;
 }
 
 void CollocationWorker::sl_taskFinished() {
@@ -228,15 +234,8 @@ void CollocationWorker::sl_taskFinished() {
 
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(list);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
         algoLog.info(tr("Found %1 collocations").arg(res.size()));
     }
-}
-
-bool CollocationWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 } //namespace LocalWorkflow

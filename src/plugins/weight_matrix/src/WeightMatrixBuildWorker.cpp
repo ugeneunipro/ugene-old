@@ -132,20 +132,26 @@ void PWMatrixBuildWorker::init() {
     output = ports.value(WMATRIX_OUT_PORT_ID);
 }
 
-bool PWMatrixBuildWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* PWMatrixBuildWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    mtype = PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE();
-    QVariantMap data = inputMessage.getData().toMap();
-    cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>(context);
-    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
-    const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-    Task* t = new PWMatrixBuildTask(cfg, ma);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        mtype = PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE();
+        QVariantMap data = inputMessage.getData().toMap();
+        cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>(context);
+        cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
+        const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+        Task* t = new PWMatrixBuildTask(cfg, ma);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+    return NULL;
 }
 
 void PWMatrixBuildWorker::sl_taskFinished() {
@@ -154,13 +160,6 @@ void PWMatrixBuildWorker::sl_taskFinished() {
     PWMatrix model = t->getResult();
     QVariant v = qVariantFromValue<PWMatrix>(model);
     output->put(Message(mtype, v));
-    if (input->isEnded()) {
-        output->setEnded();
-    }
-}
-
-bool PWMatrixBuildWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -223,19 +222,25 @@ void PFMatrixBuildWorker::init() {
     output = ports.value(FMATRIX_OUT_PORT_ID);
 }
 
-bool PFMatrixBuildWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* PFMatrixBuildWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    mtype = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
-    QVariantMap data = inputMessage.getData().toMap();
-    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
-    const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-    Task* t = new PFMatrixBuildTask(cfg, ma);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        mtype = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
+        QVariantMap data = inputMessage.getData().toMap();
+        cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
+        const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+        Task* t = new PFMatrixBuildTask(cfg, ma);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+    return NULL;
 }
 
 void PFMatrixBuildWorker::sl_taskFinished() {
@@ -244,13 +249,6 @@ void PFMatrixBuildWorker::sl_taskFinished() {
     PFMatrix model = t->getResult();
     QVariant v = qVariantFromValue<PFMatrix>(model);
     output->put(Message(mtype, v));
-    if (input->isEnded()) {
-        output->setEnded();
-    }
-}
-
-bool PFMatrixBuildWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -326,22 +324,28 @@ void PFMatrixConvertWorker::init() {
     output = ports.value(WMATRIX_OUT_PORT_ID);
 }
 
-bool PFMatrixConvertWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* PFMatrixConvertWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    mtype = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
-    QVariantMap data = inputMessage.getData().toMap();
-    PWMatrix model = data.value(PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE_ID).value<PWMatrix>();
-    QString url = data.value(BaseSlots::URL_SLOT().getId()).toString();
-    cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>(context);
-    cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
-    const PFMatrix& ma = data.value(PFMatrixWorkerFactory::FMATRIX_SLOT.getId()).value<PFMatrix>();
-    Task* t = new PWMatrixBuildTask(cfg, ma);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        mtype = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
+        QVariantMap data = inputMessage.getData().toMap();
+        PWMatrix model = data.value(PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE_ID).value<PWMatrix>();
+        QString url = data.value(BaseSlots::URL_SLOT().getId()).toString();
+        cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>(context);
+        cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
+        const PFMatrix& ma = data.value(PFMatrixWorkerFactory::FMATRIX_SLOT.getId()).value<PFMatrix>();
+        Task* t = new PWMatrixBuildTask(cfg, ma);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+    return NULL;
 }
 
 void PFMatrixConvertWorker::sl_taskFinished() {
@@ -350,13 +354,6 @@ void PFMatrixConvertWorker::sl_taskFinished() {
     PWMatrix model = t->getResult();
     QVariant v = qVariantFromValue<PWMatrix>(model);
     output->put(Message(mtype, v));
-    if (input->isEnded()) {
-        output->setEnded();
-    }
-}
-
-bool PFMatrixConvertWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 } //namespace LocalWorkflow

@@ -308,10 +308,6 @@ void SWWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool SWWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 QString SWWorker::readPatternsFromFile(const QString url) {
     QFileInfo fi(url);
     QString pattern;
@@ -361,144 +357,154 @@ QString SWWorker::readPatternsFromFile(const QString url) {
 }
 
 Task* SWWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    SmithWatermanSettings cfg;
-    
-    // sequence
-    U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence seq = seqObj->getWholeSequence();
-
-    if(seq.isNull()) {
-        return new FailTask(tr("Null sequence supplied to Smith-Waterman: %1").arg(seq.getName()));
-    }
-    // scoring matrix
-    QString mtrx = actor->getParameter(MATRIX_ATTR)->getAttributeValue<QString>(context);
-    if(mtrx.isEmpty()){
-        mtrx = "Auto";
-    }
-    cfg.pSm = AppContext::getSubstMatrixRegistry()->getMatrix(mtrx);
-    if(cfg.pSm.getName().isEmpty() && mtrx.toLower() != "auto") {
-        algoLog.details(tr("Invalid value: weight matrix with given name not exists"));
-        return new FailTask(tr("Invalid value: weight matrix with given name not exists"));
-    }
-    if (cfg.pSm.isEmpty()) {
-        QString matrixName;
-        QStringList lst = AppContext::getSubstMatrixRegistry()->selectMatrixNamesByAlphabet(seq.alphabet);
-        if (!lst.isEmpty()) {
-            matrixName = lst.first();
-            cfg.pSm = AppContext::getSubstMatrixRegistry()->getMatrix(matrixName);
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
         }
-        if(cfg.pSm.isEmpty()) {
-            return new FailTask(tr("Can't find weight matrix name: '%1'!").arg(matrixName.isEmpty() ? tr("<empty>") : matrixName));
+        SmithWatermanSettings cfg;
+        
+        // sequence
+        U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
         }
-    }
-    
-    if(mtrx.toLower() != "auto") {
-        QByteArray alphChars = seq.alphabet->getAlphabetChars();
-        if(cfg.pSm.getAlphabet()->containsAll(alphChars.constData(), alphChars.length()) ) {
-            return new FailTask(tr("Wrong matrix selected. Alphabets do not match"));
+        DNASequence seq = seqObj->getWholeSequence();
+
+        if(seq.isNull()) {
+            return new FailTask(tr("Null sequence supplied to Smith-Waterman: %1").arg(seq.getName()));
         }
-    }
-
-    // pattern
-    QString ptrnStr = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>(context);
-    if(QFile::exists(ptrnStr)) {
-        ptrnStr = readPatternsFromFile(ptrnStr);
-    }
-    ptrnStr.remove(" ");
-    ptrnStr = ptrnStr.toUpper();
-    QByteArray ptrnBytes = QString(ptrnStr).remove(PATTERN_DELIMITER).toAscii();
-    
-    if(!cfg.pSm.getAlphabet()->containsAll(ptrnBytes.constData(), ptrnBytes.length())) {
-        algoLog.error(tr("Incorrect value: pattern alphabet doesn't match sequence alphabet "));
-        return new FailTask(tr("Pattern symbols not matching to alphabet"));
-    }
-    cfg.sqnc = QByteArray(seq.constData(), seq.length());
-    cfg.globalRegion.length = seq.length();
-
-    // score and gap model
-    cfg.percentOfScore = actor->getParameter(SCORE_ATTR)->getAttributeValue<int>(context);
-    if(cfg.percentOfScore < 0 || cfg.percentOfScore > 100){
-        algoLog.error(tr("Incorrect value: score value must lay between 0 and 100"));
-        return new FailTask(tr("Incorrect value: score value must lay between 0 and 100"));
-    }
-
-    cfg.gapModel.scoreGapExtd = actor->getParameter(GAPEXT_ATTR)->getAttributeValue<double>(context);
-    cfg.gapModel.scoreGapOpen = actor->getParameter(GAPOPEN_ATTR)->getAttributeValue<double>(context);
-
-    // filter
-    QString filter = actor->getParameter(FILTER_ATTR)->getAttributeValue<QString>(context);
-    cfg.resultFilter = AppContext::getSWResultFilterRegistry()->getFilter(filter);
-    if(cfg.resultFilter == NULL){
-        algoLog.error(tr("Incorrect value:  filter name incorrect, default value used")); //details level won't work
-        cfg.resultFilter = AppContext::getSWResultFilterRegistry()->getFilter("none");
-    }
-
-    // annotation name
-    QString resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
-    if(resultName.isEmpty()){
-        algoLog.error(tr("Incorrect value: result name is empty, default value used")); //details level won't work
-        resultName = "misc_feature";
-    }
-
-    // translations
-    cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
-    if (cfg.strand != StrandOption_DirectOnly/* && seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
-        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-                                            lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-        if (!compTTs.isEmpty()) {
-            cfg.complTT = compTTs.first();
-        } else {
-            algoLog.error(tr("Could not find complement translation for %1, searching only direct strand").arg(seq.getName()));
-            cfg.strand = StrandOption_DirectOnly;
+        // scoring matrix
+        QString mtrx = actor->getParameter(MATRIX_ATTR)->getAttributeValue<QString>(context);
+        if(mtrx.isEmpty()){
+            mtrx = "Auto";
         }
-    }
-    if (actor->getParameter(AMINO_ATTR)->getAttributeValue<bool>(context)) {
-        DNATranslationType tt = seq.alphabet->getType() == DNAAlphabet_NUCL ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
-        QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(seq.alphabet, tt);
-        if (!TTs.isEmpty()) {
-            cfg.aminoTT = TTs.first(); //FIXME let user choose or use hints ?
+        cfg.pSm = AppContext::getSubstMatrixRegistry()->getMatrix(mtrx);
+        if(cfg.pSm.getName().isEmpty() && mtrx.toLower() != "auto") {
+            algoLog.details(tr("Invalid value: weight matrix with given name not exists"));
+            return new FailTask(tr("Invalid value: weight matrix with given name not exists"));
         }
+        if (cfg.pSm.isEmpty()) {
+            QString matrixName;
+            QStringList lst = AppContext::getSubstMatrixRegistry()->selectMatrixNamesByAlphabet(seq.alphabet);
+            if (!lst.isEmpty()) {
+                matrixName = lst.first();
+                cfg.pSm = AppContext::getSubstMatrixRegistry()->getMatrix(matrixName);
+            }
+            if(cfg.pSm.isEmpty()) {
+                return new FailTask(tr("Can't find weight matrix name: '%1'!").arg(matrixName.isEmpty() ? tr("<empty>") : matrixName));
+            }
+        }
+        
+        if(mtrx.toLower() != "auto") {
+            QByteArray alphChars = seq.alphabet->getAlphabetChars();
+            if(cfg.pSm.getAlphabet()->containsAll(alphChars.constData(), alphChars.length()) ) {
+                return new FailTask(tr("Wrong matrix selected. Alphabets do not match"));
+            }
+        }
+
+        // pattern
+        QString ptrnStr = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>(context);
+        if(QFile::exists(ptrnStr)) {
+            ptrnStr = readPatternsFromFile(ptrnStr);
+        }
+        ptrnStr.remove(" ");
+        ptrnStr = ptrnStr.toUpper();
+        QByteArray ptrnBytes = QString(ptrnStr).remove(PATTERN_DELIMITER).toAscii();
+        
+        if(!cfg.pSm.getAlphabet()->containsAll(ptrnBytes.constData(), ptrnBytes.length())) {
+            algoLog.error(tr("Incorrect value: pattern alphabet doesn't match sequence alphabet "));
+            return new FailTask(tr("Pattern symbols not matching to alphabet"));
+        }
+        cfg.sqnc = QByteArray(seq.constData(), seq.length());
+        cfg.globalRegion.length = seq.length();
+
+        // score and gap model
+        cfg.percentOfScore = actor->getParameter(SCORE_ATTR)->getAttributeValue<int>(context);
+        if(cfg.percentOfScore < 0 || cfg.percentOfScore > 100){
+            algoLog.error(tr("Incorrect value: score value must lay between 0 and 100"));
+            return new FailTask(tr("Incorrect value: score value must lay between 0 and 100"));
+        }
+
+        cfg.gapModel.scoreGapExtd = actor->getParameter(GAPEXT_ATTR)->getAttributeValue<double>(context);
+        cfg.gapModel.scoreGapOpen = actor->getParameter(GAPOPEN_ATTR)->getAttributeValue<double>(context);
+
+        // filter
+        QString filter = actor->getParameter(FILTER_ATTR)->getAttributeValue<QString>(context);
+        cfg.resultFilter = AppContext::getSWResultFilterRegistry()->getFilter(filter);
+        if(cfg.resultFilter == NULL){
+            algoLog.error(tr("Incorrect value:  filter name incorrect, default value used")); //details level won't work
+            cfg.resultFilter = AppContext::getSWResultFilterRegistry()->getFilter("none");
+        }
+
+        // annotation name
+        QString resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
+        if(resultName.isEmpty()){
+            algoLog.error(tr("Incorrect value: result name is empty, default value used")); //details level won't work
+            resultName = "misc_feature";
+        }
+
+        // translations
+        cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
+        if (cfg.strand != StrandOption_DirectOnly/* && seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
+            QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
+                                                lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
+            if (!compTTs.isEmpty()) {
+                cfg.complTT = compTTs.first();
+            } else {
+                algoLog.error(tr("Could not find complement translation for %1, searching only direct strand").arg(seq.getName()));
+                cfg.strand = StrandOption_DirectOnly;
+            }
+        }
+        if (actor->getParameter(AMINO_ATTR)->getAttributeValue<bool>(context)) {
+            DNATranslationType tt = seq.alphabet->getType() == DNAAlphabet_NUCL ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
+            QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(seq.alphabet, tt);
+            if (!TTs.isEmpty()) {
+                cfg.aminoTT = TTs.first(); //FIXME let user choose or use hints ?
+            }
+        }
+
+        // algorithm
+        QString algName = actor->getParameter(ALGO_ATTR)->getAttributeValue<QString>(context);
+        SmithWatermanTaskFactory* algo = AppContext::getSmithWatermanTaskFactoryRegistry()->getFactory(algName);
+        if (!algo) {
+            return new FailTask(tr("SmithWaterman algorithm not found: %1").arg(algName));
+        }
+
+        // for each pattern run smith-waterman
+        QStringList ptrnStrList = ptrnStr.split(PATTERN_DELIMITER, QString::SkipEmptyParts);
+        if(ptrnStrList.isEmpty()) {
+            algoLog.error(tr("Incorrect value: search pattern, pattern is empty"));
+            return new FailTask(tr("Incorrect value: search pattern, pattern is empty"));
+        }
+        QList<Task*> subs;
+        foreach(const QString & p, ptrnStrList) {
+            assert(!p.isEmpty());
+            SmithWatermanSettings config(cfg);
+            config.ptrn = p.toAscii();
+
+            SmithWatermanReportCallbackImpl* rcb = new SmithWatermanReportCallbackImpl( NULL, resultName, QString());
+            config.resultCallback = rcb;
+            config.resultListener = new SmithWatermanResultListener(); //FIXME: where to delete?
+
+            Task * swTask = algo->getTaskInstance(config, tr("smith_waterman_task"));
+            rcb->setParent(swTask); // swTask will delete rcb
+            callbacks.insert(swTask, rcb);
+            patterns.insert(swTask, config.ptrn);
+            subs << swTask;
+        }
+        assert(!subs.isEmpty());
+
+        MultiTask * multiSw = new MultiTask(tr("Smith waterman subtasks"), subs);
+        connect(new TaskSignalMapper(multiSw), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+        return multiSw;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-
-    // algorithm
-    QString algName = actor->getParameter(ALGO_ATTR)->getAttributeValue<QString>(context);
-    SmithWatermanTaskFactory* algo = AppContext::getSmithWatermanTaskFactoryRegistry()->getFactory(algName);
-    if (!algo) {
-        return new FailTask(tr("SmithWaterman algorithm not found: %1").arg(algName));
-    }
-
-    // for each pattern run smith-waterman
-    QStringList ptrnStrList = ptrnStr.split(PATTERN_DELIMITER, QString::SkipEmptyParts);
-    if(ptrnStrList.isEmpty()) {
-        algoLog.error(tr("Incorrect value: search pattern, pattern is empty"));
-        return new FailTask(tr("Incorrect value: search pattern, pattern is empty"));
-    }
-    QList<Task*> subs;
-    foreach(const QString & p, ptrnStrList) {
-        assert(!p.isEmpty());
-        SmithWatermanSettings config(cfg);
-        config.ptrn = p.toAscii();
-
-        SmithWatermanReportCallbackImpl* rcb = new SmithWatermanReportCallbackImpl( NULL, resultName, QString());
-        config.resultCallback = rcb;
-        config.resultListener = new SmithWatermanResultListener(); //FIXME: where to delete?
-
-        Task * swTask = algo->getTaskInstance(config, tr("smith_waterman_task"));
-        rcb->setParent(swTask); // swTask will delete rcb
-        callbacks.insert(swTask, rcb);
-        patterns.insert(swTask, config.ptrn);
-        subs << swTask;
-    }
-    assert(!subs.isEmpty());
-
-    MultiTask * multiSw = new MultiTask(tr("Smith waterman subtasks"), subs);
-    connect(new TaskSignalMapper(multiSw), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
-    return multiSw;
+    return NULL;
 }
 
 void SWWorker::sl_taskFinished(Task* t) {
@@ -531,15 +537,8 @@ void SWWorker::sl_taskFinished(Task* t) {
     if(output) {
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(annData);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
         algoLog.info(tr("Found %1 matches of pattern '%2'").arg(annData.size()).arg(ptrns.join(PATTERN_DELIMITER)));
     }
-}
-
-bool SWWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 void SWWorker::cleanup() {

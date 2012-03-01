@@ -58,8 +58,6 @@ class ScriptWorker: public BaseWorker {
 public:
     ScriptWorker(Actor *a);
     virtual void init();
-    virtual bool isReady();
-    virtual bool isDone();
     virtual Task* tick();
     virtual void cleanup();
 

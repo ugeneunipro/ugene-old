@@ -312,192 +312,101 @@ void BlastAllWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool BlastAllWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* BlastAllWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.programName=actor->getParameter(BLASTALL_PROGRAM_NAME)->getAttributeValue<QString>(context);
-    cfg.databaseNameAndPath=actor->getParameter(BLASTALL_DATABASE_PATH)->getAttributeValue<QString>(context) +"/"+
-                            actor->getParameter(BLASTALL_DATABASE_NAME)->getAttributeValue<QString>(context);
-//    if(actor->getParameter(GAP_COSTS)->getAttributeValue<QString>() == "default"){
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        cfg.programName=actor->getParameter(BLASTALL_PROGRAM_NAME)->getAttributeValue<QString>(context);
+        cfg.databaseNameAndPath=actor->getParameter(BLASTALL_DATABASE_PATH)->getAttributeValue<QString>(context) +"/"+
+                                actor->getParameter(BLASTALL_DATABASE_NAME)->getAttributeValue<QString>(context);
         cfg.isDefaultCosts=true;
-//    }else{
-//        cfg.gapOpenCost=actor->getParameter(GAP_COSTS)->getAttributeValue<QString>().split(" ")[0].toInt();
-//        cfg.gapExtendCost=actor->getParameter(GAP_COSTS)->getAttributeValue<QString>().split(" ")[1].toInt();
-//    }
-//    if(actor->getParameter(MATRIX)->getAttributeValue<QString>() == "BLOSUM62"){
         cfg.isDefaultMatrix=true;
-//        cfg.matrix=actor->getParameter(MATRIX)->getAttributeValue<QString>();
-//    }else{
-//        cfg.matrix=actor->getParameter(MATRIX)->getAttributeValue<QString>();
-//    }
-//    if(actor->getParameter(MATCH_SCORES)->getAttributeValue<QString>() == "default"){
         cfg.isDefautScores=true;
-//    }else{
-//        cfg.mismatchPenalty=actor->getParameter(MATCH_SCORES)->getAttributeValue<QString>().split(" ")[0].toInt();
-//        cfg.matchReward=actor->getParameter(MATCH_SCORES)->getAttributeValue<QString>().split(" ")[1].toInt();
-//    }
-
-    cfg.wordSize=0;//actor->getParameter(WORD_SIZE)->getAttributeValue<int>();
-
-//    cfg.megablast=actor->getParameter(USE_MEGABLAST)->getAttributeValue<bool>();
-    cfg.isGappedAlignment=actor->getParameter(BLASTALL_GAPPED_ALN)->getAttributeValue<bool>(context);
-    cfg.expectValue=actor->getParameter(BLASTALL_EXPECT_VALUE)->getAttributeValue<double>(context);
-    cfg.groupName=actor->getParameter(BLASTALL_GROUP_NAME)->getAttributeValue<QString>(context);
-    if(cfg.groupName.isEmpty()){
-        cfg.groupName="blast result";
-    }
-
-
-    QString path=actor->getParameter(BLASTALL_EXT_TOOL_PATH)->getAttributeValue<QString>(context);
-    if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-        AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->setPath(path);
-    }
-    path=actor->getParameter(BLASTALL_TMP_DIR_PATH)->getAttributeValue<QString>(context);
-    if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-        AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
-    }
-
-    U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence seq = seqObj->getWholeSequence();
-
-    if( seq.length() < 1) {
-        return new FailTask(tr("Empty sequence supplied to BLAST"));
-    }
-    cfg.querySequence=seq.seq;
-
-    DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
-    cfg.alphabet=alp;
-    //TO DO: Check alphabet
-    if(seq.alphabet->isAmino()) {
-        if(cfg.programName == "blastn" || cfg.programName == "blastx" || cfg.programName == "tblastx") {
-            return new FailTask(tr("Selected BLAST search with nucleotide input sequence"));
+        cfg.wordSize=0;
+        cfg.isGappedAlignment=actor->getParameter(BLASTALL_GAPPED_ALN)->getAttributeValue<bool>(context);
+        cfg.expectValue=actor->getParameter(BLASTALL_EXPECT_VALUE)->getAttributeValue<double>(context);
+        cfg.groupName=actor->getParameter(BLASTALL_GROUP_NAME)->getAttributeValue<QString>(context);
+        if(cfg.groupName.isEmpty()){
+            cfg.groupName="blast result";
         }
-    }
-    else {
-        if(cfg.programName == "blastp" || cfg.programName == "cuda-blastp" || cfg.programName == "tblastn") {
-            return new FailTask(tr("Selected BLAST search with amino acid input sequence"));
+
+
+        QString path=actor->getParameter(BLASTALL_EXT_TOOL_PATH)->getAttributeValue<QString>(context);
+        if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+            AppContext::getExternalToolRegistry()->getByName(BLASTALL_TOOL_NAME)->setPath(path);
         }
-    }
-    cfg.needCreateAnnotations=false;
-    cfg.outputType=actor->getParameter(BLASTALL_OUT_TYPE)->getAttributeValue<int>(context);
-    cfg.outputOriginalFile=actor->getParameter(BLASTALL_ORIGINAL_OUT)->getAttributeValue<QString>(context);
-    if(cfg.outputType != 7 && cfg.outputOriginalFile.isEmpty()){
-        return new FailTask(tr("Not selected BLAST output file"));
-    }
-//    //check on wrong input parameters
-//    //word size
-//    if(cfg.programName == "blastn" && cfg.megablast && cfg.wordSize !=0 && cfg.wordSize < 12){
-//        return new FailTask(tr("Wrong word size selected. Word size must be more or equal 12."));
-//    }else if (cfg.programName == "blastn" && !cfg.megablast && cfg.wordSize !=0 && cfg.wordSize < 7){
-//        return new FailTask(tr("Wrong word size selected. Word size must be more or equal 7."));
-//    }else if (cfg.programName != "blastn" && cfg.wordSize !=0 && (cfg.wordSize !=2 || cfg.wordSize != 3)){
-//        return new FailTask(tr("Wrong word size selected. Word size must be equal 2 or 3."));
-//    }
-//    //costs
-//    //For help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node77.html
-//    //Last values is default
-//    QString costs=actor->getParameter(GAP_COSTS)->getAttributeValue<QString>();
-//    QString scores=actor->getParameter(MATCH_SCORES)->getAttributeValue<QString>();
-//    if(cfg.programName != "blastn"){
-//        if(cfg.matrix == "PAM30" &&
-//                (costs != "9 1" || costs != "5 2" || costs != "6 2" || costs != "7 2" || costs != "8 1" || costs != "10 1")){
-//            //-G 5 -E 2; -G 6 -E 2; -G 7 -E 2; -G 8 -E 1; -G 10 -E 1; -G 9 -E 1
-//            return new FailTask(tr("Wrong gap costs selected. With matrix PAM30 gap costs must be equal \"9 1\" or \"5 2\" or \"6 2\" or \"7 2\" or \"8 1\" or \"10 1\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node77.html"));
-//        }else if(cfg.matrix == "PAM70" &&
-//                 (costs != "10 1" || costs != "6 2" || costs != "7 2" || costs != "8 2" || costs != "9 2" || costs != "11 1")){
-//            //-G 6 -E 2; -G 7 -E 2; -G 8 -E 2; -G 9 -E 2; -G 11 -E 1; -G 10 -E 1
-//            return new FailTask(tr("Wrong gap costs selected. With matrix PAM70 gap costs must be equal \"10 1\" or \"6 2\" or \"7 2\" or \"8 2\" or \"9 2\" or \"11 1\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node77.html"));
-//        }else if(cfg.matrix == "BLOSUM45" &&
-//                 (costs != "15 2" || costs != "10 3" || costs != "11 3" || costs != "12 3" || costs != "12 2" || costs != "13 2" || costs != "14 2" ||
-//                  costs != "16 2" || costs != "15 1" || costs != "16 1" || costs != "17 1" || costs != "18 1" || costs != "19 1")){
-//            //-G 10 -E 3; -G 11 -E 3; -G 12 -E 3; -G 12 -E 2; -G 13 -E 2, -G 14 -E 2;
-//            //-G 16 -E 2; -G 15 -E 1; -G 16 -E 1; -G 17 -E 1; -G 18 -E 1; -G 19 -E 1; -G 15 -E 2
-//            return new FailTask(tr("Wrong gap costs selected. With matrix BLOSUM45 gap costs must be equal \"15 2\" or \"10 3\" or \"11 3\" or \"12 3\" or \"12 2\" or \"13 2\" or \"14 2\""
-//                                   "or \"16 2\" or \"15 1\" or \"16 1\" or \"17 1\" or \"18 1\" or \"19 1\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node77.html"));
-//        }else if(cfg.matrix == "BLOSUM62" &&
-//                 (costs != "11 1" || costs != "7 2" || costs != "8 2" || costs != "9 2" || costs != "10 1" || costs != "12 1")){
-//            //-G 7 -E 2; -G 8 -E 2; -G 9 -E 2; -G 10 -E 1; -G 12 -E 1; -G 11 -E 1
-//            return new FailTask(tr("Wrong gap costs selected. With matrix BLOSUM62 gap costs must be equal \"11 1\" or \"7 2\" or \"8 2\" or \"8 2\" or \"10 1\" or \"12 1\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node77.html"));
-//        }else if(cfg.matrix == "BLOSUM80" &&
-//                 (costs != "10 1" || costs != "6 2" || costs != "7 2" || costs != "8 2" || costs != "9 1" || costs != "11 1")){
-//            //-G 6 -E 2; -G 7 -E 2; -G 8 -E 2; -G 9 -E 1; -G 11 -E 1; -G 10 -E 1
-//            return new FailTask(tr("Wrong gap costs selected. With matrix BLOSUM80 gap costs must be equal \"10 1\" or \"6 2\" or \"7 2\" or \"8 2\" or \"9 1\" or \"11 1\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node77.html"));
-//        }
-//    }else{
-//        //For help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node76.html
-//        //Last values is default
-//        if(((scores == "1 -4") || (scores == "1 -3")) &&
-//                (costs != "2 2" || costs != "1 2" || costs != "0 2" || costs != "2 1" || costs != "1 1")){
-//            //-G 1 -E 2; -G 0 -E 2;-G 2 -E 1; -G 1 -E 1; -G 2 -E 2
-//            return new FailTask(tr("Wrong gap costs selected. With scores \"%1\" gap costs must be equal \"2 2\" or \"1 2\" or \"0 2\" or \"2 1\" or \"1 1\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node76.html").arg(scores));
-//        }else if(scores == "1 -2" &&
-//                 (costs != "2 2" || costs != "1 2" || costs != "0 2" || costs != "3 1" || costs != "2 1" || costs != "1 1")){
-//            //-G 1 -E 2; -G 0 -E 2; -G 3 -E 1; -G 2 -E 1; -G 1 -E 1; -G 2 -E 2
-//            return new FailTask(tr("Wrong gap costs selected. With scores \"1 -2\" gap costs must be equal \"2 2\" or \"1 2\" or \"0 2\" or \"3 1\" or \"2 1\" or \"1 1\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node76.html"));
-//        }else if(scores == "1 -1" &&
-//                 (costs != "4 2" || costs != "3 2" || costs != "2 2" || costs != "1 2" || costs != "0 2" || costs != "4 1" || costs != "3 1" || costs != "2 1")){
-//            //-G 3 -E 2; -G 2 -E 2; -G 1 -E 2; -G 0 -E 2; -G 4 -E 1; -G 3 -E 1; -G 2 -E 1; -G 4 -E 2  :Not supported megablast
-//            return new FailTask(tr("Wrong gap costs selected. With scores \"1 -1\" gap costs must be equal \"4 2\" or \"3 2\" or \"2 2\" or \"1 2\" or \"0 2\" or \"4 1\" or \"3 1\" or \"2 1\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node76.html"));
-//        }else if(((scores == "2 -7") || (scores == "2 -5")) &&
-//                 (costs != "4 4" || costs != "2 4" || costs != "0 4" || costs != "4 2" || costs != "2 2")){
-//            //-G 2 -E 4; -G 0 -E 4; -G 4 -E 2; -G 2 -E 2; -G 4 -E 4
-//            return new FailTask(tr("Wrong gap costs selected. With scores \"%1\" gap costs must be equal \"4 4\" or \"2 4\" or \"0 4\" or \"4 2\" or \"2 2\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node76.html").arg(scores));
-//        }else if(scores == "2 -3" &&
-//                 (costs != "6 4" || costs != "4 4" || costs != "2 4" || costs != "0 4" || costs != "3 3" || costs != "6 2" || costs != "5 2" || costs != "4 2" || costs != "2 2")){
-//            //-G 4 -E 4; -G 2 -E 4; -G 0 -E 4; -G 3 -E 3; -G 6 -E 2; -G 5 -E 2; -G 4 -E 2; -G 2 -E 2, -G 6 -E 4
-//            return new FailTask(tr("Wrong gap costs selected. With scores \"2 -3\" gap costs must be equal \"6 4\" or \"4 4\" or \"2 4\" or \"0 4\" or \"3 3\" or \"6 2\" or \"5 2\" or \"4 2\"  or \"2 2\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node76.html"));
-//        }else if((scores == "4 -5") || (scores == "5 -4") &&
-//                 (costs != "12 8" || costs != "6 5" || costs != "5 5" || costs != "4 5" || costs != "3 5")){
-//            //-G 6 -E 5; -G 5 -E 5; -G 4 -E 5; -G 3 -E 5; -G 12 -E 8
-//            return new FailTask(tr("Wrong gap costs selected. With scores \"%1\" gap costs must be equal \"12 8\" or \"6 5\" or \"5 5\" or \"4 5\" or \"3 5\". "
-//                                   "\nFor help see http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node76.html").arg(scores));
-//        }
-//    }
+        path=actor->getParameter(BLASTALL_TMP_DIR_PATH)->getAttributeValue<QString>(context);
+        if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+            AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
+        }
 
-    if(cfg.programName == "blastn"){
-        cfg.megablast = true;
-        cfg.wordSize = 28;
-        cfg.windowSize = 0;
-    }else{
-        cfg.megablast = false;
-        cfg.wordSize = 3;
-        cfg.windowSize  = 40;
-    }
-    //set X dropoff values
-    if(cfg.programName == "blastn"){
-        cfg.xDropoffFGA = 100;
-        cfg.xDropoffGA = 20;
-        cfg.xDropoffUnGA = 10;
-    }else if (cfg.programName == "tblastx"){
-        cfg.xDropoffFGA = 0;
-        cfg.xDropoffGA = 0;
-        cfg.xDropoffUnGA = 7;
-    }else{
-        cfg.xDropoffFGA = 25;
-        cfg.xDropoffGA = 15;
-        cfg.xDropoffUnGA = 7;
-    }
+        U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
 
-    Task* t = new BlastAllSupportTask(cfg);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+        if( seq.length() < 1) {
+            return new FailTask(tr("Empty sequence supplied to BLAST"));
+        }
+        cfg.querySequence=seq.seq;
+
+        DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
+        cfg.alphabet=alp;
+        //TO DO: Check alphabet
+        if(seq.alphabet->isAmino()) {
+            if(cfg.programName == "blastn" || cfg.programName == "blastx" || cfg.programName == "tblastx") {
+                return new FailTask(tr("Selected BLAST search with nucleotide input sequence"));
+            }
+        }
+        else {
+            if(cfg.programName == "blastp" || cfg.programName == "cuda-blastp" || cfg.programName == "tblastn") {
+                return new FailTask(tr("Selected BLAST search with amino acid input sequence"));
+            }
+        }
+        cfg.needCreateAnnotations=false;
+        cfg.outputType=actor->getParameter(BLASTALL_OUT_TYPE)->getAttributeValue<int>(context);
+        cfg.outputOriginalFile=actor->getParameter(BLASTALL_ORIGINAL_OUT)->getAttributeValue<QString>(context);
+        if(cfg.outputType != 7 && cfg.outputOriginalFile.isEmpty()){
+            return new FailTask(tr("Not selected BLAST output file"));
+        }
+
+        if(cfg.programName == "blastn"){
+            cfg.megablast = true;
+            cfg.wordSize = 28;
+            cfg.windowSize = 0;
+        }else{
+            cfg.megablast = false;
+            cfg.wordSize = 3;
+            cfg.windowSize  = 40;
+        }
+        //set X dropoff values
+        if(cfg.programName == "blastn"){
+            cfg.xDropoffFGA = 100;
+            cfg.xDropoffGA = 20;
+            cfg.xDropoffUnGA = 10;
+        }else if (cfg.programName == "tblastx"){
+            cfg.xDropoffFGA = 0;
+            cfg.xDropoffGA = 0;
+            cfg.xDropoffUnGA = 7;
+        }else{
+            cfg.xDropoffFGA = 25;
+            cfg.xDropoffGA = 15;
+            cfg.xDropoffUnGA = 7;
+        }
+
+        Task* t = new BlastAllSupportTask(cfg);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+    return NULL;
 }
 
 void BlastAllWorker::sl_taskFinished() {
@@ -514,14 +423,7 @@ void BlastAllWorker::sl_taskFinished() {
         }
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
     }
-}
-
-bool BlastAllWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 void BlastAllWorker::cleanup() {

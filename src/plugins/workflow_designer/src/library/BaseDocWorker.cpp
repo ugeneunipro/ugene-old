@@ -51,7 +51,7 @@ namespace LocalWorkflow {
  * BaseDocReader
  **********************************/
 BaseDocReader::BaseDocReader(Actor* a, const QString& tid, const DocumentFormatId& fid) : BaseWorker(a), ch(NULL), fid(fid), 
-done(false), attachDoc2Proj(false) {
+attachDoc2Proj(false) {
     mtype = WorkflowEnv::getDataTypeRegistry()->getById(tid);
 }
 
@@ -83,10 +83,6 @@ void BaseDocReader::init() {
     ch = ports.values().first();
 }
 
-bool BaseDocReader::isReady() {
-    return !isDone();
-}
-
 Task* BaseDocReader::tick() {
     if (!docs.isEmpty()) {
         Document* doc = docs.begin().key();
@@ -104,14 +100,14 @@ Task* BaseDocReader::tick() {
         }
     } 
     if (docs.isEmpty()) {
-        done = true;
+        setDone();
         ch->setEnded();
     }
     return NULL;
 }
 
 bool BaseDocReader::isDone() {
-    return done && cache.isEmpty();
+    return BaseWorker::isDone() && cache.isEmpty();
 }
 
 void BaseDocReader::cleanup() {
@@ -133,18 +129,14 @@ void BaseDocReader::cleanup() {
 * BaseDocWriter
 **********************************/
 BaseDocWriter::BaseDocWriter(Actor* a, const DocumentFormatId& fid) 
-: BaseWorker(a), ch(NULL), format(NULL), done(false), append(false), fileMode(SaveDoc_Roll) 
+: BaseWorker(a), ch(NULL), format(NULL), append(false), fileMode(SaveDoc_Roll) 
 {
     format = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
 }
 
 BaseDocWriter::BaseDocWriter( Actor * a ) 
-: BaseWorker(a), ch(NULL), format(NULL), done(false), append(false), fileMode(SaveDoc_Roll) 
+: BaseWorker(a), ch(NULL), format(NULL), append(false), fileMode(SaveDoc_Roll) 
 {
-}
-
-bool BaseDocWriter::isDone() {
-    return done;
 }
 
 void BaseDocWriter::cleanup() {
@@ -156,12 +148,6 @@ void BaseDocWriter::cleanup() {
 void BaseDocWriter::init() {
     assert(ports.size() == 1);
     ch = ports.values().first();
-}
-
-bool BaseDocWriter::isReady() {
-    int hasMsg = ch->hasMessage();
-    bool ended = ch->isEnded();
-    return hasMsg || (ended && !done);
 }
 
 static bool openIOAdapter(IOAdapter *io, const QString &url, SaveDocFlags flags, const QSet<QString> &excludeList) {
@@ -183,11 +169,6 @@ static bool openIOAdapter(IOAdapter *io, const QString &url, SaveDocFlags flags,
 Task* BaseDocWriter::tick() {
     while(ch->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(ch);
-        QVariantMap data = inputMessage.getData().toMap();
-        if (data.isEmpty()) {
-            continue;
-        }
-
         { // get parameters
             Attribute * formatAttr = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
             if( formatAttr != NULL ) { // user sets format
@@ -206,6 +187,11 @@ Task* BaseDocWriter::tick() {
             if(a != NULL) {
                 append = a->getAttributeValue<bool>(context);
             }
+        }
+
+        QVariantMap data = inputMessage.getData().toMap();
+        if (data.isEmpty()) {
+            continue;
         }
 
         QString anUrl = url;
@@ -257,10 +243,11 @@ Task* BaseDocWriter::tick() {
         }
     }
     
-    done = ch->isEnded();
+    bool done = ch->isEnded();
     if (append && !done) {
         return NULL;
     }
+    setDone();
     return processDocs();
 }
 

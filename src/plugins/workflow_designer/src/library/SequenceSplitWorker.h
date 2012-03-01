@@ -48,9 +48,7 @@ public:
         seqPort(NULL), outPort(NULL), useAcceptedOrFiltered(false) {};
 
     virtual void init();
-    virtual bool isReady();
     virtual Task * tick();
-    virtual bool isDone();
     virtual void cleanup();
 
 protected:

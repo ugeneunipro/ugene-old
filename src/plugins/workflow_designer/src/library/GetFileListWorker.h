@@ -44,7 +44,6 @@ public:
     GetFileListWorker(Actor *p);
 
     virtual void init();
-    virtual bool isReady();
     virtual Task *tick();
     virtual bool isDone();
     virtual void cleanup() {}
@@ -54,7 +53,6 @@ private slots:
 
 private:
     IntegralBus *outChannel;
-    bool done;
     QList<Message> cache;
     DataTypePtr mtype;
 

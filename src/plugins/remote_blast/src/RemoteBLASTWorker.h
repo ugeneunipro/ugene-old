@@ -47,14 +47,12 @@ class RemoteBLASTWorker: public BaseWorker {
 public:
     RemoteBLASTWorker(Actor *a) : BaseWorker(a), input(NULL), output(NULL) {}
     virtual void init();
-    virtual bool isReady();
-    virtual bool isDone();
     virtual Task* tick();
     virtual void cleanup() {};
 private slots:
     void sl_taskFinished();
 protected:
-    CommunicationChannel *input, *output;
+    IntegralBus *input, *output;
     //QString resultName,transId;
     RemoteBLASTTaskSettings cfg;
 };

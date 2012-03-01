@@ -151,10 +151,6 @@ void QDWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool QDWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* QDWorker::tick() {
     QString schemaUri = actor->getParameter(SCHEMA_ATTR)->getAttributePureValue().toString();
     QDDocument doc;
@@ -194,36 +190,42 @@ Task* QDWorker::tick() {
         return NULL;
     }
 
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    QVariantMap map = inputMessage.getData().toMap();
-    U2DataId seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        QVariantMap map = inputMessage.getData().toMap();
+        U2DataId seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
+
+        QDRunSettings settings;
+        settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
+        settings.scheme = scheme;
+        settings.dnaSequence = seq;
+        settings.region = U2Region(0, seq.length());
+        scheme->setSequence(settings.dnaSequence);
+        bool outputType = actor->getParameter(OUTPUT_ATTR)->getAttributeValueWithoutScript<bool>();
+        if (outputType) {
+            settings.outputType = QDRunSettings::Single;
+            settings.offset = actor->getParameter(OFFSET_ATTR)->getAttributeValueWithoutScript<int>();
+        } else {
+            settings.outputType = QDRunSettings::Group;
+        }
+
+        QDScheduler* scheduler = new QDScheduler(settings);
+        connect(new TaskSignalMapper(scheduler), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+        return scheduler;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-    DNASequence seq = seqObj->getWholeSequence();
-
-    QDRunSettings settings;
-    settings.annotationsObj = new AnnotationTableObject(GObjectTypes::getTypeInfo(GObjectTypes::ANNOTATION_TABLE).name);
-    settings.scheme = scheme;
-    settings.dnaSequence = seq;
-    settings.region = U2Region(0, seq.length());
-    scheme->setSequence(settings.dnaSequence);
-    bool outputType = actor->getParameter(OUTPUT_ATTR)->getAttributeValueWithoutScript<bool>();
-    if (outputType) {
-        settings.outputType = QDRunSettings::Single;
-        settings.offset = actor->getParameter(OFFSET_ATTR)->getAttributeValueWithoutScript<int>();
-    } else {
-        settings.outputType = QDRunSettings::Group;
-    }
-
-    QDScheduler* scheduler = new QDScheduler(settings);
-    connect(new TaskSignalMapper(scheduler), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
-    return scheduler;
-}
-
-bool QDWorker::isDone() {
-    return !input || input->isEnded();
+    return NULL;
 }
 
 void QDWorker::cleanup() {
@@ -247,9 +249,6 @@ void QDWorker::sl_taskFinished(Task* t) {
         annObjToAnnDataList(ao, res);
         QVariant v = qVariantFromValue< QList<SharedAnnotationData> >(res);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
     }
 }
 

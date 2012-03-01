@@ -42,20 +42,17 @@ protected:
 class WriteAnnotationsWorker : public BaseWorker {
     Q_OBJECT
 public:
-    WriteAnnotationsWorker(Actor * p) : BaseWorker(p), annotationsPort(NULL), done(false) {}
+    WriteAnnotationsWorker(Actor * p) : BaseWorker(p), annotationsPort(NULL) {}
     ~WriteAnnotationsWorker();
     
     virtual void init();
-    virtual bool isReady();
     virtual Task * tick();
-    virtual bool isDone();
     virtual void cleanup();
     
 private:
     IntegralBus * annotationsPort;
     QList<AnnotationTableObject*> createdAnnotationObjects;
     QMap<QString, AnnotationTableObject*> annotationsByUrl;
-    bool done;
     
 }; // WriteAnnotationsWorker
 

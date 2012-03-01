@@ -50,7 +50,7 @@ static const QString EXCLUDE_NAME_FILTER("exclude-name-filter");
 /* Worker */
 /************************************************************************/
 GetFileListWorker::GetFileListWorker(Actor *p)
-: BaseWorker(p), outChannel(NULL), done(false)
+: BaseWorker(p), outChannel(NULL)
 {
     absolute = false;
     recursive = false;
@@ -67,10 +67,6 @@ void GetFileListWorker::init() {
     excludeFilter = actor->getParameter(EXCLUDE_NAME_FILTER)->getAttributeValue<QString>(context);
 }
 
-bool GetFileListWorker::isReady() {
-    return !isDone();
-}
-
 Task *GetFileListWorker::tick() {
     if (cache.isEmpty() && !dirUrls.isEmpty()) {
         Task *t = new ScanDirectoryTask(dirUrls.takeFirst(), includeFilter, excludeFilter, absolute, recursive);
@@ -81,14 +77,14 @@ Task *GetFileListWorker::tick() {
         outChannel->put(cache.takeFirst());
     }
     if (dirUrls.isEmpty()) {
-        done = true;
+        setDone();
         outChannel->setEnded();
     }
     return NULL;
 }
 
 bool GetFileListWorker::isDone() {
-    return done && cache.isEmpty();
+    return BaseWorker::isDone() && cache.isEmpty();
 }
 
 void GetFileListWorker::sl_taskFinished() {

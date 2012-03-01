@@ -40,12 +40,10 @@ protected:
 class GenerateDNAWorker : public BaseWorker {
     Q_OBJECT
 public:
-    GenerateDNAWorker(Actor* a) : BaseWorker(a), ch(NULL), done(false) {}
+    GenerateDNAWorker(Actor* a) : BaseWorker(a), ch(NULL) {}
 
     virtual void init();
-    virtual bool isReady();
     virtual Task* tick();
-    virtual bool isDone();
     virtual void cleanup() {}
 
 private slots:
@@ -53,7 +51,6 @@ private slots:
 
 private:
     CommunicationChannel* ch;
-    bool done;
 };
 
 class GenerateDNAWorkerFactory : public DomainFactory {

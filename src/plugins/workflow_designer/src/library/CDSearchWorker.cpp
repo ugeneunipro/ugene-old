@@ -146,53 +146,55 @@ void CDSearchWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool CDSearchWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
-bool CDSearchWorker::isDone() {
-    return !input || input->isEnded();
-}
-
 Task* CDSearchWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence seq = seqObj->getWholeSequence();
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
 
-    settings.query = seq.seq;
-    settings.alp = seq.alphabet;
-    if (!settings.alp->isAmino()) {
-        QString err = "Required amino acid input sequence";
-        return new FailTask(err);
-    }
-    settings.ev = actor->getParameter(EVALUE_ATTR)->getAttributeValue<float>(context);
-
-    settings.dbName = actor->getParameter(DATABASE_ATTR)->getAttributeValue<QString>(context);
-
-    bool local = actor->getParameter(LOCAL_ATTR)->getAttributePureValue().toBool();
-    CDSearchFactory* factory = NULL;
-    if (local) {
-        factory = AppContext::getCDSFactoryRegistry()->getFactory(CDSearchFactoryRegistry::LocalSearch);
-        if (!factory) {
-            QString err = tr("'External tools' plugin has to be loaded.");
+        settings.query = seq.seq;
+        settings.alp = seq.alphabet;
+        if (!settings.alp->isAmino()) {
+            QString err = "Required amino acid input sequence";
             return new FailTask(err);
         }
-        settings.localDbFolder = actor->getParameter(DB_PATH_ATTR)->getAttributeValue<QString>(context);
-    } else { // remote
-        factory = AppContext::getCDSFactoryRegistry()->getFactory(CDSearchFactoryRegistry::RemoteSearch);
-        if (!factory) {
-            QString err = tr("'Remote blast' plugin has to be loaded.");
-            return new FailTask(err);
+        settings.ev = actor->getParameter(EVALUE_ATTR)->getAttributeValue<float>(context);
+
+        settings.dbName = actor->getParameter(DATABASE_ATTR)->getAttributeValue<QString>(context);
+
+        bool local = actor->getParameter(LOCAL_ATTR)->getAttributePureValue().toBool();
+        CDSearchFactory* factory = NULL;
+        if (local) {
+            factory = AppContext::getCDSFactoryRegistry()->getFactory(CDSearchFactoryRegistry::LocalSearch);
+            if (!factory) {
+                QString err = tr("'External tools' plugin has to be loaded.");
+                return new FailTask(err);
+            }
+            settings.localDbFolder = actor->getParameter(DB_PATH_ATTR)->getAttributeValue<QString>(context);
+        } else { // remote
+            factory = AppContext::getCDSFactoryRegistry()->getFactory(CDSearchFactoryRegistry::RemoteSearch);
+            if (!factory) {
+                QString err = tr("'Remote blast' plugin has to be loaded.");
+                return new FailTask(err);
+            }
         }
+        cds = factory->createCDSearch(settings);
+        Task* t = cds->getTask();
+        connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-    cds = factory->createCDSearch(settings);
-    Task* t = cds->getTask();
-    connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
-    return t;
+    return NULL;
 }
 
 void CDSearchWorker::sl_taskFinished(Task*) {
@@ -206,9 +208,6 @@ void CDSearchWorker::sl_taskFinished(Task*) {
         }
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
     }
     delete cds; cds = NULL;
 }

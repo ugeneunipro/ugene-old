@@ -165,54 +165,63 @@ void PWMatrixSearchWorker::init() {
 }
 
 bool PWMatrixSearchWorker::isReady() {
-    return ((!models.isEmpty() && modelPort->isEnded()) && dataPort->hasMessage()) || modelPort->hasMessage();
+    if (isDone()) {
+        return false;
+    }
+    bool dataEnded = dataPort->isEnded();
+    bool modelEnded = modelPort->isEnded();
+    int dataHasMes = dataPort->hasMessage();
+    int modelHasMes = modelPort->hasMessage();
+    return modelHasMes || (modelEnded && (dataHasMes || dataEnded));
 }
 
 Task* PWMatrixSearchWorker::tick() {
     while (modelPort->hasMessage()) {
         models << modelPort->get().getData().toMap().value(PWMatrixWorkerFactory::WMATRIX_SLOT.getId()).value<PWMatrix>();
     }
-    if (models.isEmpty() || !modelPort->isEnded() || !dataPort->hasMessage()) {
+    if (!modelPort->isEnded()) {
         return NULL;
     }
-    Message inputMessage = getMessageAndSetupScriptValues(dataPort);
-    QVariantMap map = inputMessage.getData().toMap();
-    U2DataId seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence seq = seqObj->getWholeSequence();
 
-    if (!seq.isNull() && seq.alphabet->getType() == DNAAlphabet_NUCL) {
-        WeightMatrixSearchCfg config(cfg);
-        config.complOnly = (strand < 0);
-        if (strand <= 0) {
-            QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-                lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-            if (!compTTs.isEmpty()) {
-                config.complTT = compTTs.first();
+    if (dataPort->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(dataPort);
+        if (inputMessage.isEmpty() || models.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        QVariantMap map = inputMessage.getData().toMap();
+        U2DataId seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
+
+        if (!seq.isNull() && seq.alphabet->getType() == DNAAlphabet_NUCL) {
+            WeightMatrixSearchCfg config(cfg);
+            config.complOnly = (strand < 0);
+            if (strand <= 0) {
+                QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
+                    lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
+                if (!compTTs.isEmpty()) {
+                    config.complTT = compTTs.first();
+                }
             }
+            QList<Task*> subtasks;
+            foreach(PWMatrix model, models) {
+                subtasks << new WeightMatrixSingleSearchTask(model, seq.seq, config, 0);
+            }
+            Task* t = new MultiTask(tr("Search TFBS in %1").arg(seq.getName()), subtasks);
+            connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+            return t;
         }
-        QList<Task*> subtasks;
-        foreach(PWMatrix model, models) {
-            subtasks << new WeightMatrixSingleSearchTask(model, seq.seq, config, 0);
-        }
-        Task* t = new MultiTask(tr("Search TFBS in %1").arg(seq.getName()), subtasks);
-        connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
-        return t;
-    }
-    QString err = tr("Bad sequence supplied to Weight Matrix Search: %1").arg(seq.getName());
-    //if (failFast) {
+        QString err = tr("Bad sequence supplied to Weight Matrix Search: %1").arg(seq.getName());
         return new FailTask(err);
-    /*} else {
-        algoLog.error(err);
-        output->put(Message(BioDataTypes::ANNOTATION_TABLE_TYPE(), QVariant()));
-        if (dataPort->isEnded()) {
-            output->setEnded();
-        }
-        return NULL;
-    }*/
+    } if (dataPort->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+    return NULL;
 }
 
 void PWMatrixSearchWorker::sl_taskFinished(Task* t) {
@@ -223,14 +232,7 @@ void PWMatrixSearchWorker::sl_taskFinished(Task* t) {
     }
     QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
     output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-    if (dataPort->isEnded()) {
-        output->setEnded();
-    }
     algoLog.info(tr("Found %1 TFBS").arg(res.size())); //TODO set task description for report
-}
-
-bool PWMatrixSearchWorker::isDone() {
-    return dataPort->isEnded();
 }
 
 } //namespace LocalWorkflow

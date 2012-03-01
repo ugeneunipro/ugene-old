@@ -207,26 +207,29 @@ void SiteconReader::init() {
 }
 
 Task* SiteconReader::tick() {
-    Task* t = new SiteconReadTask(urls.takeFirst());
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    tasks.append(t);
-    return t;
+    if (urls.isEmpty() && tasks.isEmpty()) {
+        setDone();
+        output->setEnded();
+    } else {
+        Task* t = new SiteconReadTask(urls.takeFirst());
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        tasks.append(t);
+        return t;
+    }
+    return NULL;
 }
 
 void SiteconReader::sl_taskFinished() {
     SiteconReadTask* t = qobject_cast<SiteconReadTask*>(sender());
     if (t->getState() != Task::State_Finished) return;
-    tasks.removeAll(t);
     if (output) {
         if (!t->hasError()) {
             QVariant v = qVariantFromValue<SiteconModel>(t->getResult());
             output->put(Message(mtype, v));
         }
-        if (urls.isEmpty() && tasks.isEmpty()) {
-            output->setEnded();
-        }
         algoLog.info(tr("Loaded SITECON model from %1").arg(t->getURL()));
     }
+    tasks.removeAll(t);
 }
 
 void SiteconWriter::init() {
@@ -234,34 +237,42 @@ void SiteconWriter::init() {
 }
 
 Task* SiteconWriter::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
-    fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
-    QVariantMap data = inputMessage.getData().toMap();
-    SiteconModel model = data.value(SiteconWorkerFactory::SITECON_SLOT.getId()).value<SiteconModel>();
-    
-    QString anUrl = url;
-    if (anUrl.isEmpty()) {
-        anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
-    }
-    if (anUrl.isEmpty()) {
-        QString err = tr("Unspecified URL for writing Sitecon");
-        //if (failFast) {
-            return new FailTask(err);
-        /*} else {
-            algoLog.error(err);
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
             return NULL;
-        }*/
+        }
+        url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+        fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
+        QVariantMap data = inputMessage.getData().toMap();
+        SiteconModel model = data.value(SiteconWorkerFactory::SITECON_SLOT.getId()).value<SiteconModel>();
+        
+        QString anUrl = url;
+        if (anUrl.isEmpty()) {
+            anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
+        }
+        if (anUrl.isEmpty()) {
+            QString err = tr("Unspecified URL for writing Sitecon");
+            //if (failFast) {
+                return new FailTask(err);
+            /*} else {
+                algoLog.error(err);
+                return NULL;
+            }*/
+        }
+        assert(!anUrl.isEmpty());
+        int count = ++counter[anUrl];
+        if (count != 1) {
+            anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList("sitecon"));
+        } else {
+            anUrl = GUrlUtils::ensureFileExt( anUrl, QStringList("sitecon")).getURLString();
+        }
+        ioLog.info(tr("Writing SITECON model to %1").arg(anUrl));
+        return new SiteconWriteTask(anUrl, model, fileMode);
+    } else if (input->isEnded()) {
+        setDone();
     }
-    assert(!anUrl.isEmpty());
-    int count = ++counter[anUrl];
-    if (count != 1) {
-        anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList("sitecon"));
-    } else {
-        anUrl = GUrlUtils::ensureFileExt( anUrl, QStringList("sitecon")).getURLString();
-    }
-    ioLog.info(tr("Writing SITECON model to %1").arg(anUrl));
-    return new SiteconWriteTask(anUrl, model, fileMode);
+    return NULL;
 }
 
 } //namespace LocalWorkflow

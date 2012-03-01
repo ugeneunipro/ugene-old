@@ -35,7 +35,7 @@ private slots:
     void sl_taskFinished();
     
 protected:
-    CommunicationChannel *input, *output;
+    IntegralBus *input, *output;
     UHMMBuildSettings cfg;
     UHMMCalibrateSettings calSettings;
     bool calibrate;

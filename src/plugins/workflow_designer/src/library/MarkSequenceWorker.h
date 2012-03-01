@@ -47,16 +47,13 @@ public:
     MarkSequenceWorker(Actor *p);
 
     virtual void init();
-    virtual bool isReady();
     virtual Task *tick();
-    virtual bool isDone();
-    virtual void cleanup();
+    virtual void cleanup() {}
 
 private:
-    CommunicationChannel *inChannel;
-    CommunicationChannel *outChannel;
+    IntegralBus *inChannel;
+    IntegralBus *outChannel;
     DataTypePtr mtype;
-    bool done;
 
 }; // MarkSequenceWorker
 

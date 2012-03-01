@@ -199,16 +199,11 @@ QString GenerateDNAPrompter::composeRichDoc() {
  **************************/
 
 void GenerateDNAWorker::init() {
-    done = false;
     ch = ports.value(BasePorts::OUT_SEQ_PORT_ID());
 }
 
-bool GenerateDNAWorker::isReady() {
-    return !isDone();
-}
-
 Task* GenerateDNAWorker::tick() {
-    done = true;
+    setDone();
     DNASequenceGeneratorConfig cfg;
     cfg.sequenceName = "Sequence ";
 
@@ -297,10 +292,6 @@ Task* GenerateDNAWorker::tick() {
     Task* t = new DNASequenceGeneratorTask(cfg);
     connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
     return t;
-}
-
-bool GenerateDNAWorker::isDone() {
-    return done;
 }
 
 void GenerateDNAWorker::sl_taskFinished(Task* t) {

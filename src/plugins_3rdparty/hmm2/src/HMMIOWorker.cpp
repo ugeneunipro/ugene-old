@@ -214,9 +214,15 @@ void HMMReader::init() {
 }
 
 Task* HMMReader::tick() {
-    Task* t = new HMMReadTask(urls.takeFirst());
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+    if (urls.isEmpty()) {
+        setDone();
+        output->setEnded();
+    } else {
+        Task* t = new HMMReadTask(urls.takeFirst());
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    }
+    return NULL;
 }
 
 void HMMReader::sl_taskFinished() {
@@ -227,9 +233,6 @@ void HMMReader::sl_taskFinished() {
             QVariant v = qVariantFromValue<plan7_s*>(t->getHMM());
             output->put(Message(HMMLib::HMM_PROFILE_TYPE(), v));
         }
-        if (urls.isEmpty()) {
-            output->setEnded();
-        }
         ioLog.info(tr("Loaded HMM profile from %1").arg(t->getURL()));
     }
 }
@@ -239,34 +242,42 @@ void HMMWriter::init() {
 }
 
 Task* HMMWriter::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
-    fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
-    QVariantMap data = inputMessage.getData().toMap();
-    
-    plan7_s* hmm = data.value(HMMLib::HMM2_SLOT.getId()).value<plan7_s*>();
-    QString anUrl = url;
-    if (anUrl.isEmpty()) {
-        anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
-    }
-    if (anUrl.isEmpty() || hmm == NULL) {
-        QString err = (hmm == NULL) ? tr("Empty HMM passed for writing to %1").arg(anUrl) : tr("Unspecified URL for writing HMM");
-        //if (failFast) {
-            return new FailTask(err);
-        /*} else {
-            ioLog.error(err);
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
             return NULL;
-        }*/
+        }
+        url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+        fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
+        QVariantMap data = inputMessage.getData().toMap();
+        
+        plan7_s* hmm = data.value(HMMLib::HMM2_SLOT.getId()).value<plan7_s*>();
+        QString anUrl = url;
+        if (anUrl.isEmpty()) {
+            anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
+        }
+        if (anUrl.isEmpty() || hmm == NULL) {
+            QString err = (hmm == NULL) ? tr("Empty HMM passed for writing to %1").arg(anUrl) : tr("Unspecified URL for writing HMM");
+            //if (failFast) {
+                return new FailTask(err);
+            /*} else {
+                ioLog.error(err);
+                return NULL;
+            }*/
+        }
+        assert(!anUrl.isEmpty());
+        int count = ++counter[anUrl];
+        if (count != 1) {
+            anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList(HMMIO::HMM_EXT));
+        } else {
+            anUrl = GUrlUtils::ensureFileExt( anUrl, QStringList(HMMIO::HMM_EXT)).getURLString();
+        }
+        ioLog.info(tr("Writing HMM profile to %1").arg(anUrl));
+        return new HMMWriteTask(anUrl, hmm, fileMode);
+    } else if (input->isEnded()) {
+        setDone();
     }
-    assert(!anUrl.isEmpty());
-    int count = ++counter[anUrl];
-    if (count != 1) {
-        anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList(HMMIO::HMM_EXT));
-    } else {
-        anUrl = GUrlUtils::ensureFileExt( anUrl, QStringList(HMMIO::HMM_EXT)).getURLString();
-    }
-    ioLog.info(tr("Writing HMM profile to %1").arg(anUrl));
-    return new HMMWriteTask(anUrl, hmm, fileMode);
+    return NULL;
 }
 
 

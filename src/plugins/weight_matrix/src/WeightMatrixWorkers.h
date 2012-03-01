@@ -62,16 +62,14 @@ public:
     static void registerProto();
 
     PWMatrixBuildWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {}
-    virtual void init() ;
-    virtual bool isReady();
-    virtual Task* tick() ;
-    virtual bool isDone() ;
+    virtual void init();
+    virtual Task* tick();
     virtual void cleanup() {}
 private slots:
     void sl_taskFinished();
 
 protected:
-    CommunicationChannel    *input, *output;
+    IntegralBus    *input, *output;
     PMBuildSettings         cfg;
     DataTypePtr             mtype;
 }; 
@@ -83,16 +81,14 @@ public:
     static void registerProto();
 
     PFMatrixBuildWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {}
-    virtual void init() ;
-    virtual bool isReady();
-    virtual Task* tick() ;
-    virtual bool isDone() ;
+    virtual void init();
+    virtual Task* tick();
     virtual void cleanup() {}
 private slots:
     void sl_taskFinished();
 
 protected:
-    CommunicationChannel    *input, *output;
+    IntegralBus    *input, *output;
     PMBuildSettings         cfg;
     DataTypePtr             mtype;
 };
@@ -112,16 +108,14 @@ public:
     static void registerProto();
 
     PFMatrixConvertWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {}
-    virtual void init() ;
-    virtual bool isReady();
-    virtual Task* tick() ;
-    virtual bool isDone() ;
+    virtual void init();
+    virtual Task* tick();
     virtual void cleanup() {}
 private slots:
     void sl_taskFinished();
 
 protected:
-    CommunicationChannel    *input, *output;
+    IntegralBus    *input, *output;
     PMBuildSettings         cfg;
     DataTypePtr             mtype;
 };
@@ -134,10 +128,9 @@ public:
 
     PWMatrixSearchWorker(Actor* a) : BaseWorker(a, false), 
         modelPort(NULL), dataPort(NULL), output(NULL), strand(0) {}
-    virtual void init() ;
+    virtual void init();
     virtual bool isReady();
-    virtual Task* tick() ;
-    virtual bool isDone() ;
+    virtual Task* tick();
     virtual void cleanup() {}
 private slots:
     void sl_taskFinished(Task*);

@@ -68,14 +68,6 @@ void TextReader::init() {
     ch = ports.values().first();
 }
 
-bool TextReader::isDone() {
-    return done;
-}
-
-bool TextReader::isReady() {
-    return !isDone();
-}
-
 Task *TextReader::tick() {
     if(io && io->isOpen()) {
         QByteArray buf;
@@ -138,7 +130,7 @@ Task *TextReader::tick() {
     }
     if(urls.isEmpty() && (!io || !io->isOpen())) {
         ch->setEnded();
-        done = true;
+        setDone();
     }
     return NULL;
 }
@@ -451,6 +443,8 @@ void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, c
         } else {
             annotationName = getAnnotationName(seq->getGObjectName());
         }
+    } else {
+        annotationName = QString("unknown features %1").arg(entryNum);
     }
 
     QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(data.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());

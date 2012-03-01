@@ -79,6 +79,8 @@ public:
     virtual Message get();
     virtual Message look() const;
     virtual void put(const Message& m);
+    // put incoming context to the output channels
+    virtual void transit();
     virtual int hasMessage() const;
     virtual int takenMessages() const;
     virtual int hasRoom(const DataType* t = NULL) const;

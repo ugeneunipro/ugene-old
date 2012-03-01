@@ -68,9 +68,9 @@ public:
 class GenericMSAReader : public BaseWorker {
     Q_OBJECT
 public:
-    GenericMSAReader(Actor* a) : BaseWorker(a), ch(NULL), done(false) {}
+    GenericMSAReader(Actor* a) : BaseWorker(a), ch(NULL) {}
     virtual void init() ;
-    virtual bool isReady();
+    //virtual bool isReady();
     virtual Task* tick() ;
     virtual bool isDone() ;
     virtual void cleanup() {}
@@ -82,7 +82,6 @@ protected:
     virtual Task* createReadTask(const QString& url) {return new LoadMSATask(url);}
     CommunicationChannel* ch;
     QList<QString> urls;
-    bool done;
     QList<Message> cache;
     DataTypePtr mtype;
 };

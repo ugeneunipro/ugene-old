@@ -56,9 +56,7 @@ public:
     SWWorker(Actor* a);
     
     virtual void init();
-    virtual bool isReady();
     virtual Task* tick();
-    virtual bool isDone();
     virtual void cleanup();
 
 private slots:
@@ -68,7 +66,7 @@ private:
     QString readPatternsFromFile(const QString url);
 
 private:
-    CommunicationChannel *input, *output;
+    IntegralBus *input, *output;
     QMap<Task*, SmithWatermanReportCallbackImpl*> callbacks;
     QMap<Task*, QByteArray> patterns;
     QMap<QString, QString> patternNames;

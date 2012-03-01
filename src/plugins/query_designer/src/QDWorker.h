@@ -50,14 +50,12 @@ public:
     QDWorker(Actor* a);
 
     virtual void init();
-    virtual bool isReady();
     virtual Task* tick();
-    virtual bool isDone();
     virtual void cleanup();
 private slots:
     void sl_taskFinished(Task*);
 protected:
-    CommunicationChannel *input, *output;
+    IntegralBus *input, *output;
     QDScheme* scheme;
 };
 

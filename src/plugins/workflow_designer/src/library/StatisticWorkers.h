@@ -13,9 +13,7 @@ public:
     DNAStatWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {}
     
     virtual void init();
-    virtual bool isReady();
     virtual Task* tick();
-    virtual bool isDone();
     virtual void cleanup() {};
 
 private:
@@ -23,7 +21,7 @@ private:
     float calcGC1Content(const QByteArray &seq);
     float calcGC2Content(const QByteArray &seq);
     float calcGC3Content(const QByteArray &seq);
-    CommunicationChannel *input, *output;
+    IntegralBus *input, *output;
 };
 
 class DNAStatWorkerFactory: public DomainFactory {

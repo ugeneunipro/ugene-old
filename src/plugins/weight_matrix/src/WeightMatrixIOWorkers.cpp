@@ -214,26 +214,29 @@ void PWMatrixReader::init() {
 }
 
 Task* PWMatrixReader::tick() {
-    Task* t = new PWMatrixReadTask(urls.takeFirst());
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    tasks.append(t);
-    return t;
+    if (urls.isEmpty() && tasks.isEmpty()) {
+        setDone();
+        output->setEnded();
+    } else {
+        Task* t = new PWMatrixReadTask(urls.takeFirst());
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        tasks.append(t);
+        return t;
+    }
+    return NULL;
 }
 
 void PWMatrixReader::sl_taskFinished() {
     PWMatrixReadTask* t = qobject_cast<PWMatrixReadTask*>(sender());
     if (t->getState() != Task::State_Finished) return;
-    tasks.removeAll(t);
     if (output) {
         if (!t->hasError()) {
             QVariant v = qVariantFromValue<PWMatrix>(t->getResult());
             output->put(Message(mtype, v));
         }
-        if (urls.isEmpty() && tasks.isEmpty()) {
-            output->setEnded();
-        }
         ioLog.info(tr("Loaded weight matrix from %1").arg(t->getURL()));
     }
+    tasks.removeAll(t);
 }
 
 void PWMatrixWriter::init() {
@@ -241,34 +244,42 @@ void PWMatrixWriter::init() {
 }
 
 Task* PWMatrixWriter::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
-    fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
-    QVariantMap data = inputMessage.getData().toMap();
-    
-    PWMatrix model = data.value(PWMatrixWorkerFactory::WMATRIX_SLOT.getId()).value<PWMatrix>();
-    QString anUrl = url;
-    if (anUrl.isEmpty()) {
-        anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
-    }
-    if (anUrl.isEmpty()) {
-        QString err = tr("Unspecified URL for writing weight matrix");
-        //if (failFast) {
-            return new FailTask(err);
-        /*} else {
-            ioLog.error(err);
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
             return NULL;
-        }*/
+        }
+        url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+        fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
+        QVariantMap data = inputMessage.getData().toMap();
+        
+        PWMatrix model = data.value(PWMatrixWorkerFactory::WMATRIX_SLOT.getId()).value<PWMatrix>();
+        QString anUrl = url;
+        if (anUrl.isEmpty()) {
+            anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
+        }
+        if (anUrl.isEmpty()) {
+            QString err = tr("Unspecified URL for writing weight matrix");
+            //if (failFast) {
+                return new FailTask(err);
+            /*} else {
+                ioLog.error(err);
+                return NULL;
+            }*/
+        }
+        assert(!anUrl.isEmpty());
+        int count = ++counter[anUrl];
+        if (count != 1) {
+            anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList(WeightMatrixIO::WEIGHT_MATRIX_EXT));
+        } else {
+            anUrl = GUrlUtils::ensureFileExt( anUrl, QStringList(WeightMatrixIO::WEIGHT_MATRIX_EXT)).getURLString();
+        }
+        ioLog.info(tr("Writing weight matrix to %1").arg(anUrl));
+        return new PWMatrixWriteTask(anUrl, model, fileMode);
+    } else if (input->isEnded()) {
+        setDone();
     }
-    assert(!anUrl.isEmpty());
-    int count = ++counter[anUrl];
-    if (count != 1) {
-        anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList(WeightMatrixIO::WEIGHT_MATRIX_EXT));
-    } else {
-        anUrl = GUrlUtils::ensureFileExt( anUrl, QStringList(WeightMatrixIO::WEIGHT_MATRIX_EXT)).getURLString();
-    }
-    ioLog.info(tr("Writing weight matrix to %1").arg(anUrl));
-    return new PWMatrixWriteTask(anUrl, model, fileMode);
+    return NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -429,26 +440,29 @@ void PFMatrixReader::init() {
 }
 
 Task* PFMatrixReader::tick() {
-    Task* t = new PFMatrixReadTask(urls.takeFirst());
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    tasks.append(t);
-    return t;
+    if (urls.isEmpty() && tasks.isEmpty()) {
+        setDone();
+        output->setEnded();
+    } else {
+        Task* t = new PFMatrixReadTask(urls.takeFirst());
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        tasks.append(t);
+        return t;
+    }
+    return NULL;
 }
 
 void PFMatrixReader::sl_taskFinished() {
     PFMatrixReadTask* t = qobject_cast<PFMatrixReadTask*>(sender());
     if (t->getState() != Task::State_Finished) return;
-    tasks.removeAll(t);
     if (output) {
         if (!t->hasError()) {
             QVariant v = qVariantFromValue<PFMatrix>(t->getResult());
             output->put(Message(mtype, v));
         }
-        if (urls.isEmpty() && tasks.isEmpty()) {
-            output->setEnded();
-        }
         ioLog.info(tr("Loaded frequency matrix from %1").arg(t->getURL()));
     }
+    tasks.removeAll(t);
 }
 
 void PFMatrixWriter::init() {
@@ -456,34 +470,42 @@ void PFMatrixWriter::init() {
 }
 
 Task* PFMatrixWriter::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
-    fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
-    QVariantMap data = inputMessage.getData().toMap();
-    PFMatrix model = data.value(PFMatrixWorkerFactory::FMATRIX_SLOT.getId()).value<PFMatrix>();
-    
-    QString anUrl = url;
-    if (anUrl.isEmpty()) {
-        anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
-    }
-    if (anUrl.isEmpty()) {
-        QString err = tr("Unspecified URL for writing frequency matrix");
-        //if (failFast) {
-            return new FailTask(err);
-        /*} else {
-            ioLog.error(err);
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
             return NULL;
-        }*/
+        }
+        url = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
+        fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
+        QVariantMap data = inputMessage.getData().toMap();
+        PFMatrix model = data.value(PFMatrixWorkerFactory::FMATRIX_SLOT.getId()).value<PFMatrix>();
+        
+        QString anUrl = url;
+        if (anUrl.isEmpty()) {
+            anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
+        }
+        if (anUrl.isEmpty()) {
+            QString err = tr("Unspecified URL for writing frequency matrix");
+            //if (failFast) {
+                return new FailTask(err);
+            /*} else {
+                ioLog.error(err);
+                return NULL;
+            }*/
+        }
+        assert(!anUrl.isEmpty());
+        int count = ++counter[anUrl];
+        if (count != 1) {
+            anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList(WeightMatrixIO::FREQUENCY_MATRIX_EXT));
+        } else {
+            anUrl = GUrlUtils::ensureFileExt( anUrl, QStringList(WeightMatrixIO::FREQUENCY_MATRIX_EXT)).getURLString();
+        }
+        ioLog.info(tr("Writing frequency matrix to %1").arg(anUrl));
+        return new PFMatrixWriteTask(anUrl, model, fileMode);
+    } else if (input->isEnded()) {
+        setDone();
     }
-    assert(!anUrl.isEmpty());
-    int count = ++counter[anUrl];
-    if (count != 1) {
-        anUrl = GUrlUtils::prepareFileName(anUrl, count, QStringList(WeightMatrixIO::FREQUENCY_MATRIX_EXT));
-    } else {
-        anUrl = GUrlUtils::ensureFileExt( anUrl, QStringList(WeightMatrixIO::FREQUENCY_MATRIX_EXT)).getURLString();
-    }
-    ioLog.info(tr("Writing frequency matrix to %1").arg(anUrl));
-    return new PFMatrixWriteTask(anUrl, model, fileMode);
+    return NULL;
 }
 
 

@@ -45,7 +45,7 @@ static const QString EMPTY_ACTION_ID("empty-input-action");
  * MultiplexerWorker
  *******************************/
 MultiplexerWorker::MultiplexerWorker(Actor *p)
-: BaseWorker(p, false), inChannel1(NULL), inChannel2(NULL), outChannel(NULL), done(false), rule(ONE_TO_ONE)
+: BaseWorker(p, false), inChannel1(NULL), inChannel2(NULL), outChannel(NULL), rule(ONE_TO_ONE)
 {
 }
 
@@ -67,7 +67,7 @@ void MultiplexerWorker::init() {
 }
 
 bool MultiplexerWorker::isReady() {
-    if (done) {
+    if (isDone()) {
         return false;
     }
 
@@ -101,7 +101,7 @@ bool MultiplexerWorker::isReady() {
 
 void MultiplexerWorker::shutDown() {
     outChannel->setEnded();
-    done = true;
+    setDone();
 }
 
 bool MultiplexerWorker::checkIfEnded() {
@@ -225,12 +225,8 @@ void MultiplexerWorker::multiplexManyMode() {
     }
     if (!hasMultiData && inChannel1->isEnded()) { // nothing else to multiplex
         outChannel->setEnded();
-        done = true;
+        setDone();
     }
-}
-
-bool MultiplexerWorker::isDone() {
-    return done;
 }
 
 void MultiplexerWorker::cleanup() {

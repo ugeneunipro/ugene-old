@@ -227,69 +227,66 @@ void ORFWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool ORFWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* ORFWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
-    cfg.minLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
-    cfg.mustFit = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>(context);
-    cfg.mustInit = actor->getParameter(INIT_ATTR)->getAttributeValue<bool>(context);
-    cfg.allowAltStart = actor->getParameter(ALT_ATTR)->getAttributeValue<bool>(context);
-    cfg.includeStopCodon = actor->getParameter(ISC_ATTR)->getAttributeValue<bool>(context);
-	cfg.maxResult2Search = actor->getParameter(RES_ATTR)->getAttributeValue<int>(context); 
-    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
-    if(resultName.isEmpty()){
-        algoLog.error(tr("ORF: result name is empty, default name used"));
-        resultName = "misc_feature";
-    }
-    transId = actor->getParameter(ID_ATTR)->getAttributeValue<QString>(context);
-    if (cfg.minLen < 0){
-        algoLog.error(tr("ORF: Incorrect value: min-length must be greater then zero"));
-        return new FailTask(tr("Incorrect value: min-length must be greater then zero"));
-    }
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->put(Message::getEmptyMapMessage());
+        }
+        cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
+        cfg.minLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
+        cfg.mustFit = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>(context);
+        cfg.mustInit = actor->getParameter(INIT_ATTR)->getAttributeValue<bool>(context);
+        cfg.allowAltStart = actor->getParameter(ALT_ATTR)->getAttributeValue<bool>(context);
+        cfg.includeStopCodon = actor->getParameter(ISC_ATTR)->getAttributeValue<bool>(context);
+	    cfg.maxResult2Search = actor->getParameter(RES_ATTR)->getAttributeValue<int>(context); 
+        resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
+        if(resultName.isEmpty()){
+            algoLog.error(tr("ORF: result name is empty, default name used"));
+            resultName = "misc_feature";
+        }
+        transId = actor->getParameter(ID_ATTR)->getAttributeValue<QString>(context);
+        if (cfg.minLen < 0){
+            algoLog.error(tr("ORF: Incorrect value: min-length must be greater then zero"));
+            return new FailTask(tr("Incorrect value: min-length must be greater then zero"));
+        }
 
-    U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
 
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    
-	DNAAlphabet* alphabet = seqObj->getAlphabet(); 
-    if (alphabet && alphabet->getType() == DNAAlphabet_NUCL) {
-        ORFAlgorithmSettings config(cfg);
-        config.searchRegion.length = seqObj->getSequenceLength();
-        if (config.strand != ORFAlgorithmStrand_Direct) {
-            QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-                lookupTranslation(alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-            if (!compTTs.isEmpty()) {
-                config.complementTT = compTTs.first();
-            } else {
-                config.strand = ORFAlgorithmStrand_Direct;
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        
+	    DNAAlphabet* alphabet = seqObj->getAlphabet(); 
+        if (alphabet && alphabet->getType() == DNAAlphabet_NUCL) {
+            ORFAlgorithmSettings config(cfg);
+            config.searchRegion.length = seqObj->getSequenceLength();
+            if (config.strand != ORFAlgorithmStrand_Direct) {
+                QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
+                    lookupTranslation(alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
+                if (!compTTs.isEmpty()) {
+                    config.complementTT = compTTs.first();
+                } else {
+                    config.strand = ORFAlgorithmStrand_Direct;
+                }
+            }
+            config.proteinTT = AppContext::getDNATranslationRegistry()->
+                lookupTranslation(alphabet, DNATranslationType_NUCL_2_AMINO, transId);
+            if (config.proteinTT) {
+                Task* t = new ORFFindTask(config,seqObj->getEntityRef());
+                connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+                return t;
             }
         }
-        config.proteinTT = AppContext::getDNATranslationRegistry()->
-            lookupTranslation(alphabet, DNATranslationType_NUCL_2_AMINO, transId);
-        if (config.proteinTT) {
-            Task* t = new ORFFindTask(config,seqObj->getEntityRef());
-            connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-            return t;
-        }
-    }
-    QString err = tr("Bad sequence supplied to ORFWorker: %1").arg(seqObj->getSequenceName());
-    //if (failFast) {
+        QString err = tr("Bad sequence supplied to ORFWorker: %1").arg(seqObj->getSequenceName());
+
         return new FailTask(err);
-    /*} else {
-        algoLog.error(err);
-        output->put(Message(BioDataTypes::ANNOTATION_TABLE_TYPE(), QVariant()));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
-        return NULL;
-    }*/
+    } else if (input->isEnded()) {
+        output->setEnded();
+        setDone();
+    }
+    return NULL;
 }
 
 void ORFWorker::sl_taskFinished() {
@@ -299,15 +296,8 @@ void ORFWorker::sl_taskFinished() {
     if (output) {
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(ORFFindResult::toTable(res, resultName));
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if ( (!input->hasMessage()) && input->isEnded() ) {
-            output->setEnded();
-        }
         algoLog.info(tr("Found %1 ORFs").arg(res.size()));
     }
-}
-
-bool ORFWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 void ORFWorker::cleanup() {

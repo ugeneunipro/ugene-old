@@ -114,64 +114,65 @@ void SequenceSplitWorker::init() {
     outPort = ports.value(BasePorts::OUT_SEQ_PORT_ID());
 }
 
-bool SequenceSplitWorker::isReady() {
-    return seqPort->hasMessage();
-}
-
 Task * SequenceSplitWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(seqPort);
-    
-    cfg.translate = actor->getParameter( TRANSLATE_ATTR )->getAttributeValue<bool>(context);
-    cfg.complement = actor->getParameter( COMPLEMENT_ATTR )->getAttributeValue<bool>(context);
-    cfg.extLeft = actor->getParameter( EXTEND_LEFT_ATTR )->getAttributeValue<int>(context);
-    cfg.extRight = actor->getParameter( EXTEND_RIGHT_ATTR )->getAttributeValue<int>(context);
-    cfg.gapLength = actor->getParameter( GAP_LENGTH_ATTR )->getAttributeValue<int>(context);
-    cfg.gapSym = '-'; //FIXME
-    QVariantMap qm = inputMessage.getData().toMap();
-    
-    U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence inputSeq = seqObj->getWholeSequence();
-    inputAnns = qVariantValue<QList<SharedAnnotationData> >( qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()) );
-    
-    bool noSeq = inputSeq.isNull();
-    bool noAnns = inputAnns.isEmpty();
-    if( noSeq || noAnns ) {
-        if( noSeq ) {
-            coreLog.info(tr("No sequence provided to split worker"));
-        } else {
-            coreLog.info(tr("Nothing to extract. Sequence '%1' has no annotations.").arg(inputSeq.getName()));
+    if (seqPort->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(seqPort);
+        if (inputMessage.isEmpty()) {
+            outPort->transit();
+            return NULL;
+        }
+        cfg.translate = actor->getParameter( TRANSLATE_ATTR )->getAttributeValue<bool>(context);
+        cfg.complement = actor->getParameter( COMPLEMENT_ATTR )->getAttributeValue<bool>(context);
+        cfg.extLeft = actor->getParameter( EXTEND_LEFT_ATTR )->getAttributeValue<int>(context);
+        cfg.extRight = actor->getParameter( EXTEND_RIGHT_ATTR )->getAttributeValue<int>(context);
+        cfg.gapLength = actor->getParameter( GAP_LENGTH_ATTR )->getAttributeValue<int>(context);
+        cfg.gapSym = '-'; //FIXME
+        QVariantMap qm = inputMessage.getData().toMap();
+        
+        U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence inputSeq = seqObj->getWholeSequence();
+        inputAnns = qVariantValue<QList<SharedAnnotationData> >( qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()) );
+        
+        bool noSeq = inputSeq.isNull();
+        bool noAnns = inputAnns.isEmpty();
+        if( noSeq || noAnns ) {
+            if( noSeq ) {
+                coreLog.info(tr("No sequence provided to split worker"));
+            } else {
+                coreLog.info(tr("Nothing to extract. Sequence '%1' has no annotations.").arg(inputSeq.getName()));
+            }
+            
+            if( seqPort->isEnded() ) {
+                outPort->setEnded();
+            }
+            return NULL;
+        } 
+
+        ssTasks.clear();
+
+        foreach( SharedAnnotationData ann, inputAnns ) {   
+            Task * t = new ExtractAnnotatedRegionTask( inputSeq, ann, cfg );
+            ssTasks.push_back(t);
+        }
+        if( ssTasks.isEmpty() ) {
+            return new FailTask(tr("Nothing to extract: no sequence region match the constraints"));
         }
         
-        if( seqPort->isEnded() ) {
-            outPort->setEnded();
-        }
-        return NULL;
-    } 
-
-    ssTasks.clear();
-
-    foreach( SharedAnnotationData ann, inputAnns ) {   
-        Task * t = new ExtractAnnotatedRegionTask( inputSeq, ann, cfg );
-        ssTasks.push_back(t);
+        Task * t = new MultiTask( "Sequence split tasks", ssTasks );
+        connect( new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_onTaskFinished(Task*)) );
+        return t;
+    } else if (seqPort->isEnded()) {
+        setDone();
+        outPort->setEnded();
     }
-    if( ssTasks.isEmpty() ) {
-        return new FailTask(tr("Nothing to extract: no sequence region match the constraints"));
-    }
-    
-    Task * t = new MultiTask( "Sequence split tasks", ssTasks );
-    connect( new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_onTaskFinished(Task*)) );
-    return t;
+    return NULL;
 }
 
 void SequenceSplitWorker::cleanup() {
-}
-
-bool SequenceSplitWorker::isDone() {
-    return seqPort->isEnded();
 }
 
 void SequenceSplitWorker::sl_onTaskFinished( Task * ) {

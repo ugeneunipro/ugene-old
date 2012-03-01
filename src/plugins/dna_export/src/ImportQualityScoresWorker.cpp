@@ -124,16 +124,12 @@ void ImportPhredQualityWorker::init() {
     type = DNAQuality::getDNAQualityTypeByName( actor->getParameter(QUALITY_TYPE_ATTR)->getAttributeValue<QString>(context) );
 }
 
-bool ImportPhredQualityWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* ImportPhredQualityWorker::tick() {
     while (!input->isEnded()) {
         U2DataId seqId = input->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
         std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         if (NULL == seqObj.get()) {
-            return NULL;
+            continue;
         }
         DNASequence dna = seqObj->getWholeSequence();
         seqList << dna;
@@ -141,6 +137,7 @@ Task* ImportPhredQualityWorker::tick() {
     
     if (seqList.isEmpty() ) {
          algoLog.error( tr("Sequence list is empty.") );
+         setDone();
          return NULL;
     }
 
@@ -168,14 +165,11 @@ void ImportPhredQualityWorker::sl_taskFinished() {
     }
     
     if (input->isEnded()) {
+        setDone();
         output->setEnded();
     }
     
     algoLog.trace(tr("Import of qualities is finished.") );
-}
-
-bool ImportPhredQualityWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 void ImportPhredQualityWorker::cleanup() {

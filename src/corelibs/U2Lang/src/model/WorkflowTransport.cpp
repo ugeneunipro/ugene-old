@@ -45,6 +45,22 @@ QVariant Message::getData() const {
     return data;
 }
 
+bool Message::isEmpty() const {
+    if (t->isMap()) {
+        return data.toMap().isEmpty();
+    } else {
+        data.isNull();
+    }
+}
+
+Message Message::getEmptyMapMessage() {
+    static const QVariantMap emptyData;
+    static const QMap<Descriptor, DataTypePtr> emptyTypeMap;
+    static DataTypePtr emptyType(new MapDataType(Descriptor(), emptyTypeMap));
+    
+    return Message(emptyType, emptyData);
+}
+
 } //Workflow namespace
 
 } //GB2 namespace

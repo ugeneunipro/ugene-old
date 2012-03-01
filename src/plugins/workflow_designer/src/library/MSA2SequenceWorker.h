@@ -47,9 +47,7 @@ public:
     Alignment2SequenceWorker(Actor * p) : BaseWorker(p), input(NULL), output(NULL) {}
 
     virtual void init();
-    virtual bool isReady();
     virtual Task * tick();
-    virtual bool isDone();
     virtual void cleanup();
     
 private:

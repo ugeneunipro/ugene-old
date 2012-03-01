@@ -111,15 +111,6 @@ void ScriptWorker::init() {
     engine = new WorkflowScriptEngine(context);
 }
 
-bool ScriptWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
-bool ScriptWorker::isDone() {
-    return input->isEnded();
-}
-
-
 void ScriptWorker::bindPortVariables() {
     foreach( IntegralBus * bus, ports.values() ) {
         assert(bus != NULL);
@@ -163,14 +154,20 @@ Task *ScriptWorker::tick() {
         return new FailTask(tr("no script text"));
     }
 
-    bindPortVariables();
-    bindAttributeVariables();
+    if (input->hasMessage()) {
+        bindPortVariables();
+        bindAttributeVariables();
 
-    getMessageAndSetupScriptValues(input);
+        getMessageAndSetupScriptValues(input);
 
-    Task *t = new ScriptWorkerTask(engine, script);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+        Task *t = new ScriptWorkerTask(engine, script);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+    return NULL;
 }
 
 void ScriptWorker::sl_taskFinished() {
@@ -208,10 +205,6 @@ void ScriptWorker::sl_taskFinished() {
             QVariant scriptResult = t->getResult();
             output->put(Message(ptr,map));
         }
-    }
-
-    if (input->isEnded()) {
-        output->setEnded();
     }
 }
 

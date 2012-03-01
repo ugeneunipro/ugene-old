@@ -134,25 +134,31 @@ void KalignWorker::init() {
     output = ports.value(BasePorts::OUT_MSA_PORT_ID());
 }
 
-bool KalignWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* KalignWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>(context);
-    cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>(context);
-    cfg.termGapPenalty=actor->getParameter(TERM_GAP_PENALTY)->getAttributeValue<float>(context);
-	cfg.secret=actor->getParameter(BONUS_SCORE)->getAttributeValue<float>(context);
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>(context);
+        cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>(context);
+        cfg.termGapPenalty=actor->getParameter(TERM_GAP_PENALTY)->getAttributeValue<float>(context);
+	    cfg.secret=actor->getParameter(BONUS_SCORE)->getAttributeValue<float>(context);
 
-    MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-    if( msa.isEmpty() ) {
-        algoLog.error( tr("An empty MSA has been supplied to Kalign.") );
-        return NULL;
+        MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+        if( msa.isEmpty() ) {
+            algoLog.error( tr("An empty MSA has been supplied to Kalign.") );
+            return NULL;
+        }
+        Task* t = new KalignTask(msa, cfg);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-    Task* t = new KalignTask(msa, cfg);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+    return NULL;
 }
 
 void KalignWorker::sl_taskFinished() {
@@ -160,14 +166,7 @@ void KalignWorker::sl_taskFinished() {
     if (t->getState() != Task::State_Finished) return;
     QVariant v = qVariantFromValue<MAlignment>(t->resultMA);
     output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), v));
-    if (input->isEnded()) {
-        output->setEnded();
-    }
     algoLog.info(tr("Aligned %1 with Kalign").arg(t->resultMA.getName()));
-}
-
-bool KalignWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 void KalignWorker::cleanup() {

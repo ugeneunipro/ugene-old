@@ -252,89 +252,86 @@ FindWorker::FindWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {
 void FindWorker::init() {
     input = ports.value(BasePorts::IN_SEQ_PORT_ID());
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
-    done = false;
-}
-
-bool FindWorker::isReady() {
-    if (isDone()) {
-        return false;
-    }
-    return (input && (input->hasMessage() || input->isEnded()));
 }
 
 Task* FindWorker::tick() {
-    if (!input->hasMessage()) {
-        output->setEnded();
-        done = true;
-        return NULL;
-    }
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    FindAlgorithmTaskSettings cfg;
-    
-    // sequence
-    QVariantMap qm = inputMessage.getData().toMap();
-    U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence seq = seqObj->getWholeSequence();
-    if(seq.isNull()) {
-        return new FailTask(tr("Null sequence supplied to FindWorker: %1").arg(seq.getName()));
-    }
-    cfg.sequence = QByteArray(seq.constData(), seq.length());
-    cfg.searchRegion.length = seq.length();
-    
-    // other parameters
-    cfg.maxErr = actor->getParameter(ERR_ATTR)->getAttributeValue<int>(context);
-    cfg.patternSettings = static_cast<FindAlgorithmPatternSettings> (actor->getParameter(ALGO_ATTR)->getAttributeValue<int>(context));
-    cfg.useAmbiguousBases = actor->getParameter(AMBIGUOUS_ATTR)->getAttributeValue<bool>(context);
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        FindAlgorithmTaskSettings cfg;
+        
+        // sequence
+        QVariantMap qm = inputMessage.getData().toMap();
+        U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
+        if(seq.isNull()) {
+            return new FailTask(tr("Null sequence supplied to FindWorker: %1").arg(seq.getName()));
+        }
+        cfg.sequence = QByteArray(seq.constData(), seq.length());
+        cfg.searchRegion.length = seq.length();
+        
+        // other parameters
+        cfg.maxErr = actor->getParameter(ERR_ATTR)->getAttributeValue<int>(context);
+        cfg.patternSettings = static_cast<FindAlgorithmPatternSettings> (actor->getParameter(ALGO_ATTR)->getAttributeValue<int>(context));
+        cfg.useAmbiguousBases = actor->getParameter(AMBIGUOUS_ATTR)->getAttributeValue<bool>(context);
 
-    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
-    
-    // translations
-    cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
-    if(cfg.strand != FindAlgorithmStrand_Direct /*&& seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
-        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-            lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-        if (!compTTs.isEmpty()) {
-            cfg.complementTT = compTTs.first();
+        resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
+        
+        // translations
+        cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
+        if(cfg.strand != FindAlgorithmStrand_Direct /*&& seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
+            QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
+                lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
+            if (!compTTs.isEmpty()) {
+                cfg.complementTT = compTTs.first();
+            } else {
+                cfg.strand = FindAlgorithmStrand_Direct;
+            }
+        }
+        if(actor->getParameter(AMINO_ATTR)->getAttributeValue<bool>(context)) {
+            DNATranslationType tt = seq.alphabet->getType() == DNAAlphabet_NUCL ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
+            QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(seq.alphabet, tt);
+            if (!TTs.isEmpty()) {
+                cfg.proteinTT = TTs.first(); //FIXME let user choose or use hints ?
+            }
+        }
+        
+        // for each pattern run find task
+        QStringList ptrnStrs;
+        if (qm.contains(BaseSlots::TEXT_SLOT().getId())) {
+            ptrnStrs << qm.value(BaseSlots::TEXT_SLOT().getId()).toString();
         } else {
-            cfg.strand = FindAlgorithmStrand_Direct;
+            ptrnStrs = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>(context).split(PATTERN_DELIMITER, QString::SkipEmptyParts);
         }
-    }
-    if(actor->getParameter(AMINO_ATTR)->getAttributeValue<bool>(context)) {
-        DNATranslationType tt = seq.alphabet->getType() == DNAAlphabet_NUCL ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
-        QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(seq.alphabet, tt);
-        if (!TTs.isEmpty()) {
-            cfg.proteinTT = TTs.first(); //FIXME let user choose or use hints ?
+        if(ptrnStrs.isEmpty()) {
+            return new FailTask(tr("Empty pattern given"));
         }
+        QList<Task*> subs;
+        foreach(const QString & p, ptrnStrs) {
+            assert(!p.isEmpty());
+            FindAlgorithmTaskSettings config(cfg);
+            config.pattern = p.toUpper().toAscii();
+            Task * findTask = new FindAlgorithmTask(config);
+            patterns.insert(findTask, config.pattern);
+            subs << findTask;
+        }
+        assert(!subs.isEmpty());
+        
+        MultiTask * multiFind = new MultiTask(tr("Find algorithm subtasks"), subs);
+        connect(new TaskSignalMapper(multiFind), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+        return multiFind;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-    
-    // for each pattern run find task
-    QStringList ptrnStrs;
-    if (qm.contains(BaseSlots::TEXT_SLOT().getId())) {
-        ptrnStrs << qm.value(BaseSlots::TEXT_SLOT().getId()).toString();
-    } else {
-        ptrnStrs = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>(context).split(PATTERN_DELIMITER, QString::SkipEmptyParts);
-    }
-    if(ptrnStrs.isEmpty()) {
-        return new FailTask(tr("Empty pattern given"));
-    }
-    QList<Task*> subs;
-    foreach(const QString & p, ptrnStrs) {
-        assert(!p.isEmpty());
-        FindAlgorithmTaskSettings config(cfg);
-        config.pattern = p.toUpper().toAscii();
-        Task * findTask = new FindAlgorithmTask(config);
-        patterns.insert(findTask, config.pattern);
-        subs << findTask;
-    }
-    assert(!subs.isEmpty());
-    
-    MultiTask * multiFind = new MultiTask(tr("Find algorithm subtasks"), subs);
-    connect(new TaskSignalMapper(multiFind), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
-    return multiFind;
+    return NULL;
 }
 
 void FindWorker::sl_taskFinished(Task* t) {
@@ -353,15 +350,8 @@ void FindWorker::sl_taskFinished(Task* t) {
     if(output) {
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(FindAlgorithmResult::toTable(annData, resultName));
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
         algoLog.info(tr("Found %1 matches of pattern '%2'").arg(annData.size()).arg(ptrns.join(PATTERN_DELIMITER)));
     }
-}
-
-bool FindWorker::isDone() {
-    return done;
 }
 
 void FindWorker::cleanup() {

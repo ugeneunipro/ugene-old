@@ -80,9 +80,7 @@ public:
     static const QString ACTOR_ID;
     PWMatrixReader(Actor* a) : BaseWorker(a), output(NULL) {}
     virtual void init() ;
-    virtual bool isReady() {return !urls.isEmpty();}
     virtual Task* tick() ;
-    virtual bool isDone() {return urls.isEmpty();}
     virtual void cleanup() {}
     private slots:
         void sl_taskFinished();
@@ -100,9 +98,7 @@ public:
     static const QString ACTOR_ID;
     PWMatrixWriter(Actor* a) : BaseWorker(a), input(NULL), done(false), fileMode(SaveDoc_Overwrite) {}
     virtual void init() ;
-    virtual bool isReady() {return input && input->hasMessage();}
     virtual Task* tick() ;
-    virtual bool isDone() {return !input || input->isEnded();}
     virtual void cleanup() {}
 
 protected:
@@ -162,9 +158,7 @@ public:
     static const QString ACTOR_ID;
     PFMatrixReader(Actor* a) : BaseWorker(a), output(NULL) {}
     virtual void init() ;
-    virtual bool isReady() {return !urls.isEmpty();}
     virtual Task* tick() ;
-    virtual bool isDone() {return urls.isEmpty();}
     virtual void cleanup() {}
     private slots:
         void sl_taskFinished();
@@ -182,9 +176,7 @@ public:
     static const QString ACTOR_ID;
     PFMatrixWriter(Actor* a) : BaseWorker(a), input(NULL), done(false), fileMode(SaveDoc_Overwrite) {}
     virtual void init() ;
-    virtual bool isReady() {return input && input->hasMessage();}
     virtual Task* tick() ;
-    virtual bool isDone() {return !input || input->isEnded();}
     virtual void cleanup() {}
 
 protected:

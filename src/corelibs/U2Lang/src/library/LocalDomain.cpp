@@ -39,7 +39,9 @@ const QString LocalDomainFactory::ID("domain.local.bio");
 /*****************************
  * BaseWorker
  *****************************/
-BaseWorker::BaseWorker(Actor* a, bool autoTransitBus) : actor(a) {
+BaseWorker::BaseWorker(Actor* a, bool autoTransitBus) : actor(a)
+, processDone(false) 
+{
     foreach(Port* p, a->getPorts()) {
         if (qobject_cast<IntegralBusPort*>(p)) {
             IntegralBus* bus = new IntegralBus(p);
@@ -126,6 +128,34 @@ void BaseWorker::bindScriptValues() {
             }
         }
     }
+}
+
+void BaseWorker::setDone() {
+    processDone = true;
+}
+
+bool BaseWorker::isDone() {
+    return processDone;
+}
+
+bool BaseWorker::isReady() {
+    if (isDone()) {
+        return false;
+    }
+
+    QList<Port*> inPorts = actor->getInputPorts();
+    if (inPorts.isEmpty()) {
+        return true;
+    } else if (1 == inPorts.size()) {
+        IntegralBus *inChannel = ports.value(inPorts.first()->getId());
+        int hasMsg = inChannel->hasMessage();
+        bool ended = inChannel->isEnded();
+        if (hasMsg || ended) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /*****************************

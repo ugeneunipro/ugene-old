@@ -49,7 +49,7 @@ static const QString MARKED_SEQ_TYPESET_ID("marker.seq.content");
  * MarkSequenceWorker
  *******************************/
 MarkSequenceWorker::MarkSequenceWorker(Actor *p)
-: BaseWorker(p), inChannel(NULL), outChannel(NULL), done(false)
+: BaseWorker(p), inChannel(NULL), outChannel(NULL)
 {
 }
 
@@ -59,15 +59,13 @@ void MarkSequenceWorker::init() {
     mtype = ports.value(MarkerPorts::OUT_MARKER_SEQ_PORT())->getBusType();
 }
 
-bool MarkSequenceWorker::isReady() {
-    int hasMsg = inChannel->hasMessage();
-    bool ended = inChannel->isEnded();
-    return hasMsg || (ended && !done);
-}
-
 Task *MarkSequenceWorker::tick() {
     while (inChannel->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(inChannel);
+        if (inputMessage.isEmpty()) {
+            outChannel->transit();
+            continue;
+        }
         QVariantMap data = inputMessage.getData().toMap();
         U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
         std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
@@ -96,17 +94,10 @@ Task *MarkSequenceWorker::tick() {
         outChannel->put(mes);
     }
     if (inChannel->isEnded()) {
-        done = true;
+        setDone();
         outChannel->setEnded();
     }
     return NULL;
-}
-
-bool MarkSequenceWorker::isDone() {
-    return done;
-}
-
-void MarkSequenceWorker::cleanup() {
 }
 
 /*******************************

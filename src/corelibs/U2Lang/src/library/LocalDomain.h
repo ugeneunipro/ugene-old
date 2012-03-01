@@ -48,6 +48,12 @@ public:
     virtual ~BaseWorker();
     
     virtual ActorId getActorId() const;
+
+    virtual void setDone();
+
+    // reimplemented from Worker
+    virtual bool isDone();
+    virtual bool isReady();
     
     // reimplemented from CommunicationSubject
     virtual bool addCommunication(const QString& name, CommunicationChannel* _ch);
@@ -65,6 +71,7 @@ private:
     // bind values from input ports to script vars. 
     // This function is called before 'get' data from channel -> to set up parameters for scripting
     void bindScriptValues();
+    bool processDone;
     
 protected:
     Actor* actor;

@@ -47,14 +47,12 @@ class CDSearchWorker: public BaseWorker {
 public:
     CDSearchWorker(Actor *a) : BaseWorker(a), input(NULL), output(NULL), cds(NULL) {}
     virtual void init();
-    virtual bool isReady();
-    virtual bool isDone();
     virtual Task* tick();
     virtual void cleanup() {};
 private slots:
     void sl_taskFinished(Task*);
 protected:
-    CommunicationChannel *input, *output;
+    IntegralBus *input, *output;
     CDSearchSettings settings;
     CDSearchResultListener* cds;
 };

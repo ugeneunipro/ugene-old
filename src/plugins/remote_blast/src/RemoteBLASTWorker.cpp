@@ -144,90 +144,92 @@ void RemoteBLASTWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool RemoteBLASTWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* RemoteBLASTWorker::tick() {
     if((actor->getParameter(ANNOTATION_NAME)->getAttributeValue<QString>(context)).isEmpty()){
         algoLog.details(tr("Annotations name is empty, default name used"));
     }
     
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    //cfg.minrl = 0;
-    //cfg.maxrl = 3000;
-    cfg.dbChoosen = actor->getParameter(DATABASE)->getAttributeValue<QString>(context).split("-").last();
-    cfg.aminoT = NULL;
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        //cfg.minrl = 0;
+        //cfg.maxrl = 3000;
+        cfg.dbChoosen = actor->getParameter(DATABASE)->getAttributeValue<QString>(context).split("-").last();
+        cfg.aminoT = NULL;
 
-    int evalue = actor->getParameter(EXPECT)->getAttributeValue<int>(context);
-    int maxHits = actor->getParameter(MAX_HITS)->getAttributeValue<int>(context);
-    bool shortSeq = actor->getParameter(SHORT_SEQ)->getAttributeValue<bool>(context);
+        int evalue = actor->getParameter(EXPECT)->getAttributeValue<int>(context);
+        int maxHits = actor->getParameter(MAX_HITS)->getAttributeValue<int>(context);
+        bool shortSeq = actor->getParameter(SHORT_SEQ)->getAttributeValue<bool>(context);
 
-    if(evalue <= 0 ){
-        algoLog.error(tr("Incorrect value for 'e-value' parameter, default value passed to schema"));
-        evalue = 10;
-    }
+        if(evalue <= 0 ){
+            algoLog.error(tr("Incorrect value for 'e-value' parameter, default value passed to schema"));
+            evalue = 10;
+        }
 
-    if(cfg.dbChoosen == "cdd") {
-        cfg.params = "db=cdd";
-        addParametr(cfg.params,ReqParams::cdd_hits,maxHits);
-        addParametr(cfg.params,ReqParams::cdd_eValue,evalue);
-    }
-    else {
-        cfg.params = "CMD=Put";
-        addParametr(cfg.params,ReqParams::database,"nr");
-        addParametr(cfg.params, ReqParams::program, cfg.dbChoosen);
-        QString filter;
-        QString wordSize;
-        if(shortSeq) {
-            evalue = 1000;
-            filter = "";
+        if(cfg.dbChoosen == "cdd") {
+            cfg.params = "db=cdd";
+            addParametr(cfg.params,ReqParams::cdd_hits,maxHits);
+            addParametr(cfg.params,ReqParams::cdd_eValue,evalue);
+        }
+        else {
+            cfg.params = "CMD=Put";
+            addParametr(cfg.params,ReqParams::database,"nr");
+            addParametr(cfg.params, ReqParams::program, cfg.dbChoosen);
+            QString filter;
+            QString wordSize;
+            if(shortSeq) {
+                evalue = 1000;
+                filter = "";
+                if(cfg.dbChoosen == "blastn") {
+                    addParametr(cfg.params, ReqParams::wordSize, 7);
+                }
+            }
+            else {
+                addParametr(cfg.params, ReqParams::filter, "L");
+            }
+            addParametr(cfg.params, ReqParams::expect, evalue);
+            
+            addParametr(cfg.params, ReqParams::hits, maxHits);
+        }
+        U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
+        
+        seq.info.clear();
+        DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
+        /*if(seq.length()>MAX_BLAST_SEQ_LEN) {
+            log.error(tr("The sequence is too long"));
+            return NULL;
+        }*/
+        if(alp == AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::AMINO_DEFAULT())) {
             if(cfg.dbChoosen == "blastn") {
-                addParametr(cfg.params, ReqParams::wordSize, 7);
+                algoLog.details(tr("Selected nucleotide database"));
+                return NULL;
             }
         }
         else {
-            addParametr(cfg.params, ReqParams::filter, "L");
+            if(cfg.dbChoosen != "blastn") {
+                algoLog.details(tr("Selected amino acid database"));
+                return NULL;
+            }
         }
-        addParametr(cfg.params, ReqParams::expect, evalue);
-        
-        addParametr(cfg.params, ReqParams::hits, maxHits);
+        cfg.query = seq.seq;
+        cfg.retries = 60;
+        cfg.filterResult = 0;
+        Task* t = new RemoteBLASTTask(cfg);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-    U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence seq = seqObj->getWholeSequence();
-    
-    seq.info.clear();
-    DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
-    /*if(seq.length()>MAX_BLAST_SEQ_LEN) {
-        log.error(tr("The sequence is too long"));
-        return NULL;
-    }*/
-    if(alp == AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::AMINO_DEFAULT())) {
-        if(cfg.dbChoosen == "blastn") {
-            algoLog.details(tr("Selected nucleotide database"));
-            return NULL;
-        }
-    }
-    else {
-        if(cfg.dbChoosen != "blastn") {
-            algoLog.details(tr("Selected amino acid database"));
-            return NULL;
-        }
-    }
-    cfg.query = seq.seq;
-    cfg.retries = 60;
-    cfg.filterResult = 0;
-    Task* t = new RemoteBLASTTask(cfg);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
-}
-
-bool RemoteBLASTWorker::isDone() {
-    return !input || input->isEnded();
+    return NULL;
 }
 
 void RemoteBLASTWorker::sl_taskFinished() {
@@ -259,9 +261,6 @@ void RemoteBLASTWorker::sl_taskFinished() {
         }
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
     }
 }
 

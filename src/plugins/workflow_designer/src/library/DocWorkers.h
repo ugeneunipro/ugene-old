@@ -34,10 +34,8 @@ namespace LocalWorkflow {
 class TextReader : public BaseDocReader {
     Q_OBJECT
 public:
-    TextReader(Actor* a) : BaseDocReader(a, CoreLibConstants::TEXT_TYPESET_ID, BaseDocumentFormats::PLAIN_TEXT), io(NULL), done(false){}
+    TextReader(Actor* a) : BaseDocReader(a, CoreLibConstants::TEXT_TYPESET_ID, BaseDocumentFormats::PLAIN_TEXT), io(NULL) {}
     void init();
-    bool isDone();
-    bool isReady();
     Task *tick();
 protected:
     virtual void doc2data(Document* doc);
@@ -45,7 +43,6 @@ private:
     IOAdapter *io;
     QStringList urls;
     QString url;
-    bool done;
 };
 
 class TextWriter : public BaseDocWriter {

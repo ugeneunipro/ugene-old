@@ -70,67 +70,65 @@ void Text2SequenceWorker::init() {
     outSeqPort = ports.value(BasePorts::OUT_SEQ_PORT_ID());
 }
 
-bool Text2SequenceWorker::isReady() {
-    return txtPort->hasMessage();
-}
-
 Task * Text2SequenceWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(txtPort);
-    QString seqName = actor->getParameter(SEQ_NAME_ATTR_ID)->getAttributeValue<QString>(context);
-    if(seqName.isEmpty()) {
-        return new FailTask(tr("Sequence name not set"));
-    }
-    if(tickedNum++ > 0) {
-        seqName += QString::number(tickedNum);
-    }
-    QString alId = actor->getParameter(ALPHABET_ATTR_ID)->getAttributeValue<QString>(context);
-    if(alId.isEmpty()) {
-        alId = ALPHABET_ATTR_ID_DEF_VAL;
-    } else {
-        alId = cuteAlIdNames.key(alId, alId);
-    }
-    bool skipUnknown = actor->getParameter(SKIP_SYM_ATTR_ID)->getAttributeValue<bool>(context);
-    QChar replaceChar;
-    if(!skipUnknown) {
-        QString replaceStr = actor->getParameter(REPLACE_SYM_ATTR_ID)->getAttributeValue<QString>(context);
-        assert(replaceStr.size() <= 1);
-        if(replaceStr.isEmpty()) {
-            return new FailTask(tr("skip flag should be set or replace character defined"));
+    while (txtPort->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(txtPort);
+        if (inputMessage.isEmpty()) {
+            outSeqPort->transit();
+            continue;
         }
-        replaceChar = replaceStr.at(0);
-    }
-    QByteArray txt = inputMessage.getData().toMap().value(BaseSlots::TEXT_SLOT().getId()).value<QString>().toUtf8();
-    
-    DNAAlphabet * alphabet = (alId == ALPHABET_ATTR_ID_DEF_VAL) ? U2AlphabetUtils::findBestAlphabet(txt) : U2AlphabetUtils::getById(alId);
-    if (alphabet == NULL) {
-        QString msg;
-        if(alId == ALPHABET_ATTR_ID_DEF_VAL) {
-            msg = tr("Alphabet cannot be automatically detected");
+        QString seqName = actor->getParameter(SEQ_NAME_ATTR_ID)->getAttributeValue<QString>(context);
+        if(seqName.isEmpty()) {
+            return new FailTask(tr("Sequence name not set"));
+        }
+        if(tickedNum++ > 0) {
+            seqName += QString::number(tickedNum);
+        }
+        QString alId = actor->getParameter(ALPHABET_ATTR_ID)->getAttributeValue<QString>(context);
+        if(alId.isEmpty()) {
+            alId = ALPHABET_ATTR_ID_DEF_VAL;
         } else {
-            msg = tr("Alphabet '%1' cannot be found");
+            alId = cuteAlIdNames.key(alId, alId);
         }
-        return new FailTask(msg);
-    }
-    
-    QByteArray normSequence = SeqPasterWidgetController::getNormSequence(alphabet, txt, !skipUnknown, replaceChar);
-    DNASequence result(seqName, normSequence, alphabet);
-    QVariantMap msgData;
-    {
-        U2DataId seqId = context->getDataStorage()->putSequence(result);
-        msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
-    }
-    if(outSeqPort) {
-        outSeqPort->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));
+        bool skipUnknown = actor->getParameter(SKIP_SYM_ATTR_ID)->getAttributeValue<bool>(context);
+        QChar replaceChar;
+        if(!skipUnknown) {
+            QString replaceStr = actor->getParameter(REPLACE_SYM_ATTR_ID)->getAttributeValue<QString>(context);
+            assert(replaceStr.size() <= 1);
+            if(replaceStr.isEmpty()) {
+                return new FailTask(tr("skip flag should be set or replace character defined"));
+            }
+            replaceChar = replaceStr.at(0);
+        }
+        QByteArray txt = inputMessage.getData().toMap().value(BaseSlots::TEXT_SLOT().getId()).value<QString>().toUtf8();
+        
+        DNAAlphabet * alphabet = (alId == ALPHABET_ATTR_ID_DEF_VAL) ? U2AlphabetUtils::findBestAlphabet(txt) : U2AlphabetUtils::getById(alId);
+        if (alphabet == NULL) {
+            QString msg;
+            if(alId == ALPHABET_ATTR_ID_DEF_VAL) {
+                msg = tr("Alphabet cannot be automatically detected");
+            } else {
+                msg = tr("Alphabet '%1' cannot be found");
+            }
+            return new FailTask(msg);
+        }
+        
+        QByteArray normSequence = SeqPasterWidgetController::getNormSequence(alphabet, txt, !skipUnknown, replaceChar);
+        DNASequence result(seqName, normSequence, alphabet);
+        QVariantMap msgData;
+        {
+            U2DataId seqId = context->getDataStorage()->putSequence(result);
+            msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
+        }
+        if(outSeqPort) {
+            outSeqPort->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));
+        }
     }
     if(txtPort->isEnded()) {
+        setDone();
         outSeqPort->setEnded();
     }
-    
     return NULL;
-}
-
-bool Text2SequenceWorker::isDone() {
-    return txtPort->isEnded();
 }
 
 void Text2SequenceWorker::cleanup() {

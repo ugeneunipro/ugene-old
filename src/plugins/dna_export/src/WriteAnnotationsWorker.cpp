@@ -73,10 +73,6 @@ void WriteAnnotationsWorker::init() {
     annotationsPort = ports.value(BasePorts::IN_ANNOTATIONS_PORT_ID());
 }
 
-bool WriteAnnotationsWorker::isReady() {
-    return annotationsPort->hasMessage();
-}
-
 Task * WriteAnnotationsWorker::tick() {
     QString formatId = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
     DocumentFormat * format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
@@ -89,6 +85,9 @@ Task * WriteAnnotationsWorker::tick() {
 
     while(annotationsPort->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(annotationsPort);
+        if (inputMessage.isEmpty()) {
+            continue;
+        }
 
         QString filepath = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
         filepath = filepath.isEmpty() ? inputMessage.getData().toMap().value(BaseSlots::URL_SLOT().getId()).value<QString>() : filepath;
@@ -124,11 +123,12 @@ Task * WriteAnnotationsWorker::tick() {
         }
     } // while
 
-    done = annotationsPort->isEnded();
+    bool done = annotationsPort->isEnded();
     if (!done) {
         return NULL;
     }
-    
+
+    setDone();    
     QList<Task*> taskList;
     QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
     foreach (QString filepath, annotationsByUrl.keys()) {
@@ -156,10 +156,6 @@ Task * WriteAnnotationsWorker::tick() {
         }
     }
     return taskList.size() == 1 ? taskList.first() : new MultiTask(tr("Save annotations"), taskList);
-}
-
-bool WriteAnnotationsWorker::isDone() {
-    return done;
 }
 
 void WriteAnnotationsWorker::cleanup() {

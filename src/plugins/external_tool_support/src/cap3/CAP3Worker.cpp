@@ -108,17 +108,23 @@ void CAP3Worker::init() {
     output = ports.value(BasePorts::OUT_MSA_PORT_ID());
 }
 
-bool CAP3Worker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* CAP3Worker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.inputFiles.append( actor->getParameter(INPUT_FILE_PATH)->getAttributeValue<QString>(context) );
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        cfg.inputFiles.append( actor->getParameter(INPUT_FILE_PATH)->getAttributeValue<QString>(context) );
 
-    Task* t = new CAP3SupportTask(cfg);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+        Task* t = new CAP3SupportTask(cfg);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+    return NULL;
 }
 
 void CAP3Worker::sl_taskFinished() {
@@ -126,14 +132,7 @@ void CAP3Worker::sl_taskFinished() {
     if (t->getState() != Task::State_Finished) return;
     QVariant v = qVariantFromValue<MAlignment>(t->getResultAlignment()->getMAlignment());
     output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), v));
-    if (input->isEnded()) {
-        output->setEnded();
-    }
     algoLog.info(tr("Aligned %1 with CAP3").arg(t->getResultAlignment()->getMAlignment().getName()));
-}
-
-bool CAP3Worker::isDone() {
-    return !input || input->isEnded();
 }
 
 void CAP3Worker::cleanup() {

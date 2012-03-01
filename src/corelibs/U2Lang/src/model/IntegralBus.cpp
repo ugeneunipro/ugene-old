@@ -316,6 +316,10 @@ void IntegralBus::put(const Message& m) {
     }
 }
 
+void IntegralBus::transit() {
+    this->put(Message::getEmptyMapMessage());
+}
+
 void IntegralBus::putWithoutContext(const Message& m) {
     foreach(CommunicationChannel* ch, outerChannels) {
         ch->put(m);

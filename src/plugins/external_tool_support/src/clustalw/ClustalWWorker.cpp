@@ -200,60 +200,66 @@ void ClustalWWorker::init() {
     output = ports.value(BasePorts::OUT_MSA_PORT_ID());
 }
 
-bool ClustalWWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* ClustalWWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>(context);
-    cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>(context);
-    cfg.gapDist=actor->getParameter(GAP_DIST)->getAttributeValue<float>(context);
-    cfg.endGaps=actor->getParameter(END_GAPS)->getAttributeValue<bool>(context);
-    cfg.noHGaps=actor->getParameter(NO_HGAPS)->getAttributeValue<bool>(context);
-    cfg.noPGaps=actor->getParameter(NO_PGAPS)->getAttributeValue<bool>(context);
-    if(actor->getParameter(ITERATION)->getAttributeValue<int>(context) != 0){
-        if(actor->getParameter(ITERATION)->getAttributeValue<int>(context) == 1){
-            cfg.iterationType="TREE";
-        }else if(actor->getParameter(ITERATION)->getAttributeValue<int>(context) == 2){
-            cfg.iterationType="ALIGNMENT";
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
         }
-        if(actor->getParameter(NUM_ITERATIONS)->getAttributeValue<int>(context) != 3){
-            cfg.numIterations=actor->getParameter(NUM_ITERATIONS)->getAttributeValue<int>(context);
+        cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>(context);
+        cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>(context);
+        cfg.gapDist=actor->getParameter(GAP_DIST)->getAttributeValue<float>(context);
+        cfg.endGaps=actor->getParameter(END_GAPS)->getAttributeValue<bool>(context);
+        cfg.noHGaps=actor->getParameter(NO_HGAPS)->getAttributeValue<bool>(context);
+        cfg.noPGaps=actor->getParameter(NO_PGAPS)->getAttributeValue<bool>(context);
+        if(actor->getParameter(ITERATION)->getAttributeValue<int>(context) != 0){
+            if(actor->getParameter(ITERATION)->getAttributeValue<int>(context) == 1){
+                cfg.iterationType="TREE";
+            }else if(actor->getParameter(ITERATION)->getAttributeValue<int>(context) == 2){
+                cfg.iterationType="ALIGNMENT";
+            }
+            if(actor->getParameter(NUM_ITERATIONS)->getAttributeValue<int>(context) != 3){
+                cfg.numIterations=actor->getParameter(NUM_ITERATIONS)->getAttributeValue<int>(context);
+            }
         }
-    }
-    if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == -1){
-        if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 0){
-            cfg.matrix="IUB";
-        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 1){
-            cfg.matrix="CLUSTALW";
-        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 2){
-            cfg.matrix="BLOSUM";
-        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 3){
-            cfg.matrix="PAM";
-        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 4){
-            cfg.matrix="GONNET";
-        }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 5){
-            cfg.matrix="ID";
+        if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == -1){
+            if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 0){
+                cfg.matrix="IUB";
+            }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 1){
+                cfg.matrix="CLUSTALW";
+            }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 2){
+                cfg.matrix="BLOSUM";
+            }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 3){
+                cfg.matrix="PAM";
+            }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 4){
+                cfg.matrix="GONNET";
+            }else if(actor->getParameter(MATRIX)->getAttributeValue<int>(context) == 5){
+                cfg.matrix="ID";
+            }
         }
-    }
 
-    QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>(context);
-    if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-        AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->setPath(path);
+        QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>(context);
+        if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+            AppContext::getExternalToolRegistry()->getByName(CLUSTAL_TOOL_NAME)->setPath(path);
+        }
+        path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>(context);
+        if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+            AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
+        }
+        MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+        
+        if( msa.isEmpty() ) {
+            return new FailTask(tr("An empty MSA has been supplied to ClustalW."));
+        }
+        Task* t = new ClustalWSupportTask(new MAlignmentObject(msa), cfg);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-    path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>(context);
-    if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-        AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
-    }
-    MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-    
-    if( msa.isEmpty() ) {
-        return new FailTask(tr("An empty MSA has been supplied to ClustalW."));
-    }
-    Task* t = new ClustalWSupportTask(new MAlignmentObject(msa), cfg);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+    return NULL;
 }
 
 void ClustalWWorker::sl_taskFinished() {
@@ -261,14 +267,7 @@ void ClustalWWorker::sl_taskFinished() {
     if (t->getState() != Task::State_Finished) return;
     QVariant v = qVariantFromValue<MAlignment>(t->resultMA);
     output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), v));
-    if (input->isEnded()) {
-        output->setEnded();
-    }
     algoLog.info(tr("Aligned %1 with ClustalW").arg(t->resultMA.getName()));
-}
-
-bool ClustalWWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 void ClustalWWorker::cleanup() {

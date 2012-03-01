@@ -41,7 +41,7 @@ const QString PassFilterWorkerFactory::ACTOR_ID("filter-by-values");
  * FilterSequenceWorker
  *******************************/
 PassFilterWorker::PassFilterWorker(Actor *p)
-: BaseWorker(p), inChannel(NULL), outChannel(NULL), done(false)
+: BaseWorker(p), inChannel(NULL), outChannel(NULL)
 {
 }
 
@@ -55,32 +55,24 @@ void PassFilterWorker::init() {
     }
 }
 
-bool PassFilterWorker::isReady() {
-    int hasMsg = inChannel->hasMessage();
-    bool ended = inChannel->isEnded();
-    return hasMsg || (ended && !done);
-}
-
 Task *PassFilterWorker::tick() {
     while (inChannel->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(inChannel);
+        if (inputMessage.isEmpty()) {
+            continue;
+        }
         QVariantMap data = inputMessage.getData().toMap();
         QString value = data.value(BaseSlots::TEXT_SLOT().getId()).toString();
 
         if (passedValues.contains(value)) {
-            Message mes(mtype, QVariantMap());
-            outChannel->put(mes);
+            outChannel->put(Message::getEmptyMapMessage());
         }
     }
     if (inChannel->isEnded()) {
-        done = true;
         outChannel->setEnded();
+        setDone();
     }
     return NULL;
-}
-
-bool PassFilterWorker::isDone() {
-    return done;
 }
 
 void PassFilterWorker::cleanup() {

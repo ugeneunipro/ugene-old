@@ -47,9 +47,7 @@ public:
     Text2SequenceWorker(Actor * p) : BaseWorker(p), txtPort(NULL), outSeqPort(NULL), tickedNum(0) {}
 
     virtual void init();
-    virtual bool isReady();
     virtual Task * tick();
-    virtual bool isDone();
     virtual void cleanup();
 
 private:

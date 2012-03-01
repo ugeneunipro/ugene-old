@@ -138,31 +138,37 @@ void TCoffeeWorker::init() {
     output = ports.value(BasePorts::OUT_MSA_PORT_ID());
 }
 
-bool TCoffeeWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* TCoffeeWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>(context);
-    cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>(context);
-    cfg.numIterations=actor->getParameter(NUM_ITER)->getAttributeValue<int>(context);
-    QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>(context);
-    if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-        AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->setPath(path);
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        cfg.gapOpenPenalty=actor->getParameter(GAP_OPEN_PENALTY)->getAttributeValue<float>(context);
+        cfg.gapExtenstionPenalty=actor->getParameter(GAP_EXT_PENALTY)->getAttributeValue<float>(context);
+        cfg.numIterations=actor->getParameter(NUM_ITER)->getAttributeValue<int>(context);
+        QString path=actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>(context);
+        if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+            AppContext::getExternalToolRegistry()->getByName(TCOFFEE_TOOL_NAME)->setPath(path);
+        }
+        path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>(context);
+        if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+            AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
+        }
+        MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+        
+        if( msa.isEmpty() ) {
+            return new FailTask(tr("Empty msa supplied to tcoffee"));
+        }
+        Task* t = new TCoffeeSupportTask(new MAlignmentObject(msa), cfg);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-    path=actor->getParameter(TMP_DIR_PATH)->getAttributeValue<QString>(context);
-    if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-        AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
-    }
-    MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-    
-    if( msa.isEmpty() ) {
-        return new FailTask(tr("Empty msa supplied to tcoffee"));
-    }
-    Task* t = new TCoffeeSupportTask(new MAlignmentObject(msa), cfg);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+    return NULL;
 }
 
 void TCoffeeWorker::sl_taskFinished() {
@@ -170,14 +176,7 @@ void TCoffeeWorker::sl_taskFinished() {
     if (t->getState() != Task::State_Finished) return;
     QVariant v = qVariantFromValue<MAlignment>(t->resultMA);
     output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), v));
-    if (input->isEnded()) {
-        output->setEnded();
-    }
     algoLog.info(tr("Aligned %1 with T-Coffee").arg(t->resultMA.getName()));
-}
-
-bool TCoffeeWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 void TCoffeeWorker::cleanup() {

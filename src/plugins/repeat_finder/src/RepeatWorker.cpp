@@ -179,56 +179,62 @@ void RepeatWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool RepeatWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* RepeatWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.algo = RFAlgorithm(actor->getParameter(ALGO_ATTR)->getAttributeValue<int>(context));
-    cfg.minLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
-    cfg.minDist = actor->getParameter(MIN_DIST_ATTR)->getAttributeValue<int>(context);
-    cfg.maxDist = actor->getParameter(MAX_DIST_ATTR)->getAttributeValue<int>(context);
-    int identity = actor->getParameter(IDENTITY_ATTR)->getAttributeValue<int>(context);
-    cfg.setIdentity(identity);
-    cfg.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>(context);
-    cfg.inverted = actor->getParameter(INVERT_ATTR)->getAttributeValue<bool>(context);
-    cfg.filterNested = actor->getParameter(NESTED_ATTR)->getAttributeValue<bool>(context);
-    cfg.excludeTandems = actor->getParameter(TANMEDS_ATTR)->getAttributeValue<bool>(context);
-    resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
-    if(resultName.isEmpty()){
-        resultName = "repeat_unit";
-        algoLog.error(tr("result name is empty, default name used"));
-    }
-    if(identity > 100 || identity < 0){
-        algoLog.error(tr("Incorrect value: identity value must be between 0 and 100"));
-        return new FailTask(tr("Incorrect value: identity value must be between 0 and 100"));
-    }
-    QVariantMap map = inputMessage.getData().toMap();
-    U2DataId seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence seq = seqObj->getWholeSequence();
-    
-    if(cfg.minDist < 0){
-        algoLog.error(tr("Incorrect value: minimal distance must be greater then zero"));
-        return new FailTask(tr("Incorrect value: minimal distance must be greater then zero"));
-    }
-    
-    if (!seq.alphabet->isNucleic()) {
-        QString err = tr("Sequence alphabet is not nucleic!");
-        //if (failFast) {
-            return new FailTask(err);
-        /*} else {
-            algoLog.error(err);
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
             return NULL;
-        }*/
+        }
+        cfg.algo = RFAlgorithm(actor->getParameter(ALGO_ATTR)->getAttributeValue<int>(context));
+        cfg.minLen = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
+        cfg.minDist = actor->getParameter(MIN_DIST_ATTR)->getAttributeValue<int>(context);
+        cfg.maxDist = actor->getParameter(MAX_DIST_ATTR)->getAttributeValue<int>(context);
+        int identity = actor->getParameter(IDENTITY_ATTR)->getAttributeValue<int>(context);
+        cfg.setIdentity(identity);
+        cfg.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>(context);
+        cfg.inverted = actor->getParameter(INVERT_ATTR)->getAttributeValue<bool>(context);
+        cfg.filterNested = actor->getParameter(NESTED_ATTR)->getAttributeValue<bool>(context);
+        cfg.excludeTandems = actor->getParameter(TANMEDS_ATTR)->getAttributeValue<bool>(context);
+        resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
+        if(resultName.isEmpty()){
+            resultName = "repeat_unit";
+            algoLog.error(tr("result name is empty, default name used"));
+        }
+        if(identity > 100 || identity < 0){
+            algoLog.error(tr("Incorrect value: identity value must be between 0 and 100"));
+            return new FailTask(tr("Incorrect value: identity value must be between 0 and 100"));
+        }
+        QVariantMap map = inputMessage.getData().toMap();
+        U2DataId seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
+        
+        if(cfg.minDist < 0){
+            algoLog.error(tr("Incorrect value: minimal distance must be greater then zero"));
+            return new FailTask(tr("Incorrect value: minimal distance must be greater then zero"));
+        }
+        
+        if (!seq.alphabet->isNucleic()) {
+            QString err = tr("Sequence alphabet is not nucleic!");
+            //if (failFast) {
+                return new FailTask(err);
+            /*} else {
+                algoLog.error(err);
+                return NULL;
+            }*/
+        }
+        Task* t = new FindRepeatsToAnnotationsTask(cfg, seq, resultName, QString(), GObjectReference());
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-    Task* t = new FindRepeatsToAnnotationsTask(cfg, seq, resultName, QString(), GObjectReference());
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+    return NULL;
 }
 
 void RepeatWorker::sl_taskFinished() {
@@ -238,15 +244,8 @@ void RepeatWorker::sl_taskFinished() {
         const QList<SharedAnnotationData>& res = t->importAnnotations();
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
         algoLog.info(tr("Found %1 repeats").arg(res.size()));
     }
-}
-
-bool RepeatWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 void RepeatWorker::cleanup() {

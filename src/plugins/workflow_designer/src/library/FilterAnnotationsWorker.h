@@ -45,14 +45,12 @@ public:
     FilterAnnotationsWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {};
 
     virtual void init();
-    virtual bool isReady();
     virtual Task* tick();
-    virtual bool isDone();
     virtual void cleanup();
 private slots:
     void sl_taskFinished();
 private:
-    CommunicationChannel *input, *output;
+    IntegralBus *input, *output;
     QList<SharedAnnotationData> inputAnns;
 }; 
 

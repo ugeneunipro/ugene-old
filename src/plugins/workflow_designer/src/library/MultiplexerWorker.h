@@ -58,7 +58,6 @@ public:
     virtual void init();
     virtual bool isReady();
     virtual Task *tick();
-    virtual bool isDone();
     virtual void cleanup();
 
 private:
@@ -66,7 +65,6 @@ private:
     IntegralBus *inChannel2;
     IntegralBus *outChannel;
 
-    bool done;
     uint rule;
     uint onEmptyAction;
     bool hasMultiData;

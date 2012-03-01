@@ -86,70 +86,70 @@ void RCWorker::init() {
     output = ports.value(BasePorts::OUT_SEQ_PORT_ID());
 }
 
-bool RCWorker::isDone() {
-    return !input || input->isEnded();
-}
-
-bool RCWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* RCWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    QVariantMap qm = inputMessage.getData().toMap();
-    U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return new FailTask(tr("Null sequence object supplied to FindWorker"));
-    }
-    DNASequence seq = seqObj->getWholeSequence();
-    if(seq.isNull()) {
-        return new FailTask(tr("Null sequence supplied to FindWorker: %1").arg(seq.getName()));
-    }
-
-    QString type = actor->getParameter(OP_TYPE)->getAttributeValue<QString>(context);
-    
-    DNATranslation *complTT;
-    if(!seq.alphabet->isNucleic()) {
-        coreLog.info(tr("Can't complement amino sequence"));
-        if (input->isEnded()) {
-            output->setEnded();
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
         }
-        return NULL;
-    }
-    if(type == "reverse-complement") {
-        complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(seq.alphabet);
-        if(complTT == NULL) {
-            coreLog.info(tr("Can't find complement translation"));
+        QVariantMap qm = inputMessage.getData().toMap();
+        U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return new FailTask(tr("Null sequence object supplied to FindWorker"));
+        }
+        DNASequence seq = seqObj->getWholeSequence();
+        if(seq.isNull()) {
+            return new FailTask(tr("Null sequence supplied to FindWorker: %1").arg(seq.getName()));
+        }
+
+        QString type = actor->getParameter(OP_TYPE)->getAttributeValue<QString>(context);
+        
+        DNATranslation *complTT;
+        if(!seq.alphabet->isNucleic()) {
+            coreLog.info(tr("Can't complement amino sequence"));
             if (input->isEnded()) {
                 output->setEnded();
             }
             return NULL;
         }
-        complTT->translate(seq.seq.data(),seq.seq.size(), seq.seq.data(), seq.seq.size());
-        TextUtils::reverse(seq.seq.data(), seq.seq.size());
-    } else if(type == "norev") {
-        complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(seq.alphabet);
-        if(complTT == NULL) {
-            coreLog.info(tr("Can't find complement translation"));
+        if(type == "reverse-complement") {
+            complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(seq.alphabet);
+            if(complTT == NULL) {
+                coreLog.info(tr("Can't find complement translation"));
+                if (input->isEnded()) {
+                    output->setEnded();
+                }
+                return NULL;
+            }
+            complTT->translate(seq.seq.data(),seq.seq.size(), seq.seq.data(), seq.seq.size());
+            TextUtils::reverse(seq.seq.data(), seq.seq.size());
+        } else if(type == "norev") {
+            complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(seq.alphabet);
+            if(complTT == NULL) {
+                coreLog.info(tr("Can't find complement translation"));
+                if (input->isEnded()) {
+                    output->setEnded();
+                }
+                return NULL;
+            }
+            complTT->translate(seq.seq.data(),seq.seq.size(), seq.seq.data(), seq.seq.size());
+        } else {
+            TextUtils::reverse(seq.seq.data(), seq.seq.size());
+        }
+
+        if(output) {
+            QVariant v = qVariantFromValue<DNASequence >(seq);
+            output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), v));
             if (input->isEnded()) {
                 output->setEnded();
             }
-            return NULL;
         }
-        complTT->translate(seq.seq.data(),seq.seq.size(), seq.seq.data(), seq.seq.size());
-    } else {
-        TextUtils::reverse(seq.seq.data(), seq.seq.size());
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-
-    if(output) {
-        QVariant v = qVariantFromValue<DNASequence >(seq);
-        output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), v));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
-    }
-
     return NULL;
 }
 

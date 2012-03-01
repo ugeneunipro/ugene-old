@@ -44,16 +44,13 @@ public:
     PassFilterWorker(Actor *p);
 
     virtual void init();
-    virtual bool isReady();
     virtual Task *tick();
-    virtual bool isDone();
     virtual void cleanup();
 
 private:
     CommunicationChannel *inChannel;
     CommunicationChannel *outChannel;
     DataTypePtr mtype;
-    bool done;
     QStringList passedValues;
 
 }; // PassFilterWorker

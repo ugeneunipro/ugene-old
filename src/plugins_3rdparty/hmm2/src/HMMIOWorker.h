@@ -90,10 +90,8 @@ class HMMReader : public BaseWorker {
 public:
     static const QString ACTOR;
     HMMReader(Actor* a) : BaseWorker(a), output(NULL) {}
-    virtual void init() ;
-    virtual bool isReady() {return !urls.isEmpty();}
-    virtual Task* tick() ;
-    virtual bool isDone() {return urls.isEmpty();}
+    virtual void init();
+    virtual Task* tick();
     virtual void cleanup() {}
 private slots:
     void sl_taskFinished();
@@ -108,10 +106,8 @@ class HMMWriter : public BaseWorker {
 public:
     static const QString ACTOR;
     HMMWriter(Actor* a) : BaseWorker(a), input(NULL), done(false), fileMode(SaveDoc_Overwrite) {}
-    virtual void init() ;
-    virtual bool isReady() {return input && input->hasMessage();}
-    virtual Task* tick() ;
-    virtual bool isDone() {return !input || input->isEnded();}
+    virtual void init();
+    virtual Task* tick();
     virtual void cleanup() {}
 
 protected:

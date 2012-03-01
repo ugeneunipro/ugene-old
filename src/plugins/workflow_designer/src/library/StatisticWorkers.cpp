@@ -76,66 +76,64 @@ void DNAStatWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool DNAStatWorker::isReady() {
-    return input->hasMessage();
-}
-
 Task* DNAStatWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    QVariantMap qm = inputMessage.getData().toMap();
-    U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
+    while (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        QVariantMap qm = inputMessage.getData().toMap();
+        U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence dna = seqObj->getWholeSequence();
+
+        if(!dna.alphabet->isNucleic()) {
+            return new FailTask(tr("Sequence must be nucleotide"));
+        }
+
+        QList<SharedAnnotationData> res;
+        SharedAnnotationData gcAnn(new AnnotationData());
+        gcAnn->name = "statistics";
+        gcAnn->location->regions << U2Region( 0, dna.seq.size());
+
+        if(actor->getParameter(GCCONTENT)->getAttributeValue<bool>(context)) {
+            float gcContent = calcGCContent(dna.seq);
+            gcAnn->qualifiers.push_back(U2Qualifier("gc-content", QString::number(gcContent*100) + "%"));
+        }
+
+        if(actor->getParameter(GC1CONTENT)->getAttributeValue<bool>(context)) {
+            float gc1Content = calcGC1Content(dna.seq);
+            gcAnn->qualifiers.push_back(U2Qualifier("gc1-content", QString::number(gc1Content*100) + "%"));
+        }
+
+        if(actor->getParameter(GC2CONTENT)->getAttributeValue<bool>(context)) {
+            float gc2Content = calcGC2Content(dna.seq);
+            gcAnn->qualifiers.push_back(U2Qualifier("gc2-content", QString::number(gc2Content*100) + "%"));
+        }
+
+        if(actor->getParameter(GC3CONTENT)->getAttributeValue<bool>(context)) {
+            float gc3Content = calcGC3Content(dna.seq);
+            gcAnn->qualifiers.push_back(U2Qualifier("gc3-content", QString::number(gc3Content*100) + "%"));
+        }
+
+        if(gcAnn->qualifiers.isEmpty()) {
+            return new FailTask(tr("No statistics was selected"));
+        }
+
+        res << gcAnn;
+
+        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
+        output->put( Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v) );
     }
-    DNASequence dna = seqObj->getWholeSequence();
-
-    if(!dna.alphabet->isNucleic()) {
-        return new FailTask(tr("Sequence must be nucleotide"));
-    }
-
-    QList<SharedAnnotationData> res;
-    SharedAnnotationData gcAnn(new AnnotationData());
-    gcAnn->name = "statistics";
-    gcAnn->location->regions << U2Region( 0, dna.seq.size());
-
-    if(actor->getParameter(GCCONTENT)->getAttributeValue<bool>(context)) {
-        float gcContent = calcGCContent(dna.seq);
-        gcAnn->qualifiers.push_back(U2Qualifier("gc-content", QString::number(gcContent*100) + "%"));
-    }
-
-    if(actor->getParameter(GC1CONTENT)->getAttributeValue<bool>(context)) {
-        float gc1Content = calcGC1Content(dna.seq);
-        gcAnn->qualifiers.push_back(U2Qualifier("gc1-content", QString::number(gc1Content*100) + "%"));
-    }
-
-    if(actor->getParameter(GC2CONTENT)->getAttributeValue<bool>(context)) {
-        float gc2Content = calcGC2Content(dna.seq);
-        gcAnn->qualifiers.push_back(U2Qualifier("gc2-content", QString::number(gc2Content*100) + "%"));
-    }
-
-    if(actor->getParameter(GC3CONTENT)->getAttributeValue<bool>(context)) {
-        float gc3Content = calcGC3Content(dna.seq);
-        gcAnn->qualifiers.push_back(U2Qualifier("gc3-content", QString::number(gc3Content*100) + "%"));
-    }
-
-    if(gcAnn->qualifiers.isEmpty()) {
-        return new FailTask(tr("No statistics was selected"));
-    }
-
-    res << gcAnn;
-
-    QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
-    output->put( Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v) );
     if (input->isEnded()) {
+        setDone();
         output->setEnded();
     }
-
     return NULL;
-}
-
-bool DNAStatWorker::isDone() {
-    return input->isEnded();
 }
 
 float DNAStatWorker::calcGCContent(const QByteArray &seq) {

@@ -40,6 +40,9 @@ public:
     int getId() const;
     DataTypePtr getType() const;
     QVariant getData() const;
+    bool isEmpty() const;
+
+    static Message getEmptyMapMessage();
     
 private:
     static int nextid();

@@ -165,45 +165,53 @@ void HMMSearchWorker::init() {
 }
 
 bool HMMSearchWorker::isReady() {
-    return hmmPort->hasMessage() || ((!hmms.isEmpty() && hmmPort->isEnded() ) && seqPort->hasMessage());
+    if (isDone()) {
+        return false;
+    }
+    bool seqEnded = seqPort->isEnded();
+    bool hmmEnded = hmmPort->isEnded();
+    int seqHasMes = seqPort->hasMessage();
+    int hmmHasMes = hmmPort->hasMessage();
+    return hmmHasMes || (hmmEnded && (seqHasMes || seqEnded));
 }
  
 Task* HMMSearchWorker::tick() {
     while (hmmPort->hasMessage()) {
         hmms << hmmPort->get().getData().toMap().value(HMMLib::HMM2_SLOT.getId()).value<plan7_s*>();
     }
-    
-    if (!hmmPort->isEnded() || hmms.isEmpty() || !seqPort->hasMessage()) {
+    if (!hmmPort->isEnded()) { //  || hmms.isEmpty() || !seqPort->hasMessage()
         return NULL;
     }
-    
-    U2DataId seqId = seqPort->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence dnaSequence = seqObj->getWholeSequence();
 
-    if (dnaSequence.alphabet->getType() != DNAAlphabet_RAW) {
-        QList<Task*> subtasks;
-        foreach(plan7_s* hmm, hmms) {
-            subtasks << new HMMSearchTask(hmm, dnaSequence, cfg);
+    if (seqPort->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(seqPort);
+        if (inputMessage.isEmpty() || hmms.isEmpty()) {
+            output->transit();
+            return NULL;
         }
-        Task* searchTask = new MultiTask(tr("Search HMM signals in %1").arg(dnaSequence.getName()), subtasks);
-        connect(new TaskSignalMapper(searchTask), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
-        return searchTask;
-    }
-    QString err = tr("Bad sequence supplied to input: %1").arg(dnaSequence.getName());
-    //if (failFast) {
+        U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence dnaSequence = seqObj->getWholeSequence();
+
+        if (dnaSequence.alphabet->getType() != DNAAlphabet_RAW) {
+            QList<Task*> subtasks;
+            foreach(plan7_s* hmm, hmms) {
+                subtasks << new HMMSearchTask(hmm, dnaSequence, cfg);
+            }
+            Task* searchTask = new MultiTask(tr("Search HMM signals in %1").arg(dnaSequence.getName()), subtasks);
+            connect(new TaskSignalMapper(searchTask), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+            return searchTask;
+        }
+        QString err = tr("Bad sequence supplied to input: %1").arg(dnaSequence.getName());
         return new FailTask(err);
-    /*} else {
-        algoLog.error(err);
-        output->put(Message(BioDataTypes::ANNOTATION_TABLE_TYPE(), QVariant()));
-        if (seqPort->isEnded()) {
-            output->setEnded();
-        }
-        return NULL;
-    }*/
+    } if (seqPort->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+    return NULL;
 }
  
 void HMMSearchWorker::sl_taskFinished(Task* t) {
@@ -215,15 +223,8 @@ void HMMSearchWorker::sl_taskFinished(Task* t) {
         }
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(list);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (seqPort->isEnded()) {
-            output->setEnded();
-        }
         algoLog.info(tr("Found %1 HMM signals").arg(list.size()));
     }
-}
- 
-bool HMMSearchWorker::isDone() {
-    return seqPort->isEnded();
 }
 
 void HMMSearchWorker::cleanup() {

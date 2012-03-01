@@ -199,7 +199,10 @@ void HMMBuildWorker::init() {
 }
 
 bool HMMBuildWorker::isReady() {
-    return nextTick || input->hasMessage();
+    if (isDone()) {
+        return false;
+    }
+    return nextTick || input->hasMessage() || input->isEnded();
 }
 
 Task* HMMBuildWorker::tick() {
@@ -214,25 +217,35 @@ Task* HMMBuildWorker::tick() {
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else { // hmm build task
-        Message inputMessage = getMessageAndSetupScriptValues(input);
-        cfg.name = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
-        if(cfg.name.isEmpty()){
-            cfg.name = HMM_PROFILE_DEFAULT_NAME;
-            algoLog.details(tr("Schema name not specified. Using default value: '%1'").arg(cfg.name));
+        if (input->hasMessage()) {
+            Message inputMessage = getMessageAndSetupScriptValues(input);
+            if (inputMessage.isEmpty()) {
+                output->transit();
+                return NULL;
+            }
+            cfg.name = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
+            if(cfg.name.isEmpty()){
+                cfg.name = HMM_PROFILE_DEFAULT_NAME;
+                algoLog.details(tr("Schema name not specified. Using default value: '%1'").arg(cfg.name));
+            }
+            cfg.strategy = HMMBuildStrategy(actor->getParameter(MODE_ATTR)->getAttributeValue<int>(context));
+            calSettings.fixedlen = actor->getParameter(FIXEDLEN_ATTR)->getAttributeValue<int>(context);
+            calSettings.lenmean = actor->getParameter(LENMEAN_ATTR)->getAttributeValue<int>(context);
+            calSettings.nsample = actor->getParameter(NUM_ATTR)->getAttributeValue<int>(context);
+            calSettings.lensd = (float)actor->getParameter(LENDEV_ATTR)->getAttributeValue<double>(context);
+            calSettings.seed = actor->getParameter(SEED_ATTR)->getAttributeValue<int>(context);
+            calSettings.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>(context);
+            calibrate = actor->getParameter(CALIBRATE_ATTR)->getAttributeValue<bool>(context);
+            const MAlignment& ma = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+            
+            Task* t = new HMMBuildTask(cfg, ma);
+            connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+            return t;
+        } else if (input->isEnded()) {
+            setDone();
+            output->setEnded();
         }
-        cfg.strategy = HMMBuildStrategy(actor->getParameter(MODE_ATTR)->getAttributeValue<int>(context));
-        calSettings.fixedlen = actor->getParameter(FIXEDLEN_ATTR)->getAttributeValue<int>(context);
-        calSettings.lenmean = actor->getParameter(LENMEAN_ATTR)->getAttributeValue<int>(context);
-        calSettings.nsample = actor->getParameter(NUM_ATTR)->getAttributeValue<int>(context);
-        calSettings.lensd = (float)actor->getParameter(LENDEV_ATTR)->getAttributeValue<double>(context);
-        calSettings.seed = actor->getParameter(SEED_ATTR)->getAttributeValue<int>(context);
-        calSettings.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>(context);
-        calibrate = actor->getParameter(CALIBRATE_ATTR)->getAttributeValue<bool>(context);
-        const MAlignment& ma = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-        
-        Task* t = new HMMBuildTask(cfg, ma);
-        connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
-        return t;
+        return NULL;
     }
 }
 
@@ -268,13 +281,10 @@ void HMMBuildWorker::sl_taskFinished(Task* t) {
         output->put(Message(HMMLib::HMM_PROFILE_TYPE(), qVariantFromValue<plan7_s*>(hmm)));
         algoLog.info(tr("Calibrated HMM profile"));
     }
-    if (input->isEnded()) {
-        output->setEnded();
-    }
 }
 
 bool HMMBuildWorker::isDone() {
-    return !input || input->isEnded();
+    return BaseWorker::isDone() && !nextTick;
 }
 
 void HMMBuildWorker::cleanup() {

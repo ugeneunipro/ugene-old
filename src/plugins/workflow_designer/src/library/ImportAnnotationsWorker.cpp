@@ -60,28 +60,34 @@ void ImportAnnotationsWorker::init() {
     assert(inPort && outPort);
 }
 
-bool ImportAnnotationsWorker::isReady() {
-    return inPort->hasMessage();
-}
-
 Task * ImportAnnotationsWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(inPort);
-    QList<QString> urls = WorkflowUtils::expandToUrls(
-        actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
-    
-    QList<Task*> loadTasks;
-    foreach(const QString & url, urls) {
-        LoadDocumentTask * loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(url);
-        if(loadDocTask == NULL) {
-            qDeleteAll(loadTasks);
-            return new FailTask(L10N::errorOpeningFileRead(url));
+    if (inPort->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(inPort);
+        if (inputMessage.isEmpty()) {
+            outPort->transit();
+            return NULL;
         }
-        loadTasks << loadDocTask;
+        QList<QString> urls = WorkflowUtils::expandToUrls(
+            actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
+        
+        QList<Task*> loadTasks;
+        foreach(const QString & url, urls) {
+            LoadDocumentTask * loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(url);
+            if(loadDocTask == NULL) {
+                qDeleteAll(loadTasks);
+                return new FailTask(L10N::errorOpeningFileRead(url));
+            }
+            loadTasks << loadDocTask;
+        }
+        Task * ret = new MultiTask(tr("Load documents with annotations"), loadTasks);
+        connect(new TaskSignalMapper(ret), SIGNAL(si_taskFinished(Task*)), SLOT(sl_docsLoaded(Task*)));
+        annsMap[ret] = QVariantUtils::var2ftl(inputMessage.getData().toMap().value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
+        return ret;
+    } else if (inPort->isEnded()) {
+        setDone();
+        outPort->setEnded();
     }
-    Task * ret = new MultiTask(tr("Load documents with annotations"), loadTasks);
-    connect(new TaskSignalMapper(ret), SIGNAL(si_taskFinished(Task*)), SLOT(sl_docsLoaded(Task*)));
-    annsMap[ret] = QVariantUtils::var2ftl(inputMessage.getData().toMap().value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
-    return ret;
+    return NULL;
 }
 
 static QList<SharedAnnotationData> getAnnsFromDoc(Document* doc) {
@@ -121,13 +127,6 @@ void ImportAnnotationsWorker::sl_docsLoaded(Task* ta) {
     }
     QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(anns);
     outPort->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-    if(inPort->isEnded()) {
-        outPort->setEnded();
-    }
-}
-
-bool ImportAnnotationsWorker::isDone() {
-    return inPort->isEnded();
 }
 
 void ImportAnnotationsWorker::cleanup() {

@@ -52,31 +52,30 @@ void Alignment2SequenceWorker::init() {
     output = ports.value(BasePorts::OUT_SEQ_PORT_ID());
 }
 
-bool Alignment2SequenceWorker::isReady() {
-    return input->hasMessage();
-}
-
 Task * Alignment2SequenceWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    MAlignment ma = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-    if(ma.isEmpty()) {
-        return new FailTask(tr("empty input alignment"));
+    while (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        MAlignment ma = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+        if(ma.isEmpty()) {
+            return new FailTask(tr("empty input alignment"));
+        }
+        QList<DNASequence> seqs = MSAUtils::ma2seq(ma,true);
+        foreach(const DNASequence &seq, seqs) {
+            QVariantMap msgData;
+            U2DataId seqId = context->getDataStorage()->putSequence(seq);
+            msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
+            output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));
+        }
     }
-    QList<DNASequence> seqs = MSAUtils::ma2seq(ma,true);
-    foreach(const DNASequence &seq, seqs) {
-        QVariantMap msgData;
-        U2DataId seqId = context->getDataStorage()->putSequence(seq);
-        msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
-        output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));
-    }
-    if(!input->hasMessage()) {
+    if (input->isEnded()) {
+        setDone();
         output->setEnded();
     }
     return NULL;
-}
-
-bool Alignment2SequenceWorker::isDone() {
-    return input->isEnded();
 }
 
 void Alignment2SequenceWorker::cleanup() {

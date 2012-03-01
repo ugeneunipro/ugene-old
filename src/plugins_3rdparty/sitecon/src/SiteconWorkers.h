@@ -54,16 +54,14 @@ public:
     static void registerProto();
 
     SiteconBuildWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {}
-    virtual void init() ;
-    virtual bool isReady();
-    virtual Task* tick() ;
-    virtual bool isDone() ;
+    virtual void init();
+    virtual Task* tick();
     virtual void cleanup() {}
 private slots:
     void sl_taskFinished();
 
 protected:
-    CommunicationChannel *input, *output;
+    IntegralBus *input, *output;
     SiteconBuildSettings cfg;
     DataTypePtr mtype;
 }; 
@@ -79,7 +77,6 @@ public:
     virtual void init() ;
     virtual bool isReady();
     virtual Task* tick() ;
-    virtual bool isDone() ;
     virtual void cleanup() {}
     private slots:
         void sl_taskFinished(Task*);

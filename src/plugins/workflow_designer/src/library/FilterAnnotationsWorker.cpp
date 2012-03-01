@@ -55,32 +55,31 @@ void FilterAnnotationsWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool FilterAnnotationsWorker::isReady() {
-    return input->hasMessage();
-}
-
 Task* FilterAnnotationsWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    QVariantMap qm = inputMessage.getData().toMap();
-    inputAnns = qVariantValue<QList<SharedAnnotationData> >( qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()) );
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        QVariantMap qm = inputMessage.getData().toMap();
+        inputAnns = qVariantValue<QList<SharedAnnotationData> >( qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()) );
 
-    bool accept = actor->getParameter( WHICH_FILTER_ATTR )->getAttributeValue<bool>(context);
-    QString namesStr = actor->getParameter( FILTER_NAMES_ATTR )->getAttributeValue<QString>(context);
+        bool accept = actor->getParameter( WHICH_FILTER_ATTR )->getAttributeValue<bool>(context);
+        QString namesStr = actor->getParameter( FILTER_NAMES_ATTR )->getAttributeValue<QString>(context);
 
-    Task* t = new FilterAnnotationsTask(inputAnns, namesStr, accept);
-    connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished()));
-    return t;
+        Task* t = new FilterAnnotationsTask(inputAnns, namesStr, accept);
+        connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+    return NULL;
 }
 
 void FilterAnnotationsWorker::sl_taskFinished() {
     output->put( Message(BaseTypes::ANNOTATION_TABLE_TYPE(), qVariantFromValue(inputAnns)) );
-    if (input->isEnded()) {
-        output->setEnded();
-    }
-}
-
-bool FilterAnnotationsWorker::isDone() {
-    return input->isEnded();
 }
 
 void FilterAnnotationsWorker::cleanup() {

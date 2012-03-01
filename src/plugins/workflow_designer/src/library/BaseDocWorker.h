@@ -41,7 +41,6 @@ public:
     virtual ~BaseDocReader() {}
     
     virtual void init() ;
-    virtual bool isReady();
     virtual Task* tick() ;
     virtual bool isDone() ;
     virtual void cleanup() ;
@@ -53,7 +52,7 @@ protected:
     CommunicationChannel* ch;
     DocumentFormatId fid;
     QMap<Document*, bool> docs;
-    bool done, attachDoc2Proj;
+    bool attachDoc2Proj;
     QList<Message> cache;
     DataTypePtr mtype;
     
@@ -66,9 +65,7 @@ public:
     BaseDocWriter( Actor * a );
     virtual ~BaseDocWriter(){}
     virtual void init() ;
-    virtual bool isReady();
     virtual Task* tick() ;
-    virtual bool isDone() ;
     virtual void cleanup() ;
 
 protected:
@@ -78,7 +75,7 @@ protected:
 protected:
     CommunicationChannel* ch;
     DocumentFormat* format;
-    bool done, append;
+    bool append;
     QString url;
     QMap<QString, int> counter;
     uint fileMode;

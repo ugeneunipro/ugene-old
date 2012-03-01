@@ -207,118 +207,124 @@ void BlastPlusWorker::init() {
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 }
 
-bool BlastPlusWorker::isReady() {
-    return (input && input->hasMessage());
-}
-
 Task* BlastPlusWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(input);
-    cfg.programName=actor->getParameter(BLASTPLUS_PROGRAM_NAME)->getAttributeValue<QString>(context);
-    cfg.databaseNameAndPath=actor->getParameter(BLASTPLUS_DATABASE_PATH)->getAttributeValue<QString>(context) +"/"+
-                            actor->getParameter(BLASTPLUS_DATABASE_NAME)->getAttributeValue<QString>(context);
-    cfg.isDefaultCosts=true;
-    cfg.isDefaultMatrix=true;
-    cfg.isDefautScores=true;
-    cfg.expectValue=actor->getParameter(BLASTPLUS_EXPECT_VALUE)->getAttributeValue<double>(context);
-    cfg.groupName=actor->getParameter(BLASTPLUS_GROUP_NAME)->getAttributeValue<QString>(context);
-    if(cfg.groupName.isEmpty()){
-        cfg.groupName="blast result";
-    }
-    cfg.wordSize=0;
-    cfg.isGappedAlignment=actor->getParameter(BLASTPLUS_GAPPED_ALN)->getAttributeValue<bool>(context);
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        cfg.programName=actor->getParameter(BLASTPLUS_PROGRAM_NAME)->getAttributeValue<QString>(context);
+        cfg.databaseNameAndPath=actor->getParameter(BLASTPLUS_DATABASE_PATH)->getAttributeValue<QString>(context) +"/"+
+                                actor->getParameter(BLASTPLUS_DATABASE_NAME)->getAttributeValue<QString>(context);
+        cfg.isDefaultCosts=true;
+        cfg.isDefaultMatrix=true;
+        cfg.isDefautScores=true;
+        cfg.expectValue=actor->getParameter(BLASTPLUS_EXPECT_VALUE)->getAttributeValue<double>(context);
+        cfg.groupName=actor->getParameter(BLASTPLUS_GROUP_NAME)->getAttributeValue<QString>(context);
+        if(cfg.groupName.isEmpty()){
+            cfg.groupName="blast result";
+        }
+        cfg.wordSize=0;
+        cfg.isGappedAlignment=actor->getParameter(BLASTPLUS_GAPPED_ALN)->getAttributeValue<bool>(context);
 
-    QString path=actor->getParameter(BLASTPLUS_EXT_TOOL_PATH)->getAttributeValue<QString>(context);
-    if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+        QString path=actor->getParameter(BLASTPLUS_EXT_TOOL_PATH)->getAttributeValue<QString>(context);
+        if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+            if(cfg.programName == "blastn"){
+                AppContext::getExternalToolRegistry()->getByName(BLASTN_TOOL_NAME)->setPath(path);
+            }else if(cfg.programName == "blastp"){
+                AppContext::getExternalToolRegistry()->getByName(BLASTP_TOOL_NAME)->setPath(path);
+            }else if(cfg.programName == "gpu-blastp"){
+                AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->setPath(path);
+            }else if(cfg.programName == "blastx"){
+                AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->setPath(path);
+            }else if(cfg.programName == "tblastn"){
+                AppContext::getExternalToolRegistry()->getByName(TBLASTN_TOOL_NAME)->setPath(path);
+            }else if(cfg.programName == "tblastx"){
+                AppContext::getExternalToolRegistry()->getByName(TBLASTX_TOOL_NAME)->setPath(path);
+            }
+
+        }
+        path=actor->getParameter(BLASTPLUS_TMP_DIR_PATH)->getAttributeValue<QString>(context);
+        if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
+            AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
+        }
+
+        U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
+        
+        if( seq.length() < 1) {
+            return new FailTask(tr("Empty sequence supplied to BLAST"));
+        }
+        cfg.querySequence=seq.seq;
+
+        DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
+        cfg.alphabet=alp;
+        //TO DO: Check alphabet
+        if(seq.alphabet->isAmino()) {
+            if(cfg.programName == "blastn" || cfg.programName == "blastx" || cfg.programName == "tblastx") {
+                return new FailTask(tr("Selected BLAST search with nucleotide input sequence"));
+            }
+        }
+        else {
+            if(cfg.programName == "blastp" || cfg.programName == "gpu-blastp" || cfg.programName == "tblastn") {
+                return new FailTask(tr("Selected BLAST search with amino acid input sequence"));
+            }
+        }
+        cfg.needCreateAnnotations=false;
+        cfg.outputType=actor->getParameter(BLASTPLUS_OUT_TYPE)->getAttributeValue<int>(context);
+        cfg.outputOriginalFile=actor->getParameter(BLASTPLUS_ORIGINAL_OUT)->getAttributeValue<QString>(context);
+        if(cfg.outputType != 5 && cfg.outputOriginalFile.isEmpty()){
+            return new FailTask(tr("Not selected BLAST output file"));
+        }
+
         if(cfg.programName == "blastn"){
-            AppContext::getExternalToolRegistry()->getByName(BLASTN_TOOL_NAME)->setPath(path);
-        }else if(cfg.programName == "blastp"){
-            AppContext::getExternalToolRegistry()->getByName(BLASTP_TOOL_NAME)->setPath(path);
-        }else if(cfg.programName == "gpu-blastp"){
-            AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->setPath(path);
+            cfg.megablast = true;
+            cfg.wordSize = 28;
+            cfg.windowSize = 0;
+        }else{
+            cfg.megablast = false;
+            cfg.wordSize = 3;
+            cfg.windowSize  = 40;
+        }
+        //set X dropoff values
+        if(cfg.programName == "blastn"){
+            cfg.xDropoffFGA = 100;
+            cfg.xDropoffGA = 20;
+            cfg.xDropoffUnGA = 10;
+        }else if (cfg.programName == "tblastx"){
+            cfg.xDropoffFGA = 0;
+            cfg.xDropoffGA = 0;
+            cfg.xDropoffUnGA = 7;
+        }else{
+            cfg.xDropoffFGA = 25;
+            cfg.xDropoffGA = 15;
+            cfg.xDropoffUnGA = 7;
+        }
+
+        Task * t=NULL;
+        if(cfg.programName == "blastn"){
+            t = new BlastNPlusSupportTask(cfg);
+        }else if(cfg.programName == "blastp" || cfg.programName == "gpu-blastp"){
+            t = new BlastPPlusSupportTask(cfg);
         }else if(cfg.programName == "blastx"){
-            AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->setPath(path);
+            t = new BlastXPlusSupportTask(cfg);
         }else if(cfg.programName == "tblastn"){
-            AppContext::getExternalToolRegistry()->getByName(TBLASTN_TOOL_NAME)->setPath(path);
+            t = new TBlastNPlusSupportTask(cfg);
         }else if(cfg.programName == "tblastx"){
-            AppContext::getExternalToolRegistry()->getByName(TBLASTX_TOOL_NAME)->setPath(path);
+            t = new TBlastXPlusSupportTask(cfg);
         }
-
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
     }
-    path=actor->getParameter(BLASTPLUS_TMP_DIR_PATH)->getAttributeValue<QString>(context);
-    if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
-        AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
-    }
-
-    U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
-    }
-    DNASequence seq = seqObj->getWholeSequence();
-    
-    if( seq.length() < 1) {
-        return new FailTask(tr("Empty sequence supplied to BLAST"));
-    }
-    cfg.querySequence=seq.seq;
-
-    DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
-    cfg.alphabet=alp;
-    //TO DO: Check alphabet
-    if(seq.alphabet->isAmino()) {
-        if(cfg.programName == "blastn" || cfg.programName == "blastx" || cfg.programName == "tblastx") {
-            return new FailTask(tr("Selected BLAST search with nucleotide input sequence"));
-        }
-    }
-    else {
-        if(cfg.programName == "blastp" || cfg.programName == "gpu-blastp" || cfg.programName == "tblastn") {
-            return new FailTask(tr("Selected BLAST search with amino acid input sequence"));
-        }
-    }
-    cfg.needCreateAnnotations=false;
-    cfg.outputType=actor->getParameter(BLASTPLUS_OUT_TYPE)->getAttributeValue<int>(context);
-    cfg.outputOriginalFile=actor->getParameter(BLASTPLUS_ORIGINAL_OUT)->getAttributeValue<QString>(context);
-    if(cfg.outputType != 5 && cfg.outputOriginalFile.isEmpty()){
-        return new FailTask(tr("Not selected BLAST output file"));
-    }
-
-    if(cfg.programName == "blastn"){
-        cfg.megablast = true;
-        cfg.wordSize = 28;
-        cfg.windowSize = 0;
-    }else{
-        cfg.megablast = false;
-        cfg.wordSize = 3;
-        cfg.windowSize  = 40;
-    }
-    //set X dropoff values
-    if(cfg.programName == "blastn"){
-        cfg.xDropoffFGA = 100;
-        cfg.xDropoffGA = 20;
-        cfg.xDropoffUnGA = 10;
-    }else if (cfg.programName == "tblastx"){
-        cfg.xDropoffFGA = 0;
-        cfg.xDropoffGA = 0;
-        cfg.xDropoffUnGA = 7;
-    }else{
-        cfg.xDropoffFGA = 25;
-        cfg.xDropoffGA = 15;
-        cfg.xDropoffUnGA = 7;
-    }
-
-    Task * t=NULL;
-    if(cfg.programName == "blastn"){
-        t = new BlastNPlusSupportTask(cfg);
-    }else if(cfg.programName == "blastp" || cfg.programName == "gpu-blastp"){
-        t = new BlastPPlusSupportTask(cfg);
-    }else if(cfg.programName == "blastx"){
-        t = new BlastXPlusSupportTask(cfg);
-    }else if(cfg.programName == "tblastn"){
-        t = new TBlastNPlusSupportTask(cfg);
-    }else if(cfg.programName == "tblastx"){
-        t = new TBlastXPlusSupportTask(cfg);
-    }
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+    return NULL;
 }
 
 void BlastPlusWorker::sl_taskFinished() {
@@ -335,14 +341,7 @@ void BlastPlusWorker::sl_taskFinished() {
         }
         QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        if (input->isEnded()) {
-            output->setEnded();
-        }
     }
-}
-
-bool BlastPlusWorker::isDone() {
-    return !input || input->isEnded();
 }
 
 void BlastPlusWorker::cleanup() {
