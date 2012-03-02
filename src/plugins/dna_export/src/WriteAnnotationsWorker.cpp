@@ -118,7 +118,14 @@ Task * WriteAnnotationsWorker::tick() {
 
         QList<SharedAnnotationData> atl = QVariantUtils::var2ftl(inputMessage.getData().toMap().
             value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
-        foreach(const SharedAnnotationData & ad, atl) {
+        bool isWriteNames = actor->getParameter(WRITE_NAMES)->getAttributeValue<bool>(context);
+        foreach(SharedAnnotationData ad, atl) {
+            if(isWriteNames){
+                U2Qualifier seqNameQual;
+                seqNameQual.name = "Sequence Name";
+                seqNameQual.value = seqName;
+                ad->qualifiers.append(seqNameQual);
+            }
             att->addAnnotation(new Annotation(ad));
         }
     } // while
@@ -140,8 +147,8 @@ Task * WriteAnnotationsWorker::tick() {
             if(fl.testFlag(SaveDoc_Roll) && !GUrlUtils::renameFileWithNameRoll(filepath, ti, excludeFileNames, &coreLog)) {
                 return new FailTask(ti.getError());
             }
-            taskList << new ExportAnnotations2CSVTask(att->getAnnotations(), QByteArray(), seqName, NULL, false, 
-                  actor->getParameter(WRITE_NAMES)->getAttributeValue<bool>(context), filepath, fl.testFlag(SaveDoc_Append)
+            taskList << new ExportAnnotations2CSVTask(att->getAnnotations(), QByteArray(), QString(), NULL, false, 
+                  false, filepath, fl.testFlag(SaveDoc_Append)
                 , actor->getParameter(SEPARATOR)->getAttributeValue<QString>(context));
         } else {
             fl |= SaveDoc_DestroyAfter;
