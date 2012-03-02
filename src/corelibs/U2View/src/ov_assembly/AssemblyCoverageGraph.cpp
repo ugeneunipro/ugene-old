@@ -33,14 +33,14 @@ AssemblyCoverageGraph::AssemblyCoverageGraph(AssemblyBrowserUi * ui_) :
 QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), previousXOffset(-1) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
-    sl_redraw();
+    doRedraw();
     setMouseTracking(true);
 }
 
 void AssemblyCoverageGraph::connectSlots() {
     connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_launchCoverageCalculation()));
     connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_onOffsetsChanged()));
-    connect(&coverageTaskRunner, SIGNAL(si_finished()), SLOT(sl_redraw()));
+    connect(&coverageTaskRunner, SIGNAL(si_finished()), SLOT(sl_coverageReady()));
 }
 
 void AssemblyCoverageGraph::drawAll() {
@@ -100,7 +100,7 @@ void AssemblyCoverageGraph::mouseMoveEvent(QMouseEvent * e) {
     QWidget::mouseMoveEvent(e);
 }
 
-void AssemblyCoverageGraph::sl_redraw() {
+void AssemblyCoverageGraph::doRedraw() {
     redraw = true;
     update();
 }
@@ -108,20 +108,27 @@ void AssemblyCoverageGraph::sl_redraw() {
 void AssemblyCoverageGraph::sl_launchCoverageCalculation()
 {
     if(browser->areCellsVisible()) {
-        qint64 start = browser->getXOffsetInAssembly();
-        qint64 length = browser->basesVisible();
+        U2Region visibleRegion = browser->getVisibleBasesRegion();
 
-        previousXOffset = start;
+        previousXOffset = visibleRegion.startPos;
 
         CalcCoverageInfoTaskSettings settings;
         settings.model = model;
-        settings.visibleRange = U2Region(start, length);
-        settings.regions = length;
+        settings.visibleRange = visibleRegion;
+        settings.regions = visibleRegion.length;
 
+        browser->invalidateLocalCoverageCache();
         //coverageTaskRunner.run(new CountReadsTask(settings));
         coverageTaskRunner.run(new CalcCoverageInfoTask(settings));
     }
-    sl_redraw();
+    doRedraw();
+}
+
+void AssemblyCoverageGraph::sl_coverageReady() {
+    if(coverageTaskRunner.isFinished()) {
+        browser->setLocalCoverageCache(coverageTaskRunner.getResult());
+    }
+    doRedraw();
 }
 
 void AssemblyCoverageGraph::sl_onOffsetsChanged() {

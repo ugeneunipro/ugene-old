@@ -94,15 +94,13 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     
     //2. extract coverage info on current position
     qint64 posXInAsm = browser->calcAsmPosX(cursorPos);
-    U2OpStatusImpl status;
-    U2AssemblyCoverageStat coverageStat;
-    coverageStat.coverage.resize(1);
-    model->calculateCoverageStat(U2Region(posXInAsm, 1), coverageStat, status);
-    LOG_OP(status);
+    qint64 coverage = browser->getCoverageAtPos(posXInAsm);
+
     
     //3. format the string 
     // pos + 1 because of 1-based coords
-    QString cursorLabel = FormatUtils::formatNumberWithSeparators(posXInAsm + 1) + QString(" C%1").arg(coverageStat.coverage.at(0).maxValue);
+    QString cursorLabel = FormatUtils::formatNumberWithSeparators(posXInAsm + 1) + " C " +
+                          FormatUtils::formatNumberWithSeparators(coverage);
     int textWidth = p.fontMetrics().width(cursorLabel);
     int textHeight = p.fontMetrics().height();
     QRect offsetRect(cursorPos - textWidth/2, LABELS_END, textWidth, textHeight);

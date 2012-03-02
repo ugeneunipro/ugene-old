@@ -57,6 +57,15 @@ public:
     QList<CoveredRegion> getCoveredRegions() const;
     inline bool areCoveredRegionsReady() const {return coverageReady;}
 
+    // Local coverage cache is where calculated coverage for current visible region is stored
+    // Used to optimize getting coverage at any point inside this region
+    bool hasLocalCoverageCache() { return !localCoverageCache.isEmpty(); }
+    const CoverageInfo &getLocalCoverageCache() { return localCoverageCache; }
+    void setLocalCoverageCache(CoverageInfo coverage) { localCoverageCache = coverage; }
+    void invalidateLocalCoverageCache() { setLocalCoverageCache(CoverageInfo()); }
+
+    qint64 getCoverageAtPos(qint64 pos);
+
     // asm coords <-> pix coords functions
     qint64 calcPixelCoord(qint64 asmCoord) const;
     qint64 calcAsmCoordX(qint64 pixCoord) const;
@@ -80,6 +89,9 @@ public:
     // offsets in assembly
     inline qint64 getXOffsetInAssembly() const {return xOffsetInAssembly; }
     inline qint64 getYOffsetInAssembly() const {return yOffsetInAssembly; }
+
+    U2Region getVisibleBasesRegion() const { return U2Region(xOffsetInAssembly, basesVisible()); }
+    U2Region getVisibleRowsRegion() const { return U2Region(yOffsetInAssembly, rowsVisible()); }
     
     void setXOffsetInAssembly(qint64 x); 
     void setYOffsetInAssembly(qint64 y);
@@ -155,6 +167,8 @@ private:
     CoveredRegionsManager coveredRegionsManager;
     bool coverageReady;
 
+    CoverageInfo localCoverageCache;
+
     AssemblyCellRendererFactoryRegistry * cellRendererRegistry;
     
     QAction * zoomInAction;
@@ -196,6 +210,7 @@ public:
     inline ZoomableAssemblyOverview * getOverview() const {return zoomableOverview;}
     inline AssemblyRuler * getRuler() const {return ruler;}
     inline AssemblyReferenceArea * getReferenceArea() const {return referenceArea;}
+    inline AssemblyConsensusArea * getConsensusArea() const {return consensusArea;}
 
     QColor getCoverageColor(double grayCoeff);
     

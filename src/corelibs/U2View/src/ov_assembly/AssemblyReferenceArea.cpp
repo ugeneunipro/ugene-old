@@ -64,11 +64,8 @@ void AssemblySequenceArea::drawAll() {
 }
 
 U2Region AssemblySequenceArea::getVisibleRegion() const {
-    qint64 start = browser->getXOffsetInAssembly();
-    qint64 length = browser->basesVisible();
-    return U2Region(start, length);
+    return browser->getVisibleBasesRegion();
 }
-
 
 bool AssemblySequenceArea::areCellsVisible() const {
     return browser->areCellsVisible();

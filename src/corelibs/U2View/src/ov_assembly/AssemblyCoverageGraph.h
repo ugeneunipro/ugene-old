@@ -44,12 +44,13 @@ signals:
     void si_mouseMovedToPos(const QPoint &);
 
 private slots:
-    void sl_redraw();
+    void sl_coverageReady();
     void sl_launchCoverageCalculation();
     void sl_onOffsetsChanged();
 
 private:
     void connectSlots();
+    void doRedraw();
     void drawAll();
     void drawGraph(QPainter & p);
 
