@@ -105,5 +105,7 @@
         <file>images/notch.png</file>
         <file>images/layers.png</file>
         <file>images/collapse.png</file>
+        <file>images/ruler_coverage.png</file>
+        <file>images/tooltip.png</file>
     </qresource>
 </RCC>

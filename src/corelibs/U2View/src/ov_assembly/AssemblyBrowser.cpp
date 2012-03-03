@@ -110,6 +110,8 @@ QWidget * AssemblyBrowser::createWidget() {
     if(model->hasReads(os)) {
         updateOverviewTypeActions();
         showCoordsOnRulerAction->setChecked(ui->getRuler()->getShowCoordsOnRuler());
+        showCoverageOnRulerAction->setChecked(ui->getRuler()->getShowCoverageOnRuler());
+        readHintEnabledAction->setChecked(ui->getReadsArea()->isReadHintEnabled());
         ui->installEventFilter(this);
         ui->setAcceptDrops(true);
     }
@@ -209,6 +211,7 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
             connect(posSelector, SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
             tb->addSeparator();
             tb->addWidget(posSelector);
+            posSelector->getPosEdit()->setMinimumWidth(160); // For big numbers we need bigger text box
         }
         tb->addSeparator();
         updateZoomingActions();
@@ -224,6 +227,10 @@ void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
         tb->addWidget(overviewScaleTypeToolButton);*/
 
         tb->addAction(showCoordsOnRulerAction);
+        tb->addAction(showCoverageOnRulerAction);
+        tb->addAction(readHintEnabledAction);
+        tb->addSeparator();
+
         tb->addAction(saveScreenShotAction);
         tb->addAction(showInfoAction);
 //        tb->addAction(exportToSamAction);
@@ -519,7 +526,15 @@ void AssemblyBrowser::setupActions() {
     
     showCoordsOnRulerAction = new QAction(QIcon(":core/images/notch.png"), tr("Show coordinates on ruler"), this);
     showCoordsOnRulerAction->setCheckable(true);
-    connect(showCoordsOnRulerAction, SIGNAL(triggered()), SLOT(sl_onShowCoordsOnRulerChanged()));
+    connect(showCoordsOnRulerAction, SIGNAL(triggered(bool)), SLOT(sl_onShowCoordsOnRulerChanged(bool)));
+
+    showCoverageOnRulerAction = new QAction(QIcon(":core/images/ruler_coverage.png"), tr("Show coverage under ruler cursor"), this);
+    showCoverageOnRulerAction->setCheckable(true);
+    connect(showCoverageOnRulerAction, SIGNAL(triggered(bool)), SLOT(sl_onShowCoverageOnRulerChanged(bool)));
+
+    readHintEnabledAction = new QAction(QIcon(":core/images/tooltip.png"), tr("Show information about read under cursor in pop-up hint"), this);
+    readHintEnabledAction->setCheckable(true);
+    connect(readHintEnabledAction, SIGNAL(triggered(bool)), SLOT(sl_onReadHintEnabledChanged(bool)));
     
     saveScreenShotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
     connect(saveScreenShotAction, SIGNAL(triggered()), SLOT(sl_saveScreenshot()));
@@ -582,9 +597,16 @@ void AssemblyBrowser::sl_exportToSam() {
     }
 }
 
-void AssemblyBrowser::sl_onShowCoordsOnRulerChanged() {
-    bool showRulerCoords = showCoordsOnRulerAction->isChecked();
-    ui->getRuler()->setShowCoordsOnRuler(showRulerCoords);
+void AssemblyBrowser::sl_onShowCoordsOnRulerChanged(bool checked) {
+    ui->getRuler()->setShowCoordsOnRuler(checked);
+}
+
+void AssemblyBrowser::sl_onShowCoverageOnRulerChanged(bool checked) {
+    ui->getRuler()->setShowCoverageOnRuler(checked);
+}
+
+void AssemblyBrowser::sl_onReadHintEnabledChanged(bool checked) {
+    ui->getReadsArea()->setReadHintEnabled(checked);
 }
 
 void AssemblyBrowser::sl_changeOverviewType() {

@@ -43,6 +43,9 @@ public:
 
     void setShowCoordsOnRuler(bool showCoords);
     bool getShowCoordsOnRuler()const;
+
+    void setShowCoverageOnRuler(bool value);
+    bool getShowCoverageOnRuler()const;
     
 protected:
     void paintEvent(QPaintEvent * e);
@@ -77,6 +80,7 @@ private:
     QList<QImage> cachedLabels;
     
     bool showCoords;
+    bool showCoverage;
 };
 
 } //ns

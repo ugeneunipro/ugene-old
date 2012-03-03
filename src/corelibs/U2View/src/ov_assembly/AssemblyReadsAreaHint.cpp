@@ -55,7 +55,7 @@ AssemblyReadsAreaHint::AssemblyReadsAreaHint(QWidget * p): QFrame(p), label(new 
     }
     
 // hack: tooltip do not works on linux, popup do not work on windows
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
     setWindowFlags(Qt::ToolTip);
 #else
     setWindowFlags(Qt::Popup);

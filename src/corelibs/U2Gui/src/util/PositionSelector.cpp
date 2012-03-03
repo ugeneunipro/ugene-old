@@ -123,7 +123,7 @@ void PositionSelector::sl_onReturnPressed(){
 
 void PositionSelector::exec() {
     bool ok = false;
-    QString text = posEdit->text();
+    QString text = posEdit->text().remove(' ').remove(',');
     int v = text.toInt(&ok);
     if (!ok || v < rangeStart || v > rangeEnd) {
         return;

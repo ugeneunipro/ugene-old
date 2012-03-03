@@ -35,6 +35,12 @@ public:
     
     static bool getShowCoordsOnRuler();
     static void setShowCoordsOnRuler(bool what);
+
+    static bool getShowCoverageOnRuler();
+    static void setShowCoverageOnRuler(bool what);
+
+    static bool getReadHintEnabled();
+    static void setReadHintEnabled(bool what);
     
 }; // AssemblyBrowserSettings
 

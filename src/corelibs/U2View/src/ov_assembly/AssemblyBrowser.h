@@ -127,7 +127,9 @@ private slots:
     void sl_assemblyLoaded();
     void sl_onPosChangeRequest(int);
     void sl_changeOverviewType();
-    void sl_onShowCoordsOnRulerChanged();
+    void sl_onShowCoordsOnRulerChanged(bool checked);
+    void sl_onShowCoverageOnRulerChanged(bool checked);
+    void sl_onReadHintEnabledChanged(bool checked);
     void sl_saveScreenshot();
     void sl_showContigInfo();
     void sl_exportToSam();
@@ -175,6 +177,8 @@ private:
     PositionSelector * posSelector;
     QList<QAction*> overviewScaleTypeActions;
     QAction * showCoordsOnRulerAction;
+    QAction * showCoverageOnRulerAction;
+    QAction * readHintEnabledAction;
     QAction * saveScreenShotAction;
     QAction * showInfoAction;
     QAction * exportToSamAction;

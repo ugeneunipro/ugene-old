@@ -64,6 +64,7 @@ AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_
         coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this), mover(),
         shadowingEnabled(false), shadowingData(),
         scribbling(false), currentHotkeyIndex(-1),
+        hintEnabled(AssemblyBrowserSettings::getReadHintEnabled()),
         readMenu(new QMenu(this))
 {
     QVBoxLayout * coveredRegionsLayout = new QVBoxLayout();
@@ -82,6 +83,9 @@ AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_
 void AssemblyReadsArea::createMenu() {
     copyDataAction = readMenu->addAction(tr("Copy read information to clipboard"));
     connect(copyDataAction, SIGNAL(triggered()), SLOT(sl_onCopyReadData()));
+
+    QAction * copyPosAction = readMenu->addAction(tr("Copy current position to clipboard"));
+    connect(copyPosAction, SIGNAL(triggered()), SLOT(sl_onCopyCurPos()));
 
     QMenu * exportMenu = readMenu->addMenu(tr("Export"));
         exportReadAction = exportMenu->addAction("Current read");
@@ -312,6 +316,8 @@ void AssemblyReadsArea::showWelcomeScreen() {
 
 void AssemblyReadsArea::drawReads(QPainter & p) {
     GTIMER(c1, t1, "AssemblyReadsArea::drawReads");
+    GCOUNTER(c2, t2, "AssemblyReadsArea::drawReads");
+    qint64 t0 = GTimer::currentTimeMicros();
     coveredRegionsLabel.hide();
 
     p.setFont(browser->getFont());
@@ -415,6 +421,8 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             p.fillRect(xstart, ystart, xend - xstart, yend - ystart, Qt::black);
         }
     }    
+    t0 = GTimer::currentTimeMicros() - t0;
+    perfLog.trace(QString("Assembly: drawing reads: %1 seconds").arg(double(t0) / 1000 / 1000));
 }
 
 bool AssemblyReadsArea::findReadOnPos(const QPoint &pos, U2AssemblyRead &read) {
@@ -445,7 +453,7 @@ QList<U2AssemblyRead> AssemblyReadsArea::findReadsCrossingX(qint64 asmX) {
 }
 
 void AssemblyReadsArea::updateHint() {
-    if(cachedReads.isEmpty() || cachedReads.letterWidth == 0 || scribbling) {
+    if(!hintEnabled || cachedReads.isEmpty() || cachedReads.letterWidth == 0 || scribbling) {
         sl_hideHint();
         return;
     }
@@ -808,6 +816,11 @@ void AssemblyReadsArea::sl_onCopyReadData() {
     QApplication::clipboard()->setText(AssemblyReadsAreaHint::getReadDataAsString(read));
 }
 
+void AssemblyReadsArea::sl_onCopyCurPos() {
+    qint64 asmPos = browser->calcAsmPosX(curPos.x()) + 1; // displayed are 1-based coordinates
+    QApplication::clipboard()->setText(FormatUtils::formatNumberWithSeparators(asmPos));
+}
+
 void AssemblyReadsArea::updateMenuActions() {
     U2AssemblyRead read;
     bool found = findReadOnPos(curPos, read);
@@ -958,6 +971,16 @@ void AssemblyReadsArea::sl_changeCellRenderer() {
     }
 
     sl_redraw();
+}
+
+bool AssemblyReadsArea::isReadHintEnabled() {
+    return hintEnabled;
+}
+
+void AssemblyReadsArea::setReadHintEnabled(bool enabled) {
+    AssemblyBrowserSettings::setReadHintEnabled(enabled);
+    hintEnabled = enabled;
+    sl_hideHint();
 }
 
 } //ns

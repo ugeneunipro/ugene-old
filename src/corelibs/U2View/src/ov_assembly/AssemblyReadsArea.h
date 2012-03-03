@@ -57,6 +57,9 @@ class AssemblyReadsArea: public QWidget {
     
 public:
     AssemblyReadsArea(AssemblyBrowserUi * ui, QScrollBar * hBar, QScrollBar * vBar);
+
+    bool isReadHintEnabled();
+    void setReadHintEnabled(bool enabled);
     
 protected:
     void paintEvent(QPaintEvent * e);
@@ -124,6 +127,7 @@ private slots:
     void sl_onVScrollMoved(int pos);
     void sl_zoomOperationPerformed();
     void sl_onCopyReadData();
+    void sl_onCopyCurPos();
     void sl_onExportRead();
     void sl_onExportReadsOnScreen();
     void sl_onShadowingModeChanged(QAction *a);
@@ -216,6 +220,7 @@ private:
 
     bool scribbling;
     int currentHotkeyIndex;
+    bool hintEnabled;
     
     QMenu * readMenu;
     QAction * copyDataAction;

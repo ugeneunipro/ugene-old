@@ -48,8 +48,10 @@ static const int LONG_NOTCH_END = 18;
 static const int LABELS_END = LONG_NOTCH_END + 2;
 
 AssemblyRuler::AssemblyRuler(AssemblyBrowserUi * ui_) :
-QWidget(ui_), ui(ui_), browser(ui->getWindow()), model(ui->getModel()), cursorPos(0), 
-showCoords(AssemblyBrowserSettings::getShowCoordsOnRuler()) {
+QWidget(ui_), ui(ui_), browser(ui->getWindow()), model(ui->getModel()), cursorPos(0),
+showCoords(AssemblyBrowserSettings::getShowCoordsOnRuler()),
+showCoverage(AssemblyBrowserSettings::getShowCoverageOnRuler())
+{
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     sl_redraw();
@@ -92,15 +94,17 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     p.drawLine(cursorPos, BORDER_NOTCH_START, cursorPos, BORDER_NOTCH_END);
     p.drawLine(cursorPos+1, BORDER_NOTCH_START, cursorPos+1, BORDER_NOTCH_END);
     
-    //2. extract coverage info on current position
+    //2. find current position
     qint64 posXInAsm = browser->calcAsmPosX(cursorPos);
-    qint64 coverage = browser->getCoverageAtPos(posXInAsm);
 
     
-    //3. format the string 
+    //3. format the string, add coverage if needed
     // pos + 1 because of 1-based coords
-    QString cursorLabel = FormatUtils::formatNumberWithSeparators(posXInAsm + 1) + " C " +
-                          FormatUtils::formatNumberWithSeparators(coverage);
+    QString cursorLabel = FormatUtils::formatNumberWithSeparators(posXInAsm + 1);
+    if(showCoverage) {
+        qint64 coverage = browser->getCoverageAtPos(posXInAsm);
+        cursorLabel += " C " + FormatUtils::formatNumberWithSeparators(coverage);
+    }
     int textWidth = p.fontMetrics().width(cursorLabel);
     int textHeight = p.fontMetrics().height();
     QRect offsetRect(cursorPos - textWidth/2, LABELS_END, textWidth, textHeight);
@@ -240,6 +244,16 @@ void AssemblyRuler::setShowCoordsOnRuler(bool sh) {
 
 bool AssemblyRuler::getShowCoordsOnRuler() const {
     return showCoords;
+}
+
+void AssemblyRuler::setShowCoverageOnRuler(bool value) {
+    AssemblyBrowserSettings::setShowCoverageOnRuler(value);
+    showCoverage = value;
+    update();
+}
+
+bool AssemblyRuler::getShowCoverageOnRuler() const {
+    return showCoverage;
 }
 
 }
