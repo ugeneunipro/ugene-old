@@ -267,9 +267,18 @@ QList<CoveredRegion> AssemblyBrowser::getCoveredRegions() const {
     return QList<CoveredRegion>();
 }
 
+void AssemblyBrowser::setLocalCoverageCache(CoverageInfo coverage, const U2Region &region) {
+    localCoverageCache = coverage;
+    localCoverageRegion = region;
+}
+
+bool AssemblyBrowser::isInLocalCoverageCache(qint64 position) {
+    return localCoverageRegion.contains(position);
+}
+
 qint64 AssemblyBrowser::getCoverageAtPos(qint64 pos) {
-    if(getVisibleBasesRegion().contains(pos) && hasLocalCoverageCache()) {
-        return getLocalCoverageCache().coverageInfo[pos - xOffsetInAssembly];
+    if(isInLocalCoverageCache(pos)) {
+        return localCoverageCache.coverageInfo[pos - localCoverageRegion.startPos];
     } else {
         U2OpStatus2Log status;
         U2AssemblyCoverageStat coverageStat;

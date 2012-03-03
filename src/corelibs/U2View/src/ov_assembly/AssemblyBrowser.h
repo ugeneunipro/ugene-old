@@ -59,11 +59,8 @@ public:
 
     // Local coverage cache is where calculated coverage for current visible region is stored
     // Used to optimize getting coverage at any point inside this region
-    bool hasLocalCoverageCache() { return !localCoverageCache.isEmpty(); }
-    const CoverageInfo &getLocalCoverageCache() { return localCoverageCache; }
-    void setLocalCoverageCache(CoverageInfo coverage) { localCoverageCache = coverage; }
-    void invalidateLocalCoverageCache() { setLocalCoverageCache(CoverageInfo()); }
-
+    void setLocalCoverageCache(CoverageInfo coverage, const U2Region &region);
+    bool isInLocalCoverageCache(qint64 position);
     qint64 getCoverageAtPos(qint64 pos);
 
     // asm coords <-> pix coords functions
@@ -168,6 +165,7 @@ private:
     bool coverageReady;
 
     CoverageInfo localCoverageCache;
+    U2Region localCoverageRegion;
 
     AssemblyCellRendererFactoryRegistry * cellRendererRegistry;
     

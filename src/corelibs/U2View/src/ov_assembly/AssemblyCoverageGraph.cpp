@@ -117,7 +117,6 @@ void AssemblyCoverageGraph::sl_launchCoverageCalculation()
         settings.visibleRange = visibleRegion;
         settings.regions = visibleRegion.length;
 
-        browser->invalidateLocalCoverageCache();
         //coverageTaskRunner.run(new CountReadsTask(settings));
         coverageTaskRunner.run(new CalcCoverageInfoTask(settings));
     }
@@ -126,7 +125,7 @@ void AssemblyCoverageGraph::sl_launchCoverageCalculation()
 
 void AssemblyCoverageGraph::sl_coverageReady() {
     if(coverageTaskRunner.isFinished()) {
-        browser->setLocalCoverageCache(coverageTaskRunner.getResult());
+        browser->setLocalCoverageCache(coverageTaskRunner.getResult(), browser->getVisibleBasesRegion());
     }
     doRedraw();
 }
