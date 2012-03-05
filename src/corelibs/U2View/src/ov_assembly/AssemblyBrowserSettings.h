@@ -41,6 +41,9 @@ public:
 
     static bool getReadHintEnabled();
     static void setReadHintEnabled(bool what);
+
+    static bool getOptimizeRenderOnScroll();
+    static void setOptimizeRenderOnScroll(bool what);
     
 }; // AssemblyBrowserSettings
 

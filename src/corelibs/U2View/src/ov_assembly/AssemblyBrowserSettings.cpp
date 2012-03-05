@@ -33,6 +33,7 @@ static const QString SCALE_TYPE(SETTINGS_PREFIX + "scale_type");
 static const QString SHOW_RULER_COORDS(SETTINGS_PREFIX + "show_coords_on_ruler");
 static const QString SHOW_RULER_COVERAGE(SETTINGS_PREFIX + "show_coverage_on_ruler");
 static const QString READ_HINT(SETTINGS_PREFIX + "read_hint");
+static const QString OPTIMIZE_SCROLL(SETTINGS_PREFIX + "optimize_scroll");
 
 AssemblyBrowserSettings::OverviewScaleType AssemblyBrowserSettings::getOverviewScaleType() {
     return OverviewScaleType(AppContext::getSettings()->getValue(SCALE_TYPE, Scale_Linear).value<int>());
@@ -64,6 +65,14 @@ bool AssemblyBrowserSettings::getReadHintEnabled() {
 
 void AssemblyBrowserSettings::setReadHintEnabled(bool what) {
     AppContext::getSettings()->setValue(READ_HINT, what);
+}
+
+bool AssemblyBrowserSettings::getOptimizeRenderOnScroll() {
+    return AppContext::getSettings()->getValue(OPTIMIZE_SCROLL, true).value<bool>();
+}
+
+void AssemblyBrowserSettings::setOptimizeRenderOnScroll(bool what) {
+    AppContext::getSettings()->setValue(OPTIMIZE_SCROLL, what);
 }
 
 } // U2

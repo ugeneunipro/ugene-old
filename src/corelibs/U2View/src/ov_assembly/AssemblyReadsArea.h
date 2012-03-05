@@ -60,6 +60,9 @@ public:
 
     bool isReadHintEnabled();
     void setReadHintEnabled(bool enabled);
+
+    bool isScrolling();
+    void setScrolling(bool value);
     
 protected:
     void paintEvent(QPaintEvent * e);
@@ -134,6 +137,9 @@ private slots:
     void sl_onBindShadowing();
     void sl_onShadowingJump();
     void sl_changeCellRenderer();
+    void sl_onOptimizeRendering(bool enabled);
+    void sl_onScrollPressed() { setScrolling(true); }
+    void sl_onScrollReleased() { setScrolling(false); }
     
 private:
     AssemblyBrowserUi * ui;
@@ -221,6 +227,9 @@ private:
     bool scribbling;
     int currentHotkeyIndex;
     bool hintEnabled;
+
+    bool scrolling;
+    bool optimizeRenderOnScroll;
     
     QMenu * readMenu;
     QAction * copyDataAction;

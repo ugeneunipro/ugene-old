@@ -65,6 +65,7 @@ AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_
         shadowingEnabled(false), shadowingData(),
         scribbling(false), currentHotkeyIndex(-1),
         hintEnabled(AssemblyBrowserSettings::getReadHintEnabled()),
+        optimizeRenderOnScroll(AssemblyBrowserSettings::getOptimizeRenderOnScroll()),
         readMenu(new QMenu(this))
 {
     QVBoxLayout * coveredRegionsLayout = new QVBoxLayout();
@@ -94,6 +95,8 @@ void AssemblyReadsArea::createMenu() {
         QAction * exportVisibleReads = exportMenu->addAction("Visible reads");
         connect(exportVisibleReads, SIGNAL(triggered()), SLOT(sl_onExportReadsOnScreen()));
 
+    readMenu->addSeparator();
+
     QMenu * cellRendererMenu = readMenu->addMenu(tr("Reads highlighting"));
     {
         QList<AssemblyCellRendererFactory*> factories = browser->getCellRendererRegistry()->getFactories();
@@ -113,6 +116,11 @@ void AssemblyReadsArea::createMenu() {
 
     QMenu *shadowingMenu = createShadowingMenu();
     readMenu->addMenu(shadowingMenu);
+
+    QAction * optimizeRenderAction = readMenu->addAction(tr("Optimize rendering when scrolling"));
+    optimizeRenderAction->setCheckable(true);
+    optimizeRenderAction->setChecked(optimizeRenderOnScroll);
+    connect(optimizeRenderAction, SIGNAL(triggered(bool)), SLOT(sl_onOptimizeRendering(bool)));
 }
 
 static const QString BIND_HERE(AssemblyReadsArea::tr("Lock here"));
@@ -178,6 +186,8 @@ void AssemblyReadsArea::setupHScrollBar() {
     hBar->setDisabled(numVisibleBases == assemblyLen);
 
     connect(hBar, SIGNAL(valueChanged(int)), SLOT(sl_onHScrollMoved(int)));
+    connect(hBar, SIGNAL(sliderPressed()), SLOT(sl_onScrollPressed()));
+    connect(hBar, SIGNAL(sliderReleased()), SLOT(sl_onScrollReleased()));
 }
 
 void AssemblyReadsArea::setupVScrollBar() {
@@ -203,6 +213,8 @@ void AssemblyReadsArea::setupVScrollBar() {
     }
 
     connect(vBar, SIGNAL(valueChanged(int)), SLOT(sl_onVScrollMoved(int)));
+    connect(vBar, SIGNAL(sliderPressed()), SLOT(sl_onScrollPressed()));
+    connect(vBar, SIGNAL(sliderReleased()), SLOT(sl_onScrollReleased()));
 }
 
 void AssemblyReadsArea::drawAll() {
@@ -364,6 +376,8 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
         cellRenderer->render(QSize(cachedReads.letterWidth, cachedReads.letterWidth), text, f);
     }
 
+    int totalBasesPainted = 0;
+
     // 2. Iterate over all visible reads and draw them
     QListIterator<U2AssemblyRead> it(cachedReads.data);
     while(it.hasNext()) {
@@ -390,27 +404,37 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
             int x_pix_start = browser->calcPainterOffset(xToDrawRegion.startPos);
             int y_pix_start = browser->calcPainterOffset(yToDrawRegion.startPos);
 
-            //iterate over letters of the read
-            QList<U2CigarToken> cigar(read->cigar); // hack: to show reads without cigar but with mapped position
-            if(cigar.isEmpty()) {
-                cigar << U2CigarToken(U2CigarOp_M, readSequence.size());
-            }
-            U2AssemblyReadIterator cigarIt(readSequence, cigar, firstVisibleBase);
-            int basesPainted = 0;
-            for(int x_pix_offset = 0; cigarIt.hasNext() && basesPainted++ < readVisibleBases.length; x_pix_offset += cachedReads.letterWidth) {
-                GTIMER(c2, t2, "AssemblyReadsArea::drawReads -> cycle through one read");
-                char c = cigarIt.nextLetter();
+            if((scribbling || scrolling) && optimizeRenderOnScroll) {
+                int width = readVisibleBases.length*cachedReads.letterWidth;
+                int height = cachedReads.letterWidth;
+                p.fillRect(x_pix_start, y_pix_start, width, height, QColor("#BBBBBB"));
+            } else {
 
-                QPoint cellStart(x_pix_start + x_pix_offset, y_pix_start);
-                QPixmap cellImage;
-                if(! referenceRegion.isEmpty()) {
-                    int posInRef = readVisibleBases.startPos - cachedReads.visibleBases.startPos + basesPainted - 1;
-                    cellImage = cellRenderer->cellImage(read, c, referenceRegion[posInRef]);
-                } else {
-                    cellImage = cellRenderer->cellImage(read, c);
+                //iterate over letters of the read
+                QList<U2CigarToken> cigar(read->cigar); // hack: to show reads without cigar but with mapped position
+                if(cigar.isEmpty()) {
+                    cigar << U2CigarToken(U2CigarOp_M, readSequence.size());
                 }
 
-                p.drawPixmap(cellStart, cellImage);
+                U2AssemblyReadIterator cigarIt(readSequence, cigar, firstVisibleBase);
+
+                int basesPainted = 0;
+                for(int x_pix_offset = 0; cigarIt.hasNext() && basesPainted++ < readVisibleBases.length; x_pix_offset += cachedReads.letterWidth) {
+                    GTIMER(c2, t2, "AssemblyReadsArea::drawReads -> cycle through one read");
+                    char c = cigarIt.nextLetter();
+
+                    QPoint cellStart(x_pix_start + x_pix_offset, y_pix_start);
+                    QPixmap cellImage;
+                    if(! referenceRegion.isEmpty()) {
+                        int posInRef = readVisibleBases.startPos - cachedReads.visibleBases.startPos + basesPainted - 1;
+                        cellImage = cellRenderer->cellImage(read, c, referenceRegion[posInRef]);
+                    } else {
+                        cellImage = cellRenderer->cellImage(read, c);
+                    }
+
+                    p.drawPixmap(cellStart, cellImage);
+                    ++totalBasesPainted;
+                }
             }
         } else { 
             int xstart = browser->calcPixelCoord(xToDrawRegion.startPos);
@@ -422,7 +446,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
         }
     }    
     t0 = GTimer::currentTimeMicros() - t0;
-    perfLog.trace(QString("Assembly: drawing reads: %1 seconds").arg(double(t0) / 1000 / 1000));
+    perfLog.trace(QString("Assembly: drawing reads (%1 bases)   : %2 seconds").arg(totalBasesPainted).arg(double(t0) / 1000 / 1000));
 }
 
 bool AssemblyReadsArea::findReadOnPos(const QPoint &pos, U2AssemblyRead &read) {
@@ -647,6 +671,9 @@ void AssemblyReadsArea::mousePressEvent(QMouseEvent * e) {
 void AssemblyReadsArea::mouseReleaseEvent(QMouseEvent * e) {
     if(e->button() == Qt::LeftButton && scribbling) {
         scribbling = false;
+        if(optimizeRenderOnScroll) {
+            sl_redraw();
+        }
         setCursor(Qt::ArrowCursor);
     }
     QWidget::mousePressEvent(e);
@@ -981,6 +1008,22 @@ void AssemblyReadsArea::setReadHintEnabled(bool enabled) {
     AssemblyBrowserSettings::setReadHintEnabled(enabled);
     hintEnabled = enabled;
     sl_hideHint();
+}
+
+void AssemblyReadsArea::sl_onOptimizeRendering(bool enabled) {
+    AssemblyBrowserSettings::setOptimizeRenderOnScroll(enabled);
+    optimizeRenderOnScroll = enabled;
+}
+
+bool AssemblyReadsArea::isScrolling() {
+    return scrolling;
+}
+
+void AssemblyReadsArea::setScrolling(bool value) {
+    scrolling = value;
+    if(!scrolling && optimizeRenderOnScroll) {
+        sl_redraw();
+    }
 }
 
 } //ns

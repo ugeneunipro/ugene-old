@@ -497,8 +497,11 @@ void ZoomableAssemblyOverview::mousePressEvent(QMouseEvent * me) {
 void ZoomableAssemblyOverview::mouseMoveEvent(QMouseEvent * me) {
     //selection scribbling
     if((me->buttons() & Qt::LeftButton) && selectionScribbling) {
+        if(!ui->getReadsArea()->isScrolling()) {
+            ui->getReadsArea()->setScrolling(true);
+        }
         moveSelectionToPos(me->pos() - selectionDiff);
-    } 
+    }
     //background scribbling (Ctrl-Click)
     else if((me->buttons() & Qt::MidButton) && visibleRangeScribbling){
         int pixelDiff = visibleRangeLastPos.x() - me->pos().x();
@@ -518,6 +521,9 @@ void ZoomableAssemblyOverview::mouseReleaseEvent(QMouseEvent * me) {
     if(me->button() == Qt::LeftButton) {
         if(selectionScribbling) {
             selectionScribbling = false;
+            if(ui->getReadsArea()->isScrolling()) {
+                ui->getReadsArea()->setScrolling(false);
+            }
         }
         if(zoomToRegionSelector.scribbling) {
             zoomToRegionSelector.scribbling = false;
