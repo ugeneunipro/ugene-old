@@ -37,7 +37,8 @@ workflow "Search for transcription factor binding sites ( TFBS) in genomic seque
         strand:0;
     }
     write-genbank {
-        type:write-genbank;
+        type:write-sequence;
+		document-format:genbank;
         name:"Write Genbank";
         accumulate:true;
         write-mode:2;

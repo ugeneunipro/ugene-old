@@ -30,6 +30,7 @@
 #include <U2Lang/Aliasing.h>
 #include <U2Lang/Schema.h>
 #include <U2Lang/Port.h>
+#include <U2Lang/ActorModel.h>
 
 
 namespace U2 {
@@ -170,6 +171,7 @@ public:
     // -------------- backward compatibility --------------
         static void parseOldAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap);
         static void parseAliasesHelp(Tokenizer & tokenizer, const QList<Actor*> & procs);
+        static Actor* deprecatedActorsReplacer(const QString &id, ParsedPairs &pairs);
     // ----------------------------------------------------
 
     // if slot has no val-> add it to binding

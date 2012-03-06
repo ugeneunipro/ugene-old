@@ -3,6 +3,9 @@
 #
 #To use this schema, you need to specify locations for input and output file(s). To do this, select a corresponding task, so its' parameters appear in Property Inspector panel, and specify desired value(s) for "URL" parameter. Then you can launch the schema with pressing Ctrl+R keys.
 
+
+
+
 workflow "Align sequences with MUSCLE"{
 
     read-msa {
@@ -12,39 +15,45 @@ workflow "Align sequences with MUSCLE"{
     muscle {
         type:muscle;
         name:"Align with MUSCLE";
-        mode:0;
-        stable:true;
     }
-    write-stockholm {
-        type:write-stockholm;
-        name:"Write Stockholm";
-        accumulate:true;
-        write-mode:2;
+    write-msa {
+        type:write-msa;
+        name:"Write alignment";
+        document-format:stockholm;
+    }
+
+
+    .actor-bindings {
+        read-msa.out-msa->muscle.in-msa
+        muscle.out-msa->write-msa.in-msa
     }
 
     read-msa.msa->muscle.in-msa.msa
-    muscle.msa->write-stockholm.in-msa.msa
+    muscle.msa->write-msa.in-msa.msa
 
     .meta {
         visual {
             read-msa {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read alignment</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads MSA(s) from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
                 tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
-                pos:"-750 -660";
+                pos:"-645 -555";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             muscle {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Align with MUSCLE</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Aligns each MSA supplied with MUSCLE using &quot;<span style=' text-decoration: underline;'>MUSCLE default</span>&quot; mode.</p></body></html>";
                 tooltip:"MUSCLE is public domain multiple alignment software for protein and nucleotide sequences.<p><dfn>MUSCLE stands for MUltiple Sequence Comparison by Log-Expectation.</dfn></p>";
-                pos:"-585 -660";
+                pos:"-480 -555";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-msa.angle:180;
                 out-msa.angle:360;
             }
-            write-stockholm {
-                tooltip:"Writes all supplied alignments to file(s) in Stockholm format.";
-                pos:"-330 -660";
+            write-msa {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write alignment</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all MSAs from <span style=' text-decoration: underline;'>Align with MUSCLE</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
+                tooltip:"Writes all supplied alignments to file(s) in selected format";
+                pos:"-240 -555";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-msa.angle:180;
@@ -52,7 +61,7 @@ workflow "Align sequences with MUSCLE"{
             read-msa.out-msa->muscle.in-msa {
                 text-pos:"-45 -50";
             }
-            muscle.out-msa->write-stockholm.in-msa {
+            muscle.out-msa->write-msa.in-msa {
                 text-pos:"-45 -50";
             }
         }

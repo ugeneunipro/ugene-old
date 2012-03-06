@@ -140,40 +140,7 @@ void CoreLib::init() {
         proto->setPrompter(new WriteFastaPrompter("FASTA"));
         r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
     }
-    // WRITE FASTQ actor proto
-    {
-        QMap<Descriptor, DataTypePtr> m;
-        m[writeUrlD] = BaseTypes::STRING_TYPE();
-        m[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
-        DataTypePtr fastqTypeSet(new MapDataType(Descriptor(FASTQ_TYPESET_ID), m));
-
-        QList<PortDescriptor*> p; QList<Attribute*> a;
-        Descriptor acd(CoreLibConstants::WRITE_FASTQ_PROTO_ID, tr("Write FASTQ"), tr("Writes all supplied sequences to file(s) in FASTQ format."));
-        Descriptor pd(BasePorts::IN_SEQ_PORT_ID(), tr("Sequence"), tr("A sequence in FASTQ format along with PHRED quality scores."));
-        p << new PortDescriptor(pd, fastqTypeSet, true);
-        a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
-        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::FASTQ, acd, p, pd.getId(), a);
-        proto->setPrompter(new WriteFastaPrompter("FASTQ"));
-        r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
-    }
-    // WRITE GENBANK actor proto
-    {
-        QMap<Descriptor, DataTypePtr> m;
-        m[writeUrlD] = BaseTypes::STRING_TYPE();
-        m[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
-        m[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
-        //m[gbAccd] = BaseTypes::STRING_TYPE();
-        DataTypePtr genbankTypeSet(new MapDataType(Descriptor(GENBANK_TYPESET_ID), m));
-
-        QList<PortDescriptor*> p; QList<Attribute*> a;
-        Descriptor acd(CoreLibConstants::WRITE_GENBANK_PROTO_ID, tr("Write Genbank"), tr("Writes all supplied sequences and related annotations to file(s) in Genbank format."));
-        Descriptor pd(BasePorts::IN_SEQ_PORT_ID(), tr("Sequence"), tr("Sequence and set of annotations"));
-        p << new PortDescriptor(pd, genbankTypeSet, true);
-        a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
-        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::PLAIN_GENBANK, acd, p, pd.getId(), a);
-        proto->setPrompter(new WriteGenbankPrompter());
-        r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
-    }
+   
     // READ PLAIN TEXT actor proto
     {
         QMap<Descriptor, DataTypePtr> m;
@@ -210,27 +177,6 @@ void CoreLib::init() {
         a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
         IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::PLAIN_TEXT, acd, p, pd.getId(), a);
         proto->setPrompter(new WriteDocPrompter(tr("Save text from <u>%1</u> to <u>%2</u>."), BaseSlots::TEXT_SLOT().getId()));
-        r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
-    }
-    // WRITE CLUSTAL actor proto
-    {
-        QList<PortDescriptor*> p; QList<Attribute*> a;
-        Descriptor acd(CoreLibConstants::WRITE_CLUSTAL_PROTO_ID, tr("Write ClustalW"), tr("Writes all supplied alignments to file(s) in CLUSTALW format."));
-        Descriptor pd(BasePorts::IN_MSA_PORT_ID(), tr("Multiple sequence alignment"), tr("Multiple sequence alignment"));
-        p << new PortDescriptor(pd, writeMAType, true);
-        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::CLUSTAL_ALN, acd, p, pd.getId(), a);
-        proto->setPrompter(new WriteDocPrompter(tr("Save all MSAs from <u>%1</u> to <u>%2</u>."), BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()));
-        r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
-    }
-    // WRITE STOCKHOLM actor proto
-    {
-        QList<PortDescriptor*> p; QList<Attribute*> a;
-        Descriptor acd(CoreLibConstants::WRITE_STOCKHOLM_PROTO_ID, tr("Write Stockholm"), tr("Writes all supplied alignments to file(s) in Stockholm format."));
-        Descriptor pd(BasePorts::IN_MSA_PORT_ID(), tr("Multiple sequence alignment"), tr("Multiple sequence alignment"));
-        p << new PortDescriptor(pd, writeMAType, true);
-        a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
-        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::STOCKHOLM, acd, p, pd.getId(), a);
-        proto->setPrompter(new WriteDocPrompter(tr("Save all MSAs from <u>%1</u> to <u>%2</u>."), BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()));
         r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
     }
     // GENERIC WRITE MSA actor proto

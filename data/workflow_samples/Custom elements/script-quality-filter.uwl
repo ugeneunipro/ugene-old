@@ -10,9 +10,10 @@ workflow "Quality filter"{
         mode:0;
     }
     write-fastq {
-        type:write-fastq;
+        type:write-sequence;
         name:"Write FASTQ";
         accumulate:true;
+		document-format:fastq;
         write-mode:2;
     }
     Script-Quality-filter-example {

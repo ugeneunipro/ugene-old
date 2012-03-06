@@ -66,6 +66,7 @@ use_cuda() {
 }
 
 use_opencl() {
+	DEFINES+=OPENCL_SUPPORT
     SUBDIRS += src/plugins/opencl_support
 }
 
