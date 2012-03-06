@@ -7,13 +7,17 @@ HEADERS += src/GUITestBasePlugin.h \
            src/QtUtils.h \
            src/GUIDialogUtils.h \
            src/ToolTipUtils.h \
-           src/ToolbarUtils.h \
+           src/GTToolbar.h \
            src/AppUtils.h \
            src/DocumentUtils.h \
            src/LogUtils.h \
            src/ProjectUtils.h \
            src/ProjectTreeViewUtils.h \
-           src/tests/common_scenarios/project/Project.h
+           src/tests/common_scenarios/project/Project.h \
+		   src/api/GTMouseDriver.h \
+		   src/api/GTKeyboardDriver.h \
+		   src/api/GTWidget.h \
+		   src/api/GTSystem.h 
 
 SOURCES += src/GUITestBasePlugin.cpp \
            src/GUIInitialChecks.cpp \
@@ -21,10 +25,14 @@ SOURCES += src/GUITestBasePlugin.cpp \
            src/QtUtils.cpp \
            src/GUIDialogUtils.cpp \
            src/ToolTipUtils.cpp \
-           src/ToolbarUtils.cpp \
+           src/GTToolbar.cpp \
            src/AppUtils.cpp \
            src/DocumentUtils.cpp \
            src/LogUtils.cpp \
            src/ProjectUtils.cpp \
            src/ProjectTreeViewUtils.cpp \
-           src/tests/common_scenarios/project/Project.cpp
+           src/tests/common_scenarios/project/Project.cpp \
+		   src/api/GTMouseDriver.cpp \
+		   src/api/GTKeyboardDriver.cpp \
+		   src/api/GTWidget.cpp \
+		   src/api/GTSystem.cpp

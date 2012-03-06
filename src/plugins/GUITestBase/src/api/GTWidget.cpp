@@ -19,35 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_TOOLBAR_UTILS_H_
-#define _U2_GUI_TOOLBAR_UTILS_H_
-
-#include <U2Core/U2OpStatus.h>
-#include <QtGui/QToolBar>
+#include "GTWidget.h"
 
 namespace U2 {
 
-class ToolbarUtils {
-public:
-   
-    static QToolBar* getToolbar(U2OpStatus &os, const QString &toolbarSysName);
 
-    static void clickToolbarAction(U2OpStatus &os,const QString &actionName, const QToolBar *toolbar);
-
-    static void hoverToolbarAction(U2OpStatus &os,const QString &actionName, const QToolBar *toolbar);
+} //namespace
 
 
-    //static void? clickButtonOnToolbar(QToolBar* tb, QString buttonSysName
-
-private:
-
-    static QAction* getToolbarAction(U2OpStatus &os, const QString &actionName, const QToolBar *toolbar);
-
-
-
-
-};
-
-} // namespace
-
-#endif
