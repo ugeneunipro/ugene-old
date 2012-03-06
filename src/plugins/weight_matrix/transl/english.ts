@@ -263,8 +263,8 @@
     <name>QObject</name>
     <message>
         <location filename="../src/WMQuery.cpp" line="181"/>
-        <source>WeightMatrix</source>
-        <translation type="unfinished"></translation>
+        <source>Weight Matrix</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/WMQuery.cpp" line="182"/>

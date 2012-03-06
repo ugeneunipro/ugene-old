@@ -220,7 +220,7 @@ void QDFindPolyActor::sl_onTaskFinished(Task* t) {
 
 QDFindPolyActorPrototype::QDFindPolyActorPrototype() {
     descriptor.setId("base-content");
-    descriptor.setDisplayName(QDFindPolyActor::tr("BaseContent"));
+    descriptor.setDisplayName(QDFindPolyActor::tr("Base Content"));
     descriptor.setDocumentation(QDFindPolyActor::tr(
         "Searches regions in a sequence that contain a specified percentage"
         " of a certain base."));

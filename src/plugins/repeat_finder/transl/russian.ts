@@ -235,7 +235,7 @@
     </message>
     <message>
         <location filename="../src/ui/FindTandemsDialog.ui" line="376"/>
-        <source>Show overlapped tandems</source>
+        <source>Search for overlapped tandems</source>
         <translation>Показать перекрывающиеся тандемы</translation>
     </message>
     <message>
@@ -758,7 +758,7 @@
     <name>U2::QDTandemActor</name>
     <message>
         <location filename="../src/TandemQuery.cpp" line="62"/>
-        <source>Finds tandem repeats with periods from %1 to %2.</source>
+        <source>Searches for tandem repeats with period size between %1 and %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -768,12 +768,12 @@
     </message>
     <message>
         <location filename="../src/TandemQuery.cpp" line="169"/>
-        <source>Tandem repeats</source>
-        <translation type="unfinished"></translation>
+        <source>Tandem Repeats</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/TandemQuery.cpp" line="170"/>
-        <source>Finds tandem repeats in supplied sequence, stores found regions as annotations.</source>
+        <source>Finds tandem repeats in a supplied sequence, stores found regions as annotations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -803,8 +803,8 @@
     </message>
     <message>
         <location filename="../src/TandemQuery.cpp" line="175"/>
-        <source>The algorithm parameter allows to select the search algorithm. The default and a fast one is optimized suffix array algorithm.</source>
-        <translation type="unfinished"></translation>
+        <source>The algorithm parameter allows one to select the search algorithm. The default and a fast one is the optimized suffix array algorithm.</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/TandemQuery.cpp" line="176"/>
@@ -828,12 +828,12 @@
     </message>
     <message>
         <location filename="../src/TandemQuery.cpp" line="178"/>
-        <source>Show overlapped tandems</source>
-        <translation type="unfinished">Показать перекрывающиеся тандемы</translation>
+        <source>Search for overlapped tandems</source>
+        <translation>Показать перекрывающиеся тандемы</translation>
     </message>
     <message>
         <location filename="../src/TandemQuery.cpp" line="178"/>
-        <source>Check if the plugin should search for the overlapped tandems, otherwise keep unchecked.</source>
+        <source>If this parameter is set to &lt;i&gt;True &lt;/i&gt; then overlapped tandems should be included into the result.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

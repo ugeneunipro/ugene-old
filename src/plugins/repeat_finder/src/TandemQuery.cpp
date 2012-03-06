@@ -59,7 +59,7 @@ QString QDTandemActor::getText() const {
     int maxPeriod = cfg->getParameter(MAX_PERIOD_ATTRIBUTE)->getAttributeValueWithoutScript<int>();
     QString maxPeriodString = QString("<a href=\"%1\">%2</a>").arg(MAX_PERIOD_ATTRIBUTE).arg(maxPeriod);
 
-    QString text = QDTandemActor::tr("Finds tandem repeats with periods from %1 to %2.").arg(minPeriodString).arg(maxPeriodString);
+    QString text = QDTandemActor::tr("Searches for tandem repeats with period size between %1 and %2.").arg(minPeriodString).arg(maxPeriodString);
 
     return text;
 }
@@ -166,16 +166,16 @@ QDTandemActor::QDTandemActor(QDActorPrototype const *prototype):
 
 QDTandemActorPrototype::QDTandemActorPrototype() {
     descriptor.setId("tandems");
-    descriptor.setDisplayName(QDTandemActor::tr("Tandem repeats"));
-    descriptor.setDocumentation(QDTandemActor::tr("Finds tandem repeats in supplied sequence, stores found regions as annotations."));
+    descriptor.setDisplayName(QDTandemActor::tr("Tandem Repeats"));
+    descriptor.setDocumentation(QDTandemActor::tr("Finds tandem repeats in a supplied sequence, stores found regions as annotations."));
 
     {
         Descriptor minPeriodDescriptor(MIN_PERIOD_ATTRIBUTE, QDTandemActor::tr("Min period"), QDTandemActor::tr("Minimum acceptable repeat length measured in base symbols."));
         Descriptor maxPeriodDescriptor(MAX_PERIOD_ATTRIBUTE, QDTandemActor::tr("Max period"), QDTandemActor::tr("Maximum acceptable repeat length measured in base symbols."));
-        Descriptor algorithmDescriptor(ALGORITHM_ATTRIBUTE, QDTandemActor::tr("Algorithm"), QDTandemActor::tr("The algorithm parameter allows to select the search algorithm. The default and a fast one is optimized suffix array algorithm."));
+        Descriptor algorithmDescriptor(ALGORITHM_ATTRIBUTE, QDTandemActor::tr("Algorithm"), QDTandemActor::tr("The algorithm parameter allows one to select the search algorithm. The default and a fast one is the optimized suffix array algorithm."));
         Descriptor minTandemSizeDescriptor(MIN_TANDEM_SIZE_ATTRIBUTE, QDTandemActor::tr("Min tandem size"), QDTandemActor::tr("The minimum tandem size sets the limit on minimum acceptable length of the tandem, i.e. the minimum total repeats length of the searched tandem."));
         Descriptor minRepeatCountDescriptor(MIN_REPEAT_COUNT_ATTRIBUTE, QDTandemActor::tr("Min repeat count"), QDTandemActor::tr("The minimum number of repeats of a searched tandem."));
-        Descriptor showOverlappedTandemsDescriptor(SHOW_OVERLAPPED_TANDEMS_ATTRIBUTE, QDTandemActor::tr("Show overlapped tandems"), QDTandemActor::tr("Check if the plugin should search for the overlapped tandems, otherwise keep unchecked."));
+        Descriptor showOverlappedTandemsDescriptor(SHOW_OVERLAPPED_TANDEMS_ATTRIBUTE, QDTandemActor::tr("Search for overlapped tandems"), QDTandemActor::tr("If this parameter is set to <i>True</i> then overlapped tandems should be included into the result."));
         Descriptor nThreadsDescriptor(N_THREADS_ATTRIBUTE, QDTandemActor::tr("Parallel threads"), QDTandemActor::tr("Number of parallel threads used for the task."));
 
         FindTandemsTaskSettings defaultSettings;
@@ -196,14 +196,14 @@ QDTandemActorPrototype::QDTandemActorPrototype() {
             QVariantMap properties;
             properties["minimum"] = 1;
             properties["maximum"] = 1000000;
-            properties["suffix"] = QDTandemActor::tr(" n");
+            properties["suffix"] = QDTandemActor::tr(" bp");
             delegates[MIN_PERIOD_ATTRIBUTE] = new SpinBoxDelegate(properties);
         }
         {
             QVariantMap properties;
             properties["minimum"] = 1;
             properties["maximum"] = 1000000;
-            properties["suffix"] = QDTandemActor::tr(" n");
+            properties["suffix"] = QDTandemActor::tr(" bp");
             delegates[MAX_PERIOD_ATTRIBUTE] = new SpinBoxDelegate(properties);
         }
         {

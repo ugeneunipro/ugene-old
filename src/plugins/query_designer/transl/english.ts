@@ -479,8 +479,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/library/QDFindPolyRegionsActor.cpp" line="223"/>
-        <source>BaseContent</source>
-        <translation type="unfinished"></translation>
+        <source>Base Content</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/QDFindPolyRegionsActor.cpp" line="229"/>

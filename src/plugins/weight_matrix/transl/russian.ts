@@ -284,7 +284,7 @@
     </message>
     <message>
         <location filename="../src/WMQuery.cpp" line="181"/>
-        <source>WeightMatrix</source>
+        <source>Weight Matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

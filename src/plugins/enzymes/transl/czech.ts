@@ -1061,8 +1061,8 @@ To start ligation create a project or open an existing.</source>
     </message>
     <message>
         <location filename="../src/EnzymesQuery.cpp" line="111"/>
-        <source>RestrictionSites</source>
-        <translation type="unfinished"></translation>
+        <source>Restriction Sites</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/EnzymesQuery.cpp" line="112"/>

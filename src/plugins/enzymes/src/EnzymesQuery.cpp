@@ -108,7 +108,7 @@ void QDEnzymesActor::sl_onAlgorithmTaskFinished() {
 
 QDEnzymesActorPrototype::QDEnzymesActorPrototype() {
     descriptor.setId("rsite");
-    descriptor.setDisplayName(QDEnzymesActor::tr("RestrictionSites"));
+    descriptor.setDisplayName(QDEnzymesActor::tr("Restriction Sites"));
     descriptor.setDocumentation(QDEnzymesActor::tr("Finds restriction cut sites in supplied DNA sequence."));
 
     Descriptor ed(ENZYMES_ATTR, QDEnzymesActor::tr("Enzymes"), QDEnzymesActor::tr("Restriction enzymes used to recognize the restriction sites."));
