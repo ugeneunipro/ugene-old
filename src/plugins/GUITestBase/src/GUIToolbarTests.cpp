@@ -22,7 +22,7 @@
 #include "GUIToolbarTests.h"
 #include "QtUtils.h"
 #include "ProjectUtils.h"
-#include "ToolbarUtils.h"
+#include "GTToolbar.h"
 #include "QtUtils.h"
 
 
@@ -30,13 +30,11 @@ namespace U2 {
 
 void ToolbarTest::execute(U2OpStatus &os) {
 
-    QToolBar *tb = ToolbarUtils::getToolbar(os, MWTOOLBAR_MAIN);
-    QtUtils::sleep(1000);
-    ToolbarUtils::hoverToolbarAction(os, ACTION_PROJECTSUPPORT__OPEN_PROJECT, tb);
-    QtUtils::sleep(1000);
-    ToolbarUtils::clickToolbarAction(os, ACTION_PROJECTSUPPORT__OPEN_PROJECT, tb);
-
-    QtUtils::sleep(1000);
+    QToolBar *tb = GTToolbar::getToolbar(os, MWTOOLBAR_MAIN);
+    QWidget *button = GTToolbar::getWidgetForActionName(os, tb, ACTION_PROJECTSUPPORT__OPEN_PROJECT);
+    QtUtils::mouseClick(button, Qt::LeftButton);
+    QtUtils::sleep(3000);
+    
     
 }
 

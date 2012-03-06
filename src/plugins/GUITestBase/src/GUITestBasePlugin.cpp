@@ -25,6 +25,7 @@
 
 #include "GUIInitialChecks.h"
 #include "tests/common_scenarios/project/Project.h"
+#include "GUIToolbarTests.h"
 
 namespace U2 {
 
@@ -52,6 +53,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0017());
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0023());
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0030());
+        guiTestBase->registerTest(new ToolbarTest());
     }
 }
 
