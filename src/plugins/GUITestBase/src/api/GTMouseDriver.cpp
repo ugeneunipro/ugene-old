@@ -110,6 +110,67 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
     }
 }
 
+void GTMouseDriver::press(U2::U2OpStatus &os, ButtonType button_type)
+{   
+    unsigned int buttons[3] = {MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_MIDDLEDOWN};
+
+    INPUT event;
+    event.type = INPUT_MOUSE;
+    event.mi.dx = 0;
+    event.mi.dy = 0;
+    event.mi.mouseData = 0;
+    event.mi.dwFlags = buttons[button_type];
+    event.mi.time = 0;
+    event.mi.dwExtraInfo = 0;
+
+    SendInput(1, &event, sizeof(event));
+}
+
+void GTMouseDriver::release(U2::U2OpStatus &os, ButtonType button_type)
+{
+    // TODO: check if this key has been already pressed
+    unsigned int buttons[3] = {MOUSEEVENTF_LEFTUP, MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_MIDDLEUP};
+
+    INPUT event;
+    event.type = INPUT_MOUSE;
+    event.mi.dx = 0;
+    event.mi.dy = 0;
+    event.mi.mouseData = 0;
+    event.mi.dwFlags = buttons[button_type];
+    event.mi.time = 0;
+    event.mi.dwExtraInfo = 0;
+
+    SendInput(1, &event, sizeof(event));
+}
+
+void GTMouseDriver::click(U2::U2OpStatus &os, ButtonType button_type)
+{
+    press(os, button_type);
+    Sleep(10);
+    release(os, button_type);
+}
+
+void GTMouseDriver::doubleClick(U2OpStatus &os)
+{
+    click(os, ButtonType::LEFT);
+    Sleep(10);
+    click(os, ButtonType::LEFT);
+}
+
+void GTMouseDriver::scroll(U2OpStatus &os, int value)
+{
+    INPUT event;
+    event.type = INPUT_MOUSE;
+    event.mi.dx = 0;
+    event.mi.dy = 0;
+    event.mi.mouseData = value * WHEEL_DELTA;
+    event.mi.dwFlags = MOUSEEVENTF_WHEEL;
+    event.mi.time = 0;
+    event.mi.dwExtraInfo = 0;
+
+    SendInput(1, &event, sizeof(event));
+}
+
 #endif // _WIN32
 } //namespace
 

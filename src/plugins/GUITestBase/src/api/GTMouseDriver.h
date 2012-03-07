@@ -33,9 +33,9 @@ public:
 
     static void moveTo(U2OpStatus &os, const int x, const int y);
 
-    static void click(U2OpStatus &os, ButtonType &buttonType); //all click methods click the current position of the cursor
-    static void press(U2OpStatus &os, ButtonType &buttonType);
-    static void release(U2OpStatus &os, ButtonType &buttonType); //release method should check if this key has been already pressed. Do nothing otherwise
+    static void click(U2OpStatus &os, ButtonType buttonType); //all click methods click the current position of the cursor
+    static void press(U2OpStatus &os, ButtonType buttonType);
+    static void release(U2OpStatus &os, ButtonType buttonType); //release method should check if this key has been already pressed. Do nothing otherwise
     static void doubleClick(U2OpStatus &os);
 
     static void scroll(U2OpStatus &os, int value); //positive values for scrolling up, negative for scrolling down
