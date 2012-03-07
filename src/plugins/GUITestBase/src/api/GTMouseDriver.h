@@ -31,7 +31,7 @@ public:
 
     enum ButtonType{LEFT, RIGHT, MIDDLE};
 
-    static void moveTo(U2OpStatus &os, int x, int y);
+    static void moveTo(U2OpStatus &os, const int x, const int y);
 
     static void click(U2OpStatus &os, ButtonType &buttonType); //all click methods click the current position of the cursor
     static void press(U2OpStatus &os, ButtonType &buttonType);
