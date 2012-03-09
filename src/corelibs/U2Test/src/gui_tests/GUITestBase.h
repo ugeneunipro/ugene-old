@@ -14,10 +14,10 @@
 
 namespace U2 {
 
-#define GUI_TEST_CLASS(className, quotedClassName) \
+#define GUI_TEST_CLASS(className) \
     class className : public GUITest { \
     public: \
-    className () : GUITest(QString(PREFIX) + quotedClassName){} \
+    className () : GUITest(QString(PREFIX) + #className){} \
     protected: \
         virtual void execute(U2OpStatus &os); \
     };

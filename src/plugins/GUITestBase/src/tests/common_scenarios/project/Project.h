@@ -30,13 +30,13 @@ namespace GUITest_common_scenarios_project {
 
 #define PREFIX "GUITest_common_scenarios_project_"
 
-GUI_TEST_CLASS (test_0005,"test_0005")
-GUI_TEST_CLASS (test_0006,"test_0006")
-GUI_TEST_CLASS (test_0009,"test_0009")
-GUI_TEST_CLASS (test_0011,"test_0011")
-GUI_TEST_CLASS (test_0017,"test_0017")
-GUI_TEST_CLASS (test_0023,"test_0023")
-GUI_TEST_CLASS (test_0030,"test_0030")
+GUI_TEST_CLASS (test_0005)
+GUI_TEST_CLASS (test_0006)
+GUI_TEST_CLASS (test_0009)
+GUI_TEST_CLASS (test_0011)
+GUI_TEST_CLASS (test_0017)
+GUI_TEST_CLASS (test_0023)
+GUI_TEST_CLASS (test_0030)
 
 #undef PREFIX
 
