@@ -55,6 +55,46 @@ void GUIDialogUtils::checkExportProjectDialog(U2OpStatus &os, const QString& pro
     CHECK_SET_ERR(lineEdits[0]->text() == projectName, "Project name is not " + projectName);
 }
 
+void GUIDialogUtils::fillInExportProjectDialog(U2OpStatus &os, const QString &projectFolder, const QString &projectName) {
+
+    QWidget* w = QApplication::activeModalWidget();
+    if (!w) {
+        return;
+    }
+
+    QWidget* activeW = QApplication::focusWidget();
+    CHECK_SET_ERR(activeW != NULL, "Not export project dialog");
+    QObject* activeWP = activeW->parent();
+    CHECK_SET_ERR(activeWP != NULL, "Not export project dialog");
+
+    QList<QLineEdit*> lineEdits;
+    foreach (QObject *obj, w->children()) {
+        QLineEdit *l = qobject_cast<QLineEdit*>(obj);
+        if (l) {
+            lineEdits.push_front(l);
+        }
+    }
+
+    CHECK_SET_ERR(lineEdits.size() > 1, "There are no lineEdits in dialog");
+    if (!projectName.isEmpty()) {
+        lineEdits[0]->setText(projectName);
+    }
+    lineEdits[1]->setText(projectFolder);
+
+
+    QList<QPushButton*> buttons;
+    foreach (QObject *obj, activeWP->children()) {
+        QPushButton *b = qobject_cast<QPushButton*>(obj);
+        if (b) {
+            buttons.push_front(b);
+        }
+    }
+
+    CHECK_SET_ERR(buttons.size() == 2, "There aren't 2 QPushButtons in SaveProjectAs dialog");
+
+    buttons[1]->click();
+}
+
 void GUIDialogUtils::clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b) {
 
     QWidget* activeModal = QApplication::activeModalWidget();
@@ -68,6 +108,11 @@ void GUIDialogUtils::clickMessageBoxButton(U2OpStatus &os, QMessageBox::Standard
 
     button->click();
     QtUtils::sleep(500);
+}
+
+void GUIDialogUtils::openSaveProjectAsDialog(U2OpStatus &os) {
+
+    QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT, MWMENU_FILE);
 }
 
 void GUIDialogUtils::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel) {

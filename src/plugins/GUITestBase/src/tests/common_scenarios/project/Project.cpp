@@ -27,10 +27,35 @@
 #include "ToolTipUtils.h"
 #include "QtUtils.h"
 #include "GUIDialogUtils.h"
+#include "ProjectTreeViewUtils.h"
+#include <U2View/AnnotatedDNAViewFactory.h>
 
 namespace U2{
 
 namespace GUITest_common_scenarios_project{
+
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+
+    add(new ProjectUtils::OpenProjectGUIAction(
+        testDir+"_common_data/scenarios/project/proj1.uprj",
+        "proj1 UGENE",
+        "1CF7.PDB")
+        );
+
+    add( new ProjectUtils::ExportProjectGUIAction(testDir+"_common_data/scenarios/sandbox") );
+    add( new ProjectUtils::CloseProjectGUIAction() );
+
+    add(new ProjectUtils::OpenProjectGUIAction(
+        testDir+"_common_data/scenarios/sandbox/proj1.uprj",
+        "proj1 UGENE",
+        "1CF7.PDB")
+        );
+
+    add( new ProjectTreeViewUtils::CheckToolTipGUIAction("1CF7.PDB", "_common_data/scenarios/sandbox/1CF7.PDB") );
+
+    add( new ProjectTreeViewUtils::ClickEnterGUIAction("1CF7.PDB"));
+    add( new DocumentUtils::CheckDocumentExistsGUIAction("1CF7.PDB", AnnotatedDNAViewFactory::ID) );
+}
 
 void test_0005::execute( U2OpStatus &os ){
     ProjectUtils::openFile(os, testDir+"_common_data/scenarios/project/proj1.uprj");
@@ -44,7 +69,7 @@ void test_0005::execute( U2OpStatus &os ){
     DocumentUtils::checkDocumentExists(os, "1CF7.PDB");
     AppUtils::checkUGENETitle(os, "proj2 UGENE");
 
-    ToolTipUtils::checkProjectTreeToolTip(os, "samples/PDB/1CF7.PDB", 0);
+ //   ToolTipUtils::checkProjectTreeToolTip(os, "samples/PDB/1CF7.PDB", 0);
 }
 
 void test_0006::execute( U2OpStatus &os ){

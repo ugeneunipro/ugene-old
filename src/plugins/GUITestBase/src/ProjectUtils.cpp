@@ -46,19 +46,18 @@ void ProjectUtils::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const Open
             openFilesDrop(os, urls);
     }
 
-    QtUtils::sleep(3000);
-    checkProjectExists(os);
+//    QtUtils::sleep(3000); // TODO:
+//    checkProjectExists(os);
 
-    foreach (QUrl path, urls) {
-        GUrl pathStr = path.toString();
-        checkDocumentExists(os, pathStr);
-    }
+//     foreach (QUrl path, urls) {
+//         GUrl pathStr = path.toString();
+//         checkDocumentExists(os, pathStr);
+//     }
 }
 
 void ProjectUtils::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting) {
 
-    QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT, MWMENU_FILE);
-
+    GUIDialogUtils::openSaveProjectAsDialog(os);
     GUIDialogUtils::fillInSaveProjectAsDialog(os, projectName, projectFolder, projectFile);
 
     QMessageBox::StandardButton b = overwriteExisting ? QMessageBox::Yes : QMessageBox::No;
@@ -72,20 +71,20 @@ void ProjectUtils::closeProject(U2OpStatus &os, const CloseProjectSettings& sett
     QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__CLOSE_PROJECT, MWMENU_FILE);
     QtUtils::sleep(500);
 
-    switch (settings.saveOnClose) {
-        case CloseProjectSettings::YES:
-            GUIDialogUtils::clickMessageBoxButton(os, QMessageBox::Yes);
-            break;
-
-        case CloseProjectSettings::NO:
-            GUIDialogUtils::clickMessageBoxButton(os, QMessageBox::No);
-            break;
-
-        default:
-        case CloseProjectSettings::CANCEL:
-            GUIDialogUtils::clickMessageBoxButton(os, QMessageBox::Cancel);
-            break;
-    }
+//     switch (settings.saveOnClose) {
+//         case CloseProjectSettings::YES:
+//             GUIDialogUtils::clickMessageBoxButton(os, QMessageBox::Yes);
+//             break;
+// 
+//         case CloseProjectSettings::NO:
+//             GUIDialogUtils::clickMessageBoxButton(os, QMessageBox::No);
+//             break;
+// 
+//         default:
+//         case CloseProjectSettings::CANCEL:
+//             GUIDialogUtils::clickMessageBoxButton(os, QMessageBox::Cancel);
+//             break;
+//     }
 }
 
 void ProjectUtils::closeProjectByHotkey(U2OpStatus &os) {

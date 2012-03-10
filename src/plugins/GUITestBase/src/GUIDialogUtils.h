@@ -24,16 +24,23 @@
 
 #include <U2Core/U2OpStatus.h>
 #include <QtGui/QMessageBox>
+#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
 class GUIDialogUtils {
 public:
     static void openExportProjectDialog(U2OpStatus &os);
+    GENERATE_GUI_ACTION(OpenExportProjectDialogGUIAction, openExportProjectDialog);
+
     static void checkExportProjectDialog(U2OpStatus &os, const QString& projectName);
+    static void fillInExportProjectDialog(U2OpStatus &os, const QString &projectFolder, const QString &projectName);
+    GENERATE_GUI_ACTION_2(FillInExportProjectDialogGUIAction, fillInExportProjectDialog);
+
 
     static void clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b);
 
+    static void openSaveProjectAsDialog(U2OpStatus &os);
     static void fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel = false);
 };
 

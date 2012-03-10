@@ -47,18 +47,25 @@ void ProjectTreeViewUtils::toggleView(U2OpStatus &os) {
     QtUtils::sleep(1000);
 }
 
-void ProjectTreeViewUtils::moveTo(U2OpStatus &os, int num, int subItemNum) {
+void ProjectTreeViewUtils::clickEnter(U2OpStatus &os, const QString& itemName) {
 
-    QPoint p = getTreeViewItemPosition(os, num, subItemNum);
+    moveTo(os, itemName);
+    QPoint p = getTreeViewItemPosition(os, itemName);
+    QtUtils::mouseClickOnItem(os, widgetName, Qt::LeftButton, p);
 
-    QtUtils::moveTo(os, widgetName, p);
-    QtUtils::sleep(1000);
+    QtUtils::keyClick(os, widgetName, Qt::Key_Enter);
 }
 
-QPoint ProjectTreeViewUtils::getTreeViewItemPosition(U2OpStatus &os, int num, int subItemNum) {
+void ProjectTreeViewUtils::moveTo(U2OpStatus &os, const QString& itemName) {
+
+    QPoint p = getTreeViewItemPosition(os, itemName);
+    QtUtils::moveTo(os, widgetName, p);
+}
+
+QPoint ProjectTreeViewUtils::getTreeViewItemPosition(U2OpStatus &os, const QString &itemName) {
 
     QTreeWidget *treeWidget = getTreeWidget(os);
-    QTreeWidgetItem *item = getTreeWidgetItem(os, num, subItemNum);
+    QTreeWidgetItem *item = getTreeWidgetItem(os, itemName);
 
     if (treeWidget && item) {
         return treeWidget->visualItemRect(item).center();
@@ -75,18 +82,62 @@ QTreeWidget* ProjectTreeViewUtils::getTreeWidget(U2OpStatus &os) {
     return treeWidget;
 }
 
-QTreeWidgetItem* ProjectTreeViewUtils::getTreeWidgetItem(U2OpStatus &os, int num, int subItemNum) {
+QString ProjectTreeViewUtils::getProjectTreeItemName(ProjViewItem* projViewItem) {
+
+    if (ProjViewDocumentItem *documentItem = (ProjViewDocumentItem*)projViewItem) {
+        CHECK_EXT(documentItem->doc != NULL,,"");
+        return documentItem->doc->getName();
+    }
+
+    if (ProjViewObjectItem *objectItem = (ProjViewObjectItem*)projViewItem) {
+        CHECK_EXT(objectItem->obj != NULL,,"");
+        return objectItem->obj->getGObjectName();
+    }
+
+    if (ProjViewTypeItem *typeItem = (ProjViewTypeItem*)projViewItem) {
+        return typeItem->typePName;
+    }
+
+    return "";
+}
+
+QList<ProjViewItem*> ProjectTreeViewUtils::getProjectViewItems(QTreeWidgetItem* root) {
+
+    QList<ProjViewItem*> treeItems;
+
+    for (int i=0; i<root->childCount(); i++) {
+        treeItems.append((ProjViewItem*)root->child(i));
+        treeItems.append(getProjectViewItems(root->child(i)));
+    }
+
+    return treeItems;
+}
+
+
+QTreeWidgetItem* ProjectTreeViewUtils::getTreeWidgetItem(QTreeWidget* tree, const QString &itemName) {
+
+    if (itemName.isEmpty()) {
+        return NULL;
+    }
+
+    QList<ProjViewItem*> treeItems = getProjectViewItems(tree->invisibleRootItem());
+    foreach (ProjViewItem* item, treeItems) {
+        QString treeItemName = getProjectTreeItemName(item);
+        if (treeItemName == itemName) {
+            return item;
+        }
+    }
+
+    return NULL;
+}
+
+QTreeWidgetItem* ProjectTreeViewUtils::getTreeWidgetItem(U2OpStatus &os, const QString &itemName) {
 
     QTreeWidget *treeWidget = getTreeWidget(os);
     CHECK_SET_ERR_RESULT(treeWidget != NULL, "Tree widget not found", NULL);
 
-    QTreeWidgetItem *item = treeWidget->topLevelItem(num);
-    CHECK_SET_ERR_RESULT(item != NULL, "Item " + QString::number(num) + " not found in tree widget", NULL);
-
-    if (subItemNum>=0) {
-        item = item->child(subItemNum);
-        CHECK_SET_ERR_RESULT(item != NULL, "Subitem " + QString::number(subItemNum) + " not found in tree item " + QString::number(num), NULL);
-    }
+    QTreeWidgetItem *item = getTreeWidgetItem(treeWidget, itemName);
+    CHECK_SET_ERR_RESULT(item != NULL, "Item " + itemName + " not found in tree widget", NULL);
 
     return item;
 }

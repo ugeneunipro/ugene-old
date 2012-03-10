@@ -33,14 +33,6 @@ void ToolTipUtils::checkExistingToolTip(U2OpStatus &os, const QString& tooltip) 
     CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
 }
 
-void ToolTipUtils::checkProjectTreeToolTip(U2OpStatus &os, const QString& tooltip, int num) {
-
-    ProjectTreeViewUtils::moveTo(os, num);
-
-    QString t = getToolTip();
-    CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
-}
-
 QString ToolTipUtils::getToolTip() {
 
     return QToolTip::text();

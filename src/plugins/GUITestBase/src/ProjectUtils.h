@@ -25,6 +25,10 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/U2OpStatus.h>
 #include <QtGui/QMessageBox>
+#include <U2Test/GUITestBase.h>
+#include "AppUtils.h"
+#include "DocumentUtils.h"
+#include "GUIDialogUtils.h"
 
 namespace U2 {
 
@@ -47,11 +51,44 @@ public:
         opens a file using settings, checks if the document is loaded
     */
     static void openFile(U2OpStatus &os, const GUrl &path, const OpenFileSettings& = OpenFileSettings());
+    class OpenFileGUIAction : public GUITest {
+    public:
+        OpenFileGUIAction(const GUrl &_path, const OpenFileSettings& _s = OpenFileSettings())
+            : path(_path), s(_s){}
+
+    protected:
+        virtual void execute(U2OpStatus &os) {
+            openFile(os, path, s);
+        }
+    private:
+        GUrl path;
+        OpenFileSettings s;
+    };
+
+    class OpenProjectGUIAction : public GUIMultiTest {
+    public:
+        OpenProjectGUIAction(const GUrl& path, const QString& projectName, const QString& documentName) {
+            add(new ProjectUtils::OpenFileGUIAction(path));
+            add(new AppUtils::CheckUGENETitleGUIAction(projectName));
+            add(new DocumentUtils::CheckDocumentExistsGUIAction(documentName));
+        }
+    };
+
     static void openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& = OpenFileSettings());
+
+    class ExportProjectGUIAction : public GUIMultiTest {
+    public:
+        ExportProjectGUIAction(const QString &projectFolder, const QString &projectName = "") {
+            add( new GUIDialogUtils::OpenExportProjectDialogGUIAction() );
+            add( new GUIDialogUtils::FillInExportProjectDialogGUIAction(projectFolder, projectName) );
+        }
+    };
 
     static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
 
     static void closeProject(U2OpStatus &os, const CloseProjectSettings& = CloseProjectSettings());
+    GENERATE_GUI_ACTION(CloseProjectGUIAction, closeProject);
+
 protected:
     static void openFileDrop(U2OpStatus &os, const GUrl &path);
     static void openFilesDrop(U2OpStatus &os, const QList<QUrl> &urls);

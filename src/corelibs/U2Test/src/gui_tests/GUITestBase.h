@@ -14,10 +14,21 @@
 
 namespace U2 {
 
+#define TESTNAME(className) QString(GUI_TEST_PREFIX) + #className
+
+#define GUI_TEST_CLASS_DECLARATION(className) \
+    class className : public GUIMultiTest { \
+    public: \
+        className (); \
+    };
+
+#define GUI_TEST_CLASS_DEFINITION(className) \
+    className::className() : GUIMultiTest(TESTNAME(className))
+
 #define GUI_TEST_CLASS(className) \
     class className : public GUITest { \
     public: \
-    className () : GUITest(QString(PREFIX) + #className){} \
+    className () : GUITest(TESTNAME(className)){} \
     protected: \
         virtual void execute(U2OpStatus &os); \
     };

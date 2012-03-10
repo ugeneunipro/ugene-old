@@ -22,6 +22,7 @@ class U2TEST_EXPORT GUITestService: public Service {
     Q_OBJECT
 public:
     enum LaunchOptions {NONE, RUN_ONE_TEST, RUN_ALL_TESTS};
+    static const QString successResult;
 
     GUITestService(QObject *parent = NULL);
     virtual ~GUITestService();
@@ -33,10 +34,12 @@ protected:
 
     GUITest* getTest() const;
 
-public slots:
+protected slots:
     void sl_registerService();
     void sl_registerTestLauncherTask();
     void sl_taskStateChanged(Task*);
+
+    void sl_subTestFinished(GUITest*);
 
 private:
     QAction *runTestsAction;
@@ -46,7 +49,7 @@ private:
     LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
     bool launchedToTestGUI(CMDLineRegistry* cmdLine) const;
 
-    void registerGUITestTask() const;
+    void registerGUITest();
     void registerAllTestsTask();
     void registerServiceTask();
 
@@ -54,6 +57,9 @@ private:
     void deleteServiceMenuItem();
 
     Task* createTestLauncherTask() const;
+    void writeTestResult(const QString &result) const;
+
+    TaskStateInfo os;
 };
 
 } // U2

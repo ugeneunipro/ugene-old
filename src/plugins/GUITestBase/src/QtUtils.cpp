@@ -25,12 +25,14 @@
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Gui/GUIUtils.h>
+#include <QtTest/QSpontaneKeyEvent>
 
 namespace U2 {
 
 #define WAIT_TIMEOUT    2000
 
 QWidget* QtUtils::findWidgetByName(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget, bool errorIfNull) {
+    checkThread();
     QWidget *widget = NULL;
     if (parentWidget == NULL) {
         parentWidget = AppContext::getMainWindow()->getQMainWindow();
@@ -45,6 +47,7 @@ QWidget* QtUtils::findWidgetByName(U2OpStatus &os, const QString &widgetName, QW
 }
 
 bool QtUtils::isWidgetExists(const QString &widgetName) {
+    checkThread();
     QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
     if (!mw) {
         return false;
@@ -55,6 +58,7 @@ bool QtUtils::isWidgetExists(const QString &widgetName) {
 }
 
 QWidget* QtUtils::findWidgetByTitle(U2OpStatus &os, const QString &title) {
+    checkThread();
     QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
     QList<QWidget *>wList = mw->findChildren<QWidget*>();
     foreach(QWidget *w, wList) {
@@ -155,8 +159,6 @@ void QtUtils::keyRelease(U2OpStatus &os, const QString &widgetName, int key, Qt:
     QWidget *w = findWidgetByName(os, widgetName);
     QKeyEvent *ke = new QKeyEvent(QEvent::KeyRelease, key, modifiers);
     sendEvent(w, ke);
-    //QCoreApplication::postEvent(w, ke);
-    //QCoreApplication::processEvents();
 }
 
 void QtUtils::keyClick(U2OpStatus &os, const QString &widgetName, int key, Qt::KeyboardModifiers modifiers, const QString &text) {
@@ -494,12 +496,15 @@ void QtUtils::contextMenu(U2OpStatus &os, const QString &widgetName, const QPoin
 
 void QtUtils::clickMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName) {
 
-    QAction* neededAction = getMenuAction(os, actionName, menuName);
-    CHECK_SET_ERR(neededAction != NULL, "No such action " + actionName + " in the menu " + menuName);
+    QAction* curAction = getMenuAction(os, actionName, menuName);
+    CHECK_SET_ERR(curAction != NULL, QString("Can't find action %1").arg(actionName));
 
-    neededAction->activate(QAction::Trigger);
+    QMenu* parMenu = (QMenu*)findWidgetByName(os, menuName);
+    CHECK_SET_ERR(parMenu != NULL, QString("Menu %1 not found").arg(menuName));
+    QPoint pos = parMenu->actionGeometry(curAction).center();
 
-    sleep(500);
+    moveTo(os, menuName, pos);
+    mouseClick(os, menuName, Qt::LeftButton, pos);
 }
 
 QAction* QtUtils::getMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName) {
@@ -530,34 +535,8 @@ QWidget* QtUtils::getWidgetInFocus() {
 }
 
 void QtUtils::sendEvent(QObject *obj, QEvent *e) {
-   // if(res == ResultNone) {
-    e->setAccepted(true);
-        QCoreApplication::postEvent(obj, e);
-        QCoreApplication::processEvents();
-        /*int count = 0;
-        while(e->isAccepted() && count < WAIT_TIMEOUT) {
-            sleep(1);
-            count++;
-        }
-        if(count < WAIT_TIMEOUT) {
-            coreLog.info("event processed");
-        }*/
-   /* } else {
-        waitForEvent = false;
-        sentEvent = e;
-        connect(QApplication::instance(), SIGNAL(si_eventProcessed(QEvent*)), SLOT(sl_eventProcessed(QEvent*)));
-        QCoreApplication::postEvent(obj, e);
-        QCoreApplication::processEvents();
-        int counter = 0;
-        while(!waitForEvent && counter < WAIT_TIMEOUT) {
-            sleep(1);
-            counter++;
-        }
-        disconnect(QApplication::instance(), SIGNAL(si_eventProcessed(QEvent*)), this, SLOT(sl_eventProcessed(QEvent*)));
-        if(counter >= WAIT_TIMEOUT) {
-            throw TestException(tr("Can't wait for result"));
-        }
-    }*/
+    QSpontaneKeyEvent::setSpontaneous(e);
+    qApp->notify(obj, e);
 }
 
 void QtUtils::sleep( int msec ){
@@ -705,6 +684,12 @@ bool QtUtils::waitForTask( Task *t ){
         sleep(1);
     }
     return count < WAIT_TIMEOUT;
+}
+
+void QtUtils::checkThread() {
+    QThread* appThread = QApplication::instance()->thread();
+    QThread* thisThread = QThread::currentThread();
+    assert (appThread == thisThread);
 }
 
 } // U2

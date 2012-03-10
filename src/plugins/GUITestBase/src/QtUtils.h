@@ -105,6 +105,8 @@ public:
     static bool waitForMenuWithAction(const QString &actionName);
     static bool waitForTask(Task *t);
 
+    static void checkThread();
+
 private:
     class Waiter: public QThread {
     public:

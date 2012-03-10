@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-void AppUtils::checkUGENETitle(U2::U2OpStatus &os, const QString &title) {
+void AppUtils::checkUGENETitle(U2OpStatus &os, const QString &title) {
 
     QString ugeneTitle = AppContext::getMainWindow()->getQMainWindow()->windowTitle();
     CHECK_SET_ERR(ugeneTitle == title, "UGENE title is <" + ugeneTitle + ">, not <" + title + ">");

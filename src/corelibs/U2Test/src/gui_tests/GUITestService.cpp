@@ -21,7 +21,6 @@
 
 #include "GUITestService.h"
 #include "GUITestBase.h"
-#include "GUITestTask.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineRegistry.h>
@@ -30,7 +29,11 @@
 #include <U2Core/GObject.h>
 #include <U2Core/CMDLineCoreOptions.h>
 
+#define GUITESTING_REPORT_PREFIX "GUITesting"
+
 namespace U2 {
+
+const QString GUITestService::successResult = "Success";
 
 GUITestService::GUITestService(QObject *) : Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")),
 runTestsAction(NULL), testLauncher(NULL) {
@@ -48,7 +51,7 @@ void GUITestService::sl_registerService() {
 
     switch (launchedFor) {
         case RUN_ONE_TEST:
-            registerGUITestTask();
+            registerGUITest();
             break;
 
         case RUN_ALL_TESTS:
@@ -98,16 +101,28 @@ Task* GUITestService::createTestLauncherTask() const {
     return task;
 }
 
-void GUITestService::registerGUITestTask() const {
+void GUITestService::sl_subTestFinished(GUITest* t) {
 
-    GUITest *t = getTest();
+    delete t;
+
+    QString testResult = successResult;
+    if (os.hasError()) {
+        testResult = os.getError();
+    }
+
+    writeTestResult(testResult);
+
+    exit(0);
+}
+
+void GUITestService::registerGUITest() {
+
+    GUITest* t = getTest();
     Q_ASSERT(t);
 
     if (t) {
-        GUITestTask *task = new GUITestTask(t);
-        Q_ASSERT(task);
-
-        AppContext::getTaskScheduler()->registerTopLevelTask(task);
+        connect(t, SIGNAL(finished(GUITest*)), this, SLOT(sl_subTestFinished(GUITest*)), Qt::QueuedConnection);
+        t->run(os);
     }
 }
 
@@ -184,6 +199,11 @@ void GUITestService::sl_taskStateChanged(Task* t) {
         AppContext::getTaskScheduler()->cancelAllTasks();
         AppContext::getMainWindow()->getQMainWindow()->close();
     }
+}
+
+void GUITestService::writeTestResult(const QString& result) const {
+
+    printf("%s\n", (QString(GUITESTING_REPORT_PREFIX) + ":" + result).toUtf8().data());
 }
 
 }
