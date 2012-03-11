@@ -59,19 +59,16 @@ public:
     /*
         opens files using settings, checks if the document is loaded
     */
-    static void openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& = OpenFileSettings());
-    class OpenFilesGUIAction : public GUITest {
+    class OpenFilesGUIAction : public GUIMultiTest {
     public:
         OpenFilesGUIAction(const QList<QUrl> &_urls, const OpenFileSettings& _s = OpenFileSettings())
-            : urls(_urls), s(_s){}
+            : urls(_urls), s(_s){ addSubTests(); }
 
         OpenFilesGUIAction(const GUrl &path, const OpenFileSettings& _s = OpenFileSettings())
-            : s(_s){ urls.append(path.getURLString()); }
+            : s(_s), urls(QList<QUrl>() << path.getURLString()){ addSubTests(); }
 
     protected:
-        virtual void execute(U2OpStatus &os) {
-            openFiles(os, urls, s);
-        }
+        virtual void addSubTests();
     private:
         QList<QUrl> urls;
         OpenFileSettings s;
@@ -91,11 +88,21 @@ public:
     GENERATE_GUI_ACTION(CloseProjectGUIAction, closeProject);
 
 protected:
-    static void openFilesDrop(U2OpStatus &os, const QList<QUrl> &urls);
+    class OpenFilesDropGUIAction : public GUITest {
+    public:
+        OpenFilesDropGUIAction(const QList<QUrl> &_urls) : urls(_urls){}
+    protected:
+        virtual void execute(U2OpStatus &os);
+    private:
+        QList<QUrl> urls;
+    };
 
     static void checkProjectExists(U2OpStatus &os);
+    GENERATE_GUI_ACTION(CheckProjectExistsGUIAction, checkProjectExists);
 
     static Document* checkDocumentExists(U2OpStatus &os, const GUrl &url);
+    GENERATE_GUI_ACTION_1(CheckDocumentExistsGUIAction, checkDocumentExists);
+
     static void checkDocumentActive(U2OpStatus &os, Document *doc);
 
     static void closeProjectByHotkey(U2OpStatus &os);

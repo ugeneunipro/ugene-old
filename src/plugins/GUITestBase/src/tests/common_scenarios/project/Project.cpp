@@ -94,15 +94,15 @@ void test_0011::execute(U2OpStatus &os) {
 
 void test_0017::execute(U2OpStatus &os) {
 
-    QList<QUrl> urls;
-    urls << dataDir+"samples/Genbank/murine.gb";
-    urls << dataDir+"samples/Genbank/sars.gb";
-    urls << dataDir+"samples/Genbank/CVU55762.gb";
-    ProjectUtils::openFiles(os, urls);
-
-    DocumentUtils::checkDocumentExists(os, "murine.gb");
-    DocumentUtils::checkDocumentExists(os, "sars.gb");
-    DocumentUtils::checkDocumentExists(os, "CVU55762.gb");
+//     QList<QUrl> urls;
+//     urls << dataDir+"samples/Genbank/murine.gb";
+//     urls << dataDir+"samples/Genbank/sars.gb";
+//     urls << dataDir+"samples/Genbank/CVU55762.gb";
+//     ProjectUtils::openFiles(os, urls);
+// 
+//     DocumentUtils::checkDocumentExists(os, "murine.gb");
+//     DocumentUtils::checkDocumentExists(os, "sars.gb");
+//     DocumentUtils::checkDocumentExists(os, "CVU55762.gb");
 }
 
 void test_0023::execute(U2OpStatus &os) {

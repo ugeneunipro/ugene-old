@@ -29,21 +29,18 @@
 
 namespace U2 {
 
-void ProjectUtils::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& settings) {
+void ProjectUtils::OpenFilesGUIAction::addSubTests() {
 
-    switch (settings.openMethod) {
+    switch (s.openMethod) {
         case OpenFileSettings::DRAGDROP:
         default:
-            openFilesDrop(os, urls);
+            add( new OpenFilesDropGUIAction(urls) );
     }
 
-//    QtUtils::sleep(3000); // TODO:
-//    checkProjectExists(os);
-
-//     foreach (QUrl path, urls) {
-//         GUrl pathStr = path.toString();
-//         checkDocumentExists(os, pathStr);
-//     }
+    add( new CheckProjectExistsGUIAction() );
+    foreach (QUrl path, urls) {
+        add( new CheckDocumentExistsGUIAction(path.toString()) );
+    }
 }
 
 void ProjectUtils::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting) {
@@ -130,7 +127,7 @@ void ProjectUtils::checkDocumentActive(U2OpStatus &os, Document *doc) {
     CHECK_SET_ERR(documentWindow == activeWindow, "documentWindow is not active");
 }
 
-void ProjectUtils::openFilesDrop(U2OpStatus &os, const QList<QUrl> &urls) {
+void ProjectUtils::OpenFilesDropGUIAction::execute(U2OpStatus &os) {
 
     QWidget* widget = AppContext::getMainWindow()->getQMainWindow();
     QPoint widgetPos(widget->width()/2, widget->height()/2);

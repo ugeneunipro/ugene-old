@@ -39,15 +39,16 @@ class U2TEST_EXPORT GUIMultiTest: public GUITest {
 public:
     enum State {IDLE, RUNNING, WAITING, FINISHED} state;
 
-    GUIMultiTest(const QString &name = "") : GUITest(name), state(IDLE), waiting(0){}
+    GUIMultiTest(const QString &name = "") : GUITest(name), state(IDLE), waiting(0) {}
     virtual void run(U2OpStatus &os);
-
-    void add(GUITest *t);
-
-    TaskStateInfo os;
 
 protected:
     virtual void execute(U2OpStatus &){}
+    void add(GUITest *t);
+
+    virtual void addSubTests(){}
+
+    TaskStateInfo os;
 
 protected slots:
     void sl_update();
