@@ -22,23 +22,48 @@
 #ifndef _U2_GUI_GTKEYBOARDDRIVER_H_
 #define _U2_GUI_GTKEYBOARDDRIVER_H_
 
+#include <map>
 #include <U2Core/U2OpStatus.h>
 
 namespace U2 {
 
 class GTKeyboardDriver {
 public:
-
+    //
     static void keyPress(U2OpStatus &os, int key);
-    static void keyRelease(U2OpStatus &os, int key);
-    static void keyClick(U2OpStatus &os, int key);
+    static void keyPress(U2OpStatus &os, int key, int modifiers);
 
-    //some method for key combinations (ex: shift+smth, ctrl+smth, some buttons at once)
+    static void keyRelease(U2OpStatus &os, int key);
+    static void keyRelease(U2OpStatus &os, int key, int modifiers);
+
+    static void keyClick(U2OpStatus &os, int key);
+    static void keyClick(U2OpStatus &os, int key, int modifiers);
+
+    static void keySequence(U2OpStatus &os, QString str);
+    static void keySequence(U2OpStatus &os, QString str, int modifiers);
+
+    
+    class keys : private std::map<QString, int> {
+    public:
+        keys();
+        int operator [] (QString) const;
+    };
+    
+    static keys key;
+
+    /**
+    * Example:
+    * GTKeyboardDriver::keyClick(os, 'A'); // print 'a'
+    * GTKeyboardDriver::keyClick(os, 'a'); // print 'a'
+    *
+    * GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["shift"], 'a'); // print 'A'
+    * GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["SHIFT"], 'a'); // print 'A'
+    * case in ["..."] does not matter
+    */
     
 protected:
     
 };
-
 
 } //namespace
 
