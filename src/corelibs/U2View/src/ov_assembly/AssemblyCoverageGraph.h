@@ -52,7 +52,7 @@ private:
     void connectSlots();
     void doRedraw();
     void drawAll();
-    void drawGraph(QPainter & p);
+    void drawGraph(QPainter & p, const CoverageInfo & ci, int alpha = 255);
 
 
     AssemblyBrowserUi * ui;
@@ -63,9 +63,10 @@ private:
     bool redraw;
     const static int FIXED_HEIGHT = 25;
 
-    qint64 previousXOffset;
+    U2Region previousRegion;
 
     BackgroundTaskRunner<CoverageInfo> coverageTaskRunner;
+    CoverageInfo lastResult;
 };
 
 } //ns

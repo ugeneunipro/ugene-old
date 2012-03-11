@@ -67,7 +67,7 @@ private slots:
 template<class Result>
 class BackgroundTaskRunner : public BackgroundTaskRunner_base {
 public:
-    BackgroundTaskRunner() : task(0) {}
+    BackgroundTaskRunner() : task(0), success(false) {}
 
     virtual ~BackgroundTaskRunner() {
         if(task) {
@@ -95,6 +95,13 @@ public:
         return !task;
     }
 
+    /**
+     * Returns true if last finished task wasn't cancelled and finished without error
+     */
+    inline bool isSuccessful() {
+        return success;
+    }
+
 private:
     virtual void sl_finished() {
         BackgroundTask<Result> * senderr = dynamic_cast<BackgroundTask<Result>*>(sender());
@@ -106,6 +113,7 @@ private:
             return;
         }
         result = task->getResult();
+        success = ! task->getStateInfo().isCoR();
         task = NULL;
         emitFinished();
     }
@@ -113,6 +121,7 @@ private:
 private:
     BackgroundTask<Result> * task;
     Result result;
+    bool success;
 
 private:
     BackgroundTaskRunner(const BackgroundTaskRunner &);

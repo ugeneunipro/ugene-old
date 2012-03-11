@@ -29,6 +29,20 @@
 
 namespace U2 {
 
+void CoverageInfo::updateStats() {
+    maxCoverage = 0;
+    minCoverage = std::numeric_limits<qint64>::max();
+
+    qint64 sum = 0;
+
+    for(int regionIndex = 0; regionIndex < coverageInfo.size(); ++regionIndex) {
+        maxCoverage = std::max(maxCoverage, coverageInfo[regionIndex]);
+        minCoverage = std::min(maxCoverage, coverageInfo[regionIndex]);
+        sum += coverageInfo[regionIndex];
+    }
+    averageCoverage = (double)sum/coverageInfo.size();
+}
+
 CalcCoverageInfoTask::CalcCoverageInfoTask(const CalcCoverageInfoTaskSettings & settings_) :
 BackgroundTask<CoverageInfo>("Calculate assembly coverage", TaskFlag_None), settings(settings_)
 {
@@ -58,6 +72,7 @@ void CalcCoverageInfoTask::run() {
     double coverageStatBasesPerRegion = (double)modelLength/cachedCoverageStat.coverage.size();
 
     result.coverageInfo.resize(settings.regions);
+    result.region = settings.visibleRange;
 
     if(cachedCoverageStat.coverage.isEmpty() || (coverageStatBasesPerRegion > basesPerRegion)) {
         U2AssemblyCoverageStat coverageStat;
@@ -82,20 +97,7 @@ void CalcCoverageInfoTask::run() {
             }
         }
     }
-
-    {
-        result.maxCoverage = 0;
-        result.minCoverage = std::numeric_limits<qint64>::max();
-
-        qint64 sum = 0;
-
-        for(int regionIndex = 0;regionIndex < settings.regions;regionIndex++) {
-            result.maxCoverage = std::max(result.maxCoverage, result.coverageInfo[regionIndex]);
-            result.minCoverage = std::min(result.maxCoverage, result.coverageInfo[regionIndex]);
-            sum += result.coverageInfo[regionIndex];
-        }
-        result.averageCoverage = (double)sum/settings.regions;
-    }
+    result.updateStats();
 }
 
 }

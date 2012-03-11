@@ -38,6 +38,10 @@ struct CoverageInfo {
     inline bool isEmpty() {
         return coverageInfo.empty();
     }
+    // calculates min, max and average
+    void updateStats();
+
+    U2Region region;
     QVector<qint64> coverageInfo;
     double averageCoverage;
     qint64 maxCoverage;

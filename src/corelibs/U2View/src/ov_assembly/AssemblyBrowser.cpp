@@ -274,18 +274,19 @@ QList<CoveredRegion> AssemblyBrowser::getCoveredRegions() const {
     return QList<CoveredRegion>();
 }
 
-void AssemblyBrowser::setLocalCoverageCache(CoverageInfo coverage, const U2Region &region) {
+void AssemblyBrowser::setLocalCoverageCache(CoverageInfo coverage) {
+    SAFE_POINT(coverage.region.length == coverage.coverageInfo.size(),
+               "Coverage info with region not equal to coverage array size (not precise coverage) cannot be used as local coverage cache",);
     localCoverageCache = coverage;
-    localCoverageRegion = region;
 }
 
 bool AssemblyBrowser::isInLocalCoverageCache(qint64 position) {
-    return localCoverageRegion.contains(position);
+    return localCoverageCache.region.contains(position);
 }
 
 qint64 AssemblyBrowser::getCoverageAtPos(qint64 pos) {
     if(isInLocalCoverageCache(pos)) {
-        return localCoverageCache.coverageInfo[pos - localCoverageRegion.startPos];
+        return localCoverageCache.coverageInfo.at(pos - localCoverageCache.region.startPos);
     } else {
         U2OpStatus2Log status;
         U2AssemblyCoverageStat coverageStat;
@@ -293,6 +294,31 @@ qint64 AssemblyBrowser::getCoverageAtPos(qint64 pos) {
         model->calculateCoverageStat(U2Region(pos, 1), coverageStat, status);
         return coverageStat.coverage.first().maxValue;
     }
+}
+
+bool AssemblyBrowser::intersectsLocalCoverageCache(U2Region region) {
+    return localCoverageCache.region.intersects(region);
+}
+
+bool AssemblyBrowser::isInLocalCoverageCache(U2Region region) {
+    return localCoverageCache.region.contains(region);
+}
+
+CoverageInfo AssemblyBrowser::extractFromLocalCoverageCache(U2Region region) {
+    CoverageInfo ci;
+    ci.region = region;
+    ci.coverageInfo.resize(region.length);
+
+    if(intersectsLocalCoverageCache(region)) {
+        U2Region intersection = localCoverageCache.region.intersect(region);
+        SAFE_POINT(!intersection.isEmpty(), "intersection cannot be empty", ci);
+
+        int offsetInCache = intersection.startPos - localCoverageCache.region.startPos;
+        int offsetInResult = intersection.startPos - region.startPos;
+        memcpy(ci.coverageInfo.data() + offsetInResult, localCoverageCache.coverageInfo.constData() + offsetInCache, intersection.length*sizeof(ci.coverageInfo[0]));
+        ci.updateStats();
+    }
+    return ci;
 }
 
 int AssemblyBrowser::getCellWidth() const {
