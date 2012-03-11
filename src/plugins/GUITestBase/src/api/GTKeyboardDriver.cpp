@@ -171,7 +171,6 @@ void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, QString str, int modifier
     keyRelease(os, modifiers);
 }
 
-#endif // _WIN32
 
 //#####################################################################################
 GTKeyboardDriver::keys::keys()
@@ -227,4 +226,5 @@ int GTKeyboardDriver::keys::operator [] (QString str) const
 
 GTKeyboardDriver::keys GTKeyboardDriver::key;
 
+#endif // _WIN32
 } //namespace

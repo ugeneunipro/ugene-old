@@ -19,7 +19,7 @@ namespace U2 {
 #define GUI_TEST_CLASS_DECLARATION(className) \
     class className : public GUIMultiTest { \
     public: \
-        className::className() : GUIMultiTest(TESTNAME(className)){ addSubTests(); } \
+        className() : GUIMultiTest(TESTNAME(className)){ addSubTests(); } \
     private: \
         virtual void addSubTests(); \
     };
