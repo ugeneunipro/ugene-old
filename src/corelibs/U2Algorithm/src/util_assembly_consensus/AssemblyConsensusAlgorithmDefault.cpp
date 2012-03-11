@@ -50,7 +50,7 @@ AssemblyConsensusAlgorithm* AssemblyConsensusAlgorithmFactoryDefault::createAlgo
 //////////////////////////////////////////////////////////////////////////
 // Algorithm
 
-QByteArray AssemblyConsensusAlgorithmDefault::getConsensusRegion(const U2Region &region, U2DbiIterator<U2AssemblyRead> *reads, U2OpStatus &os) {
+QByteArray AssemblyConsensusAlgorithmDefault::getConsensusRegion(const U2Region &region, U2DbiIterator<U2AssemblyRead> *reads, QByteArray /*referenceFragment*/, U2OpStatus &os) {
     AssemblyBasesFrequenciesStat s;
     s.frequencyInfos.resize(region.length);
 

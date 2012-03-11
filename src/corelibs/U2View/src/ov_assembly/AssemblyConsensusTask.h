@@ -33,7 +33,7 @@
 namespace U2 {
 
 struct AssemblyConsensusTaskSettings {
-    AssemblyConsensusAlgorithm * consensusAlgorithm;
+    QSharedPointer<AssemblyConsensusAlgorithm> consensusAlgorithm;
     QSharedPointer<AssemblyModel> model;
     U2Region region;
 };

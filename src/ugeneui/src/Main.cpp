@@ -612,6 +612,9 @@ int main(int argc, char **argv)
     delete msaDistReg;
     appContext->setMSADistanceAlgorithmRegistry(NULL);
 
+    delete assemblyConsReg;
+    appContext->setAssemblyConsensusAlgorithmRegistry(NULL);
+
     delete pwmConvReg;
     appContext->setPWMConversionAlgorithmRegistry(NULL);
 

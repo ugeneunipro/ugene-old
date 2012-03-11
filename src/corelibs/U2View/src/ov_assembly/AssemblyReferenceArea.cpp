@@ -38,16 +38,29 @@ AssemblySequenceArea::AssemblySequenceArea(AssemblyBrowserUi * ui_) :
     sl_redraw();
     setMouseTracking(true);
 
-    // init cell renderer
-    AssemblyCellRendererFactoryRegistry *factories = browser->getCellRendererRegistry();
-    AssemblyCellRendererFactory *f = factories->getFactoryById(AssemblyCellRendererFactory::ALL_NUCLEOTIDES);
-    SAFE_POINT(f != NULL, "AssemblyCellRendererFactory::ALL_NUCLEOTIDES not found!",);
-    cellRenderer.reset(f->create());
+    setNormalCellRenderer();
 }
 
 void AssemblySequenceArea::connectSlots() {
     connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_zoomPerformed()));
     connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_offsetsChanged()));
+}
+
+void AssemblySequenceArea::setNormalCellRenderer() {
+    initCellRenderer(AssemblyCellRendererFactory::ALL_NUCLEOTIDES);
+    needsReference = false;
+}
+
+void AssemblySequenceArea::setDiffCellRenderer() {
+    initCellRenderer(AssemblyCellRendererFactory::DIFF_NUCLEOTIDES);
+    needsReference = true;
+}
+
+void AssemblySequenceArea::initCellRenderer(QString id) {
+    AssemblyCellRendererFactoryRegistry *factories = browser->getCellRendererRegistry();
+    AssemblyCellRendererFactory *f = factories->getFactoryById(id);
+    SAFE_POINT(f != NULL, QString("AssemblyCellRendererFactory with id '%1' not found!").arg(id),);
+    cellRenderer.reset(f->create());
 }
 
 void AssemblySequenceArea::drawAll() {
@@ -98,13 +111,22 @@ void AssemblySequenceArea::drawSequence(QPainter & p) {
             }
         }
         cellRenderer->render(QSize(letterWidth, letterHeight), text, f);
+        QByteArray referenceFragment;
+        if(needsReference) {
+            referenceFragment = model->getReferenceRegionOrEmpty(getVisibleRegion());
+        }
 
         for(int i = 0; i < visibleSequence.length(); ++i, x_pix_start+=letterWidth) {
             QRect r(x_pix_start, y_pix_start, letterWidth, letterHeight);
             char c = visibleSequence.at(i);
             // TODO: not hard-coded
             if(c != ' ') {
-                QPixmap cellImage = cellRenderer->cellImage(c);
+                QPixmap cellImage;
+                if(referenceFragment.isEmpty()) {
+                    cellImage = cellRenderer->cellImage(c);
+                } else {
+                    cellImage = cellRenderer->cellImage(U2AssemblyRead(), c, referenceFragment.at(i));
+                }
                 p.drawPixmap(r, cellImage);
             }
         }

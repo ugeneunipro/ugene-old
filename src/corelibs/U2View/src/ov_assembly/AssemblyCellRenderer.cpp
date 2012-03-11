@@ -31,19 +31,30 @@ namespace U2 {
 
 namespace {
 
+typedef QPair<char, char> TwoChars;
+
 static QMap<char, QColor> initDefaultColorSheme() {
     QMap<char, QColor> colors;
 
     //TODO other chars ??
     //TODO = symbol
-    colors['a'] = QColor("#FCFF92");
-    colors['c'] = QColor("#70F970");
-    colors['g'] = QColor("#4EADE1");
-    colors['t'] = QColor("#FF99B1");
-    colors['A'] = QColor("#FCFF92");
-    colors['C'] = QColor("#70F970");
-    colors['G'] = QColor("#4EADE1");
-    colors['T'] = QColor("#FF99B1");
+    colors['a'] = colors['A'] = QColor("#FCFF92");
+    colors['c'] = colors['C'] = QColor("#70F970");
+    colors['g'] = colors['G'] = QColor("#4EADE1");
+    colors['t'] = colors['T'] = QColor("#FF99B1");
+
+    // TODO: more meaningful colors
+    colors['w'] = colors['W'] =
+    colors['r'] = colors['R'] =
+    colors['m'] = colors['M'] =
+    colors['k'] = colors['K'] =
+    colors['y'] = colors['Y'] =
+    colors['s'] = colors['S'] =
+
+    colors['b'] = colors['B'] =
+    colors['v'] = colors['V'] =
+    colors['d'] = colors['D'] =
+    colors['h'] = colors['H'] = QColor("#FFAA60");
 
     colors['-'] = QColor("#FBFBFB");
     colors['N'] = QColor("#FBFBFB");
@@ -51,12 +62,16 @@ static QMap<char, QColor> initDefaultColorSheme() {
     return colors;
 }
 
-static QList<char> initAssemblyAlphabet() {
-    QList<char> alphabet;
-    alphabet << 'a' << 'c' << 'g' << 't'
-             << 'A' << 'C' << 'G' << 'T'
-             << '-' << 'N';
-    return alphabet;
+static QMap<char, TwoChars> initExtendedPairs() {
+    QMap<char, TwoChars> pairs;
+
+    pairs['w'] = pairs['W'] = TwoChars('T', 'A');
+    pairs['r'] = pairs['R'] = TwoChars('G', 'A');
+    pairs['m'] = pairs['M'] = TwoChars('C', 'A');
+    pairs['k'] = pairs['K'] = TwoChars('G', 'T');
+    pairs['y'] = pairs['Y'] = TwoChars('T', 'C');
+    pairs['s'] = pairs['S'] = TwoChars('G', 'C');
+    return pairs;
 }
 
 inline static bool isGap(char c) {
@@ -68,33 +83,34 @@ inline static bool isGap(char c) {
 }   // namespace {
 
 static const QMap<char, QColor> nucleotideColorScheme = initDefaultColorSheme();
-static const QList<char> assemblyAlphabet = initAssemblyAlphabet();
+static const QList<char> assemblyAlphabet = nucleotideColorScheme.keys();
+static const QMap<char, TwoChars> extendedPairs = initExtendedPairs();
 
-void AssemblyCellRenderer::drawCell(QPixmap &img, const QColor &color, bool text, char c, const QFont &font, const QColor &textColor) {
-    drawBackground(img, color);
-
-    if(text) {
-        drawText(img, c, font, textColor);
-    }
-}
-
-void AssemblyCellRenderer::drawBackground(QPixmap &img, const QColor & color) {
+static void drawBackground(QPixmap &img, const QColor & topColor, const QColor &bottomColor) {
     QPainter p(&img);
 
     //TODO invent something greater
     QLinearGradient linearGrad( QPointF(0, 0), QPointF(img.width(), img.height()));
-    linearGrad.setColorAt(0, QColor::fromRgb(color.red()-70,color.green()-70,color.blue()-70));
-    linearGrad.setColorAt(1, color);
+    linearGrad.setColorAt(0, QColor::fromRgb(topColor.red()-70,topColor.green()-70,topColor.blue()-70));
+    linearGrad.setColorAt(1, bottomColor);
     QBrush br(linearGrad);
 
     p.fillRect(img.rect(), br);
 }
 
-void AssemblyCellRenderer::drawText(QPixmap &img, char c, const QFont &font, const QColor &color) {
+static void drawText(QPixmap &img, char c, const QFont &font, const QColor &color) {
     QPainter p(&img);
     p.setFont(font);
     p.setPen(color);
     p.drawText(img.rect(), Qt::AlignCenter, QString(c));
+}
+
+void AssemblyCellRenderer::drawCell(QPixmap &img, const QColor &topColor, const QColor &bottomColor, bool text, char c, const QFont &font, const QColor &textColor) {
+    drawBackground(img, topColor, bottomColor);
+
+    if(text) {
+        drawText(img, c, font, textColor);
+    }
 }
 
 class NucleotideColorsRenderer : public AssemblyCellRenderer {
@@ -142,7 +158,14 @@ void NucleotideColorsRenderer::update() {
     foreach(char c, colorScheme.keys()) {
         QPixmap img(size);
         QColor textColor = isGap(c) ? Qt::red : Qt::black;
-        drawCell(img, colorScheme.value(c), text, c, font, textColor);
+        if(extendedPairs.contains(c)) {
+            // char from extended alphabet, draw gradient
+            TwoChars pair = extendedPairs.value(c);
+            drawCell(img, colorScheme.value(pair.first), colorScheme.value(pair.second), text, c, font, textColor);
+        } else {
+            // normal char
+            drawCell(img, colorScheme.value(c), text, c, font, textColor);
+        }
         images.insert(c, img);
     }
 
@@ -392,9 +415,16 @@ void DiffNucleotideColorsRenderer::update() {
         QPixmap himg(size), nimg(size);
         // make gaps more noticeable
         QColor textColor = isGap(c) ? Qt::white : Qt::black;
-        QColor highlightColor = isGap(c) ? Qt::red : colorScheme.value(c);
+        QColor highlightColor = isGap(c) ? QColor("#CC4E4E") : colorScheme.value(c);
 
-        drawCell(himg, highlightColor, text, c, font, textColor);
+        if(extendedPairs.contains(c)) {
+            // char from extended alphabet, draw gradient
+            TwoChars pair = extendedPairs.value(c);
+            drawCell(himg, colorScheme.value(pair.first), colorScheme.value(pair.second), text, c, font, textColor);
+        } else {
+            // normal char
+            drawCell(himg, highlightColor, text, c, font, textColor);
+        }
         drawCell(nimg, normalColor, text, c, font, textColor);
 
         highlightedImages.insert(c, himg);

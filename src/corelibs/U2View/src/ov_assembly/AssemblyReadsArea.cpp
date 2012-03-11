@@ -51,6 +51,7 @@
 #include <U2Formats/DocumentFormatUtils.h>
 
 #include "AssemblyBrowser.h"
+#include "AssemblyConsensusArea.h"
 #include "ZoomableAssemblyOverview.h"
 #include "ExportReadsDialog.h"
 
@@ -64,7 +65,7 @@ AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_
         coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this), mover(),
         shadowingEnabled(false), shadowingData(),
         scribbling(false), currentHotkeyIndex(-1),
-        hintEnabled(AssemblyBrowserSettings::getReadHintEnabled()),
+        hintEnabled(AssemblyBrowserSettings::getReadHintEnabled()), scrolling(false),
         optimizeRenderOnScroll(AssemblyBrowserSettings::getOptimizeRenderOnScroll()),
         readMenu(new QMenu(this))
 {
@@ -113,6 +114,9 @@ void AssemblyReadsArea::createMenu() {
             cellRendererActions << action;
         }
     }
+
+    QMenu *consensusMenu = ui->getConsensusArea()->getConsensusAlgorithmMenu();
+    readMenu->addMenu(consensusMenu);
 
     QMenu *shadowingMenu = createShadowingMenu();
     readMenu->addMenu(shadowingMenu);
@@ -354,13 +358,8 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
     }
 
     QByteArray referenceRegion;
-    if(model->hasReference() && browser->areCellsVisible()) {
-        U2OpStatusImpl status;
-        referenceRegion = model->getReferenceRegion(cachedReads.visibleBases, status);
-        if(status.hasError()) {
-            LOG_OP(status);
-            referenceRegion = QByteArray();
-        }
+    if(browser->areCellsVisible()) {
+        referenceRegion = model->getReferenceRegionOrEmpty(cachedReads.visibleBases);
     }
 
     // 1. Render cells using AssemblyCellRenderer

@@ -389,6 +389,20 @@ QByteArray AssemblyModel::getReferenceRegion(const U2Region& region, U2OpStatus&
     return refObj->getSequenceData(region);
 }
 
+QByteArray AssemblyModel::getReferenceRegionOrEmpty(const U2Region& region) {
+    if(hasReference()) {
+        U2OpStatusImpl status;
+        QByteArray referenceRegion = getReferenceRegion(region, status);
+        if(status.isCoR()) {
+            LOG_OP(status);
+            return QByteArray();
+        } else {
+            return referenceRegion;
+        }
+    }
+    return QByteArray();
+}
+
 void AssemblyModel::associateWithReference(const U2CrossDatabaseReference & ref) {
     assert(hasReference());
     assert(assemblyDbi != NULL);

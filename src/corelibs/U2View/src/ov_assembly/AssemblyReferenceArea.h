@@ -53,6 +53,9 @@ protected:
     bool areCellsVisible() const;
     U2Region getVisibleRegion() const;
 
+    void setNormalCellRenderer();
+    void setDiffCellRenderer();
+
     void paintEvent(QPaintEvent * e);
     void resizeEvent(QResizeEvent * e);
     void mouseMoveEvent(QMouseEvent * e);
@@ -66,6 +69,7 @@ protected slots:
     virtual void sl_zoomPerformed();
 
 private:
+    void initCellRenderer(QString id);
     void connectSlots();
     void drawAll();
 
@@ -77,6 +81,7 @@ private:
     QPixmap cachedView;
     bool redraw;
     auto_ptr<AssemblyCellRenderer> cellRenderer;
+    bool needsReference;
 
     const static int FIXED_HEIGHT = 25;
 };

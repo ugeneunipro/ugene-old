@@ -25,6 +25,7 @@
 #include "AssemblyReferenceArea.h"
 
 #include <U2Core/BackgroundTaskRunner.h>
+#include <U2Algorithm/AssemblyConsensusAlgorithm.h>
 
 namespace U2 {
 
@@ -35,17 +36,29 @@ class AssemblyConsensusArea: public AssemblySequenceArea {
 public:
     AssemblyConsensusArea(AssemblyBrowserUi * ui);
 
+    QMenu * getConsensusAlgorithmMenu();
+
 protected:
     virtual QByteArray getSequenceRegion(U2OpStatus &os);
     virtual bool canDrawSequence();
     virtual void drawSequence(QPainter &p);
+    virtual void mousePressEvent(QMouseEvent *e);
 
 protected slots:
     virtual void sl_offsetsChanged();
     virtual void sl_zoomPerformed();
 
+private slots:
+    void sl_consensusAlgorithmChanged(QAction *a);
+    void sl_drawDifferenceChanged(bool value);
+
 private:
+    void createContextMenu();
     void launchConsensusCalculation();
+
+    QMenu * contextMenu;
+    QMenu * consensusAlgorithmMenu;
+    QSharedPointer<AssemblyConsensusAlgorithm> consensusAlgorithm;
 
     U2Region previousRegion;
     BackgroundTaskRunner<QByteArray> consensusTaskRunner;

@@ -25,6 +25,7 @@
 
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 namespace U2 {
@@ -39,11 +40,17 @@ void AssemblyConsensusTask::run() {
     GTIMER(c2, t2, "AssemblyConsensusTask::run");
     quint64 t0 = GTimer::currentTimeMicros();
 
-    U2OpStatus2Log os;
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > reads(settings.model->getReads(settings.region, os));
+    CHECK_EXT(!settings.consensusAlgorithm.isNull(), stateInfo.setError(tr("No consensus algorithm given")),);
 
-    result = settings.consensusAlgorithm->getConsensusRegion(settings.region, reads.get(), stateInfo);
-            
+    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > reads(settings.model->getReads(settings.region, stateInfo));
+    QByteArray referenceFragment;
+    if(settings.model->hasReference()) {
+        referenceFragment = settings.model->getReferenceRegion(settings.region, stateInfo);
+    }
+    CHECK_OP(stateInfo,);
+
+    result = settings.consensusAlgorithm->getConsensusRegion(settings.region, reads.get(), referenceFragment, stateInfo);
+
     perfLog.trace(QString("Assembly: '%1' consensus calculation time: %2 seconds")
                   .arg(settings.consensusAlgorithm->getName())
                   .arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));

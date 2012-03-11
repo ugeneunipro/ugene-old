@@ -42,7 +42,7 @@ class U2ALGORITHM_EXPORT AssemblyConsensusAlgorithmDefault : public AssemblyCons
 public:
     AssemblyConsensusAlgorithmDefault(AssemblyConsensusAlgorithmFactoryDefault* factory) : AssemblyConsensusAlgorithm(factory) {}
     
-    virtual QByteArray getConsensusRegion(const U2Region &region, U2DbiIterator<U2AssemblyRead>* reads, U2OpStatus &os);
+    virtual QByteArray getConsensusRegion(const U2Region &region, U2DbiIterator<U2AssemblyRead>* reads, QByteArray referenceFragment, U2OpStatus &os);
 };
 
 }//namespace

@@ -50,10 +50,12 @@ class U2ALGORITHM_EXPORT AssemblyConsensusAlgorithm {
 public:
     AssemblyConsensusAlgorithm(AssemblyConsensusAlgorithmFactory* factory_) : factory(factory_) {}
     
+    AssemblyConsensusAlgorithmFactory* getFactory() { return factory; }
+
     QString getDescription() const {return factory->getDescription();}
     QString getName() const {return factory->getName();}
     
-    virtual QByteArray getConsensusRegion(const U2Region &region, U2DbiIterator<U2AssemblyRead>* reads, U2OpStatus &os) = 0;
+    virtual QByteArray getConsensusRegion(const U2Region &region, U2DbiIterator<U2AssemblyRead>* reads, QByteArray referenceFragment, U2OpStatus &os) = 0;
 private:
     AssemblyConsensusAlgorithmFactory* factory;
 };

@@ -70,6 +70,7 @@ public:
     void setReference(U2SequenceObject* seqObj);
 
     QByteArray getReferenceRegion(const U2Region& region, U2OpStatus& os);
+    QByteArray getReferenceRegionOrEmpty(const U2Region& region);
 
     const DbiConnection& getDbiConnection() const {return dbiHandle;}
     

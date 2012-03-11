@@ -48,9 +48,10 @@ public:
     virtual QPixmap cellImage(const U2AssemblyRead &read, char c, char ref) = 0;
 
 protected:
-    static void drawCell(QPixmap &img, const QColor &color, bool text, char c, const QFont &font, const QColor &textColor);
-    static void drawBackground(QPixmap &img, const QColor & color);
-    static void drawText(QPixmap &img, char c, const QFont &font, const QColor & color);
+    static void drawCell(QPixmap &img, const QColor &topColor, const QColor&bottomColor, bool text, char c, const QFont &font, const QColor &textColor);
+    static void drawCell(QPixmap &img, const QColor &color, bool text, char c, const QFont &font, const QColor &textColor) {
+        drawCell(img, color, color, text, c, font, textColor);
+    }
 };
 
 class AssemblyCellRendererFactory {
