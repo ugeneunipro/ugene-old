@@ -29,15 +29,6 @@
 
 namespace U2 {
 
-void ProjectUtils::openFile(U2OpStatus &os, const GUrl &path, const OpenFileSettings& settings) {
-
-    QList<QUrl> urls; urls << path.getURLString();
-    openFiles(os, urls, settings);
-
-    Document* doc = checkDocumentExists(os, path);
-    checkDocumentActive(os, doc);
-}
-
 void ProjectUtils::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& settings) {
 
     switch (settings.openMethod) {
@@ -137,14 +128,6 @@ void ProjectUtils::checkDocumentActive(U2OpStatus &os, Document *doc) {
 
     MWMDIWindow *documentWindow = viewsList.first();
     CHECK_SET_ERR(documentWindow == activeWindow, "documentWindow is not active");
-}
-
-void ProjectUtils::openFileDrop(U2OpStatus &os, const GUrl &path) {
-
-    QList<QUrl> urls;
-    urls << path.getURLString();
-
-    openFilesDrop(os, urls);
 }
 
 void ProjectUtils::openFilesDrop(U2OpStatus &os, const QList<QUrl> &urls) {

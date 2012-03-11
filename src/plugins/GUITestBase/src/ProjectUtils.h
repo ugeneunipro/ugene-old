@@ -47,34 +47,35 @@ public:
         enum SaveOnClose {NO, YES, CANCEL} saveOnClose;
     };
 
-    /*
-        opens a file using settings, checks if the document is loaded
-    */
-    static void openFile(U2OpStatus &os, const GUrl &path, const OpenFileSettings& = OpenFileSettings());
-    class OpenFileGUIAction : public GUITest {
-    public:
-        OpenFileGUIAction(const GUrl &_path, const OpenFileSettings& _s = OpenFileSettings())
-            : path(_path), s(_s){}
-
-    protected:
-        virtual void execute(U2OpStatus &os) {
-            openFile(os, path, s);
-        }
-    private:
-        GUrl path;
-        OpenFileSettings s;
-    };
-
     class OpenProjectGUIAction : public GUIMultiTest {
     public:
         OpenProjectGUIAction(const GUrl& path, const QString& projectName, const QString& documentName) {
-            add(new ProjectUtils::OpenFileGUIAction(path));
+            add(new ProjectUtils::OpenFilesGUIAction(path));
             add(new AppUtils::CheckUGENETitleGUIAction(projectName));
             add(new DocumentUtils::CheckDocumentExistsGUIAction(documentName));
         }
     };
 
+    /*
+        opens files using settings, checks if the document is loaded
+    */
     static void openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& = OpenFileSettings());
+    class OpenFilesGUIAction : public GUITest {
+    public:
+        OpenFilesGUIAction(const QList<QUrl> &_urls, const OpenFileSettings& _s = OpenFileSettings())
+            : urls(_urls), s(_s){}
+
+        OpenFilesGUIAction(const GUrl &path, const OpenFileSettings& _s = OpenFileSettings())
+            : s(_s){ urls.append(path.getURLString()); }
+
+    protected:
+        virtual void execute(U2OpStatus &os) {
+            openFiles(os, urls, s);
+        }
+    private:
+        QList<QUrl> urls;
+        OpenFileSettings s;
+    };
 
     class ExportProjectGUIAction : public GUIMultiTest {
     public:
@@ -90,7 +91,6 @@ public:
     GENERATE_GUI_ACTION(CloseProjectGUIAction, closeProject);
 
 protected:
-    static void openFileDrop(U2OpStatus &os, const GUrl &path);
     static void openFilesDrop(U2OpStatus &os, const QList<QUrl> &urls);
 
     static void checkProjectExists(U2OpStatus &os);
