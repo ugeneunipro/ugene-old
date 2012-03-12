@@ -24,28 +24,39 @@
 
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/Log.h>
+#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
 class LogTracer : public QObject {
     Q_OBJECT
 public:
-    LogTracer();
-    virtual ~LogTracer();
+    static LogTracer* instance() { static LogTracer logTracer; return &logTracer; }
 
+    void reset() { wasError = false; }
     bool hasError() const { return wasError; }
 
 protected slots:
     void sl_onMessage(const LogMessage& msg);
 
 private:
+    LogTracer();
+
     bool wasError;
 };
 
 
 class LogUtils {
 public:
-    static void checkHasError(U2OpStatus &os, const LogTracer& l);
+    class LogTracerStartGUIAction : public GUITest {
+    public:
+        virtual void execute(U2OpStatus &os);
+    };
+
+    class LogTracerCheckGUIAction : public GUITest {
+    public:
+        virtual void execute(U2OpStatus &os);
+    };
 };
 
 } // namespace

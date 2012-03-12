@@ -103,6 +103,11 @@ Task* GUITestService::createTestLauncherTask() const {
 
 void GUITestService::sl_subTestFinished(GUITest* t) {
 
+    if (GUIMultiTest* multiTest = qobject_cast<GUIMultiTest*>(t)) {
+        if (!os.hasError()) {
+            os.setError(multiTest->os.getError());
+        }
+    }
     delete t;
 
     QString testResult = successResult;

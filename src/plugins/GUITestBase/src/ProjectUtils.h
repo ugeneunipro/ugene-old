@@ -87,8 +87,10 @@ public:
         SaveProjectAsGUIAction(const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
     };
 
-    static void closeProject(U2OpStatus &os, const CloseProjectSettings& = CloseProjectSettings());
-    GENERATE_GUI_ACTION(CloseProjectGUIAction, closeProject);
+    class CloseProjectGUIAction : public GUIMultiTest {
+    public:
+        CloseProjectGUIAction(const CloseProjectSettings& settings = CloseProjectSettings());
+    };
 
 protected:
     class OpenFilesDropGUIAction : public GUITest {

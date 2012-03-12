@@ -28,13 +28,7 @@ namespace U2 {
 
 LogTracer::LogTracer()
 : wasError(false) {
-    moveToThread(LogServer::getInstance()->thread());
     connect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)), SLOT(sl_onMessage(const LogMessage&)));
-}
-
-
-LogTracer::~LogTracer() {
-    disconnect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)));
 }
 
 void LogTracer::sl_onMessage(const LogMessage &msg) {
@@ -44,8 +38,12 @@ void LogTracer::sl_onMessage(const LogMessage &msg) {
     }
 }
 
-void LogUtils::checkHasError(U2OpStatus &os, const LogTracer& l) {
-    CHECK_SET_ERR(l.hasError() == false, "There is an error in log");
+void LogUtils::LogTracerStartGUIAction::execute(U2OpStatus &os) {
+    LogTracer::instance()->reset();
+}
+
+void LogUtils::LogTracerCheckGUIAction::execute(U2OpStatus &os) {
+    CHECK_SET_ERR(LogTracer::instance()->hasError() == false, "There is an error in log");
 }
 
 } // namespace

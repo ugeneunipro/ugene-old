@@ -54,25 +54,24 @@ ProjectUtils::SaveProjectAsGUIAction::SaveProjectAsGUIAction(const QString &proj
     add( new GUIDialogUtils::FillInSaveProjectAsDialogGUIAction(projectName, projectFolder, projectFile, true) );
 }
 
-void ProjectUtils::closeProject(U2OpStatus &os, const CloseProjectSettings& settings) {
+ProjectUtils::CloseProjectGUIAction::CloseProjectGUIAction(const CloseProjectSettings& settings) {
 
-    QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__CLOSE_PROJECT, MWMENU_FILE);
-    QtUtils::sleep(500);
+    add( new QtUtils::ClickMenuActionGUIAction(ACTION_PROJECTSUPPORT__CLOSE_PROJECT, MWMENU_FILE) );
 
-//     switch (settings.saveOnClose) {
-//         case CloseProjectSettings::YES:
-//             GUIDialogUtils::clickMessageBoxButton(os, QMessageBox::Yes);
-//             break;
-// 
-//         case CloseProjectSettings::NO:
-//             GUIDialogUtils::clickMessageBoxButton(os, QMessageBox::No);
-//             break;
-// 
-//         default:
-//         case CloseProjectSettings::CANCEL:
-//             GUIDialogUtils::clickMessageBoxButton(os, QMessageBox::Cancel);
-//             break;
-//     }
+    switch (settings.saveOnClose) {
+        case CloseProjectSettings::YES:
+            add( new GUIDialogUtils::ClickMessageBoxButtonGUIAction(QMessageBox::Yes) );
+            break;
+
+        case CloseProjectSettings::NO:
+            add( new GUIDialogUtils::ClickMessageBoxButtonGUIAction(QMessageBox::No) );
+            break;
+
+        default:
+        case CloseProjectSettings::CANCEL:
+            add( new GUIDialogUtils::ClickMessageBoxButtonGUIAction(QMessageBox::Cancel) );
+            break;
+    }
 }
 
 void ProjectUtils::closeProjectByHotkey(U2OpStatus &os) {

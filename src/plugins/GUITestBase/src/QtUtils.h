@@ -30,6 +30,7 @@
 #include <QtCore/QThread>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
@@ -75,6 +76,7 @@ public:
     // expand top level menu "MW_MENU" and click on the item
     // Example: clickMenuAction(os, ACTION__ABOUT, MWMENU_HELP);
     static void clickMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName);
+    GENERATE_GUI_ACTION_2(ClickMenuActionGUIAction, clickMenuAction);
 
     // returns NULL if not found
     static QAction* getMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName);

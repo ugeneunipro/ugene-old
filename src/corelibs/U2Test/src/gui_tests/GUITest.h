@@ -36,6 +36,8 @@ typedef QList<GUITest*> GUITests;
 
 class U2TEST_EXPORT GUIMultiTest: public GUITest {
     Q_OBJECT
+friend class GUITestService;
+
 public:
     enum State {IDLE, RUNNING, WAITING, FINISHED} state;
 
