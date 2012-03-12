@@ -56,9 +56,12 @@ public:
     * GTKeyboardDriver::keyClick(os, 'A'); // print 'a'
     * GTKeyboardDriver::keyClick(os, 'a'); // print 'a'
     *
-    * GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["shift"], 'a'); // print 'A'
-    * GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["SHIFT"], 'a'); // print 'A'
+    * GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["shift"]); // print 'A'
+    * GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["SHIFT"]); // print 'A'
     * case in ["..."] does not matter
+    *
+    * GTKeyboardDriver::keySequence(os, "ThIs Is a TeSt StRiNg"); // print "ThIs Is a TeSt StRiNg"
+    * i.e. case sensitive
     */
     
 protected:
