@@ -45,6 +45,7 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.h \
            src/util_assembly_consensus/AssemblyConsensusAlgorithm.h \
            src/util_assembly_consensus/AssemblyConsensusAlgorithmDefault.h \
+           src/util_assembly_consensus/AssemblyConsensusAlgorithmSamtools.h \
            src/util_assembly_consensus/AssemblyConsensusAlgorithmRegistry.h \
            src/util_assembly_consensus/AssemblyConsensusUtils.h \
            src/util_assembly_consensus/BuiltInAssemblyConsensusAlgorithms.h \
@@ -111,6 +112,7 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.cpp \
            src/util_assembly_consensus/AssemblyConsensusAlgorithm.cpp \
            src/util_assembly_consensus/AssemblyConsensusAlgorithmDefault.cpp \
+           src/util_assembly_consensus/AssemblyConsensusAlgorithmSamtools.cpp \
            src/util_assembly_consensus/AssemblyConsensusAlgorithmRegistry.cpp \
            src/util_assembly_consensus/AssemblyConsensusUtils.cpp \
            src/util_assembly_consensus/BuiltInAssemblyConsensusAlgorithms.cpp \

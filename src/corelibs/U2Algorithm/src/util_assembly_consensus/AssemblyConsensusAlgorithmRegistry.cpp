@@ -22,11 +22,13 @@
 #include "AssemblyConsensusAlgorithmRegistry.h"
 
 #include "AssemblyConsensusAlgorithmDefault.h"
+#include "AssemblyConsensusAlgorithmSamtools.h"
 
 namespace U2 {
 
 AssemblyConsensusAlgorithmRegistry::AssemblyConsensusAlgorithmRegistry() {
     addAlgorithmFactory(new AssemblyConsensusAlgorithmFactoryDefault());
+    addAlgorithmFactory(new AssemblyConsensusAlgorithmFactorySamtools());
 }
 
 AssemblyConsensusAlgorithmRegistry::~AssemblyConsensusAlgorithmRegistry() {

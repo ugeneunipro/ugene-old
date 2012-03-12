@@ -10,14 +10,36 @@ use_opencl(){
 UGENE_RELATIVE_DESTDIR = ''
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2ALGORITHM_DLL
 
-LIBS += -L../../_release -lU2Core
+LIBS += -L../../_release -lU2Core -lsamtools
+use_bundled_zlib() {
+    INCLUDEPATH += ../../libs_3rdparty/zlib/src
+    LIBS += -lzlib
+} else {
+    LIBS += -lz
+}
+
+# Force re-linking when lib changes
+POST_TARGETDEPS += ../../_release/libsamtools.a
+# Same options which samtools is built with
+DEFINES+="_FILE_OFFSET_BITS=64" _LARGEFILE64_SOURCE _USE_KNETFILE
+INCLUDEPATH += ../../libs_3rdparty/samtools/src ../../libs_3rdparty/samtools/src/samtools
+win32:INCLUDEPATH += ../../libs_3rdparty/samtools/src/samtools/win32
+win32:LIBS+=-lws2_32
 
 !debug_and_release|build_pass {
 
     CONFIG(debug, debug|release) {
         DESTDIR=../../_debug
-        LIBS -= -L../../_release -lU2Core
-        LIBS += -L../../_debug -lU2Cored 
+        LIBS -= -L../../_release -lU2Core -lsamtools
+        LIBS += -L../../_debug -lU2Cored -lsamtoolsd
+
+        POST_TARGETDEPS -= ../../_release/libsamtools.a
+        POST_TARGETDEPS += ../../_debug/libsamtoolsd.a
+
+        use_bundled_zlib() {
+            LIBS += -lzlibd
+            LIBS -= -lzlib
+        }
     }
 
     CONFIG(release, debug|release) {
