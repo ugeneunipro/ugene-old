@@ -22,7 +22,7 @@
 #ifndef _U2_GUI_GTKEYBOARDDRIVER_H_
 #define _U2_GUI_GTKEYBOARDDRIVER_H_
 
-#include <map>
+#include <QMap>
 #include <U2Core/U2OpStatus.h>
 
 namespace U2 {
@@ -43,7 +43,7 @@ public:
     static void keySequence(U2OpStatus &os, QString str, int modifiers);
 
     
-    class keys : private std::map<QString, int> {
+    class keys : private QMap<QString, int> {
     public:
         keys();
         int operator [] (QString) const;

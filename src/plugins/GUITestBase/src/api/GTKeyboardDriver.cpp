@@ -32,7 +32,7 @@
 #include "GTKeyboardDriver.h"
 #include "QtUtils.h"
 
-#define ADD_KEY(name, code) insert(std::pair<QString, int>(name, code))
+#define ADD_KEY(name, code) insert(name, code)
 
 namespace U2 {
 
@@ -40,7 +40,7 @@ namespace U2 {
 
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key)
 {
-    CHECK_SET_ERR_RESULT(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
 
     if (isalpha(key) && islower(key)) {
         key = toupper(key);
@@ -59,8 +59,8 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key)
 
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 {
-    CHECK_SET_ERR_RESULT(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
-    CHECK_SET_ERR_RESULT(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyPress()");
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyPress()");
 
     if (isalpha(key) && islower(key)) {
         key = toupper(key);
@@ -84,7 +84,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key)
 {
-    CHECK_SET_ERR_RESULT(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
     
     if (isalpha(key) && islower(key)) {
         key = toupper(key);
@@ -103,8 +103,8 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key)
 
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
-    CHECK_SET_ERR_RESULT(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
-    CHECK_SET_ERR_RESULT(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyRelease()");
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyRelease()");
 
     if (isalpha(key) && islower(key)) {
         key = toupper(key);
@@ -128,7 +128,7 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 
 void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key)
 {
-    CHECK_SET_ERR_RESULT(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
  
     keyPress(os, key);
     Sleep(100);
@@ -137,8 +137,8 @@ void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key)
 
 void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
 {
-    CHECK_SET_ERR_RESULT(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
-    CHECK_SET_ERR_RESULT(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyClick()");
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
+    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyClick()");
 
     keyPress(os, modifiers, key);
     Sleep(100);
@@ -217,11 +217,11 @@ GTKeyboardDriver::keys::keys()
 
 int GTKeyboardDriver::keys::operator [] (QString str) const
 {
-    keys::const_iterator it = this -> find(str.toLower());
-    if (it == end()) {
+    keys::const_iterator it = find(str.toLower());
+    if (!contains(str.toLower())) {
         return 0;
     }
-    return it -> second;
+    return value(str.toLower());
 }
 
 GTKeyboardDriver::keys GTKeyboardDriver::key;
