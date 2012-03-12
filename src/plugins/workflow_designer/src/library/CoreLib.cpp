@@ -263,6 +263,7 @@ void CoreLib::init() {
     MarkSequenceWorkerFactory::init();
     MultiplexerWorkerFactory::init();
     GetFileListWorkerFactory::init();
+    FetchSequenceByIdFromAnnotationFactory::init();
     initUsersWorkers();
     initExternalToolsWorkers();
 }

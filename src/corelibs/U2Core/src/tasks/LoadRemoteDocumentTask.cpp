@@ -57,13 +57,6 @@ const QString SWISS_PROT("SWISS-PROT");
 const QString UNIPROTKB_SWISS_PROT("UniProtKB/Swiss-Prot");
 const QString UNIPROTKB_TREMBL("UniProtKB/TrEMBL");
 
-// Entrez tools variables
-#define GENBANK_NUCLEOTIDE_ID "nucleotide"
-#define GENBANK_PROTEIN_ID "protein"
-#define GENBANK_FORMAT "gb"
-#define FASTA_FORMAT "fasta"
-
-
 LoadRemoteDocumentTask::LoadRemoteDocumentTask( const GUrl& fileUrl) 
 : DocumentProviderTask(tr("Load remote document"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL),
 loadDocumentTask(NULL) 
@@ -445,7 +438,9 @@ RemoteDBRegistry::RemoteDBRegistry() {
     aliases.insert("pdb", PDB);
     aliases.insert("swissprot", SWISS_PROT);
     aliases.insert("uniprot", UNIPROTKB_SWISS_PROT);
-    
+    aliases.insert("nucleotide", GENBANK_DNA);
+    aliases.insert("protein", GENBANK_PROTEIN);
+
     const QMap<QString,DBXRefInfo>& entries = AppContext::getDBXRefRegistry()->getEntries();
     foreach(const DBXRefInfo& info, entries.values()) {
         if (!info.fileUrl.isEmpty()) {

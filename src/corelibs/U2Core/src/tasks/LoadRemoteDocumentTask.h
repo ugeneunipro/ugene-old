@@ -38,6 +38,12 @@
 
 namespace U2 {
 
+// Entrez tools variables
+#define GENBANK_NUCLEOTIDE_ID "nucleotide"
+#define GENBANK_PROTEIN_ID "protein"
+#define GENBANK_FORMAT "gb"
+#define FASTA_FORMAT "fasta"
+
 class Document;
 class CopyDataTask;
 class LoadDocumentTask;
@@ -109,7 +115,6 @@ private:
     QString accNumber, dbName, format;
     QString fileName, fullPath;
 };
-
 // This task makes queries to NCBI Entrez search engine, using eTools
 // First step: query eSearch to get global Entrez index
 // Second step: query eFetch to download file by index

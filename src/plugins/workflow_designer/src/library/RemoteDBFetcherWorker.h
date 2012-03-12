@@ -79,6 +79,52 @@ public:
     virtual Worker* createWorker(Actor *a) { return new RemoteDBFetcherWorker(a); }
 };
 
+
+class FetchSequenceByIdFromAnnotationPrompter : public PrompterBase<FetchSequenceByIdFromAnnotationPrompter>
+{
+    Q_OBJECT
+
+public:
+    FetchSequenceByIdFromAnnotationPrompter(Actor *p = 0) : PrompterBase<FetchSequenceByIdFromAnnotationPrompter>(p) {}
+
+protected:
+    virtual QString composeRichDoc();
+};
+
+class FetchSequenceByIdFromAnnotationWorker : public BaseWorker
+{
+    Q_OBJECT
+
+public:
+    FetchSequenceByIdFromAnnotationWorker (Actor *a);
+
+    virtual void init();
+    virtual Task* tick();
+    virtual void cleanup();
+
+private slots:
+    void sl_taskFinished();
+
+protected:
+    IntegralBus *input;
+    IntegralBus *output;
+    QString fullPathDir, dbId;
+};
+
+class FetchSequenceByIdFromAnnotationFactory : public DomainFactory
+{
+public:
+    static const QString ACTOR_ID;
+
+public:
+    FetchSequenceByIdFromAnnotationFactory() : DomainFactory(ACTOR_ID) {}
+
+    static void init();
+    virtual Worker* createWorker(Actor *a) { return new FetchSequenceByIdFromAnnotationWorker(a); }
+};
+
+
+
 }   // namespace U2
 }   // namespace LocalWorkflow
 

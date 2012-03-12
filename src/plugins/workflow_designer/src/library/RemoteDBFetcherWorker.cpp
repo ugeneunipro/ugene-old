@@ -87,7 +87,7 @@ QString RemoteDBFetcherPrompter::composeRichDoc()
 
 /* class RemoteDBFetcherWorker : public BaseWorker */
 
-RemoteDBFetcherWorker::RemoteDBFetcherWorker(Actor *a) : BaseWorker(a), output(0)
+RemoteDBFetcherWorker::RemoteDBFetcherWorker(Actor *a) : BaseWorker(a), output(NULL)
 {
 }
 
@@ -287,6 +287,235 @@ void RemoteDBFetcherFactory::init()
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new RemoteDBFetcherFactory());
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/* class FetchSequenceByIdFromAnnotationWorker : public BaseWorker */
+
+FetchSequenceByIdFromAnnotationWorker::FetchSequenceByIdFromAnnotationWorker(Actor *a) : BaseWorker(a), input(NULL), output(NULL)
+{
+}
+
+void FetchSequenceByIdFromAnnotationWorker::init()
+{
+    input = ports.value(BasePorts::IN_ANNOTATIONS_PORT_ID());
+    output = ports.value(BasePorts::OUT_SEQ_PORT_ID());
+
+    fullPathDir = actor->getParameter(PATH_ID)->getAttributeValue<QString>(context);
+    if (fullPathDir == DEFAULT_PATH) {
+         fullPathDir = LoadRemoteDocumentTask::getDefaultDownloadDirectory();
+    }
+
+    dbId = actor->getParameter(DBID_ID)->getAttributeValue<QString>(context);
+}
+
+QString FetchSequenceByIdFromAnnotationPrompter::composeRichDoc()
+{
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_ANNOTATIONS_PORT_ID()));
+    Actor* producer = input->getProducer(BaseSlots::ANNOTATION_TABLE_SLOT().getId());
+    QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+    QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
+
+    return tr("In each annotation from %1 search for accession ID and download the corresponding sequences.").arg(producerName);
+}
+
+Task* FetchSequenceByIdFromAnnotationWorker::tick() {
+
+    if(!QDir(fullPathDir).exists()) {
+        if(!QDir().mkpath(fullPathDir)) {
+            return new FailTask(tr("Cannot create directory '%1'").arg(fullPathDir));
+        }
+    }
+
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+        QVariantMap qm = inputMessage.getData().toMap();
+        QList<SharedAnnotationData> inputAnns = qVariantValue<QList<SharedAnnotationData> >( qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()) );
+
+        QStringList accIds;
+
+        foreach (const SharedAnnotationData& ann, inputAnns) {
+            QString accId  = ann->findFirstQualifierValue("accession");
+            if(!accId.isEmpty()) {
+                accIds << accId;
+            }
+        }
+
+        Task* task = new LoadRemoteDocumentTask(accIds.join(","), dbId);
+        connect(task, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+
+        return task;
+
+
+    } else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+
+    return NULL;
+
+}
+
+
+void FetchSequenceByIdFromAnnotationWorker::cleanup() {
+}
+
+void FetchSequenceByIdFromAnnotationWorker::sl_taskFinished() {
+
+    LoadRemoteDocumentTask *loadTask = qobject_cast<LoadRemoteDocumentTask*>(sender());
+    assert(loadTask);
+
+    if (loadTask->getState() != Task::State_Finished)
+    {
+        return;
+    }
+
+    if (loadTask->hasError())
+    {
+        loadTask->setError(tr("failed to load item '%1' from '%2' DB : %3").arg(loadTask->getAccNumber(), loadTask->getDBName(), loadTask->getError()));
+        return;
+    }
+
+    Document *doc = loadTask->getDocument();
+    assert(doc);
+
+    foreach(GObject *gobj, doc->findGObjectByType(GObjectTypes::SEQUENCE))
+    {
+        U2SequenceObject *dnao = qobject_cast<U2SequenceObject*>(gobj);
+        assert(dnao);
+
+        QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+        QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(gobj,
+                                                                                     GObjectTypes::ANNOTATION_TABLE,
+                                                                                     GObjectRelationRole::SEQUENCE,
+                                                                                     allLoadedAnnotations,
+                                                                                     UOF_LoadedOnly);
+
+        QList<SharedAnnotationData> sads;
+        if (!annotations.isEmpty())
+        {
+            AnnotationTableObject *ato = qobject_cast<AnnotationTableObject*>(annotations.first());
+            foreach(Annotation *a, ato->getAnnotations())
+            {
+                sads << a->data();
+            }
+        }
+
+        QVariantMap messageData;
+        U2DataId seqId = context->getDataStorage()->putSequence(dnao->getWholeSequence());
+        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = seqId;
+        messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue(sads);
+
+        DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById(TYPE);
+
+        output->put(Message(messageType, messageData));
+    }
+
+    if (input->isEnded()) {
+        output->setEnded();
+    }
+
+}
+
+/* Class FetchSequencByIdFromAnnotationFactory */
+
+const QString FetchSequenceByIdFromAnnotationFactory::ACTOR_ID("fetch-sequence-by-id-from-annotation");
+
+void FetchSequenceByIdFromAnnotationFactory::init()
+{
+
+    //accept annotations as input
+    QMap<Descriptor, DataTypePtr> inputMap;
+    inputMap[ BaseSlots::ANNOTATION_TABLE_SLOT() ] = BaseTypes::ANNOTATION_TABLE_TYPE();
+
+    // output sequence and annotations
+    QMap<Descriptor, DataTypePtr> outputMap;
+    outputMap[ BaseSlots::DNA_SEQUENCE_SLOT() ] = BaseTypes::DNA_SEQUENCE_TYPE();
+    outputMap[ BaseSlots::ANNOTATION_TABLE_SLOT() ] = BaseTypes::ANNOTATION_TABLE_TYPE();
+
+
+    //DataTypePtr inputType( new MapDataType(Descriptor(TYPE), inputMap) );
+    //DataTypeRegistry  *dr = WorkflowEnv::getDataTypeRegistry();
+    //assert(dr);
+    //dr->registerEntry(inputType);
+
+    Descriptor desc(ACTOR_ID,
+                    FetchSequenceByIdFromAnnotationWorker::tr("Fetch sequences by ID from annotaion"),
+                    FetchSequenceByIdFromAnnotationWorker::tr("Parses annotations to find any IDs and fetches corresponding sequences."));
+
+    QList<PortDescriptor*> pds;
+    { //Create input port descriptors
+        Descriptor inDesc( BasePorts::IN_ANNOTATIONS_PORT_ID(),FetchSequenceByIdFromAnnotationWorker::tr("Input annotations"),
+            FetchSequenceByIdFromAnnotationWorker::tr("The annotations are scanned for accesion ids.") );
+
+           pds << new PortDescriptor( inDesc, DataTypePtr(new MapDataType("input.anns", inputMap)), /*input*/ true );
+    }
+
+    {
+        Descriptor outDesc(BasePorts::OUT_SEQ_PORT_ID(), FetchSequenceByIdFromAnnotationWorker::tr("Sequence"),
+                           FetchSequenceByIdFromAnnotationWorker::tr("The downloaded sequences"));
+        pds << new PortDescriptor(outDesc, DataTypePtr(new MapDataType("output.seqs", outputMap)),  false,  true);
+    }
+
+    //RemoteDBRegistry &registry = RemoteDBRegistry::getRemoteDBRegistry();
+    //QStringList dataBases = registry.getDBs();
+    //QString defaultDB = dataBases.first();
+
+    QList<Attribute*> attrs;
+    {
+
+        Descriptor fullpathd(PATH_ID,
+                         RemoteDBFetcherWorker::tr("Save file to directory"),
+                         RemoteDBFetcherWorker::tr("The directory to store sequence files loaded from a database"));
+        attrs << new Attribute(fullpathd, BaseTypes::STRING_TYPE(), true, DEFAULT_PATH);
+
+        Descriptor dbidd(DBID_ID,
+                         RemoteDBFetcherWorker::tr("NCBI database"),
+                         RemoteDBFetcherWorker::tr("The database to read from"));
+        attrs << new Attribute(dbidd, BaseTypes::STRING_TYPE(), true, GENBANK_NUCLEOTIDE_ID);
+    }
+
+    ActorPrototype *proto = new IntegralBusActorPrototype(desc, pds, attrs);
+
+    QMap<QString, PropertyDelegate*> delegates;
+    {
+        delegates[PATH_ID] = new URLDelegate(QString(), QString(), false, true);
+
+        QStringList dbIds;
+        dbIds.append(GENBANK_NUCLEOTIDE_ID);
+        dbIds.append(GENBANK_PROTEIN_ID);
+
+        QVariantMap dbValues;
+        foreach( const QString& id, dbIds) {
+            dbValues[id] = id;
+        }
+
+        delegates[DBID_ID] = new ComboBoxDelegate(dbValues);
+
+    }
+
+    proto->setEditor(new DelegateEditor(delegates));
+    proto->setPrompter(new FetchSequenceByIdFromAnnotationPrompter());
+
+    if(AppContext::isGUIMode()) {
+        proto->setIcon(GUIUtils::createRoundIcon(ICOLOR, 22));
+    }
+
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
+
+    DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
+    localDomain->registerEntry(new FetchSequenceByIdFromAnnotationFactory());
+
+
+}
+
+
+
 
 }   // namespace U2::LocalWorkflow
 }
