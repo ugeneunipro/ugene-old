@@ -47,8 +47,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     if (guiTestBase) {
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0004());
-
-//         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0005());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0005());
 //         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0006());
 //         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0009());
 //         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0011());
