@@ -57,19 +57,29 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     add( new DocumentUtils::CheckDocumentExistsGUIAction("1CF7.PDB", AnnotatedDNAViewFactory::ID) );
 }
 
-void test_0005::execute( U2OpStatus &os ){
-//     ProjectUtils::openFile(os, testDir+"_common_data/scenarios/project/proj1.uprj");
-//     DocumentUtils::checkDocumentExists(os, "1CF7.PDB");
-//     AppUtils::checkUGENETitle(os, "proj1 UGENE");
-// 
-//     ProjectUtils::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
-//     ProjectUtils::closeProject(os);
-// 
-//     ProjectUtils::openFile(os, testDir+"_common_data/scenarios/sandbox/proj2.uprj");
-//     DocumentUtils::checkDocumentExists(os, "1CF7.PDB");
-//     AppUtils::checkUGENETitle(os, "proj2 UGENE");
-// 
-//     ToolTipUtils::checkProjectTreeToolTip(os, "samples/PDB/1CF7.PDB", 0);
+GUI_TEST_CLASS_DEFINITION(test_0005) {
+
+    add(new ProjectUtils::OpenProjectGUIAction(
+        testDir+"_common_data/scenarios/project/proj1.uprj",
+        "proj1 UGENE",
+        "1CF7.PDB")
+        );
+
+    add(new ProjectUtils::SaveProjectAsGUIAction(
+        "proj2",
+        testDir+"_common_data/scenarios/sandbox",
+        "proj2")
+        );
+
+    add(new ProjectUtils::CloseProjectGUIAction());
+
+    add(new ProjectUtils::OpenProjectGUIAction(
+        testDir+"_common_data/scenarios/sandbox/proj2.uprj",
+        "proj2 UGENE",
+        "1CF7.PDB")
+        );
+
+    add (new ProjectTreeViewUtils::CheckToolTipGUIAction("1CF7.PDB", "samples/PDB/1CF7.PDB"));
 }
 
 void test_0006::execute( U2OpStatus &os ){

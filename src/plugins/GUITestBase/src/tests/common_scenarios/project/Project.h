@@ -33,7 +33,7 @@ namespace GUITest_common_scenarios_project {
 
 GUI_TEST_CLASS_DECLARATION(test_0004)
 
-GUI_TEST_CLASS (test_0005)
+GUI_TEST_CLASS_DECLARATION(test_0005)
 GUI_TEST_CLASS (test_0006)
 GUI_TEST_CLASS (test_0009)
 GUI_TEST_CLASS (test_0011)

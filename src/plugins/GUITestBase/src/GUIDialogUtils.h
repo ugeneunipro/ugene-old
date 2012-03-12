@@ -34,14 +34,32 @@ public:
     GENERATE_GUI_ACTION(OpenExportProjectDialogGUIAction, openExportProjectDialog);
 
     static void checkExportProjectDialog(U2OpStatus &os, const QString& projectName);
+    GENERATE_GUI_ACTION_1(CheckExportProjectDialogGUIAction, checkExportProjectDialog);
+
     static void fillInExportProjectDialog(U2OpStatus &os, const QString &projectFolder, const QString &projectName);
     GENERATE_GUI_ACTION_2(FillInExportProjectDialogGUIAction, fillInExportProjectDialog);
 
 
-    static void clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b);
+    class ClickMessageBoxButtonGUIAction : public GUITest {
+    public:
+        ClickMessageBoxButtonGUIAction(QMessageBox::StandardButton _b) : b(_b){}
+    protected:
+        virtual void execute(U2OpStatus &os);
+        QMessageBox::StandardButton b;
+    };
 
     static void openSaveProjectAsDialog(U2OpStatus &os);
-    static void fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel = false);
+    GENERATE_GUI_ACTION(OpenSaveProjectAsDialogGUIAction, openSaveProjectAsDialog);
+
+    class FillInSaveProjectAsDialogGUIAction : public GUITest {
+    public:
+        FillInSaveProjectAsDialogGUIAction(const QString &_projectName, const QString &_projectFolder, const QString &_projectFile, bool _pressCancel = false)
+            : projectName(_projectName), projectFolder(_projectFolder), projectFile(_projectFile), pressCancel(_pressCancel){}
+    protected:
+        virtual void execute(U2OpStatus &os);
+        QString projectName, projectFolder, projectFile;
+        bool pressCancel;
+    };
 };
 
 } // namespace

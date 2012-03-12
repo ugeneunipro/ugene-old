@@ -43,15 +43,15 @@ void ProjectUtils::OpenFilesGUIAction::addSubTests() {
     }
 }
 
-void ProjectUtils::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting) {
+ProjectUtils::SaveProjectAsGUIAction::SaveProjectAsGUIAction(const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting) {
 
-    GUIDialogUtils::openSaveProjectAsDialog(os);
-    GUIDialogUtils::fillInSaveProjectAsDialog(os, projectName, projectFolder, projectFile);
+    add( new GUIDialogUtils::OpenSaveProjectAsDialogGUIAction() );
+    add( new GUIDialogUtils::FillInSaveProjectAsDialogGUIAction(projectName, projectFolder, projectFile) );
 
     QMessageBox::StandardButton b = overwriteExisting ? QMessageBox::Yes : QMessageBox::No;
-    GUIDialogUtils::clickMessageBoxButton(os, b);
+    add( new GUIDialogUtils::ClickMessageBoxButtonGUIAction(b) );
 
-    GUIDialogUtils::fillInSaveProjectAsDialog(os, projectName, projectFolder, projectFile, true);
+    add( new GUIDialogUtils::FillInSaveProjectAsDialogGUIAction(projectName, projectFolder, projectFile, true) );
 }
 
 void ProjectUtils::closeProject(U2OpStatus &os, const CloseProjectSettings& settings) {

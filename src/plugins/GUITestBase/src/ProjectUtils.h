@@ -82,7 +82,10 @@ public:
         }
     };
 
-    static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
+    class SaveProjectAsGUIAction : public GUIMultiTest {
+    public:
+        SaveProjectAsGUIAction(const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
+    };
 
     static void closeProject(U2OpStatus &os, const CloseProjectSettings& = CloseProjectSettings());
     GENERATE_GUI_ACTION(CloseProjectGUIAction, closeProject);

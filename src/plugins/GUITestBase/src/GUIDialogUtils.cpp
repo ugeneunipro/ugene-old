@@ -95,7 +95,7 @@ void GUIDialogUtils::fillInExportProjectDialog(U2OpStatus &os, const QString &pr
     buttons[1]->click();
 }
 
-void GUIDialogUtils::clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b) {
+void GUIDialogUtils::ClickMessageBoxButtonGUIAction::execute(U2OpStatus &os) {
 
     QWidget* activeModal = QApplication::activeModalWidget();
     QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
@@ -107,7 +107,6 @@ void GUIDialogUtils::clickMessageBoxButton(U2OpStatus &os, QMessageBox::Standard
     CHECK_SET_ERR(button != NULL, "There is no such button in messagebox");
 
     button->click();
-    QtUtils::sleep(500);
 }
 
 void GUIDialogUtils::openSaveProjectAsDialog(U2OpStatus &os) {
@@ -115,7 +114,7 @@ void GUIDialogUtils::openSaveProjectAsDialog(U2OpStatus &os) {
     QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT, MWMENU_FILE);
 }
 
-void GUIDialogUtils::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel) {
+void GUIDialogUtils::FillInSaveProjectAsDialogGUIAction::execute(U2OpStatus &os) {
 
     QWidget* w = QApplication::activeModalWidget();
     if (!w) {
