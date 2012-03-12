@@ -30,7 +30,7 @@
 namespace U2 {
 
 AssemblyCoverageGraph::AssemblyCoverageGraph(AssemblyBrowserUi * ui_) :
-QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()) {
+QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), canceled(false) {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
     doRedraw();
@@ -55,12 +55,13 @@ void AssemblyCoverageGraph::drawAll() {
 
             if(browser->areCellsVisible()) {
                 U2Region visibleRegion = browser->getVisibleBasesRegion();
-                if(!coverageTaskRunner.isFinished()) {
+                if(!coverageTaskRunner.isFinished() || canceled) {
                     if(browser->intersectsLocalCoverageCache(visibleRegion)) {
                         CoverageInfo ci = browser->extractFromLocalCoverageCache(visibleRegion);
                         drawGraph(p, ci, 128);
                     }
-                    p.drawText(cachedView.rect(), Qt::AlignCenter, tr("Calculating coverage..."));
+                    QString message = coverageTaskRunner.isFinished() ? tr("Coverage calculation canceled") : tr("Calculating coverage...");
+                    p.drawText(cachedView.rect(), Qt::AlignCenter, message);
                 } else if(lastResult.region == visibleRegion) {
                     drawGraph(p, lastResult);
                 } else if(browser->isInLocalCoverageCache(visibleRegion)) {
@@ -120,6 +121,7 @@ void AssemblyCoverageGraph::sl_launchCoverageCalculation()
 
         if(browser->isInLocalCoverageCache(visibleRegion)) {
             lastResult = browser->extractFromLocalCoverageCache(visibleRegion);
+            coverageTaskRunner.cancel();
         } else {
             CalcCoverageInfoTaskSettings settings;
             settings.model = model;
@@ -129,15 +131,21 @@ void AssemblyCoverageGraph::sl_launchCoverageCalculation()
             coverageTaskRunner.run(new CalcCoverageInfoTask(settings));
         }
     }
+    canceled = false;
     doRedraw();
 }
 
 void AssemblyCoverageGraph::sl_coverageReady() {
-    if(coverageTaskRunner.isFinished() && coverageTaskRunner.isSuccessful()) {
-        browser->setLocalCoverageCache(coverageTaskRunner.getResult());
-        lastResult = coverageTaskRunner.getResult();
+    if(coverageTaskRunner.isFinished()) {
+        if(coverageTaskRunner.isSuccessful()) {
+            browser->setLocalCoverageCache(coverageTaskRunner.getResult());
+            lastResult = coverageTaskRunner.getResult();
+            canceled = false;
+        } else {
+            canceled = true;
+        }
+        doRedraw();
     }
-    doRedraw();
 }
 
 void AssemblyCoverageGraph::sl_onOffsetsChanged() {

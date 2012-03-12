@@ -20,6 +20,7 @@
  */
 
 #include "AssemblyConsensusUtils.h"
+#include "AssemblyConsensusAlgorithm.h"
 
 namespace U2 {
 
@@ -29,48 +30,48 @@ namespace {
     }
 
     inline int char2index(char c) {
-        return QString("ACGT").indexOf(c, 0, Qt::CaseInsensitive);
-    }
-
-    inline bool isValidIndex(int index) {
-        return index >= 0 && index < U2AssemblyBasesFrequenciesInfo::LETTERS_COUNT;
+        switch(toupper(c)) {
+        case 'A' : return 0;
+        case 'C' : return 1;
+        case 'G' : return 2;
+        case 'T' : return 3;
+        default  : return -1;
+        }
     }
 }
 
 U2AssemblyBasesFrequenciesInfo::U2AssemblyBasesFrequenciesInfo()
-    : mostFrequentIndex(-1), totalBases(0)
 {
     memset(baseFrequencies, 0, sizeof(baseFrequencies));
 }
 
 void U2AssemblyBasesFrequenciesInfo::addToCharFrequency(char c) {
     int index = char2index(c);
-    if(isValidIndex(index)) {
+    if(index >= 0) {
         ++baseFrequencies[index];
-        ++totalBases;
-
-        if(!isValidIndex(mostFrequentIndex) || baseFrequencies[index] > baseFrequencies[mostFrequentIndex]) {
-            mostFrequentIndex = index;
-        }
     }
 }
 
 qint64 U2AssemblyBasesFrequenciesInfo::getCharFrequency(char c) {
-    int index = index2char(c);
-    return isValidIndex(index) ? baseFrequencies[index] : 0;
+    int index = char2index(c);
+    return index >= 0 ? baseFrequencies[index] : 0;
 }
 
 char U2AssemblyBasesFrequenciesInfo::getMostFrequentLetter() {
-    return isValidIndex(mostFrequentIndex) ? index2char(mostFrequentIndex) : 'N';
+    int mostFrequentIndex = 0;
+    for(int i = 1; i < LETTERS_COUNT; ++i) {
+        if(baseFrequencies[i] > baseFrequencies[mostFrequentIndex]) {
+            mostFrequentIndex = i;
+        }
+    }
+    return baseFrequencies[mostFrequentIndex] > 0 ? index2char(mostFrequentIndex) : AssemblyConsensusAlgorithm::EMPTY_CHAR;
 }
 
 QByteArray AssemblyBasesFrequenciesStat::getConsensusFragment() {
     int size = frequencyInfos.size();
-    QByteArray res(size, ' ');
+    QByteArray res(size, AssemblyConsensusAlgorithm::EMPTY_CHAR);
     for (int i = 0; i < size; ++i) {
-        if(frequencyInfos[i].totalBases > 0) {
-            res[i] = frequencyInfos[i].getMostFrequentLetter();
-        }
+        res[i] = frequencyInfos[i].getMostFrequentLetter();
     }
     return res;
 }

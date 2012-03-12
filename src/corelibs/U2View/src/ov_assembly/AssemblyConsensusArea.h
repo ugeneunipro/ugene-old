@@ -23,6 +23,7 @@
 #define __ASSEMBLY_CONSENSUS_AREA_H__
 
 #include "AssemblyReferenceArea.h"
+#include "AssemblyConsensusTask.h"
 
 #include <U2Core/BackgroundTaskRunner.h>
 #include <U2Algorithm/AssemblyConsensusAlgorithm.h>
@@ -51,6 +52,7 @@ protected slots:
 private slots:
     void sl_consensusAlgorithmChanged(QAction *a);
     void sl_drawDifferenceChanged(bool value);
+    void sl_consensusReady();
 
 private:
     void createContextMenu();
@@ -60,8 +62,10 @@ private:
     QMenu * consensusAlgorithmMenu;
     QSharedPointer<AssemblyConsensusAlgorithm> consensusAlgorithm;
 
-    U2Region previousRegion;
-    BackgroundTaskRunner<QByteArray> consensusTaskRunner;
+    ConsensusInfo cache;
+    ConsensusInfo lastResult;
+    bool canceled;
+    BackgroundTaskRunner<ConsensusInfo> consensusTaskRunner;
 };
 
 } //ns

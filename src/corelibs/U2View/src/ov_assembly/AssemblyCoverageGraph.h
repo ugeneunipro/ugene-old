@@ -67,6 +67,7 @@ private:
 
     BackgroundTaskRunner<CoverageInfo> coverageTaskRunner;
     CoverageInfo lastResult;
+    bool canceled;
 };
 
 } //ns

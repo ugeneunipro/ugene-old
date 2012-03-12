@@ -30,8 +30,8 @@
 
 namespace U2 {
 
-AssemblySequenceArea::AssemblySequenceArea(AssemblyBrowserUi * ui_) :
-    QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), cellRenderer(NULL)
+AssemblySequenceArea::AssemblySequenceArea(AssemblyBrowserUi * ui_, char skipChar_) :
+    QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), cellRenderer(NULL), skipChar(skipChar_)
 {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
@@ -120,7 +120,7 @@ void AssemblySequenceArea::drawSequence(QPainter & p) {
             QRect r(x_pix_start, y_pix_start, letterWidth, letterHeight);
             char c = visibleSequence.at(i);
             // TODO: not hard-coded
-            if(c != ' ') {
+            if(c != skipChar) {
                 QPixmap cellImage;
                 if(referenceFragment.isEmpty()) {
                     cellImage = cellRenderer->cellImage(c);

@@ -31,7 +31,7 @@
 namespace U2 {
 
 AssemblyConsensusTask::AssemblyConsensusTask(const AssemblyConsensusTaskSettings &settings_)
-    : BackgroundTask<QByteArray>("Calculate assembly consensus", TaskFlag_None), settings(settings_)
+    : BackgroundTask<ConsensusInfo>("Calculate assembly consensus", TaskFlag_None), settings(settings_)
 {
     tpm = Progress_Manual;
 }
@@ -49,8 +49,11 @@ void AssemblyConsensusTask::run() {
     }
     CHECK_OP(stateInfo,);
 
-    result = settings.consensusAlgorithm->getConsensusRegion(settings.region, reads.get(), referenceFragment, stateInfo);
+    result.region = settings.region;
+    result.algorithmId = settings.consensusAlgorithm->getId();
+    result.consensus = settings.consensusAlgorithm->getConsensusRegion(settings.region, reads.get(), referenceFragment, stateInfo);
 
+    CHECK_OP(stateInfo,);
     perfLog.trace(QString("Assembly: '%1' consensus calculation time: %2 seconds")
                   .arg(settings.consensusAlgorithm->getName())
                   .arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));

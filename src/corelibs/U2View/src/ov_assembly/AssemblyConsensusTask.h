@@ -32,13 +32,19 @@
 
 namespace U2 {
 
+struct ConsensusInfo {
+    QByteArray consensus;
+    U2Region region;
+    QString algorithmId;
+};
+
 struct AssemblyConsensusTaskSettings {
     QSharedPointer<AssemblyConsensusAlgorithm> consensusAlgorithm;
     QSharedPointer<AssemblyModel> model;
     U2Region region;
 };
 
-class AssemblyConsensusTask : public BackgroundTask<QByteArray> {
+class AssemblyConsensusTask : public BackgroundTask<ConsensusInfo> {
 public:
     AssemblyConsensusTask(const AssemblyConsensusTaskSettings & settings);
     virtual void run();

@@ -69,17 +69,6 @@ QByteArray SamtoolsAdapter::cigar2samtools(QList<U2CigarToken> cigar, U2OpStatus
     return samtoolsCigar;
 }
 
-static qint8 base2samtools(char base, U2OpStatus &os) {
-    // String value from bam_tview.c, tv_pl_func function
-    qint8 value = QByteArray(",ACMGRSVTWYHKDBN").indexOf(base);
-    if(value > 0) {
-        return value;
-    } else {
-        os.setError(SamtoolsAdapter::tr("Invalid base '%1', cannot convert to samtools format").arg(base));
-        return 0;
-    }
-}
-
 /**
     According to bam.h comments to bam1_seq macro,
     Each base is encoded in 4 bits: 1 for A, 2 for C, 4 for G,
@@ -87,14 +76,15 @@ static qint8 base2samtools(char base, U2OpStatus &os) {
     at the higher 4 bits having smaller coordinate on the read.
 */
 QByteArray SamtoolsAdapter::sequence2samtools(QByteArray sequence, U2OpStatus &os) {
-    QByteArray samtoolsSequence;
-    for(int i = 0; i < (sequence.length() + 1)/ 2; ++i) {
-        qint8 value = base2samtools(sequence[2*i], os) << 4;
+    int packedLength = (sequence.length() + 1)/2;
+    QByteArray samtoolsSequence(packedLength, 0);
+    for(int i = 0; i < packedLength; ++i) {
+        qint8 value = bam_nt16_table[sequence[2*i]] << 4;
         if(2*i + 1 < sequence.length()) {
-            value |= base2samtools(sequence[2*i+1], os) & 0xf;
+            value |= bam_nt16_table[sequence[2*i+1]] & 0xf;
         }
         CHECK_OP(os, samtoolsSequence);
-        samtoolsSequence.append(value);
+        samtoolsSequence[i] = value;
     }
     return samtoolsSequence;
 }
@@ -106,7 +96,7 @@ static bool check_seq2samtools(const bam1_t &b, QByteArray seq, U2OpStatus &os) 
     }
     for(int i = 0; i < b.core.l_qseq; ++i) {
         char expected = seq[i];
-        char actual = ",ACMGRSVTWYHKDBN"[bam1_seqi(bam1_seq(&b), i)];
+        char actual = bam_nt16_rev_table[bam1_seqi(bam1_seq(&b), i)];
         if(expected != actual) {
             os.setError(QString("Internal SamtoolsAdapter seq check failed: expected %1, got %2 at pos %3").arg(expected).arg(actual).arg(i));
             return false;
@@ -137,6 +127,17 @@ static bool check_qual(const bam1_t &b, QByteArray qual, U2OpStatus &os) {
     return true;
 }
 
+typedef quint8 *data_ptr;
+inline static void copyArray(data_ptr &dest, const QByteArray array) {
+    memcpy(dest, array.constData(), array.length());
+    dest += array.length();
+}
+
+inline static void copyChar(data_ptr &dest, quint8 c) {
+    *dest = c;
+    ++dest;
+}
+
 void SamtoolsAdapter::reads2samtools(U2DbiIterator<U2AssemblyRead> *reads, U2OpStatus &os, ReadsContainer & result) {
     while(reads->hasNext()) {
         U2AssemblyRead r = reads->next();
@@ -165,16 +166,16 @@ void SamtoolsAdapter::reads2samtools(U2DbiIterator<U2AssemblyRead> *reads, U2OpS
             quality = QByteArray(core.l_qseq, 0xFF);
         }
 
-        // TODO: normal concatenation without temp byte array
-        QByteArray tmp;
-        tmp.append(r->name);
-        tmp.append('\0');
-        tmp.append(cigar2samtools(r->cigar, os));
-        tmp.append(sequence2samtools(r->readSequence, os));
-        tmp.append(quality);
-        int dataLen = tmp.size();
+        QByteArray cigar = cigar2samtools(r->cigar, os);
+        QByteArray seq = sequence2samtools(r->readSequence, os);
+        int dataLen = r->name.length() + 1 + cigar.length() + seq.length() + quality.length();
         quint8 * data = new quint8[dataLen];
-        memcpy(data, tmp.constData(), dataLen);
+        quint8 * dest = data;
+        copyArray(dest, r->name);
+        copyChar(dest, '\0');
+        copyArray(dest, cigar);
+        copyArray(dest, seq);
+        copyArray(dest, quality);
 
         // No tags. TODO: is this good?
         resRead.l_aux = 0;
@@ -184,7 +185,7 @@ void SamtoolsAdapter::reads2samtools(U2DbiIterator<U2AssemblyRead> *reads, U2OpS
         CHECK_OP(os,);
 
         // TODO: remove checks, make tests
-        //CHECK_EXT(cigar2samtools(r->cigar, os).size() == 4*r->cigar.size(), os.setError("Internal SamtoolsAdapter cigar length check failed"), samtoolsReads);
+        //CHECK_EXT(cigar2samtools(r->cigar, os).size() == 4*r->cigar.size(), os.setError("Internal SamtoolsAdapter cigar length check failed"),);
         //check_seq2samtools(resRead, r->readSequence, os);
         //CHECK_OP(os,);
         //check_qual(resRead, quality, os);

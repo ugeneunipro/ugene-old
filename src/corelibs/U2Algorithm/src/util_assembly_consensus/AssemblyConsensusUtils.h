@@ -34,8 +34,6 @@ public:
 
     static const int LETTERS_COUNT = 4;
     qint64 baseFrequencies[LETTERS_COUNT];
-    int mostFrequentIndex;
-    qint64 totalBases;
 
     void addToCharFrequency(char c);
     qint64 getCharFrequency(char c);

@@ -35,10 +35,10 @@
 namespace U2 {
 
 AssemblyConsensusArea::AssemblyConsensusArea(AssemblyBrowserUi * ui)
-    : AssemblySequenceArea(ui), consensusAlgorithmMenu(NULL), consensusAlgorithm(NULL)
+    : AssemblySequenceArea(ui, AssemblyConsensusAlgorithm::EMPTY_CHAR), consensusAlgorithmMenu(NULL), consensusAlgorithm(NULL), canceled(false)
 {
     setToolTip(tr("Consensus sequence"));
-    connect(&consensusTaskRunner, SIGNAL(si_finished()), SLOT(sl_redraw()));
+    connect(&consensusTaskRunner, SIGNAL(si_finished()), SLOT(sl_consensusReady()));
 
     AssemblyConsensusAlgorithmRegistry * registry = AppContext::getAssemblyConsensusAlgorithmRegistry();
     QString defaultId = BuiltInAssemblyConsensusAlgorithms::DEFAULT_ALGO;
@@ -65,23 +65,47 @@ bool AssemblyConsensusArea::canDrawSequence() {
 
 QByteArray AssemblyConsensusArea::getSequenceRegion(U2OpStatus &os) {
     Q_UNUSED(os);
-    return consensusTaskRunner.getResult();
+    return lastResult.consensus;
+}
+
+// If required region is not fully included in cache, other positions are filled with AssemblyConsensusAlgorithm::EMPTY_CHAR
+static ConsensusInfo getPart(ConsensusInfo cache, U2Region region) {
+    ConsensusInfo result;
+    result.region = region;
+    result.algorithmId = cache.algorithmId;
+    result.consensus = QByteArray(region.length, AssemblyConsensusAlgorithm::EMPTY_CHAR);
+    if(!cache.region.isEmpty() && cache.region.intersects(region)) {
+        U2Region intersection = cache.region.intersect(region);
+        SAFE_POINT(!intersection.isEmpty(), "consensus cache: intersection cannot be empty, possible race condition?", result);
+
+        int offsetInCache = intersection.startPos - cache.region.startPos;
+        int offsetInResult = intersection.startPos - region.startPos;
+        memcpy(result.consensus.data() + offsetInResult, cache.consensus.constData() + offsetInCache, intersection.length);
+    }
+    return result;
 }
 
 void AssemblyConsensusArea::launchConsensusCalculation() {
     if(areCellsVisible()) {
-        AssemblyConsensusTaskSettings settings;
-        settings.region = getVisibleRegion();
-        settings.model = getModel();
-        settings.consensusAlgorithm = consensusAlgorithm;
-        previousRegion = settings.region;
-        consensusTaskRunner.run(new AssemblyConsensusTask(settings));
+        U2Region visibleRegion = getVisibleRegion();
+
+        if(cache.region.contains(visibleRegion) && cache.algorithmId == consensusAlgorithm->getId()) {
+            lastResult = getPart(cache, visibleRegion);
+            consensusTaskRunner.cancel();
+        } else {
+            AssemblyConsensusTaskSettings settings;
+            settings.region = visibleRegion;
+            settings.model = getModel();
+            settings.consensusAlgorithm = consensusAlgorithm;
+            consensusTaskRunner.run(new AssemblyConsensusTask(settings));
+        }
     }
+    canceled = false;
     sl_redraw();
 }
 
 void AssemblyConsensusArea::sl_offsetsChanged() {
-    if(areCellsVisible() && getVisibleRegion() != previousRegion) {
+    if(areCellsVisible() && getVisibleRegion() != lastResult.region) {
         launchConsensusCalculation();
     }
 }
@@ -91,12 +115,28 @@ void AssemblyConsensusArea::sl_zoomPerformed() {
 }
 
 void AssemblyConsensusArea::drawSequence(QPainter &p) {
-    if(! consensusTaskRunner.isFinished()) {
-        p.drawText(rect(), Qt::AlignCenter, tr("Calculating consensus..."));
-    } else if(consensusTaskRunner.getResult().size() != getVisibleRegion().length) {
-        launchConsensusCalculation();
-    } else {
-        AssemblySequenceArea::drawSequence(p);
+    if(areCellsVisible()) {
+        U2Region visibleRegion = getVisibleRegion();
+        if(! consensusTaskRunner.isFinished() || canceled) {
+            if(!cache.region.isEmpty() && cache.region.intersects(visibleRegion)) {
+                // Draw a known part while others are still being calculated
+                // To do it, temporarily substitute lastResult with values from cache, then return it back
+                ConsensusInfo storedLastResult = lastResult;
+                lastResult = getPart(cache, visibleRegion);
+                AssemblySequenceArea::drawSequence(p);
+                p.fillRect(rect(), QColor(0xff, 0xff, 0xff, 0x7f));
+                lastResult = storedLastResult;
+            }
+            QString message = consensusTaskRunner.isFinished() ? tr("Consensus calculation canceled") : tr("Calculating consensus...");
+            p.drawText(rect(), Qt::AlignCenter, message);
+        } else if(lastResult.region == visibleRegion && lastResult.algorithmId == consensusAlgorithm->getId()) {
+            AssemblySequenceArea::drawSequence(p);
+        } else if(cache.region.contains(visibleRegion) && cache.algorithmId == consensusAlgorithm->getId()) {
+            lastResult = getPart(cache, visibleRegion);
+            AssemblySequenceArea::drawSequence(p);
+        } else {
+            launchConsensusCalculation();
+        }
     }
 }
 
@@ -145,6 +185,18 @@ void AssemblyConsensusArea::sl_drawDifferenceChanged(bool drawDifference) {
 void AssemblyConsensusArea::mousePressEvent(QMouseEvent *e) {
     if(e->button() == Qt::RightButton) {
         contextMenu->exec(QCursor::pos());
+    }
+}
+
+void AssemblyConsensusArea::sl_consensusReady() {
+    if(consensusTaskRunner.isFinished()) {
+        if(consensusTaskRunner.isSuccessful()) {
+            cache = lastResult = consensusTaskRunner.getResult();
+            canceled = false;
+        } else {
+            canceled = true;
+        }
+        sl_redraw();
     }
 }
 

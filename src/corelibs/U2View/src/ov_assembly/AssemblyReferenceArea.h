@@ -42,7 +42,7 @@ class U2OpStatus;
 class AssemblySequenceArea : public QWidget {
     Q_OBJECT
 public:
-    AssemblySequenceArea(AssemblyBrowserUi * ui);
+    AssemblySequenceArea(AssemblyBrowserUi * ui, char skipChar = '\0');
 
 protected:
     virtual QByteArray getSequenceRegion(U2OpStatus &os) = 0;
@@ -82,6 +82,7 @@ private:
     bool redraw;
     auto_ptr<AssemblyCellRenderer> cellRenderer;
     bool needsReference;
+    char skipChar;
 
     const static int FIXED_HEIGHT = 25;
 };

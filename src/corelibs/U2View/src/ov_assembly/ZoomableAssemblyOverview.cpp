@@ -158,7 +158,7 @@ void ZoomableAssemblyOverview::drawZoomToRegion(QPainter & p) {
 
 void ZoomableAssemblyOverview::drawBackground(QPainter & p) {
     CoverageInfo ci = coverageTaskRunner.getResult();
-    if(visibleRange == model->getGlobalRegion()) {
+    if(ci.region == model->getGlobalRegion()) {
         browser->setGlobalCoverageInfo(ci);
     }
 

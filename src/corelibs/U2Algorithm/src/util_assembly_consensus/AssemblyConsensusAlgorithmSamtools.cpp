@@ -58,7 +58,7 @@ AssemblyConsensusAlgorithm* AssemblyConsensusAlgorithmFactorySamtools::createAlg
 
 struct AlgorithmInternal {
     AlgorithmInternal(const U2Region &region_, QByteArray referenceFragment_, U2OpStatus &os_)
-        : region(region_), os(os_), referenceFragment(referenceFragment_), result(region_.length, ' ')
+        : region(region_), os(os_), referenceFragment(referenceFragment_), result(region_.length, AssemblyConsensusAlgorithm::EMPTY_CHAR)
     {
         lplbuf = bam_lplbuf_init(processBaseCallback, this);
         bam_lplbuf_reset(lplbuf);
@@ -68,8 +68,9 @@ struct AlgorithmInternal {
 
     void processReads(U2DbiIterator<U2AssemblyRead> *reads) {
         ReadsContainer samtoolsReads;
-        os.setDescription(AssemblyConsensusAlgorithmFactorySamtools::tr("Fetching reads from database"));
+        os.setDescription(AssemblyConsensusAlgorithmFactorySamtools::tr("Fetching reads from database and converting to samtools format"));
         SamtoolsAdapter::reads2samtools(reads, os, samtoolsReads);
+        CHECK_OP(os,);
         os.setDescription(AssemblyConsensusAlgorithmFactorySamtools::tr("Sorting reads"));
         samtoolsReads.sortByStartPos();
 
@@ -111,7 +112,7 @@ struct AlgorithmInternal {
         else if (p[2] < p[1] && p[2] < p[0]) call = (1<<a2)<<16 | (int)((p[0]<p[1]?p[0]:p[1]) - p[2] + .499);
         else call = (1<<a1|1<<a2)<<16 | (int)((p[0]<p[2]?p[0]:p[2]) - p[1] + .499);
 
-        char consensusChar = ",ACMGRSVTWYHKDBN"[call>>16&0xf];
+        char consensusChar = bam_nt16_rev_table[call>>16&0xf];
         result[posInArray] = consensusChar;
     }
 

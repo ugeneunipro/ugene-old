@@ -70,9 +70,7 @@ public:
     BackgroundTaskRunner() : task(0), success(false) {}
 
     virtual ~BackgroundTaskRunner() {
-        if(task) {
-            task->cancel();
-        }
+        cancel();
     }
 
     void run(BackgroundTask<Result> * newTask)  {
@@ -82,6 +80,13 @@ public:
         task = newTask;
         connect(task, SIGNAL(si_stateChanged()), SLOT(sl_finished()));
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    }
+
+    void cancel() {
+        if(task) {
+            task->cancel();
+            task = NULL;
+        }
     }
 
     inline Result getResult() const {

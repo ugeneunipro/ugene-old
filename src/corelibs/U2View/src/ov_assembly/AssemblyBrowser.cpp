@@ -297,7 +297,7 @@ qint64 AssemblyBrowser::getCoverageAtPos(qint64 pos) {
 }
 
 bool AssemblyBrowser::intersectsLocalCoverageCache(U2Region region) {
-    return localCoverageCache.region.intersects(region);
+    return !localCoverageCache.region.isEmpty() && localCoverageCache.region.intersects(region);
 }
 
 bool AssemblyBrowser::isInLocalCoverageCache(U2Region region) {
