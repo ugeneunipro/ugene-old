@@ -31,6 +31,7 @@
 #include <U2Lang/Schema.h>
 #include <U2Lang/Port.h>
 #include <U2Lang/ActorModel.h>
+#include <U2Lang/GrouperOutSlot.h>
 
 
 namespace U2 {
@@ -103,6 +104,8 @@ public:
     static const QString ACTOR_BINDINGS;
     static const QString SOURCE_PORT;
     static const QString ALIAS;
+    static const QString IN_SLOT;
+    static const QString ACTION;
     
 public:
     struct U2LANG_EXPORT ReadFailed {
@@ -158,6 +161,7 @@ public:
     static void parseBodyHeader(Tokenizer & tokenizer, Metadata * meta, bool needName = true);
     static Actor* parseElementsDefinition(Tokenizer & tokenizer, const QString & actorName, QMap<QString, Actor*> & actorMap, 
                                             QMap<ActorId, ActorId>* idMap = NULL);
+    static void parseGrouperOutSlots(Actor *proc, const QStringList &outSlots, const QString &attrId);
     static void parseFunctionDefinition(Tokenizer & tokenizer, QMap<QString, Actor*> & actorMap);
     static void parseMarkerDefinition(Actor *proc, const QString &markerId, ParsedPairs &pairs);
     static QPair<Port*, Port*> parseDataflow(Tokenizer & tokenizer, const QString & srcTok, const QMap<QString, Actor*> & actorMap);
@@ -188,6 +192,7 @@ public:
     static QString includesDefinition(const QList<Actor*> & procs);
     static QString elementsDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode = false);
     static QString markersDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode = false);
+    static QString grouperOutSlotsDefinition(Attribute *attribute);
     static QString actorBindings(const ActorBindingsGraph *graph, const NamesMap &nmap, bool copyMode = false);
     static QString dataflowDefinition(const QList<Actor*> & procs, const NamesMap & nmap);
     static QString iterationsDefinition(const QList<Iteration> & iterations, const NamesMap & nmap, bool checkDummyIteration = true);
@@ -203,6 +208,9 @@ public:
     static void parseAttributes(Tokenizer & tokenizer, QList<AttributeConfig>& attrs);
     
     static QMap<ActorId, ActorId> deepCopy(const Schema& from, Schema* to);
+
+private:
+    static GrouperSlotAction parseAction(Tokenizer &tokenizer);
 };
 
 } // U2

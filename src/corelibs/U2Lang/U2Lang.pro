@@ -22,6 +22,8 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/DbiDataStorage.h \
            src/model/Descriptor.h \
            src/model/ExternalToolCfg.h \
+           src/model/GrouperOutSlot.h \
+           src/model/GrouperSlotAttribute.h \
            src/model/IncludedProtoFactory.h \
            src/model/IntegralBus.h \
            src/model/IntegralBusModel.h \
@@ -70,6 +72,8 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/DbiDataStorage.cpp \
            src/model/Descriptor.cpp \
            src/model/ExternalToolCfg.cpp \
+           src/model/GrouperOutSlot.cpp \
+           src/model/GrouperSlotAttribute.cpp \
            src/model/IncludedProtoFactory.cpp \
            src/model/IntegralBus.cpp \
            src/model/IntegralBusModel.cpp \

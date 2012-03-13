@@ -75,7 +75,8 @@ private:
  */
 enum AttributeGroup {
     COMMON_GROUP,
-    MARKER_GROUP
+    MARKER_GROUP,
+    GROUPER_SLOT_GROUP
 };
 
 /**

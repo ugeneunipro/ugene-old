@@ -32,6 +32,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/ExternalToolCfg.h>
+#include <U2Lang/GrouperSlotAttribute.h>
 #include <U2Lang/IncludedProtoFactory.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/Marker.h>
@@ -105,6 +106,8 @@ const QString HRSchemaSerializer::ANN_NAME              = "annotation-name";
 const QString HRSchemaSerializer::ACTOR_BINDINGS        = ".actor-bindings";
 const QString HRSchemaSerializer::SOURCE_PORT           = "source";
 const QString HRSchemaSerializer::ALIAS                 = "alias";
+const QString HRSchemaSerializer::IN_SLOT               = "in-slot";
+const QString HRSchemaSerializer::ACTION                = "action";
 
 template <class T>
 static void setIfNotNull(const T & what, T * to) {
@@ -406,8 +409,8 @@ HRSchemaSerializer::ParsedPairs::ParsedPairs(HRSchemaSerializer::Tokenizer & tok
             equalPairs[tok] = tokenizer.take();
         }
         else if(next == BLOCK_START) {
-            blockPairs[tok] = tokenizer.take();
-            tokenizer.take(); // BLOCK_END of script block
+            blockPairs.insertMulti(tok, tokenizer.take());
+            tokenizer.assertToken(BLOCK_END);
         }
         else {
             throw ReadFailed(HRSchemaSerializer::tr("Expected %3 or %1 after %2").arg(BLOCK_START).arg(tok).arg(EQUALS_SIGN));
@@ -711,8 +714,13 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
         idMap->insert(oldId, proc->getId());
     }
     
-    foreach(const QString & key, pairs.blockPairs.keys()) {
-        proc->getParameter(key)->getAttributeScript().setScriptText(pairs.blockPairs.value(key));
+    foreach(const QString & key, pairs.blockPairs.uniqueKeys()) {
+        Attribute *a = proc->getParameter(key);
+        if (GROUPER_SLOT_GROUP == a->getGroup()) {
+            parseGrouperOutSlots(proc, pairs.blockPairs.values(key), key);
+        } else {
+            proc->getParameter(key)->getAttributeScript().setScriptText(pairs.blockPairs.value(key));
+        }
     }
     
     foreach( const QString & key, pairs.equalPairs.keys() ) {
@@ -720,6 +728,114 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
     }
 
     return proc;
+}
+
+GrouperSlotAction HRSchemaSerializer::parseAction(Tokenizer &tokenizer) {
+    ParsedPairs pairs(tokenizer);
+    tokenizer.assertToken(BLOCK_END);
+
+    QString type = pairs.equalPairs.value(TYPE_ATTR, "");
+    if (type.isEmpty()) {
+        throw ReadFailed(tr("Grouper out slot action: empty type"));
+    } else if (!ActionTypes::isValidType(type)) {
+        throw ReadFailed(tr("Grouper out slot action: invalid type: %1").arg(type));
+    }
+    pairs.equalPairs.take(TYPE_ATTR);
+
+    GrouperSlotAction result(type);
+
+    foreach (const QString &paramId, pairs.equalPairs.keys()) {
+        QString param = pairs.equalPairs.take(paramId);
+        if (!ActionParameters::isValidParameter(type, paramId)) {
+            throw ReadFailed(tr("Grouper out slot action: invalid parameter: %1").arg(paramId));
+        }
+
+        ActionParameters::ParameterType pType = ActionParameters::getType(paramId);
+        QVariant var;
+        bool ok = false;
+        bool b = false;
+        int num = 0;
+        switch (pType) {
+            case ActionParameters::INTEGER:
+                num = param.toInt(&ok);
+                if (!ok) {
+                    throw ReadFailed(tr("Grouper out slot action: bad int '%1' at parameter %2")
+                        .arg(param).arg(paramId));
+                }
+                var = num;
+                break;
+            case ActionParameters::BOOLEAN:
+                if ("true" == param) {
+                    b = true;
+                } else if ("false" == param) {
+                    b = false;
+                } else {
+                    throw ReadFailed(tr("Grouper out slot action: bad bool '%1' at parameter %2")
+                        .arg(param).arg(paramId));
+                }
+                var = b;
+                break;
+            case ActionParameters::STRING:
+                var = param;
+                break;
+        }
+
+        result.setParameterValue(paramId, var);
+    }
+
+    return result;
+}
+
+void HRSchemaSerializer::parseGrouperOutSlots(Actor *proc, const QStringList &outSlotDefs, const QString &attrId) {
+    GrouperSlotAttribute *attr = dynamic_cast<GrouperSlotAttribute*>(proc->getParameter(attrId));
+    Tokenizer tokenizer;
+
+    QStringList names;
+
+    foreach (const QString &slotDef, outSlotDefs) {
+        tokenizer.tokenize(slotDef);
+        QString name;
+        QString inSlot;
+        std::auto_ptr<GrouperSlotAction> action(NULL);
+
+        while (tokenizer.notEmpty()) {
+            QString tok = tokenizer.take();
+            QString next = tokenizer.take();
+            if (EQUALS_SIGN == next) {
+                if (NAME_ATTR == tok) {
+                    name = tokenizer.take();
+                    if (names.contains(name)) {
+                        throw ReadFailed(tr("Grouper out slot: duplicated slot name: %1").arg(name));
+                    }
+                    names << name;
+                } else if (IN_SLOT == tok) {
+                    inSlot = tokenizer.take();
+                } else {
+                    throw ReadFailed(tr("Grouper out slot: unknown attribute: %1").arg(tok));
+                }
+            } else if (BLOCK_START == next) {
+                if (ACTION != tok) {
+                    throw ReadFailed(tr("Grouper out slot: unknown block definition: '%1'. %2 expected").arg(tok).arg(ACTION));
+                }
+                action.reset(new GrouperSlotAction(parseAction(tokenizer)));
+            } else {
+                throw ReadFailed(tr("Grouper out slot: unknown token: '%1'. %2 or %3 expected").arg(next).arg(BLOCK_START).arg(EQUALS_SIGN));
+            }
+        }
+
+        if (name.isEmpty()) {
+            throw ReadFailed(tr("Grouper out slot: empty slot name"));
+        }
+        if (inSlot.isEmpty()) {
+            throw ReadFailed(tr("Grouper out slot: empty in-slot"));
+        }
+
+        GrouperOutSlot slot(name, inSlot);
+        if (NULL != action.get()) {
+            slot.setAction(*action.get());
+        }
+        attr->addOutSlot(slot);
+    }
 }
 
 QString HRSchemaSerializer::parseAt(const QString & dottedStr, int ind) {
@@ -1517,6 +1633,32 @@ QString HRSchemaSerializer::scriptBlock(const QString & scriptText, int tabsNum)
     return res;
 }
 
+QString HRSchemaSerializer::grouperOutSlotsDefinition(Attribute *attribute) {
+    GrouperSlotAttribute *a = dynamic_cast<GrouperSlotAttribute*>(attribute);
+    QString result;
+
+    foreach (const GrouperOutSlot &slot, a->getOutSlots()) {
+        QString mRes;
+        mRes += makeEqualsPair(NAME_ATTR, slot.getOutSlotId(), 3);
+        mRes += makeEqualsPair(IN_SLOT, slot.getInSlotStr(), 3);
+
+        GrouperSlotAction *const action = slot.getAction();
+        if (NULL != action) {
+            QString actionBlock;
+            actionBlock += makeEqualsPair(TYPE_ATTR, action->getType(), 4);
+            foreach (const QString &paramId, action->getParameters().keys()) {
+                QVariant value = action->getParameterValue(paramId);
+                actionBlock += makeEqualsPair(paramId, value.toString(), 4);
+            }
+            mRes += makeBlock(ACTION, NO_NAME, actionBlock, 3);
+        }
+
+        result += mRes;
+    }
+
+    return result;
+}
+
 static QString elementsDefinitionBlock(Actor * actor, bool copyMode) {
     assert(actor != NULL);
     QString res;
@@ -1535,26 +1677,31 @@ static QString elementsDefinitionBlock(Actor * actor, bool copyMode) {
     // save local attributes
     foreach(Attribute * attribute, actor->getParameters().values()) {
         assert(attribute != NULL);
-        QString attributeId = attribute->getId();
-        assert(!attributeId.contains(QRegExp("\\s")));
-        
-        const AttributeScript & attrScript = attribute->getAttributeScript();
-        if(!attrScript.isEmpty()) {
-            res += HRSchemaSerializer::makeBlock(attributeId, HRSchemaSerializer::NO_NAME, 
-                                                 attrScript.getScriptText() + HRSchemaSerializer::NEW_LINE, 2, false, true);
-            continue;
-        }
-        
-        if (attribute->isDefaultValue()) {
-            continue;
-        }
-        QVariant value = attribute->getAttributePureValue();
-        assert(value.isNull() || value.canConvert<QString>());
-        QString valueStr = value.toString();
-        if(!valueStr.isEmpty()) {
-            res += HRSchemaSerializer::makeEqualsPair(attributeId, valueStr);
+        if (attribute->getGroup() == GROUPER_SLOT_GROUP) {
+            res += HRSchemaSerializer::grouperOutSlotsDefinition(attribute);
+        } else {
+            QString attributeId = attribute->getId();
+            assert(!attributeId.contains(QRegExp("\\s")));
+            
+            const AttributeScript & attrScript = attribute->getAttributeScript();
+            if(!attrScript.isEmpty()) {
+                res += HRSchemaSerializer::makeBlock(attributeId, HRSchemaSerializer::NO_NAME, 
+                                                     attrScript.getScriptText() + HRSchemaSerializer::NEW_LINE, 2, false, true);
+                continue;
+            }
+            
+            if (attribute->isDefaultValue()) {
+                continue;
+            }
+            QVariant value = attribute->getAttributePureValue();
+            assert(value.isNull() || value.canConvert<QString>());
+            QString valueStr = value.toString();
+            if(!valueStr.isEmpty()) {
+                res += HRSchemaSerializer::makeEqualsPair(attributeId, valueStr);
+            }
         }
     }
+
     return res;
 }
 
