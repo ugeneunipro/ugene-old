@@ -51,6 +51,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
         "1CF7.PDB")
         );
 
+    add( new ProjectTreeViewUtils::OpenViewGUIAction() );
     add( new ProjectTreeViewUtils::CheckToolTipGUIAction("1CF7.PDB", "_common_data/scenarios/sandbox/1CF7.PDB") );
 
     add( new ProjectTreeViewUtils::ClickGUIAction("1CF7.PDB"));
@@ -81,7 +82,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
         "1CF7.PDB")
         );
 
-    add (new ProjectTreeViewUtils::CheckToolTipGUIAction("1CF7.PDB", "samples/PDB/1CF7.PDB"));
+    add(new ProjectTreeViewUtils::OpenViewGUIAction());
+    add(new ProjectTreeViewUtils::CheckToolTipGUIAction("1CF7.PDB", "samples/PDB/1CF7.PDB"));
 }
 
 void test_0006::execute( U2OpStatus &os ){

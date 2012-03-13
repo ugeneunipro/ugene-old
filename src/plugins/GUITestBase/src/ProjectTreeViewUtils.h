@@ -39,9 +39,12 @@ public:
         ClickGUIAction(const QString &itemName);
     };
 
-    class MoveToGUIAction : public GUIMultiTest {
+    class MoveToGUIAction : public GUITest {
     public:
-        MoveToGUIAction(const QString &itemName);
+        MoveToGUIAction(const QString &_itemName) : itemName(_itemName){}
+    private:
+        virtual void execute(U2OpStatus &os);
+        QString itemName;
     };
 
     class CheckToolTipGUIAction : public GUIMultiTest {

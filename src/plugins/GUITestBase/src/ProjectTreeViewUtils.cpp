@@ -28,6 +28,7 @@
 #include <U2Gui/ProjectView.h>
 #include <U2Core/ProjectModel.h>
 #include <QtGui/QTreeWidget>
+#include "api/GTMouseDriver.h"
 
 namespace U2 {
 
@@ -50,17 +51,13 @@ void ProjectTreeViewUtils::ToggleViewGUIAction::execute(U2OpStatus &os) {
 ProjectTreeViewUtils::ClickGUIAction::ClickGUIAction(const QString& itemName) {
 
     add( new MoveToGUIAction(itemName) );
-
-    QPoint p = getTreeViewItemPosition(os, itemName);
-    add( new QtUtils::MouseClickOnItemGUIAction(widgetName, Qt::LeftButton, p) );
+    add( new GTMouseDriver::ClickGUIAction() );
 }
 
-ProjectTreeViewUtils::MoveToGUIAction::MoveToGUIAction(const QString& itemName) {
-
-    add( new OpenViewGUIAction() );
+void ProjectTreeViewUtils::MoveToGUIAction::execute(U2OpStatus &os) {
 
     QPoint p = getTreeViewItemPosition(os, itemName);
-    add( new QtUtils::MoveToGUIAction(widgetName, p) );
+    GTMouseDriver::moveTo(os, p);
 }
 
 QPoint ProjectTreeViewUtils::getTreeViewItemPosition(U2OpStatus &os, const QString &itemName) {
@@ -69,7 +66,8 @@ QPoint ProjectTreeViewUtils::getTreeViewItemPosition(U2OpStatus &os, const QStri
     QTreeWidgetItem *item = getTreeWidgetItem(os, itemName);
 
     if (treeWidget && item) {
-        return treeWidget->visualItemRect(item).center();
+        QPoint p = treeWidget->visualItemRect(item).center();
+        return treeWidget->mapToGlobal(p);
     }
 
     return QPoint();
