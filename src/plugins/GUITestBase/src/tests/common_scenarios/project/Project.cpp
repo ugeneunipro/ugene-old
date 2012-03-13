@@ -94,25 +94,23 @@ void test_0009::execute( U2OpStatus &os ){
 //     DocumentUtils::checkDocumentExists(os, "fa1.fa.gz", "MSAEditor");
 }
 
-void test_0011::execute(U2OpStatus &os) {
+GUI_TEST_CLASS_DEFINITION(test_0011) {
 
-//     ProjectUtils::openFile(os, testDir + "_common_data/scenarios/project/1.gb");
-// 
-//     GUIDialogUtils::openExportProjectDialog(os);
-//     GUIDialogUtils::checkExportProjectDialog(os, "project.uprj");
+    add(new ProjectUtils::OpenFilesGUIAction(testDir + "_common_data/scenarios/project/1.gb"));
+    add( new GUIDialogUtils::OpenExportProjectDialogGUIAction());
+    add( new GUIDialogUtils::CheckExportProjectDialogGUIAction("project.uprj"));
 }
 
-void test_0017::execute(U2OpStatus &os) {
+GUI_TEST_CLASS_DEFINITION(test_0017) {
 
-//     QList<QUrl> urls;
-//     urls << dataDir+"samples/Genbank/murine.gb";
-//     urls << dataDir+"samples/Genbank/sars.gb";
-//     urls << dataDir+"samples/Genbank/CVU55762.gb";
-//     ProjectUtils::openFiles(os, urls);
-// 
-//     DocumentUtils::checkDocumentExists(os, "murine.gb");
-//     DocumentUtils::checkDocumentExists(os, "sars.gb");
-//     DocumentUtils::checkDocumentExists(os, "CVU55762.gb");
+    add(new ProjectUtils::OpenFilesGUIAction(QList<QUrl>()
+        << dataDir+"samples/Genbank/murine.gb"
+        << dataDir+"samples/Genbank/sars.gb"
+        << dataDir+"samples/Genbank/CVU55762.gb"
+        ));
+    add(new DocumentUtils::CheckDocumentExistsGUIAction("murine.gb"));
+    add(new DocumentUtils::CheckDocumentExistsGUIAction("sars.gb"));
+    add(new DocumentUtils::CheckDocumentExistsGUIAction("CVU55762.gb"));
 }
 
 void test_0023::execute(U2OpStatus &os) {
