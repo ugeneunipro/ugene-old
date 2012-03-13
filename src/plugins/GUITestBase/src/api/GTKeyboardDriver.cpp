@@ -172,50 +172,50 @@ GTKeyboardDriver::keys::keys()
 
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key)
 {
-//    CHECK_SET_ERR (key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+    CHECK_SET_ERR (key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
 
-//    Display *display = XOpenDisplay(NULL);
-//    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyPress()");
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyPress()");
 
-//    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 1, 0);
-//    XFlush(display);
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 1, 0);
+    XFlush(display);
 }
 
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 {
-//    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
-//    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyPress()");
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyPress()");
 
-//    Display *display = XOpenDisplay(NULL);
-//    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyPress()");
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyPress()");
 
-//    XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 1, 0);
-//    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 1, 0);
-//    XFlush(display);
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 1, 0);
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 1, 0);
+    XFlush(display);
 }
 
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key)
 {
-//    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
 
-//    Display *display = XOpenDisplay(NULL);
-//    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyRelease()");
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyRelease()");
 
-//    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
-//    XFlush(display);
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+    XFlush(display);
 }
 
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
-//    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
-//    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyRelease()");
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyRelease()");
 
-//    Display *display = XOpenDisplay(NULL);
-//    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyRelease()");
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyRelease()");
 
-//    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
-//    XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 0, 0);
-//    XFlush(display);
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 0, 0);
+    XFlush(display);
 }
 
 GTKeyboardDriver::keys::keys()
