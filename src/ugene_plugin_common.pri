@@ -42,4 +42,5 @@ win32 {
 unix {
     target.path = $$UGENE_INSTALL_DIR/$$UGENE_RELATIVE_DESTDIR
     INSTALLS += target
+    LIBS += -lXtst
 }
