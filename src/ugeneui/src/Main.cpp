@@ -498,7 +498,8 @@ int main(int argc, char **argv)
         Shtirlitz::wakeup();
     }
 
-    GCOUNTER(cvar, tvar, "ugeneui launch");
+    GReportableCounter launchCounter("ugeneui launch", "", 1);
+    ++launchCounter.totalCount;
 
     //3 run QT GUI
     t1.stop();
