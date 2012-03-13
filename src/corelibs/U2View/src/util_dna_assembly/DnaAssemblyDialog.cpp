@@ -35,6 +35,7 @@
 #include <U2Gui/AppSettingsGUI.h>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Algorithm/DnaAssemblyMultiTask.h>
 
 #include "DnaAssemblyDialog.h"
 #include "DnaAssemblyGUIExtension.h"
@@ -364,8 +365,20 @@ bool DnaAssemblyDialog::eventFilter( QObject * obj, QEvent * event ) {
 }
 
 void DnaAssemblyGUIUtils::runAssembly2ReferenceDialog(const QStringList& shortReadUrls, const QString& refSeqUrl) {
-    DnaAssemblyDialog d(QApplication::activeWindow(), shortReadUrls, refSeqUrl);
-    d.exec();
+    DnaAssemblyDialog dlg(QApplication::activeWindow(), shortReadUrls, refSeqUrl);
+    if (dlg.exec()) {
+        DnaAssemblyToRefTaskSettings s;
+        s.samOutput = dlg.isSamOutput();
+        s.refSeqUrl = dlg.getRefSeqUrl();
+        s.algName = dlg.getAlgorithmName();
+        s.resultFileName = dlg.getResultFileName();
+        s.setCustomSettings( dlg.getCustomSettings() );
+        s.shortReadUrls = dlg.getShortReadUrls();
+        s.prebuiltIndex = dlg.isPrebuiltIndex();
+        s.openView = true;
+        Task* assemblyTask = new DnaAssemblyMultiTask(s, true);
+        AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
+    }
 }
 
 } // U2

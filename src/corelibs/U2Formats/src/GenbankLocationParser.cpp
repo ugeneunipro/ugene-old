@@ -129,8 +129,12 @@ public:
 
 private:
     Token readNext() {
-        while(isspace(input.peek())) {
+        const QBitArray& WHITES = TextUtils::WHITES;
+        char inputChar = input.peek();
+        //while(isspace(inputChar)) {       //exclude the locale-specific function
+        while(WHITES.testBit(inputChar)) {
             input.next();
+            inputChar = input.peek();
         }
         switch(input.peek()) {
         case '\0':

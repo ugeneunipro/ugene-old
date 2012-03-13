@@ -163,7 +163,9 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         }
 
         if (seqReader->isEnd()) {
-            setError(tr("Can not init short reads loader."));
+            if (!hasError()){
+                setError(tr("Can not init short reads loader."));
+            }
             return subTasks;
         }
 

@@ -1114,6 +1114,7 @@ void ProjectTreeController::sl_objectAddedToActiveView(GObjectView*, GObject* o)
 }
 
 void ProjectTreeController::sl_objectRemovedFromActiveView(GObjectView*, GObject* o) {
+    SAFE_POINT(o != NULL, tr("No obkect to remove from view"), );
     uiLog.trace(QString("Processing object remove form active view in project tree: %1").arg(o->getGObjectName()));
     updateObjectActiveStateVisual(o);
 }
