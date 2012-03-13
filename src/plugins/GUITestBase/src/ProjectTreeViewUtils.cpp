@@ -33,33 +33,34 @@ namespace U2 {
 
 const QString ProjectTreeViewUtils::widgetName = "documentTreeWidget";
 
-void ProjectTreeViewUtils::openView(U2OpStatus &os) {
+void ProjectTreeViewUtils::OpenViewGUIAction::addSubTests() {
 
+    TaskStateInfo os;
     QWidget *documentTreeWidget = QtUtils::findWidgetByName(os, widgetName);
     if (!documentTreeWidget) {
-        toggleView(os);
+        add( new ToggleViewGUIAction() );
     }
 }
 
-void ProjectTreeViewUtils::toggleView(U2OpStatus &os) {
+void ProjectTreeViewUtils::ToggleViewGUIAction::execute(U2OpStatus &os) {
 
     QtUtils::keyClick(os, MWMENU, Qt::Key_1, Qt::AltModifier);
-    QtUtils::sleep(1000);
 }
 
-void ProjectTreeViewUtils::clickEnter(U2OpStatus &os, const QString& itemName) {
+ProjectTreeViewUtils::ClickGUIAction::ClickGUIAction(const QString& itemName) {
 
-    moveTo(os, itemName);
+    add( new MoveToGUIAction(itemName) );
+
     QPoint p = getTreeViewItemPosition(os, itemName);
-    QtUtils::mouseClickOnItem(os, widgetName, Qt::LeftButton, p);
-
-    QtUtils::keyClick(os, widgetName, Qt::Key_Enter);
+    add( new QtUtils::MouseClickOnItemGUIAction(widgetName, Qt::LeftButton, p) );
 }
 
-void ProjectTreeViewUtils::moveTo(U2OpStatus &os, const QString& itemName) {
+ProjectTreeViewUtils::MoveToGUIAction::MoveToGUIAction(const QString& itemName) {
+
+    add( new OpenViewGUIAction() );
 
     QPoint p = getTreeViewItemPosition(os, itemName);
-    QtUtils::moveTo(os, widgetName, p);
+    add( new QtUtils::MoveToGUIAction(widgetName, p) );
 }
 
 QPoint ProjectTreeViewUtils::getTreeViewItemPosition(U2OpStatus &os, const QString &itemName) {
@@ -75,8 +76,6 @@ QPoint ProjectTreeViewUtils::getTreeViewItemPosition(U2OpStatus &os, const QStri
 }
 
 QTreeWidget* ProjectTreeViewUtils::getTreeWidget(U2OpStatus &os) {
-
-    openView(os);
 
     QTreeWidget *treeWidget = static_cast<QTreeWidget*>(QtUtils::findWidgetByName(os, widgetName));
     return treeWidget;

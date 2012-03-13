@@ -45,6 +45,15 @@ public:
 
     //mouse primitives
     static void moveTo(U2OpStatus &os, const QString &widgetName, const QPoint &pos = QPoint());
+    class MoveToGUIAction : public GUITest {
+    public:
+        MoveToGUIAction(const QString &_widgetName, const QPoint &pos = QPoint()) : widgetName(_widgetName), _pos(pos){}
+    protected:
+        virtual void execute(U2OpStatus& os) { moveTo(os, widgetName, _pos); }
+        QString widgetName;
+        QPoint _pos;
+    };
+
     static void mouseClick(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
     static void mouseDbClick(U2OpStatus &os, const QString &widgetName, const QPoint &pos = QPoint());
     static void mousePress(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button,const QPoint &pos = QPoint());
@@ -60,6 +69,19 @@ public:
     static void keyPress(U2OpStatus &os, const QString &widgetName, int key, Qt::KeyboardModifiers modifiers = 0, const QString &text = "");
     static void keyRelease(U2OpStatus &os, const QString &widgetName, int key, Qt::KeyboardModifiers modifiers = 0);
     static void keyClick(U2OpStatus &os, const QString &widgetName, int key, Qt::KeyboardModifiers modifiers = 0, const QString &text = "");
+    class KeyClickGUIAction : public GUITest {
+    public:
+        KeyClickGUIAction(const QString &_widgetName, int _key, Qt::KeyboardModifiers _modifiers = 0, const QString &_text = "")
+            : widgetName(_widgetName), key(_key), modifiers(_modifiers), text(_text) {}
+    protected:
+        virtual void execute(U2OpStatus &os) { keyClick(os, widgetName, key, modifiers, text); }
+
+        QString widgetName;
+        int key;
+        Qt::KeyboardModifiers modifiers;
+        QString text;
+    };
+
     static void keySequence(U2OpStatus &os, const QString &widgetName, const QString &sequence, Qt::KeyboardModifiers modifiers = 0);
 
     static void keyPress(QWidget *w, int key, Qt::KeyboardModifiers modifiers = 0, const QString &text = "");
@@ -83,6 +105,18 @@ public:
 
     //tree model
     static void mouseClickOnItem(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
+    class MouseClickOnItemGUIAction : public GUITest {
+    public:
+        MouseClickOnItemGUIAction(const QString &_widgetName, Qt::MouseButton _button, const QPoint &_pos = QPoint())
+            : widgetName(_widgetName), button(_button), pos(_pos) {}
+    protected:
+        virtual void execute(U2OpStatus &os) { mouseClickOnItem(os, widgetName, button, pos); }
+
+        QString widgetName;
+        Qt::MouseButton button;
+        QPoint pos;
+    };
+
     static void mouseDbClickOnItem(U2OpStatus &os, const QString &widgetName, const QPoint &pos = QPoint());
     static void mousePressOnItem(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
     static void mouseReleaseOnItem(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());

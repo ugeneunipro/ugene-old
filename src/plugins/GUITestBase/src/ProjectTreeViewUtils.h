@@ -34,11 +34,15 @@ namespace U2 {
 
 class ProjectTreeViewUtils {
 public:
-    static void clickEnter(U2OpStatus &os, const QString &itemName);
-    GENERATE_GUI_ACTION_1(ClickEnterGUIAction, clickEnter);
+    class ClickGUIAction : public GUIMultiTest {
+    public:
+        ClickGUIAction(const QString &itemName);
+    };
 
-    static void moveTo(U2OpStatus &os, const QString &itemName);
-    GENERATE_GUI_ACTION_1(MoveToGUIAction, moveTo);
+    class MoveToGUIAction : public GUIMultiTest {
+    public:
+        MoveToGUIAction(const QString &itemName);
+    };
 
     class CheckToolTipGUIAction : public GUIMultiTest {
     public:
@@ -48,8 +52,15 @@ public:
         }
     };
 
-    static void openView(U2OpStatus &os);
-    static void toggleView(U2OpStatus &os);
+    class OpenViewGUIAction : public GUIMultiTest {
+    protected:
+        virtual void addSubTests();
+    };
+
+    class ToggleViewGUIAction : public GUITest {
+    protected:
+        virtual void execute(U2OpStatus& os);
+    };
 
     static QPoint getTreeViewItemPosition(U2OpStatus &os, const QString &itemName);
 
