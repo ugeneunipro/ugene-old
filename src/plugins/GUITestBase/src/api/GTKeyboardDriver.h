@@ -63,11 +63,8 @@ public:
     * GTKeyboardDriver::keySequence(os, "ThIs Is a TeSt StRiNg"); // print "ThIs Is a TeSt StRiNg"
     * i.e. case sensitive
     */
-    
-protected:
-    
 };
 
 } //namespace
 
-#endif
+#endif // _U2_GUI_GTKEYBOARDDRIVER_H_

@@ -19,18 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTKeyboardDriver.h"
-
-#ifdef _WIN32
-
-#include <windows.h>
-#define VIRTUAL_TO_SCAN_CODE 0
-
-#endif //_WIN32
-
 #include <cctype>
 #include "GTKeyboardDriver.h"
 #include "QtUtils.h"
+
+#ifdef _WIN32
+    #include <windows.h>
+    #define VIRTUAL_TO_SCAN_CODE 0
+#elif defined __linux__
+    #define XK_LATIN1      // for latin symbol
+    #define XK_MISCELLANY  // for action keys
+    #include <X11/keysymdef.h>
+    #include <X11/extensions/XTest.h>
+#elif defined __APPLE__ & __MACH__
+    //...
+#endif
 
 #define ADD_KEY(name, code) insert(name, code)
 
@@ -85,7 +88,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
-    
+
     if (isalpha(key) && islower(key)) {
         key = toupper(key);
     }
@@ -126,53 +129,6 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
     SendInput(1, &event, sizeof(event));
 }
 
-void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key)
-{
-    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
- 
-    keyPress(os, key);
-    Sleep(100);
-    keyRelease(os, key);
-}
-
-void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
-{
-    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
-    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyClick()");
-
-    keyPress(os, modifiers, key);
-    Sleep(100);
-    keyRelease(os, modifiers, key);
-}
-
-void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, QString str)
-{
-    foreach(QChar ch, str) {
-        if(isalpha(ch.toAscii()) && !islower(ch.toAscii())) {
-            keyClick(os, key["shift"], ch.toAscii());
-        } else {
-            keyClick(os, ch.toAscii());
-        }
-    }
-}
-
-void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, QString str, int modifiers)
-{
-    keyPress(os, modifiers);
-
-    foreach(QChar ch, str) {
-        if(isalpha(ch.toAscii()) && !islower(ch.toAscii())) {
-            keyClick(os, key["shift"], ch.toAscii());
-        } else {
-            keyClick(os, ch.toAscii());
-        }
-    }
-
-    keyRelease(os, modifiers);
-}
-
-
-//#####################################################################################
 GTKeyboardDriver::keys::keys()
 {
     ADD_KEY("back", VK_BACK);
@@ -186,10 +142,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("rctrl", VK_RCONTROL);
     ADD_KEY("lctrl", VK_LCONTROL);
     ADD_KEY("menu", VK_MENU);
-    ADD_KEY("lmenu", VK_LMENU);
-    ADD_KEY("rmenu", VK_RMENU);
     ADD_KEY("pause", VK_PAUSE);
-    ADD_KEY("capital", VK_CAPITAL);
     ADD_KEY("esc", VK_ESCAPE);
     ADD_KEY("space", VK_SPACE);
     ADD_KEY("left", VK_LEFT);
@@ -215,9 +168,163 @@ GTKeyboardDriver::keys::keys()
 // macro VK_* defined in WinUser.h
 }
 
+#elif defined __linux__
+
+void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key)
+{
+    CHECK_SET_ERR (key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyPress()");
+
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 1, 0);
+    XFlush(display);
+}
+
+void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
+{
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyPress()");
+
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyPress()");
+
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 1, 0);
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 1, 0);
+    XFlush(display);
+}
+
+void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key)
+{
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyRelease()");
+
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+    XFlush(display);
+}
+
+void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
+{
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyRelease()");
+
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyRelease()");
+
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+    XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 0, 0);
+    XFlush(display);
+}
+
+GTKeyboardDriver::keys::keys()
+{
+    ADD_KEY("back", XK_BackSpace);
+    ADD_KEY("tab", XK_Tab);
+    ADD_KEY("clear", XK_Clear);
+    ADD_KEY("enter", XK_Return);
+    ADD_KEY("shift", XK_Shift_L);
+    ADD_KEY("rshift", XK_Shift_R);
+    ADD_KEY("lshift", XK_Shift_L);
+    ADD_KEY("ctrl", XK_Control_L);
+    ADD_KEY("rctrl", XK_Control_R);
+    ADD_KEY("lctrl", XK_Control_L);
+    ADD_KEY("menu", XK_Menu);
+    ADD_KEY("pause", XK_Pause);
+    ADD_KEY("esc", XK_Escape);
+    ADD_KEY("space", XK_space);
+    ADD_KEY("left", XK_Left);
+    ADD_KEY("up", XK_Up);
+    ADD_KEY("right", XK_Right);
+    ADD_KEY("down", XK_Down);
+    ADD_KEY("insert", XK_Insert);
+    ADD_KEY("delete", XK_Delete);
+    ADD_KEY("help", XK_Help);
+    ADD_KEY("f1", XK_F1);
+    ADD_KEY("f2", XK_F2);
+    ADD_KEY("f3", XK_F3);
+    ADD_KEY("f4", XK_F4);
+    ADD_KEY("f5", XK_F5);
+    ADD_KEY("f6", XK_F6);
+    ADD_KEY("f7", XK_F7);
+    ADD_KEY("f8", XK_F8);
+    ADD_KEY("f9", XK_F9);
+    ADD_KEY("f10", XK_F10);
+    ADD_KEY("f12", XK_F12);
+
+// feel free to add other keys
+// macro XK_* defined in X11/keysymdef.h
+}
+
+#elif defined __APPLE__ & __MACH__
+void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key)
+{
+}
+
+void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
+{
+}
+
+void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key)
+{
+}
+
+void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
+{
+}
+
+GTKeyboardDriver::keys::keys()
+{
+}
+#endif
+
+void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key)
+{
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
+
+    keyPress(os, key);
+    keyRelease(os, key);
+}
+
+void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
+{
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
+    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyClick()");
+
+    keyPress(os, key, modifiers);
+    keyRelease(os, key, modifiers);
+}
+
+void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, QString str)
+{
+    foreach(QChar ch, str) {
+        if(isalpha(ch.toAscii()) && !islower(ch.toAscii())) {
+            keyClick(os, ch.toAscii(), key["shift"]);
+        } else {
+            keyClick(os, ch.toAscii());
+        }
+    }
+}
+
+void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, QString str, int modifiers)
+{
+    keyPress(os, modifiers);
+
+    foreach(QChar ch, str) {
+        if(isalpha(ch.toAscii()) && !islower(ch.toAscii())) {
+            keyClick(os, key["shift"], ch.toAscii());
+        } else {
+            keyClick(os, ch.toAscii());
+        }
+    }
+
+    keyRelease(os, modifiers);
+}
+
+/******************************************************************************/
 int GTKeyboardDriver::keys::operator [] (QString str) const
 {
-    keys::const_iterator it = find(str.toLower());
     if (!contains(str.toLower())) {
         return 0;
     }
@@ -226,5 +333,4 @@ int GTKeyboardDriver::keys::operator [] (QString str) const
 
 GTKeyboardDriver::keys GTKeyboardDriver::key;
 
-#endif // _WIN32
 } //namespace
