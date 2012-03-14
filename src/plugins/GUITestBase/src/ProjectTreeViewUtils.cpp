@@ -64,12 +64,12 @@ QPoint ProjectTreeViewUtils::getTreeViewItemPosition(U2OpStatus &os, const QStri
     QTreeWidget *treeWidget = getTreeWidget(os);
     QTreeWidgetItem *item = getTreeWidgetItem(os, itemName);
 
+    QPoint p = treeWidget->rect().center();
     if (treeWidget && item) {
-        QPoint p = treeWidget->visualItemRect(item).center();
-        return treeWidget->mapToGlobal(p);
+        p = treeWidget->visualItemRect(item).center();
     }
 
-    return QPoint();
+    return treeWidget->mapToGlobal(p);
 }
 
 QTreeWidget* ProjectTreeViewUtils::getTreeWidget(U2OpStatus &os) {
@@ -80,17 +80,21 @@ QTreeWidget* ProjectTreeViewUtils::getTreeWidget(U2OpStatus &os) {
 
 QString ProjectTreeViewUtils::getProjectTreeItemName(ProjViewItem* projViewItem) {
 
-    if (ProjViewDocumentItem *documentItem = (ProjViewDocumentItem*)projViewItem) {
-        CHECK_EXT(documentItem->doc != NULL,,"");
+    if (projViewItem->isDocumentItem()) {
+        ProjViewDocumentItem *documentItem = (ProjViewDocumentItem*)projViewItem;
+        CHECK_EXT((documentItem != NULL) && (documentItem->doc != NULL),,"");
         return documentItem->doc->getName();
     }
 
-    if (ProjViewObjectItem *objectItem = (ProjViewObjectItem*)projViewItem) {
-        CHECK_EXT(objectItem->obj != NULL,,"");
+    if (projViewItem->isObjectItem()) {
+        ProjViewObjectItem *objectItem = (ProjViewObjectItem*)projViewItem;
+        CHECK_EXT((objectItem!=NULL) && (objectItem->obj != NULL),,"");
         return objectItem->obj->getGObjectName();
     }
 
-    if (ProjViewTypeItem *typeItem = (ProjViewTypeItem*)projViewItem) {
+    if (projViewItem->isTypeItem()) {
+        ProjViewTypeItem *typeItem = (ProjViewTypeItem*)projViewItem;
+        CHECK_EXT(typeItem != NULL,,"");
         return typeItem->typePName;
     }
 
