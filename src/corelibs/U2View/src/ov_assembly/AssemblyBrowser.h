@@ -152,6 +152,7 @@ private:
     bool canPerformZoomOut() const {return zoomOutAction->isEnabled();}
     int zoomInFromSize(int oldCellSize);
     int zoomOutFromSize(int oldCellSize);
+    void zoomToSize(int reqCellSize);
     void updateZoomingActions();
 
 private:

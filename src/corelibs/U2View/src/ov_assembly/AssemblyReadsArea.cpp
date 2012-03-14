@@ -807,7 +807,7 @@ void AssemblyReadsArea::sl_coveredRegionClicked(const QString & link) {
         assert(ok);
         CoveredRegion cr = browser->getCoveredRegions().at(i);
         ui->getOverview()->checkedSetVisibleRange(cr.region);
-        browser->navigateToRegion(ui->getOverview()->getVisibleRange());
+        browser->navigateToRegion(cr.region);
     }
 }
 

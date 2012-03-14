@@ -163,4 +163,13 @@ void U2AssemblyUtils::deserializeCoverageStat(QByteArray data, U2AssemblyCoverag
     }
 }
 
+QVector<qint64> U2AssemblyUtils::coverageStatToVector(const U2AssemblyCoverageStat &coverageStat) {
+    int size = coverageStat.coverage.size();
+    QVector<qint64> res(size);
+    for(int i = 0; i < size; ++i) {
+        res[i] = coverageStat.coverage[i].maxValue;
+    }
+    return res;
+}
+
 } //namespace

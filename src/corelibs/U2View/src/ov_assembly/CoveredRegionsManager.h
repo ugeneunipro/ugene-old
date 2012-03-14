@@ -62,6 +62,8 @@ public:
      */
     QList<CoveredRegion> getTopCoveredRegions(int topSize, qint64 coverageLevel=0) const;
 
+    static const int DESIRED_REGION_LENGTH;
+
 private:
     U2Region visibleRegion;
     QList<CoveredRegion> allRegions;

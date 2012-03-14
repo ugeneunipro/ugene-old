@@ -92,6 +92,11 @@ public:
     static void deserializeCoverageStat(QByteArray data, U2AssemblyCoverageStat& res, U2OpStatus &os);
 
     /**
+        Builds a vector where each item is max value of corresponding item of coverageStat
+    */
+    static QVector<qint64> coverageStatToVector(const U2AssemblyCoverageStat &coverageStat);
+
+    /**
         Size of array of cached coverage
     */
     static const int MAX_COVERAGE_VECTOR_SIZE;

@@ -261,9 +261,18 @@ void AssemblyBrowser::setGlobalCoverageInfo(const CoverageInfo & newInfo) {
     if(newInfo.coverageInfo.size() <= coveredRegionsManager.getSize()) {
         return;
     }
-    U2OpStatusImpl os;
+    QVector<qint64> coverage = newInfo.coverageInfo;
+    // prefer model's coverage stat
+    if(model->hasCachedCoverageStat()) {
+        U2OpStatus2Log status;
+        U2AssemblyCoverageStat coverageStat = model->getCoverageStat(status);
+        if(!status.isCoR() && coverageStat.coverage.size() > newInfo.coverageInfo.size()) {
+            coverage = U2AssemblyUtils::coverageStatToVector(coverageStat);
+        }
+    }
+    U2OpStatus2Log os;
     U2Region globalRegion(0, model->getModelLength(os));
-    coveredRegionsManager = CoveredRegionsManager(globalRegion, newInfo.coverageInfo);
+    coveredRegionsManager = CoveredRegionsManager(globalRegion, coverage);
     coverageInfo = newInfo;
 }
 
@@ -516,6 +525,9 @@ void AssemblyBrowser::sl_assemblyLoaded() {
 
 
 void AssemblyBrowser::navigateToRegion(const U2Region & region) {
+    int requiredCellSize = qMax(1, (int)(ui->getReadsArea()->width()/region.length));
+    zoomToSize(requiredCellSize);
+
     //if cells are not visible -> make them visible
     if(!areCellsVisible()) {
         while(!areCellsVisible()) {
@@ -524,10 +536,8 @@ void AssemblyBrowser::navigateToRegion(const U2Region & region) {
     }
     
     //if visible area does not contain reads area -> shift reads area
-    if(xOffsetInAssembly < region.startPos) {
+    if(!getVisibleBasesRegion().contains(region)) {
         setXOffsetInAssembly(region.startPos);
-    } else if(xOffsetInAssembly > region.endPos()-region.length) {
-        setXOffsetInAssembly(region.endPos()-region.length);
     }
 }
 
@@ -779,6 +789,18 @@ int AssemblyBrowser::zoomOutFromSize(int oldCellSize) {
         cellWidth = getCellWidth();
     } while(cellWidth == oldCellSize);
     return cellWidth;
+}
+
+void AssemblyBrowser::zoomToSize(int reqCellSize) {
+    SAFE_POINT(reqCellSize > 0, "reqCellSize <= 0, cannot zoomToSize",);
+
+    U2OpStatus2Log status;
+    qint64 modelLen = model->getModelLength(status);
+    qint64 width = ui->getReadsArea()->width();
+    zoomFactor = double(width)/modelLen/(reqCellSize - 0.5);
+
+    updateZoomingActions();
+    emit si_zoomOperationPerformed();
 }
 
 void AssemblyBrowser::onObjectRenamed(GObject*, const QString&) {

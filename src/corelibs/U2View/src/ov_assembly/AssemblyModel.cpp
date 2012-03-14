@@ -57,6 +57,8 @@ namespace U2 {
 // AssemblyModel
 //==============================================================================
 
+const QByteArray AssemblyModel::COVERAGE_STAT_ATTRIBUTE_NAME("coverageStat");
+
 AssemblyModel::AssemblyModel(const DbiConnection& dbiCon_) : 
 cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), assemblyDbi(0), dbiHandle(dbiCon_),
 loadingReference(false), refObj(NULL), md5Retrieved(false), cachedReadsNumber(NO_VAL), speciesRetrieved(false),
@@ -94,13 +96,28 @@ void AssemblyModel::calculateCoverageStat(const U2Region & r, U2AssemblyCoverage
     return assemblyDbi->calculateCoverage(assembly.id, r, stat, os);
 }
 
+bool AssemblyModel::hasCachedCoverageStat() {
+    if(!cachedCoverageStat.coverage.isEmpty()) {
+        return true;
+    }
+    U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
+    if(NULL != attributeDbi) {
+        U2OpStatusImpl status;
+        U2ByteArrayAttribute attr = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, COVERAGE_STAT_ATTRIBUTE_NAME, status);
+        if(!status.isCoR() && attr.hasValidId()) {
+            // TODO: check version
+            return true;
+        }
+    }
+    return false;
+}
+
 const U2AssemblyCoverageStat &AssemblyModel::getCoverageStat(U2OpStatus & os) {
     QMutexLocker mutexLocker(&mutex);
     Q_UNUSED(mutexLocker);
     if(cachedCoverageStat.coverage.isEmpty()) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
         if(NULL != attributeDbi) {
-            static const QByteArray COVERAGE_STAT_ATTRIBUTE_NAME("coverageStat");
             U2ByteArrayAttribute attr = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, COVERAGE_STAT_ATTRIBUTE_NAME, os);
             if(!os.isCoR()) {
                 if(attr.hasValidId()) {

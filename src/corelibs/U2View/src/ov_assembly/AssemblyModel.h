@@ -49,6 +49,9 @@ public:
     void calculateCoverageStat(const U2Region & r, U2AssemblyCoverageStat & stat, U2OpStatus & os);
 
     const U2AssemblyCoverageStat &getCoverageStat(U2OpStatus & os);
+
+    // returns true if calling getCoverageStat will not cause recomputation and is safe from main thread
+    bool hasCachedCoverageStat();
     
     U2Region getGlobalRegion();
 
@@ -107,6 +110,7 @@ private slots:
     
 private:
     const static qint64 NO_VAL = -1;
+    const static QByteArray COVERAGE_STAT_ATTRIBUTE_NAME;
     //TODO: track model changes and invalidate caches accordingly
     qint64 cachedModelLength;
     qint64 cachedModelHeight;

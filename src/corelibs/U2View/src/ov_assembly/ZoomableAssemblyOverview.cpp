@@ -49,7 +49,7 @@ static const QColor labelBackgroundColor(255, 255, 255, 180);
 const double ZoomableAssemblyOverview::ZOOM_MULT = 2.;
 
 ZoomableAssemblyOverview::ZoomableAssemblyOverview(AssemblyBrowserUi * ui_, bool zoomable_): QWidget(ui_), ui(ui_), browser(ui->getWindow()), 
-model(ui_->getModel()), zoomable(zoomable_), zoomFactor(1.), redrawSelection(true), redrawBackground(true), selectionScribbling(false), visibleRangeScribbling(false),
+    model(ui_->getModel()), zoomable(zoomable_), zoomFactor(1.), redrawSelection(true), redrawBackground(true), previousCoverageLength(0), selectionScribbling(false), visibleRangeScribbling(false),
 scaleType(AssemblyBrowserSettings::getOverviewScaleType()) {
     U2OpStatusImpl os;
     visibleRange.startPos = 0;
@@ -692,12 +692,14 @@ AssemblyBrowserSettings::OverviewScaleType ZoomableAssemblyOverview::getScaleTyp
 }
 
 void ZoomableAssemblyOverview::launchCoverageCalculation() {
-    CalcCoverageInfoTaskSettings settings;
-    settings.model = model;
-    settings.visibleRange = visibleRange;
-    settings.regions = width();
+    if(previousCoverageRegion != visibleRange || width() != previousCoverageLength) {
+        CalcCoverageInfoTaskSettings settings;
+        settings.model = model;
+        settings.visibleRange = previousCoverageRegion = visibleRange;
+        settings.regions = previousCoverageLength =  width();
 
-    coverageTaskRunner.run(new CalcCoverageInfoTask(settings));
+        coverageTaskRunner.run(new CalcCoverageInfoTask(settings));
+    }
     redrawBackground = true;
     sl_redraw();
 }

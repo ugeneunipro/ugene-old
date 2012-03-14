@@ -128,6 +128,8 @@ private:
 
     QPixmap cachedBackground;
     bool redrawBackground;
+    U2Region previousCoverageRegion;
+    int previousCoverageLength;
     BackgroundTaskRunner<CoverageInfo> coverageTaskRunner;
 
     bool selectionScribbling;
