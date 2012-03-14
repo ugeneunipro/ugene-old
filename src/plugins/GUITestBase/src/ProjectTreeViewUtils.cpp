@@ -59,6 +59,12 @@ void ProjectTreeViewUtils::MoveToGUIAction::execute(U2OpStatus &os) {
     GTMouseDriver::moveTo(os, p);
 }
 
+void ProjectTreeViewUtils::CheckItemExistsGUIAction::execute(U2OpStatus &os) {
+
+    QTreeWidgetItem* item = getTreeWidgetItem(os, itemName);
+    CHECK_SET_ERR(item != NULL, "Item " + itemName + " not found in tree widget");
+}
+
 QPoint ProjectTreeViewUtils::getTreeViewItemPosition(U2OpStatus &os, const QString &itemName) {
 
     QTreeWidget *treeWidget = getTreeWidget(os);

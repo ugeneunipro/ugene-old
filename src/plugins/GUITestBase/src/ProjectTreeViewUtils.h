@@ -39,6 +39,14 @@ public:
         ClickGUIAction(const QString &itemName);
     };
 
+    class CheckItemExistsGUIAction : public GUITest {
+    public:
+        CheckItemExistsGUIAction(const QString &_itemName) : itemName(_itemName){}
+    private:
+        virtual void execute(U2OpStatus &os);
+        QString itemName;
+    };
+
     class MoveToGUIAction : public GUITest {
     public:
         MoveToGUIAction(const QString &_itemName) : itemName(_itemName){}
