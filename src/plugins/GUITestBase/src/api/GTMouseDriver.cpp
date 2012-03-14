@@ -19,12 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include "GTMouseDriver.h"
 #include "QtUtils.h"
+
+#ifdef _WIN32
+    #include <windows.h>
+#elif defined __linux__
+    #include <X11/extensions/XTest.h>
+#elif defined __APPLE__ & __MACH__
+    //...
+#endif
 
 namespace U2 {
 
@@ -144,20 +148,6 @@ void GTMouseDriver::release(U2::U2OpStatus &os, ButtonType button_type)
     SendInput(1, &event, sizeof(event));
 }
 
-void GTMouseDriver::click(U2::U2OpStatus &os, ButtonType button_type)
-{
-    press(os, button_type);
-    Sleep(10);
-    release(os, button_type);
-}
-
-void GTMouseDriver::doubleClick(U2OpStatus &os)
-{
-    click(os, LEFT);
-    Sleep(10);
-    click(os, LEFT);
-}
-
 void GTMouseDriver::scroll(U2OpStatus &os, int value)
 {
     INPUT event;
@@ -172,6 +162,154 @@ void GTMouseDriver::scroll(U2OpStatus &os, int value)
     SendInput(1, &event, sizeof(event));
 }
 
-#endif // _WIN32
+#elif defined __linux__
+
+void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
+{
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in GTMouseDriver::moveTo()");
+
+    int horres = XDisplayWidth(display, 0);
+    int vertres = XDisplayHeight(display, 0);
+
+    QRect screen(0, 0, horres-1, vertres-1);
+    CHECK_SET_ERR(screen.contains(QPoint(x, y)), "Invalid coordinates for GTMouseDriver::moveTo()");
+
+    Window root, child;
+    int root_x, root_y, pos_x, pos_y;
+    unsigned mask;
+    XQueryPointer(display, RootWindow(display, DefaultScreen(display)),
+                  &root, &child, &root_x, &root_y,
+                  &pos_x, &pos_y, &mask);
+
+    const int delay = 10; //msec
+    int x0 = pos_x;
+    int y0 = pos_y;
+    int x1 = x;
+    int y1 = y;
+
+    if (x0 == x1) {
+        while(y0 != y1) {
+            if (y0 < y1) {
+                ++y0;
+            } else {
+                --y0;
+            }
+
+            XTestFakeMotionEvent(display, -1, x1, y0, delay);
+            XFlush(display);
+        }
+    } else if (y0 == y1) {
+        while(x0 != x1) {
+            if (x0 < x1) {
+                ++x0;
+            } else {
+                --x0;
+            }
+            XTestFakeMotionEvent(display, -1, x0, y1, delay);
+            XFlush(display);
+        }
+    } else {
+        // moved by the shortest way
+        // equation of the line by two points y = (-(x0 * y1 - x1 * y0) - x*(y0 - y1)) / (x1 - x0)
+        int diff_x = x1 - x0;
+        int diff_y = y0 - y1;
+        int diff_xy = -(x0 * y1 - x1 * y0);
+        int current_x = x0, current_y;
+
+        while (current_x != x1) {
+            if (x1 > x0) {
+                ++current_x;
+            } else {
+                -- current_x;
+            }
+
+            current_y = (diff_xy - current_x * diff_y) / diff_x;
+            XTestFakeMotionEvent(display, -1, current_x, current_y, delay);
+            XFlush(display);
+        }
+    }
+
+    XCloseDisplay(display);
+}
+
+void GTMouseDriver::press(U2::U2OpStatus &os, ButtonType button_type)
+{
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in GTMouseDriver::press()");
+
+    unsigned int buttons[3] = {1, 3, 2}; // 1 = Left, 2 = Middle, 3 = Right
+
+    XTestFakeButtonEvent(display, buttons[button_type], True, 0);
+    XFlush(display);
+
+    XCloseDisplay(display);
+}
+
+void GTMouseDriver::release(U2::U2OpStatus &os, ButtonType button_type)
+{
+    // TODO: check if this key has been already pressed
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in GTMouseDriver::press()");
+
+    unsigned int buttons[3] = {Button1, Button3, Button2}; // Button1 = Left, Button2 = Middle, Button3 = Right
+
+    XTestFakeButtonEvent(display, buttons[button_type], False, 0);
+    XFlush(display);
+
+    XCloseDisplay(display);
+}
+
+void GTMouseDriver::scroll(U2OpStatus &os, int value)
+{
+    Display *display = XOpenDisplay(NULL);
+    CHECK_SET_ERR (display != 0, "Error: display is NULL in GTMouseDriver::press()");
+
+    unsigned button =  value > 0 ? Button4 : Button5; //Button4 - scroll up, Button5 - scroll down
+    value = value > 0 ? value : -value;
+
+    for (int i = 0; i < value; i++) {
+        XTestFakeButtonEvent(display, button, True, 0);
+        XTestFakeButtonEvent(display, button, False, 0);
+    }
+
+    XFlush(display);
+    XCloseDisplay(display);
+}
+
+#elif defined __APPLE__ & __MACH__
+
+void GTMouseDriver::moveTo(U2::U2OpStatus &os, const QPoint& p)
+{
+}
+
+void GTMouseDriver::press(U2::U2OpStatus &os, ButtonType button_type)
+{
+}
+
+void GTMouseDriver::release(U2::U2OpStatus &os, ButtonType button_type)
+{
+}
+
+void GTMouseDriver::scroll(U2OpStatus &os, int value)
+{
+}
+
+#endif
+
+void GTMouseDriver::click(U2::U2OpStatus &os, ButtonType button_type)
+{
+    press(os, button_type);
+    QtUtils::sleep(10);
+    release(os, button_type);
+}
+
+void GTMouseDriver::doubleClick(U2OpStatus &os)
+{
+    click(os, LEFT);
+    QtUtils::sleep(100);
+    click(os, LEFT);
+}
+
 } //namespace
 

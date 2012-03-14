@@ -179,6 +179,8 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key)
 
     XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 1, 0);
     XFlush(display);
+
+    XCloseDisplay(display);
 }
 
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
@@ -192,6 +194,8 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
     XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 1, 0);
     XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 1, 0);
     XFlush(display);
+
+    XCloseDisplay(display);
 }
 
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key)
@@ -203,6 +207,8 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key)
 
     XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
     XFlush(display);
+
+    XCloseDisplay(display);
 }
 
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
@@ -216,6 +222,8 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
     XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
     XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 0, 0);
     XFlush(display);
+
+    XCloseDisplay(display);
 }
 
 GTKeyboardDriver::keys::keys()
