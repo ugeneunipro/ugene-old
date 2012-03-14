@@ -30,6 +30,7 @@
 #include "ProjectTreeViewUtils.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <api/GTKeyboardDriver.h>
+#include <api/GTMouseDriver.h>
 
 namespace U2{
 
@@ -119,11 +120,11 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 }
 
 void test_0023::execute(U2OpStatus &os) {
-    ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa");
+    //ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa");
     //TODO: minimized sequence view and check title
 }
 
-void test_0030::execute(U2OpStatus &os) {
+GUI_TEST_CLASS_DEFINITION(test_0030) {
     add (new LogUtils::LogTracerStartGUIAction());
     add (new ProjectUtils::OpenFilesGUIAction(dataDir + "samples/FASTA/human_T1.fa"));
 
