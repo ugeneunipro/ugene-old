@@ -29,6 +29,7 @@
 #include "GUIDialogUtils.h"
 #include "ProjectTreeViewUtils.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
+#include <api/GTKeyboardDriver.h>
 
 namespace U2{
 
@@ -86,7 +87,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     add(new ProjectTreeViewUtils::CheckToolTipGUIAction("1CF7.PDB", "samples/PDB/1CF7.PDB"));
 }
 
-void test_0006::execute( U2OpStatus &os ){
+void test_0006::execute( U2OpStatus &os ) {
     AppUtils::checkUGENETitle(os, "UGENE");
     QAction *result = QtUtils::getMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
     CHECK_SET_ERR(result == NULL, "Export menu item present in menu without any project created");
@@ -118,21 +119,19 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 }
 
 void test_0023::execute(U2OpStatus &os) {
-
-//    ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa");
+    ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa");
+    //TODO: minimized sequence view and check title
 }
 
-void test_0030::execute(U2OpStatus &os){
+void test_0030::execute(U2OpStatus &os) {
+    add (new LogUtils::LogTracerStartGUIAction());
+    add (new ProjectUtils::OpenFilesGUIAction(dataDir + "samples/FASTA/human_T1.fa"));
 
-//     LogTracer log;
-//     ProjectUtils::openFile(os, dataDir + "samples/FASTA/human_T1.fa");
-// 
-//     ProjectUtils::CloseProjectSettings button_to_press;
-//     button_to_press.saveOnClose = ProjectUtils::CloseProjectSettings::CANCEL;
-// 
-//     ProjectUtils::closeProject(os, button_to_press);
-// 
-//     LogUtils::checkHasError(os, log);
+    ProjectUtils::CloseProjectSettings button_to_press;
+    button_to_press.saveOnClose = ProjectUtils::CloseProjectSettings::CANCEL;
+
+    add (new ProjectUtils::CloseProjectGUIAction(button_to_press) );
+    add (new LogUtils::LogTracerCheckGUIAction());
 }
 
 }
