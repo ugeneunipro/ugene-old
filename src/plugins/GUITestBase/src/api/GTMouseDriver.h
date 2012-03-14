@@ -32,8 +32,7 @@ public:
 
     enum ButtonType{LEFT, RIGHT, MIDDLE};
 
-    static void moveTo(U2OpStatus &os, const int x, const int y);
-    static void moveTo(U2OpStatus &os, const QPoint& p) { moveTo(os, p.x(), p.y()); }
+    static void moveTo(U2OpStatus &os, const QPoint& p);
 
     static void click(U2OpStatus &os, ButtonType buttonType); //all click methods click the current position of the cursor
     class ClickGUIAction : public GUITest {

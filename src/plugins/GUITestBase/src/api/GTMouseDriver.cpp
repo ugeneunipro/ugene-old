@@ -30,15 +30,16 @@ namespace U2 {
 
 #ifdef _WIN32
 
-void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
+void GTMouseDriver::moveTo(U2::U2OpStatus &os, const QPoint& p)
 {
-    // get screen resulution
+    // get screen resolution
     HDC hDCScreen = GetDC(NULL);
     int horres = GetDeviceCaps(hDCScreen, HORZRES);
     int vertres = GetDeviceCaps(hDCScreen, VERTRES);
     ReleaseDC(NULL, hDCScreen);
-	
-    CHECK_SET_ERR_RESULT(x < horres && y < vertres && x >= 0 && y >= 0 , "Invalid coordinates for moveTo()");
+
+    QRect screen(0, 0, horres-1, vertres-1);
+    CHECK_SET_ERR(screen.contains(p), "Invalid coordinates for moveTo()");
 
     const int points_in_line = 65535;
     const double points_in_x_pixel = points_in_line / static_cast<double>(horres);
@@ -49,8 +50,8 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 	
     int x0 = pos.x;
     int y0 = pos.y;
-    int x1 = x;
-    int y1 = y;
+    int x1 = p.x();
+    int y1 = p.y();
 	
     INPUT event;
     event.type = INPUT_MOUSE;
@@ -152,9 +153,9 @@ void GTMouseDriver::click(U2::U2OpStatus &os, ButtonType button_type)
 
 void GTMouseDriver::doubleClick(U2OpStatus &os)
 {
-    click(os, ButtonType::LEFT);
+    click(os, LEFT);
     Sleep(10);
-    click(os, ButtonType::LEFT);
+    click(os, LEFT);
 }
 
 void GTMouseDriver::scroll(U2OpStatus &os, int value)
