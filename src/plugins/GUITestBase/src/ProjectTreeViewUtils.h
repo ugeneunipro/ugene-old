@@ -55,9 +55,9 @@ public:
         }
     };
 
-    class OpenViewGUIAction : public GUIMultiTest {
+    class OpenViewGUIAction : public GUITest {
     protected:
-        virtual void addSubTests();
+        virtual void execute(U2OpStatus& os);
     };
 
     class ToggleViewGUIAction : public GUITest {

@@ -34,12 +34,11 @@ namespace U2 {
 
 const QString ProjectTreeViewUtils::widgetName = "documentTreeWidget";
 
-void ProjectTreeViewUtils::OpenViewGUIAction::addSubTests() {
+void ProjectTreeViewUtils::OpenViewGUIAction::execute(U2OpStatus& os) {
 
-    TaskStateInfo os;
-    QWidget *documentTreeWidget = QtUtils::findWidgetByName(os, widgetName);
+    QWidget *documentTreeWidget = QtUtils::findWidgetByName(os, widgetName, NULL, false);
     if (!documentTreeWidget) {
-        add( new ToggleViewGUIAction() );
+        ToggleViewGUIAction().run(os);
     }
 }
 
