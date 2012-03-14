@@ -34,7 +34,7 @@ namespace U2 {
 
 #ifdef _WIN32
 
-void GTMouseDriver::moveTo(U2::U2OpStatus &os, const QPoint& p)
+void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 {
     // get screen resolution
     HDC hDCScreen = GetDC(NULL);
@@ -43,7 +43,7 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const QPoint& p)
     ReleaseDC(NULL, hDCScreen);
 
     QRect screen(0, 0, horres-1, vertres-1);
-    CHECK_SET_ERR(screen.contains(p), "Invalid coordinates for moveTo()");
+    CHECK_SET_ERR(screen.contains(QPoint(x, y)), "Invalid coordinates for moveTo()");
 
     const int points_in_line = 65535;
     const double points_in_x_pixel = points_in_line / static_cast<double>(horres);
@@ -54,8 +54,8 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const QPoint& p)
 	
     int x0 = pos.x;
     int y0 = pos.y;
-    int x1 = p.x();
-    int y1 = p.y();
+    int x1 = x;
+    int y1 = y;
 	
     INPUT event;
     event.type = INPUT_MOUSE;
