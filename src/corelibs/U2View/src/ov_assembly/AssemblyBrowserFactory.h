@@ -34,26 +34,16 @@ public:
     AssemblyBrowserFactory(QObject * parent = 0);
 
     virtual bool canCreateView(const MultiGSelection & multiSelection);
+
     virtual Task * createViewTask(const MultiGSelection & multiSelection, bool single = false);
 
+    virtual bool isStateInSelection(const MultiGSelection& multiSelection, const QVariantMap& stateData);
+
+    virtual Task* createViewTask(const QString& viewName, const QVariantMap& stateData);
+
+    virtual bool supportsSavedStates() const {return true;}
+
     static const GObjectViewFactoryId ID;
-};
-
-class AssemblyObject;
-class UnloadedObject;
-class Document;
-class AssemblyBrowser;
-
-class OpenAssemblyBrowserTask : public ObjectViewTask {
-    Q_OBJECT
-public:
-    OpenAssemblyBrowserTask(AssemblyObject * obj);
-    OpenAssemblyBrowserTask(UnloadedObject * obj);
-    OpenAssemblyBrowserTask(Document * doc);
-    virtual void open();
-    static void updateTitle(AssemblyBrowser* ab);
-private:
-    GObjectReference unloadedObjRef;
 };
 
 }

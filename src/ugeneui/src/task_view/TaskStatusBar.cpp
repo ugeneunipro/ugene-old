@@ -102,16 +102,15 @@ TaskStatusBar::TaskStatusBar() {
 }
 
 void TaskStatusBar::sl_newReport(Task* task) {
-    QString time = "[" + QTime::currentTime().toString() + "] "; 
     if(task->isReportingEnabled()) {
         QAction *action = new QAction("action", this);
         action->setData(QVariant(task->getTaskName() + "|" + QString::number(task->getTaskId()) + "|" + TVReportWindow::prepareReportHTML(task)));
         connect(action, SIGNAL(triggered()), SLOT(sl_showReport()));
         NotificationType nType = task->hasError()? Error_Not : Report_Not;
-        Notification *t = new Notification(tr("%1Report for task: '%2'").arg(time).arg(task->getTaskName()), nType, action);
+        Notification *t = new Notification(tr("Report for task: '%1'").arg(task->getTaskName()), nType, action);
         nStack->addNotification(t);
     } else if (task->hasError() && !task->isErrorNotificationSuppressed()) {
-        Notification *t = new Notification(tr("%1'%2' task failed: %3").arg(time).arg(task->getTaskName()).arg(task->getError()), Error_Not);
+        Notification *t = new Notification(tr("'%1' task failed: %2").arg(task->getTaskName()).arg(task->getError()), Error_Not);
         nStack->addNotification(t);
     }
 }

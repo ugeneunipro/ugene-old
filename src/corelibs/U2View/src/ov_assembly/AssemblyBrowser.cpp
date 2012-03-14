@@ -22,6 +22,8 @@
 #include "AssemblyBrowser.h"
 
 #include "AssemblyBrowserFactory.h"
+#include "AssemblyBrowserState.h"
+#include "AssemblyBrowserTasks.h"
 #include "ZoomableAssemblyOverview.h"
 #include "AssemblyReferenceArea.h"
 #include "AssemblyConsensusArea.h"
@@ -83,8 +85,8 @@ namespace U2 {
 const double AssemblyBrowser::ZOOM_MULT = 1.25;
 const double AssemblyBrowser::INITIAL_ZOOM_FACTOR= 1.;
 
-AssemblyBrowser::AssemblyBrowser(AssemblyObject * o) : 
-GObjectView(AssemblyBrowserFactory::ID, GObjectViewUtils::genUniqueViewName(o->getDocument(), o)), ui(0),
+AssemblyBrowser::AssemblyBrowser(QString viewName, AssemblyObject * o) :
+GObjectView(AssemblyBrowserFactory::ID, viewName), ui(0),
 gobject(o), model(0), zoomFactor(INITIAL_ZOOM_FACTOR), xOffsetInAssembly(0), yOffsetInAssembly(0), coverageReady(false),
 cellRendererRegistry(new AssemblyCellRendererFactoryRegistry(this)),
 zoomInAction(0), zoomOutAction(0), posSelectorAction(0), posSelector(0), showCoordsOnRulerAction(0), saveScreenShotAction(0),
@@ -104,6 +106,19 @@ showInfoAction(0), exportToSamAction(0)
     onObjectAdded(gobject);
 }
 
+bool AssemblyBrowser::checkValid(U2OpStatus &os) {
+    // before opening view, check for incorrect reference length attribute
+    qint64 modelLen = model->getModelLength(os);
+    CHECK_OP(os, false);
+    if(modelLen == 0 && model->hasReads(os)) {
+        os.setError(tr("Failed to open assembly browser for %1, assembly %2: model length should be > 0")
+                    .arg(gobject->getDocument()->getURLString())
+                    .arg(gobject->getGObjectName())) ;
+        return false;
+    }
+    return true;
+}
+
 QWidget * AssemblyBrowser::createWidget() {
     ui = new AssemblyBrowserUi(this);
     U2OpStatusImpl os;
@@ -116,6 +131,14 @@ QWidget * AssemblyBrowser::createWidget() {
         ui->setAcceptDrops(true);
     }
     return ui;
+}
+
+QVariantMap AssemblyBrowser::saveState() {
+    return AssemblyBrowserState::buildStateMap(this);
+}
+
+Task * AssemblyBrowser::updateViewTask(const QString &stateName, const QVariantMap &stateData) {
+    return new UpdateAssemblyBrowserTask(this, stateName, stateData);
 }
 
 bool AssemblyBrowser::eventFilter(QObject* o, QEvent* e) {
@@ -525,7 +548,7 @@ void AssemblyBrowser::sl_assemblyLoaded() {
 
 
 void AssemblyBrowser::navigateToRegion(const U2Region & region) {
-    int requiredCellSize = qMax(1, (int)(ui->getReadsArea()->width()/region.length));
+    int requiredCellSize = qMax(1, qRound((double)ui->getReadsArea()->width()/region.length));
     zoomToSize(requiredCellSize);
 
     //if cells are not visible -> make them visible

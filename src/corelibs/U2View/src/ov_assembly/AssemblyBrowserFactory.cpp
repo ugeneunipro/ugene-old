@@ -1,15 +1,13 @@
 #include "AssemblyBrowserFactory.h"
+#include "AssemblyBrowserState.h"
+#include "AssemblyBrowserTasks.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/DocumentModel.h>
 #include <U2Core/AssemblyObject.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
-
-#include <U2Gui/Notification.h>
-
-#include "AssemblyBrowser.h"
 
 namespace U2 {
 
@@ -86,89 +84,31 @@ Task * AssemblyBrowserFactory::createViewTask(const MultiGSelection & multiSelec
     return result;
 }
 
-//==============================================================================
-// OpenAssemblyBrowserTask
-//==============================================================================
-
-OpenAssemblyBrowserTask::OpenAssemblyBrowserTask(AssemblyObject * obj) : ObjectViewTask(AssemblyBrowserFactory::ID) {
-    selectedObjects.append(obj);
+bool AssemblyBrowserFactory::isStateInSelection(const MultiGSelection &multiSelection, const QVariantMap &stateData) {
+    // TODO: this method of AssemblyBrowser, AnnotatedDNAView and MSAEditor is copypaste a little more than entirely
+    AssemblyBrowserState state(stateData);
+    if(!state.isValid()) {
+        return false;
+    }
+    GObjectReference ref = state.getGObjectRef();
+    Document* doc = AppContext::getProject()->findDocumentByURL(ref.docUrl);
+    if (doc == NULL) { //todo: accept to use invalid state removal routines of ObjectViewTask ???
+        return false;
+    }
+    //check that document is in selection
+    QList<Document*> selectedDocs = SelectionUtils::getSelectedDocs(multiSelection);
+    if (selectedDocs.contains(doc)) {
+        return true;
+    }
+    //check that object is in selection
+    QList<GObject*> selectedObjects = SelectionUtils::getSelectedObjects(multiSelection);
+    GObject* obj = doc->findGObjectByName(ref.objName);
+    bool res = obj!=NULL && selectedObjects.contains(obj);
+    return res;
 }
 
-OpenAssemblyBrowserTask::OpenAssemblyBrowserTask(UnloadedObject * unloadedObj) : ObjectViewTask(AssemblyBrowserFactory::ID),
-    unloadedObjRef(unloadedObj) {
-        documentsToLoad.append(unloadedObj->getDocument());
-}
-
-OpenAssemblyBrowserTask::OpenAssemblyBrowserTask(Document * doc) : ObjectViewTask(AssemblyBrowserFactory::ID) {
-    assert(!doc->isLoaded());
-    documentsToLoad.append(doc);
-}
-
-void OpenAssemblyBrowserTask::open() {
-    if (stateInfo.hasError() || (documentsToLoad.isEmpty() && selectedObjects.isEmpty())) {
-        return;
-    }
-    
-    if (selectedObjects.isEmpty()) {
-        assert(1 == documentsToLoad.size());
-        Document* doc = documentsToLoad.first();
-        QList<GObject*> objects;
-        if (unloadedObjRef.isValid()) {
-            GObject* obj = doc->findGObjectByName(unloadedObjRef.objName);
-            if (obj!=NULL && obj->getGObjectType() == GObjectTypes::ASSEMBLY) {
-                selectedObjects.append(qobject_cast<AssemblyObject*>(obj));
-            }
-        } else {
-            QList<GObject*> objects = doc->findGObjectByType(GObjectTypes::ASSEMBLY, UOF_LoadedAndUnloaded);
-            if(!objects.isEmpty()) {
-                selectedObjects.append(qobject_cast<AssemblyObject*>(objects.first()));
-            } 
-        }
-        if (selectedObjects.isEmpty()) {
-            stateInfo.setError(tr("Assembly object not found"));
-            return;
-        }
-    }
-    
-    foreach(QPointer<GObject> po, selectedObjects) {
-        AssemblyObject* o = qobject_cast<AssemblyObject*>(po);
-        
-        SAFE_POINT(o, "Invalid assembly object!", );
-
-        viewName = GObjectViewUtils::genUniqueViewName(o->getDocument(), o);
-        AssemblyBrowser * v = new AssemblyBrowser(o);
-
-        // before opening view, check for incorrect reference length attribute
-        U2OpStatusImpl status;
-        qint64 modelLen = v->getModel()->getModelLength(status);
-        if(status.hasError()) {
-            LOG_OP(status);
-            AppContext::getMainWindow()->getNotificationStack()->addError(status.getError());
-            delete v;
-            continue;
-        }
-        if(modelLen == 0 && v->getModel()->hasReads(status)) {
-            QString message = tr("Cannot open assembly browser for %1: model length should be > 0").arg(o->getDocument()->getURLString());
-            coreLog.error(message);
-            AppContext::getMainWindow()->getNotificationStack()->addError(message);
-            delete v;
-            continue;
-        }
-
-        GObjectViewWindow* w = new GObjectViewWindow(v, viewName, false);
-        AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
-    }
-}
-
-void OpenAssemblyBrowserTask::updateTitle(AssemblyBrowser* ab) {
-    const QString& oldViewName = ab->getName();
-    GObjectViewWindow* w = GObjectViewUtils::findViewByName(oldViewName);
-    if (w != NULL) {
-        AssemblyObject* aObj = ab->getAssemblyObject();
-        QString newViewName = GObjectViewUtils::genUniqueViewName(aObj->getDocument(), aObj);
-        ab->setName(newViewName);
-        w->setWindowTitle(newViewName);
-    }
+Task * AssemblyBrowserFactory::createViewTask(const QString &viewName, const QVariantMap &stateData) {
+    return new OpenSavedAssemblyBrowserTask(viewName, stateData);
 }
 
 } //ns

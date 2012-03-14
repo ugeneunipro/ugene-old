@@ -95,11 +95,11 @@ private:
 class U2CORE_EXPORT U2OpStatus2Log : public U2OpStatusImpl {
 public:
     U2OpStatus2Log(LogLevel l = LogLevel_ERROR) : level (l){}
-    virtual ~U2OpStatus2Log() {
-        if (hasError()) {
-            coreLog.message(level, getError());
-        }
+    virtual void setError(const QString &err) {
+        U2OpStatusImpl::setError(err);
+        coreLog.message(level, err);
     }
+
 private:
     LogLevel level;
 };

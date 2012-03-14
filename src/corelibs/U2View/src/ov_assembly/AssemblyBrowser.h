@@ -47,11 +47,15 @@ class AssemblyCellRendererFactoryRegistry;
 class AssemblyBrowser : public GObjectView {
     Q_OBJECT
 public:
-    AssemblyBrowser(AssemblyObject * o);
+    AssemblyBrowser(QString viewName, AssemblyObject * o);
+    // some pre-opening checks
+    bool checkValid(U2OpStatus &os);
     
     // from GObjectView
     virtual void buildStaticToolbar(QToolBar* tb);
     virtual void buildStaticMenu(QMenu* m);
+    virtual QVariantMap saveState();
+    virtual Task* updateViewTask(const QString& stateName, const QVariantMap& stateData);
     
     void setGlobalCoverageInfo(const CoverageInfo & info);
     QList<CoveredRegion> getCoveredRegions() const;

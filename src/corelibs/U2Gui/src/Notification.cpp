@@ -21,14 +21,18 @@
 
 #include "Notification.h"
 
+#include <QtCore/QTime>
 
 namespace U2 {
 
 Notification::Notification(const QString &message, NotificationType _type, QAction *_action):QLabel(NULL),
-    action(_action), text(message), type(_type) {
+    action(_action), type(_type) {
     setMinimumWidth(TT_WIDTH);
     setMaximumWidth(TT_WIDTH);
     setMaximumHeight(TT_HEIGHT);
+
+    QString time = "[" + QTime::currentTime().toString() + "] ";
+    text = time + message;
 
     setFrameStyle(QFrame::StyledPanel);
     close = new QLabel(this);
@@ -37,8 +41,8 @@ Notification::Notification(const QString &message, NotificationType _type, QActi
     counter = 1;
 
     QFontMetrics metrics(font());
-    setText(metrics.elidedText(message, Qt::ElideRight, width()-50));
-    setToolTip(message);
+    setText(metrics.elidedText(text, Qt::ElideRight, width()-50));
+    setToolTip(text);
     
     generateCSS(false);
     generateCSSforCloseButton(false);
@@ -287,12 +291,6 @@ void NotificationStack::addNotification(Notification *t) {
     notificationNumber++;
     notificationPosition += TT_HEIGHT;
     connect(t, SIGNAL(si_dissapear()), SLOT(sl_notificationDissapear()));
-}
-
-void NotificationStack::addError(const QString& errorMessage)
-{
-    Notification *t = new Notification(errorMessage, Error_Not);
-    addNotification(t);
 }
 
 void NotificationStack::sl_notificationDissapear() {

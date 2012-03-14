@@ -24,6 +24,7 @@
 
 #include <U2Core/global.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include "MainWindow.h"
 #include "NotificationWidget.h"
 
@@ -105,14 +106,18 @@ public:
     ~NotificationStack();
 
     void addNotification(Notification *t);
-    // a shortcut to addNotification for quick reporting errors
-    void addError(const QString& errorMessage);
     int count() const;
     Notification *getNotification(int row) const;
     QList<Notification *>  getItems() const;
     void showStack();
     bool hasError() const;
     void setFixed(bool val);
+
+    // just a shortcut to write less
+    static void addNotification(const QString& message, NotificationType type, QAction *action = 0) {
+        Notification *n = new Notification(message, type, action);
+        AppContext::getMainWindow()->getNotificationStack()->addNotification(n);
+    }
 
  private slots:
      void sl_notificationDissapear();
@@ -131,6 +136,25 @@ private:
 };
 
 
+/**
+    Used to handle important errors that needs to be reported to user.
+    Dumps error to coreLog while showing notification to user.
+    LogLevel and NotificationType can be passed as params.
+    Defaults are LogLevel_ERROR and Error_Not, respectively
+*/
+
+class U2GUI_EXPORT U2OpStatus2Notification : public U2OpStatus2Log {
+public:
+    U2OpStatus2Notification(NotificationType t = Error_Not, LogLevel l = LogLevel_ERROR)
+        : U2OpStatus2Log(l), notificationType(t) {}
+
+    virtual void setError(const QString &err) {
+        U2OpStatus2Log::setError(err);
+        NotificationStack::addNotification(err, notificationType);
+    }
+private:
+    NotificationType notificationType;
+};
 
 }
 
