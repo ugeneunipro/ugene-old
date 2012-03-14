@@ -37,7 +37,7 @@ void ProjectUtils::OpenFilesGUIAction::addSubTests() {
             add( new OpenFilesDropGUIAction(urls) );
     }
 
-    add( new CheckProjectExistsGUIAction() );
+    add( new CheckProjectGUIAction() );
     foreach (QUrl path, urls) {
         add( new CheckDocumentExistsGUIAction(path.toString()) );
     }
@@ -78,6 +78,16 @@ void ProjectUtils::closeProjectByHotkey(U2OpStatus &os) {
 
     QtUtils::keyClick(os, MWMENU, Qt::Key_Q, Qt::ControlModifier);
     QtUtils::sleep(1000);
+}
+
+void ProjectUtils::CheckProjectGUIAction::execute(U2OpStatus &os) {
+
+    CHECK_SET_ERR(AppContext::getProject() != NULL, "There is no project");
+
+    switch (checkType) {
+        case EMPTY :
+            CHECK_SET_ERR(AppContext::getProject()->getDocuments().isEmpty() == true, "Project is not empty");
+    }
 }
 
 void ProjectUtils::checkProjectExists(U2OpStatus &os) {

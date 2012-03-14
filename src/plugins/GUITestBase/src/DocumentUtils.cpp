@@ -25,6 +25,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/ProjectModel.h>
+#include "ProjectTreeViewUtils.h"
 
 namespace U2 {
 
@@ -57,6 +58,12 @@ void DocumentUtils::checkDocumentExists(U2OpStatus &os, const QString &documentN
 
     GObjectViewFactoryId viewFactoryId = view->getFactoryId();
     CHECK_SET_ERR(viewFactoryId == id, "View's GObjectViewFactoryId is " + viewFactoryId + ", not " + id);
+}
+
+DocumentUtils::RemoveDocumentGUIAction::RemoveDocumentGUIAction(const QString &documentName) {
+
+    add( new ProjectTreeViewUtils::ClickGUIAction(documentName) );
+    add( new QtUtils::KeyClickGUIAction(ProjectTreeViewUtils::widgetName, Qt::Key_Delete) );
 }
 
 GObjectView* DocumentUtils::getDocumentGObjectView(U2OpStatus &os, Document* d) {

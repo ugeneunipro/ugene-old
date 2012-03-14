@@ -92,6 +92,15 @@ public:
         CloseProjectGUIAction(const CloseProjectSettings& settings = CloseProjectSettings());
     };
 
+    class CheckProjectGUIAction : public GUITest {
+    public:
+        enum CheckType {EXISTS, EMPTY};
+        CheckProjectGUIAction(CheckType _checkType = EXISTS) : checkType(_checkType){}
+    protected:
+        virtual void execute(U2OpStatus &os);
+        CheckType checkType;
+    };
+
 protected:
     class OpenFilesDropGUIAction : public GUITest {
     public:
@@ -103,7 +112,6 @@ protected:
     };
 
     static void checkProjectExists(U2OpStatus &os);
-    GENERATE_GUI_ACTION(CheckProjectExistsGUIAction, checkProjectExists);
 
     static Document* checkDocumentExists(U2OpStatus &os, const GUrl &url);
     GENERATE_GUI_ACTION_1(CheckDocumentExistsGUIAction, checkDocumentExists);

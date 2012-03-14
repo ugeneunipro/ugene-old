@@ -36,6 +36,11 @@ public:
     static void checkDocumentExists(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id = QString());
     GENERATE_GUI_ACTION_2(CheckDocumentExistsGUIAction, checkDocumentExists);
 
+    class RemoveDocumentGUIAction : public GUIMultiTest {
+    public:
+        RemoveDocumentGUIAction(const QString &documentName);
+    };
+
     static Document* getDocument(U2OpStatus &os, const QString& documentName);
 
 protected:
