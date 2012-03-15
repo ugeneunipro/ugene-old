@@ -38,6 +38,7 @@ HEADERS += src/WebWindow.h \
            src/ov_msa/MSAEditorStatusBar.h \
            src/ov_msa/MSAEditorTasks.h \
            src/ov_msa/MSAEditorUndoFramework.h \
+		   src/ov_msa/SaveSelectedSequenceFromMSADialogController.h \
            src/ov_phyltree/CreateBranchesTask.h \
            src/ov_phyltree/CreateCircularBranchesTask.h \
            src/ov_phyltree/CreateRectangularBranchesTask.h \
@@ -111,6 +112,7 @@ FORMS += src/ov_assembly/ui/ExportReadsDialog.ui \
          src/ov_msa/ui/ConsensusSelectorDialog.ui \
          src/ov_msa/ui/CreateSubalignimentDialog.ui \
          src/ov_msa/ui/DeleteGapsDialog.ui \
+		 src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \
          src/ov_sequence/ui/EditAnnotationDialog.ui \
          src/phyltree/ui/BranchSettingsDialog.ui \
@@ -164,6 +166,7 @@ SOURCES += src/WebWindow.cpp \
            src/ov_msa/MSAEditorStatusBar.cpp \
            src/ov_msa/MSAEditorTasks.cpp \
            src/ov_msa/MSAEditorUndoFramework.cpp \
+		   src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
            src/ov_phyltree/CreateCircularBranchesTask.cpp \
            src/ov_phyltree/CreateRectangularBranchesTask.cpp \
            src/ov_phyltree/CreateUnrootedBranchesTask.cpp \

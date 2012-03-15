@@ -95,6 +95,8 @@ public:
     
     void deleteAllGapColumn();
 
+    const MAlignmentRow& getRow(int row) const { return msa.getRow(row);};
+
 signals:
     void si_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
     

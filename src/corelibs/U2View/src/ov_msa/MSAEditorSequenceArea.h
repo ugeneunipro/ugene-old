@@ -24,6 +24,7 @@
 
 #include "DeleteGapsDialog.h"
 #include "MSACollapsibleModel.h"
+#include "SaveSelectedSequenceFromMSADialogController.h"
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
@@ -233,6 +234,8 @@ private slots:
 
     void sl_createSubaligniment();
 
+    void sl_saveSequence();
+
     void sl_changeColorScheme();
 
     void sl_zoomOperationPerformed(bool resizeModeChanged);
@@ -286,6 +289,7 @@ private:
     QAction*        removeAllGapsAction;
     QAction*        gotoAction;
     QAction*        createSubaligniment;
+    QAction*        saveSequence;
     QAction*        addSeqFromFileAction;
     QAction*        addSeqFromProjectAction;
     QAction*        sortByNameAction;

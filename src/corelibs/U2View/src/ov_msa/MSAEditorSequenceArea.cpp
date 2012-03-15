@@ -39,6 +39,14 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/IOAdapterUtils.h>
+
+#include <U2Formats/DocumentFormatUtils.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/PositionSelector.h>
@@ -111,6 +119,10 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     createSubaligniment = new QAction(tr("Save subalignment"), this);
     createSubaligniment->setShortcutContext(Qt::WidgetShortcut);
     connect(createSubaligniment, SIGNAL(triggered()), SLOT(sl_createSubaligniment()));
+
+    saveSequence = new QAction(tr("Save sequence"), this);
+    saveSequence->setShortcutContext(Qt::WidgetShortcut);
+    connect(saveSequence, SIGNAL(triggered()), SLOT(sl_saveSequence()));
 
     insColAction = new QAction(tr("Insert column of gaps"), this);
     insColAction->setShortcut(QKeySequence(Qt::SHIFT| Qt::Key_Space));
@@ -226,6 +238,7 @@ void MSAEditorSequenceArea::updateActions() {
     insColAction->setEnabled(!readOnly);
     insSymAction->setEnabled(!readOnly);
     createSubaligniment->setEnabled(!readOnly);
+    saveSequence->setEnabled(!readOnly);
     removeAllGapsAction->setEnabled(!readOnly);
     addSeqFromProjectAction->setEnabled(!readOnly);
     addSeqFromFileAction->setEnabled(!readOnly);
@@ -1070,6 +1083,7 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     QMenu * exportMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EXPORT);
     assert(exportMenu != NULL);
     exportMenu->addAction(createSubaligniment);
+    exportMenu->addAction(saveSequence);
     
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
     copyMenu->addAction(copySelectionAction);
@@ -1235,6 +1249,74 @@ void MSAEditorSequenceArea::sl_createSubaligniment(){
             CreateSubalignmentSettings(window, seqNames, path, true, addToProject) );
         AppContext::getTaskScheduler()->registerTopLevelTask(csTask);
     }
+}
+
+void MSAEditorSequenceArea::sl_saveSequence(){
+
+    int seqIndex = selection.y();
+
+    if(selection.height() > 1){
+        QMessageBox::critical(NULL, tr("Warning!"), tr("You must select only one sequence for export."));
+        return;
+    }
+
+    QString seqName = editor->getMSAObject()->getMAlignment().getRow(seqIndex).getName();
+    SaveSelectedSequenceFromMSADialogController d((QWidget*)AppContext::getMainWindow()->getQMainWindow());
+    int rc = d.exec();
+    if (rc == QDialog::Rejected) {
+        return;
+    }
+    //TODO: OPTIMIZATION code below can be wrapped to task
+    DNASequence seq;
+    foreach(DNASequence s,  MSAUtils::ma2seq(editor->getMSAObject()->getMAlignment(), d.trimGapsFlag)){
+        if (s.getName() == seqName){
+            seq = s;
+            break;
+        }
+    }
+
+    U2OpStatus2Log  os;
+    QString fullPath = GUrlUtils::prepareFileLocation(d.url, os);
+    CHECK_OP(os, );
+    GUrl url(fullPath);
+    
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(d.url));
+    DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(d.format);
+    Document *doc;
+    QList<GObject*> objs;
+    doc = df->createNewLoadedDocument(iof, fullPath, os);
+    CHECK_OP_EXT(os, delete doc, );
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), seq.getName(), objs, seq, os);
+    CHECK_OP_EXT(os, delete doc, );
+    doc->addObject(seqObj);
+    SaveDocumentTask *t = new SaveDocumentTask(doc, doc->getIOAdapterFactory(), doc->getURL());
+    if (d.addToProjectFlag){
+        t->addFlag(SaveDoc_DestroyAfter);
+    }
+    
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    if (d.addToProjectFlag){
+        Project *p = AppContext::getProject();
+        Document *loadedDoc=p->findDocumentByURL(url);
+        if (loadedDoc) {
+            coreLog.details("The document already in the project");
+            QMessageBox::warning(this, tr("warning"), tr("The document already in the project"));
+            return;
+        }
+        p->addDocument(doc);
+        
+        // Open view for created document
+        DocumentSelection ds;
+        ds.setSelection(QList<Document*>() <<doc);
+        MultiGSelection ms;
+        ms.addSelection(&ds);
+        foreach(GObjectViewFactory *f, AppContext::getObjectViewFactoryRegistry()->getAllFactories()) {
+            if(f->canCreateView(ms)) {
+                AppContext::getTaskScheduler()->registerTopLevelTask(f->createViewTask(ms));
+                break;
+            }
+        }
+    }    
 }
 
 void MSAEditorSequenceArea::cancelSelection()
