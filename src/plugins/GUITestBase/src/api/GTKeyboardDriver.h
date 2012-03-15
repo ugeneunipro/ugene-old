@@ -34,6 +34,11 @@ public:
     static void keyPress(U2OpStatus &os, int key);
     static void keyPress(U2OpStatus &os, int key, int modifiers);
 
+#ifdef _WIN32
+    static void keyPress(U2OpStatus &os, char key);
+    static void keyPress(U2OpStatus &os, char key, int modifiers);
+#endif
+
     static void keyRelease(U2OpStatus &os, int key);
     static void keyRelease(U2OpStatus &os, int key, int modifiers);
 

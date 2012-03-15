@@ -41,13 +41,25 @@ namespace U2 {
 
 #ifdef _WIN32
 
-void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key)
+void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key)
 {
-    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
-
     if (isalpha(key) && islower(key)) {
         key = toupper(key);
     }
+    keyPress(os, (int)key);
+}
+
+void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
+{
+    if (isalpha(key) && islower(key)) {
+        key = toupper(key);
+    }
+    keyPress(os, (int)key, modifiers);
+}
+
+void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key)
+{
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
 
     INPUT event;
     event.type = INPUT_KEYBOARD;
@@ -64,10 +76,6 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
     CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyPress()");
-
-    if (isalpha(key) && islower(key)) {
-        key = toupper(key);
-    }
 
     INPUT event;
     event.type = INPUT_KEYBOARD;
@@ -89,10 +97,6 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
 
-    if (isalpha(key) && islower(key)) {
-        key = toupper(key);
-    }
-
     INPUT event;
     event.type = INPUT_KEYBOARD;
     event.ki.wVk = key;
@@ -108,10 +112,6 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
     CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyRelease()");
-
-    if (isalpha(key) && islower(key)) {
-        key = toupper(key);
-    }
 
     INPUT event;
     event.type = INPUT_KEYBOARD;
