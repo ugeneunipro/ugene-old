@@ -57,6 +57,39 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
     keyPress(os, (int)key, modifiers);
 }
 
+void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key)
+{
+    if (isalpha(key) && islower(key)) {
+        key = toupper(key);
+    }
+    keyRelease(os, (int)key);
+}
+
+void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
+{
+    if (isalpha(key) && islower(key)) {
+        key = toupper(key);
+    }
+    keyRelease(os, (int)key, modifiers);
+}
+ 
+void GTKeyboardDriver::keyClick(U2OpStatus &os, char key)
+{
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
+
+    keyPress(os, key);
+    keyRelease(os, key);
+}
+
+void GTKeyboardDriver::keyClick(U2OpStatus &os, char key, int modifiers)
+{
+    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
+    CHECK_SET_ERR(modifiers != 0, " Error: modifiers = 0 in GTKeyboardDriver::keyClick()");
+
+    keyPress(os, key, modifiers);
+    keyRelease(os, key, modifiers);
+}
+
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
@@ -321,7 +354,7 @@ void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, QString str, int modifier
 
     foreach(QChar ch, str) {
         if(isalpha(ch.toAscii()) && !islower(ch.toAscii())) {
-            keyClick(os, key["shift"], ch.toAscii());
+            keyClick(os, ch.toAscii(), key["shift"]);
         } else {
             keyClick(os, ch.toAscii());
         }

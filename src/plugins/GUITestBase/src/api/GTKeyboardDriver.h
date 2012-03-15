@@ -31,13 +31,21 @@ namespace U2 {
 class GTKeyboardDriver {
 public:
     //
-    static void keyPress(U2OpStatus &os, int key);
-    static void keyPress(U2OpStatus &os, int key, int modifiers);
-
 #ifdef _WIN32
+    // some VK_* code and ASCII code some symbols is equal
+    // therefore, the following functions are needed
     static void keyPress(U2OpStatus &os, char key);
     static void keyPress(U2OpStatus &os, char key, int modifiers);
+
+    static void keyRelease(U2OpStatus &os, char key);
+    static void keyRelease(U2OpStatus &os, char key, int modifiers);
+
+    static void keyClick(U2OpStatus &os, char key);
+    static void keyClick(U2OpStatus &os, char key, int modifiers);
 #endif
+
+    static void keyPress(U2OpStatus &os, int key);
+    static void keyPress(U2OpStatus &os, int key, int modifiers);
 
     static void keyRelease(U2OpStatus &os, int key);
     static void keyRelease(U2OpStatus &os, int key, int modifiers);
