@@ -279,7 +279,7 @@ void GTMouseDriver::scroll(U2OpStatus &os, int value)
 
 #elif defined __APPLE__ & __MACH__
 
-void GTMouseDriver::moveTo(U2::U2OpStatus &os, const QPoint& p)
+void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 {
 }
 
