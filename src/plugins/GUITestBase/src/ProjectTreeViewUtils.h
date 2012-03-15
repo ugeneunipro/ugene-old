@@ -34,6 +34,11 @@ namespace U2 {
 
 class ProjectTreeViewUtils {
 public:
+    class RenameGUIAction : public GUIMultiTest {
+    public:
+        RenameGUIAction(const QString &itemName, const QString &newItemName);
+    };
+
     class ClickGUIAction : public GUIMultiTest {
     public:
         ClickGUIAction(const QString &itemName);

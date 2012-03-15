@@ -29,6 +29,7 @@
 #include <U2Core/ProjectModel.h>
 #include <QtGui/QTreeWidget>
 #include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 
 namespace U2 {
 
@@ -45,6 +46,14 @@ void ProjectTreeViewUtils::OpenViewGUIAction::execute(U2OpStatus& os) {
 void ProjectTreeViewUtils::ToggleViewGUIAction::execute(U2OpStatus &os) {
 
     QtUtils::keyClick(os, MWMENU, Qt::Key_1, Qt::AltModifier);
+}
+
+ProjectTreeViewUtils::RenameGUIAction::RenameGUIAction(const QString &itemName, const QString &newItemName) {
+
+    add( new ProjectTreeViewUtils::ClickGUIAction(itemName));
+    add( new QtUtils::KeyClickGUIAction(ProjectTreeViewUtils::widgetName, Qt::Key_F2) );
+    add( new GTKeyboardDriver::KeySequenceGUIAction(newItemName) );
+    add( new GTKeyboardDriver::KeyClickGUIAction(GTKeyboardDriver::key["enter"]) );
 }
 
 ProjectTreeViewUtils::ClickGUIAction::ClickGUIAction(const QString& itemName) {
