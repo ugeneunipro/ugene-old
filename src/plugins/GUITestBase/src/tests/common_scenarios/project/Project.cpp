@@ -102,21 +102,21 @@ void test_0009::execute( U2OpStatus &os ){
 
 GUI_TEST_CLASS_DEFINITION(test_0011) {
 
-    add(new ProjectUtils::OpenFilesGUIAction(testDir + "_common_data/scenarios/project/1.gb"));
+    add( new ProjectUtils::OpenFilesGUIAction(testDir + "_common_data/scenarios/project/1.gb"));
     add( new GUIDialogUtils::OpenExportProjectDialogGUIAction());
     add( new GUIDialogUtils::CheckExportProjectDialogGUIAction("project.uprj"));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0017) {
 
-    add(new ProjectUtils::OpenFilesGUIAction(QList<QUrl>()
+    add( new ProjectUtils::OpenFilesGUIAction(QList<QUrl>()
         << dataDir+"samples/Genbank/murine.gb"
         << dataDir+"samples/Genbank/sars.gb"
         << dataDir+"samples/Genbank/CVU55762.gb"
         ));
-    add(new DocumentUtils::CheckDocumentExistsGUIAction("murine.gb"));
-    add(new DocumentUtils::CheckDocumentExistsGUIAction("sars.gb"));
-    add(new DocumentUtils::CheckDocumentExistsGUIAction("CVU55762.gb"));
+    add( new DocumentUtils::CheckDocumentExistsGUIAction("murine.gb"));
+    add( new DocumentUtils::CheckDocumentExistsGUIAction("sars.gb"));
+    add( new DocumentUtils::CheckDocumentExistsGUIAction("CVU55762.gb"));
 }
 
 void test_0023::execute(U2OpStatus &os) {
@@ -134,7 +134,13 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
     add (new ProjectUtils::CloseProjectGUIAction(button_to_press) );
     add (new LogUtils::LogTracerCheckGUIAction());
 }
+GUI_TEST_CLASS_DEFINITION(test_0010) {
 
+    add( new ProjectUtils::OpenFilesGUIAction(dataDir + "samples/FASTA/human_T1.fa"));
+    add( new ProjectTreeViewUtils::ClickGUIAction("human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+    add( new ProjectTreeViewUtils::RenameGUIAction("human_T1 (UCSC April 2002 chr7:115977709-117855134)", "qqq"));
+    add( new ProjectTreeViewUtils::CheckItemGUIAction("qqq", true));
+}
 }
 
 }
