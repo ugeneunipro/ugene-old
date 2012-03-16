@@ -174,7 +174,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("ctrl", VK_CONTROL);
     ADD_KEY("rctrl", VK_RCONTROL);
     ADD_KEY("lctrl", VK_LCONTROL);
-    ADD_KEY("menu", VK_MENU);
+    ADD_KEY("alt", VK_MENU);
     ADD_KEY("pause", VK_PAUSE);
     ADD_KEY("esc", VK_ESCAPE);
     ADD_KEY("space", VK_SPACE);
@@ -271,7 +271,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("ctrl", XK_Control_L);
     ADD_KEY("rctrl", XK_Control_R);
     ADD_KEY("lctrl", XK_Control_L);
-    ADD_KEY("menu", XK_Menu);
+    ADD_KEY("menu", XK_Menu);//alt?
     ADD_KEY("pause", XK_Pause);
     ADD_KEY("esc", XK_Escape);
     ADD_KEY("space", XK_space);

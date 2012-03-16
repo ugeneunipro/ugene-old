@@ -64,31 +64,6 @@ public:
     static void mousePress(QWidget *w, Qt::MouseButton button, const QPoint &pos = QPoint());
     static void mouseRelease(QWidget *w, Qt::MouseButton button, const QPoint &pos = QPoint());
 
-    //keyboard
-    static Qt::Key asciiToKey(char ascii);
-    static void keyPress(U2OpStatus &os, const QString &widgetName, int key, Qt::KeyboardModifiers modifiers = 0, const QString &text = "");
-    static void keyRelease(U2OpStatus &os, const QString &widgetName, int key, Qt::KeyboardModifiers modifiers = 0);
-    static void keyClick(U2OpStatus &os, const QString &widgetName, int key, Qt::KeyboardModifiers modifiers = 0, const QString &text = "");
-    class KeyClickGUIAction : public GUITest {
-    public:
-        KeyClickGUIAction(const QString &_widgetName, int _key, Qt::KeyboardModifiers _modifiers = 0, const QString &_text = "")
-            : widgetName(_widgetName), key(_key), modifiers(_modifiers), text(_text) {}
-    protected:
-        virtual void execute(U2OpStatus &os) { keyClick(os, widgetName, key, modifiers, text); }
-
-        QString widgetName;
-        int key;
-        Qt::KeyboardModifiers modifiers;
-        QString text;
-    };
-
-    static void keySequence(U2OpStatus &os, const QString &widgetName, const QString &sequence, Qt::KeyboardModifiers modifiers = 0);
-
-    static void keyPress(QWidget *w, int key, Qt::KeyboardModifiers modifiers = 0, const QString &text = "");
-    static void keyRelease(QWidget *w, int key, Qt::KeyboardModifiers modifiers = 0);
-    static void keyClick(QWidget *w, int key, Qt::KeyboardModifiers modifiers = 0, const QString &text = "");
-    static void keySequence(QWidget *w, const QString &sequence, Qt::KeyboardModifiers modifiers = 0);
-
     //menu
     static void expandTopLevelMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu);
     static void clickMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu);

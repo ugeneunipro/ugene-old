@@ -26,6 +26,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include "GUIDialogUtils.h"
+#include "api/GTKeyboardDriver.h"
 
 namespace U2 {
 
@@ -76,8 +77,7 @@ ProjectUtils::CloseProjectGUIAction::CloseProjectGUIAction(const CloseProjectSet
 
 void ProjectUtils::closeProjectByHotkey(U2OpStatus &os) {
 
-    QtUtils::keyClick(os, MWMENU, Qt::Key_Q, Qt::ControlModifier);
-    QtUtils::sleep(1000);
+    GTKeyboardDriver::keyClick(os, 'q', GTKeyboardDriver::key["ctrl"]);
 }
 
 void ProjectUtils::CheckProjectGUIAction::execute(U2OpStatus &os) {

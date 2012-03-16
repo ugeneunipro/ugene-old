@@ -45,7 +45,7 @@ void ProjectTreeViewUtils::OpenViewGUIAction::execute(U2OpStatus& os) {
 
 void ProjectTreeViewUtils::ToggleViewGUIAction::execute(U2OpStatus &os) {
 
-    QtUtils::keyClick(os, MWMENU, Qt::Key_1, Qt::AltModifier);
+    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
 }
 
 ProjectTreeViewUtils::RenameGUIAction::RenameGUIAction(const QString &itemName, const QString &newItemName) {

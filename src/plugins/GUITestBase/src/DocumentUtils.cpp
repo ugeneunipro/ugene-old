@@ -27,6 +27,8 @@
 #include <U2Core/ProjectModel.h>
 #include "ProjectTreeViewUtils.h"
 
+#include "api/GTKeyboardDriver.h"
+
 namespace U2 {
 
 Document* DocumentUtils::getDocument(U2OpStatus &os, const QString& documentName) {
@@ -63,7 +65,7 @@ void DocumentUtils::checkDocumentExists(U2OpStatus &os, const QString &documentN
 DocumentUtils::RemoveDocumentGUIAction::RemoveDocumentGUIAction(const QString &documentName) {
 
     add( new ProjectTreeViewUtils::ClickGUIAction(documentName) );
-    add( new QtUtils::KeyClickGUIAction(ProjectTreeViewUtils::widgetName, Qt::Key_Delete) );
+    add( new GTKeyboardDriver::KeyClickGUIAction(GTKeyboardDriver::key["delete"]) );
 }
 
 GObjectView* DocumentUtils::getDocumentGObjectView(U2OpStatus &os, Document* d) {
