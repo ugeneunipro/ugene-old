@@ -68,7 +68,7 @@ public:
             : s(_s), urls(QList<QUrl>() << path.getURLString()){ addSubTests(); }
 
     protected:
-        virtual void addSubTests();
+        void addSubTests();
     private:
         QList<QUrl> urls;
         OpenFileSettings s;

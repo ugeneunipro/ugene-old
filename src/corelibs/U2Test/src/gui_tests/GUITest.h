@@ -48,8 +48,6 @@ protected:
     virtual void execute(U2OpStatus &){}
     void add(GUITest *t);
 
-    virtual void addSubTests(){}
-
     TaskStateInfo os;
 
 protected slots:

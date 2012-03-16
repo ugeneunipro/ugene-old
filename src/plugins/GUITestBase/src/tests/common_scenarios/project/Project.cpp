@@ -57,7 +57,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     add( new ProjectTreeViewUtils::CheckToolTipGUIAction("1CF7.PDB", "_common_data/scenarios/sandbox/1CF7.PDB") );
 
     add( new ProjectTreeViewUtils::ClickGUIAction("1CF7.PDB"));
-    add( new QtUtils::KeyClickGUIAction(ProjectTreeViewUtils::widgetName, Qt::Key_Enter) );
+    add( new GTKeyboardDriver::KeyClickGUIAction(GTKeyboardDriver::key["Enter"]) );
 
     add( new DocumentUtils::CheckDocumentExistsGUIAction("1CF7.PDB", AnnotatedDNAViewFactory::ID) );
 }
