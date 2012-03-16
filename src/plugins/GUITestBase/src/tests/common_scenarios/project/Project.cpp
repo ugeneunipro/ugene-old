@@ -134,10 +134,10 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
     add (new ProjectUtils::CloseProjectGUIAction(button_to_press) );
     add (new LogUtils::LogTracerCheckGUIAction());
 }
+
 GUI_TEST_CLASS_DEFINITION(test_0010) {
 
     add( new ProjectUtils::OpenFilesGUIAction(dataDir + "samples/FASTA/human_T1.fa"));
-    add( new ProjectTreeViewUtils::ClickGUIAction("human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
     add( new ProjectTreeViewUtils::RenameGUIAction("human_T1 (UCSC April 2002 chr7:115977709-117855134)", "qqq"));
     add( new ProjectTreeViewUtils::CheckItemGUIAction("qqq", true));
 }
