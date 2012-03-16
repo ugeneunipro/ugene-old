@@ -64,7 +64,7 @@ static errmod_coef_t *cal_coef(double depcorr, double eta)
 				if(exp_delta != 0.0) {
 					exponent += exp_delta;
 					exp_addition += exp_delta;
-					if(exp_delta < EXP_MIN && exp_delta > EXP_MAX) {
+					if(exp_delta > EXP_MIN && exp_delta < EXP_MAX) {
 						sum1 *= expl(exp_delta);
 					}
 				}
