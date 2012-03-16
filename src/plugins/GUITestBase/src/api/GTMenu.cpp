@@ -28,11 +28,19 @@ namespace U2 {
 QPoint GTMenu::getMenuPos(U2::U2OpStatus &os, const QString &menuName)
 {
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
-    QAction *action = mainWindow->findChild<QAction*>(menuName);
+    QList<QAction*>actions = mainWindow->findChildren<QAction*>();
+
+    QAction *action = NULL;
+    foreach(QAction *a, actions) {
+        if(a->text() == menuName) {
+            action = a;
+            break;
+        }
+    }
 
     CHECK_SET_ERR_RESULT(action != NULL && action->isVisible(),
-                         QString("Error: action \"%1\" not found or not visible in getMenuPos()").arg(menuName),
-                         QPoint(-1, -1));
+                             QString("Error: action \"%1\" not found or not visible in getMenuPos()").arg(menuName),
+                             BAD_POINT);
 
     QPoint pos = mainWindow->menuBar()->actionGeometry(action).center();
     QPoint gPos = mainWindow->menuBar()->mapToGlobal(pos);
@@ -40,21 +48,30 @@ QPoint GTMenu::getMenuPos(U2::U2OpStatus &os, const QString &menuName)
     return gPos;
 }
 
-QPoint GTMenu::getActionPos(U2::U2OpStatus &os, const QString &actionName, const QString &menuName)
+QPoint GTMenu::getActionPos(U2::U2OpStatus &os, const QString &menuName, const QString &actionName)
 {
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
-    QAction *action = mainWindow->findChild<QAction*>(menuName);
+    QList<QAction*>actions = mainWindow->findChildren<QAction*>();
+
+    QAction *action = NULL;
+    foreach(QAction *a, actions) {
+        if(a->text() == menuName) {
+            action = a;
+            break;
+        }
+    }
 
     CHECK_SET_ERR_RESULT(action != NULL && action->isVisible(),
-                         QString("Error: menu \"%1\" not found or not visible in getActionPos()").arg(menuName),
-                         QPoint(-1, -1));
+                             QString("Error: menu \"%1\" not found or not visible in getMenuPos()").arg(menuName),
+                             BAD_POINT);
 
     QMenu *menu = action->menu();
-    QList<QAction*> actions = menu->actions();
+    actions = menu->actions();
     QAction *act = NULL;
 
     foreach(QAction *a, actions) {
-        if (a->objectName() == actionName) {
+        qDebug() << a->text();
+        if (a->text() == actionName) {
             act = a;
             break;
         }
@@ -62,11 +79,38 @@ QPoint GTMenu::getActionPos(U2::U2OpStatus &os, const QString &actionName, const
 
     CHECK_SET_ERR_RESULT(act != NULL && act->isVisible(),
                          QString("Error: action \"%1\" not found or not visible in getActionPos()").arg(actionName),
-                         QPoint(-1, -1));
+                         BAD_POINT);
 
     QRect menuPos = mainWindow->menuBar()->actionGeometry(action);
     QPoint actionPos = menu->actionGeometry(act).center();
     QPoint gPos = mainWindow->menuBar()->mapToGlobal(QPoint(menuPos.x() + actionPos.x(), menuPos.bottom() + actionPos.y()));
+
+    return gPos;
+    }
+
+QPoint GTMenu::getContextMenuActionPos(U2::U2OpStatus &os, const QString &actionName)
+{
+    QMenu *menu = static_cast<QMenu*>(QApplication::activePopupWidget());
+    CHECK_SET_ERR_RESULT(menu != NULL && menu->isVisible(),
+                         "Error: context menu not found or not visible in getContextMenuActionPos()",
+                         BAD_POINT);
+
+    QList<QAction*> actions = menu->actions();
+    QAction *action = NULL;
+
+    foreach(QAction *a, actions) {
+        if(a->text() == actionName) {
+            action = a;
+            break;
+        }
+    }
+
+    CHECK_SET_ERR_RESULT(action != NULL && action->isVisible(),
+                         "Error: action not found or not visible in getContextMenuActionPos()",
+                         BAD_POINT);
+
+    QPoint pos = menu->actionGeometry(action).center();
+    QPoint gPos = menu->mapToGlobal(pos);
 
     return gPos;
 }
