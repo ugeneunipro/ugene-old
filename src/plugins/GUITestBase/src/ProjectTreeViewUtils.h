@@ -44,12 +44,13 @@ public:
         ClickGUIAction(const QString &itemName);
     };
 
-    class CheckItemExistsGUIAction : public GUITest {
+    class CheckItemGUIAction : public GUITest {
     public:
-        CheckItemExistsGUIAction(const QString &_itemName) : itemName(_itemName){}
+        CheckItemGUIAction(const QString &_itemName, bool _exists = true) : itemName(_itemName), exists(_exists){}
     private:
         virtual void execute(U2OpStatus &os);
         QString itemName;
+        bool exists;
     };
 
     class MoveToGUIAction : public GUITest {
