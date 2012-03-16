@@ -51,9 +51,9 @@ void ProjectTreeViewUtils::ToggleViewGUIAction::execute(U2OpStatus &os) {
 ProjectTreeViewUtils::RenameGUIAction::RenameGUIAction(const QString &itemName, const QString &newItemName) {
 
     add( new ProjectTreeViewUtils::ClickGUIAction(itemName));
-    add( new QtUtils::KeyClickGUIAction(ProjectTreeViewUtils::widgetName, Qt::Key_F2) );
+    add( new GTKeyboardDriver::KeyClickGUIAction(GTKeyboardDriver::key["F2"]) );
     add( new GTKeyboardDriver::KeySequenceGUIAction(newItemName) );
-    add( new GTKeyboardDriver::KeyClickGUIAction(GTKeyboardDriver::key["enter"]) );
+    add( new GTKeyboardDriver::KeyClickGUIAction(GTKeyboardDriver::key["Enter"]) );
 }
 
 ProjectTreeViewUtils::ClickGUIAction::ClickGUIAction(const QString& itemName) {
