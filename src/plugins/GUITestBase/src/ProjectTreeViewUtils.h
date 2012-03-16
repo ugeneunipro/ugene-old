@@ -53,9 +53,17 @@ public:
         bool exists;
     };
 
-    class MoveToGUIAction : public GUITest {
+    class MoveToGUIAction : public GUIMultiTest {
     public:
-        MoveToGUIAction(const QString &_itemName) : itemName(_itemName){}
+        MoveToGUIAction(const QString &itemName) {
+            add( new OpenViewGUIAction() );
+            add( new MoveToOpenedViewGUIAction(itemName) );
+        }
+    };
+
+    class MoveToOpenedViewGUIAction : public GUITest {
+    public:
+        MoveToOpenedViewGUIAction(const QString &_itemName) : itemName(_itemName){}
     private:
         virtual void execute(U2OpStatus &os);
         QString itemName;

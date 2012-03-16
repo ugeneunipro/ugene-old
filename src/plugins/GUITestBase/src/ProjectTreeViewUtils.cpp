@@ -62,7 +62,7 @@ ProjectTreeViewUtils::ClickGUIAction::ClickGUIAction(const QString& itemName) {
     add( new GTMouseDriver::ClickGUIAction() );
 }
 
-void ProjectTreeViewUtils::MoveToGUIAction::execute(U2OpStatus &os) {
+void ProjectTreeViewUtils::MoveToOpenedViewGUIAction::execute(U2OpStatus &os) {
 
     QPoint p = getTreeViewItemPosition(os, itemName);
     GTMouseDriver::moveTo(os, p);
