@@ -27,7 +27,6 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
 #include <QtGui>
-#include <QtCore/QThread>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Test/GUITestBase.h>
@@ -117,14 +116,6 @@ public:
     static bool waitForTask(Task *t);
 
     static void checkThread();
-
-private:
-    class Waiter: public QThread {
-    public:
-        static void await(int mseconds) {
-            msleep(mseconds);
-        }
-    };
 };
 
 } // U2

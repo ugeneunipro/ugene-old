@@ -314,7 +314,9 @@ void QtUtils::sendEvent(QObject *obj, QEvent *e) {
 }
 
 void QtUtils::sleep( int msec ){
-    Waiter::await(msec);
+    QEventLoop l;
+    QTimer::singleShot(msec, &l, SLOT(quit()));
+    l.exec();
 }
 
 
