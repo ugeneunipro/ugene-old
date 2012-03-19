@@ -135,7 +135,7 @@ defineTest( use_bundled_zlib ) {
 }
 
 #Variable enabling exclude list for ugene modules
-UGENE_EXCLUDE_LIST_ENABLED = 0
+#UGENE_EXCLUDE_LIST_ENABLED = 1
 defineTest( exclude_list_enabled ) {
     contains( UGENE_EXCLUDE_LIST_ENABLED, 1 ) : return (true)
     return (false)
