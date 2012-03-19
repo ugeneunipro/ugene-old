@@ -79,6 +79,7 @@ exclude_list_enabled() {
     SUBDIRS -= src/plugins/CoreTests
     SUBDIRS -= src/plugins/test_runner
     SUBDIRS -= src/plugins/perf_monitor
+    SUBDIRS -= src/plugins/GUITestBase
 }
 
 
