@@ -46,6 +46,8 @@ AssemblyConsensusArea::AssemblyConsensusArea(AssemblyBrowserUi * ui)
     SAFE_POINT(f != NULL, QString("consensus algorithm factory %1 not found").arg(defaultId),);
     consensusAlgorithm = QSharedPointer<AssemblyConsensusAlgorithm>(f->createAlgorithm());
 
+    setDiffCellRenderer();
+
     createContextMenu();
 }
 
@@ -55,7 +57,7 @@ void AssemblyConsensusArea::createContextMenu() {
     contextMenu->addMenu(getConsensusAlgorithmMenu());
     QAction * diffAction = contextMenu->addAction(tr("Show difference from reference"));
     diffAction->setCheckable(true);
-    diffAction->setChecked(false);
+    diffAction->setChecked(true);
     connect(diffAction, SIGNAL(triggered(bool)), SLOT(sl_drawDifferenceChanged(bool)));
 }
 
@@ -89,6 +91,7 @@ void AssemblyConsensusArea::launchConsensusCalculation() {
     if(areCellsVisible()) {
         U2Region visibleRegion = getVisibleRegion();
 
+        previousRegion = visibleRegion;
         if(cache.region.contains(visibleRegion) && cache.algorithmId == consensusAlgorithm->getId()) {
             lastResult = getPart(cache, visibleRegion);
             consensusTaskRunner.cancel();
@@ -105,7 +108,7 @@ void AssemblyConsensusArea::launchConsensusCalculation() {
 }
 
 void AssemblyConsensusArea::sl_offsetsChanged() {
-    if(areCellsVisible() && getVisibleRegion() != lastResult.region) {
+    if(areCellsVisible() && getVisibleRegion() != previousRegion) {
         launchConsensusCalculation();
     }
 }

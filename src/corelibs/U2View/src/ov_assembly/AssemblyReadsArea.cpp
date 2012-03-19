@@ -102,7 +102,9 @@ void AssemblyReadsArea::createMenu() {
     {
         QList<AssemblyCellRendererFactory*> factories = browser->getCellRendererRegistry()->getFactories();
 
-        AssemblyCellRendererFactory * selectedFactory = factories.first();
+        const QString DEFAULT_CELL_RENDERER = AssemblyCellRendererFactory::DIFF_NUCLEOTIDES;
+        AssemblyCellRendererFactory * selectedFactory = browser->getCellRendererRegistry()->getFactoryById(DEFAULT_CELL_RENDERER);
+        SAFE_POINT(selectedFactory != NULL, QString("Cannot create cell renderer: factory %1 not found").arg(DEFAULT_CELL_RENDERER),);
         cellRenderer.reset(selectedFactory->create());
 
         foreach(AssemblyCellRendererFactory *f, factories) {

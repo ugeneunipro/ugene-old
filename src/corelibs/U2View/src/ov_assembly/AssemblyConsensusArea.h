@@ -64,6 +64,7 @@ private:
 
     ConsensusInfo cache;
     ConsensusInfo lastResult;
+    U2Region previousRegion;
     bool canceled;
     BackgroundTaskRunner<ConsensusInfo> consensusTaskRunner;
 };
