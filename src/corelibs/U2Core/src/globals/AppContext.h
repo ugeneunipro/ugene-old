@@ -78,6 +78,7 @@ class StructuralAlignmentAlgorithmRegistry;
 class AutoAnnotationsSupport;
 class CDSearchFactoryRegistry;
 class GUITestBase;
+class SplicedAlignmentTaskRegistry;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -198,6 +199,8 @@ public:
 
     static StructuralAlignmentAlgorithmRegistry* getStructuralAlignmentAlgorithmRegistry() { return getInstance()->_getStructuralAlignmentAlgorithmRegistry(); }
 
+    static SplicedAlignmentTaskRegistry* getSplicedAlignmentTaskRegistry() { return getInstance()->_getSplicedAlignmentTaskRegistry(); }
+
     static U2DbiRegistry *getDbiRegistry() { return getInstance()->_getDbiRegistry(); }
     
     static bool isGUIMode() {return getInstance()->_isGUIMode(); }
@@ -261,6 +264,7 @@ protected:
     virtual U2DbiRegistry *             _getDbiRegistry() const = 0;
     virtual CDSearchFactoryRegistry* _getCDSFactoryRegistry() const = 0;
     virtual GUITestBase* _getGUITestBase() const = 0;
+    virtual SplicedAlignmentTaskRegistry* _getSplicedAlignmentTaskRegistry() const = 0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

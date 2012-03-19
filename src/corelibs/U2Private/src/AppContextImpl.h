@@ -75,6 +75,7 @@ public:
         virtualFileSystemRegistry = NULL;
         dataBaseRegistry = NULL;
         externalToolRegistry = NULL;
+        splicedAlignmentTaskRegistry = NULL;
         aaSupport = NULL;
         dbiRegistry = NULL;
         rfr = NULL;
@@ -229,7 +230,15 @@ public:
         cdsfr= _cdsfr;
     }
 
-    void setStructuralAlignmentAlgorithmRegistry(StructuralAlignmentAlgorithmRegistry *_saar) { assert(saar == NULL || _saar == NULL); saar = _saar; }
+    void setSplicedAlignmentTaskRegistry(SplicedAlignmentTaskRegistry* tr) {
+        assert((NULL == splicedAlignmentTaskRegistry) || (NULL == tr));
+        splicedAlignmentTaskRegistry = tr;
+    }
+
+    void setStructuralAlignmentAlgorithmRegistry(StructuralAlignmentAlgorithmRegistry *_saar) {
+        assert(saar == NULL || _saar == NULL);
+        saar = _saar;
+    }
 
     void setGUIMode(bool v) {
         guiMode = v;
@@ -298,6 +307,7 @@ protected:
     virtual CDSearchFactoryRegistry*        _getCDSFactoryRegistry() const { return cdsfr; }
     virtual U2DbiRegistry *                 _getDbiRegistry() const { return dbiRegistry; }
     virtual GUITestBase*                    _getGUITestBase() const {return tb;}
+    virtual SplicedAlignmentTaskRegistry*   _getSplicedAlignmentTaskRegistry() const { return splicedAlignmentTaskRegistry; }
 
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -358,6 +368,7 @@ private:
     AutoAnnotationsSupport* aaSupport;
     U2DbiRegistry *dbiRegistry;
     GUITestBase *tb;
+    SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistry;
     bool guiMode;
     QString activeWindow;
 
