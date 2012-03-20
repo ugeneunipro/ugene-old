@@ -142,6 +142,13 @@ void LogCacheExt::sl_onMessage(const LogMessage& msg) {
     LogCache::sl_onMessage(msg);
 }
 
+void LogCacheExt::setFileOutputDisabled(){
+    if (file.isOpen()) {
+        file.close();
+    }
+    fileEnabled = false;
+}
+
 
 }//namespace
 

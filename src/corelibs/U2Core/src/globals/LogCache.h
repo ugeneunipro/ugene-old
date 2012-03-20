@@ -79,6 +79,7 @@ public:
     bool isConsoleOutputEnabled() const {return consoleEnabled;}
 
     bool setFileOutputEnabled(const QString& file);
+    void setFileOutputDisabled();
     bool isFileOutputEnabled() const {return fileEnabled;}
     QString getFileOutputPath() const {return QFileInfo(file).canonicalFilePath();}
 protected slots:

@@ -82,6 +82,8 @@ public:
     bool showLevel;
     bool showCategory;
     bool enableColor;
+    bool toFile;
+    QString outputFile;
 
 //private:
     QHash<QString, LoggerSettings> categories;

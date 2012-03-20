@@ -75,6 +75,8 @@ void LogSettings::reinitAll() {
     showCategory = s->getValue(SETTINGS_ROOT + "showCategory", false).toBool();
     logPattern = s->getValue(SETTINGS_ROOT + "datePattern", "hh:mm").toString();
     enableColor = s->getValue(SETTINGS_ROOT + "enableColor", true).toBool();
+    toFile = s->getValue(SETTINGS_ROOT + "logToFile", false).toBool();
+    outputFile = s->getValue(SETTINGS_ROOT + "outFilePath", QString("")).toString();
 
     reinitCategories();
 }
@@ -131,6 +133,8 @@ void LogSettings::save() {
     s->setValue(SETTINGS_ROOT + "showCategory", showCategory);
     s->setValue(SETTINGS_ROOT + "enableColor", enableColor);
     s->setValue(SETTINGS_ROOT + "datePattern", logPattern);
+    s->setValue(SETTINGS_ROOT + "logToFile", toFile);
+    s->setValue(SETTINGS_ROOT + "outFilePath", outputFile);
 }
 
 bool LogSettings::operator==(const LogSettings& other) const {

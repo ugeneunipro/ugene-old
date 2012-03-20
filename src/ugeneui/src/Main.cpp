@@ -188,6 +188,12 @@ static void initLogsCache(LogCacheExt& logsCache, const QStringList& ) {
     QString file = qgetenv("UGENE_PRINT_TO_FILE");
     if (!file.isEmpty()) {
         logsCache.setFileOutputEnabled(file);
+        return;
+    }
+    LogSettings ls;
+    ls.reinitAll();
+    if(ls.toFile){
+        logsCache.setFileOutputEnabled(ls.outputFile);
     }
 }
 
@@ -285,7 +291,6 @@ int main(int argc, char **argv)
     
     // 3 create functional components of ugene
     QStringList envList = QProcess::systemEnvironment();
-
     LogCacheExt logsCache;
     initLogsCache(logsCache, envList);
     LogCache::setAppGlobalInstance(&logsCache);

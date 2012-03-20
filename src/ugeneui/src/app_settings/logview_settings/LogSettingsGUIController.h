@@ -71,6 +71,8 @@ private slots:
     void sl_levelStateChanged(int state);
     void sl_catItemStateChanged(QTableWidgetItem *item);
     void sl_changeColor(const QString& v);
+    void sl_outFileStateChanged(int state);
+    void sl_browseFileClicked();
 
 private:
     void updateColorLabel(QLabel* l, const QString& color);
