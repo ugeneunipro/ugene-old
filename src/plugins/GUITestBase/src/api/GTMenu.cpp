@@ -20,99 +20,176 @@
  */
 
 #include "api/GTMenu.h"
-#include "QtUtils.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include <U2Core/AppContext.h>
+#include "QtUtils.h"
 
 namespace U2 {
 
-QPoint GTMenu::getMenuPos(U2::U2OpStatus &os, const QString &menuName)
+QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, actionMethod m)
 {
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
-    QList<QAction*>actions = mainWindow->findChildren<QAction*>();
+    QAction *menu = mainWindow->findChild<QAction*>(menuName);
 
-    QAction *action = NULL;
-    foreach(QAction *a, actions) {
-        if(a->text() == menuName) {
-            action = a;
-            break;
+    CHECK_SET_ERR_RESULT(menu != NULL,
+                         QString("Error: menu \"%1\" not found in showMenu()").arg(menuName),
+                         NULL);
+
+    QPoint pos;
+    QPoint gPos;
+    int key = 0;
+
+    switch(m) {
+    case USE_MOUSE:
+        pos = mainWindow->menuBar()->actionGeometry(menu).center();
+        gPos = mainWindow->menuBar()->mapToGlobal(pos);
+
+        GTMouseDriver::moveTo(os, gPos);
+        GTMouseDriver::click(os);
+        break;
+
+    case USE_KEY:
+        if (menuName == MWMENU_FILE) {
+            key = 'F';
+        } else if (menuName == MWMENU_ACTIONS) {
+            key = 'A';
+        } else if (menuName == MWMENU_SETTINGS) {
+            key = 'S';
+        } else if (menuName == MWMENU_TOOLS) {
+            key = 'T';
+        } else if (menuName == MWMENU_WINDOW) {
+            key = 'W';
+        } else if (menuName == MWMENU_HELP) {
+            key = 'H';
         }
+
+        GTKeyboardDriver::keyClick(os, key, GTKeyboardDriver::key["alt"]);
+        break;
     }
 
-    CHECK_SET_ERR_RESULT(action != NULL && action->isVisible(),
-                             QString("Error: action \"%1\" not found or not visible in getMenuPos()").arg(menuName),
-                             BAD_POINT);
+    QEventLoop loop;
+    QTimer::singleShot(1000, &loop, SLOT(quit()));
+    loop.exec();
 
-    QPoint pos = mainWindow->menuBar()->actionGeometry(action).center();
-    QPoint gPos = mainWindow->menuBar()->mapToGlobal(pos);
-
-    return gPos;
+    return menu->menu();
 }
 
-QPoint GTMenu::getActionPos(U2::U2OpStatus &os, const QString &menuName, const QString &actionName)
+QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, actionMethod m)
 {
-    QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
-    QList<QAction*>actions = mainWindow->findChildren<QAction*>();
+    QPoint mouse_pos;
+    QRect ground_widget;
 
-    QAction *action = NULL;
-    foreach(QAction *a, actions) {
-        if(a->text() == menuName) {
-            action = a;
-            break;
+    switch(m) {
+    case USE_MOUSE:
+        mouse_pos = QCursor::pos();
+        ground_widget = ground->geometry();
+
+        if (! ground_widget.contains(mouse_pos)) {
+            GTMouseDriver::moveTo(os, ground_widget.center());
         }
+
+        GTMouseDriver::click(os, GTMouseDriver::RIGHT);
+        break;
+
+    case USE_KEY:
+//        while (! ground->hasFocus()) {
+//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+//            QtUtils::sleep(100);
+//        }
+
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["context_menu"]);
+        break;
     }
 
-    CHECK_SET_ERR_RESULT(action != NULL && action->isVisible(),
-                             QString("Error: menu \"%1\" not found or not visible in getMenuPos()").arg(menuName),
-                             BAD_POINT);
+    QEventLoop loop;
+    QTimer::singleShot(1000, &loop, SLOT(quit()));
+    loop.exec();
 
-    QMenu *menu = action->menu();
-    actions = menu->actions();
-    QAction *act = NULL;
-
-    foreach(QAction *a, actions) {
-        qDebug() << a->text();
-        if (a->text() == actionName) {
-            act = a;
-            break;
-        }
-    }
-
-    CHECK_SET_ERR_RESULT(act != NULL && act->isVisible(),
-                         QString("Error: action \"%1\" not found or not visible in getActionPos()").arg(actionName),
-                         BAD_POINT);
-
-    QRect menuPos = mainWindow->menuBar()->actionGeometry(action);
-    QPoint actionPos = menu->actionGeometry(act).center();
-    QPoint gPos = mainWindow->menuBar()->mapToGlobal(QPoint(menuPos.x() + actionPos.x(), menuPos.bottom() + actionPos.y()));
-
-    return gPos;
-    }
-
-QPoint GTMenu::getContextMenuActionPos(U2::U2OpStatus &os, const QString &actionName)
-{
     QMenu *menu = static_cast<QMenu*>(QApplication::activePopupWidget());
-    CHECK_SET_ERR_RESULT(menu != NULL && menu->isVisible(),
-                         "Error: context menu not found or not visible in getContextMenuActionPos()",
-                         BAD_POINT);
+    return menu;
+}
 
-    QList<QAction*> actions = menu->actions();
-    QAction *action = NULL;
+void GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, actionMethod m)
+{
+    CHECK_SET_ERR(! itemPath.isEmpty(), "Error: itemPath is empty in selectMenuItem()");
+    CHECK_SET_ERR(menu != NULL, "Error: menu not found in selectMenuItem()");
 
-    foreach(QAction *a, actions) {
-        if(a->text() == actionName) {
-            action = a;
+    foreach(QString item, itemPath) {
+        QPoint action_pos;
+        QAction *action = NULL;
+        QList<QAction*>actions = menu->actions();
+
+        foreach(QAction *act, actions) {
+            if (act->objectName() == item) {
+                action = act;
+                break;
+            }
+        }
+
+        CHECK_SET_ERR(action != NULL, "Error: action not found in selectMenuItem()");
+
+        switch(m) {
+        case USE_MOUSE:
+            action_pos = menu->actionGeometry(action).center();
+            action_pos = menu->mapToGlobal(action_pos);
+            GTMouseDriver::moveTo(os, action_pos);
+            break;
+
+        case USE_KEY:
+
+            while(action != menu->activeAction()) {
+                GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+                QtUtils::sleep(100);
+            }
+
+            if (action->menu()) {
+                GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
+                menu = action->menu();
+                QtUtils::sleep(100);
+            }
             break;
         }
     }
 
-    CHECK_SET_ERR_RESULT(action != NULL && action->isVisible(),
-                         "Error: action not found or not visible in getContextMenuActionPos()",
-                         BAD_POINT);
-
-    QPoint pos = menu->actionGeometry(action).center();
-    QPoint gPos = menu->mapToGlobal(pos);
-
-    return gPos;
 }
 
+void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, actionMethod m)
+{
+    CHECK_SET_ERR(! itemPath.isEmpty(), "Error: itemPath is empty in clickMenuItem()");
+    CHECK_SET_ERR(menu != NULL, "Error: menu not found in clickMenuItem()");
+
+    QList<QAction*>actions = menu->actions();
+    QAction *action = NULL;
+    QString final_item = itemPath.back();
+
+    foreach(QAction *act, actions) {
+        if (act->objectName() == final_item) {
+            action = act;
+            break;
+        }
+    }
+    CHECK_SET_ERR(action != NULL, "Error: action not found in clickMenuItem()");
+
+    if (action != menu->activeAction()) {
+        selectMenuItem(os, menu, itemPath, m);
+    }
+
+    QPoint action_pos;
+
+    switch(m) {
+    case USE_MOUSE:
+        action_pos = menu->actionGeometry(action).center();
+        action_pos = menu->mapToGlobal(action_pos);
+
+        GTMouseDriver::moveTo(os, action_pos);
+        GTMouseDriver::click(os);
+        break;
+
+    case USE_KEY:
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        break;
+    }
 }
+
+} // namespace

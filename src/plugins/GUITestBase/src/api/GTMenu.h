@@ -23,29 +23,20 @@
 #define GTMENU_H
 
 #include <U2Core/U2OpStatus.h>
+#include <QMenu>
 
-#define BAD_POINT QPoint(-1, -1);
 
 namespace U2 {
 
 class GTMenu {
 public:
-    // all methods return global position of center widgets or BAD_POINT if object not found or object is not visible
-    // use tr("") to menu and actions name
-    static QPoint getMenuPos(U2::U2OpStatus &os, const QString &menuName);
-    static QPoint getActionPos(U2::U2OpStatus &os, const QString &menuName, const QString &actionName);
-    static QPoint getContextMenuActionPos(U2::U2OpStatus &os, const QString &actionName);
+    enum actionMethod {USE_MOUSE, USE_KEY};
 
-    /**
-    * Example:
-    * QPoint pt = GTMenu::getMenuPos(os, tr("File"));
-    * GTMouseDriver::moveTo(os, pt);
-    * GTMouseDriver::click(os, GTMouseDriver::LEFT);
-    * pt = GTMenu::getActionPos(os, tr("File"), tr("&Open..."));
-    * GTMouseDriver::moveTo(os, pt);
-    * GTMouseDriver::click(os, GTMouseDriver::LEFT);
-    */
+    static QMenu* showMainMenu(U2OpStatus &os, const QString &menuName, actionMethod m = USE_MOUSE);
+    static QMenu* showContextMenu(U2OpStatus &os, const QWidget *ground, actionMethod m = USE_MOUSE);
 
+    static void selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, actionMethod m = USE_MOUSE);
+    static void clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, actionMethod m = USE_MOUSE);
 };
 
 }
