@@ -38,7 +38,8 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, actionMetho
 
     QPoint pos;
     QPoint gPos;
-    int key = 0;
+    QString menuText;
+    int key = 0, key_pos = 0;
 
     switch(m) {
     case USE_MOUSE:
@@ -50,19 +51,9 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, actionMetho
         break;
 
     case USE_KEY:
-        if (menuName == MWMENU_FILE) {
-            key = 'F';
-        } else if (menuName == MWMENU_ACTIONS) {
-            key = 'A';
-        } else if (menuName == MWMENU_SETTINGS) {
-            key = 'S';
-        } else if (menuName == MWMENU_TOOLS) {
-            key = 'T';
-        } else if (menuName == MWMENU_WINDOW) {
-            key = 'W';
-        } else if (menuName == MWMENU_HELP) {
-            key = 'H';
-        }
+        menuText = menu->text();
+        key_pos = menuText.indexOf('&');
+        key = (menuText.at(key_pos + 1)).toAscii();
 
         GTKeyboardDriver::keyClick(os, key, GTKeyboardDriver::key["alt"]);
         break;
