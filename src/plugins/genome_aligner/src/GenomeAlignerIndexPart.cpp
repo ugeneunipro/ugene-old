@@ -96,7 +96,8 @@ bool IndexPart::load(int part) {
     char *buff = (char*)sArray;
     size = partFiles[part]->read(buff, saLengths[currentPart]*sizeof(SAType));
     assert(size == saLengths[currentPart]*sizeof(SAType));
-    if (size != qint64(saLengths[currentPart]) * sizeof(SAType)) {
+    qint64 cl = (qint64)(saLengths[currentPart]);
+    if (size != (cl * sizeof(SAType))) {
         return false;
     }
 
@@ -104,6 +105,7 @@ bool IndexPart::load(int part) {
     size = partFiles[part]->read((char*)bitSeq, 1 + seqLengths[currentPart]/4);
     assert(size == 1 + seqLengths[currentPart]/4);
     if (size != 1 + seqLengths[currentPart]/4) {
+        delete[] bitSeq;
         return false;
     }
 
@@ -111,6 +113,7 @@ bool IndexPart::load(int part) {
     size = refFile->read(seq, seqLengths[currentPart]);
     assert(size == seqLengths[currentPart]);
     if (size != seqLengths[currentPart]) {
+        delete[] bitSeq;
         return false;
     }
 
