@@ -72,7 +72,7 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
     }
     keyRelease(os, (int)key, modifiers);
 }
- 
+
 void GTKeyboardDriver::keyClick(U2OpStatus &os, char key)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
@@ -164,6 +164,7 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 
 GTKeyboardDriver::keys::keys()
 {
+    ADD_KEY("context_menu", VK_APPS);
     ADD_KEY("back", VK_BACK);
     ADD_KEY("tab", VK_TAB);
     ADD_KEY("clear", VK_CLEAR);
@@ -261,6 +262,7 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 
 GTKeyboardDriver::keys::keys()
 {
+    ADD_KEY("context_menu", XK_Menu);
     ADD_KEY("back", XK_BackSpace);
     ADD_KEY("tab", XK_Tab);
     ADD_KEY("clear", XK_Clear);
@@ -271,7 +273,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("ctrl", XK_Control_L);
     ADD_KEY("rctrl", XK_Control_R);
     ADD_KEY("lctrl", XK_Control_L);
-    ADD_KEY("menu", XK_Menu);//alt?
+    ADD_KEY("alt", XK_Alt_L);
     ADD_KEY("pause", XK_Pause);
     ADD_KEY("esc", XK_Escape);
     ADD_KEY("space", XK_space);
