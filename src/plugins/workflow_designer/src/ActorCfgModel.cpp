@@ -229,7 +229,7 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
     case KEY_COLUMN:
         return Qt::ItemIsEnabled;
     case VALUE_COLUMN:
-        return row < attrs.size() ? Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable : Qt::ItemIsEnabled;
+        return row < attrs.size() ? Qt::ItemIsEditable | Qt::ItemIsEnabled : Qt::ItemIsEnabled;
     case SCRIPT_COLUMN:
         {
             if(row < attrs.size()) {
@@ -239,7 +239,7 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
                 if(currentAttribute->getAttributeType() != BaseTypes::STRING_TYPE() && currentAttribute->getAttributeType() != BaseTypes::NUM_TYPE()) {
                     return Qt::ItemIsEnabled;    
                 } else {
-                    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+                    return Qt::ItemIsEditable | Qt::ItemIsEnabled;
                 }
             } else {
                 return Qt::ItemIsEnabled;
