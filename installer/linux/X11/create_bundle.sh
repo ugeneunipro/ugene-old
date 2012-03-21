@@ -13,6 +13,10 @@ if [ -z "$PATH_TO_QT_LIBS" ]; then
    exit -1
 fi
 
+if [ -z "$PATH_TO_LIBPNG12" ]; then 
+   echo PATH_TO_LIBPNG12 environment variable is not set!
+fi
+
 echo cleaning previous bundle
 rm -rf ${TARGET_APP_DIR}
 rm -rf *.tar.gz
@@ -89,7 +93,10 @@ cp -v "$PATH_TO_QT_LIBS/libQtOpenGL.so.4" "${TARGET_APP_DIR}"
 strip -v "${TARGET_APP_DIR}/libQtOpenGL.so.4"
 cp -v "$PATH_TO_QT_LIBS/libQtSvg.so.4" "${TARGET_APP_DIR}"
 strip -v "${TARGET_APP_DIR}/libQtSvg.so.4"
-
+if [ ! -z "$PATH_TO_LIBPNG12" ]; then 
+   cp -v "$PATH_TO_LIBPNG12/libpng12.so.0" "${TARGET_APP_DIR}"
+   strip -v "${TARGET_APP_DIR}/libpng12.so.0"
+fi
 
 if [ "$1" == "-test" ]
     then
