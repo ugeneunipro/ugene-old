@@ -23,6 +23,9 @@
 #define _U2_GUI_GTWIDGET_H_
 
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/AppContext.h>
+#include <U2Gui/MainWindow.h>
+#include <QtGui/QWidget>
 
 
 namespace U2 {
@@ -31,11 +34,16 @@ class GTWidget {
 public:
 
     //finders
-    static QWidget* findWidgetByName(U2OpStatus &op, const QString &widgetName, QWidget *parentWidget, bool recursive = true);
+    static QWidget* findWidgetByName(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget, bool recursive = true);
 
-    // widget's methods
-    static void click(U2OpStatus &os, QWidget *w);
+    //mouse positioning - this or GTMouse?
+    static void moveMouseToWidget(U2OpStatus &os, QWidget *widget);
+    static void moveMouseOutOfWidget(U2OpStatus &os, QWidget *widget);
 
+    //interactions
+    static void click(U2OpStatus &os, QWidget *widget);
+    
+    
 protected:
     
 
