@@ -339,7 +339,7 @@ void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
     keyRelease(os, key, modifiers);
 }
 
-void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, QString str)
+void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, const QString &str)
 {
     foreach(QChar ch, str) {
         if(isalpha(ch.toAscii()) && !islower(ch.toAscii())) {
@@ -350,7 +350,7 @@ void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, QString str)
     }
 }
 
-void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, QString str, int modifiers)
+void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, const QString &str, int modifiers)
 {
     keyPress(os, modifiers);
 
@@ -366,7 +366,7 @@ void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, QString str, int modifier
 }
 
 /******************************************************************************/
-int GTKeyboardDriver::keys::operator [] (QString str) const
+int GTKeyboardDriver::keys::operator [] (const QString &str) const
 {
     if (!contains(str.toLower())) {
         return 0;

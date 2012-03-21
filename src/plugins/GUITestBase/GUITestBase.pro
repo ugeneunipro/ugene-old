@@ -17,7 +17,9 @@ HEADERS += src/GUITestBasePlugin.h \
 		   src/api/GTMouseDriver.h \
 		   src/api/GTKeyboardDriver.h \
 		   src/api/GTWidget.h \
-		   src/api/GTSystem.h 
+		   src/api/GTSystem.h \
+		   src/api/GTMouse.h
+ 
 
 SOURCES += src/GUITestBasePlugin.cpp \
            src/GUIInitialChecks.cpp \
@@ -35,4 +37,5 @@ SOURCES += src/GUITestBasePlugin.cpp \
 		   src/api/GTMouseDriver.cpp \
 		   src/api/GTKeyboardDriver.cpp \
 		   src/api/GTWidget.cpp \
-		   src/api/GTSystem.cpp
+		   src/api/GTSystem.cpp \
+		   src/api/GTMouse.cpp

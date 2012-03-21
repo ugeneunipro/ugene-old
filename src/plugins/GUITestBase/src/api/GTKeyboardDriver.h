@@ -52,13 +52,13 @@ public:
     static void keyClick(U2OpStatus &os, int key);
     static void keyClick(U2OpStatus &os, int key, int modifiers);
 
-    static void keySequence(U2OpStatus &os, QString str);
-    static void keySequence(U2OpStatus &os, QString str, int modifiers);
+    static void keySequence(U2OpStatus &os, const QString &str);
+    static void keySequence(U2OpStatus &os, const QString &str, int modifiers);
 
     class keys : private QMap<QString, int> {
     public:
         keys();
-        int operator [] (QString) const;
+        int operator [] (const QString&) const;
     };
     
     static keys key;
