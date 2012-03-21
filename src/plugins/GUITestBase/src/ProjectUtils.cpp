@@ -63,28 +63,28 @@ void ProjectUtils::exportProject(U2OpStatus &os, const QString &projectFolder, c
 
     GUIDialogUtils::openExportProjectDialog(os);
     GUIDialogUtils::ExportProjectDialogFiller filler(os, projectFolder, projectName);
-    GUIDialogUtils::waitForDialog(&filler);
+    GUIDialogUtils::waitForDialog(os, &filler);
 }
 
 void ProjectUtils::exportProjectCheck(U2OpStatus &os, const QString &projectName) {
 
     GUIDialogUtils::openExportProjectDialog(os);
     GUIDialogUtils::ExportProjectDialogChecker filler(os, projectName);
-    GUIDialogUtils::waitForDialog(&filler);
+    GUIDialogUtils::waitForDialog(os, &filler);
 }
 
 void ProjectUtils::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile) {
 
     GUIDialogUtils::openSaveProjectAsDialog(os);
     GUIDialogUtils::SaveProjectAsDialogFiller filler(os, projectName, projectFolder, projectFile);
-    GUIDialogUtils::waitForDialog(&filler);
+    GUIDialogUtils::waitForDialog(os, &filler);
 }
 
 void ProjectUtils::closeProject(U2OpStatus &os, const CloseProjectSettings& settings) {
 
     QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__CLOSE_PROJECT, MWMENU_FILE);
     GUIDialogUtils::MessageBoxDialogFiller filler(os, settings.saveOnCloseButton);
-    GUIDialogUtils::waitForDialog(&filler);
+    GUIDialogUtils::waitForDialog(os, &filler, false);
 }
 
 void ProjectUtils::closeProjectByHotkey(U2OpStatus &os) {

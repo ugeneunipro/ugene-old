@@ -21,45 +21,25 @@
 
 #include "GTWidget.h"
 #include "GTMouseDriver.h"
+#include <QtGui/QWidget>
 #include "QtUtils.h"
-#include "GTMouse.h"
 
 namespace U2 {
 
-    QWidget* GTWidget::findWidgetByName(U2OpStatus &op, const QString &widgetName, QWidget *parentWidget, bool recursive /* = true */) {
-        QWidget *widget = NULL;
-        if(recursive == true) {
+void GTWidget::click(U2OpStatus &os, QWidget *w) {
 
-        }
-        else {
-            if (parentWidget == NULL) {
-                //parentWidget = AppContext::getMainWindow()->getQMainWindow();
-            } 
-            widget = parentWidget->findChild<QWidget*>(widgetName);
- 
- //         if (errorifnull) {
- //                 check_set_err_result(widget != null, "widget " + widgetname + " not found", null);
- //         }
- 
-            return widget;
-        }
-    }
+    GTMouseDriver::moveTo(os, w->mapToGlobal(w->rect().center()));
+    GTMouseDriver::click(os);
+}
 
-    void GTWidget::moveMouseToWidget(U2OpStatus &os, QWidget *widget) {
+void GTWidget::setFocus(U2OpStatus &os, QWidget *w) {
 
-    }
+    CHECK_SET_ERR(w != NULL, "GTWidget::setFocus: widget is NULL");
 
-    void GTWidget::moveMouseOutOfWidget(U2OpStatus &os, QWidget *widget) {
+    GTWidget::click(os, w);
+    QtUtils::sleep(1000);
 
-    }
-
-    void GTWidget::click(U2OpStatus &os, QWidget *widget) {
-        CHECK_SET_ERR(widget != NULL, "provided widget is null");
-        GTMouse::moveCursorToWidget(os, widget);
-        GTMouseDriver::click(os);
-    }
-
+    CHECK_SET_ERR(w->hasFocus(), "Can't set focus on widget");
+}
 
 } //namespace
-
-

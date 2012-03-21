@@ -40,7 +40,7 @@ void GUIDialogWaiter::wait() {
     }
 }
 
-void GUIDialogUtils::waitForDialog(Runnable *r) {
+void GUIDialogUtils::waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDialog) {
 
     GUIDialogWaiter waiter(r);
     QTimer t;
@@ -48,7 +48,10 @@ void GUIDialogUtils::waitForDialog(Runnable *r) {
     t.connect(&t, SIGNAL(timeout()), &waiter, SLOT(wait()));
     t.start(100);
 
-    QtUtils::sleep(500);
+    QtUtils::sleep(1000);
+    if (failOnNoDialog) {
+        CHECK_SET_ERR(waiter.hadRun == true, "GUIDialogUtils::waitForDialog: no dialog");
+    }
 }
 
 void GUIDialogUtils::openExportProjectDialog(U2OpStatus &os) {
@@ -196,8 +199,8 @@ void GUIDialogUtils::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &pr
         GTWidget::click(os, saveButton);
     }
 
-    GUIDialogUtils::MessageBoxDialogFiller filler(os, QMessageBox::Yes);
-    GUIDialogUtils::waitForDialog(&filler);
+   GUIDialogUtils::MessageBoxDialogFiller filler(os, QMessageBox::Yes);
+   GUIDialogUtils::waitForDialog(os, &filler, false); // MessageBox question appears only if there is already a file on a disk
 }
 
 }

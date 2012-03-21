@@ -37,11 +37,11 @@ class GUIDialogWaiter : public QObject {
     Q_OBJECT
 public:
     GUIDialogWaiter(Runnable* _r) : r(_r), hadRun(false){}
+    bool hadRun;
 public slots:
     void wait();
 private:
     Runnable *r;
-    bool hadRun;
 };
 
 class GUIDialogUtils {
@@ -97,7 +97,7 @@ public:
         QMessageBox::StandardButton b;
     };
 
-    static void waitForDialog(Runnable *r);
+    static void waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDialog = true);
 
     static void openExportProjectDialog(U2OpStatus &os);
     static void checkExportProjectDialog(U2OpStatus &os, const QString& projectName);
