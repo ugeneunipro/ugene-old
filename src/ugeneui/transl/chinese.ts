@@ -977,33 +977,33 @@ p, li { white-space: pre-wrap; }
     <name>U2::MWMenuManagerImpl</name>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="32"/>
-        <source>File</source>
+        <source>&amp;File</source>
         <translation>文件</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="33"/>
-        <source>Actions</source>
-        <translation>操作</translation>
+        <source>&amp;Actions</source>
+        <translation>&amp;操作</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="34"/>
-        <source>Settings</source>
-        <translation>设置</translation>
+        <source>&amp;Settings</source>
+        <translation>&amp;设置</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="35"/>
-        <source>Tools</source>
-        <translation>工具</translation>
+        <source>&amp;Tools</source>
+        <translation>&amp;工具</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="36"/>
-        <source>Window</source>
-        <translation>窗口</translation>
+        <source>&amp;Window</source>
+        <translation>&amp;窗口</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="37"/>
-        <source>Help</source>
-        <translation>帮助</translation>
+        <source>&amp;Help</source>
+        <translation>&amp;帮助</translation>
     </message>
 </context>
 <context>

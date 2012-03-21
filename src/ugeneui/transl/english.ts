@@ -1065,33 +1065,33 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="32"/>
-        <source>File</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;File</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="33"/>
-        <source>Actions</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Actions</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="34"/>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Settings</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="35"/>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Tools</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="36"/>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Window</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="37"/>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Help</source>
+        <translation></translation>
     </message>
 </context>
 <context>

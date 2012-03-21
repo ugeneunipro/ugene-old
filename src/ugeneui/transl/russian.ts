@@ -1104,33 +1104,33 @@ p, li { white-space: pre-wrap; }
     <name>U2::MWMenuManagerImpl</name>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="32"/>
-        <source>File</source>
+        <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="33"/>
-        <source>Actions</source>
-        <translation>Операции</translation>
+        <source>&amp;Actions</source>
+        <translation>&amp;Операции</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="34"/>
-        <source>Settings</source>
-        <translation>Настройки</translation>
+        <source>&amp;Settings</source>
+        <translation>&amp;Настройки</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="35"/>
-        <source>Tools</source>
-        <translation>Инструменты</translation>
+        <source>&amp;Tools</source>
+        <translation>&amp;Инструменты</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="36"/>
-        <source>Window</source>
-        <translation>Окна</translation>
+        <source>&amp;Window</source>
+        <translation>&amp;Окна</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="37"/>
-        <source>Help</source>
-        <translation>Помощь</translation>
+        <source>&amp;Help</source>
+        <translation>&amp;Помощь</translation>
     </message>
 </context>
 <context>

@@ -1108,32 +1108,32 @@ p, li { white-space: pre-wrap; }
     <name>U2::MWMenuManagerImpl</name>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="32"/>
-        <source>File</source>
+        <source>&amp;File</source>
         <translation>&amp;Soubor</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="33"/>
-        <source>Actions</source>
+        <source>&amp;Actions</source>
         <translation>&amp;Činnosti</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="34"/>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>&amp;Nastavení</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="35"/>
-        <source>Tools</source>
+        <source>&amp;Tools</source>
         <translation>&amp;Nástroje</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="36"/>
-        <source>Window</source>
+        <source>&amp;Window</source>
         <translation>&amp;Okno</translation>
     </message>
     <message>
         <location filename="../src/main_window/MenuManager.cpp" line="37"/>
-        <source>Help</source>
+        <source>&amp;Help</source>
         <translation>&amp;Nápověda</translation>
     </message>
 </context>
