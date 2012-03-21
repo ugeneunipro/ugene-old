@@ -99,7 +99,8 @@ private:
 };
 
 bool isNameCharacter(char c) {
-    return (isalnum(c) || ('_' == c) || ('-' == c) || ('\'' == c) || ('*' == c));
+    const QBitArray& digitOrAlpha = TextUtils::ALPHA_NUMS; 
+    return (digitOrAlpha.testBit(c) || ('_' == c) || ('-' == c) || ('\'' == c) || ('*' == c));
 }
 
 class Lexer {
@@ -210,6 +211,7 @@ U2Region toRegion(quint64 firstBase, quint64 secondBase) {
     return U2Region(minBase - 1, maxBase - minBase + 1);
 }
 
+//ioLog added to trace an error which occurred on user's OS only
 class Parser {
 public:
     Parser(const QByteArray &input):
@@ -262,9 +264,11 @@ private:
             }
             quint64 version = 0;
             if(!parseNumber(version)) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             if(!match(Token::COLON)) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be COLON instead of %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             ioLog.info(LocationParser::tr("Ignoring remote entry: %1.%2").arg(QString(accession)).arg(version));
@@ -273,16 +277,20 @@ private:
         bool firstBaseIsFromRange = false;
         if(match(Token::LEFT_PARENTHESIS)) { // cases like (1.2)..
             firstBaseIsFromRange = true;
-            if(!parseNumber(firstBase)) { // use the first number as a region boudary
+            if(!parseNumber(firstBase)) { // use the first number as a region boundary
+                ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             if(!match(Token::PERIOD)) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be PERIOD instead of %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             if(!match(Token::NUMBER)) { // ignore the second number
+                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be NUMBER instead of %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             if(!match(Token::RIGHT_PARENTHESIS)) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be RIGHT_PARENTHESIS instead of %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             ioLog.info(LocationParser::tr("'a single base from a range' in combination with 'sequence span' is not supported"));
@@ -291,18 +299,22 @@ private:
                 ioLog.info(LocationParser::tr("Ignoring '<' at start position"));
             }
             if(!parseNumber(firstBase)) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
                 return false;
             }
         }
         if(match(Token::PERIOD)) {
             if(firstBaseIsFromRange) { // ranges are only allowed in spans
+                ioLog.trace(QString("GENBANK LOCATION PARSER: ranges are only allowed in spans. Token: %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             quint64 secondNumber = 0;
             if(!parseNumber(secondNumber)) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             if(!location->isEmpty()) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: location is not empty. Token: %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             if(!remoteEntry) { // ignore remote entries
@@ -313,15 +325,19 @@ private:
             quint64 secondNumber = 0;
             if(match(Token::LEFT_PARENTHESIS)) { // cases like ..(1.2)
                 if(!match(Token::NUMBER)) { // ignore the first number
+                    ioLog.trace(QString("GENBANK LOCATION PARSER: Must be NUMBER instead of %1").arg(lexer.peek().getString().data()));
                     return false;
                 }
                 if(!match(Token::PERIOD)) {
+                    ioLog.trace(QString("GENBANK LOCATION PARSER: Must be PERIOD instead of %1").arg(lexer.peek().getString().data()));
                     return false;
                 }
                 if(!parseNumber(secondNumber)) { // use the second number as a region boudary
+                    ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
                     return false;
                 }
                 if(!match(Token::RIGHT_PARENTHESIS)) {
+                    ioLog.trace(QString("GENBANK LOCATION PARSER: Must be RIGHT_PARENTHESIS instead of %1").arg(lexer.peek().getString().data()));
                     return false;
                 }
                 ioLog.info(LocationParser::tr("'a single base from a range' in combination with 'sequence span' is not supported"));
@@ -330,6 +346,7 @@ private:
                     ioLog.info(LocationParser::tr("Ignoring '>' at end position"));
                 }
                 if(!parseNumber(secondNumber)) {
+                    ioLog.trace(QString("GENBANK LOCATION PARSER: can't parse Number. Token: %1").arg(lexer.peek().getString().data()));
                     return false;
                 }
             }
@@ -385,13 +402,14 @@ private:
                 return false;
             }
             if(order) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: Wrong token after JOIN  - order %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             join = true;
             location->op = U2LocationOperator_Join;
             while(true) {
                 if(!parseLocation(location)) {
-                    ioLog.trace(QString("GENBANK LOCATION PARSER: Can't parse location"));
+                    ioLog.trace(QString("GENBANK LOCATION PARSER: Can't parse location on JOIN"));
                     return false;
                 }
                 if(!match(Token::COMMA)) {
@@ -404,15 +422,18 @@ private:
             }
         } else if(match(Token::ORDER)) {
             if(!match(Token::LEFT_PARENTHESIS)) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: Wrong token after ORDER %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             if(join) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: Wrong token after ORDER - join %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             order = true;
             location->op = U2LocationOperator_Order;
             while(true) {
                 if(!parseLocation(location)) {
+                    ioLog.trace(QString("GENBANK LOCATION PARSER: Can't parse location on ORDER"));
                     return false;
                 }
                 if(!match(Token::COMMA)) {
@@ -420,16 +441,19 @@ private:
                 }
             }
             if(!match(Token::RIGHT_PARENTHESIS)) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be RIGHT_PARENTHESIS instead of %1").arg(lexer.peek().getString().data()));
                 return false;
             }
         } else if(match(Token::COMPLEMENT)) {
             if(!match(Token::LEFT_PARENTHESIS)) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be LEFT_PARENTHESIS instead of %1").arg(lexer.peek().getString().data()));
                 return false;
             }
             location->strand = U2Strand::Complementary;
             // the following doesn't match the specification
             while(true) {
                 if(!parseLocation(location)) {
+                    ioLog.trace(QString("GENBANK LOCATION PARSER: Can't parse location on COMPLEMENT"));
                     return false;
                 }
                 if(!match(Token::COMMA)) {
@@ -437,11 +461,13 @@ private:
                 }
             }
             if(!match(Token::RIGHT_PARENTHESIS)) {
+                ioLog.trace(QString("GENBANK LOCATION PARSER: Must be RIGHT_PARENTHESIS instead of %1").arg(lexer.peek().getString().data()));
                 return false;
             }
         } else {
             while(true) {
                 if(!parseLocationDescriptor(location)) {
+                    ioLog.trace(QString("GENBANK LOCATION PARSER: Can't parse location descriptor"));
                     return false;
                 }
                 if(!match(Token::COMMA)) {

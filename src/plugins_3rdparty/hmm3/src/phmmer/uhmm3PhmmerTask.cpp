@@ -30,6 +30,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <task_local_storage/uHMMSearchTaskLocalStorage.h>
 
@@ -264,10 +265,12 @@ QList<Task*> UHMM3SWPhmmerTask::onSubTaskFinished(Task* subTask) {
 
 void UHMM3SWPhmmerTask::checkAlphabets() {
     assert(!hasError());
+    SAFE_POINT(dbSeq.alphabet != NULL, "DB SEQ ALPHABET is NULL", );
     if(dbSeq.alphabet->isRaw()) {
         setError(tr("Invalid db sequence alphabet: %1").arg(dbSeq.alphabet->getName()));
         return;
     }
+    SAFE_POINT(querySeq.alphabet != NULL, "Query SEQ ALPHABET is NULL", );
     if(querySeq.alphabet->isRaw()) {
         setError(tr("Invalid query sequence alphabet: %1").arg(querySeq.alphabet->getName()));
         return;
