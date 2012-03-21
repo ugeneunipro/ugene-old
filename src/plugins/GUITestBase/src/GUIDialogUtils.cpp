@@ -196,7 +196,8 @@ void GUIDialogUtils::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &pr
         GTWidget::click(os, saveButton);
     }
 
-    GUIDialogUtils::waitForDialog(&GUIDialogUtils::MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GUIDialogUtils::MessageBoxDialogFiller filler(os, QMessageBox::Yes);
+    GUIDialogUtils::waitForDialog(&filler);
 }
 
 }

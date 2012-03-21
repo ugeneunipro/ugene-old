@@ -345,6 +345,9 @@ void QtUtils::checkThread() {
     QThread* appThread = QApplication::instance()->thread();
     QThread* thisThread = QThread::currentThread();
     assert (appThread == thisThread);
+
+    Q_UNUSED(appThread);
+    Q_UNUSED(thisThread);
 }
 
 } // U2

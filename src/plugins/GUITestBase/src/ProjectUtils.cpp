@@ -62,25 +62,29 @@ void ProjectUtils::openFiles(U2OpStatus &os, const GUrl &path, const OpenFileSet
 void ProjectUtils::exportProject(U2OpStatus &os, const QString &projectFolder, const QString &projectName) {
 
     GUIDialogUtils::openExportProjectDialog(os);
-    GUIDialogUtils::waitForDialog(&GUIDialogUtils::ExportProjectDialogFiller(os, projectFolder, projectName));
+    GUIDialogUtils::ExportProjectDialogFiller filler(os, projectFolder, projectName);
+    GUIDialogUtils::waitForDialog(&filler);
 }
 
 void ProjectUtils::exportProjectCheck(U2OpStatus &os, const QString &projectName) {
 
     GUIDialogUtils::openExportProjectDialog(os);
-    GUIDialogUtils::waitForDialog(&GUIDialogUtils::ExportProjectDialogChecker(os, projectName));
+    GUIDialogUtils::ExportProjectDialogChecker filler(os, projectName);
+    GUIDialogUtils::waitForDialog(&filler);
 }
 
-void ProjectUtils::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting) {
+void ProjectUtils::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile) {
 
     GUIDialogUtils::openSaveProjectAsDialog(os);
-    GUIDialogUtils::waitForDialog(&GUIDialogUtils::SaveProjectAsDialogFiller(os, projectName, projectFolder, projectFile));
+    GUIDialogUtils::SaveProjectAsDialogFiller filler(os, projectName, projectFolder, projectFile);
+    GUIDialogUtils::waitForDialog(&filler);
 }
 
 void ProjectUtils::closeProject(U2OpStatus &os, const CloseProjectSettings& settings) {
 
     QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__CLOSE_PROJECT, MWMENU_FILE);
-    GUIDialogUtils::waitForDialog(&GUIDialogUtils::MessageBoxDialogFiller(os, settings.saveOnCloseButton));
+    GUIDialogUtils::MessageBoxDialogFiller filler(os, settings.saveOnCloseButton);
+    GUIDialogUtils::waitForDialog(&filler);
 }
 
 void ProjectUtils::closeProjectByHotkey(U2OpStatus &os) {
@@ -95,6 +99,8 @@ void ProjectUtils::checkProject(U2OpStatus &os, CheckType checkType) {
     switch (checkType) {
         case EMPTY :
             CHECK_SET_ERR(AppContext::getProject()->getDocuments().isEmpty() == true, "Project is not empty");
+        default:
+            break;
     }
 }
 
@@ -121,6 +127,7 @@ Document* ProjectUtils::checkDocumentExists(U2OpStatus &os, const GUrl &url) {
 
 void ProjectUtils::checkDocumentActive(U2OpStatus &os, Document *doc) {
 
+    Q_UNUSED(os);
     if (!doc) {
         return;
     }

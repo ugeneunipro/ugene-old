@@ -60,7 +60,7 @@ public:
     static void exportProject(U2OpStatus &os, const QString &projectFolder, const QString &projectName = "");
     static void exportProjectCheck(U2OpStatus &os, const QString &projectName);
 
-    static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
+    static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile);
     static void closeProject(U2OpStatus &os, const CloseProjectSettings& settings = CloseProjectSettings());
 
     enum CheckType {EXISTS, EMPTY};
