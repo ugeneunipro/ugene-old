@@ -28,14 +28,14 @@
 
 namespace U2 {
 
-void ToolbarTest::execute(U2OpStatus &os) {
-
-    QToolBar *tb = GTToolbar::getToolbar(os, MWTOOLBAR_MAIN);
-    QWidget *button = GTToolbar::getWidgetForActionName(os, tb, ACTION_PROJECTSUPPORT__OPEN_PROJECT);
-    QtUtils::mouseClick(button, Qt::LeftButton);
-    QtUtils::sleep(3000);
-    
-    
-}
+// GUI_TEST_CLASS_DEFINITION(ToolbarTest) {
+// 
+//     QToolBar *tb = GTToolbar::getToolbar(os, MWTOOLBAR_MAIN);
+//     QWidget *button = GTToolbar::getWidgetForActionName(os, tb, ACTION_PROJECTSUPPORT__OPEN_PROJECT);
+// //    QtUtils::mouseClick(button, Qt::LeftButton);
+//     QtUtils::sleep(3000);
+//     
+//     
+// }
 
 } // namespace

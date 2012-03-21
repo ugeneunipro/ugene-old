@@ -23,7 +23,6 @@
 #define _U2_GUI_PROJECT_TREE_VIEW_UTILS_H_
 
 #include <U2Core/U2OpStatus.h>
-#include <U2Test/GUITestBase.h>
 #include <U2Gui/ProjectTreeController.h>
 #include "ToolTipUtils.h"
 
@@ -34,64 +33,25 @@ namespace U2 {
 
 class ProjectTreeViewUtils {
 public:
-    class RenameGUIAction : public GUIMultiTest {
-    public:
-        RenameGUIAction(const QString &itemName, const QString &newItemName);
-    };
+    static void checkItem(U2OpStatus &os, const QString &itemName, bool exists = true);
 
-    class ClickGUIAction : public GUIMultiTest {
-    public:
-        ClickGUIAction(const QString &itemName);
-    };
+    static void rename(U2OpStatus &os, const QString &itemName, const QString &newItemName);
+    static void click(U2OpStatus &os, const QString &itemName);
 
-    class CheckItemGUIAction : public GUITest {
-    public:
-        CheckItemGUIAction(const QString &_itemName, bool _exists = true) : itemName(_itemName), exists(_exists){}
-    private:
-        virtual void execute(U2OpStatus &os);
-        QString itemName;
-        bool exists;
-    };
+    static void moveTo(U2OpStatus &os, const QString &itemName);
 
-    class MoveToGUIAction : public GUIMultiTest {
-    public:
-        MoveToGUIAction(const QString &itemName) {
-            add( new OpenViewGUIAction() );
-            add( new MoveToOpenedViewGUIAction(itemName) );
-        }
-    };
+    static void checkToolTip(U2OpStatus &os, const QString& itemName, const QString& tooltip);
 
-    class MoveToOpenedViewGUIAction : public GUITest {
-    public:
-        MoveToOpenedViewGUIAction(const QString &_itemName) : itemName(_itemName){}
-    private:
-        virtual void execute(U2OpStatus &os);
-        QString itemName;
-    };
-
-    class CheckToolTipGUIAction : public GUIMultiTest {
-    public:
-        CheckToolTipGUIAction(const QString& itemName, const QString& tooltip) {
-            add( new MoveToGUIAction(itemName) );
-            add( new ToolTipUtils::CheckExistingToolTipGUIAction(tooltip) );
-        }
-    };
-
-    class OpenViewGUIAction : public GUITest {
-    protected:
-        virtual void execute(U2OpStatus& os);
-    };
-
-    class ToggleViewGUIAction : public GUITest {
-    protected:
-        virtual void execute(U2OpStatus& os);
-    };
+    static void openView(U2OpStatus& os);
+    static void toggleView(U2OpStatus& os);
 
     static QPoint getTreeViewItemPosition(U2OpStatus &os, const QString &itemName);
 
     static const QString widgetName;
 
 protected:
+    static void moveToOpenedView(U2OpStatus &os, const QString &itemName);
+
     static QTreeWidget* getTreeWidget(U2OpStatus &os);
     static QTreeWidgetItem* getTreeWidgetItem(U2OpStatus &os, const QString &itemName);
 

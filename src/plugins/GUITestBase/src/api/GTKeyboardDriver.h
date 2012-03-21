@@ -24,7 +24,6 @@
 
 #include <QMap>
 #include <U2Core/U2OpStatus.h>
-#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
@@ -56,16 +55,6 @@ public:
     static void keySequence(U2OpStatus &os, QString str);
     static void keySequence(U2OpStatus &os, QString str, int modifiers);
 
-
-    GENERATE_GUI_ACTION_1(KeySequenceGUIAction, keySequence);
-    class KeyClickGUIAction : public GUITest {
-    public:
-        KeyClickGUIAction(int _key) : key(_key){}
-    protected:
-        virtual void execute(U2OpStatus &os){ keyClick(os, key); }
-        int key;
-    };
-    
     class keys : private QMap<QString, int> {
     public:
         keys();

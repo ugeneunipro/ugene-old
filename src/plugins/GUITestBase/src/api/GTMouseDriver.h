@@ -23,7 +23,7 @@
 #define _U2_GUI_GTMOUSEDRIVER_H_
 
 #include <U2Core/U2OpStatus.h>
-#include <U2Test/GUITestBase.h>
+#include <QtCore/QPoint>
 
 namespace U2 {
 
@@ -35,20 +35,12 @@ public:
     static void moveTo(U2::U2OpStatus &os, const int x, const int y);
     static void moveTo(U2OpStatus &os, const QPoint& p) { return moveTo(os, p.x(), p.y());}
 
-    static void click(U2OpStatus &os, ButtonType buttonType); //all click methods click the current position of the cursor
+    static void click(U2OpStatus &os, ButtonType buttonType = LEFT); //all click methods click the current position of the cursor
     static void press(U2OpStatus &os, ButtonType buttonType);
     static void release(U2OpStatus &os, ButtonType buttonType); //release method should check if this key has been already pressed. Do nothing otherwise
     static void doubleClick(U2OpStatus &os);
 
     static void scroll(U2OpStatus &os, int value); //positive values for scrolling up, negative for scrolling down
-
-    class ClickGUIAction : public GUITest {
-    public:
-        ClickGUIAction(ButtonType _buttonType = LEFT): buttonType(_buttonType){}
-    protected:
-        virtual void execute(U2OpStatus &os) { click(os, buttonType); }
-        ButtonType buttonType;
-    };
 
 protected:
     

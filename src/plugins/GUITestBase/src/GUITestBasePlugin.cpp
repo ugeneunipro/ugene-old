@@ -48,23 +48,22 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     if (guiTestBase) {
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0004());
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0005());
-//         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0006());
-//         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0009());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0006());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0009());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0010());
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0011());
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0017());
-//         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0023());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0023());
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0030());
-//         guiTestBase->registerTest(new ToolbarTest());
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0010());
-
+//        guiTestBase->registerTest(new ToolbarTest());
     }
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
 
     if (guiTestBase) {
-        guiTestBase->registerTest(new GUIInitialCheck(), GUITestBase::ADDITIONAL);
-        guiTestBase->registerTest(new GUILoadedCheck(), GUITestBase::ADDITIONAL);
+//         guiTestBase->registerTest(new GUIInitialCheck(), GUITestBase::ADDITIONAL);
+//         guiTestBase->registerTest(new GUILoadedCheck(), GUITestBase::ADDITIONAL);
     }
 }
 

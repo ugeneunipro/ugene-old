@@ -24,42 +24,89 @@
 
 #include <U2Core/U2OpStatus.h>
 #include <QtGui/QMessageBox>
-#include <U2Test/GUITestBase.h>
+#include <QtCore/QTimer>
 
 namespace U2 {
 
+class Runnable {
+public:
+    virtual void run() = 0;
+};
+
+class GUIDialogWaiter : public QObject {
+    Q_OBJECT
+public:
+    GUIDialogWaiter(Runnable* _r) : r(_r), hadRun(false){}
+public slots:
+    void wait();
+private:
+    Runnable *r;
+    bool hadRun;
+};
+
 class GUIDialogUtils {
 public:
-    static void openExportProjectDialog(U2OpStatus &os);
-    GENERATE_GUI_ACTION(OpenExportProjectDialogGUIAction, openExportProjectDialog);
-
-    static void checkExportProjectDialog(U2OpStatus &os, const QString& projectName);
-    GENERATE_GUI_ACTION_1(CheckExportProjectDialogGUIAction, checkExportProjectDialog);
-
-    static void fillInExportProjectDialog(U2OpStatus &os, const QString &projectFolder, const QString &projectName);
-    GENERATE_GUI_ACTION_2(FillInExportProjectDialogGUIAction, fillInExportProjectDialog);
-
-
-    class ClickMessageBoxButtonGUIAction : public GUITest {
+    class ExportProjectDialogFiller : public Runnable {
     public:
-        ClickMessageBoxButtonGUIAction(QMessageBox::StandardButton _b) : b(_b){}
-    protected:
-        virtual void execute(U2OpStatus &os);
+        ExportProjectDialogFiller(U2OpStatus &_os, const QString &_projectFolder, const QString &_projectName)
+            :os(_os), projectFolder(_projectFolder), projectName(_projectName){}
+        virtual void run() {
+            fillInExportProjectDialog(os, projectFolder, projectName);
+        }
+    private:
+        U2OpStatus &os;
+        const QString &projectFolder;
+        const QString &projectName;
+    };
+
+    class ExportProjectDialogChecker : public Runnable {
+    public:
+        ExportProjectDialogChecker(U2OpStatus &_os, const QString &_projectName)
+            :os(_os), projectName(_projectName){}
+        virtual void run() {
+            checkExportProjectDialog(os, projectName);
+        }
+    private:
+        U2OpStatus &os;
+        const QString &projectName;
+    };
+
+    class SaveProjectAsDialogFiller : public Runnable {
+    public:
+        SaveProjectAsDialogFiller(U2OpStatus &_os, const QString &_projectName, const QString &_projectFolder, const QString &_projectFile)
+            :os(_os), projectName(_projectName), projectFolder(_projectFolder), projectFile(_projectFile){}
+        virtual void run() {
+            fillInSaveProjectAsDialog(os, projectName, projectFolder, projectFile);
+        }
+    private:
+        U2OpStatus &os;
+        const QString &projectName;
+        const QString &projectFolder;
+        const QString &projectFile;
+    };
+
+    class MessageBoxDialogFiller : public Runnable {
+    public:
+        MessageBoxDialogFiller(U2OpStatus &_os, QMessageBox::StandardButton _b)
+            :os(_os), b(_b){}
+        virtual void run() {
+            clickMessageBoxButton(os, b);
+        }
+    private:
+        U2OpStatus &os;
         QMessageBox::StandardButton b;
     };
 
-    static void openSaveProjectAsDialog(U2OpStatus &os);
-    GENERATE_GUI_ACTION(OpenSaveProjectAsDialogGUIAction, openSaveProjectAsDialog);
+    static void waitForDialog(Runnable *r);
 
-    class FillInSaveProjectAsDialogGUIAction : public GUITest {
-    public:
-        FillInSaveProjectAsDialogGUIAction(const QString &_projectName, const QString &_projectFolder, const QString &_projectFile, bool _pressCancel = false)
-            : projectName(_projectName), projectFolder(_projectFolder), projectFile(_projectFile), pressCancel(_pressCancel){}
-    protected:
-        virtual void execute(U2OpStatus &os);
-        QString projectName, projectFolder, projectFile;
-        bool pressCancel;
-    };
+    static void openExportProjectDialog(U2OpStatus &os);
+    static void checkExportProjectDialog(U2OpStatus &os, const QString& projectName);
+    static void fillInExportProjectDialog(U2OpStatus &os, const QString &projectFolder, const QString &projectName);
+
+    static void clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b);
+
+    static void openSaveProjectAsDialog(U2OpStatus &os);
+    static void fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel = false);
 };
 
 } // namespace

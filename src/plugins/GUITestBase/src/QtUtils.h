@@ -29,7 +29,6 @@
 #include <QtGui>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
@@ -41,28 +40,6 @@ namespace U2 {
 
 class QtUtils {
 public:
-
-    //mouse primitives
-    static void moveTo(U2OpStatus &os, const QString &widgetName, const QPoint &pos = QPoint());
-    class MoveToGUIAction : public GUITest {
-    public:
-        MoveToGUIAction(const QString &_widgetName, const QPoint &pos = QPoint()) : widgetName(_widgetName), _pos(pos){}
-    protected:
-        virtual void execute(U2OpStatus& os) { moveTo(os, widgetName, _pos); }
-        QString widgetName;
-        QPoint _pos;
-    };
-
-    static void mouseClick(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
-    static void mouseDbClick(U2OpStatus &os, const QString &widgetName, const QPoint &pos = QPoint());
-    static void mousePress(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button,const QPoint &pos = QPoint());
-    static void mouseRelease(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
-
-    static void mouseClick(QWidget *w, Qt::MouseButton button, const QPoint &pos = QPoint());
-    static void mouseDbClick(QWidget *w, const QPoint &pos = QPoint());
-    static void mousePress(QWidget *w, Qt::MouseButton button, const QPoint &pos = QPoint());
-    static void mouseRelease(QWidget *w, Qt::MouseButton button, const QPoint &pos = QPoint());
-
     //menu
     static void expandTopLevelMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu);
     static void clickMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu);
@@ -72,25 +49,12 @@ public:
     // expand top level menu "MW_MENU" and click on the item
     // Example: clickMenuAction(os, ACTION__ABOUT, MWMENU_HELP);
     static void clickMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName);
-    GENERATE_GUI_ACTION_2(ClickMenuActionGUIAction, clickMenuAction);
 
     // returns NULL if not found
     static QAction* getMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName);
 
     //tree model
     static void mouseClickOnItem(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
-    class MouseClickOnItemGUIAction : public GUITest {
-    public:
-        MouseClickOnItemGUIAction(const QString &_widgetName, Qt::MouseButton _button, const QPoint &_pos = QPoint())
-            : widgetName(_widgetName), button(_button), pos(_pos) {}
-    protected:
-        virtual void execute(U2OpStatus &os) { mouseClickOnItem(os, widgetName, button, pos); }
-
-        QString widgetName;
-        Qt::MouseButton button;
-        QPoint pos;
-    };
-
     static void mouseDbClickOnItem(U2OpStatus &os, const QString &widgetName, const QPoint &pos = QPoint());
     static void mousePressOnItem(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());
     static void mouseReleaseOnItem(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &pos = QPoint());

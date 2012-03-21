@@ -20,13 +20,13 @@
  */
 
 #include "QtUtils.h"
-#include <U2Test/GUITestBase.h>
 #include <U2Core/Task.h>
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Gui/GUIUtils.h>
 #include <QtTest/QSpontaneKeyEvent>
 #include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 
 namespace U2 {
 
@@ -73,127 +73,6 @@ QWidget* QtUtils::findWidgetByTitle(U2OpStatus &os, const QString &title) {
     CHECK_SET_ERR_RESULT(false, errString, NULL);
 }
 
-
-void QtUtils::moveTo(U2OpStatus &os, const QString &widgetName, const QPoint &_pos) {
-    QWidget * w = findWidgetByName(os, widgetName);
-    assert(w != NULL);
-    if(!(w && w->isVisible())) {
-        return;
-    }
-    QPoint pos = _pos;
-    if(pos.isNull()) {
-        pos = w->rect().center();
-    }
-
-    QPoint begin = QCursor::pos();
-    QPoint end = w->mapToGlobal(pos);
-    QCursor::setPos(end);
-    return;
-    float k = (float)(end.ry() - begin.ry())/(end.rx() - begin.rx());
-    float b = begin.ry() - k * begin.rx();
-
-
-    int x1 = begin.rx();
-    int x2 = end.rx();
-    
-    if(x1 < x2) {
-        for(int i = x1; i <= x2; i++) {
-            int y = k*i + b;
-            sleep(10);
-            QCursor::setPos(i, y);
-        }
-    } else {
-        for(int i = x1; i >= x2; i--) {
-            int y = k*i + b;
-            sleep(10);
-            QCursor::setPos(i, y);
-        }
-    }
-}
-
-void QtUtils::mousePress(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &_pos) {
-    QWidget * w = findWidgetByName(os, widgetName);
-    QPoint pos = _pos;
-    if(pos.isNull()) {
-        pos = w->rect().center();
-    }
-
-    QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, pos, button, button, 0); 
-    sendEvent(w, me);
-}
-
-void QtUtils::mouseRelease(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &_pos) {
-    QWidget * w = findWidgetByName(os, widgetName);
-    QPoint pos = _pos;
-    if(pos.isNull()) {
-        pos = w->rect().center();
-    }
-
-    QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonRelease, pos, button, button, 0); 
-    sendEvent(w, me);
-}
-
-void QtUtils::mouseClick(U2OpStatus &os, const QString &widgetName, Qt::MouseButton button, const QPoint &_pos) {
-    mousePress(os, widgetName, button, _pos);
-    QtUtils::sleep(500);
-    mouseRelease(os, widgetName, button, _pos);
-}
-
-void QtUtils::mouseDbClick(U2OpStatus &os, const QString &widgetName, const QPoint &_pos) {
-    QWidget * w = findWidgetByName(os, widgetName);
-    QPoint pos = _pos;
-    if(pos.isNull()) {
-        pos = w->rect().center();
-    }
-
-    QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonDblClick, pos, Qt::LeftButton, Qt::LeftButton, 0);
-    sendEvent(w, me);
-}
-
-void QtUtils::mousePress(QWidget *w, Qt::MouseButton button, const QPoint &_pos) {
-    if (!w) {
-        return;
-    }
-    QPoint pos = _pos;
-    if(pos.isNull()) {
-        pos = w->rect().center();
-    }
-
-    QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonPress, pos, button, button, 0); 
-    sendEvent(w, me);
-}
-
-void QtUtils::mouseRelease(QWidget *w, Qt::MouseButton button, const QPoint &_pos) {
-    if (!w) {
-        return;
-    }
-    QPoint pos = _pos;
-    if(pos.isNull()) {
-        pos = w->rect().center();
-    }
-
-    QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonRelease, pos, button, button, 0); 
-    sendEvent(w, me);
-}
-
-void QtUtils::mouseClick(QWidget *w, Qt::MouseButton button, const QPoint &_pos) {
-    mousePress(w, button, _pos);
-    mouseRelease(w, button, _pos);
-}
-
-void QtUtils::mouseDbClick(QWidget *w, const QPoint &_pos) {
-    if (!w) {
-        return;
-    }
-    QPoint pos = _pos;
-    if(pos.isNull()) {
-        pos = w->rect().center();
-    }
-
-    QMouseEvent *me = new QMouseEvent(QEvent::MouseButtonDblClick, pos, Qt::LeftButton, Qt::LeftButton, 0);
-    sendEvent(w, me);
-}
-
 void QtUtils::expandTopLevelMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu) {
     QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
     QAction *curAction = mw->findChild<QAction*>(menuName);
@@ -207,9 +86,9 @@ void QtUtils::expandTopLevelMenu(U2OpStatus &os, const QString &menuName, const 
 
     QPoint pos = parMenu->actionGeometry(curAction).center();
 
-    moveTo(os, parentMenu, pos);
+    GTMouseDriver::moveTo(os, parMenu->mapToGlobal(pos));
     QtUtils::sleep(500);
-    mouseClick(os, parentMenu, Qt::LeftButton, pos);
+    GTMouseDriver::click(os);
 }
 
 void QtUtils::clickMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu) {
@@ -222,8 +101,8 @@ void QtUtils::clickMenu(U2OpStatus &os, const QString &menuName, const QString &
     CHECK_SET_ERR(parMenu != NULL, QString("Menu %1 not found").arg(parentMenu));
     QPoint pos = parMenu->actionGeometry(curAction).center();
 
-    moveTo(os, parentMenu, pos);
-    mouseClick(os, parentMenu, Qt::LeftButton, pos);
+    GTMouseDriver::moveTo(os, parMenu->mapToGlobal(pos));
+    GTMouseDriver::click(os);
 }
 
 void QtUtils::clickContextMenu(U2OpStatus &os, const QString &menuName) {
@@ -277,8 +156,8 @@ void QtUtils::clickMenuAction(U2OpStatus &os, const QString &actionName, const Q
     CHECK_SET_ERR(parMenu != NULL, QString("Menu %1 not found").arg(menuName));
     QPoint pos = parMenu->actionGeometry(curAction).center();
 
-    moveTo(os, menuName, pos);
-    mouseClick(os, menuName, Qt::LeftButton, pos);
+    GTMouseDriver::moveTo(os, parMenu->mapToGlobal(pos));
+    GTMouseDriver::click(os);
 }
 
 QAction* QtUtils::getMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName) {
@@ -291,7 +170,7 @@ QAction* QtUtils::getMenuAction(U2OpStatus &os, const QString &actionName, const
     CHECK_SET_ERR_RESULT(menu != NULL, "No such menu: " + menuName, false);
 
     QAction* neededAction = GUIUtils::findAction(menu->actions(), actionName);
-    QtUtils::expandTopLevelMenu(os, menuName, MWMENU);
+//    QtUtils::expandTopLevelMenu(os, menuName, MWMENU);
 
     return neededAction;
 }
@@ -313,7 +192,7 @@ void QtUtils::sendEvent(QObject *obj, QEvent *e) {
     qApp->notify(obj, e);
 }
 
-void QtUtils::sleep( int msec ){
+void QtUtils::sleep(int msec) {
     QEventLoop l;
     QTimer::singleShot(msec, &l, SLOT(quit()));
     l.exec();
@@ -403,8 +282,8 @@ void QtUtils::expandTreeItem(U2OpStatus &os, const QString &itemName, const QStr
 
     QTreeWidgetItem *item = tree->findItems(itemName, Qt::MatchExactly | Qt::MatchRecursive).first();
     QPoint pos = tree->visualItemRect(item).topLeft();
-    moveTo(os, treeName, pos);
-    mouseClickOnItem(os, treeName, Qt::LeftButton, pos);
+    GTMouseDriver::moveTo(os, tree->mapToGlobal(pos));
+    GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
 }
 

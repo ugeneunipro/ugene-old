@@ -23,14 +23,12 @@
 #define _U2_GUI_APP_UTILS_H_
 
 #include <U2Core/U2OpStatus.h>
-#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
 class AppUtils {
 public:
     static void checkUGENETitle(U2OpStatus &os, const QString& title);
-    GENERATE_GUI_ACTION_1(CheckUGENETitleGUIAction, checkUGENETitle);
 };
 
 } // namespace

@@ -20,9 +20,15 @@
  */
 
 #include "GTWidget.h"
+#include "GTMouseDriver.h"
+#include <QtGui/QWidget>
 
 namespace U2 {
 
+void GTWidget::click(U2OpStatus &os, QWidget *w) {
+    GTMouseDriver::moveTo(os, w->mapToGlobal(w->rect().center()));
+    GTMouseDriver::click(os);
+}
 
 } //namespace
 

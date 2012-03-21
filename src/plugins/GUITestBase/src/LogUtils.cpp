@@ -38,12 +38,9 @@ void LogTracer::sl_onMessage(const LogMessage &msg) {
     }
 }
 
-void LogUtils::LogTracerStartGUIAction::execute(U2OpStatus &os) {
-    LogTracer::instance()->reset();
-}
-
-void LogUtils::LogTracerCheckGUIAction::execute(U2OpStatus &os) {
-    CHECK_SET_ERR(LogTracer::instance()->hasError() == false, "There is an error in log");
+void LogUtils::check(U2OpStatus &os, LogTracer& l) {
+    QtUtils::sleep(500);
+    CHECK_SET_ERR(l.hasError() == false, "There is an error in log");
 }
 
 } // namespace

@@ -51,7 +51,7 @@ void GUITestService::sl_registerService() {
 
     switch (launchedFor) {
         case RUN_ONE_TEST:
-            registerGUITest();
+            QTimer::singleShot(1000, this, SLOT(runGUITest()));
             break;
 
         case RUN_ALL_TESTS:
@@ -101,34 +101,25 @@ Task* GUITestService::createTestLauncherTask() const {
     return task;
 }
 
-void GUITestService::sl_subTestFinished(GUITest* t) {
-
-    if (GUIMultiTest* multiTest = qobject_cast<GUIMultiTest*>(t)) {
-        if (!os.hasError()) {
-            os.setError(multiTest->os.getError());
-        }
-    }
-    delete t;
-
-    QString testResult = successResult;
-    if (os.hasError()) {
-        testResult = os.getError();
-    }
-
-    writeTestResult(testResult);
-
-    exit(0);
-}
-
-void GUITestService::registerGUITest() {
+void GUITestService::runGUITest() {
 
     GUITest* t = getTest();
     Q_ASSERT(t);
 
+    QString testResult = successResult;
     if (t) {
-        connect(t, SIGNAL(finished(GUITest*)), this, SLOT(sl_subTestFinished(GUITest*)), Qt::QueuedConnection);
         t->run(os);
+
+        if (os.hasError()) {
+            testResult = os.getError();
+        }
     }
+    else {
+        testResult = "GUITestService: Test not found";
+    }
+
+    writeTestResult(testResult);
+    exit(0);
 }
 
 void GUITestService::registerServiceTask() {

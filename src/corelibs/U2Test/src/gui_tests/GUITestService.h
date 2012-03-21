@@ -38,8 +38,7 @@ protected slots:
     void sl_registerService();
     void sl_registerTestLauncherTask();
     void sl_taskStateChanged(Task*);
-
-    void sl_subTestFinished(GUITest*);
+    void runGUITest();
 
 private:
     QAction *runTestsAction;
@@ -49,7 +48,6 @@ private:
     LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
     bool launchedToTestGUI(CMDLineRegistry* cmdLine) const;
 
-    void registerGUITest();
     void registerAllTestsTask();
     void registerServiceTask();
 

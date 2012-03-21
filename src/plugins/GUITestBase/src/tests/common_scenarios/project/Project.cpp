@@ -38,107 +38,116 @@ namespace GUITest_common_scenarios_project{
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
 
-    add(new ProjectUtils::OpenProjectGUIAction(
+    ProjectUtils::openProject(os,
         testDir+"_common_data/scenarios/project/proj1.uprj",
         "proj1 UGENE",
-        "1CF7.PDB")
-        );
+        "1CF7.PDB"
+    );
 
-    add( new ProjectUtils::ExportProjectGUIAction(testDir+"_common_data/scenarios/sandbox") );
-    add( new ProjectUtils::CloseProjectGUIAction() );
+    ProjectUtils::exportProject(os, testDir+"_common_data/scenarios/sandbox");
+    ProjectUtils::closeProject(os);
 
-    add(new ProjectUtils::OpenProjectGUIAction(
+    ProjectUtils::openProject(os,
         testDir+"_common_data/scenarios/sandbox/proj1.uprj",
         "proj1 UGENE",
-        "1CF7.PDB")
-        );
+        "1CF7.PDB"
+    );
 
-    add( new ProjectTreeViewUtils::CheckToolTipGUIAction("1CF7.PDB", "_common_data/scenarios/sandbox/1CF7.PDB") );
+    ProjectTreeViewUtils::checkToolTip(os,
+        "1CF7.PDB",
+        "_common_data/scenarios/sandbox/1CF7.PDB"
+    );
 
-    add( new ProjectTreeViewUtils::ClickGUIAction("1CF7.PDB"));
-    add( new GTKeyboardDriver::KeyClickGUIAction(GTKeyboardDriver::key["Enter"]) );
+    ProjectTreeViewUtils::click(os, "1CF7.PDB");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
 
-    add( new DocumentUtils::CheckDocumentExistsGUIAction("1CF7.PDB", AnnotatedDNAViewFactory::ID) );
+    DocumentUtils::checkDocument(os,
+        "1CF7.PDB",
+        AnnotatedDNAViewFactory::ID
+    );
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
-    add(new ProjectUtils::OpenProjectGUIAction(
+    ProjectUtils::openProject(os,
         testDir+"_common_data/scenarios/project/proj1.uprj",
         "proj1 UGENE",
-        "1CF7.PDB")
-        );
+        "1CF7.PDB"
+    );
 
-    add(new ProjectUtils::SaveProjectAsGUIAction(
+    ProjectUtils::saveProjectAs(os,
         "proj2",
         testDir+"_common_data/scenarios/sandbox",
-        "proj2")
-        );
+        "proj2"
+    );
 
-    add(new ProjectUtils::CloseProjectGUIAction());
+    ProjectUtils::closeProject(os);
 
-    add(new ProjectUtils::OpenProjectGUIAction(
+    ProjectUtils::openProject(os,
         testDir+"_common_data/scenarios/sandbox/proj2.uprj",
         "proj2 UGENE",
-        "1CF7.PDB")
-        );
+        "1CF7.PDB"
+    );
 
-    add(new ProjectTreeViewUtils::CheckToolTipGUIAction("1CF7.PDB", "samples/PDB/1CF7.PDB"));
+    ProjectTreeViewUtils::checkToolTip(os,
+        "1CF7.PDB",
+        "samples/PDB/1CF7.PDB"
+    );
 }
 
-void test_0006::execute( U2OpStatus &os ) {
+GUI_TEST_CLASS_DEFINITION(test_0006) {
     AppUtils::checkUGENETitle(os, "UGENE");
     QAction *result = QtUtils::getMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
     CHECK_SET_ERR(result == NULL, "Export menu item present in menu without any project created");
 }
 
-void test_0009::execute( U2OpStatus &os ){
+GUI_TEST_CLASS_DEFINITION(test_0009) {
 
-//     ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa.gz");
-//     DocumentUtils::checkDocumentExists(os, "fa1.fa.gz", "MSAEditor");
+    ProjectUtils::openFiles(os, testDir + "_common_data/fasta/fa1.fa.gz");
+    DocumentUtils::checkDocument(os, "fa1.fa.gz", "MSAEditor");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010) {
+
+    ProjectUtils::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+    ProjectTreeViewUtils::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", "qqq");
+    ProjectTreeViewUtils::checkItem(os, "qqq", true);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011) {
 
-    add( new ProjectUtils::OpenFilesGUIAction(testDir + "_common_data/scenarios/project/1.gb"));
-    add( new GUIDialogUtils::OpenExportProjectDialogGUIAction());
-    add( new GUIDialogUtils::CheckExportProjectDialogGUIAction("project.uprj"));
+    ProjectUtils::openFiles(os, testDir + "_common_data/scenarios/project/1.gb");
+    ProjectUtils::exportProjectCheck(os, "project.uprj");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0017) {
 
-    add( new ProjectUtils::OpenFilesGUIAction(QList<QUrl>()
+    ProjectUtils::openFiles(os, QList<QUrl>()
         << dataDir+"samples/Genbank/murine.gb"
         << dataDir+"samples/Genbank/sars.gb"
         << dataDir+"samples/Genbank/CVU55762.gb"
-        ));
-    add( new DocumentUtils::CheckDocumentExistsGUIAction("murine.gb"));
-    add( new DocumentUtils::CheckDocumentExistsGUIAction("sars.gb"));
-    add( new DocumentUtils::CheckDocumentExistsGUIAction("CVU55762.gb"));
+    );
+    DocumentUtils::checkDocument(os, "murine.gb");
+    DocumentUtils::checkDocument(os, "sars.gb");
+    DocumentUtils::checkDocument(os, "CVU55762.gb");
 }
 
-void test_0023::execute(U2OpStatus &os) {
+GUI_TEST_CLASS_DEFINITION(test_0023) {
     //ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa");
     //TODO: minimized sequence view and check title
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0030) {
-    add (new LogUtils::LogTracerStartGUIAction());
-    add (new ProjectUtils::OpenFilesGUIAction(dataDir + "samples/FASTA/human_T1.fa"));
+    LogTracer logTracer;
+    ProjectUtils::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 
-    ProjectUtils::CloseProjectSettings button_to_press;
-    button_to_press.saveOnClose = ProjectUtils::CloseProjectSettings::CANCEL;
+    ProjectUtils::CloseProjectSettings s;
+    s.saveOnCloseButton = QMessageBox::Cancel;
 
-    add (new ProjectUtils::CloseProjectGUIAction(button_to_press) );
-    add (new LogUtils::LogTracerCheckGUIAction());
+    ProjectUtils::closeProject(os, s);
+    LogUtils::check(os, logTracer);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0010) {
-
-    add( new ProjectUtils::OpenFilesGUIAction(dataDir + "samples/FASTA/human_T1.fa"));
-    add( new ProjectTreeViewUtils::RenameGUIAction("human_T1 (UCSC April 2002 chr7:115977709-117855134)", "qqq"));
-    add( new ProjectTreeViewUtils::CheckItemGUIAction("qqq", true));
-}
 }
 
 }

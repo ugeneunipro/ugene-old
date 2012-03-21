@@ -23,7 +23,6 @@
 #define _U2_GUI_DOCUMENT_UTILS_H_
 
 #include <U2Core/U2OpStatus.h>
-#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
@@ -32,14 +31,10 @@ class Document;
 
 class DocumentUtils {
 public:
-    // checks if the document with a given name is loaded in a view with a given factory Id
-    static void checkDocumentExists(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id = QString());
-    GENERATE_GUI_ACTION_2(CheckDocumentExistsGUIAction, checkDocumentExists);
+    // checks if the document with a given name exists and loaded in a view with a given factory Id
+    static void checkDocument(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id = QString());
 
-    class RemoveDocumentGUIAction : public GUIMultiTest {
-    public:
-        RemoveDocumentGUIAction(const QString &documentName);
-    };
+    static void removeDocument(U2OpStatus &os, const QString &documentName);
 
     static Document* getDocument(U2OpStatus &os, const QString& documentName);
 

@@ -25,7 +25,6 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/U2OpStatus.h>
 #include <QtGui/QMessageBox>
-#include <U2Test/GUITestBase.h>
 #include "AppUtils.h"
 #include "DocumentUtils.h"
 #include "GUIDialogUtils.h"
@@ -44,77 +43,33 @@ public:
 
     class CloseProjectSettings {
     public:
-        enum SaveOnClose {NO, YES, CANCEL} saveOnClose;
+        CloseProjectSettings() : saveOnCloseButton(QMessageBox::No){}
+
+        // QMessageBox::No, QMessageBox::Yes, QMessageBox::Cancel
+        QMessageBox::StandardButton saveOnCloseButton;
     };
 
-    class OpenProjectGUIAction : public GUIMultiTest {
-    public:
-        OpenProjectGUIAction(const GUrl& path, const QString& projectName, const QString& documentName) {
-            add(new ProjectUtils::OpenFilesGUIAction(path));
-            add(new AppUtils::CheckUGENETitleGUIAction(projectName));
-            add(new DocumentUtils::CheckDocumentExistsGUIAction(documentName));
-        }
-    };
+    static void openProject(U2OpStatus& os, const GUrl& path, const QString& projectName, const QString& documentName);
 
     /*
         opens files using settings, checks if the document is loaded
     */
-    class OpenFilesGUIAction : public GUIMultiTest {
-    public:
-        OpenFilesGUIAction(const QList<QUrl> &_urls, const OpenFileSettings& _s = OpenFileSettings())
-            : urls(_urls), s(_s){ addSubTests(); }
+    static void openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& s = OpenFileSettings());
+    static void openFiles(U2OpStatus &os, const GUrl &path, const OpenFileSettings& s = OpenFileSettings());
 
-        OpenFilesGUIAction(const GUrl &path, const OpenFileSettings& _s = OpenFileSettings())
-            : s(_s), urls(QList<QUrl>() << path.getURLString()){ addSubTests(); }
+    static void exportProject(U2OpStatus &os, const QString &projectFolder, const QString &projectName = "");
+    static void exportProjectCheck(U2OpStatus &os, const QString &projectName);
 
-    protected:
-        void addSubTests();
-    private:
-        QList<QUrl> urls;
-        OpenFileSettings s;
-    };
+    static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
+    static void closeProject(U2OpStatus &os, const CloseProjectSettings& settings = CloseProjectSettings());
 
-    class ExportProjectGUIAction : public GUIMultiTest {
-    public:
-        ExportProjectGUIAction(const QString &projectFolder, const QString &projectName = "") {
-            add( new GUIDialogUtils::OpenExportProjectDialogGUIAction() );
-            add( new GUIDialogUtils::FillInExportProjectDialogGUIAction(projectFolder, projectName) );
-        }
-    };
-
-    class SaveProjectAsGUIAction : public GUIMultiTest {
-    public:
-        SaveProjectAsGUIAction(const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting = true);
-    };
-
-    class CloseProjectGUIAction : public GUIMultiTest {
-    public:
-        CloseProjectGUIAction(const CloseProjectSettings& settings = CloseProjectSettings());
-    };
-
-    class CheckProjectGUIAction : public GUITest {
-    public:
-        enum CheckType {EXISTS, EMPTY};
-        CheckProjectGUIAction(CheckType _checkType = EXISTS) : checkType(_checkType){}
-    protected:
-        virtual void execute(U2OpStatus &os);
-        CheckType checkType;
-    };
-
-protected:
-    class OpenFilesDropGUIAction : public GUITest {
-    public:
-        OpenFilesDropGUIAction(const QList<QUrl> &_urls) : urls(_urls){}
-    protected:
-        virtual void execute(U2OpStatus &os);
-    private:
-        QList<QUrl> urls;
-    };
-
-    static void checkProjectExists(U2OpStatus &os);
+    enum CheckType {EXISTS, EMPTY};
+    static void checkProject(U2OpStatus &os, CheckType checkType = EXISTS);
 
     static Document* checkDocumentExists(U2OpStatus &os, const GUrl &url);
-    GENERATE_GUI_ACTION_1(CheckDocumentExistsGUIAction, checkDocumentExists);
+
+protected:
+    static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);
 
     static void checkDocumentActive(U2OpStatus &os, Document *doc);
 

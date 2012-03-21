@@ -35,40 +35,56 @@ namespace U2 {
 
 const QString ProjectTreeViewUtils::widgetName = "documentTreeWidget";
 
-void ProjectTreeViewUtils::OpenViewGUIAction::execute(U2OpStatus& os) {
+void ProjectTreeViewUtils::openView(U2OpStatus& os) {
 
     QWidget *documentTreeWidget = QtUtils::findWidgetByName(os, widgetName, NULL, false);
     if (!documentTreeWidget) {
-        ToggleViewGUIAction().run(os);
+        toggleView(os);
     }
+    QtUtils::sleep(500);
 }
 
-void ProjectTreeViewUtils::ToggleViewGUIAction::execute(U2OpStatus &os) {
+void ProjectTreeViewUtils::toggleView(U2OpStatus& os) {
 
     GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
 }
 
-ProjectTreeViewUtils::RenameGUIAction::RenameGUIAction(const QString &itemName, const QString &newItemName) {
+void ProjectTreeViewUtils::rename(U2OpStatus &os, const QString &itemName, const QString &newItemName) {
 
-    add( new ProjectTreeViewUtils::ClickGUIAction(itemName));
-    add( new GTKeyboardDriver::KeyClickGUIAction(GTKeyboardDriver::key["F2"]) );
-    add( new GTKeyboardDriver::KeySequenceGUIAction(newItemName) );
-    add( new GTKeyboardDriver::KeyClickGUIAction(GTKeyboardDriver::key["Enter"]) );
+    click(os, itemName);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTKeyboardDriver::keySequence(os, newItemName);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
+
+    QtUtils::sleep(500);
 }
 
-ProjectTreeViewUtils::ClickGUIAction::ClickGUIAction(const QString& itemName) {
+void ProjectTreeViewUtils::click(U2OpStatus &os, const QString &itemName) {
 
-    add( new MoveToGUIAction(itemName) );
-    add( new GTMouseDriver::ClickGUIAction() );
+    moveTo(os, itemName);
+    GTMouseDriver::click(os);
 }
 
-void ProjectTreeViewUtils::MoveToOpenedViewGUIAction::execute(U2OpStatus &os) {
+void ProjectTreeViewUtils::moveTo(U2OpStatus &os,const QString &itemName) {
+
+    openView(os);
+    moveToOpenedView(os, itemName);
+}
+
+void ProjectTreeViewUtils::moveToOpenedView(U2OpStatus &os, const QString &itemName) {
 
     QPoint p = getTreeViewItemPosition(os, itemName);
     GTMouseDriver::moveTo(os, p);
 }
 
-void ProjectTreeViewUtils::CheckItemGUIAction::execute(U2OpStatus &os) {
+void ProjectTreeViewUtils::checkToolTip(U2OpStatus &os, const QString& itemName, const QString& tooltip) {
+
+    moveTo(os, itemName);
+    QtUtils::sleep(2000);
+    ToolTipUtils::checkExistingToolTip(os, tooltip);
+}
+
+void ProjectTreeViewUtils::checkItem(U2OpStatus &os, const QString &itemName, bool exists) {
 
     QTreeWidgetItem* item = getTreeWidgetItem(os, itemName);
     if (exists) {
@@ -82,10 +98,11 @@ void ProjectTreeViewUtils::CheckItemGUIAction::execute(U2OpStatus &os) {
 QPoint ProjectTreeViewUtils::getTreeViewItemPosition(U2OpStatus &os, const QString &itemName) {
 
     QTreeWidget *treeWidget = getTreeWidget(os);
+    CHECK_SET_ERR_RESULT(treeWidget != NULL, "treeWidget is NULL", QPoint());
     QTreeWidgetItem *item = getTreeWidgetItem(os, itemName);
 
     QPoint p = treeWidget->rect().center();
-    if (treeWidget && item) {
+    if (item) {
         p = treeWidget->visualItemRect(item).center();
     }
 

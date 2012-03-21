@@ -22,19 +22,17 @@
 #ifndef _U2_GUI_INITIAL_CHECKS_H_
 #define _U2_GUI_INITIAL_CHECKS_H_
 
-#include <U2Test/GUITestBase.h>
-
 namespace U2 {
 
-class GUIInitialCheck : public GUITest {
-protected:
-    virtual void execute(U2OpStatus &os);
-};
-
-class GUILoadedCheck : public GUITest {
-public:
-    virtual void execute(U2OpStatus &os);
-};
+// class GUIInitialCheck : public GUITest {
+// protected:
+//     virtual void execute(U2OpStatus &os);
+// };
+// 
+// class GUILoadedCheck : public GUITest {
+// public:
+//     virtual void execute(U2OpStatus &os);
+// };
 
 } //namespace
 

@@ -30,49 +30,57 @@
 
 namespace U2 {
 
-void ProjectUtils::OpenFilesGUIAction::addSubTests() {
+void ProjectUtils::openProject(U2OpStatus& os, const GUrl& path, const QString& projectName, const QString& documentName) {
+
+    openFiles(os, path);
+    AppUtils::checkUGENETitle(os, projectName);
+    DocumentUtils::checkDocument(os, documentName);
+}
+
+void ProjectUtils::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& s) {
 
     switch (s.openMethod) {
         case OpenFileSettings::DRAGDROP:
         default:
-            add( new OpenFilesDropGUIAction(urls) );
+            openFilesDrop(os, urls);
     }
 
-    add( new CheckProjectGUIAction() );
+    QtUtils::sleep(500);
+
+    checkProject(os);
     foreach (QUrl path, urls) {
-        add( new CheckDocumentExistsGUIAction(path.toString()) );
+        checkDocumentExists(os, path.toString());
     }
+
+    QtUtils::sleep(1000);
 }
 
-ProjectUtils::SaveProjectAsGUIAction::SaveProjectAsGUIAction(const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting) {
-
-    add( new GUIDialogUtils::OpenSaveProjectAsDialogGUIAction() );
-    add( new GUIDialogUtils::FillInSaveProjectAsDialogGUIAction(projectName, projectFolder, projectFile) );
-
-    QMessageBox::StandardButton b = overwriteExisting ? QMessageBox::Yes : QMessageBox::No;
-    add( new GUIDialogUtils::ClickMessageBoxButtonGUIAction(b) );
-
-    add( new GUIDialogUtils::FillInSaveProjectAsDialogGUIAction(projectName, projectFolder, projectFile, true) );
+void ProjectUtils::openFiles(U2OpStatus &os, const GUrl &path, const OpenFileSettings& s) {
+    openFiles(os, QList<QUrl>() << path.getURLString(), s);
 }
 
-ProjectUtils::CloseProjectGUIAction::CloseProjectGUIAction(const CloseProjectSettings& settings) {
+void ProjectUtils::exportProject(U2OpStatus &os, const QString &projectFolder, const QString &projectName) {
 
-    add( new QtUtils::ClickMenuActionGUIAction(ACTION_PROJECTSUPPORT__CLOSE_PROJECT, MWMENU_FILE) );
+    GUIDialogUtils::openExportProjectDialog(os);
+    GUIDialogUtils::waitForDialog(&GUIDialogUtils::ExportProjectDialogFiller(os, projectFolder, projectName));
+}
 
-    switch (settings.saveOnClose) {
-        case CloseProjectSettings::YES:
-            add( new GUIDialogUtils::ClickMessageBoxButtonGUIAction(QMessageBox::Yes) );
-            break;
+void ProjectUtils::exportProjectCheck(U2OpStatus &os, const QString &projectName) {
 
-        case CloseProjectSettings::NO:
-            add( new GUIDialogUtils::ClickMessageBoxButtonGUIAction(QMessageBox::No) );
-            break;
+    GUIDialogUtils::openExportProjectDialog(os);
+    GUIDialogUtils::waitForDialog(&GUIDialogUtils::ExportProjectDialogChecker(os, projectName));
+}
 
-        default:
-        case CloseProjectSettings::CANCEL:
-            add( new GUIDialogUtils::ClickMessageBoxButtonGUIAction(QMessageBox::Cancel) );
-            break;
-    }
+void ProjectUtils::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool overwriteExisting) {
+
+    GUIDialogUtils::openSaveProjectAsDialog(os);
+    GUIDialogUtils::waitForDialog(&GUIDialogUtils::SaveProjectAsDialogFiller(os, projectName, projectFolder, projectFile));
+}
+
+void ProjectUtils::closeProject(U2OpStatus &os, const CloseProjectSettings& settings) {
+
+    QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__CLOSE_PROJECT, MWMENU_FILE);
+    GUIDialogUtils::waitForDialog(&GUIDialogUtils::MessageBoxDialogFiller(os, settings.saveOnCloseButton));
 }
 
 void ProjectUtils::closeProjectByHotkey(U2OpStatus &os) {
@@ -80,7 +88,7 @@ void ProjectUtils::closeProjectByHotkey(U2OpStatus &os) {
     GTKeyboardDriver::keyClick(os, 'q', GTKeyboardDriver::key["ctrl"]);
 }
 
-void ProjectUtils::CheckProjectGUIAction::execute(U2OpStatus &os) {
+void ProjectUtils::checkProject(U2OpStatus &os, CheckType checkType) {
 
     CHECK_SET_ERR(AppContext::getProject() != NULL, "There is no project");
 
@@ -88,12 +96,6 @@ void ProjectUtils::CheckProjectGUIAction::execute(U2OpStatus &os) {
         case EMPTY :
             CHECK_SET_ERR(AppContext::getProject()->getDocuments().isEmpty() == true, "Project is not empty");
     }
-}
-
-void ProjectUtils::checkProjectExists(U2OpStatus &os) {
-
-    // check if project exists
-    CHECK_SET_ERR(AppContext::getProject() != NULL, "There is no project");
 }
 
 Document* ProjectUtils::checkDocumentExists(U2OpStatus &os, const GUrl &url) {
@@ -136,7 +138,7 @@ void ProjectUtils::checkDocumentActive(U2OpStatus &os, Document *doc) {
     CHECK_SET_ERR(documentWindow == activeWindow, "documentWindow is not active");
 }
 
-void ProjectUtils::OpenFilesDropGUIAction::execute(U2OpStatus &os) {
+void ProjectUtils::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
 
     QWidget* widget = AppContext::getMainWindow()->getQMainWindow();
     QPoint widgetPos(widget->width()/2, widget->height()/2);

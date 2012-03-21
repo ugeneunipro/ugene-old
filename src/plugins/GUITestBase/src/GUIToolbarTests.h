@@ -22,15 +22,11 @@
 #ifndef _U2_GUI_TOOLBAR_TESTS_H_
 #define _U2_GUI_TOOLBAR_TESTS_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Test/GUITest.h>
 
 namespace U2 {
 
-
-class ToolbarTest : public GUITest {
-protected:
-    virtual void execute(U2OpStatus &os);
-};
+//GUI_TEST_CLASS_DECLARATION(ToolbarTest);
 
 } //namespace
 

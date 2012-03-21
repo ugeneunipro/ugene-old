@@ -23,8 +23,33 @@
 #include "QtUtils.h"
 
 #include <U2Core/U2SafePoints.h>
+#include "api/GTWidget.h"
 
 namespace U2 {
+
+void GUIDialogWaiter::wait() {
+
+    QWidget* w = QApplication::activeModalWidget();
+    if (!w) {
+        return;
+    }
+
+    if (r && !hadRun) {
+        hadRun = true;
+        r->run();
+    }
+}
+
+void GUIDialogUtils::waitForDialog(Runnable *r) {
+
+    GUIDialogWaiter waiter(r);
+    QTimer t;
+
+    t.connect(&t, SIGNAL(timeout()), &waiter, SLOT(wait()));
+    t.start(100);
+
+    QtUtils::sleep(500);
+}
 
 void GUIDialogUtils::openExportProjectDialog(U2OpStatus &os) {
 
@@ -53,6 +78,18 @@ void GUIDialogUtils::checkExportProjectDialog(U2OpStatus &os, const QString& pro
 
     CHECK_SET_ERR(lineEdits.size() > 0, "There is no lineEdit in dialog");
     CHECK_SET_ERR(lineEdits[0]->text() == projectName, "Project name is not " + projectName);
+
+    QList<QPushButton*> buttons;
+    foreach (QObject *obj, activeWP->children()) {
+        QPushButton *b = qobject_cast<QPushButton*>(obj);
+        if (b) {
+            buttons.push_front(b);
+        }
+    }
+
+    CHECK_SET_ERR(buttons.size() == 2, "There aren't 2 QPushButtons in SaveProjectAs dialog");
+
+    GTWidget::click(os, buttons[0]);
 }
 
 void GUIDialogUtils::fillInExportProjectDialog(U2OpStatus &os, const QString &projectFolder, const QString &projectName) {
@@ -92,10 +129,10 @@ void GUIDialogUtils::fillInExportProjectDialog(U2OpStatus &os, const QString &pr
 
     CHECK_SET_ERR(buttons.size() == 2, "There aren't 2 QPushButtons in SaveProjectAs dialog");
 
-    buttons[1]->click();
+    GTWidget::click(os, buttons[1]);
 }
 
-void GUIDialogUtils::ClickMessageBoxButtonGUIAction::execute(U2OpStatus &os) {
+void GUIDialogUtils::clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b) {
 
     QWidget* activeModal = QApplication::activeModalWidget();
     QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
@@ -106,7 +143,7 @@ void GUIDialogUtils::ClickMessageBoxButtonGUIAction::execute(U2OpStatus &os) {
     QAbstractButton* button = messageBox->button(b);
     CHECK_SET_ERR(button != NULL, "There is no such button in messagebox");
 
-    button->click();
+    GTWidget::click(os, button);
 }
 
 void GUIDialogUtils::openSaveProjectAsDialog(U2OpStatus &os) {
@@ -114,7 +151,7 @@ void GUIDialogUtils::openSaveProjectAsDialog(U2OpStatus &os) {
     QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT, MWMENU_FILE);
 }
 
-void GUIDialogUtils::FillInSaveProjectAsDialogGUIAction::execute(U2OpStatus &os) {
+void GUIDialogUtils::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel) {
 
     QWidget* w = QApplication::activeModalWidget();
     if (!w) {
@@ -153,13 +190,13 @@ void GUIDialogUtils::FillInSaveProjectAsDialogGUIAction::execute(U2OpStatus &os)
     QPushButton* saveButton = buttons[1];
 
     if (pressCancel) {
-        cancelButton->click();
+        GTWidget::click(os, cancelButton);
     }
     else {
-        saveButton->click();
+        GTWidget::click(os, saveButton);
     }
 
-    QtUtils::sleep(500);
+    GUIDialogUtils::waitForDialog(&GUIDialogUtils::MessageBoxDialogFiller(os, QMessageBox::Yes));
 }
 
 }

@@ -23,14 +23,12 @@
 #define _U2_GUI_TOOLTIP_UTILS_H_
 
 #include <U2Core/U2OpStatus.h>
-#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
 class ToolTipUtils {
 public:
     static void checkExistingToolTip(U2OpStatus &os, const QString& tooltip);
-    GENERATE_GUI_ACTION_1(CheckExistingToolTipGUIAction, checkExistingToolTip);
 
     static QString getToolTip();
 };

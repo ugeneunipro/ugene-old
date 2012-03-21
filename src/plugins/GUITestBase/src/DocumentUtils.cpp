@@ -46,7 +46,9 @@ Document* DocumentUtils::getDocument(U2OpStatus &os, const QString& documentName
     return NULL;
 }
 
-void DocumentUtils::checkDocumentExists(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id) {
+void DocumentUtils::checkDocument(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id) {
+
+    QtUtils::sleep(1000);
 
     Document *d = getDocument(os, documentName);
     CHECK_SET_ERR(d != NULL, "There is no document with name " + documentName);
@@ -62,10 +64,10 @@ void DocumentUtils::checkDocumentExists(U2OpStatus &os, const QString &documentN
     CHECK_SET_ERR(viewFactoryId == id, "View's GObjectViewFactoryId is " + viewFactoryId + ", not " + id);
 }
 
-DocumentUtils::RemoveDocumentGUIAction::RemoveDocumentGUIAction(const QString &documentName) {
+void DocumentUtils::removeDocument(U2OpStatus &os, const QString &documentName) {
 
-    add( new ProjectTreeViewUtils::ClickGUIAction(documentName) );
-    add( new GTKeyboardDriver::KeyClickGUIAction(GTKeyboardDriver::key["delete"]) );
+    ProjectTreeViewUtils::click(os, documentName);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 }
 
 GObjectView* DocumentUtils::getDocumentGObjectView(U2OpStatus &os, Document* d) {
