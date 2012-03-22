@@ -68,6 +68,7 @@ void DocumentUtils::removeDocument(U2OpStatus &os, const QString &documentName) 
 
     ProjectTreeViewUtils::click(os, documentName);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    QtUtils::sleep(500);
 }
 
 GObjectView* DocumentUtils::getDocumentGObjectView(U2OpStatus &os, Document* d) {
