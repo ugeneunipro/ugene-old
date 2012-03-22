@@ -101,22 +101,33 @@ Task* GUITestService::createTestLauncherTask() const {
     return task;
 }
 
+GUITests GUITestService::addChecks() const {
+
+    GUITestBase* tb = AppContext::getGUITestBase();
+    Q_ASSERT(tb);
+
+    GUITests additionalChecks = tb->getTests(GUITestBase::ADDITIONAL);
+    return additionalChecks;
+}
+
 void GUITestService::runGUITest() {
+
+    GUITests tests = addChecks();
 
     GUITest* t = getTest();
     Q_ASSERT(t);
+    if (!t) {
+        os.setError("GUITestService: Test not found");
+    }
+    tests.append(t);
 
-    QString testResult = successResult;
-    if (t) {
-        t->run(os);
-
-        if (os.hasError()) {
-            testResult = os.getError();
+    foreach(GUITest* t, tests) {
+        if (t) {
+            t->run(os);
         }
     }
-    else {
-        testResult = "GUITestService: Test not found";
-    }
+
+    QString testResult = os.hasError() ? os.getError() : successResult;
 
     writeTestResult(testResult);
     exit(0);

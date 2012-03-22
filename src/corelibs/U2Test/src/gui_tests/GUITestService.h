@@ -33,6 +33,7 @@ protected:
     virtual void serviceStateChangedCallback(ServiceState oldState, bool enabledStateChanged);
 
     GUITest* getTest() const;
+    GUITests addChecks() const;
 
 protected slots:
     void sl_registerService();

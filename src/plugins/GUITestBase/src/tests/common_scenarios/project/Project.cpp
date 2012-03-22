@@ -133,6 +133,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0023) {
+    os.setError("Test not implemented");
     //ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa");
     //TODO: minimized sequence view and check title
 }

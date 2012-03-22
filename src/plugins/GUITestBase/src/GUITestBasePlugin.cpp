@@ -62,8 +62,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
 
     if (guiTestBase) {
-//         guiTestBase->registerTest(new GUIInitialCheck(), GUITestBase::ADDITIONAL);
-//         guiTestBase->registerTest(new GUILoadedCheck(), GUITestBase::ADDITIONAL);
+        guiTestBase->registerTest(new GUITest_initial_checks::test_0001, GUITestBase::ADDITIONAL);
+        guiTestBase->registerTest(new GUITest_initial_checks::test_0002, GUITestBase::ADDITIONAL);
     }
 }
 
