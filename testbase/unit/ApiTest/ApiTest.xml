@@ -1,14 +1,25 @@
 <!DOCTYPE UGENE_TEST_FRAMEWORK_TEST>
 
-<gtest>
+<unittest>
 
-AssemblyDbiTest
+SequenceDbiUnitTests
++ getSequenceObject
++ getSequenceObjectInvalid
++ getAllSequenceObjects
++ getSequenceData
++ getSequenceDataInvalid
++ createSequenceObject
++ updateSequenceData
++ updateHugeSequenceData
+AssemblyDbiUnitTests
 + getAssemblyObject
 + getAssemblyObjectInvalid
 + countReads
 + countReadsInvalid
 + getReads
 + getReadsInvalid
++ getReadsByRow
++ getReadsByRowInvalid
 + getReadsByRow
 + getReadsByRowInvalid
 + getReadsByName
@@ -26,17 +37,7 @@ AssemblyDbiTest
 + packInvalid
 + calculateCoverage
 + calculateCoverageInvalid
-
-SequenceDbiTest
-+ getSequenceObject
-+ getSequenceObjectInvalid
-+ getAllSequenceObjects
-+ getSequenceData
-+ getSequenceDataInvalid
-+ createSequenceObject
-+ updateSequenceData
-
-AttributeDbiTest
+AttributeDbiUnitTests
 + getAvailableAttributeNames
 + getObjectAttributes
 + getObjectAttributesByName
@@ -49,7 +50,4 @@ AttributeDbiTest
 + StringAttribute
 + ByteArrayAttribute
 
-RepeatTest
-+ t01
-
-</gtest>
+</unittest>

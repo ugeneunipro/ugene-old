@@ -10,8 +10,7 @@ class ApiTestsPlugin : public Plugin {
     Q_OBJECT
 public:
     ApiTestsPlugin();
-private slots:
-    void convert();
+
 };
 
 } // namespace U2

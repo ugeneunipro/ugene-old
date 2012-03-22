@@ -1,0 +1,437 @@
+#include "AttributeDbiUnitTests.h"
+
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/U2AttributeDbi.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2SqlHelpers.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <QtCore/QDir>
+
+
+namespace U2 {
+
+static const QString ATTRIBUTE_NAMES = "attribute_names";
+
+static const QString OBJECT_ATTRIBUTES = "object_attributes";
+
+static const QString OBJECT_ATTRIBUTES_NAME = "object_attributes_name";
+
+static const QString OBJECT_ATTRIBUTES_CHILD_ID = "object_attributes_child_id";
+
+const QString& AttributeTestData::ATT_DB_URL("attribute-dbi.ugenedb");
+
+U2AttributeDbi* AttributeTestData::attributeDbi = NULL;
+QList<U2DataId>* AttributeTestData::objects = NULL;
+
+void AttributeTestData::init() {
+	U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById(SQLITE_DBI_ID);
+	SAFE_POINT(NULL != factory, "dbi registry not loaded", );
+	
+	dbi.reset(factory->createDbi());
+	SAFE_POINT((U2Dbi *)NULL != dbi.get(), "dbi not created", );
+
+	TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
+	QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + AttributeTestData::ATT_DB_URL;
+
+	QString tmpFile = QDir::temp().absoluteFilePath(QFileInfo(originalFile).fileName());
+
+	if(QFile::exists(tmpFile)) {
+		QFile::remove(tmpFile);
+	}
+
+	QHash<QString, QString> properties;
+	if (QFile::exists(originalFile)) {
+		SAFE_POINT(QFile::copy(originalFile, tmpFile), "attribute db file not copied", );
+	} else {
+		properties[U2_DBI_OPTION_CREATE] = U2_DBI_VALUE_ON;
+	}
+	properties["url"] = tmpFile;
+
+	QVariantMap persistentData;
+	U2OpStatusImpl opStatus;
+	dbi->init(properties, persistentData, opStatus);
+	SAFE_POINT_OP(opStatus, );
+
+	U2ObjectDbi* objDbi = dbi->getObjectDbi();
+	SAFE_POINT(NULL != objDbi, "Dbi object not loaded", );
+
+    objects = new QList<U2DataId>(objDbi->getObjects("/", 0, U2_DBI_NO_LIMIT, opStatus));
+	SAFE_POINT_OP(opStatus, );
+	
+	attributeDbi = dbi->getAttributeDbi();
+	SAFE_POINT((U2AttributeDbi *)NULL != this->attributeDbi, "attribute database not loaded", );
+}
+
+U2AttributeDbi* AttributeTestData::getAttributeDbi(){
+	if ( attributeDbi == NULL) {
+		(new AttributeTestData())->init();
+	}
+	return attributeDbi;
+}
+
+void AttributeTestData::shutdown() {
+	if ( attributeDbi != NULL) {
+		U2OpStatusImpl opStatus;
+		attributeDbi->getRootDbi()->shutdown(opStatus);
+		SAFE_POINT_OP(opStatus, );
+	}
+}
+
+static bool compareAttributesBase(const U2Attribute& attr1, const U2Attribute& attr2) {
+    if (attr1.objectId != attr2.objectId) {
+        return false;
+    }
+    if (attr1.childId != attr2.childId) {
+        return false;
+    }
+    if (attr1.version != attr2.version) {
+        return false;
+    }
+    if (attr1.name != attr2.name) {
+        return false;
+    }
+    return true;
+}
+
+template<class A>
+static bool compareAttributes(const A& attr1, const A& attr2) {
+    if (attr1.value != attr2.value) {
+        return false;
+    }
+    return compareAttributesBase(attr1, attr2);
+}
+
+template<class T, typename Compare>
+bool removeOne(QList<T>& list, const T& el, Compare compare) {
+    QMutableListIterator<T> iter(list);
+    while (iter.hasNext()) {
+        const T& current = iter.next();
+        if (compare(current, el)) {
+            iter.remove();
+            return true;
+        }
+    }
+    return false;
+}
+
+template<class T>
+void filterAttributesByName(QList<T>& attrs, const QString& name) {
+    if (!name.isEmpty()) {
+        QMutableListIterator<T> iter(attrs);
+        while (iter.hasNext()) {
+            const T& current = iter.next();
+            if (current.name != name) {
+                iter.remove();
+            }
+        }
+    }
+}
+
+template<class T>
+void filterAttributesByChildId(QList<T>& attrs, const U2DataId& childId) {
+    QMutableListIterator<T> iter(attrs);
+    while (iter.hasNext()) {
+        const T& current = iter.next();
+        if (current.childId != childId) {
+            iter.remove();
+        }
+    }
+}
+
+void AttributeTestData::testAttributesMatch(QList<U2IntegerAttribute>& expectedInt,
+                         QList<U2RealAttribute>& expectedReal,
+                         QList<U2StringAttribute>& expectedString,
+                         QList<U2ByteArrayAttribute>& expectedArray,
+                         const QList<U2DataId>& attributes)
+{
+    foreach(const U2DataId& attrId, attributes) {
+        U2DataType type = SQLiteUtils::toType(attrId);
+        SAFE_POINT(U2Type::isAttributeType(type), "inncorrect attribute type", );
+
+        U2OpStatusImpl os;
+
+        if (type == U2Type::AttributeInteger) {
+            U2IntegerAttribute attr = getAttributeDbi()->getIntegerAttribute(attrId, os);
+			SAFE_POINT_OP(os, );
+            SAFE_POINT(removeOne(expectedInt, attr, compareAttributes<U2IntegerAttribute>), "Integer attribute is not removed", );
+        } else if (type == U2Type::AttributeReal) {
+            U2RealAttribute attr = getAttributeDbi()->getRealAttribute(attrId, os);
+			SAFE_POINT_OP(os, );
+            SAFE_POINT(removeOne(expectedReal, attr, compareAttributes<U2RealAttribute>), "Real attribute is not removed", );
+        } else if (type == U2Type::AttributeString) {
+            U2StringAttribute attr = getAttributeDbi()->getStringAttribute(attrId, os);
+			SAFE_POINT_OP(os, );
+            SAFE_POINT(removeOne(expectedString, attr, compareAttributes<U2StringAttribute>), "String attribute is not removed", );
+        } else { // AttributeByteArray
+            U2ByteArrayAttribute attr = getAttributeDbi()->getByteArrayAttribute(attrId, os);
+			SAFE_POINT_OP(os, );
+            SAFE_POINT(removeOne(expectedArray, attr, compareAttributes<U2ByteArrayAttribute>), "ByteArray attribute is not removed", );
+        }
+    }
+
+    SAFE_POINT(expectedInt.size() == 0, "expected integer list size should be 0", );
+    SAFE_POINT(expectedReal.size() == 0, "expected real list size should be 0", );
+    SAFE_POINT(expectedString.size() == 0, "expected string list size should be 0", );
+    SAFE_POINT(expectedArray.size() == 0, "expected byte array list size should be 0", );
+}
+
+void AttributeTestData::getObjectAttrsTest(const APITestData& testData, bool filterByName, bool filterByChild) {
+    const ObjectAttributesTestData& attrsData = testData.getValue<ObjectAttributesTestData>(OBJECT_ATTRIBUTES);
+
+    const U2DataId& objectId = attrsData.objId;
+
+    QList<U2IntegerAttribute> attrsInt = attrsData.intAttrs;
+    QList<U2RealAttribute> attrsReal = attrsData.realAttrs;
+    QList<U2StringAttribute> attrsString = attrsData.stringAttrs;
+    QList<U2ByteArrayAttribute> attrsByteArray = attrsData.byteArrAttrs;
+
+    const U2DataId& childId = testData.getValue<U2DataId>(OBJECT_ATTRIBUTES_CHILD_ID);
+    QString name;
+
+    if (filterByName) {
+        name = testData.getValue<QString>(OBJECT_ATTRIBUTES_NAME);
+        filterAttributesByName(attrsInt, name);
+        filterAttributesByName(attrsReal, name);
+        filterAttributesByName(attrsString, name);
+        filterAttributesByName(attrsByteArray, name);
+    }
+
+    QList<U2DataId> attributes;
+    U2OpStatusImpl os;
+    if (filterByChild) {
+        filterAttributesByChildId(attrsInt, childId);
+        filterAttributesByChildId(attrsReal, childId);
+        filterAttributesByChildId(attrsString, childId);
+        filterAttributesByChildId(attrsByteArray, childId);
+        attributes = getAttributeDbi()->getObjectPairAttributes(objectId, childId, name, os);
+    } else {
+        attributes = getAttributeDbi()->getObjectAttributes(objectId, name, os);
+    }
+	SAFE_POINT_OP(os, );
+
+    testAttributesMatch(attrsInt, attrsReal, attrsString, attrsByteArray, attributes);
+}
+
+void AttributeDbiUnitTests_getAvailableAttributeNames::Test() {
+	U2AttributeDbi* attributeDbi = AttributeTestData::getAttributeDbi();
+
+    QStringList names;
+    names << "int1" << "int2" << "real1" << "str1" << "str2" << "arr1";
+
+    U2OpStatusImpl os;
+    QStringList actual = attributeDbi->getAvailableAttributeNames(os);
+	SAFE_POINT_OP(os, );
+
+    SAFE_POINT(actual.size() == names.size(), "incorrect expected available attribute names size", );
+    foreach(const QString& name, names) {
+        SAFE_POINT(actual.removeOne(name), "available attribute name not removed", );
+    }
+    SAFE_POINT(actual.size() == 0, "available attribute names size should be 0", );
+}
+
+void AttributeDbiUnitTests_getObjectAttributes::Test() {
+    const U2DataId& childId = SQLiteUtils::toU2DataId(2, U2Type::Assembly);
+	APITestData testData;
+    
+    // getObjectAttributes
+    ObjectAttributesTestData oat;
+    {
+        oat.objId = SQLiteUtils::toU2DataId(1, U2Type::Sequence);
+
+        {
+	        U2IntegerAttribute attr;
+	        attr.objectId = oat.objId;
+	        attr.name = "int1";
+	        attr.value = 5;
+            attr.childId = childId;
+            oat.intAttrs.append(attr);
+        }
+
+        {
+            U2IntegerAttribute attr;
+            attr.objectId = oat.objId;
+            attr.name = "int2";
+            attr.value = 3;
+            attr.childId = childId;
+            oat.intAttrs.append(attr);
+        }
+
+        {
+            U2RealAttribute attr;
+            attr.objectId = oat.objId;
+            attr.name = "real1";
+            attr.value = 2.7;
+            attr.childId = childId;
+            oat.realAttrs.append(attr);
+        }
+
+        {
+            U2StringAttribute attr;
+            attr.objectId = oat.objId;
+            attr.name = "str1";
+            attr.value = "some string";
+            oat.stringAttrs.append(attr);
+        }
+
+        {
+	        U2StringAttribute attr;
+	        attr.objectId = oat.objId;
+	        attr.name = "str2";
+	        attr.value = "other string";
+            oat.stringAttrs.append(attr);
+        }
+
+        {
+	        U2ByteArrayAttribute attr;
+	        attr.objectId = oat.objId;
+	        attr.name = "arr1";
+	        attr.value = "some array";
+            oat.byteArrAttrs.append(attr);
+        }
+    }
+
+    testData.addValue(OBJECT_ATTRIBUTES, oat);
+	AttributeTestData::getObjectAttrsTest(testData, false, false);
+}
+
+void AttributeDbiUnitTests_getObjectAttributesByName::Test() {
+ 	APITestData testData;
+    testData.addValue<QString>(OBJECT_ATTRIBUTES_NAME, "int2");
+	AttributeTestData::getObjectAttrsTest(testData, true, false);
+}
+
+void AttributeDbiUnitTests_getObjectPairAttributes::Test() {
+ 	APITestData testData;
+    const U2DataId& childId = SQLiteUtils::toU2DataId(2, U2Type::Assembly);
+	testData.addValue<U2DataId>(OBJECT_ATTRIBUTES_CHILD_ID, childId);
+    AttributeTestData::getObjectAttrsTest(testData, false, true);
+}
+
+void AttributeDbiUnitTests_getObjectPairAttributesByName::Test() {
+
+ 	APITestData testData;
+	testData.addValue<QString>(OBJECT_ATTRIBUTES_NAME, "int2");
+    const U2DataId& childId = SQLiteUtils::toU2DataId(2, U2Type::Assembly);
+	testData.addValue<U2DataId>(OBJECT_ATTRIBUTES_CHILD_ID, childId);
+    AttributeTestData::getObjectAttrsTest(testData, true, true);
+}
+
+void AttributeDbiUnitTests_removeAttributes::Test() {
+	U2AttributeDbi* attributeDbi = AttributeTestData::getAttributeDbi();
+
+
+    const U2DataId& objectId = AttributeTestData::getObjects()->first();
+    U2OpStatusImpl os;
+    const QList<U2DataId>& attrs = attributeDbi->getObjectAttributes(objectId, "", os);
+	SAFE_POINT_OP(os, );
+
+    {
+        U2OpStatusImpl os;
+        attributeDbi->removeAttributes(attrs, os);
+		SAFE_POINT_OP(os, );
+    }
+    {
+        U2OpStatusImpl os;
+        const QList<U2DataId>& attrs = attributeDbi->getObjectAttributes(objectId, "", os);
+		SAFE_POINT_OP(os, );
+        SAFE_POINT(attrs.isEmpty(), "attribute list should be empty", );
+    }
+}
+
+void AttributeDbiUnitTests_removeObjectAttributes::Test() {
+	U2AttributeDbi* attributeDbi = AttributeTestData::getAttributeDbi();
+
+    const U2DataId& objectId = AttributeTestData::getObjects()->first();
+    {
+	    U2OpStatusImpl os;
+	    attributeDbi->removeObjectAttributes(objectId, os);
+		SAFE_POINT_OP(os, );
+    }
+    U2OpStatusImpl os;
+    const QList<U2DataId>& attrs = attributeDbi->getObjectAttributes(objectId, "", os);
+	SAFE_POINT_OP(os, );
+    SAFE_POINT(attrs.isEmpty(), "object attribute list should be empty", );
+}
+
+void AttributeDbiUnitTests_IntegerAttribute::Test() {
+	U2AttributeDbi* attributeDbi = AttributeTestData::getAttributeDbi();
+
+    U2IntegerAttribute attr;
+    attr.objectId = AttributeTestData::getObjects()->first();
+    attr.value = 46;
+
+    {
+        U2OpStatusImpl os;
+        attributeDbi->createIntegerAttribute(attr, os);
+		SAFE_POINT_OP(os, );
+    }
+
+    U2OpStatusImpl os;
+    U2IntegerAttribute actual = attributeDbi->getIntegerAttribute(attr.id, os);
+	SAFE_POINT_OP(os, );
+    SAFE_POINT(compareAttributes(actual, attr), "incorrect integer attribute", );
+}
+
+void AttributeDbiUnitTests_RealAttribute::Test() {
+	U2AttributeDbi* attributeDbi = AttributeTestData::getAttributeDbi();
+
+    U2RealAttribute attr;
+    attr.objectId = AttributeTestData::getObjects()->first();
+    attr.value = 46.46;
+
+    {
+	    U2OpStatusImpl os;
+	    attributeDbi->createRealAttribute(attr, os);
+		SAFE_POINT_OP(os, );
+    }
+
+    U2OpStatusImpl os;
+    U2RealAttribute actual = attributeDbi->getRealAttribute(attr.id, os);
+	SAFE_POINT_OP(os, );
+    SAFE_POINT(compareAttributes(actual, attr), "incorrect real attribute", );
+}
+
+
+void AttributeDbiUnitTests_StringAttribute::Test() {
+	U2AttributeDbi* attributeDbi = AttributeTestData::getAttributeDbi();
+
+    U2StringAttribute attr;
+    attr.objectId = AttributeTestData::getObjects()->first();
+    attr.value = "some string";
+
+    {
+        U2OpStatusImpl os;
+        attributeDbi->createStringAttribute(attr, os);
+		SAFE_POINT_OP(os, );
+    }
+
+    U2OpStatusImpl os;
+    U2StringAttribute actual = attributeDbi->getStringAttribute(attr.id, os);
+	SAFE_POINT_OP(os, );
+    SAFE_POINT(compareAttributes(actual, attr), "incorrect string attribute", );
+}
+
+void AttributeDbiUnitTests_ByteArrayAttribute::Test() {
+	U2AttributeDbi* attributeDbi = AttributeTestData::getAttributeDbi();
+
+    U2ByteArrayAttribute attr;
+    attr.objectId = AttributeTestData::getObjects()->first();
+    attr.value = "some array";
+
+    {
+        U2OpStatusImpl os;
+        attributeDbi->createByteArrayAttribute(attr, os);
+		SAFE_POINT_OP(os, );
+    }
+
+    U2OpStatusImpl os;
+    U2ByteArrayAttribute actual = attributeDbi->getByteArrayAttribute(attr.id, os);
+	SAFE_POINT_OP(os, );
+    SAFE_POINT(compareAttributes(actual, attr), "incorrect byte array attribute", );
+}
+
+} //namspace
