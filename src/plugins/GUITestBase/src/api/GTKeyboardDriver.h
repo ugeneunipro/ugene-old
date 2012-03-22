@@ -25,42 +25,39 @@
 #include <QMap>
 #include <U2Core/U2OpStatus.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+#define ADD_KEY(name, code) insert(name, code)
+
 namespace U2 {
 
 class GTKeyboardDriver {
 public:
     //
 #ifdef _WIN32
-    // some VK_* code and ASCII code some symbols is equal
-    // therefore, the following functions are needed
-    static void keyPress(U2OpStatus &os, char key);
-    static void keyPress(U2OpStatus &os, char key, int modifiers);
+    // some VK_* code and ASCII code symbols are not equal
+    static void keyClick(U2OpStatus &os, char key, int modifiers = 0);
 
-    static void keyRelease(U2OpStatus &os, char key);
-    static void keyRelease(U2OpStatus &os, char key, int modifiers);
+    static void keyPress(U2OpStatus &os, char key, int modifiers = 0);
+    static void keyRelease(U2OpStatus &os, char key, int modifiers = 0);
 
-    static void keyClick(U2OpStatus &os, char key);
-    static void keyClick(U2OpStatus &os, char key, int modifiers);
+    static INPUT getKeyEvent(int key, bool keyUp = false);
 #endif
 
-    static void keyPress(U2OpStatus &os, int key);
-    static void keyPress(U2OpStatus &os, int key, int modifiers);
+    static void keyClick(U2OpStatus &os, int key, int modifiers = 0);
+    static void keySequence(U2OpStatus &os, const QString &str, int modifiers = 0);
 
-    static void keyRelease(U2OpStatus &os, int key);
-    static void keyRelease(U2OpStatus &os, int key, int modifiers);
-
-    static void keyClick(U2OpStatus &os, int key);
-    static void keyClick(U2OpStatus &os, int key, int modifiers);
-
-    static void keySequence(U2OpStatus &os, const QString &str);
-    static void keySequence(U2OpStatus &os, const QString &str, int modifiers);
+    static void keyPress(U2OpStatus &os, int key, int modifiers = 0);
+    static void keyRelease(U2OpStatus &os, int key, int modifiers = 0);
 
     class keys : private QMap<QString, int> {
     public:
         keys();
         int operator [] (const QString&) const;
     };
-    
+
     static keys key;
 
     /**
