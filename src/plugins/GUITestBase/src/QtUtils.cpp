@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-#define WAIT_TIMEOUT    2000
+#define QTUTILS_WAIT_TIMEOUT    2000
 
 QWidget* QtUtils::findWidgetByName(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget, bool errorIfNull) {
     checkThread();
@@ -298,8 +298,8 @@ bool QtUtils::waitForWidget(U2OpStatus &os, const QString& widgetName, bool show
         }
         sleep(1);
         count++;
-    } while (visible != show && count < WAIT_TIMEOUT);
-    return count < WAIT_TIMEOUT;
+    } while (visible != show && count < QTUTILS_WAIT_TIMEOUT);
+    return count < QTUTILS_WAIT_TIMEOUT;
 }
 
 bool QtUtils::waitForTreeItem(U2OpStatus &os, const QString& itemName, const QString& treeName, bool show ){
@@ -307,14 +307,14 @@ bool QtUtils::waitForTreeItem(U2OpStatus &os, const QString& itemName, const QSt
     do {
         sleep(1);
         count++;
-    } while(isItemExists(os, itemName, treeName) != show && count < WAIT_TIMEOUT);
-    return count < WAIT_TIMEOUT;
+    } while(isItemExists(os, itemName, treeName) != show && count < QTUTILS_WAIT_TIMEOUT);
+    return count < QTUTILS_WAIT_TIMEOUT;
 }
 
 bool QtUtils::waitForMenuWithAction(const QString &actionName) {
     int count = 0;
     bool fl = false;
-    while(!fl && count < WAIT_TIMEOUT){
+    while(!fl && count < QTUTILS_WAIT_TIMEOUT){
         QMenu* menu = getContextMenu();
         if(menu) {
             QList<QAction*> actions = menu->actions();
@@ -329,16 +329,16 @@ bool QtUtils::waitForMenuWithAction(const QString &actionName) {
         sleep(1);
         count++;
     } 
-    return count < WAIT_TIMEOUT;
+    return count < QTUTILS_WAIT_TIMEOUT;
 }
 
 bool QtUtils::waitForTask( Task *t ){
     int count = 0;
-    while(!t->isRunning() && count < WAIT_TIMEOUT) {
+    while(!t->isRunning() && count < QTUTILS_WAIT_TIMEOUT) {
         //count++;
         sleep(1);
     }
-    return count < WAIT_TIMEOUT;
+    return count < QTUTILS_WAIT_TIMEOUT;
 }
 
 void QtUtils::checkThread() {

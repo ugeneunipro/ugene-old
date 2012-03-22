@@ -36,7 +36,7 @@ public:
 class GUIDialogWaiter : public QObject {
     Q_OBJECT
 public:
-    GUIDialogWaiter(Runnable* _r) : r(_r), hadRun(false){}
+    GUIDialogWaiter(Runnable* _r) : hadRun(false), r(_r){}
     bool hadRun;
 public slots:
     void wait();
