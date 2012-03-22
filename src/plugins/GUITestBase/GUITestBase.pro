@@ -36,6 +36,9 @@ SOURCES += src/GUITestBasePlugin.cpp \
            src/tests/common_scenarios/project/Project.cpp \
 		   src/api/GTMouseDriver.cpp \
 		   src/api/GTKeyboardDriver.cpp \
+		   src/api/GTKeyboardDriverWindows.cpp \
+		   src/api/GTKeyboardDriverLinux.cpp \
+		   src/api/GTKeyboardDriverMac.cpp \
 		   src/api/GTWidget.cpp \
 		   src/api/GTSystem.cpp \
 		   src/api/GTMouse.cpp
