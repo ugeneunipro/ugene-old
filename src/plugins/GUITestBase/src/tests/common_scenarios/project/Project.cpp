@@ -137,6 +137,16 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
     //ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa");
     //TODO: minimized sequence view and check title
 }
+GUI_TEST_CLASS_DEFINITION(test_0018) {
+
+    ProjectUtils::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+    ProjectTreeViewUtils::click(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    ProjectTreeViewUtils::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", "qqq");
+    ProjectTreeViewUtils::rename(os, "qqq", "eee");
+    DocumentUtils::removeDocument(os, "human_T1.fa");
+    ProjectUtils::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+    ProjectTreeViewUtils::checkItem(os, "human_T1.fa", true);
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0030) {
     LogTracer logTracer;

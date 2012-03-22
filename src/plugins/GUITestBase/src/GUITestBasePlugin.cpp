@@ -53,6 +53,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0010());
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0011());
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0017());
+        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0018());
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0023());
         guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0030());
 //        guiTestBase->registerTest(new ToolbarTest());
