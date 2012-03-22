@@ -5,7 +5,7 @@ HEADERS += \
     src/ApiTestsPlugin.h \
     src/unittest.h \
     src/core/dbi/assembly/AssemblyDbiTestUtil.h \
-    src/core/dbi/assembly/AssemblyDbiUitTests.h \
+    src/core/dbi/assembly/AssemblyDbiUnitTests.h \
     src/core/dbi/sequence/SequenceDbiUnitTests.h \
     src/core/dbi/attribute/AttributeDbiUnitTests.h \
     src/UnitTestSuite.h 
