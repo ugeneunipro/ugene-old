@@ -80,7 +80,7 @@ QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, actionMeth
             GTMouseDriver::moveTo(os, ground_widget.center());
         }
 
-        GTMouseDriver::click(os, GTMouseDriver::RIGHT);
+        GTMouseDriver::click(os, Qt::RightButton);
         break;
 
     case USE_KEY:
