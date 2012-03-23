@@ -445,7 +445,7 @@ void ProjectViewImpl::initView() {
     s.groupMode = getLastGroupMode();
     s.loadTaskProvider = this;
     s.markActive = true;
-    s.activeFont.setWeight(QFont::DemiBold);
+    s.activeFont.setWeight(QFont::Bold);
     projectTreeController = new ProjectTreeController(w, w->documentTreeWidget, s);
     projectTreeController->setObjectName("document_Filter_Tree_Controller");
     connect(projectTreeController, SIGNAL(si_onPopupMenuRequested(QMenu&)), SLOT(sl_onDocTreePopupMenuRequested(QMenu&)));

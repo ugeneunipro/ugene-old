@@ -337,6 +337,12 @@ void U2SequenceImporter::_addBuffer2Db(U2OpStatus& os) {
 U2Sequence U2SequenceImporter::finalizeSequence(U2OpStatus& os) {
     _addBuffer2Db(os);
     LOG_OP(os);
+    // If sequence is empty, addBlock is never called and alphabet is not set. So set it here to some default value
+    if(! sequence.alphabet.isValid() ) {
+        sequence.alphabet.id = BaseDNAAlphabetIds::RAW();
+        con.dbi->getSequenceDbi()->updateSequenceObject(sequence, os);
+        LOG_OP(os);
+    }
     con.close(os);
     if (caseAnnsMode != NO_CASE_ANNS) {
         annList << U1AnnotationUtils::finalizeUnfinishedRegion(isUnfinishedRegion, unfinishedRegion, LOWER_CASE == caseAnnsMode);

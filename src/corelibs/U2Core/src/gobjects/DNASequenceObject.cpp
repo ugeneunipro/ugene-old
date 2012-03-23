@@ -161,8 +161,12 @@ QByteArray U2SequenceObject::getSequenceData(const U2Region& r, U2OpStatus& os) 
 bool U2SequenceObject::isValidDbiObject(U2OpStatus &os) {
     DbiConnection con(entityRef.dbiRef, os);
     CHECK_OP(os, false);
-    con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os);
+    U2Sequence s = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os);
     CHECK_OP(os, false);
+    if(U2AlphabetUtils::getById(s.alphabet) == NULL) {
+        os.setError(tr("Internal error, sequence alphabet id '%1' is invalid").arg(s.alphabet.id));
+        return false;
+    }
     return true;
 }
 
