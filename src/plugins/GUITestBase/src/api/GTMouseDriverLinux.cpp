@@ -107,7 +107,7 @@ void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
     //1 = Left, 2 = Middle, 3 = Right
     unsigned int btn = button == Qt::LeftButton ? 1 :
                        button == Qt::RightButton ? 3 :
-                       button == Qt::MiddleButton ? 2 : 0;
+                       button == Qt::MidButton ? 2 : 0;
     CHECK_SET_ERR (btn != 0, "Error: button is 0 in GTMouseDriver::press()");
 
     XTestFakeButtonEvent(display, btn, True, 0);
@@ -124,7 +124,7 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 
     unsigned int btn = button == Qt::LeftButton ? 1 :
                        button == Qt::RightButton ? 3 :
-                       button == Qt::MiddleButton ? 2 : 0;
+                       button == Qt::MidButton ? 2 : 0;
     CHECK_SET_ERR (btn != 0, "Error: button is 0 in GTMouseDriver::release()");
 
     XTestFakeButtonEvent(display, btn, False, 0);

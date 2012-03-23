@@ -115,7 +115,7 @@ void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 {
     unsigned int btn = button == Qt::LeftButton ? MOUSEEVENTF_LEFTDOWN :
                        button == Qt::RightButton ? MOUSEEVENTF_RIGHTDOWN :
-                       button == Qt::MiddleButton ? MOUSEEVENTF_MIDDLEDOWN : 0;
+                       button == Qt::MidButton ? MOUSEEVENTF_MIDDLEDOWN : 0;
     CHECK_SET_ERR (btn != 0, "Error: button is 0 in GTMouseDriver::press()");
 
     INPUT event;
@@ -136,7 +136,7 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
     unsigned int buttons[3] = {MOUSEEVENTF_LEFTUP, MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_MIDDLEUP};
     unsigned int btn = button == Qt::LeftButton ? MOUSEEVENTF_LEFTUP :
                        button == Qt::RightButton ? MOUSEEVENTF_RIGHTUP :
-                       button == Qt::MiddleButton ? MOUSEEVENTF_MIDDLEUP : 0;
+                       button == Qt::MidButton ? MOUSEEVENTF_MIDDLEUP : 0;
     CHECK_SET_ERR (btn != 0, "Error: button is 0 in GTMouseDriver::press()");
 
     INPUT event;
