@@ -71,6 +71,13 @@ Version Version::parseVersion(const QString& text) {
     }
     v.suffix = v.text.mid(textPos);
     v.isDevVersion = v.suffix.contains(VERSION_DEV_SUFFIX);
+    if(v.suffix.isEmpty()){//See issue UGENE-870 (https://ugene.unipro.ru/tracker/browse/UGENE-870)
+        bool ok;
+        int val = currentNum.toInt(&ok);
+        if (ok) {
+            v.patch = val;
+        }
+    }
     
 #ifdef _DEBUG
     v.debug = true;
