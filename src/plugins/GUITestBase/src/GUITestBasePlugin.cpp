@@ -27,6 +27,8 @@
 #include "tests/common_scenarios/project/Project.h"
 #include "GUIToolbarTests.h"
 
+#define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
+
 namespace U2 {
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
@@ -45,19 +47,17 @@ GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test 
 
 void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
-    if (guiTestBase) {
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0004());
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0005());
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0006());
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0009());
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0010());
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0011());
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0017());
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0018());
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0023());
-        guiTestBase->registerTest(new GUITest_common_scenarios_project::test_0030());
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0023);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0030);
 //        guiTestBase->registerTest(new ToolbarTest());
-    }
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
