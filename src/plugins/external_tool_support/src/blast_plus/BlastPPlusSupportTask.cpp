@@ -112,10 +112,11 @@ ExternalToolRunTask* BlastPPlusSupportTask::createBlastPlusTask(){
 
     algoLog.trace("Blastall arguments: "+arguments.join(" "));
     logParser=new ExternalToolLogParser();
+    QString workingDirectory=QFileInfo(url).absolutePath();
     if(settings.programName == "gpu-blastp") {
-        return new ExternalToolRunTask(GPU_BLASTP_TOOL_NAME, arguments, logParser);
+        return new ExternalToolRunTask(GPU_BLASTP_TOOL_NAME, arguments, logParser, workingDirectory);
     } else {
-        return new ExternalToolRunTask(BLASTP_TOOL_NAME, arguments, logParser);
+        return new ExternalToolRunTask(BLASTP_TOOL_NAME, arguments, logParser, workingDirectory);
     }
 }
 }//namespace

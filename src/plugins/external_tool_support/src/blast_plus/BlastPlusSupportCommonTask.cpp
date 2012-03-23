@@ -90,6 +90,21 @@ void BlastPlusSupportCommonTask::prepare(){
         stateInfo.setError(tr("Can not create directory for temporary files."));
         return;
     }
+    //Create ncbi.ini for windows or .ncbirc for unix like systems
+    //See issue UGENE-791 (https://ugene.unipro.ru/tracker/browse/UGENE-791)
+#ifdef Q_OS_UNIX
+    QString iniNCBIFile=tmpDir.absolutePath()+QString("/.ncbirc");
+#else
+    QString iniNCBIFile=tmpDir.absolutePath()+QString("\\ncbi.ini");
+#endif
+    if(!QFileInfo(iniNCBIFile).exists()){
+        QFile file(iniNCBIFile);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+            algoLog.details(tr("Can not create fake NCBI ini file"));
+        }else{
+            file.close();
+        }
+    }
     url = tmpDirPath + "tmp.fa";
     if (url.contains(" ")){
         stateInfo.setError("Temporary directory path have space(s). Try select any other directory without spaces.");
@@ -183,7 +198,7 @@ Task::ReportResult BlastPlusSupportCommonTask::report(){
     
     //Remove subdir for temporary files, that created in prepare
     QDir tmpDir(QFileInfo(url).absoluteDir());
-    foreach(QString file, tmpDir.entryList()){
+    foreach(QString file, tmpDir.entryList(QDir::Files|QDir::Hidden)){
         tmpDir.remove(file);
     }
     if(!tmpDir.rmdir(tmpDir.absolutePath())){

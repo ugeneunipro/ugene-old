@@ -35,7 +35,7 @@ class ExternalToolRunTask: public Task {
     Q_OBJECT
     friend class ExternalToolRunTaskHelper;
 public:
-    ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser*  logParser);
+    ExternalToolRunTask(const QString& toolName, const QStringList& arguments, ExternalToolLogParser*  logParser, const QString& workingDirectory = "");
     ~ExternalToolRunTask();
 
     void prepare();
@@ -50,6 +50,7 @@ private:
     ExternalToolLogParser*  logParser;
     QString                 toolName;
     QProcess*               externalToolProcess;
+    QString                 workingDirectory;
 };
 
 /** Part of ExternalToolRunTask that belongs to task run  thread -> get signals from that thread directly */

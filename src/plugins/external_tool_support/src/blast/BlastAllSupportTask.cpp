@@ -79,6 +79,22 @@ void BlastAllSupportTask::prepare(){
         stateInfo.setError(tr("Can not create directory for temporary files."));
         return;
     }
+    //Create ncbi.ini for windows or .ncbirc for unix like systems
+    //See issue UGENE-791 (https://ugene.unipro.ru/tracker/browse/UGENE-791)
+#ifdef Q_OS_UNIX
+    QString iniNCBIFile=tmpDir.absolutePath()+QString("/.ncbirc");
+#else
+    QString iniNCBIFile=tmpDir.absolutePath()+QString("\\ncbi.ini");
+#endif
+    if(!QFileInfo(iniNCBIFile).exists()){
+        QFile file(iniNCBIFile);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+            algoLog.details(tr("Can not create fake NCBI ini file"));
+        }else{
+            file.close();
+        }
+    }
+
     DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA);
     tmpDoc = df->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(url), stateInfo);
     CHECK_OP(stateInfo, );
@@ -180,10 +196,11 @@ QList<Task*> BlastAllSupportTask::onSubTaskFinished(Task* subTask) {
         }
 
         logParser=new ExternalToolLogParser();
+        QString workingDirectory=QFileInfo(url).absolutePath();
         if("cuda-blastp" == settings.programName) {
-            blastAllTask=new ExternalToolRunTask(CUDA_BLASTP_TOOL_NAME,arguments, logParser);
+            blastAllTask=new ExternalToolRunTask(CUDA_BLASTP_TOOL_NAME,arguments, logParser, workingDirectory);
         } else {
-            blastAllTask=new ExternalToolRunTask(BLASTALL_TOOL_NAME,arguments, logParser);
+            blastAllTask=new ExternalToolRunTask(BLASTALL_TOOL_NAME,arguments, logParser, workingDirectory);
         }
         blastAllTask->setSubtaskProgressWeight(95);
         res.append(blastAllTask);
@@ -234,7 +251,7 @@ Task::ReportResult BlastAllSupportTask::report(){
     
     //Remove subdir for temporary files, that created in prepare
     QDir tmpDir(QFileInfo(url).absoluteDir());
-    foreach(QString file, tmpDir.entryList()){
+    foreach(QString file, tmpDir.entryList(QDir::Files|QDir::Hidden)){
         tmpDir.remove(file);
     }
     if(!tmpDir.rmdir(tmpDir.absolutePath())){

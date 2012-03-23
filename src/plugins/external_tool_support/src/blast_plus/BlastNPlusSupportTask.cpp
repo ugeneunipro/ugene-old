@@ -106,6 +106,7 @@ ExternalToolRunTask* BlastNPlusSupportTask::createBlastPlusTask(){
 
     algoLog.trace("Blastall arguments: "+arguments.join(" "));
     logParser=new ExternalToolLogParser();
-    return new ExternalToolRunTask(BLASTN_TOOL_NAME, arguments, logParser);
+    QString workingDirectory=QFileInfo(url).absolutePath();
+    return new ExternalToolRunTask(BLASTN_TOOL_NAME, arguments, logParser, workingDirectory);
 }
 }//namespace

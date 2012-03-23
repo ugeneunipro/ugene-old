@@ -33,9 +33,9 @@
 
 namespace U2 {
 
-ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QStringList& _arguments, ExternalToolLogParser*  _logParser)
+ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QStringList& _arguments, ExternalToolLogParser*  _logParser, const QString& _workingDirectory)
 : Task(_toolName + " run task", TaskFlag_None), arguments(_arguments), 
-  logParser(_logParser), toolName(_toolName), externalToolProcess(NULL)
+  logParser(_logParser), toolName(_toolName), externalToolProcess(NULL), workingDirectory(_workingDirectory)
 {
     ExternalTool * tool = AppContext::getExternalToolRegistry()->getByName(toolName);
     if (tool == NULL) {
@@ -73,6 +73,10 @@ void ExternalToolRunTask::run(){
     connect(externalToolProcess,SIGNAL(readyReadStandardError()), h, SLOT(sl_onReadyToReadErrLog()));
 
     algoLog.details(tr("Launching %1 tool: %2 %3").arg(toolName).arg(program).arg(arguments.join(" ")));
+    if (!workingDirectory.isEmpty()){
+        externalToolProcess->setWorkingDirectory(workingDirectory);
+        algoLog.details(tr("Working directory is \"%1\"").arg(externalToolProcess->workingDirectory()));
+    }
 
     externalToolProcess->start(program, arguments);
     //externalToolProcess->state()
