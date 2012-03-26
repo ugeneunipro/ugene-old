@@ -24,6 +24,7 @@
 
 #include <U2Core/U2SafePoints.h>
 #include "api/GTWidget.h"
+#include "api/GTLineEdit.h"
 
 namespace U2 {
 
@@ -117,9 +118,9 @@ void GUIDialogUtils::fillInExportProjectDialog(U2OpStatus &os, const QString &pr
 
     CHECK_SET_ERR(lineEdits.size() > 1, "There are no lineEdits in dialog");
     if (!projectName.isEmpty()) {
-        lineEdits[0]->setText(projectName);
+        GTLineEdit::setText(os, lineEdits[0], projectName);
     }
-    lineEdits[1]->setText(projectFolder);
+    GTLineEdit::setText(os, lineEdits[1], projectFolder);
 
 
     QList<QPushButton*> buttons;
@@ -175,9 +176,9 @@ void GUIDialogUtils::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &pr
 
     CHECK_SET_ERR(lineEdits.size() == 3, "There aren't 3 QLineEdits in SaveProjectAs dialog");
 
-    lineEdits[2]->setText(projectName);
-    lineEdits[0]->setText(projectFolder);
-    lineEdits[1]->setText(projectFile);
+    GTLineEdit::setText(os, lineEdits[1], projectFile);
+    GTLineEdit::setText(os, lineEdits[2], projectName);
+    GTLineEdit::setText(os, lineEdits[0], projectFolder);
 
     QList<QPushButton*> buttons;
     foreach (QObject *obj, activeWPP->children()) {
