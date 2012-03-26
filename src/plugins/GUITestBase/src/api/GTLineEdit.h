@@ -23,7 +23,7 @@
 #define _U2_GT_LINEEDIT_H_
 
 #include <U2Core/U2OpStatus.h>
-#include <QtGui/QComboBox>
+#include <QtGui/QLineEdit>
 
 namespace U2 {
 
@@ -31,6 +31,11 @@ class GTLineEdit {
 public:
     static void setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str);
     static void clear(U2OpStatus& os, QLineEdit* lineEdit);
+
+    enum PasteMethod {Shortcut, Mouse};
+    static void pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod = Shortcut);
+
+    static void checkTextSize(U2OpStatus& os, QLineEdit* lineEdit);
 };
 
 }

@@ -24,6 +24,7 @@
 
 #include "GTLineEdit.h"
 #include "GTWidget.h"
+#include "GTMenu.h"
 
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
@@ -31,9 +32,11 @@
 
 namespace U2 {
 
+#define CHECK_LINEEDIT(method) CHECK_SET_ERR(lineEdit != NULL, "GTLineEdit::" #method ": lineEdit is NULL")
+
 void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str) {
 
-    CHECK_SET_ERR(lineEdit != NULL, "GTLineEdit::setText: lineEdit is NULL");
+    CHECK_LINEEDIT(setText);
 
     clear(os, lineEdit);
     GTKeyboardDriver::keySequence(os, str);
@@ -42,7 +45,7 @@ void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str
 
 void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
 
-    CHECK_SET_ERR(lineEdit != NULL, "GTLineEdit::setText: lineEdit is NULL");
+    CHECK_LINEEDIT(clear);
 
     GTWidget::setFocus(os, lineEdit);
 
@@ -50,6 +53,37 @@ void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
     QtUtils::sleep(100);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     QtUtils::sleep(1000);
+}
+
+void GTLineEdit::pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod) {
+
+    CHECK_LINEEDIT(pasteClipboard);
+
+    clear(os, lineEdit);
+    switch(pasteMethod) {
+        case Mouse:
+            os.setError("Not implemented: GTLineEdit::pasteClipboard: Paste by mouse");
+            break;
+
+        default:
+        case Shortcut:
+            GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+            break;
+    }
+
+    QtUtils::sleep(500);
+}
+
+void GTLineEdit::checkTextSize(U2OpStatus& os, QLineEdit* lineEdit) {
+
+    CHECK_LINEEDIT(checkTextSize);
+
+    QMargins lineEditMargins = lineEdit->textMargins();
+    QFontMetrics fontMetrics = lineEdit->fontMetrics();
+    int textWidth = lineEditMargins.left() + lineEditMargins.right() + fontMetrics.width(lineEdit->text());
+    int rectWidth = lineEdit->rect().width();
+
+    CHECK_SET_ERR(textWidth <= rectWidth, "Text is not inside LineEdit's rect");
 }
 
 }
