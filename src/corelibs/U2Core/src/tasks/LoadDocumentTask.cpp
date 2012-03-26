@@ -57,6 +57,8 @@
 
 #include <QtGui/QApplication>
 
+#include <memory>
+
 #define GObjectHint_NamesList  "gobject-hint-names-list"
 
 namespace U2 {
