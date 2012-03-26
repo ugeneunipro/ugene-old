@@ -248,7 +248,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     AnnotationTableObject * mergedAnnotationsPtr = mergedAnnotations.release();
     if (mergedAnnotationsPtr!=NULL) {
         sequenceRef.objName = so->getGObjectName();
-        mergedAnnotations->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
+        mergedAnnotationsPtr->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
         objects.append(mergedAnnotationsPtr);
     }
     U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, mergedAnnotationsPtr);

@@ -7,7 +7,7 @@
 
 #include <U2Core/GUrl.h>
 
-#include "ui/ui_MultimpleSequenceFilesReadingMode.h"
+#include "ui/ui_MultipleSequenceFilesReadingMode.h"
 
 namespace U2{
 
