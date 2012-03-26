@@ -206,7 +206,6 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
             hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
             std::auto_ptr<Document> d(f->loadDocument(iof, url, hints, os));
-            d->setDocumentOwnsDbiResources(false);
             
             if (os.hasError()) {
                 //coreLog.error(tr("Can't open document"));
@@ -223,6 +222,8 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                 outputUrls.clear();
                 return;
             }
+
+            d->setDocumentOwnsDbiResources(false);
 
             if( cfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()){
                 QList<GObject*> seqObjects = d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded);
