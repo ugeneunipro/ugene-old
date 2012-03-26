@@ -73,7 +73,7 @@ void ExternalToolValidateTask::run(){
     externalToolProcess=new QProcess();
     externalToolProcess->start(program, arguments);
     if(!externalToolProcess->waitForStarted(3000)){
-        stateInfo.setError(tr("It is possible that the specified executable file for  %1 tool is invalid. Tool does not start.").arg(toolName));
+        stateInfo.setError(tr("Tool does not start.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
         isValid=false;
         return;
     }
@@ -86,7 +86,7 @@ void ExternalToolValidateTask::run(){
 }
 Task::ReportResult ExternalToolValidateTask::report(){
     if(!isValid && !stateInfo.hasError()){
-        stateInfo.setError(tr("It is possible that the specified executable file for  %1 tool is invalid. Can not find expected message.").arg(toolName));
+        stateInfo.setError(tr("Can not find expected message.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
     }
     return ReportResult_Finished;
 }
