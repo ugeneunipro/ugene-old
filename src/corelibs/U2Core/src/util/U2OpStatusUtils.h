@@ -63,7 +63,7 @@ public:
     virtual QString getDescription() const {return statusDesc;}
     virtual void setDescription(const QString& desc)  {statusDesc = desc;}
 
-private:
+protected:
     /** Keeps error message if operation failed */
     QString error;
     /** Keeps current operation state description */
@@ -102,6 +102,48 @@ public:
 
 private:
     LogLevel level;
+};
+
+class U2OpStatusMapping{
+public:
+    U2OpStatusMapping(int _start, int _len):start(_start),len(_len){}
+    int start;
+    int len;
+
+};
+
+class U2OpStatusChildImpl : public U2OpStatusImpl{
+public:
+    U2OpStatusChildImpl(U2OpStatus* _parent = 0, const U2OpStatusMapping& _mapping = U2OpStatusMapping(0, 100)):parent(_parent), mapping(_mapping){}
+    virtual void setError(const QString & err) {
+        parent->setError(err);
+        error = err;
+    }
+
+    virtual bool hasError() const { 
+        return parent->hasError() || !error.isEmpty();
+    }
+
+    virtual bool isCanceled() const {
+        return parent->isCanceled() || cancelFlag != 0;
+    }
+    virtual void setCanceled(bool v)  {
+        parent->setCanceled(v);
+        cancelFlag = v;
+    }
+
+    virtual void setProgress(int v)  {
+        parent->setProgress(mapping.start + v * mapping.len / 100);
+        progress = v;
+    }
+
+    virtual void setDescription(const QString& desc)  {
+        parent->setDescription(desc);
+        statusDesc = desc;
+    }
+private:
+    U2OpStatus* parent;
+    U2OpStatusMapping mapping;
 };
 
 }// namespace

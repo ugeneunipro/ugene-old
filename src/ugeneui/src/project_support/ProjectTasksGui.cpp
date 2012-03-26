@@ -209,10 +209,24 @@ void SaveOnlyProjectTask::prepare(){
     }
 
     foreach(Document *d, proj->getDocuments()){
-        if (d->getURL().isLocalFile()) {
-            QFile pathToDoc(d->getURLString());
-            if (!pathToDoc.exists()){
-                phantomDocs.append(d);
+        
+        QStringList urls = d->getGHintsMap().value(ProjectLoaderHint_MergeMode_URLsDocumentConsistOf, QStringList()).toStringList();
+        if(urls.isEmpty()){ // not merged document
+            if (d->getURL().isLocalFile()) {
+                QFile pathToDoc(d->getURLString());
+                if (pathToDoc.exists()){
+                    continue;
+                }
+                phantomDocs.append(d);                
+            }
+        }
+        else{ // merged document
+            foreach(QString url, urls){
+                QFile pathToDoc(url);                
+                if (!pathToDoc.exists()){
+                    phantomDocs.append(d);
+                    break;
+                }
             }
         }
     }

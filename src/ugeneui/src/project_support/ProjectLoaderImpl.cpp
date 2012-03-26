@@ -22,6 +22,7 @@
 #include "ProjectLoaderImpl.h"
 #include "DocumentFormatSelectorController.h"
 #include "DocumentReadingModeSelectorController.h"
+#include "MultipleDocumentsReadingModeSelectorController.h"
 #include "ProjectTasksGui.h"
 #include "ProjectImpl.h"
 
@@ -242,7 +243,8 @@ void ProjectLoaderImpl::updateRecentProjectsMenu() {
 #define MAX_DOCS_TO_OPEN_VIEWS 5
 #define MAX_OBJECT_PER_DOC 50000
 
-Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVariantMap& hints) {
+Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVariantMap& hints) {
+    QList<GUrl> urls = _urls;
     // detect if we open real UGENE project file
     bool projectsOnly = true;
     foreach(const GUrl & url, urls) {
@@ -257,7 +259,39 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
         h2[ProjectLoaderHint_CloseActiveProject] = true;
         return createProjectLoadingTask(projectUrl, h2);
     }
-    
+	bool abilityUniteDocuments = true;
+
+	if(urls.size() < 2){
+		abilityUniteDocuments = false;
+	}
+	
+	QVariantMap hintsOverDocuments;
+
+	foreach(const GUrl& url, urls){
+		FormatDetectionResult dr;
+		FormatDetectionConfig conf;
+		conf.useImporters = true;
+		conf.bestMatchesOnly = false;
+		QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, conf);
+		if(formats.isEmpty()){
+			abilityUniteDocuments = false;
+			break;
+		}
+		dr =  formats[0];
+		bool matchCurrentDocument  = MultipleDocumentsReadingModeSelectorController::isAbilityToUniteDocumnents(dr.rawDataCheckResult.properties);
+		if(!matchCurrentDocument){
+			abilityUniteDocuments = false;
+			break;
+		}
+	}
+
+	if(abilityUniteDocuments){
+		bool ok  = MultipleDocumentsReadingModeSelectorController::adjustReadingMode(hintsOverDocuments, urls);
+		if(!ok){
+			return NULL;
+		}
+	}
+	
     // detect all formats from urls list and add files to project
     QList<AD2P_DocumentInfo> docsInfo;
     QList<AD2P_ProviderInfo> docProviders;
@@ -288,10 +322,19 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                 AppContext::getProjectView()->highlightItem(doc);
             }
         } else {
-            FormatDetectionConfig conf;
-            conf.useImporters = true;
-            conf.bestMatchesOnly = false;
-            QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, conf);
+            QList<FormatDetectionResult> formats;
+            if(hintsOverDocuments.value(ProjectLoaderHint_MergeMode_Flag, false).toBool() == false){
+                FormatDetectionConfig conf;
+                conf.useImporters = true;
+                conf.bestMatchesOnly = false;
+                formats = DocumentUtils::detectFormat(url, conf);
+            }
+            else{
+                FormatDetectionResult result;
+                result.format = AppContext::getDocumentFormatRegistry()->getFormatById(hintsOverDocuments[ProjectLoaderHint_MergeMode_RealDocumentFormat].toString());
+                formats << result;
+            }
+
             if (!formats.isEmpty()) {
                 int idx = 0;
                 if (formats.size() > 1 && 
@@ -305,6 +348,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                 if (idx >= 0) {
                     FormatDetectionResult& dr =  formats[idx];
                     dr.rawDataCheckResult.properties.unite(hints);
+					dr.rawDataCheckResult.properties.unite(hintsOverDocuments);
                     if (dr.format != NULL ) {
                         bool forceReadingOptions = hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool();
                         bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions);
@@ -316,14 +360,20 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& urls, const QVar
                             continue;
                         }
                         AD2P_DocumentInfo info;
-                        if(hints.value(ProjectLoaderHint_LoadWithoutView, false).toBool() == true){
+                        if(hints.value(ProjectLoaderHint_LoadWithoutView, true).toBool() == false){
                             info.openView = false;
                         }else{
                             info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
                         }
-                        if(hints.value(ProjectLoaderHint_LoadUnloadedDocument, false).toBool() == true){
-                            info.loadDocuments = true;
+                        if(hints.value(ProjectLoaderHint_LoadUnloadedDocument, true).toBool() == false){
+                            info.loadDocuments = false;
                         }
+						else{
+							info.loadDocuments = true;
+						}
+
+                        
+                        
                         info.url = url;
                         info.hints = dr.rawDataCheckResult.properties;
                         if (!info.hints.contains(DocumentReadingMode_MaxObjectsInDoc)) {

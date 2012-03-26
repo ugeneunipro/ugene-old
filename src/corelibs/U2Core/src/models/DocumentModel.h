@@ -89,6 +89,7 @@ typedef QFlags<DocumentFormatFlag> DocumentFormatFlags;
 
 /** Set of hints that can be processed during document loading */
 #define DocumentReadingMode_SequenceMergeGapSize            "merge-gap"
+#define DocumentReadingMode_SequenceFilesMergeGapSize       "file-gap"
 #define DocumentReadingMode_SequenceMergingFinalSizeHint    "merge-size"
 #define DocumentReadingMode_SequenceAsAlignmentHint         "sequences-are-msa"
 #define DocumentReadingMode_SequenceAsShortReadsHint        "sequences-are-short-reads"

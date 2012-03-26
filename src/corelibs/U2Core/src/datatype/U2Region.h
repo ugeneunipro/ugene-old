@@ -134,7 +134,7 @@ public:
     static void reverse(QVector<U2Region>& regions);
 
     /** shifts regions by offset pos: startPos = startPos + offset */
-    static void shift(int offset, QVector<U2Region>& regions);
+    static void shift(qint64 offset, QVector<U2Region>& regions);
 
     /** Removes all items from 'regionsToRemove' from 'regionsToProcess'*/
     static void removeAll(QVector<U2Region>& regionsToProcess, const QVector<U2Region>& regionsToRemove);

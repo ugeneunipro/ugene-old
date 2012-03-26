@@ -80,7 +80,7 @@ void U2Region::reverse(QVector<U2Region>& regions) {
     }
 }
 
-void U2Region::shift(int offset, QVector<U2Region>& regions) {
+void U2Region::shift(qint64 offset, QVector<U2Region>& regions) {
     QVector<U2Region> res;
     for (int i = 0, n = regions.size(); i < n; i++) {
         U2Region& r = regions[i];

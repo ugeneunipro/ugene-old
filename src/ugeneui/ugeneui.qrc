@@ -41,6 +41,7 @@
         <file>images/has_report.png</file>
         <file>images/preferences.png</file>
         <file>images/ugene.ico</file>
-
+        <file>images/up.png</file>	
+        <file>images/down.png</file>	
     </qresource>
 </RCC>

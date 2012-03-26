@@ -16,6 +16,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/plugin_viewer/PluginViewerImpl.h \
            src/project_support/DocumentFormatSelectorController.h \
            src/project_support/DocumentReadingModeSelectorController.h \
+           src/project_support/MultipleDocumentsReadingModeSelectorController.h \
            src/project_support/ExportProjectDialogController.h \
            src/project_support/ProjectImpl.h \
            src/project_support/ProjectLoaderImpl.h \
@@ -44,7 +45,8 @@ FORMS += src/app_settings/ui/AppSettingsDialog.ui \
          src/app_settings/logview_settings/ui/LogSettingsWidget.ui \
          src/app_settings/network_settings/ui/NetworkSettingsWidget.ui \
          src/app_settings/resource_settings/ui/ResourceSettingsWidget.ui \
-         src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui
+         src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui \
+         src/project_support/ui/MultipleSequenceFilesReadingMode.ui
 SOURCES += src/Main.cpp \
            src/app_settings/AppSettingsDialogController.cpp \
            src/app_settings/AppSettingsGUIImpl.cpp \
@@ -60,6 +62,7 @@ SOURCES += src/Main.cpp \
            src/plugin_viewer/PluginViewerImpl.cpp \
            src/project_support/DocumentFormatSelectorController.cpp \
            src/project_support/DocumentReadingModeSelectorController.cpp \
+           src/project_support/MultipleDocumentsReadingModeSelectorController.cpp \
            src/project_support/ExportProjectDialogController.cpp \
            src/project_support/ProjectImpl.cpp \
            src/project_support/ProjectLoaderImpl.cpp \

@@ -49,6 +49,9 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/SequenceUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/L10n.h>
 
 #include <QtCore/QFileInfo>
 
@@ -222,6 +225,18 @@ LoadDocumentTask::LoadDocumentTask(DocumentFormat* f, const GUrl& u,
     init();
 }
 
+static bool isLoadAsMergedDocument(QVariantMap& hints){
+    if(hints.value(ProjectLoaderHint_MergeMode_Flag, false).toBool() == true){ // if that document was/is merged
+        if(!QFile::exists(hints[ProjectLoaderHint_MergeMode_URLDocument].toString())){// if not exist - load as merge
+            return true;
+        }
+        hints.remove(ProjectLoaderHint_MergeMode_Flag); // if exist - remove hints indicated that document is merged. Now document is genbank
+        hints[DocumentReadingMode_SequenceMergeGapSize] = -1;
+    }
+
+    return false;
+}
+
 void LoadDocumentTask::init() {
     tpm = Progress_Manual;
     CHECK_EXT(format != NULL,  setError(tr("Document format is NULL!")), );
@@ -297,6 +312,57 @@ void LoadDocumentTask::prepare() {
     }
 }
 
+static Document* loadMergedDocument(IOAdapterFactory* iof, const QVariantMap& fs, U2OpStatus& os){
+    QStringList urls = fs[ProjectLoaderHint_MergeMode_URLsDocumentConsistOf].toStringList();
+    QList<Document*> docs;
+
+    bool saveDoc = fs.value(ProjectLoaderHint_MergeMode_SaveDocumentFlag, false).toBool();
+
+    os.setProgress(0);
+
+    int curentDocIdx = 0;
+    foreach(const QString& url, urls){
+        FormatDetectionConfig conf;
+        conf.useImporters = true;
+        conf.bestMatchesOnly = false;
+        GUrl gurl(url); 
+        QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(gurl, conf);
+
+        int len = 100 / urls.size();
+        U2OpStatusChildImpl localOs(&os, U2OpStatusMapping(curentDocIdx * len,
+            (curentDocIdx == urls.size() - 1) ?(100 -  curentDocIdx * len) : len));
+
+        QVariantMap fsLocal;
+        fsLocal.unite(fs);
+
+        DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(formats[0].format->getFormatId());
+        docs << df->loadDocument(iof ,gurl, fsLocal, localOs);
+        CHECK_OP(os, NULL);
+        curentDocIdx++;
+    }
+
+    Document* doc = U1SequenceUtils::mergeSequences(docs, fs , os);
+
+    if(saveDoc){
+        std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+        QString url = doc->getURLString();
+        if(!io->open(url ,IOAdapterMode_Write)){
+            os.setError(L10N::errorOpeningFileWrite(url));
+        }
+        else{
+            //TODO remove after genbank can storing without getWholeSequence
+            try{
+                doc->getDocumentFormat()->storeDocument(doc, io.get(), os);
+            }
+            catch(std::bad_alloc&){
+                os.setError(QString("Not enough memory to storing %1 file").arg(doc->getURLString()));
+            }
+        }
+    }
+
+    return doc;    
+}
+
 void LoadDocumentTask::run() {
     CHECK_OP(stateInfo, );
     if (config.createDoc && iof->isResourceAvailable(url) == TriState_No) {
@@ -310,11 +376,16 @@ void LoadDocumentTask::run() {
     // and used for LoadUnloadedDocument & LoadDocument privately
     hints.remove(GObjectHint_NamesList);
 
-    try {
-        resultDocument = format->loadDocument(iof, url, hints, stateInfo);
-    } catch(std::bad_alloc) {
-        resultDocument = NULL;
-        setError(tr("Not enough memory to load document %1").arg(url.getURLString()));
+    if(isLoadAsMergedDocument(hints)){
+        resultDocument = loadMergedDocument(iof, hints, stateInfo);
+    }
+    else{
+        try {
+            resultDocument = format->loadDocument(iof, url, hints, stateInfo);
+        } catch(std::bad_alloc) {
+            resultDocument = NULL;
+            setError(tr("Not enough memory to load document %1").arg(url.getURLString()));
+        }
     }
 
     if (resultDocument != NULL) {

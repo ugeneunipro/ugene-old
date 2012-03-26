@@ -43,6 +43,11 @@ class U2OpStatus;
 #define ProjectLoaderHint_ForceFormatOptions "force-format-options"
 #define ProjectLoaderHint_LoadWithoutView "load-without-view"
 #define ProjectLoaderHint_LoadUnloadedDocument "load-unloaded-document"
+#define ProjectLoaderHint_MergeMode_URLDocument "merge-mode-url-document"
+#define ProjectLoaderHint_MergeMode_URLsDocumentConsistOf "merge-mode-urls-document-consist-of"
+#define ProjectLoaderHint_MergeMode_SaveDocumentFlag "merge-mode-save-document-flag"
+#define ProjectLoaderHint_MergeMode_Flag "merge-mode-flag"
+#define ProjectLoaderHint_MergeMode_RealDocumentFormat  "merge-mode-real-document-format"
 
 /// Service responsible for project loading / unloading
 class U2CORE_EXPORT ProjectLoader  : public QObject {
