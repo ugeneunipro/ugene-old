@@ -378,7 +378,9 @@ QString GObjectViewUtils::genUniqueStateName(const QString& stateName) {
 
 QString GObjectViewUtils::genUniqueViewName(const Document* doc, const GObject* obj) {
     QString objName = obj->getGObjectName();
-    QString viewName = doc->getURL().baseFileName() + " " + objName;
+    const GObjectTypeInfo& ti = GObjectTypes::getTypeInfo(obj->getGObjectType());
+    QString objType = " [" + ti.treeSign + "] ";
+    QString viewName = doc->getURL().baseFileName() + objType + objName;
     return genUniqueViewName(viewName);
 }
 

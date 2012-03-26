@@ -87,7 +87,7 @@ void OpenAssemblyBrowserTask::open() {
         SAFE_POINT(o, "Invalid assembly object!", );
 
         viewName = GObjectViewUtils::genUniqueViewName(o->getDocument(), o);
-        openBrowserForObject(o, viewName);
+        openBrowserForObject(o, viewName, false);
     }
 }
 
@@ -102,14 +102,14 @@ void OpenAssemblyBrowserTask::updateTitle(AssemblyBrowser* ab) {
     }
 }
 
-AssemblyBrowser * OpenAssemblyBrowserTask::openBrowserForObject(AssemblyObject *obj, QString viewName) {
+AssemblyBrowser * OpenAssemblyBrowserTask::openBrowserForObject(AssemblyObject *obj, QString viewName, bool persistent) {
     AssemblyBrowser * v = new AssemblyBrowser(viewName, obj);
     U2OpStatus2Notification os;
     if(!v->checkValid(os)) {
         delete v;
         return NULL;
     }
-    GObjectViewWindow* w = new GObjectViewWindow(v, viewName, false);
+    GObjectViewWindow* w = new GObjectViewWindow(v, viewName, persistent);
     AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
     return v;
 }
@@ -153,7 +153,7 @@ void OpenSavedAssemblyBrowserTask::open() {
     AssemblyObject *asmObj = qobject_cast<AssemblyObject*>(obj);
     SAFE_POINT(asmObj != NULL, "Object has type ASSEMBLY, but cannot cast to AssemblyObject",);
 
-    AssemblyBrowser * ab = OpenAssemblyBrowserTask::openBrowserForObject(asmObj, viewName);
+    AssemblyBrowser * ab = OpenAssemblyBrowserTask::openBrowserForObject(asmObj, viewName, true);
     CHECK(ab != NULL,);
     state.restoreState(ab);
 }

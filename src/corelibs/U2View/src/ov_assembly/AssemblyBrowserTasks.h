@@ -40,7 +40,7 @@ public:
     OpenAssemblyBrowserTask(Document * doc);
     virtual void open();
     static void updateTitle(AssemblyBrowser* ab);
-    static AssemblyBrowser * openBrowserForObject(AssemblyObject *obj, QString viewName);
+    static AssemblyBrowser * openBrowserForObject(AssemblyObject *obj, QString viewName, bool persistent);
 private:
     GObjectReference unloadedObjRef;
 };
