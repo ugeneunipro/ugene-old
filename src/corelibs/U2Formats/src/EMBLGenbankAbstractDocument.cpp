@@ -41,6 +41,8 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/GenbankFeatures.h>
 
@@ -69,7 +71,7 @@ Document* EMBLGenbankAbstractDocument::loadDocument(IOAdapter* io, const U2DbiRe
     QString writeLockReason;
     load(dbiRef, io, objects, fs, os, writeLockReason);
 
-    CHECK_OP(os, NULL);
+    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     
     DocumentFormatUtils::updateFormatHints(objects, fs);
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs, writeLockReason);
@@ -90,7 +92,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     bool merge = gapSize!=-1;
 
     QByteArray  gapSequence((merge ? gapSize : 0), 0);
-    AnnotationTableObject* mergedAnnotations = NULL;
+    std::auto_ptr<AnnotationTableObject> mergedAnnotations(NULL);
     QStringList contigs;
     QVector<U2Region> mergedMapping;
 
@@ -146,10 +148,10 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
         if (data.hasAnnotationObjectFlag) {
             QString annotationName = genObjectName(usedNames, data.name, data.tags, i+1, GObjectTypes::ANNOTATION_TABLE);
-            if (merge && mergedAnnotations == NULL) {
-                mergedAnnotations = new AnnotationTableObject(annotationName);
+            if (merge && mergedAnnotations.get() == NULL) {
+                mergedAnnotations.reset(new AnnotationTableObject(annotationName));
             }
-            annotationsObject = merge ? mergedAnnotations : new AnnotationTableObject(annotationName);
+            annotationsObject = merge ? mergedAnnotations.get() : new AnnotationTableObject(annotationName);
 
             QStringList groupNames;
             foreach(SharedAnnotationData d, data.features) {
@@ -184,7 +186,8 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
             } 
             else { 
                 U2Sequence u2seq = seqImporter.finalizeSequence(os);
-                CHECK_OP(os, );
+
+                CHECK_OP(os,);
                 u2seq.visualName = sequenceName;
                 u2seq.circular = data.circular;
                 DbiConnection con(dbiRef, os);
@@ -195,9 +198,9 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
                     
                     U2SequenceObject* seqObj =  new U2SequenceObject(sequenceName, U2EntityRef(dbiRef, u2seq.id));
                     objects << seqObj;
-        
+                    dbiObjects.objects << u2seq.id;
+
                     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
-                    dbiObjects.objects << seqObj->getSequenceRef().entityId;
 
                     if (annotationsObject!=NULL) {
                         sequenceRef.objName = seqObj->getGObjectName();
@@ -209,6 +212,9 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
                     readHeaderAttributes(data.tags, con, seqObj);
                     toolMark = data.tags.contains(UGENE_MARK); //the mark might be added in the readHeaderAttributes method
+                } else {
+                    con.dbi->getObjectDbi()->removeObject(u2seq.id, os);
+                    LOG_OP(os);
                 }
             }
         }
@@ -227,26 +233,25 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
         return;
     }
     U2Sequence u2seq = seqImporter.finalizeSequence(os);
+    dbiObjects.objects << u2seq.id;
+
     CHECK_OP(os,);
 
     u2seq.visualName = "Sequence";
     DbiConnection con(dbiRef, os);
     con.dbi->getSequenceDbi()->updateSequenceObject(u2seq,os);
 
-    if (os.hasError()) {
-        qDeleteAll(objects);
-        delete mergedAnnotations;
-        return;
-    }
+    CHECK_OP(os,);
     U2SequenceObject* so = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
     objects << so;
     objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(io->getURL(), contigs, u2seq, mergedMapping, os);
-    if (mergedAnnotations!=NULL) {
+    AnnotationTableObject * mergedAnnotationsPtr = mergedAnnotations.release();
+    if (mergedAnnotationsPtr!=NULL) {
         sequenceRef.objName = so->getGObjectName();
         mergedAnnotations->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
-        objects.append(mergedAnnotations);
+        objects.append(mergedAnnotationsPtr);
     }
-    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, mergedAnnotations);
+    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, mergedAnnotationsPtr);
 
 }
 

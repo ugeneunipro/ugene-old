@@ -194,8 +194,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             mergedMapping.append(U2Region(sequenceStart, sequenceLen));
         } else {
             U2Sequence seq = seqImporter.finalizeSequence(os);
-            CHECK_OP(os, );
             dbiObjects.objects << seq.id;
+            CHECK_OP(os, );
             
             //TODO parse header
             DbiConnection con(dbiRef, os);
@@ -220,8 +220,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     }
 
     U2Sequence seq = seqImporter.finalizeSequence(os);
-    CHECK_OP(os, );
     dbiObjects.objects << seq.id;
+    CHECK_OP(os, );
 
     U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
     objects << new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id));

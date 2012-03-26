@@ -125,6 +125,8 @@ U2SequenceObject *importSequence(DNASequence &sequence, const QString &objName, 
     seqImporter.addBlock(sequence.seq.constData(), sequence.seq.length(), os);
     CHECK_OP(os, NULL);
     U2Sequence u2seq = seqImporter.finalizeSequence(os);
+    TmpDbiObjects dbiObjects(dbiRef, os);
+    dbiObjects.objects << u2seq.id;
     CHECK_OP(os, NULL);
 
     U2SequenceObject *seqObj = new U2SequenceObject(objName, U2EntityRef(dbiRef, u2seq.id));

@@ -195,6 +195,8 @@ Document* U1SequenceUtils::mergeSequences(const Document* doc, int mergeGap, U2O
         }
     }
     U2Sequence u2seq = seqImport.finalizeSequence(os);
+    TmpDbiObjects dbiObjects(dbiHandle.getDbiRef(), os);
+    dbiObjects.objects << u2seq.id;
     CHECK_OP(os, NULL);
     U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiHandle.getDbiRef(), u2seq.id));
     QList<GObject*> objects; objects << seqObj << annObj;

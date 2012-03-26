@@ -99,6 +99,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
 
     CHECK_EXT(isStarted == true, os.setError(RawDNASequenceFormat::tr("Sequence is empty")), );
     U2Sequence u2seq = seqImporter.finalizeSequence(os);
+    TmpDbiObjects dbiObjects(dbiRef, os);
+    dbiObjects.objects << u2seq.id;
     CHECK_OP(os, );
 
     GObjectReference sequenceRef(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE);

@@ -62,6 +62,8 @@ U2SequenceObject* DocumentFormatUtils::addSequenceObject(const U2DbiRef& dbiRef,
     CHECK_OP(os, NULL);
     
     U2Sequence sequence = importer.finalizeSequence(os);
+    TmpDbiObjects dbiObjects(dbiRef, os);
+    dbiObjects.objects << sequence.id;
     CHECK_OP(os, NULL);
 
     U2SequenceObject* so = new U2SequenceObject(name, U2EntityRef(dbiRef, sequence.id), hints);
@@ -220,6 +222,8 @@ U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRe
     importer.addBlock(sequence.seq.constData(), sequence.seq.length(), os);
     CHECK_OP(os, NULL);
     U2Sequence u2seq = importer.finalizeSequence(os);
+    TmpDbiObjects dbiObjects(dbiRef, os);
+    dbiObjects.objects << u2seq.id;
     CHECK_OP(os, NULL);
     
     U2SequenceObject* so = new U2SequenceObject(seqObjName, U2EntityRef(dbiRef, u2seq.id));

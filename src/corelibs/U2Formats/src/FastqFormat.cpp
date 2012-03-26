@@ -239,12 +239,12 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
              mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
          } else {
              U2Sequence u2seq = seqImporter.finalizeSequence(os);
+             dbiObjects.objects << u2seq.id;
              CHECK_OP(os,);
 
              U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
 
              objects << seqObj;
-             dbiObjects.objects << seqObj->getSequenceRef().entityId;
              seqObj->setQuality(DNAQuality(qualityScores));
 
              U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
@@ -259,9 +259,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
          return;
      }
      U2Sequence u2seq = seqImporter.finalizeSequence(os);
-     CHECK_OP(os,);
-
      dbiObjects.objects << u2seq.id;
+     CHECK_OP(os,);
 
      U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
      objects << new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
