@@ -58,6 +58,8 @@ private:
     Task* createTestLauncherTask() const;
     void writeTestResult(const QString &result) const;
 
+    void setQtFileDialogView();
+
     TaskStateInfo os;
 };
 

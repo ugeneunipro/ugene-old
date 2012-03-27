@@ -29,6 +29,22 @@
 #include <U2Core/GObject.h>
 #include <U2Core/CMDLineCoreOptions.h>
 
+/**************************************************** to use qt file dialog *************************************************************/
+typedef QStringList(*_qt_filedialog_open_filenames_hook)(QWidget * parent, const QString &caption, const QString &dir,
+                                                          const QString &filter, QString *selectedFilter, QFileDialog::Options options);
+typedef QString(*_qt_filedialog_open_filename_hook)     (QWidget * parent, const QString &caption, const QString &dir,
+                                                          const QString &filter, QString *selectedFilter, QFileDialog::Options options);
+typedef QString(*_qt_filedialog_save_filename_hook)     (QWidget * parent, const QString &caption, const QString &dir,
+                                                          const QString &filter, QString *selectedFilter, QFileDialog::Options options);
+typedef QString(*_qt_filedialog_existing_directory_hook)(QWidget *parent, const QString &caption, const QString &dir,
+                                                          QFileDialog::Options options);
+
+extern Q_GUI_EXPORT _qt_filedialog_open_filename_hook qt_filedialog_open_filename_hook;
+extern Q_GUI_EXPORT _qt_filedialog_open_filenames_hook qt_filedialog_open_filenames_hook;
+extern Q_GUI_EXPORT _qt_filedialog_save_filename_hook qt_filedialog_save_filename_hook;
+extern Q_GUI_EXPORT _qt_filedialog_existing_directory_hook qt_filedialog_existing_directory_hook;
+/******************************************************************************************************************************************/
+
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
 namespace U2 {
@@ -38,6 +54,8 @@ const QString GUITestService::successResult = "Success";
 GUITestService::GUITestService(QObject *) : Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")),
 runTestsAction(NULL), testLauncher(NULL) {
     connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_registerService()));
+
+    setQtFileDialogView();
 }
 
 GUITestService::~GUITestService() {
@@ -211,6 +229,16 @@ void GUITestService::sl_taskStateChanged(Task* t) {
 void GUITestService::writeTestResult(const QString& result) const {
 
     printf("%s\n", (QString(GUITESTING_REPORT_PREFIX) + ":" + result).toUtf8().data());
+}
+
+void GUITestService::setQtFileDialogView()
+{
+    if (!qgetenv("UGENE_NO_NATIVE_FILEDIALOGS").isEmpty()) {
+        qt_filedialog_open_filename_hook = 0;
+        qt_filedialog_open_filenames_hook = 0;
+        qt_filedialog_save_filename_hook = 0;
+        qt_filedialog_existing_directory_hook = 0;
+    }
 }
 
 }
