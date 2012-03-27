@@ -31,7 +31,7 @@ public:
     enum UseMethod {UseMouse, UseKey};
     enum Button {Open, Cancel};
     static void openFile(U2OpStatus &os, const QString &path, const QString &fileName,
-                  const QString &filters = "All Files", Button button = Open, UseMethod m = UseMouse);
+                  const QString &filters = "*.*", Button button = Open, UseMethod m = UseMouse);
 };
 
 } // namespace
