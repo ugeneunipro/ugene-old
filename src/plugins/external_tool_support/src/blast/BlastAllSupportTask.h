@@ -67,9 +67,12 @@ private:
 
     QList<SharedAnnotationData> result;
 
-    void parseResult();
-    void parseHit(const QDomNode &xml);
-    void parseHsp(const QDomNode &xml,const QString &id, const QString &def, const QString &accession);
+    void parseTabularResult();
+    void parseTabularLine(const QByteArray &line);
+
+    void parseXMLResult();
+    void parseXMLHit(const QDomNode &xml);
+    void parseXMLHsp(const QDomNode &xml,const QString &id, const QString &def, const QString &accession);
 };
 
 class BlastAllSupportMultiTask : public Task {

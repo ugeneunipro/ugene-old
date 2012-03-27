@@ -141,7 +141,7 @@ QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
     else if(subTask==blastPlusTask){
         assert(logParser);
         delete logParser;
-        if(settings.outputType == 5){
+        if(settings.outputType == 5 || settings.outputType == 6){
             if(!QFileInfo(settings.outputOriginalFile).exists()){
                 QString curToolName;
                 if(settings.programName == "blastn"){
@@ -166,8 +166,11 @@ QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
                 }
                 return res;
             }
-
-            parseResult();
+            if(settings.outputType == 5){
+                parseXMLResult();
+            }else if(settings.outputType == 6){
+                parseTabularResult();
+            }
             if((!result.isEmpty())&&(settings.needCreateAnnotations)) {
                // Document* d = AppContext::getProject()->findDocumentByURL(url);
                 //assert(d==NULL);
@@ -214,7 +217,124 @@ QList<SharedAnnotationData> BlastPlusSupportCommonTask::getResultedAnnotations()
 BlastTaskSettings BlastPlusSupportCommonTask::getSettings() const {
     return settings;
 }
-void BlastPlusSupportCommonTask::parseResult() {
+void BlastPlusSupportCommonTask::parseTabularResult() {
+    QFile file(settings.outputOriginalFile);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        stateInfo.setError("Can't open output file");
+        return;
+    }
+    while(!file.atEnd()){
+        QByteArray line = file.readLine();
+        if (line.startsWith("#")){//skip comment
+            continue;
+        }
+        parseTabularLine(line);
+    }
+    file.close();
+}
+void BlastPlusSupportCommonTask::parseTabularLine(const QByteArray &line){
+    SharedAnnotationData ad(new AnnotationData());
+    bool isOk;
+    int from = -1,to = -1,align_len = -1,gaps = -1, identities = -1, hitFrom = -1,hitTo = -1;
+    //Fields: Query id (0), Subject id(1), % identity(2), alignment length(3), mismatches(4), gap openings(5), q. start(6), q. end(7), s. start(8), s. end(9), e-value(10), bit score(11)
+    QList<QByteArray> elements=line.split('\t');
+    if(elements.size()!=12){
+        stateInfo.setError(tr("Incorrect number of fields in line: %1").arg(elements.size()));
+        return;
+    }
+    from = elements.at(6).toInt(&isOk);
+    if(!isOk) {
+        stateInfo.setError("Can't get location");
+        return;
+    }
+    to = elements.at(7).toInt(&isOk);
+    if(!isOk) {
+        stateInfo.setError("Can't get location");
+        return;
+    }
+    if( from != -1 && to != -1 ) {
+        if(from <= to){
+            ad->location->regions << U2Region( from-1, to - from + 1);
+        }else{
+            ad->location->regions << U2Region( to-1, from - to + 1);
+        }
+    } else {
+        stateInfo.setError("Can't evaluate location");
+        return;
+    }
+
+    hitFrom = elements.at(8).toInt(&isOk);
+    if(!isOk) {
+        stateInfo.setError("Can't get hit location");
+        return;
+    }
+    hitTo = elements.at(9).toInt(&isOk);
+    if(!isOk) {
+        stateInfo.setError("Can't get hit location");
+        return;
+    }
+    if( hitFrom != -1 && hitTo != -1 ) {
+        if(hitFrom <= hitTo){
+            ad->setStrand(U2Strand::Direct);
+            ad->qualifiers.push_back(U2Qualifier( "source_frame","direct"));
+            ad->qualifiers.push_back(U2Qualifier("hit-from", QString::number(hitFrom)));
+            ad->qualifiers.push_back(U2Qualifier("hit-to", QString::number(hitTo)));
+        }else{
+            ad->setStrand(U2Strand::Complementary);
+            ad->qualifiers.push_back(U2Qualifier( "source_frame","complement"));
+            ad->qualifiers.push_back(U2Qualifier("hit-to", QString::number(hitFrom)));
+            ad->qualifiers.push_back(U2Qualifier("hit-from", QString::number(hitTo)));
+        }
+    } else {
+        stateInfo.setError("Can't evaluate hit location");
+        return;
+    }
+    QString elem=QString(elements.at(11));
+    if(elem.endsWith('\n')){
+        elem.resize(elem.size()-1);//remove \n symbol
+    }
+    double bitScore = elem.toDouble(&isOk);
+    if (isOk){
+        ad->qualifiers.push_back(U2Qualifier("bit-score", QString::number(bitScore)));
+    }
+
+    align_len = elements.at(3).toInt(&isOk);
+    if(!isOk) {
+        stateInfo.setError("Can't get align length");
+        return;
+    }
+    gaps = elements.at(4).toInt(&isOk);
+    if(!isOk) {
+        stateInfo.setError("Can't get gaps");
+        return;
+    }
+    float identitiesPercent = elements.at(2).toFloat(&isOk);
+    if(!isOk) {
+        stateInfo.setError("Can't get identity");
+        return;
+    }
+    if( align_len != -1 ) {
+        if( gaps != -1 ) {
+            float percent = (float)gaps / (float)align_len * 100;
+            QString str = QString::number(gaps) + "/" + QString::number(align_len) + " (" + QString::number(percent,'g',4) + "%)";
+            ad->qualifiers.push_back(U2Qualifier( "gaps", str ));
+        }
+        if( identitiesPercent != -1 ) {
+            //float percent = (float)identities / (float)align_len * 100;
+            identities=(float)align_len*identitiesPercent/100.;
+            QString str = QString::number(identities) + '/' + QString::number(align_len) + " (" + QString::number(identitiesPercent,'g',4) + "%)";
+            ad->qualifiers.push_back(U2Qualifier( "identities", str ));
+        }
+    }
+    if(!elements.at(10).isEmpty()) {
+        ad->qualifiers.push_back(U2Qualifier("E-value", elements.at(10)));
+    }
+
+    ad->qualifiers.push_back(U2Qualifier("id",elements.at(1)));
+    ad->name = "blast result";
+    result.append(ad);
+}
+void BlastPlusSupportCommonTask::parseXMLResult() {
 
     QDomDocument xmlDoc;
     QFile file(settings.outputOriginalFile);
@@ -231,11 +351,11 @@ void BlastPlusSupportCommonTask::parseResult() {
 
     QDomNodeList hits = xmlDoc.elementsByTagName("Hit");
     for(int i = 0; i<hits.count();i++) {
-        parseHit(hits.at(i));
+        parseXMLHit(hits.at(i));
     }
 }
 
-void BlastPlusSupportCommonTask::parseHit(const QDomNode &xml) {
+void BlastPlusSupportCommonTask::parseXMLHit(const QDomNode &xml) {
     QString id,def,accession;
 
     QDomElement tmp = xml.lastChildElement("Hit_id");
@@ -252,13 +372,13 @@ void BlastPlusSupportCommonTask::parseHit(const QDomNode &xml) {
                 QDomNodeList hsps = nodes.at(i).childNodes();
                 for(int j = 0;j<hsps.count();j++)
                     if(hsps.at(j).toElement().tagName()=="Hsp")
-                        parseHsp(hsps.at(j),id,def,accession);
+                        parseXMLHsp(hsps.at(j),id,def,accession);
             }
         }
     }
 }
 
-void BlastPlusSupportCommonTask::parseHsp(const QDomNode &xml,const QString &id, const QString &def, const QString &accession) {
+void BlastPlusSupportCommonTask::parseXMLHsp(const QDomNode &xml,const QString &id, const QString &def, const QString &accession) {
     SharedAnnotationData ad(new AnnotationData());
     bool isOk;
     int from = -1,to = -1,align_len = -1,gaps = -1,identities = -1;
