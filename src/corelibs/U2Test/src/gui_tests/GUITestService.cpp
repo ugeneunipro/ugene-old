@@ -124,7 +124,7 @@ GUITests GUITestService::addChecks() const {
     GUITestBase* tb = AppContext::getGUITestBase();
     Q_ASSERT(tb);
 
-    GUITests additionalChecks = tb->getTests(GUITestBase::ADDITIONAL);
+    GUITests additionalChecks = tb->getTests(GUITestBase::Additional);
     return additionalChecks;
 }
 

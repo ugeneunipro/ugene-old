@@ -70,10 +70,10 @@ GUITest *GUITestBase::getTest(const QString &name, TestType testType) {
 GUITestMap& GUITestBase::getMap(TestType testType) {
 
     switch(testType) {
-    case ADDITIONAL: return additional;
+    case Additional: return additional;
 
     default:
-    case NORMAL: return tests;
+    case Normal: return tests;
     }
 }
 

@@ -31,14 +31,14 @@ typedef QMap<QString, GUITest*> GUITestMap;
 
 class U2TEST_EXPORT GUITestBase {
 public:
-    enum TestType {NORMAL, ADDITIONAL} type;
+    enum TestType {Normal, Additional} type;
 
     virtual ~GUITestBase();
 
-    bool registerTest(GUITest *test, TestType testType = NORMAL);
-    GUITest *getTest(const QString &name, TestType testType = NORMAL); // removes item from GUITestBase
+    bool registerTest(GUITest *test, TestType testType = Normal);
+    GUITest *getTest(const QString &name, TestType testType = Normal); // removes item from GUITestBase
 
-    GUITests getTests(TestType testType = NORMAL);
+    GUITests getTests(TestType testType = Normal);
 
     static const QString unnamedTestsPrefix;
 
