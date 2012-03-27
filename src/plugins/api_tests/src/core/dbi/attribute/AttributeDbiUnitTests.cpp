@@ -26,44 +26,36 @@ const QString& AttributeTestData::ATT_DB_URL("attribute-dbi.ugenedb");
 
 U2AttributeDbi* AttributeTestData::attributeDbi = NULL;
 QList<U2DataId>* AttributeTestData::objects = NULL;
+TestDbiProvider AttributeTestData::dbiProvider = TestDbiProvider();
 
 void AttributeTestData::init() {
-	U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById(SQLITE_DBI_ID);
-	SAFE_POINT(NULL != factory, "dbi registry not loaded", );
-	
-	dbi.reset(factory->createDbi());
-	SAFE_POINT((U2Dbi *)NULL != dbi.get(), "dbi not created", );
+    TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
+    QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + AttributeTestData::ATT_DB_URL;
 
-	TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
-	QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + AttributeTestData::ATT_DB_URL;
+    QString tmpFile = QDir::temp().absoluteFilePath(QFileInfo(originalFile).fileName());
 
-	QString tmpFile = QDir::temp().absoluteFilePath(QFileInfo(originalFile).fileName());
+    if(QFile::exists(tmpFile)) {
+        QFile::remove(tmpFile);
+    }
 
-	if(QFile::exists(tmpFile)) {
-		QFile::remove(tmpFile);
-	}
-
-	QHash<QString, QString> properties;
-	if (QFile::exists(originalFile)) {
-		SAFE_POINT(QFile::copy(originalFile, tmpFile), "attribute db file not copied", );
-	} else {
-		properties[U2_DBI_OPTION_CREATE] = U2_DBI_VALUE_ON;
-	}
-	properties["url"] = tmpFile;
-
-	QVariantMap persistentData;
-	U2OpStatusImpl opStatus;
-	dbi->init(properties, persistentData, opStatus);
-	SAFE_POINT_OP(opStatus, );
-
-	U2ObjectDbi* objDbi = dbi->getObjectDbi();
-	SAFE_POINT(NULL != objDbi, "Dbi object not loaded", );
+    bool create = false;
+    if (QFile::exists(originalFile)) {
+        SAFE_POINT(QFile::copy(originalFile, tmpFile), "attribute db file not copied", );
+    }else{
+        create = true;
+    }
+    dbiProvider.init(tmpFile, create, false);
+    U2Dbi* dbi = dbiProvider.getDbi();
+    SAFE_POINT(NULL != dbi, "Dbi not loaded", );
+    U2ObjectDbi* objDbi = dbi->getObjectDbi();
+    SAFE_POINT(NULL != objDbi, "Dbi object not loaded", );
+    U2OpStatusImpl opStatus;
 
     objects = new QList<U2DataId>(objDbi->getObjects("/", 0, U2_DBI_NO_LIMIT, opStatus));
-	SAFE_POINT_OP(opStatus, );
-	
-	attributeDbi = dbi->getAttributeDbi();
-	SAFE_POINT((U2AttributeDbi *)NULL != this->attributeDbi, "attribute database not loaded", );
+    SAFE_POINT_OP(opStatus, );
+
+    attributeDbi = dbi->getAttributeDbi();
+    SAFE_POINT((U2AttributeDbi *)NULL != attributeDbi, "attribute database not loaded", );
 }
 
 U2AttributeDbi* AttributeTestData::getAttributeDbi(){
@@ -76,7 +68,8 @@ U2AttributeDbi* AttributeTestData::getAttributeDbi(){
 void AttributeTestData::shutdown() {
 	if ( attributeDbi != NULL) {
 		U2OpStatusImpl opStatus;
-		attributeDbi->getRootDbi()->shutdown(opStatus);
+        dbiProvider.close();
+        attributeDbi = NULL;
 		SAFE_POINT_OP(opStatus, );
 	}
 }

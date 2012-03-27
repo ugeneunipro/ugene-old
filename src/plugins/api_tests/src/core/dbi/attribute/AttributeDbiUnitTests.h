@@ -1,6 +1,8 @@
 #ifndef _U2_ATTRIBUTE_DBI_UNIT_TEST_H_
 #define _U2_ATTRIBUTE_DBI_UNIT_TEST_H_
 
+#include "core/dbi/DbiTest.h"
+
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -14,7 +16,7 @@ class AttributeTestData {
 public:
     static U2AttributeDbi* getAttributeDbi();
 	static QList<U2DataId>* getObjects() { return objects; }
-    void init();
+    static void init();
     static void shutdown();
 	static void testAttributesMatch(QList<U2IntegerAttribute>& expectedInt,
                          QList<U2RealAttribute>& expectedReal,
@@ -31,7 +33,7 @@ protected:
 
 	static const QString& ATT_DB_URL;
 
-	std::auto_ptr<U2Dbi> dbi;
+	static TestDbiProvider dbiProvider;
 };
 
 class ObjectAttributesTestData {

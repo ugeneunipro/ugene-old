@@ -1,18 +1,21 @@
 #ifndef _U2_ASSEMBLY_DBI_UNIT_TESTS_H_
 #define _U2_ASSEMBLY_DBI_UNIT_TESTS_H_
 
+#include "core/dbi/DbiTest.h"
+
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Test/TestRunnerSettings.h>
 #include <unittest.h>
+
 #include <memory>
 
 namespace U2 {
 
 class AssemblyTestData {
 public:
-    void init();
+    static void init();
     static void shutdown();
 	static U2AssemblyDbi* getAssemblyDbi();
 	static void close();
@@ -25,7 +28,7 @@ public:
 	static const QString& ASS_DB_URL;
 
 protected:
-    std::auto_ptr<U2Dbi> dbi;
+    static TestDbiProvider dbiProvider;
 };
 
 class AssemblyDbiUnitTests_getAssemblyObject : public UnitTest {

@@ -1,6 +1,8 @@
 #ifndef _U2_SEQUENCE_DBI_UNITTESTS_H_
 #define _U2_SEQUENCE_DBI_UNITTESTS_H_
 
+#include "core/dbi/DbiTest.h"
+
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/DNAAlphabet.h>
@@ -21,7 +23,7 @@ public:
 
 class SequenceTestData {
 public:
-    void init();
+    static void init();
     static void shutdown();
 	static U2SequenceDbi* getSequenceDbi();
 	static QList<U2DataId>* getSequences() { return sequences; };
@@ -39,7 +41,7 @@ public:
 	static const QString& SEQ_DB_URL;
 
 protected:
-    std::auto_ptr<U2Dbi> dbi;
+    static TestDbiProvider dbiProvider;
 };
 
 class SequenceDbiUnitTests_getSequenceObject : public UnitTest {

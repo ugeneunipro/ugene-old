@@ -41,16 +41,11 @@ static const QString& ADD_READ = "add_read";
 
 const QString& AssemblyTestData::ASS_DB_URL("assembly-dbi.ugenedb");
 
-U2AssemblyDbi* AssemblyTestData::assemblyDbi = NULL;;
-QList<U2DataId>* AssemblyTestData::assemblyIds = NULL;;
+U2AssemblyDbi* AssemblyTestData::assemblyDbi = NULL;
+QList<U2DataId>* AssemblyTestData::assemblyIds = NULL;
+TestDbiProvider AssemblyTestData::dbiProvider = TestDbiProvider();
 
 void AssemblyTestData::init() {
-
-	U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById(SQLITE_DBI_ID);
-	SAFE_POINT(NULL != factory, "dbi registry not loaded", );
-	
-	dbi.reset(factory->createDbi());
-	SAFE_POINT((U2Dbi *)NULL != dbi.get(), "dbi not created", );
 
 	TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
 	QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + AssemblyTestData::ASS_DB_URL;
@@ -61,27 +56,24 @@ void AssemblyTestData::init() {
 		QFile::remove(tmpFile);
 	}
 
-	QHash<QString, QString> properties;
+    bool create = false;
 	if (QFile::exists(originalFile)) {
 		SAFE_POINT(QFile::copy(originalFile, tmpFile), "assembly db file not copied", );
-	} else {
-		properties[U2_DBI_OPTION_CREATE] = U2_DBI_VALUE_ON;
-	}
-	properties["url"] = tmpFile;
-
-	QVariantMap persistentData;
-	U2OpStatusImpl opStatus;
-	dbi->init(properties, persistentData, opStatus);
-	SAFE_POINT_OP(opStatus, );
-
+    }else{
+        create = true;
+    }
+    dbiProvider.init(tmpFile, create, false);
+    U2Dbi* dbi = dbiProvider.getDbi();
+    SAFE_POINT(NULL != dbi, "Dbi not loaded", );
 	U2ObjectDbi* objDbi = dbi->getObjectDbi();
 	SAFE_POINT(NULL != objDbi, "Dbi object not loaded", );
+    U2OpStatusImpl opStatus;
 
     assemblyIds = new QList<U2DataId>(objDbi->getObjects(U2Type::Assembly, 0, U2_DBI_NO_LIMIT, opStatus));
 	SAFE_POINT_OP(opStatus, );
 	
 	assemblyDbi = dbi->getAssemblyDbi();
-	SAFE_POINT((U2AssemblyDbi *)NULL != this->assemblyDbi, "assembly database not loaded", );
+	SAFE_POINT((U2AssemblyDbi *)NULL != assemblyDbi, "assembly database not loaded", );
 }
 
 U2AssemblyDbi* AssemblyTestData::getAssemblyDbi() {
@@ -94,7 +86,8 @@ U2AssemblyDbi* AssemblyTestData::getAssemblyDbi() {
 void AssemblyTestData::shutdown(){
 	if (assemblyDbi != NULL) {
 		U2OpStatusImpl opStatus;
-		assemblyDbi->getRootDbi()->shutdown(opStatus);
+        dbiProvider.close();
+        assemblyDbi = NULL;
 		SAFE_POINT_OP(opStatus, );
 	}
 }

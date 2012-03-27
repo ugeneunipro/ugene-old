@@ -19,45 +19,37 @@ const QString& GET_SEQUENCE_DATA_OUT = "get_seq_data_out";
 const QString& SequenceTestData::SEQ_DB_URL("sequence-dbi.ugenedb");
 QList<U2DataId>* SequenceTestData::sequences = NULL;
 U2SequenceDbi* SequenceTestData::sequenceDbi = NULL;
+TestDbiProvider SequenceTestData::dbiProvider = TestDbiProvider();
 
 void SequenceTestData::init() {    
 
-	U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById(SQLITE_DBI_ID);
-	SAFE_POINT((U2DbiFactory *)NULL != factory, "dbi registry not loaded", );
-	
-	dbi.reset(factory->createDbi());
-	SAFE_POINT((U2Dbi *)NULL != dbi.get(), "dbi not created", );
-	
-	sequenceDbi = dbi->getSequenceDbi();
-	SAFE_POINT(NULL != sequenceDbi, "seauence database not loaded", );
+    TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
+    QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + SequenceTestData::SEQ_DB_URL;
 
-	TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
-	QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + SequenceTestData::SEQ_DB_URL;
+    QString tmpFile = QDir::temp().absoluteFilePath(QFileInfo(originalFile).fileName());
 
-	QString tmpFile = QDir::temp().absoluteFilePath(QFileInfo(originalFile).fileName());
+    if(QFile::exists(tmpFile)) {
+        QFile::remove(tmpFile);
+    }
 
-	if(QFile::exists(tmpFile)) {
-		QFile::remove(tmpFile);
-	}
+    bool create = false;
+    if (QFile::exists(originalFile)) {
+        SAFE_POINT(QFile::copy(originalFile, tmpFile), "attribute db file not copied", );
+    }else{
+        create = true;
+    }
+    dbiProvider.init(tmpFile, create, false);
+    U2Dbi* dbi = dbiProvider.getDbi();
+    SAFE_POINT(NULL != dbi, "Dbi not loaded", );
+    U2ObjectDbi* objDbi = dbi->getObjectDbi();
+    SAFE_POINT(NULL != objDbi, "Dbi object not loaded", );
+    U2OpStatusImpl opStatus;
 
-	QHash<QString, QString> properties;
-	if (QFile::exists(originalFile)) {
-		SAFE_POINT(QFile::copy(originalFile, tmpFile), "sequence db file not copied", );
-	} else {
-		properties[U2_DBI_OPTION_CREATE] = U2_DBI_VALUE_ON;
-	}
-	properties["url"] = tmpFile;
-
-	QVariantMap persistentData;
-	U2OpStatusImpl opStatus;
-	dbi->init(properties, persistentData, opStatus);
-	SAFE_POINT_OP(opStatus, );
-
-	U2ObjectDbi* objDbi = dbi->getObjectDbi();
-	SAFE_POINT(NULL != objDbi, "Dbi object not loaded", );
+    sequenceDbi = dbi->getSequenceDbi();
+    SAFE_POINT(NULL != sequenceDbi, "sequence database not loaded", );
 
     sequences = new QList<U2DataId>(objDbi->getObjects(U2Type::Sequence, 0, U2_DBI_NO_LIMIT, opStatus));
-	SAFE_POINT_OP(opStatus, );
+    SAFE_POINT_OP(opStatus, );
 }
 
 U2SequenceDbi* SequenceTestData::getSequenceDbi() {
@@ -70,7 +62,8 @@ U2SequenceDbi* SequenceTestData::getSequenceDbi() {
 void SequenceTestData::shutdown() {
 	if (sequenceDbi != NULL) {
 		U2OpStatusImpl opStatus;
-		sequenceDbi->getRootDbi()->shutdown(opStatus);
+		dbiProvider.close();
+        sequenceDbi = NULL;
 		SAFE_POINT_OP(opStatus, );
 	}
 }
