@@ -44,6 +44,12 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
     if (modifiers) {
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 1, 0);
     }
+
+    if (key == '_') {
+        key = '-';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
+    }
+
     XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 1, 0);
     XFlush(display);
 
@@ -57,7 +63,14 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
     Display *display = XOpenDisplay(NULL);
     CHECK_SET_ERR (display != 0, "Error: display is NULL in keyRelease()");
 
-    XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+    if (key == '_') {
+        key = '-';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
+    } else {
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+    }
+
     if (modifiers) {
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 0, 0);
     }
