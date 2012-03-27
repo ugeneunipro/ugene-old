@@ -34,14 +34,34 @@ namespace U2 {
 
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
 {
-    key = toupper(key);
-    keyPress(os, (int)key, modifiers);
+    if (isalpha(key)) {
+        key = toupper(key);
+    } 
+    if (key == '_') {
+        key = VK_OEM_MINUS;
+        if (modifiers != 0) {
+            keyPress(os, modifiers);
+        }
+        keyPress(os, (int)key, GTKeyboardDriver::key["shift"]);
+    } else {
+        keyPress(os, (int)key, modifiers);
+    }
 }
 
 void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 {
-    key = toupper(key);
-    keyRelease(os, (int)key, modifiers);
+    if (isalpha(key)) {
+        key = toupper(key);
+    } 
+    if (key == '_') {
+        key = VK_OEM_MINUS;
+        keyRelease(os, (int)key, GTKeyboardDriver::key["shift"]);
+        if (modifiers) {
+            keyRelease(os, modifiers);
+        } 
+    } else {
+        keyRelease(os, (int)key, modifiers);
+    }
 }
 
 void GTKeyboardDriver::keyClick(U2OpStatus &os, char key, int modifiers)
