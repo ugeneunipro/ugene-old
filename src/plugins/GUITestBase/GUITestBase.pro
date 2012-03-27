@@ -24,8 +24,7 @@ HEADERS += src/GUITestBasePlugin.h \
                 src/api/GTMenu.h \
                 src/api/GTMenuBar.h \
                 src/api/GTFileDialog.h \
-				src/api/GTScrollBar.h
-
+				
 
 SOURCES += src/GUITestBasePlugin.cpp \
            src/GUIInitialChecks.cpp \
@@ -56,6 +55,5 @@ SOURCES += src/GUITestBasePlugin.cpp \
                 src/api/GTMouseDriverLinux.cpp \
                 src/api/GTMouseDriverMac.cpp \
                 src/api/GTFileDialog.cpp \
-				src/api/GTScrollBar.cpp
-
+				
 
