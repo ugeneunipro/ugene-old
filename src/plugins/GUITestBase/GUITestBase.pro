@@ -22,7 +22,8 @@ HEADERS += src/GUITestBasePlugin.h \
                 src/api/GTSystem.h \
                 src/api/GTMouse.h \
                 src/api/GTMenu.h \
-    src/api/GTFileDialog.h
+                src/api/GTMenuBar.h \
+                src/api/GTFileDialog.h
 
 
 SOURCES += src/GUITestBasePlugin.cpp \
@@ -46,12 +47,13 @@ SOURCES += src/GUITestBasePlugin.cpp \
                 src/api/GTSystem.cpp \
                 src/api/GTMouse.cpp \
                 src/api/GTMenu.cpp \
+                src/api/GTMenuBar.cpp \
                 src/api/GTKeyboardDriverWindows.cpp \
                 src/api/GTKeyboardDriverMac.cpp \
                 src/api/GTKeyboardDriverLinux.cpp \
                 src/api/GTMouseDriverWindows.cpp \
                 src/api/GTMouseDriverLinux.cpp \
                 src/api/GTMouseDriverMac.cpp \
-    src/api/GTFileDialog.cpp
+                src/api/GTFileDialog.cpp
 
 
