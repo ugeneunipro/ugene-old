@@ -43,7 +43,9 @@ void GTMenuBar::clickCornerMenu(U2OpStatus &os, QMenuBar* mBar, GTMenuBar::Actio
     QPoint p = cWidget->mapToGlobal(need);
 
     GTMouseDriver::moveTo(os, p);
+    QtUtils::sleep(200);
     GTMouseDriver::click(os);
+    QtUtils::sleep(500);
 }
 
 }

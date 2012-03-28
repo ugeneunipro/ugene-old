@@ -40,6 +40,7 @@ void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str
 
     clear(os, lineEdit);
     GTKeyboardDriver::keySequence(os, str);
+    QtUtils::sleep(500);
 }
 
 void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
@@ -49,7 +50,9 @@ void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
     GTWidget::setFocus(os, lineEdit);
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    QtUtils::sleep(100);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    QtUtils::sleep(1000);
 }
 
 void GTLineEdit::pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod) {
@@ -67,6 +70,8 @@ void GTLineEdit::pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod
             GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
             break;
     }
+
+    QtUtils::sleep(500);
 }
 
 void GTLineEdit::checkTextSize(U2OpStatus& os, QLineEdit* lineEdit) {

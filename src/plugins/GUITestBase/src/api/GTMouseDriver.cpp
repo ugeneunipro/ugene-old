@@ -29,8 +29,6 @@ void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
     press(os, button);
     QtUtils::sleep(10);
     release(os, button);
-
-    QtUtils::sleep(200);
 }
 
 void GTMouseDriver::doubleClick(U2OpStatus &os)
@@ -38,8 +36,6 @@ void GTMouseDriver::doubleClick(U2OpStatus &os)
     click(os, Qt::LeftButton);
     QtUtils::sleep(100);
     click(os, Qt::LeftButton);
-
-    QtUtils::sleep(200);
 }
 
 } //namespace
