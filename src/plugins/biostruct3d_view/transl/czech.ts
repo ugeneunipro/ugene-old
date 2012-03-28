@@ -2,55 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="cs_CZ">
 <context>
-    <name>ImageExportForm</name>
-    <message>
-        <location filename="../src/ui/ExportImageDialog.ui" line="14"/>
-        <source>Export Image</source>
-        <translation>Vyvést obrázek</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExportImageDialog.ui" line="32"/>
-        <source>File name</source>
-        <translation>Název souboru</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExportImageDialog.ui" line="44"/>
-        <source>...</source>
-        <translation>...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExportImageDialog.ui" line="59"/>
-        <source>Format</source>
-        <translation>Formát</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExportImageDialog.ui" line="94"/>
-        <source>Width</source>
-        <translation>Šířka</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExportImageDialog.ui" line="122"/>
-        <location filename="../src/ui/ExportImageDialog.ui" line="169"/>
-        <source>px</source>
-        <translation>px</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExportImageDialog.ui" line="141"/>
-        <source>Height</source>
-        <translation>Výška</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExportImageDialog.ui" line="210"/>
-        <source>OK</source>
-        <translation>OK</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ExportImageDialog.ui" line="217"/>
-        <source>Cancel</source>
-        <translation>Zrušit</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../src/TubeGLRenderer.cpp" line="32"/>
@@ -344,39 +295,6 @@
         <location filename="../src/BioStruct3DViewPlugin.cpp" line="79"/>
         <source>Visualizes 3D structures of biological molecules.</source>
         <translation>Zviditelňuje trojrozměrné staveby biologických molekul.</translation>
-    </message>
-</context>
-<context>
-    <name>U2::ExportImageDialog</name>
-    <message>
-        <location filename="../src/ExportImageDialog.cpp" line="79"/>
-        <source>Error</source>
-        <translation>Chyba</translation>
-    </message>
-    <message>
-        <location filename="../src/ExportImageDialog.cpp" line="79"/>
-        <source>The filename is empty!</source>
-        <translation>Název souboru je prázdný!</translation>
-    </message>
-    <message>
-        <location filename="../src/ExportImageDialog.cpp" line="87"/>
-        <source>Overwrite file?</source>
-        <translation>Přepsat soubor?</translation>
-    </message>
-    <message>
-        <location filename="../src/ExportImageDialog.cpp" line="88"/>
-        <source>The file &quot;%1&quot; already exists. Do you wish to overwrite it?</source>
-        <translation>Soubor &quot;%1&quot; již existuje. Chcete jej přepsat?</translation>
-    </message>
-    <message>
-        <location filename="../src/ExportImageDialog.cpp" line="134"/>
-        <source>Save image to...</source>
-        <translation>Uložit obrázek do...</translation>
-    </message>
-    <message>
-        <location filename="../src/ExportImageDialog.cpp" line="96"/>
-        <source>Saving image to &apos;%1&apos;...</source>
-        <translation>Obrázek se ukládá do &apos;%1&apos;...</translation>
     </message>
 </context>
 <context>
