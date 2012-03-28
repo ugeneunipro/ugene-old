@@ -1,6 +1,5 @@
-include (external_tool_support.pri)
+include(external_tool_support.pri)
 
-# Input
 HEADERS += src/ETSProjectViewItemsContoller.h \
            src/ExternalToolRunTask.h \
            src/ExternalToolSupportPlugin.h \
@@ -24,6 +23,12 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/blast_plus/RPSBlastSupportTask.h \
            src/blast_plus/TBlastNPlusSupportTask.h \
            src/blast_plus/TBlastXPlusSupportTask.h \
+           src/bowtie/BowtieSettingsWidget.h \
+           src/bowtie/BowtieSupport.h \
+           src/bowtie/BowtieTask.h \
+           src/bwa/BwaSettingsWidget.h \
+           src/bwa/BwaSupport.h \
+           src/bwa/BwaTask.h \
            src/cap3/CAP3Support.h \
            src/cap3/CAP3SupportDialog.h \
            src/cap3/CAP3SupportTask.h \
@@ -36,6 +41,12 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/mafft/MAFFTSupportRunDialog.h \
            src/mafft/MAFFTSupportTask.h \
            src/mafft/MAFFTWorker.h \
+           src/mrbayes/MrBayesDialogWidget.h \
+           src/mrbayes/MrBayesSupport.h \
+           src/mrbayes/MrBayesTask.h \
+           src/mrbayes/MrBayesTests.h \
+           src/spidey/SpideySupport.h \
+           src/spidey/SpideySupportTask.h \
            src/tcoffee/TCoffeeSupport.h \
            src/tcoffee/TCoffeeSupportRunDialog.h \
            src/tcoffee/TCoffeeSupportTask.h \
@@ -45,31 +56,21 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/utils/ExportTasks.h \
            src/utils/ExternalToolSupportAction.h \
            src/utils/ExternalToolValidateTask.h \
-           src/bowtie/BowtieTask.h \
-           src/bowtie/BowtieSupport.h \
-           src/bowtie/BowtieSettingsWidget.h \
            src/bowtie/bowtie_tests/bowtieTests.h \
-           src/bwa/BwaSupport.h \
-           src/bwa/BwaTask.h \
-           src/bwa/BwaSettingsWidget.h \
-           src/bwa/bwa_tests/bwaTests.h \
-	   src/mrbayes/MrBayesSupport.h \
-	   src/mrbayes/MrBayesDialogWidget.h \
-	   src/mrbayes/MrBayesTask.h \
-	   src/mrbayes/MrBayesTests.h 
+           src/bwa/bwa_tests/bwaTests.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
+         src/ui/BowtieBuildSettings.ui \
+         src/ui/BowtieSettings.ui \
+         src/ui/BwaBuildSettings.ui \
+         src/ui/BwaSettings.ui \
          src/ui/CAP3SupportDialog.ui \
          src/ui/ClustalWSupportRunDialog.ui \
          src/ui/ETSSettingsWidget.ui \
          src/ui/FormatDBSupportRunDialog.ui \
          src/ui/MAFFTSupportRunDialog.ui \
+         src/ui/MrBayesDialog.ui \
          src/ui/SelectPathDialog.ui \
-         src/ui/TCoffeeSupportRunDialog.ui \
-         src/ui/BowtieSettings.ui \
-         src/ui/BowtieBuildSettings.ui \
-         src/ui/BwaBuildSettings.ui \
-         src/ui/BwaSettings.ui \
-         src/ui/MrBayesDialog.ui
+         src/ui/TCoffeeSupportRunDialog.ui
 SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/ExternalToolRunTask.cpp \
            src/ExternalToolSupportPlugin.cpp \
@@ -93,6 +94,12 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/blast_plus/RPSBlastSupportTask.cpp \
            src/blast_plus/TBlastNPlusSupportTask.cpp \
            src/blast_plus/TBlastXPlusSupportTask.cpp \
+           src/bowtie/BowtieSettingsWidget.cpp \
+           src/bowtie/BowtieSupport.cpp \
+           src/bowtie/BowtieTask.cpp \
+           src/bwa/BwaSettingsWidget.cpp \
+           src/bwa/BwaSupport.cpp \
+           src/bwa/BwaTask.cpp \
            src/cap3/CAP3Support.cpp \
            src/cap3/CAP3SupportDialog.cpp \
            src/cap3/CAP3SupportTask.cpp \
@@ -105,6 +112,12 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/mafft/MAFFTSupportRunDialog.cpp \
            src/mafft/MAFFTSupportTask.cpp \
            src/mafft/MAFFTWorker.cpp \
+           src/mrbayes/MrBayesDialogWidget.cpp \
+           src/mrbayes/MrBayesSupport.cpp \
+           src/mrbayes/MrBayesTask.cpp \
+           src/mrbayes/MrBayesTests.cpp \
+           src/spidey/SpideySupport.cpp \
+           src/spidey/SpideySupportTask.cpp \
            src/tcoffee/TCoffeeSupport.cpp \
            src/tcoffee/TCoffeeSupportRunDialog.cpp \
            src/tcoffee/TCoffeeSupportTask.cpp \
@@ -114,20 +127,10 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/utils/ExportTasks.cpp \
            src/utils/ExternalToolSupportAction.cpp \
            src/utils/ExternalToolValidateTask.cpp \
-           src/bowtie/BowtieTask.cpp \
-           src/bowtie/BowtieSupport.cpp \
-           src/bowtie/BowtieSettingsWidget.cpp \
            src/bowtie/bowtie_tests/bowtieTests.cpp \
-           src/bwa/BwaSupport.cpp \
-           src/bwa/BwaTask.cpp \
-           src/bwa/BwaSettingsWidget.cpp \
-           src/bwa/bwa_tests/bwaTests.cpp \
-	   src/mrbayes/MrBayesSupport.cpp \
-	   src/mrbayes/MrBayesDialogWidget.cpp \
-	   src/mrbayes/MrBayesTask.cpp \
-	   src/mrbayes/MrBayesTests.cpp 
+           src/bwa/bwa_tests/bwaTests.cpp
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/chinese.ts \
+                transl/czech.ts \
                 transl/english.ts \
-                transl/russian.ts \
-                transl/czech.ts
+                transl/russian.ts
