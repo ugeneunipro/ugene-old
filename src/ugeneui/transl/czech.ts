@@ -34,19 +34,19 @@
 <context>
     <name>AppContextImpl</name>
     <message>
-        <location filename="../src/Main.cpp" line="292"/>
+        <location filename="../src/Main.cpp" line="253"/>
         <source>UGENE initialization started</source>
-        <translation type="unfinished">Začalo spouštění UGENE</translation>
+        <translation>Začalo spouštění UGENE</translation>
     </message>
     <message>
-        <location filename="../src/Main.cpp" line="312"/>
+        <location filename="../src/Main.cpp" line="273"/>
         <source>Style not available %1</source>
-        <translation type="unfinished">Styl není dostupný %1</translation>
+        <translation>Styl není dostupný %1</translation>
     </message>
     <message>
-        <location filename="../src/Main.cpp" line="503"/>
+        <location filename="../src/Main.cpp" line="440"/>
         <source>UGENE started</source>
-        <translation type="unfinished">UGENE bylo spuštěno</translation>
+        <translation>UGENE bylo spuštěno</translation>
     </message>
 </context>
 <context>
@@ -111,24 +111,6 @@
     </message>
 </context>
 <context>
-    <name>DocumentFormatSelectorDialog</name>
-    <message>
-        <location filename="../src/project_support/ui/DocumentFormatSelectorDialog.ui" line="14"/>
-        <source>Select correct document format</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/DocumentFormatSelectorDialog.ui" line="32"/>
-        <source>Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/DocumentFormatSelectorDialog.ui" line="39"/>
-        <source>File preview</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>ExportProjectDialog</name>
     <message>
         <location filename="../src/project_support/ui/ExportProjectDialog.ui" line="14"/>
@@ -151,21 +133,12 @@
         <translation>Název souboru s projektem</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ui/ExportProjectDialog.ui" line="68"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600; color:#e50000;&quot;&gt;Warning!&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; All pending changes in the active project will be saved!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/ExportProjectDialog.ui" line="107"/>
+        <location filename="../src/project_support/ui/ExportProjectDialog.ui" line="96"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ui/ExportProjectDialog.ui" line="114"/>
+        <location filename="../src/project_support/ui/ExportProjectDialog.ui" line="103"/>
         <source>Cancel</source>
         <translation>Zrušit</translation>
     </message>
@@ -189,23 +162,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app_settings/logview_settings/ui/LogSettingsWidget.ui" line="60"/>
-        <source>Date format:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app_settings/logview_settings/ui/LogSettingsWidget.ui" line="70"/>
         <source>Show log level</source>
         <translation>Ukázat úroveň zápisu</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/logview_settings/ui/LogSettingsWidget.ui" line="77"/>
+        <location filename="../src/app_settings/logview_settings/ui/LogSettingsWidget.ui" line="67"/>
         <source>Show log category</source>
         <translation>Ukázat skupinu zápisu</translation>
-    </message>
-    <message>
-        <location filename="../src/app_settings/logview_settings/ui/LogSettingsWidget.ui" line="84"/>
-        <source>Enable colored log output</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>category_name</source>
@@ -305,21 +268,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app_settings/network_settings/ui/NetworkSettingsWidget.ui" line="213"/>
         <source>Secure Socket protocol:</source>
         <translation>Protokol bezpečná zásuvka (Secure Socket):</translation>
-    </message>
-    <message>
-        <location filename="../src/app_settings/network_settings/ui/NetworkSettingsWidget.ui" line="244"/>
-        <source>Remote request settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app_settings/network_settings/ui/NetworkSettingsWidget.ui" line="250"/>
-        <source>Remote request timeout</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app_settings/network_settings/ui/NetworkSettingsWidget.ui" line="263"/>
-        <source> sec</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -494,102 +442,31 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>SequenceReadingModeSelectorDialog</name>
-    <message>
-        <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="14"/>
-        <source>Sequence reading options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="20"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The document selected contains multiple sequence instances. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Please select the way UGENE will read these sequences:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="39"/>
-        <source> As separate sequences in sequence viewer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="65"/>
-        <source>Merge sequences into a single sequence to show in sequence viewer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="90"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Number of &apos;unknown&apos; symbols &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-style:italic;&quot;&gt;(&apos;N &apos;for nucleic or &apos;X&apos; for amino)&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; between parts:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="110"/>
-        <source> bases</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="141"/>
-        <source>Join sequences into alignment and open in multiple alignment viewer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="167"/>
-        <source>Align reads to reference sequence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ui/SequenceReadingModeSelectorDialog.ui" line="193"/>
-        <source>File preview:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>U2::AboutDialogController</name>
     <message>
-        <location filename="../src/main_window/AboutDialogController.cpp" line="72"/>
+        <location filename="../src/main_window/AboutDialogController.cpp" line="51"/>
         <source>Max score: %1</source>
         <translation>Největší výsledek: %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window/AboutDialogController.cpp" line="117"/>
+        <location filename="../src/main_window/AboutDialogController.cpp" line="95"/>
         <source>Score: %1</source>
         <translation>Výsledek: %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window/AboutDialogController.cpp" line="121"/>
+        <location filename="../src/main_window/AboutDialogController.cpp" line="99"/>
         <source>Level: %1</source>
         <translation>Úroveň: %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window/AboutDialogController.cpp" line="127"/>
+        <location filename="../src/main_window/AboutDialogController.cpp" line="105"/>
         <source>About UGENE</source>
         <translation>O programu UGENE</translation>
     </message>
     <message>
-        <location filename="../src/main_window/AboutDialogController.cpp" line="129"/>
+        <location filename="../src/main_window/AboutDialogController.cpp" line="107"/>
         <source>Have fun ;-)</source>
         <translation>Mějte se krásně °_^</translation>
-    </message>
-</context>
-<context>
-    <name>U2::AddDocumentsToProjectTask</name>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="635"/>
-        <source>Loading documents</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="677"/>
-        <source>No active project found!</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -610,12 +487,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::AppSettingsDialogController</name>
     <message>
-        <location filename="../src/app_settings/AppSettingsDialogController.cpp" line="70"/>
+        <location filename="../src/app_settings/AppSettingsDialogController.cpp" line="49"/>
         <source>default_err</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/AppSettingsDialogController.cpp" line="72"/>
+        <location filename="../src/app_settings/AppSettingsDialogController.cpp" line="51"/>
         <source>error</source>
         <translation>Chyba</translation>
     </message>
@@ -623,7 +500,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::AppSettingsGUIImpl</name>
     <message>
-        <location filename="../src/app_settings/AppSettingsGUIImpl.cpp" line="40"/>
+        <location filename="../src/app_settings/AppSettingsGUIImpl.cpp" line="19"/>
         <source>Preferences...</source>
         <translation>Nastavení...</translation>
     </message>
@@ -631,63 +508,42 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::CheckUpdatesTask</name>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="40"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="17"/>
         <source>Check for updates</source>
         <translation>Prověřit aktualizace</translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="51"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="26"/>
         <source>Connecting to updates server</source>
         <translation>Připojuje se k aktualizačnímu serveru</translation>
     </message>
     <message>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="38"/>
         <source>Connection error: %1</source>
-        <translation type="obsolete">Chyba spojení: %1</translation>
+        <translation>Chyba spojení: %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="65"/>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="67"/>
-        <source>Connection error while checking for updates: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="83"/>
-        <source>Newer version available. You can download it from our site.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="88"/>
-        <source>Don&apos;t ask again</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="99"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="49"/>
         <source>Your version:</source>
         <translation>Vaše verze:</translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="100"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="50"/>
         <source>Latest version:</source>
         <translation>Poslední verze:</translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="103"/>
-        <source>You have the latest version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="53"/>
         <source>You have the latest  version</source>
-        <translation type="obsolete">Máte poslední verzi</translation>
+        <translation>Máte poslední verzi</translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="84"/>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="107"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="57"/>
         <source>Version information</source>
         <translation>Údaj o verzi</translation>
     </message>
     <message>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="87"/>
-        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="112"/>
+        <location filename="../src/main_window/CheckUpdatesTask.cpp" line="62"/>
         <source>Visit web site</source>
         <translation>Navštivte internetové stránky</translation>
     </message>
@@ -695,17 +551,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::CloseProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="62"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="46"/>
         <source>close_project_task_name</source>
         <translation>Zavřít projekt</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="68"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="52"/>
         <source>error_no_active_project</source>
         <translation>Nenalezen žádný činný projekt</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="86"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="70"/>
         <source>Save and close project</source>
         <translation>Uložit a zavřít projekt</translation>
     </message>
@@ -713,7 +569,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::DisablePluginViewerTask</name>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerImpl.cpp" line="56"/>
+        <location filename="../src/plugin_viewer/PluginViewerImpl.cpp" line="35"/>
         <source>disable_plugin_viewer_task</source>
         <translation>Vypnout prohlížeč přídavných modulů</translation>
     </message>
@@ -721,106 +577,15 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::DisableProjectViewTask</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="996"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="814"/>
         <source>disable_project_view</source>
         <translation>Vypnout prohlížení projektů</translation>
     </message>
 </context>
 <context>
-    <name>U2::DocumentFormatSelectorController</name>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="48"/>
-        <source>Options for %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="60"/>
-        <source>&lt;b&gt;%1&lt;/b&gt; format. Score: %2 &lt;i&gt;(%3)&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="62"/>
-        <source>&lt;b&gt;&lt;font color=red&gt;Import: &lt;/font&gt;%1&lt;/b&gt;. Score: %2 (&lt;i&gt;%3&lt;/i&gt;)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="99"/>
-        <source>Not matched</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="102"/>
-        <source>Very low similarity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="105"/>
-        <source>Low similarity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="108"/>
-        <source>Average similarity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="111"/>
-        <source>High similarity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="114"/>
-        <source>Very high similarity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="116"/>
-        <source>Perfect match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/DocumentFormatSelectorController.cpp" line="124"/>
-        <source>Format details for &apos;%1&apos; format</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>U2::DocumentUpdater</name>
-    <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="162"/>
-        <source>Document &apos;%1&apos; was modified. Do you wish to reload it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="196"/>
-        <source>Reload documents task</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="223"/>
-        <source>Unable to unload &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="232"/>
-        <source>Reload &apos;%1&apos; task</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="235"/>
-        <source>Restore state task</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="253"/>
-        <source>Reload documents and restore view state task</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>U2::EnablePluginViewerTask</name>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerImpl.cpp" line="44"/>
+        <location filename="../src/plugin_viewer/PluginViewerImpl.cpp" line="23"/>
         <source>enable_plugin_viewer_task</source>
         <translation>Zapnout prohlížeč přídavných modulů</translation>
     </message>
@@ -828,7 +593,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::EnableProjectViewTask</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="984"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="802"/>
         <source>enable_project_view</source>
         <translation>Zapnout prohlížení projektů</translation>
     </message>
@@ -836,7 +601,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ExportProjectDialogController</name>
     <message>
-        <location filename="../src/project_support/ExportProjectDialogController.cpp" line="75"/>
+        <location filename="../src/project_support/ExportProjectDialogController.cpp" line="48"/>
         <source>Choose Directory</source>
         <translation>Vybrat adresář</translation>
     </message>
@@ -844,44 +609,34 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ExportProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="302"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="420"/>
         <source>Export project task</source>
         <translation>Vyvést projektový úkol</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="432"/>
         <source>One of the documents has empty URL</source>
-        <translation type="obsolete">Jeden z dokumentů má prázdnou adresu (URL)</translation>
+        <translation>Jeden z dokumentů má prázdnou adresu (URL)</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="324"/>
-        <source>One of the project documents has empty URL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="342"/>
-        <source>Error during coping documents: file already exist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="344"/>
         <source>Error during coping documents</source>
-        <translation type="unfinished">Chyba při kopírování dokumentů</translation>
+        <translation type="obsolete">Chyba při kopírování dokumentů</translation>
     </message>
 </context>
 <context>
     <name>U2::GTest_ExportProject</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="446"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="555"/>
         <source>GTest_ExportProject::prepare unable to clean directory for exporting</source>
         <translation>GTest_ExportProject::prepare nelze uklidit adresář pro vyvedení</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="451"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="560"/>
         <source>GTest_ExportProject::prepare unable to create directory for exporting</source>
         <translation>GTest_ExportProject::prepare nelze vytvořit adresář pro vyvedení</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="471"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="580"/>
         <source>GTest_ExportProject::cleanup unable to delete exported files</source>
         <translation>GTest_ExportProject::cleanup nelze smazat vyvedené soubory</translation>
     </message>
@@ -889,17 +644,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::GTest_LoadDocumentFromProject</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="532"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="641"/>
         <source>No project loaded</source>
         <translation>Nenahrán žádný projekt</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="536"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="645"/>
         <source>Document name to load is empty</source>
         <translation>Název dokumentu k nahrání je prázdný</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="551"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="660"/>
         <source>File %1 not found in project</source>
         <translation>Soubor %1 v projektu nenalezen</translation>
     </message>
@@ -907,7 +662,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::GTest_LoadProject</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="393"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="502"/>
         <source>Unload previous project, then load new</source>
         <translation>Vyložit předchozí projekt, potom nahrát nový</translation>
     </message>
@@ -915,7 +670,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LoadProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="256"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="361"/>
         <source>load_project_task_name</source>
         <translation>Nahrát projekt</translation>
     </message>
@@ -932,22 +687,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Byl zamknut během posledního nahrání</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="267"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="372"/>
         <source>Loading project from: %1</source>
         <translation>Nahrává se projekt z: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="276"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="381"/>
         <source>Unable to detect parser for project</source>
         <translation>Nepodařilo se zjistit syntaktický analyzátor pro projekt</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="277"/>
-        <source>failed to parse project file %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="282"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="386"/>
         <source>Project loaded: %1</source>
         <translation>Projekt nahrán: %1</translation>
     </message>
@@ -959,7 +709,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nastavení zápisu</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/logview_settings/LogSettingsGUIController.cpp" line="38"/>
+        <location filename="../src/app_settings/logview_settings/LogSettingsGUIController.cpp" line="17"/>
         <source>Logging</source>
         <translation>Nastavení zápisu</translation>
     </message>
@@ -967,17 +717,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::LogSettingsPageWidget</name>
     <message>
-        <location filename="../src/app_settings/logview_settings/LogSettingsGUIController.cpp" line="78"/>
+        <location filename="../src/app_settings/logview_settings/LogSettingsGUIController.cpp" line="57"/>
         <source>Category</source>
         <translation>Skupina</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/logview_settings/LogSettingsGUIController.cpp" line="85"/>
+        <location filename="../src/app_settings/logview_settings/LogSettingsGUIController.cpp" line="64"/>
         <source>&lt;&lt;all&gt;&gt;</source>
         <translation>&lt;&lt;vše&gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/logview_settings/LogSettingsGUIController.cpp" line="242"/>
+        <location filename="../src/app_settings/logview_settings/LogSettingsGUIController.cpp" line="217"/>
         <source>Sample text</source>
         <translation>Ukázkový text</translation>
     </message>
@@ -1036,62 +786,62 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::MWMDIManagerImpl</name>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="62"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="41"/>
         <source>close_active_view</source>
         <translation>Zavřít činný pohled</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="64"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="43"/>
         <source>close_active_view_statustip</source>
         <translation>Zavřít činný pohled</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="67"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="46"/>
         <source>close_all_mdi_windows</source>
         <translation>Zavřít všechna okna</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="68"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="47"/>
         <source>close_all_mdi_windows_statustip</source>
         <translation>Zavřít všechna okna</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="71"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="50"/>
         <source>tile_mdi_windows</source>
         <translation>Klást okna vedle sebe</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="72"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="51"/>
         <source>tile_mdi_windows_statustip</source>
         <translation>Klást okna vedle sebe</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="75"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="54"/>
         <source>cascade_mdi_windows</source>
         <translation>Překrývat okna</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="76"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="55"/>
         <source>cascade_mdi_windows_statustip</source>
         <translation>Překrývat okna</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="79"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="58"/>
         <source>next_mdi_window</source>
         <translation>Další okno</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="80"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="59"/>
         <source>next_mdi_window_statustip</source>
         <translation>Další okno</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="84"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="63"/>
         <source>previous_mdi_window</source>
         <translation>Předchozí okno</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MDIManagerImpl.cpp" line="85"/>
+        <location filename="../src/main_window/MDIManagerImpl.cpp" line="64"/>
         <source>previous_mdi_window_statustip</source>
         <translation>Předchozí okno</translation>
     </message>
@@ -1107,87 +857,86 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::MWMenuManagerImpl</name>
     <message>
-        <location filename="../src/main_window/MenuManager.cpp" line="32"/>
-        <source>&amp;File</source>
+        <location filename="../src/main_window/MenuManager.cpp" line="10"/>
+        <source>mw_menu_file</source>
         <translation>&amp;Soubor</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MenuManager.cpp" line="33"/>
-        <source>&amp;Actions</source>
+        <location filename="../src/main_window/MenuManager.cpp" line="11"/>
+        <source>mw_menu_actions</source>
         <translation>&amp;Činnosti</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MenuManager.cpp" line="34"/>
-        <source>&amp;Settings</source>
+        <location filename="../src/main_window/MenuManager.cpp" line="12"/>
+        <source>mw_menu_settings</source>
         <translation>&amp;Nastavení</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MenuManager.cpp" line="35"/>
-        <source>&amp;Tools</source>
+        <location filename="../src/main_window/MenuManager.cpp" line="13"/>
+        <source>mw_menu_tools</source>
         <translation>&amp;Nástroje</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MenuManager.cpp" line="36"/>
-        <source>&amp;Window</source>
+        <location filename="../src/main_window/MenuManager.cpp" line="14"/>
+        <source>mw_menu_window</source>
         <translation>&amp;Okno</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MenuManager.cpp" line="37"/>
-        <source>&amp;Help</source>
+        <location filename="../src/main_window/MenuManager.cpp" line="15"/>
+        <source>mw_menu_help</source>
         <translation>&amp;Nápověda</translation>
     </message>
 </context>
 <context>
     <name>U2::MainWindowImpl</name>
     <message>
-        <location filename="../src/main_window/MainWindowImpl.cpp" line="180"/>
-        <source>Exit</source>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="155"/>
+        <source>mw_menu_file_exit</source>
         <translation>U&amp;končit</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MainWindowImpl.cpp" line="184"/>
-        <source>About</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/main_window/MainWindowImpl.cpp" line="195"/>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="170"/>
         <source>Download user manual</source>
         <translation>Stáhnout uživatelskou příručku</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MainWindowImpl.cpp" line="264"/>
-        <source>Shutdown already in process. Close UGENE immediately?</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="193"/>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="195"/>
+        <source>main_window_title</source>
+        <translation>UGENE</translation>
     </message>
     <message>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="236"/>
         <source>UGENE</source>
-        <translation type="obsolete">UGENE</translation>
+        <translation>UGENE</translation>
     </message>
     <message>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="237"/>
         <source>Shutdown already in process. Close UGENE immediately</source>
-        <translation type="obsolete">Vypínání již probíhá. Zavřít UGENE okamžitě</translation>
+        <translation>Vypínání již probíhá. Zavřít UGENE okamžitě</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MainWindowImpl.cpp" line="265"/>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="238"/>
         <source>Close</source>
         <translation>Zavřít</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MainWindowImpl.cpp" line="266"/>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="239"/>
         <source>Wait</source>
         <translation>Počkat</translation>
     </message>
     <message>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="159"/>
         <source>mw_menu_help_about</source>
-        <translation type="obsolete">&amp;O programu</translation>
+        <translation>&amp;O programu</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MainWindowImpl.cpp" line="192"/>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="167"/>
         <source>Check for Updates</source>
         <translation>Prověřit na novější vydání</translation>
     </message>
     <message>
-        <location filename="../src/main_window/MainWindowImpl.cpp" line="189"/>
+        <location filename="../src/main_window/MainWindowImpl.cpp" line="164"/>
         <source>Visit UGENE&apos;s Web Site</source>
         <translation>Navštivte internetové stránky UGENE</translation>
     </message>
@@ -1199,7 +948,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nastavení sítě</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/network_settings/NetworkSettingsGUIController.cpp" line="36"/>
+        <location filename="../src/app_settings/network_settings/NetworkSettingsGUIController.cpp" line="15"/>
         <source>Network</source>
         <translation>Sítě</translation>
     </message>
@@ -1207,169 +956,167 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::OpenProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="93"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="77"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="82"/>
         <source>open_project_task_name</source>
         <translation>Otevřít projekt/dokument</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="100"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="98"/>
         <source>invalid_url%1</source>
         <translation>Nečitelný soubor: %1</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="105"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="106"/>
         <source>Project already opened</source>
-        <translation type="obsolete">Projekt již otevřen</translation>
+        <translation>Projekt již otevřen</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="111"/>
         <source>UGENE</source>
-        <translation type="obsolete">UGENE</translation>
+        <translation>UGENE</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="112"/>
         <source>New project can either be opened in a new window or replace the project in the existing. How would you like to open the project?</source>
-        <translation type="obsolete">Nový projekt může být buď otevřen v novém okně nebo nahradit projekt ve stávajícím. Jak chcete, aby byl projekt otevřen?</translation>
+        <translation>Nový projekt může být buď otevřen v novém okně nebo nahradit projekt ve stávajícím. Jak chcete, aby byl projekt otevřen?</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="113"/>
         <source>New Window</source>
-        <translation type="obsolete">Nové okno</translation>
+        <translation>Nové okno</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="114"/>
         <source>This Window</source>
-        <translation type="obsolete">Toto okno</translation>
+        <translation>Toto okno</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="122"/>
         <source>Failed to open new instance of UGENE</source>
-        <translation type="obsolete">Nepodařilo se otevřít nový běh UGENE</translation>
+        <translation>Nepodařilo se otevřít nový běh UGENE</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="169"/>
         <source>unsupported_document%1</source>
-        <translation type="obsolete">Neznámý formát dokumentu: %1</translation>
+        <translation>Neznámý formát dokumentu: %1</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="184"/>
         <source>Document wasn&apos;t added to project: unsupported format</source>
-        <translation type="obsolete">Dokument nebyl do projektu přidán: nepodporovaný formát</translation>
+        <translation>Dokument nebyl do projektu přidán: nepodporovaný formát</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="189"/>
         <source>warning</source>
-        <translation type="obsolete">Varování</translation>
+        <translation>Varování</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="189"/>
         <source>The document already in the project</source>
-        <translation type="obsolete">Dokument je již v projektu</translation>
+        <translation>Dokument je již v projektu</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="198"/>
         <source>The document is already opened: %1</source>
-        <translation type="obsolete">Dokument je již otevřen: %1</translation>
+        <translation>Dokument je již otevřen: %1</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="162"/>
         <source>ignore %1</source>
-        <translation type="obsolete">Nevšímat si %1</translation>
+        <translation>Nevšímat si %1</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="152"/>
         <source>Creating new project</source>
-        <translation type="obsolete">Vytváří se nový projekt</translation>
+        <translation>Vytváří se nový projekt</translation>
     </message>
     <message>
         <source>Document is already opened: %1</source>
         <translation type="obsolete">Dokument je již otevřen: %1</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="128"/>
         <source>Stopped loading project: %1. Reason: active project found</source>
-        <translation type="obsolete">Nahrávání projektu bylo zastaveno: %1. Důvod: nalezen činný projekt</translation>
-    </message>
-</context>
-<context>
-    <name>U2::OpenWithProjectTask</name>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="735"/>
-        <source>Opening document: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="737"/>
-        <source>Opening %1 documents</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrávání projektu bylo zastaveno: %1. Důvod: nalezen činný projekt</translation>
     </message>
 </context>
 <context>
     <name>U2::PluginViewerController</name>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="68"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="47"/>
         <source>plugin_view_window_title</source>
         <translation>Prohlížeč přídavných modulů</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="102"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="78"/>
         <source>Plugins...</source>
         <translation>Přídavné moduly...</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="107"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="83"/>
         <source>add_plugin_label</source>
         <translation>Přidat přídavný modul</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="116"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="92"/>
         <source>enable_service_label</source>
         <translation>Povolit službu</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="119"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="95"/>
         <source>disable_service_label</source>
         <translation>Zakázat službu</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="263"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="239"/>
         <source>add_plugin_caption</source>
         <translation>Vybrat soubor s přídavným modulem</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="266"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="242"/>
         <source>genome_browser2_plugin_files</source>
         <translation>Soubory s přídavným modulem</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="350"/>
-        <source>Select a plugin to view more information about it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="412"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="387"/>
         <source>item_type_plugin_label</source>
         <translation>Přídavný modul</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="418"/>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="451"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="393"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="412"/>
         <source>item_state_on</source>
         <translation>Zapnuto</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="448"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="409"/>
         <source>item_type_service_label</source>
         <translation>Služba</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="452"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="413"/>
         <source>item_state_off</source>
         <translation>Vypnuto</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="110"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="86"/>
         <source>enable_plugin_action</source>
         <translation>Povolit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="113"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="89"/>
         <source>disable_plugin_action</source>
         <translation>Odstranit přídavný modul</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="284"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="260"/>
         <source>add_plugin_error_caption</source>
         <translation>Chyba!</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="417"/>
+        <location filename="../src/plugin_viewer/PluginViewerController.cpp" line="392"/>
         <source>removed_after_restart</source>
         <translation>k odstranění po opětovném spuštění</translation>
     </message>
@@ -1377,12 +1124,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::PluginViewerImpl</name>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerImpl.h" line="39"/>
+        <location filename="../src/plugin_viewer/PluginViewerImpl.h" line="18"/>
         <source>plugin_viewer_sname</source>
         <translation>Prohlížeč přídavných modulů</translation>
     </message>
     <message>
-        <location filename="../src/plugin_viewer/PluginViewerImpl.h" line="39"/>
+        <location filename="../src/plugin_viewer/PluginViewerImpl.h" line="18"/>
         <source>plugin_viewer_sdesc</source>
         <translation>Nástroj pro zviditelnění a zacházení se základními přídavnými moduly a službami</translation>
     </message>
@@ -1390,14 +1137,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectDialogController</name>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="583"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="400"/>
         <source>Choose directory</source>
         <translation>Vybrat adresář</translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="617"/>
-        <source>&lt;html&gt;&lt;body align=&quot;center&quot;&gt;&lt;br&gt;Project file already exists.&lt;br&gt;Are you sure you want to overwrite it?&lt;body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1411,24 +1153,24 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Odstranění dokumentu z projektu: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectImpl.cpp" line="101"/>
+        <location filename="../src/project_support/ProjectImpl.cpp" line="72"/>
         <source>Project URL is set to %1
 </source>
         <translation>Adresa projektu (URL) je nastavena na %1
 </translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectImpl.cpp" line="119"/>
+        <location filename="../src/project_support/ProjectImpl.cpp" line="90"/>
         <source>Adding document to the project: %1</source>
         <translation>Dokument se přidává do projektu: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectImpl.cpp" line="152"/>
+        <location filename="../src/project_support/ProjectImpl.cpp" line="117"/>
         <source>Not enough resources for load document, resource name: &apos;%1&apos; available: %2%3 requested: %4%3</source>
         <translation>Pro nahrání dokumentu není dostatek zdrojů, název zdroje: &apos;%1&apos; dostupných: %2%3 požadováno: %4%3</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectImpl.cpp" line="159"/>
+        <location filename="../src/project_support/ProjectImpl.cpp" line="124"/>
         <source>Removing document from the project: %1</source>
         <translation>Dokument se odstraňuje z projektu: %1</translation>
     </message>
@@ -1436,82 +1178,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectLoaderImpl</name>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="74"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="37"/>
         <source>&amp;New project...</source>
         <translation>&amp;Nový projekt...</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="163"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="141"/>
         <source>UGENE project file</source>
         <translation>Soubor s projektem UGENE</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="165"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="143"/>
         <source>Select files to open...</source>
         <translation>Vybrat soubory k otevření...</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="268"/>
-        <source>Project file &apos;%1&apos; ignored</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="275"/>
-        <source>The document with the same URL is already added to the project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="277"/>
-        <source>warning</source>
-        <translation type="unfinished">Varování</translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="286"/>
-        <source>The document is already loaded and added to project: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="344"/>
-        <source>Failed to detect file format: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="376"/>
-        <source>Project is already opened</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="382"/>
-        <source>New project can either be opened in a new window or replace the project in the existing. How would you like to open the project?</source>
-        <translation type="unfinished">Nový projekt může být buď otevřen v novém okně nebo nahradit projekt ve stávajícím. Jak chcete, aby byl projekt otevřen?</translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="383"/>
-        <source>New Window</source>
-        <translation type="unfinished">Nové okno</translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="384"/>
-        <source>This Window</source>
-        <translation type="unfinished">Toto okno</translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="393"/>
-        <source>Failed to open new instance of UGENE</source>
-        <translation type="unfinished">Nepodařilo se otevřít nový běh UGENE</translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="399"/>
-        <source>Stopped loading project: %1. Reason: active project found</source>
-        <translation type="unfinished">Nahrávání projektu bylo zastaveno: %1. Důvod: nalezen činný projekt</translation>
-    </message>
-    <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="605"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="363"/>
         <source>new_project_default_name</source>
         <translation>Nový projekt</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="607"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="364"/>
         <source>new_project_default_file</source>
         <translation>projekt</translation>
     </message>
@@ -1520,17 +1207,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Soubory projektu</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="80"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="43"/>
         <source>New document from text...</source>
         <translation>Nový dokument z textu...</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="85"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="48"/>
         <source>Open</source>
         <translation>Otevřít</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="91"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="54"/>
         <source>Access remote database...</source>
         <translation>Přistoupit ke vzdálené databázi...</translation>
     </message>
@@ -1539,22 +1226,22 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Otevřít projekt nebo soubor s daty</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="531"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="350"/>
         <source>Save project as</source>
         <translation>Uložit projekt jako</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="532"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="351"/>
         <source>Save</source>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="105"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="69"/>
         <source>Recent Projects</source>
         <translation>Poslední projekty</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="109"/>
+        <location filename="../src/project_support/ProjectLoaderImpl.cpp" line="73"/>
         <source>Recent Files</source>
         <translation>Poslední soubory</translation>
     </message>
@@ -1562,7 +1249,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectServiceDisableTask</name>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="185"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="159"/>
         <source>project_disable_task</source>
         <translation>Zakázat projekt</translation>
     </message>
@@ -1570,27 +1257,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectServiceEnableTask</name>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="140"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="111"/>
         <source>project_enable_task</source>
         <translation>Povolit projekt</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="149"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="120"/>
         <source>&amp;Save all</source>
         <translation>&amp;Uložit vše</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="158"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="129"/>
         <source>&amp;Close project</source>
         <translation>&amp;Zavřít projekt</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="164"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="135"/>
         <source>Export project...</source>
         <translation>Vyvést projekt...</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="155"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="126"/>
         <source>Save project &amp;as...</source>
         <translation>Uložit projekt &amp;jako...</translation>
     </message>
@@ -1598,12 +1285,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectServiceImpl</name>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="49"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="26"/>
         <source>project_sname</source>
         <translation>Projekt</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="49"/>
+        <location filename="../src/project_support/ProjectServiceImpl.cpp" line="26"/>
         <source>project_sdesc</source>
         <translation>Projektová služba je dostupná, když je otevřen projekt. Další služby, které zavisejí na projektové službě budou automaticky spuštěny, jakmile je tato služba povolena.</translation>
     </message>
@@ -1611,17 +1298,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ProjectViewImpl</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="309"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="75"/>
         <source>projectview_sname</source>
         <translation>Prohlížení projektu</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="309"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="75"/>
         <source>projectview_sdesc</source>
         <translation>Služba prohlížení projektu poskytuje základní funkce pro zviditelnění projektu a zacházení s ním</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="359"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="127"/>
         <source>save_selected_modified_docs_action</source>
         <translation>Uložit vybrané dokumenty</translation>
     </message>
@@ -1634,85 +1321,87 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Přidává se stávající dokument: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="563"/>
-        <source>Select files to open...</source>
-        <translation type="unfinished">Vybrat soubory k otevření...</translation>
-    </message>
-    <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="632"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="426"/>
         <source>active_views_menu</source>
         <translation>Činné pohledy</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="685"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="479"/>
         <source>activate_view_action_%1</source>
         <translation>Zapnout pohled: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="695"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="489"/>
         <source>open_view_action_%1</source>
         <translation>Otevřít nový pohled: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="704"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="498"/>
         <source>open_state_%1_%2</source>
         <translation>Otevřít uložený pohled &apos;%1&apos; se stavem &apos;%2&apos;</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="725"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="519"/>
         <source>open_view_submenu_%1</source>
         <translation> &apos;%1&apos; stavy pohledu</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="752"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="546"/>
         <source>add_to_view_action_%1</source>
         <translation>Přidat do pohledu: %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="795"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="589"/>
         <source>open_view_menu</source>
         <translation>Otevřít pohled</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="796"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="590"/>
         <source>add_to_view_menu</source>
         <translation>Přidat do pohledu</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="860"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="654"/>
         <source>error_adding_object_to_view_title</source>
         <translation>Chyba!</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="535"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="325"/>
         <source>unnamed_project_name</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="354"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="119"/>
         <source>Open as...</source>
         <translation>Otevřít jako...</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="362"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="130"/>
         <source>Relocate..</source>
         <translation>Přemístit...</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="366"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="134"/>
         <source>Save a copy..</source>
         <translation>Uložit kopii...</translation>
     </message>
     <message>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="298"/>
         <source>Creating new document %1</source>
-        <translation type="obsolete">Vytváří se nový dokument %1</translation>
+        <translation>Vytváří se nový dokument %1</translation>
     </message>
     <message>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="360"/>
         <source>Adding existing document %1</source>
-        <translation type="obsolete">Přidává se stávající dokument %1</translation>
+        <translation>Přidává se stávající dokument %1</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="906"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="381"/>
+        <source>Add and load document</source>
+        <translation>Přidat a nahrát dokument</translation>
+    </message>
+    <message>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="733"/>
         <source>Select new file location</source>
         <translation>Vybrat nové umístění souboru</translation>
     </message>
@@ -1721,12 +1410,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Uložit kopii</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="931"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="758"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="931"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="758"/>
         <source>Document with the same URL is added to the project. 
  Remove it from the project first.</source>
         <translation>Do projektu je přidán dokument se stejnou adresou (URL).
@@ -1744,12 +1433,12 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::ProjectViewWidget</name>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="289"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="57"/>
         <source>Project</source>
         <translation>Projekt</translation>
     </message>
     <message>
-        <location filename="../src/project_view/ProjectViewImpl.cpp" line="282"/>
+        <location filename="../src/project_view/ProjectViewImpl.cpp" line="50"/>
         <source>Group mode</source>
         <translation>Skupinový režim</translation>
     </message>
@@ -1757,7 +1446,7 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::RegisterProjectServiceTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="292"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="396"/>
         <source>Register project</source>
         <translation>Zapsat projekt</translation>
     </message>
@@ -1765,7 +1454,7 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::ResourceSettingsGUIPageController</name>
     <message>
-        <location filename="../src/app_settings/resource_settings/ResourceSettingsGUIController.cpp" line="33"/>
+        <location filename="../src/app_settings/resource_settings/ResourceSettingsGUIController.cpp" line="12"/>
         <source>Resources</source>
         <translation>Zdroje</translation>
     </message>
@@ -1773,12 +1462,12 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::SaveOnlyProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="193"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="298"/>
         <source>Save project</source>
         <translation>Uložit projekt</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="239"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="344"/>
         <source>Saving project %1</source>
         <translation>Ukládá se projekt %1</translation>
     </message>
@@ -1786,21 +1475,22 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::SaveProjectTask</name>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="129"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="232"/>
         <source>save_project_task_name</source>
         <translation>Uložit projekt</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="251"/>
         <source>UGENE</source>
-        <translation type="obsolete">UGENE</translation>
+        <translation>UGENE</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="148"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="251"/>
         <source>Save current project?</source>
         <translation>Uložit nynější projekt?</translation>
     </message>
     <message>
-        <location filename="../src/project_support/ProjectTasksGui.cpp" line="179"/>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="284"/>
         <source>Save documents, remove phantom docs, save  project</source>
         <translation>Uložit dokumenty, odstranit zdánlivé dokumenty, uložit projekt</translation>
     </message>
@@ -1813,8 +1503,9 @@ Nejprve jej z projektu odstraňte.</translation>
         <translation type="obsolete">Uložit soubor s projektem?</translation>
     </message>
     <message>
+        <location filename="../src/project_support/ProjectTasksGui.cpp" line="255"/>
         <source>My project</source>
-        <translation type="obsolete">Můj projekt</translation>
+        <translation>Můj projekt</translation>
     </message>
     <message>
         <source>Saving project %1</source>
@@ -1869,17 +1560,17 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::Shtirlitz</name>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="116"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="84"/>
         <source>Statistical reports</source>
         <translation>Statistické zprávy</translation>
     </message>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="122"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="90"/>
         <source>Shtirlitz is sending the first-time report</source>
         <translation>Shtirlitz posílá ihned zprávu</translation>
     </message>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="134"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="107"/>
         <source>%1 days passed passed since previous Shtirlitz&apos;s report. Shtirlitz is sending the new one.</source>
         <translation>Od předchozí Shtirlitzovy zprávy uplynulo %1 dnů. Shtirlitz posílá novou.</translation>
     </message>
@@ -1887,22 +1578,22 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::ShtirlitzTask</name>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="270"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="243"/>
         <source>Connecting to remote server</source>
         <translation>Připojuje se ke vzdálenému serveru</translation>
     </message>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="290"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="263"/>
         <source>Cannot resolve destination path for statistical reports</source>
         <translation>Nelze rozložit cílovou cestu pro statistické zprávy</translation>
     </message>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="294"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="267"/>
         <source>Network error while resolving destination URL: </source>
         <translation>Chyba v síti při rozložení cílové adresy (URL): </translation>
     </message>
     <message>
-        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="307"/>
+        <location filename="../src/shtirlitz/Shtirlitz.cpp" line="280"/>
         <source>Network error while sending report: </source>
         <translation>Chyba v síti při posílání zprávy: </translation>
     </message>
@@ -1910,12 +1601,12 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::ShutdownTask</name>
     <message>
-        <location filename="../src/main_window/ShutdownTask.cpp" line="37"/>
+        <location filename="../src/main_window/ShutdownTask.cpp" line="16"/>
         <source>shutdown_task_name</source>
         <translation>Zastavení provozu</translation>
     </message>
     <message>
-        <location filename="../src/main_window/ShutdownTask.cpp" line="158"/>
+        <location filename="../src/main_window/ShutdownTask.cpp" line="137"/>
         <source>Starting shutdown process...</source>
         <translation>Spouští se postup zastavení provozu...</translation>
     </message>
@@ -1928,22 +1619,22 @@ Nejprve jej z projektu odstraňte.</translation>
         <translation type="obsolete">Zastavení provozu se nepodařilo. Chyba: %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window/ShutdownTask.cpp" line="89"/>
+        <location filename="../src/main_window/ShutdownTask.cpp" line="68"/>
         <source>Close windows</source>
         <translation>Zavřít okna</translation>
     </message>
     <message>
-        <location filename="../src/main_window/ShutdownTask.cpp" line="126"/>
+        <location filename="../src/main_window/ShutdownTask.cpp" line="105"/>
         <source>Cancel active tasks</source>
         <translation>Zrušit činné úkoly</translation>
     </message>
     <message>
-        <location filename="../src/main_window/ShutdownTask.cpp" line="177"/>
+        <location filename="../src/main_window/ShutdownTask.cpp" line="156"/>
         <source>Shutdown confirmation</source>
         <translation>Potvrzení zastavení provozu</translation>
     </message>
     <message>
-        <location filename="../src/main_window/ShutdownTask.cpp" line="178"/>
+        <location filename="../src/main_window/ShutdownTask.cpp" line="157"/>
         <source>There are active tasks. Stop them now?</source>
         <translation>Jsou zde činné úkoly. Zastavit je nyní?</translation>
     </message>
@@ -1951,7 +1642,7 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::TBoard</name>
     <message>
-        <location filename="../src/main_window/AboutDialogController.cpp" line="390"/>
+        <location filename="../src/main_window/AboutDialogController.cpp" line="367"/>
         <source>Pause</source>
         <translation>Přestávka</translation>
     </message>
@@ -1959,37 +1650,37 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::TVReportWindow</name>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="436"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="412"/>
         <source>report_for_%1</source>
         <translation>Zpráva o úkole [%1]</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="447"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="423"/>
         <source>Failed</source>
         <translation>Nepodařilo se</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="447"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="423"/>
         <source>Canceled</source>
         <translation>Zrušeno</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="447"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="423"/>
         <source>Finished</source>
         <translation>Dokončeno</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="448"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="424"/>
         <source>status</source>
         <translation>Stav</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="450"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="426"/>
         <source>error:</source>
         <translation>Chyba: </translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="456"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="432"/>
         <source>time</source>
         <translation>Čas</translation>
     </message>
@@ -1997,52 +1688,52 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::TaskStatusBar</name>
     <message>
-        <location filename="../src/task_view/TaskStatusBar.cpp" line="111"/>
+        <location filename="../src/task_view/TaskStatusBar.cpp" line="88"/>
         <source>%1Report for task: &apos;%2&apos;</source>
         <translation>%1Zpráva o úkole: %2</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskStatusBar.cpp" line="114"/>
+        <location filename="../src/task_view/TaskStatusBar.cpp" line="91"/>
         <source>%1&apos;%2&apos; task failed: %3</source>
         <translation>%1%2 se nepodařilo: %3</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskStatusBar.cpp" line="144"/>
+        <location filename="../src/task_view/TaskStatusBar.cpp" line="121"/>
         <source>num_reports_%1</source>
         <translation>Zprávy: %1</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskStatusBar.cpp" line="149"/>
+        <location filename="../src/task_view/TaskStatusBar.cpp" line="126"/>
         <source>no_active_tasks</source>
         <translation>Žádné činné úkoly</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskStatusBar.cpp" line="158"/>
+        <location filename="../src/task_view/TaskStatusBar.cpp" line="135"/>
         <source>running_task_%1</source>
         <translation>Běžící úkol: %1</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskStatusBar.cpp" line="167"/>
+        <location filename="../src/task_view/TaskStatusBar.cpp" line="144"/>
         <source>_info_%1</source>
         <translation>: %1</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskStatusBar.cpp" line="172"/>
+        <location filename="../src/task_view/TaskStatusBar.cpp" line="149"/>
         <source>num_tasks_%1_num_reports_%2</source>
         <translation>Úkoly: %1, Zprávy %2</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskStatusBar.cpp" line="174"/>
+        <location filename="../src/task_view/TaskStatusBar.cpp" line="151"/>
         <source>num_tasks_%1</source>
         <translation>Úkoly: %1</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskStatusBar.cpp" line="247"/>
+        <location filename="../src/task_view/TaskStatusBar.cpp" line="224"/>
         <source>%1 notification(s)</source>
         <translation>%1 oznámení</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskStatusBar.cpp" line="160"/>
+        <location filename="../src/task_view/TaskStatusBar.cpp" line="137"/>
         <source>canceling...</source>
         <translation>Ruší se...</translation>
     </message>
@@ -2050,42 +1741,42 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::TaskViewDockWidget</name>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="49"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="28"/>
         <source>Tasks</source>
         <translation>Úkoly</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="83"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="61"/>
         <source>cancel_task_action</source>
         <translation>Zrušit úkol</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="87"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="65"/>
         <source>view_task_report_action</source>
         <translation>Zobrazit zprávu</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="91"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="69"/>
         <source>remove_task_report_action</source>
         <translation>Odstranit zprávu</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="121"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="99"/>
         <source>task_name_column</source>
         <translation>Název úkolu</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="122"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="100"/>
         <source>task_current_desc_column</source>
         <translation>Popis stavu úkolu</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="123"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="101"/>
         <source>task_progress_column</source>
         <translation>Postup úkolu</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="124"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="102"/>
         <source>task_actions_column</source>
         <translation>Činnosti</translation>
     </message>
@@ -2094,22 +1785,22 @@ Nejprve jej z projektu odstraňte.</translation>
         <translation type="obsolete">O úkolu je dostupná nová zpráva: %1</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="296"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="274"/>
         <source>Activating task report: %1</source>
         <translation>Zapíná se zpráva o úkolu: %1</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="540"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="494"/>
         <source>finished</source>
         <translation>Dokončeno</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="522"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="476"/>
         <source>Canceling...</source>
         <translation>Ruší se...</translation>
     </message>
     <message>
-        <location filename="../src/task_view/TaskViewController.cpp" line="520"/>
+        <location filename="../src/task_view/TaskViewController.cpp" line="474"/>
         <source>Canceled</source>
         <translation>Zrušeno</translation>
     </message>
@@ -2121,17 +1812,17 @@ Nejprve jej z projektu odstraňte.</translation>
         <translation type="obsolete">Různá nastavení</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="38"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="17"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Obecné</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="44"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="23"/>
         <source>File with translations is not found: %1</source>
         <translation>Soubor s překlady nebyl nalezen: %1</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="58"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="37"/>
         <source>Illegal entry in translations file: %1</source>
         <translation>Neplatný záznam v souboru s překladem: %1</translation>
     </message>
@@ -2144,7 +1835,7 @@ Nejprve jej z projektu odstraňte.</translation>
         <translation type="obsolete">Neplatný záznam v seznamu překladů: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="40"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="19"/>
         <source>Autodetection</source>
         <translation>Automatické zjištění</translation>
     </message>
@@ -2152,29 +1843,29 @@ Nejprve jej z projektu odstraňte.</translation>
 <context>
     <name>U2::UserApplicationsSettingsPageWidget</name>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="138"/>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="196"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="114"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="172"/>
         <source>Custom translation [%1]</source>
         <translation>Vlastní překlad [%1]</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="159"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="136"/>
         <source>file_not_exists</source>
         <translation>Soubor neexistuje</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="177"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="153"/>
         <source>select_wb_file_title</source>
         <translation>Vybrat internetový prohlížeč</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="184"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="160"/>
         <source>select_trans_file_title</source>
         <translation>Vybrat soubor s překladem</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="205"/>
-        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="217"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="181"/>
+        <location filename="../src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp" line="193"/>
         <source>Choose Directory</source>
         <translation>Vybrat adresář</translation>
     </message>
@@ -2187,85 +1878,64 @@ Nejprve jej z projektu odstraňte.</translation>
         <translation>Jazyk uživatelského rozhraní (použitý po opětovném spuštění)</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="41"/>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="154"/>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="202"/>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="256"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="35"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="113"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="63"/>
-        <source>Window Layout</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="69"/>
-        <source>Multiple documents</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="72"/>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="82"/>
-        <source>buttonGroup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="79"/>
-        <source>Tabbed documents</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="104"/>
         <source>web_browser</source>
         <translation>Upřednostňovaný internetový prohlížeč</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="121"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="86"/>
         <source>use_default_web_browser</source>
         <translation>Výchozí systémový prohlížeč</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="131"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="96"/>
         <source>web_browser_path</source>
         <translation>Zadaný spustitelný soubor</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="166"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="125"/>
         <source>Project</source>
         <translation>Projekt</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="172"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="131"/>
         <source>auto_open_project_at_startup</source>
         <translation>Otevřít poslední projekt při spuštění</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="182"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="141"/>
         <source>Path to downloaded data:</source>
         <translation>Cesta ke staženým datům:</translation>
     </message>
     <message>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="152"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="191"/>
         <source>Browse...</source>
-        <translation type="obsolete">Procházet...</translation>
+        <translation>Procházet...</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="214"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="164"/>
         <source>Statistical reports</source>
         <translation>Statistické zprávy</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="220"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="170"/>
         <source>Enable statistical reports collecting</source>
         <translation>Povolit sběr statistických zpráv</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="230"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="180"/>
         <source>Path for temporary files</source>
         <translation>Cesta pro dočasné soubory</translation>
     </message>
     <message>
-        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="51"/>
+        <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="45"/>
         <source>Appearance</source>
         <translation>Vzhled</translation>
     </message>

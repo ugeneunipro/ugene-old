@@ -48,7 +48,9 @@ SOURCES += src/BallAndStickGLRenderer.cpp \
 	   src/AnaglyphRenderer.cpp
 
 RESOURCES += biostruct3d_view.qrc
-TRANSLATIONS += transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/english.ts \
+                transl/russian.ts \
+                transl/czech.ts
 
 win32 : LIBS += -lGLU32
 unix_not_mac() : LIBS += -lGLU

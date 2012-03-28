@@ -129,4 +129,5 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/english.ts \
-                transl/russian.ts
+                transl/russian.ts \
+                transl/czech.ts

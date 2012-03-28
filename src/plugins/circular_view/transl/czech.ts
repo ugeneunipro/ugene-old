@@ -1,99 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en">
+<TS version="2.0" language="cs_CZ">
 <context>
     <name>U2::CircularViewAction</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="201"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="163"/>
         <source>Show circular view</source>
-        <translation></translation>
+        <translation>Ukázat kruhový pohled</translation>
     </message>
 </context>
 <context>
     <name>U2::CircularViewContext</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="72"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="56"/>
         <source>Save circular view as image</source>
-        <translation></translation>
+        <translation>Uložit kruhový pohled jako obrázek</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="177"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="142"/>
         <source>Remove circular view</source>
-        <translation></translation>
+        <translation>Odstranit kruhový pohled</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="186"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="149"/>
         <source>Show circular view</source>
-        <translation></translation>
+        <translation>Ukázat kruhový pohled</translation>
+    </message>
+</context>
+<context>
+    <name>U2::CircularViewHeaderWidget</name>
+    <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="90"/>
+        <source>Save circular view as image</source>
+        <translation>Uložit kruhový pohled jako obrázek</translation>
+    </message>
+    <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="151"/>
+        <source>Raster image (*.png *.bmp *.jpg *.jpeg *.ppm *.xbm *.xpm)</source>
+        <translation>Rastrový obrázek (*.png *.bmp *.jpg *.jpeg *.ppm *.xbm *.xpm)</translation>
+    </message>
+    <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="152"/>
+        <source>Vector image (*.svg)</source>
+        <translation>Vektorový obrázek (*.svg)</translation>
+    </message>
+    <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="153"/>
+        <source>Portable document (*.pdf *.ps)</source>
+        <translation>Přenositelný dokument (*.pdf *.ps)</translation>
+    </message>
+    <message>
+        <location filename="../src/CircularViewSplitter.cpp" line="154"/>
+        <source>Export circular view to image</source>
+        <translation>Vyvést kruhový pohled do obrázku</translation>
     </message>
 </context>
 <context>
     <name>U2::CircularViewPlugin</name>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="55"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="33"/>
         <source>CircularView</source>
-        <translation></translation>
+        <translation>Kruhový pohled</translation>
     </message>
     <message>
-        <location filename="../src/CircularViewPlugin.cpp" line="55"/>
+        <location filename="../src/CircularViewPlugin.cpp" line="33"/>
         <source>Enables drawing of DNA sequences using circular representation</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
-    <name>U2::CircularViewRenderArea</name>
-    <message>
-        <location filename="../src/CircularView.cpp" line="443"/>
-        <source>circular view size %1 %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>U2::CircularViewSplitter</name>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="53"/>
-        <source>Zoom In</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="58"/>
-        <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="63"/>
-        <source>Fit To Full View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="68"/>
-        <source>Save circular view as image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/CircularViewSplitter.cpp" line="73"/>
-        <source>Show/hide restriction sites map</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>U2::RestrctionMapWidget</name>
-    <message>
-        <location filename="../src/RestrictionMapWidget.cpp" line="64"/>
-        <location filename="../src/RestrictionMapWidget.cpp" line="76"/>
-        <source>site</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/RestrictionMapWidget.cpp" line="64"/>
-        <location filename="../src/RestrictionMapWidget.cpp" line="76"/>
-        <source>sites</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/RestrictionMapWidget.cpp" line="103"/>
-        <source>Restriction Sites Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Povolí kreslení sekvencí DNA pomocí kruhového znázornění</translation>
     </message>
 </context>
 </TS>
