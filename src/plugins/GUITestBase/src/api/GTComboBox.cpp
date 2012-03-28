@@ -45,10 +45,8 @@ void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index)
     int pressCount = qAbs(index-currIndex);
     for (int i=0; i<pressCount; i++) {
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        QtUtils::sleep(100);
     }
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    QtUtils::sleep(500);
 }
 
 }

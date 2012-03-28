@@ -41,7 +41,6 @@ void ProjectTreeViewUtils::openView(U2OpStatus& os) {
     if (!documentTreeWidget) {
         toggleView(os);
     }
-    QtUtils::sleep(500);
 }
 
 void ProjectTreeViewUtils::toggleView(U2OpStatus& os) {
@@ -55,8 +54,6 @@ void ProjectTreeViewUtils::rename(U2OpStatus &os, const QString &itemName, const
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
     GTKeyboardDriver::keySequence(os, newItemName);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-
-    QtUtils::sleep(500);
 }
 
 void ProjectTreeViewUtils::click(U2OpStatus &os, const QString &itemName) {

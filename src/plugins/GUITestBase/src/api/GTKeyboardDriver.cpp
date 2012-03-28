@@ -31,6 +31,8 @@ void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
 
     keyPress(os, key, modifiers);
     keyRelease(os, key, modifiers);
+
+    QtUtils::sleep(200);
 }
 
 void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, const QString &str, int modifiers)
