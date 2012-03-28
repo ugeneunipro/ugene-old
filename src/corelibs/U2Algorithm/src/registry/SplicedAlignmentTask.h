@@ -35,7 +35,7 @@ public:
     }
 
     U2SequenceObject* getGenomicSequence() { return genomicSeqObj; }
-    U2SequenceObject* getCDnaSequenc() { return cDnaObj; }
+    U2SequenceObject* getCDnaSequence() { return cDnaObj; }
 
 private:
     U2SequenceObject* cDnaObj;
@@ -50,8 +50,9 @@ class U2ALGORITHM_EXPORT SplicedAlignmentTask : public Task
 {
     Q_OBJECT
 public:
-    SplicedAlignmentTask(const SplicedAlignmentTaskConfig& config);
-    virtual AnnotationTableObject getAlignmentResult() = 0;
+    SplicedAlignmentTask(const SplicedAlignmentTaskConfig& cfg);
+    SplicedAlignmentTask(const QString& taskName, TaskFlags flags, const SplicedAlignmentTaskConfig& cfg);
+    virtual AnnotationTableObject* getAlignmentResult() = 0;
 protected:
     SplicedAlignmentTaskConfig config;
 };

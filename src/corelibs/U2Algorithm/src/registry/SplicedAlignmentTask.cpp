@@ -24,9 +24,14 @@
 namespace U2 {
 
 SplicedAlignmentTask::SplicedAlignmentTask(const SplicedAlignmentTaskConfig& cfg) :
-    Task(tr("Compute spliced alignment"), TaskFlag_None), config(cfg)
+    Task(tr("SplicedAlignmentTask"), TaskFlag_None), config(cfg)
 {
 
+}
+
+SplicedAlignmentTask::SplicedAlignmentTask(const QString &taskName, TaskFlags flags, const SplicedAlignmentTaskConfig &cfg) :
+    Task(taskName, flags), config(cfg)
+{
 }
 
 } //namespace
