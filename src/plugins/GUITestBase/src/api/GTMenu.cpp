@@ -23,7 +23,11 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include <U2Core/AppContext.h>
-#include "QtUtils.h"
+#include <U2Gui/MainWindow.h>
+#include "GTGlobals.h"
+#include <QtGui/QMainWindow>
+#include <QtGui/QMenuBar>
+#include <QtGui/QApplication>
 
 namespace U2 {
 
@@ -59,9 +63,7 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, actionMetho
         break;
     }
 
-    QEventLoop loop;
-    QTimer::singleShot(1000, &loop, SLOT(quit()));
-    loop.exec();
+    GTGlobals::sleep(1000);
 
     return menu->menu();
 }
@@ -86,16 +88,14 @@ QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, actionMeth
     case USE_KEY:
 //        while (! ground->hasFocus()) {
 //            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-//            QtUtils::sleep(100);
+//            GTGlobals::sleep(100);
 //        }
 
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["context_menu"]);
         break;
     }
 
-    QEventLoop loop;
-    QTimer::singleShot(1000, &loop, SLOT(quit()));
-    loop.exec();
+    GTGlobals::sleep(1000);
 
     QMenu *menu = static_cast<QMenu*>(QApplication::activePopupWidget());
     return menu;
@@ -131,13 +131,13 @@ void GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList
 
             while(action != menu->activeAction()) {
                 GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
-                QtUtils::sleep(100);
+                GTGlobals::sleep(100);
             }
 
             if (action->menu()) {
                 GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
                 menu = action->menu();
-                QtUtils::sleep(100);
+                GTGlobals::sleep(100);
             }
             break;
         }

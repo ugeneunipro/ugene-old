@@ -20,10 +20,9 @@
  */
 
 #include "GTMenuBar.h"
-#include "QtUtils.h"
-
-#include <U2Core/U2SafePoints.h>
+#include "GTGlobals.h"
 #include "api/GTMouseDriver.h"
+#include <QtGui/QMenuBar>
 
 namespace U2 {
 
@@ -43,9 +42,9 @@ void GTMenuBar::clickCornerMenu(U2OpStatus &os, QMenuBar* mBar, GTMenuBar::Actio
     QPoint p = cWidget->mapToGlobal(need);
 
     GTMouseDriver::moveTo(os, p);
-    QtUtils::sleep(200);
+    GTGlobals::sleep(200);
     GTMouseDriver::click(os);
-    QtUtils::sleep(500);
+    GTGlobals::sleep(500);
 }
 
 }

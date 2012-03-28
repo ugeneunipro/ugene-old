@@ -20,9 +20,10 @@
  */
 
 #include "AppUtils.h"
-#include "QtUtils.h"
-
-#include <U2Core/U2SafePoints.h>
+#include "GTGlobals.h"
+#include <U2Core/AppContext.h>
+#include <U2Gui/MainWindow.h>
+#include <QtGui/QMainWindow>
 
 namespace U2 {
 

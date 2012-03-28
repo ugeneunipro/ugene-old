@@ -20,10 +20,10 @@
  */
 
 #include "GUIToolbarTests.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 #include "ProjectUtils.h"
 #include "GTToolbar.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 
 namespace U2 {
@@ -32,8 +32,8 @@ namespace U2 {
 // 
 //     QToolBar *tb = GTToolbar::getToolbar(os, MWTOOLBAR_MAIN);
 //     QWidget *button = GTToolbar::getWidgetForActionName(os, tb, ACTION_PROJECTSUPPORT__OPEN_PROJECT);
-// //    QtUtils::mouseClick(button, Qt::LeftButton);
-//     QtUtils::sleep(3000);
+// //    GTGlobals::mouseClick(button, Qt::LeftButton);
+//     GTGlobals::sleep(3000);
 //     
 //     
 // }

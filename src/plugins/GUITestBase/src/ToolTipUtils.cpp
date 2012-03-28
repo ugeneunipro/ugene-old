@@ -20,10 +20,8 @@
  */
 
 #include "ToolTipUtils.h"
-#include "QtUtils.h"
-#include "ProjectTreeViewUtils.h"
-
-#include <U2Core/U2SafePoints.h>
+#include "GTGlobals.h"
+#include <QtGui/QToolTip>
 
 namespace U2 {
 

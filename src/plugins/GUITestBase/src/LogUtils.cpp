@@ -20,9 +20,7 @@
  */
 
 #include "LogUtils.h"
-#include "QtUtils.h"
-
-#include <U2Core/U2SafePoints.h>
+#include "GTGlobals.h"
 
 namespace U2 {
 
@@ -39,7 +37,7 @@ void LogTracer::sl_onMessage(const LogMessage &msg) {
 }
 
 void LogUtils::check(U2OpStatus &os, LogTracer& l) {
-    QtUtils::sleep(500);
+    GTGlobals::sleep(500);
     CHECK_SET_ERR(l.hasError() == false, "There is an error in log");
 }
 

@@ -20,13 +20,15 @@
  */
 
 #include "ProjectUtils.h"
-#include "QtUtils.h"
-#include <U2Core/ProjectModel.h>
-#include <U2Gui/ObjectViewModel.h>
-#include <U2Core/U2SafePoints.h>
-
+#include "GTGlobals.h"
 #include "GUIDialogUtils.h"
 #include "api/GTKeyboardDriver.h"
+#include <U2Core/AppContext.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Gui/ObjectViewModel.h>
+#include <QtGui/QMainWindow>
+#include <QtGui/QDragEnterEvent>
+#include <QtGui/QDropEvent>
 
 namespace U2 {
 
@@ -45,14 +47,14 @@ void ProjectUtils::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const Open
             openFilesDrop(os, urls);
     }
 
-    QtUtils::sleep(500);
+    GTGlobals::sleep(500);
 
     checkProject(os);
     foreach (QUrl path, urls) {
         checkDocumentExists(os, path.toString());
     }
 
-    QtUtils::sleep(1000);
+    GTGlobals::sleep(1000);
 }
 
 void ProjectUtils::openFiles(U2OpStatus &os, const GUrl &path, const OpenFileSettings& s) {
@@ -82,7 +84,7 @@ void ProjectUtils::saveProjectAs(U2OpStatus &os, const QString &projectName, con
 
 void ProjectUtils::closeProject(U2OpStatus &os, const CloseProjectSettings& settings) {
 
-    QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__CLOSE_PROJECT, MWMENU_FILE);
+    GTGlobals::clickMenuAction(os, ACTION_PROJECTSUPPORT__CLOSE_PROJECT, MWMENU_FILE);
     GUIDialogUtils::MessageBoxDialogFiller filler(os, settings.saveOnCloseButton);
     GUIDialogUtils::waitForDialog(os, &filler, false);
 }
@@ -157,10 +159,10 @@ void ProjectUtils::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
     Qt::MouseButtons mouseButtons = Qt::LeftButton;
 
     QDragEnterEvent* dragEnterEvent = new QDragEnterEvent(widgetPos, dropActions, mimeData, mouseButtons, 0);
-    QtUtils::sendEvent(widget, dragEnterEvent);
+    GTGlobals::sendEvent(widget, dragEnterEvent);
 
     QDropEvent* dropEvent = new QDropEvent(widgetPos, dropActions, mimeData, mouseButtons, 0);
-    QtUtils::sendEvent(widget, dropEvent);
+    GTGlobals::sendEvent(widget, dropEvent);
 }
 
 } // U2

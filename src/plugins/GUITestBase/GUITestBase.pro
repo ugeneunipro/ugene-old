@@ -4,7 +4,7 @@ include (GUITestBase.pri)
 HEADERS += src/GUITestBasePlugin.h \
            src/GUIInitialChecks.h \
            src/GUIToolbarTests.h \
-           src/QtUtils.h \
+           src/GTGlobals.h \
            src/GUIDialogUtils.h \
            src/ToolTipUtils.h \
            src/GTToolbar.h \
@@ -24,12 +24,12 @@ HEADERS += src/GUITestBasePlugin.h \
                 src/api/GTMenu.h \
                 src/api/GTMenuBar.h \
                 src/api/GTFileDialog.h \
-				
+                
 
 SOURCES += src/GUITestBasePlugin.cpp \
            src/GUIInitialChecks.cpp \
            src/GUIToolbarTests.cpp \
-           src/QtUtils.cpp \
+           src/GTGlobals.cpp \
            src/GUIDialogUtils.cpp \
            src/ToolTipUtils.cpp \
            src/GTToolbar.cpp \
@@ -55,5 +55,5 @@ SOURCES += src/GUITestBasePlugin.cpp \
                 src/api/GTMouseDriverLinux.cpp \
                 src/api/GTMouseDriverMac.cpp \
                 src/api/GTFileDialog.cpp \
-				
+                
 

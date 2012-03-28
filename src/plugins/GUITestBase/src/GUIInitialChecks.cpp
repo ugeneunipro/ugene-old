@@ -20,12 +20,11 @@
  */
 
 #include "GUIInitialChecks.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 #include "ProjectUtils.h"
+#include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/ObjectViewModel.h>
-
-#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 

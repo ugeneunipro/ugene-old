@@ -20,14 +20,13 @@
  */
 
 #include <U2Core/U2OpStatus.h>
-#include <U2Core/U2SafePoints.h>
 
 #include "GTComboBox.h"
 #include "GTWidget.h"
 
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 namespace U2 {
 
@@ -45,10 +44,10 @@ void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index)
     int pressCount = qAbs(index-currIndex);
     for (int i=0; i<pressCount; i++) {
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        QtUtils::sleep(100);
+        GTGlobals::sleep(100);
     }
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    QtUtils::sleep(500);
+    GTGlobals::sleep(500);
 }
 
 }

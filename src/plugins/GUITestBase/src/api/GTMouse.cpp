@@ -26,7 +26,7 @@
 #include <QCursor>
 #include "GTMouse.h"
 #include "GTMouseDriver.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 namespace U2 {
 

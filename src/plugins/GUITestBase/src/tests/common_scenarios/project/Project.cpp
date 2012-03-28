@@ -25,7 +25,7 @@
 #include "LogUtils.h"
 #include "AppUtils.h"
 #include "ToolTipUtils.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 #include "GUIDialogUtils.h"
 #include "ProjectTreeViewUtils.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
@@ -97,7 +97,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
     AppUtils::checkUGENETitle(os, "UGENE");
-    QAction *result = QtUtils::getMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
+    QAction *result = GTGlobals::getMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
     CHECK_SET_ERR(result == NULL, "Export menu item present in menu without any project created");
 }
 

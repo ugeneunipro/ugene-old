@@ -21,7 +21,7 @@
 
 #include <cctype>
 #include "GTKeyboardDriver.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 namespace U2 {
 

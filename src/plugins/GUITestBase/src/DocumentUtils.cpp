@@ -20,9 +20,8 @@
  */
 
 #include "DocumentUtils.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
-#include <U2Core/U2SafePoints.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/ProjectModel.h>
 #include "ProjectTreeViewUtils.h"
@@ -48,7 +47,7 @@ Document* DocumentUtils::getDocument(U2OpStatus &os, const QString& documentName
 
 void DocumentUtils::checkDocument(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id) {
 
-    QtUtils::sleep(1000);
+    GTGlobals::sleep(1000);
 
     Document *d = getDocument(os, documentName);
     CHECK_SET_ERR(d != NULL, "There is no document with name " + documentName);
@@ -68,7 +67,7 @@ void DocumentUtils::removeDocument(U2OpStatus &os, const QString &documentName) 
 
     ProjectTreeViewUtils::click(os, documentName);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-    QtUtils::sleep(500);
+    GTGlobals::sleep(500);
 }
 
 GObjectView* DocumentUtils::getDocumentGObjectView(U2OpStatus &os, Document* d) {

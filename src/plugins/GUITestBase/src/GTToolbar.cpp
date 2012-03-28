@@ -20,7 +20,7 @@
  */
 
 #include "GTToolbar.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 #include "QToolBar"
 #include "QAction"
 #include <U2Gui/MainWindow.h>
@@ -31,7 +31,7 @@ namespace U2 {
 
     QToolBar* GTToolbar::getToolbar(U2OpStatus &os, const QString &toolbarSysName) {
         QString toolbarTypeCheck = "QToolBar";
-        QToolBar *toolbar = static_cast<QToolBar*>(QtUtils::findWidgetByName(os, toolbarSysName));
+        QToolBar *toolbar = static_cast<QToolBar*>(GTGlobals::findWidgetByName(os, toolbarSysName));
         CHECK_SET_ERR_RESULT(0 == toolbarTypeCheck.compare(toolbar->metaObject()->className()), "No such toolbar: " + toolbarSysName, NULL); //the found widget is not a qtoolbar
         return toolbar;
     }

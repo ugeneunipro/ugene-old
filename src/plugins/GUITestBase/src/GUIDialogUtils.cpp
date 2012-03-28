@@ -20,11 +20,12 @@
  */
 
 #include "GUIDialogUtils.h"
-#include "QtUtils.h"
-
-#include <U2Core/U2SafePoints.h>
+#include "GTGlobals.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
+#include <U2Gui/MainWindow.h>
+#include <QtGui/QApplication>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 
@@ -49,7 +50,7 @@ void GUIDialogUtils::waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDia
     t.connect(&t, SIGNAL(timeout()), &waiter, SLOT(wait()));
     t.start(100);
 
-    QtUtils::sleep(1000);
+    GTGlobals::sleep(1000);
     if (failOnNoDialog) {
         CHECK_SET_ERR(waiter.hadRun == true, "GUIDialogUtils::waitForDialog: no dialog");
     }
@@ -57,7 +58,7 @@ void GUIDialogUtils::waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDia
 
 void GUIDialogUtils::openExportProjectDialog(U2OpStatus &os) {
 
-    QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
+    GTGlobals::clickMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
 }
 
 void GUIDialogUtils::checkExportProjectDialog(U2OpStatus &os, const QString& projectName) {
@@ -152,7 +153,7 @@ void GUIDialogUtils::clickMessageBoxButton(U2OpStatus &os, QMessageBox::Standard
 
 void GUIDialogUtils::openSaveProjectAsDialog(U2OpStatus &os) {
 
-    QtUtils::clickMenuAction(os, ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT, MWMENU_FILE);
+    GTGlobals::clickMenuAction(os, ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT, MWMENU_FILE);
 }
 
 void GUIDialogUtils::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel) {

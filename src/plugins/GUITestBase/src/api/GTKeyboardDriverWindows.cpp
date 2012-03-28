@@ -21,7 +21,7 @@
 
 #include <cctype>
 #include "GTKeyboardDriver.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 #ifdef _WIN32
     #include <windows.h>

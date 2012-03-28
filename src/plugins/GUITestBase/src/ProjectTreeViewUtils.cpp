@@ -20,16 +20,13 @@
  */
 
 #include "ProjectTreeViewUtils.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 #include "ProjectUtils.h"
-
-#include <U2Core/U2SafePoints.h>
-
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include <U2Gui/ProjectView.h>
 #include <U2Core/ProjectModel.h>
 #include <QtGui/QTreeWidget>
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
 
 namespace U2 {
 
@@ -37,11 +34,11 @@ const QString ProjectTreeViewUtils::widgetName = "documentTreeWidget";
 
 void ProjectTreeViewUtils::openView(U2OpStatus& os) {
 
-    QWidget *documentTreeWidget = QtUtils::findWidgetByName(os, widgetName, NULL, false);
+    QWidget *documentTreeWidget = GTGlobals::findWidgetByName(os, widgetName, NULL, false);
     if (!documentTreeWidget) {
         toggleView(os);
     }
-    QtUtils::sleep(500);
+    GTGlobals::sleep(500);
 }
 
 void ProjectTreeViewUtils::toggleView(U2OpStatus& os) {
@@ -56,7 +53,7 @@ void ProjectTreeViewUtils::rename(U2OpStatus &os, const QString &itemName, const
     GTKeyboardDriver::keySequence(os, newItemName);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
 
-    QtUtils::sleep(500);
+    GTGlobals::sleep(500);
 }
 
 void ProjectTreeViewUtils::click(U2OpStatus &os, const QString &itemName) {
@@ -80,7 +77,7 @@ void ProjectTreeViewUtils::moveToOpenedView(U2OpStatus &os, const QString &itemN
 void ProjectTreeViewUtils::checkToolTip(U2OpStatus &os, const QString& itemName, const QString& tooltip) {
 
     moveTo(os, itemName);
-    QtUtils::sleep(2000);
+    GTGlobals::sleep(2000);
     ToolTipUtils::checkExistingToolTip(os, tooltip);
 }
 
@@ -111,7 +108,7 @@ QPoint ProjectTreeViewUtils::getTreeViewItemPosition(U2OpStatus &os, const QStri
 
 QTreeWidget* ProjectTreeViewUtils::getTreeWidget(U2OpStatus &os) {
 
-    QTreeWidget *treeWidget = static_cast<QTreeWidget*>(QtUtils::findWidgetByName(os, widgetName));
+    QTreeWidget *treeWidget = static_cast<QTreeWidget*>(GTGlobals::findWidgetByName(os, widgetName));
     return treeWidget;
 }
 

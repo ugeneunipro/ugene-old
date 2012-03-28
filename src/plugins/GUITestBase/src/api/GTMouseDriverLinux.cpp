@@ -20,7 +20,7 @@
  */
 
 #include "GTMouseDriver.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 #ifdef __linux__
     #include <X11/extensions/XTest.h>

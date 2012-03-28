@@ -25,7 +25,15 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTComboBox.h"
 #include "GUIDialogUtils.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
+#include <U2Gui/MainWindow.h>
+#include <QtGui/QApplication>
+#include <QtGui/QLineEdit>
+#include <QtGui/QTreeView>
+#include <QtGui/QFileSystemModel>
+#include <QtGui/QHeaderView>
+#include <QtGui/QFileDialog>
+#include <QtGui/QPushButton>
 
 #define FILE_NAME_LINE_EDIT "fileNameEdit"
 
@@ -69,7 +77,7 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
 
 void GTFileDialogUtils::run()
 {
-    QtUtils::sleep(1000);
+    GTGlobals::sleep(1000);
 
     QWidget *dialog = QApplication::activeModalWidget();
     CHECK_SET_ERR (dialog != NULL && QString(dialog->metaObject()->className()) == "QFileDialog",
@@ -122,14 +130,14 @@ void GTFileDialogUtils::setPath()
     case UseKey:
         while (! lineEdit->hasFocus()) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-            QtUtils::sleep(100);
+            GTGlobals::sleep(100);
         }
         break;
     }
 
     GTKeyboardDriver::keySequence(os, path);
     while (lineEdit->text() != path) {
-        QtUtils::sleep(100);
+        GTGlobals::sleep(100);
     }
 }
 
@@ -168,7 +176,7 @@ void GTFileDialogUtils::selectFile()
         }
         while (! w->rect().contains(w->visualRect(index))) {
             GTMouseDriver::scroll(os, -1);
-            QtUtils::sleep(100);
+            GTGlobals::sleep(100);
         }
 
         indexCenter = w->visualRect(index).center();
@@ -180,16 +188,16 @@ void GTFileDialogUtils::selectFile()
     case UseKey:
         while (! w->hasFocus()) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-            QtUtils::sleep(100);
+            GTGlobals::sleep(100);
         }
 
         while (qobject_cast<QFileDialog*>(fileDialog)->selectedFiles().indexOf(path + fileName) == -1) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
-            QtUtils::sleep(100);
+            GTGlobals::sleep(100);
         }
         break;
     }
-    QtUtils::sleep(100);
+    GTGlobals::sleep(100);
 }
 
 void GTFileDialogUtils::clickButton(Button btn)
@@ -221,7 +229,7 @@ void GTFileDialogUtils::clickButton(Button btn)
     case UseKey:
         while(! button_to_click->hasFocus()) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-            QtUtils::sleep(100);
+            GTGlobals::sleep(100);
         }
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
         break;
@@ -246,13 +254,13 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
     case UseKey:
         while (! w->hasFocus()) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-            QtUtils::sleep(100);
+            GTGlobals::sleep(100);
         }
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
         break;
     }
 
-    QtUtils::sleep(100);
+    GTGlobals::sleep(100);
 }
 
 void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &fileName,

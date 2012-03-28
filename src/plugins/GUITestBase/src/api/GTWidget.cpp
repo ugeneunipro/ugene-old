@@ -22,7 +22,7 @@
 #include "GTWidget.h"
 #include "GTMouseDriver.h"
 #include <QtGui/QWidget>
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 namespace U2 {
 
@@ -37,7 +37,7 @@ void GTWidget::setFocus(U2OpStatus &os, QWidget *w) {
     CHECK_SET_ERR(w != NULL, "GTWidget::setFocus: widget is NULL");
 
     GTWidget::click(os, w);
-    QtUtils::sleep(1000);
+    GTGlobals::sleep(1000);
 
     CHECK_SET_ERR(w->hasFocus(), "Can't set focus on widget");
 }

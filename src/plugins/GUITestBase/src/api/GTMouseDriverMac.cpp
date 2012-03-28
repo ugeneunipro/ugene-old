@@ -20,7 +20,7 @@
  */
 
 #include "GTMouseDriver.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 #ifdef  __APPLE__&__MACH__
     // #include <...>

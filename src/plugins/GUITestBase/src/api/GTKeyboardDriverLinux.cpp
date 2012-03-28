@@ -21,7 +21,7 @@
 
 #include <cctype>
 #include "GTKeyboardDriver.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 #if defined __linux__
     #define XK_LATIN1      // for latin symbol

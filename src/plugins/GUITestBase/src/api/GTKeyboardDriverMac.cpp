@@ -21,7 +21,7 @@
 
 #include <cctype>
 #include "GTKeyboardDriver.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 #if defined __APPLE__ & __MACH__
     //...

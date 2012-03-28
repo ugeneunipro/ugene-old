@@ -20,7 +20,6 @@
  */
 
 #include <U2Core/U2OpStatus.h>
-#include <U2Core/U2SafePoints.h>
 
 #include "GTLineEdit.h"
 #include "GTWidget.h"
@@ -28,7 +27,7 @@
 
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 namespace U2 {
 
@@ -40,7 +39,7 @@ void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str
 
     clear(os, lineEdit);
     GTKeyboardDriver::keySequence(os, str);
-    QtUtils::sleep(500);
+    GTGlobals::sleep(500);
 }
 
 void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
@@ -50,9 +49,9 @@ void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
     GTWidget::setFocus(os, lineEdit);
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
-    QtUtils::sleep(100);
+    GTGlobals::sleep(100);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-    QtUtils::sleep(1000);
+    GTGlobals::sleep(1000);
 }
 
 void GTLineEdit::pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod) {
@@ -71,7 +70,7 @@ void GTLineEdit::pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod
             break;
     }
 
-    QtUtils::sleep(500);
+    GTGlobals::sleep(500);
 }
 
 void GTLineEdit::checkTextSize(U2OpStatus& os, QLineEdit* lineEdit) {

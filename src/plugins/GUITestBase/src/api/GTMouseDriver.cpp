@@ -20,21 +20,21 @@
  */
 
 #include "GTMouseDriver.h"
-#include "QtUtils.h"
+#include "GTGlobals.h"
 
 namespace U2 {
 
 void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
 {
     press(os, button);
-    QtUtils::sleep(10);
+    GTGlobals::sleep(10);
     release(os, button);
 }
 
 void GTMouseDriver::doubleClick(U2OpStatus &os)
 {
     click(os, Qt::LeftButton);
-    QtUtils::sleep(100);
+    GTGlobals::sleep(100);
     click(os, Qt::LeftButton);
 }
 
