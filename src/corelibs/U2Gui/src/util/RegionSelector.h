@@ -33,10 +33,18 @@
 namespace U2 {
 
 class RegionLineEdit;
+
+struct RegionPreset {
+    RegionPreset() {}
+    RegionPreset(QString text_, const U2Region & region_) : text(text_), region(region_) {}
+    QString text;
+    U2Region region;
+};
+
 class U2GUI_EXPORT RegionSelector : public QWidget {
     Q_OBJECT
 public:
-    RegionSelector(QWidget* p, qint64 len, bool isVertical = false, DNASequenceSelection* selection = NULL);
+    RegionSelector(QWidget* p, qint64 len, bool isVertical = false, DNASequenceSelection* selection = NULL, QList<RegionPreset> presets_ = QList<RegionPreset>());
 
     ~RegionSelector();
     U2Region getRegion(bool *ok = NULL) const;
@@ -66,7 +74,10 @@ private:
     bool            isVertical;
     bool            needAddSelectionButton;
 
-    DNASequenceSelection* selection;
+    QList<RegionPreset> presets;
+    int             customIndex;
+    int             defaultIndex;
+    int             wholeRegionIndex;
 };
 
 class RegionLineEdit : public QLineEdit {

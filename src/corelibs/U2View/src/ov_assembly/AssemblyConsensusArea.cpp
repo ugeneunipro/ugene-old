@@ -22,10 +22,14 @@
 #include "AssemblyConsensusArea.h"
 #include "AssemblyConsensusTask.h"
 #include "AssemblyBrowser.h"
+#include "ExportConsensusTask.h"
+#include "ExportConsensusDialog.h"
 
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -55,10 +59,14 @@ void AssemblyConsensusArea::createContextMenu() {
     contextMenu = new QMenu(this);
 
     contextMenu->addMenu(getConsensusAlgorithmMenu());
+
     QAction * diffAction = contextMenu->addAction(tr("Show difference from reference"));
     diffAction->setCheckable(true);
     diffAction->setChecked(true);
     connect(diffAction, SIGNAL(triggered(bool)), SLOT(sl_drawDifferenceChanged(bool)));
+
+    QAction * exportAction = contextMenu->addAction(tr("Export consensus..."));
+    connect(exportAction, SIGNAL(triggered()), SLOT(sl_exportConsensus()));
 }
 
 bool AssemblyConsensusArea::canDrawSequence() {
@@ -200,6 +208,31 @@ void AssemblyConsensusArea::sl_consensusReady() {
             canceled = true;
         }
         sl_redraw();
+    }
+}
+
+void AssemblyConsensusArea::sl_exportConsensus() {
+    const DocumentFormat * defaultFormat = BaseDocumentFormats::get(BaseDocumentFormats::FASTA);
+    SAFE_POINT(defaultFormat != NULL, "Internal: couldn't find default document format for consensus",);
+
+    ExportConsensusTaskSettings settings;
+    settings.region = getModel()->getGlobalRegion();
+    settings.model = getModel();
+    settings.consensusAlgorithm = consensusAlgorithm;
+    settings.formatId = defaultFormat->getFormatId();
+    settings.seqObjName = getModel()->getAssembly().visualName + "_consensus";
+    settings.addToProject = true;
+    settings.keepGaps = true;
+    settings.circular = false;
+
+    QFileInfo db(getModel()->getAssembly().dbiId);
+    QString ext = defaultFormat->getSupportedDocumentFileExtensions().first();
+    settings.fileName = QString("%1/%2_consensus.%3").arg(db.path()).arg(db.baseName()).arg(ext);
+
+    ExportConsensusDialog dlg(this, settings, getVisibleRegion());
+    if(dlg.exec() == QDialog::Accepted) {
+        settings = dlg.getSettings();
+        AppContext::getTaskScheduler()->registerTopLevelTask(new ExportConsensusTask(settings));
     }
 }
 

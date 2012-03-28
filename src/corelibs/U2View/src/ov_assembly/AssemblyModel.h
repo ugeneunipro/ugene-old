@@ -66,6 +66,7 @@ public:
     qint64 getModelHeight(U2OpStatus & os);
 
     void setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm);
+    U2Assembly getAssembly() { return assembly; }
 
     bool hasReference() const;
     bool referenceAssociated()const;

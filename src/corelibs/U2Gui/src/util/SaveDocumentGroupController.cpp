@@ -64,6 +64,10 @@ DocumentFormatId SaveDocumentGroupController::getFormatIdToSave() const {
 	return comboController->getActiveFormatId();
 }
 
+void SaveDocumentGroupController::setSelectedFormatId(DocumentFormatId id) {
+    comboController->setActiveFormatId(id);
+}
+
 DocumentFormat* SaveDocumentGroupController::getFormatToSave() const {
 	DocumentFormatId id = getFormatIdToSave();
 	if (id.isEmpty()) {

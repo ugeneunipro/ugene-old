@@ -53,6 +53,7 @@ private slots:
     void sl_consensusAlgorithmChanged(QAction *a);
     void sl_drawDifferenceChanged(bool value);
     void sl_consensusReady();
+    void sl_exportConsensus();
 
 private:
     void createContextMenu();

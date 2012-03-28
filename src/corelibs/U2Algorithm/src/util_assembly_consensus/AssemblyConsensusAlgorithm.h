@@ -59,7 +59,7 @@ public:
     virtual QByteArray getConsensusRegion(const U2Region &region, U2DbiIterator<U2AssemblyRead>* reads, QByteArray referenceFragment, U2OpStatus &os) = 0;
 
     /** The character that will be placed in consensus array if it is undefined (no bases covered current position) */
-    static const char EMPTY_CHAR = ' ';
+    static const char EMPTY_CHAR = '-';
 private:
     AssemblyConsensusAlgorithmFactory* factory;
 };

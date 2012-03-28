@@ -19,6 +19,8 @@ HEADERS += src/WebWindow.h \
            src/ov_assembly/CoverageInfo.h \
            src/ov_assembly/CoveredRegionsManager.h \
            src/ov_assembly/ExportReadsDialog.h \
+           src/ov_assembly/ExportConsensusDialog.h \
+           src/ov_assembly/ExportConsensusTask.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
            src/ov_msa/ConsensusSelectorDialogController.h \
@@ -109,6 +111,7 @@ HEADERS += src/WebWindow.h \
            src/util_smith_waterman/SmithWatermanDialogImpl.h \
            src/util_smith_waterman/SubstMatrixDialog.h
 FORMS += src/ov_assembly/ui/ExportReadsDialog.ui \
+         src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_msa/ui/ConsensusSelectorDialog.ui \
          src/ov_msa/ui/CreateSubalignimentDialog.ui \
          src/ov_msa/ui/DeleteGapsDialog.ui \
@@ -147,6 +150,8 @@ SOURCES += src/WebWindow.cpp \
            src/ov_assembly/CoverageInfo.cpp \
            src/ov_assembly/CoveredRegionsManager.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
+           src/ov_assembly/ExportConsensusDialog.cpp \
+           src/ov_assembly/ExportConsensusTask.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
            src/ov_msa/AlignmentLogo.cpp \
            src/ov_msa/ConsensusSelectorDialogController.cpp \

@@ -56,6 +56,8 @@ public:
     
 	QString getSaveFileName() const {return conf.fileNameEdit->text();}
 	
+    void setSelectedFormatId(DocumentFormatId id);
+
 	DocumentFormatId getFormatIdToSave() const;
 	
 	DocumentFormat* getFormatToSave() const;

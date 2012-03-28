@@ -39,33 +39,39 @@
 namespace U2 {
 ////////////////////////////////////////
 // RangeSelectorWidget
-RegionSelector::RegionSelector(QWidget* p, qint64 _len, bool _isVertical, DNASequenceSelection* _selection)
+RegionSelector::RegionSelector(QWidget* p, qint64 _len, bool _isVertical, DNASequenceSelection* selection, QList<RegionPreset> presets_)
     : QWidget(p), maxLen(_len), startEdit(NULL), endEdit(NULL), isVertical(_isVertical)
 {
     needAddSelectionButton=true;
-    selection = NULL;
-    if (_selection != NULL && !_selection->isEmpty()) {
-        selection = _selection;
+
+    region.startPos = 0;
+    region.length = maxLen;
+    presets << RegionPreset(tr("Whole sequence"), region);
+    defaultIndex = presets.count() - 1;
+
+    if (selection != NULL && !selection->isEmpty()) {
         region.startPos = selection->getSelectedRegions().first().startPos;
         region.length = selection->getSelectedRegions().first().endPos() - region.startPos;
-        init();
-    } else {
-        region.startPos = 0;
-        region.length = _len;
-        init();
+        presets << RegionPreset(tr("Selected"), region);
     }
+    defaultIndex = presets.count() - 1;
+
+    presets += presets_;
+
+    init();
+    reset();
 }
 
 void RegionSelector::init() {
     int w = qMax(((int)log10((double)region.endPos()))*10, 70);
 
     comboBox = new QComboBox(this);
-    comboBox->addItem(tr("Whole sequence"));
-    if (selection != NULL && !selection->isEmpty()){
-        comboBox->addItem(tr("Selected"));
-        comboBox->setCurrentIndex(1);
+    foreach(const RegionPreset & rp, presets) {
+        comboBox->addItem(rp.text);
     }
     comboBox->addItem(tr("Custom"));
+    customIndex = comboBox->count() - 1;
+
     connect(comboBox,SIGNAL(currentIndexChanged(int)),SLOT(sl_onComboBoxIndexChanged(int)));
 
     startEdit = new RegionLineEdit(this,tr("Set minimum"), 1);
@@ -128,17 +134,15 @@ RegionSelector::~RegionSelector(){
 }
 
 void RegionSelector::sl_onComboBoxIndexChanged(int index) {
-    if(index == 0) {//whole sequence
-        startEdit->setText("1");
-        endEdit->setText(QString::number(maxLen));
-    }else if(index == 1 && selection != NULL && !selection->isEmpty()){//selection region
-        qint64 start = selection->getSelectedRegions().first().startPos + 1;
-        qint64 end = selection->getSelectedRegions().first().endPos();
+    if(index < presets.count()) {
+        U2Region r = presets[index].region;
+        qint64 start = r.startPos + 1;
+        qint64 end = r.endPos();
         startEdit->setText(QString::number(start));
         endEdit->setText(QString::number(end));
+        sl_onValueEdited();
+        sl_onRegionChanged();
     }
-    sl_onValueEdited();
-    sl_onRegionChanged();
 }
 
 void RegionSelector::sl_onValueEdited(){
@@ -153,22 +157,19 @@ void RegionSelector::sl_onValueEdited(){
             p.setColor(QPalette::Base, QColor(255,200,200));//pink color
             endEdit->setPalette(p);
         }
+        // select "custom" in combobox
+        comboBox->setCurrentIndex(customIndex);
         return;
     }
     region=getRegion();
-    if(region.startPos == 0 && region.length == maxLen){
-        comboBox->setCurrentIndex(0);
-    }else if (selection != NULL && !selection->isEmpty()){//selection region
-        qint64 start = selection->getSelectedRegions().first().startPos;
-        qint64 end = selection->getSelectedRegions().first().endPos();
-        if(start == region.startPos && end == region.endPos()){
-            comboBox->setCurrentIndex(1);
-        }else{
-            comboBox->setCurrentIndex(2);
+    int currentIndex = customIndex;
+    for(int i = 0; i < presets.count(); ++i) {
+        if(region == presets[i].region) {
+            currentIndex = i;
         }
-    } else {
-        comboBox->setCurrentIndex(1);
     }
+    comboBox->setCurrentIndex(currentIndex);
+
     if(region.isEmpty()){
         QPalette p = startEdit->palette();
         p.setColor(QPalette::Base, QColor(255,200,200));//pink color
@@ -235,11 +236,7 @@ void RegionSelector::setRegion(const U2Region& value){
 }
 
 void RegionSelector::reset(){
-    if (selection != NULL){
-        comboBox->setCurrentIndex(1);
-    } else {
-        comboBox->setCurrentIndex(0);
-    }
+    comboBox->setCurrentIndex(defaultIndex);
 }
 
 void RegionSelector::showErrorMessage(){
@@ -274,7 +271,7 @@ void RegionSelector::showErrorMessage(){
 
 void RegionSelector::setWholeRegionSelected()
 {
-    comboBox->setCurrentIndex(0);
+    comboBox->setCurrentIndex(wholeRegionIndex);
 }
 
 ///////////////////////////////////////
