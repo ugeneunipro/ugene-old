@@ -1290,11 +1290,7 @@ void MSAEditorSequenceArea::sl_saveSequence(){
     CHECK_OP_EXT(os, delete doc, );
     doc->addObject(seqObj);
     SaveDocumentTask *t = new SaveDocumentTask(doc, doc->getIOAdapterFactory(), doc->getURL());
-    if (d.addToProjectFlag){
-        t->addFlag(SaveDoc_DestroyAfter);
-    }
-    
-    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+   
     if (d.addToProjectFlag){
         Project *p = AppContext::getProject();
         Document *loadedDoc=p->findDocumentByURL(url);
@@ -1312,11 +1308,15 @@ void MSAEditorSequenceArea::sl_saveSequence(){
         ms.addSelection(&ds);
         foreach(GObjectViewFactory *f, AppContext::getObjectViewFactoryRegistry()->getAllFactories()) {
             if(f->canCreateView(ms)) {
-                AppContext::getTaskScheduler()->registerTopLevelTask(f->createViewTask(ms));
+                Task *tt = f->createViewTask(ms);
+                AppContext::getTaskScheduler()->registerTopLevelTask(tt);
                 break;
             }
         }
-    }    
+    }else{
+        t->addFlag(SaveDoc_DestroyAfter);
+    }
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 void MSAEditorSequenceArea::cancelSelection()
