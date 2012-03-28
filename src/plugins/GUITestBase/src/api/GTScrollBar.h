@@ -24,37 +24,39 @@
 
 #include <U2Core/U2OpStatus.h>
 #include <QtGui>
+#include <Qt>
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
+
 
 namespace U2 {
 
 class GTScrollBar {
-//public:
-//    
-//    enum device{MOUSE, KEYBOARD};
-//
-//    static void pageUp(U2OpStatus &os, QScrollBar *scrollbar, device _device);
-//    static void pageDown(U2OpStatus &os, QScrollBar *scrollbar, device _device);
-//
-//    static void lineUp(U2OpStatus &os, QScrollBar *scrollbar, device _device); //does not necessarily move one line up (for example, moves cursor in text editors)
-//    static void lineDown(U2OpStatus &os, QScrollBar *scrollbar, device _device); //does not necessarily move one line down (for example, moves cursor in text editors)
-//
-//    static void moveSliderWithMouseUp(U2OpStatus &os, QScrollBar *scrollbar, int nPix);
-//    static void moveSliderWithMouseDown(U2OpStatus &os, QScrollBar *scrollbar, int nPix);
-//
-//    static void moveSliderWithMouseWheelUp(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling 
-//    static void moveSliderWithMouseWheelDown(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling
-//
-//    static QPoint getSliderPosition(U2OpStatus &os, QScrollBar *scrollbar);
-//    static QPoint getUpArrowPosition(U2OpStatus &os, QScrollBar *scrollbar);
-//    static QPoint getDownArrowPosition(U2OpStatus &os, QScrollBar *scrollbar);
-//    static QPoint getAreaUnderSliderPosition(U2OpStatus &os, QScrollBar *scrollbar);
-//    static QPoint getAreaOverSliderPosition(U2OpStatus &os, QScrollBar *scrollbar);
-//    //     QWidget* getUpButton();
-//    //     QWidget* getDownButton();
-//    //     QWidget* getSliderWidget();
-//    //     QRect* upper/lower area 
+public:
+    
+    enum device{MOUSE, KEYBOARD};
+
+    static void pageUp(U2OpStatus &os, QScrollBar *scrollbar, device _device);
+    static void pageDown(U2OpStatus &os, QScrollBar *scrollbar, device _device);
+
+    static void lineUp(U2OpStatus &os, QScrollBar *scrollbar, device _device); //does not necessarily move one line up (for example, moves cursor in text editors)
+    static void lineDown(U2OpStatus &os, QScrollBar *scrollbar, device _device); //does not necessarily move one line down (for example, moves cursor in text editors)
+
+    static void moveSliderWithMouseUp(U2OpStatus &os, QScrollBar *scrollbar, int nPix);
+    static void moveSliderWithMouseDown(U2OpStatus &os, QScrollBar *scrollbar, int nPix);
+
+    static void moveSliderWithMouseWheelUp(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling 
+    static void moveSliderWithMouseWheelDown(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling
+
+    static QPoint getSliderPosition(U2OpStatus &os, QScrollBar *scrollbar);
+    static QPoint getUpArrowPosition(U2OpStatus &os, QScrollBar *scrollbar);
+    static QPoint getDownArrowPosition(U2OpStatus &os, QScrollBar *scrollbar);
+    static QPoint getAreaUnderSliderPosition(U2OpStatus &os, QScrollBar *scrollbar);
+    static QPoint getAreaOverSliderPosition(U2OpStatus &os, QScrollBar *scrollbar);
+    //     QWidget* getUpButton();
+    //     QWidget* getDownButton();
+    //     QWidget* getSliderWidget();
+    //     QRect* upper/lower area 
 
 };
 

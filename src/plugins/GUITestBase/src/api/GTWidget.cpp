@@ -25,10 +25,10 @@
 
 namespace U2 {
 
-void GTWidget::click(U2OpStatus &os, QWidget *w) {
+    void GTWidget::click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton) {
 
     GTMouseDriver::moveTo(os, w->mapToGlobal(w->rect().center()));
-    GTMouseDriver::click(os);
+    GTMouseDriver::click(os, mouseButton);
 }
 
 void GTWidget::setFocus(U2OpStatus &os, QWidget *w) {

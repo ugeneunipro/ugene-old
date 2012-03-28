@@ -23,144 +23,144 @@
 
 
 namespace U2 {
-//
-//void GTScrollBar::pageUp(U2OpStatus &os, QScrollBar *scrollbar, device _device) {
-//    switch (_device) {
-//        case GTScrollBar::MOUSE:
-//            GTMouseDriver::moveTo(os, GTScrollBar::getAreaOverSliderPosition(os, scrollbar));
-//            GTMouseDriver::click(os);
-//            break;
-//            
-//        case GTScrollBar::KEYBOARD:
-//            GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
-//            GTMouseDriver::click(os);
-//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageUp"]);
-//            break;
-//
-//        default:
-//            break;
-//    }
-//}
-//
-//void GTScrollBar::pageDown(U2OpStatus &os, QScrollBar *scrollbar, device _device) {
-//    switch (_device) {
-//        case GTScrollBar::MOUSE:
-//            GTMouseDriver::moveTo(os, GTScrollBar::getAreaUnderSliderPosition(os, scrollbar));
-//            GTMouseDriver::click(os);
-//            break;
-//
-//        case GTScrollBar::KEYBOARD:
-//            GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
-//            GTMouseDriver::click(os);
-//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageDown"]);
-//            break;
-//        
-//        default:
-//            break;
-//
-//    }
-//}
-//
-//void GTScrollBar::lineUp(U2OpStatus &os, QScrollBar *scrollbar, device _device) {
-//    switch (_device) {
-//        case GTScrollBar::MOUSE:
-//            GTMouseDriver::moveTo(os, GTScrollBar::getUpArrowPosition(os, scrollbar));
-//            GTMouseDriver::click(os);
-//            break;
-//
-//        case GTScrollBar::KEYBOARD:
-//            GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
-//            GTMouseDriver::click(os);
-//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
-//            break;
-//
-//        default:
-//            break;
-//    }
-//}
-//
-//
-//void GTScrollBar::lineDown(U2OpStatus &os, QScrollBar *scrollbar, device _device) {
-//    switch (_device) {
-//        case GTScrollBar::MOUSE:
-//            GTMouseDriver::moveTo(os, GTScrollBar::getDownArrowPosition(os, scrollbar));
-//            GTMouseDriver::click(os);
-//            break;
-//
-//        case GTScrollBar::KEYBOARD:
-//            GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
-//            GTMouseDriver::click(os);
-//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
-//            break;
-//
-//        default:
-//            break;
-//    }
-//}
-//
-//void GTScrollBar::moveSliderWithMouseUp(U2OpStatus &os, QScrollBar *scrollbar, int nPix) {
-//    GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
-//    GTMouseDriver::press(os);
-//    QPoint newPosition;
-//    if (Qt::Orientation::Horizontal == scrollbar->orientation()) {
-//        newPosition = QPoint(QCursor::pos().x() + nPix, QCursor::pos().y());
-//    }   
-//    else {
-//        newPosition = QPoint(QCursor::pos().x(), QCursor::pos().y() + nPix);
-//    }
-//    GTMouseDriver::moveTo(os, newPosition);
-//    GTMouseDriver::release(os);  
-//}
-//
-//void GTScrollBar::moveSliderWithMouseDown(U2OpStatus &os, QScrollBar *scrollbar, int nPix) {
-//    GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
-//    GTMouseDriver::press(os);
-//    QPoint newPosition;
-//    if (Qt::Orientation::Horizontal == scrollbar->orientation()) {
-//        newPosition = QPoint(QCursor::pos().x() - nPix , QCursor::pos().y());
-//    }   
-//    else {
-//        newPosition = QPoint(QCursor::pos().x(), QCursor::pos().y() - nPix);
-//    }
-//    GTMouseDriver::moveTo(os, newPosition);
-//    GTMouseDriver::release(os);   
-//}
-//
-//void GTScrollBar::moveSliderWithMouseWheelUp(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls) {
-//    GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
-//    GTMouseDriver::click(os);
-//    GTMouseDriver::scroll(os, nScrolls);
-//}
-//
-//void GTScrollBar::moveSliderWithMouseWheelDown(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls) {
-//    GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
-//    GTMouseDriver::click(os);
-//    GTMouseDriver::scroll(os, (-1 * nScrolls)); //since scrolling down means negative value for GTMouseDriver::scroll
-//}
-//
-////todo
-//QPoint GTScrollBar::getSliderPosition(U2OpStatus &os, QScrollBar *scrollbar) {
-//    return QPoint();
-//}
-//
-//QPoint GTScrollBar::getUpArrowPosition(U2OpStatus &os, QScrollBar *scrollbar) {
-//    return QPoint();
-//}
-//
-//QPoint GTScrollBar::getDownArrowPosition(U2OpStatus &os, QScrollBar *scrollbar) {
-//    return QPoint();
-//}
-//
-//QPoint GTScrollBar::getAreaUnderSliderPosition(U2OpStatus &os, QScrollBar *scrollbar) {
-//    return QPoint();
-//}
-//
-//QPoint GTScrollBar::getAreaOverSliderPosition(U2OpStatus &os, QScrollBar *scrollbar) {
-//    return QPoint();
-//}
-//
-//
-//
-//    
+
+void GTScrollBar::pageUp(U2OpStatus &os, QScrollBar *scrollbar, device _device) {
+    switch (_device) {
+        case GTScrollBar::MOUSE:
+            GTMouseDriver::moveTo(os, GTScrollBar::getAreaOverSliderPosition(os, scrollbar));
+            GTMouseDriver::click(os);
+            break;
+            
+        case GTScrollBar::KEYBOARD:
+            GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
+            GTMouseDriver::click(os);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageUp"]);
+            break;
+
+        default:
+            break;
+    }
 }
- //namespace
+
+void GTScrollBar::pageDown(U2OpStatus &os, QScrollBar *scrollbar, device _device) {
+    switch (_device) {
+        case GTScrollBar::MOUSE:
+            GTMouseDriver::moveTo(os, GTScrollBar::getAreaUnderSliderPosition(os, scrollbar));
+            GTMouseDriver::click(os);
+            break;
+
+        case GTScrollBar::KEYBOARD:
+            GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
+            GTMouseDriver::click(os);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageDown"]);
+            break;
+        
+        default:
+            break;
+
+    }
+}
+
+void GTScrollBar::lineUp(U2OpStatus &os, QScrollBar *scrollbar, device _device) {
+    switch (_device) {
+        case GTScrollBar::MOUSE:
+            GTMouseDriver::moveTo(os, GTScrollBar::getUpArrowPosition(os, scrollbar));
+            GTMouseDriver::click(os);
+            break;
+
+        case GTScrollBar::KEYBOARD:
+            GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
+            GTMouseDriver::click(os);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+            break;
+
+        default:
+            break;
+    }
+}
+
+
+void GTScrollBar::lineDown(U2OpStatus &os, QScrollBar *scrollbar, device _device) {
+    switch (_device) {
+        case GTScrollBar::MOUSE:
+            GTMouseDriver::moveTo(os, GTScrollBar::getDownArrowPosition(os, scrollbar));
+            GTMouseDriver::click(os);
+            break;
+
+        case GTScrollBar::KEYBOARD:
+            GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
+            GTMouseDriver::click(os);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+            break;
+
+        default:
+            break;
+    }
+}
+
+void GTScrollBar::moveSliderWithMouseUp(U2OpStatus &os, QScrollBar *scrollbar, int nPix) {
+    GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
+    GTMouseDriver::press(os);
+    QPoint newPosition;
+    if (Qt::Horizontal == scrollbar->orientation()) {
+        newPosition = QPoint(QCursor::pos().x() + nPix, QCursor::pos().y());
+    }   
+    else {
+        newPosition = QPoint(QCursor::pos().x(), QCursor::pos().y() + nPix);
+    }
+    GTMouseDriver::moveTo(os, newPosition);
+    GTMouseDriver::release(os);  
+}
+
+void GTScrollBar::moveSliderWithMouseDown(U2OpStatus &os, QScrollBar *scrollbar, int nPix) {
+    GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
+    GTMouseDriver::press(os);
+    QPoint newPosition;
+    if (Qt::Horizontal == scrollbar->orientation()) {
+        newPosition = QPoint(QCursor::pos().x() - nPix , QCursor::pos().y());
+    }   
+    else {
+        newPosition = QPoint(QCursor::pos().x(), QCursor::pos().y() - nPix);
+    }
+    GTMouseDriver::moveTo(os, newPosition);
+    GTMouseDriver::release(os);   
+}
+
+void GTScrollBar::moveSliderWithMouseWheelUp(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls) {
+    GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
+    GTMouseDriver::click(os);
+    GTMouseDriver::scroll(os, nScrolls);
+}
+
+void GTScrollBar::moveSliderWithMouseWheelDown(U2OpStatus &os, QScrollBar *scrollbar, int nScrolls) {
+    GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
+    GTMouseDriver::click(os);
+    GTMouseDriver::scroll(os, (-1 * nScrolls)); //since scrolling down means negative value for GTMouseDriver::scroll
+}
+
+//todo
+QPoint GTScrollBar::getSliderPosition(U2OpStatus &os, QScrollBar *scrollbar) {
+    return QPoint();
+}
+
+QPoint GTScrollBar::getUpArrowPosition(U2OpStatus &os, QScrollBar *scrollbar) {
+    return QPoint();
+}
+
+QPoint GTScrollBar::getDownArrowPosition(U2OpStatus &os, QScrollBar *scrollbar) {
+    return QPoint();
+}
+
+QPoint GTScrollBar::getAreaUnderSliderPosition(U2OpStatus &os, QScrollBar *scrollbar) {
+    return QPoint();
+}
+
+QPoint GTScrollBar::getAreaOverSliderPosition(U2OpStatus &os, QScrollBar *scrollbar) {
+    return QPoint();
+}
+
+
+
+    
+}
+// namespace

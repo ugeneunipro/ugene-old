@@ -134,6 +134,8 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("down", VK_DOWN);
     ADD_KEY("insert", VK_INSERT);
     ADD_KEY("delete", VK_DELETE);
+    ADD_KEY("pageUp", VK_PRIOR);
+    ADD_KEY("pageDown", VK_NEXT);
     ADD_KEY("help", VK_HELP);
     ADD_KEY("f1", VK_F1);
     ADD_KEY("f2", VK_F2);

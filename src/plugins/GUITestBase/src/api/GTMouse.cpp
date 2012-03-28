@@ -29,19 +29,19 @@
 
 namespace U2 {
 
-    void GTMouse::moveCursorToWidget(U2OpStatus &os, QWidget *widget) {
-        CHECK_SET_ERR(widget != NULL, "Provided widget is null");
-        QPoint widgetCenter = widget->rect().center();
-        GTMouseDriver::moveTo(os, widgetCenter);
-    }
+void GTMouse::moveCursorToWidget(U2OpStatus &os, QWidget *widget) {
+    CHECK_SET_ERR(widget != NULL, "Provided widget is null");
+    QPoint widgetCenter = widget->rect().center();
+    GTMouseDriver::moveTo(os, widgetCenter);
+}
 
-    void GTMouse::moveCursorOutOfWidget(U2OpStatus &os, QWidget *widget) {
-        CHECK_SET_ERR(widget != NULL, "Provided widget is null");
-        QPoint currentPosition = QCursor::pos();
-        CHECK_SET_ERR(currentPosition != widget->rect().center(), "Cursor not over widget");
-        QPoint finalPosition = widget->rect().topLeft() + QPoint(1, 1); //top left + offset
-        GTMouseDriver::moveTo(os, finalPosition);
-    }
+void GTMouse::moveCursorOutOfWidget(U2OpStatus &os, QWidget *widget) {
+    CHECK_SET_ERR(widget != NULL, "Provided widget is null");
+    QPoint currentPosition = QCursor::pos();
+    CHECK_SET_ERR(widget->rect().contains(currentPosition, false), "Cursor not over widget");
+    QPoint finalPosition = widget->rect().topLeft() + QPoint(1, 1); //top left + offset
+    GTMouseDriver::moveTo(os, finalPosition);
+}
 
 };
 

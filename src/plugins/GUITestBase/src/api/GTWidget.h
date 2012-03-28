@@ -28,12 +28,10 @@ namespace U2 {
 
 class GTWidget {
 public:
-    //finders
-    static QWidget* findWidgetByName(U2OpStatus &op, const QString &widgetName, QWidget *parentWidget, bool recursive = true);
 
-    // widget's methods
-    static void click(U2OpStatus &os, QWidget *w);
+    static void click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton = Qt::LeftButton);
     static void setFocus(U2OpStatus &os, QWidget *w);
+
 };
 
 } //namespace

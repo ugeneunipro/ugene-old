@@ -31,10 +31,8 @@ namespace U2 {
 class GTMouse {
 public:
 
-    static void moveCursorToWidget(U2OpStatus &os, QWidget *widget);
-    
+    static void moveCursorToWidget(U2OpStatus &os, QWidget *widget);    
     static void moveCursorOutOfWidget(U2OpStatus &os, QWidget *widget);
-    
 
 };
 
