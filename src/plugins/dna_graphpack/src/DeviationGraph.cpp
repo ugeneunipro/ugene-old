@@ -50,6 +50,9 @@ DeviationGraphFactory::DeviationGraphFactory(GDeviationType t, QObject* p)
 
 bool DeviationGraphFactory::isEnabled(U2SequenceObject* o) const {
     DNAAlphabet* al = o->getAlphabet();
+    if(al->isRNA() && (devPair.first == 'T' || devPair.second == 'T')){
+        return false;
+    }
     return al->isNucleic();
 }
 

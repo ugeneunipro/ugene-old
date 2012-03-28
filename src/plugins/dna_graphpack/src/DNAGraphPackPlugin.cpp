@@ -49,8 +49,8 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 
 
 DNAGraphPackPlugin::DNAGraphPackPlugin()
-    : Plugin(tr("DNA Graph Package"),
-    tr("Contains a set of graphs for DNA sequences."))
+    : Plugin(tr("DNA/RNA Graph Package"),
+    tr("Contains a set of graphs for DNA/RNA sequences."))
 {
     ctx = new DNAGraphPackViewContext(this);
     ctx->init();

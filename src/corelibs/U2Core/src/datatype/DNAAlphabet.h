@@ -68,6 +68,8 @@ public:
     bool isNucleic() const {return type == DNAAlphabet_NUCL;}
 
     bool isAmino() const {return type == DNAAlphabet_AMINO;}
+
+    bool isRNA() const {return id.contains("RNA");}
     
     // returns sorted array of all chars used in alphabet
     // forceBothCases == true : even case-insensitive alphabet will return both cases
