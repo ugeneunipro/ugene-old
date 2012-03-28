@@ -19,35 +19,32 @@
  * MA 02110-1301, USA.
  */
 
+#ifndef _U2_GUI_DOCUMENT_UTILS_H_
+#define _U2_GUI_DOCUMENT_UTILS_H_
+
 #include <U2Core/U2OpStatus.h>
-
-#include "GTComboBox.h"
-#include "GTWidget.h"
-
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
-#include "api/GTGlobals.h"
 
 namespace U2 {
 
-void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index) {
+class GObjectView;
+class Document;
 
-    CHECK_SET_ERR(comboBox != NULL, "QComboBox* == NULL");
+class GTUtilsDocument {
+public:
+    // checks if the document with a given name exists and loaded in a view with a given factory Id
+    static void checkDocument(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id = QString());
 
-    int comboCount = comboBox->count();
-    CHECK_SET_ERR(index>=0 && index<comboCount, "invalid index");
+    static void removeDocument(U2OpStatus &os, const QString &documentName);
 
-    int currIndex = comboBox->currentIndex();
-    QString directionKey = index > currIndex ? "down" : "up";
+    static Document* getDocument(U2OpStatus &os, const QString& documentName);
 
-    GTWidget::setFocus(os, comboBox);
-    int pressCount = qAbs(index-currIndex);
-    for (int i=0; i<pressCount; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        GTGlobals::sleep(100);
-    }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(500);
-}
+protected:
+    static GObjectView* getDocumentGObjectView(U2OpStatus &os, Document* d);
 
-}
+private:
+    static QList<GObjectView*> getAllGObjectViews();
+};
+
+} // namespace
+
+#endif

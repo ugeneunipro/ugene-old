@@ -19,35 +19,30 @@
  * MA 02110-1301, USA.
  */
 
+#ifndef _U2_GUI_GTTOOLBAR_H_
+#define _U2_GUI_GTTOOLBAR_H_
+
 #include <U2Core/U2OpStatus.h>
-
-#include "GTComboBox.h"
-#include "GTWidget.h"
-
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
-#include "api/GTGlobals.h"
+#include <QtGui/QToolBar>
 
 namespace U2 {
 
-void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index) {
+class GTToolbar {
+public:
+   
+    static QToolBar* getToolbar(U2OpStatus &os, const QString &toolbarSysName);
 
-    CHECK_SET_ERR(comboBox != NULL, "QComboBox* == NULL");
+    static QWidget* getWidgetForAction(U2OpStatus &os, const QToolBar *toolbar, QAction *action);
+    static QWidget* getWidgetForActionName(U2OpStatus &os, const QToolBar *toolbar, const QString &actionName);
 
-    int comboCount = comboBox->count();
-    CHECK_SET_ERR(index>=0 && index<comboCount, "invalid index");
 
-    int currIndex = comboBox->currentIndex();
-    QString directionKey = index > currIndex ? "down" : "up";
+private:
 
-    GTWidget::setFocus(os, comboBox);
-    int pressCount = qAbs(index-currIndex);
-    for (int i=0; i<pressCount; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        GTGlobals::sleep(100);
-    }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(500);
-}
+    static QAction* getToolbarAction(U2OpStatus &os, const QString &actionName, const QToolBar *toolbar);
 
-}
+
+};
+
+} // namespace
+
+#endif

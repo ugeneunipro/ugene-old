@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include "api/GTMouseDriver.h"
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>

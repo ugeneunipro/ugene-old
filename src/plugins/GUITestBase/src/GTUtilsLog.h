@@ -19,35 +19,34 @@
  * MA 02110-1301, USA.
  */
 
+#ifndef _U2_GUI_LOG_UTILS_H_
+#define _U2_GUI_LOG_UTILS_H_
+
 #include <U2Core/U2OpStatus.h>
-
-#include "GTComboBox.h"
-#include "GTWidget.h"
-
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
-#include "api/GTGlobals.h"
+#include <U2Core/Log.h>
 
 namespace U2 {
 
-void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index) {
+class GTLogTracer : public QObject {
+    Q_OBJECT
+public:
+    GTLogTracer();
 
-    CHECK_SET_ERR(comboBox != NULL, "QComboBox* == NULL");
+    void reset() { wasError = false; }
+    bool hasError() const { return wasError; }
 
-    int comboCount = comboBox->count();
-    CHECK_SET_ERR(index>=0 && index<comboCount, "invalid index");
+protected slots:
+    void sl_onMessage(const LogMessage& msg);
 
-    int currIndex = comboBox->currentIndex();
-    QString directionKey = index > currIndex ? "down" : "up";
+private:
+    bool wasError;
+};
 
-    GTWidget::setFocus(os, comboBox);
-    int pressCount = qAbs(index-currIndex);
-    for (int i=0; i<pressCount; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        GTGlobals::sleep(100);
-    }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(500);
-}
+class GTUtilsLog {
+public:
+    static void check(U2OpStatus &os, GTLogTracer& l);
+};
 
-}
+} // namespace
+
+#endif

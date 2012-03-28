@@ -19,35 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2OpStatus.h>
-
-#include "GTComboBox.h"
-#include "GTWidget.h"
-
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
+#include "GUIInitialChecks.h"
 #include "api/GTGlobals.h"
+#include "GTUtilsProject.h"
+#include <U2Core/AppContext.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Gui/ObjectViewModel.h>
 
 namespace U2 {
 
-void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index) {
+namespace GUITest_initial_checks {
 
-    CHECK_SET_ERR(comboBox != NULL, "QComboBox* == NULL");
+GUI_TEST_CLASS_DEFINITION(test_0001) {
+    QString activeWindowName = AppContext::getActiveWindowName();
+    CHECK_SET_ERR(activeWindowName.isEmpty(), "Active window name is not empty");
 
-    int comboCount = comboBox->count();
-    CHECK_SET_ERR(index>=0 && index<comboCount, "invalid index");
-
-    int currIndex = comboBox->currentIndex();
-    QString directionKey = index > currIndex ? "down" : "up";
-
-    GTWidget::setFocus(os, comboBox);
-    int pressCount = qAbs(index-currIndex);
-    for (int i=0; i<pressCount; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        GTGlobals::sleep(100);
-    }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(500);
+    QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+    CHECK_SET_ERR(mainWindow->isActiveWindow(), "MainWindow is not active");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0002) {
+    CHECK_SET_ERR(AppContext::getProjectView() == NULL && AppContext::getProject() == NULL, "There is a project");
 }
+
+} // GUITest_initial_checks namespace
+
+} // U2 namespace

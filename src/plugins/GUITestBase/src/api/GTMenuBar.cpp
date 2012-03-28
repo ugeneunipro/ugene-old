@@ -20,7 +20,7 @@
  */
 
 #include "GTMenuBar.h"
-#include "GTGlobals.h"
+#include "api/GTGlobals.h"
 #include "api/GTMouseDriver.h"
 #include <QtGui/QMenuBar>
 

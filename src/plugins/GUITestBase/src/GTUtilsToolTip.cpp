@@ -19,27 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_EXPORT_PROJECT_TESTS_H_
-#define _U2_GUI_EXPORT_PROJECT_TESTS_H_
-
-#include <U2Test/GUITestBase.h>
+#include "GTUtilsToolTip.h"
+#include "api/GTGlobals.h"
+#include <QtGui/QToolTip>
 
 namespace U2 {
 
-class ExportProject : public GUITest {
-public:
-    ExportProject() : GUITest("ExportProjectTests_ExportProject_0011"){}
-protected:
-    virtual void execute(U2OpStatus &os);
-};
+void GTUtilsToolTip::checkExistingToolTip(U2OpStatus &os, const QString& tooltip) {
 
-class NoExportMenuItem : public GUITest {
-public:
-    NoExportMenuItem(): GUITest("ExportProjectTests_ExportProject_0006"){}
-protected:
-    virtual void execute(U2OpStatus &os);
-};
+    QString t = getToolTip();
+    CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
+}
 
-} //namespace
+QString GTUtilsToolTip::getToolTip() {
 
-#endif
+    return QToolTip::text();
+}
+
+}

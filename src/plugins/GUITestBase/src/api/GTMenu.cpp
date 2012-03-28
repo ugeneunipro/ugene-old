@@ -19,12 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
+#include "GTMenu.h"
+#include "GTMouseDriver.h"
+#include "GTKeyboardDriver.h"
+#include "api/GTGlobals.h"
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
-#include "GTGlobals.h"
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenuBar>
 #include <QtGui/QApplication>

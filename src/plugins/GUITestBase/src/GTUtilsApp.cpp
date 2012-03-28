@@ -19,35 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2OpStatus.h>
-
-#include "GTComboBox.h"
-#include "GTWidget.h"
-
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
+#include "GTUtilsApp.h"
 #include "api/GTGlobals.h"
+#include <U2Core/AppContext.h>
+#include <U2Gui/MainWindow.h>
+#include <QtGui/QMainWindow>
 
 namespace U2 {
 
-void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index) {
+void GTUtilsApp::checkUGENETitle(U2OpStatus &os, const QString &title) {
 
-    CHECK_SET_ERR(comboBox != NULL, "QComboBox* == NULL");
-
-    int comboCount = comboBox->count();
-    CHECK_SET_ERR(index>=0 && index<comboCount, "invalid index");
-
-    int currIndex = comboBox->currentIndex();
-    QString directionKey = index > currIndex ? "down" : "up";
-
-    GTWidget::setFocus(os, comboBox);
-    int pressCount = qAbs(index-currIndex);
-    for (int i=0; i<pressCount; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        GTGlobals::sleep(100);
-    }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(500);
+    QString ugeneTitle = AppContext::getMainWindow()->getQMainWindow()->windowTitle();
+    CHECK_SET_ERR(ugeneTitle == title, "UGENE title is <" + ugeneTitle + ">, not <" + title + ">");
 }
 
 }

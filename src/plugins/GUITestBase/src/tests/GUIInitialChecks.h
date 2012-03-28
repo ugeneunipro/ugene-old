@@ -19,35 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2OpStatus.h>
+#ifndef _U2_GUI_INITIAL_CHECKS_H_
+#define _U2_GUI_INITIAL_CHECKS_H_
 
-#include "GTComboBox.h"
-#include "GTWidget.h"
-
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
-#include "api/GTGlobals.h"
+#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
-void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index) {
+namespace GUITest_initial_checks {
+#define GUI_TEST_PREFIX "GUITest_initial_checks_"
 
-    CHECK_SET_ERR(comboBox != NULL, "QComboBox* == NULL");
+GUI_TEST_CLASS_DECLARATION(test_0001)
+GUI_TEST_CLASS_DECLARATION(test_0002)
 
-    int comboCount = comboBox->count();
-    CHECK_SET_ERR(index>=0 && index<comboCount, "invalid index");
-
-    int currIndex = comboBox->currentIndex();
-    QString directionKey = index > currIndex ? "down" : "up";
-
-    GTWidget::setFocus(os, comboBox);
-    int pressCount = qAbs(index-currIndex);
-    for (int i=0; i<pressCount; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        GTGlobals::sleep(100);
-    }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(500);
+#undef GUI_TEST_PREFIX
 }
 
-}
+} //namespace
+
+#endif

@@ -19,35 +19,20 @@
  * MA 02110-1301, USA.
  */
 
+#ifndef _U2_GUI_TOOLTIP_UTILS_H_
+#define _U2_GUI_TOOLTIP_UTILS_H_
+
 #include <U2Core/U2OpStatus.h>
-
-#include "GTComboBox.h"
-#include "GTWidget.h"
-
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
-#include "api/GTGlobals.h"
 
 namespace U2 {
 
-void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index) {
+class GTUtilsToolTip {
+public:
+    static void checkExistingToolTip(U2OpStatus &os, const QString& tooltip);
 
-    CHECK_SET_ERR(comboBox != NULL, "QComboBox* == NULL");
+    static QString getToolTip();
+};
 
-    int comboCount = comboBox->count();
-    CHECK_SET_ERR(index>=0 && index<comboCount, "invalid index");
+} // namespace
 
-    int currIndex = comboBox->currentIndex();
-    QString directionKey = index > currIndex ? "down" : "up";
-
-    GTWidget::setFocus(os, comboBox);
-    int pressCount = qAbs(index-currIndex);
-    for (int i=0; i<pressCount; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        GTGlobals::sleep(100);
-    }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(500);
-}
-
-}
+#endif

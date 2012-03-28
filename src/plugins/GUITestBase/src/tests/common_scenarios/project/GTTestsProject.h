@@ -19,35 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2OpStatus.h>
+#ifndef _U2_GUI_TEST_PROJECT_H_
+#define _U2_GUI_TEST_PROJECT_H_
 
-#include "GTComboBox.h"
-#include "GTWidget.h"
-
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
-#include "api/GTGlobals.h"
+#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
-void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index) {
+namespace GUITest_common_scenarios_project {
+#define GUI_TEST_PREFIX "GUITest_common_scenarios_project_"
 
-    CHECK_SET_ERR(comboBox != NULL, "QComboBox* == NULL");
+GUI_TEST_CLASS_DECLARATION(test_0004)
+GUI_TEST_CLASS_DECLARATION(test_0005)
+GUI_TEST_CLASS_DECLARATION(test_0006)
+GUI_TEST_CLASS_DECLARATION(test_0009)
+GUI_TEST_CLASS_DECLARATION(test_0010)
+GUI_TEST_CLASS_DECLARATION(test_0011)
+GUI_TEST_CLASS_DECLARATION(test_0017)
+GUI_TEST_CLASS_DECLARATION(test_0018)
+GUI_TEST_CLASS_DECLARATION(test_0023)
+GUI_TEST_CLASS_DECLARATION(test_0030)
 
-    int comboCount = comboBox->count();
-    CHECK_SET_ERR(index>=0 && index<comboCount, "invalid index");
-
-    int currIndex = comboBox->currentIndex();
-    QString directionKey = index > currIndex ? "down" : "up";
-
-    GTWidget::setFocus(os, comboBox);
-    int pressCount = qAbs(index-currIndex);
-    for (int i=0; i<pressCount; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        GTGlobals::sleep(100);
-    }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(500);
+#undef GUI_TEST_PREFIX
 }
 
-}
+} //namespace
+
+#endif

@@ -23,9 +23,9 @@
 #include <U2Core/AppContext.h>
 #include <U2Test/GUITestBase.h>
 
-#include "GUIInitialChecks.h"
-#include "tests/common_scenarios/project/Project.h"
-#include "GUIToolbarTests.h"
+#include "tests/GUIInitialChecks.h"
+#include "tests/common_scenarios/project/GTTestsProject.h"
+#include "tests/GUIToolbarTests.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 

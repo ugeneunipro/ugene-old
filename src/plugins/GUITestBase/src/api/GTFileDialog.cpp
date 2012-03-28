@@ -19,13 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include "api/GTFileDialog.h"
-#include "api/GTMenu.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTComboBox.h"
-#include "GUIDialogUtils.h"
-#include "GTGlobals.h"
+#include "GTFileDialog.h"
+#include "GTMenu.h"
+#include "GTKeyboardDriver.h"
+#include "GTMouseDriver.h"
+#include "GTComboBox.h"
+#include "GTUtilsDialog.h"
+#include "api/GTGlobals.h"
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QApplication>
 #include <QtGui/QLineEdit>
@@ -268,7 +268,7 @@ void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &
 {
     GTFileDialogUtils ob(os, path, fileName, filters, (GTFileDialogUtils::Button)button, (GTFileDialogUtils::UseMethod)m);
     ob.openFileDialog();
-    GUIDialogUtils::waitForDialog(os, &ob);
+    GTUtilsDialog::waitForDialog(os, &ob);
 }
 
 } // namespace

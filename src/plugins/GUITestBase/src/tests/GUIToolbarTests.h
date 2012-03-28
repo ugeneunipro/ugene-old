@@ -19,35 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2OpStatus.h>
+#ifndef _U2_GUI_TOOLBAR_TESTS_H_
+#define _U2_GUI_TOOLBAR_TESTS_H_
 
-#include "GTComboBox.h"
-#include "GTWidget.h"
-
-#include "GTMouseDriver.h"
-#include "GTKeyboardDriver.h"
-#include "api/GTGlobals.h"
+#include <U2Test/GUITest.h>
 
 namespace U2 {
 
-void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index) {
+//GUI_TEST_CLASS_DECLARATION(ToolbarTest);
 
-    CHECK_SET_ERR(comboBox != NULL, "QComboBox* == NULL");
+} //namespace
 
-    int comboCount = comboBox->count();
-    CHECK_SET_ERR(index>=0 && index<comboCount, "invalid index");
-
-    int currIndex = comboBox->currentIndex();
-    QString directionKey = index > currIndex ? "down" : "up";
-
-    GTWidget::setFocus(os, comboBox);
-    int pressCount = qAbs(index-currIndex);
-    for (int i=0; i<pressCount; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        GTGlobals::sleep(100);
-    }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(500);
-}
-
-}
+#endif

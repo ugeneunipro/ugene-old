@@ -19,30 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include "GUIExportProjectTests.h"
-#include "QtUtils.h"
-#include "ProjectUtils.h"
-#include "GUIDialogUtils.h"
-#include "AppUtils.h"
-#include <U2Core/ProjectModel.h>
-#include <U2Gui/ObjectViewModel.h>
+#ifndef _U2_GT_UTILS_MDI_H_
+#define _U2_GT_UTILS_MDI_H_
+
+#include <U2Core/U2OpStatus.h>
+#include "api/GTMenuBar.h"
 
 namespace U2 {
 
-void ExportProject::execute(U2OpStatus &os) {
+class MWMDIWindow;
 
-    ProjectUtils::openFile(os, testDir + "_common_data/scenarios/project/1.gb");
+class GTUtilsMdi {
+public:
+    enum Action {Minimize, Maximize, Close, Count};
 
-    GUIDialogUtils::openExportProjectDialog(os);
-    GUIDialogUtils::checkExportProjectDialog(os, "project.uprj");
-}
-
-
-
-void NoExportMenuItem::execute( U2OpStatus &os ){
-    AppUtils::checkUGENETitle(os, "UGENE");
-    QAction *result = QtUtils::getMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
-    CHECK_SET_ERR(result == NULL, "Export menu item present in menu without any project created");
-}
+    static void click(U2OpStatus &os, Action action);
+};
 
 } // namespace
+
+#endif
