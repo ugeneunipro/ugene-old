@@ -22,7 +22,7 @@
 #ifndef _U2_GUI_DOCUMENT_UTILS_H_
 #define _U2_GUI_DOCUMENT_UTILS_H_
 
-#include <U2Core/U2OpStatus.h>
+#include "api/GTGlobals.h"
 
 namespace U2 {
 
@@ -34,7 +34,7 @@ public:
     // checks if the document with a given name exists and loaded in a view with a given factory Id
     static void checkDocument(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id = QString());
 
-    static void removeDocument(U2OpStatus &os, const QString &documentName);
+    static void removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method = GTGlobals::UseKey);
 
     static Document* getDocument(U2OpStatus &os, const QString& documentName);
 

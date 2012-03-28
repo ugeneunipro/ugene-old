@@ -37,6 +37,8 @@ namespace U2 {
 
 class GTGlobals {
 public:
+    enum UseMethod {UseMouse, UseKey};
+
     static void sleep(int msec);
     static void sendEvent(QObject *obj, QEvent *e);
 

@@ -41,11 +41,10 @@ namespace U2 {
 
 class GTFileDialogUtils : public Runnable {
 public:
-    enum UseMethod {UseMouse, UseKey};
     enum Button {Open, Cancel};
     enum ViewMode {List, Detail};
 
-    GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, const QString&, Button, UseMethod);
+    GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, const QString&, Button, GTGlobals::UseMethod);
 
     void openFileDialog();
     void run();
@@ -61,11 +60,11 @@ private:
     U2OpStatus &os;
     QString path, fileName, filters;
     Button button;
-    UseMethod method;
+    GTGlobals::UseMethod method;
 };
 
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
-                           const QString &_filters, Button _button, UseMethod _method) :
+                                     const QString &_filters, Button _button, GTGlobals::UseMethod _method) :
     os(_os),
     path(_path),
     fileName(_fileName),
@@ -100,12 +99,12 @@ void GTFileDialogUtils::openFileDialog()
     itemPath << ACTION_PROJECTSUPPORT__OPEN_PROJECT;
 
     switch(method) {
-    case UseMouse:
+    case GTGlobals::UseMouse:
         menu = GTMenu::showMainMenu(os, MWMENU_FILE, GTMenu::USE_MOUSE);
         GTMenu::clickMenuItem(os, menu, itemPath);
         break;
 
-    case UseKey:;
+    case GTGlobals::UseKey:
         GTKeyboardDriver::keyClick(os, 'O', GTKeyboardDriver::key["ctrl"]);
         break;
     }
@@ -119,7 +118,7 @@ void GTFileDialogUtils::setPath()
     QPoint linePos;
 
     switch(method) {
-    case UseMouse:
+    case GTGlobals::UseMouse:
         if (! lineEdit->hasFocus()) {
             linePos = fileDialog->mapToGlobal(lineEdit->geometry().center());
             GTMouseDriver::moveTo(os, linePos);
@@ -127,7 +126,7 @@ void GTFileDialogUtils::setPath()
         }
         break;
 
-    case UseKey:
+    case GTGlobals::UseKey:
         while (! lineEdit->hasFocus()) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
             GTGlobals::sleep(100);
@@ -169,7 +168,7 @@ void GTFileDialogUtils::selectFile()
     QPoint indexCenter;
 
     switch(method) {
-    case UseMouse:
+    case GTGlobals::UseMouse:
         if (! w->rect().contains(w->visualRect(index))) {
             GTMouseDriver::moveTo(os, w->mapToGlobal(w->geometry().center()));
             GTMouseDriver::click(os);
@@ -185,7 +184,7 @@ void GTFileDialogUtils::selectFile()
         GTMouseDriver::click(os);
         break;
 
-    case UseKey:
+    case GTGlobals::UseKey:
         while (! w->hasFocus()) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
             GTGlobals::sleep(100);
@@ -219,14 +218,14 @@ void GTFileDialogUtils::clickButton(Button btn)
     QPoint btn_pos;
 
     switch(method) {
-    case UseMouse:
+    case GTGlobals::UseMouse:
         btn_pos = button_to_click->mapToGlobal(button_to_click->rect().center());
         GTMouseDriver::moveTo(os, btn_pos);
         GTMouseDriver::click(os);
         GTMouseDriver::click(os); //second click is needed for Linux
         break;
 
-    case UseKey:
+    case GTGlobals::UseKey:
         while(! button_to_click->hasFocus()) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
             GTGlobals::sleep(100);
@@ -246,12 +245,12 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
     CHECK_SET_ERR (w != NULL, "Error: view mode button not found in GTFileDialogUtils::setViewMode()");
 
     switch(method) {
-    case UseMouse:
+    case GTGlobals::UseMouse:
         GTMouseDriver::moveTo(os, w->mapToGlobal(w->rect().center()));
         GTMouseDriver::click(os);
         break;
 
-    case UseKey:
+    case GTGlobals::UseKey:
         while (! w->hasFocus()) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
             GTGlobals::sleep(100);
@@ -264,9 +263,9 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 }
 
 void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &fileName,
-              const QString &filters, Button button, UseMethod m)
+                            const QString &filters, Button button, GTGlobals::UseMethod m)
 {
-    GTFileDialogUtils ob(os, path, fileName, filters, (GTFileDialogUtils::Button)button, (GTFileDialogUtils::UseMethod)m);
+    GTFileDialogUtils ob(os, path, fileName, filters, (GTFileDialogUtils::Button)button, m);
     ob.openFileDialog();
     GTUtilsDialog::waitForDialog(os, &ob);
 }

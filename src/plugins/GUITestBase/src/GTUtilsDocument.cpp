@@ -63,7 +63,7 @@ void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName,
     CHECK_SET_ERR(viewFactoryId == id, "View's GObjectViewFactoryId is " + viewFactoryId + ", not " + id);
 }
 
-void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName) {
+void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method) {
 
     GTUtilsProjectTreeView::click(os, documentName);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);

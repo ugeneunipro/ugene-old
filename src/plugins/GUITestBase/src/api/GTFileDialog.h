@@ -22,16 +22,15 @@
 #ifndef GTFILE_DIALOG_H
 #define GTFILE_DIALOG_H
 
-#include <U2Core/U2OpStatus.h>
+#include "GTGlobals.h"
 
 namespace U2 {
 
 class GTFileDialog {
 public:
-    enum UseMethod {UseMouse, UseKey};
     enum Button {Open, Cancel};
     static void openFile(U2OpStatus &os, const QString &path, const QString &fileName,
-                  const QString &filters = "*.*", Button button = Open, UseMethod m = UseMouse);
+        const QString &filters = "*.*", Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 };
 
 } // namespace
