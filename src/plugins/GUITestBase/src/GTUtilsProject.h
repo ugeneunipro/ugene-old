@@ -22,12 +22,12 @@
 #ifndef _U2_PROJECT_UTILS_H_
 #define _U2_PROJECT_UTILS_H_
 
-#include <U2Core/GUrl.h>
-#include <U2Core/U2OpStatus.h>
-#include <QtGui/QMessageBox>
+#include "api/GTGlobals.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsDialog.h"
+#include <U2Core/GUrl.h>
+#include <QtGui/QMessageBox>
 
 namespace U2 {
 
@@ -38,7 +38,7 @@ class GTUtilsProject {
 public:
     class OpenFileSettings {
     public:
-        enum OpenMethod {DRAGDROP} openMethod;
+        enum OpenMethod {DragDrop} openMethod;
     };
 
     class CloseProjectSettings {
@@ -63,8 +63,8 @@ public:
     static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile);
     static void closeProject(U2OpStatus &os, const CloseProjectSettings& settings = CloseProjectSettings());
 
-    enum CheckType {EXISTS, EMPTY};
-    static void checkProject(U2OpStatus &os, CheckType checkType = EXISTS);
+    enum CheckType {Exists, Empty};
+    static void checkProject(U2OpStatus &os, CheckType checkType = Exists);
 
     static Document* checkDocumentExists(U2OpStatus &os, const GUrl &url);
 

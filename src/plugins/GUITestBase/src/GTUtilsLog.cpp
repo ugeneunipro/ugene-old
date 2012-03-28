@@ -20,7 +20,6 @@
  */
 
 #include "GTUtilsLog.h"
-#include "api/GTGlobals.h"
 
 namespace U2 {
 

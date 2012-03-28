@@ -21,7 +21,6 @@
 
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsProject.h"
-#include "api/GTGlobals.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include <U2Gui/ProjectView.h>
@@ -56,10 +55,11 @@ void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, con
     GTGlobals::sleep(500);
 }
 
-void GTUtilsProjectTreeView::click(U2OpStatus &os, const QString &itemName) {
+void GTUtilsProjectTreeView::click(U2OpStatus &os, const QString &itemName, Qt::MouseButton b) {
 
     moveTo(os, itemName);
-    GTMouseDriver::click(os);
+    GTMouseDriver::click(os, b);
+    GTGlobals::sleep(200);
 }
 
 void GTUtilsProjectTreeView::moveTo(U2OpStatus &os,const QString &itemName) {

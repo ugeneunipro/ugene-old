@@ -22,7 +22,6 @@
 #include "GTWidget.h"
 #include "GTMouseDriver.h"
 #include <QtGui/QWidget>
-#include "api/GTGlobals.h"
 
 namespace U2 {
 

@@ -20,7 +20,6 @@
  */
 
 #include "GTUtilsDialog.h"
-#include "api/GTGlobals.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include <U2Gui/MainWindow.h>

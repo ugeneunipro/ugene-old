@@ -20,7 +20,6 @@
  */
 
 #include "GTUtilsMdi.h"
-#include "api/GTGlobals.h"
 #include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
 #include <QtGui/QMainWindow>

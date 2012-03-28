@@ -22,21 +22,19 @@
 #ifndef GTMENU_H
 #define GTMENU_H
 
-#include <U2Core/U2OpStatus.h>
-#include <QMenu>
+#include "GTGlobals.h"
 
+class QMenu;
 
 namespace U2 {
 
 class GTMenu {
 public:
-    enum actionMethod {USE_MOUSE, USE_KEY};
+    static QMenu* showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static QMenu* showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 
-    static QMenu* showMainMenu(U2OpStatus &os, const QString &menuName, actionMethod m = USE_MOUSE);
-    static QMenu* showContextMenu(U2OpStatus &os, const QWidget *ground, actionMethod m = USE_MOUSE);
-
-    static void selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, actionMethod m = USE_MOUSE);
-    static void clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, actionMethod m = USE_MOUSE);
+    static void selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static void clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 };
 
 }

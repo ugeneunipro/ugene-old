@@ -22,9 +22,9 @@
 #ifndef _U2_GUI_PROJECT_TREE_VIEW_UTILS_H_
 #define _U2_GUI_PROJECT_TREE_VIEW_UTILS_H_
 
-#include <U2Core/U2OpStatus.h>
-#include <U2Gui/ProjectTreeController.h>
+#include "api/GTGlobals.h"
 #include "GTUtilsToolTip.h"
+#include <U2Gui/ProjectTreeController.h>
 
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -36,7 +36,7 @@ public:
     static void checkItem(U2OpStatus &os, const QString &itemName, bool exists = true);
 
     static void rename(U2OpStatus &os, const QString &itemName, const QString &newItemName);
-    static void click(U2OpStatus &os, const QString &itemName);
+    static void click(U2OpStatus &os, const QString &itemName, Qt::MouseButton b = Qt::LeftButton);
 
     static void moveTo(U2OpStatus &os, const QString &itemName);
 
@@ -47,15 +47,14 @@ public:
 
     static QPoint getTreeViewItemPosition(U2OpStatus &os, const QString &itemName);
 
-    static const QString widgetName;
-
-protected:
-    static void moveToOpenedView(U2OpStatus &os, const QString &itemName);
-
     static QTreeWidget* getTreeWidget(U2OpStatus &os);
     static QTreeWidgetItem* getTreeWidgetItem(U2OpStatus &os, const QString &itemName);
 
+    static const QString widgetName;
+
 private:
+    static void moveToOpenedView(U2OpStatus &os, const QString &itemName);
+
     static QTreeWidgetItem* getTreeWidgetItem(QTreeWidget* tree, const QString &itemName);
     static QString getProjectTreeItemName(ProjViewItem* projViewItem);
 

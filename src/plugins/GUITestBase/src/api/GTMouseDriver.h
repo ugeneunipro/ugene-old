@@ -22,15 +22,13 @@
 #ifndef _U2_GUI_GTMOUSEDRIVER_H_
 #define _U2_GUI_GTMOUSEDRIVER_H_
 
-#include <U2Core/U2OpStatus.h>
+#include "api/GTGlobals.h"
 #include <QtCore/QPoint>
 
 namespace U2 {
 
 class GTMouseDriver {
 public:
-
-    enum ButtonType{LEFT, RIGHT, MIDDLE};
 
     static void moveTo(U2::U2OpStatus &os, const int x, const int y);
     static void moveTo(U2OpStatus &os, const QPoint& p) { return moveTo(os, p.x(), p.y());}

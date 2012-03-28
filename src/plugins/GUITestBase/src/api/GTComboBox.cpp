@@ -19,14 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2OpStatus.h>
-
 #include "GTComboBox.h"
 #include "GTWidget.h"
 
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
-#include "api/GTGlobals.h"
 
 namespace U2 {
 

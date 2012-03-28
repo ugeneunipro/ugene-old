@@ -20,11 +20,10 @@
  */
 
 #include "GTToolbar.h"
-#include "api/GTGlobals.h"
-#include "QToolBar"
-#include "QAction"
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/GUIUtils.h>
+#include "QtGui/QToolBar"
+#include "QtGui/QAction"
 
 
 namespace U2 {

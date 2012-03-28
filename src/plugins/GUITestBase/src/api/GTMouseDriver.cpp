@@ -20,7 +20,6 @@
  */
 
 #include "GTMouseDriver.h"
-#include "api/GTGlobals.h"
 
 namespace U2 {
 

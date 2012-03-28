@@ -20,7 +20,6 @@
  */
 
 #include "GTUtilsProject.h"
-#include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
 #include "GTUtilsDialog.h"
 #include <U2Core/AppContext.h>
@@ -42,7 +41,7 @@ void GTUtilsProject::openProject(U2OpStatus& os, const GUrl& path, const QString
 void GTUtilsProject::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& s) {
 
     switch (s.openMethod) {
-        case OpenFileSettings::DRAGDROP:
+        case OpenFileSettings::DragDrop:
         default:
             openFilesDrop(os, urls);
     }
@@ -99,7 +98,7 @@ void GTUtilsProject::checkProject(U2OpStatus &os, CheckType checkType) {
     CHECK_SET_ERR(AppContext::getProject() != NULL, "There is no project");
 
     switch (checkType) {
-        case EMPTY :
+        case Empty:
             CHECK_SET_ERR(AppContext::getProject()->getDocuments().isEmpty() == true, "Project is not empty");
         default:
             break;

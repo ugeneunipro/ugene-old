@@ -20,7 +20,6 @@
  */
 
 #include "GTUtilsToolTip.h"
-#include "api/GTGlobals.h"
 #include <QtGui/QToolTip>
 
 namespace U2 {

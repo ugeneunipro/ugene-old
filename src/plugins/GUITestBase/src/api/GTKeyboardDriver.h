@@ -23,7 +23,7 @@
 #define _U2_GUI_GTKEYBOARDDRIVER_H_
 
 #include <QMap>
-#include <U2Core/U2OpStatus.h>
+#include "api/GTGlobals.h"
 
 #ifdef _WIN32
 #include <windows.h>

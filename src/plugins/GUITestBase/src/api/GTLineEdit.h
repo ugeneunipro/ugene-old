@@ -22,7 +22,7 @@
 #ifndef _U2_GT_LINEEDIT_H_
 #define _U2_GT_LINEEDIT_H_
 
-#include <U2Core/U2OpStatus.h>
+#include "api/GTGlobals.h"
 #include <QtGui/QLineEdit>
 
 namespace U2 {

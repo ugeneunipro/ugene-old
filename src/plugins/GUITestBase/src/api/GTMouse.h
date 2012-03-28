@@ -22,7 +22,7 @@
 #ifndef U2_GUI_GTMOUSE_H_
 #define U2_GUI_GTMOUSE_H_
 
-#include <U2Core/U2OpStatus.h>
+#include "api/GTGlobals.h"
 #include <QtGui/QWidget>
 
 

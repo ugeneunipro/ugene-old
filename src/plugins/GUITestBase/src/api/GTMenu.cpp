@@ -31,7 +31,7 @@
 
 namespace U2 {
 
-QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, actionMethod m)
+QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m)
 {
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
     QAction *menu = mainWindow->findChild<QAction*>(menuName);
@@ -46,7 +46,7 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, actionMetho
     int key = 0, key_pos = 0;
 
     switch(m) {
-    case USE_MOUSE:
+    case GTGlobals::UseMouse:
         pos = mainWindow->menuBar()->actionGeometry(menu).center();
         gPos = mainWindow->menuBar()->mapToGlobal(pos);
 
@@ -54,7 +54,7 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, actionMetho
         GTMouseDriver::click(os);
         break;
 
-    case USE_KEY:
+    case GTGlobals::UseKey:
         menuText = menu->text();
         key_pos = menuText.indexOf('&');
         key = (menuText.at(key_pos + 1)).toAscii();
@@ -68,13 +68,13 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, actionMetho
     return menu->menu();
 }
 
-QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, actionMethod m)
+QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals::UseMethod m)
 {
     QPoint mouse_pos;
     QRect ground_widget;
 
     switch(m) {
-    case USE_MOUSE:
+    case GTGlobals::UseMouse:
         mouse_pos = QCursor::pos();
         ground_widget = ground->geometry();
 
@@ -85,7 +85,7 @@ QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, actionMeth
         GTMouseDriver::click(os, Qt::RightButton);
         break;
 
-    case USE_KEY:
+    case GTGlobals::UseKey:
 //        while (! ground->hasFocus()) {
 //            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
 //            GTGlobals::sleep(100);
@@ -101,7 +101,7 @@ QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, actionMeth
     return menu;
 }
 
-void GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, actionMethod m)
+void GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m)
 {
     CHECK_SET_ERR(! itemPath.isEmpty(), "Error: itemPath is empty in selectMenuItem()");
     CHECK_SET_ERR(menu != NULL, "Error: menu not found in selectMenuItem()");
@@ -121,13 +121,13 @@ void GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList
         CHECK_SET_ERR(action != NULL, "Error: action not found in selectMenuItem()");
 
         switch(m) {
-        case USE_MOUSE:
+        case GTGlobals::UseMouse:
             action_pos = menu->actionGeometry(action).center();
             action_pos = menu->mapToGlobal(action_pos);
             GTMouseDriver::moveTo(os, action_pos);
             break;
 
-        case USE_KEY:
+        case GTGlobals::UseKey:
 
             while(action != menu->activeAction()) {
                 GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
@@ -145,7 +145,7 @@ void GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList
 
 }
 
-void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, actionMethod m)
+void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m)
 {
     CHECK_SET_ERR(! itemPath.isEmpty(), "Error: itemPath is empty in clickMenuItem()");
     CHECK_SET_ERR(menu != NULL, "Error: menu not found in clickMenuItem()");
@@ -169,7 +169,7 @@ void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList 
     QPoint action_pos;
 
     switch(m) {
-    case USE_MOUSE:
+    case GTGlobals::UseMouse:
         action_pos = menu->actionGeometry(action).center();
         action_pos = menu->mapToGlobal(action_pos);
 
@@ -177,7 +177,7 @@ void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList 
         GTMouseDriver::click(os);
         break;
 
-    case USE_KEY:
+    case GTGlobals::UseKey:
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
         break;
     }

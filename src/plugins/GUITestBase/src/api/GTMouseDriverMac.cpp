@@ -22,13 +22,13 @@
 #include "GTMouseDriver.h"
 #include "api/GTGlobals.h"
 
-#ifdef  __APPLE__&__MACH__
+#ifdef  __APPLE__//&__MACH__
     // #include <...>
 #endif
 
 namespace U2 {
 
-#ifdef  __APPLE__&__MACH__
+#ifdef  __APPLE__//&__MACH__
 
 void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 {

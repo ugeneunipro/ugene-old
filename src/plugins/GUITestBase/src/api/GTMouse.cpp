@@ -22,11 +22,10 @@
 #ifndef U2_GUI_GTMOUSE_H
 #define U2_GUI_GTMOUSE_H
 
-#include <U2Core/U2OpStatus.h>
-#include <QCursor>
 #include "GTMouse.h"
-#include "GTMouseDriver.h"
 #include "api/GTGlobals.h"
+#include "GTMouseDriver.h"
+#include <QtGui/QCursor>
 
 namespace U2 {
 

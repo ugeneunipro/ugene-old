@@ -22,7 +22,7 @@
 #ifndef _U2_GT_UTILS_MDI_H_
 #define _U2_GT_UTILS_MDI_H_
 
-#include <U2Core/U2OpStatus.h>
+#include "api/GTGlobals.h"
 #include "api/GTMenuBar.h"
 
 namespace U2 {
