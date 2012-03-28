@@ -378,16 +378,17 @@ void LoadDocumentTask::run() {
     // and used for LoadUnloadedDocument & LoadDocument privately
     hints.remove(GObjectHint_NamesList);
 
-    if(isLoadAsMergedDocument(hints)){
-        resultDocument = loadMergedDocument(iof, hints, stateInfo);
-    }
-    else{
-        try {
-            resultDocument = format->loadDocument(iof, url, hints, stateInfo);
-        } catch(std::bad_alloc) {
-            resultDocument = NULL;
-            setError(tr("Not enough memory to load document %1").arg(url.getURLString()));
+    try {
+        if(isLoadAsMergedDocument(hints)){
+            resultDocument = loadMergedDocument(iof, hints, stateInfo);
         }
+        else{
+                resultDocument = format->loadDocument(iof, url, hints, stateInfo);
+        }             
+    }
+    catch(std::bad_alloc) {
+        resultDocument = NULL;
+        setError(tr("Not enough memory to load document %1").arg(url.getURLString()));
     }
 
     if (resultDocument != NULL) {

@@ -542,16 +542,15 @@ static QString padToLen(const QString& s, int width) {
 static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString& locusStrFromAttr) {
     QString loc, date;
     if (so) {
-        DNASequence dna = so->getWholeSequence();
-        QString len = QString::number(dna.length());
-        loc = dna.getName();
+        QString len = QString::number(so->getSequenceLength());
+        loc = so->getSequenceName();
         if (loc.isEmpty()) {
             loc = so->getGObjectName();
         }
         loc = padToLen(loc.replace(QChar(' '), QChar('_')), qMax(0, 28 - len.length()));
         loc.append(len).append(" bp ");
-        if (dna.info.contains(DNAInfo::LOCUS)) {
-            DNALocusInfo loi = dna.info.value(DNAInfo::LOCUS).value<DNALocusInfo>();
+        if (so->getSequenceInfo().contains(DNAInfo::LOCUS)) {
+            DNALocusInfo loi = so->getSequenceInfo().value(DNAInfo::LOCUS).value<DNALocusInfo>();
             assert(!loi.name.isEmpty());
             QString& mol = loi.molecule;
             if (mol.size() >= 3 && mol.at(2) != '-') loc.append("   ");
@@ -714,10 +713,11 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
 
 static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> lowerCaseRegs, U2OpStatus& si) {
     static const int charsInLine = 60;
+    static const int DB_BLOCK_SIZE = charsInLine * 3000;
 
-    QByteArray seq = ao->getWholeSequenceData();
-    int slen = seq.length();
-    const char* sequence = U1AnnotationUtils::applyLowerCaseRegions(seq.data(), 0, slen, 0, lowerCaseRegs);
+    QByteArray seq;
+    qint64 slen = ao->getSequenceLength();
+    const char* sequence;
     const char* spaces = TextUtils::SPACE_LINE.constData();
     QByteArray num;
     bool ok = true;
@@ -727,7 +727,12 @@ static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> l
         return;
     }
 
-    for (int pos = 0; pos < slen; pos+=charsInLine) {
+    for (qint64 pos = 0; pos < slen; pos+=charsInLine) {
+        if( (pos % DB_BLOCK_SIZE) == 0){
+            seq.clear();
+            seq = ao->getSequenceData(U2Region(pos, qMin((qint64)DB_BLOCK_SIZE, slen - pos)));
+            sequence = U1AnnotationUtils::applyLowerCaseRegions(seq.data(), 0, seq.size(), pos, lowerCaseRegs);
+        }
         num.setNum(pos+1);
 
         //right spaces
@@ -753,8 +758,8 @@ static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> l
                 ok = false;
                 break;
             }
-            int chunkLen = qMin(10, slen - j);
-            l = io->writeBlock(QByteArray::fromRawData(sequence + j, chunkLen));
+            int chunkLen = qMin((qint64)10, slen - j);
+            l = io->writeBlock(QByteArray::fromRawData(sequence + (j % DB_BLOCK_SIZE) , chunkLen));
             if (l!=chunkLen) {
                 ok = false;
                 break;
