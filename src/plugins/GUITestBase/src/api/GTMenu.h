@@ -34,11 +34,15 @@ public:
     static QMenu* showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);
     static QMenu* showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 
+    static QAction* selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
     static void clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
-    static QAction* clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse);
-//        static QAction* selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+
+    // moves cursor to menu item, clicks on menu item; if openMenuOnly, clicks on submenu only
+    static QAction* clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool openMenuOnly = false);
+
     static QAction* getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &itemName);
 
+    // global position of menu action's center
     static QPoint actionPos(U2OpStatus &os, const QMenu* menu, QAction* action);
 };
 

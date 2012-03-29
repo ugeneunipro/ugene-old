@@ -127,7 +127,7 @@ QPoint GTMenu::actionPos(U2OpStatus &os, const QMenu* menu, QAction* action) {
     return menu->mapToGlobal(p);
 }
 
-QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m) {
+QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m, bool openMenuOnly) {
 
     CHECK_SET_ERR_RESULT(menu != NULL, "Error: menu not found in selectMenuItem()", NULL);
     CHECK_SET_ERR_RESULT(itemName.isEmpty() == false, "Error: itemName is empty in selectMenuItem()", NULL);
@@ -135,10 +135,15 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
     QAction *action = getMenuItem(os, menu, itemName);
     CHECK_SET_ERR_RESULT(action != NULL, "Error: action not found for item " + itemName + " in selectMenuItem()", NULL);
 
+    QMenu* actionMenu = action->menu();
+    bool clickingSubMenu = actionMenu ? true : false;
+
     switch(m) {
     case GTGlobals::UseMouse:
         GTMouseDriver::moveTo(os, actionPos(os, menu, action));
-        GTMouseDriver::click(os);
+        if (!openMenuOnly || clickingSubMenu) {
+            GTMouseDriver::click(os);
+        }
         break;
 
     case GTGlobals::UseKey:
@@ -147,7 +152,9 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
             GTGlobals::sleep(200);
         }
 
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        if (!openMenuOnly || clickingSubMenu) {
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        }
         break;
     }
 
@@ -156,13 +163,29 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
     return action;
 }
 
-void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod)
-{
-    CHECK_SET_ERR(itemPath.isEmpty() == false, "Error: itemPath is empty in selectMenuItem()");
+QAction* GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod) {
+
+    CHECK_SET_ERR_RESULT(itemPath.isEmpty() == false, "Error: itemPath is empty in selectMenuItem()", NULL);
+
+    QAction *action = NULL;
+    QList<QAction*>actions = menu->actions();
+    foreach(QString itemName, itemPath) {
+        CHECK_SET_ERR_RESULT(menu != NULL, "Error: menu not found for item " + itemName + " in selectMenuItem()", NULL);
+
+        action = clickMenuItem(os, menu, itemName, useMethod, true);
+        menu = action ? action->menu() : NULL;
+    }
+
+    return action;
+}
+
+void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod) {
+
+    CHECK_SET_ERR(itemPath.isEmpty() == false, "Error: itemPath is empty in clickMenuItem()");
 
     QList<QAction*>actions = menu->actions();
     foreach(QString itemName, itemPath) {
-        CHECK_SET_ERR(menu != NULL, "Error: menu not found for item " + itemName + " in selectMenuItem()");
+        CHECK_SET_ERR(menu != NULL, "Error: menu not found for item " + itemName + " in clickMenuItem()");
 
         QAction *action = clickMenuItem(os, menu, itemName, useMethod);
         menu = action ? action->menu() : NULL;
