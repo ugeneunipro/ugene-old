@@ -51,11 +51,11 @@ AttributeDbiUnitTests
 + StringAttribute
 + ByteArrayAttribute
 LocationParserTestData
-+locationParser
-+locationParserInvalid
-+hugelocationParser
-+buildLocationString
-+buildLocationStringInvalid
++ locationParser
++ locationParserInvalid
++ hugelocationParser
++ buildLocationString
+- buildLocationStringInvalid
 
 
 </unittest>
