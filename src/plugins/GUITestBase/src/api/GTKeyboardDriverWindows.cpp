@@ -36,15 +36,27 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
 {
     if (isalpha(key)) {
         key = toupper(key);
-    } 
-    if (key == '_') {
-        key = VK_OEM_MINUS;
-        if (modifiers != 0) {
-            keyPress(os, modifiers);
-        }
-        keyPress(os, (int)key, GTKeyboardDriver::key["shift"]);
-    } else {
-        keyPress(os, (int)key, modifiers);
+    }
+
+    switch (key) {
+        case '_':
+            if (modifiers != 0) {
+                keyPress(os, modifiers);
+            }
+            keyPress(os, VK_OEM_MINUS, GTKeyboardDriver::key["shift"]);
+            break;
+
+        case '.':
+            keyPress(os, VK_DECIMAL, modifiers);
+            break;
+
+        case '/':
+            keyPress(os, VK_DIVIDE, modifiers);
+            break;
+
+        default:
+            keyPress(os, (int)key, modifiers);
+            break;
     }
 }
 
@@ -53,14 +65,26 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
     if (isalpha(key)) {
         key = toupper(key);
     } 
-    if (key == '_') {
-        key = VK_OEM_MINUS;
-        keyRelease(os, (int)key, GTKeyboardDriver::key["shift"]);
-        if (modifiers) {
-            keyRelease(os, modifiers);
-        } 
-    } else {
-        keyRelease(os, (int)key, modifiers);
+
+    switch (key) {
+        case '_':
+            keyRelease(os, VK_OEM_MINUS, GTKeyboardDriver::key["shift"]);
+            if (modifiers != 0) {
+                keyRelease(os, modifiers);
+            }
+            break;
+
+        case '.':
+            keyRelease(os, VK_DECIMAL, modifiers);
+            break;
+
+        case '/':
+            keyRelease(os, VK_DIVIDE, modifiers);
+            break;
+
+        default:
+            keyRelease(os, (int)key, modifiers);
+            break;
     }
 }
 
