@@ -16,17 +16,13 @@ typedef struct {
 	uint32_t c[16];
 } call_aux_t;
 
-static const long double EXP_RESERVE = 150;
-
 static errmod_coef_t *cal_coef(double depcorr, double eta)
 {
 	int k, n, q;
 	long double sum, sum1;
+	long double exponent, exponent1;
 	double *lC;
 	errmod_coef_t *ec;
-	long double exp_addition;
-	long double EXP_MAX = logl(LDBL_MAX);
-	long double EXP_MIN = logl(LDBL_MIN);
 
 	ec = calloc(1, sizeof(errmod_coef_t));
 	// initialize ->fk
@@ -48,29 +44,25 @@ static errmod_coef_t *cal_coef(double depcorr, double eta)
 		double le1 = log(1.0 - e);
 		for (n = 1; n <= 255; ++n) {
 			double *beta = ec->beta + (q<<16|n<<8);
+
+			static const double zero = 0;
 			sum1 = sum = 0.0;
-			exp_addition = 0;
-			for (k = n; k >= 0; --k, sum1 = sum) {
-				long double exponent = exp_addition + lC[n<<8|k] + k*le + (n-k)*le1;
-// In Visual Studio, long double is equivalent to double, so its precision is not enough
-// But the ratio sum1/sum will not change if both are multipled by exp(exp_delta)
-#ifdef Q_OS_WIN32
-				long double exp_delta = 0.0;
-				if(exponent < EXP_MIN) {
-					exp_delta = EXP_RESERVE + EXP_MIN - exponent;
-				} else if(exponent > EXP_MAX - 10) {
-					exp_delta = EXP_MAX - EXP_RESERVE - exponent;
-				}
-				if(exp_delta != 0.0) {
-					exponent += exp_delta;
-					exp_addition += exp_delta;
-					if(exp_delta > EXP_MIN && exp_delta < EXP_MAX) {
-						sum1 *= expl(exp_delta);
-					}
-				}
-#endif
+			exponent = exponent1 = -1./zero; // cross-platform infinity :)
+			for (k = n; k >= 0; --k, sum1 = sum, exponent1 = exponent) {
+				exponent = lC[n<<8|k] + k*le + (n-k)*le1;
 				sum = sum1 + expl(exponent);
+// In Visual Studio, long double is equivalent to double, so its precision is not enough
+// So workaround is replace -log[ sum1/sum ] = -log[ exp(exponent1)/{exp(exponent1) + exp(exponent)} ]
+// = -log[ 1/{1 + exp(exponent - exponent1)} ] = log[ 1 + expl(exponent - exponent1) ]
+#ifndef Q_OS_WIN32
+				if(sum1 != 0. && ! isinf(exponent1)) {
+					beta[k] = 10. / M_LN10 * logl(1 + expl(exponent - exponent1));
+				} else {
+					beta[k] = 1./zero; // cross-platform infinity :)
+				}
+#else
 				beta[k] = -10. / M_LN10 * logl(sum1 / sum);
+#endif
 			}
 		}
 	}
