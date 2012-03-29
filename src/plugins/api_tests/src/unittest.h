@@ -1,7 +1,7 @@
 #ifndef _U2_UNIT_TEST_H_
 #define _U2_UNIT_TEST_H_
 
-#include <QString.h>
+#include <QString>
 
 namespace U2 {
 
