@@ -515,7 +515,9 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
 	}
 
     QMenu* removeMenu = m.addMenu(tr("Remove"));
+    removeMenu->menuAction()->setObjectName( ACTION_PROJECT__REMOVE_MENU);
     if (removeSelectedDocumentsAction->isEnabled()) {
+        removeSelectedDocumentsAction->setObjectName( ACTION_PROJECT__REMOVE_SELECTED);
         removeMenu->addAction(removeSelectedDocumentsAction);
     }
     if (removeSelectedObjectsAction->isEnabled()) {

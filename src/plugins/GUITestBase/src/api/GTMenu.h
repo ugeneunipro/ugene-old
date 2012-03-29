@@ -25,6 +25,7 @@
 #include "GTGlobals.h"
 
 class QMenu;
+class QAction;
 
 namespace U2 {
 
@@ -33,8 +34,12 @@ public:
     static QMenu* showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);
     static QMenu* showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 
-    static void selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
     static void clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static QAction* clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+//        static QAction* selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static QAction* getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &itemName);
+
+    static QPoint actionPos(U2OpStatus &os, const QMenu* menu, QAction* action);
 };
 
 }

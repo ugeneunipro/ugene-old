@@ -97,6 +97,17 @@ public:
         QMessageBox::StandardButton b;
     };
 
+    class PopupChooser : public Runnable {
+    public:
+        PopupChooser(U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseMouse)
+            :os(_os), namePath(_namePath), useMethod(_useMethod){}
+        virtual void run();
+    private:
+        U2OpStatus &os;
+        QStringList namePath;
+        GTGlobals::UseMethod useMethod;
+    };
+
     static void waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDialog = true);
 
     static void openExportProjectDialog(U2OpStatus &os);

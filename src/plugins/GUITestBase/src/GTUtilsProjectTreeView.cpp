@@ -59,7 +59,6 @@ void GTUtilsProjectTreeView::click(U2OpStatus &os, const QString &itemName, Qt::
 
     moveTo(os, itemName);
     GTMouseDriver::click(os, b);
-    GTGlobals::sleep(200);
 }
 
 void GTUtilsProjectTreeView::moveTo(U2OpStatus &os,const QString &itemName) {

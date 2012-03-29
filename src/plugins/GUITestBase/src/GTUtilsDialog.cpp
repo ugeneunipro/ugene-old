@@ -22,16 +22,19 @@
 #include "GTUtilsDialog.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
+#include "api/GTMenu.h"
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#include <QtGui/QMenu>
 
 namespace U2 {
 
 void GUIDialogWaiter::wait() {
 
-    QWidget* w = QApplication::activeModalWidget();
-    if (!w) {
+    QWidget* modalWidget = QApplication::activeModalWidget();
+    QWidget* popupWidget = QApplication::activePopupWidget();
+    if (!modalWidget && !popupWidget) {
         return;
     }
 
@@ -202,6 +205,12 @@ void GTUtilsDialog::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &pro
 
    GTUtilsDialog::MessageBoxDialogFiller filler(os, QMessageBox::Yes);
    GTUtilsDialog::waitForDialog(os, &filler, false); // MessageBox question appears only if there is already a file on a disk
+}
+
+void GTUtilsDialog::PopupChooser::run() {
+
+    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+    GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
 
 }

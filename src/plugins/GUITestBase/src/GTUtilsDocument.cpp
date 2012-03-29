@@ -22,11 +22,13 @@
 #include "GTUtilsDocument.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTMenu.h"
 #include "GTUtilsProjectTreeView.h"
-
+#include "GTUtilsDialog.h"
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/ProjectModel.h>
-
+#include <QtGui/QTreeWidgetItem>
+#include <QtGui/QApplication>
 
 namespace U2 {
 
@@ -65,8 +67,22 @@ void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName,
 
 void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method) {
 
-    GTUtilsProjectTreeView::click(os, documentName);
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    switch (method) {
+    case GTGlobals::UseMouse:
+    {
+        GTUtilsProjectTreeView::click(os, documentName, Qt::RightButton);
+        GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_MENU << ACTION_PROJECT__REMOVE_SELECTED, method);
+        GTUtilsDialog::waitForDialog(os, &popupChooser);
+        break;
+    }
+
+    default:
+    case GTGlobals::UseKey:
+        GTUtilsProjectTreeView::click(os, documentName);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        break;
+    }
+
     GTGlobals::sleep(500);
 }
 

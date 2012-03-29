@@ -101,85 +101,71 @@ QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals:
     return menu;
 }
 
-void GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m)
-{
-    CHECK_SET_ERR(! itemPath.isEmpty(), "Error: itemPath is empty in selectMenuItem()");
-    CHECK_SET_ERR(menu != NULL, "Error: menu not found in selectMenuItem()");
+QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &itemName) {
 
-    foreach(QString item, itemPath) {
-        QPoint action_pos;
-        QAction *action = NULL;
-        QList<QAction*>actions = menu->actions();
+    CHECK_SET_ERR_RESULT(menu != NULL, "Error: menu not found in selectMenuItem()", NULL);
 
-        foreach(QAction *act, actions) {
-            if (act->objectName() == item) {
-                action = act;
-                break;
-            }
-        }
-
-        CHECK_SET_ERR(action != NULL, "Error: action not found in selectMenuItem()");
-
-        switch(m) {
-        case GTGlobals::UseMouse:
-            action_pos = menu->actionGeometry(action).center();
-            action_pos = menu->mapToGlobal(action_pos);
-            GTMouseDriver::moveTo(os, action_pos);
-            break;
-
-        case GTGlobals::UseKey:
-
-            while(action != menu->activeAction()) {
-                GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
-                GTGlobals::sleep(100);
-            }
-
-            if (action->menu()) {
-                GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"]);
-                menu = action->menu();
-                GTGlobals::sleep(100);
-            }
-            break;
-        }
-    }
-
-}
-
-void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m)
-{
-    CHECK_SET_ERR(! itemPath.isEmpty(), "Error: itemPath is empty in clickMenuItem()");
-    CHECK_SET_ERR(menu != NULL, "Error: menu not found in clickMenuItem()");
-
-    QList<QAction*>actions = menu->actions();
     QAction *action = NULL;
-    QString final_item = itemPath.back();
-
+    QList<QAction*>actions = menu->actions();
     foreach(QAction *act, actions) {
-        if (act->objectName() == final_item) {
+        QString objName = act->objectName();
+        if (objName == itemName) {
             action = act;
             break;
         }
     }
-    CHECK_SET_ERR(action != NULL, "Error: action not found in clickMenuItem()");
 
-    if (action != menu->activeAction()) {
-        selectMenuItem(os, menu, itemPath, m);
-    }
+    return action;
+}
 
-    QPoint action_pos;
+QPoint GTMenu::actionPos(U2OpStatus &os, const QMenu* menu, QAction* action) {
+
+    CHECK_SET_ERR_RESULT(menu != NULL, "Error: menu == NULL in actionPos()", QPoint());
+    CHECK_SET_ERR_RESULT(action != NULL, "Error: action == NULL in actionPos()", QPoint());
+
+    QPoint p = menu->actionGeometry(action).center();
+    return menu->mapToGlobal(p);
+}
+
+QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m) {
+
+    CHECK_SET_ERR_RESULT(menu != NULL, "Error: menu not found in selectMenuItem()", NULL);
+    CHECK_SET_ERR_RESULT(itemName.isEmpty() == false, "Error: itemName is empty in selectMenuItem()", NULL);
+
+    QAction *action = getMenuItem(os, menu, itemName);
+    CHECK_SET_ERR_RESULT(action != NULL, "Error: action not found for item " + itemName + " in selectMenuItem()", NULL);
 
     switch(m) {
     case GTGlobals::UseMouse:
-        action_pos = menu->actionGeometry(action).center();
-        action_pos = menu->mapToGlobal(action_pos);
-
-        GTMouseDriver::moveTo(os, action_pos);
+        GTMouseDriver::moveTo(os, actionPos(os, menu, action));
         GTMouseDriver::click(os);
         break;
 
     case GTGlobals::UseKey:
+        while(action != menu->activeAction()) {
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+            GTGlobals::sleep(200);
+        }
+
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
         break;
+    }
+
+    GTGlobals::sleep(200);
+
+    return action;
+}
+
+void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod)
+{
+    CHECK_SET_ERR(itemPath.isEmpty() == false, "Error: itemPath is empty in selectMenuItem()");
+
+    QList<QAction*>actions = menu->actions();
+    foreach(QString itemName, itemPath) {
+        CHECK_SET_ERR(menu != NULL, "Error: menu not found for item " + itemName + " in selectMenuItem()");
+
+        QAction *action = clickMenuItem(os, menu, itemName, useMethod);
+        menu = action ? action->menu() : NULL;
     }
 }
 

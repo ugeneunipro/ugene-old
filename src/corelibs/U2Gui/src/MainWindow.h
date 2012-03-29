@@ -70,6 +70,8 @@ class QMainWindow;
 #define ACTION_PROJECTSUPPORT__EXPORT_PROJECT           "action_projectsupport__export_project"
 
 #define ACTION_PROJECT__ADD_MENU                    "action_project__add_menu"
+#define ACTION_PROJECT__REMOVE_MENU                 "action_project__remove_menu"
+#define ACTION_PROJECT__REMOVE_SELECTED             "action_project__remove_selected_action"
 #define ACTION_PROJECT__ADD_NEW_DOCUMENT            "action_project__add_new_document"
 #define ACTION_PROJECT__ADD_EXISTING_DOCUMENT       "action_project__add_existing_document"
 
