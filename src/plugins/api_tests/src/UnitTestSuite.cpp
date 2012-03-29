@@ -7,7 +7,7 @@
 #include "core/dbi/attribute/AttributeDbiUnitTests.h"
 #include "core/dbi/sequence/SequenceDbiUnitTests.h"
 #include "core/format/genbank/LocationParserUnitTests.h"
-
+#include <typeinfo>
 
 namespace U2 {
 
