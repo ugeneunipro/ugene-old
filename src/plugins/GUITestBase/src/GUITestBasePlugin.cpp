@@ -50,12 +50,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0023);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0030);
 //        guiTestBase->registerTest(new ToolbarTest());
 }

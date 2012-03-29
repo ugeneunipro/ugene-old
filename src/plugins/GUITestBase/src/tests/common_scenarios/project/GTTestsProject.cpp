@@ -31,6 +31,7 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
+#include <U2View/MSAEditorFactory.h>
 
 namespace U2{
 
@@ -100,11 +101,20 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     QAction *result = GTGlobals::getMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
     CHECK_SET_ERR(result == NULL, "Export menu item present in menu without any project created");
 }
+GUI_TEST_CLASS_DEFINITION(test_0007) {
 
+    GTUtilsProject::openProject(os, 
+        testDir+"_common_data/scenarios/project/proj1.uprj", 
+        "proj1 UGENE", 
+        "1CF7.PDB"
+        );
+    GTUtilsDocument::removeDocument(os, "1CF7.PDB", GTGlobals::UseMouse);
+    GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
+}
 GUI_TEST_CLASS_DEFINITION(test_0009) {
 
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/fa1.fa.gz");
-    GTUtilsDocument::checkDocument(os, "fa1.fa.gz", "MSAEditor");
+    GTUtilsDocument::checkDocument(os, "fa1.fa.gz", MSAEditorFactory::ID);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {
@@ -131,12 +141,6 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
     GTUtilsDocument::checkDocument(os, "sars.gb");
     GTUtilsDocument::checkDocument(os, "CVU55762.gb");
 }
-
-GUI_TEST_CLASS_DEFINITION(test_0023) {
-    os.setError("Test not implemented");
-    //ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa");
-    //TODO: minimized sequence view and check title
-}
 GUI_TEST_CLASS_DEFINITION(test_0018) {
 
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
@@ -146,6 +150,17 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
     GTUtilsDocument::removeDocument(os, "human_T1.fa");
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsProjectTreeView::checkItem(os, "human_T1.fa", true);
+}
+GUI_TEST_CLASS_DEFINITION(test_0023) {
+    os.setError("Test not implemented");
+    //ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa");
+    //TODO: minimized sequence view and check title
+}
+GUI_TEST_CLASS_DEFINITION(test_0026) {
+
+    GTUtilsProject::openFiles(os, dataDir + "samples/Genbank/sars.gb");
+    GTUtilsDocument::checkDocument(os, "sars.gb", AnnotatedDNAViewFactory::ID);
+    GTUtilsDocument::removeDocument(os, "sars.gb");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0030) {
