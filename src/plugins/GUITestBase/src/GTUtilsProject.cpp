@@ -21,6 +21,7 @@
 
 #include "GTUtilsProject.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTSequenceReadingModeDialogUtils.h"
 #include "GTUtilsDialog.h"
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
@@ -28,6 +29,7 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
+#include "api/GTMouseDriver.h"
 
 namespace U2 {
 
@@ -156,6 +158,14 @@ void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
 
     Qt::DropActions dropActions = Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
     Qt::MouseButtons mouseButtons = Qt::LeftButton;
+    GTSequenceReadingModeDialogUtils ob(os);
+    GUIDialogWaiter waiter(&ob);
+    QTimer t;
+
+    if (urls.size() > 1) {
+        t.connect(&t, SIGNAL(timeout()), &waiter, SLOT(wait()));
+        t.start(1000);
+    }
 
     QDragEnterEvent* dragEnterEvent = new QDragEnterEvent(widgetPos, dropActions, mimeData, mouseButtons, 0);
     GTGlobals::sendEvent(widget, dragEnterEvent);

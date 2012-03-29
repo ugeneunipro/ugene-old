@@ -28,7 +28,7 @@ namespace U2 {
 
 class GTWidget {
 public:
-
+    /// TODO: add use method - mouse or keyboard
     static void click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton = Qt::LeftButton);
     static void setFocus(U2OpStatus &os, QWidget *w);
 

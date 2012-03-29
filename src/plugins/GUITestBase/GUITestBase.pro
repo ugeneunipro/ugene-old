@@ -25,7 +25,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
 				src/api/GTScrollBar.h \
                 src/api/GTSystem.h \
                 src/api/GTToolbar.h \
-                src/api/GTWidget.h
+                src/api/GTWidget.h \
+    src/api/GTSequenceReadingModeDialog.h \
+    src/api/GTSequenceReadingModeDialogUtils.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsApp.cpp \
@@ -57,4 +59,10 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 				src/api/GTScrollBar.cpp \
                 src/api/GTSystem.cpp \
                 src/api/GTToolbar.cpp \
-                src/api/GTWidget.cpp
+                src/api/GTWidget.cpp \
+    src/api/GTSequenceReadingModeDialog.cpp \
+    src/api/GTSequenceReadingModeDialogUtils.cpp
+
+
+
+
