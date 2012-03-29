@@ -151,6 +151,7 @@ void DinuclOccurTask::run()
 
         // Update the task progress
         stateInfo.setProgress((region.length - wholeRegionLength) * 100 / region.length);
+        CHECK_OP(stateInfo,);
 
         iterNum++;
 
