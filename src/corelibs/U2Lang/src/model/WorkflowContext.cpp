@@ -19,16 +19,24 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Lang/ActorModel.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/Datatype.h>
+#include <U2Lang/GrouperOutSlot.h>
+#include <U2Lang/IntegralBus.h>
+
 #include "WorkflowContext.h"
 
 namespace U2 {
 
 namespace Workflow {
 
-WorkflowContext::WorkflowContext()
+WorkflowContext::WorkflowContext(const QList<Actor*> &procs)
 : storage(NULL)
 {
-
+    foreach (Actor *p, procs) {
+        procMap.insert(p->getId(), p);
+    }
 }
 
 WorkflowContext::~WorkflowContext() {
@@ -42,6 +50,148 @@ bool WorkflowContext::init() {
 
 DbiDataStorage *WorkflowContext::getDataStorage() {
     return storage;
+}
+
+DataTypePtr WorkflowContext::getOutSlotType(const QString &slotStr) {
+    QStringList tokens = slotStr.split(">");
+    assert(tokens.size() > 0);
+    tokens = tokens[0].split(".");
+    assert(2 == tokens.size());
+
+    Actor *proc = procMap.value(tokens[0], NULL);
+    if (NULL == proc) {
+        return DataTypePtr();
+    }
+
+    QString slotId = tokens[1];
+    foreach (Port *port, proc->getOutputPorts()) {
+        assert(port->getOutputType()->isMap());
+        QMap<Descriptor, DataTypePtr> typeMap = port->getOutputType()->getDatatypesMap();
+
+        if (typeMap.keys().contains(slotId)) {
+            DataTypePtr type = typeMap.value(slotId);
+            assert(DataType::Single == type->kind());
+            return type;
+        }
+    }
+
+    return DataTypePtr();
+}
+
+// Very-very bad designed function
+static bool parseSlotParams(const QString &annsSlot, const QMap<QString, Actor*> &procMap,
+                            Actor **proc, QString &portId, QString &path,
+                            QString &headPortId, QString &headSlotId) {
+    // parse @annsSlot
+    QString slotId;
+    {
+        QStringList tokens = annsSlot.split(">");
+        assert(tokens.size() > 0);
+        if (tokens.size() > 1) {
+            path = tokens[1];
+        }
+        tokens = tokens[0].split(".");
+        assert(2 == tokens.size());
+        slotId = tokens[1];
+
+        *proc = procMap.value(tokens[0], NULL);
+        if (NULL == *proc) {
+            return false;
+        }
+    }
+
+    // search headSlot
+    QString headSlot;
+    {
+        foreach (Port *port, (*proc)->getOutputPorts()) {
+            assert(port->getOutputType()->isMap());
+            QMap<Descriptor, DataTypePtr> typeMap = port->getOutputType()->getDatatypesMap();
+
+            if (typeMap.keys().contains(slotId)) {
+                portId = port->getId();
+                QString dependentSlot = portId + "." + slotId;
+                QStrStrMap slotRelations = (*proc)->getProto()->getSlotRelations();
+                if (slotRelations.contains(dependentSlot)) {
+                    headSlot = slotRelations[dependentSlot];
+                }
+                break;
+            }
+        }
+        if (headSlot.isEmpty()) {
+            return false;
+        }
+    }
+
+    QStringList tokens = headSlot.split(".");
+    assert(2 == tokens.size());
+    headPortId = tokens[0];
+    headSlotId = tokens[1];
+
+    return true;
+}
+
+static void searchAnnsSlot(Port *inPort, const QString &headSlotId, QString &newAnnsSlot, DataTypePtr &type) {
+    Attribute *b = inPort->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID);
+    QStrStrMap busMap = b->getAttributeValueWithoutScript<QStrStrMap>();
+    Attribute *p = inPort->getParameter(IntegralBusPort::PATHS_ATTR_ID);
+    SlotPathMap pathMap = p->getAttributeValueWithoutScript<SlotPathMap>();
+    QMap<Descriptor, DataTypePtr> typeMap = inPort->getOutputType()->getDatatypesMap();
+    type = typeMap.value(headSlotId);
+    newAnnsSlot = busMap.value(headSlotId);
+    QPair<QString, QString> slotPair(headSlotId, newAnnsSlot);
+    if (pathMap.contains(slotPair)) {
+        newAnnsSlot += ">" + pathMap.value(slotPair).join(",");
+    }
+    newAnnsSlot = GrouperOutSlot::busMap2readable(newAnnsSlot);
+}
+
+QString WorkflowContext::getCorrespondingSeqSlot(const QString &annsSlot) {
+    Actor *proc = NULL;
+    QString path;
+    QString portId;
+    QString headPortId;
+    QString headSlotId;
+
+    // Very-very bad designed function
+    bool pres = parseSlotParams(annsSlot, procMap, &proc, portId, path, headPortId, headSlotId);
+    if (!pres) {
+        return "";
+    }
+
+    QString res;
+    if (headPortId == portId) {
+        res = proc->getId() + "." + headSlotId;
+    } else {
+        Port *inPort = proc->getPort(headPortId);
+        assert(inPort->getOutputType()->isMap());
+        assert(inPort->isInput());
+        if (inPort->isOutput()) {
+            return "";
+        }
+
+        QString newAnnsSlot;
+        DataTypePtr type;
+        searchAnnsSlot(inPort, headSlotId, newAnnsSlot, type);
+
+        if (BaseTypes::DNA_SEQUENCE_TYPE() == type) {
+            res = newAnnsSlot;
+        } else if (BaseTypes::ANNOTATION_TABLE_TYPE() == type) {
+            res = this->getCorrespondingSeqSlot(newAnnsSlot);
+        }
+    }
+    if (res.isEmpty()) {
+        return "";
+    }
+
+    if (!path.isEmpty()) {
+        if (1 == res.split(">").size()) {
+            res += ">";
+        } else {
+            res += ",";
+        }
+        res += path;
+    }
+    return res;
 }
 
 } // Workflow

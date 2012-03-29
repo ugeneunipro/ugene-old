@@ -38,7 +38,7 @@ namespace U2 {
  * to type of port
  * prop - busmap property name
  */
-class U2LANG_EXPORT MapDatatypeEditor : public QObject, public ConfigurationEditor {
+class U2LANG_EXPORT MapDatatypeEditor : public ConfigurationEditor {
     Q_OBJECT
 public:
     MapDatatypeEditor(Configuration* cfg, const QString& prop, DataTypePtr from, DataTypePtr to);

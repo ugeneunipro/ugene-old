@@ -163,7 +163,9 @@ void ImportAnnotationsWorkerFactory::init() {
         ImportAnnotationsWorker::tr("Merge annotations"), 
         ImportAnnotationsWorker::tr("Read input annotation table and merge it with supplied annotation tables"));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
-    
+    proto->addSlotRelation(BasePorts::IN_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId(),
+        BasePorts::OUT_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
+
     //proto delegates
     QMap<QString, PropertyDelegate*> delegates;
     {

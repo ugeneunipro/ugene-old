@@ -100,6 +100,7 @@ void MarkerEditor::sl_onMarkerEdited(const QString &markerId, const QString &old
         DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outTypeMap));
         outPort->setNewType(newType);
     }
+    emit si_configurationChanged();
 }
 
 void MarkerEditor::sl_onMarkerAdded(const QString &markerId) {
@@ -130,6 +131,7 @@ void MarkerEditor::sl_onMarkerRemoved(const QString &markerId, const QString &ma
         DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outTypeMap));
         outPort->setNewType(newType);
     }
+    emit si_configurationChanged();
 }
 
 /* ***********************************************************************

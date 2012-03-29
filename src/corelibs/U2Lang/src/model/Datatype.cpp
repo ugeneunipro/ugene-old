@@ -26,6 +26,8 @@ namespace U2 {
 /*****************************
  * DataType
  *****************************/
+const QString DataType::EMPTY_TYPESET_ID = QString("empty");
+
 DataType::DataType(const QString& id, const QString& name, const QString& desc) : Descriptor(id, name, desc){
 }
 

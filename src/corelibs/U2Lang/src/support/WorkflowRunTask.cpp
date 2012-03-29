@@ -253,7 +253,7 @@ void WorkflowIterationRunTask::prepare() {
         lmap.insert(key, cc);
     }
 
-    context = new WorkflowContext();
+    context = new WorkflowContext(schema->getProcesses());
     if (!context->init()) {
         stateInfo.setError(tr("Failed to create a worflow context"));
         return;

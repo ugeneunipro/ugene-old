@@ -23,6 +23,8 @@
 #define _GROUPER_SLOT_ACTION_
 
 #include <U2Core/global.h>
+#include <U2Lang/Datatype.h>
+#include <U2Lang/Descriptor.h>
 
 namespace U2 {
 
@@ -32,8 +34,10 @@ public:
     static const QString SEQUENCE_TO_MSA;
     static const QString MERGE_MSA;
     static const QString MERGE_STRING;
+    static const QString MERGE_ANNS;
 
-    static bool isValidType(const QString &type);
+    static bool isValidType(const QString &actionType);
+    static DataTypePtr getDataTypeByAction(const QString &actionType);
 };
 
 class U2LANG_EXPORT ActionParameters {
@@ -47,6 +51,9 @@ public:
     static const QString GAP;
     static const QString UNIQUE;
     static const QString SEPARATOR;
+    static const QString MSA_NAME;
+    static const QString SEQ_NAME;
+    static const QString SEQ_SLOT;
 
     static ParameterType getType(const QString &parameter);
     static bool isValidParameter(const QString &actionType, const QString &parameter);
@@ -58,6 +65,7 @@ public:
 
     QString getType() const;
     const QVariantMap &getParameters() const;
+    bool hasParameter(const QString &parameterId) const;
     QVariant getParameterValue(const QString &parameterId) const;
     void setParameterValue(const QString &parameterId, const QVariant &value);
 
@@ -66,20 +74,35 @@ private:
     QVariantMap parameters;
 };
 
+class U2LANG_EXPORT GroupOperations {
+public:
+    static Descriptor BY_VALUE();
+    static Descriptor BY_ID();
+    static Descriptor BY_NAME();
+};
+
 class U2LANG_EXPORT GrouperOutSlot {
 public:
     GrouperOutSlot(const QString &outSlotId, const QString &inSlotStr);
+    GrouperOutSlot(const GrouperOutSlot &another);
     ~GrouperOutSlot();
 
+    bool operator==(const GrouperOutSlot &other) const;
+
     GrouperSlotAction *getAction();
-    GrouperSlotAction *const getAction() const;
+    GrouperSlotAction *getAction() const;
     void setAction(const GrouperSlotAction &action);
 
     QString getOutSlotId() const;
     void setOutSlotId(const QString &outSlotId);
 
     QString getInSlotStr() const;
-    void setInSlotStr(const QString &inSlotStr);
+    QString getBusMapInSlotId() const;
+    void setInSlotStr(const QString &slotStr);
+    void setBusMapInSlotStr(const QString &busMapSlotStr);
+
+    static QString readable2busMap(const QString &readableSlotStr);
+    static QString busMap2readable(const QString &busMapSlotStr);
 
 private:
     QString outSlotId;
@@ -89,4 +112,4 @@ private:
 
 } // U2
 
-#endif _GROUPER_SLOT_ACTION_
+#endif //_GROUPER_SLOT_ACTION_

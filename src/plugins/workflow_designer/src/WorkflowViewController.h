@@ -105,6 +105,7 @@ public slots:
         emit configurationChanged();
     }
     void sl_refreshBindings();
+    void connectConfigurationEditors();
 
 signals:
     void processItemAdded();
@@ -123,6 +124,8 @@ protected:
     void dropEvent(QGraphicsSceneDragDropEvent * event);
 
     void drawBackground(QPainter * painter, const QRectF & rect );
+
+    bool refreshGrouperSlots(Actor *proc);
 
 private:
     WorkflowView* controller;

@@ -78,6 +78,8 @@ public:
     
     // finds Descriptor identified with 'id' in list of Descriptors from getAllDescriptors function
     Descriptor getDatatypeDescriptor(const QString& id) const;
+
+    static const QString EMPTY_TYPESET_ID;
     
 }; // DataType
 

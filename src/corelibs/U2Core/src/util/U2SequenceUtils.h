@@ -76,6 +76,8 @@ public:
     bool isCaseAnnotationsModeOn() const;
     QList<Annotation*> &getCaseAnnotations();
 
+    qint64 getCurrentLength() const;
+
 private:
     void _addBlock2Buffer(const char* data, qint64 len, U2OpStatus& os);
     void _addBlock2Db(const char* data, qint64 len, U2OpStatus& os);

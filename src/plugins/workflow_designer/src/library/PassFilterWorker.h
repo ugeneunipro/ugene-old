@@ -36,7 +36,7 @@ public:
 protected:
     QString composeRichDoc();
 
-}; // FilterSequencePrompter
+}; // PassFilterPrompter
 
 class PassFilterWorker : public BaseWorker {
     Q_OBJECT

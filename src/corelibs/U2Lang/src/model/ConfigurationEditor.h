@@ -37,7 +37,8 @@ class PropertyDelegate;
  * base class for controller of configuration editor
  * editing comes from delegates (see PropertyDelegate)
  */
-class U2LANG_EXPORT ConfigurationEditor {
+class U2LANG_EXPORT ConfigurationEditor : public QObject {
+    Q_OBJECT
 public:
     enum ItemValueRole {
         ItemValueRole = Qt::UserRole + 2,
@@ -62,6 +63,9 @@ public:
 
     // make another editor
     virtual ConfigurationEditor *clone() {return new ConfigurationEditor(*this);}
+
+signals:
+    void si_configurationChanged();
 
 }; // ConfigurationEditor
 

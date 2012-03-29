@@ -381,6 +381,7 @@ void ExternalProcessWorker::cleanup() {
     }
 }
 
+#ifdef Q_OS_WIN32
 // a function from "qprocess.cpp"
 static QStringList parseCombinedArgString(const QString &program)
 {
@@ -421,6 +422,7 @@ static QStringList parseCombinedArgString(const QString &program)
 
     return args;
 }
+#endif
 
 #define WIN_LAUNCH_CMD_COMMAND "cmd /C "
 #define START_WAIT_MSEC 3000

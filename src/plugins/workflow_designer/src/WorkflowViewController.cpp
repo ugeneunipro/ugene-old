@@ -53,6 +53,8 @@
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/DesignerUtils.h>
+#include <U2Designer/GrouperEditor.h>
+#include <U2Designer/MarkerEditor.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/GlassView.h>
 #include <U2Gui/MainWindow.h>
@@ -64,6 +66,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/ExternalToolCfg.h>
+#include <U2Lang/GrouperSlotAttribute.h>
 #include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/IncludedProtoFactory.h>
 #include <U2Lang/IntegralBusModel.h>
@@ -248,6 +251,7 @@ scriptingMode(false) {
             coreLog.error(tr("Undefined workflow format for %1").arg(go->getDocument() ? go->getDocument()->getURLString() : tr("file")));
             sl_newScene();
         }
+        scene->connectConfigurationEditors();
         
         if (!err.isEmpty()) {
             sl_newScene();
@@ -1264,6 +1268,7 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         sl_updateTitle();
         scene->setIterated(false);
         sl_updateUi();
+        scene->connectConfigurationEditors();
     } else {
         scene->clearScene();
         propertyEditor->resetIterations();
@@ -1331,6 +1336,7 @@ void WorkflowView::sl_pasteItems(const QString& s) {
         }
         propertyEditor->resetIterations();
     }
+    scene->connectConfigurationEditors();
 
     int shift = GRID_STEP*(pasteCount);
     foreach(QGraphicsItem * it, scene->selectedItems()) {
@@ -1647,54 +1653,172 @@ void WorkflowScene::sl_deleteItem() {
     update();
 }
 
-void WorkflowScene::sl_refreshBindings() {
-    QList<Actor*> procList = getAllProcs();
-    foreach (QGraphicsItem* it, items()) {
-        if (WorkflowPortItemType == it->type()) {
-            WorkflowPortItem *pItem = qgraphicsitem_cast<WorkflowPortItem*>(it);
-            if (pItem->getPort()->isOutput()) {
-                continue;
-            }
+static QMap<Descriptor, DataTypePtr> getBusType(Port *inPort) {
+    QMap<Port*,Link*> links = inPort->getLinks();
+    if (links.size() == 1) {
+        Port *src = links.keys().first();
+        assert(src->isOutput());
+        IntegralBusPort *bus = dynamic_cast<IntegralBusPort*>(src);
+        assert(NULL != bus);
+        DataTypePtr type = bus->getType();
+        return type->getDatatypesMap();
+    }
+    return QMap<Descriptor, DataTypePtr>();
+}
 
-            Attribute *b = pItem->getPort()->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID);
-            Attribute *p = pItem->getPort()->getParameter(IntegralBusPort::PATHS_ATTR_ID);
-            QStrStrMap busMap = b->getAttributeValueWithoutScript<QStrStrMap>();
-            SlotPathMap pathMap = p->getAttributeValueWithoutScript<SlotPathMap>();
-
-            foreach (const QString &dest, busMap.keys()) {
-                QString srcs = busMap.value(dest);
-                QStringList validSrcs;
-                foreach (const QString &src, srcs.split(";")) {
-                    QPair<QString, QString> slotPair(dest, src);
-                    bool hasOneValidPath = false;
-                    if (pathMap.contains(slotPair)) {
-                        QList<QStringList> validPaths;
-                        foreach (const QStringList &path, pathMap.values(slotPair)) {
-                            bool valid = WorkflowUtils::isBindingValid(procList, pItem->getPort(), src, path);
-                            if (valid) {
-                                validPaths << path;
-                            }
-                            hasOneValidPath = hasOneValidPath || valid;
-                        }
-                        pathMap.remove(slotPair);
-                        foreach (const QStringList &p, validPaths) {
-                            pathMap.insertMulti(slotPair, p);
-                        }
-                    } else {
-                        QStringList path;
-                        hasOneValidPath = WorkflowUtils::isBindingValid(procList, pItem->getPort(), src, path);
-                    }
-                    if (hasOneValidPath) {
-                        validSrcs << src;
-                    }
-                }
-
-                busMap[dest] = validSrcs.join(";");
-            }
-            b->setAttributeValue(qVariantFromValue(busMap));
-            p->setAttributeValue(qVariantFromValue(pathMap));
+static bool isBindingValid(const QMap<Descriptor, DataTypePtr> &inType, const QMap<Descriptor, DataTypePtr> &ownType, const QString &srcSlotStr, const QString &ownSlot) {
+    DataTypePtr srcType;
+    bool found = false;
+    foreach (const Descriptor &d,  inType.keys()) {
+        if (d.getId() == srcSlotStr) {
+            srcType = inType.value(d);
+            found = true;
+            break;
         }
     }
+    if (!found) {
+        return false;
+    }
+
+    foreach (const Descriptor &d, ownType.keys()) {
+        if (d.getId() == ownSlot) {
+            DataTypePtr destType = ownType.value(d);
+            if (destType == srcType) {
+                return true;
+            } else if (destType == BaseTypes::ANNOTATION_TABLE_TYPE()) {
+                return (srcType == BaseTypes::ANNOTATION_TABLE_LIST_TYPE());
+            } else if (destType == BaseTypes::ANNOTATION_TABLE_LIST_TYPE()) {
+                return (srcType == BaseTypes::ANNOTATION_TABLE_TYPE());
+            }
+            break;
+        }
+    }
+
+    return false;
+}
+
+void WorkflowScene::sl_refreshBindings() {
+    bool grouperSlotsDeleted = true;
+
+    while (grouperSlotsDeleted) {
+        grouperSlotsDeleted = false;
+        QList<Actor*> procList = getAllProcs();
+        foreach (QGraphicsItem* it, items()) {
+            if (WorkflowPortItemType == it->type()) {
+                WorkflowPortItem *pItem = qgraphicsitem_cast<WorkflowPortItem*>(it);
+                Port *inPort = pItem->getPort();
+                if (inPort->isOutput()) {
+                    continue;
+                }
+
+                Attribute *b = inPort->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID);
+                Attribute *p = inPort->getParameter(IntegralBusPort::PATHS_ATTR_ID);
+                QStrStrMap busMap = b->getAttributeValueWithoutScript<QStrStrMap>();
+                SlotPathMap pathMap = p->getAttributeValueWithoutScript<SlotPathMap>();
+                QMap<Descriptor, DataTypePtr> busType = getBusType(inPort);
+                QMap<Descriptor, DataTypePtr> ownType = inPort->getOwnTypeMap();
+
+                foreach (const QString &dest, busMap.keys()) {
+                    QStringList srcs = busMap.value(dest).split(";");
+                    QStringList validSrcs;
+
+                    foreach (const QString &src, srcs) {
+                        QPair<QString, QString> slotPair(dest, src);
+                        bool hasOneValidPath = false;
+                        if (pathMap.contains(slotPair)) {
+                            QList<QStringList> validPaths;
+                            foreach (const QStringList &path, pathMap.values(slotPair)) {
+                                QString slotStr = src + ">" + path.join(",");
+                                bool valid = isBindingValid(busType, ownType, slotStr, dest);
+                                if (valid) {
+                                    validPaths << path;
+                                    hasOneValidPath = true;
+                                }
+                            }
+                            pathMap.remove(slotPair);
+                            foreach (const QStringList &p, validPaths) {
+                                pathMap.insertMulti(slotPair, p);
+                            }
+                        } else {
+                            QStringList path;
+                            hasOneValidPath = isBindingValid(busType, ownType, src, dest);
+                        }
+                        if (hasOneValidPath) {
+                            validSrcs << src;
+                        }
+                    }
+
+                    busMap[dest] = validSrcs.join(";");
+                }
+                b->setAttributeValue(qVariantFromValue(busMap));
+                p->setAttributeValue(qVariantFromValue(pathMap));
+            } else if (WorkflowProcessItemType == it->type()) {
+                Actor *proc = qgraphicsitem_cast<WorkflowProcessItem*>(it)->getProcess();
+                ActorPrototype *proto = proc->getProto();
+                if (CoreLibConstants::GROUPER_ID == proto->getId()) {
+                    grouperSlotsDeleted &= refreshGrouperSlots(proc);
+                }
+            }
+        }
+    }
+}
+
+bool WorkflowScene::refreshGrouperSlots(Actor *proc) {
+    bool grouperSlotsDeleted = false;
+
+    assert(1 == proc->getOutputPorts().size());
+    Port *outPort = proc->getOutputPorts().first();
+    assert(outPort->getOutputType()->isMap());
+    QMap<Descriptor, DataTypePtr> outBusMap = outPort->getOutputType()->getDatatypesMap();
+
+    QMap<Descriptor, DataTypePtr> inBusMap;
+    {
+        assert(1 == proc->getInputPorts().size());
+        Port *inPort = proc->getInputPorts().first();
+        inBusMap = getBusType(inPort);
+    }
+    // refresh in slot attribute
+    {
+        Attribute *attr = proc->getParameter(CoreLibConstants::GROUPER_SLOT_ATTR);
+        QString groupSlot = attr->getAttributeValueWithoutScript<QString>();
+        groupSlot = GrouperOutSlot::readable2busMap(groupSlot);
+        bool found = false;
+        foreach (const Descriptor &d, inBusMap.keys()) {
+            if (d.getId() == groupSlot) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            attr->setAttributeValue("");
+        }
+    }
+    // refresh out slots
+    {
+        GrouperSlotAttribute *attr = dynamic_cast<GrouperSlotAttribute*>(proc->getParameter(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR));
+        QList<GrouperOutSlot> &outSlots = attr->getOutSlots();
+        QList<GrouperOutSlot>::iterator i = outSlots.begin();
+        for (; i != outSlots.end(); i++) {
+            QString in = i->getBusMapInSlotId();
+            bool found = false;
+            foreach (const Descriptor &d, inBusMap.keys()) {
+                if (d.getId() == in) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                outBusMap.remove(i->getOutSlotId());
+                outSlots.erase(i);
+                grouperSlotsDeleted = true;
+            }
+        }
+    }
+
+    DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outBusMap));
+    outPort->setNewType(newType);
+
+    return grouperSlotsDeleted;
 }
 
 QList<Actor*> WorkflowScene::getSelectedProcItems() const {
@@ -1812,6 +1936,16 @@ void WorkflowScene::addProcess(Actor* proc, const QPointF& pos) {
     it->setPos(pos);
     addItem(it);
     modified = true;
+
+    ConfigurationEditor *editor = proc->getEditor();
+    if (NULL != editor) {
+        connect(editor, SIGNAL(si_configurationChanged()), this, SIGNAL(configurationChanged()));
+    }
+    GrouperEditor *g = dynamic_cast<GrouperEditor*>(editor);
+    MarkerEditor *m = dynamic_cast<MarkerEditor*>(editor);
+    if (NULL != g || NULL != m) {
+        connect(editor, SIGNAL(si_configurationChanged()), SLOT(sl_refreshBindings()));
+    }
 
     emit processItemAdded();
     update();
@@ -2067,6 +2201,23 @@ void WorkflowScene::centerView() {
     //FIXME does not work
     //views().first()->centerOn(zero);
     update();
+}
+
+void WorkflowScene::connectConfigurationEditors() {
+    foreach(QGraphicsItem *i, items()) {        
+        if(i->type() == WorkflowProcessItemType) {
+            Actor *proc = static_cast<WorkflowProcessItem *>(i)->getProcess();
+            ConfigurationEditor *editor = proc->getEditor();
+            if (NULL != editor) {
+                connect(editor, SIGNAL(si_configurationChanged()), this, SIGNAL(configurationChanged()));
+            }
+            GrouperEditor *g = dynamic_cast<GrouperEditor*>(editor);
+            MarkerEditor *m = dynamic_cast<MarkerEditor*>(editor);
+            if (NULL != g || NULL != m) {
+                connect(editor, SIGNAL(si_configurationChanged()), SLOT(sl_refreshBindings()));
+            }
+        }
+    }
 }
 
 }//namespace

@@ -136,6 +136,7 @@ Task::ReportResult LoadWorkflowSceneTask::report() {
         return ReportResult_Finished;
     }
     scene->setModified(false);
+    scene->connectConfigurationEditors();
     meta->url = url;
     return ReportResult_Finished;
 }

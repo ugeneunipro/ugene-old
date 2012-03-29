@@ -106,6 +106,7 @@ public:
     static const QString ALIAS;
     static const QString IN_SLOT;
     static const QString ACTION;
+    static const QString OUT_SLOT_ATTR;
     
 public:
     struct U2LANG_EXPORT ReadFailed {
@@ -171,6 +172,8 @@ public:
     static ActorBindingsGraph parseActorBindings(Tokenizer &tokenizer, const QMap<QString, Actor*> &actorMap, QList<QPair<Port*, Port*> > &links);
     static void parseParameterAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap);
     static void parsePortAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap, QList<PortAlias> &portAliases);
+
+    static void finalizeGrouperSlots(const QMap<QString, Actor*> &actorMap);
 
     // -------------- backward compatibility --------------
         static void parseOldAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap);

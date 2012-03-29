@@ -145,6 +145,36 @@ QStringList WorkflowUtils::expandToUrls(const QString& s) {
     return result;
 }
 
+static bool validateParameters(const Schema &schema, QList<QListWidgetItem*>* infoList, const Iteration *it, QMap<ActorId, ActorId> map) {
+    bool good = true;
+    foreach (Actor* a, schema.getProcesses()) {
+        QStringList l;
+        bool ag = a->validate(l);
+        good &= ag;
+        if (infoList && !l.isEmpty()) {
+            foreach(QString s, l) {
+                QString error;
+                QString id;
+                if (NULL == it) {
+                    error = QObject::tr("%1 : %2").arg(a->getLabel()).arg(s);
+                    id = a->getId();
+                } else {
+                    error = QObject::tr("Iteration '%3', %1 : %2").arg(a->getLabel()).arg(s).arg(it->name);
+                    id = map.key(a->getId());
+                }
+                QListWidgetItem* item = new QListWidgetItem(a->getProto()->getIcon(), error);
+                item->setData(ACTOR_REF, id);
+                if (NULL != it) {
+                    item->setData(ITERATION_REF, it->id);
+                }
+                infoList->append(item);
+            }
+        }
+    }
+
+    return good;
+}
+
 bool WorkflowUtils::validate(const Schema& schema, QList<QListWidgetItem*>* infoList) {
     bool good = true;
     std::auto_ptr<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
@@ -180,23 +210,44 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QListWidgetItem*>* info
         }
     }
 
+    if (0 == schema.getIterations().size()) {
+        good &= validateParameters(schema, infoList, NULL, QMap<ActorId, ActorId>());
+    }
+
     foreach (const Iteration& it, schema.getIterations()) {
         Schema sh;
         QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh);
         sh.applyConfiguration(it, map);
 
-        foreach (Actor* a, sh.getProcesses()) {
-            QStringList l;
-            bool ag = a->validate(l);
-            good &= ag;
-            if (infoList && !l.isEmpty()) {
-                foreach(QString s, l) {
-                    QListWidgetItem* item = new QListWidgetItem(a->getProto()->getIcon(), 
-                        tr("Iteration '%3', %1 : %2").arg(a->getLabel()).arg(s).arg(it.name));
-                    item->setData(ACTOR_REF, map.key(a->getId()));
-                    item->setData(ITERATION_REF, it.id);
-                    infoList->append(item);
+        good &= validateParameters(sh, infoList, &it, map);
+    }
+    return good;
+}
+
+static bool validateParameters(const Schema &schema, QList<QMap<int, QVariant> >* infoList, const Iteration *it, QMap<ActorId, ActorId> map) {
+    bool good = true;
+    foreach (Actor* a, schema.getProcesses()) {
+        QStringList l;
+        bool ag = a->validate(l);
+        good &= ag;
+        if (infoList && !l.isEmpty()) {
+            foreach(QString s, l) {
+                QMap<int, QVariant> item;
+                QString error;
+                QString id;
+                if (NULL == it) {
+                    error = QObject::tr("%1 : %2").arg(a->getLabel()).arg(s).arg(it->name);
+                    id = a->getId();
+                } else {
+                    error = QObject::tr("Iteration '%3', %1 : %2").arg(a->getLabel()).arg(s).arg(it->name);
+                    id = map.key(a->getId());
                 }
+                item[TEXT_REF] = error;
+                item[ACTOR_REF] = id;
+                if (NULL != it) {
+                    item[ITERATION_REF] = it->id;
+                }
+                infoList->append(item);
             }
         }
     }
@@ -238,26 +289,49 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QMap<int, QVariant> >* 
         }
     }
 
+    if (0 == schema.getIterations().size()) {
+        good &= validateParameters(schema, infoList, NULL, QMap<ActorId, ActorId>());
+    }
+
     foreach (const Iteration& it, schema.getIterations()) {
         Schema sh;
         QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh);
         sh.applyConfiguration(it, map);
 
-        foreach (Actor* a, sh.getProcesses()) {
+        good &= validateParameters(sh, infoList, &it, map);
+    }
+    return good;
+}
+
+static bool validateParameters(const Workflow::Schema &schema, QStringList & errs) {
+    bool good = true;
+    foreach (Actor* a, schema.getProcesses()) {
+        foreach( Attribute * attr, a->getParameters() ) {
+            assert(attr != NULL);
+            if( attr->isRequiredAttribute() && (attr->isEmpty() || attr->isEmptyString()) ) {
+                good = false;
+                errs.append(QObject::tr("%2: Required parameter is not set: %1 (use --%3 option)").
+                    arg(attr->getDisplayName()).arg(a->getLabel()).arg(a->getParamAliases().value(attr->getId())));
+            }
+        }
+        ConfigurationValidator * baseValidator = a->getValidator();
+        ScreenedParamValidator * screenedParamValidator = dynamic_cast<ScreenedParamValidator*>(baseValidator);
+        if(screenedParamValidator != NULL) {
+            QString err = screenedParamValidator->validate(a);
+            if( !err.isEmpty() ) {
+                good = false;
+                errs.append( QString("%3: %1 (use --%2 option)").arg(err).arg(
+                    a->getParamAliases().value(a->getParameter(screenedParamValidator->getId())->getId())).arg(a->getLabel()));
+            }
+        } else if( baseValidator != NULL ) {
             QStringList l;
-            bool ag = a->validate(l);
-            good &= ag;
-            if (infoList && !l.isEmpty()) {
-                foreach(QString s, l) {
-                    QMap<int, QVariant> item;
-                    item[TEXT_REF] = tr("Iteration '%3', %1 : %2").arg(a->getLabel()).arg(s).arg(it.name);
-                    item[ACTOR_REF] = map.key(a->getId());
-                    item[ITERATION_REF] = it.id;
-                    infoList->append(item);
-                }
+            good &= baseValidator->validate(a, l);
+            foreach(const QString & s, l) {
+                errs.append(QString("%1: %2").arg(a->getLabel()).arg(s));
             }
         }
     }
+
     return good;
 }
 
@@ -285,38 +359,17 @@ bool WorkflowUtils::validate( const Workflow::Schema& schema, QStringList & errs
             }
         }
     }
+
+    if (0 == schema.getIterations().size()) {
+        good &= validateParameters(schema, errs);
+    }
     
     foreach (const Iteration& it, schema.getIterations()) {
         Schema sh;
         QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh);
         sh.applyConfiguration(it, map);
         
-        foreach (Actor* a, sh.getProcesses()) {
-            foreach( Attribute * attr, a->getParameters() ) {
-                assert(attr != NULL);
-                if( attr->isRequiredAttribute() && (attr->isEmpty() || attr->isEmptyString()) ) {
-                    good = false;
-                    errs.append(tr("%2: Required parameter is not set: %1 (use --%3 option)").
-                        arg(attr->getDisplayName()).arg(a->getLabel()).arg(a->getParamAliases().value(attr->getId())));
-                }
-            }
-            ConfigurationValidator * baseValidator = a->getValidator();
-            ScreenedParamValidator * screenedParamValidator = dynamic_cast<ScreenedParamValidator*>(baseValidator);
-            if(screenedParamValidator != NULL) {
-                QString err = screenedParamValidator->validate(a);
-                if( !err.isEmpty() ) {
-                    good = false;
-                    errs.append( QString("%3: %1 (use --%2 option)").arg(err).arg(
-                        a->getParamAliases().value(a->getParameter(screenedParamValidator->getId())->getId())).arg(a->getLabel()));
-                }
-            } else if( baseValidator != NULL ) {
-                QStringList l;
-                good &= baseValidator->validate(a, l);
-                foreach(const QString & s, l) {
-                    errs.append(QString("%1: %2").arg(a->getLabel()).arg(s));
-                }
-            }
-        }
+        good &= validateParameters(sh, errs);
     }
     return good;
 }

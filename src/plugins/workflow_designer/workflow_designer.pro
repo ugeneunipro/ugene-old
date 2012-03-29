@@ -36,6 +36,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/GenericReadActor.h \
            src/library/GenericReadWorker.h \
            src/library/GetFileListWorker.h \
+           src/library/GroupWorker.h \
            src/library/ImportAnnotationsWorker.h \
            src/library/IncludedProtoFactoryImpl.h \
            src/library/MarkSequenceWorker.h \
@@ -50,6 +51,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/SequencesToMSAWorker.h \
            src/library/StatisticWorkers.h \
            src/library/Text2SequenceWorker.h \
+           src/util/GrouperActionUtils.h \
            src/util/SaveSchemaImageUtils.h
 FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
@@ -96,6 +98,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/GenericReadActor.cpp \
            src/library/GenericReadWorker.cpp \
            src/library/GetFileListWorker.cpp \
+           src/library/GroupWorker.cpp \
            src/library/ImportAnnotationsWorker.cpp \
            src/library/IncludedProtoFactoryImpl.cpp \
            src/library/MarkSequenceWorker.cpp \
@@ -110,6 +113,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/SequencesToMSAWorker.cpp \
            src/library/StatisticWorkers.cpp \
            src/library/Text2SequenceWorker.cpp \
+           src/util/GrouperActionUtils.cpp \
            src/util/SaveSchemaImageUtils.cpp
 RESOURCES += workflow_designer.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts

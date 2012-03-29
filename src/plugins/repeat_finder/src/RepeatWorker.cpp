@@ -109,6 +109,8 @@ void RepeatWorkerFactory::init() {
         RepeatWorker::tr("Finds repeats in each supplied sequence, stores found regions as annotations.")
         );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
+    proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
+        BasePorts::OUT_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
     QMap<QString, PropertyDelegate*> delegates;    
     {
         QVariantMap m; m["minimum"] = 0; m["maximum"] = INT_MAX; m["suffix"] = L10N::suffixBp();

@@ -258,6 +258,8 @@ void SequenceSplitWorkerFactory::init() {
                      SequenceSplitWorker::tr("Get sequences by annotations"), 
                      SequenceSplitWorker::tr("Creates sequences from annotated regions of input sequence") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
+    proto->addSlotRelation(BasePorts::OUT_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
+        BasePorts::OUT_SEQ_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
 
     //create delegates for attribute editing
     QMap<QString, PropertyDelegate *> delegates;   

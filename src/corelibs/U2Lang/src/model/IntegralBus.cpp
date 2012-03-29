@@ -132,7 +132,7 @@ QString BusMap::getNewSourceId(const QString &srcId, const QString &actorId) {
     QString path = actorId;
     QString res;
     if (-1 != sepPos) {
-        path += PATH_LIST_SEPARATOR + srcId.mid(sepPos + 1);
+        path.prepend(srcId.mid(sepPos + 1) + PATH_LIST_SEPARATOR);
         res = srcId.left(sepPos);
     } else {
         res = srcId;
@@ -373,7 +373,8 @@ void IntegralBus::setEnded() {
 }
 
 void IntegralBus::setPrintSlots(bool in, const QList<QString> &printSlots) {
-        this->printSlots = printSlots;
+    Q_UNUSED(in);
+    this->printSlots = printSlots;
 }
 
 void IntegralBus::setWorkflowContext(WorkflowContext *context) {

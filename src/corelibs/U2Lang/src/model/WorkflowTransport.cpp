@@ -49,7 +49,7 @@ bool Message::isEmpty() const {
     if (t->isMap()) {
         return data.toMap().isEmpty();
     } else {
-        data.isNull();
+        return data.isNull();
     }
 }
 

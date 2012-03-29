@@ -239,7 +239,7 @@ void MultiplexerWorkerFactory::init() {
     QList<PortDescriptor*> portDescs;
     {
         QMap<Descriptor, DataTypePtr> emptyTypeMap;
-        DataTypePtr emptyTypeSet(new MapDataType(Descriptor(EMPTY_TYPESET_ID), emptyTypeMap));
+        DataTypePtr emptyTypeSet(new MapDataType(Descriptor(DataType::EMPTY_TYPESET_ID), emptyTypeMap));
 
         // input ports
         Descriptor inputDesc1(INPUT_PORT_1, MultiplexerWorker::tr("First input data flow"), MultiplexerWorker::tr("First input data flow"));

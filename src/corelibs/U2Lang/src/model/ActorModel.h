@@ -94,6 +94,9 @@ public:
 
     bool getInfluenceOnPathFlag() const {return influenceOnPathFlag;}
     void setInfluenceOnPathFlag(bool value) {influenceOnPathFlag = value;}
+
+    void addSlotRelation(const QString &headPortId, const QString headSlot, const QString &depPortId, const QString &depSlot);
+    QStrStrMap getSlotRelations() const;
     
 protected:
     // create port and sets p as owner of new port
@@ -129,6 +132,10 @@ protected:
 
     bool allowsEmptyPorts;
     bool influenceOnPathFlag;
+
+    // Map< Dependent slotid, Head slotid >
+    // slotid is "port.slot"
+    QStrStrMap slotRelations;
     
 }; // ActorPrototype
 
@@ -254,8 +261,10 @@ public:
  * base class for Actor's configuration editor
  */
 class U2LANG_EXPORT ActorConfigurationEditor : public ConfigurationEditor {
+    Q_OBJECT
 public:
-    ActorConfigurationEditor() : cfg(NULL) {}
+    ActorConfigurationEditor() : ConfigurationEditor(), cfg(NULL) {}
+    ActorConfigurationEditor(const ActorConfigurationEditor &other);
     virtual void setConfiguration(Actor *actor) {cfg = actor;}
     virtual ConfigurationEditor *clone() {return new ActorConfigurationEditor(*this);}
 

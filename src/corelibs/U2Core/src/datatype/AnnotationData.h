@@ -40,6 +40,8 @@ public:
 
     inline AnnotationData& operator= ( const AnnotationData & a );
 
+    inline bool operator== (const AnnotationData &other) const;
+
     inline void removeAllQualifiers(const QString& name, QStringList& values);
 
     inline void findQualifiers(const QString& name, QVector<U2Qualifier>& res) const;
@@ -75,6 +77,27 @@ AnnotationData& AnnotationData::operator= ( const AnnotationData & a ) {
     location = a.location; 
     qualifiers = a.qualifiers;
     return *this;
+}
+
+bool AnnotationData::operator== (const AnnotationData &other) const {
+    if (this->name != other.name) {
+        return false;
+    }
+
+    if (this->qualifiers.size() != other.qualifiers.size()) {
+        return false;
+    }
+    foreach (const U2Qualifier &q, this->qualifiers) {
+        if (!other.qualifiers.contains(q)) {
+            return false;
+        }
+    }
+
+    if (this->location != other.location) {
+        return false;
+    }
+
+    return true;
 }
 
 void AnnotationData::removeAllQualifiers(const QString& name, QStringList& values) {

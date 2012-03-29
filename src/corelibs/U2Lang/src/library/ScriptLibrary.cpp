@@ -77,6 +77,7 @@ QScriptValue WorkflowScriptLibrary::print(QScriptContext *ctx, QScriptEngine *) 
 // unrefactored obsolete deprecated functions
 
 DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
+    Q_UNUSED(argNum);
     WorkflowScriptEngine *wse = dynamic_cast<WorkflowScriptEngine*>(engine);
     U2DataId seqId = ctx->argument(0).toVariant().value<U2DataId>();
     std::auto_ptr<U2SequenceObject> seqObj(Workflow::StorageUtils::getSequenceObject(wse->getWorkflowContext()->getDataStorage(), seqId));

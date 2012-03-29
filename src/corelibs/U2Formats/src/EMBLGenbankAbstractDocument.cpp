@@ -125,7 +125,11 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
         sequenceSize = 0;
         os.setDescription(tr("Reading entry header"));
-        if (!readEntry(&st,seqImporter,sequenceSize,fullSequenceSize,merge, (num_sequence > 0) ? gapSize : 0, os)) {
+        int offset = 0;
+        if (merge && num_sequence > 0) {
+            offset = gapSize;
+        }
+        if (!readEntry(&st,seqImporter,sequenceSize,fullSequenceSize,merge,offset, os)) {
             break;
         }
 
@@ -452,7 +456,7 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
     /*if (a->location->isMultiRegion()) {
         qSort(a->location->regions);
     }*/
-    if (offset!=0) {
+    if (offset>0) {
         U2Region::shift(offset, a->location->regions);
     }
 

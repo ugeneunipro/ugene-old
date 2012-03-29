@@ -104,6 +104,11 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
     delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true);
     setEditor(new DelegateEditor(delegates));
     setPrompter(new ReadDocPrompter(U2::Workflow::CoreLib::tr("Reads sequence(s) from <u>%1</u>.")));
+
+    QString seqSlotId = BasePorts::OUT_SEQ_PORT_ID() + "." + BaseSlots::DNA_SEQUENCE_SLOT().getId();
+    QString annsSlotId = BasePorts::OUT_SEQ_PORT_ID() + "." + BaseSlots::ANNOTATION_TABLE_SLOT().getId();
+    addSlotRelation(BasePorts::OUT_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
+        BasePorts::OUT_SEQ_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
     
     if(AppContext::isGUIMode()) {
         setIcon( GUIUtils::createRoundIcon(ICOLOR, 22) );

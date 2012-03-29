@@ -64,6 +64,18 @@ void PortDescriptor::setNewType(const DataTypePtr &newType) {
     type = newType;
 }
 
+QMap<Descriptor, DataTypePtr> PortDescriptor::getOwnTypeMap() const {
+    if (type->isMap()) {
+        return type->getDatatypesMap();
+    } else {
+        QMap<Descriptor, DataTypePtr> result;
+        Descriptor d = (Descriptor &)(*this);
+        result[d] = type;
+
+        return result;
+    }
+}
+
 /**************************
 * Port
 **************************/

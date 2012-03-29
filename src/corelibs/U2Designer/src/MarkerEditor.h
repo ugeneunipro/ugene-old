@@ -37,11 +37,11 @@ class MarkerGroupListCfgModel;
 /**
  * base class for marker-actors' configuration editor
  */
-class U2DESIGNER_EXPORT MarkerEditor : public QObject, public ActorConfigurationEditor {
+class U2DESIGNER_EXPORT MarkerEditor : public ActorConfigurationEditor {
     Q_OBJECT
 public:
     MarkerEditor();
-    MarkerEditor(const MarkerEditor &) : QObject(), markerModel(NULL) {}
+    MarkerEditor(const MarkerEditor &) : ActorConfigurationEditor(), markerModel(NULL) {}
     virtual ~MarkerEditor();
     virtual QWidget *getWidget();
     virtual void setConfiguration(Actor *actor);

@@ -113,6 +113,8 @@ void ORFWorkerFactory::init() {
         " defined by the selected genetic code.</p>")
         );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
+    proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
+        BasePorts::OUT_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
     QMap<QString, PropertyDelegate*> delegates;    
     
     QVariantMap lenMap; lenMap["minimum"] = QVariant(0); lenMap["maximum"] = QVariant(INT_MAX); 

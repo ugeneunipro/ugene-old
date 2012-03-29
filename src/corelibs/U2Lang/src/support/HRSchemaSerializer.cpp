@@ -108,6 +108,7 @@ const QString HRSchemaSerializer::SOURCE_PORT           = "source";
 const QString HRSchemaSerializer::ALIAS                 = "alias";
 const QString HRSchemaSerializer::IN_SLOT               = "in-slot";
 const QString HRSchemaSerializer::ACTION                = "action";
+const QString HRSchemaSerializer::OUT_SLOT_ATTR         = "out-slot";
 
 template <class T>
 static void setIfNotNull(const T & what, T * to) {
@@ -716,6 +717,9 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
     
     foreach(const QString & key, pairs.blockPairs.uniqueKeys()) {
         Attribute *a = proc->getParameter(key);
+        if (NULL == a) {
+            continue;
+        }
         if (GROUPER_SLOT_GROUP == a->getGroup()) {
             parseGrouperOutSlots(proc, pairs.blockPairs.values(key), key);
         } else {
@@ -835,6 +839,24 @@ void HRSchemaSerializer::parseGrouperOutSlots(Actor *proc, const QStringList &ou
             slot.setAction(*action.get());
         }
         attr->addOutSlot(slot);
+
+        Port *outPort = proc->getOutputPorts().at(0);
+        assert(outPort->getOutputType()->isMap());
+        QMap<Descriptor, DataTypePtr> outTypeMap = outPort->getOutputType()->getDatatypesMap();
+        Descriptor newTmpSlot = Descriptor(name, name, name);
+        outTypeMap[newTmpSlot] = ActionTypes::getDataTypeByAction(action.get() ? action->getType() : "");
+        DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outTypeMap));
+        outPort->setNewType(newType);
+    }
+}
+
+void HRSchemaSerializer::finalizeGrouperSlots(const QMap<QString, Actor*> &actorMap) {
+    foreach (Actor *p, actorMap.values()) {
+        if (p->getId() != "grouper") { // TODO: fix it
+            continue;
+        }
+
+        // check incoming slots
     }
 }
 
@@ -1653,7 +1675,7 @@ QString HRSchemaSerializer::grouperOutSlotsDefinition(Attribute *attribute) {
             mRes += makeBlock(ACTION, NO_NAME, actionBlock, 3);
         }
 
-        result += mRes;
+        result += makeBlock(OUT_SLOT_ATTR, NO_NAME, mRes, 2);
     }
 
     return result;
@@ -1988,21 +2010,6 @@ QString HRSchemaSerializer::schemaPortAliases(const NamesMap &nmap, const QList<
     }
 
     return res;
-}
-
-static QString generateElementName(Actor * proc, const QList<QString>& existing) {
-    QString candidate = proc->getProto()->getId().replace(HRSchemaSerializer::DOT, HRSchemaSerializer::DASH).
-                                                  replace(QRegExp("\\s+"), HRSchemaSerializer::DASH);
-    QList<QString> similar;
-    foreach(const QString & s, existing) {
-        if(s.startsWith(candidate)) {
-            similar << s;
-        }
-    }
-    if(similar.isEmpty()) {
-        return candidate;
-    }
-    return candidate + QString::number(similar.size() + 1);
 }
 
 HRSchemaSerializer::NamesMap HRSchemaSerializer::generateElementNames(const QList<Actor*>& procs) {

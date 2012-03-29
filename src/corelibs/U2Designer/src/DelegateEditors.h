@@ -49,6 +49,7 @@ namespace U2 {
  * simple realization of configuration editor
  */
 class U2DESIGNER_EXPORT DelegateEditor : public ConfigurationEditor {
+    Q_OBJECT
 public:
     DelegateEditor(const QMap<QString, PropertyDelegate*>& map) : delegates(map) {}
     DelegateEditor(const QString& s, PropertyDelegate* d) {delegates.insert(s,d);}

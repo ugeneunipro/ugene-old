@@ -324,6 +324,16 @@ void ActorPrototype::setSchema(const QString &path) {
     actorFilePath = path;
 }
 
+void ActorPrototype::addSlotRelation(const QString &headPortId, const QString headSlot, const QString &depPortId, const QString &depSlot) {
+    QString dep = depPortId + "." + depSlot;
+    QString head = headPortId + "." + headSlot;
+    slotRelations[dep] = head;
+}
+
+QStrStrMap ActorPrototype::getSlotRelations() const {
+    return slotRelations;
+}
+
 ActorPrototype::ActorPrototype(const Descriptor& d, 
                                const QList<PortDescriptor*>& ports, 
                                const QList<Attribute*>& attrs)
@@ -349,6 +359,12 @@ ActorDocument::ActorDocument(Actor* a) : QTextDocument(a), target(a) {
 
 //void ActorDocument::update(const QVariantMap& ) {
 //}
+
+ActorConfigurationEditor::ActorConfigurationEditor(const ActorConfigurationEditor &other)
+: ConfigurationEditor(other)
+{
+    cfg = other.cfg;
+}
 
 }//Workflow namespace
 }//GB2namespace

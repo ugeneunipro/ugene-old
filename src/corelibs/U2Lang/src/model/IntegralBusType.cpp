@@ -23,6 +23,8 @@
 #include "IntegralBusType.h"
 #include "IntegralBusModel.h"
 
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/GrouperOutSlot.h>
 #include <U2Core/Log.h>
 
 namespace U2 {
@@ -92,23 +94,34 @@ inline static QString getNewDisplayName(const QString &oldName, const QString &p
 void IntegralBusType::addInputs(const Port* p, bool addPaths) {
     if (p->isInput()) {
         Actor *proc = p->owner();
+        ActorPrototype *proto = proc->getProto();
+        QString grouperSlot;
+        if (proto->getId() == CoreLibConstants::GROUPER_ID) {
+            QString slotStr = proc->getParameter(CoreLibConstants::GROUPER_SLOT_ATTR)->getAttributePureValue().toString();
+            grouperSlot = GrouperOutSlot::readable2busMap(slotStr);
+        }
 
         foreach(Port* peer, p->getLinks().uniqueKeys()) {
             DataTypePtr pt = peer->getType();
             if (qobject_cast<IntegralBusPort*>(peer)) {
                 assert(pt->isMap());
                 QMap<Descriptor, DataTypePtr> types = pt->getDatatypesMap();
-                if (addPaths) {
-                    foreach (Descriptor d, types.keys()) {
-                        DataTypePtr typePtr = types.value(d);
+                foreach (Descriptor d, types.keys()) {
+                    DataTypePtr typePtr = types.value(d);
+                    if (addPaths) {
                         QString newName = getNewDisplayName(d.getDisplayName(), proc->getLabel(), d.getId());
                         QString newId = BusMap::getNewSourceId(d.getId(), proc->getId());
                         d.setId(newId);
                         d.setDisplayName(newName);
-                        map[d] = typePtr;
                     }
-                } else {
-                    map.unite(types);
+                    if (proto->getId() == CoreLibConstants::GROUPER_ID) {
+                        if (grouperSlot == d.getId()) {
+                            map[d] = typePtr;
+                        } else {
+                            continue;
+                        }
+                    }
+                    map[d] = typePtr;
                 }
             } else {
                 addOutput(pt, peer);

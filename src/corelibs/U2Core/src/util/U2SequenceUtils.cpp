@@ -280,8 +280,8 @@ void U2SequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus& os) 
 
     if (caseAnnsMode != NO_CASE_ANNS) {
         annList << U1AnnotationUtils::getCaseAnnotations(data, len, currentLength, isUnfinishedRegion, unfinishedRegion, LOWER_CASE == caseAnnsMode);
-        currentLength += len;
     }
+    currentLength += len;
 }
 
 void U2SequenceImporter::addSequenceBlock(const U2EntityRef& sequenceRef, const U2Region& r, U2OpStatus& os) {
@@ -370,6 +370,10 @@ bool U2SequenceImporter::isCaseAnnotationsModeOn() const {
 
 QList<Annotation*> &U2SequenceImporter::getCaseAnnotations() {
     return annList;
+}
+
+qint64 U2SequenceImporter::getCurrentLength() const {
+    return currentLength;
 }
 
 } //namespace

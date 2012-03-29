@@ -145,6 +145,7 @@ void WorkflowDesignerPlugin::registerCMDLineHelp() {
         tr("Prints the content of the specified slot. The incoming/outcoming content of"
         " specified slot is printed to the standart output."),
         tr("<actor_name>.<port_name>.<slot_name>"));
+    Q_UNUSED(printSection);
     
     //CMDLineHelpProvider * remoteMachineSectionArguments = new CMDLineHelpProvider( REMOTE_MACHINE, "<path-to-machine-file>");
     //CMDLineHelpProvider * remoteMachineSection = new CMDLineHelpProvider( REMOTE_MACHINE, tr("run provided tasks on given remote machine") );        

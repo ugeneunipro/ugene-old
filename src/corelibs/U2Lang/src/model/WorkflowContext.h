@@ -22,24 +22,39 @@
 #ifndef _U2_WORKFLOW_CONTEXT_H_
 #define _U2_WORKFLOW_CONTEXT_H_
 
+#include <U2Lang/Datatype.h>
 #include <U2Lang/DbiDataStorage.h>
 
 namespace U2 {
 namespace Workflow {
+
+class Actor;
 
 /**
  * Contains a common data for whole workflow running process
  */
 class U2LANG_EXPORT WorkflowContext {
 public:
-    WorkflowContext();
+    WorkflowContext(const QList<Actor*> &procs);
     ~WorkflowContext();
 
     bool init();
     DbiDataStorage *getDataStorage();
 
+    /**
+     * @slotStr = "actor.slot>actor_path1,actor_path1,..."
+     * or just "actor.slot"
+     */
+    DataTypePtr getOutSlotType(const QString &slotStr);
+    /**
+     * Frequently sequence annotations are associated with some sequence slot.
+     * Returns this slot. If annotations are free then returns empty string.
+     */
+    QString getCorrespondingSeqSlot(const QString &annsSlot);
+
 private:
     DbiDataStorage *storage;
+    QMap<QString, Actor*> procMap;
 };
 
 } // Workflow
