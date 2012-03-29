@@ -6,6 +6,7 @@
 #include "core/dbi/assembly/AssemblyDbiUnitTests.h"
 #include "core/dbi/attribute/AttributeDbiUnitTests.h"
 #include "core/dbi/sequence/SequenceDbiUnitTests.h"
+#include "core/format/genbank/LocationParserUnitTests.h"
 
 
 namespace U2 {
@@ -40,6 +41,10 @@ void UnitTestSuite::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
     GTestBuilder builder;
 
+	passed = 0;
+	ignored = 0;
+	failed = 0;
+
     QString testList = el.text();
     QTextStream stream(&testList);
     QString line = stream.readLine();
@@ -53,7 +58,9 @@ void UnitTestSuite::init(XMLTestFormat *tf, const QDomElement& el) {
         } else if (!line.startsWith('-') && !line.startsWith('#')) {
             testCase = line;
             builder.addTestCase(line);
-        }
+		} else if (line.startsWith('-')) {
+			ignored++;
+		}
         line = stream.readLine();
     }
 	tests = builder.getTests();
@@ -64,7 +71,20 @@ void UnitTestSuite::prepare() {
     AppContext::getAppSettings()->getTestRunnerSettings()->setVar("COMMON_DATA_DIR", dataDir);
 	testsRun();
 }
-
+void UnitTestSuite::check_test(UnitTest *t){
+	if (t != NULL) {
+		t->Test();
+		QString name = QString(typeid(*t).name());
+		name.remove(0, name.indexOf("::") + 2);
+		if (!t->GetError().isEmpty()){
+			taskLog.error(name + ": " + t->GetError());
+			failed++;
+		} else {
+			taskLog.info(name + ": OK");
+			passed++;
+		}
+	}
+}
 void UnitTestSuite::testsRun(){
 
     foreach(const QString& suite, tests.keys()) {
@@ -79,6 +99,8 @@ void UnitTestSuite::testsRun(){
 					t = new SequenceDbiUnitTests_getSequenceData();
 				} else if (testName == "updateHugeSequenceData") {
 					t = new SequenceDbiUnitTests_updateHugeSequenceData();
+				} else if (testName == "updateSequencesData") {
+					t = new SequenceDbiUnitTests_updateSequencesData();
 				} else if (testName == "createSequenceObject") {
 					t = new SequenceDbiUnitTests_createSequenceObject();
 				} else if (testName == "getSequenceObject") {
@@ -90,9 +112,7 @@ void UnitTestSuite::testsRun(){
 				} else if (testName == "updateAllSequenceObjects") {
 					t = new SequenceDbiUnitTests_getAllSequenceObjects();
 				}
-				if (t != NULL) {
-					t->Test();
-				}
+				check_test(t);
 			}
 		} else if (suite == "AssemblyDbiUnitTests"){
 			foreach(const QString& testName, testList) {
@@ -144,9 +164,7 @@ void UnitTestSuite::testsRun(){
 				} else if (testName == "calculateCoverageInvalid") {
 					t = new AssemblyDbiUnitTests_calculateCoverageInvalid();
 				}
-				if (t != NULL) {
-					t->Test();
-				}
+				check_test(t);
 			}
 		} else if (suite == "AttributeDbiUnitTests"){
 			foreach(const QString& testName, testList) {
@@ -174,11 +192,26 @@ void UnitTestSuite::testsRun(){
 				} else if ( testName == "ByteArrayAttribute") {
 					t = new AttributeDbiUnitTests_ByteArrayAttribute();
 				}
-				if (t != NULL) {
-					t->Test();
+				check_test(t);
+			}
+		} else if (suite == "LocationParserTestData"){
+			foreach(const QString& testName, testList) {
+				UnitTest* t = NULL;
+				if (testName == "locationParser") {
+					t = new LocationParserTestData_locationParser();
+				} else if ( testName == "locationParserInvalid") {
+					t = new LocationParserTestData_locationParserInvalid();
+				} else if ( testName == "hugeLocationParser") {
+					t = new LocationParserTestData_hugeLocationParser();
+				} else if ( testName == "buildLocationString") {
+					t = new LocationParserTestData_buildLocationString();
+				} else if ( testName == "buildLocationStringInvalid") {
+					t = new LocationParserTestData_buildLocationStringInvalid();
 				}
+				check_test(t);
 			}
 		}
+//		setError(taskLog.log())
 	}
 }
 
@@ -188,6 +221,16 @@ void UnitTestSuite::cleanup() {
 	AttributeTestData::shutdown();
 	AssemblyTestData::shutdown();
 	SequenceTestData::shutdown();
+
+	if (passed){
+		taskLog.info("Test passed: " + QString::number(passed));
+	}
+	if (ignored){
+		taskLog.info("Test ignored: " + QString::number(ignored));
+	}
+	if (failed){
+		setError("Test failed: " + QString::number(failed));
+	}
 }
 
 } //namespace

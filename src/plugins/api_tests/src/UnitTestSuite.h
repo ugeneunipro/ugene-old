@@ -5,6 +5,8 @@
 
 namespace U2 {
 
+class UnitTest;
+
 class UnitTestSuite : public GTest {
     Q_OBJECT
 public:
@@ -15,7 +17,13 @@ public:
 
 protected:
 	void testsRun();
+	void check_test(UnitTest *t);
+
     QMap<QString, QStringList> tests;
+private:
+	int passed;
+	int ignored;
+	int failed;
 };
 
 } // namespace

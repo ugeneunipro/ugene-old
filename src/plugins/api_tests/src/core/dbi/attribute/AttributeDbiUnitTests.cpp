@@ -60,7 +60,7 @@ void AttributeTestData::init() {
 
 U2AttributeDbi* AttributeTestData::getAttributeDbi(){
 	if ( attributeDbi == NULL) {
-		(new AttributeTestData())->init();
+		AttributeTestData::init();
 	}
 	return attributeDbi;
 }

@@ -54,7 +54,7 @@ void SequenceTestData::init() {
 
 U2SequenceDbi* SequenceTestData::getSequenceDbi() {
 	if (sequenceDbi == NULL) {
-		(new SequenceTestData())->init();
+		SequenceTestData::init();
 	}
 	return sequenceDbi;
 }
@@ -76,7 +76,7 @@ bool SequenceTestData::compareSequences(const U2Sequence& s1, const U2Sequence& 
     return false;
 }
 
-void SequenceTestData::checkUpdateSequence(const UpdateSequenceArgs& args) {
+void SequenceTestData::checkUpdateSequence(UnitTest *t, const UpdateSequenceArgs& args) {
 	U2SequenceDbi* sequenceDbi = SequenceTestData::getSequenceDbi(); 
 	const U2DataId& id = sequences->at(args.sequenceId);
 
@@ -119,7 +119,7 @@ void SequenceTestData::checkUpdateSequence(const UpdateSequenceArgs& args) {
 			qint64 expectedLen = 0;
 			const U2Region& intersection = U2Region(0, originalLen).intersect(regionToReplace);
 			expectedLen = originalLen - intersection.length + dataToInsert.length();
-			SAFE_POINT(expectedLen == updatedLen, "incorrect updated sequence length", );
+			CHECK_EXT(expectedLen == updatedLen, t->SetError(QString("incorrect updated sequence length")), );
 		}
 
 		{
@@ -128,7 +128,7 @@ void SequenceTestData::checkUpdateSequence(const UpdateSequenceArgs& args) {
 			SAFE_POINT_OP(os, );
 			QByteArray expectedSeq;
 			replaceRegion(originalSequence, dataToInsert, regionToReplace, expectedSeq);
-			SAFE_POINT(expectedSeq == actualSeq, "incorrect expected sequence length", );
+			CHECK_EXT(expectedSeq == actualSeq, t->SetError(QString("incorrect updated sequence")), );
 		}
 	}
 }
@@ -255,7 +255,7 @@ void SequenceDbiUnitTests_updateSequenceData::Test() {
     usd.datazToInsert << "AAAAAAAAAAAAA";
     usd.regionsToReplace << U2Region(13,13);
 
-	SequenceTestData::checkUpdateSequence(usd);
+	SequenceTestData::checkUpdateSequence(this, usd);
 }
 
 void SequenceDbiUnitTests_updateHugeSequenceData::Test() {
@@ -263,9 +263,19 @@ void SequenceDbiUnitTests_updateHugeSequenceData::Test() {
 	usd.sequenceId = 1;
 	qint64 long_max = Q_INT64_C(9223372036854775807);
 	usd.regionsToReplace << U2Region(0, long_max);	
-        usd.datazToInsert << QByteArray(long_max, 'A');
+    usd.datazToInsert << QByteArray(long_max, 'A');
+	SequenceTestData::checkUpdateSequence(this, usd);
+};
 
-	SequenceTestData::checkUpdateSequence(usd);
+void SequenceDbiUnitTests_updateSequencesData::Test() {
+	UpdateSequenceArgs usd;
+	usd.sequenceId = 1;
+	qint64 length = 100000000000;
+	for (int i = 0; i < 10000; i++){
+		usd.regionsToReplace << U2Region((length -1) * i, length);
+		usd.datazToInsert << QByteArray(length, 'A');
+	}
+	SequenceTestData::checkUpdateSequence(this, usd);
 };
 
 } //namespace

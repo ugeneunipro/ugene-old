@@ -28,7 +28,7 @@ public:
 	static U2SequenceDbi* getSequenceDbi();
 	static QList<U2DataId>* getSequences() { return sequences; };
     static bool compareSequences(const U2Sequence& s1, const U2Sequence& s2);
-	static void checkUpdateSequence(const UpdateSequenceArgs& args);
+	static void checkUpdateSequence(UnitTest *t, const UpdateSequenceArgs& args);
     static void replaceRegion(const QByteArray& originalSequence,
         const QByteArray& dataToInsert,
         const U2Region& region,
@@ -80,6 +80,11 @@ public:
 };
 
 class SequenceDbiUnitTests_updateHugeSequenceData : public UnitTest {
+public:
+    void Test();
+};
+
+class SequenceDbiUnitTests_updateSequencesData : public UnitTest {
 public:
     void Test();
 };

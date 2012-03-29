@@ -78,7 +78,7 @@ void AssemblyTestData::init() {
 
 U2AssemblyDbi* AssemblyTestData::getAssemblyDbi() {
 	if (assemblyDbi == NULL) {
-		(new AssemblyTestData())->init();
+		AssemblyTestData::init();
 	}
 	return assemblyDbi;
 }

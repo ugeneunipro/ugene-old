@@ -11,6 +11,7 @@ SequenceDbiUnitTests
 + createSequenceObject
 + updateSequenceData
 + updateHugeSequenceData
+- updateSequencesData
 AssemblyDbiUnitTests
 + getAssemblyObject
 + getAssemblyObjectInvalid
@@ -49,5 +50,12 @@ AttributeDbiUnitTests
 + RealAttribute
 + StringAttribute
 + ByteArrayAttribute
+LocationParserTestData
++locationParser
++locationParserInvalid
++hugelocationParser
++buildLocationString
++buildLocationStringInvalid
+
 
 </unittest>
