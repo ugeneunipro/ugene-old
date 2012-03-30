@@ -51,11 +51,35 @@ void ExportConsensusTask::prepare() {
     resultDocument = df->createNewLoadedDocument(iof, settings.fileName, stateInfo);
     CHECK_OP(stateInfo, );
 
-    SaveDocFlags saveFlags = SaveDoc_Overwrite;
-    consensusTask = new AssemblyConsensusTask(settings);
+    // If the input region length is more than REGION_TO_ANALAYZE,
+    // divide the analysis into iterations
+    int iterNum = 0;
+    qint64 wholeRegionLength = settings.region.length;
+    do
+    {
+        U2Region iterRegion;
+
+        if (wholeRegionLength <= REGION_TO_ANALAYZE) {
+            iterRegion = U2Region(settings.region.startPos + iterNum * REGION_TO_ANALAYZE, wholeRegionLength);
+            wholeRegionLength = 0;
+        } else {
+            iterRegion = U2Region(settings.region.startPos + iterNum * REGION_TO_ANALAYZE, REGION_TO_ANALAYZE);
+            wholeRegionLength -= REGION_TO_ANALAYZE;
+        }
+
+        consensusRegions.enqueue(iterRegion);
+
+        iterNum++;
+    } while (wholeRegionLength != 0);
+
+    consensusTask = new AssemblyConsensusWorker(this);
     consensusTask->setSubtaskProgressWeight(100);
     addSubTask(consensusTask);
 
+    seqImporter.startSequence(resultDocument->getDbiRef(), settings.seqObjName, settings.circular, stateInfo);
+    CHECK_OP(stateInfo, );
+
+    SaveDocFlags saveFlags = SaveDoc_Overwrite;
     addSubTask(new SaveDocumentTask(resultDocument, saveFlags));
 
     Project * p = AppContext::getProject();
@@ -72,18 +96,29 @@ void ExportConsensusTask::prepare() {
 QList<Task*> ExportConsensusTask::onSubTaskFinished(Task *finished) {
     QList<Task*> newSubTasks;
     if(finished == consensusTask) {
-        QByteArray consensus = consensusTask->getResult().consensus;
-
-        if(! settings.keepGaps) {
-            consensus.replace(QString(AssemblyConsensusAlgorithm::EMPTY_CHAR), "");
-        }
-
-        U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObject(resultDocument->getDbiRef(), settings.seqObjName, consensus, settings.circular, QVariantMap(), stateInfo);
+        U2Sequence u2seq = seqImporter.finalizeSequence(stateInfo);
         CHECK_OP(stateInfo, newSubTasks);
-
+        U2SequenceObject * seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(resultDocument->getDbiRef(), u2seq.id));
         resultDocument->addObject(seqObj);
     }
     return newSubTasks;
 }
+
+AssemblyConsensusTaskSettings ExportConsensusTask::getNextSettings() {
+    AssemblyConsensusTaskSettings iterSettings = settings;
+    iterSettings.region = consensusRegions.dequeue();
+    return iterSettings;
+}
+
+void ExportConsensusTask::reportResult(const ConsensusInfo &result) {
+    QByteArray consensus = result.consensus;
+
+    if(! settings.keepGaps) {
+        consensus.replace(QString(AssemblyConsensusAlgorithm::EMPTY_CHAR), "");
+    }
+    seqImporter.addBlock(consensus.constData(), consensus.length(), stateInfo);
+    CHECK_OP(stateInfo,);
+}
+
 
 } // namespace

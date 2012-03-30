@@ -44,7 +44,11 @@ struct AssemblyConsensusTaskSettings {
     U2Region region;
 };
 
+/**
+    A background task for ConsensusArea: finds consensus for given settings
+*/
 class AssemblyConsensusTask : public BackgroundTask<ConsensusInfo> {
+    Q_OBJECT
 public:
     AssemblyConsensusTask(const AssemblyConsensusTaskSettings & settings);
     virtual void run();
@@ -52,6 +56,30 @@ private:
     AssemblyConsensusTaskSettings settings;
 };
 
+/**
+    An interface of task queue for AssemblyConsensusWorker.
+*/
+class ConsensusSettingsQueue {
+public:
+    virtual bool hasNext() = 0;
+    virtual AssemblyConsensusTaskSettings getNextSettings() = 0;
+    virtual int count() = 0;
+    virtual void reportResult(const ConsensusInfo & result) = 0;
+};
+
+/**
+    Subsequently gets tasks settings from ConsensusSettingsQueue::getNextSettings(),
+    finds consensus and reports it to ConsensusSettingsQueue::reportResult()
+*/
+class AssemblyConsensusWorker : public Task {
+    Q_OBJECT
+public:
+    AssemblyConsensusWorker(ConsensusSettingsQueue * settingsQueue);
+    virtual void run();
+
+private:
+    ConsensusSettingsQueue * settingsQueue;
+};
 
 } // namespace U2
 

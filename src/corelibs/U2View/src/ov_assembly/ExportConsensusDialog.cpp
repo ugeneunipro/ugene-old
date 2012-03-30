@@ -95,6 +95,7 @@ void ExportConsensusDialog::accept() {
         regionSelector->setFocus(Qt::OtherFocusReason);
         return;
     }
+    // TODO: check if exists
     if(settings.fileName.isEmpty()) {
         QMessageBox::critical(this, tr("Error!"), tr("Select destination file"));
         filepathLineEdit->setFocus(Qt::OtherFocusReason);

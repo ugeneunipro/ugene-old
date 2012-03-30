@@ -24,7 +24,10 @@
 
 #include "AssemblyConsensusTask.h"
 
+#include <QtCore/QQueue>
+
 #include <U2Core/DocumentProviderTask.h>
+#include <U2Core/U2SequenceUtils.h>
 
 namespace U2 {
 
@@ -37,17 +40,29 @@ struct ExportConsensusTaskSettings : public AssemblyConsensusTaskSettings {
     bool circular;
 };
 
-class ExportConsensusTask : public DocumentProviderTask {
+class ExportConsensusTask : public DocumentProviderTask, ConsensusSettingsQueue {
 public:
     ExportConsensusTask(const ExportConsensusTaskSettings &settings_);
 
     virtual void prepare();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);
 
+    // implement ConsensusSettingsQueue interface
+    virtual int count() { return consensusRegions.count(); }
+    virtual bool hasNext() { return ! consensusRegions.isEmpty(); }
+    virtual AssemblyConsensusTaskSettings getNextSettings();
+    virtual void reportResult(const ConsensusInfo &result);
+
 private:
     ExportConsensusTaskSettings settings;
+    AssemblyConsensusWorker * consensusTask;
+    U2SequenceImporter seqImporter;
 
-    AssemblyConsensusTask * consensusTask;
+    // A region to analyze at a time
+    static const qint64 REGION_TO_ANALAYZE = 1000000;
+
+    // implement ConsensusSettingsQueue:
+    QQueue<U2Region> consensusRegions;
 };
 
 } // namespace
