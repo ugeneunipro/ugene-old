@@ -270,7 +270,7 @@ void SequenceDbiUnitTests_updateHugeSequenceData::Test() {
 void SequenceDbiUnitTests_updateSequencesData::Test() {
 	UpdateSequenceArgs usd;
 	usd.sequenceId = 1;
-	qint64 length = 100000000000;
+	qint64 length = Q_INT64_C(100000000000);
 	for (int i = 0; i < 10000; i++){
 		usd.regionsToReplace << U2Region((length -1) * i, length);
 		usd.datazToInsert << QByteArray(length, 'A');
