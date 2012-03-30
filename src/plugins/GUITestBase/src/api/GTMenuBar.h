@@ -29,9 +29,7 @@ namespace U2 {
 
 class GTMenuBar {
 public:
-    enum Action {Minimize, Maximize, Close, Count};
-
-    static void clickCornerMenu(U2OpStatus &os, QMenuBar *mBar, Action action);
+    static void clickCornerMenu(U2OpStatus &os, QMenuBar *mBar, GTGlobals::WindowAction action);
 };
 
 } // namespace

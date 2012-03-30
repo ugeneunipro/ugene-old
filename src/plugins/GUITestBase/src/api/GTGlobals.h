@@ -38,6 +38,7 @@ namespace U2 {
 class GTGlobals {
 public:
     enum UseMethod {UseMouse, UseKey};
+    enum WindowAction {Minimize, Maximize, Close, WindowActionCount};
 
     static void sleep(int msec);
     static void sendEvent(QObject *obj, QEvent *e);

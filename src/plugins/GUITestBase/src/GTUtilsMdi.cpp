@@ -23,10 +23,13 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
 #include <QtGui/QMainWindow>
+#include <QtGui/QMdiSubWindow>
+#include <QtGui/QMenu>
+#include <QtGui/QApplication>
 
 namespace U2 {
 
-void GTUtilsMdi::click(U2OpStatus &os, GTUtilsMdi::Action action) {
+void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
 
     MainWindow* mw = AppContext::getMainWindow();
     CHECK_SET_ERR(mw != NULL, "MainWindow == NULL");
@@ -34,8 +37,32 @@ void GTUtilsMdi::click(U2OpStatus &os, GTUtilsMdi::Action action) {
     QMainWindow* mainWindow = mw->getQMainWindow();
     CHECK_SET_ERR(mainWindow != NULL, "QMainWindow == NULL");
 
-    QMenuBar* mBar = mainWindow->menuBar();
-    GTMenuBar::clickCornerMenu(os, mBar, (GTMenuBar::Action)action);
+    GTMenuBar::clickCornerMenu(os, mainWindow->menuBar(), action);
+}
+
+QWidget* GTUtilsMdi::getWindow(U2OpStatus &os, const QString& windowName) {
+
+    CHECK_SET_ERR_RESULT(windowName.isEmpty() == false, "windowname is empty", NULL);
+
+    MainWindow* mw = AppContext::getMainWindow();
+    CHECK_SET_ERR_RESULT(mw != NULL, "MainWindow == NULL", NULL);
+
+    QList<MWMDIWindow*> mdiWindows = mw->getMDIManager()->getWindows();
+    foreach (MWMDIWindow* w, mdiWindows) {
+        QString mdiTitle = w->windowTitle();
+        if (mdiTitle == windowName) {
+            return w;
+        }
+    }
+    return NULL;
+}
+
+QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os) {
+
+    MainWindow* mw = AppContext::getMainWindow();
+    CHECK_SET_ERR_RESULT(mw != NULL, "MainWindow == NULL", NULL);
+
+    return mw->getMDIManager()->getActiveWindow();
 }
 
 }

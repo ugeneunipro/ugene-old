@@ -31,9 +31,10 @@ class MWMDIWindow;
 
 class GTUtilsMdi {
 public:
-    enum Action {Minimize, Maximize, Close, Count};
+    static void click(U2OpStatus &os, GTGlobals::WindowAction action);
 
-    static void click(U2OpStatus &os, Action action);
+    static QWidget* activeWindow(U2OpStatus &os);
+    static QWidget* getWindow(U2OpStatus &os, const QString& windowName);
 };
 
 } // namespace
