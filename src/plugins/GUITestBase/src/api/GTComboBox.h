@@ -29,6 +29,8 @@ namespace U2 {
 
 class GTComboBox {
 public:
+    // fails if the comboBox is NULL, index is not in a comboBox range
+    // or a comboBox's index differs from a given index in the end of method's execution
     static void setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index);
 };
 

@@ -29,6 +29,8 @@ namespace U2 {
 
 class GTMenuBar {
 public:
+    // clicks cornerMenu of QMenuBar as if it is a standard {Minimize, Maximize, Close} buttons widget
+    // fails if menuBar is NULL or action as int value is not one of GTGlobals::WindowAction values
     static void clickCornerMenu(U2OpStatus &os, QMenuBar *mBar, GTGlobals::WindowAction action);
 };
 

@@ -27,8 +27,6 @@
 
 namespace U2 {
 
-class MWMDIWindow;
-
 class GTUtilsMdi {
 public:
     static void click(U2OpStatus &os, GTGlobals::WindowAction action);

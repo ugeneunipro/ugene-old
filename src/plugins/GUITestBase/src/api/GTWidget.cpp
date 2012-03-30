@@ -25,7 +25,11 @@
 
 namespace U2 {
 
-    void GTWidget::click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton) {
+void GTWidget::click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton) {
+
+    CHECK_SET_ERR(w != NULL, "GTWidget::click: widget is NULL");
+    CHECK_SET_ERR(w->isVisible() == false, "GTWidget::click: widget is not visible");
+    CHECK_SET_ERR(w->isEnabled() == true, "GTWidget::click: widget is not enabled");
 
     GTMouseDriver::moveTo(os, w->mapToGlobal(w->rect().center()));
     GTMouseDriver::click(os, mouseButton);

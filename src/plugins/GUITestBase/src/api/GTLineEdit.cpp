@@ -21,7 +21,6 @@
 
 #include "GTLineEdit.h"
 #include "GTWidget.h"
-#include "GTMenu.h"
 
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
@@ -37,6 +36,9 @@ void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str
     clear(os, lineEdit);
     GTKeyboardDriver::keySequence(os, str);
     GTGlobals::sleep(500);
+
+    QString s = lineEdit->text();
+    CHECK_SET_ERR(s == str, "Can't set text, set text differs from a given string");
 }
 
 void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
@@ -49,6 +51,9 @@ void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
     GTGlobals::sleep(100);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(1000);
+
+    QString s = lineEdit->text();
+    CHECK_SET_ERR(s.isEmpty() == true, "Can't clear text, lineEdit is not empty");
 }
 
 void GTLineEdit::pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod) {

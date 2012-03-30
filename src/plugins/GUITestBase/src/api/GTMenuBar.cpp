@@ -27,14 +27,15 @@ namespace U2 {
 
 void GTMenuBar::clickCornerMenu(U2OpStatus &os, QMenuBar* mBar, GTGlobals::WindowAction action) {
 
+    CHECK_SET_ERR(mBar != NULL, "QMenuBar is NULL");
     QWidget* cWidget = mBar->cornerWidget();
     CHECK_SET_ERR(cWidget != NULL, "Corner widget is NULL");
     QRect r = cWidget->rect();
 
     int num = (int)action;
-    CHECK_SET_ERR(num>=0 && num<(int)GTGlobals::WindowActionCount, "");
+    CHECK_SET_ERR(num>=0 && num<(int)GTGlobals::WindowActionCount, "action is not GTGlobals::WindowAction");
 
-    CHECK_SET_ERR((int)GTGlobals::WindowActionCount != 0, "GTGlobals::WindowActionCount == 0");
+    SAFE_POINT((int)GTGlobals::WindowActionCount != 0, "GTGlobals::WindowActionCount == 0", );
     int oneWidth = r.width()/(int)GTGlobals::WindowActionCount;
 
     QPoint need((num+1)*oneWidth - oneWidth/2, r.height()/2);

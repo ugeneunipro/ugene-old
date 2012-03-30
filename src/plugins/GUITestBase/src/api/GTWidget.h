@@ -29,9 +29,12 @@ namespace U2 {
 class GTWidget {
 public:
     /// TODO: add use method - mouse or keyboard
-    static void click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton = Qt::LeftButton);
-    static void setFocus(U2OpStatus &os, QWidget *w);
 
+    // fails if widget is NULL, not visible or not enabled
+    static void click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton = Qt::LeftButton);
+
+    // fails if widget is NULL, GTWidget::click fails or widget hasn't got focus
+    static void setFocus(U2OpStatus &os, QWidget *w);
 };
 
 } //namespace

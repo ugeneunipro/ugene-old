@@ -45,6 +45,9 @@ void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index)
     }
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
     GTGlobals::sleep(500);
+
+    currIndex = comboBox->currentIndex();
+    CHECK_SET_ERR(currIndex == index, "Can't set index");
 }
 
 }

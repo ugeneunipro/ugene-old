@@ -29,12 +29,20 @@ namespace U2 {
 
 class GTLineEdit {
 public:
+    enum PasteMethod {Shortcut, Mouse};
+
+    // fails if lineEdit is NULL, GTLineEdit::clear fails
+    // or a set text differs from a given string
     static void setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str);
+
+    // fails if lineEdit is NULL, or lineEdit's text wasn't cleared
     static void clear(U2OpStatus& os, QLineEdit* lineEdit);
 
-    enum PasteMethod {Shortcut, Mouse};
+    // fails if GTLineEdit::clear fails
     static void pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod = Shortcut);
 
+    // fails if lineEdit is NULL or lineEdit text is not in lineEdit's rect
+    // considering lineEdit's fontMetrics and textMargins
     static void checkTextSize(U2OpStatus& os, QLineEdit* lineEdit);
 };
 
