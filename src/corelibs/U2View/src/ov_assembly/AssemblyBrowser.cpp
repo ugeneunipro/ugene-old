@@ -279,24 +279,29 @@ void AssemblyBrowser::buildStaticMenu(QMenu* m) {
     GUIUtils::disableEmptySubmenus(m);
 }
 
-void AssemblyBrowser::setGlobalCoverageInfo(const CoverageInfo & newInfo) {
+void AssemblyBrowser::setGlobalCoverageInfo(CoverageInfo newInfo) {
+    U2OpStatus2Log os;
+    U2Region globalRegion(0, model->getModelLength(os));
+    SAFE_POINT(newInfo.region == globalRegion, "coverage info is not global",);
+
     coverageReady = true;
     if(newInfo.coverageInfo.size() <= coveredRegionsManager.getSize()) {
         return;
     }
-    QVector<qint64> coverage = newInfo.coverageInfo;
     // prefer model's coverage stat
     if(model->hasCachedCoverageStat()) {
         U2OpStatus2Log status;
         U2AssemblyCoverageStat coverageStat = model->getCoverageStat(status);
         if(!status.isCoR() && coverageStat.coverage.size() > newInfo.coverageInfo.size()) {
-            coverage = U2AssemblyUtils::coverageStatToVector(coverageStat);
+            newInfo.coverageInfo = U2AssemblyUtils::coverageStatToVector(coverageStat);
+            newInfo.updateStats();
         }
     }
-    U2OpStatus2Log os;
-    U2Region globalRegion(0, model->getModelLength(os));
-    coveredRegionsManager = CoveredRegionsManager(globalRegion, coverage);
-    coverageInfo = newInfo;
+    coveredRegionsManager = CoveredRegionsManager(globalRegion, newInfo.coverageInfo);
+
+    if(newInfo.coverageInfo.size() == newInfo.region.length) {
+        setLocalCoverageCache(newInfo);
+    }
 }
 
 QList<CoveredRegion> AssemblyBrowser::getCoveredRegions() const {

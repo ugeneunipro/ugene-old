@@ -303,7 +303,7 @@ void SQLiteAssemblyDbi::calculateCoverage(const U2DataId& assemblyId, const U2Re
         return;
     }
     a->calculateCoverage(region, c, os);
-    perfLog.trace(QString("Assembly: full coverage calculation time: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
+    perfLog.trace(QString("Assembly: full coverage calculation time for %2..%3: %1 seconds").arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)).arg(region.startPos).arg(region.endPos()));
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -57,7 +57,7 @@ public:
     virtual QVariantMap saveState();
     virtual Task* updateViewTask(const QString& stateName, const QVariantMap& stateData);
     
-    void setGlobalCoverageInfo(const CoverageInfo & info);
+    void setGlobalCoverageInfo(CoverageInfo info);
     QList<CoveredRegion> getCoveredRegions() const;
     inline bool areCoveredRegionsReady() const {return coverageReady;}
 
@@ -172,7 +172,6 @@ private:
     qint64 xOffsetInAssembly;
     qint64 yOffsetInAssembly;
 
-    CoverageInfo coverageInfo;
     CoveredRegionsManager coveredRegionsManager;
     bool coverageReady;
 
