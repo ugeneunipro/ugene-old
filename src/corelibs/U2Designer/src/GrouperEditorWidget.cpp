@@ -173,7 +173,7 @@ void GrouperEditorWidget::sl_onAddButtonClicked() {
         QString inSlotId = dlg.getInSlotId();
         QString outSlotName = dlg.getOutSlotName();
         DataTypePtr type = busMap.value(inSlotId);
-        inSlotId = GrouperOutSlot::readable2busMap(inSlotId);
+        inSlotId = GrouperOutSlot::busMap2readable(inSlotId);
 
         ActionDialog *aDlg = ActionDialog::getActionDialog(this, NULL, type, grouperModel);
         if (NULL == aDlg) {

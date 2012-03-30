@@ -338,6 +338,8 @@ void URLDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
     QLineEdit* ed = editor->findChild<QLineEdit*>("URLLineEdit");
     assert(ed);
     QString val = ed->text().replace('\\', '/').trimmed();
+    QStringList urls = val.split(";", QString::SkipEmptyParts);
+    val = urls.join(";");
     model->setData(index, val, ConfigurationEditor::ItemValueRole);
     if (multi) {
         QVariantList vl;

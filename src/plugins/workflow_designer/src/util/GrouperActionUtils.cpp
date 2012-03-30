@@ -283,7 +283,7 @@ bool Sequence2MSAPerformer::applyAction(const QVariant &newData) {
     return true;
 }
 
-QVariant Sequence2MSAPerformer::finishAction(U2OpStatus &os) {
+QVariant Sequence2MSAPerformer::finishAction(U2OpStatus &) {
     return qVariantFromValue<MAlignment>(result);
 }
 
@@ -328,7 +328,7 @@ bool MergerMSAPerformer::applyAction(const QVariant &newData) {
     return true;
 }
 
-QVariant MergerMSAPerformer::finishAction(U2OpStatus &os) {
+QVariant MergerMSAPerformer::finishAction(U2OpStatus &) {
     return qVariantFromValue<MAlignment>(result);
 }
 
@@ -351,7 +351,7 @@ bool MergerStringPerformer::applyAction(const QVariant &newData) {
     return true;
 }
 
-QVariant MergerStringPerformer::finishAction(U2OpStatus &os) {
+QVariant MergerStringPerformer::finishAction(U2OpStatus &) {
     return result;
 }
 
@@ -409,7 +409,7 @@ bool MergeAnnotationPerformer::applyAction(const QVariant &newData) {
     return true;
 }
 
-QVariant MergeAnnotationPerformer::finishAction(U2OpStatus &os) {
+QVariant MergeAnnotationPerformer::finishAction(U2OpStatus &) {
     return qVariantFromValue<QList<SharedAnnotationData> >(result);
 }
 

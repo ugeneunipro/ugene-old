@@ -30,7 +30,7 @@
 namespace U2 {
 
 NewGrouperSlotDialog::NewGrouperSlotDialog(QWidget *parent, QList<Descriptor> &inSlots, QStringList &names)
-: inSlots(inSlots), names(names)
+: QDialog(parent), inSlots(inSlots), names(names)
 {
     setupUi(this);
 

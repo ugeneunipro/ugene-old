@@ -40,7 +40,7 @@ const QString LocalDomainFactory::ID("domain.local.bio");
  * BaseWorker
  *****************************/
 BaseWorker::BaseWorker(Actor* a, bool autoTransitBus)
-: actor(a), processDone(false)
+: processDone(false), actor(a)
 {
     foreach(Port* p, a->getPorts()) {
         if (qobject_cast<IntegralBusPort*>(p)) {
