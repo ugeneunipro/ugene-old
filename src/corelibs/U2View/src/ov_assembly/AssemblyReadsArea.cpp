@@ -96,6 +96,9 @@ void AssemblyReadsArea::createMenu() {
         QAction * exportVisibleReads = exportMenu->addAction("Visible reads");
         connect(exportVisibleReads, SIGNAL(triggered()), SLOT(sl_onExportReadsOnScreen()));
 
+        QAction * exportConsensus = exportMenu->addAction("Consensus");
+        connect(exportConsensus, SIGNAL(triggered()), ui->getConsensusArea(), SLOT(sl_exportConsensus()));
+
     readMenu->addSeparator();
 
     QMenu * cellRendererMenu = readMenu->addMenu(tr("Reads highlighting"));
@@ -117,11 +120,11 @@ void AssemblyReadsArea::createMenu() {
         }
     }
 
-    QMenu *consensusMenu = ui->getConsensusArea()->getConsensusAlgorithmMenu();
-    readMenu->addMenu(consensusMenu);
-
     QMenu *shadowingMenu = createShadowingMenu();
     readMenu->addMenu(shadowingMenu);
+
+    QMenu *consensusMenu = ui->getConsensusArea()->getConsensusAlgorithmMenu();
+    readMenu->addMenu(consensusMenu);
 
     QAction * optimizeRenderAction = readMenu->addAction(tr("Optimize rendering when scrolling"));
     optimizeRenderAction->setCheckable(true);

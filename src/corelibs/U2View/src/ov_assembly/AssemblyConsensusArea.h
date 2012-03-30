@@ -39,6 +39,9 @@ public:
 
     QMenu * getConsensusAlgorithmMenu();
 
+public slots:
+    void sl_exportConsensus();
+
 protected:
     virtual QByteArray getSequenceRegion(U2OpStatus &os);
     virtual bool canDrawSequence();
@@ -53,7 +56,6 @@ private slots:
     void sl_consensusAlgorithmChanged(QAction *a);
     void sl_drawDifferenceChanged(bool value);
     void sl_consensusReady();
-    void sl_exportConsensus();
 
 private:
     void createContextMenu();

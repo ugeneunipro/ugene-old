@@ -21,6 +21,8 @@
 
 #include "ExportConsensusDialog.h"
 
+#include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
+
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -61,8 +63,11 @@ ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTa
     sequenceNameLineEdit->setText(settings.seqObjName);
     addToProjectCheckBox->setChecked(settings.addToProject);
     regionSelector->setRegion(settings.region);
-    circularCheckBox->setChecked(settings.circular);
     keepGapsCheckBox->setChecked(settings.keepGaps);
+
+    QList<QString> algos = AppContext::getAssemblyConsensusAlgorithmRegistry()->getAlgorithmIds();
+    algorithmComboBox->addItems(algos);
+    algorithmComboBox->setCurrentIndex(algos.indexOf(settings.consensusAlgorithm->getId()));
 
     connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
     connect(cancelPushButton, SIGNAL(clicked()), SLOT(reject()));
@@ -76,8 +81,14 @@ void ExportConsensusDialog::accept() {
     settings.seqObjName = sequenceNameLineEdit->text();
     settings.addToProject = addToProjectCheckBox->isChecked();
     settings.region = regionSelector->getRegion(&isRegionOk);
-    settings.circular = circularCheckBox->isChecked();
-    settings.keepGaps = circularCheckBox->isChecked();
+    settings.keepGaps = keepGapsCheckBox->isChecked();
+
+    QString algoId = algorithmComboBox->currentText();
+    if(algoId != settings.consensusAlgorithm->getId()) {
+        AssemblyConsensusAlgorithmFactory * f = AppContext::getAssemblyConsensusAlgorithmRegistry()->getAlgorithmFactory(algoId);
+        SAFE_POINT(f != NULL, QString("ExportConsensusDialog: consensus algorithm factory %1 not found").arg(algoId),);
+        settings.consensusAlgorithm = QSharedPointer<AssemblyConsensusAlgorithm>(f->createAlgorithm());
+    }
 
     if(!isRegionOk){
         regionSelector->showErrorMessage();

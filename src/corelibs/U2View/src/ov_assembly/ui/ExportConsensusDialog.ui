@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>479</width>
-    <height>197</height>
+    <height>202</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,25 +53,22 @@
      <item row="2" column="1" colspan="2">
       <widget class="QLineEdit" name="sequenceNameLineEdit"/>
      </item>
-     <item row="3" column="0" colspan="3">
-      <widget class="QCheckBox" name="circularCheckBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Circular molecule</string>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="0" colspan="3">
       <widget class="QCheckBox" name="keepGapsCheckBox">
        <property name="text">
         <string>Keep gaps</string>
        </property>
       </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="algorithmLabel">
+       <property name="text">
+        <string>Consensus algorithm</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="2">
+      <widget class="QComboBox" name="algorithmComboBox"/>
      </item>
     </layout>
    </item>
