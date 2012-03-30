@@ -21,6 +21,7 @@
 
 #include "WorkflowUtils.h"
 
+#include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/Descriptor.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/IntegralBusType.h>
@@ -669,10 +670,18 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, Workf
 
 bool WorkflowUtils::validateSchemaForIncluding(const Schema &s, QString &error) {
     // TEMPORARY disallow filters element in includes
+    static QString errorStr = tr("The %1 element is a %2. Sorry, but current version of "
+        "UGENE doesn't support of filters and groupers in the includes.");
     foreach (Actor *actor, s.getProcesses()) {
-        if (actor->getProto()->getInfluenceOnPathFlag()) {
-            error = tr("The %1 element is a filter. Sorry, but current version of "
-                "UGENE doesn't support of filters in the includes.").arg(actor->getLabel());
+        ActorPrototype *proto = actor->getProto();
+        if (proto->getInfluenceOnPathFlag() || CoreLibConstants::GROUPER_ID == proto->getId()) {
+            error = errorStr;
+            error = error.arg(actor->getLabel());
+            if (proto->getInfluenceOnPathFlag()) {
+                error = error.arg(tr("filter"));
+            } else {
+                error = error.arg(tr("grouper"));
+            }
             return false;
         }
     }

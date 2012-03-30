@@ -2023,6 +2023,27 @@ void WorkflowScene::setIterated(bool iterated, const Iteration &defaultIteration
     if (!iterated) {
         iterations.clear();
         iterations.append(defaultIteration);
+    } else {
+        if (0 == iterations.size()) {
+            return;
+        }
+        const Iteration &newIter = iterations.first();
+        foreach (Actor* proc, this->getAllProcs()) {
+            if (newIter.cfg.contains(proc->getId())) {
+                const QVariantMap &params = newIter.cfg.value(proc->getId());
+                foreach (const QString &key, proc->getParameters().keys()) {
+                    Attribute *a = proc->getParameter(key);
+                    if (a->getGroup() != COMMON_GROUP) {
+                        continue;
+                    }
+                    if (!a->isDefaultValue()) {
+                        if (params.contains(key)) {
+                            a->setAttributeValue(a->getDefaultPureValue());
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
