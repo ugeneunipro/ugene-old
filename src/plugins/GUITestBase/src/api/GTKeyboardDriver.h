@@ -46,6 +46,9 @@ public:
     static INPUT getKeyEvent(int key, bool keyUp = false);
 #endif
 
+    // fails if key == 0
+    // Linux: fails if there is an opening X display error
+
     static void keyClick(U2OpStatus &os, int key, int modifiers = 0);
     static void keySequence(U2OpStatus &os, const QString &str, int modifiers = 0);
 
