@@ -28,13 +28,21 @@ namespace U2 {
 
 class GTWidget {
 public:
-    /// TODO: add use method - mouse or keyboard
-
     // fails if widget is NULL, not visible or not enabled
     static void click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton = Qt::LeftButton);
 
     // fails if widget is NULL, GTWidget::click fails or widget hasn't got focus
     static void setFocus(U2OpStatus &os, QWidget *w);
+
+    // if failIfNull is set to true, fails if widget with given object name wasn't found
+    class FindOptions {
+    public:
+        FindOptions() : failIfNull(true){}
+        bool failIfNull;
+    };
+
+    // finds widget with the given object name using given FindOptions. Parent widget is QMainWindow, if not set
+    static QWidget *findWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const FindOptions& = FindOptions());
 };
 
 } //namespace

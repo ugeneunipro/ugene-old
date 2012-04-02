@@ -21,7 +21,9 @@
 
 #include "GTUtilsProject.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
+#include "api/GTMenu.h"
 #include "GTUtilsDialog.h"
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
@@ -29,7 +31,6 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
-#include "api/GTMouseDriver.h"
 
 namespace U2 {
 
@@ -85,7 +86,8 @@ void GTUtilsProject::saveProjectAs(U2OpStatus &os, const QString &projectName, c
 
 void GTUtilsProject::closeProject(U2OpStatus &os, const CloseProjectSettings& settings) {
 
-    GTGlobals::clickMenuAction(os, ACTION_PROJECTSUPPORT__CLOSE_PROJECT, MWMENU_FILE);
+    QMenu *m = GTMenu::showMainMenu(os, MWMENU_FILE);
+    GTMenu::clickMenuItem(os, m, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTUtilsDialog::MessageBoxDialogFiller filler(os, settings.saveOnCloseButton);
     GTUtilsDialog::waitForDialog(os, &filler, false);
 }

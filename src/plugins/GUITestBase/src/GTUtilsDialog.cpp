@@ -60,7 +60,8 @@ void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDial
 
 void GTUtilsDialog::openExportProjectDialog(U2OpStatus &os) {
 
-    GTGlobals::clickMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
+    QMenu *m = GTMenu::showMainMenu(os, MWMENU_FILE);
+    GTMenu::clickMenuItem(os, m, ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
 }
 
 void GTUtilsDialog::checkExportProjectDialog(U2OpStatus &os, const QString& projectName) {
@@ -155,7 +156,8 @@ void GTUtilsDialog::clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardB
 
 void GTUtilsDialog::openSaveProjectAsDialog(U2OpStatus &os) {
 
-    GTGlobals::clickMenuAction(os, ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT, MWMENU_FILE);
+    QMenu *m = GTMenu::showMainMenu(os, MWMENU_FILE);
+    GTMenu::clickMenuItem(os, m, ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
 }
 
 void GTUtilsDialog::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel) {

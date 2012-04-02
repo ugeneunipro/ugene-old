@@ -23,6 +23,7 @@
 #include "GTUtilsProject.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTWidget.h"
 #include <U2Gui/ProjectView.h>
 #include <U2Core/ProjectModel.h>
 #include <QtGui/QTreeWidget>
@@ -33,7 +34,10 @@ const QString GTUtilsProjectTreeView::widgetName = "documentTreeWidget";
 
 void GTUtilsProjectTreeView::openView(U2OpStatus& os) {
 
-    QWidget *documentTreeWidget = GTGlobals::findWidgetByName(os, widgetName, NULL, false);
+    GTWidget::FindOptions options;
+    options.failIfNull = false;
+
+    QWidget *documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
     if (!documentTreeWidget) {
         toggleView(os);
     }
@@ -107,7 +111,7 @@ QPoint GTUtilsProjectTreeView::getTreeViewItemPosition(U2OpStatus &os, const QSt
 
 QTreeWidget* GTUtilsProjectTreeView::getTreeWidget(U2OpStatus &os) {
 
-    QTreeWidget *treeWidget = static_cast<QTreeWidget*>(GTGlobals::findWidgetByName(os, widgetName));
+    QTreeWidget *treeWidget = static_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName));
     return treeWidget;
 }
 

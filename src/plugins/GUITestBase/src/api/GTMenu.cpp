@@ -158,8 +158,6 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
         break;
     }
 
-    GTGlobals::sleep(200);
-
     return action;
 }
 

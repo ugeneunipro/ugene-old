@@ -42,11 +42,6 @@ public:
 
     static void sleep(int msec);
     static void sendEvent(QObject *obj, QEvent *e);
-
-    static void expandTopLevelMenu(U2OpStatus &os, const QString &menuName, const QString &parentMenu);
-    static QAction* getMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName);
-    static void clickMenuAction(U2OpStatus &os, const QString &actionName, const QString &menuName);
-    static QWidget *findWidgetByName(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, bool errorIfNull = true);
 };
 
 } //namespace

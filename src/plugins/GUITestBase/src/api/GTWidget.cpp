@@ -21,7 +21,10 @@
 
 #include "GTWidget.h"
 #include "GTMouseDriver.h"
+#include <U2Core/AppContext.h>
+#include <U2Gui/MainWindow.h>
 #include <QtGui/QWidget>
+#include <QtGui/QMainWindow>
 
 namespace U2 {
 
@@ -43,6 +46,20 @@ void GTWidget::setFocus(U2OpStatus &os, QWidget *w) {
     GTGlobals::sleep(1000);
 
     CHECK_SET_ERR(w->hasFocus(), "Can't set focus on widget");
+}
+
+QWidget* GTWidget::findWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget, const FindOptions& options) {
+
+    if (parentWidget == NULL) {
+        parentWidget = AppContext::getMainWindow()->getQMainWindow();
+    } 
+    QWidget* widget = parentWidget->findChild<QWidget*>(widgetName);
+
+    if (options.failIfNull) {
+        CHECK_SET_ERR_RESULT(widget != NULL, "Widget " + widgetName + " not found", NULL);
+    }
+
+    return widget;
 }
 
 } //namespace

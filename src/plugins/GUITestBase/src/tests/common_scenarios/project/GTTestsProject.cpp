@@ -22,7 +22,7 @@
 #include "GTTestsProject.h"
 #include "api/GTGlobals.h"
 #include <api/GTKeyboardDriver.h>
-#include <api/GTMouseDriver.h>
+#include "api/GTMenu.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -98,7 +98,10 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTUtilsApp::checkUGENETitle(os, "UGENE");
-    QAction *result = GTGlobals::getMenuAction(os, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, MWMENU_FILE);
+
+    QMenu *m = GTMenu::showMainMenu(os, MWMENU_FILE);
+    QAction *result = GTMenu::getMenuItem(os, m, ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
+
     CHECK_SET_ERR(result == NULL, "Export menu item present in menu without any project created");
 }
 GUI_TEST_CLASS_DEFINITION(test_0007) {
