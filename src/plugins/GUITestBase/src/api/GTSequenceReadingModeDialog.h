@@ -23,6 +23,7 @@
 #define GTSEQUENCEREADINGMODEDIALOG_H
 
 #include <U2Core/U2OpStatus.h>
+#include <QDialogButtonBox>
 #include <QString>
 #include "api/GTGlobals.h"
 
@@ -31,11 +32,10 @@ namespace U2 {
 class GTSequenceReadingModeDialog {
 public:
     enum sequenceMode {Separate, Merge};
-    enum Button {Ok, Cancel};
 
     static GTGlobals::UseMethod useMethod;
     static sequenceMode mode;
-    static Button button;
+    static QDialogButtonBox::StandardButton button;
     static int numSymbolParts;
     static int numSymbolFiles;
     static bool saveDocument;

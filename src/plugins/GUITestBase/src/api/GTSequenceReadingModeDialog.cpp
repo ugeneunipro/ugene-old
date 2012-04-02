@@ -25,7 +25,7 @@ namespace U2 {
 
 GTGlobals::UseMethod GTSequenceReadingModeDialog::useMethod = GTGlobals::UseMouse;
 GTSequenceReadingModeDialog::sequenceMode GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Separate;
-GTSequenceReadingModeDialog::Button GTSequenceReadingModeDialog::button = GTSequenceReadingModeDialog::Ok;
+QDialogButtonBox::StandardButton GTSequenceReadingModeDialog::button = QDialogButtonBox::Ok;
 int GTSequenceReadingModeDialog::numSymbolParts = 10;
 int GTSequenceReadingModeDialog::numSymbolFiles = 10;
 bool GTSequenceReadingModeDialog::saveDocument = false;

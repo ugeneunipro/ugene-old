@@ -149,18 +149,16 @@ void GTSequenceReadingModeDialogUtils::selectSaveDocument()
 
 void GTSequenceReadingModeDialogUtils::clickButton()
 {
-    QList<QPushButton*> buttonList = dialog->findChildren<QPushButton*>();
+    QDialogButtonBox *buttonBox = dialog->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+    CHECK_SET_ERR (buttonBox != NULL, "Error: button box not found in GTSequenceReadingModeDialogUtils::clickButton()");
+
+    QList<QAbstractButton*> buttonList = buttonBox->buttons();
     CHECK_SET_ERR (buttonList.size() != 0, "Error: button not found in GTSequenceReadingModeDialogUtils::clickButton()");
 
-    QMap<GTSequenceReadingModeDialog::Button, QString> buttons;
-    buttons[GTSequenceReadingModeDialog::Ok] = QPushButton::tr("&OK");
-    buttons[GTSequenceReadingModeDialog::Cancel] = QPushButton::tr("&Cancel");
-
     QPushButton *btn = NULL;
-
-    foreach(QPushButton *b, buttonList) {
-        if (b->text() == buttons[GTSequenceReadingModeDialog::button]) {
-            btn = b;
+    foreach(QAbstractButton* b, buttonList) {
+        if (buttonBox->standardButton(b) == GTSequenceReadingModeDialog::button) {
+            btn =  qobject_cast<QPushButton*> (b);
             break;
         }
     }
