@@ -32,7 +32,7 @@ private:
     bool initGUITestBase();
     void updateProgress(int finishedCount);
 
-    void teamCityLogResult(const QString &testName, const QString &testResult) const;
+    void teamCityLogResult(const QString &testName, const QString &testResult, qint64 testTimeMicros) const;
     bool testFailed(const QString &testResult) const;
 };
 

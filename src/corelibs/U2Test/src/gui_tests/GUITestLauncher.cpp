@@ -2,10 +2,10 @@
 #include "GUITestBase.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Gui/MainWindow.h>
-
-#include <QtCore/QMap>
 #include <U2Core/CMDLineCoreOptions.h>
+#include <U2Core/Timer.h>
+#include <U2Gui/MainWindow.h>
+#include <QtCore/QMap>
 
 #define TIMEOUT 60000
 #define GUITESTING_REPORT_PREFIX "GUITesting"
@@ -36,28 +36,30 @@ void GUITestLauncher::run() {
 
         Q_ASSERT(t);
         if (t) {
+            qint64 startTime = GTimer::currentTimeMicros();
             QString testName = t->getName();
             firstTestRunCheck(testName);
 
             QString testResult = performTest(testName);
             results[testName] = testResult;
 
-            teamCityLogResult(testName, testResult);
+            qint64 finishTime = GTimer::currentTimeMicros();
+            teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
         }
 
         updateProgress(finishedCount++);
     }
 }
 
-void GUITestLauncher::teamCityLogResult(const QString &testName, const QString &testResult) const {
+void GUITestLauncher::teamCityLogResult(const QString &testName, const QString &testResult, qint64 testTimeMicros) const {
 
     teamcityLog.trace(QString("##teamcity[testStarted name='%1 : %2']").arg(testName, testName));
 
     if (testFailed(testResult)) {
-        teamcityLog.trace(QString("##teamcity[testFailed name='%1 : %2' message='%3' details='%3']").arg(testName, testName, testResult));
+        teamcityLog.trace(QString("##teamcity[testFailed name='%1 : %2' message='%3' details='%3' duration='%4']").arg(testName, testName, testResult, QString::number(testTimeMicros)));
     }
 
-    teamcityLog.trace(QString("##teamcity[testFinished name='%1 : %2']").arg(testName, testName));
+    teamcityLog.trace(QString("##teamcity[testFinished name='%1 : %2' duration='%3']").arg(testName, testName, QString::number(testTimeMicros)));
 }
 
 bool GUITestLauncher::testFailed(const QString &testResult) const {
