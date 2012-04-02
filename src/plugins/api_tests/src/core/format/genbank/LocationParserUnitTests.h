@@ -3,20 +3,18 @@
 
 #include <unittest.h>
 #include <U2Core/U2OpStatusUtils.h>
-
+#include <QMetaType>
 namespace U2 {
 
 class LocationParserTestData {
 public:
 	void init() {};
-	static void setError(const QString& err) {
-		os->setError(err);
-	}
 protected:
-	static U2OpStatus2Log* os;
+	static bool registerTest;
 };
 
 class LocationParserTestData_locationParser : public UnitTest {
+public: 
 	void Test();
 };
 
@@ -37,4 +35,11 @@ class LocationParserTestData_buildLocationStringInvalid : public UnitTest {
 };
 
 }
+
+Q_DECLARE_METATYPE(U2::LocationParserTestData_locationParser);
+Q_DECLARE_METATYPE(U2::LocationParserTestData_locationParserInvalid);
+Q_DECLARE_METATYPE(U2::LocationParserTestData_hugeLocationParser);
+Q_DECLARE_METATYPE(U2::LocationParserTestData_buildLocationString);
+Q_DECLARE_METATYPE(U2::LocationParserTestData_buildLocationStringInvalid);
+
 #endif

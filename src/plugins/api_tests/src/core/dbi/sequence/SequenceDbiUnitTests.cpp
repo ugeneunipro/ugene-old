@@ -21,6 +21,22 @@ QList<U2DataId>* SequenceTestData::sequences = NULL;
 U2SequenceDbi* SequenceTestData::sequenceDbi = NULL;
 TestDbiProvider SequenceTestData::dbiProvider = TestDbiProvider();
 
+static bool registerTests(){
+	qRegisterMetaType<U2::SequenceDbiUnitTests_createSequenceObject>("SequenceDbiUnitTests_createSequenceObject");
+	qRegisterMetaType<U2::SequenceDbiUnitTests_getAllSequenceObjects>("SequenceDbiUnitTests_getAllSequenceObjects");
+	qRegisterMetaType<U2::SequenceDbiUnitTests_getSequenceData>("SequenceDbiUnitTests_getSequenceData");
+	qRegisterMetaType<U2::SequenceDbiUnitTests_getSequenceDataInvalid>("SequenceDbiUnitTests_getSequenceDataInvalid");
+	qRegisterMetaType<U2::SequenceDbiUnitTests_getSequenceObject>("SequenceDbiUnitTests_getSequenceObject");
+	qRegisterMetaType<U2::SequenceDbiUnitTests_getSequenceObjectInvalid>("SequenceDbiUnitTests_getSequenceObjectInvalid");
+	qRegisterMetaType<U2::SequenceDbiUnitTests_updateHugeSequenceData>("SequenceDbiUnitTests_updateHugeSequenceData");
+	qRegisterMetaType<U2::SequenceDbiUnitTests_updateSequenceData>("SequenceDbiUnitTests_updateSequenceData");
+	qRegisterMetaType<U2::SequenceDbiUnitTests_updateSequenceObject>("SequenceDbiUnitTests_updateSequenceObject");
+	qRegisterMetaType<U2::SequenceDbiUnitTests_updateSequencesData>("SequenceDbiUnitTests_updateSequencesData");	
+	return true;
+}
+
+bool SequenceTestData::registerTest = registerTests();
+
 void SequenceTestData::init() {    
 
     TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
@@ -90,14 +106,14 @@ void SequenceTestData::checkUpdateSequence(UnitTest *t, const UpdateSequenceArgs
 		{
 			U2OpStatusImpl os;
 			const U2Sequence& so = sequenceDbi->getSequenceObject(id, os);
-			SAFE_POINT_OP(os, );
+			CHECK_OP(os, );
 			originalLen = so.length;
 		}
 
 		{
 			U2OpStatusImpl os;
 			originalSequence = sequenceDbi->getSequenceData(id, U2Region(0, originalLen), os);
-			SAFE_POINT_OP(os, );
+			CHECK_OP(os, );
 		}
 
 		{
@@ -106,34 +122,34 @@ void SequenceTestData::checkUpdateSequence(UnitTest *t, const UpdateSequenceArgs
 			regionToReplace,
 			dataToInsert,
 			os);
-			SAFE_POINT_OP(os,);
+			CHECK_OP(os,);
 		}
 
 		qint64 updatedLen(0);
 		{
 			U2OpStatusImpl os;
 			const U2Sequence& so = sequenceDbi->getSequenceObject(id, os);
-			SAFE_POINT_OP(os, );
+			CHECK_OP(os, );
 
 			updatedLen = so.length;
 			qint64 expectedLen = 0;
 			const U2Region& intersection = U2Region(0, originalLen).intersect(regionToReplace);
 			expectedLen = originalLen - intersection.length + dataToInsert.length();
-			CHECK_EXT(expectedLen == updatedLen, t->SetError(QString("incorrect updated sequence length")), );
+			CHECK_EXT(expectedLen == updatedLen, t->SetError("incorrect updated sequence length"), );
 		}
 
 		{
 			U2OpStatusImpl os;
 			const QByteArray& actualSeq = sequenceDbi->getSequenceData(id, U2Region(0, updatedLen), os);
-			SAFE_POINT_OP(os, );
+			CHECK_OP(os, );
 			QByteArray expectedSeq;
-			replaceRegion(originalSequence, dataToInsert, regionToReplace, expectedSeq);
-			CHECK_EXT(expectedSeq == actualSeq, t->SetError(QString("incorrect updated sequence")), );
+			replaceRegion(t, originalSequence, dataToInsert, regionToReplace, expectedSeq);
+			CHECK_EXT(expectedSeq == actualSeq, t->SetError("incorrect updated sequence"), );
 		}
 	}
 }
 
-void SequenceTestData::replaceRegion(const QByteArray& originalSequence,
+void SequenceTestData::replaceRegion(UnitTest *t, const QByteArray& originalSequence,
                    const QByteArray& dataToInsert,
                    const U2Region& region,
                    QByteArray& resultSequence){
@@ -142,7 +158,7 @@ void SequenceTestData::replaceRegion(const QByteArray& originalSequence,
         if (region.startPos == originalSequence.length()) {
             resultSequence += originalSequence + dataToInsert;
         } else {
-            SAFE_POINT(region.startPos == 0, "region start position should be 0", );
+            CHECK_EXT(region.startPos == 0, t->SetError("region start position should be 0"), );
         }
     } else {
         QByteArray left = originalSequence.mid(0, regionToReplace.startPos);
@@ -173,8 +189,8 @@ void SequenceDbiUnitTests_getSequenceObject::Test() {
 
     U2OpStatusImpl os;
     const U2Sequence& actual = sequenceDbi->getSequenceObject(id, os);
-	SAFE_POINT_OP(os, );
-    SAFE_POINT(SequenceTestData::compareSequences(actual, expected), "incorrect expected sequence", );
+	CHECK_OP(os, );
+    CHECK_EXT(SequenceTestData::compareSequences(actual, expected), SetError("incorrect expected sequence"), );
 }
 
 void SequenceDbiUnitTests_getSequenceObjectInvalid::Test(){
@@ -184,11 +200,12 @@ void SequenceDbiUnitTests_getSequenceObjectInvalid::Test(){
     testData.addValue<QByteArray>(INVALID_SEQUENCE_ID, "anmr%");
 
     const U2DataId& invalidId = testData.getValue<U2DataId>(INVALID_SEQUENCE_ID);
-    SAFE_POINT(!SequenceTestData::getSequences()->contains(invalidId), "invalid id should not be in suquences", );
+    CHECK_EXT(!SequenceTestData::getSequences()->contains(invalidId), SetError("invalid id should not be in sequences"), );
     U2OpStatusImpl os;
     const U2Sequence& seq = sequenceDbi->getSequenceObject(invalidId, os);
-	SAFE_POINT(os.hasError(), "error should be thrown", );
-    SAFE_POINT(seq.id.isEmpty(), "sequence id shuld be empty", );
+	CHECK_OP(os, );
+	CHECK_EXT(os.hasError(), SetError("error should be thrown"), );
+    CHECK_EXT(seq.id.isEmpty(), SetError("sequence id shuld be empty"), );
 }
 
 void SequenceDbiUnitTests_getAllSequenceObjects::Test() {
@@ -198,8 +215,8 @@ void SequenceDbiUnitTests_getAllSequenceObjects::Test() {
         U2OpStatusImpl os;
 		const U2DataId& id = SequenceTestData::getSequences()->at(i);
         const U2Sequence& seq = sequenceDbi->getSequenceObject(id, os);
-	    SAFE_POINT_OP(os, );
-        SAFE_POINT(id == seq.id, "incorrect expected sequence id", );
+	    CHECK_OP(os, );
+        CHECK_EXT(id == seq.id, SetError("incorrect expected sequence id"), );
     }
 }
 
@@ -212,13 +229,13 @@ void SequenceDbiUnitTests_createSequenceObject::Test() {
 
     U2OpStatusImpl os;
     sequenceDbi->createSequenceObject(seq, "/", os);
-    SAFE_POINT_OP(os, );
+    CHECK_OP(os, );
 
 	const U2Sequence& actual = sequenceDbi->getSequenceObject(seq.id, os);
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(!seq.id.isEmpty(), "sequence id shuld not be empty", );
-    SAFE_POINT(seq.alphabet.id == actual.alphabet.id, "incorrect expected squence alphabet", );
-    SAFE_POINT(seq.circular == actual.circular, "incorrect expected squence circular", );
+    CHECK_OP(os, );
+    CHECK_EXT(!seq.id.isEmpty(), SetError("sequence id should not be empty"), );
+    CHECK_EXT(seq.alphabet.id == actual.alphabet.id, SetError("incorrect expected sequence alphabet"), );
+    CHECK_EXT(seq.circular == actual.circular, SetError("incorrect expected sequence circular"), );
 }
 
 
@@ -238,10 +255,20 @@ void SequenceDbiUnitTests_getSequenceData::Test(){
 
     const QByteArray& expected = testData.getValue<QByteArray>(GET_SEQUENCE_DATA_OUT);
     const QByteArray& actual = sequenceDbi->getSequenceData(id, region, os);
-    SAFE_POINT_OP(os, );
+    CHECK_OP(os, );
 
-    SAFE_POINT(expected == actual, "incorrect expected sequence data", );
+    CHECK_EXT(expected == actual, SetError("incorrect expected sequence data"), );
 }
+
+void SequenceDbiUnitTests_getSequenceDataInvalid::Test() {
+	U2SequenceDbi* sequenceDbi = SequenceTestData::getSequenceDbi();
+	APITestData testData;
+	testData.addValue<QByteArray>(INVALID_SEQUENCE_ID, "anmr%");
+	const U2DataId& invalidId = testData.getValue<U2DataId>(INVALID_SEQUENCE_ID);
+	U2OpStatusImpl os;
+	const QByteArray& res = sequenceDbi->getSequenceData(invalidId, U2Region(0, 10), os);
+	CHECK_EXT(res.isEmpty(), SetError("sequence data should be empty"), );
+};
 
 void SequenceDbiUnitTests_updateSequenceData::Test() {
     UpdateSequenceArgs usd;
@@ -270,12 +297,42 @@ void SequenceDbiUnitTests_updateHugeSequenceData::Test() {
 void SequenceDbiUnitTests_updateSequencesData::Test() {
 	UpdateSequenceArgs usd;
 	usd.sequenceId = 1;
-	qint64 length = Q_INT64_C(100000000000);
+	qint64 length = 100000000000;
 	for (int i = 0; i < 10000; i++){
 		usd.regionsToReplace << U2Region((length -1) * i, length);
 		usd.datazToInsert << QByteArray(length, 'A');
 	}
 	SequenceTestData::checkUpdateSequence(this, usd);
+};
+
+void SequenceDbiUnitTests_updateSequenceObject::Test() {
+	U2SequenceDbi* sequenceDbi = SequenceTestData::getSequenceDbi(); 
+
+	U2Sequence seq;
+	seq.circular = true;
+	seq.alphabet = BaseDNAAlphabetIds::AMINO_DEFAULT();
+
+	U2OpStatusImpl os;
+	sequenceDbi->createSequenceObject(seq, "/", os);
+	CHECK_OP(os, );
+
+	const U2Sequence& actual = sequenceDbi->getSequenceObject(seq.id, os);
+	CHECK_OP(os, );
+	CHECK_EXT(!seq.id.isEmpty(), SetError("sequence id should not be empty"), );
+	CHECK_EXT(seq.alphabet.id == actual.alphabet.id, SetError("incorrect expected sequence alphabet"), );
+	CHECK_EXT(seq.circular == actual.circular, SetError("incorrect expected sequence circular"), );
+
+	seq.alphabet = BaseDNAAlphabetIds::RAW();
+	seq.circular = true;
+	seq.length = 0;
+	sequenceDbi->updateSequenceObject(seq, os);
+	CHECK_OP(os, );
+
+	const U2Sequence& updated = sequenceDbi->getSequenceObject(seq.id, os);
+	CHECK_OP(os, );
+	CHECK_EXT(seq.id == updated.id, SetError("ids should be the same"), );
+	CHECK_EXT(seq.alphabet.id == updated.alphabet.id, SetError("incorrect updated sequence alphabet"), );
+	CHECK_EXT(seq.circular == updated.circular, SetError("incorrect updated sequence circular"), );
 };
 
 } //namespace

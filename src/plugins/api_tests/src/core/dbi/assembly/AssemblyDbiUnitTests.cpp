@@ -45,6 +45,35 @@ U2AssemblyDbi* AssemblyTestData::assemblyDbi = NULL;
 QList<U2DataId>* AssemblyTestData::assemblyIds = NULL;
 TestDbiProvider AssemblyTestData::dbiProvider = TestDbiProvider();
 
+static bool registerTests(){
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_addReads>("AssemblyDbiUnitTests_addReads");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_addReadsInvalid>("AssemblyDbiUnitTests_addReadsInvalid");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_calculateCoverage>("AssemblyDbiUnitTests_calculateCoverage");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_calculateCoverageInvalid>("AssemblyDbiUnitTests_calculateCoverageInvalid");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_countReads>("AssemblyDbiUnitTests_countReads");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_countReadsInvalid>("AssemblyDbiUnitTests_countReadsInvalid");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_createAssemblyObject>("AssemblyDbiUnitTests_createAssemblyObject");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getAssemblyObject>("AssemblyDbiUnitTests_getAssemblyObject");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getAssemblyObjectInvalid>("AssemblyDbiUnitTests_getAssemblyObjectInvalid");	
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getMaxEndPos>("AssemblyDbiUnitTests_getMaxEndPos");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getMaxEndPosInvalid>("AssemblyDbiUnitTests_getMaxEndPosInvalid");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getMaxPackedRow>("AssemblyDbiUnitTests_getMaxPackedRow");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getMaxPackedRowInvalid>("AssemblyDbiUnitTests_getMaxPackedRowInvalid");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getReads>("AssemblyDbiUnitTests_getReads");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getReadsInvalid>("AssemblyDbiUnitTests_getReadsInvalid");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getReadsByName>("AssemblyDbiUnitTests_getReadsByName");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getReadsByNameInvalid>("AssemblyDbiUnitTests_getReadsByNameInvalid");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getReadsByRow>("AssemblyDbiUnitTests_getReadsByRow");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_getReadsByRowInvalid>("AssemblyDbiUnitTests_getReadsByRowInvalid");	
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_pack>("AssemblyDbiUnitTests_pack");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_packInvalid>("AssemblyDbiUnitTests_packInvalid");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_removeReads>("AssemblyDbiUnitTests_removeReads");
+	qRegisterMetaType<U2::AssemblyDbiUnitTests_removeReadsInvalid>("AssemblyDbiUnitTests_removeReadsInvalid");	
+	return true;
+}
+
+bool AssemblyTestData::registerTest = registerTests();
+
 void AssemblyTestData::init() {
 
 	TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();

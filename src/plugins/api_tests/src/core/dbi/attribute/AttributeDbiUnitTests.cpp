@@ -28,6 +28,23 @@ U2AttributeDbi* AttributeTestData::attributeDbi = NULL;
 QList<U2DataId>* AttributeTestData::objects = NULL;
 TestDbiProvider AttributeTestData::dbiProvider = TestDbiProvider();
 
+static bool registerTests(){
+	qRegisterMetaType<U2::AttributeDbiUnitTests_ByteArrayAttribute>("AttributeDbiUnitTests_ByteArrayAttribute");
+	qRegisterMetaType<U2::AttributeDbiUnitTests_getAvailableAttributeNames>("AttributeDbiUnitTests_getAvailableAttributeNames");
+	qRegisterMetaType<U2::AttributeDbiUnitTests_getObjectAttributes>("AttributeDbiUnitTests_getObjectAttributes");
+	qRegisterMetaType<U2::AttributeDbiUnitTests_getObjectAttributesByName>("AttributeDbiUnitTests_getObjectAttributesByName");
+	qRegisterMetaType<U2::AttributeDbiUnitTests_getObjectPairAttributes>("AttributeDbiUnitTests_getObjectPairAttributes");
+	qRegisterMetaType<U2::AttributeDbiUnitTests_getObjectPairAttributesByName>("AttributeDbiUnitTests_getObjectPairAttributesByName");
+	qRegisterMetaType<U2::AttributeDbiUnitTests_IntegerAttribute>("AttributeDbiUnitTests_IntegerAttribute");
+	qRegisterMetaType<U2::AttributeDbiUnitTests_RealAttribute>("AttributeDbiUnitTests_RealAttribute");
+	qRegisterMetaType<U2::AttributeDbiUnitTests_removeAttributes>("AttributeDbiUnitTests_removeAttributes");	
+	qRegisterMetaType<U2::AttributeDbiUnitTests_removeObjectAttributes>("AttributeDbiUnitTests_removeObjectAttributes");
+	qRegisterMetaType<U2::AttributeDbiUnitTests_StringAttribute>("AttributeDbiUnitTests_StringAttribute");
+	return true;
+}
+
+bool AttributeTestData::registerTest = registerTests();
+
 void AttributeTestData::init() {
     TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
     QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + AttributeTestData::ATT_DB_URL;

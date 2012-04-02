@@ -9,8 +9,6 @@
 #include <U2Test/TestRunnerSettings.h>
 #include <unittest.h>
 
-#include <memory>
-
 namespace U2 {
 
 class AssemblyTestData {
@@ -29,6 +27,7 @@ public:
 
 protected:
     static TestDbiProvider dbiProvider;
+	static bool registerTest;
 };
 
 class AssemblyDbiUnitTests_getAssemblyObject : public UnitTest {
@@ -147,4 +146,29 @@ public:
 };
 
 }
+
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_addReads);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_addReadsInvalid);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_calculateCoverage);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_calculateCoverageInvalid);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_countReads);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_countReadsInvalid);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_createAssemblyObject);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getAssemblyObject);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getAssemblyObjectInvalid);	
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getMaxEndPos);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getMaxEndPosInvalid);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getMaxPackedRow);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getMaxPackedRowInvalid);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReads);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsInvalid);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsByName);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsByNameInvalid);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsByRow);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsByRowInvalid);	
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_pack);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_packInvalid);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_removeReads);
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_removeReadsInvalid);	
+
 #endif //_U2_ASSEMBLY_DBI_UNITTESTS_H_

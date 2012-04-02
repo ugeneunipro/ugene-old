@@ -5,10 +5,8 @@
 
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2DbiRegistry.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Test/TestRunnerSettings.h>
 #include <unittest.h>
-#include <memory>
 
 namespace U2 {
 
@@ -34,6 +32,7 @@ protected:
 	static const QString& ATT_DB_URL;
 
 	static TestDbiProvider dbiProvider;
+	static bool registerTest;
 };
 
 class ObjectAttributesTestData {
@@ -108,5 +107,17 @@ Q_DECLARE_METATYPE(U2::U2RealAttribute);
 Q_DECLARE_METATYPE(U2::U2StringAttribute);
 Q_DECLARE_METATYPE(U2::U2ByteArrayAttribute);
 Q_DECLARE_METATYPE(U2::ObjectAttributesTestData);
+
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_ByteArrayAttribute);
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_getAvailableAttributeNames);
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_getObjectAttributes);
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_getObjectAttributesByName);
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_getObjectPairAttributes);
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_getObjectPairAttributesByName);
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_IntegerAttribute);
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_RealAttribute);
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_removeAttributes);	
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_removeObjectAttributes);
+Q_DECLARE_METATYPE(U2::AttributeDbiUnitTests_StringAttribute);
 
 #endif
