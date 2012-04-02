@@ -33,7 +33,10 @@ namespace U2 {
     CHECK_SET_ERR_RESULT(condition, errorMessage, )
 
 #define CHECK_SET_ERR_RESULT(condition, errorMessage, result) \
-    CHECK_EXT(condition, if (!os.hasError()) {os.setError(errorMessage);}, result)
+{ \
+    if (os.hasError()) { return result; } \
+    CHECK_EXT(condition, if (!os.hasError()) {os.setError(errorMessage);}, result) \
+}
 
 class GTGlobals {
 public:
