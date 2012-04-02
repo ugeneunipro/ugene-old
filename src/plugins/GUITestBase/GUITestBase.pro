@@ -13,21 +13,21 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/GUIInitialChecks.h \
             src/tests/common_scenarios/project/GTTestsProject.h \
             src/tests/GUIToolbarTests.h \
-                src/api/GTComboBox.h \
-                src/api/GTFileDialog.h \
-                src/api/GTGlobals.h \
-                src/api/GTKeyboardDriver.h \
-                src/api/GTLineEdit.h \
-                src/api/GTMenu.h \
-                src/api/GTMenuBar.h \
-                src/api/GTMouse.h \
-                src/api/GTMouseDriver.h \
-				src/api/GTScrollBar.h \
-                src/api/GTSystem.h \
-                src/api/GTToolbar.h \
-                src/api/GTWidget.h \
-    src/api/GTSequenceReadingModeDialog.h \
-    src/api/GTSequenceReadingModeDialogUtils.h
+            src/api/GTComboBox.h \
+            src/api/GTFileDialog.h \
+            src/api/GTGlobals.h \
+            src/api/GTKeyboardDriver.h \
+            src/api/GTLineEdit.h \
+            src/api/GTMenu.h \
+            src/api/GTMenuBar.h \
+            src/api/GTMouse.h \
+            src/api/GTMouseDriver.h \
+            src/api/GTScrollBar.h \
+            src/api/GTSystem.h \
+            src/api/GTToolbar.h \
+            src/api/GTWidget.h \
+            src/api/GTSequenceReadingModeDialog.h \
+            src/api/GTSequenceReadingModeDialogUtils.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsApp.cpp \
@@ -41,28 +41,24 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/GUIInitialChecks.cpp \
             src/tests/common_scenarios/project/GTTestsProject.cpp \
             src/tests/GUIToolbarTests.cpp \
-                src/api/GTComboBox.cpp \
-                src/api/GTFileDialog.cpp \
-                src/api/GTGlobals.cpp \
-                src/api/GTKeyboardDriver.cpp \
-                src/api/GTKeyboardDriverLinux.cpp \
-                src/api/GTKeyboardDriverMac.cpp \
-                src/api/GTKeyboardDriverWindows.cpp \
-                src/api/GTLineEdit.cpp \
-                src/api/GTMenu.cpp \
-                src/api/GTMenuBar.cpp \
-                src/api/GTMouse.cpp \
-                src/api/GTMouseDriver.cpp \
-                src/api/GTMouseDriverLinux.cpp \
-                src/api/GTMouseDriverMac.cpp \
-                src/api/GTMouseDriverWindows.cpp \
-				src/api/GTScrollBar.cpp \
-                src/api/GTSystem.cpp \
-                src/api/GTToolbar.cpp \
-                src/api/GTWidget.cpp \
-    src/api/GTSequenceReadingModeDialog.cpp \
-    src/api/GTSequenceReadingModeDialogUtils.cpp
-
-
-
-
+            src/api/GTComboBox.cpp \
+            src/api/GTFileDialog.cpp \
+            src/api/GTGlobals.cpp \
+            src/api/GTKeyboardDriver.cpp \
+            src/api/GTKeyboardDriverLinux.cpp \
+            src/api/GTKeyboardDriverMac.cpp \
+            src/api/GTKeyboardDriverWindows.cpp \
+            src/api/GTLineEdit.cpp \
+            src/api/GTMenu.cpp \
+            src/api/GTMenuBar.cpp \
+            src/api/GTMouse.cpp \
+            src/api/GTMouseDriver.cpp \
+            src/api/GTMouseDriverLinux.cpp \
+            src/api/GTMouseDriverMac.cpp \
+            src/api/GTMouseDriverWindows.cpp \
+            src/api/GTScrollBar.cpp \
+            src/api/GTSystem.cpp \
+            src/api/GTToolbar.cpp \
+            src/api/GTWidget.cpp \
+            src/api/GTSequenceReadingModeDialog.cpp \
+            src/api/GTSequenceReadingModeDialogUtils.cpp
