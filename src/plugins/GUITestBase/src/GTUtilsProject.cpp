@@ -161,12 +161,9 @@ void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
     Qt::DropActions dropActions = Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
     Qt::MouseButtons mouseButtons = Qt::LeftButton;
     GTSequenceReadingModeDialogUtils ob(os);
-    GUIDialogWaiter waiter(&ob);
-    QTimer t;
 
     if (urls.size() > 1) {
-        t.connect(&t, SIGNAL(timeout()), &waiter, SLOT(wait()));
-        t.start(1000);
+        GTUtilsDialog::preWaitForDialog(os, &ob);
     }
 
     QDragEnterEvent* dragEnterEvent = new QDragEnterEvent(widgetPos, dropActions, mimeData, mouseButtons, 0);
