@@ -125,6 +125,8 @@ GUITests GUITestService::addChecks() const {
     Q_ASSERT(tb);
 
     GUITests additionalChecks = tb->getTests(GUITestBase::Additional);
+    Q_ASSERT(additionalChecks.size()>0);
+
     return additionalChecks;
 }
 
