@@ -23,7 +23,6 @@
 #define _U2_GUI_PROJECT_TREE_VIEW_UTILS_H_
 
 #include "api/GTGlobals.h"
-#include "GTUtilsToolTip.h"
 #include <U2Gui/ProjectTreeController.h>
 
 class QTreeWidget;
@@ -33,14 +32,8 @@ namespace U2 {
 
 class GTUtilsProjectTreeView {
 public:
-    static void checkItem(U2OpStatus &os, const QString &itemName, bool exists = true);
-
+    // clicks on item by mouse, renames item by keyboard
     static void rename(U2OpStatus &os, const QString &itemName, const QString &newItemName);
-    static void click(U2OpStatus &os, const QString &itemName, Qt::MouseButton b = Qt::LeftButton);
-
-    static void moveTo(U2OpStatus &os, const QString &itemName);
-
-    static void checkToolTip(U2OpStatus &os, const QString& itemName, const QString& tooltip);
 
     static void openView(U2OpStatus& os);
     static void toggleView(U2OpStatus& os);
@@ -53,8 +46,6 @@ public:
     static const QString widgetName;
 
 private:
-    static void moveToOpenedView(U2OpStatus &os, const QString &itemName);
-
     static QTreeWidgetItem* getTreeWidgetItem(QTreeWidget* tree, const QString &itemName);
     static QString getProjectTreeItemName(ProjViewItem* projViewItem);
 

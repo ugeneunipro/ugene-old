@@ -22,6 +22,7 @@
 #include "GTUtilsDocument.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsDialog.h"
@@ -73,13 +74,17 @@ void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName
     case GTGlobals::UseMouse:
     {
         GTUtilsDialog::preWaitForDialog(os, &popupChooser);
-        GTUtilsProjectTreeView::click(os, documentName, Qt::RightButton);
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, documentName));
+
+        GTMouseDriver::click(os, Qt::RightButton);
         break;
     }
 
     default:
     case GTGlobals::UseKey:
-        GTUtilsProjectTreeView::click(os, documentName);
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, documentName));
+        GTMouseDriver::click(os);
+
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
         break;
     }

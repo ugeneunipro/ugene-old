@@ -42,6 +42,9 @@ void GTUtilsProjectTreeView::openView(U2OpStatus& os) {
         toggleView(os);
     }
     GTGlobals::sleep(500);
+
+    documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
+    CHECK_SET_ERR(documentTreeWidget != NULL, "Can't open document tree widget view, findWidget returned NULL");
 }
 
 void GTUtilsProjectTreeView::toggleView(U2OpStatus& os) {
@@ -51,7 +54,9 @@ void GTUtilsProjectTreeView::toggleView(U2OpStatus& os) {
 
 void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, const QString &newItemName) {
 
-    click(os, itemName);
+    GTMouseDriver::moveTo(os, getTreeViewItemPosition(os, itemName));
+    GTMouseDriver::click(os);
+
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
     GTKeyboardDriver::keySequence(os, newItemName);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
@@ -59,51 +64,22 @@ void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, con
     GTGlobals::sleep(500);
 }
 
-void GTUtilsProjectTreeView::click(U2OpStatus &os, const QString &itemName, Qt::MouseButton b) {
-
-    moveTo(os, itemName);
-    GTMouseDriver::click(os, b);
-}
-
-void GTUtilsProjectTreeView::moveTo(U2OpStatus &os,const QString &itemName) {
-
-    openView(os);
-    moveToOpenedView(os, itemName);
-}
-
-void GTUtilsProjectTreeView::moveToOpenedView(U2OpStatus &os, const QString &itemName) {
-
-    QPoint p = getTreeViewItemPosition(os, itemName);
-    GTMouseDriver::moveTo(os, p);
-}
-
-void GTUtilsProjectTreeView::checkToolTip(U2OpStatus &os, const QString& itemName, const QString& tooltip) {
-
-    moveTo(os, itemName);
-    GTGlobals::sleep(2000);
-    GTUtilsToolTip::checkExistingToolTip(os, tooltip);
-}
-
-void GTUtilsProjectTreeView::checkItem(U2OpStatus &os, const QString &itemName, bool exists) {
-
-    QTreeWidgetItem* item = getTreeWidgetItem(os, itemName);
-    if (exists) {
-        CHECK_SET_ERR(item != NULL, "Item " + itemName + " not found in tree widget");
-    }
-    else {
-        CHECK_SET_ERR(item == NULL, "Item " + itemName + " found in tree widget");
-    }
-}
-
 QPoint GTUtilsProjectTreeView::getTreeViewItemPosition(U2OpStatus &os, const QString &itemName) {
 
+    openView(os);
     QTreeWidget *treeWidget = getTreeWidget(os);
-    CHECK_SET_ERR_RESULT(treeWidget != NULL, "treeWidget is NULL", QPoint());
+    CHECK_SET_ERR_RESULT(treeWidget != NULL, "treeWidget " + itemName + " is NULL", QPoint());
+
     QTreeWidgetItem *item = getTreeWidgetItem(os, itemName);
+    CHECK_SET_ERR_RESULT(item != NULL, "treeWidgetItem " + itemName + " is NULL", QPoint());
+
+    CHECK_SET_ERR_RESULT(item->isHidden() == false, "item " + itemName + " is hidden", QPoint());
 
     QPoint p = treeWidget->rect().center();
     if (item) {
-        p = treeWidget->visualItemRect(item).center();
+        //p = treeWidget->visualItemRect(item).center();
+        QRect r = treeWidget->visualItemRect(item);
+        p = QPoint(r.left(), r.height()/2);
     }
 
     return treeWidget->mapToGlobal(p);

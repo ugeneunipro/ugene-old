@@ -21,7 +21,8 @@
 
 #include "GTTestsProject.h"
 #include "api/GTGlobals.h"
-#include <api/GTKeyboardDriver.h>
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
@@ -56,12 +57,12 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
         "1CF7.PDB"
     );
 
-    GTUtilsProjectTreeView::checkToolTip(os,
-        "1CF7.PDB",
-        "_common_data/scenarios/sandbox/1CF7.PDB"
-    );
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, "1CF7.PDB"));
+    GTGlobals::sleep(2000);
+    GTUtilsToolTip::checkExistingToolTip(os, "_common_data/scenarios/sandbox/1CF7.PDB");
 
-    GTUtilsProjectTreeView::click(os, "1CF7.PDB");
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, "1CF7.PDB"));
+    GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
 
     GTUtilsDocument::checkDocument(os,
@@ -92,10 +93,9 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
         "1CF7.PDB"
     );
 
-    GTUtilsProjectTreeView::checkToolTip(os,
-        "1CF7.PDB",
-        "samples/PDB/1CF7.PDB"
-    );
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, "1CF7.PDB"));
+    GTGlobals::sleep(2000);
+    GTUtilsToolTip::checkExistingToolTip(os, "samples/PDB/1CF7.PDB");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
@@ -126,7 +126,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsProjectTreeView::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", "qqq");
-    GTUtilsProjectTreeView::checkItem(os, "qqq", true);
+    CHECK_SET_ERR(GTUtilsProjectTreeView::getTreeWidgetItem(os, "qqq") != NULL, "Item qqq not found in tree widget");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011) {
@@ -149,12 +149,12 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 GUI_TEST_CLASS_DEFINITION(test_0018) {
 
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
-    GTUtilsProjectTreeView::click(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
     GTUtilsProjectTreeView::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", "qqq");
     GTUtilsProjectTreeView::rename(os, "qqq", "eee");
     GTUtilsDocument::removeDocument(os, "human_T1.fa");
+
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
-    GTUtilsProjectTreeView::checkItem(os, "human_T1.fa", true);
+    CHECK_SET_ERR(GTUtilsProjectTreeView::getTreeWidgetItem(os, "human_T1.fa") != NULL, "Item human_T1.fa not found in tree widget");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0023) {
