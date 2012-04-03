@@ -58,6 +58,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0023);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
+	REGISTER_TEST(GUITest_common_scenarios_project::test_0028);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0030);
 //        guiTestBase->registerTest(new ToolbarTest());
 }
