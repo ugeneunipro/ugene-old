@@ -82,15 +82,15 @@ void GTFileDialogUtils::run()
 
     fileDialog = dialog;
 
-    GTGlobals::sleep(2000);
+    GTGlobals::sleep(200);
     setPath();
-    GTGlobals::sleep(2000);
+    GTGlobals::sleep(200);
     clickButton(Open);
-    GTGlobals::sleep(2000);
+    GTGlobals::sleep(200);
     setFilter();
-    GTGlobals::sleep(2000);
+    GTGlobals::sleep(200);
     setViewMode(Detail);
-    GTGlobals::sleep(2000);
+    GTGlobals::sleep(200);
     selectFile();
     GTGlobals::sleep(2000);
     clickButton(button);
