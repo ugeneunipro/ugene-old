@@ -22,6 +22,7 @@
 #include <cctype>
 #include "GTKeyboardDriver.h"
 #include "api/GTGlobals.h"
+#include <QtGui/QApplication>
 
 #if defined __linux__
     #define XK_LATIN1      // for latin symbol
@@ -37,6 +38,7 @@ namespace U2 {
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+    CHECK_SET_ERR(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     Display *display = XOpenDisplay(NULL);
     CHECK_SET_ERR (display != 0, "Error: display is NULL in keyPress()");
@@ -59,6 +61,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+    CHECK_SET_ERR(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     Display *display = XOpenDisplay(NULL);
     CHECK_SET_ERR (display != 0, "Error: display is NULL in keyRelease()");

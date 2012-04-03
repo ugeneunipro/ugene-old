@@ -22,6 +22,7 @@
 #include <cctype>
 #include "GTKeyboardDriver.h"
 #include "api/GTGlobals.h"
+#include <QtGui/QApplication>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -91,6 +92,7 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 void GTKeyboardDriver::keyClick(U2OpStatus &os, char key, int modifiers)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
+    CHECK_SET_ERR(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     keyPress(os, key, modifiers);
     keyRelease(os, key, modifiers);
@@ -112,6 +114,7 @@ INPUT GTKeyboardDriver::getKeyEvent(int key, bool keyUp) {
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers) {
 
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+    CHECK_SET_ERR(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     if (modifiers) {
         INPUT input = getKeyEvent(modifiers);
@@ -125,6 +128,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers) {
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+    CHECK_SET_ERR(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     if (modifiers) {
         INPUT input = getKeyEvent(modifiers, true);

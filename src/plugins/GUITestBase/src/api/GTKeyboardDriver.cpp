@@ -21,12 +21,14 @@
 
 #include <cctype>
 #include "GTKeyboardDriver.h"
+#include <QtGui/QApplication>
 
 namespace U2 {
 
 void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
 {
     CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
+    CHECK_SET_ERR(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     keyPress(os, key, modifiers);
     keyRelease(os, key, modifiers);

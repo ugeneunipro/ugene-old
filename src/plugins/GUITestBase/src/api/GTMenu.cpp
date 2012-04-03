@@ -185,6 +185,7 @@ void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList 
     foreach(QString itemName, itemPath) {
         CHECK_SET_ERR(menu != NULL, "Error: menu not found for item " + itemName + " in clickMenuItem()");
 
+        GTGlobals::sleep(500);
         QAction *action = clickMenuItem(os, menu, itemName, useMethod);
         menu = action ? action->menu() : NULL;
     }
