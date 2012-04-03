@@ -29,6 +29,7 @@
 #include "GTUtilsApp.h"
 #include "GTUtilsToolTip.h"
 #include "GTUtilsDialog.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsMdi.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
@@ -155,11 +156,15 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsProjectTreeView::checkItem(os, "human_T1.fa", true);
 }
+
 GUI_TEST_CLASS_DEFINITION(test_0023) {
-    os.setError("Test not implemented");
-    //ProjectUtils::openFile(os, testDir + "_common_data/fasta/fa1.fa");
-    //TODO: minimized sequence view and check title
+    GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/fa1.fa");
+    GTUtilsMdi::click(os, GTGlobals::Minimize);
+
+    QWidget* w = GTUtilsMdi::getWindow(os, "1m.fa");
+    CHECK_SET_ERR(w != NULL, "Sequence view window title is not 1m.fa");
 }
+
 GUI_TEST_CLASS_DEFINITION(test_0026) {
 
     GTUtilsProject::openFiles(os, dataDir + "samples/Genbank/sars.gb");
