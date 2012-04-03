@@ -86,12 +86,22 @@ public:
     virtual void removeAllKeys(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os);
 
     /**
+        Updates feature key.
+        Requires: U2DbiFeature_WriteFeature feature support
+    */
+    virtual void updateKey(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os);
+
+    /**
         Updates feature location. Features with U2Region(0,0) have no specified location
         Requires: U2DbiFeature_WriteFeature feature support
     */
     virtual void updateLocation(const U2DataId& featureId, const U2FeatureLocation& location, U2OpStatus& os);
 
-
+    /**
+        Updates feature name
+        Requires: U2DbiFeature_WriteFeature feature support
+    */
+    virtual void updateName(const U2DataId& featureId, const QString& newName, U2OpStatus& os);
 
     /**
         Removes the feature from database

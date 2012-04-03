@@ -31,6 +31,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2Attribute.h \
            src/datatype/U2CoreAttributes.h \
            src/datatype/U2Feature.h \
+           src/datatype/U2FeatureKeys.h \
            src/datatype/U2Identity.h \
            src/datatype/U2IdTypes.h \
            src/datatype/U2Msa.h \
@@ -163,6 +164,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U2AssemblyUtils.h \
            src/util/U2AttributeUtils.h \
            src/util/U2Bits.h \
+           src/util/U2FeatureUtils.h \
            src/util/U2OpStatusUtils.h \
            src/util/U2SequenceUtils.h
 SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
@@ -286,6 +288,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2AssemblyUtils.cpp \
            src/util/U2AttributeUtils.cpp \
            src/util/U2Bits.cpp \
+           src/util/U2FeatureUtils.cpp \
            src/util/U2SequenceUtils.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

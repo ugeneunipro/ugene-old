@@ -35,6 +35,7 @@ namespace U2 {
 class U2CORE_EXPORT U2FeatureLocation {
 public:
 
+
     /**  Strand of the location. */
     U2Strand    strand;
     
@@ -63,6 +64,9 @@ public:
 
     /** Parent feature id */
     U2DataId                    parentFeatureId;
+
+    /** Name of the feature. Not a FeatureKey, because in that case can be features with no name */
+    QString                     name;
 
     /** Annotation location */
     U2FeatureLocation           location;

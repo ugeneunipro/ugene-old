@@ -26,6 +26,8 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationData.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2Feature.h>
+#include <U2Core/U2FeatureUtils.h>
 
 #include <QtCore/QSet>
 #include <QtCore/QTimer>
@@ -38,6 +40,7 @@ class AnnotationGroup;
 class AnnotationTableObject;
 class U2SequenceObject;
 class DNATranslation;
+
 
 enum AnnotationModificationType {
     AnnotationModification_NameChanged, 
@@ -76,6 +79,7 @@ public:
 
 
 class  U2CORE_EXPORT Annotation {
+    friend class FeaturesTableObject;
     friend class AnnotationGroup;
     friend class AnnotationTableObject;
 
@@ -156,6 +160,7 @@ private:
 
 class U2CORE_EXPORT AnnotationGroup {
     friend class AnnotationTableObject;
+    friend class FeaturesTableObject;
 public:
     AnnotationGroup(AnnotationTableObject* p, const QString& _name, AnnotationGroup* parentGrp);
     ~AnnotationGroup();
@@ -251,6 +256,7 @@ class U2CORE_EXPORT AnnotationTableObject: public GObject {
     Q_OBJECT
     friend class Annotation;
     friend class AnnotationGroup;
+    friend class FeaturesTableObject;
 
 public:
     AnnotationTableObject(const QString& objectName, const QVariantMap& hintsMap = QVariantMap());
@@ -322,6 +328,90 @@ public:
 
 bool U2CORE_EXPORT annotationLessThanByRegion(const Annotation* a1, const Annotation* a2);
 bool U2CORE_EXPORT annotationGreaterThanByRegion(const Annotation* a1, const Annotation* a2);
+
+
+
+
+class U2CORE_EXPORT FeaturesTableObject: public GObject {
+    Q_OBJECT
+    friend class Annotation;
+    friend class AnnotationGroup;
+    friend class AnnotationTableObject;
+
+public:
+    FeaturesTableObject(const QString& objectName, const U2DbiRef& dbiRef, const QVariantMap& hintsMap = QVariantMap());
+    ~FeaturesTableObject();
+
+    const QList<Annotation*>& getAnnotations() const {return annotations;}
+    AnnotationGroup* getRootGroup() const {return rootGroup;}
+    void addAnnotation(Annotation* a, const QString& groupName = QString());
+    void addAnnotation(Annotation* a, const QList<QString>& groupsNames);
+    void addAnnotations(const QList<Annotation*>& annotations, const QString& groupName = QString());
+    void removeAnnotation(Annotation* a);
+    void removeAnnotations(const QList<Annotation*>& annotations);
+    virtual GObject* clone(const U2DbiRef& ref, U2OpStatus& os) const;
+    void selectAnnotationsByName(const QString& name, QList<Annotation*>& res);
+    bool checkConstraints(const GObjectConstraints* c) const;
+    void removeAnnotationsInGroup(const QList<Annotation*>& _annotations, AnnotationGroup *group);
+    void releaseLocker();
+    bool isLocked() const;
+    void cleanAnnotations();
+
+    U2Feature getRootFeature() const {return rootFeature;}
+
+protected:
+
+    void emit_onAnnotationModified(const AnnotationModification& md) {emit si_onAnnotationModified(md);}
+
+    void emit_onGroupCreated(AnnotationGroup* g) {emit si_onGroupCreated(g);}
+    void emit_onGroupRemoved(AnnotationGroup* p, AnnotationGroup* g) {emit si_onGroupRemoved(p, g);}
+    void emit_onGroupRenamed(AnnotationGroup* g, const QString& oldName) {emit si_onGroupRenamed(g, oldName);}
+    void emit_onAnnotationsInGroupRemoved(const QList<Annotation*>& l, AnnotationGroup* gr) {emit si_onAnnotationsInGroupRemoved(l, gr);}
+
+    void _removeAnnotation(Annotation* a);
+
+    void initRootFeature(const U2DbiRef& dbiRef);
+    void importToDbi(Annotation* a);
+
+    QList<Annotation*>      annotations;
+    AnnotationGroup*        rootGroup;
+    AnnotationsLocker       annLocker;
+
+    //wrapped object
+    AnnotationTableObject*  aObject;
+
+    //object to query features dbi
+    FeatureSynchronizer synchronizer;
+
+    //dummy root feature
+    U2Feature rootFeature;
+
+signals:
+    //annotations added to the object and have valid groups assigned
+    //the same signal of ATO is ignored
+    void si_onAnnotationsAdded(const QList<Annotation*>& a);
+    //annotations removed from the object and will be deleted, but still keeps references to groups and object
+    //the same signal of ATO is ignored
+    void si_onAnnotationsRemoved(const QList<Annotation*>& a);
+    void si_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*);
+    void si_onAnnotationModified(const AnnotationModification& md);
+
+    void si_onGroupCreated(AnnotationGroup*);
+    void si_onGroupRemoved(AnnotationGroup* p, AnnotationGroup* removed);
+    void si_onGroupRenamed(AnnotationGroup*, const QString& oldName);
+
+    friend class DeleteAnnotationsFromObjectTask;
+
+protected slots:
+    void sl_onAnnotationsRemoved(const QList<Annotation*>& a);
+    void sl_onAnnotationsInGroupRemoved(const QList<Annotation*>&, AnnotationGroup*);
+    void sl_onAnnotationModified(const AnnotationModification& md);
+
+    void sl_onGroupCreated(AnnotationGroup*);
+    void sl_onGroupRemoved(AnnotationGroup* p, AnnotationGroup* removed);
+    void sl_onGroupRenamed(AnnotationGroup*, const QString& oldName);
+};
+
 
 
 }//namespace

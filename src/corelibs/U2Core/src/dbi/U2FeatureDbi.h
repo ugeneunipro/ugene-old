@@ -46,7 +46,7 @@ enum OrderOp {
 
 class FeatureQuery {
 public:
-    FeatureQuery() : topLevelOnly(false),  keyNameOrderOp(OrderOp_None),
+    FeatureQuery() : topLevelOnly(false), featureNameOrderOp(OrderOp_None),  keyNameOrderOp(OrderOp_None),
         keyValueCompareOp(ComparisonOp_Invalid), keyValueOrderOp(OrderOp_None), 
         intersectRegion(-1, 0), startPosOrderOp(OrderOp_None) {}
     
@@ -54,6 +54,9 @@ public:
 
     U2DataId        parentFeatureId;
     bool            topLevelOnly;
+
+    QString         featureName;
+    OrderOp         featureNameOrderOp;
     
     QString         keyName;
     OrderOp         keyNameOrderOp;
@@ -127,12 +130,22 @@ public:
     virtual void removeAllKeys(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) = 0;
 
     /**
+        Updates feature key.
+        Requires: U2DbiFeature_WriteFeature feature support
+    */
+    virtual void updateKey(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) = 0;
+
+    /**
         Updates feature location. Features with U2Region(0,0) have no specified location
         Requires: U2DbiFeature_WriteFeature feature support
     */
     virtual void updateLocation(const U2DataId& featureId, const U2FeatureLocation& location, U2OpStatus& os) = 0;
 
-
+    /**
+        Updates feature name
+        Requires: U2DbiFeature_WriteFeature feature support
+    */
+    virtual void updateName(const U2DataId& featureId, const QString& newName, U2OpStatus& os) = 0;
 
     /**
         Removes the feature from database
