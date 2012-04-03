@@ -24,6 +24,7 @@
 
 #include "api/GTGlobals.h"
 #include "api/GTMenuBar.h"
+#include "api/GTWidget.h"
 
 namespace U2 {
 
@@ -31,8 +32,12 @@ class GTUtilsMdi {
 public:
     static void click(U2OpStatus &os, GTGlobals::WindowAction action);
 
-    static QWidget* activeWindow(U2OpStatus &os);
-    static QWidget* getWindow(U2OpStatus &os, const QString& windowName);
+    // fails if MainWindow is NULL or because of FindOptions settings
+    static QWidget* activeWindow(U2OpStatus &os, const GTWidget::FindOptions& = GTWidget::FindOptions());
+
+    // finds a window with a given window title in MDIManager windows
+    // fails if windowName is empty or because of FindOptions settings
+    static QWidget* findWindow(U2OpStatus &os, const QString& windowName, const GTWidget::FindOptions& = GTWidget::FindOptions());
 };
 
 } // namespace

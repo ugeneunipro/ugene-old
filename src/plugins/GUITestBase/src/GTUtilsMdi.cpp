@@ -40,7 +40,7 @@ void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
     GTMenuBar::clickCornerMenu(os, mainWindow->menuBar(), action);
 }
 
-QWidget* GTUtilsMdi::getWindow(U2OpStatus &os, const QString& windowName) {
+QWidget* GTUtilsMdi::findWindow(U2OpStatus &os, const QString& windowName, const GTWidget::FindOptions& options) {
 
     CHECK_SET_ERR_RESULT(windowName.isEmpty() == false, "windowname is empty", NULL);
 
@@ -54,15 +54,24 @@ QWidget* GTUtilsMdi::getWindow(U2OpStatus &os, const QString& windowName) {
             return w;
         }
     }
+
+    if (options.failIfNull) {
+        CHECK_SET_ERR_RESULT(false, "Widget " + windowName + " not found", NULL);
+    }
+
     return NULL;
 }
 
-QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os) {
+QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os, const GTWidget::FindOptions& options) {
 
     MainWindow* mw = AppContext::getMainWindow();
     CHECK_SET_ERR_RESULT(mw != NULL, "MainWindow == NULL", NULL);
 
-    return mw->getMDIManager()->getActiveWindow();
+    QWidget* w = mw->getMDIManager()->getActiveWindow();
+    if (options.failIfNull) {
+        CHECK_SET_ERR_RESULT(w != NULL, "Active window is not found", NULL);
+    }
+    return w;
 }
 
 }
