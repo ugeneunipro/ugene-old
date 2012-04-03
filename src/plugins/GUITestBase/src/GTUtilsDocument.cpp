@@ -65,14 +65,15 @@ void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName,
     CHECK_SET_ERR(viewFactoryId == id, "View's GObjectViewFactoryId is " + viewFactoryId + ", not " + id);
 }
 
-void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method) {
+void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method)
+{
+    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_MENU << ACTION_PROJECT__REMOVE_SELECTED, method);
 
     switch (method) {
     case GTGlobals::UseMouse:
     {
+        GTUtilsDialog::preWaitForDialog(os, &popupChooser);
         GTUtilsProjectTreeView::click(os, documentName, Qt::RightButton);
-        GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_MENU << ACTION_PROJECT__REMOVE_SELECTED, method);
-        GTUtilsDialog::waitForDialog(os, &popupChooser);
         break;
     }
 

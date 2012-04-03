@@ -26,7 +26,6 @@ namespace U2 {
 void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
 {
     press(os, button);
-    GTGlobals::sleep(10);
     release(os, button);
 }
 

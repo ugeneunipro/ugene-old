@@ -109,6 +109,7 @@ public:
     };
 
     static void waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDialog = true);
+    static void preWaitForDialog(U2OpStatus &os, Runnable *r);
 
     static void openExportProjectDialog(U2OpStatus &os);
     static void checkExportProjectDialog(U2OpStatus &os, const QString& projectName);

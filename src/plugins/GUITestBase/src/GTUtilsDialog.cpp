@@ -28,10 +28,13 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QMenu>
 
+
+
+#include <QDebug>
+
 namespace U2 {
 
 void GUIDialogWaiter::wait() {
-
     QWidget* modalWidget = QApplication::activeModalWidget();
     QWidget* popupWidget = QApplication::activePopupWidget();
     if (!modalWidget && !popupWidget) {
@@ -56,6 +59,15 @@ void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDial
     if (failOnNoDialog) {
         CHECK_SET_ERR(waiter.hadRun == true, "GUIDialogUtils::waitForDialog: no dialog");
     }
+}
+
+void GTUtilsDialog::preWaitForDialog(U2OpStatus &os, Runnable *r)
+{
+    static GUIDialogWaiter waiter(r);
+    static QTimer t;
+
+    t.connect(&t, SIGNAL(timeout()), &waiter, SLOT(wait()));
+    t.start(100);
 }
 
 void GTUtilsDialog::openExportProjectDialog(U2OpStatus &os) {
@@ -209,8 +221,9 @@ void GTUtilsDialog::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &pro
    GTUtilsDialog::waitForDialog(os, &filler, false); // MessageBox question appears only if there is already a file on a disk
 }
 
-void GTUtilsDialog::PopupChooser::run() {
-
+void GTUtilsDialog::PopupChooser::run()
+{
+    GTGlobals::sleep(100);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
