@@ -25,15 +25,13 @@
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QWidget>
 #include <QtGui/QMainWindow>
-#include <QtGui/qcombobox.h>
 
 namespace U2 {
 
 void GTWidget::click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton) {
 
-    GTGlobals::sleep(100);
     CHECK_SET_ERR(w != NULL, "GTWidget::click: widget is NULL");
-
+    CHECK_SET_ERR(w->isVisible() == true, "GTWidget::click: widget is not visible");
     CHECK_SET_ERR(w->isEnabled() == true, "GTWidget::click: widget is not enabled");
 
     GTMouseDriver::moveTo(os, w->mapToGlobal(w->rect().center()));
@@ -47,10 +45,7 @@ void GTWidget::setFocus(U2OpStatus &os, QWidget *w) {
     GTWidget::click(os, w);
     GTGlobals::sleep(1000);
 
-    if(!qobject_cast<QComboBox*>(w)){
-        CHECK_SET_ERR(w->hasFocus(), "Can't set focus on widget");
-    }
-    
+    CHECK_SET_ERR(w->hasFocus(), "Can't set focus on widget");
 }
 
 QWidget* GTWidget::findWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget, const FindOptions& options) {

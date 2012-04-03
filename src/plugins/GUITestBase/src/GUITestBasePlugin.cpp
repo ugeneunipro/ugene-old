@@ -54,7 +54,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0011);
-    REGISTER_TEST(GUITest_common_scenarios_project::test_0014);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
 //    REGISTER_TEST(GUITest_common_scenarios_project::test_0023); excluded because of bug
