@@ -20,8 +20,6 @@ isEmpty( INSTALL_PREFIX )  : INSTALL_PREFIX  = /usr
 isEmpty( INSTALL_BINDIR )  : INSTALL_BINDIR  = $$INSTALL_PREFIX/bin
 isEmpty( INSTALL_LIBDIR )  {
     INSTALL_LIBDIR  = $$INSTALL_PREFIX/lib
-    #installing to lib64 on 64-bit platforms:
-    contains (QMAKE_HOST.arch, x86_64) : INSTALL_LIBDIR = $$INSTALL_PREFIX/lib64
 }
 
 isEmpty( INSTALL_MANDIR )  : INSTALL_MANDIR  = $$INSTALL_PREFIX/share/man
