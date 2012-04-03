@@ -20,6 +20,7 @@
  */
 
 #include "GTUtilsDialog.h"
+#include "api/GTComboBox.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTMenu.h"
@@ -226,6 +227,64 @@ void GTUtilsDialog::PopupChooser::run()
     GTGlobals::sleep(100);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
+}
+
+
+void GTUtilsDialog::RemoteDBDialogFiller::run() {
+    QWidget* w = QApplication::activeModalWidget();
+    if (!w) {
+        return;
+    }
+
+    QWidget* activeW = QApplication::focusWidget();
+    QObject* activeWP = activeW->parent();
+    QObject* activeWPP = activeWP->parent();
+
+    QList<QLineEdit*> lineEdits;
+    foreach (QObject *obj, activeWP->children()) {
+        QLineEdit *l = qobject_cast<QLineEdit*>(obj);
+        if (l) {
+            lineEdits.push_front(l);
+        }
+    }
+
+    CHECK_SET_ERR(lineEdits.size() == 2, "There aren't 3 QLineEdits in Access remote DB dialog");
+
+    GTLineEdit::setText(os, lineEdits[1], resID);
+    if(!saveDirPath.isEmpty()){
+        GTLineEdit::setText(os, lineEdits[0], saveDirPath);
+    }
+
+    QList<QComboBox*> comboBoxes;
+    foreach (QObject *obj, activeWP->children()) {
+        QComboBox *c = qobject_cast<QComboBox*>(obj);
+        if (c) {
+            comboBoxes.push_front(c);
+        }
+    }
+
+    CHECK_SET_ERR(comboBoxes.size() == 1, "There aren't 1 QComboBox in Access remote DB dialog");
+
+    GTComboBox::setCurrentIndex(os, comboBoxes.first(), DBItemNum);
+    
+    QList<QPushButton*> buttons;
+    foreach (QObject *obj, activeWP->children()) {
+        QPushButton *b = qobject_cast<QPushButton*>(obj);
+        if (b) {
+            buttons.push_front(b);
+        }
+    }
+
+    CHECK_SET_ERR(buttons.size() == 2, "There aren't 2 QPushButtons in SaveProjectAs dialog");
+
+    QPushButton* okButton = buttons[1];
+    QPushButton* cancelButton = buttons[0];
+
+    if (pressCancel) {
+        GTWidget::click(os, cancelButton);
+    }else {
+        GTWidget::click(os, okButton);
+    }
 }
 
 }

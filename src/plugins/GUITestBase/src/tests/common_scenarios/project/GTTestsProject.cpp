@@ -33,6 +33,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsTaskTreeView.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
 
@@ -193,6 +194,18 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
 
     GTUtilsProject::closeProject(os, s);
     GTUtilsLog::check(os, logTracer);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014) {
+    //GTGlobals::clickMenuAction(os, ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, MWMENU_FILE);
+    //;
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
+    GTUtilsDialog::RemoteDBDialogFiller filler(os, "1HTQ", 2); 
+    GTUtilsDialog::waitForDialog(os, &filler);
+    GTUtilsTaskTreeView::openView(os);
+    GTUtilsTaskTreeView::cancleTask(os, "DownloadRemoteDocuments");
+
+    GTGlobals::sleep(10000);
 }
 
 }
