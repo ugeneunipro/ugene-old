@@ -48,7 +48,7 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
                   &root, &child, &root_x, &root_y,
                   &pos_x, &pos_y, &mask);
 
-    const int delay = 10; //msec
+    const int delay = 1;// msec
     int x0 = pos_x;
     int y0 = pos_y;
     int x1 = x;
