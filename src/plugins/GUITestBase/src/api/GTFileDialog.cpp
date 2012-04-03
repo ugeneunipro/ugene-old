@@ -76,19 +76,23 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
 
 void GTFileDialogUtils::run()
 {
-    GTGlobals::sleep(1000);
-
     QWidget *dialog = QApplication::activeModalWidget();
     CHECK_SET_ERR (dialog != NULL && QString(dialog->metaObject()->className()) == "QFileDialog",
                    "Error: file dialog not found in GTFileDialog::run()");
 
     fileDialog = dialog;
 
+    GTGlobals::sleep(2000);
     setPath();
+    GTGlobals::sleep(2000);
     clickButton(Open);
+    GTGlobals::sleep(2000);
     setFilter();
+    GTGlobals::sleep(2000);
     setViewMode(Detail);
+    GTGlobals::sleep(2000);
     selectFile();
+    GTGlobals::sleep(2000);
     clickButton(button);
 }
 
@@ -168,6 +172,20 @@ void GTFileDialogUtils::selectFile()
     QPoint indexCenter;
 
     switch(method) {
+    case GTGlobals::UseKey:
+//        while (! w->hasFocus()) {
+//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+//            GTGlobals::sleep(100);
+//        }
+
+//        while (qobject_cast<QFileDialog*>(fileDialog)->selectedFiles().indexOf(path + fileName) == -1) {
+//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+//            GTGlobals::sleep(1000);
+//        }
+//        break;
+/// TODO: above don't work, if show only one file
+
     case GTGlobals::UseMouse:
         if (! w->rect().contains(w->visualRect(index))) {
             GTMouseDriver::moveTo(os, w->mapToGlobal(w->geometry().center()));
@@ -183,19 +201,8 @@ void GTFileDialogUtils::selectFile()
         GTMouseDriver::moveTo(os, w->mapToGlobal(indexCenter));
         GTMouseDriver::click(os);
         break;
-
-    case GTGlobals::UseKey:
-        while (! w->hasFocus()) {
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-            GTGlobals::sleep(100);
-        }
-
-        while (qobject_cast<QFileDialog*>(fileDialog)->selectedFiles().indexOf(path + fileName) == -1) {
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
-            GTGlobals::sleep(100);
-        }
-        break;
     }
+
     GTGlobals::sleep(100);
 }
 
@@ -215,22 +222,27 @@ void GTFileDialogUtils::clickButton(Button btn)
     }
     CHECK_SET_ERR (button_to_click != NULL, "Error: button not foud in GTFileDialog::clickButton()");
 
+    while (! button_to_click->isEnabled()) {
+        GTGlobals::sleep(100);
+    }
+
     QPoint btn_pos;
+    int key = 0, key_pos;
 
     switch(method) {
+    case GTGlobals::UseKey:
+        key_pos = button_to_click->text().indexOf('&');
+        if (key_pos != -1) {
+            key = (button_to_click->text().at(key_pos + 1)).toAscii();
+            GTKeyboardDriver::keyClick(os, key, GTKeyboardDriver::key["alt"]);
+            break;
+        }
+
     case GTGlobals::UseMouse:
         btn_pos = button_to_click->mapToGlobal(button_to_click->rect().center());
         GTMouseDriver::moveTo(os, btn_pos);
         GTMouseDriver::click(os);
         GTMouseDriver::click(os); //second click is needed for Linux
-        break;
-
-    case GTGlobals::UseKey:
-        while(! button_to_click->hasFocus()) {
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-            GTGlobals::sleep(100);
-        }
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
         break;
     }
 }
@@ -265,9 +277,21 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &fileName,
                             const QString &filters, Button button, GTGlobals::UseMethod m)
 {
-    GTFileDialogUtils ob(os, path, fileName, filters, (GTFileDialogUtils::Button)button, m);
+    QString _path = QDir::cleanPath(QDir::currentPath() + "/" + path);
+    if (_path.at(_path.count() - 1) != '/') {
+        _path += '/';
+    }
+
+    GTFileDialogUtils ob(os, _path, fileName, filters, (GTFileDialogUtils::Button)button, m);
+    if (m == GTGlobals::UseMouse) {
+        GTUtilsDialog::preWaitForDialog(os, &ob);
+    }
+
     ob.openFileDialog();
-    GTUtilsDialog::waitForDialog(os, &ob);
+
+    if (m == GTGlobals::UseKey) {
+        GTUtilsDialog::waitForDialog(os, &ob);
+    }
 }
 
 } // namespace
