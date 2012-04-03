@@ -77,9 +77,7 @@ QPoint GTUtilsProjectTreeView::getTreeViewItemPosition(U2OpStatus &os, const QSt
 
     QPoint p = treeWidget->rect().center();
     if (item) {
-        //p = treeWidget->visualItemRect(item).center();
-        QRect r = treeWidget->visualItemRect(item);
-        p = QPoint(r.left(), r.height()/2);
+        p = treeWidget->visualItemRect(item).center();
     }
 
     return treeWidget->mapToGlobal(p);
