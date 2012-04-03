@@ -59,7 +59,7 @@ public:
     TODO: use subgrouping*/
     void removeGroup( AnnotationGroup* parentGroup, AnnotationGroup* groupToDelete, const U2DataId& rootFeatureId, const U2DbiRef& dbiRef, U2OpStatus& op);
 
-    /**use annotation modification tio update features*/
+    /**use annotation modification to update features*/
     void modifyFeatures( const AnnotationModification& md, const U2DataId& rootFeatureId, const U2DbiRef& dbiRef, U2OpStatus& op);
 
 private:
@@ -81,7 +81,15 @@ public:
     /**Return sublist of features which have given parentId*/
     static QList<U2Feature> getChildFeatureSublist(const U2DataId& parentFeatureId, const QList<U2Feature>& features);
 
-    
+    /**Counts children which one level below the parentFeature*/
+    static qint64 countChildren(const U2DataId& parentFeatureId, U2FeatureDbi* fdbi, U2OpStatus& os);
+
+    /**Delete groups and operation keys from list*/
+    static void clearKeys (QList<U2FeatureKey> & fKeys);
+
+    /**Delete groups and operation keys from db
+    Recursively from the parent feature*/
+    static void clearKeys (const U2DataId& parentFeatureId, U2FeatureDbi* fdbi, U2OpStatus& os);
 };
 
 } //namespace

@@ -293,10 +293,10 @@ void SQLiteFeatureDbi::removeAllKeys(const U2DataId& featureId, const QString& k
     q.execute();
 }
 
-void SQLiteFeatureDbi::updateKey(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os){
+void SQLiteFeatureDbi::updateKeyValue(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os){
     DBI_TYPE_CHECK(featureId, U2Type::Feature, os, );
 
-    SQLiteQuery q("UPDATE FeatureKey SET key = ?2, value = ?3 WHERE feature = ?1" , db, os);
+    SQLiteQuery q("UPDATE FeatureKey SET value = ?3 WHERE feature = ?1 AND key = ?2" , db, os);
     q.bindDataId(1, featureId);
     q.bindString(2, key.name);
     q.bindString(3, key.value);

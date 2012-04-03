@@ -133,7 +133,7 @@ public:
         Updates feature key.
         Requires: U2DbiFeature_WriteFeature feature support
     */
-    virtual void updateKey(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) = 0;
+    virtual void updateKeyValue(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) = 0;
 
     /**
         Updates feature location. Features with U2Region(0,0) have no specified location

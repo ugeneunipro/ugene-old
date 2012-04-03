@@ -202,26 +202,35 @@ void FeatureSynchronizer::modifyFeatures( const AnnotationModification& md, cons
             }
         case AnnotationModification_LocationChanged:
             {
+                //TODO: if there will be not only region subfeatures, update it another way
+                qint64 subfeaturesCount = U2FeaturesUtils::countChildren(featureId, connection.dbi->getFeatureDbi(), op);
+                if(subfeaturesCount >= 0){
+                     removeFeature(featureId, dbiRef, op);
+                }
+
+                U2FeatureKey locationOpKey;
+                if(md.annotation->getLocationOperator() == U2LocationOperator_Join){
+                    locationOpKey = U2FeatureKey(U2FeatureKeyOperation, U2FeatureKeyOperationJoin);
+                }else{
+                    locationOpKey = U2FeatureKey(U2FeatureKeyOperation, U2FeatureKeyOperationOrder);
+                }
+
                 if(md.annotation->getRegions().size() == 1){
                     U2FeatureLocation location;
                     location.region = md.annotation->getRegions().first();
                     location.strand = md.annotation->getStrand();
                     connection.dbi->getFeatureDbi()->updateLocation(featureId, location, op);
-
-                    //remove subfeatures
-                    //TODO: if there will be not only region subfeatures, clean it another way
-                    removeFeature(featureId, dbiRef, op);
+                    connection.dbi->getFeatureDbi()->updateKeyValue(featureId, locationOpKey, op);
 
                 }else{
                     //split
-
                     U2FeatureLocation location;
                     location.region = U2Region(0,0);
                     location.strand = U2Strand::Direct;
                     connection.dbi->getFeatureDbi()->updateLocation(featureId, location, op);
+                    connection.dbi->getFeatureDbi()->updateKeyValue(featureId, locationOpKey, op);
                     
                     addSubFeatures(md.annotation->getRegions(), md.annotation->getStrand(), featureId, connection.dbi->getFeatureDbi(), op);
-                    
                 }
                 break;
             }
@@ -313,6 +322,45 @@ QList<U2Feature> U2FeaturesUtils::getChildFeatureSublist( const U2DataId& parent
         }
     }
     return result;
+}
+
+qint64 U2FeaturesUtils::countChildren( const U2DataId& parentFeatureId, U2FeatureDbi* fdbi, U2OpStatus& os ){
+    SAFE_POINT(fdbi!=NULL, "Feature Dbi is null", -1);
+
+    FeatureQuery query;
+    query.parentFeatureId = parentFeatureId;
+    query.topLevelOnly = false;
+
+    qint64 result = fdbi->countFeatures(query, os);
+    CHECK_OP(os, result);
+
+    return result;
+}
+
+void U2FeaturesUtils::clearKeys( QList<U2FeatureKey> & fKeys ){
+    foreach(const U2FeatureKey& key, fKeys){
+        if(key.name == U2FeatureKeyGroup || key.name == U2FeatureKeyOperation){
+            fKeys.removeOne(key);
+        }
+    }
+}
+
+void U2FeaturesUtils::clearKeys( const U2DataId& parentFeatureId, U2FeatureDbi* fdbi, U2OpStatus& op ){
+    //root
+    fdbi->removeAllKeys(parentFeatureId, U2FeatureKeyGroup, op);
+    CHECK_OP(op, )
+        fdbi->removeAllKeys(parentFeatureId, U2FeatureKeyOperation, op);
+    CHECK_OP(op, )
+
+    //children
+    QList<U2Feature> subfeaturesList = U2FeaturesUtils::getSubFeatures(parentFeatureId, fdbi, op, true);
+    CHECK_OP(op, )
+        foreach(const U2Feature& f, subfeaturesList){
+            fdbi->removeAllKeys(f.id, U2FeatureKeyGroup, op);
+             CHECK_OP(op, )
+            fdbi->removeAllKeys(f.id, U2FeatureKeyOperation, op);
+            CHECK_OP(op, )
+    } 
 }
 
 } //namespace
