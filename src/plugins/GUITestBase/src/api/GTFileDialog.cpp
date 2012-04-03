@@ -92,7 +92,7 @@ void GTFileDialogUtils::run()
     setViewMode(Detail);
     GTGlobals::sleep(200);
     selectFile();
-    GTGlobals::sleep(2000);
+    GTGlobals::sleep(200);
     clickButton(button);
 }
 
@@ -173,18 +173,17 @@ void GTFileDialogUtils::selectFile()
 
     switch(method) {
     case GTGlobals::UseKey:
-//        while (! w->hasFocus()) {
-//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-//            GTGlobals::sleep(100);
-//        }
+        while (! w->hasFocus()) {
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+            GTGlobals::sleep(100);
+        }
 
-//        while (qobject_cast<QFileDialog*>(fileDialog)->selectedFiles().indexOf(path + fileName) == -1) {
-//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
-//            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-//            GTGlobals::sleep(1000);
-//        }
-//        break;
-/// TODO: above don't work, if show only one file
+        while (qobject_cast<QFileDialog*>(fileDialog)->selectedFiles().indexOf(path + fileName) == -1) {
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+            GTGlobals::sleep(100);
+        }
+        break;
 
     case GTGlobals::UseMouse:
         if (! w->rect().contains(w->visualRect(index))) {
