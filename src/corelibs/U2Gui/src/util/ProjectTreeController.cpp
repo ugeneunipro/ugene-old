@@ -107,9 +107,11 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
 	connect(loadSelectedDocumentsAction, SIGNAL(triggered()), SLOT(sl_onLoadSelectedDocuments()));
 
     addReadonlyFlagAction = new QAction(tr("Lock document for editing"), this);
+    addReadonlyFlagAction->setObjectName(ACTION_DOCUMENT__LOCK);
     connect(addReadonlyFlagAction, SIGNAL(triggered()), SLOT(sl_onToggleReadonly()));
 
     removeReadonlyFlagAction = new QAction(tr("Unlock document for editing"), this);
+    removeReadonlyFlagAction->setObjectName(ACTION_DOCUMENT__UNLOCK);
     connect(removeReadonlyFlagAction, SIGNAL(triggered()), SLOT(sl_onToggleReadonly()));
 
     unloadSelectedDocumentsAction = new QAction( QIcon(":core/images/unload_document.png"), tr("Unload selected document"), this);

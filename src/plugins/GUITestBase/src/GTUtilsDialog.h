@@ -31,6 +31,7 @@ namespace U2 {
 class Runnable {
 public:
     virtual void run() = 0;
+    virtual ~Runnable(){}
 };
 
 class GUIDialogWaiter : public QObject {
@@ -46,6 +47,14 @@ private:
 
 class GTUtilsDialog {
 public:
+    class CreateAnnotationDialogChecker : public Runnable {
+    public:
+        CreateAnnotationDialogChecker(U2OpStatus &_os) : os(_os){}
+        virtual void run();
+    private:
+        U2OpStatus &os;
+    };
+
     class ExportProjectDialogFiller : public Runnable {
     public:
         ExportProjectDialogFiller(U2OpStatus &_os, const QString &_projectFolder, const QString &_projectName)

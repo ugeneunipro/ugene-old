@@ -77,6 +77,9 @@ class QMainWindow;
 
 #define ACTION_PROJECT__EDIT_MENU                    "action_project__edit_menu"
 
+#define ACTION_DOCUMENT__LOCK                           "action_document_lock"
+#define ACTION_DOCUMENT__UNLOCK                         "action_document_unlock"
+
 #define DOCK_PROJECT_VIEW    "dock_project_view"
 #define DOCK_TASK_VIEW       "dock_task_view"
 #define DOCK_LOG_VIEW        "dock_log_view"

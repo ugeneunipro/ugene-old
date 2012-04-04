@@ -26,11 +26,8 @@
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#include <QtGui/QComboBox>
 #include <QtGui/QMenu>
-
-
-
-#include <QDebug>
 
 namespace U2 {
 
@@ -68,6 +65,28 @@ void GTUtilsDialog::preWaitForDialog(U2OpStatus &os, Runnable *r)
 
     t.connect(&t, SIGNAL(timeout()), &waiter, SLOT(wait()));
     t.start(100);
+}
+
+void GTUtilsDialog::CreateAnnotationDialogChecker::run() {
+
+    QWidget* dialog = QApplication::activeModalWidget();
+    CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+    QAbstractButton *radioButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "existingObjectRB", dialog));
+    CHECK_SET_ERR(radioButton != NULL, "Radiobutton is NULL");
+    CHECK_SET_ERR(!radioButton->isEnabled() && !radioButton->isCheckable(), "radioButton is enabled or checkable");
+
+    QComboBox *comboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "existingObjectCombo", dialog));
+    CHECK_SET_ERR(comboBox != NULL, "ComboBox is NULL");
+    CHECK_SET_ERR(comboBox->count() == 0, "comboBox count is not 0");
+
+    QAbstractButton *b = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "existingObjectButton", dialog));
+    CHECK_SET_ERR(b != NULL, "Button is NULL");
+    CHECK_SET_ERR(b->isEnabled() == false, "Button is enabled");
+
+    QWidget *cancelButton = GTWidget::findWidget(os, "cancel_button", dialog);
+    CHECK_SET_ERR(cancelButton != NULL, "Cancel button is NULL");
+    GTWidget::click(os, cancelButton);
 }
 
 void GTUtilsDialog::openExportProjectDialog(U2OpStatus &os) {
