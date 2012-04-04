@@ -109,6 +109,20 @@ public:
         GTGlobals::UseMethod useMethod;
     };
 
+    class RemoteDBDialogFiller : public Runnable {
+    public:
+        RemoteDBDialogFiller(U2OpStatus &_os, const QString _resID, int _DBItemNum, bool _pressCancel = false, const QString _saveDirPath = QString(),  GTGlobals::UseMethod _useMethod = GTGlobals::UseMouse)
+            :os(_os), resID(_resID), DBItemNum(_DBItemNum), pressCancel(_pressCancel), saveDirPath(_saveDirPath), useMethod(_useMethod){}
+        virtual void run();
+    private:
+        bool pressCancel;
+        U2OpStatus &os;
+        QString resID;
+        int DBItemNum;
+        QString saveDirPath;
+        GTGlobals::UseMethod useMethod;
+    };
+
     static void waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDialog = true);
     static void preWaitForDialog(U2OpStatus &os, Runnable *r);
 };

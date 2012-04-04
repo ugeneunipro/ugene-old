@@ -90,6 +90,7 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     connect(openProjectAction, SIGNAL(triggered()), SLOT(sl_openProject()));
     
     downloadRemoteFileAction = new QAction(tr("Access remote database..."), this);
+    downloadRemoteFileAction->setObjectName(ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
     downloadRemoteFileAction->setIcon(QIcon(":ugene/images/world_go.png"));
     connect(downloadRemoteFileAction, SIGNAL(triggered()), SLOT(sl_downloadRemoteFile()));
 

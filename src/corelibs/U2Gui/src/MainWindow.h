@@ -68,6 +68,7 @@ class QMainWindow;
 #define ACTION_PROJECTSUPPORT__CLOSE_PROJECT            "action_projectsupport__close_project"
 #define ACTION_PROJECTSUPPORT__RECENT_PROJECTS_MENU     "action_projectsupport__recent_projects_menu"
 #define ACTION_PROJECTSUPPORT__EXPORT_PROJECT           "action_projectsupport__export_project"
+#define ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB         "action_projectsupport__access_remote_db"
 
 #define ACTION_PROJECT__ADD_MENU                    "action_project__add_menu"
 #define ACTION_PROJECT__REMOVE_MENU                 "action_project__remove_menu"
@@ -83,6 +84,7 @@ class QMainWindow;
 #define DOCK_PROJECT_VIEW    "dock_project_view"
 #define DOCK_TASK_VIEW       "dock_task_view"
 #define DOCK_LOG_VIEW        "dock_log_view"
+#define DOCK_TASK_TREE_VIEW  "taskViewTree"
 
 namespace U2 {
 

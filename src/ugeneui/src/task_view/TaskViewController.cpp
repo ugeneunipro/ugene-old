@@ -56,7 +56,7 @@ TaskViewDockWidget::TaskViewDockWidget() {
     setLayout(l);
 
     tree = new QTreeWidget(this);
-    tree->setObjectName("taskViewTree");
+    tree->setObjectName(DOCK_TASK_TREE_VIEW);
     l->addWidget(tree);
     
     buildTree();
