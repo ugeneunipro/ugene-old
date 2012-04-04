@@ -1,0 +1,36 @@
+#!/bin/bash
+
+appname=ugenecl
+
+# Check if '-ui' parameter is present. 
+# If it does exclude it from the list of parameters
+# and use ugeneui instead of ugenecl
+
+params=()
+
+while [[ $# -gt 0 ]];
+do
+    if [ "$1" = "-ui" ]; then
+        appname=ugeneui
+    else
+        params+=("$1")
+    fi
+    shift
+done
+
+# readlink -f unavailable on BSD/Mac, so we cannot do
+# physical=`readlink -f $0`
+# Instead, use workaround inspired by http://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
+
+physical=$0
+cd `dirname "$physical"`
+physical=`basename "$physical"`
+while [ -L "$physical" ]
+do
+  physical=`readlink "$physical"`
+  dirname=`dirname "$physical"`
+  cd "$dirname"
+  physical=`basename "$physical"`
+done
+
+"`pwd -P`/$appname" "${params[@]}"
