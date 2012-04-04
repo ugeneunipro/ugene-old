@@ -42,20 +42,16 @@ namespace GUITest_common_scenarios_project{
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
 
-    GTUtilsProject::openProject(os,
-        testDir+"_common_data/scenarios/project/proj1.uprj",
-        "proj1 UGENE",
-        "1CF7.PDB"
-    );
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj1.uprj");
+    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
+    GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTUtilsProject::exportProject(os, testDir+"_common_data/scenarios/sandbox");
     GTUtilsProject::closeProject(os);
 
-    GTUtilsProject::openProject(os,
-        testDir+"_common_data/scenarios/sandbox/proj1.uprj",
-        "proj1 UGENE",
-        "1CF7.PDB"
-    );
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/sandbox/proj1.uprj");
+    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
+    GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, "1CF7.PDB"));
     GTGlobals::sleep(2000);
@@ -73,11 +69,9 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
-    GTUtilsProject::openProject(os,
-        testDir+"_common_data/scenarios/project/proj1.uprj",
-        "proj1 UGENE",
-        "1CF7.PDB"
-    );
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj1.uprj");
+    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
+    GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTUtilsProject::saveProjectAs(os,
         "proj2",
@@ -87,11 +81,9 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     GTUtilsProject::closeProject(os);
 
-    GTUtilsProject::openProject(os,
-        testDir+"_common_data/scenarios/sandbox/proj2.uprj",
-        "proj2 UGENE",
-        "1CF7.PDB"
-    );
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/sandbox/proj2.uprj");
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+    GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, "1CF7.PDB"));
     GTGlobals::sleep(2000);
@@ -108,11 +100,10 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0007) {
 
-    GTUtilsProject::openProject(os, 
-        testDir+"_common_data/scenarios/project/proj1.uprj", 
-        "proj1 UGENE", 
-        "1CF7.PDB"
-        );
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj1.uprj");
+    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
+    GTUtilsDocument::checkDocument(os, "1CF7.PDB");
+
     GTUtilsDocument::removeDocument(os, "1CF7.PDB", GTGlobals::UseMouse);
     GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
 }

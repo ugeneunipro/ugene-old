@@ -34,13 +34,6 @@
 
 namespace U2 {
 
-void GTUtilsProject::openProject(U2OpStatus& os, const GUrl& path, const QString& projectName, const QString& documentName) {
-
-    openFiles(os, path);
-    GTUtilsApp::checkUGENETitle(os, projectName);
-    GTUtilsDocument::checkDocument(os, documentName);
-}
-
 void GTUtilsProject::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& s) {
 
     switch (s.openMethod) {
@@ -92,11 +85,6 @@ void GTUtilsProject::closeProject(U2OpStatus &os, const CloseProjectSettings& se
     GTUtilsDialog::waitForDialog(os, &filler, false);
 }
 
-void GTUtilsProject::closeProjectByHotkey(U2OpStatus &os) {
-
-    GTKeyboardDriver::keyClick(os, 'q', GTKeyboardDriver::key["ctrl"]);
-}
-
 void GTUtilsProject::checkProject(U2OpStatus &os, CheckType checkType) {
 
     CHECK_SET_ERR(AppContext::getProject() != NULL, "There is no project");
@@ -128,26 +116,6 @@ Document* GTUtilsProject::checkDocumentExists(U2OpStatus &os, const GUrl &url) {
     CHECK_SET_ERR_RESULT(doc->isLoaded(), "Document is not loaded", NULL);
 
     return doc;
-}
-
-void GTUtilsProject::checkDocumentActive(U2OpStatus &os, Document *doc) {
-
-    Q_UNUSED(os);
-    if (!doc) {
-        return;
-    }
-
-    MWMDIWindow *activeWindow = AppContext::getMainWindow()->getMDIManager()->getActiveWindow();
-    CHECK_SET_ERR(activeWindow != NULL, "There is no active window");
-
-    const QList<GObject*>& docObjects = doc->getObjects();
-    CHECK_SET_ERR(!docObjects.isEmpty(), "Document has no objects");
-
-    QList<GObjectViewWindow*> viewsList = GObjectViewUtils::findViewsWithAnyOfObjects(docObjects);
-    CHECK_SET_ERR(!viewsList.isEmpty(), "View is not loaded");
-
-    MWMDIWindow *documentWindow = viewsList.first();
-    CHECK_SET_ERR(documentWindow == activeWindow, "documentWindow is not active");
 }
 
 void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {

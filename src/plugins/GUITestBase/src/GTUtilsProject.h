@@ -49,8 +49,6 @@ public:
         QMessageBox::StandardButton saveOnCloseButton;
     };
 
-    static void openProject(U2OpStatus& os, const GUrl& path, const QString& projectName, const QString& documentName);
-
     /*
         opens files using settings, checks if the document is loaded
     */
@@ -66,14 +64,10 @@ public:
     enum CheckType {Exists, Empty};
     static void checkProject(U2OpStatus &os, CheckType checkType = Exists);
 
+protected:
     static Document* checkDocumentExists(U2OpStatus &os, const GUrl &url);
 
-protected:
     static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);
-
-    static void checkDocumentActive(U2OpStatus &os, Document *doc);
-
-    static void closeProjectByHotkey(U2OpStatus &os);
 };
 
 } // U2
