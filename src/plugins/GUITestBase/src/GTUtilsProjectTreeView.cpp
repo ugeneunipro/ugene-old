@@ -20,13 +20,11 @@
  */
 
 #include "GTUtilsProjectTreeView.h"
-#include "GTUtilsProject.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
-#include <U2Gui/ProjectView.h>
+#include "GTUtilsTreeView.h"
 #include <U2Core/ProjectModel.h>
-#include <QtGui/QTreeWidget>
 
 namespace U2 {
 
@@ -64,23 +62,29 @@ void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, con
     GTGlobals::sleep(500);
 }
 
-QPoint GTUtilsProjectTreeView::getTreeViewItemPosition(U2OpStatus &os, const QString &itemName) {
+QRect GTUtilsProjectTreeView::getTreeViewItemRect(U2OpStatus &os, const QString &itemName) {
 
     openView(os);
     QTreeWidget *treeWidget = getTreeWidget(os);
-    CHECK_SET_ERR_RESULT(treeWidget != NULL, "treeWidget " + itemName + " is NULL", QPoint());
+    CHECK_SET_ERR_RESULT(treeWidget != NULL, "treeWidget " + itemName + " is NULL", QRect());
 
     QTreeWidgetItem *item = getTreeWidgetItem(os, itemName);
-    CHECK_SET_ERR_RESULT(item != NULL, "treeWidgetItem " + itemName + " is NULL", QPoint());
+    CHECK_SET_ERR_RESULT(item != NULL, "treeWidgetItem " + itemName + " is NULL", QRect());
 
-    CHECK_SET_ERR_RESULT(item->isHidden() == false, "item " + itemName + " is hidden", QPoint());
+    GTUtilsTreeView::expandTo(os, treeWidget, item);
+    CHECK_SET_ERR_RESULT(item->isHidden() == false, "item " + itemName + " is hidden", QRect());
 
-    QPoint p = treeWidget->rect().center();
-    if (item) {
-        p = treeWidget->visualItemRect(item).center();
-    }
+    return treeWidget->visualItemRect(item);
+}
 
-    return treeWidget->mapToGlobal(p);
+QPoint GTUtilsProjectTreeView::getTreeViewItemPosition(U2OpStatus &os, const QString &itemName) {
+
+    QRect r = getTreeViewItemRect(os, itemName);
+
+    QTreeWidget *treeWidget = getTreeWidget(os);
+    CHECK_SET_ERR_RESULT(treeWidget != NULL, "treeWidget " + itemName + " is NULL", QPoint());
+
+    return treeWidget->mapToGlobal(r.center());
 }
 
 QTreeWidget* GTUtilsProjectTreeView::getTreeWidget(U2OpStatus &os) {

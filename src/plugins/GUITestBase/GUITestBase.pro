@@ -8,10 +8,12 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsLog.h \
             src/GTUtilsMdi.h \
             src/GTUtilsProject.h \
+            src/GTUtilsTreeView.h \
             src/GTUtilsProjectTreeView.h \
             src/GTUtilsToolTip.h \
             src/tests/GUIInitialChecks.h \
             src/tests/common_scenarios/project/GTTestsProject.h \
+            src/tests/common_scenarios/project/relations/GTTestsProjectRelations.h \
             src/tests/GUIToolbarTests.h \
             src/api/GTComboBox.h \
             src/api/GTFileDialog.h \
@@ -36,10 +38,12 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsLog.cpp \
             src/GTUtilsMdi.cpp \
             src/GTUtilsProject.cpp \
+            src/GTUtilsTreeView.cpp \
             src/GTUtilsProjectTreeView.cpp \
             src/GTUtilsToolTip.cpp \
             src/tests/GUIInitialChecks.cpp \
             src/tests/common_scenarios/project/GTTestsProject.cpp \
+            src/tests/common_scenarios/project/relations/GTTestsProjectRelations.cpp \
             src/tests/GUIToolbarTests.cpp \
             src/api/GTComboBox.cpp \
             src/api/GTFileDialog.cpp \

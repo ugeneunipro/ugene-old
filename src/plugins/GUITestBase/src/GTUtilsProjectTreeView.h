@@ -38,6 +38,8 @@ public:
     static void openView(U2OpStatus& os);
     static void toggleView(U2OpStatus& os);
 
+    // returns center or item's rect
+    // fails if the item wasn't found
     static QPoint getTreeViewItemPosition(U2OpStatus &os, const QString &itemName);
 
     static QTreeWidget* getTreeWidget(U2OpStatus &os);
@@ -46,6 +48,8 @@ public:
     static const QString widgetName;
 
 private:
+    static QRect getTreeViewItemRect(U2OpStatus &os, const QString &itemName);
+
     static QTreeWidgetItem* getTreeWidgetItem(QTreeWidget* tree, const QString &itemName);
     static QString getProjectTreeItemName(ProjViewItem* projViewItem);
 

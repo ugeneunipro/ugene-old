@@ -25,6 +25,7 @@
 
 #include "tests/GUIInitialChecks.h"
 #include "tests/common_scenarios/project/GTTestsProject.h"
+#include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
 #include "tests/GUIToolbarTests.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
@@ -61,6 +62,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //    REGISTER_TEST(GUITest_common_scenarios_project::test_0028); excluded failed test
 //    REGISTER_TEST(GUITest_common_scenarios_project::test_0030); excluded because of bug
 //        guiTestBase->registerTest(new ToolbarTest());
+
+    REGISTER_TEST(GUITest_common_scenarios_project_relations::test_0002);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
