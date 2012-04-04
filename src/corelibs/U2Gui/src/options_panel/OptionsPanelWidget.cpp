@@ -28,8 +28,11 @@ namespace U2 {
 
 
 OptionsScrollArea::OptionsScrollArea() {
+    setObjectName("OP_SCROLL_AREA");
     setWidgetResizable(true);
-    setStyleSheet("border-style: none;");
+    setStyleSheet("QWidget#OP_SCROLL_AREA { "
+        "border-style: none;"
+        " }");
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     hide();
 }
@@ -44,13 +47,16 @@ QSize OptionsScrollArea::sizeHint() const
 
 OptionsPanelWidget::OptionsPanelWidget()
 {
+    setObjectName("OP_MAIN_WIDGET");
+
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
 
-    setStyleSheet(
+    setStyleSheet("QWidget#OP_MAIN_WIDGET { "
         "border-style: solid;"
         "border-color: palette(shadow);"
         "border-top-width: 1px;"
-        "border-bottom-width: 1px;");
+        "border-bottom-width: 1px;"
+        " }");
 
     // Initialize the layout of the whole widget
     QHBoxLayout* mainLayout = new QHBoxLayout();
@@ -81,12 +87,14 @@ OptionsPanelWidget::OptionsPanelWidget()
     optionsScrollArea = new OptionsScrollArea();
 
     QWidget* optionsWidget = new QWidget();
+    optionsWidget->setObjectName("OP_OPTIONS_WIDGET");
     optionsWidget->setLayout(optionsLayout);
 
-    optionsWidget->setStyleSheet(
+    optionsWidget->setStyleSheet("QWidget#OP_OPTIONS_WIDGET { "
         "background: palette(window);"
         "border-style: none;"
-        "border-color: palette(shadow);");
+        "border-color: palette(shadow);"
+        " }");
 
     optionsScrollArea->setWidget(optionsWidget);
 

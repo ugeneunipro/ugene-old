@@ -284,7 +284,7 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent * me) {
 }
 
 QString GSequenceLineViewAnnotated::prepareAnnotationText(const Annotation* a, const AnnotationSettings* as) {
-    if (as->nameQuals.isEmpty()) {
+    if ((as->showNameQuals == false) || as->nameQuals.isEmpty()) {
         return a->getAnnotationName();
     }
     QVector<U2Qualifier> qs;

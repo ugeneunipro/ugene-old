@@ -41,7 +41,6 @@ GroupOptionsWidget::GroupOptionsWidget(const QString& title, QWidget* _widget)
         "margin: 5px;");
 
     widget->setContentsMargins(10, 5, 5, 5);
-    widget->setStyleSheet("border-style: none;");
 
     // Layout and "parent" the widgets
     mainLayout = new QVBoxLayout();

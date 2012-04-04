@@ -20,8 +20,6 @@ HEADERS += src/AppSettingsGUI.h \
            src/options_panel/ShowHideSubgroupWidget.h \
            src/util/AddNewDocumentDialogController.h \
            src/util/AddNewDocumentDialogImpl.h \
-           src/util/AnnotationSettingsDialogController.h \
-           src/util/AnnotationSettingsDialogImpl.h \
            src/util/AuthenticationDialog.h \
            src/util/BaseDocumentFormatConfigurators.h \
            src/util/CopyDocumentDialogController.h \
@@ -59,7 +57,6 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/TreeWidgetUtils.h \
            src/util/logview/LogView.h
 FORMS += src/util/ui/AddNewDocumentDialog.ui \
-         src/util/ui/AnnotationSettingsDialog.ui \
          src/util/ui/AuthentificationDialog.ui \
          src/util/ui/CopyDocumentDialog.ui \
          src/util/ui/CreateAnnotationWidget.ui \
@@ -92,7 +89,6 @@ SOURCES += src/MainWindow.cpp \
            src/options_panel/OptionsPanelWidget.cpp \
            src/options_panel/ShowHideSubgroupWidget.cpp \
            src/util/AddNewDocumentDialogImpl.cpp \
-           src/util/AnnotationSettingsDialogImpl.cpp \
            src/util/AuthenticationDialog.cpp \
            src/util/BaseDocumentFormatConfigurators.cpp \
            src/util/CopyDocumentDialogController.cpp \

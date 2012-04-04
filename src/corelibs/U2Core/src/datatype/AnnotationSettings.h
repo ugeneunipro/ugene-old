@@ -44,7 +44,10 @@ public:
     QColor      color;
     bool        amino;
     bool        visible;
-    QStringList nameQuals; //a value based on qualifiers value will be used instead of the annotation name
+    bool        showNameQuals; // Specifies whether to show value of qualifier or not
+    QStringList nameQuals;     // The list of qualifiers separated by comma.
+                               // If "showNameQuals" is true, the first found value of a qualifier from the list
+                               // is shown on the annotation.
 };
 
 class U2CORE_EXPORT AnnotationSettingsRegistry : public QObject {

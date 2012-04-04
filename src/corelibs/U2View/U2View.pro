@@ -86,6 +86,10 @@ HEADERS += src/WebWindow.h \
            src/ov_sequence/PanView.h \
            src/ov_sequence/PanViewRows.h \
            src/ov_sequence/WindowStepSelectorWidget.h \
+           src/ov_sequence/annot_highlight/AnnotHighlightSettings.h \
+           src/ov_sequence/annot_highlight/AnnotHighlightTree.h \
+           src/ov_sequence/annot_highlight/AnnotHighlightTreeItem.h \
+           src/ov_sequence/annot_highlight/AnnotHighlightWidget.h \
            src/ov_sequence/sequence_info/CharOccurTask.h \
            src/ov_sequence/sequence_info/DinuclOccurTask.h \
            src/ov_sequence/sequence_info/SequenceInfo.h \
@@ -116,6 +120,7 @@ FORMS += src/ov_assembly/ui/ExportReadsDialog.ui \
          src/ov_msa/ui/CreateSubalignimentDialog.ui \
          src/ov_msa/ui/DeleteGapsDialog.ui \
 		 src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui \
+         src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \
          src/ov_sequence/ui/EditAnnotationDialog.ui \
          src/phyltree/ui/BranchSettingsDialog.ui \
@@ -215,6 +220,10 @@ SOURCES += src/WebWindow.cpp \
            src/ov_sequence/PanView.cpp \
            src/ov_sequence/PanViewRows.cpp \
            src/ov_sequence/WindowStepSelectorWidget.cpp \
+           src/ov_sequence/annot_highlight/AnnotHighlightSettings.cpp \
+           src/ov_sequence/annot_highlight/AnnotHighlightTree.cpp \
+           src/ov_sequence/annot_highlight/AnnotHighlightTreeItem.cpp \
+           src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp \
            src/ov_sequence/sequence_info/CharOccurTask.cpp \
            src/ov_sequence/sequence_info/DinuclOccurTask.cpp \
            src/ov_sequence/sequence_info/SequenceInfo.cpp \

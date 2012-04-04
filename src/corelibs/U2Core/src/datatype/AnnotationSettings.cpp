@@ -112,6 +112,7 @@ void AnnotationSettingsRegistry::read() {
         as->color = s->getValue(SETTINGS_ROOT + as->name + "/color", FeatureColors::genLightColor(as->name)).value<QColor>();
         as->visible = s->getValue(SETTINGS_ROOT + as->name + "/visible", true).toBool();
         as->amino = s->getValue(SETTINGS_ROOT + as->name + "/amino", true).toBool();
+        as->showNameQuals = s->getValue(SETTINGS_ROOT + as->name + "/show_quals", false).toBool();
         QString qs = s->getValue(SETTINGS_ROOT + as->name + "/quals", "").toString();
         if (!qs.isEmpty()) {
             as->nameQuals = qs.split(',', QString::SkipEmptyParts);
@@ -128,6 +129,7 @@ void AnnotationSettingsRegistry::save() {
         s->setValue(SETTINGS_ROOT + as->name + "/color", as->color);
         s->setValue(SETTINGS_ROOT + as->name + "/visible", as->visible);
         s->setValue(SETTINGS_ROOT + as->name + "/amino", as->amino);
+        s->setValue(SETTINGS_ROOT + as->name + "/show_quals", as->showNameQuals);
         s->setValue(SETTINGS_ROOT + as->name + "/quals", as->nameQuals.join(","));
     }
 }
@@ -137,6 +139,7 @@ AnnotationSettings::AnnotationSettings() {
     amino = false;
     color = Qt::black;
     visible = true;
+    showNameQuals = false;
 }
 
 AnnotationSettings::AnnotationSettings(const QString& _name, bool _amino, const QColor& _color, bool _visible) 
@@ -149,6 +152,7 @@ bool AnnotationSettings::equals(const AnnotationSettings* as) const {
         && amino == as->amino
         && color == as->color
         && visible == as->visible
+        && showNameQuals == as->showNameQuals
         && nameQuals == as->nameQuals;
 }
 

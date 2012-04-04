@@ -59,11 +59,11 @@
 #include <U2Core/ReverseSequenceTask.h>
 #include <U2Core/ModifySequenceObjectTask.h>
 
+#include <U2View/AnnotHighlightWidget.h>
 #include <U2View/FindDialog.h>//BUG:423: move to plugins!?
 #include <U2View/SecStructPredictUtils.h>
 #include <U2View/SequenceInfo.h>
 
-#include <U2Gui/AnnotationSettingsDialogController.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/CreateObjectRelationDialogController.h>
 #include <U2Gui/PositionSelector.h>
@@ -103,9 +103,6 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     focusedWidget = NULL;
 
     createAnnotationAction = (new ADVAnnotationCreation(this))->getCreateAnnotationAction();
-    
-    annotationSettingsAction  = new QAction(QIcon(":core/images/annotation_settings.png"), tr("Annotations highlighting..."), this);
-    connect(annotationSettingsAction, SIGNAL(triggered()), SLOT(sl_onAnnotationSettings()));
 
     posSelectorAction = new QAction(QIcon(":core/images/goto.png"), tr("Go to position..."), this);
     posSelectorAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_G));
@@ -210,43 +207,17 @@ QWidget* AnnotatedDNAView::createWidget() {
     mainSplitter->setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::SEQUENCE).icon);
 
     optionsPanel = new OptionsPanel(this);
-    optionsPanel->addGroup(QPixmap(":core/images/info.png"), "Information", new SequenceInfo(this));
+    optionsPanel->addGroup(QPixmap(":core/images/info.png"),
+        tr("Information"),
+        new SequenceInfo(this));
 
     /** BEGIN: For Test Purposes*/
-    optionsPanel->addGroup(QPixmap(":core/images/graphs.png"), "Title2", new QLabel(
-        "Test\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"));
     optionsPanel->addGroup(QPixmap(":core/images/find_dialog.png"), "Title3", new QLabel("Test"));
-    optionsPanel->addGroup(QPixmap(":core/images/chart_bar.png"), "Title4", new QLabel("Test"));
-    optionsPanel->addGroup(QPixmap(":core/images/color_wheel.png"), "Title5", new QLabel(
-        "Test\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"
-        "The quick brown fox jumps over.\n"));
     /** END: For Test Purposes */
+
+    optionsPanel->addGroup(QPixmap(":core/images/annotation_settings.png"),
+        tr("Annotations Highlighting"),
+        new AnnotHighlightWidget(this));
 
     return mainSplitter;
 }
@@ -390,7 +361,6 @@ void AnnotatedDNAView::addADVAction(ADVGlobalAction* a1) {
 
 void AnnotatedDNAView::buildStaticToolbar(QToolBar* tb) {
     tb->addAction(createAnnotationAction);
-    tb->addAction(annotationSettingsAction);
 
     tb->addSeparator();
     tb->addAction(clipb->getCopySequenceAction());
@@ -437,7 +407,6 @@ void AnnotatedDNAView::buildStaticMenu(QMenu* m) {
     addRemoveMenu(m);
     addEditMenu(m);
     m->addSeparator();
-    m->addAction(annotationSettingsAction);
     
     annotationsView->adjustStaticMenu(m);
 
@@ -669,8 +638,6 @@ void AnnotatedDNAView::sl_onContextMenuRequested(const QPoint & scrollAreaPos) {
         toggleHLAction->setObjectName("toggle_HL_action");
         m.addAction(toggleHLAction);
     }
-    annotationSettingsAction->setObjectName("annotation_settings_action");
-	m.addAction(annotationSettingsAction);
     
     if (focusedWidget!=NULL) {
         focusedWidget->buildPopupMenu(m);
@@ -688,9 +655,6 @@ void AnnotatedDNAView::sl_onFindDialog() {
     }
 }
 
-void AnnotatedDNAView::sl_onAnnotationSettings() {
-    AnnotationSettingsDialogController::run(scrollArea);
-}
 
 void AnnotatedDNAView::sl_toggleHL() {
     if (annotationSelection->isEmpty()) {

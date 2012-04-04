@@ -174,7 +174,6 @@ signals:
 private slots:
     void sl_onContextMenuRequested(const QPoint & pos);
     void sl_onFindDialog();
-    void sl_onAnnotationSettings();
     void sl_onPosChangeRequest(int pos);
     void sl_onShowPosSelectorRequest();
     void sl_toggleHL();
@@ -206,7 +205,6 @@ private:
     
     QAction*            createAnnotationAction;
     QAction*            findDialogAction;
-    QAction*            annotationSettingsAction;
     QAction*            posSelectorAction;
     QAction*            toggleHLAction;
     QAction*            posSelectorWidgetAction;

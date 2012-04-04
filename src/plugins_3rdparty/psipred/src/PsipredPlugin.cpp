@@ -62,6 +62,7 @@ PsipredPlugin::PsipredPlugin() : Plugin(tr("PsiPred"), tr("PsiPred protein secon
     //Register PsiPred annotation settings
     AnnotationSettingsRegistry* asr =AppContext::getAnnotationsSettingsRegistry();
     AnnotationSettings* as = new AnnotationSettings(PSIPRED_ANNOTATION_NAME, true, QColor(102,255, 0), true);
+    as->showNameQuals = true;
     as->nameQuals.append(BioStruct3D::SecStructTypeQualifierName);
     asr->changeSettings(QList<AnnotationSettings*>() << as, false);
 

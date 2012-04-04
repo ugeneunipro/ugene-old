@@ -131,10 +131,14 @@ QList<AnnotationSettings*> DocumentFormatUtils::predefinedSettings() {
         as->color = fi.color;
         as->visible = as->name!="source";
         as->nameQuals = fi.namingQuals;
+        if (!fi.namingQuals.isEmpty()) {
+            as->showNameQuals = true;
+        }
         predefined.append(as);
     }
     AnnotationSettings* secStructAnnotationSettings = new  AnnotationSettings(BioStruct3D::SecStructAnnotationTag, true, QColor(102,255, 0), true);
     secStructAnnotationSettings->nameQuals.append(BioStruct3D::SecStructTypeQualifierName);
+    secStructAnnotationSettings->showNameQuals = true;
     predefined.append(secStructAnnotationSettings);
     predefined.append(new AnnotationSettings(BioStruct3D::AlphaHelixAnnotationTag, true, QColor(102,255, 0), true));
     predefined.append(new AnnotationSettings(BioStruct3D::BetaStrandAnnotationTag, true, QColor(255,255,153), true));

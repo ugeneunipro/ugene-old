@@ -33,8 +33,6 @@
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 
-#include <QPointer>
-
 
 namespace U2 {
 
