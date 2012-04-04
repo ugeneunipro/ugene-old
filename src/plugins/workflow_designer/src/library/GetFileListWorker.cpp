@@ -136,19 +136,21 @@ void ScanDirectoryTask::run() {
         QFileInfoList nested;
         QFileInfoList files = scanDirectory(dir, nested);
         foreach (const QFileInfo &path, files) {
+            QString absPath = path.absoluteFilePath();
+            QString relPath = absPath;
+            relPath.replace(rootPath, "");
+
             bool matched = true;
             if (!includeFilter.isEmpty()) {
-                matched = incRx.exactMatch(path.fileName());
+                matched = incRx.exactMatch(relPath);
             }
             if (!excludeFilter.isEmpty()) {
-                matched = matched && !excRx.exactMatch(path.fileName());
+                matched = matched && !excRx.exactMatch(relPath);
             }
             if (matched) {
-                QString absPath = path.absoluteFilePath();
                 if (absolute) {
                     results << absPath;
                 } else {
-                    QString relPath = absPath.replace(rootPath, "");
                     results << relPath;
                 }
             }
@@ -210,11 +212,13 @@ void GetFileListWorkerFactory::init() {
             GetFileListWorker::tr("Recursive reading"),
             GetFileListWorker::tr("Get files from all nested directories or just from the current one"));
         Descriptor includeFilter(INCLUDE_NAME_FILTER,
-            GetFileListWorker::tr("Include name filter"),
-            GetFileListWorker::tr("Filter files by name using this name or this regular expression filter"));
+            GetFileListWorker::tr("Relative path include filter"),
+            GetFileListWorker::tr("Filter files by relative path using this regular expression. "
+            "<p><i>Set it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
         Descriptor excludeFilter(EXCLUDE_NAME_FILTER,
-            GetFileListWorker::tr("Exclude name filter"),
-            GetFileListWorker::tr("Exclude files with this name or with this regular expression"));
+            GetFileListWorker::tr("Relative path exclude filter"),
+            GetFileListWorker::tr("Exclude files which relative paths are matched by this regular expression. "
+            "<p><i>Set it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
 
         attrs << new Attribute(inPath, BaseTypes::STRING_TYPE(), true);
         attrs << new Attribute(isAbsolute, BaseTypes::BOOL_TYPE(), false, true);
