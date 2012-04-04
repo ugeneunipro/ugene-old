@@ -94,7 +94,7 @@ QList<QTreeWidgetItem*> GTUtilsTaskTreeView::getTaskTreeViewItems(QTreeWidgetIte
 }
 
 void GTUtilsTaskTreeView::cancleTask( U2OpStatus& os, const QString &itemName ){
-    click(os, itemName, Qt::MouseButton::RightButton);
+    click(os, itemName, Qt::RightButton);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
