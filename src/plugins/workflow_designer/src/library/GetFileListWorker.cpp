@@ -195,7 +195,7 @@ void GetFileListWorkerFactory::init() {
         outTypeMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr outTypeSet(new MapDataType(BasePorts::OUT_TEXT_PORT_ID(), outTypeMap));
 
-        portDescs << new PortDescriptor(OUT_PORT_ID, outTypeSet, false);
+        portDescs << new PortDescriptor(OUT_PORT_ID, outTypeSet, false, true);
     }
 
     QList<Attribute*> attrs;
