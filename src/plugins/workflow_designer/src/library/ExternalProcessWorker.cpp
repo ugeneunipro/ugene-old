@@ -99,6 +99,7 @@ Task* ExternalProcessWorker::tick() {
     U2OpStatus2Log os;
     foreach(const DataConfig& dataCfg, cfg->inputs) { //write all input data to files
         Message inputMessage = getMessageAndSetupScriptValues(inputs[i]);
+        i++;
         QVariantMap qm = inputMessage.getData().toMap();
         QString paramValue;
 
@@ -111,6 +112,7 @@ Task* ExternalProcessWorker::tick() {
             QString url = generateAndCreateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
             inputUrls << url;
             std::auto_ptr<Document> d(f->createNewLoadedDocument(iof, url, os));
+            d->setDocumentOwnsDbiResources(false);
             CHECK_OP(os, NULL);
 
             if (dataCfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
