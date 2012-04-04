@@ -1,0 +1,11 @@
+<!DOCTYPE UGENE_TEST_FRAMEWORK_TEST>
+
+<unittest>
+
+FeatureTableObjectUnitTest
++ createEmptyFeaturesTableObject
++ addAnnotationSingleRegion
++ addAnnotationMultipleRegion
++ addFeatureSingleRegion
+
+</unittest>

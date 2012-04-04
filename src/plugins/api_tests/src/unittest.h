@@ -30,8 +30,12 @@
 
 #define CHECK_NO_ERROR(os) CHECK_OP_EXT(os, SetError(os.getError()),)
 #define CHECK_TRUE(condition, error) CHECK_EXT(condition, SetError(error),)
-#define CHECK_EQUAL(expected, actual, what) CHECK_TRUE(expected == actual, QString("%1: expected '%2', got '%3'").arg(what).arg(QString(expected)).arg(QString(actual)))
-#define CHECK_NOT_EQUAL(notExpected, actual, what) CHECK_TRUE(notExpected != actual, QString("%1: expected not to be'%2', but got '%3'").arg(what).arg(QString(notExpected)).arg(QString(actual)))
+#define CHECK_FALSE(condition, error) CHECK_EXT(!(condition), SetError(error),)
+
+/** To use CHECK_EQUAL and CHECK_NOT_EQUAL for class that is not convertible to QString,
+    define partial specialization of template function toString<T>(const T &t) */
+#define CHECK_EQUAL(expected, actual, what) CHECK_TRUE(expected == actual, QString("unexpected %1: expected '%2', got '%3'").arg(what).arg(toString(expected)).arg(toString(actual)))
+#define CHECK_NOT_EQUAL(notExpected, actual, what) CHECK_TRUE(notExpected != actual, QString("unexpected %1: expected not to be '%2', but got '%3'").arg(what).arg(toString(notExpected)).arg(toString(actual)))
 
 namespace U2 {
 
@@ -45,6 +49,8 @@ public:
 protected:
 	QString error;
 };
+
+template<class T> QString toString(const T &t) { return QString("%1").arg(t); }
 
 } // namespace
 

@@ -983,7 +983,43 @@ void FeaturesTableObject::importToDbi( Annotation* a ){
 
     U2OpStatus2Log os;
     synchronizer.exportAnnotationToFeatures(a, rootFeature.id, entityRef.dbiRef, os);
-    CHECK_OP(os, );   
+    CHECK_OP(os, );
+}
+
+// direct interface to dbi
+
+void FeaturesTableObject::addFeature(U2Feature &f, U2OpStatus &os) {
+    addFeature(f, QList<U2FeatureKey>(), os);
+}
+
+void FeaturesTableObject::addFeature(U2Feature &f, QList<U2FeatureKey> keys, U2OpStatus &os) {
+    if(f.parentFeatureId.isEmpty()) {
+        f.parentFeatureId = rootFeature.id;
+    }
+    // TODO: should we set sequenceId too? Seems logical that all subfeatures has same sequenceId
+    // f.sequenceId = rootFeature.sequenceId;
+
+    DbiConnection con;
+    con.open(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+
+    con.dbi->getFeatureDbi()->createFeature(f, keys, os);
+}
+
+U2Feature FeaturesTableObject::getFeature(U2DataId id, U2OpStatus &os) {
+    DbiConnection con;
+    con.open(entityRef.dbiRef, os);
+    CHECK_OP(os, U2Feature());
+
+    return con.dbi->getFeatureDbi()->getFeature(id, os);
+}
+
+QList<U2Feature> FeaturesTableObject::getSubfeatures(U2DataId parentFeatureId, U2OpStatus &os, bool recursive) {
+    DbiConnection con;
+    con.open(entityRef.dbiRef, os);
+    CHECK_OP(os, QList<U2Feature>());
+
+    return U2FeaturesUtils::getSubFeatures(parentFeatureId, con.dbi->getFeatureDbi(), os, recursive);
 }
 
 //slots

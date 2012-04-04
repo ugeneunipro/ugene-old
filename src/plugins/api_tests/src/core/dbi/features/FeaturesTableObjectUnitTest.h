@@ -44,13 +44,17 @@ private:
 };
 
 DECLARE_TEST(FeatureTableObjectUnitTest, createEmptyFeaturesTableObject);
-DECLARE_TEST(FeatureTableObjectUnitTest, writeFeatureTableSingleRegion);
-DECLARE_TEST(FeatureTableObjectUnitTest, writeFeatureTableMultipleRegion);
+// annotation interface tests
+DECLARE_TEST(FeatureTableObjectUnitTest, addAnnotationSingleRegion);
+DECLARE_TEST(FeatureTableObjectUnitTest, addAnnotationMultipleRegion);
+// feature interface tests
+DECLARE_TEST(FeatureTableObjectUnitTest, addFeatureSingleRegion);
 
 }//namespace
 
 DECLARE_METATYPE(FeatureTableObjectUnitTest, createEmptyFeaturesTableObject)
-DECLARE_METATYPE(FeatureTableObjectUnitTest, writeFeatureTableSingleRegion)
-DECLARE_METATYPE(FeatureTableObjectUnitTest, writeFeatureTableMultipleRegion)
+DECLARE_METATYPE(FeatureTableObjectUnitTest, addAnnotationSingleRegion)
+DECLARE_METATYPE(FeatureTableObjectUnitTest, addAnnotationMultipleRegion)
+DECLARE_METATYPE(FeatureTableObjectUnitTest, addFeatureSingleRegion)
 
 #endif //_U2_FEATURE_TABLE_OBJECT_TESTS_H_

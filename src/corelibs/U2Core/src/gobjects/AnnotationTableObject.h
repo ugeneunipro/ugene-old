@@ -28,6 +28,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/U2Feature.h>
 #include <U2Core/U2FeatureUtils.h>
+#include <U2Core/U2OpStatus.h>
 
 #include <QtCore/QSet>
 #include <QtCore/QTimer>
@@ -357,7 +358,23 @@ public:
     bool isLocked() const;
     void cleanAnnotations();
 
+    /** Direct feature interface: without sync with Annotations */
+
     U2Feature getRootFeature() const {return rootFeature;}
+
+    /** Adds new feature. Sets its id, and sets parentFeatureId to root feature if it is empty */
+    void addFeature(U2Feature & f, U2OpStatus & os);
+
+    /** Adds new feature, then adds all keys from the list to it.
+        Sets its id, and sets parentFeatureId to root feature if it is empty */
+    void addFeature(U2Feature & f, QList<U2FeatureKey> keys, U2OpStatus & os);
+
+    /** Retrieves feature by id */
+    U2Feature getFeature(U2DataId id, U2OpStatus & os);
+
+    /** Finds subfeatures of given feature. If recursive is false, returns only direct children.
+        Otherwise returns all features in subtree */
+    QList<U2Feature> getSubfeatures(U2DataId parentFeatureId, U2OpStatus & os, bool recursive = false);
 
 protected:
 

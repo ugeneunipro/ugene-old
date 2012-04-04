@@ -34,7 +34,8 @@ namespace U2 {
 /** Feature location */
 class U2CORE_EXPORT U2FeatureLocation {
 public:
-
+    U2FeatureLocation() {}
+    U2FeatureLocation(U2Strand strand_, const U2Region & region_) : strand(strand_), region(region_) {}
 
     /**  Strand of the location. */
     U2Strand    strand;

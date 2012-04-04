@@ -3,7 +3,7 @@
 
 #include <U2Core/U2Dbi.h>
 #include <memory>
-
+#include <unittest.h>
 
 namespace U2 {
 
@@ -25,6 +25,8 @@ private:
     QString dbUrl;
     U2Dbi* dbi;
 };
+
+template<> inline QString toString<U2DataId>(const U2DataId &a) { return "0x" + QString(a.toHex()); }
 
 } // namespace U2
 

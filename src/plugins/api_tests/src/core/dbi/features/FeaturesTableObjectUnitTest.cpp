@@ -37,6 +37,14 @@
 
 namespace U2 {
 
+template<>
+QString toString<U2FeatureLocation>(const U2FeatureLocation & loc) {
+    QString strand = loc.strand == U2Strand::Direct ? "direct" :
+                     loc.strand == U2Strand::Complementary ? "complement" :
+                                                             "nostrand";
+    return QString("%1-%2").arg(loc.region).arg(strand);
+}
+
 namespace {
     const QString FEATURE_DB_URL("feature-dbi.ugenedb");
 }
@@ -86,7 +94,7 @@ IMPLEMENT_TEST(FeatureTableObjectUnitTest, createEmptyFeaturesTableObject) {
     CHECK_EQUAL(objRootFeature.name, actual.name, "root feature name");
 }
 
-IMPLEMENT_TEST(FeatureTableObjectUnitTest, writeFeatureTableSingleRegion) {
+IMPLEMENT_TEST(FeatureTableObjectUnitTest, addAnnotationSingleRegion) {
     U2FeatureDbi * featureDbi = FeaturesTableObjectTestData::getFeatureDbi();
 
     QString aname = "aname_single";
@@ -138,8 +146,7 @@ IMPLEMENT_TEST(FeatureTableObjectUnitTest, writeFeatureTableSingleRegion) {
     CHECK_TRUE(hasQual, "qualifier not found in feature keys");
  }
 
-// TEST_P(FeatureTableObjectTest, writeFeatureTableMultipleRegion) {
-IMPLEMENT_TEST(FeatureTableObjectUnitTest, writeFeatureTableMultipleRegion) {
+IMPLEMENT_TEST(FeatureTableObjectUnitTest, addAnnotationMultipleRegion) {
     U2FeatureDbi * featureDbi = FeaturesTableObjectTestData::getFeatureDbi();
 
     QString fname = "aname_table_multy";
@@ -210,6 +217,47 @@ IMPLEMENT_TEST(FeatureTableObjectUnitTest, writeFeatureTableMultipleRegion) {
         }
     }
     CHECK_EQUAL(3, regs.count(true), "matching regions");
+}
+
+IMPLEMENT_TEST(FeatureTableObjectUnitTest, addFeatureSingleRegion) {
+    // -- prepare --
+    U2OpStatusImpl os;
+
+    QString objName = "fname_table_single";
+    QString name = "fname_single";
+    QString keyName = "kname_single";
+    QString keyValue = "kval_single";
+    U2FeatureLocation loc = U2FeatureLocation(U2Strand::Direct, U2Region(2, 20));
+
+    U2Feature f;
+    f.name = name;
+    f.location = loc;
+
+    QList<U2FeatureKey> keys;
+    keys << U2FeatureKey(keyName, keyValue);
+
+    // -- do --
+    FeaturesTableObject ft(objName, getDbiRef());
+    ft.addFeature(f, keys, os);
+
+    // -- check fields autofill --
+    CHECK_NO_ERROR(os);
+    CHECK_FALSE(f.id.isEmpty(), "id should have been set");
+    CHECK_EQUAL(ft.getRootFeature().id, f.parentFeatureId, "parent feature id");
+
+    // -- check retrieve --
+    U2Feature ff = ft.getFeature(f.id, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(f.id, ff.id, "retrieved feature id");
+    CHECK_EQUAL(name, ff.name, "retrieved feature name");
+    CHECK_EQUAL(loc, ff.location, "retrieved feature location");
+    CHECK_EQUAL(ft.getRootFeature().id, ff.parentFeatureId, "retrieved feature parent id");
+
+    // -- check accessible as subfeature --
+    QList<U2Feature> subs = ft.getSubfeatures(ft.getRootFeature().id, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(1, subs.size(), "number of subfeatures of root feature");
+    CHECK_EQUAL(f.id, subs.first().id, "first subfeature of root feature (shoul be our feature)");
 }
 
 }//namespace
