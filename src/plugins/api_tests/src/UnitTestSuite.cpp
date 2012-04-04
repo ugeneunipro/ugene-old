@@ -6,6 +6,7 @@
 #include "core/dbi/assembly/AssemblyDbiUnitTests.h"
 #include "core/dbi/attribute/AttributeDbiUnitTests.h"
 #include "core/dbi/sequence/SequenceDbiUnitTests.h"
+#include "core/dbi/features/FeaturesTableObjectUnitTest.h"
 
 namespace U2 {
 
@@ -102,6 +103,7 @@ void UnitTestSuite::cleanup() {
 	AttributeTestData::shutdown();
 	AssemblyTestData::shutdown();
 	SequenceTestData::shutdown();
+    FeaturesTableObjectTestData::shutdown();
 
 	if (passed){
 		taskLog.info("Test passed: " + QString::number(passed));

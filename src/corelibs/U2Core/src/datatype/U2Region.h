@@ -102,6 +102,9 @@ public:
     Returns true if this region starts strictly earlier than the specified one. */
     bool operator<(const U2Region &r) const {return startPos < r.startPos;}
 
+    /** Converts region to its string represenation, so it may be used in QString::arg etc. */
+    operator QString() const { return QString("[%1, %2)").arg(startPos).arg(endPos()); }
+
     ///////////////////////// Class functions /////////////////////////////////
 
     /** Returns least common region which contains both of the 2 specified regions. */

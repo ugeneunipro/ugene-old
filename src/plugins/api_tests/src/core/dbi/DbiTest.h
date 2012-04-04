@@ -16,7 +16,7 @@ public:
     TestDbiProvider();
     ~TestDbiProvider();
 
-    void init(const QString& dbUrl, bool create, bool useConnectionPool);
+    bool init(const QString& dbiFileName, bool useConnectionPool);
     void close();
     U2Dbi* getDbi();
 private:

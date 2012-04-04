@@ -1,16 +1,11 @@
 #include "AttributeDbiUnitTests.h"
 
-#include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
-
-#include <QtCore/QDir>
-
 
 namespace U2 {
 
@@ -46,33 +41,17 @@ static bool registerTests(){
 bool AttributeTestData::registerTest = registerTests();
 
 void AttributeTestData::init() {
-    TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
-    QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + AttributeTestData::ATT_DB_URL;
-
-    QString tmpFile = QDir::temp().absoluteFilePath(QFileInfo(originalFile).fileName());
-
-    if(QFile::exists(tmpFile)) {
-        QFile::remove(tmpFile);
-    }
-
-    bool create = false;
-    if (QFile::exists(originalFile)) {
-        SAFE_POINT(QFile::copy(originalFile, tmpFile), "attribute db file not copied", );
-    }else{
-        create = true;
-    }
-    dbiProvider.init(tmpFile, create, false);
+    bool ok = dbiProvider.init(ATT_DB_URL, false);
+    SAFE_POINT(ok, "dbi provider failed to initialize",);
     U2Dbi* dbi = dbiProvider.getDbi();
-    SAFE_POINT(NULL != dbi, "Dbi not loaded", );
     U2ObjectDbi* objDbi = dbi->getObjectDbi();
-    SAFE_POINT(NULL != objDbi, "Dbi object not loaded", );
     U2OpStatusImpl opStatus;
 
     objects = new QList<U2DataId>(objDbi->getObjects("/", 0, U2_DBI_NO_LIMIT, opStatus));
     SAFE_POINT_OP(opStatus, );
 
     attributeDbi = dbi->getAttributeDbi();
-    SAFE_POINT((U2AttributeDbi *)NULL != attributeDbi, "attribute database not loaded", );
+    SAFE_POINT(NULL != attributeDbi, "attribute database not loaded",);
 }
 
 U2AttributeDbi* AttributeTestData::getAttributeDbi(){

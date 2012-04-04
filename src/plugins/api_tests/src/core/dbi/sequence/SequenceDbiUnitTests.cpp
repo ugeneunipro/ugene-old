@@ -38,34 +38,17 @@ static bool registerTests(){
 bool SequenceTestData::registerTest = registerTests();
 
 void SequenceTestData::init() {    
-
-    TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
-    QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + SequenceTestData::SEQ_DB_URL;
-
-    QString tmpFile = QDir::temp().absoluteFilePath(QFileInfo(originalFile).fileName());
-
-    if(QFile::exists(tmpFile)) {
-        QFile::remove(tmpFile);
-    }
-
-    bool create = false;
-    if (QFile::exists(originalFile)) {
-        SAFE_POINT(QFile::copy(originalFile, tmpFile), "attribute db file not copied", );
-    }else{
-        create = true;
-    }
-    dbiProvider.init(tmpFile, create, false);
+    bool ok = dbiProvider.init(SEQ_DB_URL, false);
+    SAFE_POINT(ok, "dbi provider failed to initialize",);
     U2Dbi* dbi = dbiProvider.getDbi();
-    SAFE_POINT(NULL != dbi, "Dbi not loaded", );
     U2ObjectDbi* objDbi = dbi->getObjectDbi();
-    SAFE_POINT(NULL != objDbi, "Dbi object not loaded", );
     U2OpStatusImpl opStatus;
 
     sequenceDbi = dbi->getSequenceDbi();
-    SAFE_POINT(NULL != sequenceDbi, "sequence database not loaded", );
+    SAFE_POINT(NULL != sequenceDbi, "sequence database not loaded",);
 
     sequences = new QList<U2DataId>(objDbi->getObjects(U2Type::Sequence, 0, U2_DBI_NO_LIMIT, opStatus));
-    SAFE_POINT_OP(opStatus, );
+    SAFE_POINT_OP(opStatus,);
 }
 
 U2SequenceDbi* SequenceTestData::getSequenceDbi() {
@@ -264,9 +247,12 @@ void SequenceDbiUnitTests_getSequenceDataInvalid::Test() {
 	U2SequenceDbi* sequenceDbi = SequenceTestData::getSequenceDbi();
 	APITestData testData;
 	testData.addValue<QByteArray>(INVALID_SEQUENCE_ID, "anmr%");
-	const U2DataId& invalidId = testData.getValue<U2DataId>(INVALID_SEQUENCE_ID);
-	U2OpStatusImpl os;
-	const QByteArray& res = sequenceDbi->getSequenceData(invalidId, U2Region(0, 10), os);
+	const U2DataId& invalidId = testData.getValue<U2DataId>(INVALID_SEQUENCE_ID);
+
+	U2OpStatusImpl os;
+
+	const QByteArray& res = sequenceDbi->getSequenceData(invalidId, U2Region(0, 10), os);
+
 	CHECK_EXT(res.isEmpty(), SetError("sequence data should be empty"), );
 };
 
@@ -297,7 +283,7 @@ void SequenceDbiUnitTests_updateHugeSequenceData::Test() {
 void SequenceDbiUnitTests_updateSequencesData::Test() {
 	UpdateSequenceArgs usd;
 	usd.sequenceId = 1;
-	qint64 length = 100000000000;
+	qint64 length = Q_INT64_C(100000000000);
 	for (int i = 0; i < 10000; i++){
 		usd.regionsToReplace << U2Region((length -1) * i, length);
 		usd.datazToInsert << QByteArray(length, 'A');

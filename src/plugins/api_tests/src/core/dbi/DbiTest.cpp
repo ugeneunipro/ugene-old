@@ -6,6 +6,8 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Test/TestRunnerSettings.h>
+
 #include <QtCore/QDir>
 
 
@@ -18,16 +20,33 @@ TestDbiProvider::TestDbiProvider(){
 TestDbiProvider::~TestDbiProvider(){
     close();
 }
-void TestDbiProvider::init(const QString& _dbUrl, bool _create, bool _useConnectionPool){
+bool TestDbiProvider::init(const QString& dbiFileName, bool _useConnectionPool){
     if(initialized){
         close();
         initialized = false;
     }
-    dbUrl = _dbUrl;
+
+    TestRunnerSettings* trs = AppContext::getAppSettings()->getTestRunnerSettings();
+    QString originalFile = trs->getVar("COMMON_DATA_DIR") + "/" + dbiFileName;
+
+    QString tmpFile = QDir::temp().absoluteFilePath(QFileInfo(originalFile).fileName());
+
+    if(QFile::exists(tmpFile)) {
+        QFile::remove(tmpFile);
+    }
+
+    bool _create = false;
+    if (QFile::exists(originalFile)) {
+        SAFE_POINT(QFile::copy(originalFile, tmpFile), "db file not copied", false);
+    }else{
+        _create = true;
+    }
+
+    dbUrl = tmpFile;
     useConnectionPool = _useConnectionPool;
 
     U2DbiFactory *factory = AppContext::getDbiRegistry()->getDbiFactoryById(SQLITE_DBI_ID);
-    SAFE_POINT(factory!=NULL, "No dbi factory", );
+    SAFE_POINT(factory!=NULL, "No dbi factory", false);
     U2OpStatusImpl opStatus;
 
     if(useConnectionPool){
@@ -35,10 +54,10 @@ void TestDbiProvider::init(const QString& _dbUrl, bool _create, bool _useConnect
         ref.dbiFactoryId = factory->getId();
         ref.dbiId = dbUrl;
         dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(ref, _create, opStatus);
-        CHECK_OP(opStatus, );
+        CHECK_OP(opStatus, false);
     }else{
         dbi = factory->createDbi();
-        SAFE_POINT(NULL != dbi, "dbi not created", );
+        SAFE_POINT(NULL != dbi, "dbi not created", false);
         QHash<QString, QString> properties;
         if(_create){
            properties[U2_DBI_OPTION_CREATE] = U2_DBI_VALUE_ON;
@@ -46,10 +65,13 @@ void TestDbiProvider::init(const QString& _dbUrl, bool _create, bool _useConnect
         properties["url"] = dbUrl;
         QVariantMap persistentData;
         dbi->init(properties, persistentData, opStatus);
-        SAFE_POINT_OP(opStatus, );
+        SAFE_POINT_OP(opStatus, false);
     }
+    U2ObjectDbi* objDbi = dbi->getObjectDbi();
+    SAFE_POINT(NULL != objDbi,  "object dbi not loaded", false);
 
     initialized = true;
+    return true;
 }
 void TestDbiProvider::close(){
     U2OpStatusImpl opStatus;
