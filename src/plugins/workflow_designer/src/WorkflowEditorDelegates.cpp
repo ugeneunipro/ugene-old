@@ -31,14 +31,19 @@ namespace U2 {
  ********************************/
 QWidget *ProxyDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const {
     //if (owner->custom) 
+    QWidget* editor;
     {
         QItemDelegate* itemDelegate = index.model()->data(index, DelegateRole).value<PropertyDelegate*>();
         if (itemDelegate) {
             connect(itemDelegate, SIGNAL(commitData(QWidget*)), SIGNAL(commitData(QWidget*)));
-            return itemDelegate->createEditor(parent, option, index);
+            editor = itemDelegate->createEditor(parent, option, index);
+        }
+        else{
+            editor = QItemDelegate::createEditor(parent, option, index);
         }
     }
-    return QItemDelegate::createEditor(parent, option, index);
+    editor->setFixedHeight(20);
+    return editor;
 }
 
 void ProxyDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
