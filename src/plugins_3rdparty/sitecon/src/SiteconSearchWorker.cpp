@@ -80,14 +80,17 @@ void SiteconSearchWorker::registerProto() {
     {
         Descriptor nd(NAME_ATTR, SiteconSearchWorker::tr("Result annotation"), 
             SiteconSearchWorker::tr("Annotation name for marking found regions"));
-        Descriptor scd(SCORE_ATTR, SiteconSearchWorker::tr("Min score"), 
-            QApplication::translate("SiteconSearchDialog", "min_err_tip", 0, QApplication::UnicodeUTF8));
+        Descriptor scd(SCORE_ATTR, SiteconSearchWorker::tr("Min score"),
+            SiteconSearchWorker::tr("Recognition quality percentage threshold."
+            "<p><i>If you need to switch off this filter choose <b>the lowest</b> value</i></p>"));
         Descriptor e1d(E1_ATTR, SiteconSearchWorker::tr("Min Err1"), 
             SiteconSearchWorker::tr("Alternative setting for filtering results, minimal value of Error type I."
-            "<br>Note that all thresholds (by score, by err1 and by err2) are applied when filtering results."));
+            "<br>Note that all thresholds (by score, by err1 and by err2) are applied when filtering results."
+            "<p><i>If you need to switch off this filter choose <b>\"0\"</b> value</i></p>"));
         Descriptor e2d(E2_ATTR, SiteconSearchWorker::tr("Max Err2"), 
             SiteconSearchWorker::tr("Alternative setting for filtering results, max value of Error type II."
-            "<br>Note that all thresholds (by score, by err1 and by err2) are applied when filtering results."));
+            "<br>Note that all thresholds (by score, by err1 and by err2) are applied when filtering results."
+            "<p><i>If you need to switch off this filter choose <b>\"1\"</b> value</i></p>"));
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
         a << new Attribute(BaseAttributes::STRAND_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::STRAND_BOTH());
         a << new Attribute(scd, BaseTypes::NUM_TYPE(), false, 85);
@@ -105,7 +108,7 @@ void SiteconSearchWorker::registerProto() {
     QMap<QString, PropertyDelegate*> delegates;
 
     {
-        QVariantMap m; m["minimum"] = 60; m["maximum"] = 100; m["suffix"] = "%";
+        QVariantMap m; m["minimum"] = 10; m["maximum"] = 100; m["suffix"] = "%";
         delegates[SCORE_ATTR] = new SpinBoxDelegate(m);
     }
     {
