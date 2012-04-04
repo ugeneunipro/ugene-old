@@ -89,13 +89,7 @@ void GTUtilsDialog::CreateAnnotationDialogChecker::run() {
     GTWidget::click(os, cancelButton);
 }
 
-void GTUtilsDialog::openExportProjectDialog(U2OpStatus &os) {
-
-    QMenu *m = GTMenu::showMainMenu(os, MWMENU_FILE);
-    GTMenu::clickMenuItem(os, m, ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
-}
-
-void GTUtilsDialog::checkExportProjectDialog(U2OpStatus &os, const QString& projectName) {
+void GTUtilsDialog::ExportProjectDialogChecker::run() {
 
     QWidget* w = QApplication::activeModalWidget();
     if (!w) {
@@ -131,7 +125,7 @@ void GTUtilsDialog::checkExportProjectDialog(U2OpStatus &os, const QString& proj
     GTWidget::click(os, buttons[0]);
 }
 
-void GTUtilsDialog::fillInExportProjectDialog(U2OpStatus &os, const QString &projectFolder, const QString &projectName) {
+void GTUtilsDialog::ExportProjectDialogFiller::run() {
 
     QWidget* w = QApplication::activeModalWidget();
     if (!w) {
@@ -171,7 +165,7 @@ void GTUtilsDialog::fillInExportProjectDialog(U2OpStatus &os, const QString &pro
     GTWidget::click(os, buttons[1]);
 }
 
-void GTUtilsDialog::clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b) {
+void GTUtilsDialog::MessageBoxDialogFiller::run() {
 
     QWidget* activeModal = QApplication::activeModalWidget();
     QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
@@ -185,13 +179,7 @@ void GTUtilsDialog::clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardB
     GTWidget::click(os, button);
 }
 
-void GTUtilsDialog::openSaveProjectAsDialog(U2OpStatus &os) {
-
-    QMenu *m = GTMenu::showMainMenu(os, MWMENU_FILE);
-    GTMenu::clickMenuItem(os, m, ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
-}
-
-void GTUtilsDialog::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel) {
+void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
 
     QWidget* w = QApplication::activeModalWidget();
     if (!w) {
@@ -229,15 +217,10 @@ void GTUtilsDialog::fillInSaveProjectAsDialog(U2OpStatus &os, const QString &pro
     QPushButton* cancelButton = buttons[0];
     QPushButton* saveButton = buttons[1];
 
-    if (pressCancel) {
-        GTWidget::click(os, cancelButton);
-    }
-    else {
-        GTWidget::click(os, saveButton);
-    }
+    GTWidget::click(os, saveButton);
 
-   GTUtilsDialog::MessageBoxDialogFiller filler(os, QMessageBox::Yes);
-   GTUtilsDialog::waitForDialog(os, &filler, false); // MessageBox question appears only if there is already a file on a disk
+    GTUtilsDialog::MessageBoxDialogFiller filler(os, QMessageBox::Yes);
+    GTUtilsDialog::waitForDialog(os, &filler, false); // MessageBox question appears only if there is already a file on a disk
 }
 
 void GTUtilsDialog::PopupChooser::run()

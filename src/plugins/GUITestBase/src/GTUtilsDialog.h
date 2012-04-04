@@ -59,9 +59,7 @@ public:
     public:
         ExportProjectDialogFiller(U2OpStatus &_os, const QString &_projectFolder, const QString &_projectName)
             :os(_os), projectFolder(_projectFolder), projectName(_projectName){}
-        virtual void run() {
-            fillInExportProjectDialog(os, projectFolder, projectName);
-        }
+        virtual void run();
     private:
         U2OpStatus &os;
         const QString &projectFolder;
@@ -72,9 +70,7 @@ public:
     public:
         ExportProjectDialogChecker(U2OpStatus &_os, const QString &_projectName)
             :os(_os), projectName(_projectName){}
-        virtual void run() {
-            checkExportProjectDialog(os, projectName);
-        }
+        virtual void run();
     private:
         U2OpStatus &os;
         const QString &projectName;
@@ -84,9 +80,7 @@ public:
     public:
         SaveProjectAsDialogFiller(U2OpStatus &_os, const QString &_projectName, const QString &_projectFolder, const QString &_projectFile)
             :os(_os), projectName(_projectName), projectFolder(_projectFolder), projectFile(_projectFile){}
-        virtual void run() {
-            fillInSaveProjectAsDialog(os, projectName, projectFolder, projectFile);
-        }
+        virtual void run();
     private:
         U2OpStatus &os;
         const QString &projectName;
@@ -98,9 +92,7 @@ public:
     public:
         MessageBoxDialogFiller(U2OpStatus &_os, QMessageBox::StandardButton _b)
             :os(_os), b(_b){}
-        virtual void run() {
-            clickMessageBoxButton(os, b);
-        }
+        virtual void run();
     private:
         U2OpStatus &os;
         QMessageBox::StandardButton b;
@@ -119,15 +111,6 @@ public:
 
     static void waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDialog = true);
     static void preWaitForDialog(U2OpStatus &os, Runnable *r);
-
-    static void openExportProjectDialog(U2OpStatus &os);
-    static void checkExportProjectDialog(U2OpStatus &os, const QString& projectName);
-    static void fillInExportProjectDialog(U2OpStatus &os, const QString &projectFolder, const QString &projectName);
-
-    static void clickMessageBoxButton(U2OpStatus &os, QMessageBox::StandardButton b);
-
-    static void openSaveProjectAsDialog(U2OpStatus &os);
-    static void fillInSaveProjectAsDialog(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile, bool pressCancel = false);
 };
 
 } // namespace

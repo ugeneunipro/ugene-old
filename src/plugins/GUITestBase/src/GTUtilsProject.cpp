@@ -58,29 +58,28 @@ void GTUtilsProject::openFiles(U2OpStatus &os, const GUrl &path, const OpenFileS
 
 void GTUtilsProject::exportProject(U2OpStatus &os, const QString &projectFolder, const QString &projectName) {
 
-    GTUtilsDialog::openExportProjectDialog(os);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     GTUtilsDialog::ExportProjectDialogFiller filler(os, projectFolder, projectName);
     GTUtilsDialog::waitForDialog(os, &filler);
 }
 
 void GTUtilsProject::exportProjectCheck(U2OpStatus &os, const QString &projectName) {
 
-    GTUtilsDialog::openExportProjectDialog(os);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     GTUtilsDialog::ExportProjectDialogChecker filler(os, projectName);
     GTUtilsDialog::waitForDialog(os, &filler);
 }
 
 void GTUtilsProject::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile) {
 
-    GTUtilsDialog::openSaveProjectAsDialog(os);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
     GTUtilsDialog::SaveProjectAsDialogFiller filler(os, projectName, projectFolder, projectFile);
     GTUtilsDialog::waitForDialog(os, &filler);
 }
 
 void GTUtilsProject::closeProject(U2OpStatus &os, const CloseProjectSettings& settings) {
 
-    QMenu *m = GTMenu::showMainMenu(os, MWMENU_FILE);
-    GTMenu::clickMenuItem(os, m, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTUtilsDialog::MessageBoxDialogFiller filler(os, settings.saveOnCloseButton);
     GTUtilsDialog::waitForDialog(os, &filler, false);
 }
