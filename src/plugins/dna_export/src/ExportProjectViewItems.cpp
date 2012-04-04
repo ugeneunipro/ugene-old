@@ -104,6 +104,10 @@ void ExportProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
 
 #define ACTION_PROJECT__EXPORT_MENU "action_project__export_menu"
 #define ACTION_PROJECT__IMPORT_MENU "action_project__import_menu"
+#define ACTION_PROJECT__EXPORT_MENU_ACTION "action_project__export_menu_action"
+#define ACTION_PROJECT__IMPORT_MENU_ACTION "action_project__import_menu_action"
+#define ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION "action_project__export_as_sequence_action"
+#define ACTION_PROJECT__EXPORT_TO_AMINO_ACTION "action_project__export_to_amino_action"
 
 void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
     ProjectView* pv = AppContext::getProjectView();
@@ -120,10 +124,12 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
         set = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &ms, UOF_LoadedOnly);
         if (set.size() == 1) {
             sub = new QMenu(tr("Export"));
+            exportAlignmentAsSequencesAction->setObjectName(ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION);
             sub->addAction(exportAlignmentAsSequencesAction);
             GObject* obj = set.first();
             MAlignment ma = qobject_cast<MAlignmentObject*>(obj)->getMAlignment();
             if (ma.getAlphabet()->isNucleic()) {
+                exportNucleicAlignmentToAminoAction->setObjectName(ACTION_PROJECT__EXPORT_TO_AMINO_ACTION);
                 sub->addAction(exportNucleicAlignmentToAminoAction);
             }
         }
@@ -147,6 +153,7 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
 
     if (sub != NULL) {
         sub->setObjectName(ACTION_PROJECT__EXPORT_MENU);
+        sub->menuAction()->setObjectName(ACTION_PROJECT__EXPORT_MENU_ACTION);
         QAction* beforeAction = GUIUtils::findActionAfter(m.actions(), ACTION_PROJECT__ADD_MENU);
         m.insertMenu(beforeAction, sub);
     }
@@ -155,6 +162,7 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
 void ExportProjectViewItemsContoller::addImportMenu(QMenu& m) {
     QMenu* importMenu = new QMenu(tr("Import"));
     importMenu->setObjectName(ACTION_PROJECT__IMPORT_MENU);
+    importMenu->menuAction()->setObjectName(ACTION_PROJECT__IMPORT_MENU_ACTION);
     importMenu->addAction(importAnnotationsFromCSVAction);
     QAction* beforeAction = GUIUtils::findActionAfter(m.actions(), ACTION_PROJECT__ADD_MENU);
     m.insertMenu(beforeAction, importMenu);
