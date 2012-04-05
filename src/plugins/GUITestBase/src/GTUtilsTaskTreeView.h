@@ -35,7 +35,7 @@ public:
     static void click(U2OpStatus &os, const QString &itemName, Qt::MouseButton b = Qt::LeftButton);
     static void openView(U2OpStatus& os);
     static void toggleView(U2OpStatus& os);
-    static void cancleTask(U2OpStatus& os, const QString &itemName);
+    static void cancelTask(U2OpStatus& os, const QString &itemName);
     static QTreeWidgetItem* getTreeWidgetItem(U2OpStatus &os, const QString &itemName);
     static QTreeWidget* getTreeWidget(U2OpStatus &os);
     static void moveToOpenedView(U2OpStatus& os, const QString &itemName);

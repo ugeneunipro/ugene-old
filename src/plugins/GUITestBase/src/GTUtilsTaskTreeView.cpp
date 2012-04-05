@@ -93,7 +93,7 @@ QList<QTreeWidgetItem*> GTUtilsTaskTreeView::getTaskTreeViewItems(QTreeWidgetIte
     return treeItems;
 }
 
-void GTUtilsTaskTreeView::cancleTask( U2OpStatus& os, const QString &itemName ){
+void GTUtilsTaskTreeView::cancelTask( U2OpStatus& os, const QString &itemName ){
     click(os, itemName, Qt::RightButton);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);

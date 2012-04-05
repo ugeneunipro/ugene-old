@@ -127,6 +127,14 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     GTUtilsProject::exportProjectCheck(os, "project.uprj");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0014) {
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
+    GTUtilsDialog::RemoteDBDialogFiller filler(os, "1HTQ", 2); 
+    GTUtilsDialog::waitForDialog(os, &filler);
+    GTUtilsTaskTreeView::openView(os);
+    GTUtilsTaskTreeView::cancelTask(os, "DownloadRemoteDocuments");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0017) {
 
     GTUtilsProject::openFiles(os, QList<QUrl>()
@@ -186,18 +194,6 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
 
     GTUtilsProject::closeProject(os, s);
     GTUtilsLog::check(os, logTracer);
-}
-
-GUI_TEST_CLASS_DEFINITION(test_0014) {
-    //GTGlobals::clickMenuAction(os, ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, MWMENU_FILE);
-    //;
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
-    GTUtilsDialog::RemoteDBDialogFiller filler(os, "1HTQ", 2); 
-    GTUtilsDialog::waitForDialog(os, &filler);
-    GTUtilsTaskTreeView::openView(os);
-    GTUtilsTaskTreeView::cancleTask(os, "DownloadRemoteDocuments");
-
-    GTGlobals::sleep(10000);
 }
 
 }
