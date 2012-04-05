@@ -35,13 +35,16 @@ namespace U2 {
 
 #if defined __linux__
 
+#define GT_CLASS_NAME "GTKeyboardDriverLinux"
+
+#define GT_METHOD_NAME "keyPress"
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 {
-    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
-    CHECK_SET_ERR(QApplication::activeWindow() != NULL, "There is no activeWindow");
+    GT_CHECK(key != 0, "key = 0");
+    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     Display *display = XOpenDisplay(NULL);
-    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyPress()");
+    GT_CHECK(display != 0, "display is NULL");
 
     if (modifiers) {
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, modifiers), 1, 0);
@@ -57,14 +60,16 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 
     XCloseDisplay(display);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "keyRelease"
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
-    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
-    CHECK_SET_ERR(QApplication::activeWindow() != NULL, "There is no activeWindow");
+    GT_CHECK(key != 0, "key = ");
+    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     Display *display = XOpenDisplay(NULL);
-    CHECK_SET_ERR (display != 0, "Error: display is NULL in keyRelease()");
+    GT_CHECK(display != 0, "display is NULL");
 
     if (key == '_') {
         key = '-';
@@ -81,6 +86,7 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 
     XCloseDisplay(display);
 }
+#undef GT_METHOD_NAME
 
 GTKeyboardDriver::keys::keys()
 {
@@ -123,6 +129,8 @@ GTKeyboardDriver::keys::keys()
 // feel free to add other keys
 // macro XK_* defined in X11/keysymdef.h
 }
+
+#undef GT_CLASS_NAME
 
 #endif
 

@@ -34,6 +34,8 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTUtilsProject"
+
 void GTUtilsProject::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& s) {
 
     switch (s.openMethod) {
@@ -84,18 +86,21 @@ void GTUtilsProject::closeProject(U2OpStatus &os, const CloseProjectSettings& se
     GTUtilsDialog::waitForDialog(os, &filler, false);
 }
 
+#define GT_METHOD_NAME "checkProject"
 void GTUtilsProject::checkProject(U2OpStatus &os, CheckType checkType) {
 
-    CHECK_SET_ERR(AppContext::getProject() != NULL, "There is no project");
+    GT_CHECK(AppContext::getProject() != NULL, "There is no project");
 
     switch (checkType) {
         case Empty:
-            CHECK_SET_ERR(AppContext::getProject()->getDocuments().isEmpty() == true, "Project is not empty");
+            GT_CHECK(AppContext::getProject()->getDocuments().isEmpty() == true, "Project is not empty");
         default:
             break;
     }
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkDocumentExists"
 Document* GTUtilsProject::checkDocumentExists(U2OpStatus &os, const GUrl &url) {
 
     Project *project = AppContext::getProject();
@@ -111,11 +116,12 @@ Document* GTUtilsProject::checkDocumentExists(U2OpStatus &os, const GUrl &url) {
     // check if document with url exists and was shown
     Document *doc = project->findDocumentByURL(url);
 
-    CHECK_SET_ERR_RESULT(doc != NULL, "There is no document", NULL);
-    CHECK_SET_ERR_RESULT(doc->isLoaded(), "Document is not loaded", NULL);
+    GT_CHECK_RESULT(doc != NULL, "There is no document", NULL);
+    GT_CHECK_RESULT(doc->isLoaded(), "Document is not loaded", NULL);
 
     return doc;
 }
+#undef GT_METHOD_NAME
 
 void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
 
@@ -139,5 +145,7 @@ void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
     QDropEvent* dropEvent = new QDropEvent(widgetPos, dropActions, mimeData, mouseButtons, 0);
     GTGlobals::sendEvent(widget, dropEvent);
 }
+
+#undef GT_CLASS_NAME
 
 } // U2

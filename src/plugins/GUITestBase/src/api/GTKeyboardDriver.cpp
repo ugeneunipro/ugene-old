@@ -25,14 +25,19 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTKeyboardDriver"
+
+#define GT_METHOD_NAME "keyClick"
+
 void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
 {
-    CHECK_SET_ERR(key != 0, " Error: key = 0 in GTKeyboardDriver::keyClick()");
-    CHECK_SET_ERR(QApplication::activeWindow() != NULL, "There is no activeWindow");
+    GT_CHECK(key != 0, "key = 0");
+    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     keyPress(os, key, modifiers);
     keyRelease(os, key, modifiers);
 }
+#undef GT_METHOD_NAME
 
 void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, const QString &str, int modifiers)
 {
@@ -62,5 +67,7 @@ int GTKeyboardDriver::keys::operator [] (const QString &str) const
 }
 
 GTKeyboardDriver::keys GTKeyboardDriver::key;
+
+#undef GT_CLASS_NAME
 
 } //namespace

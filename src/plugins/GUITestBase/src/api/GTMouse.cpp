@@ -29,21 +29,28 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTMouse"
+
+#define GT_METHOD_NAME "moveCursorToWidget"
 void GTMouse::moveCursorToWidget(U2OpStatus &os, QWidget *widget) {
-    CHECK_SET_ERR(widget != NULL, "Provided widget is null");
+    GT_CHECK(widget != NULL, "Provided widget is null");
     QPoint widgetCenter = widget->rect().center();
     GTMouseDriver::moveTo(os, widgetCenter);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "moveCursorOutOfWidget"
 void GTMouse::moveCursorOutOfWidget(U2OpStatus &os, QWidget *widget) {
-    CHECK_SET_ERR(widget != NULL, "Provided widget is null");
+    GT_CHECK(widget != NULL, "Provided widget is null");
     QPoint currentPosition = QCursor::pos();
-    CHECK_SET_ERR(widget->rect().contains(currentPosition, false), "Cursor not over widget");
+    GT_CHECK(widget->rect().contains(currentPosition, false), "Cursor not over widget");
     QPoint finalPosition = widget->rect().topLeft() + QPoint(1, 1); //top left + offset
     GTMouseDriver::moveTo(os, finalPosition);
 }
+#undef GT_METHOD_NAME
 
-};
+#undef GT_CLASS_NAME
 
-                       
+}
+
 #endif // U2_GUI_GTMOUSE_H

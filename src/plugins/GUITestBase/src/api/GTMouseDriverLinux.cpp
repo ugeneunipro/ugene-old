@@ -30,16 +30,19 @@ namespace U2 {
 
 #ifdef __linux__
 
+#define GT_CLASS_NAME "GTMouseDriver Linux"
+
+#define GT_METHOD_NAME "moveTo"
 void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 {
     Display *display = XOpenDisplay(NULL);
-    CHECK_SET_ERR (display != 0, "Error: display is NULL in GTMouseDriver::moveTo()");
+    GT_CHECK(display != 0, "display is NULL");
 
     int horres = XDisplayWidth(display, 0);
     int vertres = XDisplayHeight(display, 0);
 
     QRect screen(0, 0, horres-1, vertres-1);
-    CHECK_SET_ERR(screen.contains(QPoint(x, y)), "Invalid coordinates for GTMouseDriver::moveTo()");
+    GT_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
 
     Window root, child;
     int root_x, root_y, pos_x, pos_y;
@@ -98,45 +101,51 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 
     XCloseDisplay(display);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "press"
 void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 {
     Display *display = XOpenDisplay(NULL);
-    CHECK_SET_ERR (display != 0, "Error: display is NULL in GTMouseDriver::press()");
+    GT_CHECK(display != 0, "display is NULL");
 
     //1 = Left, 2 = Middle, 3 = Right
     unsigned int btn = button == Qt::LeftButton ? 1 :
                        button == Qt::RightButton ? 3 :
                        button == Qt::MidButton ? 2 : 0;
-    CHECK_SET_ERR (btn != 0, "Error: button is 0 in GTMouseDriver::press()");
+    GT_CHECK(btn != 0, "button is 0");
 
     XTestFakeButtonEvent(display, btn, True, 0);
     XFlush(display);
 
     XCloseDisplay(display);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "release"
 void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 {
     // TODO: check if this key has been already pressed
     Display *display = XOpenDisplay(NULL);
-    CHECK_SET_ERR (display != 0, "Error: display is NULL in GTMouseDriver::press()");
+    GT_CHECK(display != 0, "display is NULL");
 
     unsigned int btn = button == Qt::LeftButton ? 1 :
                        button == Qt::RightButton ? 3 :
                        button == Qt::MidButton ? 2 : 0;
-    CHECK_SET_ERR (btn != 0, "Error: button is 0 in GTMouseDriver::release()");
+    GT_CHECK(btn != 0, "button is 0");
 
     XTestFakeButtonEvent(display, btn, False, 0);
     XFlush(display);
 
     XCloseDisplay(display);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "scroll"
 void GTMouseDriver::scroll(U2OpStatus &os, int value)
 {
     Display *display = XOpenDisplay(NULL);
-    CHECK_SET_ERR (display != 0, "Error: display is NULL in GTMouseDriver::press()");
+    GT_CHECK(display != 0, "display is NULL");
 
     unsigned button =  value > 0 ? Button4 : Button5; //Button4 - scroll up, Button5 - scroll down
     value = value > 0 ? value : -value;
@@ -149,6 +158,9 @@ void GTMouseDriver::scroll(U2OpStatus &os, int value)
     XFlush(display);
     XCloseDisplay(display);
 }
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 
 #endif
 } // namespace

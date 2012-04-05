@@ -25,10 +25,13 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTUtilsTreeView"
+
+#define GT_METHOD_NAME "expandTo"
 void GTUtilsTreeView::expandTo(U2OpStatus &os, QTreeWidget *treeWidget, QTreeWidgetItem* item) {
 
-    CHECK_SET_ERR(item != NULL, "expandTo: item is NULL");
-    CHECK_SET_ERR(treeWidget != NULL, "expandTo: treeWidget is NULL");
+    GT_CHECK(item != NULL, "item is NULL");
+    GT_CHECK(treeWidget != NULL, "treeWidget is NULL");
 
     QTreeWidgetItem* parentItem = item->parent();
     if (!parentItem) {
@@ -36,7 +39,7 @@ void GTUtilsTreeView::expandTo(U2OpStatus &os, QTreeWidget *treeWidget, QTreeWid
     }
 
     expandTo(os, treeWidget, parentItem);
-    CHECK_SET_ERR(parentItem->isHidden() == false, "parent item is hidden");
+    GT_CHECK(parentItem->isHidden() == false, "parent item is hidden");
 
     QRect parentItemRect = treeWidget->visualItemRect(parentItem);
 
@@ -47,5 +50,8 @@ void GTUtilsTreeView::expandTo(U2OpStatus &os, QTreeWidget *treeWidget, QTreeWid
         GTGlobals::sleep(500);
     }
 }
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 
 }

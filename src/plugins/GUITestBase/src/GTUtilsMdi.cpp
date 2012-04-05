@@ -30,23 +30,28 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTUtilsMdi"
+
+#define GT_METHOD_NAME "click"
 void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
 
     MainWindow* mw = AppContext::getMainWindow();
-    CHECK_SET_ERR(mw != NULL, "MainWindow == NULL");
+    GT_CHECK(mw != NULL, "MainWindow == NULL");
 
     QMainWindow* mainWindow = mw->getQMainWindow();
-    CHECK_SET_ERR(mainWindow != NULL, "QMainWindow == NULL");
+    GT_CHECK(mainWindow != NULL, "QMainWindow == NULL");
 
     GTMenuBar::clickCornerMenu(os, mainWindow->menuBar(), action);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "findWindow"
 QWidget* GTUtilsMdi::findWindow(U2OpStatus &os, const QString& windowName, const GTWidget::FindOptions& options) {
 
-    CHECK_SET_ERR_RESULT(windowName.isEmpty() == false, "windowname is empty", NULL);
+    GT_CHECK_RESULT(windowName.isEmpty() == false, "windowname is empty", NULL);
 
     MainWindow* mw = AppContext::getMainWindow();
-    CHECK_SET_ERR_RESULT(mw != NULL, "MainWindow == NULL", NULL);
+    GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
 
     QList<MWMDIWindow*> mdiWindows = mw->getMDIManager()->getWindows();
     foreach (MWMDIWindow* w, mdiWindows) {
@@ -57,34 +62,40 @@ QWidget* GTUtilsMdi::findWindow(U2OpStatus &os, const QString& windowName, const
     }
 
     if (options.failIfNull) {
-        CHECK_SET_ERR_RESULT(false, "Widget " + windowName + " not found", NULL);
+        GT_CHECK_RESULT(false, "Widget " + windowName + " not found", NULL);
     }
 
     return NULL;
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "activeWindow"
 QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os, const GTWidget::FindOptions& options) {
 
     MainWindow* mw = AppContext::getMainWindow();
-    CHECK_SET_ERR_RESULT(mw != NULL, "MainWindow == NULL", NULL);
+    GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
 
     QWidget* w = mw->getMDIManager()->getActiveWindow();
     if (options.failIfNull) {
-        CHECK_SET_ERR_RESULT(w != NULL, "Active window is not found", NULL);
+        GT_CHECK_RESULT(w != NULL, "Active window is not found", NULL);
     }
     return w;
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getMdiItemPosition"
 QPoint GTUtilsMdi::getMdiItemPosition(U2OpStatus &os, const QString& windowName){
 	QWidget* w = findWindow(os, windowName);
-	CHECK_SET_ERR_RESULT(w != NULL, "MDI window not found", QPoint());
+	GT_CHECK_RESULT(w != NULL, "MDI window not found", QPoint());
 	const QRect r = w->rect();
 	return w->mapToGlobal(r.center());
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "selectRandomRegion"
 void GTUtilsMdi::selectRandomRegion(U2OpStatus &os, const QString& windowName){
 	QWidget* w = findWindow(os, windowName);
-	CHECK_SET_ERR(w != NULL, "MDI window not found");
+	GT_CHECK(w != NULL, "MDI window not found");
 	const QRect r = w->rect();
 	QPoint p = QPoint((r.topLeft().x() + r.bottomLeft().x())/2 + 5, r.center().y()/2);
 	GTMouseDriver::moveTo(os, w->mapToGlobal(p));
@@ -92,5 +103,8 @@ void GTUtilsMdi::selectRandomRegion(U2OpStatus &os, const QString& windowName){
 	GTMouseDriver::moveTo(os, w->mapToGlobal(r.center()));
 	GTMouseDriver::release(os);
 }
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 
 }

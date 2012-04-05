@@ -30,6 +30,8 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTUtilsTaskTreeView"
+
 const QString GTUtilsTaskTreeView::widgetName = DOCK_TASK_TREE_VIEW;
 
 void GTUtilsTaskTreeView::openView(U2OpStatus& os) {
@@ -47,15 +49,17 @@ void GTUtilsTaskTreeView::toggleView(U2OpStatus& os) {
     GTKeyboardDriver::keyClick(os, '2', GTKeyboardDriver::key["alt"]);
 }
 
+#define GT_METHOD_NAME "getTreeWidgetItem"
 QTreeWidgetItem* GTUtilsTaskTreeView::getTreeWidgetItem( U2OpStatus &os, const QString &itemName ){
     QTreeWidget *treeWidget = getTreeWidget(os);
-    CHECK_SET_ERR_RESULT(treeWidget != NULL, "Tree widget not found", NULL);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget not found", NULL);
 
     QTreeWidgetItem *item = getTreeWidgetItem(treeWidget, itemName);
-    CHECK_SET_ERR_RESULT(item != NULL, "Item " + itemName + " not found in tree widget", NULL);
+    GT_CHECK_RESULT(item != NULL, "Item " + itemName + " not found in tree widget", NULL);
 
     return item;
 }
+#undef GT_METHOD_NAME
 
 QTreeWidgetItem* GTUtilsTaskTreeView::getTreeWidgetItem( QTreeWidget* tree, const QString &itemName ){
     if (itemName.isEmpty()) {
@@ -115,9 +119,10 @@ void GTUtilsTaskTreeView::moveToOpenedView( U2OpStatus& os, const QString &itemN
     GTMouseDriver::moveTo(os, p);
 }
 
+#define GT_METHOD_NAME "getTreeViewItemPosition"
 QPoint GTUtilsTaskTreeView::getTreeViewItemPosition( U2OpStatus &os, const QString &itemName ){
     QTreeWidget *treeWidget = getTreeWidget(os);
-    CHECK_SET_ERR_RESULT(treeWidget != NULL, "treeWidget is NULL", QPoint());
+    GT_CHECK_RESULT(treeWidget != NULL, "treeWidget is NULL", QPoint());
     QTreeWidgetItem *item = getTreeWidgetItem(os, itemName);
 
     QPoint p = treeWidget->rect().center();
@@ -128,5 +133,8 @@ QPoint GTUtilsTaskTreeView::getTreeViewItemPosition( U2OpStatus &os, const QStri
 
     return treeWidget->mapToGlobal(p);
 }
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 
 }

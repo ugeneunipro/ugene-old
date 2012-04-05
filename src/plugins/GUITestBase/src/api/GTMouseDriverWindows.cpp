@@ -30,6 +30,9 @@ namespace U2 {
 
 #ifdef _WIN32
 
+#define GT_CLASS_NAME "GTMouseDriver Windows"
+
+#define GT_METHOD_NAME "moveTo"
 void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 {
     // get screen resolution
@@ -39,7 +42,7 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
     ReleaseDC(NULL, hDCScreen);
 
     QRect screen(0, 0, horres-1, vertres-1);
-    CHECK_SET_ERR(screen.contains(QPoint(x, y)), "Invalid coordinates for moveTo()");
+    GT_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
 
     const int points_in_line = 65535;
     const double points_in_x_pixel = points_in_line / static_cast<double>(horres);
@@ -111,13 +114,15 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
         }
     }
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "press"
 void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 {
     unsigned int btn = button == Qt::LeftButton ? MOUSEEVENTF_LEFTDOWN :
                        button == Qt::RightButton ? MOUSEEVENTF_RIGHTDOWN :
                        button == Qt::MidButton ? MOUSEEVENTF_MIDDLEDOWN : 0;
-    CHECK_SET_ERR (btn != 0, "Error: button is 0 in GTMouseDriver::press()");
+    GT_CHECK(btn != 0, "button is 0");
 
     INPUT event;
     event.type = INPUT_MOUSE;
@@ -130,7 +135,9 @@ void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 
     SendInput(1, &event, sizeof(event));
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "release"
 void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 {
     // TODO: check if this key has been already pressed
@@ -138,7 +145,7 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
     unsigned int btn = button == Qt::LeftButton ? MOUSEEVENTF_LEFTUP :
                        button == Qt::RightButton ? MOUSEEVENTF_RIGHTUP :
                        button == Qt::MidButton ? MOUSEEVENTF_MIDDLEUP : 0;
-    CHECK_SET_ERR (btn != 0, "Error: button is 0 in GTMouseDriver::press()");
+    GT_CHECK(btn != 0, "button is 0");
 
     INPUT event;
     event.type = INPUT_MOUSE;
@@ -151,6 +158,7 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 
     SendInput(1, &event, sizeof(event));
 }
+#undef GT_METHOD_NAME
 
 void GTMouseDriver::scroll(U2OpStatus &os, int value)
 {
@@ -165,6 +173,8 @@ void GTMouseDriver::scroll(U2OpStatus &os, int value)
 
     SendInput(1, &event, sizeof(event));
 }
+
+#undef GT_CLASS_NAME
 
 #endif
 } // namespace

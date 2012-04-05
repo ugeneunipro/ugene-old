@@ -45,6 +45,9 @@ void GUIDialogWaiter::wait() {
     }
 }
 
+#define GT_CLASS_NAME "GTUtilsDialog"
+
+#define GT_METHOD_NAME "waitForDialog"
 void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDialog) {
 
     GUIDialogWaiter waiter(r);
@@ -55,9 +58,10 @@ void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDial
 
     GTGlobals::sleep(1000);
     if (failOnNoDialog) {
-        CHECK_SET_ERR(waiter.hadRun == true, "GUIDialogUtils::waitForDialog: no dialog");
+        GT_CHECK(waiter.hadRun == true, "no dialog");
     }
 }
+#undef GT_METHOD_NAME
 
 void GTUtilsDialog::preWaitForDialog(U2OpStatus &os, Runnable *r)
 {
@@ -68,28 +72,37 @@ void GTUtilsDialog::preWaitForDialog(U2OpStatus &os, Runnable *r)
     t.start(100);
 }
 
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::CreateAnnotationDialogChecker"
+#define GT_METHOD_NAME "run"
 void GTUtilsDialog::CreateAnnotationDialogChecker::run() {
 
     QWidget* dialog = QApplication::activeModalWidget();
-    CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+    GT_CHECK(dialog, "activeModalWidget is NULL");
 
     QAbstractButton *radioButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "existingObjectRB", dialog));
-    CHECK_SET_ERR(radioButton != NULL, "Radiobutton is NULL");
-    CHECK_SET_ERR(!radioButton->isEnabled() && !radioButton->isCheckable(), "radioButton is enabled or checkable");
+    GT_CHECK(radioButton != NULL, "Radiobutton is NULL");
+    GT_CHECK(!radioButton->isEnabled() && !radioButton->isCheckable(), "radioButton is enabled or checkable");
 
     QComboBox *comboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "existingObjectCombo", dialog));
-    CHECK_SET_ERR(comboBox != NULL, "ComboBox is NULL");
-    CHECK_SET_ERR(comboBox->count() == 0, "comboBox count is not 0");
+    GT_CHECK(comboBox != NULL, "ComboBox is NULL");
+    GT_CHECK(comboBox->count() == 0, "comboBox count is not 0");
 
     QAbstractButton *b = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "existingObjectButton", dialog));
-    CHECK_SET_ERR(b != NULL, "Button is NULL");
-    CHECK_SET_ERR(b->isEnabled() == false, "Button is enabled");
+    GT_CHECK(b != NULL, "Button is NULL");
+    GT_CHECK(b->isEnabled() == false, "Button is enabled");
 
     QWidget *cancelButton = GTWidget::findWidget(os, "cancel_button", dialog);
-    CHECK_SET_ERR(cancelButton != NULL, "Cancel button is NULL");
+    GT_CHECK(cancelButton != NULL, "Cancel button is NULL");
     GTWidget::click(os, cancelButton);
 }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 
+
+#define GT_CLASS_NAME "GTUtilsDialog::ExportProjectDialogChecker"
+#define GT_METHOD_NAME "run"
 void GTUtilsDialog::ExportProjectDialogChecker::run() {
 
     QWidget* w = QApplication::activeModalWidget();
@@ -98,9 +111,9 @@ void GTUtilsDialog::ExportProjectDialogChecker::run() {
     }
 
     QWidget* activeW = QApplication::focusWidget();
-    CHECK_SET_ERR(activeW != NULL, "Not export project dialog");
+    GT_CHECK(activeW != NULL, "Not export project dialog");
     QObject* activeWP = activeW->parent();
-    CHECK_SET_ERR(activeWP != NULL, "Not export project dialog");
+    GT_CHECK(activeWP != NULL, "Not export project dialog");
 
     QList<QLineEdit*> lineEdits;
     foreach (QObject *obj, w->children()) {
@@ -110,8 +123,8 @@ void GTUtilsDialog::ExportProjectDialogChecker::run() {
         }
     }
 
-    CHECK_SET_ERR(lineEdits.size() > 0, "There is no lineEdit in dialog");
-    CHECK_SET_ERR(lineEdits[0]->text() == projectName, "Project name is not " + projectName);
+    GT_CHECK(lineEdits.size() > 0, "There is no lineEdit in dialog");
+    GT_CHECK(lineEdits[0]->text() == projectName, "Project name is not " + projectName);
 
     QList<QPushButton*> buttons;
     foreach (QObject *obj, activeWP->children()) {
@@ -121,11 +134,15 @@ void GTUtilsDialog::ExportProjectDialogChecker::run() {
         }
     }
 
-    CHECK_SET_ERR(buttons.size() == 2, "There aren't 2 QPushButtons in SaveProjectAs dialog");
+    GT_CHECK(buttons.size() == 2, "There aren't 2 QPushButtons");
 
     GTWidget::click(os, buttons[0]);
 }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::ExportProjectDialogFiller"
+#define GT_METHOD_NAME "run"
 void GTUtilsDialog::ExportProjectDialogFiller::run() {
 
     QWidget* w = QApplication::activeModalWidget();
@@ -134,9 +151,9 @@ void GTUtilsDialog::ExportProjectDialogFiller::run() {
     }
 
     QWidget* activeW = QApplication::focusWidget();
-    CHECK_SET_ERR(activeW != NULL, "Not export project dialog");
+    GT_CHECK(activeW != NULL, "Not export project dialog");
     QObject* activeWP = activeW->parent();
-    CHECK_SET_ERR(activeWP != NULL, "Not export project dialog");
+    GT_CHECK(activeWP != NULL, "Not export project dialog");
 
     QList<QLineEdit*> lineEdits;
     foreach (QObject *obj, w->children()) {
@@ -146,7 +163,7 @@ void GTUtilsDialog::ExportProjectDialogFiller::run() {
         }
     }
 
-    CHECK_SET_ERR(lineEdits.size() > 1, "There are no lineEdits in dialog");
+    GT_CHECK(lineEdits.size() > 1, "There are no lineEdits in dialog");
     if (!projectName.isEmpty()) {
         GTLineEdit::setText(os, lineEdits[0], projectName);
     }
@@ -161,11 +178,15 @@ void GTUtilsDialog::ExportProjectDialogFiller::run() {
         }
     }
 
-    CHECK_SET_ERR(buttons.size() == 2, "There aren't 2 QPushButtons in SaveProjectAs dialog");
+    GT_CHECK(buttons.size() == 2, "There aren't 2 QPushButtons");
 
     GTWidget::click(os, buttons[1]);
 }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::MessageBoxDialogFiller"
+#define GT_METHOD_NAME "run"
 void GTUtilsDialog::MessageBoxDialogFiller::run() {
 
     QWidget* activeModal = QApplication::activeModalWidget();
@@ -175,11 +196,15 @@ void GTUtilsDialog::MessageBoxDialogFiller::run() {
     }
 
     QAbstractButton* button = messageBox->button(b);
-    CHECK_SET_ERR(button != NULL, "There is no such button in messagebox");
+    GT_CHECK(button != NULL, "There is no such button in messagebox");
 
     GTWidget::click(os, button);
 }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::SaveProjectAsDialogFiller"
+#define GT_METHOD_NAME "run"
 void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
 
     QWidget* w = QApplication::activeModalWidget();
@@ -199,7 +224,7 @@ void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
         }
     }
 
-    CHECK_SET_ERR(lineEdits.size() == 3, "There aren't 3 QLineEdits in SaveProjectAs dialog");
+    GT_CHECK(lineEdits.size() == 3, "There aren't 3 QLineEdits");
 
     GTLineEdit::setText(os, lineEdits[1], projectFile);
     GTLineEdit::setText(os, lineEdits[2], projectName);
@@ -213,7 +238,7 @@ void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
         }
     }
 
-    CHECK_SET_ERR(buttons.size() == 2, "There aren't 2 QPushButtons in SaveProjectAs dialog");
+    GT_CHECK(buttons.size() == 2, "There aren't 2 QPushButtons");
 
     QPushButton* cancelButton = buttons[0];
     QPushButton* saveButton = buttons[1];
@@ -223,6 +248,8 @@ void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
     GTUtilsDialog::MessageBoxDialogFiller filler(os, QMessageBox::Yes);
     GTUtilsDialog::waitForDialog(os, &filler, false); // MessageBox question appears only if there is already a file on a disk
 }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 
 void GTUtilsDialog::PopupChooser::run()
 {
@@ -231,7 +258,8 @@ void GTUtilsDialog::PopupChooser::run()
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
 
-
+#define GT_CLASS_NAME "GTUtilsDialog::RemoteDBDialogFiller"
+#define GT_METHOD_NAME "run"
 void GTUtilsDialog::RemoteDBDialogFiller::run() {
     QWidget* w = QApplication::activeModalWidget();
     if (!w) {
@@ -250,7 +278,7 @@ void GTUtilsDialog::RemoteDBDialogFiller::run() {
         }
     }
 
-    CHECK_SET_ERR(lineEdits.size() == 2, "There aren't 3 QLineEdits in Access remote DB dialog");
+    GT_CHECK(lineEdits.size() == 2, "There aren't 3 QLineEdits");
 
     GTLineEdit::setText(os, lineEdits[1], resID);
     if(!saveDirPath.isEmpty()){
@@ -265,7 +293,7 @@ void GTUtilsDialog::RemoteDBDialogFiller::run() {
         }
     }
 
-    CHECK_SET_ERR(comboBoxes.size() == 1, "There aren't 1 QComboBox in Access remote DB dialog");
+    GT_CHECK(comboBoxes.size() == 1, "There aren't 1 QComboBox");
 
     GTComboBox::setCurrentIndex(os, comboBoxes.first(), DBItemNum);
     
@@ -277,7 +305,7 @@ void GTUtilsDialog::RemoteDBDialogFiller::run() {
         }
     }
 
-    CHECK_SET_ERR(buttons.size() == 2, "There aren't 2 QPushButtons in SaveProjectAs dialog");
+    GT_CHECK(buttons.size() == 2, "There aren't 2 QPushButtons");
 
     QPushButton* okButton = buttons[1];
     QPushButton* cancelButton = buttons[0];
@@ -288,5 +316,7 @@ void GTUtilsDialog::RemoteDBDialogFiller::run() {
         GTWidget::click(os, okButton);
     }
 }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 
 }

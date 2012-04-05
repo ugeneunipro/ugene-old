@@ -29,35 +29,47 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTToolbar"
+
+#define GT_METHOD_NAME "getToolbar"
     QToolBar* GTToolbar::getToolbar(U2OpStatus &os, const QString &toolbarSysName) {
         QString toolbarTypeCheck = "QToolBar";
         QToolBar *toolbar = static_cast<QToolBar*>(GTWidget::findWidget(os, toolbarSysName));
-        CHECK_SET_ERR_RESULT(0 == toolbarTypeCheck.compare(toolbar->metaObject()->className()), "No such toolbar: " + toolbarSysName, NULL); //the found widget is not a qtoolbar
+        GT_CHECK_RESULT(0 == toolbarTypeCheck.compare(toolbar->metaObject()->className()), "No such toolbar: " + toolbarSysName, NULL); //the found widget is not a qtoolbar
         return toolbar;
     }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getWidgetForAction"
     QWidget* GTToolbar::getWidgetForAction(U2OpStatus &os, const QToolBar *toolbar, QAction *action) {
         QString toolbarTypeCheck = "QToolBar";
-        CHECK_SET_ERR_RESULT((toolbar != NULL) && (0 == toolbarTypeCheck.compare(toolbar->metaObject()->className())), "Toolbar not found", NULL); //the found widget is not a qtoolbar or doesn't exist
+        GT_CHECK_RESULT((toolbar != NULL) && (0 == toolbarTypeCheck.compare(toolbar->metaObject()->className())), "Toolbar not found", NULL); //the found widget is not a qtoolbar or doesn't exist
         QWidget *widget = toolbar->widgetForAction(action);
-        CHECK_SET_ERR_RESULT(widget != NULL, "No widget for action", NULL);
+        GT_CHECK_RESULT(widget != NULL, "No widget for action", NULL);
         return widget;
     }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getWidgetFroActionName"
     QWidget* GTToolbar::getWidgetForActionName(U2OpStatus &os, const QToolBar *toolbar, const QString &actionName) {
         QString toolbarTypeCheck = "QToolBar";
-        CHECK_SET_ERR_RESULT((toolbar != NULL) && (0 == toolbarTypeCheck.compare(toolbar->metaObject()->className())), "Toolbar not found", NULL); //the found widget is not a qtoolbar or doesn't exist
+        GT_CHECK_RESULT((toolbar != NULL) && (0 == toolbarTypeCheck.compare(toolbar->metaObject()->className())), "Toolbar not found", NULL); //the found widget is not a qtoolbar or doesn't exist
         QAction *action = GTToolbar::getToolbarAction(os, actionName, toolbar);
-        CHECK_SET_ERR_RESULT(action != NULL, "No such action:" + actionName, NULL);
+        GT_CHECK_RESULT(action != NULL, "No such action:" + actionName, NULL);
         return GTToolbar::getWidgetForAction(os, toolbar, action);
     }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getToolbarAction"
     QAction* GTToolbar::getToolbarAction(U2OpStatus &os, const QString &actionName, const QToolBar *toolbar) {
         QString toolbarTypeCheck = "QToolBar";
-        CHECK_SET_ERR_RESULT((toolbar != NULL) && (0 == toolbarTypeCheck.compare(toolbar->metaObject()->className())), "Toolbar not found", NULL); //the found widget is not a qtoolbar or doesn't exist
+        GT_CHECK_RESULT((toolbar != NULL) && (0 == toolbarTypeCheck.compare(toolbar->metaObject()->className())), "Toolbar not found", NULL); //the found widget is not a qtoolbar or doesn't exist
         QAction *action = GUIUtils::findAction(toolbar->actions(), actionName);
         return action;
     }
+#undef GT_METHOD_NAME
     
+
+#undef GT_CLASS_NAME
 
 }

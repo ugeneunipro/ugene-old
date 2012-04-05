@@ -35,9 +35,13 @@ void GTLogTracer::sl_onMessage(const LogMessage &msg) {
     }
 }
 
+#define GT_CLASS_NAME "GTUtilsLog"
+#define GT_METHOD_NAME "check"
 void GTUtilsLog::check(U2OpStatus &os, GTLogTracer& l) {
     GTGlobals::sleep(500);
-    CHECK_SET_ERR(l.hasError() == false, "There is an error in log");
+    GT_CHECK(l.hasError() == false, "There is an error in log");
 }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 
 } // namespace

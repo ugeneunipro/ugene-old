@@ -25,12 +25,16 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTScrollBar"
+
+#define GT_METHOD_NAME "getScrollBar"
 QScrollBar* GTScrollBar::getScrollBar(U2OpStatus &os, const QString &scrollBarSysName) {
     QString scrollBarTypeCheck = "QScrollBar";
     QScrollBar *scrollBar = static_cast<QScrollBar*>(GTWidget::findWidget(os, scrollBarSysName));
-    CHECK_SET_ERR_RESULT(0 == scrollBarTypeCheck.compare(scrollBar->metaObject()->className()), "No such scrollbar: " + scrollBarSysName, NULL); //the found widget is not a qscrollbar
+    GT_CHECK_RESULT(0 == scrollBarTypeCheck.compare(scrollBar->metaObject()->className()), "No such scrollbar: " + scrollBarSysName, NULL); //the found widget is not a qscrollbar
     return scrollBar;
 }
+#undef GT_METHOD_NAME
 
 void GTScrollBar::pageUp(U2OpStatus &os, QScrollBar *scrollbar, device _device) {
     switch (_device) {
@@ -248,6 +252,7 @@ QStyleOptionSlider GTScrollBar::initScrollbarOptions(QScrollBar *scrollbar) {
     return options;
 }
 
+#undef GT_CLASS_NAME
     
 }
 // namespace

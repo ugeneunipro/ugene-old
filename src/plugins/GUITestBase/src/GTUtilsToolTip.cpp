@@ -24,15 +24,21 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTUtilsToolTip"
+
+#define GT_METHOD_NAME "checkExistingToolTip"
 void GTUtilsToolTip::checkExistingToolTip(U2OpStatus &os, const QString& tooltip) {
 
     QString t = getToolTip();
-    CHECK_SET_ERR(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
+    GT_CHECK(t.contains(tooltip), "Tooltip is <" + t + ">, doesn't contain <" + tooltip + ">");
 }
+#undef GT_METHOD_NAME
 
 QString GTUtilsToolTip::getToolTip() {
 
     return QToolTip::text();
 }
+
+#undef GT_CLASS_NAME
 
 }

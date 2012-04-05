@@ -31,14 +31,15 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTMenu"
+
+#define GT_METHOD_NAME "showMainMenu"
 QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m)
 {
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
     QAction *menu = mainWindow->findChild<QAction*>(menuName);
 
-    CHECK_SET_ERR_RESULT(menu != NULL,
-                         QString("Error: menu \"%1\" not found in showMenu()").arg(menuName),
-                         NULL);
+    GT_CHECK_RESULT(menu != NULL, QString("menu \"%1\" not found").arg(menuName), NULL);
 
     QPoint pos;
     QPoint gPos;
@@ -67,6 +68,7 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::
 
     return menu->menu();
 }
+#undef GT_METHOD_NAME
 
 QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals::UseMethod m)
 {
@@ -101,9 +103,10 @@ QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals:
     return menu;
 }
 
+#define GT_METHOD_NAME "getMenuItem"
 QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &itemName) {
 
-    CHECK_SET_ERR_RESULT(menu != NULL, "Error: menu not found in selectMenuItem()", NULL);
+    GT_CHECK_RESULT(menu != NULL, "menu not found", NULL);
 
     QAction *action = NULL;
     QList<QAction*>actions = menu->actions();
@@ -117,23 +120,27 @@ QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &i
 
     return action;
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "actionPos"
 QPoint GTMenu::actionPos(U2OpStatus &os, const QMenu* menu, QAction* action) {
 
-    CHECK_SET_ERR_RESULT(menu != NULL, "Error: menu == NULL in actionPos()", QPoint());
-    CHECK_SET_ERR_RESULT(action != NULL, "Error: action == NULL in actionPos()", QPoint());
+    GT_CHECK_RESULT(menu != NULL, "menu == NULL", QPoint());
+    GT_CHECK_RESULT(action != NULL, "action == NULL", QPoint());
 
     QPoint p = menu->actionGeometry(action).center();
     return menu->mapToGlobal(p);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "clickMenuItem"
 QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString &itemName, GTGlobals::UseMethod m, bool openMenuOnly) {
 
-    CHECK_SET_ERR_RESULT(menu != NULL, "Error: menu not found in selectMenuItem()", NULL);
-    CHECK_SET_ERR_RESULT(itemName.isEmpty() == false, "Error: itemName is empty in clickMenuItem()", NULL);
+    GT_CHECK_RESULT(menu != NULL, "menu not found", NULL);
+    GT_CHECK_RESULT(itemName.isEmpty() == false, "itemName is empty", NULL);
 
     QAction *action = getMenuItem(os, menu, itemName);
-    CHECK_SET_ERR_RESULT(action != NULL, "Error: action not found for item " + itemName + " in clickMenuItem()", NULL);
+    GT_CHECK_RESULT(action != NULL, "action not found for item " + itemName, NULL);
 
     QMenu* actionMenu = action->menu();
     bool clickingSubMenu = actionMenu ? true : false;
@@ -161,15 +168,17 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
 
     return action;
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "selectMenuItem"
 QAction* GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod) {
 
-    CHECK_SET_ERR_RESULT(itemPath.isEmpty() == false, "Error: itemPath is empty in selectMenuItem()", NULL);
+    GT_CHECK_RESULT(itemPath.isEmpty() == false, "itemPath is empty", NULL);
 
     QAction *action = NULL;
     QList<QAction*>actions = menu->actions();
     foreach(QString itemName, itemPath) {
-        CHECK_SET_ERR_RESULT(menu != NULL, "Error: menu not found for item " + itemName + " in selectMenuItem()", NULL);
+        GT_CHECK_RESULT(menu != NULL, "menu not found for item " + itemName, NULL);
 
         action = clickMenuItem(os, menu, itemName, useMethod, true);
         menu = action ? action->menu() : NULL;
@@ -177,14 +186,16 @@ QAction* GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QString
 
     return action;
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "clickMenuItem"
 void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod) {
 
-    CHECK_SET_ERR(itemPath.isEmpty() == false, "Error: itemPath is empty in clickMenuItem()");
+    GT_CHECK(itemPath.isEmpty() == false, "itemPath is empty");
 
     QList<QAction*>actions = menu->actions();
     foreach(QString itemName, itemPath) {
-        CHECK_SET_ERR(menu != NULL, "Error: menu not found for item " + itemName + " in clickMenuItem()");
+        GT_CHECK(menu != NULL, "menu not found for item " + itemName);
 
         GTGlobals::sleep(500);
         QAction *action = clickMenuItem(os, menu, itemName, useMethod);
@@ -192,5 +203,8 @@ void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList 
         GTGlobals::sleep(200);
     }
 }
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 
 } // namespace

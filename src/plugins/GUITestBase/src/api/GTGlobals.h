@@ -38,6 +38,12 @@ namespace U2 {
     CHECK_EXT(condition, if (!os.hasError()) {os.setError(errorMessage);}, result) \
 }
 
+#define GT_CHECK(condition, errorMessage) \
+    GT_CHECK_RESULT(condition, errorMessage, )
+
+#define GT_CHECK_RESULT(condition, errorMessage, result) \
+    CHECK_SET_ERR_RESULT(condition, GT_CLASS_NAME " :: " GT_METHOD_NAME " :  " + QString(errorMessage), result)
+
 class GTGlobals {
 public:
     enum UseMethod {UseMouse, UseKey};

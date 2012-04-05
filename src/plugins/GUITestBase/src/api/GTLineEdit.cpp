@@ -27,23 +27,26 @@
 
 namespace U2 {
 
-#define CHECK_LINEEDIT(method) CHECK_SET_ERR(lineEdit != NULL, "GTLineEdit::" #method ": lineEdit is NULL")
+#define GT_CLASS_NAME "GTLineEdit"
 
+#define GT_METHOD_NAME ""
 void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str) {
 
-    CHECK_LINEEDIT(setText);
+    GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
 
     clear(os, lineEdit);
     GTKeyboardDriver::keySequence(os, str);
     GTGlobals::sleep(500);
 
     QString s = lineEdit->text();
-    CHECK_SET_ERR(s == str, "Can't set text, set text differs from a given string");
+    GT_CHECK(s == str, "Can't set text, set text differs from a given string");
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "clear"
 void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
 
-    CHECK_LINEEDIT(clear);
+    GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
 
     GTWidget::setFocus(os, lineEdit);
 
@@ -53,17 +56,19 @@ void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
     GTGlobals::sleep(1000);
 
     QString s = lineEdit->text();
-    CHECK_SET_ERR(s.isEmpty() == true, "Can't clear text, lineEdit is not empty");
+    GT_CHECK(s.isEmpty() == true, "Can't clear text, lineEdit is not empty");
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "pasteClipboard"
 void GTLineEdit::pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod) {
 
-    CHECK_LINEEDIT(pasteClipboard);
+    GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
 
     clear(os, lineEdit);
     switch(pasteMethod) {
         case Mouse:
-            os.setError("Not implemented: GTLineEdit::pasteClipboard: Paste by mouse");
+            os.setError("GTLineEdit::pasteClipboard: Not implemented: Paste by mouse");
             break;
 
         default:
@@ -74,17 +79,22 @@ void GTLineEdit::pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod
 
     GTGlobals::sleep(500);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkTextSize"
 void GTLineEdit::checkTextSize(U2OpStatus& os, QLineEdit* lineEdit) {
 
-    CHECK_LINEEDIT(checkTextSize);
+    GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
 
     QMargins lineEditMargins = lineEdit->textMargins();
     QFontMetrics fontMetrics = lineEdit->fontMetrics();
     int textWidth = lineEditMargins.left() + lineEditMargins.right() + fontMetrics.width(lineEdit->text());
     int rectWidth = lineEdit->rect().width();
 
-    CHECK_SET_ERR(textWidth <= rectWidth, "Text is not inside LineEdit's rect");
+    GT_CHECK(textWidth <= rectWidth, "GTLineEdit::checkTextSize: Text is not inside LineEdit's rect");
 }
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 
 }

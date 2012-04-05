@@ -39,6 +39,8 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTFileDialogUtils"
+
 class GTFileDialogUtils : public Runnable {
 public:
     enum Button {Open, Cancel};
@@ -74,11 +76,12 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
 {
 }
 
+#define GT_METHOD_NAME "run"
 void GTFileDialogUtils::run()
 {
     QWidget *dialog = QApplication::activeModalWidget();
-    CHECK_SET_ERR (dialog != NULL && QString(dialog->metaObject()->className()) == "QFileDialog",
-                   "Error: file dialog not found in GTFileDialog::run()");
+    GT_CHECK(dialog != NULL && QString(dialog->metaObject()->className()) == "QFileDialog",
+                   "file dialog not found");
 
     fileDialog = dialog;
 
@@ -95,6 +98,7 @@ void GTFileDialogUtils::run()
     GTGlobals::sleep(200);
     clickButton(button);
 }
+#undef GT_METHOD_NAME
 
 void GTFileDialogUtils::openFileDialog()
 {
@@ -114,10 +118,11 @@ void GTFileDialogUtils::openFileDialog()
     }
 }
 
+#define GT_METHOD_NAME "setPath"
 void GTFileDialogUtils::setPath()
 {
     QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
-    CHECK_SET_ERR(lineEdit != 0, QString("Error: line edit \"1\" not found in GTFileDialog::setPath()").arg(FILE_NAME_LINE_EDIT));
+    GT_CHECK(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT));
 
     QPoint linePos;
 
@@ -143,11 +148,13 @@ void GTFileDialogUtils::setPath()
         GTGlobals::sleep(100);
     }
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setFilter"
 void GTFileDialogUtils::setFilter()
 {
     QComboBox *cmb = fileDialog->findChild<QComboBox*>("fileTypeCombo");
-    CHECK_SET_ERR (cmb != NULL, "Error: combobox, which contains files filters, not found in GTFileDialogUtils::setFilter()");
+    GT_CHECK(cmb != NULL, "combobox, which contains files filters, not found");
 
     int index = -1;
     for (int i = 0; i < cmb->count(); i++ ) {
@@ -157,15 +164,17 @@ void GTFileDialogUtils::setFilter()
         }
     }
 
-    CHECK_SET_ERR (index != -1, QString("Error: item \"%1\" in combobox not found in GTFileDialogUtils::setFilter()").arg(filters));
+    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(filters));
 
     GTComboBox::setCurrentIndex(os, cmb, index/*, method*/);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "selectFile"
 void GTFileDialogUtils::selectFile()
 {
     QTreeView *w = fileDialog->findChild<QTreeView*>("treeView");
-    CHECK_SET_ERR (w != NULL, "Error: widget, which contains list of file, not found in GTFileDialogUtils::selectFile()");
+    GT_CHECK(w != NULL, "widget, which contains list of file, not found");
 
     QFileSystemModel *model = qobject_cast<QFileSystemModel*>(w->model());
     QModelIndex index = model->index(path + fileName);
@@ -204,7 +213,9 @@ void GTFileDialogUtils::selectFile()
 
     GTGlobals::sleep(100);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "clickButton"
 void GTFileDialogUtils::clickButton(Button btn)
 {
     QList<QPushButton*> buttons = fileDialog->findChildren<QPushButton *>();
@@ -219,7 +230,7 @@ void GTFileDialogUtils::clickButton(Button btn)
             break;
         }
     }
-    CHECK_SET_ERR (button_to_click != NULL, "Error: button not foud in GTFileDialog::clickButton()");
+    GT_CHECK(button_to_click != NULL, "button not found");
 
     while (! button_to_click->isEnabled()) {
         GTGlobals::sleep(100);
@@ -245,7 +256,9 @@ void GTFileDialogUtils::clickButton(Button btn)
         break;
     }
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setViewMode"
 void GTFileDialogUtils::setViewMode(ViewMode v)
 {
     QMap<ViewMode, QString> button;
@@ -253,7 +266,7 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
     button[Detail] = "detailModeButton";
     QWidget *w = fileDialog->findChild<QWidget*>(button[v]);
 
-    CHECK_SET_ERR (w != NULL, "Error: view mode button not found in GTFileDialogUtils::setViewMode()");
+    GT_CHECK(w != NULL, "view mode button not found");
 
     switch(method) {
     case GTGlobals::UseMouse:
@@ -272,6 +285,7 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 
     GTGlobals::sleep(100);
 }
+#undef GT_METHOD_NAME
 
 void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &fileName,
                             const QString &filters, Button button, GTGlobals::UseMethod m)
@@ -292,5 +306,7 @@ void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &
         GTUtilsDialog::waitForDialog(os, &ob);
     }
 }
+
+#undef GT_CLASS_NAME
 
 } // namespace

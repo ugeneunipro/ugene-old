@@ -27,12 +27,15 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTComboBox"
+
+#define GT_METHOD_NAME "setCurrentIndex"
 void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index) {
 
-    CHECK_SET_ERR(comboBox != NULL, "QComboBox* == NULL");
+    GT_CHECK(comboBox != NULL, "QComboBox* == NULL");
 
     int comboCount = comboBox->count();
-    CHECK_SET_ERR(index>=0 && index<comboCount, "invalid index");
+    GT_CHECK(index>=0 && index<comboCount, "invalid index");
 
     int currIndex = comboBox->currentIndex();
     QString directionKey = index > currIndex ? "down" : "up";
@@ -47,7 +50,10 @@ void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index)
     GTGlobals::sleep(500);
 
     currIndex = comboBox->currentIndex();
-    CHECK_SET_ERR(currIndex == index, "Can't set index");
+    GT_CHECK(currIndex == index, "Can't set index");
 }
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 
 }

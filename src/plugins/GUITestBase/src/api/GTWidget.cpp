@@ -29,30 +29,37 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTWidget"
+
+#define GT_METHOD_NAME "click"
 void GTWidget::click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton) {
 
     GTGlobals::sleep(100);
-    CHECK_SET_ERR(w != NULL, "GTWidget::click: widget is NULL");
+    GT_CHECK(w != NULL, "widget is NULL");
 
-    CHECK_SET_ERR(w->isEnabled() == true, "GTWidget::click: widget is not enabled");
+    GT_CHECK(w->isEnabled() == true, "widget is not enabled");
 
     GTMouseDriver::moveTo(os, w->mapToGlobal(w->rect().center()));
     GTMouseDriver::click(os, mouseButton);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setFocus"
 void GTWidget::setFocus(U2OpStatus &os, QWidget *w) {
 
-    CHECK_SET_ERR(w != NULL, "GTWidget::setFocus: widget is NULL");
+    GT_CHECK(w != NULL, "widget is NULL");
 
     GTWidget::click(os, w);
     GTGlobals::sleep(1000);
 
     if(!qobject_cast<QComboBox*>(w)){
-        CHECK_SET_ERR(w->hasFocus(), "Can't set focus on widget");
+        GT_CHECK(w->hasFocus(), "Can't set focus on widget");
     }
     
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "findWidget"
 QWidget* GTWidget::findWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget, const FindOptions& options) {
 
     if (parentWidget == NULL) {
@@ -61,10 +68,13 @@ QWidget* GTWidget::findWidget(U2OpStatus &os, const QString &widgetName, QWidget
     QWidget* widget = parentWidget->findChild<QWidget*>(widgetName);
 
     if (options.failIfNull) {
-        CHECK_SET_ERR_RESULT(widget != NULL, "Widget " + widgetName + " not found", NULL);
+        GT_CHECK_RESULT(widget != NULL, "Widget " + widgetName + " not found", NULL);
     }
 
     return widget;
 }
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 
 } //namespace

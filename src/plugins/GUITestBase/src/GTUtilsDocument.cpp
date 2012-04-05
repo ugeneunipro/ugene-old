@@ -33,10 +33,13 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GTUtilsDocument"
+
+#define GT_METHOD_NAME "getDocument"
 Document* GTUtilsDocument::getDocument(U2OpStatus &os, const QString& documentName) {
 
     Project* p = AppContext::getProject();
-    CHECK_SET_ERR_RESULT(p != NULL, "Project does not exist", NULL);
+    GT_CHECK_RESULT(p != NULL, "Project does not exist", NULL);
 
     QList<Document*> docs = p->getDocuments();
     foreach (Document *d, docs) {
@@ -47,24 +50,27 @@ Document* GTUtilsDocument::getDocument(U2OpStatus &os, const QString& documentNa
 
     return NULL;
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkDocument"
 void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id) {
 
     GTGlobals::sleep(1000);
 
     Document *d = getDocument(os, documentName);
-    CHECK_SET_ERR(d != NULL, "There is no document with name " + documentName);
+    GT_CHECK(d != NULL, "There is no document with name " + documentName);
 
     if (id.isEmpty()) {
         return;
     }
 
     GObjectView* view = getDocumentGObjectView(os, d);
-    CHECK_SET_ERR(view != NULL, "GObjectView* is NULL");
+    GT_CHECK(view != NULL, "GObjectView* is NULL");
 
     GObjectViewFactoryId viewFactoryId = view->getFactoryId();
-    CHECK_SET_ERR(viewFactoryId == id, "View's GObjectViewFactoryId is " + viewFactoryId + ", not " + id);
+    GT_CHECK(viewFactoryId == id, "View's GObjectViewFactoryId is " + viewFactoryId + ", not " + id);
 }
+#undef GT_METHOD_NAME
 
 void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method)
 {
@@ -92,9 +98,10 @@ void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName
     GTGlobals::sleep(500);
 }
 
+#define GT_METHOD_NAME "getDocumentGObjectView"
 GObjectView* GTUtilsDocument::getDocumentGObjectView(U2OpStatus &os, Document* d) {
 
-    CHECK_SET_ERR_RESULT(d != NULL, "Document* is NULL", NULL);
+    GT_CHECK_RESULT(d != NULL, "Document* is NULL", NULL);
 
     QList<GObjectView*> gObjectViews = getAllGObjectViews();
     foreach (GObjectView *view, gObjectViews) {
@@ -105,6 +112,7 @@ GObjectView* GTUtilsDocument::getDocumentGObjectView(U2OpStatus &os, Document* d
 
     return NULL;
 }
+#undef GT_METHOD_NAME
 
 QList<GObjectView*> GTUtilsDocument::getAllGObjectViews() {
 
@@ -123,5 +131,7 @@ QList<GObjectView*> GTUtilsDocument::getAllGObjectViews() {
 
     return gObjectViews;
 }
+
+#undef GT_CLASS_NAME
 
 }
