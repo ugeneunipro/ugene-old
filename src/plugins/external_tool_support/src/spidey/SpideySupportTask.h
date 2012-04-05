@@ -32,6 +32,8 @@
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Gui/CreateAnnotationWidgetController.h>
+
 
 #include "ExternalToolRunTask.h"
 
@@ -57,16 +59,17 @@ private:
 };
 
 
+
 class SpideyAlignmentTask : public SplicedAlignmentTask {
     Q_OBJECT
 public:
     SpideyAlignmentTask(const SplicedAlignmentTaskConfig& config);
     void prepare();
-    AnnotationTableObject* getAlignmentResult() { return resultAlignment; }
+    QList<Annotation*> getAlignmentResult() { return resultAnnotations; }
     Task::ReportResult report();
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:
-    AnnotationTableObject*      resultAlignment;
+    QList<Annotation*>          resultAnnotations;
     QString                     tmpDirUrl, tmpOutputUrl;
     PrepareInputForSpideyTask*  prepareDataForSpideyTask;
     ExternalToolRunTask*        spideyTask;
@@ -86,6 +89,17 @@ public:
     int getProgress();
 };
 
+
+class SpideySupportTask : public Task {
+    Q_OBJECT
+public:
+    SpideySupportTask(const SplicedAlignmentTaskConfig& cfg, AnnotationTableObject* aobj);
+    void prepare();
+    QList<Task*> onSubTaskFinished(Task *subTask);
+private:
+    SpideyAlignmentTask* spideyAlignmentTask;
+    AnnotationTableObject* aObj;
+};
 
 }//namespace
 

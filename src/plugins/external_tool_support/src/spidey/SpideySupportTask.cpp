@@ -26,6 +26,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/Counter.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRegistry.h>
 
 
@@ -43,7 +44,7 @@ SpideyAlignmentTask::SpideyAlignmentTask(const SplicedAlignmentTaskConfig& setti
     logParser = NULL;
     spideyTask = NULL;
     prepareDataForSpideyTask = NULL;
-    resultAlignment = NULL;
+
 }
 
 
@@ -99,50 +100,55 @@ QList<Task*> SpideyAlignmentTask::onSubTaskFinished(Task* subTask) {
         // parse result
 
         QFile resultFile(tmpOutputUrl);
-        static const int BUFSIZE = 1024;
-        QList<Annotation*> anns;
 
         if (!resultFile.open(QFile::ReadOnly)) {
             setError(tr("Failed to open result file %1").arg(tmpOutputUrl));
             return res;
         }
-        QByteArray buf;
-        buf.reserve(BUFSIZE);
 
-        while (!resultFile.atEnd()) {
-            qint64 lineLength = resultFile.readLine(buf.data(), BUFSIZE);
-            if (lineLength != -1) {
-                if (buf.startsWith("Exon:")) {
-                    int pos = buf.indexOf("(gen)");
-                    if (pos == -1) {
-                        continue;
-                    }
-                    QByteArray loc = buf.mid(5, pos).trimmed();
-                    QList<QByteArray> loci = loc.split('-');
-                    if (loci.size() < 2) {
-                        continue;
-                    }
-                    int start = QString(loci.at(0)).toInt();
-                    int finish = QString(loci.at(1)).toInt();
+        QTextStream inStream(&resultFile);
+        bool strandDirect = true;
 
-                    SharedAnnotationData data(new AnnotationData);
-                    U2Location location;
-                    location->regions.append(U2Region(start,finish));
-                    // TODO; check strand
-                    data->location = location;
-                    data->name = "exon";
-
-
-                    anns.append(new Annotation(data));
-
-                }
+        while (!inStream.atEnd()) {
+            QByteArray buf = inStream.readLine().toAscii();
+            if (buf.startsWith("Strand")) {
+                strandDirect = buf.contains("plus");
             }
+            if (buf.startsWith("Exon")) {
+                // TODO: better to use reg exp here
+                int startPos = buf.indexOf(":") + 1;
+                int endPos = buf.indexOf("(gen)");
+                if (startPos == -1 || endPos == -1 ) {
+                    continue;
+                }
+                QByteArray loc = buf.mid(startPos, endPos - startPos).trimmed();
+                QList<QByteArray> loci = loc.split('-');
+                if (loci.size() < 2) {
+                    continue;
+                }
+                int start = QString(loci.at(0)).toInt();
+                int finish = QString(loci.at(1)).toInt();
+
+                if (start == finish) {
+                    continue;
+                }
+
+                SharedAnnotationData data(new AnnotationData);
+                U2Location location;
+                location->regions.append(U2Region(start - 1,finish - start + 1));
+
+                data->location = location;
+                data->setStrand(U2Strand(strandDirect ? U2Strand::Direct : U2Strand::Complementary));
+                data->name = "exon";
+                resultAnnotations.append(new Annotation(data));
+
+            }
+
         }
 
-        resultAlignment = new AnnotationTableObject("SplicedAlignment");
-        resultAlignment->addAnnotations(anns);
-
     }
+
+
 
     return res;
 
@@ -186,6 +192,8 @@ void PrepareInputForSpideyTask::prepare() {
 }
 
 #define SPIDEY_SUMMARY "spidey_output"
+#define DNA_NAME "genomic.fa"
+#define MRNA_NAME "mrna.fa"
 
 void PrepareInputForSpideyTask::run()
 {
@@ -194,12 +202,11 @@ void PrepareInputForSpideyTask::run()
     }
     // writing DNA
 
-    QString dnaName = dnaObj->getSequenceName();
-    QString dnaPath = outputDir + "/" + dnaName + ".fa";
+    QString dnaPath = outputDir + "/" + DNA_NAME;
     StreamShortReadWriter dnaWriter;
     dnaWriter.init(dnaPath);
     if (!dnaWriter.writeNextSequence(dnaObj->getWholeSequence())) {
-        setError(tr("Failed to write DNA sequence  %1").arg(dnaName));
+        setError(tr("Failed to write DNA sequence  %1").arg(dnaObj->getSequenceName()));
         return;
     }
     dnaWriter.close();
@@ -208,17 +215,11 @@ void PrepareInputForSpideyTask::run()
 
     //writing mRNA
 
-    QString mRnaName = mRnaObj->getSequenceName();
-    if (mRnaName == dnaName) {
-        setError(tr("DNA and mRNA sequences have equal names %1").arg(dnaName));
-        return;
-    }
-    QString mRnaPath = outputDir + "/" + mRnaName + ".fa";
-
+    QString mRnaPath = outputDir + "/" + MRNA_NAME;
     StreamShortReadWriter mRnaWriter;
-    mRnaWriter.init(dnaPath);
+    mRnaWriter.init(mRnaPath);
     if (!mRnaWriter.writeNextSequence(mRnaObj->getWholeSequence())) {
-       setError(tr("Failed to write DNA sequence  %1").arg(dnaName));
+       setError(tr("Failed to write DNA sequence  %1").arg(mRnaObj->getSequenceName()));
        return;
     }
     mRnaWriter.close();
@@ -237,6 +238,47 @@ void PrepareInputForSpideyTask::run()
 
 
 }
+
+//////////////////////////////////////////
+////SpideySupportTask
+
+SpideySupportTask::SpideySupportTask(const SplicedAlignmentTaskConfig &cfg, AnnotationTableObject* ao)
+    :Task("SpideySupportTask", TaskFlags_NR_FOSCOE), spideyAlignmentTask(new SpideyAlignmentTask(cfg)), aObj(ao)
+{
+
+}
+
+void SpideySupportTask::prepare()
+{
+    addSubTask(spideyAlignmentTask);
+}
+
+QList<Task *> SpideySupportTask::onSubTaskFinished(Task *subTask)
+{
+    QList<Task*> res;
+
+    if (hasError() || isCanceled()) {
+        return res;
+    }
+
+    if (subTask == spideyAlignmentTask) {
+        QList<Annotation*> results = spideyAlignmentTask->getAlignmentResult();
+        if (results.isEmpty()) {
+            setError(tr("Failed to align mRNA to genomic sequence: no alignment is found."));
+            DocumentUtils::removeDocumentsContainigGObjectFromProject(aObj);
+            aObj = NULL;
+        } else {
+            aObj->addAnnotations(results);
+        }
+    }
+
+    return res;
+
+
+}
+
+
+
 
 
 }//namespace

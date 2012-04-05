@@ -79,6 +79,8 @@
 #include "bwa/BwaTask.h"
 #include "bwa/BwaSettingsWidget.h"
 #include "bwa/bwa_tests/bwaTests.h"
+#include "spidey/SpideySupport.h"
+#include "spidey/SpideySupportTask.h"
 
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
@@ -195,6 +197,9 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     BwaSupport* bwaSupport = new BwaSupport(BWA_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(bwaSupport);
 
+    //Spidey
+    SpideySupport* spideySupport = new SpideySupport(SPIDEY_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(spideySupport);
 
     if (AppContext::getMainWindow()) {
         ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));
@@ -231,6 +236,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         connect(cap3Action, SIGNAL(triggered()), cap3Tool, SLOT(sl_runWithExtFileSpecify()));
         QMenu* assemblySumbenu = tools->findChild<QMenu*>(MWMENU_TOOLS_ASSEMBLY);
         assemblySumbenu->addAction(cap3Action);
+
+        GObjectViewWindowContext* spideyCtx = spideySupport->getViewContext();
+        spideyCtx->setParent(this);
+        spideyCtx->init();
     }
 
     AppContext::getCDSFactoryRegistry()->registerFactory(new CDSearchLocalTaskFactory(), CDSearchFactoryRegistry::LocalSearch);

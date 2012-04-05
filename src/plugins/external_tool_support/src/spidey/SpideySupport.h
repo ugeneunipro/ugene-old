@@ -43,5 +43,19 @@ private:
 };
 
 
+class SpideySupportContext: public GObjectViewWindowContext {
+    Q_OBJECT
+public:
+    SpideySupportContext(QObject* p);
+
+protected slots:
+    void sl_align_with_Spidey();
+
+protected:
+    virtual void initViewContext(GObjectView* view);
+    virtual void buildMenu(GObjectView* view, QMenu* m);
+};
+
+
 }//namespace
 #endif // _U2_SPIDEY_SUPPORT_H_
