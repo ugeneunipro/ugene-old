@@ -117,6 +117,8 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("f9", XK_F9);
     ADD_KEY("f10", XK_F10);
     ADD_KEY("f12", XK_F12);
+    //ADD_KEY("pageUp", VK_PRIOR);
+    //ADD_KEY("pageDown", VK_NEXT);
 
 // feel free to add other keys
 // macro XK_* defined in X11/keysymdef.h

@@ -36,6 +36,8 @@ public:
     
     enum device{MOUSE, KEYBOARD};
 
+    static QScrollBar* getScrollBar(U2OpStatus &os, const QString &scrollBarSysName);
+
     static void pageUp(U2OpStatus &os, QScrollBar *scrollbar, device _device);
     static void pageDown(U2OpStatus &os, QScrollBar *scrollbar, device _device);
 
@@ -53,10 +55,10 @@ public:
     static QPoint getDownArrowPosition(U2OpStatus &os, QScrollBar *scrollbar);
     static QPoint getAreaUnderSliderPosition(U2OpStatus &os, QScrollBar *scrollbar);
     static QPoint getAreaOverSliderPosition(U2OpStatus &os, QScrollBar *scrollbar);
-    //     QWidget* getUpButton();
-    //     QWidget* getDownButton();
-    //     QWidget* getSliderWidget();
-    //     QRect* upper/lower area 
+
+private:
+
+    static QStyleOptionSlider initScrollbarOptions(QScrollBar *scrollbar);
 
 };
 
