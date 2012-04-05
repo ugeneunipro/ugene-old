@@ -112,8 +112,8 @@ Task* ExternalProcessWorker::tick() {
             QString url = generateAndCreateURL(f->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
             inputUrls << url;
             std::auto_ptr<Document> d(f->createNewLoadedDocument(iof, url, os));
-            d->setDocumentOwnsDbiResources(false);
             CHECK_OP(os, NULL);
+            d->setDocumentOwnsDbiResources(false);
 
             if (dataCfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
                 U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
