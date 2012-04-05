@@ -167,13 +167,14 @@ GUI_TEST_CLASS_DEFINITION(test_0026) {
 GUI_TEST_CLASS_DEFINITION(test_0028) {
 	GTLogTracer logTracer;
 	GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
-	GTUtilsMdi::click(os, GTGlobals::Minimize);
+//	GTUtilsMdi::click(os, GTGlobals::Minimize);
 	QMdiSubWindow* fasta = (QMdiSubWindow*)GTUtilsMdi::findWindow(os, "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)");
 
 	GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
-	GTUtilsMdi::click(os, GTGlobals::Minimize);
+//	GTUtilsMdi::click(os, GTGlobals::Minimize);
 	QWidget* coi = GTUtilsMdi::findWindow(os, "COI [m] COI");
 	CHECK_SET_ERR(fasta->windowIcon().cacheKey() != coi->windowIcon().cacheKey() , "Icons must not be equals");
+	GTUtilsLog::check(os, logTracer);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0030) {

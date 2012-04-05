@@ -20,6 +20,7 @@
  */
 
 #include "GTUtilsMdi.h"
+#include <api/GTMouseDriver.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
 #include <QtGui/QMainWindow>
@@ -72,6 +73,24 @@ QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os, const GTWidget::FindOptions& o
         CHECK_SET_ERR_RESULT(w != NULL, "Active window is not found", NULL);
     }
     return w;
+}
+
+QPoint GTUtilsMdi::getMdiItemPosition(U2OpStatus &os, const QString& windowName){
+	QWidget* w = findWindow(os, windowName);
+	CHECK_SET_ERR_RESULT(w != NULL, "MDI window not found", QPoint());
+	const QRect r = w->rect();
+	return w->mapToGlobal(r.center());
+}
+
+void GTUtilsMdi::selectRandomRegion(U2OpStatus &os, const QString& windowName){
+	QWidget* w = findWindow(os, windowName);
+	CHECK_SET_ERR(w != NULL, "MDI window not found");
+	const QRect r = w->rect();
+	QPoint p = QPoint((r.topLeft().x() + r.bottomLeft().x())/2 + 5, r.center().y()/2);
+	GTMouseDriver::moveTo(os, w->mapToGlobal(p));
+	GTMouseDriver::press(os);
+	GTMouseDriver::moveTo(os, w->mapToGlobal(r.center()));
+	GTMouseDriver::release(os);
 }
 
 }

@@ -15,6 +15,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/GUIInitialChecks.h \
             src/tests/common_scenarios/project/GTTestsProject.h \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.h \
+            src/tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h \
             src/tests/GUIToolbarTests.h \
             src/api/GTComboBox.h \
@@ -47,6 +48,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/GUIInitialChecks.cpp \
             src/tests/common_scenarios/project/GTTestsProject.cpp \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.cpp \
+            src/tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.cpp \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.cpp \
             src/tests/GUIToolbarTests.cpp \
             src/api/GTComboBox.cpp \
