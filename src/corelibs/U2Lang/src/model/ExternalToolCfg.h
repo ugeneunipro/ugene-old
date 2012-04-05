@@ -45,6 +45,7 @@ public:
     bool operator ==(const DataConfig &other) const;
 
     static DocumentFormatId StringValue;
+    static DocumentFormatId OutputFileUrl;
 };
 
 class U2LANG_EXPORT AttributeConfig {

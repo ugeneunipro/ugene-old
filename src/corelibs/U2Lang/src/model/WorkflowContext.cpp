@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMutexLocker>
+
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/Datatype.h>
@@ -40,6 +42,9 @@ WorkflowContext::WorkflowContext(const QList<Actor*> &procs)
 }
 
 WorkflowContext::~WorkflowContext() {
+    foreach (const QString &url, externalProcessFiles) {
+        QFile::remove(url);
+    }
     delete storage;
 }
 
@@ -50,6 +55,11 @@ bool WorkflowContext::init() {
 
 DbiDataStorage *WorkflowContext::getDataStorage() {
     return storage;
+}
+
+void WorkflowContext::addExternalProcessFile(const QString &url) {
+    QMutexLocker locker(&addFileMutex);
+    externalProcessFiles << url;
 }
 
 DataTypePtr WorkflowContext::getOutSlotType(const QString &slotStr) {

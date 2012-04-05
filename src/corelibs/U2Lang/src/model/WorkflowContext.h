@@ -22,6 +22,8 @@
 #ifndef _U2_WORKFLOW_CONTEXT_H_
 #define _U2_WORKFLOW_CONTEXT_H_
 
+#include <QMutex>
+
 #include <U2Lang/Datatype.h>
 #include <U2Lang/DbiDataStorage.h>
 
@@ -36,7 +38,7 @@ class Actor;
 class U2LANG_EXPORT WorkflowContext {
 public:
     WorkflowContext(const QList<Actor*> &procs);
-    ~WorkflowContext();
+    virtual ~WorkflowContext();
 
     bool init();
     DbiDataStorage *getDataStorage();
@@ -51,10 +53,19 @@ public:
      * Returns this slot. If annotations are free then returns empty string.
      */
     QString getCorrespondingSeqSlot(const QString &annsSlot);
+    /**
+     * Files created by external tools workers could be used by some other scheme elements.
+     * In that case, it is needed to add these files to the context and remove them after
+     * the whole scheme performing is finished.
+     */
+    void addExternalProcessFile(const QString &url);
 
 private:
     DbiDataStorage *storage;
     QMap<QString, Actor*> procMap;
+
+    QMutex addFileMutex;
+    QStringList externalProcessFiles;
 };
 
 } // Workflow

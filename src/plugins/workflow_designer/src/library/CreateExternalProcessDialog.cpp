@@ -311,6 +311,9 @@ public:
             textFormat[tr("String value")] = DataConfig::StringValue;
         }
         textFormat[tr("Text file")] = df->getFormatId();
+        if (!isInput) {
+            textFormat[tr("Output file url")] = DataConfig::OutputFileUrl;
+        }
     }
 
     void initTypes() {

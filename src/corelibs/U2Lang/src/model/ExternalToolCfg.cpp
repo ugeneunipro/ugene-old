@@ -24,6 +24,7 @@
 namespace U2 {
 
 DocumentFormatId DataConfig::StringValue = DocumentFormatId("string-value");
+DocumentFormatId DataConfig::OutputFileUrl = DocumentFormatId("output-file-url");
 
 bool DataConfig::operator ==(const DataConfig &other) const {
     return attrName == other.attrName

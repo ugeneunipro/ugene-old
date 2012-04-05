@@ -168,8 +168,14 @@ Task* ExternalProcessWorker::tick() {
         }
     }
 
-    foreach(const DataConfig &dataCfg, cfg->outputs) { 
-        QString url1 = generateAndCreateURL(AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format)->getSupportedDocumentFileExtensions().first(), dataCfg.attrName);
+    foreach(const DataConfig &dataCfg, cfg->outputs) {
+        QString extension;
+        if (DataConfig::OutputFileUrl == dataCfg.format) {
+            extension = "tmp";
+        } else {
+            extension = AppContext::getDocumentFormatRegistry()->getFormatById(dataCfg.format)->getSupportedDocumentFileExtensions().first();
+        }
+        QString url1 = generateAndCreateURL(extension, dataCfg.attrName);
         outputUrls.insert(url1, dataCfg);
 
         int ind = execString.indexOf(QRegExp("\\$" + dataCfg.attrName + "(\\W|$)"));
@@ -201,83 +207,96 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             DataConfig cfg = i.value();
             QString url = i.key();
 
-            DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(cfg.format);
-            IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-            U2OpStatus2Log os;
-            QVariantMap hints;
-            U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
-            hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
-            std::auto_ptr<Document> d(f->loadDocument(iof, url, hints, os));
-            
-            if (os.hasError()) {
-                //coreLog.error(tr("Can't open document"));
-                bool isEnded = true;
-                foreach(CommunicationChannel *ch, inputs) {
-                    isEnded = isEnded && ch->isEnded();
-                }
-                if(isEnded) {
-                    output->setEnded();
-                    done  = true;
-                }
-                busy = false;
-                QFile::remove(url);
-                outputUrls.clear();
-                return;
-            }
+            if (cfg.type == BaseTypes::STRING_TYPE()->getId()
+                && DataConfig::OutputFileUrl == cfg.format) {
 
-            d->setDocumentOwnsDbiResources(false);
-
-            if( cfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()){
-                QList<GObject*> seqObjects = d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded);
-                DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
-                QString slotId = WorkflowUtils::getSlotDescOfDatatype(dataType).getId();
-                if (1 == seqObjects.size()) {
-                    GObject *obj = seqObjects.first();
-                    v[slotId] = obj->getEntityRef().entityId;
-                } else if (1 < seqObjects.size()) {
-                    QList<U2EntityRef> refs;
-                    foreach (GObject *obj, seqObjects) {
-                        refs << obj->getEntityRef();
+                if (QFile::exists(url)) {
+                    DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
+                    v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = url;
+                    context->addExternalProcessFile(url);
+                } else {
+                    coreLog.error(tr("%1 worker: %2 file was not created").arg(actor->getLabel()).arg(url));
+                }
+            } else {
+                DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(cfg.format);
+                IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+                U2OpStatus2Log os;
+                QVariantMap hints;
+                U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
+                hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
+                std::auto_ptr<Document> d(f->loadDocument(iof, url, hints, os));
+                
+                if (os.hasError()) {
+                    //coreLog.error(tr("Can't open document"));
+                    bool isEnded = true;
+                    foreach(CommunicationChannel *ch, inputs) {
+                        isEnded = isEnded && ch->isEnded();
                     }
-                    seqsForMergingBySlotId.insert(slotId, refs);
+                    if(isEnded) {
+                        output->setEnded();
+                        done  = true;
+                    }
+                    busy = false;
+                    QFile::remove(url);
+                    outputUrls.clear();
+                    return;
                 }
-            } else if(cfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
-                MAlignmentObject *obj =  static_cast<MAlignmentObject *> (d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT, UOF_LoadedAndUnloaded).first());
-                DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
-                v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<MAlignment>(obj->getMAlignment());
-            } else if(cfg.type == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
-                AnnotationTableObject *obj = static_cast<AnnotationTableObject *>(d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).first());
-                QList<SharedAnnotationData> list;
-                foreach(Annotation* a, obj->getAnnotations()) {
-                    list << a->data();
-                }
-                DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
-                v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue(list);
-            } else if(cfg.type == SEQ_WITH_ANNS) {
-                if(!d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).isEmpty()) {
-                    U2SequenceObject *seqObj = static_cast<U2SequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
-                    DNASequence seq = seqObj->getWholeSequence();
-                    seq.alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::RAW());
-                    U2DataId seqId = context->getDataStorage()->putSequence(seq);
-                    v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
-                }
-                if(!d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).isEmpty()) {
+
+                d->setDocumentOwnsDbiResources(false);
+
+                if( cfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()){
+                    QList<GObject*> seqObjects = d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded);
+                    DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
+                    QString slotId = WorkflowUtils::getSlotDescOfDatatype(dataType).getId();
+                    if (1 == seqObjects.size()) {
+                        GObject *obj = seqObjects.first();
+                        v[slotId] = obj->getEntityRef().entityId;
+                    } else if (1 < seqObjects.size()) {
+                        QList<U2EntityRef> refs;
+                        foreach (GObject *obj, seqObjects) {
+                            refs << obj->getEntityRef();
+                        }
+                        seqsForMergingBySlotId.insert(slotId, refs);
+                    }
+                } else if(cfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
+                    MAlignmentObject *obj =  static_cast<MAlignmentObject *> (d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT, UOF_LoadedAndUnloaded).first());
+                    DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
+                    v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<MAlignment>(obj->getMAlignment());
+                } else if(cfg.type == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
                     AnnotationTableObject *obj = static_cast<AnnotationTableObject *>(d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).first());
                     QList<SharedAnnotationData> list;
                     foreach(Annotation* a, obj->getAnnotations()) {
                         list << a->data();
                     }
-                    v[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue(list);
-                }
-                
-            } else if(cfg.type == BaseTypes::STRING_TYPE()->getId()) {
-                if(!d->findGObjectByType(GObjectTypes::TEXT, UOF_LoadedAndUnloaded).isEmpty()) {
-                    TextObject *obj = static_cast<TextObject*>(d->findGObjectByType(GObjectTypes::TEXT, UOF_LoadedAndUnloaded).first());
                     DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
-                    v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<QString>(obj->getText());
+                    v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue(list);
+                } else if(cfg.type == SEQ_WITH_ANNS) {
+                    if(!d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).isEmpty()) {
+                        U2SequenceObject *seqObj = static_cast<U2SequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
+                        DNASequence seq = seqObj->getWholeSequence();
+                        seq.alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::RAW());
+                        U2DataId seqId = context->getDataStorage()->putSequence(seq);
+                        v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
+                    }
+                    if(!d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).isEmpty()) {
+                        AnnotationTableObject *obj = static_cast<AnnotationTableObject *>(d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).first());
+                        QList<SharedAnnotationData> list;
+                        foreach(Annotation* a, obj->getAnnotations()) {
+                            list << a->data();
+                        }
+                        v[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue(list);
+                    }
+                    
+                } else if(cfg.type == BaseTypes::STRING_TYPE()->getId()) {
+                    if(!d->findGObjectByType(GObjectTypes::TEXT, UOF_LoadedAndUnloaded).isEmpty()) {
+                        TextObject *obj = static_cast<TextObject*>(d->findGObjectByType(GObjectTypes::TEXT, UOF_LoadedAndUnloaded).first());
+                        DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
+                        v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<QString>(obj->getText());
+                    }
                 }
+
+                QFile::remove(url);
             }
-            QFile::remove(url);
         }
 
         outputUrls.clear();
