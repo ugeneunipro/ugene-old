@@ -96,6 +96,8 @@ public:
     static bool canAddGObjectsToDocument(Document* doc, const GObjectType& type);
 
     static bool canRemoveGObjectFromDocument(GObject* obj);
+
+    static void removeDocumentsContainigGObjectFromProject(GObject* obj);
 };
 
 }//namespace

@@ -52,7 +52,7 @@ class U2ALGORITHM_EXPORT SplicedAlignmentTask : public Task
 public:
     SplicedAlignmentTask(const SplicedAlignmentTaskConfig& cfg);
     SplicedAlignmentTask(const QString& taskName, TaskFlags flags, const SplicedAlignmentTaskConfig& cfg);
-    virtual AnnotationTableObject* getAlignmentResult() = 0;
+    virtual QList<Annotation*> getAlignmentResult() = 0;
 protected:
     SplicedAlignmentTaskConfig config;
 };

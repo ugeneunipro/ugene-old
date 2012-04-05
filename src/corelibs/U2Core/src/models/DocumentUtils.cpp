@@ -189,7 +189,26 @@ bool DocumentUtils::canRemoveGObjectFromDocument( GObject* obj )
         return false;
     }
     
-    return true;   
+    return true;
+}
+
+void DocumentUtils::removeDocumentsContainigGObjectFromProject(GObject *obj)
+{
+    // no results found -> delete empty annotation document
+    Project* proj = AppContext::getProject();
+    if (proj!=NULL) {
+        Document* toDelete = NULL;
+        QList<Document*> docs = proj->getDocuments();
+        foreach (Document* doc, docs) {
+            if (doc->getObjects().contains(obj)) {
+                toDelete = doc;
+                break;
+            }
+        }
+        if (toDelete != NULL) {
+            proj->removeDocument(toDelete);
+        }
+    }
 }
 
 QString FormatDetectionResult::getFormatDescriptionText() const {
