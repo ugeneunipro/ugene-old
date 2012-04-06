@@ -25,6 +25,8 @@
 #include "api/GTGlobals.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTimer>
+#include "GTUtilsDialog.h"
+#include <QDir>
 
 namespace U2 {
 
@@ -37,11 +39,13 @@ public:
 class GUIDialogWaiter : public QObject {
     Q_OBJECT
 public:
-    GUIDialogWaiter(Runnable* _r) : hadRun(false), r(_r){}
+    enum DialogType {Modal, Popup};
+    GUIDialogWaiter(Runnable* _r, DialogType t) : hadRun(false), r(_r), type(t){}
     bool hadRun;
 public slots:
     void wait();
 private:
+    DialogType type;
     Runnable *r;
 };
 
@@ -123,8 +127,26 @@ public:
         GTGlobals::UseMethod useMethod;
     };
 
-    static void waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDialog = true);
-    static void preWaitForDialog(U2OpStatus &os, Runnable *r);
+    class ExportToSequenceFormatFiller : public Runnable {
+    public:
+        ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method):
+            os(_os), name(_name), useMethod(method) {
+            QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
+            if (__path.at(__path.count() - 1) != '/') {
+                __path += '/';
+            }
+
+            path = __path;
+        }
+        virtual void run();
+    private:
+        U2OpStatus &os;
+        QString path, name;
+        GTGlobals::UseMethod useMethod;
+    };
+
+    static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, bool failOnNoDialog = true);
+    static void preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal);
 };
 
 } // namespace

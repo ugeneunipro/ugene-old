@@ -24,6 +24,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTMenu.h"
+#include "GTUtilsProjectTreeView.h"
 #include "GTUtilsDialog.h"
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
@@ -31,6 +32,11 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
+
+#define ACTION_PROJECT__EXPORT_MENU_ACTION "action_project__export_menu_action"
+#define ACTION_PROJECT__IMPORT_MENU_ACTION "action_project__import_menu_action"
+#define ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION "action_project__export_as_sequence_action"
+#define ACTION_PROJECT__EXPORT_TO_AMINO_ACTION "action_project__export_to_amino_action"
 
 namespace U2 {
 
@@ -72,6 +78,31 @@ void GTUtilsProject::exportProjectCheck(U2OpStatus &os, const QString &projectNa
     GTUtilsDialog::waitForDialog(os, &filler);
 }
 
+void GTUtilsProject::exportToSequenceFormat(U2OpStatus &os, const QString &projectName, const QString &path, const QString &name, GTGlobals::UseMethod method)
+{
+    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION, method);
+    GTUtilsDialog::ExportToSequenceFormatFiller filler(os, path, name, method);
+
+    switch (method) {
+    case GTGlobals::UseMouse:
+    {
+        GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, projectName));
+        GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+        GTMouseDriver::click(os, Qt::RightButton);
+        break;
+    }
+
+    default:
+    case GTGlobals::UseKey:
+        ///TODO
+
+        break;
+    }
+
+    GTGlobals::sleep(500);
+}
+
 void GTUtilsProject::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile) {
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
@@ -83,7 +114,7 @@ void GTUtilsProject::closeProject(U2OpStatus &os, const CloseProjectSettings& se
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTUtilsDialog::MessageBoxDialogFiller filler(os, settings.saveOnCloseButton);
-    GTUtilsDialog::waitForDialog(os, &filler, false);
+    GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Popup, false);
 }
 
 #define GT_METHOD_NAME "checkProject"

@@ -79,7 +79,7 @@ void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName
     switch (method) {
     case GTGlobals::UseMouse:
     {
-        GTUtilsDialog::preWaitForDialog(os, &popupChooser);
+        GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, documentName));
 
         GTMouseDriver::click(os, Qt::RightButton);
@@ -111,6 +111,16 @@ GObjectView* GTUtilsDocument::getDocumentGObjectView(U2OpStatus &os, Document* d
     }
 
     return NULL;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isDocumentLoaded"
+bool GTUtilsDocument::isDocumentLoaded(U2OpStatus &os, const QString& documentName)
+{
+    Document *d = getDocument(os, documentName);
+    GT_CHECK_RESULT(d != NULL, "Document \"" + documentName + "\" is NULL", false);
+
+    return static_cast<bool> (getDocumentGObjectView(os, d));
 }
 #undef GT_METHOD_NAME
 

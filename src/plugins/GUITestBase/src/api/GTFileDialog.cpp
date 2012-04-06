@@ -90,7 +90,7 @@ void GTFileDialogUtils::run()
     GTGlobals::sleep(200);
     clickButton(Open);
     GTGlobals::sleep(200);
-    setFilter();
+    //setFilter();
     GTGlobals::sleep(200);
     setViewMode(Detail);
     GTGlobals::sleep(200);

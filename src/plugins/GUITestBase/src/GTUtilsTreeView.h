@@ -34,6 +34,8 @@ public:
     // recursively expands the tree making the given item visible
     // fails if item is NULL or can't expand parent item
     static void expandTo(U2OpStatus &os, QTreeWidget* treeWidget, QTreeWidgetItem* item);
+
+    static void doubleClickOnItem(U2OpStatus &os, const QString &itemName);
 };
 
 } // namespace

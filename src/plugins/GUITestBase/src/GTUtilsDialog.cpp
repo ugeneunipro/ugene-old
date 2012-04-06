@@ -24,18 +24,27 @@
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
 #include <QtGui/QComboBox>
 #include <QtGui/QMenu>
+#include <QtGui/QRadioButton>
 
 namespace U2 {
 
 void GUIDialogWaiter::wait() {
-    QWidget* modalWidget = QApplication::activeModalWidget();
-    QWidget* popupWidget = QApplication::activePopupWidget();
-    if (!modalWidget && !popupWidget) {
+    QWidget *widget = NULL;
+
+    if (type == Modal) {
+        widget = QApplication::activeModalWidget();
+    } else {
+        widget = QApplication::activePopupWidget();
+    }
+
+    if (!widget) {
         return;
     }
 
@@ -48,9 +57,9 @@ void GUIDialogWaiter::wait() {
 #define GT_CLASS_NAME "GTUtilsDialog"
 
 #define GT_METHOD_NAME "waitForDialog"
-void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDialog) {
+void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType type, bool failOnNoDialog) {
 
-    GUIDialogWaiter waiter(r);
+    GUIDialogWaiter waiter(r, type);
     QTimer t;
 
     t.connect(&t, SIGNAL(timeout()), &waiter, SLOT(wait()));
@@ -63,13 +72,13 @@ void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, bool failOnNoDial
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsDialog::preWaitForDialog(U2OpStatus &os, Runnable *r)
+void GTUtilsDialog::preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType _type)
 {
-    static GUIDialogWaiter waiter(r);
-    static QTimer t;
+    GUIDialogWaiter *waiter = new GUIDialogWaiter(r, _type);
+    QTimer *t = new QTimer;
 
-    t.connect(&t, SIGNAL(timeout()), &waiter, SLOT(wait()));
-    t.start(100);
+    t->connect(t, SIGNAL(timeout()), waiter, SLOT(wait()));
+    t->start(100);
 }
 
 #undef GT_CLASS_NAME
@@ -246,7 +255,7 @@ void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
     GTWidget::click(os, saveButton);
 
     GTUtilsDialog::MessageBoxDialogFiller filler(os, QMessageBox::Yes);
-    GTUtilsDialog::waitForDialog(os, &filler, false); // MessageBox question appears only if there is already a file on a disk
+    GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Modal, false); // MessageBox question appears only if there is already a file on a disk
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -315,6 +324,42 @@ void GTUtilsDialog::RemoteDBDialogFiller::run() {
     }else {
         GTWidget::click(os, okButton);
     }
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::ExportToSequenceFormatFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::ExportToSequenceFormatFiller::run()
+{
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+
+    QLineEdit *lineEdit = dialog->findChild<QLineEdit*>();
+    GT_CHECK(lineEdit != NULL, "line edit not found");
+
+    GTLineEdit::setText(os, lineEdit, path + name);
+
+    QRadioButton *button = dialog->findChild<QRadioButton*>(QString::fromUtf8("keepGapsRB"));
+    GT_CHECK(button != NULL, "radio button not found");
+
+    switch(useMethod) {
+    case GTGlobals::UseMouse:
+        GTMouseDriver::moveTo(os, button->mapToGlobal(button->rect().topLeft()));
+        GTMouseDriver::click(os);
+        break;
+    case GTGlobals::UseKey:
+        GTWidget::setFocus(os, button);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        break;
+    }
+
+    QPushButton *okButton = dialog->findChild<QPushButton*>(QString::fromUtf8("okButton"));
+    GT_CHECK(okButton != NULL, "OK button not found");
+
+    GTGlobals::sleep(100);
+    GTWidget::click(os, okButton);
+
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

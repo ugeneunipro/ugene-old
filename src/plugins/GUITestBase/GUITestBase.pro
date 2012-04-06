@@ -32,7 +32,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTToolbar.h \
             src/api/GTWidget.h \
             src/api/GTSequenceReadingModeDialog.h \
-            src/api/GTSequenceReadingModeDialogUtils.h
+            src/api/GTSequenceReadingModeDialogUtils.h \
+    src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsApp.cpp \
@@ -71,4 +72,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTToolbar.cpp \
             src/api/GTWidget.cpp \
             src/api/GTSequenceReadingModeDialog.cpp \
-            src/api/GTSequenceReadingModeDialogUtils.cpp
+            src/api/GTSequenceReadingModeDialogUtils.cpp \
+    src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.cpp
+
+

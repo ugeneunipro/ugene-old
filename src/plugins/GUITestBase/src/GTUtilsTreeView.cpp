@@ -20,6 +20,7 @@
  */
 
 #include "GTUtilsTreeView.h"
+#include "GTUtilsProjectTreeView.h"
 #include "api/GTMouseDriver.h"
 #include <QtGui/QTreeWidget>
 
@@ -49,6 +50,16 @@ void GTUtilsTreeView::expandTo(U2OpStatus &os, QTreeWidget *treeWidget, QTreeWid
         GTMouseDriver::click(os);
         GTGlobals::sleep(500);
     }
+}
+#undef GT_METHOD_NAME
+
+
+#define GT_METHOD_NAME "doubleClickOnItem"
+void GTUtilsTreeView::doubleClickOnItem(U2OpStatus &os, const QString &itemName)
+{
+    QPoint itemPos = GTUtilsProjectTreeView::getTreeViewItemPosition(os, itemName);
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::doubleClick(os);
 }
 #undef GT_METHOD_NAME
 
