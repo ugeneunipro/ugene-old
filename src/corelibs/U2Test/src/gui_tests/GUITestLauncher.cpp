@@ -37,15 +37,15 @@ void GUITestLauncher::run() {
         Q_ASSERT(t);
         if (t) {
             QString testName = t->getName();
-            teamcityLog.trace(QString("##teamcity[testStarted name='%1']").arg(testName));
+            teamcityLog.trace(QString("##teamcity[testStarted name='%1 : %2']").arg(testName, testName));
 
-            qint64 startTime = GTimer::currentTimeMicros();
             firstTestRunCheck(testName);
 
+            qint64 startTime = GTimer::currentTimeMicros();
             QString testResult = performTest(testName);
             results[testName] = testResult;
-
             qint64 finishTime = GTimer::currentTimeMicros();
+
             teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
         }
 
@@ -56,10 +56,10 @@ void GUITestLauncher::run() {
 void GUITestLauncher::teamCityLogResult(const QString &testName, const QString &testResult, qint64 testTimeMicros) const {
 
     if (testFailed(testResult)) {
-        teamcityLog.trace(QString("##teamcity[testFailed name='%1' message='%2' duration='%3']").arg(testName, testResult, QString::number(testTimeMicros)));
+        teamcityLog.trace(QString("##teamcity[testFailed name='%1 : %2' message='%3' details='%3' duration='%4']").arg(testName, testName, testResult, QString::number(testTimeMicros)));
     }
 
-    teamcityLog.trace(QString("##teamcity[testFinished name='%1' duration='%2']").arg(testName, QString::number(testTimeMicros)));
+    teamcityLog.trace(QString("##teamcity[testFinished name='%1 : %2' duration='%3']").arg(testName, testName, QString::number(testTimeMicros)));
 }
 
 bool GUITestLauncher::testFailed(const QString &testResult) const {
