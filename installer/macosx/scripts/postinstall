@@ -1,0 +1,3 @@
+#!/bin/bash
+export INSTALL_DIR="${2}/Applications/Unipro UGENE.app/Contents/MacOS"
+ln -s "${INSTALL_DIR}/data/samples" "${HOME}/UGENE Samples"

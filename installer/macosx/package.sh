@@ -51,6 +51,8 @@ echo running packagemaker
 --title "${PRODUCT_NAME} v.${VERSION}" \
 --version $VERSION \
 --filter "\.DS_Store" \
+--filter "\.svn" \
+--filter ".*\.swp" \
 --scripts ./scripts/ \
 --root-volume-only \
 --domain system \
