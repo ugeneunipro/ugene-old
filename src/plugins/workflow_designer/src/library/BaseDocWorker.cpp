@@ -245,11 +245,11 @@ Task* BaseDocWriter::tick() {
     }
     
     bool done = ch->isEnded() && !ch->hasMessage();
-    if (done) {
-        setDone();
-    }
     if (append && !done) {
         return NULL;
+    }
+    if (done) {
+        setDone();
     }
     return processDocs();
 }

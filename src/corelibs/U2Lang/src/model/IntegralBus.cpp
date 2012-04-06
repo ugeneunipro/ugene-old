@@ -255,9 +255,9 @@ CommunicationChannel * IntegralBus::getCommunication(const QString& id) {
 
 Message IntegralBus::get() {
     QVariantMap result;
-    context.clear();
+    QVariantMap messageContext;
     foreach (CommunicationChannel* ch, outerChannels) {
-        QVariantMap midResult = busMap->getMessageMap(ch, context);
+        QVariantMap midResult = busMap->getMessageMap(ch, messageContext);
         result.unite(midResult);
     }
 
@@ -276,7 +276,7 @@ Message IntegralBus::get() {
         data = result.values().at(0);
     }
     if (complement) {
-        complement->setContext(context);
+        complement->setContext(messageContext);
     }
     
     takenMsgs++;

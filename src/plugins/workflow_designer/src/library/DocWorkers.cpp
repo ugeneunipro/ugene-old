@@ -458,6 +458,10 @@ void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, c
     }
 
     format->storeEntry(io, seq, anObjList, os);
+
+    foreach (GObject *o, anObjList) {
+        delete o;
+    }
 }
 
 /*************************************

@@ -181,6 +181,7 @@ void GenericSeqReader::sl_taskFinished() {
     foreach(const QVariantMap& m, t->results) {
         cache.append(Message(mtype, m));
     }
+    t->results.clear();
 }
 
 /**************************
