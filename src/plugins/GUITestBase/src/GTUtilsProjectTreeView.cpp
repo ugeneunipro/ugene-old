@@ -25,6 +25,8 @@
 #include "api/GTWidget.h"
 #include "api/GTTreeWidget.h"
 #include <U2Core/ProjectModel.h>
+#include <U2Gui/MainWindow.h>
+#include <QtGui/QMainWindow>
 
 namespace U2 {
 
@@ -49,10 +51,21 @@ void GTUtilsProjectTreeView::openView(U2OpStatus& os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "toggleView"
 void GTUtilsProjectTreeView::toggleView(U2OpStatus& os) {
+
+    MainWindow* mw = AppContext::getMainWindow();
+    GT_CHECK(mw != NULL, "MainWindow is NULL");
+    QMainWindow *qmw = mw->getQMainWindow();
+    GT_CHECK(qmw != NULL, "QMainWindow is NULL");
+
+    GTMouseDriver::moveTo(os, qmw->rect().center());
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
 
     GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
 }
+#undef GT_METHOD_NAME
 
 void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, const QString &newItemName) {
 
@@ -69,9 +82,9 @@ void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, con
 #define GT_METHOD_NAME "getItemCenter"
 QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, const QString &itemName) {
 
-    QRect r = GTTreeWidget::getItemRect(os, getTreeWidget(os), findItem(os, itemName));
-
     QTreeWidget *treeWidget = getTreeWidget(os);
+    QRect r = GTTreeWidget::getItemRect(os, treeWidget, findItem(os, itemName));
+
     GT_CHECK_RESULT(treeWidget != NULL, "treeWidget " + itemName + " is NULL", QPoint());
 
     return treeWidget->mapToGlobal(r.center());
