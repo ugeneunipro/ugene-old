@@ -65,15 +65,18 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
 
-
+#define ACTION_EXPORT_SEQUENCE "export sequences"
+#define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT "export sequences as alignment"
 
 namespace U2 {
 
 ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : QObject(p) {
     exportSequencesToSequenceFormatAction = new QAction(tr("Export sequences"), this);
+    exportSequencesToSequenceFormatAction->setObjectName(ACTION_EXPORT_SEQUENCE);
     connect(exportSequencesToSequenceFormatAction, SIGNAL(triggered()), SLOT(sl_saveSequencesToSequenceFormat()));
 
     exportSequencesAsAlignmentAction = new QAction(tr("Export sequences as alignment"), this);
+    exportSequencesAsAlignmentAction->setObjectName(ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT);
     connect(exportSequencesAsAlignmentAction, SIGNAL(triggered()), SLOT(sl_saveSequencesAsAlignment()));
 
     exportAlignmentAsSequencesAction = new QAction(tr("Export alignment to sequence format"), this);
