@@ -45,8 +45,8 @@ public:
 public slots:
     void wait();
 private:
-    DialogType type;
     Runnable *r;
+    DialogType type;
 };
 
 class GTUtilsDialog {
@@ -119,10 +119,10 @@ public:
             :os(_os), resID(_resID), DBItemNum(_DBItemNum), pressCancel(_pressCancel), saveDirPath(_saveDirPath), useMethod(_useMethod){}
         virtual void run();
     private:
-        bool pressCancel;
         U2OpStatus &os;
         QString resID;
         int DBItemNum;
+        bool pressCancel;
         QString saveDirPath;
         GTGlobals::UseMethod useMethod;
     };

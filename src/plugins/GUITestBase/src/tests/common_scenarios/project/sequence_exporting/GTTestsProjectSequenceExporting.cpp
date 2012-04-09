@@ -49,7 +49,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 	CHECK_SET_ERR(!GTUtilsDocument::getDocument(os, "2.gb")->isLoaded(), "2.gb is loaded");
 	GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
-	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, "NC_001363 sequence"));
+	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
 	GTMouseDriver::doubleClick(os);
 	GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 	GTUtilsMdi::selectRandomRegion(os, "1 [s] NC_001363 sequence");
@@ -59,7 +59,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
 
-	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, "NC_001363 sequence"));
+	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
 	GTMouseDriver::doubleClick(os);
 	GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 	GTMouseDriver::moveTo(os, GTUtilsMdi::getMdiItemPosition(os, "1 [s] NC_001363 sequence"));

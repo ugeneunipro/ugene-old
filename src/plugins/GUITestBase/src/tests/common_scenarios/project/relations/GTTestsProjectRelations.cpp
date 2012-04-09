@@ -39,7 +39,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDocument::checkDocument(os, "1.gb");
     GTUtilsDocument::checkDocument(os, "2.gb");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, "NC_001363 features"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 }

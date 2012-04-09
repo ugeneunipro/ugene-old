@@ -23,7 +23,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
-#include "GTUtilsTreeView.h"
+#include "api/GTTreeWidget.h"
 #include <U2Core/ProjectModel.h>
 
 namespace U2 {
@@ -56,7 +56,7 @@ void GTUtilsProjectTreeView::toggleView(U2OpStatus& os) {
 
 void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, const QString &newItemName) {
 
-    GTMouseDriver::moveTo(os, getTreeViewItemPosition(os, itemName));
+    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
     GTMouseDriver::click(os);
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
@@ -66,27 +66,10 @@ void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, con
     GTGlobals::sleep(500);
 }
 
-#define GT_METHOD_NAME "getTreeViewItemRect"
-QRect GTUtilsProjectTreeView::getTreeViewItemRect(U2OpStatus &os, const QString &itemName) {
+#define GT_METHOD_NAME "getItemCenter"
+QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, const QString &itemName) {
 
-    openView(os);
-    QTreeWidget *treeWidget = getTreeWidget(os);
-    GT_CHECK_RESULT(treeWidget != NULL, "treeWidget " + itemName + " is NULL", QRect());
-
-    QTreeWidgetItem *item = getTreeWidgetItem(os, itemName);
-    GT_CHECK_RESULT(item != NULL, "treeWidgetItem " + itemName + " is NULL", QRect());
-
-    GTUtilsTreeView::expandTo(os, treeWidget, item);
-    GT_CHECK_RESULT(item->isHidden() == false, "item " + itemName + " is hidden", QRect());
-
-    return treeWidget->visualItemRect(item);
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "getTreeViewItemPosition"
-QPoint GTUtilsProjectTreeView::getTreeViewItemPosition(U2OpStatus &os, const QString &itemName) {
-
-    QRect r = getTreeViewItemRect(os, itemName);
+    QRect r = GTTreeWidget::getItemRect(os, getTreeWidget(os), findItem(os, itemName));
 
     QTreeWidget *treeWidget = getTreeWidget(os);
     GT_CHECK_RESULT(treeWidget != NULL, "treeWidget " + itemName + " is NULL", QPoint());
@@ -96,6 +79,8 @@ QPoint GTUtilsProjectTreeView::getTreeViewItemPosition(U2OpStatus &os, const QSt
 #undef GT_METHOD_NAME
 
 QTreeWidget* GTUtilsProjectTreeView::getTreeWidget(U2OpStatus &os) {
+
+    openView(os);
 
     QTreeWidget *treeWidget = static_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName));
     return treeWidget;
@@ -124,46 +109,24 @@ QString GTUtilsProjectTreeView::getProjectTreeItemName(ProjViewItem* projViewIte
     return "";
 }
 
-QList<ProjViewItem*> GTUtilsProjectTreeView::getProjectViewItems(QTreeWidgetItem* root) {
+#define GT_METHOD_NAME "getTreeWidgetItem"
+QTreeWidgetItem* GTUtilsProjectTreeView::findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions &options) {
 
-    QList<ProjViewItem*> treeItems;
+    GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", NULL);
 
-    for (int i=0; i<root->childCount(); i++) {
-        treeItems.append((ProjViewItem*)root->child(i));
-        treeItems.append(getProjectViewItems(root->child(i)));
-    }
+    QTreeWidget *treeWidget = getTreeWidget(os);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget is NULL", NULL);
 
-    return treeItems;
-}
-
-
-QTreeWidgetItem* GTUtilsProjectTreeView::getTreeWidgetItem(QTreeWidget* tree, const QString &itemName) {
-
-    if (itemName.isEmpty()) {
-        return NULL;
-    }
-
-    QList<ProjViewItem*> treeItems = getProjectViewItems(tree->invisibleRootItem());
-    foreach (ProjViewItem* item, treeItems) {
-        QString treeItemName = getProjectTreeItemName(item);
+    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
+    foreach (QTreeWidgetItem* item, treeItems) {
+        QString treeItemName = getProjectTreeItemName((ProjViewItem*)item);
         if (treeItemName == itemName) {
             return item;
         }
     }
+    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", NULL);
 
     return NULL;
-}
-
-#define GT_METHOD_NAME "getTreeWidgetItem"
-QTreeWidgetItem* GTUtilsProjectTreeView::getTreeWidgetItem(U2OpStatus &os, const QString &itemName) {
-
-    QTreeWidget *treeWidget = getTreeWidget(os);
-    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget not found", NULL);
-
-    QTreeWidgetItem *item = getTreeWidgetItem(treeWidget, itemName);
-    GT_CHECK_RESULT(item != NULL, "Item " + itemName + " not found in tree widget", NULL);
-
-    return item;
 }
 #undef GT_METHOD_NAME
 

@@ -32,7 +32,6 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
-#include "GTUtilsTreeView.h"
 #include "GTUtilsMdi.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
@@ -52,7 +51,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
         GTFileDialog::openFile(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa");
     }
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, "export1.fa"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "export1.fa"));
     GTMouseDriver::doubleClick(os);
     ///TODO: check [s] ru131 has '-' symbols at the end of sequence
 }
@@ -68,8 +67,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
     GTGlobals::sleep(1000);
 
-    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::getTreeWidgetItem(os, doc1);
-    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::getTreeWidgetItem(os, doc2);
+    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
+    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
     if (item1 == NULL || item2 == NULL) {
         os.setError("Project view with document \"1.gb\" and \"2.gb\" is not opened");
         return;
@@ -82,12 +81,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
-    QTreeWidget *w = GTUtilsProjectTreeView::getTreeWidget(os);
-    QTreeWidgetItem *item = GTUtilsProjectTreeView::getTreeWidgetItem(os, "NC_001363 features");
-
-    GTUtilsTreeView::expandTo(os, w, item);
-    GTGlobals::sleep(100);
-    GTUtilsTreeView::doubleClickOnItem(os, "NC_001363 features");
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
     GTGlobals::sleep(1000);
 
     GObjectViewWindow *activeWindow = qobject_cast<GObjectViewWindow*> (GTUtilsMdi::activeWindow(os));

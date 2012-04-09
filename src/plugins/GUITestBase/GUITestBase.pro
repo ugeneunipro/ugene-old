@@ -8,16 +8,14 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsLog.h \
             src/GTUtilsMdi.h \
             src/GTUtilsProject.h \
-            src/GTUtilsTreeView.h \
             src/GTUtilsProjectTreeView.h \
             src/GTUtilsToolTip.h \
-			src/GTUtilsTaskTreeView.h \
+            src/GTUtilsTaskTreeView.h \
             src/tests/GUIInitialChecks.h \
             src/tests/common_scenarios/project/GTTestsProject.h \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.h \
             src/tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h \
-            src/tests/GUIToolbarTests.h \
             src/api/GTComboBox.h \
             src/api/GTFileDialog.h \
             src/api/GTGlobals.h \
@@ -29,6 +27,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTMouseDriver.h \
             src/api/GTScrollBar.h \
             src/api/GTSystem.h \
+            src/api/GTTreeWidget.h \
             src/api/GTToolbar.h \
             src/api/GTWidget.h \
             src/api/GTSequenceReadingModeDialog.h \
@@ -42,16 +41,14 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsLog.cpp \
             src/GTUtilsMdi.cpp \
             src/GTUtilsProject.cpp \
-            src/GTUtilsTreeView.cpp \
             src/GTUtilsProjectTreeView.cpp \
             src/GTUtilsToolTip.cpp \
-			src/GTUtilsTaskTreeView.cpp \
+            src/GTUtilsTaskTreeView.cpp \
             src/tests/GUIInitialChecks.cpp \
             src/tests/common_scenarios/project/GTTestsProject.cpp \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.cpp \
             src/tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.cpp \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.cpp \
-            src/tests/GUIToolbarTests.cpp \
             src/api/GTComboBox.cpp \
             src/api/GTFileDialog.cpp \
             src/api/GTGlobals.cpp \
@@ -70,6 +67,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTScrollBar.cpp \
             src/api/GTSystem.cpp \
             src/api/GTToolbar.cpp \
+            src/api/GTTreeWidget.cpp \
             src/api/GTWidget.cpp \
             src/api/GTSequenceReadingModeDialog.cpp \
             src/api/GTSequenceReadingModeDialogUtils.cpp \

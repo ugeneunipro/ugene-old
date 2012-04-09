@@ -28,7 +28,6 @@
 #include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
 #include "tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h"
 #include "tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h"
-#include "tests/GUIToolbarTests.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 
@@ -64,7 +63,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
 //    REGISTER_TEST(GUITest_common_scenarios_project::test_0028); excluded failed test
 //    REGISTER_TEST(GUITest_common_scenarios_project::test_0030); excluded because of bug
-//        guiTestBase->registerTest(new ToolbarTest());
 
     REGISTER_TEST(GUITest_common_scenarios_project_relations::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0001);

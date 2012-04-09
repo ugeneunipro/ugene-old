@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTUtilsTreeView.h"
+#include "GTTreeWidget.h"
 #include "GTUtilsProjectTreeView.h"
 #include "api/GTMouseDriver.h"
 #include <QtGui/QTreeWidget>
@@ -29,7 +29,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsTreeView"
 
 #define GT_METHOD_NAME "expandTo"
-void GTUtilsTreeView::expandTo(U2OpStatus &os, QTreeWidget *treeWidget, QTreeWidgetItem* item) {
+void GTTreeWidget::expandTo(U2OpStatus &os, QTreeWidget *treeWidget, QTreeWidgetItem* item) {
 
     GT_CHECK(item != NULL, "item is NULL");
     GT_CHECK(treeWidget != NULL, "treeWidget is NULL");
@@ -53,15 +53,32 @@ void GTUtilsTreeView::expandTo(U2OpStatus &os, QTreeWidget *treeWidget, QTreeWid
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getItemRect"
+QRect GTTreeWidget::getItemRect(U2OpStatus &os, QTreeWidget* treeWidget, QTreeWidgetItem* item) {
 
-#define GT_METHOD_NAME "doubleClickOnItem"
-void GTUtilsTreeView::doubleClickOnItem(U2OpStatus &os, const QString &itemName)
-{
-    QPoint itemPos = GTUtilsProjectTreeView::getTreeViewItemPosition(os, itemName);
-    GTMouseDriver::moveTo(os, itemPos);
-    GTMouseDriver::doubleClick(os);
+    GT_CHECK_RESULT(treeWidget != NULL, "treeWidget is NULL", QRect());
+    GT_CHECK_RESULT(item != NULL, "treeWidgetItem is NULL", QRect());
+
+    expandTo(os, treeWidget, item);
+    GT_CHECK_RESULT(item->isHidden() == false, "item is hidden", QRect());
+
+    return treeWidget->visualItemRect(item);
 }
 #undef GT_METHOD_NAME
+
+
+QList<QTreeWidgetItem*> GTTreeWidget::getItems(QTreeWidgetItem* root) {
+
+    QList<QTreeWidgetItem*> treeItems;
+
+    for (int i=0; i<root->childCount(); i++) {
+        treeItems.append(root->child(i));
+        treeItems.append(getItems(root->child(i)));
+    }
+
+    return treeItems;
+}
+
 
 #undef GT_CLASS_NAME
 

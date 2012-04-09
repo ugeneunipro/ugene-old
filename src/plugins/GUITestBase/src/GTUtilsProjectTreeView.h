@@ -40,20 +40,14 @@ public:
 
     // returns center or item's rect
     // fails if the item wasn't found
-    static QPoint getTreeViewItemPosition(U2OpStatus &os, const QString &itemName);
+    static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
 
     static QTreeWidget* getTreeWidget(U2OpStatus &os);
-    static QTreeWidgetItem* getTreeWidgetItem(U2OpStatus &os, const QString &itemName);
+    static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
-    static const QString widgetName;
-
-private:
-    static QRect getTreeViewItemRect(U2OpStatus &os, const QString &itemName);
-
-    static QTreeWidgetItem* getTreeWidgetItem(QTreeWidget* tree, const QString &itemName);
     static QString getProjectTreeItemName(ProjViewItem* projViewItem);
 
-    static QList<ProjViewItem*> getProjectViewItems(QTreeWidgetItem* root);
+    static const QString widgetName;
 };
 
 } // namespace

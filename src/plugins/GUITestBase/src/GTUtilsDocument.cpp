@@ -80,7 +80,7 @@ void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName
     case GTGlobals::UseMouse:
     {
         GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
-        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, documentName));
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
 
         GTMouseDriver::click(os, Qt::RightButton);
         break;
@@ -88,7 +88,7 @@ void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName
 
     default:
     case GTGlobals::UseKey:
-        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, documentName));
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
         GTMouseDriver::click(os);
 
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);

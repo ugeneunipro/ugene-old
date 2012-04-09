@@ -19,22 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include "GUIToolbarTests.h"
-#include "api/GTGlobals.h"
-#include "api/GTToolbar.h"
-#include "GTUtilsProject.h"
+#ifndef _U2_GT_TREE_WIDGET_H_
+#define _U2_GT_TREE_WIDGET_H_
 
+#include "api/GTGlobals.h"
+
+class QTreeWidget;
+class QTreeWidgetItem;
 
 namespace U2 {
 
-// GUI_TEST_CLASS_DEFINITION(ToolbarTest) {
-// 
-//     QToolBar *tb = GTToolbar::getToolbar(os, MWTOOLBAR_MAIN);
-//     QWidget *button = GTToolbar::getWidgetForActionName(os, tb, ACTION_PROJECTSUPPORT__OPEN_PROJECT);
-// //    GTGlobals::mouseClick(button, Qt::LeftButton);
-//     GTGlobals::sleep(3000);
-//     
-//     
-// }
+class GTTreeWidget {
+public:
+    // expands treeWidget to the item and returns item's rect
+    static QRect getItemRect(U2OpStatus &os, QTreeWidget* treeWidget, QTreeWidgetItem* item);
+
+    // recursively expands the tree making the given item visible
+    // fails if item is NULL or can't expand parent item
+    static void expandTo(U2OpStatus &os, QTreeWidget* treeWidget, QTreeWidgetItem* item);
+
+    // gets all items under root recursively and returns a list of them
+    static QList<QTreeWidgetItem*> getItems(QTreeWidgetItem* root);
+};
 
 } // namespace
+
+#endif

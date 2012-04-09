@@ -80,7 +80,7 @@ void GTUtilsProject::exportToSequenceFormat(U2OpStatus &os, const QString &proje
     case GTGlobals::UseMouse:
     {
         GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
-        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getTreeViewItemPosition(os, projectName));
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, projectName));
         GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
         GTMouseDriver::click(os, Qt::RightButton);
         break;
