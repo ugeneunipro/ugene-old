@@ -28,6 +28,8 @@ namespace U2 {
 GroupOptionsWidget::GroupOptionsWidget(const QString& title, QWidget* _widget)
     : widget(_widget)
 {
+    setStyleSheet("font-size: 11px;");
+
     titleWidget = new QLabel(title);
     titleWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     titleWidget->setMinimumWidth(WIDGET_WIDTH);
