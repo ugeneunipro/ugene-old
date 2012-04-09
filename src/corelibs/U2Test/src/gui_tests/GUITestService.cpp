@@ -30,6 +30,7 @@
 #include <U2Core/CMDLineCoreOptions.h>
 
 /**************************************************** to use qt file dialog *************************************************************/
+#ifdef __linux__
 typedef QStringList(*_qt_filedialog_open_filenames_hook)(QWidget * parent, const QString &caption, const QString &dir,
                                                           const QString &filter, QString *selectedFilter, QFileDialog::Options options);
 typedef QString(*_qt_filedialog_open_filename_hook)     (QWidget * parent, const QString &caption, const QString &dir,
@@ -43,6 +44,7 @@ extern Q_GUI_EXPORT _qt_filedialog_open_filename_hook qt_filedialog_open_filenam
 extern Q_GUI_EXPORT _qt_filedialog_open_filenames_hook qt_filedialog_open_filenames_hook;
 extern Q_GUI_EXPORT _qt_filedialog_save_filename_hook qt_filedialog_save_filename_hook;
 extern Q_GUI_EXPORT _qt_filedialog_existing_directory_hook qt_filedialog_existing_directory_hook;
+#endif
 /******************************************************************************************************************************************/
 
 #define GUITESTING_REPORT_PREFIX "GUITesting"
@@ -235,12 +237,14 @@ void GUITestService::writeTestResult(const QString& result) const {
 
 void GUITestService::setQtFileDialogView()
 {
-    if (!qgetenv("UGENE_NO_NATIVE_FILEDIALOGS").isEmpty()) {
+#ifdef __linux__
+    if (!qgetenv("UGENE_USE_NATIVE_DIALOGS=0").isEmpty()) {
         qt_filedialog_open_filename_hook = 0;
         qt_filedialog_open_filenames_hook = 0;
         qt_filedialog_save_filename_hook = 0;
         qt_filedialog_existing_directory_hook = 0;
     }
+#endif
 }
 
 }

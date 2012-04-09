@@ -56,6 +56,13 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
         case '/':
             keyPress(os, VK_DIVIDE, modifiers);
             break;
+        
+        case ':':
+            if (modifiers != 0) {
+                keyPress(os, modifiers);
+            }
+            keyPress(os, VK_OEM_1, GTKeyboardDriver::key["shift"]);
+            break;
 
         default:
             keyPress(os, (int)key, modifiers);
@@ -83,6 +90,13 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 
         case '/':
             keyRelease(os, VK_DIVIDE, modifiers);
+            break;
+
+        case ':':
+            keyRelease(os, VK_OEM_1, GTKeyboardDriver::key["shift"]);
+            if (modifiers != 0) {
+                keyRelease(os, modifiers);
+            }
             break;
 
         default:
