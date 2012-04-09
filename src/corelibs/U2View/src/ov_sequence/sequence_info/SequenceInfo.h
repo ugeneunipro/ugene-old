@@ -41,7 +41,7 @@ class U2Region;
 class ShowHideSubgroupWidget;
 
 
-class SequenceInfo : public QWidget
+class U2VIEW_EXPORT SequenceInfo : public QWidget
 {
     Q_OBJECT
 public:

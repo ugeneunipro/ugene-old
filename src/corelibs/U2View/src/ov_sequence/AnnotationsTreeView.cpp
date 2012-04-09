@@ -167,6 +167,10 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
     removeColumnByHeaderClickAction->setIcon(removeColumnIcon);
     connect(removeColumnByHeaderClickAction, SIGNAL(triggered()), SLOT(sl_onRemoveColumnByHeaderClick()));
 
+    searchQualifierAction = new QAction(tr("Find qualifier"), this);
+    searchQualifierAction->setIcon(QIcon(":core/images/zoom_whole.png"));
+    connect (searchQualifierAction, SIGNAL(triggered()), SLOT(sl_searchQualifier()));
+
     copyColumnTextAction = new QAction(tr("Copy column text"), this);
     connect(copyColumnTextAction, SIGNAL(triggered()), SLOT(sl_onCopyColumnText()));
 
@@ -657,6 +661,7 @@ void AnnotationsTreeView::sl_onAnnotationModified(const AnnotationModification& 
     }
 }
 
+
 void AnnotationsTreeView::sl_onGroupCreated(AnnotationGroup* g) {
     AVGroupItem* pg = g->getParentGroup()== NULL ? NULL : findGroupItem(g->getParentGroup());
     buildGroupTree(pg, g);
@@ -872,6 +877,9 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
     }
     int nActive = 0;
     QAction* first = m->actions().first();
+    m->insertAction(first, searchQualifierAction);
+
+    m->insertSeparator(first);
     foreach(QAction* a, contextActions) {
         if (a->isEnabled()) {
             nActive++;
@@ -1525,6 +1533,10 @@ void AnnotationsTreeView::sl_onRemoveColumnByHeaderClick() {
     removeQualifierColumn(qColumns[lastClickedColumn-2]);
 }
 
+void AnnotationsTreeView::sl_searchQualifier(){
+    SearchQualifierDialog d(this, this);
+     d.exec();    
+}
 
 void AnnotationsTreeView::updateAllAnnotations(ATVAnnUpdateFlags flags) {
     QString emptyFilter;
@@ -2167,6 +2179,163 @@ AVQualifierItem::AVQualifierItem(AVAnnotationItem* parent, const U2Qualifier& q)
     setText(1, qValue);
 
     processLinks(qName, qValue, 1);
+}
+
+FindQualifierTask::FindQualifierTask(AnnotationsTreeView * _treeView, AVItem * _groupToSearchIn, const QString & _name, const QString & _value, bool _isExactMatch, AVItem* prevAnnotation, int prevIndex)
+:Task(tr("Searching for a qualifier"), TaskFlag_None)
+,treeView(_treeView)
+,qname(_name)
+,qvalue(_value)
+,groupToSearchIn(_groupToSearchIn)
+,isExactMatch(_isExactMatch)
+,indexOfResult(prevIndex)
+,resultAnnotation(prevAnnotation)
+{
+
+}
+
+void FindQualifierTask::prepare(){
+
+}
+
+void FindQualifierTask::run(){
+    if(hasError() || isCanceled()){
+        return;
+    }
+
+    stateInfo.setProgress(0);
+    AVItem* rootGroup = groupToSearchIn;
+
+    int childCount = rootGroup->childCount();
+    bool found = false;
+    int startIdx = getStartIndexGroup(rootGroup);
+    for (int i = startIdx; i < childCount && !found  && !stateInfo.isCanceled(); i++){
+        stateInfo.setProgress(i/childCount);
+        AVItem * child = static_cast<AVItem*>(rootGroup->child(i));
+        if(child->type == AVItemType_Annotation){
+            findInAnnotation(child, found);
+        }else if (child->type == AVItemType_Group){
+            findInGroup(child, found);
+        }
+        if(found){
+            if(!rootGroup->isExpanded()){
+                toExpand.enqueue(rootGroup);
+            }
+            break;
+        }
+    } 
+    foundResult = found;
+    stateInfo.setProgress(100);
+}
+static inline bool matchWords(const QString& enteredW, const QString& realW, bool isExactMatch){
+    return enteredW.isEmpty() ? true : (isExactMatch ? 0 == realW.compare(enteredW, Qt::CaseInsensitive) : realW.contains(enteredW, Qt::CaseInsensitive));
+}
+void FindQualifierTask::findInAnnotation(AVItem* annotation, bool& found){
+    AVAnnotationItem* ai = static_cast<AVAnnotationItem*>(annotation);
+    const QVector<U2Qualifier> & quals = ai->annotation->getQualifiers();
+    int qual_size = quals.size();
+    int startIdx = getStartIndexAnnotation(ai);
+    for(int j = startIdx; j < qual_size && !found  && !stateInfo.isCanceled(); j++){
+        const U2Qualifier & qual = quals.at(j);
+        bool matchName = matchWords(qname, qual.name, isExactMatch);
+        bool matchValue = matchWords(qvalue, qual.value, isExactMatch);
+        bool match = matchName && matchValue;
+        if(match){
+            //matched annotation is always first in the queue
+            toExpand.enqueue(annotation);
+   
+            found = true;
+            resultAnnotation = annotation;
+            indexOfResult = j;
+            break;
+        }
+    }
+}
+
+void FindQualifierTask::findInGroup(AVItem* group, bool& found){
+    int startIdx = getStartIndexGroup(group);
+    for (int i = startIdx ; i < group->childCount() && !found && !stateInfo.isCanceled(); i++){
+        AVItem * child = static_cast<AVItem*>(group->child(i));
+        if(child->type == AVItemType_Annotation){
+            findInAnnotation(child, found);
+        }else if (child->type == AVItemType_Group){
+            findInGroup(child, found);
+        }
+        if(found){
+            if(!group->isExpanded()){
+                toExpand.enqueue(group);
+            }
+            break;
+        }
+    } 
+}
+
+int FindQualifierTask::getStartIndexGroup( AVItem* group ){
+    int result = 0;
+
+    if(resultAnnotation){
+        AVItem* parentGroup = dynamic_cast<AVItem* >(resultAnnotation->parent());
+        if(parentGroup){
+            if (parentGroup != group){ //if parent group is a subgroup of group seek to its index
+                int idx = group->indexOfChild(parentGroup);
+                if (idx != -1){
+                    result = idx;
+                }
+            }else{//if annotation is in the same group seek to its idx
+                int idx = group->indexOfChild(resultAnnotation);
+                if (idx != -1){
+                    result = idx;
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+int FindQualifierTask::getStartIndexAnnotation( AVItem* annotation ){
+    int result = 0;
+    
+    if(resultAnnotation){
+        if (resultAnnotation == annotation){
+            result = indexOfResult + 1; //start from the next qualifier in the annotation
+        }
+    }
+
+    return result;
+}
+
+Task::ReportResult FindQualifierTask::report(){
+    if(hasError() || isCanceled()){
+        return ReportResult_Finished;
+    }
+    AVItem* qual = NULL;
+
+    AVItem* firstAnnoation = NULL;
+    if (!toExpand.isEmpty()){
+        firstAnnoation = toExpand.dequeue();
+        AVAnnotationItem* ai = dynamic_cast<AVAnnotationItem*>(firstAnnoation);
+        if(!ai->isExpanded()){
+            treeView->getTreeWidget()->expandItem(firstAnnoation);
+            treeView->sl_itemExpanded(firstAnnoation);
+        }
+        
+        if(foundResult && ai){
+            const U2Qualifier & u2qual = ai->annotation->getQualifiers().at(indexOfResult);
+            qual = ai->findQualifierItem(u2qual.name, u2qual.value);
+        }
+    }
+
+    foreach (AVItem* item, toExpand){
+        treeView->getTreeWidget()->expandItem(item);
+    }
+
+    if(qual){
+        treeView->getTreeWidget()->setCurrentItem(qual);
+        treeView->getTreeWidget()->scrollToItem(qual);
+    }
+
+    return ReportResult_Finished;
 }
 
 }//namespace

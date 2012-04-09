@@ -25,11 +25,14 @@
 #include <U2Core/global.h>
 #include <U2Core/Task.h>
 
+#include <U2View/SearchQualifierDialog.h>
+
 #include <QtCore/QFlags>
 #include <QtCore/QTimer>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QCloseEvent>
 #include <QtGui/QLabel>
+#include <QtCore/QQueue>
 
 
 namespace U2 {
@@ -112,6 +115,7 @@ private slots:
     void sl_onCopyColumnText();
     void sl_onCopyColumnURL();
 	void sl_exportAutoAnnotationsGroup();
+    void sl_searchQualifier();
     
     void sl_rename();
     void sl_edit();
@@ -184,6 +188,8 @@ private:
     QAction*            editAction;         // action to edit active item -> only for non-readonly
     QAction*            viewAction;         // action to view active item -> could be used both for readonly and not readonly
     QAction*            addQualifierAction; // action to create qualifier. Editable annotation or editable qualifier must be selected
+
+    QAction*            searchQualifierAction; 
     
     Qt::MouseButton     lastMB;
     QStringList         headerLabels;
@@ -203,6 +209,8 @@ private:
     static const QString annotationMimeType;
 
     friend class RemoveItemsTask;
+    friend class FindQualifierTask;
+    friend class SearchQualifierDialog;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -301,6 +309,37 @@ private:
     AVGroupItem* parentGroupItem;
     Qt::ItemFlags flags;
     QList<AVAnnotationItem *> itemsToDelete;
+};
+
+class U2VIEW_EXPORT FindQualifierTask: public Task{
+    Q_OBJECT
+public:
+    FindQualifierTask(AnnotationsTreeView * _treeView, AVItem* _groupToSearchIn, const QString & _name, const QString & _value, bool _isExactMatch, AVItem* prevAnnotation = NULL, int prevIndex = -1);
+    void prepare();
+    void run();
+    ReportResult report();
+
+    int getIndexOfResult() const { return indexOfResult; }
+    AVItem * getResultAnnotation() const { return resultAnnotation; }
+    bool isFound() const {return foundResult; }
+
+private:
+    void findInAnnotation(AVItem* annotation, bool& found);
+    void findInGroup(AVItem* group, bool& found);
+    int getStartIndexGroup(AVItem* group);
+    int getStartIndexAnnotation(AVItem* annotation);
+
+    AnnotationsTreeView *       treeView;
+    QString                     qname;
+    QString                     qvalue;
+    AVItem *                    groupToSearchIn;
+    bool                        isExactMatch;
+    bool                        foundResult;
+
+    int indexOfResult;
+    AVItem * resultAnnotation;
+
+    QQueue<AVItem*> toExpand; //this queue is needed to expand items in main thread and set found item as current
 };
 
 }//namespace

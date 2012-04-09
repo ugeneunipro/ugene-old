@@ -69,8 +69,8 @@ FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/FormatSettingsDialog.ui \
          src/util/ui/MultipartDocFormatConfiguratorWidget.ui \
          src/util/ui/ProjectTreeItemSelectorDialogBase.ui \
-         src/util/ui/RemovePartFromSequenceDialog.ui \
          src/util/ui/RangeSelectionDialog.ui \
+         src/util/ui/RemovePartFromSequenceDialog.ui \
          src/util/ui/ScriptEditorDialog.ui \
          src/util/ui/SeqPasterWidget.ui \
          src/util/ui/TextEditorDialog.ui
@@ -82,8 +82,8 @@ SOURCES += src/MainWindow.cpp \
            src/OpenViewTask.cpp \
            src/ProjectParsing.cpp \
            src/UnloadDocumentTask.cpp \
-           src/options_panel/GroupOptionsWidget.cpp \
            src/options_panel/GroupHeaderImageWidget.cpp \
+           src/options_panel/GroupOptionsWidget.cpp \
            src/options_panel/OptionsPanel.cpp \
            src/options_panel/OptionsPanelGroup.cpp \
            src/options_panel/OptionsPanelWidget.cpp \
