@@ -238,7 +238,7 @@ void GUITestService::writeTestResult(const QString& result) const {
 void GUITestService::setQtFileDialogView()
 {
 #ifdef __linux__
-    if (!qgetenv("UGENE_USE_NATIVE_DIALOGS=0").isEmpty()) {
+    if (!qgetenv("UGENE_USE_NATIVE_DIALOGS").isEmpty()) {
         qt_filedialog_open_filename_hook = 0;
         qt_filedialog_open_filenames_hook = 0;
         qt_filedialog_save_filename_hook = 0;
