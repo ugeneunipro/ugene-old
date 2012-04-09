@@ -46,7 +46,7 @@ void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findWindow"
-QWidget* GTUtilsMdi::findWindow(U2OpStatus &os, const QString& windowName, const GTWidget::FindOptions& options) {
+QWidget* GTUtilsMdi::findWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& options) {
 
     GT_CHECK_RESULT(windowName.isEmpty() == false, "windowname is empty", NULL);
 
@@ -70,7 +70,7 @@ QWidget* GTUtilsMdi::findWindow(U2OpStatus &os, const QString& windowName, const
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "activeWindow"
-QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os, const GTWidget::FindOptions& options) {
+QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& options) {
 
     MainWindow* mw = AppContext::getMainWindow();
     GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);

@@ -35,11 +35,11 @@ public:
 	static void selectRandomRegion(U2OpStatus &os, const QString& windowName);
 
     // fails if MainWindow is NULL or because of FindOptions settings
-    static QWidget* activeWindow(U2OpStatus &os, const GTWidget::FindOptions& = GTWidget::FindOptions());
+    static QWidget* activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
     // finds a window with a given window title in MDIManager windows
     // fails if windowName is empty or because of FindOptions settings
-    static QWidget* findWindow(U2OpStatus &os, const QString& windowName, const GTWidget::FindOptions& = GTWidget::FindOptions());
+    static QWidget* findWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 };
 
 } // namespace

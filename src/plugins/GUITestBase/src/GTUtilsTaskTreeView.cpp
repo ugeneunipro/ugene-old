@@ -35,7 +35,7 @@ namespace U2 {
 const QString GTUtilsTaskTreeView::widgetName = DOCK_TASK_TREE_VIEW;
 
 void GTUtilsTaskTreeView::openView(U2OpStatus& os) {
-    GTWidget::FindOptions options;
+    GTGlobals::FindOptions options;
     options.failIfNull = false;
 
     QWidget *documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
@@ -78,7 +78,7 @@ QTreeWidgetItem* GTUtilsTaskTreeView::getTreeWidgetItem( QTreeWidget* tree, cons
 }
 
 QTreeWidget* GTUtilsTaskTreeView::getTreeWidget(U2OpStatus &os) {
-    GTWidget::FindOptions options;
+    GTGlobals::FindOptions options;
     options.failIfNull = false;
 
     QTreeWidget *treeWidget = static_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName, NULL, options));

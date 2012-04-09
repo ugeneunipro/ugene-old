@@ -67,8 +67,6 @@ public:
     static void checkProject(U2OpStatus &os, CheckType checkType = Exists);
 
 protected:
-    static Document* checkDocumentExists(U2OpStatus &os, const GUrl &url);
-
     static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);
 };
 

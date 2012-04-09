@@ -49,6 +49,13 @@ public:
     enum UseMethod {UseMouse, UseKey};
     enum WindowAction {Minimize, Maximize, Close, WindowActionCount};
 
+    // if failIfNull is set to true, fails if object wasn't found
+    class FindOptions {
+    public:
+        FindOptions() : failIfNull(true){}
+        bool failIfNull;
+    };
+
     static void sleep(int msec);
     static void sendEvent(QObject *obj, QEvent *e);
 };

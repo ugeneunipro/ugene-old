@@ -35,7 +35,7 @@ const QString GTUtilsProjectTreeView::widgetName = "documentTreeWidget";
 #define GT_METHOD_NAME "openView"
 void GTUtilsProjectTreeView::openView(U2OpStatus& os) {
 
-    GTWidget::FindOptions options;
+    GTGlobals::FindOptions options;
     options.failIfNull = false;
 
     QWidget *documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);

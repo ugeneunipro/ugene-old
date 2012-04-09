@@ -50,14 +50,7 @@ void GTUtilsProject::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const Op
             openFilesDrop(os, urls);
     }
 
-    GTGlobals::sleep(500);
-
     checkProject(os);
-    foreach (QUrl path, urls) {
-        checkDocumentExists(os, path.toString());
-    }
-
-    GTGlobals::sleep(1000);
 }
 
 void GTUtilsProject::openFiles(U2OpStatus &os, const GUrl &path, const OpenFileSettings& s) {
@@ -120,6 +113,7 @@ void GTUtilsProject::closeProject(U2OpStatus &os, const CloseProjectSettings& se
 #define GT_METHOD_NAME "checkProject"
 void GTUtilsProject::checkProject(U2OpStatus &os, CheckType checkType) {
 
+    GTGlobals::sleep(500);
     GT_CHECK(AppContext::getProject() != NULL, "There is no project");
 
     switch (checkType) {
@@ -128,29 +122,6 @@ void GTUtilsProject::checkProject(U2OpStatus &os, CheckType checkType) {
         default:
             break;
     }
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "checkDocumentExists"
-Document* GTUtilsProject::checkDocumentExists(U2OpStatus &os, const GUrl &url) {
-
-    Project *project = AppContext::getProject();
-    if (!project) {
-        return NULL;
-    }
-
-    QString projectUrl = project->getProjectURL();
-    if (url == projectUrl) {
-        return NULL; // url of a project
-    }
-
-    // check if document with url exists and was shown
-    Document *doc = project->findDocumentByURL(url);
-
-    GT_CHECK_RESULT(doc != NULL, "There is no document", NULL);
-    GT_CHECK_RESULT(doc->isLoaded(), "Document is not loaded", NULL);
-
-    return doc;
 }
 #undef GT_METHOD_NAME
 
