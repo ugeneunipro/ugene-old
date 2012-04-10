@@ -52,6 +52,52 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     QString s = os.getError();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0003) {
+
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj");
+    GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
+
+    ProjViewItem *item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
+    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
+    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is not locked");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
+    GTUtilsDialog::PopupChooser unlockPopupChooser(os, QStringList() << ACTION_DOCUMENT__UNLOCK);
+    GTUtilsDialog::preWaitForDialog(os, &unlockPopupChooser, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
+    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
+    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->documentIcon.cacheKey(), "Icon is locked");
+
+    GTGlobals::sleep(1000);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
+    GTUtilsDialog::PopupChooser lockPopupChooser(os, QStringList() << ACTION_DOCUMENT__LOCK);
+    GTUtilsDialog::preWaitForDialog(os, &lockPopupChooser, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
+    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
+    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is unlocked");
+
+    GTUtilsProject::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
+
+    GTUtilsProject::closeProject(os);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/sandbox/proj2.uprj");
+    GTUtilsDocument::checkDocument(os, "1.gb");
+
+    item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
+    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
+    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is unlocked");
+}
+
+
 } // GUITest_common_scenarios_project_user_locking namespace
 
 } // U2 namespace
