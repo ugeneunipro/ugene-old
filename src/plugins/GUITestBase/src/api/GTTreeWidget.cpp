@@ -45,7 +45,8 @@ void GTTreeWidget::expandTo(U2OpStatus &os, QTreeWidget *treeWidget, QTreeWidget
     QRect parentItemRect = treeWidget->visualItemRect(parentItem);
 
     if (!parentItem->isExpanded()) {
-        QPoint p = treeWidget->mapToGlobal(QPoint(parentItemRect.left(), parentItemRect.height()/2));
+        QPoint arrowPoint = QPoint(10, parentItemRect.center().y());
+        QPoint p = treeWidget->mapToGlobal(arrowPoint);
         GTMouseDriver::moveTo(os, p);
         GTMouseDriver::click(os);
         GTGlobals::sleep(500);
