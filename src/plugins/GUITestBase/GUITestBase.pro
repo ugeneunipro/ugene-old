@@ -18,6 +18,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h \
             src/api/GTComboBox.h \
             src/api/GTFileDialog.h \
+            src/api/GTFile.h \
             src/api/GTGlobals.h \
             src/api/GTKeyboardDriver.h \
             src/api/GTLineEdit.h \
@@ -51,6 +52,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.cpp \
             src/api/GTComboBox.cpp \
             src/api/GTFileDialog.cpp \
+            src/api/GTFile.cpp \
             src/api/GTGlobals.cpp \
             src/api/GTKeyboardDriver.cpp \
             src/api/GTKeyboardDriverLinux.cpp \
