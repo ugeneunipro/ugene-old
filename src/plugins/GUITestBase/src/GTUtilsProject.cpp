@@ -24,6 +24,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTMenu.h"
+#include "GTUtilsTaskTreeView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsDialog.h"
 #include <U2Core/AppContext.h>
@@ -37,6 +38,9 @@
 #define ACTION_PROJECT__IMPORT_MENU_ACTION "action_project__import_menu_action"
 #define ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION "action_project__export_as_sequence_action"
 #define ACTION_PROJECT__EXPORT_TO_AMINO_ACTION "action_project__export_to_amino_action"
+
+#define ACTION_EXPORT_SEQUENCE "export sequences"
+#define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT "export sequences as alignment"
 
 namespace U2 {
 
@@ -75,6 +79,32 @@ void GTUtilsProject::exportToSequenceFormat(U2OpStatus &os, const QString &proje
 {
     GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION, method);
     GTUtilsDialog::ExportToSequenceFormatFiller filler(os, path, name, method);
+
+    switch (method) {
+    case GTGlobals::UseMouse:
+    {
+        GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, projectName));
+        GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+        GTMouseDriver::click(os, Qt::RightButton);
+        break;
+    }
+
+    default:
+    case GTGlobals::UseKey:
+        ///TODO
+
+        break;
+    }
+
+    GTGlobals::sleep(500);
+}
+
+void GTUtilsProject::exportSequenceAsAlignment(U2OpStatus &os, const QString projectName, const QString &path, const QString &name,
+                                               GTUtilsDialog::ExportSequenceAsAlignmentFiller::FormatToUse format, bool addDocToProject, GTGlobals::UseMethod method)
+{
+    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, method);
+    GTUtilsDialog::ExportSequenceAsAlignmentFiller filler(os, path, name, format, addDocToProject, method);
 
     switch (method) {
     case GTGlobals::UseMouse:

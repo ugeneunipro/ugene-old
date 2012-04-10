@@ -79,6 +79,27 @@ QList<QTreeWidgetItem*> GTTreeWidget::getItems(QTreeWidgetItem* root) {
     return treeItems;
 }
 
+#define GT_METHOD_NAME "doubleClickOnItem"
+void GTTreeWidget::doubleClickOnItem(U2OpStatus &os, const QString &itemName)
+{
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, itemName);
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::doubleClick(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "scrollTo"
+void GTTreeWidget::scrollTo(U2OpStatus &os, const QString &itemName)
+{
+    QTreeWidget *treeWidget = GTUtilsProjectTreeView::getTreeWidget(os);
+    GT_CHECK(treeWidget != NULL, "QTreeWidget not found");
+
+    while (! treeWidget->rect().contains(GTUtilsProjectTreeView::getTreeViewItemLocalPosition(os, itemName))) {
+        GTMouseDriver::scroll(os, -1);
+        GTGlobals::sleep(200);
+    }
+}
+#undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
 

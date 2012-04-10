@@ -145,6 +145,39 @@ public:
         GTGlobals::UseMethod useMethod;
     };
 
+    class ExportSequenceAsAlignmentFiller : public Runnable {
+    public:
+        enum FormatToUse {Clustalw, Fasta, Msf, Mega, Nexus, Sam, Stockholm};
+
+        ExportSequenceAsAlignmentFiller(U2OpStatus &_os, const QString &_path, const QString &_name,
+                                        GTUtilsDialog::ExportSequenceAsAlignmentFiller::FormatToUse _format, bool addDocumentToProject = false, GTGlobals::UseMethod method = GTGlobals::UseMouse):
+            os(_os), useMethod(method), name(_name), format(_format), addToProject(addDocumentToProject) {
+                QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
+                if (__path.at(__path.count() - 1) != '/') {
+                    __path += '/';
+                }
+
+                path = __path;
+
+                comboBoxItems[Clustalw] = "CLUSTALW";
+                comboBoxItems[Fasta] = "FASTA";
+                comboBoxItems[Msf] = "MSF";
+                comboBoxItems[Mega] = "Mega";
+                comboBoxItems[Nexus] = "NEXUS";
+                comboBoxItems[Sam] = "SAM";
+                comboBoxItems[Stockholm] = "Stockholm";
+            }
+
+        virtual void run();
+    private:
+        U2OpStatus &os;
+        QString path, name;
+        GTUtilsDialog::ExportSequenceAsAlignmentFiller::FormatToUse format;
+        QMap<GTUtilsDialog::ExportSequenceAsAlignmentFiller::FormatToUse, QString> comboBoxItems;
+        bool addToProject;
+        GTGlobals::UseMethod useMethod;
+    };
+
     static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, bool failOnNoDialog = true);
     static void preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal);
 };

@@ -24,6 +24,7 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTTreeWidget.h"
+#include "GTUtilsTaskTreeView.h"
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QMainWindow>
@@ -91,6 +92,14 @@ QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, const QString &item
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getTreeViewItemLocalPosition"
+QPoint GTUtilsProjectTreeView::getTreeViewItemLocalPosition(U2OpStatus &os, const QString &itemName) {
+
+    QRect r = GTTreeWidget::getItemRect(os, GTUtilsTaskTreeView::getTreeWidget(os), GTUtilsTaskTreeView::getTreeWidgetItem(os, itemName));
+    return r.center();
+}
+#undef GT_METHOD_NAME
+
 QTreeWidget* GTUtilsProjectTreeView::getTreeWidget(U2OpStatus &os) {
 
     openView(os);
@@ -140,6 +149,23 @@ QTreeWidgetItem* GTUtilsProjectTreeView::findItem(U2OpStatus &os, const QString 
     GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", NULL);
 
     return NULL;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSelectedItem"
+QString GTUtilsProjectTreeView::getSelectedItem(U2OpStatus &os)
+{
+    QTreeWidget *treeWidget = getTreeWidget(os);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget is NULL", NULL);
+
+    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
+    foreach (QTreeWidgetItem* item, treeItems) {
+        if (item->isSelected()) {
+            return getProjectTreeItemName((ProjViewItem*)item);
+        }
+    }
+
+    return QString();
 }
 #undef GT_METHOD_NAME
 

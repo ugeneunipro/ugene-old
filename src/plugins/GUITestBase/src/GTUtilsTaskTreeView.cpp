@@ -25,7 +25,6 @@
 #include "api/GTWidget.h"
 
 #include <U2Gui/MainWindow.h>
-
 #include <QtGui/qtreewidget.h>
 
 namespace U2 {

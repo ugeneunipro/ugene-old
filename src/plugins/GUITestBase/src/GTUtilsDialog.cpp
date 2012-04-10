@@ -32,6 +32,7 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QMenu>
 #include <QtGui/QRadioButton>
+#include <QtGui/QCheckBox>
 
 namespace U2 {
 
@@ -267,6 +268,59 @@ void GTUtilsDialog::ExportToSequenceFormatFiller::run()
     GT_CHECK(okButton != NULL, "OK button not found");
     GTWidget::click(os, okButton);
 }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::ExportSequenceAsAlignmentFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::ExportSequenceAsAlignmentFiller::run()
+{
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+
+    QLineEdit *lineEdit = dialog->findChild<QLineEdit*>();
+    GT_CHECK(lineEdit != NULL, "line edit not found");
+
+    GTLineEdit::setText(os, lineEdit, path + name);
+
+    QComboBox *comboBox = dialog->findChild<QComboBox*>();
+    GT_CHECK(comboBox != NULL, "ComboBox not found");
+
+    int index = -1;
+    for (int i = 0; i < comboBox->count(); i++ ) {
+        if (comboBox->itemText(i) == comboBoxItems[format]) {
+            index = i;
+            break;
+        }
+    }
+
+    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+
+    GTComboBox::setCurrentIndex(os, comboBox, index);
+
+    QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjectBox"));
+    GT_CHECK(checkButton, "Check box not found");
+
+    if ((addToProject && !checkButton->isChecked()) ||
+            !addToProject && checkButton->isChecked()) {
+        switch(useMethod) {
+        case GTGlobals::UseMouse:
+            GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkButton->rect().topLeft()));
+            GTMouseDriver::click(os);
+            break;
+        case GTGlobals::UseKey:
+            GTWidget::setFocus(os, checkButton);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+            break;
+        }
+    }
+
+    QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("okButton"));
+    GT_CHECK(exportButton != NULL, "Export button not found");
+
+    GTWidget::click(os, exportButton);
+}
+
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 

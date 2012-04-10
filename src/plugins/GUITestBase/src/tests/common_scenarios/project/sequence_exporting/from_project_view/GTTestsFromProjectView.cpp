@@ -32,6 +32,9 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsTaskTreeView.h"
+#include "GTUtilsTreeView.h"
+#include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
@@ -51,14 +54,24 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
         GTFileDialog::openFile(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa");
     }
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "export1.fa"));
-    GTMouseDriver::doubleClick(os);
+    GTTreeWidget::doubleClickOnItem(os, "export1.fa");
+
+
+    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ""
+                                             << "", GTGlobals::UseMouse);
+
+    GTTreeWidget::scrollTo(os, "ru131");
+    GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+    GTTreeWidget::doubleClickOnItem(os, "ru131");
+    GTGlobals::sleep(200);
+
+    os.setError("Test is not completed");
     ///TODO: check [s] ru131 has '-' symbols at the end of sequence
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
-    // Test not completed
+    os.setError("Test is not completed");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
@@ -81,8 +94,12 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
-    GTMouseDriver::doubleClick(os);
+    QTreeWidget *w = GTUtilsProjectTreeView::getTreeWidget(os);
+    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "NC_001363 features");
+
+    GTTreeWidget::expandTo(os, w, item);
+    GTGlobals::sleep(100);
+    GTTreeWidget::doubleClickOnItem(os, "NC_001363 features");
     GTGlobals::sleep(1000);
 
     GObjectViewWindow *activeWindow = qobject_cast<GObjectViewWindow*> (GTUtilsMdi::activeWindow(os));
@@ -90,7 +107,17 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
         os.setError("NC_001363 sequence has been not opened in sequence view");
         return;
     }
-    // Test not completed
+
+    GTUtilsProject::exportSequenceAsAlignment(os, "NC_001363 sequence", dataDir + "_common_data/scenarios/sandbox/",
+                                              "exp2.msf", GTUtilsDialog::ExportSequenceAsAlignmentFiller::Msf);
+    GTGlobals::sleep(100);
+
+    GTFileDialog::openFile(os, dataDir + "_common_data/scenarios/sandbox/", "exp2.msf");
+    GTGlobals::sleep(1000);
+
+    if (GTUtilsProjectTreeView::getSelectedItem(os) != "NC_001363 sequence") {
+        os.setError("multiple aligniment view with NC_001363 sequence has been not opened");
+    }
 }
 
 } // namespace
