@@ -24,6 +24,8 @@
 #include <U2View/AnnotatedDNAView.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/L10n.h>
+#include <U2Core/AppContext.h>
+#include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 #include "Primer3Dialog.h"
 
 namespace U2 {
@@ -72,6 +74,10 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
             ui.combobox_PRIMER_INTERNAL_OLIGO_MISHYB_LIBRARY->addItem(library.first);
         }
     }
+
+    SplicedAlignmentTaskRegistry* sr = AppContext::getSplicedAlignmentTaskRegistry();
+    ui.spanIntronExonBox->setEnabled(sr->getAlgNameList().size() > 1);
+
     reset();
 }
 
@@ -294,6 +300,23 @@ void Primer3Dialog::reset()
 bool Primer3Dialog::doDataExchange()
 {
     settings = defaultSettings;
+    if (ui.spanIntronExonBox->isChecked()) {
+        SpanIntronExonBoundarySettings s;
+        s.enabled = true;
+        if (!ui.rnaSeqIdEdit->text().isEmpty()) {
+            s.mRnaSeqId = ui.rnaSeqIdEdit->text();
+        } else {
+            showInvalidInputMessage(ui.rnaSeqIdEdit, "mRNA sequence ID");
+            return false;
+        }
+
+        s.minIntronLength = ui.intronMinLengthSpinBox->value();
+        s.minLeftOverlap = ui.leftOverlapSizeSpinBox->value();
+        s.minRightOverlap = ui.rightOverlapSizeSpinBox->value();
+
+        settings.setSpanIntronExonBoundarySettings(s);
+
+    }
     foreach(QString key, settings.getIntPropertyList())
     {
         QSpinBox *spinBox = findChild<QSpinBox *>("edit_" + key);
@@ -576,6 +599,7 @@ void Primer3Dialog::on_pbPick_clicked()
         rs->showErrorMessage();
         return;
     }
+
     if(doDataExchange())
     {
         accept();

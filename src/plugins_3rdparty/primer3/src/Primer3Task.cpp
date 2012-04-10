@@ -559,7 +559,7 @@ QList<PrimerPair> Primer3SWTask::getBestPairs()const
 Primer3ToAnnotationsTask::Primer3ToAnnotationsTask( const Primer3TaskSettings &settings,
 AnnotationTableObject * aobj_, const QString & groupName_, const QString & annName_ ) :
 Task(tr("Search primers to annotations"), /*TaskFlags_NR_FOSCOE*/TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), settings(settings), aobj(aobj_), 
-groupName(groupName_), annName(annName_), searchTask(NULL)
+    groupName(groupName_), annName(annName_), searchTask(NULL), findExonsTask(NULL)
 {
 }
 
@@ -661,4 +661,6 @@ SharedAnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(QString title, 
     return annotationData;
 }
 
-}
+
+
+} // namespace

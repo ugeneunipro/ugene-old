@@ -28,6 +28,7 @@
 #include <U2Core/AnnotationTableObject.h>
 
 #include "Primer3TaskSettings.h"
+#include "FindExonRegionsTask.h"
 
 #include "primer3.h"
 
@@ -160,6 +161,7 @@ private:
     QString annName;
 
     Primer3SWTask *searchTask;
+    FindExonRegionsTask *findExonsTask;
 };
 
 } //namespace

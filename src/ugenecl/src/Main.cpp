@@ -57,6 +57,7 @@
 #include <U2Algorithm/SWResultFilterRegistry.h>
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
+#include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -420,6 +421,9 @@ int main(int argc, char **argv)
     StructuralAlignmentAlgorithmRegistry *saar = new StructuralAlignmentAlgorithmRegistry();
     appContext->setStructuralAlignmentAlgorithmRegistry(saar);
 
+    SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistry = new SplicedAlignmentTaskRegistry();
+    appContext->setSplicedAlignmentTaskRegistry(splicedAlignmentTaskRegistry);
+
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     
     // show help if need
@@ -567,6 +571,9 @@ int main(int argc, char **argv)
 
     appContext->setStructuralAlignmentAlgorithmRegistry(NULL);
     delete saar;
+
+    delete splicedAlignmentTaskRegistry;
+    appContext->setSplicedAlignmentTaskRegistry(NULL);
 
     return rc;
 }

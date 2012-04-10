@@ -109,6 +109,9 @@ QList<Task*> SpideyAlignmentTask::onSubTaskFinished(Task* subTask) {
         QTextStream inStream(&resultFile);
         bool strandDirect = true;
 
+        U2Location location;
+        location->op = U2LocationOperator_Join;
+
         while (!inStream.atEnd()) {
             QByteArray buf = inStream.readLine().toAscii();
             if (buf.startsWith("Strand")) {
@@ -133,20 +136,23 @@ QList<Task*> SpideyAlignmentTask::onSubTaskFinished(Task* subTask) {
                     continue;
                 }
 
-                SharedAnnotationData data(new AnnotationData);
-                U2Location location;
-                location->regions.append(U2Region(start - 1,finish - start + 1));
-
-                data->location = location;
-                data->setStrand(U2Strand(strandDirect ? U2Strand::Direct : U2Strand::Complementary));
-                data->name = "exon";
-                resultAnnotations.append(new Annotation(data));
+               location->regions.append(U2Region(start - 1,finish - start + 1));
 
             }
 
         }
 
+        if (!location->isEmpty()) {
+            SharedAnnotationData  data(new AnnotationData);
+            data->location = location;
+            data->setStrand(U2Strand(strandDirect ? U2Strand::Direct : U2Strand::Complementary));
+            data->name = "exon";
+            resultAnnotations.append(new Annotation(data));
+        }
+
+
     }
+
 
 
 

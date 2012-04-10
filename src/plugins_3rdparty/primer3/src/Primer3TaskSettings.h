@@ -32,6 +32,25 @@
 
 namespace U2 {
 
+
+struct SpanIntronExonBoundarySettings {
+
+    SpanIntronExonBoundarySettings() {
+        enabled = false;
+        minLeftOverlap = 7;
+        minRightOverlap = 7;
+        minIntronLength = 1000;
+
+    }
+
+    bool enabled;
+    QString mRnaSeqId;
+    int minLeftOverlap, minRightOverlap;
+    int minIntronLength;
+
+};
+
+
 class Primer3TaskSettings
 {
 public:
@@ -89,6 +108,20 @@ public:
 
     primer_args *getPrimerArgs();
     seq_args *getSeqArgs();
+
+    // span intron/exon boundary settings
+
+    const SpanIntronExonBoundarySettings& getSpanIntronExonBoundarySettings() const {
+        return spanIntronExonBoundarySettings;
+    }
+
+    void setSpanIntronExonBoundarySettings(const SpanIntronExonBoundarySettings& settings) {
+        spanIntronExonBoundarySettings = settings;
+    }
+    bool spanIntronExonBoundaryIsEnabled() const { return spanIntronExonBoundarySettings.enabled; }
+
+
+
 private:
     void initMaps();
 
@@ -107,6 +140,7 @@ private:
 
     QByteArray repeatLibrary;
     QByteArray mishybLibrary;
+    SpanIntronExonBoundarySettings spanIntronExonBoundarySettings;
 
     primer_args primerArgs;
     seq_args seqArgs;

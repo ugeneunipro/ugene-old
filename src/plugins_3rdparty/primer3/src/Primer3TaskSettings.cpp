@@ -47,7 +47,8 @@ Primer3TaskSettings::Primer3TaskSettings(const Primer3TaskSettings &settings):
     repeatLibrary(settings.repeatLibrary),
     mishybLibrary(settings.mishybLibrary),
     primerArgs(settings.primerArgs),
-    seqArgs(settings.seqArgs)
+    seqArgs(settings.seqArgs),
+    spanIntronExonBoundarySettings(settings.spanIntronExonBoundarySettings)
 {
     initMaps();
 }
@@ -64,6 +65,7 @@ const Primer3TaskSettings &Primer3TaskSettings::operator=(const Primer3TaskSetti
     repeatLibrary = settings.repeatLibrary;
     mishybLibrary = settings.mishybLibrary;
     seqArgs = settings.seqArgs;
+    spanIntronExonBoundarySettings = settings.spanIntronExonBoundarySettings;
     initMaps();
     return *this;
 }

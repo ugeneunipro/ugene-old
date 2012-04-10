@@ -61,6 +61,7 @@
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
+#include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/BaseDocumentFormatConfigurators.h>
@@ -473,6 +474,9 @@ int main(int argc, char **argv)
 
     GUITestBase *tb = new GUITestBase();
     appContext->setGUITestBase(tb);
+
+    SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistiry = new SplicedAlignmentTaskRegistry();
+    appContext->setSplicedAlignmentTaskRegistry(splicedAlignmentTaskRegistiry);
     
     if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST)) {
 		QStringList urls = CMDLineRegistryUtils::getPureValues();
@@ -523,6 +527,9 @@ int main(int argc, char **argv)
     
     delete dcu;
 
+    delete splicedAlignmentTaskRegistiry;
+    appContext->setSplicedAlignmentTaskRegistry(NULL);
+
     delete tb;
     appContext->setGUITestBase(NULL);
     
@@ -566,7 +573,7 @@ int main(int argc, char **argv)
     appContext->setMainWindow(NULL);
 
     delete tf;
-    appContext->setTestFramework(0);
+    appContext->setTestFramework(NULL);
 
     delete ovfr;
     appContext->setObjectViewFactoryRegistry(NULL);
