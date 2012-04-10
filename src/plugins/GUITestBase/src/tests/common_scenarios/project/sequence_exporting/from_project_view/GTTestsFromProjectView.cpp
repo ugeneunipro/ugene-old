@@ -33,7 +33,6 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTUtilsTreeView.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
@@ -47,7 +46,7 @@ namespace GUITest_common_scenarios_project_sequence_exporting_from_project_view{
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
-    GTGlobals::sleep(100);
+    GTGlobals::sleep(1000);
     GTUtilsProject::exportToSequenceFormat(os, "HIV-1.aln", dataDir + " _common_data/scenarios/sandbox/", "export1.fa");
     GTGlobals::sleep(100);
     if (! GTUtilsDocument::getDocument(os, "export1.fa")) {
@@ -55,12 +54,11 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     }
 
     GTTreeWidget::doubleClickOnItem(os, "export1.fa");
-
+    GTTreeWidget::scrollTo(os, "ru131");
 
     GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ""
                                              << "", GTGlobals::UseMouse);
 
-    GTTreeWidget::scrollTo(os, "ru131");
     GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
     GTTreeWidget::doubleClickOnItem(os, "ru131");
     GTGlobals::sleep(200);
