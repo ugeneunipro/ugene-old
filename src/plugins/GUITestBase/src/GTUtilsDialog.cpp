@@ -273,6 +273,24 @@ void GTUtilsDialog::ExportToSequenceFormatFiller::run()
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::ExportSelectedRegionFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::ExportSelectedRegionFiller::run()
+{
+	QWidget *dialog = QApplication::activeModalWidget();
+	GT_CHECK(dialog != NULL, "dialog not found");
+
+	QLineEdit *lineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "fileNameEdit", dialog));
+	GT_CHECK(lineEdit != NULL, "File name line edit not found");
+	GTLineEdit::setText(os, lineEdit, path + name);
+
+	QPushButton *okButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
+	GT_CHECK(okButton != NULL, "Export button not found");
+	GTWidget::click(os, okButton);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSequenceAsAlignmentFiller"
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::ExportSequenceAsAlignmentFiller::run()
@@ -322,7 +340,20 @@ void GTUtilsDialog::ExportSequenceAsAlignmentFiller::run()
 
     GTWidget::click(os, exportButton);
 }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::CopyToFileAsDialogFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::CopyToFileAsDialogFiller::run()
+{
+	QWidget *dialog = QApplication::activeModalWidget();
+	GT_CHECK(dialog != NULL, "dialog not found");
+
+	QPushButton *btSave = dialog->findChild<QPushButton*>(QString::fromUtf8("createButton"));
+	GT_CHECK(btSave != NULL, "Save button not found");
+	GTWidget::click(os, btSave);
+}
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 

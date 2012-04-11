@@ -135,6 +135,43 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
     GTUtilsTaskTreeView::cancelTask(os, "DownloadRemoteDocuments");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0016) {
+	QDir dir(dataDir + "samples");
+	dir.makeAbsolute();
+	bool ok;
+	if (!dir.exists(dir.absolutePath()+ "/.dir")) {
+		ok = QDir::root().mkpath(dir.absolutePath() + "/.dir");
+		CHECK_SET_ERR(ok, QString("Can't create TEMP_DATA_DIR : %1").arg(dir.absolutePath()));
+	}
+
+	QFile fileTarget(dir.absolutePath() + "/.dir/example.gb");
+	if(!fileTarget.exists()){
+		QFile fileDest(dir.absolutePath()+"/Genbank/sars.gb");
+		QFile::copy(fileDest.fileName(), fileTarget.fileName());
+	}
+	GTUtilsProject::openFiles(os, fileTarget.fileName());
+	GTGlobals::sleep(100);
+
+	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse);
+	GTUtilsDialog::CopyToFileAsDialogFiller filler(os, "", "", GTGlobals::UseMouse);
+	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "example.gb"));
+	GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+	GTMouseDriver::click(os, Qt::RightButton);
+	GTGlobals::sleep(100);
+	if (dir.exists(dir.absolutePath()+ "/.dir")) {
+		QDir rmDir(dir.absolutePath()+ "/.dir");
+		QStringList lstFiles = rmDir.entryList(QDir::Files);
+		foreach (QString entry, lstFiles)
+		{
+			QString entryAbsPath = rmDir.absolutePath() + "/" + entry;
+			QFile::remove(entryAbsPath);
+		}
+		ok = QDir::root().rmpath(rmDir.absolutePath());
+		CHECK_SET_ERR(ok, QString("Can't remove TEMP_DATA_DIR : %1").arg(rmDir.absolutePath()));
+	}
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0017) {
 
     GTUtilsProject::openFiles(os, QList<QUrl>()
@@ -175,11 +212,9 @@ GUI_TEST_CLASS_DEFINITION(test_0026) {
 GUI_TEST_CLASS_DEFINITION(test_0028) {
 	GTLogTracer logTracer;
 	GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
-//	GTUtilsMdi::click(os, GTGlobals::Minimize);
 	QMdiSubWindow* fasta = (QMdiSubWindow*)GTUtilsMdi::findWindow(os, "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)");
 
 	GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
-//	GTUtilsMdi::click(os, GTGlobals::Minimize);
 	QWidget* coi = GTUtilsMdi::findWindow(os, "COI [m] COI");
 	CHECK_SET_ERR(fasta->windowIcon().cacheKey() != coi->windowIcon().cacheKey() , "Icons must not be equals");
 	GTUtilsLog::check(os, logTracer);

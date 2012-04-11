@@ -52,8 +52,14 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
 	GTMouseDriver::doubleClick(os);
 	GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
+	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "Export selected sequence region...", GTGlobals::UseMouse);
+	GTUtilsDialog::ExportSelectedRegionFiller filler(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
+	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTUtilsMdi::selectRandomRegion(os, "1 [s] NC_001363 sequence");
+	GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
 	GTMouseDriver::click(os, Qt::RightButton);
+	GTGlobals::sleep(100);
+	GTUtilsDocument::checkDocument(os, "exp.fasta");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
@@ -62,7 +68,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
 	GTMouseDriver::doubleClick(os);
 	GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
-	GTMouseDriver::moveTo(os, GTUtilsMdi::getMdiItemPosition(os, "1 [s] NC_001363 sequence"));
+	GTGlobals::sleep(100);
+//	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features", "annotations_tree_widget"));
+//	GTMouseDriver::doubleClick(os);
+//	GTGlobals::sleep(100);
 }
 
 }

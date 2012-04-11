@@ -364,6 +364,7 @@ void ProjectViewImpl::enable() {
     connect(relocateDocumentAction, SIGNAL(triggered()), SLOT(sl_relocate()));
 
     saveCopyAction = new QAction(tr("Save a copy.."), w);
+	saveCopyAction->setObjectName("Save a copy..");
     saveCopyAction->setIcon(QIcon(":ugene/images/save_copy.png"));
     connect(saveCopyAction, SIGNAL(triggered()), SLOT(sl_saveCopy()));
 

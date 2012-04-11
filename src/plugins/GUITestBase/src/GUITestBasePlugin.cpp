@@ -27,6 +27,7 @@
 #include "tests/common_scenarios/project/GTTestsProject.h"
 #include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
 #include "tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h"
+#include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
 #include "tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h"
 //#include "tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h"
 #include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
@@ -61,11 +62,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0014);
+	REGISTER_TEST(GUITest_common_scenarios_project::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
 //    REGISTER_TEST(GUITest_common_scenarios_project::test_0023); excluded because of bug
     REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
-//    REGISTER_TEST(GUITest_common_scenarios_project::test_0028); excluded failed test
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0028);
 //    REGISTER_TEST(GUITest_common_scenarios_project::test_0030); excluded because of bug
     REGISTER_TEST(GUITest_common_scenarios_project_multiple_docs::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0002);
@@ -73,6 +75,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_common_scenarios_project_relations::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0001);
+	REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0005);
+	REGISTER_TEST(GUITests_sequence_exporting_scenarios_project::test_0001);
+	REGISTER_TEST(GUITests_sequence_exporting_scenarios_project::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0003);
     //REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0004);

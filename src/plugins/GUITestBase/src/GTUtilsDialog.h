@@ -145,6 +145,43 @@ public:
         GTGlobals::UseMethod useMethod;
     };
 
+	class ExportSelectedRegionFiller : public Runnable {
+	public:
+		ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method):
+		  os(_os), name(_name), useMethod(method) {
+			  QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
+			  if (__path.at(__path.count() - 1) != '/') {
+				  __path += '/';
+			  }
+
+			  path = __path;
+		  }
+		  virtual void run();
+	private:
+		U2OpStatus &os;
+		QString path, name;
+		GTGlobals::UseMethod useMethod;
+	};
+
+
+	class CopyToFileAsDialogFiller : public Runnable {
+	public:
+		CopyToFileAsDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method):
+		  os(_os), name(_name), useMethod(method) {
+			  QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
+			  if (__path.at(__path.count() - 1) != '/') {
+				  __path += '/';
+			  }
+
+			  path = __path;
+		  }
+		  virtual void run();
+	private:
+		U2OpStatus &os;
+		QString path, name;
+		GTGlobals::UseMethod useMethod;
+	};
+
     class ExportSequenceAsAlignmentFiller : public Runnable {
     public:
         enum FormatToUse {Clustalw, Fasta, Msf, Mega, Nexus, Sam, Stockholm};

@@ -31,6 +31,7 @@ namespace GUITests_sequence_exporting_scenarios_project {
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
 GUI_TEST_CLASS_DECLARATION(test_0002)
+GUI_TEST_CLASS_DECLARATION(test_0005)
 
 #undef GUI_TEST_PREFIX
 }
