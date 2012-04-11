@@ -31,33 +31,31 @@
 #include <QClipboard>
 #include <QtGui/QApplication>
 
-
 namespace U2 {
-
 
 #define GT_CLASS_NAME "GTSequenceViewUtils"
 #define GT_METHOD_NAME "getSequenceAsString"
 
 QString GTSequenceViewUtils::getSequenceAsString(U2OpStatus &os)
 {
-    QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
-    GT_CHECK_RESULT(mainWindow != NULL, "Main window not found", QString());
+//    QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+//    GT_CHECK_RESULT(mainWindow != NULL, "Main window not found", QString());
 
-    PanViewRenderArea *renderArea =  (mainWindow->findChild<PanViewRenderArea*>());
-    GT_CHECK_RESULT(renderArea != NULL, "PanViewRenderArea not found", QString());
+//    PanViewRenderArea *renderArea =  (mainWindow->findChild<PanViewRenderArea*>());
+//    GT_CHECK_RESULT(renderArea != NULL, "PanViewRenderArea not found", QString());
 
-    GTMouseDriver::moveTo(os, renderArea->mapToGlobal(renderArea->rect().center()));
-    GTMouseDriver::click(os);
+//    GTMouseDriver::moveTo(os, renderArea->mapToGlobal(renderArea->rect().center()));
+//    GTMouseDriver::click(os);
 
-    GTUtilsDialog::selectSequenceDialogFiller filler(os);
-    GTUtilsDialog::preWaitForDialog(os, &filler);
+//    GTUtilsDialog::selectSequenceDialogFiller filler(os);
+//    GTUtilsDialog::preWaitForDialog(os, &filler);
 
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(1000);
-    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+//    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+//    GTGlobals::sleep(1000);
+//    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
 
-    GTGlobals::sleep(1000);
-    return QApplication::clipboard()->text();
+//    GTGlobals::sleep(1000);
+//    return QApplication::clipboard()->text();
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
