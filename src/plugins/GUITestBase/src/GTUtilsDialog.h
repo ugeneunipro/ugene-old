@@ -214,6 +214,14 @@ public:
         GTGlobals::UseMethod useMethod;
     };
 
+    class selectSequenceDialogFiller : public Runnable {
+    public:
+        selectSequenceDialogFiller(U2OpStatus &_os): os(_os){}
+        virtual void run();
+    private:
+        U2OpStatus &os;
+    };
+
     static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, bool failOnNoDialog = true);
     static void preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal);
 };

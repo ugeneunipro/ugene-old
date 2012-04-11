@@ -34,6 +34,7 @@
 #include <QtGui/QRadioButton>
 #include <QtGui/QCheckBox>
 #include <QtGui/QSpinBox>
+#include <QtGui/QToolButton>
 
 namespace U2 {
 
@@ -427,6 +428,30 @@ void GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller::run()
     GT_CHECK(exportButton != NULL, "Export button not found");
 
     GTWidget::click(os, exportButton);
+}
+
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::selectSequenceDialogFiller::run()
+{
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+
+    QToolButton *min = dialog->findChild<QToolButton*>("minButton");
+    QToolButton *max = dialog->findChild<QToolButton*>("maxButton");
+    QPushButton *okButton = dialog->findChild<QPushButton*>("okButton");
+    GT_CHECK(min != NULL, "Min button not found");
+    GT_CHECK(max != NULL, "Max button not found");
+    GT_CHECK(okButton != NULL, "OK button not found");
+
+    GTWidget::click(os, min);
+    GTGlobals::sleep(500);
+    GTWidget::click(os, max);
+    GTGlobals::sleep(500);
+    GTWidget::click(os, okButton);
 }
 
 #undef GT_METHOD_NAME
