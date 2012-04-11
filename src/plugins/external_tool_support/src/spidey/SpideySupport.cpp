@@ -56,9 +56,9 @@ SpideySupport::SpideySupport(const QString& name, const QString& path) : Externa
 {
     if (AppContext::getMainWindow()) {
         viewCtx = new SpideySupportContext(this);
-        //icon = QIcon(":external_tool_support/images/cmdline.png");
-        //grayIcon = QIcon(":external_tool_support/images/cmdline_gray.png");
-        //warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
+        icon = QIcon(":external_tool_support/images/cmdline.png");
+        grayIcon = QIcon(":external_tool_support/images/cmdline_gray.png");
+        warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
 #ifdef Q_OS_WIN
     executableFileName="Spidey.exe";
@@ -67,7 +67,7 @@ SpideySupport::SpideySupport(const QString& name, const QString& path) : Externa
     executableFileName="spidey";
     #endif
 #endif
-    validMessage="\nSPIDEY   arguments:\n\n  -i  Input file -- genomic sequence(s) [File In]";
+    validMessage="SPIDEY   arguments:";
     description=tr("<i>Spidey</i> is mRNA-to-DNA alignment program. \
                    <br>Binaries can be downloaded from http://www.ncbi.nlm.nih.gov/spidey/spideyexec.html");
     description+=tr("<br><br> Wheelan SJ, Church DM, Ostell JM.");
