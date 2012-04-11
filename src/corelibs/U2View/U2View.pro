@@ -95,6 +95,8 @@ HEADERS += src/WebWindow.h \
            src/ov_sequence/sequence_info/CharOccurTask.h \
            src/ov_sequence/sequence_info/DinuclOccurTask.h \
            src/ov_sequence/sequence_info/SequenceInfo.h \
+           src/ov_sequence/SaveGraphCutoffsDialogController.h \
+		   src/ov_sequence/SaveGraphCutoffsTask.h \
            src/ov_text/SimpleTextObjectView.h \
            src/ov_text/SimpleTextObjectViewTasks.h \
            src/phyltree/BranchSettingsDialog.h \
@@ -125,6 +127,7 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \
          src/ov_sequence/ui/EditAnnotationDialog.ui \
+         src/ov_sequence/ui/SaveGraphCutoffsDialog.ui \
          src/ov_sequence/ui/SearchQualifierDialog.ui \
          src/phyltree/ui/BranchSettingsDialog.ui \
          src/phyltree/ui/ButtonSettingsDialog.ui \
@@ -222,6 +225,8 @@ SOURCES += src/WebWindow.cpp \
            src/ov_sequence/Overview.cpp \
            src/ov_sequence/PanView.cpp \
            src/ov_sequence/PanViewRows.cpp \
+           src/ov_sequence/SaveGraphCutoffsDialogController.cpp \
+		   src/ov_sequence/SaveGraphCutoffsTask.cpp \
            src/ov_sequence/SearchQualifierDialog.cpp \
            src/ov_sequence/WindowStepSelectorWidget.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightSettings.cpp \

@@ -23,6 +23,7 @@
 #include "GSequenceGraphView.h"
 #include "GraphSettingsDialog.h"
 #include "WindowStepSelectorWidget.h"
+#include "SaveGraphCutoffsDialogController.h"
 
 #include <math.h>
 
@@ -139,6 +140,7 @@ int GSequenceGraphUtils::getNumSteps(const U2Region& range, int w, int s) {
 //drawer
 
 const QString GSequenceGraphDrawer::DEFAULT_COLOR(tr("Default color"));
+const int GSequenceGraphDrawer::UNKNOWN_VAL = -1;
 
 GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
 										   QMap<QString,QColor> colors) 
@@ -154,14 +156,11 @@ GSequenceGraphDrawer::~GSequenceGraphDrawer() {
     delete defFont;
 }
 
-//TODO:
-#define UNKNOWN_VAL -1 
-
 void GSequenceGraphDrawer::draw(QPainter& p, QList<GSequenceGraphData*> graphs, const QRect& rect) {
     
 	globalMin = 0;
 	globalMax = 0;
-	
+
 	foreach (GSequenceGraphData* graph, graphs) {
 		drawGraph(p, graph, rect);
 	}
@@ -289,21 +288,18 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
 				assert(dy <= graphHeight);
 				int y = rect.bottom() - 1 - dy;
 				int x = rect.left() + i;
-				if (lp) {
-					p.drawLine(prevX, prevY, x, prevY);
-					prevX = x;
+
+                assert(y > rect.top() && y < rect.bottom());
+                if (prevX!=-1){
+                    p.drawLine(prevX, prevY , x, prevY);
+                }
+
+                if (prevY != y && prevX != -1){ // common case for cutoffs
+					p.drawLine(x, prevY , x, y);
 				}
-				if (rp) {
-					p.drawLine(prevX,prevY,prevX,y);
-					prevY = y;
-				}
-				assert(y > rect.top() && y < rect.bottom());
-				if (prevX!=-1){
-					p.drawLine(prevX, prevY , x, y);
-				}
-				prevY = y;
-				prevX = x;
-				prevFY = (int) fy;
+                prevY = y;
+                prevX = x;
+                prevFY = (int) fy;
 			}
         }else{
             for (int i=0, n = points.firstPoints.size(); i < n; i++) {
@@ -401,6 +397,10 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
     points.firstPoints.fill(UNKNOWN_VAL);
     points.secondPoints.resize(numPoints);
     points.secondPoints.fill(UNKNOWN_VAL);
+    /*
+    points.cutoffPoints.resize(seqLen - win);
+    points.cutoffPoints.fill(UNKNOWN_VAL);
+    */
     min = UNKNOWN_VAL;
     max = UNKNOWN_VAL;
     if (vr.length < win) {
@@ -433,10 +433,12 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
             points = d->cachedData;
         } else {
             calculateWithFit(d, points, alignedFirst, alignedLast);
+            calculateCutoffPoints(d, points, alignedFirst, alignedLast);
         }
     } else {
         points.useIntervals = false;
         calculateWithExpand(d, points, alignedFirst, alignedLast);
+        calculateCutoffPoints(d, points, alignedFirst, alignedLast);
     }
 
     // Calculate min-max values, ignore unknown values
@@ -477,6 +479,11 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
     d->cachedS = step;
     d->alignedFC = alignedFirst;
     d->alignedLC = alignedLast;
+}
+
+void GSequenceGraphDrawer::calculateCutoffPoints(GSequenceGraphData* d, PairVector& points, int alignedFirst, int alignedLast){
+    points.cutoffPoints.clear();
+    d->ga->calculate(points.cutoffPoints, view->getSequenceObject(), U2Region(view->getVisibleRange()), &wdata);
 }
 
 void GSequenceGraphDrawer::calculateWithFit(GSequenceGraphData* d, PairVector& points, int alignedFirst, int alignedLast) {
@@ -576,8 +583,5 @@ void GSequenceGraphDrawer::showSettingsDialog() {
 		view->update();
 	}
 }
-
-
-
 
 } // namespace

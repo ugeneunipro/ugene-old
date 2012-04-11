@@ -69,6 +69,7 @@ public:
 struct PairVector {
     QVector<float>  firstPoints;  //max if use both
     QVector<float>  secondPoints;
+    QVector<float>  cutoffPoints;
     bool useIntervals;
 };
 
@@ -85,11 +86,15 @@ public:
 
     virtual void showSettingsDialog();
     
+    float getGlobalMin(){return globalMin;};
+    float getGlobalMax(){return globalMax;};
+    
 	const GSequenceGraphWindowData& getWindowData() {return wdata;}
     const GSequenceGraphMinMaxCutOffData& getCutOffData() {return commdata;}
 	const ColorMap& getColors() {return lineColors;}
 	
 	static const QString DEFAULT_COLOR;
+    static const int UNKNOWN_VAL;
 
 protected:
 	void drawGraph(QPainter& p, GSequenceGraphData* graph, const QRect& rect);
@@ -101,6 +106,8 @@ protected:
     
     // calculates points (< visual area size) and expands points to fill all visual area size
     void calculateWithExpand(GSequenceGraphData* d, PairVector& points, int alignedStart, int alignedEnd);
+
+    void calculateCutoffPoints(GSequenceGraphData* d, PairVector& points, int alignedFirst, int alignedLast);
 protected:
     GSequenceGraphView*             view;
     QFont*                          defFont;

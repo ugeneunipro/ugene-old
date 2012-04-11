@@ -60,6 +60,7 @@ protected:
 
 private slots:
     void sl_onShowVisualProperties(bool);
+    void sl_onSaveGraphCutoffs(bool);
 
 private:
     GSequenceLineView*          baseView;
@@ -67,6 +68,7 @@ private:
     QList<GSequenceGraphData*>  graphs;
     GSequenceGraphDrawer*       graphDrawer;
     QAction*                    visualPropertiesAction;
+    QAction*                    saveGraphCutoffsAction;
 };
 
 

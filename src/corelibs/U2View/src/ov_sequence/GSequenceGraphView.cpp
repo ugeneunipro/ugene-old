@@ -23,13 +23,22 @@
 
 #include "ADVSequenceObjectContext.h"
 #include "ADVSingleSequenceWidget.h"
+#include "SaveGraphCutoffsDialogController.h"
 
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/AppContext.h>
+
+#include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/CreateAnnotationDialog.h>
+
+#include <U2View/ADVAnnotationCreation.h>
 
 #include <U2Gui/GScrollBar.h>
 
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QMessageBox>
 
 
 namespace U2 {
@@ -41,11 +50,16 @@ GSequenceGraphView::GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx
     assert(baseView);
 
     
-    visualPropertiesAction = new QAction(tr("Graph settings"), this);
+    visualPropertiesAction = new QAction(tr("Graph settings..."), this);
     visualPropertiesAction->setObjectName("visual_properties_action");
 
     connect(visualPropertiesAction, SIGNAL(triggered(bool)), SLOT(sl_onShowVisualProperties(bool)));
 
+    saveGraphCutoffsAction = new QAction(tr("Save cutoffs of a graph as annotations..."), this);
+    saveGraphCutoffsAction->setObjectName("save_cutoffs_as_annotation");
+
+    connect(saveGraphCutoffsAction, SIGNAL(triggered(bool)), SLOT(sl_onSaveGraphCutoffs(bool)));
+    
     scrollBar->setDisabled(true);
     renderArea = new GSequenceGraphViewRA(this);
 
@@ -139,11 +153,20 @@ void GSequenceGraphView::addActionsToGraphMenu(QMenu* graphMenu)
 {
     // Add "Graph Settings" action
     graphMenu->addAction(visualPropertiesAction);
+    if(graphs.size() == 1){
+        graphMenu->addAction(saveGraphCutoffsAction);
+    }
 }
 
 
 void GSequenceGraphView::sl_onShowVisualProperties(bool) {
     graphDrawer->showSettingsDialog();
+}
+
+
+void GSequenceGraphView::sl_onSaveGraphCutoffs( bool ){
+    SaveGraphCutoffsDialogController d(graphDrawer, graphs.first(), this, ctx);
+    d.exec();
 }
 
 
