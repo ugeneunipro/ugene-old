@@ -83,7 +83,7 @@ private:
 	GObjectViewState* findStateToOpen() const;
 	
 	void addViewWindow(GObjectViewWindow*);
-	void addState(GObjectViewState*);
+	OVTStateItem* addState(GObjectViewState*);
 	void removeState(GObjectViewState* s);
 	
 
