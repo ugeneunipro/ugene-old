@@ -95,9 +95,13 @@ void GTTreeWidget::scrollTo(U2OpStatus &os, const QString &itemName)
     QTreeWidget *treeWidget = GTUtilsProjectTreeView::getTreeWidget(os);
     GT_CHECK(treeWidget != NULL, "QTreeWidget not found");
 
-    while (! treeWidget->rect().contains(GTUtilsProjectTreeView::getTreeViewItemLocalPosition(os, itemName))) {
+    QRect treeWidgetRect = treeWidget->rect();
+    QPoint localItemPosition = GTUtilsProjectTreeView::getItemLocalCenter(os, itemName);
+
+    while (! treeWidgetRect.contains(localItemPosition)) {
         GTMouseDriver::scroll(os, -1);
         GTGlobals::sleep(200);
+        localItemPosition = GTUtilsProjectTreeView::getItemLocalCenter(os, itemName);
     }
 }
 #undef GT_METHOD_NAME

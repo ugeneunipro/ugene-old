@@ -172,8 +172,44 @@ public:
     private:
         U2OpStatus &os;
         QString path, name;
-        GTUtilsDialog::ExportSequenceAsAlignmentFiller::FormatToUse format;
-        QMap<GTUtilsDialog::ExportSequenceAsAlignmentFiller::FormatToUse, QString> comboBoxItems;
+        FormatToUse format;
+        QMap<FormatToUse, QString> comboBoxItems;
+        bool addToProject;
+        GTGlobals::UseMethod useMethod;
+    };
+
+    class exportSequenceOfSelectedAnnotationsFiller : public Runnable {
+    public:
+        enum FormatToUse {Fasta, Fastaq, Gff, Genbank};
+        enum MergeOptions {SaveAsSeparate, Merge};
+        exportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength,
+                                                  bool _addDocToProject = true, GTGlobals::UseMethod method = GTGlobals::UseMouse):
+            os(_os), format(_format), gapLength(_gapLength), addToProject(_addDocToProject), useMethod(method), options(_options)
+            {
+                QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
+                if (__path.at(__path.count() - 1) != '/') {
+                    __path += '/';
+                }
+                path = __path;
+
+                comboBoxItems[Fasta] = "FASTA";
+                comboBoxItems[Fastaq] = "FASTAQ";
+                comboBoxItems[Gff] = "GFF";
+                comboBoxItems[Genbank] = "Genbank";
+
+                mergeRadioButtons[SaveAsSeparate] = "separateButton";
+                mergeRadioButtons[Merge] = "mergeButton";
+            }
+        virtual void run();
+
+    private:
+        U2OpStatus &os;
+        QString path;
+        int gapLength;
+        FormatToUse format;
+        MergeOptions options;
+        QMap<FormatToUse, QString> comboBoxItems;
+        QMap<MergeOptions, QString> mergeRadioButtons;
         bool addToProject;
         GTGlobals::UseMethod useMethod;
     };

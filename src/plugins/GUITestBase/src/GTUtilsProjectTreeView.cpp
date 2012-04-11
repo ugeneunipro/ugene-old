@@ -92,10 +92,12 @@ QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, const QString &item
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getTreeViewItemLocalPosition"
-QPoint GTUtilsProjectTreeView::getTreeViewItemLocalPosition(U2OpStatus &os, const QString &itemName) {
+#define GT_METHOD_NAME "getItemLocalCenter"
+QPoint GTUtilsProjectTreeView::getItemLocalCenter(U2OpStatus &os, const QString &itemName) {
 
-    QRect r = GTTreeWidget::getItemRect(os, GTUtilsTaskTreeView::getTreeWidget(os), GTUtilsTaskTreeView::getTreeWidgetItem(os, itemName));
+    QTreeWidget *w = GTUtilsProjectTreeView::getTreeWidget(os);
+    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, itemName);
+    QRect r = GTTreeWidget::getItemRect(os, w, item);
     return r.center();
 }
 #undef GT_METHOD_NAME
@@ -131,7 +133,7 @@ QString GTUtilsProjectTreeView::getProjectTreeItemName(ProjViewItem* projViewIte
     return "";
 }
 
-#define GT_METHOD_NAME "getTreeWidgetItem"
+#define GT_METHOD_NAME "findItem"
 QTreeWidgetItem* GTUtilsProjectTreeView::findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions &options) {
 
     GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", NULL);
@@ -139,10 +141,41 @@ QTreeWidgetItem* GTUtilsProjectTreeView::findItem(U2OpStatus &os, const QString 
     QTreeWidget *treeWidget = getTreeWidget(os);
     GT_CHECK_RESULT(treeWidget != NULL, "Tree widget is NULL", NULL);
 
+    return findItem(os, treeWidget, itemName, options);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findItem"
+QTreeWidgetItem* GTUtilsProjectTreeView::findItem(U2OpStatus &os, const QTreeWidget *treeWidget, const QString &itemName,
+                                                  const GTGlobals::FindOptions &options) {
+
+    GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", NULL);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget is NULL", NULL);
+
     QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
     foreach (QTreeWidgetItem* item, treeItems) {
         QString treeItemName = getProjectTreeItemName((ProjViewItem*)item);
         if (treeItemName == itemName) {
+            return item;
+        }
+    }
+    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", NULL);
+
+    return NULL;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findItemByText("
+QTreeWidgetItem* GTUtilsProjectTreeView::findItemByText(U2OpStatus &os, const QTreeWidget *treeWidget, const QString &itemName,
+                                                  const GTGlobals::FindOptions &options) {
+
+    GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", NULL);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget is NULL", NULL);
+
+    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
+    foreach (QTreeWidgetItem* item, treeItems) {
+        qDebug() << "Found = " << itemName << " has = " << item->text(0) ;
+        if (item->text(0) == itemName) {
             return item;
         }
     }

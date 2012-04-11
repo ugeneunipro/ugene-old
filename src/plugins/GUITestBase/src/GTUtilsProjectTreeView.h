@@ -41,10 +41,14 @@ public:
     // returns center or item's rect
     // fails if the item wasn't found
     static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
-    static QPoint getTreeViewItemLocalPosition(U2OpStatus &os, const QString &itemName);
+    static QPoint getItemLocalCenter(U2OpStatus &os, const QString &itemName);
 
     static QTreeWidget* getTreeWidget(U2OpStatus &os);
     static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QTreeWidgetItem* findItem(U2OpStatus &os, const QTreeWidget *treeWidget, const QString &itemName,
+                                     const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QTreeWidgetItem* findItemByText(U2OpStatus &os, const QTreeWidget *treeWidget, const QString &itemName,
+                                           const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static QString getSelectedItem(U2OpStatus &os);
 
     static QString getProjectTreeItemName(ProjViewItem* projViewItem);

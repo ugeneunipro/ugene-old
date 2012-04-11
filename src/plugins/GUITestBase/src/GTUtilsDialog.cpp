@@ -33,6 +33,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QRadioButton>
 #include <QtGui/QCheckBox>
+#include <QtGui/QSpinBox>
 
 namespace U2 {
 
@@ -316,6 +317,113 @@ void GTUtilsDialog::ExportSequenceAsAlignmentFiller::run()
     }
 
     QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("okButton"));
+    GT_CHECK(exportButton != NULL, "Export button not found");
+
+    GTWidget::click(os, exportButton);
+}
+
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller::run()
+{
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+
+    QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+    GT_CHECK(lineEdit != NULL, "line edit not found");
+
+    GTLineEdit::setText(os, lineEdit, path);
+
+    QComboBox *comboBox = dialog->findChild<QComboBox*>();
+    GT_CHECK(comboBox != NULL, "ComboBox not found");
+
+    int index = -1;
+    for (int i = 0; i < comboBox->count(); i++ ) {
+        if (comboBox->itemText(i) == comboBoxItems[format]) {
+            index = i;
+            break;
+        }
+    }
+
+    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+
+    GTComboBox::setCurrentIndex(os, comboBox, index);
+
+    QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjectBox"));
+    GT_CHECK(checkButton != NULL, "Check box not found");
+
+    if ((addToProject && !checkButton->isChecked()) ||
+            !addToProject && checkButton->isChecked()) {
+        switch(useMethod) {
+        case GTGlobals::UseMouse:
+            GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkButton->rect().topLeft()));
+            GTMouseDriver::click(os);
+            break;
+        case GTGlobals::UseKey:
+            GTWidget::setFocus(os, checkButton);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+            break;
+        }
+    }
+
+    QRadioButton *mergeButton =  dialog->findChild<QRadioButton*>(mergeRadioButtons[options]);
+    GT_CHECK(mergeButton != NULL, "Radio button " + mergeRadioButtons[options] + " not found");
+
+    switch(useMethod) {
+    case GTGlobals::UseMouse:
+        GTMouseDriver::moveTo(os, mergeButton->mapToGlobal(mergeButton->rect().topLeft()));
+        GTMouseDriver::click(os);
+        break;
+    case GTGlobals::UseKey:
+        GTWidget::setFocus(os, mergeButton);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        break;
+    }
+
+    QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>("mergeSpinBox");
+    GT_CHECK(mergeSpinBox != NULL, "SpinBox not found");
+
+    GTGlobals::sleep(1000);
+    QPoint arrowPos;
+    QRect spinBoxRect;
+    int key;
+
+    if (mergeSpinBox->value() != gapLength) {
+        switch(useMethod) {
+        case GTGlobals::UseMouse:
+            spinBoxRect = mergeSpinBox->rect();
+            if (gapLength > mergeSpinBox->value()) {
+                arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() / 4); // -5 it's needed that area under cursor was clickable
+            } else {
+                arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() * 3 / 4);
+            }
+
+            GTMouseDriver::moveTo(os, mergeSpinBox->mapToGlobal(arrowPos));
+            while (mergeSpinBox->value() != gapLength) {
+                GTMouseDriver::click(os);
+                GTGlobals::sleep(100);
+            }
+            break;
+
+        case GTGlobals::UseKey:
+            if (gapLength > mergeSpinBox->value()) {
+                key = GTKeyboardDriver::key["up"];
+            } else {
+                key = GTKeyboardDriver::key["down"];
+            }
+
+            GTWidget::setFocus(os, mergeSpinBox);
+            while (mergeSpinBox->value() != gapLength) {
+                GTKeyboardDriver::keyClick(os, key);
+                GTGlobals::sleep(100);
+            }
+        }
+    }
+
+    QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
     GT_CHECK(exportButton != NULL, "Export button not found");
 
     GTWidget::click(os, exportButton);
