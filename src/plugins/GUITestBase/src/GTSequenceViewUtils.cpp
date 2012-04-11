@@ -20,8 +20,17 @@
  */
 
 #include "GTSequenceViewUtils.h"
+#include "api/GTGlobals.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
+#include <QtGui/QMainWindow>
+#include "U2Gui/MainWindow.h"
+#include "GTUtilsDialog.h"
+#include <U2Core/AppContext.h>
+#include <U2View/DetView.h>
+#include <QClipboard>
+#include <QtGui/QApplication>
 
-#include <QDebug>
 namespace U2 {
 
 #define GT_CLASS_NAME "GTSequenceViewUtils"
@@ -29,7 +38,23 @@ namespace U2 {
 
 QString GTSequenceViewUtils::getSequenceAsString(U2OpStatus &os)
 {
-    return QString();
+    MainWindow* mw = AppContext::getMainWindow();
+    GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
+
+    MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
+
+    GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
+    GTMouseDriver::click(os);
+
+    GTUtilsDialog::selectSequenceDialogFiller filler(os);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(1000);
+    return QApplication::clipboard()->text();
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
