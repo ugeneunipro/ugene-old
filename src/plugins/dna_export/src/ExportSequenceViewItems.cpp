@@ -102,6 +102,7 @@ ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     connect(sequence2SequenceAction, SIGNAL(triggered()), SLOT(sl_saveSelectedSequences()));
 
     annotations2SequenceAction = new QAction(tr("Export sequence of selected annotations..."), this);
+    annotations2SequenceAction->setObjectName("action_export_sequence_of_selected_annotations");
     connect(annotations2SequenceAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotationsSequence()));
 
     annotations2CSVAction = new QAction(tr("Export annotations..."), this);
