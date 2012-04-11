@@ -3,43 +3,55 @@
 
 #include <unittest.h>
 #include <U2Core/U2OpStatusUtils.h>
-#include <QMetaType>
+
 namespace U2 {
 
-class LocationParserTestData {
-public:
-	void init() {};
-protected:
-	static bool registerTest;
-};
-
-class LocationParserTestData_locationParser : public UnitTest {
-public: 
-	void Test();
-};
-
-class LocationParserTestData_locationParserInvalid : public UnitTest {
-	void Test();
-};
-
-class LocationParserTestData_hugeLocationParser : public UnitTest {
-	void Test();
-};
-
-class LocationParserTestData_buildLocationString : public UnitTest {
-	void Test();
-};
-
-class LocationParserTestData_buildLocationStringInvalid : public UnitTest {
-	void Test();
-};
+DECLARE_TEST(LocationParserTestData, locationParser);
+DECLARE_TEST(LocationParserTestData, locationParserEmpty);
+DECLARE_TEST(LocationParserTestData, locationParserCompare);
+DECLARE_TEST(LocationParserTestData, locationParserDuplicate);
+DECLARE_TEST(LocationParserTestData, locationParserInvalid);
+DECLARE_TEST(LocationParserTestData, hugeLocationParser);
+DECLARE_TEST(LocationParserTestData, locationParserComplement);
+DECLARE_TEST(LocationParserTestData, locationParserComplementInvalid);
+DECLARE_TEST(LocationParserTestData, buildLocationString);
+DECLARE_TEST(LocationParserTestData, buildLocationStringDuplicate);
+DECLARE_TEST(LocationParserTestData, buildLocationStringInvalid);
+DECLARE_TEST(LocationParserTestData, locationOperatorJoin);
+DECLARE_TEST(LocationParserTestData, locationOperatorJoinInvalid);
+DECLARE_TEST(LocationParserTestData, locationOperatorOrder);
+DECLARE_TEST(LocationParserTestData, locationOperatorOrderInvalid);
+DECLARE_TEST(LocationParserTestData, locationParserParenthesis);
+DECLARE_TEST(LocationParserTestData, locationParserParenthesisInvalid);
+DECLARE_TEST(LocationParserTestData, locationParserLeftParenthesisMissed);
+DECLARE_TEST(LocationParserTestData, locationParserRightParenthesisMissed);
+DECLARE_TEST(LocationParserTestData, locationParserPeriodInvalid);
+DECLARE_TEST(LocationParserTestData, locationParserDoublePeriodInvalid);
+DECLARE_TEST(LocationParserTestData, locationParserCommaInvalid);
 
 }
 
-Q_DECLARE_METATYPE(U2::LocationParserTestData_locationParser);
-Q_DECLARE_METATYPE(U2::LocationParserTestData_locationParserInvalid);
-Q_DECLARE_METATYPE(U2::LocationParserTestData_hugeLocationParser);
-Q_DECLARE_METATYPE(U2::LocationParserTestData_buildLocationString);
-Q_DECLARE_METATYPE(U2::LocationParserTestData_buildLocationStringInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationParser);
+DECLARE_METATYPE(LocationParserTestData, locationParserEmpty);
+DECLARE_METATYPE(LocationParserTestData, locationParserCompare);
+DECLARE_METATYPE(LocationParserTestData, locationParserDuplicate);
+DECLARE_METATYPE(LocationParserTestData, locationParserInvalid);
+DECLARE_METATYPE(LocationParserTestData, hugeLocationParser);
+DECLARE_METATYPE(LocationParserTestData, locationParserComplement);
+DECLARE_METATYPE(LocationParserTestData, locationParserComplementInvalid);
+DECLARE_METATYPE(LocationParserTestData, buildLocationString);
+DECLARE_METATYPE(LocationParserTestData, buildLocationStringDuplicate);
+DECLARE_METATYPE(LocationParserTestData, buildLocationStringInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationOperatorJoin);
+DECLARE_METATYPE(LocationParserTestData, locationOperatorJoinInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationOperatorOrder);
+DECLARE_METATYPE(LocationParserTestData, locationOperatorOrderInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationParserParenthesis);
+DECLARE_METATYPE(LocationParserTestData, locationParserParenthesisInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationParserLeftParenthesisMissed);
+DECLARE_METATYPE(LocationParserTestData, locationParserRightParenthesisMissed);
+DECLARE_METATYPE(LocationParserTestData, locationParserPeriodInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationParserDoublePeriodInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationParserCommaInvalid);
 
 #endif

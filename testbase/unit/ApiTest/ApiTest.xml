@@ -52,10 +52,25 @@ AttributeDbiUnitTests
 + ByteArrayAttribute
 LocationParserTestData
 + locationParser
++ locationParserEmpty
++ locationParserCompare
++ locationParserDuplicate
 + locationParserInvalid
-+ hugelocationParser
++ locationParserComplement
++ locationParserComplementInvalid
+- hugeLocationParser
 + buildLocationString
++ buildLocationStringDuplicate
 - buildLocationStringInvalid
-
-
++ locationOperatorJoin
++ locationOperatorJoinInvalid
++ locationOperatorOrder
++ locationOperatorOrderInvalid
++ locationParserParenthesis
++ locationParserParenthesisInvalid
+- locationParserLeftParenthesisMissed
++ locationParserRightParenthesisMissed
++ locationParserPeriodInvalid
++ locationParserDoublePeriodInvalid
++ locationParserCommaInvalid
 </unittest>
