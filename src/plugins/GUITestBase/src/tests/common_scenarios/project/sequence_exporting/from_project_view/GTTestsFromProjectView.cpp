@@ -53,15 +53,16 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
         GTFileDialog::openFile(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa");
     }
 
-    GTTreeWidget::doubleClickOnItem(os, "export1.fa");
-    GTTreeWidget::scrollTo(os, "ru131");
+//    GTTreeWidget::doubleClickOnItem(os, "export1.fa");
+    GTUtilsProjectTreeView::scrollTo(os, "ru131");
 
     GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ""
                                              << "", GTGlobals::UseMouse);
 
     GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
-    GTTreeWidget::doubleClickOnItem(os, "ru131");
-    GTGlobals::sleep(200);
+//    GTTreeWidget::doubleClickOnItem(os, "ru131");
+
+    GTGlobals::sleep(200000000);
 
     os.setError("Test is not completed");
     ///TODO: check [s] ru131 has '-' symbols at the end of sequence
@@ -69,6 +70,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(10000000);
     os.setError("Test is not completed");
 }
 
@@ -97,7 +99,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     GTTreeWidget::expandTo(os, w, item);
     GTGlobals::sleep(100);
-    GTTreeWidget::doubleClickOnItem(os, "NC_001363 features");
+//    GTTreeWidget::doubleClickOnItem(os, "NC_001363 features");
     GTGlobals::sleep(1000);
 
     GObjectViewWindow *activeWindow = qobject_cast<GObjectViewWindow*> (GTUtilsMdi::activeWindow(os));
