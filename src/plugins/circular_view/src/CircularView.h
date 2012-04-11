@@ -96,8 +96,6 @@ protected slots:
     virtual void sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation*>& added, const QList<Annotation*>& removed);
     virtual void sl_onDNASelectionChanged(LRegionsSelection* thiz, const QVector<U2Region>& added, const QVector<U2Region>& removed);
 
-    void sl_sequenceWidgetRemoved(ADVSequenceWidget*);
-
 protected:
     void adaptSizes();
     void updateZoomActions();

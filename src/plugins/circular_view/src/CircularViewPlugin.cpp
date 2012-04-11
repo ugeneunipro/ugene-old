@@ -30,6 +30,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Core/DocumentSelection.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSingleSequenceWidget.h>
@@ -78,6 +79,8 @@ void CircularViewContext::initViewContext(GObjectView* v) {
         sl_sequenceWidgetAdded(w);
     }
     connect(av, SIGNAL(si_sequenceWidgetAdded(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetAdded(ADVSequenceWidget*)));
+    connect (av, SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
+
 }
 
 #define MIN_LENGTH_TO_AUTO_SHOW (1000*1000)
@@ -107,6 +110,24 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     }
 
 }
+
+void CircularViewContext::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
+    
+    ADVSingleSequenceWidget* sw = qobject_cast<ADVSingleSequenceWidget*>(w);
+    CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
+    SAFE_POINT(a != NULL, "Circular view action is not found", );
+    CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), false);
+    if(splitter != NULL) {
+        splitter->removeView(a->view,a->rmapWidget);
+        delete a->view;
+        delete a->rmapWidget;
+        if(splitter->isEmpty()) {
+            removeCircularView(sw->getAnnotatedDNAView());
+        }
+    }
+
+}
+
 
 CircularViewSplitter* CircularViewContext::getView(GObjectView* view, bool create) {
 
@@ -179,6 +200,7 @@ void CircularViewContext::sl_showCircular() {
         CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), true);
         a->view = new CircularView(sw, sw->getSequenceContext());
         a->rmapWidget=new RestrctionMapWidget(sw->getSequenceContext(),splitter);
+        
         splitter->addView(a->view,a->rmapWidget);
         sw->getAnnotatedDNAView()->insertWidgetIntoSplitter(splitter);
         splitter->adaptSize();

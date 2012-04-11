@@ -59,7 +59,6 @@ const int CircularView::graduation = 16;
 CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx)
 : GSequenceLineViewAnnotated(p, ctx), clockwise(true), holdSelection(false)
 {
-    connect (ctx->getAnnotatedDNAView(), SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
     QSet<AnnotationTableObject*> anns = ctx->getAnnotationObjects(true);
     foreach(AnnotationTableObject* obj, anns ) {
         registerAnnotations(obj->getAnnotations());
@@ -91,13 +90,6 @@ void CircularView::updateMinHeight() {
     setMinimumHeight(minH);
 }
 
-void CircularView::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
-    foreach (ADVSequenceObjectContext *wctx, w->getSequenceContexts()) {
-        if (ctx == wctx) {
-            close();
-        }
-    }
-}
 
 void CircularView::mousePressEvent(QMouseEvent * e) {
     GSequenceLineViewAnnotated::mousePressEvent(e);

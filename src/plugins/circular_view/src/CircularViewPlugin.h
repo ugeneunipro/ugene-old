@@ -53,6 +53,7 @@ public:
 protected slots:
     void sl_showCircular();
     void sl_sequenceWidgetAdded(ADVSequenceWidget*);
+    void sl_sequenceWidgetRemoved(ADVSequenceWidget* w);
     
 protected:
     virtual void initViewContext(GObjectView* view);
