@@ -62,20 +62,9 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTMouseDriver::doubleClick(os);
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 
-    ProjViewItem *item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
-    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
-    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is not locked");
-
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
-    GTUtilsDialog::PopupChooser unlockPopupChooser(os, QStringList() << ACTION_DOCUMENT__UNLOCK);
-    GTUtilsDialog::preWaitForDialog(os, &unlockPopupChooser, GUIDialogWaiter::Popup);
-    GTMouseDriver::click(os, Qt::RightButton);
-
-    item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
+    ProjViewItem* item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
     CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
     CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->documentIcon.cacheKey(), "Icon is locked");
-
-    GTGlobals::sleep(1000);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTUtilsDialog::PopupChooser lockPopupChooser(os, QStringList() << ACTION_DOCUMENT__LOCK);
