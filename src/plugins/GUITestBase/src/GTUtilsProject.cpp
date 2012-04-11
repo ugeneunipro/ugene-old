@@ -137,7 +137,7 @@ void GTUtilsProject::closeProject(U2OpStatus &os, const CloseProjectSettings& se
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTUtilsDialog::MessageBoxDialogFiller filler(os, settings.saveOnCloseButton);
-    GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Popup, false);
+    GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Modal, false);
 }
 
 #define GT_METHOD_NAME "checkProject"
