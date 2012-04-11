@@ -43,6 +43,10 @@ public:
     static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
     static QPoint getItemLocalCenter(U2OpStatus &os, const QString &itemName);
 
+
+    // if item is not visible, scroll until item is not visible
+    static void scrollTo(U2OpStatus &os, const QString &itemName);
+
     static QTreeWidget* getTreeWidget(U2OpStatus &os);
     static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static QTreeWidgetItem* findItem(U2OpStatus &os, const QTreeWidget *treeWidget, const QString &itemName,

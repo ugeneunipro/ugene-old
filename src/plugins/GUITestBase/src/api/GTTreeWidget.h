@@ -38,10 +38,6 @@ public:
     // fails if item is NULL or can't expand parent item
     static void expandTo(U2OpStatus &os, QTreeWidget* treeWidget, QTreeWidgetItem* item);
 
-    // if item is not visible, scroll until item is not visible
-    static void scrollTo(U2OpStatus &os, const QString &itemName);
-    static void doubleClickOnItem(U2OpStatus &os, const QString &itemName);
-
     // gets all items under root recursively and returns a list of them
     static QList<QTreeWidgetItem*> getItems(QTreeWidgetItem* root);
 };

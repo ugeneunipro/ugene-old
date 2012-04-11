@@ -102,6 +102,23 @@ QPoint GTUtilsProjectTreeView::getItemLocalCenter(U2OpStatus &os, const QString 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "scrollTo"
+void GTUtilsProjectTreeView::scrollTo(U2OpStatus &os, const QString &itemName)
+{
+    QTreeWidget *treeWidget = GTUtilsProjectTreeView::getTreeWidget(os);
+    GT_CHECK(treeWidget != NULL, "QTreeWidget not found");
+
+    QRect treeWidgetRect = treeWidget->rect();
+    QPoint localItemPosition = GTUtilsProjectTreeView::getItemLocalCenter(os, itemName);
+
+    while (! treeWidgetRect.contains(localItemPosition)) {
+        GTMouseDriver::scroll(os, -1);
+        GTGlobals::sleep(200);
+        localItemPosition = GTUtilsProjectTreeView::getItemLocalCenter(os, itemName);
+    }
+}
+#undef GT_METHOD_NAME
+
 QTreeWidget* GTUtilsProjectTreeView::getTreeWidget(U2OpStatus &os) {
 
     openView(os);
