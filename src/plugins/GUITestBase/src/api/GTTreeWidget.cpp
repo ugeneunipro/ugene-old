@@ -23,31 +23,33 @@
 #include "GTUtilsProjectTreeView.h"
 #include "api/GTMouseDriver.h"
 #include <QtGui/QTreeWidget>
+#include <QtGui/QHeaderView>
 
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsTreeView"
 
-#define GT_METHOD_NAME "expandTo"
-void GTTreeWidget::expandTo(U2OpStatus &os, QTreeWidget *treeWidget, QTreeWidgetItem* item) {
+#define GT_METHOD_NAME "expand"
+void GTTreeWidget::expand(U2OpStatus &os, QTreeWidgetItem* item) {
 
-    GT_CHECK(item != NULL, "item is NULL");
-    GT_CHECK(treeWidget != NULL, "treeWidget is NULL");
-
-    QTreeWidgetItem* parentItem = item->parent();
-    if (!parentItem) {
+    if (item == NULL) {
         return;
     }
+    expand(os, item->parent());
+    GT_CHECK(item->isHidden() == false, "parent item is hidden");
 
-    expandTo(os, treeWidget, parentItem);
-    GT_CHECK(parentItem->isHidden() == false, "parent item is hidden");
+    QTreeWidget *treeWidget = item->treeWidget();
+    GT_CHECK(item->isHidden() == false, "parent item is hidden");
 
-    QRect parentItemRect = treeWidget->visualItemRect(parentItem);
+    QRect itemRect = treeWidget->visualItemRect(item);
+    if (!item->isExpanded()) {
+        QPoint p = QPoint(itemRect.left(), itemRect.center().y());
 
-    if (!parentItem->isExpanded()) {
-        QPoint arrowPoint = QPoint(10, parentItemRect.center().y());
-        QPoint p = treeWidget->mapToGlobal(arrowPoint);
-        GTMouseDriver::moveTo(os, p);
+        QHeaderView *headerView = treeWidget->header();
+        int headerHeight = headerView->height();
+        p.setY(p.y() + headerHeight);
+
+        GTMouseDriver::moveTo(os, treeWidget->mapToGlobal(p));
         GTMouseDriver::click(os);
         GTGlobals::sleep(500);
     }
@@ -55,18 +57,36 @@ void GTTreeWidget::expandTo(U2OpStatus &os, QTreeWidget *treeWidget, QTreeWidget
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemRect"
-QRect GTTreeWidget::getItemRect(U2OpStatus &os, QTreeWidget* treeWidget, QTreeWidgetItem* item) {
+QRect GTTreeWidget::getItemRect(U2OpStatus &os, QTreeWidgetItem* item) {
 
-    GT_CHECK_RESULT(treeWidget != NULL, "treeWidget is NULL", QRect());
     GT_CHECK_RESULT(item != NULL, "treeWidgetItem is NULL", QRect());
 
-    expandTo(os, treeWidget, item);
+    QTreeWidget *treeWidget = item->treeWidget();
+    GT_CHECK_RESULT(treeWidget != NULL, "treeWidget is NULL", QRect());
+
+    expand(os, item);
     GT_CHECK_RESULT(item->isHidden() == false, "item is hidden", QRect());
 
     return treeWidget->visualItemRect(item);
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getItemCenter"
+QPoint GTTreeWidget::getItemCenter(U2OpStatus &os, QTreeWidgetItem* item) {
+
+    GT_CHECK_RESULT(item != NULL, "item is NULL", QPoint());
+
+    QTreeWidget *treeWidget = item->treeWidget();
+    GT_CHECK_RESULT(treeWidget != NULL, "treeWidget is NULL", QPoint());
+
+    QPoint p = getItemRect(os, item).center();
+    QHeaderView *headerView = treeWidget->header();
+    int headerHeight = headerView->height();
+    p.setY(p.y() + headerHeight);
+
+    return treeWidget->mapToGlobal(p);
+}
+#undef GT_METHOD_NAME
 
 QList<QTreeWidgetItem*> GTTreeWidget::getItems(QTreeWidgetItem* root) {
 

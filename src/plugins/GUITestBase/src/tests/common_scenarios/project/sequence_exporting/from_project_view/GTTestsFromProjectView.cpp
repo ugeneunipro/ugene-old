@@ -98,7 +98,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     QTreeWidget *w = GTUtilsProjectTreeView::getTreeWidget(os);
     QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "NC_001363 features");
 
-    GTTreeWidget::expandTo(os, w, item);
+    GTTreeWidget::expand(os, item);
     GTGlobals::sleep(100);
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features");
     GTMouseDriver::moveTo(os, itemPos);

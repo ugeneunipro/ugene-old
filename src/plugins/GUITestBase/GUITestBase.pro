@@ -9,6 +9,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsMdi.h \
             src/GTUtilsProject.h \
             src/GTUtilsProjectTreeView.h \
+            src/GTUtilsAnnotationsTreeView.h \
             src/GTUtilsToolTip.h \
             src/GTUtilsTaskTreeView.h \
             src/tests/GUIInitialChecks.h \
@@ -46,6 +47,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsMdi.cpp \
             src/GTUtilsProject.cpp \
             src/GTUtilsProjectTreeView.cpp \
+            src/GTUtilsAnnotationsTreeView.cpp \
             src/GTUtilsToolTip.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/tests/GUIInitialChecks.cpp \

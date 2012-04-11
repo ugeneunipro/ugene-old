@@ -84,7 +84,7 @@ void GTUtilsProjectTreeView::rename(U2OpStatus &os, const QString &itemName, con
 QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, const QString &itemName) {
 
     QTreeWidget *treeWidget = getTreeWidget(os);
-    QRect r = GTTreeWidget::getItemRect(os, treeWidget, findItem(os, itemName));
+    QRect r = GTTreeWidget::getItemRect(os, findItem(os, itemName));
 
     GT_CHECK_RESULT(treeWidget != NULL, "treeWidget " + itemName + " is NULL", QPoint());
 
@@ -95,9 +95,8 @@ QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, const QString &item
 #define GT_METHOD_NAME "getItemLocalCenter"
 QPoint GTUtilsProjectTreeView::getItemLocalCenter(U2OpStatus &os, const QString &itemName) {
 
-    QTreeWidget *w = GTUtilsProjectTreeView::getTreeWidget(os);
     QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, itemName);
-    QRect r = GTTreeWidget::getItemRect(os, w, item);
+    QRect r = GTTreeWidget::getItemRect(os, item);
     return r.center();
 }
 #undef GT_METHOD_NAME
@@ -123,7 +122,7 @@ QTreeWidget* GTUtilsProjectTreeView::getTreeWidget(U2OpStatus &os) {
 
     openView(os);
 
-    QTreeWidget *treeWidget = static_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName));
+    QTreeWidget *treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName));
     return treeWidget;
 }
 

@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_TREE_WIDGET_H_
-#define _U2_GT_TREE_WIDGET_H_
+#ifndef _U2_GUI_ANNOTATIONS_TREE_VIEW_UTILS_H_
+#define _U2_GUI_ANNOTATIONS_TREE_VIEW_UTILS_H_
 
 #include "api/GTGlobals.h"
 
@@ -29,19 +29,21 @@ class QTreeWidgetItem;
 
 namespace U2 {
 
-class GTTreeWidget {
+class AVItem;
+class GTUtilsAnnotationsTreeView {
 public:
-    // expands treeWidget to the item and returns item's rect
-    static QRect getItemRect(U2OpStatus &os, QTreeWidgetItem* item);
+    static QTreeWidget* getTreeWidget(U2OpStatus &os);
 
-    static QPoint getItemCenter(U2OpStatus &os, QTreeWidgetItem* item);
+    // returns center or item's rect
+    // fails if the item wasn't found
+    static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
 
-    // recursively expands the tree making the given item visible
-    // fails if item is NULL, item is hidden or item wasn't expanded
-    static void expand(U2OpStatus &os, QTreeWidgetItem* item);
+    static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QString getSelectedItem(U2OpStatus &os);
 
-    // gets all items under root recursively and returns a list of them
-    static QList<QTreeWidgetItem*> getItems(QTreeWidgetItem* root);
+    static QString getAVItemName(U2OpStatus &os, AVItem* avItem);
+
+    static const QString widgetName;
 };
 
 } // namespace
