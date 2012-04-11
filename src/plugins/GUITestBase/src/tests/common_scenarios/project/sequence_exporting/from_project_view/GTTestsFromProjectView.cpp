@@ -53,17 +53,16 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
         GTFileDialog::openFile(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa");
     }
 
-    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, itemName);
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "export1.fa");
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::doubleClick(os);
-
     GTUtilsProjectTreeView::scrollTo(os, "ru131");
 
     GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ""
                                              << "", GTGlobals::UseMouse);
 
     GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
-    itemPos = GTUtilsProjectTreeView::getItemCenter(os, itemName);
+    itemPos = GTUtilsProjectTreeView::getItemCenter(os, "ru131");
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::doubleClick(os);
 
@@ -101,8 +100,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     GTTreeWidget::expandTo(os, w, item);
     GTGlobals::sleep(100);
-
-    itemPos = GTUtilsProjectTreeView::getItemCenter(os, itemName);
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features");
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep(1000);
