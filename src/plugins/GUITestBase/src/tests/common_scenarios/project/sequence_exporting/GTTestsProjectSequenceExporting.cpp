@@ -25,6 +25,7 @@
 #include <api/GTKeyboardDriver.h>
 #include "api/GTMenu.h"
 #include <api/GTMouseDriver.h>
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -52,7 +53,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
 	GTMouseDriver::doubleClick(os);
 	GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
-	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "Export selected sequence region...", GTGlobals::UseMouse);
+	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse);
 	GTUtilsDialog::ExportSelectedRegionFiller filler(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTUtilsMdi::selectRandomRegion(os, "1 [s] NC_001363 sequence");
@@ -69,9 +70,20 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTMouseDriver::doubleClick(os);
 	GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 	GTGlobals::sleep(100);
-//	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features", "annotations_tree_widget"));
-//	GTMouseDriver::doubleClick(os);
-//	GTGlobals::sleep(100);
+	QTreeWidgetItem* item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+	CHECK_SET_ERR(item != NULL, "AnnotationsTreeView is NULL");
+	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseMouse);
+	GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller filler(os, 
+		"_common_data/scenarios/sandbox/exp.fasta",
+		GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
+		GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate,
+		0
+	);
+	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+	GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "C"));
+	GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+	GTMouseDriver::click(os, Qt::RightButton);
+	GTGlobals::sleep(1000);
 }
 
 }

@@ -99,7 +99,7 @@ void ExportSequenceViewItemsController::buildMenu(GObjectView* v, QMenu* m) {
 
 ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     sequence2SequenceAction = new QAction(tr("Export selected sequence region..."), this);
-	sequence2SequenceAction->setObjectName("Export selected sequence region...");
+	sequence2SequenceAction->setObjectName("action_export_selected_sequence_region");
     connect(sequence2SequenceAction, SIGNAL(triggered()), SLOT(sl_saveSelectedSequences()));
 
     annotations2SequenceAction = new QAction(tr("Export sequence of selected annotations..."), this);
@@ -107,6 +107,7 @@ ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     connect(annotations2SequenceAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotationsSequence()));
 
     annotations2CSVAction = new QAction(tr("Export annotations..."), this);
+	annotations2CSVAction->setObjectName("action_export_annotations");
     connect(annotations2CSVAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotations()));
 
     annotationsToAlignmentAction = new QAction(QIcon(":core/images/msa.png"), tr("Align selected annotations..."), this);

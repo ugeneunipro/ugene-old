@@ -359,7 +359,7 @@ void GTUtilsDialog::CopyToFileAsDialogFiller::run()
 
 #define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"
 #define GT_METHOD_NAME "run"
-void GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller::run()
+void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::run()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
@@ -382,7 +382,9 @@ void GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller::run()
 
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
 
-    GTComboBox::setCurrentIndex(os, comboBox, index);
+	if (comboBox->currentIndex() != index){
+		GTComboBox::setCurrentIndex(os, comboBox, index);
+	}
 
     QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjectBox"));
     GT_CHECK(checkButton != NULL, "Check box not found");
@@ -404,16 +406,18 @@ void GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller::run()
     QRadioButton *mergeButton =  dialog->findChild<QRadioButton*>(mergeRadioButtons[options]);
     GT_CHECK(mergeButton != NULL, "Radio button " + mergeRadioButtons[options] + " not found");
 
-    switch(useMethod) {
-    case GTGlobals::UseMouse:
-        GTMouseDriver::moveTo(os, mergeButton->mapToGlobal(mergeButton->rect().topLeft()));
-        GTMouseDriver::click(os);
-        break;
-    case GTGlobals::UseKey:
-        GTWidget::setFocus(os, mergeButton);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-        break;
-    }
+	if (mergeButton->isEnabled()){
+		switch(useMethod) {
+		case GTGlobals::UseMouse:
+			GTMouseDriver::moveTo(os, mergeButton->mapToGlobal(mergeButton->rect().topLeft()));
+			GTMouseDriver::click(os);
+			break;
+		case GTGlobals::UseKey:
+			GTWidget::setFocus(os, mergeButton);
+			GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+			break;
+		}
+	}
 
     QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>("mergeSpinBox");
     GT_CHECK(mergeSpinBox != NULL, "SpinBox not found");

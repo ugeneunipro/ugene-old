@@ -117,6 +117,17 @@ QString GTUtilsAnnotationsTreeView::getSelectedItem(U2OpStatus &os)
     return QString();
 }
 #undef GT_METHOD_NAME
+#define GT_METHOD_NAME "getItemCenter"
+QPoint GTUtilsAnnotationsTreeView::getItemCenter(U2OpStatus &os, const QString &itemName) {
+
+	QTreeWidget *treeWidget = getTreeWidget(os);
+	GT_CHECK_RESULT(treeWidget != NULL, "treeWidget is NULL", QPoint());
+	QTreeWidgetItem* item = findItem(os, itemName);
+	GT_CHECK_RESULT(item != NULL, "treeWidget " + itemName + " is NULL", QPoint());
+
+	return GTTreeWidget::getItemCenter(os, item);
+}
+#undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
 

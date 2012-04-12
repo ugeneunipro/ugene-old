@@ -215,18 +215,19 @@ public:
         GTGlobals::UseMethod useMethod;
     };
 
-    class exportSequenceOfSelectedAnnotationsFiller : public Runnable {
+    class ExportSequenceOfSelectedAnnotationsFiller : public Runnable {
     public:
         enum FormatToUse {Fasta, Fastaq, Gff, Genbank};
         enum MergeOptions {SaveAsSeparate, Merge};
-        exportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength,
+        ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength,
                                                   bool _addDocToProject = true, GTGlobals::UseMethod method = GTGlobals::UseMouse):
             os(_os), format(_format), gapLength(_gapLength), addToProject(_addDocToProject), useMethod(method), options(_options)
             {
                 QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
-                if (__path.at(__path.count() - 1) != '/') {
+				// no needs to add '/' so _path includes file name
+                /*if (__path.at(__path.count() - 1) != '/') {
                     __path += '/';
-                }
+                }*/
                 path = __path;
 
                 comboBoxItems[Fasta] = "FASTA";
