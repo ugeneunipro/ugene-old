@@ -107,7 +107,7 @@ ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     connect(annotations2SequenceAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotationsSequence()));
 
     annotations2CSVAction = new QAction(tr("Export annotations..."), this);
-	annotations2CSVAction->setObjectName("action_export_annotations");
+    annotations2CSVAction->setObjectName(ACTION_EXPORT_ANNOTATIONS);
     connect(annotations2CSVAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotations()));
 
     annotationsToAlignmentAction = new QAction(QIcon(":core/images/msa.png"), tr("Align selected annotations..."), this);

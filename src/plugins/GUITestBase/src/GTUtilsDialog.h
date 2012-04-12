@@ -282,6 +282,16 @@ public:
         U2OpStatus &os;
     };
 
+    class ExportAnnotationsDialogFiller : public Runnable {
+    public:
+        ExportAnnotationsDialogFiller(U2OpStatus &_os, const QString& _fileName)
+            : os(_os), fileName(_fileName){}
+        virtual void run();
+    private:
+        U2OpStatus &os;
+        QString fileName;
+    };
+
     static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, bool failOnNoDialog = true);
     static void preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal);
 };

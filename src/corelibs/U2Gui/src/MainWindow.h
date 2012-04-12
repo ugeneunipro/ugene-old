@@ -81,6 +81,17 @@ class QMainWindow;
 #define ACTION_DOCUMENT__LOCK                           "action_document_lock"
 #define ACTION_DOCUMENT__UNLOCK                         "action_document_unlock"
 
+
+#define ACTION_PROJECT__EXPORT_MENU_ACTION          "action_project__export_menu_action"
+#define ACTION_PROJECT__IMPORT_MENU_ACTION          "action_project__import_menu_action"
+#define ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION  "action_project__export_as_sequence_action"
+#define ACTION_PROJECT__EXPORT_TO_AMINO_ACTION      "action_project__export_to_amino_action"
+
+#define ACTION_EXPORT_SEQUENCE                      "export sequences"
+#define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT         "export sequences as alignment"
+#define ACTION_EXPORT_ANNOTATIONS                   "action_export_annotations"
+
+
 #define DOCK_PROJECT_VIEW    "dock_project_view"
 #define DOCK_TASK_VIEW       "dock_task_view"
 #define DOCK_LOG_VIEW        "dock_log_view"

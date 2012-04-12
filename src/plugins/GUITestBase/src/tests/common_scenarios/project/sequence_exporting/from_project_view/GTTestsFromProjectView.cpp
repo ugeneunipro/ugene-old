@@ -33,7 +33,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTSequenceViewUtils.h";
+#include "GTSequenceViewUtils.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
 #include <U2View/AnnotatedDNAViewFactory.h>

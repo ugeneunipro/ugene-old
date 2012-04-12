@@ -25,6 +25,7 @@
 #include <api/GTKeyboardDriver.h>
 #include "api/GTMenu.h"
 #include <api/GTMouseDriver.h>
+#include "api/GTFile.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsProject.h"
@@ -40,7 +41,7 @@
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
 #include <U2Core/DocumentModel.h>
-
+#include <U2View/ADVConstants.h>
 #include <U2Core/AppContext.h>
 
 namespace U2{
@@ -120,6 +121,31 @@ GUI_TEST_CLASS_DEFINITION(test_0003)
     GTGlobals::sleep(100);
 
     GTSequenceViewUtils::checkSequence(os, expectedSequences);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
+    GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsDocument::checkDocument(os, "2.gb");
+    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    GTMouseDriver::doubleClick(os);
+    GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
+
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "B_joined"));
+    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ADV_MENU_EXPORT << ACTION_EXPORT_ANNOTATIONS);
+    GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+
+    GTUtilsDialog::ExportAnnotationsDialogFiller filler(os, testDir+"_common_data/scenarios/sandbox/1.csv");
+    GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(100);
+
+    GTGlobals::sleep(1000);
+    bool equals = GTFile::equals(os, testDir+"_common_data/scenarios/sandbox/1.csv", testDir+"_common_data/scenarios/project/test_0004.csv");
+    CHECK_SET_ERR(equals == true, "Exported file differs from the test file");
 }
 
 }

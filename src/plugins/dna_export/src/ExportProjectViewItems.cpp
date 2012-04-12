@@ -107,10 +107,6 @@ void ExportProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
 
 #define ACTION_PROJECT__EXPORT_MENU "action_project__export_menu"
 #define ACTION_PROJECT__IMPORT_MENU "action_project__import_menu"
-#define ACTION_PROJECT__EXPORT_MENU_ACTION "action_project__export_menu_action"
-#define ACTION_PROJECT__IMPORT_MENU_ACTION "action_project__import_menu_action"
-#define ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION "action_project__export_as_sequence_action"
-#define ACTION_PROJECT__EXPORT_TO_AMINO_ACTION "action_project__export_to_amino_action"
 
 void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
     ProjectView* pv = AppContext::getProjectView();

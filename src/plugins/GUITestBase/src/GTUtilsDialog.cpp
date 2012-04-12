@@ -35,6 +35,7 @@
 #include <QtGui/QCheckBox>
 #include <QtGui/QSpinBox>
 #include <QtGui/QToolButton>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -531,7 +532,6 @@ void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::fillSpinBox()
         }
     }
 }
-
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
@@ -556,6 +556,31 @@ void GTUtilsDialog::selectSequenceDialogFiller::run()
     GTWidget::click(os, okButton);
 }
 
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::ExportAnnotationsDialogFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::ExportAnnotationsDialogFiller::run() {
+
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog is NULL");
+
+    QLineEdit* fileNameEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+    GT_CHECK(fileNameEdit != NULL, "fileNameEdit is NULL");
+    GTLineEdit::setText(os, fileNameEdit, fileName);
+
+    QComboBox* formatsBox = dialog->findChild<QComboBox*>("formatsBox");
+    GT_CHECK(formatsBox != NULL, "formatsBox is NULL");
+    GTComboBox::setCurrentIndex(os, formatsBox, formatsBox->findText("csv"));
+
+    QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+    GT_CHECK(buttonBox != NULL, "buttonBox is NULL");
+
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    GT_CHECK(okButton != NULL, "okButton is NULL");
+    GTWidget::click(os, okButton);
+}
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
