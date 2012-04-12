@@ -64,12 +64,15 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     itemPos = GTUtilsProjectTreeView::getItemCenter(os, "ru131");
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::doubleClick(os);
-
     GTGlobals::sleep(1000);
 
-    QString sequence = GTSequenceViewUtils::getSequenceAsString(os);
+    QWidget *activeWindow =  GTUtilsMdi::activeWindow(os);
+    if (! activeWindow->windowTitle().contains("ru131") && !os.hasError()) {
+        os.setError("fasta file with sequences has been not opened");
+    }
 
-    if (sequence.at(sequence.length() - 1) != '-') {
+    QString sequence = GTSequenceViewUtils::getSequenceAsString(os);
+    if (sequence.at(sequence.length() - 1) != '-' && !os.hasError()) {
         os.setError("sequence [s] ru131 has not NOT'-' symbols at the end of sequence");
     }
 }
