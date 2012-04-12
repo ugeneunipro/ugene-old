@@ -26,6 +26,7 @@
 #include "api/GTMenu.h"
 #include <api/GTMouseDriver.h>
 #include "GTUtilsAnnotationsTreeView.h"
+#include "api/GTTreeWidget.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -35,9 +36,12 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsMdi.h"
+#include "GTSequenceViewUtils.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
 #include <U2Core/DocumentModel.h>
+
+#include <U2Core/AppContext.h>
 
 namespace U2{
 
@@ -84,6 +88,38 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
 	GTMouseDriver::click(os, Qt::RightButton);
 	GTGlobals::sleep(1000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003)
+{
+    const QString doc1("1.gb"), doc2("2.gb"), expectedSequences("ACCCCACCCGTAGGTGGCAAGCTAGCTTAAG");
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTGlobals::sleep(1000);
+
+    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
+    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
+    if (item1 == NULL || item2 == NULL) {
+        os.setError("Project view with document \"1.gb\" and \"2.gb\" is not opened");
+        return;
+    }
+
+    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
+
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDocument::checkDocument(os, doc2, AnnotatedDNAViewFactory::ID);
+
+    GTUtilsProject::exportSequenceOfSelectedAnnotations(os, "B_joined", testDir + "_common_data/scenarios/sandbox/exp.fasta",
+                                                        GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
+                                                        GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::Merge, 5);
+
+    GTGlobals::sleep(100);
+
+    GTSequenceViewUtils::checkSequence(os, expectedSequences);
 }
 
 }

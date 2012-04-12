@@ -42,6 +42,7 @@ QString GTSequenceViewUtils::getSequenceAsString(U2OpStatus &os)
     GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
 
     MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
+    GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
 
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);
@@ -57,6 +58,17 @@ QString GTSequenceViewUtils::getSequenceAsString(U2OpStatus &os)
     return QApplication::clipboard()->text();
 }
 #undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSequenceAsString"
+
+void GTSequenceViewUtils::checkSequence(U2OpStatus &os, const QString &expectedSequence)
+{
+    QString actualSequence = getSequenceAsString(os);
+
+    GT_CHECK(expectedSequence == actualSequence, "Actual sequence does not match with expected sequence");
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 } // namespace U2

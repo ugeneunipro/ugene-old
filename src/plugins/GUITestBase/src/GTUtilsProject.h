@@ -62,8 +62,13 @@ public:
     static void exportToSequenceFormat(U2OpStatus &os, const QString &projectName, const QString &path,
                                        const QString &name, GTGlobals::UseMethod = GTGlobals::UseMouse);
     static void exportSequenceAsAlignment(U2OpStatus &os, const QString projectName, const QString &path,
-                                          const QString &name, GTUtilsDialog::ExportSequenceAsAlignmentFiller::FormatToUse, bool addDocToProject = false, GTGlobals::UseMethod = GTGlobals::UseMouse);
+                                          const QString &name, GTUtilsDialog::ExportSequenceAsAlignmentFiller::FormatToUse,
+                                          bool addDocToProject = false, GTGlobals::UseMethod = GTGlobals::UseMouse);
 
+    static void exportSequenceOfSelectedAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &path,
+                                                    GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::FormatToUse format,
+                                                    GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::MergeOptions options,
+                                                    int gapLength, bool addDocToProject = true, GTGlobals::UseMethod = GTGlobals::UseMouse);
     static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile);
     static void closeProject(U2OpStatus &os, const CloseProjectSettings& settings = CloseProjectSettings());
 

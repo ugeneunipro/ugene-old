@@ -85,6 +85,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0002);
 
+    REGISTER_TEST(GUITests_sequence_exporting_scenarios_project::test_0003);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
