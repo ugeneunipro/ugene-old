@@ -41,7 +41,7 @@
 
 namespace U2{
 
-namespace GUITests_sequence_exporting_scenarios_project {
+namespace GUITest_common_scenarios_project_sequence_exporting {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 	GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");

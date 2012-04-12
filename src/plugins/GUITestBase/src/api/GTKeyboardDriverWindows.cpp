@@ -63,6 +63,30 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
             }
             keyPress(os, VK_OEM_1, GTKeyboardDriver::key["shift"]);
             break;
+		case '<':
+			 if (modifiers != 0) {
+                keyPress(os, modifiers);
+            }
+            keyPress(os, VK_OEM_COMMA, GTKeyboardDriver::key["shift"]);
+            break;
+		case '>':
+			 if (modifiers != 0) {
+                keyPress(os, modifiers);
+            }
+            keyPress(os, VK_OEM_PERIOD, GTKeyboardDriver::key["shift"]);
+            break;
+		case '(':
+			 if (modifiers != 0) {
+                keyPress(os, modifiers);
+            }
+            keyPress(os, '9', GTKeyboardDriver::key["shift"]);
+            break;
+		case ')':
+			 if (modifiers != 0) {
+                keyPress(os, modifiers);
+            }
+            keyPress(os, '0', GTKeyboardDriver::key["shift"]);
+            break;
 
         default:
             keyPress(os, (int)key, modifiers);
@@ -98,7 +122,30 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
                 keyRelease(os, modifiers);
             }
             break;
-
+		case '<':
+            keyRelease(os, VK_OEM_COMMA, GTKeyboardDriver::key["shift"]);
+            if (modifiers != 0) {
+                keyRelease(os, modifiers);
+            }
+            break;
+		case '>':
+            keyRelease(os, VK_OEM_PERIOD, GTKeyboardDriver::key["shift"]);
+            if (modifiers != 0) {
+                keyRelease(os, modifiers);
+            }
+            break;
+		case '(':
+            keyRelease(os, '9', GTKeyboardDriver::key["shift"]);
+            if (modifiers != 0) {
+                keyRelease(os, modifiers);
+            }
+            break;
+		case ')':
+            keyRelease(os, '0', GTKeyboardDriver::key["shift"]);
+            if (modifiers != 0) {
+                keyRelease(os, modifiers);
+            }
+            break;
         default:
             keyRelease(os, (int)key, modifiers);
             break;

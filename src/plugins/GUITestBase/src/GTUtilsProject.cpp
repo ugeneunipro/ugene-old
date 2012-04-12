@@ -67,6 +67,12 @@ void GTUtilsProject::exportProject(U2OpStatus &os, const QString &projectFolder,
     GTUtilsDialog::ExportProjectDialogFiller filler(os, projectFolder, projectName);
     GTUtilsDialog::waitForDialog(os, &filler);
 }
+void GTUtilsProject::createAnnotation(U2OpStatus &os, const QString &groupName, const QString &annotationName, const QString &location) {
+ 
+	GTKeyboardDriver::keyClick(os, 'N', GTKeyboardDriver::key["ctrl"]);
+    GTUtilsDialog::CreateAnnotationDialogFiller filler(os, groupName, annotationName, location);
+    GTUtilsDialog::waitForDialog(os, &filler);
+}
 
 void GTUtilsProject::exportProjectCheck(U2OpStatus &os, const QString &projectName) {
 

@@ -19,19 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_TESTS_PROJECT_SEQUENCE_EXPORTING_H_
-#define _U2_GUI_TESTS_PROJECT_SEQUENCE_EXPORTING_H_
+#ifndef _U2_GUI_TEST_PROJECT_DOCUMENT_MODIFYING_H_
+#define _U2_GUI_TEST_PROJECT_DOCUMENT_MODIFYING_H_
 
 #include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
-namespace GUITest_common_scenarios_project_sequence_exporting {
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_project_sequence_exporting_"
+namespace GUITest_common_scenarios_project_document_modifying {
+#define GUI_TEST_PREFIX "GUITest_common_scenarios_project_document_modifying_"
 
-GUI_TEST_CLASS_DECLARATION(test_0001)
 GUI_TEST_CLASS_DECLARATION(test_0002)
-GUI_TEST_CLASS_DECLARATION(test_0005)
 
 #undef GUI_TEST_PREFIX
 }

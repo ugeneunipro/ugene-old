@@ -101,6 +101,7 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
     connect(removeSelectedObjectsAction, SIGNAL(triggered()), SLOT(sl_onRemoveSelectedObjects()));
 
 	loadSelectedDocumentsAction = new QAction(QIcon(":core/images/load_selected_documents.png"), tr("Load selected documents"), this);
+	loadSelectedDocumentsAction->setObjectName("action_load_selected_documents");
     loadSelectedDocumentsAction->setShortcuts(QList<QKeySequence>() << Qt::Key_Enter << Qt::Key_Return);
     loadSelectedDocumentsAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     tree->addAction(loadSelectedDocumentsAction);

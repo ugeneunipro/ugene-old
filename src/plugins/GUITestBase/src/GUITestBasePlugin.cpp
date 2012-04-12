@@ -29,7 +29,7 @@
 #include "tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h"
 #include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
 #include "tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h"
-//#include "tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h"
+#include "tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h"
 #include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
 #include "tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.h"
 #include "tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h"
@@ -76,14 +76,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_relations::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0001);
 	REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0005);
-	REGISTER_TEST(GUITests_sequence_exporting_scenarios_project::test_0001);
-	REGISTER_TEST(GUITests_sequence_exporting_scenarios_project::test_0002);
+	REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0001);
+	REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0003);
     //REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0006);
-    //REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0002);
 
 }
 

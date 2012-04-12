@@ -56,6 +56,7 @@ public:
     static void openFiles(U2OpStatus &os, const GUrl &path, const OpenFileSettings& s = OpenFileSettings());
 
     static void exportProject(U2OpStatus &os, const QString &projectFolder, const QString &projectName = "");
+	static void createAnnotation(U2OpStatus &os, const QString &groupName = "", const QString &annotationName = "", const QString &location = "");
     static void exportProjectCheck(U2OpStatus &os, const QString &projectName);
 
     static void exportToSequenceFormat(U2OpStatus &os, const QString &projectName, const QString &path,

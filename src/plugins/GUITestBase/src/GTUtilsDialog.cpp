@@ -119,6 +119,31 @@ void GTUtilsDialog::CreateAnnotationDialogChecker::run() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::CreateAnnotationDialogFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::CreateAnnotationDialogFiller::run() {
+
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QLineEdit *groupNameLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "groupNameEdit", dialog));
+    GT_CHECK(groupNameLineEdit != NULL, "LineEdit is NULL");
+    GTLineEdit::setText(os, groupNameLineEdit, groupName);
+
+    QLineEdit *annotationNameLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "annotationNameEdit", dialog));
+    GT_CHECK(annotationNameLineEdit != NULL, "LineEdit is NULL");
+    GTLineEdit::setText(os, annotationNameLineEdit, annotationName);
+ 
+	QLineEdit *locationLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "locationEdit", dialog));
+    GT_CHECK(locationLineEdit != NULL, "LineEdit is NULL");
+    GTLineEdit::setText(os, locationLineEdit, location);
+
+    QAbstractButton *createButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "create_button", dialog));
+    GTWidget::click(os, createButton);
+
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportProjectDialogChecker"
 #define GT_METHOD_NAME "run"

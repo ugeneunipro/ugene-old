@@ -19,6 +19,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.h \
             src/tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h \
+            src/tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h \
             src/api/GTComboBox.h \
             src/api/GTFileDialog.h \
             src/api/GTFile.h \
@@ -57,6 +58,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.cpp \
             src/tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.cpp \
             src/tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.cpp \
+            src/tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.cpp \
             src/api/GTComboBox.cpp \
             src/api/GTFileDialog.cpp \
             src/api/GTFile.cpp \
