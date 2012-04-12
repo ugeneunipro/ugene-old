@@ -93,10 +93,14 @@ QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, const QString &item
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemLocalCenter"
-QPoint GTUtilsProjectTreeView::getItemLocalCenter(U2OpStatus &os, const QString &itemName) {
-
+QPoint GTUtilsProjectTreeView::getItemLocalCenter(U2OpStatus &os, const QString &itemName)
+{
     QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, itemName);
-    QRect r = GTTreeWidget::getItemRect(os, item);
+    QTreeWidget *treeWidget = item->treeWidget();
+    GT_CHECK_RESULT(treeWidget != NULL, "treeWidget is NULL", QPoint());
+    GT_CHECK_RESULT(item != NULL, "item is NULL", QPoint());
+
+    QRect r = treeWidget->visualItemRect(item);
     return r.center();
 }
 #undef GT_METHOD_NAME

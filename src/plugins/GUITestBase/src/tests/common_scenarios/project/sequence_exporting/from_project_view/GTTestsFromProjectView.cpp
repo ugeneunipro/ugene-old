@@ -33,6 +33,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
+#include "GTSequenceViewUtils.h";
 #include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
@@ -54,20 +55,23 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     }
 
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "export1.fa");
-    GTMouseDriver::moveTo(os, itemPos);
-    GTMouseDriver::doubleClick(os);
     GTUtilsProjectTreeView::scrollTo(os, "ru131");
 
-    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ""
-                                             << "", GTGlobals::UseMouse);
 
-    GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+
     itemPos = GTUtilsProjectTreeView::getItemCenter(os, "ru131");
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::doubleClick(os);
 
-    os.setError("Test is not completed");
-    ///TODO: check [s] ru131 has '-' symbols at the end of sequence
+    GTGlobals::sleep(1000);
+
+    QString sequence = GTSequenceViewUtils::getSequenceAsString(os);
+
+    if (sequence.at(sequence.length() - 1) != '-') {
+        os.setError("sequence [s] ru131 has not NOT'-' symbols at the end of sequence");
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
