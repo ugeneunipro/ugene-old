@@ -720,10 +720,12 @@ void ProjectViewImpl::buildOpenViewMenu(const MultiGSelection& ms, QMenu* m) {
             continue;
         }
         if (openActions.size() == 1) {
-            m->addAction(openActions.first());
+            QAction *openAction = openActions.first();
+            openAction->setObjectName("action_open_view");
+            m->addAction(openAction);
             continue;
         }
-        QMenu* submenu = new QMenu(tr("open_view_submenu_%1").arg(f->getName()),	 m);
+        QMenu* submenu = new QMenu(tr("open_view_submenu_%1").arg(f->getName()), m);
         foreach (QAction* a, openActions) {
             submenu->addAction(a);
         }
@@ -806,6 +808,8 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
     }
 
     buildOpenViewMenu(multiSelection, openViewMenu);
+    openViewMenu->menuAction()->setObjectName("submenu_open_view");
+
     buildAddToViewMenu(multiSelection, addToViewMenu);
 
     addToViewMenu->setDisabled(addToViewMenu->isEmpty());
