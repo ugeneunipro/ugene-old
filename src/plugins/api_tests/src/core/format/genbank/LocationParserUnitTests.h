@@ -28,7 +28,9 @@ DECLARE_TEST(LocationParserTestData, locationParserRightParenthesisMissed);
 DECLARE_TEST(LocationParserTestData, locationParserPeriodInvalid);
 DECLARE_TEST(LocationParserTestData, locationParserDoublePeriodInvalid);
 DECLARE_TEST(LocationParserTestData, locationParserCommaInvalid);
-
+DECLARE_TEST(LocationParserTestData, locationParserNumberInvalid);
+DECLARE_TEST(LocationParserTestData, locationParserLessInvalid);
+DECLARE_TEST(LocationParserTestData, locationParserGreaterInvalid);
 }
 
 DECLARE_METATYPE(LocationParserTestData, locationParser);
@@ -53,5 +55,8 @@ DECLARE_METATYPE(LocationParserTestData, locationParserRightParenthesisMissed);
 DECLARE_METATYPE(LocationParserTestData, locationParserPeriodInvalid);
 DECLARE_METATYPE(LocationParserTestData, locationParserDoublePeriodInvalid);
 DECLARE_METATYPE(LocationParserTestData, locationParserCommaInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationParserNumberInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationParserLessInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationParserGreaterInvalid);
 
 #endif

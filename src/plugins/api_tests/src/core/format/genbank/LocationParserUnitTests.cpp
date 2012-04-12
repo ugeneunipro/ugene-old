@@ -283,4 +283,28 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserCommaInvalid) {
 	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
 }
 
+IMPLEMENT_TEST(LocationParserTestData, locationParserNumberInvalid) {
+	QString str = "9223372036854775809..100";
+	U2Location location;
+	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
+	QVector<U2Region> regions = location->regions;
+	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
+}
+
+IMPLEMENT_TEST(LocationParserTestData, locationParserLessInvalid) {
+	QString str = "<<1..13";
+	U2Location location;
+	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
+	QVector<U2Region> regions = location->regions;
+	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
+}
+
+IMPLEMENT_TEST(LocationParserTestData, locationParserGreaterInvalid) {
+	QString str = ">>>>10..9";
+	U2Location location;
+	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
+	QVector<U2Region> regions = location->regions;
+	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
+}
+
 } //namespace

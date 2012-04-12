@@ -73,4 +73,7 @@ LocationParserTestData
 + locationParserPeriodInvalid
 + locationParserDoublePeriodInvalid
 + locationParserCommaInvalid
+- locationParserNumberInvalid
++ locationParserLessInvalid
++ locationParserGreaterInvalid
 </unittest>
