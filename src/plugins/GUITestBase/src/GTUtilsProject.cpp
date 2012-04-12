@@ -137,10 +137,10 @@ void GTUtilsProject::exportSequenceAsAlignment(U2OpStatus &os, const QString pro
 void GTUtilsProject::exportSequenceOfSelectedAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &path,
                                                          GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::FormatToUse format,
                                                          GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::MergeOptions options,
-                                                         int gapLength, bool addDocToProject, GTGlobals::UseMethod method)
+                                                         int gapLength, bool mergeSequence, bool addDocToProject, GTGlobals::UseMethod method)
 {
     GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations");
-    GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller filler(os, path, format, options, gapLength, addDocToProject);
+    GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller filler(os, path, format, options, gapLength, mergeSequence, addDocToProject);
     QPoint pos;
 
     switch (method) {

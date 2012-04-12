@@ -386,14 +386,44 @@ void GTUtilsDialog::CopyToFileAsDialogFiller::run()
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::run()
 {
-    QWidget *dialog = QApplication::activeModalWidget();
-    GT_CHECK(dialog != NULL, "dialog not found");
+    QWidget *dlg = QApplication::activeModalWidget();
+    GT_CHECK(dlg != NULL, "dialog not found");
 
+    dialog = dlg;
+
+    setFileName();
+    GTGlobals::sleep(200);
+    setFormat();
+    GTGlobals::sleep(200);
+    checkAddToProject();
+    GTGlobals::sleep(200);
+    clickMergeRadioButton();
+    GTGlobals::sleep(200);
+    fillSpinBox();
+    GTGlobals::sleep(200);
+
+    QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
+    GT_CHECK(exportButton != NULL, "Export button not found");
+
+    GTWidget::click(os, exportButton);
+}
+
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setFileName"
+void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::setFileName()
+{
     QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
     GT_CHECK(lineEdit != NULL, "line edit not found");
 
     GTLineEdit::setText(os, lineEdit, path);
+}
 
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setFormat"
+void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::setFormat()
+{
     QComboBox *comboBox = dialog->findChild<QComboBox*>();
     GT_CHECK(comboBox != NULL, "ComboBox not found");
 
@@ -407,10 +437,16 @@ void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::run()
 
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
 
-	if (comboBox->currentIndex() != index){
-		GTComboBox::setCurrentIndex(os, comboBox, index);
-	}
+    if (comboBox->currentIndex() != index){
+        GTComboBox::setCurrentIndex(os, comboBox, index);
+    }
+}
 
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkAddToProject"
+void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::checkAddToProject()
+{
     QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjectBox"));
     GT_CHECK(checkButton != NULL, "Check box not found");
 
@@ -427,27 +463,40 @@ void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::run()
             break;
         }
     }
+}
 
-    QRadioButton *mergeButton =  dialog->findChild<QRadioButton*>(mergeRadioButtons[options]);
-    GT_CHECK(mergeButton != NULL, "Radio button " + mergeRadioButtons[options] + " not found");
+#undef GT_METHOD_NAME
 
-	if (mergeButton->isEnabled()){
-		switch(useMethod) {
-		case GTGlobals::UseMouse:
-			GTMouseDriver::moveTo(os, mergeButton->mapToGlobal(mergeButton->rect().topLeft()));
-			GTMouseDriver::click(os);
-			break;
-		case GTGlobals::UseKey:
-			GTWidget::setFocus(os, mergeButton);
-			GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-			break;
-		}
-	}
+#define GT_METHOD_NAME "clickMergeRadioButton"
+void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::clickMergeRadioButton()
+{
+    if (merge) {
+        QRadioButton *mergeButton =  dialog->findChild<QRadioButton*>(mergeRadioButtons[options]);
+        GT_CHECK(mergeButton != NULL, "Radio button " + mergeRadioButtons[options] + " not found");
 
+        if (mergeButton->isEnabled()){
+            switch(useMethod) {
+            case GTGlobals::UseMouse:
+                GTMouseDriver::moveTo(os, mergeButton->mapToGlobal(mergeButton->rect().topLeft()));
+                GTMouseDriver::click(os);
+                break;
+            case GTGlobals::UseKey:
+                GTWidget::setFocus(os, mergeButton);
+                GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+                break;
+            }
+        }
+    }
+}
+
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "fillSpinBox"
+void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::fillSpinBox()
+{
     QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>("mergeSpinBox");
     GT_CHECK(mergeSpinBox != NULL, "SpinBox not found");
 
-    GTGlobals::sleep(1000);
     QPoint arrowPos;
     QRect spinBoxRect;
     int key;
@@ -483,11 +532,6 @@ void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::run()
             }
         }
     }
-
-    QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
-    GT_CHECK(exportButton != NULL, "Export button not found");
-
-    GTWidget::click(os, exportButton);
 }
 
 #undef GT_METHOD_NAME
