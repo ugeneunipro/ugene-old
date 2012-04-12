@@ -19,8 +19,11 @@ echo recreating Package_Root dir structure
 mkdir -p "${TARGET_APP_DIR}"
 mkdir -p "${SYMLINKS_DIR}"
 
-echo creating bundle
-./bundle_release.sh -nodmg
+if [ "$1" != "-skip-bundle" ]
+then
+  echo creating bundle
+  ./bundle_release.sh -nodmg
+fi
 
 echo copying bundle
 # NB! Ending slash in source dir is important: in BSD cp it means copy contents, not folder itself

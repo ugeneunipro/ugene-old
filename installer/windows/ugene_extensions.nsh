@@ -68,8 +68,9 @@ SectionGroup "${un}Associate file extensions"
 ;PDB format
   !insertmacro AssociateExtSection "${un}" ".pdb"     "Protein Data Bank file"      "1"
 
-;SAM format
-  !insertmacro AssociateExtSection "${un}" ".sam"   "SAM file"                      "1"
+;SAM/BAM format
+  !insertmacro AssociateExtSection "${un}" ".sam"   "SAM genome assembly"           "1"
+  !insertmacro AssociateExtSection "${un}" ".bam"   "BAM genome assembly"           "1"
 
 ;SCF format -> DISABLED: overrides show desktop icon!!
 ;  !insertmacro AssociateExtSection "${un}" ".scf"    "SCF file"                    "1"
@@ -80,6 +81,9 @@ SectionGroup "${un}Associate file extensions"
 
 ;STOCKHOLM format
   !insertmacro AssociateExtSection "${un}" ".sto"    "Stockholm alignment file"     "1"
+
+;UGENE Database format
+  !insertmacro AssociateExtSection "${un}" ".ugenedb" "UGENE Database"              "1"
 
 ;UGENE Query format
   !insertmacro AssociateExtSection "${un}" ".uql"    "UGENE Query Language"         "1"

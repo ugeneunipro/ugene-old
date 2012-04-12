@@ -1,5 +1,5 @@
 PRODUCT_NAME="ugeneui"
-PRODUCT_DISPLAY_NAME="UGENE"
+PRODUCT_DISPLAY_NAME="Unipro UGENE"
 
 VERSION=`cat ../../src/ugene_version.pri | grep UGENE_VERSION | awk -F'=' '{print $2}'`
 BUILD_DIR=./release_bundle
@@ -21,6 +21,9 @@ echo
 echo copying UGENE bundle 
 cp -R $RELEASE_DIR/ugeneui.app/ "$TARGET_APP_DIR"
 changeCoreInstallNames ugeneui
+
+echo copying icons
+cp ../../src/ugeneui/images/ugene-doc.icns "$TARGET_APP_DIR/Contents/Resources"
 
 mkdir "${TARGET_EXE_DIR}/../Frameworks"
 mkdir "${TARGET_EXE_DIR}/plugins"

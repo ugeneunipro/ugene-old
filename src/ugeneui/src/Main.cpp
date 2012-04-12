@@ -218,6 +218,32 @@ public:
 #endif
         return res;
     }
+
+    bool event(QEvent *event)
+    {
+        switch (event->type()) {
+        case QEvent::FileOpen:
+            {
+                QStringList urls(static_cast<QFileOpenEvent *>(event)->file());
+                openAfterPluginsLoaded(urls);
+            }
+            return true;
+        default:
+            return QApplication::event(event);
+        }
+    }
+
+    void openAfterPluginsLoaded(QStringList urls) {
+        OpenWithProjectTask * task = new OpenWithProjectTask(urls);
+        PluginSupport * pluginSupport = AppContext::getPluginSupport();
+
+        if(pluginSupport->isAllPluginsLoaded()) {
+            AppContext::getTaskScheduler()->registerTopLevelTask(task);
+        } else {
+            connect( pluginSupport, SIGNAL( si_allStartUpPluginsLoaded() ),
+                     new TaskStarter( task ), SLOT( registerTask() ) );
+        }
+    }
 };
 
 int main(int argc, char **argv) 
@@ -479,29 +505,27 @@ int main(int argc, char **argv)
     appContext->setSplicedAlignmentTaskRegistry(splicedAlignmentTaskRegistiry);
     
     if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST)) {
-		QStringList urls = CMDLineRegistryUtils::getPureValues();
+        QStringList urls = CMDLineRegistryUtils::getPureValues();
 
-		if(urls.isEmpty() && AppContext::getAppSettings()->getUserAppsSettings()->openLastProjectAtStartup()) {
-			QString lastProject = ProjectLoaderImpl::getLastProjectURL();
-			if (!lastProject.isEmpty()) {
-				urls << lastProject;
-			}
-		}
+        if(urls.isEmpty() && AppContext::getAppSettings()->getUserAppsSettings()->openLastProjectAtStartup()) {
+            QString lastProject = ProjectLoaderImpl::getLastProjectURL();
+            if (!lastProject.isEmpty()) {
+                urls << lastProject;
+            }
+        }
 
-		if( !urls.isEmpty() ) {
-			// defer loading until all plugins/services loaded
-			QObject::connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), 
-				new TaskStarter( new OpenWithProjectTask(urls) ), SLOT( registerTask() ) );
-
-		}
-	}
+        if( !urls.isEmpty() ) {
+            // defer loading until all plugins/services loaded
+            app.openAfterPluginsLoaded(urls);
+        }
+    }
 
     registerCoreServices();
 
     if ( envList.contains(ENV_GUI_TEST+QString("=1")) ) {
-	    GUITestService *guiTestService = new GUITestService();
-		Q_UNUSED(guiTestService);
-	}
+        GUITestService *guiTestService = new GUITestService();
+        Q_UNUSED(guiTestService);
+    }
 
     if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {
         Shtirlitz::wakeup();
