@@ -470,21 +470,19 @@ void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::checkAddToProject
 #define GT_METHOD_NAME "clickMergeRadioButton"
 void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::clickMergeRadioButton()
 {
-    if (merge) {
-        QRadioButton *mergeButton =  dialog->findChild<QRadioButton*>(mergeRadioButtons[options]);
-        GT_CHECK(mergeButton != NULL, "Radio button " + mergeRadioButtons[options] + " not found");
+    QRadioButton *mergeButton =  dialog->findChild<QRadioButton*>(mergeRadioButtons[options]);
+    GT_CHECK(mergeButton != NULL, "Radio button " + mergeRadioButtons[options] + " not found");
 
-        if (mergeButton->isEnabled()){
-            switch(useMethod) {
-            case GTGlobals::UseMouse:
-                GTMouseDriver::moveTo(os, mergeButton->mapToGlobal(mergeButton->rect().topLeft()));
-                GTMouseDriver::click(os);
-                break;
-            case GTGlobals::UseKey:
-                GTWidget::setFocus(os, mergeButton);
-                GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-                break;
-            }
+    if (mergeButton->isEnabled()){
+        switch(useMethod) {
+        case GTGlobals::UseMouse:
+            GTMouseDriver::moveTo(os, mergeButton->mapToGlobal(mergeButton->rect().topLeft()));
+            GTMouseDriver::click(os);
+            break;
+        case GTGlobals::UseKey:
+            GTWidget::setFocus(os, mergeButton);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+            break;
         }
     }
 }
