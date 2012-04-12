@@ -108,10 +108,11 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTUtilsDocument::removeDocument(os, "1CF7.PDB", GTGlobals::UseMouse);
     GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
 }
+
 GUI_TEST_CLASS_DEFINITION(test_0009) {
 
-    GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/fa1.fa.gz");
-    GTUtilsDocument::checkDocument(os, "fa1.fa.gz", MSAEditorFactory::ID);
+    GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/ty3.aln.gz");
+    GTUtilsDocument::checkDocument(os, "ty3.aln.gz", MSAEditorFactory::ID);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {

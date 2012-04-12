@@ -42,6 +42,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     CHECK_SET_ERR(AppContext::getProjectView() == NULL && AppContext::getProject() == NULL, "There is a project");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0003) {
+    AppContext::getMainWindow()->getQMainWindow()->showMaximized();
+}
+
 } // GUITest_initial_checks namespace
 
 } // U2 namespace
