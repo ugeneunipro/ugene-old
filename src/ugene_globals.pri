@@ -94,18 +94,6 @@ defineTest( use_opencl ) {
     return (false)
 }
 
-# Crash handler
-isEmpty(USE_CRASH_HANDLER) : USE_CRASH_HANDLER = 1
-defineTest( use_crash_handler) {
-    macx: return (false)
-    contains(USE_CRASH_HANDLER, 1): return (true)
-    return (false)
-}
-
-release : use_crash_handler() {
-    DEFINES+=USE_CRASHHANDLER
-}
-
 # establishing binary-independet data directory for *nix installation
 unix {
     DEFINES *= UGENE_DATA_DIR=\\\"$$UGENE_INSTALL_DATA\\\"

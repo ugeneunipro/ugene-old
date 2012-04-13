@@ -110,6 +110,7 @@
 //global
 #define GLOBAL_SETTINGS QString("global/")
 
+#define ENV_USE_CRASHHANDLER "USE_CRASH_HANDLER"
 #define ENV_UGENE_DEV "UGENE_DEV"
 #define ENV_GUI_TEST "UGENE_GUI_TEST"
 

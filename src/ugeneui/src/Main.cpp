@@ -121,12 +121,6 @@ extern Q_GUI_EXPORT bool qt_use_native_dialogs;
 QT_END_NAMESPACE
 #endif
 
-#ifdef _DEBUG //force no crash handler mode in debug build
-#undef USE_CRASHHANDLER
-#endif
-
-
-
 namespace U2 {
 
 static void registerCoreServices() {
@@ -203,19 +197,20 @@ public:
     GApplication(int & argc, char ** argv): QApplication(argc, argv) {}
     virtual bool notify(QObject * receiver, QEvent * event ) {
         bool res = false;
-#if defined(USE_CRASHHANDLER)
-        try {
-            res = QApplication::notify(receiver, event);
-        } catch(...) {
-            if(CrashHandler::buffer) {
-                CrashHandler::releaseReserve();
-            }
+        if (CrashHandler::isEnabled()) {
+            try {
+                res = QApplication::notify(receiver, event);
+            } catch(...) {
+                if(CrashHandler::buffer) {
+                    CrashHandler::releaseReserve();
+                }
 
-            CrashHandler::runMonitorProcess("C++ exception|Unhandled exception");
+                CrashHandler::runMonitorProcess("C++ exception|Unhandled exception");
+            }
         }
-#else
-        res = QApplication::notify(receiver, event);
-#endif
+        else {
+            res = QApplication::notify(receiver, event);
+        }
         return res;
     }
 
@@ -248,10 +243,10 @@ public:
 
 int main(int argc, char **argv) 
 {
-#if defined(USE_CRASHHANDLER)
-    CrashHandler::setupHandler();
-    CrashHandler::preallocateReservedSpace();
-#endif
+    if (CrashHandler::isEnabled()) {
+        CrashHandler::setupHandler();
+        CrashHandler::preallocateReservedSpace();
+    }
 
     QT_REQUIRE_VERSION( argc, argv, QT_VERSION_STR );
 

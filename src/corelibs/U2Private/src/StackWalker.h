@@ -54,7 +54,6 @@
 
 #include <QtCore/qglobal.h>
 
-#if defined(USE_CRASHHANDLER)
 #if defined (Q_OS_WIN)
 
 #include <windows.h>
@@ -179,7 +178,6 @@ protected:
 
 }
 
-#endif
 #endif
 
 #endif

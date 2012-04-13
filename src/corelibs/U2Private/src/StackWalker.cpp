@@ -49,8 +49,6 @@
 *
 **********************************************************************/
 
-#if defined(USE_CRASHHANDLER) 
-
 #include "StackWalker.h"
 #if defined (Q_OS_WIN)
 
@@ -1000,5 +998,3 @@ void StackWalker::OnOutput(LPCSTR _buffer) {
 }
 
 #endif
-#endif
-

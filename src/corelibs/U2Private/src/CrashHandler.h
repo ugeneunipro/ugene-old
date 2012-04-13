@@ -22,9 +22,6 @@
 #ifndef _CRASH_HANDLER_H_
 #define _CRASH_HANDLER_H_
 
-#if defined(USE_CRASHHANDLER)
-
-
 
 #include "StackWalker.h"
 
@@ -70,6 +67,7 @@ class LogMessage;
 class U2PRIVATE_EXPORT CrashHandler {
 public:
     static void setupHandler();
+    static bool isEnabled();
 #if defined( Q_OS_WIN )
     static LONG NTAPI CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo );
     static LONG NTAPI CrashHandlerFuncSecond(PEXCEPTION_POINTERS pExceptionInfo );
@@ -95,7 +93,5 @@ public:
 };
 
 } //namespace
-
-#endif //crash handler flag
 
 #endif

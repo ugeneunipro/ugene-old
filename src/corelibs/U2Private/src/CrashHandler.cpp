@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#if defined(USE_CRASHHANDLER)
-
 #include "CrashHandler.h"
 #include "TaskSchedulerImpl.h"
 
@@ -35,6 +33,27 @@
 
 namespace U2 {
 
+bool CrashHandler::isEnabled() {
+
+    static QString disableEnvString = ENV_USE_CRASHHANDLER+QString("=0");
+    static bool disableCrashHandler = QProcess::systemEnvironment().contains(disableEnvString);
+    if (disableCrashHandler) {
+        return false;
+    }
+
+    static QString enableEnvString = ENV_USE_CRASHHANDLER+QString("=1");
+    static bool enableCrashHandler = QProcess::systemEnvironment().contains(enableEnvString);
+    if (enableCrashHandler) {
+        return true;
+    }
+
+#ifdef _DEBUG // no crash handler mode in debug build by default
+    bool defaultValue = false;
+#else
+    bool defaultValue = true;
+#endif
+    return defaultValue;
+}
 
 #if defined( Q_OS_WIN )
 
@@ -190,7 +209,7 @@ void CrashHandler::releaseReserve() {
 
 void CrashHandler::setupHandler() {
     // setup cached messages first
-    assert(crashLogCache = NULL);
+    assert(crashLogCache == NULL);
     crashLogCache = new LogCache();
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_TASKS, LogLevel_TRACE));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CORE_SERVICES, LogLevel_TRACE));
@@ -351,5 +370,3 @@ void CrashHandler::getSubTasks(Task *t, QString& list, int lvl) {
 
 
 }
-
-#endif
