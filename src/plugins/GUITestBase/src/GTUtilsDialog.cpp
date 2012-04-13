@@ -37,6 +37,8 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QDialogButtonBox>
 
+#include <QDebug>
+
 namespace U2 {
 
 void GUIDialogWaiter::wait() {
@@ -232,7 +234,7 @@ void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
 void GTUtilsDialog::PopupChooser::run()
 {
     GTGlobals::sleep(100);
-    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());;
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
 
@@ -452,10 +454,13 @@ void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::checkAddToProject
     GT_CHECK(checkButton != NULL, "Check box not found");
 
     if ((addToProject && !checkButton->isChecked()) ||
-            !addToProject && checkButton->isChecked()) {
+         !addToProject && checkButton->isChecked()) {
+        QPoint checkPos = checkButton->mapToGlobal(checkButton->rect().topLeft());
+
+        checkPos = QPoint(checkPos.x() + 10, checkPos.y() + 10); // +10 for moved to clickable area
         switch(useMethod) {
         case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkButton->rect().topLeft()));
+            GTMouseDriver::moveTo(os, checkPos);
             GTMouseDriver::click(os);
             break;
         case GTGlobals::UseKey:
@@ -475,9 +480,12 @@ void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::clickMergeRadioBu
     GT_CHECK(mergeButton != NULL, "Radio button " + mergeRadioButtons[options] + " not found");
 
     if (mergeButton->isEnabled()){
+        QPoint radioPos = mergeButton->mapToGlobal(mergeButton->rect().topLeft());
+        radioPos = QPoint(radioPos.x() + 10, radioPos.y() + 10); // +10 for moved to clickable area
+
         switch(useMethod) {
         case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(os, mergeButton->mapToGlobal(mergeButton->rect().topLeft()));
+            GTMouseDriver::moveTo(os, radioPos);
             GTMouseDriver::click(os);
             break;
         case GTGlobals::UseKey:
