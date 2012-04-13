@@ -42,7 +42,7 @@ namespace U2 {
     GT_CHECK_RESULT(condition, errorMessage, )
 
 #define GT_CHECK_RESULT(condition, errorMessage, result) \
-    CHECK_SET_ERR_RESULT(condition, GT_CLASS_NAME " :: " GT_METHOD_NAME " :  " + QString(errorMessage), result)
+    CHECK_SET_ERR_RESULT(condition, GT_CLASS_NAME " __ " GT_METHOD_NAME " _  " + QString(errorMessage), result)
 
 class GTGlobals {
 public:
