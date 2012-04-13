@@ -27,6 +27,7 @@
 namespace U2 {
 
 namespace GUITest_initial_checks {
+#undef GUI_TEST_PREFIX
 #define GUI_TEST_PREFIX "GUITest_initial_checks_"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)

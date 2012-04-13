@@ -27,6 +27,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_project_relations {
+#undef GUI_TEST_PREFIX
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_project_relations_"
 
 GUI_TEST_CLASS_DECLARATION(test_0002)

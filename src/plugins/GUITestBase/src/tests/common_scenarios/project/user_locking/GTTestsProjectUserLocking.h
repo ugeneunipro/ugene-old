@@ -27,6 +27,7 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_project_user_locking {
+#undef GUI_TEST_PREFIX
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_project_user_locking_"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
