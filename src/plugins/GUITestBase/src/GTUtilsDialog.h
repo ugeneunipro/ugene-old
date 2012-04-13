@@ -309,8 +309,8 @@ public:
         selectSequenceRegionDialogFiller(U2OpStatus &_os):
             os(_os), rangeType(Single), selectAll(true){}
 
-        selectSequenceRegionDialogFiller(U2OpStatus &_os, int minVal, int maxVal):
-            os(_os), rangeType(Single), selectAll(false), min(minVal), max(maxVal){}
+        selectSequenceRegionDialogFiller(U2OpStatus &_os, int _minVal, int _maxVal):
+            os(_os), rangeType(Single), selectAll(false), minVal(_minVal), maxVal(_maxVal){}
 
         selectSequenceRegionDialogFiller(U2OpStatus &_os, const QString &range):
             os(_os), rangeType(Multiple), selectAll(false), multipleRange(range){}
@@ -319,7 +319,7 @@ public:
     private:
         RangeType rangeType;
         U2OpStatus &os;
-        int min, max;
+        int minVal, maxVal;
         bool selectAll;
         QString multipleRange;
     };

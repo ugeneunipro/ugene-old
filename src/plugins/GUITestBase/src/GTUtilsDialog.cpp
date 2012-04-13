@@ -136,8 +136,8 @@ void GTUtilsDialog::CreateAnnotationDialogFiller::run() {
     QLineEdit *annotationNameLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "annotationNameEdit", dialog));
     GT_CHECK(annotationNameLineEdit != NULL, "LineEdit is NULL");
     GTLineEdit::setText(os, annotationNameLineEdit, annotationName);
- 
-	QLineEdit *locationLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "locationEdit", dialog));
+
+        QLineEdit *locationLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "locationEdit", dialog));
     GT_CHECK(locationLineEdit != NULL, "LineEdit is NULL");
     GTLineEdit::setText(os, locationLineEdit, location);
 
@@ -235,6 +235,7 @@ void GTUtilsDialog::PopupChooser::run()
 {
     GTGlobals::sleep(100);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+    qDebug() << activePopupMenu->actions();
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
 
@@ -305,16 +306,16 @@ void GTUtilsDialog::ExportToSequenceFormatFiller::run()
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::ExportSelectedRegionFiller::run()
 {
-	QWidget *dialog = QApplication::activeModalWidget();
-	GT_CHECK(dialog != NULL, "dialog not found");
+        QWidget *dialog = QApplication::activeModalWidget();
+        GT_CHECK(dialog != NULL, "dialog not found");
 
-	QLineEdit *lineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "fileNameEdit", dialog));
-	GT_CHECK(lineEdit != NULL, "File name line edit not found");
-	GTLineEdit::setText(os, lineEdit, path + name);
+        QLineEdit *lineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "fileNameEdit", dialog));
+        GT_CHECK(lineEdit != NULL, "File name line edit not found");
+        GTLineEdit::setText(os, lineEdit, path + name);
 
-	QPushButton *okButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
-	GT_CHECK(okButton != NULL, "Export button not found");
-	GTWidget::click(os, okButton);
+        QPushButton *okButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
+        GT_CHECK(okButton != NULL, "Export button not found");
+        GTWidget::click(os, okButton);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -375,12 +376,12 @@ void GTUtilsDialog::ExportSequenceAsAlignmentFiller::run()
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::CopyToFileAsDialogFiller::run()
 {
-	QWidget *dialog = QApplication::activeModalWidget();
-	GT_CHECK(dialog != NULL, "dialog not found");
+        QWidget *dialog = QApplication::activeModalWidget();
+        GT_CHECK(dialog != NULL, "dialog not found");
 
-	QPushButton *btSave = dialog->findChild<QPushButton*>(QString::fromUtf8("createButton"));
-	GT_CHECK(btSave != NULL, "Save button not found");
-	GTWidget::click(os, btSave);
+        QPushButton *btSave = dialog->findChild<QPushButton*>(QString::fromUtf8("createButton"));
+        GT_CHECK(btSave != NULL, "Save button not found");
+        GTWidget::click(os, btSave);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -567,16 +568,16 @@ void GTUtilsDialog::ExportAnnotationsFiller::run()
 
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
 
-	if (comboBox->currentIndex() != index){
-		GTComboBox::setCurrentIndex(os, comboBox, index);
-	}
+        if (comboBox->currentIndex() != index){
+                GTComboBox::setCurrentIndex(os, comboBox, index);
+        }
 
     QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("exportSequenceCheck"));
     GT_CHECK(checkButton != NULL, "Check box not found");
 
     if ((saveSequencesUnderAnnotations && !checkButton->isChecked()) ||
             !saveSequencesUnderAnnotations && checkButton->isChecked()) {
-		QPoint checkPos;
+                QPoint checkPos;
         switch(useMethod) {
         case GTGlobals::UseMouse:
             checkPos = QPoint(checkButton->rect().left() + 5, checkButton->rect().top() + 5);
@@ -594,10 +595,10 @@ void GTUtilsDialog::ExportAnnotationsFiller::run()
 
     if ((saveSequenceNames && !checkButton->isChecked()) ||
             !saveSequenceNames && checkButton->isChecked()) {
-		QPoint checkPos;
+                QPoint checkPos;
         switch(useMethod) {
         case GTGlobals::UseMouse:
-			checkPos = QPoint(checkButton->rect().left() + 5, checkButton->rect().top() + 5);
+                        checkPos = QPoint(checkButton->rect().left() + 5, checkButton->rect().top() + 5);
             GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkPos));
             GTMouseDriver::click(os);
             break;
@@ -607,10 +608,10 @@ void GTUtilsDialog::ExportAnnotationsFiller::run()
             break;
         }
     }
-	QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+        QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
     GT_CHECK(buttonBox != NULL, "buttonBox is NULL");
 
-	QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+        QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     GT_CHECK(okButton != NULL, "okButton is NULL");
 
     GTWidget::click(os, okButton);
@@ -638,15 +639,15 @@ void GTUtilsDialog::selectSequenceRegionDialogFiller::run()
         GTWidget::click(os, max);
         GTGlobals::sleep(500);
     } else if (rangeType == Single) {
-        GT_CHECK(min < max, "Value \"min\" greater or equals then \"max\"");
+        GT_CHECK(minVal < maxVal, "Value \"min\" greater or equals then \"max\"");
 
         QLineEdit *startEdit = dialog->findChild<QLineEdit*>("startEdit");
         QLineEdit *endEdit = dialog->findChild<QLineEdit*>("endEdit");
         GT_CHECK(startEdit != NULL, "QLineEdit \"startEdit\" not found");
         GT_CHECK(endEdit != NULL, "QLineEdit \"endEdit\" not found");
 
-        GTLineEdit::setText(os, startEdit, QString::number(min));
-        GTLineEdit::setText(os, endEdit, QString::number(max));
+        GTLineEdit::setText(os, startEdit, QString::number(minVal));
+        GTLineEdit::setText(os, endEdit, QString::number(maxVal));
     } else {
         GT_CHECK(! multipleRange.isEmpty(), "Range is empty");
 
