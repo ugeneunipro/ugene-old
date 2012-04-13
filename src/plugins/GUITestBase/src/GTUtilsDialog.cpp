@@ -543,6 +543,83 @@ void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::fillSpinBox()
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::exportAnnotationsFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::ExportAnnotationsFiller::run()
+{
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+
+    QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+    GT_CHECK(lineEdit != NULL, "line edit not found");
+    GTLineEdit::setText(os, lineEdit, exportToFile);
+
+    QComboBox *comboBox = dialog->findChild<QComboBox*>();
+    GT_CHECK(comboBox != NULL, "ComboBox not found");
+
+    int index = -1;
+    for (int i = 0; i < comboBox->count(); i++ ) {
+        if (comboBox->itemText(i) == comboBoxItems[format]) {
+            index = i;
+            break;
+        }
+    }
+
+    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+
+	if (comboBox->currentIndex() != index){
+		GTComboBox::setCurrentIndex(os, comboBox, index);
+	}
+
+    QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("exportSequenceCheck"));
+    GT_CHECK(checkButton != NULL, "Check box not found");
+
+    if ((saveSequencesUnderAnnotations && !checkButton->isChecked()) ||
+            !saveSequencesUnderAnnotations && checkButton->isChecked()) {
+		QPoint checkPos;
+        switch(useMethod) {
+        case GTGlobals::UseMouse:
+            checkPos = QPoint(checkButton->rect().left() + 5, checkButton->rect().top() + 5);
+            GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkPos));
+            GTMouseDriver::click(os);
+            break;
+        case GTGlobals::UseKey:
+            GTWidget::setFocus(os, checkButton);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+            break;
+        }
+    }
+    checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("exportSequenceNameCheck"));
+    GT_CHECK(checkButton != NULL, "Check box not found");
+
+    if ((saveSequenceNames && !checkButton->isChecked()) ||
+            !saveSequenceNames && checkButton->isChecked()) {
+		QPoint checkPos;
+        switch(useMethod) {
+        case GTGlobals::UseMouse:
+			checkPos = QPoint(checkButton->rect().left() + 5, checkButton->rect().top() + 5);
+            GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkPos));
+            GTMouseDriver::click(os);
+            break;
+        case GTGlobals::UseKey:
+            GTWidget::setFocus(os, checkButton);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+            break;
+        }
+    }
+	QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+    GT_CHECK(buttonBox != NULL, "buttonBox is NULL");
+
+	QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    GT_CHECK(okButton != NULL, "okButton is NULL");
+
+    GTWidget::click(os, okButton);
+
+}
+
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 #define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::selectSequenceDialogFiller::run()
@@ -563,33 +640,8 @@ void GTUtilsDialog::selectSequenceDialogFiller::run()
     GTGlobals::sleep(500);
     GTWidget::click(os, okButton);
 }
-
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-#define GT_CLASS_NAME "GTUtilsDialog::ExportAnnotationsDialogFiller"
-#define GT_METHOD_NAME "run"
-void GTUtilsDialog::ExportAnnotationsDialogFiller::run() {
-
-    QWidget *dialog = QApplication::activeModalWidget();
-    GT_CHECK(dialog != NULL, "dialog is NULL");
-
-    QLineEdit* fileNameEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
-    GT_CHECK(fileNameEdit != NULL, "fileNameEdit is NULL");
-    GTLineEdit::setText(os, fileNameEdit, fileName);
-
-    QComboBox* formatsBox = dialog->findChild<QComboBox*>("formatsBox");
-    GT_CHECK(formatsBox != NULL, "formatsBox is NULL");
-    GTComboBox::setCurrentIndex(os, formatsBox, formatsBox->findText("csv"));
-
-    QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
-    GT_CHECK(buttonBox != NULL, "buttonBox is NULL");
-
-    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-    GT_CHECK(okButton != NULL, "okButton is NULL");
-    GTWidget::click(os, okButton);
-}
-#undef GT_METHOD_NAME
-#undef GT_CLASS_NAME
 
 }

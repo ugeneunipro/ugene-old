@@ -43,6 +43,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2View/ADVConstants.h>
 #include <U2Core/AppContext.h>
+#include <QFile>
 
 namespace U2{
 
@@ -138,7 +139,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ADV_MENU_EXPORT << ACTION_EXPORT_ANNOTATIONS);
     GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 
-    GTUtilsDialog::ExportAnnotationsDialogFiller filler(os, testDir+"_common_data/scenarios/sandbox/1.csv");
+    GTUtilsDialog::ExportAnnotationsFiller filler(os, testDir+"_common_data/scenarios/sandbox/1.csv", GTUtilsDialog::ExportAnnotationsFiller::csv);
     GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(100);
@@ -146,6 +147,47 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTGlobals::sleep(1000);
     bool equals = GTFile::equals(os, testDir+"_common_data/scenarios/sandbox/1.csv", testDir+"_common_data/scenarios/project/test_0004.csv");
     CHECK_SET_ERR(equals == true, "Exported file differs from the test file");
+}
+GUI_TEST_CLASS_DEFINITION(test_0005) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+
+	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+	GTMouseDriver::doubleClick(os);
+	GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
+	GTGlobals::sleep(100);
+
+	QTreeWidgetItem* item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+	CHECK_SET_ERR(item != NULL, "AnnotationsTreeView is NULL");
+	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_annotations", GTGlobals::UseMouse);
+	GTUtilsProject::exportAnnotations(os, "C", testDir+"_common_data/scenarios/sandbox/1.csv", GTUtilsDialog::ExportAnnotationsFiller::csv, true, false);
+	GTGlobals::sleep(2000);
+
+	QString expectedFileContent ("\"Group\",\"Name\",\"Start\",\"End\",\"Length\",\"Complementary\",\"Sequence\",\"qual1\",\"qual2\"\"C\",\"C\",\"80\",\"90\",\"11\",\"no\",\"GAATAGAAAAG\",\"val1\",\"val2\"");
+
+	QFile file(testDir+"_common_data/scenarios/sandbox/1.csv");
+	if (! file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		if (! os.hasError()) {
+			os.setError("Can't open file \"" + testDir + "_common_data/scenarios/sandbox/1.csv\"");
+		}
+	}
+    QTextStream in(&file);
+	QString fileContent, temp;
+	
+	while (! in.atEnd()) {
+		in >> temp;
+		fileContent += temp;
+	}
+	file.close();
+
+	if (fileContent != expectedFileContent && !os.hasError() ) {
+		os.setError("File is not expected file");
+	}
+
+}
+GUI_TEST_CLASS_DEFINITION(test_0007) {
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECT__ADD_NEW_DOCUMENT);
+	GTGlobals::sleep(2000);
 }
 
 }

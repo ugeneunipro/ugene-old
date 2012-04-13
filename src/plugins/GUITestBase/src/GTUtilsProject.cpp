@@ -154,7 +154,33 @@ void GTUtilsProject::exportSequenceOfSelectedAnnotations(U2OpStatus &os, const Q
 
     GTGlobals::sleep(500);
 }
+void GTUtilsProject::exportAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &exportToFile,
+                                       GTUtilsDialog::ExportAnnotationsFiller::fileFormat format,
+                                       bool saveSequencesUnderAnnotations, bool saveSequenceNames, GTGlobals::UseMethod method)
+{
+    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_annotations");
+    GTUtilsDialog::ExportAnnotationsFiller filler(os, exportToFile, format, saveSequencesUnderAnnotations, saveSequenceNames);
+    QPoint pos;
 
+    switch (method) {
+    case GTGlobals::UseKey:
+        //TODO
+    case GTGlobals::UseMouse:
+    {
+        pos = GTUtilsAnnotationsTreeView::getItemCenter(os, itemToClick);
+        GTMouseDriver::moveTo(os, pos);
+        GTMouseDriver::doubleClick(os);
+        GTGlobals::sleep(200);
+
+        GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+        GTUtilsDialog::preWaitForDialog(os, &filler);
+        GTMouseDriver::click(os, Qt::RightButton);
+        break;
+    }
+    }
+
+    GTGlobals::sleep(500);
+}
 void GTUtilsProject::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile) {
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);

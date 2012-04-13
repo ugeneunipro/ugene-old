@@ -27,6 +27,7 @@
 #include <QtCore/QTimer>
 #include "GTUtilsDialog.h"
 #include <QDir>
+#include <QDebug>
 
 namespace U2 {
 
@@ -274,22 +275,42 @@ public:
         GTGlobals::UseMethod useMethod;
     };
 
+
+	class ExportAnnotationsFiller : public Runnable {
+    public:
+        enum fileFormat {genbank, gff, csv};
+        ExportAnnotationsFiller(U2OpStatus &_os, const QString &_exportToFile, fileFormat _format, bool _saveSequencesUnderAnnotations = true, 
+			                    bool _saveSequenceNames = true, GTGlobals::UseMethod method = GTGlobals::UseMouse):
+            os(_os), format(_format), saveSequencesUnderAnnotations(_saveSequencesUnderAnnotations), saveSequenceNames(_saveSequenceNames), useMethod(method)
+            {
+                QString __exportToFile = QDir::cleanPath(QDir::currentPath() + "/" + _exportToFile);
+                exportToFile = __exportToFile;
+				qDebug() << "\n\n\n\n\n\n\n\n\nPath = " << exportToFile << "\n\n\n\n\n\n\n\n";
+
+                comboBoxItems[genbank] = "genbank";
+                comboBoxItems[gff] = "gff";
+                comboBoxItems[csv] = "csv";
+            }
+        virtual void run();
+
+    private:
+        U2OpStatus &os;
+        QString exportToFile;
+        fileFormat format;
+        QMap<fileFormat, QString> comboBoxItems;
+        bool saveSequencesUnderAnnotations;
+        bool saveSequenceNames;
+
+        GTGlobals::UseMethod useMethod;
+    };
+
+
     class selectSequenceDialogFiller : public Runnable {
     public:
         selectSequenceDialogFiller(U2OpStatus &_os): os(_os){}
         virtual void run();
     private:
         U2OpStatus &os;
-    };
-
-    class ExportAnnotationsDialogFiller : public Runnable {
-    public:
-        ExportAnnotationsDialogFiller(U2OpStatus &_os, const QString& _fileName)
-            : os(_os), fileName(_fileName){}
-        virtual void run();
-    private:
-        U2OpStatus &os;
-        QString fileName;
     };
 
     static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, bool failOnNoDialog = true);

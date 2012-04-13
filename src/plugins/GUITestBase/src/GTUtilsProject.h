@@ -69,6 +69,8 @@ public:
                                                     GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::FormatToUse format,
                                                     GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::MergeOptions options,
                                                     int gapLength, bool addDocToProject = true, GTGlobals::UseMethod = GTGlobals::UseMouse);
+	static void exportAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &exportToFile, GTUtilsDialog::ExportAnnotationsFiller::fileFormat format, 
+								  bool saveSequencesUnderAnnotations = true, bool saveSequenceNames = true, GTGlobals::UseMethod = GTGlobals::UseMouse);
     static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile);
     static void closeProject(U2OpStatus &os, const CloseProjectSettings& settings = CloseProjectSettings());
 

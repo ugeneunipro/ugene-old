@@ -116,6 +116,7 @@ void GTFileDialogUtils::openFileDialog()
         GTKeyboardDriver::keyClick(os, 'O', GTKeyboardDriver::key["ctrl"]);
         break;
     }
+	GTGlobals::sleep(500);
 }
 
 #define GT_METHOD_NAME "setPath"
