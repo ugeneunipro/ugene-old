@@ -309,8 +309,8 @@ public:
         selectSequenceRegionDialogFiller(U2OpStatus &_os):
             os(_os), rangeType(Single), selectAll(true){}
 
-        selectSequenceRegionDialogFiller(U2OpStatus &_os, int _min, int _max):
-            os(_os), rangeType(Single), selectAll(false), min(_min), max(_max){}
+        selectSequenceRegionDialogFiller(U2OpStatus &_os, int minVal, int maxVal):
+            os(_os), rangeType(Single), selectAll(false), min(minVal), max(maxVal){}
 
         selectSequenceRegionDialogFiller(U2OpStatus &_os, const QString &range):
             os(_os), rangeType(Multiple), selectAll(false), multipleRange(range){}
@@ -324,15 +324,7 @@ public:
         QString multipleRange;
     };
 
-    class ExportAnnotationsDialogFiller : public Runnable {
-    public:
-        ExportAnnotationsDialogFiller(U2OpStatus &_os, const QString& _fileName)
-            : os(_os), fileName(_fileName){}
-        virtual void run();
-    private:
-        U2OpStatus &os;
-        QString fileName;
-    };
+
 
     static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, bool failOnNoDialog = true);
     static void preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal);
