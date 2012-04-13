@@ -94,8 +94,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/project/user locking/
 //////////////////////////////////////////////////////////////////////////
 //     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0001); excluded failed test
+    REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0003);
-	REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0005);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/document modifying/
