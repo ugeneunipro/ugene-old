@@ -23,12 +23,17 @@
 #include "api/GTGlobals.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTFileDialog.h"
+#include "api/GTWidget.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsTaskTreeView.h"
+#include "api/GTTreeWidget.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2Core/DocumentModel.h>
+#include <QtGui/QRadioButton>
 
 namespace U2 {
 
@@ -51,6 +56,92 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsDialog::waitForDialog(os, &checker);
 
     QString s = os.getError();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0002) 
+{
+#define GT_CLASS_NAME "GUITest_common_scenarios_project_user_locking_test_0002::CreateAnnnotationDialogComboBoxChecker"
+#define GT_METHOD_NAME "run"
+    class CreateAnnnotationDialogComboBoxChecker : public Runnable {
+    public:
+        CreateAnnnotationDialogComboBoxChecker(U2OpStatus &_os, const QString &radioButtonName): buttonName(radioButtonName), os(_os){}
+        void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            GT_CHECK(dialog != NULL, "activeModalWidget is NULL");
+
+            QRadioButton *btn = dialog->findChild<QRadioButton*>("existingObjectRB");
+            GT_CHECK(btn != NULL, "Radio button not found");
+
+            if (! btn->isEnabled()) {
+                GTMouseDriver::moveTo(os, btn->mapToGlobal(btn->rect().topLeft()));
+                GTMouseDriver::click(os);
+            }
+
+            QComboBox *comboBox = dialog->findChild<QComboBox*>();
+            GT_CHECK(comboBox != NULL, "ComboBox not found");
+
+            GT_CHECK(comboBox->count() != 0, "ComboBox is empty");
+
+            QPushButton *cancelButton = dialog->findChild<QPushButton*>("cancel_button");
+            GT_CHECK(cancelButton != NULL, "Button \"cancel\" not found");
+
+            GTWidget::click(os, cancelButton);
+        }
+
+    private:
+        U2OpStatus &os;
+        QString buttonName;
+    };
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj3.uprj");
+    GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsApp::checkUGENETitle(os, "proj3 UGENE");
+
+    QTreeWidget *w = GTUtilsProjectTreeView::getTreeWidget(os);
+    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "1.gb");
+
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "1.gb");
+    GTGlobals::sleep(100);
+
+    GTUtilsDialog::PopupChooser chooser1(os, QStringList() << "submenu_open_view" << "action_open_view");
+    GTUtilsDialog::preWaitForDialog(os, &chooser1, GUIDialogWaiter::Popup);
+
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
+
+    QIcon itemIconBefore = item->icon(0);
+
+    GTUtilsDialog::PopupChooser chooser2(os, QStringList() << "action_document_unlock");
+    GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
+
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    QIcon itemIconAfter = item->icon(0);
+
+    if (itemIconBefore.cacheKey() == itemIconAfter.cacheKey() && !os.hasError()) {
+        os.setError("Lock icon has not disappear");
+    }
+
+    CreateAnnnotationDialogComboBoxChecker checker(os, "");
+    GTUtilsDialog::preWaitForDialog(os, &checker);
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::PopupChooser chooser3(os, QStringList() << "action_document_lock");
+    GTUtilsDialog::preWaitForDialog(os, &chooser3, GUIDialogWaiter::Popup);
+
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    GTUtilsProject::closeProject(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
