@@ -79,6 +79,7 @@ QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals:
     case GTGlobals::UseMouse:
         mouse_pos = QCursor::pos();
         ground_widget = ground->geometry();
+        ground_widget = QRect(ground->mapToGlobal(ground_widget.topLeft()), ground->mapToGlobal(ground_widget.bottomRight()));
 
         if (! ground_widget.contains(mouse_pos)) {
             GTMouseDriver::moveTo(os, ground_widget.center());
