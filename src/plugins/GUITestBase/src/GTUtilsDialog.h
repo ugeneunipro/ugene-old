@@ -275,16 +275,15 @@ public:
     };
 
 
-	class ExportAnnotationsFiller : public Runnable {
+    class ExportAnnotationsFiller : public Runnable {
     public:
         enum fileFormat {genbank, gff, csv};
-        ExportAnnotationsFiller(U2OpStatus &_os, const QString &_exportToFile, fileFormat _format, bool _saveSequencesUnderAnnotations = true, 
+        ExportAnnotationsFiller(U2OpStatus &_os, const QString &_exportToFile, fileFormat _format, bool _saveSequencesUnderAnnotations = true,
 			                    bool _saveSequenceNames = true, GTGlobals::UseMethod method = GTGlobals::UseMouse):
             os(_os), format(_format), saveSequencesUnderAnnotations(_saveSequencesUnderAnnotations), saveSequenceNames(_saveSequenceNames), useMethod(method)
             {
                 QString __exportToFile = QDir::cleanPath(QDir::currentPath() + "/" + _exportToFile);
                 exportToFile = __exportToFile;
-				qDebug() << "\n\n\n\n\n\n\n\n\nPath = " << exportToFile << "\n\n\n\n\n\n\n\n";
 
                 comboBoxItems[genbank] = "genbank";
                 comboBoxItems[gff] = "gff";
@@ -304,7 +303,7 @@ public:
     };
 
 
-class selectSequenceRegionDialogFiller : public Runnable {
+    class selectSequenceRegionDialogFiller : public Runnable {
     public:
         enum RangeType {Single, Multiple};
         selectSequenceRegionDialogFiller(U2OpStatus &_os):
