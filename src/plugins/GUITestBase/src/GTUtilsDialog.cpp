@@ -234,7 +234,7 @@ void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
 void GTUtilsDialog::PopupChooser::run()
 {
     GTGlobals::sleep(100);
-    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());;
+    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
 
@@ -622,22 +622,51 @@ void GTUtilsDialog::ExportAnnotationsFiller::run()
 
 #define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"
 #define GT_METHOD_NAME "run"
-void GTUtilsDialog::selectSequenceDialogFiller::run()
+void GTUtilsDialog::selectSequenceRegionDialogFiller::run()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
-    QToolButton *min = dialog->findChild<QToolButton*>("minButton");
-    QToolButton *max = dialog->findChild<QToolButton*>("maxButton");
-    QPushButton *okButton = dialog->findChild<QPushButton*>("okButton");
-    GT_CHECK(min != NULL, "Min button not found");
-    GT_CHECK(max != NULL, "Max button not found");
-    GT_CHECK(okButton != NULL, "OK button not found");
+    if (selectAll) {
+        QToolButton *min = dialog->findChild<QToolButton*>("minButton");
+        QToolButton *max = dialog->findChild<QToolButton*>("maxButton");
+        GT_CHECK(min != NULL, "Min button not found");
+        GT_CHECK(max != NULL, "Max button not found");
 
-    GTWidget::click(os, min);
-    GTGlobals::sleep(500);
-    GTWidget::click(os, max);
-    GTGlobals::sleep(500);
+        GTWidget::click(os, min);
+        GTGlobals::sleep(500);
+        GTWidget::click(os, max);
+        GTGlobals::sleep(500);
+    } else if (rangeType == Single) {
+        GT_CHECK(min < max, "Value \"min\" greater or equals then \"max\"");
+
+        QLineEdit *startEdit = dialog->findChild<QLineEdit*>("startEdit");
+        QLineEdit *endEdit = dialog->findChild<QLineEdit*>("endEdit");
+        GT_CHECK(startEdit != NULL, "QLineEdit \"startEdit\" not found");
+        GT_CHECK(endEdit != NULL, "QLineEdit \"endEdit\" not found");
+
+        GTLineEdit::setText(os, startEdit, QString::number(min));
+        GTLineEdit::setText(os, endEdit, QString::number(max));
+    } else {
+        GT_CHECK(! multipleRange.isEmpty(), "Range is empty");
+
+        QRadioButton *multipleButton = dialog->findChild<QRadioButton*>("miltipleButton");
+        GT_CHECK(multipleButton != NULL, "RadioButton \"miltipleButton\" not found");
+
+        QPoint buttonPos = multipleButton->mapToGlobal(multipleButton->rect().topLeft());
+        buttonPos = QPoint(buttonPos.x() + 10, buttonPos.y() + 10); // for moved to clickable area
+
+        GTMouseDriver::moveTo(os, buttonPos);
+        GTMouseDriver::click(os);
+
+        QLineEdit *regionEdit = dialog->findChild<QLineEdit*>("multipleRegionEdit");
+        GT_CHECK(regionEdit != NULL, "QLineEdit \"multipleRegionEdit\" not foud");
+
+        GTLineEdit::setText(os, regionEdit, multipleRange);
+    }
+
+    QPushButton *okButton = dialog->findChild<QPushButton*>("okButton");
+    GT_CHECK(okButton != NULL, "OK button not found");
     GTWidget::click(os, okButton);
 }
 #undef GT_METHOD_NAME

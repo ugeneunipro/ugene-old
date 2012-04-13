@@ -47,7 +47,7 @@ QString GTSequenceViewUtils::getSequenceAsString(U2OpStatus &os)
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);
 
-    GTUtilsDialog::selectSequenceDialogFiller filler(os);
+    GTUtilsDialog::selectSequenceRegionDialogFiller filler(os);
     GTUtilsDialog::preWaitForDialog(os, &filler);
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
