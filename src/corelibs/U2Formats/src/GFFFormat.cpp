@@ -443,7 +443,7 @@ QStringList GFFFormat::parseLine( QString line ) const{
         pair.clear();
         pair.append(prev);
         pair.append(c);
-        if((c == '\t') || (pair == " \t") || (pair == "  ")){
+        if((c == '\t') || (pair == " \t") || ((pair == "  ") && result.size() < 8)){ //ignore double space pair in comment section
             if((word != "  ") && (word != " ") && !word.isEmpty()){
                 result.append(word);
             }
