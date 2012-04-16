@@ -48,6 +48,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/SchemaWorker.h \
            src/library/ScriptWorker.h \
            src/library/SequenceSplitWorker.h \
+           src/library/AminoTranslationWorker.h \
            src/library/SequencesToMSAWorker.h \
            src/library/StatisticWorkers.h \
            src/library/Text2SequenceWorker.h \
@@ -110,6 +111,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/SchemaWorker.cpp \
            src/library/ScriptWorker.cpp \
            src/library/SequenceSplitWorker.cpp \
+           src/library/AminoTranslationWorker.cpp \
            src/library/SequencesToMSAWorker.cpp \
            src/library/StatisticWorkers.cpp \
            src/library/Text2SequenceWorker.cpp \

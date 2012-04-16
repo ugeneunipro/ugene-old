@@ -44,6 +44,7 @@
 #include "library/PassFilterWorker.h"
 #include "library/MarkSequenceWorker.h"
 #include "library/MultiplexerWorker.h"
+#include "library/AminoTranslationWorker.h"
 
 #include "RemoteDBFetcherWorker.h"
 
@@ -266,6 +267,8 @@ void CoreLib::init() {
     GetFileListWorkerFactory::init();
     FetchSequenceByIdFromAnnotationFactory::init();
     GroupWorkerFactory::init();
+    AminoTranslationWorkerFactory::init();
+
     initUsersWorkers();
     initExternalToolsWorkers();
 }

@@ -43,7 +43,13 @@ public:
     static const QString STRAND_DIRECT();
     static const QString STRAND_COMPLEMENTARY();
     static const QVariantMap STRAND_ATTRIBUTE_VALUES_MAP();
-    
+
+    static const Descriptor AMINO_TRANSLATION_OFFSET_ATTRIBUTE();
+    static const QString AMINO_TRANSLATION_OFFSET_ZERO();
+    static const QString AMINO_TRANSLATION_OFFSET_ONE();
+    static const QString AMINO_TRANSLATION_OFFSET_TWO();
+    static const QString AMINO_TRANSLATION_OFFSET_ALL();
+    static const QVariantMap AMINO_TRANSLATION_OFFSET_ATTRIBUTE_VALUES_MAP();
 }; // BaseAttributes
 
 } // Workflow
