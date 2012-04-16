@@ -57,6 +57,8 @@ public:
 
     static QString getProjectTreeItemName(ProjViewItem* projViewItem);
 
+    static void itemModificationCheck(U2OpStatus &os, QTreeWidgetItem* item, bool modified = true);
+
     static const QString widgetName;
 };
 

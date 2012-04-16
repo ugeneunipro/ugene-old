@@ -32,6 +32,17 @@ namespace U2{
 
 namespace GUITest_common_scenarios_project_relations{
 
+GUI_TEST_CLASS_DEFINITION(test_0001) {
+
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj");
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+    GTUtilsDocument::checkDocument(os, "1.gb");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
