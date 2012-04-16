@@ -47,7 +47,8 @@ RegionSelector::RegionSelector(QWidget* p, qint64 _len, bool _isVertical, DNASeq
     region.startPos = 0;
     region.length = maxLen;
     presets << RegionPreset(tr("Whole sequence"), region);
-    defaultIndex = presets.count() - 1;
+    wholeRegionIndex = presets.count() - 1;
+    defaultIndex = wholeRegionIndex;
 
     if (selection != NULL && !selection->isEmpty()) {
         region.startPos = selection->getSelectedRegions().first().startPos;
