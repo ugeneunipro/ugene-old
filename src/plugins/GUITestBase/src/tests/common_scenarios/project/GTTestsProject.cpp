@@ -24,6 +24,8 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
+#include "api/GTFile.h"
+#include <api/GTFileDialog.h>
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -128,6 +130,48 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     GTUtilsProject::exportProjectCheck(os, "project.uprj");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0012) {
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "1.gb");
+	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
+	GTMouseDriver::click(os, Qt::RightButton);
+	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse);
+	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+
+	GTUtilsDialog::CopyToFileAsDialogFiller filler(os, testDir + "_common_data/scenarios/sandbox/", "1.gb", 
+		                                           GTUtilsDialog::CopyToFileAsDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
+	GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+	GTGlobals::sleep(100);
+
+	GTUtilsDocument::checkDocument(os, "1.gb.gz");
+	GTGlobals::sleep(100);
+	QString fileNames[] = {"_common_data/scenarios/project/test_0012.gb", "_common_data/scenarios/project/1.gb"};
+	QString fileContent[2];
+
+	for (int i = 0; i < 2; i++) {
+		QFile file(testDir + fileNames[i]);
+		if (! file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+			if (! os.hasError()) {
+				os.setError("Can't open file \"" + testDir + fileNames[i]);
+			}
+		}
+		QTextStream in(&file);
+		QString temp;
+		temp = in.readLine();
+		while (! in.atEnd()) {
+			temp = in.readLine();
+			fileContent[i] += temp;
+		}
+		file.close();
+	}
+
+	qDebug() << "file 1 = " << fileContent[0] << "file 2 = " << fileContent[1];
+	if (fileContent[0] != fileContent[1] && !os.hasError() ) {
+		os.setError("File is not expected file");
+	}
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0014) {
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
     GTUtilsDialog::RemoteDBDialogFiller filler(os, "1HTQ", 2); 
@@ -154,7 +198,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
 	GTGlobals::sleep(100);
 
 	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse);
-	GTUtilsDialog::CopyToFileAsDialogFiller filler(os, "", "", GTGlobals::UseMouse);
+	GTUtilsDialog::CopyToFileAsDialogFiller filler(os, "", "", GTUtilsDialog::CopyToFileAsDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "example.gb"));
 	GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
@@ -201,6 +245,32 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 
     QWidget* w = GTUtilsMdi::findWindow(os, "1m.fa");
     CHECK_SET_ERR(w != NULL, "Sequence view window title is not 1m.fa");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0025) {
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+
+    GTUtilsDialog::PopupChooser popupChooser1(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &popupChooser1, GUIDialogWaiter::Popup);
+	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
+    GTGlobals::sleep(1000);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(100);
+
+    GTUtilsDialog::PopupChooser popupChooser2(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &popupChooser2, GUIDialogWaiter::Popup);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "2.gb"));
+    GTGlobals::sleep(1000);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(100);
+
+	GTUtilsProject::createAnnotation(os, "<auto>", "misc_feature", "complement(1.. 20)");
+	GTGlobals::sleep(2000);
+	GTUtilsProject::ExitProjectSettings s;
+    s.saveNoCloseButton = QMessageBox::No;
+	GTUtilsProject::exitProject(os, s);
+	
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0026) {

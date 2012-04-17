@@ -64,11 +64,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0012);
 //     REGISTER_TEST(GUITest_common_scenarios_project::test_0014); wrong test - does not cancel task
 	REGISTER_TEST(GUITest_common_scenarios_project::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
 //    REGISTER_TEST(GUITest_common_scenarios_project::test_0023); wrong test
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0025);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0028);
 //     REGISTER_TEST(GUITest_common_scenarios_project::test_0030); https://ugene.unipro.ru/tracker/browse/UGENE-88
@@ -113,7 +115,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0003);
 //     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0004); https://ugene.unipro.ru/tracker/browse/UGENE-924
 // 	REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0005); excluded failed test
-// 	REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0007); excluded failed test
+ 	REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0007); 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/from project view/
 //////////////////////////////////////////////////////////////////////////
@@ -127,7 +129,7 @@ void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
     if (guiTestBase) {
         guiTestBase->registerTest(new GUITest_initial_checks::test_0001, GUITestBase::Additional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0002, GUITestBase::Additional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0003, GUITestBase::Additional);
+       // guiTestBase->registerTest(new GUITest_initial_checks::test_0003, GUITestBase::Additional);
     }
 }
 

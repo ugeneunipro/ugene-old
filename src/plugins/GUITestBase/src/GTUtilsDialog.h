@@ -27,6 +27,8 @@
 #include <QtCore/QTimer>
 #include "GTUtilsDialog.h"
 #include <QDir>
+#include <QDebug>
+
 
 namespace U2 {
 
@@ -178,20 +180,33 @@ public:
 
 	class CopyToFileAsDialogFiller : public Runnable {
 	public:
-		CopyToFileAsDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method):
-		  os(_os), name(_name), useMethod(method) {
+		enum FormatToUse {Genbank, GFF};
+
+		CopyToFileAsDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name, 
+                                 GTUtilsDialog::CopyToFileAsDialogFiller::FormatToUse _format, bool compressFile = true,
+								 bool addToProject = false, GTGlobals::UseMethod method = GTGlobals::UseMouse):
+		  os(_os), path(_path), name(_name), useMethod(method), format(_format), compressFile(compressFile), addToProject(addToProject) {
 			  QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
 			  if (__path.at(__path.count() - 1) != '/') {
 				  __path += '/';
 			  }
 
 			  path = __path;
+
+			  comboBoxItems[Genbank] = "Genbank";
+              comboBoxItems[GFF] = "GFF";
+
 		  }
 		  virtual void run();
 	private:
 		U2OpStatus &os;
 		QString path, name;
 		GTGlobals::UseMethod useMethod;
+        FormatToUse format;
+        QMap<FormatToUse, QString> comboBoxItems;
+        bool addToProject;
+		bool compressFile;
+
 	};
 
     class ExportSequenceAsAlignmentFiller : public Runnable {
@@ -232,8 +247,8 @@ public:
         enum FormatToUse {Fasta, Fastaq, Gff, Genbank};
         enum MergeOptions {SaveAsSeparate, Merge};
         ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength,
-                                                  bool _addDocToProject = true, GTGlobals::UseMethod method = GTGlobals::UseMouse):
-            os(_os), format(_format), gapLength(_gapLength), addToProject(_addDocToProject),
+                                                  bool _addDocToProject = true, bool _exportWithAnnotations = true, GTGlobals::UseMethod method = GTGlobals::UseMouse):
+            os(_os), format(_format), gapLength(_gapLength), addToProject(_addDocToProject), exportWithAnnotations(_exportWithAnnotations),
             useMethod(method), options(_options)
             {
                 QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
@@ -260,6 +275,7 @@ public:
         void setFileName();
         void setFormat();
         void checkAddToProject();
+		void checkExportWithAnnotations();
         void clickMergeRadioButton();
         void fillSpinBox();
         QWidget *dialog;
@@ -271,6 +287,38 @@ public:
         QMap<FormatToUse, QString> comboBoxItems;
         QMap<MergeOptions, QString> mergeRadioButtons;
         bool addToProject;
+		bool exportWithAnnotations;
+        GTGlobals::UseMethod useMethod;
+    };
+
+
+	class CreateDocumentFiller : public Runnable {
+    public:
+        enum documentFormat {FASTA, Genbank};
+        CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, const QString &_documentLocation,
+			                 documentFormat _format, const QString &_sequenceName, GTGlobals::UseMethod method = GTGlobals::UseMouse):
+            os(_os), format(_format), useMethod(method)
+            {
+				sequenceName = _sequenceName;
+				pasteDataHere = _pasteDataHere;
+                QString __documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + _documentLocation + "/" + _sequenceName);
+                documentLocation = __documentLocation;
+				
+				qDebug() << "\n\n\n\n\n\n\n\n\nPath = " << documentLocation << "\n\n\n\n\n\n\n\n";
+
+                comboBoxItems[FASTA] = "FASTA";
+                comboBoxItems[Genbank] = "Genbank";
+            }
+        virtual void run();
+
+	private:
+        U2OpStatus &os;
+        QString documentLocation;
+        QString pasteDataHere;
+        QString sequenceName;
+        documentFormat format;
+        QMap<documentFormat, QString> comboBoxItems;
+
         GTGlobals::UseMethod useMethod;
     };
 

@@ -30,6 +30,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTMenuBar.h \
             src/api/GTMouse.h \
             src/api/GTMouseDriver.h \
+            src/api/GTPlainTextEdit.h \
             src/api/GTScrollBar.h \
             src/api/GTSystem.h \
             src/api/GTTreeWidget.h \
@@ -75,6 +76,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTMouseDriverLinux.cpp \
             src/api/GTMouseDriverMac.cpp \
             src/api/GTMouseDriverWindows.cpp \
+            src/api/GTPlainTextEdit.cpp \
             src/api/GTScrollBar.cpp \
             src/api/GTSystem.cpp \
             src/api/GTToolbar.cpp \

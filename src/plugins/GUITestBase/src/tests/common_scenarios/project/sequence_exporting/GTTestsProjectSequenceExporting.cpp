@@ -44,6 +44,7 @@
 #include <U2View/ADVConstants.h>
 #include <U2Core/AppContext.h>
 #include <QFile>
+#include <QPlainTextEdit>
 
 namespace U2{
 
@@ -186,8 +187,19 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 }
 GUI_TEST_CLASS_DEFINITION(test_0007) {
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECT__ADD_NEW_DOCUMENT);
-	GTGlobals::sleep(2000);
+	GTUtilsProject::createDocument(os, "ACGTGTGTGTACGACAGACGACAGCAGACGACAGACAGACAGACAGCAAGAGAGAGAGAG", testDir + "_common_data/scenarios/sandbox/", 
+		                           GTUtilsDialog::CreateDocumentFiller::Genbank, "Sequence");
+	GTGlobals::sleep(1000);
+    GTUtilsProject::createAnnotation(os, "<auto>", "misc_feature", "complement(1.. 20)");
+	GTGlobals::sleep(1000);
+    GTUtilsProject::exportSequenceOfSelectedAnnotations(os, "misc_feature", testDir + "_common_data/scenarios/sandbox/exp.gb",
+                                                        GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::Genbank,
+														GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate, 0, true, true);
+
+
+	GTGlobals::sleep(100);
+
+
 }
 
 }

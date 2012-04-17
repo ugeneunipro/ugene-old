@@ -49,6 +49,13 @@ public:
         QMessageBox::StandardButton saveOnCloseButton;
     };
 
+	class ExitProjectSettings {
+	public:
+		ExitProjectSettings() : saveNoCloseButton(QMessageBox::No){}
+
+		QMessageBox::StandardButton saveNoCloseButton;
+
+	};
     /*
         opens files using settings, checks if the document is loaded
     */
@@ -68,11 +75,14 @@ public:
     static void exportSequenceOfSelectedAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &path,
                                                     GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::FormatToUse format,
                                                     GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::MergeOptions options,
-                                                    int gapLength, bool addDocToProject = true, GTGlobals::UseMethod = GTGlobals::UseMouse);
+                                                    int gapLength, bool addDocToProject = true, bool exportWithAnnotations = true, GTGlobals::UseMethod = GTGlobals::UseMouse);
 	static void exportAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &exportToFile, GTUtilsDialog::ExportAnnotationsFiller::fileFormat format, 
 								  bool saveSequencesUnderAnnotations = true, bool saveSequenceNames = true, GTGlobals::UseMethod = GTGlobals::UseMouse);
+	static void createDocument(U2OpStatus &os, const QString &pasteDataHere, const QString &documentLocation, GTUtilsDialog::CreateDocumentFiller::documentFormat format,
+		                        const QString &sequenceName, GTGlobals::UseMethod = GTGlobals::UseMouse);
     static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile);
     static void closeProject(U2OpStatus &os, const CloseProjectSettings& settings = CloseProjectSettings());
+	static void exitProject(U2OpStatus &os, const ExitProjectSettings& exitSettings = ExitProjectSettings());
 
     enum CheckType {Exists, Empty};
     static void checkProject(U2OpStatus &os, CheckType checkType = Exists);

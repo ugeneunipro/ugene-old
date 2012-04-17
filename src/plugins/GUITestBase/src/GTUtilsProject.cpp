@@ -129,7 +129,7 @@ void GTUtilsProject::exportSequenceAsAlignment(U2OpStatus &os, const QString pro
 void GTUtilsProject::exportSequenceOfSelectedAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &path,
                                                          GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::FormatToUse format,
                                                          GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::MergeOptions options,
-                                                         int gapLength, bool addDocToProject, GTGlobals::UseMethod method)
+                                                         int gapLength, bool addDocToProject, bool exportWithAnnotations, GTGlobals::UseMethod method)
 {
     GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations");
     GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller filler(os, path, format, options, gapLength, addDocToProject);
@@ -181,6 +181,20 @@ void GTUtilsProject::exportAnnotations(U2OpStatus &os, const QString &itemToClic
 
     GTGlobals::sleep(500);
 }
+
+void GTUtilsProject::createDocument(U2OpStatus &os, const QString &pasteDataHere, const QString &documentLocation, 
+									GTUtilsDialog::CreateDocumentFiller::documentFormat format, const QString &sequenceName, 
+									GTGlobals::UseMethod method)
+{
+	GTUtilsDialog::CreateDocumentFiller filler(os, pasteDataHere, documentLocation, format, sequenceName);
+	GTUtilsDialog::preWaitForDialog(os, &filler);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText");
+    
+	GTGlobals::sleep(1000);
+    QPoint pos;
+}
+
+
 void GTUtilsProject::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile) {
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
@@ -194,6 +208,14 @@ void GTUtilsProject::closeProject(U2OpStatus &os, const CloseProjectSettings& se
     GTUtilsDialog::MessageBoxDialogFiller filler(os, settings.saveOnCloseButton);
     GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Modal, false);
 }
+
+void GTUtilsProject::exitProject(U2OpStatus &os, const ExitProjectSettings& exitSettings) {
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
+    GTUtilsDialog::MessageBoxDialogFiller filler(os, exitSettings.saveNoCloseButton);
+    GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Modal, false);
+}
+
 
 #define GT_METHOD_NAME "checkProject"
 void GTUtilsProject::checkProject(U2OpStatus &os, CheckType checkType) {
