@@ -356,6 +356,25 @@ void MAlignmentRow::setQuality( const DNAQuality& quality )
     }
 }
 
+int MAlignmentRow::getUngappedLength() const{
+    QBitArray gapMap(256);
+    gapMap[MAlignment_GapChar] = true;
+    QByteArray seqCopy(sequence);
+    int newLen = TextUtils::remove(seqCopy.data(), seqCopy.length(), seqCopy.data(), gapMap);
+    return newLen;    
+}
+
+int MAlignmentRow::getUngappedPosition( int pos ) const{
+    QByteArray part = sequence.mid(0, pos);
+    int ungappedPos = part.size();
+    foreach(QChar cc, part){
+        if(cc == MAlignment_GapChar){
+            ungappedPos--;
+        }
+    }
+    return ungappedPos;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // MAlignment impl
 

@@ -59,6 +59,8 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
     linesLabel->setAlignment(Qt::AlignCenter);
     colsLabel = new QLabel();
     colsLabel->setAlignment(Qt::AlignCenter);
+    posLabel = new QLabel();
+    posLabel->setAlignment(Qt::AlignCenter);
 
     lockLabel = new QLabel();
     
@@ -72,6 +74,7 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
 //    l->addStretch(1);
     l->addWidget(linesLabel);
     l->addWidget(colsLabel);
+    l->addWidget(posLabel);
     l->addWidget(lockLabel);
     setLayout(l);
 
@@ -118,6 +121,13 @@ void MSAEditorStatusWidget::updateCoords() {
     colsLabel->setText(ctext);
     colsLabel->setToolTip(tr("Column %1 of %2").arg(pos.x() + 1).arg(aliLen));
     colsLabel->setMinimumWidth(10 + fm.width(cpattern.arg(aliLen).arg(aliLen)));
+
+    QPair<QString, int> pp = seqArea->getGappedColumnInfo();
+    QString ppattern = QString(tr("Pos %1 / %2"));
+    QString ptext = ppattern.arg(pp.first).arg(pp.second);
+    posLabel->setText(ptext);
+    posLabel->setToolTip(tr("Position %1 of %2").arg(pp.first).arg(pp.second));
+    posLabel->setMinimumWidth(10 + fm.width(ppattern.arg(pp.second).arg(pp.second)));
 }
 
 

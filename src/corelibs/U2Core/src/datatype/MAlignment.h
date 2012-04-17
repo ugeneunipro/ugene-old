@@ -66,6 +66,8 @@ public:
     // Gets the length of the packed sequence
     int getCoreLength() const {return sequence.size();}
 
+    int getUngappedLength() const;
+
     // Return true if the packed sequence has DNA quality scores
     bool  hasQuality() const { return (!dnaQuality.isEmpty()); }
 
@@ -134,6 +136,8 @@ public:
     // Removes all gaps. Sets offset to 0
     // Returns true if changed
     bool simplify();
+
+    int getUngappedPosition(int pos) const;
 
 private:
     //helper method, common code for crop & mid

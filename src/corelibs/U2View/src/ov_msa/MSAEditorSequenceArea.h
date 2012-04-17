@@ -162,6 +162,8 @@ public:
 
     U2Region getRowsAt(int seq) const;
 
+    QPair<QString, int> getGappedColumnInfo() const;
+
 private:
     // emulating cursor mode with
 

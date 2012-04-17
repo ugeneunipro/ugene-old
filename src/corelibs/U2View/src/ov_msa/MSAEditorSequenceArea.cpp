@@ -1663,4 +1663,17 @@ void MSAEditorSequenceArea::sl_reverseComplementCurrentSelection() {
     }
 }
 
+QPair<QString, int> MSAEditorSequenceArea::getGappedColumnInfo() const{
+    const MAlignment& msa = editor->getMSAObject()->getMAlignment();
+    const MAlignmentRow& row = msa.getRow(getSelectedRows().startPos);
+    int len = row.getUngappedLength();
+    QChar current = row.chatAt(selection.topLeft().x());
+    if(current == MAlignment_GapChar){
+        return QPair<QString, int>(QString("gap"),len);
+    }else{ 
+        int pos = row.getUngappedPosition(selection.topLeft().x());
+        return QPair<QString, int>(QString::number(pos + 1),len);
+    }
+}
+
 }//namespace
