@@ -43,7 +43,10 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
     GT_CHECK(key != 0, "key = 0");
 //    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
-    Display *display = XOpenDisplay(NULL);
+    QByteArray display_name = qgetenv("DISPLAY");
+    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+
+    Display *display = XOpenDisplay(display_name.constData());
     GT_CHECK(display != 0, "display is NULL");
 
     if (modifiers) {
@@ -68,7 +71,10 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
     GT_CHECK(key != 0, "key = ");
 //    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
-    Display *display = XOpenDisplay(NULL);
+    QByteArray display_name = qgetenv("DISPLAY");
+    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+
+    Display *display = XOpenDisplay(display_name.constData());
     GT_CHECK(display != 0, "display is NULL");
 
     if (key == '_') {

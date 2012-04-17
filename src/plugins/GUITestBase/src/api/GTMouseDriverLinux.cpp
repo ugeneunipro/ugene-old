@@ -21,6 +21,7 @@
 
 #include "GTMouseDriver.h"
 #include "api/GTGlobals.h"
+#include <QByteArray>
 
 #ifdef __linux__
     #include <X11/extensions/XTest.h>
@@ -35,7 +36,10 @@ namespace U2 {
 #define GT_METHOD_NAME "moveTo"
 void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 {
-    Display *display = XOpenDisplay(NULL);
+    QByteArray display_name = qgetenv("DISPLAY");
+    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+
+    Display *display = XOpenDisplay(display_name.constData());
     GT_CHECK(display != 0, "display is NULL");
 
     int horres = XDisplayWidth(display, 0);
@@ -106,7 +110,10 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 #define GT_METHOD_NAME "press"
 void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 {
-    Display *display = XOpenDisplay(NULL);
+    QByteArray display_name = qgetenv("DISPLAY");
+    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+
+    Display *display = XOpenDisplay(display_name.constData());
     GT_CHECK(display != 0, "display is NULL");
 
     //1 = Left, 2 = Middle, 3 = Right
@@ -126,7 +133,10 @@ void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 {
     // TODO: check if this key has been already pressed
-    Display *display = XOpenDisplay(NULL);
+    QByteArray display_name = qgetenv("DISPLAY");
+    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+
+    Display *display = XOpenDisplay(display_name.constData());
     GT_CHECK(display != 0, "display is NULL");
 
     unsigned int btn = button == Qt::LeftButton ? 1 :
@@ -144,7 +154,10 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 #define GT_METHOD_NAME "scroll"
 void GTMouseDriver::scroll(U2OpStatus &os, int value)
 {
-    Display *display = XOpenDisplay(NULL);
+    QByteArray display_name = qgetenv("DISPLAY");
+    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+
+    Display *display = XOpenDisplay(display_name.constData());
     GT_CHECK(display != 0, "display is NULL");
 
     unsigned button =  value > 0 ? Button4 : Button5; //Button4 - scroll up, Button5 - scroll down
