@@ -173,7 +173,7 @@ void Text2SequenceWorkerFactory::init() {
     }
     
     Descriptor protoDesc(Text2SequenceWorkerFactory::ACTOR_ID, 
-        Text2SequenceWorker::tr("Convert text to sequence"), 
+        Text2SequenceWorker::tr("Convert Text to Sequence"), 
         Text2SequenceWorker::tr("Converts input text to sequence"));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     

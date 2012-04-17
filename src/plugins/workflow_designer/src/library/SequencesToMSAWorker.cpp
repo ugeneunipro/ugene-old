@@ -116,7 +116,7 @@ void SequencesToMSAWorkerFactory::init() {
     }
 
     Descriptor desc( SequencesToMSAWorkerFactory::ACTOR_ID, 
-        SequencesToMSAWorker::tr("Join sequences into alignment"), 
+        SequencesToMSAWorker::tr("Join Sequences into Alignment"), 
         SequencesToMSAWorker::tr("Creates multiple sequence alignment from sequences.") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, p, QList<Attribute*>() );
 

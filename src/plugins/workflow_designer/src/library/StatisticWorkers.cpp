@@ -54,7 +54,7 @@ void DNAStatWorkerFactory::init() {
         BaseTypes::BOOL_TYPE(),false, true);
 
     Descriptor desc( ACTOR_ID,
-        DNAStatWorker::tr("DNA statistics"), 
+        DNAStatWorker::tr("DNA Statistics"), 
         DNAStatWorker::tr("Evaluates statistics for DNA sequences") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
     proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),

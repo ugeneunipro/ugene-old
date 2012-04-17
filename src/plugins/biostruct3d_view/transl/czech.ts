@@ -199,7 +199,7 @@
     </message>
     <message>
         <location filename="../src/BioStruct3DGLWidget.cpp" line="1024"/>
-        <source>Align With...</source>
+        <source>Align with...</source>
         <translation>Zarovnat s...</translation>
     </message>
     <message>

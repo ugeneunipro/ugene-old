@@ -2239,8 +2239,8 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="155"/>
-        <source>Local BLAST search</source>
-        <translation type="unfinished"></translation>
+        <source>Local BLAST Search</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="156"/>
@@ -2410,8 +2410,8 @@ for long deletions (-L)</source>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="123"/>
-        <source>Local BLAST+ search</source>
-        <translation type="unfinished"></translation>
+        <source>Local BLAST+ Search</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="124"/>

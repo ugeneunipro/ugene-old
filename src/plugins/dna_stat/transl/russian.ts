@@ -241,7 +241,7 @@
     <message>
         <location filename="../src/DNAStatPlugin.cpp" line="49"/>
         <source>DNA Statistics</source>
-        <translation></translation>
+        <translation>ДНК статистика</translation>
     </message>
     <message>
         <location filename="../src/DNAStatPlugin.cpp" line="49"/>

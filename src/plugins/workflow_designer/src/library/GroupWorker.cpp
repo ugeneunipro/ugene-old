@@ -223,7 +223,7 @@ QString GroupPrompter::composeRichDoc() {
         }
     }
 
-    QString result = tr("Group all incoming messages by<u>%1</u> of <u>%2</u> slot data");
+    QString result = tr("Group all incoming messages <u>%1</u> of <u>%2</u> slot data.");
     if (inputName == unsetStr) {
         return result.arg("").arg(inputName);
     } else {
@@ -232,11 +232,11 @@ QString GroupPrompter::composeRichDoc() {
 
         QString op;
         if ("by-id" == opId) {
-            op = tr(" id");
+            op = tr("by id");
         } else if ("by-name" == opId) {
             op = tr(" name");
         } else if ("by-value" == opId) {
-            op = tr(" value");
+            op = tr("by value");
         }
         return result.arg(op).arg(inputName);
     }

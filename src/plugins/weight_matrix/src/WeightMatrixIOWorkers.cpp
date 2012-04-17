@@ -144,7 +144,7 @@ void PWMatrixWorkerFactory::init()
         QList<PortDescriptor*> p; QList<Attribute*> a;
         Descriptor pd(WMATRIX_IN_PORT_ID, WeightMatrixIO::tr("Weight matrix"), WeightMatrixIO::tr("Input weight matrix"));
         p << new PortDescriptor(pd, t, true /*input*/);
-        Descriptor desc(PWMatrixWriter::ACTOR_ID, WeightMatrixIO::tr("Write weight matrix"), WeightMatrixIO::tr("Saves all input weight matrices to specified location."));
+        Descriptor desc(PWMatrixWriter::ACTOR_ID, WeightMatrixIO::tr("Write Weight Matrix"), WeightMatrixIO::tr("Saves all input weight matrices to specified location."));
         IntegralBusActorPrototype* proto = new WritePWMatrixProto(desc, p, a);
         proto->setPrompter(new PWMatrixWritePrompter());
         r->registerProto(BaseActorCategories::CATEGORY_TRANSCRIPTION(), proto);
@@ -157,7 +157,7 @@ void PWMatrixWorkerFactory::init()
         outM[WMATRIX_SLOT] = WEIGHT_MATRIX_MODEL_TYPE();
         p << new PortDescriptor(pd, DataTypePtr(new MapDataType("wmatrix.read.out", outM)), false /*input*/, true /*multi*/);
         
-        Descriptor desc(PWMatrixReader::ACTOR_ID, WeightMatrixIO::tr("Read weight matrix"), WeightMatrixIO::tr("Reads weight matrices from file(s). The files can be local or Internet URLs."));
+        Descriptor desc(PWMatrixReader::ACTOR_ID, WeightMatrixIO::tr("Read Weight Matrix"), WeightMatrixIO::tr("Reads weight matrices from file(s). The files can be local or Internet URLs."));
         IntegralBusActorPrototype* proto = new ReadPWMatrixProto(desc, p, a);
         proto->setPrompter(new PWMatrixReadPrompter());
         r->registerProto(BaseActorCategories::CATEGORY_TRANSCRIPTION(), proto);
@@ -370,7 +370,7 @@ void PFMatrixWorkerFactory::init()
         QList<PortDescriptor*> p; QList<Attribute*> a;
         Descriptor pd(FMATRIX_IN_PORT_ID, WeightMatrixIO::tr("Frequency matrix"), WeightMatrixIO::tr("Input frequency matrix"));
         p << new PortDescriptor(pd, t, true /*input*/);
-        Descriptor desc(PFMatrixWriter::ACTOR_ID, WeightMatrixIO::tr("Write frequency matrix"), WeightMatrixIO::tr("Saves all input frequency matrices to specified location."));
+        Descriptor desc(PFMatrixWriter::ACTOR_ID, WeightMatrixIO::tr("Write Frequency Matrix"), WeightMatrixIO::tr("Saves all input frequency matrices to specified location."));
         IntegralBusActorPrototype* proto = new WritePFMatrixProto(desc, p, a);
         proto->setPrompter(new PFMatrixWritePrompter());
         r->registerProto(BaseActorCategories::CATEGORY_TRANSCRIPTION(), proto);
@@ -383,7 +383,7 @@ void PFMatrixWorkerFactory::init()
         outM[PFMatrixWorkerFactory::FMATRIX_SLOT] = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
         p << new PortDescriptor(pd, DataTypePtr(new MapDataType("fmatrix.read.out", outM)), false /*input*/, true /*multi*/);
         
-        Descriptor desc(PFMatrixReader::ACTOR_ID, WeightMatrixIO::tr("Read frequency matrix"), WeightMatrixIO::tr("Reads frequency matrices from file(s). The files can be local or Internet URLs."));
+        Descriptor desc(PFMatrixReader::ACTOR_ID, WeightMatrixIO::tr("Read Frequency Matrix"), WeightMatrixIO::tr("Reads frequency matrices from file(s). The files can be local or Internet URLs."));
         IntegralBusActorPrototype* proto = new ReadPFMatrixProto(desc, p, a);
         proto->setPrompter(new PFMatrixReadPrompter());
         r->registerProto(BaseActorCategories::CATEGORY_TRANSCRIPTION(), proto);

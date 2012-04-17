@@ -255,7 +255,7 @@ void SequenceSplitWorkerFactory::init() {
     }
 
     Descriptor desc( SequenceSplitWorkerFactory::ACTOR, 
-                     SequenceSplitWorker::tr("Get sequences by annotations"), 
+                     SequenceSplitWorker::tr("Get Sequences by Annotations"), 
                      SequenceSplitWorker::tr("Creates sequences from annotated regions of input sequence") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
     proto->addSlotRelation(BasePorts::OUT_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),

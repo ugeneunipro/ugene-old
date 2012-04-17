@@ -778,7 +778,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RemoteBLASTWorker.cpp" line="90"/>
         <source>Remote BLAST</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Request to remote database</source>
@@ -1002,7 +1002,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/RemoteBLASTPlugin.cpp" line="59"/>
         <source>Remote BLAST</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>

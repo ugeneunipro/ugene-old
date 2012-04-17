@@ -238,7 +238,7 @@
     </message>
     <message>
         <location filename="../src/BioStruct3DGLWidget.cpp" line="780"/>
-        <source>Align With...</source>
+        <source>Align with...</source>
         <translation></translation>
     </message>
     <message>

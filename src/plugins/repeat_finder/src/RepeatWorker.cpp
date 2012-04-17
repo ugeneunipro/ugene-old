@@ -105,7 +105,7 @@ void RepeatWorkerFactory::init() {
         a << new Attribute(tan, BaseTypes::BOOL_TYPE(), false, cfg.excludeTandems);
     }
 
-    Descriptor desc(ACTOR_ID, RepeatWorker::tr("Find repeats"), 
+    Descriptor desc(ACTOR_ID, RepeatWorker::tr("Find Repeats"), 
         RepeatWorker::tr("Finds repeats in each supplied sequence, stores found regions as annotations.")
         );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);

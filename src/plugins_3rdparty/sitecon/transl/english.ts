@@ -277,7 +277,7 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     <name>U2::LocalWorkflow::SiteconBuildWorker</name>
     <message>
         <location filename="../src/SiteconBuildWorker.cpp" line="84"/>
-        <source>Build SITECON model</source>
+        <source>Build SITECON Model</source>
         <translation></translation>
     </message>
     <message>
@@ -435,7 +435,7 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="98"/>
         <source>Search for TFBS with SITECON</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconSearchWorker.cpp" line="194"/>
@@ -751,7 +751,7 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     <message>
         <location filename="../src/SiteconBuildDialogController.cpp" line="172"/>
         <source>build_sitecon_model</source>
-        <translation>Build SITECON model</translation>
+        <translation>Build SITECON Model</translation>
     </message>
     <message>
         <location filename="../src/SiteconBuildDialogController.cpp" line="182"/>
@@ -956,8 +956,8 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     </message>
     <message>
         <location filename="../src/SiteconIOWorkers.cpp" line="140"/>
-        <source>Write SITECON model</source>
-        <translation type="unfinished"></translation>
+        <source>Write SITECON Model</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/SiteconIOWorkers.cpp" line="147"/>
@@ -971,8 +971,8 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     </message>
     <message>
         <location filename="../src/SiteconIOWorkers.cpp" line="153"/>
-        <source>Read SITECON model</source>
-        <translation type="unfinished"></translation>
+        <source>Read SITECON Model</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1010,7 +1010,7 @@ Must be: windows size is not greater than TFBS alignment length, recommended: wi
     <name>U2::SiteconReadTask</name>
     <message>
         <location filename="../src/SiteconIO.h" line="52"/>
-        <source>Read SITECON model</source>
+        <source>Read SITECON Model</source>
         <translation></translation>
     </message>
 </context>

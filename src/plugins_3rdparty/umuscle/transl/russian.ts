@@ -164,7 +164,7 @@
     <message>
         <location filename="../src/MuscleWorker.cpp" line="86"/>
         <source>Align with MUSCLE</source>
-        <translation type="unfinished">Выравнять с помощью MUSCLE</translation>
+        <translation>Выравнять с помощью MUSCLE</translation>
     </message>
     <message>
         <location filename="../src/MuscleWorker.cpp" line="87"/>
@@ -486,10 +486,6 @@
         <location filename="../src/MusclePlugin.cpp" line="244"/>
         <source>Select file with alignment</source>
         <translation>Выбор файла выравнивания</translation>
-    </message>
-    <message>
-        <source>Align with MUSCLE</source>
-        <translation type="obsolete">Выровнять ...</translation>
     </message>
 </context>
 <context>

@@ -346,7 +346,7 @@ void PWMBuildDialogController::reject() {
 // tasks
 
 PFMatrixBuildTask::PFMatrixBuildTask(const PMBuildSettings& s, const MAlignment& ma) 
-: Task (tr("Build frequency matrix"), TaskFlag_None), settings(s), ma(ma)
+: Task (tr("Build Frequency Matrix"), TaskFlag_None), settings(s), ma(ma)
 {
     GCOUNTER( cvar, tvar, "PFMatrixBuildTask" );
     tpm = Task::Progress_Manual;
@@ -379,7 +379,7 @@ void PFMatrixBuildTask::run() {
 }
 
 PFMatrixBuildToFileTask::PFMatrixBuildToFileTask(const QString& inFile, const QString& _outFile, const PMBuildSettings& s) 
-: Task (tr("Build weight matrix"), TaskFlag_NoRun), loadTask(NULL), buildTask(NULL), outFile(_outFile), settings(s)
+: Task (tr("Build Weight Matrix"), TaskFlag_NoRun), loadTask(NULL), buildTask(NULL), outFile(_outFile), settings(s)
 {
     tpm = Task::Progress_SubTasksBased;
     
@@ -467,14 +467,14 @@ QList<Task*> PFMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
 }
 
 PWMatrixBuildTask::PWMatrixBuildTask(const PMBuildSettings& s, const MAlignment& ma) 
-: Task (tr("Build weight matrix"), TaskFlag_None), settings(s), ma(ma)
+: Task (tr("Build Weight Matrix"), TaskFlag_None), settings(s), ma(ma)
 {
     GCOUNTER( cvar, tvar, "PWMatrixBuildTask" );
     tpm = Task::Progress_Manual;
 }
 
 PWMatrixBuildTask::PWMatrixBuildTask(const PMBuildSettings& s, const PFMatrix& ma) 
-: Task (tr("Build weight matrix"), TaskFlag_None), settings(s), tempMatrix(ma)
+: Task (tr("Build Weight Matrix"), TaskFlag_None), settings(s), tempMatrix(ma)
 {
     GCOUNTER( cvar, tvar, "PWMatrixBuildTask" );
     tpm = Task::Progress_Manual;
@@ -526,7 +526,7 @@ void PWMatrixBuildTask::run() {
 }
 
 PWMatrixBuildToFileTask::PWMatrixBuildToFileTask(const QString& inFile, const QString& _outFile, const PMBuildSettings& s) 
-: Task (tr("Build weight matrix"), TaskFlag_NoRun), loadTask(NULL), buildTask(NULL), outFile(_outFile), settings(s)
+: Task (tr("Build Weight Matrix"), TaskFlag_NoRun), loadTask(NULL), buildTask(NULL), outFile(_outFile), settings(s)
 {
     tpm = Task::Progress_SubTasksBased;
     

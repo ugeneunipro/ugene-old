@@ -1103,7 +1103,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/MAFFTSupportRunDialog.ui" line="14"/>
         <source>Align with MAFFT</source>
-        <translation type="unfinished">Выровнять с MAFFT</translation>
+        <translation>Выровнять с MAFFT</translation>
     </message>
     <message>
         <location filename="../src/ui/MAFFTSupportRunDialog.ui" line="20"/>
@@ -1256,7 +1256,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/TCoffeeSupportRunDialog.ui" line="14"/>
         <source>Align with T-Coffee</source>
-        <translation type="unfinished">Выровнять с T-Coffee</translation>
+        <translation>Выровнять с T-Coffee</translation>
     </message>
     <message>
         <location filename="../src/ui/TCoffeeSupportRunDialog.ui" line="20"/>
@@ -1707,10 +1707,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>U2::ClustalWSupportContext</name>
-    <message>
-        <source>Align with ClustalW</source>
-        <translation type="obsolete">Выровнять с ClustalW</translation>
-    </message>
     <message>
         <location filename="../src/clustalw/ClustalWSupport.cpp" line="139"/>
         <source>Align with ClustalW...</source>
@@ -2237,7 +2233,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="154"/>
         <source>Local BLAST search</source>
-        <translation type="unfinished"></translation>
+        <translation>Локальный BLAST поиск</translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="155"/>
@@ -2407,8 +2403,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="122"/>
-        <source>Local BLAST+ search</source>
-        <translation type="unfinished"></translation>
+        <source>Local BLAST+ Search</source>
+        <translation>Локальный BLAST+ поиск</translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="123"/>
@@ -2630,7 +2626,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="128"/>
         <source>Align with ClustalW</source>
-        <translation type="unfinished"></translation>
+        <translation>Выравнивание ClustalW</translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="252"/>
@@ -2727,7 +2723,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="86"/>
         <source>Align with MAFFT</source>
-        <translation type="unfinished">Выровнять с MAFFT</translation>
+        <translation>Выровнять с MAFFT</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="164"/>
@@ -2872,13 +2868,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::MAFFTSupportContext</name>
     <message>
-        <source>Align with MAFFT</source>
-        <translation type="obsolete">Выровнять с MAFFT</translation>
-    </message>
-    <message>
         <location filename="../src/mafft/MAFFTSupport.cpp" line="138"/>
         <source>Align with MAFFT...</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровнять с MAFFT...</translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTSupport.cpp" line="159"/>
@@ -3125,13 +3117,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::TCoffeeSupportContext</name>
     <message>
-        <source>Align with T-Coffee</source>
-        <translation type="obsolete">Выровнять с T-Coffee</translation>
-    </message>
-    <message>
         <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="141"/>
         <source>Align with T-Coffee...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeSupport.cpp" line="162"/>

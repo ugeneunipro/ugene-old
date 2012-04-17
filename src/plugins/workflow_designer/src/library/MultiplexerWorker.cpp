@@ -329,11 +329,11 @@ QString MultiplexerPrompter::composeRichDoc() {
     }
 
     if (ONE_TO_ONE == rule) {
-        return tr("For every message from <u>%1</u> it gets only one message from <u>%2</u> and puts them to the output").arg(inputName1).arg(inputName2);
+        return tr("For every message from <u>%1</u> it gets only one message from <u>%2</u> and puts them to the output.").arg(inputName1).arg(inputName2);
     } else if (STREAM == rule) {
-        return tr("Puts every message from <u>%1</u> and <u>%2</u> to the output").arg(inputName1).arg(inputName2);
+        return tr("Puts every message from <u>%1</u> and <u>%2</u> to the output.").arg(inputName1).arg(inputName2);
     } else {
-        return tr("For every message from <u>%1</u> it gets every message from <u>%2</u> and puts them to the output").arg(inputName1).arg(inputName2);
+        return tr("For every message from <u>%1</u> it gets every message from <u>%2</u> and puts them to the output.").arg(inputName1).arg(inputName2);
     }
 }
 

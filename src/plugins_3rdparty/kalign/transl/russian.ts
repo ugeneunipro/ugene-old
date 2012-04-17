@@ -103,10 +103,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::KalignMSAEditorContext</name>
     <message>
-        <source>Align with Kalign</source>
-        <translation type="obsolete">Выровнять с Kalign</translation>
-    </message>
-    <message>
         <location filename="../src/KalignPlugin.cpp" line="188"/>
         <source>Align with Kalign...</source>
         <translation type="unfinished"></translation>

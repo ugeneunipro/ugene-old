@@ -49,7 +49,7 @@ class SiteconReadTask: public Task {
     Q_OBJECT
 public:
     SiteconReadTask(const QString& url) 
-        : Task(tr("Read SITECON model"), TaskFlag_None), url(url) {}
+        : Task(tr("Read SITECON Model"), TaskFlag_None), url(url) {}
     void run();
     SiteconModel getResult() const {return model;}
     QString getURL() const {return url;}

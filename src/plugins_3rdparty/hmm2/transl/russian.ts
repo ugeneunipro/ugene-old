@@ -965,7 +965,7 @@
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchTask.cpp" line="27"/>
-        <source>HMM search</source>
+        <source>HMM Search</source>
         <translation>Поиск HMM</translation>
     </message>
     <message>
@@ -1082,7 +1082,7 @@
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="114"/>
-        <source>HMM build</source>
+        <source>HMM Build</source>
         <translation>Построить HMM</translation>
     </message>
     <message>
@@ -1217,12 +1217,12 @@
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="157"/>
-        <source>Read HMM profile</source>
+        <source>Read HMM Profile</source>
         <translation>Читать HMM профайл</translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="144"/>
-        <source>Write HMM profile</source>
+        <source>Write HMM Profile</source>
         <translation>Сохранить HMM профайл</translation>
     </message>
     <message>
@@ -1348,7 +1348,7 @@
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="80"/>
-        <source>HMM search</source>
+        <source>HMM Search</source>
         <translation>Поиск HMM</translation>
     </message>
     <message>

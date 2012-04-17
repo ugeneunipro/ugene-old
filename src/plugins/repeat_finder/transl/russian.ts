@@ -5,7 +5,7 @@
     <name>FindRepeatsDialog</name>
     <message>
         <location filename="../src/ui/FindRepeatsDialog.ui" line="17"/>
-        <source>Find repeats</source>
+        <source>Find Repeats</source>
         <translation>Поиск повторов</translation>
     </message>
     <message>
@@ -597,7 +597,7 @@
     </message>
     <message>
         <location filename="../src/RepeatWorker.cpp" line="105"/>
-        <source>Find repeats</source>
+        <source>Find Repeats</source>
         <translation>Поиск повторов</translation>
     </message>
     <message>
@@ -862,7 +862,7 @@
     <name>U2::RFAlgorithmBase</name>
     <message>
         <location filename="../src/RFBase.cpp" line="79"/>
-        <source>Find repeats</source>
+        <source>Find Repeats</source>
         <translation>Поиск повторов</translation>
     </message>
     <message>
@@ -927,8 +927,8 @@
         <translation type="obsolete">прямые</translation>
     </message>
     <message>
-        <source>Find repeats</source>
-        <translation type="obsolete">Поиск повторов</translation>
+        <source>Find Repeats</source>
+        <translation>Поиск повторов</translation>
     </message>
     <message>
         <source>Finds &lt;u&gt;%1&lt;/u&gt; repeats.&lt;br&gt;Detects &lt;u&gt;%2 identical&lt;/u&gt; repeats &lt;u&gt;not shorter than %3 bps&lt;/u&gt;.&lt;br&gt;Outputs the list of found regions annotated as &lt;u&gt;%4&lt;/u&gt;.</source>

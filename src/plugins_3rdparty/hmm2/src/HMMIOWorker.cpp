@@ -141,7 +141,7 @@ void HMMIOWorkerFactory::init() {
          QList<PortDescriptor*> p; QList<Attribute*> a;
          p << new PortDescriptor(id, t, true /*input*/);
          
-         Descriptor desc(HMMWriter::ACTOR, HMMLib::tr("Write HMM profile"), HMMLib::tr("Saves all input HMM profiles to specified location."));
+         Descriptor desc(HMMWriter::ACTOR, HMMLib::tr("Write HMM Profile"), HMMLib::tr("Saves all input HMM profiles to specified location."));
          IntegralBusActorPrototype* proto = new WriteHMMProto(desc, p, a);
          proto->setPrompter(new HMMWritePrompter());
          r->registerProto(HMMLib::HMM_CATEGORY(), proto);
@@ -154,7 +154,7 @@ void HMMIOWorkerFactory::init() {
          outM[HMMLib::HMM2_SLOT] = HMMLib::HMM_PROFILE_TYPE();
          p << new PortDescriptor(od, DataTypePtr(new MapDataType("hmm.read.out", outM)), false /*output*/, true);
          
-         Descriptor desc(HMMReader::ACTOR, HMMLib::tr("Read HMM profile"), HMMLib::tr("Reads HMM profiles from file(s). The files can be local or Internet URLs."));
+         Descriptor desc(HMMReader::ACTOR, HMMLib::tr("Read HMM Profile"), HMMLib::tr("Reads HMM profiles from file(s). The files can be local or Internet URLs."));
          IntegralBusActorPrototype* proto = new ReadHMMProto(desc, p, a);
          proto->setPrompter(new HMMReadPrompter());
          r->registerProto(HMMLib::HMM_CATEGORY(), proto);

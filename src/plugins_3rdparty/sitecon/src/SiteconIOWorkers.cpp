@@ -137,7 +137,7 @@ void SiteconWorkerFactory::init()
         QList<PortDescriptor*> p; QList<Attribute*> a;
         Descriptor pd(SITECON_IN_PORT_ID, SiteconIO::tr("Sitecon model"), SiteconIO::tr("Input Sitecon model"));
         p << new PortDescriptor(pd, t, true /*input*/);
-        Descriptor desc(SiteconWriter::ACTOR_ID, SiteconIO::tr("Write SITECON model"), SiteconIO::tr("Saves all input SITECON profiles to specified location."));
+        Descriptor desc(SiteconWriter::ACTOR_ID, SiteconIO::tr("Write SITECON Model"), SiteconIO::tr("Saves all input SITECON profiles to specified location."));
         IntegralBusActorPrototype* proto = new WriteSiteconProto(desc, p, a);
         proto->setPrompter(new SiteconWritePrompter());
         r->registerProto(BaseActorCategories::CATEGORY_TRANSCRIPTION(), proto);
@@ -150,7 +150,7 @@ void SiteconWorkerFactory::init()
         outM[SiteconWorkerFactory::SITECON_SLOT] = SiteconWorkerFactory::SITECON_MODEL_TYPE();
         p << new PortDescriptor(pd, DataTypePtr(new MapDataType("sitecon.read.out", outM)), false /*input*/, true /*multi*/);
         
-        Descriptor desc(SiteconReader::ACTOR_ID, SiteconIO::tr("Read SITECON model"), SiteconIO::tr("Reads SITECON profiles from file(s). The files can be local or Internet URLs."));
+        Descriptor desc(SiteconReader::ACTOR_ID, SiteconIO::tr("Read SITECON Model"), SiteconIO::tr("Reads SITECON profiles from file(s). The files can be local or Internet URLs."));
         IntegralBusActorPrototype* proto = new ReadSiteconProto(desc, p, a);
         proto->setPrompter(new SiteconReadPrompter());
         r->registerProto(BaseActorCategories::CATEGORY_TRANSCRIPTION(), proto);

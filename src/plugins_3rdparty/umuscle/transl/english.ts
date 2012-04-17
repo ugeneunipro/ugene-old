@@ -156,7 +156,7 @@
     <message>
         <location filename="../src/MuscleWorker.cpp" line="86"/>
         <source>Align with MUSCLE</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/MuscleWorker.cpp" line="87"/>

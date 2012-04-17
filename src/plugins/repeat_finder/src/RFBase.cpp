@@ -80,7 +80,7 @@ char RFAlgorithmBase::getUnknownChar(const DNAAlphabetType &type) {
 
 RFAlgorithmBase::RFAlgorithmBase(RFResultsListener* l, const char* seqx, int sizex, const char* seqy, int sizey, 
                                  DNAAlphabetType seqType, int w, int k, TaskFlags flags) 
-: Task(tr("Find repeats"), flags), 
+: Task(tr("Find Repeats"), flags), 
 seqX(seqx),  seqY(seqy), SIZE_X(sizex), SIZE_Y(sizey), 
 SEQ_TYPE(seqType), WINDOW_SIZE(w), K(k), C(w-k),
 resultsListener(l), reportReflected(true)

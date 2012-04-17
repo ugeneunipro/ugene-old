@@ -106,7 +106,7 @@ void Alignment2SequenceWorkerFactory::init() {
     QList<Attribute*> attrs;
    
     Descriptor protoDesc(Alignment2SequenceWorkerFactory::ACTOR_ID, 
-        Alignment2SequenceWorker::tr("Split alignment into sequences"), 
+        Alignment2SequenceWorker::tr("Split Alignment into Sequences"), 
         Alignment2SequenceWorker::tr("Splits input alignment into sequences"));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     

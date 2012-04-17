@@ -56,7 +56,7 @@ WeightMatrixPlugin::WeightMatrixPlugin() : Plugin(tr("Weight matrix"), tr("Searc
         ctxADV = new WeightMatrixADVContext(this);
         ctxADV->init();
 
-        QAction* buildAction = new QAction(tr("Build weight matrix"), this);
+        QAction* buildAction = new QAction(tr("Build Weight Matrix"), this);
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
        
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);

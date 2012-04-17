@@ -106,7 +106,7 @@ void CollocationWorkerFactory::init() {
         a << new Attribute(fd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
     }
 
-    Descriptor desc(ACTOR_ID, CollocationWorker::tr("Collocation search"), 
+    Descriptor desc(ACTOR_ID, CollocationWorker::tr("Collocation Search"), 
         CollocationWorker::tr("Finds groups of specified annotations in each supplied set of annotations, stores found regions as annotations."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),

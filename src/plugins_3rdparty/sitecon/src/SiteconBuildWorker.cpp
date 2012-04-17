@@ -81,7 +81,7 @@ void SiteconBuildWorker::registerProto() {
         a << new Attribute(ad, BaseTypes::BOOL_TYPE(), false, int(SiteconWeightAlg_None));
     }
 
-    Descriptor desc(ACTOR_ID, tr("Build SITECON model"),
+    Descriptor desc(ACTOR_ID, tr("Build SITECON Model"),
         tr("Builds statistical profile for SITECON. The SITECON is a program for probabilistic recognition of transcription factor binding sites."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;    

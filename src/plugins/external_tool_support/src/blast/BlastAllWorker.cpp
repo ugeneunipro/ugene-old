@@ -152,7 +152,7 @@ void BlastAllWorkerFactory::init() {
     a << new Attribute(output, BaseTypes::STRING_TYPE(), false, QVariant(""));
     a << new Attribute(outtype, BaseTypes::STRING_TYPE(), false, QVariant("7"));
 
-    Descriptor desc(ACTOR_ID, BlastAllWorker::tr("Local BLAST search"),
+    Descriptor desc(ACTOR_ID, BlastAllWorker::tr("Local BLAST Search"),
         BlastAllWorker::tr("Finds annotations for DNA sequence in local database"));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     proto->addSlotRelation(BasePorts::IN_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),

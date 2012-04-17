@@ -24,7 +24,7 @@ HMMSearchTask::HMMSearchTask( const QString& hFile, const DNASequence& _seq, con
 :Task("", TaskFlag_NoRun), 
 hmm(NULL), seq(_seq), settings(s), complTrans(NULL), aminoTrans(NULL), fName(hFile), swTask(NULL), readHMMTask(NULL)
 {
-    setTaskName(tr("HMM search"));
+    setTaskName(tr("HMM Search"));
     GCOUNTER( cvar, tvar, "HMM2 Search" );
 }
 

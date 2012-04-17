@@ -1711,7 +1711,7 @@ var %2; //parsed line number</source>
     <message>
         <location filename="../src/GenerateDNAWorker.cpp" line="176"/>
         <source>Generate DNA</source>
-        <translation type="unfinished"></translation>
+        <translation>Генерация ДНК</translation>
     </message>
     <message>
         <location filename="../src/GenerateDNAWorker.cpp" line="177"/>
@@ -1802,7 +1802,7 @@ var %2; //parsed line number</source>
     <message>
         <location filename="../src/ImportQualityScoresWorker.cpp" line="73"/>
         <source>Import PHRED qualities</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ImportQualityScoresWorker.cpp" line="74"/>
@@ -1888,8 +1888,8 @@ You can use this worker to convert .fasta and .qual pair to fastq format</source
     </message>
     <message>
         <location filename="../src/WriteAnnotationsWorker.cpp" line="199"/>
-        <source>Write annotations</source>
-        <translation type="unfinished"></translation>
+        <source>Write Annotations</source>
+        <translation>Запись аннотаций</translation>
     </message>
     <message>
         <location filename="../src/WriteAnnotationsWorker.cpp" line="200"/>

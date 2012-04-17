@@ -7,6 +7,6 @@
   <Out-Slots Slot="string"/>
  </Output-port>
  <Attributes/>
- <Element-name Name="Dump sequence info"/>
+ <Element-name Name="Dump Sequence Info"/>
  <Element-description Description="For all incoming sequences, dump sequence name and sequence size to output"/>
 </Actor>

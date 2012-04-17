@@ -89,7 +89,7 @@ void PWMatrixBuildWorker::registerProto() {
         a << new Attribute(td, BaseTypes::BOOL_TYPE(), true, false /* false = mononucleic, true = dinucleic */);
     }
 
-    Descriptor desc(ACTOR_ID, tr("Build weight matrix"),
+    Descriptor desc(ACTOR_ID, tr("Build Weight Matrix"),
         tr("Builds weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;    
@@ -188,7 +188,7 @@ void PFMatrixBuildWorker::registerProto() {
         a << new Attribute(td, BaseTypes::BOOL_TYPE(), true, false /* false = mononucleic, true = dinucleic */);
     }
 
-    Descriptor desc(ACTOR_ID, tr("Build frequency matrix"),
+    Descriptor desc(ACTOR_ID, tr("Build Frequency Matrix"),
         tr("Builds frequency matrix. Frequency matrices are used for probabilistic recognition of transcription factor binding sites."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;
@@ -211,7 +211,7 @@ QString PFMatrixBuildPrompter::composeRichDoc() {
     Actor* msaProducer = input->getProducer(BasePorts::IN_MSA_PORT_ID());
 
     QString msaName = msaProducer ? tr("For each MSA from <u>%1</u>,").arg(msaProducer->getLabel()) : "";
-    QString doc = tr("%1 build frequency matrix.")
+    QString doc = tr("%1 build Frequency Matrix.")
         .arg(msaName);
 
     return doc;
@@ -281,7 +281,7 @@ void PFMatrixConvertWorker::registerProto() {
         a << new Attribute(td, BaseTypes::BOOL_TYPE(), true, false /* false = mononucleic, true = dinucleic */);
     }
 
-    Descriptor desc(ACTOR_ID, tr("Convert frequency matrix"),
+    Descriptor desc(ACTOR_ID, tr("Convert Frequency Matrix"),
         tr("Converts frequency matrix to weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;    

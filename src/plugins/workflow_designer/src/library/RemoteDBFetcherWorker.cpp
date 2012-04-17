@@ -229,7 +229,7 @@ void RemoteDBFetcherFactory::init()
     dr->registerEntry(outType);
 
     Descriptor desc(ACTOR_ID,
-                    RemoteDBFetcherWorker::tr("Read From Remote Database"),
+                    RemoteDBFetcherWorker::tr("Read from Remote Database"),
                     RemoteDBFetcherWorker::tr("Reads sequences and annotations if any from a remote database."));
 
     QList<PortDescriptor*> pds;
@@ -445,7 +445,7 @@ void FetchSequenceByIdFromAnnotationFactory::init()
     //dr->registerEntry(inputType);
 
     Descriptor desc(ACTOR_ID,
-                    FetchSequenceByIdFromAnnotationWorker::tr("Fetch sequences by ID from annotaion"),
+                    FetchSequenceByIdFromAnnotationWorker::tr("Fetch Sequences by ID from Annotaion"),
                     FetchSequenceByIdFromAnnotationWorker::tr("Parses annotations to find any IDs and fetches corresponding sequences."));
 
     QList<PortDescriptor*> pds;

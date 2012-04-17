@@ -9,6 +9,6 @@
  <Attributes>
   <Attribute Type="number" Name="len"/>
  </Attributes>
- <Element-name Name="Create alignment example"/>
+ <Element-name Name="Create Alignment Example"/>
  <Element-description Description="Creates alignment from sequences with length less than len"/>
 </Actor>

@@ -337,7 +337,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/QDWorker.cpp" line="98"/>
         <source>Annotate with UQL</source>
-        <translation type="unfinished"></translation>
+        <translation>Аннотирование при помощи UQL</translation>
     </message>
     <message>
         <location filename="../src/QDWorker.cpp" line="99"/>

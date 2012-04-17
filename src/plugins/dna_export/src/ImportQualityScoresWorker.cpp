@@ -70,7 +70,7 @@ void ImportPhredQualityWorkerFactory::init() {
     a << new Attribute(qualUrl, BaseTypes::STRING_TYPE(), true /*required*/, QString());
     a << new Attribute(qualType, BaseTypes::STRING_TYPE(), false/*required*/, DNAQuality::getDNAQualityNameByType(DNAQualityType_Sanger) );    
 
-    Descriptor desc(ACTOR_ID, ImportPhredQualityWorker::tr("Import PHRED qualities"), 
+    Descriptor desc(ACTOR_ID, ImportPhredQualityWorker::tr("Import PHRED Qualities"), 
         ImportPhredQualityWorker::tr("Add corresponding PHRED quality scores to the sequences.\nYou can use this worker to convert .fasta and .qual pair to fastq format"));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
 

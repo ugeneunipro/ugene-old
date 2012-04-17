@@ -9,6 +9,6 @@
  <Attributes>
   <Attribute Type="number" Name="quality"/>
  </Attributes>
- <Element-name Name="Quality filter example"/>
+ <Element-name Name="Quality Filter Example"/>
  <Element-description Description="Filter's sequences for quality"/>
 </Actor>

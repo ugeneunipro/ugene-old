@@ -59,7 +59,7 @@ class PFMatrixReadTask: public Task {
     Q_OBJECT
 public:
     PFMatrixReadTask(const QString& url) 
-        : Task(tr("Read frequency matrix"), TaskFlag_None), url(url) {}
+        : Task(tr("Read Frequency Matrix"), TaskFlag_None), url(url) {}
     void run();
     PFMatrix getResult() const {return model;}
     QString getURL() const {return url;}
@@ -72,7 +72,7 @@ class PWMatrixReadTask: public Task {
     Q_OBJECT
 public:
     PWMatrixReadTask(const QString& url) 
-        : Task(tr("Read weight matrix"), TaskFlag_None), url(url) {}
+        : Task(tr("Read Weight Matrix"), TaskFlag_None), url(url) {}
     void run();
     PWMatrix getResult() const {return model;}
     QString getURL() const {return url;}

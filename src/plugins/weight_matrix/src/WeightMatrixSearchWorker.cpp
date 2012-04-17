@@ -84,7 +84,7 @@ void PWMatrixSearchWorker::registerProto() {
         a << new Attribute(scd, BaseTypes::NUM_TYPE(), false, 85);
     }
 
-    Descriptor desc(ACTOR_ID, tr("Search for TFBS with weight matrix"), 
+    Descriptor desc(ACTOR_ID, tr("Search for TFBS with Weight Matrix"), 
         tr("Searches each input sequence for transcription factor binding sites significantly similar to specified weight matrices."
         " In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.")
         );

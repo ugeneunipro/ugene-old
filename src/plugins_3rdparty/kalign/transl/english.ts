@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="14"/>
         <source>Align with Kalign</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/KalignDialog.ui" line="20"/>
@@ -225,7 +225,7 @@
     <message>
         <location filename="../src/KalignWorker.cpp" line="79"/>
         <source>Align with Kalign</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/KalignWorker.cpp" line="80"/>

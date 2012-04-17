@@ -391,7 +391,7 @@
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="192"/>
-        <source>Build frequency matrix</source>
+        <source>Build Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -437,7 +437,7 @@
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="286"/>
-        <source>Convert frequency matrix</source>
+        <source>Convert Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -538,7 +538,7 @@
     </message>
     <message>
         <location filename="../src/WeightMatrixBuildWorker.cpp" line="92"/>
-        <source>Build weight matrix</source>
+        <source>Build Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -635,8 +635,8 @@
     </message>
     <message>
         <location filename="../src/WeightMatrixSearchWorker.cpp" line="87"/>
-        <source>Search for TFBS with weight matrix</source>
-        <translation type="unfinished"></translation>
+        <source>Search for TFBS with Weight Matrix</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/WeightMatrixSearchWorker.cpp" line="88"/>
@@ -704,7 +704,7 @@
     <name>U2::PFMatrixBuildTask</name>
     <message>
         <location filename="../src/PWMBuildDialogController.cpp" line="343"/>
-        <source>Build frequency matrix</source>
+        <source>Build Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -732,7 +732,7 @@
     <name>U2::PFMatrixBuildToFileTask</name>
     <message>
         <location filename="../src/PWMBuildDialogController.cpp" line="376"/>
-        <source>Build weight matrix</source>
+        <source>Build Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -760,7 +760,7 @@
     <name>U2::PFMatrixReadTask</name>
     <message>
         <location filename="../src/WeightMatrixIO.h" line="62"/>
-        <source>Read frequency matrix</source>
+        <source>Read Frequency Matrix</source>
         <translation></translation>
     </message>
 </context>
@@ -953,7 +953,7 @@ Maybe model data is not enough for selected algorithm</source>
     <message>
         <location filename="../src/PWMBuildDialogController.cpp" line="464"/>
         <location filename="../src/PWMBuildDialogController.cpp" line="471"/>
-        <source>Build weight matrix</source>
+        <source>Build Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -981,7 +981,7 @@ Maybe model data is not enough for selected algorithm</source>
     <name>U2::PWMatrixBuildToFileTask</name>
     <message>
         <location filename="../src/PWMBuildDialogController.cpp" line="523"/>
-        <source>Build weight matrix</source>
+        <source>Build Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -1009,7 +1009,7 @@ Maybe model data is not enough for selected algorithm</source>
     <name>U2::PWMatrixReadTask</name>
     <message>
         <location filename="../src/WeightMatrixIO.h" line="75"/>
-        <source>Read weight matrix</source>
+        <source>Read Weight Matrix</source>
         <translation></translation>
     </message>
 </context>
@@ -1134,7 +1134,7 @@ Maybe model data is not enough for selected algorithm</source>
     </message>
     <message>
         <location filename="../src/WeightMatrixIOWorkers.cpp" line="147"/>
-        <source>Write weight matrix</source>
+        <source>Write Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -1150,7 +1150,7 @@ Maybe model data is not enough for selected algorithm</source>
     </message>
     <message>
         <location filename="../src/WeightMatrixIOWorkers.cpp" line="160"/>
-        <source>Read weight matrix</source>
+        <source>Read Weight Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -1173,7 +1173,7 @@ Maybe model data is not enough for selected algorithm</source>
     </message>
     <message>
         <location filename="../src/WeightMatrixIOWorkers.cpp" line="362"/>
-        <source>Write frequency matrix</source>
+        <source>Write Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -1183,7 +1183,7 @@ Maybe model data is not enough for selected algorithm</source>
     </message>
     <message>
         <location filename="../src/WeightMatrixIOWorkers.cpp" line="375"/>
-        <source>Read frequency matrix</source>
+        <source>Read Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -1207,7 +1207,7 @@ Maybe model data is not enough for selected algorithm</source>
     </message>
     <message>
         <location filename="../src/WeightMatrixPlugin.cpp" line="59"/>
-        <source>Build weight matrix</source>
+        <source>Build Weight Matrix</source>
         <translation></translation>
     </message>
 </context>

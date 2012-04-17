@@ -199,7 +199,7 @@
     </message>
     <message>
         <location filename="../src/CollocationWorker.cpp" line="109"/>
-        <source>Collocation search</source>
+        <source>Collocation Search</source>
         <translation>Поиск групп аннотаций</translation>
     </message>
     <message>

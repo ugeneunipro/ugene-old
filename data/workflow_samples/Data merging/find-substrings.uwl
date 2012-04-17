@@ -3,6 +3,7 @@
 #
 #The results of patterns searching are grouped by id of a sequence: original and find patterns annotations are united into two new grouped annotations sets.
 #
+#
 
 
 
@@ -32,16 +33,16 @@ workflow "Find substrings at sequences"{
         group-op:by-id;
         group-slot:read-sequence.sequence;
         out-slot {
-            name:origin-annotations;
-            in-slot:read-sequence.annotations;
+            name:substring-annotations;
+            in-slot:search.annotations;
             action {
                 type:merge-annotations;
                 unique:false;
             }
         }
         out-slot {
-            name:substring-annotations;
-            in-slot:search.annotations;
+            name:origin-annotations;
+            in-slot:read-sequence.annotations;
             action {
                 type:merge-annotations;
                 unique:false;
@@ -55,10 +56,10 @@ workflow "Find substrings at sequences"{
 
 
     .actor-bindings {
-        read-text.out-text->multiplexer.input-data-2
         read-sequence.out-sequence->multiplexer.input-data-1
-        search.out-annotations->grouper.input-data
+        read-text.out-text->multiplexer.input-data-2
         multiplexer.output-data->search.in-sequence
+        search.out-annotations->grouper.input-data
         grouper.output-data->write-sequence.in-sequence
     }
 
@@ -73,69 +74,74 @@ workflow "Find substrings at sequences"{
             read-sequence {
                 description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read Sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads sequence(s) from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
                 tooltip:"Reads sequences and annotations if any from local or remote files.";
-                pos:"-854 -744";
+                pos:"-732 -809";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                out-sequence.angle:360;
+                bounds:"-30 -30 103.25 66";
+                out-sequence.angle:295.615;
             }
             read-text {
                 description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read Plain Text</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads text from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
                 tooltip:"Reads text from local or remote files.";
-                pos:"-851 -610";
+                pos:"-730 -492";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                out-text.angle:360;
+                bounds:"-30 -30 101 56";
+                out-text.angle:45;
             }
             multiplexer {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Multiplexer</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>For every message from <span style=' text-decoration: underline;'>Read Sequence.Sequence</span> it gets every message from <span style=' text-decoration: underline;'>Read Plain Text.Plain text</span> and puts them to the output</p></body></html>";
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Multiplexer</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>For every message from <span style=' text-decoration: underline;'>Read Sequence.Sequence</span> it gets every message from <span style=' text-decoration: underline;'>Read Plain Text.Plain text</span> and puts them to the output.</p></body></html>";
                 tooltip:"Multiplexes two input data flows using the set multiplexing rule.";
-                pos:"-728 -666";
+                pos:"-733 -669";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                input-data-1.angle:150;
-                input-data-2.angle:210;
-                output-data.angle:360;
+                input-data-1.angle:43.2101;
+                input-data-2.angle:287.501;
+                output-data.angle:343.639;
             }
             search {
                 description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Find Substrings</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Searches regions in each sequence from <span style=' text-decoration: underline;'>Read Sequence</span> similar to patterns from <span style=' text-decoration: underline;'>Read Plain Text</span>.<br />A substring must <a href='param:max-mismatches-num'><span style=' text-decoration: underline; color:#0000ff;'>match a pattern exactly</span></a>.<br />Searches in <a href='param:strand'><span style=' text-decoration: underline; color:#0000ff;'>both strands</span></a> of a sequence. Outputs the regions found annotated as <a href='param:result-name'><span style=' text-decoration: underline; color:#0000ff;'>misc_feature</span></a>.</p></body></html>";
                 tooltip:"Searches regions in a sequence similar to a pattern sequence. Outputs a set of annotations.";
-                pos:"-546 -666";
+                pos:"-498 -669";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-sequence.angle:180;
-                out-annotations.angle:360;
-            }
-            read-sequence.out-sequence->multiplexer.input-data-1 {
-                text-pos:"-27.5 -24";
-            }
-            read-text.out-text->multiplexer.input-data-2 {
-                text-pos:"-26.5 -24";
-            }
-            multiplexer.output-data->search.in-sequence {
-                text-pos:"-45 -37";
+                bounds:"-30 -30 193 106";
+                in-sequence.angle:226.848;
+                out-annotations.angle:349.448;
             }
             grouper {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Grouper</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Group all incoming messages by<span style=' text-decoration: underline;'> id</span> of <span style=' text-decoration: underline;'>Sequence (by Read Sequence)</span> slot data</p></body></html>";
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Grouper</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Group all incoming messages <span style=' text-decoration: underline;'>by id</span> of <span style=' text-decoration: underline;'>Sequence (by Read Sequence)</span> slot data.</p></body></html>";
                 tooltip:"Groups incoming data by set input slot";
-                pos:"-329 -665";
+                pos:"-172 -672";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                input-data.angle:180;
-                output-data.angle:360;
-            }
-            search.out-annotations->grouper.input-data {
-                text-pos:"-45 -37";
+                bounds:"-30 -30 102.5 108";
+                input-data.angle:232.883;
+                output-data.angle:290.082;
             }
             write-sequence {
                 description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all sequences from <span style=' text-decoration: underline;'>Read Sequence</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
                 tooltip:"Writes all supplied sequences to file(s) in selected format.";
-                pos:"-207 -665";
+                pos:"-170 -490";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
-                in-sequence.angle:180;
+                bounds:"-30 -30 100.25 55";
+                in-sequence.angle:39.5226;
+            }
+            read-text.out-text->multiplexer.input-data-2 {
+                text-pos:"-52.5 -12";
+            }
+            read-sequence.out-sequence->multiplexer.input-data-1 {
+                text-pos:"-53.5 -11";
+            }
+            search.out-annotations->grouper.input-data {
+                text-pos:"-45 -44";
+            }
+            multiplexer.output-data->search.in-sequence {
+                text-pos:"-43 -54";
             }
             grouper.output-data->write-sequence.in-sequence {
-                text-pos:"-45 -37";
+                text-pos:"-109 -18";
             }
         }
     }

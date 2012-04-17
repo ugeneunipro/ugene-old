@@ -5,7 +5,7 @@
     <name>FindRepeatsDialog</name>
     <message>
         <location filename="../src/ui/FindRepeatsDialog.ui" line="17"/>
-        <source>Find repeats</source>
+        <source>Find Repeats</source>
         <translation></translation>
     </message>
     <message>
@@ -561,7 +561,7 @@
     </message>
     <message>
         <location filename="../src/RepeatWorker.cpp" line="105"/>
-        <source>Find repeats</source>
+        <source>Find Repeats</source>
         <translation></translation>
     </message>
     <message>
@@ -818,7 +818,7 @@
     <name>U2::RFAlgorithmBase</name>
     <message>
         <location filename="../src/RFBase.cpp" line="79"/>
-        <source>Find repeats</source>
+        <source>Find Repeats</source>
         <translation></translation>
     </message>
     <message>

@@ -217,7 +217,7 @@ void WriteAnnotationsWorkerFactory::init() {
     }
     
     Descriptor protoDesc(WriteAnnotationsWorkerFactory::ACTOR_ID, 
-        WriteAnnotationsWorker::tr("Write annotations"), 
+        WriteAnnotationsWorker::tr("Write Annotations"), 
         WriteAnnotationsWorker::tr("Writes all supplied annotations to file(s) in selected formatId."));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
     

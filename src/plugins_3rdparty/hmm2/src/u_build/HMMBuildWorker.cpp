@@ -111,7 +111,7 @@ void HMMBuildWorkerFactory::init() {
     a << new Attribute(ldd, BaseTypes::NUM_TYPE(), false, QVariant(double(200)));
     a << new Attribute(td, BaseTypes::NUM_TYPE(), false, QVariant(1));
 
-    Descriptor desc(HMMBuildWorkerFactory::ACTOR, HMMBuildWorker::tr("HMM build"), HMMBuildWorker::tr("Builds a HMM profile from a multiple sequence alignment."
+    Descriptor desc(HMMBuildWorkerFactory::ACTOR, HMMBuildWorker::tr("HMM Build"), HMMBuildWorker::tr("Builds a HMM profile from a multiple sequence alignment."
         "<p>The HMM profile is a statistical model which captures position-specific information"
         " about how conserved each column of the alignment is, and which residues are likely."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);

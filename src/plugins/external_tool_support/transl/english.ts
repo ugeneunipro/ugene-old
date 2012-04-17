@@ -819,7 +819,7 @@ for long deletions (-L)</source>
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="20"/>
         <source>Align with ClustalW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/ClustalWSupportRunDialog.ui" line="26"/>
@@ -1102,7 +1102,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/MAFFTSupportRunDialog.ui" line="14"/>
         <source>Align with MAFFT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/MAFFTSupportRunDialog.ui" line="20"/>
@@ -1255,7 +1255,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/TCoffeeSupportRunDialog.ui" line="14"/>
         <source>Align with T-Coffee</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/TCoffeeSupportRunDialog.ui" line="20"/>
@@ -2223,8 +2223,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="154"/>
-        <source>Local BLAST search</source>
-        <translation type="unfinished"></translation>
+        <source>Local BLAST Search</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/blast/BlastAllWorker.cpp" line="155"/>
@@ -2394,8 +2394,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="122"/>
-        <source>Local BLAST+ search</source>
-        <translation type="unfinished"></translation>
+        <source>Local BLAST+ Search</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/blast_plus/BlastPlusWorker.cpp" line="123"/>
@@ -2617,7 +2617,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="128"/>
         <source>Align with ClustalW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/clustalw/ClustalWWorker.cpp" line="252"/>
@@ -2714,7 +2714,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="86"/>
         <source>Align with MAFFT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mafft/MAFFTWorker.cpp" line="164"/>
@@ -2820,7 +2820,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="86"/>
         <source>Align with T-Coffee</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/tcoffee/TCoffeeWorker.cpp" line="87"/>

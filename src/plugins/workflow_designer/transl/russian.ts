@@ -797,8 +797,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/MSA2SequenceWorker.cpp" line="110"/>
-        <source>Split alignment into sequences</source>
-        <translation type="unfinished"></translation>
+        <source>Split Alignment into Sequences</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/MSA2SequenceWorker.cpp" line="111"/>
@@ -922,7 +922,7 @@ it is better to leave the list intact.</source>
     <message>
         <location filename="../src/library/CDSearchWorker.cpp" line="90"/>
         <source>CD-Search</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/CDSearchWorker.cpp" line="91"/>
@@ -1004,8 +1004,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/StatisticWorkers.cpp" line="57"/>
-        <source>DNA statistics</source>
-        <translation type="unfinished"></translation>
+        <source>DNA Statistics</source>
+        <translation>ДНК статистика</translation>
     </message>
     <message>
         <location filename="../src/library/StatisticWorkers.cpp" line="58"/>
@@ -1127,8 +1127,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/FilterAnnotationsWorker.cpp" line="122"/>
-        <source>Filter annotations by name</source>
-        <translation type="unfinished"></translation>
+        <source>Filter Annotations by Name</source>
+        <translation>Фильтрация аннотаций по имени</translation>
     </message>
     <message>
         <location filename="../src/library/FilterAnnotationsWorker.cpp" line="123"/>
@@ -1349,8 +1349,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/ImportAnnotationsWorker.cpp" line="164"/>
-        <source>Merge annotations</source>
-        <translation type="unfinished"></translation>
+        <source>Merge Annotations</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/ImportAnnotationsWorker.cpp" line="165"/>
@@ -1592,7 +1592,7 @@ it is better to leave the list intact.</source>
     <message>
         <location filename="../src/library/ReverseComplementWorker.cpp" line="51"/>
         <source>Reverse Complement</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/ReverseComplementWorker.cpp" line="52"/>
@@ -1681,7 +1681,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="230"/>
-        <source>Read From Remote Database</source>
+        <source>Read from Remote Database</source>
         <translation>Загрузить из удаленной базы данных</translation>
     </message>
     <message>
@@ -1928,8 +1928,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/SequenceSplitWorker.cpp" line="257"/>
-        <source>Get sequences by annotations</source>
-        <translation type="unfinished"></translation>
+        <source>Get Sequences by Annotations</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/SequenceSplitWorker.cpp" line="258"/>
@@ -1969,8 +1969,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/SequencesToMSAWorker.cpp" line="119"/>
-        <source>Join sequences into alignment</source>
-        <translation type="unfinished"></translation>
+        <source>Join Sequences into Alignment</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/library/SequencesToMSAWorker.cpp" line="120"/>
@@ -2105,8 +2105,8 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/Text2SequenceWorker.cpp" line="178"/>
-        <source>Convert text to sequence</source>
-        <translation type="unfinished"></translation>
+        <source>Convert Text to Sequence</source>
+        <translation>Преобразование текста в последовательность</translation>
     </message>
     <message>
         <location filename="../src/library/Text2SequenceWorker.cpp" line="179"/>
@@ -2250,7 +2250,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/CoreLib.cpp" line="201"/>
-        <source>Write plain text</source>
+        <source>Write Plain Text</source>
         <translation>Запись текста</translation>
     </message>
     <message>
@@ -2372,7 +2372,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/CoreLib.cpp" line="239"/>
-        <source>Write alignment</source>
+        <source>Write Alignment</source>
         <translation>Запись множественного выравнивания</translation>
     </message>
     <message>
@@ -2382,7 +2382,7 @@ it is better to leave the list intact.</source>
     </message>
     <message>
         <location filename="../src/library/CoreLib.cpp" line="276"/>
-        <source>Write sequence</source>
+        <source>Write Sequence</source>
         <translation>Запись последовательности</translation>
     </message>
     <message>

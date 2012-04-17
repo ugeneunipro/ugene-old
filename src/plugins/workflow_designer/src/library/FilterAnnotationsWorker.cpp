@@ -118,7 +118,7 @@ void FilterAnnotationsWorkerFactory::init() {
     }
 
     Descriptor desc( FilterAnnotationsWorkerFactory::ACTOR_ID,
-        FilterAnnotationsWorker::tr("Filter annotations by name"), 
+        FilterAnnotationsWorker::tr("Filter Annotations by Name"), 
         FilterAnnotationsWorker::tr("Filters annotations by name") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
 

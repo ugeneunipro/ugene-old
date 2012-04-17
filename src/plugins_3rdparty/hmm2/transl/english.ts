@@ -12,7 +12,7 @@
     <message>
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="13"/>
         <source>hmmbuild_dialog_title</source>
-        <translation>HMM build</translation>
+        <translation>HMM Build</translation>
     </message>
     <message>
         <location filename="../src/u_build/ui/HMMBuildDialog.ui" line="21"/>
@@ -968,7 +968,7 @@ You can use this option to generate reproducible results for different hmmcalibr
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchTask.cpp" line="27"/>
-        <source>HMM search</source>
+        <source>HMM Search</source>
         <translation></translation>
     </message>
     <message>
@@ -1085,7 +1085,7 @@ You can use this option to generate reproducible results for different hmmcalibr
     </message>
     <message>
         <location filename="../src/u_build/HMMBuildWorker.cpp" line="114"/>
-        <source>HMM build</source>
+        <source>HMM Build</source>
         <translation></translation>
     </message>
     <message>
@@ -1216,12 +1216,12 @@ You can use this option to generate reproducible results for different hmmcalibr
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="157"/>
-        <source>Read HMM profile</source>
+        <source>Read HMM Profile</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="144"/>
-        <source>Write HMM profile</source>
+        <source>Write HMM Profile</source>
         <translation></translation>
     </message>
     <message>
@@ -1343,7 +1343,7 @@ You can use this option to generate reproducible results for different hmmcalibr
     </message>
     <message>
         <location filename="../src/u_search/HMMSearchWorker.cpp" line="80"/>
-        <source>HMM search</source>
+        <source>HMM Search</source>
         <translation></translation>
     </message>
     <message>
@@ -1449,14 +1449,6 @@ Biological sequence analysis using profile hidden Markov models</translation>
     <message>
         <source>hmmcalibrate</source>
         <translation type="obsolete">HMM calibrate</translation>
-    </message>
-    <message>
-        <source>hmmbuild</source>
-        <translation type="obsolete">HMM build</translation>
-    </message>
-    <message>
-        <source>hmmsearch</source>
-        <translation type="obsolete">HMM search</translation>
     </message>
     <message>
         <location filename="../src/uHMMPlugin.cpp" line="83"/>
