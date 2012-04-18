@@ -34,8 +34,6 @@ public:
     virtual QString getName() const;
     
     virtual AssemblyConsensusAlgorithm* createAlgorithm();
-private:
-    QString algorithmId;
 };
 
 class U2ALGORITHM_EXPORT AssemblyConsensusAlgorithmDefault : public AssemblyConsensusAlgorithm {

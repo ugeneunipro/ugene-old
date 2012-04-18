@@ -42,11 +42,11 @@ AssemblyConsensusAlgorithmFactorySamtools::AssemblyConsensusAlgorithmFactorySamt
 {}
 
 QString AssemblyConsensusAlgorithmFactorySamtools::getName() const {
-    return tr("Samtools");
+    return tr("SAMtools");
 }
 
 QString AssemblyConsensusAlgorithmFactorySamtools::getDescription() const {
-    return tr("Uses samtools to calculate consensus with regard to quality of reads");
+    return tr("Uses SAMtools to calculate consensus with regard to quality of reads");
 }
 
 AssemblyConsensusAlgorithm* AssemblyConsensusAlgorithmFactorySamtools::createAlgorithm() {
@@ -68,7 +68,7 @@ struct AlgorithmInternal {
 
     void processReads(U2DbiIterator<U2AssemblyRead> *reads) {
         ReadsContainer samtoolsReads;
-        os.setDescription(AssemblyConsensusAlgorithmFactorySamtools::tr("Fetching reads from database and converting to samtools format"));
+        os.setDescription(AssemblyConsensusAlgorithmFactorySamtools::tr("Fetching reads from database and converting to SAMtools format"));
         SamtoolsAdapter::reads2samtools(reads, os, samtoolsReads);
         CHECK_OP(os,);
         os.setDescription(AssemblyConsensusAlgorithmFactorySamtools::tr("Sorting reads"));
