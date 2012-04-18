@@ -41,7 +41,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_EXCLUDED_REGION">
            <property name="text">
-            <string>Excluded Regions</string>
+            <string>Excluded regions</string>
            </property>
           </widget>
          </item>
@@ -98,7 +98,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_PRIMER_PRODUCT_SIZE_RANGE">
            <property name="text">
-            <string>Product Size Ranges</string>
+            <string>Product size ranges</string>
            </property>
           </widget>
          </item>
@@ -108,7 +108,7 @@
          <item row="0" column="2">
           <widget class="QLabel" name="label_PRIMER_MISPRIMING_LIBRARY">
            <property name="text">
-            <string>Mispriming/Repeat Library</string>
+            <string>Mispriming/Repeat library</string>
            </property>
           </widget>
          </item>
@@ -133,42 +133,42 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_PRIMER_NUM_RETURN">
            <property name="text">
-            <string>Number To Return</string>
+            <string>Number to return</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_PRIMER_MAX_MISPRIMING">
            <property name="text">
-            <string>Max Repeat Mispriming</string>
+            <string>Max repeat mispriming</string>
            </property>
           </widget>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_PRIMER_MAX_TEMPLATE_MISPRIMING">
            <property name="text">
-            <string>Max Template Mispriming</string>
+            <string>Max template mispriming</string>
            </property>
           </widget>
          </item>
          <item row="1" column="2">
           <widget class="QLabel" name="label_PRIMER_MAX_END_STABILITY">
            <property name="text">
-            <string>Max 3' Stability</string>
+            <string>Max 3' stability</string>
            </property>
           </widget>
          </item>
          <item row="2" column="2">
           <widget class="QLabel" name="label_PRIMER_PAIR_MAX_MISPRIMING">
            <property name="text">
-            <string>Pair Max Repeat Mispriming</string>
+            <string>Pair max repeat mispriming</string>
            </property>
           </widget>
          </item>
          <item row="3" column="2">
           <widget class="QLabel" name="label_PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING">
            <property name="text">
-            <string>Pair Max Template Mispriming</string>
+            <string>Pair max template mispriming</string>
            </property>
           </widget>
          </item>
@@ -214,7 +214,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_PRIMER_START_CODON_POSITION">
            <property name="text">
-            <string>Start Codon Position</string>
+            <string>Start codon position</string>
            </property>
           </widget>
          </item>
@@ -388,7 +388,7 @@
             <bool>true</bool>
            </property>
            <property name="text">
-            <string>Pick hybridization probe</string>
+            <string>Pick hybridization probe (internal oligo)</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -401,7 +401,7 @@
          <item row="1" column="1">
           <widget class="QLabel" name="label_35">
            <property name="text">
-            <string>(internal oligo), or use oligo below</string>
+            <string>or use oligo below</string>
            </property>
           </widget>
          </item>
@@ -421,7 +421,7 @@
             <bool>false</bool>
            </property>
            <property name="text">
-            <string>Pick right primer or use right primer</string>
+            <string>Pick right primer</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -434,7 +434,7 @@
          <item row="1" column="2">
           <widget class="QLabel" name="label_36">
            <property name="text">
-            <string>below (5' to 3' on opposite strand)</string>
+            <string>or use right primer below (5' to 3' on opposite strand)</string>
            </property>
           </widget>
          </item>
@@ -472,7 +472,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_PRIMER_SIZE">
            <property name="text">
-            <string>Primer Size</string>
+            <string>Primer size</string>
            </property>
           </widget>
          </item>
@@ -554,7 +554,7 @@
          <item row="1" column="8">
           <widget class="QLabel" name="label_PRIMER_MAX_DIFF_TM">
            <property name="text">
-            <string>Max Tm Difference</string>
+            <string>Max Tm difference</string>
            </property>
           </widget>
          </item>
@@ -954,28 +954,28 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_PRIMER_SELF_ANY">
            <property name="text">
-            <string>Max Self Complementarity</string>
+            <string>Max self complementarity</string>
            </property>
           </widget>
          </item>
          <item row="0" column="2">
           <widget class="QLabel" name="label_PRIMER_SELF_END">
            <property name="text">
-            <string>Max 3' Self Complementarity</string>
+            <string>Max 3' self complementarity</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_PRIMER_INSIDE_PENALTY">
            <property name="text">
-            <string>Inside Target Penalty</string>
+            <string>Inside target penalty</string>
            </property>
           </widget>
          </item>
          <item row="2" column="2">
           <widget class="QLabel" name="label_PRIMER_OUTSIDE_PENALTY">
            <property name="text">
-            <string>Outside Target Penalty</string>
+            <string>Outside target penalty</string>
            </property>
           </widget>
          </item>
@@ -996,21 +996,21 @@
          <item row="1" column="2">
           <widget class="QLabel" name="label_PRIMER_MAX_POLY_X">
            <property name="text">
-            <string>Max Poly-X</string>
+            <string>Max poly-X</string>
            </property>
           </widget>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_PRIMER_FIRST_BASE_INDEX">
            <property name="text">
-            <string>First Base Index</string>
+            <string>First base index</string>
            </property>
           </widget>
          </item>
          <item row="3" column="2">
           <widget class="QLabel" name="label_PRIMER_GC_CLAMP">
            <property name="text">
-            <string>CG Clamp</string>
+            <string>CG clamp</string>
            </property>
           </widget>
          </item>
@@ -1060,7 +1060,7 @@
          <item row="6" column="0">
           <widget class="QLabel" name="label_PRIMER_DNA_CONC">
            <property name="text">
-            <string>Annealing Oligo Concentration</string>
+            <string>Annealing oligo concentration</string>
            </property>
           </widget>
          </item>
@@ -1332,7 +1332,7 @@
          <item>
           <widget class="QCheckBox" name="checkbox_PRIMER_LIBERAL_BASE">
            <property name="text">
-            <string> Liberal Base</string>
+            <string> Liberal base</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -1345,7 +1345,7 @@
             <bool>false</bool>
            </property>
            <property name="text">
-            <string>Show Debuging Info</string>
+            <string>Show debuging info</string>
            </property>
           </widget>
          </item>
@@ -1372,7 +1372,7 @@
      </widget>
      <widget class="QWidget" name="tab_InternalOligo">
       <attribute name="title">
-       <string>Internal Oligo</string>
+       <string>Internal oligo</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
@@ -1380,7 +1380,7 @@
          <item>
           <widget class="QLabel" name="label_58">
            <property name="text">
-            <string>Hyb Oligo Excluded Region</string>
+            <string>Hyb oligo excluded region</string>
            </property>
           </widget>
          </item>
@@ -1401,21 +1401,21 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_59">
            <property name="text">
-            <string>Hyb Oligo Size</string>
+            <string>Hyb oligo size</string>
            </property>
           </widget>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_60">
            <property name="text">
-            <string>Hyb Oligo Tm</string>
+            <string>Hyb oligo Tm</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_61">
            <property name="text">
-            <string>Hyb Oligo GC%</string>
+            <string>Hyb oligo GC%</string>
            </property>
           </widget>
          </item>
@@ -1594,7 +1594,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_71">
            <property name="text">
-            <string>Hyb Oligo Self Complementarity</string>
+            <string>Hyb oligo self complementarity</string>
            </property>
           </widget>
          </item>
@@ -1608,28 +1608,28 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_73">
            <property name="text">
-            <string>Hyb Oligo Mishyb Library</string>
+            <string>Hyb oligo mishyb library</string>
            </property>
           </widget>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_74">
            <property name="text">
-            <string>Hyb Oligo Min Sequence Quality</string>
+            <string>Hyb oligo min sequence quality</string>
            </property>
           </widget>
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="label_75">
            <property name="text">
-            <string>Hyb Oligo Conc of monovalent cations</string>
+            <string>Hyb oligo conc of monovalent cations</string>
            </property>
           </widget>
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="label_76">
            <property name="text">
-            <string>Hyb Oligo conc of divalent cations</string>
+            <string>Hyb oligo conc of divalent cations</string>
            </property>
           </widget>
          </item>
@@ -1711,21 +1711,21 @@
          <item row="0" column="2">
           <widget class="QLabel" name="label_77">
            <property name="text">
-            <string>Hyb Oligo Max 3' Self Complementarity</string>
+            <string>Hyb oligo max 3' self complementarity</string>
            </property>
           </widget>
          </item>
          <item row="1" column="2">
           <widget class="QLabel" name="label_78">
            <property name="text">
-            <string>Hyb Oligo Max Poly-X</string>
+            <string>Hyb oligo max poly-X</string>
            </property>
           </widget>
          </item>
          <item row="2" column="2">
           <widget class="QLabel" name="label_79">
            <property name="text">
-            <string>Hyb Oligo Max Mishyb</string>
+            <string>Hyb oligo max mishyb</string>
            </property>
           </widget>
          </item>
@@ -1771,14 +1771,14 @@
          <item row="5" column="2">
           <widget class="QLabel" name="label_81">
            <property name="text">
-            <string>Hyb Oligo [dNTP]</string>
+            <string>Hyb oligo [dNTP]</string>
            </property>
           </widget>
          </item>
          <item row="4" column="2">
           <widget class="QLabel" name="label_80">
            <property name="text">
-            <string>Hyb Oligo DNA Concentration</string>
+            <string>Hyb oligo DNA concentration</string>
            </property>
           </widget>
          </item>
@@ -2000,14 +2000,14 @@ p, li { white-space: pre-wrap; }
            <item row="0" column="0">
             <widget class="QLabel" name="label_17">
              <property name="text">
-              <string>Self Complementarity</string>
+              <string>Self complementarity</string>
              </property>
             </widget>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_18">
              <property name="text">
-              <string>3' Self Complementarity</string>
+              <string>3' self complementarity</string>
              </property>
             </widget>
            </item>
@@ -2028,35 +2028,35 @@ p, li { white-space: pre-wrap; }
            <item row="4" column="0">
             <widget class="QLabel" name="label_21">
              <property name="text">
-              <string>Sequence Quality</string>
+              <string>Sequence quality</string>
              </property>
             </widget>
            </item>
            <item row="5" column="0">
             <widget class="QLabel" name="label_22">
              <property name="text">
-              <string>End Sequence Quality</string>
+              <string>End sequence quality</string>
              </property>
             </widget>
            </item>
            <item row="6" column="0">
             <widget class="QLabel" name="label_23">
              <property name="text">
-              <string>Position Penalty</string>
+              <string>Position penalty</string>
              </property>
             </widget>
            </item>
            <item row="7" column="0">
             <widget class="QLabel" name="label_24">
              <property name="text">
-              <string>End Stability</string>
+              <string>End stability</string>
              </property>
             </widget>
            </item>
            <item row="8" column="0">
             <widget class="QLabel" name="label_25">
              <property name="text">
-              <string>Template Mispriming</string>
+              <string>Template mispriming</string>
              </property>
             </widget>
            </item>
@@ -2219,7 +2219,7 @@ p, li { white-space: pre-wrap; }
            <item row="0" column="0">
             <widget class="QLabel" name="label_26">
              <property name="text">
-              <string>Product Size</string>
+              <string>Product size</string>
              </property>
             </widget>
            </item>
@@ -2324,49 +2324,49 @@ p, li { white-space: pre-wrap; }
            <item row="0" column="0">
             <widget class="QLabel" name="label_27">
              <property name="text">
-              <string>Tm Difference</string>
+              <string>Tm difference</string>
              </property>
             </widget>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_29">
              <property name="text">
-              <string>Any Complementarity</string>
+              <string>Any complementarity</string>
              </property>
             </widget>
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_30">
              <property name="text">
-              <string>3' Complementarity</string>
+              <string>3' complementarity</string>
              </property>
             </widget>
            </item>
            <item row="3" column="0">
             <widget class="QLabel" name="label_31">
              <property name="text">
-              <string>Pair Mispriming</string>
+              <string>Pair mispriming</string>
              </property>
             </widget>
            </item>
            <item row="4" column="0">
             <widget class="QLabel" name="label_32">
              <property name="text">
-              <string>Primer Penalty Weight</string>
+              <string>Primer penalty weight</string>
              </property>
             </widget>
            </item>
            <item row="5" column="0">
             <widget class="QLabel" name="label_33">
              <property name="text">
-              <string>Hyb Oligo Penalty Weight</string>
+              <string>Hyb oligo penalty weight</string>
              </property>
             </widget>
            </item>
            <item row="6" column="0">
             <widget class="QLabel" name="label_37">
              <property name="text">
-              <string>Primer Pair Template Mispriming Weight</string>
+              <string>Primer pair template mispriming weight</string>
              </property>
             </widget>
            </item>
@@ -2503,21 +2503,21 @@ p, li { white-space: pre-wrap; }
            <item row="0" column="0">
             <widget class="QLabel" name="label_38">
              <property name="text">
-              <string>Hyb Oligo Tm</string>
+              <string>Hyb oligo Tm</string>
              </property>
             </widget>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_40">
              <property name="text">
-              <string>Hyb Oligo Size</string>
+              <string>Hyb oligo size</string>
              </property>
             </widget>
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_41">
              <property name="text">
-              <string>Hyb Oligo GC%</string>
+              <string>Hyb oligo GC%</string>
              </property>
             </widget>
            </item>
@@ -2655,28 +2655,28 @@ p, li { white-space: pre-wrap; }
            <item row="0" column="0">
             <widget class="QLabel" name="label_39">
              <property name="text">
-              <string>Hyb Oligo Self Complementarity</string>
+              <string>Hyb oligo self complementarity</string>
              </property>
             </widget>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_42">
              <property name="text">
-              <string>Hyb Oligo #N's</string>
+              <string>Hyb oligo #N's</string>
              </property>
             </widget>
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_43">
              <property name="text">
-              <string>Hyb Oligo Mishybing</string>
+              <string>Hyb oligo mishybing</string>
              </property>
             </widget>
            </item>
            <item row="3" column="0">
             <widget class="QLabel" name="label_44">
              <property name="text">
-              <string>Hyb Oligo Sequence Quality</string>
+              <string>Hyb oligo sequence quality</string>
              </property>
             </widget>
            </item>
@@ -2753,7 +2753,7 @@ p, li { white-space: pre-wrap; }
      </widget>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>Span intron/exon</string>
+       <string>Span Intron/Exon</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <item>
@@ -2954,7 +2954,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Sequence Quality</string>
+          <string>Sequence quality</string>
          </property>
         </widget>
        </item>
@@ -2966,7 +2966,7 @@ p, li { white-space: pre-wrap; }
          <item>
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Min Sequence Quality:</string>
+            <string>Min sequence quality:</string>
            </property>
           </widget>
          </item>
@@ -2986,7 +2986,7 @@ p, li { white-space: pre-wrap; }
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Min End Sequence Quality:</string>
+            <string>Min end sequence quality:</string>
            </property>
           </widget>
          </item>
@@ -3006,7 +3006,7 @@ p, li { white-space: pre-wrap; }
          <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Sequence Quality Range Min:</string>
+            <string>Sequence quality range min:</string>
            </property>
           </widget>
          </item>
@@ -3026,7 +3026,7 @@ p, li { white-space: pre-wrap; }
          <item>
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Sequence Quality Range Max:</string>
+            <string>Sequence quality range max:</string>
            </property>
           </widget>
          </item>

@@ -87,7 +87,7 @@
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="20"/>
         <source>dialog_tittle</source>
-        <translation>Primer designer</translation>
+        <translation>Primer Designer</translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="36"/>
@@ -96,7 +96,7 @@
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="44"/>
-        <source>Excluded Regions</source>
+        <source>Excluded regions</source>
         <translation></translation>
     </message>
     <message>
@@ -106,47 +106,47 @@
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="101"/>
-        <source>Product Size Ranges</source>
+        <source>Product size ranges</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="111"/>
-        <source>Mispriming/Repeat Library</source>
+        <source>Mispriming/Repeat library</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="136"/>
-        <source>Number To Return</source>
+        <source>Number to return</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="143"/>
-        <source>Max Repeat Mispriming</source>
+        <source>Max repeat mispriming</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="150"/>
-        <source>Max Template Mispriming</source>
+        <source>Max template mispriming</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="157"/>
-        <source>Max 3&apos; Stability</source>
+        <source>Max 3&apos; stability</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="164"/>
-        <source>Pair Max Repeat Mispriming</source>
+        <source>Pair max repeat mispriming</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="171"/>
-        <source>Pair Max Template Mispriming</source>
+        <source>Pair max template mispriming</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="217"/>
-        <source>Start Codon Position</source>
+        <source>Start codon position</source>
         <translation></translation>
     </message>
     <message>
@@ -161,22 +161,22 @@
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="391"/>
-        <source>Pick hybridization probe</source>
+        <source>Pick hybridization probe (internal oligo)</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="404"/>
-        <source>(internal oligo), or use oligo below</source>
+        <source>or use oligo below</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="424"/>
-        <source>Pick right primer or use right primer</source>
+        <source>Pick right primer</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="437"/>
-        <source>below (5&apos; to 3&apos; on opposite strand)</source>
+        <source>or use right primer below (5&apos; to 3&apos; on opposite strand)</source>
         <translation></translation>
     </message>
     <message>
@@ -186,7 +186,7 @@
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="475"/>
-        <source>Primer Size</source>
+        <source>Primer size</source>
         <translation></translation>
     </message>
     <message>
@@ -220,7 +220,7 @@
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="557"/>
-        <source>Max Tm Difference</source>
+        <source>Max Tm difference</source>
         <translation></translation>
     </message>
     <message>
@@ -252,22 +252,22 @@
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="957"/>
-        <source>Max Self Complementarity</source>
+        <source>Max self complementarity</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="964"/>
-        <source>Max 3&apos; Self Complementarity</source>
+        <source>Max 3&apos; self complementarity</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="971"/>
-        <source>Inside Target Penalty</source>
+        <source>Inside target penalty</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="978"/>
-        <source>Outside Target Penalty</source>
+        <source>Outside target penalty</source>
         <translation></translation>
     </message>
     <message>
@@ -282,17 +282,17 @@
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="999"/>
-        <source>Max Poly-X</source>
+        <source>Max poly-X</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1006"/>
-        <source>First Base Index</source>
+        <source>First base index</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1013"/>
-        <source>CG Clamp</source>
+        <source>CG clamp</source>
         <translation></translation>
     </message>
     <message>
@@ -322,17 +322,17 @@
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1063"/>
-        <source>Annealing Oligo Concentration</source>
+        <source>Annealing oligo concentration</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1335"/>
-        <source> Liberal Base</source>
+        <source> Liberal base</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1348"/>
-        <source>Show Debuging Info</source>
+        <source>Show debuging info</source>
         <translation></translation>
     </message>
     <message>
@@ -352,25 +352,25 @@
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1383"/>
-        <source>Hyb Oligo Excluded Region</source>
+        <source>Hyb oligo excluded region</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1404"/>
         <location filename="../src/ui/Primer3Dialog.ui" line="2513"/>
-        <source>Hyb Oligo Size</source>
+        <source>Hyb oligo size</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1411"/>
         <location filename="../src/ui/Primer3Dialog.ui" line="2506"/>
-        <source>Hyb Oligo Tm</source>
+        <source>Hyb oligo Tm</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1418"/>
         <location filename="../src/ui/Primer3Dialog.ui" line="2520"/>
-        <source>Hyb Oligo GC%</source>
+        <source>Hyb oligo GC%</source>
         <translation></translation>
     </message>
     <message>
@@ -397,7 +397,7 @@
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1597"/>
         <location filename="../src/ui/Primer3Dialog.ui" line="2658"/>
-        <source>Hyb Oligo Self Complementarity</source>
+        <source>Hyb oligo self complementarity</source>
         <translation></translation>
     </message>
     <message>
@@ -407,47 +407,47 @@
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1611"/>
-        <source>Hyb Oligo Mishyb Library</source>
+        <source>Hyb oligo mishyb library</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1618"/>
-        <source>Hyb Oligo Min Sequence Quality</source>
+        <source>Hyb oligo min sequence quality</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1625"/>
-        <source>Hyb Oligo Conc of monovalent cations</source>
+        <source>Hyb oligo conc of monovalent cations</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1632"/>
-        <source>Hyb Oligo conc of divalent cations</source>
+        <source>Hyb oligo conc of divalent cations</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1714"/>
-        <source>Hyb Oligo Max 3&apos; Self Complementarity</source>
+        <source>Hyb oligo max 3&apos; self complementarity</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1721"/>
-        <source>Hyb Oligo Max Poly-X</source>
+        <source>Hyb oligo max poly-X</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1728"/>
-        <source>Hyb Oligo Max Mishyb</source>
+        <source>Hyb oligo max mishyb</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1774"/>
-        <source>Hyb Oligo [dNTP]</source>
+        <source>Hyb oligo [dNTP]</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="1781"/>
-        <source>Hyb Oligo DNA Concentration</source>
+        <source>Hyb oligo DNA concentration</source>
         <translation></translation>
     </message>
     <message>
@@ -505,12 +505,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2003"/>
-        <source>Self Complementarity</source>
+        <source>Self complementarity</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2010"/>
-        <source>3&apos; Self Complementarity</source>
+        <source>3&apos; self complementarity</source>
         <translation></translation>
     </message>
     <message>
@@ -527,27 +527,27 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/Primer3Dialog.ui" line="2031"/>
         <location filename="../src/ui/Primer3Dialog.ui" line="2756"/>
         <location filename="../src/ui/Primer3Dialog.ui" line="2762"/>
-        <source>Sequence Quality</source>
+        <source>Sequence quality</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2038"/>
-        <source>End Sequence Quality</source>
+        <source>End sequence quality</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2045"/>
-        <source>Position Penalty</source>
+        <source>Position penalty</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2052"/>
-        <source>End Stability</source>
+        <source>End stability</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2059"/>
-        <source>Template Mispriming</source>
+        <source>Template mispriming</source>
         <translation></translation>
     </message>
     <message>
@@ -561,42 +561,42 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2222"/>
-        <source>Product Size</source>
+        <source>Product size</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2327"/>
-        <source>Tm Difference</source>
+        <source>Tm difference</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2334"/>
-        <source>Any Complementarity</source>
+        <source>Any complementarity</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2341"/>
-        <source>3&apos; Complementarity</source>
+        <source>3&apos; complementarity</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2348"/>
-        <source>Pair Mispriming</source>
+        <source>Pair mispriming</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2355"/>
-        <source>Primer Penalty Weight</source>
+        <source>Primer penalty weight</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2362"/>
-        <source>Hyb Oligo Penalty Weight</source>
+        <source>Hyb oligo penalty weight</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2369"/>
-        <source>Primer Pair Template Mispriming Weight</source>
+        <source>Primer pair template mispriming weight</source>
         <translation></translation>
     </message>
     <message>
@@ -610,37 +610,37 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2665"/>
-        <source>Hyb Oligo #N&apos;s</source>
+        <source>Hyb oligo #N&apos;s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2672"/>
-        <source>Hyb Oligo Mishybing</source>
+        <source>Hyb oligo mishybing</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2679"/>
-        <source>Hyb Oligo Sequence Quality</source>
+        <source>Hyb oligo sequence quality</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2774"/>
-        <source>Min Sequence Quality:</source>
+        <source>Min sequence quality:</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2794"/>
-        <source>Min End Sequence Quality:</source>
+        <source>Min end sequence quality:</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2814"/>
-        <source>Sequence Quality Range Min:</source>
+        <source>Sequence quality range min:</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2834"/>
-        <source>Sequence Quality Range Max:</source>
+        <source>Sequence quality range max:</source>
         <translation></translation>
     </message>
     <message>
@@ -650,12 +650,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2908"/>
-        <source>Reset Form</source>
+        <source>Reset form</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2915"/>
-        <source>Pick Primers</source>
+        <source>Pick primers</source>
         <translation></translation>
     </message>
 </context>
@@ -754,22 +754,22 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/Primer3Dialog.cpp" line="331"/>
-        <source>Start Codon Position</source>
+        <source>Start codon position</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/Primer3Dialog.cpp" line="345"/>
-        <source>Product Min Tm</source>
+        <source>Product min Tm</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/Primer3Dialog.cpp" line="359"/>
-        <source>Product Opt Tm</source>
+        <source>Product opt Tm</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/Primer3Dialog.cpp" line="373"/>
-        <source>Product Max Tm</source>
+        <source>Product max Tm</source>
         <translation></translation>
     </message>
     <message>
@@ -779,22 +779,22 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/Primer3Dialog.cpp" line="401"/>
-        <source>Inside Penalty</source>
+        <source>Inside penalty</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/Primer3Dialog.cpp" line="415"/>
-        <source>Internal Oligo Opt Tm</source>
+        <source>Internal oligo opt Tm</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/Primer3Dialog.cpp" line="427"/>
-        <source>Excluded Regions</source>
+        <source>Excluded regions</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/Primer3Dialog.cpp" line="439"/>
-        <source>Internal Oligo Excluded Regions</source>
+        <source>Internal oligo excluded regions</source>
         <translation></translation>
     </message>
     <message>
@@ -804,12 +804,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/Primer3Dialog.cpp" line="463"/>
-        <source>Product Size Ranges</source>
+        <source>Product size ranges</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/Primer3Dialog.cpp" line="500"/>
-        <source>Sequence Quality</source>
+        <source>Sequence quality</source>
         <translation></translation>
     </message>
     <message>

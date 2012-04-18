@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>New alignment action</string>
+   <string>New Alignment Action</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
