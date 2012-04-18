@@ -15,13 +15,14 @@ HEADERS += src/WebWindow.h \
            src/ov_assembly/AssemblyReadsArea.h \
            src/ov_assembly/AssemblyReadsAreaHint.h \
            src/ov_assembly/AssemblyReferenceArea.h \
+           src/ov_assembly/AssemblySettingsWidget.h \
            src/ov_assembly/AssemblyRuler.h \
            src/ov_assembly/CoverageInfo.h \
            src/ov_assembly/CoveredRegionsManager.h \
+           src/ov_assembly/AssemblyInfoWidget.h \
            src/ov_assembly/ExportReadsDialog.h \
            src/ov_assembly/ExportConsensusDialog.h \
            src/ov_assembly/ExportConsensusTask.h \
-           src/ov_assembly/ExportReadsDialog.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
            src/ov_msa/ConsensusSelectorDialogController.h \
@@ -96,7 +97,7 @@ HEADERS += src/WebWindow.h \
            src/ov_sequence/sequence_info/DinuclOccurTask.h \
            src/ov_sequence/sequence_info/SequenceInfo.h \
            src/ov_sequence/SaveGraphCutoffsDialogController.h \
-		   src/ov_sequence/SaveGraphCutoffsTask.h \
+           src/ov_sequence/SaveGraphCutoffsTask.h \
            src/ov_text/SimpleTextObjectView.h \
            src/ov_text/SimpleTextObjectViewTasks.h \
            src/phyltree/BranchSettingsDialog.h \
@@ -158,8 +159,10 @@ SOURCES += src/WebWindow.cpp \
            src/ov_assembly/AssemblyReadsAreaHint.cpp \
            src/ov_assembly/AssemblyReferenceArea.cpp \
            src/ov_assembly/AssemblyRuler.cpp \
+           src/ov_assembly/AssemblySettingsWidget.cpp \
            src/ov_assembly/CoverageInfo.cpp \
            src/ov_assembly/CoveredRegionsManager.cpp \
+           src/ov_assembly/AssemblyInfoWidget.cpp \
            src/ov_assembly/ExportConsensusDialog.cpp \
            src/ov_assembly/ExportConsensusTask.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
@@ -226,7 +229,7 @@ SOURCES += src/WebWindow.cpp \
            src/ov_sequence/PanView.cpp \
            src/ov_sequence/PanViewRows.cpp \
            src/ov_sequence/SaveGraphCutoffsDialogController.cpp \
-		   src/ov_sequence/SaveGraphCutoffsTask.cpp \
+           src/ov_sequence/SaveGraphCutoffsTask.cpp \
            src/ov_sequence/SearchQualifierDialog.cpp \
            src/ov_sequence/WindowStepSelectorWidget.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightSettings.cpp \

@@ -43,6 +43,7 @@ namespace U2 {
 class AssemblyBrowserUi;
 class PositionSelector;
 class AssemblyCellRendererFactoryRegistry;
+class OptionsPanel;
 
 class AssemblyBrowser : public GObjectView {
     Q_OBJECT
@@ -56,6 +57,7 @@ public:
     virtual void buildStaticMenu(QMenu* m);
     virtual QVariantMap saveState();
     virtual Task* updateViewTask(const QString& stateName, const QVariantMap& stateData);
+    virtual OptionsPanel* getOptionsPanel();
     
     void setGlobalCoverageInfo(CoverageInfo info);
     QList<CoveredRegion> getCoveredRegions() const;
@@ -118,14 +120,20 @@ public:
 
     AssemblyCellRendererFactoryRegistry * getCellRendererRegistry() { return cellRendererRegistry; }
 
+    QAction * getReadHintEnabledAction() { return readHintEnabledAction; }
+    QAction * getCoordsOnRulerAction() { return showCoordsOnRulerAction; }
+    QAction * getCoverageOnRulerAction() { return showCoverageOnRulerAction; }
+
 public slots:
     void sl_zoomIn(const QPoint & pos = QPoint());
     void sl_zoomOut(const QPoint & pos = QPoint());
     void sl_zoomToReads();
+    void sl_coveredRegionClicked(const QString link);
 
 signals:
     void si_offsetsChanged();
     void si_zoomOperationPerformed();
+    void si_coverageReady();
 
 protected:
     virtual QWidget * createWidget();

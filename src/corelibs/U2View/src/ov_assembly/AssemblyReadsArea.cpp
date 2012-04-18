@@ -59,10 +59,11 @@ namespace U2 {
 
 static const QColor backgroundColor(Qt::white);
 static const QColor shadowingColor(255,255,255,200);
+const QString AssemblyReadsArea::ZOOM_LINK = "zoom";
 
 AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_)
     :  QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), redraw(true), cellRenderer(NULL),
-        coveredRegionsLabel(this), hBar(hBar_), vBar(vBar_), hintData(this), mover(),
+        coveredRegionsLabel(browser, this), hBar(hBar_), vBar(vBar_), hintData(this), mover(),
         shadowingEnabled(false), shadowingData(),
         scribbling(false), currentHotkeyIndex(-1),
         hintEnabled(AssemblyBrowserSettings::getReadHintEnabled()), scrolling(false),
@@ -78,6 +79,7 @@ AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_
     setFocusPolicy(Qt::StrongFocus);
     
     coveredRegionsLabel.installEventFilter(this);
+    coveredRegionsLabel.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     
     createMenu();
 }
@@ -126,10 +128,10 @@ void AssemblyReadsArea::createMenu() {
     QMenu *consensusMenu = ui->getConsensusArea()->getConsensusAlgorithmMenu();
     readMenu->addMenu(consensusMenu);
 
-    QAction * optimizeRenderAction = readMenu->addAction(tr("Optimize rendering when scrolling"));
+    optimizeRenderAction = readMenu->addAction(tr("Optimize rendering when scrolling"));
     optimizeRenderAction->setCheckable(true);
     optimizeRenderAction->setChecked(optimizeRenderOnScroll);
-    connect(optimizeRenderAction, SIGNAL(triggered(bool)), SLOT(sl_onOptimizeRendering(bool)));
+    connect(optimizeRenderAction, SIGNAL(toggled(bool)), SLOT(sl_onOptimizeRendering(bool)));
 }
 
 static const QString BIND_HERE(AssemblyReadsArea::tr("Lock here"));
@@ -175,7 +177,6 @@ void AssemblyReadsArea::initRedraw() {
 void AssemblyReadsArea::connectSlots() {
     connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_zoomOperationPerformed()));
     connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
-    connect(&coveredRegionsLabel, SIGNAL(linkActivated(const QString&)), SLOT(sl_coveredRegionClicked(const QString&)));
 }   
 
 void AssemblyReadsArea::setupHScrollBar() {
@@ -266,8 +267,6 @@ void AssemblyReadsArea::drawAll() {
     }
 }
 
-const static QString ZOOM_LINK("zoom");
-
 const QList<AssemblyReadsArea::HotkeyDescription> AssemblyReadsArea::HOTKEY_DESCRIPTIONS = AssemblyReadsArea::initHotkeyDescriptions();
 
 QList<AssemblyReadsArea::HotkeyDescription> AssemblyReadsArea::initHotkeyDescriptions() {
@@ -292,44 +291,25 @@ void AssemblyReadsArea::showWelcomeScreen() {
     GTIMER(c1, t1, "AssemblyReadsArea::showWelcomeScreen");
 
     cachedReads.clear();
-    QString text = tr("<a href=\"%1\">Zoom in to see the reads</a>").arg(ZOOM_LINK);
+    QString prefix = tr("<a href=\"%1\">Zoom in to see the reads</a>").arg(ZOOM_LINK);
 
     QList<CoveredRegion> coveredRegions = browser->getCoveredRegions();
     if(!browser->areCoveredRegionsReady()) {
-        text = tr("Please wait until overview rendering is finished, or <a href=\"%1\">zoom in to see the reads</a>").arg(ZOOM_LINK);
+        prefix = tr("Please wait until overview rendering is finished, or <a href=\"%1\">zoom in to see the reads</a>").arg(ZOOM_LINK);
     } else if(!coveredRegions.empty()) {
-        text += tr(" or choose one of the well-covered regions:<br><br>");
-        QString coveredRegionsText = "<table align=\"center\" cellspacing=\"2\">";
-        /*
-        * |   | Region | Coverage |
-        * | 1 | [x,y]  | z        |
-        */
-        coveredRegionsText += tr("<tr><td></td><td>Region</td><td>Approx.&nbsp;coverage</td></tr>");
-        for(int i = 0; i < coveredRegions.size(); ++i) {
-            const CoveredRegion & cr = coveredRegions.at(i);
-            QString crStart = FormatUtils::splitThousands(cr.region.startPos);
-            QString crEnd = FormatUtils::splitThousands(cr.region.endPos());
-            QString crCoverage = FormatUtils::splitThousands(cr.coverage);
-            coveredRegionsText += "<tr>";
-            coveredRegionsText += QString("<td align=\"right\">%1&nbsp;&nbsp;</td>").arg(i+1);
-            coveredRegionsText += QString("<td><a href=\"%1\">[%2 - %3]</a></td>").arg(i).arg(crStart).arg(crEnd);
-            coveredRegionsText += tr("<td align=\"center\">%4</td>").arg(crCoverage);
-            coveredRegionsText += "</tr>";
-        }
-        coveredRegionsText += "</table>";
-        text += coveredRegionsText;
+        prefix += tr(" or choose one of the well-covered regions:<br><br>");
     }
+    prefix += "<center>";
     
     assert(!HOTKEY_DESCRIPTIONS.isEmpty());
     if(currentHotkeyIndex == -1 || !coveredRegionsLabel.isVisible()) {
         currentHotkeyIndex = qrand() % HOTKEY_DESCRIPTIONS.size();
     }
-    text += "<br><br><br><u>TIP:</u>&nbsp;&nbsp;&nbsp;";
+    QString postfix = "</center><br><br><br><u>TIP:</u>&nbsp;&nbsp;&nbsp;";
     HotkeyDescription hotkey = HOTKEY_DESCRIPTIONS.at(currentHotkeyIndex);
-    text += QString("<b>%1</b>&nbsp;&mdash;&nbsp;%2").arg(hotkey.key).arg(hotkey.desc);
+    postfix += QString("<b>%1</b>&nbsp;&mdash;&nbsp;%2").arg(hotkey.key).arg(hotkey.desc);
     
-    coveredRegionsLabel.setText(text);
-    coveredRegionsLabel.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    coveredRegionsLabel.setAdditionalText(prefix, postfix);
     coveredRegionsLabel.show();
 
     //p.drawText(rect(), Qt::AlignCenter, );
@@ -800,19 +780,6 @@ void AssemblyReadsArea::mouseDoubleClickEvent(QMouseEvent * e) {
         qint64 yOffset = browser->getYOffsetInAssembly();
         qint64 windowHalfY = yOffset + qRound64((double)browser->rowsCanBeVisible() / 2);
         browser->setYOffsetInAssembly(browser->normalizeYoffset(yOffset + cursorYoffset - windowHalfY + 1));
-    }
-}
-
-void AssemblyReadsArea::sl_coveredRegionClicked(const QString & link) {
-    if(ZOOM_LINK == link) {
-        browser->sl_zoomToReads();
-    } else {
-        bool ok;
-        int i = link.toInt(&ok);
-        assert(ok);
-        CoveredRegion cr = browser->getCoveredRegions().at(i);
-        ui->getOverview()->checkedSetVisibleRange(cr.region);
-        browser->navigateToRegion(cr.region);
     }
 }
 

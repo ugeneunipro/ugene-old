@@ -107,5 +107,6 @@
         <file>images/collapse.png</file>
         <file>images/ruler_coverage.png</file>
         <file>images/tooltip.png</file>
+        <file>images/settings.png</file>
     </qresource>
 </RCC>

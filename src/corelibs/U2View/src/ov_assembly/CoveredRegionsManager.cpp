@@ -51,6 +51,7 @@ visibleRegion(visibleRegion_)  {
         U2Region region(step*i, qint64(step));
         CoveredRegion coveredRegion(region, maxCoverage);
         //coreLog.trace(QString("Assembly: adding covered region %1 - %2, coverage %3").arg(region.startPos).arg(region.endPos()).arg(maxCoverage));
+
         allRegions.push_back(coveredRegion);
     }
 

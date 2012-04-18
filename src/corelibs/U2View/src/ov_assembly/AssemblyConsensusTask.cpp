@@ -63,7 +63,6 @@ void AssemblyConsensusTask::run() {
     perfLog.trace(QString("Assembly: '%1' consensus calculation time: %2 seconds")
                   .arg(settings.consensusAlgorithm->getName())
                   .arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
-
 }
 
 AssemblyConsensusWorker::AssemblyConsensusWorker(ConsensusSettingsQueue *settingsQueue_)
@@ -73,6 +72,9 @@ AssemblyConsensusWorker::AssemblyConsensusWorker(ConsensusSettingsQueue *setting
 }
 
 void AssemblyConsensusWorker::run() {
+    GTIMER(c2, t2, "AssemblyConsensusTask::run");
+    quint64 t0 = GTimer::currentTimeMicros();
+
     int count = settingsQueue->count();
     int mappingLength = 100/count;
     ConsensusInfo result;
@@ -89,6 +91,10 @@ void AssemblyConsensusWorker::run() {
         ++completed;
     }
     stateInfo.setProgress(100);
+
+    perfLog.trace(QString("Assembly: '%1' consensus export time: %2 seconds")
+                  .arg(result.algorithmId)
+                  .arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)));
 }
 
 } //namespace

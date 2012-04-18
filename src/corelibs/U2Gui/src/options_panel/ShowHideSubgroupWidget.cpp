@@ -36,11 +36,12 @@ ShowHideSubgroupWidget::ShowHideSubgroupWidget(
     mainLayout->setSpacing(0);
     mainLayout->setAlignment(Qt::AlignTop);
 
-    innerWidget->setContentsMargins(17, 5, 20, 5);
+    innerWidget->setContentsMargins(17, 5, 5, 5);
 
     arrowHeaderWidget = new ArrowHeaderWidget(caption, isOpened);
     connect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)),
         this, SLOT(updateSubgroupState(bool)));
+    updateSubgroupState(isOpened);
 
     mainLayout->addWidget(arrowHeaderWidget);
     mainLayout->addWidget(innerWidget);

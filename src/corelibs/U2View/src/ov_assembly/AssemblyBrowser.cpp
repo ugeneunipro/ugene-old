@@ -32,6 +32,7 @@
 #include "AssemblyReadsArea.h"
 #include "AssemblyBrowserSettings.h"
 #include "AssemblyCellRenderer.h"
+#include "AssemblySettingsWidget.h"
 
 #include <U2Core/U2Type.h>
 #include <U2Core/U2DbiUtils.h>
@@ -69,6 +70,7 @@
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
+#include <U2Gui/OptionsPanel.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/PositionSelector.h>
@@ -120,6 +122,7 @@ bool AssemblyBrowser::checkValid(U2OpStatus &os) {
 }
 
 QWidget * AssemblyBrowser::createWidget() {
+    optionsPanel = new OptionsPanel(this);
     ui = new AssemblyBrowserUi(this);
     U2OpStatusImpl os;
     if(model->hasReads(os)) {
@@ -139,6 +142,10 @@ QVariantMap AssemblyBrowser::saveState() {
 
 Task * AssemblyBrowser::updateViewTask(const QString &stateName, const QVariantMap &stateData) {
     return new UpdateAssemblyBrowserTask(this, stateName, stateData);
+}
+
+OptionsPanel * AssemblyBrowser::getOptionsPanel() {
+    return optionsPanel;
 }
 
 bool AssemblyBrowser::eventFilter(QObject* o, QEvent* e) {
@@ -283,8 +290,6 @@ void AssemblyBrowser::setGlobalCoverageInfo(CoverageInfo newInfo) {
     U2OpStatus2Log os;
     U2Region globalRegion(0, model->getModelLength(os));
     SAFE_POINT(newInfo.region == globalRegion, "coverage info is not global",);
-
-    coverageReady = true;
     if(newInfo.coverageInfo.size() <= coveredRegionsManager.getSize()) {
         return;
     }
@@ -302,6 +307,9 @@ void AssemblyBrowser::setGlobalCoverageInfo(CoverageInfo newInfo) {
     if(newInfo.coverageInfo.size() == newInfo.region.length) {
         setLocalCoverageCache(newInfo);
     }
+
+    coverageReady = true;
+    emit si_coverageReady();
 }
 
 QList<CoveredRegion> AssemblyBrowser::getCoveredRegions() const {
@@ -590,15 +598,15 @@ void AssemblyBrowser::setupActions() {
     
     showCoordsOnRulerAction = new QAction(QIcon(":core/images/notch.png"), tr("Show coordinates on ruler"), this);
     showCoordsOnRulerAction->setCheckable(true);
-    connect(showCoordsOnRulerAction, SIGNAL(triggered(bool)), SLOT(sl_onShowCoordsOnRulerChanged(bool)));
+    connect(showCoordsOnRulerAction, SIGNAL(toggled(bool)), SLOT(sl_onShowCoordsOnRulerChanged(bool)));
 
     showCoverageOnRulerAction = new QAction(QIcon(":core/images/ruler_coverage.png"), tr("Show coverage under ruler cursor"), this);
     showCoverageOnRulerAction->setCheckable(true);
-    connect(showCoverageOnRulerAction, SIGNAL(triggered(bool)), SLOT(sl_onShowCoverageOnRulerChanged(bool)));
+    connect(showCoverageOnRulerAction, SIGNAL(toggled(bool)), SLOT(sl_onShowCoverageOnRulerChanged(bool)));
 
     readHintEnabledAction = new QAction(QIcon(":core/images/tooltip.png"), tr("Show information about read under cursor in pop-up hint"), this);
     readHintEnabledAction->setCheckable(true);
-    connect(readHintEnabledAction, SIGNAL(triggered(bool)), SLOT(sl_onReadHintEnabledChanged(bool)));
+    connect(readHintEnabledAction, SIGNAL(toggled(bool)), SLOT(sl_onReadHintEnabledChanged(bool)));
     
     saveScreenShotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
     connect(saveScreenShotAction, SIGNAL(triggered()), SLOT(sl_saveScreenshot()));
@@ -835,6 +843,18 @@ void AssemblyBrowser::onObjectRenamed(GObject*, const QString&) {
     OpenAssemblyBrowserTask::updateTitle(this);
 }
 
+void AssemblyBrowser::sl_coveredRegionClicked(const QString link) {
+    if(link == AssemblyReadsArea::ZOOM_LINK) {
+        sl_zoomToReads();
+    } else {
+        bool ok;
+        int i = link.toInt(&ok);
+        assert(ok);
+        CoveredRegion cr = getCoveredRegions().at(i);
+        ui->getOverview()->checkedSetVisibleRange(cr.region);
+        navigateToRegion(cr.region);
+    }
+}
 
 //==============================================================================
 // AssemblyBrowserUi
@@ -878,6 +898,14 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
         readsLayoutWidget->setLayout(readsLayout);
         mainLayout->addWidget(readsLayoutWidget);
         mainLayout->addWidget(readsHBar);
+
+        OptionsPanel * optionsPanel = browser->getOptionsPanel();
+
+        AssemblyInfoWidget * infoWidget = new AssemblyInfoWidget(browser, this);
+        optionsPanel->addGroup(QPixmap(":core/images/chart_bar.png"), tr("Assembly Statistics"), infoWidget);
+
+        AssemblySettingsWidget * settingsWidget = new AssemblySettingsWidget(this);
+        optionsPanel->addGroup(QPixmap(":core/images/settings.png"), tr("Assembly Browser Settings"), settingsWidget);
 
         setLayout(mainLayout);  
 

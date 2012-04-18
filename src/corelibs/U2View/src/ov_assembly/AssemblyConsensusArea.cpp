@@ -63,10 +63,10 @@ void AssemblyConsensusArea::createContextMenu() {
     QAction * exportAction = contextMenu->addAction(tr("Export consensus..."));
     connect(exportAction, SIGNAL(triggered()), SLOT(sl_exportConsensus()));
 
-    QAction * diffAction = contextMenu->addAction(tr("Show difference from reference"));
+    diffAction = contextMenu->addAction(tr("Show difference from reference"));
     diffAction->setCheckable(true);
     diffAction->setChecked(true);
-    connect(diffAction, SIGNAL(triggered(bool)), SLOT(sl_drawDifferenceChanged(bool)));
+    connect(diffAction, SIGNAL(toggled(bool)), SLOT(sl_drawDifferenceChanged(bool)));
 }
 
 bool AssemblyConsensusArea::canDrawSequence() {
@@ -164,9 +164,16 @@ QMenu * AssemblyConsensusArea::getConsensusAlgorithmMenu() {
             action->setChecked(f == consensusAlgorithm->getFactory());
             action->setData(f->getId());
             connect(consensusAlgorithmMenu, SIGNAL(triggered(QAction*)), SLOT(sl_consensusAlgorithmChanged(QAction*)));
+            algorithmActions << action;
         }
     }
     return consensusAlgorithmMenu;
+}
+
+QList<QAction*> AssemblyConsensusArea::getAlgorithmActions() {
+    // ensure that menu is created
+    getConsensusAlgorithmMenu();
+    return algorithmActions;
 }
 
 void AssemblyConsensusArea::sl_consensusAlgorithmChanged(QAction * action) {

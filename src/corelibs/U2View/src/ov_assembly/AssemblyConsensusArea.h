@@ -38,6 +38,8 @@ public:
     AssemblyConsensusArea(AssemblyBrowserUi * ui);
 
     QMenu * getConsensusAlgorithmMenu();
+    QList<QAction*> getAlgorithmActions();
+    QAction* getDiffAction() { return diffAction; }
 
 public slots:
     void sl_exportConsensus();
@@ -63,6 +65,8 @@ private:
 
     QMenu * contextMenu;
     QMenu * consensusAlgorithmMenu;
+    QList<QAction*> algorithmActions;
+    QAction * diffAction;
     QSharedPointer<AssemblyConsensusAlgorithm> consensusAlgorithm;
 
     ConsensusInfo cache;

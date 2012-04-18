@@ -33,6 +33,7 @@
 #include "AssemblyCellRenderer.h"
 #include "AssemblyReadsAreaHint.h"
 #include "AssemblyModel.h"
+#include "AssemblyInfoWidget.h"
 
 #include <memory>
 using std::auto_ptr;
@@ -63,7 +64,12 @@ public:
 
     bool isScrolling();
     void setScrolling(bool value);
-    
+
+    QList<QAction*> getCellRendererActions() {return cellRendererActions; }
+    QAction * getOptimizeRenderAction() { return optimizeRenderAction; }
+
+    static const QString ZOOM_LINK;
+
 protected:
     void paintEvent(QPaintEvent * e);
     void resizeEvent(QResizeEvent * e);
@@ -125,7 +131,6 @@ public slots:
     void sl_redraw();
     
 private slots:
-    void sl_coveredRegionClicked(const QString & link);
     void sl_onHScrollMoved(int pos);
     void sl_onVScrollMoved(int pos);
     void sl_zoomOperationPerformed();
@@ -151,7 +156,7 @@ private:
 
     auto_ptr<AssemblyCellRenderer> cellRenderer;
     
-    QLabel coveredRegionsLabel;
+    CoveredRegionsLabel coveredRegionsLabel;
     QScrollBar * hBar;
     QScrollBar * vBar;
     
@@ -243,6 +248,7 @@ private:
     QAction *shadowingJump;
 
     QList<QAction*> cellRendererActions;
+    QAction * optimizeRenderAction;
 };
 
 } //ns
