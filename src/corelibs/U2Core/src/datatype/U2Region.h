@@ -50,7 +50,6 @@ public:
     /** Region length. */
     qint64 length;
 
-
     ////////////////////////// Member functions and operators ////////////////////
 
     /** Region end position, exclusive. */
@@ -102,8 +101,20 @@ public:
     Returns true if this region starts strictly earlier than the specified one. */
     bool operator<(const U2Region &r) const {return startPos < r.startPos;}
 
-    /** Converts region to its string represenation, so it may be used in QString::arg etc. */
-    operator QString() const { return QString("[%1, %2)").arg(startPos).arg(endPos()); }
+    /**
+        String formats for U2Region::toString:
+            FormatBrackets  "[100, 200)"
+            FormatDash      "100 - 200"
+            FormatPlusMinus "150 &plusmn; 50" - for html only
+    */
+    enum Format {
+        FormatBrackets,
+        FormatDash,
+        FormatPlusMinus
+    };
+
+    /** Converts region to its string represenation using given format. */
+    QString toString(Format format = FormatBrackets) const;
 
     ///////////////////////// Class functions /////////////////////////////////
 

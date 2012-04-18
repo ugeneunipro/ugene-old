@@ -42,7 +42,7 @@ QString toString<U2FeatureLocation>(const U2FeatureLocation & loc) {
     QString strand = loc.strand == U2Strand::Direct ? "direct" :
                      loc.strand == U2Strand::Complementary ? "complement" :
                                                              "nostrand";
-    return QString("%1-%2").arg(loc.region).arg(strand);
+    return QString("%1-%2").arg(loc.region.toString()).arg(strand);
 }
 
 namespace {

@@ -27,6 +27,7 @@ private:
 };
 
 template<> inline QString toString<U2DataId>(const U2DataId &a) { return "0x" + QString(a.toHex()); }
+template<> inline QString toString<U2Region>(const U2Region &r) { return r.toString(); }
 
 } // namespace U2
 

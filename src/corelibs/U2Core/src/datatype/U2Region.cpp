@@ -20,8 +20,26 @@
  */
 
 #include <U2Core/U2Region.h>
+#include <U2Core/FormatUtils.h>
 
 namespace U2 {
+
+QString U2Region::toString(Format format) const {
+    QString start       = FormatUtils::splitThousands(startPos);
+    QString end         = FormatUtils::splitThousands(endPos());
+    QString middle      = FormatUtils::splitThousands(center());
+    QString halfLength  = FormatUtils::splitThousands(length/2);
+
+    switch(format) {
+    case FormatDash:
+        return QString("%1 - %2").arg(start, end);
+    case FormatPlusMinus:
+        return QString("%1 &plusmn; %2").arg(middle, halfLength);
+    case FormatBrackets:
+    default:
+        return QString("[%1, %2)").arg(start, end);
+    }
+}
 
 QVector<U2Region> U2Region::join(QVector<U2Region>& regions)  {
     QVector<U2Region> result = regions;
@@ -142,6 +160,5 @@ QDataStream &operator>>(QDataStream &in, U2Region &myObj) {
     in >> myObj.length;
     return in;
 }
-
 
 } //ns
