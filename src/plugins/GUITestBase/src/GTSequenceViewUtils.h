@@ -32,6 +32,7 @@ class GTSequenceViewUtils {
 public:
     static QString getSequenceAsString(U2OpStatus &os);
     static void checkSequence(U2OpStatus &os, const QString &expectedSequence);
+  	static void openSequenceView(U2OpStatus &os, const QString &sequenceName);
 };
 
 } // namespace U2

@@ -49,7 +49,7 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserDuplicate) {
 
 
 IMPLEMENT_TEST(LocationParserTestData, locationParserInvalid) {
-	QString regionStr = "-10..9";
+	QString regionStr = "join(10..9,-22..30)";
     U2Location location;
     Genbank::LocationParser::parseLocation(qPrintable(regionStr),regionStr.length(), location);
     QVector<U2Region> regions = location->regions;
@@ -228,17 +228,6 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserLeftParenthesisMissed) {
 	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
 	QVector<U2Region> regions = location->regions;
 	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
-
-	str = "join(1..10))";
-	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
-	regions = location->regions;
-	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
-
-	str = "join(1..10))))))))))";
-	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
-	regions = location->regions;
-	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
-
 }
 
 IMPLEMENT_TEST(LocationParserTestData, locationParserRightParenthesisMissed) {
@@ -247,20 +236,36 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserRightParenthesisMissed) {
 	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
 	QVector<U2Region> regions = location->regions;
 	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
+}
 
-	str = "order((1..10)";
+IMPLEMENT_TEST(LocationParserTestData, locationParserName) {
+	QString str = "test.1:(3.4)..(5.6)";
+	U2Location location;
 	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
-	regions = location->regions;
-	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
+	CHECK_EQUAL(0, location->regions.size(), "incorrect expected regions size");
+}
 
-	str = "order((((((((((1..10)";
+
+IMPLEMENT_TEST(LocationParserTestData, locationParserNameInvalid) {
+	QString str = "test.1.2:(3.4)..(5.6),(7.8)..(9.10)";
+	U2Location location;
 	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
-	regions = location->regions;
-	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
+	CHECK_EQUAL(0, location->regions.size(), "incorrect expected regions size");
+}
+
+IMPLEMENT_TEST(LocationParserTestData, locationParserPeriod) {
+	QString str = "(3.4)..(5.6)";
+	U2Location location;
+	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
+	CHECK_EQUAL(1, location->regions.size(), "incorrect expected regions size");
+
+	str = "(0.0)..(1.3),(20.8)..(45.74)";
+	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
+	CHECK_EQUAL(2, location->regions.size(), "incorrect expected regions size");
 }
 
 IMPLEMENT_TEST(LocationParserTestData, locationParserPeriodInvalid) {
-	QString str = "join(.,.,.)";
+	QString str = "(1.11).(13.0)";
 	U2Location location;
 	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
 	QVector<U2Region> regions = location->regions;
@@ -268,7 +273,7 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserPeriodInvalid) {
 }
 
 IMPLEMENT_TEST(LocationParserTestData, locationParserDoublePeriodInvalid) {
-	QString str = "join(..,..,..)";
+	QString str = "join(..10,12..,)";
 	U2Location location;
 	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
 	QVector<U2Region> regions = location->regions;
@@ -276,7 +281,7 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserDoublePeriodInvalid) {
 }
 
 IMPLEMENT_TEST(LocationParserTestData, locationParserCommaInvalid) {
-	QString str = "join(,,,)";
+	QString str = "order(1,3,5,)";
 	U2Location location;
 	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
 	QVector<U2Region> regions = location->regions;
@@ -284,27 +289,48 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserCommaInvalid) {
 }
 
 IMPLEMENT_TEST(LocationParserTestData, locationParserNumberInvalid) {
-	QString str = "9223372036854775809..100";
+	QString str = "9223372036854775809..9223372036854775899";
 	U2Location location;
 	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
 	QVector<U2Region> regions = location->regions;
-	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
+	AnnotationData ad;
+	ad.location->regions << location->regions;
+	QString regionStr = Genbank::LocationParser::buildLocationString(&ad);
+	U2Location newLocation;
+	Genbank::LocationParser::parseLocation(qPrintable(regionStr),regionStr.length(), newLocation);
+
+	CHECK_EQUAL(location->regions.size(), newLocation->regions.size(), "incorrect expected regions size");
+}
+
+IMPLEMENT_TEST(LocationParserTestData, locationBuildStringNumberInvalid) {
+	AnnotationData ad;
+	ad.location->regions << U2Region(9223372036854775809, 90);
+	QString regionStr = Genbank::LocationParser::buildLocationString(&ad);
+	U2Location location;
+	Genbank::LocationParser::parseLocation(qPrintable(regionStr),regionStr.length(), location);
+	CHECK_EQUAL(ad.location->regions.size(), location->regions.size(), "incorrect expected regions size");
 }
 
 IMPLEMENT_TEST(LocationParserTestData, locationParserLessInvalid) {
 	QString str = "<<1..13";
 	U2Location location;
 	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
-	QVector<U2Region> regions = location->regions;
-	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
+	CHECK_EQUAL(0, location->regions.size(), "incorrect expected regions size");
 }
 
 IMPLEMENT_TEST(LocationParserTestData, locationParserGreaterInvalid) {
-	QString str = ">>>>10..9";
+	QString str = ">>>>10..19";
 	U2Location location;
 	Genbank::LocationParser::parseLocation(qPrintable(str),str.length(), location);
-	QVector<U2Region> regions = location->regions;
-	CHECK_EQUAL(0, regions.size(), "incorrect expected regions size");
+	CHECK_EQUAL(0, location->regions.size(), "incorrect expected regions size");
+
 }
+
+/*IMPLEMENT_TEST(LocationParserTestData, locationParserNameInvald) {
+	QString str = "test10..19";
+	U2Location location;
+	Genbank::LocationParser::parseLocation(qPrintable(str, str.length(), location);
+	CHECK_EQUAL(1, location->regions.size(), "incorrect expected regions size");
+}*/
 
 } //namespace

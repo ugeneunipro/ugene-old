@@ -125,18 +125,23 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     connect(findDialogAction, SIGNAL(triggered()), SLOT(sl_onFindDialog()));
 
     addSequencePart = new QAction(tr("Insert subsequence..."), this);
+  	addSequencePart->setObjectName(ACTION_EDIT_INSERT_SUBSEQUENCE);
     connect(addSequencePart, SIGNAL(triggered()), this, SLOT(sl_addSequencePart()));
 
     removeSequencePart = new QAction(tr("Remove subsequence..."), this);
+  	removeSequencePart->setObjectName(ACTION_EDIT_REMOVE_SUBSEQUENCE);
     connect(removeSequencePart, SIGNAL(triggered()), this, SLOT(sl_removeSequencePart()));
 
     replaceSequencePart = new QAction(tr("Replace subsequence..."), this);
+  	replaceSequencePart->setObjectName(ACTION_EDIT_REPLACE_SUBSEQUENCE);
     connect(replaceSequencePart, SIGNAL(triggered()), this, SLOT(sl_replaceSequencePart()));
 
     removeSequenceObjectAction = new QAction(tr("Selected sequence from view"), this);
+  	removeSequenceObjectAction->setObjectName(ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW);
     connect(removeSequenceObjectAction, SIGNAL(triggered()), SLOT(sl_removeSelectedSequenceObject()));
     
     reverseSequenceAction = new QAction(tr("Reverse complement sequence"), this);
+  	reverseSequenceAction->setObjectName(ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE);
     connect(reverseSequenceAction, SIGNAL(triggered()), SLOT(sl_reverseSequence()));
 
     SecStructPredictViewAction::createAction(this);

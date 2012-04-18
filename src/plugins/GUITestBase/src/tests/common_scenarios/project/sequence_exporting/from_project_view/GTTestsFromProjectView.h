@@ -30,6 +30,9 @@ namespace GUITest_common_scenarios_project_sequence_exporting_from_project_view 
 #undef GUI_TEST_PREFIX
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_project_sequence_exporting_from_project_view_"
 
+GUI_TEST_CLASS_DECLARATION(test_0001)
+GUI_TEST_CLASS_DECLARATION(test_0002)
+GUI_TEST_CLASS_DECLARATION(test_0003)
 GUI_TEST_CLASS_DECLARATION(test_0004)
 GUI_TEST_CLASS_DECLARATION(test_0005)
 GUI_TEST_CLASS_DECLARATION(test_0006)

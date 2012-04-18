@@ -53,21 +53,25 @@ ObjectViewTreeController::ObjectViewTreeController(QTreeWidget* w) : QObject(w),
     connect(tree, SIGNAL(itemChanged(QTreeWidgetItem*, int)), SLOT(sl_onItemChanged(QTreeWidgetItem*, int)));
 
     activateViewAction = new QAction(tr("Activate view"), this);
+  	activateViewAction->setObjectName(ACTION_ACTIVATE_VIEW);
     activateViewAction->setShortcut(QKeySequence(Qt::Key_Space));
     activateViewAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(activateViewAction, SIGNAL(triggered()), SLOT(sl_activateView()));
 
     addStateAction = new QAction(tr("Add bookmark"), this);
+  	addStateAction->setObjectName(ACTION_ADD_BOOKMARK);
     addStateAction->setIcon(QIcon(":core/images/bookmark_add.png"));
     connect(addStateAction, SIGNAL(triggered()), SLOT(sl_addState()));
 
     removeStateAction = new QAction(tr("Remove bookmark"), this);
+  	removeStateAction->setObjectName(ACTION_REMOVE_BOOKMARK);
     removeStateAction->setIcon(QIcon(":core/images/bookmark_remove.png"));
     removeStateAction->setShortcut(QKeySequence(Qt::Key_Delete));
     removeStateAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(removeStateAction, SIGNAL(triggered()), SLOT(sl_removeState()));
 
     renameStateAction = new QAction(tr("Rename bookmark"), this);
+  	renameStateAction->setObjectName(ACTION_RENAME_BOOKMARK);
     renameStateAction->setIcon(QIcon(":core/images/bookmark_edit.png"));
     renameStateAction->setShortcut(QKeySequence(Qt::Key_F2));
     renameStateAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);

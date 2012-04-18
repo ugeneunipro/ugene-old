@@ -25,8 +25,10 @@
 
 #include "tests/GUIInitialChecks.h"
 #include "tests/common_scenarios/project/GTTestsProject.h"
+#include "tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h"
 #include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
 #include "tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h"
+#include "tests/sequence_edit/GTTestsSequenceEdit.h"
 #include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
 #include "tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h"
 #include "tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h"
@@ -69,12 +71,17 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 	REGISTER_TEST(GUITest_common_scenarios_project::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
+	REGISTER_TEST(GUITest_common_scenarios_project::test_0021);
 //    REGISTER_TEST(GUITest_common_scenarios_project::test_0023); wrong test
     REGISTER_TEST(GUITest_common_scenarios_project::test_0025);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0028);
 //     REGISTER_TEST(GUITest_common_scenarios_project::test_0030); https://ugene.unipro.ru/tracker/browse/UGENE-88
 
+//////////////////////////////////////////////////////////////////////////
+// Common scenarios/project/bookmarks/
+//////////////////////////////////////////////////////////////////////////
+	REGISTER_TEST(GUITest_common_scenarios_project_bookmarks::test_0002);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/multiple docs/
@@ -108,6 +115,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0002); excluded failed test
 
 //////////////////////////////////////////////////////////////////////////
+// Common scenarios/project/sequence edit/
+//////////////////////////////////////////////////////////////////////////
+REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0002);
+
+//////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/
 //////////////////////////////////////////////////////////////////////////
 	REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0001);
@@ -120,6 +132,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/from project view/
 //////////////////////////////////////////////////////////////////////////
+//	REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0001);
+//	REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0002);
+//	REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0003);
 //     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0004); excluded failed test
 //     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0005); test is not completed
 //     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0006); excluded failed test

@@ -70,10 +70,15 @@ LocationParserTestData
 + locationParserParenthesisInvalid
 - locationParserLeftParenthesisMissed
 + locationParserRightParenthesisMissed
++ locationParserPeriod
 + locationParserPeriodInvalid
 + locationParserDoublePeriodInvalid
 + locationParserCommaInvalid
 - locationParserNumberInvalid
 + locationParserLessInvalid
 + locationParserGreaterInvalid
++ locationParserName
++ locationParserNameInvalid
+- locationBuildStringNumberInvalid
+
 </unittest>

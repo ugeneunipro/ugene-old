@@ -10,10 +10,13 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsProject.h \
             src/GTUtilsProjectTreeView.h \
             src/GTUtilsAnnotationsTreeView.h \
+            src/GTUtilsBookmarksTreeView.h \
             src/GTUtilsToolTip.h \
             src/GTUtilsTaskTreeView.h \
             src/tests/GUIInitialChecks.h \
+            src/tests/sequence_edit/GTTestsSequenceEdit.h \
             src/tests/common_scenarios/project/GTTestsProject.h \
+            src/tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.h \
             src/tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h \
             src/tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.h \
@@ -50,10 +53,13 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsProject.cpp \
             src/GTUtilsProjectTreeView.cpp \
             src/GTUtilsAnnotationsTreeView.cpp \
+            src/GTUtilsBookmarksTreeView.cpp \
             src/GTUtilsToolTip.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/tests/GUIInitialChecks.cpp \
+            src/tests/sequence_edit/GTTestsSequenceEdit.cpp \
             src/tests/common_scenarios/project/GTTestsProject.cpp \
+            src/tests/common_scenarios/project/bookmarks/GTTestsBookmarks.cpp \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.cpp \
             src/tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.cpp \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.cpp \

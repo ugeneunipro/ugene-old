@@ -91,6 +91,18 @@ class QMainWindow;
 #define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT         "export sequences as alignment"
 #define ACTION_EXPORT_ANNOTATIONS                   "action_export_annotations"
 
+#define ACTION_EDIT_SEQUENCE						"edit sequences"
+#define ACTION_EDIT_INSERT_SUBSEQUENCE		        "action_edit_insert_sub_sequences"
+#define ACTION_EDIT_REMOVE_SUBSEQUENCE		        "action_edit_remove_sub_sequences"
+#define ACTION_EDIT_REPLACE_SUBSEQUENCE		        "action_edit_replace_sub_sequences"
+#define ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE     "action_edit_reserve_complement_sequences"
+#define ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW		"action_edit_select_sequences_from_view"
+
+#define ACTION_ACTIVATE_VIEW						"action_activate_view"
+#define ACTION_ADD_BOOKMARK							"action_add_bookmark"
+#define ACTION_RENAME_BOOKMARK						"action_rename_bookmark"
+#define ACTION_REMOVE_BOOKMARK						"action_remove_bookmark"
+
 
 #define DOCK_PROJECT_VIEW    "dock_project_view"
 #define DOCK_TASK_VIEW       "dock_task_view"

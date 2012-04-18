@@ -373,6 +373,50 @@ public:
     };
 
 
+	class RemovePartFromSequenceDialogFiller : public Runnable {
+	public:
+		enum RemoveType {Remove, Resize};
+		enum FormatToUse {FASTA, Genbank};
+
+		RemovePartFromSequenceDialogFiller(U2OpStatus &_os, QString _range):
+		os(_os), range(_range), removeType(Resize), format(FASTA) {}
+
+		RemovePartFromSequenceDialogFiller(U2OpStatus &_os,RemoveType _removeType, bool _saveNew, const QString &_saveToFile, FormatToUse _format):
+		os(_os), saveNew(_saveNew), removeType(_removeType), format(_format) {
+			QString __saveToFile = QDir::cleanPath(QDir::currentPath() + "/" + _saveToFile);
+			saveToFile = __saveToFile;
+			comboBoxItems[FASTA] = "FASTA";
+			comboBoxItems[Genbank] = "Genbank";
+		}
+
+		RemovePartFromSequenceDialogFiller(U2OpStatus &_os, RemoveType _removeType):
+		os(_os), removeType(_removeType), format(FASTA){}
+
+		virtual void run();
+	private:
+		QString range;
+		RemoveType removeType;
+		FormatToUse format;
+		U2OpStatus &os;
+		bool saveNew;
+		QString saveToFile;
+		QMap<FormatToUse, QString> comboBoxItems;
+	};
+
+
+	class SequenceReadingModeSelectorDialogFiller : public Runnable {
+	public:
+		enum ReadingMode {Separate, Merge, Join, Align};
+
+		SequenceReadingModeSelectorDialogFiller(U2OpStatus &_os, ReadingMode _mode = Separate, int _bases=10):
+		os(_os), readingMode(_mode), bases(_bases) {}
+
+		virtual void run();
+	private:
+		ReadingMode readingMode;
+		int bases;
+		U2OpStatus &os;
+	};
 
     static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, bool failOnNoDialog = true);
     static void preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal);

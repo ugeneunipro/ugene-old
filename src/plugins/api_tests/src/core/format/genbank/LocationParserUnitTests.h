@@ -25,12 +25,16 @@ DECLARE_TEST(LocationParserTestData, locationParserParenthesis);
 DECLARE_TEST(LocationParserTestData, locationParserParenthesisInvalid);
 DECLARE_TEST(LocationParserTestData, locationParserLeftParenthesisMissed);
 DECLARE_TEST(LocationParserTestData, locationParserRightParenthesisMissed);
+DECLARE_TEST(LocationParserTestData, locationParserPeriod);
 DECLARE_TEST(LocationParserTestData, locationParserPeriodInvalid);
 DECLARE_TEST(LocationParserTestData, locationParserDoublePeriodInvalid);
 DECLARE_TEST(LocationParserTestData, locationParserCommaInvalid);
 DECLARE_TEST(LocationParserTestData, locationParserNumberInvalid);
 DECLARE_TEST(LocationParserTestData, locationParserLessInvalid);
 DECLARE_TEST(LocationParserTestData, locationParserGreaterInvalid);
+DECLARE_TEST(LocationParserTestData, locationParserName);
+DECLARE_TEST(LocationParserTestData, locationParserNameInvalid);
+DECLARE_TEST(LocationParserTestData, locationBuildStringNumberInvalid);
 }
 
 DECLARE_METATYPE(LocationParserTestData, locationParser);
@@ -52,11 +56,15 @@ DECLARE_METATYPE(LocationParserTestData, locationParserParenthesis);
 DECLARE_METATYPE(LocationParserTestData, locationParserParenthesisInvalid);
 DECLARE_METATYPE(LocationParserTestData, locationParserLeftParenthesisMissed);
 DECLARE_METATYPE(LocationParserTestData, locationParserRightParenthesisMissed);
+DECLARE_METATYPE(LocationParserTestData, locationParserPeriod);
 DECLARE_METATYPE(LocationParserTestData, locationParserPeriodInvalid);
 DECLARE_METATYPE(LocationParserTestData, locationParserDoublePeriodInvalid);
 DECLARE_METATYPE(LocationParserTestData, locationParserCommaInvalid);
 DECLARE_METATYPE(LocationParserTestData, locationParserNumberInvalid);
 DECLARE_METATYPE(LocationParserTestData, locationParserLessInvalid);
 DECLARE_METATYPE(LocationParserTestData, locationParserGreaterInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationParserName);
+DECLARE_METATYPE(LocationParserTestData, locationParserNameInvalid);
+DECLARE_METATYPE(LocationParserTestData, locationBuildStringNumberInvalid);
 
 #endif

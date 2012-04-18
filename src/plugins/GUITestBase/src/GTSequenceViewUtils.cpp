@@ -26,6 +26,7 @@
 #include <QtGui/QMainWindow>
 #include "U2Gui/MainWindow.h"
 #include "GTUtilsDialog.h"
+#include "GTUtilsProjectTreeView.h"
 #include <U2Core/AppContext.h>
 #include <U2View/DetView.h>
 #include <QClipboard>
@@ -66,6 +67,18 @@ void GTSequenceViewUtils::checkSequence(U2OpStatus &os, const QString &expectedS
     QString actualSequence = getSequenceAsString(os);
 
     GT_CHECK(expectedSequence == actualSequence, "Actual sequence does not match with expected sequence");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "openSequenceView"
+void GTSequenceViewUtils::openSequenceView(U2OpStatus &os, const QString &sequenceName){
+	QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
+	GTMouseDriver::moveTo(os, itemPos);
+	GTMouseDriver::click(os, Qt::RightButton);
+
+	GTUtilsDialog::PopupChooser chooser(os, QStringList() << "submenu_open_view" << "action_open_view", GTGlobals::UseMouse);
+	GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+	GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 

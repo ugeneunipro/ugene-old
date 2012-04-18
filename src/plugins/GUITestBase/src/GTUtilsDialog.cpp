@@ -34,6 +34,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QRadioButton>
 #include <QtGui/QCheckBox>
+#include <QtGui/QGroupBox>
 #include <QtGui/QSpinBox>
 #include <QtGui/QToolButton>
 #include <QtGui/QDialogButtonBox>
@@ -804,6 +805,93 @@ void GTUtilsDialog::CreateDocumentFiller::run()
 
 }
 
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::RemovePartFromSequenceDialogFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::RemovePartFromSequenceDialogFiller::run()
+{
+	QWidget *dialog = QApplication::activeModalWidget();
+	GT_CHECK(dialog != NULL, "dialog not found");
+
+	if (!range.isEmpty()){
+		QLineEdit *removeLocationEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("removeLocationEdit"));
+		GT_CHECK(removeLocationEdit != NULL, "QLineEdit \"removeLocationEdit\" not found");
+		GTLineEdit::setText(os, removeLocationEdit, range);
+	}
+	QRadioButton *resizeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("resizeRB"));
+	GT_CHECK(resizeRB != NULL, "radio button not found");
+	resizeRB->setChecked(removeType == Resize);
+	QRadioButton *removeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("removeRB"));
+	GT_CHECK(removeRB != NULL, "radio button not found");
+	removeRB->setChecked(removeType == Remove);
+
+	if (saveNew) {
+		QGroupBox *saveToAnotherBox =  dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
+		saveToAnotherBox->setChecked(true);
+		QLineEdit *filepathEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("filepathEdit"));
+		GT_CHECK(filepathEdit != NULL, "QLineEdit \"filepathEdit\" not found");
+
+		GTLineEdit::setText(os, filepathEdit, saveToFile);
+	}
+	if (format != FASTA){
+		QComboBox *formatBox = dialog->findChild<QComboBox*>(QString::fromUtf8("formatBox"));
+		GT_CHECK(formatBox != NULL, "format box not found");
+		int index = -1;
+		for (int i = 0; i < formatBox->count(); i++ ) {
+			if (formatBox->itemText(i) == comboBoxItems[format]) {
+				index = i;
+				break;
+			}
+		}
+
+		GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+
+		GTComboBox::setCurrentIndex(os, formatBox, index);
+	}
+	QPushButton *okButton = dialog->findChild<QPushButton*>("OKButton");
+	GT_CHECK(okButton != NULL, "OK button not found");
+	GTWidget::click(os, okButton);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::SequenceReadingModeSelectorDialogFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::SequenceReadingModeSelectorDialogFiller::run()
+{
+	QWidget *dialog = QApplication::activeModalWidget();
+	GT_CHECK(dialog != NULL, "dialog not found");
+	if (readingMode == Separate) {
+		QRadioButton *separateRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("separateRB"));
+		GT_CHECK(separateRB != NULL, "radio button not found");
+		separateRB->setChecked(readingMode == Separate);
+	}
+	if (readingMode == Merge) {
+		QRadioButton *mergeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("mergeRB"));
+		GT_CHECK(mergeRB != NULL, "radio button not found");
+		mergeRB->setChecked(readingMode == Merge);
+		QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>(QString::fromUtf8("mergeSpinBox"));
+		if (mergeSpinBox->value() != bases){
+			mergeSpinBox->setValue(bases);
+		}
+	}
+	if (readingMode == Join) {
+		QRadioButton *malignmentRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("malignmentRB"));
+		GT_CHECK(malignmentRB != NULL, "radio button not found");
+		malignmentRB->setChecked(readingMode == Join);
+	}
+	if (readingMode == Align) {
+		QRadioButton *refalignmentRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("refalignmentRB"));
+		GT_CHECK(refalignmentRB != NULL, "radio button not found");
+		refalignmentRB->setChecked(readingMode == Align);
+	}
+	QDialogButtonBox *buttonBox = dialog->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+	QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+	GT_CHECK(button != NULL, "standart button not found");
+	GTWidget::click(os, button);
+}
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 

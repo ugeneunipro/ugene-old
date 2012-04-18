@@ -34,6 +34,7 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTSequenceViewUtils.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsTaskTreeView.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
@@ -237,6 +238,36 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
 
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
     CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "human_T1.fa") != NULL, "Item human_T1.fa not found in tree widget");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0021) {
+	GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+	GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
+	GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+	GTGlobals::sleep(1000);
+
+	QTreeWidgetItem* item = GTUtilsProjectTreeView::findItem(os, "se1");
+	QFont font = item->font(0);
+	CHECK_SET_ERR(font.bold(), "se1 item font is not a bold");
+	item = GTUtilsProjectTreeView::findItem(os, "se2");
+	font = item->font(0);
+	CHECK_SET_ERR(font.bold(), "se2 item font is not a bold");
+
+	GTUtilsMdi::click(os, GTGlobals::Close);
+	GTGlobals::sleep(1000);
+	item = GTUtilsProjectTreeView::findItem(os, "se1");
+	font = item->font(0);
+	CHECK_SET_ERR(!font.bold(), "se1 item font is not a bold");
+
+	GTSequenceViewUtils::openSequenceView(os, "se1");	
+	item = GTUtilsProjectTreeView::findItem(os, "se1");
+	font = item->font(0);
+	CHECK_SET_ERR(font.bold(), "se1 item font is not a bold");
+
+	GTSequenceViewUtils::openSequenceView(os, "se2");	
+	item = GTUtilsProjectTreeView::findItem(os, "se2");
+	font = item->font(0);
+	CHECK_SET_ERR(font.bold(), "se2 item font is not a bold");	 
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0023) {
