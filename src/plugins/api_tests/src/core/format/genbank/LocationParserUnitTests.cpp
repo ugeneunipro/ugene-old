@@ -304,7 +304,7 @@ IMPLEMENT_TEST(LocationParserTestData, locationParserNumberInvalid) {
 
 IMPLEMENT_TEST(LocationParserTestData, locationBuildStringNumberInvalid) {
 	AnnotationData ad;
-	ad.location->regions << U2Region(9223372036854775809, 90);
+	ad.location->regions << U2Region(Q_INT64_C(9223372036854775807), 90);
 	QString regionStr = Genbank::LocationParser::buildLocationString(&ad);
 	U2Location location;
 	Genbank::LocationParser::parseLocation(qPrintable(regionStr),regionStr.length(), location);
