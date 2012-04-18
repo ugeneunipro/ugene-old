@@ -178,7 +178,7 @@ void Primer3ADVContext::sl_showDialog() {
             dialog.prepareAnnotationObject();
             const CreateAnnotationModel &model = dialog.getCreateAnnotationModel();
             AppContext::getTaskScheduler()->registerTopLevelTask(
-                new Primer3ToAnnotationsTask(settings, model.getAnnotationObject(), model.groupName, ""));
+                new Primer3ToAnnotationsTask(settings, seqCtx->getSequenceObject(), model.getAnnotationObject(), model.groupName, ""));
 
         }
     }

@@ -30,6 +30,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Gui/AppSettingsGUI.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>
@@ -75,52 +76,11 @@ SpideySupport::SpideySupport(const QString& name, const QString& path) : Externa
     description+=tr("<br>Genome Res. 2001 Nov;11(11):1952-7.");
     versionRegExp=QRegExp("VersionDate: (\\d+\\/\\d+\\/\\d+)");
     toolKitName="Spidey";
+
+    AppContext::getSplicedAlignmentTaskRegistry()->registerTaskFactory(new SpideyAlignmentTaskFactory, SPIDEY_TOOL_NAME);
+
 }
 
-void SpideySupport::sl_runWithExtFileSpecify(){
-    //Check that Spidey and temporary directory path defined
-    /*if (path.isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setWindowTitle(name);
-        msgBox.setText(tr("Path for %1 tool not selected.").arg(name));
-        msgBox.setInformativeText(tr("Do you want to select it now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
-        switch (ret) {
-           case QMessageBox::Yes:
-               AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
-               break;
-           case QMessageBox::No:
-               return;
-               break;
-           default:
-               assert(NULL);
-               break;
-         }
-    }
-    if (path.isEmpty()){
-        return;
-    }
-    U2OpStatus2Log os(LogLevel_DETAILS);
-    ExternalToolSupportSettings::checkTemporaryDir(os);
-    CHECK_OP(os,);
-
-    //Call select input file and setup settings dialog
-    // TODO: provide GUI to Spidey as additional featureMSAE_MENU_ALIGN
-    SpideySupportTaskSettings settings;
-    SpideySupportDialog SpideyDialog(settings, QApplication::activeWindow());
-    
-    if(SpideyDialog.exec() != QDialog::Accepted){
-        return;
-    }
-    
-    assert(!settings.inputFiles.isEmpty());
-
-    SpideySupportTask* task = new SpideySupportTask(settings);
-    AppContext::getTaskScheduler()->registerTopLevelTask(task);*/
-    
-}
 
 ////////////////////////////////////////
 //SpideySupportContext

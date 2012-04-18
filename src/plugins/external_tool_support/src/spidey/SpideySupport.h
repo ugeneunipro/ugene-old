@@ -36,8 +36,6 @@ public:
     SpideySupport(const QString& name, const QString& path = "");
     GObjectViewWindowContext* getViewContext(){ return viewCtx; }
 
-public slots:
-    void sl_runWithExtFileSpecify();
 private:
     GObjectViewWindowContext* viewCtx;
 };

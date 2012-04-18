@@ -18,7 +18,7 @@ extern Logger log( "Span Exon/Intron Regions" );
 FindExonRegionsTask::FindExonRegionsTask(U2SequenceObject* dObj, const QString &rnaSeqId)
     :Task("FindExonRegionsTask", TaskFlags_NR_FOSCOE), dnaObj(dObj)
 {
-    loadDocumentTask = new LoadRemoteDocumentTask(rnaSeqId, GENBANK_NUCLEOTIDE_ID);
+    loadDocumentTask = new LoadRemoteDocumentTask(rnaSeqId, "genbank");
     alignmentTask = NULL;
 
 }

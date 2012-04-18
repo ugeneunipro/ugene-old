@@ -39,6 +39,7 @@ public:
     explicit SplicedAlignmentTaskRegistry(QObject *parent = 0);
     ~SplicedAlignmentTaskRegistry();
     bool registerTaskFactory(SplicedAlignmentTaskFactory* alg, const QString& algId);
+    void unregisterTaskFactory(const QString& algId);
     bool hadRegistered(const QString& algId);
     SplicedAlignmentTaskFactory* getAlgorithm(const QString& algId);
     QStringList getAlgNameList();

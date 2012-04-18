@@ -76,7 +76,7 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
     }
 
     SplicedAlignmentTaskRegistry* sr = AppContext::getSplicedAlignmentTaskRegistry();
-    ui.spanIntronExonBox->setEnabled(sr->getAlgNameList().size() > 1);
+    ui.spanIntronExonBox->setEnabled(sr->getAlgNameList().size() > 0);
 
     reset();
 }
@@ -310,9 +310,9 @@ bool Primer3Dialog::doDataExchange()
             return false;
         }
 
-        s.minIntronLength = ui.intronMinLengthSpinBox->value();
         s.minLeftOverlap = ui.leftOverlapSizeSpinBox->value();
         s.minRightOverlap = ui.rightOverlapSizeSpinBox->value();
+        s.spanIntron = ui.spanIntronCheckBox->isChecked();
 
         settings.setSpanIntronExonBoundarySettings(s);
 

@@ -556,21 +556,73 @@ QList<PrimerPair> Primer3SWTask::getBestPairs()const
 //////////////////////////////////////////////////////////////////////////
 ////Primer3ToAnnotationsTask
 
-Primer3ToAnnotationsTask::Primer3ToAnnotationsTask( const Primer3TaskSettings &settings,
+Primer3ToAnnotationsTask::Primer3ToAnnotationsTask( const Primer3TaskSettings &settings, U2SequenceObject* so_,
 AnnotationTableObject * aobj_, const QString & groupName_, const QString & annName_ ) :
-Task(tr("Search primers to annotations"), /*TaskFlags_NR_FOSCOE*/TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), settings(settings), aobj(aobj_), 
+Task(tr("Search primers to annotations"), /*TaskFlags_NR_FOSCOE*/TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled | TaskFlag_FailOnSubtaskError),
+    settings(settings), seqObj(so_), aobj(aobj_),
     groupName(groupName_), annName(annName_), searchTask(NULL), findExonsTask(NULL)
 {
 }
 
 void Primer3ToAnnotationsTask::prepare()
 {
-    searchTask = new Primer3SWTask(settings);
-    addSubTask(searchTask);
+    if (settings.getSpanIntronExonBoundarySettings().enabled) {
+        findExonsTask = new FindExonRegionsTask(seqObj,settings.getSpanIntronExonBoundarySettings().mRnaSeqId);
+        addSubTask(findExonsTask);
+    } else {
+        searchTask = new Primer3SWTask(settings);
+        addSubTask(searchTask);
+    }
+}
+
+QList<Task *> Primer3ToAnnotationsTask::onSubTaskFinished(Task *subTask)
+{
+    QList<Task*> res;
+
+    if (isCanceled() || hasError()) {
+        return res;
+    }
+
+    if (!subTask->isFinished()) {
+        return res;
+    }
+
+    if (subTask == findExonsTask) {
+        QList<U2Region> regions = findExonsTask->getRegions();
+        if (regions.isEmpty()) {
+            setError(tr("No exons are found in the sequence. Please, make sure corresponding RNA sequence id (%1) is selected correctly."));
+            return res;
+        }
+
+        // TODO: think how to include other regions
+
+        const U2Region& firstRegion = regions.first();
+        int intronStart = firstRegion.endPos() - settings.getSpanIntronExonBoundarySettings().minLeftOverlap;
+        int intronEnd = firstRegion.endPos() + settings.getSpanIntronExonBoundarySettings().minRightOverlap;
+        if (regions.size() > 1 || settings.getSpanIntronExonBoundarySettings().spanIntron) {
+            const U2Region& secondRegion = regions.at(1);
+            intronEnd = secondRegion.startPos + settings.getSpanIntronExonBoundarySettings().minRightOverlap;
+        }
+        QList<QPair<int,int> > targets = settings.getTarget();
+        targets.append(QPair<int,int>(intronStart,intronEnd));
+        settings.setTarget(targets);
+
+        searchTask = new Primer3SWTask(settings);
+        res.append(searchTask);
+
+    }
+
+    return res;
 }
 
 QString Primer3ToAnnotationsTask::generateReport() const {
+
+
     QString res;
+
+    if (hasError() || isCanceled()) {
+        return res;
+    }
 
     foreach(Primer3Task *t, searchTask->regionTasks) {
         t->sumStat(&searchTask->settings);
@@ -607,13 +659,16 @@ QString Primer3ToAnnotationsTask::generateReport() const {
     res += "<br>Pair stats:<br>";
     res += QString("considered %1, unacceptable product size %2, high end compl %3, ok %4.")
         .arg(pairStats.considered).arg(pairStats.product).arg(pairStats.compl_end).arg(pairStats.ok);
-    return res;
 
     return res;
 }
 
 Task::ReportResult Primer3ToAnnotationsTask::report()
 {
+    if (hasError() || isCanceled()) {
+        return ReportResult_Finished;
+    }
+
     assert( searchTask );
 
     QList<PrimerPair> bestPairs = searchTask->getBestPairs();

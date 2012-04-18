@@ -144,10 +144,11 @@ class Primer3ToAnnotationsTask : public Task {
     Q_OBJECT
 public:
     Primer3ToAnnotationsTask( const Primer3TaskSettings &settings,
-        AnnotationTableObject* aobj_, const QString & groupName_, const QString & annName_ );
+        U2SequenceObject* seqObj_, AnnotationTableObject* aobj_, const QString & groupName_, const QString & annName_ );
 
     void prepare();
-    void run(){}
+    QList<Task*> onSubTaskFinished(Task *subTask);
+
     virtual QString generateReport() const;
     Task::ReportResult report();
 
@@ -157,6 +158,7 @@ private:
     Primer3TaskSettings settings;
 
     AnnotationTableObject * aobj;
+    U2SequenceObject* seqObj;
     QString groupName;
     QString annName;
 

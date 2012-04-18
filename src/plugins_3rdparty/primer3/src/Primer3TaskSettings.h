@@ -39,14 +39,14 @@ struct SpanIntronExonBoundarySettings {
         enabled = false;
         minLeftOverlap = 7;
         minRightOverlap = 7;
-        minIntronLength = 1000;
+        spanIntron = false;
 
     }
 
     bool enabled;
     QString mRnaSeqId;
     int minLeftOverlap, minRightOverlap;
-    int minIntronLength;
+    bool spanIntron;
 
 };
 

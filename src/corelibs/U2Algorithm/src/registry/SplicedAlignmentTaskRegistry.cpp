@@ -49,6 +49,14 @@ bool SplicedAlignmentTaskRegistry::registerTaskFactory( SplicedAlignmentTaskFact
 
 }
 
+void SplicedAlignmentTaskRegistry::unregisterTaskFactory(const QString &algId)
+{
+    if (algMap.contains(algId)) {
+        SplicedAlignmentTaskFactory* factory = algMap.take(algId);
+        delete factory;
+    }
+}
+
 bool SplicedAlignmentTaskRegistry::hadRegistered( const QString& algId )
 {
     return algMap.contains(algId);
