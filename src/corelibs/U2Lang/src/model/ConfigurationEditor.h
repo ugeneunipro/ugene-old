@@ -47,7 +47,7 @@ public:
 
 public:    
     ConfigurationEditor() {}
-    ConfigurationEditor(const ConfigurationEditor&) {}
+    ConfigurationEditor(const ConfigurationEditor&) : QObject() {}
     virtual ~ConfigurationEditor() {}
 
     // editing widget
