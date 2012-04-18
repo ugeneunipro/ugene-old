@@ -55,7 +55,7 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     
     ui.tableWidget->setColumnCount(3);
     ui.tableWidget->setRowCount(bamInfo.getHeader().getReferences().count());
-    QStringList header; header << BAMDbiPlugin::tr("Contig name") << BAMDbiPlugin::tr("Length") << BAMDbiPlugin::tr("URI");
+    QStringList header; header << BAMDbiPlugin::tr("Assembly name") << BAMDbiPlugin::tr("Length") << BAMDbiPlugin::tr("URI");
     ui.tableWidget->setHorizontalHeaderLabels(header);
     ui.tableWidget->horizontalHeader()->setStretchLastSection(true);    
     {
@@ -78,7 +78,7 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.fileName() + ".ugenedb");
     ui.sourceUrlView->setText(QDir::cleanPath(sourceUrl.getURLString()));
     ui.okButton->setFocus();
-    connect(ui.tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), SLOT(sl_contigCheckChanged(QTableWidgetItem*)));
+    connect(ui.tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), SLOT(sl_assemblyCheckChanged(QTableWidgetItem*)));
 }
 
 void ConvertToSQLiteDialog::sl_selectAll() {
@@ -199,7 +199,7 @@ void ConvertToSQLiteDialog::sl_bamInfoButtonClicked() {
     dialog.exec();
 }
 
-void ConvertToSQLiteDialog::sl_contigCheckChanged(QTableWidgetItem * item) {
+void ConvertToSQLiteDialog::sl_assemblyCheckChanged(QTableWidgetItem * item) {
     bamInfo.getSelected()[item->row()] = (item->checkState() == Qt::Checked);
 }
 
@@ -233,7 +233,7 @@ void ConvertToSQLiteDialog::accept() {
             }
         }
         if(!selected && !bamInfo.isUnmappedSelected()) {
-            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Please select contigs to import"));
+            QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Please select assemblies to be imported"));
             return;
         }
         

@@ -612,15 +612,15 @@ void AssemblyBrowser::setupActions() {
     connect(saveScreenShotAction, SIGNAL(triggered()), SLOT(sl_saveScreenshot()));
     
     showInfoAction = new QAction(QIcon(":ugene/images/task_report.png"), tr("Show assembly information"), this);
-    connect(showInfoAction, SIGNAL(triggered()), SLOT(sl_showContigInfo()));
+    connect(showInfoAction, SIGNAL(triggered()), SLOT(sl_showAssemblyInfo()));
 
     exportToSamAction = new QAction(QIcon(":/core/images/sam.png"), tr("Export assembly to SAM format"), this);
     connect(exportToSamAction, SIGNAL(triggered()), SLOT(sl_exportToSam()));
 }
 
-void AssemblyBrowser::sl_showContigInfo() {
+void AssemblyBrowser::sl_showAssemblyInfo() {
     QDialog dlg(ui, Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
-    dlg.setWindowTitle(tr("'%1' Contig Information").arg(gobject->getGObjectName()));
+    dlg.setWindowTitle(tr("Assembly '%1' Information").arg(gobject->getGObjectName()));
     dlg.setLayout(new QVBoxLayout());
     QLabel * infoLabel = new QLabel();
     {

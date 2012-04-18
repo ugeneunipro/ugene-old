@@ -46,7 +46,7 @@ public slots:
 
 private slots:
     void on_destinationUrlButton_clicked();
-    void sl_contigCheckChanged(QTableWidgetItem * item);
+    void sl_assemblyCheckChanged(QTableWidgetItem * item);
     void sl_bamInfoButtonClicked();
     void sl_selectAll();
     void sl_unselectAll();

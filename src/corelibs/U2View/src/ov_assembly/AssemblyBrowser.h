@@ -148,7 +148,7 @@ private slots:
     void sl_onShowCoverageOnRulerChanged(bool checked);
     void sl_onReadHintEnabledChanged(bool checked);
     void sl_saveScreenshot();
-    void sl_showContigInfo();
+    void sl_showAssemblyInfo();
     void sl_exportToSam();
     
 private:
