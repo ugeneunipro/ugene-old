@@ -239,9 +239,11 @@ void ObjectViewTreeController::sl_onViewStateAdded(GObjectViewState* s) {
     updateActions();
     connect(s, SIGNAL(si_stateModified(GObjectViewState*)), SLOT(sl_onStateModified(GObjectViewState*)));
 
-    // Start renaming to allow user to enter the name for bookmark
-    tree->setCurrentItem(si);
-    sl_renameState();
+    if(s->getStateName() != GObjectViewState::APP_CLOSING_STATE_NAME) {
+        // Start renaming to allow user to enter the name for bookmark
+        tree->setCurrentItem(si);
+        sl_renameState();
+    }
 }
 
 void ObjectViewTreeController::sl_onViewStateRemoved(GObjectViewState* s) {
