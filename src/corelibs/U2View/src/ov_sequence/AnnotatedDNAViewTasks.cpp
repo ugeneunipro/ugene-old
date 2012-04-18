@@ -26,6 +26,7 @@
 
 #include "GSequenceLineView.h"
 
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectTypes.h>
@@ -40,7 +41,9 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <QApplication>
 #include <QtCore/QSet>
+#include <QMessageBox>
 
 namespace U2 {
 
@@ -125,6 +128,40 @@ static QString deriveViewName(const QList<U2SequenceObject*>& seqObjects) {
     return viewName;
 }
 
+static const int MAX_SEQS_COUNT = 5;
+static void showAlphapetWarning(const QList<U2SequenceObject*> &seqObjects) {
+    QStringList rawSeqs;
+    foreach (U2SequenceObject *seqObj, seqObjects) {
+        DNAAlphabet *alphabet = seqObj->getAlphabet();
+        if (DNAAlphabet_RAW == alphabet->getType()) {
+            rawSeqs << seqObj->getSequenceName();
+        }
+    }
+
+    if (!rawSeqs.isEmpty()) {
+        QString warning(QObject::tr("The following sequences contain unrecognizable symbols:\n"));
+        int seqCount = 0;
+        foreach (const QString &seqName, rawSeqs) {
+            warning.append(seqName).append("\n");
+            seqCount++;
+            if (MAX_SEQS_COUNT == seqCount) {
+                break;
+            }
+        }
+        if (seqCount < rawSeqs.size()) {
+            warning.append(QObject::tr("and others...\n"));
+        }
+        warning.append("\n");
+
+        warning.append(QObject::tr("Some algorithms will not work for these sequences."));
+        QMessageBox *msgBox = new QMessageBox(QApplication::activeWindow());
+        msgBox->setIcon(QMessageBox::Warning);
+        msgBox->setWindowTitle(QObject::tr("Warning"));
+        msgBox->setText(warning);
+        msgBox->setButtonText(QMessageBox::Ok, "Ok");
+        msgBox->setVisible(true);
+    }
+}
 
 void OpenAnnotatedDNAViewTask::open() {
     if (stateInfo.hasError() || sequenceObjectRefs.isEmpty()) {
@@ -158,6 +195,8 @@ void OpenAnnotatedDNAViewTask::open() {
     GObjectViewWindow* w = new GObjectViewWindow(v, viewName, false);
     MWMDIManager* mdiManager =  AppContext::getMainWindow()->getMDIManager();
     mdiManager->addMDIWindow(w);
+
+    showAlphapetWarning(seqObjects);
 
 }
 
