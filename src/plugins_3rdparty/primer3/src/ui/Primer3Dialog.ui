@@ -1372,7 +1372,7 @@
      </widget>
      <widget class="QWidget" name="tab_InternalOligo">
       <attribute name="title">
-       <string>Internal oligo</string>
+       <string>Internal Oligo</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
