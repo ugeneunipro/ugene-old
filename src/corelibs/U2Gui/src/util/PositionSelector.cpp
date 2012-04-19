@@ -31,10 +31,10 @@
 
 namespace U2 {
 
-PositionSelector::PositionSelector(QWidget* p, int s, int e) 
+PositionSelector::PositionSelector(QWidget* p, int s, int e, bool fixedSize)
 : QWidget(p), rangeStart(s), rangeEnd(e), posEdit(NULL), autoclose(false), dialog(NULL) 
 {
-    init();
+    init(fixedSize);
 
     QToolButton* goButton = new QToolButton(this);
     goButton->setText(tr("Go!"));
@@ -44,11 +44,11 @@ PositionSelector::PositionSelector(QWidget* p, int s, int e)
     layout()->addWidget(goButton);
 }
 
-void PositionSelector::init() {
+void PositionSelector::init(bool fixedSize) {
     int w = qMax(((int)log10((double)rangeEnd))*10, 70);
     posEdit = new QLineEdit(this);
     posEdit->setValidator(new QIntValidator(rangeStart, rangeEnd, posEdit));
-    if (dialog == NULL) {
+    if (fixedSize) {
         posEdit->setFixedWidth(w);
     } else {
         posEdit->setMinimumWidth(qMax(120, w));
@@ -58,7 +58,7 @@ void PositionSelector::init() {
     connect(posEdit, SIGNAL(returnPressed()), SLOT(sl_onReturnPressed()));
 
     QHBoxLayout* l = new QHBoxLayout(this);
-    if (dialog == NULL) {
+    if (fixedSize) {
         l->setContentsMargins(5, 0, 5, 0);
         l->setSizeConstraint(QLayout::SetFixedSize);
     } else {
@@ -79,7 +79,7 @@ void PositionSelector::init() {
 PositionSelector::PositionSelector(QDialog* d, int s, int e, bool _a) 
 : QWidget(d), rangeStart(s), rangeEnd(e), posEdit(NULL), autoclose(_a), dialog(d) 
 {
-    init();
+    init(true);
 
     QPushButton* okButton = new QPushButton(this);
     okButton->setText(tr("Go!"));

@@ -11,7 +11,9 @@ HEADERS += src/WebWindow.h \
            src/ov_assembly/AssemblyConsensusArea.h \
            src/ov_assembly/AssemblyConsensusTask.h \
            src/ov_assembly/AssemblyCoverageGraph.h \
+           src/ov_assembly/AssemblyInfoWidget.h \
            src/ov_assembly/AssemblyModel.h \
+           src/ov_assembly/AssemblyNavigationWidget.h \
            src/ov_assembly/AssemblyReadsArea.h \
            src/ov_assembly/AssemblyReadsAreaHint.h \
            src/ov_assembly/AssemblyReferenceArea.h \
@@ -19,7 +21,6 @@ HEADERS += src/WebWindow.h \
            src/ov_assembly/AssemblyRuler.h \
            src/ov_assembly/CoverageInfo.h \
            src/ov_assembly/CoveredRegionsManager.h \
-           src/ov_assembly/AssemblyInfoWidget.h \
            src/ov_assembly/ExportReadsDialog.h \
            src/ov_assembly/ExportConsensusDialog.h \
            src/ov_assembly/ExportConsensusTask.h \
@@ -154,7 +155,9 @@ SOURCES += src/WebWindow.cpp \
            src/ov_assembly/AssemblyConsensusArea.cpp \
            src/ov_assembly/AssemblyConsensusTask.cpp \
            src/ov_assembly/AssemblyCoverageGraph.cpp \
+           src/ov_assembly/AssemblyInfoWidget.cpp \
            src/ov_assembly/AssemblyModel.cpp \
+           src/ov_assembly/AssemblyNavigationWidget.cpp \
            src/ov_assembly/AssemblyReadsArea.cpp \
            src/ov_assembly/AssemblyReadsAreaHint.cpp \
            src/ov_assembly/AssemblyReferenceArea.cpp \
@@ -162,7 +165,6 @@ SOURCES += src/WebWindow.cpp \
            src/ov_assembly/AssemblySettingsWidget.cpp \
            src/ov_assembly/CoverageInfo.cpp \
            src/ov_assembly/CoveredRegionsManager.cpp \
-           src/ov_assembly/AssemblyInfoWidget.cpp \
            src/ov_assembly/ExportConsensusDialog.cpp \
            src/ov_assembly/ExportConsensusTask.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \

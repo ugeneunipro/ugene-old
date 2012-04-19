@@ -33,6 +33,8 @@
 #include "AssemblyBrowserSettings.h"
 #include "AssemblyCellRenderer.h"
 #include "AssemblySettingsWidget.h"
+#include "AssemblyInfoWidget.h"
+#include "AssemblyNavigationWidget.h"
 
 #include <U2Core/U2Type.h>
 #include <U2Core/U2DbiUtils.h>
@@ -903,6 +905,9 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
 
         AssemblyInfoWidget * infoWidget = new AssemblyInfoWidget(browser, this);
         optionsPanel->addGroup(QPixmap(":core/images/chart_bar.png"), tr("Assembly Statistics"), infoWidget);
+
+        AssemblyNavigationWidget * navWidget = new AssemblyNavigationWidget(browser, this);
+        optionsPanel->addGroup(QPixmap(":core/images/goto.png"), tr("Navigation"), navWidget);
 
         AssemblySettingsWidget * settingsWidget = new AssemblySettingsWidget(this);
         optionsPanel->addGroup(QPixmap(":core/images/settings.png"), tr("Assembly Browser Settings"), settingsWidget);

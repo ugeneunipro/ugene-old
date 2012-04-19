@@ -27,55 +27,6 @@
 
 namespace U2 {
 
-CoveredRegionsLabel::CoveredRegionsLabel(AssemblyBrowser * ab, QWidget *p)
-    : QLabel(p), browser(ab)
-{
-    connect(this, SIGNAL(linkActivated(QString)), browser, SLOT(sl_coveredRegionClicked(QString)));
-    connect(browser, SIGNAL(si_coverageReady()), SLOT(sl_updateContent()));
-    setAlignment(Qt::AlignTop);
-    setContentsMargins(0, 0, 0, 0);
-    sl_updateContent();
-}
-
-void CoveredRegionsLabel::setAdditionalText(QString prefix_, QString postfix_) {
-    prefix = prefix_;
-    postfix = postfix_;
-    sl_updateContent();
-}
-
-void CoveredRegionsLabel::sl_updateContent() {
-    QString text = "<style>a:link { color: gray }</style>";
-    text += prefix;
-
-    QList<CoveredRegion> coveredRegions = browser->getCoveredRegions();
-    if(!browser->areCoveredRegionsReady()) {
-        text += tr("Computing coverage...");
-    } else if(!coveredRegions.empty()) {
-        QString coveredRegionsText = "<style>td { padding-right: 8px;}</style>";
-        coveredRegionsText += "<table cellspacing='2' style='margin-top: 5px;'>";
-        /*
-        * |   | Region | Coverage |
-        * | 1 | [x,y]  | z        |
-        */
-        coveredRegionsText += tr("<tr><th/><th align='left'><div style='margin-right: 5px;'>Position</div></th><th align = 'center'>Coverage</th></tr>");
-        for(int i = 0; i < coveredRegions.size(); ++i) {
-            const CoveredRegion & cr = coveredRegions.at(i);
-            QString crRegion = FormatUtils::splitThousands(cr.region.center());
-            QString crCoverage = FormatUtils::splitThousands(cr.coverage);
-            coveredRegionsText += "<tr>";
-            coveredRegionsText += QString("<td align='right'>%1&nbsp;&nbsp;</td>").arg(i+1);
-            coveredRegionsText += QString("<td><a href=\"%1\">%2</a></td>").arg(i).arg(crRegion);
-            coveredRegionsText += tr("<td align=\"center\">%4</td>").arg(crCoverage);
-            coveredRegionsText += "</tr>";
-        }
-        coveredRegionsText += "</table>";
-        text += coveredRegionsText;
-    }
-
-    text += postfix;
-
-    setText(text);
-}
 
 namespace {
     const int MAX_FIELD_LEN = 12;
@@ -160,16 +111,7 @@ AssemblyInfoWidget::AssemblyInfoWidget(AssemblyBrowser *browser, QWidget *p)
         QWidget * refGroup = new ShowHideSubgroupWidget("REFERENCE", tr("Reference Information"), refWidget, false);
         mainLayout->addWidget(refGroup);
     }
-
-
-    CoveredRegionsLabel * coveredLabel = new CoveredRegionsLabel(browser, this);
-    QWidget * coveredGroup = new ShowHideSubgroupWidget("COVERED", tr("Most Covered Regions"), coveredLabel, true);
-    mainLayout->addWidget(coveredGroup);
 }
 
-
-void AssemblyInfoWidget::sl_copyInfo(QString info) {
-    QApplication::clipboard()->setText(info);
-}
 
 } // namespace

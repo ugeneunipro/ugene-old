@@ -33,7 +33,7 @@ namespace U2 {
 class U2GUI_EXPORT PositionSelector : public QWidget {
     Q_OBJECT
 public:
-    PositionSelector(QWidget* p, int rangeStart, int rangeEnd);
+    PositionSelector(QWidget* p, int rangeStart, int rangeEnd, bool fixedSize = true);
     PositionSelector(QDialog* d, int rangeStart, int rangeEnd, bool autoclose);
 
     ~PositionSelector();
@@ -48,7 +48,7 @@ private slots:
     void sl_onReturnPressed();
 
 private:
-    void init();
+    void init(bool fixedSize);
     void exec();
 
     int rangeStart;

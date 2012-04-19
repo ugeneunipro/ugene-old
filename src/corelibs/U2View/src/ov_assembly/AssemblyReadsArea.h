@@ -33,7 +33,7 @@
 #include "AssemblyCellRenderer.h"
 #include "AssemblyReadsAreaHint.h"
 #include "AssemblyModel.h"
-#include "AssemblyInfoWidget.h"
+#include "AssemblyNavigationWidget.h"
 
 #include <memory>
 using std::auto_ptr;

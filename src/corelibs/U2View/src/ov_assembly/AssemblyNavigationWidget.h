@@ -19,22 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __ASSEMBLY_INFO_WIDGET_H__
-#define __ASSEMBLY_INFO_WIDGET_H__
+#ifndef __ASSEMBLY_NAVIGATION_WIDGET_H__
+#define __ASSEMBLY_NAVIGATION_WIDGET_H__
 
 #include <QtGui/QtGui>
-#include <U2Core/U2Region.h>
 
 namespace U2 {
 
 class AssemblyBrowser;
 
-class AssemblyInfoWidget : public QWidget {
+class AssemblyNavigationWidget : public QWidget {
     Q_OBJECT
 public:
-    AssemblyInfoWidget(AssemblyBrowser * browser, QWidget *p = NULL);
+    AssemblyNavigationWidget(AssemblyBrowser * browser, QWidget *p = NULL);
+};
+
+class CoveredRegionsLabel : public QLabel {
+    Q_OBJECT
+public:
+    CoveredRegionsLabel(AssemblyBrowser * browser, QWidget *p = NULL);
+
+    void setAdditionalText(QString prefix, QString postfix);
+
+public slots:
+    void sl_updateContent();
+
+private:
+    AssemblyBrowser * browser;
+    QString prefix;
+    QString postfix;
 };
 
 } // namespace
 
-#endif // #ifndef __ASSEMBLY_INFO_WIDGET_H__
+#endif // #ifndef __ASSEMBLY_NAVIGATION_WIDGET_H__
