@@ -148,6 +148,7 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
 
     switch(m) {
     case GTGlobals::UseMouse:
+        GTMouseDriver::moveTo(os, QCursor::pos().x(), actionPos(os, menu, action).y());
         GTMouseDriver::moveTo(os, actionPos(os, menu, action));
         GTGlobals::sleep(200);
         if (!openMenuOnly || clickingSubMenu) {
