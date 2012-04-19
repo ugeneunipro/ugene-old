@@ -60,7 +60,7 @@ void GTUtilsProjectTreeView::toggleView(U2OpStatus& os) {
     QMainWindow *qmw = mw->getQMainWindow();
     GT_CHECK(qmw != NULL, "QMainWindow is NULL");
 
-    GTMouseDriver::moveTo(os, qmw->rect().center());
+    GTMouseDriver::moveTo(os, qmw->mapToGlobal(qmw->rect().center()));
     GTMouseDriver::click(os);
     GTGlobals::sleep(500);
 

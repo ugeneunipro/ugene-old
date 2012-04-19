@@ -56,12 +56,12 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
 
-	GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.pdb");
-	GTUtilsDocument::checkDocument(os, "1CF7.PDB");
+    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+    GTUtilsDocument::checkDocument(os, "1CF7.PDB");
     GTUtilsProject::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
     GTUtilsProject::closeProject(os);
 	
-	GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
     GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
