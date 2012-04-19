@@ -53,98 +53,89 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
     const char* data = rawData.constData();
     int size = rawData.size();
 
-    if (size <= 0 || data[0] != '@' ) {
-        return FormatDetection_NotMatched;
+    int sequenceCount = 0;
+    int from = 0;
+    while (from>=0) {
+        // DNA sequence
+        from = rawData.indexOf('@', from);
+        if (from>=0) {
+            sequenceCount++;
+        }
+        else {
+            break;
+        }
+
+        // Quality sequence
+        from = rawData.indexOf('+', from);
+        sequenceCount = from>=0 ? sequenceCount+1 : sequenceCount;
     }
+    sequenceCount /= 2;
+
     bool hasBinaryBlocks = TextUtils::contains(TextUtils::BINARY, data, size);
-    if (hasBinaryBlocks){
+    if (hasBinaryBlocks || (sequenceCount == 0)) {
         return FormatDetection_NotMatched;
     }
-    FormatCheckResult res(FormatDetection_AverageSimilarity);
-    // here we propagate some property values without actual parsing
-    // this must be fixed some day
+
+    FormatCheckResult res(FormatDetection_HighSimilarity);
     res.properties[RawDataCheckResult_Sequence] = true;
+    res.properties[RawDataCheckResult_MultipleSequences] = sequenceCount > 1;
     res.properties[RawDataCheckResult_SequenceWithGaps] = false;
-    res.properties[RawDataCheckResult_MultipleSequences] = true;
     res.properties[RawDataCheckResult_MinSequenceSize] = 10;
     res.properties[RawDataCheckResult_MaxSequenceSize] = 1000;
     return res;
 }
 
-
 #define BUFF_SIZE  4096
 
-static bool readLine(QByteArray& target, IOAdapter* io, U2OpStatus& os, bool last = false, int * howManyRead = NULL) {
-    bool lineOK = false;
-    qint64 len, total = target.size();
-    do
-    {
-        if (target.capacity() - total < BUFF_SIZE) {
-            target.reserve(target.capacity() + BUFF_SIZE);
-        }
-        char* buff = target.data() + total;
-        len = io->readUntil(buff, BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Exclude, &lineOK);
-        if(howManyRead != NULL) { *howManyRead += len; }
-        os.setProgress(io->getProgress());
-        total += len;
-    } while (!os.isCoR() && !lineOK && len == BUFF_SIZE);
-    if (lineOK) {
-        target.resize(total);
-        //put back start of another line
-        //io->skip(len - BUFF_SIZE);
-        //eat trailing white
-        char ch;
-        bool gotChar = io->getChar(&ch);
-        bool get_white = gotChar && TextUtils::LINE_BREAKS[uchar(ch)];
-        if(gotChar && howManyRead != NULL) {*howManyRead = *howManyRead + 1;}
-        assert(get_white);
-        lineOK = get_white;
-    } else if (!last) {
-        os.setError(U2::FastqFormat::tr("Unexpected end of file"));
+static QString readSequenceName(U2OpStatus& os, IOAdapter *io, char beginWith = '@') {
+
+    QByteArray buffArray(BUFF_SIZE+1, 0);
+    char* buff = buffArray.data();
+
+    static const QString errorMessage = U2::FastqFormat::tr("Error while trying to find sequence name start");
+
+    bool sequenceNameStartFound = false;
+    int readedCount = 0;
+    while ((readedCount == 0) && !io->isEof()) { // skip \ns
+        readedCount = io->readLine(buff, BUFF_SIZE, &sequenceNameStartFound);
     }
-    return lineOK;
+    CHECK_EXT(io->isEof() == false,,"");
+    CHECK_EXT(readedCount >= 0, os.setError(errorMessage), "");
+
+    buffArray.resize(readedCount);
+    buffArray = buffArray.trimmed();
+    CHECK_EXT((buffArray.size() > 0) && (buff[0] == beginWith), os.setError(errorMessage), "");
+
+    QString sequenceName = QString::fromLatin1(buff+1, buffArray.size()-1);
+    return sequenceName;
 }
 
-static const QByteArray SEQ_QUAL_SEPARATOR = "+";
-
-// reads until new line, starting with separator
-// separator not included in read data
-static bool readUntil(QByteArray & target, IOAdapter * io, U2OpStatus & ti, const QByteArray & separator) {
-    QByteArray currentLine;
-    while(1) {
-        currentLine.clear();
-        int howMany = 0;
-        readLine(currentLine, io, ti, false, &howMany);
-        if( ti.hasError() ) {
-            return false;
-        } else if( currentLine.startsWith(separator) ) {
-            io->skip(-1 * (howMany));
-            break;
-        } else if( currentLine.isEmpty() ) {
-            ti.setError( "Unexpected end of file" );
-            return false;
-        }
-        
-        target.append(currentLine.trimmed());
-    }
-    return true;
+static bool checkFirstSymbol(const QByteArray& b, char symbol) {
+    return (b.size()>0 && b.data()[0] == symbol);
 }
 
-static bool readBlock( QByteArray & block, IOAdapter * io, U2OpStatus & ti, qint64 size ) {
-    assert(size >= 0);
-    while( block.size() < size ) {
-        QByteArray curBlock;
-        readLine(curBlock, io, ti);
-        if(ti.hasError()) {
-            return false;
-        } else if( curBlock.isEmpty() ) {
-            ti.setError( "Unexpected end of file" );
-            return false;
+static void readSequence(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, char readUntil = '+') {
+
+    QByteArray buffArray(BUFF_SIZE+1, 0);
+    char* buff = buffArray.data();
+
+    // reading until readUntil symbol i.e. quality or dna sequence name start, ignoring whitespace at the beginning and the end of lines
+
+    while (!io->isEof()) {
+        bool eolnFound = false;
+        int readedCount = io->readUntil(buff, BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &eolnFound);
+        CHECK_EXT(readedCount >= 0, os.setError(U2::FastqFormat::tr("Error while reading sequence")),);
+
+        QByteArray trimmed = QByteArray(buffArray.data(), readedCount);
+        trimmed = trimmed.trimmed();
+
+        if (eolnFound && checkFirstSymbol(trimmed, readUntil)) { // read quality sequence name line, reverting back
+            io->skip(-readedCount);
+            return;
         }
-        
-        block.append(curBlock);
+
+        sequence.append(trimmed);
     }
-    return true;
 }
 
 /**
@@ -152,122 +143,115 @@ static bool readBlock( QByteArray & block, IOAdapter * io, U2OpStatus & ti, qint
  */
 static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os,
                  int gapSize, int predictedSize, QString& writeLockReason) {
-     writeLockReason.clear();
-     QByteArray readBuff, secondBuff;
+    writeLockReason.clear();
 
-     bool merge = gapSize!=-1;
-     QByteArray sequence;
-     QByteArray qualityScores;
-     QStringList headers;
-     QSet<QString> names;
-     QVector<U2Region> mergedMapping;
-     QByteArray gapSequence((merge ? gapSize : 0), 0);
-     sequence.reserve(predictedSize);
-     qualityScores.reserve(predictedSize);
+    QByteArray readBuff(BUFF_SIZE+1, 0), secondBuff;
+    char* buff = readBuff.data();
 
-     TmpDbiObjects dbiObjects(dbiRef, os);
+    bool merge = gapSize!=-1;
+    QByteArray sequence;
+    QByteArray qualityScores;
+    QStringList headers;
+    QSet<QString> names;
+    QVector<U2Region> mergedMapping;
+    QByteArray gapSequence((merge ? gapSize : 0), 0);
+    sequence.reserve(predictedSize);
+    qualityScores.reserve(predictedSize);
 
-     // for lower case annotations
-     GObjectReference sequenceRef;
+    TmpDbiObjects dbiObjects(dbiRef, os);
 
-     qint64 sequenceStart = 0;
+    // for lower case annotations
+    GObjectReference sequenceRef;
+    qint64 sequenceStart = 0;
 
-     U2SequenceImporter seqImporter(hints);
+    U2SequenceImporter seqImporter(hints);
+    int seqNumber = 0;
 
-     int seqNumber = 0;
-
-     while (!os.isCoR()) {
-         //read header
-         readBuff.clear();
-         if (!readLine(readBuff, io, os, (merge && !headers.isEmpty()) || !names.isEmpty())) {
-             break;
-         }
-         if (readBuff[0]!= '@') {
-             os.setError(U2::FastqFormat::tr("Not a valid FASTQ file: %1. The @ identifier is not found.").arg(docUrl.getURLString()));
-             break;
-         }
-
-         QString headerLine = QString::fromLatin1(readBuff.data()+1, readBuff.length()-1);
-
-         if (merge == false   || seqNumber == 0){		
-                QString objName = (merge) ? "Sequence" : TextUtils::variate(headerLine, "_", names);
-                names.insert(objName);
-                seqImporter.startSequence(dbiRef,objName,false,os);
-                CHECK_OP(os,);
-                sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);
-         }
-
-         //read sequence
-         if (merge && sequence.length() > 0) {
-                    seqImporter.addDefaultSymbolsBlock(gapSize,os);
-                    sequenceStart += sequence.length();
-                    sequenceStart+=gapSize;
-                    CHECK_OP(os,);
-         }
-         sequence.clear();  
-         if(!readUntil(sequence, io, os, SEQ_QUAL_SEPARATOR)) {
+    while (!os.isCoR()) {
+        //read header
+        readBuff.clear();
+        QString sequenceName = readSequenceName(os, io, '@');
+        // check for eof while trying to read another FASTQ block
+        if (io->isEof()) {
             break;
-         }
-         seqImporter.addBlock(sequence.data(),sequence.length(),os);
-         CHECK_OP(os,);
+        }
 
-         // read +<seqname>
-         secondBuff.clear();
-         secondBuff.reserve(readBuff.length());
-         if (!readLine(secondBuff, io, os)) {
-             break;
-         }
-         if (secondBuff[0]!= '+' || (secondBuff.length() != 1 && secondBuff.length() != readBuff.length() )
-             || (readBuff.length()  == secondBuff.length() && strncmp(readBuff.data()+1, secondBuff.data()+1, readBuff.length() - 1))) {
-             os.setError(U2::FastqFormat::tr("Not a valid FASTQ file: %1").arg(docUrl.getURLString()));
-             break;
-         }
-         
-         // read qualities
-         qualityScores.clear();
-         
-         if( !readBlock(qualityScores, io, os, sequence.length()) ) {
-            break;
-         }
-         
-         if ( qualityScores.length() != sequence.length()) {
-             os.setError(U2::FastqFormat::tr("Not a valid FASTQ file: %1. Bad quality scores: inconsistent size.").arg(docUrl.getURLString()));   
-         }
-         seqNumber++;
-         if (merge) {
-             headers.append(headerLine);
-             mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
-         } else {
-             U2Sequence u2seq = seqImporter.finalizeSequence(os);
-             dbiObjects.objects << u2seq.id;
-             CHECK_OP(os,);
+        CHECK_OP(os,);
 
-             U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
+        if ((merge == false) || (seqNumber == 0)) {
+            QString objName = (merge) ? "Sequence" : TextUtils::variate(sequenceName, "_", names);
+            names.insert(objName);
+            seqImporter.startSequence(dbiRef,objName,false,os);
+            CHECK_OP(os,);
+            sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);
+        }
 
-             objects << seqObj;
-             seqObj->setQuality(DNAQuality(qualityScores));
+        //read sequence
+        if (merge && sequence.length() > 0) {
+            seqImporter.addDefaultSymbolsBlock(gapSize,os);
+            sequenceStart += sequence.length();
+            sequenceStart+=gapSize;
+            CHECK_OP(os,);
+        }
 
-             U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
-         }
-     }
+        sequence.clear();  
+        readSequence(os, io, sequence);
+        CHECK_OP(os,);
 
-     CHECK_OP(os, );
-     CHECK_EXT(!objects.isEmpty() || merge, os.setError(Document::tr("Document is empty.")), );
-     SAFE_POINT(headers.size() == mergedMapping.size(), "headers <-> regions mapping failed!", );
+        seqImporter.addBlock(sequence.data(),sequence.length(),os);
+        CHECK_OP(os,);
 
-     if (!merge) {
-         return;
-     }
-     U2Sequence u2seq = seqImporter.finalizeSequence(os);
-     dbiObjects.objects << u2seq.id;
-     CHECK_OP(os,);
+        QString qualSequenceName = readSequenceName(os, io, '+');
+        if (!qualSequenceName.isEmpty()) {
+            static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file: %1, sequence name differs from quality scores name").arg(docUrl.getURLString());
+            CHECK_EXT(sequenceName == qualSequenceName, os.setError(err), );
+        }
 
-     U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
-     objects << new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
-     objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(docUrl, headers, u2seq, mergedMapping, os);
-     if (headers.size() > 1) {
-         writeLockReason = DocumentFormat::MERGED_SEQ_LOCK;
-     }
+        // read qualities
+        qualityScores.clear();
+        readSequence(os, io, qualityScores, '@');
+        CHECK_OP(os,);
+
+        static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file: %1. Bad quality scores: inconsistent size.").arg(docUrl.getURLString());
+        CHECK_EXT(sequence.length() == qualityScores.length(), os.setError(err),);
+
+        seqNumber++;
+        if (merge) {
+            headers.append(sequenceName);
+            mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
+        }
+        else {
+            U2Sequence u2seq = seqImporter.finalizeSequence(os);
+            dbiObjects.objects << u2seq.id;
+            CHECK_OP(os,);
+
+            U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
+            CHECK_EXT(seqObj != NULL, os.setError("U2SequenceObject is NULL"),);
+            seqObj->setQuality(DNAQuality(qualityScores));
+            objects << seqObj;
+
+            U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
+        }
+    }
+
+    CHECK_OP(os,);
+    bool emptyObjects = objects.isEmpty();
+    CHECK_EXT(!emptyObjects || merge, os.setError(Document::tr("Document is empty.")), );
+    SAFE_POINT(headers.size() == mergedMapping.size(), "headers <-> regions mapping failed!", );
+
+    if (!merge) {
+        return;
+    }
+    U2Sequence u2seq = seqImporter.finalizeSequence(os);
+    dbiObjects.objects << u2seq.id;
+    CHECK_OP(os,);
+
+    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
+    objects << new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
+    objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(docUrl, headers, u2seq, mergedMapping, os);
+    if (headers.size() > 1) {
+        writeLockReason = DocumentFormat::MERGED_SEQ_LOCK;
+    }
 }
 
 Document* FastqFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& _hints, U2OpStatus& os) {
@@ -284,10 +268,9 @@ Document* FastqFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     DocumentFormatUtils::updateFormatHints(objects, hints);
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, hints, lockReason );
+
     return doc;
 }
-
-#define SAVE_LINE_LEN 70
 
 void FastqFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& os) {
     foreach (GObject* obj, d->getObjects()) {
@@ -297,72 +280,71 @@ void FastqFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& os) {
     }
 }
 
+void writeSequence(U2OpStatus &os, IOAdapter *io, const char* seq, int len, const QString& errorMessage) {
+
+    CHECK_EXT(io != NULL, os.setError("can't write sequence"),);
+
+    static const int lineLength = 80;
+
+    for (int i = 0; i < len; i += lineLength ) {
+        int chunkSize = qMin(lineLength, len - i);
+
+        QByteArray toWrite(seq + i, chunkSize);
+        int writtenCount = io->writeBlock(toWrite);
+        int writtenEoln = io->writeBlock("\n", 1);
+        CHECK_EXT((writtenCount == chunkSize) && (writtenEoln > 0), os.setError(errorMessage),);
+    }
+}
+
 void FastqFormat::storeEntry(IOAdapter *io, U2SequenceObject *seqObj, const QList<GObject*> &anns, U2OpStatus &os) {
     Q_UNUSED(anns);
 
     CHECK_EXT(seqObj!=NULL, os.setError(L10N::badArgument("NULL sequence" )), );
-    try {
-        //write header;
-        QByteArray block;
 
-        QString hdr = seqObj->getGObjectName();
-        block.append('@').append(hdr).append( '\n' );
-        if (io->writeBlock( block ) != block.length()) {
-            throw 0;
-        }
-        // write sequence
-        DNASequence wholeSeq = seqObj->getWholeSequence();
-        const char* seq = wholeSeq.constData();
+    GUrl url = seqObj->getDocument() ? seqObj->getDocument()->getURL() : GUrl();
+    static QString errorMessage = L10N::errorWritingFile(url);
 
-        int len = wholeSeq.length();
-        for (int i = 0; i < len; i += SAVE_LINE_LEN ) {
-            int chunkSize = qMin( SAVE_LINE_LEN, len - i );
-            if (io->writeBlock( seq + i, chunkSize ) != chunkSize
-                || !io->writeBlock( "\n", 1 )) {
-                    throw 0;
-            }
-        }
+    //write header;
+    QByteArray block;
 
-        //write transition
-        block.clear();
-        block.append("+\n");
+    QString sequenceName = seqObj->getGObjectName();
+    block.append('@').append(sequenceName).append('\n');
 
-        if (io->writeBlock( block ) != block.length()) {
-            throw 0;
-        }
+    int writtenCount = io->writeBlock(block);
+    CHECK_EXT(writtenCount == block.length(), os.setError(errorMessage),);
 
-        //write quality
-        QByteArray buf;
-        const char* quality = NULL;
-        if (wholeSeq.hasQualityScores()) {
-            quality = wholeSeq.quality.qualCodes.constData();
-            len = wholeSeq.quality.qualCodes.length();
-        } else {
-            // record the highest possible quality
-            buf.fill('I',len);
-            quality = buf.constData();
-        } 
+    // write sequence
+    DNASequence wholeSeq = seqObj->getWholeSequence();
+    writeSequence(os, io, wholeSeq.constData(), wholeSeq.length(), errorMessage);
 
-        for (int i = 0; i < len; i += SAVE_LINE_LEN ) {
-            int chunkSize = qMin( SAVE_LINE_LEN, len - i );
-            if (io->writeBlock( quality + i, chunkSize ) != chunkSize || !io->writeBlock( "\n", 1 )) {
-                throw 0;
-            }
-        }
+    //write transition
+    block.clear();
+    block.append("+\n");
 
-    } catch (int) {
-        GUrl url = seqObj->getDocument() ? seqObj->getDocument()->getURL() : GUrl();
-        os.setError(L10N::errorWritingFile(url));
+    writtenCount = io->writeBlock(block);
+    CHECK_EXT(writtenCount == block.length(), os.setError(errorMessage),);
+
+    //write quality
+    QByteArray buf;
+    const char* qualityData = NULL;
+    if (wholeSeq.hasQualityScores()) {
+        const QByteArray& quality = wholeSeq.quality.qualCodes;
+        CHECK_EXT(wholeSeq.length() == quality.length(), os.setError(errorMessage),);
+        qualityData = quality.constData();
     }
+    else {
+        // record the highest possible quality
+        buf.fill('I', wholeSeq.length());
+        qualityData = buf.constData();
+    }
+
+    writeSequence(os, io, qualityData, wholeSeq.length(), errorMessage);
 }
 
-DNASequence *FastqFormat::loadSequence(IOAdapter* io, U2OpStatus& ti) {
-    if( NULL == io || !io->isOpen() ) {
-        ti.setError(L10N::badArgument("IO adapter"));
-        return NULL;
-    }
+DNASequence *FastqFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
+    CHECK_EXT((io != NULL) && (io->isOpen() == true), os.setError(L10N::badArgument("IO adapter")), NULL);
 
-    QByteArray readBuff, secondBuff;
+    QByteArray readBuff;
     QByteArray sequence;
     QByteArray qualityScores;
     int predictedSize = 1000;
@@ -370,45 +352,34 @@ DNASequence *FastqFormat::loadSequence(IOAdapter* io, U2OpStatus& ti) {
     qualityScores.reserve(predictedSize);
 
     //read header
-    if (!readLine(readBuff, io, ti)) {
-        return NULL;
-    }
-    if (readBuff[0]!= '@') {
-        ti.setError("Not a valid FASTQ file. The @ identifier is not found.");
-        return NULL;
-    }
+    readBuff.clear();
+    QString sequenceName = readSequenceName(os, io, '@');
+    // check for eof while trying to read another FASTQ block
+    CHECK_EXT(!io->isEof(), "", NULL);
+    CHECK_OP(os, NULL);
 
-    //read sequence
-    if(!readUntil(sequence, io, ti, SEQ_QUAL_SEPARATOR)) {
-        return NULL;
-    }
-    int seqLen = sequence.size();
+    sequence.clear();  
+    readSequence(os, io, sequence);
+    CHECK_OP(os, NULL);
 
-    // read +<seqname>
-    secondBuff.reserve(readBuff.size());
-    if (!readLine(secondBuff, io, ti)) {
-        return NULL;
-    }
-    if (secondBuff[0]!= '+' || (secondBuff.size() != 1 && secondBuff.size() != readBuff.size())
-     || (readBuff.size() == secondBuff.size() && strncmp(readBuff.data()+1, secondBuff.data()+1, readBuff.size() - 1))) {
-        ti.setError("Not a valid FASTQ file");
-        return NULL;
+    QString qualSequenceName = readSequenceName(os, io, '+');
+    if (!qualSequenceName.isEmpty()) {
+        static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file, sequence name differs from quality scores name");
+        CHECK_EXT(sequenceName == qualSequenceName, os.setError(err), NULL);
     }
 
     // read qualities
-    if(!readBlock(qualityScores, io, ti, seqLen) ) {
-        return NULL;
-    }
+    qualityScores.clear();
+    readSequence(os, io, qualityScores, '@');
+    CHECK_OP(os, NULL);
 
-    if ( qualityScores.length() != sequence.length() ) {
-        ti.setError("Not a valid FASTQ file. Bad quality scores: inconsistent size.");
-    }
+    static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file. Bad quality scores: inconsistent size.");
+    CHECK_EXT(sequence.length() == qualityScores.length(), os.setError(err), NULL);
 
-    QByteArray headerLine = QByteArray::fromRawData(readBuff.data()+1, readBuff.length()-1);
-    DNASequence *seq = new DNASequence(headerLine, sequence);
+    DNASequence *seq = new DNASequence(sequenceName, sequence);
     seq->quality = DNAQuality(qualityScores);
     seq->alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::NUCL_DNA_EXTENDED());
-    assert(seq->alphabet!=NULL);
+    SAFE_POINT(seq->alphabet != NULL, "FastqFormat::loadSequence alphabet is NULL", NULL);
 
     if (!seq->alphabet->isCaseSensitive()) {
         TextUtils::translate(TextUtils::UPPER_CASE_MAP, const_cast<char*>(seq->seq.constData()), seq->seq.length());
@@ -417,4 +388,4 @@ DNASequence *FastqFormat::loadSequence(IOAdapter* io, U2OpStatus& ti) {
     return seq;
 }
 
-}//namespace
+} //namespace
