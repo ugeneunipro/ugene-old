@@ -62,8 +62,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTMouseDriver::click(os, Qt::RightButton);
 	GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+	GTGlobals::sleep(10000);
 	GTUtilsDocument::checkDocument(os, "exp.fasta");
-	GTGlobals::sleep(1000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
@@ -82,8 +82,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTMouseDriver::click(os, Qt::RightButton);
 	GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+	GTGlobals::sleep(10000);
 	GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/sandbox/exp2.aln");
-	GTGlobals::sleep(1000);
 	GTUtilsDocument::checkDocument(os, "exp2.aln");
 }
 
