@@ -98,6 +98,7 @@ class QMainWindow;
 #define ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE     "action_edit_reserve_complement_sequences"
 #define ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW		"action_edit_select_sequences_from_view"
 
+#define ACTION_BOOKMARK_TREE_VIEW					"action_bookmark_tree_view"
 #define ACTION_ACTIVATE_VIEW						"action_activate_view"
 #define ACTION_ADD_BOOKMARK							"action_add_bookmark"
 #define ACTION_RENAME_BOOKMARK						"action_rename_bookmark"

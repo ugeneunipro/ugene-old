@@ -46,6 +46,7 @@ ObjectViewTreeController::ObjectViewTreeController(QTreeWidget* w) : QObject(w),
     tree->headerItem()->setHidden(true);
     tree->setSelectionMode(QAbstractItemView::SingleSelection);
     tree->setContextMenuPolicy(Qt::CustomContextMenu);
+  	tree->setObjectName(ACTION_BOOKMARK_TREE_VIEW);
 
     connect(tree, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem*)), SLOT(sl_onTreeCurrentChanged(QTreeWidgetItem *, QTreeWidgetItem*)));
     connect(tree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));

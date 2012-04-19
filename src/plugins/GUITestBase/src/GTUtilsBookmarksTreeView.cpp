@@ -37,7 +37,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsBookmarksTreeView"
 
-const QString GTUtilsBookmarksTreeView::widgetName = QString::fromUtf8("viewTreeWidget");
+const QString GTUtilsBookmarksTreeView::widgetName = ACTION_BOOKMARK_TREE_VIEW;
 
 #define GT_METHOD_NAME "getTreeWidget"
 QTreeWidget* GTUtilsBookmarksTreeView::getTreeWidget(U2OpStatus &os) {
