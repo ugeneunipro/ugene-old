@@ -94,16 +94,10 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 	GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
 	GTGlobals::sleep(1000);
 
-	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[s] se1"));
-	GTMouseDriver::click(os, Qt::RightButton);
+	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "multiple.fa"));
+	GTMouseDriver::click(os);
 	GTGlobals::sleep(1000);
-/*	QTreeWidget* tree = GTUtilsProjectTreeView::getTreeWidget(os);
-	QTreeWidgetItem* item = GTUtilsProjectTreeView::findItem(os, "[s] se1");
-	tree->setItemSelected(item, true);
-	item = GTUtilsProjectTreeView::findItem(os, "[s] se2");
-	tree->setItemSelected(item, true);
-	GTGlobals::sleep(1000);*/
-	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[s] se2"));
+	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
 	GTGlobals::sleep(1000);
 	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
 	GTUtilsDialog::ExportSequenceAsAlignmentFiller filler(os,
@@ -115,9 +109,8 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTMouseDriver::click(os, Qt::RightButton);
 	GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
-	GTGlobals::sleep(1000);
+	GTGlobals::sleep(10000);
 	GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/sandbox/exp2.aln");
-	GTGlobals::sleep(1000);
 	GTUtilsDocument::checkDocument(os, "exp2.aln");
 }
 
