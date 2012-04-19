@@ -4,10 +4,12 @@
 #The results of patterns searching are grouped by id of a sequence: original and find patterns annotations are united into two new grouped annotations sets.
 #
 #
+#
+#
 
 
 
-workflow "Find substrings at sequences"{
+workflow "Find substrings in sequences"{
 
     read-sequence {
         type:read-sequence;
@@ -51,7 +53,7 @@ workflow "Find substrings at sequences"{
     }
     write-sequence {
         type:write-sequence;
-        name:"Write sequence";
+        name:"Write Sequence";
     }
 
 
@@ -120,7 +122,7 @@ workflow "Find substrings at sequences"{
                 output-data.angle:290.082;
             }
             write-sequence {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all sequences from <span style=' text-decoration: underline;'>Read Sequence</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write Sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all sequences from <span style=' text-decoration: underline;'>Read Sequence</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
                 tooltip:"Writes all supplied sequences to file(s) in selected format.";
                 pos:"-170 -490";
                 style:ext;
@@ -128,17 +130,17 @@ workflow "Find substrings at sequences"{
                 bounds:"-30 -30 100.25 55";
                 in-sequence.angle:39.5226;
             }
-            read-text.out-text->multiplexer.input-data-2 {
-                text-pos:"-52.5 -12";
-            }
             read-sequence.out-sequence->multiplexer.input-data-1 {
                 text-pos:"-53.5 -11";
             }
-            search.out-annotations->grouper.input-data {
-                text-pos:"-45 -44";
+            read-text.out-text->multiplexer.input-data-2 {
+                text-pos:"-52.5 -12";
             }
             multiplexer.output-data->search.in-sequence {
                 text-pos:"-43 -54";
+            }
+            search.out-annotations->grouper.input-data {
+                text-pos:"-45 -44";
             }
             grouper.output-data->write-sequence.in-sequence {
                 text-pos:"-109 -18";

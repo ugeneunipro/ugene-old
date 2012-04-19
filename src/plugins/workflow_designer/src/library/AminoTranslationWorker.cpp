@@ -179,7 +179,7 @@ void AminoTranslationWorkerFactory::init(){
     a << new Attribute(atd, BaseTypes::BOOL_TYPE(), true, QVariant(true));
 
     Descriptor desc(ACTOR_ID,
-        AminoTranslationWorker::tr("Amino translation"),
+        AminoTranslationWorker::tr("Amino Translation"),
         AminoTranslationWorker::tr("Translate sequence into it's amino translation"
         " . Output a sequence."));
 
