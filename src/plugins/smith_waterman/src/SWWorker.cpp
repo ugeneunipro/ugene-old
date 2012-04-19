@@ -451,10 +451,10 @@ Task* SWWorker::tick() {
         // translations
         cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
         if (cfg.strand != StrandOption_DirectOnly/* && seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
-            QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-                                                lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-            if (!compTTs.isEmpty()) {
-                cfg.complTT = compTTs.first();
+            DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
+                                                lookupComplementTranslation(seq.alphabet);
+            if (compTT != NULL) {
+                cfg.complTT = compTT;
             } else {
                 algoLog.error(tr("Could not find complement translation for %1, searching only direct strand").arg(seq.getName()));
                 cfg.strand = StrandOption_DirectOnly;
@@ -463,8 +463,8 @@ Task* SWWorker::tick() {
         if (actor->getParameter(AMINO_ATTR)->getAttributeValue<bool>(context)) {
             DNATranslationType tt = seq.alphabet->getType() == DNAAlphabet_NUCL ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
             QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(seq.alphabet, tt);
-            if (!TTs.isEmpty()) {
-                cfg.aminoTT = TTs.first(); //FIXME let user choose or use hints ?
+            if (!TTs.isEmpty()) { //FIXME let user choose or use hints ?
+                    cfg.aminoTT = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(seq.alphabet);
             }
         }
 

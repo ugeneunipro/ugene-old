@@ -130,10 +130,10 @@ Task* QDSiteconActor::getAlgorithmTask(const QVector<U2Region>& location) {
     const DNASequence& dnaSeq = scheme->getSequence();
     QDStrandOption stOp = getStrandToRun();
     if (stOp == QDStrand_ComplementOnly || stOp == QDStrand_Both) {
-        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-            lookupTranslation(dnaSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-        if (!compTTs.isEmpty()) {
-            settings.complTT = compTTs.first();
+        DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
+            lookupComplementTranslation(dnaSeq.alphabet);
+        if (compTT != NULL) {
+            settings.complTT = compTT;
         }
     }
     

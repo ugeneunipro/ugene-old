@@ -48,10 +48,10 @@ void ExtractAnnotatedRegionTask::prepareTranslations() {
         return;
     }
     if (cfg.complement && inputAnn->getStrand().isCompementary()) {
-        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-            lookupTranslation( inputSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL );
-        if (!compTTs.isEmpty()) {
-            complT = compTTs.first(); 
+        DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
+            lookupComplementTranslation( inputSeq.alphabet);
+        if (compTT != NULL) {
+            complT = compTT; 
         }
     }
 
@@ -59,7 +59,7 @@ void ExtractAnnotatedRegionTask::prepareTranslations() {
         DNATranslationType dnaTranslType = (inputSeq.alphabet->getType() == DNAAlphabet_NUCL) ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
         QList<DNATranslation*> aminoTTs = AppContext::getDNATranslationRegistry()->lookupTranslation( inputSeq.alphabet, dnaTranslType );
         if( !aminoTTs.isEmpty() ) {
-            aminoT = aminoTTs.first();
+             aminoT = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(inputSeq.alphabet);
         } 
     }
 }

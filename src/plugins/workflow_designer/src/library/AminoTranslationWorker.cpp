@@ -6,17 +6,16 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseActorCategories.h>
-#include <U2Lang/BaseAttributes.h>
 #include <U2Designer/DelegateEditors.h>
 
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/DNATranslation.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/GObjectUtils.h>
 
 const QString OFFSET_DELIMITER(",");
 
@@ -25,7 +24,9 @@ namespace LocalWorkflow{
 
 const QString AminoTranslationWorkerFactory::ACTOR_ID("sequence-translation");
 
-static const QString NAME_ATTR("result-name");
+static const QString AUTO_TRANSLATION_ATTR("auto-translation");
+static const QString ID_ATTR("genetic-code");
+static const QString POS_2_TRANSLATE_ATTR("pos-2-translate");
 
 void TranslateSequence2AminoTask::run(){
     assert(configs.seqObj != NULL);
@@ -35,6 +36,9 @@ void TranslateSequence2AminoTask::run(){
     QVector<U2Region> regionsDirect = configs.regionsDirect;
     QVector<U2Region> regionsComplementary = configs.regionsComplementary;
     QString resultName = configs.resultName;    
+
+    DNATranslation* aminoTT = configs.aminoTT;
+    SAFE_POINT(aminoTT != NULL, QString("Can't produce amino translation"),);
 
     for(QVector<U2Region>::iterator i = regionsDirect.begin(); i != regionsDirect.end();){
         if(i->startPos >= seqLen){
@@ -56,8 +60,6 @@ void TranslateSequence2AminoTask::run(){
 
     DNATranslation* complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(seqObj->getAlphabet());
     SAFE_POINT(complTT != NULL || regionsComplementary.isEmpty(), QString("Can't support complement mode"),);
-    DNATranslation* aminoTT = AppContext::getDNATranslationRegistry()->lookupTranslation(seqObj->getAlphabet(), DNATranslationType_NUCL_2_AMINO).first();
-    SAFE_POINT(aminoTT != NULL, QString("Can't produce amino translation"),);
 
     static const int NUM_DB_READ = 3 * 1024;
 
@@ -75,7 +77,7 @@ void TranslateSequence2AminoTask::run(){
         CHECK_OP(stateInfo, );
 
         U2SequenceImporter importer;
-        importer.startSequence(dbRef, resultName + QString("_%1").arg(currentSeq), false, stateInfo);
+        importer.startSequence(dbRef, seqObj->getSequenceName()+ " " + resultName + QString(" %1").arg(currentSeq) + " direct", false, stateInfo);
         
         int blockCounter = 0;
         qint64 end = directRegion.startPos +  directRegion.length / 3 * 3;
@@ -97,7 +99,7 @@ void TranslateSequence2AminoTask::run(){
         results << new U2SequenceObject(u2Seq.visualName, U2EntityRef(dbRef, u2Seq.id));
         currentSeq++;
     }
-    
+    currentSeq = 0;
     // complementary
     foreach(U2Region complementaryRegion, regionsComplementary){
         translatedSeq.clear();
@@ -107,7 +109,7 @@ void TranslateSequence2AminoTask::run(){
         CHECK_OP(stateInfo, );
 
         U2SequenceImporter importer;
-        importer.startSequence(dbRef, resultName + QString("_%1").arg(currentSeq), false, stateInfo);
+        importer.startSequence(dbRef, seqObj->getSequenceName()+ " " + resultName + QString(" %1").arg(currentSeq) + " complementary", false, stateInfo);
 
         QByteArray complementarySeq;
         char* complSeq;
@@ -169,23 +171,43 @@ void AminoTranslationWorkerFactory::init(){
         p << new PortDescriptor(oud, DataTypePtr(new MapDataType("translate.sequence", outM)), false, true);
     }
     QList<Attribute*> a;
-    a << new Attribute(BaseAttributes::STRAND_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::STRAND_BOTH());
-   
-    Descriptor nd(NAME_ATTR, AminoTranslationWorker::tr("Sequence name"), AminoTranslationWorker::tr("Name of the result amino translation"));
-    a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("Amino translation"));
 
-    a << new Attribute(BaseAttributes::AMINO_TRANSLATION_OFFSET_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::AMINO_TRANSLATION_OFFSET_ALL());
+    Descriptor pt(POS_2_TRANSLATE_ATTR, AminoTranslationWorker::tr("Translate from "), AminoTranslationWorker::tr("What position would sequence translated from : first, second, third or from all positions"));
+    a << new Attribute(pt, BaseTypes::STRING_TYPE(), false, QVariant("all"));   
+
+    Descriptor atd(AUTO_TRANSLATION_ATTR, AminoTranslationWorker::tr("Auto selected genetic code"), AminoTranslationWorker::tr("Set if genetic code will be selected automatically"));
+    a << new Attribute(atd, BaseTypes::BOOL_TYPE(), true, QVariant(true));
 
     Descriptor desc(ACTOR_ID,
         AminoTranslationWorker::tr("Amino translation"),
         AminoTranslationWorker::tr("Translate sequence into it's amino translation"
         " . Output a sequence."));
 
-    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
+    Descriptor ttd(ID_ATTR, AminoTranslationWorker::tr("Genetic code"), AminoTranslationWorker::tr("Which genetic code should be used for translating the input nucleotide sequence."));
+    Attribute* translAttribute = new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));
+
+    translAttribute->addRelation(new VisibilityRelation(AUTO_TRANSLATION_ATTR, "False"));
+    a << translAttribute;
 
     QMap<QString, PropertyDelegate*> delegates;    
-    delegates[BaseAttributes::STRAND_ATTRIBUTE().getId()] = new ComboBoxDelegate(BaseAttributes::STRAND_ATTRIBUTE_VALUES_MAP());
-    delegates[BaseAttributes::AMINO_TRANSLATION_OFFSET_ATTRIBUTE().getId()] = new ComboBoxDelegate(BaseAttributes::AMINO_TRANSLATION_OFFSET_ATTRIBUTE_VALUES_MAP());
+
+    QVariantMap idMap;
+    QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->
+        lookupTranslation(AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()), 
+        DNATranslationType_NUCL_2_AMINO);
+    foreach(DNATranslation* tt, TTs) {
+        idMap[tt->getTranslationName()] = tt->getTranslationId();
+    }
+    delegates[ID_ATTR] = new ComboBoxDelegate(idMap);
+
+    QVariantMap posTransMap;
+    posTransMap["all"]="all";
+    posTransMap["first"]="first";
+    posTransMap["second"]="second";
+    posTransMap["third"]="third";
+    delegates[POS_2_TRANSLATE_ATTR] = new ComboBoxDelegate(posTransMap);
+
+    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     
     proto->setEditor(new DelegateEditor(delegates));
 
@@ -197,58 +219,33 @@ void AminoTranslationWorkerFactory::init(){
     localDomain->registerEntry(new AminoTranslationWorkerFactory());
 }
 
-static SequenceTranslationStrand getStrand(const QString & s) {
-    QString str = s.toLower();
-    if(BaseAttributes::STRAND_BOTH().startsWith(str)) {
-        return SequenceTranslationStrand_Both;
-    } else if(BaseAttributes::STRAND_DIRECT().startsWith(str)) {
-        return SequenceTranslationStrand_Direct;
-    } else if(BaseAttributes::STRAND_COMPLEMENTARY().startsWith(str)) {
-        return SequenceTranslationStrand_Complement;
-    } else {
-        bool ok = false;
-        int num = str.toInt(&ok);
-        if(ok && num >= 0) {
-            return SequenceTranslationStrand(num);
-        } else {
-            return SequenceTranslationStrand_Both;
-        }
-    }
-}
-
-
 QString AminoTranslationPrompter::composeRichDoc(){
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()));
     Actor* producer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
-    SequenceTranslationStrand strand = getStrand(getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId()).value<QString>());
-    
-    QString strandName;
-    switch (strand) {
-        case SequenceTranslationStrand_Both:
-            strandName = AminoTranslationWorker::tr("both strands");
-            break;
-        case SequenceTranslationStrand_Direct:
-            strandName = AminoTranslationWorker::tr("direct strand");
-            break;
-        case SequenceTranslationStrand_Complement:
-            strandName = AminoTranslationWorker::tr("complement strand");
-            break;
-        default:
-            assert(false);
-    }
-    QString offset = getParameter(BaseAttributes::AMINO_TRANSLATION_OFFSET_ATTRIBUTE().getId()).value<QString>();
-    QString resultName = getParameter(NAME_ATTR).toString();
+    QString offset = getParameter(POS_2_TRANSLATE_ATTR).toString();
+    bool autoTranslation = getParameter(AUTO_TRANSLATION_ATTR).toBool();
+    QString translationId ;
+    QString usingGenetic;
 
-    resultName = getHyperlink(NAME_ATTR, resultName);
-    offset = getHyperlink(BaseAttributes::AMINO_TRANSLATION_OFFSET_ATTRIBUTE().getId(), offset);
-    strandName = getHyperlink(BaseAttributes::STRAND_ATTRIBUTE().getId(), strandName);
-    QString doc = QString("Translated sequence with base name %1 to amino in %2 with %3 offset").
-                    arg(resultName).
-                    arg(strandName).
-                    arg(offset);
+    offset = getHyperlink(POS_2_TRANSLATE_ATTR, offset);
+
+    if(!autoTranslation){
+        translationId = getParameter(ID_ATTR).toString();
+        DNATranslation* aminoTT = AppContext::getDNATranslationRegistry()->
+            lookupTranslation(AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT()), DNATranslationType_NUCL_2_AMINO, translationId);
+        QString ttName = aminoTT->getTranslationName();
+        usingGenetic = ttName = getHyperlink(ID_ATTR, ttName);        
+    }
+    else{
+        usingGenetic = getHyperlink(AUTO_TRANSLATION_ATTR, "auto selected genetic code");
+    }
+
+    QString doc = QString("Translated sequence to amino from %1 position using %2").
+                    arg(offset). // offset from sequence will be translated
+                    arg(usingGenetic); // genetic code
     return doc;
 }
 
@@ -257,6 +254,29 @@ AminoTranslationWorker::AminoTranslationWorker(Actor* a): BaseWorker(a), input(N
 void AminoTranslationWorker::init(){
     input = ports.value(BasePorts::IN_SEQ_PORT_ID());
     output = ports.value(BasePorts::OUT_SEQ_PORT_ID());
+}
+
+static QVector<U2Region> getTranslatedRegions(const QString& attribute, qint64 seqLen){
+    QVector<U2Region> translatedRegions;
+
+    if(attribute == "first"){
+        translatedRegions.append(U2Region(0, seqLen));
+    }
+    else if(attribute == "second"){
+        translatedRegions.append(U2Region(1, seqLen - 1));
+    }
+    else if(attribute == "third"){
+        translatedRegions.append(U2Region(2, seqLen - 2));
+    }
+    else if(attribute == "all"){
+        translatedRegions.append(U2Region(0, seqLen));
+        translatedRegions.append(U2Region(1, seqLen - 1));
+        translatedRegions.append(U2Region(2, seqLen - 2));
+    }
+    else{
+        assert(false);
+    }
+    return translatedRegions;
 }
 
 Task* AminoTranslationWorker::tick(){
@@ -270,7 +290,6 @@ Task* AminoTranslationWorker::tick(){
         U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
         QSharedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
 
-
         if (NULL == seqObj.data()) {
             return NULL;
         }
@@ -283,45 +302,31 @@ Task* AminoTranslationWorker::tick(){
             return new FailTask(tr("Alphabet is not nucleic"));
         }
 
+        QStringList offsets = actor->getParameter(POS_2_TRANSLATE_ATTR)->getAttributeValue<QString>(context).split(OFFSET_DELIMITER, QString::SkipEmptyParts);
+        QString resultName = "Amino translation";
 
-        QStringList offsets = actor->getParameter(BaseAttributes::AMINO_TRANSLATION_OFFSET_ATTRIBUTE().getId())->getAttributeValue<QString>(context).split(OFFSET_DELIMITER, QString::SkipEmptyParts);
-        QString resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
-        if(resultName.isEmpty()){
-            algoLog.error(tr("Amino translation: result name is not defined, used default one instead"));
-            resultName = "Sequence";
+        QVector<U2Region> regionsDirect = getTranslatedRegions(actor->getParameter(POS_2_TRANSLATE_ATTR)->getAttributeValue<QString>(context), seqObj->getSequenceLength());
+
+        bool autoTranslation = actor->getParameter(AUTO_TRANSLATION_ATTR)->getAttributeValue<bool>(context);
+        DNATranslation* aminoTT = NULL;
+    
+        if(autoTranslation ){
+            aminoTT  = GObjectUtils::findAminoTT(seqObj.data(), false);
         }
-
-        SequenceTranslationStrand strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
-
-        QVector<U2Region> regionsDirect;
-        QVector<U2Region> regionsComplementaries;
-
-        foreach(const QString& offset, offsets){
-            bool ok;            
-            int currentOffset = offset.toInt(&ok);
-                        
-            switch (strand) {
-        case SequenceTranslationStrand_Both:
-            regionsDirect.append(U2Region(currentOffset, seqObj->getSequenceLength() - currentOffset));
-            regionsComplementaries.append(U2Region(0, seqObj->getSequenceLength() - currentOffset));
-            break;
-        case SequenceTranslationStrand_Direct:
-            regionsDirect.append(U2Region(currentOffset, seqObj->getSequenceLength() - currentOffset));
-            break;
-        case SequenceTranslationStrand_Complement:
-            regionsComplementaries.append(U2Region(0, seqObj->getSequenceLength() - currentOffset));
-            break;
-        default:
-            assert(false);
-            }
+        else{
+            QString translId = actor->getParameter(ID_ATTR)->getAttributeValue<QString>(context);
+            aminoTT = AppContext::getDNATranslationRegistry()->lookupTranslation(seqObj->getAlphabet(), DNATranslationType_NUCL_2_AMINO, translId);
+        }
+        if(aminoTT == NULL){
+            return new FailTask("Selected genetic code is not supported ");
         }
       
         AminoTranslationSettings  config;
 
         config.regionsDirect = regionsDirect;
-        config.regionsComplementary = regionsComplementaries;
         config.resultName = resultName;
         config.seqObj = seqObj;
+        config.aminoTT = aminoTT;
 
         TranslateSequence2AminoTask* transTask = new TranslateSequence2AminoTask(config);
 

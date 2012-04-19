@@ -160,10 +160,10 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     settings.sqnc = dnaSeq.seq;
 
     if (settings.strand != StrandOption_DirectOnly) {
-        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-            lookupTranslation(dnaSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-        if (!compTTs.isEmpty()) {
-            settings.complTT = compTTs.first();
+        DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
+            lookupComplementTranslation(dnaSeq.alphabet);
+        if (compTT != NULL) {
+            settings.complTT = compTT;
         } else {
             //Could not find complement translation, searching only direct strand
             settings.strand = StrandOption_DirectOnly;
@@ -173,8 +173,8 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     if (params.value(AMINO_ATTR)->getAttributeValueWithoutScript<bool>()) {
         DNATranslationType tt = (dnaSeq.alphabet->getType() == DNAAlphabet_NUCL) ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
         QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(dnaSeq.alphabet, tt);
-        if (!TTs.isEmpty()) {
-            settings.aminoTT = TTs.first(); //FIXME let user choose or use hints ?
+        if (!TTs.isEmpty()) { //FIXME let user choose or use hints ?
+                settings.aminoTT = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(dnaSeq.alphabet);
         }
     }
     assert(settings.pSm.getName().isEmpty() && mtrx.toLower() != "auto");

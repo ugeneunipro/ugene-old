@@ -253,14 +253,14 @@ bool HMMSearchTask::checkAlphabets(int hmmAlType, DNAAlphabet* seqAl, DNATransla
     aminoTrans = NULL;
     if (seqAl->isNucleic()) {
         DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
-        QList<DNATranslation*> complTs = tr->lookupTranslation(seqAl, DNATranslationType_NUCL_2_COMPLNUCL);
-        if (!complTs.empty()) {
-            complTrans = complTs.first();
+        DNATranslation* complT = tr->lookupComplementTranslation(seqAl);
+        if (complT != NULL) {
+            complTrans = complT;
         }
         if (hmmAl == DNAAlphabet_AMINO) {
             QList<DNATranslation*> aminoTs = tr->lookupTranslation(seqAl, DNATranslationType_NUCL_2_AMINO);
             if (!aminoTs.empty()) {
-                aminoTrans = aminoTs.first();
+                aminoTrans = tr->getStandardGeneticCodeTranslation(seqAl);
             }
         }
     } else {

@@ -265,10 +265,10 @@ Task* ORFWorker::tick() {
             ORFAlgorithmSettings config(cfg);
             config.searchRegion.length = seqObj->getSequenceLength();
             if (config.strand != ORFAlgorithmStrand_Direct) {
-                QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-                    lookupTranslation(alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-                if (!compTTs.isEmpty()) {
-                    config.complementTT = compTTs.first();
+                DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
+                    lookupComplementTranslation(alphabet);
+                if (compTT != NULL) {
+                    config.complementTT = compTT;
                 } else {
                     config.strand = ORFAlgorithmStrand_Direct;
                 }

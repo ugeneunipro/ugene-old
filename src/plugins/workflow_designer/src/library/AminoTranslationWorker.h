@@ -25,12 +25,7 @@
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <QtCore/QSharedPointer>
-
-enum SequenceTranslationStrand{
-    SequenceTranslationStrand_Direct,
-    SequenceTranslationStrand_Complement,
-    SequenceTranslationStrand_Both
-};
+#include <U2Core/DNATranslation.h>
 
 namespace U2 {
 
@@ -42,17 +37,19 @@ namespace U2 {
             QVector<U2Region> regionsDirect;
             QVector<U2Region> regionsComplementary;
             QSharedPointer<U2SequenceObject> seqObj;
+            DNATranslation* aminoTT;
         };
 
         class TranslateSequence2AminoTask : public Task{
             Q_OBJECT    
         public:
-            TranslateSequence2AminoTask(const AminoTranslationSettings& _configs):Task("Translate sequence to amino", TaskFlag_None),configs(_configs){}
+            TranslateSequence2AminoTask(const AminoTranslationSettings& _configs):
+                    Task("Translate sequence to amino", TaskFlag_None),configs(_configs){}
             virtual void run();
             QList<U2SequenceObject*> popResults(){return results;}
         private:
             QList<U2SequenceObject*> results; 
-            AminoTranslationSettings configs;
+            AminoTranslationSettings configs;           
         };  
 
         class AminoTranslationPrompter;

@@ -50,7 +50,7 @@ void TranslateMSA2AminoTask::run() {
 
     CHECK_EXT(translations.isEmpty(), setError(tr("Unable to find suitable translation for %1").arg(maObj->getGObjectName())), );
 
-    DNATranslation* transl = translations.first();
+    DNATranslation* transl = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(maObj->getAlphabet());
 
     QList<DNASequence> lst = MSAUtils::ma2seq(maObj->getMAlignment(), true);
     resultMA = MAlignment(maObj->getMAlignment().getName(),transl->getDstAlphabet()) ;

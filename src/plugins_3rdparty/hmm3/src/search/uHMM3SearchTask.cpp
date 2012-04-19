@@ -357,14 +357,14 @@ bool UHMM3SWSearchTask::setTranslations( int hmmAl, DNAAlphabet* seqAl ) {
     if( seqAl->isNucleic() ) {
         DNATranslationRegistry* transReg = AppContext::getDNATranslationRegistry();
         assert( NULL != transReg );
-        QList< DNATranslation* > complTs = transReg->lookupTranslation( seqAl, DNATranslationType_NUCL_2_COMPLNUCL );
-        if (!complTs.empty()) {
-            complTranslation = complTs.first();
+        DNATranslation* complTT = transReg->lookupComplementTranslation( seqAl);
+        if (complTT != NULL) {
+            complTranslation = complTT;
         }
         if( hmmAl == eslAMINO ) {
             QList< DNATranslation* > aminoTs = transReg->lookupTranslation( seqAl, DNATranslationType_NUCL_2_AMINO );
             if( !aminoTs.empty() ) {
-                aminoTranslation = aminoTs.first();
+                aminoTranslation =  transReg->getStandardGeneticCodeTranslation(seqAl);
             }
         }
     } else {

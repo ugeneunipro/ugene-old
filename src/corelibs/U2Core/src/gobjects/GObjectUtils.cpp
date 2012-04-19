@@ -186,7 +186,7 @@ DNATranslation* GObjectUtils::findAminoTT(U2SequenceObject* so, bool fromHintsOn
     }
     QList<DNATranslation*> aminoTs = tr->lookupTranslation(so->getAlphabet(), DNATranslationType_NUCL_2_AMINO);
     if (!aminoTs.empty()) {
-        res = aminoTs.first();
+        res = tr->getStandardGeneticCodeTranslation(so->getAlphabet());
     }
     return res;
 }

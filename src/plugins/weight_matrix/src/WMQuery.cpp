@@ -140,9 +140,9 @@ Task* QDWMActor::getAlgorithmTask(const QVector<U2Region>& location) {
     if (dnaSeq.alphabet->getType() == DNAAlphabet_NUCL) {        
         config.complOnly = strand == QDStrand_ComplementOnly;
         if (strand == QDStrand_Both || strand == QDStrand_ComplementOnly) {
-            QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(dnaSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-            if (!compTTs.isEmpty()) {
-                config.complTT = compTTs.first();
+            DNATranslation* compTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(dnaSeq.alphabet);
+            if (compTT  != NULL) {
+                config.complTT = compTT;
             }
         }
         t = new WMQDTask(modelUrl, config, dnaSeq, "", location);

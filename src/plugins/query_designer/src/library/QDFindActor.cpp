@@ -81,9 +81,9 @@ Task* QDFindActor::getAlgorithmTask(const QVector<U2Region>& location) {
     }
 
     if (settings.strand != FindAlgorithmStrand_Direct) {
-        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(scheme->getSequence().alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-        if (!compTTs.isEmpty()) {
-            settings.complementTT = compTTs.first();
+        DNATranslation* compTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(scheme->getSequence().alphabet);
+        if (compTT  != NULL) {
+            settings.complementTT = compTT ;
         } else {
             QString err = tr("%1: can not find complement translation.").arg(getParameters()->getLabel());
             return new FailTask(err);

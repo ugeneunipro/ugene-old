@@ -154,9 +154,9 @@ Task* QDFindPolyActor::getAlgorithmTask( const QVector<U2Region>& location ) {
 
     settings.strand = getStrandToRun();
     if (settings.strand != QDStrand_DirectOnly) {
-        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->lookupTranslation(scheme->getSequence().alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-        if (!compTTs.isEmpty()) {
-            settings.complTT = compTTs.first();
+        DNATranslation* complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(scheme->getSequence().alphabet);
+        if (complTT != NULL) {
+            settings.complTT = complTT;
         } else {
             QString err = tr("Could not find complement translation");
             return new FailTask(err);

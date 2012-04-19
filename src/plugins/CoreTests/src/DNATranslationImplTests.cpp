@@ -101,7 +101,7 @@ Task::ReportResult GTest_DNATranslation3to1Test::report() {
 
     QList<DNATranslation*> aminoTs = tr->lookupTranslation(mySequence->getAlphabet(), DNATranslationType_NUCL_2_AMINO);
     if (!aminoTs.empty()) {
-        aminoTransl = aminoTs.first();
+        aminoTransl = tr->getStandardGeneticCodeTranslation(mySequence->getAlphabet());
     }
     int tempValue;
     if(strTo == -1){

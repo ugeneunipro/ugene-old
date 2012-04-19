@@ -282,14 +282,14 @@ void UHMM3SWPhmmerTask::setTranslations() {
     if(dbSeq.alphabet->isNucleic()) {
         DNATranslationRegistry* transReg = AppContext::getDNATranslationRegistry();
         assert( NULL != transReg );
-        QList< DNATranslation* > complTs = transReg->lookupTranslation( dbSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL );
-        if (!complTs.empty()) {
-            complTranslation = complTs.first();
+        DNATranslation*  complTT = transReg->lookupComplementTranslation( dbSeq.alphabet);
+        if (complTT != NULL) {
+            complTranslation = complTT;
         }
         if( querySeq.alphabet->isAmino() ) {
             QList< DNATranslation* > aminoTs = transReg->lookupTranslation( dbSeq.alphabet, DNATranslationType_NUCL_2_AMINO );
             if( !aminoTs.empty() ) {
-            aminoTranslation = aminoTs.first();
+                aminoTranslation = transReg->getStandardGeneticCodeTranslation(dbSeq.alphabet);
             }
         }
     } else {

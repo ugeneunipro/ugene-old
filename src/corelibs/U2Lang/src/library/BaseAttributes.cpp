@@ -100,41 +100,7 @@ const QVariantMap BaseAttributes::STRAND_ATTRIBUTE_VALUES_MAP() {
     return strandMap;
 }
 
-const Descriptor BaseAttributes::AMINO_TRANSLATION_OFFSET_ATTRIBUTE(){
-    return Descriptor(AMINO_TRANSLATION_OFFSET_ATTR_ID, tr("Translate from "), tr("Where would sequence translated from : 0, 1, 2 or from all offsets"));
-}
 
-const QString BaseAttributes::AMINO_TRANSLATION_OFFSET_ZERO() {
-    return "0";
-}
-
-const QString BaseAttributes::AMINO_TRANSLATION_OFFSET_ONE() {
-    return "1";
-}
-
-const QString BaseAttributes::AMINO_TRANSLATION_OFFSET_TWO() {
-    return "2";
-}
-
-const QString BaseAttributes::AMINO_TRANSLATION_OFFSET_ALL() {
-    return "0, 1, 2";
-}
-
-const QVariantMap BaseAttributes::AMINO_TRANSLATION_OFFSET_ATTRIBUTE_VALUES_MAP(){
-    QVariantMap offsetMap;
-
-    const QString offsetZero = tr("0");
-    const QString offsetOne = tr("1");
-    const QString offsetTwo = tr("2");
-    const QString offsetAll = tr("0, 1, 2");
-
-    offsetMap[offsetZero] = AMINO_TRANSLATION_OFFSET_ZERO();
-    offsetMap[offsetOne] = AMINO_TRANSLATION_OFFSET_ONE();
-    offsetMap[offsetTwo] = AMINO_TRANSLATION_OFFSET_TWO();
-    offsetMap[offsetAll ] = AMINO_TRANSLATION_OFFSET_ALL();
-
-    return offsetMap;
-}
 
 } // Workflow
 } // U2

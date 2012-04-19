@@ -22,6 +22,8 @@
 #include "DNATranslation.h"
 #include "DNAAlphabet.h"
 
+#include <U2Core/U2SafePoints.h>
+
 namespace U2 {
 
 DNATranslation::DNATranslation(const QString& _id, const QString& _name, DNAAlphabet* src, DNAAlphabet* dst) {
@@ -109,12 +111,28 @@ QList<DNATranslation*> DNATranslationRegistry::lookupTranslation(DNAAlphabet* sr
     return res;
 }
 
+DNATranslation* DNATranslationRegistry::getStandardGeneticCodeTranslation(DNAAlphabet* srcAlphabet){
+    if (srcAlphabet->isNucleic()) {        
+        return lookupTranslation(srcAlphabet, DNATranslationID(1));
+    }
+    FAIL("Standart genetic code is used only with source nucleic alphabet", NULL);
+}
+
 DNATranslation* DNATranslationRegistry::lookupTranslation(DNAAlphabet* srcAlphabet, 
                                                           DNATranslationType type,
                                                           const QString& id) 
 {
     foreach(DNATranslation* t, translations) {
         if (t->getTranslationId() == id && t->getSrcAlphabet() == srcAlphabet && t->getDNATranslationType() == type) {
+            return t;
+        }
+    }
+    return NULL;
+}
+
+DNATranslation* DNATranslationRegistry::lookupTranslation(DNAAlphabet* srcAlphabet, const QString& id){
+    foreach(DNATranslation* t, translations) {
+        if (t->getTranslationId() == id && srcAlphabet == t->getSrcAlphabet()) {
             return t;
         }
     }
@@ -132,12 +150,17 @@ DNATranslation* DNATranslationRegistry::lookupTranslation(const QString& id) {
 
 DNATranslation* DNATranslationRegistry::lookupComplementTranslation(DNAAlphabet* srcAlphabet) {
     assert(srcAlphabet->isNucleic());
-    QList<DNATranslation*> complTs = lookupTranslation(srcAlphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-    if (complTs.isEmpty()) {
-        return NULL;
+    if (srcAlphabet->getId() == BaseDNAAlphabetIds ::NUCL_DNA_DEFAULT()) {
+        return lookupTranslation(BaseDNATranslationIds::NUCL_DNA_DEFAULT_COMPLEMENT);    
+    } else if (srcAlphabet->getId() == BaseDNAAlphabetIds ::NUCL_DNA_EXTENDED()) {
+        return lookupTranslation(BaseDNATranslationIds::NUCL_DNA_EXTENDED_COMPLEMENT);
+    } else if (srcAlphabet->getId() == BaseDNAAlphabetIds ::NUCL_RNA_DEFAULT()) {
+        return lookupTranslation(BaseDNATranslationIds::NUCL_RNA_DEFAULT_COMPLEMENT);    
+    } else if (srcAlphabet->getId() == BaseDNAAlphabetIds ::NUCL_RNA_EXTENDED()) {
+        return lookupTranslation(BaseDNATranslationIds::NUCL_RNA_EXTENDED_COMPLEMENT);
+    } else {
+        FAIL("Complement translation not supported for alphabet", NULL);
     }
-    return complTs.first();
-
 }
 
 }//namespace

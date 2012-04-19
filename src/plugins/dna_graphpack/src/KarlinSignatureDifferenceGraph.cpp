@@ -102,10 +102,10 @@ void KarlinGraphAlgorithm::calculate(QVector<float>& res, U2SequenceObject* o, c
     assert(al->isNucleic());
     
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
-    QList<DNATranslation*> complTs = tr->lookupTranslation(al, DNATranslationType_NUCL_2_COMPLNUCL);
-    assert(!complTs.empty());
+    DNATranslation* complT = tr->lookupComplementTranslation(al);
+    assert(complT != NULL);
 
-    DNATranslation* complTrans = complTs.first();
+    DNATranslation* complTrans = complT;
     mapTrans = complTrans->getOne2OneMapper();
     
     QByteArray seq = o->getWholeSequenceData();

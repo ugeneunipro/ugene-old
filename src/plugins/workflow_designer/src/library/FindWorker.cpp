@@ -289,10 +289,10 @@ Task* FindWorker::tick() {
         // translations
         cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
         if(cfg.strand != FindAlgorithmStrand_Direct /*&& seq.alphabet->getType() == DNAAlphabet_NUCL*/) {
-            QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-                lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-            if (!compTTs.isEmpty()) {
-                cfg.complementTT = compTTs.first();
+            DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
+                lookupComplementTranslation(seq.alphabet);
+            if (compTT != NULL) {
+                cfg.complementTT = compTT ;
             } else {
                 cfg.strand = FindAlgorithmStrand_Direct;
             }
@@ -300,8 +300,8 @@ Task* FindWorker::tick() {
         if(actor->getParameter(AMINO_ATTR)->getAttributeValue<bool>(context)) {
             DNATranslationType tt = seq.alphabet->getType() == DNAAlphabet_NUCL ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
             QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(seq.alphabet, tt);
-            if (!TTs.isEmpty()) {
-                cfg.proteinTT = TTs.first(); //FIXME let user choose or use hints ?
+            if (!TTs.isEmpty()) { //FIXME let user choose or use hints ?
+                    cfg.proteinTT  = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(seq.alphabet);
             }
         }
         

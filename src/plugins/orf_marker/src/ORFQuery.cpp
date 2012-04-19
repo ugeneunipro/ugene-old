@@ -126,10 +126,10 @@ Task* QDORFActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     settings.searchRegion = U2Region(0, dnaSeq.length());
 
     if (settings.strand != ORFAlgorithmStrand_Direct) {
-        QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-            lookupTranslation(dnaSeq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-        if (!compTTs.isEmpty()) {
-            settings.complementTT = compTTs.first();
+        DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
+            lookupComplementTranslation(dnaSeq.alphabet);
+        if (compTT != NULL) {
+            settings.complementTT = compTT;
         } else {
             settings.strand = ORFAlgorithmStrand_Direct;
         }

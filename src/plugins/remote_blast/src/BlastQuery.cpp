@@ -84,7 +84,7 @@ Task* QDCDDActor::getAlgorithmTask(const QVector<U2Region>& location) {
         }
         QList<DNATranslation*> TTs = AppContext::getDNATranslationRegistry()->lookupTranslation(alph, tt);
         if (!TTs.isEmpty()) {
-            settings.aminoT = TTs.first();
+             settings.aminoT = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(alph);
         } else {
             return new FailTask(tr("Bad sequence."));
         }

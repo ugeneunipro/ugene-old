@@ -51,9 +51,9 @@ Translator::Translator(const U2SequenceObject *s, const QString& tid) : seq(s), 
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
     aminoTransl = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, ("NCBI-GenBank #" + tid));
     assert(aminoTransl);
-    QList<DNATranslation*> complTs = tr->lookupTranslation(al, DNATranslationType_NUCL_2_COMPLNUCL);
-    if (!complTs.empty()) {
-        complTransl = complTs.first();
+    DNATranslation* complT = tr->lookupComplementTranslation(al);
+    if (complT != NULL) {
+        complTransl = complT ;
     }
 }
 

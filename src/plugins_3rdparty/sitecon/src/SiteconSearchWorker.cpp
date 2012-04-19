@@ -239,10 +239,10 @@ Task* SiteconSearchWorker::tick() {
             SiteconSearchCfg config(cfg);
             config.complOnly = (strand < 0);
             if (strand <= 0) {
-                QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-                    lookupTranslation(seq.alphabet, DNATranslationType_NUCL_2_COMPLNUCL);
-                if (!compTTs.isEmpty()) {
-                    config.complTT = compTTs.first();
+                DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
+                    lookupComplementTranslation(seq.alphabet);
+                if (compTT != NULL) {
+                    config.complTT = compTT;
                 }
             }
             QList<Task*> subtasks;

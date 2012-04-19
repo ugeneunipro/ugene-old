@@ -223,8 +223,9 @@ QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine
     if( aminoTTs.isEmpty() ) {
         return ctx->throwError(QObject::tr("Translation table is empty"));
     }
-
-    DNATranslation *aminoT = aminoTTs.first();
+    DNATranslation *aminoT;
+    aminoT = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(seq.alphabet);
+   
     aminoT->translate(seq.seq.data() + offset, seq.length() - offset, seq.seq.data(), seq.length());
     seq.seq.resize(seq.length()/3);
 

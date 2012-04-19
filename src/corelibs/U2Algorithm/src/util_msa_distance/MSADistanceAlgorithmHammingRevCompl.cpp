@@ -52,12 +52,12 @@ MSADistanceAlgorithm* MSADistanceAlgorithmFactoryHammingRevCompl::createAlgorith
 // Algorithm
 
 void MSADistanceAlgorithmHammingRevCompl::run() {
-    QList<DNATranslation*> compTTs = AppContext::getDNATranslationRegistry()->
-        lookupTranslation(ma.getAlphabet(), DNATranslationType_NUCL_2_COMPLNUCL);
+    DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
+        lookupComplementTranslation(ma.getAlphabet());
 
-    assert (!compTTs.isEmpty());
+    assert (compTT != NULL);
 
-    DNATranslation* trans = compTTs.first();
+    DNATranslation* trans = compTT ;
     int nSeq = ma.getNumRows();
     MAlignment revtransl;
     revtransl.setAlphabet(ma.getAlphabet());

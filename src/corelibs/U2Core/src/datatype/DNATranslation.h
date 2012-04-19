@@ -105,6 +105,8 @@ public:
     DNATranslationRegistry(QObject* p=0) :QObject(p){}
     ~DNATranslationRegistry();
 
+    DNATranslation* getStandardGeneticCodeTranslation(DNAAlphabet* srcAlphabet);
+
     QStringList getDNATranlations() const;
 
     QStringList getDNATranslationIds() const;
@@ -116,6 +118,8 @@ public:
     DNATranslation* lookupTranslation(DNAAlphabet* srcAlphabet, DNATranslationType type, const QString& id);
 
     DNATranslation* lookupTranslation(const QString& id);
+
+    DNATranslation* lookupTranslation(DNAAlphabet* srcAlphabet, const QString& id);
 
     DNATranslation* lookupComplementTranslation(DNAAlphabet* srcAlphabet);
 
