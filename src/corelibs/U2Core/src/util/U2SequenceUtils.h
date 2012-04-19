@@ -30,6 +30,7 @@ namespace U2 {
 
 class Annotation;
 class DNASequence;
+class DNAQuality;
 class DNATranslation;
 
 /**                                           
@@ -55,7 +56,8 @@ public:
     static U2Sequence copySequence(const U2EntityRef& srcSeq, const U2DbiRef& dstDbi, U2OpStatus& os);
 
     static U2EntityRef import(const U2DbiRef& dbiRef, const DNASequence& seq, U2OpStatus& os);
-    
+
+    static void setQuality(const U2EntityRef& entityRef, const DNAQuality& quality);
 };
 
 /** Class used to efficiently import sequence into DBI */

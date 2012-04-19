@@ -33,7 +33,7 @@
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-
+#include <U2Core/U2AttributeDbi.h>
 
 #include "U2SequenceUtils.h"
 
@@ -158,7 +158,6 @@ QList<QByteArray> U2SequenceUtils::extractRegions(const U2EntityRef& seqRef, con
 
 
 U2EntityRef U2SequenceUtils::import(const U2DbiRef& dbiRef, const DNASequence& seq, U2OpStatus& os) {
-//TODO: import quality scores too!
 
     U2EntityRef res;
     U2SequenceImporter i;
@@ -174,9 +173,36 @@ U2EntityRef U2SequenceUtils::import(const U2DbiRef& dbiRef, const DNASequence& s
     
     res.dbiRef = dbiRef;
     res.entityId = u2seq.id;
+
+    setQuality(res, seq.quality);
+
     return res;
 }
 
+void U2SequenceUtils::setQuality(const U2EntityRef& entityRef, const DNAQuality& q) {
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+    QList<U2DataId> idQualList=con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::FASTQ_QUAL_CODES,os);
+    CHECK_OP(os, );
+    if(!idQualList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(idQualList.first(),os);
+        CHECK_OP(os, );
+    }
+    QList<U2DataId> idQualTypeList=con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::FASTQ_QUAL_TYPE,os);
+    CHECK_OP(os, );
+    if(!idQualTypeList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(idQualTypeList.first(),os);
+        CHECK_OP(os, );
+    }
+
+    U2ByteArrayAttribute qualityCodes(entityRef.entityId, DNAInfo::FASTQ_QUAL_CODES,q.qualCodes);
+    U2IntegerAttribute   qualityType(entityRef.entityId, DNAInfo::FASTQ_QUAL_TYPE,q.type);
+    con.dbi->getAttributeDbi()->createByteArrayAttribute(qualityCodes,os);
+    CHECK_OP(os, );
+    con.dbi->getAttributeDbi()->createIntegerAttribute(qualityType,os);
+    CHECK_OP(os, );
+}
 
 //////////////////////////////////////////////////////////////////////////
 // U2SequenceImporter
