@@ -903,16 +903,16 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
 
         OptionsPanel * optionsPanel = browser->getOptionsPanel();
 
-        AssemblyInfoWidget * infoWidget = new AssemblyInfoWidget(browser, this);
-        optionsPanel->addGroup(QPixmap(":core/images/chart_bar.png"), tr("Assembly Statistics"), infoWidget);
-
         AssemblyNavigationWidget * navWidget = new AssemblyNavigationWidget(browser, this);
         optionsPanel->addGroup(QPixmap(":core/images/goto.png"), tr("Navigation"), navWidget);
 
         AssemblySettingsWidget * settingsWidget = new AssemblySettingsWidget(this);
         optionsPanel->addGroup(QPixmap(":core/images/settings.png"), tr("Assembly Browser Settings"), settingsWidget);
 
-        setLayout(mainLayout);  
+        AssemblyInfoWidget * infoWidget = new AssemblyInfoWidget(browser, this);
+        optionsPanel->addGroup(QPixmap(":core/images/chart_bar.png"), tr("Assembly Statistics"), infoWidget);
+
+        setLayout(mainLayout);
 
         connect(readsArea, SIGNAL(si_heightChanged()), zoomableOverview, SLOT(sl_visibleAreaChanged()));
         connect(readsArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
