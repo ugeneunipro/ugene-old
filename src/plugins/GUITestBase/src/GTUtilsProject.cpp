@@ -187,10 +187,10 @@ void GTUtilsProject::createDocument(U2OpStatus &os, const QString &pasteDataHere
 									GTGlobals::UseMethod method)
 {
 	GTUtilsDialog::CreateDocumentFiller filler(os, pasteDataHere, documentLocation, format, sequenceName);
-	GTUtilsDialog::preWaitForDialog(os, &filler);
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText");
+    GTUtilsDialog::preWaitForDialog(os, &filler);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
     
-	GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000);
     QPoint pos;
 }
 
