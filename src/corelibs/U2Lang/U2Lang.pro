@@ -19,6 +19,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/ConfigurationValidator.h \
            src/model/Datatype.h \
            src/model/DatatypeConversion.h \
+           src/model/DbiDataHandler.h \
            src/model/DbiDataStorage.h \
            src/model/Descriptor.h \
            src/model/ExternalToolCfg.h \
@@ -69,6 +70,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/AttributeRelation.cpp \
            src/model/Configuration.cpp \
            src/model/Datatype.cpp \
+           src/model/DbiDataHandler.cpp \
            src/model/DbiDataStorage.cpp \
            src/model/Descriptor.cpp \
            src/model/ExternalToolCfg.cpp \

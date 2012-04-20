@@ -196,9 +196,9 @@ void ScriptWorker::sl_taskFinished() {
     if (output) {
         if (t->isList) {
             QString varName = "out_" + BaseSlots::DNA_SEQUENCE_SLOT().getId();
-            QList<U2DataId> seqs = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<QList<U2DataId> >();
-            foreach(U2DataId seqId, seqs) {
-                map[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = QVariant::fromValue<U2DataId>(seqId);
+            QList<SharedDbiDataHandler> seqs = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<QList<SharedDbiDataHandler> >();
+            foreach(SharedDbiDataHandler seqId, seqs) {
+                map[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = QVariant::fromValue<SharedDbiDataHandler>(seqId);
                 output->put(Message(ptr,map));
             }
         } else {

@@ -26,6 +26,8 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2DbiUtils.h>
 
+#include <U2Lang/DbiDataHandler.h>
+
 #include <memory>
 
 namespace U2 {
@@ -40,9 +42,11 @@ public:
     bool init();
     U2DbiRef getDbiRef();
 
-    virtual U2Object *getObject(const U2DataId &objectId, const U2DataType &type);
-    virtual U2DataId putSequence(const DNASequence &sequence);
+    virtual U2Object *getObject(const SharedDbiDataHandler &handler, const U2DataType &type);
+    virtual SharedDbiDataHandler putSequence(const DNASequence &sequence);
     virtual bool deleteObject(const U2DataId &objectId, const U2DataType &type);
+
+    virtual SharedDbiDataHandler getDataHandler(const U2DataId &id);
 
 private:
     TmpDbiHandle *dbiHandle;
@@ -51,7 +55,7 @@ private:
 
 class U2LANG_EXPORT StorageUtils {
 public:
-    static U2SequenceObject *getSequenceObject(DbiDataStorage *storage, const U2DataId &objectId);
+    static U2SequenceObject *getSequenceObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
 };
     
 } // Workflow

@@ -117,8 +117,8 @@ Task * Text2SequenceWorker::tick() {
         DNASequence result(seqName, normSequence, alphabet);
         QVariantMap msgData;
         {
-            U2DataId seqId = context->getDataStorage()->putSequence(result);
-            msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
+            SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(result);
+            msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
         }
         if(outSeqPort) {
             outSeqPort->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));

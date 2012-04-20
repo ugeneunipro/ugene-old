@@ -41,9 +41,9 @@ public:
 class LoadSeqTask : public Task {
     Q_OBJECT
 public:
-    LoadSeqTask(QString url, const QVariantMap& cfg, DNASelector* sel, const U2DbiRef &dbiRef)
+    LoadSeqTask(QString url, const QVariantMap& cfg, DNASelector* sel, DbiDataStorage *storage)
         : Task(tr("Read sequences from %1").arg(url), TaskFlag_None),
-        url(url), selector(sel), cfg(cfg), dbiRef(dbiRef) {}
+        url(url), selector(sel), cfg(cfg), storage(storage) {}
     virtual void prepare();
     virtual void run();
 
@@ -51,7 +51,7 @@ public:
     DNASelector *selector;
     QVariantMap cfg;
     QList<QVariantMap> results;
-    U2DbiRef dbiRef;
+    DbiDataStorage *storage;
 };
 
 class LoadMSATask : public Task {
@@ -98,7 +98,7 @@ protected slots:
 
 protected:
     virtual Task* createReadTask(const QString& url) {
-        return new LoadSeqTask(url, cfg, &selector, context->getDataStorage()->getDbiRef());
+        return new LoadSeqTask(url, cfg, &selector, context->getDataStorage());
     }
     QVariantMap cfg;
     DNASelector selector;

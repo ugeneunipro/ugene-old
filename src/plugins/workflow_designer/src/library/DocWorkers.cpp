@@ -213,7 +213,7 @@ void FastaWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNu
 }
 
 void FastaWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
-    U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
     if (NULL == seqObj.get()) {
         return;
@@ -237,7 +237,7 @@ inline static U2SequenceObject *getCopiedSequenceObject(const QVariantMap &data,
     U2SequenceObject *dna = NULL;
 
     if ( data.contains(BaseSlots::DNA_SEQUENCE_SLOT().getId()) ) {
-        U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         if (NULL == seqObj.get()) {
             os.setError("Can't get sequence object");
@@ -289,7 +289,7 @@ void FastQWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNu
 }
 
 void FastQWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
-    U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
     if (NULL == seqObj.get()) {
         return;
@@ -329,7 +329,7 @@ void RawSeqWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryN
 
 // same as FastQWriter::data2document
 void RawSeqWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
-    U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
     if (NULL == seqObj.get()) {
         return;
@@ -376,7 +376,7 @@ void GenbankWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entry
 }
 
 void GenbankWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
-    U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
     if (NULL == seqObj.get()) {
         return;
@@ -472,7 +472,7 @@ void GFFWriter::data2doc(Document* doc, const QVariantMap& data) {
 }
 
 void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
-    U2DataId seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
     if (seqObj.get() == NULL) {
         return;

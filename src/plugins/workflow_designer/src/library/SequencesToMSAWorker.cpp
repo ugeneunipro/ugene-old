@@ -57,7 +57,7 @@ void SequencesToMSAWorker::cleanup() {}
 Task* SequencesToMSAWorker::tick() {
     Message inputMessage = getMessageAndSetupScriptValues(inPort);
     QVariantMap qm = inputMessage.getData().toMap();
-    U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+    SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
     if (NULL == seqObj.get()) {
         return NULL;

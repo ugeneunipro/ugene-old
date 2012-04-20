@@ -94,7 +94,7 @@ Task * WriteAnnotationsWorker::tick() {
         if (filepath.isEmpty()) {
             return new FailTask(tr("Unspecified URL to write %1").arg(formatId));
         }
-        U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         
         if (NULL != seqObj.get()) {

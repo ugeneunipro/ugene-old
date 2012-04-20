@@ -59,9 +59,10 @@ U2DbiRef DbiDataStorage::getDbiRef() {
     return dbiHandle->getDbiRef();
 }
 
-U2Object *DbiDataStorage::getObject(const U2DataId &objectId, const U2DataType &type) {
+U2Object *DbiDataStorage::getObject(const SharedDbiDataHandler &handler, const U2DataType &type) {
     assert(NULL != dbiHandle);
     U2OpStatusImpl os;
+    const U2DataId &objectId = handler->id;
 
     //if (U2Type::Sequence == type) {
     if (1 == type) {
@@ -76,14 +77,16 @@ U2Object *DbiDataStorage::getObject(const U2DataId &objectId, const U2DataType &
     return NULL;
 }
 
-U2DataId DbiDataStorage::putSequence(const DNASequence &dnaSeq) {
+SharedDbiDataHandler DbiDataStorage::putSequence(const DNASequence &dnaSeq) {
     assert(NULL != dbiHandle);
     
     U2OpStatusImpl os;
     U2EntityRef ent = U2SequenceUtils::import(dbiHandle->getDbiRef(), dnaSeq, os);
-    CHECK_OP(os, U2DataId());
+    CHECK_OP(os, SharedDbiDataHandler());
+
+    SharedDbiDataHandler handler(new DbiDataHandler(ent.entityId, connection->dbi->getObjectDbi()));
     
-    return ent.entityId;
+    return handler;
 }
 
 bool DbiDataStorage::deleteObject(const U2DataId &, const U2DataType &) {
@@ -91,9 +94,15 @@ bool DbiDataStorage::deleteObject(const U2DataId &, const U2DataType &) {
     return true;
 }
 
-U2SequenceObject *StorageUtils::getSequenceObject(DbiDataStorage *storage, const U2DataId &objectId) {
-    //std::auto_ptr<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(objectId, U2Type::Sequence)));
-    std::auto_ptr<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(objectId, 1)));
+SharedDbiDataHandler DbiDataStorage::getDataHandler(const U2DataId &id) {
+    DbiDataHandler *handler = new DbiDataHandler(id, connection->dbi->getObjectDbi());
+
+    return SharedDbiDataHandler(handler);
+}
+
+U2SequenceObject *StorageUtils::getSequenceObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
+    //std::auto_ptr<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, U2Type::Sequence)));
+    std::auto_ptr<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, 1)));
     if (NULL == seqDbi.get()) {
         return NULL;
     }

@@ -116,7 +116,7 @@ Task* ExternalProcessWorker::tick() {
             d->setDocumentOwnsDbiResources(false);
 
             if (dataCfg.type == BaseTypes::DNA_SEQUENCE_TYPE()->getId()) {
-                U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+                SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
                 U2SequenceObject *seqObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
                 if (NULL == seqObj) {
                     return NULL;
@@ -134,7 +134,7 @@ Task* ExternalProcessWorker::tick() {
                 MAlignment ma = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
                 d->addObject(new MAlignmentObject(ma));
             } else if (dataCfg.type == SEQ_WITH_ANNS) {
-                U2DataId seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+                SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
                 U2SequenceObject *dnaObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
                 if (NULL == dnaObj) {
                     return NULL;
@@ -275,8 +275,8 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                         U2SequenceObject *seqObj = static_cast<U2SequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
                         DNASequence seq = seqObj->getWholeSequence();
                         seq.alphabet = U2AlphabetUtils::getById(BaseDNAAlphabetIds::RAW());
-                        U2DataId seqId = context->getDataStorage()->putSequence(seq);
-                        v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
+                        SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seq);
+                        v[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
                     }
                     if(!d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).isEmpty()) {
                         AnnotationTableObject *obj = static_cast<AnnotationTableObject *>(d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).first());

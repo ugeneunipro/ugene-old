@@ -199,7 +199,7 @@ Task* QDWorker::tick() {
             return NULL;
         }
         QVariantMap map = inputMessage.getData().toMap();
-        U2DataId seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        SharedDbiDataHandler seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         if (NULL == seqObj.get()) {
             return NULL;

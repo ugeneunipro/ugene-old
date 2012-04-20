@@ -298,8 +298,8 @@ void GenerateDNAWorker::sl_taskFinished(Task* t) {
     DNASequenceGeneratorTask* task = qobject_cast<DNASequenceGeneratorTask*>(t);
     if (ch) {
         foreach(DNASequence seq, task->getSequences()) {
-            U2DataId dataId = context->getDataStorage()->putSequence(seq);
-            ch->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), dataId));
+            SharedDbiDataHandler handler = context->getDataStorage()->putSequence(seq);
+            ch->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), qVariantFromValue<SharedDbiDataHandler>(handler)));
         }
         ch->setEnded();
     }

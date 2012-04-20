@@ -631,7 +631,7 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, Workf
     if (STRING_TYPE == data.type()) {
         text += data.toString();
     } else if (SEQUENCE_TYPE == data.type()) {
-        U2SequenceObject *obj = StorageUtils::getSequenceObject(context->getDataStorage(), data.value<U2DataId>());
+        U2SequenceObject *obj = StorageUtils::getSequenceObject(context->getDataStorage(), data.value<SharedDbiDataHandler>());
         data2text(context, BaseDocumentFormats::FASTA, obj, text);
     } else {
         bool annType = false;

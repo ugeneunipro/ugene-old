@@ -79,11 +79,11 @@ ActionPerformer *GrouperActionUtils::getActionPerformer(const GrouperOutSlot &sl
 
 bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1, const QVariant &data2, DataTypePtr dataType, WorkflowContext *context) {
     if (BaseTypes::DNA_SEQUENCE_TYPE() == dataType) {
-        U2DataId seqId1 = data1.value<U2DataId>();
-        U2DataId seqId2 = data2.value<U2DataId>();
+        SharedDbiDataHandler seqId1 = data1.value<SharedDbiDataHandler>();
+        SharedDbiDataHandler seqId2 = data2.value<SharedDbiDataHandler>();
 
         if (GroupOperations::BY_ID() == groupOp) {
-            return seqId1 == seqId2;
+            return (*seqId1.data()) == (*seqId2.data());
         }
         
         U2OpStatusImpl os;
@@ -200,7 +200,7 @@ MergeSequencePerformer::MergeSequencePerformer(const QString &outSlot, const Gro
 
 bool MergeSequencePerformer::applyAction(const QVariant &newData) {
     U2OpStatusImpl os;
-    U2DataId seqId = newData.value<U2DataId>();
+    SharedDbiDataHandler seqId = newData.value<SharedDbiDataHandler>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
 
     if (!started) {
@@ -229,7 +229,8 @@ bool MergeSequencePerformer::applyAction(const QVariant &newData) {
 
 QVariant MergeSequencePerformer::finishAction(U2OpStatus &os) {
     U2Sequence seq = importer.finalizeSequence(os);
-    return qVariantFromValue<U2DataId>(seq.id);
+    SharedDbiDataHandler handler = context->getDataStorage()->getDataHandler(seq.id);
+    return qVariantFromValue<SharedDbiDataHandler>(handler);
 }
 
 QVariantMap MergeSequencePerformer::getParameters() const {
@@ -247,7 +248,7 @@ Sequence2MSAPerformer::Sequence2MSAPerformer(const QString &outSlot, const Group
 }
 
 bool Sequence2MSAPerformer::applyAction(const QVariant &newData) {
-    U2DataId seqId = newData.value<U2DataId>();
+    SharedDbiDataHandler seqId = newData.value<SharedDbiDataHandler>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
     if (NULL == seqObj.get()) {
         return false;

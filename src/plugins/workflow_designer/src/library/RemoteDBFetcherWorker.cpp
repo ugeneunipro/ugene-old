@@ -186,8 +186,8 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
         }
 
         QVariantMap messageData;
-        U2DataId seqId = context->getDataStorage()->putSequence(dnao->getWholeSequence());
-        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = seqId;
+        SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(dnao->getWholeSequence());
+        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
         messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue(sads);
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById(TYPE);
@@ -407,8 +407,8 @@ void FetchSequenceByIdFromAnnotationWorker::sl_taskFinished() {
         }
 
         QVariantMap messageData;
-        U2DataId seqId = context->getDataStorage()->putSequence(dnao->getWholeSequence());
-        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = seqId;
+        SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(dnao->getWholeSequence());
+        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
         messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue(sads);
 
         DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById(TYPE);

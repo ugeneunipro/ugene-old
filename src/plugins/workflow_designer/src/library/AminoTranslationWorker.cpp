@@ -287,7 +287,7 @@ Task* AminoTranslationWorker::tick(){
             output->put(Message::getEmptyMapMessage());
         }
 
-        U2DataId seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<U2DataId>();
+        SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         QSharedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
 
         if (NULL == seqObj.data()) {
@@ -356,8 +356,8 @@ void AminoTranslationWorker::sl_taskFinished(){
         QList<U2SequenceObject*> seqObjs = translate2AminoTask->popResults();
         foreach(U2SequenceObject* seqObj, seqObjs ){
             QVariantMap msgData;
-            U2DataId seqId = context->getDataStorage()->putSequence(seqObj->getWholeSequence());
-            msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = seqId;
+            SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seqObj->getWholeSequence());
+            msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
             output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));
             output->setContext(channelContext);
         }
