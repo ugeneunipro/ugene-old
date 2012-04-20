@@ -340,7 +340,7 @@ int
 esl_dst_CPairIdMx(char **as, int N, ESL_DMATRIX **ret_S)
 {
     ESL_DMATRIX *S = NULL;
-    int status;
+    int status = 0;
     int i,j;
 
     if (( S = esl_dmatrix_Create(N,N) ) == NULL) goto ERROR;
