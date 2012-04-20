@@ -237,7 +237,7 @@ static bool validateParameters(const Schema &schema, QList<QMap<int, QVariant> >
                 QString error;
                 QString id;
                 if (NULL == it) {
-                    error = QObject::tr("%1 : %2").arg(a->getLabel()).arg(s).arg(it->name);
+                    error = QObject::tr("%1 : %2").arg(a->getLabel()).arg(s);
                     id = a->getId();
                 } else {
                     error = QObject::tr("Iteration '%3', %1 : %2").arg(a->getLabel()).arg(s).arg(it->name);
