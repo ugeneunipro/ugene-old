@@ -83,7 +83,7 @@ bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1
         SharedDbiDataHandler seqId2 = data2.value<SharedDbiDataHandler>();
 
         if (GroupOperations::BY_ID() == groupOp) {
-            return (*seqId1.data()) == (*seqId2.data());
+            return seqId1 == seqId2;
         }
         
         U2OpStatusImpl os;

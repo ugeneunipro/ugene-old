@@ -130,6 +130,7 @@ Task *GroupWorker::tick() {
             outChannel->put(Message(mtype, data));
         }
         setDone();
+        cleanup();
         outChannel->setEnded();
     }
 
@@ -142,6 +143,8 @@ void GroupWorker::cleanup() {
             delete p;
         }
     }
+    groupedData.clear();
+    uniqueData.clear();
 }
 
 /************************************************************************/
