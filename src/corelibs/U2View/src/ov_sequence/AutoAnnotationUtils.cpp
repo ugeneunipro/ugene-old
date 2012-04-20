@@ -211,13 +211,11 @@ QAction* AutoAnnotationUtils::findAutoAnnotationsToggleAction( ADVSequenceObject
 
 }
 
-
-
 void AutoAnnotationUtils::triggerAutoAnnotationsUpdate( ADVSequenceObjectContext* ctx, const QString& aaGroupName )
 {
     AutoAnnotationsADVAction* aaAction = findAutoAnnotationADVAction( ctx );
     
-    if (!aaAction->isEnabled()) {
+    if (aaAction != NULL && !aaAction->isEnabled()) {
         return;
     }
 
