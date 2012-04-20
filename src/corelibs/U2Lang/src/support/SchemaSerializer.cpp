@@ -312,7 +312,12 @@ void SchemaSerializer::updatePortBindings(const QList<Actor*> & procs) {
                 if(vals.size() == 2) {
                     ActorId actorId = str2aid(vals.at(0));
                     QString slot = vals.at(1);
+
                     Port * inP = findPort(procs, actorId, slot); if(!inP) {continue;}
+                    if (inP == NULL) {
+                        return;
+                    }
+
                     DataTypePtr inPType = inP->Port::getType();
                     QMap<Descriptor, DataTypePtr> inPTypeMap = inPType->getDatatypesMap();
                     if(inP != NULL && inPType->isMap() && inPTypeMap.keys().size() == 1) {
