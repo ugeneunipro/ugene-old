@@ -285,6 +285,7 @@ void Tree::PruneTree(const Tree &tree, unsigned Subfams[],
 	Validate();
 
 	delete[] uUnprunedToPrunedIndex;
+    delete[] uPrunedToUnprunedIndex;
 	}
 
 void LeafIndexesToIds(const Tree &tree, const unsigned Leaves[], unsigned uCount,
