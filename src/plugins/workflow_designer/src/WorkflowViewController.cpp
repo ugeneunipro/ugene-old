@@ -1613,10 +1613,12 @@ void WorkflowScene::sl_deleteItem() {
 
                 QList<Port*> ports = proc->getProcess()->getPorts();
                 QList<PortAlias>::iterator i = portAliases.begin();
-                for (; i != portAliases.end(); i++) {
+                while (i != portAliases.end()) {
                     Port *p = const_cast<Port*>(i->getSourcePort());
                     if (ports.contains(p)) {
-                        portAliases.erase(i);
+                        i = portAliases.erase(i);
+                    } else {
+                        ++i;
                     }
                 }
         }
@@ -1798,7 +1800,7 @@ bool WorkflowScene::refreshGrouperSlots(Actor *proc) {
         GrouperSlotAttribute *attr = dynamic_cast<GrouperSlotAttribute*>(proc->getParameter(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR));
         QList<GrouperOutSlot> &outSlots = attr->getOutSlots();
         QList<GrouperOutSlot>::iterator i = outSlots.begin();
-        for (; i != outSlots.end(); i++) {
+        while (i != outSlots.end()) {
             QString in = i->getBusMapInSlotId();
             bool found = false;
             foreach (const Descriptor &d, inBusMap.keys()) {
@@ -1809,8 +1811,10 @@ bool WorkflowScene::refreshGrouperSlots(Actor *proc) {
             }
             if (!found) {
                 outBusMap.remove(i->getOutSlotId());
-                outSlots.erase(i);
+                i = outSlots.erase(i);
                 grouperSlotsDeleted = true;
+            } else {
+                ++i;
             }
         }
     }
