@@ -33,6 +33,7 @@
 #include <QtGui/QCloseEvent>
 #include <QtGui/QLabel>
 #include <QtCore/QQueue>
+#include <QtCore/QPair>
 
 
 namespace U2 {
@@ -311,10 +312,32 @@ private:
     QList<AVAnnotationItem *> itemsToDelete;
 };
 
+class FindQualifierTaskSettings{
+public:
+    FindQualifierTaskSettings(AVItem* _groupToSearchIn, const QString& _name, const QString& _value, bool _isExactMatch, bool _searchAll, AVItem* _prevAnnotation = NULL, int _prevIndex = -1)
+    :groupToSearchIn(_groupToSearchIn)
+    ,name(_name)
+    ,value(_value)
+    ,isExactMatch(_isExactMatch)
+    ,prevAnnotation(_prevAnnotation)
+    ,prevIndex(_prevIndex)
+    ,searchAll(_searchAll)
+    {
+    }
+
+    AVItem* groupToSearchIn;
+    QString name;
+    QString value;
+    bool isExactMatch;
+    AVItem* prevAnnotation;
+    int prevIndex;
+    bool searchAll;
+};
+
 class U2VIEW_EXPORT FindQualifierTask: public Task{
     Q_OBJECT
 public:
-    FindQualifierTask(AnnotationsTreeView * _treeView, AVItem* _groupToSearchIn, const QString & _name, const QString & _value, bool _isExactMatch, AVItem* prevAnnotation = NULL, int prevIndex = -1);
+    FindQualifierTask(AnnotationsTreeView * _treeView, const FindQualifierTaskSettings& settings);
     void prepare();
     void run();
     ReportResult report();
@@ -334,12 +357,14 @@ private:
     QString                     qvalue;
     AVItem *                    groupToSearchIn;
     bool                        isExactMatch;
+    bool                        searchAll;
     bool                        foundResult;
 
     int indexOfResult;
     AVItem * resultAnnotation;
 
-    QQueue<AVItem*> toExpand; //this queue is needed to expand items in main thread and set found item as current
+    QQueue<AVItem*> toExpand; //this queue is needed to expand items in main thread
+    QList< QPair<AVAnnotationItem*, int> > foundQuals; //this is needed to set found items as selected
 };
 
 }//namespace

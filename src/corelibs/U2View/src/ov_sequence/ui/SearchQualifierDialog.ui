@@ -30,6 +30,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="selectAllButton">
+       <property name="text">
+        <string>Select All</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="nextButton">
        <property name="text">
         <string>Next</string>
@@ -159,8 +166,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>351</x>
-     <y>161</y>
+     <x>308</x>
+     <y>230</y>
     </hint>
     <hint type="destinationlabel">
      <x>241</x>
@@ -175,8 +182,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>270</x>
-     <y>207</y>
+     <x>225</x>
+     <y>230</y>
     </hint>
     <hint type="destinationlabel">
      <x>159</x>

@@ -78,7 +78,7 @@ SearchQualifierDialog::SearchQualifierDialog(QWidget* p, AnnotationsTreeView * _
      }
      ui->groupLabel->setText(groupName);
 
-
+     connect(ui->selectAllButton, SIGNAL( clicked() ), SLOT( sl_searchAll() ));
 }
 
 bool SearchQualifierDialog::eventFilter(QObject *obj, QEvent *e) {
@@ -108,22 +108,7 @@ static QString simplify(const QString& s) {
 }
 
 void SearchQualifierDialog::accept() {
-
-    QString name = simplify(ui->nameEdit->text());
-    QString val = simplify(ui->valueEdit->text());
-    if (!(name.length() < 20 && TextUtils::fits(TextUtils::QUALIFIER_NAME_CHARS, name.toAscii().data(), name.length()))) {
-        QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier name"));
-        return;
-    }
-    if (!Annotation::isValidQualifierValue(val)) {
-        QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier value"));
-        return;
-    }
-
-    FindQualifierTask* findTask = new FindQualifierTask(treeView, groupToSearchIn, name, val, ui->exactButton->isChecked(), parentAnnotationofPrevResult, indexOfPrevResult);
-    connect(findTask, SIGNAL( si_stateChanged() ), SLOT( sl_searchTaskStateChanged() ));
-    TaskScheduler* s = AppContext::getTaskScheduler();
-    s->registerTopLevelTask(findTask);
+    search();
 }
 
 SearchQualifierDialog::~SearchQualifierDialog( ) {
@@ -157,6 +142,34 @@ void SearchQualifierDialog::sl_searchTaskStateChanged( ) {
 void SearchQualifierDialog::clearPrevResults(){
     parentAnnotationofPrevResult = NULL;
     indexOfPrevResult = -1;
+}
+
+void SearchQualifierDialog::search( bool searchAll /*= false*/ ){
+    QString name = simplify(ui->nameEdit->text());
+    QString val = simplify(ui->valueEdit->text());
+    if (!(name.length() < 20 && TextUtils::fits(TextUtils::QUALIFIER_NAME_CHARS, name.toAscii().data(), name.length()))) {
+        QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier name"));
+        return;
+    }
+    if (!Annotation::isValidQualifierValue(val)) {
+        QMessageBox::critical(this, tr("Error!"), tr("Illegal qualifier value"));
+        return;
+    }
+    if(searchAll){
+        clearPrevResults();
+    }
+
+    FindQualifierTaskSettings settings(groupToSearchIn, name, val, ui->exactButton->isChecked(), searchAll, parentAnnotationofPrevResult, indexOfPrevResult);
+
+
+    FindQualifierTask* findTask = new FindQualifierTask(treeView, settings);
+    connect(findTask, SIGNAL( si_stateChanged() ), SLOT( sl_searchTaskStateChanged() ));
+    TaskScheduler* s = AppContext::getTaskScheduler();
+    s->registerTopLevelTask(findTask);
+}
+
+void SearchQualifierDialog::sl_searchAll(){
+    search(true);
 }
 
 }//namespace

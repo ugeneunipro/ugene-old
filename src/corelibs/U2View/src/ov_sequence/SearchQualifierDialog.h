@@ -51,7 +51,9 @@ protected:
     
 protected slots:
     void sl_searchTaskStateChanged();
+    void sl_searchAll();
 private:
+    void search(bool searchAll = false);
     AnnotationsTreeView * treeView;
     Ui_SearchQualifierDialog* ui;
     AVItem* groupToSearchIn;

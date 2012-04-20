@@ -2181,15 +2181,16 @@ AVQualifierItem::AVQualifierItem(AVAnnotationItem* parent, const U2Qualifier& q)
     processLinks(qName, qValue, 1);
 }
 
-FindQualifierTask::FindQualifierTask(AnnotationsTreeView * _treeView, AVItem * _groupToSearchIn, const QString & _name, const QString & _value, bool _isExactMatch, AVItem* prevAnnotation, int prevIndex)
+FindQualifierTask::FindQualifierTask(AnnotationsTreeView * _treeView, const FindQualifierTaskSettings& settings)
 :Task(tr("Searching for a qualifier"), TaskFlag_None)
 ,treeView(_treeView)
-,qname(_name)
-,qvalue(_value)
-,groupToSearchIn(_groupToSearchIn)
-,isExactMatch(_isExactMatch)
-,indexOfResult(prevIndex)
-,resultAnnotation(prevAnnotation)
+,qname(settings.name)
+,qvalue(settings.value)
+,groupToSearchIn(settings.groupToSearchIn)
+,isExactMatch(settings.isExactMatch)
+,indexOfResult(settings.prevIndex)
+,resultAnnotation(settings.prevAnnotation)
+,searchAll(settings.searchAll)
 {
 
 }
@@ -2209,7 +2210,8 @@ void FindQualifierTask::run(){
     int childCount = rootGroup->childCount();
     bool found = false;
     int startIdx = getStartIndexGroup(rootGroup);
-    for (int i = startIdx; i < childCount && !found  && !stateInfo.isCanceled(); i++){
+    for (int i = startIdx; i < childCount  && !stateInfo.isCanceled(); i++){
+        found = false;
         stateInfo.setProgress(i/childCount);
         AVItem * child = static_cast<AVItem*>(rootGroup->child(i));
         if(child->type == AVItemType_Annotation){
@@ -2217,14 +2219,18 @@ void FindQualifierTask::run(){
         }else if (child->type == AVItemType_Group){
             findInGroup(child, found);
         }
-        if(found){
+        if(!foundQuals.isEmpty()){
             if(!rootGroup->isExpanded()){
-                toExpand.enqueue(rootGroup);
+                if (!toExpand.contains(rootGroup)){
+                    toExpand.enqueue(rootGroup);
+                }
             }
-            break;
+            if(!searchAll){
+                break;
+            }
         }
     } 
-    foundResult = found;
+    foundResult = !foundQuals.isEmpty();
     stateInfo.setProgress(100);
 }
 static inline bool matchWords(const QString& enteredW, const QString& realW, bool isExactMatch){
@@ -2235,26 +2241,31 @@ void FindQualifierTask::findInAnnotation(AVItem* annotation, bool& found){
     const QVector<U2Qualifier> & quals = ai->annotation->getQualifiers();
     int qual_size = quals.size();
     int startIdx = getStartIndexAnnotation(ai);
-    for(int j = startIdx; j < qual_size && !found  && !stateInfo.isCanceled(); j++){
+    for(int j = startIdx; j < qual_size  && !stateInfo.isCanceled(); j++){
         const U2Qualifier & qual = quals.at(j);
         bool matchName = matchWords(qname, qual.name, isExactMatch);
         bool matchValue = matchWords(qvalue, qual.value, isExactMatch);
         bool match = matchName && matchValue;
         if(match){
             //matched annotation is always first in the queue
-            toExpand.enqueue(annotation);
-   
+            //toExpand.enqueue(annotation);
             found = true;
             resultAnnotation = annotation;
             indexOfResult = j;
-            break;
+
+            foundQuals.append(QPair<AVAnnotationItem*, int > (ai, indexOfResult));
+
+            if(!searchAll){
+                break;
+            }
         }
     }
 }
 
 void FindQualifierTask::findInGroup(AVItem* group, bool& found){
     int startIdx = getStartIndexGroup(group);
-    for (int i = startIdx ; i < group->childCount() && !found && !stateInfo.isCanceled(); i++){
+    for (int i = startIdx ; i < group->childCount() && !stateInfo.isCanceled(); i++){
+        found = false;
         AVItem * child = static_cast<AVItem*>(group->child(i));
         if(child->type == AVItemType_Annotation){
             findInAnnotation(child, found);
@@ -2263,9 +2274,13 @@ void FindQualifierTask::findInGroup(AVItem* group, bool& found){
         }
         if(found){
             if(!group->isExpanded()){
-                toExpand.enqueue(group);
+                if (!toExpand.contains(group)){
+                    toExpand.enqueue(group);
+                }
             }
-            break;
+            if(!searchAll){
+                break;
+            }
         }
     } 
 }
@@ -2304,25 +2319,34 @@ int FindQualifierTask::getStartIndexAnnotation( AVItem* annotation ){
 
     return result;
 }
+typedef QPair< AVAnnotationItem*, int > QualPair;
 
 Task::ReportResult FindQualifierTask::report(){
     if(hasError() || isCanceled()){
         return ReportResult_Finished;
     }
-    AVItem* qual = NULL;
 
-    AVItem* firstAnnoation = NULL;
-    if (!toExpand.isEmpty()){
-        firstAnnoation = toExpand.dequeue();
-        AVAnnotationItem* ai = dynamic_cast<AVAnnotationItem*>(firstAnnoation);
+    AVItem* qual = NULL;
+    int qualsSize = foundQuals.size();
+    if(qualsSize > 0){
+        treeView->getTreeWidget()->clearSelection();
+    }
+
+    foreach(const QualPair & p, foundQuals){
+        AVAnnotationItem* ai = p.first;
         if(!ai->isExpanded()){
-            treeView->getTreeWidget()->expandItem(firstAnnoation);
-            treeView->sl_itemExpanded(firstAnnoation);
+            treeView->getTreeWidget()->expandItem(ai);
+            treeView->sl_itemExpanded(ai);
         }
-        
+
         if(foundResult && ai){
-            const U2Qualifier & u2qual = ai->annotation->getQualifiers().at(indexOfResult);
+            const U2Qualifier & u2qual = ai->annotation->getQualifiers().at(p.second);
             qual = ai->findQualifierItem(u2qual.name, u2qual.value);
+            qual->setSelected(true);
+            qual->parent()->setSelected(true);
+        }
+        if(isCanceled()){
+            return ReportResult_Finished;
         }
     }
 
@@ -2330,8 +2354,7 @@ Task::ReportResult FindQualifierTask::report(){
         treeView->getTreeWidget()->expandItem(item);
     }
 
-    if(qual){
-        treeView->getTreeWidget()->setCurrentItem(qual);
+    if(qual && qualsSize == 1){
         treeView->getTreeWidget()->scrollToItem(qual);
     }
 
