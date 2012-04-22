@@ -1299,6 +1299,13 @@ bool AnnotationsTreeView::initiateDragAndDrop(QMouseEvent* ) {
     dndCopyOnly = false; // allow 'move' by default first
     for (int i = 0, n = initialSelItems.size(); i < n; i++) {
         AVItem *itemi = dynamic_cast<AVItem*>(initialSelItems[i]);
+        AnnotationTableObject* ao = itemi->getAnnotationTableObject();
+        if (AutoAnnotationsSupport::isAutoAnnotation(ao)) {
+            //  only allow to drag top-level auto annotations groups
+            if (!(itemi->type == AVItemType_Group && itemi->parent() != NULL)) {
+                continue;    
+            }
+        }
         if (!dndCopyOnly && isReadOnly(itemi)) {
             dndCopyOnly = true;
         }
@@ -1370,10 +1377,17 @@ static void collectAnnotationDnDInfo(AnnotationGroup* ag, const QString& destGro
 
 void AnnotationsTreeView::finishDragAndDrop(Qt::DropAction dndAction) {
     AnnotationTableObject* dstObject = dropDestination->getAnnotationTableObject();
+    
+    // Can not drag anything to auto-annotation object
+    if (AutoAnnotationsSupport::isAutoAnnotation(dstObject)) {
+        return;
+    }
+
     QString destGroupPath = dropDestination->group->getGroupPath();
 
     QList<AnnotationGroup*> affectedGroups;
     QList<AnnotationDnDInfo> affectedAnnotations; 
+    QList<Task*> moveAutoAnnotationTasks;
     QStringList manualCreationGroups;
 
     for (int i = 0, n = dndSelItems.size(); i < n; ++i) {
@@ -1387,6 +1401,16 @@ void AnnotationsTreeView::finishDragAndDrop(Qt::DropAction dndAction) {
             AVGroupItem* movedGroupItem = dynamic_cast<AVGroupItem*>(selItem);
             if (movedGroupItem->group->getParentGroup() == dropDestination->group) {
                 continue; // can't drop group into itself
+            }
+            
+            // auto-annotations have to be handled differently
+            if (AutoAnnotationsSupport::isAutoAnnotation(movedGroupItem->getAnnotationTableObject())) {
+                GObjectReference dstRef(dstObject);
+                ADVSequenceObjectContext* seqCtx = ctx->getSequenceInFocus();
+                Task* t = new ExportAutoAnnotationsGroupTask(movedGroupItem->getAnnotationGroup(),
+                    dstRef, seqCtx);
+                moveAutoAnnotationTasks.append(t);
+                continue;
             }
             QString toGroupPath = destGroupPath + (destGroupPath.isEmpty() ? "" : "/") + movedGroupItem->group->getGroupName();
             if (movedGroupItem->group->getAnnotations().isEmpty()) {
@@ -1428,6 +1452,11 @@ void AnnotationsTreeView::finishDragAndDrop(Qt::DropAction dndAction) {
     // manually create empty group items
     foreach(const QString& path, manualCreationGroups) {
         dstObject->getRootGroup()->getSubgroup(path, true);
+    }
+
+    // make auto-annotations persistent
+    foreach (Task* t, moveAutoAnnotationTasks) {
+        AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
 }
 
