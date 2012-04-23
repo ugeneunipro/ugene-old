@@ -129,6 +129,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence edit/
 //////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0001, "https://ugene.unipro.ru/tracker/browse/UGENE-954");
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0002);
 	REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0006);
 	REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0009);
@@ -137,7 +138,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/remote request/
 //////////////////////////////////////////////////////////////////////////
-	REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0001);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/

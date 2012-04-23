@@ -46,6 +46,38 @@ namespace U2{
 
 namespace GUITest_common_scenarios_sequence_edit {
 
+GUI_TEST_CLASS_DEFINITION(test_0001) {
+
+	GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+
+	GTUtilsDialog::selectSequenceRegionDialogFiller dialog(os, 1, 50);
+	GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
+	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+	GTGlobals::sleep(1000);
+
+	GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+	GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+
+	GTUtilsDialog::RemovePartFromSequenceDialogFiller removeDialog(os,
+		GTUtilsDialog::RemovePartFromSequenceDialogFiller::Remove,
+		true,
+		testDir+"_common_data/scenarios/sandbox/result.fa",
+		GTUtilsDialog::RemovePartFromSequenceDialogFiller::FASTA
+	);
+
+	GTUtilsDialog::preWaitForDialog(os, &removeDialog, GUIDialogWaiter::Modal);
+	GTGlobals::sleep(1000);
+
+    GTSequenceViewUtils::openSequenceView(os, "result.fa");
+
+    int sequenceLength = GTSequenceViewUtils::getLengthOfSequence(os);
+    CHECK_SET_ERR(sequenceLength == 199900, "Sequence length is " + QString::number(sequenceLength) + ", expected 199900");
+
+    QString sequenceBegin = GTSequenceViewUtils::getBeginOfSequenceAsString(os, 7);
+    CHECK_SET_ERR(sequenceBegin == "AGAGAGA", "Sequence starts with <" + sequenceBegin + ">, expected AGAGAGA");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 	GTUtilsDialog::selectSequenceRegionDialogFiller dialog(os, 1, 50);
