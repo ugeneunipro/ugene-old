@@ -52,6 +52,11 @@
 
 #include <algorithm>
 
+#ifdef Q_WS_MACX
+#include <Authorization.h>
+#include <errno.h>
+#endif
+
 
 namespace U2 {
 
@@ -144,6 +149,9 @@ MainWindowImpl::MainWindowImpl() {
     openWDManualAction = NULL;
     openQDManualAction = NULL;
     shutDownInProcess = false;
+#ifdef _INSTALL_TO_PATH_ACTION
+    installToPathAction = NULL;
+#endif
     nStack = NULL;
 }
 
@@ -212,6 +220,10 @@ void MainWindowImpl::createActions() {
     openQDManualAction = new QAction(tr("Open Query Designer Manual"), this);
     connect(openQDManualAction, SIGNAL(triggered()),SLOT(sl_openQDManualAction()));
 
+#ifdef _INSTALL_TO_PATH_ACTION
+    installToPathAction = new QAction(tr("Enable Terminal Usage..."), this);
+    connect(installToPathAction, SIGNAL(triggered()), SLOT(sl_installToPathAction()));
+#endif
 }
 
 void MainWindowImpl::sl_exitAction() {
@@ -257,6 +269,9 @@ void MainWindowImpl::prepareGUI() {
 	exitAction->setObjectName(ACTION__EXIT);
     exitAction->setParent(mw);
     menuManager->getTopLevelMenu(MWMENU_FILE)->addAction(exitAction);
+#ifdef _INSTALL_TO_PATH_ACTION
+    menuManager->getTopLevelMenu(MWMENU_FILE)->addAction(installToPathAction);
+#endif
 
     aboutAction->setObjectName(ACTION__ABOUT);
     aboutAction->setParent(mw);
@@ -314,6 +329,55 @@ void MainWindowImpl::sl_openQDManualAction()
 {
     openManual(QD_USER_MANUAL_FILE_NAME);
 }
+
+#ifdef _INSTALL_TO_PATH_ACTION
+void MainWindowImpl::sl_installToPathAction() {
+    // This feature is inspired by GitX and its original implementation is here:
+    // https://github.com/pieter/gitx/blob/85322728facbd2a2df84e5fee3e7239fce18fd22/ApplicationController.m#L121
+
+    bool success = true;
+    QString exePath = QCoreApplication::applicationDirPath() + "/";
+    QString installationPath = "/usr/bin/";
+    QStringList tools;
+    tools << "ugene" << "ugeneui" << "ugenecl";
+
+    AuthorizationRef auth;
+    if (AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &auth) == errAuthorizationSuccess) {
+
+        foreach(QString tool, tools) {
+            QByteArray executable = (exePath + tool).toUtf8();
+            QByteArray installPath = installationPath.toUtf8();
+            QString symlink = installationPath + tool;
+            char const* arguments[] = { "-f", "-s", executable.constData(), installPath.constData(),  NULL };
+            char const* helperTool  = "/bin/ln";
+
+            if (AuthorizationExecuteWithPrivileges(auth, helperTool, kAuthorizationFlagDefaults, (char**)arguments, NULL) == errAuthorizationSuccess) {
+                // HACK: sleep because otherwise QFileInfo::exists might return false
+                sleep(100);
+                wait(NULL);
+                if ( ! QFileInfo(symlink).exists() ) {
+                    QMessageBox::critical(NULL, tr("Installation failed"), tr("Failed to enable terminal usage: couldn't install '%1'").arg(symlink));
+                    success = false;
+                    break;
+                }
+            } else {
+                QMessageBox::critical(NULL, tr("Installation failed"), tr("Failed to enable terminal usage: not authorized"));
+                success = false;
+                break;
+            }
+        }
+
+        AuthorizationFree(auth, kAuthorizationFlagDefaults);
+    } else {
+        QMessageBox::critical(NULL, tr("Installation failed"), tr("Failed to enable terminal usage: authorization failure"));
+        success = false;
+    }
+
+    if(success) {
+        QMessageBox::information(NULL, tr("Installation successful"), tr("Terminal usage successfully enabled.\n\nNow you can type ugene in command line to start UGENE."));
+    }
+}
+#endif // #ifdef _INSTALL_TO_PATH_ACTION
 
 void MainWindowImpl::openManual(const QString& name){
     QFileInfo fileInfo( QString(PATH_PREFIX_DATA)+":"+"/manuals/" + name );

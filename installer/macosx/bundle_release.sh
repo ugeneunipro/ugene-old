@@ -44,6 +44,7 @@ cp "$RELEASE_DIR/ugenecl.app/Contents/MacOS/ugenecl" "$TARGET_EXE_DIR"
 changeCoreInstallNames ugenecl
 changeQtInstallNames ugenecl
 cp ./ugene "$TARGET_EXE_DIR"
+cp ./install.sh "$TARGET_EXE_DIR"
 
 echo copying qt libraries - plugin dependencies
 cp $PATH_TO_QT/libQtOpenGL.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL.4.dylib"

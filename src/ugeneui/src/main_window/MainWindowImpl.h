@@ -33,6 +33,10 @@
 class QMdiArea;
 class QToolBar;
 
+#if defined(Q_WS_MACX) && !defined(_DEBUG)
+#define _INSTALL_TO_PATH_ACTION
+#endif
+
 namespace U2 {
 
 class MWDockManagerImpl;
@@ -83,6 +87,9 @@ private slots:
     void sl_openManualAction();
     void sl_openWDManualAction();
     void sl_openQDManualAction();
+#ifdef _INSTALL_TO_PATH_ACTION
+    void sl_installToPathAction();
+#endif
 
 private:
     void createActions();
@@ -107,7 +114,9 @@ private:
     QAction*                openManualAction;
     QAction*                openWDManualAction;
     QAction*                openQDManualAction;
-
+#ifdef _INSTALL_TO_PATH_ACTION
+    QAction*                installToPathAction;
+#endif
     bool                    shutDownInProcess;
 };
 
