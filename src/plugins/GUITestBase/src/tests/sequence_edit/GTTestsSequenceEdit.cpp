@@ -24,6 +24,7 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
+#include "api/GTFileDialog.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -62,11 +63,28 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
 	GTUtilsDialog::preWaitForDialog(os, &removeDialog, GUIDialogWaiter::Modal);
 	GTGlobals::sleep(1000);
-	GTSequenceViewUtils::openSequenceView(os, "result.gb");	
+    GTSequenceViewUtils::openSequenceView(os, "result.gb");
 /*	QString sequence = GTSequenceViewUtils::getSequenceAsString(os);
 	if (sequence.length()!= 199900) {
 		os.setError("incorrect sequence length");
-	}*/
+    }*/
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/", "NC_014267.gb");
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+
+    GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE, GTGlobals::UseKey);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep(1000);
+
+    QString expectedSequenceBegin = "ATCAGATT";
+    QString sequenceBegin = GTSequenceViewUtils::getLeftOfSequenceAsString(os, 8);
+
+    if (expectedSequenceBegin != sequenceBegin && !os.hasError()) {
+        os.setError("Bad sequence");
+    }
 }
 
 } // namespace

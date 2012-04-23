@@ -175,6 +175,7 @@ QTreeWidgetItem* GTUtilsProjectTreeView::findItem(U2OpStatus &os, const QTreeWid
     QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
     foreach (QTreeWidgetItem* item, treeItems) {
         QString treeItemName = getProjectTreeItemName((ProjViewItem*)item);
+        qDebug() << treeItemName << " ";
         if (treeItemName == itemName) {
             return item;
         }

@@ -489,9 +489,9 @@ void ProjectTreeController::sl_onItemDoubleClicked(QTreeWidgetItem * item, int) 
 void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
     QMenu m;
 
-	if (loadSelectedDocumentsAction->isEnabled()) {
-		m.addAction(loadSelectedDocumentsAction);
-	}
+    if (loadSelectedDocumentsAction->isEnabled()) {
+        m.addAction(loadSelectedDocumentsAction);
+    }
     if (unloadSelectedDocumentsAction->isEnabled()) {
         m.addAction(unloadSelectedDocumentsAction);
     }
@@ -503,7 +503,7 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
     }
 
     ProjectView* pv = AppContext::getProjectView();
-	if (pv != NULL) {
+    if (pv != NULL) {
         QAction* addExistingDocumentAction = new QAction(pv->getAddExistingDocumentAction()->icon(), tr("Existing document"), &m);
         connect(addExistingDocumentAction, SIGNAL(triggered()), pv->getAddExistingDocumentAction(), SLOT(trigger()));
 
@@ -515,7 +515,7 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
         QMenu* editMenu = m.addMenu(tr("Edit"));
         editMenu->menuAction()->setObjectName( ACTION_PROJECT__EDIT_MENU);
         editMenu->addAction(renameAction);
-	}
+    }
 
     QMenu* removeMenu = m.addMenu(tr("Remove"));
     removeMenu->menuAction()->setObjectName( ACTION_PROJECT__REMOVE_MENU);
@@ -528,7 +528,7 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
     }
     removeMenu->setEnabled(!removeMenu->actions().isEmpty());
 
-	emit si_onPopupMenuRequested(m);
+        emit si_onPopupMenuRequested(m);
     m.setObjectName("popMenu");
 	m.exec(QCursor::pos());
 }

@@ -62,6 +62,32 @@ QString GTSequenceViewUtils::getSequenceAsString(U2OpStatus &os)
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getSequenceAsString"
+
+QString GTSequenceViewUtils::getLeftOfSequenceAsString(U2OpStatus &os, int length)
+{
+    MainWindow* mw = AppContext::getMainWindow();
+    GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
+
+    MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
+    GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
+
+    GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
+    GTMouseDriver::click(os);
+
+    GTUtilsDialog::selectSequenceRegionDialogFiller filler(os, 1, length);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(500); // don't touch!!!
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    return QApplication::clipboard()->text();
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "checkSequence"
 
 void GTSequenceViewUtils::checkSequence(U2OpStatus &os, const QString &expectedSequence)

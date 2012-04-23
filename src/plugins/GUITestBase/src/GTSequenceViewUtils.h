@@ -31,6 +31,7 @@ class U2OpStatus;
 class GTSequenceViewUtils {
 public:
     static QString getSequenceAsString(U2OpStatus &os);
+    static QString getLeftOfSequenceAsString(U2OpStatus &os, int length);
     static void checkSequence(U2OpStatus &os, const QString &expectedSequence);
   	static void openSequenceView(U2OpStatus &os, const QString &sequenceName);
 };
