@@ -353,7 +353,7 @@ void GTUtilsDialog::ExportSequenceAsAlignmentFiller::run()
     GT_CHECK(checkButton, "Check box not found");
 
     if ((addToProject && !checkButton->isChecked()) ||
-            !addToProject && checkButton->isChecked()) {
+            (!addToProject && checkButton->isChecked())) {
         switch(useMethod) {
         case GTGlobals::UseMouse:
             GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkButton->rect().topLeft()));
@@ -406,7 +406,7 @@ void GTUtilsDialog::CopyToFileAsDialogFiller::run()
 	GT_CHECK(checkButton != NULL, "Check box not found");
 
 	if ((compressFile && !checkButton->isChecked()) ||
-	    !compressFile && checkButton->isChecked()) {
+	    (!compressFile && checkButton->isChecked())) {
 		QPoint checkPos;
 		switch(useMethod) {
 		case GTGlobals::UseMouse:
@@ -424,7 +424,7 @@ void GTUtilsDialog::CopyToFileAsDialogFiller::run()
 	GT_CHECK(checkButton != NULL, "Check box not found");
 
 	if ((addToProject && !checkButton->isChecked()) ||
-	    !addToProject && checkButton->isChecked()) {
+	    (!addToProject && checkButton->isChecked())) {
 	QPoint checkPos;
 	switch(useMethod) {
 	case GTGlobals::UseMouse:
@@ -518,7 +518,7 @@ void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::checkAddToProject
     GT_CHECK(checkButton != NULL, "Check box not found");
 
     if ((addToProject && !checkButton->isChecked()) ||
-         !addToProject && checkButton->isChecked()) {
+         (!addToProject && checkButton->isChecked())) {
         QPoint checkPos = checkButton->mapToGlobal(checkButton->rect().topLeft());
 
         checkPos = QPoint(checkPos.x() + 10, checkPos.y() + 10); // +10 for moved to clickable area
@@ -544,7 +544,7 @@ void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::checkExportWithAn
     GT_CHECK(checkButton != NULL, "Check box not found");
 
     if ((exportWithAnnotations && !checkButton->isChecked()) ||
-         !exportWithAnnotations && checkButton->isChecked()) {
+         (!exportWithAnnotations && checkButton->isChecked())) {
         QPoint checkPos = checkButton->mapToGlobal(checkButton->rect().topLeft());
 
         checkPos = QPoint(checkPos.x() + 10, checkPos.y() + 10); // +10 for moved to clickable area
@@ -664,7 +664,7 @@ void GTUtilsDialog::ExportAnnotationsFiller::run()
     GT_CHECK(checkButton != NULL, "Check box not found");
 
     if ((saveSequencesUnderAnnotations && !checkButton->isChecked()) ||
-            !saveSequencesUnderAnnotations && checkButton->isChecked()) {
+            (!saveSequencesUnderAnnotations && checkButton->isChecked())) {
                 QPoint checkPos;
         switch(useMethod) {
         case GTGlobals::UseMouse:
@@ -682,7 +682,7 @@ void GTUtilsDialog::ExportAnnotationsFiller::run()
     GT_CHECK(checkButton != NULL, "Check box not found");
 
     if ((saveSequenceNames && !checkButton->isChecked()) ||
-            !saveSequenceNames && checkButton->isChecked()) {
+            (!saveSequenceNames && checkButton->isChecked())) {
                 QPoint checkPos;
         switch(useMethod) {
         case GTGlobals::UseMouse:

@@ -202,10 +202,10 @@ public:
 		U2OpStatus &os;
 		QString path, name;
 		GTGlobals::UseMethod useMethod;
-        FormatToUse format;
-        QMap<FormatToUse, QString> comboBoxItems;
-        bool addToProject;
+    FormatToUse format;
 		bool compressFile;
+    bool addToProject;
+    QMap<FormatToUse, QString> comboBoxItems;
 
 	};
 
@@ -215,7 +215,7 @@ public:
 
         ExportSequenceAsAlignmentFiller(U2OpStatus &_os, const QString &_path, const QString &_name,
                                         GTUtilsDialog::ExportSequenceAsAlignmentFiller::FormatToUse _format, bool addDocumentToProject = false, GTGlobals::UseMethod method = GTGlobals::UseMouse):
-            os(_os), useMethod(method), name(_name), format(_format), addToProject(addDocumentToProject) {
+            os(_os), name(_name), useMethod(method), format(_format), addToProject(addDocumentToProject) {
                 QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
                 if (__path.at(__path.count() - 1) != '/') {
                     __path += '/';
@@ -236,10 +236,10 @@ public:
     private:
         U2OpStatus &os;
         QString path, name;
-        FormatToUse format;
-        QMap<FormatToUse, QString> comboBoxItems;
-        bool addToProject;
         GTGlobals::UseMethod useMethod;
+        FormatToUse format;
+        bool addToProject;
+        QMap<FormatToUse, QString> comboBoxItems;
     };
 
     class ExportSequenceOfSelectedAnnotationsFiller : public Runnable {
@@ -248,8 +248,8 @@ public:
         enum MergeOptions {SaveAsSeparate, Merge};
         ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength,
                                                   bool _addDocToProject = true, bool _exportWithAnnotations = true, GTGlobals::UseMethod method = GTGlobals::UseMouse):
-            os(_os), format(_format), gapLength(_gapLength), addToProject(_addDocToProject), exportWithAnnotations(_exportWithAnnotations),
-            useMethod(method), options(_options)
+            os(_os), gapLength(_gapLength), format(_format), addToProject(_addDocToProject), exportWithAnnotations(_exportWithAnnotations),
+            options(_options), useMethod(method)
             {
                 QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
 				// no needs to add '/' so _path includes file name
@@ -283,12 +283,12 @@ public:
         QString path;
         int gapLength;
         FormatToUse format;
+        bool addToProject;
+    		bool exportWithAnnotations;
         MergeOptions options;
+        GTGlobals::UseMethod useMethod;
         QMap<FormatToUse, QString> comboBoxItems;
         QMap<MergeOptions, QString> mergeRadioButtons;
-        bool addToProject;
-		bool exportWithAnnotations;
-        GTGlobals::UseMethod useMethod;
     };
 
 
@@ -365,10 +365,10 @@ public:
 
         virtual void run();
     private:
-        RangeType rangeType;
         U2OpStatus &os;
-        int minVal, maxVal;
+        RangeType rangeType;
         bool selectAll;
+        int minVal, maxVal;
         QString multipleRange;
     };
 
@@ -382,7 +382,7 @@ public:
 		os(_os), range(_range), removeType(Resize), format(FASTA) {}
 
 		RemovePartFromSequenceDialogFiller(U2OpStatus &_os,RemoveType _removeType, bool _saveNew, const QString &_saveToFile, FormatToUse _format):
-		os(_os), saveNew(_saveNew), removeType(_removeType), format(_format) {
+		os(_os), removeType(_removeType), format(_format), saveNew(_saveNew) {
 			QString __saveToFile = QDir::cleanPath(QDir::currentPath() + "/" + _saveToFile);
 			saveToFile = __saveToFile;
 			comboBoxItems[FASTA] = "FASTA";
@@ -394,10 +394,10 @@ public:
 
 		virtual void run();
 	private:
+		U2OpStatus &os;
 		QString range;
 		RemoveType removeType;
 		FormatToUse format;
-		U2OpStatus &os;
 		bool saveNew;
 		QString saveToFile;
 		QMap<FormatToUse, QString> comboBoxItems;
@@ -413,9 +413,9 @@ public:
 
 		virtual void run();
 	private:
+		U2OpStatus &os;
 		ReadingMode readingMode;
 		int bases;
-		U2OpStatus &os;
 	};
 
     static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, bool failOnNoDialog = true);
