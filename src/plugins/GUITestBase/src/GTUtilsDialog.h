@@ -354,21 +354,30 @@ public:
     class selectSequenceRegionDialogFiller : public Runnable {
     public:
         enum RangeType {Single, Multiple};
+        selectSequenceRegionDialogFiller(U2OpStatus &_os, int *_len):
+            os(_os), rangeType(Single), len(_len), minVal(0), maxVal(0){}
+
         selectSequenceRegionDialogFiller(U2OpStatus &_os):
-            os(_os), rangeType(Single), selectAll(true){}
+            os(_os), rangeType(Single), selectAll(true), length(0), len(NULL){}
 
         selectSequenceRegionDialogFiller(U2OpStatus &_os, int _minVal, int _maxVal):
-            os(_os), rangeType(Single), selectAll(false), minVal(_minVal), maxVal(_maxVal){}
+            os(_os), rangeType(Single), selectAll(false), minVal(_minVal),
+            maxVal(_maxVal), length(0), len(NULL){}
 
         selectSequenceRegionDialogFiller(U2OpStatus &_os, const QString &range):
-            os(_os), rangeType(Multiple), selectAll(false), multipleRange(range){}
+            os(_os), rangeType(Multiple), selectAll(false), multipleRange(range),
+            length(0), len(NULL){}
+
+        selectSequenceRegionDialogFiller(U2OpStatus &_os, int _length, bool selectFromBegin = true):
+            os(_os), rangeType(Single), selectAll(false), length(_length), fromBegin(selectFromBegin),
+            minVal(0), maxVal(0), len(NULL){}
 
         virtual void run();
     private:
         U2OpStatus &os;
         RangeType rangeType;
-        bool selectAll;
-        int minVal, maxVal;
+        bool selectAll, fromBegin;
+        int minVal, maxVal, length, *len;
         QString multipleRange;
     };
 

@@ -237,7 +237,6 @@ void GTUtilsDialog::PopupChooser::run()
 {
     GTGlobals::sleep(100);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
-    qDebug() << activePopupMenu->actions();
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
 
@@ -727,15 +726,31 @@ void GTUtilsDialog::selectSequenceRegionDialogFiller::run()
         GTWidget::click(os, max);
         GTGlobals::sleep(500);
     } else if (rangeType == Single) {
-        GT_CHECK(minVal < maxVal, "Value \"min\" greater or equals then \"max\"");
+        GT_CHECK(minVal <= maxVal, "Value \"min\" greater then \"max\"");
 
         QLineEdit *startEdit = dialog->findChild<QLineEdit*>("startEdit");
         QLineEdit *endEdit = dialog->findChild<QLineEdit*>("endEdit");
         GT_CHECK(startEdit != NULL, "QLineEdit \"startEdit\" not found");
         GT_CHECK(endEdit != NULL, "QLineEdit \"endEdit\" not found");
 
-        GTLineEdit::setText(os, startEdit, QString::number(minVal));
-        GTLineEdit::setText(os, endEdit, QString::number(maxVal));
+        if (len != NULL) {
+            *len = endEdit->text().toInt();
+        } else if (length == 0) {
+            GTLineEdit::setText(os, startEdit, QString::number(minVal));
+            GTLineEdit::setText(os, endEdit, QString::number(maxVal));
+        } else {
+            int min = startEdit->text().toInt();
+            int max = endEdit->text().toInt();
+            GT_CHECK(max - min >= length, "Invalid argument \"length\"");
+
+            if (fromBegin) {
+                GTLineEdit::setText(os, startEdit, QString::number(1));
+                GTLineEdit::setText(os, endEdit, QString::number(length));
+            } else {
+                GTLineEdit::setText(os, startEdit, QString::number(max - length + 1));
+                GTLineEdit::setText(os, endEdit, QString::number(max));
+            }
+        }
     } else {
         GT_CHECK(! multipleRange.isEmpty(), "Range is empty");
 

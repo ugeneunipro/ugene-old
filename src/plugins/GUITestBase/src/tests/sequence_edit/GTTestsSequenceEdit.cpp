@@ -80,7 +80,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTGlobals::sleep(1000);
 
     QString expectedSequenceBegin = "ATCAGATT";
-    QString sequenceBegin = GTSequenceViewUtils::getLeftOfSequenceAsString(os, 8);
+    QString sequenceBegin = GTSequenceViewUtils::getBeginOfSequenceAsString(os, 8);
 
     if (expectedSequenceBegin != sequenceBegin && !os.hasError()) {
         os.setError("Bad sequence");
