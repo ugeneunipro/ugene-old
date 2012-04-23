@@ -87,6 +87,18 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0009) {
+	GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/AMINO.fa");
+	GTUtilsDialog::selectSequenceRegionDialogFiller dialog(os, 10, 13);
+	GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
+	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+	GTGlobals::sleep(1000);
+	GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+	GTGlobals::sleep(1000);
+	QString sequence = QApplication::clipboard()->text();
+	CHECK_SET_ERR("ACCC" == sequence, "Incorrect sequence is copied");
+}
+
 } // namespace
 } // namespace U2
 

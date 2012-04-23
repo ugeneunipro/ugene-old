@@ -29,6 +29,7 @@
 #include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
 #include "tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h"
 #include "tests/sequence_edit/GTTestsSequenceEdit.h"
+#include "tests/common_scenarios/project/remote_request/GTTestsProjectRemoteRequest.h"
 #include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
 #include "tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h"
 #include "tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h"
@@ -129,7 +130,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/project/sequence edit/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0002);
-    REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0006);
+	REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0006);
+	REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0009);
+
+
+//////////////////////////////////////////////////////////////////////////
+// Common scenarios/remote request/
+//////////////////////////////////////////////////////////////////////////
+	REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0001);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/

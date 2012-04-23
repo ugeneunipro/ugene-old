@@ -32,6 +32,7 @@ namespace GUITest_common_scenarios_sequence_edit {
 
 GUI_TEST_CLASS_DECLARATION(test_0002)
 GUI_TEST_CLASS_DECLARATION(test_0006)
+GUI_TEST_CLASS_DECLARATION(test_0009)
 
 #undef GUI_TEST_PREFIX
 }

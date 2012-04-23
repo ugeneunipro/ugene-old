@@ -18,6 +18,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/project/GTTestsProject.h \
             src/tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.h \
+            src/tests/common_scenarios/project/remote_request/GTTestsProjectRemoteRequest.h \
             src/tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h \
             src/tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.h \
             src/tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h \
@@ -61,6 +62,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/project/GTTestsProject.cpp \
             src/tests/common_scenarios/project/bookmarks/GTTestsBookmarks.cpp \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.cpp \
+            src/tests/common_scenarios/project/remote_request/GTTestsProjectRemoteRequest.cpp \
             src/tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.cpp \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.cpp \
             src/tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.cpp \
