@@ -55,7 +55,8 @@ class RemoveItemsTask;
 
 enum ATVAnnUpdateFlag {
     ATVAnnUpdateFlag_BaseColumns = 0x1,
-    ATVAnnUpdateFlag_QualColumns = 0x2
+    ATVAnnUpdateFlag_QualColumns = 0x2,
+    ATVAnnUpdateFlag_ReverseAnnotationSelection = 0x3
 };
 
 typedef QFlags<ATVAnnUpdateFlag> ATVAnnUpdateFlags;
@@ -117,6 +118,7 @@ private slots:
     void sl_onCopyColumnURL();
 	void sl_exportAutoAnnotationsGroup();
     void sl_searchQualifier();
+    void sl_invertSelection();
     
     void sl_rename();
     void sl_edit();
@@ -191,6 +193,7 @@ private:
     QAction*            addQualifierAction; // action to create qualifier. Editable annotation or editable qualifier must be selected
 
     QAction*            searchQualifierAction; 
+    QAction*            invertAnnotationSelectionAction; 
     
     Qt::MouseButton     lastMB;
     QStringList         headerLabels;

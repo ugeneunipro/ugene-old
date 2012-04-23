@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Search qualifier</string>
+   <string>Find Qualifier</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="6" column="0" colspan="6">
@@ -93,7 +93,7 @@
       <item row="1" column="0">
        <widget class="QRadioButton" name="contaiinsButton">
         <property name="text">
-         <string>Contains Substring</string>
+         <string>Contains substring</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -106,7 +106,7 @@
       <item row="0" column="0">
        <widget class="QRadioButton" name="exactButton">
         <property name="text">
-         <string>Exact Match</string>
+         <string>Exact match</string>
         </property>
         <attribute name="buttonGroup">
          <string>buttonGroup</string>

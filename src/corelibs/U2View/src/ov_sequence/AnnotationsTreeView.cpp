@@ -167,9 +167,12 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
     removeColumnByHeaderClickAction->setIcon(removeColumnIcon);
     connect(removeColumnByHeaderClickAction, SIGNAL(triggered()), SLOT(sl_onRemoveColumnByHeaderClick()));
 
-    searchQualifierAction = new QAction(tr("Find qualifier"), this);
+    searchQualifierAction = new QAction(tr("Find qualifier..."), this);
     searchQualifierAction->setIcon(QIcon(":core/images/zoom_whole.png"));
     connect (searchQualifierAction, SIGNAL(triggered()), SLOT(sl_searchQualifier()));
+
+    invertAnnotationSelectionAction = new QAction(tr("Inver annotation selection"), this);
+    connect (invertAnnotationSelectionAction, SIGNAL(triggered()), SLOT(sl_invertSelection()));
 
     copyColumnTextAction = new QAction(tr("Copy column text"), this);
     connect(copyColumnTextAction, SIGNAL(triggered()), SLOT(sl_onCopyColumnText()));
@@ -878,6 +881,7 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
     int nActive = 0;
     QAction* first = m->actions().first();
     m->insertAction(first, searchQualifierAction);
+    m->insertAction(first, invertAnnotationSelectionAction);
 
     m->insertSeparator(first);
     foreach(QAction* a, contextActions) {
@@ -1567,6 +1571,10 @@ void AnnotationsTreeView::sl_searchQualifier(){
      d.exec();    
 }
 
+void AnnotationsTreeView::sl_invertSelection(){
+    updateAllAnnotations(ATVAnnUpdateFlag_ReverseAnnotationSelection);
+}
+
 void AnnotationsTreeView::updateAllAnnotations(ATVAnnUpdateFlags flags) {
     QString emptyFilter;
     for(int i=0; i<tree->topLevelItemCount(); i++) {
@@ -2109,6 +2117,10 @@ void AVAnnotationItem::updateVisual(ATVAnnUpdateFlags f) {
                 }
             }
         }
+    }
+
+    if (f.testFlag(ATVAnnUpdateFlag_QualColumns)) {
+        setSelected(!isSelected());
     }
 
     GUIUtils::setMutedLnF(this, !as->visible, true);
