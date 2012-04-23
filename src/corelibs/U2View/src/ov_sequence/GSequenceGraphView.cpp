@@ -55,7 +55,7 @@ GSequenceGraphView::GSequenceGraphView(QWidget* p, ADVSequenceObjectContext* ctx
 
     connect(visualPropertiesAction, SIGNAL(triggered(bool)), SLOT(sl_onShowVisualProperties(bool)));
 
-    saveGraphCutoffsAction = new QAction(tr("Save cutoffs of a graph as annotations..."), this);
+    saveGraphCutoffsAction = new QAction(tr("Save cutoffs as annotations..."), this);
     saveGraphCutoffsAction->setObjectName("save_cutoffs_as_annotation");
 
     connect(saveGraphCutoffsAction, SIGNAL(triggered(bool)), SLOT(sl_onSaveGraphCutoffs(bool)));

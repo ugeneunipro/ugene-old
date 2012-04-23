@@ -26,6 +26,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/LoadDocumentTask.h>
 
+#include <QtGui/QMessageBox>
+
 namespace U2{
 
 SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGraphDrawer *_d, GSequenceGraphData *_gd, QWidget *parent, ADVSequenceObjectContext* _ctx )
@@ -35,7 +37,7 @@ SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGra
     m.hideLocation = true;
     m.data->name = QString("graph_cutoffs");
     m.sequenceObjectRef = ctx->getSequenceObject();
-    m.useUnloadedObjects = true;
+    m.useUnloadedObjects = false;
     m.sequenceLen = ctx->getSequenceObject()->getSequenceLength();
     ac = new CreateAnnotationWidgetController(m, this);
 
@@ -77,26 +79,30 @@ SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGra
 }
 
 void SaveGraphCutoffsDialogController::accept(){
+    if(!validate()){
+        return;
+    }
     ac->prepareAnnotationObject();
     const CreateAnnotationModel &mm = ac->getModel();
     int startPos = gd->cachedFrom, len = gd->cachedLen, step = gd->cachedS, window = gd->cachedW;
     PairVector& points = gd->cachedData;
 
-    int curPos = (startPos < window) ? (window/2 - 1) : startPos;
+    int curPos = (startPos < window) ? (window/2 - 1) : startPos, startOffset = window/2, tailOffset = window - startOffset, prevAccepetedPos = 0;
     curPos++;
     for (int i=0, n = points.cutoffPoints.size(); i < n; i++) {
         if (isAcceptableValue(points.cutoffPoints[i])){
             if (resultRegions.isEmpty()){
-                resultRegions.append(U2Region(curPos, step));
+                resultRegions.append(U2Region(curPos - startOffset, window));
             }else{
                 QList<U2Region>::iterator it = resultRegions.end();
                 it--;
-                if(it->endPos() == curPos){            //expand if accepted values in a row
+                if((prevAccepetedPos + step) == curPos){            //expand if accepted values in a row
                     it->length += step;
                 }else{                                          //remove prevous empty region, and add new region to list
-                    resultRegions.append(U2Region(curPos, step));
+                    resultRegions.append(U2Region(curPos - startOffset, window));
                 }
             }
+            prevAccepetedPos = curPos;
         }
         curPos += step;
     }
@@ -124,6 +130,14 @@ bool SaveGraphCutoffsDialogController::isAcceptableValue(float val){
         val > maxCutoffBox->value() &&
         outsideRadioButton->isChecked());
     
+}
+
+bool SaveGraphCutoffsDialogController::validate(){
+    if(minCutoffBox->value() >= maxCutoffBox->value()){
+        QMessageBox::critical(NULL, tr("Error!"), "Minimum cutoff value greater or equal maximum!");
+        return false;
+    }
+    return true;
 }
 
 }

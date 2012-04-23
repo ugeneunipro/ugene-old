@@ -39,6 +39,7 @@ public:
     virtual void accept();
 private:
     inline bool isAcceptableValue(float val);
+    bool validate();
 
     CreateAnnotationWidgetController*   ac;
     ADVSequenceObjectContext*           ctx;
