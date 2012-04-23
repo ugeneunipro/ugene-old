@@ -84,7 +84,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0021);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0023, "wrong test");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project::test_0025);//, "excluded failed test (linux)");
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0025);//, "excluded failed test (linux)");
     REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0028);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0030, "https://ugene.unipro.ru/tracker/browse/UGENE-88");
@@ -109,7 +109,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/project/relations/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_relations::test_0001);
-    REGISTER_TEST(GUITest_common_scenarios_project_relations::test_0002);
+//    REGISTER_TEST(GUITest_common_scenarios_project_relations::test_0002);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/user locking/
@@ -129,6 +129,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/project/sequence edit/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0006);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/
@@ -138,7 +139,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting::test_0003, "excluded failed test");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-924");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting::test_0005, "excluded failed test");
-    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project_sequence_exporting::test_0007);//, "excluded failed test (linux)");
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0007);//, "excluded failed test (linux)");
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/from project view/
