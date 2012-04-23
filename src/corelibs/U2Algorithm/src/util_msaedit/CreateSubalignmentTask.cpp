@@ -65,7 +65,7 @@ void CreateSubalignmentTask::prepare() {
         resultDocument->addObject(resultMAObj);
         GObjectUtils::updateRelationsURL(resultMAObj, origDoc->getURL(), cfg.url);
     } else {
-        CHECK_EXT(origDoc->isStateLocked(), setError(tr("Document is locked: %1").arg(resultDocument->getURLString())), );
+        CHECK_EXT(origDoc->isStateLocked(), setError(tr("Document is locked: %1").arg(origDoc->getURLString())), );
         resultDocument = origDoc;
         resultMAObj = origMAObj;
         docOwner = false;
