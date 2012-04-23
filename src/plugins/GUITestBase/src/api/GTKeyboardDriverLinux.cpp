@@ -66,6 +66,14 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
         key = '.';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
         break;
+    case '(':
+        key = '9';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
+        break;
+    case ')':
+        key = '0';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
+        break;
     }
 
     XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 1, 0);
@@ -87,25 +95,38 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
     Display *display = XOpenDisplay(display_name.constData());
     GT_CHECK(display != 0, "display is NULL");
 
-    if (key == '_' || key == '<' || key == '>') {
-        switch(key) {
-        case '_':
-            key = '-';
-            XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
-            XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
-            break;
-        case '<':
-            key = ',';
-            XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
-            XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
-            break;
-        case '>':
-            key = '.';
-            XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
-            XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
-            break;
-        }
-    } else {
+    switch(key) {
+    case '_':
+        key = '-';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
+        break;
+
+    case '<':
+        key = ',';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
+        break;
+
+    case '>':
+        key = '.';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
+        break;
+
+    case '(':
+        key = '9';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
+        break;
+    case ')':
+
+        key = '0';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
+        break;
+
+    default:
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
     }
 
