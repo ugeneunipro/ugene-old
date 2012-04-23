@@ -39,11 +39,12 @@ public:
     DbiDataHandler(const U2DataId &id, U2ObjectDbi *dbi);
     virtual ~DbiDataHandler();
 
-    virtual bool operator == (const DbiDataHandler &other) const;
-
 private:
     const U2DataId id;
     U2ObjectDbi *dbi;
+
+    DbiDataHandler(const DbiDataHandler &);
+    DbiDataHandler &operator=(const DbiDataHandler &);
 };
 
 } // Workflow

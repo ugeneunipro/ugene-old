@@ -41,8 +41,11 @@ DbiDataHandler::~DbiDataHandler() {
     // TODO: how do you want to check @os???
 }
 
-bool DbiDataHandler::operator == (const DbiDataHandler &other) const {
-    return id == other.id;
+DbiDataHandler::DbiDataHandler(const DbiDataHandler &) {
+}
+
+DbiDataHandler &DbiDataHandler::operator=(const DbiDataHandler &) {
+    return *this;
 }
 
 }
