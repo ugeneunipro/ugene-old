@@ -53,14 +53,16 @@ QString GTSequenceViewUtils::getSequenceAsString(U2OpStatus &os)
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
+    GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
+    GTMouseDriver::click(os);
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
-
     GTGlobals::sleep(1000);
+
     return QApplication::clipboard()->text();
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getSequenceAsString"
+#define GT_METHOD_NAME "checkSequence"
 
 void GTSequenceViewUtils::checkSequence(U2OpStatus &os, const QString &expectedSequence)
 {
