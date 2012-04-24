@@ -725,6 +725,13 @@ void GTUtilsDialog::selectSequenceRegionDialogFiller::run()
         GTGlobals::sleep(500);
         GTWidget::click(os, max);
         GTGlobals::sleep(500);
+
+        if (len != NULL) {
+            QLineEdit *endEdit = dialog->findChild<QLineEdit*>("endEdit");
+            GT_CHECK(endEdit != NULL, "QLineEdit \"endEdit\" not found");
+
+            *len = endEdit->text().toInt();
+        }
     } else if (rangeType == Single) {
         GT_CHECK(minVal <= maxVal, "Value \"min\" greater then \"max\"");
 
@@ -733,9 +740,7 @@ void GTUtilsDialog::selectSequenceRegionDialogFiller::run()
         GT_CHECK(startEdit != NULL, "QLineEdit \"startEdit\" not found");
         GT_CHECK(endEdit != NULL, "QLineEdit \"endEdit\" not found");
 
-        if (len != NULL) {
-            *len = endEdit->text().toInt();
-        } else if (length == 0) {
+        if (length == 0) {
             GTLineEdit::setText(os, startEdit, QString::number(minVal));
             GTLineEdit::setText(os, endEdit, QString::number(maxVal));
         } else {

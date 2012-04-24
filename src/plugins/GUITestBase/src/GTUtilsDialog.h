@@ -385,7 +385,7 @@ public:
     public:
         enum RangeType {Single, Multiple};
         selectSequenceRegionDialogFiller(U2OpStatus &_os, int *_len):
-            os(_os), rangeType(Single), minVal(0), maxVal(0), len(_len){}
+            os(_os), rangeType(Single), len(_len), minVal(0), maxVal(0), selectAll(true){}
 
         selectSequenceRegionDialogFiller(U2OpStatus &_os):
             os(_os), rangeType(Single), selectAll(true), length(0), len(NULL){}
