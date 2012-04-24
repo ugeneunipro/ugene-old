@@ -80,6 +80,10 @@ public:
 								  bool saveSequencesUnderAnnotations = true, bool saveSequenceNames = true, GTGlobals::UseMethod = GTGlobals::UseMouse);
 	static void createDocument(U2OpStatus &os, const QString &pasteDataHere, const QString &documentLocation, GTUtilsDialog::CreateDocumentFiller::documentFormat format,
 		                        const QString &sequenceName, GTGlobals::UseMethod = GTGlobals::UseMouse);
+	static void insertSequence(U2OpStatus &os, const QString &pasteDataHere,
+									 const QString &documentLocation, GTUtilsDialog::InsertSequenceFiller::documentFormat format,
+									 bool saveToNewFile, bool mergeAnnotations,
+									 GTGlobals::UseMethod = GTGlobals::UseMouse);
     static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile);
     static void closeProject(U2OpStatus &os, const CloseProjectSettings& settings = CloseProjectSettings());
 	static void exitProject(U2OpStatus &os, const ExitProjectSettings& exitSettings = ExitProjectSettings());

@@ -303,9 +303,7 @@ public:
 				pasteDataHere = _pasteDataHere;
                 QString __documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + _documentLocation + "/" + _sequenceName);
                 documentLocation = __documentLocation;
-				
 				qDebug() << "\n\n\n\n\n\n\n\n\nPath = " << documentLocation << "\n\n\n\n\n\n\n\n";
-
                 comboBoxItems[FASTA] = "FASTA";
                 comboBoxItems[Genbank] = "Genbank";
             }
@@ -321,6 +319,38 @@ public:
 
         GTGlobals::UseMethod useMethod;
     };
+
+	
+	class InsertSequenceFiller : public Runnable {
+	public:
+		enum documentFormat {FASTA, Genbank};
+		InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere,
+							 const QString &_documentLocation, 
+							 documentFormat _format,bool _saveToNewFile, bool _mergeAnnotations, 
+							 GTGlobals::UseMethod method = GTGlobals::UseMouse):
+			os(_os), pasteDataHere(_pasteDataHere), saveToNewFile(_saveToNewFile), format(_format), useMethod(method)  
+			{
+				pasteDataHere = _pasteDataHere;
+				QString __documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + _documentLocation);
+                comboBoxItems[FASTA] = "FASTA";
+                comboBoxItems[Genbank] = "Genbank";
+				documentLocation = __documentLocation;
+				mergeAnnotations = _mergeAnnotations;
+				
+			}
+        virtual void run();
+
+    private:
+        U2OpStatus &os;
+        QString documentLocation, pasteDataHere;
+        documentFormat format;
+        QMap<documentFormat, QString> comboBoxItems;
+        bool saveToNewFile;
+        bool mergeAnnotations;
+
+        GTGlobals::UseMethod useMethod;
+
+	};
 
 
     class ExportAnnotationsFiller : public Runnable {

@@ -823,6 +823,89 @@ void GTUtilsDialog::CreateDocumentFiller::run()
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::insertSequenceFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::InsertSequenceFiller::run()
+{
+	qDebug() <<  "IN RUN";
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+
+    QPlainTextEdit *plainText = dialog->findChild<QPlainTextEdit*>("sequenceEdit");
+    GT_CHECK(plainText != NULL, "plain text not found");
+	GTPlainTextEdit::setPlainText(os, plainText, pasteDataHere);
+
+	QGroupBox *checkButton = dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
+	GT_CHECK(checkButton != NULL, "Check box not found");
+
+	if ((saveToNewFile && !checkButton->isChecked()) ||
+	    !saveToNewFile && checkButton->isChecked()) {
+		QPoint checkPos;
+		switch(useMethod) {
+		case GTGlobals::UseMouse:
+			checkPos = QPoint(checkButton->rect().left() + 12, checkButton->rect().top() + 12);
+			GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkPos));
+			GTMouseDriver::click(os);
+			break;
+		case GTGlobals::UseKey:
+			GTWidget::setFocus(os, checkButton);
+			GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+			break;
+		}
+	}
+	
+	GTGlobals::sleep(1000);
+
+	QCheckBox *checkButton1 = dialog->findChild<QCheckBox*>(QString::fromUtf8("mergeAnnotationsBox"));
+	GT_CHECK(checkButton1 != NULL, "Check box not found");
+
+	if ((mergeAnnotations && !checkButton1->isChecked()) ||
+	    !mergeAnnotations && checkButton1->isChecked()) {
+	QPoint checkPos;
+	switch(useMethod) {
+	case GTGlobals::UseMouse:
+		checkPos = QPoint(checkButton1->rect().left() + 5, checkButton1->rect().top() + 5);
+		GTMouseDriver::moveTo(os, checkButton1->mapToGlobal(checkPos));
+		GTMouseDriver::click(os);
+		break;
+	case GTGlobals::UseKey:
+		GTWidget::setFocus(os, checkButton1);
+		GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+		break;
+		}
+	}
+
+	QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("filepathEdit");
+    GT_CHECK(lineEdit != NULL, "line edit not found");
+    GTLineEdit::setText(os, lineEdit, documentLocation);
+
+    QComboBox *comboBox = dialog->findChild<QComboBox*>();
+    GT_CHECK(comboBox != NULL, "ComboBox not found");
+
+    int index = -1;
+    for (int i = 0; i < comboBox->count(); i++ ) {
+        if (comboBox->itemText(i) == comboBoxItems[format]) {
+            index = i;
+            break;
+        }
+    }
+
+    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+
+	if (comboBox->currentIndex() != index){
+		GTComboBox::setCurrentIndex(os, comboBox, index);
+	}
+
+	QPushButton *createButton = dialog->findChild<QPushButton*>(QString::fromUtf8("OKButton"));
+    GT_CHECK(createButton != NULL, "Create button not found");
+
+    GTWidget::click(os, createButton);
+}
+
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+
 #define GT_CLASS_NAME "GTUtilsDialog::RemovePartFromSequenceDialogFiller"
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::RemovePartFromSequenceDialogFiller::run()
@@ -910,4 +993,5 @@ void GTUtilsDialog::SequenceReadingModeSelectorDialogFiller::run()
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-}
+
+}//namespace

@@ -35,6 +35,7 @@
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
 #include <QtGui/QHeaderView>
+#include <U2View/ADVConstants.h>
 
 namespace U2 {
 
@@ -194,6 +195,15 @@ void GTUtilsProject::createDocument(U2OpStatus &os, const QString &pasteDataHere
     QPoint pos;
 }
 
+void GTUtilsProject::insertSequence(U2OpStatus &os, const QString &pasteDataHere, const QString &documentLocation, 
+									GTUtilsDialog::InsertSequenceFiller::documentFormat format,
+									bool saveToNewFile, bool mergeAnnotations, GTGlobals::UseMethod method)
+{
+	GTUtilsDialog::InsertSequenceFiller filler(os, pasteDataHere, documentLocation, format, saveToNewFile, mergeAnnotations, method);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
+	GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
+	GTGlobals::sleep(1000);
+}
 
 void GTUtilsProject::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile) {
 
