@@ -328,25 +328,25 @@ public:
 							 const QString &_documentLocation, 
 							 documentFormat _format,bool _saveToNewFile, bool _mergeAnnotations, 
 							 GTGlobals::UseMethod method = GTGlobals::UseMouse):
-			os(_os), pasteDataHere(_pasteDataHere), saveToNewFile(_saveToNewFile), format(_format), useMethod(method)  
+			os(_os), pasteDataHere(_pasteDataHere),
+                format(_format), saveToNewFile(_saveToNewFile), mergeAnnotations(_mergeAnnotations), 
+                useMethod(method)  
 			{
-				pasteDataHere = _pasteDataHere;
-				QString __documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + _documentLocation);
+                documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + _documentLocation);
                 comboBoxItems[FASTA] = "FASTA";
                 comboBoxItems[Genbank] = "Genbank";
-				documentLocation = __documentLocation;
 				mergeAnnotations = _mergeAnnotations;
 			}
         virtual void run();
 
     private:
         U2OpStatus &os;
-        QString documentLocation, pasteDataHere;
+        QString pasteDataHere;
         documentFormat format;
         QMap<documentFormat, QString> comboBoxItems;
         bool saveToNewFile;
         bool mergeAnnotations;
-
+        QString documentLocation;
         GTGlobals::UseMethod useMethod;
 
 	};

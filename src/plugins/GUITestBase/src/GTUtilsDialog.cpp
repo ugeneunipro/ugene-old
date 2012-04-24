@@ -844,7 +844,7 @@ void GTUtilsDialog::InsertSequenceFiller::run()
 	GT_CHECK(checkButton != NULL, "Check box not found");
 
 	if ((saveToNewFile && !checkButton->isChecked()) ||
-	    !saveToNewFile && checkButton->isChecked()) {
+	   (!saveToNewFile && checkButton->isChecked())) {
 		QPoint checkPos;
 		switch(useMethod) {
 		case GTGlobals::UseMouse:
@@ -865,7 +865,7 @@ void GTUtilsDialog::InsertSequenceFiller::run()
 	GT_CHECK(checkButton1 != NULL, "Check box not found");
 
 	if ((mergeAnnotations && !checkButton1->isChecked()) ||
-	    !mergeAnnotations && checkButton1->isChecked()) {
+	    (!mergeAnnotations && checkButton1->isChecked())) {
 	QPoint checkPos;
 	switch(useMethod) {
 	case GTGlobals::UseMouse:
@@ -929,7 +929,7 @@ void GTUtilsDialog::RemovePartFromSequenceDialogFiller::run()
 	QRadioButton *removeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("removeRB"));
 	GT_CHECK(removeRB != NULL, "radio button not found");
 	removeRB->setChecked(removeType == Remove);
-
+    GTGlobals::sleep(1000);
 	if (saveNew) {
 		QGroupBox *saveToAnotherBox =  dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
 		saveToAnotherBox->setChecked(true);

@@ -183,6 +183,38 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0008) {
+
+    GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+
+	GTUtilsDialog::selectSequenceRegionDialogFiller dialog(os, 2, 2);
+	GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
+	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+	GTGlobals::sleep(1000);
+
+	GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+	GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+
+    GTUtilsDialog::RemovePartFromSequenceDialogFiller removeDialog(os,
+        GTUtilsDialog::RemovePartFromSequenceDialogFiller::Remove,
+        false,
+        testDir+"_common_data/scenarios/sandbox/result.fa",
+        GTUtilsDialog::RemovePartFromSequenceDialogFiller::FASTA
+        );
+
+	GTUtilsDialog::preWaitForDialog(os, &removeDialog, GUIDialogWaiter::Modal);
+	GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000);
+
+    int sequenceLength = GTSequenceViewUtils::getLengthOfSequence(os);
+    CHECK_SET_ERR(sequenceLength == 29, "Sequence length is " + QString::number(sequenceLength) + ", expected 29");
+
+    QString sequenceBegin = GTSequenceViewUtils::getBeginOfSequenceAsString(os, 3);
+    CHECK_SET_ERR(sequenceBegin == "AAT", "Sequence starts with <" + sequenceBegin + ">, expected AAT");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0009) {
 	GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/AMINO.fa");
 	GTUtilsDialog::selectSequenceRegionDialogFiller dialog(os, 10, 13);
