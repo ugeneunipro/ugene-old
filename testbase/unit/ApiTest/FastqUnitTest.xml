@@ -6,6 +6,6 @@ FasqUnitTests
 + checkRawData
 + checkRawDataMultiple
 + checkRawDataInvalidHeaderStartWith
-- checkRawDataInvalidQualityHeaderStartWith
++ checkRawDataInvalidQualityHeaderStartWith
 
 </unittest>

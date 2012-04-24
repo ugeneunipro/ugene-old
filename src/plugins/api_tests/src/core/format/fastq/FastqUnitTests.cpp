@@ -26,7 +26,7 @@ void FastqFormatTestData::init() {
 }
 
 IMPLEMENT_TEST(FasqUnitTests, checkRawData) {
-	if (FastqFormatTestData::ioAdapter == NULL) {
+	if (FastqFormatTestData::format == NULL) {
 		FastqFormatTestData::init();
 	}
 	QByteArray rawData = "@SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
@@ -37,7 +37,7 @@ IMPLEMENT_TEST(FasqUnitTests, checkRawData) {
 }
 
 IMPLEMENT_TEST(FasqUnitTests, checkRawDataMultiple) {
-	if (FastqFormatTestData::ioAdapter == NULL) {
+	if (FastqFormatTestData::format == NULL) {
 		FastqFormatTestData::init();
 	}
 	QByteArray rawData = "@SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
@@ -50,7 +50,7 @@ IMPLEMENT_TEST(FasqUnitTests, checkRawDataMultiple) {
 }
 
 IMPLEMENT_TEST(FasqUnitTests, checkRawDataInvalidHeaderStartWith) {
-	if (FastqFormatTestData::ioAdapter == NULL) {
+	if (FastqFormatTestData::format == NULL) {
 		FastqFormatTestData::init();
 	}
 	QByteArray rawData = "SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
@@ -59,10 +59,10 @@ IMPLEMENT_TEST(FasqUnitTests, checkRawDataInvalidHeaderStartWith) {
 }
 
 IMPLEMENT_TEST(FasqUnitTests, checkRawDataInvalidQualityHeaderStartWith) {
-	if (FastqFormatTestData::ioAdapter == NULL) {
+	if (FastqFormatTestData::format == NULL) {
 		FastqFormatTestData::init();
 	}
-	QByteArray rawData = "@SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n-\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
+	QByteArray rawData = "@SEQ_ID\nGGGTGATGGCCGCTGCCGATGGCGTCAAATCCCACC\n-\nIIIIIIIIIIIIIIIIIIIIIIIIIIIIII9IG9IC\n";
 	FormatCheckResult res = FastqFormatTestData::format->checkRawData(rawData);
 	SAFE_POINT(res.score == FormatDetection_NotMatched, "format is not marched", );
 }
