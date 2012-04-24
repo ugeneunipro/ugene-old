@@ -44,7 +44,7 @@ public:
     static void registerScriptWorker(const QString &actorName);
 
     static bool isRegistered(const QString &actorName);
-    static bool isRegisteredTheSameProto(const QString &actorName, const ActorPrototype *proto);
+    static bool isRegisteredTheSameProto(const QString &actorName, ActorPrototype *proto);
 
 protected:
     virtual ActorPrototype *_getScriptProto(QList<DataTypePtr > input, QList<DataTypePtr > output, QList<Attribute*> attrs,

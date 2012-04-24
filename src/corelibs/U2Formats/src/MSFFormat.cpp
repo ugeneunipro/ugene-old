@@ -256,7 +256,7 @@ void MSFFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     QByteArray line = "  " + MSF_FIELD;
     line += " " + QByteArray::number(maLen);
     line += "  " + TYPE_FIELD;
-    line += " " + obj->getAlphabet()->isAmino() ? TYPE_VALUE_PROTEIN : TYPE_VALUE_NUCLEIC;
+    line += " " + ( obj->getAlphabet()->isAmino() ? TYPE_VALUE_PROTEIN : TYPE_VALUE_NUCLEIC );
     line += "  " + QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm");
     line += "  " + CHECK_FIELD;
     line += " " + QByteArray::number(checkSum);

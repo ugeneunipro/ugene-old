@@ -284,9 +284,9 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
                         break;
                     }
                     bool ok = true;
-                    const QString& percentStr = l[0];
+                    QString percentStr = l[0];
                     const QString& errStr = l[1];
-                    percentStr.left(percentStr.length()-1);
+                    percentStr = percentStr.left(percentStr.length()-1);
                     int p = percentStr.toInt(&ok);
                     if (!ok) {
                         si.setError(  tr("error_parsing_error_val_%1").arg(line) );

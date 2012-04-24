@@ -679,6 +679,7 @@ void FindDialog::sl_onRemoveOverlaps() {
             }
             U2Region r = rj->res.region.intersect(ri->res.region);
             if (r.length > 0 && r.length >= MAX_OVERLAP_K * ri->res.region.length) {
+                //TODO: the statement below is always false
                 if (ri->res.err > ri->res.err) {
                     delete ri;
                     i--;

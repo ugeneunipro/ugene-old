@@ -84,12 +84,12 @@ bool IncludedProtoFactory::isRegistered(const QString &actorName) {
     }
 }
 
-bool IncludedProtoFactory::isRegisteredTheSameProto(const QString &actorName, const ActorPrototype *proto) {
+bool IncludedProtoFactory::isRegisteredTheSameProto(const QString &actorName, ActorPrototype *proto) {
     ActorPrototype *regProto = WorkflowEnv::getProtoRegistry()->getProto(actorName);
     assert(NULL != proto);
 
     // compare simple proto parameters
-    if (regProto->isScriptFlagSet() != regProto->isScriptFlagSet()) {
+    if (regProto->isScriptFlagSet() != proto->isScriptFlagSet()) {
         return false;
     }
 

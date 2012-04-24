@@ -627,8 +627,8 @@ void AnnotationsTreeViewL::sl_onAnnotationModified(const AnnotationModification&
             {
                 const AnnotationGroupModification& gmd = (const AnnotationGroupModification&)md;
                 AVAnnotationItemL* ai = findAnnotationItem(gmd.group, gmd.annotation);
-                AVGroupItemL* gi = dynamic_cast<AVGroupItemL*>(ai->parent());
                 assert(ai!=NULL);
+                AVGroupItemL* gi = dynamic_cast<AVGroupItemL*>(ai->parent());
                 tree->removeItem(ai);
                 gi->updateVisual();
 

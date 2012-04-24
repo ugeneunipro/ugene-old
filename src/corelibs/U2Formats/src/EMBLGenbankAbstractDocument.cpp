@@ -115,6 +115,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     int fullSequenceSize = 0;
 
     for (int i=0; !os.isCoR(); i++, ++num_sequence) {
+        //TODO: reference to a local variable??? Such a pointer will become invalid
         EMBLGenbankDataEntry data;
         st.entry = &data;
 

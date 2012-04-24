@@ -602,7 +602,7 @@ int MAlignment::calculateMinLength() const {
 
 void MAlignment::removeChars(int row, int pos, int n) {
     assert(row >= 0 && row < getNumRows());
-    assert(pos >= 0 && pos + n <= length && n > 0 && n > 0);
+    assert(pos >= 0 && pos + n <= length && n > 0);
 
     MAStateCheck check(this);
 

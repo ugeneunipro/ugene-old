@@ -241,7 +241,7 @@ bool QDSceneSerializer::doc2scheme(const QList<QDDocument*>& docs, QMap<QDElemen
                 }
             }
             if (actualStmt==NULL) {
-                algoLog.error(QObject::tr("{%1} is not found in imported files.").arg(actualStmt->getId()));
+             //   algoLog.error(QObject::tr("{%1} is not found in imported files.").arg(grpStmt->getId()));
                 return false;
             }
             actor = QDSchemeSerializer::loadActor(actualStmt, group);

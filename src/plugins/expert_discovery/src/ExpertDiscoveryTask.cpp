@@ -452,7 +452,7 @@ bool ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(MarkingBa
                     foreach(Annotation* a, annotations){
                        const QVector<U2Region>& regions =  a->getRegions();
                        foreach(U2Region reg, regions){
-                           reg.length;
+                           //reg.length;
                            int startPos = reg.startPos;
                            int endPos = reg.startPos + reg.length - 1;
                            if (endPos >= startPos && startPos >= 0) {

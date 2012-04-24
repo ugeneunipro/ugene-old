@@ -103,7 +103,7 @@ void ConvertAssemblyToSamTask::run() {
             DNASequence seq;
             while (dbiIterator->hasNext()) {
                 U2AssemblyRead read = dbiIterator->next();
-                read->cigar;
+                //read->cigar;
 
                 seq.seq = read->readSequence;
                 seq.quality = read->quality;

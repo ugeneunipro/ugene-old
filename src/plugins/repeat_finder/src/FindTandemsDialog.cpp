@@ -222,7 +222,7 @@ void FindTandemsDialog::accept() {
     settings.maxPeriod = maxPeriod;
 //    settings.mismatches = (100-identPerc) * minPeriod / 100;
     settings.seqRegion = range;
-    settings.seqRegion = range;
+//    settings.seqRegion = range;
     settings.algo = (TSConstants::TSAlgo)algoComboBox->currentIndex();
     settings.minRepeatCount = minRepeatsBox->value();
     settings.minTandemSize = qMax(FindTandemsTaskSettings::DEFAULT_MIN_TANDEM_SIZE, minTandemSizeBox->value());

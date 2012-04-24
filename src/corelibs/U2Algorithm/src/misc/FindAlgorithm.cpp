@@ -196,7 +196,7 @@ static void findInAmino_subst(
                               int& percentsCompleted, 
                               int& currentPos) 
 {
-    assert(aminoTT->getSrcAlphabet()->isNucleic() && aminoTT->getDstAlphabet()->isAmino());
+    assert(complTT && aminoTT && aminoTT->getSrcAlphabet()->isNucleic() && aminoTT->getDstAlphabet()->isAmino());
     int patternLenInNucl =  3 * patternLen;
     if( range.length < patternLenInNucl ) {
         currentPos = range.endPos();

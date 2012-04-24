@@ -522,7 +522,7 @@ Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter
 
     /* Read header */
     if (read_scf_header(fp, &h) == -1) {
-        return false;
+        return NULL;
     }
 
     /* fake things for older style SCF -- SD */

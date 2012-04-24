@@ -180,7 +180,7 @@ LoadUnloadedDocumentTask* LoadUnloadedDocumentTask::findActiveLoadingTask(Docume
             return lut;
         }
     }
-    return false;
+    return NULL;
 }
 
 bool LoadUnloadedDocumentTask::addLoadingSubtask(Task* t, const LoadDocumentTaskConfig& config) {

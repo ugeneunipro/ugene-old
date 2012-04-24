@@ -654,8 +654,8 @@ void AnnotationsTreeView::sl_onAnnotationModified(const AnnotationModification& 
             {
                 const AnnotationGroupModification& gmd = (const AnnotationGroupModification&)md;
                 AVAnnotationItem* ai = findAnnotationItem(gmd.group, gmd.annotation);
-                AVGroupItem* gi = dynamic_cast<AVGroupItem*>(ai->parent());
                 assert(ai!=NULL);
+                AVGroupItem* gi = dynamic_cast<AVGroupItem*>(ai->parent());
                 delete ai;
                 gi->updateVisual();
 
@@ -2119,7 +2119,7 @@ void AVAnnotationItem::updateVisual(ATVAnnUpdateFlags f) {
         }
     }
 
-    if (f.testFlag(ATVAnnUpdateFlag_QualColumns)) {
+    if (f.testFlag(ATVAnnUpdateFlag_ReverseAnnotationSelection)) {
         setSelected(!isSelected());
     }
 
@@ -2375,6 +2375,7 @@ Task::ReportResult FindQualifierTask::report(){
 
     foreach(const QualPair & p, foundQuals){
         AVAnnotationItem* ai = p.first;
+        assert(ai!=NULL);
         if(!ai->isExpanded()){
             treeView->getTreeWidget()->expandItem(ai);
             treeView->sl_itemExpanded(ai);
