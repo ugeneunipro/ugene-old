@@ -217,6 +217,8 @@ void CrashHandler::setupHandler() {
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_USER_INTERFACE, LogLevel_ERROR));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_ALGORITHM, LogLevel_TRACE));
     crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CONSOLE, LogLevel_ERROR));
+    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_CORE_SERVICES, LogLevel_DETAILS));
+    crashLogCache->filter.filters.append(LogFilterItem(ULOG_CAT_TASKS, LogLevel_DETAILS));
 
 #if defined( Q_OS_WIN )
     addHandlerFunc = NULL;
