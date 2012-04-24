@@ -45,7 +45,7 @@ namespace U2{
 namespace GUITest_common_scenarios_project_remote_request {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
-	GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
+	GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 	GTUtilsDialog::RemoteDBDialogFiller filler(os, "3EZB", 2); 
 	GTUtilsDialog::waitForDialog(os, &filler);
 	GTUtilsTaskTreeView::openView(os);
