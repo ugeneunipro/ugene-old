@@ -200,6 +200,18 @@ void GTSequenceViewUtils::openSequenceView(U2OpStatus &os, const QString &sequen
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "addSequenceView"
+void GTSequenceViewUtils::addSequenceView(U2OpStatus &os, const QString &sequenceName){
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsDialog::PopupChooser chooser(os, QStringList() << "submenu_add_view" << "action_add_view", GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTGlobals::sleep(1000);
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 } // namespace U2

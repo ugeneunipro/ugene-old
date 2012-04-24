@@ -225,11 +225,22 @@ QString GTUtilsProjectTreeView::getSelectedItem(U2OpStatus &os)
 
 #define GT_METHOD_NAME "itemModificationCheck"
 void GTUtilsProjectTreeView::itemModificationCheck(U2OpStatus &os, QTreeWidgetItem* item, bool modified ){
+    GT_CHECK(item != NULL, "item is NULL");
     QVariant data = item->data(0, Qt::TextColorRole);
     bool modState = !(QVariant() == data);
     GT_CHECK(modState == modified, "Document's " + item->text(0) + " modification state not equal with expected");
 }
 
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "itemActiveCheck"
+void GTUtilsProjectTreeView::itemActiveCheck(U2OpStatus &os, QTreeWidgetItem* item, bool active) {
+    GT_CHECK(item != NULL, "item is NULL");
+    QVariant data = item->data(0, Qt::FontRole);
+
+    bool modState = !(QVariant() == data);
+    GT_CHECK(modState == active, "Document's " + item->text(0) + " active state not equal with expected");
+}
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME

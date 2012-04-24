@@ -24,6 +24,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTMenu.h"
+#include "api/GTLineEdit.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsDialog.h"
@@ -239,6 +240,22 @@ void GTUtilsProject::checkProject(U2OpStatus &os, CheckType checkType) {
         default:
             break;
     }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setFilter"
+void GTUtilsProject::setFilter(U2OpStatus &os, const QString& filter) {
+
+    MainWindow* mw = AppContext::getMainWindow();
+    GT_CHECK(mw != NULL, "MainWindow is NULL");
+    QWidget* widget = mw->getQMainWindow();
+    GT_CHECK(widget != NULL, "QMainWindow is NULL");
+
+    QLineEdit* nameFilterEdit = widget->findChild<QLineEdit*>("nameFilterEdit");
+    GT_CHECK(nameFilterEdit != NULL, "nameFilterEdit is NULL");
+
+    GTLineEdit::setText(os, nameFilterEdit, filter);
+    GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 
