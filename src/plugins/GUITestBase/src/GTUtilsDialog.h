@@ -336,7 +336,6 @@ public:
                 comboBoxItems[Genbank] = "Genbank";
 				documentLocation = __documentLocation;
 				mergeAnnotations = _mergeAnnotations;
-				
 			}
         virtual void run();
 
@@ -384,23 +383,65 @@ public:
     class selectSequenceRegionDialogFiller : public Runnable {
     public:
         enum RangeType {Single, Multiple};
-        selectSequenceRegionDialogFiller(U2OpStatus &_os, int *_len):
-            os(_os), rangeType(Single), len(_len), minVal(0), maxVal(0), selectAll(true){}
+        selectSequenceRegionDialogFiller(U2OpStatus &_os, int *_len) : os(_os)
+        {
+            rangeType = Single;
+            selectAll = true;
+            fromBegin = false;
+            minVal = 0;
+            maxVal = 0;
+            length = 0;
+            len = _len;
+            multipleRange = QString();
+        }
 
-        selectSequenceRegionDialogFiller(U2OpStatus &_os):
-            os(_os), rangeType(Single), selectAll(true), length(0), len(NULL){}
+        selectSequenceRegionDialogFiller(U2OpStatus &_os) : os(_os)
+        {
+            rangeType = Single;
+            selectAll = true;
+            fromBegin = false;
+            minVal = 0;
+            maxVal = 0;
+            length = 0;
+            len = NULL;
+            multipleRange = QString();
+        }
 
-        selectSequenceRegionDialogFiller(U2OpStatus &_os, int _minVal, int _maxVal):
-            os(_os), rangeType(Single), selectAll(false), minVal(_minVal),
-            maxVal(_maxVal), length(0), len(NULL){}
+        selectSequenceRegionDialogFiller(U2OpStatus &_os, int _minVal, int _maxVal) : os(_os)
+        {
+            rangeType = Single;
+            selectAll = false;
+            fromBegin = false;
+            minVal = _minVal;
+            maxVal = _maxVal;
+            length = 0;
+            len = NULL;
+            multipleRange = QString();
+        }
 
-        selectSequenceRegionDialogFiller(U2OpStatus &_os, const QString &range):
-            os(_os), rangeType(Multiple), selectAll(false),
-            length(0), len(NULL), multipleRange(range){}
+        selectSequenceRegionDialogFiller(U2OpStatus &_os, const QString &range) : os(_os)
+        {
+            rangeType = Multiple;
+            selectAll = false;
+            fromBegin = false;
+            minVal = 0;
+            maxVal = 0;
+            length = 0;
+            len = NULL;
+            multipleRange = range;
+        }
 
-        selectSequenceRegionDialogFiller(U2OpStatus &_os, int _length, bool selectFromBegin = true):
-            os(_os), rangeType(Single), selectAll(false), fromBegin(selectFromBegin),
-            minVal(0), maxVal(0), length(_length), len(NULL){}
+        selectSequenceRegionDialogFiller(U2OpStatus &_os, int _length, bool selectFromBegin = true) : os(_os)
+        {
+            rangeType = Single;
+            selectAll = false;
+            fromBegin = selectFromBegin;
+            minVal = 0;
+            maxVal = 0;
+            length = _length;
+            len = NULL;
+            multipleRange = QString();
+        }
 
         virtual void run();
     private:
