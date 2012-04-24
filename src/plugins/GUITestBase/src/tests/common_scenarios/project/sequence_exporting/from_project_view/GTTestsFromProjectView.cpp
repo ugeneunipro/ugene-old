@@ -140,8 +140,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
         os.setError("fasta file with sequences has been not opened");
     }
 
-    QString sequence = GTSequenceViewUtils::getSequenceAsString(os);
-    if (sequence.at(sequence.length() - 1) != '-' && !os.hasError()) {
+    QString sequence = GTSequenceViewUtils::getEndOfSequenceAsString(os, 1);
+    if (sequence.at(0) != '-' && !os.hasError()) {
         os.setError("sequence [s] ru131 has not NOT'-' symbols at the end of sequence");
     }
 }

@@ -30,7 +30,7 @@ class U2OpStatus;
 
 class GTSequenceViewUtils {
 public:
-    static QString getSequenceAsString(U2OpStatus &os);
+    static void getSequenceAsString(U2OpStatus &os, QString &sequence);
     static QString getBeginOfSequenceAsString(U2OpStatus &os, int length);
     static QString getEndOfSequenceAsString(U2OpStatus &os, int length);
     static int getLengthOfSequence(U2OpStatus &os);
