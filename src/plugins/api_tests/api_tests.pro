@@ -10,6 +10,7 @@ HEADERS += \
     src/core/dbi/sequence/SequenceDbiUnitTests.h \
     src/core/dbi/attribute/AttributeDbiUnitTests.h \
     src/core/dbi/features/FeaturesTableObjectUnitTest.h \
+    src/core/format/fastq/FastqUnitTests.h \
     src/core/format/genbank/LocationParserUnitTests.h \
     src/UnitTestSuite.h 
 SOURCES += \
@@ -20,5 +21,6 @@ SOURCES += \
     src/core/dbi/sequence/SequenceDbiUnitTests.cpp \
     src/core/dbi/attribute/AttributeDbiUnitTests.cpp \
     src/core/dbi/features/FeaturesTableObjectUnitTest.cpp \
+    src/core/format/fastq/FastqUnitTests.cpp \
     src/core/format/genbank/LocationParserUnitTests.cpp \
     src/UnitTestSuite.cpp 

@@ -80,5 +80,4 @@ LocationParserTestData
 + locationParserName
 + locationParserNameInvalid
 - locationBuildStringNumberInvalid
-
 </unittest>
