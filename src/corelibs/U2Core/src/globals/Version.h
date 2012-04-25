@@ -53,6 +53,7 @@ public:
     QString     text;
     QString     suffix;
     bool        isDevVersion;
+    const static QString     buildDate;
 };
 
 } //namespace

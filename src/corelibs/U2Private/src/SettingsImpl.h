@@ -36,6 +36,7 @@ public:
     ~SettingsImpl();
     
     QStringList getAllKeys(const QString& path);
+    void cleanSection(const QString& path);
 
     virtual bool contains(const QString& key) const;
     virtual void remove(const QString& key);

@@ -85,6 +85,7 @@ protected:
     void updateSavedState(PluginRef* ref);
 
 private:
+    QString             versionAppendix;
     QList<PluginRef*>   plugRefs;
     QList<Plugin*>      plugins;
 };

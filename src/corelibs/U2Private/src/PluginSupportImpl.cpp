@@ -56,8 +56,18 @@ PluginSupportImpl::PluginSupportImpl(): allLoaded(false) {
     QString pluginListSettingsDir = settings->toVersionKey(PLUGINS_LIST_SETTINGS);
     QStringList allKeys = settings->getAllKeys(pluginListSettingsDir);
     QSet<QString> pluginFiles;
+    versionAppendix = Version::buildDate;
+    if (!Version::appVersion().isDevVersion){
+        versionAppendix.clear();
+    }else{
+        versionAppendix.replace(" ", ".");
+        versionAppendix.append("-");
+        if (allKeys.size() > 150){
+            settings->remove(pluginListSettingsDir);
+        }
+    }
     foreach (QString pluginId, allKeys) {
-        QString file = settings->getValue(pluginListSettingsDir + pluginId).toString();
+        QString file = settings->getValue(pluginListSettingsDir + versionAppendix + pluginId).toString();
         pluginFiles.insert(file);
     }
 
@@ -326,7 +336,7 @@ void PluginSupportImpl::updateSavedState(PluginRef* ref) {
             }
         }
     } else {
-        settings->setValue(pluginListSettingsDir + pluginId, descUrl);
+        settings->setValue(pluginListSettingsDir + versionAppendix + pluginId, descUrl);
 
         //remove from skip-list if present
         if (isDefaultPluginsDir(descUrl)) {

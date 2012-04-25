@@ -149,6 +149,12 @@ QStringList SettingsImpl::getAllKeys(const QString& path) {
     return allKeys;
 }
 
+void SettingsImpl::cleanSection(const QString& path){
+    QStringList keyList = getAllKeys(path);
+    foreach(QString key, keyList){
+        remove(key);
+    }
+}
 
 void SettingsImpl::sync() {
     QMutexLocker lock(&threadSafityLock);

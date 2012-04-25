@@ -33,6 +33,8 @@ namespace U2 {
 #define U2_APP_VERSION_STRING TOSTRING(U2_APP_VERSION)
 #define VERSION_DEV_SUFFIX "dev"
 
+const QString Version::buildDate = __DATE__;
+
 Version::Version() {
     major = minor = patch = 0;
     debug = false;
