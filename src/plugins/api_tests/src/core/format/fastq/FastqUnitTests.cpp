@@ -55,7 +55,7 @@ IMPLEMENT_TEST(FasqUnitTests, checkRawDataInvalidHeaderStartWith) {
 	}
 	QByteArray rawData = "SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
 	FormatCheckResult res = FastqFormatTestData::format->checkRawData(rawData);
-	SAFE_POINT(res.score == FormatDetection_NotMatched, "format is not marched", );
+	SAFE_POINT(res.score == FormatDetection_NotMatched, "format is not matched", );
 }
 
 IMPLEMENT_TEST(FasqUnitTests, checkRawDataInvalidQualityHeaderStartWith) {
@@ -64,7 +64,7 @@ IMPLEMENT_TEST(FasqUnitTests, checkRawDataInvalidQualityHeaderStartWith) {
 	}
 	QByteArray rawData = "@SEQ_ID\nGGGTGATGGCCGCTGCCGATGGCGTCAAATCCCACC\n-\nIIIIIIIIIIIIIIIIIIIIIIIIIIIIII9IG9IC\n";
 	FormatCheckResult res = FastqFormatTestData::format->checkRawData(rawData);
-	SAFE_POINT(res.score == FormatDetection_NotMatched, "format is not marched", );
+	SAFE_POINT(res.score == FormatDetection_NotMatched, "format is not matched", );
 }
 
 } //namespace
