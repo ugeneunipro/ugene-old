@@ -184,6 +184,27 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0007) {
+    GTUtilsProject::openFiles(os, testDir + "_common_data/edit_sequence/test.gb");
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+
+    GTUtilsDialog::RemovePartFromSequenceDialogFiller removeDialog(os, "2..2");
+    GTUtilsDialog::preWaitForDialog(os, &removeDialog, GUIDialogWaiter::Modal);
+    GTGlobals::sleep(1000);
+
+    QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 3);
+    CHECK_SET_ERR(sequenceBegin == "AAT", "Sequence starts with " + sequenceBegin + ", expected AAT");
+
+    int length = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(length == 29, "Sequence length is " + QString::number(length) + ", expected 29");
+
+    bool found = GTUtilsAnnotationsTreeView::findRegion(os, "DUMMY_1", U2Region(2, 5));
+    CHECK_SET_ERR(found == true, "There is no {2..5} region in annotation");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
@@ -226,6 +247,27 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 	GTGlobals::sleep(1000);
 	QString sequence = QApplication::clipboard()->text();
 	CHECK_SET_ERR("ACCC" == sequence, "Incorrect sequence is copied");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0012) {
+    GTUtilsProject::openFiles(os, testDir + "_common_data/edit_sequence/test.gb");
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+
+    GTUtilsDialog::RemovePartFromSequenceDialogFiller removeDialog(os, "2..2");
+    GTUtilsDialog::preWaitForDialog(os, &removeDialog, GUIDialogWaiter::Modal);
+    GTGlobals::sleep(1000);
+
+    QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 3);
+    CHECK_SET_ERR(sequenceBegin == "AAT", "Sequence starts with " + sequenceBegin + ", expected AAT");
+
+    int length = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(length == 29, "Sequence length is " + QString::number(length) + ", expected 29");
+
+    bool found = GTUtilsAnnotationsTreeView::findRegion(os, "DUMMY_1", U2Region(2, 5));
+    CHECK_SET_ERR(found == true, "There is no {2..5} region in annotation");
 }
 
 } // namespace

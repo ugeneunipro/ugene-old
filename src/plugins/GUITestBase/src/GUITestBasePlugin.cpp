@@ -83,6 +83,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0020);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0021);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0023, "wrong test");
     REGISTER_TEST(GUITest_common_scenarios_project::test_0025);
@@ -135,9 +136,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-956");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0005, "https://ugene.unipro.ru/tracker/browse/UGENE-954");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0006, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0009);
-
+    REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0012);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/remote request/

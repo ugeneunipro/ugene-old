@@ -240,6 +240,29 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
     CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "human_T1.fa") != NULL, "Item human_T1.fa not found in tree widget");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0020) {
+    GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+    GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep(1000);
+
+    QTreeWidgetItem* se1 = GTUtilsProjectTreeView::findItem(os, "se1");
+    GTUtilsProjectTreeView::itemActiveCheck(os, se1);
+
+    QTreeWidgetItem* se2 = GTUtilsProjectTreeView::findItem(os, "se2");
+    GTUtilsProjectTreeView::itemActiveCheck(os, se2);
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsProjectTreeView::itemActiveCheck(os, se1, false);
+    GTUtilsProjectTreeView::itemActiveCheck(os, se2, false);
+
+    GTUtilsSequenceView::openSequenceView(os, "se1");
+    GTUtilsProjectTreeView::itemActiveCheck(os, se1);
+
+    GTUtilsSequenceView::addSequenceView(os, "se2");
+    GTUtilsProjectTreeView::itemActiveCheck(os, se2);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0021) {
 	GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
 	GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
