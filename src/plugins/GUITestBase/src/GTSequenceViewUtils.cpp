@@ -82,6 +82,7 @@ void GTSequenceViewUtils::getSequenceAsString(U2OpStatus &os, QString &sequence)
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000); // don't touch
 
     GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
@@ -109,7 +110,7 @@ QString GTSequenceViewUtils::getBeginOfSequenceAsString(U2OpStatus &os, int leng
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
-
+    GTGlobals::sleep(1000); // don't touch
     QString sequence;
     GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
@@ -139,6 +140,7 @@ QString GTSequenceViewUtils::getEndOfSequenceAsString(U2OpStatus &os, int length
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000); // don't touch
 
     QString sequence;
     GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
