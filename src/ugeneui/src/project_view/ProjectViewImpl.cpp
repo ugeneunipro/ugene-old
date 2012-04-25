@@ -755,6 +755,7 @@ void ProjectViewImpl::buildAddToViewMenu(const MultiGSelection& ms, QMenu* m) {
     QAction* action = new QAction(tr("add_to_view_action_%1").arg(ow->getViewName()), m);		
     AddToViewContext* ac = new AddToViewContext(action, ow->getObjectView(), objects);
     action->setData(QVariant::fromValue((void*)ac));
+    action->setObjectName("action_add_view");
     connect(action, SIGNAL(triggered()), SLOT(sl_addToView()));
     m->addAction(action);
 }
@@ -811,6 +812,7 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
     openViewMenu->menuAction()->setObjectName("submenu_open_view");
 
     buildAddToViewMenu(multiSelection, addToViewMenu);
+    addToViewMenu->menuAction()->setObjectName("submenu_add_view");
 
     addToViewMenu->setDisabled(addToViewMenu->isEmpty());
     m.insertMenu(m.actions().first(), addToViewMenu);

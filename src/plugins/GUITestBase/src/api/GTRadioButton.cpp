@@ -19,27 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef GTSEQUENCEVIEWUTILS_H
-#define GTSEQUENCEVIEWUTILS_H
+#include "GTRadioButton.h"
+#include "GTWidget.h"
 
-#include <QString>
+#include "GTMouseDriver.h"
+#include "GTKeyboardDriver.h"
 
 namespace U2 {
 
-class U2OpStatus;
+#define GT_CLASS_NAME "GTRadioButton"
 
-class GTSequenceViewUtils {
-public:
-    static void getSequenceAsString(U2OpStatus &os, QString &sequence);
-    static QString getBeginOfSequenceAsString(U2OpStatus &os, int length);
-    static QString getEndOfSequenceAsString(U2OpStatus &os, int length);
-    static int getLengthOfSequence(U2OpStatus &os);
-    static void checkSequence(U2OpStatus &os, const QString &expectedSequence);
+#define GT_METHOD_NAME "click"
+void GTRadioButton::click(U2OpStatus& os, QRadioButton *radioButton) {
+    GT_CHECK(radioButton != NULL, "RadioButton is NULL");
 
-  	static void openSequenceView(U2OpStatus &os, const QString &sequenceName);
-    static void addSequenceView(U2OpStatus &os, const QString &sequenceName);
-};
+    QPoint buttonPos = radioButton->mapToGlobal(radioButton->rect().topLeft());
+    buttonPos = QPoint(buttonPos.x() + 10, buttonPos.y() + 10); // moved to clickable area
 
-} // namespace U2
+    GTMouseDriver::moveTo(os, buttonPos);
+    GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
 
-#endif // GTSEQUENCEVIEWUTILS_H
+#undef GT_CLASS_NAME
+
+}

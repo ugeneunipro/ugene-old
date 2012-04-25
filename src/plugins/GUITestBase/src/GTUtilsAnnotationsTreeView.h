@@ -30,6 +30,8 @@ class QTreeWidgetItem;
 namespace U2 {
 
 class AVItem;
+class U2Region;
+
 class GTUtilsAnnotationsTreeView {
 public:
     static QTreeWidget* getTreeWidget(U2OpStatus &os);
@@ -39,6 +41,10 @@ public:
     static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
 
     static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+
+    // finds given region in annotation with a given name. U2Region: visible {begin, end} positions.
+    static bool findRegion(U2OpStatus &os, const QString &itemName, const U2Region& region);
+
     static QString getSelectedItem(U2OpStatus &os);
 
     static QString getAVItemName(U2OpStatus &os, AVItem* avItem);

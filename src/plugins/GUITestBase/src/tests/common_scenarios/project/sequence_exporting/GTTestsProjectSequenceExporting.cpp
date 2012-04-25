@@ -37,7 +37,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsMdi.h"
-#include "GTSequenceViewUtils.h"
+#include "GTUtilsSequenceView.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
 #include <U2Core/DocumentModel.h>
@@ -122,7 +122,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003)
 
     GTGlobals::sleep(100);
 
-    GTSequenceViewUtils::checkSequence(os, expectedSequences);
+    GTUtilsSequenceView::checkSequence(os, expectedSequences);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {

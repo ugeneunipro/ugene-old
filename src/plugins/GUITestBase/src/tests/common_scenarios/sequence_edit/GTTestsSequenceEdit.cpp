@@ -25,6 +25,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
+#include "api/GTTreeWidget.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -32,10 +33,10 @@
 #include "GTUtilsToolTip.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTSequenceViewUtils.h"
-#include "api/GTTreeWidget.h"
+#include "GTUtilsSequenceView.h"
 #include "GTUtilsMdi.h"
 #include <U2Core/DocumentModel.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
@@ -69,12 +70,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 	GTUtilsDialog::preWaitForDialog(os, &removeDialog, GUIDialogWaiter::Modal);
 	GTGlobals::sleep(1000);
 
-    GTSequenceViewUtils::openSequenceView(os, "result.fa");
+    GTUtilsSequenceView::openSequenceView(os, "result.fa");
 
-    int sequenceLength = GTSequenceViewUtils::getLengthOfSequence(os);
+    int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 199900, "Sequence length is " + QString::number(sequenceLength) + ", expected 199900");
 
-    QString sequenceBegin = GTSequenceViewUtils::getBeginOfSequenceAsString(os, 7);
+    QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 7);
     CHECK_SET_ERR(sequenceBegin == "AGAGAGA", "Sequence starts with <" + sequenceBegin + ">, expected AGAGAGA");
 }
 
@@ -95,7 +96,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
 	GTUtilsDialog::preWaitForDialog(os, &removeDialog, GUIDialogWaiter::Modal);
 	GTGlobals::sleep(1000);
-    GTSequenceViewUtils::openSequenceView(os, "result.gb");
+    GTUtilsSequenceView::openSequenceView(os, "result.gb");
 /*	QString sequence = GTSequenceViewUtils::getSequenceAsString(os);
 	if (sequence.length()!= 199900) {
 		os.setError("incorrect sequence length");
@@ -110,12 +111,12 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTUtilsDocument::checkDocument(os, "result.fa");
 	GTGlobals::sleep(1000);
 
-	GTSequenceViewUtils::openSequenceView(os, "result.fa");	
+	GTUtilsSequenceView::openSequenceView(os, "result.fa");	
 
-	int sequenceLength = GTSequenceViewUtils::getLengthOfSequence(os);
+	int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 199956, "Sequence length is " + QString::number(sequenceLength) + ", expected 199956");
 
-    QString sequenceBegin = GTSequenceViewUtils::getBeginOfSequenceAsString(os, 6);
+    QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 6);
     CHECK_SET_ERR(sequenceBegin == "AAAAAA", "Sequence starts with <" + sequenceBegin + ">, expected AAAAAA");
 
 }
@@ -127,12 +128,12 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 	GTGlobals::sleep(1000);
     GTUtilsDocument::checkDocument(os, "result.gb");
 	GTGlobals::sleep(1000);
-	GTSequenceViewUtils::openSequenceView(os, "result.gb");	
+	GTUtilsSequenceView::openSequenceView(os, "result.gb");	
 
-	int sequenceLength = GTSequenceViewUtils::getLengthOfSequence(os);
+	int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 199956, "Sequence length is " + QString::number(sequenceLength) + ", expected 199956");
 
-    QString sequenceBegin = GTSequenceViewUtils::getBeginOfSequenceAsString(os, 6);
+    QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 6);
     CHECK_SET_ERR(sequenceBegin == "AAAAAA", "Sequence starts with <" + sequenceBegin + ">, expected AAAAAA");
 
 }
@@ -156,12 +157,12 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 	GTGlobals::sleep(1000);
     GTUtilsDocument::checkDocument(os, "result.fa");
 	GTGlobals::sleep(1000);
-	GTSequenceViewUtils::openSequenceView(os, "result.fa");	
+	GTUtilsSequenceView::openSequenceView(os, "result.fa");	
 
-	int sequenceLength = GTSequenceViewUtils::getLengthOfSequence(os);
+	int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 199900, "Sequence length is " + QString::number(sequenceLength) + ", expected 199900");
 
-    QString sequenceBegin = GTSequenceViewUtils::getBeginOfSequenceAsString(os, 7);
+    QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 7);
     CHECK_SET_ERR(sequenceBegin == "AGAGAGA", "Sequence starts with <" + sequenceBegin + ">, expected AGAGAGA");
 
 
@@ -176,7 +177,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTGlobals::sleep(1000);
 
     QString expectedSequenceBegin = "ATCAGATT";
-    QString sequenceBegin = GTSequenceViewUtils::getBeginOfSequenceAsString(os, 8);
+    QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 8);
 
     if (expectedSequenceBegin != sequenceBegin && !os.hasError()) {
         os.setError("Bad sequence");
@@ -208,10 +209,10 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 	GTGlobals::sleep(1000);
     GTGlobals::sleep(1000);
 
-    int sequenceLength = GTSequenceViewUtils::getLengthOfSequence(os);
+    int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 29, "Sequence length is " + QString::number(sequenceLength) + ", expected 29");
 
-    QString sequenceBegin = GTSequenceViewUtils::getBeginOfSequenceAsString(os, 3);
+    QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 3);
     CHECK_SET_ERR(sequenceBegin == "AAT", "Sequence starts with <" + sequenceBegin + ">, expected AAT");
 }
 
@@ -229,5 +230,3 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 
 } // namespace
 } // namespace U2
-
-

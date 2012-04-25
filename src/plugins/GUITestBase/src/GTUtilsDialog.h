@@ -324,15 +324,19 @@ public:
 	class InsertSequenceFiller : public Runnable {
 	public:
 		enum documentFormat {FASTA, Genbank};
-		InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere,
-							 const QString &_documentLocation, 
-							 documentFormat _format,bool _saveToNewFile, bool _mergeAnnotations, 
+        enum RegionResolvingMode {Resize, Remove, SplitJoin, SplitSeparate};
+
+		InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere, RegionResolvingMode _regionResolvingMode = Resize, int _insertPosition = 0,
+							 const QString &_documentLocation = "", 
+							 documentFormat _format = FASTA, bool _saveToNewFile = false, bool _mergeAnnotations = false,
 							 GTGlobals::UseMethod method = GTGlobals::UseMouse):
-			os(_os), pasteDataHere(_pasteDataHere),
-                format(_format), saveToNewFile(_saveToNewFile), mergeAnnotations(_mergeAnnotations), 
-                useMethod(method)  
+			os(_os), pasteDataHere(_pasteDataHere), regionResolvingMode(_regionResolvingMode), insertPosition(_insertPosition),
+                documentLocation(_documentLocation), format(_format), saveToNewFile(_saveToNewFile), mergeAnnotations(_mergeAnnotations),
+                useMethod(method)
 			{
-                documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + _documentLocation);
+                if (!documentLocation.isEmpty()) {
+                    documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + documentLocation);
+                }
                 comboBoxItems[FASTA] = "FASTA";
                 comboBoxItems[Genbank] = "Genbank";
 				mergeAnnotations = _mergeAnnotations;
@@ -342,13 +346,15 @@ public:
     private:
         U2OpStatus &os;
         QString pasteDataHere;
+        RegionResolvingMode regionResolvingMode;
+        int insertPosition;
         documentFormat format;
-        QMap<documentFormat, QString> comboBoxItems;
         bool saveToNewFile;
         bool mergeAnnotations;
         QString documentLocation;
         GTGlobals::UseMethod useMethod;
 
+        QMap<documentFormat, QString> comboBoxItems;
 	};
 
 

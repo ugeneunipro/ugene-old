@@ -33,7 +33,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTSequenceViewUtils.h"
+#include "GTUtilsSequenceView.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
@@ -140,7 +140,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
         os.setError("fasta file with sequences has been not opened");
     }
 
-    QString sequence = GTSequenceViewUtils::getEndOfSequenceAsString(os, 1);
+    QString sequence = GTUtilsSequenceView::getEndOfSequenceAsString(os, 1);
     if (sequence.at(0) != '-' && !os.hasError()) {
         os.setError("sequence [s] ru131 has not NOT'-' symbols at the end of sequence");
     }

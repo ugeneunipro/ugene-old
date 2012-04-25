@@ -23,6 +23,8 @@
 #include "api/GTComboBox.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
+#include "api/GTRadioButton.h"
+#include "api/GTSpinBox.h"
 #include "api/GTPlainTextEdit.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
@@ -840,6 +842,33 @@ void GTUtilsDialog::InsertSequenceFiller::run()
     GT_CHECK(plainText != NULL, "plain text not found");
 	GTPlainTextEdit::setPlainText(os, plainText, pasteDataHere);
 
+    QString radioButtonName;
+    switch (regionResolvingMode) {
+        case Resize:
+            radioButtonName = "resizeRB";
+            break;
+
+        case Remove:
+            radioButtonName = "removeRB";
+            break;
+
+        case SplitJoin:
+            radioButtonName = "splitRB";
+            break;
+
+        default:
+        case SplitSeparate:
+            radioButtonName = "split_separateRB";
+            break;
+    }
+    QRadioButton *regionResolvingMode = dialog->findChild<QRadioButton*>(radioButtonName);//"regionResolvingMode");
+    GT_CHECK(regionResolvingMode != NULL, "regionResolvingMode not found");
+    GTRadioButton::click(os, regionResolvingMode);
+
+    QSpinBox *insertPositionSpin = dialog->findChild<QSpinBox*>("insertPositionSpin");
+    GT_CHECK(insertPositionSpin != NULL, "insertPositionSpin not found");
+    GTSpinBox::setValue(os, insertPositionSpin, insertPosition);
+
 	QGroupBox *checkButton = dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
 	GT_CHECK(checkButton != NULL, "Check box not found");
 
@@ -880,9 +909,11 @@ void GTUtilsDialog::InsertSequenceFiller::run()
 		}
 	}
 
-	QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("filepathEdit");
-    GT_CHECK(lineEdit != NULL, "line edit not found");
-    GTLineEdit::setText(os, lineEdit, documentLocation);
+    if (saveToNewFile) {
+    	QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("filepathEdit");
+        GT_CHECK(lineEdit != NULL, "line edit not found");
+        GTLineEdit::setText(os, lineEdit, documentLocation);
+    }
 
     QComboBox *comboBox = dialog->findChild<QComboBox*>();
     GT_CHECK(comboBox != NULL, "ComboBox not found");

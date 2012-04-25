@@ -34,7 +34,7 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
-#include "GTSequenceViewUtils.h"
+#include "GTUtilsSequenceView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsTaskTreeView.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
@@ -259,12 +259,12 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
 	font = item->font(0);
 	CHECK_SET_ERR(!font.bold(), "se1 item font is not a bold");
 
-	GTSequenceViewUtils::openSequenceView(os, "se1");	
+	GTUtilsSequenceView::openSequenceView(os, "se1");	
 	item = GTUtilsProjectTreeView::findItem(os, "se1");
 	font = item->font(0);
 	CHECK_SET_ERR(font.bold(), "se1 item font is not a bold");
 
-	GTSequenceViewUtils::openSequenceView(os, "se2");	
+	GTUtilsSequenceView::openSequenceView(os, "se2");	
 	item = GTUtilsProjectTreeView::findItem(os, "se2");
 	font = item->font(0);
 	CHECK_SET_ERR(font.bold(), "se2 item font is not a bold");	 

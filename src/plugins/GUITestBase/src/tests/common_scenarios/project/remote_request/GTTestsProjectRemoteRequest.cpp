@@ -34,7 +34,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTSequenceViewUtils.h"
+#include "GTUtilsSequenceView.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
 #include <U2View/MSAEditorFactory.h>

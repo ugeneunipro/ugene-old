@@ -101,6 +101,29 @@ QTreeWidgetItem* GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QStr
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "findRegion"
+bool GTUtilsAnnotationsTreeView::findRegion(U2OpStatus &os, const QString &itemName, const U2Region& r) {
+
+    AVAnnotationItem* item = (AVAnnotationItem*)GTUtilsAnnotationsTreeView::findItem(os, itemName);
+    CHECK_SET_ERR_RESULT(item != NULL, "Item " + itemName + " not found", false);
+    Annotation* ann = item->annotation;
+    CHECK_SET_ERR_RESULT(ann != NULL, "Annotation is NULL", false);
+
+    U2Region neededRegion(r.startPos-1, r.length-r.startPos+1);
+
+    bool found = false;
+    QVector<U2Region> regions = ann->getRegions();
+    foreach (const U2Region& r, regions) {
+        if (r.contains(neededRegion)) {
+            found = true;
+            break;
+        }
+    }
+
+    return found;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getSelectedItem"
 QString GTUtilsAnnotationsTreeView::getSelectedItem(U2OpStatus &os)
 {

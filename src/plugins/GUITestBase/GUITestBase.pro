@@ -11,6 +11,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsProjectTreeView.h \
             src/GTUtilsAnnotationsTreeView.h \
             src/GTUtilsBookmarksTreeView.h \
+            src/GTUtilsSequenceView.h \
             src/GTUtilsToolTip.h \
             src/GTUtilsTaskTreeView.h \
             src/tests/GUIInitialChecks.h \
@@ -24,7 +25,10 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h \
             src/tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h \
+            src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h \
             src/api/GTComboBox.h \
+            src/api/GTSpinBox.h \
+            src/api/GTRadioButton.h \
             src/api/GTFileDialog.h \
             src/api/GTFile.h \
             src/api/GTGlobals.h \
@@ -41,9 +45,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTToolbar.h \
             src/api/GTWidget.h \
             src/api/GTSequenceReadingModeDialog.h \
-            src/api/GTSequenceReadingModeDialogUtils.h \
-            src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h \
-    src/GTSequenceViewUtils.h
+            src/api/GTSequenceReadingModeDialogUtils.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsApp.cpp \
@@ -55,6 +57,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsProjectTreeView.cpp \
             src/GTUtilsAnnotationsTreeView.cpp \
             src/GTUtilsBookmarksTreeView.cpp \
+            src/GTUtilsSequenceView.cpp \
             src/GTUtilsToolTip.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/tests/GUIInitialChecks.cpp \
@@ -68,7 +71,10 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.cpp \
             src/tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.cpp \
             src/tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.cpp \
+            src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.cpp \
             src/api/GTComboBox.cpp \
+            src/api/GTSpinBox.cpp \
+            src/api/GTRadioButton.cpp \
             src/api/GTFileDialog.cpp \
             src/api/GTFile.cpp \
             src/api/GTGlobals.cpp \
@@ -91,9 +97,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTreeWidget.cpp \
             src/api/GTWidget.cpp \
             src/api/GTSequenceReadingModeDialog.cpp \
-            src/api/GTSequenceReadingModeDialogUtils.cpp \
-            src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.cpp \
-    src/GTSequenceViewUtils.cpp
+            src/api/GTSequenceReadingModeDialogUtils.cpp
 
 
 

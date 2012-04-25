@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTSequenceViewUtils.h"
+#include "GTUtilsSequenceView.h"
 #include "api/GTGlobals.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
@@ -66,10 +66,10 @@ private:
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-#define GT_CLASS_NAME "GTSequenceViewUtils"
+#define GT_CLASS_NAME "GTUtilsSequenceView"
 #define GT_METHOD_NAME "getSequenceAsString"
 
-void GTSequenceViewUtils::getSequenceAsString(U2OpStatus &os, QString &sequence)
+void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
 {
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
@@ -97,7 +97,7 @@ void GTSequenceViewUtils::getSequenceAsString(U2OpStatus &os, QString &sequence)
 
 #define GT_METHOD_NAME "getBeginOfSequenceAsString"
 
-QString GTSequenceViewUtils::getBeginOfSequenceAsString(U2OpStatus &os, int length)
+QString GTUtilsSequenceView::getBeginOfSequenceAsString(U2OpStatus &os, int length)
 {
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
@@ -127,7 +127,7 @@ QString GTSequenceViewUtils::getBeginOfSequenceAsString(U2OpStatus &os, int leng
 
 #define GT_METHOD_NAME "getEndOfSequenceAsString"
 
-QString GTSequenceViewUtils::getEndOfSequenceAsString(U2OpStatus &os, int length)
+QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length)
 {
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
@@ -158,7 +158,7 @@ QString GTSequenceViewUtils::getEndOfSequenceAsString(U2OpStatus &os, int length
 
 #define GT_METHOD_NAME "getLengthOfSequence"
 
-int GTSequenceViewUtils::getLengthOfSequence(U2OpStatus &os)
+int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
 {
     MainWindow* mw = AppContext::getMainWindow();
     GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
@@ -181,7 +181,7 @@ int GTSequenceViewUtils::getLengthOfSequence(U2OpStatus &os)
 
 #define GT_METHOD_NAME "checkSequence"
 
-void GTSequenceViewUtils::checkSequence(U2OpStatus &os, const QString &expectedSequence)
+void GTUtilsSequenceView::checkSequence(U2OpStatus &os, const QString &expectedSequence)
 {
     QString actualSequence;
     getSequenceAsString(os, actualSequence);
@@ -191,7 +191,7 @@ void GTSequenceViewUtils::checkSequence(U2OpStatus &os, const QString &expectedS
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "openSequenceView"
-void GTSequenceViewUtils::openSequenceView(U2OpStatus &os, const QString &sequenceName){
+void GTUtilsSequenceView::openSequenceView(U2OpStatus &os, const QString &sequenceName){
 	QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
 	GTMouseDriver::moveTo(os, itemPos);
 	GTMouseDriver::click(os, Qt::RightButton);
@@ -203,7 +203,7 @@ void GTSequenceViewUtils::openSequenceView(U2OpStatus &os, const QString &sequen
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addSequenceView"
-void GTSequenceViewUtils::addSequenceView(U2OpStatus &os, const QString &sequenceName){
+void GTUtilsSequenceView::addSequenceView(U2OpStatus &os, const QString &sequenceName){
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
