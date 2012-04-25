@@ -1393,7 +1393,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/ov_sequence/ADVSingleSequenceWidget.cpp" line="415"/>
         <source>Select</source>
-        <translation>Селектировать</translation>
+        <translation>Выделить</translation>
     </message>
     <message>
         <source>Replace file</source>
@@ -1561,12 +1561,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/ov_sequence/ADVSyncViewManager.cpp" line="571"/>
         <source>Hide %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрыть %1</translation>
     </message>
     <message>
         <location filename="../src/ov_sequence/ADVSyncViewManager.cpp" line="573"/>
         <source>Show %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать %1</translation>
     </message>
 </context>
 <context>
@@ -3055,7 +3055,7 @@ Please select file to align.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="406"/>
         <source>Tree</source>
-        <translation type="unfinished">Дерево</translation>
+        <translation>Дерево</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditor.cpp" line="413"/>
@@ -3283,7 +3283,7 @@ Please select file to align.</source>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="104"/>
         <source>Fill selection with gaps</source>
-        <translation type="unfinished">Заполнить пропусками</translation>
+        <translation>Заполнить пропусками</translation>
     </message>
     <message>
         <location filename="../src/ov_msa/MSAEditorSequenceArea.cpp" line="111"/>
