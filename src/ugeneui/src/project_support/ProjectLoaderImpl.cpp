@@ -267,6 +267,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
 	}
 	
 	QVariantMap hintsOverDocuments;
+    QMap<QString, qint64> headerSequenceLengths;
 
 	foreach(const GUrl& url, urls){
 		FormatDetectionResult dr;
@@ -279,7 +280,8 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
 			break;
 		}
 		dr =  formats[0];
-		bool matchCurrentDocument  = MultipleDocumentsReadingModeSelectorController::isAbilityToUniteDocumnents(dr.rawDataCheckResult.properties);
+		bool matchCurrentDocument = MultipleDocumentsReadingModeSelectorController::mergeDocumentOption(dr, &headerSequenceLengths);
+
 		if(!matchCurrentDocument){
 			abilityUniteDocuments = false;
 			break;
@@ -287,7 +289,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
 	}
 
 	if(abilityUniteDocuments){
-		bool ok  = MultipleDocumentsReadingModeSelectorController::adjustReadingMode(hintsOverDocuments, urls);
+		bool ok  = MultipleDocumentsReadingModeSelectorController::adjustReadingMode(hintsOverDocuments, urls, headerSequenceLengths);
 		if(!ok){
 			return NULL;
 		}

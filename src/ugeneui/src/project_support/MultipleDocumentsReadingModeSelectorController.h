@@ -6,6 +6,7 @@
 #include <QtCore/QList>
 
 #include <U2Core/GUrl.h>
+#include <U2Core/DocumentUtils.h>
 
 #include "ui/ui_MultipleSequenceFilesReadingMode.h"
 
@@ -13,8 +14,8 @@ namespace U2{
 
 class MultipleDocumentsReadingModeSelectorController {
 public:	
-	static bool adjustReadingMode(QVariantMap& , QList<GUrl>& urls);
-	static bool isAbilityToUniteDocumnents(const QVariantMap& hintsDiocuments);    
+	static bool adjustReadingMode(QVariantMap& , QList<GUrl>& urls,const QMap<QString, qint64>& headerSequenceLengths);
+	static bool mergeDocumentOption(const FormatDetectionResult& formatResult, QMap<QString, qint64>* headerSequenceLengths);    
 private:
     MultipleDocumentsReadingModeSelectorController();
 };
@@ -24,7 +25,7 @@ Q_OBJECT
 public:
     MultipleDocumentsReadingModeDialog(const QList<GUrl>& urls, QWidget* parent = 0); 
     ~MultipleDocumentsReadingModeDialog();
-    bool setupGUI(QList<GUrl>& urls, QVariantMap& hintsDocuments);
+    bool setupGUI(QList<GUrl>& urls, QVariantMap& hintsDocuments, const QMap<QString, qint64>& headerSequenceLengths);
     void setupOrderingMergeDocuments();
 private slots:
    void sl_onMoveUp();

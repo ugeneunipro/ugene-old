@@ -296,7 +296,7 @@ void U2SequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus& os) 
         CHECK_EXT(resAl!=NULL, os.setError(U2SequenceUtils::tr("Failed to derive sequence alphabet!")), );
     } 
     
-    if (resAl != oldAl) {
+    if (resAl != U2AlphabetUtils::getById(sequence.alphabet)) {
         sequence.alphabet.id = resAl->getId();
         con.dbi->getSequenceDbi()->updateSequenceObject(sequence, os);
         CHECK_OP(os, );

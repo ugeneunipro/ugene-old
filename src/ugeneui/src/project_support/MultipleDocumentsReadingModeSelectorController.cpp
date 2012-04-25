@@ -6,6 +6,8 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/LocalFileAdapter.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <QtGui/QFileDialog>
@@ -19,11 +21,11 @@ struct GUrlLess{
         } 
 }; 
 
-bool MultipleDocumentsReadingModeSelectorController::adjustReadingMode(QVariantMap& props, QList<GUrl>& urls){	
+bool MultipleDocumentsReadingModeSelectorController::adjustReadingMode(QVariantMap& props, QList<GUrl>& urls, const QMap<QString, qint64>& headerSequenceLengths){	
     qSort(urls.begin(), urls.end(), GUrlLess());
 
     MultipleDocumentsReadingModeDialog d(urls, QApplication::activeWindow());
-    return d.setupGUI(urls, props);    
+    return d.setupGUI(urls, props, headerSequenceLengths);    
 }
 
 void MultipleDocumentsReadingModeDialog::sl_onChooseDirPath(){
@@ -40,8 +42,39 @@ void MultipleDocumentsReadingModeDialog::sl_onChooseDirPath(){
     }
 }
 
-bool MultipleDocumentsReadingModeSelectorController::isAbilityToUniteDocumnents(const QVariantMap& hintsDiocuments){
-	return hintsDiocuments.value(RawDataCheckResult_Sequence).toBool();
+bool MultipleDocumentsReadingModeSelectorController::mergeDocumentOption(const FormatDetectionResult& formatResult, QMap<QString, qint64>* headerSequenceLengths){
+    QVariantMap docHints = formatResult.rawDataCheckResult.properties;
+    if(formatResult.format->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
+        if(docHints.value(RawDataCheckResult_Sequence) == false){
+            static const int MAX_LINE = 8192;
+            char buff[MAX_LINE + 1] = {0};
+
+            std::auto_ptr<LocalFileAdapterFactory> factory( new LocalFileAdapterFactory());
+            std::auto_ptr<IOAdapter> io(factory->createIOAdapter());
+            if(!io->open(formatResult.url, IOAdapterMode_Read)){
+                return false;
+            }
+            bool terminatorFound = false;
+            io->readLine(buff, MAX_LINE, &terminatorFound);
+            if(!terminatorFound){
+                return false;
+            }
+            QString line = QString(QByteArray(buff));
+            QStringList words = line.split(QRegExp("\\s"), QString::SkipEmptyParts);
+            if(words.size() < 3){ // origin len not defined
+                return false;
+            }
+            bool isLenDefined = false;
+            qint64 seqLen = words[2].toLongLong(&isLenDefined); 
+            
+            if(!isLenDefined || seqLen <= 0){
+                return false;
+            }
+            (*headerSequenceLengths)[formatResult.url.getURLString()] = seqLen;
+            return true;
+        }
+    }
+    return docHints.value(RawDataCheckResult_Sequence).toBool();
 }
 
 
@@ -49,7 +82,7 @@ MultipleDocumentsReadingModeDialog::MultipleDocumentsReadingModeDialog(const QLi
     extension4MergedDocument = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK)->getSupportedDocumentFileExtensions().first();
 }
 
-bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMap& props){
+bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMap& props, const QMap<QString, qint64>& headerSequenceLengths){
     setModal(true);
     setupUi(this);
     // doesn't matter from what position, because excluded fileName all path of documents are the same
@@ -58,7 +91,7 @@ bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMa
     int startFileName = urlStr.lastIndexOf(url.fileName());
     urlStr.remove(startFileName, url.fileName().size());
 
-    QString randomFileName = GUrlUtils::rollFileName(urlStr + QString("merge_document") + "." + extension4MergedDocument , DocumentUtils::getNewDocFileNameExcludesHint()) ;
+    QString randomFileName = GUrlUtils::rollFileName(urlStr + QString("merged_document") + "." + extension4MergedDocument , DocumentUtils::getNewDocFileNameExcludesHint()) ;
     newUrl->setText(randomFileName);
     setupOrderingMergeDocuments();
 
@@ -92,7 +125,6 @@ bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMa
 
         listMergedDocuments->clear();
 
-        props[DocumentReadingMode_SequenceMergeGapSize] = internalGap->value();
         props[DocumentReadingMode_SequenceFilesMergeGapSize] = fileGap->value();
         props[ProjectLoaderHint_MergeMode_URLDocument] = newUrl->text();
         props[ProjectLoaderHint_MergeMode_SaveDocumentFlag] = saveBox->isChecked();
@@ -105,6 +137,9 @@ bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMa
         }
         
         props[ProjectLoaderHint_MergeMode_URLsDocumentConsistOf] =  urlsStr;
+        foreach(const GUrl& url, _urls){
+            props[RawDataCheckResult_HeaderSequenceLength + url.getURLString()] = headerSequenceLengths.value(url.getURLString(), -1);
+        }
         _urls.clear();
         _urls << GUrl(newUrl->text());
     }

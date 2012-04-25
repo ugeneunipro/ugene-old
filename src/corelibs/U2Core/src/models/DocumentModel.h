@@ -86,6 +86,8 @@ typedef QFlags<DocumentFormatFlag> DocumentFormatFlags;
 /** contains estimation of maximum size of a sequence from document */
 #define RawDataCheckResult_MaxSequenceSize "sequence-max-size"
 
+/*Contains length of sequence that was read from header of sequence file. Used in merge files option*/
+#define RawDataCheckResult_HeaderSequenceLength "header-sequence-length"
 
 /** Set of hints that can be processed during document loading */
 #define DocumentReadingMode_SequenceMergeGapSize            "merge-gap"
