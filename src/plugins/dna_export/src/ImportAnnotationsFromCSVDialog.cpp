@@ -149,7 +149,7 @@ void ImportAnnotationsFromCSVDialog::accept() {
             default:;
         }
     }
-    if (endPos + startPos + length != 2  || endPos > 1 || startPos > 1 || length > 1) {
+    if (endPos + startPos + length < 2  || endPos > 1 || startPos > 1 || length > 1) {
         QMessageBox::critical(this, L10N::errorTitle(), tr("Invalid start position/end position/length configuration!"));
         return;
     }
