@@ -29,31 +29,35 @@ IMPLEMENT_TEST(FasqUnitTests, checkRawData) {
 	if (FastqFormatTestData::format == NULL) {
 		FastqFormatTestData::init();
 	}
-	QByteArray rawData = "@SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
+    QByteArray rawData = "@SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
 	FormatCheckResult res = FastqFormatTestData::format->checkRawData(rawData);
-	SAFE_POINT(res.properties[RawDataCheckResult_Sequence] == true, "data is not sequence", );
-	SAFE_POINT(res.properties[RawDataCheckResult_MultipleSequences] == false, "sequence is multiple", );
-	SAFE_POINT(res.properties[RawDataCheckResult_SequenceWithGaps] == false, "sequence with gap", );
+
+    SAFE_POINT(res.score != FormatDetection_NotMatched, "data is not sequence", );
+    SAFE_POINT(res.properties[RawDataCheckResult_Sequence] == true, "data is not sequence", );
+    SAFE_POINT(res.properties[RawDataCheckResult_MultipleSequences] == false, "sequence is multiple", );
+    SAFE_POINT(res.properties[RawDataCheckResult_SequenceWithGaps] == false, "sequence with gap", );
 }
 
 IMPLEMENT_TEST(FasqUnitTests, checkRawDataMultiple) {
 	if (FastqFormatTestData::format == NULL) {
 		FastqFormatTestData::init();
 	}
-	QByteArray rawData = "@SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
-	QByteArray rawData1 = "@SEQ_ID1\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
+    QByteArray rawData = "@SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
+    QByteArray rawData1 = "@SEQ_ID1\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
 
-	FormatCheckResult res = FastqFormatTestData::format->checkRawData(rawData + rawData1);
-	SAFE_POINT(res.properties[RawDataCheckResult_Sequence] == true, "data is not sequence", );
-	SAFE_POINT(res.properties[RawDataCheckResult_MultipleSequences] == true, "sequence is multiple", );
-	SAFE_POINT(res.properties[RawDataCheckResult_SequenceWithGaps] == false, "sequence with gap", );
+    FormatCheckResult res = FastqFormatTestData::format->checkRawData(rawData + rawData1);
+
+    SAFE_POINT(res.score != FormatDetection_NotMatched, "data is not sequence", );
+    SAFE_POINT(res.properties[RawDataCheckResult_Sequence] == true, "data is not sequence", );
+    SAFE_POINT(res.properties[RawDataCheckResult_MultipleSequences] == true, "sequence is not multiple", );
+    SAFE_POINT(res.properties[RawDataCheckResult_SequenceWithGaps] == false, "sequence with gap", );
 }
 
 IMPLEMENT_TEST(FasqUnitTests, checkRawDataInvalidHeaderStartWith) {
 	if (FastqFormatTestData::format == NULL) {
 		FastqFormatTestData::init();
 	}
-	QByteArray rawData = "SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
+    QByteArray rawData = "SEQ_ID\nGATTTGGGGTTCAAAGCAGTATCGATCAAATAGTAAATCCATTTGTTCAACTCACAGTTT\n+\n!''*((((***+))%%%++)(%%%%).1***-+*''))**55CCF>>>>>>CCCCCCC65\n";
 	FormatCheckResult res = FastqFormatTestData::format->checkRawData(rawData);
 	SAFE_POINT(res.score == FormatDetection_NotMatched, "format is not matched", );
 }
