@@ -12,6 +12,8 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <QtGui/QFileDialog>
 
+#include <memory>
+
 namespace U2{
 
 struct GUrlLess{     
