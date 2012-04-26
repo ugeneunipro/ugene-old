@@ -536,7 +536,7 @@ int main(int argc, char **argv)
         ts->registerTopLevelTask(new CheckUpdatesTask(true));
     }
 
-  //  ts->registerTopLevelTask(new TmpDirChecker());
+    ts->registerTopLevelTask(new TmpDirChecker());
 
     int rc = app.exec();
 

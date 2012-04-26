@@ -99,12 +99,11 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
         st->setVisualStyle(state->style);
     }
 
-/*
+
     TmpDirChecker tmpDirChecker;
     if (!tmpDirChecker.checkPath(state->temporaryDirPath)) {
         uiLog.error("You do not have permission to write to \"" + state->temporaryDirPath + "\" directory\"");
     }
-*/
 }
 
 AppSettingsGUIPageWidget* UserApplicationsSettingsPageController::createWidget(AppSettingsGUIPageState* state) {

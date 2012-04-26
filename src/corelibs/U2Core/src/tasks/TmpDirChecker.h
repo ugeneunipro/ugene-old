@@ -26,9 +26,8 @@
 
 namespace U2 {
 
-class TmpDirChecker : public Task {
+class U2CORE_EXPORT TmpDirChecker : public Task {
     Q_OBJECT
-
 public:
     TmpDirChecker();
     void run();
