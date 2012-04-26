@@ -253,8 +253,9 @@ void MultiplexerWorkerFactory::init() {
     QList<Attribute*> attrs;
     {
         // attributes
-        Descriptor ruleDesc(RULE_ID, MultiplexerWorker::tr("Multiplexing rule"), MultiplexerWorker::tr("Multiplexing rule"));
-        Descriptor actionDesc(EMPTY_ACTION_ID, MultiplexerWorker::tr("If empty input"), MultiplexerWorker::tr("How to multiplex the data if one of input ports produces no data"));
+        Descriptor ruleDesc(RULE_ID, MultiplexerWorker::tr("Multiplexing rule"), MultiplexerWorker::tr("Specifies how to multiplex the input data flows. <br><li>Values:</li> <li><b>1 to 1</b> - for every message from the first input data flow it gets only one message from the second input data flow and puts them to the output.</li> <li><b>1 to many and Many to 1</b> - for every message from the first input data flow it gets every message from the second input data flow and puts them to the output. <li><b>Streaming mode</b> - puts every message from the first and the second input data flows to the output.</li> "));
+
+        Descriptor actionDesc(EMPTY_ACTION_ID, MultiplexerWorker::tr("If empty input"), MultiplexerWorker::tr("How to multiplex the data if one of input ports produces no data. <br><li>Values:</li> <li><b>Fill by empty values</b> - if one of input ports produces no data, get data from another port only and put them to the output.</li> <li><b>Truncate</b> - if one of input port produces no data, then do not output anything.</li><br>"));
 
         Attribute *ruleAttr = new Attribute(ruleDesc, BaseTypes::STRING_TYPE(), true, ONE_TO_ONE);
         Attribute *actionAttr = new Attribute(actionDesc, BaseTypes::STRING_TYPE(), true, FILL_EMPTY);
@@ -281,7 +282,7 @@ void MultiplexerWorkerFactory::init() {
    
     Descriptor protoDesc(MultiplexerWorkerFactory::ACTOR_ID,
         MultiplexerWorker::tr("Multiplexer"),
-        MultiplexerWorker::tr("Multiplexes two input data flows using the set multiplexing rule."));
+        MultiplexerWorker::tr("Construct an output data flow using two input data flows and a multiplexing rule."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
 
