@@ -28,27 +28,6 @@
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsMdi.h"
 
-/*
-#include "api/GTKeyboardDriver.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTMenu.h"
-#include "api/GTFileDialog.h"
-#include "api/GTTreeWidget.h"
-#include "GTUtilsDocument.h"
-#include "GTUtilsLog.h"
-#include "GTUtilsApp.h"
-#include "GTUtilsToolTip.h"
-#include "GTUtilsDialog.h"
-#include "GTUtilsMdi.h"
-#include "GTUtilsProjectTreeView.h"
-#include "GTUtilsTaskTreeView.h"
-#include "GTUtilsSequenceView.h"
-#include "GTUtilsMdi.h"
-#include <U2Core/DocumentModel.h>
-#include <U2View/AnnotatedDNAViewFactory.h>
-#include <U2View/MSAEditorFactory.h>
-#include <U2View/ADVConstants.h>
-*/
 #include <U2Core/AppContext.h>
 #include <U2View/ADVConstants.h>
 
