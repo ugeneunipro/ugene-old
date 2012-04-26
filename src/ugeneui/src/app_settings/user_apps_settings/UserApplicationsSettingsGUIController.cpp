@@ -30,7 +30,7 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QStyleFactory>
 
-#include "../resource_settings/TmpDirChecker.h"
+#include "U2Core/TmpDirChecker.h"
 
 namespace U2
 {
