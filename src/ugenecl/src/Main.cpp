@@ -39,6 +39,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/Version.h>
 #include <U2Core/VirtualFileSystem.h>
+#include "U2Core/TmpDirChecker.h"
 
 #include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -93,7 +94,6 @@
 #include "DumpLicenseTask.h"
 #include "DumpVersionTask.h"
 #include "DumpHelpTask.h"
-#include "U2Core/TmpDirChecker.h"
 
 #include <QtCore/QCoreApplication>
 
@@ -447,14 +447,14 @@ int main(int argc, char **argv)
         QObject::connect(psp, SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(new DumpVersionTask()), SLOT(registerTask()));
     }
     
-    bool hasNewTmpDir = cmdLineRegistry->hasParameter(CMDLineCoreOptions::TMP_DIR);
+   /* bool hasNewTmpDir = cmdLineRegistry->hasParameter(CMDLineCoreOptions::TMP_DIR);
     if (hasNewTmpDir) {
         QString newTmpDir = cmdLineRegistry->getParameterValue(CMDLineCoreOptions::TMP_DIR);
         AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(newTmpDir);
-    }
+    }*/
 
     if (!showHelp && !showLicense && !showVersion) {
-        QObject::connect(psp, SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(new TmpDirChecker()), SLOT(registerTask()));
+       // QObject::connect(psp, SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(new TmpDirChecker()), SLOT(registerTask()));
     }
 
     openDocs();
