@@ -30,6 +30,8 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QStyleFactory>
 
+#include "../resource_settings/TmpDirChecker.h"
+
 namespace U2
 {
 #define TRANSMAP_FILE_NAME "translations.txt"
@@ -95,6 +97,12 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     if (style!=NULL) {
         QApplication::setStyle(style);
         st->setVisualStyle(state->style);
+    }
+
+
+    TmpDirChecker tmpDirChecker;
+    if (!tmpDirChecker.checkPath(state->temporaryDirPath)) {
+        uiLog.error("You do not have permission to write to \"" + state->temporaryDirPath + "\" directory\"");
     }
 }
 

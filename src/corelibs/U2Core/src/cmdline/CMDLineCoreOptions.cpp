@@ -41,6 +41,7 @@ const QString CMDLineCoreOptions::LOG_FORMAT    = "log-format";
 const QString CMDLineCoreOptions::LOG_LEVEL     = "log-level";
 const QString CMDLineCoreOptions::LAUNCH_GUI_TEST   = "gui-test";
 const QString CMDLineCoreOptions::USAGE         = "usage";
+const QString CMDLineCoreOptions::TMP_DIR       = "tmp-dir";
 
 
 void CMDLineCoreOptions::initHelp() {
@@ -65,10 +66,17 @@ void CMDLineCoreOptions::initHelp() {
         tr( "Specifies the language to use." ),
         tr( "Specifies the language to use. The following values are available: CS, EN, RU." ),
         tr( "<language_code>" ));
+
+    CMDLineHelpProvider * tmpDirSection = new CMDLineHelpProvider(
+        TMP_DIR,
+        "Path to temporary folder",
+        "",
+        tr( "<path_to_file>" ));
     
     cmdLineRegistry->registerCMDLineHelpProvider( helpSection );
     cmdLineRegistry->registerCMDLineHelpProvider( loadSettingsFileSection );
     cmdLineRegistry->registerCMDLineHelpProvider( translSection );
+    cmdLineRegistry->registerCMDLineHelpProvider( tmpDirSection);
 }
 
 } // U2

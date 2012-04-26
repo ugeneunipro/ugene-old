@@ -166,7 +166,8 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U2Bits.h \
            src/util/U2FeatureUtils.h \
            src/util/U2OpStatusUtils.h \
-           src/util/U2SequenceUtils.h
+           src/util/U2SequenceUtils.h \
+    src/tasks/TmpDirChecker.h
 SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/cmdline/CMDLineRegistry.cpp \
            src/cmdline/CMDLineUtils.cpp \
@@ -289,7 +290,8 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2AttributeUtils.cpp \
            src/util/U2Bits.cpp \
            src/util/U2FeatureUtils.cpp \
-           src/util/U2SequenceUtils.cpp
+           src/util/U2SequenceUtils.cpp \
+    src/tasks/TmpDirChecker.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

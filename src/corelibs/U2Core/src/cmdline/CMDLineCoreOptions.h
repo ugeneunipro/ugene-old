@@ -45,6 +45,7 @@ public:
     static const QString LOG_LEVEL;
     static const QString LAUNCH_GUI_TEST;
     static const QString USAGE;
+    static const QString TMP_DIR;
         
 public:
     // initialize help for core cmdline options

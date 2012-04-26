@@ -41,6 +41,7 @@
 #include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2Core/LogCache.h>
 #include <U2Core/VirtualFileSystem.h>
+#include <U2Core/TmpDirChecker.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -92,7 +93,6 @@
 #include <TaskSchedulerImpl.h>
 #include <AppSettingsImpl.h>
 #include <CrashHandler.h>
-
 
 #include "app_settings/AppSettingsGUIImpl.h"
 #include "app_settings/logview_settings/LogSettingsGUIController.h"
@@ -535,6 +535,9 @@ int main(int argc, char **argv)
     if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
         ts->registerTopLevelTask(new CheckUpdatesTask(true));
     }
+
+    ts->registerTopLevelTask(new TmpDirChecker());
+
     int rc = app.exec();
 
     //4 deallocate resources
