@@ -81,7 +81,7 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getTreeWidgetItem"
-QTreeWidgetItem* GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions &options) {
+QTreeWidgetItem* GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QString &itemName, bool errorIfFail, const GTGlobals::FindOptions &options) {
 
     GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", NULL);
 
@@ -95,7 +95,7 @@ QTreeWidgetItem* GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QStr
             return item;
         }
     }
-    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", NULL);
+    GT_CHECK_RESULT(options.failIfNull == false && errorIfFail, "Item " + itemName + " not found in tree widget", NULL);
 
     return NULL;
 }

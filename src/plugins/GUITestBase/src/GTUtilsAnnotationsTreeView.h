@@ -40,7 +40,7 @@ public:
     // fails if the item wasn't found
     static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
 
-    static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, bool errorIfFail = true, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
     // finds given region in annotation with a given name. U2Region: visible {begin, end} positions.
     static bool findRegion(U2OpStatus &os, const QString &itemName, const U2Region& region);
