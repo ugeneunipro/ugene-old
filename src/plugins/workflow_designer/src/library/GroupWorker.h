@@ -56,6 +56,7 @@ private:
     IntegralBus *outChannel;
     DataTypePtr mtype;
 
+    bool produceOneGroup;
     QString groupSlot;
     QString groupOp;
     QList<GrouperOutSlot> outSlots;
@@ -63,7 +64,6 @@ private:
 
     QMap<int, PerformersMap> groupedData;
     QMap<int, QVariant> uniqueData;
-    qint64 messageCounter;
 }; // GroupWorker
 
 class GroupWorkerFactory : public DomainFactory {

@@ -50,7 +50,7 @@ static const QString OPER_ATTR_ID("group-op");
 /* GroupWorker */
 /************************************************************************/
 GroupWorker::GroupWorker(Actor *p)
-: BaseWorker(p, false), inChannel(NULL), outChannel(NULL), messageCounter(0)
+: BaseWorker(p, false), inChannel(NULL), outChannel(NULL), produceOneGroup(false)
 {
     
 }
@@ -63,7 +63,11 @@ void GroupWorker::init() {
     GrouperSlotAttribute *slotsAttr = dynamic_cast<GrouperSlotAttribute*>(actor->getParameter(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR));
     outSlots = slotsAttr->getOutSlots();
     groupSlot = actor->getParameter(CoreLibConstants::GROUPER_SLOT_ATTR)->getAttributePureValue().toString();
-    inType = context->getOutSlotType(groupSlot);
+    produceOneGroup = groupSlot.isEmpty();
+    if (!produceOneGroup) {
+        inType = context->getOutSlotType(groupSlot);
+        groupSlot = GrouperOutSlot::readable2busMap(groupSlot);
+    }
     groupOp = actor->getParameter(OPER_ATTR_ID)->getAttributePureValue().toString();
 
     if (groupOp != GroupOperations::BY_VALUE().getId()
@@ -71,7 +75,6 @@ void GroupWorker::init() {
         && groupOp != GroupOperations::BY_ID().getId()) {
         groupOp = GroupOperations::BY_ID().getId();
     }
-    groupSlot = GrouperOutSlot::readable2busMap(groupSlot);
 }
 
 Task *GroupWorker::tick() {
@@ -79,32 +82,40 @@ Task *GroupWorker::tick() {
         Message inMessage = inChannel->look();
         inChannel->get();
         QVariantMap mData = inMessage.getData().toMap();
-        if (!mData.keys().contains(groupSlot)) {
-            continue;
-        }
-        messageCounter++;
 
-        QVariant gsData = mData.value(groupSlot);
-        // search group slot data at unique data
         int foundId = -1;
         PerformersMap perfs;
-        foreach (int id, uniqueData.keys()) {
-            const QVariant &d = uniqueData[id];
-            bool equal = GrouperActionUtils::equalData(groupOp, d, gsData, inType, context);
-            if (equal) {
-                foundId = id;
-                perfs = groupedData[id];
-                break;
+        if (produceOneGroup) {
+            foundId = 0;
+            if (1 == groupedData.size()) {
+                perfs = groupedData[0];
             }
-        }
+            GrouperActionUtils::applyActions(context, outSlots, mData, perfs);
+        } else {
+            if (!mData.keys().contains(groupSlot)) {
+                continue;
+            }
 
-        // apply actions for out slots
-        GrouperActionUtils::applyActions(context, outSlots, mData, perfs);
+            QVariant gsData = mData.value(groupSlot);
+            // search group slot data at unique data
+            foreach (int id, uniqueData.keys()) {
+                const QVariant &d = uniqueData[id];
+                bool equal = GrouperActionUtils::equalData(groupOp, d, gsData, inType, context);
+                if (equal) {
+                    foundId = id;
+                    perfs = groupedData[id];
+                    break;
+                }
+            }
 
-        // add new unique data and action performers
-        if (foundId < 0) {
-            foundId = uniqueData.size();
-            uniqueData[foundId] = gsData;
+            // apply actions for out slots
+            GrouperActionUtils::applyActions(context, outSlots, mData, perfs);
+
+            // add new unique data and action performers
+            if (foundId < 0) {
+                foundId = uniqueData.size();
+                uniqueData[foundId] = gsData;
+            }
         }
         groupedData[foundId] = perfs;
     }
@@ -124,9 +135,11 @@ Task *GroupWorker::tick() {
                 data[slotId] = slotData;
             }
 
-            QVariantMap context;
-            context[groupSlot] = uniqueData[id];
-            outChannel->setContext(context);
+            if (!produceOneGroup) {
+                QVariantMap context;
+                context[groupSlot] = uniqueData[id];
+                outChannel->setContext(context);
+            }
             outChannel->put(Message(mtype, data));
         }
         setDone();
@@ -171,7 +184,7 @@ void GroupWorkerFactory::init() {
         Attribute *slotsAttr = new GrouperSlotAttribute(slotsDesc, BaseTypes::STRING_TYPE(), false);
 
         Descriptor groupDesc(CoreLibConstants::GROUPER_SLOT_ATTR, GroupWorker::tr("Group slot"), GroupWorker::tr("Group slot"));
-        Attribute *groupAttr = new Attribute(groupDesc, BaseTypes::STRING_TYPE(), true);
+        Attribute *groupAttr = new Attribute(groupDesc, BaseTypes::STRING_TYPE(), false);
 
         Descriptor opDesc(OPER_ATTR_ID, GroupWorker::tr("Group operation"), GroupWorker::tr("Group operation"));
         Attribute *opAttr = new Attribute(opDesc, BaseTypes::STRING_TYPE(), true);
@@ -203,8 +216,8 @@ Worker *GroupWorkerFactory::createWorker(Actor *a) {
 /* GroupPrompter */
 /************************************************************************/
 QString GroupPrompter::composeRichDoc() {
-    QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
-    QString inputName = unsetStr;
+    QString inputName;
+    bool produceOneGroup = true;
 
     Port *input = target->getInputPorts().first();
     if (input->getLinks().size() > 0) {
@@ -221,15 +234,16 @@ QString GroupPrompter::composeRichDoc() {
         foreach (const Descriptor &d, busMap.keys()) {
             if (d.getId() == groupSlot) {
                 inputName = d.getDisplayName();
+                produceOneGroup = false;
                 break;
             }
         }
     }
 
-    QString result = tr("Group all incoming messages <u>%1</u> of <u>%2</u> slot data.");
-    if (inputName == unsetStr) {
-        return result.arg("").arg(inputName);
+    if (produceOneGroup) {
+        return tr("Group all incoming messages into one message");
     } else {
+        QString result = tr("Group all incoming messages <u>%1</u> of <u>%2</u> slot data.");
         Attribute *groupOpAttr = target->getParameter(CoreLibConstants::GROUPER_OPER_ATTR);
         QString opId = groupOpAttr->getAttributeValueWithoutScript<QString>();
 
@@ -237,7 +251,7 @@ QString GroupPrompter::composeRichDoc() {
         if ("by-id" == opId) {
             op = tr("by id");
         } else if ("by-name" == opId) {
-            op = tr(" name");
+            op = tr("by name");
         } else if ("by-value" == opId) {
             op = tr("by value");
         }

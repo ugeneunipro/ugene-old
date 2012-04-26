@@ -105,6 +105,7 @@ void GrouperEditorWidget::setupGroupOpBox(int slotIdx, const QString &groupOp, c
     operationBox->addItem(tr("By value"), "by-value"); // for all types
 
     QString slotId = slotBox->itemData(slotIdx).toString();
+    operationBox->setDisabled(slotId.isEmpty());
     DataTypePtr type = busMap.value(slotId);
     if (BaseTypes::DNA_SEQUENCE_TYPE() == type) {
         operationBox->addItem(tr("By id"), "by-id");
