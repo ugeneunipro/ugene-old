@@ -235,6 +235,10 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 3);
     CHECK_SET_ERR(sequenceBegin == "AAT", "Sequence starts with <" + sequenceBegin + ">, expected AAT");
+
+    bool found = GTUtilsAnnotationsTreeView::findItem(os, "DUMMY_1", false);
+    CHECK_SET_ERR(found = true, "There is annotation DUMMY_1, expected state there is no annotation DUMMY_1");
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009) {

@@ -52,7 +52,7 @@ public:
     // if failIfNull is set to true, fails if object wasn't found
     class FindOptions {
     public:
-        FindOptions() : failIfNull(true){}
+        FindOptions(bool fail = true) : failIfNull(fail){}
         bool failIfNull;
     };
 
