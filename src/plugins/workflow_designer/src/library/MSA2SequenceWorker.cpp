@@ -64,10 +64,12 @@ Task * Alignment2SequenceWorker::tick() {
             return new FailTask(tr("empty input alignment"));
         }
         QList<DNASequence> seqs = MSAUtils::ma2seq(ma,true);
+        QVariantMap channelContext = output->getContext();
         foreach(const DNASequence &seq, seqs) {
             QVariantMap msgData;
             SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seq);
             msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
+            output->setContext(channelContext);
             output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));
         }
     }

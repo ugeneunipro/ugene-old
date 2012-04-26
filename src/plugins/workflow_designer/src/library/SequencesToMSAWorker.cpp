@@ -88,7 +88,9 @@ void SequencesToMSAWorker::sl_onTaskFinished(Task* t) {
 
     outPort->put( Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), qVariantFromValue(ma)) );
 
+    QVariantMap emptyContext;
     if (inPort->isEnded()) {
+        outPort->setContext(emptyContext);
         outPort->setEnded();
     }
 }

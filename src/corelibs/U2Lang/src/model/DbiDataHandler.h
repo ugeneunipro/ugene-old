@@ -39,6 +39,8 @@ public:
     DbiDataHandler(const U2DataId &id, U2ObjectDbi *dbi);
     virtual ~DbiDataHandler();
 
+    bool equals(const DbiDataHandler *other);
+
 private:
     const U2DataId id;
     U2ObjectDbi *dbi;

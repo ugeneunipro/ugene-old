@@ -92,8 +92,6 @@ bool MultiplexerWorker::isReady() {
         } else if (hasMsg2) {
             return ended1;
         }
-    } else if (STREAM ==  rule) {
-        return hasMsg1 || hasMsg2;
     }
 
     return ended1 && ended2;
@@ -272,7 +270,6 @@ void MultiplexerWorkerFactory::init() {
         rules[MultiplexerWorker::tr("1 to many")] = ONE_TO_MANY;
         rules[MultiplexerWorker::tr("Many to 1")] = MANY_TO_ONE;
         rules[MultiplexerWorker::tr("1 to 1")] = ONE_TO_ONE;
-        rules[MultiplexerWorker::tr("Streaming mode")] = STREAM;
 
         QVariantMap actions;
         actions[MultiplexerWorker::tr("Fill by empty values")] = FILL_EMPTY;
@@ -330,8 +327,6 @@ QString MultiplexerPrompter::composeRichDoc() {
 
     if (ONE_TO_ONE == rule) {
         return tr("For every message from <u>%1</u> it gets only one message from <u>%2</u> and puts them to the output.").arg(inputName1).arg(inputName2);
-    } else if (STREAM == rule) {
-        return tr("Puts every message from <u>%1</u> and <u>%2</u> to the output.").arg(inputName1).arg(inputName2);
     } else {
         return tr("For every message from <u>%1</u> it gets every message from <u>%2</u> and puts them to the output.").arg(inputName1).arg(inputName2);
     }

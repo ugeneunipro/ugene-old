@@ -358,8 +358,8 @@ void AminoTranslationWorker::sl_taskFinished(){
             QVariantMap msgData;
             SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seqObj->getWholeSequence());
             msgData[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
-            output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));
             output->setContext(channelContext);
+            output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), msgData));
         }
     }
 }

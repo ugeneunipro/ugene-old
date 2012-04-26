@@ -48,5 +48,13 @@ DbiDataHandler &DbiDataHandler::operator=(const DbiDataHandler &) {
     return *this;
 }
 
+bool DbiDataHandler::equals(const DbiDataHandler *other) {
+    if (NULL == other) {
+        return false;
+    }
+
+    return (other->id == id) && (other->dbi == dbi);
+}
+
 }
 }

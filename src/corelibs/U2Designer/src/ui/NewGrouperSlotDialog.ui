@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>367</width>
+    <width>428</width>
     <height>115</height>
    </rect>
   </property>
@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>New Grouper Slot</string>
+   <string>Setup new data merge action</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -37,7 +37,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Input slot</string>
+        <string>Source data slot</string>
        </property>
       </widget>
      </item>
@@ -54,7 +54,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Output slot name</string>
+        <string>Name of new slot with merged data</string>
        </property>
       </widget>
      </item>
