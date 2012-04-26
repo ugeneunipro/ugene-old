@@ -36,7 +36,11 @@ namespace U2 {
 #define GT_METHOD_NAME "showMainMenu"
 QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::UseMethod m)
 {
-    QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+    MainWindow *mw = AppContext::getMainWindow();
+    GT_CHECK_RESULT(mw != NULL, "MainWindow is NULL", NULL);
+    QMainWindow *mainWindow = mw->getQMainWindow();
+    GT_CHECK_RESULT(mainWindow != NULL, "QMainWindow is NULL", NULL);
+
     QAction *menu = mainWindow->findChild<QAction*>(menuName);
 
     GT_CHECK_RESULT(menu != NULL, QString("menu \"%1\" not found").arg(menuName), NULL);
@@ -70,8 +74,11 @@ QMenu* GTMenu::showMainMenu(U2OpStatus &os, const QString &menuName, GTGlobals::
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "showContextMenu"
 QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals::UseMethod m)
 {
+    GT_CHECK_RESULT(ground != NULL, "ground widget is NULL", NULL);
+
     QPoint mouse_pos;
     QRect ground_widget;
 
@@ -103,6 +110,7 @@ QMenu* GTMenu::showContextMenu(U2OpStatus &os, const QWidget *ground, GTGlobals:
     QMenu *menu = static_cast<QMenu*>(QApplication::activePopupWidget());
     return menu;
 }
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getMenuItem"
 QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &itemName) {
@@ -174,6 +182,7 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
 #define GT_METHOD_NAME "selectMenuItem"
 QAction* GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod) {
 
+    GT_CHECK_RESULT(menu != NULL, "menu is NULL", NULL);
     GT_CHECK_RESULT(itemPath.isEmpty() == false, "itemPath is empty", NULL);
 
     QAction *action = NULL;
@@ -192,6 +201,7 @@ QAction* GTMenu::selectMenuItem(U2OpStatus &os, const QMenu *menu, const QString
 #define GT_METHOD_NAME "clickMenuItem"
 void GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod) {
 
+    GT_CHECK(menu != NULL, "menu is NULL");
     GT_CHECK(itemPath.isEmpty() == false, "itemPath is empty");
 
     QList<QAction*>actions = menu->actions();

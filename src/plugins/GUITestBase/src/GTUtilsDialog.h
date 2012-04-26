@@ -121,7 +121,7 @@ public:
         PopupChooser(U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseMouse)
             :os(_os), namePath(_namePath), useMethod(_useMethod){}
         virtual void run();
-    private:
+    protected:
         U2OpStatus &os;
         QStringList namePath;
         GTGlobals::UseMethod useMethod;

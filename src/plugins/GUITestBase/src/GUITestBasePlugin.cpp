@@ -28,6 +28,7 @@
 #include "tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h"
 #include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
 #include "tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h"
+#include "tests/common_scenarios/sequence_view/GTTestsSequenceView.h"
 #include "tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.h"
 #include "tests/common_scenarios/project/remote_request/GTTestsProjectRemoteRequest.h"
 #include "tests/common_scenarios/project/sequence_exporting/GTTestsProjectSequenceExporting.h"
@@ -70,7 +71,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
 //////////////////////////////////////////////////////////////////////////
-
     REGISTER_TEST(GUITest_common_scenarios_project::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0006);
@@ -126,6 +126,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0001);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_document_modifying::test_0002, "excluded failed test");
+
+//////////////////////////////////////////////////////////////////////////
+// Common scenarios/Sequence view/
+//////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0005);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/sequence edit/

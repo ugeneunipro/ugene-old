@@ -95,6 +95,7 @@ ADVSyncViewManager::ADVSyncViewManager(AnnotatedDNAView* v) : QObject(v), adv(v)
     connect( toggleAutoAnnotationsMenu, SIGNAL(aboutToShow()), SLOT(sl_updateAutoAnnotationsMenu()) );
      
     toggleAutoAnnotationsButton = new QToolButton();
+    toggleAutoAnnotationsButton->setObjectName("toggleAutoAnnotationsButton");
     toggleAutoAnnotationsButton->setDefaultAction(toggleAutoAnnotationsMenu->menuAction());
     toggleAutoAnnotationsButton->setPopupMode(QToolButton::InstantPopup);
     
