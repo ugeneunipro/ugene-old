@@ -33,12 +33,16 @@ namespace U2 {
 #define GT_DEBUG_MESSAGE(condition, errorMessage, result) \
 { \
     uiLog.trace("GT_DEBUG_MESSAGE Checking condition <" #condition ">"); \
+    uiLog.trace("GT_DEBUG_MESSAGE errorMessage <" + QString(errorMessage) + ">"); \
     if (condition) { \
-        uiLog.trace("GT_DEBUG_MESSAGE ok, but errorMessage is: <" + QString(errorMessage) + ">"); \
+        uiLog.trace("GT_DEBUG_MESSAGE ok"); \
     } \
     else { \
-        QString firstFailed = os.hasError() ? "!!!FIRST FAIL" : "failed, but OpStatus already hasError"; \
-        uiLog.trace("GT_DEBUG_MESSAGE " + firstFailed + ": <" + QString(errorMessage) + ">\n\n"); \
+        uiLog.trace("GT_DEBUG_MESSAGE FAILED"); \
+    } \
+    if (os.hasError()) { \
+        uiLog.trace("GT_DEBUG_MESSAGE OpStatus already has error"); \
+        uiLog.trace("GT_DEBUG_MESSAGE OpStatus error <" + os.getError() + ">"); \
     } \
 }
 
@@ -49,7 +53,7 @@ namespace U2 {
 { \
     GT_DEBUG_MESSAGE(condition, errorMessage, result); \
     if (os.hasError()) { return result; } \
-    CHECK_EXT(condition, if (!os.hasError()) {os.setError(errorMessage);}, result) \
+    CHECK_EXT(condition, if (!os.hasError()) { uiLog.trace("!!!FIRST FAIL"); os.setError(errorMessage);}, result) \
 }
 
 #define GT_CHECK(condition, errorMessage) \

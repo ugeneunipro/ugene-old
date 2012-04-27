@@ -7,7 +7,7 @@
 #include <U2Gui/MainWindow.h>
 #include <QtCore/QMap>
 
-#define TIMEOUT 300000
+#define TIMEOUT 60000
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
 #define ULOG_CAT_TEAMCITY "Teamcity Integration"
