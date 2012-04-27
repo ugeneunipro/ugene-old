@@ -30,6 +30,7 @@ static const QString ANNOTATION_TABLE_LIST_TYPE_ID("ann-table-list");
 static const QString ANNOTATION_TABLE_TYPE_ID("ann_table");
 static const QString MULTIPLE_ALIGNMENT_TYPE_ID("malignment");
 static const QString STRING_TYPE_ID("string");
+static const QString STRING_LIST_TYPE_ID("string-list");
 static const QString BOOL_TYPE_ID("bool");
 static const QString NUM_TYPE_ID("number");
 static const QString ANY_TYPE_ID("void");
@@ -92,6 +93,18 @@ DataTypePtr BaseTypes::STRING_TYPE() {
         startup = false;
     }
     return dtr->getById(STRING_TYPE_ID);
+}
+
+DataTypePtr BaseTypes::STRING_LIST_TYPE() {
+    DataTypeRegistry* dtr = WorkflowEnv::getDataTypeRegistry();
+    assert(dtr);
+    static bool startup = true;
+    if (startup)
+    {
+        dtr->registerEntry(DataTypePtr(new ListDataType(STRING_LIST_TYPE_ID, BaseTypes::STRING_TYPE())));
+        startup = false;
+    }
+    return dtr->getById(STRING_LIST_TYPE_ID);
 }
 
 DataTypePtr BaseTypes::BOOL_TYPE() {

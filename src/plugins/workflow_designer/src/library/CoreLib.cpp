@@ -169,7 +169,7 @@ void CoreLib::init() {
     {
         QMap<Descriptor, DataTypePtr> m;
         m[writeUrlD] = BaseTypes::STRING_TYPE();
-        m[BaseSlots::TEXT_SLOT()] = new ListDataType("string-list", BaseTypes::STRING_TYPE());
+        m[BaseSlots::TEXT_SLOT()] = BaseTypes::STRING_LIST_TYPE();
         DataTypePtr dtl(new MapDataType(Descriptor("in.text"), m));
 
         QList<PortDescriptor*> p; QList<Attribute*> a;

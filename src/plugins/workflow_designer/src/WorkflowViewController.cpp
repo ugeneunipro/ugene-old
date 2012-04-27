@@ -1691,6 +1691,10 @@ static bool isBindingValid(const QMap<Descriptor, DataTypePtr> &inType, const QM
                 return (srcType == BaseTypes::ANNOTATION_TABLE_LIST_TYPE());
             } else if (destType == BaseTypes::ANNOTATION_TABLE_LIST_TYPE()) {
                 return (srcType == BaseTypes::ANNOTATION_TABLE_TYPE());
+            } else if (destType == BaseTypes::STRING_TYPE()) {
+                return (srcType == BaseTypes::STRING_LIST_TYPE());
+            } else if (destType == BaseTypes::STRING_LIST_TYPE()) {
+                return (srcType == BaseTypes::STRING_TYPE());
             }
             break;
         }
@@ -1758,7 +1762,7 @@ void WorkflowScene::sl_refreshBindings() {
                 Actor *proc = qgraphicsitem_cast<WorkflowProcessItem*>(it)->getProcess();
                 ActorPrototype *proto = proc->getProto();
                 if (CoreLibConstants::GROUPER_ID == proto->getId()) {
-                    grouperSlotsDeleted &= refreshGrouperSlots(proc);
+                    grouperSlotsDeleted |= refreshGrouperSlots(proc);
                 }
             }
         }

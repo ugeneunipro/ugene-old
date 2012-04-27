@@ -35,6 +35,7 @@ public:
     static DataTypePtr MULTIPLE_ALIGNMENT_TYPE();
     
     static DataTypePtr STRING_TYPE();
+    static DataTypePtr STRING_LIST_TYPE();
     static DataTypePtr BOOL_TYPE();
     static DataTypePtr NUM_TYPE();
     static DataTypePtr ANY_TYPE();
