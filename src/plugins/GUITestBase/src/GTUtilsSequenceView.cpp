@@ -117,7 +117,6 @@ QString GTUtilsSequenceView::getBeginOfSequenceAsString(U2OpStatus &os, int leng
     GTSequenceReader reader(os, &sequence);
     GTUtilsDialog::preWaitForDialog(os, &reader);
 
-    GTMouseDriver::click(os);
     GTMenu::showContextMenu(os, mdiWindow);
     GTGlobals::sleep(1000);
 
