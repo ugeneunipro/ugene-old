@@ -278,7 +278,7 @@ QVariant GrouperSlotsCfgModel::headerData(int section, Qt::Orientation orientati
         case 0:
             return tr("Output slot name");
         case 1:
-            return tr("Input slot");
+            return tr("Source data slot");
         default:
             assert(false);
         }
