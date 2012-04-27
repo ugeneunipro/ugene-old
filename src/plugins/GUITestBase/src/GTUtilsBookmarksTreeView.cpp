@@ -25,6 +25,7 @@
 #include "api/GTWidget.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsTaskTreeView.h"
+#include "GTUtilsProjectTreeView.h"
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewTreeController.h>
@@ -42,7 +43,14 @@ const QString GTUtilsBookmarksTreeView::widgetName = ACTION_BOOKMARK_TREE_VIEW;
 #define GT_METHOD_NAME "getTreeWidget"
 QTreeWidget* GTUtilsBookmarksTreeView::getTreeWidget(U2OpStatus &os) {
 
-    QTreeWidget *treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName));
+    QTreeWidget *treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName, NULL, false));
+
+    if (!treeWidget) {
+        GTUtilsProjectTreeView::toggleView(os);
+        GTGlobals::sleep(1000);
+    }
+
+    treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName));
     return treeWidget;
 }
 #undef GT_METHOD_NAME

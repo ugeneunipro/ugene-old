@@ -94,7 +94,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/bookmarks/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_bookmarks::test_0002, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_project_bookmarks::test_0002);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/multiple docs/
