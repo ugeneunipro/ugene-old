@@ -32,6 +32,7 @@ namespace U2 {
 
 #define GT_DEBUG_MESSAGE(condition, errorMessage, result) \
 { \
+    uiLog.trace("\n------------"); \
     uiLog.trace("GT_DEBUG_MESSAGE Checking condition <" #condition ">"); \
     uiLog.trace("GT_DEBUG_MESSAGE errorMessage <" + QString(errorMessage) + ">"); \
     if (condition) { \
@@ -44,6 +45,7 @@ namespace U2 {
         uiLog.trace("GT_DEBUG_MESSAGE OpStatus already has error"); \
         uiLog.trace("GT_DEBUG_MESSAGE OpStatus error <" + os.getError() + ">"); \
     } \
+    uiLog.trace("------------\n"); \
 }
 
 #define CHECK_SET_ERR(condition, errorMessage) \
@@ -53,7 +55,7 @@ namespace U2 {
 { \
     GT_DEBUG_MESSAGE(condition, errorMessage, result); \
     if (os.hasError()) { return result; } \
-    CHECK_EXT(condition, if (!os.hasError()) { uiLog.trace("!!!FIRST FAIL"); os.setError(errorMessage);}, result) \
+    CHECK_EXT(condition, if (!os.hasError()) { uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL"); os.setError(errorMessage);}, result) \
 }
 
 #define GT_CHECK(condition, errorMessage) \
