@@ -103,12 +103,24 @@ void GUITestLauncher::updateProgress(int finishedCount) {
     }
 }
 
-QString GUITestLauncher::performTest(const QString& testName) const {
+QProcessEnvironment GUITestLauncher::getProcessEnvironment(const QString &testName) {
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+
+    env.insert("UGENE_DEV", "1");
+    env.insert("UGENE_GUI_TEST", "1");
+    env.insert("UGENE_USE_NATIVE_DIALOGS", "0");
+    env.insert("UGENE_PRINT_TO_FILE", "ugene_"+testName+".out");
+
+    return env;
+}
+
+QString GUITestLauncher::performTest(const QString& testName) {
 
     QString path = QCoreApplication::applicationFilePath();
 
     // ~QProcess is killing the process, will not return until the process is terminated.
     QProcess process;
+    process.setProcessEnvironment(getProcessEnvironment(testName));
     process.start(path, getTestProcessArguments(testName));
 
     bool started = process.waitForStarted();
@@ -126,12 +138,12 @@ QString GUITestLauncher::performTest(const QString& testName) const {
     return tr("An error occurred while finishing UGENE: ") + process.errorString();
 }
 
-QStringList GUITestLauncher::getTestProcessArguments(const QString &testName) const {
+QStringList GUITestLauncher::getTestProcessArguments(const QString &testName) {
 
     return QStringList() << QString("--") + CMDLineCoreOptions::LAUNCH_GUI_TEST + "=" + testName;
 }
 
-QString GUITestLauncher::readTestResult(const QByteArray& output) const {
+QString GUITestLauncher::readTestResult(const QByteArray& output) {
 
     QString msg;
     QTextStream stream(output, QIODevice::ReadOnly);

@@ -24,16 +24,30 @@
 
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/Log.h>
 
 #include <QtGui/QAction>
 
 namespace U2 {
+
+#define GT_DEBUG_MESSAGE(condition, errorMessage, result) \
+{ \
+    uiLog.trace("GT_DEBUG_MESSAGE Checking condition <" #condition ">"); \
+    if (condition) { \
+        uiLog.trace("GT_DEBUG_MESSAGE ok, but errorMessage is: <" + QString(errorMessage) + ">"); \
+    } \
+    else { \
+        QString firstFailed = os.hasError() ? "!!!FIRST FAIL" : "failed, but OpStatus already hasError"; \
+        uiLog.trace("GT_DEBUG_MESSAGE " + firstFailed + ": <" + QString(errorMessage) + ">\n\n"); \
+    } \
+}
 
 #define CHECK_SET_ERR(condition, errorMessage) \
     CHECK_SET_ERR_RESULT(condition, errorMessage, )
 
 #define CHECK_SET_ERR_RESULT(condition, errorMessage, result) \
 { \
+    GT_DEBUG_MESSAGE(condition, errorMessage, result); \
     if (os.hasError()) { return result; } \
     CHECK_EXT(condition, if (!os.hasError()) {os.setError(errorMessage);}, result) \
 }

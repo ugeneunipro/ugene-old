@@ -5,6 +5,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/MultiTask.h>
 #include <U2Gui/MainWindow.h>
+#include <QtCore/QProcessEnvironment>
 
 namespace U2 {
 
@@ -22,12 +23,12 @@ private:
     QList<GUITest *> tests;
     QMap<QString, QString> results;
 
-    QStringList getTestProcessArguments(const QString &testName) const;
+    static QStringList getTestProcessArguments(const QString &testName);
+    static QProcessEnvironment getProcessEnvironment(const QString &testName);
 
     void firstTestRunCheck(const QString& testName);
-    QString performTest(const QString& testName) const;
-
-    QString readTestResult(const QByteArray& output) const;
+    static QString performTest(const QString& testName);
+    static QString readTestResult(const QByteArray& output);
 
     bool initGUITestBase();
     void updateProgress(int finishedCount);
