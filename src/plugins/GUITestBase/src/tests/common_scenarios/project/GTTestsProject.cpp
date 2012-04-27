@@ -25,7 +25,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTFile.h"
-#include <api/GTFileDialog.h>
+#include "api/GTFileDialog.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -37,6 +37,7 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsTaskTreeView.h"
+
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
 
@@ -45,8 +46,8 @@ namespace U2{
 namespace GUITest_common_scenarios_project{
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
-
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj1.uprj");
+    GTGlobals::sleep(1000);
     GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
