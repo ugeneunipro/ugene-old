@@ -104,7 +104,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/anonymous project/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_anonymous_project::test_0002, "excluded failed test");
+//    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_anonymous_project::test_0002, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0003);
 
 //////////////////////////////////////////////////////////////////////////
@@ -116,7 +117,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/user locking/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_user_locking::test_0001, "excluded failed test");
+//    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_user_locking::test_0001, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_project_user_locking::test_0005);
@@ -125,7 +127,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/project/document modifying/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0001);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_document_modifying::test_0002, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0002);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/Sequence view/
@@ -140,7 +142,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0003, "https://ugene.unipro.ru/tracker/browse/UGENE-956");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-956");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0005, "https://ugene.unipro.ru/tracker/browse/UGENE-954");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0006, "excluded failed test");
+//    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_edit::test_0006, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0009);
@@ -150,26 +153,29 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/remote request/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0001);
-
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0002);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting::test_0003, "excluded failed test");
+//    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting::test_0003, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0003);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-924");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting::test_0005, "excluded failed test");
+//    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting::test_0005, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0007);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/from project view/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0001);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0002, "excluded failed test");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0003, "excluded failed test");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0004, "excluded failed test");
+//    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0002, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0002);
+//    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0003, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0004);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0005, "test is not completed");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0006, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0006);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
