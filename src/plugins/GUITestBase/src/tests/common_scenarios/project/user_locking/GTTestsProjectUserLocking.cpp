@@ -41,8 +41,8 @@ namespace GUITest_common_scenarios_project_user_locking {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 
-    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj5.uprj");
+    GTUtilsApp::checkUGENETitle(os, "proj5 UGENE");
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
