@@ -25,6 +25,8 @@
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 
+#include <ui/ui_PaletteWidget.h>
+
 #include <QtGui/QAction>
 #include <QtGui/QTreeWidget>
 
@@ -32,9 +34,9 @@ namespace U2 {
 using namespace Workflow;
 class WorkflowView;
 class WorkflowScene;
+class WorkflowPaletteElements;
 
-
-class WorkflowPalette : public QTreeWidget
+class WorkflowPalette : public QWidget, Ui_PaletteWidget
 {
     Q_OBJECT
 
@@ -54,7 +56,32 @@ signals:
     void processSelected(Workflow::ActorPrototype*);
     void si_protoDeleted(const QString &);
     void si_protoChanged();
-    
+
+private:
+    WorkflowPaletteElements *elementsList;
+    friend class PaletteDelegate;
+};
+
+class WorkflowPaletteElements : public QTreeWidget {
+    Q_OBJECT
+
+public:
+
+    WorkflowPaletteElements(ActorPrototypeRegistry* reg, QWidget *parent = 0);
+    QMenu* createMenu(const QString& name);
+
+    QVariant saveState() const;
+    void restoreState(const QVariant&);
+
+public slots:
+    void resetSelection();
+    void sl_nameFilterChanged(const QString &filter);
+
+signals:
+    void processSelected(Workflow::ActorPrototype*);
+    void si_protoDeleted(const QString &);
+    void si_protoChanged();
+
 protected:
     void contextMenuEvent(QContextMenuEvent *e);
     void mouseMoveEvent ( QMouseEvent * event );
@@ -73,12 +100,18 @@ private:
     QAction* createItemAction(Workflow::ActorPrototype* item);
     void setContent(ActorPrototypeRegistry*);
     void sortTree();
+
 private:
     QMap<QString,QList<QAction*> > categoryMap;
     QMap<QAction*, QTreeWidgetItem*> actionMap;
     QTreeWidgetItem *overItem;
     QAction* currentAction;
     QPoint dragStartPosition;
+    QString nameFilter;
+
+    ActorPrototypeRegistry *protoRegistry;
+    QVariantMap expandState;
+
     friend class PaletteDelegate;
 };
 

@@ -58,6 +58,7 @@ FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
          src/ui/ExternalProcessWorkerDialog.ui \
          src/ui/ImportSchemaDialog.ui \
+         src/ui/PaletteWidget.ui \
          src/ui/PortAliasesConfigurationDialog.ui \
          src/ui/SchemaAliasesConfigurationDialog.ui \
          src/ui/SchemaConfigurationDialog.ui \
