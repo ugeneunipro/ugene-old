@@ -46,7 +46,7 @@ namespace U2{
 namespace GUITest_common_scenarios_project{
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
-    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj1.uprj");
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj1.uprj");
     GTGlobals::sleep(3000);
     GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
