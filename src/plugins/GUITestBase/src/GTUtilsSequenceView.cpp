@@ -75,15 +75,14 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
     GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
 
     QPoint posToActiveWindow = mdiWindow->mapToGlobal(mdiWindow->rect().center());
-    posToActiveWindow.setY(posToActiveWindow.y() - 30); // for TeamCity
     GTMouseDriver::moveTo(os, posToActiveWindow);
-//    while (QString(qApp->widgetAt(posToActiveWindow)->metaObject()->className()).contains("QScrollBar")) {
-//        posToActiveWindow.setY(posToActiveWindow.y() - 20);
-//        GTMouseDriver::moveTo(os, posToActiveWindow);
-//        GTGlobals::sleep(100);
-//    }
+    while (QString(qApp->widgetAt(posToActiveWindow)->metaObject()->className()).contains("QScrollBar")) {
+        posToActiveWindow.setY(posToActiveWindow.y() - 20);
+        GTMouseDriver::moveTo(os, posToActiveWindow);
+        GTGlobals::sleep(100);
+    }
 
-//    GTMouseDriver::moveTo(os, posToActiveWindow);
+    GTMouseDriver::moveTo(os, posToActiveWindow);
     GTMouseDriver::click(os);
 
     GTUtilsDialog::selectSequenceRegionDialogFiller filler(os);
