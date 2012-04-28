@@ -145,9 +145,14 @@ void GTFileDialogUtils::setPath()
     }
 
     GTKeyboardDriver::keySequence(os, path);
-    while (lineEdit->text() != path) {
+    for (int i = 0; i < 20; i++) { // wait 2 sec
+        if (lineEdit->text() == path) {
+            return;
+        }
         GTGlobals::sleep(100);
     }
+
+    GT_CHECK(lineEdit->text() == path, "Can't open file \"" + lineEdit->text() + "\"");
 }
 #undef GT_METHOD_NAME
 
