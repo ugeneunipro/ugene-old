@@ -65,9 +65,10 @@ void GTUtilsProject::exportProject(U2OpStatus &os, const QString &projectFolder,
 }
 void GTUtilsProject::createAnnotation(U2OpStatus &os, const QString &groupName, const QString &annotationName, const QString &location) {
  
-	GTKeyboardDriver::keyClick(os, 'N', GTKeyboardDriver::key["ctrl"]);
     GTUtilsDialog::CreateAnnotationDialogFiller filler(os, groupName, annotationName, location);
-    GTUtilsDialog::waitForDialog(os, &filler);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
 }
 
 void GTUtilsProject::exportProjectCheck(U2OpStatus &os, const QString &projectName) {
@@ -160,7 +161,7 @@ void GTUtilsProject::exportAnnotations(U2OpStatus &os, const QString &itemToClic
                                        GTUtilsDialog::ExportAnnotationsFiller::fileFormat format,
                                        bool saveSequencesUnderAnnotations, bool saveSequenceNames, GTGlobals::UseMethod method)
 {
-    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_annotations");
+    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_annotations", GTGlobals::UseKey);
     GTUtilsDialog::ExportAnnotationsFiller filler(os, exportToFile, format, saveSequencesUnderAnnotations, saveSequenceNames);
     QPoint pos;
 
