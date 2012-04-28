@@ -74,7 +74,12 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
 
-    GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
+    QPoint posToActiveWindow = mdiWindow->mapToGlobal(mdiWindow->rect().center());
+    while (qApp->widgetAt(QCursor::pos())->metaObject()->className() == "QScrollBar") {
+        posToActiveWindow.setY(posToActiveWindow.y() - 5);
+    }
+
+    GTMouseDriver::moveTo(os, posToActiveWindow);
     GTMouseDriver::click(os);
 
     GTUtilsDialog::selectSequenceRegionDialogFiller filler(os);
@@ -82,7 +87,7 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000); // don't touch
+    GTGlobals::sleep(1000);
 
     GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
