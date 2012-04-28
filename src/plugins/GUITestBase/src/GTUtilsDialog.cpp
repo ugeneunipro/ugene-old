@@ -237,7 +237,7 @@ void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
 
 void GTUtilsDialog::PopupChooser::run()
 {
-    GTGlobals::sleep(2000);
+    GTGlobals::sleep(1000);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
