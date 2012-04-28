@@ -346,6 +346,17 @@ void WorkflowPaletteElements::sortTree() {
         categoryIdx++;
     }
 
+    text = BaseActorCategories::CATEGORY_DATAFLOW().getDisplayName();
+    if (!findItems(text, Qt::MatchExactly).isEmpty())
+    {
+        item = findItems(text, Qt::MatchExactly).first();
+        if (item) {
+            takeTopLevelItem(indexFromItem(item).row());
+            insertTopLevelItem(categoryIdx,item);
+            categoryIdx++;
+        }
+    }
+
     text = BaseActorCategories::CATEGORY_SCRIPT().getDisplayName();
     if(!findItems(text,Qt::MatchExactly).isEmpty()) {
         item = findItems(text,Qt::MatchExactly).first();
@@ -356,17 +367,6 @@ void WorkflowPaletteElements::sortTree() {
     }
 
     text = BaseActorCategories::CATEGORY_EXTERNAL().getDisplayName();
-    if (!findItems(text, Qt::MatchExactly).isEmpty())
-    {
-        item = findItems(text, Qt::MatchExactly).first();
-        if (item)
-        {
-            takeTopLevelItem(indexFromItem(item).row());
-            addTopLevelItem(item);
-        }
-    }
-
-    text = BaseActorCategories::CATEGORY_DATAFLOW().getDisplayName();
     if (!findItems(text, Qt::MatchExactly).isEmpty())
     {
         item = findItems(text, Qt::MatchExactly).first();
