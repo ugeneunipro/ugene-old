@@ -75,8 +75,10 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
     GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
 
     QPoint posToActiveWindow = mdiWindow->mapToGlobal(mdiWindow->rect().center());
+    GTMouseDriver::moveTo(os, posToActiveWindow);
     while (qApp->widgetAt(QCursor::pos())->metaObject()->className() == "QScrollBar") {
-        posToActiveWindow.setY(posToActiveWindow.y() - 5);
+        posToActiveWindow.setY(posToActiveWindow.y() - 20);
+        GTMouseDriver::moveTo(os, posToActiveWindow);
     }
 
     GTMouseDriver::moveTo(os, posToActiveWindow);
