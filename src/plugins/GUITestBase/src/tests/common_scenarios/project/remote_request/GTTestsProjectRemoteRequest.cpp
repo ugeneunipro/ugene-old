@@ -25,6 +25,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
+#include "api/GTTreeWidget.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -35,10 +36,12 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsSequenceView.h"
-#include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
+
 #include <U2View/MSAEditorFactory.h>
+#include <U2View/AnnotatedDNAViewFactory.h>
 #include <api/GTFileDialog.h>
+
 
 namespace U2{
 
@@ -51,6 +54,15 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 	GTUtilsTaskTreeView::openView(os);
 	GTUtilsTaskTreeView::cancelTask(os, "DownloadRemoteDocuments");
 	GTGlobals::sleep(1000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0002) {
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTUtilsDialog::RemoteDBDialogFiller filler(os, "NC_001363", 0); 
+    GTUtilsDialog::waitForDialog(os, &filler);
+    GTGlobals::sleep(10000);
+    GTUtilsDocument::isDocumentLoaded(os, "NC_001363.gb");
+    GTUtilsDocument::checkDocument(os, "NC_001363.gb", AnnotatedDNAViewFactory::ID);
 }
 
 } // namespace

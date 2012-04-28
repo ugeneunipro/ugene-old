@@ -5,6 +5,7 @@ namespace U2 {
 
 #define ADV_MENU_ANALYSE                "ADV_MENU_ANALYSE"
 #define ADV_MENU_COPY                   "ADV_MENU_COPY"
+#define ADV_COPY_TRANSLATION_ACTION     "ADV_COPY_TRANSLATION_ACTION"
 #define ADV_MENU_SELECT                 "ADV_MENU_SELECT"
 #define ADV_MENU_ADD                    "ADV_MENU_ADD"
 #define ADV_MENU_REMOVE                 "ADV_MENU_REMOVE"

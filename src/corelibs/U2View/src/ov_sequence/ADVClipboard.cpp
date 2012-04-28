@@ -64,6 +64,7 @@ ADVClipboard::ADVClipboard(AnnotatedDNAView* c) : QObject(c) {
     
     copyTranslationAction = new QAction(QIcon(":/core/images/copy_translation.png"), tr("Copy translation"), this);
     copyTranslationAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_T));
+    copyTranslationAction->setObjectName(ADV_COPY_TRANSLATION_ACTION);
     
     copyComplementSequenceAction = new QAction(QIcon(":/core/images/copy_complement_sequence.png"), tr("Copy reverse complement sequence"), this);
     copyComplementSequenceAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_C));

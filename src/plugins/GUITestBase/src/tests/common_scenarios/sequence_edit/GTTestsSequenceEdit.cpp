@@ -38,10 +38,12 @@
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsMdi.h"
+
 #include <U2Core/DocumentModel.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
 #include <U2View/ADVConstants.h>
+#include <QClipboard>
 
 namespace U2{
 
@@ -251,6 +253,23 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 	GTGlobals::sleep(1000);
 	QString sequence = QApplication::clipboard()->text();
 	CHECK_SET_ERR("ACCC" == sequence, "Incorrect sequence is copied");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010) {
+    GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+
+    GTUtilsDialog::selectSequenceRegionDialogFiller dialog(os, 1, 11);
+    GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+    GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_COPY << ADV_COPY_TRANSLATION_ACTION, GTGlobals::UseKey);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep(1000);
+    QString text = QApplication::clipboard()->text();
+
+    CHECK_SET_ERR(text == "K*K", "Sequcence part translated to <" + text + ">, expected K*K");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0012) {

@@ -144,12 +144,15 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_sequence_edit::test_0012);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/remote request/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0002);
+
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/
 //////////////////////////////////////////////////////////////////////////
