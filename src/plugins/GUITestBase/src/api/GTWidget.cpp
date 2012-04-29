@@ -32,14 +32,16 @@ namespace U2 {
 #define GT_CLASS_NAME "GTWidget"
 
 #define GT_METHOD_NAME "click"
-void GTWidget::click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton) {
+void GTWidget::click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton, QPoint p) {
 
     GTGlobals::sleep(100);
     GT_CHECK(w != NULL, "widget is NULL");
-
     GT_CHECK(w->isEnabled() == true, "widget is not enabled");
 
-    GTMouseDriver::moveTo(os, w->mapToGlobal(w->rect().center()));
+    if (p.isNull()) {
+        p = w->rect().center();
+    }
+    GTMouseDriver::moveTo(os, w->mapToGlobal(p));
     GTMouseDriver::click(os, mouseButton);
 }
 #undef GT_METHOD_NAME

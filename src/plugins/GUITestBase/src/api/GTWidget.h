@@ -28,8 +28,8 @@ namespace U2 {
 
 class GTWidget {
 public:
-    // fails if widget is NULL, not visible or not enabled
-    static void click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton = Qt::LeftButton);
+    // fails if widget is NULL, not visible or not enabled; if p isNull, clicks on the center of widget
+    static void click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton = Qt::LeftButton, QPoint p = QPoint());
 
     // fails if widget is NULL, GTWidget::click fails or widget hasn't got focus
     static void setFocus(U2OpStatus &os, QWidget *w);

@@ -20,6 +20,7 @@
  */
 
 #include "GTUtilsDialog.h"
+#include "api/GTCheckBox.h"
 #include "api/GTComboBox.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
@@ -338,34 +339,12 @@ void GTUtilsDialog::ExportSequenceAsAlignmentFiller::run()
     QComboBox *comboBox = dialog->findChild<QComboBox*>();
     GT_CHECK(comboBox != NULL, "ComboBox not found");
 
-    int index = -1;
-    for (int i = 0; i < comboBox->count(); i++ ) {
-        if (comboBox->itemText(i) == comboBoxItems[format]) {
-            index = i;
-            break;
-        }
-    }
-
+    int index = comboBox->findText(comboBoxItems[format]);
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
-
     GTComboBox::setCurrentIndex(os, comboBox, index);
 
-    QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjectBox"));
-    GT_CHECK(checkButton, "Check box not found");
-
-    if ((addToProject && !checkButton->isChecked()) ||
-            (!addToProject && checkButton->isChecked())) {
-        switch(useMethod) {
-        case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkButton->rect().topLeft()));
-            GTMouseDriver::click(os);
-            break;
-        case GTGlobals::UseKey:
-            GTWidget::setFocus(os, checkButton);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-            break;
-        }
-    }
+    QCheckBox *checkBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjectBox"));
+    GTCheckBox::setChecked(os, checkBox, addToProject);
 
     QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("okButton"));
     GT_CHECK(exportButton != NULL, "Export button not found");
