@@ -1,5 +1,6 @@
 #include "GUITestLauncher.h"
 #include "GUITestBase.h"
+#include "GUITestService.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineCoreOptions.h>
@@ -20,6 +21,13 @@ GUITestLauncher::GUITestLauncher()
 : Task("gui_test_launcher", TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled) {
 
     tpm = Task::Progress_Manual;
+}
+
+bool GUITestLauncher::renameTestLog(const QString& testName) {
+    QString outFileName = testOutFile(testName);
+
+    QFile outLog(outFileName);
+    return outLog.rename("failed_" + outFileName);
 }
 
 void GUITestLauncher::run() {
@@ -47,6 +55,9 @@ void GUITestLauncher::run() {
 
                 QString testResult = performTest(testName);
                 results[testName] = testResult;
+                if (testFailed(testResult)) {
+                    renameTestLog(testName);
+                }
 
                 qint64 finishTime = GTimer::currentTimeMicros();
                 teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
@@ -71,7 +82,7 @@ void GUITestLauncher::teamCityLogResult(const QString &testName, const QString &
 
 bool GUITestLauncher::testFailed(const QString &testResult) const {
 
-    if (!testResult.contains("Success")) {
+    if (!testResult.contains(GUITestService::successResult)) {
         return true;
     }
 
@@ -103,13 +114,17 @@ void GUITestLauncher::updateProgress(int finishedCount) {
     }
 }
 
+QString GUITestLauncher::testOutFile(const QString &testName) {
+    return "ugene_"+testName+".out";
+}
+
 QProcessEnvironment GUITestLauncher::getProcessEnvironment(const QString &testName) {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
     env.insert("UGENE_DEV", "1");
     env.insert("UGENE_GUI_TEST", "1");
     env.insert("UGENE_USE_NATIVE_DIALOGS", "0");
-    env.insert("UGENE_PRINT_TO_FILE", "ugene_"+testName+".out");
+    env.insert("UGENE_PRINT_TO_FILE", testOutFile(testName));
 
     return env;
 }

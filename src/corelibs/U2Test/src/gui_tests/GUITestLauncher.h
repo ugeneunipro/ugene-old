@@ -25,10 +25,12 @@ private:
 
     static QStringList getTestProcessArguments(const QString &testName);
     static QProcessEnvironment getProcessEnvironment(const QString &testName);
+    static QString testOutFile(const QString &testName);
 
     void firstTestRunCheck(const QString& testName);
     static QString performTest(const QString& testName);
     static QString readTestResult(const QByteArray& output);
+    static bool renameTestLog(const QString& testName);
 
     bool initGUITestBase();
     void updateProgress(int finishedCount);
