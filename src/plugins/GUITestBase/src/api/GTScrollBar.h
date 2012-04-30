@@ -33,16 +33,13 @@ namespace U2 {
 
 class GTScrollBar {
 public:
-    
-    enum device{MOUSE, KEYBOARD};
-
     static QScrollBar* getScrollBar(U2OpStatus &os, const QString &scrollBarSysName);
 
-    static void pageUp(U2OpStatus &os, QScrollBar *scrollbar, device _device);
-    static void pageDown(U2OpStatus &os, QScrollBar *scrollbar, device _device);
+    static void pageUp(U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod);
+    static void pageDown(U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod);
 
-    static void lineUp(U2OpStatus &os, QScrollBar *scrollbar, device _device); //does not necessarily move one line up (for example, moves cursor in text editors)
-    static void lineDown(U2OpStatus &os, QScrollBar *scrollbar, device _device); //does not necessarily move one line down (for example, moves cursor in text editors)
+    static void lineUp(U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod); //does not necessarily move one line up (for example, moves cursor in text editors)
+    static void lineDown(U2OpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod); //does not necessarily move one line down (for example, moves cursor in text editors)
 
     static void moveSliderWithMouseUp(U2OpStatus &os, QScrollBar *scrollbar, int nPix);
     static void moveSliderWithMouseDown(U2OpStatus &os, QScrollBar *scrollbar, int nPix);
@@ -57,9 +54,7 @@ public:
     static QPoint getAreaOverSliderPosition(U2OpStatus &os, QScrollBar *scrollbar);
 
 private:
-
-    static QStyleOptionSlider initScrollbarOptions(QScrollBar *scrollbar);
-
+    static QStyleOptionSlider initScrollbarOptions(U2OpStatus &os, QScrollBar *scrollbar);
 };
 
 } //namespace

@@ -167,10 +167,10 @@ QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length
 int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
 {
     MainWindow* mw = AppContext::getMainWindow();
-    GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
+    GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", 0);
 
     MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
-    GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
+    GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", 0);
 
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);

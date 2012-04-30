@@ -1,4 +1,4 @@
-/**
+ /**
  * UGENE - Integrated Bioinformatics Tools.
  * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
@@ -142,13 +142,12 @@ void GTUtilsDialog::CreateAnnotationDialogFiller::run() {
     GT_CHECK(annotationNameLineEdit != NULL, "LineEdit is NULL");
     GTLineEdit::setText(os, annotationNameLineEdit, annotationName);
 
-        QLineEdit *locationLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "locationEdit", dialog));
+    QLineEdit *locationLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "locationEdit", dialog));
     GT_CHECK(locationLineEdit != NULL, "LineEdit is NULL");
     GTLineEdit::setText(os, locationLineEdit, location);
 
     QAbstractButton *createButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "create_button", dialog));
     GTWidget::click(os, createButton);
-
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -210,7 +209,7 @@ void GTUtilsDialog::MessageBoxDialogFiller::run() {
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
-
+ 
 #define GT_CLASS_NAME "GTUtilsDialog::SaveProjectAsDialogFiller"
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
@@ -229,7 +228,7 @@ void GTUtilsDialog::SaveProjectAsDialogFiller::run() {
 
     QAbstractButton *createButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "createButton", dialog));
     GTWidget::click(os, createButton);
-
+ 
     GTUtilsDialog::MessageBoxDialogFiller filler(os, QMessageBox::Yes);
     GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Modal, false); // MessageBox question appears only if there is already a file on a disk
 }
@@ -286,17 +285,8 @@ void GTUtilsDialog::ExportToSequenceFormatFiller::run()
 
     QRadioButton *button = dialog->findChild<QRadioButton*>(QString::fromUtf8("keepGapsRB"));
     GT_CHECK(button != NULL, "radio button not found");
+    GTRadioButton::click(os, button);
 
-    switch(useMethod) {
-    case GTGlobals::UseMouse:
-        GTMouseDriver::moveTo(os, button->mapToGlobal(button->rect().topLeft()));
-        GTMouseDriver::click(os);
-        break;
-    case GTGlobals::UseKey:
-        GTWidget::setFocus(os, button);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-        break;
-    }
     GTGlobals::sleep(100);
 
     QPushButton *okButton = dialog->findChild<QPushButton*>(QString::fromUtf8("okButton"));
@@ -310,16 +300,16 @@ void GTUtilsDialog::ExportToSequenceFormatFiller::run()
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::ExportSelectedRegionFiller::run()
 {
-        QWidget *dialog = QApplication::activeModalWidget();
-        GT_CHECK(dialog != NULL, "dialog not found");
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
 
-        QLineEdit *lineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "fileNameEdit", dialog));
-        GT_CHECK(lineEdit != NULL, "File name line edit not found");
-        GTLineEdit::setText(os, lineEdit, path + name);
+    QLineEdit *lineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "fileNameEdit", dialog));
+    GT_CHECK(lineEdit != NULL, "File name line edit not found");
+    GTLineEdit::setText(os, lineEdit, path + name);
 
-        QPushButton *okButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
-        GT_CHECK(okButton != NULL, "Export button not found");
-        GTWidget::click(os, okButton);
+    QPushButton *okButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
+    GT_CHECK(okButton != NULL, "Export button not found");
+    GTWidget::click(os, okButton);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -361,68 +351,30 @@ void GTUtilsDialog::CopyToFileAsDialogFiller::run()
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
-	QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
-   	GT_CHECK(lineEdit != NULL, "line edit not found");
-	GTLineEdit::setText(os, lineEdit, path + name);
+    QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+    GT_CHECK(lineEdit != NULL, "line edit not found");
+    GTLineEdit::setText(os, lineEdit, path + name);
 
-	QComboBox *comboBox = dialog->findChild<QComboBox*>("formatCombo");
-	GT_CHECK(comboBox != NULL, "ComboBox not found");
+    QComboBox *comboBox = dialog->findChild<QComboBox*>("formatCombo");
+    GT_CHECK(comboBox != NULL, "ComboBox not found");
+    int index = comboBox->findText(comboBoxItems[format]);
 
-	int index = -1;
-	for (int i = 0; i < comboBox->count(); i++ ) {
-		if (comboBox->itemText(i) == comboBoxItems[format]) {
-			index = i;
-			break;
-		}
-	}
+    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+    if (comboBox->currentIndex() != index){
+        GTComboBox::setCurrentIndex(os, comboBox, index);
+    }
 
-	GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+    QCheckBox *compressCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("compressCheck"));
+    GT_CHECK(compressCheckBox != NULL, "Check box not found");
+    GTCheckBox::setChecked(os, compressCheckBox, compressFile);
 
-	if (comboBox->currentIndex() != index){
-		GTComboBox::setCurrentIndex(os, comboBox, index);
-	}
+    QCheckBox *addCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjCheck"));
+    GT_CHECK(addCheckBox != NULL, "Check box not found");
+    GTCheckBox::setChecked(os, addCheckBox, addToProject);
 
-	QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("compressCheck"));
-	GT_CHECK(checkButton != NULL, "Check box not found");
-
-	if ((compressFile && !checkButton->isChecked()) ||
-	    (!compressFile && checkButton->isChecked())) {
-		QPoint checkPos;
-		switch(useMethod) {
-		case GTGlobals::UseMouse:
-			checkPos = QPoint(checkButton->rect().left() + 5, checkButton->rect().top() + 5);
-			GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkPos));
-			GTMouseDriver::click(os);
-			break;
-		case GTGlobals::UseKey:
-			GTWidget::setFocus(os, checkButton);
-			GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-			break;
-		}
-	}
-	checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjCheck"));
-	GT_CHECK(checkButton != NULL, "Check box not found");
-
-	if ((addToProject && !checkButton->isChecked()) ||
-	    (!addToProject && checkButton->isChecked())) {
-	QPoint checkPos;
-	switch(useMethod) {
-	case GTGlobals::UseMouse:
-		checkPos = QPoint(checkButton->rect().left() + 5, checkButton->rect().top() + 5);
-		GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkPos));
-		GTMouseDriver::click(os);
-		break;
-	case GTGlobals::UseKey:
-		GTWidget::setFocus(os, checkButton);
-		GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-		break;
-	}
-}
-
-	QPushButton *btSave = dialog->findChild<QPushButton*>(QString::fromUtf8("createButton"));
-	GT_CHECK(btSave != NULL, "Save button not found");
-	GTWidget::click(os, btSave);
-
+    QPushButton *btSave = dialog->findChild<QPushButton*>(QString::fromUtf8("createButton"));
+    GT_CHECK(btSave != NULL, "Save button not found");
+    GTWidget::click(os, btSave);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -431,188 +383,61 @@ void GTUtilsDialog::CopyToFileAsDialogFiller::run()
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::run()
 {
-    QWidget *dlg = QApplication::activeModalWidget();
-    GT_CHECK(dlg != NULL, "dialog not found");
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
 
-    dialog = dlg;
+    QLineEdit *fileNameEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+    GT_CHECK(fileNameEdit != NULL, "fileNameEdit not found");
+    GTLineEdit::setText(os, fileNameEdit, path);
 
-    setFileName();
     GTGlobals::sleep(200);
-    setFormat();
+
+    QComboBox *comboBox = dialog->findChild<QComboBox*>();
+    GT_CHECK(comboBox != NULL, "ComboBox not found");
+    int index = comboBox->findText(comboBoxItems[format]);
+
+    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+    if (comboBox->currentIndex() != index){
+        GTComboBox::setCurrentIndex(os, comboBox, index);
+    }
+
     GTGlobals::sleep(200);
-    checkAddToProject();
+
+    QCheckBox *projectCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjectBox"));
+    GT_CHECK(projectCheckBox != NULL, "addToProjectBox not found");
+    GTCheckBox::setChecked(os, projectCheckBox, addToProject);
+
     GTGlobals::sleep(200);
-	checkExportWithAnnotations();
+
+    QCheckBox *annotationsCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("withAnnotationsBox"));
+    GT_CHECK(annotationsCheckBox != NULL, "Check box not found");
+    GTCheckBox::setChecked(os, annotationsCheckBox, exportWithAnnotations);
+
     GTGlobals::sleep(200);
-    clickMergeRadioButton();
+
+    QRadioButton *mergeButton = dialog->findChild<QRadioButton*>(mergeRadioButtons[options]);
+
+    GT_CHECK(mergeButton != NULL, "Radio button " + mergeRadioButtons[options] + " not found");
+    if (mergeButton->isEnabled()){
+        GTRadioButton::click(os, mergeButton);
+    }
+
     GTGlobals::sleep(200);
-    fillSpinBox();
+
+    QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>("mergeSpinBox");
+    GT_CHECK(mergeSpinBox != NULL, "SpinBox not found");
+    GTSpinBox::setValue(os, mergeSpinBox, gapLength);
+
     GTGlobals::sleep(200);
 
     QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
     GT_CHECK(exportButton != NULL, "Export button not found");
-
     GTWidget::click(os, exportButton);
-}
-
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "setFileName"
-void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::setFileName()
-{
-    QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
-    GT_CHECK(lineEdit != NULL, "line edit not found");
-
-    GTLineEdit::setText(os, lineEdit, path);
-}
-
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "setFormat"
-void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::setFormat()
-{
-    QComboBox *comboBox = dialog->findChild<QComboBox*>();
-    GT_CHECK(comboBox != NULL, "ComboBox not found");
-
-    int index = -1;
-    for (int i = 0; i < comboBox->count(); i++ ) {
-        if (comboBox->itemText(i) == comboBoxItems[format]) {
-            index = i;
-            break;
-        }
-    }
-
-    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
-
-    if (comboBox->currentIndex() != index){
-        GTComboBox::setCurrentIndex(os, comboBox, index);
-    }
-}
-
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "checkAddToProject"
-void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::checkAddToProject()
-{
-    QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjectBox"));
-    GT_CHECK(checkButton != NULL, "Check box not found");
-
-    if ((addToProject && !checkButton->isChecked()) ||
-         (!addToProject && checkButton->isChecked())) {
-        QPoint checkPos = checkButton->mapToGlobal(checkButton->rect().topLeft());
-
-        checkPos = QPoint(checkPos.x() + 10, checkPos.y() + 10); // +10 for moved to clickable area
-        switch(useMethod) {
-        case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(os, checkPos);
-            GTMouseDriver::click(os);
-            break;
-        case GTGlobals::UseKey:
-            GTWidget::setFocus(os, checkButton);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-            break;
-        }
-    }
-}
-
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "checkExportWithAnnotations"
-void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::checkExportWithAnnotations()
-{
-    QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("withAnnotationsBox"));
-    GT_CHECK(checkButton != NULL, "Check box not found");
-
-    if ((exportWithAnnotations && !checkButton->isChecked()) ||
-         (!exportWithAnnotations && checkButton->isChecked())) {
-        QPoint checkPos = checkButton->mapToGlobal(checkButton->rect().topLeft());
-
-        checkPos = QPoint(checkPos.x() + 10, checkPos.y() + 10); // +10 for moved to clickable area
-        switch(useMethod) {
-        case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(os, checkPos);
-            GTMouseDriver::click(os);
-            break;
-        case GTGlobals::UseKey:
-            GTWidget::setFocus(os, checkButton);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-            break;
-        }
-    }
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "clickMergeRadioButton"
-void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::clickMergeRadioButton()
-{
-    QRadioButton *mergeButton =  dialog->findChild<QRadioButton*>(mergeRadioButtons[options]);
-    GT_CHECK(mergeButton != NULL, "Radio button " + mergeRadioButtons[options] + " not found");
-
-    if (mergeButton->isEnabled()){
-        QPoint radioPos = mergeButton->mapToGlobal(mergeButton->rect().topLeft());
-        radioPos = QPoint(radioPos.x() + 10, radioPos.y() + 10); // +10 for moved to clickable area
-
-        switch(useMethod) {
-        case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(os, radioPos);
-            GTMouseDriver::click(os);
-            break;
-        case GTGlobals::UseKey:
-            GTWidget::setFocus(os, mergeButton);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-            break;
-        }
-    }
-}
-
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "fillSpinBox"
-void GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::fillSpinBox()
-{
-    QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>("mergeSpinBox");
-    GT_CHECK(mergeSpinBox != NULL, "SpinBox not found");
-
-    QPoint arrowPos;
-    QRect spinBoxRect;
-    int key;
-
-    if (mergeSpinBox->value() != gapLength) {
-        switch(useMethod) {
-        case GTGlobals::UseMouse:
-            spinBoxRect = mergeSpinBox->rect();
-            if (gapLength > mergeSpinBox->value()) {
-                arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() / 4); // -5 it's needed that area under cursor was clickable
-            } else {
-                arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() * 3 / 4);
-            }
-
-            GTMouseDriver::moveTo(os, mergeSpinBox->mapToGlobal(arrowPos));
-            while (mergeSpinBox->value() != gapLength) {
-                GTMouseDriver::click(os);
-                GTGlobals::sleep(100);
-            }
-            break;
-
-        case GTGlobals::UseKey:
-            if (gapLength > mergeSpinBox->value()) {
-                key = GTKeyboardDriver::key["up"];
-            } else {
-                key = GTKeyboardDriver::key["down"];
-            }
-
-            GTWidget::setFocus(os, mergeSpinBox);
-            while (mergeSpinBox->value() != gapLength) {
-                GTKeyboardDriver::keyClick(os, key);
-                GTGlobals::sleep(100);
-            }
-        }
-    }
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-#define GT_CLASS_NAME "GTUtilsDialog::exportAnnotationsFiller"
+#define GT_CLASS_NAME "GTUtilsDialog::ExportAnnotationsFiller"
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::ExportAnnotationsFiller::run()
 {
@@ -626,66 +451,27 @@ void GTUtilsDialog::ExportAnnotationsFiller::run()
     QComboBox *comboBox = dialog->findChild<QComboBox*>();
     GT_CHECK(comboBox != NULL, "ComboBox not found");
 
-    int index = -1;
-    for (int i = 0; i < comboBox->count(); i++ ) {
-        if (comboBox->itemText(i) == comboBoxItems[format]) {
-            index = i;
-            break;
-        }
-    }
-
+    int index = comboBox->findText(comboBoxItems[format]);
     GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
-
-        if (comboBox->currentIndex() != index){
-                GTComboBox::setCurrentIndex(os, comboBox, index);
-        }
+    if (comboBox->currentIndex() != index){
+        GTComboBox::setCurrentIndex(os, comboBox, index);
+    }
 
     QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("exportSequenceCheck"));
     GT_CHECK(checkButton != NULL, "Check box not found");
+    GTCheckBox::setChecked(os, checkButton, saveSequencesUnderAnnotations);
 
-    if ((saveSequencesUnderAnnotations && !checkButton->isChecked()) ||
-            (!saveSequencesUnderAnnotations && checkButton->isChecked())) {
-                QPoint checkPos;
-        switch(useMethod) {
-        case GTGlobals::UseMouse:
-            checkPos = QPoint(checkButton->rect().left() + 5, checkButton->rect().top() + 5);
-            GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkPos));
-            GTMouseDriver::click(os);
-            break;
-        case GTGlobals::UseKey:
-            GTWidget::setFocus(os, checkButton);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-            break;
-        }
-    }
     checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("exportSequenceNameCheck"));
     GT_CHECK(checkButton != NULL, "Check box not found");
+    GTCheckBox::setChecked(os, checkButton, saveSequenceNames);
 
-    if ((saveSequenceNames && !checkButton->isChecked()) ||
-            (!saveSequenceNames && checkButton->isChecked())) {
-                QPoint checkPos;
-        switch(useMethod) {
-        case GTGlobals::UseMouse:
-                        checkPos = QPoint(checkButton->rect().left() + 5, checkButton->rect().top() + 5);
-            GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkPos));
-            GTMouseDriver::click(os);
-            break;
-        case GTGlobals::UseKey:
-            GTWidget::setFocus(os, checkButton);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-            break;
-        }
-    }
-        QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+    QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+
     GT_CHECK(buttonBox != NULL, "buttonBox is NULL");
-
-        QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     GT_CHECK(okButton != NULL, "okButton is NULL");
-
     GTWidget::click(os, okButton);
-
 }
-
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
@@ -710,7 +496,6 @@ void GTUtilsDialog::selectSequenceRegionDialogFiller::run()
         if (len != NULL) {
             QLineEdit *endEdit = dialog->findChild<QLineEdit*>("endEdit");
             GT_CHECK(endEdit != NULL, "QLineEdit \"endEdit\" not found");
-
             *len = endEdit->text().toInt();
         }
     } else if (rangeType == Single) {
@@ -742,16 +527,10 @@ void GTUtilsDialog::selectSequenceRegionDialogFiller::run()
 
         QRadioButton *multipleButton = dialog->findChild<QRadioButton*>("miltipleButton");
         GT_CHECK(multipleButton != NULL, "RadioButton \"miltipleButton\" not found");
-
-        QPoint buttonPos = multipleButton->mapToGlobal(multipleButton->rect().topLeft());
-        buttonPos = QPoint(buttonPos.x() + 10, buttonPos.y() + 10); // for moved to clickable area
-
-        GTMouseDriver::moveTo(os, buttonPos);
-        GTMouseDriver::click(os);
+        GTRadioButton::click(os, multipleButton);
 
         QLineEdit *regionEdit = dialog->findChild<QLineEdit*>("multipleRegionEdit");
         GT_CHECK(regionEdit != NULL, "QLineEdit \"multipleRegionEdit\" not foud");
-
         GTLineEdit::setText(os, regionEdit, multipleRange);
     }
 
@@ -766,36 +545,28 @@ void GTUtilsDialog::selectSequenceRegionDialogFiller::run()
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::CreateDocumentFiller::run()
 {
-	qDebug() <<  "IN RUN";
+    qDebug() <<  "IN RUN";
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
     QPlainTextEdit *plainText = dialog->findChild<QPlainTextEdit*>("sequenceEdit");
     GT_CHECK(plainText != NULL, "plain text not found");
-	GTPlainTextEdit::setPlainText(os, plainText, pasteDataHere);
+    GTPlainTextEdit::setPlainText(os, plainText, pasteDataHere);
 
-	QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("filepathEdit");
+    QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("filepathEdit");
     GT_CHECK(lineEdit != NULL, "line edit not found");
     GTLineEdit::setText(os, lineEdit, documentLocation);
 
     QComboBox *comboBox = dialog->findChild<QComboBox*>();
     GT_CHECK(comboBox != NULL, "ComboBox not found");
 
-    int index = -1;
-    for (int i = 0; i < comboBox->count(); i++ ) {
-        if (comboBox->itemText(i) == comboBoxItems[format]) {
-            index = i;
-            break;
-        }
+    int index = comboBox->findText(comboBoxItems[format]);
+    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+    if (comboBox->currentIndex() != index){
+        GTComboBox::setCurrentIndex(os, comboBox, index);
     }
 
-    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
-
-	if (comboBox->currentIndex() != index){
-		GTComboBox::setCurrentIndex(os, comboBox, index);
-	}
-
-	QLineEdit *lineEditName = dialog->findChild<QLineEdit*>("nameEdit");
+    QLineEdit *lineEditName = dialog->findChild<QLineEdit*>("nameEdit");
     GT_CHECK(lineEdit != NULL, "line edit not found");
     GTLineEdit::setText(os, lineEditName, sequenceName);
 
@@ -803,7 +574,6 @@ void GTUtilsDialog::CreateDocumentFiller::run()
     GT_CHECK(createButton != NULL, "Create button not found");
 
     GTWidget::click(os, createButton);
-
 }
 
 #undef GT_METHOD_NAME
@@ -813,13 +583,13 @@ void GTUtilsDialog::CreateDocumentFiller::run()
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::InsertSequenceFiller::run()
 {
-	qDebug() <<  "IN RUN";
+    qDebug() <<  "IN RUN";
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
     QPlainTextEdit *plainText = dialog->findChild<QPlainTextEdit*>("sequenceEdit");
     GT_CHECK(plainText != NULL, "plain text not found");
-	GTPlainTextEdit::setPlainText(os, plainText, pasteDataHere);
+    GTPlainTextEdit::setPlainText(os, plainText, pasteDataHere);
 
     QString radioButtonName;
     switch (regionResolvingMode) {
@@ -848,48 +618,33 @@ void GTUtilsDialog::InsertSequenceFiller::run()
     GT_CHECK(insertPositionSpin != NULL, "insertPositionSpin not found");
     GTSpinBox::setValue(os, insertPositionSpin, insertPosition);
 
-	QGroupBox *checkButton = dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
-	GT_CHECK(checkButton != NULL, "Check box not found");
+    QGroupBox *checkButton = dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
+    GT_CHECK(checkButton != NULL, "Check box not found");
 
-	if ((saveToNewFile && !checkButton->isChecked()) ||
-	   (!saveToNewFile && checkButton->isChecked())) {
-		QPoint checkPos;
-		switch(useMethod) {
-		case GTGlobals::UseMouse:
-			checkPos = QPoint(checkButton->rect().left() + 12, checkButton->rect().top() + 12);
-			GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkPos));
-			GTMouseDriver::click(os);
-			break;
-		case GTGlobals::UseKey:
-			GTWidget::setFocus(os, checkButton);
-			GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-			break;
-		}
-	}
-	
-	GTGlobals::sleep(1000);
+    if ((saveToNewFile && !checkButton->isChecked()) ||
+       (!saveToNewFile && checkButton->isChecked())) {
+        QPoint checkPos;
+        switch(useMethod) {
+        case GTGlobals::UseMouse:
+            checkPos = QPoint(checkButton->rect().left() + 12, checkButton->rect().top() + 12);
+            GTMouseDriver::moveTo(os, checkButton->mapToGlobal(checkPos));
+            GTMouseDriver::click(os);
+            break;
+        case GTGlobals::UseKey:
+            GTWidget::setFocus(os, checkButton);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+            break;
+        }
+    }
 
-	QCheckBox *checkButton1 = dialog->findChild<QCheckBox*>(QString::fromUtf8("mergeAnnotationsBox"));
-	GT_CHECK(checkButton1 != NULL, "Check box not found");
+    GTGlobals::sleep(1000);
 
-	if ((mergeAnnotations && !checkButton1->isChecked()) ||
-	    (!mergeAnnotations && checkButton1->isChecked())) {
-	QPoint checkPos;
-	switch(useMethod) {
-	case GTGlobals::UseMouse:
-		checkPos = QPoint(checkButton1->rect().left() + 5, checkButton1->rect().top() + 5);
-		GTMouseDriver::moveTo(os, checkButton1->mapToGlobal(checkPos));
-		GTMouseDriver::click(os);
-		break;
-	case GTGlobals::UseKey:
-		GTWidget::setFocus(os, checkButton1);
-		GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
-		break;
-		}
-	}
+    QCheckBox *checkButton1 = dialog->findChild<QCheckBox*>(QString::fromUtf8("mergeAnnotationsBox"));
+    GT_CHECK(checkButton1 != NULL, "Check box not found");
+    GTCheckBox::setChecked(os, checkButton1, mergeAnnotations);
 
     if (saveToNewFile) {
-    	QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("filepathEdit");
+        QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("filepathEdit");
         GT_CHECK(lineEdit != NULL, "line edit not found");
         GTLineEdit::setText(os, lineEdit, documentLocation);
     }
@@ -897,21 +652,13 @@ void GTUtilsDialog::InsertSequenceFiller::run()
     QComboBox *comboBox = dialog->findChild<QComboBox*>();
     GT_CHECK(comboBox != NULL, "ComboBox not found");
 
-    int index = -1;
-    for (int i = 0; i < comboBox->count(); i++ ) {
-        if (comboBox->itemText(i) == comboBoxItems[format]) {
-            index = i;
-            break;
-        }
+    int index = comboBox->findText(comboBoxItems[format]);
+    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+    if (comboBox->currentIndex() != index){
+        GTComboBox::setCurrentIndex(os, comboBox, index);
     }
 
-    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
-
-	if (comboBox->currentIndex() != index){
-		GTComboBox::setCurrentIndex(os, comboBox, index);
-	}
-
-	QPushButton *createButton = dialog->findChild<QPushButton*>(QString::fromUtf8("OKButton"));
+    QPushButton *createButton = dialog->findChild<QPushButton*>(QString::fromUtf8("OKButton"));
     GT_CHECK(createButton != NULL, "Create button not found");
 
     GTWidget::click(os, createButton);
@@ -920,52 +667,51 @@ void GTUtilsDialog::InsertSequenceFiller::run()
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-
 #define GT_CLASS_NAME "GTUtilsDialog::RemovePartFromSequenceDialogFiller"
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::RemovePartFromSequenceDialogFiller::run()
 {
-	QWidget *dialog = QApplication::activeModalWidget();
-	GT_CHECK(dialog != NULL, "dialog not found");
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
 
-	if (!range.isEmpty()){
-		QLineEdit *removeLocationEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("removeLocationEdit"));
-		GT_CHECK(removeLocationEdit != NULL, "QLineEdit \"removeLocationEdit\" not found");
-		GTLineEdit::setText(os, removeLocationEdit, range);
-	}
-	QRadioButton *resizeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("resizeRB"));
-	GT_CHECK(resizeRB != NULL, "radio button not found");
-	resizeRB->setChecked(removeType == Resize);
-	QRadioButton *removeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("removeRB"));
-	GT_CHECK(removeRB != NULL, "radio button not found");
-	removeRB->setChecked(removeType == Remove);
+    if (!range.isEmpty()){
+        QLineEdit *removeLocationEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("removeLocationEdit"));
+        GT_CHECK(removeLocationEdit != NULL, "QLineEdit \"removeLocationEdit\" not found");
+        GTLineEdit::setText(os, removeLocationEdit, range);
+    }
+    QRadioButton *resizeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("resizeRB"));
+    GT_CHECK(resizeRB != NULL, "radio button not found");
+    resizeRB->setChecked(removeType == Resize);
+    QRadioButton *removeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("removeRB"));
+    GT_CHECK(removeRB != NULL, "radio button not found");
+    removeRB->setChecked(removeType == Remove);
     GTGlobals::sleep(1000);
-	if (saveNew) {
-		QGroupBox *saveToAnotherBox =  dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
-		saveToAnotherBox->setChecked(true);
-		QLineEdit *filepathEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("filepathEdit"));
-		GT_CHECK(filepathEdit != NULL, "QLineEdit \"filepathEdit\" not found");
+    if (saveNew) {
+        QGroupBox *saveToAnotherBox =  dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
+        saveToAnotherBox->setChecked(true);
+        QLineEdit *filepathEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("filepathEdit"));
+        GT_CHECK(filepathEdit != NULL, "QLineEdit \"filepathEdit\" not found");
 
-		GTLineEdit::setText(os, filepathEdit, saveToFile);
-	}
-	if (format != FASTA){
-		QComboBox *formatBox = dialog->findChild<QComboBox*>(QString::fromUtf8("formatBox"));
-		GT_CHECK(formatBox != NULL, "format box not found");
-		int index = -1;
-		for (int i = 0; i < formatBox->count(); i++ ) {
-			if (formatBox->itemText(i) == comboBoxItems[format]) {
-				index = i;
-				break;
-			}
-		}
+        GTLineEdit::setText(os, filepathEdit, saveToFile);
+    }
+    if (format != FASTA){
+        QComboBox *formatBox = dialog->findChild<QComboBox*>(QString::fromUtf8("formatBox"));
+        GT_CHECK(formatBox != NULL, "format box not found");
+        int index = -1;
+        for (int i = 0; i < formatBox->count(); i++ ) {
+            if (formatBox->itemText(i) == comboBoxItems[format]) {
+                index = i;
+                break;
+            }
+        }
 
-		GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+        GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
 
-		GTComboBox::setCurrentIndex(os, formatBox, index);
-	}
-	QPushButton *okButton = dialog->findChild<QPushButton*>("OKButton");
-	GT_CHECK(okButton != NULL, "OK button not found");
-	GTWidget::click(os, okButton);
+        GTComboBox::setCurrentIndex(os, formatBox, index);
+    }
+    QPushButton *okButton = dialog->findChild<QPushButton*>("OKButton");
+    GT_CHECK(okButton != NULL, "OK button not found");
+    GTWidget::click(os, okButton);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -974,39 +720,38 @@ void GTUtilsDialog::RemovePartFromSequenceDialogFiller::run()
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::SequenceReadingModeSelectorDialogFiller::run()
 {
-	QWidget *dialog = QApplication::activeModalWidget();
-	GT_CHECK(dialog != NULL, "dialog not found");
-	if (readingMode == Separate) {
-		QRadioButton *separateRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("separateRB"));
-		GT_CHECK(separateRB != NULL, "radio button not found");
-		separateRB->setChecked(readingMode == Separate);
-	}
-	if (readingMode == Merge) {
-		QRadioButton *mergeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("mergeRB"));
-		GT_CHECK(mergeRB != NULL, "radio button not found");
-		mergeRB->setChecked(readingMode == Merge);
-		QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>(QString::fromUtf8("mergeSpinBox"));
-		if (mergeSpinBox->value() != bases){
-			mergeSpinBox->setValue(bases);
-		}
-	}
-	if (readingMode == Join) {
-		QRadioButton *malignmentRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("malignmentRB"));
-		GT_CHECK(malignmentRB != NULL, "radio button not found");
-		malignmentRB->setChecked(readingMode == Join);
-	}
-	if (readingMode == Align) {
-		QRadioButton *refalignmentRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("refalignmentRB"));
-		GT_CHECK(refalignmentRB != NULL, "radio button not found");
-		refalignmentRB->setChecked(readingMode == Align);
-	}
-	QDialogButtonBox *buttonBox = dialog->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
-	QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
-	GT_CHECK(button != NULL, "standart button not found");
-	GTWidget::click(os, button);
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+    if (readingMode == Separate) {
+        QRadioButton *separateRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("separateRB"));
+        GT_CHECK(separateRB != NULL, "radio button not found");
+        separateRB->setChecked(readingMode == Separate);
+    }
+    if (readingMode == Merge) {
+        QRadioButton *mergeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("mergeRB"));
+        GT_CHECK(mergeRB != NULL, "radio button not found");
+        mergeRB->setChecked(readingMode == Merge);
+        QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>(QString::fromUtf8("mergeSpinBox"));
+        if (mergeSpinBox->value() != bases){
+            mergeSpinBox->setValue(bases);
+        }
+    }
+    if (readingMode == Join) {
+        QRadioButton *malignmentRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("malignmentRB"));
+        GT_CHECK(malignmentRB != NULL, "radio button not found");
+        malignmentRB->setChecked(readingMode == Join);
+    }
+    if (readingMode == Align) {
+        QRadioButton *refalignmentRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("refalignmentRB"));
+        GT_CHECK(refalignmentRB != NULL, "radio button not found");
+        refalignmentRB->setChecked(readingMode == Align);
+    }
+    QDialogButtonBox *buttonBox = dialog->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+    QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+    GT_CHECK(button != NULL, "standart button not found");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
-
 
 }//namespace

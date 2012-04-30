@@ -56,8 +56,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 	GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller filler(os,
 	testDir+"_common_data/scenarios/sandbox/exp.fasta",
 	GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
-	GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate,
-	GTGlobals::UseMouse
+	GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
 	);
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTMouseDriver::click(os, Qt::RightButton);
@@ -76,8 +75,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTUtilsDialog::ExportSequenceAsAlignmentFiller filler(os,
 		testDir+"_common_data/scenarios/sandbox/",
 		"exp2.aln",
-		GTUtilsDialog::ExportSequenceAsAlignmentFiller::Clustalw,
-		GTGlobals::UseMouse
+		GTUtilsDialog::ExportSequenceAsAlignmentFiller::Clustalw
 	);
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTMouseDriver::click(os, Qt::RightButton);

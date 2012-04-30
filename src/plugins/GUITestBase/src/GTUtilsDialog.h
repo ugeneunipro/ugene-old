@@ -246,8 +246,8 @@ public:
     public:
         enum FormatToUse {Fasta, Fastaq, Gff, Genbank};
         enum MergeOptions {SaveAsSeparate, Merge};
-        ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength,
-                                                  bool _addDocToProject = true, bool _exportWithAnnotations = true, GTGlobals::UseMethod method = GTGlobals::UseMouse):
+        ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength = 0,
+                                                  bool _addDocToProject = true, bool _exportWithAnnotations = false, GTGlobals::UseMethod method = GTGlobals::UseMouse):
             os(_os), gapLength(_gapLength), format(_format), addToProject(_addDocToProject), exportWithAnnotations(_exportWithAnnotations),
             options(_options), useMethod(method)
             {
@@ -265,20 +265,10 @@ public:
 
                 mergeRadioButtons[SaveAsSeparate] = "separateButton";
                 mergeRadioButtons[Merge] = "mergeButton";
-
-                dialog = NULL;
             }
         virtual void run();
 
     private:
-
-        void setFileName();
-        void setFormat();
-        void checkAddToProject();
-		void checkExportWithAnnotations();
-        void clickMergeRadioButton();
-        void fillSpinBox();
-        QWidget *dialog;
         U2OpStatus &os;
         QString path;
         int gapLength;
@@ -348,10 +338,10 @@ public:
         QString pasteDataHere;
         RegionResolvingMode regionResolvingMode;
         int insertPosition;
+        QString documentLocation;
         documentFormat format;
         bool saveToNewFile;
         bool mergeAnnotations;
-        QString documentLocation;
         GTGlobals::UseMethod useMethod;
 
         QMap<documentFormat, QString> comboBoxItems;

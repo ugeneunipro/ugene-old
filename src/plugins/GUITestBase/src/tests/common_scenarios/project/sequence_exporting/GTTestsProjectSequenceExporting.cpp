@@ -83,8 +83,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller filler(os, 
 		"_common_data/scenarios/sandbox/exp.fasta",
 		GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
-		GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate,
-		0
+		GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
 	);
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "C"));
