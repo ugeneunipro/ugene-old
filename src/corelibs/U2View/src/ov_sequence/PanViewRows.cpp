@@ -113,8 +113,11 @@ void PVRowsManager::removeAnnotation(Annotation* a) {
 
 int PVRowsManager::getAnnotationRowIdx(Annotation* a) const {
     PVRowData* row = rowByAnnotation.value(a, NULL);
-    assert(row != NULL);
-    return rows.indexOf(row);
+    if (NULL == row) {
+        return -1;
+    } else {
+        return rows.indexOf(row);
+    }
 }
 
 const QString& PVRowsManager::getRowKey(int rowNum) const {

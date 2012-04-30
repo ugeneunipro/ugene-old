@@ -56,6 +56,10 @@ public:
     bool contains(const QString& key) const;
     int getNumRows() const {return rows.size();}
     PVRowData* getRow(int row) const;
+
+    /**
+     * returns -1 if @a is not found
+     */
     int getAnnotationRowIdx(Annotation* a) const;
     PVRowData* getAnnotationRow(Annotation* a) const {return rowByAnnotation.value(a, NULL);}
     
