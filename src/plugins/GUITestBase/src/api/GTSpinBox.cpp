@@ -30,11 +30,44 @@ namespace U2 {
 #define GT_CLASS_NAME "GTSpinBox"
 
 #define GT_METHOD_NAME "setValue"
-void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v) {
+void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod) {
     GT_CHECK(spinBox != NULL, "spinBox is NULL");
 
-    spinBox->setValue(v);
-    // TODO: set value through GUI
+    QPoint arrowPos;
+    QRect spinBoxRect;
+    int key;
+
+    if (spinBox->value() != v) {
+        switch(useMethod) {
+        case GTGlobals::UseMouse:
+            spinBoxRect = spinBox->rect();
+            if (v > spinBox->value()) {
+                arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() / 4); // -5 it's needed that area under cursor was clickable
+            } else {
+                arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() * 3 / 4);
+            }
+
+            GTMouseDriver::moveTo(os, spinBox->mapToGlobal(arrowPos));
+            while (spinBox->value() != v) {
+                GTMouseDriver::click(os);
+                GTGlobals::sleep(100);
+            }
+            break;
+
+        case GTGlobals::UseKey:
+            if (v > spinBox->value()) {
+                key = GTKeyboardDriver::key["up"];
+            } else {
+                key = GTKeyboardDriver::key["down"];
+            }
+
+            GTWidget::setFocus(os, spinBox);
+            while (spinBox->value() != v) {
+                GTKeyboardDriver::keyClick(os, key);
+                GTGlobals::sleep(100);
+            }
+        }
+    }
 
     int currIndex = spinBox->value();
     GT_CHECK(currIndex == v, "Can't set index");

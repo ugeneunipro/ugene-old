@@ -30,7 +30,7 @@ namespace U2 {
 class GTSpinBox {
 public:
     // fails if the spinBox is NULL or can't set value
-    static void setValue(U2OpStatus& os, QSpinBox *spinBox, int v);
+    static void setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod = GTGlobals::UseMouse);
 };
 
 }
