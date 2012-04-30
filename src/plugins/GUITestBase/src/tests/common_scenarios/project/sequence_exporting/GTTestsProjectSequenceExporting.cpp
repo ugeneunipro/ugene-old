@@ -101,10 +101,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003)
 
     QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
     QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
-    if (item1 == NULL || item2 == NULL) {
-        os.setError("Project view with document \"1.gb\" and \"2.gb\" is not opened");
-        return;
-    }
+    CHECK_SET_ERR(item1 != NULL && item2 != NULL, "Project view with document \"1.gb\" and \"2.gb\" is not opened");
 
     GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
@@ -117,8 +114,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003)
 
     GTUtilsProject::exportSequenceOfSelectedAnnotations(os, "B_joined", testDir + "_common_data/scenarios/sandbox/exp.fasta",
                                                         GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
-                                                        GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::Merge, 5);
-
+                                                        GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::Merge, 5, true);
     GTGlobals::sleep(100);
 
     GTUtilsSequenceView::checkSequence(os, expectedSequences);

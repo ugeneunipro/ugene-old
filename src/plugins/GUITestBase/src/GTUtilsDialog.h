@@ -248,9 +248,10 @@ public:
         enum MergeOptions {SaveAsSeparate, Merge};
         ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength = 0,
                                                   bool _addDocToProject = true, bool _exportWithAnnotations = false, GTGlobals::UseMethod method = GTGlobals::UseMouse):
-            os(_os), gapLength(_gapLength), format(_format), addToProject(_addDocToProject), exportWithAnnotations(_exportWithAnnotations),
+            os(_os), gapLength(_gapLength), format(_format), addToProject(_addDocToProject), exportWithAnnotations(false),
             options(_options), useMethod(method)
             {
+                exportWithAnnotations = _exportWithAnnotations;
                 QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
 				// no needs to add '/' so _path includes file name
                 /*if (__path.at(__path.count() - 1) != '/') {
@@ -274,7 +275,7 @@ public:
         int gapLength;
         FormatToUse format;
         bool addToProject;
-    		bool exportWithAnnotations;
+        bool exportWithAnnotations;
         MergeOptions options;
         GTGlobals::UseMethod useMethod;
         QMap<FormatToUse, QString> comboBoxItems;

@@ -53,8 +53,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTUtilsProject::exportProject(os, testDir+"_common_data/scenarios/sandbox");
     GTUtilsProject::closeProject(os);
+    GTGlobals::sleep(1000);
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/sandbox/proj1.uprj");
+    GTGlobals::sleep(1000);
     GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 

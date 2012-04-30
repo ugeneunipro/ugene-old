@@ -186,7 +186,6 @@ int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkSequence"
-
 void GTUtilsSequenceView::checkSequence(U2OpStatus &os, const QString &expectedSequence)
 {
     QString actualSequence;
