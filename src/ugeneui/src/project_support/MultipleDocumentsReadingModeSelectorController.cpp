@@ -46,6 +46,9 @@ void MultipleDocumentsReadingModeDialog::sl_onChooseDirPath(){
 
 bool MultipleDocumentsReadingModeSelectorController::mergeDocumentOption(const FormatDetectionResult& formatResult, QMap<QString, qint64>* headerSequenceLengths){
     QVariantMap docHints = formatResult.rawDataCheckResult.properties;
+    if(formatResult.format == NULL){
+        return false;
+    }
     if(formatResult.format->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
         if(docHints.value(RawDataCheckResult_Sequence) == false){
             static const int MAX_LINE = 8192;
