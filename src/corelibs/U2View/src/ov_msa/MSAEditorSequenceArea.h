@@ -193,6 +193,9 @@ public:
 
     void updateVBarPosition(int seq);
     
+	void drawContent(QPainter& p);
+
+
 signals:
     void si_startChanged(const QPoint& p, const QPoint& prev);
     void si_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);
@@ -257,7 +260,6 @@ private:
     void updateVScrollBar();
     
     void drawAll();
-    void drawContent(QPainter& p);
     void drawCursor(QPainter& p);
     void drawFocus(QPainter& p);
     void drawSelection(QPainter &p);

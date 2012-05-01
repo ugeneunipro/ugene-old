@@ -275,6 +275,8 @@ void MSAEditorSequenceArea::drawAll() {
     drawFocus(p);
 }
 
+
+
 void MSAEditorSequenceArea::drawContent(QPainter& p) {
     MAlignmentObject* maObj = editor->getMSAObject();
     

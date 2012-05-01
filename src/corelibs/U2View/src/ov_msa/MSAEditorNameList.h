@@ -76,6 +76,9 @@ protected:
     void wheelEvent (QWheelEvent * we);
     //todo context menu?
 
+public:
+    void drawContent(QPainter& p);
+
 private:
     bool isRowInSelection(int row);
     void updateActions();
@@ -84,7 +87,6 @@ private:
     void updateSelection(int newSeqNum);
     void moveSelectedRegion( int shift );
     void drawAll();
-    void drawContent(QPainter& p);
     void drawSelection(QPainter& p);
     void drawSequenceItem(QPainter& p, int n, bool selected);
     void drawSequenceItem(QPainter& p, int s, bool selected, const U2Region& yRange, int pos);

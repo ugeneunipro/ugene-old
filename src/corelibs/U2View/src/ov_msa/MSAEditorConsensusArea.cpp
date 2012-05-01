@@ -151,6 +151,12 @@ void MSAEditorConsensusArea::paintEvent(QPaintEvent *e) {
     QWidget::paintEvent(e);
 }
 
+void MSAEditorConsensusArea::drawContent(QPainter& p ) {
+    drawConsensus(p);
+    drawRuler(p);
+    drawHistogram(p);
+}
+
 void MSAEditorConsensusArea::drawSelection(QPainter& p) {
     QFont f = ui->editor->getFont();
     f.setWeight(QFont::DemiBold);

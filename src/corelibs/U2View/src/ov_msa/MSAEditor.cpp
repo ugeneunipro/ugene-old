@@ -65,6 +65,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QFontDialog>
 #include <U2Gui/GScrollBar.h>
+#include <QtSvg/QSvgGenerator>
 
 #include <U2View/CreatePhyTreeDialogController.h>
 
@@ -386,6 +387,8 @@ void MSAEditor::addEditMenu(QMenu* m) {
 void MSAEditor::addExportMenu(QMenu* m) {
     QMenu* em = m->addMenu(tr("Export"));
     em->menuAction()->setObjectName(MSAE_MENU_EXPORT);
+    em->addAction(saveScreenshotAction);
+    em->addAction(saveSvgAction);
 }
 
 void MSAEditor::addViewMenu(QMenu* m) {
@@ -439,7 +442,11 @@ QWidget* MSAEditor::createWidget() {
     connect(ui , SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));
     saveScreenshotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
     connect(saveScreenshotAction, SIGNAL(triggered()), ui, SLOT(sl_saveScreenshot()));
-    initDragAndDropSupport();
+    
+	saveSvgAction = new QAction(tr("Export as SVG"), this);
+	connect(saveSvgAction, SIGNAL(triggered()), ui, SLOT(sl_saveSvgImage()));
+	
+	initDragAndDropSupport();
     return ui;
 }
 
@@ -624,6 +631,32 @@ void MSAEditorUI::sl_saveScreenshot(){
     screenRect.setBottom(seqArea->geometry().bottom());
     ExportImageDialog dialog(this, screenRect);
     dialog.exec();
+}
+
+void MSAEditorUI::sl_saveSvgImage() {
+	
+    LastUsedDirHelper lod;
+    lod.url = QFileDialog::getSaveFileName(this, tr("Save SVG"),
+        lod.dir, tr("SVG files (*.svg)"));
+
+    QSvgGenerator generator;
+	generator.setFileName(lod.url);
+	generator.setSize(QSize(width(), height()));
+	generator.setViewBox(QRect(0, 0, 800, 600));
+	generator.setTitle(tr("SVG ").arg(editor->getMSAObject()->getGObjectName()));
+	generator.setDescription(tr("An SVG image of multiple alignment created by Unipro UGENE"));
+	
+	QPainter painter;
+    painter.begin(&generator);
+    painter.translate(nameList->width(), 0);
+    consArea->drawContent(painter);
+    painter.translate(-nameList->width(), consArea->height());
+    nameList->drawContent(painter);
+    painter.translate(nameList->width(), 0);
+    seqArea->drawContent(painter);
+    
+    painter.end();
+
 }
 
 MSALabelWidget::MSALabelWidget(const MSAEditorUI* _ui, const QString & _t, Qt::Alignment _a) 

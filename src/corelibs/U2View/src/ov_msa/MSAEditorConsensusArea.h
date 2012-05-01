@@ -85,6 +85,9 @@ private slots:
     void sl_configureConsensusAction();
     void sl_zoomOperationPerformed(bool resizeModeChanged);
 
+public:
+    void drawContent(QPainter& painter);
+
 private:
     QString createToolTip(QHelpEvent* he) const;
     void updateThresholdInfoInConsensusDialog();
