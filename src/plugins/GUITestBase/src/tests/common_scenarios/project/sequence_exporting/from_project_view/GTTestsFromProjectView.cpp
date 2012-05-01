@@ -144,11 +144,6 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     }
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0005) {
-    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
-    os.setError("Test is not completed");
-}
-
 GUI_TEST_CLASS_DEFINITION(test_0006) {
     const QString doc1("1.gb"), doc2("2.gb");
 

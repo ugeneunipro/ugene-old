@@ -170,7 +170,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0004);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0005, "test is not completed");
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0006);
 }
 
