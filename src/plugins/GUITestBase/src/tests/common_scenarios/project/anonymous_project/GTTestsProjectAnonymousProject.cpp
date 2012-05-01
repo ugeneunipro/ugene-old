@@ -39,6 +39,7 @@ namespace GUITest_common_scenarios_project_anonymous_project{
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+    GTGlobals::sleep(5000);
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
     GTUtilsProject::exportProject(os, testDir + "_common_data/scenarios/sandbox", "proj2.uprj");
     GTUtilsDialog::MessageBoxDialogFiller filler(os, QMessageBox::No);
@@ -72,5 +73,3 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 }
 
 }
-
-
