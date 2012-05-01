@@ -679,12 +679,17 @@ void GTUtilsDialog::RemovePartFromSequenceDialogFiller::run()
         GT_CHECK(removeLocationEdit != NULL, "QLineEdit \"removeLocationEdit\" not found");
         GTLineEdit::setText(os, removeLocationEdit, range);
     }
-    QRadioButton *resizeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("resizeRB"));
-    GT_CHECK(resizeRB != NULL, "radio button not found");
-    resizeRB->setChecked(removeType == Resize);
-    QRadioButton *removeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("removeRB"));
-    GT_CHECK(removeRB != NULL, "radio button not found");
-    removeRB->setChecked(removeType == Remove);
+    if (removeType == Resize) {
+        QRadioButton *resizeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("resizeRB"));
+        GT_CHECK(resizeRB != NULL, "radio button not found");
+        GTRadioButton::click(os, resizeRB);
+    }
+    else {
+        QRadioButton *removeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("removeRB"));
+        GT_CHECK(removeRB != NULL, "radio button not found");
+        GTRadioButton::click(os, removeRB);
+    }
+
     GTGlobals::sleep(1000);
     if (saveNew) {
         QGroupBox *saveToAnotherBox =  dialog->findChild<QGroupBox*>(QString::fromUtf8("saveToAnotherBox"));
@@ -697,14 +702,7 @@ void GTUtilsDialog::RemovePartFromSequenceDialogFiller::run()
     if (format != FASTA){
         QComboBox *formatBox = dialog->findChild<QComboBox*>(QString::fromUtf8("formatBox"));
         GT_CHECK(formatBox != NULL, "format box not found");
-        int index = -1;
-        for (int i = 0; i < formatBox->count(); i++ ) {
-            if (formatBox->itemText(i) == comboBoxItems[format]) {
-                index = i;
-                break;
-            }
-        }
-
+        int index = formatBox->findText(comboBoxItems[format]);
         GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
 
         GTComboBox::setCurrentIndex(os, formatBox, index);
@@ -725,28 +723,30 @@ void GTUtilsDialog::SequenceReadingModeSelectorDialogFiller::run()
     if (readingMode == Separate) {
         QRadioButton *separateRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("separateRB"));
         GT_CHECK(separateRB != NULL, "radio button not found");
-        separateRB->setChecked(readingMode == Separate);
+        GTRadioButton::click(os, separateRB);
     }
     if (readingMode == Merge) {
         QRadioButton *mergeRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("mergeRB"));
         GT_CHECK(mergeRB != NULL, "radio button not found");
-        mergeRB->setChecked(readingMode == Merge);
+        GTRadioButton::click(os, mergeRB);
+
         QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>(QString::fromUtf8("mergeSpinBox"));
-        if (mergeSpinBox->value() != bases){
-            mergeSpinBox->setValue(bases);
-        }
+        GT_CHECK(mergeSpinBox != NULL, "merge spin box not found");
+        GTSpinBox::setValue(os, mergeSpinBox, bases);
     }
     if (readingMode == Join) {
         QRadioButton *malignmentRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("malignmentRB"));
         GT_CHECK(malignmentRB != NULL, "radio button not found");
-        malignmentRB->setChecked(readingMode == Join);
+        GTRadioButton::click(os, malignmentRB);
     }
     if (readingMode == Align) {
         QRadioButton *refalignmentRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("refalignmentRB"));
         GT_CHECK(refalignmentRB != NULL, "radio button not found");
-        refalignmentRB->setChecked(readingMode == Align);
+        GTRadioButton::click(os, refalignmentRB);
     }
     QDialogButtonBox *buttonBox = dialog->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+    GT_CHECK(buttonBox != NULL, "buttonBox not found");
+
     QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
     GT_CHECK(button != NULL, "standart button not found");
     GTWidget::click(os, button);
