@@ -52,11 +52,12 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTUtilsProject::exportProject(os, testDir+"_common_data/scenarios/sandbox");
+    GTGlobals::sleep(2000);
     GTUtilsProject::closeProject(os);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(2000);
 
-    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/sandbox/proj1.uprj");
-    GTGlobals::sleep(1000);
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj1.uprj");
+    GTGlobals::sleep(2000);
     GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
@@ -297,7 +298,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0023) {
-    GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/fa1.fa");
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/1m.fa");
     GTUtilsMdi::click(os, GTGlobals::Minimize);
 
     QWidget* w = GTUtilsMdi::findWindow(os, "1m.fa");
@@ -327,7 +328,6 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
 	GTUtilsProject::ExitProjectSettings s;
     s.saveNoCloseButton = QMessageBox::No;
 	GTUtilsProject::exitProject(os, s);
-	
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0026) {

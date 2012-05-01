@@ -79,13 +79,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0012);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0014, "wrong test - does not cancel task");
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0014);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0020);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0021);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0023, "wrong test");
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0023);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0025);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0028);
@@ -99,7 +99,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/multiple docs/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_multiple_docs::test_0001, "excluded failed test");
+    REGISTER_TEST(GUITest_common_scenarios_project_multiple_docs::test_0001);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/anonymous project/

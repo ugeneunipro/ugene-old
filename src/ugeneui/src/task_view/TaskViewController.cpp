@@ -81,6 +81,7 @@ TaskViewDockWidget::~TaskViewDockWidget() {
 
 void TaskViewDockWidget::initActions() {
     cancelTaskAction  = new QAction(tr("cancel_task_action"), this);
+    cancelTaskAction->setObjectName("cancel_task_action");
     cancelTaskAction->setIcon(QIcon(":ugene/images/cancel.png"));
     connect(cancelTaskAction, SIGNAL(triggered()), SLOT(sl_onCancelTask()));
 

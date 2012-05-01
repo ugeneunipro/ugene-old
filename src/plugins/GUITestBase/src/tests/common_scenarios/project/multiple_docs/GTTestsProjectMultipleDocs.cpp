@@ -29,27 +29,25 @@
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include "api/GTFileDialog.h"
 
-
 namespace U2{
 
 namespace GUITest_common_scenarios_project_multiple_docs{
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 
-	    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2.uprj");
-        GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
-        GTUtilsDocument::checkDocument(os, "1.gb");
-        GTUtilsProject::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
-	 
-		GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
-        GTUtilsDocument::checkDocument(os, "1CF7.PDB");
-        GTUtilsDocument::checkDocument(os, "1.gb");
-        GTUtilsProject::closeProject(os);
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2.uprj");
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+    GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsProject::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
 
-	    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
-        GTUtilsDocument::checkDocument(os, "1.gb");
-        GTUtilsDocument::checkDocument(os, "1CF7.PDB");
+    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+    GTUtilsDocument::checkDocument(os, "1CF7.PDB");
+    GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsProject::closeProject(os);
 
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
+    GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 }
 
 }
