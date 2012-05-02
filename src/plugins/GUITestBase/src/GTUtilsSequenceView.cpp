@@ -74,9 +74,12 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
 
+    QMessageBox msgBox;
+
     QPoint posToActiveWindow = mdiWindow->mapToGlobal(mdiWindow->rect().center());
     GTMouseDriver::moveTo(os, posToActiveWindow);
-    while (QString(qApp->widgetAt(posToActiveWindow)->metaObject()->className()).contains("QScrollBar")) {
+
+    while (!QString(qApp->widgetAt(posToActiveWindow)->metaObject()->className()).contains("U2::PanViewRenderArea")) {
         posToActiveWindow.setY(posToActiveWindow.y() - 20);
         GTMouseDriver::moveTo(os, posToActiveWindow);
         GTGlobals::sleep(100);
