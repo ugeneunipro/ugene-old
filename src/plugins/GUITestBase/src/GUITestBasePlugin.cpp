@@ -68,8 +68,6 @@ GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test 
 
 void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
-    REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0002);
-
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
 //////////////////////////////////////////////////////////////////////////
@@ -106,6 +104,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/anonymous project/
 //////////////////////////////////////////////////////////////////////////
+
+    REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0003);
 
 //////////////////////////////////////////////////////////////////////////
