@@ -83,6 +83,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0019);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0020);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0021);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0023, "https://ugene.unipro.ru/tracker/browse/UGENE-963");

@@ -244,6 +244,30 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
     CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "human_T1.fa") != NULL, "Item human_T1.fa not found in tree widget");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0019) {
+
+    GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+    GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep(1000);
+
+    QTreeWidgetItem* se1 = GTUtilsProjectTreeView::findItem(os, "se1");
+    QTreeWidgetItem* se2 = GTUtilsProjectTreeView::findItem(os, "se2");
+
+    CHECK_SET_ERR(se1->font(0).bold(), "se1 are not marked with bold text");
+    CHECK_SET_ERR(se2->font(0).bold(), "se2 are not marked with bold text");
+
+    QWidget *w = GTWidget::findWidget(os, "render_area_se1");
+
+    GTUtilsDialog::PopupChooser chooser(os, QStringList() << "ADV_MENU_REMOVE" << ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTMenu::showContextMenu(os, w);
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000);
+
+    CHECK_SET_ERR(!se1->font(0).bold(), "se1 are not marked with regular text");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0020) {
     GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
     GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
