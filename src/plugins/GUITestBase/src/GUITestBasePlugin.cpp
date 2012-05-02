@@ -68,6 +68,8 @@ GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test 
 
 void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
+    REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0002);
+
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
 //////////////////////////////////////////////////////////////////////////
@@ -104,7 +106,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/anonymous project/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0003);
 
 //////////////////////////////////////////////////////////////////////////
@@ -178,7 +179,7 @@ void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
     if (guiTestBase) {
         guiTestBase->registerTest(new GUITest_initial_checks::test_0001, GUITestBase::Additional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0002, GUITestBase::Additional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0003, GUITestBase::Additional);
+//        guiTestBase->registerTest(new GUITest_initial_checks::test_0003, GUITestBase::Additional);
     }
 }
 
