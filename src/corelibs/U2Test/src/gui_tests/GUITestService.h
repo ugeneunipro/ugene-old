@@ -61,6 +61,11 @@ private:
     void setQtFileDialogView();
 
     TaskStateInfo os;
+
+    class CleanerForGuiTest {
+    public:
+        static void clearDir(const QString&);
+    };
 };
 
 } // U2
