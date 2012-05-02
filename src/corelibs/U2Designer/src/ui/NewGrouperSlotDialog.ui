@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Setup new data merge action</string>
+   <string>Setup New Data Merge Action</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
