@@ -196,7 +196,7 @@ void GroupWorkerFactory::init() {
 
     Descriptor protoDesc(GroupWorkerFactory::ACTOR_ID,
         GroupWorker::tr("Grouper"),
-        GroupWorker::tr("Groups incoming data by set input slot"));
+        GroupWorker::tr("Groups data supplied to the specified slot by the specified property (for example, by value). Additionally, it is possible to merge data from another slots associated with the specified one."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
 
@@ -241,9 +241,9 @@ QString GroupPrompter::composeRichDoc() {
     }
 
     if (produceOneGroup) {
-        return tr("Group all incoming messages into one message");
+        return tr("Groups all incoming messages into one message");
     } else {
-        QString result = tr("Group all incoming messages <u>%1</u> of <u>%2</u> slot data.");
+        QString result = tr("Groups all incoming messages <u>%1</u> of <u>%2</u> slot data.");
         Attribute *groupOpAttr = target->getParameter(CoreLibConstants::GROUPER_OPER_ATTR);
         QString opId = groupOpAttr->getAttributeValueWithoutScript<QString>();
 

@@ -1,7 +1,13 @@
 #!UGENE_WORKFLOW
-#The scheme reads sequences from a file, marks them with sequence name marker and groups all sequences by the marker.
+#This scheme describes how to merge sequences and manipulate its annotations.
 #
-#Sequences with equal markers are merged into one sequence. Annotations are shifted using the position of the corresponding sequence at the merged sequence.
+#First, the schema reads sequence(s) from file(s). Then, marks the input sequences with the sequence name marker. After marking the sequences are grouped by the marker. Sequences with equal markers are merged into one sequence. Annotations are shifted using the position of the corresponding sequence at the merged sequence. And finally, the grouped data are written into file, specified by a user.
+#
+#By default, sequence is marked using the sequence name marker. You can configure this value in the Marker element parameters. Also, you can configure the Grouper element parameters.
+#
+#To try out this sample, add the input files to the Read Sequence, select the name and location of the output files in the Write Sequence element and run the schema.
+#
+#
 #
 #
 #
@@ -56,8 +62,8 @@ workflow "Merge sequences and shift corresponding annotations"{
     }
 
     .actor-bindings {
-        mark-sequence.out-marked-seq->grouper.input-data
         read-sequence.out-sequence->mark-sequence.in-sequence
+        mark-sequence.out-marked-seq->grouper.input-data
         grouper.output-data->write-sequence.in-sequence
     }
 
@@ -88,7 +94,7 @@ workflow "Merge sequences and shift corresponding annotations"{
                 out-marked-seq.angle:351.733;
             }
             grouper {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Grouper</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Group all incoming messages <span style=' text-decoration: underline;'>by value</span> of <span style=' text-decoration: underline;'>sequence-name (by Sequence Marker)</span> slot data.</p></body></html>";
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Grouper</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Groups all incoming messages <span style=' text-decoration: underline;'>by value</span> of <span style=' text-decoration: underline;'>sequence-name (by Sequence Marker)</span> slot data.</p></body></html>";
                 tooltip:"Groups incoming data by set input slot";
                 pos:"-417 -703";
                 style:ext;
@@ -106,14 +112,14 @@ workflow "Merge sequences and shift corresponding annotations"{
                 bounds:"-30 -30 103.25 89";
                 in-sequence.angle:205.866;
             }
-            read-sequence.out-sequence->mark-sequence.in-sequence {
-                text-pos:"-27.5 -24";
-            }
             mark-sequence.out-marked-seq->grouper.input-data {
                 text-pos:"-46 -27";
             }
             grouper.output-data->write-sequence.in-sequence {
                 text-pos:"-45 -40";
+            }
+            read-sequence.out-sequence->mark-sequence.in-sequence {
+                text-pos:"-27.5 -24";
             }
         }
     }

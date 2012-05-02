@@ -1,7 +1,13 @@
 #!UGENE_WORKFLOW
-#This scheme reads sequences and text strings (patterns) from files. Then these data sets are multiplexed using this rule: every sequence is united with every pattern. These united data sets are transported to the find patterns element.
+#This scheme describes how to find substrings in sequences and group these sequences by different parameters.
 #
-#The results of patterns searching are grouped by id of a sequence: original and find patterns annotations are united into two new grouped annotations sets.
+#First, the schema reads sequences and text strings (patterns) from files. Then, these data sets are multiplexed using this rule: every sequence is united with every pattern. After multiplexing these united data sets are transported to the find patterns element. The results of patterns searching are grouped by id of a sequence: original and find patterns annotations are united into two new grouped annotations sets. And finally, the grouped data are written into file, specified by a user.
+#
+#By default, sequence multiplexed using the rule “1 to 1”. You can configure this value in the Multiplexer element parameters. Also, you can configure the Pattern element parameters and the Grouper element parameters.
+#
+#To try out this sample, add the input files to the Read Sequence and Read Plain Text elements, select the name and location of the output files in the Write Sequence element and run the schema.
+#
+#
 #
 #
 #
@@ -35,16 +41,16 @@ workflow "Find substrings in sequences"{
         group-op:by-id;
         group-slot:read-sequence.sequence;
         out-slot {
-            name:substring-annotations;
-            in-slot:search.annotations;
+            name:origin-annotations;
+            in-slot:read-sequence.annotations;
             action {
                 type:merge-annotations;
                 unique:false;
             }
         }
         out-slot {
-            name:origin-annotations;
-            in-slot:read-sequence.annotations;
+            name:substring-annotations;
+            in-slot:search.annotations;
             action {
                 type:merge-annotations;
                 unique:false;
@@ -112,7 +118,7 @@ workflow "Find substrings in sequences"{
                 out-annotations.angle:349.448;
             }
             grouper {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Grouper</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Group all incoming messages <span style=' text-decoration: underline;'>by id</span> of <span style=' text-decoration: underline;'>Sequence (by Read Sequence)</span> slot data.</p></body></html>";
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Grouper</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Groups all incoming messages <span style=' text-decoration: underline;'>by id</span> of <span style=' text-decoration: underline;'>Sequence (by Read Sequence)</span> slot data.</p></body></html>";
                 tooltip:"Groups incoming data by set input slot";
                 pos:"-172 -672";
                 style:ext;
@@ -130,14 +136,14 @@ workflow "Find substrings in sequences"{
                 bounds:"-30 -30 100.25 55";
                 in-sequence.angle:39.5226;
             }
+            multiplexer.output-data->search.in-sequence {
+                text-pos:"-43 -54";
+            }
             read-sequence.out-sequence->multiplexer.input-data-1 {
                 text-pos:"-53.5 -11";
             }
             read-text.out-text->multiplexer.input-data-2 {
                 text-pos:"-52.5 -12";
-            }
-            multiplexer.output-data->search.in-sequence {
-                text-pos:"-43 -54";
             }
             search.out-annotations->grouper.input-data {
                 text-pos:"-45 -44";

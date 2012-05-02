@@ -1,5 +1,13 @@
 #!UGENE_WORKFLOW
-#The scheme searches for TFBS with different methods and writes the result into one output file.
+#This sample describes how to search for TFBS with different methods and how to write the results into one output file.
+#
+#First, the schema reads sequences input by a user. Then, each sequence goes to searching TFBS elements. At that time two reading elements reads the matrix and model for TFBS searching and transfering this data into TFBS searching elements. After that the TFBS searching elements searches TFBS in the input sequences. After that the two data flows multiplexes into one output data flow. And finally, the multiplexed data are written into file, specified by a user.
+#
+#You can configure the parameters of Search for TFBS with Weight Matrix, Search TFBS with SITECON and Multiplexer elements.
+#
+#To try out this sample, add the input files to the Read Sequence element, select the Read Weight Matrix, Read SITECON model and select name and location of the output file in the Write Sequence element and run the schema.
+#
+#
 #
 #
 #
@@ -51,11 +59,11 @@ workflow "Search for tfbs"{
     .actor-bindings {
         multiplexer.output-data->write-sequence.in-sequence
         sitecon-search.out-annotations->multiplexer.input-data-2
-        read-sequence.out-sequence->wmatrix-search.in-sequence
-        read-sequence.out-sequence->sitecon-search.in-sequence
         wmatrix-search.out-annotations->multiplexer.input-data-1
         sitecon-read.out-sitecon->sitecon-search.in-sitecon
         wmatrix-read.out-wmatrix->wmatrix-search.in-wmatrix
+        read-sequence.out-sequence->wmatrix-search.in-sequence
+        read-sequence.out-sequence->sitecon-search.in-sequence
     }
 
     read-sequence.annotations->write-sequence.in-sequence.annotations
