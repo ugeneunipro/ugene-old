@@ -178,7 +178,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0014) {
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTUtilsDialog::RemoteDBDialogFiller filler(os, "1HTQ", 2); 
     GTUtilsDialog::waitForDialog(os, &filler);
     GTUtilsTaskTreeView::openView(os);
