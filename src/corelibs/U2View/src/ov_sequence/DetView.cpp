@@ -75,7 +75,7 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     assert(ctx->getSequenceObject()!=NULL);
     featureFlags&=!GSLV_FF_SupportsCustomRange;
     renderArea = new DetViewRenderArea(this);
-    renderArea->setObjectName("render_area");
+    renderArea->setObjectName("render_area_" + ctx->getSequenceObject()->getSequenceName());
 
     connect(ctx, SIGNAL(si_aminoTranslationChanged()), SLOT(sl_onAminoTTChanged()));
     connect(ctx, SIGNAL(si_translationRowsChanged()), SLOT(sl_translationRowsChanged()));
