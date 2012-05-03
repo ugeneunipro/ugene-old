@@ -42,9 +42,7 @@ protected slots:
     void runGUITest();
 
 private:
-    QAction *runTestsAction;
-    Task *testLauncher;
-    GUITests testsToRun;
+    static void clearSandbox();
 
     LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
     bool launchedToTestGUI(CMDLineRegistry* cmdLine) const;
@@ -60,12 +58,10 @@ private:
 
     void setQtFileDialogView();
 
+    QAction *runTestsAction;
+    Task *testLauncher;
+    GUITests testsToRun;
     TaskStateInfo os;
-
-    class CleanerForGuiTest {
-    public:
-        static void clearDir(const QString&);
-    };
 };
 
 } // U2

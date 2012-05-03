@@ -145,9 +145,8 @@ void GUITestService::runGUITest() {
 
     foreach(GUITest* t, tests) {
         if (t) {
+            clearSandbox();
             t->run(os);
-
-            CleanerForGuiTest::clearDir(GUITest::testDir + "_common_data/scenarios/sandbox/");
         }
     }
 
@@ -249,8 +248,9 @@ void GUITestService::setQtFileDialogView()
 #endif
 }
 
-void GUITestService::CleanerForGuiTest::clearDir(const QString &pathToSandbox)
+void GUITestService::clearSandbox()
 {
+    QString pathToSandbox = GUITest::testDir + "_common_data/scenarios/sandbox/";
     QDir sandbox(pathToSandbox);
 
     foreach (QString fileName, sandbox.entryList()) {
