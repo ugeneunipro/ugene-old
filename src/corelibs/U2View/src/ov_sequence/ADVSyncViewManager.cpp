@@ -104,15 +104,19 @@ ADVSyncViewManager::ADVSyncViewManager(AnnotatedDNAView* v) : QObject(v), adv(v)
     
     // visual mode ops
     toggleAllAction = new QAction("Toggle All sequence views", this);
+    toggleAllAction->setObjectName("toggleAllSequenceViews");
     connect(toggleAllAction, SIGNAL(triggered()), SLOT(sl_toggleVisualMode()));
 
     toggleOveAction = new QAction("Toggle Overview", this);
+    toggleOveAction->setObjectName("toggleOverview");
     connect(toggleOveAction, SIGNAL(triggered()), SLOT(sl_toggleVisualMode()));
 
     togglePanAction = new QAction("Toggle Zoom view", this);
+    togglePanAction->setObjectName("toggleZoomView");
     connect(togglePanAction, SIGNAL(triggered()), SLOT(sl_toggleVisualMode()));
     
     toggleDetAction = new QAction("Toggle Details view", this);
+    toggleDetAction->setObjectName("toggleDetailsView");
     connect(toggleDetAction, SIGNAL(triggered()), SLOT(sl_toggleVisualMode()));
 
     toggleViewButtonAction = NULL;
@@ -126,6 +130,7 @@ ADVSyncViewManager::ADVSyncViewManager(AnnotatedDNAView* v) : QObject(v), adv(v)
     connect(toggleViewButtonMenu, SIGNAL(aboutToShow()), SLOT(sl_updateVisualMode()));
     
     toggleViewButton = new QToolButton();
+    toggleViewButton->setObjectName("toggleViewButton");
     toggleViewButton->setDefaultAction(toggleViewButtonMenu->menuAction());
     toggleViewButton->setPopupMode(QToolButton::InstantPopup);
     

@@ -44,6 +44,8 @@ Overview::Overview(QWidget *p, ADVSequenceObjectContext *ctx) : GSequenceLineVie
     renderArea = new OverviewRenderArea(this);
     visibleRange = U2Region(0, ctx->getSequenceLength());
     renderArea->setMouseTracking(true);
+    renderArea->setObjectName("OverviewRenderArea");
+
 
     ADVSingleSequenceWidget* ssw = qobject_cast<ADVSingleSequenceWidget*>(p);
     panView = ssw->getPanView();

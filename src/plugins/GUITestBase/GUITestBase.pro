@@ -17,6 +17,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/GUIInitialChecks.h \
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.h \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.h \
+            src/tests/common_scenarios/toggle_view/GTTestsToggleView.h \
             src/tests/common_scenarios/project/GTTestsProject.h \
             src/tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.h \
@@ -66,6 +67,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/GUIInitialChecks.cpp \
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.cpp \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.cpp \
+            src/tests/common_scenarios/toggle_view/GTTestsToggleView.cpp \
             src/tests/common_scenarios/project/GTTestsProject.cpp \
             src/tests/common_scenarios/project/bookmarks/GTTestsBookmarks.cpp \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.cpp \
