@@ -180,7 +180,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     QString expectedSequenceBegin = "ATCAGATT";
     QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 8);
-
     if (expectedSequenceBegin != sequenceBegin && !os.hasError()) {
         os.setError("Bad sequence");
     }
@@ -270,6 +269,24 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     QString text = QApplication::clipboard()->text();
 
     CHECK_SET_ERR(text == "K*K", "Sequcence part translated to <" + text + ">, expected K*K");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011) {
+    GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
+    GTGlobals::sleep(1000);
+
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "DUMMY_1"));
+
+    GTUtilsDialog::PopupChooser chooser(os, QStringList() << "ADV_MENU_COPY" << "action_copy_annotation_sequence");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000);
+
+    const QString expectedSequence = "AATGA";
+    QString realSequence = QApplication::clipboard()->text();
+
+    CHECK_SET_ERR(expectedSequence == realSequence, "Sequence is not pasted");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0012) {
