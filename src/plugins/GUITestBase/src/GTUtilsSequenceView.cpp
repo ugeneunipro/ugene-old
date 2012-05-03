@@ -198,6 +198,25 @@ void GTUtilsSequenceView::checkSequence(U2OpStatus &os, const QString &expectedS
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "selectSequenceRegion"
+void GTUtilsSequenceView::selectSequenceRegion(U2OpStatus &os, int from, int to)
+{
+    MainWindow* mw = AppContext::getMainWindow();
+    GT_CHECK(mw != NULL, "MainWindow == NULL");
+
+    MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
+    GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
+
+    GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
+    GTMouseDriver::click(os);
+
+    GTUtilsDialog::selectSequenceRegionDialogFiller filler(os, from, to);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "openSequenceView"
 void GTUtilsSequenceView::openSequenceView(U2OpStatus &os, const QString &sequenceName){
 	QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);

@@ -20,13 +20,16 @@
  */
 
 #include "GTTestsSequenceView.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTGlobals.h"
 #include "api/GTWidget.h"
 #include "api/GTMenu.h"
+#include "api/GTFileDialog.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsSequenceView.h"
 
 #include <U2Core/AppContext.h>
 #include <U2View/ADVConstants.h>
@@ -34,6 +37,25 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_sequence_view {
+
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "fa1.fa");
+    GTGlobals::sleep(1000);
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 3);
+
+    GTUtilsDialog::PopupChooser chooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+
+    GTUtilsDialog::ExportSelectedRegionFiller filler(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+
+    GTMouseDriver::click(os);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 

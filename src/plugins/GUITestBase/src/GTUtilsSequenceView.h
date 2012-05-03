@@ -35,6 +35,7 @@ public:
     static QString getEndOfSequenceAsString(U2OpStatus &os, int length);
     static int getLengthOfSequence(U2OpStatus &os);
     static void checkSequence(U2OpStatus &os, const QString &expectedSequence);
+    static void selectSequenceRegion(U2OpStatus &os, int from, int to);
 
   	static void openSequenceView(U2OpStatus &os, const QString &sequenceName);
     static void addSequenceView(U2OpStatus &os, const QString &sequenceName);

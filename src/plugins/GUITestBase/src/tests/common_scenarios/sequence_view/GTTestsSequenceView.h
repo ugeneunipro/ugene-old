@@ -30,6 +30,7 @@ namespace GUITest_common_scenarios_sequence_view {
 #undef GUI_TEST_PREFIX
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_sequence_view_"
 
+GUI_TEST_CLASS_DECLARATION(test_0004)
 GUI_TEST_CLASS_DECLARATION(test_0005)
 
 #undef GUI_TEST_PREFIX
