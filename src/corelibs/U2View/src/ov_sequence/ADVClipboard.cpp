@@ -73,6 +73,7 @@ ADVClipboard::ADVClipboard(AnnotatedDNAView* c) : QObject(c) {
     copyComplementTranslationAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_T));
 
     copyAnnotationSequenceAction = new QAction(QIcon(":/core/images/copy_annotation_sequence.png"), tr("Copy annotation sequence"), this);
+    copyAnnotationSequenceAction->setObjectName("action_copy_annotation_sequence");
     copyAnnotationSequenceTranslationAction = new QAction(QIcon(":/core/images/copy_annotation_translation.png"), tr("Copy annotation sequence translation"), this);
 
     connect(copySequenceAction, SIGNAL(triggered()), SLOT(sl_copySequence()));
