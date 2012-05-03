@@ -44,7 +44,7 @@ public:
     ProjectImpl(const QString& _name, const QString& _url, 
                 const QList<Document*>& _docs = QList<Document*>(), 
                 const QList<GObjectViewState*>& _states = QList<GObjectViewState*>());
-	~ProjectImpl();
+	virtual ~ProjectImpl();
     
 	virtual const QString& getProjectName() const {return name;}
 

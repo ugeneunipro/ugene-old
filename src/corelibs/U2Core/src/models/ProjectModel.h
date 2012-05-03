@@ -83,6 +83,8 @@ class U2CORE_EXPORT Project : public StateLockableTreeItem {
     Q_PROPERTY( QList<Document*> docs READ getDocuments )
 
 public:
+    virtual ~Project();
+
     virtual const QString& getProjectName() const = 0;
 
     virtual void setProjectName(const QString& name) = 0;

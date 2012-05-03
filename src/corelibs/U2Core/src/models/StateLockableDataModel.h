@@ -57,7 +57,7 @@ class U2CORE_EXPORT StateLockableItem : public QObject {
     Q_OBJECT
 public:
     StateLockableItem(QObject* p = NULL);
-    ~StateLockableItem();
+    virtual ~StateLockableItem();
 
     int getStateLocksCount() const {return locks.size();}
 
@@ -116,7 +116,7 @@ class U2CORE_EXPORT StateLockableTreeItem : public StateLockableItem {
 public:
     StateLockableTreeItem() : StateLockableItem(), parentStateLockItem(NULL), childLocksCount(0), numModifiedChildren(0){}
 
-    ~StateLockableTreeItem();
+    virtual ~StateLockableTreeItem();
 
     virtual bool isStateLocked() const;
 

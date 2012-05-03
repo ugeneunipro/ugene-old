@@ -24,6 +24,10 @@
 
 namespace U2 {
 
+Project::~Project() {
+
+}
+
 void Project::setupToEngine(QScriptEngine *engine)
 {
     Document::setupToEngine(engine);
