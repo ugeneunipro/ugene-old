@@ -279,6 +279,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 
     GTUtilsDialog::PopupChooser chooser(os, QStringList() << "ADV_MENU_COPY" << "action_copy_annotation_sequence");
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
     GTGlobals::sleep(1000);
