@@ -106,10 +106,11 @@ bool BlastPlusSupportRunDialog::checkToolPath(){
         needSetToolPath=true;
         toolName=BLASTP_TOOL_NAME;
 
-    }else if((programName->currentText() == "gpu-blastp") &&
-             (AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->getPath().isEmpty())){
-        needSetToolPath=true;
-        toolName=GPU_BLASTP_TOOL_NAME;
+// https://ugene.unipro.ru/tracker/browse/UGENE-945
+//     }else if((programName->currentText() == "gpu-blastp") &&
+//              (AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->getPath().isEmpty())){
+//         needSetToolPath=true;
+//         toolName=GPU_BLASTP_TOOL_NAME;
 
     }else if((programName->currentText() == "blastx") &&
              (AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->getPath().isEmpty())){
@@ -333,10 +334,11 @@ bool BlastPlusWithExtFileSpecifySupportRunDialog::checkToolPath(){
         needSetToolPath=true;
         toolName=BLASTP_TOOL_NAME;
 
-    }else if((programName->currentText() == "gpu-blastp") &&
-             (AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->getPath().isEmpty())){
-        needSetToolPath=true;
-        toolName=GPU_BLASTP_TOOL_NAME;
+// https://ugene.unipro.ru/tracker/browse/UGENE-945
+//     }else if((programName->currentText() == "gpu-blastp") &&
+//              (AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->getPath().isEmpty())){
+//         needSetToolPath=true;
+//         toolName=GPU_BLASTP_TOOL_NAME;
 
     }else if((programName->currentText() == "blastx") &&
              (AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->getPath().isEmpty())){

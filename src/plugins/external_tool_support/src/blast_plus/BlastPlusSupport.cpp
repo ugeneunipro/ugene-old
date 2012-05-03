@@ -89,18 +89,19 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
     description="The <i>blastp</i> tool searches a protein database \
                 using a protein query.";
     versionRegExp=QRegExp("Protein-Protein BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
-    }else if(name == GPU_BLASTP_TOOL_NAME){
-#ifdef Q_OS_WIN
-    executableFileName="blastp.exe";
-#else
-    #ifdef Q_OS_LINUX
-    executableFileName="blastp";
-    #endif
-#endif
-    validMessage="[-gpu boolean]";
-    description="The <i>blastp</i> tool searches a protein database \
-                using a protein query.";
-    versionRegExp=QRegExp("Protein-Protein BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
+// https://ugene.unipro.ru/tracker/browse/UGENE-945
+//     }else if(name == GPU_BLASTP_TOOL_NAME){
+// #ifdef Q_OS_WIN
+//     executableFileName="blastp.exe";
+// #else
+//     #ifdef Q_OS_LINUX
+//     executableFileName="blastp";
+//     #endif
+// #endif
+//     validMessage="[-gpu boolean]";
+//     description="The <i>blastp</i> tool searches a protein database \
+//                 using a protein query.";
+//     versionRegExp=QRegExp("Protein-Protein BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
     }else if(name == BLASTX_TOOL_NAME){
 #ifdef Q_OS_WIN
     executableFileName="blastx.exe";

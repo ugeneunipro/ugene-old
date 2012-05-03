@@ -178,8 +178,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     AppContext::getExternalToolRegistry()->registerEntry(blastNPlusTool);
     BlastPlusSupport* blastPPlusTool = new BlastPlusSupport(BLASTP_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(blastPPlusTool);
-    BlastPlusSupport* gpuBlastPPlusTool = new BlastPlusSupport(GPU_BLASTP_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(gpuBlastPPlusTool);
+//     BlastPlusSupport* gpuBlastPPlusTool = new BlastPlusSupport(GPU_BLASTP_TOOL_NAME); // https://ugene.unipro.ru/tracker/browse/UGENE-945
+//     AppContext::getExternalToolRegistry()->registerEntry(gpuBlastPPlusTool);
     BlastPlusSupport* blastXPlusTool = new BlastPlusSupport(BLASTX_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(blastXPlusTool);
     BlastPlusSupport* tBlastNPlusTool = new BlastPlusSupport(TBLASTN_TOOL_NAME);

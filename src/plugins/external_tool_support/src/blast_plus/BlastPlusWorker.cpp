@@ -236,8 +236,8 @@ Task* BlastPlusWorker::tick() {
                 AppContext::getExternalToolRegistry()->getByName(BLASTN_TOOL_NAME)->setPath(path);
             }else if(cfg.programName == "blastp"){
                 AppContext::getExternalToolRegistry()->getByName(BLASTP_TOOL_NAME)->setPath(path);
-            }else if(cfg.programName == "gpu-blastp"){
-                AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->setPath(path);
+//             }else if(cfg.programName == "gpu-blastp"){ // https://ugene.unipro.ru/tracker/browse/UGENE-945
+//                 AppContext::getExternalToolRegistry()->getByName(GPU_BLASTP_TOOL_NAME)->setPath(path);
             }else if(cfg.programName == "blastx"){
                 AppContext::getExternalToolRegistry()->getByName(BLASTX_TOOL_NAME)->setPath(path);
             }else if(cfg.programName == "tblastn"){
