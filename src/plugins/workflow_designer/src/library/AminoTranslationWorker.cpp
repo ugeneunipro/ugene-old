@@ -296,16 +296,20 @@ Task* AminoTranslationWorker::tick(){
         QList<SharedAnnotationData> annList = QVariantUtils::var2ftl(inputMessage.getData().toMap().value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
         
         if (NULL == seqObj.data()) {
+            algoLog.trace("Sequence is not found");
             return NULL;
         }
 
         if(seqObj->getAlphabet() == NULL  ){
+            algoLog.trace("Alphabet is not found");
             return NULL;
         }
         
 
         if(!seqObj->getAlphabet()->isNucleic()){
-            return new FailTask(tr("Alphabet is not nucleic"));
+            algoLog.trace("Alphabet is not nucleic");
+            return NULL;
+            //return new FailTask(tr("Alphabet is not nucleic"));
         }
 
         QStringList offsets = actor->getParameter(POS_2_TRANSLATE_ATTR)->getAttributeValue<QString>(context).split(OFFSET_DELIMITER, QString::SkipEmptyParts);
