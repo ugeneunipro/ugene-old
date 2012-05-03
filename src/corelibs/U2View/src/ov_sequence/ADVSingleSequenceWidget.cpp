@@ -875,6 +875,7 @@ void ADVSingleSequenceHeaderWidget::populateToolBars() {
     widgetStateMenuButton->setIcon(QIcon(":core/images/adv_widget_menu.png"));
     widgetStateMenuButton->setFixedWidth(20);
     widgetStateMenuButton->setToolTip(tr("Toggle view"));
+    widgetStateMenuButton->setObjectName("toggle_view_button_" + ctx->getSequenceObject()->getGObjectName());
     connect(widgetStateMenuButton, SIGNAL(pressed()), SLOT(sl_showStateMenu()));
 
 
