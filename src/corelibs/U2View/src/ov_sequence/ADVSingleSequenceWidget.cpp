@@ -116,7 +116,7 @@ void ADVSingleSequenceWidget::init() {
     addSequenceView(detView);
 
     panView = new PanView(this, seqCtx);
-    panView->setObjectName("pan_view");
+    panView->setObjectName("pan_view_" + getSequenceObject()->getGObjectName());
     connect(panView, SIGNAL(si_centerPosition(qint64)), SLOT(sl_onLocalCenteringRequest(qint64)));
 
     zoomUseObject.setPanView(panView);
