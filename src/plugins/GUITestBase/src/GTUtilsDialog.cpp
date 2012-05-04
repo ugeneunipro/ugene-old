@@ -545,7 +545,6 @@ void GTUtilsDialog::selectSequenceRegionDialogFiller::run()
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::CreateDocumentFiller::run()
 {
-    qDebug() <<  "IN RUN";
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
@@ -750,6 +749,29 @@ void GTUtilsDialog::SequenceReadingModeSelectorDialogFiller::run()
     QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
     GT_CHECK(button != NULL, "standart button not found");
     GTWidget::click(os, button);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::ZoomToRangeDialogFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::ZoomToRangeDialogFiller::run()
+{
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+
+    QLineEdit *from = dialog->findChild<QLineEdit*>("start_edit_line");
+    QLineEdit *to = dialog->findChild<QLineEdit*>("end_edit_line");
+    GT_CHECK(from != NULL, "\"start_edit_line\" to  not found");
+    GT_CHECK(to != NULL, "\"end_edit_line\" to  not found");
+
+    GTLineEdit::setText(os, from, QString::number(minVal));
+    GTLineEdit::setText(os, to, QString::number(maxVal));
+
+    QPushButton *okButton = dialog->findChild<QPushButton*>("ok_button");
+    GT_CHECK(okButton != NULL, "Button \"Ok\" to  not found");
+
+    GTWidget::click(os, okButton);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

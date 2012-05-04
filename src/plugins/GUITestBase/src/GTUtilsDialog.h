@@ -495,6 +495,15 @@ public:
 		int bases;
 	};
 
+    class ZoomToRangeDialogFiller : public Runnable {
+    public:
+        ZoomToRangeDialogFiller(U2OpStatus &_os, int min, int max) : os(_os), minVal(min), maxVal(max){}
+        virtual void run();
+    private:
+        U2OpStatus &os;
+        int minVal, maxVal;
+    };
+
     static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, bool failOnNoDialog = true);
     static void preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, int msec = 100);
 };
