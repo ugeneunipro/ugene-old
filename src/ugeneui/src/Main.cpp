@@ -164,6 +164,10 @@ static void setDataSearchPaths() {
     }
 #endif
 
+    foreach(const QString& path, dataSearchPaths) {
+        printf("DATA PATH is :%s \n", qPrintable(path));
+    }
+
     QDir::setSearchPaths( PATH_PREFIX_DATA, dataSearchPaths );
     //now data files may be opened using QFile( "data:some_data_file" )
 } 

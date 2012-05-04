@@ -433,7 +433,7 @@ void DotPlotFilterTask::filterForCurrentSuperRegions(FilterIntersectionParameter
 }
 
 void DotPlotFilterTask::copyInitialResults(){
-    int size = initialResults->size();
+
     filteredResults->clear();
     foreach(DotPlotResults r, *initialResults){
         filteredResults->append(r);

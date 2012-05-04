@@ -165,6 +165,7 @@ static void setDataSearchPaths() {
     if( QDir(appDirPath+RELATIVE_DATA_DIR).exists() ) {
         dataSearchPaths.push_back( appDirPath+RELATIVE_DATA_DIR );
     } else if( QDir(appDirPath+RELATIVE_DEV_DATA_DIR).exists() ) {          //data location for developers
+        printf("ADDED PATH %s", qPrintable(appDirPath+RELATIVE_DEV_DATA_DIR) );
         dataSearchPaths.push_back( appDirPath+RELATIVE_DEV_DATA_DIR );
     }
     if( dataSearchPaths.empty() ) {
@@ -177,8 +178,9 @@ static void setDataSearchPaths() {
     if( QDir(ugene_data_dir).exists() ) {
         dataSearchPaths.push_back( QString(UGENE_DATA_DIR) );
     }
-#endif
+    printf("ADDED PATH %s", UGENE_DATA_DIR);
 
+#endif
     QDir::setSearchPaths( PATH_PREFIX_DATA, dataSearchPaths );
     //now data files may be opened using QFile( "data:some_data_file" )
 }

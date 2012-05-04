@@ -146,7 +146,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     writeLockReason.clear();
 
     QByteArray readBuff(BUFF_SIZE+1, 0), secondBuff;
-    char* buff = readBuff.data();
 
     bool merge = gapSize!=-1;
     QByteArray sequence;

@@ -222,7 +222,6 @@ Document* U1SequenceUtils::mergeSequences(const QList<Document*> docs,const QVar
     GUrl newUrl(newStringUrl, GUrl_File);
 
     QList <GObjectRelation> tmpRelations;
-    bool hasSequence = false;
 
     foreach(const Document* doc, docs){
         U2SequenceObject* seqObj = NULL;

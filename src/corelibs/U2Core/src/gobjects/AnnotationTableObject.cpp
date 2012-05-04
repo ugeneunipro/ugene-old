@@ -910,6 +910,7 @@ void FeaturesTableObject::removeAnnotations( const QList<Annotation*>& annotatio
 }
 
 GObject* FeaturesTableObject::clone( const U2DbiRef& ref, U2OpStatus& os ) const{
+    Q_UNUSED(os);
     GTIMER(c2,t2,"FeaturesTableObject::clone");
     FeaturesTableObject* cln = new FeaturesTableObject(getGObjectName(), ref, getGHintsMap());
     cln->setIndexInfo(getIndexInfo());

@@ -308,6 +308,7 @@ void SwissProtPlainTextFormat::readAnnotations(ParserState *st, int offset){
 
 SharedAnnotationData SwissProtPlainTextFormat::readAnnotation(IOAdapter* io, char* cbuff, int len, int READ_BUFF_SIZE, U2OpStatus& si, int offset, int seqLen){
 
+    Q_UNUSED(seqLen);
     AnnotationData* a = new AnnotationData();
     SharedAnnotationData f(a);
     QString key = QString::fromAscii(cbuff+5, 10).trimmed();
