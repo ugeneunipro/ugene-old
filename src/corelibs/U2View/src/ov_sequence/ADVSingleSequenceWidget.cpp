@@ -125,7 +125,7 @@ void ADVSingleSequenceWidget::init() {
     panView->setFrameView(detView);
 
     overview = new Overview(this, seqCtx);
-    overview->setObjectName("overview");
+    overview->setObjectName("overview_" + getSequenceObject()->getGObjectName());
     overview->setMouseTracking(true);
     addSequenceView(overview, headerWidget);
     
@@ -767,9 +767,13 @@ void ADVSingleSequenceWidget::updateSelectionActions() {
 
 void ADVSingleSequenceWidget::addStateActions( QMenu& m ) {
     toggleViewAction->setText(isViewCollapsed() ? tr("Show all views") : tr("Hide all views"));
+    toggleViewAction->setObjectName("show_hide_all_views");
     togglePanViewAction->setText(isPanViewCollapsed() ? tr("Show zoom view") : tr("Hide zoom view"));
+    togglePanViewAction->setObjectName("show_hide_zoom_view");
     toggleDetViewAction->setText(isDetViewCollapsed() ? tr("Show details view") : tr("Hide details view"));
+    toggleDetViewAction->setObjectName("show_hide_details_view");
     toggleOverviewAction->setText(isOverviewCollapsed() ? tr("Show overview") : tr("Hide overview"));
+    toggleOverviewAction->setObjectName("show_hide_overview");
     m.addAction(toggleViewAction);
     m.addAction(toggleDetViewAction);
     m.addAction(togglePanViewAction);
