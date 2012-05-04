@@ -73,6 +73,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
 
 }
+
 GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
@@ -95,7 +96,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTWidget::click(os, toggleViewButton1);
     GTGlobals::sleep(1000);
 
-    }
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
     GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
@@ -117,7 +119,63 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTWidget::click(os, toggleViewButton1);
     GTGlobals::sleep(1000);
 
-    }
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009)
+{
+    GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+    GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep(1000);
+
+
+    QWidget *overViewSe1 = GTWidget::findWidget(os, "overview_se1");
+    QWidget *overViewSe2 = GTWidget::findWidget(os, "overview_se2");
+
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    QWidget *toggleViewButtonSe2 = GTWidget::findWidget(os, "toggle_view_button_se2");
+
+    GTUtilsDialog::PopupChooser chooser0(os, QStringList() << "show_hide_overview");
+    GTUtilsDialog::preWaitForDialog(os, &chooser0, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButtonSe2);
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(!overViewSe2->isVisible(), "panoramical view for se2 sequence has been not closed");
+
+    GTUtilsDialog::PopupChooser chooser1(os, QStringList() << "toggleOverview");
+    GTUtilsDialog::preWaitForDialog(os, &chooser1, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(!overViewSe1->isVisible() && !overViewSe2->isVisible(),
+                  "panoramical views for both sequences has been not closed");
+
+    GTUtilsDialog::PopupChooser chooser2(os, QStringList() << "show_hide_overview");
+    GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButtonSe2);
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(overViewSe2->isVisible(), "panoramical view for se2 sequence has been not shown");
+
+    GTUtilsDialog::PopupChooser chooser3(os, QStringList() << "toggleOverview");
+    GTUtilsDialog::preWaitForDialog(os, &chooser3, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(!overViewSe1->isVisible() && !overViewSe2->isVisible(),
+                  "panoramical view for both sequences has been not closed");
+}
+
+
+GUI_TEST_CLASS_DEFINITION(test_0010)
+{
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(1000);
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 60000, 70000);
+    GTGlobals::sleep(1000);
+
+}
 
 } // namespace
 } // namespace U2
