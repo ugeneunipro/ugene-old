@@ -164,7 +164,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0007);
-    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0009);
+//    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0009);
 //    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0010);
 
 //////////////////////////////////////////////////////////////////////////
