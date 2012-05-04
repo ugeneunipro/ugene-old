@@ -152,9 +152,6 @@ static void setDataSearchPaths() {
     } else if( QDir(appDirPath+RELATIVE_DEV_DATA_DIR).exists() ) {          //data location for developers
         dataSearchPaths.push_back( appDirPath+RELATIVE_DEV_DATA_DIR );
     }
-    if( dataSearchPaths.empty() ) {
-        dataSearchPaths.push_back("/");
-    }
 
 #if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && defined( UGENE_DATA_DIR )
     //using directory which is set during installation process on Linux
@@ -164,8 +161,8 @@ static void setDataSearchPaths() {
     }
 #endif
 
-    foreach(const QString& path, dataSearchPaths) {
-        printf("DATA PATH is :%s \n", qPrintable(path));
+    if( dataSearchPaths.empty() ) {
+        dataSearchPaths.push_back("/");
     }
 
     QDir::setSearchPaths( PATH_PREFIX_DATA, dataSearchPaths );

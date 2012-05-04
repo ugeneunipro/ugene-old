@@ -168,9 +168,6 @@ static void setDataSearchPaths() {
         printf("ADDED PATH %s", qPrintable(appDirPath+RELATIVE_DEV_DATA_DIR) );
         dataSearchPaths.push_back( appDirPath+RELATIVE_DEV_DATA_DIR );
     }
-    if( dataSearchPaths.empty() ) {
-        dataSearchPaths.push_back("/");
-    }
 
 #if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && defined( UGENE_DATA_DIR )
     //using directory which is set during installation process on linux
@@ -178,9 +175,12 @@ static void setDataSearchPaths() {
     if( QDir(ugene_data_dir).exists() ) {
         dataSearchPaths.push_back( QString(UGENE_DATA_DIR) );
     }
-    printf("ADDED PATH %s", UGENE_DATA_DIR);
-
 #endif
+
+    if( dataSearchPaths.empty() ) {
+        dataSearchPaths.push_back("/");
+    }
+
     QDir::setSearchPaths( PATH_PREFIX_DATA, dataSearchPaths );
     //now data files may be opened using QFile( "data:some_data_file" )
 }
