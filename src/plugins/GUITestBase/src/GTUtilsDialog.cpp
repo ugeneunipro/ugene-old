@@ -90,13 +90,13 @@ void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsDialog::preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType _type)
+void GTUtilsDialog::preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType _type, int msec)
 {
     GUIDialogWaiter *waiter = new GUIDialogWaiter(r, _type);
     QTimer *t = new QTimer;
 
     t->connect(t, SIGNAL(timeout()), waiter, SLOT(wait()));
-    t->start(100);
+    t->start(msec);
 }
 
 #undef GT_CLASS_NAME
