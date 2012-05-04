@@ -107,9 +107,11 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     zoomUsing = 0;
 
     zoomInAction = new QAction(QIcon(":/core/images/zoom_in.png"), tr("Zoom In"), this);
+    zoomInAction->setObjectName("action_zoom_in_" + ctx->getSequenceObject()->getGObjectName());
     connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomInAction()));
 
     zoomOutAction = new QAction(QIcon(":/core/images/zoom_out.png"), tr("Zoom Out"), this);
+    zoomOutAction->setObjectName("action_zoom_out_" + ctx->getSequenceObject()->getGObjectName());
     connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOutAction()));
 
     zoomToSelectionAction= new QAction(QIcon(":/core/images/zoom_sel.png"), tr("Zoom to Selection"), this);
