@@ -92,6 +92,7 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
     connect(selectOutAnnotationRangeAction, SIGNAL(triggered()), SLOT(sl_onSelectOutRange()));
 
     zoomToRangeAction = new QAction(QIcon(":/core/images/zoom_reg.png"), tr("Zoom to range.."), this);
+    zoomToRangeAction->setObjectName("zoom_to_range_" + getSequenceObject()->getGObjectName());
     connect(zoomToRangeAction, SIGNAL(triggered()), SLOT(sl_zoomToRange()));
 
     createNewRulerAction = new QAction(tr("Create new ruler..."), this);
@@ -841,6 +842,7 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     nameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     
     toolBar = new HBar(this);
+    toolBar->setObjectName("tool_bar_" + ctx->getSequenceObject()->getGObjectName());
     toolBar->layout()->setSpacing(0);
     toolBar->layout()->setMargin(0);
 
