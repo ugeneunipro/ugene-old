@@ -121,6 +121,8 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
 }
 
+
+
 GUI_TEST_CLASS_DEFINITION(test_0009)
 {
     GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
@@ -161,7 +163,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009)
     GTUtilsDialog::preWaitForDialog(os, &chooser3, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(10000);
     CHECK_SET_ERR(!overViewSe1->isVisible() && !overViewSe2->isVisible(),
                   "panoramical view for both sequences has been not closed");
 }
