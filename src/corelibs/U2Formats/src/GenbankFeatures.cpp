@@ -98,6 +98,7 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
     FK(GBFeatureKey_misc_RNA,         "misc_RNA",         cl("000000"), false, tr("Miscellaneous transcript feature not defined by other RNA keys"));
     FK(GBFeatureKey_misc_signal,      "misc_signal",      cl("000000"), false, tr("Miscellaneous signal"));
     FK(GBFeatureKey_misc_structure,   "misc_structure",   cl("000000"), false, tr("Miscellaneous DNA or RNA structure"));
+    FK(GBFeatureKey_mobile_element,   "mobile_element",   cl("000000"), false, tr("Region of genome containing mobile elements"));
     FK(GBFeatureKey_modified_base,    "modified_base",    cl("000000"), false, tr("The indicated base is a modified nucleotide"));
     FK(GBFeatureKey_mRNA,             "mRNA",             cl("000000"), false, tr("Messenger RNA"));
     FK(GBFeatureKey_N_region,         "N_region",         cl("000000"), false, tr("Span of the N immunological feature"));
@@ -228,6 +229,7 @@ const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
         groups.insert(misc, GBFeatureKey_misc_feature);
         groups.insert(misc, GBFeatureKey_misc_recomb);
         groups.insert(misc, GBFeatureKey_misc_structure);
+        groups.insert(misc, GBFeatureKey_mobile_element);
         groups.insert(misc, GBFeatureKey_primer); //TODO: recheck grouping
         groups.insert(misc, GBFeatureKey_source);
         groups.insert(misc, GBFeatureKey_stem_loop);

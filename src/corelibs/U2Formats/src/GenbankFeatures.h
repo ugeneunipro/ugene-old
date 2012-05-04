@@ -55,6 +55,7 @@ enum GBFeatureKey {
     GBFeatureKey_misc_RNA,	    // Miscellaneous transcript feature not defined by other RNA keys
     GBFeatureKey_misc_signal,	    // Miscellaneous signal
     GBFeatureKey_misc_structure,	// Miscellaneous DNA or RNA structure
+    GBFeatureKey_mobile_element, // Region of genome containing mobile elements
     GBFeatureKey_modified_base,	// The indicated base is a modified nucleotide
     GBFeatureKey_mRNA,		    // Messenger RNA
     GBFeatureKey_N_region,	    // Span of the N immunological feature
