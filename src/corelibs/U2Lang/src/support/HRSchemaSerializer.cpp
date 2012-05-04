@@ -1615,7 +1615,12 @@ QString HRSchemaSerializer::header2String(const Metadata * meta) {
     QString res = HRSchemaSerializer::HEADER_LINE + "\n";
     if(meta != NULL) {
         QStringList descLines = meta->comment.split(HRSchemaSerializer::NEW_LINE, QString::KeepEmptyParts);
-        foreach(const QString & line, descLines) {
+        for (int lineIdx=0; lineIdx<descLines.size(); lineIdx++) {
+            const QString &line = descLines.at(lineIdx);
+            bool lastLine = (lineIdx == descLines.size()-1);
+            if (lastLine && line.isEmpty()) {
+                continue;
+            }
             res += HRSchemaSerializer::SERVICE_SYM + line + HRSchemaSerializer::NEW_LINE;
         }
     }
