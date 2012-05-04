@@ -150,7 +150,6 @@ void AminoTranslationWorkerFactory::init(){
 
     QMap<Descriptor, DataTypePtr> m;
     m[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
-    m[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
     DataTypePtr inSet(new MapDataType(Descriptor("regioned.sequence"), m));
     DataTypeRegistry* dr = WorkflowEnv::getDataTypeRegistry();
     assert(dr);
@@ -291,9 +290,9 @@ Task* AminoTranslationWorker::tick(){
         }
 
         SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
+
         QSharedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
 
-        QList<SharedAnnotationData> annList = QVariantUtils::var2ftl(inputMessage.getData().toMap().value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
         
         if (NULL == seqObj.data()) {
             algoLog.trace("Sequence is not found");
@@ -321,17 +320,7 @@ Task* AminoTranslationWorker::tick(){
         DNATranslation* aminoTT = NULL;
     
         if(autoTranslation ){
-            QVector<U2Qualifier> results;
-            foreach(const SharedAnnotationData& data, annList){
-                data->findQualifiers("transl_table", results);
-                if(results.size() > 0){
-                    QString guess = "NCBI-GenBank #"+results.first().value;
-                    aminoTT = AppContext::getDNATranslationRegistry()->lookupTranslation(seqObj->getAlphabet(), DNATranslationType_NUCL_2_AMINO, guess);
-                    if (aminoTT != NULL) {
-                        break;
-                    }
-                }
-            }
+            aminoTT = AppContext::getDNATranslationRegistry()->lookupTranslation(seqObj->getAlphabet(), DNATranslationType_NUCL_2_AMINO, seqObj->getStringAttribute(Translation_Table_Id_Attribute));
             if(aminoTT == NULL){
                 aminoTT  = GObjectUtils::findAminoTT(seqObj.data(), false);
             }

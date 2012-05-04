@@ -75,6 +75,7 @@ public:
     static QList<U2Region> getRelatedLowerCaseRegions(const U2SequenceObject *so, const QList<GObject*> &anns);
 
     static char *applyLowerCaseRegions(char *seq, qint64 first, qint64 len, qint64 globalOffset, const QList<U2Region> &regs);
+    static QString U1AnnotationUtils::guessAminoTranslation(AnnotationTableObject* ao, DNAAlphabet* al);
 
     static QString lowerCaseAnnotationName;
     static QString upperCaseAnnotationName;

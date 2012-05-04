@@ -30,6 +30,7 @@
 
 namespace U2 {
 
+#define Translation_Table_Id_Attribute "transl_table"
 
 /**
     Attribute for any top-level object record.

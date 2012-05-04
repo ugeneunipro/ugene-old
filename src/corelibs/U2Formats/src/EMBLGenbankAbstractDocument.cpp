@@ -202,6 +202,11 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
                     fullSequenceSize = 0;
                     
                     U2SequenceObject* seqObj =  new U2SequenceObject(sequenceName, U2EntityRef(dbiRef, u2seq.id));
+                    QString translation = U1AnnotationUtils::guessAminoTranslation(annotationsObject, seqObj->getAlphabet());
+                    if(!translation.isEmpty()){
+                        seqObj->setStringAttribute(translation , Translation_Table_Id_Attribute);
+                    }
+                    
                     objects << seqObj;
                     dbiObjects.objects << u2seq.id;
 
@@ -217,6 +222,9 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
                     readHeaderAttributes(data.tags, con, seqObj);
                     toolMark = data.tags.contains(UGENE_MARK); //the mark might be added in the readHeaderAttributes method
+                    
+                    // try to guess relevant translation from a CDS feature (if any)
+                    
                 } else {
                     con.dbi->getObjectDbi()->removeObject(u2seq.id, os);
                     LOG_OP(os);

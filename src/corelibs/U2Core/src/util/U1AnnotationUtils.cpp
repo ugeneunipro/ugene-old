@@ -22,8 +22,12 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/U2AlphabetUtils.h>
 
 #include <U2Core/U1AnnotationUtils.h>
+
 
 namespace U2 {
 
@@ -305,6 +309,30 @@ char *U1AnnotationUtils::applyLowerCaseRegions(char *seq, qint64 first, qint64 l
     }
 
     return seq;
+}
+
+QString U1AnnotationUtils::guessAminoTranslation(AnnotationTableObject* ao, DNAAlphabet* al){
+    DNATranslation* res = NULL;    
+    DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
+
+    if(ao != NULL && al != NULL){
+        if(al->isNucleic()){
+        foreach(Annotation* ann, ao->getAnnotations()) {
+            if (ann->getAnnotationName() == "CDS") {
+                QVector<U2Qualifier> ql;
+                    ann->findQualifiers("transl_table", ql);
+                    if (ql.size() > 0) {
+                        QString guess = "NCBI-GenBank #"+ql.first().value;
+                        res = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, guess);
+                        if (res !=NULL) {
+                            return guess;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return "";
 }
 
 } //namespace
