@@ -1448,10 +1448,7 @@ void WorkflowView::sl_loadScene() {
         AppContext::getSettings()->setValue(LAST_DIR, QFileInfo(url).absoluteDir().absolutePath());
         Task* t = new LoadWorkflowSceneTask(scene, &meta, url); //FIXME unsynchronized meta usage
         TaskSignalMapper* m = new TaskSignalMapper(t);
-        connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_updateTitle()));
-        connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_updateUi()));
-        connect(m, SIGNAL(si_taskFinished(Task*)), scene, SLOT(centerView()));
-        connect(m, SIGNAL(si_taskFinished(Task*)), propertyEditor, SLOT(resetIterations()));
+        connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_onSceneLoaded()));
         if(LoadWorkflowTask::detectFormat(IOAdapterUtils::readFileHeader(url)) == LoadWorkflowTask::XML) {
             connect(m, SIGNAL(si_taskFinished(Task*)), SLOT(sl_xmlSchemaLoaded(Task*)));
         }
@@ -1481,6 +1478,15 @@ void WorkflowView::sl_newScene() {
     scene->setModified(false);
     scene->update();
     this->sl_updateUi();
+}
+
+void WorkflowView::sl_onSceneLoaded() {
+    sl_updateTitle();
+    sl_updateUi();
+    scene->centerView();
+    propertyEditor->resetIterations();
+    
+    scene->setModified(false);
 }
 
 void WorkflowView::sl_updateTitle() {
