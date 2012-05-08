@@ -52,20 +52,23 @@ DnaAssemblySupport::DnaAssemblySupport()
     QMenu *dnaAssemblySub = toolsMenu->addMenu(QIcon( ":core/images/align.png" ), tr("DNA assembly"));
     dnaAssemblySub->setObjectName(MWMENU_TOOLS_ASSEMBLY);
 
-    QAction* dnaAssemblyAction = new QAction( tr("Align short reads..."), this );
-    dnaAssemblyAction->setIcon(QIcon(":core/images/align.png"));
-    connect( dnaAssemblyAction, SIGNAL( triggered() ), SLOT( sl_showDnaAssemblyDialog() ) );
-    dnaAssemblySub->addAction( dnaAssemblyAction );
-
-    QAction* buildIndexAction = new QAction( tr("Build index..."), this );
-    buildIndexAction->setIcon(QIcon(":core/images/align.png"));
-    connect( buildIndexAction, SIGNAL( triggered() ), SLOT( sl_showBuildIndexDialog() ) );
-    dnaAssemblySub->addAction( buildIndexAction );
-
     QAction* convertAssemblyToSamAction = new QAction( tr("Convert UGENE Assembly data base to SAM format..."), this );
     convertAssemblyToSamAction->setIcon(QIcon(":core/images/align.png"));
     connect( convertAssemblyToSamAction, SIGNAL( triggered() ), SLOT( sl_showConvertToSamDialog() ) );
     dnaAssemblySub->addAction( convertAssemblyToSamAction );
+
+    QMenu *refAlignSub = toolsMenu->addMenu(QIcon( ":core/images/align.png" ), tr("Align to reference"));
+    refAlignSub->setObjectName(MWMENU_TOOLS_REF_ALIGN);
+
+    QAction* dnaAssemblyAction = new QAction( tr("Align short reads..."), this );
+    dnaAssemblyAction->setIcon(QIcon(":core/images/align.png"));
+    connect( dnaAssemblyAction, SIGNAL( triggered() ), SLOT( sl_showDnaAssemblyDialog() ) );
+    refAlignSub->addAction( dnaAssemblyAction );
+
+    QAction* buildIndexAction = new QAction( tr("Build index..."), this );
+    buildIndexAction->setIcon(QIcon(":core/images/align.png"));
+    connect( buildIndexAction, SIGNAL( triggered() ), SLOT( sl_showBuildIndexDialog() ) );
+    refAlignSub->addAction( buildIndexAction );
 }
 
 void DnaAssemblySupport::sl_showDnaAssemblyDialog() 

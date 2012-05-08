@@ -44,6 +44,7 @@ class QMainWindow;
 #define MWMENU_TOOLS                        "mwmenu_tools"
 #define MWMENU_TOOLS_MALIGN                 "mwmenu_tools_malign"
 #define MWMENU_TOOLS_ASSEMBLY               "mwmenu_tools_assembly"
+#define MWMENU_TOOLS_REF_ALIGN              "mwmenu_tools_ref_align"
 #define MWMENU_WINDOW                       "mwmenu_window"
 #define MWMENU_HELP                         "mwmenu_help"
 
