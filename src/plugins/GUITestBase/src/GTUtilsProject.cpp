@@ -25,18 +25,20 @@
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTMenu.h"
 #include "api/GTLineEdit.h"
+#include "api/GTWidget.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsAnnotationsTreeView.h"
+
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
+#include <U2View/ADVConstants.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <QtGui/QMainWindow>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
 #include <QtGui/QHeaderView>
-#include <U2View/ADVConstants.h>
 
 namespace U2 {
 
@@ -247,12 +249,7 @@ void GTUtilsProject::checkProject(U2OpStatus &os, CheckType checkType) {
 #define GT_METHOD_NAME "setFilter"
 void GTUtilsProject::setFilter(U2OpStatus &os, const QString& filter) {
 
-    MainWindow* mw = AppContext::getMainWindow();
-    GT_CHECK(mw != NULL, "MainWindow is NULL");
-    QWidget* widget = mw->getQMainWindow();
-    GT_CHECK(widget != NULL, "QMainWindow is NULL");
-
-    QLineEdit* nameFilterEdit = widget->findChild<QLineEdit*>("nameFilterEdit");
+    QLineEdit* nameFilterEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "nameFilterEdit"));
     GT_CHECK(nameFilterEdit != NULL, "nameFilterEdit is NULL");
 
     GTLineEdit::setText(os, nameFilterEdit, filter);
