@@ -60,7 +60,7 @@
 #include <U2Core/ModifySequenceObjectTask.h>
 
 #include <U2View/AnnotHighlightWidget.h>
-#include <U2View/FindDialog.h>//BUG:423: move to plugins!?
+#include <U2View/FindPatternWidget.h>
 #include <U2View/SecStructPredictUtils.h>
 #include <U2View/SequenceInfo.h>
 
@@ -84,6 +84,11 @@
 namespace U2 {
 
 /* TRANSLATOR U2::AnnotatedDNAView */
+
+const QString AnnotatedDNAView::OP_TAB_TITLE_INFO = QString(tr("Information"));
+const QString AnnotatedDNAView::OP_TAB_TITLE_SEARCH_IN_SEQ = QString(tr("Search in Sequence"));
+const QString AnnotatedDNAView::OP_TAB_TITLE_ANNOT_HIGHLIGHT = QString(tr("Annotations Highlighting"));
+
 
 AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2SequenceObject*>& dnaObjects) 
 : GObjectView(AnnotatedDNAViewFactory::ID, viewName)
@@ -119,10 +124,10 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
         addObject(dnaObj);
     }
 
-    findDialogAction = new ADVGlobalAction(this, QIcon(":core/images/find_dialog.png"), tr("Find pattern..."), 10);
-    findDialogAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_F));
-    findDialogAction->setShortcutContext(Qt::WindowShortcut);
-    connect(findDialogAction, SIGNAL(triggered()), SLOT(sl_onFindDialog()));
+    findPatternAction = new ADVGlobalAction(this, QIcon(":core/images/find_dialog.png"), tr("Find pattern..."), 10);
+    findPatternAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_F));
+    findPatternAction->setShortcutContext(Qt::WindowShortcut);
+    connect(findPatternAction, SIGNAL(triggered()), SLOT(sl_onFindPatternClicked()));
 
     addSequencePart = new QAction(tr("Insert subsequence..."), this);
   	addSequencePart->setObjectName(ACTION_EDIT_INSERT_SUBSEQUENCE);
@@ -213,15 +218,15 @@ QWidget* AnnotatedDNAView::createWidget() {
 
     optionsPanel = new OptionsPanel(this);
     optionsPanel->addGroup(QPixmap(":core/images/info.png"),
-        tr("Information"),
+        OP_TAB_TITLE_INFO,
         new SequenceInfo(this));
 
-    /** BEGIN: For Test Purposes*/
-    optionsPanel->addGroup(QPixmap(":core/images/find_dialog.png"), "Title3", new QLabel("Test"));
-    /** END: For Test Purposes */
+    optionsPanel->addGroup(QPixmap(":core/images/find_dialog.png"),
+        OP_TAB_TITLE_SEARCH_IN_SEQ,
+        new FindPatternWidget(this));
 
     optionsPanel->addGroup(QPixmap(":core/images/annotation_settings.png"),
-        tr("Annotations Highlighting"),
+        OP_TAB_TITLE_ANNOT_HIGHLIGHT,
         new AnnotHighlightWidget(this));
 
     return mainSplitter;
@@ -653,11 +658,12 @@ void AnnotatedDNAView::sl_onContextMenuRequested(const QPoint & scrollAreaPos) {
 }
 
 
-void AnnotatedDNAView::sl_onFindDialog() {
-    ADVSequenceObjectContext* c = getSequenceInFocus();
-    if (c != NULL) {
-        FindDialog::runDialog(c);
-    }
+void AnnotatedDNAView::sl_onFindPatternClicked() {
+    OptionsPanel* optionsPanel = getOptionsPanel();
+    SAFE_POINT(NULL != optionsPanel, "Internal error: options panel is NULL"
+        " when pattern search has been initiated!",);
+
+    optionsPanel->openGroupByTitle(OP_TAB_TITLE_SEARCH_IN_SEQ);
 }
 
 

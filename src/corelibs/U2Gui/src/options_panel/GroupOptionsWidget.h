@@ -35,10 +35,13 @@ public:
     GroupOptionsWidget(const QString& title, QWidget* widget);
 
     inline static int getWidgetWidth() { return WIDGET_WIDTH; }
+    inline QString getTitle() { return title; }
+
 
 private:
     QWidget*            widget;
     QLabel*             titleWidget;
+    QString             title;
 
     QVBoxLayout*        mainLayout;
 

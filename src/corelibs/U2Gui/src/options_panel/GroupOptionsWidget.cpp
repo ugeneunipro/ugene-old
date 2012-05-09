@@ -25,8 +25,9 @@
 namespace U2 {
 
 
-GroupOptionsWidget::GroupOptionsWidget(const QString& title, QWidget* _widget)
-    : widget(_widget)
+GroupOptionsWidget::GroupOptionsWidget(const QString& _title, QWidget* _widget)
+    : widget(_widget),
+      title(_title)
 {
     setStyleSheet("font-size: 11px;");
 

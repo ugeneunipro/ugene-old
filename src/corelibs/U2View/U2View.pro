@@ -94,6 +94,8 @@ HEADERS += src/WebWindow.h \
            src/ov_sequence/annot_highlight/AnnotHighlightTree.h \
            src/ov_sequence/annot_highlight/AnnotHighlightTreeItem.h \
            src/ov_sequence/annot_highlight/AnnotHighlightWidget.h \
+           src/ov_sequence/find_pattern/FindPatternTask.h \
+           src/ov_sequence/find_pattern/FindPatternWidget.h \
            src/ov_sequence/sequence_info/CharOccurTask.h \
            src/ov_sequence/sequence_info/DinuclOccurTask.h \
            src/ov_sequence/sequence_info/SequenceInfo.h \
@@ -112,7 +114,6 @@ HEADERS += src/WebWindow.h \
            src/util_dna_assembly/DnaAssemblyDialog.h \
            src/util_dna_assembly/DnaAssemblyGUIExtension.h \
            src/util_dna_assembly/DnaAssemblyUtils.h \
-           src/util_find_dialog/FindDialog.h \
            src/util_msa_align/MSAAlignDialog.h \
            src/util_msa_align/MSAAlignGUIExtension.h \
            src/util_sec_struct_predict/SecStructDialog.h \
@@ -127,6 +128,7 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_msa/ui/DeleteGapsDialog.ui \
          src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui \
          src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
+         src/ov_sequence/find_pattern/ui/FindPatternForm.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \
          src/ov_sequence/ui/EditAnnotationDialog.ui \
          src/ov_sequence/ui/SaveGraphCutoffsDialog.ui \
@@ -139,8 +141,6 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/util_dna_assembly/ui/AssemblyToRefDialog.ui \
          src/util_dna_assembly/ui/AssemblyToSamDialog.ui \
          src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui \
-         src/util_find_dialog/ui/FindDialogUI.ui \
-         src/util_find_dialog/ui/InfoRegExp.ui \
          src/util_msa_align/ui/PerformAlignmentDialog.ui \
          src/util_sec_struct_predict/ui/SecStructDialog.ui \
          src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \
@@ -238,6 +238,8 @@ SOURCES += src/WebWindow.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightTree.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightTreeItem.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp \
+           src/ov_sequence/find_pattern/FindPatternTask.cpp \
+           src/ov_sequence/find_pattern/FindPatternWidget.cpp \
            src/ov_sequence/sequence_info/CharOccurTask.cpp \
            src/ov_sequence/sequence_info/DinuclOccurTask.cpp \
            src/ov_sequence/sequence_info/SequenceInfo.cpp \
@@ -253,7 +255,6 @@ SOURCES += src/WebWindow.cpp \
            src/util_dna_assembly/ConvertAssemblyToSamDialog.cpp \
            src/util_dna_assembly/DnaAssemblyDialog.cpp \
            src/util_dna_assembly/DnaAssemblyUtils.cpp \
-           src/util_find_dialog/FindDialog.cpp \
            src/util_msa_align/MSAAlignDialog.cpp \
            src/util_sec_struct_predict/SecStructDialog.cpp \
            src/util_sec_struct_predict/SecStructPredictUtils.cpp \

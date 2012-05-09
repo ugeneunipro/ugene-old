@@ -20,7 +20,6 @@
  */
 
 #include "CreateAnnotationWidgetController.h"
-#include <ui/ui_CreateAnnotationWidget.h>
 
 #include "GObjectComboBoxController.h"
 #include <U2Gui/DialogUtils.h>
@@ -51,6 +50,9 @@
 #include <memory>
 
 #include <QtGui/QFileDialog>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QGridLayout>
+#include <QtGui/QGroupBox>
 
 //#define SETTINGS_LAST_USED_ANNOTATION_NAME "create_annotation/last_name"
 #define SETTINGS_LASTDIR "create_annotation/last_dir"
@@ -59,9 +61,9 @@ namespace U2 {
 /* TRANSLATOR U2::CreateAnnotationWidgetController */
 
 CreateAnnotationModel::CreateAnnotationModel() : defaultIsNewDoc(false), hideLocation(false), hideAnnotationName(false) {
-	data = new AnnotationData();
+    data = new AnnotationData();
     useUnloadedObjects = false;
-	hideAutoAnnotationsOption = true;
+    hideAutoAnnotationsOption = true;
 }
 
 AnnotationTableObject* CreateAnnotationModel::getAnnotationObject() const {
@@ -72,32 +74,81 @@ AnnotationTableObject* CreateAnnotationModel::getAnnotationObject() const {
 }
 
 
-CreateAnnotationWidgetController::CreateAnnotationWidgetController(const CreateAnnotationModel& m, QObject* p)
+CreateAnnotationWidgetController::CreateAnnotationWidgetController(
+    const CreateAnnotationModel& m,
+    QObject* p,
+    AnnotationWidgetMode layoutMode)
 : QObject(p), model(m)
 {
     this->setObjectName("CreateAnnotationWidgetController");
     assert(AppContext::getProject()!=NULL);
     assert(model.sequenceObjectRef.isValid());
     w = new QWidget();
-    ui = new Ui_CreateAnnotationWidget;
-    ui->setupUi(w);
+    initLayout(layoutMode);
 
+    GObjectComboBoxControllerConstraints occc;
+    occc.relationFilter.ref = model.sequenceObjectRef;
+    occc.relationFilter.role = GObjectRelationRole::SEQUENCE;
+    occc.typeFilter = GObjectTypes::ANNOTATION_TABLE;
+    occc.onlyWritable = true;
+    occc.uof = model.useUnloadedObjects ? UOF_LoadedAndUnloaded : UOF_LoadedOnly;
+
+    occ = new GObjectComboBoxController(this, occc, existingObjectCombo);
+
+    commonWidgetUpdate(model);
+
+    connect(newFileButton, SIGNAL(clicked()), SLOT(sl_onNewDocClicked()));
+    connect(existingObjectButton, SIGNAL(clicked()), SLOT(sl_onLoadObjectsClicked()));
+    connect(groupNameButton, SIGNAL(clicked()), SLOT(sl_groupName()));
+    connect(complementButton, SIGNAL(clicked()), SLOT(sl_complementLocation()));
+}
+
+
+void CreateAnnotationWidgetController::updateWidgetForAnnotationModel(const CreateAnnotationModel& newModel)
+{
+    SAFE_POINT(newModel.sequenceObjectRef.isValid(),
+        "Internal error: incorrect sequence object reference was supplied"
+        "to the annotation widget controller.",);
+
+    model = newModel;
+
+    GObjectComboBoxControllerConstraints occc;
+    occc.relationFilter.ref = newModel.sequenceObjectRef;
+    occc.relationFilter.role = GObjectRelationRole::SEQUENCE;
+    occc.typeFilter = GObjectTypes::ANNOTATION_TABLE;
+    occc.onlyWritable = true;
+    occc.uof = newModel.useUnloadedObjects ? UOF_LoadedAndUnloaded : UOF_LoadedOnly;
+
+    occ->updateConstrains(occc);
+
+    commonWidgetUpdate(newModel);
+}
+
+
+void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotationModel& model)
+{
     if (model.hideLocation) {
-        ui->locationLabel->hide();
-        ui->locationEdit->hide();
-        ui->complementButton->hide();
+        locationLabel->hide();
+        locationEdit->hide();
+        complementButton->hide();
     }
-    if( model.hideAnnotationName ) {
-        ui->annotationNameEdit->hide();
-        ui->annotationNameLabel->hide();
-        ui->showNameGroupsButton->hide();
+    else {
+        locationLabel->show();
+        locationEdit->show();
+        complementButton->show();
+    }
+
+    if(model.hideAnnotationName) {
+        annotationNameEdit->hide();
+        annotationNameLabel->hide();
+        showNameGroupsButton->hide();
     } else {
         QMenu* menu = createAnnotationNamesMenu(w, this);
-        ui->showNameGroupsButton->setMenu(menu);
-        ui->showNameGroupsButton->setPopupMode(QToolButton::InstantPopup);
+        showNameGroupsButton->setMenu(menu);
+        showNameGroupsButton->setPopupMode(QToolButton::InstantPopup);
     }
-    
-	QString dir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR).toString();
+
+    QString dir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR).toString();
     if (dir.isEmpty() || !QDir(dir).exists()) {
         dir = QDir::homePath();
         Project* prj = AppContext::getProject();
@@ -117,63 +168,232 @@ CreateAnnotationWidgetController::CreateAnnotationWidgetController(const CreateA
     for (int i=1; QFileInfo(url).exists() || AppContext::getProject()->findDocumentByURL(url)!= NULL; i++) {
         url = dir + baseName +"_"+QString::number(i) + ext;
     }
-    ui->newFileEdit->setText(url);
+    newFileEdit->setText(url);
 
     GROUP_NAME_AUTO = CreateAnnotationWidgetController::tr("<auto>");
 
-    GObjectComboBoxControllerConstraints occc;
-    occc.relationFilter.ref = model.sequenceObjectRef;
-    occc.relationFilter.role = GObjectRelationRole::SEQUENCE;
-    occc.typeFilter = GObjectTypes::ANNOTATION_TABLE;
-    occc.onlyWritable = true;
-    occc.uof = model.useUnloadedObjects ? UOF_LoadedAndUnloaded : UOF_LoadedOnly;
-    occ = new GObjectComboBoxController(this, occc, ui->existingObjectCombo);
     if (model.annotationObjectRef.isValid()) {
         occ->setSelectedObject(model.annotationObjectRef);
     } 
 
     //default field values
     if (!model.data->name.isEmpty()) {
-        ui->annotationNameEdit->setText(model.data->name);
+        annotationNameEdit->setText(model.data->name);
     } else if (!model.hideAnnotationName) {
         //QString name = AppContext::getSettings()->getValue(SETTINGS_LAST_USED_ANNOTATION_NAME, QString("misc_feature")).toString();
-        ui->annotationNameEdit->setText("misc_feature");
+        annotationNameEdit->setText("misc_feature");
     }
-    ui->annotationNameEdit->selectAll();
+    annotationNameEdit->selectAll();
 
-    ui->groupNameEdit->setText(model.groupName.isEmpty() ? GROUP_NAME_AUTO : model.groupName);
+    groupNameEdit->setText(model.groupName.isEmpty() ? GROUP_NAME_AUTO : model.groupName);
 
     if (!model.data->location->isEmpty()) {
         QString locationString = Genbank::LocationParser::buildLocationString(model.data);
-        ui->locationEdit->setText(locationString);
+        locationEdit->setText(locationString);
     }
 
-    if (model.defaultIsNewDoc || ui->existingObjectCombo->count() == 0) {
-        ui->existingObjectRB->setCheckable(false);
-        ui->existingObjectRB->setDisabled(true);
-        ui->existingObjectCombo->setDisabled(true);
-        ui->existingObjectButton->setDisabled(true);
-        ui->newFileRB->setChecked(true);
+    if (model.defaultIsNewDoc || existingObjectCombo->count() == 0) {
+        existingObjectRB->setCheckable(false);
+        existingObjectRB->setDisabled(true);
+        existingObjectCombo->setDisabled(true);
+        existingObjectButton->setDisabled(true);
+        newFileRB->setChecked(true);
     }
-	
-	if (model.hideAutoAnnotationsOption) {
-		ui->useAutoAnnotationsRB->hide();
-	} else {
-		ui->useAutoAnnotationsRB->setChecked(true);
-	}
+    else {
+        existingObjectRB->setCheckable(true);
+        existingObjectRB->setDisabled(false);
+        existingObjectCombo->setDisabled(false);
+        existingObjectButton->setDisabled(false);
+        existingObjectRB->setChecked(true);
+    }
 
-    connect(ui->newFileButton, SIGNAL(clicked()), SLOT(sl_onNewDocClicked()));
-    connect(ui->existingObjectButton, SIGNAL(clicked()), SLOT(sl_onLoadObjectsClicked()));
-    connect(ui->groupNameButton, SIGNAL(clicked()), SLOT(sl_groupName()));
-    connect(ui->complementButton, SIGNAL(clicked()), SLOT(sl_complementLocation()));
+    if (model.hideAutoAnnotationsOption) {
+        useAutoAnnotationsRB->hide();
+        useAutoAnnotationsRB->setChecked(false);
+    } else {
+        useAutoAnnotationsRB->show();
+        useAutoAnnotationsRB->setChecked(true);
+    }
 }
 
+
+void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMode)
+{
+    QSizePolicy sizePolicy;
+
+    if (layoutMode == normal) {
+        w->resize(492, 218);
+        sizePolicy = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+        w->setMinimumSize(QSize(400, 58));
+    } else {
+        w->resize(170, 369);
+        sizePolicy = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        w->setMinimumSize(QSize(170, 0));
+    }
+    w->setSizePolicy(sizePolicy);
+
+    w->setWindowTitle(tr("Create Annotations"));
+
+    QVBoxLayout* mainLayout = new QVBoxLayout(w);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+
+    // Save annotations group
+    QGroupBox* groupSaveAnnots = new QGroupBox(w);
+    groupSaveAnnots->setTitle(tr("Save annotation(s) to"));
+    QGridLayout* gridLayout = new QGridLayout(groupSaveAnnots);
+
+    existingObjectRB = new QRadioButton(groupSaveAnnots);
+    existingObjectRB->setChecked(true);
+    existingObjectRB->setText(tr("Existing annotation table"));
+    existingObjectCombo = new QComboBox(groupSaveAnnots);
+    existingObjectButton = new QToolButton(groupSaveAnnots);
+    QIcon loadSelectedDocIcon;
+    loadSelectedDocIcon.addFile(
+        QString::fromUtf8(":/core/images/load_selected_documents.png"),
+        QSize(),
+        QIcon::Normal,
+        QIcon::Off);
+    existingObjectButton->setIcon(loadSelectedDocIcon);
+    existingObjectButton->setText("...");
+    newFileRB = new QRadioButton(groupSaveAnnots);
+    newFileRB->setText(tr("Create new table"));
+    newFileEdit = new QLineEdit(groupSaveAnnots);
+    newFileEdit->setEnabled(false);
+    newFileButton = new QToolButton(groupSaveAnnots);
+    newFileButton->setEnabled(false);
+    newFileButton->setText("...");
+    useAutoAnnotationsRB = new QRadioButton(groupSaveAnnots);
+    useAutoAnnotationsRB->setText(tr("Use auto-annotations table"));
+
+    if (layoutMode == normal) {
+        gridLayout->addWidget(existingObjectRB, 1, 0, 1, 1);
+        gridLayout->addWidget(existingObjectCombo, 1, 1, 1, 1);
+        gridLayout->addWidget(existingObjectButton, 1, 2, 1, 1);
+        gridLayout->addWidget(newFileRB, 2, 0, 1, 1);
+        gridLayout->addWidget(newFileEdit, 2, 1, 1, 1);
+        gridLayout->addWidget(newFileButton, 2, 2, 1, 1);
+        gridLayout->addWidget(useAutoAnnotationsRB, 3, 0, 1, 1);
+    }
+    else {
+        QSpacerItem* horizontalSpacer = new QSpacerItem(15, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        QHBoxLayout* layoutExistAnnot = new QHBoxLayout();
+
+        layoutExistAnnot->addItem(horizontalSpacer);
+        layoutExistAnnot->addWidget(existingObjectCombo);
+        layoutExistAnnot->addWidget(existingObjectButton);
+
+        QSpacerItem* horizontalSpacer2 = new QSpacerItem(15, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        QHBoxLayout* layoutCreateTable = new QHBoxLayout();
+
+        layoutCreateTable->addItem(horizontalSpacer2);
+        layoutCreateTable->addWidget(newFileEdit);
+        layoutCreateTable->addWidget(newFileButton);
+
+        gridLayout->addWidget(existingObjectRB, 0, 0, 1, 1);
+        gridLayout->addLayout(layoutExistAnnot, 1, 0, 1, 1);
+        gridLayout->addWidget(newFileRB, 2, 0, 1, 1);
+        gridLayout->addLayout(layoutCreateTable, 3, 0, 1, 1);
+        gridLayout->addWidget(useAutoAnnotationsRB, 4, 0, 1, 1);
+    }
+
+    // Annotation parameters group
+    QGroupBox* groupAnnotParams = new QGroupBox(w);
+    groupAnnotParams->setTitle(tr("Annotation parameters"));
+
+    QGridLayout* gridLayoutParams = new QGridLayout(groupAnnotParams);
+    groupNameLabel = new QLabel(groupAnnotParams);
+    QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Preferred);
+    sizePolicy1.setHorizontalStretch(0);
+    sizePolicy1.setVerticalStretch(0);
+    sizePolicy1.setHeightForWidth(groupNameLabel->sizePolicy().hasHeightForWidth());
+    groupNameLabel->setSizePolicy(sizePolicy1);
+
+    groupNameEdit = new QLineEdit(groupAnnotParams);
+
+    groupNameButton = new QToolButton(groupAnnotParams);
+    QIcon iconGroupAuto;
+    iconGroupAuto.addFile(QString::fromUtf8(":/core/images/group_auto.png"), QSize(), QIcon::Normal, QIcon::Off);
+    groupNameButton->setText("...");
+    groupNameButton->setToolTip(tr("Predefined group names"));
+    groupNameButton->setIcon(iconGroupAuto);
+
+    annotationNameLabel = new QLabel(groupAnnotParams);
+
+    annotationNameEdit = new QLineEdit(groupAnnotParams);
+    annotationNameEdit->setMaxLength(100);
+
+    showNameGroupsButton = new QToolButton(groupAnnotParams);
+    QIcon iconPredefAnnot;
+    iconPredefAnnot.addFile(QString::fromUtf8(":/core/images/predefined_annotation_groups.png"), QSize(), QIcon::Normal, QIcon::Off);
+    showNameGroupsButton->setIcon(iconPredefAnnot);
+    showNameGroupsButton->setToolTip(tr("Predefined annotation names"));
+    showNameGroupsButton->setText(QString());
+
+    locationLabel = new QLabel(groupAnnotParams);
+
+    locationEdit = new QLineEdit(groupAnnotParams);
+    locationEdit->setToolTip(tr("Annotation location in GenBank format"));
+
+    complementButton = new QToolButton(groupAnnotParams);
+    QIcon iconComplement;
+    iconComplement.addFile(QString::fromUtf8(":/core/images/do_complement.png"), QSize(), QIcon::Normal, QIcon::Off);
+    complementButton->setToolTip(tr("Add/remove complement flag"));
+    complementButton->setText("...");
+    complementButton->setIcon(iconComplement);
+
+    if (layoutMode ==  normal) {
+        groupNameLabel->setText(tr("Group name"));
+        annotationNameLabel->setText(tr("Annotation name"));
+        locationLabel->setText(tr("Location"));
+
+        gridLayoutParams->addWidget(groupNameLabel, 0, 0, 1, 1);
+        gridLayoutParams->addWidget(groupNameEdit, 0, 1, 1, 1);
+        gridLayoutParams->addWidget(groupNameButton, 0, 2, 1, 1);
+        gridLayoutParams->addWidget(annotationNameLabel, 1, 0, 1, 1);
+        gridLayoutParams->addWidget(annotationNameEdit, 1, 1, 1, 1);
+        gridLayoutParams->addWidget(showNameGroupsButton, 1, 2, 1, 1);
+        gridLayoutParams->addWidget(locationLabel, 2, 0, 1, 1);
+        gridLayoutParams->addWidget(locationEdit, 2, 1, 1, 1);
+        gridLayoutParams->addWidget(complementButton, 2, 2, 1, 1);
+    }
+    else {
+        groupNameLabel->setText(tr("Group name:"));
+        annotationNameLabel->setText(tr("Annotation name:"));
+        locationLabel->setText(tr("Location:"));
+
+        gridLayoutParams->addWidget(groupNameLabel, 0, 0, 1, 1);
+        gridLayoutParams->addWidget(groupNameEdit, 1, 0, 1, 1);
+        gridLayoutParams->addWidget(groupNameButton, 1, 1, 1, 1);
+        gridLayoutParams->addWidget(annotationNameLabel, 2, 0, 1, 1);
+        gridLayoutParams->addWidget(annotationNameEdit, 3, 0, 1, 1);
+        gridLayoutParams->addWidget(showNameGroupsButton, 3, 1, 1, 1);
+        gridLayoutParams->addWidget(locationLabel, 4, 0, 1, 1);
+        gridLayoutParams->addWidget(locationEdit, 5, 0, 1, 1);
+        gridLayoutParams->addWidget(complementButton, 5, 1, 1, 1);
+    }
+
+    // Set layout, connect slots
+    mainLayout->addWidget(groupSaveAnnots);
+    mainLayout->addWidget(groupAnnotParams);
+    w->setLayout(mainLayout);
+
+    QWidget::setTabOrder(groupNameEdit, annotationNameEdit);
+    QWidget::setTabOrder(annotationNameEdit, locationEdit);
+
+    QObject::connect(newFileRB, SIGNAL(toggled(bool)), newFileEdit, SLOT(setEnabled(bool)));
+    QObject::connect(newFileRB, SIGNAL(toggled(bool)), newFileButton, SLOT(setEnabled(bool)));
+    QObject::connect(existingObjectRB, SIGNAL(toggled(bool)), existingObjectCombo, SLOT(setEnabled(bool)));
+    QObject::connect(existingObjectRB, SIGNAL(toggled(bool)), existingObjectButton, SLOT(setEnabled(bool)));
+    QObject::connect(useAutoAnnotationsRB, SIGNAL(toggled(bool)), groupAnnotParams, SLOT(setDisabled(bool)));
+}
+
+
 void CreateAnnotationWidgetController::sl_onNewDocClicked() {
-    QString openUrl = QFileInfo(ui->newFileEdit->text()).absoluteDir().absolutePath();
+    QString openUrl = QFileInfo(newFileEdit->text()).absoluteDir().absolutePath();
     QString filter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::PLAIN_GENBANK, false);
     QString name = QFileDialog::getSaveFileName(NULL, tr("Save file"), openUrl, filter);
     if (!name.isEmpty()) {
-        ui->newFileEdit->setText(name);
+        newFileEdit->setText(name);
         AppContext::getSettings()->setValue(SETTINGS_LASTDIR, QFileInfo(name).absoluteDir().absolutePath());
     }
 }
@@ -214,9 +434,9 @@ void CreateAnnotationWidgetController::sl_onLoadObjectsClicked() {
 }
 
 QString CreateAnnotationWidgetController::validate() {
-	updateModel();
+    updateModel();
 
-	if (!model.annotationObjectRef.isValid()) {
+    if (!model.annotationObjectRef.isValid()) {
         if (model.newDocUrl.isEmpty()) {
             return tr("Select annotation saving parameters");
         }
@@ -224,35 +444,35 @@ QString CreateAnnotationWidgetController::validate() {
             return tr("Document is already added to the project: '%1'").arg(model.newDocUrl);
         }
         QFileInfo fi(model.newDocUrl);
-        QString dirUrl = QFileInfo(ui->newFileEdit->text()).absoluteDir().absolutePath();
+        QString dirUrl = QFileInfo(newFileEdit->text()).absoluteDir().absolutePath();
         QDir dir(dirUrl);
         if (!dir.exists()) {
             return tr("Illegal folder: %1").arg(dirUrl);
         }
     }
 
-	if (model.data->name.isEmpty() && !model.hideAnnotationName ) {
-        ui->annotationNameEdit->setFocus();
-		return tr("Annotation name is empty");
-	}
+    if (model.data->name.isEmpty() && !model.hideAnnotationName ) {
+        annotationNameEdit->setFocus();
+        return tr("Annotation name is empty");
+    }
 
     if (model.data->name.length() > GBFeatureUtils::MAX_KEY_LEN) {
-        ui->annotationNameEdit->setFocus();
+        annotationNameEdit->setFocus();
         return tr("Annotation name is too long!\nMaximum allowed size: %1 (Genbank format compatibility issue)").arg(GBFeatureUtils::MAX_KEY_LEN);
-	}
+    }
 
     if (!Annotation::isValidAnnotationName(model.data->name) && !model.hideAnnotationName) {
-        ui->annotationNameEdit->setFocus();
+        annotationNameEdit->setFocus();
         return tr("Illegal annotation name");
     }
 
-	if (model.groupName.isEmpty()) {
-        ui->groupNameEdit->setFocus();
-		return tr("Group name is empty");
-	}
+    if (model.groupName.isEmpty()) {
+        groupNameEdit->setFocus();
+        return tr("Group name is empty");
+    }
 
     if (!AnnotationGroup::isValidGroupName(model.groupName, true)) {
-        ui->groupNameEdit->setFocus();
+        groupNameEdit->setFocus();
         return tr("Illegal group name");
     }
     
@@ -260,9 +480,9 @@ QString CreateAnnotationWidgetController::validate() {
     static const QString INVALID_LOCATION = tr("Invalid location! Location must be in GenBank format.\nSimple examples:\n1..10\njoin(1..10,15..45)\ncomplement(5..15)");
     
     if (!model.hideLocation && model.data->location->isEmpty()) {
-        ui->locationEdit->setFocus();
-		return INVALID_LOCATION;
-	}
+        locationEdit->setFocus();
+        return INVALID_LOCATION;
+    }
     foreach(U2Region reg, model.data->getRegions()){
         if( reg.endPos() > model.sequenceLen || reg.startPos < 0 || reg.endPos() < reg.startPos) {
             return INVALID_LOCATION;
@@ -271,38 +491,40 @@ QString CreateAnnotationWidgetController::validate() {
 
 //    AppContext::getSettings()->setValue(SETTINGS_LAST_USED_ANNOTATION_NAME, model.data->name);
 
-	return QString::null;
+    return QString::null;
 }
 
 
 void CreateAnnotationWidgetController::updateModel() {
-	model.data->name = ui->annotationNameEdit->text();
+    model.data->name = annotationNameEdit->text();
 
-	model.groupName = ui->groupNameEdit->text();
-	if (model.groupName == GROUP_NAME_AUTO) {
-		model.groupName = model.data->name;
-	}
-
-	model.data->location->reset();
-	
-    if (!model.hideLocation) {
-        QByteArray locEditText = ui->locationEdit->text().toAscii();
-        Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->locationEdit->text().length(), model.data->location);
+    model.groupName = groupNameEdit->text();
+    if (model.groupName == GROUP_NAME_AUTO) {
+        model.groupName = model.data->name;
     }
 
-    if (ui->existingObjectRB->isChecked()) {
+    model.data->location->reset();
+    
+    if (!model.hideLocation) {
+        QByteArray locEditText = locationEdit->text().toAscii();
+        Genbank::LocationParser::parseLocation(	locEditText.constData(), locationEdit->text().length(), model.data->location);
+    }
+
+    if (existingObjectRB->isChecked()) {
         model.annotationObjectRef = occ->getSelectedObject();
         model.newDocUrl = "";
     } else {
         model.annotationObjectRef = GObjectReference();
-        model.newDocUrl = ui->newFileEdit->text();
+        model.newDocUrl = newFileEdit->text();
     }
 }
 
 void CreateAnnotationWidgetController::prepareAnnotationObject() {
     QString v = validate();
     assert(v.isEmpty());
-    if (!model.annotationObjectRef.isValid() && ui->newFileRB->isChecked()) {
+    bool test1 = !model.annotationObjectRef.isValid();
+    bool test2 = newFileRB->isChecked();
+    if (!model.annotationObjectRef.isValid() && newFileRB->isChecked()) {
         assert(!model.newDocUrl.isEmpty());
         assert(AppContext::getProject()->findDocumentByURL(model.newDocUrl)==NULL);
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
@@ -349,7 +571,7 @@ QMenu* CreateAnnotationWidgetController::createAnnotationNamesMenu(QWidget* p, Q
 void CreateAnnotationWidgetController::sl_setPredefinedAnnotationName() {
     QAction* a = qobject_cast<QAction*>(sender());
     QString text = a->text();
-    ui->annotationNameEdit->setText(text);
+    annotationNameEdit->setText(text);
 }
 
 void CreateAnnotationWidgetController::sl_groupName() {
@@ -362,13 +584,13 @@ void CreateAnnotationWidgetController::sl_groupName() {
     }
     assert(groupNames.size() >= 1);
     if (groupNames.size() == 1) {
-        ui->groupNameEdit->setText(groupNames.first());
+        groupNameEdit->setText(groupNames.first());
         return;
     }
     qSort(groupNames);
 
     QMenu m(w);
-    QPoint menuPos = ui->groupNameButton->mapToGlobal(ui->groupNameButton->rect().bottomLeft());
+    QPoint menuPos = groupNameButton->mapToGlobal(groupNameButton->rect().bottomLeft());
     foreach(const QString& str, groupNames) {
         QAction* a = new QAction(str, &m);
         connect(a, SIGNAL(triggered()), SLOT(sl_setPredefinedGroupName()));
@@ -380,36 +602,36 @@ void CreateAnnotationWidgetController::sl_groupName() {
 void CreateAnnotationWidgetController::sl_setPredefinedGroupName() {
     QAction* a = qobject_cast<QAction*>(sender());
     QString name = a->text();
-    ui->groupNameEdit->setText(name);
+    groupNameEdit->setText(name);
 }
 
 void CreateAnnotationWidgetController::sl_complementLocation() {
-    QString text = ui->locationEdit->text();
+    QString text = locationEdit->text();
     if (text.startsWith("complement(") && text.endsWith(")")) {
-        ui->locationEdit->setText(text.mid(11, text.length()-12));
+        locationEdit->setText(text.mid(11, text.length()-12));
     } else {
-        ui->locationEdit->setText("complement(" + text + ")");
+        locationEdit->setText("complement(" + text + ")");
     }
 }
 
 CreateAnnotationWidgetController::~CreateAnnotationWidgetController()
 {
-    delete ui;
+    delete w;
 }
 
 bool CreateAnnotationWidgetController::isNewObject() const
 {
-    return ui->newFileRB->isChecked();
+    return newFileRB->isChecked();
 }
 
 void CreateAnnotationWidgetController::setFocusToNameEdit()
 {
-    ui->annotationNameEdit->setFocus();
+    annotationNameEdit->setFocus();
 }
 
 bool CreateAnnotationWidgetController::useAutoAnnotationModel() const
 {
-	return ui->useAutoAnnotationsRB->isChecked();
+    return useAutoAnnotationsRB->isChecked();
 }
 
 } // namespace

@@ -65,6 +65,18 @@ void OptionsPanel::addGroup(const QPixmap& headerImage, const QString& title, QW
 }
 
 
+void OptionsPanel::openGroupByTitle(QString groupTitle)
+{
+    foreach (OptionsPanelGroup* group, groups)
+    {
+        if (group->getOptionsWidget()->getTitle() == groupTitle) {
+            widget->openOptionsPanel();
+            openOptionsGroup(group);
+        }
+    }
+}
+
+
 void OptionsPanel::sl_groupHeaderPressed(GroupHeaderImageWidget* _headerImageWidget, bool ctrlHold)
 {
     // Find the options group and get the corresponding options widget

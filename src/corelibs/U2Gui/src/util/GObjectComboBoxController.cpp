@@ -45,6 +45,12 @@ GObjectComboBoxController::GObjectComboBoxController(QObject* p, const GObjectCo
     updateCombo();
 }
 
+void GObjectComboBoxController::updateConstrains(const GObjectComboBoxControllerConstraints& c)
+{
+    settings = c;
+    updateCombo();
+}
+
 void GObjectComboBoxController::updateCombo() {
     combo->clear();
     foreach(Document* d, AppContext::getProject()->getDocuments()) {

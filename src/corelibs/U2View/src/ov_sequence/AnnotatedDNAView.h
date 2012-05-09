@@ -173,7 +173,7 @@ signals:
 
 private slots:
     void sl_onContextMenuRequested(const QPoint & pos);
-    void sl_onFindDialog();
+    void sl_onFindPatternClicked();
     void sl_onPosChangeRequest(int pos);
     void sl_onShowPosSelectorRequest();
     void sl_toggleHL();
@@ -204,7 +204,7 @@ private:
     QVBoxLayout*        scrolledWidgetLayout;
     
     QAction*            createAnnotationAction;
-    QAction*            findDialogAction;
+    QAction*            findPatternAction;
     QAction*            posSelectorAction;
     QAction*            toggleHLAction;
     QAction*            posSelectorWidgetAction;
@@ -237,6 +237,10 @@ private:
     ADVSequenceWidget*          focusedWidget;
     
     int                         timerId;
+
+    static const QString OP_TAB_TITLE_INFO;
+    static const QString OP_TAB_TITLE_SEARCH_IN_SEQ;
+    static const QString OP_TAB_TITLE_ANNOT_HIGHLIGHT;  
 };
 
 

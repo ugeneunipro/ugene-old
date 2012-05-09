@@ -55,6 +55,9 @@ public:
     /** Returns the main Options Panel widget */
     QWidget* getMainWidget();
 
+    /** Open a group with the specified group title */
+    void openGroupByTitle(QString groupTitle);
+
 
 public slots:
     /** Catches signals that a group header has been pressed

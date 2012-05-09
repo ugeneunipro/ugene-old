@@ -54,6 +54,8 @@ public:
 
     GObject* getSelectedObject() const;
 
+    void updateConstrains(const GObjectComboBoxControllerConstraints& c);
+
 private slots:
     void sl_onDocumentAdded(Document* d);
     void sl_onDocumentRemoved(Document* d);

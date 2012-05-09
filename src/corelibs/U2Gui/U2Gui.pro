@@ -59,7 +59,6 @@ HEADERS += src/AppSettingsGUI.h \
 FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthentificationDialog.ui \
          src/util/ui/CopyDocumentDialog.ui \
-         src/util/ui/CreateAnnotationWidget.ui \
          src/util/ui/CreateDocumentFromTextDialog.ui \
          src/util/ui/CreateObjectRelationDialog.ui \
          src/util/ui/DownloadRemoteFileDialog.ui \
