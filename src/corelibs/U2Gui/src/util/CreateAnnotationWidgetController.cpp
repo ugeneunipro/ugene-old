@@ -522,8 +522,6 @@ void CreateAnnotationWidgetController::updateModel() {
 void CreateAnnotationWidgetController::prepareAnnotationObject() {
     QString v = validate();
     assert(v.isEmpty());
-    bool test1 = !model.annotationObjectRef.isValid();
-    bool test2 = newFileRB->isChecked();
     if (!model.annotationObjectRef.isValid() && newFileRB->isChecked()) {
         assert(!model.newDocUrl.isEmpty());
         assert(AppContext::getProject()->findDocumentByURL(model.newDocUrl)==NULL);

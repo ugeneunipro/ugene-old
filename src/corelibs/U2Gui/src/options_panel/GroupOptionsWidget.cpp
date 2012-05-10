@@ -47,7 +47,7 @@ GroupOptionsWidget::GroupOptionsWidget(const QString& _title, QWidget* _widget)
 
     // Layout and "parent" the widgets
     mainLayout = new QVBoxLayout();
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setContentsMargins(0, 0, 0, 15);
     mainLayout->setSpacing(0);
     mainLayout->addWidget(titleWidget);
     mainLayout->addWidget(widget);

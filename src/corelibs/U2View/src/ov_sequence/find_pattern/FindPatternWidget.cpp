@@ -126,6 +126,9 @@ void FindPatternWidget::initLayout()
         "font: bold;");
 
     updateLayout();
+    
+    layoutSearchButton->setAlignment(Qt::AlignTop);
+    this->layout()->setAlignment(Qt::AlignTop);
 }
 
 
@@ -133,7 +136,7 @@ void FindPatternWidget::initAlgorithmLayout()
 {
     boxAlgorithm->addItem(tr("InsDel"), FindAlgorithmPatternSettings_InsDel);
     boxAlgorithm->addItem(tr("Substitute"), FindAlgorithmPatternSettings_Subst);
-    boxAlgorithm->addItem(tr("Regular expressions"), FindAlgorithmPatternSettings_RegExp);
+    boxAlgorithm->addItem(tr("Regular expression"), FindAlgorithmPatternSettings_RegExp);
 
     layoutMismatch = new QHBoxLayout(this);
 
@@ -535,6 +538,7 @@ void FindPatternWidget::checkState()
         btnSearch->setDisabled(true);
         highlightBackground(textPattern);
         showHideErrorMessage(true, PatternIsTooLong);
+        return;
     }
     else {
         doNotHighlightBackground(textPattern);
