@@ -247,7 +247,8 @@ Task* SiteconSearchWorker::tick() {
             }
             QList<Task*> subtasks;
             foreach(const SiteconModel& model, models) {
-                subtasks << new SiteconSearchTask(model, seq.seq, config, 0);
+                SiteconSearchTask *sst = new SiteconSearchTask(model, seq.seq, config, 0);
+                subtasks << sst;
             }
             Task* t = new MultiTask(tr("Search TFBS in %1").arg(seq.getName()), subtasks);
             connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
@@ -267,6 +268,7 @@ void SiteconSearchWorker::sl_taskFinished(Task* t) {
     foreach(Task* sub, t->getSubtasks()) {
         SiteconSearchTask* sst = qobject_cast<SiteconSearchTask*>(sub);
         res += SiteconSearchResult::toTable(sst->takeResults(), resultName);
+        sst->cleanup();
     }
     QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(res);
     output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
