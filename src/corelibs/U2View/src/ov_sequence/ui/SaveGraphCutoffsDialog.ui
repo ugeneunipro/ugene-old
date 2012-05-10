@@ -119,81 +119,6 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="4">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>93</height>
-      </size>
-     </property>
-     <property name="title">
-      <string>Area to annotate</string>
-     </property>
-     <widget class="QRadioButton" name="outsideRadioButton">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>26</y>
-        <width>131</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>131</width>
-        <height>18</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>131</width>
-        <height>18</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Around cutoff values</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="betweenRadioButton">
-      <property name="geometry">
-       <rect>
-        <x>12</x>
-        <y>51</y>
-        <width>131</width>
-        <height>29</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>131</width>
-        <height>29</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>131</width>
-        <height>29</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Between cutoff values</string>
-      </property>
-     </widget>
-    </widget>
-   </item>
    <item row="3" column="0" colspan="4">
     <widget class="QWidget" name="annotationsWidget" native="true">
      <property name="sizePolicy">
@@ -208,6 +133,8 @@
        <height>0</height>
       </size>
      </property>
+     <zorder>groupBox</zorder>
+     <zorder>groupBox</zorder>
     </widget>
    </item>
    <item row="4" column="0" colspan="2">
@@ -259,6 +186,65 @@
      <property name="text">
       <string>Cancel</string>
      </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="4">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>93</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Area to annotate</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QRadioButton" name="outsideRadioButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>131</width>
+          <height>18</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Around cutoff values</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="betweenRadioButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>131</width>
+          <height>29</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Between cutoff values</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
