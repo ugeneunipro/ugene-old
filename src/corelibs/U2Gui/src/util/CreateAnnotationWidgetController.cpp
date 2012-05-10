@@ -248,6 +248,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     existingObjectRB->setChecked(true);
     existingObjectRB->setText(tr("Existing annotation table"));
     existingObjectCombo = new QComboBox(groupSaveAnnots);
+    existingObjectCombo->setObjectName("existingObjectCombo");
+
     existingObjectButton = new QToolButton(groupSaveAnnots);
     QIcon loadSelectedDocIcon;
     loadSelectedDocIcon.addFile(
