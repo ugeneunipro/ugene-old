@@ -24,6 +24,7 @@
 #include <U2Test/GUITestBase.h>
 
 #include "tests/GUIInitialChecks.h"
+#include "tests/regression_scenarios/GTTestsRegressionScenarios.h"
 #include "tests/common_scenarios/project/GTTestsProject.h"
 #include "tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h"
 #include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
@@ -68,6 +69,11 @@ GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test 
 }
 
 void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
+
+//////////////////////////////////////////////////////////////////////////
+// Regression scenarios/
+//////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_0986, "https://ugene.unipro.ru/tracker/browse/UGENE-986");
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/

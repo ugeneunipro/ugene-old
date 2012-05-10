@@ -15,6 +15,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsToolTip.h \
             src/GTUtilsTaskTreeView.h \
             src/tests/GUIInitialChecks.h \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios.h \
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.h \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.h \
             src/tests/common_scenarios/toggle_view/GTTestsToggleView.h \
@@ -65,6 +66,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsToolTip.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/tests/GUIInitialChecks.cpp \
+            src/tests/regression_scenarios/GTTestsRegressionScenarios.cpp \
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.cpp \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.cpp \
             src/tests/common_scenarios/toggle_view/GTTestsToggleView.cpp \
