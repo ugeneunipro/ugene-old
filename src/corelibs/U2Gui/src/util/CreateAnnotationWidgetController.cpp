@@ -309,6 +309,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     groupNameLabel->setSizePolicy(sizePolicy1);
 
     groupNameEdit = new QLineEdit(groupAnnotParams);
+    groupNameEdit->setObjectName("groupNameEdit");
 
     groupNameButton = new QToolButton(groupAnnotParams);
     QIcon iconGroupAuto;
@@ -320,6 +321,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     annotationNameLabel = new QLabel(groupAnnotParams);
 
     annotationNameEdit = new QLineEdit(groupAnnotParams);
+    annotationNameEdit->setObjectName("annotationNameEdit");
+
     annotationNameEdit->setMaxLength(100);
 
     showNameGroupsButton = new QToolButton(groupAnnotParams);
@@ -332,6 +335,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     locationLabel = new QLabel(groupAnnotParams);
 
     locationEdit = new QLineEdit(groupAnnotParams);
+    locationEdit->setObjectName("locationEdit");
+
     locationEdit->setToolTip(tr("Annotation location in GenBank format"));
 
     complementButton = new QToolButton(groupAnnotParams);
