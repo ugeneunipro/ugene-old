@@ -243,6 +243,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     QGridLayout* gridLayout = new QGridLayout(groupSaveAnnots);
 
     existingObjectRB = new QRadioButton(groupSaveAnnots);
+    existingObjectRB ->setObjectName("existingObjectRB");
+
     existingObjectRB->setChecked(true);
     existingObjectRB->setText(tr("Existing annotation table"));
     existingObjectCombo = new QComboBox(groupSaveAnnots);
