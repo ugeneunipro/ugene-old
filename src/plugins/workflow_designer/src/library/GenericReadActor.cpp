@@ -82,7 +82,8 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
             SeqReadPrompter::tr("In <i>Merge</i> mode, the specified number of gaps are inserted between the original sequences. "
             "This is helpful, for example, to avoid finding false positives at the merge boundaries."));
         Descriptor acd(GenericSeqActorProto::ACC_ATTR, SeqReadPrompter::tr("Accession filter"), 
-            SeqReadPrompter::tr("Reports only sequences with the specified accession (id)."));
+            SeqReadPrompter::tr("Reports only sequences containing the specified regular expression."
+                                "<p><i>Leave it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
 
         attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
         attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, SPLIT);

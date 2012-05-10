@@ -35,7 +35,7 @@ public:
     //DNASelector(const QString& acc):acc(acc){}
     bool matches(const DNASequence &);
     bool objectMatches(const U2SequenceObject *);
-    QString acc;
+    QString accExpr;
 };
 
 class LoadSeqTask : public Task {

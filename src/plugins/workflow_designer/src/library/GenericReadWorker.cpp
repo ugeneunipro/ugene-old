@@ -170,7 +170,7 @@ void GenericSeqReader::init() {
         QString mergeToken = DocumentReadingMode_SequenceMergeGapSize;
         cfg[mergeToken] = actor->getParameter(GenericSeqActorProto::GAP_ATTR)->getAttributeValue<int>(context);
     }
-    selector.acc = actor->getParameter(GenericSeqActorProto::ACC_ATTR)->getAttributeValue<QString>(context);
+    selector.accExpr = actor->getParameter(GenericSeqActorProto::ACC_ATTR)->getAttributeValue<QString>(context);
 }
 
 void GenericSeqReader::sl_taskFinished() {
@@ -304,24 +304,24 @@ void LoadSeqTask::run() {
  * DNASelector
  **************************/
 bool DNASelector::matches( const DNASequence& dna) {
-    if (acc.isEmpty()) {
+    if (accExpr.isEmpty()) {
         return true;
     }
     if (dna.info.contains(DNAInfo::ACCESSION)) {
-        return dna.info.value(DNAInfo::ACCESSION).toStringList().contains(acc);
+        return dna.info.value(DNAInfo::ACCESSION).toString().contains(QRegExp(accExpr));
     }
-    return acc == dna.getName();
+    return dna.getName().contains(QRegExp(accExpr));
 }
 
 bool DNASelector::objectMatches( const U2SequenceObject *dna) {
-    if (acc.isEmpty()) {
+    if (accExpr.isEmpty()) {
         return true;
     }
     QVariantMap info = dna->getSequenceInfo();
     if (info.contains(DNAInfo::ACCESSION)) {
-        return info.value(DNAInfo::ACCESSION).toStringList().contains(acc);
+        return info.value(DNAInfo::ACCESSION).toString().contains(QRegExp(accExpr));
     }
-    return acc == dna->getSequenceName();
+    return dna->getSequenceName().contains(QRegExp(accExpr));
 }
 
 } // Workflow namespace
