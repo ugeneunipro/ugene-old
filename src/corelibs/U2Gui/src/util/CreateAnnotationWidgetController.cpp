@@ -623,7 +623,7 @@ void CreateAnnotationWidgetController::sl_complementLocation() {
 
 CreateAnnotationWidgetController::~CreateAnnotationWidgetController()
 {
-    delete w;
+    // QWidget* w is deleted recursively by deleteChildren when parent destructor of CreateAnnotationWidgetController is called
 }
 
 bool CreateAnnotationWidgetController::isNewObject() const

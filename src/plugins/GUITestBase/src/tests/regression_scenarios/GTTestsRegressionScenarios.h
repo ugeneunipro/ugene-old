@@ -31,6 +31,7 @@ namespace GUITest_regression_scenarios {
 #define GUI_TEST_PREFIX "GUITest_regression_scenarios_"
 
 GUI_TEST_CLASS_DECLARATION(test_0986)
+GUI_TEST_CLASS_DECLARATION(test_0986_1)
 
 #undef GUI_TEST_PREFIX
 }

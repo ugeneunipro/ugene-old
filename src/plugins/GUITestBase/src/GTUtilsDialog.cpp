@@ -101,6 +101,26 @@ void GTUtilsDialog::preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaite
 
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::SmithWatermanDialogFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialog::SmithWatermanDialogFiller::run() {
+
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QAbstractButton *cancelButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "bttnCancel", dialog));
+    GT_CHECK(cancelButton != NULL, "Radiobutton is NULL");
+
+    if (button == Cancel) {
+        GTWidget::click(os, cancelButton);
+        return;
+    }
+
+    GT_CHECK(true, "Not implemented");
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 #define GT_CLASS_NAME "GTUtilsDialog::CreateAnnotationDialogChecker"
 #define GT_METHOD_NAME "run"
 void GTUtilsDialog::CreateAnnotationDialogChecker::run() {

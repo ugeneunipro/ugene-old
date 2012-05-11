@@ -23,7 +23,9 @@
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
 #include "api/GTGlobals.h"
+
 #include <U2Core/AppContext.h>
+#include <U2Core/Log.h>
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenuBar>
@@ -121,12 +123,15 @@ QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &i
     QList<QAction*>actions = menu->actions();
     foreach(QAction *act, actions) {
         QString objName = act->objectName();
+        uiLog.trace("GT_DEBUG_MESSAGE: Action name: <" + objName + ">");
         if (objName == itemName) {
+            uiLog.trace("GT_DEBUG_MESSAGE: Found action");
             action = act;
             break;
         }
     }
 
+    uiLog.trace("GT_DEBUG_MESSAGE: Not found action");
     return action;
 }
 #undef GT_METHOD_NAME

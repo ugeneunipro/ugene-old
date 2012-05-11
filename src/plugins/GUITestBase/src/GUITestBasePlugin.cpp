@@ -73,7 +73,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Regression scenarios/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_0986, "https://ugene.unipro.ru/tracker/browse/UGENE-986");
+    REGISTER_TEST(GUITest_regression_scenarios::test_0986);
+    REGISTER_TEST(GUITest_regression_scenarios::test_0986_1);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/

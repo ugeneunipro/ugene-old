@@ -141,6 +141,7 @@ void SWAlgorithmADVContext::initViewContext(GObjectView* view) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
     assert(av != NULL);
     ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":core/images/sw.png"), tr("Find pattern [Smith-Waterman]..."), 15);
+    a->setObjectName("find_pattern_smith_waterman_action");
 
     a->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_F));
     a->setShortcutContext(Qt::WindowShortcut);

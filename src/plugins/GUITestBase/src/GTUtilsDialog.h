@@ -53,6 +53,16 @@ private:
 
 class GTUtilsDialog {
 public:
+    class SmithWatermanDialogFiller : public Runnable {
+    public:
+        enum Button {Find, Cancel};
+        SmithWatermanDialogFiller(U2OpStatus &_os) : os(_os), button(Find){}
+        virtual void run();
+        Button button;
+    private:
+        U2OpStatus &os;
+    };
+
     class CreateAnnotationDialogChecker : public Runnable {
     public:
         CreateAnnotationDialogChecker(U2OpStatus &_os) : os(_os){}
