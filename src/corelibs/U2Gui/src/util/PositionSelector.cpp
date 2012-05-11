@@ -47,6 +47,7 @@ PositionSelector::PositionSelector(QWidget* p, int s, int e, bool fixedSize)
 void PositionSelector::init(bool fixedSize) {
     int w = qMax(((int)log10((double)rangeEnd))*10, 70);
     posEdit = new QLineEdit(this);
+    posEdit->setObjectName("go_to_pos_line_edit");
     posEdit->setValidator(new QIntValidator(rangeStart, rangeEnd, posEdit));
     if (fixedSize) {
         posEdit->setFixedWidth(w);
@@ -83,11 +84,13 @@ PositionSelector::PositionSelector(QDialog* d, int s, int e, bool _a)
 
     QPushButton* okButton = new QPushButton(this);
     okButton->setText(tr("Go!"));
+    okButton->setObjectName("okButton");
     okButton->setDefault(true);
     connect(okButton, SIGNAL(clicked(bool)), SLOT(sl_onButtonClicked(bool)));
 
     QPushButton* cancelButton = new QPushButton(this);
     cancelButton->setText(tr("Cancel"));
+    cancelButton->setObjectName("cancelButton");
     connect(cancelButton, SIGNAL(clicked()), d, SLOT(reject()));
 
     QHBoxLayout* l3 = new QHBoxLayout();
