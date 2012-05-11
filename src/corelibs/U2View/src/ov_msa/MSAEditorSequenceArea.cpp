@@ -130,6 +130,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(insColAction, SIGNAL(triggered()), SLOT(sl_insCol()));
     
     gotoAction = new QAction(QIcon(":core/images/goto.png"), tr("Go to position..."), this);
+    gotoAction->setObjectName("action_go_to_position");
     gotoAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_G));
     gotoAction->setShortcutContext(Qt::WindowShortcut);
     gotoAction->setToolTip(QString("%1 (%2)").arg(gotoAction->text()).arg(gotoAction->shortcut().toString()));
