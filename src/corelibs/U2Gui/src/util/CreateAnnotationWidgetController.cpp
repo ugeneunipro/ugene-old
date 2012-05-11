@@ -251,6 +251,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     existingObjectCombo->setObjectName("existingObjectCombo");
 
     existingObjectButton = new QToolButton(groupSaveAnnots);
+    existingObjectButton->setObjectName("existingObjectButton");
+
     QIcon loadSelectedDocIcon;
     loadSelectedDocIcon.addFile(
         QString::fromUtf8(":/core/images/load_selected_documents.png"),
