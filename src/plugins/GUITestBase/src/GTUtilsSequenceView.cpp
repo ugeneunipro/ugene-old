@@ -28,7 +28,7 @@
 #include <QtGui/QMainWindow>
 #include "U2Gui/MainWindow.h"
 #include "U2View/ADVConstants.h"
-#include "GTUtilsDialog.h"
+#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsProjectTreeView.h"
 #include <U2Core/AppContext.h>
 #include <U2View/DetView.h>
@@ -88,14 +88,14 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
     GTMouseDriver::moveTo(os, posToActiveWindow);
     GTMouseDriver::click(os);
 
-    GTUtilsDialog::selectSequenceRegionDialogFiller filler(os);
+    GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os);
     GTUtilsDialog::preWaitForDialog(os, &filler);
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
     GTGlobals::sleep(1000);
 
-    GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
     GTSequenceReader reader(os, &sequence);
     GTUtilsDialog::preWaitForDialog(os, &reader);
@@ -115,14 +115,14 @@ QString GTUtilsSequenceView::getBeginOfSequenceAsString(U2OpStatus &os, int leng
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);
 
-    GTUtilsDialog::selectSequenceRegionDialogFiller filler(os, length);
+    GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, length);
     GTUtilsDialog::preWaitForDialog(os, &filler);
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
     GTGlobals::sleep(1000); // don't touch
     QString sequence;
-    GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
     GTSequenceReader reader(os, &sequence);
     GTUtilsDialog::preWaitForDialog(os, &reader);
@@ -144,7 +144,7 @@ QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);
 
-    GTUtilsDialog::selectSequenceRegionDialogFiller filler(os, length, false);
+    GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, length, false);
     GTUtilsDialog::preWaitForDialog(os, &filler);
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
@@ -152,7 +152,7 @@ QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length
     GTGlobals::sleep(1000); // don't touch
 
     QString sequence;
-    GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
     GTSequenceReader reader(os, &sequence);
     GTUtilsDialog::preWaitForDialog(os, &reader);
@@ -179,7 +179,7 @@ int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
     GTMouseDriver::click(os);
 
     int length = -1;
-    GTUtilsDialog::selectSequenceRegionDialogFiller filler(os, &length);
+    GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, &length);
     GTUtilsDialog::preWaitForDialog(os, &filler);
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
@@ -210,7 +210,7 @@ void GTUtilsSequenceView::selectSequenceRegion(U2OpStatus &os, int from, int to)
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);
 
-    GTUtilsDialog::selectSequenceRegionDialogFiller filler(os, from, to);
+    GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, from, to);
     GTUtilsDialog::preWaitForDialog(os, &filler);
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
@@ -223,7 +223,7 @@ void GTUtilsSequenceView::openSequenceView(U2OpStatus &os, const QString &sequen
 	GTMouseDriver::moveTo(os, itemPos);
 	GTMouseDriver::click(os, Qt::RightButton);
 
-	GTUtilsDialog::PopupChooser chooser(os, QStringList() << "submenu_open_view" << "action_open_view", GTGlobals::UseMouse);
+	GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "submenu_open_view" << "action_open_view", GTGlobals::UseMouse);
 	GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
 	GTGlobals::sleep(1000);
 }
@@ -235,7 +235,7 @@ void GTUtilsSequenceView::addSequenceView(U2OpStatus &os, const QString &sequenc
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
 
-    GTUtilsDialog::PopupChooser chooser(os, QStringList() << "submenu_add_view" << "action_add_view", GTGlobals::UseMouse);
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "submenu_add_view" << "action_add_view", GTGlobals::UseMouse);
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep(1000);
 }

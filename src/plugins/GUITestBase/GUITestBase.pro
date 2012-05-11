@@ -4,6 +4,7 @@ include (GUITestBase.pri)
 HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
+            src/GTUtilsDialogRunnables.h \
             src/GTUtilsDocument.h \
             src/GTUtilsLog.h \
             src/GTUtilsMdi.h \
@@ -55,6 +56,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \
+            src/GTUtilsDialogRunnables.cpp \
             src/GTUtilsDocument.cpp \
             src/GTUtilsLog.cpp \
             src/GTUtilsMdi.cpp \

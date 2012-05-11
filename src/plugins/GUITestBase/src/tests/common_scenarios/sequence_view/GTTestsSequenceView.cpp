@@ -25,7 +25,7 @@
 #include "api/GTWidget.h"
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
-#include "GTUtilsDialog.h"
+#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsMdi.h"
@@ -45,10 +45,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 3);
 
-    GTUtilsDialog::PopupChooser chooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region");
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region");
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
 
-    GTUtilsDialog::ExportSelectedRegionFiller filler(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
+    GTUtilsDialogRunnables::ExportSelectedRegionFiller filler(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
     GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
 
     GTMouseDriver::click(os);
@@ -59,9 +59,9 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
-    class AllActionsPopupChooser : public GTUtilsDialog::PopupChooser {
+    class AllActionsPopupChooser : public GTUtilsDialogRunnables::PopupChooser {
     public:
-        AllActionsPopupChooser(U2OpStatus &_os) : GTUtilsDialog::PopupChooser(_os, QStringList()) {}
+        AllActionsPopupChooser(U2OpStatus &_os) : GTUtilsDialogRunnables::PopupChooser(_os, QStringList()) {}
         void run() {
             GTGlobals::sleep(100);
             QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
@@ -79,7 +79,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
         }
     } allActionsPopupChooser(os);
 
-    GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+    GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller dialog(os);
     GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/multy_fa.fa");
     GTUtilsDocument::checkDocument(os, "multy_fa.fa");

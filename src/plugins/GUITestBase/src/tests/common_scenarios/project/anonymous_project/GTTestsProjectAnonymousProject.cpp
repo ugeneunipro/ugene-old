@@ -28,7 +28,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialog.h"
+#include "GTUtilsDialogRunnables.h"
 #include "api/GTFileDialog.h"
 #include "GTUtilsProject.h"
 
@@ -42,7 +42,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTGlobals::sleep(5000);
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
     GTUtilsProject::exportProject(os, testDir + "_common_data/scenarios/sandbox", "proj2.uprj");
-    GTUtilsDialog::MessageBoxDialogFiller filler(os, QMessageBox::No);
+    GTUtilsDialogRunnables::MessageBoxDialogFiller filler(os, QMessageBox::No);
     GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Modal, false);
     GTUtilsProject::closeProject(os);
     GTGlobals::sleep(2000);

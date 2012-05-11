@@ -31,7 +31,7 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialog.h"
+#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsProjectTreeView.h"
@@ -51,7 +51,7 @@ namespace GUITest_common_scenarios_toggle_view {
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
-    GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+    GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller dialog(os);
     GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
@@ -59,7 +59,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(toggleViewButton != NULL, "Toggle View Button is NULL"); 
-    GTUtilsDialog::PopupChooser chooser(os, QStringList() << "toggleOverview");
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "toggleOverview");
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
@@ -76,7 +76,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
 
-    GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+    GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller dialog(os);
     GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
@@ -84,7 +84,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(toggleViewButton != NULL, "Toggle View Button is NULL"); 
-    GTUtilsDialog::PopupChooser chooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "toggleDetailsView");
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
@@ -99,7 +99,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007) {
-    GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+    GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller dialog(os);
     GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
@@ -107,7 +107,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(toggleViewButton != NULL, "Toggle View Button is NULL"); 
-    GTUtilsDialog::PopupChooser chooser(os, QStringList() << "toggleAllSequenceViews");
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "toggleAllSequenceViews");
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
@@ -123,7 +123,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
 GUI_TEST_CLASS_DEFINITION(test_0008)
 {
-    GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+    GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller dialog(os);
     GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal, 10000);
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "multiple.fa");
@@ -151,7 +151,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008)
     CHECK_SET_ERR(zoomInButton != NULL, "Zoom In button not found");
     CHECK_SET_ERR(zoomOutButton != NULL, "Zoom Out button not found");
 
-    GTUtilsDialog::ZoomToRangeDialogFiller filler(os, 20, 50);
+    GTUtilsDialogRunnables::ZoomToRangeDialogFiller filler(os, 20, 50);
     GTUtilsDialog::preWaitForDialog(os, &filler);
     GTWidget::click(os, zoomButton);
     GTGlobals::sleep(1000);
@@ -164,7 +164,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008)
     QWidget *toggleViewButtonSe2 = GTWidget::findWidget(os, "toggle_view_button_se2");
     CHECK_SET_ERR(toggleViewButtonSe2 != NULL, "Toggle View button button not found");
 
-    GTUtilsDialog::PopupChooser chooser0(os, QStringList() << "show_hide_zoom_view");
+    GTUtilsDialogRunnables::PopupChooser chooser0(os, QStringList() << "show_hide_zoom_view");
     GTUtilsDialog::preWaitForDialog(os, &chooser0, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButtonSe2);
     GTGlobals::sleep(1000);
@@ -188,7 +188,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008)
 
 GUI_TEST_CLASS_DEFINITION(test_0009)
 {
-    GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+    GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller dialog(os);
     GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
@@ -200,14 +200,14 @@ GUI_TEST_CLASS_DEFINITION(test_0009)
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
     QWidget *toggleViewButtonSe2 = GTWidget::findWidget(os, "toggle_view_button_se2");
 
-    GTUtilsDialog::PopupChooser chooser0(os, QStringList() << "show_hide_overview");
+    GTUtilsDialogRunnables::PopupChooser chooser0(os, QStringList() << "show_hide_overview");
     GTUtilsDialog::preWaitForDialog(os, &chooser0, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButtonSe2);
     GTGlobals::sleep(1000);
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(overViewSe2->isHidden(), "panoramical view for se2 sequence has been not closed");
 
-    GTUtilsDialog::PopupChooser chooser1(os, QStringList() << "toggleOverview");
+    GTUtilsDialogRunnables::PopupChooser chooser1(os, QStringList() << "toggleOverview");
     GTUtilsDialog::preWaitForDialog(os, &chooser1, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
@@ -215,14 +215,14 @@ GUI_TEST_CLASS_DEFINITION(test_0009)
     CHECK_SET_ERR(overViewSe1->isHidden() && overViewSe2->isHidden(),
                   "panoramical views for both sequences has been not closed");
 
-    GTUtilsDialog::PopupChooser chooser2(os, QStringList() << "show_hide_overview");
+    GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << "show_hide_overview");
     GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButtonSe2);
     GTGlobals::sleep(1000);
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(!overViewSe2->isHidden(), "panoramical view for se2 sequence has been not shown");
 
-    GTUtilsDialog::PopupChooser chooser3(os, QStringList() << "toggleOverview");
+    GTUtilsDialogRunnables::PopupChooser chooser3(os, QStringList() << "toggleOverview");
     GTUtilsDialog::preWaitForDialog(os, &chooser3, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);

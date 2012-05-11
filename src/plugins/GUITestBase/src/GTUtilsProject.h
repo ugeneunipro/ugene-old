@@ -25,7 +25,7 @@
 #include "api/GTGlobals.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
-#include "GTUtilsDialog.h"
+#include "GTUtilsDialogRunnables.h"
 #include <U2Core/GUrl.h>
 #include <QtGui/QMessageBox>
 
@@ -69,19 +69,19 @@ public:
     static void exportToSequenceFormat(U2OpStatus &os, const QString &projectName, const QString &path,
                                        const QString &name, GTGlobals::UseMethod = GTGlobals::UseMouse);
     static void exportSequenceAsAlignment(U2OpStatus &os, const QString projectName, const QString &path,
-                                          const QString &name, GTUtilsDialog::ExportSequenceAsAlignmentFiller::FormatToUse,
+                                          const QString &name, GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::FormatToUse,
                                           bool addDocToProject = false, GTGlobals::UseMethod = GTGlobals::UseMouse);
 
     static void exportSequenceOfSelectedAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &path,
-                                                    GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::FormatToUse format,
-                                                    GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::MergeOptions options,
+                                                    GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::FormatToUse format,
+                                                    GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::MergeOptions options,
                                                     int gapLength, bool addDocToProject = true, bool exportWithAnnotations = false, GTGlobals::UseMethod = GTGlobals::UseMouse);
-	static void exportAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &exportToFile, GTUtilsDialog::ExportAnnotationsFiller::fileFormat format, 
+	static void exportAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &exportToFile, GTUtilsDialogRunnables::ExportAnnotationsFiller::fileFormat format, 
 								  bool saveSequencesUnderAnnotations = true, bool saveSequenceNames = true, GTGlobals::UseMethod = GTGlobals::UseMouse);
-	static void createDocument(U2OpStatus &os, const QString &pasteDataHere, const QString &documentLocation, GTUtilsDialog::CreateDocumentFiller::documentFormat format,
+	static void createDocument(U2OpStatus &os, const QString &pasteDataHere, const QString &documentLocation, GTUtilsDialogRunnables::CreateDocumentFiller::documentFormat format,
 		                        const QString &sequenceName, GTGlobals::UseMethod = GTGlobals::UseMouse);
 	static void insertSequence(U2OpStatus &os, const QString &pasteDataHere,
-									 const QString &documentLocation, GTUtilsDialog::InsertSequenceFiller::documentFormat format,
+									 const QString &documentLocation, GTUtilsDialogRunnables::InsertSequenceFiller::documentFormat format,
 									 bool saveToNewFile, bool mergeAnnotations,
 									 GTGlobals::UseMethod = GTGlobals::UseMouse);
     static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile);

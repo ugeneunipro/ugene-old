@@ -24,7 +24,7 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
-#include "GTUtilsDialog.h"
+#include "GTUtilsDialogRunnables.h"
 
 #include <U2View/ADVConstants.h>
 
@@ -58,12 +58,12 @@ GUI_TEST_CLASS_DEFINITION(test_0986_1) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep(3000);
 
-    GTUtilsDialog::SmithWatermanDialogFiller filler(os);
-    filler.button = GTUtilsDialog::SmithWatermanDialogFiller::Cancel;
+    GTUtilsDialogRunnables::SmithWatermanDialogFiller filler(os);
+    filler.button = GTUtilsDialogRunnables::SmithWatermanDialogFiller::Cancel;
     GTUtilsDialog::preWaitForDialog(os, &filler);
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    GTUtilsDialog::PopupChooser chooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep(5000);
 

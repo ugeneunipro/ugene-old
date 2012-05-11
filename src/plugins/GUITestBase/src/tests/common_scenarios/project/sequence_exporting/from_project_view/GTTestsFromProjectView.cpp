@@ -29,7 +29,7 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialog.h"
+#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
@@ -52,11 +52,11 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
 	GTMouseDriver::doubleClick(os);
 	GTGlobals::sleep(1000);
-	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE, GTGlobals::UseMouse);
-	GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller filler(os,
+	GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE, GTGlobals::UseMouse);
+	GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller filler(os,
 	testDir+"_common_data/scenarios/sandbox/exp.fasta",
-	GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
-	GTUtilsDialog::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
+	GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
+	GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
 	);
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTMouseDriver::click(os, Qt::RightButton);
@@ -71,11 +71,11 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
 	GTMouseDriver::doubleClick(os);
 	GTGlobals::sleep(1000);
-	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
-	GTUtilsDialog::ExportSequenceAsAlignmentFiller filler(os,
+	GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
+	GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller filler(os,
 		testDir+"_common_data/scenarios/sandbox/",
 		"exp2.aln",
-		GTUtilsDialog::ExportSequenceAsAlignmentFiller::Clustalw
+		GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::Clustalw
 	);
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
 	GTMouseDriver::click(os, Qt::RightButton);
@@ -87,7 +87,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
-	GTUtilsDialog::SequenceReadingModeSelectorDialogFiller dialog(os);
+	GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller dialog(os);
 	GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
 	GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
 	GTGlobals::sleep(1000);
@@ -97,11 +97,11 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 	GTGlobals::sleep(1000);
 	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
 	GTGlobals::sleep(1000);
-	GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
-	GTUtilsDialog::ExportSequenceAsAlignmentFiller filler(os,
+	GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
+	GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller filler(os,
 		testDir+"_common_data/scenarios/sandbox/",
 		"exp2.aln",
-		GTUtilsDialog::ExportSequenceAsAlignmentFiller::Clustalw,
+		GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::Clustalw,
 		GTGlobals::UseMouse
 		);
 	GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
@@ -181,7 +181,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     }
 
     GTUtilsProject::exportSequenceAsAlignment(os, "NC_001363 sequence", dataDir + "_common_data/scenarios/sandbox/",
-                                              "exp2.msf", GTUtilsDialog::ExportSequenceAsAlignmentFiller::Msf);
+                                              "exp2.msf", GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::Msf);
     GTGlobals::sleep(100);
 
     GTFileDialog::openFile(os, dataDir + "_common_data/scenarios/sandbox/", "exp2.msf");

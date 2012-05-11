@@ -25,7 +25,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "GTUtilsProjectTreeView.h"
-#include "GTUtilsDialog.h"
+#include "GTUtilsDialogRunnables.h"
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/ProjectModel.h>
 #include <QtGui/QTreeWidgetItem>
@@ -74,7 +74,7 @@ void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName,
 
 void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method)
 {
-    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_MENU << ACTION_PROJECT__REMOVE_SELECTED, method);
+    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_MENU << ACTION_PROJECT__REMOVE_SELECTED, method);
 
     switch (method) {
     case GTGlobals::UseMouse:

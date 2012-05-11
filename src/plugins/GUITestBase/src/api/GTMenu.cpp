@@ -131,7 +131,9 @@ QAction* GTMenu::getMenuItem(U2OpStatus &os, const QMenu* menu, const QString &i
         }
     }
 
-    uiLog.trace("GT_DEBUG_MESSAGE: Not found action");
+    if (!action) {
+        uiLog.trace("GT_DEBUG_MESSAGE: Not found action");
+    }
     return action;
 }
 #undef GT_METHOD_NAME

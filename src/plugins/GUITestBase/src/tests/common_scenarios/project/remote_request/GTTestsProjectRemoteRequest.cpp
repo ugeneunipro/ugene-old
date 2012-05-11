@@ -31,7 +31,7 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialog.h"
+#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
@@ -49,7 +49,7 @@ namespace GUITest_common_scenarios_project_remote_request {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 	GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-	GTUtilsDialog::RemoteDBDialogFiller filler(os, "3EZB", 2); 
+	GTUtilsDialogRunnables::RemoteDBDialogFiller filler(os, "3EZB", 2); 
 	GTUtilsDialog::waitForDialog(os, &filler);
 	GTUtilsTaskTreeView::openView(os);
 	GTUtilsTaskTreeView::cancelTask(os, "DownloadRemoteDocuments");
@@ -58,7 +58,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-    GTUtilsDialog::RemoteDBDialogFiller filler(os, "NC_001363", 0); 
+    GTUtilsDialogRunnables::RemoteDBDialogFiller filler(os, "NC_001363", 0); 
     GTUtilsDialog::waitForDialog(os, &filler);
     GTGlobals::sleep(20000);
     GTUtilsDocument::isDocumentLoaded(os, "NC_001363.gb");

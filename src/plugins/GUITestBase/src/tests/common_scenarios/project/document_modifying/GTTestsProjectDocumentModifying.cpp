@@ -28,7 +28,7 @@
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialog.h"
+#include "GTUtilsDialogRunnables.h"
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
 
@@ -43,7 +43,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2-1.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
     GTUtilsApp::checkUGENETitle(os, "proj2-1 UGENE");
-    GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
+    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
     GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTGlobals::sleep(2000);
@@ -63,7 +63,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
    GTUtilsDocument::checkDocument(os, "1.gb");
    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
-   GTUtilsDialog::PopupChooser popupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
+   GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
    GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
    GTGlobals::sleep(1000);

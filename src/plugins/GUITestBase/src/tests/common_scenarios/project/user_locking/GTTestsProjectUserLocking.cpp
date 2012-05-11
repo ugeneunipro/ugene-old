@@ -52,7 +52,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTGlobals::sleep(2000);
 
     GTKeyboardDriver::keyClick(os, 'N', GTKeyboardDriver::key["ctrl"]);
-    GTUtilsDialog::CreateAnnotationDialogChecker checker(os);
+    GTUtilsDialogRunnables::CreateAnnotationDialogChecker checker(os);
     GTUtilsDialog::waitForDialog(os, &checker);
 
     QString s = os.getError();
@@ -105,7 +105,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "1.gb");
     GTGlobals::sleep(100);
 
-    GTUtilsDialog::PopupChooser chooser1(os, QStringList() << "submenu_open_view" << "action_open_view");
+    GTUtilsDialogRunnables::PopupChooser chooser1(os, QStringList() << "submenu_open_view" << "action_open_view");
     GTUtilsDialog::preWaitForDialog(os, &chooser1, GUIDialogWaiter::Popup);
 
     GTMouseDriver::moveTo(os, itemPos);
@@ -116,7 +116,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
 
     QIcon itemIconBefore = item->icon(0);
 
-    GTUtilsDialog::PopupChooser chooser2(os, QStringList() << "action_document_unlock");
+    GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << "action_document_unlock");
     GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
 
     GTMouseDriver::moveTo(os, itemPos);
@@ -134,7 +134,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
-    GTUtilsDialog::PopupChooser chooser3(os, QStringList() << "action_document_lock");
+    GTUtilsDialogRunnables::PopupChooser chooser3(os, QStringList() << "action_document_lock");
     GTUtilsDialog::preWaitForDialog(os, &chooser3, GUIDialogWaiter::Popup);
 
     GTMouseDriver::moveTo(os, itemPos);
@@ -159,7 +159,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->documentIcon.cacheKey(), "Icon is locked");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
-    GTUtilsDialog::PopupChooser lockPopupChooser(os, QStringList() << ACTION_DOCUMENT__LOCK);
+    GTUtilsDialogRunnables::PopupChooser lockPopupChooser(os, QStringList() << ACTION_DOCUMENT__LOCK);
     GTUtilsDialog::preWaitForDialog(os, &lockPopupChooser, GUIDialogWaiter::Popup);
     GTMouseDriver::click(os, Qt::RightButton);
 
