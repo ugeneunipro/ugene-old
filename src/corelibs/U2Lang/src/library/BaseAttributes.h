@@ -37,6 +37,7 @@ public:
     static const Descriptor ACCUMULATE_OBJS_ATTRIBUTE();
     static const Descriptor READ_BY_LINES_ATTRIBUTE();
     static const Descriptor FILE_MODE_ATTRIBUTE();
+    static const Descriptor SPLIT_SEQ_ATTRIBUTE();
     
     static const Descriptor STRAND_ATTRIBUTE();
     static const QString STRAND_BOTH();

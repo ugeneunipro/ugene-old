@@ -31,6 +31,7 @@ static const QString FILE_MODE_ATTR_ID("write-mode");
 
 static const QString STRAND_ATTR_ID("strand");
 static const QString AMINO_TRANSLATION_OFFSET_ATTR_ID("translation");
+static const QString SPLIT_ATTR("split");
 
 namespace U2 {
 namespace Workflow {
@@ -56,6 +57,10 @@ const Descriptor BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE() {
     return Descriptor(APPEND_ATTR_ID, tr("Accumulate objects"), 
         tr("Accumulate all incoming data in one file or create separate files for each input."
         "In the latter case, an incremental numerical suffix is added to the file name."));
+}
+
+const Descriptor BaseAttributes::SPLIT_SEQ_ATTRIBUTE(){
+    return Descriptor(SPLIT_ATTR, tr("Split sequence"), tr("Split each incoming sequence on several parts"));
 }
 
 const Descriptor BaseAttributes::READ_BY_LINES_ATTRIBUTE() {

@@ -205,20 +205,29 @@ static U2SequenceObject *addSeqObject(Document* doc, DNASequence& seq) {
 * FastaWriter
 *************************************/
 void FastaWriter::data2doc(Document* doc, const QVariantMap& data) {
-    data2document(doc, data, context);
+    data2document(doc, data, context, numSplitSequences, currentSplitSequence);
 }
 
 void FastaWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
     streamingStoreEntry(format, io, data, context, entryNum);
 }
 
-void FastaWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
+void FastaWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context, int numSplitSequences, int currentSplitSequence ) {
     SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
     std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
     if (NULL == seqObj.get()) {
         return;
     }
-    DNASequence seq = seqObj->getWholeSequence();
+    
+    U2Region splitRegion = U2Region(currentSplitSequence * (seqObj->getSequenceLength() / numSplitSequences), 
+        seqObj->getSequenceLength() / numSplitSequences + ((currentSplitSequence == (numSplitSequences - 1) ) ? seqObj->getSequenceLength() % numSplitSequences  : 0));
+
+    QByteArray splitSequence = seqObj->getSequenceData(splitRegion);
+
+    DNASequence seq(seqObj->getSequenceName() + ((numSplitSequences == 1) ? QString("%1..%2").arg(splitRegion.startPos + 1, splitRegion.length) : ""), splitSequence, seqObj->getAlphabet());
+    seq.circular = seqObj->isCircular();
+    seq.quality = seqObj->getQuality();
+    seq.info = seqObj->getSequenceInfo();
 
     QString sequenceName = data.value(BaseSlots::FASTA_HEADER_SLOT().getId()).toString();
     if (sequenceName.isEmpty()) {
@@ -226,11 +235,11 @@ void FastaWriter::data2document(Document* doc, const QVariantMap& data, Workflow
         if (sequenceName.isEmpty()) {
             sequenceName = QString("unknown sequence %1").arg(doc->getObjects().size());
         }
-    } else {
+    }else {
         seq.info.insert(DNAInfo::FASTA_HDR, sequenceName);
     }
     seq.setName(sequenceName);
-    addSeqObject(doc, seq);
+    addSeqObject(doc, seq);    
 }
 
 inline static U2SequenceObject *getCopiedSequenceObject(const QVariantMap &data, WorkflowContext *context, U2OpStatus2Log &os) {
@@ -526,7 +535,7 @@ void SeqWriter::data2doc(Document* doc, const QVariantMap& data){
     }
     DocumentFormatId fid = format->getFormatId();
     if( fid == BaseDocumentFormats::FASTA ) {
-        FastaWriter::data2document( doc, data, context );
+        FastaWriter::data2document( doc, data, context, numSplitSequences, currentSplitSequence);
     } else if( fid == BaseDocumentFormats::PLAIN_GENBANK ) {
         GenbankWriter::data2document( doc, data, context );
     } else if ( fid == BaseDocumentFormats::FASTQ) {

@@ -25,11 +25,14 @@
 #include <U2Lang/Schema.h>
 #include <U2Lang/IntegralBusType.h>
 #include <U2Lang/WorkflowSettings.h>
+#include <U2Lang/BaseAttributes.h>
+
 #include <U2Core/Log.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineUtils.h>
+
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -73,6 +76,20 @@ BaseWorker::~BaseWorker() {
     }
     qDeleteAll(ports.values());
     actor->setPeer(NULL);
+}
+
+QStringList BaseWorker::getOutputFiles(){
+    QStringList res;
+    foreach(Attribute *attr, actor->getProto()->getAttributes()) {
+        if(attr->getId() == BaseAttributes::URL_OUT_ATTRIBUTE().getId()) {
+            QString str = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValueWithoutScript<QString>();
+            QUrl url(str);
+            if(url.isValid()) {
+                res << url.toString();
+            }
+        }
+    }
+    return res;
 }
 
 bool BaseWorker::addCommunication(const QString& id, CommunicationChannel* ch) {

@@ -67,7 +67,7 @@ public:
     virtual void init() ;
     virtual Task* tick() ;
     virtual void cleanup() ;
-
+    virtual QStringList getOutputFiles();
 protected:
     virtual void data2doc(Document*, const QVariantMap&) = 0;
     virtual void storeEntry(IOAdapter *, const QVariantMap &, int) {}
@@ -80,6 +80,9 @@ protected:
     QMap<QString, int> counter;
     uint fileMode;
     int messagesCount;
+    int numSplitSequences;
+    int currentSplitSequence;
+    QStringList outputs;
 
     QMap<QString, Document*> docs;
     QMap<QString, IOAdapter*> adapters;

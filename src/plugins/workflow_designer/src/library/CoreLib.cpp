@@ -231,9 +231,13 @@ void CoreLib::init() {
             Descriptor pd(BasePorts::IN_SEQ_PORT_ID(), tr("Sequence"), tr("Sequence"));
             p << new PortDescriptor(pd, typeSet, true);
             a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
-            Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, 
+            Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true, 
                 supportedFormats.contains( BaseDocumentFormats::FASTA ) ? BaseDocumentFormats::FASTA : supportedFormats.first() );
             a << docFormatAttr;
+            QMap <QString, PropertyDelegate*> delegates;    
+            Attribute* splitAttr = new Attribute(BaseAttributes::SPLIT_SEQ_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, 1);
+            splitAttr ->addRelation(new VisibilityRelation(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::FASTA));
+            a << splitAttr;
             WriteDocActorProto *childProto = new WriteDocActorProto( acd, GObjectTypes::SEQUENCE, p, pd.getId(), a );
             IntegralBusActorPrototype * proto = childProto;
             docFormatAttr->addRelation(new FileExtensionRelation(childProto->getUrlAttr()->getId(), docFormatAttr->getAttributePureValue().toString()));
@@ -242,11 +246,19 @@ void CoreLib::init() {
             foreach( const DocumentFormatId & fid, supportedFormats ) {
                 m[fid] = fid;
             }
+
             ComboBoxDelegate *comboDelegate = new ComboBoxDelegate(m);
+            
+            QVariantMap lenMap; lenMap["minimum"] = QVariant(1); 
+            lenMap["maximum"] = QVariant(100); 
+            SpinBoxDelegate* spinDelegate  = new SpinBoxDelegate(lenMap);
+
             connect(comboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_formatChanged(const QString &)));
             proto->getEditor()->addDelegate(comboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
+            proto->getEditor()->addDelegate(spinDelegate, BaseAttributes::SPLIT_SEQ_ATTRIBUTE().getId());
             proto->setPrompter(new WriteDocPrompter(tr("Save all sequences from <u>%1</u> to <u>%2</u>."), BaseSlots::DNA_SEQUENCE_SLOT().getId()));
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
+            
         }
     }
     DataWorkerFactory::init();

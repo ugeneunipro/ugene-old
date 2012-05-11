@@ -101,6 +101,9 @@ SharedDbiDataHandler DbiDataStorage::getDataHandler(const U2DataId &id) {
 }
 
 U2SequenceObject *StorageUtils::getSequenceObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
+    if(handler.constData() == NULL){
+        return NULL;
+    }
     //std::auto_ptr<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, U2Type::Sequence)));
     std::auto_ptr<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, 1)));
     if (NULL == seqDbi.get()) {

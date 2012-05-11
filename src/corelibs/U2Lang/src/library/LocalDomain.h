@@ -58,6 +58,7 @@ public:
     // reimplemented from CommunicationSubject
     virtual bool addCommunication(const QString& name, CommunicationChannel* _ch);
     virtual CommunicationChannel* getCommunication(const QString& name);
+    virtual QStringList getOutputFiles();
     
     // if you want your worker support scripts -> you should call this function to get Messages from channels
     // call this when channel has message

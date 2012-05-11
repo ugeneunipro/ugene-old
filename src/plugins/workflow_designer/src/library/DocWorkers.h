@@ -61,7 +61,7 @@ protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
 public:
-    static void data2document(Document*, const QVariantMap&, WorkflowContext*);
+    static void data2document(Document*, const QVariantMap&, WorkflowContext*, int numSplitSequences, int currentSplit);
     static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
 };
 

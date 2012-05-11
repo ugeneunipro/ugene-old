@@ -129,7 +129,7 @@ void BaseDocReader::cleanup() {
 * BaseDocWriter
 **********************************/
 BaseDocWriter::BaseDocWriter(Actor* a, const DocumentFormatId& fid) 
-: BaseWorker(a), ch(NULL), format(NULL), append(false), fileMode(SaveDoc_Roll) 
+: BaseWorker(a), ch(NULL), format(NULL), append(false), fileMode(SaveDoc_Roll), numSplitSequences(1), currentSplitSequence(0)
 {
     format = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
 }
@@ -150,6 +150,12 @@ void BaseDocWriter::init() {
     ch = ports.values().first();
 }
 
+QStringList BaseDocWriter::getOutputFiles(){
+    QStringList files = BaseWorker::getOutputFiles();
+    files.append(outputs);
+    return files;
+}
+
 static bool openIOAdapter(IOAdapter *io, const QString &url, SaveDocFlags flags, const QSet<QString> &excludeList) {
     if (flags.testFlag(SaveDoc_Roll)) {
         TaskStateInfo ti;
@@ -166,17 +172,27 @@ static bool openIOAdapter(IOAdapter *io, const QString &url, SaveDocFlags flags,
 
 #define GZIP_SUFFIX ".gz"
 
-Task* BaseDocWriter::tick() {
+Task* BaseDocWriter::tick() {  
     while(ch->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(ch);
+        currentSplitSequence = 0;
+
         { // get parameters
             Attribute * formatAttr = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
             if( formatAttr != NULL ) { // user sets format
                 QString formatId = formatAttr->getAttributeValue<QString>(context);
-                format = AppContext::getDocumentFormatRegistry()->getFormatById( formatId );
+                format = AppContext::getDocumentFormatRegistry()->getFormatById( formatId );                
             }
             if(format == NULL) {
                 return new FailTask(tr("Document format not set"));
+            }
+
+            Attribute* splitAttr = actor->getParameter(BaseAttributes::SPLIT_SEQ_ATTRIBUTE().getId());
+            if(format->getFormatId() == BaseDocumentFormats::FASTA && splitAttr != NULL){
+                numSplitSequences = splitAttr->getAttributeValue<int>(context);
+            }
+            else{
+                numSplitSequences = 1;
             }
 
             Attribute * urlAttribute = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
@@ -189,6 +205,19 @@ Task* BaseDocWriter::tick() {
             }
         }
 
+        SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
+        QSharedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+
+        if(!seqObj.data()){
+            numSplitSequences = 1;
+        }
+        else {
+            numSplitSequences = ((seqObj.data()->getSequenceLength() < numSplitSequences) ?  seqObj.data()->getSequenceLength() : numSplitSequences);
+            if(numSplitSequences == 0){
+                numSplitSequences = 1;
+            }
+        }
+        
         QVariantMap data = inputMessage.getData().toMap();
         if (data.isEmpty()) {
             continue;
@@ -205,8 +234,20 @@ Task* BaseDocWriter::tick() {
 
         // to avoid "c:/..." and "C:/..." on windows
         anUrl = QFileInfo(anUrl).absoluteFilePath();
-
+        
         bool streaming = format->isStreamingSupport();
+        append = append && (numSplitSequences == 1);
+        
+        QStringList urls;
+        QSet<QString> excluded;
+        if(numSplitSequences > 1){
+            for(int i = 0; i < numSplitSequences; ++i){
+                QString tmpUrl = GUrlUtils::rollFileName(anUrl, "_split", excluded);                        
+                excluded << tmpUrl;
+                urls << tmpUrl;
+            }
+        }
+
         { // create a new adapter or document
             bool createNewDoc = ( !append || !streaming ) && !docs.contains(anUrl);
             bool createNewAdapter = append && streaming && !adapters.contains(anUrl);
@@ -217,7 +258,7 @@ Task* BaseDocWriter::tick() {
                 if (createNewAdapter) {
                     IOAdapter *io = iof->createIOAdapter();
                     openIOAdapter(io, anUrl, SaveDocFlags(fileMode), usedUrls);
-                    ioLog.details(tr("Creating %1 [%2]").arg(io->getURL().getURLString()).arg(format->getFormatName()));
+                    ioLog.details(tr("Cre76ating %1 [%2]").arg(io->getURL().getURLString()).arg(format->getFormatName()));
                     usedUrls.insert(io->getURL().getURLString());
                     adapters.insert(anUrl, io);
                 }
@@ -227,17 +268,36 @@ Task* BaseDocWriter::tick() {
                 QVariantMap hints;
                 U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
                 hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
-                Document *doc = format->createNewLoadedDocument(iof, anUrl, os, hints);
-                docs.insert(anUrl, doc);
+                if(numSplitSequences == 1){
+                    Document *doc = format->createNewLoadedDocument(iof, anUrl , os, hints);
+                    docs.insert(anUrl, doc);
+                }
+                else{
+                    foreach(const QString& url, urls){                        
+                        Document *doc = format->createNewLoadedDocument(iof, url , os, hints);
+                        docs.insert(url, doc);
+                    }
+                }
             }
         }
-
+        
         if (streaming && append) {
             IOAdapter *io = adapters.value(anUrl);
             storeEntry(io, data, ch->takenMessages());
         } else {
-            Document *doc = docs.value(anUrl);
-            data2doc(doc, data);
+            if(numSplitSequences == 1){
+                Document *doc = docs.value(anUrl);
+                data2doc(doc, data);
+            }
+            else{
+                foreach(const QString& url, urls){
+                    Document *doc = docs.value(url);
+                    data2doc(doc, data);
+                    ++currentSplitSequence;
+                    outputs << url;
+                }
+                currentSplitSequence = 0;
+            }
             if (!append) {
                 break;
             }
@@ -247,7 +307,7 @@ Task* BaseDocWriter::tick() {
     bool done = ch->isEnded() && !ch->hasMessage();
     if (append && !done) {
         return NULL;
-    }
+    }    
     if (done) {
         setDone();
     }

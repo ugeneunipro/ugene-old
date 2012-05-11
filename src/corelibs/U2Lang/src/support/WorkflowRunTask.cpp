@@ -28,6 +28,7 @@
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/WorkflowSettings.h>
+#include <U2Lang/LocalDomain.h>
 
 #include <U2Core/Counter.h>
 #include <U2Core/CMDLineRegistry.h>
@@ -322,15 +323,8 @@ DocumentFormat *getDocumentFormatByProtoId(QString protoId) {
 static QStringList getOutputFiles(const QList<Actor*> & procs) {
     QStringList res;
     foreach(Actor *a, procs) {
-        foreach(Attribute *attr, a->getProto()->getAttributes()) {
-            if(attr->getId() == BaseAttributes::URL_OUT_ATTRIBUTE().getId()) {
-                QString str = a->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId())->getAttributeValueWithoutScript<QString>();
-                QUrl url(str);
-                if(url.isValid()) {
-                    res << url.toString();
-                }
-            }
-        }
+        LocalWorkflow::BaseWorker* bw = a->castPeer<LocalWorkflow::BaseWorker>();
+        res.append(bw->getOutputFiles());        
     }
     return res;
 }
