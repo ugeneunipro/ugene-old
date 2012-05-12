@@ -76,7 +76,7 @@ public:
         bool failIfNull;
     };
 
-    static void sleep(int msec);
+    static void sleep(int msec = 2000);
     static void sendEvent(QObject *obj, QEvent *e);
 };
 

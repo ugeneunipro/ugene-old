@@ -32,6 +32,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h \
             src/api/GTCheckBox.h \
             src/api/GTComboBox.h \
+            src/api/GTTabWidget.h \
+            src/api/GTTabBar.h \
             src/api/GTSpinBox.h \
             src/api/GTRadioButton.h \
             src/api/GTFileDialog.h \
@@ -84,6 +86,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.cpp \
             src/api/GTCheckBox.cpp \
             src/api/GTComboBox.cpp \
+            src/api/GTTabWidget.cpp \
+            src/api/GTTabBar.cpp \
             src/api/GTSpinBox.cpp \
             src/api/GTRadioButton.cpp \
             src/api/GTFileDialog.cpp \
