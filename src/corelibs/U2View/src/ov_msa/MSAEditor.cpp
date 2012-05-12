@@ -546,6 +546,8 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), of
     GScrollBar* cvBar = new GScrollBar(Qt::Vertical);
 
     seqArea = new MSAEditorSequenceArea(this, shBar, cvBar);
+    seqArea->setObjectName("msa_editor_sequence_area");
+
     nameList = new MSAEditorNameList(this, nhBar);
     consArea = new MSAEditorConsensusArea(this);
     offsetsView = new MSAEditorOffsetsViewController(this, editor, seqArea);
