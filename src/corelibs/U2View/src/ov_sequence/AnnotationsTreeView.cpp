@@ -2229,9 +2229,10 @@ FindQualifierTask::FindQualifierTask(AnnotationsTreeView * _treeView, const Find
 ,qvalue(settings.value)
 ,groupToSearchIn(settings.groupToSearchIn)
 ,isExactMatch(settings.isExactMatch)
+,searchAll(settings.searchAll)
+,foundResult(false)
 ,indexOfResult(settings.prevIndex)
 ,resultAnnotation(settings.prevAnnotation)
-,searchAll(settings.searchAll)
 {
 
 }

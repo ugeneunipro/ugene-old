@@ -341,6 +341,7 @@ void FindPatternWidget::sl_onMatchPercentChanged()
 void FindPatternWidget::sl_onFocusChanged(
     ADVSequenceWidget* /* prevWidget */, ADVSequenceWidget* currentWidget)
 {
+    Q_UNUSED(currentWidget);
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     if (activeContext != 0) {
         DNAAlphabet* alphabet = activeContext->getAlphabet();

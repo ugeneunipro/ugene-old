@@ -98,8 +98,6 @@ void CharOccurTask::run()
         
         // Get the selected region and verify that the data has been correctly read
         QByteArray sequence = sequenceDbi->getSequenceData(seqRef.entityId, iterRegion, os);
-        qint64 test = sequence.length();
-
         if (os.hasError() || sequence.isEmpty()) {
             taskLog.details("Skipping calculation of the characters occurrence.");
             break;

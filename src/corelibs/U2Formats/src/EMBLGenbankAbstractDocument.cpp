@@ -330,7 +330,6 @@ static int numQuotesInLine(char* cbuff, int len){
 int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbuff, int maxSize, bool _prevLineHasMaxSize, int lenFirstLine) {
     int len = 0;
     bool lineOk = true;
-	bool quotesPrevLine = false;
     static const int MAX_LINE = 256;
     int sizeToSkip = maxSize - MAX_LINE;
     const QBitArray& LINE_BREAKS = TextUtils::LINE_BREAKS;

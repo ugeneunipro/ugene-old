@@ -209,7 +209,6 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
-    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
 
 	GTUtilsDialogRunnables::selectSequenceRegionDialogFiller dialog(os, 2, 2);
 	GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
@@ -239,7 +238,6 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     bool found = GTUtilsAnnotationsTreeView::findItem(os, "DUMMY_1", false);
     CHECK_SET_ERR(found = true, "There is annotation DUMMY_1, expected state there is no annotation DUMMY_1");
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009) {

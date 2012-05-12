@@ -114,7 +114,7 @@ void TranslateSequence2AminoTask::run(){
         importer.startSequence(dbRef, seqObj->getSequenceName()+ " " + resultName + QString(" %1").arg(currentSeq) + " complementary", false, stateInfo);
 
         QByteArray complementarySeq;
-        char* complSeq;
+        char* complSeq = NULL;
 
         int blockCounter = 0;
         qint64 end = complementaryRegion.endPos() - 1  - complementaryRegion.length / 3 * 3;
@@ -133,6 +133,7 @@ void TranslateSequence2AminoTask::run(){
                 blockCounter = 0;
 
             }
+            SAFE_POINT(complSeq != NULL, "complSeq is NULL", );
             translatedSeq.append(aminoTT->translate3to1(complSeq[blockCounter], complSeq[blockCounter + 1], complSeq[blockCounter + 2]));
         }
 

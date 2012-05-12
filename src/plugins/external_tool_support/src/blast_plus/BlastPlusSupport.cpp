@@ -99,8 +99,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 //     #endif
 // #endif
 //     validMessage="[-gpu boolean]";
-//     description="The <i>blastp</i> tool searches a protein database \
-//                 using a protein query.";
+//     description="The <i>blastp</i> tool searches a protein database using a protein query.";
 //     versionRegExp=QRegExp("Protein-Protein BLAST (\\d+\\.\\d+\\.\\d+\\+?)");
     }else if(name == BLASTX_TOOL_NAME){
 #ifdef Q_OS_WIN

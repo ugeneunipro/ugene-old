@@ -43,6 +43,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
+    Q_UNUSED(os);
     AppContext::getMainWindow()->getQMainWindow()->showMaximized();
     GTGlobals::sleep(1000);
 }

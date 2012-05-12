@@ -61,9 +61,9 @@ DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
     selectionX(NULL),selectionY(NULL),sequenceX(NULL),sequenceY(NULL), direct(true), inverted(false), nearestInverted(false), ignorePanView(false), keepAspectRatio(false),
     zoom(1.0f, 1.0f), shiftX(0), shiftY(0),
     minLen(100), identity(100),
-    pixMapUpdateNeeded(true), deleteDotPlotFlag(false), dotPlotTask(NULL), pixMap(NULL), miniMap(NULL),
+    pixMapUpdateNeeded(true), deleteDotPlotFlag(false), filtration(false), dotPlotTask(NULL), pixMap(NULL), miniMap(NULL),
     nearestRepeat(NULL),
-    clearedByRepitSel(false), filtration(false)
+    clearedByRepitSel(false)
 {
     dpDirectResultListener = new DotPlotResultsListener();
     dpRevComplResultsListener = new DotPlotRevComplResultsListener();

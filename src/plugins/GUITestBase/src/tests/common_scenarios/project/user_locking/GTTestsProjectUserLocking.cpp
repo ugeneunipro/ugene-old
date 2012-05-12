@@ -89,8 +89,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
         }
 
     private:
-        U2OpStatus &os;
         QString buttonName;
+        U2OpStatus &os;
     };
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -99,7 +99,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTUtilsDocument::checkDocument(os, "1.gb");
     GTUtilsApp::checkUGENETitle(os, "proj3 UGENE");
 
-    QTreeWidget *w = GTUtilsProjectTreeView::getTreeWidget(os);
     QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "1.gb");
 
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "1.gb");

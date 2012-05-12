@@ -36,16 +36,15 @@ QAbstractButton* GTAction::button(U2OpStatus &os, const QString &actionName, QOb
     QAction* a = findAction(os, actionName, parent);
     GT_CHECK_RESULT(a != NULL, "action is NULL", NULL);
 
-    QAbstractButton *tb = NULL;
-
     QList<QWidget*> associated = a->associatedWidgets();
     foreach(QWidget* w, associated) {
-        if (tb = qobject_cast<QAbstractButton*>(w)) {
-            break;
+        QAbstractButton *tb = qobject_cast<QAbstractButton*>(w);
+        if (tb) {
+            return tb;
         }
     }
 
-    return tb;
+    return NULL;
 }
 #undef GT_METHOD_NAME
 

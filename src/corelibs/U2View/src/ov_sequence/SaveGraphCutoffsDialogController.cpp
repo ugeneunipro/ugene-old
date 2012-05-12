@@ -84,10 +84,10 @@ void SaveGraphCutoffsDialogController::accept(){
     }
     ac->prepareAnnotationObject();
     const CreateAnnotationModel &mm = ac->getModel();
-    int startPos = gd->cachedFrom, len = gd->cachedLen, step = gd->cachedS, window = gd->cachedW;
+    int startPos = gd->cachedFrom, step = gd->cachedS, window = gd->cachedW;
     PairVector& points = gd->cachedData;
 
-    int curPos = (startPos < window) ? (window/2 - 1) : startPos, startOffset = window/2, tailOffset = window - startOffset, prevAccepetedPos = 0;
+    int curPos = (startPos < window) ? (window/2 - 1) : startPos, startOffset = window/2, prevAccepetedPos = 0;
     curPos++;
     for (int i=0, n = points.cutoffPoints.size(); i < n; i++) {
         if (isAcceptableValue(points.cutoffPoints[i])){

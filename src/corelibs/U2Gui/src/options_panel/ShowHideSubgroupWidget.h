@@ -49,8 +49,8 @@ signals:
 
 private:
     ArrowHeaderWidget* arrowHeaderWidget;
-    QWidget* innerWidget;
     QString subgroupId;
+    QWidget* innerWidget;
 
 private slots:
     void updateSubgroupState(bool isSubgroupOpened);

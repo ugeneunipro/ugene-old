@@ -354,7 +354,7 @@ DNASequence *FastqFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
     readBuff.clear();
     QString sequenceName = readSequenceName(os, io, '@');
     // check for eof while trying to read another FASTQ block
-    CHECK_EXT(!io->isEof(), "", NULL);
+    CHECK_EXT(!io->isEof(), , NULL);
     CHECK_OP(os, NULL);
 
     sequence.clear();  

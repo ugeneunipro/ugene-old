@@ -351,7 +351,7 @@ private:
                 }
             }
             if(!remoteEntry) { // ignore remote entries
-                if(seqLenForCircular != -1 && firstBase > secondNumber){
+                if(seqLenForCircular != (quint64)-1 && firstBase > secondNumber){
                     location->regions.append(toRegion(1, secondNumber));
                     location->regions.append(toRegion(firstBase, seqLenForCircular));
                     location->regionType = U2LocationRegionType_Default;
@@ -373,7 +373,7 @@ private:
                 return false;
             }
             if(!remoteEntry) { // ignore remote entries
-                if(seqLenForCircular != -1 && firstBase > secondBase){
+                if(seqLenForCircular != (quint64)-1 && firstBase > secondBase){
                     location->regions.append(toRegion(1, secondBase));
                     location->regions.append(toRegion(firstBase, seqLenForCircular));
                     location->regionType = U2LocationRegionType_Default;

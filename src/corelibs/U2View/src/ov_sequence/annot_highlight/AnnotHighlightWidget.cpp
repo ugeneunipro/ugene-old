@@ -54,6 +54,7 @@ ShowAllAnnotTypesLabel::ShowAllAnnotTypesLabel()
 
 void ShowAllAnnotTypesLabel::mousePressEvent(QMouseEvent* event)
 {
+    Q_UNUSED(event);
     if (showAllIsSelected) {
         showAllIsSelected = false;
         setText(SHOW_ALL_ANNOT_TYPES);
@@ -284,10 +285,6 @@ void AnnotHighlightWidget::findAllAnnotationsNamesInSettings()
     }
 }
 
-
-static bool caseInsensitiveLessThan(const QString &s1, const QString &s2) {
-    return s1.toLower() < s2.toLower();
-}
 
 void AnnotHighlightWidget::loadAnnotTypes()
 {

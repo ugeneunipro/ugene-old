@@ -263,7 +263,6 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
 		float fy, fy2;
 		int prevFY = -1;
 		bool rp = false, lp = false;
-		int ymid = rect.bottom() - 1 - qRound((fymid - min) * kh);
         if(!points.useIntervals){
 			for (int i=0, n = points.firstPoints.size(); i < n; i++) {
 				fy = points.firstPoints[i];
@@ -482,6 +481,8 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
 }
 
 void GSequenceGraphDrawer::calculateCutoffPoints(GSequenceGraphData* d, PairVector& points, int alignedFirst, int alignedLast){
+    Q_UNUSED(alignedFirst);
+    Q_UNUSED(alignedLast);
     points.cutoffPoints.clear();
     d->ga->calculate(points.cutoffPoints, view->getSequenceObject(), U2Region(view->getVisibleRange()), &wdata);
 }

@@ -83,14 +83,6 @@ struct DotPlotResults {
     }
 };
 
-static bool DPResultLessThenX(DotPlotResults& r1, DotPlotResults& r2){
-    return r1.x < r2.x;
-}
-
-static bool DPResultLessThenY(DotPlotResults& r1, DotPlotResults& r2){
-    return r1.y < r2.y;
-}
-
 // Listener which collect results from an algorithm
 class DotPlotResultsListener : public RFResultsListener {
     friend class DotPlotWidget;

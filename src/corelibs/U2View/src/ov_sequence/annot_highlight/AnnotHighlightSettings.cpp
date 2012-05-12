@@ -32,6 +32,7 @@ const QString AnnotHighlightSettingsWidget::LIGHT_RED_COLOR = "rgb(231, 94, 80)"
 
 AnnotHighlightSettingsWidget::AnnotHighlightSettingsWidget(QWidget* parent)
 {
+    Q_UNUSED(parent);
     setupUi(this);
 
     connect(checkShowHideAnnots, SIGNAL(stateChanged(int)), SLOT(sl_onShowHideChanged(int)));

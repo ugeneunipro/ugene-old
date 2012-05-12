@@ -164,7 +164,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
-    QTreeWidget *w = GTUtilsProjectTreeView::getTreeWidget(os);
     QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "NC_001363 features");
 
     GTTreeWidget::expand(os, item);

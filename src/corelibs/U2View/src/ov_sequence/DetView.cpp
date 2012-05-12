@@ -116,8 +116,6 @@ void DetView::resizeEvent(QResizeEvent *e) {
 }
 
 void DetView::updateActions() {
-    bool visible = isVisible();
-
     bool hasComplement = ctx->getComplementTT()!=NULL;
     showComplementAction->setEnabled(hasComplement );
 
