@@ -35,4 +35,4 @@ public:
 };
 
 }
-#endif // _U2_GT_COMBOBOX_H_
+#endif // _U2_GT_TABBAR_H_

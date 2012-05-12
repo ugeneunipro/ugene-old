@@ -30,6 +30,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h \
             src/tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h \
             src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h \
+            src/api/GTRegionSelector.h \
             src/api/GTCheckBox.h \
             src/api/GTComboBox.h \
             src/api/GTTabWidget.h \
@@ -45,6 +46,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTMenuBar.h \
             src/api/GTMouse.h \
             src/api/GTMouseDriver.h \
+            src/api/GTTextEdit.h \
             src/api/GTPlainTextEdit.h \
             src/api/GTScrollBar.h \
             src/api/GTSystem.h \
@@ -84,6 +86,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.cpp \
             src/tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.cpp \
             src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.cpp \
+            src/api/GTRegionSelector.cpp \
             src/api/GTCheckBox.cpp \
             src/api/GTComboBox.cpp \
             src/api/GTTabWidget.cpp \
@@ -105,6 +108,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTMouseDriverLinux.cpp \
             src/api/GTMouseDriverMac.cpp \
             src/api/GTMouseDriverWindows.cpp \
+            src/api/GTTextEdit.cpp \
             src/api/GTPlainTextEdit.cpp \
             src/api/GTScrollBar.cpp \
             src/api/GTSystem.cpp \

@@ -23,6 +23,7 @@
 #define _U2_GUI_DIALOG_UTILS_RUNNABLES_H_
 
 #include "api/GTGlobals.h"
+#include "api/GTRegionSelector.h"
 #include "GTUtilsDialog.h"
 
 #include <QtCore/QDir>
@@ -35,12 +36,14 @@ class GTUtilsDialogRunnables {
 public:
     class SmithWatermanDialogFiller : public Runnable {
     public:
-        enum Button {Find, Cancel};
-        SmithWatermanDialogFiller(U2OpStatus &_os) : os(_os), button(Find){}
+        enum Button {Search, Cancel};
+        SmithWatermanDialogFiller(U2OpStatus &_os, const QString& _pattern = "", const GTRegionSelector::RegionSelectorSettings& _s = GTRegionSelector::RegionSelectorSettings()) : button(Search), os(_os), pattern(_pattern), s(_s){}
         virtual void run();
         Button button;
     private:
         U2OpStatus &os;
+        QString pattern;
+        GTRegionSelector::RegionSelectorSettings s;
     };
 
     class CreateAnnotationDialogChecker : public Runnable {

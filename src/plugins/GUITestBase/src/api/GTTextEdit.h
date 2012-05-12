@@ -19,24 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_TESTS_REGRESSION_SCENARIOS_H_
-#define _U2_GT_TESTS_REGRESSION_SCENARIOS_H_
+#ifndef _U2_GT_TEXTEDIT_H_
+#define _U2_GT_TEXTEDIT_H_
 
-#include <U2Test/GUITestBase.h>
+#include "api/GTGlobals.h"
+#include <QtGui/QTextEdit>
 
 namespace U2 {
 
-namespace GUITest_regression_scenarios {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_regression_scenarios_"
+class GTTextEdit {
+public:
+    // fails if textEdit is NULL
+    // or a set text differs from a given text
+    static void setText(U2OpStatus& os, QTextEdit* textEdit, const QString &text);
+};
 
-GUI_TEST_CLASS_DECLARATION(test_0986)
-GUI_TEST_CLASS_DECLARATION(test_0986_1)
-GUI_TEST_CLASS_DECLARATION(test_0986_2)
-
-#undef GUI_TEST_PREFIX
 }
 
-} //namespace
-
-#endif
+#endif // _U2_GT_TEXTEDIT_H_

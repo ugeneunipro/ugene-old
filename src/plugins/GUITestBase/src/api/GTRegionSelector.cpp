@@ -19,24 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_TESTS_REGRESSION_SCENARIOS_H_
-#define _U2_GT_TESTS_REGRESSION_SCENARIOS_H_
-
-#include <U2Test/GUITestBase.h>
+#include "GTRegionSelector.h"
+#include "GTWidget.h"
+#include "GTLineEdit.h"
 
 namespace U2 {
 
-namespace GUITest_regression_scenarios {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_regression_scenarios_"
+#define GT_CLASS_NAME "GTRegionSelector"
 
-GUI_TEST_CLASS_DECLARATION(test_0986)
-GUI_TEST_CLASS_DECLARATION(test_0986_1)
-GUI_TEST_CLASS_DECLARATION(test_0986_2)
+#define GT_METHOD_NAME "setRegion"
+void GTRegionSelector::setRegion(U2OpStatus& os, RegionSelector *regionSelector, const RegionSelectorSettings& s) {
 
-#undef GUI_TEST_PREFIX
+    GT_CHECK(regionSelector != NULL, "RegionSelector is NULL");
+
+    CHECK_EXT(!s.isUnset(), uiLog.trace("GT_DEBUG_MESSAGE RegionSelectorSettings isUnset, returning"), );
+
+    QLineEdit* startEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "start_edit_line", regionSelector));
+    GTLineEdit::setText(os, startEdit, QString::number(s.start));
+
+    QLineEdit* endEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "end_edit_line", regionSelector));
+    GTLineEdit::setText(os, endEdit, QString::number(s.end));
 }
+#undef GT_METHOD_NAME
 
-} //namespace
+#undef GT_CLASS_NAME
 
-#endif
+}

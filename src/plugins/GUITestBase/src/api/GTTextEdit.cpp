@@ -19,24 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_TESTS_REGRESSION_SCENARIOS_H_
-#define _U2_GT_TESTS_REGRESSION_SCENARIOS_H_
-
-#include <U2Test/GUITestBase.h>
+#include "GTTextEdit.h"
+#include "GTWidget.h"
+#include "GTKeyboardDriver.h"
 
 namespace U2 {
 
-namespace GUITest_regression_scenarios {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_regression_scenarios_"
+#define GT_CLASS_NAME "GTTextEdit"
 
-GUI_TEST_CLASS_DECLARATION(test_0986)
-GUI_TEST_CLASS_DECLARATION(test_0986_1)
-GUI_TEST_CLASS_DECLARATION(test_0986_2)
+#define GT_METHOD_NAME ""
+void GTTextEdit::setText(U2OpStatus& os, QTextEdit* textEdit, const QString &text) {
 
-#undef GUI_TEST_PREFIX
+    GT_CHECK(textEdit != NULL, "plainTextEdit is NULL");
+
+	GTWidget::setFocus(os, textEdit);
+
+    GTKeyboardDriver::keySequence(os, text);
+    GTGlobals::sleep(500);
 }
+#undef GT_METHOD_NAME
 
-} //namespace
+#undef GT_CLASS_NAME
 
-#endif
+}

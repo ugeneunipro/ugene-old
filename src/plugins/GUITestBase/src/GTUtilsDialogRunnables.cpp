@@ -20,16 +20,19 @@
  */
 
 #include "GTUtilsDialogRunnables.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTCheckBox.h"
 #include "api/GTComboBox.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSpinBox.h"
+#include "api/GTTextEdit.h"
 #include "api/GTPlainTextEdit.h"
 #include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
+#include "api/GTTabWidget.h"
+
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
@@ -52,15 +55,24 @@ void GTUtilsDialogRunnables::SmithWatermanDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    QAbstractButton *cancelButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "bttnCancel", dialog));
-    GT_CHECK(cancelButton != NULL, "Radiobutton is NULL");
-
     if (button == Cancel) {
+        QAbstractButton *cancelButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "bttnCancel", dialog));
         GTWidget::click(os, cancelButton);
         return;
     }
 
-    GT_CHECK(true, "Not implemented");
+    QTabWidget *tabWidget = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabWidget", dialog));
+    GTTabWidget::setCurrentIndex(os, tabWidget, 0);
+
+    RegionSelector *regionSelector = qobject_cast<RegionSelector*>(GTWidget::findWidget(os, "range_selector", dialog));
+    GTRegionSelector::setRegion(os, regionSelector, s);
+
+    QTextEdit* textEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "teditPattern", dialog));
+    GTTextEdit::setText(os, textEdit, pattern);
+
+    QAbstractButton *searchButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "bttnRun", dialog));
+    GTWidget::click(os, searchButton);
+    GTGlobals::sleep();
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

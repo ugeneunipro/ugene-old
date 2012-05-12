@@ -19,24 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_TESTS_REGRESSION_SCENARIOS_H_
-#define _U2_GT_TESTS_REGRESSION_SCENARIOS_H_
+#ifndef _U2_GT_REGIONSELECTOR_H_
+#define _U2_GT_REGIONSELECTOR_H_
 
-#include <U2Test/GUITestBase.h>
+#include "api/GTGlobals.h"
+#include <U2Gui/RegionSelector.h>
 
 namespace U2 {
 
-namespace GUITest_regression_scenarios {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_regression_scenarios_"
+class GTRegionSelector {
+public:
+    class RegionSelectorSettings {
+    public:
+        RegionSelectorSettings(): start(0), end(0), unset(true){}
+        RegionSelectorSettings(int _start, int _end): start(_start), end(_end), unset(false){}
+        bool isUnset() const { return unset; }
 
-GUI_TEST_CLASS_DECLARATION(test_0986)
-GUI_TEST_CLASS_DECLARATION(test_0986_1)
-GUI_TEST_CLASS_DECLARATION(test_0986_2)
+        int start, end;
+    private:
+        bool unset;
+    };
 
-#undef GUI_TEST_PREFIX
+    static void setRegion(U2OpStatus& os, RegionSelector *regionSelector, const RegionSelectorSettings& s);
+};
+
 }
-
-} //namespace
-
-#endif
+#endif // _U2_GT_REGIONSELECTOR_H_

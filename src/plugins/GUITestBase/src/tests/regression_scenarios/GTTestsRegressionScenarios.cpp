@@ -70,6 +70,23 @@ GUI_TEST_CLASS_DEFINITION(test_0986_1) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0986_2) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(3000);
+
+    GTRegionSelector::RegionSelectorSettings regionSelectorSettings(1, 2);
+    GTUtilsDialogRunnables::SmithWatermanDialogFiller filler(os, "ATCG", regionSelectorSettings);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTGlobals::sleep(5000);
+
+    GTGlobals::sleep(5000);
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
