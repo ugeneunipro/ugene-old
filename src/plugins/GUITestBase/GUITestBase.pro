@@ -55,7 +55,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTWidget.h \
             src/api/GTAction.h \
             src/api/GTSequenceReadingModeDialog.h \
-            src/api/GTSequenceReadingModeDialogUtils.h
+            src/api/GTSequenceReadingModeDialogUtils.h \
+    src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsApp.cpp \
@@ -117,7 +118,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTWidget.cpp \
             src/api/GTAction.cpp \
             src/api/GTSequenceReadingModeDialog.cpp \
-            src/api/GTSequenceReadingModeDialogUtils.cpp
+            src/api/GTSequenceReadingModeDialogUtils.cpp \
+    src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.cpp
 
 
 
