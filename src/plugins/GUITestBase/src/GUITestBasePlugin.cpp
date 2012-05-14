@@ -25,7 +25,6 @@
 
 #include "tests/GUIInitialChecks.h"
 #include "tests/regression_scenarios/GTTestsRegressionScenarios.h"
-#include "tests/common_scenarios/msa_editor/GTTestsMsaEditor.h"
 #include "tests/common_scenarios/project/GTTestsProject.h"
 #include "tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h"
 #include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
@@ -71,7 +70,6 @@ GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test 
 
 void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0004);
 //////////////////////////////////////////////////////////////////////////
 // Regression scenarios/
 //////////////////////////////////////////////////////////////////////////
@@ -97,7 +95,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0019);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0020);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0021);
-    REGISTER_TEST(GUITest_common_scenarios_project::test_0023);//, "https://ugene.unipro.ru/tracker/browse/UGENE-963");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0023, "https://ugene.unipro.ru/tracker/browse/UGENE-963");
     REGISTER_TEST(GUITest_common_scenarios_project::test_0025);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0028);
@@ -175,7 +173,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0008);
-    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0009);
+//    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0009);
 //    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0010);
 
 //////////////////////////////////////////////////////////////////////////
@@ -200,6 +198,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/msa_editor
 /////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0004);
 
 }
 
@@ -208,7 +207,7 @@ void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
     if (guiTestBase) {
         guiTestBase->registerTest(new GUITest_initial_checks::test_0001, GUITestBase::Additional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0002, GUITestBase::Additional);
-//        guiTestBase->registerTest(new GUITest_initial_checks::test_0003, GUITestBase::Additional);
+        guiTestBase->registerTest(new GUITest_initial_checks::test_0003, GUITestBase::Additional);
     }
 }
 
