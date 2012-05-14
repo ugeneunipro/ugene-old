@@ -258,6 +258,7 @@ void FindPatternWidget::sl_onAlgorithmChanged(int index)
 {
     selectedAlgorithm = boxAlgorithm->itemData(index).toInt();
     updateLayout();
+    verifyPatternAlphabet();
 }
 
 
