@@ -24,6 +24,7 @@
 
 #include <U2Core/U2AbstractDbi.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2SqlHelpers.h>
 
 struct sqlite3;
 
@@ -132,6 +133,10 @@ public:
 
     virtual void setProperty(const QString& name, const QString& value, U2OpStatus& os);
 
+    virtual void startOperationsBlock(U2OpStatus &os);
+
+    virtual void stopOperationBlock();
+
 private:
     QString getLastErrorMessage(int rc);
 
@@ -151,6 +156,7 @@ private:
     SQLiteAttributeDbi*                 attributeDbi;
     SQLiteVariantDbi*                   variantDbi;
     SQLiteFeatureDbi*                   featureDbi;
+    SQLiteTransaction*                  operationsBlockTransaction;
     
     friend class SQLiteObjectDbi;
     friend class SQLiteCrossDatabaseReferenceDbi;

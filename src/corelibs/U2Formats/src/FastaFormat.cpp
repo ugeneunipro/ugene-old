@@ -121,6 +121,8 @@ FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUr
 static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, QList<GObject*>& objects,
                  int gapSize, QString& writeLockReason, U2OpStatus& os) 
 {
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, );
     static char fastaHeaderStartChar = '>';
     static QBitArray fastaHeaderStart = TextUtils::createBitMap(fastaHeaderStartChar);
 
@@ -149,6 +151,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
 
     qint64 sequenceStart = 0;
     int sequenceNumber = 0;
+    DbiConnection con(dbiRef, os);
     while (!os.isCoR()) {
         //read header
         len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
@@ -198,7 +201,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             CHECK_OP(os, );
             
             //TODO parse header
-            DbiConnection con(dbiRef, os);
             U2StringAttribute attr(seq.id, DNAInfo::FASTA_HDR, headerLine);
             con.dbi->getAttributeDbi()->createStringAttribute(attr, os);
             CHECK_OP(os, );

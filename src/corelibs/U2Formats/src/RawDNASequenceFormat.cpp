@@ -49,6 +49,8 @@ RawDNASequenceFormat::RawDNASequenceFormat(QObject* p) : DocumentFormat(p, Docum
 
 
 static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& objects, const QVariantMap& fs, U2OpStatus& os) {
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, );
     static const int READ_BUFF_SIZE = 4096;
 
     U2SequenceImporter  seqImporter(fs);

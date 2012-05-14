@@ -143,6 +143,8 @@ static void readSequence(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, ch
  */
 static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, const GUrl& docUrl, QList<GObject*>& objects, U2OpStatus& os,
                  int gapSize, int predictedSize, QString& writeLockReason) {
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, );
     writeLockReason.clear();
 
     QByteArray readBuff(BUFF_SIZE+1, 0), secondBuff;

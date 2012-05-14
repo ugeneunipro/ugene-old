@@ -158,6 +158,18 @@ public:
     static U2DbiRef toRef(U2Dbi* dbi);
 };
 
+/**
+    This helper class provides a way to make the block of operations through the one transaction
+*/
+class U2CORE_EXPORT DbiOperationsBlock {
+public:
+    DbiOperationsBlock(const U2DbiRef &dbiRef, U2OpStatus &os);
+    ~DbiOperationsBlock();
+
+private:
+    U2DbiRef dbiRef;
+    DbiConnection *connection;
+};
 
 template<class T> QList<T> U2DbiUtils::toList(U2DbiIterator<T>* it) {
     QList<T> result;

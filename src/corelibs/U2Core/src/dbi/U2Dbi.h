@@ -277,6 +277,13 @@ public:
     */
     virtual void setProperty(const QString& name, const QString& value, U2OpStatus& os) = 0;
 
+    /**
+        Initializes execution of the block of operation through the one transaction
+    */
+    virtual void startOperationsBlock(U2OpStatus & /* os */) {}
+
+    virtual void stopOperationBlock() {}
+
 };
 
 /** 

@@ -152,5 +152,17 @@ TmpDbiObjects::~TmpDbiObjects() {
     }
 }
 
+DbiOperationsBlock::DbiOperationsBlock(const U2DbiRef &_dbiRef, U2OpStatus &os) {
+    dbiRef = _dbiRef;
+    connection = new DbiConnection(dbiRef, os);
+    CHECK_OP(os, );
+    connection->dbi->startOperationsBlock(os);
+}
+
+DbiOperationsBlock::~DbiOperationsBlock() {
+    connection->dbi->stopOperationBlock();
+    delete connection;
+}
+
 
 } //namespace

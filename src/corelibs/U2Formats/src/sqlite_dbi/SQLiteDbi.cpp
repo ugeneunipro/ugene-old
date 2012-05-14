@@ -28,6 +28,7 @@
 #include "SQLiteVariantDbi.h"
 #include "SQLiteFeatureDbi.h"
 
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/Log.h>
 #include <U2Core/Version.h>
@@ -50,6 +51,7 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     attributeDbi = new SQLiteAttributeDbi(this);
     variantDbi = new SQLiteVariantDbi(this);
     featureDbi = new SQLiteFeatureDbi(this);
+    operationsBlockTransaction = NULL;
 }
 
 SQLiteDbi::~SQLiteDbi() {
@@ -127,6 +129,18 @@ void SQLiteDbi::setProperty(const QString& name, const QString& value, U2OpStatu
     q2.bindString(1, name);
     q2.bindString(2, value);
     q2.execute();
+}
+
+void SQLiteDbi::startOperationsBlock(U2OpStatus &os) {
+    SQLiteTransaction *newTransaction = new SQLiteTransaction(this->db, os);
+    SAFE_POINT(NULL == operationsBlockTransaction, "Operations block initializing error", );
+    operationsBlockTransaction = newTransaction;
+}
+
+void SQLiteDbi::stopOperationBlock() {
+    SQLiteTransaction *transactionToDelete = operationsBlockTransaction;
+    operationsBlockTransaction = NULL;
+    delete transactionToDelete;
 }
 
 static int isEmptyCallback(void *o, int argc, char ** /*argv*/, char ** /*column*/) {

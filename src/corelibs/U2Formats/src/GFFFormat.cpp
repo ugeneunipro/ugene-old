@@ -192,6 +192,8 @@ static QStringList splitGffAttributes(const QString& line, char sep) {
 
 void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os){
     Q_UNUSED(hints);
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, );
     gauto_array<char> buff = new char[READ_BUFF_SIZE];
     int len = io->readLine(buff.data, READ_BUFF_SIZE);
     buff.data[len] = '\0';
