@@ -15,6 +15,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsSequenceView.h \
             src/GTUtilsToolTip.h \
             src/GTUtilsTaskTreeView.h \
+            src/GTUtilsMsaEditorSequenceArea.h \
             src/tests/GUIInitialChecks.h \
             src/tests/regression_scenarios/GTTestsRegressionScenarios.h \
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.h \
@@ -56,7 +57,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTAction.h \
             src/api/GTSequenceReadingModeDialog.h \
             src/api/GTSequenceReadingModeDialogUtils.h \
-    src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.h
+            src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsApp.cpp \
@@ -72,6 +73,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsSequenceView.cpp \
             src/GTUtilsToolTip.cpp \
             src/GTUtilsTaskTreeView.cpp \
+            src/GTUtilsMsaEditorSequenceArea.cpp \
             src/tests/GUIInitialChecks.cpp \
             src/tests/regression_scenarios/GTTestsRegressionScenarios.cpp \
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.cpp \
@@ -119,7 +121,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTAction.cpp \
             src/api/GTSequenceReadingModeDialog.cpp \
             src/api/GTSequenceReadingModeDialogUtils.cpp \
-    src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.cpp
+            src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.cpp
 
 
 
