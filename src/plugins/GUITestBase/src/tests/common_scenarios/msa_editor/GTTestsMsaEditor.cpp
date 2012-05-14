@@ -25,7 +25,7 @@
 #include "api/GTFileDialog.h"
 #include "GTUtilsDialogRunnables.h"
 #include "GTUtilsMdi.h"
-#include "U2View/MSAEditorSequenceArea.h"
+#include "GTUtilsMsaEditorSequenceArea.h"
 
 namespace U2 {
 
@@ -45,19 +45,18 @@ GUI_TEST_CLASS_DEFINITION(test_0004)
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
 
     GTMenu::showContextMenu(os, mdiWindow);
-    GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
 
-    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", mdiWindow));
-    CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
-
-    QRect expectedSelection(5, 0, 1, 1);
-    CHECK_SET_ERR(expectedSelection == msaEditArea->getSelection().getRect(), "Unexpected selection region");
+    QRect expectedRect(5, 0, 1, 1);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, expectedRect);
 
     GTUtilsDialogRunnables::GoToDialogFiller filler1(os, 6);
     GTUtilsDialog::preWaitForDialog(os, &filler1);
     GTKeyboardDriver::keyClick(os, 'g', GTKeyboardDriver::key["ctrl"]);
-    CHECK_SET_ERR(expectedSelection == msaEditArea->getSelection().getRect(), "Unexpected selection region");
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, expectedRect);
 }
 
 } // namespace GUITest_common_scenarios_msa_editor
