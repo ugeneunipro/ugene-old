@@ -24,7 +24,8 @@
 #include "U2View/MSAEditorSequenceArea.h"
 
 namespace U2 {
-
+#define GT_CLASS_NAME "GTUtilsMSAEditorSequenceArea"
+#define GT_METHOD_NAME "checkSelectedRect"
 void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect &expectedRect)
 {
     MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area"));
@@ -32,5 +33,27 @@ void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect
 
     CHECK_SET_ERR(expectedRect == msaEditArea->getSelection().getRect(), "Unexpected selection region");
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getLeftOffset"
+int GTUtilsMSAEditorSequenceArea::getLeftOffset(U2OpStatus &os)
+{
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", -1);
+
+    return msaEditArea->getFirstVisibleBase() + 1; // тут не уверен, есть еще класс MSAEditorOffsetsViewWidget (файл MSAEditorOffsetsViewWidget.h)
+                                                   // мне кажется более правильно будет от туда офсет вытащить.
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getLeftOffset"
+int GTUtilsMSAEditorSequenceArea::getRightOffset(U2OpStatus &os)
+{
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", -1);
+
+    return msaEditArea->getLastVisibleBase(true, true) + 1; // тут такая же фигня как getLeftOffset()
+}
+
+#undef GT_CLASS_NAME
 } // namespace

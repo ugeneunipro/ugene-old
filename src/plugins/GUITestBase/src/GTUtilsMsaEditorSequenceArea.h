@@ -28,7 +28,12 @@ namespace U2 {
 
 class GTUtilsMSAEditorSequenceArea {
 public:
-    static void checkSelectedRect(U2OpStatus &os, const QRect &expectedRect);
+    static void checkSelectedRect(U2OpStatus &os, const QRect &expectedRect); // see example in GUITest_common_scenarios_msa_editor::test_0004
+    static int getLeftOffset(U2OpStatus &os);
+    static int getRightOffset(U2OpStatus &os);
+    static int getLength(U2OpStatus &os);
+    static void putCursor(U2OpStatus &os, int x, int y);
+    static void selectArea(U2OpStatus &os, const QPoint &topLeft, const QPoint &bottomRigth);
 };
 } // namespace
 #endif // GTUTILSMSAEDITORSEQUENCEAREA_H
