@@ -331,6 +331,15 @@ public:
         U2OpStatus &os;
         int minVal, maxVal;
     };
+
+    class GoToDialogFiller : public Runnable {
+    public:
+        GoToDialogFiller(U2OpStatus &_os, int _goTo) : os(_os), goTo(_goTo){}
+        virtual void run();
+    private:
+        U2OpStatus &os;
+        int goTo;
+    };
 };
 
 } // namespace

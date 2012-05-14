@@ -215,6 +215,7 @@ void GTUtilsDialogRunnables::PopupChooser::run()
 {
     GTGlobals::sleep(1000);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+    qDebug() << activePopupMenu->actions();
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
 
@@ -940,6 +941,26 @@ void GTUtilsDialogRunnables::ZoomToRangeDialogFiller::run()
     GT_CHECK(okButton != NULL, "Button \"Ok\" to  not found");
 
     GTWidget::click(os, okButton);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::GoToDialogFiller"
+#define GT_METHOD_NAME "run"
+void GTUtilsDialogRunnables::GoToDialogFiller::run()
+{
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+
+    QLineEdit *posEdit = dialog->findChild<QLineEdit*>("go_to_pos_line_edit");
+    GT_CHECK(posEdit != NULL, "Line edit not found");
+
+    GTLineEdit::setText(os, posEdit, QString::number(goTo));
+
+    QPushButton *goButton = dialog->findChild<QPushButton*>("okButton");
+    GT_CHECK(goButton != NULL, "Button \"Go!\" not found");
+
+    GTWidget::click(os, goButton);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
