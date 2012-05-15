@@ -76,6 +76,7 @@ namespace U2 {
 MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb) 
 : editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb) 
 {
+    setObjectName("msa_editor_sequence_area");
     setFocusPolicy(Qt::WheelFocus);
 
     cachedView = new QPixmap();

@@ -35,6 +35,8 @@ public:
     static int getLength(U2OpStatus &os);
     static void putCursor(U2OpStatus &os, int x, int y);
     static void selectArea(U2OpStatus &os, const QPoint &topLeft, const QPoint &bottomRigth);
+
+    static bool offsetsVisible(U2OpStatus &os);
 };
 
 } // namespace

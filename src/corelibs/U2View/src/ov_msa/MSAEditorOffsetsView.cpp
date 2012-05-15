@@ -47,7 +47,9 @@ MSAEditorOffsetsViewController::MSAEditorOffsetsViewController(QObject* p, MSAEd
     assert(mobj);
     MSAEditorBaseOffsetCache* cache = new MSAEditorBaseOffsetCache(this, mobj);
     lw = new MSAEditorOffsetsViewWidget(ed, seqArea, cache, true);
+    lw->setObjectName("msa_editor_offsets_view_widget_left");
     rw = new MSAEditorOffsetsViewWidget(ed, seqArea, cache, false);
+    rw->setObjectName("msa_editor_offsets_view_widget_right");
 
     connect(seqArea, SIGNAL(si_startChanged(const QPoint&,const QPoint&)), SLOT(sl_startChanged(const QPoint&,const QPoint&)));
     connect(editor, SIGNAL(si_fontChanged(const QFont&)), SLOT(sl_fontChanged()));
@@ -61,6 +63,7 @@ MSAEditorOffsetsViewController::MSAEditorOffsetsViewController(QObject* p, MSAEd
     bool showOffsets = s->getValue(SETTINGS_ROOT + SETTINGS_SHOW_OFFSETS, true).toBool();
 
     viewAction = new QAction(tr("Show offsets"), this);
+    viewAction->setObjectName("show_offsets");
     viewAction->setCheckable(true);
     viewAction->setChecked(showOffsets);
     connect(viewAction, SIGNAL(triggered(bool)), SLOT(sl_showOffsets(bool)));

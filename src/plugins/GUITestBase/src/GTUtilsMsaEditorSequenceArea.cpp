@@ -67,5 +67,18 @@ int GTUtilsMSAEditorSequenceArea::getLength(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "offsetsVisible"
+bool GTUtilsMSAEditorSequenceArea::offsetsVisible(U2OpStatus &os) {
+
+    QWidget *leftOffsetWidget = GTWidget::findWidget(os, "msa_editor_offsets_view_widget_left");
+    QWidget *rightOffsetWidget = GTWidget::findWidget(os, "msa_editor_offsets_view_widget_right");
+
+    GT_CHECK_RESULT((leftOffsetWidget != NULL) && (rightOffsetWidget != NULL), "offset widgets are NULL", false);
+    GT_CHECK_RESULT(leftOffsetWidget->isVisible() == rightOffsetWidget->isVisible(), "offset widget visibility states are not the same", false);
+
+    return leftOffsetWidget->isVisible();
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 } // namespace

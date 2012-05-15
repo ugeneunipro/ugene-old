@@ -27,6 +27,8 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 
+#include <U2View/MSAEditor.h>
+
 namespace U2 {
 
 namespace GUITest_common_scenarios_msa_editor {
@@ -113,6 +115,37 @@ GUI_TEST_CLASS_DEFINITION(test_0001_4) {
     int rightOffest = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
     CHECK_SET_ERR(rightOffest == 3, "Wrong right offset");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0002) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    bool offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
+    CHECK_SET_ERR(offsetsVisible == false, "Offsets are visible");
+
+
+    GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
+
+    mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
+    CHECK_SET_ERR(offsetsVisible == true, "Offsets are not visible");
+}
+
 
 GUI_TEST_CLASS_DEFINITION(test_0004)
 {

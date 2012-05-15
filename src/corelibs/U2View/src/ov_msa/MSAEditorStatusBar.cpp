@@ -35,6 +35,7 @@ MSAEditorStatusWidget::MSAEditorStatusWidget(MAlignmentObject* mobj, MSAEditorSe
 : aliObj(mobj), seqArea(sa), 
 lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
 {
+    setObjectName("msa_editor_status_widget");
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
     QLabel* findLabel = new QLabel();

@@ -31,7 +31,7 @@ namespace U2 {
 
 class GTMSAEditorStatusWidget {
 public:
-    // fails if the widget is NULL or can't set value
+    // fails if the widget is NULL or can't get length
     static int length(U2OpStatus& os, QWidget* w);
 };
 
