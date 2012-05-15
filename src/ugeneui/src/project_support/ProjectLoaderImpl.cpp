@@ -242,7 +242,7 @@ void ProjectLoaderImpl::updateRecentProjectsMenu() {
 }
 
 #define MAX_DOCS_TO_OPEN_VIEWS 5
-#define MAX_OBJECT_PER_DOC 50000
+#define MAX_OBJECT_PER_DOC 5000000
 
 Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVariantMap& hints) {
     QList<GUrl> urls = _urls;

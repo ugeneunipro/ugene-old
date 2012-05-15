@@ -388,21 +388,43 @@ void Document::checkLoadedState() const {
 #endif
 }
 
+class DocumentChildEventsHelper {
+public:
+    DocumentChildEventsHelper(Document *doc)
+    : doc(doc)
+    {
+        if (NULL != doc) {
+            doc->d_ptr->receiveChildEvents = false;
+        }
+    }
 
+    ~DocumentChildEventsHelper() {
+        if (NULL != doc) {
+            doc->d_ptr->receiveChildEvents = true;
+        }
+    }
+
+private:
+    Document *doc;
+};
 
 void Document::loadFrom(Document* sourceDoc) {
     SAFE_POINT(!isLoaded(), QString("Document is already loaded: ").arg(getURLString()), )
-        
+
+    DocumentChildEventsHelper eventsHelper(this);
+
     sourceDoc->checkLoadedState();
     checkUnloadedState();
 
     loadStateChangeMode = true;
 
     QMap<QString, UnloadedObjectInfo> unloadedInfo;
+    
     foreach(GObject* obj, objects) { //remove all unloaded objects but save hints
         unloadedInfo.insert(obj->getGObjectName(), UnloadedObjectInfo(obj));
         _removeObject(obj);
     }
+
     ctxState->setAll(sourceDoc->getGHints()->getMap());
     
     lastUpdateTime = sourceDoc->getLastUpdateTime();
@@ -449,7 +471,7 @@ void Document::loadFrom(Document* sourceDoc) {
     //TODO: rebind local objects relations if url!=d.url
     
     loadStateChangeMode = false;
-    
+
     checkLoadedState();
 }
 
@@ -572,6 +594,7 @@ void Document::setUserModLock(bool v) {
 
 bool Document::unload(bool deleteObjects) {
     assert(isLoaded());
+    DocumentChildEventsHelper eventsHelper(this);
     
     bool liveLocked = hasLocks(StateLockableTreeFlags_ItemAndChildren, StateLockFlag_LiveLock);
     if (liveLocked) {

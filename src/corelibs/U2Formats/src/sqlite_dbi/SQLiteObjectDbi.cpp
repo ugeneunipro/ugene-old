@@ -386,25 +386,31 @@ void SQLiteObjectDbi::ensureParent(const U2DataId& parentId, const U2DataId& chi
 // Helper methods
 
 void SQLiteObjectDbi::incrementVersion(const U2DataId& objectId, DbRef* db, U2OpStatus& os) {
-    SQLiteQuery q("UPDATE Object SET version = version + 1 WHERE id = ?1", db, os);
-    q.bindDataId(1, objectId);
-    q.update(1);
+    SQLiteTransaction t(db, os);
+    static const QString queryString("UPDATE Object SET version = version + 1 WHERE id = ?1");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    q->bindDataId(1, objectId);
+    q->update(1);
 }
 
 qint64 SQLiteObjectDbi::getObjectVersion(const U2DataId& objectId, U2OpStatus& os) {
-    SQLiteQuery q("SELECT version FROM Object WHERE id = ?1", db, os);
-    q.bindDataId(1, objectId);
-    return q.selectInt64();
+    SQLiteTransaction t(db, os);
+    static const QString queryString("SELECT version FROM Object WHERE id = ?1");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    q->bindDataId(1, objectId);
+    return q->selectInt64();
 }
 
 U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder, SQLiteDbiObjectRank rank, U2OpStatus& os) {
+    SQLiteTransaction t(db, os);
     U2DataType type = object.getType();
     const QString &vname = object.visualName;
-    SQLiteQuery i1("INSERT INTO Object(type, rank, name) VALUES(?1, ?2, ?3)", db, os);
-    i1.bindType(1, type);
-    i1.bindInt32(2, rank);
-    i1.bindString(3, vname);
-    U2DataId res = i1.insert(type);
+    static const QString i1String("INSERT INTO Object(type, rank, name) VALUES(?1, ?2, ?3)");
+    SQLiteQuery *i1 = t.getPreparedQuery(i1String, db, os);
+    i1->bindType(1, type);
+    i1->bindInt32(2, rank);
+    i1->bindString(3, vname);
+    U2DataId res = i1->insert(type);
     if (os.hasError()) {
         return res;
     }
@@ -415,10 +421,11 @@ U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder,
             return res;
         }
 
-        SQLiteQuery i2("INSERT INTO FolderContent(folder, object) VALUES(?1, ?2)", db, os);
-        i2.bindInt64(1, folderId);
-        i2.bindDataId(2, res);    
-        i2.execute();
+        static const QString i2String("INSERT INTO FolderContent(folder, object) VALUES(?1, ?2)");
+        SQLiteQuery *i2 = t.getPreparedQuery(i2String, db, os);
+        i2->bindInt64(1, folderId);
+        i2->bindDataId(2, res);    
+        i2->execute();
     }
 
     object.id = res;
@@ -442,10 +449,12 @@ void SQLiteObjectDbi::getObject(U2Object& object, const U2DataId& id, U2OpStatus
 }
 
 void SQLiteObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
-    SQLiteQuery q("UPDATE Object SET name = ?1, version = version + 1 WHERE id = ?2", db, os);
-    q.bindString(1, obj.visualName);
-    q.bindDataId(2, obj.id);
-    q.execute();
+    SQLiteTransaction t(db, os);
+    static const QString queryString("UPDATE Object SET name = ?1, version = version + 1 WHERE id = ?2");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    q->bindString(1, obj.visualName);
+    q->bindDataId(2, obj.id);
+    q->execute();
 
     SAFE_POINT_OP(os, );
 
@@ -453,9 +462,11 @@ void SQLiteObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
 }
 
 qint64 SQLiteObjectDbi::getFolderId(const QString& path, bool mustExist, DbRef* db, U2OpStatus& os) {
-    SQLiteQuery q("SELECT id FROM Folder WHERE path = ?1", db, os);
-    q.bindString(1, path);
-    qint64 res = q.selectInt64();
+    SQLiteTransaction t(db, os);
+    static const QString queryString("SELECT id FROM Folder WHERE path = ?1");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    q->bindString(1, path);
+    qint64 res = q->selectInt64();
     if (os.hasError()) {
         return -1;
     }

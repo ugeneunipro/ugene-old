@@ -841,6 +841,7 @@ void ProjectTreeController::sl_onObjectAdded(GObject* obj) {
         }
     }
     connectGObject(obj);
+
 	ProjViewObjectItem* objItem = new ProjViewObjectItem(obj, this);
     
     if (mode.groupMode != ProjectTreeGroupMode_ByDocument || topItem == NULL) {
@@ -848,7 +849,7 @@ void ProjectTreeController::sl_onObjectAdded(GObject* obj) {
     } else { //keep natural mode, as in file
         topItem->addChild(objItem);
     }
-    if (topItem != NULL) {
+    if (topItem != NULL && topItem->childCount() == 1) {
         topItem->updateVisual();
     }
 	updateActions();

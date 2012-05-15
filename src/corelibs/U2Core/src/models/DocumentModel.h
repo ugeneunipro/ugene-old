@@ -268,10 +268,14 @@ enum DocumentModLock {
     DocumentModLock_NUM_LOCKS
 };
 
+class DocumentChildEventsHelper;
+
 class U2CORE_EXPORT Document : public  StateLockableTreeItem {
     Q_OBJECT
     Q_PROPERTY( QString name WRITE setName READ getName )
     Q_PROPERTY( GUrl url WRITE setURL READ getURL )
+
+    friend class DocumentChildEventsHelper;
 
 public:
     class Constraints {
