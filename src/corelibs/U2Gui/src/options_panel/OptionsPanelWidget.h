@@ -45,6 +45,9 @@ public:
 };
 
 
+/** Options Panel Widget state */
+enum OPMainWidgetState {OPMainWidgetState_Opened, OPMainWidgetState_Closed};
+
 /** 
  * Serves as a parent widget for all header image and option widgets.
  * Provides general layout and style of the widgets (but it DOESN'T handle the behavior of selecting a group!).
@@ -56,22 +59,39 @@ public:
     /** Constructor. Initializes the layout and style of the widget */
     OptionsPanelWidget();
 
-    /** Creates a new header image widget and owns it by putting it into the layout */
-    GroupHeaderImageWidget* createHeaderImageWidget(const QPixmap& image);
+    /** Creates a new header image widget and owns it by putting it into the layout. */
+    GroupHeaderImageWidget* createHeaderImageWidget(const QString& groupId, const QPixmap& image);
 
     /** Creates a new options widget and owns it by putting into the layout */
-    GroupOptionsWidget* createOptionsWidget(const QString& title, QWidget* widget);
+    GroupOptionsWidget* createOptionsWidget(const QString& groupId, const QString& title, QWidget* widget);
 
-    /** Shows/hides the options scroll area widget */
+    /** Shows/hides the options scroll area widget (the left part of the OP) */
     void openOptionsPanel();
     void closeOptionsPanel();
 
+    /** Specifies if the left part of the Options Panel is shown */
+    inline OPMainWidgetState getState() { return opMainWidgetState; }
+
+    /** Returns NULL if not found */
+    GroupHeaderImageWidget* findHeaderWidgetByGroupId(const QString& groupId);
+
+    /** Delete options widget (on the left side) */
+    void deleteOptionsWidget(const QString& groupId);
+
 private:
+    /** Returns NULL if not found */
+    GroupOptionsWidget* findOptionsWidgetByGroupId(const QString& groupId);
+
     /** Layouts */
     QVBoxLayout* optionsLayout;
     QVBoxLayout* groupsLayout;
 
     OptionsScrollArea* optionsScrollArea;
+
+    OPMainWidgetState opMainWidgetState;
+
+    QList<GroupHeaderImageWidget*> headerWidgets;
+    QList<GroupOptionsWidget*> optionsWidgets;
 };
 
 

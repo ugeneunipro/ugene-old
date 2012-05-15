@@ -1,7 +1,8 @@
 include (U2View.pri)
 
 # Input
-HEADERS += src/WebWindow.h \
+HEADERS += src/Init.h \
+           src/WebWindow.h \
            src/ov_assembly/AssemblyBrowser.h \
            src/ov_assembly/AssemblyBrowserFactory.h \
            src/ov_assembly/AssemblyBrowserSettings.h \
@@ -94,11 +95,14 @@ HEADERS += src/WebWindow.h \
            src/ov_sequence/annot_highlight/AnnotHighlightTree.h \
            src/ov_sequence/annot_highlight/AnnotHighlightTreeItem.h \
            src/ov_sequence/annot_highlight/AnnotHighlightWidget.h \
+           src/ov_sequence/annot_highlight/AnnotHighlightWidgetFactory.h \
            src/ov_sequence/find_pattern/FindPatternTask.h \
            src/ov_sequence/find_pattern/FindPatternWidget.h \
+           src/ov_sequence/find_pattern/FindPatternWidgetFactory.h \
            src/ov_sequence/sequence_info/CharOccurTask.h \
            src/ov_sequence/sequence_info/DinuclOccurTask.h \
            src/ov_sequence/sequence_info/SequenceInfo.h \
+           src/ov_sequence/sequence_info/SequenceInfoFactory.h \
            src/ov_sequence/SaveGraphCutoffsDialogController.h \
            src/ov_sequence/SaveGraphCutoffsTask.h \
            src/ov_text/SimpleTextObjectView.h \
@@ -145,7 +149,8 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/util_sec_struct_predict/ui/SecStructDialog.ui \
          src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \
          src/util_smith_waterman/ui/SubstMatrixDialogBase.ui
-SOURCES += src/WebWindow.cpp \
+SOURCES += src/Init.cpp \
+           src/WebWindow.cpp \
            src/ov_assembly/AssemblyBrowser.cpp \
            src/ov_assembly/AssemblyBrowserFactory.cpp \
            src/ov_assembly/AssemblyBrowserSettings.cpp \
@@ -238,11 +243,14 @@ SOURCES += src/WebWindow.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightTree.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightTreeItem.cpp \
            src/ov_sequence/annot_highlight/AnnotHighlightWidget.cpp \
+           src/ov_sequence/annot_highlight/AnnotHighlightWidgetFactory.cpp \
            src/ov_sequence/find_pattern/FindPatternTask.cpp \
            src/ov_sequence/find_pattern/FindPatternWidget.cpp \
+           src/ov_sequence/find_pattern/FindPatternWidgetFactory.cpp \
            src/ov_sequence/sequence_info/CharOccurTask.cpp \
            src/ov_sequence/sequence_info/DinuclOccurTask.cpp \
            src/ov_sequence/sequence_info/SequenceInfo.cpp \
+           src/ov_sequence/sequence_info/SequenceInfoFactory.cpp \
            src/ov_text/SimpleTextObjectView.cpp \
            src/ov_text/SimpleTextObjectViewTasks.cpp \
            src/phyltree/BranchSettingsDialog.cpp \

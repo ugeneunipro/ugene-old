@@ -27,7 +27,8 @@
 namespace U2 {
 
 
-OptionsPanel::OptionsPanel(QObject* parent) : QObject(parent)
+OptionsPanel::OptionsPanel(GObjectView* _objView)
+    : objView(_objView)
 {
     widget = new OptionsPanelWidget();
 }
@@ -46,147 +47,144 @@ QWidget* OptionsPanel::getMainWidget()
 }
 
 
-void OptionsPanel::addGroup(const QPixmap& headerImage, const QString& title, QWidget* _widget)
+void OptionsPanel::addGroup(OPWidgetFactory* factory)
 {
-    // Create the widgets to show the group
-    GroupHeaderImageWidget* headerImageWidget = widget->createHeaderImageWidget(headerImage);
-    GroupOptionsWidget* optionsWidget = widget->createOptionsWidget(title, _widget);
+    // Create a widget with icon at the right side
+    OPGroupParameters groupParameters = factory->getOPGroupParameters();
+    GroupHeaderImageWidget* headerImageWidget =
+        widget->createHeaderImageWidget(groupParameters.getGroupId(), groupParameters.getIcon());
 
     // Listen for signals from the header image widget
-    connect(headerImageWidget, SIGNAL(si_groupHeaderPressed(GroupHeaderImageWidget*, bool)),
-        this, SLOT(sl_groupHeaderPressed(GroupHeaderImageWidget*, bool)));
+    connect(headerImageWidget, SIGNAL(si_groupHeaderPressed(QString, bool)),
+        this, SLOT(sl_groupHeaderPressed(QString, bool)));
 
-    // Create the group object
-    OptionsPanelGroup* group = new OptionsPanelGroup(headerImageWidget, optionsWidget);
-    groups.append(group);
-
-    // Hide the options group
-    optionsWidget->hide();
+    // Add the factory
+    opWidgetFactories.append(factory);
 }
 
 
-void OptionsPanel::openGroupByTitle(QString groupTitle)
+void OptionsPanel::openGroupById(const QString& groupId)
 {
-    foreach (OptionsPanelGroup* group, groups)
-    {
-        if (group->getOptionsWidget()->getTitle() == groupTitle) {
-            widget->openOptionsPanel();
-            openOptionsGroup(group);
-        }
+    if (OPMainWidgetState_Closed == widget->getState()) {
+        widget->openOptionsPanel();
+        openOptionsGroup(groupId);
+    }
+    else {
+        openOptionsGroup(groupId);
     }
 }
 
 
-void OptionsPanel::sl_groupHeaderPressed(GroupHeaderImageWidget* _headerImageWidget, bool ctrlHold)
+void OptionsPanel::sl_groupHeaderPressed(QString groupId, bool ctrlHold)
 {
-    // Find the options group and get the corresponding options widget
-    OptionsPanelGroup* group = findGroupByHeader(_headerImageWidget);
+    OPWidgetFactory* opWidgetFactory = findFactoryByGroupId(groupId);
+    SAFE_POINT(NULL != opWidgetFactory,
+        QString("Internal error: can't open a group with ID '%1' on the Options Panel.").arg(groupId),);
 
     // Implement the logic of the groups opening/closing
-    if (activeGroups.empty())
-    {
+    //
+    if (OPMainWidgetState_Closed == widget->getState()) {
         widget->openOptionsPanel();
-        openOptionsGroup(group);
+        openOptionsGroup(groupId);
         return;
     }
-
-    // There are active groups and Ctrl is pressed down
+    
+    // There are active groups and Ctrl has been pressed down
     if (ctrlHold)
     {
         // The group has already been opened
-        if (activeGroups.contains(group))
+        if (OPGroupState_Opened == opWidgetFactory->getGroupState())
         {
             // And this is the only opened group
-            if (activeGroups.count() == 1)
-            {
+            if (1 == activeGroupsIds.count()) {
                 widget->closeOptionsPanel();
             }
 
             // Close the already opened group in any case
-            closeOptionsGroup(group);
+            closeOptionsGroup(groupId);
             return;
         }
         // The group hasn't yet been opened
         else
         {
-            openOptionsGroup(group);
+            openOptionsGroup(groupId);
             return;
         }
     }
 
     // There are active groups and Ctrl is not pressed down
     // The only active group is the currently selected one
-    if (activeGroups.contains(group) && (activeGroups.count() == 1))
+    if (OPGroupState_Opened == opWidgetFactory->getGroupState() &&
+        (1 == activeGroupsIds.count()))
     {
         widget->closeOptionsPanel();
-        closeOptionsGroup(group);
+        closeOptionsGroup(groupId);
         return;
     }
     // There are more than 1 groups opened
     else
     {
-        foreach (OptionsPanelGroup* activeGroup, activeGroups)
-        {
-            closeOptionsGroup(activeGroup);
+        foreach (QString groupId, activeGroupsIds) {
+            closeOptionsGroup(groupId);
         }
-
-        openOptionsGroup(group);
+        openOptionsGroup(groupId);
     }
 }
 
 
-void OptionsPanel::openOptionsGroup(OptionsPanelGroup* group)
+void OptionsPanel::openOptionsGroup(const QString& groupId)
 {
-    SAFE_POINT((group != 0), "Internal error: options panel group equals to 0.",);
-
-    if (activeGroups.contains(group))
-    {
+    if (activeGroupsIds.contains(groupId)) {
         return;
     }
 
-    GroupOptionsWidget* optionsWidget = group->getOptionsWidget();
-    SAFE_POINT((optionsWidget != 0), "Internal error: an options group doesn't contain a widget.",);
+    OPWidgetFactory* opWidgetFactory = findFactoryByGroupId(groupId);
+    SAFE_POINT(NULL != opWidgetFactory,
+        QString("Internal error: can't open a group with ID '%1' on the Options Panel.").arg(groupId),);
 
-    GroupHeaderImageWidget* headerWidget = group->getHeaderImageWidget();
-    SAFE_POINT((headerWidget != 0), "Internal error: an options group doesn't contain a header widget.",);
+    GroupHeaderImageWidget* headerWidget = widget->findHeaderWidgetByGroupId(groupId);
+    SAFE_POINT(NULL != headerWidget,
+        QString("Internal error: can't find a header widget for group '%1'").arg(groupId),);
 
-    optionsWidget->show();
+    OPGroupParameters parameters = opWidgetFactory->getOPGroupParameters();
+    widget->createOptionsWidget(groupId, parameters.getTitle(), opWidgetFactory->createWidget(objView));
     headerWidget->setHeaderSelected();
-
-    activeGroups.append(group);
+    activeGroupsIds.append(groupId);
+    opWidgetFactory->setGroupState(OPGroupState_Opened);
 }
 
 
-void OptionsPanel::closeOptionsGroup(OptionsPanelGroup* group)
+void OptionsPanel::closeOptionsGroup(const QString& groupId)
 {
-    SAFE_POINT((group != 0), "Internal error: options panel group equals to 0.",);
-
-    if (!activeGroups.contains(group))
-    {
+    if (!activeGroupsIds.contains(groupId)) {
         return;
     }
 
-    GroupOptionsWidget* optionsWidget = group->getOptionsWidget();
-    SAFE_POINT((optionsWidget != 0), "Internal error: an options group doesn't contain a widget.",);
+    OPWidgetFactory* opWidgetFactory = findFactoryByGroupId(groupId);
+    SAFE_POINT(NULL != opWidgetFactory,
+        QString("Internal error: can't open a group with ID '%1' on the Options Panel.").arg(groupId),);
 
-    GroupHeaderImageWidget* headerWidget = group->getHeaderImageWidget();
-    SAFE_POINT((headerWidget != 0), "Internal error: an options group doesn't contain a header widget.",);
+    GroupHeaderImageWidget* headerWidget = widget->findHeaderWidgetByGroupId(groupId);
+    SAFE_POINT(NULL != headerWidget,
+        QString("Internal error: can't find a header widget for group '%1'").arg(groupId),);
 
-    optionsWidget->hide();
+    widget->deleteOptionsWidget(groupId);
     headerWidget->setHeaderDeselected();
-
-    activeGroups.removeOne(group);
+    activeGroupsIds.removeAll(groupId);
+    opWidgetFactory->setGroupState(OPGroupState_Closed);
 }
 
 
-OptionsPanelGroup* OptionsPanel::findGroupByHeader(GroupHeaderImageWidget* _headerImageWidget)
+OPWidgetFactory* OptionsPanel::findFactoryByGroupId(const QString& groupId)
 {
-    foreach (OptionsPanelGroup* group, groups)
-    {
-        if (group->getHeaderImageWidget() == _headerImageWidget)
-            return group;
+    foreach (OPWidgetFactory* factory, opWidgetFactories) {
+        OPGroupParameters parameters = factory->getOPGroupParameters();
+        if (parameters.getGroupId() == groupId) {
+            return factory;
+        }
     }
-    return 0;
+
+    return NULL;
 }
 
 

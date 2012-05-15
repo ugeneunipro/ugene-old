@@ -76,6 +76,7 @@ public:
         dataBaseRegistry = NULL;
         externalToolRegistry = NULL;
         splicedAlignmentTaskRegistry = NULL;
+        opWidgetFactoryRegistry = NULL;
         aaSupport = NULL;
         dbiRegistry = NULL;
         rfr = NULL;
@@ -235,6 +236,11 @@ public:
         splicedAlignmentTaskRegistry = tr;
     }
 
+    void setOPWidgetFactoryRegistry(OPWidgetFactoryRegistry* _opWidgetFactoryRegistry) {
+        assert((NULL == opWidgetFactoryRegistry) || (NULL == _opWidgetFactoryRegistry));
+        opWidgetFactoryRegistry = _opWidgetFactoryRegistry;
+    }
+
     void setStructuralAlignmentAlgorithmRegistry(StructuralAlignmentAlgorithmRegistry *_saar) {
         assert(saar == NULL || _saar == NULL);
         saar = _saar;
@@ -308,6 +314,7 @@ protected:
     virtual U2DbiRegistry *                 _getDbiRegistry() const { return dbiRegistry; }
     virtual GUITestBase*                    _getGUITestBase() const {return tb;}
     virtual SplicedAlignmentTaskRegistry*   _getSplicedAlignmentTaskRegistry() const { return splicedAlignmentTaskRegistry; }
+    virtual OPWidgetFactoryRegistry*        _getOPWidgetFactoryRegistry() const { return opWidgetFactoryRegistry; }
 
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -369,6 +376,7 @@ private:
     U2DbiRegistry *dbiRegistry;
     GUITestBase *tb;
     SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistry;
+    OPWidgetFactoryRegistry* opWidgetFactoryRegistry;
     bool guiMode;
     QString activeWindow;
 

@@ -237,10 +237,6 @@ private:
     ADVSequenceWidget*          focusedWidget;
     
     int                         timerId;
-
-    static const QString OP_TAB_TITLE_INFO;
-    static const QString OP_TAB_TITLE_SEARCH_IN_SEQ;
-    static const QString OP_TAB_TITLE_ANNOT_HIGHLIGHT;  
 };
 
 

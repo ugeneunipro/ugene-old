@@ -19,38 +19,36 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GROUP_OPTIONS_WIDGET_H_
-#define _U2_GROUP_OPTIONS_WIDGET_H_
+#ifndef _U2_OP_WIDGET_FACTORY_REGISTRY_H_
+#define _U2_OP_WIDGET_FACTORY_REGISTRY_H_
 
-#include <QtGui/QtGui>
+#include "OPWidgetFactory.h"
+
+#include <U2Core/global.h>
+
+#include <QtCore/QMutex>
+
 
 namespace U2 {
 
-/**
- * Widget with some options shown when a group header has been pressed.
- */
-class GroupOptionsWidget : public QWidget
+class U2GUI_EXPORT OPWidgetFactoryRegistry : public QObject
 {
+    Q_OBJECT
+
 public:
-    GroupOptionsWidget(const QString& groupId, const QString& title, QWidget* widget);
+    OPWidgetFactoryRegistry(QObject* parent = NULL);
+    ~OPWidgetFactoryRegistry();
 
-    inline const QString& getGroupId() { return groupId; }
-    inline static int getWidgetWidth() { return WIDGET_WIDTH; }
-    inline const QString& getTitle() { return title; }
+    bool registerFactory(OPWidgetFactory* factory);
 
+    QList<OPWidgetFactory*> getRegisteredFactories(ObjectViewType objViewType);
 
 private:
-    QString     groupId;
-    QWidget*    widget;
-    QLabel*     titleWidget;
-    QString     title;
-
-    QVBoxLayout*        mainLayout;
-
-    static const int TITLE_HEIGHT = 30;
-    static const int WIDGET_WIDTH = 200;
+    QList<OPWidgetFactory*> opWidgetFactories;
+    QMutex mutex;
 };
 
 } // namespace
 
 #endif
+

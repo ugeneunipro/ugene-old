@@ -34,19 +34,23 @@ class GroupHeaderImageWidget : public QLabel
 {
     Q_OBJECT
 public:
-    GroupHeaderImageWidget(const QPixmap& image);
+    GroupHeaderImageWidget(const QString& groupId, const QPixmap& image);
+
+    inline const QString& getGroupId() { return groupId; }
 
     void setHeaderSelected();
     void setHeaderDeselected();
 
 signals:
     /** Emitted when the widget has been pressed */
-    void si_groupHeaderPressed(GroupHeaderImageWidget*, bool ctrlHold);
+    void si_groupHeaderPressed(QString groupId, bool ctrlHold);
 
 protected:
     virtual void mousePressEvent(QMouseEvent*);
 
 private:
+    QString groupId;
+
     static const QString HEADER_COMMON_STYLE;
 };
 

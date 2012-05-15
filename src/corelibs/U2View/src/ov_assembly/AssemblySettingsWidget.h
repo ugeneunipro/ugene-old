@@ -22,8 +22,13 @@
 #ifndef __ASSEMBLY_SETTINGS_WIDGET_H__
 #define __ASSEMBLY_SETTINGS_WIDGET_H__
 
-#include <QtGui/QtGui>
+#include <U2Core/global.h>
 #include <U2Core/U2Region.h>
+
+#include <U2Gui/OPWidgetFactory.h>
+
+#include <QtGui/QtGui>
+
 
 namespace U2 {
 
@@ -52,6 +57,24 @@ private:
     QComboBox * readsHighlightCombo;
     // Consensus
     QComboBox * algorithmCombo;
+};
+
+
+class U2VIEW_EXPORT AssemblySettingsWidgetFactory : public OPWidgetFactory
+{
+    Q_OBJECT
+public:
+    AssemblySettingsWidgetFactory();
+    virtual ~AssemblySettingsWidgetFactory(){}
+
+    virtual QWidget* createWidget(GObjectView* objView);
+
+    virtual OPGroupParameters getOPGroupParameters();
+
+private:
+    static const QString GROUP_ID;
+    static const QString GROUP_ICON_STR;
+    static const QString GROUP_TITLE;
 };
 
 } // namespace

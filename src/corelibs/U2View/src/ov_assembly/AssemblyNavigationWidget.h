@@ -22,7 +22,12 @@
 #ifndef __ASSEMBLY_NAVIGATION_WIDGET_H__
 #define __ASSEMBLY_NAVIGATION_WIDGET_H__
 
+#include <U2Core/global.h>
+
+#include <U2Gui/OPWidgetFactory.h>
+
 #include <QtGui/QtGui>
+
 
 namespace U2 {
 
@@ -48,6 +53,23 @@ private:
     AssemblyBrowser * browser;
     QString prefix;
     QString postfix;
+};
+
+class U2VIEW_EXPORT AssemblyNavigationWidgetFactory : public OPWidgetFactory
+{
+    Q_OBJECT
+public:
+    AssemblyNavigationWidgetFactory();
+    virtual ~AssemblyNavigationWidgetFactory(){}
+
+    virtual QWidget* createWidget(GObjectView* objView);
+
+    virtual OPGroupParameters getOPGroupParameters();
+
+private:
+    static const QString GROUP_ID;
+    static const QString GROUP_ICON_STR;
+    static const QString GROUP_TITLE;
 };
 
 } // namespace

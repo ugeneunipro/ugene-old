@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -19,36 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GROUP_OPTIONS_WIDGET_H_
-#define _U2_GROUP_OPTIONS_WIDGET_H_
+#ifndef _U2_FIND_PATTERN_WIDGET_FACTORY_H_
+#define _U2_FIND_PATTERN_WIDGET_FACTORY_H_
 
-#include <QtGui/QtGui>
+#include <U2Core/global.h>
+
+#include <U2Gui/OPWidgetFactory.h>
+
+#include <U2View/AnnotatedDNAView.h>
+
+#include <QtGui/QPixmap>
+
 
 namespace U2 {
 
-/**
- * Widget with some options shown when a group header has been pressed.
- */
-class GroupOptionsWidget : public QWidget
+class U2VIEW_EXPORT FindPatternWidgetFactory : public OPWidgetFactory
 {
+    Q_OBJECT
 public:
-    GroupOptionsWidget(const QString& groupId, const QString& title, QWidget* widget);
+    FindPatternWidgetFactory();
+    virtual ~FindPatternWidgetFactory(){}
 
-    inline const QString& getGroupId() { return groupId; }
-    inline static int getWidgetWidth() { return WIDGET_WIDTH; }
-    inline const QString& getTitle() { return title; }
+    virtual QWidget* createWidget(GObjectView* objView);
 
+    virtual OPGroupParameters getOPGroupParameters();
+
+    static const QString& getGroupId() { return GROUP_ID; }
 
 private:
-    QString     groupId;
-    QWidget*    widget;
-    QLabel*     titleWidget;
-    QString     title;
-
-    QVBoxLayout*        mainLayout;
-
-    static const int TITLE_HEIGHT = 30;
-    static const int WIDGET_WIDTH = 200;
+    static const QString GROUP_ID;
+    static const QString GROUP_ICON_STR;
+    static const QString GROUP_TITLE;
 };
 
 } // namespace

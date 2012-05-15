@@ -21,14 +21,14 @@
 
 #include "SequenceInfo.h"
 
-#include <U2Gui/ShowHideSubgroupWidget.h>
-
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/ShowHideSubgroupWidget.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>

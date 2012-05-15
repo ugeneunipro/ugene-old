@@ -24,9 +24,11 @@
 
 #include <U2Core/FormatUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
+
 
 namespace U2 {
 
@@ -106,5 +108,43 @@ void CoveredRegionsLabel::sl_updateContent() {
 
     setText(text);
 }
+
+//
+// AssemblyNavigationWidgetFactory
+////////////////////////////////////
+const QString AssemblyNavigationWidgetFactory::GROUP_ID = "OP_ASS_NAVIGATION";
+const QString AssemblyNavigationWidgetFactory::GROUP_ICON_STR = ":core/images/goto.png";
+const QString AssemblyNavigationWidgetFactory::GROUP_TITLE = QString(tr("Navigation"));
+
+
+AssemblyNavigationWidgetFactory::AssemblyNavigationWidgetFactory()
+{
+    objectViewOfWidget = ObjViewType_AssemblyBrowser;
+}
+
+
+QWidget* AssemblyNavigationWidgetFactory::createWidget(GObjectView* objView)
+{
+    SAFE_POINT(NULL != objView,
+        QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
+        NULL);
+
+    AssemblyBrowser* assemblyBrowser = qobject_cast<AssemblyBrowser*>(objView);
+    SAFE_POINT(NULL != assemblyBrowser,
+        QString("Internal error: unable to cast object view to Assembly Browser for group '%1'.").arg(GROUP_ID),
+        NULL);
+
+    AssemblyNavigationWidget* widget = new AssemblyNavigationWidget(assemblyBrowser, assemblyBrowser->getMainWidget());
+    return widget;
+}
+
+
+OPGroupParameters AssemblyNavigationWidgetFactory::getOPGroupParameters()
+{
+    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
+}
+
+
+
 
 } // namespace

@@ -79,6 +79,7 @@ class AutoAnnotationsSupport;
 class CDSearchFactoryRegistry;
 class GUITestBase;
 class SplicedAlignmentTaskRegistry;
+class OPWidgetFactoryRegistry;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -201,6 +202,8 @@ public:
 
     static SplicedAlignmentTaskRegistry* getSplicedAlignmentTaskRegistry() { return getInstance()->_getSplicedAlignmentTaskRegistry(); }
 
+    static OPWidgetFactoryRegistry* getOPWidgetFactoryRegistry() { return getInstance()->_getOPWidgetFactoryRegistry(); }
+
     static U2DbiRegistry *getDbiRegistry() { return getInstance()->_getDbiRegistry(); }
     
     static bool isGUIMode() {return getInstance()->_isGUIMode(); }
@@ -265,6 +268,7 @@ protected:
     virtual CDSearchFactoryRegistry* _getCDSFactoryRegistry() const = 0;
     virtual GUITestBase* _getGUITestBase() const = 0;
     virtual SplicedAlignmentTaskRegistry* _getSplicedAlignmentTaskRegistry() const = 0;
+    virtual OPWidgetFactoryRegistry* _getOPWidgetFactoryRegistry() const = 0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

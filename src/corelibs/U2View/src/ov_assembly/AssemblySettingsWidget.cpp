@@ -196,4 +196,40 @@ QWidget * AssemblySettingsWidget::createRulerSettings() {
 }
 
 
+//
+// AssemblySettingsWidgetFactory
+////////////////////////////////////
+const QString AssemblySettingsWidgetFactory::GROUP_ID = "OP_ASS_SETTINGS";
+const QString AssemblySettingsWidgetFactory::GROUP_ICON_STR = ":core/images/settings.png";
+const QString AssemblySettingsWidgetFactory::GROUP_TITLE = QString(tr("Assembly Browser Settings"));
+
+
+AssemblySettingsWidgetFactory::AssemblySettingsWidgetFactory()
+{
+    objectViewOfWidget = ObjViewType_AssemblyBrowser;
+}
+
+
+QWidget* AssemblySettingsWidgetFactory::createWidget(GObjectView* objView)
+{
+    SAFE_POINT(NULL != objView,
+        QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
+        NULL);
+
+    AssemblyBrowser* assemblyBrowser = qobject_cast<AssemblyBrowser*>(objView);
+    SAFE_POINT(NULL != assemblyBrowser,
+        QString("Internal error: unable to cast object view to Assembly Browser for group '%1'.").arg(GROUP_ID),
+        NULL);
+
+    AssemblySettingsWidget* widget = new AssemblySettingsWidget(assemblyBrowser->getMainWidget());
+    return widget;
+}
+
+
+OPGroupParameters AssemblySettingsWidgetFactory::getOPGroupParameters()
+{
+    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
+}
+
+
 } // namespace

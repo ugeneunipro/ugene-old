@@ -32,9 +32,6 @@
 #include "AssemblyReadsArea.h"
 #include "AssemblyBrowserSettings.h"
 #include "AssemblyCellRenderer.h"
-#include "AssemblySettingsWidget.h"
-#include "AssemblyInfoWidget.h"
-#include "AssemblyNavigationWidget.h"
 
 #include <U2Core/U2Type.h>
 #include <U2Core/U2DbiUtils.h>
@@ -72,9 +69,10 @@
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
-#include <U2Gui/OptionsPanel.h>
 
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/OptionsPanel.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/PositionSelector.h>
 
 #include <U2View/ConvertAssemblyToSamDialog.h>
@@ -901,16 +899,13 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
         mainLayout->addWidget(readsLayoutWidget);
         mainLayout->addWidget(readsHBar);
 
+        OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
         OptionsPanel * optionsPanel = browser->getOptionsPanel();
-
-        AssemblyNavigationWidget * navWidget = new AssemblyNavigationWidget(browser, this);
-        optionsPanel->addGroup(QPixmap(":core/images/goto.png"), tr("Navigation"), navWidget);
-
-        AssemblySettingsWidget * settingsWidget = new AssemblySettingsWidget(this);
-        optionsPanel->addGroup(QPixmap(":core/images/settings.png"), tr("Assembly Browser Settings"), settingsWidget);
-
-        AssemblyInfoWidget * infoWidget = new AssemblyInfoWidget(browser, this);
-        optionsPanel->addGroup(QPixmap(":core/images/chart_bar.png"), tr("Assembly Statistics"), infoWidget);
+        QList<OPWidgetFactory*> opWidgetFactoriesForAssBr =
+            opWidgetFactoryRegistry->getRegisteredFactories(ObjViewType_AssemblyBrowser);
+        foreach (OPWidgetFactory* factory, opWidgetFactoriesForAssBr) {
+            optionsPanel->addGroup(factory);
+        }
 
         setLayout(mainLayout);
 

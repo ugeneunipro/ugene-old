@@ -19,38 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GROUP_OPTIONS_WIDGET_H_
-#define _U2_GROUP_OPTIONS_WIDGET_H_
+#include "OPWidgetFactory.h"
 
-#include <QtGui/QtGui>
+#include <U2Core/U2SafePoints.h>
+
 
 namespace U2 {
 
-/**
- * Widget with some options shown when a group header has been pressed.
- */
-class GroupOptionsWidget : public QWidget
+OPGroupParameters::OPGroupParameters(QString _groupId, QPixmap headerImage, QString title)
+    :  groupId(_groupId),
+       groupIcon(headerImage),
+       groupTitle(title)
 {
-public:
-    GroupOptionsWidget(const QString& groupId, const QString& title, QWidget* widget);
+}
 
-    inline const QString& getGroupId() { return groupId; }
-    inline static int getWidgetWidth() { return WIDGET_WIDTH; }
-    inline const QString& getTitle() { return title; }
-
-
-private:
-    QString     groupId;
-    QWidget*    widget;
-    QLabel*     titleWidget;
-    QString     title;
-
-    QVBoxLayout*        mainLayout;
-
-    static const int TITLE_HEIGHT = 30;
-    static const int WIDGET_WIDTH = 200;
-};
+OPWidgetFactory::OPWidgetFactory()
+{
+    groupState = OPGroupState_Closed;
+}
 
 } // namespace
-
-#endif

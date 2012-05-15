@@ -115,6 +115,7 @@ public:
     inline QSharedPointer<AssemblyModel> getModel() const {return model;}
     inline QFont getFont() const {return font;}
     void setFocusToPosSelector();
+    inline AssemblyBrowserUi* getMainWidget() { return ui; }
     
     AssemblyObject* getAssemblyObject() const {return gobject;}
 

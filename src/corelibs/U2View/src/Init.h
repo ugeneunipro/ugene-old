@@ -19,36 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GROUP_OPTIONS_WIDGET_H_
-#define _U2_GROUP_OPTIONS_WIDGET_H_
+#ifndef _U2_INIT_U2VIEW_H_
+#define _U2_INIT_U2VIEW_H_
 
-#include <QtGui/QtGui>
+#include <U2Core/global.h>
+
 
 namespace U2 {
 
-/**
- * Widget with some options shown when a group header has been pressed.
- */
-class GroupOptionsWidget : public QWidget
-{
+class U2VIEW_EXPORT Init {
 public:
-    GroupOptionsWidget(const QString& groupId, const QString& title, QWidget* widget);
-
-    inline const QString& getGroupId() { return groupId; }
-    inline static int getWidgetWidth() { return WIDGET_WIDTH; }
-    inline const QString& getTitle() { return title; }
-
+    static void initOptionsPanels();
 
 private:
-    QString     groupId;
-    QWidget*    widget;
-    QLabel*     titleWidget;
-    QString     title;
-
-    QVBoxLayout*        mainLayout;
-
-    static const int TITLE_HEIGHT = 30;
-    static const int WIDGET_WIDTH = 200;
+    Init(){}
 };
 
 } // namespace

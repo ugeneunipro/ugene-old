@@ -118,26 +118,33 @@ OptionsPanelWidget::OptionsPanelWidget()
     mainLayout->addWidget(optionsScrollArea);
     mainLayout->addWidget(groupsWidget);
     setLayout(mainLayout);
+
+    // Init the state
+    opMainWidgetState = OPMainWidgetState_Closed;
 }
 
 
-GroupHeaderImageWidget* OptionsPanelWidget::createHeaderImageWidget(const QPixmap& image)
+GroupHeaderImageWidget* OptionsPanelWidget::createHeaderImageWidget(const QString& groupId, const QPixmap& image)
 {
-    GroupHeaderImageWidget* widget = new GroupHeaderImageWidget(image);
+    GroupHeaderImageWidget* widget = new GroupHeaderImageWidget(groupId, image);
 
     // Add widget to the layout and "parent" it
     groupsLayout->addWidget(widget);
+
+    headerWidgets.append(widget);
 
     return widget;
 }
 
 
-GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& title, QWidget* _widget)
+GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& groupId, const QString& title, QWidget* _widget)
 {
-    GroupOptionsWidget* widget = new GroupOptionsWidget(title, _widget);
+    GroupOptionsWidget* widget = new GroupOptionsWidget(groupId, title, _widget);
 
     // Add widget to the layout and "parent" it
     optionsLayout->addWidget(widget);
+
+    optionsWidgets.append(widget);
 
     return widget;
 }
@@ -146,12 +153,50 @@ GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& title
 void OptionsPanelWidget::openOptionsPanel()
 {
     optionsScrollArea->show();
+    opMainWidgetState = OPMainWidgetState_Opened;
 }
 
 
 void OptionsPanelWidget::closeOptionsPanel()
 {
     optionsScrollArea->hide();
+    opMainWidgetState = OPMainWidgetState_Closed;
+}
+
+
+GroupHeaderImageWidget* OptionsPanelWidget::findHeaderWidgetByGroupId(const QString& groupId)
+{
+    foreach (GroupHeaderImageWidget* widget, headerWidgets) {
+        if (widget->getGroupId() == groupId) {
+            return widget;
+        }
+    }
+
+    return NULL;
+}
+
+
+GroupOptionsWidget* OptionsPanelWidget::findOptionsWidgetByGroupId(const QString& groupId)
+{
+    foreach (GroupOptionsWidget* widget, optionsWidgets) {
+        if (widget->getGroupId() == groupId) {
+            return widget;
+        }
+    }
+
+    return NULL;
+}
+
+
+void OptionsPanelWidget::deleteOptionsWidget(const QString& groupId)
+{
+    GroupOptionsWidget* optionsWidget = findOptionsWidgetByGroupId(groupId);
+    SAFE_POINT(NULL != optionsWidget,
+        QString("Internal error: failed to find an options widget for group '%1' to delete it.").arg(groupId),);
+
+    optionsLayout->removeWidget(optionsWidget);
+    delete optionsWidget;
+    optionsWidgets.removeAll(optionsWidget);
 }
 
 

@@ -59,18 +59,17 @@
 #include <U2Core/ReverseSequenceTask.h>
 #include <U2Core/ModifySequenceObjectTask.h>
 
-#include <U2View/AnnotHighlightWidget.h>
-#include <U2View/FindPatternWidget.h>
+#include <U2View/FindPatternWidgetFactory.h>
 #include <U2View/SecStructPredictUtils.h>
-#include <U2View/SequenceInfo.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/CreateObjectRelationDialogController.h>
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/EditSequenceDialogController.h>
-#include <U2Gui/RemovePartFromSequenceDialogController.h>
 #include <U2Gui/OptionsPanel.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
+#include <U2Gui/RemovePartFromSequenceDialogController.h>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QScrollArea>
@@ -84,10 +83,6 @@
 namespace U2 {
 
 /* TRANSLATOR U2::AnnotatedDNAView */
-
-const QString AnnotatedDNAView::OP_TAB_TITLE_INFO = QString(tr("Information"));
-const QString AnnotatedDNAView::OP_TAB_TITLE_SEARCH_IN_SEQ = QString(tr("Search in Sequence"));
-const QString AnnotatedDNAView::OP_TAB_TITLE_ANNOT_HIGHLIGHT = QString(tr("Annotations Highlighting"));
 
 
 AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2SequenceObject*>& dnaObjects) 
@@ -216,18 +211,13 @@ QWidget* AnnotatedDNAView::createWidget() {
 
     mainSplitter->setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::SEQUENCE).icon);
 
+    // Init the Options Panel
     optionsPanel = new OptionsPanel(this);
-    optionsPanel->addGroup(QPixmap(":core/images/info.png"),
-        OP_TAB_TITLE_INFO,
-        new SequenceInfo(this));
-
-    optionsPanel->addGroup(QPixmap(":core/images/find_dialog.png"),
-        OP_TAB_TITLE_SEARCH_IN_SEQ,
-        new FindPatternWidget(this));
-
-    optionsPanel->addGroup(QPixmap(":core/images/annotation_settings.png"),
-        OP_TAB_TITLE_ANNOT_HIGHLIGHT,
-        new AnnotHighlightWidget(this));
+    OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
+    QList<OPWidgetFactory*> opWidgetFactoriesForSeqView = opWidgetFactoryRegistry->getRegisteredFactories(ObjViewType_SequenceView);
+    foreach (OPWidgetFactory* factory, opWidgetFactoriesForSeqView) {
+        optionsPanel->addGroup(factory);
+    }
 
     return mainSplitter;
 }
@@ -663,7 +653,8 @@ void AnnotatedDNAView::sl_onFindPatternClicked() {
     SAFE_POINT(NULL != optionsPanel, "Internal error: options panel is NULL"
         " when pattern search has been initiated!",);
 
-    optionsPanel->openGroupByTitle(OP_TAB_TITLE_SEARCH_IN_SEQ);
+    const QString& findPatternGroupId = FindPatternWidgetFactory::getGroupId();
+    optionsPanel->openGroupById(findPatternGroupId);
 }
 
 

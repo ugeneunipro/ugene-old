@@ -23,7 +23,10 @@
 #include "AssemblyBrowser.h"
 
 #include <U2Core/FormatUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/ShowHideSubgroupWidget.h>
+
 
 namespace U2 {
 
@@ -111,6 +114,41 @@ AssemblyInfoWidget::AssemblyInfoWidget(AssemblyBrowser *browser, QWidget *p)
         QWidget * refGroup = new ShowHideSubgroupWidget("REFERENCE", tr("Reference Information"), refWidget, false);
         mainLayout->addWidget(refGroup);
     }
+}
+
+//
+// AssemblyInfoWidgetFactory
+////////////////////////////////////
+const QString AssemblyInfoWidgetFactory::GROUP_ID = "OP_ASS_INFO";
+const QString AssemblyInfoWidgetFactory::GROUP_ICON_STR = ":core/images/chart_bar.png";
+const QString AssemblyInfoWidgetFactory::GROUP_TITLE = QString(tr("Assembly Statistics"));
+
+
+AssemblyInfoWidgetFactory::AssemblyInfoWidgetFactory()
+{
+    objectViewOfWidget = ObjViewType_AssemblyBrowser;
+}
+
+
+QWidget* AssemblyInfoWidgetFactory::createWidget(GObjectView* objView)
+{
+    SAFE_POINT(NULL != objView,
+        QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
+        NULL);
+
+    AssemblyBrowser* assemblyBrowser = qobject_cast<AssemblyBrowser*>(objView);
+    SAFE_POINT(NULL != assemblyBrowser,
+        QString("Internal error: unable to cast object view to Assembly Browser for group '%1'.").arg(GROUP_ID),
+        NULL);
+
+    AssemblyInfoWidget* widget = new AssemblyInfoWidget(assemblyBrowser, assemblyBrowser->getMainWidget());
+    return widget;
+}
+
+
+OPGroupParameters AssemblyInfoWidgetFactory::getOPGroupParameters()
+{
+    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
 }
 
 

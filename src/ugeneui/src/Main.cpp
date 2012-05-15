@@ -65,11 +65,13 @@
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/BaseDocumentFormatConfigurators.h>
 #include <U2Gui/LogView.h>
 
 #include <U2View/MSAColorScheme.h>
 #include <U2View/DnaAssemblyUtils.h>
+#include <U2View/Init.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Test/XMLTestFormat.h>
@@ -499,6 +501,12 @@ int main(int argc, char **argv)
 
     SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistiry = new SplicedAlignmentTaskRegistry();
     appContext->setSplicedAlignmentTaskRegistry(splicedAlignmentTaskRegistiry);
+
+    OPWidgetFactoryRegistry* opWidgetFactoryRegistry = new OPWidgetFactoryRegistry();
+    appContext->setOPWidgetFactoryRegistry(opWidgetFactoryRegistry);
+
+    // Register all Options Panel groups on the required GObjectViews
+    Init::initOptionsPanels();
     
     if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST)) {
         QStringList urls = CMDLineRegistryUtils::getPureValues();
