@@ -29,6 +29,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
+#include <QtGui/QWidget>
 
 namespace U2 {
 

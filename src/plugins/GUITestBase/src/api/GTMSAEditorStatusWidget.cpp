@@ -19,23 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef GTTESTSMSAEDITOR_H
-#define GTTESTSMSAEDITOR_H
-
-#include <U2Test/GUITestBase.h>
+#include "GTMSAEditorStatusWidget.h"
+#include "GTWidget.h"
 
 namespace U2 {
 
-namespace GUITest_common_scenarios_msa_editor {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_msa_editor_"
+#define GT_CLASS_NAME "GTMSAEditorStatusWidget"
 
-GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0004)
+#define GT_METHOD_NAME "length"
+int GTMSAEditorStatusWidget::length(U2OpStatus& os, QWidget* w) {
 
-#undef GUI_TEST_PREFIX
-} // namespace U2
+    QLabel* label = qobject_cast<QLabel*>(GTWidget::findWidget(os, "colsLabel", w));
+    GT_CHECK_RESULT(label != NULL, "label is NULL", -1);
 
-} //namespace
+    QString labelText = label->text();
+    QString lengthString = labelText.section('/', -1, -1);
 
-#endif // GTTESTSMSAEDITOR_H
+    bool ok = false;
+    int lengthInt = lengthString.toInt(&ok);
+    GT_CHECK_RESULT(ok == true, "toInt returned false", -1);
+
+    return lengthInt;
+}
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
+
+}

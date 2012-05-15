@@ -19,23 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef GTTESTSMSAEDITOR_H
-#define GTTESTSMSAEDITOR_H
+#ifndef _U2_GT_MSAEDITOR_STATUSWIDGET_H_
+#define _U2_GT_MSAEDITOR_STATUSWIDGET_H_
 
-#include <U2Test/GUITestBase.h>
+#include "api/GTGlobals.h"
+
+#include <QtGui/QSpinBox>
+#include <U2View/MSAEditorStatusBar.h>
 
 namespace U2 {
 
-namespace GUITest_common_scenarios_msa_editor {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_common_scenarios_msa_editor_"
+class GTMSAEditorStatusWidget {
+public:
+    // fails if the widget is NULL or can't set value
+    static int length(U2OpStatus& os, QWidget* w);
+};
 
-GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0004)
-
-#undef GUI_TEST_PREFIX
-} // namespace U2
-
-} //namespace
-
-#endif // GTTESTSMSAEDITOR_H
+}
+#endif // _U2_GT_MSAEDITOR_STATUSWIDGET_H_

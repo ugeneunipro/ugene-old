@@ -58,6 +58,7 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
     linesLabel = new QLabel();
     linesLabel->setAlignment(Qt::AlignCenter);
     colsLabel = new QLabel();
+    colsLabel->setObjectName("colsLabel");
     colsLabel->setAlignment(Qt::AlignCenter);
     posLabel = new QLabel();
     posLabel->setAlignment(Qt::AlignCenter);

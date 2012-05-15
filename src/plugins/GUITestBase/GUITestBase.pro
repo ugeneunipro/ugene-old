@@ -2,6 +2,7 @@ include (GUITestBase.pri)
 
 # Input
 HEADERS +=  src/GUITestBasePlugin.h \
+#   Utils classes
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
             src/GTUtilsDialogRunnables.h \
@@ -16,8 +17,11 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsToolTip.h \
             src/GTUtilsTaskTreeView.h \
             src/GTUtilsMsaEditorSequenceArea.h \
+#   Tests
             src/tests/GUIInitialChecks.h \
+#   Tests/Regression Scenarios
             src/tests/regression_scenarios/GTTestsRegressionScenarios.h \
+#   Tests/Common Scenarios
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.h \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.h \
             src/tests/common_scenarios/toggle_view/GTTestsToggleView.h \
@@ -31,7 +35,13 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/project/user_locking/GTTestsProjectUserLocking.h \
             src/tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h \
             src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h \
+            src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.h \
+#   UGENE primitives
+            src/api/GTMSAEditorStatusWidget.h \
             src/api/GTRegionSelector.h \
+            src/api/GTSequenceReadingModeDialog.h \
+            src/api/GTSequenceReadingModeDialogUtils.h \
+#   Qt primitives
             src/api/GTCheckBox.h \
             src/api/GTComboBox.h \
             src/api/GTTabWidget.h \
@@ -54,12 +64,10 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTTreeWidget.h \
             src/api/GTToolbar.h \
             src/api/GTWidget.h \
-            src/api/GTAction.h \
-            src/api/GTSequenceReadingModeDialog.h \
-            src/api/GTSequenceReadingModeDialogUtils.h \
-            src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.h
+            src/api/GTAction.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
+#   Utils classes
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \
             src/GTUtilsDialogRunnables.cpp \
@@ -74,8 +82,11 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsToolTip.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/GTUtilsMsaEditorSequenceArea.cpp \
+#   Tests
             src/tests/GUIInitialChecks.cpp \
+#   Tests/Regression Scenarios
             src/tests/regression_scenarios/GTTestsRegressionScenarios.cpp \
+#   Tests/Common Scenarios
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.cpp \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.cpp \
             src/tests/common_scenarios/toggle_view/GTTestsToggleView.cpp \
@@ -89,7 +100,13 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.cpp \
             src/tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.cpp \
             src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.cpp \
+            src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.cpp \
+#   UGENE primitives
+            src/api/GTMSAEditorStatusWidget.cpp \
             src/api/GTRegionSelector.cpp \
+            src/api/GTSequenceReadingModeDialog.cpp \
+            src/api/GTSequenceReadingModeDialogUtils.cpp \
+#   Qt primitives
             src/api/GTCheckBox.cpp \
             src/api/GTComboBox.cpp \
             src/api/GTTabWidget.cpp \
@@ -118,11 +135,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTToolbar.cpp \
             src/api/GTTreeWidget.cpp \
             src/api/GTWidget.cpp \
-            src/api/GTAction.cpp \
-            src/api/GTSequenceReadingModeDialog.cpp \
-            src/api/GTSequenceReadingModeDialogUtils.cpp \
-            src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.cpp
-
-
-
+            src/api/GTAction.cpp
 

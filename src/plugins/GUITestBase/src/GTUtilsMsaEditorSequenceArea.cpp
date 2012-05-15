@@ -21,10 +21,13 @@
 
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "api/GTWidget.h"
-#include "U2View/MSAEditorSequenceArea.h"
+#include "api/GTMSAEditorStatusWidget.h"
+
+#include <U2View/MSAEditorSequenceArea.h>
 
 namespace U2 {
 #define GT_CLASS_NAME "GTUtilsMSAEditorSequenceArea"
+
 #define GT_METHOD_NAME "checkSelectedRect"
 void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect &expectedRect)
 {
@@ -54,6 +57,15 @@ int GTUtilsMSAEditorSequenceArea::getRightOffset(U2OpStatus &os)
 
     return msaEditArea->getLastVisibleBase(true, true) + 1; // тут такая же фигня как getLeftOffset()
 }
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getLength"
+int GTUtilsMSAEditorSequenceArea::getLength(U2OpStatus &os) {
+
+    QWidget *statusWidget = GTWidget::findWidget(os, "msa_editor_status_widget");
+    return GTMSAEditorStatusWidget::length(os, statusWidget);
+}
+#undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
 } // namespace
