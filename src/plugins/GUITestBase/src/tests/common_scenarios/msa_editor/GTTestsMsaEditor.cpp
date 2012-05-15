@@ -37,13 +37,81 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTGlobals::sleep();
 
     int length = GTUtilsMSAEditorSequenceArea::getLength(os);
-    CHECK_SET_ERR(length == 14, "Wrong length, expected 14, length is " + QString::number(length));
+    CHECK_SET_ERR(length == 14, "Wrong length");
 
     int leftOffest = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
-    CHECK_SET_ERR(leftOffest == 1, "Wrong left offset, expected 1, offset is " + QString::number(leftOffest));
+    CHECK_SET_ERR(leftOffest == 1, "Wrong left offset");
 
     int rightOffest = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
-    CHECK_SET_ERR(rightOffest == 14, "Wrong right offset, expected 14, offset is " + QString::number(rightOffest));
+    CHECK_SET_ERR(rightOffest == 14, "Wrong right offset");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0001_1) {
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma.aln");
+    GTGlobals::sleep();
+
+    int length = GTUtilsMSAEditorSequenceArea::getLength(os);
+    CHECK_SET_ERR(length == 12, "Wrong length");
+
+    int leftOffest = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(leftOffest == 1, "Wrong left offset");
+
+    int rightOffest = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    CHECK_SET_ERR(rightOffest == 12, "Wrong right offset");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0001_2) {
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gap_col.aln");
+    GTGlobals::sleep();
+
+    GTUtilsMdi::click(os, GTGlobals::Maximize);
+    GTGlobals::sleep();
+
+    int length = GTUtilsMSAEditorSequenceArea::getLength(os);
+    CHECK_SET_ERR(length == 14, "Wrong length");
+
+    int leftOffest = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(leftOffest == 1, "Wrong left offset");
+
+    int rightOffest = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    CHECK_SET_ERR(rightOffest == 14, "Wrong right offset");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0001_3) {
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "revcompl.aln");
+    GTGlobals::sleep();
+
+    GTUtilsMdi::click(os, GTGlobals::Minimize);
+    GTGlobals::sleep();
+
+    int length = GTUtilsMSAEditorSequenceArea::getLength(os);
+    CHECK_SET_ERR(length == 6, "Wrong length");
+
+    int leftOffest = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(leftOffest == 1, "Wrong left offset");
+
+    int rightOffest = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    CHECK_SET_ERR(rightOffest == 6, "Wrong right offset");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0001_4) {
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "translations_nucl.aln", "*.*", GTFileDialog::Cancel);
+    GTGlobals::sleep();
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "translations_nucl.aln", "*.*", GTFileDialog::Open);
+    GTGlobals::sleep();
+
+    int length = GTUtilsMSAEditorSequenceArea::getLength(os);
+    CHECK_SET_ERR(length == 3, "Wrong length");
+
+    int leftOffest = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(leftOffest == 1, "Wrong left offset");
+
+    int rightOffest = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    CHECK_SET_ERR(rightOffest == 3, "Wrong right offset");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004)

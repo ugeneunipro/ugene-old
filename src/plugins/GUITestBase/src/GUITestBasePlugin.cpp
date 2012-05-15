@@ -200,6 +200,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/msa_editor
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0001_2);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0001_3);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0001_4);
+
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0004);
 }
 
