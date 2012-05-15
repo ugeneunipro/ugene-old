@@ -20,12 +20,14 @@
  */
 
 #include "GTTestsMsaEditor.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
 #include "GTUtilsDialogRunnables.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsProjectTreeView.h"
 
 #include <U2View/MSAEditor.h>
 
@@ -146,6 +148,150 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     CHECK_SET_ERR(offsetsVisible == true, "Offsets are not visible");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0002_1) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma.aln");
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+
+    GTUtilsMdi::click(os, GTGlobals::Maximize);
+    GTGlobals::sleep();
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    bool offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
+    CHECK_SET_ERR(offsetsVisible == false, "Offsets are visible");
+
+
+    GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
+
+    mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
+    CHECK_SET_ERR(offsetsVisible == true, "Offsets are not visible");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0002_2) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gap_col.aln");
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+
+    GTUtilsMdi::click(os, GTGlobals::Maximize);
+    GTGlobals::sleep();
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    bool offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
+    CHECK_SET_ERR(offsetsVisible == false, "Offsets are visible");
+
+
+    GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
+
+    mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
+    CHECK_SET_ERR(offsetsVisible == true, "Offsets are not visible");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0002_3) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "revcompl.aln");
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    bool offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
+    CHECK_SET_ERR(offsetsVisible == false, "Offsets are visible");
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep();
+
+    mdiWindow = GTUtilsMdi::activeWindow(os, false);
+    CHECK_SET_ERR(mdiWindow == NULL, "There is an MDI window");
+
+    QPoint p = GTUtilsProjectTreeView::getItemCenter(os, "revcompl");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
+    CHECK_SET_ERR(offsetsVisible == true, "Offsets are not visible");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0002_4) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "revcompl.aln");
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+
+    QWidget* mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    bool offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
+    CHECK_SET_ERR(offsetsVisible == false, "Offsets are visible");
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep();
+
+    QPoint p = GTUtilsProjectTreeView::getItemCenter(os, "revcompl");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    GTUtilsMdi::click(os, GTGlobals::Maximize);
+    GTGlobals::sleep();
+
+    GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
+
+    mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
+    CHECK_SET_ERR(offsetsVisible == true, "Offsets are not visible");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0004)
 {
