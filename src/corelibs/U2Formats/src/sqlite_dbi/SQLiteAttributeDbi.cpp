@@ -21,6 +21,7 @@
 
 #include "SQLiteAttributeDbi.h"
 
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/Timer.h>
 
@@ -224,21 +225,23 @@ void SQLiteAttributeDbi::removeObjectAttributes(const U2DataId& objectId, U2OpSt
 }
     
 
-qint64 SQLiteAttributeDbi::createAttribute(U2Attribute& attr, U2DataType type, U2OpStatus& os) {
-    SQLiteQuery q("INSERT INTO Attribute(type, object, child, otype, ctype, oextra, cextra, version, name) "
-                " VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)", db, os);
+qint64 SQLiteAttributeDbi::createAttribute(U2Attribute& attr, U2DataType type, SQLiteTransaction& t, U2OpStatus& os) {
+    static const QString queryString("INSERT INTO Attribute(type, object, child, otype, ctype, oextra, cextra, version, name) "
+        " VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    CHECK_OP(os, -1);
     
-    q.bindType(1, type);
-    q.bindDataId(2, attr.objectId);
-    q.bindDataId(3, attr.childId);
-    q.bindType(4, SQLiteUtils::toType(attr.objectId));
-    q.bindType(5, SQLiteUtils::toType(attr.childId));
-    q.bindBlob(6, SQLiteUtils::toDbExtra(attr.objectId));
-    q.bindBlob(7, SQLiteUtils::toDbExtra(attr.childId));
-    q.bindInt64(8, attr.version);
-    q.bindString(9, attr.name);
+    q->bindType(1, type);
+    q->bindDataId(2, attr.objectId);
+    q->bindDataId(3, attr.childId);
+    q->bindType(4, SQLiteUtils::toType(attr.objectId));
+    q->bindType(5, SQLiteUtils::toType(attr.childId));
+    q->bindBlob(6, SQLiteUtils::toDbExtra(attr.objectId));
+    q->bindBlob(7, SQLiteUtils::toDbExtra(attr.childId));
+    q->bindInt64(8, attr.version);
+    q->bindString(9, attr.name);
     
-    return q.insert();
+    return q->insert();
 }
 
 
@@ -247,16 +250,19 @@ Creates int64 attribute in database. ObjectId must be already set in attribute a
 Requires U2DbiFeature_WriteAttribute feature support
 */    
 void SQLiteAttributeDbi::createIntegerAttribute(U2IntegerAttribute& a, U2OpStatus& os) {
-    qint64 id = createAttribute(a, U2Type::AttributeInteger, os);
+    SQLiteTransaction t(db, os);
+    qint64 id = createAttribute(a, U2Type::AttributeInteger, t, os);
     if (os.hasError()) {
         return;
     }
     a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeInteger);
 
-    SQLiteQuery q("INSERT INTO IntegerAttribute(attribute, value) VALUES(?1, ?2)", db, os);
-    q.bindInt64(1, id);
-    q.bindInt64(2, a.value);
-    q.execute();
+    static const QString queryString("INSERT INTO IntegerAttribute(attribute, value) VALUES(?1, ?2)");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    CHECK_OP(os, );
+    q->bindInt64(1, id);
+    q->bindInt64(2, a.value);
+    q->execute();
 }
 
 /** 
@@ -264,16 +270,19 @@ Creates real64 attribute in database. ObjectId must be already set in attribute 
 Requires U2DbiFeature_WriteAttribute feature support
 */    
 void SQLiteAttributeDbi::createRealAttribute(U2RealAttribute& a, U2OpStatus& os) {
-    qint64 id = createAttribute(a, U2Type::AttributeReal, os);
+    SQLiteTransaction t(db, os);
+    qint64 id = createAttribute(a, U2Type::AttributeReal, t, os);
     if (os.hasError()) {
         return;
     }
     a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeReal);
 
-    SQLiteQuery q("INSERT INTO RealAttribute(attribute, value) VALUES(?1, ?2)", db, os);
-    q.bindInt64(1, id);
-    q.bindDouble(2, a.value);
-    q.execute();
+    static const QString queryString("INSERT INTO RealAttribute(attribute, value) VALUES(?1, ?2)");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    CHECK_OP(os, );
+    q->bindInt64(1, id);
+    q->bindDouble(2, a.value);
+    q->execute();
 }
 
 /** 
@@ -281,16 +290,19 @@ Creates String attribute in database. ObjectId must be already set in attribute 
 Requires U2DbiFeature_WriteAttribute feature support
 */    
 void SQLiteAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus& os) {
-    qint64 id = createAttribute(a, U2Type::AttributeString, os);
+    SQLiteTransaction t(db, os);
+    qint64 id = createAttribute(a, U2Type::AttributeString, t, os);
     if (os.hasError()) {
         return;
     }
     a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeString);
 
-    SQLiteQuery q("INSERT INTO StringAttribute(attribute, value) VALUES(?1, ?2)", db, os);
-    q.bindInt64(1, id);
-    q.bindString(2, a.value);
-    q.execute();
+    static const QString queryString("INSERT INTO StringAttribute(attribute, value) VALUES(?1, ?2)");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    CHECK_OP(os, );
+    q->bindInt64(1, id);
+    q->bindString(2, a.value);
+    q->execute();
 }
 
 /** 
@@ -298,16 +310,19 @@ Creates Byte attribute in database. ObjectId must be already set in attribute an
 Requires U2DbiFeature_WriteAttribute feature support
 */    
 void SQLiteAttributeDbi::createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpStatus& os) {
-    qint64 id = createAttribute(a, U2Type::AttributeByteArray, os);
+    SQLiteTransaction t(db, os);
+    qint64 id = createAttribute(a, U2Type::AttributeByteArray, t, os);
     if (os.hasError()) {
         return;
     }
     a.id = SQLiteUtils::toU2DataId(id, U2Type::AttributeByteArray);
 
-    SQLiteQuery q("INSERT INTO ByteArrayAttribute(attribute, value) VALUES(?1, ?2)", db, os);
-    q.bindInt64(1, id);
-    q.bindBlob(2, a.value, false);
-    q.execute();
+    static const QString queryString("INSERT INTO ByteArrayAttribute(attribute, value) VALUES(?1, ?2)");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    CHECK_OP(os, );
+    q->bindInt64(1, id);
+    q->bindBlob(2, a.value, false);
+    q->execute();
 }
 
 } //namespace

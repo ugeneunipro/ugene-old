@@ -46,6 +46,7 @@ public:
     QMutex                      lock;
     bool                        useTransaction;
     QVector<SQLiteTransaction*> transactionStack;
+    QMap<QString, SQLiteQuery*> preparedQueries;
 };
 
 class U2CORE_EXPORT SQLiteUtils {
@@ -221,11 +222,11 @@ public:
 
     void setError(const QString& err);
     
-    bool hasError() const {return os.hasError();}
+    bool hasError() const {return os->hasError();}
 
-    void setOpStatus(U2OpStatus& _os) {os = _os;}
+    void setOpStatus(U2OpStatus& _os) {os = &_os;}
 
-    U2OpStatus& getOpStatus() {return  os;}
+    U2OpStatus& getOpStatus() {return  *os;}
     
     DbRef*          getDb() const {return db;}
 
@@ -237,7 +238,7 @@ private:
 
 
     DbRef*          db;
-    U2OpStatus&     os;
+    U2OpStatus*     os;
     sqlite3_stmt*   st;
     QString         sql;
 };
@@ -248,9 +249,14 @@ public:
     SQLiteTransaction(DbRef* db, U2OpStatus& os);
     virtual ~SQLiteTransaction();
 
+    SQLiteQuery *getPreparedQuery(const QString &sql, DbRef *d, U2OpStatus &os);
+    SQLiteQuery *getPreparedQuery(const QString &sql, qint64 offset, qint64 count, DbRef *d, U2OpStatus &os);
+
 private:
     DbRef* db;
     U2OpStatus& os;
+
+    void clearPreparedQueries();
 
 #ifdef _DEBUG
 public:

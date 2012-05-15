@@ -22,6 +22,7 @@
 #include "U2SqlHelpers.h"
 
 #include <U2Core/Log.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <sqlite3.h>
 
@@ -137,7 +138,7 @@ static void traceQueryDestroy(const QString& q) {
 #endif
 
 SQLiteQuery::SQLiteQuery(const QString& _sql, DbRef* d, U2OpStatus& _os) 
-: db(d), os(_os), st(NULL), sql(_sql)
+: db(d), os(&_os), st(NULL), sql(_sql)
 {
     prepare();
 
@@ -147,7 +148,7 @@ SQLiteQuery::SQLiteQuery(const QString& _sql, DbRef* d, U2OpStatus& _os)
 }
 
 SQLiteQuery::SQLiteQuery(const QString& _sql, qint64 offset, qint64 count, DbRef* d, U2OpStatus& _os)
-: db(d), os(_os), st(NULL), sql(_sql)
+: db(d), os(&_os), st(NULL), sql(_sql)
 {
     SQLiteUtils::addLimit(sql, offset, count);
     prepare();
@@ -159,13 +160,13 @@ SQLiteQuery::SQLiteQuery(const QString& _sql, qint64 offset, qint64 count, DbRef
 
 void SQLiteQuery::setError(const QString& err) {
     ioLog.trace("SQL: error: " + err + " in query: " + sql);
-    if (!os.hasError()) {
-        os.setError(err);
+    if (!os->hasError()) {
+        os->setError(err);
     } 
 }
 
 void SQLiteQuery::prepare() {
-    if (os.hasError()) {
+    if (os->hasError()) {
         return;
     }
     QByteArray utf8 = sql.toUtf8();
@@ -545,6 +546,14 @@ SQLiteTransaction::SQLiteTransaction(DbRef* ref, U2OpStatus& _os)
     }
 }
 
+void SQLiteTransaction::clearPreparedQueries() {
+    foreach (const QString &sql, db->preparedQueries.keys()) {
+        SQLiteQuery *query = db->preparedQueries[sql];
+        delete query;
+    }
+    db->preparedQueries.clear();
+}
+
 SQLiteTransaction::~SQLiteTransaction() {
     QMutexLocker m(&db->lock);
 
@@ -561,6 +570,7 @@ SQLiteTransaction::~SQLiteTransaction() {
         } else {
             rc = sqlite3_exec(db->handle, "COMMIT TRANSACTION;", NULL, NULL, NULL);
         }
+        clearPreparedQueries();
         db->lock.unlock();
         if (rc != SQLITE_OK) {
             os.setError(SQLiteL10n::queryError(sqlite3_errmsg(db->handle)));
@@ -569,5 +579,30 @@ SQLiteTransaction::~SQLiteTransaction() {
     
 }
 
+SQLiteQuery *SQLiteTransaction::getPreparedQuery(const QString &sql, DbRef *d, U2OpStatus &os) {
+    if (db->preparedQueries.contains(sql)) {
+        SQLiteQuery *result = db->preparedQueries[sql];
+        result->setOpStatus(os);
+        result->reset(false);
+        return result;
+    }
+    SQLiteQuery *result = new SQLiteQuery(sql, d, os);
+    CHECK_OP(os, NULL);
+    db->preparedQueries[sql] = result;
+    return result;
+}
+
+SQLiteQuery *SQLiteTransaction::getPreparedQuery(const QString &sql, qint64 offset, qint64 count, DbRef *d, U2OpStatus &os) {
+    if (db->preparedQueries.contains(sql)) {
+        SQLiteQuery *result = db->preparedQueries[sql];
+        result->setOpStatus(os);
+        result->reset(false);
+        return result;
+    }
+    SQLiteQuery *result = new SQLiteQuery(sql, offset, count, d, os);
+    CHECK_OP(os, NULL);
+    db->preparedQueries[sql] = result;
+    return result;
+}
 
 } //namespace

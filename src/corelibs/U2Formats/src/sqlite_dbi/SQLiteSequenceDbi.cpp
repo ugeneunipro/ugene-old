@@ -48,14 +48,16 @@ void SQLiteSequenceDbi::initSqlSchema(U2OpStatus& os) {
 }
 
 U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) {
+    SQLiteTransaction t(db, os);
     U2Sequence res;
 
     DBI_TYPE_CHECK(sequenceId, U2Type::Sequence, os, res);
     dbi->getSQLiteObjectDbi()->getObject(res, sequenceId, os);
 
-    CHECK_OP(os, res)
+    CHECK_OP(os, res);
 
-    SQLiteQuery q("SELECT Sequence.length, Sequence.alphabet, Sequence.circular FROM Sequence WHERE Sequence.object = ?1", db, os);
+    static const QString queryString("SELECT Sequence.length, Sequence.alphabet, Sequence.circular FROM Sequence WHERE Sequence.object = ?1");
+    SQLiteQuery q(queryString, db, os);
     q.bindDataId(1, sequenceId);
     if (q.step()) {
         res.length = q.getInt64(0);
@@ -104,14 +106,17 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
 
 
 void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os) {
+    SQLiteTransaction t(db, os);
     dbi->getSQLiteObjectDbi()->createObject(sequence, folder, SQLiteDbiObjectRank_TopLevel, os);
     CHECK_OP(os, );
     
-    SQLiteQuery q("INSERT INTO Sequence(object, alphabet, circular) VALUES(?1, ?2, ?3)", db, os);
-    q.bindDataId(1, sequence.id);
-    q.bindString(2, sequence.alphabet.id);
-    q.bindBool(3, sequence.circular);
-    q.insert();
+    static const QString queryString("INSERT INTO Sequence(object, alphabet, circular) VALUES(?1, ?2, ?3)");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    CHECK_OP(os, );
+    q->bindDataId(1, sequence.id);
+    q->bindString(2, sequence.alphabet.id);
+    q->bindBool(3, sequence.circular);
+    q->insert();
     assert(!os.hasError());
 }
 
@@ -119,11 +124,13 @@ void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString
 void SQLiteSequenceDbi::updateSequenceObject(U2Sequence& sequence, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
 
-    SQLiteQuery q("UPDATE Sequence SET alphabet = ?1, circular = ?2 WHERE object = ?3", db, os);
-    q.bindString(1, sequence.alphabet.id);
-    q.bindBool(2, sequence.circular);
-    q.bindDataId(3, sequence.id);
-    q.execute();
+    static const QString queryString("UPDATE Sequence SET alphabet = ?1, circular = ?2 WHERE object = ?3");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    CHECK_OP(os, );
+    q->bindString(1, sequence.alphabet.id);
+    q->bindBool(2, sequence.circular);
+    q->bindDataId(3, sequence.id);
+    q->execute();
 
     SAFE_POINT_OP(os, );
 
@@ -172,10 +179,12 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
 
     // find cropped parts
     QByteArray leftCrop, rightCrop;
-    SQLiteQuery leftQ("SELECT sstart FROM SequenceData WHERE sequence = ?1 AND sstart <= ?2 AND send >= ?2", db, os);
-    leftQ.bindDataId(1, sequenceId);
-    leftQ.bindInt64(2, regionToReplace.startPos);
-    qint64 cropLeftPos = leftQ.selectInt64(-1);
+    static const QString leftString("SELECT sstart FROM SequenceData WHERE sequence = ?1 AND sstart <= ?2 AND send >= ?2");
+    SQLiteQuery *leftQ = t.getPreparedQuery(leftString, db, os);
+    CHECK_OP(os, );
+    leftQ->bindDataId(1, sequenceId);
+    leftQ->bindInt64(2, regionToReplace.startPos);
+    qint64 cropLeftPos = leftQ->selectInt64(-1);
     if (os.hasError()) {
         return;
     }
@@ -189,10 +198,12 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
             cropLeftPos = 0;
         }
 
-        SQLiteQuery rightQ("SELECT send FROM SequenceData WHERE sequence = ?1 AND sstart <= ?2 AND send >= ?2", db, os);
-        rightQ.bindDataId(1, sequenceId);
-        rightQ.bindInt64(2, regionToReplace.endPos());
-        qint64 cropRightPos = rightQ.selectInt64(-1);
+        static const QString rightString("SELECT send FROM SequenceData WHERE sequence = ?1 AND sstart <= ?2 AND send >= ?2");
+        SQLiteQuery *rightQ = t.getPreparedQuery(rightString, db, os);
+        CHECK_OP(os, );
+        rightQ->bindDataId(1, sequenceId);
+        rightQ->bindInt64(2, regionToReplace.endPos());
+        qint64 cropRightPos = rightQ->selectInt64(-1);
         if (os.hasError()) {
             return;
         }
@@ -201,12 +212,14 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
         }
 
         // remove all affected regions
-        SQLiteQuery removeQ("DELETE FROM SequenceData WHERE sequence = ?1 "
-            " AND ((sstart >= ?2 AND sstart <= ?3) OR (?2 >= sstart  AND send >= ?2))", db, os);
-        removeQ.bindDataId(1, sequenceId);
-        removeQ.bindInt64(2, regionToReplace.startPos);
-        removeQ.bindInt64(3, regionToReplace.endPos());
-        removeQ.execute();
+        static const QString removeString("DELETE FROM SequenceData WHERE sequence = ?1 "
+            " AND ((sstart >= ?2 AND sstart <= ?3) OR (?2 >= sstart  AND send >= ?2))");
+        SQLiteQuery *removeQ = t.getPreparedQuery(removeString, db, os);
+        CHECK_OP(os, );
+        removeQ->bindDataId(1, sequenceId);
+        removeQ->bindInt64(2, regionToReplace.startPos);
+        removeQ->bindInt64(3, regionToReplace.endPos());
+        removeQ->execute();
         if (os.hasError()) {
             return;
         }
@@ -214,11 +227,13 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
         // now adjust 'sstart' & 'send' for all sequence regions on the right side of the insert
         if (dataToInsert.length() != regionToReplace.length) {
             qint64 d = dataToInsert.length() - regionToReplace.length;
-            SQLiteQuery updateQ("UPDATE SequenceData SET sstart = sstart + ?1, send = send + ?1 WHERE sequence = ?2 AND sstart >= ?3", db, os);
-            updateQ.bindInt64(1, d);
-            updateQ.bindDataId(2, sequenceId);
-            updateQ.bindInt64(3, regionToReplace.endPos());
-            updateQ.execute();
+            static const QString updateString("UPDATE SequenceData SET sstart = sstart + ?1, send = send + ?1 WHERE sequence = ?2 AND sstart >= ?3");
+            SQLiteQuery *updateQ = t.getPreparedQuery(updateString, db, os);
+            CHECK_OP(os, );
+            updateQ->bindInt64(1, d);
+            updateQ->bindDataId(2, sequenceId);
+            updateQ->bindInt64(3, regionToReplace.endPos());
+            updateQ->execute();
             if (os.hasError()) {
                 return;
             }
@@ -226,15 +241,17 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
     }
     // insert new regions
     QList<QByteArray> newDataToInsert = quantify(QList<QByteArray>() << leftCrop << dataToInsert << rightCrop);
-    SQLiteQuery insertQ("INSERT INTO SequenceData(sequence, sstart, send, data) VALUES(?1, ?2, ?3, ?4)", db, os);
+    static const QString insertString("INSERT INTO SequenceData(sequence, sstart, send, data) VALUES(?1, ?2, ?3, ?4)");
+    SQLiteQuery *insertQ = t.getPreparedQuery(insertString, db, os);
+    CHECK_OP(os, );
     qint64 startPos = cropLeftPos;
     foreach(const QByteArray& d, newDataToInsert) {
-        insertQ.reset();
-        insertQ.bindDataId(1, sequenceId);
-        insertQ.bindInt64(2, startPos);
-        insertQ.bindInt64(3, startPos + d.length());
-        insertQ.bindBlob(4, d);
-        insertQ.execute();
+        insertQ->reset();
+        insertQ->bindDataId(1, sequenceId);
+        insertQ->bindInt64(2, startPos);
+        insertQ->bindInt64(3, startPos + d.length());
+        insertQ->bindBlob(4, d);
+        insertQ->execute();
         if (os.hasError()) {
             return;
         }
@@ -245,18 +262,22 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
     if (emptySequence) {
         newLength = dataToInsert.length();
     } else {
-        SQLiteQuery lengthQ("SELECT MAX(send) FROM SequenceData WHERE sequence = ?1", db, os);
-        lengthQ.bindDataId(1, sequenceId);
-        newLength = lengthQ.selectInt64();
+        static const QString lengthString("SELECT MAX(send) FROM SequenceData WHERE sequence = ?1");
+        SQLiteQuery *lengthQ = t.getPreparedQuery(lengthString, db, os);
+        CHECK_OP(os, );
+        lengthQ->bindDataId(1, sequenceId);
+        newLength = lengthQ->selectInt64();
         if (os.hasError()) {
             return;
         }
     }
 
-    SQLiteQuery updateLengthQuery("UPDATE Sequence SET length = ?1 WHERE object = ?2", db, os);
-    updateLengthQuery.bindInt64(1, newLength);
-    updateLengthQuery.bindDataId(2, sequenceId);
-    updateLengthQuery.update(1);
+    static const QString updateLengthString("UPDATE Sequence SET length = ?1 WHERE object = ?2");
+    SQLiteQuery *updateLengthQuery = t.getPreparedQuery(updateLengthString, db, os);
+    CHECK_OP(os, );
+    updateLengthQuery->bindInt64(1, newLength);
+    updateLengthQuery->bindDataId(2, sequenceId);
+    updateLengthQuery->update(1);
     if (os.hasError()) {
         return;
     }

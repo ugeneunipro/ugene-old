@@ -99,7 +99,7 @@ public:
     virtual void initSqlSchema(U2OpStatus& os);
 
 private:
-    qint64 createAttribute(U2Attribute& attr, U2DataType type, U2OpStatus& os);
+    qint64 createAttribute(U2Attribute& attr, U2DataType type, SQLiteTransaction& t, U2OpStatus& os);
 
     QString buildSelectAttributeQuery(const QString& attributeTable);
 

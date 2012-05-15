@@ -246,7 +246,7 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
     assert(!isModified());
 }
 
-static void deallocateDbiResources(GObject* obj) {
+static void deallocateDbiResources(GObject* obj, DbiConnection &con, U2OpStatus &os) {
     SAFE_POINT(obj != NULL, "NULL object was provided!",);
     U2EntityRef objRef = obj->getEntityRef();
 
@@ -254,10 +254,6 @@ static void deallocateDbiResources(GObject* obj) {
         U2DbiRef dbiRef = objRef.dbiRef;
 
         if (dbiRef.isValid()) {
-            U2OpStatus2Log os;
-            DbiConnection con(dbiRef, os);
-            CHECK_OP(os, );
-
             con.dbi->getObjectDbi()->removeObject(objRef.entityId, os);
         }
     }
@@ -273,9 +269,15 @@ Document::~Document() {
         }
     }
 
+
     if (isDocumentOwnsDbiResources()) {
+        U2OpStatus2Log os;
+        DbiConnection con(dbiRef, os);
+        CHECK_OP(os, );
+        DbiOperationsBlock(dbiRef, os);
+        CHECK_OP(os, );
         foreach (GObject* obj, objects) {
-            deallocateDbiResources(obj);
+            deallocateDbiResources(obj, con, os);
             obj->setGHints(NULL);
         }
     }
@@ -324,7 +326,9 @@ void Document::_removeObject(GObject* obj, bool deleteObjects) {
     emit si_objectRemoved(obj);
     
     if (deleteObjects) {
-        deallocateDbiResources(obj);
+        U2OpStatus2Log os;
+        DbiConnection con(dbiRef, os);
+        deallocateDbiResources(obj, con, os);
         delete obj;
     }
 }

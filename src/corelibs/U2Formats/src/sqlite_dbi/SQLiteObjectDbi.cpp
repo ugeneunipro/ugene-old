@@ -128,17 +128,22 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
         return false;
     }
     if (folder.isEmpty()) {
-        SQLiteQuery deleteQ("DELETE FROM FolderContent WHERE object = ?1", db, os);
-        deleteQ.bindDataId(1, objectId);
+        static const QString deleteString("DELETE FROM FolderContent WHERE object = ?1");
+        SQLiteQuery *deleteQ = t.getPreparedQuery(deleteString, db, os);
+        deleteQ->bindDataId(1, objectId);
         CHECK_OP(os, false);
     } else {
-        qint64 folderId = SQLiteQuery("SELECT id FROM Folder WHERE path = '" + folder + "'", db, os).selectInt64();
+        static const QString selectString("SELECT id FROM Folder WHERE path = ?1");
+        SQLiteQuery *selectQ = t.getPreparedQuery(selectString, db, os);
+        selectQ->bindString(1, folder);
+        qint64 folderId = selectQ->selectInt64();
         CHECK_OP(os, false);
 
-        SQLiteQuery deleteQ("DELETE FROM FolderContent WHERE folder = ?1 AND object = ?2", db, os);
-        deleteQ.bindInt64(1, folderId);
-        deleteQ.bindDataId(2, objectId);
-        deleteQ.update();
+        static const QString deleteString("DELETE FROM FolderContent WHERE folder = ?1 AND object = ?2");
+        SQLiteQuery *deleteQ = t.getPreparedQuery(deleteString, db, os);
+        deleteQ->bindInt64(1, folderId);
+        deleteQ->bindDataId(2, objectId);
+        deleteQ->update();
         CHECK_OP(os, false);
     }
     
@@ -153,9 +158,11 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
 
     if (!parents.isEmpty()) { // object is a part of another object ->  do not erase
         //update top_level flag!
-        SQLiteQuery toplevelQ("UPDATE Object SET rank = " + QString::number(SQLiteDbiObjectRank_Child) + " WHERE id = ?1", db, os);
-        toplevelQ.bindDataId(1, objectId);
-        toplevelQ.execute();
+        static const QString toplevelString("UPDATE Object SET rank = ?1 WHERE id = ?2");
+        SQLiteQuery *toplevelQ = t.getPreparedQuery(toplevelString, db, os);
+        toplevelQ->bindInt32(1, SQLiteDbiObjectRank_Child);
+        toplevelQ->bindDataId(2, objectId);
+        toplevelQ->execute();
         return false;
     }
 
