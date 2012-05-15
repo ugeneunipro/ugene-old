@@ -213,7 +213,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 	GTUtilsDialogRunnables::selectSequenceRegionDialogFiller dialog(os, 2, 2);
 	GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
 	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
-	GTGlobals::sleep(1000);
+	GTGlobals::sleep();
 
 	GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 	GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
@@ -227,8 +227,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
         );
 
 	GTUtilsDialog::preWaitForDialog(os, &removeDialog, GUIDialogWaiter::Modal);
-	GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
 
     int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 29, "Sequence length is " + QString::number(sequenceLength) + ", expected 29");
@@ -237,7 +236,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     CHECK_SET_ERR(sequenceBegin == "AAT", "Sequence starts with <" + sequenceBegin + ">, expected AAT");
 
     bool found = GTUtilsAnnotationsTreeView::findItem(os, "DUMMY_1", false);
-    CHECK_SET_ERR(found == true, "There is annotation DUMMY_1, expected state there is no annotation DUMMY_1");
+    CHECK_SET_ERR(found == false, "There is annotation DUMMY_1, expected state there is no annotation DUMMY_1");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009) {

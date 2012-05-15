@@ -175,6 +175,8 @@ int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
     MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
     GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", 0);
 
+    GTGlobals::sleep();
+
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);
 

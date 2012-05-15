@@ -215,7 +215,6 @@ void GTUtilsDialogRunnables::PopupChooser::run()
 {
     GTGlobals::sleep(1000);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
-    qDebug() << activePopupMenu->actions();
     GTMenu::clickMenuItem(os, activePopupMenu, namePath, useMethod);
 }
 
@@ -878,6 +877,7 @@ void GTUtilsDialogRunnables::RemovePartFromSequenceDialogFiller::run()
     QPushButton *okButton = dialog->findChild<QPushButton*>("OKButton");
     GT_CHECK(okButton != NULL, "OK button not found");
     GTWidget::click(os, okButton);
+    GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
