@@ -96,6 +96,7 @@ private:
     QRect calculateButtonRect(const QRect& itemRect) const;
     int getSelectedRow() const;
     
+    QObject*            labels; // used in GUI tests
     MSAEditor*          editor;
     MSAEditorUI*        ui;
     QScrollBar*         nhBar;

@@ -147,6 +147,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(addSeqFromProjectAction, SIGNAL(triggered()), SLOT(sl_addSeqFromProject()));
 
     sortByNameAction = new QAction(tr("Sort sequences by name"), this);
+    sortByNameAction->setObjectName("action_sort_by_name");
     connect(sortByNameAction, SIGNAL(triggered()), SLOT(sl_sortByName()));
 
     viewModeAction = new QAction(QIcon(":core/images/collapse.png"), tr("Enable collapsing"), this);

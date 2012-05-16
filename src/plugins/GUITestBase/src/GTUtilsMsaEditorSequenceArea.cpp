@@ -38,6 +38,37 @@ void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkSorted"
+void GTUtilsMSAEditorSequenceArea::checkSorted(U2OpStatus &os, bool sortedState) {
+
+    QStringList names = getNameList(os);
+
+    QStringList sortedNames = names;
+    qSort(sortedNames);
+
+    bool sorted = (sortedNames == names);
+    GT_CHECK(sorted == sortedState, "Sorted state differs from needed sorted state");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getNameList"
+QStringList GTUtilsMSAEditorSequenceArea::getNameList(U2OpStatus &os) {
+
+    QWidget *msaEditorNameList = GTWidget::findWidget(os, "msa_editor_name_list");
+    CHECK_SET_ERR_RESULT(msaEditorNameList != NULL, "MsaEditorSequenceArea not found", QStringList());
+
+    QObject *labelsParent = msaEditorNameList->findChild<QObject*>("labels_parent");
+    CHECK_SET_ERR_RESULT(labelsParent != NULL, "labelsParent is NULL", QStringList());
+    CHECK_SET_ERR_RESULT(labelsParent->children().size() == 1, "labelsParent is NULL", QStringList());
+
+    QObject *namesObject = labelsParent->findChild<QObject*>();
+    CHECK_SET_ERR_RESULT(namesObject != NULL, "names QObject is NULL", QStringList());
+
+    QString allNames = namesObject->objectName();
+    return allNames.split('|', QString::SkipEmptyParts);;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getLeftOffset"
 int GTUtilsMSAEditorSequenceArea::getLeftOffset(U2OpStatus &os)
 {

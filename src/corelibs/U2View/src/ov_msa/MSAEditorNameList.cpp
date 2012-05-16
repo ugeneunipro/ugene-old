@@ -38,7 +38,8 @@ namespace U2 {
 static const int CROSS_SIZE = 9;
 #define CHILDREN_OFFSET 8
 
-MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar) : editor(_ui->editor), ui(_ui), nhBar(_nhBar) {
+MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar) : labels(NULL), editor(_ui->editor), ui(_ui), nhBar(_nhBar) {
+    setObjectName("msa_editor_name_list");
     setFocusPolicy(Qt::WheelFocus);
     cachedView = new QPixmap();
     completeRedraw = true;
@@ -75,6 +76,10 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar) : edi
     
     nhBar->setEnabled(false);
     updateActions();
+
+    QObject *labelsParent = new QObject(this);
+    labelsParent->setObjectName("labels_parent");
+    labels = new QObject(labelsParent);
 }
 
 MSAEditorNameList::~MSAEditorNameList() {
@@ -484,6 +489,9 @@ void MSAEditorNameList::drawContent(QPainter& p) {
     int startSeq = ui->seqArea->getFirstVisibleSequence();
     int lastSeq = ui->seqArea->getLastVisibleSequence(true);
 
+    if (labels) {
+        labels->setObjectName("");
+    }
     if (ui->isCollapsibleMode()) {
         MSACollapsibleItemModel* m = ui->getCollapseModel();
         QVector<U2Region> range;
@@ -523,6 +531,9 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, bool selected) {
     const MAlignment& ma = maObj->getMAlignment();
     const MAlignmentRow& row = ma.getRow(s);
     p.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, row.getName());
+    if (labels) {
+        labels->setObjectName(labels->objectName() + "|" + row.getName());
+    }
 }
 
 void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, bool selected, const U2Region& yRange, int pos) {
@@ -568,6 +579,9 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, bool selected, cons
 
     textRect = QRect(textRect.left() + CROSS_SIZE*2 + delta, textRect.top(), textRect.width() - ((5*CROSS_SIZE)/2), textRect.height());
     style()->drawItemText(&p, textRect, Qt::AlignVCenter | Qt::AlignLeft, branchOption.palette, true, row.getName());
+    if (labels) {
+        labels->setObjectName(labels->objectName() + "|" + row.getName());
+    }
 }
 
 void MSAEditorNameList::drawSelection(QPainter& p) {
