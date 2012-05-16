@@ -59,7 +59,7 @@ namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
 ///Close project
-CloseProjectTask::CloseProjectTask() : Task(tr("close_project_task_name"), TaskFlags_NR_FOSCOE)
+CloseProjectTask::CloseProjectTask() : Task(tr("close_project_task_name"), TaskFlags(TaskFlag_NoRun) | TaskFlag_CancelOnSubtaskCancel)
 {
 }
 
