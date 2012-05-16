@@ -137,7 +137,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/project/document modifying/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0001);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_document_modifying::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-962");
+    REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0002);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/Sequence view/

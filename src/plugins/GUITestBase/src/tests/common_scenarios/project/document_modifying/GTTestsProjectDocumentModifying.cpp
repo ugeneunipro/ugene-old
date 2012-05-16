@@ -19,14 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "api/GTMenu.h"
 #include "GTTestsProjectDocumentModifying.h"
+#include "api/GTMenu.h"
 #include "api/GTGlobals.h"
 #include "api/GTMouseDriver.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsToolTip.h"
 #include "GTUtilsDialogRunnables.h"
 #include "api/GTFileDialog.h"
@@ -66,18 +67,32 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
    GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
-   GTGlobals::sleep(1000);
+   GTGlobals::sleep();
    GTMouseDriver::click(os, Qt::RightButton);
-   GTGlobals::sleep(100);
+   GTGlobals::sleep();
    GTUtilsProject::createAnnotation(os, "<auto>", "misc_feature", "complement(1.. 20)");
-   GTGlobals::sleep(100);
-   QTreeWidgetItem *d = GTUtilsProjectTreeView::findItem(os, "MyDocument.gb");
+   GTGlobals::sleep();
+   QTreeWidgetItem *d = GTUtilsProjectTreeView::findItem(os, "1.gb");
    GTUtilsProjectTreeView::itemModificationCheck(os, d, true);
    GTUtilsProject::CloseProjectSettings s;
    s.saveOnCloseButton = QMessageBox::Yes;
    GTUtilsProject::closeProject(os, s);
+   GTGlobals::sleep();
+
+
    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
-   GTUtilsDocument::checkDocument(os, "MyDocument.gb");
+   GTUtilsDocument::checkDocument(os, "1.gb");
+
+   GTUtilsDialogRunnables::PopupChooser popupChooser2(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
+   GTUtilsDialog::preWaitForDialog(os, &popupChooser2, GUIDialogWaiter::Popup);
+   GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
+   GTGlobals::sleep();
+   GTMouseDriver::click(os, Qt::RightButton);
+   GTGlobals::sleep();
+
+   GTGlobals::sleep();
+   QTreeWidgetItem* ann = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+   CHECK_SET_ERR(ann != NULL, "There is no annotation");
 }
 
 }
