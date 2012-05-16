@@ -53,7 +53,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
     CHECK_OP(os, );
     static const int READ_BUFF_SIZE = 4096;
 
-    U2SequenceImporter  seqImporter(fs);
+    U2SequenceImporter  seqImporter(fs, true);
 
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();

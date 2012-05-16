@@ -81,8 +81,12 @@ public:
         HINT: use U2_REGION_MAX to replace or clear whole the sequence
 
         Requires: U2DbiFeature_WriteSequence feature support
+
+        Note: if @updateLength is set then it will update length of the sequence object
+
+        Hint: if @emptySequence is set then the start position of the inserting data is not calculated
     */
-    virtual void updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os) = 0;
+    virtual void updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, bool updateLenght, bool emptySequence, U2OpStatus& os) = 0;
 };
 
 

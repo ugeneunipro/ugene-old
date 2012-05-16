@@ -87,7 +87,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
     QString seqName(docUrl.baseFileName());
     QList<Annotation*> annotations;
 
-    U2SequenceImporter seqImporter(fs);
+    U2SequenceImporter seqImporter(fs, true);
 
     while (!os.isCoR()) {
         //read header

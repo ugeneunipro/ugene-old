@@ -165,7 +165,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     GObjectReference sequenceRef;
     qint64 sequenceStart = 0;
 
-    U2SequenceImporter seqImporter(hints);
+    U2SequenceImporter seqImporter(hints, true);
     int seqNumber = 0;
 
     while (!os.isCoR()) {

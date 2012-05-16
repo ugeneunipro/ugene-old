@@ -132,7 +132,7 @@ void U2SequenceObject::setWholeSequence(const DNASequence& seq) {
     U2OpStatus2Log os;
     DbiConnection con(entityRef.dbiRef, os);
     CHECK_OP(os, );
-    con.dbi->getSequenceDbi()->updateSequenceData(entityRef.entityId, U2_REGION_MAX, seq.seq, os);
+    con.dbi->getSequenceDbi()->updateSequenceData(entityRef.entityId, U2_REGION_MAX, seq.seq, true, false, os);
     CHECK_OP(os, );
     if (!seq.quality.isEmpty()) {
         setQuality(seq.quality);
@@ -177,7 +177,7 @@ void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& 
     
     DbiConnection con(entityRef.dbiRef, os);
     CHECK_OP(os, );
-    con.dbi->getSequenceDbi()->updateSequenceData(entityRef.entityId, region, seq.seq, os);
+    con.dbi->getSequenceDbi()->updateSequenceData(entityRef.entityId, region, seq.seq, true, false, os);
     cachedLength = -1;
     setModified(true);
     emit si_sequenceChanged();

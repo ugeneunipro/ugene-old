@@ -34,6 +34,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/U2AttributeDbi.h>
+#include <U2Core/Timer.h>
 
 #include "U2SequenceUtils.h"
 
@@ -83,7 +84,7 @@ U2Sequence U2SequenceUtils::copySequence(const U2EntityRef& srcSeq, const U2DbiR
     //TODO: optimize and insert by small chunks! ~2-4 mb
     QByteArray wholeSeq = srcCon.dbi->getSequenceDbi()->getSequenceData(srcSeq.entityId, U2_REGION_MAX, os);
     CHECK_OP(os, res);
-    dstCon.dbi->getSequenceDbi()->updateSequenceData(res.id, U2Region(0, 0), wholeSeq, os);
+    dstCon.dbi->getSequenceDbi()->updateSequenceData(res.id, U2Region(0, 0), wholeSeq, true, false, os);
 
    
     return res;
@@ -236,18 +237,26 @@ static CaseAnnotationsMode getCaseAnnotationsModeHint(const QVariantMap& fs)
 }
 
 
-U2SequenceImporter::U2SequenceImporter(const QVariantMap& fs) {
+U2SequenceImporter::U2SequenceImporter(const QVariantMap& fs, bool lazyMode, bool singleThread)
+: lazyMode(lazyMode), singleThread(singleThread), sequenceCreated(false)
+{
     insertBlockSize = DEFAULT_SEQUENCE_INSERT_BLOCK_SIZE;
     currentLength = 0;
     isUnfinishedRegion = false;
     caseAnnsMode = getCaseAnnotationsModeHint(fs);
+    sequenceCreated = false;
+    committedLength = 0;
 }
 
-U2SequenceImporter::U2SequenceImporter(qint64 _insertBlockSize, const QVariantMap& fs) : insertBlockSize(_insertBlockSize) {
+U2SequenceImporter::U2SequenceImporter(qint64 _insertBlockSize, const QVariantMap& fs, bool lazyMode, bool singleThread)
+: insertBlockSize(_insertBlockSize), lazyMode(lazyMode), singleThread(singleThread)
+{
     insertBlockSize = qMin((qint64)10, insertBlockSize);
     currentLength = 0;
     isUnfinishedRegion = false;
     caseAnnsMode = getCaseAnnotationsModeHint(fs);
+    sequenceCreated = false;
+    committedLength = 0;
 }
 
 U2SequenceImporter::~U2SequenceImporter() {
@@ -272,8 +281,11 @@ void U2SequenceImporter::startSequence(const U2DbiRef& dbiRef, const QString& vi
     isUnfinishedRegion = false;
     annList.clear();
     
-    con.dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
-    CHECK_OP(os, );
+    if (!lazyMode) {
+        con.dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
+        CHECK_OP(os, );
+        sequenceCreated = true;
+    }
 }
 
 void U2SequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus& os) {
@@ -298,8 +310,10 @@ void U2SequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus& os) 
     
     if (resAl != U2AlphabetUtils::getById(sequence.alphabet)) {
         sequence.alphabet.id = resAl->getId();
-        con.dbi->getSequenceDbi()->updateSequenceObject(sequence, os);
-        CHECK_OP(os, );
+        if (sequenceCreated) {
+            con.dbi->getSequenceDbi()->updateSequenceObject(sequence, os);
+            CHECK_OP(os, );
+        }
     }
 
     _addBlock2Buffer(data, len, os);
@@ -349,9 +363,29 @@ void U2SequenceImporter::_addBlock2Db(const char* data, qint64 len, U2OpStatus& 
     }
     QByteArray arr(data, len); 
     TextUtils::translate(TextUtils::UPPER_CASE_MAP, arr.data(), arr.length());
-    con.dbi->getSequenceDbi()->updateSequenceData(sequence.id, U2Region(sequence.length, 0), arr, os);
+
+    bool updateLength = true;
+    bool emptySequence = false;
+    if (!sequenceCreated) {
+        emptySequence = true;
+        if (singleThread) {
+            SAFE_POINT(0 == committedLength, "Sequence object is not created, but sequence data already exists", );
+            sequence.length = sequenceBuffer.length();
+            updateLength = false;
+        }
+        con.dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
+        CHECK_OP(os, );
+        sequenceCreated = true;
+    }
+
+    con.dbi->getSequenceDbi()->updateSequenceData(sequence.id, U2Region(sequence.length, 0), arr, updateLength, emptySequence, os);
     CHECK_OP(os, );
-    sequence.length += len;
+    if (committedLength == sequence.length) {
+        sequence.length += len;
+    } else { // because of lazyMode and delayed sequence creation
+        sequence.length = committedLength + len;
+    }
+    committedLength += len;
 }
 
 void U2SequenceImporter::_addBuffer2Db(U2OpStatus& os) {
@@ -361,6 +395,7 @@ void U2SequenceImporter::_addBuffer2Db(U2OpStatus& os) {
 }
 
 U2Sequence U2SequenceImporter::finalizeSequence(U2OpStatus& os) {
+    GTIMER(c1, t1, "U2SequenceImporter::finalizeSequence");
     _addBuffer2Db(os);
     LOG_OP(os);
     // If sequence is empty, addBlock is never called and alphabet is not set. So set it here to some default value
@@ -383,6 +418,8 @@ U2Sequence U2SequenceImporter::finalizeSequence(U2OpStatus& os) {
             }
         }
     }
+    sequenceCreated = false;
+    committedLength = 0;
     return sequence;
 }
 

@@ -63,8 +63,9 @@ public:
 /** Class used to efficiently import sequence into DBI */
 class U2CORE_EXPORT U2SequenceImporter {
 public:
-    U2SequenceImporter(const QVariantMap& fs = QVariantMap());
-    U2SequenceImporter(qint64 _insertBlockSize, const QVariantMap& fs = QVariantMap());
+    U2SequenceImporter(const QVariantMap& fs = QVariantMap(), bool lazyMode = false, bool singleThread = true);
+    U2SequenceImporter(qint64 _insertBlockSize, const QVariantMap& fs = QVariantMap(),
+        bool lazyMode = false, bool singleThread = true);
     virtual ~U2SequenceImporter();
     
     void startSequence(const U2DbiRef& dbiRef, const QString& visualName, bool circular, U2OpStatus& os);
@@ -97,6 +98,12 @@ private:
     bool                isUnfinishedRegion;
     U2Region            unfinishedRegion;
     CaseAnnotationsMode caseAnnsMode;
+
+    bool                lazyMode;
+    bool                singleThread;
+
+    bool                sequenceCreated;
+    qint64              committedLength; // singleThread only
 
 };
 

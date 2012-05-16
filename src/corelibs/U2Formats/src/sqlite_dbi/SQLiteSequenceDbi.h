@@ -63,7 +63,7 @@ public:
 
         //TODO think about annotations: should we fix locations automatically?? If yes, emit notifications??
     */
-    virtual void updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, U2OpStatus& os);
+    virtual void updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, bool updateLenght, bool emptySequence, U2OpStatus& os);
 
     virtual void initSqlSchema(U2OpStatus& os);
 

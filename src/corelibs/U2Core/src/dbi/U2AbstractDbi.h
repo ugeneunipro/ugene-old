@@ -145,7 +145,7 @@ public:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequence, getRootDbi(), os);
     }
 
-    virtual void updateSequenceData(const U2DataId&, const U2Region&, const QByteArray&, U2OpStatus& os) {
+    virtual void updateSequenceData(const U2DataId&, const U2Region&, const QByteArray&, bool updateLenght, bool emptySequence, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteSequence, getRootDbi(), os);
     }
 };

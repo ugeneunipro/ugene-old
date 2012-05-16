@@ -205,7 +205,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     //header validation
     validateHeader(words);
 
-    U2SequenceImporter seqImporter(hints);
+    U2SequenceImporter seqImporter(hints, true);
 
     int lineNumber = 1;
     QMap<QString,Annotation*> joinedAnnotations;

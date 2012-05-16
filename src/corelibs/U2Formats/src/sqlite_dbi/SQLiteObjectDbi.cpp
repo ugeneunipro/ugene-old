@@ -386,6 +386,11 @@ void SQLiteObjectDbi::ensureParent(const U2DataId& parentId, const U2DataId& chi
 // Helper methods
 
 void SQLiteObjectDbi::incrementVersion(const U2DataId& objectId, DbRef* db, U2OpStatus& os) {
+    // TODO: currently versions are not needed
+    if (true) {
+        return;
+    }
+
     SQLiteTransaction t(db, os);
     static const QString queryString("UPDATE Object SET version = version + 1 WHERE id = ?1");
     SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
@@ -394,6 +399,10 @@ void SQLiteObjectDbi::incrementVersion(const U2DataId& objectId, DbRef* db, U2Op
 }
 
 qint64 SQLiteObjectDbi::getObjectVersion(const U2DataId& objectId, U2OpStatus& os) {
+    // TODO: currently versions are not needed
+    if (true) {
+        return 0;
+    }
     SQLiteTransaction t(db, os);
     static const QString queryString("SELECT version FROM Object WHERE id = ?1");
     SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);

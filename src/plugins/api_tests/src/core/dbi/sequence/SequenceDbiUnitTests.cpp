@@ -104,6 +104,8 @@ void SequenceTestData::checkUpdateSequence(UnitTest *t, const UpdateSequenceArgs
 			sequenceDbi->updateSequenceData(id,
 			regionToReplace,
 			dataToInsert,
+            true,
+            false,
 			os);
 			CHECK_OP(os,);
 		}

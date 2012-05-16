@@ -39,6 +39,7 @@
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/Timer.h>
 
 namespace U2 {
 
@@ -121,6 +122,7 @@ FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUr
 static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, QList<GObject*>& objects,
                  int gapSize, QString& writeLockReason, U2OpStatus& os) 
 {
+    GTIMER(c1, t1, "Fasta::load");
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
     static char fastaHeaderStartChar = '>';
@@ -147,7 +149,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     static QBitArray nonWhites = ~TextUtils::WHITES;
     io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
 
-    U2SequenceImporter seqImporter(fs);
+    U2SequenceImporter seqImporter(fs, true);
 
     qint64 sequenceStart = 0;
     int sequenceNumber = 0;
