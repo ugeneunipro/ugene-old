@@ -30,16 +30,16 @@
 namespace U2 {
 class GTUtilsMdi {
 public:
-    static void click(U2OpStatus &os, GTGlobals::WindowAction action);
+	static void click(U2OpStatus &os, GTGlobals::WindowAction action);
 	static QPoint getMdiItemPosition(U2OpStatus &os, const QString& windowName);
 	static void selectRandomRegion(U2OpStatus &os, const QString& windowName);
 
-    // fails if MainWindow is NULL or because of FindOptions settings
-    static QWidget* activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+	// fails if MainWindow is NULL or because of FindOptions settings
+	static QWidget* activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
-    // finds a window with a given window title in MDIManager windows
-    // fails if windowName is empty or because of FindOptions settings
-    static QWidget* findWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+	// finds a window with a given window title in MDIManager windows
+	// fails if windowName is empty or because of FindOptions settings
+	static QWidget* findWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 };
 
 } // namespace

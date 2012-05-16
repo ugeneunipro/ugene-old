@@ -35,51 +35,51 @@ namespace U2 {
 #define GT_METHOD_NAME "click"
 void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
 
-    MainWindow* mw = AppContext::getMainWindow();
-    GT_CHECK(mw != NULL, "MainWindow == NULL");
+	MainWindow* mw = AppContext::getMainWindow();
+	GT_CHECK(mw != NULL, "MainWindow == NULL");
 
-    QMainWindow* mainWindow = mw->getQMainWindow();
-    GT_CHECK(mainWindow != NULL, "QMainWindow == NULL");
+	QMainWindow* mainWindow = mw->getQMainWindow();
+	GT_CHECK(mainWindow != NULL, "QMainWindow == NULL");
 
-    GTMenuBar::clickCornerMenu(os, mainWindow->menuBar(), action);
+	GTMenuBar::clickCornerMenu(os, mainWindow->menuBar(), action);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findWindow"
 QWidget* GTUtilsMdi::findWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& options) {
 
-    GT_CHECK_RESULT(windowName.isEmpty() == false, "windowname is empty", NULL);
+	GT_CHECK_RESULT(windowName.isEmpty() == false, "windowname is empty", NULL);
 
-    MainWindow* mw = AppContext::getMainWindow();
-    GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
+	MainWindow* mw = AppContext::getMainWindow();
+	GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
 
-    QList<MWMDIWindow*> mdiWindows = mw->getMDIManager()->getWindows();
-    foreach (MWMDIWindow* w, mdiWindows) {
-        QString mdiTitle = w->windowTitle();
-        if (mdiTitle == windowName) {
-            return w;
-        }
-    }
+	QList<MWMDIWindow*> mdiWindows = mw->getMDIManager()->getWindows();
+	foreach (MWMDIWindow* w, mdiWindows) {
+		QString mdiTitle = w->windowTitle();
+		if (mdiTitle == windowName) {
+			return w;
+		}
+	}
 
-    if (options.failIfNull) {
-        GT_CHECK_RESULT(false, "Widget " + windowName + " not found", NULL);
-    }
+	if (options.failIfNull) {
+		GT_CHECK_RESULT(false, "Widget " + windowName + " not found", NULL);
+	}
 
-    return NULL;
+	return NULL;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "activeWindow"
 QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& options) {
 
-    MainWindow* mw = AppContext::getMainWindow();
-    GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
+	MainWindow* mw = AppContext::getMainWindow();
+	GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", NULL);
 
-    QWidget* w = mw->getMDIManager()->getActiveWindow();
-    if (options.failIfNull) {
-        GT_CHECK_RESULT(w != NULL, "Active window is not found", NULL);
-    }
-    return w;
+	QWidget* w = mw->getMDIManager()->getActiveWindow();
+	if (options.failIfNull) {
+		GT_CHECK_RESULT(w != NULL, "Active window is not found", NULL);
+	}
+	return w;
 }
 #undef GT_METHOD_NAME
 

@@ -57,12 +57,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-    GTUtilsDialogRunnables::RemoteDBDialogFiller filler(os, "NC_001363", 0); 
-    GTUtilsDialog::waitForDialog(os, &filler);
-    GTGlobals::sleep(20000);
-    GTUtilsDocument::isDocumentLoaded(os, "NC_001363.gb");
-    GTUtilsDocument::checkDocument(os, "NC_001363.gb", AnnotatedDNAViewFactory::ID);
+	GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+	GTUtilsDialogRunnables::RemoteDBDialogFiller filler(os, "NC_001363", 0); 
+	GTUtilsDialog::waitForDialog(os, &filler);
+	GTGlobals::sleep(20000);
+	GTUtilsDocument::isDocumentLoaded(os, "NC_001363.gb");
+	GTUtilsDocument::checkDocument(os, "NC_001363.gb", AnnotatedDNAViewFactory::ID);
 }
 
 } // namespace

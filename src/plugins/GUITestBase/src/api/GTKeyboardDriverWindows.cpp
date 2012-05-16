@@ -25,8 +25,8 @@
 #include <QtGui/QApplication>
 
 #ifdef _WIN32
-    #include <windows.h>
-    #define VIRTUAL_TO_SCAN_CODE 0
+	#include <windows.h>
+	#define VIRTUAL_TO_SCAN_CODE 0
 #endif
 
 namespace U2 {
@@ -37,214 +37,214 @@ namespace U2 {
 
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
 {
-    if (isalpha(key)) {
-        key = toupper(key);
-    }
+	if (isalpha(key)) {
+		key = toupper(key);
+	}
 
-    switch (key) {
-        case '_':
-            if (modifiers != 0) {
-                keyPress(os, modifiers);
-            }
-            keyPress(os, VK_OEM_MINUS, GTKeyboardDriver::key["shift"]);
-            break;
+	switch (key) {
+		case '_':
+			if (modifiers != 0) {
+				keyPress(os, modifiers);
+			}
+			keyPress(os, VK_OEM_MINUS, GTKeyboardDriver::key["shift"]);
+			break;
 
-        case '.':
-            keyPress(os, VK_DECIMAL, modifiers);
-            break;
+		case '.':
+			keyPress(os, VK_DECIMAL, modifiers);
+			break;
 
-        case '/':
-            keyPress(os, VK_DIVIDE, modifiers);
-            break;
-        
-        case ':':
-            if (modifiers != 0) {
-                keyPress(os, modifiers);
-            }
-            keyPress(os, VK_OEM_1, GTKeyboardDriver::key["shift"]);
-            break;
+		case '/':
+			keyPress(os, VK_DIVIDE, modifiers);
+			break;
+		
+		case ':':
+			if (modifiers != 0) {
+				keyPress(os, modifiers);
+			}
+			keyPress(os, VK_OEM_1, GTKeyboardDriver::key["shift"]);
+			break;
 		case '<':
 			 if (modifiers != 0) {
-                keyPress(os, modifiers);
-            }
-            keyPress(os, VK_OEM_COMMA, GTKeyboardDriver::key["shift"]);
-            break;
+				keyPress(os, modifiers);
+			}
+			keyPress(os, VK_OEM_COMMA, GTKeyboardDriver::key["shift"]);
+			break;
 		case '>':
 			 if (modifiers != 0) {
-                keyPress(os, modifiers);
-            }
-            keyPress(os, VK_OEM_PERIOD, GTKeyboardDriver::key["shift"]);
-            break;
+				keyPress(os, modifiers);
+			}
+			keyPress(os, VK_OEM_PERIOD, GTKeyboardDriver::key["shift"]);
+			break;
 		case '(':
 			 if (modifiers != 0) {
-                keyPress(os, modifiers);
-            }
-            keyPress(os, '9', GTKeyboardDriver::key["shift"]);
-            break;
+				keyPress(os, modifiers);
+			}
+			keyPress(os, '9', GTKeyboardDriver::key["shift"]);
+			break;
 		case ')':
 			 if (modifiers != 0) {
-                keyPress(os, modifiers);
-            }
-            keyPress(os, '0', GTKeyboardDriver::key["shift"]);
-            break;
+				keyPress(os, modifiers);
+			}
+			keyPress(os, '0', GTKeyboardDriver::key["shift"]);
+			break;
 
-        default:
-            keyPress(os, (int)key, modifiers);
-            break;
-    }
+		default:
+			keyPress(os, (int)key, modifiers);
+			break;
+	}
 }
 
 void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 {
-    if (isalpha(key)) {
-        key = toupper(key);
-    } 
+	if (isalpha(key)) {
+		key = toupper(key);
+	} 
 
-    switch (key) {
-        case '_':
-            keyRelease(os, VK_OEM_MINUS, GTKeyboardDriver::key["shift"]);
-            if (modifiers != 0) {
-                keyRelease(os, modifiers);
-            }
-            break;
+	switch (key) {
+		case '_':
+			keyRelease(os, VK_OEM_MINUS, GTKeyboardDriver::key["shift"]);
+			if (modifiers != 0) {
+				keyRelease(os, modifiers);
+			}
+			break;
 
-        case '.':
-            keyRelease(os, VK_DECIMAL, modifiers);
-            break;
+		case '.':
+			keyRelease(os, VK_DECIMAL, modifiers);
+			break;
 
-        case '/':
-            keyRelease(os, VK_DIVIDE, modifiers);
-            break;
+		case '/':
+			keyRelease(os, VK_DIVIDE, modifiers);
+			break;
 
-        case ':':
-            keyRelease(os, VK_OEM_1, GTKeyboardDriver::key["shift"]);
-            if (modifiers != 0) {
-                keyRelease(os, modifiers);
-            }
-            break;
+		case ':':
+			keyRelease(os, VK_OEM_1, GTKeyboardDriver::key["shift"]);
+			if (modifiers != 0) {
+				keyRelease(os, modifiers);
+			}
+			break;
 		case '<':
-            keyRelease(os, VK_OEM_COMMA, GTKeyboardDriver::key["shift"]);
-            if (modifiers != 0) {
-                keyRelease(os, modifiers);
-            }
-            break;
+			keyRelease(os, VK_OEM_COMMA, GTKeyboardDriver::key["shift"]);
+			if (modifiers != 0) {
+				keyRelease(os, modifiers);
+			}
+			break;
 		case '>':
-            keyRelease(os, VK_OEM_PERIOD, GTKeyboardDriver::key["shift"]);
-            if (modifiers != 0) {
-                keyRelease(os, modifiers);
-            }
-            break;
+			keyRelease(os, VK_OEM_PERIOD, GTKeyboardDriver::key["shift"]);
+			if (modifiers != 0) {
+				keyRelease(os, modifiers);
+			}
+			break;
 		case '(':
-            keyRelease(os, '9', GTKeyboardDriver::key["shift"]);
-            if (modifiers != 0) {
-                keyRelease(os, modifiers);
-            }
-            break;
+			keyRelease(os, '9', GTKeyboardDriver::key["shift"]);
+			if (modifiers != 0) {
+				keyRelease(os, modifiers);
+			}
+			break;
 		case ')':
-            keyRelease(os, '0', GTKeyboardDriver::key["shift"]);
-            if (modifiers != 0) {
-                keyRelease(os, modifiers);
-            }
-            break;
-        default:
-            keyRelease(os, (int)key, modifiers);
-            break;
-    }
+			keyRelease(os, '0', GTKeyboardDriver::key["shift"]);
+			if (modifiers != 0) {
+				keyRelease(os, modifiers);
+			}
+			break;
+		default:
+			keyRelease(os, (int)key, modifiers);
+			break;
+	}
 }
 
 #define GT_METHOD_NAME "keyClick"
 void GTKeyboardDriver::keyClick(U2OpStatus &os, char key, int modifiers)
 {
-    GT_CHECK(key != 0, "key = 0");
-    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
+	GT_CHECK(key != 0, "key = 0");
+	GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
-    keyPress(os, key, modifiers);
-    keyRelease(os, key, modifiers);
+	keyPress(os, key, modifiers);
+	keyRelease(os, key, modifiers);
 }
 #undef GT_METHOD_NAME
 
 INPUT GTKeyboardDriver::getKeyEvent(int key, bool keyUp) {
 
-    INPUT event;
-    event.type = INPUT_KEYBOARD;
-    event.ki.wVk = key;
-    event.ki.wScan = MapVirtualKey(key, VIRTUAL_TO_SCAN_CODE);
-    event.ki.dwFlags = keyUp ? KEYEVENTF_KEYUP : 0;
-    event.ki.time = 0;
-    event.ki.dwExtraInfo = 0;
+	INPUT event;
+	event.type = INPUT_KEYBOARD;
+	event.ki.wVk = key;
+	event.ki.wScan = MapVirtualKey(key, VIRTUAL_TO_SCAN_CODE);
+	event.ki.dwFlags = keyUp ? KEYEVENTF_KEYUP : 0;
+	event.ki.time = 0;
+	event.ki.dwExtraInfo = 0;
 
-    return event;
+	return event;
 }
 
 #define GT_METHOD_NAME "keyPress"
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers) {
 
-    GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
-    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
+	GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+	GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
-    if (modifiers) {
-        INPUT input = getKeyEvent(modifiers);
-        SendInput(1, &input, sizeof(input));
-    }
+	if (modifiers) {
+		INPUT input = getKeyEvent(modifiers);
+		SendInput(1, &input, sizeof(input));
+	}
 
-    INPUT input = getKeyEvent(key);
-    SendInput(1, &input, sizeof(input));
+	INPUT input = getKeyEvent(key);
+	SendInput(1, &input, sizeof(input));
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyRelease"
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
-    GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
-    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
+	GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+	GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
-    if (modifiers) {
-        INPUT input = getKeyEvent(modifiers, true);
-        SendInput(1, &input, sizeof(input));
-    }
+	if (modifiers) {
+		INPUT input = getKeyEvent(modifiers, true);
+		SendInput(1, &input, sizeof(input));
+	}
 
-    INPUT input = getKeyEvent(key, true);
-    SendInput(1, &input, sizeof(input));
+	INPUT input = getKeyEvent(key, true);
+	SendInput(1, &input, sizeof(input));
 }
 #undef GT_METHOD_NAME
 
 GTKeyboardDriver::keys::keys()
 {
-    ADD_KEY("context_menu", VK_APPS);
-    ADD_KEY("back", VK_BACK);
-    ADD_KEY("tab", VK_TAB);
-    ADD_KEY("clear", VK_CLEAR);
-    ADD_KEY("enter", VK_RETURN);
-    ADD_KEY("shift", VK_SHIFT);
-    ADD_KEY("rshift", VK_RSHIFT);
-    ADD_KEY("lshift", VK_LSHIFT);
-    ADD_KEY("ctrl", VK_CONTROL);
-    ADD_KEY("rctrl", VK_RCONTROL);
-    ADD_KEY("lctrl", VK_LCONTROL);
-    ADD_KEY("alt", VK_MENU);
-    ADD_KEY("pause", VK_PAUSE);
-    ADD_KEY("esc", VK_ESCAPE);
-    ADD_KEY("space", VK_SPACE);
-    ADD_KEY("left", VK_LEFT);
-    ADD_KEY("up", VK_UP);
-    ADD_KEY("right", VK_RIGHT);
-    ADD_KEY("down", VK_DOWN);
-    ADD_KEY("insert", VK_INSERT);
-    ADD_KEY("delete", VK_DELETE);
-    ADD_KEY("pageUp", VK_PRIOR);
-    ADD_KEY("pageDown", VK_NEXT);
-    ADD_KEY("help", VK_HELP);
-    ADD_KEY("f1", VK_F1);
-    ADD_KEY("f2", VK_F2);
-    ADD_KEY("f3", VK_F3);
-    ADD_KEY("f4", VK_F4);
-    ADD_KEY("f5", VK_F5);
-    ADD_KEY("f6", VK_F6);
-    ADD_KEY("f7", VK_F7);
-    ADD_KEY("f8", VK_F8);
-    ADD_KEY("f9", VK_F9);
-    ADD_KEY("f10", VK_F10);
-    ADD_KEY("f12", VK_F12);
+	ADD_KEY("context_menu", VK_APPS);
+	ADD_KEY("back", VK_BACK);
+	ADD_KEY("tab", VK_TAB);
+	ADD_KEY("clear", VK_CLEAR);
+	ADD_KEY("enter", VK_RETURN);
+	ADD_KEY("shift", VK_SHIFT);
+	ADD_KEY("rshift", VK_RSHIFT);
+	ADD_KEY("lshift", VK_LSHIFT);
+	ADD_KEY("ctrl", VK_CONTROL);
+	ADD_KEY("rctrl", VK_RCONTROL);
+	ADD_KEY("lctrl", VK_LCONTROL);
+	ADD_KEY("alt", VK_MENU);
+	ADD_KEY("pause", VK_PAUSE);
+	ADD_KEY("esc", VK_ESCAPE);
+	ADD_KEY("space", VK_SPACE);
+	ADD_KEY("left", VK_LEFT);
+	ADD_KEY("up", VK_UP);
+	ADD_KEY("right", VK_RIGHT);
+	ADD_KEY("down", VK_DOWN);
+	ADD_KEY("insert", VK_INSERT);
+	ADD_KEY("delete", VK_DELETE);
+	ADD_KEY("pageUp", VK_PRIOR);
+	ADD_KEY("pageDown", VK_NEXT);
+	ADD_KEY("help", VK_HELP);
+	ADD_KEY("f1", VK_F1);
+	ADD_KEY("f2", VK_F2);
+	ADD_KEY("f3", VK_F3);
+	ADD_KEY("f4", VK_F4);
+	ADD_KEY("f5", VK_F5);
+	ADD_KEY("f6", VK_F6);
+	ADD_KEY("f7", VK_F7);
+	ADD_KEY("f8", VK_F8);
+	ADD_KEY("f9", VK_F9);
+	ADD_KEY("f10", VK_F10);
+	ADD_KEY("f12", VK_F12);
 
 // feel free to add other keys
 // macro VK_* defined in WinUser.h
