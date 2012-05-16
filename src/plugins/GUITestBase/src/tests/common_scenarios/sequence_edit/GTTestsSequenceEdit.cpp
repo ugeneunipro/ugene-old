@@ -210,6 +210,10 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
 
+    GTGlobals::sleep();
+    QTreeWidgetItem *dummyTest = GTUtilsAnnotationsTreeView::findItem(os, "DUMMY_1", false);
+    CHECK_SET_ERR(dummyTest != NULL, "There is no annotation DUMMY_1");
+
 	GTUtilsDialogRunnables::selectSequenceRegionDialogFiller dialog(os, 2, 2);
 	GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
 	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
