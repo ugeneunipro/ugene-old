@@ -52,7 +52,7 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
     switch (avItem->type) {
         case AVItemType_Annotation:
             {
-                AVAnnotationItem* avAnnotationItem= (AVAnnotationItem*)avItem;
+                AVAnnotationItem* avAnnotationItem = (AVAnnotationItem*)avItem;
                 GT_CHECK_RESULT(avAnnotationItem != NULL, "avAnnotationItem is NULL", "");
 
                 Annotation *annotation = avAnnotationItem->annotation;
@@ -62,6 +62,14 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
             break;
 
         case AVItemType_Group:
+            {
+                AVGroupItem* avGroupItem = (AVGroupItem*)avItem;
+                GT_CHECK_RESULT(avGroupItem != NULL, "avGroupItem is NULL", "");
+
+                AnnotationGroup* group = avGroupItem->group;
+                GT_CHECK_RESULT(group != NULL, "group is NULL", "");
+                return group->getGroupName();
+            }
             break;
 
         case AVItemType_Qualifier:
