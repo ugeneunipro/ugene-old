@@ -125,9 +125,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
 
-    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
-    GTMenu::showContextMenu(os, mdiWindow);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
     GTGlobals::sleep();
 
@@ -138,9 +136,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
 
-    mdiWindow = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
-    GTMenu::showContextMenu(os, mdiWindow);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
     GTGlobals::sleep();
 
@@ -158,9 +154,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     GTUtilsMdi::click(os, GTGlobals::Maximize);
     GTGlobals::sleep();
 
-    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
-    GTMenu::showContextMenu(os, mdiWindow);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
     GTGlobals::sleep();
 
@@ -171,9 +165,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
 
-    mdiWindow = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
-    GTMenu::showContextMenu(os, mdiWindow);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
     GTGlobals::sleep();
 
@@ -191,8 +183,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTUtilsMdi::click(os, GTGlobals::Maximize);
     GTGlobals::sleep();
 
-    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
     GTGlobals::sleep();
@@ -204,9 +194,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
 
-    mdiWindow = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
-    GTMenu::showContextMenu(os, mdiWindow);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
     GTGlobals::sleep();
 
@@ -259,10 +247,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_4) {
     GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
 
-    QWidget* mdiWindow = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
-
-    GTMenu::showContextMenu(os, mdiWindow);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
     GTGlobals::sleep();
 
@@ -283,14 +268,102 @@ GUI_TEST_CLASS_DEFINITION(test_0002_4) {
     GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
 
-    mdiWindow = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
-    GTMenu::showContextMenu(os, mdiWindow);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
     GTGlobals::sleep();
 
     offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
     CHECK_SET_ERR(offsetsVisible == true, "Offsets are not visible");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTGlobals::sleep();
+
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::checkSorted(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003_1) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTGlobals::sleep();
+
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::checkSorted(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003_2) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "revcompl.aln");
+    GTGlobals::sleep();
+
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
+
+    GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::checkSorted(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003_3) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gap_col.aln");
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::checkSorted(os, false);
+
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+
+    GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
+
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+    GTUtilsMdi::click(os, GTGlobals::Maximize);
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::checkSorted(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003_4) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma.aln");
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::checkSorted(os, false);
+
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep();
+
+    QWidget* mdiWindow = GTUtilsMdi::activeWindow(os, false);
+    CHECK_SET_ERR(mdiWindow == NULL, "There is an MDI window");
+
+    QPoint p = GTUtilsProjectTreeView::getItemCenter(os, "ma");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::checkSorted(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004)
