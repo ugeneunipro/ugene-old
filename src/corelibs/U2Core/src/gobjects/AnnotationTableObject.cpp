@@ -136,7 +136,7 @@ QString Annotation::getQualifiersTip(int maxRows, U2SequenceObject* seq, DNATran
             if (len != r.length) {
                 complete = false;
             }
-            if (getStrand().isCompementary()) {
+            if (getStrand().isCompementary() && comlTT != NULL) {
                 QByteArray ba = seq->getSequenceData(U2Region(r.endPos() - len, len));
                 comlTT->translate(ba.data(), len);
                 TextUtils::reverse(ba.data(), len);
