@@ -98,7 +98,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     QStringList contigs;
     QVector<U2Region> mergedMapping;
 
-    U2SequenceImporter seqImporter(fs, true);
+    U2SequenceImporter seqImporter(fs);
 
     QSet<QString> usedNames;
     bool toolMark = false;

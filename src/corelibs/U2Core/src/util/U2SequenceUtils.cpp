@@ -34,7 +34,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/U2AttributeDbi.h>
-#include <U2Core/Timer.h>
 
 #include "U2SequenceUtils.h"
 
@@ -395,7 +394,6 @@ void U2SequenceImporter::_addBuffer2Db(U2OpStatus& os) {
 }
 
 U2Sequence U2SequenceImporter::finalizeSequence(U2OpStatus& os) {
-    GTIMER(c1, t1, "U2SequenceImporter::finalizeSequence");
     _addBuffer2Db(os);
     LOG_OP(os);
     // If sequence is empty, addBlock is never called and alphabet is not set. So set it here to some default value
