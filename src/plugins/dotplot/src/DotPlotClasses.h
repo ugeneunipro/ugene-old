@@ -89,7 +89,7 @@ class DotPlotResultsListener : public RFResultsListener {
 
 public:
     DotPlotResultsListener();
-    ~DotPlotResultsListener();
+    virtual ~DotPlotResultsListener();
 
     void setTask(Task *);
 
