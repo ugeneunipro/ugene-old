@@ -41,150 +41,150 @@ namespace GUITest_common_scenarios_project_user_locking {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 
-	GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj5.uprj");
-	GTUtilsApp::checkUGENETitle(os, "proj5 UGENE");
-	GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj5.uprj");
+    GTUtilsApp::checkUGENETitle(os, "proj5 UGENE");
+    GTUtilsDocument::checkDocument(os, "1.gb");
 
-	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
-	GTMouseDriver::doubleClick(os);
-	GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 
-	GTGlobals::sleep(2000);
+    GTGlobals::sleep(2000);
 
-	GTKeyboardDriver::keyClick(os, 'N', GTKeyboardDriver::key["ctrl"]);
-	GTUtilsDialogRunnables::CreateAnnotationDialogChecker checker(os);
-	GTUtilsDialog::waitForDialog(os, &checker);
+    GTKeyboardDriver::keyClick(os, 'N', GTKeyboardDriver::key["ctrl"]);
+    GTUtilsDialogRunnables::CreateAnnotationDialogChecker checker(os);
+    GTUtilsDialog::waitForDialog(os, &checker);
 
-	QString s = os.getError();
+    QString s = os.getError();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) 
 {
 #define GT_CLASS_NAME "GUITest_common_scenarios_project_user_locking_test_0002::CreateAnnnotationDialogComboBoxChecker"
 #define GT_METHOD_NAME "run"
-	class CreateAnnnotationDialogComboBoxChecker : public Runnable {
-	public:
-		CreateAnnnotationDialogComboBoxChecker(U2OpStatus &_os, const QString &radioButtonName): buttonName(radioButtonName), os(_os){}
-		void run() {
-			QWidget* dialog = QApplication::activeModalWidget();
-			GT_CHECK(dialog != NULL, "activeModalWidget is NULL");
+    class CreateAnnnotationDialogComboBoxChecker : public Runnable {
+    public:
+        CreateAnnnotationDialogComboBoxChecker(U2OpStatus &_os, const QString &radioButtonName): buttonName(radioButtonName), os(_os){}
+        void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            GT_CHECK(dialog != NULL, "activeModalWidget is NULL");
 
-			QRadioButton *btn = dialog->findChild<QRadioButton*>("existingObjectRB");
-			GT_CHECK(btn != NULL, "Radio button not found");
+            QRadioButton *btn = dialog->findChild<QRadioButton*>("existingObjectRB");
+            GT_CHECK(btn != NULL, "Radio button not found");
 
-			if (! btn->isEnabled()) {
-				GTMouseDriver::moveTo(os, btn->mapToGlobal(btn->rect().topLeft()));
-				GTMouseDriver::click(os);
-			}
+            if (! btn->isEnabled()) {
+                GTMouseDriver::moveTo(os, btn->mapToGlobal(btn->rect().topLeft()));
+                GTMouseDriver::click(os);
+            }
 
-			QComboBox *comboBox = dialog->findChild<QComboBox*>();
-			GT_CHECK(comboBox != NULL, "ComboBox not found");
+            QComboBox *comboBox = dialog->findChild<QComboBox*>();
+            GT_CHECK(comboBox != NULL, "ComboBox not found");
 
-			GT_CHECK(comboBox->count() != 0, "ComboBox is empty");
+            GT_CHECK(comboBox->count() != 0, "ComboBox is empty");
 
-			QPushButton *cancelButton = dialog->findChild<QPushButton*>("cancel_button");
-			GT_CHECK(cancelButton != NULL, "Button \"cancel\" not found");
+            QPushButton *cancelButton = dialog->findChild<QPushButton*>("cancel_button");
+            GT_CHECK(cancelButton != NULL, "Button \"cancel\" not found");
 
-			GTWidget::click(os, cancelButton);
-		}
+            GTWidget::click(os, cancelButton);
+        }
 
-	private:
-		QString buttonName;
-		U2OpStatus &os;
-	};
+    private:
+        QString buttonName;
+        U2OpStatus &os;
+    };
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-	GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj3.uprj");
-	GTUtilsDocument::checkDocument(os, "1.gb");
-	GTUtilsApp::checkUGENETitle(os, "proj3 UGENE");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj3.uprj");
+    GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsApp::checkUGENETitle(os, "proj3 UGENE");
 
-	QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "1.gb");
+    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "1.gb");
 
-	QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "1.gb");
-	GTGlobals::sleep(100);
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "1.gb");
+    GTGlobals::sleep(100);
 
-	GTUtilsDialogRunnables::PopupChooser chooser1(os, QStringList() << "submenu_open_view" << "action_open_view");
-	GTUtilsDialog::preWaitForDialog(os, &chooser1, GUIDialogWaiter::Popup);
+    GTUtilsDialogRunnables::PopupChooser chooser1(os, QStringList() << "submenu_open_view" << "action_open_view");
+    GTUtilsDialog::preWaitForDialog(os, &chooser1, GUIDialogWaiter::Popup);
 
-	GTMouseDriver::moveTo(os, itemPos);
-	GTMouseDriver::click(os, Qt::RightButton);
-	GTGlobals::sleep(1000);
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
 
-	GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
+    GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 
-	QIcon itemIconBefore = item->icon(0);
+    QIcon itemIconBefore = item->icon(0);
 
-	GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << "action_document_unlock");
-	GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialogRunnables::PopupChooser chooser2(os, QStringList() << "action_document_unlock");
+    GTUtilsDialog::preWaitForDialog(os, &chooser2, GUIDialogWaiter::Popup);
 
-	GTMouseDriver::moveTo(os, itemPos);
-	GTMouseDriver::click(os, Qt::RightButton);
-	GTGlobals::sleep(1000);
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
 
-	QIcon itemIconAfter = item->icon(0);
+    QIcon itemIconAfter = item->icon(0);
 
-	if (itemIconBefore.cacheKey() == itemIconAfter.cacheKey() && !os.hasError()) {
-		os.setError("Lock icon has not disappear");
-	}
+    if (itemIconBefore.cacheKey() == itemIconAfter.cacheKey() && !os.hasError()) {
+        os.setError("Lock icon has not disappear");
+    }
 
-	CreateAnnnotationDialogComboBoxChecker checker(os, "");
-	GTUtilsDialog::preWaitForDialog(os, &checker);
-	GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
-	GTGlobals::sleep(1000);
+    CreateAnnnotationDialogComboBoxChecker checker(os, "");
+    GTUtilsDialog::preWaitForDialog(os, &checker);
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
 
-	GTUtilsDialogRunnables::PopupChooser chooser3(os, QStringList() << "action_document_lock");
-	GTUtilsDialog::preWaitForDialog(os, &chooser3, GUIDialogWaiter::Popup);
+    GTUtilsDialogRunnables::PopupChooser chooser3(os, QStringList() << "action_document_lock");
+    GTUtilsDialog::preWaitForDialog(os, &chooser3, GUIDialogWaiter::Popup);
 
-	GTMouseDriver::moveTo(os, itemPos);
-	GTMouseDriver::click(os, Qt::RightButton);
-	GTGlobals::sleep(1000);
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
 
-	GTUtilsProject::closeProject(os);
+    GTUtilsProject::closeProject(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
 
-	GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj");
-	GTUtilsDocument::checkDocument(os, "1.gb");
-	GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj");
+    GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
-	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
-	GTMouseDriver::doubleClick(os);
-	GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 
-	ProjViewItem* item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
-	CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
-	CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->documentIcon.cacheKey(), "Icon is locked");
+    ProjViewItem* item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
+    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
+    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->documentIcon.cacheKey(), "Icon is locked");
 
-	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
-	GTUtilsDialogRunnables::PopupChooser lockPopupChooser(os, QStringList() << ACTION_DOCUMENT__LOCK);
-	GTUtilsDialog::preWaitForDialog(os, &lockPopupChooser, GUIDialogWaiter::Popup);
-	GTMouseDriver::click(os, Qt::RightButton);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
+    GTUtilsDialogRunnables::PopupChooser lockPopupChooser(os, QStringList() << ACTION_DOCUMENT__LOCK);
+    GTUtilsDialog::preWaitForDialog(os, &lockPopupChooser, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
 
-	item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
-	CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
-	CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is unlocked");
+    item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
+    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
+    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is unlocked");
 
-	GTUtilsProject::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
+    GTUtilsProject::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
 
-	GTUtilsProject::closeProject(os);
-	GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/sandbox/proj2.uprj");
-	GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsProject::closeProject(os);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/sandbox/proj2.uprj");
+    GTUtilsDocument::checkDocument(os, "1.gb");
 
-	item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
-	CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
-	CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is unlocked");
+    item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
+    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
+    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is unlocked");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
-	GTUtilsProject::openFiles(os, dataDir + "samples/ABIF/A01.abi");
-	GTUtilsProject::openFiles(os, dataDir + "samples/Genbank/sars.gb");
-	Document* d = GTUtilsDocument::getDocument(os,"A01.abi");
-	CHECK_SET_ERR(!d->isModificationAllowed(StateLockModType_AddChild), QString("Enable to perform locking/unlocking for : %1").arg(d->getName()));
+    GTUtilsProject::openFiles(os, dataDir + "samples/ABIF/A01.abi");
+    GTUtilsProject::openFiles(os, dataDir + "samples/Genbank/sars.gb");
+    Document* d = GTUtilsDocument::getDocument(os,"A01.abi");
+    CHECK_SET_ERR(!d->isModificationAllowed(StateLockModType_AddChild), QString("Enable to perform locking/unlocking for : %1").arg(d->getName()));
 
-	d = GTUtilsDocument::getDocument(os,"sars.gb");
-	CHECK_SET_ERR(d->isModificationAllowed(StateLockModType_AddChild), QString("Enable to perform locking/unlocking for : %1").arg(d->getName()));
+    d = GTUtilsDocument::getDocument(os,"sars.gb");
+    CHECK_SET_ERR(d->isModificationAllowed(StateLockModType_AddChild), QString("Enable to perform locking/unlocking for : %1").arg(d->getName()));
 }
 } // GUITest_common_scenarios_project_user_locking namespace
 

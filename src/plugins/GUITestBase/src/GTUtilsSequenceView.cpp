@@ -44,24 +44,24 @@ namespace U2 {
 #define GT_METHOD_NAME "run"
 class GTSequenceReader : public Runnable {
 public:
-	GTSequenceReader(U2OpStatus &_os, QString *_str):os(_os), str(_str){}
-	void run()
-	{
-		QWidget *widget = QApplication::activeModalWidget();
+    GTSequenceReader(U2OpStatus &_os, QString *_str):os(_os), str(_str){}
+    void run()
+    {
+        QWidget *widget = QApplication::activeModalWidget();
 
-		QPlainTextEdit *textEdit = widget->findChild<QPlainTextEdit*>();
-		GT_CHECK(textEdit != NULL, "PlainTextEdit not found");
+        QPlainTextEdit *textEdit = widget->findChild<QPlainTextEdit*>();
+        GT_CHECK(textEdit != NULL, "PlainTextEdit not found");
 
-		*str = textEdit->toPlainText();
+        *str = textEdit->toPlainText();
 
-		QPushButton *cancel = widget->findChild<QPushButton*>();
-		GT_CHECK(cancel != NULL, "Button \"cancel\" not found");
-		GTWidget::click(os, cancel);
-	}
+        QPushButton *cancel = widget->findChild<QPushButton*>();
+        GT_CHECK(cancel != NULL, "Button \"cancel\" not found");
+        GTWidget::click(os, cancel);
+    }
 
 private:
-	U2OpStatus &os;
-	QString *str;
+    U2OpStatus &os;
+    QString *str;
 };
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -71,37 +71,37 @@ private:
 
 void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
 {
-	QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
-	GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
 
-	QMessageBox msgBox;
+    QMessageBox msgBox;
 
-	QPoint posToActiveWindow = mdiWindow->mapToGlobal(mdiWindow->rect().center());
-	GTMouseDriver::moveTo(os, posToActiveWindow);
+    QPoint posToActiveWindow = mdiWindow->mapToGlobal(mdiWindow->rect().center());
+    GTMouseDriver::moveTo(os, posToActiveWindow);
 
-	while (!QString(qApp->widgetAt(posToActiveWindow)->metaObject()->className()).contains("U2::PanViewRenderArea")) {
-		posToActiveWindow.setY(posToActiveWindow.y() - 20);
-		GTMouseDriver::moveTo(os, posToActiveWindow);
-		GTGlobals::sleep(100);
-	}
+    while (!QString(qApp->widgetAt(posToActiveWindow)->metaObject()->className()).contains("U2::PanViewRenderArea")) {
+        posToActiveWindow.setY(posToActiveWindow.y() - 20);
+        GTMouseDriver::moveTo(os, posToActiveWindow);
+        GTGlobals::sleep(100);
+    }
 
-	GTMouseDriver::moveTo(os, posToActiveWindow);
-	GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, posToActiveWindow);
+    GTMouseDriver::click(os);
 
-	GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os);
-	GTUtilsDialog::preWaitForDialog(os, &filler);
+    GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
 
-	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
-	GTGlobals::sleep(1000);
-	GTGlobals::sleep(1000);
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000);
 
-	GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
-	GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
-	GTSequenceReader reader(os, &sequence);
-	GTUtilsDialog::preWaitForDialog(os, &reader);
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTSequenceReader reader(os, &sequence);
+    GTUtilsDialog::preWaitForDialog(os, &reader);
 
-	GTMenu::showContextMenu(os, mdiWindow);
-	GTGlobals::sleep(1000);
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 
@@ -109,28 +109,28 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
 
 QString GTUtilsSequenceView::getBeginOfSequenceAsString(U2OpStatus &os, int length)
 {
-	QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
-	GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
 
-	GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
-	GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
+    GTMouseDriver::click(os);
 
-	GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, length);
-	GTUtilsDialog::preWaitForDialog(os, &filler);
+    GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, length);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
 
-	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
-	GTGlobals::sleep(1000);
-	GTGlobals::sleep(1000); // don't touch
-	QString sequence;
-	GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
-	GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
-	GTSequenceReader reader(os, &sequence);
-	GTUtilsDialog::preWaitForDialog(os, &reader);
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000); // don't touch
+    QString sequence;
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTSequenceReader reader(os, &sequence);
+    GTUtilsDialog::preWaitForDialog(os, &reader);
 
-	GTMenu::showContextMenu(os, mdiWindow);
-	GTGlobals::sleep(1000);
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep(1000);
 
-	return sequence;
+    return sequence;
 }
 #undef GT_METHOD_NAME
 
@@ -138,30 +138,30 @@ QString GTUtilsSequenceView::getBeginOfSequenceAsString(U2OpStatus &os, int leng
 
 QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length)
 {
-	QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
-	GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", NULL);
 
-	GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
-	GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
+    GTMouseDriver::click(os);
 
-	GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, length, false);
-	GTUtilsDialog::preWaitForDialog(os, &filler);
+    GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, length, false);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
 
-	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
-	GTGlobals::sleep(1000);
-	GTGlobals::sleep(1000); // don't touch
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+    GTGlobals::sleep(1000); // don't touch
 
-	QString sequence;
-	GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
-	GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
-	GTSequenceReader reader(os, &sequence);
-	GTUtilsDialog::preWaitForDialog(os, &reader);
+    QString sequence;
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTSequenceReader reader(os, &sequence);
+    GTUtilsDialog::preWaitForDialog(os, &reader);
 
-	GTMouseDriver::click(os);
-	GTMenu::showContextMenu(os, mdiWindow);
-	GTGlobals::sleep(1000);
+    GTMouseDriver::click(os);
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep(1000);
 
-	return sequence;
+    return sequence;
 }
 #undef GT_METHOD_NAME
 
@@ -169,77 +169,77 @@ QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length
 
 int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
 {
-	MainWindow* mw = AppContext::getMainWindow();
-	GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", 0);
+    MainWindow* mw = AppContext::getMainWindow();
+    GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", 0);
 
-	MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
-	GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", 0);
+    MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
+    GT_CHECK_RESULT(mdiWindow != NULL, "MDI window == NULL", 0);
 
-	GTGlobals::sleep();
+    GTGlobals::sleep();
 
-	GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
-	GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
+    GTMouseDriver::click(os);
 
-	int length = -1;
-	GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, &length);
-	GTUtilsDialog::preWaitForDialog(os, &filler);
-	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
-	GTGlobals::sleep(1000);
+    int length = -1;
+    GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, &length);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
 
-	return length;
+    return length;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkSequence"
 void GTUtilsSequenceView::checkSequence(U2OpStatus &os, const QString &expectedSequence)
 {
-	QString actualSequence;
-	getSequenceAsString(os, actualSequence);
+    QString actualSequence;
+    getSequenceAsString(os, actualSequence);
 
-	GT_CHECK(expectedSequence == actualSequence, "Actual sequence does not match with expected sequence");
+    GT_CHECK(expectedSequence == actualSequence, "Actual sequence does not match with expected sequence");
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "selectSequenceRegion"
 void GTUtilsSequenceView::selectSequenceRegion(U2OpStatus &os, int from, int to)
 {
-	MainWindow* mw = AppContext::getMainWindow();
-	GT_CHECK(mw != NULL, "MainWindow == NULL");
+    MainWindow* mw = AppContext::getMainWindow();
+    GT_CHECK(mw != NULL, "MainWindow == NULL");
 
-	MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
-	GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
+    MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
+    GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
 
-	GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
-	GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
+    GTMouseDriver::click(os);
 
-	GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, from, to);
-	GTUtilsDialog::preWaitForDialog(os, &filler);
-	GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
-	GTGlobals::sleep(1000);
+    GTUtilsDialogRunnables::selectSequenceRegionDialogFiller filler(os, from, to);
+    GTUtilsDialog::preWaitForDialog(os, &filler);
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "openSequenceView"
 void GTUtilsSequenceView::openSequenceView(U2OpStatus &os, const QString &sequenceName){
-	QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
-	GTMouseDriver::moveTo(os, itemPos);
-	GTMouseDriver::click(os, Qt::RightButton);
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::click(os, Qt::RightButton);
 
-	GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "submenu_open_view" << "action_open_view", GTGlobals::UseMouse);
-	GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
-	GTGlobals::sleep(1000);
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "submenu_open_view" << "action_open_view", GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addSequenceView"
 void GTUtilsSequenceView::addSequenceView(U2OpStatus &os, const QString &sequenceName){
-	QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
-	GTMouseDriver::moveTo(os, itemPos);
-	GTMouseDriver::click(os, Qt::RightButton);
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::click(os, Qt::RightButton);
 
-	GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "submenu_add_view" << "action_add_view", GTGlobals::UseMouse);
-	GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
-	GTGlobals::sleep(1000);
+    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "submenu_add_view" << "action_add_view", GTGlobals::UseMouse);
+    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 

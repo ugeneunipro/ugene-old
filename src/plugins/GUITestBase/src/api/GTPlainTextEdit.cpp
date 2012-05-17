@@ -32,13 +32,13 @@ namespace U2 {
 #define GT_METHOD_NAME ""
 void GTPlainTextEdit::setPlainText(U2OpStatus& os, QPlainTextEdit* plainTextEdit, const QString &text) {
 
-	GT_CHECK(plainTextEdit != NULL, "plainTextEdit is NULL");
-	
-	GTWidget::setFocus(os, plainTextEdit);
+    GT_CHECK(plainTextEdit != NULL, "plainTextEdit is NULL");
+    
+    GTWidget::setFocus(os, plainTextEdit);
 
-	qDebug() << "Test in setPlainTest() = " << text;
-	GTKeyboardDriver::keySequence(os, text);
-	GTGlobals::sleep(500);
+    qDebug() << "Test in setPlainTest() = " << text;
+    GTKeyboardDriver::keySequence(os, text);
+    GTGlobals::sleep(500);
 
 
 }

@@ -36,66 +36,66 @@ class Document;
 
 class GTUtilsProject {
 public:
-	class OpenFileSettings {
-	public:
-		enum OpenMethod {DragDrop} openMethod;
-	};
+    class OpenFileSettings {
+    public:
+        enum OpenMethod {DragDrop} openMethod;
+    };
 
-	class CloseProjectSettings {
-	public:
-		CloseProjectSettings() : saveOnCloseButton(QMessageBox::No){}
+    class CloseProjectSettings {
+    public:
+        CloseProjectSettings() : saveOnCloseButton(QMessageBox::No){}
 
-		// QMessageBox::No, QMessageBox::Yes, QMessageBox::Cancel
-		QMessageBox::StandardButton saveOnCloseButton;
-	};
+        // QMessageBox::No, QMessageBox::Yes, QMessageBox::Cancel
+        QMessageBox::StandardButton saveOnCloseButton;
+    };
 
-	class ExitProjectSettings {
-	public:
-		ExitProjectSettings() : saveNoCloseButton(QMessageBox::No){}
+    class ExitProjectSettings {
+    public:
+        ExitProjectSettings() : saveNoCloseButton(QMessageBox::No){}
 
-		QMessageBox::StandardButton saveNoCloseButton;
+        QMessageBox::StandardButton saveNoCloseButton;
 
-	};
-	/*
-		opens files using settings, checks if the document is loaded
-	*/
-	static void openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& s = OpenFileSettings());
-	static void openFiles(U2OpStatus &os, const GUrl &path, const OpenFileSettings& s = OpenFileSettings());
+    };
+    /*
+        opens files using settings, checks if the document is loaded
+    */
+    static void openFiles(U2OpStatus &os, const QList<QUrl> &urls, const OpenFileSettings& s = OpenFileSettings());
+    static void openFiles(U2OpStatus &os, const GUrl &path, const OpenFileSettings& s = OpenFileSettings());
 
-	static void exportProject(U2OpStatus &os, const QString &projectFolder, const QString &projectName = "");
-	static void createAnnotation(U2OpStatus &os, const QString &groupName = "", const QString &annotationName = "", const QString &location = "");
-	static void exportProjectCheck(U2OpStatus &os, const QString &projectName);
+    static void exportProject(U2OpStatus &os, const QString &projectFolder, const QString &projectName = "");
+    static void createAnnotation(U2OpStatus &os, const QString &groupName = "", const QString &annotationName = "", const QString &location = "");
+    static void exportProjectCheck(U2OpStatus &os, const QString &projectName);
 
-	static void exportToSequenceFormat(U2OpStatus &os, const QString &projectName, const QString &path,
-									   const QString &name, GTGlobals::UseMethod = GTGlobals::UseMouse);
-	static void exportSequenceAsAlignment(U2OpStatus &os, const QString projectName, const QString &path,
-										  const QString &name, GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::FormatToUse,
-										  bool addDocToProject = false, GTGlobals::UseMethod = GTGlobals::UseMouse);
+    static void exportToSequenceFormat(U2OpStatus &os, const QString &projectName, const QString &path,
+                                       const QString &name, GTGlobals::UseMethod = GTGlobals::UseMouse);
+    static void exportSequenceAsAlignment(U2OpStatus &os, const QString projectName, const QString &path,
+                                          const QString &name, GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::FormatToUse,
+                                          bool addDocToProject = false, GTGlobals::UseMethod = GTGlobals::UseMouse);
 
-	static void exportSequenceOfSelectedAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &path,
-													GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::FormatToUse format,
-													GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::MergeOptions options,
-													int gapLength, bool addDocToProject = true, bool exportWithAnnotations = false, GTGlobals::UseMethod = GTGlobals::UseMouse);
-	static void exportAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &exportToFile, GTUtilsDialogRunnables::ExportAnnotationsFiller::fileFormat format, 
-								  bool saveSequencesUnderAnnotations = true, bool saveSequenceNames = true, GTGlobals::UseMethod = GTGlobals::UseMouse);
-	static void createDocument(U2OpStatus &os, const QString &pasteDataHere, const QString &documentLocation, GTUtilsDialogRunnables::CreateDocumentFiller::documentFormat format,
-								const QString &sequenceName, GTGlobals::UseMethod = GTGlobals::UseMouse);
-	static void insertSequence(U2OpStatus &os, const QString &pasteDataHere,
-									 const QString &documentLocation, GTUtilsDialogRunnables::InsertSequenceFiller::documentFormat format,
-									 bool saveToNewFile, bool mergeAnnotations,
-									 GTGlobals::UseMethod = GTGlobals::UseMouse);
-	static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile);
-	static void closeProject(U2OpStatus &os, const CloseProjectSettings& settings = CloseProjectSettings());
-	static void exitProject(U2OpStatus &os, const ExitProjectSettings& exitSettings = ExitProjectSettings());
+    static void exportSequenceOfSelectedAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &path,
+                                                    GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::FormatToUse format,
+                                                    GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::MergeOptions options,
+                                                    int gapLength, bool addDocToProject = true, bool exportWithAnnotations = false, GTGlobals::UseMethod = GTGlobals::UseMouse);
+    static void exportAnnotations(U2OpStatus &os, const QString &itemToClick, const QString &exportToFile, GTUtilsDialogRunnables::ExportAnnotationsFiller::fileFormat format, 
+                                  bool saveSequencesUnderAnnotations = true, bool saveSequenceNames = true, GTGlobals::UseMethod = GTGlobals::UseMouse);
+    static void createDocument(U2OpStatus &os, const QString &pasteDataHere, const QString &documentLocation, GTUtilsDialogRunnables::CreateDocumentFiller::documentFormat format,
+                                const QString &sequenceName, GTGlobals::UseMethod = GTGlobals::UseMouse);
+    static void insertSequence(U2OpStatus &os, const QString &pasteDataHere,
+                                     const QString &documentLocation, GTUtilsDialogRunnables::InsertSequenceFiller::documentFormat format,
+                                     bool saveToNewFile, bool mergeAnnotations,
+                                     GTGlobals::UseMethod = GTGlobals::UseMouse);
+    static void saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile);
+    static void closeProject(U2OpStatus &os, const CloseProjectSettings& settings = CloseProjectSettings());
+    static void exitProject(U2OpStatus &os, const ExitProjectSettings& exitSettings = ExitProjectSettings());
 
-	enum CheckType {Exists, Empty};
-	static void checkProject(U2OpStatus &os, CheckType checkType = Exists);
+    enum CheckType {Exists, Empty};
+    static void checkProject(U2OpStatus &os, CheckType checkType = Exists);
 
-	// sets filter in a project view widget by finding "nameFilterEdit" QLineEdit
-	static void setFilter(U2OpStatus &os, const QString& filter);
+    // sets filter in a project view widget by finding "nameFilterEdit" QLineEdit
+    static void setFilter(U2OpStatus &os, const QString& filter);
 
 protected:
-	static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);
+    static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);
 };
 
 } // U2

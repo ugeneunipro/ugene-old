@@ -30,12 +30,12 @@ namespace U2 {
 #define GT_METHOD_NAME ""
 void GTTextEdit::setText(U2OpStatus& os, QTextEdit* textEdit, const QString &text) {
 
-	GT_CHECK(textEdit != NULL, "plainTextEdit is NULL");
+    GT_CHECK(textEdit != NULL, "plainTextEdit is NULL");
 
-	GTWidget::setFocus(os, textEdit);
+    GTWidget::setFocus(os, textEdit);
 
-	GTKeyboardDriver::keySequence(os, text);
-	GTGlobals::sleep(500);
+    GTKeyboardDriver::keySequence(os, text);
+    GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 
