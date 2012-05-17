@@ -203,7 +203,7 @@ void GTUtilsProject::insertSequence(U2OpStatus &os, const QString &pasteDataHere
 									GTUtilsDialogRunnables::InsertSequenceFiller::documentFormat format,
 									bool saveToNewFile, bool mergeAnnotations, GTGlobals::UseMethod method)
 {
-	GTUtilsDialogRunnables::InsertSequenceFiller filler(os, pasteDataHere, GTUtilsDialogRunnables::InsertSequenceFiller::Resize, 0, documentLocation, format, saveToNewFile, mergeAnnotations, method);
+	GTUtilsDialogRunnables::InsertSequenceFiller filler(os, pasteDataHere, GTUtilsDialogRunnables::InsertSequenceFiller::Resize, 1, documentLocation, format, saveToNewFile, mergeAnnotations, method);
 	GTUtilsDialog::preWaitForDialog(os, &filler);
 	GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
 	GTGlobals::sleep(1000);

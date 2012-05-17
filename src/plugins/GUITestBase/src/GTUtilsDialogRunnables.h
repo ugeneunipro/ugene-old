@@ -231,7 +231,7 @@ public:
 		enum documentFormat {FASTA, Genbank};
         enum RegionResolvingMode {Resize, Remove, SplitJoin, SplitSeparate};
 
-        InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere, RegionResolvingMode _regionResolvingMode = Resize, int _insertPosition = 0,
+        InsertSequenceFiller(U2OpStatus &_os, const QString &_pasteDataHere, RegionResolvingMode _regionResolvingMode = Resize, int _insertPosition = 1,
 							 const QString &_documentLocation = "", 
 							 documentFormat _format = FASTA, bool _saveToNewFile = false, bool _mergeAnnotations = false,
 							 GTGlobals::UseMethod method = GTGlobals::UseMouse);
