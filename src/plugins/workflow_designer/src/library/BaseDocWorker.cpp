@@ -153,6 +153,9 @@ void BaseDocWriter::init() {
 QStringList BaseDocWriter::getOutputFiles(){
     QStringList files = BaseWorker::getOutputFiles();
     files.append(outputs);
+
+    QSet<QString> urlSet = files.toSet();
+    files = urlSet.toList();
     return files;
 }
 

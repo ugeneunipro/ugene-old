@@ -58,6 +58,7 @@ static const QString ERROR_KEYWORD("#%*ugene-finished-with-error#%*");
 static const QString STATE_KEYWORD("#%&state#%&");
 static const QString MSG_NUM_KEYWORD("#%$msgnum#%$");
 static const QString MSG_PASSED_KEYWORD("#%$msgpassed#%$");
+static const QString OUTPUT_FILE_URL("output-file-url");
 
 /*******************************************
  * WorkflowRunTask
@@ -324,7 +325,7 @@ static QStringList getOutputFiles(const QList<Actor*> & procs) {
     QStringList res;
     foreach(Actor *a, procs) {
         LocalWorkflow::BaseWorker* bw = a->castPeer<LocalWorkflow::BaseWorker>();
-        res.append(bw->getOutputFiles());        
+        res.append(bw->getOutputFiles());
     }
     return res;
 }
@@ -339,6 +340,9 @@ Task::ReportResult WorkflowIterationRunTask::report() {
         }
     }
     fileLinks = getOutputFiles(schema->getProcesses());
+    foreach (const QString &url, fileLinks) {
+        ioLog.trace(QString("%1:;%2").arg(OUTPUT_FILE_URL).arg(url));
+    }
     return ReportResult_Finished;
 }
 
@@ -504,6 +508,7 @@ QList<Task*> WorkflowIterationRunInProcessTask::onSubTaskFinished(Task* subTask)
         monitor->setSubtaskProgressWeight(1);
         res << monitor;
     } else if(monitor == subTask) {
+        createdFilesUlrs = monitor->getCreatedFilesUrls();
         monitor = NULL;
     } else {
         assert(false);
@@ -542,7 +547,7 @@ int WorkflowIterationRunInProcessTask::getMsgPassed(Link * l) {
 }
 
 QStringList WorkflowIterationRunInProcessTask::getFiles() {
-    return getOutputFiles(schema->getProcesses());
+    return createdFilesUlrs;
 }
 
 /***********************************
@@ -632,6 +637,10 @@ void RunCmdlineWorkflowTask::sl_onError(QProcess::ProcessError err) {
     setError(msg);
 }
 
+QStringList RunCmdlineWorkflowTask::getCreatedFilesUrls() const {
+    return createdFilesUlrs;
+}
+
 void RunCmdlineWorkflowTask::writeLog(const QString& message) {
     QStringList lines = message.split(QChar('\n'));
 
@@ -652,7 +661,8 @@ void RunCmdlineWorkflowTask::writeLog(const QString& message) {
                 || logLine.startsWith(ERROR_KEYWORD)
                 || logLine.startsWith(STATE_KEYWORD)
                 || logLine.startsWith(MSG_NUM_KEYWORD)
-                || logLine.startsWith(MSG_PASSED_KEYWORD);
+                || logLine.startsWith(MSG_PASSED_KEYWORD)
+                || logLine.startsWith(OUTPUT_FILE_URL);
 
             if (commandToken)  {
                 continue;
@@ -717,6 +727,11 @@ void RunCmdlineWorkflowTask::sl_onReadStandardOutput() {
                 if(ok && num >= 0) {
                     msgPassed[QString("%1:%2").arg(msgPassedWords.at(1)).arg(msgPassedWords.at(2))] = num;
                 }
+            }
+        } else if (word.startsWith(OUTPUT_FILE_URL)) {
+            QStringList msgPassedWords = word.split(":;");
+            if(msgPassedWords.size() == 2) {
+                createdFilesUlrs.append(msgPassedWords.at(1));
             }
         }
     }

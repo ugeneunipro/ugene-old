@@ -141,6 +141,7 @@ private:
     SaveWorkflowTask * saveSchemaTask;
     RunCmdlineWorkflowTask * monitor;
     QMap<ActorId, ActorId> rmap;
+    QStringList createdFilesUlrs;
     
 }; // WorkflowIterationRunInProcessTask
 
@@ -165,6 +166,7 @@ public:
     int getMsgNum(const QString & ids);
     int getMsgPassed(const QString & ids);
     void writeLog(const QString& message);
+    QStringList getCreatedFilesUrls() const;
     
 private slots:
     void sl_onError(QProcess::ProcessError);
@@ -177,6 +179,7 @@ private:
     QMap<QString, int>                      msgNums;
     QMap<QString, int>                      msgPassed;
     QString                                 processLogPrefix;
+    QStringList                             createdFilesUlrs;
     
 }; // WorkflowRunInProcessMonitorTask
 
