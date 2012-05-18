@@ -230,10 +230,12 @@ void LoadSeqTask::run() {
     doc->setDocumentOwnsDbiResources(false);
     CHECK_OP(stateInfo, );
 
+    DbiOperationsBlock opBlock(storage->getDbiRef(), stateInfo);
     const QSet<GObjectType>& types = format->getSupportedObjectTypes();
     if (types.contains(GObjectTypes::SEQUENCE)) {
         QList<GObject*> seqObjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
         QList<GObject*> annObjs = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+        QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         foreach(GObject* go, seqObjs) {
             assert(go != NULL);
             if (!selector->objectMatches((U2SequenceObject*)go)) {
@@ -243,7 +245,6 @@ void LoadSeqTask::run() {
             m.insert(BaseSlots::URL_SLOT().getId(), url);
             SharedDbiDataHandler handler = storage->getDataHandler(go->getEntityRef().entityId);
             m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
-            QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
             QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(go, 
                 GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, 
                 allLoadedAnnotations, UOF_LoadedOnly);

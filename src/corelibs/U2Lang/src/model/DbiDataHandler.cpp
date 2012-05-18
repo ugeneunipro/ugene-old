@@ -37,7 +37,8 @@ DbiDataHandler::DbiDataHandler(const U2DataId &id, U2ObjectDbi *dbi)
 
 DbiDataHandler::~DbiDataHandler() {
     U2OpStatusImpl os;
-    dbi->removeObject(id, os);
+    // TODO: removing is forbidden because of performance problems
+    //dbi->removeObject(id, os);
     // TODO: how do you want to check @os???
 }
 
@@ -54,6 +55,10 @@ bool DbiDataHandler::equals(const DbiDataHandler *other) {
     }
 
     return (other->id == id) && (other->dbi == dbi);
+}
+
+int DbiDataHandler::getReferenceCount() const {
+    return int(this->ref);
 }
 
 }

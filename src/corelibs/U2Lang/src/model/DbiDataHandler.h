@@ -39,6 +39,8 @@ public:
     DbiDataHandler(const U2DataId &id, U2ObjectDbi *dbi);
     virtual ~DbiDataHandler();
 
+    int getReferenceCount() const;
+
     bool equals(const DbiDataHandler *other);
 
 private:

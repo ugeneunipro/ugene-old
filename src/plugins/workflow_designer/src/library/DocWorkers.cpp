@@ -246,17 +246,25 @@ inline static U2SequenceObject *getCopiedSequenceObject(const QVariantMap &data,
     U2SequenceObject *dna = NULL;
 
     if ( data.contains(BaseSlots::DNA_SEQUENCE_SLOT().getId()) ) {
-        SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
+        SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()) // here is the first SharedDbiDataHandler using
+                                    .value<SharedDbiDataHandler>(); // here is the second one. So, refCount >= 2
+
         std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         if (NULL == seqObj.get()) {
             os.setError("Can't get sequence object");
             return NULL;
         }
-        DNASequence seq = seqObj->getWholeSequence();
-        U2EntityRef seqRef = U2SequenceUtils::import(seqObj->getEntityRef().dbiRef, seq, os);
-        CHECK_OP(os, NULL);
 
-        dna = new U2SequenceObject(seq.getName(), seqRef);
+        int refCount = seqId.constData()->getReferenceCount();
+        if (refCount > 2) { // need to copy because it is used by another worker
+            DNASequence seq = seqObj->getWholeSequence();
+            U2EntityRef seqRef = U2SequenceUtils::import(seqObj->getEntityRef().dbiRef, seq, os);
+            CHECK_OP(os, NULL);
+
+            dna = new U2SequenceObject(seqObj->getSequenceName(), seqRef);
+        } else {
+            dna = seqObj.release();
+        }
     }
 
     return dna;

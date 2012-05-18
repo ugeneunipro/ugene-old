@@ -23,7 +23,6 @@
 #include "SQLiteObjectDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
-#include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
@@ -71,7 +70,7 @@ U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2Op
 }
 
 QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) {
-    GTIMER(c1, t1, "SQLiteSequenceDbi::getSequenceData");
+    SQLiteTransaction t(db, os);
     QByteArray res;
     //TODO: check mem-overflow, compare region.length with sequence length!
     // res.reserve(region.length);

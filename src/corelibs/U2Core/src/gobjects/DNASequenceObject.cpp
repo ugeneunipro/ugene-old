@@ -91,14 +91,41 @@ QString U2SequenceObject::getSequenceName() const  {
     return cachedName;
 }
 
+#define FETCH_SEQUENCE(seqGet, seq, entityRef) \
+    if (!seqGet) { \
+        U2OpStatus2Log os; \
+        DbiConnection con(entityRef.dbiRef, os); \
+        CHECK_OP(os, DNASequence()); \
+        seq = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os); \
+        CHECK_OP(os, DNASequence()); \
+        seqGet = true; \
+    }
+
 DNASequence U2SequenceObject::getWholeSequence() const {
     QByteArray wholeSeq = getWholeSequenceData();
-    DNAAlphabet* alpha = getAlphabet();
-    QString seqName = getSequenceName();
+
+    U2Sequence seq;
+    bool seqGet = false;
+
+    DNAAlphabet* alpha = cachedAlphabet;
+    if (!cachedAlphabet) {
+        FETCH_SEQUENCE(seqGet, seq, entityRef);
+        cachedAlphabet = alpha = U2AlphabetUtils::getById(seq.alphabet);
+    }
+    QString seqName = cachedName;
+    if (cachedName.isEmpty()) {
+        FETCH_SEQUENCE(seqGet, seq, entityRef);
+        seqName = cachedName = seq.visualName;
+    }
     DNASequence res(seqName, wholeSeq, alpha);
-    res.circular = isCircular();
+    if (cachedCircular == TriState_Unknown) {
+        FETCH_SEQUENCE(seqGet, seq, entityRef);
+        cachedCircular = seq.circular ? TriState_Yes : TriState_No;
+    }
+    res.circular = (cachedCircular == TriState_Yes);
+
     res.quality = getQuality();
-	res.info = getSequenceInfo();
+    res.info = getSequenceInfo();
     return res;
 }
 
