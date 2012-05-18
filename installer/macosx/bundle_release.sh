@@ -130,13 +130,14 @@ macdeployqt "$TARGET_APP_DIR"
 
 mv "$TARGET_APP_DIR" "$TARGET_APP_DIR_RENAMED"
 
+cd  $BUILD_DIR 
+ln -s ./Unipro\ UGENE.app/Contents/MacOS/data/samples ./Samples
+cd ..
+
 if [ ! "$1" ] 
    then
       echo
       echo pkg-dmg running...
       ./pkg-dmg --source $BUILD_DIR --target ugene-${VERSION}-mac-x86-r${BUILD_VCS_NUMBER_new_trunk} --license ../source/LICENSE --volname "Unipro UGENE $VERSION" --symlink /Applications
-    
 fi
 
-
- 
