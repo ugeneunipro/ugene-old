@@ -53,8 +53,6 @@ private:
     void setCorrectState();
 
     AnnotationSettings* currentSettings;
-
-    static const QString LIGHT_RED_COLOR;
 };
 
 } // namespace

@@ -23,12 +23,11 @@
 
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
 
 namespace U2 {
-
-const QString AnnotHighlightSettingsWidget::LIGHT_RED_COLOR = "rgb(231, 94, 80)";
 
 AnnotHighlightSettingsWidget::AnnotHighlightSettingsWidget(QWidget* parent)
 {
@@ -101,7 +100,7 @@ void AnnotHighlightSettingsWidget::sl_onEditQualifiersChanged(const QString& inp
 
 void AnnotHighlightSettingsWidget::setIncorrectState()
 {
-    editQualifiers->setStyleSheet("background-color: " + LIGHT_RED_COLOR + ";");
+    editQualifiers->setStyleSheet("background-color: " + L10N::errorColorTextFieldStr() + ";");
 }
 
 

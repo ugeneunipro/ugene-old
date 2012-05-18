@@ -76,7 +76,7 @@ void CoveredRegionsLabel::setAdditionalText(QString prefix_, QString postfix_) {
 }
 
 void CoveredRegionsLabel::sl_updateContent() {
-    QString text = "<style>a:link { color: gray }</style>";
+    QString text = "<style>a:link { color: palette(shadow) }</style>";
     text += prefix;
 
     QList<CoveredRegion> coveredRegions = browser->getCoveredRegions();

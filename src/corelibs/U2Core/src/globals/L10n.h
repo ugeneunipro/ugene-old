@@ -57,7 +57,8 @@ public:
     static QString errorDocumentNotFound(const GUrl& url) { return tr("Document not found: %1").arg(url.getURLString());}
     static QString suffixBp() { return tr(" bp");}
 
-    static QString redLightColorStr() { return "rgb(231, 94, 80)"; }
+    static QString errorColorTextFieldStr() { return "rgb(255, 152, 142)"; }
+    static QString errorColorLabelStr() { return "rgb(166, 57, 46)"; }
 
 };
 

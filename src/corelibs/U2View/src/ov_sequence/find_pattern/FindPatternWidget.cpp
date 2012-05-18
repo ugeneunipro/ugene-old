@@ -83,7 +83,7 @@ void FindPatternWidget::updateShowOptions()
 {
     // Change the label
     QString linkText = showMore ? tr("Show more options") : tr("Show less options");
-    linkText = QString("<a href=\"%1\" style=\"color: gray\">").arg(SHOW_OPTIONS_LINK)
+    linkText = QString("<a href=\"%1\" style=\"color: palette(shadow)\">").arg(SHOW_OPTIONS_LINK)
         + linkText
         + QString("</a>");
 
@@ -95,12 +95,16 @@ void FindPatternWidget::updateShowOptions()
         groupSearchIn->hide();
         groupOther->hide();
         annotsWidget->hide();
+
+        setMinimumSize(QSize(170, 150));
     }
     else {
         groupAlgorithm->show();
         groupSearchIn->show();
         groupOther->show();
         annotsWidget->show();
+
+        setMinimumSize(QSize(170, 780));
     }
 
     // Change the mode
@@ -110,6 +114,8 @@ void FindPatternWidget::updateShowOptions()
 
 void FindPatternWidget::initLayout()
 {
+    setMinimumSize(QSize(170, 150));
+
     // Hide all additional options
     showMore = true;
     updateShowOptions();
@@ -122,7 +128,7 @@ void FindPatternWidget::initLayout()
 
     lblErrorMessage->hide();
     lblErrorMessage->setStyleSheet(
-        "color: red;"
+        "color: " + L10N::errorColorLabelStr() + ";"
         "font: bold;");
 
     updateLayout();
@@ -279,7 +285,8 @@ void FindPatternWidget::sl_onRegionOptionChanged(int index)
 
 void highlightBackground(QWidget* widget)
 {
-    widget->setStyleSheet("background-color: " + L10N::redLightColorStr() + ";");
+    widget->setStyleSheet(
+        "background-color: " + L10N::errorColorTextFieldStr() + ";");
 }
 
 
