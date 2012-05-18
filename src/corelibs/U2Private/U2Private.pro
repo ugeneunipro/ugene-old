@@ -26,6 +26,10 @@ SOURCES += src/AppContextImpl.cpp \
            src/TaskSchedulerImpl.cpp \
 		   src/StackWalker.cpp
 
+CONFIG(x64) {
+	win32 : SOURCES += src/StackRollbackX64.asm
+}
+
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

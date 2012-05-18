@@ -36,6 +36,7 @@ isEmpty( UGENE_INSTALL_MAN )     : UGENE_INSTALL_MAN     = $$INSTALL_MANDIR/man1
 
 CONFIG(x64) {
     DEFINES += UGENE_X86_64
+    win32 : QMAKE_LFLAGS *= /MACHINE:X64
 } else:CONFIG(ppc) {
     DEFINES += UGENE_PPC
 } else {

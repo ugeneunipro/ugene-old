@@ -31,6 +31,15 @@
 
 #define MAX_CRASH_MESSAGES_TO_SEND 70
 
+#if defined(Q_OS_WIN32)
+  #ifdef UGENE_X86_64 //see http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4dc15026-884c-4f8a-8435-09d0111d708d/
+	extern "C"
+	{
+		void rollbackStack();
+	}
+  #endif
+#endif
+
 namespace U2 {
 
 bool CrashHandler::isEnabled() {
@@ -88,9 +97,24 @@ LONG CrashHandler::CrashHandlerFuncSecond(PEXCEPTION_POINTERS pExceptionInfo ) {
 }
 
 LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
-    QString error;
-    switch(pExceptionInfo->ExceptionRecord->ExceptionCode) {
-        case EXCEPTION_ACCESS_VIOLATION: error = "Access violation";
+
+    if (pExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_STACK_OVERFLOW) {
+#if defined(Q_OS_WIN32)
+  #ifdef UGENE_X86 //see http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4dc15026-884c-4f8a-8435-09d0111d708d/
+        _asm add esp, 10240; //roll back stack and current frame pointer
+  #else
+		rollbackStack();//TODO:need hack for x86_64
+  #endif
+#endif
+        QString anotherError = QString::number(EXCEPTION_STACK_OVERFLOW, 16) + "|Stack overflow"; //previous error was dropped in the stack unwinding 
+        st.ShowCallstack(GetCurrentThread(), pExceptionInfo->ContextRecord);
+        runMonitorProcess(anotherError);
+		return EXCEPTION_EXECUTE_HANDLER;
+    }
+    else {
+	    QString error;
+	    switch(pExceptionInfo->ExceptionRecord->ExceptionCode) {
+		case EXCEPTION_ACCESS_VIOLATION: error = "Access violation";
             break;
         case EXCEPTION_DATATYPE_MISALIGNMENT: error = "Data type misalignment";
             break;
@@ -138,29 +162,18 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
         case CONTROL_C_EXIT: error = "Control C exit";
             break;
         default: /*error = "Unknown exception";*/ return EXCEPTION_EXECUTE_HANDLER;
-    }
-    if(removeHandlerFunc != NULL) {
-        removeHandlerFunc(handler);
-    }    
-    //RemoveVectoredExceptionHandler(handler);
-    //handler2 = AddVectoredExceptionHandler(1, CrashHandlerFuncSecond);
-    if(pExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_STACK_OVERFLOW) {
-#if defined(Q_OS_WIN32)
-        _asm add esp, 10240; //roll back stack and current frame pointer
-#endif
-        /*WORD *sp = (WORD*)_AddressOfReturnAddress();
-        WORD newSp = *sp + 10240;
-        __movsw(sp, &newSp, 1);*/
+        }
+        if(removeHandlerFunc != NULL) {
+            removeHandlerFunc(handler);
+        }
+        //RemoveVectoredExceptionHandler(handler);
+        //handler2 = AddVectoredExceptionHandler(1, CrashHandlerFuncSecond);
 
-        QString anotherError = QString::number(EXCEPTION_STACK_OVERFLOW, 16) + "|Stack overflow"; //previous error was dropped in the stack unwinding 
         st.ShowCallstack(GetCurrentThread(), pExceptionInfo->ContextRecord);
-        runMonitorProcess(anotherError);
-    }
 
-    st.ShowCallstack(GetCurrentThread(), pExceptionInfo->ContextRecord);
-
-    runMonitorProcess(QString::number(pExceptionInfo->ExceptionRecord->ExceptionCode, 16) + "|" + error + "::" + QString::number((int)pExceptionInfo->ExceptionRecord->ExceptionAddress, 16));
-    return EXCEPTION_EXECUTE_HANDLER;
+        runMonitorProcess(QString::number(pExceptionInfo->ExceptionRecord->ExceptionCode, 16) + "|" + error + "::" + QString::number((int)pExceptionInfo->ExceptionRecord->ExceptionAddress, 16));
+        return EXCEPTION_EXECUTE_HANDLER;
+	}
 }
 
 #else

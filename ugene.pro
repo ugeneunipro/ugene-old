@@ -82,6 +82,9 @@ exclude_list_enabled() {
     SUBDIRS -= src/plugins/GUITestBase
 }
 
+CONFIG(x64) {
+	SUBDIRS -= src/plugins_3rdparty/umuscle
+}
 
 #create target directories
 win32 {
