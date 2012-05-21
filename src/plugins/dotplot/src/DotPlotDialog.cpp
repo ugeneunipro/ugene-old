@@ -319,16 +319,7 @@ void DotPlotDialog::updateColors() {
 bool DotPlotDialog::isObjectInADV(GObject* obj){
     SAFE_POINT(obj != NULL, "Object is NULL in DotPlotDialog::isObjectInADV(GObject* obj)", false);
 
-    QList<ADVSequenceObjectContext*> currentContexts = adv->getSequenceContexts();
-
-    bool result = false;
-    foreach(ADVSequenceObjectContext* objContext, currentContexts){
-        if (objContext->getSequenceGObject()->getGObjectName() == obj->getGObjectName()){
-            result = true;
-        }
-    }
-
-    return result;
+    return adv->containsObject(obj);
 }
 
 GObject* DotPlotDialog::getGObjectByName(const QString& gObjectName){
