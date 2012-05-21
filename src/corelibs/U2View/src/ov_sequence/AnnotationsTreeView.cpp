@@ -490,6 +490,7 @@ void AnnotationsTreeView::sl_onAnnotationsAdded(const QList<Annotation*>& as) {
         foreach(AnnotationGroup* ag, a->getGroups()) {
             AVGroupItem* gi = findGroupItem(ag);
             if (gi!=NULL) {
+                GTIMER(c11,t11,"AnnotationsTreeView::sl_onAnnotationsAdded loop if");
                 //if (findAnnotationItem(gi, a)== NULL) 
                 {
                     buildAnnotationTree(gi, a);
@@ -2057,7 +2058,7 @@ AnnotationGroup* AVGroupItem::getAnnotationGroup() const {
 
 AVAnnotationItem::AVAnnotationItem(AVGroupItem* parent, Annotation* a) : AVItem(parent, AVItemType_Annotation), annotation(a)
 {
-    updateVisual(ATVAnnUpdateFlags(ATVAnnUpdateFlag_BaseColumns) | ATVAnnUpdateFlag_QualColumns);    
+    updateVisual(ATVAnnUpdateFlags(ATVAnnUpdateFlag_BaseColumns | ATVAnnUpdateFlag_QualColumns));    
     hasNumericQColumns = false;
 }
 
@@ -2073,7 +2074,6 @@ QMap<QString, QIcon>& AVAnnotationItem::getIconsCache() {
 }
 
 void AVAnnotationItem::updateVisual(ATVAnnUpdateFlags f) {
-
     const QString& name = annotation->getAnnotationName();
     const AnnotationSettings* as = AppContext::getAnnotationsSettingsRegistry()->getAnnotationSettings(name);
     

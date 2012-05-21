@@ -56,7 +56,7 @@ class RemoveItemsTask;
 enum ATVAnnUpdateFlag {
     ATVAnnUpdateFlag_BaseColumns = 0x1,
     ATVAnnUpdateFlag_QualColumns = 0x2,
-    ATVAnnUpdateFlag_ReverseAnnotationSelection = 0x3
+    ATVAnnUpdateFlag_ReverseAnnotationSelection = 0x4
 };
 
 typedef QFlags<ATVAnnUpdateFlag> ATVAnnUpdateFlags;

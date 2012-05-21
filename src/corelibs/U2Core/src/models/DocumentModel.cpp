@@ -274,7 +274,7 @@ Document::~Document() {
         U2OpStatus2Log os;
         DbiConnection con(dbiRef, os);
         CHECK_OP(os, );
-        DbiOperationsBlock(dbiRef, os);
+        DbiOperationsBlock opBlock(dbiRef, os);
         CHECK_OP(os, );
         foreach (GObject* obj, objects) {
             deallocateDbiResources(obj, con, os);
