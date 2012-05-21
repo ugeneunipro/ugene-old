@@ -747,7 +747,7 @@ Choose another region.</source>
     <message>
         <location filename="../src/DigestSequenceDialog.cpp" line="219"/>
         <source> : %1 cut(s)</source>
-        <translation>, разрезов: %1</translation>
+        <translation> : %1 разрез(ов)</translation>
     </message>
     <message>
         <location filename="../src/DigestSequenceDialog.cpp" line="308"/>
