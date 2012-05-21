@@ -1,8 +1,8 @@
 REM the root dir for this scirpt is svn trunk
 set U_ROOT=%cd%
 set U_VERSION=%1
-set OUTPUT_DIR=%U_ROOT%\installer\windows\ugene-%U_VERSION%
-set INSTALL_DIR=%U_ROOT%\installer\windows
+set OUTPUT_DIR=%U_ROOT%\installer\windows_x64\ugene-%U_VERSION%
+set INSTALL_DIR=%U_ROOT%\installer\windows_x64
 set BINARY_ZIPFILE=%INSTALL_DIR%\ugene-%U_VERSION%-win-x86-r%BUILD_VCS_NUMBER_new_trunk%.zip
 
 
@@ -87,7 +87,7 @@ call %INSTALL_DIR%/copy_plugin.cmd remote_service
 call %INSTALL_DIR%/copy_plugin.cmd repeat_finder
 call %INSTALL_DIR%/copy_plugin.cmd sitecon
 call %INSTALL_DIR%/copy_plugin.cmd smith_waterman
-call %INSTALL_DIR%/copy_plugin.cmd umuscle
+REM call %INSTALL_DIR%/copy_plugin.cmd umuscle
 call %INSTALL_DIR%/copy_plugin.cmd weight_matrix
 call %INSTALL_DIR%/copy_plugin.cmd workflow_designer
 call %INSTALL_DIR%/copy_plugin.cmd dbi_sqlite
