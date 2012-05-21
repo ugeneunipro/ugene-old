@@ -47,7 +47,6 @@ void SQLiteSequenceDbi::initSqlSchema(U2OpStatus& os) {
 }
 
 U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
     U2Sequence res;
 
     DBI_TYPE_CHECK(sequenceId, U2Type::Sequence, os, res);
@@ -70,7 +69,6 @@ U2Sequence SQLiteSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2Op
 }
 
 QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U2Region& region, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
     QByteArray res;
     //TODO: check mem-overflow, compare region.length with sequence length!
     // res.reserve(region.length);

@@ -471,11 +471,10 @@ void SQLiteObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
 }
 
 qint64 SQLiteObjectDbi::getFolderId(const QString& path, bool mustExist, DbRef* db, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
     static const QString queryString("SELECT id FROM Folder WHERE path = ?1");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-    q->bindString(1, path);
-    qint64 res = q->selectInt64();
+    SQLiteQuery q(queryString, db, os);
+    q.bindString(1, path);
+    qint64 res = q.selectInt64();
     if (os.hasError()) {
         return -1;
     }

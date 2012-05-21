@@ -71,87 +71,81 @@ QStringList SQLiteAttributeDbi::getAvailableAttributeNames(U2OpStatus& os) {
 
 /** Returns all attribute ids for the given object */
 QList<U2DataId> SQLiteAttributeDbi::getObjectAttributes(const U2DataId& objectId, const QString& name, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
     if (name.isEmpty()) {
         static const QString queryString("SELECT id, type, '' FROM Attribute WHERE object = ?1 ORDER BY id");
-        SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-        q->bindDataId(1, objectId);
-        return q->selectDataIdsExt();
+        SQLiteQuery q(queryString, db, os);
+        q.bindDataId(1, objectId);
+        return q.selectDataIdsExt();
     }
     static const QString queryString("SELECT id, type, '' FROM Attribute WHERE object = ?1 AND name = ?2 ORDER BY id");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-    q->bindDataId(1, objectId);
-    q->bindString(2, name);
-    return q->selectDataIdsExt();
+    SQLiteQuery q(queryString, db, os);
+    q.bindDataId(1, objectId);
+    q.bindString(2, name);
+    return q.selectDataIdsExt();
 }
 
 /** Returns all attribute ids for the given object */
 QList<U2DataId> SQLiteAttributeDbi::getObjectPairAttributes(const U2DataId& objectId, const U2DataId& childId, const QString& name, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
     if (name.isEmpty()) {
         static const QString queryString("SELECT id, type, '' FROM Attribute WHERE object = ?1 AND child = ?2 ORDER BY id");
-        SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-        q->bindDataId(1, objectId);
-        q->bindDataId(2, childId);
-        return q->selectDataIdsExt();
+        SQLiteQuery q(queryString, db, os);
+        q.bindDataId(1, objectId);
+        q.bindDataId(2, childId);
+        return q.selectDataIdsExt();
     }
     static const QString queryString("SELECT id, type, '' FROM Attribute WHERE object = ?1 AND child = ?2 AND name = ?3 ORDER BY id");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-    q->bindDataId(1, objectId);
-    q->bindDataId(2, childId);
-    q->bindString(3, name);
-    return q->selectDataIdsExt();
+    SQLiteQuery q(queryString, db, os);
+    q.bindDataId(1, objectId);
+    q.bindDataId(2, childId);
+    q.bindString(3, name);
+    return q.selectDataIdsExt();
 }
 
 /** Loads int64 attribute by id */
 U2IntegerAttribute SQLiteAttributeDbi::getIntegerAttribute(const U2DataId& attributeId, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
     static const QString queryString(buildSelectAttributeQuery("IntegerAttribute"));
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-    q->bindDataId(1, attributeId);
+    SQLiteQuery q(queryString, db, os);
+    q.bindDataId(1, attributeId);
     U2IntegerAttribute res;
     readAttribute(q, res);
-    res.value = q->getInt64(0);
-    q->ensureDone();
+    res.value = q.getInt64(0);
+    q.ensureDone();
     return res;
 }
 
 /** Loads real64 attribute by id */
 U2RealAttribute SQLiteAttributeDbi::getRealAttribute(const U2DataId& attributeId, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
     static const QString queryString(buildSelectAttributeQuery("RealAttribute"));
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-    q->bindDataId(1, attributeId);
+    SQLiteQuery q(queryString, db, os);
+    q.bindDataId(1, attributeId);
     U2RealAttribute res;
     readAttribute(q, res);
-    res.value = q->getDouble(0);
-    q->ensureDone();
+    res.value = q.getDouble(0);
+    q.ensureDone();
     return res;
 }
 
 /** Loads String attribute by id */
 U2StringAttribute SQLiteAttributeDbi::getStringAttribute(const U2DataId& attributeId, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
     static const QString queryString(buildSelectAttributeQuery("StringAttribute"));
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-    q->bindDataId(1, attributeId);
+    SQLiteQuery q(queryString, db, os);
+    q.bindDataId(1, attributeId);
     U2StringAttribute res;
     readAttribute(q, res);
-    res.value = q->getString(0);
-    q->ensureDone();
+    res.value = q.getString(0);
+    q.ensureDone();
     return res;
 }
 
 /** Loads byte attribute by id */
 U2ByteArrayAttribute SQLiteAttributeDbi::getByteArrayAttribute(const U2DataId& attributeId, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
     static const QString queryString(buildSelectAttributeQuery("ByteArrayAttribute"));
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-    q->bindDataId(1, attributeId);
+    SQLiteQuery q(queryString, db, os);
+    q.bindDataId(1, attributeId);
     U2ByteArrayAttribute res;
     readAttribute(q, res);
-    res.value = q->getBlob(0);
-    q->ensureDone();
+    res.value = q.getBlob(0);
+    q.ensureDone();
     return res;
 }
 
@@ -161,21 +155,21 @@ QString SQLiteAttributeDbi::buildSelectAttributeQuery(const QString& attributeTa
             " FROM Attribute AS a, " + attributeTable + " AS t WHERE a.id = ?1 AND t.attribute = a.id";
 }
 
-void SQLiteAttributeDbi::readAttribute(SQLiteQuery *q, U2Attribute& attr) {
-    if (q->hasError()) {
+void SQLiteAttributeDbi::readAttribute(SQLiteQuery &q, U2Attribute& attr) {
+    if (q.hasError()) {
         return;
     }
-    if (!q->step()) {
-        if (!q->hasError()) {
-            q->setError(SQLiteL10n::tr("Attribute not found!"));
+    if (!q.step()) {
+        if (!q.hasError()) {
+            q.setError(SQLiteL10n::tr("Attribute not found!"));
         }
         return;
     }
-    attr.id = q->getDataIdExt(1);
-    attr.objectId = q->getDataIdExt(4);
-    attr.childId = q->getDataIdExt(7);
-    attr.version = q->getInt64(10);
-    attr.name = q->getString(11);
+    attr.id = q.getDataIdExt(1);
+    attr.objectId = q.getDataIdExt(4);
+    attr.childId = q.getDataIdExt(7);
+    attr.version = q.getInt64(10);
+    attr.name = q.getString(11);
 }
 
 
