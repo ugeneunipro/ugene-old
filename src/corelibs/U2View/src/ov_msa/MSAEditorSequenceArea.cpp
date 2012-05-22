@@ -1139,7 +1139,7 @@ void MSAEditorSequenceArea::sl_insCol() {
 }
 
 void MSAEditorSequenceArea::sl_goto() {
-    QDialog dlg;
+    QDialog dlg(this);
     dlg.setModal(true);
     dlg.setWindowTitle(tr("Go To"));
     int aliLen = editor->getAlignmentLen();

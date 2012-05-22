@@ -96,8 +96,8 @@ PositionSelector::PositionSelector(QDialog* d, int s, int e, bool _a)
     QHBoxLayout* l3 = new QHBoxLayout();
     l3->setMargin(0);
     l3->addStretch();
-    l3->addWidget(cancelButton);
     l3->addWidget(okButton);
+    l3->addWidget(cancelButton);
 
     assert(dialog!=NULL);
     QVBoxLayout* l2 = new QVBoxLayout();
