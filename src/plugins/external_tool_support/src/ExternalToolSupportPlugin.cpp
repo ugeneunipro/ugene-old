@@ -163,8 +163,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     AppContext::getExternalToolRegistry()->registerEntry(makeBLASTDBTool);
 
     //MakeBLASTDB from GPU-BLAST+
-    FormatDBSupport* gpuMakeBLASTDBTool = new FormatDBSupport(GPU_MAKEBLASTDB_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(gpuMakeBLASTDBTool);
+//     FormatDBSupport* gpuMakeBLASTDBTool = new FormatDBSupport(GPU_MAKEBLASTDB_TOOL_NAME); // https://ugene.unipro.ru/tracker/browse/UGENE-945
+//     AppContext::getExternalToolRegistry()->registerEntry(gpuMakeBLASTDBTool);
 
     //BlastAll
     BlastAllSupport* blastallTool = new BlastAllSupport(BLASTALL_TOOL_NAME);

@@ -3,7 +3,7 @@ set U_ROOT=%cd%
 set U_VERSION=%1
 set OUTPUT_DIR=%U_ROOT%\installer\windows_x64\ugene-%U_VERSION%
 set INSTALL_DIR=%U_ROOT%\installer\windows_x64
-set BINARY_ZIPFILE=%INSTALL_DIR%\ugene-%U_VERSION%-win-x86-r%BUILD_VCS_NUMBER_new_trunk%.zip
+set BINARY_ZIPFILE=%INSTALL_DIR%\ugene-%U_VERSION%-win-x64-r%BUILD_VCS_NUMBER_new_trunk%.zip
 
 
 IF EXIST %OUTPUT_DIR% del /F /S /Q %OUTPUT_DIR%
