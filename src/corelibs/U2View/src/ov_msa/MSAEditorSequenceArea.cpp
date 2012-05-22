@@ -1082,7 +1082,7 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     assert(editMenu!=NULL);
     QList<QAction*> actions; 
-    actions << removeAllGapsAction;
+    actions << removeAllGapsAction << reverseComplementAction;
     editMenu->insertActions(editMenu->isEmpty() ? NULL : editMenu->actions().first(), actions);
     
     QMenu * exportMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EXPORT);
