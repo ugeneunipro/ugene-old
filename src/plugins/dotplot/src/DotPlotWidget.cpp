@@ -24,6 +24,7 @@
 #include "DotPlotTasks.h"
 #include "DotPlotFilterDialog.h"
 
+#include <U2Core/Counter.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -341,6 +342,7 @@ void DotPlotWidget::sl_taskFinished(Task *task) {
         return;
     }
 
+    GCOUNTER(c, t, "Create dotplot");
     dpFilteredResults->clear();
     dpFilteredResultsRevCompl->clear();
 
