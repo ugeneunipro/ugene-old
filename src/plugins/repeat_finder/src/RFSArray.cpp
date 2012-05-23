@@ -289,6 +289,34 @@ void RFSArrayWAlgorithm::calculate(RFSArrayWSubtask* t) {
     algoLog.trace(QString("Done. Thread %1, Search time: %2 sec").arg(t->tid).arg(double(t1-t0)/(1000*1000)));
 }
 
+static bool resultsIntrersectR1R2(const RFResult &r1, const RFResult &r2) {
+    if (r1.x <= r2.x) {
+        if (r1.x + r1.l >= r2.x) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+
+static bool resultsIntrersectR2R1(const RFResult &r1, const RFResult &r2) {
+    if (r2.x <= r1.x) {
+        if (r2.x + r2.l >= r1.x) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+
+static bool resultsIntrersect(const RFResult &r1, const RFResult &r2) {
+    bool r1r2 = resultsIntrersectR1R2(r1, r2);
+    bool r2r1 = resultsIntrersectR2R1(r1, r2);
+    return (r1r2 || r2r1);
+}
+
 void RFSArrayWAlgorithm::processBoundaryResults() {
     //called after all subtasks finished -> merge boundary results
     RFResult* rs = bresults.data();
@@ -298,7 +326,10 @@ void RFSArrayWAlgorithm::processBoundaryResults() {
             continue;
         }
         int dj = rj.x - rj.y;
-        for (int i = j + 1; i < n; i++) {
+        for (int i = 0; i < n; i++) {
+            if (i == j) {
+                continue;
+            }
             RFResult& ri = rs[i];
             if (ri.l == -1) { //was merged
                 continue;
@@ -307,11 +338,22 @@ void RFSArrayWAlgorithm::processBoundaryResults() {
             if (dj != di) {
                 continue;
             }
-            if (ri.x + ri.l >= rj.x) {
+            if (!resultsIntrersect(rj, ri)) {
+                continue;
+            }
+            bool rjri = resultsIntrersectR1R2(rj, ri);
+            bool rirj = resultsIntrersectR2R1(rj, ri);
+
+            if (rirj) {
                 ri.l = rj.x + rj.l - ri.x;
+                assert(ri.l >=0);
+
                 rj.l = -1;
-            } else if (rj.x + rj.l >= ri.x) {
+                break;
+            } else if (rjri) {
                 rj.l = ri.x + ri.l - rj.x;
+                assert(rj.l >=0);
+
                 ri.l = -1;
             }
         }

@@ -341,6 +341,9 @@ void DotPlotWidget::sl_taskFinished(Task *task) {
         return;
     }
 
+    dpFilteredResults->clear();
+    dpFilteredResultsRevCompl->clear();
+
     if (!dpDirectResultListener->stateOk || !dpRevComplResultsListener->stateOk) {
         DotPlotDialogs::tooManyResults();
     }
