@@ -389,14 +389,12 @@ void DotPlotWidget::cancelRepeatFinderTask() {
     RepeatFinderTaskFactoryRegistry *tfr = AppContext::getRepeatFinderTaskFactoryRegistry();
     RepeatFinderTaskFactory *factory = tfr->getFactory("");
     SAFE_POINT(factory != NULL, "Repeats factory is NULL!", );
-    factory->setRFResultsListener(dotPlotTask, NULL);
 
     MultiTask *mTask = qobject_cast<MultiTask*>(dotPlotTask);
     if (mTask) {
+        mTask->cancel();
         foreach(Task *t, mTask->getSubtasks()) {
-            if (!t->isFinished()) {
-                t->cancel();
-            }
+            factory->setRFResultsListener(t, NULL);
         }
     }
 }
