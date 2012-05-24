@@ -171,6 +171,10 @@ void DotPlotWidget::connectSequenceSelectionSignals() {
 
 DotPlotWidget::~DotPlotWidget() {
 
+    if (dotPlotTask) {
+        cancelRepeatFinderTask();
+    }
+
     delete timer;
     delete showSettingsDialogAction;
     delete saveImageAction;
@@ -180,15 +184,21 @@ DotPlotWidget::~DotPlotWidget() {
     delete filterDotPlotAction;
     delete pixMap;
 
-    if (dotPlotTask) {
-        cancelRepeatFinderTask();
-    }
     delete dpDirectResultListener;
     delete dpRevComplResultsListener;
     delete dpFilteredResults;
     delete dpFilteredResultsRevCompl;
 }
 
+bool DotPlotWidget::onCloseEvent() {
+
+    if (dotPlotTask) {
+        cancelRepeatFinderTask();
+        return false;
+    }
+
+    return true;
+}
 
 // called by DotPlotSplitter
 void DotPlotWidget::buildPopupMenu(QMenu *m) const {

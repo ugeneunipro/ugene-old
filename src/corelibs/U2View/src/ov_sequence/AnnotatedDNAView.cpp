@@ -311,6 +311,18 @@ void AnnotatedDNAView::setFocusedSequenceWidget(ADVSequenceWidget* v) {
     emit si_focusChanged(prevFocus, focusedWidget);
 }
 
+bool AnnotatedDNAView::onCloseEvent() {
+
+    foreach (ADVSplitWidget* w, splitWidgets) {
+        bool canClose = w->onCloseEvent();
+        if (!canClose) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool AnnotatedDNAView::onObjectRemoved(GObject* o) {
     if (o->getGObjectType() == GObjectTypes::ANNOTATION_TABLE) {
         AnnotationTableObject* ao = qobject_cast<AnnotationTableObject*>(o);

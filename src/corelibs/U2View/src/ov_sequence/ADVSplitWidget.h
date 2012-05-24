@@ -39,6 +39,8 @@ public:
     virtual bool acceptsGObject(GObject* objects)  = 0;
     virtual void updateState(const QVariantMap& m) = 0;
     virtual void saveState(QVariantMap& m) = 0;
+
+    virtual bool onCloseEvent() { return true; }
 protected:
     AnnotatedDNAView* dnaView;
 };

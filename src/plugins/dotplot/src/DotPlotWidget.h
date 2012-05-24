@@ -80,7 +80,7 @@ public:
 
     void setSequences(U2SequenceObject* seqX, U2SequenceObject* seqY);
 
-    
+    virtual bool onCloseEvent();
 
 signals:
     void si_removeDotPlot();
@@ -115,6 +115,7 @@ protected:
     void focusInEvent(QFocusEvent* fe);
     void focusOutEvent(QFocusEvent* fe);
     bool event(QEvent *event);
+
 private:
 
     AnnotatedDNAView* dnaView;

@@ -173,6 +173,8 @@ public:
     virtual void addObjectHandler(GObjectViewObjectHandler* oh) {objectHandlers.append(oh);}
     virtual void removeObjectHandler(GObjectViewObjectHandler* oh) {objectHandlers.removeOne(oh);}
 
+    virtual bool onCloseEvent() { return true; }
+
 protected:
     /** if 'true' is returned -> view will be closed */
     virtual bool onObjectRemoved(GObject* o);
@@ -247,7 +249,7 @@ public:
     virtual void setupViewMenu(QMenu* n);
 
 protected:
-    bool onCloseEvent();
+    virtual bool onCloseEvent();
 signals:
     void si_persistentStateChanged(GObjectViewWindow* thiz);
 

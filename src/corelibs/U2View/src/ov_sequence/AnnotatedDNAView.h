@@ -156,6 +156,8 @@ protected:
     virtual void addEditMenu(QMenu* m);
     virtual ADVSequenceWidget* findSequenceWidgetByPos(const QPoint& globalPos) const;
 
+    virtual bool onCloseEvent();
+
 signals:
     void si_sequenceAdded(ADVSequenceObjectContext* c);
     void si_sequenceRemoved(ADVSequenceObjectContext* c);

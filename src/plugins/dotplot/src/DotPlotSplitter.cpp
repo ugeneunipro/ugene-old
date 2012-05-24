@@ -111,6 +111,18 @@ DotPlotSplitter::DotPlotSplitter(AnnotatedDNAView* a)
     setFocus();
 }
 
+bool DotPlotSplitter::onCloseEvent() {
+
+    foreach (DotPlotWidget* w, dotPlotList) {
+        bool canClose = w->onCloseEvent();
+        if (!canClose) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 QToolButton *DotPlotSplitter::createToolButton(const QIcon& ic, const QString& toolTip, const char *slot, bool checkable) {
 
     QToolButton *toolButton = new QToolButton(this);

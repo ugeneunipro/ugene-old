@@ -313,7 +313,7 @@ void GObjectViewWindow::closeView() {
 
 bool GObjectViewWindow::onCloseEvent() {
     view->saveWidgetState();
-    return true;
+    return view->onCloseEvent();
 }
 
 GObjectViewFactory* GObjectViewWindow::getViewFactory() const {

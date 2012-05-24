@@ -53,6 +53,9 @@ public:
     bool isEmpty() const;
     void buildPopupMenu(QMenu *);
 
+protected:
+    virtual bool onCloseEvent();
+
 private:
     QToolButton *createToolButton(const QString& iconPath, const QString& toolTip, const char *slot, bool checkable = true);
     QToolButton *createToolButton(const QIcon& ic, const QString& toolTip, const char *slot, bool checkable = true);
