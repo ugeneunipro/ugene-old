@@ -636,7 +636,7 @@ void FindPatternWidget::sl_onSearchClicked()
 
     FindAlgorithmTaskSettings settings;
     settings.sequence = activeContext->getSequenceObject()->getWholeSequenceData();
-    settings.pattern = textPattern->toPlainText().toLocal8Bit();
+    settings.pattern = textPattern->toPlainText().toLocal8Bit().toUpper();
 
     // Strand
     if (isAminoSequenceSelected) {

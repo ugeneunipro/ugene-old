@@ -122,6 +122,12 @@ GrouperSlotAction::GrouperSlotAction(const QString &type)
 
 }
 
+GrouperSlotAction::GrouperSlotAction(const GrouperSlotAction &other)
+: type(other.type), parameters(other.parameters)
+{
+
+}
+
 QString GrouperSlotAction::getType() const {
     return type;
 }

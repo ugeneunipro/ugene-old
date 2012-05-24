@@ -62,6 +62,7 @@ public:
 class U2LANG_EXPORT GrouperSlotAction {
 public:
     GrouperSlotAction(const QString &type);
+    GrouperSlotAction(const GrouperSlotAction &other);
 
     QString getType() const;
     const QVariantMap &getParameters() const;

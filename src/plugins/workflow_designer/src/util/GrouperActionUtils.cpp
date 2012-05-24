@@ -34,7 +34,10 @@ namespace Workflow {
 /* GrouperActionUtils */
 /************************************************************************/
 ActionPerformer *GrouperActionUtils::getActionPerformer(const GrouperOutSlot &slot, WorkflowContext *context, const PerformersMap &perfs) {
-    GrouperSlotAction action = *slot.getAction();
+    GrouperSlotAction *actionPtr = slot.getAction();
+    SAFE_POINT(NULL != actionPtr, "GrouperActionUtils::getActionPerformer - action is null", NULL);
+
+    GrouperSlotAction action(*actionPtr);
     QString type = action.getType();
     if (ActionTypes::MERGE_SEQUENCE == type) {
         QString seqSlot = slot.getOutSlotId();
@@ -44,10 +47,12 @@ ActionPerformer *GrouperActionUtils::getActionPerformer(const GrouperOutSlot &sl
                 continue;
             }
             QVariantMap params = p->getParameters();
-            QString parentSlot = params.value(MergeAnnotationPerformer::PARENT_SEQUENCE_SLOT, "").toString();
-            if (parentSlot == seqSlot) {
-                p->setParentPerformer(msp);
-                break;
+            if (params.contains(MergeAnnotationPerformer::PARENT_SEQUENCE_SLOT)) {
+                QString parentSlot = params[MergeAnnotationPerformer::PARENT_SEQUENCE_SLOT].toString();
+                if (parentSlot == seqSlot) {
+                    p->setParentPerformer(msp);
+                    break;
+                }
             }
         }
         return msp;
@@ -138,7 +143,10 @@ void GrouperActionUtils::applyActions(WorkflowContext *context, QList<GrouperOut
         QString key = slot.getBusMapInSlotId();
         if (mData.keys().contains(key)) {
             if (!perfs.contains(slot.getOutSlotId())) {
-                perfs[slot.getOutSlotId()] = getActionPerformer(slot, context, perfs);
+                ActionPerformer *p = getActionPerformer(slot, context, perfs);
+                SAFE_POINT(NULL != p, "GrouperActionUtils::applyActions - performer is NULL", );
+
+                perfs[slot.getOutSlotId()] = p;
             }
         }
     }
