@@ -105,7 +105,7 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 
     XCloseDisplay(display);
 
-    GTGlobals::sleep();
+    GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 
