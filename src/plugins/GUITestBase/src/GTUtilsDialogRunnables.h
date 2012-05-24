@@ -111,7 +111,7 @@ public:
 
     class PopupChooser : public Runnable {
     public:
-        PopupChooser(U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseMouse)
+        PopupChooser(U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
             :os(_os), namePath(_namePath), useMethod(_useMethod){}
         virtual void run();
     protected:
