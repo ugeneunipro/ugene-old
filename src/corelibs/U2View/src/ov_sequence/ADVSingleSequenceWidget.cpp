@@ -112,8 +112,10 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
 void ADVSingleSequenceWidget::init() {
     ADVSequenceObjectContext* seqCtx = getSequenceContext();
     detView = new DetView(this, seqCtx);
-    detView->setObjectName("det_view");
-    addSequenceView(detView);
+    detView->setObjectName("det_view_" + getSequenceObject()->getGObjectName());
+    detView->setMouseTracking(true);
+    addSequenceView(detView, headerWidget);
+
 
     panView = new PanView(this, seqCtx);
     panView->setObjectName("pan_view_" + getSequenceObject()->getGObjectName());
