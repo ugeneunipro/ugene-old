@@ -55,7 +55,7 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
     int y0 = pos.y;
     int x1 = x;
     int y1 = y;
-    const int delay = 1; // msec
+//    const int delay = 1; // msec
 
     INPUT event;
     event.type = INPUT_MOUSE;
@@ -76,7 +76,7 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
             }
             event.mi.dy = y0 * points_in_y_pixel + 0.5;
             SendInput(1, &event, sizeof(event));
-            Sleep(delay);
+//            Sleep(delay);
         }
     } else if (y0 == y1) {
         event.mi.dy = y0 * points_in_y_pixel + 0.5;
@@ -88,7 +88,7 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
             }
             event.mi.dx = x0 * points_in_x_pixel + 0.5;
             SendInput(1, &event, sizeof(event));
-            Sleep(delay);
+//            Sleep(delay);
         }
     } else {
         // moved by the shortest way
@@ -110,7 +110,7 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
             event.mi.dx = current_x * points_in_x_pixel + 0.5;
             SendInput(1, &event, sizeof(event));
 
-            Sleep(delay);
+//            Sleep(delay);
         }
     }
 }
