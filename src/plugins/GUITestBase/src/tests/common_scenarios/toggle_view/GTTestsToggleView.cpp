@@ -67,7 +67,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsDialog::preWaitForDialog(os, &chooser0, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(10000);
 
     CHECK_SET_ERR(overViewSe1->isHidden() && overViewSe2->isHidden(),
         "panoramical views for both sequences has not been closed");
@@ -77,7 +77,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsDialog::preWaitForDialog(os, &chooser1, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(10000);
 
     CHECK_SET_ERR(!overViewSe1->isHidden() && !overViewSe2->isHidden(), 
         "panoramical view for both sequences has not been shown");
@@ -104,7 +104,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTUtilsDialog::preWaitForDialog(os, &chooser0, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(10000);
 
     CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe2->isHidden(),
         "details views for both sequences has not been closed");
@@ -115,7 +115,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTUtilsDialog::preWaitForDialog(os, &chooser1, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(10000);
 
     CHECK_SET_ERR(!detailsViewSe1->isHidden() && !detailsViewSe2->isHidden(), 
         "details view for both sequences has not been shown");
@@ -147,7 +147,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTUtilsDialog::preWaitForDialog(os, &chooser0, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(10000);
 
     CHECK_SET_ERR(overViewSe1->isHidden() && overViewSe2->isHidden(),
         "panoramical views for both sequences has not been closed");
@@ -162,7 +162,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTUtilsDialog::preWaitForDialog(os, &chooser1, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(10000);
 
     CHECK_SET_ERR(!overViewSe1->isHidden() && !overViewSe2->isHidden(), 
         "panoramical view for both sequences has not been shown");
