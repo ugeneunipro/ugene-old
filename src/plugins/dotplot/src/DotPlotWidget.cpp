@@ -192,7 +192,7 @@ DotPlotWidget::~DotPlotWidget() {
 
 bool DotPlotWidget::onCloseEvent() {
 
-    if (dotPlotTask) {
+    if (dotPlotTask && !deleteDotPlotFlag) {
         cancelRepeatFinderTask();
         return false;
     }
