@@ -28,6 +28,7 @@
 #include "api/GTWidget.h"
 #include "GTUtilsDialogRunnables.h"
 #include "GTUtilsProject.h"
+#include "GTUtilsMdi.h"
 
 #include <U2View/ADVConstants.h>
 
@@ -134,6 +135,58 @@ GUI_TEST_CLASS_DEFINITION(test_1001_2) {
     Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep();
+
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1015) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+
+    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 3);
+    GTUtilsDialog::waitForDialog(os, r);
+    QWidget *w = GTWidget::findWidget(os, "build_dotplot_action_widget");
+    GTWidget::click(os, w);
+    GTGlobals::sleep();
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1015_1) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+
+    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 30, 50);
+    GTUtilsDialog::waitForDialog(os, r);
+    QWidget *w = GTWidget::findWidget(os, "build_dotplot_action_widget");
+    GTWidget::click(os, w);
+    GTGlobals::sleep();
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsMdi::click(os, GTGlobals::Minimize);
+
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1015_2) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+
+    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 100, 50, true);
+    GTUtilsDialog::waitForDialog(os, r);
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTGlobals::sleep();
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsMdi::click(os, GTGlobals::Close);
 
     GTGlobals::sleep(5000);
 }
