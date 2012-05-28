@@ -888,6 +888,7 @@ void ADVSingleSequenceHeaderWidget::populateToolBars() {
 
 
     closeViewAction = new QAction(tr("Remove sequence"), ctx);
+    closeViewAction->setObjectName("remove_sequence");
     connect(closeViewAction, SIGNAL(triggered()), SLOT(sl_closeView()));
 
     closeBar->addWidget(widgetStateMenuButton);

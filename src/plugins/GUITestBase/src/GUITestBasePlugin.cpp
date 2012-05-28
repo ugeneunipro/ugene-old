@@ -85,6 +85,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1015);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_2);
+
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
 //////////////////////////////////////////////////////////////////////////
@@ -178,12 +179,16 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/toggle view/
 //////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_2);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_3);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_4);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0008);
-//    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0009);
-//    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0009);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/
