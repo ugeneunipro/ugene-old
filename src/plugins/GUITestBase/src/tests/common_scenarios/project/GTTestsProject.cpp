@@ -408,6 +408,21 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
     GTUtilsLog::check(os, logTracer);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0031) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsDocument::checkDocument(os, "human_T1.fa");
+
+    GTUtilsProject::setFilter(os, "BBBB");
+    GTUtilsMdi::click(os, GTGlobals::Close);
+
+    Runnable* r = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::Ok);
+    GTUtilsDialog::waitForDialog(os, r, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, dataDir+"samples/FASTA/human_T1.fa");
+
+    GTGlobals::sleep();
+}
+
 }
 
 }
