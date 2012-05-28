@@ -29,6 +29,14 @@ namespace U2 {
 class GTFile {
 public:
     static bool equals(U2OpStatus &os, const QString&, const QString&);
+
+    // backup file to the file with backupPostfix. fail the given file can't be opened
+    static void backup(U2OpStatus &os, const QString&);
+
+    // restores file and deletes backup. fail if there is no backup or can't write to the given file
+    static void restore(U2OpStatus &os, const QString&);
+
+    static const QString backupPostfix;
 };
 
 } //namespace

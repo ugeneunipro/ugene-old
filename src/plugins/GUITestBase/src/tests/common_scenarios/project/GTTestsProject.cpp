@@ -356,6 +356,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 
 GUI_TEST_CLASS_DEFINITION(test_0025) {
 
+    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
 
     Runnable *popupChooser1 = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
@@ -377,6 +378,8 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTUtilsProject::ExitProjectSettings s;
     s.saveNoCloseButton = QMessageBox::No;
     GTUtilsProject::exitProject(os, s);
+
+    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0026) {

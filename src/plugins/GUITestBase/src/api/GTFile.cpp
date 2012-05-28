@@ -26,6 +26,8 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTFile"
 
+const QString GTFile::backupPostfix = "_GT_backup";
+
 #define GT_METHOD_NAME "equals"
 bool GTFile::equals(U2OpStatus &os, const QString& path1, const QString& path2) {
 
@@ -41,6 +43,39 @@ bool GTFile::equals(U2OpStatus &os, const QString& path1, const QString& path2) 
     GT_CHECK_RESULT((f1.error() == QFile::NoError) && (f2.error() == QFile::NoError), f1.errorString() + " " + f2.errorString(), false);
 
     return byteArray1 == byteArray2;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "backup"
+void GTFile::backup(U2OpStatus &os, const QString& path) {
+
+    QFile f2(path + backupPostfix);
+    bool ok = f2.open(QIODevice::ReadOnly);
+    if (ok) {
+        f2.remove();
+    }
+
+    bool copied = QFile::copy(path, path + backupPostfix);
+    GT_CHECK(copied == true, "backup of <" + path + "> can't be created");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "restore"
+void GTFile::restore(U2OpStatus &os, const QString& path) {
+
+    QFile backupFile(path + backupPostfix);
+
+    bool ok = backupFile.open(QIODevice::ReadOnly);
+    GT_CHECK(ok, "There is no backup file for <" + path + ">");
+
+    QFile file(path);
+    ok = file.open(QIODevice::ReadOnly);
+    if (ok) {
+        file.remove();
+    }
+
+    bool renamed = backupFile.rename(path);
+    GT_CHECK(renamed == true, "restore of <" + path + "> can't be done");
 }
 #undef GT_METHOD_NAME
 

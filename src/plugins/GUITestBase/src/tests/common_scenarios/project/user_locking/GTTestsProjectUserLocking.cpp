@@ -25,12 +25,13 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTFileDialog.h"
 #include "api/GTWidget.h"
+#include "api/GTTreeWidget.h"
+#include "api/GTFile.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "api/GTTreeWidget.h"
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2Core/DocumentModel.h>
 #include <QtGui/QRadioButton>
@@ -96,6 +97,9 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+    // backup proj3 first
+    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj3.uprj");
+
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj3.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
     GTUtilsApp::checkUGENETitle(os, "proj3 UGENE");
@@ -142,6 +146,9 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTGlobals::sleep(1000);
 
     GTUtilsProject::closeProject(os);
+
+    // proj3 was modified, restoring
+    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj3.uprj");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
