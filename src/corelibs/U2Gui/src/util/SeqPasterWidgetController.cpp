@@ -78,13 +78,9 @@ QString SeqPasterWidgetController::validate(){
     if(ui->sequenceEdit->toPlainText().isEmpty()){
         return tr("Input sequence is empty");
     }
-    bool replace = ui->replaceRB->isChecked();
-    if(replace && ui->symbolToReplaceEdit->text().isEmpty()) {
-        return tr("Replace symbol is empty");
-    }
-    
+ 
     QByteArray seq = ((ui->sequenceEdit->document())->toPlainText()).toUtf8();
-    seq=QString(seq).remove(QRegExp("\\s")).toAscii();
+    seq = QString(seq).remove(QRegExp("\\s")).toAscii();
     DNAAlphabet *alph = NULL;
     if(ui->groupBox->isChecked()){
         alph = U2AlphabetUtils::getById((ui->alphabetBox->itemData(ui->alphabetBox->currentIndex())).toString());
@@ -98,6 +94,18 @@ QString SeqPasterWidgetController::validate(){
     if(alph == NULL){
         return tr("Alphabet not detected");
     }
+
+    bool replace = ui->replaceRB->isChecked();
+    if(replace) {
+        if(ui->symbolToReplaceEdit->text().isEmpty()){
+            return tr("Replace symbol is empty");
+        }
+        char cc = ui->symbolToReplaceEdit->text().at(0).toAscii();
+        if(!alph->contains(cc)){
+            return tr("Replace symbol is not belongs to selected alphabet");
+        }        
+    }
+
     QChar replaceChar = replace ? ui->symbolToReplaceEdit->text().at(0) : QChar();
     QByteArray normSequence = getNormSequence(alph, seq, replace, replaceChar);
     resultSeq = DNASequence("New Sequence", normSequence, alph);
