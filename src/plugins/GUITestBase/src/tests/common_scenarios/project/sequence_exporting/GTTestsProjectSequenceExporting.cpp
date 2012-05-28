@@ -51,45 +51,88 @@ namespace U2{
 namespace GUITest_common_scenarios_project_sequence_exporting {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
+// 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
 
+// Expected state: 
+//     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded    
     CHECK_SET_ERR(!GTUtilsDocument::getDocument(os, "1.gb")->isLoaded(), "1.gb is loaded");
     CHECK_SET_ERR(!GTUtilsDocument::getDocument(os, "2.gb")->isLoaded(), "2.gb is loaded");
+//     2) UGENE window titled with text "proj4 UGENE"
     GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+// 2. Double click on "[a] Annotations" sequence object, in project view tree
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+// Expected result: NC_001363 sequence has been opened in sequence view    
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
-    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse);
-    GTUtilsDialogRunnables::ExportSelectedRegionFiller filler(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
-    GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+
+// 3. Select region 1..4 at sequence view. Right click to selected region open context menu. Use menu {Export->Export Selected Sequence region}
+// Expected state: Export DNA Sequences To FASTA Format dialog open
+// 4. Fill the next field in dialog:
+// {Export to file:} _common_data/scenarios/sandbox/exp.fasta
+// {Add created document to project} set checked
+
+    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+    Runnable *filler = new GTUtilsDialogRunnables::ExportSelectedRegionFiller(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+
     GTUtilsMdi::selectRandomRegion(os, "1 [s] NC_001363 sequence");
-    GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(100);
+    GTGlobals::sleep();
+
+// Expected state: sequence view [1..4] has been opened, with sequence "AAAT"
+    GTGlobals::sleep();
     GTUtilsDocument::checkDocument(os, "exp.fasta");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
+// 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+// Expected state: 
+//     1) Project view with document "1.gb" and "2.gb" is opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsDocument::checkDocument(os, "2.gb");
+
+//     2) UGENE window titled with text "proj4 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
+
+// 2. Double click on "[a] Annotations" sequence object, in project view tree
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+//     Expected result: NC_001363 sequence has been opened in sequence view
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
-    GTGlobals::sleep(100);
-    QTreeWidgetItem* item = GTUtilsAnnotationsTreeView::findItem(os, "C");
-    CHECK_SET_ERR(item != NULL, "AnnotationsTreeView is NULL");
-    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseMouse);
-    GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller filler(os, 
+
+// 3. Select annotation C. Use context menu item {Export->Export Sequence of Selected Annotations}
+// Expected state: Export Sequence of selected annotations will open
+// 
+// 4. Fill the next field in dialog:
+//     {Format } FASTA
+//     {Export to file:} _common_data/scenarios/sandbox/exp.fasta
+//     {Add created document to project} set checked
+// 5. Click Export button.
+
+    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+
+    Runnable *filler = new GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller(os, 
         "_common_data/scenarios/sandbox/exp.fasta",
         GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
         GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
     );
-    GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "C"));
-    GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
+
+// Expected state: sequence view C has been opened, with sequence "GAATAGAAAAG"
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003)
@@ -132,11 +175,11 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "B_joined"));
-    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << ADV_MENU_EXPORT << ACTION_EXPORT_ANNOTATIONS);
-    GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_EXPORT << ACTION_EXPORT_ANNOTATIONS);
+    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
-    GTUtilsDialogRunnables::ExportAnnotationsFiller filler(os, testDir+"_common_data/scenarios/sandbox/1.csv", GTUtilsDialogRunnables::ExportAnnotationsFiller::csv);
-    GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+    Runnable *filler = new GTUtilsDialogRunnables::ExportAnnotationsFiller(os, testDir+"_common_data/scenarios/sandbox/1.csv", GTUtilsDialogRunnables::ExportAnnotationsFiller::csv);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(100);
 

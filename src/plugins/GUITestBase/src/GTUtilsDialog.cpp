@@ -26,7 +26,30 @@
 
 namespace U2 {
 
-void GUIDialogWaiter::wait() {
+GUIDialogWaiter::GUIDialogWaiter(Runnable* _r, DialogType t)
+: hadRun(false), runnable(_r), type(t), timer(NULL) {
+
+    static int totalWaiterCount = 0;
+    waiterId = totalWaiterCount++;
+
+    timer = new QTimer();
+
+    timer->connect(timer, SIGNAL(timeout()), this, SLOT(checkDialog()));
+    timer->start(100);
+}
+
+GUIDialogWaiter::~GUIDialogWaiter() {
+
+    finishWaiting();
+}
+
+void GUIDialogWaiter::finishWaiting() {
+
+    delete timer; timer = NULL;
+    delete runnable; runnable = NULL;
+}
+
+void GUIDialogWaiter::checkDialog() {
     QWidget *widget = NULL;
 
     switch (type) {
@@ -46,37 +69,23 @@ void GUIDialogWaiter::wait() {
         return;
     }
 
-    if (r && !hadRun) {
+    if (runnable && !hadRun) {
+        timer->stop();
+        uiLog.trace("-------------------------");
+        uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");
+        uiLog.trace("-------------------------");
+
         hadRun = true;
-        r->run();
+        runnable->run();
     }
 }
 
 #define GT_CLASS_NAME "GTUtilsDialog"
 
-#define GT_METHOD_NAME "waitForDialog"
-void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType type, bool failOnNoDialog) {
-
-    GUIDialogWaiter waiter(r, type);
-    QTimer t;
-
-    t.connect(&t, SIGNAL(timeout()), &waiter, SLOT(wait()));
-    t.start(100);
-
-    GTGlobals::sleep(1000);
-    if (failOnNoDialog) {
-        GT_CHECK(waiter.hadRun == true, "no dialog");
-    }
-}
-#undef GT_METHOD_NAME
-
-void GTUtilsDialog::preWaitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType _type, int msec)
+void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType _type, int msec)
 {
     GUIDialogWaiter *waiter = new GUIDialogWaiter(r, _type);
-    QTimer *t = new QTimer;
-
-    t->connect(t, SIGNAL(timeout()), waiter, SLOT(wait()));
-    t->start(msec);
+//    pool.add
 }
 
 #undef GT_CLASS_NAME

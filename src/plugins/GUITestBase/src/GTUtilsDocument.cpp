@@ -33,6 +33,8 @@
 
 namespace U2 {
 
+const QString GTUtilsDocument::DocumentUnloaded = "Unloaded";
+
 #define GT_CLASS_NAME "GTUtilsDocument"
 
 #define GT_METHOD_NAME "getDocument"
@@ -65,8 +67,12 @@ void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName,
     }
 
     GObjectView* view = getDocumentGObjectView(os, d);
-    GT_CHECK(view != NULL, "GObjectView* is NULL");
+    if (id == DocumentUnloaded) {
+        GT_CHECK(view == NULL, "GObjectView is not NULL");
+        return;
+    }
 
+    GT_CHECK(view != NULL, "GObjectView* is NULL");
     GObjectViewFactoryId viewFactoryId = view->getFactoryId();
     GT_CHECK(viewFactoryId == id, "View's GObjectViewFactoryId is " + viewFactoryId + ", not " + id);
 }
@@ -74,12 +80,12 @@ void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName,
 
 void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method)
 {
-    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_MENU << ACTION_PROJECT__REMOVE_SELECTED, method);
+    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_MENU << ACTION_PROJECT__REMOVE_SELECTED, method);
 
     switch (method) {
     case GTGlobals::UseMouse:
     {
-        GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+        GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
 
         GTMouseDriver::click(os, Qt::RightButton);

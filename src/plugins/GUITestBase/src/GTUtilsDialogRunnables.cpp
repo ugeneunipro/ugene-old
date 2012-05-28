@@ -190,6 +190,7 @@ void GTUtilsDialogRunnables::MessageBoxDialogFiller::run() {
 #define GT_METHOD_NAME "run"
 void GTUtilsDialogRunnables::SaveProjectAsDialogFiller::run() {
 
+    GTGlobals::sleep();
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -204,9 +205,8 @@ void GTUtilsDialogRunnables::SaveProjectAsDialogFiller::run() {
 
     QAbstractButton *createButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "createButton", dialog));
     GTWidget::click(os, createButton);
- 
-    GTUtilsDialogRunnables::MessageBoxDialogFiller filler(os, QMessageBox::Yes);
-    GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Modal, false); // MessageBox question appears only if there is already a file on a disk
+
+    GTGlobals::sleep();
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

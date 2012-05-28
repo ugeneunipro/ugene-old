@@ -301,16 +301,18 @@ void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &
         _path += '/';
     }
 
-    GTFileDialogUtils ob(os, _path, fileName, filters, (GTFileDialogUtils::Button)button, m);
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, _path, fileName, filters, (GTFileDialogUtils::Button)button, m);
     if (m == GTGlobals::UseMouse) {
-        GTUtilsDialog::preWaitForDialog(os, &ob);
+        GTUtilsDialog::waitForDialog(os, ob);
     }
 
-    ob.openFileDialog();
+    ob->openFileDialog();
 
     if (m == GTGlobals::UseKey) {
-        GTUtilsDialog::waitForDialog(os, &ob);
+        GTUtilsDialog::waitForDialog(os, ob);
     }
+
+    GTGlobals::sleep();
 }
 
 #undef GT_CLASS_NAME

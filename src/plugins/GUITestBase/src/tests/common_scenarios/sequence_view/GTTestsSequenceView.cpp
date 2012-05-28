@@ -45,11 +45,11 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 3);
 
-    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region");
-    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
-    GTUtilsDialogRunnables::ExportSelectedRegionFiller filler(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
-    GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+    Runnable *filler = new GTUtilsDialogRunnables::ExportSelectedRegionFiller(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
     GTMouseDriver::click(os);
     GTMouseDriver::click(os, Qt::RightButton);
@@ -77,10 +77,10 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
                 i++;
             }
         }
-    } allActionsPopupChooser(os);
+    };
 
-    GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller dialog(os);
-    GTUtilsDialog::preWaitForDialog(os, &dialog, GUIDialogWaiter::Modal);
+    Runnable *dialog = new GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/multy_fa.fa");
     GTUtilsDocument::checkDocument(os, "multy_fa.fa");
 
@@ -96,7 +96,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     CHECK_SET_ERR(toggleAutoAnnotationsButton != NULL, "toggleAutoAnnotationsButton is NULL");
     CHECK_SET_ERR(toggleAutoAnnotationsButton->isEnabled() == true, "toggleAutoAnnotationsButton is disabled, expected enabled");
 
-    GTUtilsDialog::preWaitForDialog(os, &allActionsPopupChooser, GUIDialogWaiter::Popup);
+    Runnable *allActionsPopupChooser = new AllActionsPopupChooser(os);
+    GTUtilsDialog::waitForDialog(os, allActionsPopupChooser, GUIDialogWaiter::Popup);
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep(1000);
 }

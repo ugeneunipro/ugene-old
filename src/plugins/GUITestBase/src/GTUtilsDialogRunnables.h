@@ -61,20 +61,20 @@ public:
 		virtual void run();
 	private:
 		U2OpStatus &os;
-		const QString &groupName;
-		const QString &annotationName;
-		const QString &location;
+		const QString groupName;
+		const QString annotationName;
+		const QString location;
 	};
 
     class ExportProjectDialogFiller : public Runnable {
     public:
-        ExportProjectDialogFiller(U2OpStatus &_os, const QString &_projectFolder, const QString &_projectName)
+        ExportProjectDialogFiller(U2OpStatus &_os, const QString &_projectFolder, const QString &_projectName = "")
             :os(_os), projectFolder(_projectFolder), projectName(_projectName){}
         virtual void run();
     private:
         U2OpStatus &os;
-        const QString &projectFolder;
-        const QString &projectName;
+        const QString projectFolder;
+        const QString projectName;
     };
 
     class ExportProjectDialogChecker : public Runnable {
@@ -84,7 +84,7 @@ public:
         virtual void run();
     private:
         U2OpStatus &os;
-        const QString &projectName;
+        const QString projectName;
     };
 
     class SaveProjectAsDialogFiller : public Runnable {
@@ -94,9 +94,9 @@ public:
         virtual void run();
     private:
         U2OpStatus &os;
-        const QString &projectName;
-        const QString &projectFolder;
-        const QString &projectFile;
+        const QString projectName;
+        const QString projectFolder;
+        const QString projectFile;
     };
 
     class MessageBoxDialogFiller : public Runnable {
@@ -136,7 +136,7 @@ public:
 
     class ExportToSequenceFormatFiller : public Runnable {
     public:
-        ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method);
+        ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
         U2OpStatus &os;

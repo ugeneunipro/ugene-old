@@ -31,6 +31,8 @@ class Document;
 
 class GTUtilsDocument {
 public:
+    static const QString DocumentUnloaded;
+
     // checks if the document with a given name exists and loaded in a view with a given factory Id
     static void checkDocument(U2OpStatus &os, const QString &documentName, const GObjectViewFactoryId &id = QString());
 

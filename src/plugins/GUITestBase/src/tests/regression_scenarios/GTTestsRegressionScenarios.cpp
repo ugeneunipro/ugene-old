@@ -42,9 +42,10 @@ GUI_TEST_CLASS_DEFINITION(test_0986) {
         EscClicker(U2OpStatus& _os) : os(_os){}
         virtual void run(){ GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["esc"]); }
         U2OpStatus& os;
-    } escClicker(os);
+    };
+    Runnable *escClicker = new EscClicker(os);
 
-    GTUtilsDialog::preWaitForDialog(os, &escClicker);
+    GTUtilsDialog::waitForDialog(os, escClicker);
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
@@ -58,13 +59,13 @@ GUI_TEST_CLASS_DEFINITION(test_0986_1) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep(3000);
 
-    GTUtilsDialogRunnables::SmithWatermanDialogFiller filler(os);
-    filler.button = GTUtilsDialogRunnables::SmithWatermanDialogFiller::Cancel;
-    GTUtilsDialog::preWaitForDialog(os, &filler);
+    GTUtilsDialogRunnables::SmithWatermanDialogFiller *filler = new GTUtilsDialogRunnables::SmithWatermanDialogFiller(os);
+    filler->button = GTUtilsDialogRunnables::SmithWatermanDialogFiller::Cancel;
+    GTUtilsDialog::waitForDialog(os, filler);
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
-    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep(5000);
 
     GTGlobals::sleep(5000);
@@ -76,15 +77,24 @@ GUI_TEST_CLASS_DEFINITION(test_0986_2) {
     GTGlobals::sleep(3000);
 
     GTRegionSelector::RegionSelectorSettings regionSelectorSettings(1, 2);
-    GTUtilsDialogRunnables::SmithWatermanDialogFiller filler(os, "ATCG", regionSelectorSettings);
-    GTUtilsDialog::preWaitForDialog(os, &filler);
+    Runnable *filler = new GTUtilsDialogRunnables::SmithWatermanDialogFiller(os, "ATCG", regionSelectorSettings);
+    GTUtilsDialog::waitForDialog(os, filler);
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    GTUtilsDialogRunnables::PopupChooser chooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
-    GTUtilsDialog::preWaitForDialog(os, &chooser, GUIDialogWaiter::Popup);
+    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep(5000);
 
     GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1001) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTFileDialog::openFile(os, testDir+"_common_data/fasta/", "human_T1_cutted.fa");
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
 }
 
 } // GUITest_regression_scenarios namespace

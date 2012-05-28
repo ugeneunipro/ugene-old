@@ -62,13 +62,14 @@ void GTUtilsProject::openFiles(U2OpStatus &os, const GUrl &path, const OpenFileS
 void GTUtilsProject::exportProject(U2OpStatus &os, const QString &projectFolder, const QString &projectName) {
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
-    GTUtilsDialogRunnables::ExportProjectDialogFiller filler(os, projectFolder, projectName);
-    GTUtilsDialog::waitForDialog(os, &filler);
+    Runnable *filler = new GTUtilsDialogRunnables::ExportProjectDialogFiller(os, projectFolder, projectName);
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
 }
 void GTUtilsProject::createAnnotation(U2OpStatus &os, const QString &groupName, const QString &annotationName, const QString &location) {
  
-    GTUtilsDialogRunnables::CreateAnnotationDialogFiller filler(os, groupName, annotationName, location);
-    GTUtilsDialog::preWaitForDialog(os, &filler);
+    Runnable *filler = new GTUtilsDialogRunnables::CreateAnnotationDialogFiller(os, groupName, annotationName, location);
+    GTUtilsDialog::waitForDialog(os, filler);
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 }
@@ -76,21 +77,22 @@ void GTUtilsProject::createAnnotation(U2OpStatus &os, const QString &groupName, 
 void GTUtilsProject::exportProjectCheck(U2OpStatus &os, const QString &projectName) {
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
-    GTUtilsDialogRunnables::ExportProjectDialogChecker filler(os, projectName);
-    GTUtilsDialog::waitForDialog(os, &filler);
+    Runnable *filler = new GTUtilsDialogRunnables::ExportProjectDialogChecker(os, projectName);
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
 }
 
 void GTUtilsProject::exportToSequenceFormat(U2OpStatus &os, const QString &projectName, const QString &path, const QString &name, GTGlobals::UseMethod method)
 {
-    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION, method);
-    GTUtilsDialogRunnables::ExportToSequenceFormatFiller filler(os, path, name, method);
+    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION, method);
+    Runnable *filler = new GTUtilsDialogRunnables::ExportToSequenceFormatFiller(os, path, name, method);
 
     switch (method) {
     case GTGlobals::UseMouse:
     {
-        GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+        GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, projectName));
-        GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+        GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
         GTMouseDriver::click(os, Qt::RightButton);
         break;
     }
@@ -108,15 +110,15 @@ void GTUtilsProject::exportToSequenceFormat(U2OpStatus &os, const QString &proje
 void GTUtilsProject::exportSequenceAsAlignment(U2OpStatus &os, const QString projectName, const QString &path, const QString &name,
                                                GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::FormatToUse format, bool addDocToProject, GTGlobals::UseMethod method)
 {
-    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, method);
-    GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller filler(os, path, name, format, addDocToProject, method);
+    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, method);
+    Runnable *filler = new GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller(os, path, name, format, addDocToProject, method);
 
     switch (method) {
     case GTGlobals::UseMouse:
     {
-        GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+        GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, projectName));
-        GTUtilsDialog::preWaitForDialog(os, &filler, GUIDialogWaiter::Modal);
+        GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
         GTMouseDriver::click(os, Qt::RightButton);
         break;
     }
@@ -136,8 +138,8 @@ void GTUtilsProject::exportSequenceOfSelectedAnnotations(U2OpStatus &os, const Q
                                                          GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::MergeOptions options,
                                                          int gapLength, bool addDocToProject, bool exportWithAnnotations, GTGlobals::UseMethod method)
 {
-    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseKey);
-    GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller filler(os, path, format, options, gapLength, addDocToProject, exportWithAnnotations);
+    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseKey);
+    Runnable *filler = new GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller(os, path, format, options, gapLength, addDocToProject, exportWithAnnotations);
     QPoint pos;
 
     switch (method) {
@@ -150,8 +152,8 @@ void GTUtilsProject::exportSequenceOfSelectedAnnotations(U2OpStatus &os, const Q
         GTMouseDriver::doubleClick(os);
         GTGlobals::sleep(200);
 
-        GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
-        GTUtilsDialog::preWaitForDialog(os, &filler);
+        GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+        GTUtilsDialog::waitForDialog(os, filler);
         GTMouseDriver::click(os, Qt::RightButton);
         break;
     }
@@ -163,8 +165,8 @@ void GTUtilsProject::exportAnnotations(U2OpStatus &os, const QString &itemToClic
                                        GTUtilsDialogRunnables::ExportAnnotationsFiller::fileFormat format,
                                        bool saveSequencesUnderAnnotations, bool saveSequenceNames, GTGlobals::UseMethod method)
 {
-    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_annotations", GTGlobals::UseKey);
-    GTUtilsDialogRunnables::ExportAnnotationsFiller filler(os, exportToFile, format, saveSequencesUnderAnnotations, saveSequenceNames);
+    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_annotations", GTGlobals::UseKey);
+    Runnable *filler = new GTUtilsDialogRunnables::ExportAnnotationsFiller(os, exportToFile, format, saveSequencesUnderAnnotations, saveSequenceNames);
     QPoint pos;
 
     switch (method) {
@@ -177,8 +179,8 @@ void GTUtilsProject::exportAnnotations(U2OpStatus &os, const QString &itemToClic
         GTMouseDriver::doubleClick(os);
         GTGlobals::sleep(200);
 
-        GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
-        GTUtilsDialog::preWaitForDialog(os, &filler);
+        GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+        GTUtilsDialog::waitForDialog(os, filler);
         GTMouseDriver::click(os, Qt::RightButton);
         break;
     }
@@ -191,8 +193,8 @@ void GTUtilsProject::createDocument(U2OpStatus &os, const QString &pasteDataHere
                                     GTUtilsDialogRunnables::CreateDocumentFiller::documentFormat format, const QString &sequenceName, 
                                     GTGlobals::UseMethod method)
 {
-    GTUtilsDialogRunnables::CreateDocumentFiller filler(os, pasteDataHere, documentLocation, format, sequenceName);
-    GTUtilsDialog::preWaitForDialog(os, &filler);
+    Runnable *filler = new GTUtilsDialogRunnables::CreateDocumentFiller(os, pasteDataHere, documentLocation, format, sequenceName);
+    GTUtilsDialog::waitForDialog(os, filler);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
     
     GTGlobals::sleep(1000);
@@ -203,8 +205,8 @@ void GTUtilsProject::insertSequence(U2OpStatus &os, const QString &pasteDataHere
                                     GTUtilsDialogRunnables::InsertSequenceFiller::documentFormat format,
                                     bool saveToNewFile, bool mergeAnnotations, GTGlobals::UseMethod method)
 {
-    GTUtilsDialogRunnables::InsertSequenceFiller filler(os, pasteDataHere, GTUtilsDialogRunnables::InsertSequenceFiller::Resize, 1, documentLocation, format, saveToNewFile, mergeAnnotations, method);
-    GTUtilsDialog::preWaitForDialog(os, &filler);
+    Runnable *filler = new GTUtilsDialogRunnables::InsertSequenceFiller(os, pasteDataHere, GTUtilsDialogRunnables::InsertSequenceFiller::Resize, 1, documentLocation, format, saveToNewFile, mergeAnnotations, method);
+    GTUtilsDialog::waitForDialog(os, filler);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
     GTGlobals::sleep(1000);
 }
@@ -212,22 +214,25 @@ void GTUtilsProject::insertSequence(U2OpStatus &os, const QString &pasteDataHere
 void GTUtilsProject::saveProjectAs(U2OpStatus &os, const QString &projectName, const QString &projectFolder, const QString &projectFile) {
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
-    GTUtilsDialogRunnables::SaveProjectAsDialogFiller filler(os, projectName, projectFolder, projectFile);
-    GTUtilsDialog::waitForDialog(os, &filler);
+    Runnable *filler = new GTUtilsDialogRunnables::SaveProjectAsDialogFiller(os, projectName, projectFolder, projectFile);
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
 }
 
 void GTUtilsProject::closeProject(U2OpStatus &os, const CloseProjectSettings& settings) {
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
-    GTUtilsDialogRunnables::MessageBoxDialogFiller filler(os, settings.saveOnCloseButton);
-    GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Modal, false);
+    Runnable *filler = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, settings.saveOnCloseButton);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTGlobals::sleep();
 }
 
 void GTUtilsProject::exitProject(U2OpStatus &os, const ExitProjectSettings& exitSettings) {
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
-    GTUtilsDialogRunnables::MessageBoxDialogFiller filler(os, exitSettings.saveNoCloseButton);
-    GTUtilsDialog::waitForDialog(os, &filler, GUIDialogWaiter::Modal, false);
+    Runnable *filler = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, exitSettings.saveNoCloseButton);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTGlobals::sleep();
 }
 
 
@@ -235,13 +240,15 @@ void GTUtilsProject::exitProject(U2OpStatus &os, const ExitProjectSettings& exit
 void GTUtilsProject::checkProject(U2OpStatus &os, CheckType checkType) {
 
     GTGlobals::sleep(500);
-    GT_CHECK(AppContext::getProject() != NULL, "There is no project");
 
-    switch (checkType) {
-        case Empty:
-            GT_CHECK(AppContext::getProject()->getDocuments().isEmpty() == true, "Project is not empty");
-        default:
-            break;
+    if (checkType == NotExists) {
+        GT_CHECK(AppContext::getProject() == NULL, "There is a project");
+        return;
+    }
+
+    GT_CHECK(AppContext::getProject() != NULL, "There is no project");
+    if (checkType == Empty) {
+        GT_CHECK(AppContext::getProject()->getDocuments().isEmpty() == true, "Project is not empty");
     }
 }
 #undef GT_METHOD_NAME
@@ -267,10 +274,10 @@ void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
 
     Qt::DropActions dropActions = Qt::CopyAction | Qt::MoveAction | Qt::LinkAction;
     Qt::MouseButtons mouseButtons = Qt::LeftButton;
-    GTSequenceReadingModeDialogUtils ob(os);
+    Runnable *ob = new GTSequenceReadingModeDialogUtils(os);
 
     if (urls.size() > 1) {
-        GTUtilsDialog::preWaitForDialog(os, &ob);
+        GTUtilsDialog::waitForDialog(os, ob);
     }
 
     QDragEnterEvent* dragEnterEvent = new QDragEnterEvent(widgetPos, dropActions, mimeData, mouseButtons, 0);

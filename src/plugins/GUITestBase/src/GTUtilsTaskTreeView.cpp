@@ -98,8 +98,8 @@ QList<QTreeWidgetItem*> GTUtilsTaskTreeView::getTaskTreeViewItems(QTreeWidgetIte
 }
 
 void GTUtilsTaskTreeView::cancelTask( U2OpStatus& os, const QString &itemName ){
-    GTUtilsDialogRunnables::PopupChooser popupChooser(os, QStringList() << "cancel_task_action", GTGlobals::UseMouse);
-    GTUtilsDialog::preWaitForDialog(os, &popupChooser, GUIDialogWaiter::Popup);
+    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "cancel_task_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
     click(os, itemName, Qt::RightButton);
     GTGlobals::sleep(3000);
 }

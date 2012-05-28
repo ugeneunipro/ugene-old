@@ -88,7 +88,7 @@ public:
     static void closeProject(U2OpStatus &os, const CloseProjectSettings& settings = CloseProjectSettings());
     static void exitProject(U2OpStatus &os, const ExitProjectSettings& exitSettings = ExitProjectSettings());
 
-    enum CheckType {Exists, Empty};
+    enum CheckType {Exists, Empty, NotExists};
     static void checkProject(U2OpStatus &os, CheckType checkType = Exists);
 
     // sets filter in a project view widget by finding "nameFilterEdit" QLineEdit
