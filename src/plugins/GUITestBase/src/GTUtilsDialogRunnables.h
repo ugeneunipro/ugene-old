@@ -34,6 +34,16 @@ namespace U2 {
 
 class GTUtilsDialogRunnables {
 public:
+    class DotPlotFiller : public Runnable {
+    public:
+        DotPlotFiller(U2OpStatus &_os, int _minLen, int _identity = 0, bool _invertedRepeats = false) : os(_os), minLen(_minLen), identity(_identity), invertedRepeats(_invertedRepeats) {}
+        virtual void run();
+    private:
+        U2OpStatus &os;
+        int minLen, identity;
+        bool invertedRepeats;
+    };
+
     class SmithWatermanDialogFiller : public Runnable {
     public:
         enum Button {Search, Cancel};

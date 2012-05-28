@@ -50,6 +50,30 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::SmithWatermanDialogFiller"
 #define GT_METHOD_NAME "run"
+void GTUtilsDialogRunnables::DotPlotFiller::run() {
+
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QSpinBox *minLenBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "minLenBox", dialog));
+    GTSpinBox::setValue(os, minLenBox, minLen);
+
+    if (identity) {
+        QSpinBox *identityBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "identityBox", dialog));
+        GTSpinBox::setValue(os, identityBox, identity);
+    }
+
+    QCheckBox* invertedCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "invertedCheckBox", dialog));
+    GTCheckBox::setChecked(os, invertedCheckBox, invertedRepeats);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "startButton", dialog));
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+
+#define GT_CLASS_NAME "GTUtilsDialog::SmithWatermanDialogFiller"
+#define GT_METHOD_NAME "run"
 void GTUtilsDialogRunnables::SmithWatermanDialogFiller::run() {
 
     QWidget* dialog = QApplication::activeModalWidget();

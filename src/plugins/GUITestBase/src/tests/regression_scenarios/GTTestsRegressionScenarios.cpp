@@ -24,7 +24,10 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
+#include "api/GTAction.h"
+#include "api/GTWidget.h"
 #include "GTUtilsDialogRunnables.h"
+#include "GTUtilsProject.h"
 
 #include <U2View/ADVConstants.h>
 
@@ -90,11 +93,49 @@ GUI_TEST_CLASS_DEFINITION(test_0986_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_1001) {
 
-    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
-    GTFileDialog::openFile(os, testDir+"_common_data/fasta/", "human_T1_cutted.fa");
+    GTUtilsProject::openFiles(os, dataDir+"samples/FASTA/human_T1.fa");
+    GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
     GTGlobals::sleep();
 
+    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 4);
+    GTUtilsDialog::waitForDialog(os, r);
+    QWidget *w = GTWidget::findWidget(os, "build_dotplot_action_widget");
+    GTWidget::click(os, w);
     GTGlobals::sleep();
+
+    GTGlobals::sleep(15000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1001_1) {
+
+    GTUtilsProject::openFiles(os, dataDir+"samples/FASTA/human_T1.fa");
+    GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
+    GTGlobals::sleep();
+
+    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 100, 50);
+    GTUtilsDialog::waitForDialog(os, r);
+    QWidget *w = GTWidget::findWidget(os, "build_dotplot_action_widget");
+    GTWidget::click(os, w);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1001_2) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
+    GTGlobals::sleep();
+
+    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 99, 99, true);
+    GTUtilsDialog::waitForDialog(os, r);
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep(5000);
 }
 
 } // GUITest_regression_scenarios namespace

@@ -399,6 +399,10 @@ void AnnotatedDNAView::buildStaticToolbar(QToolBar* tb) {
     foreach(ADVGlobalAction* a, advActions) {
         if (a->getFlags().testFlag(ADVGlobalActionFlag_AddToToolbar)) {
             tb->addAction(a);
+            QWidget* w = tb->widgetForAction(a);
+            if (w) {
+                w->setObjectName(a->objectName() + "_widget");
+            }
         }
     }
 

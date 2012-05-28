@@ -222,9 +222,11 @@ void DotPlotViewContext::initViewContext(GObjectView* v) {
     // add the dotplot menu item to an analyze menu
     QString dotPlotBuildString = tr("Build dotplot...");
     ADVGlobalAction* act = new ADVGlobalAction(av, QIcon(":dotplot/images/dotplot.png"), dotPlotBuildString, 40, ADVGlobalActionFlags(ADVGlobalActionFlag_AddToAnalyseMenu));
+    act->setObjectName("build_dotplot_action");
     connect(act, SIGNAL(triggered()), SLOT(sl_buildDotPlot()));
 
     ADVGlobalAction* tb = new ADVGlobalAction(av, QIcon(":dotplot/images/dotplot.png"), dotPlotBuildString, 40, ADVGlobalActionFlags(ADVGlobalActionFlag_AddToToolbar));
+    tb->setObjectName("build_dotplot_action");
     connect(tb, SIGNAL(triggered()), SLOT(sl_buildDotPlot()));
 
     // this view context is created by dotplot wizard
