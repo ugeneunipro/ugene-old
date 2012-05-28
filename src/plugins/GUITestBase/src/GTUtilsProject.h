@@ -91,9 +91,6 @@ public:
     enum CheckType {Exists, Empty, NotExists};
     static void checkProject(U2OpStatus &os, CheckType checkType = Exists);
 
-    // sets filter in a project view widget by finding "nameFilterEdit" QLineEdit
-    static void setFilter(U2OpStatus &os, const QString& filter);
-
 protected:
     static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);
 };

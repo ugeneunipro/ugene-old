@@ -253,17 +253,6 @@ void GTUtilsProject::checkProject(U2OpStatus &os, CheckType checkType) {
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "setFilter"
-void GTUtilsProject::setFilter(U2OpStatus &os, const QString& filter) {
-
-    QLineEdit* nameFilterEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "nameFilterEdit"));
-    GT_CHECK(nameFilterEdit != NULL, "nameFilterEdit is NULL");
-
-    GTLineEdit::setText(os, nameFilterEdit, filter);
-    GTGlobals::sleep(500);
-}
-#undef GT_METHOD_NAME
-
 void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
 
     QWidget* widget = AppContext::getMainWindow()->getQMainWindow();

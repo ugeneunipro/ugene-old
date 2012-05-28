@@ -26,6 +26,7 @@
 #include "api/GTMenu.h"
 #include "api/GTFile.h"
 #include "api/GTFileDialog.h"
+#include "api/GTLineEdit.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
@@ -416,7 +417,13 @@ GUI_TEST_CLASS_DEFINITION(test_0031) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTUtilsDocument::checkDocument(os, "human_T1.fa");
 
-    GTUtilsProject::setFilter(os, "BBBB");
+    GTUtilsProjectTreeView::openView(os);
+    GTGlobals::sleep();
+
+    QLineEdit* nameFilterEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "nameFilterEdit"));
+    GTLineEdit::setText(os, nameFilterEdit, "BBBB");
+    GTGlobals::sleep();
+
     GTUtilsMdi::click(os, GTGlobals::Close);
 
     Runnable* r = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::Ok);
