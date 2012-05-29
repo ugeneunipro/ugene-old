@@ -43,19 +43,23 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
     GTGlobals::sleep(5000);
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
-    GTUtilsProject::exportProject(os, testDir + "_common_data/scenarios/sandbox", "proj2.uprj");
-    Runnable *filler = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::No);
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+
+    Runnable *filler = new GTUtilsDialogRunnables::ExportProjectDialogFiller(os, testDir + "_common_data/scenarios/sandbox", "proj2.uprj");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     GTGlobals::sleep();
 
-    GTUtilsProject::closeProject(os);
-    GTGlobals::sleep(2000);
+    Runnable *filler2 = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::No);
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
 
+    GTGlobals::sleep();
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
     GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
-    GTGlobals::sleep(2000);
+    GTGlobals::sleep();
     GTUtilsToolTip::checkExistingToolTip(os, "_common_data/scenarios/sandbox/1CF7.PDB");
 }
 

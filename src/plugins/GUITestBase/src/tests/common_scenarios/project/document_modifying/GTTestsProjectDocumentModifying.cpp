@@ -58,7 +58,10 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTGlobals::sleep();
 
 // Press Ctrl+N and add annotation to it annotations table.
-    GTUtilsProject::createAnnotation(os, "<auto>", "CCC", "1.. 10");
+    Runnable *filler = new GTUtilsDialogRunnables::CreateAnnotationDialogFiller(os, "<auto>", "CCC", "1.. 10");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
 
     GTGlobals::sleep();
 // Expected state: in project view 1.gb document has marked as modified (with blue color)
@@ -82,7 +85,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // 
 // 3. Fill the next field in dialog and click Save button:
 //     {Project Folder:} _common_data/scenarios/sandbox
-    GTUtilsProject::exportProject(os, testDir + "_common_data/scenarios/sandbox");
+    Runnable *filler = new GTUtilsDialogRunnables::ExportProjectDialogFiller(os, testDir + "_common_data/scenarios/sandbox");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
+    GTGlobals::sleep();
 
 // 4. Close project. No questions must be asked
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
@@ -105,18 +111,21 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTGlobals::sleep();
 
 // Press Ctrl+N and add annotation "misc_feature" to the annotations table in 1.gb document.
-    GTUtilsProject::createAnnotation(os, "<auto>", "misc_feature", "complement(1.. 20)");
+    Runnable *filler2 = new GTUtilsDialogRunnables::CreateAnnotationDialogFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
+    GTUtilsDialog::waitForDialog(os, filler2);
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
 // Expected state: in project view 1.gb document has marked as modified (with blue color)
+    GTGlobals::sleep();
     QTreeWidgetItem *d = GTUtilsProjectTreeView::findItem(os, "1.gb");
     GTUtilsProjectTreeView::itemModificationCheck(os, d, true);
 
 // 7. Use menu {File->Close Project}
 // Expected state: "Question?" dialog has appeared that proposes to save 1.gb file
 // 8. Click Yes button
-    Runnable *filler = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::Yes);
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    Runnable *filler3 = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::Yes);
+    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 

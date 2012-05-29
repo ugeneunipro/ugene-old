@@ -27,6 +27,7 @@
 #include "api/GTWidget.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTFile.h"
+#include "api/GTMenu.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
@@ -145,7 +146,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
 
-    GTUtilsProject::closeProject(os);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
 
     // proj3 was modified, restoring
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj3.uprj");
@@ -174,9 +176,14 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
     CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is unlocked");
 
-    GTUtilsProject::saveProjectAs(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
+    Runnable *filler = new GTUtilsDialogRunnables::SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
+    GTGlobals::sleep();
 
-    GTUtilsProject::closeProject(os);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
+
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/sandbox/proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
 

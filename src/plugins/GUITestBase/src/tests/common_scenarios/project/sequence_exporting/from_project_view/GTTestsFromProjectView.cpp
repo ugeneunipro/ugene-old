@@ -250,18 +250,25 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 // Expected state: Export sequences dialog open
 // 4. Select file to save: _common_data/scenarios/sandbox/exp2.msf and set 'file format to use' to MSF,
 // Than to uncheck the 'add document to the project' checkbox and click Save button.
-    GTUtilsProject::exportSequenceAsAlignment(os, "NC_001363 sequence", dataDir + "_common_data/scenarios/sandbox/",
-                                              "exp2.msf", GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::Msf);
-    GTGlobals::sleep();
+    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT);
+    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+
+    Runnable *filler = new GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
+        "exp2.msf", GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::Msf);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
 // 5. Open file _common_data/scenarios/sandbox/exp2.msf
+    GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "_common_data/scenarios/sandbox/", "exp2.msf");
     GTGlobals::sleep(1000);
 
 // Expected state: multiple aligniment view with NC_001363 sequence has been opened
     if (GTUtilsProjectTreeView::getSelectedItem(os) != "NC_001363 sequence") {
-        os.setError("multiple aligniment view with NC_001363 sequence has been not opened");
+        os.setError("multiple alignment view with NC_001363 sequence has been not opened");
     }
 }
 

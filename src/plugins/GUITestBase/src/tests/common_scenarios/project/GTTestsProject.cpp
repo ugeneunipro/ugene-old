@@ -105,13 +105,13 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
-    GTUtilsProject::saveProjectAs(os,
-        "proj2",
-        testDir+"_common_data/scenarios/sandbox",
-        "proj2"
-    );
+    Runnable *filler = new GTUtilsDialogRunnables::SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
+    GTGlobals::sleep();
 
-    GTUtilsProject::closeProject(os);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/sandbox/proj2.uprj");
     GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
@@ -156,7 +156,11 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 GUI_TEST_CLASS_DEFINITION(test_0011) {
 
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/1.gb");
-    GTUtilsProject::exportProjectCheck(os, "project.uprj");
+
+    Runnable *filler = new GTUtilsDialogRunnables::ExportProjectDialogChecker(os, "project.uprj");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0012) {
@@ -374,11 +378,17 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(100);
 
-    GTUtilsProject::createAnnotation(os, "<auto>", "misc_feature", "complement(1.. 20)");
+    Runnable *filler = new GTUtilsDialogRunnables::CreateAnnotationDialogFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
     GTGlobals::sleep(2000);
-    GTUtilsProject::ExitProjectSettings s;
-    s.saveNoCloseButton = QMessageBox::No;
-    GTUtilsProject::exitProject(os, s);
+
+    Runnable *filler2 = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::No);
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
+    GTGlobals::sleep();
 
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
 }
@@ -405,10 +415,11 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
     GTLogTracer logTracer;
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 
-    GTUtilsProject::CloseProjectSettings s;
-    s.saveOnCloseButton = QMessageBox::Cancel;
+    Runnable *filler = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::Cancel);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
 
-    GTUtilsProject::closeProject(os, s);
     GTUtilsLog::check(os, logTracer);
 }
 

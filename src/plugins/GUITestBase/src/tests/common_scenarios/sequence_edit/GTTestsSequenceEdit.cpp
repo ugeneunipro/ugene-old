@@ -107,11 +107,21 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-    GTGlobals::sleep(1000);
-    GTUtilsProject::insertSequence(os, "AAAAAA", testDir + "_common_data/scenarios/sandbox/result.fa", GTUtilsDialogRunnables::InsertSequenceFiller::FASTA, true, false);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
+
+    Runnable *filler = new GTUtilsDialogRunnables::InsertSequenceFiller(os,
+        "AAAAAA", GTUtilsDialogRunnables::InsertSequenceFiller::Resize, 1,
+        testDir + "_common_data/scenarios/sandbox/result.fa",
+        GTUtilsDialogRunnables::InsertSequenceFiller::FASTA,
+        true,
+        false
+    );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
+    GTGlobals::sleep();
+
     GTUtilsDocument::checkDocument(os, "result.fa");
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
 
     GTUtilsSequenceView::openSequenceView(os, "result.fa");	
 
@@ -125,11 +135,22 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-    GTGlobals::sleep(1000);
-    GTUtilsProject::insertSequence(os, "AAAAAA", testDir + "_common_data/scenarios/sandbox/result.gb", GTUtilsDialogRunnables::InsertSequenceFiller::Genbank, true, false);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
+
+    Runnable *filler = new GTUtilsDialogRunnables::InsertSequenceFiller(os,
+        "AAAAAA", GTUtilsDialogRunnables::InsertSequenceFiller::Resize, 1,
+        testDir + "_common_data/scenarios/sandbox/result.gb",
+        GTUtilsDialogRunnables::InsertSequenceFiller::Genbank,
+        true,
+        false
+    );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
+    GTGlobals::sleep();
+
     GTUtilsDocument::checkDocument(os, "result.gb");
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
+
     GTUtilsSequenceView::openSequenceView(os, "result.gb");	
 
     int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
