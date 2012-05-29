@@ -853,14 +853,7 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
 		AVItem* avItem = static_cast<AVItem*>(selItems.first());
 		AnnotationTableObject* aObj = avItem->getAnnotationTableObject();
 		if (AutoAnnotationsSupport::isAutoAnnotation(aObj)) {
-			ADVSequenceObjectContext* seqCtx = ctx->getSequenceContext(aObj);
-			QList<QAction*> tActions = AutoAnnotationUtils::getAutoAnnotationToggleActions(seqCtx);
-			if (!tActions.isEmpty()) {
-				QMenu* aaSubMenu = m->addMenu("Auto-annotations highlighting");
-				aaSubMenu->setIcon(QIcon(":core/images/predefined_annotation_groups.png"));
-				aaSubMenu->addActions(tActions);
-			}
-			if (avItem->parent() != NULL) {
+ 			if (avItem->parent() != NULL) {
 				m->addAction(exportAutoAnnotationsGroup);
 			}
 		}
@@ -870,8 +863,7 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
     QList<QAction*> contextActions;
     contextActions << copyQualifierAction << copyQualifierURLAction 
         << toggleQualifierColumnAction << copyColumnTextAction 
-        << copyColumnURLAction << editAction
-;//        << cutAnnotationsAction << copyAnnotationsAction << pasteAnnotationsAction;
+        << copyColumnURLAction << editAction;
     
     QMenu* copyMenu = GUIUtils::findSubMenu(m, ADV_MENU_COPY);
     foreach(QAction* a, contextActions) {
