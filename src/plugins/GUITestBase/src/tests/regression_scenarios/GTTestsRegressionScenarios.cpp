@@ -21,11 +21,15 @@
 
 #include "GTTestsRegressionScenarios.h"
 #include "api/GTGlobals.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
 #include "api/GTAction.h"
 #include "api/GTWidget.h"
+#include "api/GTTreeWidget.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsDialogRunnables.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsMdi.h"
@@ -100,8 +104,7 @@ GUI_TEST_CLASS_DEFINITION(test_1001) {
 
     Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 4);
     GTUtilsDialog::waitForDialog(os, r);
-    QWidget *w = GTWidget::findWidget(os, "build_dotplot_action_widget");
-    GTWidget::click(os, w);
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
 
     GTGlobals::sleep(15000);
@@ -115,8 +118,7 @@ GUI_TEST_CLASS_DEFINITION(test_1001_1) {
 
     Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 100, 50);
     GTUtilsDialog::waitForDialog(os, r);
-    QWidget *w = GTWidget::findWidget(os, "build_dotplot_action_widget");
-    GTWidget::click(os, w);
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
 
     GTGlobals::sleep(5000);
@@ -146,8 +148,7 @@ GUI_TEST_CLASS_DEFINITION(test_1015) {
 
     Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 3);
     GTUtilsDialog::waitForDialog(os, r);
-    QWidget *w = GTWidget::findWidget(os, "build_dotplot_action_widget");
-    GTWidget::click(os, w);
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -162,8 +163,7 @@ GUI_TEST_CLASS_DEFINITION(test_1015_1) {
 
     Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 30, 50);
     GTUtilsDialog::waitForDialog(os, r);
-    QWidget *w = GTWidget::findWidget(os, "build_dotplot_action_widget");
-    GTWidget::click(os, w);
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -190,6 +190,46 @@ GUI_TEST_CLASS_DEFINITION(test_1015_2) {
 
     GTGlobals::sleep(5000);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_1021) {
+
+    for (int i=0; i<2; i++) {
+// 1) Open data\samples\FASTA\human_T1.fa
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+
+// 2) Click "build dotplot" tooltip
+// 3) Click OK in opened dotplot dialog
+    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 100);
+    GTUtilsDialog::waitForDialog(os, r);
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+    GTGlobals::sleep();
+
+// 4) Click on human_T1.fa project tree view item
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+
+// 5) Press delete key
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+// Expected state: there are no empty MDI window opened, no bookmarks
+    GTGlobals::sleep();
+    QWidget* activeWindow = GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(activeWindow == NULL, "there is active window");
+
+    QTreeWidget* bookmarksTree = GTUtilsBookmarksTreeView::getTreeWidget(os);
+    CHECK_SET_ERR(bookmarksTree != NULL, "bookmarksTreeWidget is NULL");
+
+    int bookmarksCount = bookmarksTree->topLevelItemCount();
+    CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
+    }
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F4"], GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+}
+
 
 } // GUITest_regression_scenarios namespace
 

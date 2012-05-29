@@ -74,8 +74,6 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
 
-    QMessageBox msgBox;
-
     QPoint posToActiveWindow = mdiWindow->mapToGlobal(mdiWindow->rect().center());
     GTMouseDriver::moveTo(os, posToActiveWindow);
 
