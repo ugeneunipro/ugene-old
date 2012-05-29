@@ -44,6 +44,7 @@ REGISTER_TYPE(UNLOADED,             "OT_UNLOADED",      GObject::tr("Unloaded"),
 REGISTER_TYPE_EX(TEXT,              "OT_TEXT",          GObject::tr("Text"),            GObject::tr("Text"),           "t",     ":core/images/texto.png");
 REGISTER_TYPE_EX(SEQUENCE,          "OT_SEQUENCE",      GObject::tr("Sequence"),        GObject::tr("Sequences"),      "s",     ":core/images/dna.png");
 REGISTER_TYPE(ANNOTATION_TABLE,     "OT_ANNOTATIONS",   GObject::tr("Annotation"),      GObject::tr("Annotations"),    "a");
+REGISTER_TYPE(VARIANT_TRACK,        "OT_VARIATIONS",    GObject::tr("Variation"),       GObject::tr("Variations"),     "v");
 REGISTER_TYPE(CHROMATOGRAM,         "OT_CHROMATOGRAM",  GObject::tr("Chromatogram"),    GObject::tr("Chromatograms"),  "c");
 REGISTER_TYPE_EX(MULTIPLE_ALIGNMENT,   "OT_MSA",        GObject::tr("Alignment"),       GObject::tr("Alignments"),     "m",     ":core/images/msa.png");
 REGISTER_TYPE_EX(PHYLOGENETIC_TREE, "OT_PTREE",         GObject::tr("Tree"),            GObject::tr("Trees"),          "tr",    ":core/images/tree.png");

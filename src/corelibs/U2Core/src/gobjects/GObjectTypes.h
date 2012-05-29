@@ -48,6 +48,7 @@ public:
     static const GObjectType TEXT;
     static const GObjectType SEQUENCE;
     static const GObjectType ANNOTATION_TABLE;
+    static const GObjectType VARIANT_TRACK;
     static const GObjectType CHROMATOGRAM;
     static const GObjectType MULTIPLE_ALIGNMENT;
     static const GObjectType PHYLOGENETIC_TREE;

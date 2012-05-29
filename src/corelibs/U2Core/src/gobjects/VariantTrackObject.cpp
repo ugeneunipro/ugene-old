@@ -1,0 +1,91 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#include "VariantTrackObject.h"
+#include "GObjectTypes.h"
+
+#include <U2Core/AppContext.h>
+#include <U2Core/U2VariantDbi.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/U2SafePoints.h>
+
+
+namespace U2 {
+
+//////////////////////////////////////////////////////////////////////////
+//VariantTrackObject
+
+VariantTrackObject::VariantTrackObject( const QString& objectName, const U2EntityRef& trackRef, const QVariantMap& hintsMap )
+: GObject(GObjectTypes::VARIANT_TRACK, objectName+"_variations", hintsMap) {
+
+    entityRef = trackRef;
+}
+
+VariantTrackObject::~VariantTrackObject(){
+
+}
+
+U2DbiIterator<U2Variant>* VariantTrackObject::getVariants( const U2Region& reg, U2OpStatus& os ){
+    DbiConnection con;
+    con.open(entityRef.dbiRef, os);
+    CHECK_OP(os, NULL);
+
+    U2VariantDbi* vdbi = con.dbi->getVariantDbi();
+    SAFE_POINT(vdbi != NULL, "Varian DBI is NULL", NULL);
+    
+    return vdbi->getVariants(entityRef.entityId, reg, os);
+}
+
+GObject* VariantTrackObject::clone( const U2DbiRef& dbiRef, U2OpStatus& os ) const{
+    //TODO
+    return NULL;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//VariantTrackObjectUtils
+Annotation* VariantTrackObjectUtils::variantToAnnotation( const U2Variant& var ){
+    SharedAnnotationData d( new AnnotationData());
+    Annotation* a = new Annotation(d);
+
+    U2Region varRegion;
+    varRegion.startPos = var.startPos;
+    varRegion.length = var.endPos == 0 ? 1 : (var.endPos - var.startPos);
+
+    a->addLocationRegion(varRegion);
+    a->addQualifier("public_id", var.publicId);
+    a->addQualifier("ref_data", var.refData);
+    a->addQualifier("obs_data", var.obsData);
+    a->setAnnotationName("variation");
+
+    return a;
+}
+
+U2::U2Feature VariantTrackObjectUtils::variantToFeature( const U2Variant& var ){
+    U2Feature res;
+
+    res.id = var.id;
+    res.name = "variation";
+    res.location.region = U2Region(var.startPos, var.endPos == 0 ? 1 : var.endPos - var.startPos);
+
+    return res;
+}
+
+}//namespace

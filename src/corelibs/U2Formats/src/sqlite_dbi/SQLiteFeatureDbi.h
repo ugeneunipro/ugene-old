@@ -25,15 +25,20 @@
 #include "SQLiteDbi.h"
 
 #include <U2Core/U2FeatureDbi.h>
+#include <U2Core/U2FeatureKeys.h>
+
 
 namespace U2 {
 
 class SQLiteQuery;
 
+
+
+
 class SQLiteFeatureDbi : public U2FeatureDbi, public SQLiteChildDBICommon {
 public:
 
-    SQLiteFeatureDbi(SQLiteDbi* dbi);
+   SQLiteFeatureDbi(SQLiteDbi* dbi);
 
     virtual void initSqlSchema(U2OpStatus& os);
 
@@ -104,13 +109,19 @@ public:
     virtual void updateName(const U2DataId& featureId, const QString& newName, U2OpStatus& os);
 
     /**
+        Updates feature parent
+        Requires: U2DbiFeature_WriteFeature feature support
+    */
+    virtual void updateParentId(const U2DataId& featureId, const U2DataId& parentId, U2OpStatus& os);
+
+    /**
         Removes the feature from database
         Requires: U2DbiFeature_WriteFeature feature support
     */
     virtual void removeFeature(const U2DataId& featureId, U2OpStatus& os);
 
 private:
-    SQLiteQuery* createFeatureQuery(const QString& selectPart, const FeatureQuery& fq, bool useOrder, U2OpStatus& os);
+    SQLiteQuery* createFeatureQuery(const QString& selectPart, const FeatureQuery& fq, bool useOrder, U2OpStatus& os, SQLiteTransaction* trans = NULL);
 };
 
 } //namespace

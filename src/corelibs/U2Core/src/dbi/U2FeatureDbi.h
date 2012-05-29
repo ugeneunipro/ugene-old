@@ -148,6 +148,12 @@ public:
     virtual void updateName(const U2DataId& featureId, const QString& newName, U2OpStatus& os) = 0;
 
     /**
+        Updates feature parent
+        Requires: U2DbiFeature_WriteFeature feature support
+    */
+    virtual void updateParentId(const U2DataId& featureId, const U2DataId& parentId, U2OpStatus& os) = 0;
+
+    /**
         Removes the feature from database
         Requires: U2DbiFeature_WriteFeature feature support
     */

@@ -69,6 +69,7 @@ public:
     static const U2DataType PhyTree     = 3;
     static const U2DataType Assembly    = 4;
     static const U2DataType VariantTrack = 5;
+    static const U2DataType VariantType  = 6;
     static const U2DataType CrossDatabaseReference    = 999;
 
     /** SCO (non-object, non-root) types */

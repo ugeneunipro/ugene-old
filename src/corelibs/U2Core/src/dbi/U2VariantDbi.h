@@ -40,15 +40,35 @@ public:
     /** Returns available VariantTracks */
     virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(U2OpStatus& os) = 0;
 
+    /** Returns available VariantTracks for given sequence id*/
+    virtual U2DbiIterator<U2VariantTrack>* getVariantTracks(const U2DataId& seqId, U2OpStatus& os) = 0;
+
 
     /** Returns VariantTrack instance by the given id */
     virtual U2VariantTrack getVariantTrack(const U2DataId& id, U2OpStatus& os) = 0;
-
+// 
+//     /** 
+//         Creates new VariantTrack instance and adds all Variants provided by iterator to it 
+//         Requires U2DbiFeature_WriteVariants feature support
+//     */
+//     virtual void createVariantTrack(U2VariantTrack& track, U2DbiIterator<U2Variant>* it, const QString& folder, U2OpStatus& os) = 0;
+// 
     /** 
-        Creates new VariantTrack instance and adds all Variants provided by iterator to it 
+        Adds all Variants provided by iterator to the track 
         Requires U2DbiFeature_WriteVariants feature support
     */
-    virtual void createVariantTrack(U2VariantTrack& track, U2DbiIterator<U2Variant>* it, const QString& folder, U2OpStatus& os) = 0;
+    virtual void addVariantsToTrack(const U2VariantTrack& track, U2DbiIterator<U2Variant>* it, U2OpStatus& os) = 0;
+     /** 
+        Creates new VariantTrack instance
+        Requires U2DbiFeature_WriteVariants feature support
+    */
+    virtual void createVariantTrack(U2VariantTrack& track, const QString& folder, U2OpStatus& os) = 0;
+
+    /** 
+        Create Variant and add it to the track
+        Requires U2DbiFeature_WriteVariants feature support
+    */
+    //virtual void addVariantToTrack(U2Variant& variant, const U2VariantTrack& track, U2OpStatus& os) = 0;
  
     /** 
         Updates VariantTrack instance 
@@ -56,14 +76,18 @@ public:
     */
     virtual void updateVariantTrack(const U2VariantTrack& track, U2OpStatus& os) = 0;
 
-    /** Returns all Variants from the given sequence region */
+    /** Returns all Variants from the given sequence region 
+    U2_REGION_MAX to get all variants*/
     virtual U2DbiIterator<U2Variant>* getVariants(const U2DataId& track, const U2Region& region, U2OpStatus& os) = 0;
 
-    /** Returns a selection of variants starting from the offset */
-    virtual U2DbiIterator<U2Variant>* getVariantsRange(int offset, int limit, U2OpStatus& os ) = 0;
+    /** Returns a selection of variants of the track starting from the offset */
+    virtual U2DbiIterator<U2Variant>* getVariantsRange(const U2DataId& track, int offset, int limit, U2OpStatus& os ) = 0;
 
     /** Return number of variants in track */
     virtual int getVariantCount(const U2DataId& track, U2OpStatus& os) = 0;
+
+    /** Delete the variant track from the database */
+    virtual void removeTrack(const U2DataId& track, U2OpStatus& os) = 0;
 };
 
 
