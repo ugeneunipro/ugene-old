@@ -30,7 +30,7 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialogRunnables.h"
+
 #include "GTUtilsMdi.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsProjectTreeView.h"
@@ -42,13 +42,15 @@
 #include <U2View/MSAEditorFactory.h>
 #include <api/GTFileDialog.h>
 
+#include "runnables/qt/PopupChooser.h"
+
 namespace U2{
 
 namespace GUITest_common_scenarios_project_bookmarks {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/dp_view/NC_014267.gb");
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
     GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "NC_014267 [s] NC_014267 sequence"));
     GTMouseDriver::click(os, Qt::RightButton);

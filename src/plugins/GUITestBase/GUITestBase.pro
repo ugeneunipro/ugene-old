@@ -2,10 +2,39 @@ include (GUITestBase.pri)
 
 # Input
 HEADERS +=  src/GUITestBasePlugin.h \
+#   Runnables
+#   Runnables / Qt
+            src/runnables/qt/MessageBoxFiller.h \
+            src/runnables/qt/PopupChooser.h \
+#   Runnables / UGENE
+#   Runnables / UGENE / ugeneui
+            src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h \
+            src/runnables/ugene/ugeneui/ExportProjectDialogFiller.h \
+            src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h \
+#   Runnables / UGENE / corelibs
+#   Runnables / UGENE / corelibs / U2Gui
+            src/runnables/ugene/corelibs/U2Gui/CopyDocumentDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h \
+#   Runnables / UGENE / corelibs / U2Gui / util
+            src/runnables/ugene/corelibs/U2Gui/util/PositionSelectorFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/util/RangeSelectorFiller.h \
+#   Runnables / UGENE / corelibs / U2View
+            src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
+#   Runnables / UGENE / plugins / dotplot
+            src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h \
+#   Runnables / UGENE / plugins / dna_export
+            src/runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h \
+            src/runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h \
+            src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h \
+            src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h \
 #   Utils classes
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
-            src/GTUtilsDialogRunnables.h \
             src/GTUtilsDocument.h \
             src/GTUtilsLog.h \
             src/GTUtilsMdi.h \
@@ -67,10 +96,39 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTAction.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
+#   Runnables
+#   Runnables / Qt
+            src/runnables/qt/MessageBoxFiller.cpp \
+            src/runnables/qt/PopupChooser.cpp \
+#   Runnables / UGENE
+#   Runnables / UGENE / ugeneui
+            src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.cpp \
+            src/runnables/ugene/ugeneui/ExportProjectDialogFiller.cpp \
+            src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.cpp \
+#   Runnables / UGENE / corelibs
+#   Runnables / UGENE / corelibs / U2Gui
+            src/runnables/ugene/corelibs/U2Gui/CopyDocumentDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.cpp \
+#   Runnables / UGENE / corelibs / U2Gui / util
+            src/runnables/ugene/corelibs/U2Gui/util/PositionSelectorFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/util/RangeSelectorFiller.cpp \
+#   Runnables / UGENE / corelibs / U2View
+            src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
+#   Runnables / UGENE / plugins / dotplot
+            src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.cpp \
+#   Runnables / UGENE / plugins / dna_export
+            src/runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.cpp \
+            src/runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.cpp \
+            src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.cpp \
+            src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.cpp \
 #   Utils classes
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \
-            src/GTUtilsDialogRunnables.cpp \
             src/GTUtilsDocument.cpp \
             src/GTUtilsLog.cpp \
             src/GTUtilsMdi.cpp \

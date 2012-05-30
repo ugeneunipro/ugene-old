@@ -28,7 +28,7 @@
 #include "api/GTWidget.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsProjectTreeView.h"
-#include "GTUtilsDialogRunnables.h"
+
 #include "GTUtilsAnnotationsTreeView.h"
 
 #include <U2Core/AppContext.h>

@@ -24,22 +24,27 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
+#include "api/GTSequenceReadingModeDialogUtils.h"
+#include "api/GTTreeWidget.h"
+#include "api/GTFileDialog.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsSequenceView.h"
-#include "api/GTSequenceReadingModeDialogUtils.h"
-#include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
+#include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
+
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
-#include <api/GTFileDialog.h>
 
 namespace U2 {
 
@@ -69,7 +74,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 3. Right click on [s] NC_001363 sequence object, in project view tree. Use context menu item {Export->Export sequences}
 // Expected state: Export sequences dialog open
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE, GTGlobals::UseMouse);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE, GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
 // 4. Fill the next field in dialog:
@@ -78,10 +83,10 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //     {Add created document to project} set checked
 //     
 // 5. Click Export button.
-    Runnable *filler = new GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller(os,
+    Runnable *filler = new ExportSequenceOfSelectedAnnotationsFiller(os,
         testDir+"_common_data/scenarios/sandbox/exp.fasta",
-        GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
-        GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
+        ExportSequenceOfSelectedAnnotationsFiller::Fasta,
+        ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
         );
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
@@ -117,15 +122,15 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 3. Right click on [s] NC_001363 sequence object, in project view tree. Use context menu item {Export->Export sequence as alignment}
 // Expected state: Export sequences dialog open
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
 // 4. Select file to save: _common_data/scenarios/sandbox/exp2.aln and set 'file format to use' to CLUSTALW,
 // Than to uncheck the 'add document to the project' checkbox and click Save button.
-    Runnable *filler = new GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller(os,
+    Runnable *filler = new ExportSequenceAsAlignmentFiller(os,
         testDir+"_common_data/scenarios/sandbox/",
         "exp2.aln",
-        GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::Clustalw,
+        ExportSequenceAsAlignmentFiller::Clustalw,
         false
     );
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
@@ -140,7 +145,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
-    Runnable *dialog = new GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller(os);
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
@@ -152,13 +157,13 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
-    Runnable *filler = new GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller(os,
+    Runnable *filler = new ExportSequenceAsAlignmentFiller(os,
         testDir+"_common_data/scenarios/sandbox/",
         "exp2.aln",
-        GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::Clustalw,
+        ExportSequenceAsAlignmentFiller::Clustalw,
         GTGlobals::UseMouse
         );
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
@@ -174,10 +179,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
     GTGlobals::sleep(1000);
 
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
-    Runnable *filler = new GTUtilsDialogRunnables::ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa");
+    Runnable *filler = new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa");
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "HIV-1.aln"));
@@ -250,11 +255,11 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 // Expected state: Export sequences dialog open
 // 4. Select file to save: _common_data/scenarios/sandbox/exp2.msf and set 'file format to use' to MSF,
 // Than to uncheck the 'add document to the project' checkbox and click Save button.
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
-    Runnable *filler = new GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
-        "exp2.msf", GTUtilsDialogRunnables::ExportSequenceAsAlignmentFiller::Msf);
+    Runnable *filler = new ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
+        "exp2.msf", ExportSequenceAsAlignmentFiller::Msf);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));

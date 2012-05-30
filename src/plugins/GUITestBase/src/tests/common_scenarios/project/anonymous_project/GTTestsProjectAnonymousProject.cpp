@@ -29,8 +29,10 @@
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsProject.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
+#include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 
@@ -54,19 +56,19 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //     {Destination Directory} _common_data/scenarios/sandbox
 //     {Project file name} proj2.uprj
 // 4. Click OK button
-    Runnable *filler = new GTUtilsDialogRunnables::ExportProjectDialogFiller(os, testDir + "_common_data/scenarios/sandbox", "proj2.uprj");
+    Runnable *filler = new ExportProjectDialogFiller(os, testDir + "_common_data/scenarios/sandbox", "proj2.uprj");
     GTUtilsDialog::waitForDialog(os, filler);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     GTGlobals::sleep();
 
 // 5. Click NO in opened messagebox
-    Runnable *filler2 = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::No);
+    Runnable *filler2 = new MessageBoxDialogFiller(os, QMessageBox::No);
     GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
     GTGlobals::sleep();
 
 // 6. Use menu {File->Close project}
 // 7. Click NO in opened messagebox
-    Runnable *filler3 = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::No);
+    Runnable *filler3 = new MessageBoxDialogFiller(os, QMessageBox::No);
     GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
@@ -105,7 +107,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 //     {Project Folder:} _common_data/scenarios/sandbox
 //     {Project file} proj2
 // 4. Click Save button
-    Runnable *filler = new GTUtilsDialogRunnables::SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
+    Runnable *filler = new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
     GTUtilsDialog::waitForDialog(os, filler);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
     GTGlobals::sleep();

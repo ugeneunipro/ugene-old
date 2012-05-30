@@ -30,9 +30,12 @@
 #include "api/GTTreeWidget.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsBookmarksTreeView.h"
-#include "GTUtilsDialogRunnables.h"
+#include "GTUtilsDialog.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsMdi.h"
+#include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
+#include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
+#include "runnables/qt/PopupChooser.h"
 
 #include <U2View/ADVConstants.h>
 
@@ -67,12 +70,12 @@ GUI_TEST_CLASS_DEFINITION(test_0986_1) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep(3000);
 
-    GTUtilsDialogRunnables::SmithWatermanDialogFiller *filler = new GTUtilsDialogRunnables::SmithWatermanDialogFiller(os);
-    filler->button = GTUtilsDialogRunnables::SmithWatermanDialogFiller::Cancel;
+    SmithWatermanDialogFiller *filler = new SmithWatermanDialogFiller(os);
+    filler->button = SmithWatermanDialogFiller::Cancel;
     GTUtilsDialog::waitForDialog(os, filler);
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
+    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep(5000);
 
@@ -85,11 +88,11 @@ GUI_TEST_CLASS_DEFINITION(test_0986_2) {
     GTGlobals::sleep(3000);
 
     GTRegionSelector::RegionSelectorSettings regionSelectorSettings(1, 2);
-    Runnable *filler = new GTUtilsDialogRunnables::SmithWatermanDialogFiller(os, "ATCG", regionSelectorSettings);
+    Runnable *filler = new SmithWatermanDialogFiller(os, "ATCG", regionSelectorSettings);
     GTUtilsDialog::waitForDialog(os, filler);
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
+    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep(5000);
 
@@ -102,7 +105,7 @@ GUI_TEST_CLASS_DEFINITION(test_1001) {
     GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 4);
+    Runnable *r = new DotPlotFiller(os, 4);
     GTUtilsDialog::waitForDialog(os, r);
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
@@ -116,7 +119,7 @@ GUI_TEST_CLASS_DEFINITION(test_1001_1) {
     GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 100, 50);
+    Runnable *r = new DotPlotFiller(os, 100, 50);
     GTUtilsDialog::waitForDialog(os, r);
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
@@ -130,11 +133,11 @@ GUI_TEST_CLASS_DEFINITION(test_1001_2) {
     GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 99, 99, true);
+    Runnable *r = new DotPlotFiller(os, 99, 99, true);
     GTUtilsDialog::waitForDialog(os, r);
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
+    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep();
 
@@ -146,7 +149,7 @@ GUI_TEST_CLASS_DEFINITION(test_1015) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 3);
+    Runnable *r = new DotPlotFiller(os, 3);
     GTUtilsDialog::waitForDialog(os, r);
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
@@ -161,7 +164,7 @@ GUI_TEST_CLASS_DEFINITION(test_1015_1) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 30, 50);
+    Runnable *r = new DotPlotFiller(os, 30, 50);
     GTUtilsDialog::waitForDialog(os, r);
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
@@ -177,11 +180,11 @@ GUI_TEST_CLASS_DEFINITION(test_1015_2) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 100, 50, true);
+    Runnable *r = new DotPlotFiller(os, 100, 50, true);
     GTUtilsDialog::waitForDialog(os, r);
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
+    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep();
 
@@ -200,7 +203,7 @@ GUI_TEST_CLASS_DEFINITION(test_1021) {
 
 // 2) Click "build dotplot" tooltip
 // 3) Click OK in opened dotplot dialog
-    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 100);
+    Runnable *r = new DotPlotFiller(os, 100);
     GTUtilsDialog::waitForDialog(os, r);
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
@@ -235,7 +238,7 @@ GUI_TEST_CLASS_DEFINITION(test_1022) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 3);
+    Runnable *r = new DotPlotFiller(os, 3);
     GTUtilsDialog::waitForDialog(os, r);
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();

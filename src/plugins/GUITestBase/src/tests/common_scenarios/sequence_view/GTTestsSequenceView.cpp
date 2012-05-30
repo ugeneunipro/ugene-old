@@ -25,11 +25,13 @@
 #include "api/GTWidget.h"
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
-#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsSequenceView.h"
+#include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2View/ADVConstants.h>
@@ -45,10 +47,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 3);
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
-    Runnable *filler = new GTUtilsDialogRunnables::ExportSelectedRegionFiller(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
+    Runnable *filler = new ExportSelectedRegionFiller(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
     GTMouseDriver::click(os);
@@ -59,9 +61,9 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
-    class AllActionsPopupChooser : public GTUtilsDialogRunnables::PopupChooser {
+    class AllActionsPopupChooser : public PopupChooser {
     public:
-        AllActionsPopupChooser(U2OpStatus &_os) : GTUtilsDialogRunnables::PopupChooser(_os, QStringList()) {}
+        AllActionsPopupChooser(U2OpStatus &_os) : PopupChooser(_os, QStringList()) {}
         void run() {
             GTGlobals::sleep(100);
             QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
@@ -79,7 +81,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
         }
     };
 
-    Runnable *dialog = new GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller(os);
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/multy_fa.fa");
     GTUtilsDocument::checkDocument(os, "multy_fa.fa");

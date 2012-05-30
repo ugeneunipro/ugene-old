@@ -21,23 +21,28 @@
 
 #include "GTTestsProjectSequenceExporting.h"
 #include "api/GTGlobals.h"
-#include <api/GTFileDialog.h>
-#include <api/GTKeyboardDriver.h>
+#include "api/GTFileDialog.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
-#include <api/GTMouseDriver.h>
+#include "api/GTMouseDriver.h"
 #include "api/GTFile.h"
-#include "GTUtilsAnnotationsTreeView.h"
 #include "api/GTTreeWidget.h"
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsSequenceView.h"
+#include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
 #include <U2Core/DocumentModel.h>
@@ -75,9 +80,9 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // {Export to file:} _common_data/scenarios/sandbox/exp.fasta
 // {Add created document to project} set checked
 
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
-    Runnable *filler = new GTUtilsDialogRunnables::ExportSelectedRegionFiller(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
+    Runnable *filler = new ExportSelectedRegionFiller(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
     GTUtilsMdi::selectRandomRegion(os, "1 [s] NC_001363 sequence");
@@ -118,13 +123,13 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //     {Add created document to project} set checked
 // 5. Click Export button.
 
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseMouse);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
-    Runnable *filler = new GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller(os, 
+    Runnable *filler = new ExportSequenceOfSelectedAnnotationsFiller(os, 
         "_common_data/scenarios/sandbox/exp.fasta",
-        GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
-        GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
+        ExportSequenceOfSelectedAnnotationsFiller::Fasta,
+        ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
     );
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
@@ -173,12 +178,12 @@ GUI_TEST_CLASS_DEFINITION(test_0003)
 //     {Merge sequnces} set selected
 //     {Gap length} 5
 // 5. Click Export button.
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseKey);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
-    Runnable *filler = new GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller(os,
+    Runnable *filler = new ExportSequenceOfSelectedAnnotationsFiller(os,
         testDir + "_common_data/scenarios/sandbox/exp.fasta",
-        GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::Fasta,
-        GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::Merge,
+        ExportSequenceOfSelectedAnnotationsFiller::Fasta,
+        ExportSequenceOfSelectedAnnotationsFiller::Merge,
         5,
         true
     );
@@ -203,10 +208,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "B_joined"));
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ADV_MENU_EXPORT << ACTION_EXPORT_ANNOTATIONS);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ADV_MENU_EXPORT << ACTION_EXPORT_ANNOTATIONS);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
-    Runnable *filler = new GTUtilsDialogRunnables::ExportAnnotationsFiller(os, testDir+"_common_data/scenarios/sandbox/1.csv", GTUtilsDialogRunnables::ExportAnnotationsFiller::csv);
+    Runnable *filler = new ExportAnnotationsFiller(os, testDir+"_common_data/scenarios/sandbox/1.csv", ExportAnnotationsFiller::csv);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(100);
@@ -230,12 +235,12 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_annotations", GTGlobals::UseKey);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_annotations", GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
-    Runnable *filler = new GTUtilsDialogRunnables::ExportAnnotationsFiller(os,
+    Runnable *filler = new ExportAnnotationsFiller(os,
         testDir+"_common_data/scenarios/sandbox/1.csv",
-        GTUtilsDialogRunnables::ExportAnnotationsFiller::csv,
+        ExportAnnotationsFiller::csv,
         true,
         false
     );
@@ -268,10 +273,10 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
 GUI_TEST_CLASS_DEFINITION(test_0007) {
 
-    Runnable *filler = new GTUtilsDialogRunnables::CreateDocumentFiller(os,
+    Runnable *filler = new CreateDocumentFiller(os,
         "ACGTGTGTGTACGACAGACGACAGCAGACGACAGACAGACAGACAGCAAGAGAGAGAGAG",
         testDir + "_common_data/scenarios/sandbox/",
-        GTUtilsDialogRunnables::CreateDocumentFiller::Genbank,
+        CreateDocumentFiller::Genbank,
         "Sequence"
     );
     GTUtilsDialog::waitForDialog(os, filler);
@@ -279,7 +284,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    Runnable *filler2 = new GTUtilsDialogRunnables::CreateAnnotationDialogFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
+    Runnable *filler2 = new CreateAnnotationDialogFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
     GTUtilsDialog::waitForDialog(os, filler2);
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
@@ -291,12 +296,12 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseKey);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_sequence_of_selected_annotations", GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
-    Runnable *filler3 = new GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller(os,
+    Runnable *filler3 = new ExportSequenceOfSelectedAnnotationsFiller(os,
         testDir + "_common_data/scenarios/sandbox/exp.gb",
-        GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::Genbank,
-        GTUtilsDialogRunnables::ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate,
+        ExportSequenceOfSelectedAnnotationsFiller::Genbank,
+        ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate,
         0,
         true,
         true

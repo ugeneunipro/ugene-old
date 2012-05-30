@@ -23,10 +23,10 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
-#include "GTUtilsDialogRunnables.h"
+#include "runnables/qt/PopupChooser.h"
 
 #include <U2Gui/MainWindow.h>
-#include <QtGui/qtreewidget.h>
+#include <QtGui/QTreeWidget>
 
 namespace U2 {
 
@@ -98,7 +98,7 @@ QList<QTreeWidgetItem*> GTUtilsTaskTreeView::getTaskTreeViewItems(QTreeWidgetIte
 }
 
 void GTUtilsTaskTreeView::cancelTask( U2OpStatus& os, const QString &itemName ){
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "cancel_task_action", GTGlobals::UseMouse);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << "cancel_task_action", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
     click(os, itemName, Qt::RightButton);
     GTGlobals::sleep(3000);

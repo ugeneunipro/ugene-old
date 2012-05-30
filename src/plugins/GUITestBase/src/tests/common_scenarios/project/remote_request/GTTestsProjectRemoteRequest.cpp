@@ -26,21 +26,21 @@
 #include "api/GTMenu.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTTreeWidget.h"
+#include "api/GTFileDialog.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsMdi.h"
+#include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 
 #include <U2View/MSAEditorFactory.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
-#include <api/GTFileDialog.h>
 
 
 namespace U2{
@@ -49,7 +49,7 @@ namespace GUITest_common_scenarios_project_remote_request {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-    Runnable *filler = new GTUtilsDialogRunnables::RemoteDBDialogFiller(os, "3EZB", 2); 
+    Runnable *filler = new RemoteDBDialogFiller(os, "3EZB", 2); 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
@@ -60,7 +60,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-    Runnable *filler = new GTUtilsDialogRunnables::RemoteDBDialogFiller(os, "NC_001363", 0); 
+    Runnable *filler = new RemoteDBDialogFiller(os, "NC_001363", 0); 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 

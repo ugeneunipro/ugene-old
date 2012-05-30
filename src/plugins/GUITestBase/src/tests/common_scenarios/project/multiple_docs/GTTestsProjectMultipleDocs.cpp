@@ -28,6 +28,7 @@
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsTaskTreeView.h"
+#include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 
@@ -54,7 +55,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 	{Project Folder:} _common_data/scenarios/sandbox
 // 	{Project file} proj2
 // 4. Click Save button
-    Runnable *filler = new GTUtilsDialogRunnables::SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
+    Runnable *filler = new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
     GTUtilsDialog::waitForDialog(os, filler);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
     GTGlobals::sleep();

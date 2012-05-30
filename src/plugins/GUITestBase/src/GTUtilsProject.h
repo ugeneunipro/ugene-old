@@ -25,7 +25,7 @@
 #include "api/GTGlobals.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
-#include "GTUtilsDialogRunnables.h"
+
 #include <U2Core/GUrl.h>
 #include <QtGui/QMessageBox>
 

@@ -25,7 +25,8 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "GTUtilsProjectTreeView.h"
-#include "GTUtilsDialogRunnables.h"
+#include "runnables/qt/PopupChooser.h"
+
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/ProjectModel.h>
 #include <QtGui/QTreeWidgetItem>
@@ -80,7 +81,7 @@ void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName,
 
 void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method)
 {
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_MENU << ACTION_PROJECT__REMOVE_SELECTED, method);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_MENU << ACTION_PROJECT__REMOVE_SELECTED, method);
 
     switch (method) {
     case GTGlobals::UseMouse:

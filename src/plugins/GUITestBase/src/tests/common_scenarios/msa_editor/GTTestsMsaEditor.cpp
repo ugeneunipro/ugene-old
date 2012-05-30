@@ -24,10 +24,11 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
-#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
+#include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/util/PositionSelectorFiller.h"
 
 #include <U2View/MSAEditor.h>
 
@@ -122,7 +123,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
     GTGlobals::sleep(1000);
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
@@ -133,7 +134,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     CHECK_SET_ERR(offsetsVisible == false, "Offsets are visible");
 
 
-    Runnable *chooser2 = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
@@ -148,7 +149,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma.aln");
     GTGlobals::sleep(1000);
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
     GTUtilsMdi::click(os, GTGlobals::Maximize);
@@ -162,7 +163,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     CHECK_SET_ERR(offsetsVisible == false, "Offsets are visible");
 
 
-    Runnable *chooser2 = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
@@ -177,7 +178,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gap_col.aln");
     GTGlobals::sleep(1000);
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
     GTUtilsMdi::click(os, GTGlobals::Maximize);
@@ -191,7 +192,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     CHECK_SET_ERR(offsetsVisible == false, "Offsets are visible");
 
 
-    Runnable *chooser2 = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
@@ -206,7 +207,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_3) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "revcompl.aln");
     GTGlobals::sleep(1000);
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
@@ -229,7 +230,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_3) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    Runnable *chooser2 = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
@@ -244,7 +245,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_4) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "revcompl.aln");
     GTGlobals::sleep(1000);
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
@@ -265,7 +266,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_4) {
     GTUtilsMdi::click(os, GTGlobals::Maximize);
     GTGlobals::sleep();
 
-    Runnable *chooser2 = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
@@ -280,7 +281,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
     GTGlobals::sleep();
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -292,7 +293,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
     GTGlobals::sleep();
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
@@ -304,12 +305,12 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "revcompl.aln");
     GTGlobals::sleep();
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
 
-    Runnable *chooser2 = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
     GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -323,12 +324,12 @@ GUI_TEST_CLASS_DEFINITION(test_0003_3) {
 
     GTUtilsMSAEditorSequenceArea::checkSorted(os, false);
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
-    Runnable *chooser2 = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
     GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
@@ -347,7 +348,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_4) {
 
     GTUtilsMSAEditorSequenceArea::checkSorted(os, false);
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -374,8 +375,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004)
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "action_go_to_position");
-    Runnable *filler = new GTUtilsDialogRunnables::GoToDialogFiller(os, 6);
+    Runnable *chooser = new PopupChooser(os, QStringList() << "action_go_to_position");
+    Runnable *filler = new GoToDialogFiller(os, 6);
     GTUtilsDialog::waitForDialog(os, filler);
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
@@ -386,7 +387,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004)
     QRect expectedRect(5, 0, 1, 1);
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, expectedRect);
 
-    Runnable *filler1 = new GTUtilsDialogRunnables::GoToDialogFiller(os, 6);
+    Runnable *filler1 = new GoToDialogFiller(os, 6);
     GTUtilsDialog::waitForDialog(os, filler1);
     GTKeyboardDriver::keyClick(os, 'g', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();

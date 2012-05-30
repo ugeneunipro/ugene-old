@@ -32,12 +32,20 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsToolTip.h"
-#include "GTUtilsDialogRunnables.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsTaskTreeView.h"
+#include "runnables/qt/PopupChooser.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+#include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
+#include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
+#include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CopyDocumentDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
@@ -61,7 +69,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 // 3. Fill the next field in dialog:
 //     {Destination Directory} _common_data/scenarios/sandbox
 // 4. Click OK button
-    Runnable *filler = new GTUtilsDialogRunnables::ExportProjectDialogFiller(os, testDir+"_common_data/scenarios/sandbox");
+    Runnable *filler = new ExportProjectDialogFiller(os, testDir+"_common_data/scenarios/sandbox");
     GTUtilsDialog::waitForDialog(os, filler);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     GTGlobals::sleep();
@@ -105,7 +113,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
-    Runnable *filler = new GTUtilsDialogRunnables::SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
+    Runnable *filler = new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
     GTUtilsDialog::waitForDialog(os, filler);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
     GTGlobals::sleep();
@@ -157,7 +165,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/1.gb");
 
-    Runnable *filler = new GTUtilsDialogRunnables::ExportProjectDialogChecker(os, "project.uprj");
+    Runnable *filler = new ExportProjectDialogChecker(os, "project.uprj");
     GTUtilsDialog::waitForDialog(os, filler);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     GTGlobals::sleep();
@@ -168,11 +176,11 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "1.gb");
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
-    Runnable *filler = new GTUtilsDialogRunnables::CopyToFileAsDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "1.gb", 
-                                                   GTUtilsDialogRunnables::CopyToFileAsDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
+    Runnable *filler = new CopyToFileAsDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "1.gb", 
+                                                   CopyToFileAsDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
     GTGlobals::sleep(100);
 
@@ -207,7 +215,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
 GUI_TEST_CLASS_DEFINITION(test_0014) {
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-    Runnable *filler = new GTUtilsDialogRunnables::RemoteDBDialogFiller(os, "1HTQ", 2); 
+    Runnable *filler = new RemoteDBDialogFiller(os, "1HTQ", 2); 
     GTUtilsDialog::waitForDialog(os, filler);
     GTGlobals::sleep();
 
@@ -232,8 +240,8 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
     GTUtilsProject::openFiles(os, fileTarget.fileName());
     GTGlobals::sleep(100);
 
-    Runnable *popupChooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse);
-    Runnable *filler = new GTUtilsDialogRunnables::CopyToFileAsDialogFiller(os, "", "", GTUtilsDialogRunnables::CopyToFileAsDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse);
+    Runnable *filler = new CopyToFileAsDialogFiller(os, "", "", CopyToFileAsDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "example.gb"));
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
@@ -276,7 +284,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
 
 GUI_TEST_CLASS_DEFINITION(test_0019) {
 
-    Runnable *dialog = new GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller(os);
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
@@ -289,7 +297,7 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
 
     QWidget *w = GTWidget::findWidget(os, "render_area_se1");
 
-    Runnable *chooser = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "ADV_MENU_REMOVE" << ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW);
+    Runnable *chooser = new PopupChooser(os, QStringList() << "ADV_MENU_REMOVE" << ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW);
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTMenu::showContextMenu(os, w);
     GTGlobals::sleep(1000);
@@ -299,7 +307,7 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0020) {
-    Runnable *dialog = new GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller(os);
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
@@ -322,7 +330,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0021) {
-    Runnable *dialog = new GTUtilsDialogRunnables::SequenceReadingModeSelectorDialogFiller(os);
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
@@ -364,28 +372,28 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
 
-    Runnable *popupChooser1 = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
+    Runnable *popupChooser1 = new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser1, GUIDialogWaiter::Popup);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTGlobals::sleep(1000);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(100);
 
-    Runnable *popupChooser2 = new GTUtilsDialogRunnables::PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
+    Runnable *popupChooser2 = new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser2, GUIDialogWaiter::Popup);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "2.gb"));
     GTGlobals::sleep(1000);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(100);
 
-    Runnable *filler = new GTUtilsDialogRunnables::CreateAnnotationDialogFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
+    Runnable *filler = new CreateAnnotationDialogFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
     GTUtilsDialog::waitForDialog(os, filler);
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
     GTGlobals::sleep(2000);
 
-    Runnable *filler2 = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::No);
+    Runnable *filler2 = new MessageBoxDialogFiller(os, QMessageBox::No);
     GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
     GTGlobals::sleep();
@@ -415,7 +423,7 @@ GUI_TEST_CLASS_DEFINITION(test_0030) {
     GTLogTracer logTracer;
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 
-    Runnable *filler = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::Cancel);
+    Runnable *filler = new MessageBoxDialogFiller(os, QMessageBox::Cancel);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
@@ -437,7 +445,7 @@ GUI_TEST_CLASS_DEFINITION(test_0031) {
 
     GTUtilsMdi::click(os, GTGlobals::Close);
 
-    Runnable* r = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::Ok);
+    Runnable* r = new MessageBoxDialogFiller(os, QMessageBox::Ok);
     GTUtilsDialog::waitForDialog(os, r, GUIDialogWaiter::Modal);
     GTUtilsProject::openFiles(os, dataDir+"samples/FASTA/human_T1.fa");
 
