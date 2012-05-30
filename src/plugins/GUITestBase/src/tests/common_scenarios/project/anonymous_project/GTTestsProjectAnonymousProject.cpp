@@ -40,24 +40,49 @@ namespace GUITest_common_scenarios_project_anonymous_project{
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 
+// 1. Use menu {File->Open}. Open file data/samples/PDB/1CF7.pdb
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+
+// Expected state: 
+//     1) Project view with document "1CF7.PDB" is opened
     GTGlobals::sleep(5000);
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
+// 2. Use menu {File->Export Project}
+// Expected state: "Export Project" dialog has appeared
+// 3. Fill the next field in dialog:
+//     {Destination Directory} _common_data/scenarios/sandbox
+//     {Project file name} proj2.uprj
+// 4. Click OK button
     Runnable *filler = new GTUtilsDialogRunnables::ExportProjectDialogFiller(os, testDir + "_common_data/scenarios/sandbox", "proj2.uprj");
     GTUtilsDialog::waitForDialog(os, filler);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     GTGlobals::sleep();
 
+// 5. Click NO in opened messagebox
     Runnable *filler2 = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::No);
     GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTGlobals::sleep();
+
+// 6. Use menu {File->Close project}
+// 7. Click NO in opened messagebox
+    Runnable *filler3 = new GTUtilsDialogRunnables::MessageBoxDialogFiller(os, QMessageBox::No);
+    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 
+// 8. Use menu {File->Open}. Open project _common_data/scenarios/sandbox/proj2.uprj
     GTGlobals::sleep();
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/sandbox/", "proj2.uprj");
+
+// Expected state: 
+//     1) project view with document "1CF7.PDB" has been opened, 
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
+
+//     2) UGENE window titled with text "proj2 UGENE"
     GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+
+//     3) File path at tooltip for "1CF7.PDB" must be "_common_data/scenarios/sandbox/1CF7.PDB"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
     GTGlobals::sleep();
     GTUtilsToolTip::checkExistingToolTip(os, "_common_data/scenarios/sandbox/1CF7.PDB");
