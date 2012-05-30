@@ -81,6 +81,12 @@
 #include "bwa/bwa_tests/bwaTests.h"
 #include "spidey/SpideySupport.h"
 #include "spidey/SpideySupportTask.h"
+#include "cufflinks/CuffdiffWorker.h"
+#include "cufflinks/CufflinksSupport.h"
+#include "cufflinks/CufflinksWorker.h"
+#include "cufflinks/CuffmergeWorker.h"
+#include "tophat/TopHatSupport.h"
+#include "tophat/TopHatWorker.h"
 
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
@@ -200,6 +206,21 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     //Spidey
     SpideySupport* spideySupport = new SpideySupport(SPIDEY_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(spideySupport);
+
+    // TopHat
+    TopHatSupport* tophatTool = new TopHatSupport(TOPHAT_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(tophatTool);
+
+    // Cufflinks external tools
+    CufflinksSupport* cuffcompareTool = new CufflinksSupport(CUFFCOMPARE_TOOL_NAME);
+    CufflinksSupport* cuffdiffTool = new CufflinksSupport(CUFFDIFF_TOOL_NAME);
+    CufflinksSupport* cufflinksTool = new CufflinksSupport(CUFFLINKS_TOOL_NAME);
+    CufflinksSupport* cuffmergeTool = new CufflinksSupport(CUFFMERGE_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(cuffcompareTool);
+    AppContext::getExternalToolRegistry()->registerEntry(cuffdiffTool);
+    AppContext::getExternalToolRegistry()->registerEntry(cufflinksTool);
+    AppContext::getExternalToolRegistry()->registerEntry(cuffmergeTool);
+
 
     if (AppContext::getMainWindow()) {
         ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));
@@ -371,6 +392,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     LocalWorkflow::BlastAllWorkerFactory::init();
     LocalWorkflow::BlastPlusWorkerFactory::init();
     LocalWorkflow::TCoffeeWorkerFactory::init();
+    LocalWorkflow::CuffdiffWorkerFactory::init();
+    LocalWorkflow::CufflinksWorkerFactory::init();
+    LocalWorkflow::CuffmergeWorkerFactory::init();
+    LocalWorkflow::TopHatWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

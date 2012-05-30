@@ -68,7 +68,7 @@ DataTypePtr HMMLib::HMM_PROFILE_TYPE() {
 
 const Descriptor HMMLib::HMM2_SLOT("hmm2-profile", HMMLib::tr("HMM Profile"), "");
 
-const Descriptor HMMLib::HMM_CATEGORY() {return Descriptor("hmmer", tr("HMMER2 tools"), "");}
+const Descriptor HMMLib::HMM_CATEGORY() {return Descriptor("hmmer", tr("HMMER2 Tools"), "");}
 
 HMMIOProto::HMMIOProto(const Descriptor& _desc, const QList<PortDescriptor*>& _ports, const QList<Attribute*>& _attrs ) 
 : IntegralBusActorPrototype(_desc, _ports, _attrs) {

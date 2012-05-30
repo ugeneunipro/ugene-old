@@ -60,6 +60,8 @@ public:
     static QString errorColorTextFieldStr() { return "rgb(255, 152, 142)"; }
     static QString errorColorLabelStr() { return "rgb(166, 57, 46)"; }
 
+    static QString defaultStr() { return "default"; } // It is used in WD, do not translate this without testing
+
 };
 
 }//ns

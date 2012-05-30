@@ -37,6 +37,10 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/clustalw/ClustalWSupportRunDialog.h \
            src/clustalw/ClustalWSupportTask.h \
            src/clustalw/ClustalWWorker.h \
+           src/cufflinks/CuffdiffWorker.h \
+           src/cufflinks/CufflinksSupport.h \
+           src/cufflinks/CufflinksWorker.h \
+           src/cufflinks/CuffmergeWorker.h \
            src/mafft/MAFFTSupport.h \
            src/mafft/MAFFTSupportRunDialog.h \
            src/mafft/MAFFTSupportTask.h \
@@ -51,6 +55,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/tcoffee/TCoffeeSupportRunDialog.h \
            src/tcoffee/TCoffeeSupportTask.h \
            src/tcoffee/TCoffeeWorker.h \
+           src/tophat/TopHatSupport.h \
+           src/tophat/TopHatWorker.h \
            src/utils/BlastRunCommonDialog.h \
            src/utils/BlastTaskSettings.h \
            src/utils/ExportTasks.h \
@@ -108,6 +114,10 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/clustalw/ClustalWSupportRunDialog.cpp \
            src/clustalw/ClustalWSupportTask.cpp \
            src/clustalw/ClustalWWorker.cpp \
+           src/cufflinks/CuffdiffWorker.cpp \
+           src/cufflinks/CufflinksSupport.cpp \
+           src/cufflinks/CufflinksWorker.cpp \
+           src/cufflinks/CuffmergeWorker.cpp \
            src/mafft/MAFFTSupport.cpp \
            src/mafft/MAFFTSupportRunDialog.cpp \
            src/mafft/MAFFTSupportTask.cpp \
@@ -122,6 +132,8 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/tcoffee/TCoffeeSupportRunDialog.cpp \
            src/tcoffee/TCoffeeSupportTask.cpp \
            src/tcoffee/TCoffeeWorker.cpp \
+           src/tophat/TopHatSupport.cpp \
+           src/tophat/TopHatWorker.cpp \
            src/utils/BlastRunCommonDialog.cpp \
            src/utils/BlastTaskSettings.cpp \
            src/utils/ExportTasks.cpp \

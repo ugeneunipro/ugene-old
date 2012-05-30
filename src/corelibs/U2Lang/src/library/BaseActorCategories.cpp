@@ -55,6 +55,10 @@ const Descriptor BaseActorCategories::CATEGORY_ASSEMBLY() {
     return Descriptor("asm", tr("DNA Assembly"), ""); 
 }
 
+const Descriptor BaseActorCategories::CATEGORY_RNA_SEQ() {
+    return Descriptor("rna", tr("NGS: RNA Analysis"), "");
+}
+
 const Descriptor BaseActorCategories::CATEGORY_TRANSCRIPTION() {
     return Descriptor("tr", tr("Transcription Factor"), ""); 
 }

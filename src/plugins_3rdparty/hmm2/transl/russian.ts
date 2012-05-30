@@ -1195,7 +1195,7 @@
     <name>U2::LocalWorkflow::HMMLib</name>
     <message>
         <location filename="../src/HMMIOWorker.cpp" line="71"/>
-        <source>HMMER2 tools</source>
+        <source>HMMER2 Tools</source>
         <translation>Программы HMMER2</translation>
     </message>
     <message>

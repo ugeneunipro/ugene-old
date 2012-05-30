@@ -255,7 +255,13 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
     }
     assert(selectedItems.length()==1);
     QString name=selectedItems.at(0)->text(0);
-    if((selectedItems.at(0)->text(0) != "BLAST") && (selectedItems.at(0)->text(0) != "CUDA-BLAST") && (selectedItems.at(0)->text(0) != "BLAST+") && (selectedItems.at(0)->text(0) != "GPU-BLAST+") && (selectedItems.at(0)->text(0) != "Bowtie")){
+    if((selectedItems.at(0)->text(0) != "BLAST") &&
+       (selectedItems.at(0)->text(0) != "CUDA-BLAST") &&
+       (selectedItems.at(0)->text(0) != "BLAST+") &&
+       (selectedItems.at(0)->text(0) != "GPU-BLAST+") &&
+       (selectedItems.at(0)->text(0) != "Bowtie") &&
+       (selectedItems.at(0)->text(0) != "Cufflinks Tools"))
+    {
         descriptionTextEdit->setText(AppContext::getExternalToolRegistry()->getByName(selectedItems.at(0)->text(0))->getDescription());
         if(!externalToolsInfo[selectedItems.at(0)->text(0)].version.isEmpty()){
             descriptionTextEdit->setText(descriptionTextEdit->toHtml()+tr("<br>Version: ")+externalToolsInfo[selectedItems.at(0)->text(0)].version);
@@ -287,6 +293,15 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
                        "Bowtie indexes the genome with a Burrows-Wheeler index to keep "
                        "its memory footprint small: typically about 2.2 GB for the human "
                        "genome (2.9 GB for paired-end)."));
+    }
+
+    if(selectedItems.at(0)->text(0) == "Cufflinks Tools"){
+        descriptionTextEdit->setText("<i>Cufflinks</i> assembles transcripts, estimates"
+            " their abundances, and tests for differential expression and regulation"
+            " in RNA-Seq samples. It accepts aligned RNA-Seq reads and assembles"
+            " the alignments into a parsimonious set of transcripts. It also estimates"
+            " the relative abundances of these transcripts based on how many reads"
+            " support each one, taking into account biases in library preparation protocols. ");
     }
 }
 void ExternalToolSupportSettingsPageWidget::sl_onPathEditWidgetClick(){

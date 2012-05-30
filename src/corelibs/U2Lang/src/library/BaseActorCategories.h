@@ -36,6 +36,7 @@ public:
     static const Descriptor CATEGORY_BASIC();
     static const Descriptor CATEGORY_ALIGNMENT();
     static const Descriptor CATEGORY_ASSEMBLY();
+    static const Descriptor CATEGORY_RNA_SEQ();
     static const Descriptor CATEGORY_TRANSCRIPTION();
     static const Descriptor CATEGORY_SCRIPT();
     static const Descriptor CATEGORY_STATISTIC();
