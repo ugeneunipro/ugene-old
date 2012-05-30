@@ -230,6 +230,25 @@ GUI_TEST_CLASS_DEFINITION(test_1021) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1022) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+
+    Runnable *r = new GTUtilsDialogRunnables::DotPlotFiller(os, 3);
+    GTUtilsDialog::waitForDialog(os, r);
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep(5000);
+}
 
 } // GUITest_regression_scenarios namespace
 
