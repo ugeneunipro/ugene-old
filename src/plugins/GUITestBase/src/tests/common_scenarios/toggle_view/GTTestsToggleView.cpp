@@ -206,8 +206,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001_4) {
     CHECK_SET_ERR(activeMDIWindow == NULL, "there is active MDI window");
 }
 
-
-
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
 // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa, open file as separate sequences
@@ -220,8 +218,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     QWidget *overViewSe1 = GTWidget::findWidget(os, "overview_se1");
     QWidget *overViewSe2 = GTWidget::findWidget(os, "overview_se2");
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
-    QWidget *toggleViewButtonSe1 = GTWidget::findWidget(os, "toggle_view_button_se1");
-    QWidget *toggleViewButtonSe2 = GTWidget::findWidget(os, "toggle_view_button_se2");
 
 // 2. Click on toolbar button Toggle views. Click menu item Hide all overviews.
     Runnable *chooser0 = new PopupChooser(os, QStringList() << "toggleOverview");

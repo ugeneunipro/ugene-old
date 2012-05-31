@@ -118,9 +118,9 @@ QString GTUtilsSequenceView::getBeginOfSequenceAsString(U2OpStatus &os, int leng
 
     Runnable *filler = new selectSequenceRegionDialogFiller(os, length);
     GTUtilsDialog::waitForDialog(os, filler);
-
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
+
     GTGlobals::sleep(1000); // don't touch
     QString sequence;
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);

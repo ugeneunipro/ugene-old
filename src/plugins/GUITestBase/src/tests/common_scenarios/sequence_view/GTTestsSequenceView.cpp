@@ -50,13 +50,12 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     Runnable *chooser = new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
-    Runnable *filler = new ExportSelectedRegionFiller(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
+    Runnable *filler = new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
     GTMouseDriver::click(os);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {

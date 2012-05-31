@@ -86,18 +86,26 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // {Export to file:} _common_data/scenarios/sandbox/exp.fasta
 // {Add created document to project} set checked
 
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 4);
+    GTGlobals::sleep();
+
     Runnable *popupChooser = new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
-    Runnable *filler = new ExportSelectedRegionFiller(os, "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
+    Runnable *filler = new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
-    GTUtilsMdi::selectRandomRegion(os, "1 [s] NC_001363 sequence");
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
 // Expected state: sequence view [1..4] has been opened, with sequence "AAAT"
     GTGlobals::sleep();
     GTUtilsDocument::checkDocument(os, "exp.fasta");
+
+    QString seq;
+    GTUtilsSequenceView::getSequenceAsString(os, seq);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(seq == "AAAT", "exported sequence differs from AAAT");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
@@ -133,7 +141,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
     Runnable *filler = new ExportSequenceOfSelectedAnnotationsFiller(os, 
-        "_common_data/scenarios/sandbox/exp.fasta",
+        testDir + "_common_data/scenarios/sandbox/exp.fasta",
         ExportSequenceOfSelectedAnnotationsFiller::Fasta,
         ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
     );

@@ -139,7 +139,7 @@ void GUITestService::runGUITest() {
     GUITest* t = getTest();
     Q_ASSERT(t);
     if (!t) {
-        os.setError("GUITestService: Test not found");
+        os.setError("GUITestService __ Test not found");
     }
     tests.append(t);
 

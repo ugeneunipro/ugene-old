@@ -157,6 +157,7 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
 
     QAction *action = getMenuItem(os, menu, itemName);
     GT_CHECK_RESULT(action != NULL, "action not found for item " + itemName, NULL);
+    GT_CHECK_RESULT(action->isEnabled() == true, "action <" + itemName + "> is not enabled", NULL);
 
     QMenu* actionMenu = action->menu();
     bool clickingSubMenu = actionMenu ? true : false;
