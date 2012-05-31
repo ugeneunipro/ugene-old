@@ -58,11 +58,18 @@ namespace GUITest_common_scenarios_project_sequence_exporting {
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
+    GTGlobals::sleep();
 
+    GTUtilsDocument::checkDocument(os, "1.gb");
+    GTUtilsDocument::checkDocument(os, "2.gb");
 // Expected state: 
 //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded    
-    CHECK_SET_ERR(!GTUtilsDocument::getDocument(os, "1.gb")->isLoaded(), "1.gb is loaded");
-    CHECK_SET_ERR(!GTUtilsDocument::getDocument(os, "2.gb")->isLoaded(), "2.gb is loaded");
+    Document* doc1 = GTUtilsDocument::getDocument(os, "1.gb");
+    Document* doc2 = GTUtilsDocument::getDocument(os, "2.gb");
+    CHECK_SET_ERR(doc1 != NULL && doc2 != NULL, "there are no documents 1.gb and 2.gb");
+
+    CHECK_SET_ERR(!doc1->isLoaded(), "1.gb is loaded");
+    CHECK_SET_ERR(!doc2->isLoaded(), "2.gb is loaded");
 //     2) UGENE window titled with text "proj4 UGENE"
     GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 

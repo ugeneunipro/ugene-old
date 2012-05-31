@@ -99,6 +99,46 @@ GUI_TEST_CLASS_DEFINITION(test_0986_2) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0986_3) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(3000);
+
+    GTRegionSelector::RegionSelectorSettings regionSelectorSettings(1, 2);
+    Runnable *filler = new SmithWatermanDialogFiller(os, "ATCGAT", regionSelectorSettings);
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTGlobals::sleep(5000);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0986_4) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(3000);
+
+    GTRegionSelector::RegionSelectorSettings regionSelectorSettings(1, 2);
+    Runnable *filler = new SmithWatermanDialogFiller(os, "ATCGAT", regionSelectorSettings);
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTGlobals::sleep(5000);
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep(5000);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1001) {
 
     GTUtilsProject::openFiles(os, dataDir+"samples/FASTA/human_T1.fa");
@@ -140,6 +180,47 @@ GUI_TEST_CLASS_DEFINITION(test_1001_2) {
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep();
+
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1001_3) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
+    GTGlobals::sleep();
+
+    Runnable *r = new DotPlotFiller(os, 99, 99, true);
+    GTUtilsDialog::waitForDialog(os, r);
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTGlobals::sleep(5000);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1001_4) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
+    GTGlobals::sleep();
+
+    Runnable *r = new DotPlotFiller(os, 99, 99, true);
+    GTUtilsDialog::waitForDialog(os, r);
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTGlobals::sleep(5000);
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
 
     GTGlobals::sleep(5000);
 }
@@ -194,42 +275,260 @@ GUI_TEST_CLASS_DEFINITION(test_1015_2) {
     GTGlobals::sleep(5000);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1021) {
+GUI_TEST_CLASS_DEFINITION(test_1015_3) {
 
-    for (int i=0; i<2; i++) {
-// 1) Open data\samples\FASTA\human_T1.fa
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-// 2) Click "build dotplot" tooltip
-// 3) Click OK in opened dotplot dialog
-    Runnable *r = new DotPlotFiller(os, 100);
+    Runnable *r = new DotPlotFiller(os, 100, 50, true);
     GTUtilsDialog::waitForDialog(os, r);
-    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep();
 
-// 4) Click on human_T1.fa project tree view item
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsMdi::click(os, GTGlobals::Close);
+
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
     GTMouseDriver::click(os);
     GTGlobals::sleep();
-
-// 5) Press delete key
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1015_4) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-// Expected state: there are no empty MDI window opened, no bookmarks
+    Runnable *r = new DotPlotFiller(os, 100, 50, true);
+    GTUtilsDialog::waitForDialog(os, r);
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
     GTGlobals::sleep();
-    QWidget* activeWindow = GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false));
-    CHECK_SET_ERR(activeWindow == NULL, "there is active window");
 
-    QTreeWidget* bookmarksTree = GTUtilsBookmarksTreeView::getTreeWidget(os);
-    CHECK_SET_ERR(bookmarksTree != NULL, "bookmarksTreeWidget is NULL");
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsMdi::click(os, GTGlobals::Minimize);
 
-    int bookmarksCount = bookmarksTree->topLevelItemCount();
-    CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1021) {
+
+    for (int i=0; i<2; i++) {
+        // 1) Open data\samples\FASTA\human_T1.fa
+        GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+        GTGlobals::sleep();
+
+        // 2) Click "build dotplot" tooltip
+        // 3) Click OK in opened dotplot dialog
+        Runnable *r = new DotPlotFiller(os, 100);
+        GTUtilsDialog::waitForDialog(os, r);
+        GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+        GTGlobals::sleep();
+
+        // 4) Click on human_T1.fa project tree view item
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+        GTMouseDriver::click(os);
+        GTGlobals::sleep();
+
+        // 5) Press delete key
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep();
+
+        // Expected state: there are no empty MDI window opened, no bookmarks
+        GTGlobals::sleep();
+        QWidget* activeWindow = GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false));
+        CHECK_SET_ERR(activeWindow == NULL, "there is active window");
+
+        QTreeWidget* bookmarksTree = GTUtilsBookmarksTreeView::getTreeWidget(os);
+        CHECK_SET_ERR(bookmarksTree != NULL, "bookmarksTreeWidget is NULL");
+
+        int bookmarksCount = bookmarksTree->topLevelItemCount();
+        CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
     }
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F4"], GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1021_1) {
+
+    for (int i=0; i<3; i++) {
+        // 1) Open data\samples\FASTA\human_T1.fa
+        GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+        GTGlobals::sleep();
+
+        // 2) Click "build dotplot" tooltip
+        // 3) Click OK in opened dotplot dialog
+        Runnable *r = new DotPlotFiller(os, 100);
+        GTUtilsDialog::waitForDialog(os, r);
+        GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+        GTGlobals::sleep();
+
+        // 4) Click on human_T1.fa project tree view item
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+        GTMouseDriver::click(os);
+        GTGlobals::sleep();
+
+        // 5) Press delete key
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep();
+
+        // Expected state: there are no empty MDI window opened, no bookmarks
+        GTGlobals::sleep();
+        QWidget* activeWindow = GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false));
+        CHECK_SET_ERR(activeWindow == NULL, "there is active window");
+
+        QTreeWidget* bookmarksTree = GTUtilsBookmarksTreeView::getTreeWidget(os);
+        CHECK_SET_ERR(bookmarksTree != NULL, "bookmarksTreeWidget is NULL");
+
+        int bookmarksCount = bookmarksTree->topLevelItemCount();
+        CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
+    }
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F4"], GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1021_2) {
+
+    for (int i=0; i<2; i++) {
+        // 1) Open data\samples\FASTA\human_T1.fa
+        GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+        GTGlobals::sleep();
+
+        // 2) Click "build dotplot" tooltip
+        // 3) Click OK in opened dotplot dialog
+        Runnable *r = new DotPlotFiller(os, 100);
+        GTUtilsDialog::waitForDialog(os, r);
+        GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+        GTGlobals::sleep();
+
+        // 4) Click on human_T1.fa project tree view item
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+        GTMouseDriver::click(os);
+        GTGlobals::sleep();
+
+        // 5) Press delete key
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep();
+
+        // Expected state: there are no empty MDI window opened, no bookmarks
+        GTGlobals::sleep();
+        QWidget* activeWindow = GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false));
+        CHECK_SET_ERR(activeWindow == NULL, "there is active window");
+
+        QTreeWidget* bookmarksTree = GTUtilsBookmarksTreeView::getTreeWidget(os);
+        CHECK_SET_ERR(bookmarksTree != NULL, "bookmarksTreeWidget is NULL");
+
+        int bookmarksCount = bookmarksTree->topLevelItemCount();
+        CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
+    }
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1021_3) {
+
+    for (int i=0; i<2; i++) {
+        // 1) Open data\samples\FASTA\human_T1.fa
+        GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+        GTGlobals::sleep();
+
+        // 2) Click "build dotplot" tooltip
+        // 3) Click OK in opened dotplot dialog
+        Runnable *r = new DotPlotFiller(os, 120, 100, true);
+        GTUtilsDialog::waitForDialog(os, r);
+        GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+        GTGlobals::sleep();
+
+        if (i==0) {
+            GTUtilsMdi::click(os, GTGlobals::Minimize);
+            GTGlobals::sleep();
+        }
+
+        // 4) Click on human_T1.fa project tree view item
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+        GTMouseDriver::click(os);
+        GTGlobals::sleep();
+
+        // 5) Press delete key
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep();
+
+        // Expected state: there are no empty MDI window opened, no bookmarks
+        GTGlobals::sleep();
+        QWidget* activeWindow = GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false));
+        CHECK_SET_ERR(activeWindow == NULL, "there is active window");
+
+        QTreeWidget* bookmarksTree = GTUtilsBookmarksTreeView::getTreeWidget(os);
+        CHECK_SET_ERR(bookmarksTree != NULL, "bookmarksTreeWidget is NULL");
+
+        int bookmarksCount = bookmarksTree->topLevelItemCount();
+        CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
+    }
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1021_4) {
+
+    for (int i=0; i<2; i++) {
+        // 1) Open data\samples\FASTA\human_T1.fa
+        GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+        GTGlobals::sleep();
+
+        // 2) Click "build dotplot" tooltip
+        // 3) Click OK in opened dotplot dialog
+        Runnable *r = new DotPlotFiller(os, 110, 100, true);
+        GTUtilsDialog::waitForDialog(os, r);
+        GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+        GTGlobals::sleep();
+
+        if (i==0) {
+            GTUtilsMdi::click(os, GTGlobals::Minimize);
+            GTGlobals::sleep();
+        }
+
+        // 4) Click on human_T1.fa project tree view item
+        GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+        GTMouseDriver::click(os);
+        GTGlobals::sleep();
+
+        // 5) Press delete key
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep();
+
+        // Expected state: there are no empty MDI window opened, no bookmarks
+        GTGlobals::sleep();
+        QWidget* activeWindow = GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false));
+        CHECK_SET_ERR(activeWindow == NULL, "there is active window");
+
+        QTreeWidget* bookmarksTree = GTUtilsBookmarksTreeView::getTreeWidget(os);
+        CHECK_SET_ERR(bookmarksTree != NULL, "bookmarksTreeWidget is NULL");
+
+        int bookmarksCount = bookmarksTree->topLevelItemCount();
+        CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
+    }
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
     GTGlobals::sleep();
 }
 

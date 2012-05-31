@@ -77,16 +77,26 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_0986);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986_2);
+    REGISTER_TEST(GUITest_regression_scenarios::test_0986_3);
+    REGISTER_TEST(GUITest_regression_scenarios::test_0986_4);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1001);
     REGISTER_TEST(GUITest_regression_scenarios::test_1001_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1001_2);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1001_3);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1001_4);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1015);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1015_2);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1015_3);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1015_4);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1021);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1021_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1021_2);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1021_3);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1021_4);
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1022, "https://ugene.unipro.ru/tracker/browse/UGENE-1022");
 
@@ -188,11 +198,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_2);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_3);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_4);
-    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0005);
-    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0006);
-    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0007);
+//     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0005);
+//     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0006);
+//     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0008);
-    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0009);
+//     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0009);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/
