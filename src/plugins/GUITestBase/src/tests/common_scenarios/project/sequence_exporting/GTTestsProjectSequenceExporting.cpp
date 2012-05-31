@@ -48,7 +48,6 @@
 #include <U2Core/DocumentModel.h>
 #include <U2View/ADVConstants.h>
 #include <U2Core/AppContext.h>
-#include <QFile>
 #include <QPlainTextEdit>
 
 namespace U2{
@@ -255,27 +254,9 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
-    QString expectedFileContent ("\"Group\",\"Name\",\"Start\",\"End\",\"Length\",\"Complementary\",\"Sequence\",\"qual1\",\"qual2\"\"C\",\"C\",\"80\",\"90\",\"11\",\"no\",\"GAATAGAAAAG\",\"val1\",\"val2\"");
-
-    QFile file(testDir+"_common_data/scenarios/sandbox/1.csv");
-    if (! file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        if (! os.hasError()) {
-            os.setError("Can't open file \"" + testDir + "_common_data/scenarios/sandbox/1.csv\"");
-        }
-    }
-    QTextStream in(&file);
-    QString fileContent, temp;
-    
-    while (! in.atEnd()) {
-        in >> temp;
-        fileContent += temp;
-    }
-    file.close();
-
-    if (fileContent != expectedFileContent && !os.hasError() ) {
-        os.setError("File is not expected file");
-    }
-
+    GTGlobals::sleep(1000);
+    bool equals = GTFile::equals(os, testDir+"_common_data/scenarios/sandbox/1.csv", testDir+"_common_data/scenarios/project/test_0005.csv");
+    CHECK_SET_ERR(equals == true, "Exported file differs from the test file");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007) {
