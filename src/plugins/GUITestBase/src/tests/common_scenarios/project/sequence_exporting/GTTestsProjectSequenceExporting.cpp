@@ -94,6 +94,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     Runnable *filler = new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
+    QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(activeWindow != NULL, "there is no active MDI window");
+
+    QPoint p = activeWindow->mapToGlobal(activeWindow->rect().center());
+    GTMouseDriver::moveTo(os, p.x(), 200);
+
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
