@@ -125,6 +125,7 @@ QProcessEnvironment GUITestLauncher::getProcessEnvironment(const QString &testNa
     env.insert("UGENE_GUI_TEST", "1");
     env.insert("UGENE_USE_NATIVE_DIALOGS", "0");
     env.insert("UGENE_PRINT_TO_FILE", testOutFile(testName));
+    env.insert("UGENE_USER_INI", testName + "_UGENE.ini");
 
     return env;
 }
