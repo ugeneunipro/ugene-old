@@ -45,12 +45,15 @@ class DocumentUpdater : public QObject {
     Q_OBJECT
 public:
     DocumentUpdater(QObject* p=NULL);
+    void ReloadDocuments( QList<Document*> docs2Reload ); //reload and reopen views for given documents
+
 private slots:
     void sl_update();
     void sl_updateTaskStateChanged();
 private:
     void excludeDocumentsInTasks(const QList<Task*>& tasks, QList<Document*>& documents);
     void update();
+
     Task* updateTask;
     bool recursion;
 };

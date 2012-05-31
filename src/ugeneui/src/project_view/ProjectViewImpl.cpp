@@ -193,6 +193,33 @@ void DocumentUpdater::update() {
 
     // setup multi task : reload documents + open views
 
+    ReloadDocuments(docs2Reload);
+
+}
+
+void DocumentUpdater::sl_updateTaskStateChanged() {
+    SAFE_POINT(updateTask != NULL, "updateTask is NULL?", );
+    if (updateTask->isFinished()) {
+        updateTask = NULL;
+    }
+}
+
+void DocumentUpdater::excludeDocumentsInTasks(const QList<Task*>& tasks, QList<Document*>& documents) {
+    foreach(Task* task, tasks) {
+        excludeDocumentsInTasks(task->getSubtasks(), documents);
+        SaveDocumentTask* saveTask = qobject_cast<SaveDocumentTask*>(task);
+        if (saveTask) {
+            documents.removeAll(saveTask->getDocument());
+        } else {
+            LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(task);
+            if (loadTask) {
+                documents.removeAll(loadTask->getDocument());
+            }
+        }
+    }
+}
+
+void DocumentUpdater::ReloadDocuments( QList<Document*> docs2Reload ){
     Task* reloadTask = new Task(tr("Reload documents task"), TaskFlag_NoRun);
 
     QList<GObjectViewState*> states;
@@ -253,28 +280,7 @@ void DocumentUpdater::update() {
     updateTask = new MultiTask(tr("Reload documents and restore view state task"), subs);
     connect(updateTask, SIGNAL(si_stateChanged()), SLOT(sl_updateTaskStateChanged()));
     AppContext::getTaskScheduler()->registerTopLevelTask(updateTask);
-}
 
-void DocumentUpdater::sl_updateTaskStateChanged() {
-    SAFE_POINT(updateTask != NULL, "updateTask is NULL?", );
-    if (updateTask->isFinished()) {
-        updateTask = NULL;
-    }
-}
-
-void DocumentUpdater::excludeDocumentsInTasks(const QList<Task*>& tasks, QList<Document*>& documents) {
-    foreach(Task* task, tasks) {
-        excludeDocumentsInTasks(task->getSubtasks(), documents);
-        SaveDocumentTask* saveTask = qobject_cast<SaveDocumentTask*>(task);
-        if (saveTask) {
-            documents.removeAll(saveTask->getDocument());
-        } else {
-            LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(task);
-            if (loadTask) {
-                documents.removeAll(loadTask->getDocument());
-            }
-        }
-    }
 }
 
 ProjectViewWidget::ProjectViewWidget() {

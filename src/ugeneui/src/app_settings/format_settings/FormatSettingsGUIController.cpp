@@ -25,8 +25,10 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/MultiTask.h>
-#include <U2Core/LoadDocumentTask.h>
+//#include <U2Core/MultiTask.h>
+//#include <U2Core/LoadDocumentTask.h>
+
+#include "project_view/ProjectViewImpl.h"
 
 namespace U2 {
 
@@ -49,20 +51,19 @@ void FormatSettingsGUIPageController::saveState(AppSettingsGUIPageState* _state)
     FormatAppsSettings *s = AppContext::getAppSettings()->getFormatAppsSettings();
     CaseAnnotationsMode prevMode = s->getCaseAnnotationsMode();
     s->setCaseAnnotationsMode(state->caseMode);
-    if(state->caseMode != prevMode){
-        Project *p = AppContext::getProject();
+    Project *p = AppContext::getProject();
+    if(state->caseMode != prevMode && p != NULL){        
         QList<Document*> docs = p->getDocuments(), toReload;
-        QList<Task*> loadList;
         foreach(Document *d, docs){
             if(d->isLoaded()){
                 QList <GObject*> gobjList = d->findGObjectByType(GObjectTypes::SEQUENCE);
                 if(!gobjList.isEmpty()){
-                    d->unload(true);
-                    loadList.append(new LoadUnloadedDocumentTask(d));
+                    toReload.append(d);
                 }
             }
         }
-        AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask("Load pack of documents", loadList));
+        DocumentUpdater du;
+        du.ReloadDocuments(toReload);
     }
 }
 
