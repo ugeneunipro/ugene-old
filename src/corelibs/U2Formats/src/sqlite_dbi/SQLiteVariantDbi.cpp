@@ -35,7 +35,7 @@ void SQLiteVariantDbi::initSqlSchema(U2OpStatus& os) {
         return;
     }
     // Variant track object
-    SQLiteQuery(" CREATE TABLE VariantTrack (object INTEGER, sequence INTEGER NOT NULL, "
+    SQLiteQuery(" CREATE TABLE VariantTrack (object INTEGER, sequence INTEGER, sequenceName TEXT NOT NULL,"
         " FOREIGN KEY(object) REFERENCES Object(id), FOREIGN KEY(sequence) REFERENCES Object(id)  )", db, os).execute();
 
     // Variant element
@@ -60,21 +60,17 @@ U2VariantTrack SQLiteVariantDbi::getVariantTrack(const U2DataId& variantId, U2Op
     dbi->getSQLiteObjectDbi()->getObject(res, variantId, os);
     CHECK_OP(os, res);
 
-    SQLiteQuery q("SELECT sequence FROM VariantTrack WHERE object = ?1", db, os);
+    SQLiteQuery q("SELECT sequence, sequenceName FROM VariantTrack WHERE object = ?1", db, os);
     q.bindDataId(1, variantId);
     if (q.step())  {
         res.sequence = q.getDataId(0, U2Type::Sequence);
+        res.sequenceName = q.getString(1);
         q.ensureDone();
     } 
     return res;
 }
 
 void SQLiteVariantDbi::addVariantsToTrack(const U2VariantTrack& track, U2DbiIterator<U2Variant>* it, U2OpStatus& os){
-    if (track.sequence.isEmpty()) {
-        os.setError(SQLiteL10N::tr("Sequence object is not set!"));
-        return;
-    }
-
     //SQLiteTransaction t(db, os);
 
     SQLiteQuery q2("INSERT INTO Variant(track, startPos, endPos, refData, obsData, publicId) VALUES(?1, ?2, ?3, ?4, ?5, ?6)", db, os);
@@ -94,27 +90,24 @@ void SQLiteVariantDbi::addVariantsToTrack(const U2VariantTrack& track, U2DbiIter
 }
 
 void SQLiteVariantDbi::createVariantTrack(U2VariantTrack& track, const QString& folder, U2OpStatus& os){
-    if (track.sequence.isEmpty()) {
-        os.setError(SQLiteL10N::tr("Sequence object is not set!"));
-        return;
-    }
-    
     //SQLiteTransaction t(db, os);
 
     dbi->getSQLiteObjectDbi()->createObject(track, folder, SQLiteDbiObjectRank_TopLevel, os);
     SAFE_POINT_OP(os,);
 
-    SQLiteQuery q1("INSERT INTO VariantTrack(object, sequence) VALUES(?1, ?2)", db, os);
+    SQLiteQuery q1("INSERT INTO VariantTrack(object, sequence, sequenceName) VALUES(?1, ?2, ?3)", db, os);
     q1.bindDataId(1, track.id);
     q1.bindDataId(2, track.sequence);
+    q1.bindString(3, track.sequenceName);
     q1.execute();
     SAFE_POINT_OP(os,);
 }
     
 void SQLiteVariantDbi::updateVariantTrack(const U2VariantTrack& track, U2OpStatus& os) {
-    SQLiteQuery q("UPDATE VariantTrack(sequence) SET VALUES(?1) WHERE object = ?2", db, os);
+    SQLiteQuery q("UPDATE VariantTrack(sequence, sequenceName) SET VALUES(?1, ?2) WHERE object = ?3", db, os);
     q.bindString(1, track.sequence);
-    q.bindDataId(2, track.id);
+    q.bindString(2, track.sequenceName);
+    q.bindDataId(3, track.id);
     q.execute();
 }
 
@@ -151,17 +144,18 @@ class SimpleVariantTrackLoader : public SqlRSLoader<U2VariantTrack> {
         U2VariantTrack track;
         track.id = q->getDataId(0, U2Type::VariantTrack);
         track.sequence = q->getDataId(1,U2Type::Sequence);
+        track.sequenceName = q->getString(2);
         return track;
     }
 };
 
 U2DbiIterator<U2VariantTrack>* SQLiteVariantDbi::getVariantTracks( U2OpStatus& os )
 {
-    SQLiteQuery* q = new SQLiteQuery("SELECT object, sequence FROM VariantTrack", db, os);
+    SQLiteQuery* q = new SQLiteQuery("SELECT object, sequence, sequenceName FROM VariantTrack", db, os);
     return new SqlRSIterator<U2VariantTrack>(q, new SimpleVariantTrackLoader(), NULL, U2VariantTrack(), os);    
 }
 U2DbiIterator<U2VariantTrack>* SQLiteVariantDbi::getVariantTracks(const U2DataId& seqId, U2OpStatus& os){
-    SQLiteQuery* q = new SQLiteQuery("SELECT object, sequence FROM VariantTrack WHERE sequence = ?1 ", db, os);
+    SQLiteQuery* q = new SQLiteQuery("SELECT object, sequence, sequenceName FROM VariantTrack WHERE sequence = ?1 ", db, os);
 
     q->bindDataId(1, seqId);
 

@@ -19,31 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __U2_WORKFLOW_BASE_PORTS_H_
-#define __U2_WORKFLOW_BASE_PORTS_H_
+#ifndef _U2_VCF4_VARIATION_FORMAT_H_
+#define _U2_VCF4_VARIATION_FORMAT_H_
 
-#include <QtCore/QString>
-#include <U2Core/global.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Formats/AbstractVariationFormat.h>
 
 namespace U2 {
-namespace Workflow {
 
-class U2LANG_EXPORT BasePorts {
+class U2FORMATS_EXPORT VCF4VariationFormat : public AbstractVariationFormat {
+    Q_OBJECT
 public:
-    static const QString OUT_MSA_PORT_ID();
-    static const QString IN_MSA_PORT_ID();
-    static const QString OUT_SEQ_PORT_ID();
-    static const QString IN_SEQ_PORT_ID();
-    static const QString OUT_ANNOTATIONS_PORT_ID();
-    static const QString IN_ANNOTATIONS_PORT_ID();
-    static const QString OUT_TEXT_PORT_ID();
-    static const QString IN_TEXT_PORT_ID();
-    static const QString OUT_VARIATION_TRACK_PORT_ID();
-    static const QString IN_VARIATION_TRACK_PORT_ID();
-    
-}; // BasePorts
+    VCF4VariationFormat(QObject *p);
 
-} // Workflow
+    virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::VCF4;}
+
+protected:
+    virtual bool checkFormatByColumnCount(int columnCount) const;
+};
+
 } // U2
 
-#endif // __U2_WORKFLOW_BASE_PORTS_H_
+#endif // _U2_VCF4_VARIATION_FORMAT_H_

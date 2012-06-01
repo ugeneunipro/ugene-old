@@ -46,6 +46,8 @@
 #include <U2Formats/PDWFormat.h>
 #include <U2Formats/SwissProtPlainTextFormat.h>
 #include <U2Formats/SQLiteDbi.h>
+#include <U2Formats/SimpleSNPVariationFormat.h>
+#include <U2Formats/VCF4VariationFormat.h>
 
 namespace U2 {
 
@@ -169,6 +171,12 @@ void DocumentFormatRegistryImpl::init() {
 
     PDWFormat *pdw = new PDWFormat(this);
     registerFormat(pdw);
+
+    SimpleSNPVariationFormat *snp = new SimpleSNPVariationFormat(this);
+    registerFormat(snp);
+
+    VCF4VariationFormat *vcf4 = new VCF4VariationFormat(this);
+    registerFormat(vcf4);
 
     AppContext::getDbiRegistry()->registerDbiFactory(new SQLiteDbiFactory());
     DbiDocumentFormat* sdbi = new DbiDocumentFormat(SQLiteDbiFactory::ID, "usqlite", tr("UGENE Database"), QStringList()<<"ugenedb" );

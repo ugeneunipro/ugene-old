@@ -26,6 +26,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2SequenceUtils.h>
+#include <U2Core/U2VariantDbi.h>
 
 #include "DbiDataStorage.h"
 
@@ -68,9 +69,16 @@ U2Object *DbiDataStorage::getObject(const SharedDbiDataHandler &handler, const U
     if (1 == type) {
         U2SequenceDbi *dbi = connection->dbi->getSequenceDbi();
         U2Sequence seq = dbi->getSequenceObject(objectId, os);
-        CHECK_OP(os, NULL);
+        SAFE_POINT_OP(os, NULL);
 
         return new U2Sequence(seq);
+    //} else if (U2Type::VariantTrack == type) {
+    } else if (5 == type) {
+        U2VariantDbi *dbi = connection->dbi->getVariantDbi();
+        U2VariantTrack track = dbi->getVariantTrack(objectId, os);
+        SAFE_POINT_OP(os, NULL);
+
+        return new U2VariantTrack(track);
     } else {
         assert(0);
     }
@@ -104,13 +112,26 @@ U2SequenceObject *StorageUtils::getSequenceObject(DbiDataStorage *storage, const
     if(handler.constData() == NULL){
         return NULL;
     }
-    //std::auto_ptr<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, U2Type::Sequence)));
-    std::auto_ptr<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, 1)));
-    if (NULL == seqDbi.get()) {
-        return NULL;
-    }
+    //QScopedPointer<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, U2Type::Sequence)));
+    QScopedPointer<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, 1)));
+    CHECK(NULL != seqDbi.data(), NULL);
+
     U2EntityRef ent(storage->getDbiRef(), seqDbi->id);
     return new U2SequenceObject(seqDbi->visualName, ent);
+}
+
+VariantTrackObject *StorageUtils::getVariantTrackObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
+    if(handler.constData() == NULL){
+        return NULL;
+    }
+    //QScopedPointer<U2VariantTrack> track(dynamic_cast<U2VariantTrack*>(storage->getObject(handler, U2Type::VariantTrack)));
+    QScopedPointer<U2VariantTrack> track(dynamic_cast<U2VariantTrack*>(storage->getObject(handler, 5)));
+    CHECK(NULL != track.data(), NULL);
+
+    U2EntityRef trackRef(storage->getDbiRef(), track->id);
+    QString objName = track->sequenceName;
+
+    return new VariantTrackObject(objName, trackRef);
 }
 
 } // Workflow

@@ -45,7 +45,9 @@ public:
     virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os) const;
 
     /**U2_REGION_MAX to get all variants*/
-    U2DbiIterator<U2Variant>* getVariants(const U2Region& reg, U2OpStatus& os );
+    U2DbiIterator<U2Variant>* getVariants(const U2Region& reg, U2OpStatus& os ) const;
+
+    U2VariantTrack getVariantTrack(U2OpStatus &os) const;
 };
 
 class U2CORE_EXPORT VariantTrackObjectUtils{

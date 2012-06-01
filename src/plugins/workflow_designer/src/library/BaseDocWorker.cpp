@@ -129,13 +129,13 @@ void BaseDocReader::cleanup() {
 * BaseDocWriter
 **********************************/
 BaseDocWriter::BaseDocWriter(Actor* a, const DocumentFormatId& fid) 
-: BaseWorker(a), ch(NULL), format(NULL), append(false), fileMode(SaveDoc_Roll), numSplitSequences(1), currentSplitSequence(0)
+: BaseWorker(a), ch(NULL), format(NULL), append(true), fileMode(SaveDoc_Roll), numSplitSequences(1), currentSplitSequence(0)
 {
     format = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
 }
 
 BaseDocWriter::BaseDocWriter( Actor * a ) 
-: BaseWorker(a), ch(NULL), format(NULL), append(false), fileMode(SaveDoc_Roll) 
+: BaseWorker(a), ch(NULL), format(NULL), append(true), fileMode(SaveDoc_Roll) 
 {
 }
 
@@ -205,6 +205,8 @@ Task* BaseDocWriter::tick() {
             Attribute* a = actor->getParameter(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE().getId());
             if(a != NULL) {
                 append = a->getAttributeValue<bool>(context);
+            } else {
+                append = true;
             }
         }
 

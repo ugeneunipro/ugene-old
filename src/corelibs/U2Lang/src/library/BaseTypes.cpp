@@ -29,6 +29,7 @@ static const QString DNA_SEQUENCE_TYPE_ID("seq");
 static const QString ANNOTATION_TABLE_LIST_TYPE_ID("ann-table-list");
 static const QString ANNOTATION_TABLE_TYPE_ID("ann_table");
 static const QString MULTIPLE_ALIGNMENT_TYPE_ID("malignment");
+static const QString VARIATION_TRACK_TYPE_ID("variation");
 static const QString STRING_TYPE_ID("string");
 static const QString STRING_LIST_TYPE_ID("string-list");
 static const QString BOOL_TYPE_ID("bool");
@@ -81,6 +82,17 @@ DataTypePtr BaseTypes::MULTIPLE_ALIGNMENT_TYPE() {
         startup = false;
     }
     return dtr->getById(MULTIPLE_ALIGNMENT_TYPE_ID);
+}
+
+DataTypePtr BaseTypes::VARIATION_TRACK_TYPE() {
+    DataTypeRegistry* dtr = WorkflowEnv::getDataTypeRegistry();
+    assert(dtr);
+    static bool startup = true;
+    if (startup) {
+        dtr->registerEntry(DataTypePtr(new DataType(VARIATION_TRACK_TYPE_ID, tr("Variation track"), tr("Set of variations"))));
+        startup = false;
+    }
+    return dtr->getById(VARIATION_TRACK_TYPE_ID);
 }
 
 DataTypePtr BaseTypes::STRING_TYPE() {

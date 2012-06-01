@@ -42,14 +42,15 @@ public:
 
     virtual void storeDocument(Document* d, IOAdapter* io, U2OpStatus& os);
 
+    virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os);
+
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+
 
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
 private:
-
-    void save(IOAdapter* io, Document* doc, U2OpStatus& ti);
     void load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap& fs, U2OpStatus& ti);
 
     QString formatName;

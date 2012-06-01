@@ -2,6 +2,7 @@ include (U2Formats.pri)
 
 # Input
 HEADERS += src/ABIFormat.h \
+           src/AbstractVariationFormat.h \
            src/ACEFormat.h \
            src/ASNFormat.h \
            src/ClustalWAlnFormat.h \
@@ -26,11 +27,13 @@ HEADERS += src/ABIFormat.h \
            src/RawDNASequenceFormat.h \
            src/SAMFormat.h \
            src/SCFFormat.h \
+           src/SimpleSNPVariationFormat.h \
            src/StdResidueDictionary.h \
            src/StockholmFormat.h \
            src/StreamSequenceReader.h \
            src/StreamSequenceWriter.h \
            src/SwissProtPlainTextFormat.h \
+           src/VCF4VariationFormat.h \
            src/sqlite_dbi/SQLiteAnnotationDbi.h \
            src/sqlite_dbi/SQLiteAssemblyDbi.h \
            src/sqlite_dbi/SQLiteAttributeDbi.h \
@@ -46,6 +49,7 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.h \
            src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h
 SOURCES += src/ABIFormat.cpp \
+           src/AbstractVariationFormat.cpp \
            src/ACEFormat.cpp \
            src/ASNFormat.cpp \
            src/ClustalWAlnFormat.cpp \
@@ -68,11 +72,13 @@ SOURCES += src/ABIFormat.cpp \
            src/RawDNASequenceFormat.cpp \
            src/SAMFormat.cpp \
            src/SCFFormat.cpp \
+           src/SimpleSNPVariationFormat.cpp \
            src/StdResidueDictionary.cpp \
            src/StockholmFormat.cpp \
            src/StreamSequenceReader.cpp \
            src/StreamSequenceWriter.cpp \
            src/SwissProtPlainTextFormat.cpp \
+           src/VCF4VariationFormat.cpp \
            src/sqlite_dbi/SQLiteAnnotationDbi.cpp \
            src/sqlite_dbi/SQLiteAssemblyDbi.cpp \
            src/sqlite_dbi/SQLiteAttributeDbi.cpp \

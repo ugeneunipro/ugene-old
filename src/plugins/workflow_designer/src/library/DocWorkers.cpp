@@ -291,7 +291,11 @@ void FastaWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, con
         seq->setSequenceInfo(info);
     }
     seq->setGObjectName(sequenceName);
-    format->storeEntry(io, seq, QList<GObject*>(), os);
+
+    QList<GObject*> seqs; seqs << seq;
+    QMap< GObjectType, QList<GObject*> > objectsMap;
+    objectsMap[GObjectTypes::SEQUENCE] = seqs;
+    format->storeEntry(io, objectsMap, os);
 }
 
 /*************************************
@@ -330,7 +334,11 @@ void FastQWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, con
     if (seq->getGObjectName().isEmpty()) {
         seq->setGObjectName(QString("unknown sequence %1").arg(entryNum));
     }
-    format->storeEntry(io, seq.get(), QList<GObject*>(), os);
+
+    QList<GObject*> seqs; seqs << seq.get();
+    QMap< GObjectType, QList<GObject*> > objectsMap;
+    objectsMap[GObjectTypes::SEQUENCE] = seqs;
+    format->storeEntry(io, objectsMap, os);
 }
 
 /*************************************
@@ -367,7 +375,10 @@ void RawSeqWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, co
         return;
     }
 
-    format->storeEntry(io, seq.get(), QList<GObject*>(), os);
+    QList<GObject*> seqs; seqs << seq.get();
+    QMap< GObjectType, QList<GObject*> > objectsMap;
+    objectsMap[GObjectTypes::SEQUENCE] = seqs;
+    format->storeEntry(io, objectsMap, os);
 }
 
 /*************************************
@@ -474,7 +485,17 @@ void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, c
         }
     }
 
-    format->storeEntry(io, seq, anObjList, os);
+    QMap< GObjectType, QList<GObject*> > objectsMap;
+    {
+        if (NULL != seq) {
+            QList<GObject*> seqs; seqs << seq;
+            objectsMap[GObjectTypes::SEQUENCE] = seqs;
+        }
+        if (!anObjList.isEmpty()) {
+            objectsMap[GObjectTypes::ANNOTATION_TABLE] = anObjList;
+        }
+    }
+    format->storeEntry(io, objectsMap, os);
 
     foreach (GObject *o, anObjList) {
         delete o;

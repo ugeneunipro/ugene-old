@@ -54,7 +54,9 @@ const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 
 Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url, U2OpStatus& os, const QVariantMap& hints) {
     U2DbiRef tmpDbiRef;
-    bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
+    const QSet<GObjectType> &types = getSupportedObjectTypes();
+    bool useTmpDbi = types.contains(GObjectTypes::SEQUENCE)
+        || types.contains(GObjectTypes::VARIANT_TRACK);
     if (useTmpDbi) {
         if (hints.contains(DBI_REF_HINT)) {
             tmpDbiRef = hints.value(DBI_REF_HINT).value<U2DbiRef>();
@@ -90,7 +92,9 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
 
     Document* res = NULL;
 
-    bool useTmpDbi = getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE);
+    const QSet<GObjectType> &types = getSupportedObjectTypes();
+    bool useTmpDbi = types.contains(GObjectTypes::SEQUENCE)
+                  || types.contains(GObjectTypes::VARIANT_TRACK);
     if (useTmpDbi) {
         U2DbiRef dbiRef;
         if (hints.contains(DBI_REF_HINT)) {
@@ -173,7 +177,7 @@ bool DocumentFormat::checkConstraints(const DocumentFormatConstraints& c) const 
     return true;
 }
 
-void DocumentFormat::storeEntry(IOAdapter *, U2SequenceObject *, const QList<GObject*> &, U2OpStatus &os) {
+void DocumentFormat::storeEntry(IOAdapter *, const QMap< GObjectType, QList<GObject*> > &, U2OpStatus &os) {
     os.setError("This document format does not support streaming mode");
 }
 

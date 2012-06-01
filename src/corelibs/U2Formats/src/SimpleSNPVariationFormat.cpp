@@ -19,31 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __U2_WORKFLOW_BASE_PORTS_H_
-#define __U2_WORKFLOW_BASE_PORTS_H_
-
-#include <QtCore/QString>
-#include <U2Core/global.h>
+#include "SimpleSNPVariationFormat.h"
 
 namespace U2 {
-namespace Workflow {
 
-class U2LANG_EXPORT BasePorts {
-public:
-    static const QString OUT_MSA_PORT_ID();
-    static const QString IN_MSA_PORT_ID();
-    static const QString OUT_SEQ_PORT_ID();
-    static const QString IN_SEQ_PORT_ID();
-    static const QString OUT_ANNOTATIONS_PORT_ID();
-    static const QString IN_ANNOTATIONS_PORT_ID();
-    static const QString OUT_TEXT_PORT_ID();
-    static const QString IN_TEXT_PORT_ID();
-    static const QString OUT_VARIATION_TRACK_PORT_ID();
-    static const QString IN_VARIATION_TRACK_PORT_ID();
-    
-}; // BasePorts
+SimpleSNPVariationFormat::SimpleSNPVariationFormat(QObject *p)
+: AbstractVariationFormat(p, QStringList()<<"snp")
+{
+    formatName = QString("SimpleSNP");
 
-} // Workflow
+    columnRoles.insert(0, ColumnRole_ChromosomeId);
+    columnRoles.insert(1, ColumnRole_StartPos);
+    columnRoles.insert(2, ColumnRole_RefData);
+    columnRoles.insert(3, ColumnRole_ObsData);
+
+    maxColumnNumber = columnRoles.keys().last();
+}
+
+bool SimpleSNPVariationFormat::checkFormatByColumnCount(int columnCount) const {
+    return (columnCount == maxColumnNumber+1);
+}
+
 } // U2
-
-#endif // __U2_WORKFLOW_BASE_PORTS_H_

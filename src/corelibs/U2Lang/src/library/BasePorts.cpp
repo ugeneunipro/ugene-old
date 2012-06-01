@@ -56,5 +56,13 @@ const QString BasePorts::IN_TEXT_PORT_ID() {
     return "in-text";
 }
 
+const QString BasePorts::OUT_VARIATION_TRACK_PORT_ID() {
+    return "out-variations";
+}
+
+const QString BasePorts::IN_VARIATION_TRACK_PORT_ID() {
+    return "in-variations";
+}
+
 } // Workflow
 } // U2

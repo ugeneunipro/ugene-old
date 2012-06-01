@@ -56,6 +56,8 @@ public:
     static const DocumentFormatId NEXUS;
     static const DocumentFormatId MEGA;
     static const DocumentFormatId PDW;
+    static const DocumentFormatId SNP;
+    static const DocumentFormatId VCF4;
 
     static DocumentFormat* get(const DocumentFormatId& formatId);
 };

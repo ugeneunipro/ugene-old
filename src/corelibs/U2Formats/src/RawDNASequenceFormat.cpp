@@ -139,8 +139,14 @@ void RawDNASequenceFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus&
     PlainTextFormat::storeRawData(so->getWholeSequenceData(), os, io);
 }
 
-void RawDNASequenceFormat::storeEntry(IOAdapter *io, U2SequenceObject *seq, const QList<GObject*> &anns, U2OpStatus &os) {
-    Q_UNUSED(anns);
+void RawDNASequenceFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
+    SAFE_POINT(objectsMap.contains(GObjectTypes::SEQUENCE), "Raw sequence entry storing: no sequences", );
+    const QList<GObject*> &seqs = objectsMap[GObjectTypes::SEQUENCE];
+    SAFE_POINT(1 == seqs.size(), "Raw sequence entry storing: sequence objects count error", );
+
+    U2SequenceObject *seq = dynamic_cast<U2SequenceObject*>(seqs.first());
+    SAFE_POINT(NULL != seq, "Raw sequence entry storing: NULL sequence object", );
+
     PlainTextFormat::storeRawData(seq->getWholeSequenceData(), os, io);
     CHECK_OP(os, );
 

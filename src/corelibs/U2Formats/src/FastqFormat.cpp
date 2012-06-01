@@ -276,7 +276,11 @@ Document* FastqFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const
 void FastqFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& os) {
     foreach (GObject* obj, d->getObjects()) {
         U2SequenceObject* seqObj = qobject_cast< U2SequenceObject* >( obj);
-        storeEntry(io, seqObj, QList<GObject*>(), os);
+        QList<GObject*> seqs; seqs << seqObj;
+        QMap< GObjectType, QList<GObject*> > objectsMap;
+        objectsMap[GObjectTypes::SEQUENCE] = seqs;
+
+        storeEntry(io, objectsMap, os);
         CHECK_OP(os, );
     }
 }
@@ -297,10 +301,12 @@ void writeSequence(U2OpStatus &os, IOAdapter *io, const char* seq, int len, cons
     }
 }
 
-void FastqFormat::storeEntry(IOAdapter *io, U2SequenceObject *seqObj, const QList<GObject*> &anns, U2OpStatus &os) {
-    Q_UNUSED(anns);
-
-    CHECK_EXT(seqObj!=NULL, os.setError(L10N::badArgument("NULL sequence" )), );
+void FastqFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
+    SAFE_POINT(objectsMap.contains(GObjectTypes::SEQUENCE), "Fastq entry storing: no sequences", );
+    const QList<GObject*> &seqs = objectsMap[GObjectTypes::SEQUENCE];
+    SAFE_POINT(1 == seqs.size(), "Fastq entry storing: sequence objects count error", );
+    U2SequenceObject *seqObj = dynamic_cast<U2SequenceObject*>(seqs.first());
+    SAFE_POINT(NULL != seqObj, "Fastq entry storing: NULL sequence object", );
 
     GUrl url = seqObj->getDocument() ? seqObj->getDocument()->getURL() : GUrl();
     static QString errorMessage = L10N::errorWritingFile(url);

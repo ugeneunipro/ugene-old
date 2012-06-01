@@ -441,12 +441,36 @@ void GenbankPlainTextFormat::storeDocument(Document* doc, IOAdapter* io, U2OpSta
             aos << anns.takeFirst();
         }
 
-        storeEntry(io, so, aos, os);
+        QMap< GObjectType, QList<GObject*> > objectsMap;
+        {
+            if (NULL != so) {
+                QList<GObject*> seqs; seqs << so;
+                objectsMap[GObjectTypes::SEQUENCE] = seqs;
+            }
+            if (!aos.isEmpty()) {
+                objectsMap[GObjectTypes::ANNOTATION_TABLE] = aos;
+            }
+        }
+        storeEntry(io, objectsMap, os);
         CHECK_OP(os, );
     }
 }
 
-void GenbankPlainTextFormat::storeEntry(IOAdapter *io, U2SequenceObject *seq, const QList<GObject*> &anns, U2OpStatus &os) {
+void GenbankPlainTextFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
+    U2SequenceObject *seq = NULL;
+    QList<GObject*> anns;
+    if (objectsMap.contains(GObjectTypes::SEQUENCE)) {
+        const QList<GObject*> &seqs = objectsMap[GObjectTypes::SEQUENCE];
+        SAFE_POINT(1 >= seqs.size(), "Genbank entry storing: sequence objects count error", );
+        if (1 == seqs.size()) {
+            seq = dynamic_cast<U2SequenceObject*>(seqs.first());
+            SAFE_POINT(NULL != seq, "Genbank entry storing: NULL sequence object", );
+        }
+    }
+    if (objectsMap.contains(GObjectTypes::ANNOTATION_TABLE)) {
+        anns = objectsMap[GObjectTypes::ANNOTATION_TABLE];
+    }
+
     //reading header attribute
     QString locusFromAttributes;
     QString gbHeader;

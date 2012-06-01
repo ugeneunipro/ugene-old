@@ -290,8 +290,13 @@ void FastaFormat::storeDocument( Document* doc, IOAdapter* io, U2OpStatus& os ) 
     }
 }
 
-void FastaFormat::storeEntry(IOAdapter *io, U2SequenceObject *seq, const QList<GObject*> &anns, U2OpStatus &os) {
-    Q_UNUSED(anns);
+void FastaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
+    SAFE_POINT(objectsMap.contains(GObjectTypes::SEQUENCE), "Fasta entry storing: no sequences", );
+    const QList<GObject*> &seqs = objectsMap[GObjectTypes::SEQUENCE];
+    SAFE_POINT(1 == seqs.size(), "Fasta entry storing: sequence objects count error", );
+
+    U2SequenceObject *seq = dynamic_cast<U2SequenceObject*>(seqs.first());
+    SAFE_POINT(NULL != seq, "Fasta entry storing: NULL sequence object", );
     saveSequence(io, seq->getWholeSequence(), os);
 }
 

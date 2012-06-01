@@ -39,12 +39,14 @@
 #include "ReverseComplementWorker.h"
 #include "MSA2SequenceWorker.h"
 #include "ExternalProcessWorker.h"
+#include "library/AminoTranslationWorker.h"
 #include "library/GetFileListWorker.h"
 #include "library/GroupWorker.h"
 #include "library/PassFilterWorker.h"
 #include "library/MarkSequenceWorker.h"
 #include "library/MultiplexerWorker.h"
-#include "library/AminoTranslationWorker.h"
+#include "library/ReadVariationWorker.h"
+#include "library/WriteVariationWorker.h"
 
 #include "RemoteDBFetcherWorker.h"
 
@@ -280,6 +282,8 @@ void CoreLib::init() {
     FetchSequenceByIdFromAnnotationFactory::init();
     GroupWorkerFactory::init();
     AminoTranslationWorkerFactory::init();
+    ReadVariationWorkerFactory::init();
+    WriteVariationWorkerFactory::init();
 
     initUsersWorkers();
     initExternalToolsWorkers();

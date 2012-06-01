@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -19,28 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __U2_WORKFLOW_BASE_SLOTS_H_
-#define __U2_WORKFLOW_BASE_SLOTS_H_
+#ifndef _WRITE_VARIATION_LIST_WORKER_
+#define _WRITE_VARIATION_LIST_WORKER_
 
-#include <U2Lang/Descriptor.h>
+#include "library/BaseDocWorker.h"
 
 namespace U2 {
-namespace Workflow {
+namespace LocalWorkflow {
 
-class U2LANG_EXPORT BaseSlots : public QObject {
+class WriteVariationWorker : public BaseDocWriter {
     Q_OBJECT
 public:
-    static const Descriptor DNA_SEQUENCE_SLOT();
-    static const Descriptor MULTIPLE_ALIGNMENT_SLOT();
-    static const Descriptor ANNOTATION_TABLE_SLOT();
-    static const Descriptor TEXT_SLOT();
-    static const Descriptor URL_SLOT();
-    static const Descriptor FASTA_HEADER_SLOT();
-    static const Descriptor VARIATION_TRACK_SLOT();
-    
-}; // BaseSlots
+    WriteVariationWorker(Actor *p, const DocumentFormatId& fid);
 
-} // Workflow
+protected:
+    virtual void data2doc(Document *doc, const QVariantMap &data);
+    virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
+}; // WriteVariationWorker
+
+class WriteVariationWorkerFactory : public DomainFactory {
+public:
+    static const QString ACTOR_ID;
+
+    WriteVariationWorkerFactory() : DomainFactory(ACTOR_ID) {}
+    static void init();
+    virtual Worker *createWorker(Actor *a);
+
+}; // WriteVariationWorkerFactory
+
+} // LocalWorkflow
 } // U2
 
-#endif // __U2_WORKFLOW_BASE_SLOTS_H_
+#endif // _WRITE_VARIATION_LIST_WORKER_

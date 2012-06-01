@@ -43,6 +43,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/MSA2SequenceWorker.h \
            src/library/MultiplexerWorker.h \
            src/library/PassFilterWorker.h \
+           src/library/ReadVariationWorker.h \
            src/library/RemoteDBFetcherWorker.h \
            src/library/ReverseComplementWorker.h \
            src/library/SchemaWorker.h \
@@ -52,6 +53,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/SequencesToMSAWorker.h \
            src/library/StatisticWorkers.h \
            src/library/Text2SequenceWorker.h \
+           src/library/WriteVariationWorker.h \
            src/util/GrouperActionUtils.h \
            src/util/SaveSchemaImageUtils.h
 FORMS += src/ui/ChooseItemDialog.ui \
@@ -107,6 +109,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/MSA2SequenceWorker.cpp \
            src/library/MultiplexerWorker.cpp \
            src/library/PassFilterWorker.cpp \
+           src/library/ReadVariationWorker.cpp \
            src/library/RemoteDBFetcherWorker.cpp \
            src/library/ReverseComplementWorker.cpp \
            src/library/SchemaWorker.cpp \
@@ -116,6 +119,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/SequencesToMSAWorker.cpp \
            src/library/StatisticWorkers.cpp \
            src/library/Text2SequenceWorker.cpp \
+           src/library/WriteVariationWorker.cpp \
            src/util/GrouperActionUtils.cpp \
            src/util/SaveSchemaImageUtils.cpp
 RESOURCES += workflow_designer.qrc

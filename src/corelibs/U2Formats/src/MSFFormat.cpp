@@ -55,7 +55,7 @@ const int MSFFormat::CHARS_IN_WORD = 10;
 
 //TODO: recheck if it does support streaming! Fix isObjectOpSupported if not!
 
-MSFFormat::MSFFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_SW, QStringList("msf")) {
+MSFFormat::MSFFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("msf")) {
     formatName = tr("MSF");
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
     formatDescription = tr("MSF format is used to store multiple aligned sequences. Files include the sequence name and the sequence itself, which is usually aligned with other sequences in the file.");
@@ -222,21 +222,37 @@ Document* MSFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);
 }
 
-static bool writeBlock(IOAdapter *io, Document* d, U2OpStatus& ti, const QByteArray& buf) {
+static bool writeBlock(IOAdapter *io, U2OpStatus& ti, const QByteArray& buf) {
     int len = io->writeBlock(buf);
     if (len != buf.length()) {
-        ti.setError(L10N::errorWritingFile(d->getURL()));
+        ti.setError(L10N::errorTitle());
         return true;
     }
     return false;
 }
 
 void MSFFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
-    const MAlignmentObject* obj = NULL;
-    if((d->getObjects().size() != 1) || ((obj = qobject_cast<const MAlignmentObject*>(d->getObjects().first())) == NULL)) {
+    MAlignmentObject* obj = NULL;
+    if((d->getObjects().size() != 1) || ((obj = qobject_cast<MAlignmentObject*>(d->getObjects().first())) == NULL)) {
         os.setError("No data to write;");
         return;
     }
+
+    QList<GObject*> als; als << obj;
+    QMap< GObjectType, QList<GObject*> > objectsMap;
+    objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT] = als;
+    storeEntry(io, objectsMap, os);
+    CHECK_EXT(!os.isCoR(), os.setError(L10N::errorWritingFile(d->getURL())), );
+}
+
+void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
+    SAFE_POINT(objectsMap.contains(GObjectTypes::MULTIPLE_ALIGNMENT), "MSF entry storing: no alignment", );
+    const QList<GObject*> &als = objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT];
+    SAFE_POINT(1 == als.size(), "MSF entry storing: alignment objects count error", );
+
+    const MAlignmentObject* obj = dynamic_cast<MAlignmentObject*>(als.first());
+    SAFE_POINT(NULL != obj, "MSF entry storing: NULL alignment object", );
+
     const MAlignment& ma = obj->getMAlignment();
 
     //precalculate seq writing params
@@ -261,7 +277,7 @@ void MSFFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     line += "  " + CHECK_FIELD;
     line += " " + QByteArray::number(checkSum);
     line += "  " + END_OF_HEADER_LINE + "\n\n";
-    if (writeBlock(io, d, os, line))
+    if (writeBlock(io, os, line))
         return;
 
     //write info
@@ -274,11 +290,11 @@ void MSFFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
         line += " " + QString("%1").arg(checkSums[row.getName()], -maxCheckSumLen);
         line += "  " + WEIGHT_FIELD;
         line += " " + QByteArray::number(WEIGHT_VALUE) + "\n";
-        if (writeBlock(io, d, os, line)) {
+        if (writeBlock(io, os, line)) {
             return;
         }
     }
-    if (writeBlock(io, d, os, "\n" + SECTION_SEPARATOR + "\n\n")) {
+    if (writeBlock(io, os, "\n" + SECTION_SEPARATOR + "\n\n")) {
         return;
     }
 
@@ -295,7 +311,7 @@ void MSFFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
                 line += s;
             }
             line += '\n';
-            if (writeBlock(io, d, os, line)) {
+            if (writeBlock(io, os, line)) {
                 return;
             }
         }
@@ -312,11 +328,11 @@ void MSFFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
                 line += row.mid(i + j, nChars).toByteArray(nChars).replace(MAlignment_GapChar, '.');
             }
             line += '\n';
-            if (writeBlock(io, d, os, line)) {
+            if (writeBlock(io, os, line)) {
                 return;
             }
         }
-        if (writeBlock(io, d, os, "\n")) {
+        if (writeBlock(io, os, "\n")) {
             return;
         }
     }

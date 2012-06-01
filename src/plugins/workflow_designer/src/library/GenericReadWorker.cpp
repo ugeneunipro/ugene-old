@@ -227,8 +227,8 @@ void LoadSeqTask::run() {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     cfg.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(storage->getDbiRef()));
     std::auto_ptr<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
-    doc->setDocumentOwnsDbiResources(false);
     CHECK_OP(stateInfo, );
+    doc->setDocumentOwnsDbiResources(false);
 
     DbiOperationsBlock opBlock(storage->getDbiRef(), stateInfo);
     const QSet<GObjectType>& types = format->getSupportedObjectTypes();

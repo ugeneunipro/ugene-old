@@ -37,6 +37,8 @@ public:
     /** Sequence id */
     U2DataId      sequence;
 
+    QString       sequenceName;
+
     // implement U2Object
     virtual U2DataType getType() { return U2Type::VariantTrack; }
 };

@@ -41,7 +41,7 @@ namespace U2{
 #define READ_BUFF_SIZE 4096         //file reader buffer size
 #define SAVE_LINE_LEN 70            //line length for 
 
-GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlags_SW, QStringList("gff")){
+GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("gff")){
     formatName = tr("GFF");
 	formatDescription = tr("GFF is a format used for storing features and annotations");
     supportedObjectTypes+=GObjectTypes::ANNOTATION_TABLE;

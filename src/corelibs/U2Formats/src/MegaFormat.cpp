@@ -43,7 +43,7 @@ const char MegaFormat::MEGA_INDEL='-';
 const char MegaFormat::MEGA_START_COMMENT='!';
 const char MegaFormat::MEGA_END_COMMENT=';';
 
-MegaFormat::MegaFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_SW, QStringList("meg")) {
+MegaFormat::MegaFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("meg")) {
     formatName = tr("Mega");
 	formatDescription = tr("Mega is a file format of native MEGA program");
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
@@ -57,15 +57,21 @@ Document* MegaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const 
 }
 
 void MegaFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
-    if( NULL == d ) {
-        os.setError(L10N::badArgument("doc"));
-        return;
+    CHECK_EXT(d!=NULL, os.setError(L10N::badArgument("doc")), );
+    CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), );
+
+    MAlignmentObject* obj = NULL;
+    if( (d->getObjects().size() != 1)
+        || ((obj = qobject_cast<MAlignmentObject*>(d->getObjects().first())) == NULL)) {
+            os.setError("No data to write;");
+            return;
     }
-    if( NULL == io || !io->isOpen() ) {
-        os.setError(L10N::badArgument("IO adapter"));
-        return;
-    }
-    save(io, d, os);
+    
+    QList<GObject*> als; als << obj;
+    QMap< GObjectType, QList<GObject*> > objectsMap;
+    objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT] = als;
+    storeEntry(io, objectsMap, os);
+    CHECK_EXT(!os.isCoR(), os.setError(L10N::errorWritingFile(d->getURL())), );
 }
 
 FormatCheckResult MegaFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
@@ -326,13 +332,14 @@ void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::U2OpStatu
     objects.append(obj);
 }
 
-void MegaFormat::save(U2::IOAdapter *io, U2::Document *d, U2::U2OpStatus &ti) {
-    const MAlignmentObject* obj = NULL;
-    if( (d->getObjects().size() != 1)
-        || ((obj = qobject_cast<const MAlignmentObject*>(d->getObjects().first())) == NULL)) {
-            ti.setError("No data to write;");
-            return;
-    }
+void MegaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &ti) {
+    SAFE_POINT(objectsMap.contains(GObjectTypes::MULTIPLE_ALIGNMENT), "Mega entry storing: no alignment", );
+    const QList<GObject*> &als = objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT];
+    SAFE_POINT(1 == als.size(), "Mega entry storing: alignment objects count error", );
+
+    const MAlignmentObject* obj = dynamic_cast<MAlignmentObject*>(als.first());
+    SAFE_POINT(NULL != obj, "Mega entry storing: NULL alignment object", );
+
     const MAlignment& ma = obj->getMAlignment();
 
     //write header
@@ -340,7 +347,7 @@ void MegaFormat::save(U2::IOAdapter *io, U2::Document *d, U2::U2OpStatus &ti) {
     header.append(MEGA_SEPARATOR).append(MEGA_HEADER).append("\n").append(MEGA_UGENE_TITLE);
     int len = io->writeBlock(header);
     if (len != header.length()) {
-        ti.setError(L10N::errorWritingFile(d->getURL()));
+        ti.setError(L10N::errorTitle());
         return;
     }
 
@@ -368,7 +375,7 @@ void MegaFormat::save(U2::IOAdapter *io, U2::Document *d, U2::U2OpStatus &ti) {
             
             len = io->writeBlock(line);
             if (len != line.length()) {
-                ti.setError(L10N::errorWritingFile(d->getURL()));
+                ti.setError(L10N::errorTitle());
                 return;
             }
         }

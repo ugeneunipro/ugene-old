@@ -48,7 +48,7 @@ namespace U2 {
 
 const QByteArray ClustalWAlnFormat::CLUSTAL_HEADER = "CLUSTAL";
 
-ClustalWAlnFormat::ClustalWAlnFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_SW, QStringList("aln")) 
+ClustalWAlnFormat::ClustalWAlnFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("aln")) 
 {
     formatName = tr("CLUSTALW");
 	formatDescription = tr("Clustalw is a format for storing multiple sequence alignments");
@@ -194,20 +194,21 @@ Document* ClustalWAlnFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
 #define MAX_NAME_LEN    39
 #define SEQ_ALIGNMENT    5
 
-void ClustalWAlnFormat::save(IOAdapter* io, Document* d, U2OpStatus& ti) {
-    const MAlignmentObject* obj = NULL;
-    if( (d->getObjects().size() != 1)
-        || ((obj = qobject_cast<const MAlignmentObject*>(d->getObjects().first())) == NULL)) {
-            ti.setError("No data to write;");
-            return;
-    }
+void ClustalWAlnFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &ti) {
+    SAFE_POINT(objectsMap.contains(GObjectTypes::MULTIPLE_ALIGNMENT), "Clustal entry storing: no alignment", );
+    const QList<GObject*> &als = objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT];
+    SAFE_POINT(1 == als.size(), "Clustal entry storing: alignment objects count error", );
+
+    const MAlignmentObject* obj = dynamic_cast<MAlignmentObject*>(als.first());
+    SAFE_POINT(NULL != obj, "Clustal entry storing: NULL alignment object", );
+
     const MAlignment& ma = obj->getMAlignment();
     
     //write header
     QByteArray header("CLUSTAL W 2.0 multiple sequence alignment\n\n");
     int len = io->writeBlock(header);
     if (len != header.length()) {
-        ti.setError(L10N::errorWritingFile(d->getURL()));
+        ti.setError(L10N::errorTitle());
         return;
     }
 
@@ -258,7 +259,7 @@ void ClustalWAlnFormat::save(IOAdapter* io, Document* d, U2OpStatus& ti) {
 
             len = io->writeBlock(line);
             if (len != line.length()) {
-                ti.setError(L10N::errorWritingFile(d->getURL()));
+                ti.setError(L10N::errorTitle());
                 return;
             }
         }
@@ -268,7 +269,7 @@ void ClustalWAlnFormat::save(IOAdapter* io, Document* d, U2OpStatus& ti) {
         line.append("\n\n");
         len = io->writeBlock(line);
         if (len != line.length()) {
-            ti.setError(L10N::errorWritingFile(d->getURL()));
+            ti.setError(L10N::errorTitle());
             return;
         }
     }
@@ -277,7 +278,19 @@ void ClustalWAlnFormat::save(IOAdapter* io, Document* d, U2OpStatus& ti) {
 void ClustalWAlnFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     CHECK_EXT(d!=NULL, os.setError(L10N::badArgument("doc")), );
     CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), );
-    save(io, d, os);
+
+    MAlignmentObject *obj = NULL;
+    if( (d->getObjects().size() != 1)
+        || ((obj = qobject_cast<MAlignmentObject*>(d->getObjects().first())) == NULL)) {
+            os.setError("No data to write;");
+            return;
+    }
+
+    QList<GObject*> als; als << obj;
+    QMap< GObjectType, QList<GObject*> > objectsMap;
+    objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT] = als;
+    storeEntry(io, objectsMap, os);
+    CHECK_EXT(!os.isCoR(), os.setError(L10N::errorWritingFile(d->getURL())), );
 }
 
 FormatCheckResult ClustalWAlnFormat::checkRawData(const QByteArray& data, const GUrl&) const {

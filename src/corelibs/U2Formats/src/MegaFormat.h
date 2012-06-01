@@ -36,6 +36,7 @@ public:
     virtual DocumentFormatId getFormatId() const { return BaseDocumentFormats::MEGA; }
     virtual const QString& getFormatName() const { return formatName; }
     virtual void storeDocument(Document* d, IOAdapter* io, U2OpStatus& os);
+    virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &ti);
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
@@ -43,7 +44,6 @@ protected:
 private:
     QString formatName;
     void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& ti);
-    void save(IOAdapter* io, Document* d, U2OpStatus& ti);
     static void skipWhites(IOAdapter *io, QByteArray &line);
     static void readHeader(IOAdapter* io, QByteArray &line, U2OpStatus &ti);
     static void readTitle(IOAdapter* io, QByteArray &line, U2OpStatus &ti);

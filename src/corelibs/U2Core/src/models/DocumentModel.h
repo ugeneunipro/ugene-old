@@ -188,9 +188,9 @@ public:
     /**
      * Streaming mode formats implement getSequence() and storeEntry() methods
      */
-    virtual bool isStreamingSupport() {return false;}
+    virtual bool isStreamingSupport() {return formatFlags.testFlag(DocumentFormatFlag_SupportStreaming);}
 
-    virtual void storeEntry(IOAdapter *io, U2SequenceObject *seq, const QList<GObject*> &anns, U2OpStatus &os);
+    virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os);
 
 protected:
     

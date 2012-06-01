@@ -25,6 +25,7 @@
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/VariantTrackObject.h>
 
 #include <U2Lang/DbiDataHandler.h>
 
@@ -56,6 +57,7 @@ private:
 class U2LANG_EXPORT StorageUtils {
 public:
     static U2SequenceObject *getSequenceObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
+    static VariantTrackObject *getVariantTrackObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
 };
     
 } // Workflow

@@ -86,7 +86,7 @@ bool SAMFormat::validateField(int num, QByteArray &field, U2OpStatus *ti) {
     return true;
 }
 
-SAMFormat::SAMFormat( QObject* p ): DocumentFormat(p, DocumentFormatFlags_SW, QStringList()<< "sam")
+SAMFormat::SAMFormat( QObject* p ): DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList()<< "sam")
 {
     formatName = tr("SAM");
 	formatDescription = tr("The Sequence Alignment/Map (SAM) format is a generic alignment format for"
@@ -324,17 +324,22 @@ Document* SAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 
 void SAMFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     //TODO: sorting options?
-    if( NULL == d ) {
-        os.setError(L10N::badArgument("doc"));
-        return;
-    }
-    if( NULL == io || !io->isOpen() ) {
-        os.setError(L10N::badArgument("IO adapter"));
-        return;
-    }
+    CHECK_EXT(d!=NULL, os.setError(L10N::badArgument("doc")), );
+    CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), );
+
+    QMap< GObjectType, QList<GObject*> > objectsMap;
+    QList<GObject*> als; als << d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
+    objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT] = als;
+    storeEntry(io, objectsMap, os);
+}
+
+void SAMFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
+    SAFE_POINT(objectsMap.contains(GObjectTypes::MULTIPLE_ALIGNMENT), "Clustal entry storing: no alignment", );
+    const QList<GObject*> &als = objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT];
+    SAFE_POINT(als.size() > 0, "Clustal entry storing: alignment objects count error", );
 
     QList<const MAlignmentObject*> maList;
-    foreach(GObject *obj, d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
+    foreach(GObject *obj, als) {
         const MAlignmentObject* maObj = qobject_cast<const MAlignmentObject*>(obj);
         assert(maObj != NULL);
         maList.append(maObj);

@@ -48,6 +48,8 @@ const DocumentFormatId BaseDocumentFormats::NEXUS("nexus");
 const DocumentFormatId BaseDocumentFormats::MEGA("mega");
 const DocumentFormatId BaseDocumentFormats::ACE("ace");
 const DocumentFormatId BaseDocumentFormats::PDW("pdw");
+const DocumentFormatId BaseDocumentFormats::SNP("snp");
+const DocumentFormatId BaseDocumentFormats::VCF4("vcf");
 
 DocumentFormat* BaseDocumentFormats::get(const DocumentFormatId& formatId) {
     return AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
