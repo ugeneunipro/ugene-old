@@ -47,7 +47,7 @@ QTreeWidget* GTUtilsBookmarksTreeView::getTreeWidget(U2OpStatus &os) {
 
     if (!treeWidget) {
         GTUtilsProjectTreeView::toggleView(os);
-        GTGlobals::sleep(1000);
+        GTGlobals::sleep(3000);
     }
 
     treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName));
