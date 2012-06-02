@@ -65,6 +65,7 @@ private slots:
     void sl_saveSelectionToFile();
     void sl_openDBPage();
     void sl_itemChanged(QTreeWidgetItem* item, int col);
+    void sl_filterTextChanged(const QString& filterText);
 private:
     void loadFile(const QString& url);
     void saveFile(const QString& url);

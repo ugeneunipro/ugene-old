@@ -84,6 +84,7 @@ EnzymesSelectorWidget::EnzymesSelectorWidget() {
     connect(invertSelectionButton, SIGNAL(clicked()), SLOT(sl_inverseSelection()));
     connect(saveSelectionButton, SIGNAL(clicked()), SLOT(sl_saveSelectionToFile()));
     connect(enzymeInfo, SIGNAL(clicked()), SLOT(sl_openDBPage()));
+    connect(enzymesFilterEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_filterTextChanged(const QString&)));
 
     if (loadedEnzymes.isEmpty()) {
         QString lastUsedFile = AppContext::getSettings()->getValue(EnzymeSettings::DATA_FILE_KEY).toString();
@@ -205,6 +206,9 @@ void EnzymesSelectorWidget::setEnzymesList(const QList<SEnzymeData>& enzymes) {
     totalEnzymes = 0;
 
     GTIMER(c2,t2,"FindEnzymesDialog::loadFile [refill data tree]");
+
+    enzymesFilterEdit->clear();
+
     foreach (const SEnzymeData& enz, enzymes) {
         EnzymeTreeItem* item = new EnzymeTreeItem(enz);
         if (lastSelection.contains(enz->id)) {
@@ -252,6 +256,27 @@ EnzymeGroupTreeItem* EnzymesSelectorWidget::findGroupItem(const QString& s, bool
         return gi;
     }
     return NULL;
+}
+
+void EnzymesSelectorWidget::sl_filterTextChanged(const QString& filterText) {
+    
+    for(int i = 0, n = tree->topLevelItemCount(); i < n; ++i){
+        EnzymeGroupTreeItem* gi = static_cast<EnzymeGroupTreeItem*>(tree->topLevelItem(i));
+        int numHiddenItems = 0;
+        int itemCount = gi->childCount();
+        for( int j = 0; j < itemCount; ++j) {
+            EnzymeTreeItem* item = static_cast<EnzymeTreeItem*>(gi->child(j));
+            if ( item->enzyme->id.contains(filterText, Qt::CaseInsensitive) ) {
+                item->setHidden(false);
+            } else {
+                item->setHidden(true);
+                ++numHiddenItems;
+            }
+        }
+        gi->setHidden(numHiddenItems == itemCount);
+        
+    }
+
 }
 
 void EnzymesSelectorWidget::updateStatus() {
