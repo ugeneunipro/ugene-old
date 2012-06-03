@@ -29,6 +29,16 @@ SecStructPredictTask::SecStructPredictTask(const QByteArray& seq)
 
 }
 
+#define MIN_REGION_SIZE 5
+
+void SecStructPredictTask::prepare()
+{
+    if (sequence.length() < MIN_REGION_SIZE) {
+        setError("The size of sequence is less then minimal allowed size (5 residues).");
+        return;
+    }
+}
+
 
 
 

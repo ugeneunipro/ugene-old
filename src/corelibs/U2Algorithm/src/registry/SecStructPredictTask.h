@@ -31,6 +31,7 @@ class U2ALGORITHM_EXPORT SecStructPredictTask : public Task {
     Q_OBJECT
 public:
     SecStructPredictTask(const QByteArray& seq);
+    void prepare();
     const QList<SharedAnnotationData>& getResults() const { return results; }
     const QByteArray getSSFormatResults() const { return output; }
     
