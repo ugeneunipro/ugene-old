@@ -31,6 +31,32 @@
 namespace U2 {
 namespace LocalWorkflow {
 
+// generic sequence writer
+class SeqWriter : public BaseDocWriter {
+    Q_OBJECT
+public:
+    SeqWriter(Actor *a);
+    SeqWriter(Actor *a, const DocumentFormatId &fid);
+protected:
+    int numSplitSequences;
+    int currentSplitSequence;
+
+    virtual void data2doc(Document*, const QVariantMap&);
+    virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
+
+    virtual void takeParameters(U2OpStatus &os);
+    virtual QStringList takeUrlList(const QVariantMap &data, U2OpStatus &os);
+};
+
+class MSAWriter : public BaseDocWriter {
+    Q_OBJECT
+public:
+    MSAWriter(Actor* a, const DocumentFormatId& fid) : BaseDocWriter(a, fid){}
+    MSAWriter(Actor * a) : BaseDocWriter(a){}
+protected:
+    virtual void data2doc(Document*, const QVariantMap&);
+};
+
 class TextReader : public BaseDocReader {
     Q_OBJECT
 public:
@@ -53,10 +79,10 @@ protected:
     virtual void data2doc(Document*, const QVariantMap&);
 };
 
-class FastaWriter : public BaseDocWriter {
+class FastaWriter : public SeqWriter {
     Q_OBJECT
 public:
-    FastaWriter(Actor* a) : BaseDocWriter(a, BaseDocumentFormats::FASTA){}
+    FastaWriter(Actor* a) : SeqWriter(a, BaseDocumentFormats::FASTA){}
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
@@ -109,26 +135,6 @@ protected:
     virtual void data2doc(Document*, const QVariantMap&);
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
-};
-
-
-// generic sequence writer
-class SeqWriter : public BaseDocWriter {
-    Q_OBJECT
-public:
-    SeqWriter( Actor * a ) : BaseDocWriter(a) {}
-protected:
-    virtual void data2doc(Document*, const QVariantMap&);
-    virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
-};
-
-class MSAWriter : public BaseDocWriter {
-    Q_OBJECT
-public:
-    MSAWriter(Actor* a, const DocumentFormatId& fid) : BaseDocWriter(a, fid){}
-    MSAWriter(Actor * a) : BaseDocWriter(a){}
-protected:
-    virtual void data2doc(Document*, const QVariantMap&);
 };
 
 class DataWorkerFactory : public DomainFactory {

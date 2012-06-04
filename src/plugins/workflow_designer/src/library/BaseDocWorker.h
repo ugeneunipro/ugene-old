@@ -25,6 +25,7 @@
 #include <U2Lang/LocalDomain.h>
 
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/U2OpStatus.h>
 
 namespace U2 {
 
@@ -73,20 +74,23 @@ protected:
     virtual void storeEntry(IOAdapter *, const QVariantMap &, int) {}
     Task* processDocs();
 protected:
-    CommunicationChannel* ch;
-    DocumentFormat* format;
+    CommunicationChannel *ch;
+    DocumentFormat *format;
     bool append;
     QString url;
     QMap<QString, int> counter;
     uint fileMode;
-    int messagesCount;
-    int numSplitSequences;
-    int currentSplitSequence;
     QStringList outputs;
 
     QMap<QString, Document*> docs;
     QMap<QString, IOAdapter*> adapters;
     QSet<QString> usedUrls;
+
+    virtual void takeParameters(U2OpStatus &os);
+    virtual QStringList takeUrlList(const QVariantMap &data, U2OpStatus &os);
+
+private:
+    void createAdaptersAndDocs(const QStringList &urls);
 };
 
 }// Workflow namespace

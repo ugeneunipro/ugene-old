@@ -53,10 +53,12 @@ WriteVariationWorker::WriteVariationWorker(Actor *p, const DocumentFormatId& fid
 }
 
 void WriteVariationWorker::data2doc(Document *doc, const QVariantMap &data) {
-
+    Q_UNUSED(doc);
+    Q_UNUSED(data);
+    SAFE_POINT(NULL, tr("Write variations: internal error"), );
 }
 
-void WriteVariationWorker::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
+void WriteVariationWorker::storeEntry(IOAdapter *io, const QVariantMap &data, int) {
     U2OpStatusImpl os;
     QScopedPointer<VariantTrackObject> trackObj(NULL);
     {

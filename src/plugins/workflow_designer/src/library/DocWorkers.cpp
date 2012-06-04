@@ -19,39 +19,40 @@
  * MA 02110-1301, USA.
  */
 
-#include "DocWorkers.h"
 #include "CoreLib.h"
 #include "GenericReadWorker.h"
 
-#include <U2Core/QVariantUtils.h>
-#include <U2Core/Log.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/TextObject.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/DNASequence.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNASequence.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/FailTask.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/Log.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/QVariantUtils.h>
+#include <U2Core/TextObject.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/FailTask.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/AppContext.h>
-
 #include <U2Formats/EMBLGenbankAbstractDocument.h>
 #include <U2Formats/GFFFormat.h>
 
-#include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/CoreLibConstants.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseAttributes.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowUtils.h>
+
+#include "DocWorkers.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -206,6 +207,7 @@ static U2SequenceObject *addSeqObject(Document* doc, DNASequence& seq) {
 *************************************/
 void FastaWriter::data2doc(Document* doc, const QVariantMap& data) {
     data2document(doc, data, context, numSplitSequences, currentSplitSequence);
+    currentSplitSequence++;
 }
 
 void FastaWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
@@ -558,22 +560,35 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
 /*************************************
 * SeqWriter
 *************************************/
+SeqWriter::SeqWriter(Actor *a)
+: BaseDocWriter(a), numSplitSequences(1), currentSplitSequence(0)
+{
+
+}
+
+SeqWriter::SeqWriter(Actor *a, const DocumentFormatId &fid)
+: BaseDocWriter(a, fid), numSplitSequences(1), currentSplitSequence(0)
+{
+
+}
+
 void SeqWriter::data2doc(Document* doc, const QVariantMap& data){
-    if( format == NULL ) {
+    if (NULL == format) {
         return;
     }
     DocumentFormatId fid = format->getFormatId();
-    if( fid == BaseDocumentFormats::FASTA ) {
-        FastaWriter::data2document( doc, data, context, numSplitSequences, currentSplitSequence);
-    } else if( fid == BaseDocumentFormats::PLAIN_GENBANK ) {
-        GenbankWriter::data2document( doc, data, context );
-    } else if ( fid == BaseDocumentFormats::FASTQ) {
-        FastQWriter::data2document( doc, data, context );    
-    } else if( fid == BaseDocumentFormats::RAW_DNA_SEQUENCE ) {
-        RawSeqWriter::data2document( doc, data, context );
-    }else if( fid == BaseDocumentFormats::GFF ) {
-        GFFWriter::data2document( doc, data, context );
-    }else {
+    if (BaseDocumentFormats::FASTA == fid) {
+        FastaWriter::data2document(doc, data, context, numSplitSequences, currentSplitSequence);
+        currentSplitSequence++;
+    } else if (BaseDocumentFormats::PLAIN_GENBANK == fid) {
+        GenbankWriter::data2document(doc, data, context);
+    } else if (BaseDocumentFormats::FASTQ == fid) {
+        FastQWriter::data2document(doc, data, context);
+    } else if (BaseDocumentFormats::RAW_DNA_SEQUENCE == fid) {
+        RawSeqWriter::data2document(doc, data, context);
+    } else if (BaseDocumentFormats::GFF == fid) {
+        GFFWriter::data2document(doc, data, context);
+    } else {
         assert(0);
         ioLog.error(QString("Unknown data format for writing: %1").arg(fid));
     }
@@ -596,6 +611,56 @@ void SeqWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum)
         assert(0);
         ioLog.error(QString("Unknown data format for writing: %1").arg(fid));
     }
+}
+
+void SeqWriter::takeParameters(U2OpStatus &os) {
+    BaseDocWriter::takeParameters(os);
+    SAFE_POINT_OP(os, );
+
+    Attribute *splitAttr = actor->getParameter(BaseAttributes::SPLIT_SEQ_ATTRIBUTE().getId());
+    if (format->getFormatId() == BaseDocumentFormats::FASTA && splitAttr != NULL) {
+        numSplitSequences = splitAttr->getAttributeValue<int>(context);
+    } else{
+        numSplitSequences = 1;
+    }
+}
+
+QStringList SeqWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) {
+    QStringList urls = BaseDocWriter::takeUrlList(data, os);
+    SAFE_POINT_OP(os, urls);
+    SAFE_POINT(1 == urls.size(), "Several urls in the output attribute", urls);
+
+    QString anUrl = urls.first();
+    SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
+    QSharedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+
+    currentSplitSequence = 0;
+
+    if (!seqObj.data()) {
+        numSplitSequences = 1;
+    } else {
+        qint64 seqLen = seqObj.data()->getSequenceLength();
+        if (seqLen < numSplitSequences) {
+            numSplitSequences = seqLen;
+        }
+        if (0 == numSplitSequences) {
+            numSplitSequences = 1;
+        }
+    }
+
+    append &= (1 == numSplitSequences);
+
+    QSet<QString> excluded;
+    if (numSplitSequences > 1) {
+        urls.clear();
+        for (int i = 0; i < numSplitSequences; ++i) {
+            QString tmpUrl = GUrlUtils::rollFileName(anUrl, "_split", excluded);                        
+            excluded << tmpUrl;
+            urls << tmpUrl;
+        }
+    }
+
+    return urls;
 }
 
 /*************************************
