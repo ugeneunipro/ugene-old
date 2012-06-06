@@ -23,6 +23,7 @@
 #define GTUTILSMSAEDITORSEQUENCEAREA_H
 
 #include "api/GTGlobals.h"
+#include <U2View/MSAEditorSequenceArea.h>
 
 namespace U2 {
 
@@ -38,8 +39,11 @@ public:
     static int getRightOffset(U2OpStatus &os);
 
     static int getLength(U2OpStatus &os);
-    static void putCursor(U2OpStatus &os, int x, int y);
-    static void selectArea(U2OpStatus &os, const QPoint &topLeft, const QPoint &bottomRigth);
+
+    static void moveTo(U2OpStatus &os, const QPoint &p);
+
+    // selects area in MSA coordinats, if p2 is undefined, selects all visible MSA area
+    static void selectArea(U2OpStatus &os, const QPoint &p1 = QPoint(0, 0), const QPoint &p2 = QPoint(-1, -1));
 
     static bool offsetsVisible(U2OpStatus &os);
 };

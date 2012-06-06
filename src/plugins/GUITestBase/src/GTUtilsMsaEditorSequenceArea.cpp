@@ -22,11 +22,53 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "api/GTWidget.h"
 #include "api/GTMSAEditorStatusWidget.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
+#include "GTUtilsMdi.h"
 
-#include <U2View/MSAEditorSequenceArea.h>
+#include <U2View/MSAEditor.h>
 
 namespace U2 {
 #define GT_CLASS_NAME "GTUtilsMSAEditorSequenceArea"
+
+#define GT_METHOD_NAME "moveTo"
+void GTUtilsMSAEditorSequenceArea::moveTo(U2OpStatus &os, const QPoint &p)
+{
+    QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", activeWindow));
+    CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
+
+    QWidget *msaOffsetLeft = GTWidget::findWidget(os, "msa_editor_offsets_view_widget_left", activeWindow);
+    CHECK_SET_ERR(msaOffsetLeft != NULL, "MsaOffset Left not found");
+
+    QPoint shift = msaOffsetLeft->mapToGlobal(QPoint(msaOffsetLeft->rect().right(), 0));
+
+    int posX = msaEditArea->getXByColumnNum(p.x());
+    int posY = msaEditArea->getYBySequenceNum(p.y());
+
+    GTMouseDriver::moveTo(os, shift+QPoint(posX, posY));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "selectArea"
+void GTUtilsMSAEditorSequenceArea::selectArea(U2OpStatus &os, const QPoint &p1, const QPoint &_p2)
+{
+    QPoint p2 = _p2;
+    if ((p2.x()<0) || (p2.y()<0)) {
+        MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", GTUtilsMdi::activeWindow(os)));
+        GT_CHECK(msaEditArea != NULL, "MsaEditorSequenceArea not found");
+
+// select all visible field
+        p2 = QPoint(msaEditArea->getNumVisibleBases(true)-1, msaEditArea->getNumVisibleSequences(true)-1);
+    }
+
+    moveTo(os, p1);
+    GTMouseDriver::press(os);
+    moveTo(os, p2);
+    GTMouseDriver::release(os);
+    GTGlobals::sleep();
+}
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkSelectedRect"
 void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect &expectedRect)

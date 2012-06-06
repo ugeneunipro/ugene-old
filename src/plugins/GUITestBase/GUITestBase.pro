@@ -30,6 +30,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / UGENE / plugins / dna_export
             src/runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h \
+            src/runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h \
 #   Utils classes
@@ -71,6 +72,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTSequenceReadingModeDialog.h \
             src/api/GTSequenceReadingModeDialogUtils.h \
 #   Qt primitives
+            src/api/GTClipboard.h \
             src/api/GTCheckBox.h \
             src/api/GTComboBox.h \
             src/api/GTTabWidget.h \
@@ -124,6 +126,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / UGENE / plugins / dna_export
             src/runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.cpp \
+            src/runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.cpp \
 #   Utils classes
@@ -165,6 +168,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTSequenceReadingModeDialog.cpp \
             src/api/GTSequenceReadingModeDialogUtils.cpp \
 #   Qt primitives
+            src/api/GTClipboard.cpp \
             src/api/GTCheckBox.cpp \
             src/api/GTComboBox.cpp \
             src/api/GTTabWidget.cpp \
