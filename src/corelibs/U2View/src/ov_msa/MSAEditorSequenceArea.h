@@ -103,7 +103,8 @@ public:
     U2Region getBaseXRange(int pos, bool useVirtualCoords) const;
     
     int getColumnNumByX(int x) const;
-    
+    int getXByColumnNum(int columnNum) const;
+
     void setFirstVisibleBase(int pos);
 
 
@@ -119,6 +120,7 @@ public:
     U2Region getSequenceYRange(int seqNum, bool useVirtualCoords) const;
 
     int getSequenceNumByY(int y) const;
+    int getYBySequenceNum(int sequenceNum) const;
 
     void setFirstVisibleSequence(int seq);
 

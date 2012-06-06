@@ -78,6 +78,7 @@ void ExportAlignmentViewItemsController::buildMenu(GObjectView* v, QMenu* m) {
 
 MSAExportContext::MSAExportContext(MSAEditor* e) : editor(e) {
     translateMSAAction = new QAction(tr("Amino translation of alignment rows..."), this);
+    translateMSAAction->setObjectName("amino_translation_of_alignment_rows");
     connect(translateMSAAction, SIGNAL(triggered()), SLOT(sl_exportNucleicMsaToAmino()));        
 }
 

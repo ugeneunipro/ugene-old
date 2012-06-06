@@ -98,6 +98,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(delSelectionAction, SIGNAL(triggered()), SLOT(sl_delCurrentSelection()));
 
     copySelectionAction = new QAction(tr("Copy selection"), this);
+    copySelectionAction->setObjectName("copy_selection");
     copySelectionAction->setShortcut(QKeySequence::Copy);
     copySelectionAction->setShortcutContext(Qt::WidgetShortcut);
     copySelectionAction->setToolTip(QString("%1 (%2)").arg(copySelectionAction->text())
@@ -106,11 +107,13 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     addAction(copySelectionAction);
 
     delColAction = new QAction(QIcon(":core/images/msaed_remove_columns_with_gaps.png"), tr("Remove columns of gaps..."), this);
+    delColAction->setObjectName("remove_columns_of_gaps");
     delColAction->setShortcut(QKeySequence(Qt::SHIFT| Qt::Key_Delete));
     delColAction->setShortcutContext(Qt::WidgetShortcut);
     connect(delColAction, SIGNAL(triggered()), SLOT(sl_delCol()));
     
     insSymAction = new QAction(tr("Fill selection with gaps"), this);
+    insSymAction->setObjectName("fill_selection_with_gaps");
     insSymAction->setShortcut(QKeySequence(Qt::Key_Space));
     insSymAction->setShortcutContext(Qt::WidgetShortcut);
     connect(insSymAction, SIGNAL(triggered()), SLOT(sl_fillCurrentSelectionWithGaps()));
@@ -585,6 +588,10 @@ int MSAEditorSequenceArea::getColumnNumByX(int x) const {
 
 }
 
+int MSAEditorSequenceArea::getXByColumnNum(int columnNum) const {
+    return (columnNum + 0.5f)*editor->getColumnWidth();
+}
+
 int MSAEditorSequenceArea::getSequenceNumByY(int y) const {
     int seqOffs = y / editor->getRowHeight();
     int seq = startSeq + seqOffs;
@@ -592,6 +599,10 @@ int MSAEditorSequenceArea::getSequenceNumByY(int y) const {
         return -1; 
     }
     return seq;
+}
+
+int MSAEditorSequenceArea::getYBySequenceNum(int sequenceNum) const {
+    return (sequenceNum + 0.5f)*editor->getRowHeight();
 }
 
 U2Region MSAEditorSequenceArea::getBaseXRange(int pos, bool useVirtualCoords) const {

@@ -95,6 +95,7 @@ const float MSAEditor::zoomMult = 1.25;
 
 MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
 : GObjectView(MSAEditorFactory::ID, viewName), ui(NULL) {
+
     msaObject = qobject_cast<MAlignmentObject*>(obj);
     objects.append(msaObject);
     onObjectAdded(msaObject);
@@ -439,6 +440,10 @@ QVariantMap MSAEditor::saveState() {
 QWidget* MSAEditor::createWidget() {
     assert(ui == NULL);
     ui = new MSAEditorUI(this);
+
+    QString objName = "msa_editor_" + msaObject->getGObjectName();
+    ui->setObjectName(objName);
+
     connect(ui , SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));
     saveScreenshotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
     connect(saveScreenshotAction, SIGNAL(triggered()), ui, SLOT(sl_saveScreenshot()));
@@ -606,7 +611,7 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), of
     mainLayout->addWidget(splitter, 0, 0, 2, 1);
     mainLayout->addWidget(cvBar, 1, 1);
     mainLayout->addWidget(label, 0, 1);
-    mainLayout->addWidget(statusWidget, 2, 0, 1, 2);
+//    mainLayout->addWidget(statusWidget, 2, 0, 1, 2);
     QWidget *mainWidget = new QWidget();
     mainWidget->setLayout(mainLayout);
     setLayout(mainLayout);
