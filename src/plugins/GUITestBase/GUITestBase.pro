@@ -25,6 +25,10 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/util/RangeSelectorFiller.h \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
+#   Runnables / UGENE / plugins_3rdparty
+#   Runnables / UGENE / plugins_3rdparty / kalign
+            src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h \
+#   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / dotplot
             src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h \
 #   Runnables / UGENE / plugins / dna_export
@@ -121,6 +125,10 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/util/RangeSelectorFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
+#   Runnables / UGENE / plugins_3rdparty
+#   Runnables / UGENE / plugins_3rdparty / kalign
+            src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.cpp \
+#   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / dotplot
             src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.cpp \
 #   Runnables / UGENE / plugins / dna_export

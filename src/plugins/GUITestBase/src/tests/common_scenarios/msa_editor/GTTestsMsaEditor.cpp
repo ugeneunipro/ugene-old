@@ -31,6 +31,7 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/util/PositionSelectorFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 
 #include <U2View/MSAEditor.h>
 
@@ -404,15 +405,12 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 
 // 2. Do document context menu {Export->Export aligniment to amino format}
 // 3. Translate with default settings
-    QWidget* activeMDI = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(activeMDI != NULL, "there is no active MDI window");
-
     Runnable *filler = new ExportMSA2MSADialogFiller(os);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
-    GTWidget::click(os, activeMDI, Qt::RightButton);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -438,15 +436,12 @@ GUI_TEST_CLASS_DEFINITION(test_0010_1) {
 
 // 2. Do document context menu {Export->Export aligniment to amino format}
 // 3. Translate with default settings
-    QWidget* activeMDI = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(activeMDI != NULL, "there is no active MDI window");
-
     Runnable *filler = new ExportMSA2MSADialogFiller(os);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
-    GTWidget::click(os, activeMDI, Qt::RightButton);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -474,15 +469,12 @@ GUI_TEST_CLASS_DEFINITION(test_0010_2) {
 
 // 2. Do document context menu {Export->Export aligniment to amino format}
 // 3. Translate with default settings
-    QWidget* activeMDI = GTUtilsMdi::activeWindow(os);
-    CHECK_SET_ERR(activeMDI != NULL, "there is no active MDI window");
-
     Runnable *filler = new ExportMSA2MSADialogFiller(os);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
-    GTWidget::click(os, activeMDI, Qt::RightButton);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 
     GTGlobals::sleep();
@@ -518,7 +510,6 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os);
-//    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -553,7 +544,6 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1) {
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os);
-//    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -590,7 +580,6 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2) {
     GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os);
-//    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -622,6 +611,110 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2) {
     CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
 
     GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013) {
+// Kalign crashes on amino alignment that was generated from nucleotide alignment (0002658)
+
+// 1. Open file data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+// 2. Convert alignment to amino. Use context menu {Export->Amino translation of alignment rows}
+    Runnable *filler = new ExportMSA2MSADialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+
+// 3. Open converted alignment. Use context menu {Align->Align with Kalign}
+    Runnable *filler2 = new KalignDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+// Expected state: UGENE not crash
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013_1) {
+
+// Kalign crashes on amino alignment that was generated from nucleotide alignment (0002658)
+
+// 1. Open file data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+// 2. Convert alignment to amino. Use context menu {Export->Amino translation of alignment rows}
+    Runnable *filler = new ExportMSA2MSADialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+
+// CHANGES: close and open MDI window
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Multiple alignment"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+
+// 3. Open converted alignment. Use context menu {Align->Align with Kalign}
+    Runnable *filler2 = new KalignDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+// Expected state: UGENE not crash
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013_2) {
+// Kalign crashes on amino alignment that was generated from nucleotide alignment (0002658)
+
+// 1. Open file data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+// 2. Convert alignment to amino. Use context menu {Export->Amino translation of alignment rows}
+    Runnable *filler = new ExportMSA2MSADialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+
+// 3. Open converted alignment. Use context menu {Align->Align with Kalign}
+    Runnable *filler2 = new KalignDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+
+// CHANGES: using main menu
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+// Expected state: UGENE not crash
+    GTGlobals::sleep(5000);
 }
 
 } // namespace GUITest_common_scenarios_msa_editor
