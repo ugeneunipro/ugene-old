@@ -24,11 +24,13 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
+#include "api/GTClipboard.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/util/PositionSelectorFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 
 #include <U2View/MSAEditor.h>
 
@@ -393,6 +395,116 @@ GUI_TEST_CLASS_DEFINITION(test_0004)
     GTGlobals::sleep();
 
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, expectedRect);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010) {
+
+// 1. Open file _common_data\scenarios\msa\translations_nucl.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln");
+
+// 2. Do document context menu {Export->Export aligniment to amino format}
+// 3. Translate with default settings
+    QWidget* activeMDI = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(activeMDI != NULL, "there is no active MDI window");
+
+    Runnable *filler = new ExportMSA2MSADialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, activeMDI, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os);
+// copy to clipboard
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+// Expected state: every sequense name the same as it amino translation
+    QString clipboardText = GTClipboard::text(os);
+    QString expectedMSA = "L\nS\nD\nS\nP\nK";
+
+    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010_1) {
+
+// 1. Open file _common_data\scenarios\msa\translations_nucl.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln");
+
+// 2. Do document context menu {Export->Export aligniment to amino format}
+// 3. Translate with default settings
+    QWidget* activeMDI = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(activeMDI != NULL, "there is no active MDI window");
+
+    Runnable *filler = new ExportMSA2MSADialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, activeMDI, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os);
+// copy to clipboard
+    Runnable* chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: every sequense name the same as it amino translation
+    QString clipboardText = GTClipboard::text(os);
+    QString expectedMSA = "L\nS\nD\nS\nP\nK";
+
+    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010_2) {
+
+// 1. Open file _common_data\scenarios\msa\translations_nucl.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln");
+
+// 2. Do document context menu {Export->Export aligniment to amino format}
+// 3. Translate with default settings
+    QWidget* activeMDI = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(activeMDI != NULL, "there is no active MDI window");
+
+    Runnable *filler = new ExportMSA2MSADialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, activeMDI, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os);
+// copy to clipboard
+    Runnable* chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: every sequense name the same as it amino translation
+    QString clipboardText = GTClipboard::text(os);
+    QString expectedMSA = "L\nS\nD\nS\nP\nK";
+    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+
+    QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    QStringList expectedNameList = QStringList() << "L" << "S" << "D" << "S" << "P" << "K";
+
+    CHECK_SET_ERR(nameList == expectedNameList, "name lists differ");
+
+    GTGlobals::sleep();
 }
 
 } // namespace GUITest_common_scenarios_msa_editor
