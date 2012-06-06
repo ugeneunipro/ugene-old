@@ -34,6 +34,7 @@ public:
     static DataTypePtr ANNOTATION_TABLE_TYPE();
     static DataTypePtr MULTIPLE_ALIGNMENT_TYPE();
     static DataTypePtr VARIATION_TRACK_TYPE();
+    static DataTypePtr ASSEMBLY_TYPE();
     
     static DataTypePtr STRING_TYPE();
     static DataTypePtr STRING_LIST_TYPE();

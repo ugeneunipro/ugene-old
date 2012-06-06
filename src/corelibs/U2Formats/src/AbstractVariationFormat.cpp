@@ -41,6 +41,7 @@ AbstractVariationFormat::AbstractVariationFormat(QObject *p, const QStringList &
 : DocumentFormat(p, DocumentFormatFlags_SW, fileExts), sep(QString())
 {
     supportedObjectTypes += GObjectTypes::VARIANT_TRACK;
+    formatDescription = tr("SNP formats are used to store single-nucleotide polymorphism data");
 }
 
 #define READ_BUFF_SIZE 4095
@@ -150,7 +151,7 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
     return doc;
 }
 
-FormatCheckResult AbstractVariationFormat::checkRawData(const QByteArray &dataPrefix, const GUrl &url) const {
+FormatCheckResult AbstractVariationFormat::checkRawData(const QByteArray &dataPrefix, const GUrl &) const {
     QStringList lines = QString(dataPrefix).split("\n");
     int idx = 0;
     foreach (const QString &l, lines) {
@@ -170,7 +171,10 @@ FormatCheckResult AbstractVariationFormat::checkRawData(const QByteArray &dataPr
             return FormatDetection_NotMatched;
         }
     }
-    return FormatDetection_Matched;
+    if (0 == idx) {
+        return FormatDetection_NotMatched;
+    }
+    return FormatDetection_AverageSimilarity;
 }
 
 void AbstractVariationFormat::storeDocument(Document *doc, IOAdapter *io, U2OpStatus &os) {

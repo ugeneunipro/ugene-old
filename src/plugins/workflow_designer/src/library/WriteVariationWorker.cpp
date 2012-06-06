@@ -59,16 +59,16 @@ void WriteVariationWorker::data2doc(Document *doc, const QVariantMap &data) {
 }
 
 void WriteVariationWorker::storeEntry(IOAdapter *io, const QVariantMap &data, int) {
+    SAFE_POINT(data.contains(BaseSlots::VARIATION_TRACK_SLOT().getId()),
+        tr("Write variation worker: no variation track"), );
     U2OpStatusImpl os;
     QScopedPointer<VariantTrackObject> trackObj(NULL);
     {
-        SAFE_POINT(data.contains(BaseSlots::VARIATION_TRACK_SLOT().getId()),
-            tr("Write variation worker: no variation track"), );
         SharedDbiDataHandler objId = data.value(BaseSlots::VARIATION_TRACK_SLOT().getId())
             .value<SharedDbiDataHandler>();
         trackObj.reset(StorageUtils::getVariantTrackObject(context->getDataStorage(), objId));
+        SAFE_POINT(NULL != trackObj.data(), tr("Can't get track object"), );
     }
-    SAFE_POINT(NULL != trackObj.data(), tr("Can't get track object"), );
 
     QMap< GObjectType, QList<GObject*> > objectsMap;
     {

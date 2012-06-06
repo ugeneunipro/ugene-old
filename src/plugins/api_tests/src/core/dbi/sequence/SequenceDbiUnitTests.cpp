@@ -100,12 +100,12 @@ void SequenceTestData::checkUpdateSequence(UnitTest *t, const UpdateSequenceArgs
 		}
 
 		{
+            QVariantMap hints;
 			U2OpStatusImpl os;
 			sequenceDbi->updateSequenceData(id,
 			regionToReplace,
 			dataToInsert,
-            true,
-            false,
+            hints,
 			os);
 			CHECK_OP(os,);
 		}

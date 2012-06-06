@@ -24,6 +24,7 @@
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
 
 namespace U2 {
 
@@ -168,7 +169,9 @@ static QList<QByteArray> quantify(const QList<QByteArray>& input) {
     return res;
 
 }
-void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, bool updateLenght, bool emptySequence, U2OpStatus& os) {
+void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, const QVariantMap &hints, U2OpStatus& os) {
+    bool updateLenght = hints.value(U2SequenceDbiHints::UPDATE_SEQUENCE_LENGTH, true).toBool();
+    bool emptySequence = hints.value(U2SequenceDbiHints::EMPTY_SEQUENCE, false).toBool();
     SQLiteTransaction t(db, os);
     //algorithm: 
         // find all regions affected -> remove them

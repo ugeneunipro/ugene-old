@@ -37,6 +37,7 @@ public:
     static const Descriptor URL_SLOT();
     static const Descriptor FASTA_HEADER_SLOT();
     static const Descriptor VARIATION_TRACK_SLOT();
+    static const Descriptor ASSEMBLY_SLOT();
     
 }; // BaseSlots
 

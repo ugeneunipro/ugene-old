@@ -107,6 +107,12 @@ private:
 
 };
 
+class U2CORE_EXPORT U2SequenceDbiHints {
+public:
+    static const QString UPDATE_SEQUENCE_LENGTH;
+    static const QString EMPTY_SEQUENCE;
+};
+
 } //namespace
 
 

@@ -39,6 +39,9 @@
 
 namespace U2 {
 
+const QString U2SequenceDbiHints::UPDATE_SEQUENCE_LENGTH = "update-length";
+const QString U2SequenceDbiHints::EMPTY_SEQUENCE = "empty-sequence";
+
 DNAAlphabetType U2SequenceUtils::alphabetType(const U2EntityRef& ref, U2OpStatus& os) {
     DNAAlphabetType res = DNAAlphabet_RAW;
     DbiConnection con(ref.dbiRef, os);
@@ -83,7 +86,8 @@ U2Sequence U2SequenceUtils::copySequence(const U2EntityRef& srcSeq, const U2DbiR
     //TODO: optimize and insert by small chunks! ~2-4 mb
     QByteArray wholeSeq = srcCon.dbi->getSequenceDbi()->getSequenceData(srcSeq.entityId, U2_REGION_MAX, os);
     CHECK_OP(os, res);
-    dstCon.dbi->getSequenceDbi()->updateSequenceData(res.id, U2Region(0, 0), wholeSeq, true, false, os);
+    QVariantMap hints;
+    dstCon.dbi->getSequenceDbi()->updateSequenceData(res.id, U2Region(0, 0), wholeSeq, hints, os);
 
    
     return res;
@@ -377,7 +381,10 @@ void U2SequenceImporter::_addBlock2Db(const char* data, qint64 len, U2OpStatus& 
         sequenceCreated = true;
     }
 
-    con.dbi->getSequenceDbi()->updateSequenceData(sequence.id, U2Region(sequence.length, 0), arr, updateLength, emptySequence, os);
+    QVariantMap hints;
+    hints[U2SequenceDbiHints::UPDATE_SEQUENCE_LENGTH] = updateLength;
+    hints[U2SequenceDbiHints::EMPTY_SEQUENCE] = emptySequence;
+    con.dbi->getSequenceDbi()->updateSequenceData(sequence.id, U2Region(sequence.length, 0), arr, hints, os);
     CHECK_OP(os, );
     if (committedLength == sequence.length) {
         sequence.length += len;

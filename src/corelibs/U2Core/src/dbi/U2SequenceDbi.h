@@ -86,9 +86,8 @@ public:
 
         Hint: if @emptySequence is set then the start position of the inserting data is not calculated
     */
-    virtual void updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, bool updateLenght, bool emptySequence, U2OpStatus& os) = 0;
+    virtual void updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, const QVariantMap &hints, U2OpStatus& os) = 0;
 };
-
 
 } //namespace
 

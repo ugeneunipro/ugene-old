@@ -28,6 +28,7 @@ static const QString TEXT_SLOT_ID("text");
 static const QString URL_SLOT_ID("url");
 static const QString FASTA_HEADER_SLOT_ID("fasta-header");
 static const QString VARIATION_TRACK_SLOT_ID("variation-track");
+static const QString ASSEMBLY_SLOT_ID("assembly");
 
 namespace U2 {
 namespace Workflow {
@@ -58,6 +59,10 @@ const Descriptor BaseSlots::FASTA_HEADER_SLOT() {
 
 const Descriptor BaseSlots::VARIATION_TRACK_SLOT() {
     return Descriptor(VARIATION_TRACK_SLOT_ID, tr("Variation track"), tr("Set of variations"));
+}
+
+const Descriptor BaseSlots::ASSEMBLY_SLOT() {
+    return Descriptor(ASSEMBLY_SLOT_ID, tr("Assembly data"), tr("Assembly data"));
 }
 
 } // Workflow
