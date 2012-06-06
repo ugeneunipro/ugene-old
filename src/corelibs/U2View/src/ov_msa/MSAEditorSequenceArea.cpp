@@ -158,6 +158,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(viewModeAction, SIGNAL(toggled(bool)), SLOT(sl_setCollapsingMode(bool)));
 
     reverseComplementAction = new QAction(tr("Replace selected rows with reverse-complement"), this);
+    reverseComplementAction->setObjectName("replace_selected_rows_with_reverse-complement");
     connect(reverseComplementAction, SIGNAL(triggered()), SLOT(sl_reverseComplementCurrentSelection()));
 
     

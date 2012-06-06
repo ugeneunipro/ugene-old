@@ -507,5 +507,122 @@ GUI_TEST_CLASS_DEFINITION(test_0010_2) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0012) {
+// Add tests on alignment translation features (0002432)
+
+// 1. Open file _common_data\scenarios\msa\revcompl.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "revcompl.aln");
+
+// 2. Select all sequences and do context menu {Edit->Replace selected rows with reverce complement}
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os);
+//    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: result alignement must be
+// CAA---
+// --TGA-
+// ---ATC
+
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, -1), QPoint(-1, 0));
+// copy to clipboard
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+// Expected state: every sequense name the same as it amino translation
+    QString clipboardText = GTClipboard::text(os);
+    QString expectedMSA = "CAA---\n--TGA-\n---ATC";
+
+    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0012_1) {
+// Add tests on alignment translation features (0002432)
+
+// 1. Open file _common_data\scenarios\msa\revcompl.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "revcompl.aln");
+
+// 2. Select all sequences and do context menu {Edit->Replace selected rows with reverce complement}
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os);
+//    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: result alignement must be
+// CAA---
+// --TGA-
+// ---ATC
+
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, -1), QPoint(-1, 0));
+// copy to clipboard. CHANGES: copy by context menu
+    Runnable* chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: every sequense name the same as it amino translation
+    QString clipboardText = GTClipboard::text(os);
+    QString expectedMSA = "CAA---\n--TGA-\n---ATC";
+
+    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0012_2) {
+// Add tests on alignment translation features (0002432)
+
+// 1. Open file _common_data\scenarios\msa\revcompl.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "revcompl.aln");
+
+// 2. Select all sequences and do context menu {Edit->Replace selected rows with reverce complement}
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os);
+//    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// CHANGES: close and open MDI window
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "revcompl"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+// Expected state: result alignement must be
+// CAA---
+// --TGA-
+// ---ATC
+
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, -1), QPoint(-1, 0));
+// copy to clipboard. CHANGES: copy by context menu
+    Runnable* chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: every sequense name the same as it amino translation
+    QString clipboardText = GTClipboard::text(os);
+    QString expectedMSA = "CAA---\n--TGA-\n---ATC";
+
+    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+
+    GTGlobals::sleep();
+}
+
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2

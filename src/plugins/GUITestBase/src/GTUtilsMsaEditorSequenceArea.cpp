@@ -51,16 +51,15 @@ void GTUtilsMSAEditorSequenceArea::moveTo(U2OpStatus &os, const QPoint &p)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "selectArea"
-void GTUtilsMSAEditorSequenceArea::selectArea(U2OpStatus &os, const QPoint &p1, const QPoint &_p2)
+void GTUtilsMSAEditorSequenceArea::selectArea(U2OpStatus &os, QPoint p1, QPoint p2)
 {
-    QPoint p2 = _p2;
-    if ((p2.x()<0) || (p2.y()<0)) {
-        MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", GTUtilsMdi::activeWindow(os)));
-        GT_CHECK(msaEditArea != NULL, "MsaEditorSequenceArea not found");
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", GTUtilsMdi::activeWindow(os)));
+    GT_CHECK(msaEditArea != NULL, "MsaEditorSequenceArea not found");
 
-// select all visible field
-        p2 = QPoint(msaEditArea->getNumVisibleBases(true)-1, msaEditArea->getNumVisibleSequences(true)-1);
-    }
+    p1.rx() = p1.x()<0 ? msaEditArea->getNumVisibleBases(true)-1 : p1.x();
+    p2.rx() = p2.x()<0 ? msaEditArea->getNumVisibleBases(true)-1 : p2.x();
+    p1.ry() = p1.y()<0 ? msaEditArea->getNumVisibleSequences(true)-1 : p1.y();
+    p2.ry() = p2.y()<0 ? msaEditArea->getNumVisibleSequences(true)-1 : p2.y();
 
     moveTo(os, p1);
     GTMouseDriver::press(os);

@@ -42,8 +42,8 @@ public:
 
     static void moveTo(U2OpStatus &os, const QPoint &p);
 
-    // selects area in MSA coordinats, if p2 is undefined, selects all visible MSA area
-    static void selectArea(U2OpStatus &os, const QPoint &p1 = QPoint(0, 0), const QPoint &p2 = QPoint(-1, -1));
+    // selects area in MSA coordinats, if some p coordinate less than 0, it becomes max valid coordinate
+    static void selectArea(U2OpStatus &os, QPoint p1 = QPoint(0, 0), QPoint p2 = QPoint(-1, -1));
 
     static bool offsetsVisible(U2OpStatus &os);
 };
