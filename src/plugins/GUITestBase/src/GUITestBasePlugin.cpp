@@ -198,6 +198,16 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_2);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_3);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_4);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0002_2);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0002_3);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0002_4);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0003_1);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0003_2);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0003_3);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0003_4);
 //     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0005);
 //     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0006);
 //     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0007);
