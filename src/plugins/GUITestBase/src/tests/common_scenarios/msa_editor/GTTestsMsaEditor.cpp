@@ -28,6 +28,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsLog.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/util/PositionSelectorFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
@@ -711,6 +712,118 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2) {
     GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
+    GTGlobals::sleep();
+
+// Expected state: UGENE not crash
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014) {
+// UGENE crashes in malignment editor after aligning (UGENE-6)
+
+// 1. Do menu tools->multiple alignment->kalign, set input alignment "data/samples/CLUSTALW/COI.aln" and press Align button
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    GTLogTracer logTracer;
+    Runnable *filler2 = new KalignDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+// 2. after kalign finishes and msa opens insert gaps and click in alignment
+    GTGlobals::sleep(5000);
+    GTUtilsLog::check(os, logTracer);
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTGlobals::sleep();
+
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+
+// Expected state: UGENE not crash
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014_1) {
+// UGENE crashes in malignment editor after aligning (UGENE-6)
+
+// 1. Do menu tools->multiple alignment->kalign, set input alignment "data/samples/CLUSTALW/COI.aln" and press Align button
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    GTLogTracer logTracer;
+    Runnable *filler2 = new KalignDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+
+// CHANGES: using main menu
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+// 2. after kalign finishes and msa opens insert gaps and click in alignment
+    GTGlobals::sleep(5000);
+    GTUtilsLog::check(os, logTracer);
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTGlobals::sleep();
+
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+
+// Expected state: UGENE not crash
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014_2) {
+// UGENE crashes in malignment editor after aligning (UGENE-6)
+
+// 1. Do menu tools->multiple alignment->kalign, set input alignment "data/samples/CLUSTALW/COI.aln" and press Align button
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+// CHANGES: close and open MDI window, close Project tree view
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep();
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+    GTUtilsProjectTreeView::toggleView(os);
+    GTGlobals::sleep();
+
+    GTLogTracer logTracer;
+    Runnable *filler2 = new KalignDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+    GTGlobals::sleep();
+
+// 2. after kalign finishes and msa opens insert gaps and click in alignment
+    GTGlobals::sleep(5000);
+    GTUtilsLog::check(os, logTracer);
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTGlobals::sleep();
+
+    GTMouseDriver::click(os);
     GTGlobals::sleep();
 
 // Expected state: UGENE not crash
