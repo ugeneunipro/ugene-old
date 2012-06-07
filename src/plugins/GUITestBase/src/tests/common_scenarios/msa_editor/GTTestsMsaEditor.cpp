@@ -500,6 +500,163 @@ GUI_TEST_CLASS_DEFINITION(test_0010_2) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0011) {
+// In-place reverse complement replace in MSA Editor (0002425)
+
+// 1. Open file _common_data\scenarios\msa\translations_nucl.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln");
+
+// 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: sequence changed from TTG -> CAA 
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep();
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "CAA", "Clipboard string and expected MSA string differs");
+
+//                 sequence name  changed from L -> L|revcompl
+    QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
+    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "revcompl"), "There are no 'L|revcompl' in nameList");
+
+// 3. Do step 2 again
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: sequence changed from CAA -> TTG 
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep();
+    clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "TTG", "Clipboard string and expected MSA string differs");
+
+//                 sequence name changed from L|revcompl ->    
+    nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
+    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] != "revcompl"), "There are 'L|revcompl' in nameList");
+
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_1) {
+// In-place reverse complement replace in MSA Editor (0002425)
+
+// 1. Open file _common_data\scenarios\msa\translations_nucl.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln");
+
+// 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: sequence changed from TTG -> CAA 
+// CHANGES: copy by context menu
+    GTGlobals::sleep();
+    Runnable* chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "CAA", "Clipboard string and expected MSA string differs");
+
+//                 sequence name  changed from L -> L|revcompl
+    QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
+    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "revcompl"), "There are no 'L|revcompl' in nameList");
+
+// 3. Do step 2 again
+    Runnable *chooser3 = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
+    GTUtilsDialog::waitForDialog(os, chooser3, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: sequence changed from CAA -> TTG 
+    GTGlobals::sleep();
+// CHANGES: copy by context menu
+    GTGlobals::sleep();
+    Runnable* chooser4 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
+    GTUtilsDialog::waitForDialog(os, chooser4, GUIDialogWaiter::Popup);
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "TTG", "Clipboard string and expected MSA string differs");
+
+//                 sequence name changed from L|revcompl ->    
+    nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
+    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] != "revcompl"), "There are 'L|revcompl' in nameList");
+
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_2) {
+// In-place reverse complement replace in MSA Editor (0002425)
+
+// 1. Open file _common_data\scenarios\msa\translations_nucl.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "translations_nucl.aln");
+
+// 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
+// CHANGES: using main menu
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+//    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: sequence changed from TTG -> CAA 
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep();
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "CAA", "Clipboard string and expected MSA string differs");
+
+//                 sequence name  changed from L -> L|revcompl
+    QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
+    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "revcompl"), "There are no 'L|revcompl' in nameList");
+
+// 3. Do step 2 again
+// CHANGES: using main menu
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+//    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+// Expected state: sequence changed from CAA -> TTG 
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep();
+    clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "TTG", "Clipboard string and expected MSA string differs");
+
+//                 sequence name changed from L|revcompl ->    
+    nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
+    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] != "revcompl"), "There are 'L|revcompl' in nameList");
+
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0012) {
 // Add tests on alignment translation features (0002432)
 
