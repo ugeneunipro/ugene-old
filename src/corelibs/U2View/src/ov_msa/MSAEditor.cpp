@@ -611,7 +611,7 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), of
     mainLayout->addWidget(splitter, 0, 0, 2, 1);
     mainLayout->addWidget(cvBar, 1, 1);
     mainLayout->addWidget(label, 0, 1);
-//    mainLayout->addWidget(statusWidget, 2, 0, 1, 2);
+    mainLayout->addWidget(statusWidget, 2, 0, 1, 2);
     QWidget *mainWidget = new QWidget();
     mainWidget->setLayout(mainLayout);
     setLayout(mainLayout);
