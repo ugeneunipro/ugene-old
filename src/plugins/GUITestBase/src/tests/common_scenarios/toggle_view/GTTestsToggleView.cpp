@@ -639,6 +639,149 @@ GUI_TEST_CLASS_DEFINITION(test_0003_4) {
     CHECK_SET_ERR(DetailsViewSe2->isVisible() == true, "details view is hidden");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+    //1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide overview.
+    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_overview");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTGlobals::sleep();
+
+    //Expected state: over view for se2 sequence has been closed, all zoom buttons at this toolbar becomes disabled
+    QWidget *overViewSe2 = GTWidget::findWidget(os, "overview_se2");
+    CHECK_SET_ERR(overViewSe2->isVisible() == false, "overview is visible")
+
+
+    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show overview.
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTGlobals::sleep();
+
+    //Expected state: over view for se2 sequence has been appeared
+    CHECK_SET_ERR(overViewSe2->isVisible() == true, "overview is hidden")
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004_1) {
+    //1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide overview. CHANGES: using 'Toggle views' instead 'Toggle view'
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable* chooser2 = new PopupChooser(os, QStringList() << "toggleOverview");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    //Expected state: over view for se2 sequence has been closed, all zoom buttons at this toolbar becomes disabled
+    QWidget *overViewSe2 = GTWidget::findWidget(os, "overview_se2");
+    CHECK_SET_ERR(overViewSe2->isVisible() == false, "overview is visible");
+
+
+    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show overview.
+    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_overview");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTGlobals::sleep();
+
+    //Expected state: over view for se2 sequence has been appeared
+    CHECK_SET_ERR(overViewSe2->isVisible() == true, "overview is hidden")
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004_2) {
+    //1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide overview.
+    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_overview");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTGlobals::sleep();
+
+    //Expected state: over view for se2 sequence has been closed, all zoom buttons at this toolbar becomes disabled
+    QWidget *overViewSe2 = GTWidget::findWidget(os, "overview_se2");
+    CHECK_SET_ERR(overViewSe2->isVisible() == false, "overview is visible");
+
+
+    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show overview. CHANGES: using 'Toggle views' instead 'Toggle view'
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable* chooser2 = new PopupChooser(os, QStringList() << "toggleOverview");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    //Expected state: over view for se2 sequence has been appeared
+    CHECK_SET_ERR(overViewSe2->isVisible() == true, "overview is hidden")
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004_3) {
+    //1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide overview. CHANGES: using sequence se1 instead se2
+    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_overview");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    GTGlobals::sleep();
+
+    //Expected state: over view for se2 sequence has been closed, all zoom buttons at this toolbar becomes disabled
+    QWidget *overViewSe2 = GTWidget::findWidget(os, "overview_se1");
+    CHECK_SET_ERR(overViewSe2->isVisible() == false, "overview is visible");
+
+
+    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show overview.
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    GTGlobals::sleep();
+
+    //Expected state: over view for se2 sequence has been appeared
+    CHECK_SET_ERR(overViewSe2->isVisible() == true, "overview is hidden")
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004_4) {
+    //1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    //2. Click on toolbar button Toggle view for sequence se2. Click menu item Hide overview. CHANGES: using 'hide all' instead hide overview
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "show_hide_all_views");
+    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTGlobals::sleep();
+
+    //Expected state: over view for se2 sequence has been closed, all zoom buttons at this toolbar becomes disabled
+    QWidget *overViewSe2 = GTWidget::findWidget(os, "overview_se2");
+    CHECK_SET_ERR(overViewSe2->isVisible() == false, "overview is visible")
+
+    //3. Click on toolbar button Toggle view for sequence se2. Click menu item Show overview.
+    Runnable *chooser = new PopupChooser(os, QStringList() << "show_hide_overview");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTGlobals::sleep();
+
+    //Expected state: over view for se2 sequence has been appeared
+    CHECK_SET_ERR(overViewSe2->isVisible() == true, "overview is hidden")
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
 // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa, open file as separate sequences
