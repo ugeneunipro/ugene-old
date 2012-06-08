@@ -215,6 +215,7 @@ void WorkflowDesignerService::serviceStateChangedCallback(ServiceState , bool en
 
 void WorkflowDesignerService::sl_startWorkflowPlugin() {
     designerAction = new QAction( QIcon(":/workflow_designer/images/wd.png"), tr("Workflow Designer..."), this);
+    designerAction->setObjectName("Workflow Designer");
     connect(designerAction, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
 
     //managerAction = new QAction(tr("Workflow Manager"), this);

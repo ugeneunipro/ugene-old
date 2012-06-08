@@ -57,6 +57,7 @@ void ExpertDiscoveryPlugin::sl_initExpertDiscoveryViewCtx() {
           //AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(new ExpertDiscoverySignalsAutoAnnotationUpdater );
           //change the icon
           QAction* action = new QAction(  tr("Expert Discovery"), this );
+          action->setObjectName("Expert Discovery");
           connect( action, SIGNAL( triggered() ), SLOT( sl_expertDiscoveryView() ) );
 
           AppContext::getMainWindow()->getTopLevelMenu( MWMENU_TOOLS )->addAction( action );

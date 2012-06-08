@@ -101,15 +101,19 @@ UHMM3Plugin::UHMM3Plugin() : Plugin( tr( "hmm3_plugin_name" ), tr( "hmm3_plugin_
         }
         
         QMenu * hmm3ToolsSub = hmmMenu->addMenu(QIcon( ":/hmm3/images/hmmer_16.png" ), tr("HMMER3 tools"));
+        hmm3ToolsSub->menuAction()->setObjectName("HMMER3 tools");
         QAction * buildAction = new QAction( tr( "Build HMM3 profile" ), this );
+        buildAction->setObjectName("Build HMM3 profile");
         connect( buildAction, SIGNAL( triggered() ), SLOT( sl_buildProfile() ) );
         hmm3ToolsSub->addAction( buildAction );
         
         QAction * searchAction = new QAction( tr( "Search with HMM3" ), this );
+        searchAction->setObjectName("Search with HMM3");
         connect( searchAction, SIGNAL( triggered() ), SLOT( sl_searchHMMSignals() ) );
         hmm3ToolsSub->addAction( searchAction );
         
         QAction * phmmerAction = new QAction( tr( "Search with HMM3 phmmer" ), this );
+        phmmerAction->setObjectName("Search with HMM3 phmmer");
         connect( phmmerAction, SIGNAL( triggered() ), SLOT( sl_phmmerSearch() ) );
         hmm3ToolsSub->addAction( phmmerAction );
         

@@ -47,6 +47,7 @@ DNAExportPlugin::DNAExportPlugin() : Plugin(tr("DNA export"), tr("Export and imp
     if (AppContext::getMainWindow()) {
         services.push_back(new DNAExportService());
         QAction* a = new QAction(tr("Generate Sequence..."), this);
+        a->setObjectName("Generate Sequence");
         connect(a, SIGNAL(triggered()), SLOT(sl_generateSequence()));
         QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         toolsMenu->addAction(a);

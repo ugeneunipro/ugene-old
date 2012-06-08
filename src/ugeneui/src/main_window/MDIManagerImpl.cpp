@@ -60,28 +60,34 @@ void MWMDIManagerImpl::prepareGUI() {
 
 	//prepare Window menu
 	closeAct = new QAction(tr("close_active_view"), this);
+    closeAct->setObjectName("Close active view");
     closeAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
 	closeAct->setStatusTip(tr("close_active_view_statustip"));
 	connect(closeAct, SIGNAL(triggered()), mdiArea, SLOT(closeActiveSubWindow()));
 
 	closeAllAct = new QAction(tr("close_all_mdi_windows"), this);
+    closeAllAct->setObjectName("Close all windows");
 	closeAllAct->setStatusTip(tr("close_all_mdi_windows_statustip"));
 	connect(closeAllAct, SIGNAL(triggered()), mdiArea, SLOT(closeAllSubWindows()));
 
     tileAct = new QAction(QIcon(":ugene/images/window_tile.png"), tr("tile_mdi_windows"), this);
+    tileAct->setObjectName("Tile windows");
 	tileAct->setStatusTip(tr("tile_mdi_windows_statustip"));
 	connect(tileAct, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
 
 	cascadeAct = new QAction(QIcon(":ugene/images/window_cascade.png"), tr("cascade_mdi_windows"), this);
+    cascadeAct->setObjectName("Cascade windows");
 	cascadeAct->setStatusTip(tr("cascade_mdi_windows_statustip"));
 	connect(cascadeAct, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
 
 	nextAct = new QAction(QIcon(":ugene/images/window_next.png"), tr("next_mdi_window"), this);
+    nextAct->setObjectName("Next window");
 	nextAct->setStatusTip(tr("next_mdi_window_statustip"));
 	nextAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
 	connect(nextAct, SIGNAL(triggered()), mdiArea, SLOT(activateNextSubWindow()));
 
 	previousAct = new QAction(QIcon(":ugene/images/window_prev.png"), tr("previous_mdi_window"), this);
+    previousAct->setObjectName("Previous window");
 	previousAct->setStatusTip(tr("previous_mdi_window_statustip"));
 	previousAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
 	connect(previousAct, SIGNAL(triggered()),mdiArea, SLOT(activatePreviousSubWindow()));

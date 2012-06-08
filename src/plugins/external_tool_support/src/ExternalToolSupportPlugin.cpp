@@ -129,18 +129,21 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         clustalWTool->getViewContext()->init();
 
         ExternalToolSupportAction* clustalWAction = new ExternalToolSupportAction(tr("ClustalW..."), this, QStringList(CLUSTAL_TOOL_NAME));
+        clustalWAction->setObjectName("ClustalW");
         connect(clustalWAction, SIGNAL(triggered()), clustalWTool, SLOT(sl_runWithExtFileSpecify()));
 
         mAFFTTool->getViewContext()->setParent(this);
         mAFFTTool->getViewContext()->init();
 
         ExternalToolSupportAction* mAFFTAction= new ExternalToolSupportAction(tr("MAFFT..."), this, QStringList(MAFFT_TOOL_NAME));
+        mAFFTAction->setObjectName("MAFFT");
         connect(mAFFTAction, SIGNAL(triggered()), mAFFTTool, SLOT(sl_runWithExtFileSpecify()));
 
         tCoffeeTool->getViewContext()->setParent(this);
         tCoffeeTool->getViewContext()->init();
 
         ExternalToolSupportAction* tCoffeeAction= new ExternalToolSupportAction(tr("T-Coffee..."), this, QStringList(TCOFFEE_TOOL_NAME));
+        tCoffeeAction->setObjectName("T-Coffee");
         connect(tCoffeeAction, SIGNAL(triggered()), tCoffeeTool, SLOT(sl_runWithExtFileSpecify()));
 
         //Add to menu MA
@@ -149,6 +152,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         if(toolsSubmenu == NULL){
             toolsSubmenu = tools->addMenu(tr("Multiple alignment"));
             toolsSubmenu->setObjectName(MWMENU_TOOLS_MALIGN);
+            toolsSubmenu->menuAction()->setObjectName("Multiple alignment");
         }
 
         toolsSubmenu->setIcon(QIcon(":core/images/msa.png"));//bad code
@@ -224,9 +228,11 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
     if (AppContext::getMainWindow()) {
         ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));
+        formatDBAction->setObjectName("FormatDB");
         connect(formatDBAction, SIGNAL(triggered()), formatDBTool, SLOT(sl_runWithExtFileSpecify()));
 
         ExternalToolSupportAction* makeBLASTDBAction= new ExternalToolSupportAction(tr("BLAST+ make DB..."), this, QStringList(MAKEBLASTDB_TOOL_NAME));
+        makeBLASTDBAction->setObjectName("BLAST+ make DB");
         connect(makeBLASTDBAction, SIGNAL(triggered()), makeBLASTDBTool, SLOT(sl_runWithExtFileSpecify()));
 
         BlastAllSupportContext *blastAllViewContext = new BlastAllSupportContext(this);
@@ -234,6 +240,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         blastAllViewContext->init();
 
         ExternalToolSupportAction* blastallAction= new ExternalToolSupportAction(tr("BLAST Search..."), this, QStringList(BLASTALL_TOOL_NAME));
+        blastallAction->setObjectName("BLAST Search");
         connect(blastallAction, SIGNAL(triggered()), blastallTool, SLOT(sl_runWithExtFileSpecify()));
 
         BlastPlusSupportContext* blastPlusViewCtx = new BlastPlusSupportContext(this);
@@ -242,11 +249,13 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         QStringList toolList;
         toolList << BLASTN_TOOL_NAME << BLASTP_TOOL_NAME << BLASTX_TOOL_NAME << TBLASTN_TOOL_NAME << TBLASTX_TOOL_NAME << RPSBLAST_TOOL_NAME;
         ExternalToolSupportAction* blastPlusAction= new ExternalToolSupportAction(tr("BLAST+ Search..."), this, toolList);
+        blastPlusAction->setObjectName("BLAST+ Search");
         connect(blastPlusAction, SIGNAL(triggered()), blastNPlusTool, SLOT(sl_runWithExtFileSpecify()));
         
         //Add to menu NCBI Toolkit
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu* blastSubmenu = tools->addMenu(tr("BLAST"));
+        blastSubmenu->setObjectName("BLAST");
         blastSubmenu->setIcon(QIcon(":external_tool_support/images/ncbi.png"));
         blastSubmenu->addAction(formatDBAction);
         blastSubmenu->addAction(blastallAction);
@@ -254,6 +263,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         blastSubmenu->addAction(blastPlusAction);
         
         ExternalToolSupportAction* cap3Action = new ExternalToolSupportAction(QString("Contig assembly with %1").arg(cap3Tool->getName()), this, QStringList(cap3Tool->getName()));
+        cap3Action->setObjectName(QString("Contig assembly with %1").arg(cap3Tool->getName()));
         connect(cap3Action, SIGNAL(triggered()), cap3Tool, SLOT(sl_runWithExtFileSpecify()));
         QMenu* assemblySumbenu = tools->findChild<QMenu*>(MWMENU_TOOLS_ASSEMBLY);
         assemblySumbenu->addAction(cap3Action);

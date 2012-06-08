@@ -198,26 +198,33 @@ void MainWindowImpl::createActions() {
     connect(exitAction, SIGNAL(triggered()), SLOT(sl_exitAction()));
 
     aboutAction = new QAction(tr("About"), this);
+    aboutAction->setObjectName("About");
     aboutAction->setShortcut(QKeySequence(Qt::Key_F1));
     aboutAction->setShortcutContext(Qt::ApplicationShortcut);
     connect(aboutAction, SIGNAL(triggered()), SLOT(sl_aboutAction()));
 
     visitWebAction = new QAction(tr("Visit UGENE Web Site"), this);
+    visitWebAction->setObjectName("Visit UGENE Web Site");
     connect(visitWebAction, SIGNAL(triggered()), SLOT(sl_visitWeb()));
 
     viewOnlineDocumentation = new QAction(tr("View UGENE Documentation Online"), this);
+    viewOnlineDocumentation->setObjectName("View UGENE Documentation Online");
     connect(viewOnlineDocumentation, SIGNAL(triggered()), SLOT(sl_viewOnlineDocumentation()));
 
     checkUpdateAction = new QAction(tr("Check for Updates"), this);
+    checkUpdateAction->setObjectName("Check for Updates");
     connect(checkUpdateAction, SIGNAL(triggered()), SLOT(sl_checkUpdatesAction()));
 
     openManualAction = new QAction(tr("Open UGENE User Manual"), this);
+    openManualAction->setObjectName("Open UGENE User Manual");
     connect(openManualAction, SIGNAL(triggered()),SLOT(sl_openManualAction()));
 
     openWDManualAction = new QAction(tr("Open Workflow Designer Manual"), this);
+    openWDManualAction->setObjectName("Open Workflow Designer Manual");
     connect(openWDManualAction, SIGNAL(triggered()),SLOT(sl_openWDManualAction()));
 
     openQDManualAction = new QAction(tr("Open Query Designer Manual"), this);
+    openQDManualAction->setObjectName("Open Query Designer Manual");
     connect(openQDManualAction, SIGNAL(triggered()),SLOT(sl_openQDManualAction()));
 
 #ifdef _INSTALL_TO_PATH_ACTION

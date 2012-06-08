@@ -40,6 +40,7 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
 PerfMonitorPlugin::PerfMonitorPlugin() : Plugin( tr("Performance Monitor"), tr("Shows performance counters") ) {
     windowId = 0;
     openWindowAction = new QAction(tr("Show counters"), this);
+    openWindowAction->setObjectName("Show counters");
     openWindowAction->setIcon(QIcon(":perf_monitor/images/mon.png"));
     connect(openWindowAction, SIGNAL(triggered()), SLOT(sl_openWindow()));
 

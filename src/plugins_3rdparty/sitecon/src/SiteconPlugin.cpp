@@ -64,10 +64,12 @@ SiteconPlugin::SiteconPlugin() : Plugin(tr("sitecon_plugin"), tr("sitecon_plugin
         ctxADV->init();
 
         QAction* buildAction = new QAction(tr("sitecon_build"), this);
+        buildAction->setObjectName("Build new SITECON model from alignment");
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
         
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu* toolsSubmenu = tools->addMenu(QIcon(":/sitecon/images/sitecon.png"), tr("sitecon_menu"));
+        toolsSubMenu->menuAction()->setObjectName("SITECON");
 
         toolsSubmenu->addAction(buildAction);
     }

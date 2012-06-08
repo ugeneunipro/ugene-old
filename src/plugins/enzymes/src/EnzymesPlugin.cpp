@@ -98,12 +98,16 @@ EnzymesPlugin::EnzymesPlugin() : Plugin( tr("Restriction analysis"),
 void EnzymesPlugin::createToolsMenu()
 {
     openDigestSequenceDialog = new QAction(tr("Digest into Fragments..."), this);
+    openDigestSequenceDialog->setObjectName("Digest into Fragments");
     openConstructMoleculeDialog = new QAction(tr("Construct Molecule..."), this);
+    openConstructMoleculeDialog->setObjectName("Construct Molecule");
     openCreateFragmentDialog = new QAction(tr("Create Fragment..."), this);
+    openCreateFragmentDialog->setObjectName("Create Fragment");
     
     QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
     
     QMenu* cloningMenu = tools->addMenu(QIcon(":core/images/dna_helix.png"), tr("Cloning"));
+    cloningMenu->menuAction()->setObjectName("Cloning");
     
     cloningMenu->addAction(openDigestSequenceDialog);
     connect(openDigestSequenceDialog, SIGNAL(triggered()), SLOT(sl_onOpenDigestSequenceDialog()));   
@@ -236,6 +240,7 @@ void EnzymesADVContext::buildMenu( GObjectView* v, QMenu* m )
     }
         
     QMenu* cloningMenu = new QMenu(tr("Cloning"), m);
+    cloningMenu->menuAction()->setObjectName("Cloning");
     cloningMenu->addActions(cloningActions);
     
     QAction* exportMenuAction = GUIUtils::findAction(m->actions(), ADV_MENU_EXPORT);

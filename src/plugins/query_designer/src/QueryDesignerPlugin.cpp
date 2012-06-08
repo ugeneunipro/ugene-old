@@ -146,6 +146,7 @@ bool QueryDesignerService::closeViews() {
 
 void QueryDesignerService::sl_startQDPlugin() {
     QAction* action = new QAction(QIcon(":query_designer/images/query_designer.png"), tr("Query Designer..."), this);
+    action->setObjectName("Query Designer");
     connect(action, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
 
     QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);

@@ -81,22 +81,27 @@ uHMMPlugin::uHMMPlugin() : Plugin(tr("uhmm_plugin"), tr("uhmm_plugin_desc")), ct
 {
     if (AppContext::getMainWindow()) {
         QAction* buildAction = new QAction(tr("Build HMM2 profile"), this);
+        buildAction->setObjectName("Build HMM2 profile");
         connect(buildAction, SIGNAL(triggered()), SLOT(sl_build()));
 
         QAction* calibrateAction = new QAction(tr("Calibrate profile with HMM2"), this);
+        calibrateAction->setObjectName("Calibrate profile with HMM2");
         connect(calibrateAction, SIGNAL(triggered()), SLOT(sl_calibrate()));
         
         QAction* searchAction = new QAction(tr("Search with HMM2"), this);
+        searchAction->setObjectName("Search with HMM2");
         connect(searchAction, SIGNAL(triggered()), SLOT(sl_search()));
 
         QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu * hmmMenu = toolsMenu->property("hmm_menu").value<QMenu*>();
+        hmmMenu->menuAction()->setObjectName("HMMER tools");
         if(hmmMenu == NULL) {
             hmmMenu = toolsMenu->addMenu(QIcon(":/hmm2/images/hmmer_16.png"), tr("HMMER tools"));
             toolsMenu->setProperty("hmm_menu", qVariantFromValue<QMenu*>(hmmMenu));
         }
         
         QMenu* hmm2ToolsSub = hmmMenu->addMenu(QIcon(":/hmm2/images/hmmer_16.png"), tr("HMMER2 tools"));
+        hmm2ToolsSub->menuAction()->setObjectName("HMMER2 tools");
         hmm2ToolsSub->addAction(buildAction);
         hmm2ToolsSub->addAction(calibrateAction);
         hmm2ToolsSub->addAction(searchAction);

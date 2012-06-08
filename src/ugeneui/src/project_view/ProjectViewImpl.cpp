@@ -358,6 +358,7 @@ void ProjectViewImpl::enable() {
     
     assert(addExistingDocumentAction == NULL);
     addExistingDocumentAction = new QAction(QIcon(":ugene/images/advanced_open.png"), tr("Open as..."), w);
+    addExistingDocumentAction->setObjectName("Open as");
     addExistingDocumentAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O));
     addExistingDocumentAction->setShortcutContext(Qt::ApplicationShortcut);
     connect(addExistingDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddExistingDocument()));

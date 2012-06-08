@@ -77,6 +77,7 @@ KalignPlugin::KalignPlugin()
         ctx->init();
 
         QAction* kalignAction = new QAction(tr("Kalign..."), this);
+        kalignAction->setObjectName("Kalign");
         kalignAction->setIcon(QIcon(":kalign/images/kalign_16.png"));
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu* toolsSubmenu = tools->findChild<QMenu*>(MWMENU_TOOLS_MALIGN);

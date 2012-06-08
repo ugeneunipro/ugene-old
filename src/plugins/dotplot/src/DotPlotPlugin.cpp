@@ -77,6 +77,7 @@ DotPlotViewContext::DotPlotViewContext(QObject* p)
 {
     // add dotplot item to the tools menu
     QAction* showDlgAction = new QAction( QIcon(":dotplot/images/dotplot.png"), tr("Build dotplot..."), this );
+    showDlgAction->setObjectName("Build dotplot");
     connect( showDlgAction, SIGNAL( triggered() ), SLOT( sl_showDotPlotDialog() ) );
     AppContext::getMainWindow()->getTopLevelMenu( MWMENU_TOOLS )->addAction( showDlgAction );
 
