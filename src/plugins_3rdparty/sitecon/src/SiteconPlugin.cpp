@@ -69,7 +69,7 @@ SiteconPlugin::SiteconPlugin() : Plugin(tr("sitecon_plugin"), tr("sitecon_plugin
         
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu* toolsSubmenu = tools->addMenu(QIcon(":/sitecon/images/sitecon.png"), tr("sitecon_menu"));
-        toolsSubMenu->menuAction()->setObjectName("SITECON");
+        toolsSubmenu->menuAction()->setObjectName("SITECON");
 
         toolsSubmenu->addAction(buildAction);
     }

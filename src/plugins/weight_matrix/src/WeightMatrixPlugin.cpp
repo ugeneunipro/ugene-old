@@ -62,7 +62,7 @@ WeightMatrixPlugin::WeightMatrixPlugin() : Plugin(tr("Weight matrix"), tr("Searc
        
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu* toolsSubmenu = tools->addMenu(QIcon(":/weight_matrix/images/weight_matrix.png"), tr("Weight matrix"));
-        toolsSubMenu->menuAction()->setObjectName("Weight matrix");
+        toolsSubmenu->menuAction()->setObjectName("Weight matrix");
 
         toolsSubmenu->addAction(buildAction);
     }

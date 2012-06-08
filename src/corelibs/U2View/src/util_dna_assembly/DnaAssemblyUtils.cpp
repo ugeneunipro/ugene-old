@@ -51,7 +51,7 @@ DnaAssemblySupport::DnaAssemblySupport()
     QMenu *toolsMenu = AppContext::getMainWindow()->getTopLevelMenu( MWMENU_TOOLS );
     QMenu *dnaAssemblySub = toolsMenu->addMenu(QIcon( ":core/images/align.png" ), tr("DNA assembly"));
     dnaAssemblySub->setObjectName(MWMENU_TOOLS_ASSEMBLY);
-    dnaAssemblySyb->menuAction()->setObjectName("DNA assembly");
+    dnaAssemblySub->menuAction()->setObjectName("DNA assembly");
 
     QAction* convertAssemblyToSamAction = new QAction( tr("Convert UGENE Assembly data base to SAM format..."), this );
     convertAssemblyToSamAction->setObjectName("Convert UGENE Assembly data base to SAM format");
@@ -64,7 +64,7 @@ DnaAssemblySupport::DnaAssemblySupport()
     refAlignSub->setObjectName(MWMENU_TOOLS_REF_ALIGN);
 
     QAction* dnaAssemblyAction = new QAction( tr("Align short reads..."), this );
-    dnaAssebblyAction->setObjectName("Align short reads");
+    dnaAssemblyAction->setObjectName("Align short reads");
     dnaAssemblyAction->setIcon(QIcon(":core/images/align.png"));
     connect( dnaAssemblyAction, SIGNAL( triggered() ), SLOT( sl_showDnaAssemblyDialog() ) );
     refAlignSub->addAction( dnaAssemblyAction );
