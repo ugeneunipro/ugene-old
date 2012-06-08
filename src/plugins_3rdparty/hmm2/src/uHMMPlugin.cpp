@@ -94,12 +94,12 @@ uHMMPlugin::uHMMPlugin() : Plugin(tr("uhmm_plugin"), tr("uhmm_plugin_desc")), ct
 
         QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu * hmmMenu = toolsMenu->property("hmm_menu").value<QMenu*>();
-        hmmMenu->menuAction()->setObjectName("HMMER tools");
         if(hmmMenu == NULL) {
             hmmMenu = toolsMenu->addMenu(QIcon(":/hmm2/images/hmmer_16.png"), tr("HMMER tools"));
             toolsMenu->setProperty("hmm_menu", qVariantFromValue<QMenu*>(hmmMenu));
         }
         
+        hmmMenu->menuAction()->setObjectName("HMMER tools");
         QMenu* hmm2ToolsSub = hmmMenu->addMenu(QIcon(":/hmm2/images/hmmer_16.png"), tr("HMMER2 tools"));
         hmm2ToolsSub->menuAction()->setObjectName("HMMER2 tools");
         hmm2ToolsSub->addAction(buildAction);
