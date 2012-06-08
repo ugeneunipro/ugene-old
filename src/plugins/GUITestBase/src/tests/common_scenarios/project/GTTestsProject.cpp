@@ -224,40 +224,22 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0016) {
-    QDir dir(dataDir + "samples");
-    dir.makeAbsolute();
-    bool ok;
-    if (!dir.exists(dir.absolutePath()+ "/.dir")) {
-        ok = QDir::root().mkpath(dir.absolutePath() + "/.dir");
-        CHECK_SET_ERR(ok, QString("Can't create TEMP_DATA_DIR : %1").arg(dir.absolutePath()));
-    }
-
-    QFile fileTarget(dir.absolutePath() + "/.dir/example.gb");
-    if(!fileTarget.exists()){
-        QFile fileDest(dir.absolutePath()+"/Genbank/sars.gb");
-        QFile::copy(fileDest.fileName(), fileTarget.fileName());
-    }
-    GTUtilsProject::openFiles(os, fileTarget.fileName());
-    GTGlobals::sleep(100);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/genbank/.dir/murine.gb");
+    GTGlobals::sleep();
 
     Runnable *popupChooser = new PopupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse);
-    Runnable *filler = new CopyToFileAsDialogFiller(os, "", "", CopyToFileAsDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
+    Runnable *filler = new CopyToFileAsDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "example.gb"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "murine.gb"));
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(100);
-    if (dir.exists(dir.absolutePath()+ "/.dir")) {
-        QDir rmDir(dir.absolutePath()+ "/.dir");
-        QStringList lstFiles = rmDir.entryList(QDir::Files);
-        foreach (QString entry, lstFiles)
-        {
-            QString entryAbsPath = rmDir.absolutePath() + "/" + entry;
-            QFile::remove(entryAbsPath);
-        }
-        ok = QDir::root().rmpath(rmDir.absolutePath());
-        CHECK_SET_ERR(ok, QString("Can't remove TEMP_DATA_DIR : %1").arg(rmDir.absolutePath()));
-    }
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "murine_copy1.gb"));
+    GTGlobals::sleep();
+
+    GTGlobals::sleep(2000);
+    GTUtilsToolTip::checkExistingToolTip(os, ".dir");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0017) {

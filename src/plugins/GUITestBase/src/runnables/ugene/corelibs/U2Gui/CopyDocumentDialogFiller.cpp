@@ -41,7 +41,9 @@ os(_os), path(_path), name(_name), useMethod(method), format(_format), compressF
         __path += '/';
     }
 
-    path = __path;
+    if (!path.isEmpty()) {
+        path = __path;
+    }
 
     comboBoxItems[Genbank] = "Genbank";
     comboBoxItems[GFF] = "GFF";
@@ -53,26 +55,28 @@ void CopyToFileAsDialogFiller::run()
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
-    QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
-    GT_CHECK(lineEdit != NULL, "line edit not found");
-    GTLineEdit::setText(os, lineEdit, path + name);
+    if (!path.isEmpty()) {
+        QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+        GT_CHECK(lineEdit != NULL, "line edit not found");
+        GTLineEdit::setText(os, lineEdit, path + name);
 
-    QComboBox *comboBox = dialog->findChild<QComboBox*>("formatCombo");
-    GT_CHECK(comboBox != NULL, "ComboBox not found");
-    int index = comboBox->findText(comboBoxItems[format]);
+        QComboBox *comboBox = dialog->findChild<QComboBox*>("formatCombo");
+        GT_CHECK(comboBox != NULL, "ComboBox not found");
+        int index = comboBox->findText(comboBoxItems[format]);
 
-    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
-    if (comboBox->currentIndex() != index){
-        GTComboBox::setCurrentIndex(os, comboBox, index);
+        GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+        if (comboBox->currentIndex() != index){
+            GTComboBox::setCurrentIndex(os, comboBox, index);
+        }
+
+        QCheckBox *compressCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("compressCheck"));
+        GT_CHECK(compressCheckBox != NULL, "Check box not found");
+        GTCheckBox::setChecked(os, compressCheckBox, compressFile);
+
+        QCheckBox *addCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjCheck"));
+        GT_CHECK(addCheckBox != NULL, "Check box not found");
+        GTCheckBox::setChecked(os, addCheckBox, addToProject);
     }
-
-    QCheckBox *compressCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("compressCheck"));
-    GT_CHECK(compressCheckBox != NULL, "Check box not found");
-    GTCheckBox::setChecked(os, compressCheckBox, compressFile);
-
-    QCheckBox *addCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjCheck"));
-    GT_CHECK(addCheckBox != NULL, "Check box not found");
-    GTCheckBox::setChecked(os, addCheckBox, addToProject);
 
     QPushButton *btSave = dialog->findChild<QPushButton*>(QString::fromUtf8("createButton"));
     GT_CHECK(btSave != NULL, "Save button not found");
