@@ -40,11 +40,13 @@ MSAEditorUndoFramework::MSAEditorUndoFramework(QObject* p, MAlignmentObject* ma)
     setUndoLimit(100);
     
     uAction = createUndoAction(this);
+    uAction->setObjectName("Undo");
     uAction->setIcon(QIcon(":core/images/undo.png"));
     uAction->setShortcut(QKeySequence::Undo);
     uAction->setToolTip(QString("%1 (%2)").arg(uAction->text()).arg(uAction->shortcut().toString()));
 
     rAction = createRedoAction(this);
+    rAction->setObjectName("Redo");
     rAction->setIcon(QIcon(":core/images/redo.png"));
     rAction->setShortcut(QKeySequence::Redo);
     rAction->setToolTip(QString("%1 (%2)").arg(rAction->text()).arg(rAction->shortcut().toString()));

@@ -93,6 +93,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
    
     delSelectionAction = new QAction(tr("Remove selection"), this);
+    delSelectionAction->setObjectName("Remove selection");
     delSelectionAction->setShortcut(QKeySequence(Qt::Key_Delete));
     delSelectionAction->setShortcutContext(Qt::WidgetShortcut);
     connect(delSelectionAction, SIGNAL(triggered()), SLOT(sl_delCurrentSelection()));
@@ -121,10 +122,12 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
 
 
     createSubaligniment = new QAction(tr("Save subalignment"), this);
+    createSubaligniment->setObjectName("Save subalignment");
     createSubaligniment->setShortcutContext(Qt::WidgetShortcut);
     connect(createSubaligniment, SIGNAL(triggered()), SLOT(sl_createSubaligniment()));
 
     saveSequence = new QAction(tr("Save sequence"), this);
+    saveSequence->setObjectName("Save sequence");
     saveSequence->setShortcutContext(Qt::WidgetShortcut);
     connect(saveSequence, SIGNAL(triggered()), SLOT(sl_saveSequence()));
 
@@ -141,12 +144,15 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(gotoAction, SIGNAL(triggered()), SLOT(sl_goto()));
 
     removeAllGapsAction = new QAction(QIcon(":core/images/msaed_remove_all_gaps.png"), tr("Remove all gaps"), this);
+    removeAllGapsAction->setObjectName("Remove all gaps");
     connect(removeAllGapsAction, SIGNAL(triggered()), SLOT(sl_removeAllGaps()));
 
     addSeqFromFileAction = new QAction(tr("Sequence from file..."), this);
+    addSeqFromFileAction->setObjectName("Sequence from file");
     connect(addSeqFromFileAction, SIGNAL(triggered()), SLOT(sl_addSeqFromFile()));
 
     addSeqFromProjectAction = new QAction(tr("Sequence from current project..."), this);
+    addSeqFromProjectAction->setObjectName("Sequence from current project");
     connect(addSeqFromProjectAction, SIGNAL(triggered()), SLOT(sl_addSeqFromProject()));
 
     sortByNameAction = new QAction(tr("Sort sequences by name"), this);
@@ -154,6 +160,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(sortByNameAction, SIGNAL(triggered()), SLOT(sl_sortByName()));
 
     viewModeAction = new QAction(QIcon(":core/images/collapse.png"), tr("Enable collapsing"), this);
+    viewModeAction->setObjectName("Enable collapsing");
     viewModeAction->setCheckable(true);
     connect(viewModeAction, SIGNAL(toggled(bool)), SLOT(sl_setCollapsingMode(bool)));
 
@@ -205,6 +212,7 @@ void MSAEditorSequenceArea::prepareColorSchemeMenuActions() {
     QList<MSAColorSchemeFactory*> factories= csr->getMSAColorSchemes(atype);
     foreach(MSAColorSchemeFactory* f, factories) {
         QAction* action = new QAction(f->getName(), this);
+        action->setObjectName(f->getName());
         action->setCheckable(true);
         action->setChecked(f == csf);
         action->setData(f->getId());
@@ -1110,6 +1118,7 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     viewMenu->addAction(sortByNameAction);
 
     QMenu* colorsSchemeMenu = new QMenu(tr("Colors"), m);
+    colorsSchemeMenu->menuAction()->setObjectName("Colors");
     colorsSchemeMenu->setIcon(QIcon(":core/images/color_wheel.png"));
     foreach(QAction* a, colorSchemeMenuActions) {
         colorsSchemeMenu->addAction(a);

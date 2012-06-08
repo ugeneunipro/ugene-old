@@ -139,6 +139,7 @@ void TCoffeeSupportContext::initViewContext(GObjectView* view) {
     bool objLocked = msaed->getMSAObject()->isStateLocked();
 
     TCoffeeSupportAction* alignAction = new TCoffeeSupportAction(this, view, tr("Align with T-Coffee..."), 2000);
+    alignAction->setObjectName("Align with T-Coffee");
 
     addViewAction(alignAction);
     alignAction->setEnabled(!objLocked);

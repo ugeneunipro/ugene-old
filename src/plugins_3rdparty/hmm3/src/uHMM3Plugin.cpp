@@ -206,6 +206,7 @@ void UHMM3MSAEditorContext::initViewContext( GObjectView * view ) {
         return;
 
     GObjectViewAction * action = new GObjectViewAction( this, view, tr("Build HMMER3 profile") );
+    action->setObjectName("Build HMMER3 profile");
     action->setIcon( QIcon( ":/hmm3/images/hmmer_16.png" ) );
     connect( action, SIGNAL( triggered() ), SLOT( sl_build() ) );
     addViewAction( action );

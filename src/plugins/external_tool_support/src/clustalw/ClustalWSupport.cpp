@@ -137,6 +137,7 @@ void ClustalWSupportContext::initViewContext(GObjectView* view) {
     bool objLocked = msaed->getMSAObject()->isStateLocked();
 
     ClustalWSupportAction* alignAction = new ClustalWSupportAction(this, view, tr("Align with ClustalW..."), 2000);
+    alignAction->setObjectName("Align with ClustalW");
 
     addViewAction(alignAction);
     alignAction->setEnabled(!objLocked);

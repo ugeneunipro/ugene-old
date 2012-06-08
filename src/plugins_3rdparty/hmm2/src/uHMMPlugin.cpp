@@ -220,6 +220,7 @@ void HMMMSAEditorContext::initViewContext(GObjectView* view) {
         return;
 
     GObjectViewAction* a = new GObjectViewAction(this, view, tr("Build HMMER2 profile"));
+    a->setObjectName("Build HMMER2 profile");
     a->setIcon(QIcon(":/hmm2/images/hmmer_16.png"));
     connect(a, SIGNAL(triggered()), SLOT(sl_build()));
     addViewAction(a);

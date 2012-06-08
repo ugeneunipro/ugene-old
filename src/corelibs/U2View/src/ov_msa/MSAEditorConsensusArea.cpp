@@ -64,12 +64,15 @@ MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI* _ui) : editor(_ui->e
     connect(editor, SIGNAL(si_buildPopupMenu(GObjectView* , QMenu*)), SLOT(sl_buildContextMenu(GObjectView*, QMenu*)));
     
     copyConsensusAction = new QAction(tr("Copy consensus"), this);
+    copyConsensusAction->setObjectName("Copy consensus");
     connect(copyConsensusAction, SIGNAL(triggered()), SLOT(sl_copyConsensusSequence()));
 
     copyConsensusWithGapsAction = new QAction(tr("Copy consensus with gaps"), this);
+    copyConsensusWithGapsAction->setObjectName("Copy consensus with gaps");
     connect(copyConsensusWithGapsAction, SIGNAL(triggered()), SLOT(sl_copyConsensusSequenceWithGaps()));
 
     configureConsensusAction = new QAction(tr("Consensus mode..."), this);
+    configureConsensusAction->setObjectName("Consensus mode");
     connect(configureConsensusAction, SIGNAL(triggered()), SLOT(sl_configureConsensusAction()));
 
     setupFontAndHeight();

@@ -136,6 +136,7 @@ void MAFFTSupportContext::initViewContext(GObjectView* view) {
     bool objLocked = msaed->getMSAObject()->isStateLocked();
 
     MAFFTSupportAction* alignAction = new MAFFTSupportAction(this, view, tr("Align with MAFFT..."), 2000);
+    alignAction->setObjectName("Align with MAFFT");
 
     addViewAction(alignAction);
     alignAction->setEnabled(!objLocked);

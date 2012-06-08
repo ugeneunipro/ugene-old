@@ -104,21 +104,27 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     GCOUNTER(cvar,tvar,"MSAEditor");
 
     zoomInAction = new QAction(QIcon(":core/images/zoom_in.png"), tr("Zoom In"), this);
+    zoomInAction->setObjectName("Zoom In");
     connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomIn()));
 
     zoomOutAction = new QAction(QIcon(":core/images/zoom_out.png"), tr("Zoom Out"), this);
+    zoomOutAction->setObjectName("Zoom Out");
     connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOut()));
 
     zoomToSelectionAction = new QAction(QIcon(":core/images/zoom_reg.png"), tr("Zoom To Selection"), this);
+    zoomToSelectionAction->setObjectName("Zoom To Selection");
     connect(zoomToSelectionAction, SIGNAL(triggered()), SLOT(sl_zoomToSelection()));
 
     resetFontAction = new QAction(QIcon(":core/images/zoom_whole.png"), tr("Reset Zoom"), this);
+    resetFontAction->setObjectName("Reset Zoom");
     connect(resetFontAction, SIGNAL(triggered()), SLOT(sl_resetZoom()));
 
     changeFontAction = new QAction(QIcon(":core/images/font.png"), tr("Change Font"), this);
+    changeFontAction->setObjectName("Change Font");
     connect(changeFontAction, SIGNAL(triggered()), SLOT(sl_changeFont()));
 
     buildTreeAction = new QAction(QIcon(":/core/images/phylip.png"), tr("Build Tree"), this);
+    buildTreeAction->setObjectName("Build Tree");
     connect(buildTreeAction, SIGNAL(triggered()), SLOT(sl_buildTree()));
 
     Settings* s = AppContext::getSettings();
@@ -446,9 +452,11 @@ QWidget* MSAEditor::createWidget() {
 
     connect(ui , SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));
     saveScreenshotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
+    saveScreenshotAction->setObjectName("Export as image");
     connect(saveScreenshotAction, SIGNAL(triggered()), ui, SLOT(sl_saveScreenshot()));
     
 	saveSvgAction = new QAction(tr("Export as SVG"), this);
+    saveSvgAction->setObjectName("Export as SVG");
 	connect(saveSvgAction, SIGNAL(triggered()), ui, SLOT(sl_saveSvgImage()));
 	
 	initDragAndDropSupport();
