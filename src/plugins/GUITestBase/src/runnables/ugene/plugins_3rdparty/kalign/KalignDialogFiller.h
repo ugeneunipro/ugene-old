@@ -26,12 +26,10 @@
 
 namespace U2 {
 
-class KalignDialogFiller : public Runnable {
+class KalignDialogFiller : public Filler {
 public:
     KalignDialogFiller(U2OpStatus &_os);
     virtual void run();
-private:
-    U2OpStatus &os;
 };
 
 }

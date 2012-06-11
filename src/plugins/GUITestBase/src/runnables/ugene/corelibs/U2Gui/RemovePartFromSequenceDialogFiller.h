@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-    class RemovePartFromSequenceDialogFiller : public Runnable {
+    class RemovePartFromSequenceDialogFiller : public Filler {
     public:
         enum RemoveType {Remove, Resize};
         enum FormatToUse {FASTA, Genbank};
@@ -37,7 +37,6 @@ namespace U2 {
 
         virtual void run();
     private:
-        U2OpStatus &os;
         QString range;
         RemoveType removeType;
         FormatToUse format;

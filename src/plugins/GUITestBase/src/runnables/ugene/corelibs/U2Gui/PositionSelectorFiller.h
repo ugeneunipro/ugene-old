@@ -26,12 +26,11 @@
 
 namespace U2 {
 
-    class GoToDialogFiller : public Runnable {
+    class GoToDialogFiller : public Filler {
     public:
-        GoToDialogFiller(U2OpStatus &_os, int _goTo) : os(_os), goTo(_goTo){}
+        GoToDialogFiller(U2OpStatus &_os, int _goTo) : Filler(_os, "PositionSelector"), goTo(_goTo){}
         virtual void run();
     private:
-        U2OpStatus &os;
         int goTo;
     };
 }

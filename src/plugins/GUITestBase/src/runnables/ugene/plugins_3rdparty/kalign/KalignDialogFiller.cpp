@@ -29,7 +29,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::KalignDialogFiller"
 
-KalignDialogFiller::KalignDialogFiller(U2OpStatus &_os) : os(_os) {}
+KalignDialogFiller::KalignDialogFiller(U2OpStatus &_os) : Filler(_os, "KalignDialog") {}
 
 #define GT_METHOD_NAME "run"
 void KalignDialogFiller::run()

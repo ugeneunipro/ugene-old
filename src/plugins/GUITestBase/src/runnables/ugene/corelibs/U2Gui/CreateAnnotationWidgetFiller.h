@@ -26,21 +26,18 @@
 
 namespace U2 {
 
-    class CreateAnnotationDialogChecker : public Runnable {
+    class CreateAnnotationWidgetChecker : public Filler {
     public:
-        CreateAnnotationDialogChecker(U2OpStatus &_os) : os(_os){}
+        CreateAnnotationWidgetChecker(U2OpStatus &_os) : Filler(_os, "CreateAnnotationWidget"){}
         virtual void run();
-    private:
-        U2OpStatus &os;
     };
 
-    class CreateAnnotationDialogFiller : public Runnable {
+    class CreateAnnotationWidgetFiller : public Filler {
     public:
-        CreateAnnotationDialogFiller(U2OpStatus &_os, const QString &_groupName, const QString &_annotationName, const QString &_location)
-            :os(_os), groupName(_groupName), annotationName(_annotationName), location(_location){}
+        CreateAnnotationWidgetFiller(U2OpStatus &_os, const QString &_groupName, const QString &_annotationName, const QString &_location)
+            : Filler(_os, "CreateAnnotationWidget"), groupName(_groupName), annotationName(_annotationName), location(_location){}
         virtual void run();
     private:
-        U2OpStatus &os;
         const QString groupName;
         const QString annotationName;
         const QString location;

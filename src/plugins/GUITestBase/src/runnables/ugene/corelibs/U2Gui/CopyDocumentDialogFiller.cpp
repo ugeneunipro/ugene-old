@@ -32,10 +32,11 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::CopyToFileAsDialogFiller"
-CopyToFileAsDialogFiller::CopyToFileAsDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name, 
-                         CopyToFileAsDialogFiller::FormatToUse _format, bool compressFile,
+CopyDocumentDialogFiller::CopyDocumentDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name, 
+                         CopyDocumentDialogFiller::FormatToUse _format, bool compressFile,
                          bool addToProject, GTGlobals::UseMethod method):
-os(_os), path(_path), name(_name), useMethod(method), format(_format), compressFile(compressFile), addToProject(addToProject) {
+Filler(_os, "CopyDocumentDialogFiller"),
+path(_path), name(_name), useMethod(method), format(_format), compressFile(compressFile), addToProject(addToProject) {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
         __path += '/';
@@ -50,7 +51,7 @@ os(_os), path(_path), name(_name), useMethod(method), format(_format), compressF
 }
 
 #define GT_METHOD_NAME "run"
-void CopyToFileAsDialogFiller::run()
+void CopyDocumentDialogFiller::run()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

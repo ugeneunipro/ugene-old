@@ -32,7 +32,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::CreateAnnotationDialogChecker"
 #define GT_METHOD_NAME "run"
-void CreateAnnotationDialogChecker::run() {
+void CreateAnnotationWidgetChecker::run() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
@@ -58,7 +58,7 @@ void CreateAnnotationDialogChecker::run() {
 
 #define GT_CLASS_NAME "GTUtilsDialog::CreateAnnotationDialogFiller"
 #define GT_METHOD_NAME "run"
-void CreateAnnotationDialogFiller::run() {
+void CreateAnnotationWidgetFiller::run() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

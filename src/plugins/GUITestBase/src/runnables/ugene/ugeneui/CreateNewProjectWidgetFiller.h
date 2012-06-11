@@ -26,13 +26,12 @@
 
 namespace U2 {
 
-    class SaveProjectAsDialogFiller : public Runnable {
+    class SaveProjectAsDialogFiller : public Filler {
     public:
         SaveProjectAsDialogFiller(U2OpStatus &_os, const QString &_projectName, const QString &_projectFolder, const QString &_projectFile)
-            :os(_os), projectName(_projectName), projectFolder(_projectFolder), projectFile(_projectFile){}
+            :Filler(_os, "CreateNewProjectDialog"), projectName(_projectName), projectFolder(_projectFolder), projectFile(_projectFile){}
         virtual void run();
     private:
-        U2OpStatus &os;
         const QString projectName;
         const QString projectFolder;
         const QString projectFile;

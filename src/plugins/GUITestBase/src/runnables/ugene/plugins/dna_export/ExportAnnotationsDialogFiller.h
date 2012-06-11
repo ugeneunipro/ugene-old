@@ -26,14 +26,13 @@
 
 namespace U2 {
 
-    class ExportAnnotationsFiller : public Runnable {
+    class ExportAnnotationsFiller : public Filler {
     public:
         enum fileFormat {genbank, gff, csv};
         ExportAnnotationsFiller(U2OpStatus &_os, const QString &_exportToFile, fileFormat _format, bool _saveSequencesUnderAnnotations = true,
                                 bool _saveSequenceNames = true, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
-        U2OpStatus &os;
         QString exportToFile;
         fileFormat format;
         QMap<fileFormat, QString> comboBoxItems;

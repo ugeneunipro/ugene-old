@@ -27,14 +27,13 @@
 
 namespace U2 {
 
-    class SmithWatermanDialogFiller : public Runnable {
+    class SmithWatermanDialogFiller : public Filler {
     public:
         enum Button {Search, Cancel};
-        SmithWatermanDialogFiller(U2OpStatus &_os, const QString& _pattern = "", const GTRegionSelector::RegionSelectorSettings& _s = GTRegionSelector::RegionSelectorSettings()) : button(Search), os(_os), pattern(_pattern), s(_s){}
+        SmithWatermanDialogFiller(U2OpStatus &_os, const QString& _pattern = "", const GTRegionSelector::RegionSelectorSettings& _s = GTRegionSelector::RegionSelectorSettings()) : Filler(_os, "SmithWatermanDialogBase"), button(Search), pattern(_pattern), s(_s){}
         virtual void run();
         Button button;
     private:
-        U2OpStatus &os;
         QString pattern;
         GTRegionSelector::RegionSelectorSettings s;
     };

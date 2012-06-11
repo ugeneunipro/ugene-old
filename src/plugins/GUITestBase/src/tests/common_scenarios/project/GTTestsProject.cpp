@@ -179,8 +179,8 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     Runnable *popupChooser = new PopupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
 
-    Runnable *filler = new CopyToFileAsDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "1.gb", 
-                                                   CopyToFileAsDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
+    Runnable *filler = new CopyDocumentDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "1.gb", 
+                                                   CopyDocumentDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
     GTGlobals::sleep(100);
 
@@ -228,7 +228,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
     GTGlobals::sleep();
 
     Runnable *popupChooser = new PopupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse);
-    Runnable *filler = new CopyToFileAsDialogFiller(os);
+    Runnable *filler = new CopyDocumentDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "murine.gb"));
     GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
@@ -368,7 +368,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(100);
 
-    Runnable *filler = new CreateAnnotationDialogFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
+    Runnable *filler = new CreateAnnotationWidgetFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
     GTUtilsDialog::waitForDialog(os, filler);
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();

@@ -61,7 +61,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTGlobals::sleep();
 
 // Press Ctrl+N and add annotation to it annotations table.
-    Runnable *filler = new CreateAnnotationDialogFiller(os, "<auto>", "CCC", "1.. 10");
+    Runnable *filler = new CreateAnnotationWidgetFiller(os, "<auto>", "CCC", "1.. 10");
     GTUtilsDialog::waitForDialog(os, filler);
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
@@ -114,7 +114,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTGlobals::sleep();
 
 // Press Ctrl+N and add annotation "misc_feature" to the annotations table in 1.gb document.
-    Runnable *filler2 = new CreateAnnotationDialogFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
+    Runnable *filler2 = new CreateAnnotationWidgetFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
     GTUtilsDialog::waitForDialog(os, filler2);
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();

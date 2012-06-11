@@ -41,7 +41,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTFileDialogUtils"
 
-class GTFileDialogUtils : public Runnable {
+class GTFileDialogUtils : public Filler {
 public:
     enum Button {Open, Cancel};
     enum ViewMode {List, Detail};
@@ -59,7 +59,6 @@ private:
     void setViewMode(ViewMode);
 
     QWidget *fileDialog;
-    U2OpStatus &os;
     QString path, fileName, filters;
     Button button;
     GTGlobals::UseMethod method;
@@ -67,7 +66,7 @@ private:
 
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
                                      const QString &_filters, Button _button, GTGlobals::UseMethod _method) :
-    os(_os),
+    Filler(_os, ""),
     path(_path),
     fileName(_fileName),
     filters(_filters),

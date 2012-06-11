@@ -43,7 +43,7 @@ InsertSequenceFiller::InsertSequenceFiller(U2OpStatus &_os, const QString &_past
     const QString &_documentLocation, 
     documentFormat _format, bool _saveToNewFile, bool _mergeAnnotations,
     GTGlobals::UseMethod method):
-os(_os), pasteDataHere(_pasteDataHere), regionResolvingMode(_regionResolvingMode), insertPosition(_insertPosition),
+Filler(_os, "EditSequenceDialog"), pasteDataHere(_pasteDataHere), regionResolvingMode(_regionResolvingMode), insertPosition(_insertPosition),
 documentLocation(_documentLocation), format(_format), saveToNewFile(_saveToNewFile), mergeAnnotations(_mergeAnnotations),
 useMethod(method)
 {

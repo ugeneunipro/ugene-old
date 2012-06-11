@@ -26,12 +26,11 @@
 
 namespace U2 {
 
-    class ExportToSequenceFormatFiller : public Runnable {
+    class ExportToSequenceFormatFiller : public Filler {
     public:
         ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
-        U2OpStatus &os;
         QString path, name;
         GTGlobals::UseMethod useMethod;
     };

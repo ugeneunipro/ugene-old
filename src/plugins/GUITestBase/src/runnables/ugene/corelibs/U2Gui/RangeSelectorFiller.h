@@ -26,12 +26,11 @@
 
 namespace U2 {
 
-    class ZoomToRangeDialogFiller : public Runnable {
+    class ZoomToRangeDialogFiller : public Filler {
     public:
-        ZoomToRangeDialogFiller(U2OpStatus &_os, int min, int max) : os(_os), minVal(min), maxVal(max){}
+        ZoomToRangeDialogFiller(U2OpStatus &_os, int min, int max) : Filler(_os, "range_selector"), minVal(min), maxVal(max){}
         virtual void run();
     private:
-        U2OpStatus &os;
         int minVal, maxVal;
     };
 }

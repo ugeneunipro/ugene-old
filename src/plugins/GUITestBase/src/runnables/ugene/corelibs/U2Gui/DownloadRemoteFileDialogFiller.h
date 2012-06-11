@@ -26,13 +26,12 @@
 
 namespace U2 {
 
-    class RemoteDBDialogFiller : public Runnable {
+    class RemoteDBDialogFiller : public Filler {
     public:
         RemoteDBDialogFiller(U2OpStatus &_os, const QString _resID, int _DBItemNum, bool _pressCancel = false, const QString _saveDirPath = QString(),  GTGlobals::UseMethod _useMethod = GTGlobals::UseMouse)
-            :os(_os), resID(_resID), DBItemNum(_DBItemNum), pressCancel(_pressCancel), saveDirPath(_saveDirPath), useMethod(_useMethod){}
+            :Filler(_os, "DownloadRemoteFileDialog"), resID(_resID), DBItemNum(_DBItemNum), pressCancel(_pressCancel), saveDirPath(_saveDirPath), useMethod(_useMethod){}
         virtual void run();
     private:
-        U2OpStatus &os;
         QString resID;
         int DBItemNum;
         bool pressCancel;

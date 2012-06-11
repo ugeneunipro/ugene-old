@@ -34,7 +34,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::createDocumentFiller"
 CreateDocumentFiller::CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, const QString &_documentLocation,
     documentFormat _format, const QString &_sequenceName, GTGlobals::UseMethod method):
-os(_os), format(_format), useMethod(method)
+Filler(_os, "CreateDocumentFromTextDialog"), format(_format), useMethod(method)
 {
     sequenceName = _sequenceName;
     pasteDataHere = _pasteDataHere;

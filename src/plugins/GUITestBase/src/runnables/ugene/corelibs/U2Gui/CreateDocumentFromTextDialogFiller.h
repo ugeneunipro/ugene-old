@@ -26,14 +26,13 @@
 
 namespace U2 {
 
-    class CreateDocumentFiller : public Runnable {
+    class CreateDocumentFiller : public Filler {
     public:
         enum documentFormat {FASTA, Genbank};
         CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, const QString &_documentLocation,
                              documentFormat _format, const QString &_sequenceName, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
-        U2OpStatus &os;
         QString documentLocation;
         QString pasteDataHere;
         QString sequenceName;

@@ -36,7 +36,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::ExportAnnotationsFiller"
 ExportAnnotationsFiller::ExportAnnotationsFiller(U2OpStatus &_os, const QString &_exportToFile, fileFormat _format, bool _saveSequencesUnderAnnotations,
     bool _saveSequenceNames, GTGlobals::UseMethod method):
-os(_os), format(_format), saveSequencesUnderAnnotations(_saveSequencesUnderAnnotations), saveSequenceNames(_saveSequenceNames), useMethod(method)
+Filler(_os, "U2::ExportAnnotationsDialog"), format(_format), saveSequencesUnderAnnotations(_saveSequencesUnderAnnotations), saveSequenceNames(_saveSequenceNames), useMethod(method)
 {
     QString __exportToFile = QDir::cleanPath(QDir::currentPath() + "/" + _exportToFile);
     exportToFile = __exportToFile;

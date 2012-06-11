@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-    class selectSequenceRegionDialogFiller : public Runnable {
+    class selectSequenceRegionDialogFiller : public Filler {
     public:
         enum RangeType {Single, Multiple};
         selectSequenceRegionDialogFiller(U2OpStatus &_os, int *_len);
@@ -37,7 +37,6 @@ namespace U2 {
 
         virtual void run();
     private:
-        U2OpStatus &os;
         RangeType rangeType;
         bool selectAll, fromBegin;
         int minVal, maxVal, length, *len;

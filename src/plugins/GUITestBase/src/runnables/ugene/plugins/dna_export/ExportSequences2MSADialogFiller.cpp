@@ -34,7 +34,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSequenceAsAlignmentFiller"
 ExportSequenceAsAlignmentFiller::ExportSequenceAsAlignmentFiller(U2OpStatus &_os, const QString &_path, const QString &_name,
                                 ExportSequenceAsAlignmentFiller::FormatToUse _format, bool addDocumentToProject, GTGlobals::UseMethod method):
-os(_os), name(_name), useMethod(method), format(_format), addToProject(addDocumentToProject) {
+Filler(_os, "U2::ExportSequences2MSADialog"), name(_name), useMethod(method), format(_format), addToProject(addDocumentToProject) {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
         __path += '/';

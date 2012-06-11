@@ -58,7 +58,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTGlobals::sleep(2000);
 
     GTKeyboardDriver::keyClick(os, 'N', GTKeyboardDriver::key["ctrl"]);
-    Runnable *checker = new CreateAnnotationDialogChecker(os);
+    Runnable *checker = new CreateAnnotationWidgetChecker(os);
     GTUtilsDialog::waitForDialog(os, checker);
     GTGlobals::sleep();
 
@@ -69,9 +69,9 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
 {
 #define GT_CLASS_NAME "GUITest_common_scenarios_project_user_locking_test_0002::CreateAnnnotationDialogComboBoxChecker"
 #define GT_METHOD_NAME "run"
-    class CreateAnnnotationDialogComboBoxChecker : public Runnable {
+    class CreateAnnnotationDialogComboBoxChecker : public Filler {
     public:
-        CreateAnnnotationDialogComboBoxChecker(U2OpStatus &_os, const QString &radioButtonName): buttonName(radioButtonName), os(_os){}
+        CreateAnnnotationDialogComboBoxChecker(U2OpStatus &_os, const QString &radioButtonName): buttonName(radioButtonName), Filler(_os, ""){}
         void run() {
             QWidget* dialog = QApplication::activeModalWidget();
             GT_CHECK(dialog != NULL, "activeModalWidget is NULL");
@@ -97,7 +97,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
 
     private:
         QString buttonName;
-        U2OpStatus &os;
     };
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

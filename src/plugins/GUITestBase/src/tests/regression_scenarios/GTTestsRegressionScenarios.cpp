@@ -48,11 +48,10 @@ GUI_TEST_CLASS_DEFINITION(test_0986) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep(3000);
 
-    class EscClicker : public Runnable {
+    class EscClicker : public Filler {
     public:
-        EscClicker(U2OpStatus& _os) : os(_os){}
+        EscClicker(U2OpStatus& _os) : Filler(_os, ""){}
         virtual void run(){ GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["esc"]); }
-        U2OpStatus& os;
     };
     Runnable *escClicker = new EscClicker(os);
 

@@ -26,15 +26,14 @@
 
 namespace U2 {
 
-    class CopyToFileAsDialogFiller : public Runnable {
+    class CopyDocumentDialogFiller : public Filler {
     public:
         enum FormatToUse {Genbank, GFF};
-        CopyToFileAsDialogFiller(U2OpStatus &_os, const QString &_path = "", const QString &_name = "", 
-            CopyToFileAsDialogFiller::FormatToUse _format = CopyToFileAsDialogFiller::Genbank, bool compressFile = false,
+        CopyDocumentDialogFiller(U2OpStatus &_os, const QString &_path = "", const QString &_name = "", 
+            CopyDocumentDialogFiller::FormatToUse _format = CopyDocumentDialogFiller::Genbank, bool compressFile = false,
                                  bool addToProject = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
-        U2OpStatus &os;
         QString path, name;
         GTGlobals::UseMethod useMethod;
         FormatToUse format;

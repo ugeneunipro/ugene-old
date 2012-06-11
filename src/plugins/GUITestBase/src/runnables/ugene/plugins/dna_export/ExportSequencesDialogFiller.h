@@ -26,17 +26,16 @@
 
 namespace U2 {
 
-    class ExportSelectedRegionFiller : public Runnable {
+    class ExportSelectedRegionFiller : public Filler {
     public:
         ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method);
           virtual void run();
     private:
-        U2OpStatus &os;
         QString path, name;
         GTGlobals::UseMethod useMethod;
     };
 
-    class ExportSequenceOfSelectedAnnotationsFiller : public Runnable {
+    class ExportSequenceOfSelectedAnnotationsFiller : public Filler {
     public:
         enum FormatToUse {Fasta, Fastaq, Gff, Genbank};
         enum MergeOptions {SaveAsSeparate, Merge};
@@ -44,7 +43,6 @@ namespace U2 {
                                                   bool _addDocToProject = true, bool _exportWithAnnotations = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
-        U2OpStatus &os;
         QString path;
         int gapLength;
         FormatToUse format;

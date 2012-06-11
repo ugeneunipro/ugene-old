@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-class GTSequenceReadingModeDialogUtils : public Runnable {
+class GTSequenceReadingModeDialogUtils : public Filler {
 public:
     enum sequenceMode {Separate, Merge};
     enum Button {Ok, Cancel};
@@ -44,8 +44,6 @@ private:
     void changeSpinBoxValue(QSpinBox*, int);
 
     QWidget *dialog;
-    U2OpStatus &os;
-
 };
 
 } // namespace

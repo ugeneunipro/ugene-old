@@ -46,6 +46,7 @@ PositionSelector::PositionSelector(QWidget* p, int s, int e, bool fixedSize)
 }
 
 void PositionSelector::init(bool fixedSize) {
+    setObjectName("PositionSelector");
     int w = qMax(((int)log10((double)rangeEnd))*10, 70);
     posEdit = new QLineEdit(this);
     posEdit->setObjectName("go_to_pos_line_edit");

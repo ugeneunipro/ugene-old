@@ -35,7 +35,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSelectedRegionFiller"
 ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method):
-os(_os), name(_name), useMethod(method) {
+Filler(_os, "U2::ExportSequencesDialog"), name(_name), useMethod(method) {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
         __path += '/';
@@ -64,7 +64,7 @@ void ExportSelectedRegionFiller::run()
 #define GT_CLASS_NAME "GTUtilsDialog::exportSequenceOfSelectedAnnotationsFiller"
 ExportSequenceOfSelectedAnnotationsFiller::ExportSequenceOfSelectedAnnotationsFiller(U2OpStatus &_os, const QString &_path, FormatToUse _format, MergeOptions _options, int _gapLength,
     bool _addDocToProject, bool _exportWithAnnotations, GTGlobals::UseMethod method):
-    os(_os), gapLength(_gapLength), format(_format), addToProject(_addDocToProject), exportWithAnnotations(false),
+    Filler(_os, "U2::ExportSequencesDialog"), gapLength(_gapLength), format(_format), addToProject(_addDocToProject), exportWithAnnotations(false),
     options(_options), useMethod(method)
 {
     exportWithAnnotations = _exportWithAnnotations;

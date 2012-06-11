@@ -26,16 +26,15 @@
 
 namespace U2 {
 
-    class SequenceReadingModeSelectorDialogFiller : public Runnable {
+    class SequenceReadingModeSelectorDialogFiller : public Filler {
     public:
         enum ReadingMode {Separate, Merge, Join, Align};
 
         SequenceReadingModeSelectorDialogFiller(U2OpStatus &_os, ReadingMode _mode = Separate, int _bases=10):
-        os(_os), readingMode(_mode), bases(_bases) {}
+        Filler(_os, "SequenceReadingModeSelectorDialog"), readingMode(_mode), bases(_bases) {}
 
         virtual void run();
     private:
-        U2OpStatus &os;
         ReadingMode readingMode;
         int bases;
     };

@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-    class InsertSequenceFiller : public Runnable {
+    class InsertSequenceFiller : public Filler {
     public:
         enum documentFormat {FASTA, Genbank};
         enum RegionResolvingMode {Resize, Remove, SplitJoin, SplitSeparate};
@@ -37,7 +37,6 @@ namespace U2 {
                              GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
-        U2OpStatus &os;
         QString pasteDataHere;
         RegionResolvingMode regionResolvingMode;
         int insertPosition;

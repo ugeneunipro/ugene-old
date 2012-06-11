@@ -32,7 +32,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportToSequenceFormatFiller"
 
-ExportMSA2MSADialogFiller::ExportMSA2MSADialogFiller(U2OpStatus &_os) : os(_os) {}
+ExportMSA2MSADialogFiller::ExportMSA2MSADialogFiller(U2OpStatus &_os) : Filler(_os, "U2::ExportMSA2MSADialog") {}
 
 #define GT_METHOD_NAME "run"
 void ExportMSA2MSADialogFiller::run()

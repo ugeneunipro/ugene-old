@@ -32,6 +32,14 @@ public:
     virtual ~Runnable(){}
 };
 
+class Filler : public Runnable {
+public:
+    Filler(U2OpStatus& _os, const QString& _objectName) : os(_os), objectName(_objectName){}
+protected:
+    U2OpStatus &os;
+    QString objectName;
+};
+
 class GUIDialogWaiter : public QObject {
     Q_OBJECT
 public:

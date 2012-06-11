@@ -35,10 +35,10 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::RemovePartFromSequenceDialogFiller"
 RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os, QString _range):
-os(_os), range(_range), removeType(Resize), format(FASTA) {}
+Filler(_os, "RemovePartFromSequenceDialog"), range(_range), removeType(Resize), format(FASTA) {}
 
 RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os,RemoveType _removeType, bool _saveNew, const QString &_saveToFile, FormatToUse _format):
-os(_os), removeType(_removeType), format(_format), saveNew(_saveNew) {
+Filler(_os, "RemovePartFromSequenceDialog"), removeType(_removeType), format(_format), saveNew(_saveNew) {
     QString __saveToFile = QDir::cleanPath(QDir::currentPath() + "/" + _saveToFile);
     saveToFile = __saveToFile;
     comboBoxItems[FASTA] = "FASTA";
@@ -46,7 +46,7 @@ os(_os), removeType(_removeType), format(_format), saveNew(_saveNew) {
 }
 
 RemovePartFromSequenceDialogFiller::RemovePartFromSequenceDialogFiller(U2OpStatus &_os, RemoveType _removeType):
-os(_os), removeType(_removeType), format(FASTA){}
+Filler(_os, "RemovePartFromSequenceDialog"), removeType(_removeType), format(FASTA){}
 
 #define GT_METHOD_NAME "run"
 void RemovePartFromSequenceDialogFiller::run()

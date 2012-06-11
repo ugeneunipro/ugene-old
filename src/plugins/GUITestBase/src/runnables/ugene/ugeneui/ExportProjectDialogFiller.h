@@ -26,24 +26,22 @@
 
 namespace U2 {
 
-    class ExportProjectDialogFiller : public Runnable {
+    class ExportProjectDialogFiller : public Filler {
     public:
         ExportProjectDialogFiller(U2OpStatus &_os, const QString &_projectFolder, const QString &_projectName = "")
-            :os(_os), projectFolder(_projectFolder), projectName(_projectName){}
+            :Filler(_os, "ExportProjectDialog"), projectFolder(_projectFolder), projectName(_projectName){}
         virtual void run();
     private:
-        U2OpStatus &os;
         const QString projectFolder;
         const QString projectName;
     };
 
-    class ExportProjectDialogChecker : public Runnable {
+    class ExportProjectDialogChecker : public Filler {
     public:
         ExportProjectDialogChecker(U2OpStatus &_os, const QString &_projectName)
-            :os(_os), projectName(_projectName){}
+            :Filler(_os, "ExportProjectDialog"), projectName(_projectName){}
         virtual void run();
     private:
-        U2OpStatus &os;
         const QString projectName;
     };
 }

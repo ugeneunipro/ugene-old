@@ -45,9 +45,9 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTSequenceReader"
 #define GT_METHOD_NAME "run"
-class GTSequenceReader : public Runnable {
+class GTSequenceReader : public Filler {
 public:
-    GTSequenceReader(U2OpStatus &_os, QString *_str):os(_os), str(_str){}
+    GTSequenceReader(U2OpStatus &_os, QString *_str):Filler(_os, ""), str(_str){}
     void run()
     {
         QWidget *widget = QApplication::activeModalWidget();
@@ -63,7 +63,6 @@ public:
     }
 
 private:
-    U2OpStatus &os;
     QString *str;
 };
 #undef GT_METHOD_NAME
