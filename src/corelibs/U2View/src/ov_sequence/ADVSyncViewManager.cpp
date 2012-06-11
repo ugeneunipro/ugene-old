@@ -39,14 +39,17 @@ ADVSyncViewManager::ADVSyncViewManager(AnnotatedDNAView* v) : QObject(v), adv(v)
     selectionRecursion = false;
 
     lockByStartPosAction = new QAction(tr("Lock scales: visible range start"), this);
+    lockByStartPosAction->setObjectName("Lock scales: visible range start");
     connect(lockByStartPosAction, SIGNAL(triggered()), SLOT(sl_lock()));
     lockByStartPosAction->setCheckable(true);
     
     lockBySeqSelAction = new QAction(tr("Lock scales: selected sequence"), this);
+    lockBySeqSelAction->setObjectName("Lock scales: selected sequence");
     connect(lockBySeqSelAction, SIGNAL(triggered()), SLOT(sl_lock()));
     lockBySeqSelAction->setCheckable(true);
 
     lockByAnnSelAction = new QAction(tr("Lock scales: selected annotation"), this);
+    lockByAnnSelAction->setObjectName("Lock scales: selected annotation");
     connect(lockByAnnSelAction, SIGNAL(triggered()), SLOT(sl_lock()));
     lockByAnnSelAction->setCheckable(true);
     
@@ -57,12 +60,15 @@ ADVSyncViewManager::ADVSyncViewManager(AnnotatedDNAView* v) : QObject(v), adv(v)
     lockActionGroup->setExclusive(true);
 
     syncByStartPosAction = new QAction(tr("Adjust scales: visible range start"), this);
+    syncByStartPosAction->setObjectName("Adjust scales: visible range start");
     connect(syncByStartPosAction, SIGNAL(triggered()), SLOT(sl_sync()));
 
     syncBySeqSelAction = new QAction(tr("Adjust scales: selected sequence"), this);
+    syncBySeqSelAction->setObjectName("Adjust scales: selected sequence");
     connect(syncBySeqSelAction, SIGNAL(triggered()), SLOT(sl_sync()));
 
     syncByAnnSelAction = new QAction(tr("Adjust scales: selected annotation"), this);
+    syncByAnnSelAction->setObjectName("Adjust scales: selected annotation");
     connect(syncByAnnSelAction, SIGNAL(triggered()), SLOT(sl_sync()));
 
     lockMenu = new QMenu(tr("Lock scales"));
@@ -76,12 +82,14 @@ ADVSyncViewManager::ADVSyncViewManager(AnnotatedDNAView* v) : QObject(v), adv(v)
     syncMenu->addAction(syncByAnnSelAction);
     
     lockButton = new QToolButton();
+    lockButton->setObjectName("Lock scales");
     lockButton->setCheckable(true);
     connect(lockButton, SIGNAL(clicked()), SLOT(sl_lock()));
     lockButton->setDefaultAction(lockMenu->menuAction());
     lockButton->setCheckable(true);
 
     syncButton = new QToolButton();
+    syncButton->setObjectName("Adjust scales");
     connect(syncButton, SIGNAL(clicked()), SLOT(sl_sync()));
     syncButton->setDefaultAction(syncMenu->menuAction());
 

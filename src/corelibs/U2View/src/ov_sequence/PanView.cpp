@@ -155,11 +155,13 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     panViewToolButton->setToolTip(tr("Manage Rows in Zoom View"));
 
     toggleMainRulerAction = new QAction(tr("Show Main Ruler"), this);
+    toggleMainRulerAction->setObjectName("Show Main Ruler");
     toggleMainRulerAction->setCheckable(true);
     toggleMainRulerAction->setChecked(getRenderArea()->showMainRuler);
     connect(toggleMainRulerAction, SIGNAL(triggered(bool)), SLOT(sl_toggleMainRulerVisibility(bool)));
 
     toggleCustomRulersAction = new QAction(tr("Show Custom Rulers"), this);
+    toggleCustomRulersAction->setObjectName("Show Custom Rulers");
     toggleCustomRulersAction->setCheckable(true);
     toggleCustomRulersAction->setChecked(getRenderArea()->showCustomRulers);
     toggleCustomRulersAction->setEnabled(!getRenderArea()->customRulers.isEmpty());

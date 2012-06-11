@@ -156,6 +156,7 @@ void DNAViewStatsContext::initViewContext( GObjectView* view )
 	SAFE_POINT(dnaView != NULL, "Annotated view is NULL", );
 		
 	GObjectViewAction* dnaStatsAction = new GObjectViewAction(this, view, tr("Statistics"));
+    dnaStatsAction->setObjectName("Statistics");
 	connect(dnaStatsAction, SIGNAL(triggered()), SLOT(sl_showDnaStats()));
 	addViewAction(dnaStatsAction);	
 }

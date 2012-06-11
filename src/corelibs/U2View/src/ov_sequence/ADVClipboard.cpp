@@ -60,6 +60,7 @@ ADVClipboard::ADVClipboard(AnnotatedDNAView* c) : QObject(c) {
     
 
     copySequenceAction = new QAction(QIcon(":/core/images/copy_sequence.png"), tr("Copy sequence"), this);
+    copySequenceAction->setObjectName("Copy sequence");
     copySequenceAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_C));
     
     copyTranslationAction = new QAction(QIcon(":/core/images/copy_translation.png"), tr("Copy translation"), this);
@@ -67,14 +68,17 @@ ADVClipboard::ADVClipboard(AnnotatedDNAView* c) : QObject(c) {
     copyTranslationAction->setObjectName(ADV_COPY_TRANSLATION_ACTION);
     
     copyComplementSequenceAction = new QAction(QIcon(":/core/images/copy_complement_sequence.png"), tr("Copy reverse complement sequence"), this);
+    copyComplementSequenceAction->setObjectName("Copy reverse complement sequence");
     copyComplementSequenceAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_C));
     
     copyComplementTranslationAction = new QAction(QIcon(":/core/images/copy_complement_translation.png"), tr("Copy reverse complement translation"), this);
+    copyComplementTranslationAction->setObjectName("Copy reverse complement translation");
     copyComplementTranslationAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_T));
 
     copyAnnotationSequenceAction = new QAction(QIcon(":/core/images/copy_annotation_sequence.png"), tr("Copy annotation sequence"), this);
     copyAnnotationSequenceAction->setObjectName("action_copy_annotation_sequence");
     copyAnnotationSequenceTranslationAction = new QAction(QIcon(":/core/images/copy_annotation_translation.png"), tr("Copy annotation sequence translation"), this);
+    copyAnnotationSequenceTranslationAction->setObjectName("Copy annotation sequence translation");
 
     connect(copySequenceAction, SIGNAL(triggered()), SLOT(sl_copySequence()));
     connect(copyTranslationAction, SIGNAL(triggered()), SLOT(sl_copyTranslation()));

@@ -100,6 +100,7 @@ void SpideySupportContext::initViewContext(GObjectView* view) {
     QString spideyTitle = tr("Align sequence to mRNA");
     ADVGlobalAction* alignAction = new ADVGlobalAction(dnaView, QIcon(), spideyTitle, 1000*2000,
                                                        ADVGlobalActionFlags(ADVGlobalActionFlag_SingleSequenceOnly));
+    alignAction->setObjectName("Align sequence to mRNA");
     addViewAction(alignAction);
 
     connect(alignAction, SIGNAL(triggered()), SLOT(sl_align_with_Spidey()));

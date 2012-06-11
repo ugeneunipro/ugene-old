@@ -39,6 +39,7 @@ PositionSelector::PositionSelector(QWidget* p, int s, int e, bool fixedSize)
     QToolButton* goButton = new QToolButton(this);
     goButton->setText(tr("Go!"));
     goButton->setToolTip(tr("Go to position"));
+    goButton->setObjectName("Go!");
     connect(goButton, SIGNAL(clicked(bool)), SLOT(sl_onButtonClicked(bool)));
 
     layout()->addWidget(goButton);

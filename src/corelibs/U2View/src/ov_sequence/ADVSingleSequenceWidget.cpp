@@ -83,12 +83,15 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
     connect(selectRangeAction1, SIGNAL(triggered()), SLOT(sl_onSelectRange()));
 
     selectRangeAction2 = new QAction(QIcon(":/core/images/select_region.png"), tr("Sequence region..."), this);
+    selectRangeAction2->setObjectName("Sequence region");
     connect(selectRangeAction2, SIGNAL(triggered()), SLOT(sl_onSelectRange()));
 
     selectInAnnotationRangeAction= new QAction(tr("Sequence between selected annotations"), this);
+    selectInAnnotationRangeAction->setObjectName("Sequence between selected annotations");
     connect(selectInAnnotationRangeAction, SIGNAL(triggered()), SLOT(sl_onSelectInRange()));
     
     selectOutAnnotationRangeAction= new QAction(tr("Sequence around selected annotations"), this);
+    selectOutAnnotationRangeAction->setObjectName("Sequence around selected annotations");
     connect(selectOutAnnotationRangeAction, SIGNAL(triggered()), SLOT(sl_onSelectOutRange()));
 
     zoomToRangeAction = new QAction(QIcon(":/core/images/zoom_reg.png"), tr("Zoom to range.."), this);
@@ -96,6 +99,7 @@ ADVSingleSequenceWidget::ADVSingleSequenceWidget(ADVSequenceObjectContext* seqCt
     connect(zoomToRangeAction, SIGNAL(triggered()), SLOT(sl_zoomToRange()));
 
     createNewRulerAction = new QAction(tr("Create new ruler..."), this);
+    createNewRulerAction->setObjectName("Create new ruler");
     connect(createNewRulerAction, SIGNAL(triggered()), SLOT(sl_createCustomRuler()));
 
     linesLayout = new QVBoxLayout();
@@ -420,6 +424,7 @@ void ADVSingleSequenceWidget::buildPopupMenu(QMenu& m) {
 
 void ADVSingleSequenceWidget::addSelectMenu(QMenu& m) {
     QMenu* selectMenu = new QMenu(tr("Select"),  &m);
+    selectMenu->menuAction()->setObjectName("Select");
     
     selectMenu->addAction(selectRangeAction2);
     selectMenu->addAction(selectInAnnotationRangeAction);
@@ -434,6 +439,7 @@ void ADVSingleSequenceWidget::addRulersMenu(QMenu& m) {
     rulerActions.qlist.clear();
 
     QMenu* rulersM = new QMenu(tr("Rulers..."),  &m);
+    rulersM->menuAction()->setObjectName("Rulers");
     rulersM->setIcon(QIcon(":core/images/ruler.png"));
     
     rulersM->addAction(createNewRulerAction);

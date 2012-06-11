@@ -111,9 +111,11 @@ ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     connect(annotations2CSVAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotations()));
 
     annotationsToAlignmentAction = new QAction(QIcon(":core/images/msa.png"), tr("Align selected annotations..."), this);
+    annotationsToAlignmentAction->setObjectName("Align selected annotations");
     connect(annotationsToAlignmentAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotationsToAlignment()));
 
     annotationsToAlignmentWithTranslatedAction = new QAction(QIcon(":core/images/msa.png"), tr("Align selected annotations (amino acids)..."), this);
+    annotationsToAlignmentWithTranslatedAction->setObjectName("Align selected annotations (amino acids)...");
     connect(annotationsToAlignmentWithTranslatedAction, SIGNAL(triggered()), SLOT(sl_saveSelectedAnnotationsToAlignmentWithTranslation()));
 
     sequenceToAlignmentAction = new QAction(QIcon(":core/images/msa.png"), tr("Align selected sequence regions..."), this);
@@ -121,6 +123,7 @@ ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     connect(sequenceToAlignmentAction, SIGNAL(triggered()), SLOT(sl_saveSelectedSequenceToAlignment()));
 
     sequenceToAlignmentWithTranslationAction = new QAction(QIcon(":core/images/msa.png"), tr("Align selected sequence regions (amino acids)..."), this);
+    sequenceToAlignmentWithTranslationAction->setObjectName("Align selected sequence regions (amino acids)");
     connect(sequenceToAlignmentWithTranslationAction, SIGNAL(triggered()), SLOT(sl_saveSelectedSequenceToAlignmentWithTranslation()));
 
     sequenceById = new QAction(tr("Export sequences by 'id'"), this);
