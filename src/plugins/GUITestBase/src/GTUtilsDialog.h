@@ -36,11 +36,12 @@ class GUIDialogWaiter : public QObject {
     Q_OBJECT
 public:
     enum DialogType {Modal, Popup};
-    GUIDialogWaiter(Runnable* _r, DialogType t);
+    GUIDialogWaiter(Runnable* _r, DialogType t, const QString& objectName);
     virtual ~GUIDialogWaiter();
 
     bool hadRun;
     int waiterId;
+    QString objectName;
 
 public slots:
     void checkDialog();
@@ -52,11 +53,13 @@ private:
     QTimer* timer;
 
     void finishWaiting(); // deletes timer and runnable
+    bool isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName);
 };
 
 class GTUtilsDialog {
 public:
-    static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, int msec = 100);
+    // if objectName is not empty, waits for QWidget with a given name
+    static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, const QString& objectName = "");
 };
 
 } // namespace

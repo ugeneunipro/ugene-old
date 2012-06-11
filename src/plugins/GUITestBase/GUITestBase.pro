@@ -20,9 +20,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h \
-#   Runnables / UGENE / corelibs / U2Gui / util
-            src/runnables/ugene/corelibs/U2Gui/util/PositionSelectorFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/util/RangeSelectorFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
 #   Runnables / UGENE / plugins_3rdparty
@@ -120,9 +119,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.cpp \
-#   Runnables / UGENE / corelibs / U2Gui / util
-            src/runnables/ugene/corelibs/U2Gui/util/PositionSelectorFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/util/RangeSelectorFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
 #   Runnables / UGENE / plugins_3rdparty
