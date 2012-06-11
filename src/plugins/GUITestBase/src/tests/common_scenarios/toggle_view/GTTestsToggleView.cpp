@@ -39,7 +39,7 @@
 #include "GTUtilsMdi.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
-#include "runnables/ugene/corelibs/U2Gui/util/RangeSelectorFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h"
 
 #include <U2Core/DocumentModel.h>
 #include <U2View/AnnotatedDNAViewFactory.h>

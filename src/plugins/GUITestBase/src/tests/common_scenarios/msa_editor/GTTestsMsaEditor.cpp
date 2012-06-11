@@ -30,7 +30,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsLog.h"
 #include "runnables/qt/PopupChooser.h"
-#include "runnables/ugene/corelibs/U2Gui/util/PositionSelectorFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 
