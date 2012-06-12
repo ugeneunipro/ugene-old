@@ -45,8 +45,10 @@ class GUIDialogWaiter : public QObject {
     Q_OBJECT
 public:
     enum DialogType {Modal, Popup};
-    GUIDialogWaiter(Runnable* _r, DialogType t, const QString& objectName);
+    GUIDialogWaiter(U2OpStatus &os, Runnable* _r, DialogType t, const QString& objectName, int timeout = 20000);
     virtual ~GUIDialogWaiter();
+
+    static const int timerPeriod = 100;
 
     bool hadRun;
     int waiterId;
@@ -56,10 +58,13 @@ public slots:
     void checkDialog();
 
 private:
+    U2OpStatus &os;
     Runnable *runnable;
     DialogType type;
 
     QTimer* timer;
+    int waitingTime;
+    int timeout;
 
     void finishWaiting(); // deletes timer and runnable
     bool isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName);

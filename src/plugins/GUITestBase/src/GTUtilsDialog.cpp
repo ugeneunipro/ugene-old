@@ -26,8 +26,8 @@
 
 namespace U2 {
 
-GUIDialogWaiter::GUIDialogWaiter(Runnable* _r, DialogType t, const QString& _objectName)
-: hadRun(false), waiterId(-1), objectName(_objectName), runnable(_r), type(t), timer(NULL) {
+GUIDialogWaiter::GUIDialogWaiter(U2OpStatus &_os, Runnable* _r, DialogType t, const QString& _objectName, int _timeout)
+: hadRun(false), waiterId(-1), objectName(_objectName), os(_os), runnable(_r), type(t), timer(NULL), waitingTime(0), timeout(_timeout) {
 
     static int totalWaiterCount = 0;
     waiterId = totalWaiterCount++;
@@ -35,7 +35,7 @@ GUIDialogWaiter::GUIDialogWaiter(Runnable* _r, DialogType t, const QString& _obj
     timer = new QTimer();
 
     timer->connect(timer, SIGNAL(timeout()), this, SLOT(checkDialog()));
-    timer->start(100);
+    timer->start(timerPeriod);
 }
 
 GUIDialogWaiter::~GUIDialogWaiter() {
@@ -73,12 +73,8 @@ void GUIDialogWaiter::checkDialog() {
         default:
             break;
     }
-    if (!widget) {
-        return;
-    }
 
-    QString widgetObjectName = widget->objectName();
-    if (runnable && !hadRun && isExpectedName(widgetObjectName, objectName)) {
+    if (widget && runnable && !hadRun && isExpectedName(widget->objectName(), objectName)) {
         timer->stop();
         uiLog.trace("-------------------------");
         uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");
@@ -86,6 +82,17 @@ void GUIDialogWaiter::checkDialog() {
 
         hadRun = true;
         runnable->run();
+    }
+    else {
+        waitingTime += timerPeriod;
+        if (waitingTime > timeout) {
+            uiLog.trace("-------------------------");
+            uiLog.trace("!!! GUIDialogWaiter::TIMEOUT Id = " + QString::number(waiterId) + ", going to finish waiting");
+            uiLog.trace("-------------------------");
+
+            os.setError("GUIDialogWaiter __ checkDialog __ TIMEOUT, waiterId = " + QString::number(waiterId));
+            finishWaiting();
+        }
     }
 }
 
@@ -99,8 +106,7 @@ void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::
         objectName = f->getObjectName();
     }
 
-    GUIDialogWaiter *waiter = new GUIDialogWaiter(r, _type, objectName);
-//    pool.add
+    GUIDialogWaiter *waiter = new GUIDialogWaiter(os, r, _type, objectName);
 }
 
 #undef GT_CLASS_NAME
