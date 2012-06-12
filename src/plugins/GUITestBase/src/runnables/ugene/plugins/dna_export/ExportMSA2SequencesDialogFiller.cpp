@@ -33,7 +33,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::ExportToSequenceFormatFiller"
 
 ExportToSequenceFormatFiller::ExportToSequenceFormatFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method):
-Filler(_os, "U2::ExportMSA2SequencesDialog"), name(_name), useMethod(method) {
+Filler(_os, "U2__ExportMSA2SequencesDialog"), name(_name), useMethod(method) {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
         __path += '/';

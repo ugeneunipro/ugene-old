@@ -35,6 +35,7 @@ public:
 class Filler : public Runnable {
 public:
     Filler(U2OpStatus& _os, const QString& _objectName) : os(_os), objectName(_objectName){}
+    QString getObjectName() const { return objectName; }
 protected:
     U2OpStatus &os;
     QString objectName;

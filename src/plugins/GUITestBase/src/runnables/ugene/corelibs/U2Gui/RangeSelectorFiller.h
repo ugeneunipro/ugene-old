@@ -28,7 +28,7 @@ namespace U2 {
 
     class ZoomToRangeDialogFiller : public Filler {
     public:
-        ZoomToRangeDialogFiller(U2OpStatus &_os, int min, int max) : Filler(_os, "range_selector"), minVal(min), maxVal(max){}
+        ZoomToRangeDialogFiller(U2OpStatus &_os, int min, int max) : Filler(_os, "range_selection_dialog"), minVal(min), maxVal(max){}
         virtual void run();
     private:
         int minVal, maxVal;

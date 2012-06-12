@@ -54,6 +54,7 @@ bool GUIDialogWaiter::isExpectedName(const QString& widgetObjectName, const QStr
     if (expectedObjectName.isEmpty()) {
         return true;
     }
+    uiLog.trace("Checking name, widget name <" + widgetObjectName + ">, expected <" + expectedObjectName + ">");
     return widgetObjectName == expectedObjectName;
 }
 
@@ -90,8 +91,14 @@ void GUIDialogWaiter::checkDialog() {
 
 #define GT_CLASS_NAME "GTUtilsDialog"
 
-void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType _type, const QString& objectName)
+void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType _type, const QString& _objectName)
 {
+    QString objectName = _objectName;
+    Filler* f = dynamic_cast<Filler*>(r);
+    if (f && !(f->getObjectName().isEmpty())) {
+        objectName = f->getObjectName();
+    }
+
     GUIDialogWaiter *waiter = new GUIDialogWaiter(r, _type, objectName);
 //    pool.add
 }

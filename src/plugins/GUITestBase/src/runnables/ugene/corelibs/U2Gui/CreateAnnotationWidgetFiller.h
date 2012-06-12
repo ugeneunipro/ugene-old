@@ -28,14 +28,14 @@ namespace U2 {
 
     class CreateAnnotationWidgetChecker : public Filler {
     public:
-        CreateAnnotationWidgetChecker(U2OpStatus &_os) : Filler(_os, "CreateAnnotationWidget"){}
+        CreateAnnotationWidgetChecker(U2OpStatus &_os) : Filler(_os, "new_annotation_dialog"){}
         virtual void run();
     };
 
     class CreateAnnotationWidgetFiller : public Filler {
     public:
         CreateAnnotationWidgetFiller(U2OpStatus &_os, const QString &_groupName, const QString &_annotationName, const QString &_location)
-            : Filler(_os, "CreateAnnotationWidget"), groupName(_groupName), annotationName(_annotationName), location(_location){}
+            : Filler(_os, "new_annotation_dialog"), groupName(_groupName), annotationName(_annotationName), location(_location){}
         virtual void run();
     private:
         const QString groupName;

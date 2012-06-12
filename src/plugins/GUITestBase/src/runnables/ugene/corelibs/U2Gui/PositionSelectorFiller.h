@@ -28,7 +28,7 @@ namespace U2 {
 
     class GoToDialogFiller : public Filler {
     public:
-        GoToDialogFiller(U2OpStatus &_os, int _goTo) : Filler(_os, "PositionSelector"), goTo(_goTo){}
+        GoToDialogFiller(U2OpStatus &_os, int _goTo) : Filler(_os, ""), goTo(_goTo){}
         virtual void run();
     private:
         int goTo;

@@ -35,7 +35,7 @@ namespace U2 {
 CopyDocumentDialogFiller::CopyDocumentDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name, 
                          CopyDocumentDialogFiller::FormatToUse _format, bool compressFile,
                          bool addToProject, GTGlobals::UseMethod method):
-Filler(_os, "CopyDocumentDialogFiller"),
+Filler(_os, "CopyDocumentDialog"),
 path(_path), name(_name), useMethod(method), format(_format), compressFile(compressFile), addToProject(addToProject) {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
