@@ -24,8 +24,8 @@
 #include "GTKeyboardDriver.h"
 #include "GTMouseDriver.h"
 #include "GTComboBox.h"
-#include "GTUtilsDialog.h"
 #include "api/GTGlobals.h"
+
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QApplication>
 #include <QtGui/QLineEdit>
@@ -41,38 +41,19 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTFileDialogUtils"
 
-class GTFileDialogUtils : public Filler {
-public:
-    enum Button {Open, Cancel};
-    enum ViewMode {List, Detail};
-
-    GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, const QString&, Button, GTGlobals::UseMethod);
-
-    void openFileDialog();
-    void run();
-
-private:
-    void setFilter();
-    void setPath();
-    void selectFile();
-    void clickButton(Button);
-    void setViewMode(ViewMode);
-
-    QWidget *fileDialog;
-    QString path, fileName, filters;
-    Button button;
-    GTGlobals::UseMethod method;
-};
-
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
                                      const QString &_filters, Button _button, GTGlobals::UseMethod _method) :
     Filler(_os, ""),
-    path(_path),
+//    path(_path),
     fileName(_fileName),
     filters(_filters),
     button(_button),
     method(_method)
 {
+    path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
+    if (path.at(path.count() - 1) != '/') {
+        path += '/';
+    }
 }
 
 #define GT_METHOD_NAME "run"
@@ -295,12 +276,7 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &fileName,
                             const QString &filters, Button button, GTGlobals::UseMethod m)
 {
-    QString _path = QDir::cleanPath(QDir::currentPath() + "/" + path);
-    if (_path.at(_path.count() - 1) != '/') {
-        _path += '/';
-    }
-
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, _path, fileName, filters, (GTFileDialogUtils::Button)button, m);
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, path, fileName, filters, (GTFileDialogUtils::Button)button, m);
     if (m == GTGlobals::UseMouse) {
         GTUtilsDialog::waitForDialog(os, ob);
     }

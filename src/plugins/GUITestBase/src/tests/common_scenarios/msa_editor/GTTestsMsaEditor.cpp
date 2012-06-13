@@ -1472,5 +1472,100 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0015) {
+// ugene crashes when removing document after kalign (UGENE-36)
+// 
+// 1. create empty project
+// 2. do menu {tools->multiple alignment->kalign}, set aligned document samples/CLUSTALW/COI.aln
+
+    Runnable *filler = new KalignDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler);
+    Runnable *ob = new GTFileDialogUtils(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsDialog::waitForDialog(os, ob);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Multiple alignment" << "Kalign");
+    GTGlobals::sleep();
+
+// 3. aligned document opens
+    GTGlobals::sleep(5000);
+    GTUtilsMdi::activeWindow(os);
+
+// 4. select document in project and press del
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+// Expected state: UGENE not crash
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0015_1) {
+// ugene crashes when removing document after kalign (UGENE-36)
+// 
+// 1. create empty project
+// 2. do menu {tools->multiple alignment->kalign}, set aligned document samples/CLUSTALW/COI.aln
+
+// CHANGES: opens file, Kalign by popup menu
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep();
+
+    GTLogTracer logTracer;
+    Runnable *filler = new KalignDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
+
+// 3. aligned document opens
+    GTGlobals::sleep(5000);
+    GTUtilsMdi::activeWindow(os);
+    GTUtilsLog::check(os, logTracer);
+
+// 4. select document in project and press del
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+// Expected state: UGENE not crash
+    GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0015_2) {
+// ugene crashes when removing document after kalign (UGENE-36)
+// 
+// 1. create empty project
+// 2. do menu {tools->multiple alignment->kalign}, set aligned document samples/CLUSTALW/COI.aln
+
+    Runnable *filler = new KalignDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, filler);
+    Runnable *ob = new GTFileDialogUtils(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsDialog::waitForDialog(os, ob);
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Multiple alignment" << "Kalign");
+    GTGlobals::sleep();
+
+// 3. aligned document opens
+    GTGlobals::sleep(5000);
+    GTUtilsMdi::activeWindow(os);
+
+// CHANGES: close MDI window
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep();
+
+// 4. select document in project and press del
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+// Expected state: UGENE not crash
+    GTGlobals::sleep(5000);
+}
+
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2

@@ -294,6 +294,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0014, "https://ugene.unipro.ru/tracker/browse/UGENE-1033");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0014_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1033");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0014_2, "https://ugene.unipro.ru/tracker/browse/UGENE-1033");
+
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0015, "https://ugene.unipro.ru/tracker/browse/UGENE-1033");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0015_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1033");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0015_2, "https://ugene.unipro.ru/tracker/browse/UGENE-1033");
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

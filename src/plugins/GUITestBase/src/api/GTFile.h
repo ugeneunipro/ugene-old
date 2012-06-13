@@ -33,6 +33,9 @@ public:
     // backup file to the file with backupPostfix. fail the given file can't be opened
     static void backup(U2OpStatus &os, const QString&);
 
+    // copy file removing target file if exist
+    static void copy(U2OpStatus &os, const QString& from, const QString& to);
+
     // restores file and deletes backup. fail if there is no backup or can't write to the given file
     static void restore(U2OpStatus &os, const QString&);
 

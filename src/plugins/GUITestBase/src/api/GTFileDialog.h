@@ -23,8 +23,32 @@
 #define GTFILE_DIALOG_H
 
 #include "GTGlobals.h"
+#include "GTUtilsDialog.h"
 
 namespace U2 {
+
+class GTFileDialogUtils : public Filler {
+public:
+    enum Button {Open, Cancel};
+    enum ViewMode {List, Detail};
+
+    GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, const QString& = "*.*", Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
+    void openFileDialog();
+    void run();
+
+private:
+    void setFilter();
+    void setPath();
+    void selectFile();
+    void clickButton(Button);
+    void setViewMode(ViewMode);
+
+    QWidget *fileDialog;
+    QString path, fileName, filters;
+    Button button;
+    GTGlobals::UseMethod method;
+};
+
 
 class GTFileDialog {
 public:

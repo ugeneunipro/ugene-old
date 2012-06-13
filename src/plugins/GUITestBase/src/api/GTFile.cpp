@@ -46,17 +46,24 @@ bool GTFile::equals(U2OpStatus &os, const QString& path1, const QString& path2) 
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "backup"
-void GTFile::backup(U2OpStatus &os, const QString& path) {
+#define GT_METHOD_NAME "copy"
+void GTFile::copy(U2OpStatus &os, const QString& from, const QString& to) {
 
-    QFile f2(path + backupPostfix);
+    QFile f2(to);
     bool ok = f2.open(QIODevice::ReadOnly);
     if (ok) {
         f2.remove();
     }
 
-    bool copied = QFile::copy(path, path + backupPostfix);
-    GT_CHECK(copied == true, "backup of <" + path + "> can't be created");
+    bool copied = QFile::copy(from, to);
+    GT_CHECK(copied == true, "can't copy <" + from + "> to <" + to + ">");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "backup"
+void GTFile::backup(U2OpStatus &os, const QString& path) {
+
+    copy(os, path, path + backupPostfix);
 }
 #undef GT_METHOD_NAME
 
