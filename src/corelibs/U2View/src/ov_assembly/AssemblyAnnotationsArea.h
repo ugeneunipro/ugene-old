@@ -19,37 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __U2_ASSEMBLY_READS_AREA_HINT_H__
-#define __U2_ASSEMBLY_READS_AREA_HINT_H__
+#ifndef _ASSEMBLY_ANNOTATIONS_AREA_
+#define _ASSEMBLY_ANNOTATIONS_AREA_
 
-#include <QtGui/QFrame>
-#include <QtGui/QLabel>
-
-#include <U2Core/U2Assembly.h>
+#include <QWidget>
 
 namespace U2 {
 
-// hint that is shown under cursor for current read
-class AssemblyReadsAreaHint : public QFrame {
+class AssemblyBrowser;
+class AssemblyBrowserUi;
+class AssemblyVariantRowManager;
+
+class AssemblyAnnotationsArea : public QWidget {
     Q_OBJECT
 public:
-    static const QPoint OFFSET_FROM_CURSOR;
-    static const int LETTER_MAX_COUNT = 60;
-    static QString getReadDataAsString(const U2AssemblyRead & r);
-    
-public:
-    AssemblyReadsAreaHint(QWidget * p);
-    void setData(U2AssemblyRead r, QList<U2AssemblyRead> mates);
-    
-protected:
-    virtual bool eventFilter(QObject *, QEvent *);
-    virtual void leaveEvent(QEvent * e);
-    virtual void mouseMoveEvent(QMouseEvent * e);
+    AssemblyAnnotationsArea(AssemblyBrowserUi *ui);
+    virtual ~AssemblyAnnotationsArea();
 
-    QLabel * label;
-    
-}; // AssemblyReadsAreaHint
+signals:
+    void si_mouseMovedToPos(const QPoint&);
+
+private:
+    AssemblyVariantRowManager *variantRowManager;
+};
 
 } // U2
 
-#endif // __U2_ASSEMBLY_READS_AREA_HINT_H__
+#endif // _ASSEMBLY_ANNOTATIONS_AREA_

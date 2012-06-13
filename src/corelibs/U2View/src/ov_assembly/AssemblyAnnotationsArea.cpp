@@ -19,37 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __U2_ASSEMBLY_READS_AREA_HINT_H__
-#define __U2_ASSEMBLY_READS_AREA_HINT_H__
+#include <QPainter>
+#include <QVBoxLayout>
 
-#include <QtGui/QFrame>
-#include <QtGui/QLabel>
+#include "AssemblyBrowser.h"
+#include "AssemblyVariantRow.h"
 
-#include <U2Core/U2Assembly.h>
+#include "AssemblyAnnotationsArea.h"
 
 namespace U2 {
 
-// hint that is shown under cursor for current read
-class AssemblyReadsAreaHint : public QFrame {
-    Q_OBJECT
-public:
-    static const QPoint OFFSET_FROM_CURSOR;
-    static const int LETTER_MAX_COUNT = 60;
-    static QString getReadDataAsString(const U2AssemblyRead & r);
-    
-public:
-    AssemblyReadsAreaHint(QWidget * p);
-    void setData(U2AssemblyRead r, QList<U2AssemblyRead> mates);
-    
-protected:
-    virtual bool eventFilter(QObject *, QEvent *);
-    virtual void leaveEvent(QEvent * e);
-    virtual void mouseMoveEvent(QMouseEvent * e);
+AssemblyAnnotationsArea::AssemblyAnnotationsArea(AssemblyBrowserUi *ui)
+: QWidget(ui)
+{
+    this->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
+    variantRowManager = new AssemblyVariantRowManager(ui);
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
+    this->setLayout(vLayout);
+    vLayout->setMargin(0);
+    vLayout->setSpacing(0);
+}
 
-    QLabel * label;
-    
-}; // AssemblyReadsAreaHint
+AssemblyAnnotationsArea::~AssemblyAnnotationsArea() {
+    delete variantRowManager;
+}
 
 } // U2
-
-#endif // __U2_ASSEMBLY_READS_AREA_HINT_H__

@@ -216,6 +216,7 @@ class AssemblyConsensusArea;
 class AssemblyCoverageGraph;
 class AssemblyRuler;
 class AssemblyReadsArea;
+class AssemblyAnnotationsArea;
 
 class AssemblyBrowserUi : public QWidget {
     Q_OBJECT
@@ -230,6 +231,7 @@ public:
     inline AssemblyRuler * getRuler() const {return ruler;}
     inline AssemblyReferenceArea * getReferenceArea() const {return referenceArea;}
     inline AssemblyConsensusArea * getConsensusArea() const {return consensusArea;}
+    inline AssemblyAnnotationsArea * getAnnotationsArea() const {return annotationsArea;}
 
     QColor getCoverageColor(double grayCoeff);
     
@@ -241,6 +243,7 @@ private:
     AssemblyCoverageGraph * coverageGraph;
     AssemblyRuler * ruler;
     AssemblyReadsArea * readsArea;
+    AssemblyAnnotationsArea * annotationsArea;
     
 };
 

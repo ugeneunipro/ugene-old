@@ -43,6 +43,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/VariantTrackObject.h>
 
 #include <U2Gui/ObjectViewTasks.h>
 
@@ -332,6 +333,13 @@ void AssemblyModel::sl_referenceDocRemoved(Document* d) {
     if (d != NULL && refObj != NULL && refObj->getDocument() == d) {
         onReferenceRemoved();
     }
+
+    foreach (VariantTrackObject *trackObj, trackObjList) {
+        if (trackObj->getDocument() == d) {
+            trackObjList.removeOne(trackObj);
+            emit si_trackRemoved(trackObj);
+        }
+    }
 }
 
 // when reference obj removed from its document
@@ -489,6 +497,28 @@ QList<U2AssemblyRead> AssemblyModel::findMateReads(U2AssemblyRead read, U2OpStat
         }
     }
     return result;
+}
+
+const QList<VariantTrackObject*> &AssemblyModel::getTrackList() const {
+    return trackObjList;
+}
+
+void AssemblyModel::addTrackObject(VariantTrackObject *trackObj) {
+    CHECK(trackObj != NULL, );
+    if (!trackObjList.contains(trackObj)) {
+        trackObjList << trackObj;
+
+        connect(trackObj->getDocument(), SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_trackObjRemoved(GObject*)));
+        emit si_trackAdded(trackObj);
+    }
+}
+
+void AssemblyModel::sl_trackObjRemoved(GObject *o) {
+    VariantTrackObject *trackObj = qobject_cast<VariantTrackObject*>(o);
+    if (NULL != trackObj) {
+        trackObjList.removeOne(trackObj);
+        emit si_trackRemoved(trackObj);
+    }
 }
 
 QByteArray AssemblyModel::getReferenceSpecies(U2OpStatus & os) {

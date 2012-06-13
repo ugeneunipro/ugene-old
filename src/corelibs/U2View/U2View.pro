@@ -3,6 +3,7 @@ include (U2View.pri)
 # Input
 HEADERS += src/Init.h \
            src/WebWindow.h \
+           src/ov_assembly/AssemblyAnnotationsArea.h \
            src/ov_assembly/AssemblyBrowser.h \
            src/ov_assembly/AssemblyBrowserFactory.h \
            src/ov_assembly/AssemblyBrowserSettings.h \
@@ -20,6 +21,8 @@ HEADERS += src/Init.h \
            src/ov_assembly/AssemblyReferenceArea.h \
            src/ov_assembly/AssemblySettingsWidget.h \
            src/ov_assembly/AssemblyRuler.h \
+           src/ov_assembly/AssemblyVariantHint.h \
+           src/ov_assembly/AssemblyVariantRow.h \
            src/ov_assembly/CoverageInfo.h \
            src/ov_assembly/CoveredRegionsManager.h \
            src/ov_assembly/ExportReadsDialog.h \
@@ -151,6 +154,7 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/util_smith_waterman/ui/SubstMatrixDialogBase.ui
 SOURCES += src/Init.cpp \
            src/WebWindow.cpp \
+           src/ov_assembly/AssemblyAnnotationsArea.cpp \
            src/ov_assembly/AssemblyBrowser.cpp \
            src/ov_assembly/AssemblyBrowserFactory.cpp \
            src/ov_assembly/AssemblyBrowserSettings.cpp \
@@ -168,6 +172,8 @@ SOURCES += src/Init.cpp \
            src/ov_assembly/AssemblyReferenceArea.cpp \
            src/ov_assembly/AssemblyRuler.cpp \
            src/ov_assembly/AssemblySettingsWidget.cpp \
+           src/ov_assembly/AssemblyVariantHint.cpp \
+           src/ov_assembly/AssemblyVariantRow.cpp \
            src/ov_assembly/CoverageInfo.cpp \
            src/ov_assembly/CoveredRegionsManager.cpp \
            src/ov_assembly/ExportConsensusDialog.cpp \

@@ -19,37 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __U2_ASSEMBLY_READS_AREA_HINT_H__
-#define __U2_ASSEMBLY_READS_AREA_HINT_H__
+#ifndef _ASSEMBLY_VARIANT_HINT_
+#define _ASSEMBLY_VARIANT_HINT_
 
-#include <QtGui/QFrame>
-#include <QtGui/QLabel>
+#include <U2Core/U2Variant.h>
 
-#include <U2Core/U2Assembly.h>
+#include "AssemblyReadsAreaHint.h"
 
 namespace U2 {
 
-// hint that is shown under cursor for current read
-class AssemblyReadsAreaHint : public QFrame {
+class AssemblyVariantHint : public AssemblyReadsAreaHint {
     Q_OBJECT
 public:
-    static const QPoint OFFSET_FROM_CURSOR;
-    static const int LETTER_MAX_COUNT = 60;
-    static QString getReadDataAsString(const U2AssemblyRead & r);
-    
-public:
-    AssemblyReadsAreaHint(QWidget * p);
-    void setData(U2AssemblyRead r, QList<U2AssemblyRead> mates);
-    
-protected:
-    virtual bool eventFilter(QObject *, QEvent *);
-    virtual void leaveEvent(QEvent * e);
-    virtual void mouseMoveEvent(QMouseEvent * e);
+    AssemblyVariantHint(QWidget *parent);
+    void setData(const QList<U2Variant> &varList);
 
-    QLabel * label;
-    
-}; // AssemblyReadsAreaHint
+protected:
+    virtual void leaveEvent(QEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+};
 
 } // U2
 
-#endif // __U2_ASSEMBLY_READS_AREA_HINT_H__
+#endif // _ASSEMBLY_VARIANT_HINT_

@@ -33,6 +33,7 @@ namespace U2 {
 class Document;
 class Task;
 class U2SequenceObject;
+class VariantTrackObject;
 
 class AssemblyModel : public QObject {
     Q_OBJECT
@@ -86,6 +87,9 @@ public:
     bool hasReads(U2OpStatus & os);
 
     QList<U2AssemblyRead> findMateReads(U2AssemblyRead read, U2OpStatus& os);
+
+    const QList<VariantTrackObject*> &getTrackList() const;
+    void addTrackObject(VariantTrackObject *trackObj);
     
 private:
     /**
@@ -99,6 +103,11 @@ private:
     
 signals:
     void si_referenceChanged();
+    void si_trackAdded(VariantTrackObject *trackObj);
+    void si_trackRemoved(VariantTrackObject *trackObj);
+
+public slots:
+    void sl_trackObjRemoved(GObject *o);
     
 private slots:
     void sl_referenceLoaded();
@@ -123,6 +132,7 @@ private:
 
     bool loadingReference;
     U2SequenceObject* refObj;
+    QList<VariantTrackObject*> trackObjList;
 
     QByteArray referenceMd5;
     bool md5Retrieved;

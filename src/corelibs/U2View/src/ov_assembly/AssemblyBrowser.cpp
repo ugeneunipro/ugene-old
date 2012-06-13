@@ -21,6 +21,7 @@
 
 #include "AssemblyBrowser.h"
 
+#include "AssemblyAnnotationsArea.h"
 #include "AssemblyBrowserFactory.h"
 #include "AssemblyBrowserState.h"
 #include "AssemblyBrowserTasks.h"
@@ -39,6 +40,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/FormatUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/VariantTrackObject.h>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QPainter>
@@ -170,60 +172,64 @@ bool AssemblyBrowser::eventFilter(QObject* o, QEvent* e) {
 }
 
 QString AssemblyBrowser::tryAddObject(GObject * obj) {
-    U2SequenceObject * seqObj = qobject_cast<U2SequenceObject*>(obj);
-    if(seqObj == NULL) {
-        return tr("Only sequence object can be added to assembly browser");
-    }
-    Document * seqDoc = seqObj->getDocument();
-    if(seqDoc == NULL) {
-        assert(false);
-        return tr("Internal error: only sequence with document can be added to browser");
-    }
-    assert(seqDoc->getDocumentFormat() != NULL);
-    
-    
-    U2OpStatus2Log os;
-    qint64 seqLen = seqObj->getSequenceLength();    
-    QStringList errs;
-    qint64 modelLen = model->getModelLength(os);
-    if (seqLen != modelLen) {
-        errs << tr("- Reference sequence is %1 than assembly").arg(seqLen < modelLen ? tr("lesser") : tr("bigger"));
-    }
-    if (seqObj->getGObjectName() != gobject->getGObjectName()) {
-        errs << tr("- Reference and assembly names not match");
-    }
-    
-    // commented: waiting for fix
-    //QByteArray refMd5 = model->getReferenceMd5();
-    //if(!refMd5.isEmpty()) {
-    //    //QByteArray data = QString(seqObj->getSequence()).remove("-").toUpper().toUtf8();
-    //    QByteArray data = QString(seqObj->getSequence()).toUpper().toUtf8();
-    //    QByteArray seqObjMd5 = QCryptographicHash::hash(data, QCryptographicHash::Md5).toHex();
-    //    if(seqObjMd5 != refMd5) {
-    //        errs << tr("- Reference MD5 not match with MD5 written in assembly");
-    //    }
-    //}
-    
-    bool setRef = true;
-    if(!errs.isEmpty()) {
-        errs << tr("\n  Continue?");
-        QMessageBox::StandardButtons fl = QMessageBox::Ok | QMessageBox::Cancel;
-        QMessageBox::StandardButton btn = QMessageBox::question(ui, tr("Errors"), errs.join("\n"), fl, QMessageBox::Ok);
-        setRef = btn == QMessageBox::Ok;
-    }
-    if(setRef) {
-        model->setReference(seqObj);
-        U2CrossDatabaseReferenceDbi * crossDbi = model->getDbiConnection().dbi->getCrossDatabaseReferenceDbi();
-        U2CrossDatabaseReference crossDbRef;
-        // Cannot simply use seqObj->getSequenceRef(), since it points to a temporary dbi
-        // TODO: make similar method seqObj->getPersistentSequenctRef()
-        crossDbRef.dataRef.dbiRef.dbiId = seqDoc->getURLString();
-        crossDbRef.dataRef.dbiRef.dbiFactoryId = "document";
-        crossDbRef.dataRef.entityId = seqObj->getGObjectName().toUtf8();
-        crossDbRef.dataRef.version = 1;
-        crossDbi->createCrossReference(crossDbRef, os);
-        LOG_OP(os);
-        model->associateWithReference(crossDbRef);
+    Document * objDoc = obj->getDocument();
+    SAFE_POINT(NULL != objDoc, "", tr("Internal error: only object with document can be added to browser"));
+
+    if (GObjectTypes::SEQUENCE == obj->getGObjectType()) {
+        U2SequenceObject * seqObj = qobject_cast<U2SequenceObject*>(obj);
+        CHECK(NULL != seqObj, tr("Internal error: broken sequence object"));
+        SAFE_POINT(NULL != objDoc->getDocumentFormat(), "", tr("Internal error: empty document format"));
+        
+        U2OpStatus2Log os;
+        qint64 seqLen = seqObj->getSequenceLength();    
+        QStringList errs;
+        qint64 modelLen = model->getModelLength(os);
+        if (seqLen != modelLen) {
+            errs << tr("- Reference sequence is %1 than assembly").arg(seqLen < modelLen ? tr("lesser") : tr("bigger"));
+        }
+        if (seqObj->getGObjectName() != gobject->getGObjectName()) {
+            errs << tr("- Reference and assembly names not match");
+        }
+        
+        // commented: waiting for fix
+        //QByteArray refMd5 = model->getReferenceMd5();
+        //if(!refMd5.isEmpty()) {
+        //    //QByteArray data = QString(seqObj->getSequence()).remove("-").toUpper().toUtf8();
+        //    QByteArray data = QString(seqObj->getSequence()).toUpper().toUtf8();
+        //    QByteArray seqObjMd5 = QCryptographicHash::hash(data, QCryptographicHash::Md5).toHex();
+        //    if(seqObjMd5 != refMd5) {
+        //        errs << tr("- Reference MD5 not match with MD5 written in assembly");
+        //    }
+        //}
+        
+        bool setRef = true;
+        if(!errs.isEmpty()) {
+            errs << tr("\n  Continue?");
+            QMessageBox::StandardButtons fl = QMessageBox::Ok | QMessageBox::Cancel;
+            QMessageBox::StandardButton btn = QMessageBox::question(ui, tr("Errors"), errs.join("\n"), fl, QMessageBox::Ok);
+            setRef = btn == QMessageBox::Ok;
+        }
+        if(setRef) {
+            model->setReference(seqObj);
+            U2CrossDatabaseReferenceDbi * crossDbi = model->getDbiConnection().dbi->getCrossDatabaseReferenceDbi();
+            U2CrossDatabaseReference crossDbRef;
+            // Cannot simply use seqObj->getSequenceRef(), since it points to a temporary dbi
+            // TODO: make similar method seqObj->getPersistentSequenctRef()
+            crossDbRef.dataRef.dbiRef.dbiId = objDoc->getURLString();
+            crossDbRef.dataRef.dbiRef.dbiFactoryId = "document";
+            crossDbRef.dataRef.entityId = seqObj->getGObjectName().toUtf8();
+            crossDbRef.dataRef.version = 1;
+            crossDbi->createCrossReference(crossDbRef, os);
+            LOG_OP(os);
+            model->associateWithReference(crossDbRef);
+        }
+    } else if (GObjectTypes::VARIANT_TRACK == obj->getGObjectType()) {
+        VariantTrackObject *trackObj = qobject_cast<VariantTrackObject*>(obj);
+        CHECK(NULL != trackObj, tr("Internal error: broken variant track object"));
+
+        model->addTrackObject(trackObj);
+    } else {
+        return tr("Only sequence or variant track  objects can be added to assembly browser");
     }
 
     return "";
@@ -861,7 +867,7 @@ void AssemblyBrowser::sl_coveredRegionClicked(const QString link) {
 //==============================================================================
 
 AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(browser_), zoomableOverview(0), 
-referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
+referenceArea(0), coverageGraph(0), ruler(0), readsArea(0), annotationsArea(0) {
     U2OpStatusImpl os;
     if(browser->getModel()->hasReads(os)) { // has mapped reads -> show rich visualization
         setMinimumSize(300, 200);
@@ -875,6 +881,7 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
         coverageGraph = new AssemblyCoverageGraph(this);
         ruler = new AssemblyRuler(this);
         readsArea  = new AssemblyReadsArea(this, readsHBar, readsVBar);
+        annotationsArea = new AssemblyAnnotationsArea(this);
 
         QVBoxLayout *mainLayout = new QVBoxLayout();
         mainLayout->setMargin(0);
@@ -887,12 +894,13 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
 
         readsLayout->addWidget(referenceArea, 0, 0);
         readsLayout->addWidget(consensusArea, 1, 0);
-        readsLayout->addWidget(ruler, 2, 0);
-        readsLayout->addWidget(coverageGraph, 3, 0);
+        readsLayout->addWidget(annotationsArea, 2, 0);
+        readsLayout->addWidget(ruler, 3, 0);
+        readsLayout->addWidget(coverageGraph, 4, 0);
 
-        readsLayout->addWidget(readsArea, 4, 0);
-        readsLayout->addWidget(readsVBar, 4, 1, 1, 1);
-        readsLayout->addWidget(readsHBar, 4, 0);
+        readsLayout->addWidget(readsArea, 5, 0);
+        readsLayout->addWidget(readsVBar, 5, 1, 1, 1);
+        readsLayout->addWidget(readsHBar, 5, 0);
 
         QWidget * readsLayoutWidget = new QWidget;
         readsLayoutWidget->setLayout(readsLayout);
@@ -914,6 +922,7 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0){
         connect(referenceArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
         connect(consensusArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
         connect(coverageGraph, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
+        connect(annotationsArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
         connect(browser, SIGNAL(si_offsetsChanged()), readsArea, SLOT(sl_hideHint()));
         connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), referenceArea, SLOT(sl_redraw()));
         connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), readsArea, SLOT(sl_redraw()));
