@@ -42,6 +42,8 @@
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SequenceUtils.h>
+#include <U2Core/ZlibAdapter.h>
+
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/WorkflowEnv.h>
@@ -188,11 +190,42 @@ void GenericSeqReader::sl_taskFinished() {
  * LoadSeqTask
  **************************/
 void LoadSeqTask::prepare() {
+    QFileInfo fi(url);
+    if(!fi.exists()){
+        stateInfo.setError(tr("File '%1' not exists").arg(url));
+        return;
+    }
+
+    QList<DocumentFormat*> fs = DocumentUtils::toFormats(DocumentUtils::detectFormat(url));
+    foreach (DocumentFormat *f, fs) {
+        const QSet<GObjectType>& types = f->getSupportedObjectTypes();
+        if (types.contains(GObjectTypes::SEQUENCE) || types.contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
+            format = f;
+            break;
+        }
+    }
+    if (format == NULL) {
+        stateInfo.setError(tr("Unsupported document format"));
+        return;
+    }
+
+    const QSet<GObjectType> &types = format->getSupportedObjectTypes();
+    if (1 == types.size() && types.contains(GObjectTypes::SEQUENCE)) {
+        // no memory resources should be reserved for this file, because
+        // sequences are stored into the database
+        return;
+    }
+
     int memUseMB = 0;
     QFileInfo file(url);
     memUseMB = file.size() / (1024*1024);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE || iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
+    if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE) {
+        qint64 bytes = ZlibAdapter::getUncompressedFileSizeInBytes(url);
+        if (bytes > 0) {
+            memUseMB = bytes / (1024*1024);
+        }
+    } else if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
         memUseMB *= 2.5; //Need to calculate compress level
     }
     coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
@@ -203,26 +236,7 @@ void LoadSeqTask::prepare() {
 }
 
 void LoadSeqTask::run() {
-    QFileInfo fi(url);
-    if(!fi.exists()){
-        stateInfo.setError(  tr("File '%1' not exists").arg(url) );
-        return;
-    }
-    QList<DocumentFormat*> fs = DocumentUtils::toFormats(DocumentUtils::detectFormat(url));
-    DocumentFormat* format = NULL;
-
-    foreach( DocumentFormat * f, fs ) {
-        const QSet<GObjectType>& types = f->getSupportedObjectTypes();
-        if (types.contains(GObjectTypes::SEQUENCE) || types.contains(GObjectTypes::MULTIPLE_ALIGNMENT)) {
-            format = f;
-            break;
-        }
-    }
-
-    if (format == NULL) {
-        stateInfo.setError(  tr("Unsupported document format") );
-        return;
-    }
+    CHECK(NULL != format, );
     ioLog.info(tr("Reading sequences from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
     cfg.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(storage->getDbiRef()));

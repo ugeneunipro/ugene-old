@@ -25,6 +25,7 @@
 #include <U2Lang/LocalDomain.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/MAlignment.h>
 
 namespace U2 {
@@ -43,7 +44,7 @@ class LoadSeqTask : public Task {
 public:
     LoadSeqTask(QString url, const QVariantMap& cfg, DNASelector* sel, DbiDataStorage *storage)
         : Task(tr("Read sequences from %1").arg(url), TaskFlag_None),
-        url(url), selector(sel), cfg(cfg), storage(storage) {}
+        url(url), selector(sel), cfg(cfg), storage(storage), format(NULL) {}
     virtual void prepare();
     virtual void run();
 
@@ -52,6 +53,7 @@ public:
     QVariantMap cfg;
     QList<QVariantMap> results;
     DbiDataStorage *storage;
+    DocumentFormat *format;
 };
 
 class LoadMSATask : public Task {
