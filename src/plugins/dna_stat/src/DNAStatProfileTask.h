@@ -39,15 +39,20 @@ public:
 
 private:
     void computeStats();
-
+    double calcPi(const QByteArray& seq);
+    double calcChargeState(const QMap<char,int>& countMap, double pH );
     ADVSequenceObjectContext* ctx;
     qint64 seqLen;
     QVector<qint64>         contentCounter;
     //TODO: optimize
     QMap<QByteArray, int>   diNuclCounter;
 	int nA, nT, nC, nG;
-
     QString resultText;
+    // static tables
+    static QMap<char,double> pMWMap; // protein molecular weight
+    static QMap<char,double> pKaMap; // pKa values
+    static QMap<char,int> pChargeMap; // protein charges
+    
 };
 
 }// namespace
