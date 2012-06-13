@@ -48,14 +48,17 @@ QAbstractButton* GTAction::button(U2OpStatus &os, const QString &actionName, QOb
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getAction"
-QAction* GTAction::findAction(U2OpStatus &os, const QString &actionName, QObject *parent) {
+#define GT_METHOD_NAME "findAction"
+QAction* GTAction::findAction(U2OpStatus &os, const QString &actionName, QObject *parent, GTGlobals::FindOptions& options) {
 
     if (parent == NULL) {
         parent = AppContext::getMainWindow()->getQMainWindow();
     }
     QAction* a = parent->findChild<QAction*>(actionName);
 
+    if (options.failIfNull) {
+        GT_CHECK_RESULT(a != NULL, "action is NULL", a);
+    }
     return a;
 }
 #undef GT_METHOD_NAME

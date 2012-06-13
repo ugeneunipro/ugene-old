@@ -74,6 +74,11 @@ class GTUtilsDialog {
 public:
     // if objectName is not empty, waits for QWidget with a given name
     static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, const QString& objectName = "");
+
+    // deletes all GUIDialogWaiters
+    static void cleanup();
+private:
+    static QList<GUIDialogWaiter*> pool;
 };
 
 } // namespace

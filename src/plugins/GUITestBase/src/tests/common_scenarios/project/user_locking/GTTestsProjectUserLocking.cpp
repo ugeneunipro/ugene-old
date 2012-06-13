@@ -71,7 +71,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
 #define GT_METHOD_NAME "run"
     class CreateAnnnotationDialogComboBoxChecker : public Filler {
     public:
-        CreateAnnnotationDialogComboBoxChecker(U2OpStatus &_os, const QString &radioButtonName): buttonName(radioButtonName), Filler(_os, ""){}
+        CreateAnnnotationDialogComboBoxChecker(U2OpStatus &_os, const QString &radioButtonName): Filler(_os, ""), buttonName(radioButtonName){}
         void run() {
             QWidget* dialog = QApplication::activeModalWidget();
             GT_CHECK(dialog != NULL, "activeModalWidget is NULL");

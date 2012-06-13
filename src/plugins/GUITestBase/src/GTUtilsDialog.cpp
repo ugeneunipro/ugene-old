@@ -26,6 +26,8 @@
 
 namespace U2 {
 
+#define GT_CLASS_NAME "GUIDialogWaiter"
+
 GUIDialogWaiter::GUIDialogWaiter(U2OpStatus &_os, Runnable* _r, DialogType t, const QString& _objectName, int _timeout)
 : hadRun(false), waiterId(-1), objectName(_objectName), os(_os), runnable(_r), type(t), timer(NULL), waitingTime(0), timeout(_timeout) {
 
@@ -58,6 +60,7 @@ bool GUIDialogWaiter::isExpectedName(const QString& widgetObjectName, const QStr
     return widgetObjectName == expectedObjectName;
 }
 
+#define GT_METHOD_NAME "checkDialog"
 void GUIDialogWaiter::checkDialog() {
     QWidget *widget = NULL;
 
@@ -90,13 +93,16 @@ void GUIDialogWaiter::checkDialog() {
             uiLog.trace("!!! GUIDialogWaiter::TIMEOUT Id = " + QString::number(waiterId) + ", going to finish waiting");
             uiLog.trace("-------------------------");
 
-            os.setError("GUIDialogWaiter __ checkDialog __ TIMEOUT, waiterId = " + QString::number(waiterId));
             finishWaiting();
+            GT_CHECK(false, "TIMEOUT, waiterId = " + QString::number(waiterId));
         }
     }
 }
+#undef GT_METHOD_NAME
 
-#define GT_CLASS_NAME "GTUtilsDialog"
+#undef GT_CLASS_NAME
+
+QList<GUIDialogWaiter*> GTUtilsDialog::pool = QList<GUIDialogWaiter*>();
 
 void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType _type, const QString& _objectName)
 {
@@ -107,8 +113,13 @@ void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::
     }
 
     GUIDialogWaiter *waiter = new GUIDialogWaiter(os, r, _type, objectName);
+    pool.append(waiter);
 }
 
-#undef GT_CLASS_NAME
+void GTUtilsDialog::cleanup() {
+
+    qDeleteAll(pool);
+    pool.clear();
+}
 
 }//namespace

@@ -834,8 +834,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     QWidget *toolBarSe1 = GTWidget::findWidget(os, "tool_bar_se1");
     QWidget *toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2");
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
-    QWidget *toggleViewButtonSe2 = GTWidget::findWidget(os, "toggle_view_button_se2");
-    QWidget *toggleViewButtonSe1 = GTWidget::findWidget(os, "toggle_view_button_se1");
 
 // 2. Click on toolbar button Toggle views. Click menu item Hide all details.
     Runnable *chooser0 = new PopupChooser(os, QStringList() << "toggleDetailsView");
@@ -880,8 +878,6 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     QWidget *toolBarSe1 = GTWidget::findWidget(os, "tool_bar_se1");
     QWidget *toolBarSe2 = GTWidget::findWidget(os, "tool_bar_se2");
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
-    QWidget *toggleViewButtonSe1 = GTWidget::findWidget(os, "toggle_view_button_se1");
-    QWidget *toggleViewButtonSe2 = GTWidget::findWidget(os, "toggle_view_button_se2");
 
 // 2. Click on toolbar button Toggle views. Click menu item Hide all sequences.
     Runnable *chooser0 = new PopupChooser(os, QStringList() << "toggleAllSequenceViews");

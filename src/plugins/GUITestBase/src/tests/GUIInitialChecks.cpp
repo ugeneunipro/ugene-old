@@ -22,6 +22,8 @@
 #include "GUIInitialChecks.h"
 #include "api/GTGlobals.h"
 #include "GTUtilsProject.h"
+#include "GTUtilsDialog.h"
+
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/ObjectViewModel.h>
@@ -29,6 +31,11 @@
 namespace U2 {
 
 namespace GUITest_initial_checks {
+
+GUI_TEST_CLASS_DEFINITION(test_0000) {
+    Q_UNUSED(os);
+    GTUtilsDialog::cleanup();
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     QString activeWindowName = AppContext::getActiveWindowName();
