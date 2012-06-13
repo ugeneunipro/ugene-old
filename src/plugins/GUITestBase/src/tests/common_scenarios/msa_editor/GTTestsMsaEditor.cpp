@@ -25,6 +25,7 @@
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
 #include "api/GTClipboard.h"
+#include "api/GTLineEdit.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
@@ -534,6 +535,145 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 // Expected state: coordinates in status bar Ln 4/10 Col 8/14
     CHECK_SET_ERR(line->text() == "Ln 4 / 10", "Line is " + line->text());
     CHECK_SET_ERR(column->text() == "Col 8 / 14", "Column is " + column->text());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006) {
+// Check find from status bar
+
+// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+
+// Expected state: Aligniment length 14, left offset 1, right offset 14
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 14, "Wrong length");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLeftOffset(os) == 1, "Wrong left offset");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getRightOffset(os) == 14, "Wrong right offset");
+
+    QWidget *msaEditorStatusBar = GTWidget::findWidget(os, "msa_editor_status_bar");
+    CHECK_SET_ERR(msaEditorStatusBar != NULL, "MSAEditorStatusBar is NULL");
+
+    QLineEdit *searchEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "searchEdit", msaEditorStatusBar));
+    QWidget *findForward = GTWidget::findWidget(os, "Find forward", msaEditorStatusBar);
+    QWidget *findBackward = GTWidget::findWidget(os, "Find backward", msaEditorStatusBar);
+
+// 2. Put AAGT in text field at status bar. Click Find next button.
+    GTLineEdit::setText(os, searchEdit, "AAGT");
+    GTWidget::click(os, findForward);
+// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
+
+// 3. Click Find next button.
+    GTWidget::click(os, findForward);
+// Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 7, 4, 1));
+
+// 4. Click Find previous button.
+    GTWidget::click(os, findBackward);
+// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006_1) {
+// Check find from status bar
+
+// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+
+// Expected state: Aligniment length 14, left offset 1, right offset 14
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 14, "Wrong length");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLeftOffset(os) == 1, "Wrong left offset");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getRightOffset(os) == 14, "Wrong right offset");
+
+    QWidget *msaEditorStatusBar = GTWidget::findWidget(os, "msa_editor_status_bar");
+    CHECK_SET_ERR(msaEditorStatusBar != NULL, "MSAEditorStatusBar is NULL");
+
+    QLineEdit *searchEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "searchEdit", msaEditorStatusBar));
+    QWidget *findForward = GTWidget::findWidget(os, "Find forward", msaEditorStatusBar);
+    QWidget *findBackward = GTWidget::findWidget(os, "Find backward", msaEditorStatusBar);
+
+// 2. Put AAGT in text field at status bar. Click Find next button.
+    GTLineEdit::setText(os, searchEdit, "AAGT");
+    GTWidget::click(os, findForward);
+// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
+
+// 3. Click Find next button. CHANGES: click 3 times
+    GTWidget::click(os, findForward);
+    GTWidget::click(os, findForward);
+    GTWidget::click(os, findForward);
+// Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 7, 4, 1));
+
+// 4. Click Find previous button. CHANGES: click 3 times
+    GTWidget::click(os, findBackward);
+    GTWidget::click(os, findBackward);
+    GTWidget::click(os, findBackward);
+// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006_2) {
+// Check find from status bar
+
+// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+
+// Expected state: Aligniment length 14, left offset 1, right offset 14
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 14, "Wrong length");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLeftOffset(os) == 1, "Wrong left offset");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getRightOffset(os) == 14, "Wrong right offset");
+
+    QWidget *msaEditorStatusBar = GTWidget::findWidget(os, "msa_editor_status_bar");
+    CHECK_SET_ERR(msaEditorStatusBar != NULL, "MSAEditorStatusBar is NULL");
+
+    QLineEdit *searchEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "searchEdit", msaEditorStatusBar));
+    QWidget *findForward = GTWidget::findWidget(os, "Find forward", msaEditorStatusBar);
+    QWidget *findBackward = GTWidget::findWidget(os, "Find backward", msaEditorStatusBar);
+
+// 2. Put AAGT in text field at status bar. Click Find next button.
+    GTLineEdit::setText(os, searchEdit, "AAGT");
+    GTWidget::click(os, findForward);
+// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
+
+// CHANGES: clear search text, click Find forward and check that selection wasn't changed; set AAGT again
+    GTLineEdit::setText(os, searchEdit, "");
+    GTWidget::click(os, findForward);
+// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
+    GTLineEdit::setText(os, searchEdit, "AAGT");
+    GTGlobals::sleep();
+
+// 3. Click Find next button.
+    GTWidget::click(os, findForward);
+// Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 7, 4, 1));
+
+// CHANGES: clear search text, click Find backward and check that selection wasn't changed; set AAGT again
+    GTLineEdit::setText(os, searchEdit, "");
+    GTWidget::click(os, findBackward);
+// Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 7, 4, 1));
+    GTLineEdit::setText(os, searchEdit, "AAGT");
+    GTGlobals::sleep();
+
+// 4. Click Find previous button.
+    GTWidget::click(os, findBackward);
+// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {

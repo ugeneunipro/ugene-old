@@ -42,15 +42,18 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
     findLabel->setText(tr("Find:"));
     
     prevButton = new QPushButton();
+    prevButton->setObjectName("Find backward");
     prevButton->setToolTip(tr("Find backward <b>(SHIFT + Enter)</b>"));
     prevButton->setIcon(QIcon(":core/images/msa_find_prev.png"));
     prevButton->setFlat(true);
     nextButton = new QPushButton();
+    nextButton->setObjectName("Find forward");
     nextButton->setToolTip(tr("Find forward <b>(Enter)</b>"));
     nextButton->setIcon(QIcon(":core/images/msa_find_next.png"));
     nextButton->setFlat(true);
     
     searchEdit = new QLineEdit();
+    searchEdit->setObjectName("searchEdit");
     //searchEdit->setMinimumWidth(200);
     searchEdit->installEventFilter(this);
     searchEdit->setMaxLength(1000);

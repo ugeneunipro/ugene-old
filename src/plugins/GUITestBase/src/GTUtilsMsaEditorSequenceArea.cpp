@@ -81,7 +81,8 @@ void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect
     MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area"));
     CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
 
-    CHECK_SET_ERR(expectedRect == msaEditArea->getSelection().getRect(), "Unexpected selection region");
+    QRect msaEditRegion = msaEditArea->getSelection().getRect();
+    CHECK_SET_ERR(expectedRect == msaEditRegion, "Unexpected selection region");
 }
 #undef GT_METHOD_NAME
 
