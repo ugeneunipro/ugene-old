@@ -632,11 +632,15 @@ QWidget* MSAEditorUI::createLabelWidget(const QString& text, Qt::Alignment ali) 
 }
 
 QAction* MSAEditorUI::getUndoAction() const {
-    return undoFWK->getUndoAction();
+    QAction *a = undoFWK->getUndoAction();
+    a->setObjectName("msa_action_undo");
+    return a;
 }
 
 QAction* MSAEditorUI::getRedoAction() const {
-    return undoFWK->getRedoAction();
+    QAction *a = undoFWK->getRedoAction();
+    a->setObjectName("msa_action_redo");
+    return a;
 }
 
 void MSAEditorUI::sl_saveScreenshot(){

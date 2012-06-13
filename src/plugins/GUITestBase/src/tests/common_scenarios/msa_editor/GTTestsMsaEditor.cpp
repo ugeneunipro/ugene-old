@@ -20,11 +20,13 @@
  */
 
 #include "GTTestsMsaEditor.h"
+#include "api/GTAction.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
 #include "api/GTClipboard.h"
+#include "api/GTToolbar.h"
 #include "api/GTLineEdit.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
@@ -34,6 +36,7 @@
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 
 #include <U2View/MSAEditor.h>
 
@@ -537,13 +540,14 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     CHECK_SET_ERR(column->text() == "Col 8 / 14", "Column is " + column->text());
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0006) {
-// Check find from status bar
 
-// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+GUI_TEST_CLASS_DEFINITION(test_0006) {
+    // Check find from status bar
+
+    // 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
 
-// Expected state: Aligniment length 14, left offset 1, right offset 14
+    // Expected state: Aligniment length 14, left offset 1, right offset 14
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 14, "Wrong length");
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLeftOffset(os) == 1, "Wrong left offset");
@@ -556,33 +560,33 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     QWidget *findForward = GTWidget::findWidget(os, "Find forward", msaEditorStatusBar);
     QWidget *findBackward = GTWidget::findWidget(os, "Find backward", msaEditorStatusBar);
 
-// 2. Put AAGT in text field at status bar. Click Find next button.
+    // 2. Put AAGT in text field at status bar. Click Find next button.
     GTLineEdit::setText(os, searchEdit, "AAGT");
     GTWidget::click(os, findForward);
-// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    // Expected state: find result sequence Tettigonia_viridissima region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
 
-// 3. Click Find next button.
+    // 3. Click Find next button.
     GTWidget::click(os, findForward);
-// Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
+    // Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 7, 4, 1));
 
-// 4. Click Find previous button.
+    // 4. Click Find previous button.
     GTWidget::click(os, findBackward);
-// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    // Expected state: find result sequence Tettigonia_viridissima region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006_1) {
-// Check find from status bar
+    // Check find from status bar
 
-// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    // 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
 
-// Expected state: Aligniment length 14, left offset 1, right offset 14
+    // Expected state: Aligniment length 14, left offset 1, right offset 14
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 14, "Wrong length");
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLeftOffset(os) == 1, "Wrong left offset");
@@ -595,37 +599,37 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     QWidget *findForward = GTWidget::findWidget(os, "Find forward", msaEditorStatusBar);
     QWidget *findBackward = GTWidget::findWidget(os, "Find backward", msaEditorStatusBar);
 
-// 2. Put AAGT in text field at status bar. Click Find next button.
+    // 2. Put AAGT in text field at status bar. Click Find next button.
     GTLineEdit::setText(os, searchEdit, "AAGT");
     GTWidget::click(os, findForward);
-// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    // Expected state: find result sequence Tettigonia_viridissima region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
 
-// 3. Click Find next button. CHANGES: click 3 times
+    // 3. Click Find next button. CHANGES: click 3 times
     GTWidget::click(os, findForward);
     GTWidget::click(os, findForward);
     GTWidget::click(os, findForward);
-// Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
+    // Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 7, 4, 1));
 
-// 4. Click Find previous button. CHANGES: click 3 times
+    // 4. Click Find previous button. CHANGES: click 3 times
     GTWidget::click(os, findBackward);
     GTWidget::click(os, findBackward);
     GTWidget::click(os, findBackward);
-// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    // Expected state: find result sequence Tettigonia_viridissima region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006_2) {
-// Check find from status bar
+    // Check find from status bar
 
-// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    // 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
 
-// Expected state: Aligniment length 14, left offset 1, right offset 14
+    // Expected state: Aligniment length 14, left offset 1, right offset 14
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 14, "Wrong length");
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLeftOffset(os) == 1, "Wrong left offset");
@@ -638,42 +642,246 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     QWidget *findForward = GTWidget::findWidget(os, "Find forward", msaEditorStatusBar);
     QWidget *findBackward = GTWidget::findWidget(os, "Find backward", msaEditorStatusBar);
 
-// 2. Put AAGT in text field at status bar. Click Find next button.
+    // 2. Put AAGT in text field at status bar. Click Find next button.
     GTLineEdit::setText(os, searchEdit, "AAGT");
     GTWidget::click(os, findForward);
-// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    // Expected state: find result sequence Tettigonia_viridissima region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
 
-// CHANGES: clear search text, click Find forward and check that selection wasn't changed; set AAGT again
+    // CHANGES: clear search text, click Find forward and check that selection wasn't changed; set AAGT again
     GTLineEdit::setText(os, searchEdit, "");
     GTWidget::click(os, findForward);
-// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    // Expected state: find result sequence Tettigonia_viridissima region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
     GTLineEdit::setText(os, searchEdit, "AAGT");
     GTGlobals::sleep();
 
-// 3. Click Find next button.
+    // 3. Click Find next button.
     GTWidget::click(os, findForward);
-// Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
+    // Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 7, 4, 1));
 
-// CHANGES: clear search text, click Find backward and check that selection wasn't changed; set AAGT again
+    // CHANGES: clear search text, click Find backward and check that selection wasn't changed; set AAGT again
     GTLineEdit::setText(os, searchEdit, "");
     GTWidget::click(os, findBackward);
-// Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
+    // Expected state: find result sequence Mecopoda_elongata__Ishigaki__J region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 7, 4, 1));
     GTLineEdit::setText(os, searchEdit, "AAGT");
     GTGlobals::sleep();
 
-// 4. Click Find previous button.
+    // 4. Click Find previous button.
     GTWidget::click(os, findBackward);
-// Expected state: find result sequence Tettigonia_viridissima region 1..4
+    // Expected state: find result sequence Tettigonia_viridissima region 1..4
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 3, 4, 1));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007) {
+    //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTGlobals::sleep(1000);
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+    
+    //Expected state: Aligniment length 14, left offset 1, right offset 14
+
+    //2. Do double click on Tettigonia_viridissima sequence name.
+    //Expected state: Rename dialog appears
+    //3. Put "Sequence_a" into text field. Click OK.
+
+    Runnable *filler = new RenameSequenceFiller(os, "Sequence_a", "Tettigonia_viridissima");
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    //Expected state: Tettigonia_viridissima renamed to Sequence_a
+    Runnable *filler2 = new RenameSequenceFiller(os, "Sequence_a", "Sequence_a");
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    //4. Rlick Undo button.
+    QWidget *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    
+    //Expected state: Tettigonia_viridissima renamed back
+    Runnable *filler3 = new RenameSequenceFiller(os, "Tettigonia_viridissima", "Tettigonia_viridissima");
+    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();    
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007_1) {
+    //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTGlobals::sleep(1000);
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+
+    //Expected state: Aligniment length 14, left offset 1, right offset 14
+
+    //2. Do double click on Tettigonia_viridissima sequence name.
+    //Expected state: Rename dialog appears
+    //3. Put "Sequence_a" into text field. Click OK.
+
+    Runnable *filler = new RenameSequenceFiller(os, "Sequence_a", "Tettigonia_viridissima");
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    //Expected state: Tettigonia_viridissima renamed to Sequence_a
+    
+    Runnable *filler2 = new RenameSequenceFiller(os, "Sequence_a", "Sequence_a");
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    //4. Rlick Undo button. CHANGES: clicking undo by mouse
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "msa_action_undo"));
+    GTGlobals::sleep();
+
+    //Expected state: Tettigonia_viridissima renamed back
+    Runnable *filler3 = new RenameSequenceFiller(os, "Tettigonia_viridissima", "Tettigonia_viridissima");
+    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007_2) {
+    //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTGlobals::sleep(1000);
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+
+    //Expected state: Aligniment length 14, left offset 1, right offset 14
+
+    //2. Do double click on Tettigonia_viridissima sequence name. CHANGES: another sequence renamed
+    //Expected state: Rename dialog appears
+    //3. Put "Sequence_a" into text field. Click OK.
+
+    Runnable *filler = new RenameSequenceFiller(os, "Sequence_a", "Bicolorana_bicolor_EF540830");
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,2));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    //Expected state: Tettigonia_viridissima renamed to Sequence_a
+    Runnable *filler2 = new RenameSequenceFiller(os, "Sequence_a", "Sequence_a");
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,2));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    //4. Rlick Undo button.
+    QWidget *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    //Expected state: Tettigonia_viridissima renamed back
+    Runnable *filler3 = new RenameSequenceFiller(os, "Bicolorana_bicolor_EF540830", "Bicolorana_bicolor_EF540830");
+    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,2));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007_3) {
+    //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTGlobals::sleep(1000);
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+
+    //Expected state: Aligniment length 14, left offset 1, right offset 14
+
+    //2. Do double click on Tettigonia_viridissima sequence name. CHANGES: another sequence renamed
+    //Expected state: Rename dialog appears
+    //3. Put "Sequence_a" into text field. Click OK.
+
+    Runnable *filler = new RenameSequenceFiller(os, "Sequence_a", "Phaneroptera_falcata");
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,0));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    //Expected state: Tettigonia_viridissima renamed to Sequence_a
+    Runnable *filler2 = new RenameSequenceFiller(os, "Sequence_a", "Sequence_a");
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,0));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    //4. Rlick Undo button.
+    QWidget *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    //Expected state: Tettigonia_viridissima renamed back
+    Runnable *filler3 = new RenameSequenceFiller(os, "Phaneroptera_falcata", "Phaneroptera_falcata");
+    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,0));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();    
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007_4) {
+    //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTGlobals::sleep(1000);
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
+
+    //Expected state: Aligniment length 14, left offset 1, right offset 14
+
+    //2. Do double click on Tettigonia_viridissima sequence name. CHANGES: another sequence renamed
+    //Expected state: Rename dialog appears
+    //3. Put "Sequence_a" into text field. Click OK.
+
+    Runnable *filler = new RenameSequenceFiller(os, "Sequence_a", "Conocephalus_sp.");
+    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,5));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    //Expected state: Tettigonia_viridissima renamed to Sequence_a
+    Runnable *filler2 = new RenameSequenceFiller(os, "Sequence_a", "Sequence_a");
+    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,5));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    //4. Rlick Undo button.
+    QWidget *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    //Expected state: Tettigonia_viridissima renamed back
+    Runnable *filler3 = new RenameSequenceFiller(os, "Conocephalus_sp.", "Conocephalus_sp.");
+    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,5));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();    
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {
