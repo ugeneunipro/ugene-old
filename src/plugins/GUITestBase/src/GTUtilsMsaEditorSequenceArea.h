@@ -44,6 +44,7 @@ public:
 
     // selects area in MSA coordinats, if some p coordinate less than 0, it becomes max valid coordinate
     static void selectArea(U2OpStatus &os, QPoint p1 = QPoint(0, 0), QPoint p2 = QPoint(-1, -1));
+    static void click(U2OpStatus &os, QPoint p = QPoint(0, 0));
 
     static bool offsetsVisible(U2OpStatus &os);
 };

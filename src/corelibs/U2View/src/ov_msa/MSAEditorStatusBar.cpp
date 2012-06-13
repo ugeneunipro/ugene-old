@@ -35,7 +35,7 @@ MSAEditorStatusWidget::MSAEditorStatusWidget(MAlignmentObject* mobj, MSAEditorSe
 : aliObj(mobj), seqArea(sa), 
 lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
 {
-    setObjectName("msa_editor_status_widget");
+    setObjectName("msa_editor_status_bar");
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
     QLabel* findLabel = new QLabel();
@@ -57,11 +57,13 @@ lockedIcon(":core/images/lock.png"), unlockedIcon(":core/images/lock_open.png")
     findLabel->setBuddy(searchEdit);
 
     linesLabel = new QLabel();
+    linesLabel->setObjectName("Line");
     linesLabel->setAlignment(Qt::AlignCenter);
     colsLabel = new QLabel();
-    colsLabel->setObjectName("colsLabel");
+    colsLabel->setObjectName("Column");
     colsLabel->setAlignment(Qt::AlignCenter);
     posLabel = new QLabel();
+    posLabel->setObjectName("Position");
     posLabel->setAlignment(Qt::AlignCenter);
 
     lockLabel = new QLabel();

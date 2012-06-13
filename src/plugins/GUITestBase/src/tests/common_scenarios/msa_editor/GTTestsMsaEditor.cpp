@@ -399,6 +399,143 @@ GUI_TEST_CLASS_DEFINITION(test_0004)
     GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, expectedRect);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0005) {
+// Check maligniment view status bar coordinates
+
+// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+
+// Expected state: Alignment length 14, left offset 1, right offset 14
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 14, "Wrong length");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLeftOffset(os) == 1, "Wrong left offset");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getRightOffset(os) == 14, "Wrong right offset");
+
+    QWidget *msaEditorStatusBar = GTWidget::findWidget(os, "msa_editor_status_bar");
+    CHECK_SET_ERR(msaEditorStatusBar != NULL, "MSAEditorStatusBar is NULL");
+
+    QLabel* line = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Line", msaEditorStatusBar));
+    CHECK_SET_ERR(line != NULL, "Line of MSAEditorStatusBar is NULL");
+    QLabel* column = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Column", msaEditorStatusBar));
+    CHECK_SET_ERR(column != NULL, "Column of MSAEditorStatusBar is NULL");
+
+// 2. Put cursor in 5th symbol for Tettigonia_virdissima sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(4, 3));
+// Expected state: coordinates in status bar Ln 4/10 Col 5/14
+    CHECK_SET_ERR(line->text() == "Ln 4 / 10", "Line is " + line->text());
+    CHECK_SET_ERR(column->text() == "Col 5 / 14", "Column is " + column->text());
+
+// 3. Put cursor in 2nd symbol for Podisma_sapporensis sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(1, 8));
+// Expected state: coordinates in status bar Ln 9/10 Col 2/14
+    CHECK_SET_ERR(line->text() == "Ln 9 / 10", "Line is " + line->text());
+    CHECK_SET_ERR(column->text() == "Col 2 / 14", "Column is " + column->text());
+
+// 4. Select area from 8th symbol for Tettigonia_virdissima sequence(top left corner) to 13th symbol for Podisma_sapporensis sequence.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+// Expected state: coordinates in status bar Ln 4/10 Col 8/14
+    CHECK_SET_ERR(line->text() == "Ln 4 / 10", "Line is " + line->text());
+    CHECK_SET_ERR(column->text() == "Col 8 / 14", "Column is " + column->text());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005_1) {
+// Check maligniment view status bar coordinates
+
+// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+
+// Expected state: Alignment length 14, left offset 1, right offset 14
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 14, "Wrong length");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLeftOffset(os) == 1, "Wrong left offset");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getRightOffset(os) == 14, "Wrong right offset");
+
+    QWidget *msaEditorStatusBar = GTWidget::findWidget(os, "msa_editor_status_bar");
+    CHECK_SET_ERR(msaEditorStatusBar != NULL, "MSAEditorStatusBar is NULL");
+
+    QLabel* line = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Line", msaEditorStatusBar));
+    CHECK_SET_ERR(line != NULL, "Line of MSAEditorStatusBar is NULL");
+    QLabel* column = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Column", msaEditorStatusBar));
+    CHECK_SET_ERR(column != NULL, "Column of MSAEditorStatusBar is NULL");
+
+// CHANGES: click order changed
+// 3. Put cursor in 2nd symbol for Podisma_sapporensis sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(1, 8));
+// Expected state: coordinates in status bar Ln 9/10 Col 2/14
+    CHECK_SET_ERR(line->text() == "Ln 9 / 10", "Line is " + line->text());
+    CHECK_SET_ERR(column->text() == "Col 2 / 14", "Column is " + column->text());
+
+// 2. Put cursor in 5th symbol for Tettigonia_virdissima sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(4, 3));
+// Expected state: coordinates in status bar Ln 4/10 Col 5/14
+    CHECK_SET_ERR(line->text() == "Ln 4 / 10", "Line is " + line->text());
+    CHECK_SET_ERR(column->text() == "Col 5 / 14", "Column is " + column->text());
+
+// 4. Select area from 8th symbol for Tettigonia_virdissima sequence(top left corner) to 13th symbol for Podisma_sapporensis sequence.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+// Expected state: coordinates in status bar Ln 4/10 Col 8/14
+    CHECK_SET_ERR(line->text() == "Ln 4 / 10", "Line is " + line->text());
+    CHECK_SET_ERR(column->text() == "Col 8 / 14", "Column is " + column->text());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005_2) {
+// Check maligniment view status bar coordinates
+
+// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+
+// Expected state: Alignment length 14, left offset 1, right offset 14
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 14, "Wrong length");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLeftOffset(os) == 1, "Wrong left offset");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getRightOffset(os) == 14, "Wrong right offset");
+
+    QWidget *msaEditorStatusBar = GTWidget::findWidget(os, "msa_editor_status_bar");
+    CHECK_SET_ERR(msaEditorStatusBar != NULL, "MSAEditorStatusBar is NULL");
+
+    QLabel* line = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Line", msaEditorStatusBar));
+    CHECK_SET_ERR(line != NULL, "Line of MSAEditorStatusBar is NULL");
+    QLabel* column = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Column", msaEditorStatusBar));
+    CHECK_SET_ERR(column != NULL, "Column of MSAEditorStatusBar is NULL");
+
+// 2. Put cursor in 5th symbol for Tettigonia_virdissima sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(4, 3));
+// Expected state: coordinates in status bar Ln 4/10 Col 5/14
+    CHECK_SET_ERR(line->text() == "Ln 4 / 10", "Line is " + line->text());
+    CHECK_SET_ERR(column->text() == "Col 5 / 14", "Column is " + column->text());
+
+// CHANGES: close and open MDI window, hide projectTreeView
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "ma2_gapped"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    GTUtilsProjectTreeView::toggleView(os);
+    GTGlobals::sleep();
+
+    msaEditorStatusBar = GTWidget::findWidget(os, "msa_editor_status_bar");
+    CHECK_SET_ERR(msaEditorStatusBar != NULL, "MSAEditorStatusBar is NULL");
+
+    line = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Line", msaEditorStatusBar));
+    CHECK_SET_ERR(line != NULL, "Line of MSAEditorStatusBar is NULL");
+    column = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Column", msaEditorStatusBar));
+    CHECK_SET_ERR(column != NULL, "Column of MSAEditorStatusBar is NULL");
+
+// 3. Put cursor in 2nd symbol for Podisma_sapporensis sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(1, 8));
+// Expected state: coordinates in status bar Ln 9/10 Col 2/14
+    CHECK_SET_ERR(line->text() == "Ln 9 / 10", "Line is " + line->text());
+    CHECK_SET_ERR(column->text() == "Col 2 / 14", "Column is " + column->text());
+
+// 4. Select area from 8th symbol for Tettigonia_virdissima sequence(top left corner) to 13th symbol for Podisma_sapporensis sequence.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(7, 3), QPoint(12, 7));
+// Expected state: coordinates in status bar Ln 4/10 Col 8/14
+    CHECK_SET_ERR(line->text() == "Ln 4 / 10", "Line is " + line->text());
+    CHECK_SET_ERR(column->text() == "Col 8 / 14", "Column is " + column->text());
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0010) {
 
 // 1. Open file _common_data\scenarios\msa\translations_nucl.aln

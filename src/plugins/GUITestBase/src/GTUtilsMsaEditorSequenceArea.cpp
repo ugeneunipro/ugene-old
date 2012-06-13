@@ -69,6 +69,12 @@ void GTUtilsMSAEditorSequenceArea::selectArea(U2OpStatus &os, QPoint p1, QPoint 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "click"
+void GTUtilsMSAEditorSequenceArea::click(U2OpStatus &os, QPoint p) {
+    selectArea(os, p, p);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "checkSelectedRect"
 void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect &expectedRect)
 {
@@ -134,7 +140,7 @@ int GTUtilsMSAEditorSequenceArea::getRightOffset(U2OpStatus &os)
 #define GT_METHOD_NAME "getLength"
 int GTUtilsMSAEditorSequenceArea::getLength(U2OpStatus &os) {
 
-    QWidget *statusWidget = GTWidget::findWidget(os, "msa_editor_status_widget");
+    QWidget *statusWidget = GTWidget::findWidget(os, "msa_editor_status_bar");
     return GTMSAEditorStatusWidget::length(os, statusWidget);
 }
 #undef GT_METHOD_NAME

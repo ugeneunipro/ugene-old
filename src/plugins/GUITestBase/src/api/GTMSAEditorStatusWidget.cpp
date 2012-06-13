@@ -29,7 +29,7 @@ namespace U2 {
 #define GT_METHOD_NAME "length"
 int GTMSAEditorStatusWidget::length(U2OpStatus& os, QWidget* w) {
 
-    QLabel* label = qobject_cast<QLabel*>(GTWidget::findWidget(os, "colsLabel", w));
+    QLabel* label = qobject_cast<QLabel*>(GTWidget::findWidget(os, "Column", w));
     GT_CHECK_RESULT(label != NULL, "label is NULL", -1);
 
     QString labelText = label->text();
