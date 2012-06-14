@@ -36,6 +36,7 @@
 #include <U2Core/Counter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <limits>
 #include <memory>
@@ -499,7 +500,9 @@ void ConvertToSQLiteTask::run() {
             throw Exception(opStatus.getError());
         }
         U2Dbi* sqliteDbi = dbiHandle.dbi;
-        if(!append) {
+        QStringList folders = sqliteDbi->getObjectDbi()->getFolders(opStatus);
+        CHECK_OP_EXT(opStatus, throw Exception(opStatus.getError()), );
+        if(!append || !folders.contains("/")) {
             sqliteDbi->getObjectDbi()->createFolder("/", opStatus);
             if(opStatus.hasError()) {
                 throw Exception(opStatus.getError());

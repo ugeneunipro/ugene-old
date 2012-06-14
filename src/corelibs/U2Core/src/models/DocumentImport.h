@@ -58,7 +58,7 @@ public:
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& url) = 0;
     
-    virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard) = 0;
+    virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard, const QVariantMap &hints) = 0;
 
     virtual QString getImporterDescription() const {return importerDescription;}
     

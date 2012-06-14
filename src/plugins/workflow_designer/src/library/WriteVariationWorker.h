@@ -22,7 +22,7 @@
 #ifndef _WRITE_VARIATION_LIST_WORKER_
 #define _WRITE_VARIATION_LIST_WORKER_
 
-#include "library/BaseDocWorker.h"
+#include "BaseDocWorker.h"
 
 namespace U2 {
 namespace LocalWorkflow {

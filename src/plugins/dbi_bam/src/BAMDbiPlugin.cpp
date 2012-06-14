@@ -192,17 +192,23 @@ FormatCheckResult BAMImporter::checkRawData(const QByteArray& rawData, const GUr
     return samScore;
 }
 
-DocumentProviderTask* BAMImporter::createImportTask(const FormatDetectionResult& res, bool showWizard) {
+DocumentProviderTask* BAMImporter::createImportTask(const FormatDetectionResult& res, bool showWizard, const QVariantMap &hints) {
     bool sam = res.rawDataCheckResult.properties[SAM_HINT].toBool();
-    return new BAMImporterTask(res.url, showWizard, sam);
+    QVariantMap fullHints(hints);
+    fullHints[SAM_HINT] = sam;
+    return new BAMImporterTask(res.url, showWizard, fullHints);
 }
 
 
-BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui, bool _sam) 
+BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui, const QVariantMap &hints) 
 : DocumentProviderTask(tr("BAM/SAM file import: %1").arg(url.fileName()), TaskFlags_NR_FOSCOE)
 {
     useGui = _useGui;
-    sam = _sam;
+    sam = hints.value(SAM_HINT, false).toBool();
+    if (hints.contains(DocumentFormat::DBI_REF_HINT)) {
+        U2DbiRef ref = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
+        hintedDbiUrl = ref.dbiId;
+    }
     convertTask = NULL;
     loadDocTask = NULL;
     loadInfoTask = new LoadInfoTask(url, sam);
@@ -218,15 +224,29 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
         return res;
     }
     if (loadInfoTask == subTask) {
-        ConvertToSQLiteDialog convertDialog(loadInfoTask->getSourceUrl(), loadInfoTask->getInfo(), false);
-        convertDialog.hideAddToProjectOption();
-        int rc = convertDialog.exec();
-        if (rc == QDialog::Accepted) {
-            GUrl destUrl = convertDialog.getDestinationUrl();
+        GUrl srcUrl = loadInfoTask->getSourceUrl();
+        GUrl destUrl;
+        if (hintedDbiUrl.isEmpty()) {
+            destUrl = srcUrl.dirPath() + "/" + srcUrl.fileName() + ".ugenedb";
+        } else {
+            destUrl = hintedDbiUrl;
+        }
+        bool convert = true;
+        if (useGui) {
+            ConvertToSQLiteDialog convertDialog(loadInfoTask->getSourceUrl(), loadInfoTask->getInfo(), false);
+            convertDialog.hideAddToProjectOption();
+            int rc = convertDialog.exec();
+            if (rc == QDialog::Accepted) {
+                destUrl = convertDialog.getDestinationUrl();
+                convert = true;
+            } else {
+                convert = false;
+                stateInfo.setCanceled(true);
+            }
+        }
+        if (convert) {
             convertTask = new ConvertToSQLiteTask(loadInfoTask->getSourceUrl(), destUrl, loadInfoTask->getInfo(), sam);
             res << convertTask;
-        } else {
-            stateInfo.setCanceled(true);
         }
     } else if (convertTask == subTask) {
         loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());

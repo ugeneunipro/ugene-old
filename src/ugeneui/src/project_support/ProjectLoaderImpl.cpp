@@ -389,7 +389,8 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                         assert(dr.importer != NULL);
                         AD2P_ProviderInfo info;
                         info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
-                        info.dp = dr.importer->createImportTask(dr, true);
+                        QVariantMap hints;
+                        info.dp = dr.importer->createImportTask(dr, true, hints);
                         docProviders << info;
                     }
                 }

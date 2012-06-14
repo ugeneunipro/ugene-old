@@ -52,7 +52,7 @@ public:
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& url);
 
-    virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard);
+    virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard, const QVariantMap &hints);
 
 };
 
@@ -62,7 +62,7 @@ class ConvertToSQLiteTask;
 class BAMImporterTask : public DocumentProviderTask {
 	Q_OBJECT
 public:
-    BAMImporterTask(const GUrl& url, bool useGui, bool sam);
+    BAMImporterTask(const GUrl& url, bool useGui, const QVariantMap &hints);
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:
     LoadInfoTask*           loadInfoTask;
@@ -70,6 +70,7 @@ private:
     LoadDocumentTask*       loadDocTask;
     bool                    useGui;
     bool                    sam;
+    QString                 hintedDbiUrl;
 };
 
 } // namespace BAM

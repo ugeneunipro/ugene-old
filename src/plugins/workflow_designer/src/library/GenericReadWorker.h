@@ -31,9 +31,32 @@
 namespace U2 {
 namespace LocalWorkflow {
 
+class GenericDocReader : public BaseWorker {
+    Q_OBJECT
+public:
+    GenericDocReader(Actor *a) : BaseWorker(a), ch(NULL) {}
+    virtual void init();
+    virtual Task *tick();
+    virtual bool isDone();
+    virtual void cleanup() {}
+
+protected slots:
+    virtual void sl_taskFinished() = 0;
+
+protected:
+    virtual Task *createReadTask(const QString &url) = 0;
+
+    CommunicationChannel *ch;
+    QList<QString> urls;
+    QList<Message> cache;
+    DataTypePtr mtype;
+};
+
+/************************************************************************/
+/* Inherited classes */
+/************************************************************************/
 class DNASelector {
 public:
-    //DNASelector(const QString& acc):acc(acc){}
     bool matches(const DNASequence &);
     bool objectMatches(const U2SequenceObject *);
     QString accExpr;
@@ -42,7 +65,7 @@ public:
 class LoadSeqTask : public Task {
     Q_OBJECT
 public:
-    LoadSeqTask(QString url, const QVariantMap& cfg, DNASelector* sel, DbiDataStorage *storage)
+    LoadSeqTask(QString url, const QVariantMap &cfg, DNASelector *sel, DbiDataStorage *storage)
         : Task(tr("Read sequences from %1").arg(url), TaskFlag_None),
         url(url), selector(sel), cfg(cfg), storage(storage), format(NULL) {}
     virtual void prepare();
@@ -67,39 +90,31 @@ public:
     QList<MAlignment> results;
 };
 
-
-class GenericMSAReader : public BaseWorker {
+class GenericMSAReader : public GenericDocReader {
     Q_OBJECT
 public:
-    GenericMSAReader(Actor* a) : BaseWorker(a), ch(NULL) {}
+    GenericMSAReader(Actor *a) : GenericDocReader(a) {}
     virtual void init() ;
-    //virtual bool isReady();
-    virtual Task* tick() ;
-    virtual bool isDone() ;
     virtual void cleanup() {}
 
 protected slots:
     virtual void sl_taskFinished();
 
 protected:
-    virtual Task* createReadTask(const QString& url) {return new LoadMSATask(url);}
-    CommunicationChannel* ch;
-    QList<QString> urls;
-    QList<Message> cache;
-    DataTypePtr mtype;
+    virtual Task *createReadTask(const QString &url) {return new LoadMSATask(url);}
 };
 
-class GenericSeqReader : public GenericMSAReader {
+class GenericSeqReader : public GenericDocReader {
     Q_OBJECT
 public:
-    GenericSeqReader(Actor* a) : GenericMSAReader(a){}
+    GenericSeqReader(Actor *a) : GenericDocReader(a){}
     virtual void init() ;
 
 protected slots:
     virtual void sl_taskFinished();
 
 protected:
-    virtual Task* createReadTask(const QString& url) {
+    virtual Task *createReadTask(const QString &url) {
         return new LoadSeqTask(url, cfg, &selector, context->getDataStorage());
     }
     QVariantMap cfg;

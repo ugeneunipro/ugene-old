@@ -45,6 +45,7 @@
 #include "library/PassFilterWorker.h"
 #include "library/MarkSequenceWorker.h"
 #include "library/MultiplexerWorker.h"
+#include "library/ReadAssemblyWorker.h"
 #include "library/ReadVariationWorker.h"
 #include "library/WriteVariationWorker.h"
 
@@ -284,6 +285,7 @@ void CoreLib::init() {
     AminoTranslationWorkerFactory::init();
     ReadVariationWorkerFactory::init();
     WriteVariationWorkerFactory::init();
+    ReadAssemblyWorkerFactory::init();
 
     initUsersWorkers();
     initExternalToolsWorkers();

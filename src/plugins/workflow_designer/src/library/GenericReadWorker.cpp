@@ -57,18 +57,17 @@ using namespace Workflow;
 namespace LocalWorkflow {
 
 /**************************
- * GenericMSAReader
+ * GenericDocReader
  **************************/
-void GenericMSAReader::init() {
-    mtype = WorkflowEnv::getDataTypeRegistry()->getById(GenericMAActorProto::TYPE);
+void GenericDocReader::init() {
     urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
     assert(ports.size() == 1);
     ch = ports.values().first();
 }
 
-Task* GenericMSAReader::tick() {
+Task *GenericDocReader::tick() {
     if (cache.isEmpty() && !urls.isEmpty()) {
-        Task* t = createReadTask(urls.takeFirst());
+        Task *t = createReadTask(urls.takeFirst());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }
@@ -82,8 +81,16 @@ Task* GenericMSAReader::tick() {
     return NULL;
 }
 
-bool GenericMSAReader::isDone() {
+bool GenericDocReader::isDone() {
     return BaseWorker::isDone() && cache.isEmpty();
+}
+
+/**************************
+ * GenericMSAReader
+ **************************/
+void GenericMSAReader::init() {
+    GenericDocReader::init();
+    mtype = WorkflowEnv::getDataTypeRegistry()->getById(GenericMAActorProto::TYPE);
 }
 
 void GenericMSAReader::sl_taskFinished() {
@@ -164,7 +171,7 @@ void LoadMSATask::run() {
  * GenericSeqReader
  **************************/
 void GenericSeqReader::init() {
-    GenericMSAReader::init();
+    GenericDocReader::init();
     mtype = WorkflowEnv::getDataTypeRegistry()->getById(GenericSeqActorProto::TYPE);
     GenericSeqActorProto::Mode mode = GenericSeqActorProto::Mode(actor->getParameter(
                                                                     GenericSeqActorProto::MODE_ATTR)->getAttributeValue<int>(context));

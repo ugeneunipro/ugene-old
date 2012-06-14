@@ -19,52 +19,59 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _READ_VARIATION_LIST_WORKER_
-#define _READ_VARIATION_LIST_WORKER_
+#ifndef _READ_ASSEMBLY_WORKER_
+#define _READ_ASSEMBLY_WORKER_
 
 #include "GenericReadWorker.h"
 
 namespace U2 {
+
+class Document;
+class DocumentFormat;
+
 namespace LocalWorkflow {
 
-class ReadVariationWorker : public GenericDocReader {
+class ReadAssemblyWorker : public GenericDocReader {
     Q_OBJECT
 public:
-    ReadVariationWorker(Actor *p);
+    ReadAssemblyWorker(Actor *p);
     virtual void init() ;
 
 protected slots:
     virtual void sl_taskFinished();
 
 protected:
-    virtual Task* createReadTask(const QString &url);
-}; // ReadVariationWorker
+    virtual Task *createReadTask(const QString &url);
+}; // ReadAssemblyWorker
 
-class ReadVariationWorkerFactory : public DomainFactory {
+class ReadAssemblyWorkerFactory : public DomainFactory {
 public:
     static const QString ACTOR_ID;
 
-    ReadVariationWorkerFactory() : DomainFactory(ACTOR_ID) {}
+    ReadAssemblyWorkerFactory() : DomainFactory(ACTOR_ID) {}
     static void init();
     virtual Worker *createWorker(Actor *a);
 
-}; // ReadVariationWorkerFactory
+}; // ReadAssemblyWorkerFactory
 
-class ReadVariationTask : public Task {
+class ReadAssemblyTask : public Task {
     Q_OBJECT
 public:
-    ReadVariationTask(const QString &url, DbiDataStorage *storage);
+    ReadAssemblyTask(const QString &url, DbiDataStorage *storage);
     virtual void prepare();
     virtual void run();
+    virtual QList<Task*> onSubTaskFinished(Task *subTask);
 
     QList<QVariantMap> results;
 
 private:
     QString url;
     DbiDataStorage *storage;
+    DocumentFormat *format;
+    Document *doc;
 };
 
 } // LocalWorkflow
 } // U2
 
-#endif // _READ_VARIATION_LIST_WORKER_
+#endif // _READ_ASSEMBLY_WORKER_

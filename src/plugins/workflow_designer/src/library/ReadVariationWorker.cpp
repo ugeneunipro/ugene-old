@@ -40,7 +40,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
 
-#include "library/DocActors.h"
+#include "DocActors.h"
 
 #include "ReadVariationWorker.h"
 
@@ -48,19 +48,18 @@ namespace U2 {
 namespace LocalWorkflow {
 
 const QString ReadVariationWorkerFactory::ACTOR_ID("read-variations");
-static const QString OUT_PORT_ID("out-variations");
 
 /************************************************************************/
 /* Worker */
 /************************************************************************/
 ReadVariationWorker::ReadVariationWorker(Actor *p)
-: GenericMSAReader(p)
+: GenericDocReader(p)
 {
 
 }
 
 void ReadVariationWorker::init() {
-    GenericMSAReader::init();
+    GenericDocReader::init();
     IntegralBus *outBus = dynamic_cast<IntegralBus*>(ch);
     assert(outBus);
     mtype = outBus->getBusType();
