@@ -22,6 +22,7 @@
 #ifndef _WORKFLOW_DBI_DATA_STORAGE_H_
 #define _WORKFLOW_DBI_DATA_STORAGE_H_
 
+#include <U2Core/AssemblyObject.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2DbiUtils.h>
@@ -43,6 +44,7 @@ public:
     bool init();
     U2DbiRef getDbiRef();
 
+    /* NOTE: deallocate memory! */
     virtual U2Object *getObject(const SharedDbiDataHandler &handler, const U2DataType &type);
     virtual SharedDbiDataHandler putSequence(const DNASequence &sequence);
     virtual bool deleteObject(const U2DataId &objectId, const U2DataType &type);
@@ -56,8 +58,12 @@ private:
 
 class U2LANG_EXPORT StorageUtils {
 public:
+    /* NOTE: deallocate memory! */
     static U2SequenceObject *getSequenceObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
+    /* NOTE: deallocate memory! */
     static VariantTrackObject *getVariantTrackObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
+    /* NOTE: deallocate memory! */
+    static AssemblyObject *getAssemblyObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
 };
     
 } // Workflow

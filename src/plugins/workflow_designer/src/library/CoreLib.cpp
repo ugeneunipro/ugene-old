@@ -40,6 +40,7 @@
 #include "MSA2SequenceWorker.h"
 #include "ExternalProcessWorker.h"
 #include "library/AminoTranslationWorker.h"
+#include "library/AssemblyToSequenceWorker.h"
 #include "library/GetFileListWorker.h"
 #include "library/GroupWorker.h"
 #include "library/PassFilterWorker.h"
@@ -286,6 +287,7 @@ void CoreLib::init() {
     ReadVariationWorkerFactory::init();
     WriteVariationWorkerFactory::init();
     ReadAssemblyWorkerFactory::init();
+    AssemblyToSequencesWorkerFactory::init();
 
     initUsersWorkers();
     initExternalToolsWorkers();

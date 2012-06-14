@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -79,6 +80,13 @@ U2Object *DbiDataStorage::getObject(const SharedDbiDataHandler &handler, const U
         SAFE_POINT_OP(os, NULL);
 
         return new U2VariantTrack(track);
+    //} else if (U2Type::Assembly == type) {
+    } else if (4 == type) {
+        U2AssemblyDbi *dbi = connection->dbi->getAssemblyDbi();
+        U2Assembly assembly = dbi->getAssemblyObject(objectId, os);
+        SAFE_POINT_OP(os, NULL);
+
+        return new U2Assembly(assembly);
     } else {
         assert(0);
     }
@@ -132,6 +140,21 @@ VariantTrackObject *StorageUtils::getVariantTrackObject(DbiDataStorage *storage,
     QString objName = track->sequenceName;
 
     return new VariantTrackObject(objName, trackRef);
+}
+
+AssemblyObject *StorageUtils::getAssemblyObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
+    if(handler.constData() == NULL){
+        return NULL;
+    }
+    //QScopedPointer<U2Assembly> track(dynamic_cast<U2Assembly*>(storage->getObject(handler, U2Type::Assembly)));
+    QScopedPointer<U2Assembly> assembly(dynamic_cast<U2Assembly*>(storage->getObject(handler, 4)));
+    CHECK(NULL != assembly.data(), NULL);
+
+    U2EntityRef assemblyRef(storage->getDbiRef(), assembly->id);
+    QString objName = assembly->visualName;
+
+    QVariantMap hints;
+    return new AssemblyObject(assemblyRef, objName, hints);
 }
 
 } // Workflow

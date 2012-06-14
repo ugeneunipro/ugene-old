@@ -24,6 +24,7 @@ HEADERS += src/ActorCfgModel.h \
            src/WorkflowViewController.h \
            src/WorkflowViewItems.h \
            src/cmdline/WorkflowCMDLineTasks.h \
+           src/library/AssemblyToSequenceWorker.h \
            src/library/BaseDocWorker.h \
            src/library/CDSearchWorker.h \
            src/library/CoreLib.h \
@@ -91,6 +92,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/WorkflowViewController.cpp \
            src/WorkflowViewItems.cpp \
            src/cmdline/WorkflowCMDLineTasks.cpp \
+           src/library/AssemblyToSequenceWorker.cpp \
            src/library/BaseDocWorker.cpp \
            src/library/CDSearchWorker.cpp \
            src/library/CoreLib.cpp \
