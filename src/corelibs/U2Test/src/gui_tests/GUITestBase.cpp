@@ -7,7 +7,8 @@ const QString GUITestBase::unnamedTestsPrefix = "test";
 GUITestBase::~GUITestBase() {
 
     qDeleteAll(tests);
-    qDeleteAll(additional);
+    qDeleteAll(preAdditional);
+    qDeleteAll(postAdditional);
 }
 
 bool GUITestBase::registerTest(GUITest *test, TestType testType) {
@@ -70,7 +71,8 @@ GUITest *GUITestBase::getTest(const QString &name, TestType testType) {
 GUITestMap& GUITestBase::getMap(TestType testType) {
 
     switch(testType) {
-    case Additional: return additional;
+    case PreAdditional: return preAdditional;
+    case PostAdditional: return postAdditional;
 
     default:
     case Normal: return tests;

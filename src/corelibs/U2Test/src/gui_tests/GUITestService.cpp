@@ -121,12 +121,23 @@ Task* GUITestService::createTestLauncherTask() const {
     return task;
 }
 
-GUITests GUITestService::addChecks() const {
+GUITests GUITestService::preChecks() const {
 
     GUITestBase* tb = AppContext::getGUITestBase();
     Q_ASSERT(tb);
 
-    GUITests additionalChecks = tb->getTests(GUITestBase::Additional);
+    GUITests additionalChecks = tb->getTests(GUITestBase::PreAdditional);
+    Q_ASSERT(additionalChecks.size()>0);
+
+    return additionalChecks;
+}
+
+GUITests GUITestService::postChecks() const {
+
+    GUITestBase* tb = AppContext::getGUITestBase();
+    Q_ASSERT(tb);
+
+    GUITests additionalChecks = tb->getTests(GUITestBase::PostAdditional);
     Q_ASSERT(additionalChecks.size()>0);
 
     return additionalChecks;
@@ -134,7 +145,7 @@ GUITests GUITestService::addChecks() const {
 
 void GUITestService::runGUITest() {
 
-    GUITests tests = addChecks();
+    GUITests tests = preChecks();
 
     GUITest* t = getTest();
     Q_ASSERT(t);
@@ -142,10 +153,11 @@ void GUITestService::runGUITest() {
         os.setError("GUITestService __ Test not found");
     }
     tests.append(t);
+    tests.append(postChecks());
 
+    clearSandbox();
     foreach(GUITest* t, tests) {
         if (t) {
-            clearSandbox();
             t->run(os);
         }
     }

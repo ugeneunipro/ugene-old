@@ -31,7 +31,7 @@ typedef QMap<QString, GUITest*> GUITestMap;
 
 class U2TEST_EXPORT GUITestBase {
 public:
-    enum TestType {Normal, Additional} type;
+    enum TestType {Normal, PreAdditional, PostAdditional} type;
 
     virtual ~GUITestBase();
 
@@ -44,7 +44,7 @@ public:
 
 private:
     GUITestMap tests;
-    GUITestMap additional; // GUI checks additional to the launched checks
+    GUITestMap postAdditional, preAdditional; // GUI checks additional to the launched checks
 
     GUITest *findTest(const QString &name, TestType testType);
 
