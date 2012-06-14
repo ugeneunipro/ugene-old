@@ -86,9 +86,11 @@ public:
 
     static void waitForDialog(U2OpStatus &os, Runnable *r);
 
-    // deletes all GUIDialogWaiters
-    static void cleanup();
+    // deletes all GUIDialogWaiters, sets err if there are unfinished waiters
+    static void cleanup(U2OpStatus &os);
 private:
+    static void checkAllFinished(U2OpStatus &os);
+
     static QList<GUIDialogWaiter*> pool;
 };
 

@@ -103,6 +103,9 @@ void GUIDialogWaiter::checkDialog() {
 
 #undef GT_CLASS_NAME
 
+
+#define GT_CLASS_NAME "GTUtilsDialog"
+
 QList<GUIDialogWaiter*> GTUtilsDialog::pool = QList<GUIDialogWaiter*>();
 
 void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings)
@@ -121,10 +124,24 @@ void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r) {
     waitForDialog(os, r, settings);
 }
 
-void GTUtilsDialog::cleanup() {
+#define GT_METHOD_NAME "checkAllFinished"
+void GTUtilsDialog::checkAllFinished(U2OpStatus &os) {
+
+    foreach(GUIDialogWaiter* w, pool) {
+        GT_CHECK(w, "NULL GUIDialogWaiter");
+        GT_CHECK(w->hadRun, "Waiter hadn't run");
+    }
+}
+#undef GT_METHOD_NAME
+
+void GTUtilsDialog::cleanup(U2OpStatus &os) {
+
+    checkAllFinished(os);
 
     qDeleteAll(pool);
     pool.clear();
 }
 
-}//namespace
+#undef GT_CLASS_NAME
+
+} //namespace

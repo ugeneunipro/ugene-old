@@ -33,8 +33,7 @@ namespace U2 {
 namespace GUITest_initial_checks {
 
 GUI_TEST_CLASS_DEFINITION(test_0000) {
-    Q_UNUSED(os);
-    GTUtilsDialog::cleanup();
+    GTUtilsDialog::cleanup(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
@@ -53,6 +52,10 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     Q_UNUSED(os);
     AppContext::getMainWindow()->getQMainWindow()->showMaximized();
     GTGlobals::sleep(1000);
+}
+
+GUI_TEST_CLASS_DEFINITION(post_test_0000) {
+    GTUtilsDialog::cleanup(os);
 }
 
 } // GUITest_initial_checks namespace

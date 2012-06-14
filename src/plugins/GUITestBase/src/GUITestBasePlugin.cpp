@@ -317,10 +317,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
 
     if (guiTestBase) {
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0000, GUITestBase::Additional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0001, GUITestBase::Additional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0002, GUITestBase::Additional);
-        guiTestBase->registerTest(new GUITest_initial_checks::test_0003, GUITestBase::Additional);
+        guiTestBase->registerTest(new GUITest_initial_checks::test_0000, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::test_0001, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::test_0002, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::test_0003, GUITestBase::PreAdditional);
+
+        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0000, GUITestBase::PostAdditional);
     }
 }
 
