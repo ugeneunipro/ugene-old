@@ -22,7 +22,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h \
-			src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
 #   Runnables / UGENE / plugins_3rdparty
@@ -122,7 +123,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.cpp \
-			src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
 #   Runnables / UGENE / plugins_3rdparty

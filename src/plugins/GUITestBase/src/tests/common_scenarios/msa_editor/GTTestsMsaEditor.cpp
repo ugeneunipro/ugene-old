@@ -39,6 +39,7 @@
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 
 #include <U2View/MSAEditor.h>
 
@@ -1683,6 +1684,83 @@ GUI_TEST_CLASS_DEFINITION(test_0016_2) {
     GTFile::restore(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0017) {
+// Add a molecule from project  (UGENE-288)
+// 
+// 1. Open file data/samples/Genbank/murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTGlobals::sleep();
+
+// 2. Open file data/samples/MSF/HMA.msf
+    GTFileDialog::openFile(os, dataDir + "samples/MSF/", "HMA.msf");
+    GTGlobals::sleep();
+
+// 3. On MSA editor {Context Menu->Add->Sequence from current project}
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+
+// 4. Select item dialog appeared
+// Expected state: loaded sequences present in list
+    Runnable *checker = new ProjectTreeItemSelectorDialogBaseChecker(os, "[s] NC_001363");
+    GTUtilsDialog::waitForDialog(os, checker);
+
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0017_1) {
+// Add a molecule from project  (UGENE-288)
+// 
+// 1. Open file data/samples/Genbank/murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTGlobals::sleep();
+
+// 2. Open file data/samples/MSF/HMA.msf
+    GTFileDialog::openFile(os, dataDir + "samples/MSF/", "HMA.msf");
+    GTGlobals::sleep();
+
+// 3. On MSA editor {Context Menu->Add->Sequence from current project}
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+
+// 4. Select item dialog appeared
+// Expected state: loaded sequences present in list
+    Runnable *checker = new ProjectTreeItemSelectorDialogBaseChecker(os, "[s] NC_001363");
+    GTUtilsDialog::waitForDialog(os, checker);
+
+// CHANGES: using main menu instead of popup
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0017_2) {
+// Add a molecule from project  (UGENE-288)
+// 
+// 1. Open file data/samples/Genbank/murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
+    GTGlobals::sleep();
+
+// CHANGES: close MDI window of murine.gb
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTGlobals::sleep();
+
+// 2. Open file data/samples/MSF/HMA.msf
+    GTFileDialog::openFile(os, dataDir + "samples/MSF/", "HMA.msf");
+    GTGlobals::sleep();
+
+// 3. On MSA editor {Context Menu->Add->Sequence from current project}
+    Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+
+// 4. Select item dialog appeared
+// Expected state: loaded sequences present in list
+    Runnable *checker = new ProjectTreeItemSelectorDialogBaseChecker(os, "[s] NC_001363");
+    GTUtilsDialog::waitForDialog(os, checker);
+
+// CHANGES: using main menu instead of popup
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+}
 
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2
