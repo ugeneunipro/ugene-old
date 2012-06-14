@@ -54,7 +54,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTGlobals::sleep(5000);
 
     Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, popupChooser);
     GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "NC_014267 [s] NC_014267 sequence"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();

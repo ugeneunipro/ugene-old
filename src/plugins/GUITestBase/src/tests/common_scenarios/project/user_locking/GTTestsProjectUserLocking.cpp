@@ -114,7 +114,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTGlobals::sleep(100);
 
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "submenu_open_view" << "action_open_view");
-    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser1);
 
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
@@ -125,7 +125,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     QIcon itemIconBefore = item->icon(0);
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "action_document_unlock");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
 
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
@@ -143,7 +143,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTGlobals::sleep(1000);
 
     Runnable *chooser3 = new PopupChooser(os, QStringList() << "action_document_lock");
-    GTUtilsDialog::waitForDialog(os, chooser3, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser3);
 
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
@@ -172,7 +172,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     Runnable *lockPopupChooser = new PopupChooser(os, QStringList() << ACTION_DOCUMENT__LOCK);
-    GTUtilsDialog::waitForDialog(os, lockPopupChooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, lockPopupChooser);
     GTMouseDriver::click(os, Qt::RightButton);
 
     item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");

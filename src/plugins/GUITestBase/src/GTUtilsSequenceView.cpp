@@ -96,7 +96,7 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
     GTGlobals::sleep(1000);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     Runnable *reader = new GTSequenceReader(os, &sequence);
     GTUtilsDialog::waitForDialog(os, reader);
 
@@ -123,7 +123,7 @@ QString GTUtilsSequenceView::getBeginOfSequenceAsString(U2OpStatus &os, int leng
     GTGlobals::sleep(1000); // don't touch
     QString sequence;
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     Runnable *reader = new GTSequenceReader(os, &sequence);
     GTUtilsDialog::waitForDialog(os, reader);
 
@@ -152,7 +152,7 @@ QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length
 
     QString sequence;
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE, GTGlobals::UseKey);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     Runnable *reader = new GTSequenceReader(os, &sequence);
     GTUtilsDialog::waitForDialog(os, reader);
 
@@ -224,7 +224,7 @@ void GTUtilsSequenceView::openSequenceView(U2OpStatus &os, const QString &sequen
     GTMouseDriver::click(os, Qt::RightButton);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << "submenu_open_view" << "action_open_view", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
@@ -236,7 +236,7 @@ void GTUtilsSequenceView::addSequenceView(U2OpStatus &os, const QString &sequenc
     GTMouseDriver::click(os, Qt::RightButton);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << "submenu_add_view" << "action_add_view", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME

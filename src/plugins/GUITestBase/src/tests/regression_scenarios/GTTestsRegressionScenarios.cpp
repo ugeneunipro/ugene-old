@@ -75,7 +75,7 @@ GUI_TEST_CLASS_DEFINITION(test_0986_1) {
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTGlobals::sleep(5000);
@@ -92,7 +92,7 @@ GUI_TEST_CLASS_DEFINITION(test_0986_2) {
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTGlobals::sleep(5000);
@@ -109,7 +109,7 @@ GUI_TEST_CLASS_DEFINITION(test_0986_3) {
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
@@ -131,7 +131,7 @@ GUI_TEST_CLASS_DEFINITION(test_0986_4) {
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -177,7 +177,7 @@ GUI_TEST_CLASS_DEFINITION(test_1001_2) {
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep();
 
     GTGlobals::sleep(5000);
@@ -194,7 +194,7 @@ GUI_TEST_CLASS_DEFINITION(test_1001_3) {
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
@@ -216,7 +216,7 @@ GUI_TEST_CLASS_DEFINITION(test_1001_4) {
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -265,7 +265,7 @@ GUI_TEST_CLASS_DEFINITION(test_1015_2) {
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep();
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -284,7 +284,7 @@ GUI_TEST_CLASS_DEFINITION(test_1015_3) {
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep();
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -308,7 +308,7 @@ GUI_TEST_CLASS_DEFINITION(test_1015_4) {
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep();
 
     GTUtilsMdi::click(os, GTGlobals::Close);

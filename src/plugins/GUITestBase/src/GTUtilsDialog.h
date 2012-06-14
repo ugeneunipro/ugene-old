@@ -32,27 +32,26 @@ public:
     virtual ~Runnable(){}
 };
 
-class Filler : public Runnable {
-public:
-    Filler(U2OpStatus& _os, const QString& _objectName) : os(_os), objectName(_objectName){}
-    QString getObjectName() const { return objectName; }
-protected:
-    U2OpStatus &os;
-    QString objectName;
-};
-
 class GUIDialogWaiter : public QObject {
     Q_OBJECT
 public:
     enum DialogType {Modal, Popup};
-    GUIDialogWaiter(U2OpStatus &os, Runnable* _r, DialogType t, const QString& objectName, int timeout = 20000);
+
+    struct WaitSettings {
+        WaitSettings(const QString& _objectName="", DialogType _dialogType = GUIDialogWaiter::Modal, int _timeout = 20000) : dialogType(_dialogType), objectName(_objectName), timeout(_timeout){}
+
+        DialogType dialogType;
+        QString objectName;
+        int timeout;
+    };
+
+    GUIDialogWaiter(U2OpStatus &os, Runnable* _r, const WaitSettings& settings = WaitSettings());
     virtual ~GUIDialogWaiter();
 
     static const int timerPeriod = 100;
 
     bool hadRun;
     int waiterId;
-    QString objectName;
 
 public slots:
     void checkDialog();
@@ -60,20 +59,32 @@ public slots:
 private:
     U2OpStatus &os;
     Runnable *runnable;
-    DialogType type;
+    WaitSettings settings;
 
     QTimer* timer;
     int waitingTime;
-    int timeout;
 
     void finishWaiting(); // deletes timer and runnable
     bool isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName);
 };
 
+class Filler : public Runnable {
+public:
+    Filler(U2OpStatus& _os, const GUIDialogWaiter::WaitSettings& _settings) : os(_os), settings(_settings){}
+    Filler(U2OpStatus& _os, const QString &_objectName) : os(_os), settings(GUIDialogWaiter::WaitSettings(_objectName)){}
+
+    GUIDialogWaiter::WaitSettings getSettings() const { return settings; }
+protected:
+    U2OpStatus &os;
+    GUIDialogWaiter::WaitSettings settings;
+};
+
 class GTUtilsDialog {
 public:
     // if objectName is not empty, waits for QWidget with a given name
-    static void waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType = GUIDialogWaiter::Modal, const QString& objectName = "");
+    static void waitForDialog(U2OpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings);
+
+    static void waitForDialog(U2OpStatus &os, Runnable *r);
 
     // deletes all GUIDialogWaiters
     static void cleanup();

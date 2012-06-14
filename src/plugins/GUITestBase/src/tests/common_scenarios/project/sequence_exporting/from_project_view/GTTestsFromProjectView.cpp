@@ -75,7 +75,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 3. Right click on [s] NC_001363 sequence object, in project view tree. Use context menu item {Export->Export sequences}
 // Expected state: Export sequences dialog open
     Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE, GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, popupChooser);
 
 // 4. Fill the next field in dialog:
 //     {Export to file:} _common_data/scenarios/sandbox/exp.fasta
@@ -88,7 +88,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
         ExportSequenceOfSelectedAnnotationsFiller::Fasta,
         ExportSequenceOfSelectedAnnotationsFiller::SaveAsSeparate
         );
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
 
     GTGlobals::sleep(5000);
 
@@ -123,7 +123,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // 3. Right click on [s] NC_001363 sequence object, in project view tree. Use context menu item {Export->Export sequence as alignment}
 // Expected state: Export sequences dialog open
     Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, popupChooser);
 
 // 4. Select file to save: _common_data/scenarios/sandbox/exp2.aln and set 'file format to use' to CLUSTALW,
 // Than to uncheck the 'add document to the project' checkbox and click Save button.
@@ -133,7 +133,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
         ExportSequenceAsAlignmentFiller::Clustalw,
         false
     );
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
     GTGlobals::sleep();
@@ -146,7 +146,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
     Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, dialog);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
 
@@ -158,7 +158,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTGlobals::sleep(1000);
 
     Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, popupChooser);
 
     Runnable *filler = new ExportSequenceAsAlignmentFiller(os,
         testDir+"_common_data/scenarios/sandbox/",
@@ -166,7 +166,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
         ExportSequenceAsAlignmentFiller::Clustalw,
         GTGlobals::UseMouse
         );
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
     GTGlobals::sleep();
@@ -180,10 +180,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTGlobals::sleep(1000);
 
     Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION);
-    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, popupChooser);
 
     Runnable *filler = new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa");
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "HIV-1.aln"));
     GTMouseDriver::click(os, Qt::RightButton);
@@ -256,11 +256,11 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 // 4. Select file to save: _common_data/scenarios/sandbox/exp2.msf and set 'file format to use' to MSF,
 // Than to uncheck the 'add document to the project' checkbox and click Save button.
     Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT);
-    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, popupChooser);
 
     Runnable *filler = new ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
         "exp2.msf", ExportSequenceAsAlignmentFiller::Msf);
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
     GTMouseDriver::click(os, Qt::RightButton);

@@ -28,8 +28,8 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GUIDialogWaiter"
 
-GUIDialogWaiter::GUIDialogWaiter(U2OpStatus &_os, Runnable* _r, DialogType t, const QString& _objectName, int _timeout)
-: hadRun(false), waiterId(-1), objectName(_objectName), os(_os), runnable(_r), type(t), timer(NULL), waitingTime(0), timeout(_timeout) {
+GUIDialogWaiter::GUIDialogWaiter(U2OpStatus &_os, Runnable* _r, const WaitSettings& _settings)
+: hadRun(false), waiterId(-1), os(_os), runnable(_r), settings(_settings), timer(NULL), waitingTime(0) {
 
     static int totalWaiterCount = 0;
     waiterId = totalWaiterCount++;
@@ -63,8 +63,9 @@ bool GUIDialogWaiter::isExpectedName(const QString& widgetObjectName, const QStr
 #define GT_METHOD_NAME "checkDialog"
 void GUIDialogWaiter::checkDialog() {
     QWidget *widget = NULL;
+    GT_CHECK(runnable != NULL, "Runnable is NULL");
 
-    switch (type) {
+    switch (settings.dialogType) {
         case Modal:
             widget = QApplication::activeModalWidget();
             break;
@@ -77,7 +78,7 @@ void GUIDialogWaiter::checkDialog() {
             break;
     }
 
-    if (widget && runnable && !hadRun && isExpectedName(widget->objectName(), objectName)) {
+    if (widget && !hadRun && isExpectedName(widget->objectName(), settings.objectName)) {
         timer->stop();
         uiLog.trace("-------------------------");
         uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");
@@ -88,7 +89,7 @@ void GUIDialogWaiter::checkDialog() {
     }
     else {
         waitingTime += timerPeriod;
-        if (waitingTime > timeout) {
+        if (waitingTime > settings.timeout) {
             uiLog.trace("-------------------------");
             uiLog.trace("!!! GUIDialogWaiter::TIMEOUT Id = " + QString::number(waiterId) + ", going to finish waiting");
             uiLog.trace("-------------------------");
@@ -104,16 +105,20 @@ void GUIDialogWaiter::checkDialog() {
 
 QList<GUIDialogWaiter*> GTUtilsDialog::pool = QList<GUIDialogWaiter*>();
 
-void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, GUIDialogWaiter::DialogType _type, const QString& _objectName)
+void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings)
 {
-    QString objectName = _objectName;
+    GUIDialogWaiter *waiter = new GUIDialogWaiter(os, r, settings);
+    pool.append(waiter);
+}
+
+void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r) {
+    GUIDialogWaiter::WaitSettings settings;
     Filler* f = dynamic_cast<Filler*>(r);
-    if (f && !(f->getObjectName().isEmpty())) {
-        objectName = f->getObjectName();
+    if (f) {
+        settings = f->getSettings();
     }
 
-    GUIDialogWaiter *waiter = new GUIDialogWaiter(os, r, _type, objectName);
-    pool.append(waiter);
+    waitForDialog(os, r, settings);
 }
 
 void GTUtilsDialog::cleanup() {

@@ -63,13 +63,13 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 5. Click NO in opened messagebox
     Runnable *filler2 = new MessageBoxDialogFiller(os, QMessageBox::No);
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
     GTGlobals::sleep();
 
 // 6. Use menu {File->Close project}
 // 7. Click NO in opened messagebox
     Runnable *filler3 = new MessageBoxDialogFiller(os, QMessageBox::No);
-    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler3);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 

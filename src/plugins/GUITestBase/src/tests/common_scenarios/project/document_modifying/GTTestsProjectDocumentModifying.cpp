@@ -55,7 +55,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 2. Open view for 1.gb document.
     Runnable *popupChooser = new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, popupChooser);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
@@ -108,7 +108,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 6. Load 1.gb document using context menu.
     Runnable *popupChooser = new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, popupChooser);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
@@ -128,7 +128,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // Expected state: "Question?" dialog has appeared that proposes to save 1.gb file
 // 8. Click Yes button
     Runnable *filler3 = new MessageBoxDialogFiller(os, QMessageBox::Yes);
-    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler3);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 
@@ -139,7 +139,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 10) Open 1.gb view by context menu
     Runnable *popupChooser2 = new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, popupChooser2);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();

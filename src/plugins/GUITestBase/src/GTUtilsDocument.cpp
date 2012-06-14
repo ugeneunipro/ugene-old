@@ -86,7 +86,7 @@ void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName
     switch (method) {
     case GTGlobals::UseMouse:
     {
-        GTUtilsDialog::waitForDialog(os, popupChooser, GUIDialogWaiter::Popup);
+        GTUtilsDialog::waitForDialog(os, popupChooser);
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
 
         GTMouseDriver::click(os, Qt::RightButton);

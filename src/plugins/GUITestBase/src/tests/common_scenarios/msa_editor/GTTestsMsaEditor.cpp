@@ -135,7 +135,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTGlobals::sleep(1000);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -146,7 +146,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -161,7 +161,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     GTGlobals::sleep(1000);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
     GTUtilsMdi::click(os, GTGlobals::Maximize);
     GTGlobals::sleep();
@@ -175,7 +175,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -190,7 +190,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTGlobals::sleep(1000);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
     GTUtilsMdi::click(os, GTGlobals::Maximize);
     GTGlobals::sleep();
@@ -204,7 +204,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -219,7 +219,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_3) {
     GTGlobals::sleep(1000);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
@@ -242,7 +242,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_3) {
     GTGlobals::sleep();
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
 
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
@@ -257,7 +257,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_4) {
     GTGlobals::sleep(1000);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -278,7 +278,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_4) {
     GTGlobals::sleep();
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -293,7 +293,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTGlobals::sleep();
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
 
@@ -305,7 +305,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTGlobals::sleep();
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
@@ -317,12 +317,12 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTGlobals::sleep();
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
 
@@ -336,12 +336,12 @@ GUI_TEST_CLASS_DEFINITION(test_0003_3) {
     GTUtilsMSAEditorSequenceArea::checkSorted(os, false);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -360,7 +360,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_4) {
     GTUtilsMSAEditorSequenceArea::checkSorted(os, false);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "action_sort_by_name");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
 
@@ -389,7 +389,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004)
     Runnable *chooser = new PopupChooser(os, QStringList() << "action_go_to_position");
     Runnable *filler = new GoToDialogFiller(os, 6);
     GTUtilsDialog::waitForDialog(os, filler);
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
     GTMenu::showContextMenu(os, mdiWindow);
     GTGlobals::sleep();
@@ -698,14 +698,14 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     //3. Put "Sequence_a" into text field. Click OK.
 
     Runnable *filler = new RenameSequenceFiller(os, "Sequence_a", "Tettigonia_viridissima");
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
     //Expected state: Tettigonia_viridissima renamed to Sequence_a
     Runnable *filler2 = new RenameSequenceFiller(os, "Sequence_a", "Sequence_a");
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
@@ -718,7 +718,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     
     //Expected state: Tettigonia_viridissima renamed back
     Runnable *filler3 = new RenameSequenceFiller(os, "Tettigonia_viridissima", "Tettigonia_viridissima");
-    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler3);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();    
@@ -739,7 +739,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     //3. Put "Sequence_a" into text field. Click OK.
 
     Runnable *filler = new RenameSequenceFiller(os, "Sequence_a", "Tettigonia_viridissima");
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
@@ -747,7 +747,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     //Expected state: Tettigonia_viridissima renamed to Sequence_a
     
     Runnable *filler2 = new RenameSequenceFiller(os, "Sequence_a", "Sequence_a");
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
@@ -758,7 +758,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
 
     //Expected state: Tettigonia_viridissima renamed back
     Runnable *filler3 = new RenameSequenceFiller(os, "Tettigonia_viridissima", "Tettigonia_viridissima");
-    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler3);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
@@ -779,14 +779,14 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     //3. Put "Sequence_a" into text field. Click OK.
 
     Runnable *filler = new RenameSequenceFiller(os, "Sequence_a", "Bicolorana_bicolor_EF540830");
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,2));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
     //Expected state: Tettigonia_viridissima renamed to Sequence_a
     Runnable *filler2 = new RenameSequenceFiller(os, "Sequence_a", "Sequence_a");
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,2));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
@@ -799,7 +799,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
 
     //Expected state: Tettigonia_viridissima renamed back
     Runnable *filler3 = new RenameSequenceFiller(os, "Bicolorana_bicolor_EF540830", "Bicolorana_bicolor_EF540830");
-    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler3);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,2));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
@@ -820,14 +820,14 @@ GUI_TEST_CLASS_DEFINITION(test_0007_3) {
     //3. Put "Sequence_a" into text field. Click OK.
 
     Runnable *filler = new RenameSequenceFiller(os, "Sequence_a", "Phaneroptera_falcata");
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,0));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
     //Expected state: Tettigonia_viridissima renamed to Sequence_a
     Runnable *filler2 = new RenameSequenceFiller(os, "Sequence_a", "Sequence_a");
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,0));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
@@ -840,7 +840,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_3) {
 
     //Expected state: Tettigonia_viridissima renamed back
     Runnable *filler3 = new RenameSequenceFiller(os, "Phaneroptera_falcata", "Phaneroptera_falcata");
-    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler3);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,0));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();    
@@ -861,14 +861,14 @@ GUI_TEST_CLASS_DEFINITION(test_0007_4) {
     //3. Put "Sequence_a" into text field. Click OK.
 
     Runnable *filler = new RenameSequenceFiller(os, "Sequence_a", "Conocephalus_sp.");
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,5));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
     //Expected state: Tettigonia_viridissima renamed to Sequence_a
     Runnable *filler2 = new RenameSequenceFiller(os, "Sequence_a", "Sequence_a");
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,5));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
@@ -881,7 +881,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_4) {
 
     //Expected state: Tettigonia_viridissima renamed back
     Runnable *filler3 = new RenameSequenceFiller(os, "Conocephalus_sp.", "Conocephalus_sp.");
-    GTUtilsDialog::waitForDialog(os, filler3, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler3);
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,5));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();    
@@ -895,10 +895,10 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 // 2. Do document context menu {Export->Export aligniment to amino format}
 // 3. Translate with default settings
     Runnable *filler = new ExportMSA2MSADialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 
@@ -926,10 +926,10 @@ GUI_TEST_CLASS_DEFINITION(test_0010_1) {
 // 2. Do document context menu {Export->Export aligniment to amino format}
 // 3. Translate with default settings
     Runnable *filler = new ExportMSA2MSADialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 
@@ -938,7 +938,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_1) {
     GTUtilsMSAEditorSequenceArea::selectArea(os);
 // copy to clipboard
     Runnable* chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -959,10 +959,10 @@ GUI_TEST_CLASS_DEFINITION(test_0010_2) {
 // 2. Do document context menu {Export->Export aligniment to amino format}
 // 3. Translate with default settings
     Runnable *filler = new ExportMSA2MSADialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 
@@ -971,7 +971,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010_2) {
     GTUtilsMSAEditorSequenceArea::selectArea(os);
 // copy to clipboard
     Runnable* chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -996,7 +996,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 
 // 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
@@ -1016,7 +1016,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 
 // 3. Do step 2 again
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1044,7 +1044,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
 
 // 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
@@ -1053,7 +1053,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
 // CHANGES: copy by context menu
     GTGlobals::sleep();
     Runnable* chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1068,7 +1068,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
 
 // 3. Do step 2 again
     Runnable *chooser3 = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
-    GTUtilsDialog::waitForDialog(os, chooser3, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser3);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1077,7 +1077,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
 // CHANGES: copy by context menu
     GTGlobals::sleep();
     Runnable* chooser4 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
-    GTUtilsDialog::waitForDialog(os, chooser4, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser4);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1102,7 +1102,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 // 2. Select first sequence and do context menu {Edit->Replace selected rows with reverce complement}
 // CHANGES: using main menu
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 //    GTMouseDriver::click(os, Qt::RightButton);
@@ -1124,7 +1124,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 // 3. Do step 2 again
 // CHANGES: using main menu
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 //    GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
@@ -1153,7 +1153,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
 // 2. Select all sequences and do context menu {Edit->Replace selected rows with reverce complement}
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os);
     GTMouseDriver::click(os, Qt::RightButton);
@@ -1187,7 +1187,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1) {
 
 // 2. Select all sequences and do context menu {Edit->Replace selected rows with reverce complement}
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os);
     GTMouseDriver::click(os, Qt::RightButton);
@@ -1202,7 +1202,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1) {
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, -1), QPoint(-1, 0));
 // copy to clipboard. CHANGES: copy by context menu
     Runnable* chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1223,7 +1223,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2) {
 
 // 2. Select all sequences and do context menu {Edit->Replace selected rows with reverce complement}
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os);
     GTMouseDriver::click(os, Qt::RightButton);
@@ -1246,7 +1246,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2) {
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, -1), QPoint(-1, 0));
 // copy to clipboard. CHANGES: copy by context menu
     Runnable* chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1267,10 +1267,10 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
 // 2. Convert alignment to amino. Use context menu {Export->Amino translation of alignment rows}
     Runnable *filler = new ExportMSA2MSADialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1278,10 +1278,10 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
 // 3. Open converted alignment. Use context menu {Align->Align with Kalign}
     Runnable *filler2 = new KalignDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
     GTGlobals::sleep();
@@ -1299,10 +1299,10 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1) {
 
 // 2. Convert alignment to amino. Use context menu {Export->Amino translation of alignment rows}
     Runnable *filler = new ExportMSA2MSADialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1319,10 +1319,10 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1) {
 
 // 3. Open converted alignment. Use context menu {Align->Align with Kalign}
     Runnable *filler2 = new KalignDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
     GTGlobals::sleep();
@@ -1339,10 +1339,10 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2) {
 
 // 2. Convert alignment to amino. Use context menu {Export->Amino translation of alignment rows}
     Runnable *filler = new ExportMSA2MSADialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
 
@@ -1350,11 +1350,11 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2) {
 
 // 3. Open converted alignment. Use context menu {Align->Align with Kalign}
     Runnable *filler2 = new KalignDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
 
 // CHANGES: using main menu
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
     GTGlobals::sleep();
@@ -1371,10 +1371,10 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 
     GTLogTracer logTracer;
     Runnable *filler2 = new KalignDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
     GTGlobals::sleep();
@@ -1405,11 +1405,11 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1) {
 
     GTLogTracer logTracer;
     Runnable *filler2 = new KalignDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
 
 // CHANGES: using main menu
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
     GTGlobals::sleep();
@@ -1449,10 +1449,10 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2) {
 
     GTLogTracer logTracer;
     Runnable *filler2 = new KalignDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, filler2, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, filler2);
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep();
     GTGlobals::sleep();
@@ -1518,7 +1518,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTUtilsDialog::waitForDialog(os, filler);
 
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
 
@@ -1697,7 +1697,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 
 // 3. On MSA editor {Context Menu->Add->Sequence from current project}
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
@@ -1721,7 +1721,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017_1) {
 
 // 3. On MSA editor {Context Menu->Add->Sequence from current project}
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
@@ -1750,7 +1750,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017_2) {
 
 // 3. On MSA editor {Context Menu->Add->Sequence from current project}
     Runnable *chooser = new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
 
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
