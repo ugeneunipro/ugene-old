@@ -218,6 +218,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0008);
 //     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0011_1);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0011_2);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0012);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0013);
+
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/sequence exporting/

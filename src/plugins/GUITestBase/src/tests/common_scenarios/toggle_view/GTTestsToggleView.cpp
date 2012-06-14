@@ -1025,5 +1025,266 @@ GUI_TEST_CLASS_DEFINITION(test_0009)
                   "panoramical view for both sequences has been not closed");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0011)
+{
+// 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QWidget *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+    QToolBar *toolBarSe1 = mainWindow->findChild<QToolBar*>("tool_bar_se1");
+    CHECK_SET_ERR(mainWindow != NULL, "Main Window not found");
+    CHECK_SET_ERR(toolBarSe1 != NULL, "Tool bar not found");
+
+    QAction *zoomAction = mainWindow->findChild<QAction*>("zoom_to_range_se1");
+    CHECK_SET_ERR(zoomAction != NULL, "Zoom to range action not found");
+    QWidget *zoomButton = toolBarSe1->widgetForAction(zoomAction);
+    CHECK_SET_ERR(zoomButton != NULL, "Zoom button not found");
+
+    QAction *zoomInSe1 = mainWindow->findChild<QAction*>("action_zoom_in_se1");
+    QAction *zoomOutSe1 = mainWindow->findChild<QAction*>("action_zoom_out_se1");
+    CHECK_SET_ERR(zoomInSe1 != NULL, "Zoom In action not found");
+    CHECK_SET_ERR(zoomOutSe1 != NULL, "Zoom Out action not found");
+
+    QWidget *zoomInButton = toolBarSe1->widgetForAction(zoomInSe1);
+    QWidget *zoomOutButton = toolBarSe1->widgetForAction(zoomInSe1);
+
+    CHECK_SET_ERR(zoomInButton != NULL, "Zoom In button not found");
+    CHECK_SET_ERR(zoomOutButton != NULL, "Zoom Out button not found");
+
+// 2. Press 'Zoom in' button for seq1.
+    GTWidget::click(os, zoomInButton);
+    GTGlobals::sleep();
+    QWidget *zoomViewSe1 = GTWidget::findWidget(os, "pan_view_se1");
+    CHECK_SET_ERR(!zoomViewSe1->isHidden(), "panoramical view for se1 sequence has been not appeared");
+
+// 3. Close zoom view for seq1
+    Runnable *chooser0 = new PopupChooser(os, QStringList() << "show_hide_zoom_view");
+    GTUtilsDialog::waitForDialog(os, chooser0, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    GTGlobals::sleep();
+
+// Expected state: Zoom area (grey rectangle) has disappered from overview for seq1
+    GTGlobals::sleep();
+    CHECK_SET_ERR(zoomViewSe1 != NULL, "Zoom View widget not found");
+    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se2 sequence has been not closed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_1)
+{
+// 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QWidget *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+    QToolBar *toolBarSe1 = mainWindow->findChild<QToolBar*>("tool_bar_se1");
+    QToolBar *toolBarSe2 = mainWindow->findChild<QToolBar*>("tool_bar_se2");
+    CHECK_SET_ERR(mainWindow != NULL, "Main Window not found");
+    CHECK_SET_ERR(toolBarSe1 != NULL, "Tool bar not found");
+    CHECK_SET_ERR(toolBarSe2 != NULL, "Tool bar not found");
+
+    QAction *zoomAction1 = mainWindow->findChild<QAction*>("zoom_to_range_se1");
+    CHECK_SET_ERR(zoomAction1 != NULL, "Zoom to range action not found");
+    QAction *zoomAction2 = mainWindow->findChild<QAction*>("zoom_to_range_se2");
+    CHECK_SET_ERR(zoomAction2 != NULL, "Zoom to range action not found");
+
+    QWidget *zoomButton1 = toolBarSe1->widgetForAction(zoomAction1);
+    CHECK_SET_ERR(zoomButton1 != NULL, "Zoom button not found");
+    QWidget *zoomButton2 = toolBarSe2->widgetForAction(zoomAction2);
+    CHECK_SET_ERR(zoomButton2 != NULL, "Zoom button not found");
+
+    QAction *zoomInSe1 = mainWindow->findChild<QAction*>("action_zoom_in_se1");
+    QAction *zoomOutSe1 = mainWindow->findChild<QAction*>("action_zoom_out_se1");
+    CHECK_SET_ERR(zoomInSe1 != NULL, "Zoom In action not found");
+    CHECK_SET_ERR(zoomOutSe1 != NULL, "Zoom Out action not found");
+
+    QAction *zoomInSe2 = mainWindow->findChild<QAction*>("action_zoom_in_se2");
+    QAction *zoomOutSe2 = mainWindow->findChild<QAction*>("action_zoom_out_se2");
+    CHECK_SET_ERR(zoomInSe2 != NULL, "Zoom In action not found");
+    CHECK_SET_ERR(zoomOutSe2 != NULL, "Zoom Out action not found");
+
+    QWidget *zoomInButton1 = toolBarSe1->widgetForAction(zoomInSe1);
+    QWidget *zoomOutButton1 = toolBarSe1->widgetForAction(zoomInSe1);
+
+    QWidget *zoomInButton2 = toolBarSe2->widgetForAction(zoomInSe2);
+    QWidget *zoomOutButton2 = toolBarSe2->widgetForAction(zoomInSe2);
+
+    CHECK_SET_ERR(zoomInButton1 != NULL, "Zoom In button not found");
+    CHECK_SET_ERR(zoomOutButton1 != NULL, "Zoom Out button not found");
+
+    CHECK_SET_ERR(zoomInButton2 != NULL, "Zoom In button not found");
+    CHECK_SET_ERR(zoomOutButton2 != NULL, "Zoom Out button not found");
+
+// 2. Press 'Zoom in' button for both. CHANGES: for both instead of seq1
+    GTWidget::click(os, zoomInButton1);
+    GTGlobals::sleep();
+    QWidget *zoomViewSe1 = GTWidget::findWidget(os, "pan_view_se1");
+    CHECK_SET_ERR(!zoomViewSe1->isHidden(), "panoramical view for se1 sequence has been not appeared");
+
+    GTWidget::click(os, zoomInButton2);
+    GTGlobals::sleep();
+    QWidget *zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2");
+    CHECK_SET_ERR(!zoomViewSe2->isHidden(), "panoramical view for se1 sequence has been not appeared");
+
+// 3. Close zoom view for both. CHANGES: for both instead of seq1
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "show_hide_zoom_view");
+    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    GTGlobals::sleep();
+
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "show_hide_zoom_view");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTGlobals::sleep();
+
+// Expected state: Zoom area (grey rectangle) has disappered from overview for both. CHANGES: for both instead of seq1
+    GTGlobals::sleep();
+    CHECK_SET_ERR(zoomViewSe1 != NULL, "Zoom View widget not found");
+    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se2 sequence has been not closed");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(zoomViewSe2 != NULL, "Zoom View widget not found");
+    CHECK_SET_ERR(zoomViewSe2->isHidden(), "panoramical view for se2 sequence has been not closed");
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_2)
+{
+    // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QWidget *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+    QToolBar *toolBarSe1 = mainWindow->findChild<QToolBar*>("tool_bar_se1");
+    QToolBar *toolBarSe2 = mainWindow->findChild<QToolBar*>("tool_bar_se2");
+    CHECK_SET_ERR(mainWindow != NULL, "Main Window not found");
+    CHECK_SET_ERR(toolBarSe1 != NULL, "Tool bar not found");
+    CHECK_SET_ERR(toolBarSe2 != NULL, "Tool bar not found");
+
+    QAction *zoomAction1 = mainWindow->findChild<QAction*>("zoom_to_range_se1");
+    CHECK_SET_ERR(zoomAction1 != NULL, "Zoom to range action not found");
+    QAction *zoomAction2 = mainWindow->findChild<QAction*>("zoom_to_range_se2");
+    CHECK_SET_ERR(zoomAction2 != NULL, "Zoom to range action not found");
+
+    QWidget *zoomButton1 = toolBarSe1->widgetForAction(zoomAction1);
+    CHECK_SET_ERR(zoomButton1 != NULL, "Zoom button not found");
+    QWidget *zoomButton2 = toolBarSe2->widgetForAction(zoomAction2);
+    CHECK_SET_ERR(zoomButton2 != NULL, "Zoom button not found");
+
+    QAction *zoomInSe1 = mainWindow->findChild<QAction*>("action_zoom_in_se1");
+    QAction *zoomOutSe1 = mainWindow->findChild<QAction*>("action_zoom_out_se1");
+    CHECK_SET_ERR(zoomInSe1 != NULL, "Zoom In action not found");
+    CHECK_SET_ERR(zoomOutSe1 != NULL, "Zoom Out action not found");
+
+    QAction *zoomInSe2 = mainWindow->findChild<QAction*>("action_zoom_in_se2");
+    QAction *zoomOutSe2 = mainWindow->findChild<QAction*>("action_zoom_out_se2");
+    CHECK_SET_ERR(zoomInSe2 != NULL, "Zoom In action not found");
+    CHECK_SET_ERR(zoomOutSe2 != NULL, "Zoom Out action not found");
+
+    QWidget *zoomInButton1 = toolBarSe1->widgetForAction(zoomInSe1);
+    QWidget *zoomOutButton1 = toolBarSe1->widgetForAction(zoomInSe1);
+
+    QWidget *zoomInButton2 = toolBarSe2->widgetForAction(zoomInSe2);
+    QWidget *zoomOutButton2 = toolBarSe2->widgetForAction(zoomInSe2);
+
+    CHECK_SET_ERR(zoomInButton1 != NULL, "Zoom In button not found");
+    CHECK_SET_ERR(zoomOutButton1 != NULL, "Zoom Out button not found");
+
+    CHECK_SET_ERR(zoomInButton2 != NULL, "Zoom In button not found");
+    CHECK_SET_ERR(zoomOutButton2 != NULL, "Zoom Out button not found");
+
+    // 2. Press 'Zoom in' button for both. CHANGES: for both instead of seq1
+    GTWidget::click(os, zoomInButton1);
+    GTGlobals::sleep();
+    QWidget *zoomViewSe1 = GTWidget::findWidget(os, "pan_view_se1");
+    CHECK_SET_ERR(!zoomViewSe1->isHidden(), "panoramical view for se1 sequence has been not appeared");
+
+    GTWidget::click(os, zoomInButton2);
+    GTGlobals::sleep();
+    QWidget *zoomViewSe2 = GTWidget::findWidget(os, "pan_view_se2");
+    CHECK_SET_ERR(!zoomViewSe2->isHidden(), "panoramical view for se1 sequence has been not appeared");
+
+    // 3. Close zoom views by global Toogle View Button. CHANGES: for both instead of seq1 + global Toggle View Button instead of the seq1 and buttons
+
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "toggleZoomView");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    // Expected state: Zoom area (grey rectangle) has disappered from overview for both. 
+    GTGlobals::sleep();
+    CHECK_SET_ERR(zoomViewSe1 != NULL, "Zoom View widget not found");
+    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se2 sequence has been not closed");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(zoomViewSe2 != NULL, "Zoom View widget not found");
+    CHECK_SET_ERR(zoomViewSe2->isHidden(), "panoramical view for se2 sequence has been not closed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0012)
+    {
+    // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QWidget *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+    QToolBar *toolBarSe1 = mainWindow->findChild<QToolBar*>("tool_bar_se1");
+    CHECK_SET_ERR(mainWindow != NULL, "Main Window not found");
+    CHECK_SET_ERR(toolBarSe1 != NULL, "Tool bar not found");
+
+    QAction *zoomAction = mainWindow->findChild<QAction*>("zoom_to_range_se1");
+    CHECK_SET_ERR(zoomAction != NULL, "Zoom to range action not found");
+    QWidget *zoomButton = toolBarSe1->widgetForAction(zoomAction);
+    CHECK_SET_ERR(zoomButton != NULL, "Zoom button not found");
+
+    QAction *zoomInSe1 = mainWindow->findChild<QAction*>("action_zoom_in_se1");
+    QAction *zoomOutSe1 = mainWindow->findChild<QAction*>("action_zoom_out_se1");
+    CHECK_SET_ERR(zoomInSe1 != NULL, "Zoom In action not found");
+    CHECK_SET_ERR(zoomOutSe1 != NULL, "Zoom Out action not found");
+
+    QWidget *zoomInButton = toolBarSe1->widgetForAction(zoomInSe1);
+    QWidget *zoomOutButton = toolBarSe1->widgetForAction(zoomInSe1);
+
+    CHECK_SET_ERR(zoomInButton != NULL, "Zoom In button not found");
+    CHECK_SET_ERR(zoomOutButton != NULL, "Zoom Out button not found");
+
+// 2. Press 'Zoom in' button for seq1.
+    GTWidget::click(os, zoomInButton);
+    GTGlobals::sleep();
+    QWidget *zoomViewSe1 = GTWidget::findWidget(os, "pan_view_se1");
+    CHECK_SET_ERR(!zoomViewSe1->isHidden(), "panoramical view for se1 sequence has been not appeared");
+
+// 3. Close zoom view for seq1
+    Runnable *chooser0 = new PopupChooser(os, QStringList() << "show_hide_zoom_view");
+    GTUtilsDialog::waitForDialog(os, chooser0, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    GTGlobals::sleep();
+
+// Expected state: Zoom area (grey rectangle) has disappered from overview for seq1
+    GTGlobals::sleep();
+    CHECK_SET_ERR(zoomViewSe1 != NULL, "Zoom View widget not found");
+    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se2 sequence has been not closed");
+
+
+    }
+GUI_TEST_CLASS_DEFINITION(test_0013)
+    {
+
+    }
+
+
 } // namespace
 } // namespace U2
