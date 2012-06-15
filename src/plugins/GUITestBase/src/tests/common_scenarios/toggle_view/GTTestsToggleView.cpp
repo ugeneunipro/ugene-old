@@ -1235,14 +1235,14 @@ GUI_TEST_CLASS_DEFINITION(test_0012)
     {
 // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
     Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, dialog);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
 // 2. Close detailed view
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
     Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
@@ -1267,12 +1267,12 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1)
     // 2. Close detailed view CHANGES: for 1 and 2 instead of global button
 
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser1);
     GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
     GTGlobals::sleep();
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser1);
     GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
     GTGlobals::sleep();
 
@@ -1290,7 +1290,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2)
     {
     // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
     Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, dialog);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
@@ -1309,7 +1309,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2)
         "details views for both sequences has not been closed");
 
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");
-    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser1);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
@@ -1318,7 +1318,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2)
         "details views for both sequences has not been closed");
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "toggleDetailsView");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
@@ -1334,14 +1334,14 @@ GUI_TEST_CLASS_DEFINITION(test_0013)
     {
 // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
     Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, dialog);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
 // 2. Close detailed view
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
     Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
-    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
@@ -1359,19 +1359,19 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1)
     {
     // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
     Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, dialog);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
     // 2. Close detailed view CHANGES: for 1 and 2 instead of global button
 
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser1);
     GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
     GTGlobals::sleep();
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser1);
     GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
     GTGlobals::sleep();
 
@@ -1388,14 +1388,14 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1)
     {
     // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
     Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsDialog::waitForDialog(os, dialog);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
     // 2. Close detailed view
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
     Runnable *chooser0 = new PopupChooser(os, QStringList() << "toggleDetailsView");
-    GTUtilsDialog::waitForDialog(os, chooser0, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser0);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
@@ -1407,7 +1407,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1)
         "details views for both sequences has not been closed");
 
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");
-    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser1);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
@@ -1416,7 +1416,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1)
         "details views for both sequences has not been closed");
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "toggleDetailsView");
-    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
