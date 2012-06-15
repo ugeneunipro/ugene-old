@@ -1070,7 +1070,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011)
 // Expected state: Zoom area (grey rectangle) has disappered from overview for seq1
     GTGlobals::sleep();
     CHECK_SET_ERR(zoomViewSe1 != NULL, "Zoom View widget not found");
-    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se2 sequence has been not closed");
+    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se1 sequence has been not closed");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011_1)
@@ -1146,7 +1146,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1)
 // Expected state: Zoom area (grey rectangle) has disappered from overview for both. CHANGES: for both instead of seq1
     GTGlobals::sleep();
     CHECK_SET_ERR(zoomViewSe1 != NULL, "Zoom View widget not found");
-    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se2 sequence has been not closed");
+    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se1 sequence has been not closed");
 
     GTGlobals::sleep();
     CHECK_SET_ERR(zoomViewSe2 != NULL, "Zoom View widget not found");
@@ -1233,58 +1233,200 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2)
 
 GUI_TEST_CLASS_DEFINITION(test_0012)
     {
+// 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+// 2. Close detailed view
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    QWidget *detailsViewSe1 = GTWidget::findWidget(os, "det_view_se1");
+    QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+        "details views for both sequences has not been closed");
+
+// TODO: Expected state: position indicator(Yellow triangle) on overview has disappered from overview
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0012_1)
+    {
     // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
     Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, dialog);
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep();
 
-    GTGlobals::sleep();
-    QWidget *mainWindow = AppContext::getMainWindow()->getQMainWindow();
-    QToolBar *toolBarSe1 = mainWindow->findChild<QToolBar*>("tool_bar_se1");
-    CHECK_SET_ERR(mainWindow != NULL, "Main Window not found");
-    CHECK_SET_ERR(toolBarSe1 != NULL, "Tool bar not found");
+    // 2. Close detailed view CHANGES: for 1 and 2 instead of global button
 
-    QAction *zoomAction = mainWindow->findChild<QAction*>("zoom_to_range_se1");
-    CHECK_SET_ERR(zoomAction != NULL, "Zoom to range action not found");
-    QWidget *zoomButton = toolBarSe1->widgetForAction(zoomAction);
-    CHECK_SET_ERR(zoomButton != NULL, "Zoom button not found");
-
-    QAction *zoomInSe1 = mainWindow->findChild<QAction*>("action_zoom_in_se1");
-    QAction *zoomOutSe1 = mainWindow->findChild<QAction*>("action_zoom_out_se1");
-    CHECK_SET_ERR(zoomInSe1 != NULL, "Zoom In action not found");
-    CHECK_SET_ERR(zoomOutSe1 != NULL, "Zoom Out action not found");
-
-    QWidget *zoomInButton = toolBarSe1->widgetForAction(zoomInSe1);
-    QWidget *zoomOutButton = toolBarSe1->widgetForAction(zoomInSe1);
-
-    CHECK_SET_ERR(zoomInButton != NULL, "Zoom In button not found");
-    CHECK_SET_ERR(zoomOutButton != NULL, "Zoom Out button not found");
-
-// 2. Press 'Zoom in' button for seq1.
-    GTWidget::click(os, zoomInButton);
-    GTGlobals::sleep();
-    QWidget *zoomViewSe1 = GTWidget::findWidget(os, "pan_view_se1");
-    CHECK_SET_ERR(!zoomViewSe1->isHidden(), "panoramical view for se1 sequence has been not appeared");
-
-// 3. Close zoom view for seq1
-    Runnable *chooser0 = new PopupChooser(os, QStringList() << "show_hide_zoom_view");
-    GTUtilsDialog::waitForDialog(os, chooser0);
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
     GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
     GTGlobals::sleep();
 
-// Expected state: Zoom area (grey rectangle) has disappered from overview for seq1
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
     GTGlobals::sleep();
-    CHECK_SET_ERR(zoomViewSe1 != NULL, "Zoom View widget not found");
-    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se2 sequence has been not closed");
 
+    QWidget *detailsViewSe1 = GTWidget::findWidget(os, "det_view_se1");
+    QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
 
+    GTGlobals::sleep();
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+        "details views for both sequences has not been closed");
+
+    // TODO: Expected state: position indicator(Yellow triangle) on overview has disappered from overview
     }
+
+GUI_TEST_CLASS_DEFINITION(test_0012_2)
+    {
+    // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    // 2. Close detailed view
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable *chooser0 = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser0);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    QWidget *detailsViewSe1 = GTWidget::findWidget(os, "det_view_se1");
+    QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+        "details views for both sequences has not been closed");
+
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(!detailsViewSe1->isHidden() && !detailsViewSe1->isHidden(),
+        "details views for both sequences has not been closed");
+
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+        "details views for both sequences has not been closed");
+
+
+    // TODO: Expected state: position indicator(Yellow triangle) on overview has disappered from overview
+    }
+
 GUI_TEST_CLASS_DEFINITION(test_0013)
     {
+// 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+// 2. Close detailed view
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    QWidget *detailsViewSe1 = GTWidget::findWidget(os, "det_view_se1");
+    QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+        "details views for both sequences has not been closed");
+
+// TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from zoom view
 
     }
+GUI_TEST_CLASS_DEFINITION(test_0013_1)
+    {
+    // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
 
+    // 2. Close detailed view CHANGES: for 1 and 2 instead of global button
+
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    GTGlobals::sleep();
+
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTGlobals::sleep();
+
+    QWidget *detailsViewSe1 = GTWidget::findWidget(os, "det_view_se1");
+    QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+        "details views for both sequences has not been closed");
+
+    // TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from zoom view
+
+    }GUI_TEST_CLASS_DEFINITION(test_0013_2)
+    {
+    // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog, GUIDialogWaiter::Modal);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    // 2. Close detailed view
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable *chooser0 = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser0, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    QWidget *detailsViewSe1 = GTWidget::findWidget(os, "det_view_se1");
+    QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+        "details views for both sequences has not been closed");
+
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser1, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(!detailsViewSe1->isHidden() && !detailsViewSe1->isHidden(),
+        "details views for both sequences has not been closed");
+
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser2, GUIDialogWaiter::Popup);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
+        "details views for both sequences has not been closed");
+
+    // TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from zoom view
+
+    }
 
 } // namespace
 } // namespace U2
