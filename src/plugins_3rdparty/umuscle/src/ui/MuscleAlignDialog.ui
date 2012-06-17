@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>505</width>
-    <height>380</height>
+    <height>575</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -157,6 +157,27 @@
          <string>Translate to amino when aligning</string>
         </property>
        </widget>
+      </item>
+      <item row="4" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Translation table:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="translationTableBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -308,10 +329,6 @@
     </layout>
    </item>
   </layout>
-  <zorder>groupBox</zorder>
-  <zorder>confEdit</zorder>
-  <zorder>label_3</zorder>
-  <zorder>groupBox_2</zorder>
  </widget>
  <resources/>
  <connections>
@@ -408,6 +425,38 @@
     <hint type="destinationlabel">
      <x>120</x>
      <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>translateCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_4</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>362</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>63</x>
+     <y>388</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>translateCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>translationTableBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>362</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>388</y>
     </hint>
    </hints>
   </connection>

@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNATranslation.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QToolButton>
@@ -51,7 +52,14 @@ MuscleAlignDialogController::MuscleAlignDialogController(QWidget* w, const MAlig
     foreach(const MuscleAlignPreset* p, presets.qlist) {
         confBox->addItem(p->name);
     }
-   
+    
+    DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
+    QList<DNATranslation*> aminoTs = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO);
+    assert(!aminoTs.empty());
+    foreach(DNATranslation* t, aminoTs) {
+        translationTableBox->addItem(t->getTranslationName());
+    }
 }
 
 void MuscleAlignDialogController::accept() {
@@ -142,6 +150,7 @@ MuscleAlignWithExtFileSpecifyDialogController::MuscleAlignWithExtFileSpecifyDial
     foreach(const MuscleAlignPreset* p, presets.qlist) {
         confBox->addItem(p->name);
     }
+
 }
 
 void MuscleAlignWithExtFileSpecifyDialogController::sl_inputFileLineEditChanged(const QString& str){
@@ -237,6 +246,16 @@ void MuscleAlignDialogController::initPresets() {
 bool MuscleAlignDialogController::translateToAmino()
 {
     return translateCheckBox->isChecked();
+}
+
+QString MuscleAlignDialogController::getTranslationId() {
+    
+    DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
+    QStringList ids = tr->getDNATranslationIds(translationTableBox->currentText());
+    assert(!ids.empty());
+    
+    return ids.first();
+
 }
 
 

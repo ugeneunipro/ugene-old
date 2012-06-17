@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNATranslation.h>
 #include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QMessageBox>
@@ -52,7 +53,19 @@ KalignDialogController::KalignDialogController(QWidget* w, const MAlignment& _ma
 {
     setupUi(this);
 	setupUiExt();
-    translateCheckBox->setEnabled(ma.getAlphabet()->isNucleic() && translateEnabled);
+    if (ma.getAlphabet()->isNucleic() && translateEnabled) {
+        translateCheckBox->setEnabled(true);
+        DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+        DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
+        QList<DNATranslation*> aminoTs = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO);
+        assert(!aminoTs.empty());
+        foreach(DNATranslation* t, aminoTs) {
+            translationTableBox->addItem(t->getTranslationName());
+        }
+    } else {
+        translateCheckBox->setEnabled(false);
+    }
+
 }
 
 void KalignDialogController::setupUiExt() {    
@@ -97,6 +110,15 @@ void KalignDialogController::accept() {
 bool KalignDialogController::translateToAmino()
 {
     return translateCheckBox->isChecked();
+}
+
+QString KalignDialogController::getTranslationId() {
+    DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
+    QStringList ids = tr->getDNATranslationIds(translationTableBox->currentText());
+    assert(!ids.empty());
+
+    return ids.first();
+
 }
 
 }//namespace

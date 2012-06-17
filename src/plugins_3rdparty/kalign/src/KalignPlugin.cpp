@@ -226,7 +226,7 @@ void KalignMSAEditorContext::sl_align() {
     }
 
 	if (dlg.translateToAmino()) {
-        AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, kalignTask));
+        AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, kalignTask,dlg.getTranslationId()));
     } else {
         AppContext::getTaskScheduler()->registerTopLevelTask(kalignTask);
     }

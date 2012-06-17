@@ -37,14 +37,15 @@ class DNATranslation;
 class U2ALGORITHM_EXPORT TranslateMSA2AminoTask : public Task {
     Q_OBJECT
 public:
-    TranslateMSA2AminoTask(MAlignmentObject* obj );
+    TranslateMSA2AminoTask(MAlignmentObject* obj);
+    TranslateMSA2AminoTask(MAlignmentObject* obj, const QString& trId );
     const MAlignment& getTaskResult() { return resultMA; }
     void run();
     ReportResult report();
 private:
     MAlignment resultMA;
     MAlignmentObject* maObj;
-    QList<DNATranslation*> translations;
+    DNATranslation* translation;
 };
 
 
@@ -74,7 +75,7 @@ protected:
 class U2ALGORITHM_EXPORT AlignInAminoFormTask : public Task {
     Q_OBJECT
 public:
-    AlignInAminoFormTask(MAlignmentObject* obj, AlignGObjectTask* alignTask);
+    AlignInAminoFormTask(MAlignmentObject* obj, AlignGObjectTask* alignTask, const QString& traslId);
     ~AlignInAminoFormTask();
 
     virtual void prepare();
@@ -84,6 +85,7 @@ protected:
     AlignGObjectTask* alignTask;
     MAlignmentObject *maObj, *clonedObj;
     MAlignment bufMA;
+    QString traslId;
 };
 
 

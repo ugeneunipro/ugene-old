@@ -42,23 +42,35 @@ TranslateMSA2AminoTask::TranslateMSA2AminoTask( MAlignmentObject* obj )
     assert(maObj != NULL);
     assert(maObj->getAlphabet()->isNucleic());
 
-    translations = AppContext::getDNATranslationRegistry()->lookupTranslation(maObj->getAlphabet(), DNATranslationType_NUCL_2_AMINO);
+    QList<DNATranslation*> translations = 
+        AppContext::getDNATranslationRegistry()->lookupTranslation(maObj->getAlphabet(), DNATranslationType_NUCL_2_AMINO);
+    CHECK_EXT(translations.isEmpty(), setError(tr("Unable to find suitable translation for %1").arg(maObj->getGObjectName())), );
+    
+    translation = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(maObj->getAlphabet());
+
 }
 
+TranslateMSA2AminoTask::TranslateMSA2AminoTask( MAlignmentObject* obj, const QString& translationId )
+: Task("TranslateMSA2AminoTask", TaskFlags_FOSCOE), maObj(obj)
+{
+    assert(maObj != NULL);
+    assert(maObj->getAlphabet()->isNucleic());
+
+    translation = AppContext::getDNATranslationRegistry()->lookupTranslation(translationId);
+
+}
+
+
 void TranslateMSA2AminoTask::run() {
-    assert(!translations.isEmpty());
-
-    CHECK_EXT(translations.isEmpty(), setError(tr("Unable to find suitable translation for %1").arg(maObj->getGObjectName())), );
-
-    DNATranslation* transl = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(maObj->getAlphabet());
-
+    assert(translation != NULL);
+    
     QList<DNASequence> lst = MSAUtils::ma2seq(maObj->getMAlignment(), true);
-    resultMA = MAlignment(maObj->getMAlignment().getName(),transl->getDstAlphabet()) ;
+    resultMA = MAlignment(maObj->getMAlignment().getName(),translation->getDstAlphabet()) ;
 
     foreach (const DNASequence& dna, lst) {    
         int buflen = dna.length() / 3;
         QByteArray buf(buflen,'\0');
-        transl->translate(dna.seq.constData(), dna.length(), buf.data(), buflen);
+        translation->translate(dna.seq.constData(), dna.length(), buf.data(), buflen);
         buf.replace("*","X");
         MAlignmentRow row(dna.getName(), buf);  
         resultMA.addRow(row);
@@ -78,8 +90,8 @@ Task::ReportResult TranslateMSA2AminoTask::report() {
 //////////////////////////////////////////////////////////////////////////
 /// AlignInAminoFormTask
 
-AlignInAminoFormTask::AlignInAminoFormTask( MAlignmentObject* obj, AlignGObjectTask* t )
-: Task ("Align in amino form", TaskFlags_FOSCOE), alignTask(t), maObj(obj), clonedObj(NULL)
+AlignInAminoFormTask::AlignInAminoFormTask( MAlignmentObject* obj, AlignGObjectTask* t, const QString& trId )
+: Task ("Align in amino form", TaskFlags_FOSCOE), alignTask(t), maObj(obj), clonedObj(NULL), traslId(trId)
 {
     setMaxParallelSubtasks(1);
 }
@@ -95,7 +107,7 @@ void AlignInAminoFormTask::prepare() {
     clonedObj = new MAlignmentObject(maObj->getMAlignment(), maObj->getGHintsMap());
     alignTask->setMAObject(clonedObj);
     bufMA = clonedObj->getMAlignment();
-    addSubTask(new TranslateMSA2AminoTask(clonedObj));
+    addSubTask(new TranslateMSA2AminoTask(clonedObj,traslId));
     addSubTask(alignTask);
 }
 

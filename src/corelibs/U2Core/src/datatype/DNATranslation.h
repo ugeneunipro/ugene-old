@@ -111,6 +111,8 @@ public:
 
     QStringList getDNATranslationIds() const;
 
+    QStringList getDNATranslationIds(const QString& name) const;
+
     void registerDNATranslation(DNATranslation* t);
 
     QList<DNATranslation*> lookupTranslation(DNAAlphabet* srcAlphabet, DNATranslationType type);

@@ -89,6 +89,18 @@ QStringList DNATranslationRegistry::getDNATranslationIds() const
 
 }
 
+QStringList DNATranslationRegistry::getDNATranslationIds(const QString& name) const
+{
+    QStringList l;
+    foreach(DNATranslation* t, translations) {
+        if (t->getTranslationName() == name) {
+            l<<t->getTranslationId();
+        }
+    }
+    return l;
+
+}
+
 
 void DNATranslationRegistry::registerDNATranslation(DNATranslation* t) {
     translations.push_back(t);

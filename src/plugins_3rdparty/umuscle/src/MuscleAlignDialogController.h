@@ -77,7 +77,7 @@ class MuscleAlignDialogController : public QDialog, public Ui_MuscleAlignmentDia
 public:
     MuscleAlignDialogController(QWidget* w, const MAlignment& ma, MuscleTaskSettings& settings);
     bool translateToAmino();
-    
+    QString getTranslationId();    
 public slots:
     void accept();
 

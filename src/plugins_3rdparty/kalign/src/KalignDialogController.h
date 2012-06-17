@@ -38,7 +38,7 @@ class KalignDialogController : public QDialog, public Ui_KalignDialog {
 public:
     KalignDialogController(QWidget* w, const MAlignment& ma, KalignTaskSettings& settings, bool translateEnabled);
     bool translateToAmino();
-
+    QString getTranslationId();
 public slots:
     void accept();
 

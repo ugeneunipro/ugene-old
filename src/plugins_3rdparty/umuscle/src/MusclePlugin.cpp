@@ -197,7 +197,8 @@ void MuscleMSAEditorContext::sl_align() {
         muscleTask = new MuscleGObjectTask(obj, s);
     }
     if (dlg.translateToAmino()) {
-        AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, muscleTask));
+        QString trId = dlg.getTranslationId();
+        AppContext::getTaskScheduler()->registerTopLevelTask(new AlignInAminoFormTask(obj, muscleTask, trId));
     } else {
         AppContext::getTaskScheduler()->registerTopLevelTask(muscleTask);
     }
