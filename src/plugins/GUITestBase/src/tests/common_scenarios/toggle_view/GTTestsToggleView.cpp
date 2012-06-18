@@ -803,7 +803,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
 // Expected state: panoramical views for both sequences has been closed, all zoom buttons at sequence views becomes disabled
     GTGlobals::sleep();
-    CHECK_SET_ERR(overViewSe1->isHidden() && overViewSe2->isHidden(),
+    CHECK_SET_ERR(overViewSe1->isVisible() == false && overViewSe2->isVisible() == false,
         "panoramical views for both sequences has not been closed");
 
 // 3. Click on toolbar button Toggle views. Click menu item Show all overviews.
@@ -812,12 +812,12 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTWidget::click(os, toggleViewButton);
     GTGlobals::sleep();
 
-    QWidget *_overViewSe1 = GTWidget::findWidget(os, "overview_se1");
-    QWidget *_overViewSe2 = GTWidget::findWidget(os, "overview_se2");
+    //QWidget *_overViewSe1 = GTWidget::findWidget(os, "overview_se1");
+    //QWidget *_overViewSe2 = GTWidget::findWidget(os, "overview_se2");
 
 // Expected state: panoramical view for both sequences has been appeared
     GTGlobals::sleep();
-    CHECK_SET_ERR(!_overViewSe1->isHidden() && !_overViewSe2->isHidden(), 
+    CHECK_SET_ERR(overViewSe1->isVisible() == true && overViewSe2->isVisible() == true, 
         "panoramical view for both sequences has not been shown");
 }
 
@@ -843,10 +843,10 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 // Expected state: views for both sequences has been closed, but toolbars still present.
     GTGlobals::sleep();
-    CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe2->isHidden(),
-        "details views for both sequences has not been closed");
-    CHECK_SET_ERR(!toolBarSe1->isHidden() && !toolBarSe2->isHidden(), 
-        "toolbars for both sequences has not been shown");
+    CHECK_SET_ERR(detailsViewSe1->isVisible() == false && detailsViewSe2->isVisible() == false, 
+        "panoramical view for both sequences has not been shown");
+    CHECK_SET_ERR(toolBarSe1->isVisible() == true && toolBarSe2->isVisible() == true, 
+        "panoramical view for both sequences has not been shown");
 
 // 3. Click on toolbar button Toggle views. Click menu item Show all details.
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");
@@ -856,8 +856,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 // Expected state: view for both sequences has been appeared
     GTGlobals::sleep();
-    CHECK_SET_ERR(!detailsViewSe1->isHidden() && !detailsViewSe2->isHidden(), 
-        "details view for both sequences has not been shown");
+    CHECK_SET_ERR(detailsViewSe1->isVisible() == true && detailsViewSe2->isVisible() == true, 
+        "panoramical view for both sequences has not been shown");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007) {
@@ -887,13 +887,13 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
 // Expected state: all views for both sequences has been closed, but toolbars still present.
     GTGlobals::sleep();
-    CHECK_SET_ERR(overViewSe1->isHidden() && overViewSe2->isHidden(),
+    CHECK_SET_ERR(overViewSe1->isHidden() == true && overViewSe2->isHidden() == true,
         "panoramical views for both sequences has not been closed");
-    CHECK_SET_ERR(DetailsViewSe1->isHidden() && DetailsViewSe2->isHidden(),
+    CHECK_SET_ERR(DetailsViewSe1->isHidden() == true && DetailsViewSe2->isHidden() == true,
         "details views for both sequences has not been closed");
-    CHECK_SET_ERR(zoomViewSe1->isHidden() && zoomViewSe2->isHidden(),
+    CHECK_SET_ERR(zoomViewSe1->isHidden() == true && zoomViewSe2->isHidden() == true,
         "zoom views for both sequences has not been closed");
-    CHECK_SET_ERR(!toolBarSe1->isHidden() && !toolBarSe2->isHidden(), 
+    CHECK_SET_ERR(toolBarSe1->isHidden() == false && toolBarSe2->isHidden() == false, 
         "toolbars view for both sequences has not been shown");
 
 // 3. Click on toolbar button Toggle views. Click menu item Show all sequences.
@@ -904,11 +904,11 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
 // Expected state: all views for both sequences has been appeared
     GTGlobals::sleep();
-    CHECK_SET_ERR(!overViewSe1->isHidden() && !overViewSe2->isHidden(), 
+    CHECK_SET_ERR(overViewSe1->isHidden() == false && overViewSe2->isHidden() == false, 
         "panoramical view for both sequences has not been shown");
-    CHECK_SET_ERR(!DetailsViewSe1->isHidden() && !DetailsViewSe2->isHidden(), 
+    CHECK_SET_ERR(DetailsViewSe1->isHidden() == false && DetailsViewSe2->isHidden() == false, 
         "details view for both sequences has not been shown");
-    CHECK_SET_ERR(!zoomViewSe1->isHidden() && !zoomViewSe2->isHidden(), 
+    CHECK_SET_ERR(zoomViewSe1->isHidden() == false && zoomViewSe2->isHidden() == false, 
         "zoom view for both sequences has not been shown");
 }
 
