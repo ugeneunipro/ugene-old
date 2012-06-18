@@ -1224,7 +1224,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2)
     // Expected state: Zoom area (grey rectangle) has disappered from overview for both. 
     GTGlobals::sleep();
     CHECK_SET_ERR(zoomViewSe1 != NULL, "Zoom View widget not found");
-    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se2 sequence has been not closed");
+    CHECK_SET_ERR(zoomViewSe1->isHidden(), "panoramical view for se1 sequence has been not closed");
 
     GTGlobals::sleep();
     CHECK_SET_ERR(zoomViewSe2 != NULL, "Zoom View widget not found");
@@ -1272,13 +1272,14 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1)
     GTGlobals::sleep();
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
     GTGlobals::sleep();
 
     QWidget *detailsViewSe1 = GTWidget::findWidget(os, "det_view_se1");
     QWidget *detailsViewSe2 = GTWidget::findWidget(os, "det_view_se2");
 
+    GTGlobals::sleep();
     GTGlobals::sleep();
     CHECK_SET_ERR(detailsViewSe1->isHidden() && detailsViewSe1->isHidden(),
         "details views for both sequences has not been closed");
@@ -1315,7 +1316,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_2)
 
     GTGlobals::sleep();
     CHECK_SET_ERR(!detailsViewSe1->isHidden() && !detailsViewSe1->isHidden(),
-        "details views for both sequences has not been closed");
+        "details views for both sequences has not been show");
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "toggleDetailsView");
     GTUtilsDialog::waitForDialog(os, chooser2);
@@ -1371,7 +1372,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1)
     GTGlobals::sleep();
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "show_hide_details_view");
-    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTUtilsDialog::waitForDialog(os, chooser2);
     GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
     GTGlobals::sleep();
 
@@ -1413,7 +1414,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1)
 
     GTGlobals::sleep();
     CHECK_SET_ERR(!detailsViewSe1->isHidden() && !detailsViewSe1->isHidden(),
-        "details views for both sequences has not been closed");
+        "details views for both sequences has not been show");
 
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "toggleDetailsView");
     GTUtilsDialog::waitForDialog(os, chooser2);
