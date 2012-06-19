@@ -54,15 +54,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsApp::checkUGENETitle(os, "proj2-1 UGENE");
 
 // 2. Open view for 1.gb document.
-    Runnable *popupChooser = new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep();
 
 // Press Ctrl+N and add annotation to it annotations table.
-    Runnable *filler = new CreateAnnotationWidgetFiller(os, "<auto>", "CCC", "1.. 10");
-    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "CCC", "1.. 10"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
@@ -88,8 +85,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // 
 // 3. Fill the next field in dialog and click Save button:
 //     {Project Folder:} _common_data/scenarios/sandbox
-    Runnable *filler = new ExportProjectDialogFiller(os, testDir + "_common_data/scenarios/sandbox");
-    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDialog::waitForDialog(os, new ExportProjectDialogFiller(os, testDir + "_common_data/scenarios/sandbox"));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     GTGlobals::sleep();
 
@@ -107,15 +103,12 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 6. Load 1.gb document using context menu.
-    Runnable *popupChooser = new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep();
 
 // Press Ctrl+N and add annotation "misc_feature" to the annotations table in 1.gb document.
-    Runnable *filler2 = new CreateAnnotationWidgetFiller(os, "<auto>", "misc_feature", "complement(1.. 20)");
-    GTUtilsDialog::waitForDialog(os, filler2);
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "misc_feature", "complement(1.. 20)"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
@@ -127,8 +120,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // 7. Use menu {File->Close Project}
 // Expected state: "Question?" dialog has appeared that proposes to save 1.gb file
 // 8. Click Yes button
-    Runnable *filler3 = new MessageBoxDialogFiller(os, QMessageBox::Yes);
-    GTUtilsDialog::waitForDialog(os, filler3);
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
 
@@ -138,11 +130,9 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDocument::checkDocument(os, "1.gb");
 
 // 10) Open 1.gb view by context menu
-    Runnable *popupChooser2 = new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser2);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep();
 
 // Expected state: annotation added at step 6 already presents in document
     GTGlobals::sleep();

@@ -47,15 +47,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 3);
 
-    Runnable *chooser = new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region");
-    GTUtilsDialog::waitForDialog(os, chooser);
-
-    Runnable *filler = new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, filler);
-
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EXPORT" << "action_export_selected_sequence_region"));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "exp.fasta", GTGlobals::UseMouse));
     GTMouseDriver::click(os);
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(1000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
@@ -80,8 +75,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
         }
     };
 
-    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
-    GTUtilsDialog::waitForDialog(os, dialog);
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/multy_fa.fa");
     GTUtilsDocument::checkDocument(os, "multy_fa.fa");
 
@@ -97,8 +91,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     CHECK_SET_ERR(toggleAutoAnnotationsButton != NULL, "toggleAutoAnnotationsButton is NULL");
     CHECK_SET_ERR(toggleAutoAnnotationsButton->isEnabled() == true, "toggleAutoAnnotationsButton is disabled, expected enabled");
 
-    Runnable *allActionsPopupChooser = new AllActionsPopupChooser(os);
-    GTUtilsDialog::waitForDialog(os, allActionsPopupChooser);
+    GTUtilsDialog::waitForDialog(os, new AllActionsPopupChooser(os));
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep(1000);
 }

@@ -45,7 +45,6 @@ void ProjectTreeItemSelectorDialogBaseChecker::run(){
 
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, foundItems[0]));
     GTMouseDriver::click(os);
-    GTGlobals::sleep();
 
     QPushButton* okButton = dialog->findChild<QPushButton*>("okButton");
     GT_CHECK(okButton != NULL, "treeWidget is NULL");

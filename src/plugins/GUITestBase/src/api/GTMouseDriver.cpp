@@ -27,14 +27,14 @@ void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
 {
     press(os, button);
     release(os, button);
+
+    GTGlobals::sleep(100);
 }
 
 void GTMouseDriver::doubleClick(U2OpStatus &os)
 {
     click(os, Qt::LeftButton);
-    GTGlobals::sleep(100);
     click(os, Qt::LeftButton);
 }
 
 } //namespace
-

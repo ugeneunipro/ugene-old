@@ -51,7 +51,6 @@ void GTTreeWidget::expand(U2OpStatus &os, QTreeWidgetItem* item) {
 
         GTMouseDriver::moveTo(os, treeWidget->mapToGlobal(p));
         GTMouseDriver::click(os);
-        GTGlobals::sleep(500);
     }
 }
 #undef GT_METHOD_NAME

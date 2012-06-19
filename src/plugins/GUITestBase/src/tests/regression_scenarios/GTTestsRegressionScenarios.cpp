@@ -53,9 +53,8 @@ GUI_TEST_CLASS_DEFINITION(test_0986) {
         EscClicker(U2OpStatus& _os) : Filler(_os, ""){}
         virtual void run(){ GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["esc"]); }
     };
-    Runnable *escClicker = new EscClicker(os);
 
-    GTUtilsDialog::waitForDialog(os, escClicker);
+    GTUtilsDialog::waitForDialog(os, new EscClicker(os));
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
@@ -73,9 +72,8 @@ GUI_TEST_CLASS_DEFINITION(test_0986_1) {
     filler->button = SmithWatermanDialogFiller::Cancel;
     GTUtilsDialog::waitForDialog(os, filler);
 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTGlobals::sleep(5000);
@@ -87,12 +85,10 @@ GUI_TEST_CLASS_DEFINITION(test_0986_2) {
     GTGlobals::sleep(3000);
 
     GTRegionSelector::RegionSelectorSettings regionSelectorSettings(1, 2);
-    Runnable *filler = new SmithWatermanDialogFiller(os, "ATCG", regionSelectorSettings);
-    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, "ATCG", regionSelectorSettings));
 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTGlobals::sleep(5000);
@@ -104,17 +100,14 @@ GUI_TEST_CLASS_DEFINITION(test_0986_3) {
     GTGlobals::sleep(3000);
 
     GTRegionSelector::RegionSelectorSettings regionSelectorSettings(1, 2);
-    Runnable *filler = new SmithWatermanDialogFiller(os, "ATCGAT", regionSelectorSettings);
-    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, "ATCGAT", regionSelectorSettings));
 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
     GTMouseDriver::click(os);
-    GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     GTGlobals::sleep(5000);
@@ -126,12 +119,10 @@ GUI_TEST_CLASS_DEFINITION(test_0986_4) {
     GTGlobals::sleep(3000);
 
     GTRegionSelector::RegionSelectorSettings regionSelectorSettings(1, 2);
-    Runnable *filler = new SmithWatermanDialogFiller(os, "ATCGAT", regionSelectorSettings);
-    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDialog::waitForDialog(os, new SmithWatermanDialogFiller(os, "ATCGAT", regionSelectorSettings));
 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_pattern_smith_waterman_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -144,8 +135,7 @@ GUI_TEST_CLASS_DEFINITION(test_1001) {
     GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 4);
-    GTUtilsDialog::waitForDialog(os, r);
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 4));
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
 
@@ -158,8 +148,7 @@ GUI_TEST_CLASS_DEFINITION(test_1001_1) {
     GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 100, 50);
-    GTUtilsDialog::waitForDialog(os, r);
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 100, 50));
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
 
@@ -172,12 +161,9 @@ GUI_TEST_CLASS_DEFINITION(test_1001_2) {
     GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 99, 99, true);
-    GTUtilsDialog::waitForDialog(os, r);
-
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 99, 99, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep();
 
     GTGlobals::sleep(5000);
@@ -189,17 +175,13 @@ GUI_TEST_CLASS_DEFINITION(test_1001_3) {
     GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 99, 99, true);
-    GTUtilsDialog::waitForDialog(os, r);
-
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 99, 99, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
     GTMouseDriver::click(os);
-    GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     GTGlobals::sleep(5000);
@@ -211,12 +193,9 @@ GUI_TEST_CLASS_DEFINITION(test_1001_4) {
     GTUtilsProject::openFiles(os, testDir+"_common_data/fasta/human_T1_cutted.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 99, 99, true);
-    GTUtilsDialog::waitForDialog(os, r);
-
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 99, 99, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep(5000);
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -229,8 +208,7 @@ GUI_TEST_CLASS_DEFINITION(test_1015) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 3);
-    GTUtilsDialog::waitForDialog(os, r);
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 3));
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
 
@@ -244,8 +222,7 @@ GUI_TEST_CLASS_DEFINITION(test_1015_1) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 30, 50);
-    GTUtilsDialog::waitForDialog(os, r);
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 30, 50));
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
 
@@ -260,12 +237,9 @@ GUI_TEST_CLASS_DEFINITION(test_1015_2) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 100, 50, true);
-    GTUtilsDialog::waitForDialog(os, r);
-
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 100, 50, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep();
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -279,12 +253,9 @@ GUI_TEST_CLASS_DEFINITION(test_1015_3) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 100, 50, true);
-    GTUtilsDialog::waitForDialog(os, r);
-
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 100, 50, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep();
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -292,7 +263,6 @@ GUI_TEST_CLASS_DEFINITION(test_1015_3) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
     GTMouseDriver::click(os);
-    GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     GTGlobals::sleep(5000);
@@ -303,12 +273,9 @@ GUI_TEST_CLASS_DEFINITION(test_1015_4) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 100, 50, true);
-    GTUtilsDialog::waitForDialog(os, r);
-
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 100, 50, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "build_dotplot_action", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTGlobals::sleep();
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -316,7 +283,6 @@ GUI_TEST_CLASS_DEFINITION(test_1015_4) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
     GTMouseDriver::click(os);
-    GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     GTGlobals::sleep(5000);
@@ -331,15 +297,13 @@ GUI_TEST_CLASS_DEFINITION(test_1021) {
 
         // 2) Click "build dotplot" tooltip
         // 3) Click OK in opened dotplot dialog
-        Runnable *r = new DotPlotFiller(os, 100);
-        GTUtilsDialog::waitForDialog(os, r);
+        GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 100));
         GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
         GTGlobals::sleep();
 
         // 4) Click on human_T1.fa project tree view item
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
         GTMouseDriver::click(os);
-        GTGlobals::sleep();
 
         // 5) Press delete key
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
@@ -370,15 +334,13 @@ GUI_TEST_CLASS_DEFINITION(test_1021_1) {
 
         // 2) Click "build dotplot" tooltip
         // 3) Click OK in opened dotplot dialog
-        Runnable *r = new DotPlotFiller(os, 100);
-        GTUtilsDialog::waitForDialog(os, r);
+        GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 100));
         GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
         GTGlobals::sleep();
 
         // 4) Click on human_T1.fa project tree view item
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
         GTMouseDriver::click(os);
-        GTGlobals::sleep();
 
         // 5) Press delete key
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
@@ -409,15 +371,13 @@ GUI_TEST_CLASS_DEFINITION(test_1021_2) {
 
         // 2) Click "build dotplot" tooltip
         // 3) Click OK in opened dotplot dialog
-        Runnable *r = new DotPlotFiller(os, 100);
-        GTUtilsDialog::waitForDialog(os, r);
+        GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 100));
         GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
         GTGlobals::sleep();
 
         // 4) Click on human_T1.fa project tree view item
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
         GTMouseDriver::click(os);
-        GTGlobals::sleep();
 
         // 5) Press delete key
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
@@ -450,8 +410,7 @@ GUI_TEST_CLASS_DEFINITION(test_1021_3) {
 
         // 2) Click "build dotplot" tooltip
         // 3) Click OK in opened dotplot dialog
-        Runnable *r = new DotPlotFiller(os, 120, 100, true);
-        GTUtilsDialog::waitForDialog(os, r);
+        GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 120, 100, true));
         GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
         GTGlobals::sleep();
 
@@ -463,7 +422,6 @@ GUI_TEST_CLASS_DEFINITION(test_1021_3) {
         // 4) Click on human_T1.fa project tree view item
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
         GTMouseDriver::click(os);
-        GTGlobals::sleep();
 
         // 5) Press delete key
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
@@ -496,8 +454,7 @@ GUI_TEST_CLASS_DEFINITION(test_1021_4) {
 
         // 2) Click "build dotplot" tooltip
         // 3) Click OK in opened dotplot dialog
-        Runnable *r = new DotPlotFiller(os, 110, 100, true);
-        GTUtilsDialog::waitForDialog(os, r);
+        GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 110, 100, true));
         GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
         GTGlobals::sleep();
 
@@ -509,7 +466,6 @@ GUI_TEST_CLASS_DEFINITION(test_1021_4) {
         // 4) Click on human_T1.fa project tree view item
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
         GTMouseDriver::click(os);
-        GTGlobals::sleep();
 
         // 5) Press delete key
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
@@ -536,14 +492,12 @@ GUI_TEST_CLASS_DEFINITION(test_1022) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
-    Runnable *r = new DotPlotFiller(os, 3);
-    GTUtilsDialog::waitForDialog(os, r);
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 3));
     GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
     GTGlobals::sleep();
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
     GTMouseDriver::click(os);
-    GTGlobals::sleep();
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep();

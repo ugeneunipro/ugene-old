@@ -62,7 +62,6 @@ void GTUtilsProjectTreeView::toggleView(U2OpStatus& os) {
 
     GTMouseDriver::moveTo(os, qmw->mapToGlobal(qmw->rect().center()));
     GTMouseDriver::click(os);
-    GTGlobals::sleep(500);
 
     GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
 }

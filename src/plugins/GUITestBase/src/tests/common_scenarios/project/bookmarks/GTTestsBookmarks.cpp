@@ -53,11 +53,9 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     GTGlobals::sleep(5000);
 
-    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, popupChooser);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "NC_014267 [s] NC_014267 sequence"));
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep();
 }
 
 } // namespace

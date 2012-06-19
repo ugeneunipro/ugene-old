@@ -58,11 +58,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTGlobals::sleep(2000);
 
     GTKeyboardDriver::keyClick(os, 'N', GTKeyboardDriver::key["ctrl"]);
-    Runnable *checker = new CreateAnnotationWidgetChecker(os);
-    GTUtilsDialog::waitForDialog(os, checker);
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetChecker(os));
     GTGlobals::sleep();
-
-    QString s = os.getError();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) 
@@ -113,41 +110,29 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "1.gb");
     GTGlobals::sleep(100);
 
-    Runnable *chooser1 = new PopupChooser(os, QStringList() << "submenu_open_view" << "action_open_view");
-    GTUtilsDialog::waitForDialog(os, chooser1);
-
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "submenu_open_view" << "action_open_view"));
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(1000);
 
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
-
     QIcon itemIconBefore = item->icon(0);
 
-    Runnable *chooser2 = new PopupChooser(os, QStringList() << "action_document_unlock");
-    GTUtilsDialog::waitForDialog(os, chooser2);
-
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_document_unlock"));
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(1000);
 
     QIcon itemIconAfter = item->icon(0);
-
     if (itemIconBefore.cacheKey() == itemIconAfter.cacheKey() && !os.hasError()) {
         os.setError("Lock icon has not disappear");
     }
 
-    Runnable *checker = new CreateAnnnotationDialogComboBoxChecker(os, "");
-    GTUtilsDialog::waitForDialog(os, checker);
+    GTUtilsDialog::waitForDialog(os, new CreateAnnnotationDialogComboBoxChecker(os, ""));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
-    Runnable *chooser3 = new PopupChooser(os, QStringList() << "action_document_lock");
-    GTUtilsDialog::waitForDialog(os, chooser3);
-
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_document_lock"));
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(1000);
 
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
     GTGlobals::sleep();
@@ -170,17 +155,15 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
     CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->documentIcon.cacheKey(), "Icon is locked");
 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_DOCUMENT__LOCK));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
-    Runnable *lockPopupChooser = new PopupChooser(os, QStringList() << ACTION_DOCUMENT__LOCK);
-    GTUtilsDialog::waitForDialog(os, lockPopupChooser);
     GTMouseDriver::click(os, Qt::RightButton);
 
     item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
     CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
     CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is unlocked");
 
-    Runnable *filler = new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2");
-    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2"));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
     GTGlobals::sleep();
 

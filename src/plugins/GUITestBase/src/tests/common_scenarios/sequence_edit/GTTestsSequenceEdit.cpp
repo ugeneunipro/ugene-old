@@ -56,14 +56,11 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 
-    Runnable *dialog = new selectSequenceRegionDialogFiller(os, 1, 50);
-    GTUtilsDialog::waitForDialog(os, dialog);
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
 
     Runnable *removeDialog = new RemovePartFromSequenceDialogFiller(os,
         RemovePartFromSequenceDialogFiller::Remove,
@@ -71,8 +68,9 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
         testDir+"_common_data/scenarios/sandbox/result.fa",
         RemovePartFromSequenceDialogFiller::FASTA
     );
-
     GTUtilsDialog::waitForDialog(os, removeDialog);
+
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep(1000);
 
     GTUtilsSequenceView::openSequenceView(os, "result.fa");
@@ -86,20 +84,18 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
-    Runnable *dialog = new selectSequenceRegionDialogFiller(os, 1, 50);
-    GTUtilsDialog::waitForDialog(os, dialog);
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
     Runnable *removeDialog = new RemovePartFromSequenceDialogFiller(os,
         RemovePartFromSequenceDialogFiller::Remove,
         true,
         testDir+"_common_data/scenarios/sandbox/result.gb",
         RemovePartFromSequenceDialogFiller::Genbank
     );
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTUtilsDialog::waitForDialog(os, removeDialog);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep(1000);
     GTUtilsSequenceView::openSequenceView(os, "result.gb");
 /*	QString sequence = GTSequenceViewUtils::getSequenceAsString(os);
@@ -166,20 +162,18 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
-    Runnable *dialog = new selectSequenceRegionDialogFiller(os, 1, 50);
-    GTUtilsDialog::waitForDialog(os, dialog);
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
     Runnable *removeDialog = new RemovePartFromSequenceDialogFiller(os,
         RemovePartFromSequenceDialogFiller::Remove,
         true,
         testDir+"_common_data/scenarios/sandbox/result.fa",
         RemovePartFromSequenceDialogFiller::FASTA
     );
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTUtilsDialog::waitForDialog(os, removeDialog);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep(1000);
     GTUtilsDocument::checkDocument(os, "result.fa");
     GTGlobals::sleep(1000);
@@ -197,8 +191,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/", "NC_014267.gb");
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
 
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE, GTGlobals::UseKey);
-    GTUtilsDialog::waitForDialog(os, chooser);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE, GTGlobals::UseKey));
     GTMenu::showContextMenu(os, mdiWindow);
     GTGlobals::sleep(1000);
 
@@ -212,12 +205,10 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/edit_sequence/test.gb");
 
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
 
-    Runnable *removeDialog = new RemovePartFromSequenceDialogFiller(os, "2..2");
-    GTUtilsDialog::waitForDialog(os, removeDialog);
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "2..2"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep(1000);
 
     QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 3);
@@ -238,14 +229,11 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     QTreeWidgetItem *dummyTest = GTUtilsAnnotationsTreeView::findItem(os, "DUMMY_1", false);
     CHECK_SET_ERR(dummyTest != NULL, "There is no annotation DUMMY_1");
 
-    Runnable *dialog = new selectSequenceRegionDialogFiller(os, 2, 2);
-    GTUtilsDialog::waitForDialog(os, dialog);
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 2, 2));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
 
     Runnable *removeDialog = new RemovePartFromSequenceDialogFiller(os,
         RemovePartFromSequenceDialogFiller::Remove,
@@ -255,6 +243,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
         );
 
     GTUtilsDialog::waitForDialog(os, removeDialog);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
     int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
@@ -269,8 +258,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
 GUI_TEST_CLASS_DEFINITION(test_0009) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/AMINO.fa");
-    Runnable *dialog = new selectSequenceRegionDialogFiller(os, 10, 13);
-    GTUtilsDialog::waitForDialog(os, dialog);
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 10, 13));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
@@ -283,12 +271,10 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
 
-    Runnable *dialog = new selectSequenceRegionDialogFiller(os, 1, 11);
-    GTUtilsDialog::waitForDialog(os, dialog);
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 11));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_COPY << ADV_COPY_TRANSLATION_ACTION, GTGlobals::UseKey);
-    GTUtilsDialog::waitForDialog(os, chooser);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY << ADV_COPY_TRANSLATION_ACTION, GTGlobals::UseKey));
     GTMenu::showContextMenu(os, mdiWindow);
     GTGlobals::sleep(1000);
     QString text = QApplication::clipboard()->text();
@@ -300,13 +286,10 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
     GTGlobals::sleep(1000);
 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_COPY" << "action_copy_annotation_sequence"));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "DUMMY_1"));
-
-    Runnable *chooser = new PopupChooser(os, QStringList() << "ADV_MENU_COPY" << "action_copy_annotation_sequence");
-    GTUtilsDialog::waitForDialog(os, chooser);
     GTMouseDriver::click(os);
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(1000);
     GTGlobals::sleep(1000);
 
     const QString expectedSequence = "AATGA";
@@ -318,12 +301,9 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 GUI_TEST_CLASS_DEFINITION(test_0012) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/edit_sequence/test.gb");
 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "2..2"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    Runnable *chooser = new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
-
-    Runnable *removeDialog = new RemovePartFromSequenceDialogFiller(os, "2..2");
-    GTUtilsDialog::waitForDialog(os, removeDialog);
     GTGlobals::sleep(1000);
 
     QString sequenceBegin = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 3);

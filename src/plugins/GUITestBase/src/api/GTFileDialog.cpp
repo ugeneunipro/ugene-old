@@ -277,15 +277,9 @@ void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &
                             const QString &filters, Button button, GTGlobals::UseMethod m)
 {
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, path, fileName, filters, (GTFileDialogUtils::Button)button, m);
-    if (m == GTGlobals::UseMouse) {
-        GTUtilsDialog::waitForDialog(os, ob);
-    }
+    GTUtilsDialog::waitForDialog(os, ob);
 
     ob->openFileDialog();
-
-    if (m == GTGlobals::UseKey) {
-        GTUtilsDialog::waitForDialog(os, ob);
-    }
 
     GTGlobals::sleep();
 }
