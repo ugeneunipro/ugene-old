@@ -139,7 +139,7 @@ void ReadVariationTask::run() {
 
         QVariantMap m;
         m.insert(BaseSlots::URL_SLOT().getId(), url);
-        SharedDbiDataHandler handler = storage->getDataHandler(trackObj->getEntityRef().entityId);
+        SharedDbiDataHandler handler = storage->getDataHandler(trackObj->getEntityRef());
         m.insert(BaseSlots::VARIATION_TRACK_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
         results.append(m);
     }

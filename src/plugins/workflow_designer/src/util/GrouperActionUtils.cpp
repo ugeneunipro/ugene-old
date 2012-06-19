@@ -237,7 +237,8 @@ bool MergeSequencePerformer::applyAction(const QVariant &newData) {
 
 QVariant MergeSequencePerformer::finishAction(U2OpStatus &os) {
     U2Sequence seq = importer.finalizeSequence(os);
-    SharedDbiDataHandler handler = context->getDataStorage()->getDataHandler(seq.id);
+    U2EntityRef entRef(context->getDataStorage()->getDbiRef(), seq.id);
+    SharedDbiDataHandler handler = context->getDataStorage()->getDataHandler(entRef);
     return qVariantFromValue<SharedDbiDataHandler>(handler);
 }
 

@@ -132,6 +132,11 @@ public:
 
     /** Object version number this reference is valid for */
     qint64          version;
+
+    bool operator == (const U2EntityRef &other) const {
+        return (entityId == other.entityId) && (version == other.version)
+            && (dbiRef == other.dbiRef);
+    }
 };
 
 /** 

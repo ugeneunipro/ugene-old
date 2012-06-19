@@ -104,7 +104,7 @@ void AssemblyToSequencesTask::run() {
 
     // 3. get assembly reads
     U2OpStatusImpl os;
-    DbiConnection con(storage->getDbiRef(), os);
+    DbiConnection con(assemblyObj->getEntityRef().dbiRef, os);
     SAFE_POINT_OP(os, );
 
     U2AssemblyDbi *dbi = con.dbi->getAssemblyDbi();

@@ -19,15 +19,21 @@
  * MA 02110-1301, USA.
  */
 
+#include <QFile>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2VariantDbi.h>
+#include <U2Core/UserApplicationsSettings.h>
 
 #include "DbiDataStorage.h"
 
@@ -36,12 +42,21 @@ namespace U2 {
 namespace Workflow {
 
 DbiDataStorage::DbiDataStorage()
-: dbiHandle(NULL) , connection(NULL) {
+: dbiHandle(NULL)
+{
 
 }
 
 DbiDataStorage::~DbiDataStorage() {
-    delete connection;
+    foreach (const U2DbiId &id, connections.keys()) {
+        DbiConnection *connection = connections[id];
+        delete connection;
+    }
+    foreach (const U2DbiRef &tmpRef, tmpDbiList) {
+        if (QFile::exists(tmpRef.dbiId)) {
+            QFile::remove(tmpRef.dbiId);
+        }
+    }
     delete dbiHandle;
 }
 
@@ -50,9 +65,10 @@ bool DbiDataStorage::init() {
     dbiHandle = new TmpDbiHandle(WORKFLOW_SESSION_TMP_DBI_ALIAS, os);
     CHECK_OP(os, false);
 
-    connection = new DbiConnection(dbiHandle->getDbiRef(), os);
+    DbiConnection *connection = new DbiConnection(dbiHandle->getDbiRef(), os);
     CHECK_OP(os, false);
 
+    connections[dbiHandle->getDbiRef().dbiId] = connection;
     return true;
 }
 
@@ -64,7 +80,9 @@ U2DbiRef DbiDataStorage::getDbiRef() {
 U2Object *DbiDataStorage::getObject(const SharedDbiDataHandler &handler, const U2DataType &type) {
     assert(NULL != dbiHandle);
     U2OpStatusImpl os;
-    const U2DataId &objectId = handler->id;
+    const U2DataId &objectId = handler->entRef.entityId;
+    DbiConnection *connection = this->getConnection(handler->getDbiRef(), os);
+    CHECK_OP(os, NULL);
 
     //if (U2Type::Sequence == type) {
     if (1 == type) {
@@ -100,7 +118,10 @@ SharedDbiDataHandler DbiDataStorage::putSequence(const DNASequence &dnaSeq) {
     U2EntityRef ent = U2SequenceUtils::import(dbiHandle->getDbiRef(), dnaSeq, os);
     CHECK_OP(os, SharedDbiDataHandler());
 
-    SharedDbiDataHandler handler(new DbiDataHandler(ent.entityId, connection->dbi->getObjectDbi()));
+    DbiConnection *connection = this->getConnection(dbiHandle->getDbiRef(), os);
+    CHECK_OP(os, SharedDbiDataHandler());
+
+    SharedDbiDataHandler handler(new DbiDataHandler(ent, connection->dbi->getObjectDbi(), true));
     
     return handler;
 }
@@ -110,47 +131,74 @@ bool DbiDataStorage::deleteObject(const U2DataId &, const U2DataType &) {
     return true;
 }
 
-SharedDbiDataHandler DbiDataStorage::getDataHandler(const U2DataId &id) {
-    DbiDataHandler *handler = new DbiDataHandler(id, connection->dbi->getObjectDbi());
+SharedDbiDataHandler DbiDataStorage::getDataHandler(const U2EntityRef &entRef, bool useGC) {
+    U2OpStatusImpl os;
+    DbiConnection *connection = this->getConnection(entRef.dbiRef, os);
+    CHECK_OP(os, SharedDbiDataHandler());
+
+    DbiDataHandler *handler = new DbiDataHandler(entRef, connection->dbi->getObjectDbi(), useGC);
 
     return SharedDbiDataHandler(handler);
 }
 
-U2SequenceObject *StorageUtils::getSequenceObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
-    if(handler.constData() == NULL){
-        return NULL;
+DbiConnection *DbiDataStorage::getConnection(const U2DbiRef &dbiRef, U2OpStatus &os) {
+    // TODO: mutex
+    if (connections.contains(dbiRef.dbiId)) {
+        return connections[dbiRef.dbiId];
+    } else {
+        DbiConnection *connection = new DbiConnection(dbiRef, os);
+        CHECK_OP(os, NULL);
+
+        connections[dbiRef.dbiId] = connection;
+        return connection;
     }
+}
+
+U2DbiRef DbiDataStorage::createTmpDbi(U2OpStatus &os) {
+    // TODO: mutex
+    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath();
+
+    U2DbiRef dbiRef;
+    dbiRef.dbiId = GUrlUtils::prepareTmpFileLocation(tmpDirPath, WORKFLOW_SESSION_TMP_DBI_ALIAS, "ugenedb", os);
+    dbiRef.dbiFactoryId = DEFAULT_DBI_ID;
+    SAFE_POINT_OP(os, U2DbiRef());
+
+    tmpDbiList << dbiRef;
+    return dbiRef;
+}
+
+/************************************************************************/
+/* StorageUtils */
+/************************************************************************/
+U2SequenceObject *StorageUtils::getSequenceObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
+    CHECK(NULL != handler.constData(), NULL);
     //QScopedPointer<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, U2Type::Sequence)));
     QScopedPointer<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, 1)));
     CHECK(NULL != seqDbi.data(), NULL);
 
-    U2EntityRef ent(storage->getDbiRef(), seqDbi->id);
+    U2EntityRef ent(handler->getDbiRef(), seqDbi->id);
     return new U2SequenceObject(seqDbi->visualName, ent);
 }
 
 VariantTrackObject *StorageUtils::getVariantTrackObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
-    if(handler.constData() == NULL){
-        return NULL;
-    }
+    CHECK(NULL != handler.constData(), NULL);
     //QScopedPointer<U2VariantTrack> track(dynamic_cast<U2VariantTrack*>(storage->getObject(handler, U2Type::VariantTrack)));
     QScopedPointer<U2VariantTrack> track(dynamic_cast<U2VariantTrack*>(storage->getObject(handler, 5)));
     CHECK(NULL != track.data(), NULL);
 
-    U2EntityRef trackRef(storage->getDbiRef(), track->id);
+    U2EntityRef trackRef(handler->getDbiRef(), track->id);
     QString objName = track->sequenceName;
 
     return new VariantTrackObject(objName, trackRef);
 }
 
 AssemblyObject *StorageUtils::getAssemblyObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
-    if(handler.constData() == NULL){
-        return NULL;
-    }
+    CHECK(NULL != handler.constData(), NULL);
     //QScopedPointer<U2Assembly> track(dynamic_cast<U2Assembly*>(storage->getObject(handler, U2Type::Assembly)));
     QScopedPointer<U2Assembly> assembly(dynamic_cast<U2Assembly*>(storage->getObject(handler, 4)));
     CHECK(NULL != assembly.data(), NULL);
 
-    U2EntityRef assemblyRef(storage->getDbiRef(), assembly->id);
+    U2EntityRef assemblyRef(handler->getDbiRef(), assembly->id);
     QString objName = assembly->visualName;
 
     QVariantMap hints;

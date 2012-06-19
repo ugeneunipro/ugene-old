@@ -49,11 +49,17 @@ public:
     virtual SharedDbiDataHandler putSequence(const DNASequence &sequence);
     virtual bool deleteObject(const U2DataId &objectId, const U2DataType &type);
 
-    virtual SharedDbiDataHandler getDataHandler(const U2DataId &id);
+    /* If @useGC is true then the data will be removed from the database by GC */
+    virtual SharedDbiDataHandler getDataHandler(const U2EntityRef &entRef, bool useGC = true);
+
+    U2DbiRef createTmpDbi(U2OpStatus &os);
 
 private:
     TmpDbiHandle *dbiHandle;
-    DbiConnection *connection;
+    QMap<U2DbiId, DbiConnection*> connections;
+    QList<U2DbiRef> tmpDbiList;
+
+    DbiConnection *getConnection(const U2DbiRef &dbiRef, U2OpStatus &os);
 };
 
 class U2LANG_EXPORT StorageUtils {

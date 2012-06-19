@@ -36,16 +36,18 @@ typedef QSharedDataPointer<DbiDataHandler> SharedDbiDataHandler;
 class U2LANG_EXPORT DbiDataHandler : public QSharedData {
     friend class DbiDataStorage;
 public:
-    DbiDataHandler(const U2DataId &id, U2ObjectDbi *dbi);
+    DbiDataHandler(const U2EntityRef &entRef, U2ObjectDbi *dbi, bool useGC);
     virtual ~DbiDataHandler();
 
     int getReferenceCount() const;
+    U2DbiRef getDbiRef() const;
 
     bool equals(const DbiDataHandler *other);
 
 private:
-    const U2DataId id;
+    const U2EntityRef entRef;
     U2ObjectDbi *dbi;
+    bool useGC;
 
     DbiDataHandler(const DbiDataHandler &);
     DbiDataHandler &operator=(const DbiDataHandler &);

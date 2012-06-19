@@ -21,11 +21,13 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AssemblyObject.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentProviderTask.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Designer/DelegateEditors.h>
@@ -110,8 +112,12 @@ void ReadAssemblyTask::prepare() {
                 break;
             }
         } else if (NULL != f.importer) {
+            U2OpStatusImpl os;
+            U2DbiRef dbiRef = storage->createTmpDbi(os);
+            SAFE_POINT_OP(os, );
+
             QVariantMap hints;
-            hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(storage->getDbiRef()));
+            hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
             DocumentProviderTask *t = f.importer->createImportTask(f, false, hints);
             addSubTask(t);
             return;
@@ -141,7 +147,9 @@ void ReadAssemblyTask::run() {
     }
 
     std::auto_ptr<Document> docPtr(NULL);
+    bool useGC = true;
     if (NULL == doc) {
+        useGC = false;
         ioLog.info(tr("Reading assembly from %1 [%2]").arg(url).arg(format->getFormatName()));
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
         QVariantMap hints;
@@ -149,6 +157,7 @@ void ReadAssemblyTask::run() {
         docPtr.reset(format->loadDocument(iof, url, hints, stateInfo));
         CHECK_OP(stateInfo, );
     } else {
+        useGC = true;
         docPtr.reset(doc);
         doc = NULL;
     }
@@ -161,7 +170,7 @@ void ReadAssemblyTask::run() {
 
         QVariantMap m;
         m.insert(BaseSlots::URL_SLOT().getId(), url);
-        SharedDbiDataHandler handler = storage->getDataHandler(assemblyObj->getEntityRef().entityId);
+        SharedDbiDataHandler handler = storage->getDataHandler(assemblyObj->getEntityRef(), useGC);
         m.insert(BaseSlots::ASSEMBLY_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
         results.append(m);
     }

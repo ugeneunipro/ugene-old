@@ -264,7 +264,7 @@ void LoadSeqTask::run() {
             }
             QVariantMap m;
             m.insert(BaseSlots::URL_SLOT().getId(), url);
-            SharedDbiDataHandler handler = storage->getDataHandler(go->getEntityRef().entityId);
+            SharedDbiDataHandler handler = storage->getDataHandler(go->getEntityRef());
             m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
             QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(go, 
                 GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, 
@@ -314,7 +314,7 @@ void LoadSeqTask::run() {
                 U2EntityRef seqRef = U2SequenceUtils::import(storage->getDbiRef(), s, os);
                 CHECK_OP(os, );
                 m.insert(BaseSlots::URL_SLOT().getId(), url);
-                SharedDbiDataHandler handler = storage->getDataHandler(seqRef.entityId);
+                SharedDbiDataHandler handler = storage->getDataHandler(seqRef);
                 m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
                 results.append(m);
             }

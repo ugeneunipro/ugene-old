@@ -29,17 +29,19 @@
 namespace U2 {
 namespace Workflow {
 
-DbiDataHandler::DbiDataHandler(const U2DataId &id, U2ObjectDbi *dbi)
-: id(id), dbi(dbi)
+DbiDataHandler::DbiDataHandler(const U2EntityRef &entRef, U2ObjectDbi *dbi, bool useGC)
+: entRef(entRef), dbi(dbi), useGC(useGC)
 {
 
 }
 
 DbiDataHandler::~DbiDataHandler() {
-    U2OpStatusImpl os;
-    // TODO: removing is forbidden because of performance problems
-    //dbi->removeObject(id, os);
-    // TODO: how do you want to check @os???
+    if (useGC) {
+        U2OpStatusImpl os;
+        // TODO: removing is forbidden because of performance problems
+        //dbi->removeObject(id, os);
+        // TODO: how do you want to check @os???
+    }
 }
 
 DbiDataHandler::DbiDataHandler(const DbiDataHandler &) {
@@ -54,11 +56,15 @@ bool DbiDataHandler::equals(const DbiDataHandler *other) {
         return false;
     }
 
-    return (other->id == id) && (other->dbi == dbi);
+    return (other->entRef == entRef) && (other->dbi == dbi);
 }
 
 int DbiDataHandler::getReferenceCount() const {
     return int(this->ref);
+}
+
+U2DbiRef DbiDataHandler::getDbiRef() const {
+    return entRef.dbiRef;
 }
 
 }
