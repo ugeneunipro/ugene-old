@@ -42,9 +42,9 @@ namespace BAM {
 ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _bamInfo, bool sam) : QDialog(QApplication::activeWindow()), sourceUrl(_sourceUrl), bamInfo(_bamInfo) {
     ui.setupUi(this);
     if (sam) {
-        setWindowTitle("Import BAM/SAM file");
+        setWindowTitle("Import SAM file");
     } else {
-        setWindowTitle("Import BAM/SAM file");
+        setWindowTitle("Import BAM file");
     }
     
     connect(ui.bamInfoButton, SIGNAL(clicked()), SLOT(sl_bamInfoButtonClicked()));

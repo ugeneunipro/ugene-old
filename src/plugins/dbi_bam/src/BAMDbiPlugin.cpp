@@ -233,7 +233,7 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
         }
         bool convert = true;
         if (useGui) {
-            ConvertToSQLiteDialog convertDialog(loadInfoTask->getSourceUrl(), loadInfoTask->getInfo(), false);
+            ConvertToSQLiteDialog convertDialog(loadInfoTask->getSourceUrl(), loadInfoTask->getInfo(), loadInfoTask->isSam());
             convertDialog.hideAddToProjectOption();
             int rc = convertDialog.exec();
             if (rc == QDialog::Accepted) {
