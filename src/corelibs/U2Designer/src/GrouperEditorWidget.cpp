@@ -91,12 +91,17 @@ GrouperEditorWidget::GrouperEditorWidget(GrouperSlotsCfgModel *grouperModel, Act
     int idx = slotBox->currentIndex();
     setupGroupOpBox(idx, groupOp, busMap);
 
+    editButton->setEnabled(false);
+    removeButton->setEnabled(false);
+
     connect(addButton, SIGNAL(clicked()), SLOT(sl_onAddButtonClicked()));
     connect(editButton, SIGNAL(clicked()), SLOT(sl_onEditButtonClicked()));
     connect(removeButton, SIGNAL(clicked()), SLOT(sl_onRemoveButtonClicked()));
 
     connect(slotBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_onGroupSlotChanged(int)));
     connect(operationBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_onGroupOpChanged(int)));
+    connect(slotsTable, SIGNAL(entered(const QModelIndex &)), SLOT(sl_onItemEntered(const QModelIndex &)));
+    connect(slotsTable, SIGNAL(pressed(const QModelIndex &)), SLOT(sl_onItemSelected(const QModelIndex &)));
 }
 
 void GrouperEditorWidget::setupGroupOpBox(int slotIdx, const QString &groupOp, const QMap<Descriptor, DataTypePtr> &busMap) {
@@ -145,6 +150,18 @@ void GrouperEditorWidget::sl_onGroupOpChanged(int idx) {
     a->setAttributeValue(groupOp);
 
     emit si_grouperCfgChanged();
+}
+
+void GrouperEditorWidget::sl_onItemEntered(const QModelIndex &idx) {
+    Qt::MouseButtons bs = QApplication::mouseButtons();
+    if (bs.testFlag(Qt::LeftButton)) {
+        sl_onItemSelected(idx);
+    }
+}
+
+void GrouperEditorWidget::sl_onItemSelected(const QModelIndex &) {
+    editButton->setEnabled(true);
+    removeButton->setEnabled(true);
 }
 
 void GrouperEditorWidget::sl_onAddButtonClicked() {

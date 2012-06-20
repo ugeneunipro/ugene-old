@@ -64,6 +64,8 @@ private slots:
     void sl_onEditButtonClicked();
     void sl_onRemoveButtonClicked();
     void sl_onTypeChanged(int newTypeIndex);
+    void sl_onItemSelected(const QModelIndex &idx);
+    void sl_onItemEntered(const QModelIndex &idx);
 };
 
 /************************************************************************/

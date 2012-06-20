@@ -51,6 +51,8 @@ private slots:
 
     void sl_onGroupSlotChanged(int idx);
     void sl_onGroupOpChanged(int idx);
+    void sl_onItemSelected(const QModelIndex &idx);
+    void sl_onItemEntered(const QModelIndex &idx);
 
 private:
     void setupGroupOpBox(int slotIdx, const QString &groupOp, const QMap<Descriptor, DataTypePtr> &busMap);

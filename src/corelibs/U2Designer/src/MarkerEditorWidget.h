@@ -44,6 +44,8 @@ private slots:
     void sl_onAddButtonClicked();
     void sl_onEditButtonClicked();
     void sl_onRemoveButtonClicked();
+    void sl_onItemSelected(const QModelIndex &idx);
+    void sl_onItemEntered(const QModelIndex &idx);
 };
 
 } // U2

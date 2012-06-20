@@ -73,10 +73,15 @@ EditMarkerGroupDialog::EditMarkerGroupDialog(bool isNew, Marker *marker, QWidget
     }
     currentTypeIndex = typeBox->currentIndex();
 
+    editButton->setEnabled(false);
+    removeButton->setEnabled(false);
+
     connect(addButton, SIGNAL(clicked()), SLOT(sl_onAddButtonClicked()));
     connect(editButton, SIGNAL(clicked()), SLOT(sl_onEditButtonClicked()));
     connect(removeButton, SIGNAL(clicked()), SLOT(sl_onRemoveButtonClicked()));
     connect(typeBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_onTypeChanged(int)));
+    connect(table, SIGNAL(entered(const QModelIndex &)), SLOT(sl_onItemEntered(const QModelIndex &)));
+    connect(table, SIGNAL(pressed(const QModelIndex &)), SLOT(sl_onItemSelected(const QModelIndex &)));
 
     updateUi();
 }
@@ -102,6 +107,18 @@ EditMarkerGroupDialog::~EditMarkerGroupDialog() {
 
 Marker *EditMarkerGroupDialog::getMarker() {
     return marker->clone();
+}
+
+void EditMarkerGroupDialog::sl_onItemEntered(const QModelIndex &idx) {
+    Qt::MouseButtons bs = QApplication::mouseButtons();
+    if (bs.testFlag(Qt::LeftButton)) {
+        sl_onItemSelected(idx);
+    }
+}
+
+void EditMarkerGroupDialog::sl_onItemSelected(const QModelIndex &) {
+    editButton->setEnabled(true);
+    removeButton->setEnabled(true);
 }
 
 void EditMarkerGroupDialog::sl_onAddButtonClicked() {

@@ -43,9 +43,14 @@ MarkerEditorWidget::MarkerEditorWidget(QAbstractTableModel *markerModel, QWidget
 
     table->setModel(markerModel);
 
+    editButton->setEnabled(false);
+    removeButton->setEnabled(false);
+
     connect(addButton, SIGNAL(clicked()), SLOT(sl_onAddButtonClicked()));
     connect(editButton, SIGNAL(clicked()), SLOT(sl_onEditButtonClicked()));
     connect(removeButton, SIGNAL(clicked()), SLOT(sl_onRemoveButtonClicked()));
+    connect(table, SIGNAL(entered(const QModelIndex &)), SLOT(sl_onItemEntered(const QModelIndex &)));
+    connect(table, SIGNAL(pressed(const QModelIndex &)), SLOT(sl_onItemSelected(const QModelIndex &)));
 }
 
 void MarkerEditorWidget::sl_onAddButtonClicked() {
@@ -82,6 +87,18 @@ void MarkerEditorWidget::sl_onRemoveButtonClicked() {
     }
 
     markerModel->removeRows(selected.first().row(), 1, selected.first());
+}
+
+void MarkerEditorWidget::sl_onItemEntered(const QModelIndex &idx) {
+    Qt::MouseButtons bs = QApplication::mouseButtons();
+    if (bs.testFlag(Qt::LeftButton)) {
+        sl_onItemSelected(idx);
+    }
+}
+
+void MarkerEditorWidget::sl_onItemSelected(const QModelIndex &) {
+    editButton->setEnabled(true);
+    removeButton->setEnabled(true);
 }
 
 bool MarkerEditorWidget::checkEditMarkerGroupResult(const QString &oldName, Marker *newMarker, QString &message) {
