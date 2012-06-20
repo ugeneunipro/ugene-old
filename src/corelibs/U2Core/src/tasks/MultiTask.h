@@ -23,6 +23,7 @@
 #define _U2_MULTI_TASK_H_
 
 #include <U2Core/Task.h>
+#include <U2Core/StateLockableDataModel.h>
 
 #include <QtCore/QList>
 #include <QtCore/QString>
@@ -33,11 +34,14 @@ namespace U2
 class U2CORE_EXPORT MultiTask : public Task {
     Q_OBJECT
 public:
-    MultiTask( const QString & name, const QList<Task *>& taskz );
+    MultiTask( const QString & name, const QList<Task *>& taskz, bool withLock = false );
 
     QList<Task*> getTasks() const;
 
+    ReportResult report();
+
 private:
+    StateLock *l;
     QList<Task*> tasks;
     
 };

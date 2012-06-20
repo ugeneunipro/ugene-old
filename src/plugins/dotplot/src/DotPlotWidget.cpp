@@ -735,7 +735,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
         tasks << dotPlotInversedTask;
     }
 
-    dotPlotTask = new MultiTask("Searching repeats", tasks);
+    dotPlotTask = new MultiTask("Searching repeats", tasks, true);
 
     TaskScheduler* ts = AppContext::getTaskScheduler();
     ts->registerTopLevelTask(dotPlotTask);

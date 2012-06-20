@@ -21,10 +21,13 @@
 
 #include "MultiTask.h"
 
+#include <U2Core/AppContext.h>
+#include <U2Core/ProjectModel.h>
+
 namespace U2
 {
 
-MultiTask::MultiTask( const QString & name, const QList<Task *>& taskz ) : 
+MultiTask::MultiTask( const QString & name, const QList<Task *>& taskz, bool withLock) : 
 Task(name, TaskFlags_NR_FOSCOE), tasks(taskz)
 {
     setMaxParallelSubtasks(1);
@@ -36,10 +39,25 @@ Task(name, TaskFlags_NR_FOSCOE), tasks(taskz)
     foreach( Task * t, taskz ) {
         addSubTask(t);
     }
+    if(withLock){
+        l = new StateLock(getTaskName(), StateLockFlag_LiveLock);
+        AppContext::getProject()->lockState(l);
+    }else{
+        l = NULL;
+    }
 }
 
 QList<Task*> MultiTask::getTasks() const {
     return tasks;
+}
+
+Task::ReportResult MultiTask::report(){
+    if(l != NULL){
+        AppContext::getProject()->unlockState(l);
+        delete l;
+        l = NULL;
+    }
+    return Task::ReportResult_Finished;
 }
 
 } //namespace
