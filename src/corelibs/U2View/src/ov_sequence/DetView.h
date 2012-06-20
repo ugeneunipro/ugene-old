@@ -67,7 +67,7 @@ protected:
     
     void mouseReleaseEvent(QMouseEvent* me);
     
-    void updateActions();
+    void updateActions(bool visible);
 
     void resizeEvent(QResizeEvent *e);
     void updateSize();
