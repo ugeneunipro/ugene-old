@@ -81,9 +81,54 @@ void SaveDocumentTask::run() {
     coreLog.info(tr("Saving document %1\n").arg(url.getURLString()));
     DocumentFormat* df = doc->getDocumentFormat();
 
-    std::auto_ptr<IOAdapter> io(IOAdapterUtils::open(url, stateInfo, flags.testFlag(SaveDoc_Append)? IOAdapterMode_Append: IOAdapterMode_Write));
-    CHECK_OP(stateInfo, );
-    df->storeDocument(doc, io.get(), stateInfo);
+    QString originalFilePath = url.getURLString();
+    bool originalFileExists = false;
+    if (url.isLocalFile()) {
+        QFile file(originalFilePath);
+        originalFileExists = file.open(QIODevice::ReadOnly);
+        file.close();
+    }
+
+    if (url.isLocalFile() && originalFileExists) {
+        // make tmp file
+        QString tmpFileName = GUrlUtils::prepareTmpFileLocation(url.dirPath(), url.fileName(), "tmp", stateInfo);
+
+        QFile tmpFile(tmpFileName);
+        bool created = tmpFile.open(QIODevice::WriteOnly);
+        tmpFile.close();
+        CHECK_EXT(created == true, stateInfo.setError(tr("Can't create tmp file")), );
+
+        if (flags.testFlag(SaveDoc_Append)) {
+            QFile::remove(tmpFileName);
+            bool copied = QFile::copy(originalFilePath, tmpFileName);
+            CHECK_EXT(copied == true, stateInfo.setError(tr("Can't copy file to tmp file while trying to save document by append")), );
+        }
+
+        // save document to tmp file, auto_ptr will release file in destructor
+        {
+            std::auto_ptr<IOAdapter> io(IOAdapterUtils::open(GUrl(tmpFileName), stateInfo, flags.testFlag(SaveDoc_Append)? IOAdapterMode_Append: IOAdapterMode_Write));
+            CHECK_OP(stateInfo, );
+            df->storeDocument(doc, io.get(), stateInfo);
+        }
+
+        // remove old file and rename tmp file
+        CHECK_OP(stateInfo, );
+
+        QFile file(originalFilePath);
+        bool originalFileExists = file.open(QIODevice::ReadOnly);
+        if (originalFileExists) {
+            originalFileExists = !file.remove();
+        }
+        CHECK_EXT(originalFileExists == false, stateInfo.setError(tr("Can't remove original file to place tmp file instead")), );
+
+        bool renamed = QFile::rename(tmpFileName, originalFilePath);
+        CHECK_EXT(renamed == true, stateInfo.setError(tr("Can't rename saved tmp file to original file")), );
+    }
+    else {
+        std::auto_ptr<IOAdapter> io(IOAdapterUtils::open(url, stateInfo, flags.testFlag(SaveDoc_Append)? IOAdapterMode_Append: IOAdapterMode_Write));
+        CHECK_OP(stateInfo, );
+        df->storeDocument(doc, io.get(), stateInfo);
+    }
 }
 
 Task::ReportResult SaveDocumentTask::report() {
