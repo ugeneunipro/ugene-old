@@ -46,7 +46,7 @@ public:
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
-    virtual bool isStreamingSupport() {return true;}
+    virtual bool isStreamingSupport() {return false;}
 
     virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os);
 
