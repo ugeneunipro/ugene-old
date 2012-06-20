@@ -55,6 +55,7 @@ public:
     MSAWriter(Actor * a) : BaseDocWriter(a){}
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
+    virtual bool isStreamingSupport() const;
 };
 
 class TextReader : public BaseDocReader {
@@ -77,6 +78,7 @@ public:
     TextWriter(Actor* a) : BaseDocWriter(a, BaseDocumentFormats::PLAIN_TEXT){}
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
+    virtual bool isStreamingSupport() const;
 };
 
 class FastaWriter : public SeqWriter {

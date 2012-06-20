@@ -224,7 +224,7 @@ QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) 
 }
 
 void BaseDocWriter::createAdaptersAndDocs(const QStringList &urls) {
-    bool streaming = format->isStreamingSupport();
+    bool streaming = this->isStreamingSupport();
 
     foreach (const QString &anUrl, urls) {
         bool createNewDoc = (!append || !streaming) && !docs.contains(anUrl);
@@ -252,6 +252,10 @@ void BaseDocWriter::createAdaptersAndDocs(const QStringList &urls) {
     }
 }
 
+bool BaseDocWriter::isStreamingSupport() const {
+    return format->isStreamingSupport();
+}
+
 Task* BaseDocWriter::tick() {
     U2OpStatusImpl os;
     while(ch->hasMessage()) {
@@ -267,7 +271,7 @@ Task* BaseDocWriter::tick() {
         SAFE_POINT_OP(os, new FailTask(os.getError()));
         this->createAdaptersAndDocs(urls);
 
-        bool streaming = format->isStreamingSupport();
+        bool streaming = this->isStreamingSupport();
         foreach (const QString &anUrl, urls) {
             if (streaming && append) {
                 IOAdapter *io = adapters.value(anUrl);

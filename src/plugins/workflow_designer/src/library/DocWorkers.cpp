@@ -163,6 +163,10 @@ void TextWriter::data2doc(Document* doc, const QVariantMap& data) {
     }
 }
 
+bool TextWriter::isStreamingSupport() const {
+    return false;
+}
+
 static inline QString getUniqueObjectName(const Document *doc, const QString &name) {
     QString result = name;
     int num = 0;
@@ -694,6 +698,10 @@ void MSAWriter::data2doc(Document* doc, const QVariantMap& data) {
         ct++;
     }
     doc->addObject(new MAlignmentObject(ma));
+}
+
+bool MSAWriter::isStreamingSupport() const {
+    return false;
 }
 
 /*************************************
