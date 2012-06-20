@@ -265,6 +265,15 @@ QMap<QString, QString> BusPortEditor::getBindingsMap() {
     return bindingsMap;
 }
 
+bool BusPortEditor::isEmpty() const {
+    if (NULL != table) {
+        int rows = table->model()->rowCount();
+        return (0 == rows);
+    } else {
+        return false;
+    }
+}
+
 /*******************************
 * DescriptorListEditorDelegate
 *******************************/

@@ -77,6 +77,7 @@ public:
     virtual ~BusPortEditor() {}
     virtual void commit();
     virtual QMap<QString,QString> getBindingsMap();
+    virtual bool isEmpty() const;
 
 protected:
     virtual QWidget* createGUI(DataTypePtr from, DataTypePtr to);

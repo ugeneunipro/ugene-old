@@ -64,6 +64,8 @@ public:
     // make another editor
     virtual ConfigurationEditor *clone() {return new ConfigurationEditor(*this);}
 
+    virtual bool isEmpty() const {return false;}
+
 signals:
     void si_configurationChanged();
 
