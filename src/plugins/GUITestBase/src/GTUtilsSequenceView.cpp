@@ -179,8 +179,7 @@ int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
     GTMouseDriver::click(os);
 
     int length = -1;
-    Runnable *filler = new selectSequenceRegionDialogFiller(os, &length);
-    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, &length));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
@@ -207,11 +206,11 @@ void GTUtilsSequenceView::selectSequenceRegion(U2OpStatus &os, int from, int to)
     MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
     GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
 
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, from, to));
+
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);
 
-    Runnable *filler = new selectSequenceRegionDialogFiller(os, from, to);
-    GTUtilsDialog::waitForDialog(os, filler);
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 }
@@ -219,25 +218,21 @@ void GTUtilsSequenceView::selectSequenceRegion(U2OpStatus &os, int from, int to)
 
 #define GT_METHOD_NAME "openSequenceView"
 void GTUtilsSequenceView::openSequenceView(U2OpStatus &os, const QString &sequenceName){
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "submenu_open_view" << "action_open_view", GTGlobals::UseMouse));
+
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
-
-    Runnable *chooser = new PopupChooser(os, QStringList() << "submenu_open_view" << "action_open_view", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
-    GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "addSequenceView"
 void GTUtilsSequenceView::addSequenceView(U2OpStatus &os, const QString &sequenceName){
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "submenu_add_view" << "action_add_view", GTGlobals::UseMouse));
+
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
-
-    Runnable *chooser = new PopupChooser(os, QStringList() << "submenu_add_view" << "action_add_view", GTGlobals::UseMouse);
-    GTUtilsDialog::waitForDialog(os, chooser);
-    GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 
