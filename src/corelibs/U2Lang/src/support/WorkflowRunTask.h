@@ -165,7 +165,7 @@ public:
     WorkerState getState(const ActorId & id);
     int getMsgNum(const QString & ids);
     int getMsgPassed(const QString & ids);
-    void writeLog(const QString& message);
+    void writeLog(QStringList &lines);
     QStringList getCreatedFilesUrls() const;
     
 private slots:

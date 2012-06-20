@@ -641,21 +641,52 @@ QStringList RunCmdlineWorkflowTask::getCreatedFilesUrls() const {
     return createdFilesUlrs;
 }
 
-void RunCmdlineWorkflowTask::writeLog(const QString& message) {
-    QStringList lines = message.split(QChar('\n'));
+/**
+ * Returns the position of the last symbol of @nameCandidated in the @line.
+ * Or returns -1 if the @line is not a log line
+ */
+inline static int getLogNameCandidate(const QString &line, QString &nameCandidate) {
+    if ("" == line) {
+        return -1;
+    }
 
-    foreach(QString line, lines) {
+    if (!line.startsWith("[")) {
+        return -1;
+    }
+
+    // maybe, @line is "[time][loglevel] log"
+    int openPos = line.indexOf("[", 1); // 1 because it is needed to skip first [time] substring
+    if (-1 == openPos) {
+        return -1;
+    }
+    int closePos = line.indexOf("]", openPos);
+    if (-1 == closePos) {
+        return -1;
+    }
+    nameCandidate = line.mid(openPos+1, closePos - openPos - 1);
+    return closePos;
+}
+
+void RunCmdlineWorkflowTask::writeLog(QStringList &lines) {
+    QStringList::Iterator it = lines.begin();
+    for (; it != lines.end(); it++) {
+        QString &line = *it;
         line = line.simplified();
-        if ("" == line) {
+        QString nameCandidate;
+        int closePos = getLogNameCandidate(line, nameCandidate);
+        if (-1 == closePos) {
             continue;
         }
+        
+
         for (int i = conf.logLevel2Commute; i < LogLevel_NumLevels; i++) {
             QString logLevelName = getLogLevelName((LogLevel)i);
-            QRegExp rx("\\[.+\\]\\[" + logLevelName + "\\]");
-            if (rx.indexIn(line) != 0) {
+
+            if (logLevelName != nameCandidate) {
                 continue;
             }
-            QString logLine = line.right(line.length() - rx.matchedLength());
+
+            QString logLine = line.mid(closePos + 1);
             logLine = logLine.simplified();
             bool commandToken = logLine.startsWith(OUTPUT_PROGRESS_TAG)
                 || logLine.startsWith(ERROR_KEYWORD)
@@ -674,10 +705,11 @@ void RunCmdlineWorkflowTask::writeLog(const QString& message) {
 
 void RunCmdlineWorkflowTask::sl_onReadStandardOutput() {
     QString data(proc->readAllStandardOutput());
-    writeLog(data);
+    QStringList lines = data.split(QChar('\n'));
+    writeLog(lines);
 
     int errInd = data.indexOf(ERROR_KEYWORD);
-    if(errInd >= 0) {
+    if (errInd >= 0) {
         int errIndEnd = data.indexOf(ERROR_KEYWORD, errInd + 1);
         assert(errIndEnd > errInd);
         if(errIndEnd > errInd) {
@@ -688,50 +720,57 @@ void RunCmdlineWorkflowTask::sl_onReadStandardOutput() {
         }
         return;
     }
-    
-    QStringList words = data.split(QRegExp("\\s+"));
-    int sz = words.size();
-    for(int i = 0; i < sz; ++i) {
-        QString word = words.at(i);
-        if(word.startsWith(OUTPUT_PROGRESS_TAG)) {
-            QString numStr = words.at(i).mid(OUTPUT_PROGRESS_TAG.size());
-            bool ok = false;
-            int num = numStr.toInt(&ok);
-            if(ok && num >= 0) {
-                stateInfo.progress = qMin(num, 100);
-            }
-        } else if(word.startsWith(STATE_KEYWORD)) {
-            QStringList stWords = word.split(":");
-            if(stWords.size() == 3) {
+
+    foreach (const QString &line, lines) {
+        QStringList words = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+        int sz = words.size();
+        for(int i = 0; i < sz; ++i) {
+            QString &word = words[i];
+            if(word.startsWith(OUTPUT_PROGRESS_TAG)) {
+                QString numStr = word.mid(OUTPUT_PROGRESS_TAG.size());
                 bool ok = false;
-                int num = stWords.at(2).toInt(&ok);
+                int num = numStr.toInt(&ok);
                 if(ok && num >= 0) {
-                    WorkerState st = (WorkerState)num;
-                    states[stWords.at(1)] = st;
+                    stateInfo.progress = qMin(num, 100);
                 }
-            }
-        } else if(word.startsWith(MSG_NUM_KEYWORD)) {
-            QStringList msgNumWords = word.split(":");
-            if(msgNumWords.size() == 4) {
-                bool ok = false;
-                int num = msgNumWords.at(3).toInt(&ok);
-                if(ok && num >= 0) {
-                    msgNums[QString("%1:%2").arg(msgNumWords.at(1)).arg(msgNumWords.at(2))] = num;
+                break;
+            } else if(word.startsWith(STATE_KEYWORD)) {
+                QStringList stWords = word.split(":");
+                if(stWords.size() == 3) {
+                    bool ok = false;
+                    int num = stWords[2].toInt(&ok);
+                    if(ok && num >= 0) {
+                        WorkerState st = (WorkerState)num;
+                        states[stWords[1]] = st;
+                    }
                 }
-            }
-        } else if(word.startsWith(MSG_PASSED_KEYWORD)) {
-            QStringList msgPassedWords = word.split(":");
-            if(msgPassedWords.size() == 4) {
-                bool ok = false;
-                int num = msgPassedWords.at(3).toInt(&ok);
-                if(ok && num >= 0) {
-                    msgPassed[QString("%1:%2").arg(msgPassedWords.at(1)).arg(msgPassedWords.at(2))] = num;
+                break;
+            } else if(word.startsWith(MSG_NUM_KEYWORD)) {
+                QStringList msgNumWords = word.split(":");
+                if(msgNumWords.size() == 4) {
+                    bool ok = false;
+                    int num = msgNumWords[3].toInt(&ok);
+                    if(ok && num >= 0) {
+                        msgNums[QString("%1:%2").arg(msgNumWords[1]).arg(msgNumWords[2])] = num;
+                    }
                 }
-            }
-        } else if (word.startsWith(OUTPUT_FILE_URL)) {
-            QStringList msgPassedWords = word.split(":;");
-            if(msgPassedWords.size() == 2) {
-                createdFilesUlrs.append(msgPassedWords.at(1));
+                break;
+            } else if(word.startsWith(MSG_PASSED_KEYWORD)) {
+                QStringList msgPassedWords = word.split(":");
+                if(msgPassedWords.size() == 4) {
+                    bool ok = false;
+                    int num = msgPassedWords[3].toInt(&ok);
+                    if(ok && num >= 0) {
+                        msgPassed[QString("%1:%2").arg(msgPassedWords[1]).arg(msgPassedWords[2])] = num;
+                    }
+                }
+                break;
+            } else if (word.startsWith(OUTPUT_FILE_URL)) {
+                QStringList msgPassedWords = word.split(":;");
+                if(msgPassedWords.size() == 2) {
+                    createdFilesUlrs.append(msgPassedWords[1]);
+                }
+                break;
             }
         }
     }
