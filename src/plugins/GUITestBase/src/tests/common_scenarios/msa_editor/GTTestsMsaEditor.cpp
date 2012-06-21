@@ -1286,7 +1286,6 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 // 1. Do menu tools->multiple alignment->kalign, set input alignment "data/samples/CLUSTALW/COI.aln" and press Align button
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
-    GTLogTracer logTracer;
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
@@ -1296,7 +1295,6 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 
 // 2. after kalign finishes and msa opens insert gaps and click in alignment
     GTGlobals::sleep(5000);
-    GTUtilsLog::check(os, logTracer);
 
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
     GTMouseDriver::click(os);
@@ -1316,7 +1314,6 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1) {
 // 1. Do menu tools->multiple alignment->kalign, set input alignment "data/samples/CLUSTALW/COI.aln" and press Align button
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
-    GTLogTracer logTracer;
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
 
 // CHANGES: using main menu
@@ -1327,7 +1324,6 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1) {
 
 // 2. after kalign finishes and msa opens insert gaps and click in alignment
     GTGlobals::sleep(5000);
-    GTUtilsLog::check(os, logTracer);
 
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
     GTMouseDriver::click(os);
@@ -1356,7 +1352,6 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2) {
     GTUtilsProjectTreeView::toggleView(os);
     GTGlobals::sleep();
 
-    GTLogTracer logTracer;
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
@@ -1366,7 +1361,6 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2) {
 
 // 2. after kalign finishes and msa opens insert gaps and click in alignment
     GTGlobals::sleep(5000);
-    GTUtilsLog::check(os, logTracer);
 
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
     GTMouseDriver::click(os);
@@ -1415,7 +1409,6 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     GTGlobals::sleep();
 
-    GTLogTracer logTracer;
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
@@ -1425,7 +1418,6 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
 // 3. aligned document opens
     GTGlobals::sleep(5000);
     GTUtilsMdi::activeWindow(os);
-    GTUtilsLog::check(os, logTracer);
 
 // 4. select document in project and press del
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
