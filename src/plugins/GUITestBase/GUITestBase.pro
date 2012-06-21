@@ -71,6 +71,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.h \
             src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.h \
             src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.h \
+            src/tests/common_scenarios/annotations/GTTestsAnnotations.h \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.h \
             src/api/GTRegionSelector.h \
@@ -172,6 +173,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/project/document_modifying/GTTestsProjectDocumentModifying.cpp \
             src/tests/common_scenarios/project/sequence_exporting/from_project_view/GTTestsFromProjectView.cpp \
             src/tests/common_scenarios/msa_editor/GTTestsMsaEditor.cpp \
+            src/tests/common_scenarios/annotations/GTTestsAnnotations.cpp \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.cpp \
             src/api/GTRegionSelector.cpp \
