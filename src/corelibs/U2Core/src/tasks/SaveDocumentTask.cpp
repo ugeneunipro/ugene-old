@@ -86,6 +86,10 @@ void SaveDocumentTask::run() {
     if (url.isLocalFile()) {
         QFile file(originalFilePath);
         originalFileExists = file.open(QIODevice::ReadOnly);
+        qint64 fileSize = file.size();
+        if (fileSize == 0) {
+            originalFileExists = false;
+        }
         file.close();
     }
 
