@@ -83,10 +83,31 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
+// Removing part from sequence
+// 
+// Steps:
+// 
+// 1. Use menu {File->Open}. Open file samples/FASTA/human_T1.fa
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
+
+// 2. Click Ctrl+A. 
+// Expected state: Select range dialog appears
+// 
+// 3. Fill the next field in dialog:
+//     {Range:} 1..50
+//     
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
+
+// 4. Click OK. Right click on sequence area. Use context menu {Edit sequence->Remove selected sequence}.
+// Expected state: Remove subsequence dialog appears
+// 
+// 5. Fill the next field in dialog:
+//     {Save resulted document to a new file} set checked
+//     {Document format} Genbank
+//     {Document location} _common_data/scenarios/sandbox/result.gb
+// 6. Click Remove Button.
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
     Runnable *removeDialog = new RemovePartFromSequenceDialogFiller(os,
         RemovePartFromSequenceDialogFiller::Remove,
@@ -95,14 +116,17 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
         RemovePartFromSequenceDialogFiller::Genbank
     );
     GTUtilsDialog::waitForDialog(os, removeDialog);
-    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    GTGlobals::sleep(1000);
+    GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
+
+// Expected state: 
+//     document with edited sequence must appear in project view, 
+//     sequence length in new document must be 199900
+//     sequence must starts with "AGAGAGA"
     GTUtilsSequenceView::openSequenceView(os, "result.gb");
-/*	QString sequence = GTSequenceViewUtils::getSequenceAsString(os);
-    if (sequence.length()!= 199900) {
-        os.setError("incorrect sequence length");
-    }*/
+    CHECK_SET_ERR(GTUtilsSequenceView::getLengthOfSequence(os) == 199900, "Expected length differs");
+    CHECK_SET_ERR(GTUtilsSequenceView::getBeginOfSequenceAsString(os, 7) == "AGAGAGA", "Expected sequence beginning differs");
 }
+
 GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
