@@ -28,13 +28,12 @@
 
 namespace U2 {
 
-    class MessageBoxDialogFiller : public Runnable {
+    class MessageBoxDialogFiller : public Filler {
     public:
         MessageBoxDialogFiller(U2OpStatus &_os, QMessageBox::StandardButton _b)
-            :os(_os), b(_b){}
+            :Filler(_os, ""), b(_b){}
         virtual void run();
     private:
-        U2OpStatus &os;
         QMessageBox::StandardButton b;
     };
 }

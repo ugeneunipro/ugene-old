@@ -53,9 +53,6 @@ void GUIDialogWaiter::finishWaiting() {
 
 bool GUIDialogWaiter::isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName) {
 
-    if (expectedObjectName.isEmpty()) {
-        return true;
-    }
     uiLog.trace("Checking name, widget name <" + widgetObjectName + ">, expected <" + expectedObjectName + ">");
     return widgetObjectName == expectedObjectName;
 }

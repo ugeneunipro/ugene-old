@@ -56,12 +56,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //     {Destination Directory} _common_data/scenarios/sandbox
 //     {Project file name} proj2.uprj
 // 4. Click OK button
-    GTUtilsDialog::waitForDialog(os, new ExportProjectDialogFiller(os, testDir + "_common_data/scenarios/sandbox", "proj2.uprj"));
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
-    GTGlobals::sleep();
-
 // 5. Click NO in opened messagebox
+    GTUtilsDialog::waitForDialog(os, new ExportProjectDialogFiller(os, testDir + "_common_data/scenarios/sandbox", "proj2.uprj"));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     GTGlobals::sleep();
 
 // 6. Use menu {File->Close project}

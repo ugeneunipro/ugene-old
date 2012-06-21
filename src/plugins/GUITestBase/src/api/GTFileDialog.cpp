@@ -43,7 +43,7 @@ namespace U2 {
 
 GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
                                      const QString &_filters, Button _button, GTGlobals::UseMethod _method) :
-    Filler(_os, ""),
+    Filler(_os, "QFileDialog"),
 //    path(_path),
     fileName(_fileName),
     filters(_filters),
