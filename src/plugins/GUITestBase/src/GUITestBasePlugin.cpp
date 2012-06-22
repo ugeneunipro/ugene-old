@@ -328,6 +328,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

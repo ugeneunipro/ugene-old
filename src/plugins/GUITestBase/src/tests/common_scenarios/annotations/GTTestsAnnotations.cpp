@@ -115,5 +115,44 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsAnnotationsTreeView::findItem(os, "D");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+// Annotation editor: update annotations incorrect behavior (0001585)
+// 
+// Steps:
+// 
+// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+// Expected state: 
+//     1) Project view with document "1.gb" has been opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+//     2) UGENE window titled with text "proj2 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+
+// 2. Open view for "1.gb"
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+// 3. Create 2 annotations:
+//     1) a1 in group a1
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a1", "a1", "10..16"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+
+//     2) a1 in group a2
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a2", "a1", "18..20"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+
+// 4. Toggle highlight for a1. 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "toggle_HL_action"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "a1"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+// Expected state: both annotations (a1) and groups (a1, a2) looks muted (grayed out)
+}
+
 } // namespace GUITest_common_scenarios_annotations
 } // namespace U2

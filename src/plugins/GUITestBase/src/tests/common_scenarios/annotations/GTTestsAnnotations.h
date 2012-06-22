@@ -32,6 +32,7 @@ namespace GUITest_common_scenarios_annotations {
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
 GUI_TEST_CLASS_DECLARATION(test_0002)
+GUI_TEST_CLASS_DECLARATION(test_0004)
 
 #undef GUI_TEST_PREFIX
 } // namespace U2
