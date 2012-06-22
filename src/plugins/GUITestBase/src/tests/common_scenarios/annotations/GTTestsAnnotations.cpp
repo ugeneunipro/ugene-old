@@ -78,5 +78,42 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsAnnotationsTreeView::findItem(os, "ann3");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0002) {
+// Creating joined annotation
+// 
+// Steps:
+// 
+// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+// Expected state: 
+//     1) Project view with document "1.gb" has been opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+//     2) UGENE window titled with text "proj2 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+//     
+// 2. Open view for "1.gb"
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+// 
+// 3. Do menu {Actions->Add->New Annotation}
+// Expected state: "Create annotation" dialog has appeared
+// 
+// 3. Fill the next field in dialog:
+//     {Group Name} DDD
+//     {Annotation Name} D
+//     {Location} join(10..16,18..20)
+// 
+// 4. Click Create button
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "DDD", "D", "join(10..16,18..20)"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+
+// Expected state: annotation with 2 segments has been created
+    GTGlobals::sleep();
+    GTUtilsAnnotationsTreeView::findItem(os, "D");
+}
+
 } // namespace GUITest_common_scenarios_annotations
 } // namespace U2

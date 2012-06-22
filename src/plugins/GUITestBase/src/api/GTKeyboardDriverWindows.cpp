@@ -53,6 +53,10 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
             keyPress(os, VK_DECIMAL, modifiers);
             break;
 
+        case ',':
+            keyPress(os, VK_OEM_COMMA, modifiers);
+            break;
+
         case '/':
             keyPress(os, VK_DIVIDE, modifiers);
             break;
@@ -110,6 +114,10 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 
         case '.':
             keyRelease(os, VK_DECIMAL, modifiers);
+            break;
+
+        case ',':
+            keyRelease(os, VK_OEM_COMMA, modifiers);
             break;
 
         case '/':
