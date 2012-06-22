@@ -26,6 +26,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h \
@@ -128,6 +129,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.cpp \

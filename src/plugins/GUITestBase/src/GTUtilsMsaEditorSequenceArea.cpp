@@ -56,10 +56,10 @@ void GTUtilsMSAEditorSequenceArea::selectArea(U2OpStatus &os, QPoint p1, QPoint 
     MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", GTUtilsMdi::activeWindow(os)));
     GT_CHECK(msaEditArea != NULL, "MsaEditorSequenceArea not found");
 
-    p1.rx() = p1.x()<0 ? msaEditArea->getNumVisibleBases(true)-1 : p1.x();
-    p2.rx() = p2.x()<0 ? msaEditArea->getNumVisibleBases(true)-1 : p2.x();
-    p1.ry() = p1.y()<0 ? msaEditArea->getNumVisibleSequences(true)-1 : p1.y();
-    p2.ry() = p2.y()<0 ? msaEditArea->getNumVisibleSequences(true)-1 : p2.y();
+    p1.rx() = p1.x()==-1 ? msaEditArea->getNumVisibleBases(true)-1 : p1.x();
+    p2.rx() = p2.x()==-1 ? msaEditArea->getNumVisibleBases(true)-1 : p2.x();
+    p1.ry() = p1.y()==-1 ? msaEditArea->getNumVisibleSequences(true)-1 : p1.y();
+    p2.ry() = p2.y()==-1 ? msaEditArea->getNumVisibleSequences(true)-1 : p2.y();
 
     moveTo(os, p1);
     GTMouseDriver::press(os);
@@ -82,6 +82,8 @@ void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect
     CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
 
     QRect msaEditRegion = msaEditArea->getSelection().getRect();
+    qDebug() << "Expected rect: " << expectedRect;
+    qDebug() << "msaEditRegion: " << msaEditRegion;
     CHECK_SET_ERR(expectedRect == msaEditRegion, "Unexpected selection region");
 }
 #undef GT_METHOD_NAME

@@ -29,7 +29,7 @@ namespace U2 {
 
 class GTUtilsMSAEditorSequenceArea {
 public:
-    static void checkSelectedRect(U2OpStatus &os, const QRect &expectedRect); // see example in GUITest_common_scenarios_msa_editor::test_0004
+    static void checkSelectedRect(U2OpStatus &os, const QRect &expectedRect);
     static void checkSorted(U2OpStatus &os, bool sortedState = true);
 
     // MSAEditorNameList

@@ -40,6 +40,7 @@
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 
 #include <U2View/MSAEditor.h>
 
@@ -1638,6 +1639,99 @@ GUI_TEST_CLASS_DEFINITION(test_0017_2) {
 
 // CHANGES: using main menu instead of popup
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0018) {
+// Shifting sequences in the Alignment Editor (UGENE-238)
+// 
+// 1. Open file data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+// 2. Click on some row in sequence names area
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-10, 2));
+// Expected state: row became selected
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 2, 604, 1));
+
+// 3. Click & drag selected row in sequence names area
+    QStringList list1 = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-10, 2), QPoint(-10, 3));
+// Expected state: row order changes respectively
+    QStringList list2 = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(list1 != list2, "Name list wasn't changed");
+
+// 4. Click & drag on unselected area
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-10, 0), QPoint(-9, 1));
+// Expected state: multiple rows selected
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 0, 604, 2));
+
+// 5. Click & drag selected block
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(-10, 0), QPoint(-9, 1));
+// Expected state: whole selected block shifted
+    QStringList list3 = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(list2 != list3, "Name list wasn't changed");
+
+// 6. Click on some row in selected block
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-9, 1));
+// Expected state: selection falls back to one row
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, QRect(0, 1, 604, 1));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0019) {
+// UGENE-79 In MSA editor support rows collapsing mode
+// 
+// 1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    QStringList preList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+// 2. Press button Enable collapsing
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+
+// Expected state: Mecopoda_elongata__Ishigaki__J and Mecopoda_elongata__Sumatra_ folded together
+    QStringList postList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(preList.size() == postList.size() + 1, "Name lists differs not by 1");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0020) {
+// UGENE crashes when all columns in MSAEditor are deleted (UGENE-329)
+// 
+// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+// 2. Insert some gaps to the first column. Ensure, that every column has a gap
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 0));
+    GTGlobals::sleep();
+    for (int i=0; i<6; i++) {
+        GTKeyboardDriver::keyPress(os, ' ');
+        GTGlobals::sleep(100);
+    }
+
+    QStringList preList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+// 3. Select Edit -> remove columns of gaps -> remove columns with number of gaps 1.
+// 4. Click OK
+    GTUtilsDialog::waitForDialog(os, new DeleteGapsDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "remove_columns_of_gaps"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+// Expected state: UGENE not crashes, deletion is not performed
+    GTGlobals::sleep(5000);
+    QStringList postList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(preList == postList, "lists of nanes of msa sequences differs");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0021) {
+// MSA editor zoom bug (UGENE-520)
+// 
+// 1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep();
+
+// 2. zoom MSA to maximum
+    for (int i=0; i<8; i++) {
+        GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Zoom In"));
+    }
+
+// Expected state: top sequence not overlaps with ruler
     GTGlobals::sleep();
 }
 

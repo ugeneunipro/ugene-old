@@ -35,7 +35,7 @@ namespace U2 {
     QToolBar* GTToolbar::getToolbar(U2OpStatus &os, const QString &toolbarSysName) {
         QString toolbarTypeCheck = "QToolBar";
         QToolBar *toolbar = static_cast<QToolBar*>(GTWidget::findWidget(os, toolbarSysName));
-        GT_CHECK_RESULT(0 == toolbarTypeCheck.compare(toolbar->metaObject()->className()), "No such toolbar: " + toolbarSysName, NULL); //the found widget is not a qtoolbar
+        GT_CHECK_RESULT((toolbar != NULL) && 0 == toolbarTypeCheck.compare(toolbar->metaObject()->className()), "No such toolbar: " + toolbarSysName, NULL); //the found widget is not a qtoolbar
         return toolbar;
     }
 #undef GT_METHOD_NAME
