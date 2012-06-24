@@ -781,6 +781,9 @@ void AnnotatedDNAView::sl_onShowPosSelectorRequest() {
 
 void AnnotatedDNAView::insertWidgetIntoSplitter(ADVSplitWidget* splitWidget) {
     assert(mainSplitter!=NULL);
+    if (splitWidgets.contains(splitWidget)) {
+        return;
+    }
     mainSplitter->insertWidget(0, splitWidget);
     mainSplitter->setStretchFactor(0, 1);
     splitWidgets.append(splitWidget);
