@@ -54,7 +54,7 @@ protected slots:
     void sl_showCircular();
     void sl_sequenceWidgetAdded(ADVSequenceWidget*);
     void sl_sequenceWidgetRemoved(ADVSequenceWidget* w);
-    
+    void sl_toggleViews();
 protected:
     virtual void initViewContext(GObjectView* view);
     void buildMenu(GObjectView* v, QMenu* m);

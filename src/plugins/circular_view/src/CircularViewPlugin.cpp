@@ -36,11 +36,14 @@
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVUtils.h>
 
 #include <U2Gui/GUIUtils.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QMenu>
+
+#include <limits>
 
 namespace U2 {
 
@@ -80,6 +83,12 @@ void CircularViewContext::initViewContext(GObjectView* v) {
     }
     connect(av, SIGNAL(si_sequenceWidgetAdded(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetAdded(ADVSequenceWidget*)));
     connect (av, SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
+    
+    ADVGlobalAction* globalToggleViewAction = new ADVGlobalAction(av, 
+        QIcon(":circular_view/images/circular.png"), 
+        tr("Toggle circular views"), 
+        std::numeric_limits<int>::max()); // big enough to be the last one?
+    connect(globalToggleViewAction, SIGNAL(triggered()), SLOT(sl_toggleViews()));
 
 }
 
@@ -222,6 +231,28 @@ void CircularViewContext::sl_showCircular() {
         }
         a->view = NULL;
     }
+}
+
+void CircularViewContext::sl_toggleViews()
+{
+
+    ADVGlobalAction* globalToggleViewAction = qobject_cast<ADVGlobalAction*>(sender());
+    assert(globalToggleViewAction != NULL);
+    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*> (globalToggleViewAction->getObjectView());
+    if (av == NULL) {
+        return;
+    }
+    
+    QList<ADVSequenceWidget*> sWidgets = av->getSequenceWidgets();
+
+    foreach( ADVSequenceWidget* sw, sWidgets) {
+        CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
+        if (a != NULL) {
+            a->trigger();
+        }
+    }
+
+
 }
 
 CircularViewAction::CircularViewAction() : ADVSequenceWidgetAction(CIRCULAR_ACTION_NAME, tr("Show circular view")), view(NULL), rmapWidget(NULL)
