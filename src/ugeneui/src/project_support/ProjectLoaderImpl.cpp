@@ -261,32 +261,33 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
         return createProjectLoadingTask(projectUrl, h2);
     }
 	bool abilityUniteDocuments = true;
-
-	if(urls.size() < 2){
-		abilityUniteDocuments = false;
-	}
 	
 	QVariantMap hintsOverDocuments;
     QMap<QString, qint64> headerSequenceLengths;
 
-	foreach(const GUrl& url, urls){
-		FormatDetectionResult dr;
-		FormatDetectionConfig conf;
-		conf.useImporters = true;
-		conf.bestMatchesOnly = false;
-		QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, conf);
-		if(formats.isEmpty()){
-			abilityUniteDocuments = false;
-			break;
-		}
-		dr =  formats[0];
-		bool matchCurrentDocument = MultipleDocumentsReadingModeSelectorController::mergeDocumentOption(dr, &headerSequenceLengths);
+    if(urls.size() >= 2){
+	    foreach(const GUrl& url, urls){
+		    FormatDetectionResult dr;
+		    FormatDetectionConfig conf;
+		    conf.useImporters = true;
+		    conf.bestMatchesOnly = false;
+		    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, conf);
+		    if(formats.isEmpty()){
+			    abilityUniteDocuments = false;
+			    break;
+		    }
+		    dr =  formats[0];
+		    bool matchCurrentDocument = MultipleDocumentsReadingModeSelectorController::mergeDocumentOption(dr, &headerSequenceLengths);
 
-		if(!matchCurrentDocument){
-			abilityUniteDocuments = false;
-			break;
-		}
-	}
+		    if(!matchCurrentDocument){
+			    abilityUniteDocuments = false;
+			    break;
+		    }
+	    }
+    }
+    else{
+         abilityUniteDocuments = false;
+    }
 
 	if(abilityUniteDocuments){
 		bool ok  = MultipleDocumentsReadingModeSelectorController::adjustReadingMode(hintsOverDocuments, urls, headerSequenceLengths);
