@@ -26,6 +26,8 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Test/GTest.h>
+
 #include <QtCore/QThread>
 
 #ifdef Q_OS_WIN
@@ -52,6 +54,9 @@ AppResourcePool::AppResourcePool() {
 
     projectResouce = new AppResource(RESOURCE_PROJECT, 1, tr("Project"));
     registerResource(projectResouce);
+
+    listenLogInGTest = new AppResource(RESOURCE_LISTEN_LOG_IN_TESTS, 1, "LogInTests");
+    registerResource(listenLogInGTest);
 }
 
 AppResourcePool::~AppResourcePool() {

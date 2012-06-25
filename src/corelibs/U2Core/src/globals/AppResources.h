@@ -101,6 +101,7 @@ private:
     AppResource* memResource;
     AppResource* projectResouce;
     AppResource* phyTreeResource;
+    AppResource* listenLogInGTest;
 };
 
 }//namespace

@@ -275,13 +275,18 @@ Document::~Document() {
 
 
     if (isDocumentOwnsDbiResources()) {
-        U2OpStatus2Log os;
-        DbiConnection con(dbiRef, os);
-        CHECK_OP(os, );
-        DbiOperationsBlock opBlock(dbiRef, os);
-        CHECK_OP(os, );
+        if (dbiRef.isValid()) {
+            U2OpStatus2Log os;
+            DbiConnection con(dbiRef, os);
+            CHECK_OP(os, );
+            DbiOperationsBlock opBlock(dbiRef, os);
+            CHECK_OP(os, );
+            foreach (GObject* obj, objects) {
+                deallocateDbiResources(obj, con, os);
+            }
+        }
+
         foreach (GObject* obj, objects) {
-            deallocateDbiResources(obj, con, os);
             obj->setGHints(NULL);
         }
     }
@@ -330,9 +335,11 @@ void Document::_removeObject(GObject* obj, bool deleteObjects) {
     emit si_objectRemoved(obj);
     
     if (deleteObjects) {
-        U2OpStatus2Log os;
-        DbiConnection con(dbiRef, os);
-        deallocateDbiResources(obj, con, os);
+        if (obj->entityRef.isValid()) {
+            U2OpStatus2Log os;
+            DbiConnection con(dbiRef, os);
+            deallocateDbiResources(obj, con, os);
+        }
         delete obj;
     }
 }

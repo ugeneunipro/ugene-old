@@ -51,6 +51,7 @@ public:
     static const DocumentFormatId MSF;
     static const DocumentFormatId ACE;
     static const DocumentFormatId GFF;
+    static const DocumentFormatId GTF;
     static const DocumentFormatId SRF;
     static const DocumentFormatId SAM;
     static const DocumentFormatId NEXUS;

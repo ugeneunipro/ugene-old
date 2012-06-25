@@ -39,6 +39,7 @@
 #include <U2Formats/ASNFormat.h>
 #include <U2Formats/MSFFormat.h>
 #include <U2Formats/GFFFormat.h>
+#include <U2Formats/GTFFormat.h>
 #include <U2Formats/SAMFormat.h>
 #include <U2Formats/NEXUSFormat.h>
 #include <U2Formats/MegaFormat.h>
@@ -155,6 +156,9 @@ void DocumentFormatRegistryImpl::init() {
 
     GFFFormat *gff = new GFFFormat(this);
     registerFormat(gff);
+
+    GTFFormat* gtf = new GTFFormat(this);
+    registerFormat(gtf);
 
     NEXUSFormat* nexus = new NEXUSFormat(this);
     registerFormat(nexus);

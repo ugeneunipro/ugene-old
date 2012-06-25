@@ -154,6 +154,19 @@ private:
     QString        qValue;
 };
 
+
+class GTest_CheckAnnotationQualifierIsAbsent : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationQualifierIsAbsent, "check-no-annotation-qualifier");
+
+    ReportResult report();
+
+private:
+    QString        annCtxName;
+    QString        qName;
+};
+
+
 class GTest_CheckAnnotationsNumInTwoObjects : public GTest {
     Q_OBJECT
     SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsNumInTwoObjects, "compare-annotations-num-in-two-objects");

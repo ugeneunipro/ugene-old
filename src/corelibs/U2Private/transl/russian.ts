@@ -298,7 +298,7 @@
     </message>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="645"/>
-        <source>promoting task {%1} to &apos;%2&apos;</source>
+        <source>Promoting task {%1} to &apos;%2&apos;</source>
         <translation>Задача {%1} %2.</translation>
     </message>
     <message>
@@ -313,7 +313,7 @@
     </message>
     <message>
         <location filename="../src/TaskSchedulerImpl.cpp" line="647"/>
-        <source>promoting task {%1} to &apos;%2&apos;, error &apos;%3&apos;</source>
+        <source>Promoting task {%1} to &apos;%2&apos;, error &apos;%3&apos;</source>
         <translation>Задача {%1} %2; ошибка: %3</translation>
     </message>
     <message>

@@ -38,6 +38,7 @@ GTest::GTest(const QString& taskName, GTest* cp, const GTestEnvironment* _env,
 : Task(taskName, flags), contextProvider(cp), env(_env)
 {
     assert(env!=NULL);
+
     foreach(Task* t, subtasks) {
         addSubTask(t);
     }
@@ -332,6 +333,66 @@ void GTestState::setPassed() {
     errMessage.clear(); 
     state = TriState_Yes;
     emit si_stateChanged(this);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// GTestLogHelper
+GTestLogHelper::GTestLogHelper()
+{
+    connect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)), SLOT(getMessage(const LogMessage&)));
+}
+
+
+void GTestLogHelper::expectLogMessage(QString inputMessage)
+{
+    expectedMessages[inputMessage] = false; // i.e. not detected yet
+}
+
+
+void GTestLogHelper::expectNoLogMessage(QString inputMessage)
+{
+    unexpectedMessages[inputMessage] = false;
+}
+
+
+GTestLogHelperStatus GTestLogHelper::verifyStatus()
+{
+    QCoreApplication::processEvents();
+
+    GTestLogHelperStatus status = GTest_LogHelper_Valid;
+
+    foreach (QString str, expectedMessages.keys()) {
+        if (false == expectedMessages[str]) {
+            status = GTest_LogHelper_Invalid;
+            coreLog.error(QString("GTestLogHelper: no expected message \"%1\" in the log!").arg(str));
+        }
+    }
+
+    foreach (QString str, unexpectedMessages.keys()) {
+        if (true == unexpectedMessages[str]) {
+            status = GTest_LogHelper_Invalid;
+            coreLog.error(QString("GTestLogHelper: message \"%1\" is present in the log unexpectedly!").arg(str));
+        }
+    }
+
+    return status;
+}
+
+
+void GTestLogHelper::getMessage(const LogMessage& logMessage)
+{
+    foreach (QString str, expectedMessages.keys()) {
+        if (logMessage.text.contains(str)) {
+            expectedMessages[str] = true;
+        }
+    }
+
+    foreach (QString str, unexpectedMessages.keys()) {
+        if (logMessage.text.contains(str)) {
+            unexpectedMessages[str] = true;
+        }
+    }
 }
 
 }//namespace

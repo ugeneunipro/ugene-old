@@ -328,7 +328,7 @@ QString TaskSchedulerImpl::tryLockResources(Task* task, bool prepareStage, bool&
     int nLocked = 0;
     if (!prepareStage) {
         threadsResource->acquire();
-        taskLog.trace(QString("acquiring resource: '%1':%2, state: %3/%4").arg(threadsResource->name).arg(1).arg(threadsResource->currentUse).arg(threadsResource->maxUse));
+        taskLog.trace(QString("Acquiring resource: '%1':%2, state: %3/%4").arg(threadsResource->name).arg(1).arg(threadsResource->currentUse).arg(threadsResource->maxUse));
         nLocked++;
     }
     for (int i=0, n = tres.size(); i<n; i++) {
@@ -340,7 +340,7 @@ QString TaskSchedulerImpl::tryLockResources(Task* task, bool prepareStage, bool&
         appRes->acquire(taskRes.resourceUse);
         taskRes.locked = true;
         nLocked++;
-        taskLog.trace(QString("acquiring resource: '%1':%2, state: %3/%4").arg(appRes->name).arg(taskRes.resourceUse).arg(appRes->currentUse).arg(appRes->maxUse));
+        taskLog.trace(QString("Acquiring resource: '%1':%2, state: %3/%4").arg(appRes->name).arg(taskRes.resourceUse).arg(appRes->currentUse).arg(appRes->maxUse));
     }
     hasLockedResourcesAfterCall = nLocked > 0;
     return QString::null;
@@ -354,7 +354,7 @@ void TaskSchedulerImpl::releaseResources(TaskInfo* ti, bool prepareStage) {
     if (!prepareStage) {
         threadsResource->release();
     }
-    taskLog.trace(QString("releasing resource: '%1':%2, state: %3/%4").arg(threadsResource->name).arg(1).arg(threadsResource->currentUse).arg(threadsResource->maxUse));
+    taskLog.trace(QString("Releasing resource: '%1':%2, state: %3/%4").arg(threadsResource->name).arg(1).arg(threadsResource->currentUse).arg(threadsResource->maxUse));
     TaskResources& tres = getTaskResources(ti->task);
     for (int i=0, n = tres.size(); i<n; i++) {
         TaskResourceUsage& taskRes = tres[i];
@@ -365,7 +365,7 @@ void TaskSchedulerImpl::releaseResources(TaskInfo* ti, bool prepareStage) {
         AppResource* appRes = resourcePool->getResource(taskRes.resourceId);
         appRes->release(taskRes.resourceUse);
         taskRes.locked = false;
-        taskLog.trace(QString("releasing resource: '%1':%2, state: %3/%4").arg(appRes->name).arg(taskRes.resourceUse).arg(appRes->currentUse).arg(appRes->maxUse));
+        taskLog.trace(QString("Releasing resource: '%1':%2, state: %3/%4").arg(appRes->name).arg(taskRes.resourceUse).arg(appRes->currentUse).arg(appRes->maxUse));
     }
     if (prepareStage) {
         ti->hasLockedPrepareResources = false;
@@ -606,7 +606,12 @@ void TaskSchedulerImpl::checkSerialPromotion(TaskInfo* pti, Task* subtask) {
             before = false;
         } else if (before) {
             Task::State subState = sub->getState();
-            assert(subState!=Task::State_New);
+            // There may be "locked" subtasks (requires some resources) before
+            // the current task (that is not "locked"). In this case their
+            // state would be "New"
+            if (sub->getTaskResources().size() == 0) {
+                assert(subState!=Task::State_New);
+            }
         }
     }
 #else
@@ -643,9 +648,9 @@ void TaskSchedulerImpl::promoteTask(TaskInfo* ti, Task::State newState) {
     TaskInfo* pti = ti->parentTaskInfo;
 
     if (!tsi.hasError()) {
-        taskLog.trace(tr("promoting task {%1} to '%2'").arg(task->getTaskName()).arg(state2String(newState)));
+        taskLog.trace(tr("Promoting task {%1} to '%2'").arg(task->getTaskName()).arg(state2String(newState)));
     } else {
-        taskLog.trace(tr("promoting task {%1} to '%2', error '%3'").arg(task->getTaskName()).arg(state2String(newState)).arg(tsi.getError()));
+        taskLog.trace(tr("Promoting task {%1} to '%2', error '%3'").arg(task->getTaskName()).arg(state2String(newState)).arg(tsi.getError()));
     }
 
     checkSerialPromotion(pti, ti->task);

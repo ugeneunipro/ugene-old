@@ -420,6 +420,57 @@ Task::ReportResult GTest_CheckAnnotationQualifier::report() {
     return ReportResult_Finished;
 }
 
+
+void GTest_CheckAnnotationQualifierIsAbsent::init(XMLTestFormat *tf, const QDomElement& el) {
+    Q_UNUSED(tf);
+
+    annCtxName = el.attribute(ANNOTATION_ATTR);
+    if (annCtxName.isEmpty()) {
+        failMissingValue(OBJ_ATTR);
+        return;
+    }
+
+    qName=el.attribute(QUALIFIER_ATTR);
+    if (qName.isEmpty()) {
+        failMissingValue(QUALIFIER_ATTR);
+        return;
+    } 
+}
+
+
+Task::ReportResult GTest_CheckAnnotationQualifierIsAbsent::report() {
+    GTestAnnotationDataItem *annCtx = getContext<GTestAnnotationDataItem>(this, annCtxName);
+    if (annCtx == NULL){
+        stateInfo.setError(QString("invalid annotation context"));
+        return ReportResult_Finished;
+    }
+    const SharedAnnotationData a = annCtx->getAnnotation();
+    QVector<U2Qualifier> res;
+    if (res.isEmpty()) {
+        int i = 0;
+        i++;
+    }
+    else {
+        int j = 0;
+        j++;
+    }
+    a->findQualifiers(qName, res);
+    if (res.isEmpty()) {
+        int i = 0;
+        i++;
+    }
+    else {
+        int j = 0;
+        j++;
+        stateInfo.setError(QString("An annotation has qualifier %1, but it shouldn't!").arg(qName));
+    }
+    if (!res.isEmpty()) {
+        stateInfo.setError(QString("An annotation has qualifier %1, but it shouldn't!").arg(qName));
+    }
+    return ReportResult_Finished;
+}
+
+
 //---------------------------------------------------------------
 void GTest_CheckAnnotationsNumInTwoObjects::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
@@ -738,6 +789,18 @@ Task::ReportResult GTest_CheckAnnotationsQualifiersInTwoObjects::report() {
             const QList<Annotation*>& annList2 = myAnnotation2->getAnnotations();
 
             for(int n=0;(n != annList.size())&&(n != annList2.size());n++){
+                Annotation* an1 = annList.at(n);
+                QString ann1name = an1->getAnnotationName();
+                Annotation* an2 = annList2.at(n);
+                QString ann2name = an2->getAnnotationName();
+                foreach (U2Qualifier qualifier, annList.at(n)->getQualifiers()) {
+                    QString qualName = qualifier.name;
+                    QString qualValue = qualifier.value;
+                }
+                foreach (U2Qualifier qualifier, annList2.at(n)->getQualifiers()) {
+                    QString qualName = qualifier.name;
+                    QString qualValue = qualifier.value;
+                }
                 if(annList.at(n)->getQualifiers() != annList2.at(n)->getQualifiers()){
                     stateInfo.setError(QString("annotations qualifiers  in position %1 not matched").arg(n));
                     return ReportResult_Finished;
@@ -978,6 +1041,7 @@ QList<XMLTestFactory*> AnnotationTableObjectTest::createTestFactories() {
     res.append(GTest_CheckAnnotationName::createFactory());
     res.append(GTest_CheckAnnotationLocation::createFactory());
     res.append(GTest_CheckAnnotationQualifier::createFactory());
+    res.append(GTest_CheckAnnotationQualifierIsAbsent::createFactory());
     res.append(GTest_CheckAnnotationsNumInTwoObjects::createFactory());
     res.append(GTest_CheckAnnotationsLocationsInTwoObjects::createFactory());
     res.append(GTest_CheckAnnotationsLocationsAndNumReorderdered::createFactory());

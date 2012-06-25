@@ -41,8 +41,10 @@ public:
     SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_LoadDocument, "load-document");
 
     ReportResult report();
+    void prepare();
 
     virtual void cleanup();
+
 
 private:
     QString             docContextName;
@@ -50,6 +52,11 @@ private:
     bool                contextAdded;
     bool                tempFile;
     QString             url;
+    GTestLogHelper      logHelper;
+
+    QString expectedLogMessage;
+    QString expectedLogMessage2;
+    QString unexpectedLogMessage;
 };
 
 class GTest_SaveDocument : public GTest {

@@ -23,6 +23,7 @@
 #define _U2_UGENE_TEST_FRAMEWORK_H_
 
 
+#include <U2Core/Log.h>
 #include <U2Core/Task.h>
 
 #include <QtCore/QString>
@@ -32,6 +33,9 @@
 #include <QtXml/QtXml>
 
 namespace U2 {
+
+/** Tests that need to verify log uses this resource */
+#define RESOURCE_LISTEN_LOG_IN_TESTS    1000001
 
 
 class U2TEST_EXPORT GTestEnvironment {
@@ -184,6 +188,38 @@ protected:
     GTestEnvironment env;
 };
 
+
+
+enum GTestLogHelperStatus {GTest_LogHelper_Invalid, GTest_LogHelper_Valid};
+
+/**
+ * Helps to verify if the log contains a message (or several messages),
+ * or, visa versa, doesn't contain a message (or several messages).
+ *
+ * To use it, create a new instance of the class in a test init function.
+ * Call "expectLogMessage" for each expected message.
+ * Call "expectNoLogMessage" for messages that mustn't be in the log.
+ * In the test's report() or similar function call verifyStatus().
+ *
+ * WARNING: All tests that listen to log need also to define attribute
+ * "lockForLogListening" for "multi-test" tag! This is done to avoid mixing of log
+ * between different tests.
+ */
+class U2TEST_EXPORT GTestLogHelper : public QObject {
+    Q_OBJECT
+public:
+    GTestLogHelper();
+    void expectLogMessage(QString inputMessage);
+    void expectNoLogMessage(QString inputMessage);
+    GTestLogHelperStatus verifyStatus();
+
+private slots:
+    void getMessage(const LogMessage& logMessage);
+
+private:
+    QMap<QString, bool> expectedMessages;
+    QMap<QString, bool> unexpectedMessages; // Messages that mustn't be present in the log
+};
 
 }//namespace
 

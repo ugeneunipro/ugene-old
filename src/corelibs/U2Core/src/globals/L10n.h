@@ -62,6 +62,9 @@ public:
 
     static QString defaultStr() { return "default"; } // It is used in WD, do not translate this without testing
 
+    static QString directStrandStr() { return tr("Direct"); }
+    static QString complementStrandStr() { return tr("Reverse-complementary"); }
+
 };
 
 }//ns

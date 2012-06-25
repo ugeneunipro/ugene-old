@@ -26,12 +26,16 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GHints.h>
+#include <U2Core/Log.h>
 
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/DocumentUtils.h>
 
+#include <U2Test/GTest.h>
+
 #include <U2Formats/SAMFormat.h>
+
 
 namespace U2 {
 
@@ -57,6 +61,18 @@ void GTest_LoadDocument::init(XMLTestFormat*, const QDomElement& el) {
     loadTask = NULL;
     contextAdded = false;
     docContextName = el.attribute("index");
+
+    if (NULL != el.attribute("message")) {
+        expectedLogMessage = el.attribute("message");
+    }
+
+    if (NULL != el.attribute("message2")) {
+        expectedLogMessage2 = el.attribute("message2");
+    }
+
+    if (NULL != el.attribute("no-message")) {
+        unexpectedLogMessage = el.attribute("no-message");
+    }
     
     QString dir = el.attribute("dir");
     if(dir == "temp"){
@@ -97,12 +113,30 @@ void GTest_LoadDocument::cleanup() {
     }
 }
 
+void GTest_LoadDocument::prepare() {
+    if (!expectedLogMessage.isEmpty()) {
+        logHelper.expectLogMessage(expectedLogMessage);
+    }
+
+    if (!expectedLogMessage2.isEmpty()) {
+        logHelper.expectLogMessage(expectedLogMessage2);
+    }
+
+    if (!unexpectedLogMessage.isEmpty()){
+        logHelper.expectNoLogMessage(unexpectedLogMessage);
+    }
+}
+
 Task::ReportResult GTest_LoadDocument::report() {
     if (loadTask!=NULL && loadTask->hasError()) {
         stateInfo.setError( loadTask->getError());
     } else if (!docContextName.isEmpty()) {
         addContext(docContextName, loadTask->getDocument());
         contextAdded = true;
+
+        if (GTest_LogHelper_Invalid == logHelper.verifyStatus()) {
+            stateInfo.setError("Log is incorrect!");
+        }
     }
     return ReportResult_Finished;
 }

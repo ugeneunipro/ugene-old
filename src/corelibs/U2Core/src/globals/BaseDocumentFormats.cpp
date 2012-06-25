@@ -42,6 +42,7 @@ const DocumentFormatId BaseDocumentFormats::FASTQ("fastq");
 const DocumentFormatId BaseDocumentFormats::PLAIN_ASN("mmdb");
 const DocumentFormatId BaseDocumentFormats::MSF("msf");
 const DocumentFormatId BaseDocumentFormats::GFF("gff");
+const DocumentFormatId BaseDocumentFormats::GTF("gtf");
 const DocumentFormatId BaseDocumentFormats::SRF("srfasta");
 const DocumentFormatId BaseDocumentFormats::SAM("sam");
 const DocumentFormatId BaseDocumentFormats::NEXUS("nexus");

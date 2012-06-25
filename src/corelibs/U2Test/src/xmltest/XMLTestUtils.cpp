@@ -34,6 +34,15 @@ QList<XMLTestFactory*>  XMLTestUtils::createTestFactories() {
 }
 
 void XMLMultiTest::init(XMLTestFormat *tf, const QDomElement& el) {
+
+    // This attribute is used to avoid mixing log messages between different tests
+    // Each test that listens to log should set this attribute to "true"
+    // See also: GTestLogHelper
+    bool lockForLogListening = false;
+    if ("true" == el.attribute("lockForLogListening")) {
+        lockForLogListening = true;
+    }
+
     QDomNodeList subtaskNodes = el.childNodes();
     QList<Task*> subs;
     for(int i=0;i<subtaskNodes.size(); i++) {
@@ -54,6 +63,10 @@ void XMLMultiTest::init(XMLTestFormat *tf, const QDomElement& el) {
         subs.append(subTest);
     }
     if (!hasError()) {
+        if (lockForLogListening) {
+            addTaskResource(TaskResourceUsage(RESOURCE_LISTEN_LOG_IN_TESTS, 1, true));
+        }
+
         foreach(Task* t, subs) {
             addSubTask(t);
         }
