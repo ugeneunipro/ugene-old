@@ -59,7 +59,7 @@ public:
     static QVector<U2Region> getJoinedMapping(const QList<QByteArray>& seqParts);
 
     static Document* mergeSequences(const Document* doc, int mergeGap, U2OpStatus& os);
-	static Document* mergeSequences(const QList<Document*> doc, const QVariantMap& hints, U2OpStatus& os);
+	static Document* mergeSequences(const QList<Document*> doc, QVariantMap hints, U2OpStatus& os);
 };
 
 

@@ -161,6 +161,21 @@ static void showAlphapetWarning(const QList<U2SequenceObject*> &seqObjects) {
         msgBox->setButtonText(QMessageBox::Ok, "Ok");
         msgBox->setVisible(true);
     }
+
+    QSet<Document*> docs;
+    foreach(const GObject* obj, seqObjects){
+        docs.insert(obj->getDocument());
+    }
+    foreach(const Document* doc, docs){
+        if(!doc->getGHintsMap()[ProjectLoaderHint_MergeMode_DifferentAlphabets].toString().isEmpty()){
+            QMessageBox *msgBox = new QMessageBox(QApplication::activeWindow());
+            msgBox->setIcon(QMessageBox::Warning);
+            msgBox->setWindowTitle(QObject::tr("Warning"));
+            msgBox->setText(doc->getGHintsMap()[ProjectLoaderHint_MergeMode_DifferentAlphabets].toString());
+            msgBox->setButtonText(QMessageBox::Ok, "Ok");
+            msgBox->setVisible(true);
+        }
+    }
 }
 
 void OpenAnnotatedDNAViewTask::open() {

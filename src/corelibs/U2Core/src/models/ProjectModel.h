@@ -48,6 +48,7 @@ class U2OpStatus;
 #define ProjectLoaderHint_MergeMode_SaveDocumentFlag "merge-mode-save-document-flag"
 #define ProjectLoaderHint_MergeMode_Flag "merge-mode-flag"
 #define ProjectLoaderHint_MergeMode_RealDocumentFormat  "merge-mode-real-document-format"
+#define ProjectLoaderHint_MergeMode_DifferentAlphabets "merge-sequences-different-alphabets"
 
 /// Service responsible for project loading / unloading
 class U2CORE_EXPORT ProjectLoader  : public QObject {
