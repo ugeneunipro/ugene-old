@@ -33,6 +33,7 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsLog.h"
+#include "GTUtilsBookmarksTreeView.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
@@ -852,6 +853,398 @@ GUI_TEST_CLASS_DEFINITION(test_0007_4) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();    
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0008) {
+
+//     1. Open document samples\CLUSTALW\COI.aln
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep();
+
+//     2. Create bookmark. Rename "New bookmark" to "start bookmark"
+    QPoint p = GTUtilsBookmarksTreeView::getItemCenter(os, "COI [m] COI");
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "start bookmark");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int startRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int startLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+
+//     3. Scroll msa to the middle.
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 300));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+
+//     4. Create bookmark. Rename "New bookmark" to "middle bookmark"
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "middle bookmark");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int midRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int midLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+// 
+//     5. Scroll msa to the end.
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 550));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
+
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+//     6. Create bookmark. Rename "New bookmark" to "end bookmark"
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "end bookmark");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int endRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int endLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+
+//     Expected state: clicking on each bookmark will recall corresponding MSA position
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "start bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    int RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(startRO == RO && startLO == LO, "start bookmark offsets doesnt equal");
+
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "middle bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(midRO == RO && midLO == LO, "mid bookmark offsets doesnt equal");
+
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "end bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");   
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0008_1) {  //CHANGES: default names used
+
+    //     1. Open document samples\CLUSTALW\COI.aln
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep();
+
+    //     2. Create bookmark. Rename "New bookmark" to "start bookmark"
+    QPoint p = GTUtilsBookmarksTreeView::getItemCenter(os, "COI [m] COI");
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int startRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int startLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+
+    //     3. Scroll msa to the middle.
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 300));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+
+    //     4. Create bookmark. Rename "New bookmark" to "middle bookmark"
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int midRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int midLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    // 
+    //     5. Scroll msa to the end.
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 550));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
+
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+    //     6. Create bookmark. Rename "New bookmark" to "end bookmark"
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int endRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int endLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+
+    //     Expected state: clicking on each bookmark will recall corresponding MSA position
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "New bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    int RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(startRO == RO && startLO == LO, "start bookmark offsets doesnt equal");
+
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "New bookmark 2");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(midRO == RO && midLO == LO, "mid bookmark offsets doesnt equal");
+
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "New bookmark 3");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");   
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0008_2) { //CHANGES: mid and end coordinates changed
+
+    //     1. Open document samples\CLUSTALW\COI.aln
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep();
+
+    //     2. Create bookmark. Rename "New bookmark" to "start bookmark"
+    QPoint p = GTUtilsBookmarksTreeView::getItemCenter(os, "COI [m] COI");
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "start bookmark");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int startRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int startLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+
+    //     3. Scroll msa to the middle.
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 200));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+
+    //     4. Create bookmark. Rename "New bookmark" to "middle bookmark"
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "middle bookmark");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int midRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int midLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    // 
+    //     5. Scroll msa to the end.
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 510));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
+
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+    //     6. Create bookmark. Rename "New bookmark" to "end bookmark"
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "end bookmark");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int endRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int endLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+
+    //     Expected state: clicking on each bookmark will recall corresponding MSA position
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "start bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    int RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(startRO == RO && startLO == LO, "start bookmark offsets doesnt equal");
+
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "middle bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(midRO == RO && midLO == LO, "mid bookmark offsets doesnt equal");
+
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "end bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");   
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0008_3) { //CHANGES: mid and end coordinates changed, used another file
+
+    //     1. Open document samples\CLUSTALW\COI.aln
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
+    GTGlobals::sleep();
+
+    //     2. Create bookmark. Rename "New bookmark" to "start bookmark"
+    QPoint p = GTUtilsBookmarksTreeView::getItemCenter(os, "HIV-1 [m] HIV-1");
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "start bookmark");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int startRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int startLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+
+    //     3. Scroll msa to the middle.
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 600));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
+
+    QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+
+    //     4. Create bookmark. Rename "New bookmark" to "middle bookmark"
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "middle bookmark");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int midRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int midLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    // 
+    //     5. Scroll msa to the end.
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 1000));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
+
+    GTMenu::showContextMenu(os, mdiWindow);
+    GTGlobals::sleep();
+    //     6. Create bookmark. Rename "New bookmark" to "end bookmark"
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keySequence(os, "end bookmark");
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep();
+
+    int endRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    int endLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+
+    //     Expected state: clicking on each bookmark will recall corresponding MSA position
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "start bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    int RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(startRO == RO && startLO == LO, "start bookmark offsets doesnt equal");
+
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "middle bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(midRO == RO && midLO == LO, "mid bookmark offsets doesnt equal");
+
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "end bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
+    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");   
+}
+
+
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {
 

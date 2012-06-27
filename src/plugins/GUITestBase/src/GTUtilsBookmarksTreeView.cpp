@@ -71,7 +71,7 @@ QTreeWidgetItem* GTUtilsBookmarksTreeView::findItem(U2OpStatus &os, const QStrin
         if (vi->isRootItem()){
             QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(vi);
             foreach (QTreeWidgetItem* item, treeItems) {
-                if (item->text(1) == itemName) {
+                if (item->text(0) == itemName) {
                     return item;
                 }
             }
