@@ -30,7 +30,7 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsToolTip.h"
-
+#include "runnables/qt/MessageBoxFiller.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsProjectTreeView.h"
@@ -41,7 +41,7 @@
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
 #include <api/GTFileDialog.h>
-
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
 
 namespace U2{
@@ -49,15 +49,67 @@ namespace U2{
 namespace GUITest_common_scenarios_project_bookmarks {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
-    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/dp_view/NC_014267.gb");
 
-    GTGlobals::sleep(5000);
+//  1. Open a GenBank file with circular view (tested on NC_014267.gb from NCBI DB)
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/" , "NC_014267.gb");
+    GTGlobals::sleep(1000);
+
+//  2. Create a bookmark
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "NC_014267 [s] NC_014267 sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+//  3. Close project
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
+}
+GUI_TEST_CLASS_DEFINITION(test_0002_1) {
+
+    // 1. Open a GenBank file with circular view (tested on NC_014267.gb from NCBI DB)
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/" , "NC_014267.gb");
+    GTGlobals::sleep(1000);
+
+    // 2. Create a bookmark. Change: Create 2 bookmarks.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "NC_014267 [s] NC_014267 sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "NC_014267 [s] NC_014267 sequence"));
     GTMouseDriver::click(os, Qt::RightButton);
-}
+    GTGlobals::sleep();
 
+    // 3. Close project
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
+}
+GUI_TEST_CLASS_DEFINITION(test_0002_2) {
+
+    // 1. Open a GenBank file with circular view (tested on NC_014267.gb from NCBI DB)
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/" , "NC_014267.gb");
+    GTGlobals::sleep(1000);
+
+    // 2. Create a bookmark
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "NC_014267 [s] NC_014267 sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    //2'. Change: Remove the bookmark
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_REMOVE_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::moveTo(os, GTUtilsBookmarksTreeView::getItemCenter(os, "NC_014267 [s] NC_014267 sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    // 3. Close project
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
+}
 } // namespace
 } // namespace U2
 

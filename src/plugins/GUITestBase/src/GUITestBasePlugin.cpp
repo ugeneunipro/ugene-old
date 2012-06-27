@@ -130,6 +130,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/project/bookmarks/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_bookmarks::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_project_bookmarks::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_project_bookmarks::test_0002_2);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/multiple docs/
@@ -228,6 +230,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //  REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0013);
 //  REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0013_1);
 //  REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0013_2);
+//    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0014);
 
 
 //////////////////////////////////////////////////////////////////////////

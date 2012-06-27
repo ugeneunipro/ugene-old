@@ -31,6 +31,8 @@ namespace GUITest_common_scenarios_project_bookmarks {
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_project_bookmarks_"
 
 GUI_TEST_CLASS_DECLARATION(test_0002)
+GUI_TEST_CLASS_DECLARATION(test_0002_1)
+GUI_TEST_CLASS_DECLARATION(test_0002_2)
 
 #undef GUI_TEST_PREFIX
 }
