@@ -42,6 +42,7 @@ GraphAction::GraphAction(GSequenceGraphFactory* _factory)
       factory(_factory),
       view(NULL)
 {
+    setObjectName(_factory->getGraphName());
     connect(this, SIGNAL(triggered()), SLOT(sl_handleGraphAction()));
 }
 
