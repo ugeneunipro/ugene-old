@@ -31,6 +31,8 @@ namespace GUITest_common_scenarios_project_document_modifying {
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_project_document_modifying_"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
+GUI_TEST_CLASS_DECLARATION(test_0001_1)
+
 GUI_TEST_CLASS_DECLARATION(test_0002)
 
 #undef GUI_TEST_PREFIX

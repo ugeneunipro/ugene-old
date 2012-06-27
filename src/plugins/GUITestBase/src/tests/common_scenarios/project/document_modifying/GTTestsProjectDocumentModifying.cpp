@@ -69,6 +69,33 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsProjectTreeView::itemModificationCheck(os, d, true);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0001_1) { //CHANGES another annotation created
+    // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2-1.uprj
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj2-1.uprj");
+
+    // Expected state: 
+    //     1) Project view with document "1.gb" has been opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+
+    //     2) UGENE window titled with text "proj2-1 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj2-1 UGENE");
+
+    // 2. Open view for 1.gb document.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // Press Ctrl+N and add annotation to it annotations table.
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "GROUP", "Annotation", "4.. 18"));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    // Expected state: in project view 1.gb document has marked as modified (with blue color)
+    QTreeWidgetItem *d = GTUtilsProjectTreeView::findItem(os, "1.gb");
+    GTUtilsProjectTreeView::itemModificationCheck(os, d, true);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj

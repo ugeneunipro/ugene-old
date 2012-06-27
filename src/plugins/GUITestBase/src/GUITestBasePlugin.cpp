@@ -163,12 +163,16 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/project/document modifying/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0001_1);
+
     REGISTER_TEST(GUITest_common_scenarios_project_document_modifying::test_0002);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/Sequence view/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004_1);
+
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0005);
 
 //////////////////////////////////////////////////////////////////////////
