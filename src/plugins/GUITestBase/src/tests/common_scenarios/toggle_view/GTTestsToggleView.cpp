@@ -1296,7 +1296,9 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1)
 
     // TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from zoom view
 
-    }GUI_TEST_CLASS_DEFINITION(test_0013_2)
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0013_2)
     {
     // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
     Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
@@ -1339,6 +1341,112 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1)
     // TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from zoom view
 
     }
+GUI_TEST_CLASS_DEFINITION(test_0014)
+    {
+    // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
 
+//  2. Open graph view {Graphs->CG% content}
+    GTGlobals::sleep();
+    QWidget *sequenceWidget1 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0", NULL, false);
+    CHECK_SET_ERR(sequenceWidget1 != NULL, "sequenceWidget is not present");
+    QWidget *circularViewSe1 = GTWidget::findWidget(os, "GraphMenuAction", sequenceWidget1, false);
+    Runnable *chooser = new PopupChooser(os, QStringList() << "GC Content (%)");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, circularViewSe1);
+    GTGlobals::sleep();
+
+//  3. Close detailed view
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    GTGlobals::sleep();
+//  TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from graph view
+
+    }
+GUI_TEST_CLASS_DEFINITION(test_0014_1)
+    {
+    // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    //  2. Open graph view {Graphs->CG% content}. Changes: for both sequences
+    GTGlobals::sleep();
+    QWidget *sequenceWidget1 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0", NULL, false);
+    CHECK_SET_ERR(sequenceWidget1 != NULL, "sequenceWidget is not present");
+    QWidget *circularViewSe1 = GTWidget::findWidget(os, "GraphMenuAction", sequenceWidget1, false);
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "GC Content (%)");
+    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTWidget::click(os, circularViewSe1);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QWidget *sequenceWidget2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_1", NULL, false);
+    CHECK_SET_ERR(sequenceWidget2 != NULL, "sequenceWidget is not present");
+    QWidget *circularViewSe2 = GTWidget::findWidget(os, "GraphMenuAction", sequenceWidget2, false);
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "GC Content (%)");
+    GTUtilsDialog::waitForDialog(os, chooser2);
+    GTWidget::click(os, circularViewSe2);
+    GTGlobals::sleep();
+
+    //  3. Close detailed view. Changes: for both sequences
+    Runnable *chooser3 = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    GTUtilsDialog::waitForDialog(os, chooser3);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    GTGlobals::sleep();
+
+    Runnable *chooser4 = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    GTUtilsDialog::waitForDialog(os, chooser4);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTGlobals::sleep();
+    //  TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from graph view for both sequences
+
+    }
+GUI_TEST_CLASS_DEFINITION(test_0014_2)
+    {
+    // 1. Use menu {File->Open}. Open file _common_data/scenarios/project/multiple.fa
+    Runnable *dialog = new SequenceReadingModeSelectorDialogFiller(os);
+    GTUtilsDialog::waitForDialog(os, dialog);
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
+    GTGlobals::sleep();
+
+    //  2. Open graph view {Graphs->CG% content}. Changes: for 1 sequences
+    GTGlobals::sleep();
+    QWidget *sequenceWidget1 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0", NULL, false);
+    CHECK_SET_ERR(sequenceWidget1 != NULL, "sequenceWidget is not present");
+    QWidget *circularViewSe1 = GTWidget::findWidget(os, "GraphMenuAction", sequenceWidget1, false);
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "GC Content (%)");
+    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTWidget::click(os, circularViewSe1);
+    GTGlobals::sleep();
+
+    //  3. Close detailed view. Changes: for 1 sequences
+    Runnable *chooser3 = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    GTUtilsDialog::waitForDialog(os, chooser3);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se1"));
+    GTGlobals::sleep();
+
+    //  2. Open graph view {Graphs->CG% content}. Changes: for 2 sequences
+    GTGlobals::sleep();
+    QWidget *sequenceWidget2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_1", NULL, false);
+    CHECK_SET_ERR(sequenceWidget2 != NULL, "sequenceWidget is not present");
+    QWidget *circularViewSe2 = GTWidget::findWidget(os, "GraphMenuAction", sequenceWidget2, false);
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "GC Content (%)");
+    GTUtilsDialog::waitForDialog(os, chooser2);
+    GTWidget::click(os, circularViewSe2);
+    GTGlobals::sleep();
+
+    //  3. Close detailed view. Changes: for 2 sequences
+    Runnable *chooser4 = new PopupChooser(os, QStringList() << "show_hide_details_view");
+    GTUtilsDialog::waitForDialog(os, chooser4);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_se2"));
+    GTGlobals::sleep();
+    //  TODO: Expected state: position indicator (Grey dotted line rectangle)  has disappered from graph view for both sequences
+    }
 } // namespace
 } // namespace U2
