@@ -35,6 +35,7 @@ namespace U2 {
 #define RTM_RANGE_CONDITION_CHECK           QString(" ((gstart < ?1 AND gstart > ?2) AND gstart + elen > ?3) ")
 #define RTM_RANGE_CONDITION_CHECK_COUNT     QString("  (gstart < ?1 AND gstart > ?2) ")
 #define ALL_READ_FIELDS                     QString(" id, prow, gstart, elen, flags, mq, data")
+#define SORTED_READS                        QString(" ORDER BY gstart ASC ")
 
 
 SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, 
@@ -141,8 +142,12 @@ qint64 SingleTableAssemblyAdapter::getMaxEndPos(U2OpStatus& os) {
     return SQLiteQuery(QString("SELECT MAX(gstart + elen) FROM %1").arg(readsTable), db, os).selectInt64();
 }
 
-U2DbiIterator<U2AssemblyRead>* SingleTableAssemblyAdapter::getReads(const U2Region& r, U2OpStatus& os) {
+U2DbiIterator<U2AssemblyRead>* SingleTableAssemblyAdapter::getReads(const U2Region& r, U2OpStatus& os, bool sortedHint) {
     QString qStr = QString("SELECT " + ALL_READ_FIELDS + " FROM %1 WHERE " + rangeConditionCheck).arg(readsTable);
+    if (sortedHint) {
+        qStr += SORTED_READS;
+    }
+
     SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
     bindRegion(*q, r);
     return new SqlRSIterator<U2AssemblyRead>(q, new SimpleAssemblyReadLoader(), NULL, U2AssemblyRead(), os);

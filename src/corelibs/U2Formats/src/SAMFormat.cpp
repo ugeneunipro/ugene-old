@@ -408,12 +408,16 @@ bool SAMFormat::getSectionTags( QByteArray &line, const QByteArray &sectionName,
     return true;
 }
 
-bool SAMFormat::storeHeader(IOAdapter* io, const QVector<QByteArray> &names, const QVector<int> &lengths) {
+bool SAMFormat::storeHeader(IOAdapter* io, const QVector<QByteArray> &names, const QVector<int> &lengths, bool coordinateSorted) {
     assert(names.size() > 0);
     assert(names.size() == lengths.size());
     static const QByteArray TAB = "\t";
     QByteArray block;
-    block.append(SECTION_HEADER).append(TAB).append("VN:").append(VERSION).append("\n");   
+    block.append(SECTION_HEADER).append(TAB).append(TAG_VERSION).append(":").append(VERSION);
+    if (coordinateSorted) {
+        block.append(TAB).append(TAG_SORT_ORDER).append(":").append("coordinate");
+    }
+    block.append("\n");
     for (int i=0; i<names.size(); i++) {
         block.append(SECTION_SEQUENCE).append(TAB).append(TAG_SEQUENCE_NAME).append(":");
         block.append(names[i]).append(TAB);

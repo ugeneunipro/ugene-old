@@ -642,7 +642,7 @@ QStringList RunCmdlineWorkflowTask::getCreatedFilesUrls() const {
 }
 
 /**
- * Returns the position of the last symbol of @nameCandidated in the @line.
+ * Returns the position of the last symbol of @nameCandidate in the @line.
  * Or returns -1 if the @line is not a log line
  */
 inline static int getLogNameCandidate(const QString &line, QString &nameCandidate) {

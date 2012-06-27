@@ -303,10 +303,10 @@ qint64 MultiTableAssemblyAdapter::getMaxEndPos(U2OpStatus& os) {
     return max;
 }
 
-U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReads(const U2Region& r, U2OpStatus& os) {
+U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReads(const U2Region& r, U2OpStatus& os, bool sortedHint) {
     QVector< U2DbiIterator<U2AssemblyRead>* > iterators;
     foreach(MTASingleTableAdapter* a, adapters) {
-        iterators << a->singleTableAdapter->getReads(r, os);
+        iterators << a->singleTableAdapter->getReads(r, os, sortedHint);
         if (os.hasError()) {
             break;
         }
@@ -315,7 +315,7 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReads(const U2Regio
         qDeleteAll(iterators);
         return NULL;
     } 
-    return new MTAReadsIterator(iterators, idExtras);
+    return new MTAReadsIterator(iterators, idExtras, sortedHint);
 }
 
 U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) {
@@ -337,7 +337,7 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByRow(const U2
         qDeleteAll(iterators);
         return NULL;
     } 
-    return new MTAReadsIterator(iterators, selectedIdExtras);
+    return new MTAReadsIterator(iterators, selectedIdExtras, false);
 }
 
 U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByName(const QByteArray& name, U2OpStatus& os) {
@@ -352,7 +352,7 @@ U2DbiIterator<U2AssemblyRead>* MultiTableAssemblyAdapter::getReadsByName(const Q
         qDeleteAll(iterators);
         return NULL;
     } 
-    return new MTAReadsIterator(iterators, idExtras);
+    return new MTAReadsIterator(iterators, idExtras, false);
 }
 
 int MultiTableAssemblyAdapter::getElenRangePosById(const U2DataId& id) const {
@@ -753,8 +753,8 @@ void MultiTablePackAlgorithmAdapter::ensureGridSize(int nRows) {
 //////////////////////////////////////////////////////////////////////////
 // MTAReadsIterator
 
-MTAReadsIterator::MTAReadsIterator(QVector< U2DbiIterator<U2AssemblyRead>* >& i, const QVector<QByteArray>& ie)
-: iterators (i), currentRange(0), idExtras(ie)
+MTAReadsIterator::MTAReadsIterator(QVector< U2DbiIterator<U2AssemblyRead>* >& i, const QVector<QByteArray>& ie, bool sorted)
+: iterators (i), currentRange(0), idExtras(ie), sortedHint(sorted)
 {
 }
 
@@ -762,53 +762,105 @@ MTAReadsIterator::~MTAReadsIterator() {
     qDeleteAll(iterators);
 }
 
+// TODO: remove copy-paste from this code
 bool MTAReadsIterator::hasNext() {
-    bool res = currentRange < iterators.size();
-    if (res) {
-        do {
-            U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
-            res = it->hasNext();
-            if (res) {
-                break;
+    if (sortedHint) {
+        foreach (U2DbiIterator<U2AssemblyRead> *it, iterators) {
+            if (it->hasNext()) {
+                return true;
             }
-            currentRange++;
-        }  while (currentRange < iterators.size());
+        }
+        return false;
+    } else {
+        bool res = currentRange < iterators.size();
+        if (res) {
+            do {
+                U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
+                res = it->hasNext();
+                if (res) {
+                    break;
+                }
+                currentRange++;
+            }  while (currentRange < iterators.size());
+        }
+        return res;
     }
-    return res;
 }
 
 U2AssemblyRead MTAReadsIterator::next() {
     U2AssemblyRead res;
-    if (currentRange < iterators.size()) {
-        do {
-            U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
+    if (sortedHint) {
+        qint64 minPos = LLONG_MAX;
+        U2DbiIterator<U2AssemblyRead> *minIt = NULL;
+        foreach (U2DbiIterator<U2AssemblyRead> *it, iterators) {
             if (it->hasNext()) {
-                res = it->next();
-                const QByteArray& idExtra = idExtras.at(currentRange);;
-                res->id = addTable2Id(res->id, idExtra);
-                break;
+                U2AssemblyRead candidate = it->peek();
+                if (candidate->leftmostPos < minPos) {
+                    minIt = it;
+                    minPos = candidate->leftmostPos;
+                }
             }
-            currentRange++;
-        } while (currentRange < iterators.size());
+        }
+        if (NULL != minIt) {
+            res = minIt->next();
+            int currentIt = iterators.indexOf(minIt);
+            const QByteArray& idExtra = idExtras.at(currentIt);
+            res->id = addTable2Id(res->id, idExtra);
+        }
+        return res;
+    } else {
+        if (currentRange < iterators.size()) {
+            do {
+                U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
+                if (it->hasNext()) {
+                    res = it->next();
+                    const QByteArray& idExtra = idExtras.at(currentRange);;
+                    res->id = addTable2Id(res->id, idExtra);
+                    break;
+                }
+                currentRange++;
+            } while (currentRange < iterators.size());
+        }
+        return res;
     }
-    return res;
 }
 
 U2AssemblyRead MTAReadsIterator::peek() {
     U2AssemblyRead res;
-    if (currentRange < iterators.size()) {
-        do {
-            U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
+    if (sortedHint) {
+        qint64 minPos = LLONG_MAX;
+        U2DbiIterator<U2AssemblyRead> *minIt = NULL;
+        foreach (U2DbiIterator<U2AssemblyRead> *it, iterators) {
             if (it->hasNext()) {
-                res = it->peek();
-                const QByteArray& idExtra = idExtras.at(currentRange);;
-                res->id = addTable2Id(res->id, idExtra);
-                break;
+                U2AssemblyRead candidate = it->peek();
+                if (candidate->leftmostPos < minPos) {
+                    minIt = it;
+                    minPos = candidate->leftmostPos;
+                }
             }
-            currentRange++;
-        } while (currentRange < iterators.size());
+        }
+        if (NULL != minIt) {
+            res = minIt->next();
+            int currentIt = iterators.indexOf(minIt);
+            const QByteArray& idExtra = idExtras.at(currentIt);
+            res->id = addTable2Id(res->id, idExtra);
+        }
+        return res;
+    } else {
+        if (currentRange < iterators.size()) {
+            do {
+                U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
+                if (it->hasNext()) {
+                    res = it->peek();
+                    const QByteArray& idExtra = idExtras.at(currentRange);;
+                    res->id = addTable2Id(res->id, idExtra);
+                    break;
+                }
+                currentRange++;
+            } while (currentRange < iterators.size());
+        }
+        return res;
     }
-    return res;
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -90,7 +90,7 @@ void ConvertAssemblyToSamTask::run() {
     }
 
     //writing to a sam file for an every object
-    samFormat.storeHeader(io.get(), names, lengths);
+    samFormat.storeHeader(io.get(), names, lengths, true);
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle->dbi->getEntityTypeById(id);
         if (U2Type::Assembly == objectType) {
@@ -98,12 +98,15 @@ void ConvertAssemblyToSamTask::run() {
             wholeAssembly.length = assDbi->getMaxEndPos(assembly.id, status);
 
             QByteArray refSeqName = assembly.visualName.replace(QRegExp("\\s|\\t"), "_").toAscii();
-            U2DbiIterator<U2AssemblyRead> *dbiIterator = assDbi->getReads(assembly.id, wholeAssembly, status);
+            U2DbiIterator<U2AssemblyRead> *dbiIterator = assDbi->getReads(assembly.id, wholeAssembly, status, true);
 
             DNASequence seq;
+            qint64 prevPos = 0;
             while (dbiIterator->hasNext()) {
                 U2AssemblyRead read = dbiIterator->next();
                 //read->cigar;
+                SAFE_POINT(read->leftmostPos >= prevPos, "Unsorted reads", );
+                prevPos = read->leftmostPos;
 
                 seq.seq = read->readSequence;
                 seq.quality = read->quality;

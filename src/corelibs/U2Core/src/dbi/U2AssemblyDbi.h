@@ -103,7 +103,7 @@ public:
         
         Note: iterator instance must be deallocated by caller method
     */
-    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os, bool sortedHint = false) = 0;
 
     /** 
         Returns reads with packed row value bounded by 'minRow' and 'maxRow' that intersect given region.

@@ -34,6 +34,7 @@ namespace U2 {
 #define ALL_READ_FIELDS         QString(" r.id, i.prow1, i.gstart, i.gend - i.gstart, r.flags, r.mq, r.data")
 #define SAME_IDX                QString(" (i.id == r.id) ")
 #define FROM_2TABLES            QString(" FROM %1 AS r, %2 AS i ")
+#define SORTED_READS            QString(" ORDER BY i.gstart ASC ")
 
 
 RTreeAssemblyAdapter::RTreeAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, 
@@ -94,9 +95,13 @@ qint64 RTreeAssemblyAdapter::getMaxEndPos(U2OpStatus& os) {
     return SQLiteQuery(QString("SELECT MAX(gend) FROM %1").arg(indexTable), db, os).selectInt64();
 }
 
-U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReads(const U2Region& r, U2OpStatus& os) {
+U2DbiIterator<U2AssemblyRead>* RTreeAssemblyAdapter::getReads(const U2Region& r, U2OpStatus& os, bool sortedHint) {
     QString qStr = QString("SELECT " + ALL_READ_FIELDS + FROM_2TABLES + " WHERE " + SAME_IDX + " AND "+ RANGE_CONDITION_CHECK )
         .arg(readsTable).arg(indexTable);
+    if (sortedHint) {
+        qStr += SORTED_READS;
+    }
+
     SQLiteQuery* q = new SQLiteQuery(qStr, db, os);
     q->bindInt64(1, r.endPos());
     q->bindInt64(2, r.startPos);

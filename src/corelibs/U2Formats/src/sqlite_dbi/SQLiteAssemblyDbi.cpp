@@ -133,11 +133,11 @@ qint64 SQLiteAssemblyDbi::countReads(const U2DataId& assemblyId, const U2Region&
 }
 
 
-U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os) {
+U2DbiIterator<U2AssemblyRead>* SQLiteAssemblyDbi::getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os, bool sortedHint) {
     GTIMER(c2, t2, "SQLiteAssemblyDbi::getReadsAt");
     AssemblyAdapter* a = getAdapter(assemblyId, os);
     if ( a != NULL ) {
-        return a->getReads(r, os);
+        return a->getReads(r, os, sortedHint);
     }
     return NULL;
 }

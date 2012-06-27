@@ -51,7 +51,7 @@ public:
         Return reads that intersect given region
         Note: iterator instance must be deallocated by caller method
     */
-    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os);
+    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2DataId& assemblyId, const U2Region& r, U2OpStatus& os, bool sortedHint = false);
 
     /** 
         Return reads with packed row value >= min, <= max that intersect given region 
@@ -141,7 +141,7 @@ public:
     virtual qint64 getMaxPackedRow(const U2Region& r, U2OpStatus& os) = 0;
     virtual qint64 getMaxEndPos(U2OpStatus& os) = 0;
 
-    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os) = 0;
+    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os, bool sortedHint = false) = 0;
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os) = 0;
     

@@ -54,7 +54,7 @@ public:
     virtual qint64 getMaxPackedRow(const U2Region& r, U2OpStatus& os);
     virtual qint64 getMaxEndPos(U2OpStatus& os);
 
-    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os);
+    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os, bool sortedHint = false);
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os);
     virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os);
 
@@ -165,7 +165,7 @@ private:
 // Class that multiplexes multiple read iterators into 1
 class MTAReadsIterator : public U2DbiIterator<U2AssemblyRead> {
 public:
-    MTAReadsIterator(QVector< U2DbiIterator<U2AssemblyRead>* >& iterators, const QVector<QByteArray>& idExtras);
+    MTAReadsIterator(QVector< U2DbiIterator<U2AssemblyRead>* >& iterators, const QVector<QByteArray>& idExtras, bool sortedHint);
 
     virtual ~MTAReadsIterator();
 
@@ -179,6 +179,7 @@ private:
     QVector<U2DbiIterator<U2AssemblyRead>*> iterators;
     int                                     currentRange;
     QVector<QByteArray>                     idExtras;
+    bool                                    sortedHint;
 };
 
 // Class that multiplexes multiple read packed data iterators into 1 and supports ordering
