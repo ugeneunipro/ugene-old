@@ -108,6 +108,7 @@ public:
     ItemViewStyle* getStyleByIdSafe(StyleId id) const;
     ItemViewStyle* getStyleById(const StyleId & id) const;
     bool containsStyle(const StyleId & id) const;
+    void updatePorts();
     
 protected:
     QVariant itemChange ( GraphicsItemChange change, const QVariant & value );

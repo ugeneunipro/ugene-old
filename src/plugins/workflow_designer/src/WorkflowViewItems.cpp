@@ -275,6 +275,15 @@ void WorkflowProcessItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
     }
 }
 
+void WorkflowProcessItem::updatePorts(){
+    foreach(WorkflowPortItem* pit, ports) {
+        pit->setPos(pos());
+        foreach(WorkflowBusItem*bit, pit->getDataFlows()) {
+            bit->updatePos();
+        }
+    }
+}
+
 QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVariant & value ) 
 {
     switch(change) {
@@ -321,12 +330,9 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
         break;
     case ItemPositionHasChanged:
         {
-            foreach(WorkflowPortItem* pit, ports) {
-                pit->setPos(pos());
-                foreach(WorkflowBusItem*bit, pit->getDataFlows()) {
-                    bit->updatePos();
-                }
-            }
+            
+            updatePorts();
+
             WorkflowScene * sc = qobject_cast<WorkflowScene*>(scene());
             if(sc != NULL) {
                 if (!sc->views().isEmpty()) {
@@ -1078,6 +1084,7 @@ void WorkflowBusItem::paint ( QPainter * painter, const QStyleOptionGraphicsItem
     QPointF p1 = dst->head(this);
     QPointF p2 = src->head(this);
 
+
     QPainterPath path;
     path.addEllipse(p2, A/2 - 2, A/2 - 2);
     path.addEllipse(p1, A/2 - 2, A/2 - 2);
@@ -1091,6 +1098,7 @@ void WorkflowBusItem::paint ( QPainter * painter, const QStyleOptionGraphicsItem
     if (!validate()) {
         pen.setColor(Qt::red);
     }
+
     drawArrow(painter, pen, p2, p1);
     //update();
 

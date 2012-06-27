@@ -330,6 +330,8 @@ bool ExtendedProcStyle::sceneEventFilter( QGraphicsItem * watched, QEvent * even
                     
                     qreal rb = b2.right() + p2.x();
                     b2.setRight(rb);
+
+                    owner->updatePorts();
                     
                     if (b2.width() < MARGIN*2 + R) {
                         return true;
@@ -380,6 +382,7 @@ bool ExtendedProcStyle::sceneEventFilter( QGraphicsItem * watched, QEvent * even
                         || (qAbs(b2.bottom() - p.y()) < RESIZE_AREA)))
                 {
                     b2.setBottom(b2.bottom() + p2.y());
+                    owner->updatePorts();
                 }
                 //qreal minHeight = qMax(doc->size().height(), R) + MARGIN*2;
                 qreal minHeight = R + MARGIN*2;
