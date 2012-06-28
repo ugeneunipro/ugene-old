@@ -87,6 +87,19 @@ void UnloadDocumentTask::runUnloadTaskHelper(const QList<Document*>& docs, Unloa
 
     foreach(Document* doc, docs) {
         QString err = checkSafeUnload(doc);
+        if(err == tr("There is an active view with document content")){
+            QMessageBox::StandardButtons buttons = QMessageBox::StandardButtons(QMessageBox::Yes) | QMessageBox::No;
+            QMessageBox::StandardButton res = QMessageBox::question(NULL,
+                tr("Question?"), tr("Close views for document: %1").arg(doc->getURLString()),
+                buttons, QMessageBox::Yes);
+            if(res == QMessageBox::Yes ){
+                foreach(GObjectViewWindow *v,  GObjectViewUtils::findViewsWithAnyOfObjects(doc->getObjects())){
+                    v->closeView();
+                }
+            }
+        }
+
+        err = checkSafeUnload(doc);
         if (!err.isEmpty()) {
             failedToUnload[doc] = err;
             continue;
