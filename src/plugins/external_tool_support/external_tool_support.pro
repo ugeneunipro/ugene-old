@@ -37,6 +37,10 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/clustalw/ClustalWSupportRunDialog.h \
            src/clustalw/ClustalWSupportTask.h \
            src/clustalw/ClustalWWorker.h \
+           src/clustalo/ClustalOSupport.h \
+           src/clustalo/ClustalOSupportRunDialog.h \
+           src/clustalo/ClustalOSupportTask.h \
+           src/clustalo/ClustalOWorker.h \
            src/cufflinks/CuffdiffWorker.h \
            src/cufflinks/CufflinksSupport.h \
            src/cufflinks/CufflinksWorker.h \
@@ -71,6 +75,7 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BwaSettings.ui \
          src/ui/CAP3SupportDialog.ui \
          src/ui/ClustalWSupportRunDialog.ui \
+         src/ui/ClustalOSupportRunDialog.ui \
          src/ui/ETSSettingsWidget.ui \
          src/ui/FormatDBSupportRunDialog.ui \
          src/ui/MAFFTSupportRunDialog.ui \
@@ -114,6 +119,10 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/clustalw/ClustalWSupportRunDialog.cpp \
            src/clustalw/ClustalWSupportTask.cpp \
            src/clustalw/ClustalWWorker.cpp \
+           src/clustalo/ClustalOSupport.cpp \
+           src/clustalo/ClustalOSupportRunDialog.cpp \
+           src/clustalo/ClustalOSupportTask.cpp \
+           src/clustalo/ClustalOWorker.cpp \
            src/cufflinks/CuffdiffWorker.cpp \
            src/cufflinks/CufflinksSupport.cpp \
            src/cufflinks/CufflinksWorker.cpp \

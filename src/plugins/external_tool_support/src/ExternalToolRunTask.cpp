@@ -187,7 +187,8 @@ void ExternalToolLogParser::parseErrOutput(const QString& partOfLog){
         }
     }
 }
-
+////////////////////////////////////////
+//ExternalToolSupportUtils
 void ExternalToolSupportUtils::removeTmpDir( const QString& tmpDirUrl, U2OpStatus& os) {
     if (tmpDirUrl.isEmpty()) {
         os.setError(tr("Can not remove temporary directory: path is empty."));

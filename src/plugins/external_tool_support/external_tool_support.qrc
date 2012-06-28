@@ -2,12 +2,15 @@
     <qresource prefix="/external_tool_support">
         <file>images/clustalx.png</file>
         <file>images/clustalx_gray.png</file>
+        <file>images/clustalo.png</file>
+        <file>images/clustalo_gray.png</file>
         <file>images/cmdline.png</file>
         <file>images/cmdline_gray.png</file>
         <file>images/ncbi.png</file>
         <file>images/tcoffee_gray.png</file>
         <file>images/tcoffee.png</file>
         <file>images/clustalx_warn.png</file>
+        <file>images/clustalo_warn.png</file>
         <file>images/cmdline_warn.png</file>
         <file>images/tcoffee_warn.png</file>
         <file>images/cancel.png</file>

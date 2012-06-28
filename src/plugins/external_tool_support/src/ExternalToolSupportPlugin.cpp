@@ -59,6 +59,8 @@
 
 #include "clustalw/ClustalWSupport.h"
 #include "clustalw/ClustalWWorker.h"
+#include "clustalo/ClustalOSupport.h"
+#include "clustalo/ClustalOWorker.h"
 #include "mafft/MAFFTSupport.h"
 #include "mafft/MAFFTWorker.h"
 #include "tcoffee/TCoffeeSupport.h"
@@ -112,6 +114,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     ClustalWSupport* clustalWTool=new ClustalWSupport(CLUSTAL_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(clustalWTool);
 
+    //ClustalO
+    ClustalOSupport* clustalOTool=new ClustalOSupport(CLUSTALO_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(clustalOTool);
+
     //MAFFT
     MAFFTSupport* mAFFTTool=new MAFFTSupport(MAFFT_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(mAFFTTool);
@@ -131,6 +137,12 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         ExternalToolSupportAction* clustalWAction = new ExternalToolSupportAction(tr("ClustalW..."), this, QStringList(CLUSTAL_TOOL_NAME));
         clustalWAction->setObjectName("ClustalW");
         connect(clustalWAction, SIGNAL(triggered()), clustalWTool, SLOT(sl_runWithExtFileSpecify()));
+
+        clustalOTool->getViewContext()->setParent(this);
+        clustalOTool->getViewContext()->init();
+
+        ExternalToolSupportAction* clustalOAction = new ExternalToolSupportAction(tr("ClustalO..."), this, QStringList(CLUSTALO_TOOL_NAME));
+        connect(clustalOAction, SIGNAL(triggered()), clustalOTool, SLOT(sl_runWithExtFileSpecify()));
 
         mAFFTTool->getViewContext()->setParent(this);
         mAFFTTool->getViewContext()->init();
@@ -157,6 +169,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
         toolsSubmenu->setIcon(QIcon(":core/images/msa.png"));//bad code
         toolsSubmenu->addAction(clustalWAction);
+        toolsSubmenu->addAction(clustalOAction);
         toolsSubmenu->addAction(mAFFTAction);
         toolsSubmenu->addAction(tCoffeeAction);
     }
@@ -398,6 +411,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     }
     //Add new workers to WD
     LocalWorkflow::ClustalWWorkerFactory::init();
+    LocalWorkflow::ClustalOWorkerFactory::init();
     LocalWorkflow::MAFFTWorkerFactory::init();
     LocalWorkflow::BlastAllWorkerFactory::init();
     LocalWorkflow::BlastPlusWorkerFactory::init();
