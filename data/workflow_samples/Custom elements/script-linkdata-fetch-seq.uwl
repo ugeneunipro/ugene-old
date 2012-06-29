@@ -1,0 +1,58 @@
+#!UGENE_WORKFLOW
+#Fetches sequence from LinkData by specified work ID, filename, subject ID, property ID and writes result in file in FASTA format
+
+include "LinkData Fetch.usa" as "Script-LinkData Fetch"
+
+workflow "LinkData fetch"{
+
+    script-linkdata-fetch {
+        type:"Script-LinkData Fetch";
+        name:"LinkData Fetch";
+        script {
+out_sequence = sequenceFromText(LinkData.getObjects(workId,filename,subject,property));
+
+        };
+        filename:cox_s70_promoters_8objects;
+        property:"http://linkdata.org/property/rdf1s171i#sequence";
+        subject:"http://linkdata.org/resource/rdf1s171i#A.A1'";
+        workId:rdf1s171i;
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Sequence";
+        url-out:"D:/work/linkdata.fa";
+    }
+
+
+    .actor-bindings {
+        script-linkdata-fetch.out->write-sequence.in-sequence
+    }
+
+    script-linkdata-fetch.sequence->write-sequence.in-sequence.sequence
+
+    .meta {
+        visual {
+            script-linkdata-fetch {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>LinkData Fetch</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Fetches sequence from LinkData service</p></body></html>";
+                tooltip:"Fetches sequence from LinkData service";
+                pos:"-735 -569";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out.angle:360;
+            }
+            write-sequence {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write Sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all sequences from <span style=' text-decoration: underline;'>LinkData Fetch</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#0000ff;'>linkdata.fa</span></a>.</p></body></html>";
+                tooltip:"Writes all supplied sequences to file(s) in selected format.";
+                pos:"-504 -570";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 78 90";
+                in-sequence.angle:180;
+            }
+            script-linkdata-fetch.out->write-sequence.in-sequence {
+                text-pos:"-32.5 -24";
+            }
+        }
+    }
+}
+

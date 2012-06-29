@@ -77,8 +77,12 @@ ActorPrototype *IncludedProtoFactoryImpl::_getScriptProto(QList<DataTypePtr > in
     Descriptor inDesc( IN_PORT_ID, LocalWorkflow::ScriptWorker::tr("input data"), LocalWorkflow::ScriptWorker::tr("input data") );
     Descriptor outDesc( OUT_PORT_ID, LocalWorkflow::ScriptWorker::tr("output data"), LocalWorkflow::ScriptWorker::tr("output data") );
 
-    portDescs << new PortDescriptor( inDesc, inSet, /*input*/ true );
-    portDescs << new PortDescriptor( outDesc, outSet, /*input*/false, /*multi*/true );
+	if(!input.isEmpty()) {
+		portDescs << new PortDescriptor( inDesc, inSet, /*input*/ true );
+	}
+	if(!output.isEmpty()) {
+	    portDescs << new PortDescriptor( outDesc, outSet, /*input*/false, /*multi*/true );
+	}
 
 
     QString namePrefix;

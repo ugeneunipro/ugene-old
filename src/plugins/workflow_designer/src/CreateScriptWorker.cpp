@@ -229,7 +229,7 @@ public:
 
     bool removeRows(int row, int count, const QModelIndex &parent /* = QModelIndex */) {
         Q_UNUSED(count);
-        if(rowCount() == 1 || row <0 || row > rowCount()) {
+        if(rowCount() == 0 || row <0 || row > rowCount()) {
             return false;
         }
 

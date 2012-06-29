@@ -1,0 +1,15 @@
+<!DOCTYPE GB2WORKFLOW>
+<Actor>
+ <Input-port/>
+ <Output-port>
+  <Out-Slots Slot="seq"/>
+ </Output-port>
+ <Attributes>
+  <Attribute Type="string" Name="workId"/>
+  <Attribute Type="string" Name="filename"/>
+  <Attribute Type="string" Name="subject"/>
+  <Attribute Type="string" Name="property"/>
+ </Attributes>
+ <Element-name Name="LinkData Fetch"/>
+ <Element-description Description="Fetches sequence from LinkData service"/>
+</Actor>

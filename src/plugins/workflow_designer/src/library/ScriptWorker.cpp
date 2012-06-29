@@ -99,7 +99,7 @@ bool ScriptWorkerFactory::init(QList<DataTypePtr > input, QList<DataTypePtr > ou
 }
 
 ScriptWorker::ScriptWorker(Actor *a)
-: BaseWorker(a), input(NULL), output(NULL)
+: BaseWorker(a), input(NULL), output(NULL), taskFinished(false)
 {
     script = a->getScript();
     engine = NULL;
@@ -153,24 +153,41 @@ Task *ScriptWorker::tick() {
         coreLog.error(tr("no script text"));
         return new FailTask(tr("no script text"));
     }
+	if(input != NULL) {
+		if (input->hasMessage()) {
+			bindPortVariables();
+			bindAttributeVariables();
 
-    if (input->hasMessage()) {
-        bindPortVariables();
-        bindAttributeVariables();
+			getMessageAndSetupScriptValues(input);
 
-        getMessageAndSetupScriptValues(input);
-
-        Task *t = new ScriptWorkerTask(engine, script);
-        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-        return t;
-    } else if (input->isEnded()) {
-        setDone();
-        output->setEnded();
-    }
+			Task *t = new ScriptWorkerTask(engine, script);
+			connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+			return t;
+		} else if (input->isEnded()) {
+			setDone();
+			if(output != NULL) {
+				output->setEnded();
+			}
+		}
+	} else {
+		if(taskFinished) {
+			setDone();
+			if(output != NULL) {
+				output->setEnded();
+			}
+		} else {
+			bindPortVariables();
+			bindAttributeVariables();
+			Task *t = new ScriptWorkerTask(engine, script);
+			connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+			return t;
+		}
+	}
     return NULL;
 }
 
 void ScriptWorker::sl_taskFinished() {
+	taskFinished = true;
     ScriptWorkerTask *t = qobject_cast<ScriptWorkerTask*>(sender());
     if (t->getState() != Task::State_Finished || t->hasError()) {
         return;
@@ -182,7 +199,7 @@ void ScriptWorker::sl_taskFinished() {
     DataTypePtr ptr = dtr->getById(OUTPUT_PORT_TYPE + name);
 
     if(ptr->getAllDescriptors().size() == 1 && ptr->getAllDescriptors().first().getId() == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
-        if (!input->isEnded()) {
+        if (input != NULL && !input->isEnded()) {
             return;
         }
     }

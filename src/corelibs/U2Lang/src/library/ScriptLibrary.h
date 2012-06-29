@@ -28,10 +28,30 @@
 
 namespace U2 {
 
+class WorkflowScriptRegistry;
+class WorkflowScriptFactory;
 class WorkflowScriptEngine;
+
+class U2LANG_EXPORT WorkflowScriptFactory {
+public:
+	virtual void createScript(WorkflowScriptEngine *engine) = 0;
+};
+
+class U2LANG_EXPORT WorkflowScriptRegistry {
+public:
+	~WorkflowScriptRegistry();
+	void registerScriptFactory(WorkflowScriptFactory* f);
+	void unregisterScriptFactory(WorkflowScriptFactory* f);
+	const QList<WorkflowScriptFactory*> &getFactories() const;
+private:
+	QList<WorkflowScriptFactory*> list;
+};
 
 class U2LANG_EXPORT WorkflowScriptLibrary {
 public:
+
+	static WorkflowScriptRegistry* getScriptRegistry();
+
     static void initEngine(WorkflowScriptEngine *engine);
     
     // ================== Misc =======================
@@ -71,7 +91,7 @@ public:
     
     // ================== Misc =======================
     static QScriptValue debugOut(QScriptContext *ctx, QScriptEngine *);
-    
+
 }; // WorkflowScriptLibrary
 
 } // U2

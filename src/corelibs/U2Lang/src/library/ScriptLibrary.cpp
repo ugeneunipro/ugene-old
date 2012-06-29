@@ -36,6 +36,23 @@
 
 namespace U2 {
 
+WorkflowScriptRegistry::~WorkflowScriptRegistry() {
+	qDeleteAll(list);
+}
+
+void WorkflowScriptRegistry::registerScriptFactory(WorkflowScriptFactory* f) {
+	assert(!list.contains(f));
+	list.append(f);
+}
+
+void WorkflowScriptRegistry::unregisterScriptFactory(WorkflowScriptFactory* f) {
+	list.removeAll(f);
+}
+
+const QList<WorkflowScriptFactory*> &WorkflowScriptRegistry::getFactories() const {
+	return list;
+}
+
 void WorkflowScriptLibrary::initEngine(WorkflowScriptEngine *engine) {
     QScriptValue foo = engine->globalObject();
 
@@ -68,6 +85,12 @@ void WorkflowScriptLibrary::initEngine(WorkflowScriptEngine *engine) {
     foo.setProperty("addQualifier", engine->newFunction(addQualifier));
     foo.setProperty("getLocation", engine->newFunction(getLocation));
     foo.setProperty("filterByQualifier", engine->newFunction(filterByQualifier));
+
+	if(AppContext::getWorkflowScriptRegistry() != NULL) {
+		foreach(WorkflowScriptFactory* f, AppContext::getWorkflowScriptRegistry()->getFactories()) {
+			f->createScript(engine);
+		}
+	}
 }
 
 QScriptValue WorkflowScriptLibrary::print(QScriptContext *ctx, QScriptEngine *) {

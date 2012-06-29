@@ -505,6 +505,9 @@ int main(int argc, char **argv)
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry = new OPWidgetFactoryRegistry();
     appContext->setOPWidgetFactoryRegistry(opWidgetFactoryRegistry);
 
+	WorkflowScriptRegistry* workflowScriptRegistry = new WorkflowScriptRegistry();
+	appContext->setWorkflowScriptRegistry(workflowScriptRegistry);
+
     // Register all Options Panel groups on the required GObjectViews
     Init::initOptionsPanels();
     
