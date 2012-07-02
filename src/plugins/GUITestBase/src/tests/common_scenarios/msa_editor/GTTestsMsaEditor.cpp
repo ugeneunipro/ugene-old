@@ -39,6 +39,7 @@
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
@@ -1294,7 +1295,106 @@ GUI_TEST_CLASS_DEFINITION(test_0008_3) { //CHANGES: mid and end coordinates chan
     CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");   
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0009) {
 
+    //1. Open ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTGlobals::sleep();
+
+    //2. Select a trailing region length=3 (all gaps) for Isophia_altiacaEF540820
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(11, 1), QPoint(13, 1));
+    GTGlobals::sleep();
+
+    //3. Do context menu {Align-> Align with MUSCLE}  use "column range"
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+    //GTGlobals::sleep();
+
+    //Expected state: Column range = 12-14
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(11, 0), QPoint(13, 9));
+    GTGlobals::sleep();
+
+    QString clipboardText = GTClipboard::text(os);
+    QString expectedMSA = "TAA\n---\nTAA\nTAA\n---\n---\n---\nTAA\nTTA\n---";
+
+    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+
+    GTGlobals::sleep();
+
+    //4. Press Align
+    //Expected state: After aligning with 'stable' option the order must not change
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009_1) {
+
+    //1. Open ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTGlobals::sleep();
+
+    //2. Select a trailing region length=3 (all gaps) for Isophia_altiacaEF540820
+    //CHANGES: selection from right to left
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(13, 1), QPoint(11, 1));
+    GTGlobals::sleep();
+
+    //3. Do context menu {Align-> Align with MUSCLE}  use "column range"
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+    //GTGlobals::sleep();
+
+    //Expected state: Column range = 12-14
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(11, 0), QPoint(13, 9));
+    GTGlobals::sleep();
+
+    QString clipboardText = GTClipboard::text(os);
+    QString expectedMSA = "TAA\n---\nTAA\nTAA\n---\n---\n---\nTAA\nTTA\n---";
+
+    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+
+    GTGlobals::sleep();
+
+    //4. Press Align
+    //Expected state: After aligning with 'stable' option the order must not change
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009_2) {
+
+    //1. Open ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTGlobals::sleep();
+
+    //2. Select a trailing region length=3 (all gaps) for Isophia_altiacaEF540820
+    //CHANGES: another region selected
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(11, 4), QPoint(13, 4));
+    GTGlobals::sleep();
+
+    //3. Do context menu {Align-> Align with MUSCLE}  use "column range"
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+    //GTGlobals::sleep();
+
+    //Expected state: Column range = 12-14
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(11, 0), QPoint(13, 9));
+    GTGlobals::sleep();
+
+    QString clipboardText = GTClipboard::text(os);
+    QString expectedMSA = "TAA\n---\nTAA\nTAA\n---\n---\n---\nTAA\nTTA\n---";
+
+    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+
+    GTGlobals::sleep();
+
+    //4. Press Align
+    //Expected state: After aligning with 'stable' option the order must not change
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {
 

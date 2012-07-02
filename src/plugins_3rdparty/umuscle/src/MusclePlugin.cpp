@@ -67,6 +67,7 @@ MusclePlugin::MusclePlugin()
         //Add to tools menu for fast run
         QAction* muscleAction = new QAction(tr("MUSCLE..."), this);
         muscleAction->setIcon(QIcon(":umuscle/images/muscle_16.png"));
+        muscleAction->setObjectName("Align with muscle");
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu* toolsSubmenu = tools->findChild<QMenu*>(MWMENU_TOOLS_MALIGN);
         if(toolsSubmenu == NULL){
@@ -137,6 +138,7 @@ void MuscleMSAEditorContext::initViewContext(GObjectView* view) {
     MuscleAction* alignAction = new MuscleAction(this, view, tr("Align with MUSCLE..."), 1000);
     alignAction->setIcon(QIcon(":umuscle/images/muscle_16.png"));
     alignAction->setEnabled(!objLocked);
+    alignAction->setObjectName("Align with muscle");
     connect(alignAction, SIGNAL(triggered()), SLOT(sl_align()));
     connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_lockedStateChanged()));
     addViewAction(alignAction);
