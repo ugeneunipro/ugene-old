@@ -343,6 +343,11 @@ void Writer::writeRead(const Alignment &alignment) {
         assert(2 == tag.size());
         writeBytes(tag);
         QVariant value = alignment.getOptionalFields().value(tag);
+        if ("B" == tag) {
+            writeChar('B');
+            writeString(value.toByteArray());
+            continue;
+        }
         switch(value.type()) {
         case QVariant::Int:
             {

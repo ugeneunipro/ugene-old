@@ -329,6 +329,18 @@ Alignment BamReader::AlignmentReader::read() {
                     bytesRead += hexString.size() + 1;
                     break;
                 }
+            case 'B':
+                {
+                    QByteArray intOrArray = r->readString();
+                    if(intOrArray.size() <= 1) {
+                        throw InvalidFormatException(BAMDbiPlugin::tr("Too short integer or numeric array string: %1").arg(intOrArray.size()));
+                    }
+                    // TODO: parse the @intOrArray string into the type and the numeric values array.
+                    // Currently these values are not used (and not stored) anywhere, so they are not parsed.
+                    value = intOrArray;
+                    bytesRead += intOrArray.size() + 1;
+                    break;
+                }
             default:
                 throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field value type: %1").arg(type));
             }
