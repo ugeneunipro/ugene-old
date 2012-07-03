@@ -179,28 +179,117 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
 #else
     struct sigaction CrashHandler::sa;
 
-    void CrashHandler::signalHandler(int signo, siginfo_t*, void*) {
+    void CrashHandler::signalHandler(int signo, siginfo_t *siginfo, void*) {
         sigprocmask(SIG_UNBLOCK, &sa.sa_mask, NULL);
         QString exception;
+
         switch(signo) {
-        case SIGBUS: exception = "Access to undefined portion of memory object";
+        case SIGBUS:
+            exception = "Access to undefined portion of memory object";
+            switch (siginfo->si_code) {
+            case BUS_ADRALN:
+                exception += ": invalid address alignment.";
+                break;
+            case BUS_ADRERR:
+                exception += ": non-existent physical address.";
+                break;
+            case BUS_OBJERR:
+                exception += ": object-specific hardware error.";
+                break;
+            }
             break;
-        case SIGFPE: exception = "Erroneous arithmetic operation";
+
+        case SIGFPE:
+            exception = "Erroneous arithmetic operation";
+            switch (siginfo->si_code) {
+            case FPE_INTDIV:
+                exception += ": integer divide-by-zero.";
+                break;
+            case FPE_INTOVF:
+                exception += ": integer overflow.";
+                break;
+            case FPE_FLTDIV:
+                exception += ": floating point divide-by-zero.";
+                break;
+            case FPE_FLTOVF:
+                exception += ": floating point overflow.";
+                break;
+            case FPE_FLTUND:
+                exception += ": floating point underflow.";
+                break;
+            case FPE_FLTRES:
+                exception += ": floating point inexact result.";
+                break;
+            case FPE_FLTINV:
+                exception += ": invalid floating point operation.";
+                break;
+            case FPE_FLTSUB:
+                exception += ": subscript out of range.";
+                break;
+            }
             break;
-        case SIGILL: exception = "Illegal instruction";
+
+        case SIGILL:
+            exception = "Illegal instruction";
+            switch (siginfo->si_code) {
+            case ILL_ILLOPC:
+                exception += ": illegal opcode.";
+                break;
+            case ILL_ILLOPN:
+                exception += ": illegal operand.";
+                break;
+            case ILL_ILLADR:
+                exception += ": illegal addressing mode.";
+                break;
+            case ILL_ILLTRP:
+                exception += ": illegal trap.";
+                break;
+            case ILL_PRVOPC:
+                exception += ": privileged opcode.";
+                break;
+            case ILL_PRVREG:
+                exception += ": privileged register.";
+                break;
+            case ILL_COPROC:
+                exception += ": coprocessor error.";
+                break;
+            case ILL_BADSTK:
+                exception += ": internal stack error.";
+                break;
+            }
             break;
-        case SIGSEGV: exception = "Segmentation fault";
+
+        case SIGSEGV:
+            exception = "Segmentation fault";
+            switch (siginfo->si_code) {
+            case SEGV_MAPERR:
+                exception += ": address not mapped.";
+                break;
+            case SEGV_ACCERR:
+                exception += ": invalid permissions.";
+                break;
+            }
             break;
-        case SIGSYS: exception = "Bad syscall";
+
+        case SIGSYS:
+            exception = "Bad syscall";
             break;
-        case SIGXCPU: exception = "CPU time limit exceeded";
+
+        case SIGXCPU:
+            exception = "CPU time limit exceeded";
             break;
-        case SIGXFSZ: exception = "File size limit exceeded";
+
+        case SIGXFSZ:
+            exception = "File size limit exceeded";
             break;
-        case SIGABRT: exception = "Program has been aborted";
+
+        case SIGABRT:
+            exception = "Program has been aborted";
             break;
+
         default: return;
         }
+
         runMonitorProcess(QString::number(signo) + "|" + exception);
     }
 #endif
