@@ -30,7 +30,7 @@
 #include "ExportAnnotationsDialog.h"
 #include "ExportAnnotations2CSVTask.h"
 #include "ExportUtils.h"
-
+#include "ExportQualityScoresTask.h"
 #include "ImportAnnotationsFromCSVDialog.h"
 #include "ImportAnnotationsFromCSVTask.h"
 
@@ -54,9 +54,10 @@
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/MultiTask.h>
 
 #include <U2Gui/DialogUtils.h>
-
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectView.h>
@@ -93,7 +94,10 @@ ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : Q
 
     exportAnnotations2CSV = new QAction(tr("Export annotations"), this);
     connect(exportAnnotations2CSV, SIGNAL(triggered()), SLOT(sl_exportAnnotations()));
-
+    
+    exportSequenceQuality = new QAction(tr("Export sequence quality"), this);
+    connect(exportSequenceQuality, SIGNAL(triggered()), SLOT(sl_exportSequenceQuality()));
+    
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
     connect(pv, SIGNAL(si_onDocTreePopupMenuRequested(QMenu&)), SLOT(sl_addToProjectViewMenu(QMenu&)));
@@ -119,6 +123,11 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
         sub = new QMenu(tr("Export"));
         sub->addAction(exportSequencesToSequenceFormatAction);
         sub->addAction(exportSequencesAsAlignmentAction);
+        foreach (GObject* obj, set) {
+            if (obj->getDocument()->getDocumentFormatId() == BaseDocumentFormats::FASTQ) {
+                sub->addAction(exportSequenceQuality);
+            }
+        }
     } else {
         set = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &ms, UOF_LoadedOnly);
         if (set.size() == 1) {
@@ -149,7 +158,7 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
         }
         sub->addAction(exportDNAChromatogramAction);
     }
-
+    
     if (sub != NULL) {
         sub->setObjectName(ACTION_PROJECT__EXPORT_MENU);
         sub->menuAction()->setObjectName(ACTION_PROJECT__EXPORT_MENU_ACTION);
@@ -446,5 +455,41 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
+
+void ExportProjectViewItemsContoller::sl_exportSequenceQuality() {
+    ProjectView* pv = AppContext::getProjectView();
+    assert(pv!=NULL);
+
+    MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
+    QList<GObject*> sequenceObjects = SelectionUtils::findObjectsKeepOrder(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
+    if (sequenceObjects.isEmpty()) {
+        QMessageBox::critical(NULL, L10N::errorTitle(), tr("No sequence objects selected!"));
+        return;
+    }
+
+    
+    LastUsedDirHelper lod;
+    lod.url = QFileDialog::getSaveFileName(QApplication::activeWindow(), tr("Set output quality file"), lod.dir,".qual");
+    if (lod.url.isEmpty()) {
+        return;
+    }
+    
+    QList<Task*> exportTasks;
+    foreach(GObject* gObj, sequenceObjects) {
+            if (gObj->getDocument()->getDocumentFormatId() != BaseDocumentFormats::FASTQ) {
+            continue;
+        }
+        U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*> (gObj);
+        ExportQualityScoresConfig cfg;
+        cfg.dstFilePath = lod.url;
+        Task* exportTask = new ExportPhredQualityScoresTask( seqObj, cfg );
+        exportTasks.append(exportTask);
+    }
+    
+    Task* t = new MultiTask("ExportQualityScoresFromProjectView", exportTasks);
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    
+}
+
 
 } //namespace

@@ -44,6 +44,7 @@ private slots:
     void sl_importAnnotationsFromCSV();
     void sl_exportChromatogramToSCF();
     void sl_exportAnnotations();
+    void sl_exportSequenceQuality();
 
 private:
     void addExportMenu(QMenu& m);
@@ -56,6 +57,7 @@ private:
     QAction* importAnnotationsFromCSVAction;
     QAction* exportDNAChromatogramAction;
     QAction* exportAnnotations2CSV;
+    QAction* exportSequenceQuality;
 
 };
 
