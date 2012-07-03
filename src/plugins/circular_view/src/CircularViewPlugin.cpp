@@ -101,6 +101,7 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     }
     
     CircularViewAction* action = new CircularViewAction();
+    action->setObjectName("circular_view_action");
     action->setIcon(QIcon(":circular_view/images/circular.png"));
     action->setCheckable(true);
     action->setChecked(false);
