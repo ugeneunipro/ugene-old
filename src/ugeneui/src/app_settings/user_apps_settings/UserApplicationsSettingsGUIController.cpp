@@ -78,6 +78,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageController::getSavedState()
     state->temporaryDirPath = s->getUserTemporaryDirPath();
     state->enableStatistics = s->isStatisticsCollectionEnabled();
     state->tabbedWindowLayout = s->tabbedWindowLayout();
+    state->resetSettings = s->resetSettings();
     return state;
 }
 
@@ -92,6 +93,7 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     st->setUserTemporaryDirPath(state->temporaryDirPath);
     st->setEnableCollectingStatistics(state->enableStatistics);
     st->setTabbedWindowLayout(state->tabbedWindowLayout);
+    st->setResetSettings(state->resetSettings);
     
     QStyle* style = QStyleFactory::create(state->style);
     if (style!=NULL) {
@@ -153,6 +155,7 @@ void UserApplicationsSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     }
 
     autoOpenProjectBox->setChecked(state->openLastProjectFlag);
+    resetSettingsBox->setChecked(state->resetSettings);
 }
 
 AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& err) const {
@@ -177,6 +180,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& e
     state->temporaryDirPath = tmpDirPathEdit->text();
     state->enableStatistics = enableStatisticsEdit->isChecked();
     state->tabbedWindowLayout = tabbedButton->isChecked();
+    state->resetSettings = resetSettingsBox->isChecked();
 
     return state;
 }

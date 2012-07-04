@@ -269,6 +269,22 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="reset">
+     <property name="title">
+      <string>Default settings</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <item>
+       <widget class="QCheckBox" name="resetSettingsBox">
+        <property name="text">
+         <string>Reset settings to default on next start of UGENE</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>

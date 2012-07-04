@@ -51,7 +51,7 @@ class UserApplicationsSettingsPageState : public AppSettingsGUIPageState {
     Q_OBJECT
 public:
     UserApplicationsSettingsPageState() : useDefaultWebBrowser (true), 
-        openLastProjectFlag(false), enableStatistics(false), tabbedWindowLayout(false) {}
+        openLastProjectFlag(false), enableStatistics(false), tabbedWindowLayout(false), resetSettings(false) {}
 
     QString webBrowserUrl;
     QString translFile;
@@ -62,6 +62,7 @@ public:
     bool openLastProjectFlag;
     bool enableStatistics;
     bool tabbedWindowLayout;
+    bool resetSettings;
 };
 
 

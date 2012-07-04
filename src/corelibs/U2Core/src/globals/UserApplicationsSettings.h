@@ -70,6 +70,9 @@ public:
     bool tabbedWindowLayout() const;
     void setTabbedWindowLayout(bool b);
 
+    bool resetSettings() const;
+    void setResetSettings(bool b);
+
 signals:
     void si_temporaryPathChanged();
     void si_windowLayoutChanged();

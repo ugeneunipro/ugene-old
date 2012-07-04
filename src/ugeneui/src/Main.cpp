@@ -686,6 +686,9 @@ int main(int argc, char **argv)
     delete saar;
     appContext->setStructuralAlignmentAlgorithmRegistry(NULL);
 
+    bool deleteSettingsFile = userAppSettings->resetSettings();
+    QString iniFile = AppContext::getSettings()->fileName();
+    
     delete appSettingsGUI;
     appContext->setAppSettingsGUI(NULL);
 
@@ -697,6 +700,11 @@ int main(int argc, char **argv)
 
     delete globalSettings;
     appContext->setGlobalSettings(NULL);
+
+    if (deleteSettingsFile){
+        QFile ff;
+        ff.remove(iniFile);
+    }
 
     return rc;   
 }

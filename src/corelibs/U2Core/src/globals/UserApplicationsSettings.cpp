@@ -48,6 +48,7 @@ namespace U2 {
 #define TEMPORARY_DIR QString("temporary_dir")
 #define COLLECTING_STATISTICS QString("collecting_statistics")
 #define WINDOW_LAYOUT  QString("tabbed_windows")
+#define RESET_SETTINGS_FLAG QString("reset_settings")
 
 //TODO: create a special ENV header to keep all env-vars ugene depends
 #define UGENE_SKIP_TMP_DIR_CLEANUP "UGENE_SKIP_TMP_DIR_CLEANUP"
@@ -97,6 +98,14 @@ bool UserAppsSettings::openLastProjectAtStartup() const {
 
 void UserAppsSettings::setOpenLastProjectAtStartup(bool v) {
     return AppContext::getSettings()->setValue(SETTINGS_ROOT + LAST_PROJECT_FLAG, v);
+}
+
+bool UserAppsSettings::resetSettings() const {
+    return AppContext::getSettings()->getValue(SETTINGS_ROOT + RESET_SETTINGS_FLAG, false).toBool();
+}
+
+void UserAppsSettings::setResetSettings(bool b){
+    AppContext::getSettings()->setValue(SETTINGS_ROOT + RESET_SETTINGS_FLAG, b);
 }
 
 QString UserAppsSettings::getVisualStyle() const {
