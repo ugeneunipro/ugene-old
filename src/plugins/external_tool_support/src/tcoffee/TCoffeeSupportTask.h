@@ -35,16 +35,6 @@
 
 namespace U2 {
 
-/*Options for MAFFT
-+ --op # :         Gap opening penalty, default: 1.53
-+ --ep # :         Offset (works like gap extension penalty), default: 0.0
-+ --maxiterate # : Maximum number of iterative refinement, default: 0
-? --clustalout :   Output: clustal format, default: fasta // With this option bad output clustal file is generated.(dkandrov)
-? --reorder :      Outorder: aligned, default: input order
-? --quiet :        Do not report progress
-? --thread # :     Number of threads. (# must be <= number of physical cores - 1)
-
-*/
 class TCoffeeLogParser;
 class TCoffeeSupportTaskSettings {
 public:

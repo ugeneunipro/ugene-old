@@ -186,7 +186,7 @@ Task::ReportResult TCoffeeSupportTask::report(){
 ////////////////////////////////////////
 //TCoffeeWithExtFileSpecifySupportTask
 TCoffeeWithExtFileSpecifySupportTask::TCoffeeWithExtFileSpecifySupportTask(const TCoffeeSupportTaskSettings& _settings) :
-        Task("Run MAFFT alignment task", TaskFlags_NR_FOSCOE),
+        Task("Run T-Coffee alignment task", TaskFlags_NR_FOSCOE),
         settings(_settings)
 {
     GCOUNTER( cvar, tvar, "TCoffeeSupportTask" );
@@ -279,7 +279,7 @@ void TCoffeeLogParser::parseErrOutput(const QString& partOfLog){
     lastErrLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
         if(buf.contains("WARNING")){
-            algoLog.info("MAFFT: " + buf);
+            algoLog.info("T-Coffee: " + buf);
         }else{
             algoLog.trace(buf);
         }
