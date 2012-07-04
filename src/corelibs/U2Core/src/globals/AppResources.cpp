@@ -48,7 +48,13 @@ AppResourcePool::AppResourcePool() {
     threadResource = new AppResource(RESOURCE_THREAD, maxThreadCount, tr("Threads"));
     registerResource(threadResource);
 
-    int maxMem = s->getValue(SETTINGS_ROOT + "maxMem", 3 * 512).toInt(); //TODO: increase default value for 64bit ?
+    qint64 maxMemValMb = 0;
+#if defined(Q_OS_MAC64) || defined(Q_OS_WIN64) || defined(UGENE_X86_64) || defined( __amd64__ ) || defined( __AMD64__ ) || defined( __x86_64__ ) || defined( _M_X64 )
+    maxMemValMb = 8*1024; //8 Gb
+#else
+    maxMemValMb = 3*512; //1.5 Gb
+#endif
+    int maxMem = s->getValue(SETTINGS_ROOT + "maxMem", maxMemValMb).toInt(); 
     memResource = new AppResource(RESOURCE_MEMORY, maxMem, tr("Memory"), tr("Mb"));
     registerResource(memResource);
 
