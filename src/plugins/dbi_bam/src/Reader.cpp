@@ -37,6 +37,42 @@ int BamReader::AlignmentReader::getId() {
     return id;
 }
 
+bool BamReader::AlignmentReader::readNumber(char type, QVariant &value, int &bytesRead) {
+    switch(type) {
+        case 'c':
+            value = (int)r->readInt8();
+            bytesRead += 1;
+            break;
+        case 'C':
+            value = (int)r->readUint8();
+            bytesRead += 1;
+            break;
+        case 's':
+            value = (int)r->readInt16();
+            bytesRead += 2;
+            break;
+        case 'S':
+            value = (int)r->readUint16();
+            bytesRead += 2;
+            break;
+        case 'i':
+            value = (int)r->readInt32();
+            bytesRead += 4;
+            break;
+        case 'I':
+            value = (uint)r->readUint32();
+            bytesRead += 4;
+            break;
+        case 'f':
+            value = r->readFloat32();
+            bytesRead += 4;
+            break;
+        default:
+            return false;
+    }
+    return true;
+}
+
 Alignment BamReader::AlignmentReader::read() {
     Alignment alignment;
     alignment.setReferenceId(id);
@@ -267,82 +303,61 @@ Alignment BamReader::AlignmentReader::read() {
             char type = r->readChar();
             bytesRead += 3;
             QVariant value;
+            bool isNumber = this->readNumber(type, value, bytesRead);
+            if (!isNumber) {
             switch(type) {
-            case 'A':
-                value = r->readChar();
-                bytesRead += 1;
-                break;
-            case 'c':
-                value = (int)r->readInt8();
-                bytesRead += 1;
-                break;
-            case 'C':
-                value = (int)r->readUint8();
-                bytesRead += 1;
-                break;
-            case 's':
-                value = (int)r->readInt16();
-                bytesRead += 2;
-                break;
-            case 'S':
-                value = (int)r->readUint16();
-                bytesRead += 2;
-                break;
-            case 'i':
-                value = (int)r->readInt32();
-                bytesRead += 4;
-                break;
-            case 'I':
-                value = (int)r->readUint32();
-                bytesRead += 4;
-                break;
-            case 'f':
-                value = r->readFloat32();
-                bytesRead += 4;
-                break;
-            case 'Z':
-                {
-                    QByteArray string = r->readString();
-                    value = string;
-                    bytesRead += string.size() + 1;
+                case 'A':
+                    value = r->readChar();
+                    bytesRead += 1;
                     break;
-                }
-            case 'H':
-                {
-                    QByteArray hexString = r->readString();
-                    if(0 != (hexString.size()%2)) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("Odd hex string length: %1").arg(hexString.size()));
+                case 'Z':
+                    {
+                        QByteArray string = r->readString();
+                        value = string;
+                        bytesRead += string.size() + 1;
+                        break;
                     }
-                    QByteArray data(hexString.size()/2, 0);
-                    for(int index = 0;index < hexString.size();index++) {
-                        int digitValue = QChar(hexString[index]).digitValue();
-                        if((-1 == digitValue) || (digitValue > 0xf)) {
-                            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid hex string digit: %1").arg(hexString[index]));
+                case 'H':
+                    {
+                        QByteArray hexString = r->readString();
+                        if(0 != (hexString.size()%2)) {
+                            throw InvalidFormatException(BAMDbiPlugin::tr("Odd hex string length: %1").arg(hexString.size()));
                         }
-                        if(0 == (index%2)) {
-                            data[index/2] = data[index/2] | (digitValue << 4);
-                        } else {
-                            data[index/2] = data[index/2] | digitValue;
+                        QByteArray data(hexString.size()/2, 0);
+                        for(int index = 0;index < hexString.size();index++) {
+                            int digitValue = QChar(hexString[index]).digitValue();
+                            if((-1 == digitValue) || (digitValue > 0xf)) {
+                                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid hex string digit: %1").arg(hexString[index]));
+                            }
+                            if(0 == (index%2)) {
+                                data[index/2] = data[index/2] | (digitValue << 4);
+                            } else {
+                                data[index/2] = data[index/2] | digitValue;
+                            }
                         }
+                        value = data;
+                        bytesRead += hexString.size() + 1;
+                        break;
                     }
-                    value = data;
-                    bytesRead += hexString.size() + 1;
-                    break;
-                }
-            case 'B':
-                {
-                    QByteArray intOrArray = r->readString();
-                    if(intOrArray.size() <= 1) {
-                        throw InvalidFormatException(BAMDbiPlugin::tr("Too short integer or numeric array string: %1").arg(intOrArray.size()));
+                case 'B':
+                    {
+                        char arrayType = r->readChar();
+                        int arraySize = r->readInt32();
+                        bytesRead += 5;
+                        QVariantList values;
+                        for (int i=0; i<arraySize; i++) {
+                            QVariant number;
+                            bool isNumber = this->readNumber(arrayType, number, bytesRead);
+                            assert(isNumber);
+                            Q_UNUSED(isNumber);
+                            values << number;
+                        }
+                        value = values;
+                        break;
                     }
-                    // TODO: parse the @intOrArray string into the type and the numeric values array.
-                    // Currently these values are not used (and not stored) anywhere, so they are not parsed.
-                    value = intOrArray;
-                    bytesRead += intOrArray.size() + 1;
-                    break;
+                default:
+                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field value type: %1").arg(type));
                 }
-            default:
-                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field value type: %1").arg(type));
             }
             optionalFields.insert(tag, value);
         }

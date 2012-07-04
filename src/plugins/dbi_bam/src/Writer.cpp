@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2SafePoints.h>
+
 #include "BAMDbiPlugin.h"
 #include "Writer.h"
 
@@ -148,6 +150,55 @@ void Writer::writeHeader(const Header &header) {
         writeInt32(reference.getName().size() + 1);
         writeString(reference.getName());
         writeInt32(reference.getLength());
+    }
+}
+
+static char getIntType(int intValue) {
+    if((intValue >= 0) && (intValue <= 0xff)) {
+        return 'C';
+    } else if((intValue >= -0x80) && (intValue <= 0x7f)) {
+        return 'c';
+    } else if((intValue >= 0) && (intValue <= 0xffff)) {
+        return 'S';
+    } else if((intValue >= -0x8000) && (intValue <= 0x7fff)) {
+        return 's';
+    } else {
+        return 'i';
+    }
+
+    return -1;
+}
+
+static char getArrayType(const QVariantList &values) {
+    CHECK(values.size() > 0, -1);
+    int maxInt = INT_MIN;
+    bool hasInt = false;
+    bool hasUInt = false;
+    foreach (const QVariant &number, values) {
+        switch(number.type()) {
+        case QVariant::Int:
+            {
+                hasInt = true;
+                int intValue = number.toInt();
+                if (maxInt < intValue) {
+                    maxInt = intValue;
+                }
+                break;
+            }
+        case QVariant::UInt:
+            hasUInt = true;
+            break;
+        case QVariant::Double:
+            return 'f';
+        }
+    }
+
+    if (hasInt && !hasUInt) {
+        return getIntType(maxInt);
+    } else if (!hasInt && hasUInt) {
+        return 'I';
+    } else {
+        return -1;
     }
 }
 
@@ -343,11 +394,6 @@ void Writer::writeRead(const Alignment &alignment) {
         assert(2 == tag.size());
         writeBytes(tag);
         QVariant value = alignment.getOptionalFields().value(tag);
-        if ("B" == tag) {
-            writeChar('B');
-            writeString(value.toByteArray());
-            continue;
-        }
         switch(value.type()) {
         case QVariant::Int:
             {
@@ -386,6 +432,37 @@ void Writer::writeRead(const Alignment &alignment) {
             writeChar('f');
             writeFloat32((float)value.toDouble());
             break;
+        case QVariant::List:
+            {
+                QVariantList values = value.toList();
+                if (0 == values.size()) {
+                    break;
+                }
+                char arrayType = getArrayType(values);
+                if (-1 == arrayType) {
+                    break;
+                }
+                writeChar('B');
+                writeInt32(values.size());
+                foreach (const QVariant &number, values) {
+                    switch (arrayType) {
+                    case 'c':
+                        writeInt8(number.toInt());
+                    case 'C':
+                        writeUint8(number.toInt());
+                    case 's':
+                        writeInt16(number.toInt());
+                    case 'S':
+                        writeUint16(number.toInt());
+                    case 'i':
+                        writeInt32(number.toInt());
+                    case 'I':
+                        writeUint32(number.toInt());
+                    case 'f':
+                        writeFloat32((float)number.toDouble());
+                    }
+                }
+            }
         default:
             assert(false);
         }

@@ -57,6 +57,11 @@ public:
         int id;
         int blockSize;
         BamReader* r;
+
+        /**
+         * Returns true if a number was read
+         */
+        bool readNumber(char type, QVariant &value, int &bytesRead);
     };
 
     BamReader(IOAdapter &ioAdapter);
