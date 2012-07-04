@@ -22,6 +22,8 @@
 #ifndef _U2_CUFFLINKS_WORKER_H
 #define _U2_CUFFLINKS_WORKER_H
 
+#include "CufflinksSettings.h"
+
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 
@@ -53,12 +55,15 @@ public:
     virtual Task* tick();
     virtual void cleanup();
 
-    private slots:
-        void sl_taskFinished();
+private slots:
+    void sl_cufflinksTaskFinished();
 
 protected:
-    CommunicationChannel* input;
-    CommunicationChannel* output;
+    IntegralBus* input;
+    IntegralBus* output;
+    CufflinksSettings settings;
+
+    bool settingsAreCorrect;
 };
 
 
@@ -69,6 +74,17 @@ public:
     static void init();
     CufflinksWorkerFactory() : DomainFactory(ACTOR_ID) {}
     virtual Worker* createWorker(Actor* actor) { return new CufflinksWorker(actor); }
+
+    static const QString REF_ANNOTATION;
+    static const QString RABT_ANNOTATION;
+    static const QString LIBRARY_TYPE;
+    static const QString MASK_FILE;
+    static const QString MULTI_READ_CORRECT;
+    static const QString MIN_ISOFORM_FRACTION;
+    static const QString FRAG_BIAS_CORRECT;
+    static const QString PRE_MRNA_FRACTION;
+    static const QString EXT_TOOL_PATH;
+    static const QString TMP_DIR_PATH;
 };
 
 } // namespace LocalWorkflow

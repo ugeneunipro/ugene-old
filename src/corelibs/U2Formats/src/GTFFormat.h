@@ -22,6 +22,7 @@
 #ifndef _U2_GTF_FORMAT_H_
 #define _U2_GTF_FORMAT_H_
 
+#include <U2Core/AnnotationData.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2Region.h>
@@ -130,13 +131,22 @@ public:
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
+    /** Gets annotation data from a GTF file, but doesn't create an annotation table, etc. */
+    static QList<SharedAnnotationData> getAnnotData(IOAdapter* io, U2OpStatus& os);
+
 protected:
-    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, U2OpStatus& os);
 
 private:
     GTFLineData parseAndValidateLine(QString line, GTFLineValidateFlags& status) const;
 
-    void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os);
+    /**
+    * A common method for parsing and validating an input GTF file.
+    * It is used during loading the file or just getting the annotations data from it.
+    */
+    QList<SharedAnnotationData> parseDocument(IOAdapter* io, U2OpStatus& os);
+
+    void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os);
 
     static const QString FORMAT_NAME;
 
@@ -157,6 +167,8 @@ private:
      * used in the Cufflinks output. Other values are from the GTF spec.
      */
     QList<QString> GTF_FEATURE_FIELD_VALUES;
+
+    QString sequenceName;
 };
 
 

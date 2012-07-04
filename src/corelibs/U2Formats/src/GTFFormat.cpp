@@ -35,6 +35,8 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
 
+#include <memory>
+
 
 namespace U2 {
 
@@ -108,13 +110,15 @@ GTFFormat::GTFFormat(QObject* parent)
 }
 
 
-Document* GTFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os)
+Document* GTFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, U2OpStatus& os)
 {
+    Q_UNUSED(dbiRef);
+    Q_UNUSED(hints);
+
     CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
     QList<GObject*> objects;
 
-    load(io, dbiRef, objects, fs, os);
-
+    load(io, objects, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects);
@@ -135,10 +139,17 @@ int readGTFLine(QString &buffer, IOAdapter* io, gauto_array<char>& charbuff) {
 }
 
 
-void GTFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os)
+QList<SharedAnnotationData> GTFFormat::getAnnotData(IOAdapter* io, U2OpStatus& os)
 {
-    QSet<AnnotationTableObject*> annotTablesSet;
-    QMap<QString, U2SequenceObject*> sequenceMap;
+    std::auto_ptr<QObject> parent(new QObject());
+    GTFFormat gtfFormat(parent.get());
+    return gtfFormat.parseDocument(io, os);
+}
+
+
+QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& os)
+{
+    QList<SharedAnnotationData> result;
 
     int length;
     gauto_array<char> buff = new char[READ_BUFF_SIZE];
@@ -156,17 +167,17 @@ void GTFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         // Check that an annotation can be created
         if (validationStatus.isIncorrectNumberOfFields()) {
             os.setError(tr("GTF parsing error: incorrect number of fields at line %1!").arg(lineNumber));
-            return;
+            return result;
         }
 
         if (validationStatus.isEmptyField()) {
             os.setError(tr("GTF parsing error: a field at line %1 is empty!").arg(lineNumber));
-            return;
+            return result;
         }
 
         if (validationStatus.isIncorrectCoordinates()) {
             os.setError(tr("GTF parsing error: incorrect coordinates at line %1!").arg(lineNumber));
-            return;
+            return result;
         }
 
         // If file is invalid, but can be parsed an error is written to the log,
@@ -175,6 +186,18 @@ void GTFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
             fileIsValid = false;
         }
 
+        // Verify the sequence name (error doesn't occur, just warning)
+        if (!sequenceName.isEmpty()) {
+            if (gtfLineData.seqName != sequenceName) {
+                coreLog.trace(tr("GTF parsing warning: different sequence names were detected"
+                    " in an input GTF file. Sequence name '%1' is used.").arg(sequenceName));
+            }
+        }
+        else {
+            sequenceName = gtfLineData.seqName;
+        }
+
+        // Verify the feature field
         if (validationStatus.isIncorrectFeatureField()) {
             coreLog.trace(tr("GTF parsing error: unexpected value of the \"feature\""
                 " value \"%1\" at line %2!").arg(gtfLineData.feature).arg(lineNumber));
@@ -182,20 +205,15 @@ void GTFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
 
         // Create the annotation
         QString annotName = gtfLineData.feature;
-        QString groupName = annotName; // Assume that the group name is the same as the annotation name
-        if (!AnnotationGroup::isValidGroupName(groupName, false)) {
-            groupName = "Group"; // Or just a value if the name of the feature is not appropriate
-        }
 
         SharedAnnotationData annotData(new AnnotationData());
-        Annotation* annot = new Annotation(annotData);
-        annot->addLocationRegion(gtfLineData.region);
-        annot->setAnnotationName(annotName);
+        annotData->name = annotName;
+        annotData->location->regions << gtfLineData.region;
 
 
         // Add qualifiers
         if (NO_VALUE_STR != gtfLineData.source) {
-            annot->addQualifier(SOURCE_QUALIFIER_NAME, gtfLineData.source);
+            annotData->qualifiers.push_back(U2Qualifier(SOURCE_QUALIFIER_NAME, gtfLineData.source));
         }
 
         if (validationStatus.isIncorrectScore()) {
@@ -204,7 +222,7 @@ void GTFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                 " value \"%1\" at line %2!").arg(gtfLineData.score).arg(lineNumber));
         }
         else if (NO_VALUE_STR != gtfLineData.score) {
-            annot->addQualifier(SCORE_QUALIFIER_NAME, gtfLineData.score);
+            annotData->qualifiers.push_back(U2Qualifier(SCORE_QUALIFIER_NAME, gtfLineData.score));
         }
 
 
@@ -213,7 +231,7 @@ void GTFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                 " value \"%1\" at line %2!").arg(gtfLineData.frame).arg(lineNumber));
         }
         else if (NO_VALUE_STR != gtfLineData.frame) {
-            annot->addQualifier(FRAME_QUALIFIER_NAME, gtfLineData.frame);
+            annotData->qualifiers.push_back(U2Qualifier(FRAME_QUALIFIER_NAME, gtfLineData.frame));
         }
 
 
@@ -225,7 +243,7 @@ void GTFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
 
             // If all qualifier are correct, add the qualifiers
             if (!validationStatus.isIncorrectFormatOfAttributes()) {
-                annot->addQualifier(qualifier);
+                annotData->qualifiers.push_back(qualifier);
             }
         }
 
@@ -254,16 +272,37 @@ void GTFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                 " value \"%1\" at line %2!").arg(gtfLineData.strand).arg(lineNumber));
         }
         else if ("+" == gtfLineData.strand) {
-            annot->addQualifier(STRAND_QUALIFIER_NAME, L10N::directStrandStr());
+            annotData->qualifiers.push_back(U2Qualifier(STRAND_QUALIFIER_NAME, L10N::directStrandStr()));
         }
         else if ("-" == gtfLineData.strand) {
-            annot->setStrand(U2Strand::Complementary);
-            annot->addQualifier(STRAND_QUALIFIER_NAME, L10N::complementStrandStr());
+            annotData->setStrand(U2Strand::Complementary);
+            annotData->qualifiers.push_back(U2Qualifier(STRAND_QUALIFIER_NAME, L10N::complementStrandStr()));
         }
 
+        // Append the result
+        result.append(annotData);
 
+        // Move to the next line
+        lineNumber++;
+    }
+
+    if (false == fileIsValid) {
+        coreLog.error("GTF parsing error: one or more errors occurred while parsing the input file,"
+            " see TRACE log for details!");
+    }
+
+    return result;
+}
+
+
+void GTFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
+{
+    QList<SharedAnnotationData> annotations = parseDocument(io, os);
+
+    foreach (SharedAnnotationData annotData, annotations) {
         // Get or create the annotations table
-        QString annotTableName = gtfLineData.seqName + FEATURES_TAG;
+
+        QString annotTableName = sequenceName + FEATURES_TAG;
         AnnotationTableObject* annotTable = NULL;
         foreach (GObject* object, objects) {
             if (object->getGObjectName() == annotTableName) {
@@ -273,19 +312,14 @@ void GTFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         if (!annotTable) {
             annotTable = new AnnotationTableObject(annotTableName);
             objects.append(annotTable);
-            annotTablesSet.insert(annotTable);
         }
 
-        annotTable->addAnnotation(annot, groupName);
+        QString groupName = annotData->name; // Assume that the group name is the same as the annotation name
+        if (!AnnotationGroup::isValidGroupName(groupName, false)) {
+            groupName = "Group"; // Or just a value if the name of the feature is not appropriate
+        }
 
-
-        // Move to the next line
-        lineNumber++;
-    }
-
-    if (false == fileIsValid) {
-        coreLog.error("GTF parsing error: one or more errors occurred while parsing the input file,"
-            " see TRACE log for details!");
+        annotTable->addAnnotation(new Annotation(annotData), groupName);
     }
 }
 
@@ -307,8 +341,6 @@ FormatCheckResult GTFFormat::checkRawData(const QByteArray& rawData, const GUrl&
     if (size < MIN_POSSIBLE_LINE_SIZE) {
         return FormatDetection_NotMatched;
     }
-
-    FormatDetectionScore result = FormatDetection_NotMatched;
 
     QString dataStr(rawData);
     QStringList fileLines = dataStr.split("\n");
@@ -475,10 +507,10 @@ GTFLineData GTFFormat::parseAndValidateLine(QString line, GTFLineValidateFlags& 
 
     // Score: can be either an integer, a float number, or a dot (".")
     bool scoreIsInt;
-    int scoreToInt = parsedData.score.toInt(&scoreIsInt);
+    parsedData.score.toInt(&scoreIsInt);
     if (!scoreIsInt) {
         bool scoreIsFloat;
-        float scoreToFloat = parsedData.score.toFloat(&scoreIsFloat);
+        parsedData.score.toFloat(&scoreIsFloat);
         if (!scoreIsFloat) {
             if (NO_VALUE_STR != parsedData.score) {
                 status.setFlagIncorrectScore();
@@ -543,8 +575,13 @@ void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
             // Joined annotations are currently stored as other annotations (we do not store that they are joined)
             foreach (const U2Region region, annotRegions) {
                 QString annotTableName = annotTable->getGObjectName();
-                lineFields[GTF_SEQ_NAME_INDEX] =
-                    annotTableName.left(annotTableName.size() - QString(FEATURES_TAG).size());
+                if (annotTableName.endsWith(FEATURES_TAG)) {
+                    lineFields[GTF_SEQ_NAME_INDEX] = 
+                        annotTableName.left(annotTableName.size() - QString(FEATURES_TAG).size());
+                }
+                else {
+                    lineFields[GTF_SEQ_NAME_INDEX] = annotTableName;
+                }
 
                 lineFields[GTF_FEATURE_INDEX] = annotName;
 
@@ -554,7 +591,6 @@ void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                 QString geneIdAttributeStr;
                 QString transcriptIdAttributeStr;
                 QString otherAttributesStr;
-                bool firstAttribute = true;
                 foreach (U2Qualifier qualifier, annotQualifiers) {
                     if (SOURCE_QUALIFIER_NAME == qualifier.name) {
                         lineFields[GTF_SOURCE_INDEX] = qualifier.value;

@@ -19,31 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CUFFLINKS_SUPPORT_H
-#define _U2_CUFFLINKS_SUPPORT_H
-
-#include <U2Core/ExternalToolRegistry.h>
-
-#define CUFFCOMPARE_TOOL_NAME   "Cuffcompare"
-#define CUFFDIFF_TOOL_NAME      "Cuffdiff"
-#define CUFFLINKS_TOOL_NAME     "Cufflinks"
-#define CUFFMERGE_TOOL_NAME     "Cuffmerge"
-
-#define CUFFLINKS_TMP_DIR       "cufflinks"
+#include "CufflinksTests.h"
 
 
 namespace U2 {
 
-class CufflinksSupport : public ExternalTool
+const QString GTest_Cufflinks::INPUT_FILE = "in";
+
+
+void GTest_Cufflinks::init(XMLTestFormat* /* tf */, const QDomElement& el)
 {
-    Q_OBJECT
+    bool ok = false;
 
-public:
-    CufflinksSupport(const QString& name, const QString& path = "");
-};
+    if (!el.attribute(INPUT_FILE).isEmpty()) {
+        //settings.
+    }
+
+}
 
 
+QList<XMLTestFactory*> CufflinksTests::createTestFactories()
+{
+    QList<XMLTestFactory*> res;
+    res.append(GTest_Cufflinks::createFactory());
+    return res;
+}
 
 } // namespace
-
-#endif

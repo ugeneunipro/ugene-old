@@ -19,29 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CUFFLINKS_SUPPORT_H
-#define _U2_CUFFLINKS_SUPPORT_H
+#ifndef _U2_CUFFLINKS_SETTINGS_H_
+#define _U2_CUFFLINKS_SETTINGS_H_
 
-#include <U2Core/ExternalToolRegistry.h>
+#include "../RnaSeqCommon.h"
 
-#define CUFFCOMPARE_TOOL_NAME   "Cuffcompare"
-#define CUFFDIFF_TOOL_NAME      "Cuffdiff"
-#define CUFFLINKS_TOOL_NAME     "Cufflinks"
-#define CUFFMERGE_TOOL_NAME     "Cuffmerge"
+#include <U2Core/AnnotationData.h>
 
-#define CUFFLINKS_TMP_DIR       "cufflinks"
+#include <U2Lang/DbiDataHandler.h>
+#include <U2Lang/DbiDataStorage.h>
 
 
 namespace U2 {
 
-class CufflinksSupport : public ExternalTool
+
+class CufflinksSettings
 {
-    Q_OBJECT
-
 public:
-    CufflinksSupport(const QString& name, const QString& path = "");
-};
+    CufflinksSettings();
 
+    // Workflow element parameters
+    QString             referenceAnnotation;
+    QString             rabtAnnotation;
+    RnaSeqLibraryType   libraryType;
+    QString             maskFile;
+    bool                multiReadCorrect;
+    double              minIsoformFraction;
+    QString             fragBiasCorrect;
+    double              preMrnaFraction;
+
+    // Input assembly
+    Workflow::DbiDataStorage*           storage;
+    Workflow::SharedDbiDataHandler      assemblyId;
+};
 
 
 } // namespace

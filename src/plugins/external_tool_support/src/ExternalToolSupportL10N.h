@@ -19,30 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CUFFLINKS_SUPPORT_H
-#define _U2_CUFFLINKS_SUPPORT_H
+#ifndef _U2_EXTERNAL_TOOL_SUPPORT_L10N_H_
+#define _U2_EXTERNAL_TOOL_SUPPORT_L10N_H_
 
-#include <U2Core/ExternalToolRegistry.h>
+#include "ExternalToolSupportPlugin.h"
 
-#define CUFFCOMPARE_TOOL_NAME   "Cuffcompare"
-#define CUFFDIFF_TOOL_NAME      "Cuffdiff"
-#define CUFFLINKS_TOOL_NAME     "Cufflinks"
-#define CUFFMERGE_TOOL_NAME     "Cuffmerge"
-
-#define CUFFLINKS_TMP_DIR       "cufflinks"
+#include <QString>
 
 
 namespace U2 {
 
-class CufflinksSupport : public ExternalTool
+
+class ExternalToolSupportL10N : public QObject
 {
     Q_OBJECT
-
 public:
-    CufflinksSupport(const QString& name, const QString& path = "");
+    static QString errorRemovingTmpSubdir(QString subdirName) {
+        return ExternalToolSupportPlugin::tr("The subdirectory for temporary files '%1' already exists."
+                " Can not remove this directory!").arg(subdirName);
+    }
+
+    static QString errorCreatingTmpSubrir(QString subdirName) {
+        return ExternalToolSupportPlugin::tr("Can not create a subdirectory for temporary files '%1'!").arg(subdirName);
+    }
 };
-
-
 
 } // namespace
 

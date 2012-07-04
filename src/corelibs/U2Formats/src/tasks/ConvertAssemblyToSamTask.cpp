@@ -45,18 +45,32 @@ namespace U2 {
 
 ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(GUrl db, GUrl sam)
 : Task("ConvertAssemblyToSamTask", (TaskFlag)(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)),
-dbFileUrl(db), samFileUrl(sam), handle(NULL)
+    dbFileUrl(db),
+    samFileUrl(sam),
+    handle(NULL)
 {
 }
 
 ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(const DbiConnection *h, GUrl sam)
 : Task("ConvertAssemblyToSamTask", (TaskFlag)(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)),
-samFileUrl(sam), handle(h)
+    samFileUrl(sam),
+    handle(h),
+    dbFileUrl(NULL)
 {
 }
 
+ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(const U2EntityRef& entityRef, GUrl sam)
+: Task("ConvertAssemblyToSamTask", (TaskFlag)(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)),
+    samFileUrl(sam),
+    handle(NULL),
+    dbFileUrl(NULL),
+    assemblyEntityRef(entityRef)
+{
+}
+
+
 void ConvertAssemblyToSamTask::run() {
-    //init sam file
+    // Init sam file
     SAMFormat samFormat;
     
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
@@ -64,21 +78,46 @@ void ConvertAssemblyToSamTask::run() {
     bool res = io->open(samFileUrl, IOAdapterMode_Write);
     SAFE_POINT(res == true, QString("Failed to open SAM file for write: %1").arg(samFileUrl.getURLString()),);
     
-    //init assembly objects
+    // Init assembly objects
     U2OpStatusImpl status;
     QSharedPointer<DbiConnection> dbiHandle;
+
     if (NULL == handle) {
-        dbiHandle = QSharedPointer<DbiConnection>(new DbiConnection(U2DbiRef(SQLITE_DBI_ID, dbFileUrl.getURLString()), false, status));
+        if (assemblyEntityRef.isValid()) {
+            dbiHandle = QSharedPointer<DbiConnection>(
+                new DbiConnection(assemblyEntityRef.dbiRef,
+                false,
+                status));
+        }
+        else {
+            dbiHandle = QSharedPointer<DbiConnection>(
+                new DbiConnection(U2DbiRef(SQLITE_DBI_ID, dbFileUrl.getURLString()),
+                false,
+                status));
+        }
         handle = dbiHandle.data();
     }
+
     U2ObjectDbi *odbi = handle->dbi->getObjectDbi();
+    QVector<QByteArray> names;
+    QVector<int> lengths;
+
     U2AssemblyDbi *assDbi = handle->dbi->getAssemblyDbi();
-    QList<U2DataId> objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, status);
     U2Region wholeAssembly;
     wholeAssembly.startPos = 0;
 
-    QVector<QByteArray> names;
-    QVector<int> lengths;
+    QList<U2DataId> objectIds;
+
+    // If the entityRef has been passed to the class constructor,
+    // then leave only one object with the specified ID
+    if (assemblyEntityRef.isValid()) {
+        objectIds.append(assemblyEntityRef.entityId);
+    }
+    // Otherwise convert all objects
+    else {
+        objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, status);
+    }
+
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle->dbi->getEntityTypeById(id);
         if (U2Type::Assembly == objectType) {
@@ -89,7 +128,7 @@ void ConvertAssemblyToSamTask::run() {
         }
     }
 
-    //writing to a sam file for an every object
+    // Writing to a sam file for an every object
     samFormat.storeHeader(io.get(), names, lengths, true);
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle->dbi->getEntityTypeById(id);

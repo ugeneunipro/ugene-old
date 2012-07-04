@@ -19,9 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include "CufflinksSupportTask.h"
 #include "CufflinksWorker.h"
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/L10n.h>
+#include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -29,6 +33,8 @@
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
 
@@ -41,22 +47,45 @@ namespace LocalWorkflow {
  *****************************/
 const QString CufflinksWorkerFactory::ACTOR_ID("cufflinks");
 
-const QString REF_ANNOTATION("ref-annotation");
-const QString RABT_ANNOTATION("rabt-annotation");
-const QString LIBRARY_TYPE("library-type");
-const QString MASK_FILE("mask-file");
-const QString MULTI_READ_CORRECT("multi-read-correct");
-const QString MIN_ISOFORM_FRACTION("min-isoform-fraction");
-const QString FRAG_BIAS_CORRECT("frag-bias-correct");
-const QString PRE_MRNA_FRACTION("pre-mrna-fraction");
-const QString EXT_TOOL_PATH("path");
-const QString TMP_DIR_PATH("tmp-dir");
+const QString CufflinksWorkerFactory::REF_ANNOTATION("ref-annotation");
+const QString CufflinksWorkerFactory::RABT_ANNOTATION("rabt-annotation");
+const QString CufflinksWorkerFactory::LIBRARY_TYPE("library-type");
+const QString CufflinksWorkerFactory::MASK_FILE("mask-file");
+const QString CufflinksWorkerFactory::MULTI_READ_CORRECT("multi-read-correct");
+const QString CufflinksWorkerFactory::MIN_ISOFORM_FRACTION("min-isoform-fraction");
+const QString CufflinksWorkerFactory::FRAG_BIAS_CORRECT("frag-bias-correct");
+const QString CufflinksWorkerFactory::PRE_MRNA_FRACTION("pre-mrna-fraction");
+const QString CufflinksWorkerFactory::EXT_TOOL_PATH("path");
+const QString CufflinksWorkerFactory::TMP_DIR_PATH("tmp-dir");
 
 
 void CufflinksWorkerFactory::init()
 {
     QList<PortDescriptor*> portDescriptors;
     QList<Attribute*> attributes;
+
+    // Define ports and slots
+    Descriptor inputPortDescriptor(BasePorts::IN_ASSEMBLY_PORT_ID(),
+        CufflinksWorker::tr("Input reads"),
+        CufflinksWorker::tr("Input RNA-Seq read alignments."));
+
+    Descriptor outputPortDescriptor(BasePorts::OUT_ANNOTATIONS_PORT_ID(),
+        CufflinksWorker::tr("Output annotations"),
+        CufflinksWorker::tr("Assembled isoforms, estimated isoform-level expression values,"
+        " and estimated gene-level expression values, produced by Cufflinks."));
+
+    QMap<Descriptor, DataTypePtr> inputMap;
+    inputMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ASSEMBLY_TYPE();
+    portDescriptors << new PortDescriptor(inputPortDescriptor,
+        DataTypePtr(new MapDataType("cufflinks.in.assembly", inputMap)),
+        true /* input */);
+
+    QMap<Descriptor, DataTypePtr> outputMap;
+    outputMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
+    portDescriptors << new PortDescriptor(outputPortDescriptor,
+        DataTypePtr(new MapDataType("cufflinks.out.annotations", outputMap)),
+        false /* input */,
+        true /* multi */);
 
     // Description of the element
     Descriptor cufflinksDescriptor(ACTOR_ID,
@@ -88,7 +117,7 @@ void CufflinksWorkerFactory::init()
         CufflinksWorker::tr("Specifies RNA-Seq protocol"));
 
     Descriptor maskFile(MASK_FILE,
-        CufflinksWorker::tr("Mask files"),
+        CufflinksWorker::tr("Mask file"),
         CufflinksWorker::tr("Ignore all reads that could have come from transcripts"
         " in this file. It is recommended to include any annotated rRNA, mitochondrial"
         " transcripts other abundant transcripts you wish to ignore in your analysis"
@@ -226,17 +255,84 @@ CufflinksWorker::CufflinksWorker(Actor* actor)
 
 void CufflinksWorker::init()
 {
+    input = ports.value(BasePorts::IN_ASSEMBLY_PORT_ID());
+    output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
+
+    // Init the parameters
+    settingsAreCorrect = true;
+    QString extToolPath = actor->getParameter(CufflinksWorkerFactory::EXT_TOOL_PATH)->getAttributeValue<QString>(context);
+    if (QString::compare(extToolPath, "default", Qt::CaseInsensitive) != 0) {
+        AppContext::getExternalToolRegistry()->getByName(CUFFLINKS_TOOL_NAME)->setPath(extToolPath);
+    }
+
+    QString tmpDirPath = actor->getParameter(CufflinksWorkerFactory::TMP_DIR_PATH)->getAttributeValue<QString>(context);
+    if (QString::compare(tmpDirPath, "default", Qt::CaseInsensitive) != 0) {
+        AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(tmpDirPath);
+    }
+
+    settings.referenceAnnotation = actor->getParameter(CufflinksWorkerFactory::REF_ANNOTATION)->getAttributeValue<QString>(context);
+    settings.rabtAnnotation = actor->getParameter(CufflinksWorkerFactory::RABT_ANNOTATION)->getAttributeValue<QString>(context);
+
+    int libType = actor->getParameter(CufflinksWorkerFactory::LIBRARY_TYPE)->getAttributeValue<int>(context);
+    if (!settings.libraryType.setLibraryType(libType)) {
+        algoLog.error(tr("Incorrect value of the library type parameter for Cufflinks!"));
+        settingsAreCorrect = false;
+    }
+
+    settings.maskFile = actor->getParameter(CufflinksWorkerFactory::MASK_FILE)->getAttributeValue<QString>(context);
+    settings.multiReadCorrect = actor->getParameter(CufflinksWorkerFactory::MULTI_READ_CORRECT)->getAttributeValue<bool>(context);
+    settings.minIsoformFraction = actor->getParameter(CufflinksWorkerFactory::MIN_ISOFORM_FRACTION)->getAttributeValue<double>(context);
+    settings.fragBiasCorrect = actor->getParameter(CufflinksWorkerFactory::FRAG_BIAS_CORRECT)->getAttributeValue<QString>(context);
+    settings.preMrnaFraction = actor->getParameter(CufflinksWorkerFactory::PRE_MRNA_FRACTION)->getAttributeValue<double>(context);
 }
 
 
 Task* CufflinksWorker::tick()
 {
+    if (false == settingsAreCorrect) {
+        return NULL;
+    }
+
+    if (input->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        if (inputMessage.isEmpty()) {
+            output->transit();
+            return NULL;
+        }
+
+        // Get the assembly ID
+        SharedDbiDataHandler assemblyId = inputMessage.getData().toMap().value(BaseSlots::ASSEMBLY_SLOT().getId()).value<SharedDbiDataHandler>();
+
+        settings.assemblyId = assemblyId;
+        settings.storage = context->getDataStorage();
+
+        // Create the task
+        Task* cufflinksSupportTask = new CufflinksSupportTask(settings);
+        connect(cufflinksSupportTask, SIGNAL(si_stateChanged()), SLOT(sl_cufflinksTaskFinished()));
+
+        return cufflinksSupportTask;
+    }
+    else if (input->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+
     return NULL;
 }
 
 
-void CufflinksWorker::sl_taskFinished()
+void CufflinksWorker::sl_cufflinksTaskFinished()
 {
+    CufflinksSupportTask* cufflinksSupportTask = qobject_cast<CufflinksSupportTask*>(sender());
+    if (Task::State_Finished != cufflinksSupportTask->getState()) {
+        return;
+    }
+
+    if (output) {
+        QList<SharedAnnotationData> annots = cufflinksSupportTask->getTranscriptGtfAnnots();
+        QVariant variant = qVariantFromValue<QList<SharedAnnotationData>>(annots);
+        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), variant));
+    }
 }
 
 

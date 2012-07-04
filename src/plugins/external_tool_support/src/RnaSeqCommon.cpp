@@ -19,31 +19,48 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CUFFLINKS_SUPPORT_H
-#define _U2_CUFFLINKS_SUPPORT_H
+#include "RnaSeqCommon.h"
 
-#include <U2Core/ExternalToolRegistry.h>
-
-#define CUFFCOMPARE_TOOL_NAME   "Cuffcompare"
-#define CUFFDIFF_TOOL_NAME      "Cuffdiff"
-#define CUFFLINKS_TOOL_NAME     "Cufflinks"
-#define CUFFMERGE_TOOL_NAME     "Cuffmerge"
-
-#define CUFFLINKS_TMP_DIR       "cufflinks"
+#include <U2Core/U2SafePoints.h>
 
 
 namespace U2 {
 
-class CufflinksSupport : public ExternalTool
+const QString RnaSeqLibraryType::frUnstranded = "fr-unstranded";
+const QString RnaSeqLibraryType::frFirstStrand = "fr-firststrand";
+const QString RnaSeqLibraryType::frSecondStrand = "fr-secondstrand";
+
+
+RnaSeqLibraryType::RnaSeqLibraryType()
 {
-    Q_OBJECT
-
-public:
-    CufflinksSupport(const QString& name, const QString& path = "");
-};
+    libraryType = 0;
+}
 
 
+bool RnaSeqLibraryType::setLibraryType(int val)
+{
+    if (val < 0 || val > 2) {
+        return false;
+    }
+    else {
+        libraryType = val;
+        return true;
+    }
+}
+
+
+QString RnaSeqLibraryType::getLibraryTypeAsStr()
+{
+    switch(libraryType) {
+        case 0:
+            return frUnstranded;
+        case 1:
+            return frFirstStrand;
+        case 2:
+            return frSecondStrand;
+        default:
+            FAIL(QObject::tr("Unexpected value '%1' of the library type").arg(libraryType), frUnstranded);
+    }
+}
 
 } // namespace
-
-#endif

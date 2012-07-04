@@ -77,7 +77,8 @@ public:
 };
 
 
-class ExternalToolLogParser {
+class ExternalToolLogParser : public QObject {
+    Q_OBJECT
 public:
     ExternalToolLogParser();
     virtual int getProgress(){ return progress; }

@@ -19,29 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CUFFLINKS_SUPPORT_H
-#define _U2_CUFFLINKS_SUPPORT_H
+#ifndef _U2_RNA_SEQ_COMMON_H_
+#define _U2_RNA_SEQ_COMMON_H_
 
-#include <U2Core/ExternalToolRegistry.h>
-
-#define CUFFCOMPARE_TOOL_NAME   "Cuffcompare"
-#define CUFFDIFF_TOOL_NAME      "Cuffdiff"
-#define CUFFLINKS_TOOL_NAME     "Cufflinks"
-#define CUFFMERGE_TOOL_NAME     "Cuffmerge"
-
-#define CUFFLINKS_TMP_DIR       "cufflinks"
+#include <QString>
 
 
 namespace U2 {
 
-class CufflinksSupport : public ExternalTool
+
+class RnaSeqLibraryType
 {
-    Q_OBJECT
-
 public:
-    CufflinksSupport(const QString& name, const QString& path = "");
-};
+    // Init library type as "fr-unstranded"
+    RnaSeqLibraryType();
 
+    // Return "false" if the value is not correct,
+    // otherwise sets the new value and returns "true"
+    bool setLibraryType(int val);
+
+    // fr-unstranded - for example, Standard Illumina
+    // fr-firststrand - examples are dUTP, NSR, NNSR
+    // fr-secondstrand - examples are Directional Illumina (Ligation), Standard SOLiD
+    QString getLibraryTypeAsStr();
+
+private:
+    int libraryType;
+
+    static const QString frUnstranded;
+    static const QString frFirstStrand;
+    static const QString frSecondStrand;
+};
 
 
 } // namespace

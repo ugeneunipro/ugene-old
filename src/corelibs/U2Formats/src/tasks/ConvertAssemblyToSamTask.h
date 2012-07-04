@@ -27,6 +27,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/GUrl.h>
 
+
 namespace U2 {
 
 class LoadDocumentTask;
@@ -37,12 +38,18 @@ class U2FORMATS_EXPORT ConvertAssemblyToSamTask : public Task {
 public:
     ConvertAssemblyToSamTask(GUrl dbFileUrl, GUrl samFileUrl);
     ConvertAssemblyToSamTask(const DbiConnection *handle, GUrl samFileUrl);
+
+    /** Converts only one assembly object to a SAM file */
+    ConvertAssemblyToSamTask(const U2EntityRef& entityRef, GUrl samFileUrl);
+
     void run();
     QString generateReport() const;
 
 private:
     GUrl dbFileUrl;
     GUrl samFileUrl;
+
+    U2EntityRef assemblyEntityRef;
 
     const DbiConnection *handle;
 };
