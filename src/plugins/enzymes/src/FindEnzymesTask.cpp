@@ -29,6 +29,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/Settings.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Formats/GenbankFeatures.h>
 #include <U2Formats/GenbankLocationParser.h>
 
@@ -299,6 +300,7 @@ void FindSingleEnzymeTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti)
     if (dnaSeq.length() < enzyme->seq.length()) {
         return;
     }
+    SAFE_POINT(enzyme->alphabet != NULL, tr("No enzyme alphabet"), );
     if (!enzyme->alphabet->isNucleic()) {
         algoLog.info(tr("Non-nucleic enzyme alphabet: %1, enzyme: %2, skipping..").arg(enzyme->alphabet->getId()).arg(enzyme->id));
         return;

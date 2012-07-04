@@ -25,6 +25,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/Settings.h>
 #include <U2Core/NetworkConfiguration.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/GUIUtils.h>
 #include <U2Remote/SynchHttp.h>
@@ -50,6 +51,8 @@ CheckUpdatesTask::CheckUpdatesTask(bool startUp)
 void CheckUpdatesTask::run() {
     stateInfo.setDescription(tr("Connecting to updates server"));
     NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
+    SAFE_POINT(nc != NULL, "Network configuration is null", );
+
     bool isProxy = nc->isProxyUsed(QNetworkProxy::HttpProxy);
     bool isException = nc->getExceptionsList().contains(SITE_URL);
     SyncHTTP http(SITE_URL);

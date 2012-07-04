@@ -169,14 +169,14 @@ void RegisterServiceTask::prepare() {
 EnableServiceTask::EnableServiceTask(ServiceRegistryImpl* _sr, Service* _s) 
 : Task(tr("Enable '%1' service").arg(_s->getName()), TaskFlag_NoRun), sr(_sr), s(_s)
 {
-    assert(s->isDisabled());
+    assert(sr && s && s->isDisabled());
 }
 
 static bool findCircular(ServiceRegistryImpl* sr, Service* s, int currentDepth =0);
 static bool checkAllParentsEnabled(ServiceRegistryImpl* sr, Service* s);
 
 void EnableServiceTask::prepare() {
-//TODO: improve messaging. The service name is already mentined in task name!
+//TODO: improve messaging. The service name is already mentioned in task name!
 
     sr->activeServiceTasks.push_back(this);
     if (s->isEnabled()) {
@@ -186,7 +186,7 @@ void EnableServiceTask::prepare() {
     bool circular = findCircular(sr, s);
     if (circular) {
         sr->setServiceState(s, ServiceState_Disabled_CircularDependency);
-        stateInfo.setError(tr("Circullar service dependency: %1").arg(s->getName()));
+        stateInfo.setError(tr("Circular service dependency: %1").arg(s->getName()));
         return;
     }
     bool noparent = !checkAllParentsEnabled(sr, s);

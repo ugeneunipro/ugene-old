@@ -31,6 +31,7 @@
 #include <U2Core/U2Type.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
 
 #include <QtCore/QObject>
@@ -49,6 +50,8 @@ template <typename CompareFN>
 class FindEnzymesAlgorithm {
 public:
     void run(const DNASequence& sequence, const U2Region& range, const SEnzymeData& enzyme, FindEnzymesAlgListener* l, TaskStateInfo& ti) {
+
+        SAFE_POINT(enzyme->alphabet != NULL, "No enzyme alphabet", );
     
         // look for results in direct strand
         run(sequence, range, enzyme, enzyme->seq.constData(), U2Strand::Direct, l, ti);

@@ -507,6 +507,8 @@ QString CreateAnnotationWidgetController::validate() {
 
 
 void CreateAnnotationWidgetController::updateModel() {
+    SAFE_POINT(model.data != NULL, "Model data is null", );
+
     model.data->name = annotationNameEdit->text();
 
     model.groupName = groupNameEdit->text();

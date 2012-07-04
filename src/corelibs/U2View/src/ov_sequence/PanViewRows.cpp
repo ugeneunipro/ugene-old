@@ -22,6 +22,7 @@
 #include "PanViewRows.h"
 
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/U2SafePoints.h>
 #include <QtCore/QVarLengthArray>
 
 namespace U2 {
@@ -81,7 +82,7 @@ inline bool compare_rows(PVRowData* x, PVRowData* y) {
 }    
 
 void PVRowsManager::addAnnotation(Annotation* a, const QString& key) {
-    assert(!rowByAnnotation.contains(a));
+    SAFE_POINT(!rowByAnnotation.contains(a), "Annoation has been already added", );
     QVector<U2Region> location = a->getRegions();
     foreach(PVRowData* row, rows) {
         if (row->key == key && row->fitToRow(location)) {
@@ -101,7 +102,7 @@ void PVRowsManager::addAnnotation(Annotation* a, const QString& key) {
 
 void PVRowsManager::removeAnnotation(Annotation* a) {
     PVRowData* row = rowByAnnotation.value(a, NULL);
-    assert(row != NULL);
+    SAFE_POINT(row != NULL, "Now row by annotation", );
     rowByAnnotation.remove(a);
     row->annotations.removeOne(a);
     U2Region::removeAll(row->ranges, a->getRegions());
@@ -121,13 +122,13 @@ int PVRowsManager::getAnnotationRowIdx(Annotation* a) const {
 }
 
 const QString& PVRowsManager::getRowKey(int rowNum) const {
-    assert(rowNum >= 0 && rowNum < rows.size());
+    SAFE_POINT(rowNum >= 0 && rowNum < rows.size(), "Bad row number", "");
     PVRowData* r = rows[rowNum];
     return r->key;
 }
 
 int PVRowsManager::getNumAnnotationsInRow(int rowNum) const {
-    assert(rowNum >= 0 && rowNum < rows.size());
+    SAFE_POINT(rowNum >= 0 && rowNum < rows.size(), "Row number out of range", 0);
     PVRowData* r = rows[rowNum];
     return r->annotations.size();
 }

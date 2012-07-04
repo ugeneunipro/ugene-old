@@ -71,6 +71,7 @@ void GObject::setGObjectName(const QString& newName) {
 }
 
 QList<GObjectRelation> GObject::getObjectRelations() const {
+    SAFE_POINT(hints != NULL, "Object hints is NULL", QList<GObjectRelation>());
     QList<GObjectRelation> res = hints->get(GObjectHint_RelatedObjects).value<QList<GObjectRelation> >();
     return res;
     

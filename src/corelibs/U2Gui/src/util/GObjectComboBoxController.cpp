@@ -27,6 +27,7 @@
 
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/UnloadedObject.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -151,7 +152,7 @@ GObject* GObjectComboBoxController::getSelectedObject() const {
         return NULL;
     }
     GObjectReference r = combo->itemData(n).value<GObjectReference>();
-    assert(r.isValid());
+    SAFE_POINT(r.isValid(), "GObjectReverence is invalid", NULL);
     GObject* obj = GObjectUtils::selectObjectByReference(r, GObjectUtils::findAllObjects(UOF_LoadedAndUnloaded), UOF_LoadedAndUnloaded);
     assert(obj!=NULL);
     return obj;
