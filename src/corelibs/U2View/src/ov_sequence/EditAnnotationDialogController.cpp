@@ -70,15 +70,21 @@ void EditAnnotationDialogController::accept(){
     QByteArray locEditText = locationEdit->text().toAscii();
     Genbank::LocationParser::parseLocation(locEditText.constData(), locationEdit->text().length(), location);
 
+    if ( location->isEmpty()) {
+        QMessageBox::critical( this, tr( "Error!" ), tr( "Annotation location empty or invalid!" ) );
+        QDialog::reject();
+        return;
+    }
+
     U2Region cRegion = U2Region::containingRegion(location->regions);
     bool validRegions = seqRange.contains(cRegion);
 
-    if ( location->isEmpty() || (nameEdit->text()).isEmpty() ) {
-        QDialog::reject();
-    }else if (!Annotation::isValidAnnotationName(nameEdit->text())) {
+    if (!Annotation::isValidAnnotationName(nameEdit->text())) {
         QMessageBox::critical( this, tr( "Error!" ), tr( "Wrong annotation name!" ) );
+        QDialog::reject();
     }else if (!validRegions){
         QMessageBox::critical( this, tr( "Error!" ), tr( "New annotation locations is out of sequence bounds!" ) );
+        QDialog::reject();
     }else{
         currentName = nameEdit->text();
         QDialog::accept();
