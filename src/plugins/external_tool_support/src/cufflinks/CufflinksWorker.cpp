@@ -330,7 +330,7 @@ void CufflinksWorker::sl_cufflinksTaskFinished()
 
     if (output) {
         QList<SharedAnnotationData> annots = cufflinksSupportTask->getTranscriptGtfAnnots();
-        QVariant variant = qVariantFromValue<QList<SharedAnnotationData>>(annots);
+        QVariant variant = qVariantFromValue< QList<SharedAnnotationData> >(annots);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), variant));
     }
 }
