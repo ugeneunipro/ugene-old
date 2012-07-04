@@ -70,6 +70,7 @@ public:
     QString                         profileURL;  // document url
     MAlignment                      ma;
     bool                            usePercents; //report percents but not counts
+    bool                            excludeGaps; //exclude gaps when calculate distance
     DistanceMatrixMSAProfileOutputFormat   outFormat;   
     QString                         outURL;    
 };

@@ -28,6 +28,12 @@
 namespace U2 {
 
 // Hamming algorithm is based on Hamming distance between sequences
+// weight schemes is the following:
+//
+// w("A", "T") = 1
+// w("A", "-") = w ("-", "A") = 0 or 1 (depends on "Exclude gaps" option)
+// w("-", "-") = 0
+// w("A", "A") = 0
 class U2ALGORITHM_EXPORT MSADistanceAlgorithmFactoryHamming: public MSADistanceAlgorithmFactory {
     Q_OBJECT
 public:
@@ -46,7 +52,7 @@ class U2ALGORITHM_EXPORT MSADistanceAlgorithmHamming : public MSADistanceAlgorit
     Q_OBJECT
 public:
     MSADistanceAlgorithmHamming(MSADistanceAlgorithmFactoryHamming* f, const MAlignment& ma)
-        : MSADistanceAlgorithm(f, ma){}
+        : MSADistanceAlgorithm(f, ma){ isSimilarity = false;}
 
     virtual void run();
 };

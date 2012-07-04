@@ -39,6 +39,7 @@ enum DistanceAlgorithmFlag {
     DistanceAlgorithmFlag_Nucleic = 1 << 0,
     DistanceAlgorithmFlag_Amino = 1 << 1,
     DistanceAlgorithmFlag_Raw = 1 << 2,
+    DistanceAlgorithmFlag_ExcludeGaps = 1 << 3
 };
 
 typedef QFlags<DistanceAlgorithmFlag> DistanceAlgorithmFlags;
@@ -56,6 +57,9 @@ public:
 
     DistanceAlgorithmFlags getFlags() const {return flags;}
 
+    void setFlag(DistanceAlgorithmFlag flag);
+    void resetFlag(DistanceAlgorithmFlag flag);
+
     virtual QString getDescription() const = 0;
 
     virtual QString getName() const = 0;
@@ -63,7 +67,7 @@ public:
     // utility method
     static DistanceAlgorithmFlags getAphabetFlags(const DNAAlphabet* al);
 
-private:
+protected:
     QString                 algorithmId;
     DistanceAlgorithmFlags  flags;
 
@@ -82,6 +86,10 @@ public:
 
     QString getId() const {return factory->getId();}
 
+    bool isSimilarityMeasure() const {return isSimilarity;}
+
+    void setExcludeGaps(bool _excludeGaps) {excludeGaps = _excludeGaps;}
+
     MSADistanceAlgorithmFactory* getFactory() const {return factory;}
 
 private:
@@ -91,6 +99,8 @@ protected:
     MAlignment                                  ma;
     QVarLengthArray<QVarLengthArray<int> >      distanceTable;
     QMutex                                      lock;
+    bool                                        excludeGaps;
+    bool                                        isSimilarity;
 };
 
 }//namespace

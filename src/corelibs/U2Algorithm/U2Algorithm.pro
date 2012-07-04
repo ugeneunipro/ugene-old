@@ -31,6 +31,8 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/registry/RepeatFinderTaskFactoryRegistry.h \
            src/registry/SecStructPredictAlgRegistry.h \
            src/registry/SecStructPredictTask.h \
+           src/registry/SplicedAlignmentTask.h \
+           src/registry/SplicedAlignmentTaskRegistry.h \
            src/registry/SubstMatrixRegistry.h \
            src/smith_waterman/SmithWatermanReportCallback.h \
            src/smith_waterman/SmithWatermanResult.h \
@@ -45,8 +47,8 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.h \
            src/util_assembly_consensus/AssemblyConsensusAlgorithm.h \
            src/util_assembly_consensus/AssemblyConsensusAlgorithmDefault.h \
-           src/util_assembly_consensus/AssemblyConsensusAlgorithmSamtools.h \
            src/util_assembly_consensus/AssemblyConsensusAlgorithmRegistry.h \
+           src/util_assembly_consensus/AssemblyConsensusAlgorithmSamtools.h \
            src/util_assembly_consensus/AssemblyConsensusUtils.h \
            src/util_assembly_consensus/BuiltInAssemblyConsensusAlgorithms.h \
            src/util_msa_consensus/BuiltInConsensusAlgorithms.h \
@@ -60,6 +62,7 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/util_msa_distance/BuiltInDistanceAlgorithms.h \
            src/util_msa_distance/MSADistanceAlgorithm.h \
            src/util_msa_distance/MSADistanceAlgorithmHamming.h \
+           src/util_msa_distance/MSADistanceAlgorithmSimilarity.h \
            src/util_msa_distance/MSADistanceAlgorithmHammingRevCompl.h \
            src/util_msa_distance/MSADistanceAlgorithmRegistry.h \
            src/util_msaedit/CreateSubalignmentTask.h \
@@ -77,9 +80,7 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/util_weight_matrix/PWMConversionAlgorithmNLG.h \
            src/util_weight_matrix/PWMConversionAlgorithmRegistry.h \
            src/util_gpu/opencl/OpenCLHelper.h \
-           src/util_gpu/opencl/OpenCLUtils.h \
-    src/registry/SplicedAlignmentTask.h \
-    src/registry/SplicedAlignmentTaskRegistry.h
+           src/util_gpu/opencl/OpenCLUtils.h
 SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/misc/BitsTable.cpp \
            src/misc/DnaAssemblyMultiTask.cpp \
@@ -102,6 +103,8 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/registry/RepeatFinderTaskFactoryRegistry.cpp \
            src/registry/SecStructPredictAlgRegistry.cpp \
            src/registry/SecStructPredictTask.cpp \
+           src/registry/SplicedAlignmentTask.cpp \
+           src/registry/SplicedAlignmentTaskRegistry.cpp \
            src/registry/SubstMatrixRegistry.cpp \
            src/smith_waterman/SmithWatermanReportCallback.cpp \
            src/smith_waterman/SmithWatermanResult.cpp \
@@ -114,8 +117,8 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.cpp \
            src/util_assembly_consensus/AssemblyConsensusAlgorithm.cpp \
            src/util_assembly_consensus/AssemblyConsensusAlgorithmDefault.cpp \
-           src/util_assembly_consensus/AssemblyConsensusAlgorithmSamtools.cpp \
            src/util_assembly_consensus/AssemblyConsensusAlgorithmRegistry.cpp \
+           src/util_assembly_consensus/AssemblyConsensusAlgorithmSamtools.cpp \
            src/util_assembly_consensus/AssemblyConsensusUtils.cpp \
            src/util_assembly_consensus/BuiltInAssemblyConsensusAlgorithms.cpp \
            src/util_msa_consensus/BuiltInConsensusAlgorithms.cpp \
@@ -129,6 +132,7 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/util_msa_distance/BuiltInDistanceAlgorithms.cpp \
            src/util_msa_distance/MSADistanceAlgorithm.cpp \
            src/util_msa_distance/MSADistanceAlgorithmHamming.cpp \
+           src/util_msa_distance/MSADistanceAlgorithmSimilarity.cpp \
            src/util_msa_distance/MSADistanceAlgorithmHammingRevCompl.cpp \
            src/util_msa_distance/MSADistanceAlgorithmRegistry.cpp \
            src/util_msaedit/CreateSubalignmentTask.cpp \
@@ -146,8 +150,6 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/util_weight_matrix/PWMConversionAlgorithmNLG.cpp \
            src/util_weight_matrix/PWMConversionAlgorithmRegistry.cpp \
            src/util_gpu/opencl/OpenCLHelper.cpp \
-           src/util_gpu/opencl/OpenCLUtils.cpp \
-    src/registry/SplicedAlignmentTask.cpp \
-    src/registry/SplicedAlignmentTaskRegistry.cpp
+           src/util_gpu/opencl/OpenCLUtils.cpp
 RESOURCES += U2Algorithm.qrc
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

@@ -22,6 +22,7 @@
 #include "MSADistanceAlgorithmRegistry.h"
 
 #include "MSADistanceAlgorithmHamming.h"
+#include "MSADistanceAlgorithmSimilarity.h"
 #include "MSADistanceAlgorithmHammingRevCompl.h"
 
 namespace U2 {
@@ -29,6 +30,7 @@ namespace U2 {
 MSADistanceAlgorithmRegistry::MSADistanceAlgorithmRegistry(QObject* p) : QObject(p) {
     addAlgorithm(new MSADistanceAlgorithmFactoryHamming());
     //addAlgorithm(new MSADistanceAlgorithmFactoryHammingRevCompl());
+    addAlgorithm(new MSADistanceAlgorithmFactorySimilarity());
 }
 
 MSADistanceAlgorithmRegistry::~MSADistanceAlgorithmRegistry() {

@@ -46,11 +46,25 @@ DistanceAlgorithmFlags MSADistanceAlgorithmFactory::getAphabetFlags(const DNAAlp
     return DistanceAlgorithmFlag_Raw;
 }
 
+void MSADistanceAlgorithmFactory::setFlag( DistanceAlgorithmFlag flag ){
+    flags |= flag; 
+}
+
+void MSADistanceAlgorithmFactory::resetFlag( DistanceAlgorithmFlag flag ){
+    if(flags.testFlag(flag)){
+        flags ^= flag;
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Algorithm
 
 MSADistanceAlgorithm::MSADistanceAlgorithm(MSADistanceAlgorithmFactory* _factory, const MAlignment& _ma)
-: Task(tr("MSA distance algorithm \"%1\" task").arg(_factory->getName()), TaskFlag_None), factory(_factory), ma(_ma)
+: Task(tr("MSA distance algorithm \"%1\" task").arg(_factory->getName()), TaskFlag_None)
+, factory(_factory)
+, ma(_ma)
+, excludeGaps(true)
+, isSimilarity(true)
 {    
     for (int i = 0; i < ma.getNumRows(); i++) {
         distanceTable.append(QVarLengthArray<int>(ma.getNumRows()));

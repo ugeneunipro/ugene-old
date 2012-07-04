@@ -31,6 +31,7 @@ namespace U2 {
 class U2ALGORITHM_EXPORT BuiltInDistanceAlgorithms {
 public:
     static const QString HAMMING_ALGO;
+	static const QString SIMILARITY_ALGO;
     static const QString HAMMING_REVCOMPL_ALGO;
 };
 

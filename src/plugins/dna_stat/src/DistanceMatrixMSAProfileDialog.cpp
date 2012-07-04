@@ -97,6 +97,7 @@ void DistanceMatrixMSAProfileDialog::accept() {
     s.usePercents = percentsRB->isChecked();
     s.algoName = algoCombo->currentText();
     s.ma = msaObj->getMAlignment();
+    s.excludeGaps = checkBox->isChecked();
     if (saveBox->isChecked()) {
         s.outURL = fileEdit->text();
         if (s.outURL.isEmpty()) {
@@ -119,7 +120,13 @@ DistanceMatrixMSAProfileTask::DistanceMatrixMSAProfileTask(const DistanceMatrixM
 }
 
 void DistanceMatrixMSAProfileTask::prepare() {
-    MSADistanceAlgorithm* algo = AppContext::getMSADistanceAlgorithmRegistry()->getAlgorithmFactory(s.algoName)->createAlgorithm(s.ma);
+    MSADistanceAlgorithmFactory* factory = AppContext::getMSADistanceAlgorithmRegistry()->getAlgorithmFactory(s.algoName);
+    if(s.excludeGaps){
+        factory->setFlag(DistanceAlgorithmFlag_ExcludeGaps);
+    }else{
+        factory->resetFlag(DistanceAlgorithmFlag_ExcludeGaps);
+    }
+    MSADistanceAlgorithm* algo = factory->createAlgorithm(s.ma);
     if (algo == NULL) {
         return;
     }
@@ -150,7 +157,7 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
 
             resultText+="<table>\n";
             resultText+= "<tr><td><b>"+tr("Alignment file:") + "</b></td><td>" + s.profileURL + "@" + s.profileName+ "</td></tr>\n";
-            resultText+= "<tr><td><b>"+tr("Table content:") + "</b></td><td>" +(s.usePercents ? tr("similarity percents") : tr("similarity distance")) + "</td></tr>\n";
+            resultText+= "<tr><td><b>"+tr("Table content:") + "</b></td><td>" +(s.usePercents ? (algo->getName()+" in percent") : algo->getName()) + "</td></tr>\n";
             resultText+= "</table>\n";
             resultText+="<br><br>\n";
 
@@ -162,25 +169,34 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
             }
             resultText+="</tr>\n";
 
+            bool isSimilarity = algo->isSimilarityMeasure();
+            int minLen = s.ma.getLength();
+
             //out char freqs
             for (int i=0; i < s.ma.getNumRows(); i++) {
                 QString name = s.ma.getRow(i).getName();
                 resultText+="<tr>";
                 resultText+="<td> " + name + "</td>";
                 for (int j=0; j < s.ma.getNumRows(); j++) {
-                    int val = qRound(algo->getSimilarity(i, j) * (s.usePercents ? (100.0 / s.ma.getLength()) : 1.0));
+                    if(s.usePercents && s.excludeGaps){
+                        int len1 = s.ma.getRow(i).getUngappedLength();
+                        int len2 = s.ma.getRow(j).getUngappedLength();
+                        minLen = qMin(len1, len2);
+                    }
+                    int val = qRound(algo->getSimilarity(i, j) * (s.usePercents ? (100.0 / minLen) : 1.0));
+                    
                     QString colorStr = "";
                     if (i != j) {
                         int hotness = qRound(100 * double(val) / maxVal);
-                        if (hotness  >= 90)  {
+                        if ((hotness  >= 90 && isSimilarity) || (hotness <= 10 && !isSimilarity))  {
                             colorStr = " bgcolor=" + colors[0];
-                        } else if (hotness >= 70) {
+                        } else if ((hotness  > 70 && isSimilarity) || (hotness <= 25 && !isSimilarity)) {
                             colorStr = " bgcolor=" + colors[1];
-                        } else if (hotness > 50) {
+                        } else if ((hotness  > 50 && isSimilarity) || (hotness <= 50 && !isSimilarity)) {
                             colorStr = " bgcolor=" + colors[2];
-                        } else if (hotness > 25) {
+                        } else if ((hotness  > 25 && isSimilarity) || (hotness <= 70 && !isSimilarity)) {
                             colorStr = " bgcolor=" + colors[3];
-                        } else if (hotness > 10) {
+                        } else if ((hotness  > 10 && isSimilarity) || (hotness < 90 && !isSimilarity)) {
                             colorStr = " bgcolor=" + colors[4];
                         }
                     }         
@@ -193,11 +209,19 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
             //legend:
             resultText+="<br><br>\n";
             resultText+= "<table><tr><td><b>" + tr("Legend:")+"&nbsp;&nbsp;</b>\n";
-            resultText+="<td bgcolor="+colors[4]+">10%</td>\n";
-            resultText+="<td bgcolor="+colors[3]+">25%</td>\n";
-            resultText+="<td bgcolor="+colors[2]+">50%</td>\n";
-            resultText+="<td bgcolor="+colors[1]+">70%</td>\n";
-            resultText+="<td bgcolor="+colors[0]+">90%</td>\n";
+            if(isSimilarity){
+                resultText+="<td bgcolor="+colors[4]+">10%</td>\n";
+                resultText+="<td bgcolor="+colors[3]+">25%</td>\n";
+                resultText+="<td bgcolor="+colors[2]+">50%</td>\n";
+                resultText+="<td bgcolor="+colors[1]+">70%</td>\n";
+                resultText+="<td bgcolor="+colors[0]+">90%</td>\n";
+            }else{
+                resultText+="<td bgcolor="+colors[0]+">10%</td>\n";
+                resultText+="<td bgcolor="+colors[1]+">25%</td>\n";
+                resultText+="<td bgcolor="+colors[2]+">50%</td>\n";
+                resultText+="<td bgcolor="+colors[3]+">70%</td>\n";
+                resultText+="<td bgcolor="+colors[4]+">90%</td>\n";
+            }
             resultText+="</tr></table><br>\n";
         } else {
             resultText+= " ";
