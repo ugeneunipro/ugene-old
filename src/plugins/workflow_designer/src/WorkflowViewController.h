@@ -233,6 +233,7 @@ protected:
     bool onCloseEvent();
 
 private:
+    void remapActorsIds();
     void createActions();
     void saveState();
     

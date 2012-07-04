@@ -1342,8 +1342,32 @@ void WorkflowView::sl_pasteItems(const QString& s) {
     foreach(QGraphicsItem * it, scene->selectedItems()) {
         it->moveBy(shift, shift);
     }
+    remapActorsIds();
 }
 
+void WorkflowView::remapActorsIds(){
+    QMap<ActorId, ActorId> mapIds;
+
+    foreach(QGraphicsItem * it, scene->selectedItems()) {
+        if(it->type() == WorkflowProcessItemType) {
+            Actor* a = qgraphicsitem_cast<WorkflowProcessItem*>(it)->getProcess();
+            ActorId oldId = a->getId();
+            ActorId newId = HRSceneSerializer::newActorId(a->getProto()->getId(), scene->getAllProcs());
+            a->setId(newId);
+            mapIds[oldId] = newId;
+        }
+    }
+    foreach(QGraphicsItem * it, scene->selectedItems()) {
+        if(it->type() == WorkflowBusItemType) {
+            WorkflowBusItem* busItem = qgraphicsitem_cast<WorkflowBusItem*>(it);            
+            IntegralBusPort* integralBusPort = qobject_cast<IntegralBusPort*>(busItem->getInPort()->getPort());
+            if(integralBusPort){
+                integralBusPort->remap(mapIds);
+            }
+        }
+    }
+}
+ 
 void WorkflowView::sl_procItemAdded() {
     currentActor = NULL;
     propertyEditor->setEditable(true);
