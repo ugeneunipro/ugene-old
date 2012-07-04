@@ -44,7 +44,7 @@
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/U2SafePoints.h>
-
+#include <U2Core/MultiTask.h>
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/UnloadDocumentTask.h>

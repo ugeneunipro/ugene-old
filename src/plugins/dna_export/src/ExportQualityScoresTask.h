@@ -20,7 +20,7 @@
  */
 
 #ifndef _U2_EXPORT_QUALITY_SCORES_TASK_H_
-#define _U2_EXPORT_QUALITY_SOCRES_TASK_H_
+#define _U2_EXPORT_QUALITY_SCORES_TASK_H_
 
 #include <U2Core/Task.h>
 #include <U2Core/DNAQuality.h>
@@ -52,4 +52,4 @@ private:
 
 } // namespace U2
 
-#endif 
+#endif // _U2_EXPORT_QUALITY_SCORES_TASK_H_

@@ -26,6 +26,7 @@
 #include "ExportSequenceViewItems.h"
 #include "ExportAlignmentViewItems.h"
 #include "ImportQualityScoresWorker.h"
+#include "ExportQualityScoresWorker.h"
 #include "WriteAnnotationsWorker.h"
 #include "DNASequenceGeneratorDialog.h"
 #include "GenerateDNAWorker.h"
@@ -67,8 +68,10 @@ DNAExportPlugin::DNAExportPlugin() : Plugin(tr("DNA export"), tr("Export and imp
     }
     
     LocalWorkflow::ImportPhredQualityWorkerFactory::init();
+    LocalWorkflow::ExportPhredQualityWorkerFactory::init();
     LocalWorkflow::WriteAnnotationsWorkerFactory::init();
     LocalWorkflow::GenerateDNAWorkerFactory::init();
+
 }
 
 void DNAExportPlugin::sl_generateSequence() {
