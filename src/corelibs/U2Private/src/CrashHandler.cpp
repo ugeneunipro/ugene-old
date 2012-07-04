@@ -22,6 +22,8 @@
 #include "CrashHandler.h"
 #include "TaskSchedulerImpl.h"
 
+#include <string>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
 #include <U2Core/Log.h>
@@ -181,7 +183,7 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
 
     void CrashHandler::signalHandler(int signo, siginfo_t *siginfo, void*) {
         sigprocmask(SIG_UNBLOCK, &sa.sa_mask, NULL);
-        QString exception;
+        std::string exception;
 
         switch(signo) {
         case SIGBUS:
@@ -290,7 +292,7 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
         default: return;
         }
 
-        runMonitorProcess(QString::number(signo) + "|" + exception);
+        runMonitorProcess(QString::number(signo) + "|" + exception.c_str());
     }
 #endif
 
