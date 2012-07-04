@@ -286,6 +286,9 @@ U2Region DotPlotWidget::getVisibleRange(Qt::Axis axis) {
     }
 
     len-=startPos;
+    if (0 == len) { // to avoid division by zero
+        len = 1;
+    }
 
     return U2Region(startPos, len);
 }
