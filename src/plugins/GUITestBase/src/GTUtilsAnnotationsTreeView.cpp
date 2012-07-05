@@ -151,6 +151,25 @@ QPoint GTUtilsAnnotationsTreeView::getItemCenter(U2OpStatus &os, const QString &
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "rename"
+
+void GTUtilsAnnotationsTreeView::rename(U2OpStatus &os, const QString &itemName, const QString &newItemName, const QString &location, const QString &newLocation) {
+
+    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
+    GTMouseDriver::click(os);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keySequence(os, newItemName);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keySequence(os, newLocation);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
+
+    GTGlobals::sleep(500);
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

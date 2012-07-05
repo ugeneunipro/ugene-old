@@ -496,6 +496,7 @@ void ADVSingleSequenceWidget::addADVSequenceWidgetAction(ADVSequenceWidgetAction
         QToolBar* tb = headerWidget->getToolBar();
         if (a->menu()!=NULL) {
             QToolButton* tt = new QToolButton(tb);
+            tt->setObjectName(a->objectName());
             tt->setDefaultAction(a);
             tt->setPopupMode(QToolButton::InstantPopup);
             tb->insertWidget(tb->actions().first(), tt);

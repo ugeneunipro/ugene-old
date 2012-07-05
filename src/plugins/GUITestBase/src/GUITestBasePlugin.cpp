@@ -41,6 +41,7 @@
 #include "tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h"
 #include "tests/common_scenarios/msa_editor/GTTestsMsaEditor.h"
 #include "tests/common_scenarios/annotations/GTTestsAnnotations.h"
+#include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE) \
@@ -170,6 +171,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/Sequence view/
 //////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_2);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004_1);
 
@@ -220,7 +224,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004_2);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004_3);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004_4);
-//    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0005);
+   REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0005);
 //    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0006);
 //    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0008);
@@ -234,7 +238,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //  REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0013);
 //  REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0013_1);
 //  REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0013_2);
-//    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0014);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0014);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0014_1);
+    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0014_2);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -366,6 +372,18 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_2);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/annotations/edit
+/////////////////////////////////////////////////////////////////////////
+
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0002_2);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0003_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0003_2);
+
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
