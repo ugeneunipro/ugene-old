@@ -171,9 +171,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/Sequence view/
 //////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002);
-    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_1);
-    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_2);
+    //REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002);
+    //REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_1);
+    //REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_2);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004_1);
 
@@ -376,7 +376,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations/edit
 /////////////////////////////////////////////////////////////////////////
-
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0001_2);
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0002_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0002_2);

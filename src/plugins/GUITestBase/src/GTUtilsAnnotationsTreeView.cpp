@@ -151,9 +151,9 @@ QPoint GTUtilsAnnotationsTreeView::getItemCenter(U2OpStatus &os, const QString &
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "rename"
+#define GT_METHOD_NAME "renameAndLocation"
 
-void GTUtilsAnnotationsTreeView::rename(U2OpStatus &os, const QString &itemName, const QString &newItemName, const QString &location, const QString &newLocation) {
+void GTUtilsAnnotationsTreeView::renameAndLocation(U2OpStatus &os, const QString &itemName, const QString &newItemName, const QString &location, const QString &newLocation) {
 
     GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
     GTMouseDriver::click(os);
@@ -169,6 +169,20 @@ void GTUtilsAnnotationsTreeView::rename(U2OpStatus &os, const QString &itemName,
     GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
+
+//#define GT_METHOD_NAME "renameGroup"
+//
+//void GTUtilsAnnotationsTreeView::renameGroup(U2OpStatus &os, const QString &itemName, const QString &newItemName) {
+//
+//    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
+//    GTMouseDriver::click(os);
+//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+//    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+//    GTKeyboardDriver::keySequence(os, newItemName);
+//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
+//    GTGlobals::sleep(500);
+//}
+//#undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
 

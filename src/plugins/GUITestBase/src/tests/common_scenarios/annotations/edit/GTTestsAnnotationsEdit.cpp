@@ -37,6 +37,101 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_annotations_edit {
 
+
+GUI_TEST_CLASS_DEFINITION(test_0001) {
+// Rename annotation
+// 
+// Steps:
+// 
+// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+// Expected state: 
+//     1) Project view with document "1.gb" has been opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+//     2) UGENE window titled with text "proj2 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+
+// 2. Open view for "1.gb"
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+
+    QTreeWidgetItem *Item = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    //item->parent();
+    //expand(os, item->parent());
+
+//    GTUtilsAnnotationsTreeView::rename(os, "B", "BB");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0001_1) {
+// Rename annotation
+// 
+// Steps:
+// 
+// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+// Expected state: 
+//     1) Project view with document "1.gb" has been opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+//     2) UGENE window titled with text "proj2 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+
+// 2. Open view for "1.gb"
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "80 ..90");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
+
+// 4. Select annotation C in annotation tree. Click F2. Change name to CC.
+
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "CC", "C", "80 ..90", "80 ..90");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "C") != NULL, "Item C not found in tree widget");
+}
+
+
+GUI_TEST_CLASS_DEFINITION(test_0001_2) {
+// Rename annotation
+// 
+// Steps:
+// 
+// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+// Expected state: 
+//     1) Project view with document "1.gb" has been opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+//     2) UGENE window titled with text "proj2 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+
+// 2. Open view for "1.gb"
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "80 ..90");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
+
+// 4. Select annotation B in annotation tree. Click F2. Change name to BB.
+
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "B", "BB", "30 ..120", "30 ..120");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
+}
+
+
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 // Rename annotation
 // 
@@ -57,7 +152,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::rename(os, "C", "CC", "80 ..90", "80 ..90");
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "80 ..90");
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
 
@@ -83,13 +178,13 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::rename(os, "C", "CC", "80 ..90", "80 ..90");
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "80 ..90");
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
 
 // 4. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::rename(os, "CC", "C", "80 ..90", "80 ..90");
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "CC", "C", "80 ..90", "80 ..90");
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "C") != NULL, "Item C not found in tree widget");
 }
@@ -115,13 +210,13 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::rename(os, "C", "CC", "80 ..90", "80 ..90");
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "80 ..90");
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
 
 // 4. Select annotation B in annotation tree. Click F2. Change name to BB.
 
-    GTUtilsAnnotationsTreeView::rename(os, "B", "BB", "30 ..120", "30 ..120");
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "B", "BB", "30 ..120", "30 ..120");
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
 }
@@ -147,7 +242,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::rename(os, "C", "C", "80 ..90", "20 ..40");
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "C", "80 ..90", "20 ..40");
     GTGlobals::sleep();
     bool found = GTUtilsAnnotationsTreeView::findRegion(os, "C", U2Region(20, 40));
     CHECK_SET_ERR(found == true, "There is no {20 ..40} region in annotation");
@@ -174,14 +269,14 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::rename(os, "C", "C", "80 ..90", "20 ..40");
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "C", "80 ..90", "20 ..40");
     GTGlobals::sleep();
     bool found = GTUtilsAnnotationsTreeView::findRegion(os, "C", U2Region(20, 40));
     CHECK_SET_ERR(found == true, "There is no {20 ..40} region in annotation");
 
 // 4. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::rename(os, "C", "C", "20 ..40", "10 ..90");
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "C", "20 ..40", "10 ..90");
     GTGlobals::sleep();
     bool found1 = GTUtilsAnnotationsTreeView::findRegion(os, "C", U2Region(10, 90));
     CHECK_SET_ERR(found1 == true, "There is no {10 ..90} region in annotation");
@@ -208,13 +303,13 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::rename(os, "C", "CC", "80 ..90", "20 ..40");
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "20 ..40");
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
 
 // 4. Select annotation B in annotation tree. Click F2. Change name to BB.
 
-    GTUtilsAnnotationsTreeView::rename(os, "B", "BB", "30 ..120", "20 ..40");
+    GTUtilsAnnotationsTreeView::renameAndLocation(os, "B", "BB", "30 ..120", "20 ..40");
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
 

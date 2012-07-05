@@ -40,6 +40,32 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_sequence_view {
 
+GUI_TEST_CLASS_DEFINITION(test_0002) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.pdb");
+    GTGlobals::sleep(3000);
+    qDebug() << "Its widget: " << qApp->widgetAt(QCursor::pos()) << "His name is: " <<  qApp->widgetAt(QCursor::pos())->objectName() << "\n\n\n\n\n\n\n";
+    return;
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0002_1) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.pdb");
+    GTGlobals::sleep(3000);
+    qDebug() << "Its widget: " << qApp->widgetAt(QCursor::pos()) << "His name is: " <<  qApp->widgetAt(QCursor::pos())->objectName() << "\n\n\n\n\n\n\n";
+    return;
+
+    }
+GUI_TEST_CLASS_DEFINITION(test_0002_2) {
+
+    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.pdb");
+    GTGlobals::sleep(3000);
+    qDebug() << "Its widget: " << qApp->widgetAt(QCursor::pos()) << "His name is: " <<  qApp->widgetAt(QCursor::pos())->objectName() << "\n\n\n\n\n\n\n";
+    return;
+
+    }
+
 GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "fa1.fa");
