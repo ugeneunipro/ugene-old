@@ -57,20 +57,22 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+// 3. Select annotation C in annotation tree. Click F2. Change name to BB.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B");
     if ("B  (0, 2)" == item->parent()->text(0)) {
         GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
         GTMouseDriver::click(os);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTGlobals::sleep(10000);
+        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardDriver::keySequence(os, "BB");
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
+        GTGlobals::sleep(1000);
     }
-    //expand(os, item->parent());
-
-//    GTUtilsAnnotationsTreeView::rename(os, "B", "BB");
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
+
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    CHECK_SET_ERR("BB  (0, 2)" == item1->parent()->text(0), "Item BB not found in tree widget");
 
 }
 
@@ -92,17 +94,33 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+// 3. Select annotation C in annotation tree. Click F2. Change name to BB.
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "80 ..90");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    if ("B  (0, 2)" == item->parent()->text(0)) {
+        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
+        GTMouseDriver::click(os);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardDriver::keySequence(os, "BB");
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
+        GTGlobals::sleep(1000);
+    }
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
 
-// 4. Select annotation C in annotation tree. Click F2. Change name to CC.
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    CHECK_SET_ERR("BB  (0, 2)" == item1->parent()->text(0), "Item BB not found in tree widget");
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "CC", "C", "80 ..90", "80 ..90");
-    GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "C") != NULL, "Item C not found in tree widget");
+        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1->parent()));
+        GTMouseDriver::click(os);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardDriver::keySequence(os, "B");
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
+        GTGlobals::sleep(1000);
+
+        QTreeWidgetItem *item2 = GTUtilsAnnotationsTreeView::findItem(os, "B");
+        CHECK_SET_ERR("B  (0, 2)" == item2->parent()->text(0), "Item B not found in tree widget");
 }
 
 
@@ -124,17 +142,37 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+// 3. Select annotation C in annotation tree. Click F2. Change name to BB.
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "80 ..90");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    if ("B  (0, 2)" == item->parent()->text(0)) {
+        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
+        GTMouseDriver::click(os);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardDriver::keySequence(os, "BB");
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
+        GTGlobals::sleep(1000);
+    }
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
 
-// 4. Select annotation B in annotation tree. Click F2. Change name to BB.
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    CHECK_SET_ERR("BB  (0, 2)" == item1->parent()->text(0), "Item BB not found in tree widget");
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "B", "BB", "30 ..120", "30 ..120");
-    GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
+        QTreeWidgetItem *item2 = GTUtilsAnnotationsTreeView::findItem(os, "C");
+        if ("C  (0, 1)" == item2->parent()->text(0)) {
+
+        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item2->parent()));
+        GTMouseDriver::click(os);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardDriver::keySequence(os, "CC");
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
+        GTGlobals::sleep(1000);
+            }
+
+        QTreeWidgetItem *item3 = GTUtilsAnnotationsTreeView::findItem(os, "C");
+        CHECK_SET_ERR("CC  (0, 1)" == item3->parent()->text(0), "Item CC not found in tree widget");
 }
 
 
