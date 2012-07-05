@@ -197,7 +197,7 @@ void SQLiteAttributeDbi::removeAttributes(const QList<U2DataId>& attributeIds, U
     static const QString qrString("DELETE FROM RealAttribute WHERE attribute = ?1");
     static const QString qsString("DELETE FROM StringAttribute WHERE attribute = ?1");
     static const QString qbString("DELETE FROM ByteArrayAttribute WHERE attribute = ?1");
-    SQLiteQuery *q = t.getPreparedQuery(qsString, db, os);
+    SQLiteQuery *q = t.getPreparedQuery(qString, db, os);
     SQLiteQuery *qi = t.getPreparedQuery(qiString, db, os);
     SQLiteQuery *qr = t.getPreparedQuery(qrString, db, os);
     SQLiteQuery *qs = t.getPreparedQuery(qsString, db, os);
