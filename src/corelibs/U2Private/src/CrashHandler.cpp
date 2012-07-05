@@ -346,11 +346,11 @@ void CrashHandler::setupHandler() {
 
 #else
 #ifndef Q_OS_MAC // if separate stack has been used in MAC OS as under Linux, then backtrace() will not work
-#define SA_FLAGS SA_ONSTACK | SA_SIGINFO
+#define SA_FLAGS (SA_ONSTACK | SA_SIGINFO)
 
     stack_t sigstk;
-    sigstk.ss_sp = malloc(SIGSTKSZ);
-    sigstk.ss_size = SIGSTKSZ;
+    sigstk.ss_sp = malloc(SIGSTKSZ * 2);
+    sigstk.ss_size = SIGSTKSZ * 2;
     sigstk.ss_flags = 0;
     if (sigaltstack(&sigstk,0) < 0) {
         perror("sigaltstack");
@@ -369,7 +369,7 @@ void CrashHandler::setupHandler() {
     }
 
     sa.sa_sigaction = signalHandler;
-    sa.sa_flags = SA_FLAGS;
+    sa.sa_flags = (SA_FLAGS);
     for (unsigned i = 0; kExceptionSignals[i] != -1; ++i) {
         sigaction(kExceptionSignals[i], &sa, NULL);
     }
