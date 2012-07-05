@@ -25,6 +25,7 @@
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
+#include "api/GTTreeWidget.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"
@@ -58,8 +59,13 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    QTreeWidgetItem *Item = GTUtilsAnnotationsTreeView::findItem(os, "B");
-    //item->parent();
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    if ("B  (0, 2)" == item->parent()->text(0)) {
+        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
+        GTMouseDriver::click(os);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+        GTGlobals::sleep(10000);
+    }
     //expand(os, item->parent());
 
 //    GTUtilsAnnotationsTreeView::rename(os, "B", "BB");
