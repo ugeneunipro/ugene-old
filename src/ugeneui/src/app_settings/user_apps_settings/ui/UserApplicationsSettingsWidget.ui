@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>641</width>
-    <height>629</height>
+    <height>649</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -277,7 +277,7 @@
       <item>
        <widget class="QCheckBox" name="resetSettingsBox">
         <property name="text">
-         <string>Reset settings to default on next start of UGENE</string>
+         <string>Reset settings to default on the next run</string>
         </property>
        </widget>
       </item>
