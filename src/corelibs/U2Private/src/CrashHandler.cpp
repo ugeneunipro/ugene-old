@@ -177,8 +177,8 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
         return EXCEPTION_EXECUTE_HANDLER;
 	}
 }
-
 #else
+
     struct sigaction CrashHandler::sa;
 
     void CrashHandler::signalHandler(int signo, siginfo_t *siginfo, void*) {
@@ -343,10 +343,11 @@ void CrashHandler::setupHandler() {
         addHandlerFunc(1, CrashHandlerFunc);
     }
     //handler = AddVectoredExceptionHandler(1, CrashHandlerFunc);
-    
-#elif defined( Q_OS_MAC)
-    return; //TODO: implement crash hander for MAC OS
+
 #else
+#ifndef Q_OS_MAC // if separate stack has been used in MAC OS as under Linux, then backtrace() will not work
+#define SA_FLAGS SA_ONSTACK | SA_SIGINFO
+
     stack_t sigstk;
     sigstk.ss_sp = malloc(SIGSTKSZ);
     sigstk.ss_size = SIGSTKSZ;
@@ -354,6 +355,10 @@ void CrashHandler::setupHandler() {
     if (sigaltstack(&sigstk,0) < 0) {
         perror("sigaltstack");
     }
+
+#else
+#define SA_FLAGS SA_SIGINFO
+#endif // Q_OS_MAK
 
     //struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
@@ -364,7 +369,7 @@ void CrashHandler::setupHandler() {
     }
 
     sa.sa_sigaction = signalHandler;
-    sa.sa_flags = SA_ONSTACK | SA_SIGINFO;
+    sa.sa_flags = SA_FLAGS;
     for (unsigned i = 0; kExceptionSignals[i] != -1; ++i) {
         sigaction(kExceptionSignals[i], &sa, NULL);
     }
@@ -373,7 +378,11 @@ void CrashHandler::setupHandler() {
 }
 
 void CrashHandler::runMonitorProcess(const QString &exceptionType) {
+#ifdef Q_OS_MAC
+    QString path = QCoreApplication::applicationDirPath() + "/ugenem.app/Contents/MacOS/ugenem";
+#else
     QString path = QCoreApplication::applicationDirPath() + "/ugenem";
+#endif
 
 #ifndef Q_OS_WIN
     char pid_buf[30];
@@ -413,7 +422,7 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType) {
         messageLog += "None";
     }
     reportText += messageLog + " | ";
-        
+
     QString taskList;
     TaskScheduler *ts = AppContext::getTaskScheduler();
     QList<Task* > topTasks = ts != NULL ? ts->getTopLevelTasks() : QList<Task*>();
@@ -438,7 +447,6 @@ void CrashHandler::runMonitorProcess(const QString &exceptionType) {
     if (taskList.isEmpty()) {
         reportText += "None";
     }
-
     
 #if defined (Q_OS_WIN)
     reportText += "|" + st.getBuffer();
