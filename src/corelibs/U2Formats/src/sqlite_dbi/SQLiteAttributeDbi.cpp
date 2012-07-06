@@ -160,9 +160,7 @@ void SQLiteAttributeDbi::readAttribute(SQLiteQuery &q, U2Attribute& attr) {
         return;
     }
     if (!q.step()) {
-        if (!q.hasError()) {
-            q.setError(SQLiteL10n::tr("Attribute not found!"));
-        }
+        coreLog.details(QString("Query %1 can't execute: required attribute not found in sqlite attribute database").arg(q.getQueryText()));
         return;
     }
     attr.id = q.getDataIdExt(1);

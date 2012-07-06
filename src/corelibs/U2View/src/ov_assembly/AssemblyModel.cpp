@@ -187,6 +187,10 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
             attr.value = cachedModelLength;
             attributeDbi->createIntegerAttribute(attr, os);
         }
+        if(cachedModelLength == NO_VAL){
+            os.setError("Can't get model length, database is corrupted");
+            LOG_OP(os);
+        }
     }
     return cachedModelLength;
 }
@@ -233,6 +237,10 @@ qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {
                 attr.value = cachedModelHeight;
                 attributeDbi->createIntegerAttribute(attr, os);
             }
+        }
+        if(cachedModelHeight  == NO_VAL){
+            os.setError("Can't get model height, database is corrupted");
+            LOG_OP(os);
         }
     }
     return cachedModelHeight;
@@ -469,6 +477,10 @@ qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
                 attr.value = cachedReadsNumber;
                 attributeDbi->createIntegerAttribute(attr, os);
             }
+        }
+        if(cachedReadsNumber  == NO_VAL){
+            os.setError("Can't get reads number, database is corrupted");
+            LOG_OP(os);
         }
     }
     return cachedReadsNumber;
