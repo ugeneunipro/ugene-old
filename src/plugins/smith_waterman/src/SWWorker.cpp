@@ -402,7 +402,7 @@ Task* SWWorker::tick() {
         
         if(mtrx.toLower() != "auto") {
             QByteArray alphChars = seq.alphabet->getAlphabetChars();
-            if(cfg.pSm.getAlphabet()->containsAll(alphChars.constData(), alphChars.length()) ) {
+            if(!cfg.pSm.getAlphabet()->containsAll(alphChars.constData(), alphChars.length()) ) {
                 return new FailTask(tr("Wrong matrix selected. Alphabets do not match"));
             }
         }
