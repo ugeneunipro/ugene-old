@@ -59,6 +59,8 @@ public:
     static const DocumentFormatId PDW;
     static const DocumentFormatId SNP;
     static const DocumentFormatId VCF4;
+    static const DocumentFormatId BAM;
+    static const DocumentFormatId UGENEDB;
 
     static DocumentFormat* get(const DocumentFormatId& formatId);
 };

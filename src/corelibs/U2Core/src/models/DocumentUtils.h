@@ -53,7 +53,7 @@ public:
 
 class U2CORE_EXPORT FormatDetectionConfig {
 public:
-    FormatDetectionConfig() : bestMatchesOnly(true), useImporters(false), useExtensionBonus(true){}
+    FormatDetectionConfig() : bestMatchesOnly(true), useImporters(false), useExtensionBonus(true), excludeHiddenFormats(true) {}
     
     /** if true format detection algorithm returns list of best matches only */
     bool bestMatchesOnly;
@@ -61,8 +61,11 @@ public:
     /** if false format detection algorithm do not test format importers and returns only real formats */
     bool useImporters;
 
-    /** if true file extension is checked and bonus is added if extension is matched for a format*/
+    /** if true file extension is checked and bonus is added if extension is matched for a format */
     bool useExtensionBonus;
+
+    /** if true then formats with the 'hidden' flag will be excluded */
+    bool excludeHiddenFormats;
 };
 
 class U2CORE_EXPORT DocumentUtils: public QObject    {

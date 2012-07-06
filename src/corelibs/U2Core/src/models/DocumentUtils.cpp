@@ -98,6 +98,9 @@ QList<FormatDetectionResult> DocumentUtils::detectFormat( const QByteArray& rawD
         if (conf.useExtensionBonus && f->getSupportedDocumentFileExtensions().contains(ext) && cr.score >= FormatDetection_VeryLowSimilarity) {
             cr.score += FORMAT_DETECTION_EXT_BONUS;
         }
+        if (conf.excludeHiddenFormats && f->checkFlags(DocumentFormatFlag_Hidden)) {
+            continue;
+        }
         FormatDetectionResult res;
         res.format = f;
         res.rawDataCheckResult = cr;

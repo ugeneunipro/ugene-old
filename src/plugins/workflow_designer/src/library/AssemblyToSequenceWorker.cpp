@@ -109,7 +109,7 @@ void AssemblyToSequencesTask::run() {
 
     U2AssemblyDbi *dbi = con.dbi->getAssemblyDbi();
     U2DataId assemblyId = assemblyObj->getEntityRef().entityId;
-    qint64 length = dbi->getMaxEndPos(assemblyId, os);
+    qint64 length = dbi->getMaxEndPos(assemblyId, os) + 1;
     SAFE_POINT_OP(os, );
     U2Region wholeAssembly(0, length);
     QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter(dbi->getReads(assemblyId, wholeAssembly, os));

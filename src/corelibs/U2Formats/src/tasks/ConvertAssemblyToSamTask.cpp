@@ -118,11 +118,18 @@ void ConvertAssemblyToSamTask::run() {
         objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, status);
     }
 
+    U2AssemblyDbi *aDbi = handle->dbi->getAssemblyDbi();
+    U2AttributeDbi *attDbi = handle->dbi->getAttributeDbi();
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle->dbi->getEntityTypeById(id);
         if (U2Type::Assembly == objectType) {
-            U2Assembly assembly = handle->dbi->getAssemblyDbi()->getAssemblyObject(id, status);
-            int length = handle->dbi->getAttributeDbi()->getIntegerAttribute(id, status).value;
+            U2Assembly assembly = aDbi->getAssemblyObject(id, status);
+            int length = 0;
+            if (NULL != attDbi) {
+                length = handle->dbi->getAttributeDbi()->getIntegerAttribute(id, status).value;
+            } else {
+                length = aDbi->getMaxEndPos(id, status) + 1;
+            }
             names.append(assembly.visualName.replace(QRegExp("\\s|\\t"), "_").toAscii());
             lengths.append(length);
         }

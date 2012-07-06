@@ -183,7 +183,8 @@ void DocumentFormatRegistryImpl::init() {
     registerFormat(vcf4);
 
     AppContext::getDbiRegistry()->registerDbiFactory(new SQLiteDbiFactory());
-    DbiDocumentFormat* sdbi = new DbiDocumentFormat(SQLiteDbiFactory::ID, "usqlite", tr("UGENE Database"), QStringList()<<"ugenedb" );
+    DocumentFormatFlags flags(DocumentFormatFlags_W1);
+    DbiDocumentFormat* sdbi = new DbiDocumentFormat(SQLiteDbiFactory::ID, BaseDocumentFormats::UGENEDB, tr("UGENE Database"), QStringList()<<"ugenedb", flags);
     registerFormat(sdbi);
 }
 

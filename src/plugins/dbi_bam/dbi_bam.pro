@@ -23,7 +23,8 @@ HEADERS += \
     src/ConvertToSQLiteDialog.h \
     src/LoadBamInfoTask.h \
     src/SamReader.h \
-    src/CancelledException.h
+    src/CancelledException.h \
+    src/SamtoolsBasedDbi.h
 SOURCES += \
     src/BAMDbiPlugin.cpp \
     src/BAMFormat.cpp \
@@ -46,7 +47,8 @@ SOURCES += \
     src/ConvertToSQLiteDialog.cpp \
     src/LoadBamInfoTask.cpp \
     src/SamReader.cpp \
-    src/CancelledException.cpp
+    src/CancelledException.cpp \
+    src/SamtoolsBasedDbi.cpp
 FORMS += \
     src/ConvertToSQLiteDialog.ui
 

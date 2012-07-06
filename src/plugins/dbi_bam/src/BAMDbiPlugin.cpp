@@ -47,6 +47,7 @@
 #include "BAMDbiPlugin.h"
 #include "LoadBamInfoTask.h"
 #include "BAMFormat.h"
+#include "SamtoolsBasedDbi.h"
 
 
 #include <QtGui/QAction>
@@ -54,6 +55,8 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
+
+#include "SamtoolsBasedDbi.h"
 
 namespace U2 {
 namespace BAM {
@@ -65,9 +68,14 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 
 BAMDbiPlugin::BAMDbiPlugin() : Plugin(tr("BAM format support"), tr("Interface for indexed read-only access to BAM files"))
 {
-    //Disabled until deciding it's future
-    //AppContext::getDocumentFormatRegistry()->registerFormat(new DbiDocumentFormat(DbiFactory::ID, "bam", tr("BAM File"), QStringList("bam")));
-    AppContext::getDbiRegistry()->registerDbiFactory(new DbiFactory());
+    DocumentFormatFlags flags = DocumentFormatFlags(DocumentFormatFlag_NoPack)
+        | DocumentFormatFlag_NoFullMemoryLoad
+        | DocumentFormatFlag_Hidden
+        | DocumentFormatFlag_SingleObjectFormat;
+    DocumentFormat *bamDbi = new DbiDocumentFormat(SamtoolsBasedDbiFactory::ID, BaseDocumentFormats::BAM, tr("BAM File"), QStringList("bam"), flags);
+    AppContext::getDocumentFormatRegistry()->registerFormat(bamDbi);
+    AppContext::getDbiRegistry()->registerDbiFactory(new SamtoolsBasedDbiFactory());
+    //AppContext::getDbiRegistry()->registerDbiFactory(new DbiFactory());
 
     {
         MainWindow *mainWindow = AppContext::getMainWindow();
@@ -149,7 +157,9 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
     AddDocumentTask * addTask = NULL;
     if(doc == NULL) {
         IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url.getURLString()));
-        DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById("usqlite");
+        CHECK(NULL != iof, );
+        DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::UGENEDB);
+        CHECK(NULL != df, );
         U2OpStatus2Log os;
         doc = df->createNewUnloadedDocument(iof, url, os);
         CHECK_OP(os, );

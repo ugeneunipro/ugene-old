@@ -53,11 +53,13 @@ public:
     virtual SharedDbiDataHandler getDataHandler(const U2EntityRef &entRef, bool useGC = true);
 
     U2DbiRef createTmpDbi(U2OpStatus &os);
+    void openDbi(const U2DbiRef &dbiRef, U2OpStatus &os);
 
 private:
     TmpDbiHandle *dbiHandle;
     QMap<U2DbiId, DbiConnection*> connections;
-    QList<U2DbiRef> tmpDbiList;
+    /* DbiRef <-> temporary */
+    QMap<U2DbiId, bool> dbiList;
 
     DbiConnection *getConnection(const U2DbiRef &dbiRef, U2OpStatus &os);
 };

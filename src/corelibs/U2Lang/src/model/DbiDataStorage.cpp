@@ -52,9 +52,12 @@ DbiDataStorage::~DbiDataStorage() {
         DbiConnection *connection = connections[id];
         delete connection;
     }
-    foreach (const U2DbiRef &tmpRef, tmpDbiList) {
-        if (QFile::exists(tmpRef.dbiId)) {
-            QFile::remove(tmpRef.dbiId);
+    foreach (const U2DbiId &dbiId, dbiList.keys()) {
+        bool temporary = dbiList.value(dbiId);
+        if (temporary) {
+            if (QFile::exists(dbiId)) {
+                QFile::remove(dbiId);
+            }
         }
     }
     delete dbiHandle;
@@ -163,8 +166,24 @@ U2DbiRef DbiDataStorage::createTmpDbi(U2OpStatus &os) {
     dbiRef.dbiFactoryId = DEFAULT_DBI_ID;
     SAFE_POINT_OP(os, U2DbiRef());
 
-    tmpDbiList << dbiRef;
+    SAFE_POINT(!dbiList.contains(dbiRef.dbiId),
+               QString("Temp dbi already exists: %1").arg(dbiRef.dbiId), dbiRef);
+
+    DbiConnection con(dbiRef, true, os);
+    SAFE_POINT_OP(os, U2DbiRef());
+
+    dbiList[dbiRef.dbiId] = true;
+    connections[dbiRef.dbiId] = new DbiConnection(con);
+
     return dbiRef;
+}
+
+void DbiDataStorage::openDbi(const U2DbiRef &dbiRef, U2OpStatus &os) {
+    DbiConnection con(dbiRef, false, os);
+    SAFE_POINT_OP(os, );
+
+    dbiList[dbiRef.dbiId] = false;
+    connections[dbiRef.dbiId] = new DbiConnection(con);
 }
 
 /************************************************************************/

@@ -102,6 +102,7 @@ void ReadAssemblyTask::prepare() {
 
     FormatDetectionConfig conf;
     conf.useImporters = true;
+    conf.excludeHiddenFormats = false;
     QList<FormatDetectionResult> fs = DocumentUtils::detectFormat(url, conf);
 
     foreach (const FormatDetectionResult &f, fs) {
@@ -153,7 +154,24 @@ void ReadAssemblyTask::run() {
         ioLog.info(tr("Reading assembly from %1 [%2]").arg(url).arg(format->getFormatName()));
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
         QVariantMap hints;
-        hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(storage->getDbiRef()));
+        {
+            // TODO: fix this hardcoded DBI id recognition
+            U2DbiFactoryId fId;
+            if (BaseDocumentFormats::UGENEDB == format->getFormatId()) {
+                fId = DEFAULT_DBI_ID;
+            } else if (BaseDocumentFormats::BAM == format->getFormatId()) {
+                fId = BAM_DBI_ID;
+            }
+            U2DbiFactory *dbiFactory = AppContext::getDbiRegistry()->getDbiFactoryById(fId);
+            SAFE_POINT(NULL != dbiFactory, QString("Unknown dbi factory id: %").arg(fId), );
+
+            U2OpStatusImpl os;
+            U2DbiRef dbiRef(dbiFactory->getId(), U2DataId(url.toAscii()));
+            storage->openDbi(dbiRef, os);
+            CHECK_OP(os, );
+
+            hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
+        }
         docPtr.reset(format->loadDocument(iof, url, hints, stateInfo));
         CHECK_OP(stateInfo, );
     } else {

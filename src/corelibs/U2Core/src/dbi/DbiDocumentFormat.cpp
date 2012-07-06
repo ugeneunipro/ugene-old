@@ -34,8 +34,8 @@
 namespace U2 {
 
 DbiDocumentFormat::DbiDocumentFormat(const U2DbiFactoryId& _id, const DocumentFormatId& _formatId, 
-                                     const QString& _formatName, const QStringList& exts, QObject* p) 
-: DocumentFormat(p, DocumentFormatFlags_W1, exts) 
+                                     const QString& _formatName, const QStringList& exts, DocumentFormatFlags flags, QObject* p) 
+: DocumentFormat(p, flags, exts) 
 {
     id = _id;
     formatId = _formatId;

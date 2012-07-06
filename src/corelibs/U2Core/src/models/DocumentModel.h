@@ -61,6 +61,8 @@ enum DocumentFormatFlag {
     DocumentFormatFlag_NoPack               = 1<<3,
     // Document is not fully loaded to memory. Used for database files
     DocumentFormatFlag_NoFullMemoryLoad     = 1<<4,
+    // Document is not included into format recognition by default
+    DocumentFormatFlag_Hidden               = 1<<5,
 };
 
 
