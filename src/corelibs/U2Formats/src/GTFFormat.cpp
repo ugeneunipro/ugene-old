@@ -297,6 +297,7 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& 
 
 void GTFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
 {
+    sequenceName = "";
     QList<SharedAnnotationData> annotations = parseDocument(io, os);
 
     foreach (SharedAnnotationData annotData, annotations) {
