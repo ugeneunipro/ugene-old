@@ -77,12 +77,7 @@ BAMDbiPlugin::BAMDbiPlugin() : Plugin(tr("BAM format support"), tr("Interface fo
     AppContext::getDbiRegistry()->registerDbiFactory(new SamtoolsBasedDbiFactory());
     //AppContext::getDbiRegistry()->registerDbiFactory(new DbiFactory());
 
-    {
-        MainWindow *mainWindow = AppContext::getMainWindow();
-        if (NULL != mainWindow) {
-            AppContext::getDocumentFormatRegistry()->getImportSupport()->addDocumentImporter(new BAMImporter());
-        }
-    }
+    AppContext::getDocumentFormatRegistry()->getImportSupport()->addDocumentImporter(new BAMImporter());
 }
 
 void BAMDbiPlugin::sl_converter() {
