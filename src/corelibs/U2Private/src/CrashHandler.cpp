@@ -31,6 +31,7 @@
 #include <U2Core/Timer.h>
 #include <U2Core/Version.h>
 
+
 #define MAX_CRASH_MESSAGES_TO_SEND 70
 
 #if defined(Q_OS_WIN32)
@@ -377,12 +378,9 @@ void CrashHandler::setupHandler() {
 #endif
 }
 
-void CrashHandler::runMonitorProcess(const QString &exceptionType) {
-#ifdef Q_OS_MAC
-    QString path = QCoreApplication::applicationDirPath() + "/ugenem.app/Contents/MacOS/ugenem";
-#else
+void CrashHandler::runMonitorProcess(const QString &exceptionType)
+{
     QString path = QCoreApplication::applicationDirPath() + "/ugenem";
-#endif
 
 #ifndef Q_OS_WIN
     char pid_buf[30];
