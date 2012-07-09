@@ -86,6 +86,10 @@ MWDockManagerImpl::MWDockManagerImpl(MainWindowImpl* _mw)
     tga->setShortcutContext(Qt::ApplicationShortcut);
     connect(tga, SIGNAL(triggered()), SLOT(sl_toggleDocks()));
     mw->addAction(tga);
+
+    mainWindowIsHidden = false;
+    mw->installEventFilter(this);
+
 }
 
 MWDockManagerImpl::~MWDockManagerImpl() {
@@ -416,7 +420,7 @@ void MWDockManagerImpl::sl_dockVisibilityChanged(bool visible) {
     if (visible) {
 		return; 
 	}
-    if (mw->isMinimized()) {
+    if (mw->isMinimized() || mainWindowIsHidden) {
         return;
     }
     QDockWidget* dock = qobject_cast<QDockWidget*>(sender());
@@ -464,6 +468,17 @@ DockData* MWDockManagerImpl::findDockByDockWidget(QDockWidget* dock) const  {
 }
 
 bool MWDockManagerImpl::eventFilter(QObject *obj, QEvent *event) {
+
+    if (obj == mw) {
+        if (event->type() == QEvent::Hide ) {
+            mainWindowIsHidden = true;
+        } else if (event->type() == QEvent::Show) {
+            mainWindowIsHidden = false;
+        } else {
+            return false;
+        }
+    }
+
     if (event->type() == QEvent::MouseButtonRelease) {
         QMouseEvent* me = (QMouseEvent*)event;
         if (me->button() == Qt::LeftButton) {
@@ -475,6 +490,7 @@ bool MWDockManagerImpl::eventFilter(QObject *obj, QEvent *event) {
             toggleDock(data);
         }
     }
+
     return false;
 }
 
@@ -489,7 +505,7 @@ void MWDockManagerImpl::toggleDock(DockData* d) {
 
 void MWDockManagerImpl::saveDockGeometry(DockData* dd) {
 	const QString& id = dd->wrapWidget->w->objectName();
-	const QSize& size = dd->wrapWidget->w->size();
+    const QSize& size = dd->wrapWidget->w->size();
 	Settings* s = AppContext::getSettings();
 	s->setValue(DOCK_SETTINGS+id+"/size", size);
 }

@@ -109,6 +109,10 @@ private:
     QToolBar* dockBottom;
     QAction*  statusBarAction;
 
+    // This variable is required in order to avoid unnessesary closing of dock widgets.
+    // It is controlled with the eventFilter function.
+    bool mainWindowIsHidden;
+
     QString lastActiveDocksState[MWDockArea_MaxDocks];
 };
 
