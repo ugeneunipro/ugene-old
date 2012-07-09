@@ -333,8 +333,8 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/1m.fa");
     GTUtilsMdi::click(os, GTGlobals::Minimize);
 
-    QWidget* w = GTUtilsMdi::findWindow(os, "1m.fa");
-    CHECK_SET_ERR(w != NULL, "Sequence view window title is not 1m.fa");
+    QWidget* w = GTUtilsMdi::findWindow(os, "1m [m] Multiple alignment");
+    CHECK_SET_ERR(w != NULL, "Sequence view window title is not 1m [m] Multiple alignment");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0025) {
