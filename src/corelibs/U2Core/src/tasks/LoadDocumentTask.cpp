@@ -489,7 +489,7 @@ void LoadDocumentTask::processObjRef() {
 
 Document* LoadDocumentTask::createCopyRestructuredWithHints(Document* doc, U2OpStatus& os) {
     Document *resultDoc = NULL;
-    QVariantMap& hints = doc->getGHintsMap();
+    QVariantMap hints = doc->getGHintsMap();
     if(hints.value(ProjectLoaderHint_MultipleFilesMode_Flag).toBool()){return NULL;}
     if (hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()) {
         QList<U2SequenceObject*> seqObjects;
