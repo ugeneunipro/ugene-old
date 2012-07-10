@@ -258,7 +258,7 @@ static QList<GObject*> createNewObjects(const QHash< U2SequenceObject*, QList<An
 {
     QList<GObject*> objects;
     // Creating sequence object for group sequence with the same alphabets. Amount of different alphabets = amount of sequence objects
-    for(QMap<DNAAlphabetType, QList<U2SequenceObject*> >::iterator it = mapObjects2Alpabets.begin(); it != mapObjects2Alpabets.end(); ++it){
+    for(QMap<DNAAlphabetType, QList<U2SequenceObject*> >::const_iterator it = mapObjects2Alpabets.begin(); it != mapObjects2Alpabets.end(); ++it){
         U2SequenceImporter seqImport;
         QString seqName = newUrl.fileName() ;
         if(mapObjects2Alpabets.size() > 1){
