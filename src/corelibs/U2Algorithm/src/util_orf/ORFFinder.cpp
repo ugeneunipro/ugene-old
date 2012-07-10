@@ -21,15 +21,16 @@
 
 #include "ORFFinder.h"
 
-#include <U2Core/Log.h>
-#include <U2Core/TextUtils.h>
 #include <U2Algorithm/DynTable.h>
 #include <U2Algorithm/RollingArray.h>
-#include <U2Core/Task.h>
 
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslationImpl.h>
+#include <U2Core/Log.h>
+#include <U2Core/Task.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <assert.h>
 
@@ -90,7 +91,9 @@ void ORFFindAlgorithm::find(
         for(qint64 i = cfg.searchRegion.startPos; i < end && !stopFlag && !os.isCoR(); i++, leftTillPercent--,++seqPointer) {
 			if((seqPointer % BLOCK_READ_FROM_DB) == 0){ // query to db
 				sequence.clear();
-				sequence.append(dnaSeq.getSequenceData(U2Region(i,qMin(end - i,(qint64)BLOCK_READ_FROM_DB+3))));
+                qint64 regLen = qMin(end - i, (qint64)BLOCK_READ_FROM_DB + 3);
+				sequence.append(dnaSeq.getSequenceData(U2Region(i, regLen), os));
+                SAFE_POINT_OP(os, );
 				seqPointer = 0;
 			}
             int frame = i%3;
@@ -140,7 +143,9 @@ void ORFFindAlgorithm::find(
             for(qint64 i = cfg.searchRegion.startPos; i < minInitiator && !stopFlag && initiatorsRemain && !os.isCoR(); i++,++seqPointer) {
 				if( (seqPointer %BLOCK_READ_FROM_DB) == 0){ // query to db
 					sequence.clear();
-					sequence.append(dnaSeq.getSequenceData(U2Region(i,qMin(qint64(minInitiator - i),qint64(BLOCK_READ_FROM_DB+3)))));
+                    qint64 regLen = qMin((qint64)minInitiator - i, (qint64)BLOCK_READ_FROM_DB + 3);
+					sequence.append(dnaSeq.getSequenceData(U2Region(i, regLen), os));
+                    SAFE_POINT_OP(os, );
 					seqPointer = 0;
 				}
                 int frame =(regLen+i)%3;
@@ -185,7 +190,10 @@ void ORFFindAlgorithm::find(
 			if((seqPointer % BLOCK_READ_FROM_DB) == 0){// query to db
 				sequence.clear();
 				QByteArray tmp;
-				tmp.append(dnaSeq.getSequenceData(U2Region(qMax(end,(qint64)(i-(BLOCK_READ_FROM_DB+3))),qMin(i-end+1,(qint64)BLOCK_READ_FROM_DB+3+1))));
+                qint64 regStart = qMax(end, (qint64)i - (BLOCK_READ_FROM_DB + 3));
+                qint64 regLen = qMin(i - end + 1, (qint64)BLOCK_READ_FROM_DB + 3 + 1);
+				tmp.append(dnaSeq.getSequenceData(U2Region(regStart, regLen), os));
+                SAFE_POINT_OP(os, );
 				sequence.append(tmp,tmp.size());
 				cfg.complementTT->translate(tmp,tmp.size(),sequence.data(),sequence.size());
 				TextUtils::reverse(sequence.data(),sequence.size());
@@ -239,7 +247,10 @@ void ORFFindAlgorithm::find(
 				if((seqPointer % BLOCK_READ_FROM_DB) == 0){// query to db
 					sequence.clear();
 					QByteArray tmp;
-					tmp.append(dnaSeq.getSequenceData(U2Region(qMax((qint64)maxInitiator ,qint64(i-(BLOCK_READ_FROM_DB+3))),qMin(i-maxInitiator+1,(qint64)(BLOCK_READ_FROM_DB+3+1)))));
+                    qint64 regStart = qMax((qint64)maxInitiator, (qint64)i - (BLOCK_READ_FROM_DB + 3));
+                    qint64 regLen = qMin(i - maxInitiator + 1, (qint64)BLOCK_READ_FROM_DB + 3 + 1);
+					tmp.append(dnaSeq.getSequenceData(U2Region(regStart, regLen), os));
+                    SAFE_POINT_OP(os, );
 					sequence.append(tmp,tmp.size());
 					cfg.complementTT->translate(tmp,tmp.size(),sequence.data(),sequence.size());
 					TextUtils::reverse(sequence.data(),sequence.size());

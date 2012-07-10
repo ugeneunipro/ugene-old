@@ -212,6 +212,7 @@ Task* QDWorker::tick() {
         settings.dnaSequence = seq;
         settings.region = U2Region(0, seq.length());
         scheme->setSequence(settings.dnaSequence);
+        scheme->setEntityRef(seqObj->getSequenceRef());
         bool outputType = actor->getParameter(OUTPUT_ATTR)->getAttributeValueWithoutScript<bool>();
         if (outputType) {
             settings.outputType = QDRunSettings::Single;

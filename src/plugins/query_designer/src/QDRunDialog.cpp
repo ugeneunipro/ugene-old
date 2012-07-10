@@ -392,8 +392,11 @@ void QDDialog::sl_okBtnClicked() {
     cawc->prepareAnnotationObject();
     const CreateAnnotationModel& m = cawc->getModel();
     
-    DNASequence sequence = ctx->getSequenceObject()->getWholeSequence();
+    U2SequenceObject *seqObj = ctx->getSequenceObject();
+    SAFE_POINT(NULL != seqObj, "NULL sequence object", );
+    DNASequence sequence = seqObj->getWholeSequence();
     scheme->setSequence(sequence);
+    scheme->setEntityRef(seqObj->getSequenceRef());
     QDRunSettings settings;
     GObject* ao = GObjectUtils::selectObjectByReference(m.annotationObjectRef, UOF_LoadedOnly);
     settings.annotationsObj = qobject_cast<AnnotationTableObject*>(ao);
