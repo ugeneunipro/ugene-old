@@ -147,4 +147,25 @@ int MSAUtils::getRowIndexByName( const MAlignment& ma, const QString& name )
     return -1;
 }
 
+MAlignmentObject* MSAUtils::seqObjs2msaObj(const QList<GObject*>& objects, U2OpStatus& os, bool useGenbankHeader){
+    MAlignment ma = seq2ma(objects, os, useGenbankHeader);
+
+    if (ma.isEmpty()) {
+        return NULL;
+    }
+    ma.trim();
+    return new MAlignmentObject(ma);    
+}
+
+MAlignmentObject* MSAUtils::seqDocs2msaObj(QList<Document*> docs, U2OpStatus& os, bool useGenbankHeader){
+    CHECK(!docs.isEmpty(), NULL);
+    QList<GObject*> objects;
+    foreach(Document* doc, docs){
+        objects << doc->getObjects();
+    }
+    return seqObjs2msaObj(objects, os, useGenbankHeader);
+
+    
+
+}
 }//namespace

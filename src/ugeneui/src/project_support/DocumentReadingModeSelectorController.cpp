@@ -30,7 +30,7 @@
 namespace U2{
 
 
-bool DocumentReadingModeSelectorController::adjustReadingMode(FormatDetectionResult& dr, bool forceOptions) {
+bool DocumentReadingModeSelectorController::adjustReadingMode(FormatDetectionResult& dr, bool forceOptions, bool optionsAlreadyChoosed) {
     // only sequence reading mode options are supported today
 
     // sequence reading: 
@@ -40,9 +40,9 @@ bool DocumentReadingModeSelectorController::adjustReadingMode(FormatDetectionRes
         // 4. as reads to be aligned to reference
 
     QVariantMap& props = dr.rawDataCheckResult.properties;
-	if(props.value((DocumentReadingMode_SequenceFilesMergeGapSize), -1).toInt() != -1){
-		return true;
-	}
+    if(optionsAlreadyChoosed){
+        return true;
+    }
     bool sequenceFound = props.value(RawDataCheckResult_Sequence).toBool();
     if (!sequenceFound && forceOptions) {
         DocumentFormatConstraints dfc;

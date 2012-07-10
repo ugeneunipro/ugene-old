@@ -24,6 +24,8 @@
 
 #include <U2Core/global.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/MAlignmentObject.h>
 
 namespace U2 {
 
@@ -49,6 +51,9 @@ public:
 
     //checks that alignment is not empty and all packed sequence parts has equal length
     static bool checkPackedModelSymmetry(MAlignment& ali, U2OpStatus& ti);
+
+    static MAlignmentObject* seqDocs2msaObj(QList<Document*> doc, U2OpStatus& os, bool useGenbankHeader = false);
+    static MAlignmentObject* seqObjs2msaObj(const QList<GObject*>& objects, U2OpStatus& os, bool useGenbankHeader = false);
 };
 
 

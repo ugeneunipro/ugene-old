@@ -52,6 +52,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2DbiRegistry.h>
 
 #include <QtCore/QFileInfo>
 
@@ -227,13 +228,14 @@ LoadDocumentTask::LoadDocumentTask(DocumentFormat* f, const GUrl& u,
     init();
 }
 
-static bool isLoadAsMergedDocument(QVariantMap& hints){
-    if(hints.value(ProjectLoaderHint_MergeMode_Flag, false).toBool() == true){ // if that document was/is merged
-        if(!QFile::exists(hints[ProjectLoaderHint_MergeMode_URLDocument].toString())){// if not exist - load as merge
+static bool isLoadFromMultipleFiles(QVariantMap& hints){
+    if(hints.value(ProjectLoaderHint_MultipleFilesMode_Flag, false).toBool() == true){ // if that document was/is collected from different files
+        if(!QFile::exists(hints[ProjectLoaderHint_MultipleFilesMode_Flag].toString())){// if not exist - load as collected 
             return true;
         }
-        hints.remove(ProjectLoaderHint_MergeMode_Flag); // if exist - remove hints indicated that document is merged. Now document is genbank
+        hints.remove(ProjectLoaderHint_MultipleFilesMode_Flag); // if exist - remove hints indicated that document is collected . Now document is genbank or clustalw
         hints[DocumentReadingMode_SequenceMergeGapSize] = -1;
+        hints[DocumentReadingMode_SequenceAsAlignmentHint] = false;
     }
 
     return false;
@@ -314,15 +316,14 @@ void LoadDocumentTask::prepare() {
     }
 }
 
-static Document* loadMergedDocument(IOAdapterFactory* iof, const QVariantMap& fs, U2OpStatus& os){
-    QStringList urls = fs[ProjectLoaderHint_MergeMode_URLsDocumentConsistOf].toStringList();
+static QList<Document*> loadMulti(IOAdapterFactory* iof, const QVariantMap& fs, U2OpStatus& os){
     QList<Document*> docs;
 
-    bool saveDoc = fs.value(ProjectLoaderHint_MergeMode_SaveDocumentFlag, false).toBool();
-
     os.setProgress(0);
-
     int curentDocIdx = 0;
+
+    QStringList urls = fs[ProjectLoaderHint_MultipleFilesMode_URLsDocumentConsistOf].toStringList();
+
     foreach(const QString& url, urls){
         FormatDetectionConfig conf;
         conf.useImporters = true;
@@ -336,15 +337,16 @@ static Document* loadMergedDocument(IOAdapterFactory* iof, const QVariantMap& fs
 
         QVariantMap fsLocal;
         fsLocal.unite(fs);
-
+        fsLocal.remove(DocumentReadingMode_SequenceMergeGapSize);
         DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(formats[0].format->getFormatId());
         docs << df->loadDocument(iof ,gurl, fsLocal, localOs);
-        CHECK_OP(os, NULL);
+        CHECK_OP(os, docs);
         curentDocIdx++;
     }
+    return docs;
+}
 
-    Document* doc = U1SequenceUtils::mergeSequences(docs, fs , os);
-
+void loadHintsNewDocument(bool saveDoc, IOAdapterFactory* iof, Document* doc, U2OpStatus& os){
     if(saveDoc){
         std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
         QString url = doc->getURLString();
@@ -361,6 +363,41 @@ static Document* loadMergedDocument(IOAdapterFactory* iof, const QVariantMap& fs
             }
         }
     }
+}
+
+static Document* loadFromMultipleFiles(IOAdapterFactory* iof, QVariantMap& fs, U2OpStatus& os){
+    QList<Document*> docs = loadMulti(iof, fs, os);
+    if(os.isCoR()){
+        foreach(Document* doc, docs){
+            delete doc;
+        }
+        return NULL;
+    }
+   
+    Document* doc = NULL;
+    QString newStringUrl = fs[ProjectLoaderHint_MultipleFilesMode_URLDocument].toString();
+    GUrl newUrl(newStringUrl, GUrl_File);
+    DocumentFormat* df= AppContext::getDocumentFormatRegistry()->getFormatById(fs[ProjectLoaderHint_MultipleFilesMode_RealDocumentFormat].toString());
+    QList<GObject*> newObjects;
+    
+    TmpDbiHandle dbiHandle(SESSION_TMP_DBI_ALIAS, os);
+    U2DbiRef ref;
+    if(fs.value(DocumentReadingMode_SequenceMergeGapSize, -1) != - 1){
+       ref = dbiHandle.getDbiRef();
+       newObjects << U1SequenceUtils::mergeSequences(docs, ref, newStringUrl, fs, os);
+    }
+    else if(fs.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()){                
+        newObjects << MSAUtils::seqDocs2msaObj(docs, os);
+        ref = U2DbiRef();
+    }    
+    else{
+        os.setError("Multiple files reading mode: unsupported flags");
+    }
+    CHECK_OP(os, NULL);
+    doc = new Document(df, iof, newUrl, ref, newObjects, fs);
+
+    bool saveDoc = fs.value(ProjectLoaderHint_MultipleFilesMode_SaveDocumentFlag, false).toBool();
+    loadHintsNewDocument(saveDoc, iof, doc, os);
 
     return doc;    
 }
@@ -379,11 +416,11 @@ void LoadDocumentTask::run() {
     hints.remove(GObjectHint_NamesList);
 
     try {
-        if(isLoadAsMergedDocument(hints)){
-            resultDocument = loadMergedDocument(iof, hints, stateInfo);
+        if(isLoadFromMultipleFiles(hints)){
+            resultDocument = loadFromMultipleFiles(iof, hints, stateInfo);
         }
         else{
-                resultDocument = format->loadDocument(iof, url, hints, stateInfo);
+            resultDocument = format->loadDocument(iof, url, hints, stateInfo);
         }             
     }
     catch(std::bad_alloc) {
@@ -450,18 +487,14 @@ void LoadDocumentTask::processObjRef() {
 }
 
 
-Document* LoadDocumentTask::createCopyRestructuredWithHints(const Document* doc, U2OpStatus& os) {
+Document* LoadDocumentTask::createCopyRestructuredWithHints(Document* doc, U2OpStatus& os) {
     Document *resultDoc = NULL;
-    const QVariantMap& hints = doc->getGHintsMap();
+    QVariantMap& hints = doc->getGHintsMap();
+    if(hints.value(ProjectLoaderHint_MultipleFilesMode_Flag).toBool()){return NULL;}
     if (hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()) {
         QList<U2SequenceObject*> seqObjects;
-        MAlignment ma = MSAUtils::seq2ma(doc->getObjects(), os);
-        if (ma.isEmpty()) {
-            return NULL;
-        }
-        ma.trim();
 
-        MAlignmentObject* maObj = new MAlignmentObject(ma);
+        MAlignmentObject* maObj = MSAUtils::seqObjs2msaObj(doc->getObjects(), os);
         QList<GObject*> objects;
         objects << maObj;
 
@@ -478,7 +511,13 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(const Document* doc,
         if (mergeGap < 0 || doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedOnly).count() <= 1) {
             return NULL;
         }
-        resultDoc = U1SequenceUtils::mergeSequences(doc, mergeGap, os);
+        //resultDoc = U1SequenceUtils::mergeSequences(doc, mergeGap, os);
+        TmpDbiHandle dbiHandle(SESSION_TMP_DBI_ALIAS, os);
+        QList<GObject*> objects = U1SequenceUtils::mergeSequences(doc, dbiHandle.getDbiRef(), hints, os);
+        Document* resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), 
+            dbiHandle.getDbiRef(), objects, hints, tr("File content was merged"));
+        doc->propagateModLocks(resultDoc);
+
         if (os.hasError()) {
             delete resultDoc;
             resultDoc = NULL;

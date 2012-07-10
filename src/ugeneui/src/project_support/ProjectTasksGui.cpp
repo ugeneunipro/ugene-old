@@ -210,7 +210,7 @@ void SaveOnlyProjectTask::prepare(){
 
     foreach(Document *d, proj->getDocuments()){
         
-        QStringList urls = d->getGHintsMap().value(ProjectLoaderHint_MergeMode_URLsDocumentConsistOf, QStringList()).toStringList();
+        QStringList urls = d->getGHintsMap().value(ProjectLoaderHint_MultipleFilesMode_URLDocument, QStringList()).toStringList();
         if(urls.isEmpty()){ // not merged document
             if (d->getURL().isLocalFile()) {
                 QFile pathToDoc(d->getURLString());

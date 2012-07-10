@@ -24,6 +24,7 @@
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
+#include <U2Core/GObject.h>
 
 #include <QtCore/QVariant>
 
@@ -58,8 +59,8 @@ public:
     /** Returns regions locations as if they were joined */
     static QVector<U2Region> getJoinedMapping(const QList<QByteArray>& seqParts);
 
-    static Document* mergeSequences(const Document* doc, int mergeGap, U2OpStatus& os);
-	static Document* mergeSequences(const QList<Document*> doc, QVariantMap hints, U2OpStatus& os);
+	static QList<GObject*> mergeSequences(const QList<Document*> doc, const U2DbiRef& ref, const QString& newStringUrl, QVariantMap& hints, U2OpStatus& os);
+    static QList<GObject*> mergeSequences(Document* doc, const U2DbiRef& ref, QVariantMap& hints, U2OpStatus& os);
 };
 
 

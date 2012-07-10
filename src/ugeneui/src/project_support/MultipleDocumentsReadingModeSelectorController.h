@@ -31,7 +31,9 @@ private slots:
    void sl_onMoveUp();
    void sl_onMoveDown();
    void sl_onChooseDirPath();
+   void sl_optionChanged(bool);
 private:
+   void setupNewUrl();
    QString deleteNumPrefix(QString);
    void deleteAllNumPrefix();
    void changeNumPrefix();

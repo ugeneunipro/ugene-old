@@ -43,11 +43,11 @@ class U2OpStatus;
 #define ProjectLoaderHint_ForceFormatOptions "force-format-options"
 #define ProjectLoaderHint_LoadWithoutView "load-without-view"
 #define ProjectLoaderHint_LoadUnloadedDocument "load-unloaded-document"
-#define ProjectLoaderHint_MergeMode_URLDocument "merge-mode-url-document"
-#define ProjectLoaderHint_MergeMode_URLsDocumentConsistOf "merge-mode-urls-document-consist-of"
-#define ProjectLoaderHint_MergeMode_SaveDocumentFlag "merge-mode-save-document-flag"
-#define ProjectLoaderHint_MergeMode_Flag "merge-mode-flag"
-#define ProjectLoaderHint_MergeMode_RealDocumentFormat  "merge-mode-real-document-format"
+#define ProjectLoaderHint_MultipleFilesMode_URLDocument "multiple-files-mode-url-document"
+#define ProjectLoaderHint_MultipleFilesMode_URLsDocumentConsistOf "multiple-files-mode-urls-document-consist-of"
+#define ProjectLoaderHint_MultipleFilesMode_SaveDocumentFlag "multiple-files-mode-save-document-flag"
+#define ProjectLoaderHint_MultipleFilesMode_Flag "multiple-files-mode-flag"
+#define ProjectLoaderHint_MultipleFilesMode_RealDocumentFormat  "multiple-files-mode-real-document-format"
 #define ProjectLoaderHint_MergeMode_DifferentAlphabets "merge-sequences-different-alphabets"
 
 /// Service responsible for project loading / unloading

@@ -327,7 +327,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
             }
         } else {
             QList<FormatDetectionResult> formats;
-            if(hintsOverDocuments.value(ProjectLoaderHint_MergeMode_Flag, false).toBool() == false){
+            if(hintsOverDocuments.value(ProjectLoaderHint_MultipleFilesMode_Flag, false).toBool() == false){
                 FormatDetectionConfig conf;
                 conf.useImporters = true;
                 conf.bestMatchesOnly = false;
@@ -335,7 +335,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
             }
             else{
                 FormatDetectionResult result;
-                result.format = AppContext::getDocumentFormatRegistry()->getFormatById(hintsOverDocuments[ProjectLoaderHint_MergeMode_RealDocumentFormat].toString());
+                result.format = AppContext::getDocumentFormatRegistry()->getFormatById(hintsOverDocuments[ProjectLoaderHint_MultipleFilesMode_RealDocumentFormat].toString());
                 formats << result;
             }
 
@@ -355,7 +355,8 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
 					dr.rawDataCheckResult.properties.unite(hintsOverDocuments);
                     if (dr.format != NULL ) {
                         bool forceReadingOptions = hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool();
-                        bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions);
+                        bool optionsAlreadyChoosed = hints.value((ProjectLoaderHint_MultipleFilesMode_Flag), false).toBool();
+                        bool ok = DocumentReadingModeSelectorController::adjustReadingMode(dr, forceReadingOptions, optionsAlreadyChoosed);
                         if (!ok) {
                             continue;
                         }
