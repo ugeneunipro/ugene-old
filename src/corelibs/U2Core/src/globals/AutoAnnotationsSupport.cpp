@@ -204,9 +204,14 @@ void AutoAnnotationObject::emitStateChange( bool started )
 const QString AutoAnnotationsUpdateTask::NAME("Auto-annotations update task");
 
 AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject* aaObj, QList<Task*> updateTasks ) :
-    Task(NAME, TaskFlags_NR_FOSCOE), aa(aaObj), lock(NULL), subTasks(updateTasks)
+    Task(NAME, TaskFlags_NR_FOSCOE), aa(aaObj), aaSeqObj(NULL), lock(NULL), subTasks(updateTasks)
 {
     setMaxParallelSubtasks(1);
+}
+
+AutoAnnotationsUpdateTask::~AutoAnnotationsUpdateTask()
+{
+    cleanup();
 }
 
 void AutoAnnotationsUpdateTask::prepare()
@@ -214,7 +219,8 @@ void AutoAnnotationsUpdateTask::prepare()
     SAFE_POINT(aa != NULL, tr("Empty auto-annotation object"), );
     
     lock = new StateLock("Auto-annotations update", StateLockFlag_LiveLock);
-    aa->getSeqObject()->lockState(lock);
+    aaSeqObj = aa->getSeqObject();
+    aaSeqObj->lockState(lock);
     
     aa->emitStateChange(true);
     foreach(Task* subtask, subTasks) {
@@ -222,19 +228,31 @@ void AutoAnnotationsUpdateTask::prepare()
     }
 }
 
+void AutoAnnotationsUpdateTask::cleanup()
+{
+    if (lock != NULL) {
+        aaSeqObj->unlockState(lock);
+        delete lock;
+    }
+
+}
+
 
 Task::ReportResult AutoAnnotationsUpdateTask::report()
 {
-    if (aa != NULL ) {
+
+    // If the task was cancelled, this may indicate that aa object was deleted
+    // TODO: add more reliable mechanism to prevent deletion of aa objects, while they are updated
+    if (isCanceled()) {
+        return ReportResult_Finished;
+    }
+
+
+    if ( aa != NULL ) {
         aa->emitStateChange(false);
     }
 
-    if (lock != NULL) {
-        aa->getSeqObject()->unlockState(lock);
-        delete lock;
-    }
-    
-    
+
     return ReportResult_Finished;
 }
 

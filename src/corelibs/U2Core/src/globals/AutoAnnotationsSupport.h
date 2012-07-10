@@ -112,11 +112,15 @@ class U2CORE_EXPORT AutoAnnotationsUpdateTask : public Task {
     Q_OBJECT
 public:
     AutoAnnotationsUpdateTask(AutoAnnotationObject* aaObj, QList<Task*> subtasks); 
+    virtual ~AutoAnnotationsUpdateTask();
     virtual void prepare();
+    virtual void cleanup();
     ReportResult report();
+    AutoAnnotationObject* getAutoAnnotationObject() { return aa; }
     static const QString NAME;
 protected:
     AutoAnnotationObject* aa;
+    U2SequenceObject* aaSeqObj;
     StateLock* lock;
     QList<Task*> subTasks;
 };

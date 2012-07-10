@@ -313,6 +313,12 @@ void AnnotatedDNAView::setFocusedSequenceWidget(ADVSequenceWidget* v) {
 
 bool AnnotatedDNAView::onCloseEvent() {
 
+
+    QList<AutoAnnotationObject*> aaList = autoAnnotationsMap.values();
+    foreach( AutoAnnotationObject* aa, aaList ) {
+        cancelAutoAnnotationUpdates(aa);
+    }
+
     foreach (ADVSplitWidget* w, splitWidgets) {
         bool canClose = w->onCloseEvent();
         if (!canClose) {
@@ -347,9 +353,7 @@ bool AnnotatedDNAView::onObjectRemoved(GObject* o) {
                 removeObject(ao);
             }
             seqContexts.removeOne(seqCtx);
-            AutoAnnotationObject* aa = autoAnnotationsMap.take(seqCtx);
-            emit si_annotationObjectRemoved(aa->getAnnotationObject());
-            delete aa;
+            removeAutoAnnotations(seqCtx);
             delete seqCtx;
         }
     }
@@ -862,6 +866,27 @@ void AnnotatedDNAView::addAutoAnnotations( ADVSequenceObjectContext* seqCtx )
         w->addADVSequenceWidgetAction( aaAction );
     }
 
+}
+
+void AnnotatedDNAView::removeAutoAnnotations(ADVSequenceObjectContext *seqCtx)
+{
+    AutoAnnotationObject* aa = autoAnnotationsMap.take(seqCtx);
+    cancelAutoAnnotationUpdates(aa);
+    emit si_annotationObjectRemoved(aa->getAnnotationObject());
+    delete aa;
+}
+
+void AnnotatedDNAView::cancelAutoAnnotationUpdates(AutoAnnotationObject* aa)
+{
+    QList<Task*> tasks = AppContext::getTaskScheduler()->getTopLevelTasks();
+    foreach (Task* t, tasks) {
+        AutoAnnotationsUpdateTask* aaUpdateTask = qobject_cast<AutoAnnotationsUpdateTask*> (t);
+        if (aaUpdateTask != NULL) {
+            if ( aaUpdateTask->getAutoAnnotationObject() == aa ) {
+                aaUpdateTask->cancel();
+            }
+        }
+    }
 }
 
 
