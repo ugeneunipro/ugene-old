@@ -206,6 +206,7 @@ const QString AutoAnnotationsUpdateTask::NAME("Auto-annotations update task");
 AutoAnnotationsUpdateTask::AutoAnnotationsUpdateTask( AutoAnnotationObject* aaObj, QList<Task*> updateTasks ) :
     Task(NAME, TaskFlags_NR_FOSCOE), aa(aaObj), aaSeqObj(NULL), lock(NULL), subTasks(updateTasks)
 {
+    aaObjectInvalid = false;
     setMaxParallelSubtasks(1);
 }
 
@@ -241,12 +242,10 @@ void AutoAnnotationsUpdateTask::cleanup()
 Task::ReportResult AutoAnnotationsUpdateTask::report()
 {
 
-    // If the task was cancelled, this may indicate that aa object was deleted
     // TODO: add more reliable mechanism to prevent deletion of aa objects, while they are updated
-    if (isCanceled()) {
+    if (isCanceled() && aaObjectInvalid) {
         return ReportResult_Finished;
     }
-
 
     if ( aa != NULL ) {
         aa->emitStateChange(false);

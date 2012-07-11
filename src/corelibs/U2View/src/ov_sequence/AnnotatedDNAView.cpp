@@ -883,6 +883,7 @@ void AnnotatedDNAView::cancelAutoAnnotationUpdates(AutoAnnotationObject* aa)
         AutoAnnotationsUpdateTask* aaUpdateTask = qobject_cast<AutoAnnotationsUpdateTask*> (t);
         if (aaUpdateTask != NULL) {
             if ( aaUpdateTask->getAutoAnnotationObject() == aa ) {
+                aaUpdateTask->setAutoAnnotationInvalid();
                 aaUpdateTask->cancel();
             }
         }

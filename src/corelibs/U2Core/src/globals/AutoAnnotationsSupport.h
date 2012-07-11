@@ -116,6 +116,7 @@ public:
     virtual void prepare();
     virtual void cleanup();
     ReportResult report();
+    void setAutoAnnotationInvalid() { aaObjectInvalid = true; }
     AutoAnnotationObject* getAutoAnnotationObject() { return aa; }
     static const QString NAME;
 protected:
@@ -123,6 +124,7 @@ protected:
     U2SequenceObject* aaSeqObj;
     StateLock* lock;
     QList<Task*> subTasks;
+    bool aaObjectInvalid;
 };
 
 
