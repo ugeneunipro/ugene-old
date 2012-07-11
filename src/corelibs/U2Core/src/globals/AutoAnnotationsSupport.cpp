@@ -104,7 +104,7 @@ bool AutoAnnotationsSupport::isAutoAnnotation( const GObject* obj )
 
 //////////////////////////////////////////////////////////////////////////
 
-AutoAnnotationObject::AutoAnnotationObject( U2SequenceObject* obj ) : dnaObj(obj)
+AutoAnnotationObject::AutoAnnotationObject( U2SequenceObject* obj, QObject* parent ) : QObject(parent), dnaObj(obj)
 {
     QVariantMap hints;
     hints.insert(AUTO_ANNOTATION_HINT, true);

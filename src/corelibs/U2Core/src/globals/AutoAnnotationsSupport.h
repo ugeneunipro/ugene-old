@@ -48,7 +48,7 @@ class U2CORE_EXPORT AutoAnnotationObject : public QObject
     Q_OBJECT
 public:
     static const QString AUTO_ANNOTATION_HINT;
-    AutoAnnotationObject(U2SequenceObject* obj);
+    AutoAnnotationObject(U2SequenceObject* obj, QObject* parent);
     ~AutoAnnotationObject();
     AnnotationTableObject* getAnnotationObject() const { return aobj; }
     U2SequenceObject* getSeqObject() const {return dnaObj; }

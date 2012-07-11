@@ -855,7 +855,7 @@ void AnnotatedDNAView::addRelatedAnnotations(ADVSequenceObjectContext* seqCtx) {
 void AnnotatedDNAView::addAutoAnnotations( ADVSequenceObjectContext* seqCtx )
 {
     
-    AutoAnnotationObject* aa = new AutoAnnotationObject(seqCtx->getSequenceObject());
+    AutoAnnotationObject* aa = new AutoAnnotationObject(seqCtx->getSequenceObject(), seqCtx);
     seqCtx->addAutoAnnotationObject(aa->getAnnotationObject());
     autoAnnotationsMap.insert(seqCtx, aa);
 
