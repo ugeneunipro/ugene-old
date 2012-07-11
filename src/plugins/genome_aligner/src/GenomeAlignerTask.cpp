@@ -353,13 +353,16 @@ void ReadShortReadsSubTask::run() {
     foreach (SearchQuery *qu, alignContext.queries) {
         delete qu;
     }
-    if (isCanceled()) {
-        return;
-    }
     alignContext.queries.clear();
     alignContext.bitValuesV.clear();
     alignContext.readNumbersV.clear();
     alignContext.positionsAtReadV.clear();
+
+    if (isCanceled()) {
+        alignContext.isReadingFinished = true;
+        alignContext.alignerWait.wakeAll();
+        return;
+    }
     bunchSize = 0;
     qint64 m = freeMemorySize;
     taskLog.details(QString("Memory size is %1").arg(m));
@@ -386,6 +389,8 @@ void ReadShortReadsSubTask::run() {
         if (NULL == query) {
             if (!seqReader->isEnd()) {
                 setError("Short-reads object type must be a sequence, but not a multiple alignment");
+                alignContext.isReadingFinished = true;
+                alignContext.alignerWait.wakeAll();
                 return;
             }
             break;
@@ -442,8 +447,10 @@ void ReadShortReadsSubTask::run() {
             }
         }
 
-        if (alignBunchSize > ALIGN_DATA_SIZE) {
-            alignContext.alignerWait.wakeAll();
+        if (!alignContext.openCL) {
+            if (alignBunchSize > ALIGN_DATA_SIZE) {
+                alignContext.alignerWait.wakeAll();
+            }
         }
     }
 

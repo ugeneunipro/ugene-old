@@ -24,6 +24,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "GenomeAlignerIndex.h"
 #include "GenomeAlignerTask.h"
@@ -158,9 +159,15 @@ void GenomeAlignerFindTask::getDataForAligning(int &first, int &length) {
 
 void GenomeAlignerFindTask::waitDataForAligning(int &first, int &length) {
     QMutexLocker lock(&shortReadsMutex);
-    while ((!alignContext->isReadingFinished && alignContext->bitValuesV.size() - nextElementToGive < ALIGN_DATA_SIZE)
-        || !alignContext->isReadingStarted) { //while (not enough read) wait
-        alignContext->alignerWait.wait(&shortReadsMutex);
+    if (alignContext->openCL) {
+        while (!alignContext->isReadingFinished) {
+            alignContext->alignerWait.wait(&shortReadsMutex);
+        }
+    } else {
+        while ((!alignContext->isReadingFinished && alignContext->bitValuesV.size() - nextElementToGive < ALIGN_DATA_SIZE)
+            || !alignContext->isReadingStarted) { //while (not enough read) wait
+            alignContext->alignerWait.wait(&shortReadsMutex);
+        }
     }
     unsafeGetData(first, length);
     if (alignContext->isReadingFinished) {
@@ -174,6 +181,10 @@ bool GenomeAlignerFindTask::runOpenCLBinarySearch() {
     if (!openCLFinished) {
         openCLFinished = true;
         delete[] bitMaskResults;
+        if (0 == alignContext->bitValuesV.size()) {
+            bitMaskResults = NULL;
+            return false;
+        }
         bitMaskResults = index->bitMaskBinarySearchOpenCL(alignContext->bitValuesV.constData(), alignContext->bitValuesV.size(), alignContext->bitFilter);
         if (NULL == bitMaskResults) {
             setError("OpenCL binary find error");
@@ -221,19 +232,23 @@ void ShortReadAligner::run() {
     BMType currentBitFilter = bitFilter;
 
     for (int part=0; part < index->getPartCount(); part++) {
-        q = const_cast<SearchQuery**>(alignContext->queries.constData());
-        const BMType *bitValues = alignContext->bitValuesV.constData();
-        const int *readNumbers = alignContext->readNumbersV.constData();
-        const int *par = alignContext->positionsAtReadV.constData();
-
         stateInfo.setProgress(100*part/index->getPartCount());
         parent->loadPartForAligning(part);
         if (parent->hasError()) {
             return;
         }
         stateInfo.setProgress(stateInfo.getProgress() + 25/index->getPartCount());
+
+        if (part > 0) {
+            SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
+            parent->getDataForAligning(first, length);
+        } else { //if (0 == part) then wait for reading shortreads
+            parent->waitDataForAligning(first, length);
+        }
+
 #ifdef OPENCL_SUPPORT
         if (alignContext->openCL) {
+            SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
             if (!parent->runOpenCLBinarySearch()) {
                 return;
             }
@@ -242,12 +257,12 @@ void ShortReadAligner::run() {
         }
 #endif
 
-        if (part > 0 || alignContext->openCL) {
-            parent->getDataForAligning(first, length);
-        } else { //if (0 == part) then wait for reading shortreads
-            parent->waitDataForAligning(first, length);
-        }
         while (length > 0) {
+            q = const_cast<SearchQuery**>(alignContext->queries.constData());
+            const BMType *bitValues = alignContext->bitValuesV.constData();
+            const int *readNumbers = alignContext->readNumbersV.constData();
+            const int *par = alignContext->positionsAtReadV.constData();
+
             if (!(part > 0 || alignContext->openCL)) {
                 w = GenomeAlignerTask::calculateWindowSize(alignContext->absMismatches,
                     alignContext->nMismatches, alignContext->ptMismatches, alignContext->minReadLength, alignContext->maxReadLength);
@@ -257,6 +272,7 @@ void ShortReadAligner::run() {
             last = first + length;
             for (int i=first; i<last; i++) {
                 if (part > 0 || alignContext->openCL) { //for avoiding a QVector deep copy
+                    SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
                     bv = bitValues[i];
                     rn = readNumbers[i];
                     pos = par[i];
@@ -311,7 +327,8 @@ void ShortReadAligner::run() {
                     }
                 }
             }
-            if (part > 0 || alignContext->openCL) {
+            if (part > 0) {
+                SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
                 parent->getDataForAligning(first, length);
             } else {
                 parent->waitDataForAligning(first, length);
