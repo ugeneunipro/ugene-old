@@ -4,7 +4,7 @@
 workflow "Dump sequence info"{
 
     Script-Dump-sequence-info {
-        type:"Script-Dump sequence info";
+        type:"Script-Dump Sequence Info";
         name:"Dump sequence info";
         script {
 out_text=getName(in_sequence) + ": " + size(in_sequence);

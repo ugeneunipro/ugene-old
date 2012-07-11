@@ -101,9 +101,8 @@ QScriptValue WorkflowScriptLibrary::print(QScriptContext *ctx, QScriptEngine *) 
 // unrefactored obsolete deprecated functions
 
 DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
-    Q_UNUSED(argNum);
     WorkflowScriptEngine *wse = dynamic_cast<WorkflowScriptEngine*>(engine);
-    Workflow::SharedDbiDataHandler seqId = ctx->argument(0).toVariant().value<Workflow::SharedDbiDataHandler>();
+    Workflow::SharedDbiDataHandler seqId = ctx->argument(argNum).toVariant().value<Workflow::SharedDbiDataHandler>();
     std::auto_ptr<U2SequenceObject> seqObj(Workflow::StorageUtils::getSequenceObject(wse->getWorkflowContext()->getDataStorage(), seqId));
     if (NULL == seqObj.get()) {
         return DNASequence();

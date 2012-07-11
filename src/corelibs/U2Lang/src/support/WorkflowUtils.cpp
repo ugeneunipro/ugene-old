@@ -43,6 +43,7 @@
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/StringAdapter.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
@@ -217,7 +218,9 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QListWidgetItem*>* info
 
     foreach (const Iteration& it, schema.getIterations()) {
         Schema sh;
-        QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh);
+        U2OpStatusImpl os;
+        QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh, os);
+        SAFE_POINT_OP(os, false);
         sh.applyConfiguration(it, map);
 
         good &= validateParameters(sh, infoList, &it, map);
@@ -296,7 +299,9 @@ bool WorkflowUtils::validate(const Schema& schema, QList<QMap<int, QVariant> >* 
 
     foreach (const Iteration& it, schema.getIterations()) {
         Schema sh;
-        QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh);
+        U2OpStatusImpl os;
+        QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh, os);
+        SAFE_POINT_OP(os, false);
         sh.applyConfiguration(it, map);
 
         good &= validateParameters(sh, infoList, &it, map);
@@ -367,7 +372,9 @@ bool WorkflowUtils::validate( const Workflow::Schema& schema, QStringList & errs
     
     foreach (const Iteration& it, schema.getIterations()) {
         Schema sh;
-        QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh);
+        U2OpStatusImpl os;
+        QMap<ActorId, ActorId> map = HRSchemaSerializer::deepCopy(schema, &sh, os);
+        SAFE_POINT_OP(os, false);
         sh.applyConfiguration(it, map);
         
         good &= validateParameters(sh, errs);

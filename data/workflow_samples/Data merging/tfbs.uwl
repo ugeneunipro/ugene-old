@@ -7,19 +7,6 @@
 #
 #To try out this sample, add the input files to the Read Sequence element, select the Read Weight Matrix, Read SITECON model and select name and location of the output file in the Write Sequence element and run the schema.
 #
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-
-
 
 workflow "Search for tfbs"{
 

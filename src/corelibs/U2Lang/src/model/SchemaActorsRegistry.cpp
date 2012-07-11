@@ -21,6 +21,9 @@
 
 #include <QMutexLocker>
 
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Lang/HRSchemaSerializer.h>
 
 #include "SchemaActorsRegistry.h"
@@ -52,7 +55,9 @@ Schema *SchemaActorsRegistry::getSchema(const QString &protoId) {
         return NULL;
     }
     Schema *copy = new Schema();
-    HRSchemaSerializer::deepCopy(*schema, copy);
+    U2OpStatusImpl os;
+    HRSchemaSerializer::deepCopy(*schema, copy, os);
+    SAFE_POINT_EXT(!os.isCoR(), copy->reset(), NULL);
     return copy;
 }
 

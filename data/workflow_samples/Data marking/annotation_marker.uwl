@@ -9,18 +9,6 @@
 #To try out this sample, add the input files to the Read Sequence  element, select the name and location of the output files to the Write Sequence  elements
 #(Write "Good" Sequence(s) and Write "Rest" Sequence(s)) and run the schema.
 #
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-
-
 
 workflow "Marking by annotation number"{
 
@@ -36,14 +24,17 @@ workflow "Marking by annotation number"{
     filter-by-values {
         type:filter-by-values;
         name:"Filter 'Good' Sequences";
+        text:good;
     }
     filter-by-values2 {
         type:filter-by-values;
         name:"Filter 'Rest' Sequences";
+        text:Rest;
     }
     write-sequence {
         type:write-sequence;
         name:"Write 'Good' Sequences";
+        document-format:genbank;
     }
     write-sequence2 {
         type:write-sequence;
@@ -83,19 +74,6 @@ workflow "Marking by annotation number"{
         path-through:filter-by-values2;
     }
 
-    .iteration "Default iteration"{
-        id:30;
-
-        filter-by-values {
-            text:good;
-        }
-        filter-by-values2 {
-            text:Rest;
-        }
-        write-sequence {
-            document-format:genbank;
-        }
-    }
     .meta {
         visual {
             read-sequence {

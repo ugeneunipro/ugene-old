@@ -17,7 +17,7 @@ workflow "Quality filter"{
         write-mode:2;
     }
     Script-Quality-filter-example {
-        type:"Script-Quality filter example";
+        type:"Script-Quality Filter Example";
         name:"Quality filter example";
         script {
 var qual;

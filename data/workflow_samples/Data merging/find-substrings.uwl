@@ -7,13 +7,6 @@
 #
 #To try out this sample, add the input files to the Read Sequence and Read Plain Text elements, select the name and location of the output files in the Write Sequence element and run the schema.
 #
-#
-#
-#
-#
-#
-
-
 
 workflow "Find substrings in sequences"{
 

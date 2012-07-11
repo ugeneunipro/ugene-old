@@ -51,6 +51,8 @@
 #include <U2Core/ProjectService.h>
 #include <U2Core/Settings.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/DesignerUtils.h>
 #include <U2Designer/GrouperEditor.h>
@@ -1187,7 +1189,9 @@ void WorkflowView::sl_importSchemaToElement() {
         ImportSchemaDialog d(this);
         if (d.exec()) {
             Schema *s = new Schema();
-            HRSchemaSerializer::deepCopy(schema, s);
+            U2OpStatusImpl os;
+            HRSchemaSerializer::deepCopy(schema, s, os);
+            SAFE_POINT_OP(os, );
             QString typeName = d.getTypeName();
 
             s->setTypeName(typeName);

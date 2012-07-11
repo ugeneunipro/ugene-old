@@ -194,7 +194,8 @@ Task::ReportResult WorkflowRunTask::report() {
 *******************************************/
 WorkflowIterationRunTask::WorkflowIterationRunTask(const Schema& sh, const Iteration& it) : 
 Task(QString("%1").arg(it.name), TaskFlags_NR_FOSCOE), context(NULL), schema(new Schema()), scheduler(NULL) {
-    rmap = HRSchemaSerializer::deepCopy(sh, schema);
+    rmap = HRSchemaSerializer::deepCopy(sh, schema, stateInfo);
+    SAFE_POINT_OP(stateInfo, );
     schema->applyConfiguration(it, rmap);
     
     if(schema->getDomain().isEmpty()) {
@@ -485,7 +486,8 @@ Task(QString("Execute iteration '%1'").arg(it.name), TaskFlags_NR_FOSCOE), schem
     meta.url = tempFile.fileName();
     tempFile.close();
     
-    rmap = HRSchemaSerializer::deepCopy(sc, schema);
+    rmap = HRSchemaSerializer::deepCopy(sc, schema, stateInfo);
+    SAFE_POINT_OP(stateInfo, );
     schema->applyConfiguration(it, rmap);
     schema->getIterations().clear();
     saveSchemaTask = new SaveWorkflowTask(schema, meta, true);

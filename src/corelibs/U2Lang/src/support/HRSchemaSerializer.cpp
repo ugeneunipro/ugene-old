@@ -24,6 +24,7 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/Log.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/ActorModel.h>
@@ -1766,7 +1767,9 @@ QString HRSchemaSerializer::includesDefinition(const QList<Actor*> & procs) {
 QString HRSchemaSerializer::elementsDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode) {
     QString res;
     foreach( Actor * actor, procs) {
-        res += makeBlock(nmap[actor->getId()], NO_NAME, elementsDefinitionBlock(actor, copyMode));
+        QString idStr = nmap[actor->getId()];
+        SAFE_POINT(!idStr.contains(QRegExp("\\s")), tr("Error: element name in the scheme file contains spaces"), QString());
+        res += makeBlock(idStr, NO_NAME, elementsDefinitionBlock(actor, copyMode));
     }
     return res + NEW_LINE;
 }
@@ -2020,7 +2023,9 @@ QString HRSchemaSerializer::schemaPortAliases(const NamesMap &nmap, const QList<
 HRSchemaSerializer::NamesMap HRSchemaSerializer::generateElementNames(const QList<Actor*>& procs) {
     QMap<ActorId, QString> nmap;
     foreach(Actor * proc, procs) {
-        nmap[proc->getId()] = proc->getId();//generateElementName(proc, nmap.values());
+        QString id = aid2str(proc->getId());
+        QString name = id.replace(QRegExp("\\s"), "-");
+        nmap[proc->getId()] = name;//generateElementName(proc, nmap.values());
     }
     return nmap;
 }
@@ -2045,12 +2050,13 @@ QString HRSchemaSerializer::schema2String(const Schema & schema, const Metadata 
     return res;
 }
 
-QMap<ActorId, ActorId> HRSchemaSerializer::deepCopy(const Schema& from, Schema* to) {
+QMap<ActorId, ActorId> HRSchemaSerializer::deepCopy(const Schema& from, Schema* to, U2OpStatus &os) {
     assert(to != NULL);
     QString data = schema2String(from, NULL, true);
     QMap<ActorId, ActorId> idMap;
     QString err = string2Schema(data, to, NULL, &idMap);
     if(!err.isEmpty()) {
+        os.setError(err);
         coreLog.details(err);
         to->reset();
         return QMap<ActorId, ActorId>();

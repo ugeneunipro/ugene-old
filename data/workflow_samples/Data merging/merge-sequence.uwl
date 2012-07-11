@@ -7,12 +7,6 @@
 #
 #To try out this sample, add the input files to the Read Sequence, select the name and location of the output files in the Write Sequence element and run the schema.
 #
-#
-#
-#
-#
-
-
 
 workflow "Merge sequences and shift corresponding annotations"{
 

@@ -42,6 +42,7 @@ namespace U2 {
 
 typedef QString ActorId;
 inline ActorId str2aid(const QString& s) {return s;}
+inline QString aid2str(const ActorId& s) {return s;}
 
 /**
  * attribute value can be obtained from script

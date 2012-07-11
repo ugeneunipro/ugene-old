@@ -210,7 +210,7 @@ public:
     static void parsePorts(Tokenizer & tokenizer, QList<DataConfig>& ports);
     static void parseAttributes(Tokenizer & tokenizer, QList<AttributeConfig>& attrs);
     
-    static QMap<ActorId, ActorId> deepCopy(const Schema& from, Schema* to);
+    static QMap<ActorId, ActorId> deepCopy(const Schema& from, Schema* to, U2OpStatus &os);
 
 private:
     static GrouperSlotAction parseAction(Tokenizer &tokenizer);

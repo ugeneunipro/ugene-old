@@ -9,14 +9,6 @@
 #To try out this sample, add the input files to the Read Sequence  element, select the name and location of the output files to the Write Sequence  elements
 #(Write "Short" Sequence(s) and Write "Long" Sequence(s)) and run the schema.
 #
-#
-#
-#
-#
-#
-#
-
-
 
 workflow "Marking by length"{
 
@@ -32,10 +24,12 @@ workflow "Marking by length"{
     filter-by-values {
         type:filter-by-values;
         name:"Filter 'Short' Sequences";
+        text:short;
     }
     filter-by-values2 {
         type:filter-by-values;
         name:"Filter 'Long' Sequences";
+        text:long;
     }
     write-sequence {
         type:write-sequence;
@@ -80,16 +74,6 @@ workflow "Marking by length"{
         path-through:filter-by-values2;
     }
 
-    .iteration "Default iteration"{
-        id:63;
-
-        filter-by-values {
-            text:short;
-        }
-        filter-by-values2 {
-            text:long;
-        }
-    }
     .meta {
         visual {
             read-sequence {

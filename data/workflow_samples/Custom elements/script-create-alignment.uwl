@@ -10,7 +10,7 @@ workflow "Create alignment"{
         mode:0;
     }
     Script-Create-alignment-example {
-        type:"Script-Create alignment example";
+        type:"Script-Create Alignment Example";
         name:"Create alignment example";
         script {
 var length;

@@ -53,13 +53,6 @@ workflow "Convert UQL schema results to alignment" {
     sequences-to-msa.msa->write-msa.in-msa.msa
     query.annotations->filter-annotations.in-annotations.annotations
 
-    .iteration "Default iteration"{
-        id:11;
-
-        query {
-            merge:false;
-        }
-    }
     .meta {
         visual {
             read-sequence {
