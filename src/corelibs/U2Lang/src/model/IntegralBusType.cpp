@@ -26,6 +26,7 @@
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/GrouperOutSlot.h>
 #include <U2Core/Log.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 namespace Workflow {
@@ -56,25 +57,54 @@ QString IntegralBusType::parseAttributeIdFromSlotDesc(const QString & str) {
     }
 }
 
+static void remapSlotsString(QString &slotStr, const QMap<ActorId, ActorId> &actorIdsMap) {
+    QStringList lst = slotStr.split(":");
+    SAFE_POINT(lst.size() > 0, "Bad slot id", );
+
+    QString idStr = lst.first();
+    ActorId oldId = str2aid(idStr);
+    if (actorIdsMap.contains(oldId)) {
+        ActorId newId = actorIdsMap[oldId];
+        QString newIdStr = aid2str(newId);
+        lst.replace(0, newIdStr);
+        QString newSlotStr = lst.join(":");
+        coreLog.trace("remapping old="+slotStr+" to new="+newSlotStr);        
+        slotStr = newSlotStr;
+    }
+}
+
 void IntegralBusType::remap(QStrStrMap& busMap, const QMap<ActorId, ActorId>& m) {
     foreach(QString key, busMap.uniqueKeys()) {
         QStringList newValList;
         foreach(QString val, busMap.value(key).split(";")) {
-            QStringList lst = val.split(":");
-            QString sid = lst.first();
-            ActorId id = str2aid(sid);
-            coreLog.trace("trying remap key="+key+" sid="+sid);
-            if (m.contains(id)) {
-                QString newSid = QString("%1").arg(m.value(id));
-                lst.replace(0, newSid);
-                QString newVal = lst.join(":");
-                coreLog.trace("remapping old="+val+" to new="+newVal);        
-                val = newVal;
-            }
+            remapSlotsString(val, m);
             newValList.append(val);
         }
         busMap.insert(key, newValList.join(";"));
     }
+}
+
+void IntegralBusType::remapPaths(SlotPathMap &pathsMap, const QMap<ActorId, ActorId> &actorIdsMap) {
+    SlotPathMap newPathsMap;
+    foreach (const SlotPair &slotsPair, pathsMap.keys()) {
+        QStringList oldPath = pathsMap.value(slotsPair, QStringList());
+        QStringList newPath;
+        foreach (const QString &idStr, oldPath) {
+            ActorId oldId = str2aid(idStr);
+            if (actorIdsMap.contains(oldId)) {
+                const ActorId &newId = actorIdsMap[oldId];
+                newPath << aid2str(newId);
+            } else {
+                newPath << aid2str(oldId);
+            }
+        }
+
+        SlotPair newSlotPair(slotsPair);
+        remapSlotsString(newSlotPair.second, actorIdsMap);
+
+        newPathsMap[newSlotPair] = newPath;
+    }
+    pathsMap = newPathsMap;
 }
 
 inline static QString getNewDisplayName(const QString &oldName, const QString &procName, const QString &slotStr) {

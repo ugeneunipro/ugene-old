@@ -201,11 +201,18 @@ void IntegralBusPort::clearPaths() {
 
 void IntegralBusPort::remap(const QMap<ActorId, ActorId>& m) {
     // TODO: find the way this method is called. And work up the PATHS_ATTR_ID parameter
-    Attribute* a = getParameter(BUS_MAP_ATTR_ID);
-    if (a) {
-        QStrStrMap busMap = a->getAttributeValueWithoutScript<QStrStrMap>();
+    Attribute* busAttr = getParameter(BUS_MAP_ATTR_ID);
+    if (busAttr) {
+        QStrStrMap busMap = busAttr->getAttributeValueWithoutScript<QStrStrMap>();
         IntegralBusType::remap(busMap, m);
         setParameter(BUS_MAP_ATTR_ID, qVariantFromValue<QStrStrMap>(busMap));
+    }
+
+    Attribute* pathsAttr = getParameter(PATHS_ATTR_ID);
+    if (busAttr) {
+        SlotPathMap pathsMap = pathsAttr->getAttributeValueWithoutScript<SlotPathMap>();
+        IntegralBusType::remapPaths(pathsMap, m);
+        setParameter(PATHS_ATTR_ID, qVariantFromValue<SlotPathMap>(pathsMap));
     }
 }
 

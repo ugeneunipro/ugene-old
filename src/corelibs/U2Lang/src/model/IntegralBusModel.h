@@ -24,7 +24,11 @@
 
 #include <U2Lang/ActorModel.h>
 
-typedef QMap<QPair<QString, QString>, QStringList> SlotPathMap;
+// destSlotId <-> sourceActorId:sourceSlotId
+typedef QPair<QString, QString> SlotPair;
+
+// connected slots <-> connection path (actorId1, actorId2, ...)
+typedef QMap<SlotPair, QStringList> SlotPathMap;
 
 namespace U2 {
 namespace Workflow {

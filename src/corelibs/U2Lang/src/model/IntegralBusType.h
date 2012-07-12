@@ -51,6 +51,7 @@ public:
     static QString parseAttributeIdFromSlotDesc(const QString & str);
     // when schema is deeply copied we need to remap actorIds in busmap
     static void remap(QStrStrMap& busMap, const QMap<ActorId, ActorId>&);
+    static void remapPaths(SlotPathMap &pathsMap, const QMap<ActorId, ActorId> &actorIdsMap);
     
 }; // IntegralBusType
 
