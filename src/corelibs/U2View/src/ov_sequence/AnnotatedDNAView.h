@@ -198,7 +198,7 @@ private:
     void addRelatedAnnotations(ADVSequenceObjectContext* seqCtx);
     void addAutoAnnotations(ADVSequenceObjectContext* seqCtx);
     void removeAutoAnnotations(ADVSequenceObjectContext* seqCtx);
-    void cancelAutoAnnotationUpdates(AutoAnnotationObject* aaObj);
+    void cancelAutoAnnotationUpdates(AutoAnnotationObject* aaObj, bool* existsRemovedTasks = NULL);
     void addGraphs(ADVSequenceObjectContext* seqCtx);
     void importDocAnnotations(Document* doc);
 

@@ -45,6 +45,7 @@
 #include <U2Core/Timer.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/RemoveAnnotationsTask.h>
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -312,20 +313,24 @@ void AnnotatedDNAView::setFocusedSequenceWidget(ADVSequenceWidget* v) {
 }
 
 bool AnnotatedDNAView::onCloseEvent() {
-
-
     QList<AutoAnnotationObject*> aaList = autoAnnotationsMap.values();
+    bool waitFinishedRemovedTasks = false;
     foreach( AutoAnnotationObject* aa, aaList ) {
-        cancelAutoAnnotationUpdates(aa);
+        bool existRemovedTask = false;
+        cancelAutoAnnotationUpdates(aa, &existRemovedTask);
+        waitFinishedRemovedTasks = waitFinishedRemovedTasks || existRemovedTask;
     }
-
+    if(waitFinishedRemovedTasks){
+        QMessageBox::information(this->getWidget(), "information", "Can not close view while there are annotations being processed");
+        return false;
+    }
     foreach (ADVSplitWidget* w, splitWidgets) {
         bool canClose = w->onCloseEvent();
         if (!canClose) {
             return false;
         }
     }
-
+    
     return true;
 }
 
@@ -876,19 +881,28 @@ void AnnotatedDNAView::removeAutoAnnotations(ADVSequenceObjectContext *seqCtx)
     delete aa;
 }
 
-void AnnotatedDNAView::cancelAutoAnnotationUpdates(AutoAnnotationObject* aa)
+
+void AnnotatedDNAView::cancelAutoAnnotationUpdates(AutoAnnotationObject* aa, bool* removeTaskExist)
 {
     QList<Task*> tasks = AppContext::getTaskScheduler()->getTopLevelTasks();
     foreach (Task* t, tasks) {
         AutoAnnotationsUpdateTask* aaUpdateTask = qobject_cast<AutoAnnotationsUpdateTask*> (t);
         if (aaUpdateTask != NULL) {
-            if ( aaUpdateTask->getAutoAnnotationObject() == aa ) {
+            if ( aaUpdateTask->getAutoAnnotationObject() == aa && !aaUpdateTask->isFinished()) {
                 aaUpdateTask->setAutoAnnotationInvalid();
                 aaUpdateTask->cancel();
-            }
+                if(removeTaskExist){
+                    *removeTaskExist = false;
+                    foreach(Task* subTask, aaUpdateTask->getSubtasks()){
+                        RemoveAnnotationsTask* rTask = qobject_cast<RemoveAnnotationsTask*> (subTask);
+                        if(rTask && !rTask->isFinished()){*removeTaskExist = true;}
+                    }
+                }
+            }            
         }
     }
 }
+
 
 
 /**
