@@ -19,37 +19,74 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Lang/IntegralBusType.h>
+
 #include "GrouperSlotAttribute.h"
 
 namespace U2 {
 
-GrouperSlotAttribute::GrouperSlotAttribute(const Descriptor &d, const DataTypePtr type, bool required, const QVariant &defaultValue)
+GrouperOutSlotAttribute::GrouperOutSlotAttribute(const Descriptor &d, const DataTypePtr type, bool required, const QVariant &defaultValue)
 : Attribute(d, type, required, defaultValue)
 {
 
 }
 
-GrouperSlotAttribute::~GrouperSlotAttribute() {
+GrouperOutSlotAttribute::~GrouperOutSlotAttribute() {
 }
 
-Attribute *GrouperSlotAttribute::clone() {
-    return new GrouperSlotAttribute(*this);
+Attribute *GrouperOutSlotAttribute::clone() {
+    return new GrouperOutSlotAttribute(*this);
 }
 
-AttributeGroup GrouperSlotAttribute::getGroup() {
+AttributeGroup GrouperOutSlotAttribute::getGroup() {
     return GROUPER_SLOT_GROUP;
 }
 
-QList<GrouperOutSlot> &GrouperSlotAttribute::getOutSlots() {
+QList<GrouperOutSlot> &GrouperOutSlotAttribute::getOutSlots() {
     return outSlots;
 }
 
-const QList<GrouperOutSlot> &GrouperSlotAttribute::getOutSlots() const {
+const QList<GrouperOutSlot> &GrouperOutSlotAttribute::getOutSlots() const {
     return outSlots;
 }
 
-void GrouperSlotAttribute::addOutSlot(const GrouperOutSlot &outSlot) {
+void GrouperOutSlotAttribute::addOutSlot(const GrouperOutSlot &outSlot) {
     outSlots.append(outSlot);
+}
+
+void GrouperOutSlotAttribute::updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap) {
+    QList<GrouperOutSlot> newOutSlots;
+    foreach (const GrouperOutSlot &gSlot, outSlots) {
+        QString slotStr = gSlot.getInSlotStr();
+        slotStr = GrouperOutSlot::readable2busMap(slotStr);
+        Workflow::IntegralBusType::remapSlotString(slotStr, actorIdsMap);
+        slotStr = GrouperOutSlot::busMap2readable(slotStr);
+
+        GrouperOutSlot newGSlot(gSlot);
+        newGSlot.setInSlotStr(slotStr);
+        newOutSlots << newGSlot;
+    }
+
+    outSlots = newOutSlots;
+}
+
+GroupSlotAttribute::GroupSlotAttribute(const Descriptor &d, const DataTypePtr type, bool required, const QVariant &defaultValue)
+: Attribute(d, type, required, defaultValue)
+{
+
+}
+
+Attribute *GroupSlotAttribute::clone() {
+    return new GroupSlotAttribute(*this);
+}
+
+void GroupSlotAttribute::updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap) {
+    QString slotStr = this->getAttributeValueWithoutScript<QString>();
+    slotStr = GrouperOutSlot::readable2busMap(slotStr);
+    Workflow::IntegralBusType::remapSlotString(slotStr, actorIdsMap);
+    slotStr = GrouperOutSlot::busMap2readable(slotStr);
+
+    this->setAttributeValue(slotStr);
 }
 
 } // U2

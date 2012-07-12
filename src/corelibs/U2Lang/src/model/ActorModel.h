@@ -192,6 +192,12 @@ public:
 
     ActorId getOwner() const;
     void setOwner(const ActorId &owner);
+
+    /**
+     * Ids of other actors in the scheme can be changed (after copy-paste, for example).
+     * It is needed to update all of ids which are used by this actor
+     */
+    virtual void updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap);
     
 signals:
     void si_labelChanged();

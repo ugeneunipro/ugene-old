@@ -143,6 +143,10 @@ AttributeGroup Attribute::getGroup() {
     return COMMON_GROUP;
 }
 
+void Attribute::updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap) {
+    Q_UNUSED(actorIdsMap);
+}
+
 /*************************************
 *  AttributeScript
 *************************************/

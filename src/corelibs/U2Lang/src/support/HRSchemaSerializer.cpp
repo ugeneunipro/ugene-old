@@ -792,7 +792,7 @@ GrouperSlotAction HRSchemaSerializer::parseAction(Tokenizer &tokenizer) {
 }
 
 void HRSchemaSerializer::parseGrouperOutSlots(Actor *proc, const QStringList &outSlotDefs, const QString &attrId) {
-    GrouperSlotAttribute *attr = dynamic_cast<GrouperSlotAttribute*>(proc->getParameter(attrId));
+    GrouperOutSlotAttribute *attr = dynamic_cast<GrouperOutSlotAttribute*>(proc->getParameter(attrId));
     Tokenizer tokenizer;
 
     QStringList names;
@@ -1662,7 +1662,7 @@ QString HRSchemaSerializer::scriptBlock(const QString & scriptText, int tabsNum)
 }
 
 QString HRSchemaSerializer::grouperOutSlotsDefinition(Attribute *attribute) {
-    GrouperSlotAttribute *a = dynamic_cast<GrouperSlotAttribute*>(attribute);
+    GrouperOutSlotAttribute *a = dynamic_cast<GrouperOutSlotAttribute*>(attribute);
     QString result;
 
     foreach (const GrouperOutSlot &slot, a->getOutSlots()) {

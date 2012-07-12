@@ -208,6 +208,7 @@ static QString itemsItself(const QList<QGraphicsItem*> & items, const QList<Iter
     QString res;
     HRSchemaSerializer::NamesMap nmap = HRSchemaSerializer::generateElementNames(procs);
     res += HRSchemaSerializer::elementsDefinition(procs, nmap);
+    res += HRSchemaSerializer::markersDefinition(procs, nmap);
     res += HRSchemaSerializer::dataflowDefinition(procs, nmap);
     res += HRSchemaSerializer::iterationsDefinition(iterations, nmap, false);
     res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::META_START, HRSchemaSerializer::NO_NAME, itemsMeta(procs, items, nmap));

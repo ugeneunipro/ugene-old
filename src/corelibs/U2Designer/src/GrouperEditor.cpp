@@ -64,7 +64,7 @@ void GrouperEditor::setConfiguration(Actor *actor) {
     ActorConfigurationEditor::setConfiguration(actor);
     QMap<QString, Attribute*> attrs = cfg->getParameters();
 
-    GrouperSlotAttribute *gAttr = NULL;
+    GrouperOutSlotAttribute *gAttr = NULL;
     foreach (QString key, attrs.keys()) {
         Attribute *attr = attrs.value(key);
         if (GROUPER_SLOT_GROUP == attr->getGroup()) {
@@ -73,7 +73,7 @@ void GrouperEditor::setConfiguration(Actor *actor) {
                 gAttr = NULL;
                 break;
             }
-            gAttr = dynamic_cast<GrouperSlotAttribute*>(attr);
+            gAttr = dynamic_cast<GrouperOutSlotAttribute*>(attr);
         }
     }
 

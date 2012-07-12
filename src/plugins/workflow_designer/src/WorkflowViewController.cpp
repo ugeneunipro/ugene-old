@@ -1293,7 +1293,9 @@ void WorkflowView::sl_pasteItems(const QString& s) {
     if (wf->checkRawData(lpt).score != FormatDetection_Matched) {
         return;
     }
+    disconnect(scene, SIGNAL(selectionChanged()), this, SLOT(sl_editItem()));
     scene->clearSelection();
+    connect(scene, SIGNAL(selectionChanged()), SLOT(sl_editItem()));
     
     QList<Iteration> oldIterations = scene->getIterations();
     scene->setIterations(QList<Iteration>());
@@ -1361,6 +1363,14 @@ void WorkflowView::remapActorsIds(){
             mapIds[oldId] = newId;
         }
     }
+
+    foreach(QGraphicsItem * it, scene->selectedItems()) {
+        if(it->type() == WorkflowProcessItemType) {
+            Actor* a = qgraphicsitem_cast<WorkflowProcessItem*>(it)->getProcess();
+            a->updateActorIds(mapIds);
+        }
+    }
+
     foreach(QGraphicsItem * it, scene->selectedItems()) {
         if(it->type() == WorkflowBusItemType) {
             WorkflowBusItem* busItem = qgraphicsitem_cast<WorkflowBusItem*>(it);            
@@ -1835,7 +1845,7 @@ bool WorkflowScene::refreshGrouperSlots(Actor *proc) {
     }
     // refresh out slots
     {
-        GrouperSlotAttribute *attr = dynamic_cast<GrouperSlotAttribute*>(proc->getParameter(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR));
+        GrouperOutSlotAttribute *attr = dynamic_cast<GrouperOutSlotAttribute*>(proc->getParameter(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR));
         QList<GrouperOutSlot> &outSlots = attr->getOutSlots();
         QList<GrouperOutSlot>::iterator i = outSlots.begin();
         while (i != outSlots.end()) {

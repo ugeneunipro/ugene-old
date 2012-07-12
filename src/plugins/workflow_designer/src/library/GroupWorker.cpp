@@ -60,7 +60,7 @@ void GroupWorker::init() {
     outChannel = ports.value(OUTPUT_PORT);
     mtype = outChannel->getBusType();
 
-    GrouperSlotAttribute *slotsAttr = dynamic_cast<GrouperSlotAttribute*>(actor->getParameter(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR));
+    GrouperOutSlotAttribute *slotsAttr = dynamic_cast<GrouperOutSlotAttribute*>(actor->getParameter(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR));
     outSlots = slotsAttr->getOutSlots();
     groupSlot = actor->getParameter(CoreLibConstants::GROUPER_SLOT_ATTR)->getAttributePureValue().toString();
     produceOneGroup = groupSlot.isEmpty();
@@ -181,10 +181,10 @@ void GroupWorkerFactory::init() {
     QList<Attribute*> attrs;
     {
         Descriptor slotsDesc(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR, GroupWorker::tr("Out slots"), GroupWorker::tr("Out slots"));
-        Attribute *slotsAttr = new GrouperSlotAttribute(slotsDesc, BaseTypes::STRING_TYPE(), false);
+        Attribute *slotsAttr = new GrouperOutSlotAttribute(slotsDesc, BaseTypes::STRING_TYPE(), false);
 
         Descriptor groupDesc(CoreLibConstants::GROUPER_SLOT_ATTR, GroupWorker::tr("Group slot"), GroupWorker::tr("Group slot"));
-        Attribute *groupAttr = new Attribute(groupDesc, BaseTypes::STRING_TYPE(), false);
+        Attribute *groupAttr = new GroupSlotAttribute(groupDesc, BaseTypes::STRING_TYPE(), false);
 
         Descriptor opDesc(OPER_ATTR_ID, GroupWorker::tr("Group operation"), GroupWorker::tr("Group operation"));
         Attribute *opAttr = new Attribute(opDesc, BaseTypes::STRING_TYPE(), true);

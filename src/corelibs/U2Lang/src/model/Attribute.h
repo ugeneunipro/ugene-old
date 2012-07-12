@@ -128,6 +128,12 @@ public:
 
     virtual AttributeGroup getGroup();
 
+    /**
+     * Ids of actors in the scheme can be changed (after copy-paste, for example).
+     * It is needed to update all of ids which are used by this attribute
+     */
+    virtual void updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap);
+
     
 private:
     void debugCheckAttributeId() const;

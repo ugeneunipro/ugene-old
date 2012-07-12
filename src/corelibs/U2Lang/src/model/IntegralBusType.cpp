@@ -57,7 +57,7 @@ QString IntegralBusType::parseAttributeIdFromSlotDesc(const QString & str) {
     }
 }
 
-static void remapSlotsString(QString &slotStr, const QMap<ActorId, ActorId> &actorIdsMap) {
+void IntegralBusType::remapSlotString(QString &slotStr, const QMap<ActorId, ActorId> &actorIdsMap) {
     QStringList lst = slotStr.split(":");
     SAFE_POINT(lst.size() > 0, "Bad slot id", );
 
@@ -77,7 +77,7 @@ void IntegralBusType::remap(QStrStrMap& busMap, const QMap<ActorId, ActorId>& m)
     foreach(QString key, busMap.uniqueKeys()) {
         QStringList newValList;
         foreach(QString val, busMap.value(key).split(";")) {
-            remapSlotsString(val, m);
+            remapSlotString(val, m);
             newValList.append(val);
         }
         busMap.insert(key, newValList.join(";"));
@@ -100,7 +100,7 @@ void IntegralBusType::remapPaths(SlotPathMap &pathsMap, const QMap<ActorId, Acto
         }
 
         SlotPair newSlotPair(slotsPair);
-        remapSlotsString(newSlotPair.second, actorIdsMap);
+        remapSlotString(newSlotPair.second, actorIdsMap);
 
         newPathsMap[newSlotPair] = newPath;
     }

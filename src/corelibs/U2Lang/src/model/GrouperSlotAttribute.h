@@ -27,13 +27,14 @@
 
 namespace U2 {
 
-class U2LANG_EXPORT GrouperSlotAttribute : public Attribute {
+class U2LANG_EXPORT GrouperOutSlotAttribute : public Attribute {
 public:
-    GrouperSlotAttribute(const Descriptor &d, const DataTypePtr type, bool required = false, const QVariant &defaultValue = QVariant());
-    ~GrouperSlotAttribute();
+    GrouperOutSlotAttribute(const Descriptor &d, const DataTypePtr type, bool required = false, const QVariant &defaultValue = QVariant());
+    ~GrouperOutSlotAttribute();
 
     virtual Attribute *clone();
     virtual AttributeGroup getGroup();
+    virtual void updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap);
 
     QList<GrouperOutSlot> &getOutSlots();
     const QList<GrouperOutSlot> &getOutSlots() const;
@@ -41,6 +42,14 @@ public:
 
 private:
     QList<GrouperOutSlot> outSlots;
+};
+
+class U2LANG_EXPORT GroupSlotAttribute : public Attribute {
+public:
+    GroupSlotAttribute(const Descriptor &d, const DataTypePtr type, bool required = false, const QVariant &defaultValue = QVariant());
+
+    virtual Attribute *clone();
+    virtual void updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap);
 };
 
 } // U2

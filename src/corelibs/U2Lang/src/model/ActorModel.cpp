@@ -113,6 +113,16 @@ void Actor::setOwner(const ActorId &owner) {
     this->owner = owner;
 }
 
+void Actor::updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap) {
+    if (actorIdsMap.contains(owner)) {
+        owner = actorIdsMap[owner];
+    }
+
+    foreach (Attribute *a, this->getAttributes()) {
+        a->updateActorIds(actorIdsMap);
+    }
+}
+
 ActorPrototype * Actor::getProto() const {
     return proto;
 }
