@@ -38,7 +38,6 @@ int asciiToVirtual(int);
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
-    key = asciiToVirtual(key);
 
     bool isChanged = false;
     switch(key) {
@@ -79,6 +78,8 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 
         CGEventPost(kCGHIDEventTap, event);
         CFRelease(event);
+    } else {
+        key = asciiToVirtual(key);
     }
 
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
@@ -93,7 +94,6 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
-    key = asciiToVirtual(key);
 
     bool isChanged = false;
     switch(key) {
@@ -119,6 +119,9 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
         break;
     }
 
+    if (!isChanged) {
+        key = asciiToVirtual(key);
+    }
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
     GT_CHECK(event != NULL, "Can't create event");
 
