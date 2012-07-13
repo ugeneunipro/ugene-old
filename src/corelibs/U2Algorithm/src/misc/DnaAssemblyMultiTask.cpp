@@ -23,11 +23,16 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/ProjectModel.h>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/MainWindow.h>
+
+#include <QMainWindow>
+#include <QMessageBox>
 
 namespace U2 {
 
@@ -67,9 +72,17 @@ QList<Task*> DnaAssemblyMultiTask::onSubTaskFinished( Task* subTask ) {
     }
 
     if ( subTask == assemblyToRefTask && settings.openView ) {
-        Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(settings.resultFileName);
-        if (openTask != NULL) {
-            subTasks << openTask;
+        if (assemblyToRefTask->isHaveResult()) {
+            Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(settings.resultFileName);
+            if (openTask != NULL) {
+                subTasks << openTask;
+            }
+        } else {
+            QString message = tr("The short reads can't be mapped to the reference sequence!");
+            coreLog.info(message);
+            if (NULL != AppContext::getMainWindow()) {
+                QMessageBox::information(AppContext::getMainWindow()->getQMainWindow(), L10N::warningTitle(), message);
+            }
         }
     }
 

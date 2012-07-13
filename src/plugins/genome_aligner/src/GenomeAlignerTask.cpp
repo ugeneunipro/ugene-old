@@ -304,6 +304,8 @@ Task::ReportResult GenomeAlignerTask::report() {
         taskLog.info(tr("Index loading time = %1").arg(indexLoadTime));
         taskLog.info(tr("Short-reads IO time = %1").arg(shortreadIOTime/(1000*1000)));
     }
+
+    haveResults = (readsAligned > 0);
     
     return ReportResult_Finished;
 }
