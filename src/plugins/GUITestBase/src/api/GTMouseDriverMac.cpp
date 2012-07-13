@@ -22,29 +22,81 @@
 #include "GTMouseDriver.h"
 #include "api/GTGlobals.h"
 
-#ifdef  __APPLE__//&__MACH__
-    // #include <...>
+#include <QCursor>
+
+#ifdef  Q_OS_MAC
+#include <ApplicationServices/ApplicationServices.h>
 #endif
 
 namespace U2 {
 
-#ifdef  __APPLE__//&__MACH__
+#ifdef  Q_OS_MAC
+#define GT_CLASS_NAME "GTMouseDriverMac"
 
+#define GT_METHOD_NAME "moveTo"
 void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
 {
-}
+    CGDirectDisplayID displayID = CGMainDisplayID();
+    size_t horres = CGDisplayPixelsWide (displayID);
+    size_t vertres = CGDisplayPixelsHigh (displayID);
 
+    QRect screen(0, 0, horres-1, vertres-1);
+    GT_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
+
+    CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, CGPointMake(x, y), 0 /*ignored*/);
+    GT_CHECK(event != NULL, "Can't create event");
+
+    CGEventPost(kCGHIDEventTap, event);
+    CFRelease(event);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "press"
 void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
 {
-}
+    QPoint mousePos = QCursor::pos();
+    CGEventType eventType = button == Qt::LeftButton ? kCGEventLeftMouseDown :
+                                button == Qt::RightButton ? kCGEventRightMouseDown:
+                                button == Qt::MidButton ? kCGEventOtherMouseDown : kCGEventNull;
+    CGEventRef event = CGEventCreateMouseEvent(NULL, eventType, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
+    GT_CHECK(event != NULL, "Can't create event");
 
+    CGEventPost(kCGHIDEventTap, event);
+    CFRelease(event);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "release"
 void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
 {
-}
+    QPoint mousePos = QCursor::pos();
+    CGEventType eventType = button == Qt::LeftButton ? kCGEventLeftMouseUp :
+                                button == Qt::RightButton ? kCGEventRightMouseUp:
+                                button == Qt::MidButton ? kCGEventOtherMouseUp : kCGEventNull;
+    CGEventRef event = CGEventCreateMouseEvent(NULL, eventType, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
+    GT_CHECK(event != NULL, "Can't create event");
 
+    CGEventPost(kCGHIDEventTap, event);
+    CFRelease(event);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "scroll"
 void GTMouseDriver::scroll(U2OpStatus &os, int value)
 {
-}
+    CGEventRef event = CGEventCreateScrollWheelEvent(NULL, kCGScrollEventUnitPixel, 1, value > 0 ? 10 : -10);
+    GT_CHECK(event != NULL, "Can't create event");
+    //  Scrolling movement is generally represented by small signed integer values, typically in a range from -10 to +10.
+    //  Large values may have unexpected results, depending on the application that processes the event.
+    value = value > 0 ? value : -value;
+    for (int i = 0; i < value; i += 10) {
+        CGEventPost(kCGHIDEventTap, event);
+    }
 
+    CFRelease(event);
+}
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 #endif
 } //namespace

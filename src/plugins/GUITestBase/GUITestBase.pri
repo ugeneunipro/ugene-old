@@ -10,6 +10,9 @@ unix {
     !macx {
     LIBS += -lXtst
     }
+    macx {
+    QMAKE_LFLAGS += -framework ApplicationServices
+    }
 }
 
 
