@@ -331,5 +331,5 @@ int asciiToVirtual(int key)
     return key;
 }
 
-} //namespace
 #endif
+} //namespace
