@@ -52,6 +52,7 @@ void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, const QString &str, int m
         } else {
             keyClick(os, asciiChar);
         }
+        GTGlobals::sleep(10); // need for MacOS
     }
 
     if (modifiers) {
