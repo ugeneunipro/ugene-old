@@ -27,13 +27,13 @@
 #include <Carbon/Carbon.h>
 #endif
 
-int asciiToVirtual(int);
-
 namespace U2 {
 
 #ifdef  Q_OS_MAC
-#define GT_CLASS_NAME "GTKeyboardDriverMac"
 
+int asciiToVirtual(int);
+
+#define GT_CLASS_NAME "GTKeyboardDriverMac"
 #define GT_METHOD_NAME "keyPress"
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 {
@@ -177,10 +177,6 @@ GTKeyboardDriver::keys::keys()
 }
 
 #undef GT_CLASS_NAME
-
-#endif
-
-} //namespace
 
 int asciiToVirtual(int key)
 {
@@ -334,3 +330,6 @@ int asciiToVirtual(int key)
 
     return key;
 }
+
+} //namespace
+#endif
