@@ -23,6 +23,7 @@
 
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -44,27 +45,21 @@ void SequencesToMSAWorker::init() {
     outPort = ports.value(BasePorts::OUT_MSA_PORT_ID());
 }
 
-bool SequencesToMSAWorker::isReady() {
-    return inPort->hasMessage();
-}
-
-bool SequencesToMSAWorker::isDone() {
-    return outPort->isEnded();;
-}
-
 void SequencesToMSAWorker::cleanup() {}
 
 Task* SequencesToMSAWorker::tick() {
-    Message inputMessage = getMessageAndSetupScriptValues(inPort);
-    QVariantMap qm = inputMessage.getData().toMap();
-    SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return NULL;
+    if (inPort->hasMessage()) {
+        Message inputMessage = getMessageAndSetupScriptValues(inPort);
+        QVariantMap qm = inputMessage.getData().toMap();
+        SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
+        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.get()) {
+            return NULL;
+        }
+        DNASequence seq = seqObj->getWholeSequence();
+        data.append(seq);
     }
-    DNASequence seq = seqObj->getWholeSequence();
-    data.append(seq);
-    if (inPort->isEnded()) {
+    if (!inPort->hasMessage() && inPort->isEnded()) {
         Task* t = new MSAFromSequencesTask(data);
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_onTaskFinished(Task*)));
         return t;
@@ -73,6 +68,7 @@ Task* SequencesToMSAWorker::tick() {
 }
 
 void MSAFromSequencesTask::run() {
+    CHECK(sequences_.size() > 0, );
     DNASequence seq = sequences_.first();
     ma.setAlphabet(seq.alphabet);
     ma.addRow( MAlignmentRow(seq.getName(),seq.seq) );
@@ -86,12 +82,16 @@ void SequencesToMSAWorker::sl_onTaskFinished(Task* t) {
     MSAFromSequencesTask* maTask = qobject_cast<MSAFromSequencesTask*>(t);
     MAlignment ma = maTask->getResult();
 
-    outPort->put( Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), qVariantFromValue(ma)) );
+    if (!ma.isEmpty()) {
+        outPort->put( Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), qVariantFromValue(ma)) );
+    }
 
     QVariantMap emptyContext;
+    SAFE_POINT(inPort->isEnded(), "Internal error. The scheme is broken", );
     if (inPort->isEnded()) {
         outPort->setContext(emptyContext);
         outPort->setEnded();
+        setDone();
     }
 }
 

@@ -470,6 +470,7 @@ void GenbankPlainTextFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, 
     if (objectsMap.contains(GObjectTypes::ANNOTATION_TABLE)) {
         anns = objectsMap[GObjectTypes::ANNOTATION_TABLE];
     }
+    SAFE_POINT(NULL != seq || !anns.isEmpty(), "Store entry: nothing to write", );
 
     //reading header attribute
     QString locusFromAttributes;
