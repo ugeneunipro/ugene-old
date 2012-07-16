@@ -372,7 +372,7 @@
         <translation>Neplatný název</translation>
     </message>
     <message>
-        <location filename="../src/TaskSchedulerImpl.cpp" line="790"/>
+        <location filename="../src/TaskSchedulerImpl.cpp" line="799"/>
         <source>Deleting task: %1</source>
         <translation>Maže se úkol: %1</translation>
     </message>
@@ -418,10 +418,6 @@
         <location filename="../src/TaskSchedulerImpl.cpp" line="687"/>
         <source>Task {%1} finished</source>
         <translation>Úkol {%1} dokončen</translation>
-    </message>
-    <message>
-        <source>Deleting task: %1</source>
-        <translation>Maže se úkol: %1</translation>
     </message>
 </context>
 <context>
