@@ -40,6 +40,7 @@
 #include <U2Formats/MSFFormat.h>
 #include <U2Formats/GFFFormat.h>
 #include <U2Formats/GTFFormat.h>
+#include <U2Formats/FpkmTrackingFormat.h>
 #include <U2Formats/SAMFormat.h>
 #include <U2Formats/NEXUSFormat.h>
 #include <U2Formats/MegaFormat.h>
@@ -159,6 +160,9 @@ void DocumentFormatRegistryImpl::init() {
 
     GTFFormat* gtf = new GTFFormat(this);
     registerFormat(gtf);
+
+    FpkmTrackingFormat* fpkmTr = new FpkmTrackingFormat(this);
+    registerFormat(fpkmTr);
 
     NEXUSFormat* nexus = new NEXUSFormat(this);
     registerFormat(nexus);

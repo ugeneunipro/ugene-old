@@ -52,6 +52,7 @@ public:
     static const DocumentFormatId ACE;
     static const DocumentFormatId GFF;
     static const DocumentFormatId GTF;
+    static const DocumentFormatId FPKM_TRACKING_FORMAT;
     static const DocumentFormatId SRF;
     static const DocumentFormatId SAM;
     static const DocumentFormatId NEXUS;

@@ -347,9 +347,19 @@ FormatCheckResult GTFFormat::checkRawData(const QByteArray& rawData, const GUrl&
     QStringList fileLines = dataStr.split("\n");
     GTFLineValidateFlags validationStatus;
 
-    foreach (QString line, fileLines) {
-        if (!line.trimmed().isEmpty()) { // e.g. the last line in file can be empty
-            parseAndValidateLine(line, validationStatus);
+    int numToIterate;
+    int HUGE_DATA = 65536;
+    if (size < HUGE_DATA) {
+        numToIterate = fileLines.size(); 
+    }
+    else {
+        // Skip the last line as it can be incomplete
+        numToIterate = fileLines.size() - 1;
+    }
+
+    for (int i = 1; i < numToIterate; ++i) {
+        if (!fileLines[i].trimmed().isEmpty()) { // e.g. the last line in file can be empty
+            parseAndValidateLine(fileLines[i], validationStatus);
         }
     }
 
@@ -552,7 +562,7 @@ void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
 
     QStringList cleanFields;
     for (int i = 0; i < FIELDS_COUNT_IN_EACH_LINE; ++i) {
-        cleanFields.append(".");
+        cleanFields.append(NO_VALUE_STR);
     }
 
     QByteArray lineData;
@@ -607,7 +617,7 @@ void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                             lineFields[GTF_STRAND_INDEX] = "-";
                         }
                         else {
-                            noErrorsDuringStoring = true;
+                            noErrorsDuringStoring = false;
                             coreLog.trace(tr("GTF saving error: unknown value"
                                 " of the strand qualifier \"%1\" of an annotation"
                                 " \"%2\" was skipped!").arg(qualifier.name).arg(annotName));
