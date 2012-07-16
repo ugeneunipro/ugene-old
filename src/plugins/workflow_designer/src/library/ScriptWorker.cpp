@@ -39,6 +39,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/MAlignment.h>
 
 
 namespace U2 {
@@ -208,6 +209,12 @@ void ScriptWorker::sl_taskFinished() {
     foreach(const Descriptor &desc, ptr->getAllDescriptors()) {
         QString varName = "out_" + desc.getId();
         //MAlignment ma = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<MAlignment>();
+        if (BaseSlots::DNA_SEQUENCE_SLOT().getId() == desc.getId()) {
+            SharedDbiDataHandler seqId = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<SharedDbiDataHandler>();
+            if (!seqId.constData() || !seqId.constData()->isValid()) {
+                continue;
+            }
+        }
         map[desc.getId()] = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant();
     }
     if (output) {
@@ -215,12 +222,16 @@ void ScriptWorker::sl_taskFinished() {
             QString varName = "out_" + BaseSlots::DNA_SEQUENCE_SLOT().getId();
             QList<SharedDbiDataHandler> seqs = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<QList<SharedDbiDataHandler> >();
             foreach(SharedDbiDataHandler seqId, seqs) {
-                map[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = QVariant::fromValue<SharedDbiDataHandler>(seqId);
-                output->put(Message(ptr,map));
+                if (seqId.constData() && seqId.constData()->isValid()) {
+                    map[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = QVariant::fromValue<SharedDbiDataHandler>(seqId);
+                    output->put(Message(ptr,map));
+                }
             }
         } else {
             QVariant scriptResult = t->getResult();
-            output->put(Message(ptr,map));
+            if (!map.isEmpty()) {
+                output->put(Message(ptr,map));
+            }
         }
     }
 }

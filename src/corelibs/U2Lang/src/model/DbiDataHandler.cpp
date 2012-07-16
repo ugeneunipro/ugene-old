@@ -51,7 +51,7 @@ DbiDataHandler &DbiDataHandler::operator=(const DbiDataHandler &) {
     return *this;
 }
 
-bool DbiDataHandler::equals(const DbiDataHandler *other) {
+bool DbiDataHandler::equals(const DbiDataHandler *other) const {
     if (NULL == other) {
         return false;
     }
@@ -65,6 +65,10 @@ int DbiDataHandler::getReferenceCount() const {
 
 U2DbiRef DbiDataHandler::getDbiRef() const {
     return entRef.dbiRef;
+}
+
+bool DbiDataHandler::isValid() const {
+    return entRef.isValid();
 }
 
 }

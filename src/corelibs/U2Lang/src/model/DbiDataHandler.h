@@ -42,7 +42,9 @@ public:
     int getReferenceCount() const;
     U2DbiRef getDbiRef() const;
 
-    bool equals(const DbiDataHandler *other);
+    bool equals(const DbiDataHandler *other) const;
+
+    bool isValid() const;
 
 private:
     const U2EntityRef entRef;
