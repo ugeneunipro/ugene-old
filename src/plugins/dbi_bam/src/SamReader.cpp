@@ -319,7 +319,11 @@ void SamReader::readHeader() {
         QList<Header::Program> programs;
         QList<QByteArray> previousProgramIds;
         while((len = ioAdapter.readLine(buff, READ_BUFF_SIZE, &lineOk)) >= 0) {
-            QByteArray line = QByteArray::fromRawData(buff, len);
+            if(isEof()){
+                break;
+            }
+
+            QByteArray line = QByteArray::fromRawData(buff, len);            
             if(line.isEmpty()) {
                 continue;
             }
