@@ -139,6 +139,18 @@ private:
 
     void createObjectDbi();
     void cleanup();
+    /**
+     *  Returns true if all right
+     */
+    bool initBamStructures(const QByteArray &fileName);
+    /**
+     *  Returns true if the index was built
+     */
+    bool buildBamIndex(const QByteArray &fileName);
+    /**
+     * Returns sorted bam file name
+     */
+    QByteArray sortBamFile(const QByteArray &fileName);
 }; // SamtoolsBasedDbi
 
 class SamtoolsBasedDbiFactory : public U2DbiFactory {

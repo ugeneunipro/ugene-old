@@ -122,7 +122,7 @@ int bam_merge_core(int by_qname, const char *out, const char *headers, int n, ch
 			if (l > 4 && strcmp(s + l - 4, ".bam") == 0) l -= 4;
 			for (j = l - 1; j >= 0; --j) if (s[j] == '/') break;
 			++j; l -= j;
-			RG[i] = calloc(l + 1, 1);
+			RG[i] = (char*)calloc(l + 1, 1);
 			RG_len[i] = l;
 			strncpy(RG[i], s + j, l);
 		}
@@ -257,7 +257,8 @@ int bam_merge(int argc, char *argv[])
 	int c, is_by_qname = 0, flag = 0, ret = 0;
 	char *fn_headers = NULL, *reg = 0;
 
-	while ((c = getopt(argc, argv, "h:nru1R:f")) >= 0) {
+	while (0) {
+    //while ((c = getopt(argc, argv, "h:nru1R:f")) >= 0) {
 		switch (c) {
 		case 'r': flag |= MERGE_RG; break;
 		case 'f': flag |= MERGE_FORCE; break;
@@ -422,7 +423,8 @@ int bam_sort(int argc, char *argv[])
 {
 	size_t max_mem = 500000000;
 	int c, is_by_qname = 0, is_stdout = 0;
-	while ((c = getopt(argc, argv, "nom:")) >= 0) {
+    while (0) {
+	//while ((c = getopt(argc, argv, "nom:")) >= 0) {
 		switch (c) {
 		case 'o': is_stdout = 1; break;
 		case 'n': is_by_qname = 1; break;
