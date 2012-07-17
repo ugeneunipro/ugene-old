@@ -44,7 +44,6 @@
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/MultiTask.h>
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/UnloadDocumentTask.h>
@@ -351,6 +350,7 @@ Task::ReportResult ExportProjectTask::report() {
             QFile f(origPath);
             QFileInfo fi(f);
             QString resultPath = destinationDir + "/" + fi.fileName();
+            resultPath = GUrlUtils::rollFileName(resultPath, "_copy" , QSet<QString>());
             if (resultPath != origPath && !f.copy(resultPath)){
                 if (QFile::exists(resultPath)) {
                     setError(tr("Error during coping documents: file already exist"));
