@@ -679,12 +679,12 @@ void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
 void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
 {
     rubberBand->hide();
+    if (shifting) {
+        editor->getMSAObject()->releaseState();
+    }
     if (scribbling) {
         QPoint newCurPos = coordToAbsolutePos(e->pos());
-        if (isInRange(newCurPos) ) {
-            if (shifting) {
-                editor->getMSAObject()->releaseState();
-            }
+        if (isInRange(newCurPos) ) {            
             if (e->pos() == origin) {
                 // special case: click but don't drag
                 shifting = false;
