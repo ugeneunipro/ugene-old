@@ -287,6 +287,9 @@ void PanView::sl_onAnnotationsModified(const AnnotationModification& md) {
     modified << md.annotation;
     unregisterAnnotations(modified);
     registerAnnotations(modified);
+
+    addUpdateFlags(GSLV_UF_AnnotationsChanged);
+    update();
     GSequenceLineViewAnnotated::sl_onAnnotationsModified(md);
 }
 
