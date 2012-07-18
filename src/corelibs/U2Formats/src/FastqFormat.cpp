@@ -138,6 +138,27 @@ static void readSequence(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, ch
     }
 }
 
+static void readQuality(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, int count) {
+
+    QByteArray buffArray(BUFF_SIZE+1, 0);
+    char* buff = buffArray.data();
+
+    // reading quality sequence, ignoring whitespace at the beginning and the end of lines
+
+    int readed = 0;
+    while (!io->isEof() && (readed < count)) {
+        int elapsedCount = count - readed;
+        int readedCount = io->readBlock(buff, elapsedCount);
+        CHECK_EXT(readedCount >= 0, os.setError(U2::FastqFormat::tr("Error while reading quality")),);
+
+        QByteArray trimmed = QByteArray(buffArray.data(), readedCount);
+        trimmed = trimmed.trimmed();
+
+        readed += trimmed.size();
+        sequence.append(trimmed);
+    }
+}
+
 /**
  * FASTQ format specification: http://maq.sourceforge.net/fastq.shtml
  */
@@ -210,7 +231,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
 
         // read qualities
         qualityScores.clear();
-        readSequence(os, io, qualityScores, '@');
+        readQuality(os, io, qualityScores, sequence.size());
         CHECK_OP(os,);
 
         static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file: %1. Bad quality scores: inconsistent size.").arg(docUrl.getURLString());
