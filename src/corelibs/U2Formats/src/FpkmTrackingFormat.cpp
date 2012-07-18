@@ -32,6 +32,8 @@
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <memory>
+
 
 namespace U2 {
 
@@ -129,6 +131,16 @@ void FpkmTrackingFormat::addQualifierIfValuePresent(SharedAnnotationData& annotD
             " '%2' can't be added").arg(name).arg(val), );
         annotData->qualifiers.push_back(qual);
     }
+}
+
+
+QList<SharedAnnotationData> FpkmTrackingFormat::getAnnotData(IOAdapter* io, U2OpStatus& os)
+{
+    std::auto_ptr<QObject> parent(new QObject());
+    FpkmTrackingFormat fpkmTrackingFormat(parent.get());
+    QString seqName;
+    QString annotName = "misc_feature";
+    return fpkmTrackingFormat.parseDocument(io, seqName, annotName, os);
 }
 
 

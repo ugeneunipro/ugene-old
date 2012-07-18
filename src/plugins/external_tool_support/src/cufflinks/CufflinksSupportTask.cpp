@@ -35,6 +35,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
+#include <U2Formats/FpkmTrackingFormat.h>
 #include <U2Formats/GTFFormat.h>
 
 #include <QCoreApplication>
@@ -173,41 +174,48 @@ QList<Task*> CufflinksSupportTask::onSubTaskFinished(Task* subTask)
         result.append(cufflinksExtToolTask);
     }
     else if (subTask == cufflinksExtToolTask) {
-        transcriptGtfResultToAnnotations();
+        transcriptGtfAnnots = getAnnotationsFromFile("transcripts.gtf", CufflinksOutputGtf);
+        isoformLevelAnnots = getAnnotationsFromFile("isoforms.fpkm_tracking", CufflinksOutputFpkm);
+        geneLevelAnnots = getAnnotationsFromFile("genes.fpkm_tracking", CufflinksOutputFpkm);
     }
 
     return result;
 }
 
 
-void CufflinksSupportTask::transcriptGtfResultToAnnotations()
+QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(QString fileName, CufflinksOutputFormat format)
 {
+    QList<SharedAnnotationData> res;
+
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     if (NULL == iof) {
-        ioLog.error(tr("Can't create IOAdapterFactory for reading transcripts.gtf for Cufflinks!"));
-        return;
+        stateInfo.setError(tr("An internal error occurred during getting annotations from a Cufflinks output file!"));
+        return res;
     }
 
-    QString transcriptGtfPath = workingDirectory + "/transcripts.gtf";
+    QString filePath = workingDirectory + "/" + fileName;
 
-    if(!QFile::exists(transcriptGtfPath)){
-        stateInfo.setError(tr("Cufflinks output file '%1' is not found!"));
-        return;
+    if(!QFile::exists(filePath)){
+        stateInfo.setError(tr("Cufflinks output file '%1' is not found!").arg(filePath));
+        return res;
     }
 
     std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
-    if (!io.get()->open(GUrl(transcriptGtfPath), IOAdapterMode_Read)) {
-        stateInfo.setError(L10N::errorOpeningFileRead(transcriptGtfPath));
-        return;
+    if (!io.get()->open(GUrl(filePath), IOAdapterMode_Read)) {
+        stateInfo.setError(L10N::errorOpeningFileRead(filePath));
+        return res;
     }
 
-    transcriptGtfAnnots = GTFFormat::getAnnotData(io.get(), stateInfo);
-}
+    switch (format) {
+        case CufflinksOutputFpkm:
+            return FpkmTrackingFormat::getAnnotData(io.get(), stateInfo);
 
+        case CufflinksOutputGtf:
+            return GTFFormat::getAnnotData(io.get(), stateInfo);
 
-QList<SharedAnnotationData> CufflinksSupportTask::getTranscriptGtfAnnots() const
-{
-    return transcriptGtfAnnots;
+        default:
+            FAIL("Internal error: unexpected format of the Cufflinks output!", res);
+    }
 }
 
 

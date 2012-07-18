@@ -37,6 +37,9 @@
 namespace U2 {
 
 
+enum CufflinksOutputFormat {CufflinksOutputFpkm, CufflinksOutputGtf};
+
+
 class CufflinksSupportTask : public Task
 {
     Q_OBJECT
@@ -48,10 +51,13 @@ public:
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
 
-    QList<SharedAnnotationData> getTranscriptGtfAnnots() const;
+    QList<SharedAnnotationData> getTranscriptGtfAnnots() const { return transcriptGtfAnnots; };
+    QList<SharedAnnotationData> getIsoformAnnots() const { return isoformLevelAnnots; };
+    QList<SharedAnnotationData> getGeneAnnots() const { return geneLevelAnnots; };
 
 private:
-    void transcriptGtfResultToAnnotations();
+    // "fileName" is the file name relatively to the working directory
+    QList<SharedAnnotationData> getAnnotationsFromFile(QString fileName, CufflinksOutputFormat format);
 
     CufflinksSettings                   settings;
 
@@ -64,6 +70,8 @@ private:
     ExternalToolRunTask*                cufflinksExtToolTask;
 
     QList<SharedAnnotationData>         transcriptGtfAnnots;
+    QList<SharedAnnotationData>         isoformLevelAnnots;
+    QList<SharedAnnotationData>         geneLevelAnnots;
 };
 
 

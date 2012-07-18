@@ -24,6 +24,7 @@
 
 #include "CufflinksSettings.h"
 
+#include <U2Lang/Descriptor.h>
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 
@@ -85,6 +86,11 @@ public:
     static const QString PRE_MRNA_FRACTION;
     static const QString EXT_TOOL_PATH;
     static const QString TMP_DIR_PATH;
+
+    static const QString OUT_MAP_DESCR_ID;
+    static const QString TRANSCRIPT_SLOT_DESCR_ID;
+    static const QString ISO_LEVEL_SLOT_DESCR_ID;
+    static const QString GENE_LEVEL_SLOT_DESCR_ID;
 };
 
 } // namespace LocalWorkflow

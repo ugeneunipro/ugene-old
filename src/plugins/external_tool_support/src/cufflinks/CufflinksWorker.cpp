@@ -25,6 +25,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Designer/DelegateEditors.h>
@@ -58,6 +59,11 @@ const QString CufflinksWorkerFactory::PRE_MRNA_FRACTION("pre-mrna-fraction");
 const QString CufflinksWorkerFactory::EXT_TOOL_PATH("path");
 const QString CufflinksWorkerFactory::TMP_DIR_PATH("tmp-dir");
 
+const QString CufflinksWorkerFactory::OUT_MAP_DESCR_ID("out.annotations");
+const QString CufflinksWorkerFactory::TRANSCRIPT_SLOT_DESCR_ID("transcripts.slot");
+const QString CufflinksWorkerFactory::ISO_LEVEL_SLOT_DESCR_ID("isolevel.slot");
+const QString CufflinksWorkerFactory::GENE_LEVEL_SLOT_DESCR_ID("genelevel.slot");
+
 
 void CufflinksWorkerFactory::init()
 {
@@ -77,13 +83,36 @@ void CufflinksWorkerFactory::init()
     QMap<Descriptor, DataTypePtr> inputMap;
     inputMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ASSEMBLY_TYPE();
     portDescriptors << new PortDescriptor(inputPortDescriptor,
-        DataTypePtr(new MapDataType("cufflinks.in.assembly", inputMap)),
+        DataTypePtr(new MapDataType("in.assembly", inputMap)),
         true /* input */);
 
     QMap<Descriptor, DataTypePtr> outputMap;
-    outputMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
+
+    Descriptor transcriptsSlotDescriptor = Descriptor(TRANSCRIPT_SLOT_DESCR_ID,
+        CufflinksWorker::tr("Transcripts"),
+        CufflinksWorker::tr("A set of annotated regions"));
+
+    Descriptor isoformLevelExprDescriptor = Descriptor(ISO_LEVEL_SLOT_DESCR_ID,
+        CufflinksWorker::tr("Isoform-level expression values"),
+        CufflinksWorker::tr("A set of annotated regions"));
+
+    Descriptor geneLevelExprDescriptor = Descriptor(GENE_LEVEL_SLOT_DESCR_ID,
+        CufflinksWorker::tr("Gene-level expression values"),
+        CufflinksWorker::tr("A set of annotated regions"));
+
+    outputMap[transcriptsSlotDescriptor] = BaseTypes::ANNOTATION_TABLE_TYPE();
+    outputMap[isoformLevelExprDescriptor] = BaseTypes::ANNOTATION_TABLE_TYPE();
+    outputMap[geneLevelExprDescriptor] = BaseTypes::ANNOTATION_TABLE_TYPE();
+
+    DataTypeRegistry* registry = WorkflowEnv::getDataTypeRegistry();
+    assert(registry);
+
+    DataTypePtr mapDataType(new MapDataType(OUT_MAP_DESCR_ID, outputMap));
+
+    registry->registerEntry(mapDataType);
+
     portDescriptors << new PortDescriptor(outputPortDescriptor,
-        DataTypePtr(new MapDataType("cufflinks.out.annotations", outputMap)),
+        mapDataType,
         false /* input */,
         true /* multi */);
 
@@ -329,9 +358,25 @@ void CufflinksWorker::sl_cufflinksTaskFinished()
     }
 
     if (output) {
-        QList<SharedAnnotationData> annots = cufflinksSupportTask->getTranscriptGtfAnnots();
-        QVariant variant = qVariantFromValue< QList<SharedAnnotationData> >(annots);
-        output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), variant));
+        DataTypePtr outputMapDataType =
+            WorkflowEnv::getDataTypeRegistry()->getById(CufflinksWorkerFactory::OUT_MAP_DESCR_ID);
+        SAFE_POINT(0 != outputMapDataType, "Internal error: can't get DataTypePtr for output map!",);
+
+        QList<SharedAnnotationData> trascriptAnnots = cufflinksSupportTask->getTranscriptGtfAnnots();
+        QList<SharedAnnotationData> isoLevelAnnots = cufflinksSupportTask->getIsoformAnnots();
+        QList<SharedAnnotationData> geneLevelAnnots = cufflinksSupportTask->getGeneAnnots();
+
+        QVariantMap messageData;
+        messageData[CufflinksWorkerFactory::TRANSCRIPT_SLOT_DESCR_ID] =
+            qVariantFromValue< QList<SharedAnnotationData> >(trascriptAnnots);
+
+        messageData[CufflinksWorkerFactory::ISO_LEVEL_SLOT_DESCR_ID] =
+            qVariantFromValue< QList<SharedAnnotationData> >(isoLevelAnnots);
+
+        messageData[CufflinksWorkerFactory::GENE_LEVEL_SLOT_DESCR_ID] =
+            qVariantFromValue< QList<SharedAnnotationData> >(geneLevelAnnots);
+
+        output->put(Message(outputMapDataType, messageData));
     }
 }
 
