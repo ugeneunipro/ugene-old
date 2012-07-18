@@ -29,11 +29,12 @@
 namespace U2 {
 
 MSAEditorUndoFramework::MSAEditorUndoFramework(QObject* p, MAlignmentObject* ma) 
-: QUndoStack(p), maObj(ma), lastSavedObjectVersion(0), maxMemUse(20*1024*1024)
+: QUndoStack(p), maObj(ma), lastSavedObjectVersion(0), maxMemUse(20*1024*1024), stateComplete(true)
 {
     if (maObj!=NULL) {
         connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
                        SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
+        connect(maObj, SIGNAL(si_completeStateChanged(bool)), SLOT(sl_completeStateChanged(bool)));
         connect(maObj, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
     }
     
@@ -73,14 +74,14 @@ void MSAEditorUndoFramework::applyUndoRedoAction(const MAlignment& ma) {
     }
 }
 
-void MSAEditorUndoFramework::sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& mi) {
-    if (maObj == NULL || lastSavedObjectVersion == maObj->getModificationVersion() || maBefore.getRows() == maObj->getMAlignment().getRows()) {
-        return;
-    }
+void MSAEditorUndoFramework::sl_completeStateChanged(bool _stateCompele){
+    stateComplete = _stateCompele;
+}
 
-    if (mi.hints.value(MODIFIER) == MAROW_SIMILARITY_SORT) {
-        return;
-    }
+void MSAEditorUndoFramework::sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& mi) {
+    if (maObj == NULL || lastSavedObjectVersion == maObj->getModificationVersion() || maBefore.getRows() == maObj->getMAlignment().getRows()) {return;}
+    if (mi.hints.value(MODIFIER) == MAROW_SIMILARITY_SORT) {return;}
+    if(!stateComplete){return;}
 
     lastSavedObjectVersion = maObj->getModificationVersion();
     const MAlignment& maAfter = maObj->getMAlignment();

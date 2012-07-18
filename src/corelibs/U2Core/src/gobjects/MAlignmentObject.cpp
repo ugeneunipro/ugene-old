@@ -28,6 +28,39 @@
 
 namespace U2 {
 
+MSAMemento::MSAMemento():lastState(MAlignment()){}
+
+MAlignment MSAMemento::getState() const{
+    return lastState;
+}
+
+void MSAMemento::setState(const MAlignment& state){
+    lastState = state;
+}
+
+
+
+MAlignmentObject::~MAlignmentObject(){
+    delete memento;
+}
+
+void MAlignmentObject::saveState(){
+    emit si_completeStateChanged(false);
+    memento->setState(msa);
+}
+
+void MAlignmentObject::releaseState(){
+    emit si_completeStateChanged(true);
+
+    MAlignment maBefore = memento->getState();
+    setModified(true);
+    MAlignmentModInfo mi;
+
+    emit si_alignmentChanged(maBefore, mi);
+
+}
+
+
 GObject* MAlignmentObject::clone(const U2DbiRef&, U2OpStatus&) const {
     MAlignmentObject* cln = new MAlignmentObject(msa, getGHintsMap());
     cln->setIndexInfo(getIndexInfo());
@@ -330,8 +363,6 @@ bool MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int 
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", false );
     SAFE_POINT(!isRegionEmpty(startPos, startRow, nBases, nRows), "Region is empty!", false );
 
-    MAlignment maBefore = msa;
-
     int n = 0;
     if (shift > 0) {
         insertGap(U2Region(startRow,nRows), startPos, shift);
@@ -344,12 +375,8 @@ bool MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int 
         for (int row = startRow; row < endRow; ++row) {
             n += deleteGap(row, startPos + shift, qAbs(shift));
         }
-    }
+    }    
 
-    setModified(true);
-    MAlignmentModInfo mi;
-    emit si_alignmentChanged(maBefore, mi);
-    
     return n > 0;
 
 }

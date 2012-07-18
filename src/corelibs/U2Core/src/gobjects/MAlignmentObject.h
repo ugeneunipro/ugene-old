@@ -44,12 +44,26 @@ private:
     static bool registerMeta;
 };
 
+class MSAMemento{
+public:
+    ~MSAMemento(){}
+private:     
+    friend class MAlignmentObject;
+    MSAMemento();
+    MAlignment getState() const;
+    void setState(const MAlignment&);
+private:
+    MAlignment lastState;
+};
+
 class U2CORE_EXPORT MAlignmentObject : public GObject {
     Q_OBJECT
 public:
 
     explicit MAlignmentObject(const MAlignment& a, const QVariantMap& hintsMap = QVariantMap())
-        : GObject(GObjectTypes::MULTIPLE_ALIGNMENT, a.getName(), hintsMap), msa(a){};
+        : GObject(GObjectTypes::MULTIPLE_ALIGNMENT, a.getName(), hintsMap), msa(a), memento(new MSAMemento){};
+
+    ~MAlignmentObject();
 
     const MAlignment& getMAlignment() const {return msa;}
 
@@ -97,11 +111,15 @@ public:
 
     const MAlignmentRow& getRow(int row) const { return msa.getRow(row);};
 
+    void saveState();
+
+    void releaseState();
 signals:
     void si_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
-    
+    void si_completeStateChanged(bool complete);
 protected:
     MAlignment msa;
+    MSAMemento* memento;
 };
 
 

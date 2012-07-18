@@ -44,11 +44,13 @@ public:
 public slots:
     void sl_alignmentChanged(const MAlignment& aliBefore, const MAlignmentModInfo& modInfo);
     void sl_lockedStateChanged();
+    void sl_completeStateChanged(bool complete);
     
 private:
     MAlignmentObject*   maObj;
     int                 lastSavedObjectVersion;
     int                 maxMemUse;//in bytes;
+    bool                stateComplete;
 
     QAction*            uAction;
     QAction*            rAction;
