@@ -15,5 +15,9 @@ unix {
     }
 }
 
+win32 {
+    LIBS += User32.lib Gdi32.lib
+}
+
 
 include( ../../ugene_plugin_common.pri )

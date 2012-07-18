@@ -26,3 +26,6 @@ unix {
     INSTALLS += target
 }
 
+win32 {
+    LIBS += Advapi32.lib
+}

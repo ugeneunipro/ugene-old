@@ -19,7 +19,7 @@ use_bundled_zlib() {
 }
 
 # Force re-linking when lib changes
-POST_TARGETDEPS += ../../_release/libsamtools.a
+unix:POST_TARGETDEPS += ../../_release/libsamtools.a
 # Same options which samtools is built with
 DEFINES+="_FILE_OFFSET_BITS=64" _LARGEFILE64_SOURCE _USE_KNETFILE
 INCLUDEPATH += ../../libs_3rdparty/samtools/src ../../libs_3rdparty/samtools/src/samtools
@@ -33,8 +33,8 @@ win32:LIBS+=-lws2_32
         LIBS -= -L../../_release -lU2Core -lsamtools
         LIBS += -L../../_debug -lU2Cored -lsamtoolsd
 
-        POST_TARGETDEPS -= ../../_release/libsamtools.a
-        POST_TARGETDEPS += ../../_debug/libsamtoolsd.a
+        unix:POST_TARGETDEPS -= ../../_release/libsamtools.a
+        unix:POST_TARGETDEPS += ../../_debug/libsamtoolsd.a
 
         use_bundled_zlib() {
             LIBS += -lzlibd

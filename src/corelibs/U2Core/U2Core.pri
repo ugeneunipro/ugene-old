@@ -40,7 +40,7 @@ INCLUDEPATH += ../../libs_3rdparty/sqlite3/src
 
 # Special compiler flags for windows configuration
 win32 {
-    LIBS += Psapi.lib
+    LIBS += Psapi.lib User32.lib
 }
 
 unix {
