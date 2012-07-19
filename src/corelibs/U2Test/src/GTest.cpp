@@ -19,12 +19,16 @@
  * MA 02110-1301, USA.
  */
 
+#include "GTest.h"
+
 #include <assert.h>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QFile>
 
-#include <U2Core/AppContext.h>
-#include "GTest.h"
 
 namespace U2 {
 
@@ -339,59 +343,85 @@ void GTestState::setPassed() {
 //////////////////////////////////////////////////////////////////////////
 // GTestLogHelper
 GTestLogHelper::GTestLogHelper()
+    : statusWasVerified(false)
 {
-    connect(LogServer::getInstance(), SIGNAL(si_message(const LogMessage&)), SLOT(getMessage(const LogMessage&)));
 }
 
 
-void GTestLogHelper::expectLogMessage(QString inputMessage)
+void GTestLogHelper::initMessages(const QStringList& expectedList, const QStringList& unexpectedList)
 {
-    expectedMessages[inputMessage] = false; // i.e. not detected yet
-}
+    LogServer::getInstance()->addListner(this);
+    logHelperStartTime = GTimer::currentTimeMicros();
 
 
-void GTestLogHelper::expectNoLogMessage(QString inputMessage)
-{
-    unexpectedMessages[inputMessage] = false;
+    foreach (QString message, expectedList) {
+        expectedMessages[message] = false; // i.e. not detected yet
+    }
+
+    foreach (QString message, unexpectedList) {
+        unexpectedMessages[message] = false;
+    }
 }
 
 
 GTestLogHelperStatus GTestLogHelper::verifyStatus()
 {
-    QCoreApplication::processEvents();
-
     GTestLogHelperStatus status = GTest_LogHelper_Valid;
 
-    foreach (QString str, expectedMessages.keys()) {
+    foreach (const QString& str, expectedMessages.keys()) {
         if (false == expectedMessages[str]) {
             status = GTest_LogHelper_Invalid;
             coreLog.error(QString("GTestLogHelper: no expected message \"%1\" in the log!").arg(str));
         }
     }
 
-    foreach (QString str, unexpectedMessages.keys()) {
+    foreach (const QString& str, unexpectedMessages.keys()) {
         if (true == unexpectedMessages[str]) {
             status = GTest_LogHelper_Invalid;
             coreLog.error(QString("GTestLogHelper: message \"%1\" is present in the log unexpectedly!").arg(str));
         }
     }
 
+    LogServer::getInstance()->removeListner(this);
+    statusWasVerified = true;
+    logHelperEndTime = GTimer::currentTimeMicros();
+
     return status;
 }
 
 
-void GTestLogHelper::getMessage(const LogMessage& logMessage)
+void GTestLogHelper::onMessage(const LogMessage& logMessage)
 {
-    foreach (QString str, expectedMessages.keys()) {
+    qint64 currentTime = GTimer::currentTimeMicros();
+
+    foreach (const QString& str, expectedMessages.keys()) {
         if (logMessage.text.contains(str)) {
             expectedMessages[str] = true;
         }
     }
 
-    foreach (QString str, unexpectedMessages.keys()) {
+    foreach (const QString& str, unexpectedMessages.keys()) {
         if (logMessage.text.contains(str)) {
             unexpectedMessages[str] = true;
         }
+    }
+
+    SAFE_POINT(logMessage.time >= logHelperStartTime,
+        QString("Internal error in GTestLogHelper (incorrect start time): message '%1' with time '%2' appeared"
+            " in log at time '%3'. GTestLogHelper start time is '%4'.").arg(logMessage.text)
+                .arg(logMessage.time)
+                .arg(currentTime)
+                .arg(logHelperStartTime),
+                );
+
+    if (statusWasVerified) {
+        FAIL(QString("Internal error in GTestLogHelper (got a message after verifying the status):"
+            " message '%1' with time '%2' appeared"
+            " in log at time '%3'. GTestLogHelper end time is '%4'.").arg(logMessage.text)
+            .arg(logMessage.time)
+            .arg(currentTime)
+            .arg(logHelperEndTime),
+            );
     }
 }
 

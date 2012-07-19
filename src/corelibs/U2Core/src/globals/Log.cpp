@@ -21,6 +21,7 @@
 
 #include "Log.h"
 #include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QSet>
 
@@ -51,6 +52,31 @@ QStringList LogServer::getCategories() const {
     }
     return result;
 }
+
+void LogServer::addListner(LogListener* listner)
+{
+    SAFE_POINT(NULL != listner, "Internal error during adding a log listner: NULL listner!",);
+    SAFE_POINT(!listeners.contains(listner),
+        "Internal error during adding a log listner: the listener is already added!",);
+    listeners.append(listner);
+}
+
+void LogServer::removeListner(LogListener* listener)
+{
+    int numOfListenersRemoved = listeners.removeAll(listener);
+    SAFE_POINT(1 == numOfListenersRemoved, QString("Internal error during removing a log listener:"
+        " unexpected number '%1' of listeners!").arg(numOfListenersRemoved),);
+}
+
+void LogServer::message(const LogMessage& m)
+{
+    emit si_message(m);
+    foreach (LogListener* listner, listeners)
+    {
+        listner->onMessage(m);
+    }
+}
+
 
 Logger::Logger(const QString& category1) {
     categoryNames << category1;

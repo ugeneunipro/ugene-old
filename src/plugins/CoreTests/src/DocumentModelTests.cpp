@@ -114,17 +114,22 @@ void GTest_LoadDocument::cleanup() {
 }
 
 void GTest_LoadDocument::prepare() {
+    QStringList expectedMessages;
+    QStringList unexpectedMessages;
+
     if (!expectedLogMessage.isEmpty()) {
-        logHelper.expectLogMessage(expectedLogMessage);
+        expectedMessages << expectedLogMessage;
     }
 
     if (!expectedLogMessage2.isEmpty()) {
-        logHelper.expectLogMessage(expectedLogMessage2);
+        expectedMessages << expectedLogMessage2;
     }
 
     if (!unexpectedLogMessage.isEmpty()){
-        logHelper.expectNoLogMessage(unexpectedLogMessage);
+        unexpectedMessages << unexpectedLogMessage;
     }
+
+    logHelper.initMessages(expectedMessages, unexpectedMessages);
 }
 
 Task::ReportResult GTest_LoadDocument::report() {

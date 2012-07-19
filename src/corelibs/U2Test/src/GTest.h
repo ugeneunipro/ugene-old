@@ -205,20 +205,25 @@ enum GTestLogHelperStatus {GTest_LogHelper_Invalid, GTest_LogHelper_Valid};
  * "lockForLogListening" for "multi-test" tag! This is done to avoid mixing of log
  * between different tests.
  */
-class U2TEST_EXPORT GTestLogHelper : public QObject {
+class U2TEST_EXPORT GTestLogHelper : public LogListener {
     Q_OBJECT
 public:
     GTestLogHelper();
-    void expectLogMessage(QString inputMessage);
-    void expectNoLogMessage(QString inputMessage);
+
+    void initMessages(const QStringList& expectedMessages, const QStringList& unexpectedMessages);
+
     GTestLogHelperStatus verifyStatus();
 
-private slots:
-    void getMessage(const LogMessage& logMessage);
-
 private:
+    void onMessage(const LogMessage& logMessage);
+
     QMap<QString, bool> expectedMessages;
     QMap<QString, bool> unexpectedMessages; // Messages that mustn't be present in the log
+
+    qint64      logHelperStartTime;
+    qint64      logHelperEndTime;
+
+    bool        statusWasVerified;
 };
 
 }//namespace

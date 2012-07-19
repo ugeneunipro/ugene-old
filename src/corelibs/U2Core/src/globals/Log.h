@@ -79,6 +79,13 @@ private:
     QStringList categoryNames;
 };
 
+class U2CORE_EXPORT LogListener : public QObject {
+    Q_OBJECT
+public:
+    virtual void onMessage(const LogMessage& m) = 0;
+};
+
+
 class U2CORE_EXPORT LogServer : public QObject {
     Q_OBJECT
     friend class Logger;
@@ -88,13 +95,18 @@ public:
     const QList<Logger*>& getLoggers() const {return loggers;}
     QStringList getCategories() const;
 
+    void addListner(LogListener* listner);
+    void removeListner(LogListener* listener);
+
 private:
-    void message(const LogMessage& m) {emit si_message(m);}
+    void message(const LogMessage& m);
     QList<Logger*> loggers;
+    QList<LogListener*> listeners;
 
 signals:
     void si_message(const LogMessage& m);
 };
+
 
 //TODO: support log category translation + use log category ids instead of the names in code
 
