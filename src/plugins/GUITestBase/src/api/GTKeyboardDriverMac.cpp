@@ -34,8 +34,8 @@ namespace U2 {
 int asciiToVirtual(int);
 
 #define GT_CLASS_NAME "GTKeyboardDriverMac"
-#define GT_METHOD_NAME "keyPress"
-void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
+#define GT_METHOD_NAME "keyPress_char"
+void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
 
@@ -63,35 +63,43 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
         break;
     }
 
-
-    if (modifiers) {
-        CGEventRef event = CGEventCreateKeyboardEvent(NULL, modifiers, true);
-        GT_CHECK(event != NULL, "Can't create event");
-
-        CGEventPost(kCGHIDEventTap, event);
-        CFRelease(event);
-    }
-
     if (isChanged) {
         CGEventRef event = CGEventCreateKeyboardEvent(NULL, GTKeyboardDriver::key["shift"], true);
         GT_CHECK(event != NULL, "Can't create event");
 
-        CGEventPost(kCGHIDEventTap, event);
+        CGEventPost(kCGSessionEventTap, event);
         CFRelease(event);
     } else {
         key = asciiToVirtual(key);
     }
 
+    GTGlobals::sleep(10);
+    keyPress(os, (int)key, modifiers);
+}
+
+#define GT_METHOD_NAME "keyPress_int"
+void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
+{
+    if (modifiers) {
+        CGEventRef event = CGEventCreateKeyboardEvent(NULL, modifiers, true);
+        GT_CHECK(event != NULL, "Can't create event");
+
+        CGEventPost(kCGSessionEventTap, event);
+        CFRelease(event);
+        GTGlobals::sleep(10);
+    }
+
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
     GT_CHECK(event != NULL, "Can't create event");
 
-    CGEventPost(kCGHIDEventTap, event);
+    CGEventPost(kCGSessionEventTap, event);
     CFRelease(event);
+    GTGlobals::sleep(10);
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "keyRelease"
-void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
+#define GT_METHOD_NAME "keyRelease_char"
+void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, char key, int modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
 
@@ -121,33 +129,42 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 
     if (!isChanged) {
         key = asciiToVirtual(key);
-    }
-    CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
-    GT_CHECK(event != NULL, "Can't create event");
-
-    CGEventPost(kCGHIDEventTap, event);
-    CFRelease(event);
-
-    if (isChanged) {
+    } else {
         CGEventRef event = CGEventCreateKeyboardEvent(NULL, GTKeyboardDriver::key["shift"], false);
         GT_CHECK(event != NULL, "Can't create event");
 
-        CGEventPost(kCGHIDEventTap, event);
+        CGEventPost(kCGSessionEventTap, event);
         CFRelease(event);
     }
+
+    GTGlobals::sleep(10);
+    keyRelease(os, (int) key, modifiers);
+}
+
+#define GT_METHOD_NAME "keyRelease_int"
+void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
+{
+    CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
+    GT_CHECK(event != NULL, "Can't create event");
+
+    CGEventPost(kCGSessionEventTap, event);
+    CFRelease(event);
+    GTGlobals::sleep(10);
 
     if (modifiers) {
         CGEventRef event = CGEventCreateKeyboardEvent(NULL, modifiers, false);
         GT_CHECK(event != NULL, "Can't create event");
 
-        CGEventPost(kCGHIDEventTap, event);
+        CGEventPost(kCGSessionEventTap, event);
         CFRelease(event);
     }
+    GTGlobals::sleep(10);
 }
 #undef GT_METHOD_NAME
 
 GTKeyboardDriver::keys::keys()
 {
+    ADD_KEY("cmd", kVK_Command);
     ADD_KEY("tab", kVK_Tab);
     ADD_KEY("enter", kVK_Return);
     ADD_KEY("shift", kVK_Shift);
@@ -178,6 +195,18 @@ GTKeyboardDriver::keys::keys()
 // feel free to add other keys
 // macro kVK_* defined in Carbon.framework/Frameworks/HIToolbox.framework/Headers/Events.h
 }
+
+#define GT_METHOD_NAME "keyClick"
+void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, char key, int modifiers)
+{
+    GT_CHECK(key != 0, "key = 0");
+
+    keyPress(os, key, modifiers);
+    GTGlobals::sleep(10);
+    keyRelease(os, key, modifiers);
+    GTGlobals::sleep(10);
+}
+#undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
 

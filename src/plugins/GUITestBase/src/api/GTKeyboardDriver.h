@@ -36,14 +36,14 @@ namespace U2 {
 class GTKeyboardDriver {
 public:
     //
-#ifdef _WIN32
-    // some VK_* code and ASCII code symbols are not equal
+#if defined Q_OS_WIN || defined Q_OS_MAC
     static void keyClick(U2OpStatus &os, char key, int modifiers = 0);
 
     static void keyPress(U2OpStatus &os, char key, int modifiers = 0);
     static void keyRelease(U2OpStatus &os, char key, int modifiers = 0);
-
+#if defined Q_OS_WIN
     static INPUT getKeyEvent(int key, bool keyUp = false);
+#endif
 #endif
 
     // fails if key == 0
