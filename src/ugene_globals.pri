@@ -13,7 +13,7 @@ win32 : DEFINES+= _WINDOWS
 
 win32 : QMAKE_CFLAGS_RELEASE = -O2 -Oy- -MD
 win32 : QMAKE_CXXFLAGS_RELEASE = -O2 -Oy- -MD
-win32 : QMAKE_LFLAGS_RELEASE = /INCREMENTAL:NO /MAP /MAPINFO:EXPORT
+win32 : QMAKE_LFLAGS_RELEASE = /INCREMENTAL:NO /MAP /MAPINFO:EXPORTS
 
 macx : QMAKE_CXXFLAGS += -Wno-attributes # Ignore "'weak_import' attribute ignored" warning coming from OpenCL headers
 

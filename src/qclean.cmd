@@ -11,8 +11,6 @@ set rdir=debug
 call :func %fpath:~0,-1% 
 set rdir=release
 call :func %fpath:~0,-1% 
-set rdir=build
-call :func %fpath:~0,-1% 
 set rdir=_UpgradeReport_Files
 call :func %fpath:~0,-1% 
 goto end 
