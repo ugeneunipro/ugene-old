@@ -24,6 +24,7 @@
 
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
+#include "api/GTKeyboardUtils.h"
 #include <QDebug>
 namespace U2 {
 
@@ -51,7 +52,7 @@ void GTPlainTextEdit::setPlainText(U2OpStatus& os, QPlainTextEdit* plainTextEdit
 //
 //    GTWidget::setFocus(os, plainTextEdit);
 //
-//    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+//    GTKeyboardUtils::selectAll(os);
 //    GTGlobals::sleep(100);
 //    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 //    GTGlobals::sleep(1000);

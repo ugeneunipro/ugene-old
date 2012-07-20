@@ -22,6 +22,7 @@
 #include "GTTestsFromProjectView.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTKeyboardUtils.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
@@ -148,7 +149,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "multiple.fa"));
     GTMouseDriver::click(os);
 
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse));

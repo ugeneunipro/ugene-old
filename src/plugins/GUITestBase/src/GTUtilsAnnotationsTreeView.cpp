@@ -22,6 +22,7 @@
 #include "GTUtilsAnnotationsTreeView.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTKeyboardUtils.h"
 #include "api/GTWidget.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsTaskTreeView.h"
@@ -159,10 +160,10 @@ void GTUtilsAnnotationsTreeView::renameAndLocation(U2OpStatus &os, const QString
     GTMouseDriver::click(os);
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTKeyboardDriver::keySequence(os, newItemName);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTKeyboardDriver::keySequence(os, newLocation);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
 
@@ -177,7 +178,7 @@ void GTUtilsAnnotationsTreeView::renameAndLocation(U2OpStatus &os, const QString
 //    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
 //    GTMouseDriver::click(os);
 //    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-//    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+//    GTKeyboardUtils::selectAll(os);
 //    GTKeyboardDriver::keySequence(os, newItemName);
 //    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
 //    GTGlobals::sleep(500);

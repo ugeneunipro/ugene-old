@@ -23,6 +23,7 @@
 #include "api/GTGlobals.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTKeyboardUtils.h"
 #include "api/GTMenu.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsDialog.h"
@@ -91,7 +92,7 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
     Runnable *filler = new selectSequenceRegionDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, filler);
 
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
     GTGlobals::sleep(1000);
 
@@ -117,7 +118,7 @@ QString GTUtilsSequenceView::getBeginOfSequenceAsString(U2OpStatus &os, int leng
 
     Runnable *filler = new selectSequenceRegionDialogFiller(os, length);
     GTUtilsDialog::waitForDialog(os, filler);
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
 
     GTGlobals::sleep(1000); // don't touch
@@ -146,7 +147,7 @@ QString GTUtilsSequenceView::getEndOfSequenceAsString(U2OpStatus &os, int length
     Runnable *filler = new selectSequenceRegionDialogFiller(os, length, false);
     GTUtilsDialog::waitForDialog(os, filler);
 
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
     GTGlobals::sleep(1000); // don't touch
 
@@ -180,7 +181,7 @@ int GTUtilsSequenceView::getLengthOfSequence(U2OpStatus &os)
 
     int length = -1;
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, &length));
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
 
     return length;
@@ -211,7 +212,7 @@ void GTUtilsSequenceView::selectSequenceRegion(U2OpStatus &os, int from, int to)
     GTMouseDriver::moveTo(os, mdiWindow->mapToGlobal(mdiWindow->rect().center()));
     GTMouseDriver::click(os);
 
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME

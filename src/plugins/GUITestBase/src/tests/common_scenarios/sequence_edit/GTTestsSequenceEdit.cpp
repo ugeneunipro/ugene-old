@@ -22,6 +22,7 @@
 #include "GTTestsSequenceEdit.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTKeyboardUtils.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
@@ -57,7 +58,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
@@ -97,7 +98,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //     {Range:} 1..50
 //     
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
 
 // 4. Click OK. Right click on sequence area. Use context menu {Edit sequence->Remove selected sequence}.
@@ -187,7 +188,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 50));
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
     Runnable *removeDialog = new RemovePartFromSequenceDialogFiller(os,
@@ -254,7 +255,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     CHECK_SET_ERR(dummyTest != NULL, "There is no annotation DUMMY_1");
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 2, 2));
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE, GTGlobals::UseMouse));
@@ -283,9 +284,9 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 GUI_TEST_CLASS_DEFINITION(test_0009) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/AMINO.fa");
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 10, 13));
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
-    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::copy(os);
     GTGlobals::sleep(1000);
     QString sequence = QApplication::clipboard()->text();
     CHECK_SET_ERR("ACCC" == sequence, "Incorrect sequence is copied");
@@ -296,7 +297,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
 
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 11));
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY << ADV_COPY_TRANSLATION_ACTION, GTGlobals::UseKey));
     GTMenu::showContextMenu(os, mdiWindow);

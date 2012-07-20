@@ -24,6 +24,7 @@
 
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
+#include "GTKeyboardUtils.h"
 
 namespace U2 {
 
@@ -50,7 +51,7 @@ void GTLineEdit::clear(U2OpStatus& os, QLineEdit* lineEdit) {
 
     GTWidget::setFocus(os, lineEdit);
 
-    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(100);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(1000);
@@ -73,7 +74,7 @@ void GTLineEdit::pasteClipboard(U2OpStatus& os, QLineEdit* lineEdit, PasteMethod
 
         default:
         case Shortcut:
-            GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+            GTKeyboardUtils::paste(os);
             break;
     }
 

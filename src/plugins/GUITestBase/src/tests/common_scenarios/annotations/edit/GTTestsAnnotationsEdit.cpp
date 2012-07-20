@@ -22,6 +22,7 @@
 #include "GTTestsAnnotationsEdit.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTKeyboardUtils.h"
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
@@ -60,11 +61,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // 3. Select annotation C in annotation tree. Click F2. Change name to BB.
 
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B");
+
     if ("B  (0, 2)" == item->parent()->text(0)) {
         GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
         GTMouseDriver::click(os);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardUtils::selectAll(os);
         GTKeyboardDriver::keySequence(os, "BB");
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
         GTGlobals::sleep(1000);
@@ -101,7 +103,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
         GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
         GTMouseDriver::click(os);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardUtils::selectAll(os);
         GTKeyboardDriver::keySequence(os, "BB");
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
         GTGlobals::sleep(1000);
@@ -114,7 +116,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
         GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1->parent()));
         GTMouseDriver::click(os);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardUtils::selectAll(os);
         GTKeyboardDriver::keySequence(os, "B");
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
         GTGlobals::sleep(1000);
@@ -149,7 +151,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
         GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
         GTMouseDriver::click(os);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardUtils::selectAll(os);
         GTKeyboardDriver::keySequence(os, "BB");
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
         GTGlobals::sleep(1000);
@@ -165,7 +167,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
         GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item2->parent()));
         GTMouseDriver::click(os);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardUtils::selectAll(os);
         GTKeyboardDriver::keySequence(os, "CC");
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
         GTGlobals::sleep(1000);
