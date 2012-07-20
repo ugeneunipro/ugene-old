@@ -398,7 +398,7 @@ DNASequence *FastqFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
 
     // read qualities
     qualityScores.clear();
-    readSequence(os, io, qualityScores, '@');
+    readQuality(os, io, qualityScores, sequence.size());
     CHECK_OP(os, NULL);
 
     static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file. Bad quality scores: inconsistent size.");
