@@ -21,7 +21,7 @@
 
 #include "MenuManager.h"
 #include <U2Core/Log.h>
-#include <QtGUI/QApplication>
+#include <QApplication>
 
 namespace U2 {
 #define STATIC_MENU_MODEL 1
