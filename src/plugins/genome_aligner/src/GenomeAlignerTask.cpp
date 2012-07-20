@@ -416,11 +416,19 @@ void ReadShortReadsSubTask::run() {
         }
 
         n = alignContext.absMismatches ? alignContext.nMismatches+1 : (query->length()*alignContext.ptMismatches/100)+1;
+
+        qint64 memoryRequiredForOneRead = n*24 +  // 2*(long long + int) == 24
+            sizeof(SearchQuery) +
+            ONE_SEARCH_QUERY_SIZE + query->length() +
+            query->getNameLength() +
+            query->getQuality().qualCodes.length();
+        memoryRequiredForOneRead *= 2; // FIXME: UGENE-1114
+
         if (alignReversed) {
-            m -= 2*(n*24 + sizeof(SearchQuery) + ONE_SEARCH_QUERY_SIZE + query->length() + query->getNameLength());  // 2*(long long + int) == 24
+            m -= 2*memoryRequiredForOneRead;
             alignBunchSize += 2;
         } else {
-            m -= n*24 + sizeof(SearchQuery) + ONE_SEARCH_QUERY_SIZE + query->length() + query->getNameLength();
+            m -= memoryRequiredForOneRead;
             alignBunchSize++;
         }
         if (m<=0) {
