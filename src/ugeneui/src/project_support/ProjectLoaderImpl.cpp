@@ -164,9 +164,17 @@ void ProjectLoaderImpl::sl_openProject() {
 
     filter.append("\n"+tr("UGENE project file") + " (*" + PROJECTFILE_EXT + ")");
 
-    QStringList files = QFileDialog::getOpenFileNames(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
+    QStringList files;
 
-	if (files.isEmpty()) {
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        files = QFileDialog::getOpenFileNames(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter, 0, QFileDialog::DontUseNativeDialog);
+    } else
+#endif
+
+    files = QFileDialog::getOpenFileNames(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
+
+    if (files.isEmpty()) {
         return;
     }
 
