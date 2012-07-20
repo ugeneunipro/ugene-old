@@ -31,10 +31,11 @@ void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
     GTGlobals::sleep(100);
 }
 
+#ifndef Q_OS_MAC
 void GTMouseDriver::doubleClick(U2OpStatus &os)
 {
     click(os, Qt::LeftButton);
     click(os, Qt::LeftButton);
 }
-
+#endif
 } //namespace

@@ -46,8 +46,9 @@ void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
     CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, CGPointMake(x, y), 0 /*ignored*/);
     GT_CHECK(event != NULL, "Can't create event");
 
-    CGEventPost(kCGHIDEventTap, event);
+    CGEventPost(kCGSessionEventTap, event);
     CFRelease(event);
+    GTGlobals::sleep(100);
 }
 #undef GT_METHOD_NAME
 
@@ -61,7 +62,8 @@ void GTMouseDriver::press(U2::U2OpStatus &os, Qt::MouseButton button)
     CGEventRef event = CGEventCreateMouseEvent(NULL, eventType, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
     GT_CHECK(event != NULL, "Can't create event");
 
-    CGEventPost(kCGHIDEventTap, event);
+    CGEventPost(kCGSessionEventTap, event);
+    GTGlobals::sleep(0); // don't touch, it's Mac's magic
     CFRelease(event);
 }
 #undef GT_METHOD_NAME
@@ -76,8 +78,35 @@ void GTMouseDriver::release(U2::U2OpStatus &os, Qt::MouseButton button)
     CGEventRef event = CGEventCreateMouseEvent(NULL, eventType, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
     GT_CHECK(event != NULL, "Can't create event");
 
-    CGEventPost(kCGHIDEventTap, event);
+    CGEventPost(kCGSessionEventTap, event);
+    GTGlobals::sleep(0); // don't touch, it's Mac's magic
     CFRelease(event);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "doubleClick"
+void GTMouseDriver::doubleClick(U2OpStatus &os)
+{
+    QPoint mousePos = QCursor::pos();
+    CGEventType eventTypeMouseDown = kCGEventLeftMouseDown ;
+    CGEventRef eventPress = CGEventCreateMouseEvent(NULL, eventTypeMouseDown, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
+    GT_CHECK(eventPress != NULL, "Can't create event");
+
+    CGEventType eventTypeMouseUp = kCGEventLeftMouseUp ;
+    CGEventRef eventRelease = CGEventCreateMouseEvent(NULL, eventTypeMouseUp, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
+    GT_CHECK(eventRelease != NULL, "Can't create event");
+
+    CGEventSetDoubleValueField(eventPress, kCGMouseEventClickState, 2);
+    CGEventSetDoubleValueField(eventRelease, kCGMouseEventClickState, 2);
+
+    CGEventPost(kCGSessionEventTap, eventPress);
+    GTGlobals::sleep(0); // don't touch, it's Mac's magic
+    CGEventPost(kCGSessionEventTap, eventRelease);
+    GTGlobals::sleep(0);
+
+    GTGlobals::sleep(100);
+    CFRelease(eventPress);
+    CFRelease(eventRelease);
 }
 #undef GT_METHOD_NAME
 
@@ -90,13 +119,14 @@ void GTMouseDriver::scroll(U2OpStatus &os, int value)
     //  Large values may have unexpected results, depending on the application that processes the event.
     value = value > 0 ? value : -value;
     for (int i = 0; i < value; i += 10) {
-        CGEventPost(kCGHIDEventTap, event);
+        CGEventPost(kCGSessionEventTap, event);
+        GTGlobals::sleep(0); // don't touch, it's Mac's magic
     }
 
     CFRelease(event);
 }
 #undef GT_METHOD_NAME
-
 #undef GT_CLASS_NAME
-#endif
+
+#endif // Q_OS_MAC
 } //namespace
