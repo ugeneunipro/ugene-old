@@ -92,6 +92,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTFile.h \
             src/api/GTGlobals.h \
             src/api/GTKeyboardDriver.h \
+            src/api/GTKeyboardUtils.h \
             src/api/GTLineEdit.h \
             src/api/GTMenu.h \
             src/api/GTMenuBar.h \
@@ -200,6 +201,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTKeyboardDriverLinux.cpp \
             src/api/GTKeyboardDriverMac.cpp \
             src/api/GTKeyboardDriverWindows.cpp \
+            src/api/GTKeyboardUtils.cpp \
             src/api/GTLineEdit.cpp \
             src/api/GTMenu.cpp \
             src/api/GTMenuBar.cpp \
@@ -216,4 +218,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTreeWidget.cpp \
             src/api/GTWidget.cpp \
             src/api/GTAction.cpp
+
+
 
