@@ -41,7 +41,27 @@ void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
     QMainWindow* mainWindow = mw->getQMainWindow();
     GT_CHECK(mainWindow != NULL, "QMainWindow == NULL");
 
+#ifndef Q_OS_MAC
     GTMenuBar::clickCornerMenu(os, mainWindow->menuBar(), action);
+#else
+    MWMDIWindow *mdiWindow = mw->getMDIManager()->getActiveWindow();
+    GT_CHECK(mdiWindow != NULL, "MDIWindow == NULL");
+
+    // TODO: make click on button
+    switch (action) {
+    case GTGlobals::Minimize:
+        mdiWindow->showMinimized();
+        break;
+    case GTGlobals::Maximize:
+        mdiWindow->showMaximized();
+        break;
+    case GTGlobals::Close:
+    case GTGlobals::WindowActionCount:
+        // TODO
+        GT_CHECK(false, "No this case under MacOS");
+        break;
+    }
+#endif
 }
 #undef GT_METHOD_NAME
 
