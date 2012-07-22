@@ -535,6 +535,55 @@ void BlastAllSupportTask::parseXMLHsp(const QDomNode &xml,const QString &id, con
         }
     }
 
+    // parse alignment
+    {
+        elem = xml.lastChildElement("Hsp_qseq");
+        QByteArray qSeq = elem.text().toAscii();
+
+        elem = xml.lastChildElement("Hsp_hseq");
+        QByteArray hSeq = elem.text().toAscii();
+
+        elem = xml.lastChildElement("Hsp_midline");
+        QByteArray midline = elem.text().toAscii();
+
+        QByteArray cigar;
+        int length = midline.length();
+        char prevCigarChar = '*';
+        int cigarCount = 0;
+
+        for (int i = 0; i < length; ++i) {
+            char cigarChar;
+            char gapChar = midline.at(i);
+            if (gapChar == '|') {
+                cigarChar = 'M';
+            } else {
+                if (qSeq.at(i) == '-') {
+                    cigarChar = 'D';
+                } else if ( hSeq.at(i) == '-')  {
+                    cigarChar = 'I';
+                } else {
+                    cigarChar = 'X';
+                }
+            }
+
+            if ( i > 0 && prevCigarChar != cigarChar ) {
+                cigar.append( QByteArray::number(cigarCount) ).append(prevCigarChar);
+                cigarCount = 0;
+            }
+
+            prevCigarChar = cigarChar;
+            cigarCount++;
+
+            if (i == length - 1 ) {
+                cigar.append( QByteArray::number(cigarCount) ).append( cigarChar );
+            }
+        }
+
+        ad->qualifiers.append( U2Qualifier("subj_seq", hSeq) );
+        ad->qualifiers.append( U2Qualifier("cigar", cigar) );
+
+    }
+
     ad->qualifiers.push_back(U2Qualifier("id",id));
     ad->qualifiers.push_back(U2Qualifier("def",def));
     ad->qualifiers.push_back(U2Qualifier("accession",accession));
