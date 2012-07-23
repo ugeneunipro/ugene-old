@@ -48,7 +48,8 @@ public:
 
     QVariant saveState() const;
     void restoreState(const QVariant&);
-
+    
+    void setFocus();
 public slots:
     void resetSelection();
 
@@ -56,10 +57,11 @@ signals:
     void processSelected(Workflow::ActorPrototype*);
     void si_protoDeleted(const QString &);
     void si_protoChanged();
-
 private:
     WorkflowPaletteElements *elementsList;
     friend class PaletteDelegate;
+
+    QAction* delTextAction;
 };
 
 class WorkflowPaletteElements : public QTreeWidget {
@@ -100,6 +102,7 @@ private:
     QAction* createItemAction(Workflow::ActorPrototype* item);
     void setContent(ActorPrototypeRegistry*);
     void sortTree();
+    QVariant changeState(const QVariant& v);
 
 private:
     QMap<QString,QList<QAction*> > categoryMap;
@@ -108,6 +111,7 @@ private:
     QAction* currentAction;
     QPoint dragStartPosition;
     QString nameFilter;
+    QString oldNameFilter;
 
     ActorPrototypeRegistry *protoRegistry;
     QVariantMap expandState;

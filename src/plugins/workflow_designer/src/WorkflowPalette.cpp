@@ -70,11 +70,17 @@ WorkflowPalette::WorkflowPalette(ActorPrototypeRegistry* reg, QWidget *parent)
 
     this->layout()->addWidget(elementsList);
 
+    delTextAction = new QAction(this);
+    delTextAction->setShortcut(QKeySequence(tr("Esc")));
+    this->addAction(delTextAction);
+
+    connect(delTextAction, SIGNAL(triggered()), filterNameEdit, SLOT(clear()));
+
     connect(elementsList, SIGNAL(processSelected(Workflow::ActorPrototype*)), SIGNAL(processSelected(Workflow::ActorPrototype*)));
     connect(elementsList, SIGNAL(si_protoDeleted(const QString &)), SIGNAL(si_protoDeleted(const QString &)));
     connect(elementsList, SIGNAL(si_protoChanged()), SIGNAL(si_protoChanged()));
 
-    connect(filterNameEdit, SIGNAL(textEdited(const QString &)), elementsList, SLOT(sl_nameFilterChanged(const QString &)));
+    connect(filterNameEdit, SIGNAL(textChanged(const QString &)), elementsList, SLOT(sl_nameFilterChanged(const QString &)));
 }
 
 QMenu* WorkflowPalette::createMenu(const QString& name) {
@@ -91,6 +97,10 @@ QVariant WorkflowPalette::saveState() const {
 
 void WorkflowPalette::restoreState(const QVariant& v) {
     elementsList->restoreState(v);
+}
+
+void WorkflowPalette::setFocus(){
+    filterNameEdit->setFocus();
 }
 
 class PaletteDelegate: public QItemDelegate {
@@ -276,7 +286,7 @@ void WorkflowPaletteElements::setContent(ActorPrototypeRegistry* reg) {
 
         foreach(ActorPrototype* proto, it.value()) {
             QString name = proto->getDisplayName().toLower();
-            if (!filterMatched(nameFilter, name)) {
+            if (!filterMatched(nameFilter, name) && !filterMatched(nameFilter, it.key().getDisplayName().toLower())) {
                 continue;
             }
             if (NULL == category) {
@@ -316,10 +326,11 @@ void WorkflowPaletteElements::rebuild() {
     }
 
     if (reg) {
-        QVariant v = saveState();
+        QVariant saved = saveState();
         clear();
         setContent(reg);
-        restoreState(v);
+        QVariant changed = changeState(saved);
+        restoreState(changed);
     }
 
     setMouseTracking(true);
@@ -626,8 +637,30 @@ void WorkflowPaletteElements::leaveEvent(QEvent *) {
     };
 }
 
+QVariant WorkflowPaletteElements::changeState(const QVariant& savedState){
+    QVariantMap m = savedState.toMap();
+
+    for (int i = 0, count = topLevelItemCount(); i < count; ++i) {
+        QTreeWidgetItem* it = topLevelItem(i);         
+        bool expanded = m.value(it->data(0, Qt::UserRole).toString()).toBool();
+
+        QRegExp nonWhitespase("\\s");
+        QStringList splitNew = nameFilter.split(nonWhitespase, QString::SkipEmptyParts);
+        bool hasCharsNewFilter = splitNew.size() > 0 && !splitNew.first().isEmpty();
+        QStringList splitOld = oldNameFilter.split(nonWhitespase, QString::SkipEmptyParts);
+        bool hasCharsOldFilter = splitOld.size() > 0 && !splitOld.first().isEmpty();
+
+        if(hasCharsNewFilter && !hasCharsOldFilter){expanded = true;}
+        else if(!hasCharsNewFilter && hasCharsOldFilter){expanded = false;}
+        
+        m.insert(it->data(0, Qt::UserRole).toString(), expanded);
+    }   
+    return m;
+}
+
 void WorkflowPaletteElements::sl_nameFilterChanged(const QString &filter) {
     overItem = NULL;
+    oldNameFilter = nameFilter;
     nameFilter = filter.toLower();
     rebuild();
 }

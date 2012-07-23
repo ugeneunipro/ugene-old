@@ -459,6 +459,26 @@ void WorkflowView::createActions() {
     appendExternalTool = new QAction(tr("Add element with command line tool..."), this);
     appendExternalTool->setIcon(QIcon(":workflow_designer/images/external_cmd_tool_add.png"));
     connect(appendExternalTool, SIGNAL(triggered()), SLOT(sl_appendExternalToolWorker()));
+
+    findPrototypeAction = new QAction(this);
+    findPrototypeAction->setShortcut(QKeySequence::Find);
+    connect(findPrototypeAction, SIGNAL(triggered()), SLOT(sl_findPrototype()));
+    this->addAction(findPrototypeAction);
+}
+
+void WorkflowView::sl_findPrototype(){
+    if(tabs->currentWidget() != palette){return;}
+
+    palette->setFocus();
+
+    static const int MIN_SIZE_FIND = 260;
+    QList<int> sizes = splitter->sizes();
+    int idx = splitter->indexOf(tabs);
+    CHECK(idx >= 0 && idx < sizes.size(),);
+    if(sizes.at(idx) < MIN_SIZE_FIND / 2){
+        sizes[idx] = MIN_SIZE_FIND;
+        splitter->setSizes(sizes);
+    }    
 }
 
 void WorkflowView::sl_createScript() {

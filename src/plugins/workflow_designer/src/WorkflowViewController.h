@@ -228,7 +228,7 @@ private slots:
     void sl_protoDeleted(const QString& id);
     void sl_xmlSchemaLoaded(Task*);
     void sl_editExternalTool();
-    
+    void sl_findPrototype();    
 protected:
     bool onCloseEvent();
 
@@ -279,6 +279,8 @@ private:
     QAction* runAction;
     QAction* stopAction;
     QAction* validateAction;
+
+    QAction* findPrototypeAction;
 
     QList<QAction*> styleActions;
     QList<QAction*> runModeActions;
