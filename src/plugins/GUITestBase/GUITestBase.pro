@@ -24,6 +24,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h \
             src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h \
             src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
@@ -130,6 +132,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \

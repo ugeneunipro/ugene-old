@@ -63,6 +63,14 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
             break;
 
         case AVItemType_Group:
+            {
+                AVGroupItem* avGroupItem = (AVGroupItem*)avItem;
+                GT_CHECK_RESULT(avGroupItem!= NULL, "avAnnotationItem is NULL", "");
+
+                AnnotationGroup *group= avGroupItem->group;
+                GT_CHECK_RESULT(group != NULL, "avGroupItem->group is NULL", "");
+                return group->getGroupName();
+            }
             break;
 
         case AVItemType_Qualifier:
@@ -151,40 +159,6 @@ QPoint GTUtilsAnnotationsTreeView::getItemCenter(U2OpStatus &os, const QString &
     return GTTreeWidget::getItemCenter(os, item);
 }
 #undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "renameAndLocation"
-
-void GTUtilsAnnotationsTreeView::renameAndLocation(U2OpStatus &os, const QString &itemName, const QString &newItemName, const QString &location, const QString &newLocation) {
-
-    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
-    GTMouseDriver::click(os);
-
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-    GTKeyboardUtils::selectAll(os);
-    GTKeyboardDriver::keySequence(os, newItemName);
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"]);
-    GTKeyboardUtils::selectAll(os);
-    GTKeyboardDriver::keySequence(os, newLocation);
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-
-    GTGlobals::sleep(500);
-}
-#undef GT_METHOD_NAME
-
-//#define GT_METHOD_NAME "renameGroup"
-//
-//void GTUtilsAnnotationsTreeView::renameGroup(U2OpStatus &os, const QString &itemName, const QString &newItemName) {
-//
-//    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
-//    GTMouseDriver::click(os);
-//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-//    GTKeyboardUtils::selectAll(os);
-//    GTKeyboardDriver::keySequence(os, newItemName);
-//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-//    GTGlobals::sleep(500);
-//}
-//#undef GT_METHOD_NAME
-
 #undef GT_CLASS_NAME
 
 }

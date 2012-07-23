@@ -171,7 +171,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/Sequence view/
 //////////////////////////////////////////////////////////////////////////
-    //REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002);
+//    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002);
     //REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_1);
     //REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_2);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004);
@@ -224,7 +224,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004_2);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004_3);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004_4);
-   REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0005);
+//    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0005);
 //    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0006);
 //    REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0008);

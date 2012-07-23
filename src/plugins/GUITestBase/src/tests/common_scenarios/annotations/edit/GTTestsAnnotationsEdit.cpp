@@ -34,6 +34,9 @@
 #include "GTUtilsSequenceView.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
+
 
 namespace U2 {
 
@@ -60,21 +63,19 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to BB.
 
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group");
 
-    if ("B  (0, 2)" == item->parent()->text(0)) {
-        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
-        GTMouseDriver::click(os);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTKeyboardUtils::selectAll(os);
-        GTKeyboardDriver::keySequence(os, "BB");
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-        GTGlobals::sleep(1000);
-    }
+    Runnable *filler = new EditGroupAnnotationsFiller(os, "BB");
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
     GTGlobals::sleep();
 
-    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "B");
-    CHECK_SET_ERR("BB  (0, 2)" == item1->parent()->text(0), "Item BB not found in tree widget");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
+
 
 }
 
@@ -96,33 +97,34 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-// 3. Select annotation C in annotation tree. Click F2. Change name to BB.
+// 3. Select annotation B in annotation tree. Click F2. Change name to BB.
 
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B");
-    if ("B  (0, 2)" == item->parent()->text(0)) {
-        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
-        GTMouseDriver::click(os);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTKeyboardUtils::selectAll(os);
-        GTKeyboardDriver::keySequence(os, "BB");
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-        GTGlobals::sleep(1000);
-    }
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group");
+
+    Runnable *filler = new EditGroupAnnotationsFiller(os, "BB");
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
     GTGlobals::sleep();
 
-    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "B");
-    CHECK_SET_ERR("BB  (0, 2)" == item1->parent()->text(0), "Item BB not found in tree widget");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
 
-        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1->parent()));
-        GTMouseDriver::click(os);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTKeyboardUtils::selectAll(os);
-        GTKeyboardDriver::keySequence(os, "B");
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-        GTGlobals::sleep(1000);
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "BB");
 
-        QTreeWidgetItem *item2 = GTUtilsAnnotationsTreeView::findItem(os, "B");
-        CHECK_SET_ERR("B  (0, 2)" == item2->parent()->text(0), "Item B not found in tree widget");
+    Runnable *filler1 = new EditGroupAnnotationsFiller(os, "B_group");
+    GTUtilsDialog::waitForDialog(os, filler1);
+
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "B_group") != NULL, "Item B_group not found in tree widget");
+
 }
 
 
@@ -146,37 +148,34 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to BB.
 
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B");
-    if ("B  (0, 2)" == item->parent()->text(0)) {
-        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
-        GTMouseDriver::click(os);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTKeyboardUtils::selectAll(os);
-        GTKeyboardDriver::keySequence(os, "BB");
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-        GTGlobals::sleep(1000);
-    }
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group");
+
+    Runnable *filler = new EditGroupAnnotationsFiller(os, "BB");
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
     GTGlobals::sleep();
 
-    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "B");
-    CHECK_SET_ERR("BB  (0, 2)" == item1->parent()->text(0), "Item BB not found in tree widget");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
 
-        QTreeWidgetItem *item2 = GTUtilsAnnotationsTreeView::findItem(os, "C");
-        if ("C  (0, 1)" == item2->parent()->text(0)) {
 
-        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item2->parent()));
-        GTMouseDriver::click(os);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-        GTKeyboardUtils::selectAll(os);
-        GTKeyboardDriver::keySequence(os, "CC");
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-        GTGlobals::sleep(1000);
-            }
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "C_group");
 
-        QTreeWidgetItem *item3 = GTUtilsAnnotationsTreeView::findItem(os, "C");
-        CHECK_SET_ERR("CC  (0, 1)" == item3->parent()->text(0), "Item CC not found in tree widget");
+    Runnable *filler1 = new EditGroupAnnotationsFiller(os, "CC");
+    GTUtilsDialog::waitForDialog(os, filler1);
+
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item BB not found in tree widget");
+
 }
-
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 // Rename annotation
@@ -198,7 +197,12 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "80 ..90");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+    Runnable *filler = new EditAnnotationFiller(os, "CC", "80 ..90");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
 
@@ -224,13 +228,25 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "80 ..90");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+    Runnable *filler = new EditAnnotationFiller(os, "CC", "80 ..90");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
 
-// 4. Select annotation C in annotation tree. Click F2. Change name to CC.
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "CC");
+    Runnable *filler1 = new EditAnnotationFiller(os, "C", "80 ..90");
+    GTUtilsDialog::waitForDialog(os, filler1);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "CC", "C", "80 ..90", "80 ..90");
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "C") != NULL, "Item C not found in tree widget");
 }
@@ -256,13 +272,25 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "80 ..90");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+    Runnable *filler = new EditAnnotationFiller(os, "CC", "80 ..90");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
 
-// 4. Select annotation B in annotation tree. Click F2. Change name to BB.
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    Runnable *filler1 = new EditAnnotationFiller(os, "BB", "30 ..120");
+    GTUtilsDialog::waitForDialog(os, filler1);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "B", "BB", "30 ..120", "30 ..120");
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
 }
@@ -288,7 +316,14 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "C", "80 ..90", "20 ..40");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+    Runnable *filler = new EditAnnotationFiller(os, "C", "20 ..40");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
     GTGlobals::sleep();
     bool found = GTUtilsAnnotationsTreeView::findRegion(os, "C", U2Region(20, 40));
     CHECK_SET_ERR(found == true, "There is no {20 ..40} region in annotation");
@@ -315,18 +350,30 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "C", "80 ..90", "20 ..40");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+    Runnable *filler = new EditAnnotationFiller(os, "C", "20 ..40");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
     GTGlobals::sleep();
     bool found = GTUtilsAnnotationsTreeView::findRegion(os, "C", U2Region(20, 40));
     CHECK_SET_ERR(found == true, "There is no {20 ..40} region in annotation");
-
 // 4. Select annotation C in annotation tree. Click F2. Change name to CC.
 
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "C", "20 ..40", "10 ..90");
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "C");
+    Runnable *filler1 = new EditAnnotationFiller(os, "C", "10 ..90");
+    GTUtilsDialog::waitForDialog(os, filler1);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
     GTGlobals::sleep();
     bool found1 = GTUtilsAnnotationsTreeView::findRegion(os, "C", U2Region(10, 90));
     CHECK_SET_ERR(found1 == true, "There is no {10 ..90} region in annotation");
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003_2) {
@@ -348,18 +395,67 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTGlobals::sleep();
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to CC.
-
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "C", "CC", "80 ..90", "20 ..40");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+    Runnable *filler = new EditAnnotationFiller(os, "CC", "20 ..40");
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item CC not found in tree widget");
 
-// 4. Select annotation B in annotation tree. Click F2. Change name to BB.
-
-    GTUtilsAnnotationsTreeView::renameAndLocation(os, "B", "BB", "30 ..120", "20 ..40");
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
+    bool found = GTUtilsAnnotationsTreeView::findRegion(os, "CC", U2Region(20, 40));
+    CHECK_SET_ERR(found == true, "There is no {20 ..40} region in annotation");
+
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    Runnable *filler1 = new EditAnnotationFiller(os, "BB", "20 ..40");
+    GTUtilsDialog::waitForDialog(os, filler1);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    bool found1 = GTUtilsAnnotationsTreeView::findRegion(os, "BB", U2Region(20, 40));
+    CHECK_SET_ERR(found1 == true, "There is no {20 ..40} region in annotation");
 
 }
+
+//GUI_TEST_CLASS_DEFINITION(test_0004) {
+//// Rename annotation
+//// 
+//// Steps:
+//// 
+//// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+//    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+//// Expected state: 
+////     1) Project view with document "1.gb" has been opened
+//    GTUtilsDocument::checkDocument(os, "1.gb");
+////     2) UGENE window titled with text "proj2 UGENE"
+//    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+//
+//// 2. Open view for "1.gb"
+//    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+//    GTMouseDriver::doubleClick(os);
+//    GTGlobals::sleep();
+//
+//// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+//
+//    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+//    if ("C  (0, 1)" == item->parent()->text(0)) {
+//        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
+//        GTMouseDriver::click(os);
+//        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+//    QWidget *complementButton = GTWidget::findWidget(os, "", sequenceWidget2, false);
+//    GTWidget::click(os, circularViewSe2);
+//
+//
+//        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+//        GTKeyboardDriver::keySequence(os, "BB");
+//        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
+//        GTGlobals::sleep(1000);
+//    }
+//}
 
 } // namespace GUITest_common_scenarios_annotations_edit
 } // namespace U2
