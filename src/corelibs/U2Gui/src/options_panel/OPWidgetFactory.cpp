@@ -35,7 +35,6 @@ OPGroupParameters::OPGroupParameters(QString _groupId, QPixmap headerImage, QStr
 
 OPWidgetFactory::OPWidgetFactory()
 {
-    groupState = OPGroupState_Closed;
 }
 
 } // namespace

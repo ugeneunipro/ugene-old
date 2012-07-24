@@ -119,12 +119,6 @@ void AnnotHighlightWidget::initLayout()
     mainLayout->addLayout(treeLayout);
     mainLayout->addLayout(settingsLayout);
 
-    QSpacerItem* spacer = new QSpacerItem(0, 5,
-        QSizePolicy::Minimum,
-        QSizePolicy::Expanding);
-
-    mainLayout->addSpacerItem(spacer);
-
     setLayout(mainLayout);
 }
 

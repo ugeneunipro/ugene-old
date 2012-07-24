@@ -93,7 +93,7 @@ void OptionsPanel::sl_groupHeaderPressed(QString groupId, bool ctrlHold)
     if (ctrlHold)
     {
         // The group has already been opened
-        if (OPGroupState_Opened == opWidgetFactory->getGroupState())
+        if (activeGroupsIds.contains(groupId))
         {
             // And this is the only opened group
             if (1 == activeGroupsIds.count()) {
@@ -114,7 +114,7 @@ void OptionsPanel::sl_groupHeaderPressed(QString groupId, bool ctrlHold)
 
     // There are active groups and Ctrl is not pressed down
     // The only active group is the currently selected one
-    if (OPGroupState_Opened == opWidgetFactory->getGroupState() &&
+    if (activeGroupsIds.contains(groupId) &&
         (1 == activeGroupsIds.count()))
     {
         widget->closeOptionsPanel();
@@ -135,6 +135,7 @@ void OptionsPanel::sl_groupHeaderPressed(QString groupId, bool ctrlHold)
 void OptionsPanel::openOptionsGroup(const QString& groupId)
 {
     if (activeGroupsIds.contains(groupId)) {
+        widget->focusOptionsWidget(groupId);
         return;
     }
 
@@ -150,7 +151,6 @@ void OptionsPanel::openOptionsGroup(const QString& groupId)
     widget->createOptionsWidget(groupId, parameters.getTitle(), opWidgetFactory->createWidget(objView));
     headerWidget->setHeaderSelected();
     activeGroupsIds.append(groupId);
-    opWidgetFactory->setGroupState(OPGroupState_Opened);
 }
 
 
@@ -171,7 +171,6 @@ void OptionsPanel::closeOptionsGroup(const QString& groupId)
     widget->deleteOptionsWidget(groupId);
     headerWidget->setHeaderDeselected();
     activeGroupsIds.removeAll(groupId);
-    opWidgetFactory->setGroupState(OPGroupState_Closed);
 }
 
 

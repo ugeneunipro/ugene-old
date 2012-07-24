@@ -78,6 +78,9 @@ public:
     /** Delete options widget (on the left side) */
     void deleteOptionsWidget(const QString& groupId);
 
+    /** Verifies that a widget with the specified ID is present and makes it active */
+    void focusOptionsWidget(const QString& groupId);
+
 private:
     /** Returns NULL if not found */
     GroupOptionsWidget* findOptionsWidgetByGroupId(const QString& groupId);

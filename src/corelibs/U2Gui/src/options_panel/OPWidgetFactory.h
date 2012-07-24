@@ -50,9 +50,6 @@ private:
 };
 
 
-enum OPGroupState {OPGroupState_Opened, OPGroupState_Closed};
-
-
 class U2GUI_EXPORT OPWidgetFactory : public QObject
 {
     Q_OBJECT
@@ -66,13 +63,9 @@ public:
 
     virtual ObjectViewType getObjectViewType() { return objectViewOfWidget; }
 
-    virtual OPGroupState getGroupState() { return groupState; }
-    virtual void setGroupState(OPGroupState newState) { groupState = newState; }
-
 protected:
     GObjectView*    objView;
     ObjectViewType  objectViewOfWidget;
-    OPGroupState    groupState;
 };
 
 } // namespace

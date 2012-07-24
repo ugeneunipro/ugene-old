@@ -96,6 +96,10 @@ OptionsPanelWidget::OptionsPanelWidget()
         "border-color: palette(shadow);"
         " }");
 
+    QSpacerItem* optionsWidgetsSpacer = new QSpacerItem(0, 0,
+        QSizePolicy::Minimum, QSizePolicy::Expanding);
+    optionsLayout->addItem(optionsWidgetsSpacer);
+
     optionsScrollArea->setWidget(optionsWidget);
 
     // The widget is used to add additional decoration to the groups panel
@@ -142,9 +146,9 @@ GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& group
     GroupOptionsWidget* widget = new GroupOptionsWidget(groupId, title, _widget);
 
     // Add widget to the layout and "parent" it
-    optionsLayout->addWidget(widget);
+    optionsLayout->insertWidget(0, widget);
 
-    optionsWidgets.append(widget);
+    optionsWidgets.insert(0, widget);
 
     widget->setFocus();
 
@@ -199,6 +203,19 @@ void OptionsPanelWidget::deleteOptionsWidget(const QString& groupId)
     optionsLayout->removeWidget(optionsWidget);
     delete optionsWidget;
     optionsWidgets.removeAll(optionsWidget);
+}
+
+
+void OptionsPanelWidget::focusOptionsWidget(const QString& groupId)
+{
+    GroupOptionsWidget* optionsWidget = findOptionsWidgetByGroupId(groupId);
+    SAFE_POINT(NULL != optionsWidget,
+        QString("Internal error: failed to find an options widget for group '%1' to activate it.").arg(groupId),);
+
+    optionsLayout->removeWidget(optionsWidget);
+    optionsLayout->insertWidget(0, optionsWidget);
+
+    optionsWidget->setFocus();
 }
 
 
