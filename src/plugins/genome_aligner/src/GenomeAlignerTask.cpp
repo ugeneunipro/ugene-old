@@ -417,12 +417,17 @@ void ReadShortReadsSubTask::run() {
 
         n = alignContext.absMismatches ? alignContext.nMismatches+1 : (query->length()*alignContext.ptMismatches/100)+1;
 
+        qint64 qualLength = 0;
+        if (query->hasQuality()){
+            qualLength = query->getQuality().qualCodes.length();
+        }
         qint64 memoryRequiredForOneRead = n*24 +  // 2*(long long + int) == 24
             sizeof(SearchQuery) +
             ONE_SEARCH_QUERY_SIZE + query->length() +
             query->getNameLength() +
-            query->getQuality().qualCodes.length();
+            qualLength;
         memoryRequiredForOneRead *= 2; // FIXME: UGENE-1114
+
 
         if (alignReversed) {
             m -= 2*memoryRequiredForOneRead;
