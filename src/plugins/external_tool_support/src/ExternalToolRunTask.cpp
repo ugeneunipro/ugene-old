@@ -104,6 +104,7 @@ void ExternalToolRunTask::run(){
             algoLog.details(tr("Tool %1 finished successfully").arg(toolName));
         }
     }
+    delete h;
 }
 Task::ReportResult ExternalToolRunTask::report(){
     return ReportResult_Finished;
@@ -113,7 +114,7 @@ void ExternalToolRunTask::cancelProcess(){
 }
 
 ExternalToolRunTaskHelper::ExternalToolRunTaskHelper(ExternalToolRunTask* t) 
-: QObject(t), p(t)
+: p(t)
 { 
     logData.resize(1000); 
 }
