@@ -272,7 +272,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "misc_feature", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "misc_feature_group", "misc_feature", "complement(1.. 20)"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 

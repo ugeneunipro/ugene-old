@@ -291,13 +291,13 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
 // 3. Create 2 annotations:
 //     1) a1 in group a1
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a1", "a1", "10..16"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a1_group", "a1", "10..16"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
 //     2) a1 in group a2
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a2", "a1", "18..20"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a2_group", "a1", "18..20"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
@@ -330,13 +330,13 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
 
 // 3. Create 2 annotations:
 //     1) a1 in group a1
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a1", "a1", "10..16"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a1_group", "a1", "10..16"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
 //     2) a1 in group a2
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a2", "a1", "18..20"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a2_group", "a1", "18..20"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
@@ -369,13 +369,13 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 
 // 3. Create 2 annotations:
 //     1) a1 in group a1
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a1", "a1", "10..16"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a1_group", "a1", "10..16"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
 //     2) a1 in group a2
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a2", "a1", "18..20"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a2_group", "a1", "18..20"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();

@@ -308,19 +308,21 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011) {
+
     GTFileDialog::openFile(os, testDir + "_common_data/edit_sequence/", "test.gb");
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_COPY" << "action_copy_annotation_sequence"));
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "DUMMY_1"));
-    GTMouseDriver::click(os);
+    GTGlobals::sleep(1000);
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
 
     const QString expectedSequence = "AATGA";
-    QString realSequence = QApplication::clipboard()->text();
 
+    QString realSequence = QApplication::clipboard()->text();
     CHECK_SET_ERR(expectedSequence == realSequence, "Sequence is not pasted");
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0012) {
