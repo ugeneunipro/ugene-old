@@ -27,6 +27,10 @@ use_cuda() {
     
     GA_NVCC_FLAGS = 
 
+    win32 {
+        #libcmt conflicts with msvcrt
+        QMAKE_LFLAGS += /NODEFAULTLIB:libcmt
+    }
 #TODO: win 64?
     !win32  {
         GA_NVCC_FLAGS += -Xcompiler -fPIC
