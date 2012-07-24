@@ -52,6 +52,26 @@ enum ErrorMessageFlag {
 };
 
 
+/**
+ * A workaround to listen to enter in the pattern field and
+ * make a correct (almost) tab order.
+ */
+class FindPatternEventFilter : public QObject
+{
+    Q_OBJECT
+public:
+    FindPatternEventFilter(QObject* parent);
+
+signals:
+    void si_enterPressed();
+    void si_tabPressed();
+
+protected:
+    bool eventFilter(QObject* obj, QEvent *event);
+};
+
+
+
 class FindPatternWidget : public QWidget, private Ui_FindPatternForm
 {
     Q_OBJECT
@@ -69,6 +89,20 @@ private slots:
     void sl_onSequenceTranslationChanged(int);
     void sl_onSearchPatternChanged();
     void sl_onSearchClicked();
+
+    /**
+     * If the search button is enabled, launches the search
+     * (i.e. on pressing enter in the pattern field)
+     */
+    void sl_onEnterInPatternFieldPressed();
+
+    /**
+     * On pressing tab in the pattern field moves focus to the search button,
+     * if it is enabled.
+     * This is done temporarily to avoid confusion with passing focus to other
+     * AnnotatedDNAView widgets.
+     */
+    void sl_onTabInPatternFieldPressed();
 
     /** Another sequence has been selected */
     void sl_onFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);

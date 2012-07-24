@@ -146,6 +146,8 @@ GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& group
 
     optionsWidgets.append(widget);
 
+    widget->setFocus();
+
     return widget;
 }
 

@@ -22,6 +22,9 @@
     <height>800</height>
    </size>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
@@ -70,6 +73,12 @@
        <width>192</width>
        <height>140</height>
       </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="tabChangesFocus">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -334,6 +343,19 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>textPattern</tabstop>
+  <tabstop>btnSearch</tabstop>
+  <tabstop>boxAlgorithm</tabstop>
+  <tabstop>boxStrand</tabstop>
+  <tabstop>boxSeqTransl</tabstop>
+  <tabstop>boxRegion</tabstop>
+  <tabstop>editStart</tabstop>
+  <tabstop>editEnd</tabstop>
+  <tabstop>removeOverlapsBox</tabstop>
+  <tabstop>boxUseMaxResult</tabstop>
+  <tabstop>boxMaxResult</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

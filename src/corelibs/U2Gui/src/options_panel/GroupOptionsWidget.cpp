@@ -53,6 +53,8 @@ GroupOptionsWidget::GroupOptionsWidget(const QString& _groupId, const QString& _
     mainLayout->addWidget(titleWidget);
     mainLayout->addWidget(widget);
     setLayout(mainLayout);
+
+    setFocusProxy(widget);
 }
 
 } // namespace

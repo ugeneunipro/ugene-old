@@ -40,6 +40,31 @@
 
 namespace U2 {
 
+
+FindPatternEventFilter::FindPatternEventFilter(QObject* parent)
+    : QObject(parent)
+{
+}
+
+
+bool FindPatternEventFilter::eventFilter(QObject* obj, QEvent* event)
+{
+    if (QEvent::KeyPress == event->type()) {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        if (Qt::Key_Tab == keyEvent->key()) {
+            emit si_tabPressed();
+            return true;
+        }
+        if (Qt::Key_Enter == keyEvent->key() || Qt::Key_Return == keyEvent->key()) {
+            emit si_enterPressed();
+            return true;
+        }
+    }
+    return QObject::eventFilter(obj, event);
+}
+
+
+
 const static QString SHOW_OPTIONS_LINK("show_options_link");
 
 const int FindPatternWidget::DEFAULT_RESULTS_NUM_LIMIT = 100000;
@@ -75,6 +100,14 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         connectSlots();
 
         checkState();
+
+        setFocusProxy(textPattern);
+        btnSearch->setAutoDefault(true);
+
+        FindPatternEventFilter* findPatternEventFilter = new FindPatternEventFilter(this);
+        textPattern->installEventFilter(findPatternEventFilter);
+        connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterInPatternFieldPressed()));
+        connect(findPatternEventFilter, SIGNAL(si_tabPressed()), SLOT(sl_onTabInPatternFieldPressed()));
     }
 }
 
@@ -132,7 +165,7 @@ void FindPatternWidget::initLayout()
         "font: bold;");
 
     updateLayout();
-    
+
     layoutSearchButton->setAlignment(Qt::AlignTop);
     this->layout()->setAlignment(Qt::AlignTop);
 }
@@ -452,6 +485,37 @@ void FindPatternWidget::showHideErrorMessage(bool show, ErrorMessageFlag errorMe
 
 void FindPatternWidget::sl_onSearchPatternChanged()
 {
+    // Trim the pattern and make it upper-case
+    QString patternInTextEdit = textPattern->toPlainText();
+    QString patternResult;
+
+    QTextCursor cursorInTextEdit = textPattern->textCursor();
+    int numOfNonSpaceCharsBeforeCursor = 0;
+    int cursorPosition = 0;
+    if (!cursorInTextEdit.isNull()) {
+        cursorPosition = cursorInTextEdit.position();
+    }
+
+    for (int i = 0; i < patternInTextEdit.size(); ++i) {
+        QChar ch = patternInTextEdit[i];
+        if (!ch.isSpace()) {
+            patternResult.append(ch);
+            if (i < cursorPosition) {
+                numOfNonSpaceCharsBeforeCursor++;
+            }
+        }
+    }
+
+    patternResult = patternResult.toUpper();
+
+    if (patternResult != patternInTextEdit) {
+        textPattern->setPlainText(patternResult);
+
+        // Move cursor to the same place
+        cursorInTextEdit.setPosition(numOfNonSpaceCharsBeforeCursor, QTextCursor::MoveAnchor);
+        textPattern->setTextCursor(cursorInTextEdit);
+    }
+
     checkState();
     tunePercentBox();
     enableDisableMatchSpin();
@@ -624,6 +688,26 @@ void FindPatternWidget::tunePercentBox()
         QString("Internal error: unexpected value during tuning of the match percentage value '%1.'").arg(newValue),);
 
     spinMatch->setValue(newValue);
+}
+
+
+void FindPatternWidget::sl_onTabInPatternFieldPressed()
+{
+    if (btnSearch->isEnabled()) {
+        btnSearch->setFocus();
+    }
+    return;
+}
+
+
+void FindPatternWidget::sl_onEnterInPatternFieldPressed()
+{
+    if (btnSearch->isEnabled()) {
+        sl_onSearchClicked();
+    }
+    else {
+        return;
+    }
 }
 
 
