@@ -30,6 +30,18 @@ bool GUITestLauncher::renameTestLog(const QString& testName) {
     return outLog.rename("failed_" + outFileName);
 }
 
+QString GUITestLauncher::escaped(const QString &s) {
+
+    QString esc = s;
+
+    esc = esc.replace("|", "||");
+    esc = esc.replace("]", "|]");
+    esc = esc.replace("\r", "|r");
+    esc = esc.replace("\n", "|n");
+    esc = esc.replace("'", "|'");
+    return esc;
+}
+
 void GUITestLauncher::run() {
 
     if (!initGUITestBase()) {
@@ -51,7 +63,7 @@ void GUITestLauncher::run() {
 
             if (!t->isIgnored()) {
                 qint64 startTime = GTimer::currentTimeMicros();
-                teamcityLog.trace(QString("##teamcity[testStarted name='%1']").arg(testName));
+                teamcityLog.trace(QString("##teamcity[testStarted name='%1']").arg(escaped(testName)));
 
                 QString testResult = performTest(testName);
                 results[testName] = testResult;
@@ -63,7 +75,7 @@ void GUITestLauncher::run() {
                 teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
             }
             else {
-                teamcityLog.trace(QString("##teamcity[testIgnored name='%1' message='%2']").arg(testName, t->getIgnoreMessage()));
+                teamcityLog.trace(QString("##teamcity[testIgnored name='%1' message='%2']").arg(escaped(testName), escaped(t->getIgnoreMessage())));
             }
         }
 
@@ -74,10 +86,10 @@ void GUITestLauncher::run() {
 void GUITestLauncher::teamCityLogResult(const QString &testName, const QString &testResult, qint64 testTimeMicros) const {
 
     if (testFailed(testResult)) {
-        teamcityLog.trace(QString("##teamcity[testFailed name='%1' message='%2' details='%2' duration='%3']").arg(testName, testResult, QString::number(testTimeMicros)));
+        teamcityLog.trace(QString("##teamcity[testFailed name='%1' message='%2' details='%2' duration='%3']").arg(escaped(testName), escaped(testResult), QString::number(testTimeMicros)));
     }
 
-    teamcityLog.trace(QString("##teamcity[testFinished name='%1' duration='%2']").arg(testName, QString::number(testTimeMicros)));
+    teamcityLog.trace(QString("##teamcity[testFinished name='%1' duration='%2']").arg(escaped(testName), QString::number(testTimeMicros)));
 }
 
 bool GUITestLauncher::testFailed(const QString &testResult) const {

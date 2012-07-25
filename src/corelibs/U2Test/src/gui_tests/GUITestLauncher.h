@@ -35,6 +35,7 @@ private:
     bool initGUITestBase();
     void updateProgress(int finishedCount);
 
+    static QString escaped(const QString &s); // returns valid teamcity log string with escaped symbols
     void teamCityLogResult(const QString &testName, const QString &testResult, qint64 testTimeMicros) const;
     bool testFailed(const QString &testResult) const;
 };
