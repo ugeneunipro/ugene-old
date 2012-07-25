@@ -253,6 +253,10 @@ private:
     AnnotationGroup *group;
 };
 
+
+#define QUALIFIER_NAME_CIGAR    "cigar"
+#define QUALIFIER_NAME_SUBJECT  "subj_seq"
+
 class U2CORE_EXPORT AnnotationTableObject: public GObject {
     Q_OBJECT
     friend class Annotation;

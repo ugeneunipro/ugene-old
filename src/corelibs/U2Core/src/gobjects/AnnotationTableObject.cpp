@@ -82,16 +82,105 @@ bool Annotation::isValidAnnotationName(const QString& n) {
     return true;
 }
 
+
+static QList<U2CigarToken> parceCigar(const QString& cigar) {
+    QList<U2CigarToken> cigarTokens;
+
+    QRegExp rx("(\\d+)(\\w)");
+
+    int pos = 0;
+    while ((pos = rx.indexIn(cigar, pos)) != -1) {
+        if (rx.numCaptures() != 2) {
+            break;
+        }
+        int count = rx.cap(1).toInt();
+        QString cigarChar = rx.cap(2);
+
+        if (cigarChar == "M") {
+            cigarTokens.append( U2CigarToken( U2CigarOp_M, count) );
+        } else if (cigarChar == "I") {
+            cigarTokens.append( U2CigarToken( U2CigarOp_I, count));
+        } else if (cigarChar == "D") {
+            cigarTokens.append( U2CigarToken( U2CigarOp_D, count));
+        } else if (cigarChar == "X") {
+            cigarTokens.append( U2CigarToken( U2CigarOp_X, count));
+        } else {
+            break;
+        }
+
+        pos += rx.matchedLength();
+    }
+
+
+    return cigarTokens;
+
+}
+
+
+static QString getAlignmentTip(const QString& ref, const QList<U2CigarToken>& tokens, int maxVisibleSymbols) {
+    QString alignmentTip;
+
+    if (tokens.size() == 0) {
+        return ref;
+    }
+
+    int pos = 0;
+
+    QList<int> mismatchPositions;
+
+    foreach (const U2CigarToken& t, tokens) {
+        if (t.op == U2CigarOp_M) {
+            alignmentTip += ref.mid(pos, t.count);
+            pos += t.count;
+        } else if (t.op == U2CigarOp_X) {
+            alignmentTip += ref.mid(pos, t.count);
+            mismatchPositions.append(pos);
+            pos += t.count;
+        } else if (t.op == U2CigarOp_I) {
+            // gap already present in sequence?
+            pos += t.count;
+        }
+    }
+
+    if (alignmentTip.length()  > maxVisibleSymbols) {
+        alignmentTip = alignmentTip.left(maxVisibleSymbols);
+        alignmentTip += " ... ";
+    }
+
+    // make mismatches bold
+    int offset = 0;
+    static const int OFFSET_LEN = QString("<b></b>").length();
+    foreach(int pos, mismatchPositions) {
+        int newPos = pos + offset;
+        if (newPos + 1 >= alignmentTip.length() ) {
+            break;
+        }
+        alignmentTip.replace(newPos, 1,  QString("<b>%1</b>").arg( alignmentTip.at(newPos) ) );
+        offset += OFFSET_LEN;
+    }
+
+    return alignmentTip;
+}
+
+
 QString Annotation::getQualifiersTip(int maxRows, U2SequenceObject* seq, DNATranslation* comlTT, DNATranslation* aminoTT) const {
     QString tip;
     int rows = 0;
     const int QUALIFIER_VALUE_CUT = 40;
+
+    QString cigar, ref;
     if (d->qualifiers.size() != 0) {
         tip += "<nobr>";
         bool first = true;
         foreach (const U2Qualifier& q, d->qualifiers) {
             if (++rows > maxRows) {
                 break;
+            }
+            if (q.name == QUALIFIER_NAME_CIGAR) {
+                cigar = q.value;
+            } else if (q.name == QUALIFIER_NAME_SUBJECT) {
+                ref = q.value;
+                continue;
             }
             QString val = q.value;
             if(val.length() > QUALIFIER_VALUE_CUT) {
@@ -105,6 +194,13 @@ QString Annotation::getQualifiersTip(int maxRows, U2SequenceObject* seq, DNATran
             tip += "<b>" + Qt::escape(q.name) + "</b> = " + Qt::escape(val);
         }
         tip += "</nobr>";
+    }
+
+    if (cigar.size() > 0 && ref.size() > 0) {
+        QList<U2CigarToken> tokens = parceCigar(cigar);
+        QString alignmentTip = getAlignmentTip(ref, tokens, QUALIFIER_VALUE_CUT);
+        tip += "<br><b>Reference</b> = " + alignmentTip;
+        rows++;
     }
 
     bool canShowSeq = true;
