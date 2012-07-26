@@ -23,6 +23,7 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTGlobals.h"
 #include "api/GTWidget.h"
+#include "api/GTAction.h"
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
 #include "GTUtilsProject.h"
@@ -32,7 +33,7 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-
+#include <U2View/DetView.h>
 #include <U2Core/AppContext.h>
 #include <U2View/ADVConstants.h>
 
@@ -66,6 +67,114 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
     }
 
+GUI_TEST_CLASS_DEFINITION(test_0003) {
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QAction *showTranslationAction = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation = GTAction::button(os, "translation_action");
+    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
+
+    GTGlobals::sleep();
+    QAction *showComplementAction = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement = GTAction::button(os, "complement_action");
+    CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
+
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation -> isEnabled() == true, "button is not disabled");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement -> isEnabled() == true, "button is not disabled");
+    }
+GUI_TEST_CLASS_DEFINITION(test_0003_1) {
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "toggleAllSequenceViews");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QAction *showTranslationAction = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation = GTAction::button(os, "translation_action");
+    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
+
+    GTGlobals::sleep();
+    QAction *showComplementAction = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement = GTAction::button(os, "complement_action");
+    CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
+
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleAllSequenceViews");
+    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation -> isEnabled() == true, "button is not disabled");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement -> isEnabled() == true, "button is not disabled");
+    }
+GUI_TEST_CLASS_DEFINITION(test_0003_2) {
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep();
+
+    QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QAction *showTranslationAction = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation = GTAction::button(os, "translation_action");
+    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
+
+    GTGlobals::sleep();
+    QAction *showComplementAction = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement = GTAction::button(os, "complement_action");
+    CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
+
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation -> isEnabled() == true, "button is not disabled");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement -> isEnabled() == true, "button is not disabled");
+
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser2);
+    GTWidget::click(os, toggleViewButton);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
+
+
+    }
 GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "fa1.fa");

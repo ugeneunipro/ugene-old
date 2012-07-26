@@ -32,6 +32,7 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QToolButton>
 
+
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::EditAnnotationFiller"
@@ -62,4 +63,38 @@ void EditAnnotationFiller::run()
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::EditAnnotationChecker"
+#define GT_METHOD_NAME "run"
+void EditAnnotationChecker::run()
+    {
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+
+    if (!annotationName.isEmpty()) {
+        QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("nameEdit");
+        GT_CHECK(lineEdit != NULL, "line edit not found");
+        QString text = lineEdit->text();
+        QPushButton* okButton = dialog->findChild<QPushButton*>("OKButton");
+        GT_CHECK(okButton != NULL, "okButton is NULL");
+        GTWidget::click(os, okButton);
+        GT_CHECK (text == annotationName, "This name is not expected name");
+    }
+
+    if (!location.isEmpty()){
+        QLineEdit *lineEdit1 = dialog->findChild<QLineEdit*>("locationEdit");
+        GT_CHECK(lineEdit1 != NULL, "line edit not found");
+
+        QString text = lineEdit1->text();
+        QPushButton* okButton = dialog->findChild<QPushButton*>("OKButton");
+        GT_CHECK(okButton != NULL, "okButton is NULL");
+        GTWidget::click(os, okButton);
+        GT_CHECK (text == location, "This name is not expected name");
+    }
+
+    QPushButton* okButton = dialog->findChild<QPushButton*>("OKButton");
+    GT_CHECK(okButton != NULL, "okButton is NULL");
+    GTWidget::click(os, okButton);
+    }
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 }

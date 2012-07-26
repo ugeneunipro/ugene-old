@@ -56,9 +56,13 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
 {
     showComplementAction = new QAction(tr("Show complement strand"), this);
     showComplementAction->setIcon(QIcon(":core/images/show_compl.png"));
+    showComplementAction->setObjectName("complement_action");
+    connect(showComplementAction, SIGNAL(triggered(bool)), SLOT(sl_showComplementToggle(bool)));
 
     showTranslationAction = new QAction(tr("Show amino translations"), this);
     showTranslationAction->setIcon(QIcon(":core/images/show_trans.png"));
+    showTranslationAction->setObjectName("translation_action");
+    connect(showTranslationAction, SIGNAL(triggered(bool)), SLOT(sl_showTranslationToggle(bool)));
 
     showComplementAction->setCheckable(true);
     showTranslationAction->setCheckable(true);
@@ -68,9 +72,6 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     
     bool hasAmino = ctx->getAminoTT()!=NULL; 
     showTranslationAction->setChecked(hasAmino);
-
-    connect(showComplementAction, SIGNAL(triggered(bool)), SLOT(sl_showComplementToggle(bool)));
-    connect(showTranslationAction, SIGNAL(triggered(bool)), SLOT(sl_showTranslationToggle(bool)));
 
     assert(ctx->getSequenceObject()!=NULL);
     featureFlags&=!GSLV_FF_SupportsCustomRange;

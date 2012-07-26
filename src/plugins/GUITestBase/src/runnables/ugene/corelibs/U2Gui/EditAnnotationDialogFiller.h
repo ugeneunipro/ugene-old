@@ -38,6 +38,15 @@ namespace U2 {
         GTGlobals::UseMethod useMethod;
     };
 
+    class EditAnnotationChecker : public Filler {
+    public:
+        EditAnnotationChecker(U2OpStatus &_os, const QString &_annotationName, const QString &_location)
+            :Filler(_os, "EditAnnotationDialog"), annotationName(_annotationName), location(_location){}
+        virtual void run();
+    private:
+        QString annotationName;
+        QString location;
+        };
 }
 
 #endif

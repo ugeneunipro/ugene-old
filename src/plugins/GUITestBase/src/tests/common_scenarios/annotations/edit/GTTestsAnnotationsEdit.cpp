@@ -421,41 +421,108 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 
 }
 
-//GUI_TEST_CLASS_DEFINITION(test_0004) {
-//// Rename annotation
-//// 
-//// Steps:
-//// 
-//// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
-//    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
-//// Expected state: 
-////     1) Project view with document "1.gb" has been opened
-//    GTUtilsDocument::checkDocument(os, "1.gb");
-////     2) UGENE window titled with text "proj2 UGENE"
-//    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
-//
-//// 2. Open view for "1.gb"
-//    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
-//    GTMouseDriver::doubleClick(os);
-//    GTGlobals::sleep();
-//
-//// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
-//
-//    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
-//    if ("C  (0, 1)" == item->parent()->text(0)) {
-//        GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item->parent()));
-//        GTMouseDriver::click(os);
-//        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
-//    QWidget *complementButton = GTWidget::findWidget(os, "", sequenceWidget2, false);
-//    GTWidget::click(os, circularViewSe2);
-//
-//
-//        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
-//        GTKeyboardDriver::keySequence(os, "BB");
-//        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Enter"]);
-//        GTGlobals::sleep(1000);
-//    }
-//}
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+//Rename annotation
+
+// Steps:
+// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+// Expected state: 
+//     1) Project view with document "1.gb" has been opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+//     2) UGENE window titled with text "proj2 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+
+// 2. Open view for "1.gb"
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+    Runnable *filler = new EditAnnotationFiller(os, "C", "20 ..40", true);
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
+    Runnable *checker = new EditAnnotationChecker(os, "", "complement(20..40)");
+    GTUtilsDialog::waitForDialog(os, checker);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0004_1) {
+//Rename annotation
+
+// Steps:
+// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+// Expected state: 
+//     1) Project view with document "1.gb" has been opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+//     2) UGENE window titled with text "proj2 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+
+// 2. Open view for "1.gb"
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "C");
+    Runnable *filler = new EditAnnotationFiller(os, "CC", "20 ..40", true);
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
+    Runnable *checker = new EditAnnotationChecker(os, "CC", "complement(20..40)");
+    GTUtilsDialog::waitForDialog(os, checker);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0004_2) {
+//Rename annotation
+
+// Steps:
+// 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj2.uprj
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
+// Expected state: 
+//     1) Project view with document "1.gb" has been opened
+    GTUtilsDocument::checkDocument(os, "1.gb");
+//     2) UGENE window titled with text "proj2 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+
+// 2. Open view for "1.gb"
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+// 3. Select annotation C in annotation tree. Click F2. Change name to CC.
+
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B");
+    Runnable *filler = new EditAnnotationFiller(os, "B", "20 ..40", true);
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+
+    Runnable *checker = new EditAnnotationChecker(os, "", "complement(20..40)");
+    GTUtilsDialog::waitForDialog(os, checker);
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F2"]);
+    GTGlobals::sleep();
+    }
 
 } // namespace GUITest_common_scenarios_annotations_edit
 } // namespace U2
