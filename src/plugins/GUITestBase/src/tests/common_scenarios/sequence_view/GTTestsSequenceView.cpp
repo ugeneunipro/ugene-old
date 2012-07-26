@@ -81,11 +81,13 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTGlobals::sleep();
     QAction *showTranslationAction = GTAction::findAction(os, "translation_action");
     QAbstractButton* translation = GTAction::button(os, "translation_action");
+
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
     QAction *showComplementAction = GTAction::findAction(os, "complement_action");
     QAbstractButton* complement = GTAction::button(os, "complement_action");
+
     CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
 
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");
@@ -94,10 +96,18 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(translation -> isEnabled() == true, "button is not disabled");
+    QAction *showTranslationAction1 = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
+
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(complement -> isEnabled() == true, "button is not disabled");
+    QAction *showComplementAction1 = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement1 = GTAction::button(os, "complement_action");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
     }
 GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 
@@ -113,11 +123,13 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTGlobals::sleep();
     QAction *showTranslationAction = GTAction::findAction(os, "translation_action");
     QAbstractButton* translation = GTAction::button(os, "translation_action");
+
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
     QAction *showComplementAction = GTAction::findAction(os, "complement_action");
     QAbstractButton* complement = GTAction::button(os, "complement_action");
+
     CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
 
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleAllSequenceViews");
@@ -126,10 +138,18 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(translation -> isEnabled() == true, "button is not disabled");
+    QAction *showTranslationAction1 = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(complement -> isEnabled() == true, "button is not disabled");
+    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
+
+    GTGlobals::sleep();
+    QAction *showComplementAction1 = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement1 = GTAction::button(os, "complement_action");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
     }
 GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
@@ -144,11 +164,13 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTGlobals::sleep();
     QAction *showTranslationAction = GTAction::findAction(os, "translation_action");
     QAbstractButton* translation = GTAction::button(os, "translation_action");
+
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
     QAction *showComplementAction = GTAction::findAction(os, "complement_action");
     QAbstractButton* complement = GTAction::button(os, "complement_action");
+
     CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
 
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "toggleDetailsView");
@@ -157,7 +179,11 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(translation -> isEnabled() == true, "button is not disabled");
+    QAction *showTranslationAction1 = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
 
     GTGlobals::sleep();
     CHECK_SET_ERR(complement -> isEnabled() == true, "button is not disabled");
@@ -171,7 +197,11 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
+    QAction *showComplementAction1 = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement1 = GTAction::button(os, "complement_action");
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement1 -> isEnabled() == false, "button is not disabled");
 
 
     }
