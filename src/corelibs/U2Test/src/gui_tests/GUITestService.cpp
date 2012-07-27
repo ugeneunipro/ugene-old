@@ -21,6 +21,7 @@
 
 #include "GUITestService.h"
 #include "GUITestBase.h"
+#include "GUITestTeamcityLogger.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineRegistry.h>
@@ -28,6 +29,8 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObject.h>
 #include <U2Core/CMDLineCoreOptions.h>
+#include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
 
 /**************************************************** to use qt file dialog *************************************************************/
 #ifdef __linux__
@@ -50,8 +53,6 @@ extern Q_GUI_EXPORT _qt_filedialog_existing_directory_hook qt_filedialog_existin
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
 namespace U2 {
-
-const QString GUITestService::successResult = "Success";
 
 GUITestService::GUITestService(QObject *) : Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")),
 runTestsAction(NULL), testLauncher(NULL) {
@@ -78,6 +79,10 @@ void GUITestService::sl_registerService() {
             registerAllTestsTask();
             break;
 
+        case RUN_ALL_TESTS_BATCH:
+            QTimer::singleShot(1000, this, SLOT(runAllGUITests()));
+            break;
+
         default:
         case NONE:
             registerServiceTask();
@@ -86,8 +91,9 @@ void GUITestService::sl_registerService() {
 }
 
 GUITestService::LaunchOptions GUITestService::getLaunchOptions(CMDLineRegistry* cmdLine) const {
+    CHECK(cmdLine, NONE);
 
-    if (launchedToTestGUI(cmdLine)) {
+    if (cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST)) {
         QString paramValue = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);
         if (!paramValue.isEmpty()) {
             return RUN_ONE_TEST;
@@ -95,12 +101,11 @@ GUITestService::LaunchOptions GUITestService::getLaunchOptions(CMDLineRegistry* 
         return RUN_ALL_TESTS;
     }
 
+    if (cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST_BATCH)) {
+        return RUN_ALL_TESTS_BATCH;
+    }
+
     return NONE;
-}
-
-bool GUITestService::launchedToTestGUI(CMDLineRegistry* cmdLine) const {
-
-    return cmdLine && cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST);
 }
 
 void GUITestService::registerAllTestsTask() {
@@ -121,7 +126,7 @@ Task* GUITestService::createTestLauncherTask() const {
     return task;
 }
 
-GUITests GUITestService::preChecks() const {
+GUITests GUITestService::preChecks() {
 
     GUITestBase* tb = AppContext::getGUITestBase();
     Q_ASSERT(tb);
@@ -132,7 +137,7 @@ GUITests GUITestService::preChecks() const {
     return additionalChecks;
 }
 
-GUITests GUITestService::postChecks() const {
+GUITests GUITestService::postChecks() {
 
     GUITestBase* tb = AppContext::getGUITestBase();
     Q_ASSERT(tb);
@@ -143,12 +148,78 @@ GUITests GUITestService::postChecks() const {
     return additionalChecks;
 }
 
+void GUITestService::runAllGUITests() {
+
+    TaskStateInfo os;
+    GUITests initTests = preChecks();
+    GUITests postTests = postChecks();
+    foreach(GUITest* t, initTests) {
+        if (t) {
+            t->run(os);
+        }
+    }
+    if (os.hasError()) {
+        GUITestTeamcityLogger::teamCityLogResult("Initial checks", "Failed", 0);
+
+        AppContext::getTaskScheduler()->cancelAllTasks();
+        AppContext::getMainWindow()->getQMainWindow()->close();
+        return;
+    }
+
+    GUITests tests = AppContext::getGUITestBase()->getTests();
+    Q_ASSERT(!tests.isEmpty());
+
+    foreach(GUITest* t, tests) {
+        Q_ASSERT(t);
+        if (!t) {
+            continue;
+        }
+        QString testName = t->getName();
+
+        if (t->isIgnored()) {
+            GUITestTeamcityLogger::testIgnored(testName, t->getIgnoreMessage());
+            continue;
+        }
+
+        qint64 startTime = GTimer::currentTimeMicros();
+        GUITestTeamcityLogger::testStarted(testName);
+
+        TaskStateInfo os;
+        t->run(os);
+        foreach(GUITest* t, postTests) {
+            if (t) {
+                t->run(os);
+            }
+        }
+
+        QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
+
+        qint64 finishTime = GTimer::currentTimeMicros();
+        GUITestTeamcityLogger::teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
+    }
+
+    AppContext::getTaskScheduler()->cancelAllTasks();
+    AppContext::getMainWindow()->getQMainWindow()->close();
+}
+
 void GUITestService::runGUITest() {
 
-    GUITests tests = preChecks();
+    CMDLineRegistry* cmdLine = AppContext::getCMDLineRegistry();
+    Q_ASSERT(cmdLine);
+    QString testName = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);
 
-    GUITest* t = getTest();
+    GUITestBase *tb = AppContext::getGUITestBase();
+    Q_ASSERT(tb);
+    GUITest *t = tb->getTest(testName);
+
+    runGUITest(t);
+}
+
+void GUITestService::runGUITest(GUITest* t) {
     Q_ASSERT(t);
+    TaskStateInfo os;
+
+    GUITests tests = preChecks();
     if (!t) {
         os.setError("GUITestService __ Test not found");
     }
@@ -162,9 +233,9 @@ void GUITestService::runGUITest() {
         }
     }
 
-    QString testResult = os.hasError() ? os.getError() : successResult;
-
+    QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
     writeTestResult(testResult);
+
     exit(0);
 }
 
@@ -174,20 +245,6 @@ void GUITestService::registerServiceTask() {
     Q_ASSERT(registerServiceTask);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(registerServiceTask);
-}
-
-GUITest* GUITestService::getTest() const {
-
-    CMDLineRegistry* cmdLine = AppContext::getCMDLineRegistry();
-    Q_ASSERT(cmdLine);
-
-    GUITestBase *tb = AppContext::getGUITestBase();
-    Q_ASSERT(tb);
-
-    QString testName = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);
-    GUITest *t = tb->getTest(testName);
-
-    return t;
 }
 
 void GUITestService::serviceStateChangedCallback(ServiceState, bool enabledStateChanged) {
@@ -243,7 +300,7 @@ void GUITestService::sl_taskStateChanged(Task* t) {
     }
 }
 
-void GUITestService::writeTestResult(const QString& result) const {
+void GUITestService::writeTestResult(const QString& result) {
 
     printf("%s\n", (QString(GUITESTING_REPORT_PREFIX) + ":" + result).toUtf8().data());
 }

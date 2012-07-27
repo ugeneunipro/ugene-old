@@ -40,6 +40,7 @@ const QString CMDLineCoreOptions::TEAMCITY_OUTPUT = "log-teamcity-out";
 const QString CMDLineCoreOptions::LOG_FORMAT    = "log-format";
 const QString CMDLineCoreOptions::LOG_LEVEL     = "log-level";
 const QString CMDLineCoreOptions::LAUNCH_GUI_TEST   = "gui-test";
+const QString CMDLineCoreOptions::LAUNCH_GUI_TEST_BATCH = "gui-test-batch";
 const QString CMDLineCoreOptions::USAGE         = "usage";
 const QString CMDLineCoreOptions::TMP_DIR       = "tmp-dir";
 

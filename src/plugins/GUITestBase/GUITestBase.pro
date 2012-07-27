@@ -32,7 +32,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h \
-			src/runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h \
+            src/runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h \
 #   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / dotplot
             src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h \
@@ -140,7 +140,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.cpp \
-			src/runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.cpp \
+            src/runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.cpp \
 #   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / dotplot
             src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.cpp \
@@ -222,6 +222,3 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTreeWidget.cpp \
             src/api/GTWidget.cpp \
             src/api/GTAction.cpp
-
-
-

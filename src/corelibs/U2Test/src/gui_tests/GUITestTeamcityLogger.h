@@ -19,28 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_INITIAL_CHECKS_H_
-#define _U2_GUI_INITIAL_CHECKS_H_
+#ifndef _U2_GUI_TESTS_TEAMCITY_LOGGER_H_
+#define _U2_GUI_TESTS_TEAMCITY_LOGGER_H_
 
-#include <U2Test/GUITestBase.h>
+#include <QtCore/QString>
 
 namespace U2 {
 
-namespace GUITest_initial_checks {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_initial_checks_"
+class GUITestTeamcityLogger {
+public:
+    static void testStarted(const QString& testName);
+    static void testIgnored(const QString& testName, const QString& ignoreReason);
+    static void teamCityLogResult(const QString &testName, const QString &testResult, qint64 testTimeMicros);
 
-GUI_TEST_CLASS_DECLARATION(test_0000)
-GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0002)
-GUI_TEST_CLASS_DECLARATION(test_0003)
+//private:
+    static QString escaped(const QString &s); // returns valid teamcity log string with escaped symbols
+    static bool testFailed(const QString &testResult);
 
-GUI_TEST_CLASS_DECLARATION(post_test_0000)
-GUI_TEST_CLASS_DECLARATION(post_test_0001)
+    static const QString successResult;
+};
 
-#undef GUI_TEST_PREFIX
-}
-
-} //namespace
+} // namespace
 
 #endif

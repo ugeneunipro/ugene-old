@@ -81,13 +81,17 @@ protected:
 
 class GTUtilsDialog {
 public:
+    enum CleanupSettings {
+        FailOnUnfinished, NoFailOnUnfinished
+    };
+
     // if objectName is not empty, waits for QWidget with a given name
     static void waitForDialog(U2OpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings);
 
     static void waitForDialog(U2OpStatus &os, Runnable *r);
 
     // deletes all GUIDialogWaiters, sets err if there are unfinished waiters
-    static void cleanup(U2OpStatus &os);
+    static void cleanup(U2OpStatus &os, CleanupSettings s = FailOnUnfinished);
 private:
     static void checkAllFinished(U2OpStatus &os);
 

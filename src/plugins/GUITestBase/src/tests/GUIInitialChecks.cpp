@@ -20,9 +20,13 @@
  */
 
 #include "GUIInitialChecks.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTWidget.h"
 #include "api/GTGlobals.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDialog.h"
+#include "GTUtilsProjectTreeView.h"
+#include "runnables/qt/MessageBoxFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
@@ -64,6 +68,26 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000) {
     GTUtilsDialog::cleanup(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(post_test_0001) {
+
+    // close project
+    if (AppContext::getProject() != NULL) {
+
+        GTWidget::click(os, GTUtilsProjectTreeView::getTreeWidget(os));
+        GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+        GTGlobals::sleep(100);
+
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep(100);
+
+        GTKeyboardDriver::keyClick(os, 'q', GTKeyboardDriver::key["ctrl"]);
+        GTGlobals::sleep(100);
+
+        GTUtilsDialog::cleanup(os, GTUtilsDialog::NoFailOnUnfinished);
+    }
 }
 
 } // GUITest_initial_checks namespace

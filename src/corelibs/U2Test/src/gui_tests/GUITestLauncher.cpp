@@ -1,6 +1,28 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
 #include "GUITestLauncher.h"
 #include "GUITestBase.h"
 #include "GUITestService.h"
+#include "GUITestTeamcityLogger.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineCoreOptions.h>
@@ -11,11 +33,7 @@
 #define TIMEOUT 120000
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
-#define ULOG_CAT_TEAMCITY "Teamcity Integration"
-
 namespace U2 {
-
-static Logger teamcityLog(ULOG_CAT_TEAMCITY);
 
 GUITestLauncher::GUITestLauncher()
 : Task("gui_test_launcher", TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled) {
@@ -28,18 +46,6 @@ bool GUITestLauncher::renameTestLog(const QString& testName) {
 
     QFile outLog(outFileName);
     return outLog.rename("failed_" + outFileName);
-}
-
-QString GUITestLauncher::escaped(const QString &s) {
-
-    QString esc = s;
-
-    esc = esc.replace("|", "||");
-    esc = esc.replace("]", "|]");
-    esc = esc.replace("\r", "|r");
-    esc = esc.replace("\n", "|n");
-    esc = esc.replace("'", "|'");
-    return esc;
 }
 
 void GUITestLauncher::run() {
@@ -63,42 +69,24 @@ void GUITestLauncher::run() {
 
             if (!t->isIgnored()) {
                 qint64 startTime = GTimer::currentTimeMicros();
-                teamcityLog.trace(QString("##teamcity[testStarted name='%1']").arg(escaped(testName)));
+                GUITestTeamcityLogger::testStarted(testName);
 
                 QString testResult = performTest(testName);
                 results[testName] = testResult;
-                if (testFailed(testResult)) {
+                if (GUITestTeamcityLogger::testFailed(testResult)) {
                     renameTestLog(testName);
                 }
 
                 qint64 finishTime = GTimer::currentTimeMicros();
-                teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
+                GUITestTeamcityLogger::teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
             }
             else {
-                teamcityLog.trace(QString("##teamcity[testIgnored name='%1' message='%2']").arg(escaped(testName), escaped(t->getIgnoreMessage())));
+                GUITestTeamcityLogger::testIgnored(testName, t->getIgnoreMessage());
             }
         }
 
         updateProgress(finishedCount++);
     }
-}
-
-void GUITestLauncher::teamCityLogResult(const QString &testName, const QString &testResult, qint64 testTimeMicros) const {
-
-    if (testFailed(testResult)) {
-        teamcityLog.trace(QString("##teamcity[testFailed name='%1' message='%2' details='%2' duration='%3']").arg(escaped(testName), escaped(testResult), QString::number(testTimeMicros)));
-    }
-
-    teamcityLog.trace(QString("##teamcity[testFinished name='%1' duration='%2']").arg(escaped(testName), QString::number(testTimeMicros)));
-}
-
-bool GUITestLauncher::testFailed(const QString &testResult) const {
-
-    if (!testResult.contains(GUITestService::successResult)) {
-        return true;
-    }
-
-    return false;
 }
 
 void GUITestLauncher::firstTestRunCheck(const QString& testName) {
@@ -199,7 +187,7 @@ QString GUITestLauncher::generateReport() const {
     QMap<QString, QString>::const_iterator i;
     for (i = results.begin(); i != results.end(); ++i) {
         QString color = "green";
-        if (testFailed(i.value())) {
+        if (GUITestTeamcityLogger::testFailed(i.value())) {
             color = "red";
         }
         res += QString("<tr><th><font color='%3'>%1</font></th><th><font color='%3'>%2</font></th></tr>").arg(i.key()).arg(i.value()).arg(color);

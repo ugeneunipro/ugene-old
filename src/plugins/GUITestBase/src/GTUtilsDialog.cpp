@@ -137,9 +137,11 @@ void GTUtilsDialog::checkAllFinished(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
-void GTUtilsDialog::cleanup(U2OpStatus &os) {
+void GTUtilsDialog::cleanup(U2OpStatus &os, CleanupSettings s) {
 
-    checkAllFinished(os);
+    if (s == FailOnUnfinished) {
+        checkAllFinished(os);
+    }
 
     qDeleteAll(pool);
     pool.clear();
