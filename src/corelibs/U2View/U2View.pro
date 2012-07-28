@@ -48,6 +48,8 @@ HEADERS += src/Init.h \
            src/ov_msa/MSAEditorTasks.h \
            src/ov_msa/MSAEditorUndoFramework.h \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.h \
+           src/ov_msa/ColorSchemaDialogController.h \
+		   src/ov_msa/ColorSchemaSettingsController.h \                      
            src/ov_phyltree/CreateBranchesTask.h \
            src/ov_phyltree/CreateCircularBranchesTask.h \
            src/ov_phyltree/CreateRectangularBranchesTask.h \
@@ -134,6 +136,8 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_msa/ui/CreateSubalignimentDialog.ui \
          src/ov_msa/ui/DeleteGapsDialog.ui \
          src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui \
+         src/ov_msa/ui/ColorSchemaDialog.ui \
+         src/ov_msa/ui/ColorSchemaSettingsWidget.ui \
          src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
          src/ov_sequence/find_pattern/ui/FindPatternForm.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \
@@ -199,6 +203,8 @@ SOURCES += src/Init.cpp \
            src/ov_msa/MSAEditorTasks.cpp \
            src/ov_msa/MSAEditorUndoFramework.cpp \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
+           src/ov_msa/ColorSchemaDialogController.cpp \           
+           src/ov_msa/ColorSchemaSettingsController.cpp \
            src/ov_phyltree/CreateCircularBranchesTask.cpp \
            src/ov_phyltree/CreateRectangularBranchesTask.cpp \
            src/ov_phyltree/CreateUnrootedBranchesTask.cpp \

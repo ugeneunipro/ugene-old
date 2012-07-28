@@ -21,7 +21,9 @@
 
 #include "MSAColorScheme.h"
 #include "MSAEditorFactory.h"
+#include "ColorSchemaSettingsController.h"
 
+#include <U2Core/AppContext.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/FeatureColors.h>
 #include <U2Algorithm/MSAConsensusUtils.h>
@@ -350,6 +352,7 @@ void MSAColorSchemeClustalX::updateCache() {
 //////////////////////////////////////////////////////////////////////////
 // registry
 MSAColorSchemeRegistry::MSAColorSchemeRegistry() {
+    AppContext::getAppSettingsGUI()->registerPage(new ColorSchemaSettingsPageController());
     initBuiltInSchemes();
 }
 
@@ -646,12 +649,35 @@ static void addJalviewNucl(QVector<QColor>& colorsPerChar) {
     SET_C('U', colorsPerChar['T'].lighter(105)); 
 }
 
+static void addCustomNucl(QVector<QColor>& colorsPerChar) {
+     QMap<DNAAlphabetType, QMap<char, QColor> > mapAlphabetColors = ColorSchemaSettingsUtils::getColors();
+     QMap<char, QColor> alphabetColors = mapAlphabetColors[DNAAlphabet_NUCL];
+
+     QMapIterator<char, QColor> it(alphabetColors);
+     while(it.hasNext()){
+         it.next();
+         SET_C(it.key(), it.value());
+     }
+}
+
+static void addCustomAmino(QVector<QColor>& colorsPerChar) {
+    QMap<DNAAlphabetType, QMap<char, QColor> > mapAlphabetColors = ColorSchemaSettingsUtils::getColors();
+    QMap<char, QColor> alphabetColors = mapAlphabetColors[DNAAlphabet_AMINO];
+
+    QMapIterator<char, QColor> it(alphabetColors);
+    while(it.hasNext()){
+        it.next();
+        SET_C(it.key(), it.value());
+    }
+}
+
 //SET_C('', "#"); 
 
 QString MSAColorScheme::EMPTY_NUCL      = "COLOR_SCHEME_EMPTY_NUCL";
 QString MSAColorScheme::UGENE_NUCL      = "COLOR_SCHEME_UGENE_NUCL";
 QString MSAColorScheme::JALVIEW_NUCL    = "COLOR_SCHEME_JALVIEW_NUCL";
 QString MSAColorScheme::IDENTPERC_NUCL  = "COLOR_SCHEME_IDENTPERC_NUCL";
+QString MSAColorScheme::CUSTOM_NUCL       = "COLOR_SCHEME_CUSTOM_NUCL";
 
 QString MSAColorScheme::EMPTY_AMINO     = "COLOR_SCHEME_EMPTY_AMINO";
 QString MSAColorScheme::UGENE_AMINO     = "COLOR_SCHEME_UGENE_AMINO";
@@ -664,6 +690,7 @@ QString MSAColorScheme::TURN_AMINO      = "COLOR_SCHEME_TURN_AMINO";
 QString MSAColorScheme::BURIED_AMINO    = "COLOR_SCHEME_BURIED_AMINO";
 QString MSAColorScheme::IDENTPERC_AMINO = "COLOR_SCHEME_IDENTPERC_AMINO";
 QString MSAColorScheme::CLUSTALX_AMINO  = "COLOR_SCHEME_CLUSTALX_AMINO";
+QString MSAColorScheme::CUSTOM_AMINO      = "COLOR_SCHEME_CUSTOM_AMINO";
 
 void MSAColorSchemeRegistry::initBuiltInSchemes() {
     QVector<QColor> colorsPerChar;
@@ -721,6 +748,17 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
     addMSAColorSchemeFactory(new MSAColorSchemePercIdentFactory(this, MSAColorScheme::IDENTPERC_AMINO, tr("Percentage Identity"), DNAAlphabet_AMINO));
     
     addMSAColorSchemeFactory(new MSAColorSchemeClustalXFactory(this, MSAColorScheme::CLUSTALX_AMINO,  tr("Clustal X"), DNAAlphabet_AMINO));
+
+    fillEmptyCS(colorsPerChar);
+    addCustomNucl(colorsPerChar);
+
+    addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::CUSTOM_NUCL, tr("Custom"), DNAAlphabet_NUCL, colorsPerChar));
+
+    fillEmptyCS(colorsPerChar);
+    addCustomAmino(colorsPerChar);
+
+    addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::CUSTOM_AMINO, tr("Custom"), DNAAlphabet_AMINO, colorsPerChar));
+
 }
 
 }//namespace

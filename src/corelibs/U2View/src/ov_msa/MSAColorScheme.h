@@ -91,6 +91,7 @@ public:
     static QString UGENE_NUCL;
     static QString JALVIEW_NUCL;
     static QString IDENTPERC_NUCL;
+    static QString CUSTOM_NUCL;
 
     static QString EMPTY_AMINO;
     static QString UGENE_AMINO;
@@ -103,6 +104,7 @@ public:
     static QString BURIED_AMINO;
     static QString IDENTPERC_AMINO;
     static QString CLUSTALX_AMINO;
+    static QString CUSTOM_AMINO;
 
 protected:
     MSAColorSchemeFactory*  factory;
