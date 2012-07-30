@@ -155,16 +155,8 @@ GUITests GUITestService::postChecks() {
 
 void GUITestService::runAllGUITests() {
 
-    TaskStateInfo os;
     GUITests initTests = preChecks();
     GUITests postTests = postChecks();
-    if (os.hasError()) {
-        GUITestTeamcityLogger::teamCityLogResult("Initial checks", "Failed", 0);
-
-        AppContext::getTaskScheduler()->cancelAllTasks();
-        AppContext::getMainWindow()->getQMainWindow()->close();
-        return;
-    }
 
     GUITests tests = AppContext::getGUITestBase()->getTests();
     Q_ASSERT(!tests.isEmpty());
@@ -193,10 +185,10 @@ void GUITestService::runAllGUITests() {
         log.trace("GTRUNNER - runAllGUITests - going to run test " + testName);
         t->run(os);
 
-        log.trace("GTRUNNER - runAllGUITests - going to run post tests " + testName);
+        TaskStateInfo os2;
         foreach(GUITest* t, postTests) {
             if (t) {
-                t->run(os);
+                t->run(os2);
             }
         }
         log.trace("GTRUNNER - runAllGUITests - finished running test " + testName);

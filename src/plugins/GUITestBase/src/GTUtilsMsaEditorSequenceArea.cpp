@@ -41,7 +41,10 @@ void GTUtilsMSAEditorSequenceArea::moveTo(U2OpStatus &os, const QPoint &p)
     QWidget *msaOffsetLeft = GTWidget::findWidget(os, "msa_editor_offsets_view_widget_left", activeWindow);
     CHECK_SET_ERR(msaOffsetLeft != NULL, "MsaOffset Left not found");
 
-    QPoint shift = msaOffsetLeft->mapToGlobal(QPoint(msaOffsetLeft->rect().right(), 0));
+    QPoint shift = msaOffsetLeft->mapToGlobal(QPoint(0, 0));
+    if (msaOffsetLeft->isVisible()) {
+        shift = msaOffsetLeft->mapToGlobal(QPoint(msaOffsetLeft->rect().right(), 0));
+    }
 
     int posX = msaEditArea->getXByColumnNum(p.x());
     int posY = msaEditArea->getYBySequenceNum(p.y());

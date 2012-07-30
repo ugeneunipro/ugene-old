@@ -338,6 +338,10 @@ GUI_TEST_CLASS_DEFINITION(test_0003_3) {
     GTGlobals::sleep();
 
     GTUtilsMSAEditorSequenceArea::checkSorted(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_VIEW << "show_offsets"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003_4) {
