@@ -23,6 +23,7 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTGlobals.h"
+#include "api/GTFile.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
@@ -41,11 +42,14 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
+// fail on MacOS
+#ifndef Q_OS_MAC
     QString activeWindowName = AppContext::getActiveWindowName();
-//    CHECK_SET_ERR(activeWindowName.isEmpty(), "Active window name is not empty"); // fail on MacOS
+    CHECK_SET_ERR(activeWindowName.isEmpty(), "Active window name is not empty");
 
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
-//    CHECK_SET_ERR(mainWindow->isActiveWindow(), "MainWindow is not active"); // fail on MacOS
+    CHECK_SET_ERR(mainWindow->isActiveWindow(), "MainWindow is not active");
+#endif
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
@@ -64,6 +68,15 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 #endif
 
     GTGlobals::sleep(1000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj1.uprj");
+    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
+    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj2.uprj");
+    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj3.uprj");
+    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
+    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj5.uprj");
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000) {
@@ -87,7 +100,17 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
         GTGlobals::sleep(100);
 
         GTUtilsDialog::cleanup(os, GTUtilsDialog::NoFailOnUnfinished);
+        GTGlobals::sleep();
     }
+}
+
+GUI_TEST_CLASS_DEFINITION(post_test_0002) {
+    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj1.uprj");
+    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
+    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2.uprj");
+    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj3.uprj");
+    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
+    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj5.uprj");
 }
 
 } // GUITest_initial_checks namespace

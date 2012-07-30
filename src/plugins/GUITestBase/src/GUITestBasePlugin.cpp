@@ -401,9 +401,11 @@ void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new GUITest_initial_checks::test_0001, GUITestBase::PreAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0002, GUITestBase::PreAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0003, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::test_0004, GUITestBase::PreAdditional);
 
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0000, GUITestBase::PostAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0001, GUITestBase::PostAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0002, GUITestBase::PostAdditional);
     }
 }
 

@@ -31,6 +31,7 @@
 #include <U2Core/CMDLineCoreOptions.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/Log.h>
 
 /**************************************************** to use qt file dialog *************************************************************/
 #ifdef __linux__
@@ -52,7 +53,11 @@ extern Q_GUI_EXPORT _qt_filedialog_existing_directory_hook qt_filedialog_existin
 
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
+
 namespace U2 {
+
+#define ULOG_CAT_TEAMCITY "Teamcity Log"
+static Logger log(ULOG_CAT_TEAMCITY);
 
 GUITestService::GUITestService(QObject *) : Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")),
 runTestsAction(NULL), testLauncher(NULL) {
@@ -153,11 +158,6 @@ void GUITestService::runAllGUITests() {
     TaskStateInfo os;
     GUITests initTests = preChecks();
     GUITests postTests = postChecks();
-    foreach(GUITest* t, initTests) {
-        if (t) {
-            t->run(os);
-        }
-    }
     if (os.hasError()) {
         GUITestTeamcityLogger::teamCityLogResult("Initial checks", "Failed", 0);
 
@@ -185,12 +185,21 @@ void GUITestService::runAllGUITests() {
         GUITestTeamcityLogger::testStarted(testName);
 
         TaskStateInfo os;
+        foreach(GUITest* t, initTests) {
+            if (t) {
+                t->run(os);
+            }
+        }
+        log.trace("GTRUNNER - runAllGUITests - going to run test " + testName);
         t->run(os);
+
+        log.trace("GTRUNNER - runAllGUITests - going to run post tests " + testName);
         foreach(GUITest* t, postTests) {
             if (t) {
                 t->run(os);
             }
         }
+        log.trace("GTRUNNER - runAllGUITests - finished running test " + testName);
 
         QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
 

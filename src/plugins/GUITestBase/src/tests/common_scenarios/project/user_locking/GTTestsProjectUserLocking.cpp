@@ -99,7 +99,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
 #undef GT_CLASS_NAME
 
     // backup proj3 first
-    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj3.uprj");
+//     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj3.uprj");
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj3.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -138,7 +138,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTGlobals::sleep();
 
     // proj3 was modified, restoring
-    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj3.uprj");
+//     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj3.uprj");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {

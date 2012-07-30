@@ -339,7 +339,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023) {
 
 GUI_TEST_CLASS_DEFINITION(test_0025) {
 
-    GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
+//     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
@@ -362,7 +362,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
     GTGlobals::sleep();
 
-    GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
+//     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0026) {
