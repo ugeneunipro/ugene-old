@@ -24,6 +24,8 @@
 #include "AssemblyBrowser.h"
 #include "ExportConsensusTask.h"
 #include "ExportConsensusDialog.h"
+#include "ExportConsensusVariationsTask.h"
+#include "ExportConsensusVariationsDialog.h"
 
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
@@ -62,6 +64,12 @@ void AssemblyConsensusArea::createContextMenu() {
 
     QAction * exportAction = contextMenu->addAction(tr("Export consensus..."));
     connect(exportAction, SIGNAL(triggered()), SLOT(sl_exportConsensus()));
+
+    exportConsensusVariationsAction = contextMenu->addAction(tr("Export consensus variations..."));
+    connect(exportConsensusVariationsAction , SIGNAL(triggered()), SLOT(sl_exportConsensusVariations()));
+
+    exportConsensusVariationsAction->setDisabled(true);
+
 
     diffAction = contextMenu->addAction(tr("Show difference from reference"));
     diffAction->setCheckable(true);
@@ -202,6 +210,7 @@ void AssemblyConsensusArea::sl_drawDifferenceChanged(bool drawDifference) {
 
 void AssemblyConsensusArea::mousePressEvent(QMouseEvent *e) {
     if(e->button() == Qt::RightButton) {
+        updateActions();
         contextMenu->exec(QCursor::pos());
     }
 }
@@ -242,5 +251,41 @@ void AssemblyConsensusArea::sl_exportConsensus() {
         AppContext::getTaskScheduler()->registerTopLevelTask(new ExportConsensusTask(settings));
     }
 }
+void AssemblyConsensusArea::sl_exportConsensusVariations(){
+    const DocumentFormat * defaultFormat = BaseDocumentFormats::get(BaseDocumentFormats::SNP);
+    SAFE_POINT(defaultFormat != NULL, "Internal: couldn't find default document format for consensus variations",);
+
+    ExportConsensusVariationsTaskSettings settings;
+    settings.region = getModel()->getGlobalRegion();
+    settings.model = getModel();
+    settings.consensusAlgorithm = consensusAlgorithm;
+    settings.formatId = defaultFormat->getFormatId();
+    settings.seqObjName = getModel()->getAssembly().visualName;
+    settings.addToProject = true;
+    settings.keepGaps = true;
+    settings.mode = Mode_Variations;
+    settings.refSeq = getModel()->getRefereneceEntityRef();
+
+    QFileInfo db(getModel()->getAssembly().dbiId);
+    QString ext = defaultFormat->getSupportedDocumentFileExtensions().first();
+    settings.fileName = QString("%1/%2.%3").arg(db.path()).arg(db.baseName()).arg(ext);
+
+    ExportConsensusVariationsDialog dlg(this, settings, getVisibleRegion());
+    if(dlg.exec() == QDialog::Accepted) {
+        settings = dlg.getSettings();
+        AppContext::getTaskScheduler()->registerTopLevelTask(new ExportConsensusVariationsTask(settings));
+    }
+
+}
+
+void AssemblyConsensusArea::updateActions(){
+    if (!getModel()->hasReference()){
+        exportConsensusVariationsAction->setDisabled(true);
+    }else{
+        exportConsensusVariationsAction->setDisabled(false);
+    }
+        
+}
+
 
 } //ns

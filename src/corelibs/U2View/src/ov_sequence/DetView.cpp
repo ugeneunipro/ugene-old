@@ -85,7 +85,7 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
 
     pack();
 
-    updateActions(true);
+    updateActions();
 }
 
 void DetView::updateSize() {
@@ -116,21 +116,21 @@ void DetView::resizeEvent(QResizeEvent *e) {
     onVisibleRangeChanged();
 }
 
-void DetView::updateActions(bool visible) {
+void DetView::updateActions() {
     bool hasComplement = ctx->getComplementTT()!=NULL;
-    showComplementAction->setEnabled(hasComplement && visible);
+    showComplementAction->setEnabled(hasComplement );
 
     bool hasAmino = ctx->getAminoTT()!=NULL; 
-    showTranslationAction->setEnabled(hasAmino && visible);
+    showTranslationAction->setEnabled(hasAmino );
 }
 
 void DetView::showEvent(QShowEvent * e) {
-    updateActions(true);
+    updateActions();
     GSequenceLineViewAnnotated::showEvent(e);
 }
 
 void DetView::hideEvent(QHideEvent * e) {
-    updateActions(false);
+    updateActions();
     GSequenceLineViewAnnotated::hideEvent(e);
 }
 

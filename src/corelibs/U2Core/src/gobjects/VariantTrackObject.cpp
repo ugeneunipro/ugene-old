@@ -87,33 +87,18 @@ GObject* VariantTrackObject::clone( const U2DbiRef& dbiRef, U2OpStatus& os ) con
     return clonedObj;
 }
 
-//////////////////////////////////////////////////////////////////////////
-//VariantTrackObjectUtils
-Annotation* VariantTrackObjectUtils::variantToAnnotation( const U2Variant& var ){
-    SharedAnnotationData d( new AnnotationData());
-    Annotation* a = new Annotation(d);
+void VariantTrackObject::addVariants( const QList<U2Variant>& variants, U2OpStatus& os ){
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
 
-    U2Region varRegion;
-    varRegion.startPos = var.startPos;
-    varRegion.length = var.endPos == 0 ? 1 : (var.endPos - var.startPos);
+    U2VariantDbi* vdbi = con.dbi->getVariantDbi();
+    SAFE_POINT(vdbi != NULL, "Varian DBI is NULL", );
 
-    a->addLocationRegion(varRegion);
-    a->addQualifier("public_id", var.publicId);
-    a->addQualifier("ref_data", var.refData);
-    a->addQualifier("obs_data", var.obsData);
-    a->setAnnotationName("variation");
+    U2VariantTrack track = vdbi->getVariantTrack(entityRef.entityId, os);
+    CHECK_OP(os, );
 
-    return a;
-}
-
-U2::U2Feature VariantTrackObjectUtils::variantToFeature( const U2Variant& var ){
-    U2Feature res;
-
-    res.id = var.id;
-    res.name = "variation";
-    res.location.region = U2Region(var.startPos, var.endPos == 0 ? 1 : var.endPos - var.startPos);
-
-    return res;
+    BufferedDbiIterator<U2Variant> bufIter(variants);
+    vdbi->addVariantsToTrack(track, &bufIter, os);
 }
 
 }//namespace

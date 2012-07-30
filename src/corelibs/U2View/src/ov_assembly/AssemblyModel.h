@@ -73,6 +73,7 @@ public:
     bool referenceAssociated()const;
     
     void setReference(U2SequenceObject* seqObj);
+    U2EntityRef getRefereneceEntityRef(); 
 
     QByteArray getReferenceRegion(const U2Region& region, U2OpStatus& os);
     QByteArray getReferenceRegionOrEmpty(const U2Region& region);

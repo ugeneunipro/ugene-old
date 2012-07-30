@@ -149,12 +149,14 @@ QList<AnnotationSettings*> DocumentFormatUtils::predefinedSettings() {
 
 QList<DNASequence> DocumentFormatUtils::toSequences(const GObject* obj) {
     QList<DNASequence> res;
+    SAFE_POINT(obj != NULL, "Gobject is NULL", res);
     const U2SequenceObject* seqObj = qobject_cast<const U2SequenceObject*>(obj);
     if (seqObj != NULL) {
         res << seqObj->getWholeSequence();
         return res;
     }
     const MAlignmentObject* maObj = qobject_cast<const MAlignmentObject*>(obj);
+    SAFE_POINT(maObj != NULL, "MAlignmentObject is NULL", res);
     DNAAlphabet* al = maObj->getMAlignment().getAlphabet();
     foreach(const MAlignmentRow& row, maObj->getMAlignment().getRows()) {
         DNASequence seq;

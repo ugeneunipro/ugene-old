@@ -28,6 +28,8 @@ HEADERS += src/Init.h \
            src/ov_assembly/ExportReadsDialog.h \
            src/ov_assembly/ExportConsensusDialog.h \
            src/ov_assembly/ExportConsensusTask.h \
+		   src/ov_assembly/ExportConsensusVariationsDialog.h \
+           src/ov_assembly/ExportConsensusVariationsTask.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
            src/ov_msa/ConsensusSelectorDialogController.h \
@@ -182,6 +184,8 @@ SOURCES += src/Init.cpp \
            src/ov_assembly/CoveredRegionsManager.cpp \
            src/ov_assembly/ExportConsensusDialog.cpp \
            src/ov_assembly/ExportConsensusTask.cpp \
+		   src/ov_assembly/ExportConsensusVariationsDialog.cpp \
+           src/ov_assembly/ExportConsensusVariationsTask.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
            src/ov_msa/AlignmentLogo.cpp \

@@ -144,7 +144,7 @@ Task::ReportResult SaveDocumentTask::report() {
     }
     CHECK_OP(stateInfo, ReportResult_Finished);
     
-    if (url == doc->getURL() && iof == doc->getIOAdapterFactory()) {
+    if (doc && url == doc->getURL() && iof == doc->getIOAdapterFactory()) {
         doc->makeClean();
     }
     if (doc) {

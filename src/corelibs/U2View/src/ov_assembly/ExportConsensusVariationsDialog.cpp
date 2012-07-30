@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportConsensusDialog.h"
+#include "ExportConsensusVariationsDialog.h"
 
 #include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
 
@@ -34,23 +34,23 @@
 
 namespace U2 {
 
-ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTaskSettings &settings_, const U2Region & visibleRegion)
+ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, const ExportConsensusVariationsTaskSettings &settings_, const U2Region & visibleRegion)
     : QDialog(p), settings(settings_)
 {
     setupUi(this);
     //hide for this dialog
-    variationModeComboBox->hide();
-    variationModeLabel->hide();
-
+    sequenceNameLabel->hide();
+    sequenceNameLineEdit->hide();
+   
     SaveDocumentGroupControllerConfig conf;
-    conf.dfc.supportedObjectTypes += GObjectTypes::SEQUENCE;
+    conf.dfc.supportedObjectTypes += GObjectTypes::VARIANT_TRACK;
     conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
     conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
     conf.fileDialogButton = filepathToolButton;
     conf.fileNameEdit = filepathLineEdit;
     conf.formatCombo = documentFormatComboBox;
     conf.parentWidget = this;
-    conf.saveTitle = tr("Export consensus");
+    conf.saveTitle = tr("Export consensus variations");
     conf.defaultFileName = settings.fileName;
     saveController = new SaveDocumentGroupController(conf, this);
 
@@ -72,12 +72,16 @@ ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTa
     algorithmComboBox->addItems(algos);
     algorithmComboBox->setCurrentIndex(algos.indexOf(settings.consensusAlgorithm->getId()));
 
+    variationModeComboBox->addItem(tr("Variations"), Mode_Variations);
+    variationModeComboBox->addItem(tr("Similar"), Mode_Similar);
+    variationModeComboBox->addItem(tr("All"), Mode_All);
+
     connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
     connect(cancelPushButton, SIGNAL(clicked()), SLOT(reject()));
     setMaximumHeight(layout()->minimumSize().height());
 }
 
-void ExportConsensusDialog::accept() {
+void ExportConsensusVariationsDialog::accept() {
     bool isRegionOk;
     settings.fileName = saveController->getSaveFileName();
     settings.formatId = saveController->getFormatIdToSave();
@@ -92,6 +96,14 @@ void ExportConsensusDialog::accept() {
         SAFE_POINT(f != NULL, QString("ExportConsensusDialog: consensus algorithm factory %1 not found").arg(algoId),);
         settings.consensusAlgorithm = QSharedPointer<AssemblyConsensusAlgorithm>(f->createAlgorithm());
     }
+
+    int modeIdx = variationModeComboBox->currentIndex();
+    if (modeIdx == -1){
+        QMessageBox::critical(this, tr("Error!"), tr("Select consensus variation mode"));
+        variationModeComboBox->setFocus(Qt::OtherFocusReason);
+        return;
+    }
+    settings.mode = static_cast<CallVariationsMode>(variationModeComboBox->itemData(modeIdx).toInt());
 
     if(!isRegionOk){
         regionSelector->showErrorMessage();

@@ -242,7 +242,6 @@ void ADVSingleSequenceWidget::setPanViewCollapsed(bool v) {
 void ADVSingleSequenceWidget::setDetViewCollapsed(bool v) {    
     if (ttButton != NULL) {
 		getSequenceContext()->setTranslationsVisible(!v);
-        ttButton->setEnabled(!v);
     }
 	detView->setHidden(v);
 	

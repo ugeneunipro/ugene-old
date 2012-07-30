@@ -43,6 +43,7 @@ public:
 
 public slots:
     void sl_exportConsensus();
+    void sl_exportConsensusVariations();
 
 protected:
     virtual QByteArray getSequenceRegion(U2OpStatus &os);
@@ -62,11 +63,13 @@ private slots:
 private:
     void createContextMenu();
     void launchConsensusCalculation();
+    void updateActions();
 
     QMenu * contextMenu;
     QMenu * consensusAlgorithmMenu;
     QList<QAction*> algorithmActions;
     QAction * diffAction;
+    QAction * exportConsensusVariationsAction; 
     QSharedPointer<AssemblyConsensusAlgorithm> consensusAlgorithm;
 
     ConsensusInfo cache;

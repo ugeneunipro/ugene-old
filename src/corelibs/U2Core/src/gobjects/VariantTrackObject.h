@@ -27,12 +27,8 @@
 #include <U2Core/U2Variant.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/U2Feature.h>
-//#include <U2Core/Task.h>
-//#include <U2Core/U2OpStatus.h>
 
 namespace U2{
-
-class Annotation;
 
 class U2CORE_EXPORT VariantTrackObject: public GObject {
     Q_OBJECT
@@ -47,19 +43,10 @@ public:
     /**U2_REGION_MAX to get all variants*/
     U2DbiIterator<U2Variant>* getVariants(const U2Region& reg, U2OpStatus& os ) const;
 
+    void addVariants(const QList<U2Variant>& variants, U2OpStatus& os);
+
     U2VariantTrack getVariantTrack(U2OpStatus &os) const;
 };
-
-class U2CORE_EXPORT VariantTrackObjectUtils{
-public:
-    
-    static Annotation* variantToAnnotation (const U2Variant& var);
-
-    static U2Feature variantToFeature (const U2Variant& var);
-
-};
-
-
 
 }//namespace
 

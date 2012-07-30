@@ -574,4 +574,11 @@ void AssemblyModel::sl_unassociateReference() {
     }
 }
 
+U2EntityRef AssemblyModel::getRefereneceEntityRef(){
+    if (hasReference()){
+        return refObj->getEntityRef();
+    }
+    return U2EntityRef();
+}
+
 } // U2
