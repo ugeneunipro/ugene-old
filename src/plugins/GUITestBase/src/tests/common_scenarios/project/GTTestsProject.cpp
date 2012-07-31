@@ -357,11 +357,11 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTGlobals::sleep();
 
     GTGlobals::sleep(2000);
-
+/*
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
     GTGlobals::sleep();
-
+*/
 //     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj4.uprj");
 }
 
