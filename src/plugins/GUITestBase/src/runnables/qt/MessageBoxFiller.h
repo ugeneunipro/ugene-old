@@ -36,6 +36,12 @@ namespace U2 {
     private:
         QMessageBox::StandardButton b;
     };
+
+    class MessageBoxNoToAllOrNo : public Filler {
+    public:
+        MessageBoxNoToAllOrNo(U2OpStatus &_os) : Filler(_os, ""){}
+        virtual void run();
+    };
 }
 
 #endif

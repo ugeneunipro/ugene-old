@@ -92,7 +92,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
         GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
         GTGlobals::sleep(100);
 
-        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+        GTUtilsDialog::waitForDialog(os, new MessageBoxNoToAllOrNo(os));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
         GTGlobals::sleep(100);
 

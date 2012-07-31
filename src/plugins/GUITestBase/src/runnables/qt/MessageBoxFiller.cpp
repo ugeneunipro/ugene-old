@@ -43,4 +43,24 @@ void MessageBoxDialogFiller::run() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+
+#define GT_CLASS_NAME "GTUtilsDialog::MessageBoxNoToAllOrNo"
+#define GT_METHOD_NAME "run"
+void MessageBoxNoToAllOrNo::run() {
+
+    QWidget* activeModal = QApplication::activeModalWidget();
+    QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
+    GT_CHECK(messageBox != NULL, "messageBox is NULL");
+
+    QAbstractButton* button = messageBox->button(QMessageBox::NoToAll);
+    if (!button) {
+        button = messageBox->button(QMessageBox::No);
+    }
+    GT_CHECK(button != NULL, "There are no No buttons in messagebox");
+
+    GTWidget::click(os, button);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 }

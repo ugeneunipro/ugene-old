@@ -2434,6 +2434,10 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
 
 // Expected state: top sequence not overlaps with ruler
     GTGlobals::sleep();
+
+    for (int i=0; i<8; i++) {
+        GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Zoom Out"));
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0021_1) {
@@ -2450,6 +2454,10 @@ GUI_TEST_CLASS_DEFINITION(test_0021_1) {
 
 // Expected state: top sequence not overlaps with ruler
     GTGlobals::sleep();
+
+    for (int i=0; i<8; i++) {
+        GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Zoom Out"));
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0021_2) {
@@ -2466,6 +2474,10 @@ GUI_TEST_CLASS_DEFINITION(test_0021_2) {
 
 // Expected state: top sequence not overlaps with ruler
     GTGlobals::sleep();
+
+    for (int i=0; i<8; i++) {
+        GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Zoom Out"));
+    }
 }
 
 } // namespace GUITest_common_scenarios_msa_editor
