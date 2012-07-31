@@ -33,9 +33,16 @@ namespace U2 {
     /************************************************************************/
 #define ColorSchemaSettingsPageId     QString("ColorSchemaSettings")
 
+    class CustomColorSchema{
+    public:
+        QString name;
+        DNAAlphabetType type;
+        QMap<char, QColor> alpColors;
+    };
+
     class ColorSchemaSettingsUtils {
     public:
-        static QMap<DNAAlphabetType, QMap<char, QColor> > getColors();
+        static QList<CustomColorSchema> getSchemas();
     };
 
     class ColorSchemaSettingsPageController : public AppSettingsGUIPageController {
@@ -48,13 +55,17 @@ namespace U2 {
         virtual void saveState(AppSettingsGUIPageState* s);
 
         virtual AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* data);
+signals:
+    void si_customSettingsChanged();
     };
+
+    
 
     class ColorSchemaSettingsPageState : public AppSettingsGUIPageState {
         Q_OBJECT
     public:
         QString colorsDir;
-        QMap<DNAAlphabetType, QMap<char, QColor> >customColors;
+        QList<CustomColorSchema> customSchemas;
     };
 
     class ColorSchemaSettingsPageWidget: public AppSettingsGUIPageWidget, public Ui_ColorSchemaSettingsWidget {
@@ -69,8 +80,12 @@ namespace U2 {
         private slots:
             void sl_onColorsDirButton();
             void sl_onChangeColorSchema();
+            void sl_onAddColorSchema();
+            void sl_schemaNameEdited(const QString&);
     private:
-        QMap<DNAAlphabetType, QMap<char, QColor> >customColors;
+        bool isNameExist(const QString&);
+        bool isSchemaNameValid(const QString&, QString&);
+        QList<CustomColorSchema> customSchemas;
     };
 
 } // U2

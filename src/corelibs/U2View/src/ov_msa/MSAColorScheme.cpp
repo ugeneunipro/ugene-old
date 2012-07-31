@@ -30,6 +30,9 @@
 
 namespace U2 {
 
+
+#define SET_C(ch, cl) colorsPerChar[ch]=colorsPerChar[ch+('a'-'A')]=cl
+
 //////////////////////////////////////////////////////////////////////////
 // factories
 
@@ -46,6 +49,20 @@ MSAColorSchemeStaticFactory::MSAColorSchemeStaticFactory(QObject* p, const QStri
 
 MSAColorScheme* MSAColorSchemeStaticFactory::create(QObject* p, MAlignmentObject* o) {
     return new MSAColorSchemeStatic(p, this, o, colorsPerChar);
+}
+
+MSAColorSchemeCustomSettingsFactory::MSAColorSchemeCustomSettingsFactory(QObject* p, const QString& _id, const QString& _name, 
+                                                         DNAAlphabetType _atype, const QVector<QColor>& _colorsPerChar) 
+                                                         : MSAColorSchemeFactory(p, _id, _name, _atype), colorsPerChar(_colorsPerChar)
+{    
+}
+
+MSAColorScheme* MSAColorSchemeCustomSettingsFactory::create(QObject* p, MAlignmentObject* o) {
+    return new MSAColorSchemeStatic(p, this, o, colorsPerChar);
+}
+
+void MSAColorSchemeCustomSettingsFactory::sl_onCustomSettingsChanged(){
+
 }
 
 
@@ -352,9 +369,21 @@ void MSAColorSchemeClustalX::updateCache() {
 //////////////////////////////////////////////////////////////////////////
 // registry
 MSAColorSchemeRegistry::MSAColorSchemeRegistry() {
-    AppContext::getAppSettingsGUI()->registerPage(new ColorSchemaSettingsPageController());
+    ColorSchemaSettingsPageController* controller = new ColorSchemaSettingsPageController();
+    connect(controller, SIGNAL(si_customSettingsChanged()), SLOT(sl_onCustomSettingsChanged()));
+    AppContext::getAppSettingsGUI()->registerPage(controller);
     initBuiltInSchemes();
+    initCustomSchema();
 }
+
+MSAColorSchemeRegistry::~MSAColorSchemeRegistry(){
+    foreach(MSAColorSchemeFactory* f, customColorers){
+        delete f;
+    }
+    customColorers.clear();
+}
+
+
 
 QList<MSAColorSchemeFactory*> MSAColorSchemeRegistry::getMSAColorSchemes(DNAAlphabetType atype) const {
     QList<MSAColorSchemeFactory*> res;
@@ -366,8 +395,23 @@ QList<MSAColorSchemeFactory*> MSAColorSchemeRegistry::getMSAColorSchemes(DNAAlph
     return res;
 }
 
+QList<MSAColorSchemeFactory*> MSAColorSchemeRegistry::getMSACustomColorSchemes(DNAAlphabetType atype) const{
+    QList<MSAColorSchemeFactory*> res;
+    foreach(MSAColorSchemeFactory* f, customColorers) {
+        if (f->getAlphabetType() == atype) {
+            res.append(f);
+        }
+    }
+    return res;
+}
+
 MSAColorSchemeFactory* MSAColorSchemeRegistry::getMSAColorSchemeFactoryById(const QString& id) const {
     foreach(MSAColorSchemeFactory* csf, colorers) {
+        if(csf->getId() == id) {
+            return csf;
+        }
+    }
+    foreach(MSAColorSchemeFactory* csf, customColorers) {
         if(csf->getId() == id) {
             return csf;
         }
@@ -397,6 +441,12 @@ void MSAColorSchemeRegistry::addMSAColorSchemeFactory(MSAColorSchemeFactory* csf
     qStableSort(colorers.begin(), colorers.end(), compareNames);
 }
 
+void MSAColorSchemeRegistry::addMSACustomColorSchemeFactory(MSAColorSchemeFactory* csf){
+    assert(getMSAColorSchemeFactoryById(csf->getId()) == NULL);
+    customColorers.append(csf);
+    qStableSort(colorers.begin(), colorers.end(), compareNames);
+}
+
 static void fillEmptyCS(QVector<QColor>& colorsPerChar) {
     colorsPerChar.fill(QColor(), 256);
 }
@@ -408,7 +458,6 @@ static void fillLightColorsCS(QVector<QColor>& colorsPerChar) {
     colorsPerChar[MAlignment_GapChar] = QColor(); //invalid color -> no color at all
 }
 
-#define SET_C(ch, cl) colorsPerChar[ch]=colorsPerChar[ch+('a'-'A')]=cl
 
 static void addUGENEAmino(QVector<QColor>& colorsPerChar) {
     //amino groups: "KRH", "GPST", "FWY", "ILM"
@@ -650,7 +699,7 @@ static void addJalviewNucl(QVector<QColor>& colorsPerChar) {
 }
 
 static void addCustomNucl(QVector<QColor>& colorsPerChar) {
-     QMap<DNAAlphabetType, QMap<char, QColor> > mapAlphabetColors = ColorSchemaSettingsUtils::getColors();
+     QMap<DNAAlphabetType, QMap<char, QColor> > mapAlphabetColors;// = ColorSchemaSettingsUtils::getColors();
      QMap<char, QColor> alphabetColors = mapAlphabetColors[DNAAlphabet_NUCL];
 
      QMapIterator<char, QColor> it(alphabetColors);
@@ -661,7 +710,7 @@ static void addCustomNucl(QVector<QColor>& colorsPerChar) {
 }
 
 static void addCustomAmino(QVector<QColor>& colorsPerChar) {
-    QMap<DNAAlphabetType, QMap<char, QColor> > mapAlphabetColors = ColorSchemaSettingsUtils::getColors();
+    QMap<DNAAlphabetType, QMap<char, QColor> > mapAlphabetColors; // = ColorSchemaSettingsUtils::getColors();
     QMap<char, QColor> alphabetColors = mapAlphabetColors[DNAAlphabet_AMINO];
 
     QMapIterator<char, QColor> it(alphabetColors);
@@ -691,6 +740,27 @@ QString MSAColorScheme::BURIED_AMINO    = "COLOR_SCHEME_BURIED_AMINO";
 QString MSAColorScheme::IDENTPERC_AMINO = "COLOR_SCHEME_IDENTPERC_AMINO";
 QString MSAColorScheme::CLUSTALX_AMINO  = "COLOR_SCHEME_CLUSTALX_AMINO";
 QString MSAColorScheme::CUSTOM_AMINO      = "COLOR_SCHEME_CUSTOM_AMINO";
+
+
+void MSAColorSchemeRegistry::initCustomSchema(){
+    QVector<QColor> colorsPerChar;
+
+    foreach(const CustomColorSchema& schema, ColorSchemaSettingsUtils::getSchemas()){
+        fillEmptyCS(colorsPerChar);
+        QMapIterator<char, QColor> it(schema.alpColors);
+        while(it.hasNext()){
+            it.next();
+            SET_C(it.key(), it.value());
+        }
+        addMSACustomColorSchemeFactory(new MSAColorSchemeCustomSettingsFactory(NULL, schema.name, schema.name, schema.type, colorsPerChar));
+    }
+}
+
+void MSAColorSchemeRegistry::sl_onCustomSettingsChanged(){
+    customColorers.clear();
+    initCustomSchema();
+    emit si_customSettingsChanged(); 
+}
 
 void MSAColorSchemeRegistry::initBuiltInSchemes() {
     QVector<QColor> colorsPerChar;
@@ -749,15 +819,7 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
     
     addMSAColorSchemeFactory(new MSAColorSchemeClustalXFactory(this, MSAColorScheme::CLUSTALX_AMINO,  tr("Clustal X"), DNAAlphabet_AMINO));
 
-    fillEmptyCS(colorsPerChar);
-    addCustomNucl(colorsPerChar);
-
-    addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::CUSTOM_NUCL, tr("Custom"), DNAAlphabet_NUCL, colorsPerChar));
-
-    fillEmptyCS(colorsPerChar);
-    addCustomAmino(colorsPerChar);
-
-    addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::CUSTOM_AMINO, tr("Custom"), DNAAlphabet_AMINO, colorsPerChar));
+    
 
 }
 

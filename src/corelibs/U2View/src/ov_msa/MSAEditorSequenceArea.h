@@ -249,6 +249,8 @@ private slots:
 
     void sl_modelChanged();
 
+    void sl_customColorSettingsChanged();
+
 protected:
     virtual void wheelEvent (QWheelEvent * event);
 
@@ -269,9 +271,15 @@ private:
     void ins(const QPoint& p, bool columnMode);
     void fillSelectionWithGaps();
     void del(const QPoint& p, bool columnMode);
-   
+  
+    void deleteOldCustomSchemes();
+
     bool checkState() const;
     void validateRanges();          //called on resize/refont like events
+
+    QAction* getCheckedSchemaAction();
+    QAction* findActionById(QString id);
+    QString getCheckedActionId(); 
 
     MSAEditor*      editor;
     MSAEditorUI*    ui;
@@ -310,6 +318,7 @@ private:
     bool            highlightSelection;
 
     QList<QAction*> colorSchemeMenuActions;
+    QList<QAction* > customColorSchemeMenuActions;
 };
 
 }//namespace

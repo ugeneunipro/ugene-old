@@ -62,6 +62,17 @@ private:
     QVector<QColor> colorsPerChar;
 };
 
+class U2VIEW_EXPORT MSAColorSchemeCustomSettingsFactory : public MSAColorSchemeFactory {
+    Q_OBJECT
+public:
+    MSAColorSchemeCustomSettingsFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype, const QVector<QColor>& colorsPerChar);
+    virtual MSAColorScheme* create(QObject* p, MAlignmentObject* obj);
+private slots:
+    void sl_onCustomSettingsChanged();
+private:
+    QVector<QColor> colorsPerChar;
+};
+
 class MSAColorSchemePercIdentFactory : public MSAColorSchemeFactory {
     Q_OBJECT
 public:
@@ -121,6 +132,7 @@ private:
 
     QVector<QColor> colorsPerChar;
 };
+
 
 //PERCENT
 class U2VIEW_EXPORT MSAColorSchemePercIdent : public MSAColorScheme {
@@ -191,20 +203,28 @@ class U2VIEW_EXPORT MSAColorSchemeRegistry : public QObject {
     Q_OBJECT
 public:
     MSAColorSchemeRegistry();
+    ~MSAColorSchemeRegistry();
 
     const QList<MSAColorSchemeFactory*>& getMSAColorSchemes() const {return colorers;}
+    const QList<MSAColorSchemeFactory*>& getCustomColorSchemes() const {return customColorers;}
     
     QList<MSAColorSchemeFactory*> getMSAColorSchemes(DNAAlphabetType atype) const;
+    QList<MSAColorSchemeFactory*> getMSACustomColorSchemes(DNAAlphabetType atype) const;
 
     MSAColorSchemeFactory* getMSAColorSchemeFactoryById(const QString& id) const;
 
     void addMSAColorSchemeFactory(MSAColorSchemeFactory* cs);
-
-    
+    void addMSACustomColorSchemeFactory(MSAColorSchemeFactory* cs);
+signals:
+    void si_customSettingsChanged();
+private slots:
+   void sl_onCustomSettingsChanged();
 private:
     void initBuiltInSchemes();
+    void initCustomSchema();
 
     QList<MSAColorSchemeFactory*> colorers;
+    QList<MSAColorSchemeFactory*> customColorers;
 };
 
 
