@@ -269,13 +269,13 @@ LoadDocumentTask * LoadDocumentTask::getDefaultLoadDocTask(const GUrl& url) {
 }
 
 static bool isLoadToMem(const DocumentFormatId& id){
-	// files that use dbi not loaded to memory
-	if(id == BaseDocumentFormats::FASTA || id ==  BaseDocumentFormats::PLAIN_GENBANK || 
-		id == BaseDocumentFormats::RAW_DNA_SEQUENCE || id == BaseDocumentFormats::FASTQ 
-		|| id == BaseDocumentFormats::GFF || id == BaseDocumentFormats::PDW){		
-			return false;
-	}	
-	return true;	
+    // files that use dbi not loaded to memory
+    if(id == BaseDocumentFormats::FASTA || id ==  BaseDocumentFormats::PLAIN_GENBANK ||
+        id == BaseDocumentFormats::RAW_DNA_SEQUENCE || id == BaseDocumentFormats::FASTQ
+        || id == BaseDocumentFormats::GFF || id == BaseDocumentFormats::PDW){
+            return false;
+    }
+    return true;
 }
 
 void LoadDocumentTask::prepare() {
@@ -284,7 +284,7 @@ void LoadDocumentTask::prepare() {
     }
     
     int memUseMB = 0;
-	
+
     if(!format->getFlags().testFlag(DocumentFormatFlag_NoFullMemoryLoad) && isLoadToMem(format->getFormatId())) { // document is fully loaded to memory
         QFileInfo file(url.getURLString());
         memUseMB = file.size() / (1024*1024);

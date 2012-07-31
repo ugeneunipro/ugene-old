@@ -34,23 +34,23 @@ class WorkflowScriptEngine;
 
 class U2LANG_EXPORT WorkflowScriptFactory {
 public:
-	virtual void createScript(WorkflowScriptEngine *engine) = 0;
+    virtual void createScript(WorkflowScriptEngine *engine) = 0;
 };
 
 class U2LANG_EXPORT WorkflowScriptRegistry {
 public:
-	~WorkflowScriptRegistry();
-	void registerScriptFactory(WorkflowScriptFactory* f);
-	void unregisterScriptFactory(WorkflowScriptFactory* f);
-	const QList<WorkflowScriptFactory*> &getFactories() const;
+    ~WorkflowScriptRegistry();
+    void registerScriptFactory(WorkflowScriptFactory* f);
+    void unregisterScriptFactory(WorkflowScriptFactory* f);
+    const QList<WorkflowScriptFactory*> &getFactories() const;
 private:
-	QList<WorkflowScriptFactory*> list;
+    QList<WorkflowScriptFactory*> list;
 };
 
 class U2LANG_EXPORT WorkflowScriptLibrary {
 public:
 
-	static WorkflowScriptRegistry* getScriptRegistry();
+    static WorkflowScriptRegistry* getScriptRegistry();
 
     static void initEngine(WorkflowScriptEngine *engine);
     

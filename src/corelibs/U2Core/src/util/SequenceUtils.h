@@ -59,7 +59,7 @@ public:
     /** Returns regions locations as if they were joined */
     static QVector<U2Region> getJoinedMapping(const QList<QByteArray>& seqParts);
 
-	static QList<GObject*> mergeSequences(const QList<Document*> doc, const U2DbiRef& ref, const QString& newStringUrl, QVariantMap& hints, U2OpStatus& os);
+    static QList<GObject*> mergeSequences(const QList<Document*> doc, const U2DbiRef& ref, const QString& newStringUrl, QVariantMap& hints, U2OpStatus& os);
     static QList<GObject*> mergeSequences(Document* doc, const U2DbiRef& ref, QVariantMap& hints, U2OpStatus& os);
 };
 
