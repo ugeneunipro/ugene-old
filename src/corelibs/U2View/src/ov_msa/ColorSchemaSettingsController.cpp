@@ -320,7 +320,8 @@ void ColorSchemaSettingsPageWidget::sl_onColorsDirButton() {
 }
 
 void ColorSchemaSettingsPageWidget::sl_onAddColorSchema(){
-    if(!isSchemaNameValid(schemaName->text(), QString())){return;}
+    QString desciption;
+    if(!isSchemaNameValid(schemaName->text(), desciption)){return;}
 
     DNAAlphabetType type;
 
