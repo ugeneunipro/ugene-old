@@ -117,7 +117,7 @@ QList<U2Variant> U2VariationUtils::getSNPFromSequences( const QByteArray& refSeq
            U2Variant var;
            var.refData = QByteArray(1, refChar);
            var.obsData = QByteArray(1, obsChar);
-           var.startPos = i;
+           var.startPos = i+nameStartIdx;
            var.publicId = (QString(namePrefix+"%1").arg(i+nameStartIdx));
            res.append(var);
         }
