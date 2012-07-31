@@ -321,8 +321,8 @@ GUI_TEST_CLASS_DEFINITION(test_1021) {
         CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
     }
 
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F4"], GTKeyboardDriver::key["alt"]);
-    GTGlobals::sleep();
+//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F4"], GTKeyboardDriver::key["alt"]);
+//    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1021_1) {
@@ -358,8 +358,8 @@ GUI_TEST_CLASS_DEFINITION(test_1021_1) {
         CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
     }
 
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F4"], GTKeyboardDriver::key["alt"]);
-    GTGlobals::sleep();
+//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["F4"], GTKeyboardDriver::key["alt"]);
+//    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1021_2) {
@@ -395,10 +395,10 @@ GUI_TEST_CLASS_DEFINITION(test_1021_2) {
         CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
     }
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
-    GTGlobals::sleep();
+//    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
+//    GTGlobals::sleep();
 
-    GTGlobals::sleep();
+//    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1021_3) {
@@ -439,10 +439,10 @@ GUI_TEST_CLASS_DEFINITION(test_1021_3) {
         CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
     }
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
-    GTGlobals::sleep();
+//    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
+//    GTGlobals::sleep();
 
-    GTGlobals::sleep();
+//    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1021_4) {
@@ -483,8 +483,8 @@ GUI_TEST_CLASS_DEFINITION(test_1021_4) {
         CHECK_SET_ERR(bookmarksCount == 0, "there are bookmarks");
     }
 
-    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
-    GTGlobals::sleep();
+//    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION__EXIT);
+//    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1022) {
