@@ -89,8 +89,8 @@ void ORFWorkerFactory::init() {
             "               Allow ORFs starting with alternative initiation codons,\n"
             "               accordingly to the current translation table.\n", 0, QApplication::UnicodeUTF8));
         Descriptor isc(ISC_ATTR, ORFWorker::tr("Include stop codon"), ORFWorker::tr("The result annotation will includes stop codon if this option is set"));
-		Descriptor mr(RES_ATTR,ORFWorker::tr("Max result"),ORFWorker::tr("Find results not achieved by specified count"));
-		Descriptor lr(LIMIT_ATTR,ORFWorker::tr("Limit results"),ORFWorker::tr("The amount of results will be limited id that option is setted"));
+        Descriptor mr(RES_ATTR,ORFWorker::tr("Max result"),ORFWorker::tr("Find results not achieved by specified count"));
+        Descriptor lr(LIMIT_ATTR,ORFWorker::tr("Limit results"),ORFWorker::tr("The amount of results will be limited id that option is setted"));
         
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("ORF"));
         a << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));
@@ -100,8 +100,8 @@ void ORFWorkerFactory::init() {
         a << new Attribute(ind, BaseTypes::BOOL_TYPE(), false, QVariant(true));
         a << new Attribute(ad, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         a << new Attribute(isc, BaseTypes::BOOL_TYPE(), false, QVariant(false));
-		a << new Attribute(mr,BaseTypes::NUM_TYPE(),false,100000);
-		a << new Attribute(lr,BaseTypes::BOOL_TYPE(),false,QVariant(true));
+        a << new Attribute(mr,BaseTypes::NUM_TYPE(),false,100000);
+        a << new Attribute(lr,BaseTypes::BOOL_TYPE(),false,QVariant(true));
     }
 
     Descriptor desc(ACTOR_ID, ORFWorker::tr("ORF Marker"), 
@@ -241,7 +241,7 @@ Task* ORFWorker::tick() {
         cfg.mustInit = actor->getParameter(INIT_ATTR)->getAttributeValue<bool>(context);
         cfg.allowAltStart = actor->getParameter(ALT_ATTR)->getAttributeValue<bool>(context);
         cfg.includeStopCodon = actor->getParameter(ISC_ATTR)->getAttributeValue<bool>(context);
-	    cfg.maxResult2Search = actor->getParameter(RES_ATTR)->getAttributeValue<int>(context); 
+        cfg.maxResult2Search = actor->getParameter(RES_ATTR)->getAttributeValue<int>(context);
         resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
         if(resultName.isEmpty()){
             algoLog.error(tr("ORF: result name is empty, default name used"));
@@ -260,7 +260,7 @@ Task* ORFWorker::tick() {
             return NULL;
         }
         
-	    DNAAlphabet* alphabet = seqObj->getAlphabet(); 
+        DNAAlphabet* alphabet = seqObj->getAlphabet();
         if (alphabet && alphabet->getType() == DNAAlphabet_NUCL) {
             ORFAlgorithmSettings config(cfg);
             config.searchRegion.length = seqObj->getSequenceLength();

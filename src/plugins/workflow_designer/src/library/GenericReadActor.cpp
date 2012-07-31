@@ -93,8 +93,8 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
 
     QMap<QString, PropertyDelegate*> delegates;
     QVariantMap modeMap;
-	QString splitStr = SeqReadPrompter::tr("Split");
-	QString mergeStr = SeqReadPrompter::tr("Merge");
+    QString splitStr = SeqReadPrompter::tr("Split");
+    QString mergeStr = SeqReadPrompter::tr("Merge");
     modeMap[splitStr] = SPLIT;
     modeMap[mergeStr] = MERGE;
     delegates[MODE_ATTR] = new ComboBoxDelegate(modeMap);

@@ -61,8 +61,8 @@ DNAGraphPackViewContext::DNAGraphPackViewContext(QObject* p) : GObjectViewWindow
 {
     graphFactories.append(new BaseContentGraphFactory(BaseContentGraphFactory::GC, this));
     graphFactories.append(new BaseContentGraphFactory(BaseContentGraphFactory::AG, this));
-	graphFactories.append(new GCFramePlotFactory(this));
-	graphFactories.append(new DeviationGraphFactory(DeviationGraphFactory::GC, this));
+    graphFactories.append(new GCFramePlotFactory(this));
+    graphFactories.append(new DeviationGraphFactory(DeviationGraphFactory::GC, this));
     graphFactories.append(new DeviationGraphFactory(DeviationGraphFactory::AT, this));
     graphFactories.append(new KarlinGraphFactory(this));
     graphFactories.append(new EntropyGraphFactory(this));

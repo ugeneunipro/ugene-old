@@ -121,7 +121,7 @@ Task* QDORFActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     settings.mustFit = params.value(FIT_ATTR)->getAttributePureValue().toBool();
     settings.mustInit = params.value(INIT_ATTR)->getAttributePureValue().toBool();
     settings.allowAltStart = params.value(ALT_ATTR)->getAttributePureValue().toBool();
-	settings.maxResult2Search = params.value(RES_ATTR)->getAttributePureValue().toInt();
+    settings.maxResult2Search = params.value(RES_ATTR)->getAttributePureValue().toInt();
 
     settings.searchRegion = U2Region(0, dnaSeq.length());
 
@@ -204,8 +204,8 @@ QDORFActorPrototype::QDORFActorPrototype() {
      "               accordingly to the current translation table.\n", 0, QApplication::UnicodeUTF8));
      Descriptor mld(MAX_LENGTH_ATTR, QDORFActor::tr("Max length"), QDORFActor::tr("Maximum length of annotation allowed."));
      Descriptor fd(FIT_ATTR, QDORFActor::tr("Require stop codon"), QDORFActor::tr("Require stop codon"));
-	 Descriptor mr(RES_ATTR,QDORFActor::tr("Max result"),QDORFActor::tr("Find results not achieved by specified count"));
-	 Descriptor lr(LIMIT_ATTR,QDORFActor::tr("Limit results"),QDORFActor::tr("The amount of results will be limited id that option is setted"));
+     Descriptor mr(RES_ATTR,QDORFActor::tr("Max result"),QDORFActor::tr("Find results not achieved by specified count"));
+     Descriptor lr(LIMIT_ATTR,QDORFActor::tr("Limit results"),QDORFActor::tr("The amount of results will be limited id that option is setted"));
 
      attributes << new Attribute(ttd, BaseTypes::STRING_TYPE(), false, QVariant(DNATranslationID(1)));
      attributes << new Attribute(ld, BaseTypes::NUM_TYPE(), true, QVariant(100));
@@ -213,8 +213,8 @@ QDORFActorPrototype::QDORFActorPrototype() {
      attributes << new Attribute(ad, BaseTypes::BOOL_TYPE(), false, QVariant(false));
      attributes << new Attribute(mld, BaseTypes::NUM_TYPE(), true, QVariant(QDActor::DEFAULT_MAX_RESULT_LENGTH));
      attributes << new Attribute(fd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
-	 attributes << new Attribute(mr,BaseTypes::NUM_TYPE(),false,100000);
-	 attributes << new Attribute(lr,BaseTypes::BOOL_TYPE(),false,QVariant(true));
+     attributes << new Attribute(mr,BaseTypes::NUM_TYPE(),false,100000);
+     attributes << new Attribute(lr,BaseTypes::BOOL_TYPE(),false,QVariant(true));
 
      QMap<QString, PropertyDelegate*> delegates;
 

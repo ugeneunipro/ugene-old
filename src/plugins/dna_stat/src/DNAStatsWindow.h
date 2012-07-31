@@ -34,13 +34,13 @@ class DNAStatProfileTask;
 class DNAStatsWindow;
 
 class DNAStatsWebView : public QWebView {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	DNAStatsWebView(DNAStatsWindow* parent) :  statsWindow(parent) {}
+    DNAStatsWebView(DNAStatsWindow* parent) :  statsWindow(parent) {}
 protected:
-	virtual void contextMenuEvent(QContextMenuEvent*);
+    virtual void contextMenuEvent(QContextMenuEvent*);
 private:
-	DNAStatsWindow* statsWindow;
+    DNAStatsWindow* statsWindow;
 };
 
 
@@ -49,13 +49,13 @@ class DNAStatsWindow: public MWMDIWindow {
 public:
     DNAStatsWindow(ADVSequenceObjectContext* ctx);
 private slots:
-	void sl_onTaskStateChanged(Task* task);
+    void sl_onTaskStateChanged(Task* task);
 private:
-	void update();
-	DNAStatsWebView* webView;
-	ADVSequenceObjectContext* ctx;
-	DNAStatProfileTask* updateTask;
-	
+    void update();
+    DNAStatsWebView* webView;
+    ADVSequenceObjectContext* ctx;
+    DNAStatProfileTask* updateTask;
+
 
 };
 

@@ -43,7 +43,7 @@ namespace U2{
 
 GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("gff")){
     formatName = tr("GFF");
-	formatDescription = tr("GFF is a format used for storing features and annotations");
+    formatDescription = tr("GFF is a format used for storing features and annotations");
     supportedObjectTypes+=GObjectTypes::ANNOTATION_TABLE;
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
 }
@@ -318,7 +318,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                     joinedAnnotations.insert(id, a);
                 }
                 a->addLocationRegion(range);
-                a->setAnnotationName(annName);		
+                a->setAnnotationName(annName);
 
                 QString atoName = words[0] + FEATURES_TAG;
                 AnnotationTableObject *ato = NULL;

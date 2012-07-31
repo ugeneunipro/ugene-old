@@ -203,7 +203,7 @@ void GSequenceGraphViewRA::drawAll(QPaintDevice* pd) {
 
     const QList<GSequenceGraphData*>& graphs = getGraphView()->getGraphs();
     gd->draw(p, graphs, graphRect);
-	
+
     drawFrame(p);
     drawSelection(p);
 }

@@ -202,10 +202,10 @@ bool EMBLPlainTextFormat::readEntry(ParserState* st,U2SequenceImporter& seqImpor
         }
         else if (st->hasKey("SQ", 2)) {
             //reading sequence
-			if(merge && gapSize){
-				seqImporter.addDefaultSymbolsBlock(gapSize,os);
-				CHECK_OP(os,false);
-			}
+            if(merge && gapSize){
+                seqImporter.addDefaultSymbolsBlock(gapSize,os);
+                CHECK_OP(os,false);
+            }
             readSequence(st,seqImporter,sequenceLen,fullSequenceLen,os);
             return true;
         }

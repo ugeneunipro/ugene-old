@@ -103,7 +103,7 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     connect(transCombo, SIGNAL(currentIndexChanged ( int )), SLOT(sl_translationChanged()));    
     sl_translationChanged();
 
-	createAnnotationWidget();
+    createAnnotationWidget();
 
 }
 
@@ -225,7 +225,7 @@ void ORFDialog::sl_onClearList() {
 
 void ORFDialog::sl_onFindAll() {
     if (resultsTree->topLevelItemCount() > 0) {
-		int res = QMessageBox::warning(this, L10N::warningTitle(), tr("Results list contains results from the previous search. Clear?"), 
+        int res = QMessageBox::warning(this, L10N::warningTitle(), tr("Results list contains results from the previous search. Clear?"),
                                 QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
         if (res == QMessageBox::Cancel) {
             return;
@@ -332,15 +332,15 @@ void ORFDialog::accept()
     }
     ORFSettingsKeys::save(s, AppContext::getSettings());
     if (ac->useAutoAnnotationModel()) {
-		AutoAnnotationUtils::triggerAutoAnnotationsUpdate(ctx, ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
-	} else {
-		ac->prepareAnnotationObject();
-		const CreateAnnotationModel& m = ac->getModel();
-		AnnotationTableObject* aObj = m.getAnnotationObject();
-		FindORFsToAnnotationsTask* orfTask = 
-			new FindORFsToAnnotationsTask(aObj, ctx->getSequenceObject()->getEntityRef(),s, m.groupName);
-		AppContext::getTaskScheduler()->registerTopLevelTask(orfTask);
-	}
+        AutoAnnotationUtils::triggerAutoAnnotationsUpdate(ctx, ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
+    } else {
+        ac->prepareAnnotationObject();
+        const CreateAnnotationModel& m = ac->getModel();
+        AnnotationTableObject* aObj = m.getAnnotationObject();
+        FindORFsToAnnotationsTask* orfTask =
+            new FindORFsToAnnotationsTask(aObj, ctx->getSequenceObject()->getEntityRef(),s, m.groupName);
+        AppContext::getTaskScheduler()->registerTopLevelTask(orfTask);
+    }
     QDialog::accept();
 }
 
@@ -355,10 +355,10 @@ void ORFDialog::initSettings()
     ckAlt->setChecked(s.allowAltStart);
     ckOverlap->setChecked(s.allowOverlap);
     sbMinLen->setValue(s.minLen);
-	ckIncStopCodon->setChecked(s.includeStopCodon);
+    ckIncStopCodon->setChecked(s.includeStopCodon);
     ckCircularSearch->setChecked(s.circularSearch);
-	maxResultField->setValue(s.maxResult2Search);
-	maxResult->setChecked(s.isResultsLimited);
+    maxResultField->setValue(s.maxResult2Search);
+    maxResult->setChecked(s.isResultsLimited);
     if (s.strand == ORFAlgorithmStrand_Direct) {
         rbDirect->setChecked(true);
     } else if (s.strand == ORFAlgorithmStrand_Complement) {
@@ -378,11 +378,11 @@ void ORFDialog::getSettings(ORFAlgorithmSettings& s)
     s.mustInit = ckInit->isChecked();
     s.allowAltStart = ckAlt->isChecked();
     s.allowOverlap = ckOverlap->isChecked();
-	s.includeStopCodon = ckIncStopCodon->isChecked();
+    s.includeStopCodon = ckIncStopCodon->isChecked();
     s.circularSearch = ckCircularSearch->isChecked();
     s.minLen = (ckMinLen->isChecked()) ? sbMinLen->value() : 0;
-	s.maxResult2Search = maxResultField->value();
-	s.isResultsLimited = maxResult->isChecked();
+    s.maxResult2Search = maxResultField->value();
+    s.isResultsLimited = maxResult->isChecked();
 
     //setup search region
     s.searchRegion = getCompleteSearchRegion(&isRegionOk);
@@ -396,23 +396,23 @@ U2::ORFAlgorithmStrand ORFDialog::getAlgStrand() const
 
 void ORFDialog::createAnnotationWidget()
 {
-	CreateAnnotationModel acm;
-	
-	U2SequenceObject* seqObj = ctx->getSequenceObject();
-	acm.sequenceObjectRef = GObjectReference(seqObj);
-	acm.hideAnnotationName = true;
-	acm.hideLocation = true;
-	acm.hideAutoAnnotationsOption = false;
-	acm.data->name = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
-	acm.sequenceLen = seqObj->getSequenceLength();
-	ac = new CreateAnnotationWidgetController(acm, this);
-	QWidget* caw = ac->getWidget();    
-	QVBoxLayout* l = new QVBoxLayout();
-	l->setMargin(0);
-	l->addWidget(caw);
-	annotationsWidget->setLayout(l);
-	annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
-	
+    CreateAnnotationModel acm;
+
+    U2SequenceObject* seqObj = ctx->getSequenceObject();
+    acm.sequenceObjectRef = GObjectReference(seqObj);
+    acm.hideAnnotationName = true;
+    acm.hideLocation = true;
+    acm.hideAutoAnnotationsOption = false;
+    acm.data->name = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
+    acm.sequenceLen = seqObj->getSequenceLength();
+    ac = new CreateAnnotationWidgetController(acm, this);
+    QWidget* caw = ac->getWidget();
+    QVBoxLayout* l = new QVBoxLayout();
+    l->setMargin(0);
+    l->addWidget(caw);
+    annotationsWidget->setLayout(l);
+    annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
+
 }
 
 

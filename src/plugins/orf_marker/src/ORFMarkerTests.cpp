@@ -139,12 +139,12 @@ void GTest_ORFMarkerTask::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
 
-	QString strIncStopCodon = el.attribute(INCLUDE_STOP_CODON_ATTR);
-	if (strIncStopCodon == "true") {
-		settings.includeStopCodon = true;
-	} else {
-		settings.includeStopCodon = false;
-	}
+    QString strIncStopCodon = el.attribute(INCLUDE_STOP_CODON_ATTR);
+    if (strIncStopCodon == "true") {
+        settings.includeStopCodon = true;
+    } else {
+        settings.includeStopCodon = false;
+    }
 
     QString strAltStart = el.attribute(ALT_INIT_ATTR);
     if (strAltStart.isEmpty()) {
@@ -167,7 +167,7 @@ void GTest_ORFMarkerTask::init(XMLTestFormat *tf, const QDomElement& el) {
         settings.circularSearch = false;
     }
 
-	settings.maxResult2Search = INT_MAX;
+    settings.maxResult2Search = INT_MAX;
 
     QString strTranslationId = el.attribute(TRANSLATION_ID_ATTR);
     if (strTranslationId.isEmpty()) {
@@ -190,7 +190,7 @@ void GTest_ORFMarkerTask::prepare() {
     settings.complementTT = tr.getComplTranslation();
     settings.proteinTT = tr.getAminoTranslation();
     settings.searchRegion = U2Region(0, mySequence->getSequenceLength());
-	task = new ORFFindTask(settings, mySequence->getSequenceRef());
+    task = new ORFFindTask(settings, mySequence->getSequenceRef());
     addSubTask(task);
 }
 

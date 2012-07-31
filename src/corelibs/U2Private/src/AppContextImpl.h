@@ -77,7 +77,7 @@ public:
         externalToolRegistry = NULL;
         splicedAlignmentTaskRegistry = NULL;
         opWidgetFactoryRegistry = NULL;
-		workflowScriptRegistry = NULL;
+        workflowScriptRegistry = NULL;
         aaSupport = NULL;
         dbiRegistry = NULL;
         rfr = NULL;
@@ -247,10 +247,10 @@ public:
         saar = _saar;
     }
 
-	void setWorkflowScriptRegistry(WorkflowScriptRegistry *_wsr) {
-		assert(workflowScriptRegistry == NULL || _wsr == NULL);
-		workflowScriptRegistry = _wsr;
-	}
+    void setWorkflowScriptRegistry(WorkflowScriptRegistry *_wsr) {
+        assert(workflowScriptRegistry == NULL || _wsr == NULL);
+        workflowScriptRegistry = _wsr;
+    }
 
     void setGUIMode(bool v) {
         guiMode = v;
@@ -321,7 +321,7 @@ protected:
     virtual GUITestBase*                    _getGUITestBase() const {return tb;}
     virtual SplicedAlignmentTaskRegistry*   _getSplicedAlignmentTaskRegistry() const { return splicedAlignmentTaskRegistry; }
     virtual OPWidgetFactoryRegistry*        _getOPWidgetFactoryRegistry() const { return opWidgetFactoryRegistry; }
-	virtual WorkflowScriptRegistry*			_getWorkflowScriptRegistry() const { return workflowScriptRegistry; }
+    virtual WorkflowScriptRegistry*         _getWorkflowScriptRegistry() const { return workflowScriptRegistry; }
 
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -384,7 +384,7 @@ private:
     GUITestBase *tb;
     SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistry;
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry;
-	WorkflowScriptRegistry* workflowScriptRegistry;
+    WorkflowScriptRegistry* workflowScriptRegistry;
     bool guiMode;
     QString activeWindow;
 

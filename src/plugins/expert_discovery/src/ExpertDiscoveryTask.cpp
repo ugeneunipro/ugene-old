@@ -50,7 +50,7 @@ ExpertDiscoveryLoadPosNegTask::ExpertDiscoveryLoadPosNegTask(QString firstF, QSt
     firstFile = firstF;
     secondFile = secondF;
     this->generateNeg = generateNeg;
-	negPerPositive = _negPerPositive;
+    negPerPositive = _negPerPositive;
 }
 
 ExpertDiscoveryLoadPosNegTask::~ExpertDiscoveryLoadPosNegTask(){
@@ -481,63 +481,63 @@ ExpertDiscoveryLoadControlMrkTask::ExpertDiscoveryLoadControlMrkTask(QString fir
 
 void ExpertDiscoveryLoadControlMrkTask::prepare(){
 
-	QString strPosName = firstFile;
-	try {
-		if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
-			edData.loadControlSequenceAnnotation(strPosName);
-		} else  {
-			QList<FormatDetectionResult> curFormats = DocumentUtils::detectFormat(firstFile);
-			if (!curFormats.isEmpty()){
-				if(curFormats.first().format->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
-					GUrl url(strPosName);
-					IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-					DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
+    QString strPosName = firstFile;
+    try {
+        if (strPosName.right(4).compare(".xml", Qt::CaseInsensitive) == 0) {
+            edData.loadControlSequenceAnnotation(strPosName);
+        } else  {
+            QList<FormatDetectionResult> curFormats = DocumentUtils::detectFormat(firstFile);
+            if (!curFormats.isEmpty()){
+                if(curFormats.first().format->getFormatId() == BaseDocumentFormats::PLAIN_GENBANK){
+                    GUrl url(strPosName);
+                    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
+                    DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
 
-					conDoc = f->createNewUnloadedDocument(iof, url, stateInfo);
-					CHECK_OP(stateInfo, );
-					addSubTask(new LoadUnloadedDocumentTask(conDoc));
+                    conDoc = f->createNewUnloadedDocument(iof, url, stateInfo);
+                    CHECK_OP(stateInfo, );
+                    addSubTask(new LoadUnloadedDocumentTask(conDoc));
 
-				} else {
-					ifstream fConAnn(strPosName.toStdString().c_str());  
-					edData.getConMarkBase().load(fConAnn);
-				}
-			}
-		}
-	}
-	catch (exception& ex) {
-		edData.getConMarkBase().clear();
-		QString str = "Control annotation: ";
-		str += ex.what();
-		QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-		mb.exec();
-		setError(str);
-		return;
-	}
+                } else {
+                    ifstream fConAnn(strPosName.toStdString().c_str());
+                    edData.getConMarkBase().load(fConAnn);
+                }
+            }
+        }
+    }
+    catch (exception& ex) {
+        edData.getConMarkBase().clear();
+        QString str = "Control annotation: ";
+        str += ex.what();
+        QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
+        mb.exec();
+        setError(str);
+        return;
+    }
 }
 
 Task::ReportResult ExpertDiscoveryLoadControlMrkTask::report(){
-	if (isCanceled() || hasError()) {
-		return ReportResult_Finished;
-	}
+    if (isCanceled() || hasError()) {
+        return ReportResult_Finished;
+    }
 
-	if(conDoc){
-		try {
-			if (!ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(edData.getConMarkBase(), edData.getConSeqBase(), conDoc))
-				throw std::exception();
-		}catch (exception& ex) {
-			edData.getConMarkBase().clear();
-			QString str = "Control annotation: ";
-			str += ex.what();
-			QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
-			mb.exec();
-			setError(str);
-			return ReportResult_Finished;
-		}
-	}
+    if(conDoc){
+        try {
+            if (!ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(edData.getConMarkBase(), edData.getConSeqBase(), conDoc))
+                throw std::exception();
+        }catch (exception& ex) {
+            edData.getConMarkBase().clear();
+            QString str = "Control annotation: ";
+            str += ex.what();
+            QMessageBox mb(QMessageBox::Critical, tr("Error"), str);
+            mb.exec();
+            setError(str);
+            return ReportResult_Finished;
+        }
+    }
 
-	edData.getConSeqBase().setMarking(edData.getConMarkBase());
+    edData.getConSeqBase().setMarking(edData.getConMarkBase());
 
-	return ReportResult_Finished;
+    return ReportResult_Finished;
 }
 
 
@@ -1448,38 +1448,38 @@ ExpertDiscoveryExportSequences::ExpertDiscoveryExportSequences( const SequenceBa
 
 
 void ExpertDiscoveryExportSequences::prepare(){
-	QFileDialog saveRepDialog;
-	saveRepDialog.setFileMode(QFileDialog::AnyFile);
-	saveRepDialog.setNameFilter(tr("Fasta Files (*.fa *.fasta)"));
-	saveRepDialog.setViewMode(QFileDialog::Detail);
-	saveRepDialog.setAcceptMode(QFileDialog::AcceptSave);
+    QFileDialog saveRepDialog;
+    saveRepDialog.setFileMode(QFileDialog::AnyFile);
+    saveRepDialog.setNameFilter(tr("Fasta Files (*.fa *.fasta)"));
+    saveRepDialog.setViewMode(QFileDialog::Detail);
+    saveRepDialog.setAcceptMode(QFileDialog::AcceptSave);
 
-	if(saveRepDialog.exec()){
-		QStringList fileNames = saveRepDialog.selectedFiles();
-		if(fileNames.isEmpty()) return;
+    if(saveRepDialog.exec()){
+        QStringList fileNames = saveRepDialog.selectedFiles();
+        if(fileNames.isEmpty()) return;
 
-		fileName = fileNames.first();
-	}
+        fileName = fileNames.first();
+    }
 
-		
+
 }
 
 void ExpertDiscoveryExportSequences::run()
 {
 
-	if(fileName.isEmpty() || isCanceled()){
+    if(fileName.isEmpty() || isCanceled()){
 
-	}
+    }
 
-	ofstream out(fileName.toStdString().c_str());
-	
-	if(!out.is_open()){
-		QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
-		mb.exec();
-		return;
-	}
+    ofstream out(fileName.toStdString().c_str());
 
-	base.save(out);
+    if(!out.is_open()){
+        QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
+        mb.exec();
+        return;
+    }
+
+    base.save(out);
 
 }
 }//namespace

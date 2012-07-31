@@ -240,7 +240,7 @@ private:
 };
 
 class DeleteAnnotationsFromObjectTask: public Task {
-	Q_OBJECT
+    Q_OBJECT
 public:
     DeleteAnnotationsFromObjectTask(const QList<Annotation *> _anns, AnnotationTableObject *_aobj, AnnotationGroup *_gr): 
       Task(tr("Delete annotations from object task"), TaskFlag_None), anns(_anns), aobj(_aobj), group(_gr){}

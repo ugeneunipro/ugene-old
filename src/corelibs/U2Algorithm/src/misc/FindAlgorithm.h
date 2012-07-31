@@ -85,9 +85,9 @@ enum FindAlgorithmStrand {
 };
 
 enum FindAlgorithmPatternSettings {
-	FindAlgorithmPatternSettings_InsDel, 
-	FindAlgorithmPatternSettings_Subst, 
-	FindAlgorithmPatternSettings_RegExp 
+    FindAlgorithmPatternSettings_InsDel,
+    FindAlgorithmPatternSettings_Subst,
+    FindAlgorithmPatternSettings_RegExp
 };
 
 class U2ALGORITHM_EXPORT FindAlgorithmSettings {
@@ -101,22 +101,22 @@ public:
         int maxErr = 0,
         FindAlgorithmPatternSettings _patternSettings = FindAlgorithmPatternSettings_Subst, 
         bool ambBases = false,
-		int _maxRegExpResult = 100,
-		int _maxResult2Find = 5000) : pattern(pattern), strand(strand), complementTT(complementTT), proteinTT(proteinTT),
+        int _maxRegExpResult = 100,
+        int _maxResult2Find = 5000) : pattern(pattern), strand(strand), complementTT(complementTT), proteinTT(proteinTT),
 searchRegion(searchRegion), singleShot(singleShot), maxErr(maxErr), patternSettings (_patternSettings ), useAmbiguousBases (ambBases),
-	maxRegExpResult(_maxRegExpResult),maxResult2Find(_maxResult2Find){}
+    maxRegExpResult(_maxRegExpResult),maxResult2Find(_maxResult2Find){}
 
-    QByteArray							pattern;
-    FindAlgorithmStrand					strand;
-    DNATranslation*						complementTT;
-    DNATranslation*						proteinTT;
-    U2Region							searchRegion;
-    bool								singleShot;
-    int									maxErr;
+    QByteArray                          pattern;
+    FindAlgorithmStrand                 strand;
+    DNATranslation*                     complementTT;
+    DNATranslation*                     proteinTT;
+    U2Region                            searchRegion;
+    bool                                singleShot;
+    int                                 maxErr;
     FindAlgorithmPatternSettings        patternSettings;
-    bool								useAmbiguousBases;
-	int									maxRegExpResult;
-	int									maxResult2Find;
+    bool                                useAmbiguousBases;
+    int                                 maxRegExpResult;
+    int                                 maxResult2Find;
 };
 
 
@@ -138,12 +138,12 @@ public:
         int patternLen, 
         bool singleShot,
         int maxErr,
-		int maxRegExpResult,
+        int maxRegExpResult,
         int& stopFlag, 
         int& percentsCompleted, 
         int& currentPos,
-		int currentLen
-		); 
+        int currentLen
+        );
 
     static void find(
         FindAlgorithmResultsListener* rl,
@@ -153,7 +153,7 @@ public:
         int& stopFlag, 
         int& percentsCompleted, 
         int& currentPos,
-		int currentLen) {
+        int currentLen) {
             find(rl,
                 config.proteinTT,
                 config.complementTT,
@@ -167,11 +167,11 @@ public:
                 config.pattern.length(),
                 config.singleShot,
                 config.maxErr,
-				config.maxRegExpResult,
+                config.maxRegExpResult,
                 stopFlag, 
                 percentsCompleted, 
                 currentPos,
-				currentLen);
+                currentLen);
     }
 
 };

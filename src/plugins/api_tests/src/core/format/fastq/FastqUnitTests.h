@@ -10,11 +10,11 @@ class FastqFormat;
 
 class FastqFormatTestData {
 public:
-	static void init();
-	static void shutdown();
+    static void init();
+    static void shutdown();
 
-	static IOAdapter* ioAdapter;
-	static FastqFormat* format;
+    static IOAdapter* ioAdapter;
+    static FastqFormat* format;
 };
 
 DECLARE_TEST(FasqUnitTests, checkRawData);

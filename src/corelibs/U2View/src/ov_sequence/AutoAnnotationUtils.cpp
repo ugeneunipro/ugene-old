@@ -50,11 +50,11 @@ AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, AutoAnn
     connect(aaObj, SIGNAL(si_updateStarted()), SLOT(sl_autoAnnotationUpdateStarted()));
     connect(aaObj, SIGNAL(si_updateFinshed()), SLOT(sl_autoAnnotationUpdateFinished()));
 
-	selectAllAction= new QAction(tr("Select all"),this);
-	connect(selectAllAction, SIGNAL(triggered()), SLOT(sl_onSelectAll()));
-	
-	deselectAllAction = new QAction(tr("Deselect all"),this);
-	connect(deselectAllAction, SIGNAL(triggered()), SLOT(sl_onDeselectAll()));
+    selectAllAction= new QAction(tr("Select all"),this);
+    connect(selectAllAction, SIGNAL(triggered()), SLOT(sl_onSelectAll()));
+
+    deselectAllAction = new QAction(tr("Deselect all"),this);
+    connect(deselectAllAction, SIGNAL(triggered()), SLOT(sl_onDeselectAll()));
 
     updateMenu();
         
@@ -109,22 +109,22 @@ void AutoAnnotationsADVAction::sl_toggle( bool toggled )
 }
 
 void AutoAnnotationsADVAction::sl_onSelectAll() {
-	QList<QAction*> actions = getToggleActions();
-	foreach(QAction* action, actions) {
-		if (!action->isChecked()) {
-			action->trigger();
-		}
-	}
+    QList<QAction*> actions = getToggleActions();
+    foreach(QAction* action, actions) {
+        if (!action->isChecked()) {
+            action->trigger();
+        }
+    }
 }
 
 void AutoAnnotationsADVAction::sl_onDeselectAll()
 {
-	QList<QAction*> actions = getToggleActions();
-	foreach(QAction* action, actions) {
-		if (action->isChecked()) {
-			action->trigger();
-		}
-	}	
+    QList<QAction*> actions = getToggleActions();
+    foreach(QAction* action, actions) {
+        if (action->isChecked()) {
+            action->trigger();
+        }
+    }
 }
 
 
@@ -256,33 +256,33 @@ AutoAnnotationsADVAction* AutoAnnotationUtils::findAutoAnnotationADVAction( ADVS
 
 QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions( ADVSequenceObjectContext* ctx )
 {
-	QList<QAction*> res;
+    QList<QAction*> res;
 
-	foreach(ADVSequenceWidget* w, ctx->getSequenceWidgets()) {
-		ADVSequenceWidgetAction* advAction = w->getADVSequenceWidgetAction(AutoAnnotationsADVAction::ACTION_NAME);
-		if (advAction == NULL) {
-			continue;
-		}
-		AutoAnnotationsADVAction* aaAction = qobject_cast<AutoAnnotationsADVAction*> (advAction);
-		assert(aaAction != NULL);
-		res = aaAction->getToggleActions();
+    foreach(ADVSequenceWidget* w, ctx->getSequenceWidgets()) {
+        ADVSequenceWidgetAction* advAction = w->getADVSequenceWidgetAction(AutoAnnotationsADVAction::ACTION_NAME);
+        if (advAction == NULL) {
+            continue;
+        }
+        AutoAnnotationsADVAction* aaAction = qobject_cast<AutoAnnotationsADVAction*> (advAction);
+        assert(aaAction != NULL);
+        res = aaAction->getToggleActions();
 
 
-		int selectedCount = 0;
-		foreach (QAction* a, res) {
-			if (a->isChecked()) {
-				selectedCount += 1;
-			}
-		}
+        int selectedCount = 0;
+        foreach (QAction* a, res) {
+            if (a->isChecked()) {
+                selectedCount += 1;
+            }
+        }
 
-		if (selectedCount == res.size()) {
-			res.append(aaAction->getDeselectAllAction());
-		} else {
-			res.append(aaAction->getSelectAllAction());
-		}
-	}
+        if (selectedCount == res.size()) {
+            res.append(aaAction->getDeselectAllAction());
+        } else {
+            res.append(aaAction->getSelectAllAction());
+        }
+    }
 
-	return res;
+    return res;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -291,42 +291,42 @@ QList<QAction*> AutoAnnotationUtils::getAutoAnnotationToggleActions( ADVSequence
 ExportAutoAnnotationsGroupTask::ExportAutoAnnotationsGroupTask( AnnotationGroup* ag, GObjectReference& ref, ADVSequenceObjectContext* ctx)
 :Task("ExportAutoAnnotationsGroupTask", TaskFlags_NR_FOSCOE), aGroup(ag), aRef(ref), seqCtx(ctx)
 {
-	
+
 }
 
 
 void ExportAutoAnnotationsGroupTask::prepare() {
-	QSet<Annotation*> annsToExport;
-	aGroup->findAllAnnotationsInGroupSubTree(annsToExport);
+    QSet<Annotation*> annsToExport;
+    aGroup->findAllAnnotationsInGroupSubTree(annsToExport);
 
-	QList<SharedAnnotationData> aData;
-	foreach(Annotation* a, annsToExport) {
-		aData.append(a->data());
-	}
-	
-	SAFE_POINT(aData.size() > 0, "No auto-annotations to export!", );
+    QList<SharedAnnotationData> aData;
+    foreach(Annotation* a, annsToExport) {
+        aData.append(a->data());
+    }
+
+    SAFE_POINT(aData.size() > 0, "No auto-annotations to export!", );
 
         createTask =  new ADVCreateAnnotationsTask(seqCtx->getAnnotatedDNAView(), aRef, aGroup->getGroupName(), aData );
 
-	addSubTask(createTask);
+    addSubTask(createTask);
 }
 
 
 QList<Task*> ExportAutoAnnotationsGroupTask::onSubTaskFinished( Task* subTask ) {
-	QList<Task*> res;
+    QList<Task*> res;
 
-	if (!subTask->isFinished() || subTask->hasError() || subTask->isCanceled()) {
-		return res;
-	}
-	
-	if (subTask == createTask) {
-		QAction* toggleAction =  AutoAnnotationUtils::findAutoAnnotationsToggleAction(seqCtx, aGroup->getGroupName());
-		if (toggleAction != NULL && toggleAction->isChecked()) {
-			toggleAction->trigger();
-		}
-	}
+    if (!subTask->isFinished() || subTask->hasError() || subTask->isCanceled()) {
+        return res;
+    }
 
-	return res;
+    if (subTask == createTask) {
+        QAction* toggleAction =  AutoAnnotationUtils::findAutoAnnotationsToggleAction(seqCtx, aGroup->getGroupName());
+        if (toggleAction != NULL && toggleAction->isChecked()) {
+            toggleAction->trigger();
+        }
+    }
+
+    return res;
 
 }
 

@@ -38,7 +38,7 @@ struct RemoteTaskInfo {
 
  
 class GetUserTasksInfoTask: public Task {
-	Q_OBJECT
+    Q_OBJECT
 public:
     GetUserTasksInfoTask(RemoteServiceMachine* machine);
     virtual void run();
@@ -50,7 +50,7 @@ private:
 };
 
 class FetchRemoteTaskResultTask : public Task {
-	Q_OBJECT
+    Q_OBJECT
 public:
     FetchRemoteTaskResultTask(RemoteServiceMachine* machine, const QStringList& resultUrls, qint64 taskId);
     virtual void run();

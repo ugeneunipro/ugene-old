@@ -72,7 +72,7 @@ private:
     CommunicationChannel *input, *output;
     WorkflowScriptEngine *engine;
     AttributeScript *script;  
-	bool taskFinished;
+    bool taskFinished;
 };
 
 class ScriptWorkerFactory: public DomainFactory {

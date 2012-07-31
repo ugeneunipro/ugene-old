@@ -103,12 +103,12 @@ public:
         bool mustInit = true,
         bool allowAltStart = false,
         bool allowOverlap = false,
-		bool includeStopCodon = false,
+        bool includeStopCodon = false,
         bool circularSearch = false
-		) : strand(strand), complementTT(complementTT), proteinTT(proteinTT),
+        ) : strand(strand), complementTT(complementTT), proteinTT(proteinTT),
         searchRegion(searchRegion), minLen(minLen), mustFit(mustFit), 
         mustInit(mustInit), allowAltStart(allowAltStart), allowOverlap(allowOverlap), 
-		includeStopCodon(includeStopCodon), circularSearch(circularSearch) {}
+        includeStopCodon(includeStopCodon), circularSearch(circularSearch) {}
     
     ORFAlgorithmStrand          strand;
     DNATranslation*             complementTT;
@@ -119,17 +119,17 @@ public:
     bool                        mustInit;
     bool                        allowAltStart;
     bool                        allowOverlap;
-	bool						includeStopCodon;
+    bool                        includeStopCodon;
     bool                        circularSearch;
-	int							maxResult2Search;
-	bool						isResultsLimited;
+    int                         maxResult2Search;
+    bool                        isResultsLimited;
     static const QString        ANNOTATION_GROUP_NAME;
     // strand string ids
     static const QString        STRAND_DIRECT;
     static const QString        STRAND_COMPL;
     static const QString        STRAND_BOTH; 
     static QString              getStrandStringId(ORFAlgorithmStrand strand);
-    static ORFAlgorithmStrand   getStrandByStringId(const QString& id);	
+    static ORFAlgorithmStrand   getStrandByStringId(const QString& id);
 };
 
 

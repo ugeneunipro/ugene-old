@@ -38,7 +38,7 @@ namespace U2 {
 //flags
 #define SOURCE_ATTR                 "source"
 #define AMBIG_ATTR                  "ambig"
-#define MAXLEN_ATTR					"max_len"
+#define MAXLEN_ATTR                 "max_len"
 
 void GTest_FindAlgorithmTest::init(XMLTestFormat *tf, const QDomElement& el){
     Q_UNUSED(tf);
@@ -126,15 +126,15 @@ void GTest_FindAlgorithmTest::init(XMLTestFormat *tf, const QDomElement& el){
         settings.patternSettings = FindAlgorithmPatternSettings_Subst;
     }else if(buf == "insdel"){
         settings.patternSettings = FindAlgorithmPatternSettings_InsDel;
-	}
-	else if(buf == "regexp"){
-		settings.patternSettings = FindAlgorithmPatternSettings_RegExp;
-		settings.maxRegExpResult =  el.attribute(MAXLEN_ATTR).toInt(&ok);
-		if(!ok){
-			stateInfo.setError(GTest::tr("value incorrect for %1").arg(MAXLEN_ATTR));
-			return;
-		}
-	}
+    }
+    else if(buf == "regexp"){
+        settings.patternSettings = FindAlgorithmPatternSettings_RegExp;
+        settings.maxRegExpResult =  el.attribute(MAXLEN_ATTR).toInt(&ok);
+        if(!ok){
+            stateInfo.setError(GTest::tr("value incorrect for %1").arg(MAXLEN_ATTR));
+            return;
+        }
+    }
     else{
         stateInfo.setError(GTest::tr("value for %1 incorrect").arg(ALGORITHM_ATTR));
     }

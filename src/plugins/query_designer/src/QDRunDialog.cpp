@@ -211,9 +211,9 @@ void QDRunDialogTask::setupQuery() {
     CHECK_EXT(!objs.isEmpty(), setError(tr("Sequence not found, document: %1").arg(docWithSequence->getURLString())), );
 
     U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(objs.first());
-	DNASequence sequence = seqObj->getWholeSequence();
+    DNASequence sequence = seqObj->getWholeSequence();
     scheme->setSequence(sequence);
-	scheme->setEntityRef(seqObj->getEntityRef());
+    scheme->setEntityRef(seqObj->getEntityRef());
     QDRunSettings settings;
     settings.region = U2Region(0, seqObj->getSequenceLength());
     settings.scheme = scheme;
@@ -251,7 +251,7 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
         Project* proj = AppContext::getProject();
         if (!addToProject) {
             scheme->setSequence(DNASequence());
-			scheme->setEntityRef(U2EntityRef());
+            scheme->setEntityRef(U2EntityRef());
             SaveDocumentTask* saveTask = new SaveDocumentTask(docWithAnnotations, SaveDoc_DestroyAfter, QSet<QString>());
             res.append(saveTask);
         } else {

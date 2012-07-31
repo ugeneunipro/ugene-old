@@ -77,8 +77,8 @@ WorkflowDocFormat::WorkflowDocFormat(QObject* p)
 : DocumentFormat(p, DocumentFormatFlags_W1, QStringList(WorkflowUtils::WD_FILE_EXTENSIONS) << WorkflowUtils::WD_XML_FORMAT_EXTENSION),
   formatName(tr("Workflow Schema")) {
     supportedObjectTypes += WorkflowGObject::TYPE;
-	formatDescription = tr("WorkflowDoc is a format used for creating/editing/storing/retrieving"
-		"workflow schema with the text file");
+    formatDescription = tr("WorkflowDoc is a format used for creating/editing/storing/retrieving"
+        "workflow schema with the text file");
 }
 
 Document* WorkflowDocFormat::createNewLoadedDocument(IOAdapterFactory* io, const QString& url, U2OpStatus& os, const QVariantMap& fs) {

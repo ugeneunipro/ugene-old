@@ -656,7 +656,7 @@ void SplitterHeaderWidget::sl_addModel()
     
     ProjectTreeControllerModeSettings settings;
     settings.objectTypesToShow.append(GObjectTypes::BIOSTRUCTURE_3D);
-	settings.allowSelectUnloaded = true;
+    settings.allowSelectUnloaded = true;
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings, this);
     
     if (!objects.isEmpty()) {

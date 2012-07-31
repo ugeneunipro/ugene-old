@@ -44,8 +44,8 @@ namespace U2 {
 SwissProtPlainTextFormat::SwissProtPlainTextFormat(QObject* p)
 : EMBLGenbankAbstractDocument(BaseDocumentFormats::PLAIN_SWISS_PROT, tr("Swiss-Prot"), 80, DocumentFormatFlag_SupportWriting, p)
 {
-	formatDescription = tr("SwissProt is a format of the UniProtKB/Swiss-prot database used for "
-			"storing annotated protein sequence");
+    formatDescription = tr("SwissProt is a format of the UniProtKB/Swiss-prot database used for "
+            "storing annotated protein sequence");
     fileExtensions << "sw" << "em" << "emb" << "embl" << "txt";
     sequenceStartPrefix = "SQ";
     fPrefix = "FT";
@@ -186,7 +186,7 @@ bool SwissProtPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& se
         else if (st->hasKey("SQ", 2)) {
             //reading sequence
             readSequence(st,seqImporter,sequenceLen,fullSequenceLen,os);
-			CHECK_OP(os,false);
+            CHECK_OP(os,false);
             return true;
         }
 
@@ -210,7 +210,7 @@ bool SwissProtPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& se
     return false;
 }
 bool SwissProtPlainTextFormat::readSequence(ParserState *st, U2SequenceImporter& seqImporter, int& sequenceLen, int& fullSequenceLen, U2OpStatus& os){
-	QByteArray res;
+    QByteArray res;
 
     IOAdapter* io = st->io;
     U2OpStatus& si = st->si;
@@ -255,19 +255,19 @@ bool SwissProtPlainTextFormat::readSequence(ParserState *st, U2SequenceImporter&
                 }
             }
         }
-		
+
         if (!ok) {
             si.setError(tr("Error reading sequence: memory allocation failed"));
             break;
         }
-		
-		seqImporter.addBlock(res,res.size(),os);
-		if(os.isCoR()){
-			break;
-		}
-		sequenceLen += res.size();
-		fullSequenceLen += res.size();
-		res.clear();
+
+        seqImporter.addBlock(res,res.size(),os);
+        if(os.isCoR()){
+            break;
+        }
+        sequenceLen += res.size();
+        fullSequenceLen += res.size();
+        res.clear();
 
         si.setProgress(io->getProgress());
     }

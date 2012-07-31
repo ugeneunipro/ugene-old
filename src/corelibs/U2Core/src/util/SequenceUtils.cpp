@@ -309,7 +309,7 @@ QList<GObject*> U1SequenceUtils::mergeSequences(const QList<Document*> docs, con
         reorderingObjects(objs);        
         processOldObjects(objs, annotationsBySequenceObjectName, mapObjects2Alpabets, doc->getURLString(), doc->getURL().fileName(), hints, os);        
         CHECK_OP(os, QList<GObject*>());
-	}
+    }
     CHECK_OP(os, QList<GObject*>());
     return createNewObjects(annotationsBySequenceObjectName, mapObjects2Alpabets, ref, newUrl, hints, mergeGap, os);            
 }

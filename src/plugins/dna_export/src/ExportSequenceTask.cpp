@@ -258,7 +258,7 @@ QList<Task*> ExportAnnotationSequenceTask::onSubTaskFinished(Task* subTask) {
         exportSubTask = new ExportSequenceTask(config.exportSequenceSettings);
         res.append(exportSubTask);  
     }
-	this->resultDocument = this->exportSubTask->takeDocument();
+    this->resultDocument = this->exportSubTask->takeDocument();
     return res;
 }
 

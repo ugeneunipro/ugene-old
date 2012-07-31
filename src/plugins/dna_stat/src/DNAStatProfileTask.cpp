@@ -103,13 +103,13 @@ DNAStatProfileTask::DNAStatProfileTask(ADVSequenceObjectContext* context):Task(t
     ctx = context;
     contentCounter.resize(256);
     contentCounter.fill(0);
-	nA = nC = nG = nT = 0;
+    nA = nC = nG = nT = 0;
 }
 
 void DNAStatProfileTask::run(){
     computeStats();
     QString seqName = ctx->getSequenceGObject()->getGObjectName(), url = ctx->getSequenceGObject()->getDocument()->getURL().getURLString();   
-	U2SequenceObject* dnaObj = ctx->getSequenceObject();
+    U2SequenceObject* dnaObj = ctx->getSequenceObject();
 
     //setup style
     resultText= "<STYLE TYPE=\"text/css\"><!-- \n";
@@ -124,38 +124,38 @@ void DNAStatProfileTask::run(){
     resultText+="<table>\n";
     resultText+="<tr><td><b>" + DNAStatProfileTask::tr("Sequence file:") + "</b></td><td>" + url + "@" + seqName + "</td></tr><tr><td><b>" + 
         DNAStatProfileTask::tr("Sequence length:") + "</b></td><td>" + QString::number(seqLen) + "</td></tr>\n";
-	resultText += "<tr><td><b>Molecule Type:</b></td><td>" + ctx->getSequenceObject()->getAlphabet()->getName() + "</td></tr>\n";
-	
-	DNAAlphabet* al = dnaObj->getAlphabet();
-	if (al->isNucleic()) {
-		
-		float gcContent = 100.0 * (nG + nC) / (float) seqLen;
-		resultText += "<tr><td><b>GC content:</b></td><td>" + QString("%1 %").arg(gcContent, 0, 'f', 2) + "</td></tr>\n";
-		
-		// Calculating molar weight
-		// Source: http://www.basic.northwestern.edu/biotools/oligocalc.html
-		bool isRna = al->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT() ||
-			al->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
-		
-		float molarWeight = 0;
-		if (isRna) {
-			molarWeight = nA * 329.21 + nT * 306.17 + nC * 305.18 + nG * 345.21 + 159.0;
-		} else {
-			molarWeight = nA * 313.21 + nT * 304.2 + nC * 289.18 + nG * 329.21 + 17.04;
-		}
-		
-		int molarAbsCoef = nA*15400 + nT*8800 + nC*7300 + nG*11700;
-		
-		float meltingTm = 0;
-		if (seqLen < 15) {
-			meltingTm = (nA+nT) * 2 + (nG + nC) * 4;
-		} else {
-			meltingTm = 64.9 + 41*(nG + nC-16.4)/(float)(nA+nT+nG+nC);
-		}
+    resultText += "<tr><td><b>Molecule Type:</b></td><td>" + ctx->getSequenceObject()->getAlphabet()->getName() + "</td></tr>\n";
 
-		resultText += "<tr><td><b>Molar Weight:</b></td><td>" + QString("%1 Da").arg(molarWeight, 0, 'f', 2) + "</td></tr>\n";
-		resultText += "<tr><td><b>Molar ext. coef.:</b></td><td>" + QString("%1 I/mol (at 260 nm)").arg(molarAbsCoef) + "</td></tr>\n";
-		resultText += "<tr><td><b>Melting Tm:</b></td><td>" + QString("%1 C (at salt CC 50 mM, primer CC 50 mM, pH 7.0)").arg(meltingTm, 0, 'f', 2) + "</td></tr>\n";
+    DNAAlphabet* al = dnaObj->getAlphabet();
+    if (al->isNucleic()) {
+
+        float gcContent = 100.0 * (nG + nC) / (float) seqLen;
+        resultText += "<tr><td><b>GC content:</b></td><td>" + QString("%1 %").arg(gcContent, 0, 'f', 2) + "</td></tr>\n";
+
+        // Calculating molar weight
+        // Source: http://www.basic.northwestern.edu/biotools/oligocalc.html
+        bool isRna = al->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT() ||
+            al->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
+
+        float molarWeight = 0;
+        if (isRna) {
+            molarWeight = nA * 329.21 + nT * 306.17 + nC * 305.18 + nG * 345.21 + 159.0;
+        } else {
+            molarWeight = nA * 313.21 + nT * 304.2 + nC * 289.18 + nG * 329.21 + 17.04;
+        }
+
+        int molarAbsCoef = nA*15400 + nT*8800 + nC*7300 + nG*11700;
+
+        float meltingTm = 0;
+        if (seqLen < 15) {
+            meltingTm = (nA+nT) * 2 + (nG + nC) * 4;
+        } else {
+            meltingTm = 64.9 + 41*(nG + nC-16.4)/(float)(nA+nT+nG+nC);
+        }
+
+        resultText += "<tr><td><b>Molar Weight:</b></td><td>" + QString("%1 Da").arg(molarWeight, 0, 'f', 2) + "</td></tr>\n";
+        resultText += "<tr><td><b>Molar ext. coef.:</b></td><td>" + QString("%1 I/mol (at 260 nm)").arg(molarAbsCoef) + "</td></tr>\n";
+        resultText += "<tr><td><b>Melting Tm:</b></td><td>" + QString("%1 C (at salt CC 50 mM, primer CC 50 mM, pH 7.0)").arg(meltingTm, 0, 'f', 2) + "</td></tr>\n";
     } else if (al->isAmino()) {
         
         // it's ok to use whole sequence since the proteins in 95% cases are not bigger than 2000 residues
@@ -181,7 +181,7 @@ void DNAStatProfileTask::run(){
         // calculate  groups
 
     }
-	
+
     resultText+="</table>\n";
     resultText+="<br><br>\n";
 
@@ -208,7 +208,7 @@ void DNAStatProfileTask::run(){
         resultText+="<tr><td></td><td>" + 
             DNAStatProfileTask::tr("Dinucleotide counts") + "</td><td>" +
             DNAStatProfileTask::tr("Dinucleotide percents %") + "</td></tr>";
-		QMap<QByteArray, int>::const_iterator it(diNuclCounter.begin());
+        QMap<QByteArray, int>::const_iterator it(diNuclCounter.begin());
         for(;it != diNuclCounter.end(); it++){
             const QByteArray diNucl = it.key();
             const int cnt = it.value();
@@ -240,17 +240,17 @@ void DNAStatProfileTask::computeStats(){
         prevEnd += blockSize;
         QByteArray seqBlock = ctx->getSequenceData(r);
         foreach(char c, seqBlock){
-			if (c == 'A') {
-				nA++;
-			} else if (c == 'G') {
-				nG++;
-			} else if (c == 'T' || c == 'U') {
-				nT++;
-			} else if (c == 'C') {
-				nC++;
-			}
-			contentCounter[uchar(c)]++;
-			if (!dinucl) {
+            if (c == 'A') {
+                nA++;
+            } else if (c == 'G') {
+                nG++;
+            } else if (c == 'T' || c == 'U') {
+                nT++;
+            } else if (c == 'C') {
+                nC++;
+            }
+            contentCounter[uchar(c)]++;
+            if (!dinucl) {
                 continue;
             }
             nucPair[0] = nucPair[1];

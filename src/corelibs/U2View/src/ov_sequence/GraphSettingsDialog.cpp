@@ -39,65 +39,64 @@ namespace U2 {
 GraphSettingsDialog::GraphSettingsDialog( GSequenceGraphDrawer* d, const U2Region& range, QWidget* parent )
 :QDialog(parent), colorMap(d->getColors())
 {
-	
-	const GSequenceGraphWindowData& windowData = d->getWindowData();
-	const GSequenceGraphMinMaxCutOffData& cutOffData = d->getCutOffData();
-	wss = new WindowStepSelectorWidget(this, range, windowData.window, windowData.step);
-	mms = new MinMaxSelectorWidget(this, cutOffData.min, cutOffData.max, cutOffData.enableCuttoff);
-	QVBoxLayout* l = new QVBoxLayout();
-	QHBoxLayout* buttonsLayout = new QHBoxLayout();
-	buttonsLayout->addStretch(10);
-	
-	QList<QHBoxLayout*> cLayouts;
-	foreach(const QString& key, colorMap.keys()) {
-		QLabel* defaultColorName = new QLabel(QString("%1:").arg(key));
-		QPushButton* colorChangeButton = new QPushButton();
-		colorChangeButton->setObjectName(key);
-		colorChangeButton->setFixedSize(QSize(25,25));
-		connect(colorChangeButton, SIGNAL(clicked()), SLOT(sl_onPickColorButtonClicked()));
-		QColor color = colorMap.value(key);
-		colorChangeButton->setStyleSheet(QString(BACKGROUND_COLOR).arg(color.name()));
-		QHBoxLayout* cl = new QHBoxLayout();
-		cl->addSpacerItem(new QSpacerItem(50,25, QSizePolicy::Expanding));
-		cl->addWidget(defaultColorName);
-		cl->addWidget(colorChangeButton);
-		cl->addSpacerItem(new QSpacerItem(50,25, QSizePolicy::Expanding));
-		cLayouts.append(cl);
-		
-	}		
-	
-	QPushButton* cancelButton = new QPushButton(tr("Cancel"), this);
-	QPushButton* okButton = new QPushButton(tr("OK"), this);
-	buttonsLayout->addWidget(okButton);
-	buttonsLayout->addWidget(cancelButton);
 
-	l->addWidget(wss);
-	foreach(QLayout* cl, cLayouts) {
-		l->addLayout(cl);
-	}
-	l->addWidget(mms);
-	l->addLayout(buttonsLayout);
+    const GSequenceGraphWindowData& windowData = d->getWindowData();
+    const GSequenceGraphMinMaxCutOffData& cutOffData = d->getCutOffData();
+    wss = new WindowStepSelectorWidget(this, range, windowData.window, windowData.step);
+    mms = new MinMaxSelectorWidget(this, cutOffData.min, cutOffData.max, cutOffData.enableCuttoff);
+    QVBoxLayout* l = new QVBoxLayout();
+    QHBoxLayout* buttonsLayout = new QHBoxLayout();
+    buttonsLayout->addStretch(10);
 
-	setLayout(l);
-	setWindowTitle(tr("Graph Settings"));
-	setWindowIcon(QIcon(":core/images/graphs.png"));
+    QList<QHBoxLayout*> cLayouts;
+    foreach(const QString& key, colorMap.keys()) {
+        QLabel* defaultColorName = new QLabel(QString("%1:").arg(key));
+        QPushButton* colorChangeButton = new QPushButton();
+        colorChangeButton->setObjectName(key);
+        colorChangeButton->setFixedSize(QSize(25,25));
+        connect(colorChangeButton, SIGNAL(clicked()), SLOT(sl_onPickColorButtonClicked()));
+        QColor color = colorMap.value(key);
+        colorChangeButton->setStyleSheet(QString(BACKGROUND_COLOR).arg(color.name()));
+        QHBoxLayout* cl = new QHBoxLayout();
+        cl->addSpacerItem(new QSpacerItem(50,25, QSizePolicy::Expanding));
+        cl->addWidget(defaultColorName);
+        cl->addWidget(colorChangeButton);
+        cl->addSpacerItem(new QSpacerItem(50,25, QSizePolicy::Expanding));
+        cLayouts.append(cl);
+    }
 
-	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-	setMinimumWidth(200);
+    QPushButton* cancelButton = new QPushButton(tr("Cancel"), this);
+    QPushButton* okButton = new QPushButton(tr("OK"), this);
+    buttonsLayout->addWidget(okButton);
+    buttonsLayout->addWidget(cancelButton);
 
-	connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));
-	connect(okButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));
+    l->addWidget(wss);
+    foreach(QLayout* cl, cLayouts) {
+        l->addLayout(cl);
+    }
+    l->addWidget(mms);
+    l->addLayout(buttonsLayout);
 
-	okButton->setDefault(true);
+    setLayout(l);
+    setWindowTitle(tr("Graph Settings"));
+    setWindowIcon(QIcon(":core/images/graphs.png"));
+
+    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    setMinimumWidth(200);
+
+    connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));
+    connect(okButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));
+
+    okButton->setDefault(true);
 }
 
 void GraphSettingsDialog::sl_onPickColorButtonClicked()
 {
-	QPushButton* colorButton = qobject_cast<QPushButton*> (sender());
-	SAFE_POINT(colorButton, "Button for color is NULL", );
+    QPushButton* colorButton = qobject_cast<QPushButton*> (sender());
+    SAFE_POINT(colorButton, "Button for color is NULL", );
 
-	QString colorName = colorButton->objectName();
-	QColor initial = colorMap.value(colorName);
+    QString colorName = colorButton->objectName();
+    QColor initial = colorMap.value(colorName);
 
     QColorDialog CD(initial, this);
 
@@ -110,18 +109,18 @@ void GraphSettingsDialog::sl_onPickColorButtonClicked()
 
 void GraphSettingsDialog::sl_onCancelClicked()
 {
-	reject();
+    reject();
 }
 
 void GraphSettingsDialog::sl_onOkClicked()
 {
-	QString err = wss->validate();
-	QString mmerr = mms->validate();
-	if (err.isEmpty() && mmerr.isEmpty()) {
-		accept();
-		return;
-	}
-	QMessageBox::critical(this, windowTitle(), err.append(' ').append(mmerr));
+    QString err = wss->validate();
+    QString mmerr = mms->validate();
+    if (err.isEmpty() && mmerr.isEmpty()) {
+        accept();
+        return;
+    }
+    QMessageBox::critical(this, windowTitle(), err.append(' ').append(mmerr));
 }
 
 } // namespace 

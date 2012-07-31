@@ -86,10 +86,10 @@ private:
     ORFAlgorithmStrand getAlgStrand() const;
 
 private:
-	void createAnnotationWidget();
+    void createAnnotationWidget();
     ADVSequenceObjectContext* ctx;
     U2SequenceObject* sequence;
-	CreateAnnotationWidgetController* ac;
+    CreateAnnotationWidgetController* ac;
 
     U2Region panViewSelection;
     ORFFindTask* task;

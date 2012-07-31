@@ -158,7 +158,7 @@ protected:
     GSLV_FeatureFlags               featureFlags;
     GSequenceLineView*              frameView;
     GSequenceLineView*              coherentRangeView;
-	double coefScrollBarMapping;
+    double coefScrollBarMapping;
 
     // special flag setup by child classes that tells to this class do or skip
     // any changes to selection on mouse ops

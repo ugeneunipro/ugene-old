@@ -188,7 +188,7 @@ QString FindPrompter::composeRichDoc() {
     FindAlgorithmSettings cfg;
     cfg.strand = getStrand(getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId()).value<QString>());
     cfg.maxErr = getParameter(ERR_ATTR).toInt();
-	cfg.patternSettings = static_cast<FindAlgorithmPatternSettings>(getParameter(ALGO_ATTR).toInt());
+    cfg.patternSettings = static_cast<FindAlgorithmPatternSettings>(getParameter(ALGO_ATTR).toInt());
 
     QString strandName;
     switch (cfg.strand) {

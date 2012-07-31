@@ -14,7 +14,7 @@ public:
     QString getFirstFileName() const {return firstFileName;}
     QString getSecondFileName() const {return secondFileName;}
     bool isGenerateNegative() const {return generateNeg;}
-	int getNegativePerPositive() const {return negativePerPositive;}
+    int getNegativePerPositive() const {return negativePerPositive;}
 protected slots:
     void sl_openFirstFile();
     void sl_openSecondFile();
@@ -25,7 +25,7 @@ private:
     QString secondFileName;
 
     bool generateNeg;
-	int negativePerPositive;
+    int negativePerPositive;
 
     QString filter;
 

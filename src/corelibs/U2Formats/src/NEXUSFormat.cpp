@@ -42,7 +42,7 @@ NEXUSFormat::NEXUSFormat(QObject *p) :
         DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList()<<"nex"<<"nxs")      // disable streaming for now
 {
     formatName = tr("NEXUS");
-	formatDescription = tr("Nexus is a multiple alignment and phylogenetic trees file format");
+    formatDescription = tr("Nexus is a multiple alignment and phylogenetic trees file format");
     supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
     supportedObjectTypes += GObjectTypes::PHYLOGENETIC_TREE;
 }

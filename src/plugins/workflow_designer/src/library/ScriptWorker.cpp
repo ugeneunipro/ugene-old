@@ -69,11 +69,11 @@ void ScriptWorkerTask::run() {
     WorkflowScriptLibrary::initEngine(engine);
     QScriptValue scriptResultValue = ScriptTask::runScript(engine, scriptVars, script->getScriptText(), stateInfo);
     if(engine->hasUncaughtException()) {
-		scriptResultValue = engine->uncaughtException();
+        scriptResultValue = engine->uncaughtException();
         QString message = scriptResultValue.toString();
         stateInfo.setError(tr("Error in line ") + QString::number(engine->uncaughtExceptionLineNumber()) + ":" + message.split(":").last());
     }
-	result = scriptResultValue.toVariant();
+    result = scriptResultValue.toVariant();
 
     if(engine->globalObject().property("list").toBool()) {
         isList = true;
@@ -154,41 +154,41 @@ Task *ScriptWorker::tick() {
         coreLog.error(tr("no script text"));
         return new FailTask(tr("no script text"));
     }
-	if(input != NULL) {
-		if (input->hasMessage()) {
-			bindPortVariables();
-			bindAttributeVariables();
+    if(input != NULL) {
+        if (input->hasMessage()) {
+            bindPortVariables();
+            bindAttributeVariables();
 
-			getMessageAndSetupScriptValues(input);
+            getMessageAndSetupScriptValues(input);
 
-			Task *t = new ScriptWorkerTask(engine, script);
-			connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-			return t;
-		} else if (input->isEnded()) {
-			setDone();
-			if(output != NULL) {
-				output->setEnded();
-			}
-		}
-	} else {
-		if(taskFinished) {
-			setDone();
-			if(output != NULL) {
-				output->setEnded();
-			}
-		} else {
-			bindPortVariables();
-			bindAttributeVariables();
-			Task *t = new ScriptWorkerTask(engine, script);
-			connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-			return t;
-		}
-	}
+            Task *t = new ScriptWorkerTask(engine, script);
+            connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+            return t;
+        } else if (input->isEnded()) {
+            setDone();
+            if(output != NULL) {
+                output->setEnded();
+            }
+        }
+    } else {
+        if(taskFinished) {
+            setDone();
+            if(output != NULL) {
+                output->setEnded();
+            }
+        } else {
+            bindPortVariables();
+            bindAttributeVariables();
+            Task *t = new ScriptWorkerTask(engine, script);
+            connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+            return t;
+        }
+    }
     return NULL;
 }
 
 void ScriptWorker::sl_taskFinished() {
-	taskFinished = true;
+    taskFinished = true;
     ScriptWorkerTask *t = qobject_cast<ScriptWorkerTask*>(sender());
     if (t->getState() != Task::State_Finished || t->hasError()) {
         return;

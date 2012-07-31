@@ -15,19 +15,19 @@ class AssemblyTestData {
 public:
     static void init();
     static void shutdown();
-	static U2AssemblyDbi* getAssemblyDbi();
-	static void close();
-	static QList<U2DataId>* getAssemblyIds() { return assemblyIds; };
+    static U2AssemblyDbi* getAssemblyDbi();
+    static void close();
+    static QList<U2DataId>* getAssemblyIds() { return assemblyIds; };
 
 public:
     static U2AssemblyDbi* assemblyDbi;
     static QList<U2DataId>* assemblyIds;
 
-	static const QString& ASS_DB_URL;
+    static const QString& ASS_DB_URL;
 
 protected:
     static TestDbiProvider dbiProvider;
-	static bool registerTest;
+    static bool registerTest;
 };
 
 class AssemblyDbiUnitTests_getAssemblyObject : public UnitTest {
@@ -155,7 +155,7 @@ Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_countReads);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_countReadsInvalid);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_createAssemblyObject);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getAssemblyObject);
-Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getAssemblyObjectInvalid);	
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getAssemblyObjectInvalid);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getMaxEndPos);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getMaxEndPosInvalid);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getMaxPackedRow);
@@ -165,10 +165,10 @@ Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsInvalid);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsByName);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsByNameInvalid);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsByRow);
-Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsByRowInvalid);	
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_getReadsByRowInvalid);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_pack);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_packInvalid);
 Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_removeReads);
-Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_removeReadsInvalid);	
+Q_DECLARE_METATYPE(U2::AssemblyDbiUnitTests_removeReadsInvalid);
 
 #endif //_U2_ASSEMBLY_DBI_UNITTESTS_H_

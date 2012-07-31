@@ -116,7 +116,7 @@ private slots:
     void sl_onRemoveColumnByHeaderClick();
     void sl_onCopyColumnText();
     void sl_onCopyColumnURL();
-	void sl_exportAutoAnnotationsGroup();
+    void sl_exportAutoAnnotationsGroup();
     void sl_searchQualifier();
     void sl_invertSelection();
     
@@ -152,7 +152,7 @@ private:
     AVAnnotationItem* buildAnnotationTree(AVGroupItem* parentGroup, Annotation* a);
     void populateAnnotationQualifiers(AVAnnotationItem* ai);
     void updateAllAnnotations(ATVAnnUpdateFlags flags);
-	QMenu* getAutoAnnotationsHighligtingMenu(AnnotationTableObject* aObj);
+    QMenu* getAutoAnnotationsHighligtingMenu(AnnotationTableObject* aObj);
 
     AVGroupItem* findGroupItem(const AnnotationGroup* g) const;
     AVAnnotationItem* findAnnotationItem(const AnnotationGroup* g, const Annotation* a) const;
@@ -182,7 +182,7 @@ private:
     QAction*            removeColumnByHeaderClickAction;
     QAction*            copyColumnTextAction;
     QAction*            copyColumnURLAction;
-	QAction*			exportAutoAnnotationsGroup;
+    QAction*            exportAutoAnnotationsGroup;
 //    QAction*            cutAnnotationsAction;
 //    QAction*            copyAnnotationsAction;
 //    QAction*            pasteAnnotationsAction;
@@ -203,7 +203,7 @@ private:
     QIcon               removeColumnIcon;
     QTimer              sortTimer;
     QPoint              dragStartPos;
-	QMenu*				highlightAutoAnnotationsMenu;
+    QMenu*              highlightAutoAnnotationsMenu;
     // drag&drop related data
     bool                    isDragging;
     bool                    dndCopyOnly;

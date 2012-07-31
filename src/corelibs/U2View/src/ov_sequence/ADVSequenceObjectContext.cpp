@@ -312,13 +312,13 @@ QSet<AnnotationTableObject*> ADVSequenceObjectContext::getAnnotationObjects(bool
 
 void ADVSequenceObjectContext::sl_toggleTranslations(){
     translationRowsStatus.clear();
-	rowChoosed = true;
+    rowChoosed = true;
     emit si_translationRowsChanged();
-	rowChoosed = false;
+    rowChoosed = false;
 }
 
 bool ADVSequenceObjectContext::isRowChoosed(){
-	return rowChoosed;
+    return rowChoosed;
 }
 
 QVector<bool> ADVSequenceObjectContext::getTranslationRowsVisibleStatus(){

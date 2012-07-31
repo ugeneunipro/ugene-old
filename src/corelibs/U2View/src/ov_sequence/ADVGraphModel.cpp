@@ -143,13 +143,13 @@ const QString GSequenceGraphDrawer::DEFAULT_COLOR(tr("Default color"));
 const int GSequenceGraphDrawer::UNKNOWN_VAL = -1;
 
 GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
-										   QMap<QString,QColor> colors) 
+                                           QMap<QString,QColor> colors)
 : QObject(v), view(v), lineColors(colors), wdata(wd)
 {
     defFont = new QFont("Arial", 8);
-	if (colors.isEmpty()) {
-		lineColors.insert(DEFAULT_COLOR, Qt::black);
-	}
+    if (colors.isEmpty()) {
+        lineColors.insert(DEFAULT_COLOR, Qt::black);
+    }
 }
 
 GSequenceGraphDrawer::~GSequenceGraphDrawer() {
@@ -158,135 +158,135 @@ GSequenceGraphDrawer::~GSequenceGraphDrawer() {
 
 void GSequenceGraphDrawer::draw(QPainter& p, QList<GSequenceGraphData*> graphs, const QRect& rect) {
     
-	globalMin = 0;
-	globalMax = 0;
+    globalMin = 0;
+    globalMax = 0;
 
-	foreach (GSequenceGraphData* graph, graphs) {
-		drawGraph(p, graph, rect);
-	}
-	
-	{
-		 //draw min/max
-		 QPen minMaxPen(Qt::DashDotDotLine);
-		 minMaxPen.setWidth(1);
-		 p.setPen(minMaxPen);
-		 p.setFont(*defFont);
+    foreach (GSequenceGraphData* graph, graphs) {
+        drawGraph(p, graph, rect);
+    }
 
-		 //max
-		 p.drawLine(rect.topLeft(), rect.topRight());
-		 QRect maxTextRect(rect.x(), rect.y(), rect.width(), 12);
-		 p.drawText(maxTextRect, Qt::AlignRight, QString::number((double) globalMax, 'g', 4));
+    {
+         //draw min/max
+         QPen minMaxPen(Qt::DashDotDotLine);
+         minMaxPen.setWidth(1);
+         p.setPen(minMaxPen);
+         p.setFont(*defFont);
 
-		 //min
-		 p.drawLine(rect.bottomLeft(), rect.bottomRight());
-		 QRect minTextRect(rect.x(), rect.bottom()-12, rect.width(), 12);
-		 p.drawText(minTextRect, Qt::AlignRight, QString::number((double) globalMin, 'g', 4));
-	 }
+         //max
+         p.drawLine(rect.topLeft(), rect.topRight());
+         QRect maxTextRect(rect.x(), rect.y(), rect.width(), 12);
+         p.drawText(maxTextRect, Qt::AlignRight, QString::number((double) globalMax, 'g', 4));
+
+         //min
+         p.drawLine(rect.bottomLeft(), rect.bottomRight());
+         QRect minTextRect(rect.x(), rect.bottom()-12, rect.width(), 12);
+         p.drawText(minTextRect, Qt::AlignRight, QString::number((double) globalMin, 'g', 4));
+     }
 }
 
 
 void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const QRect& rect )
 {
-	float min=0;
-	float max=0;
-	PairVector points;
-	int nPoints = rect.width();
-	calculatePoints(d, points, min, max, nPoints);
+    float min=0;
+    float max=0;
+    PairVector points;
+    int nPoints = rect.width();
+    calculatePoints(d, points, min, max, nPoints);
 
-	assert(points.firstPoints.size() == nPoints);
+    assert(points.firstPoints.size() == nPoints);
 
-	double comin = commdata.min, comax = commdata.max;
-	if (commdata.enableCuttoff){
-		min = comin;
-		max = comax;
-	}
-	
-	globalMin = min;
-	globalMax = max;
+    double comin = commdata.min, comax = commdata.max;
+    if (commdata.enableCuttoff){
+        min = comin;
+        max = comax;
+    }
 
-	QPen graphPen(Qt::SolidLine);
-	if  (lineColors.contains(d->graphName)) {
-		graphPen.setColor(lineColors.value(d->graphName));
-	} else {
-		graphPen.setColor(lineColors.value(DEFAULT_COLOR));
-	}
+    globalMin = min;
+    globalMax = max;
 
-	graphPen.setWidth(1);
-	p.setPen(graphPen);
+    QPen graphPen(Qt::SolidLine);
+    if  (lineColors.contains(d->graphName)) {
+        graphPen.setColor(lineColors.value(d->graphName));
+    } else {
+        graphPen.setColor(lineColors.value(DEFAULT_COLOR));
+    }
+
+    graphPen.setWidth(1);
+    p.setPen(graphPen);
 
 
-	int graphHeight = rect.bottom() - rect.top() - 2;
-	float kh = (min == max) ? 1 : graphHeight / (max - min);
+    int graphHeight = rect.bottom() - rect.top() - 2;
+    float kh = (min == max) ? 1 : graphHeight / (max - min);
 
-	int prevY = -1;
-	int prevX = -1;
+    int prevY = -1;
+    int prevX = -1;
 
-	if (!commdata.enableCuttoff) {
-		////////cutoff off
-		for (int i = 0, n = nPoints; i < n; i++) {
-			float fy1 = points.firstPoints[i];
-			if (fy1 == UNKNOWN_VAL) {
-				continue;
-			}
-			int dy1 = qRound((fy1 - min) * kh);
-			assert(dy1 <= graphHeight);
-			int y1 = rect.bottom() - 1 - dy1;
-			int x = rect.left() + i;
-			assert(y1 > rect.top() && y1 < rect.bottom());
-			if (prevX != -1) {
-				p.drawLine(prevX, prevY , x, y1);
-			}
-			prevY = y1;
-			prevX = x;
-			if (points.useIntervals) {
-				float fy2 = points.secondPoints[i];
-				if (fy2 == UNKNOWN_VAL) {
-					continue;
-				}
-				int dy2 = qRound((fy2 - min) * kh);
-				assert(dy2 <= graphHeight);
-				int y2 = rect.bottom() - 1 - dy2;
-				assert(y2 > rect.top() && y2 < rect.bottom());
-				if (prevX != -1){
-					p.drawLine(prevX, prevY , x, y2);
-				}
-				prevY = y2;
-				prevX = x;
-			}
-		}
-	} else    {
-		////////cutoff on
+    if (!commdata.enableCuttoff) {
+        ////////cutoff off
+        for (int i = 0, n = nPoints; i < n; i++) {
+            float fy1 = points.firstPoints[i];
+            if (fy1 == UNKNOWN_VAL) {
+                continue;
+            }
+            int dy1 = qRound((fy1 - min) * kh);
+            assert(dy1 <= graphHeight);
+            int y1 = rect.bottom() - 1 - dy1;
+            int x = rect.left() + i;
+            assert(y1 > rect.top() && y1 < rect.bottom());
+            if (prevX != -1) {
+                p.drawLine(prevX, prevY , x, y1);
+            }
+            prevY = y1;
+            prevX = x;
+            if (points.useIntervals) {
+                float fy2 = points.secondPoints[i];
+                if (fy2 == UNKNOWN_VAL) {
+                    continue;
+                }
+                int dy2 = qRound((fy2 - min) * kh);
+                assert(dy2 <= graphHeight);
+                int y2 = rect.bottom() - 1 - dy2;
+                assert(y2 > rect.top() && y2 < rect.bottom());
+                if (prevX != -1){
+                    p.drawLine(prevX, prevY , x, y2);
+                }
+                prevY = y2;
+                prevX = x;
+            }
+        }
+    } else    {
+        ////////cutoff on
 
-		float fymin = comin;
-		float fymax = comax;
-		float fymid = (comin + comax)/2;
-		float fy, fy2;
-		int prevFY = -1;
-		bool rp = false, lp = false;
+        float fymin = comin;
+        float fymax = comax;
+        float fymid = (comin + comax)/2;
+        float fy, fy2;
+        int prevFY = -1;
+        bool rp = false, lp = false;
         if(!points.useIntervals){
-			for (int i=0, n = points.firstPoints.size(); i < n; i++) {
-				fy = points.firstPoints[i];
-				rp = false;
-				lp = false;
-				if (fy == UNKNOWN_VAL) {
-					continue;
-				}
-				if (fy >= fymax) {
-					fy = fymax;
-					if (prevFY == int(fymid)) lp=true;
-				}else if(fy < fymax && fy > fymin){
-					fy = fymid;
-					if (prevFY == int(fymax)) rp=true;
+            for (int i=0, n = points.firstPoints.size(); i < n; i++) {
+                fy = points.firstPoints[i];
+                rp = false;
+                lp = false;
+                if (fy == UNKNOWN_VAL) {
+                    continue;
+                }
+                if (fy >= fymax) {
+                    fy = fymax;
+                    if (prevFY == int(fymid)) lp=true;
+                }else if(fy < fymax && fy > fymin){
+                    fy = fymid;
+                    if (prevFY == int(fymax)) rp=true;
                     if (prevFY == int(fymin)) lp=true;
                 }else{
                     fy = fymin;
                     if (prevFY == int(fymid)) lp=true;
                 }
 
-				int dy = qRound((fy - min) * kh);
-				assert(dy <= graphHeight);
-				int y = rect.bottom() - 1 - dy;
-				int x = rect.left() + i;
+                int dy = qRound((fy - min) * kh);
+                assert(dy <= graphHeight);
+                int y = rect.bottom() - 1 - dy;
+                int x = rect.left() + i;
 
                 assert(y > rect.top() && y < rect.bottom());
                 if (prevX!=-1){
@@ -294,12 +294,12 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
                 }
 
                 if (prevY != y && prevX != -1){ // common case for cutoffs
-					p.drawLine(x, prevY , x, y);
-				}
+                    p.drawLine(x, prevY , x, y);
+                }
                 prevY = y;
                 prevX = x;
                 prevFY = (int) fy;
-			}
+            }
         }else{
             for (int i=0, n = points.firstPoints.size(); i < n; i++) {
                 assert(points.firstPoints.size() == points.secondPoints.size());
@@ -359,7 +359,7 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
             }
 
         }
-	}
+    }
 
 }
 
@@ -572,17 +572,17 @@ void GSequenceGraphDrawer::calculateWithExpand(GSequenceGraphData* d, PairVector
 
 void GSequenceGraphDrawer::showSettingsDialog() {
     
-	GraphSettingsDialog dlg(this, U2Region(1, view->getSequenceLength()-1), view);
-	
-	if (dlg.exec() == QDialog::Accepted) {
-		wdata.window = dlg.getWindowSelector()->getWindow();
-		wdata.step = dlg.getWindowSelector()->getStep();
-		commdata.enableCuttoff = dlg.getMinMaxSelector()->getState();
-		commdata.min = dlg.getMinMaxSelector()->getMin();
-		commdata.max = dlg.getMinMaxSelector()->getMax();
-		lineColors = dlg.getColors();
-		view->update();
-	}
+    GraphSettingsDialog dlg(this, U2Region(1, view->getSequenceLength()-1), view);
+
+    if (dlg.exec() == QDialog::Accepted) {
+        wdata.window = dlg.getWindowSelector()->getWindow();
+        wdata.step = dlg.getWindowSelector()->getStep();
+        commdata.enableCuttoff = dlg.getMinMaxSelector()->getState();
+        commdata.min = dlg.getMinMaxSelector()->getMin();
+        commdata.max = dlg.getMinMaxSelector()->getMax();
+        lineColors = dlg.getColors();
+        view->update();
+    }
 }
 
 } // namespace

@@ -45,7 +45,7 @@ public:
 private:
     QString firstFile, secondFile;
     bool generateNeg;
-	int negPerPositive;
+    int negPerPositive;
     QList<Document*> docs;
 
     Document* loadFile(QString inFile);
@@ -91,7 +91,7 @@ public:
     void prepare();
     ReportResult report();
 
-	static bool loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc);
+    static bool loadAnnotationFromUgeneDocument(MarkingBase& base, const SequenceBase& seqBase, Document* doc);
 
 private:
     QString firstFile, secondFile, thirdFile;
@@ -117,12 +117,12 @@ public:
 
     void run(){};
     void prepare();
-	ReportResult report();
+    ReportResult report();
 
 private:
     QString firstFile;
     ExpertDiscoveryData& edData;
-	Document* conDoc;
+    Document* conDoc;
 
     //Document* loadFile(QString inFile);
 
@@ -397,12 +397,12 @@ private:
 
 class ExpertDiscoveryExportSequences : public Task{
 public:
-	ExpertDiscoveryExportSequences(const SequenceBase& base);
-	void prepare();
-	void run();
+    ExpertDiscoveryExportSequences(const SequenceBase& base);
+    void prepare();
+    void run();
 private:
-	const SequenceBase& base;
-	QString fileName;
+    const SequenceBase& base;
+    QString fileName;
 };   
 
         

@@ -149,7 +149,7 @@ private:
     QAction*          resetFontAction;
     QAction*          buildTreeAction;
     QAction*          saveScreenshotAction;
-	QAction*		  saveSvgAction;
+    QAction*          saveSvgAction;
 
     CreatePhyTreeSettings settings;
     PhyTreeGeneratorLauncherTask* treeGeneratorTask;
@@ -180,7 +180,7 @@ public:
 
 public slots:
     void sl_saveScreenshot();
-	void sl_saveSvgImage();
+    void sl_saveSvgImage();
 
 private:
     MSAEditor*                      editor;

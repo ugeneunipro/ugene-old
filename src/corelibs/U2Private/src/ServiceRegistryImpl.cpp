@@ -288,8 +288,8 @@ DisableServiceTask::DisableServiceTask(ServiceRegistryImpl* _sr, Service* _s, bo
 static QList<Service*> getDirectChilds(ServiceRegistryImpl* sr, ServiceType st);
 
 bool DisableServiceTask::isGUITesting() const {
-	CMDLineRegistry *cmdLine = AppContext::getCMDLineRegistry();
-	return cmdLine && cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST);
+    CMDLineRegistry *cmdLine = AppContext::getCMDLineRegistry();
+    return cmdLine && cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST);
 }
 
 void DisableServiceTask::prepare() {
@@ -300,10 +300,10 @@ void DisableServiceTask::prepare() {
         foreach(Task* t, activeTopTasks) {
             coreLog.details(tr("Active top-level task name: %1").arg(t->getTaskName()));
         }
-		if (!isGUITesting()) { // GUI Tests contain tests on closing Project which is Service
-	        stateInfo.setError(  tr("Active task was found") );
-			return;
-		}
+        if (!isGUITesting()) { // GUI Tests contain tests on closing Project which is Service
+            stateInfo.setError(  tr("Active task was found") );
+            return;
+        }
     }
     if (!sr->services.contains(s)) {
         stateInfo.setError(  tr("Service is not registered: %1").arg(s->getName()) );

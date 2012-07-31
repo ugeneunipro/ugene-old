@@ -47,7 +47,7 @@ BAMFormat::BAMFormat(QObject *parent):
     DocumentFormat(parent, DocumentFormatFlag_SupportWriting, QStringList("bam")),
     formatName(tr("BAM"))
 {
-	formatDescription = tr("Binary compressed SAM format");
+    formatDescription = tr("Binary compressed SAM format");
     supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
 }
 

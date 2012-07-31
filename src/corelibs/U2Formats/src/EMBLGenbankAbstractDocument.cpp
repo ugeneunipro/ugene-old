@@ -284,48 +284,48 @@ static bool isNewQStart(const char* s, int l) {
     }
     const QBitArray& WHITES = TextUtils::WHITES;
     int i = QN_COL;
-	bool hasWhites = false;
-	bool hasEqualitySign = false; // qualifier with '=' char if true and without otherwise
-	bool hasWhitesBeforeVal = false;
+    bool hasWhites = false;
+    bool hasEqualitySign = false; // qualifier with '=' char if true and without otherwise
+    bool hasWhitesBeforeVal = false;
     for (; i < l; i++) {
         char c = s[i];
         if (c == '=' && i > QN_COL) {
             hasEqualitySign = true;
-			if(WHITES [s[i+1]]  ){ // there is whites between potential qual and val
-				hasWhitesBeforeVal = true;
-			}
-			break;
+            if(WHITES [s[i+1]]  ){ // there is whites between potential qual and val
+                hasWhitesBeforeVal = true;
+            }
+            break;
         }
         if (WHITES[(uchar)c]) {
-			hasWhites = true;
+            hasWhites = true;
         }
-		if(hasWhites && !WHITES[(uchar)c]){ // there is !whites characters after qualifier without '=' char    
-			hasWhitesBeforeVal = true;
-			break;
-		}
+        if(hasWhites && !WHITES[(uchar)c]){ // there is !whites characters after qualifier without '=' char
+            hasWhitesBeforeVal = true;
+            break;
+        }
     }
-	
-	if(hasEqualitySign){		
-		if(hasWhites ){ // whites between qual and '=' char
-			return false;
-		}
-		return true;
-	}
-	else if(hasWhitesBeforeVal){
-		return false;
-	}
-	
-	return true; // qualifier without '=' char    
+
+    if(hasEqualitySign){
+        if(hasWhites ){ // whites between qual and '=' char
+            return false;
+        }
+        return true;
+    }
+    else if(hasWhitesBeforeVal){
+        return false;
+    }
+
+    return true; // qualifier without '=' char
 }
 
 static int numQuotesInLine(char* cbuff, int len){
-	QString line = QString(QByteArray(cbuff,len));
-	int pos = 0;
-	int numQuotes = 0;
-	while((pos = line.indexOf('\"',pos+1)) != -1){
-		 numQuotes++;
-	}
-	return numQuotes;
+    QString line = QString(QByteArray(cbuff,len));
+    int pos = 0;
+    int numQuotes = 0;
+    while((pos = line.indexOf('\"',pos+1)) != -1){
+         numQuotes++;
+    }
+    return numQuotes;
 } 
 
 //TODO: make it IO active -> read util the end. Otherwise qualifier is limited in size by maxSize
@@ -336,10 +336,10 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
     int sizeToSkip = maxSize - MAX_LINE;
     const QBitArray& LINE_BREAKS = TextUtils::LINE_BREAKS;
 
-	int numQuotes = 0;
-	numQuotes += numQuotesInLine(cbuff,lenFirstLine);
+    int numQuotes = 0;
+    numQuotes += numQuotesInLine(cbuff,lenFirstLine);
 
-	cbuff+= lenFirstLine;
+    cbuff+= lenFirstLine;
 
     bool breakWords = !_prevLineHasMaxSize; //todo: create a parameter and make it depends on annotation name.
     do {
@@ -355,13 +355,13 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
                 for (; A_COL < lineLen && LINE_BREAKS[(uchar)skipBuff[lineLen-1]]; lineLen--){}; //remove line breaks
                 if (lineLen == 0 || lineLen < A_COL || skip[0]!=fPrefix[0] || skip[1]!=fPrefix[1] 
                     || skip[K_COL]!=' ' || (skip[A_COL]=='/' && isNewQStart(skip, lineLen) && (numQuotes%2) == 0))
-				{
+                {
                     io->skip(-readLen);
                     break;
                 }
-				else{
-					numQuotes += numQuotesInLine(skipBuff,lineLen);
-				}
+                else{
+                    numQuotes += numQuotesInLine(skipBuff,lineLen);
+                }
             } while (true);
             break;
         }
@@ -375,9 +375,9 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
             io->skip(-readLen);
             break;
         }
-		else{
-			numQuotes += numQuotesInLine(lineBuf,lineLen);
-		}
+        else{
+            numQuotes += numQuotesInLine(lineBuf,lineLen);
+        }
         if (breakWords && lineLen-A_COL > 0 && lineBuf[A_COL]!=' ') { //add space to separate words
             cbuff[len] = ' ';
             len++;
@@ -594,7 +594,7 @@ bool EMBLGenbankAbstractDocument::readSequence(ParserState* st, U2SequenceImport
         bool isSeek = writer.seek(0);
                 assert(isSeek);Q_UNUSED(isSeek);
 
-        //add buffer to result	
+        //add buffer to result
         for (int i= (numIsPrefix ? dataOffset : 0), n = (numIsPrefix ? len : len -  dataOffset) ; i < n; i++) {
             char c = buff[i];
             if (c != ' ' && c != '\t') {

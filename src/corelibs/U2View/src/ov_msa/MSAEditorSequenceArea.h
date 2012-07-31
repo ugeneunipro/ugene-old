@@ -195,7 +195,7 @@ public:
 
     void updateVBarPosition(int seq);
     
-	void drawContent(QPainter& p);
+    void drawContent(QPainter& p);
 
 
 signals:

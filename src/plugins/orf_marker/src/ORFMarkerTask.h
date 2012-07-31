@@ -44,11 +44,11 @@ public:
     static const QString MUST_INIT;
     static const QString ALLOW_ALT_START;
     static const QString ALLOW_OVERLAP;
-	static const QString INCLUDE_STOP_CODON;
+    static const QString INCLUDE_STOP_CODON;
     static const QString CIRCULAR_SEARCH;
-	static const QString MAX_RESULT;
-	static const QString IS_RESULT_LIMITED;
-	
+    static const QString MAX_RESULT;
+    static const QString IS_RESULT_LIMITED;
+
     static void save(const ORFAlgorithmSettings& cfg, Settings* st);
     static void read(ORFAlgorithmSettings& cfg, const Settings* st);
 };
@@ -58,7 +58,7 @@ public:
  public:
     FindORFsToAnnotationsTask(AnnotationTableObject* aobj,const U2EntityRef& entityRef,
          const ORFAlgorithmSettings& settings, const QString& groupName = QString());
-	 
+
     void run();
     ReportResult report();
      
@@ -73,7 +73,7 @@ public:
  
  
 class ORFAutoAnnotationsUpdater : public AutoAnnotationsUpdater {
-	Q_OBJECT
+    Q_OBJECT
 public:
      ORFAutoAnnotationsUpdater();
      Task* createAutoAnnotationsUpdateTask(const AutoAnnotationObject* aa);

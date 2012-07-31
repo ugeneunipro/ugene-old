@@ -137,7 +137,7 @@ private:
     Service* s;
     bool manual;
 
-	bool isGUITesting() const;
+    bool isGUITesting() const;
 };
 
 

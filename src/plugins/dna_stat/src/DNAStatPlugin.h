@@ -35,7 +35,7 @@ public:
 private:
     GObjectViewWindowContext* statViewCtx;
     GObjectViewWindowContext* distanceViewCtx;
-	GObjectViewWindowContext* dnaStatsViewCtx;
+    GObjectViewWindowContext* dnaStatsViewCtx;
 };
 
 class DNAStatMSAEditorContext: public GObjectViewWindowContext {
@@ -63,14 +63,14 @@ protected:
 };
 
 class DNAViewStatsContext : public GObjectViewWindowContext {
-	Q_OBJECT
+    Q_OBJECT
 public: 
-	DNAViewStatsContext(QObject* p);
+    DNAViewStatsContext(QObject* p);
 protected slots:
-	void sl_showDnaStats();
-	void buildMenu(GObjectView* v, QMenu* m);
+    void sl_showDnaStats();
+    void buildMenu(GObjectView* v, QMenu* m);
 protected:
-	virtual void initViewContext(GObjectView* view);
+    virtual void initViewContext(GObjectView* view);
 };
 
 

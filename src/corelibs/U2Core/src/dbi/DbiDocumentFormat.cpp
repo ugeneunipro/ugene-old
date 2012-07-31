@@ -40,7 +40,7 @@ DbiDocumentFormat::DbiDocumentFormat(const U2DbiFactoryId& _id, const DocumentFo
     id = _id;
     formatId = _formatId;
     formatName = _formatName;
-	formatDescription = tr("ugenedb is a internal UGENE database file format");
+    formatDescription = tr("ugenedb is a internal UGENE database file format");
     supportedObjectTypes+=GObjectTypes::ASSEMBLY;
     formatFlags|=DocumentFormatFlag_NoPack;
     formatFlags|=DocumentFormatFlag_NoFullMemoryLoad;

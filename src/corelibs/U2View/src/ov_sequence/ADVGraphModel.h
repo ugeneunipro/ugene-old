@@ -79,7 +79,7 @@ class U2VIEW_EXPORT GSequenceGraphDrawer : public QObject{
     Q_OBJECT
 public:
     GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
-		ColorMap colorMap = ColorMap());
+        ColorMap colorMap = ColorMap());
     virtual ~GSequenceGraphDrawer();
 
     virtual void draw(QPainter& p, QList<GSequenceGraphData*> graphs, const QRect& rect);
@@ -89,15 +89,15 @@ public:
     float getGlobalMin(){return globalMin;};
     float getGlobalMax(){return globalMax;};
     
-	const GSequenceGraphWindowData& getWindowData() {return wdata;}
+    const GSequenceGraphWindowData& getWindowData() {return wdata;}
     const GSequenceGraphMinMaxCutOffData& getCutOffData() {return commdata;}
-	const ColorMap& getColors() {return lineColors;}
-	
-	static const QString DEFAULT_COLOR;
+    const ColorMap& getColors() {return lineColors;}
+
+    static const QString DEFAULT_COLOR;
     static const int UNKNOWN_VAL;
 
 protected:
-	void drawGraph(QPainter& p, GSequenceGraphData* graph, const QRect& rect);
+    void drawGraph(QPainter& p, GSequenceGraphData* graph, const QRect& rect);
 
     void calculatePoints(GSequenceGraphData* d, PairVector& points, float& min, float& max, int numPoints);
     
@@ -113,7 +113,7 @@ protected:
     QFont*                          defFont;
     ColorMap                        lineColors;
     float                           globalMin, globalMax;
-	
+
     GSequenceGraphWindowData        wdata;
     GSequenceGraphMinMaxCutOffData  commdata;
 };

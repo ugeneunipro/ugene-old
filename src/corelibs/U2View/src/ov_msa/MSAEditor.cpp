@@ -455,11 +455,11 @@ QWidget* MSAEditor::createWidget() {
     saveScreenshotAction->setObjectName("Export as image");
     connect(saveScreenshotAction, SIGNAL(triggered()), ui, SLOT(sl_saveScreenshot()));
     
-	saveSvgAction = new QAction(tr("Export as SVG"), this);
+    saveSvgAction = new QAction(tr("Export as SVG"), this);
     saveSvgAction->setObjectName("Export as SVG");
-	connect(saveSvgAction, SIGNAL(triggered()), ui, SLOT(sl_saveSvgImage()));
-	
-	initDragAndDropSupport();
+    connect(saveSvgAction, SIGNAL(triggered()), ui, SLOT(sl_saveSvgImage()));
+
+    initDragAndDropSupport();
     return ui;
 }
 
@@ -651,19 +651,19 @@ void MSAEditorUI::sl_saveScreenshot(){
 }
 
 void MSAEditorUI::sl_saveSvgImage() {
-	
+
     LastUsedDirHelper lod;
     lod.url = QFileDialog::getSaveFileName(this, tr("Save SVG"),
         lod.dir, tr("SVG files (*.svg)"));
 
     QSvgGenerator generator;
-	generator.setFileName(lod.url);
-	generator.setSize(QSize(width(), height()));
-	generator.setViewBox(QRect(0, 0, 800, 600));
-	generator.setTitle(tr("SVG ").arg(editor->getMSAObject()->getGObjectName()));
-	generator.setDescription(tr("An SVG image of multiple alignment created by Unipro UGENE"));
-	
-	QPainter painter;
+    generator.setFileName(lod.url);
+    generator.setSize(QSize(width(), height()));
+    generator.setViewBox(QRect(0, 0, 800, 600));
+    generator.setTitle(tr("SVG ").arg(editor->getMSAObject()->getGObjectName()));
+    generator.setDescription(tr("An SVG image of multiple alignment created by Unipro UGENE"));
+
+    QPainter painter;
     painter.begin(&generator);
     painter.translate(nameList->width(), 0);
     consArea->drawContent(painter);

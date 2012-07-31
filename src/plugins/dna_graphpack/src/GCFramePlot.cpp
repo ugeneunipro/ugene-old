@@ -30,13 +30,13 @@
 namespace U2 {
 
 #define OFFSET_NULL "Frame 1"
-#define OFFSET_ONE	"Frame 2"
+#define OFFSET_ONE    "Frame 2"
 #define OFFSET_TWO  "Frame 3"
 
 GCFramePlotFactory::GCFramePlotFactory(QObject* p)
 : GSequenceGraphFactory("GC Frame Plot", p)  
 {
-	
+
 }
 
 bool GCFramePlotFactory::isEnabled(U2SequenceObject* o) const {
@@ -47,33 +47,33 @@ bool GCFramePlotFactory::isEnabled(U2SequenceObject* o) const {
 QList<GSequenceGraphData*> GCFramePlotFactory::createGraphs(GSequenceGraphView* v) {
     Q_UNUSED(v);
     
-	//TODO: All points should be calculated during one loop over the window.
-	
-	QList<GSequenceGraphData*> res;
+    //TODO: All points should be calculated during one loop over the window.
+
+    QList<GSequenceGraphData*> res;
     assert(isEnabled(v->getSequenceObject()));
     GSequenceGraphData* d = new GSequenceGraphData(OFFSET_NULL);
     d->ga = new GCFramePlotAlgorithm(0);
-	res.append(d);
+    res.append(d);
 
-	GSequenceGraphData* d2 = new GSequenceGraphData(OFFSET_ONE);
-	d2->ga = new GCFramePlotAlgorithm(1);
-	res.append(d2);
+    GSequenceGraphData* d2 = new GSequenceGraphData(OFFSET_ONE);
+    d2->ga = new GCFramePlotAlgorithm(1);
+    res.append(d2);
     
-	GSequenceGraphData* d3 = new GSequenceGraphData(OFFSET_TWO);
-	d3->ga = new GCFramePlotAlgorithm(2);
-	res.append(d3);
+    GSequenceGraphData* d3 = new GSequenceGraphData(OFFSET_TWO);
+    d3->ga = new GCFramePlotAlgorithm(2);
+    res.append(d3);
 
-	return res;
+    return res;
 }
 
 GSequenceGraphDrawer* GCFramePlotFactory::getDrawer(GSequenceGraphView* v) {
     GSequenceGraphWindowData wd(10, 30);
-	
-	QMap<QString, QColor> colors;
-	colors.insert(OFFSET_NULL, Qt::red);
-	colors.insert(OFFSET_ONE, Qt::green);
-	colors.insert(OFFSET_TWO, Qt::blue);
-		
+
+    QMap<QString, QColor> colors;
+    colors.insert(OFFSET_NULL, Qt::red);
+    colors.insert(OFFSET_ONE, Qt::green);
+    colors.insert(OFFSET_TWO, Qt::blue);
+
     return new GSequenceGraphDrawer(v, wd, colors);
 }
 
@@ -84,7 +84,7 @@ GSequenceGraphDrawer* GCFramePlotFactory::getDrawer(GSequenceGraphView* v) {
 GCFramePlotAlgorithm::GCFramePlotAlgorithm( int _offset )
 :map(256, false), offset(_offset)
 {
-	map['G'] = map['C'] = true;
+    map['G'] = map['C'] = true;
 }
 
 void GCFramePlotAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps)
@@ -93,10 +93,10 @@ void GCFramePlotAlgorithm::windowStrategyWithoutMemorize(QVector<float>& res, co
         int start = startPos + i * d->step;
         int end = start + d->window;
         int base_count = 0;
-		
-		while (start % 3 != offset) {
-			start++;
-		}
+
+        while (start % 3 != offset) {
+            start++;
+        }
 
         for (int x = start; x < end; x += 3) {
             char c = seq[x];

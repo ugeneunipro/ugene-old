@@ -44,13 +44,13 @@ void EDProjectTree::addSubitem(EDProjectItem* subItem, EDProjectItem* parent){
 
 void EDProjectTree::updateTree(int flag, EDProjectItem* item){
     switch (flag) {
-    case ED_UPDATE_ALL				:	remake();			break;
-    case ED_ITEM_NAME_CHANGED		:	updateItem(item);	break;
-    case ED_ITEM_STATE_CHANGED		:	updateItemState(item);	break;
-    case ED_ITEM_ADDED				:	internalRemake(item, dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(item)->parent()));	break;
-    case ED_ITEM_DELETED			:	/*deleteItem(pItem);*/  break;
-    case ED_CURRENT_ITEM_CHANGED	:	setCurrentItem(item); emit si_changeProp(item); break;
-    case ED_UPDATE_CHILDREN		    :	updateChildren(item); break;
+    case ED_UPDATE_ALL                :    remake();            break;
+    case ED_ITEM_NAME_CHANGED        :    updateItem(item);    break;
+    case ED_ITEM_STATE_CHANGED        :    updateItemState(item);    break;
+    case ED_ITEM_ADDED                :    internalRemake(item, dynamic_cast<EDProjectItem*>(dynamic_cast<QTreeWidgetItem*>(item)->parent()));    break;
+    case ED_ITEM_DELETED            :    /*deleteItem(pItem);*/  break;
+    case ED_CURRENT_ITEM_CHANGED    :    setCurrentItem(item); emit si_changeProp(item); break;
+    case ED_UPDATE_CHILDREN            :    updateChildren(item); break;
     case ED_MRK_UPDATE              :   updateMarkup(); break; 
     };
 }
@@ -327,7 +327,7 @@ QMenu* EDProjectTree::chosePopupMen(EDProjectItem* pItem){
             return NULL;
         } 
         generateReportAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
-		exportToSequencesAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
+        exportToSequencesAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
         showFirstSequencesAction->setEnabled(pBaseItem->getSequenceBase().getSize() != 0);
         return popupMenuSequenceBase;
     }
@@ -413,8 +413,8 @@ void EDProjectTree::createPopupsAndActions(){
     generateReportAction = new QAction(tr("Generate report"), this);
     connect(generateReportAction, SIGNAL(triggered(bool)), SLOT(sl_generateReport()));
 
-	exportToSequencesAction = new QAction(tr("Export Sequences"), this);
-	connect(exportToSequencesAction, SIGNAL(triggered(bool)), SLOT(sl_exportSequences()));
+    exportToSequencesAction = new QAction(tr("Export Sequences"), this);
+    connect(exportToSequencesAction, SIGNAL(triggered(bool)), SLOT(sl_exportSequences()));
 
     clearDisplayedAction = new QAction(tr("Clear displayed sequences area"), this);
     connect(clearDisplayedAction, SIGNAL(triggered(bool)), SLOT(sl_clearDisplayed()));
@@ -508,7 +508,7 @@ void EDProjectTree::createPopupsAndActions(){
 
     popupMenuSequenceBase = new QMenu(this);
     popupMenuSequenceBase->addAction(generateReportAction);
-	popupMenuSequenceBase->addAction(exportToSequencesAction);
+    popupMenuSequenceBase->addAction(exportToSequencesAction);
     popupMenuSequenceBase->addAction(showFirstSequencesAction);
 }
 
@@ -564,11 +564,11 @@ void EDProjectTree::onCSNPropertyChanged(EDProjectItem* pItem, const EDPIPropert
     }
     else {
         switch (pCSN->getType()) {
-        case PIT_CSN_DISTANCE	: onDistancePropertyChanged(pCSN, pProperty, strNewValue); break;
-        case PIT_CSN_REPETITION	: onRepetitionPropertyChanged(pCSN, pProperty, strNewValue); break;
-        case PIT_CSN_INTERVAL	: onIntervalPropertyChanged(pCSN, pProperty, strNewValue); break;
-        case PIT_CSN_WORD		: onWordPropertyChanged(pCSN, pProperty, strNewValue); break;
-        case PIT_CSN_MRK_ITEM	: onMrkItemPropertyChanged(pCSN, pProperty, strNewValue); break;
+        case PIT_CSN_DISTANCE    : onDistancePropertyChanged(pCSN, pProperty, strNewValue); break;
+        case PIT_CSN_REPETITION    : onRepetitionPropertyChanged(pCSN, pProperty, strNewValue); break;
+        case PIT_CSN_INTERVAL    : onIntervalPropertyChanged(pCSN, pProperty, strNewValue); break;
+        case PIT_CSN_WORD        : onWordPropertyChanged(pCSN, pProperty, strNewValue); break;
+        case PIT_CSN_MRK_ITEM    : onMrkItemPropertyChanged(pCSN, pProperty, strNewValue); break;
         default: assert(0);
         }
     }
@@ -833,16 +833,16 @@ void EDProjectTree::onMrkItemPropertyChanged(EDProjectItem* pItem, const EDPIPro
 
 Operation* EDProjectTree::createCSN(int ValueId) const{
     switch (ValueId) {
-    case EDPIPropertyTypeListCSNodeTypes::DISTANCE	: return new OpDistance;
-    case EDPIPropertyTypeListCSNodeTypes::REPETITION	: return new OpReiteration;
-    case EDPIPropertyTypeListCSNodeTypes::INTERVAL	: return new OpInterval;
-    case EDPIPropertyTypeListCSNodeTypes::WORD		: 
+    case EDPIPropertyTypeListCSNodeTypes::DISTANCE    : return new OpDistance;
+    case EDPIPropertyTypeListCSNodeTypes::REPETITION    : return new OpReiteration;
+    case EDPIPropertyTypeListCSNodeTypes::INTERVAL    : return new OpInterval;
+    case EDPIPropertyTypeListCSNodeTypes::WORD        :
         {
             TS* pTS = new TS;
             pTS->setFromMarking(false);
             return pTS;
         }
-    case EDPIPropertyTypeListCSNodeTypes::MRK_ITEM	: 
+    case EDPIPropertyTypeListCSNodeTypes::MRK_ITEM    :
         {
             TS* pTS = new TS;
             pTS->setFromMarking(true);
@@ -987,7 +987,7 @@ void EDProjectTree::sl_selAllSig(){
             continue;
         }
         if (!edData.isSignalSelected(pSI))
-            edData.switchSelection(const_cast<EDProjectItem*>(pSI), true);	
+            edData.switchSelection(const_cast<EDProjectItem*>(pSI), true);
 
         updateTree(ED_ITEM_STATE_CHANGED, pSI);
     }
@@ -1003,7 +1003,7 @@ void EDProjectTree::sl_deselAllSig(){
             continue;
         }
         if (edData.isSignalSelected(pSI))
-               edData.switchSelection(const_cast<EDProjectItem*>(pSI), true);	
+               edData.switchSelection(const_cast<EDProjectItem*>(pSI), true);
         updateTree(ED_ITEM_STATE_CHANGED, pSI);
     }
 }
@@ -1017,9 +1017,9 @@ void EDProjectTree::sl_setPriorAllSig(){
         if(!pSI){
             continue;
         }
-        EDPICS* pCS = dynamic_cast<EDPICS*>(pSI);	
+        EDPICS* pCS = dynamic_cast<EDPICS*>(pSI);
         if (pCS){
-            edData.onSetCurrentSignalParamsAsPrior(pCS, false);	
+            edData.onSetCurrentSignalParamsAsPrior(pCS, false);
             updateTree(ED_CURRENT_ITEM_CHANGED, pCS);
         }
     }
@@ -1034,9 +1034,9 @@ void EDProjectTree::sl_clearPriorAllSig(){
         if(!pSI){
             continue;
         }
-        EDPICS* pCS = dynamic_cast<EDPICS*>(pSI);	
+        EDPICS* pCS = dynamic_cast<EDPICS*>(pSI);
         if (pCS){
-            edData.onClearSignalPriorParams(pCS);	
+            edData.onClearSignalPriorParams(pCS);
             updateTree(ED_CURRENT_ITEM_CHANGED, pCS);
         }
     }
@@ -1116,35 +1116,35 @@ void EDProjectTree::sl_generateReport(){
 }
 
 void EDProjectTree::sl_exportSequences(){
-	EDPISequenceBase* pItem = dynamic_cast<EDPISequenceBase*>(currentItem());
-	if (!pItem)
-	{
-		return;
-	}
-	//edData.generateRecognizationReport(pItem);
+    EDPISequenceBase* pItem = dynamic_cast<EDPISequenceBase*>(currentItem());
+    if (!pItem)
+    {
+        return;
+    }
+    //edData.generateRecognizationReport(pItem);
 
-	ExpertDiscoveryExportSequences *t = new ExpertDiscoveryExportSequences(pItem->getSequenceBase());
+    ExpertDiscoveryExportSequences *t = new ExpertDiscoveryExportSequences(pItem->getSequenceBase());
 
-	AppContext::getTaskScheduler()->registerTopLevelTask(t);
-// 	QFileDialog saveRepDialog;
-// 	saveRepDialog.setFileMode(QFileDialog::AnyFile);
-// 	saveRepDialog.setNameFilter(tr("Fasta Files (*.fa *.fasta)"));
-// 	saveRepDialog.setViewMode(QFileDialog::Detail);
-// 	saveRepDialog.setAcceptMode(QFileDialog::AcceptSave);
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+//     QFileDialog saveRepDialog;
+//     saveRepDialog.setFileMode(QFileDialog::AnyFile);
+//     saveRepDialog.setNameFilter(tr("Fasta Files (*.fa *.fasta)"));
+//     saveRepDialog.setViewMode(QFileDialog::Detail);
+//     saveRepDialog.setAcceptMode(QFileDialog::AcceptSave);
 // 
-// 	if(saveRepDialog.exec()){
-// 		QStringList fileNames = saveRepDialog.selectedFiles();
-// 		if(fileNames.isEmpty()) return;
+//     if(saveRepDialog.exec()){
+//         QStringList fileNames = saveRepDialog.selectedFiles();
+//         if(fileNames.isEmpty()) return;
 // 
-// 		QString fileName = fileNames.first();
+//         QString fileName = fileNames.first();
 // 
-// 		GUrl URL(strNegName);
-// 		IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
-// 		DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
+//         GUrl URL(strNegName);
+//         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(URL));
+//         DocumentFormat* f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
 // 
-// 		negDoc = f->createNewUnloadedDocument(iof, URL, stateInfo);
-// 		CHECK_OP(stateInfo,);
-// 		addSubTask(new LoadUnloadedDocumentTask(negDoc));
+//         negDoc = f->createNewUnloadedDocument(iof, URL, stateInfo);
+//         CHECK_OP(stateInfo,);
+//         addSubTask(new LoadUnloadedDocumentTask(negDoc));
 }
 
 void EDProjectTree::sl_sortField(QAction* action){

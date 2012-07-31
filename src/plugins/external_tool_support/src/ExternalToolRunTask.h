@@ -70,7 +70,7 @@ private:
 };
 
 class ExternalToolSupportUtils : public QObject {
-	Q_OBJECT
+    Q_OBJECT
 public:
     static void removeTmpDir(const QString& absoulutePath, U2OpStatus& os);
     static QString createTmpDir(const QString& domain, U2OpStatus& os);

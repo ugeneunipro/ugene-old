@@ -314,10 +314,10 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
                 if (st->len >0) {
                     st->io->skip(-st->len - 1);
                 }
-				if(merge && gapSize){
-					seqImporter.addDefaultSymbolsBlock(gapSize,os);
-					CHECK_OP(os,false);
-				}
+                if(merge && gapSize){
+                    seqImporter.addDefaultSymbolsBlock(gapSize,os);
+                    CHECK_OP(os,false);
+                }
                 readSequence(st,seqImporter,sequenceLen,fullSequenceLen,os);
             }
             return true;

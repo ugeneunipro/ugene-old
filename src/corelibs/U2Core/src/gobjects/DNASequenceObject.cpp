@@ -199,9 +199,9 @@ bool U2SequenceObject::isValidDbiObject(U2OpStatus &os) {
 }
 
 void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& seq, U2OpStatus& os) {
-	// seq.alphabet == NULL - for tests.
+    // seq.alphabet == NULL - for tests.
     CHECK_EXT(seq.alphabet == getAlphabet() || seq.seq.isEmpty() || seq.alphabet == NULL, 
-		os.setError(tr("Modified sequence & region have different alphabet")), );
+        os.setError(tr("Modified sequence & region have different alphabet")), );
     
     DbiConnection con(entityRef.dbiRef, os);
     CHECK_OP(os, );
@@ -253,56 +253,56 @@ DNAQuality U2SequenceObject::getQuality() const {
 }
 
 void U2SequenceObject::setSequenceInfo(const QVariantMap& info) {
-	U2OpStatus2Log os;
-	DbiConnection con(entityRef.dbiRef, os);
-	CHECK_OP(os, );
-	QList<U2DataId> chainIdList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::CHAIN_ID,os);
-	CHECK_OP(os, );
-	if(!chainIdList.isEmpty()){
-		con.dbi->getAttributeDbi()->removeObjectAttributes(chainIdList.first(),os);
-		CHECK_OP(os, );
-	}
-	QList<U2DataId> commentList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::COMMENT,os);
-	CHECK_OP(os, );
-	if(!commentList.isEmpty()){
-		con.dbi->getAttributeDbi()->removeObjectAttributes(commentList.first(),os);
-		CHECK_OP(os, );
-	}
-	QList<U2DataId> definitionList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::DEFINITION,os);
-	CHECK_OP(os, );
-	if(!definitionList.isEmpty()){
-		con.dbi->getAttributeDbi()->removeObjectAttributes(definitionList.first(),os);
-		CHECK_OP(os, );
-	}
-	U2StringAttribute chainID(entityRef.entityId, DNAInfo::CHAIN_ID, info.value(DNAInfo::CHAIN_ID).toString());		
-	U2StringAttribute comment(entityRef.entityId, DNAInfo::COMMENT, info.value(DNAInfo::COMMENT).toString());
-	U2StringAttribute definition(entityRef.entityId, DNAInfo::DEFINITION, info.value(DNAInfo::DEFINITION).toString());
-	con.dbi->getAttributeDbi()->createStringAttribute(chainID, os);
-	CHECK_OP(os, );
-	con.dbi->getAttributeDbi()->createStringAttribute(comment, os);
-	CHECK_OP(os, );
-	con.dbi->getAttributeDbi()->createStringAttribute(definition, os);
-	CHECK_OP(os, );
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+    QList<U2DataId> chainIdList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::CHAIN_ID,os);
+    CHECK_OP(os, );
+    if(!chainIdList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(chainIdList.first(),os);
+        CHECK_OP(os, );
+    }
+    QList<U2DataId> commentList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::COMMENT,os);
+    CHECK_OP(os, );
+    if(!commentList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(commentList.first(),os);
+        CHECK_OP(os, );
+    }
+    QList<U2DataId> definitionList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::DEFINITION,os);
+    CHECK_OP(os, );
+    if(!definitionList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(definitionList.first(),os);
+        CHECK_OP(os, );
+    }
+    U2StringAttribute chainID(entityRef.entityId, DNAInfo::CHAIN_ID, info.value(DNAInfo::CHAIN_ID).toString());
+    U2StringAttribute comment(entityRef.entityId, DNAInfo::COMMENT, info.value(DNAInfo::COMMENT).toString());
+    U2StringAttribute definition(entityRef.entityId, DNAInfo::DEFINITION, info.value(DNAInfo::DEFINITION).toString());
+    con.dbi->getAttributeDbi()->createStringAttribute(chainID, os);
+    CHECK_OP(os, );
+    con.dbi->getAttributeDbi()->createStringAttribute(comment, os);
+    CHECK_OP(os, );
+    con.dbi->getAttributeDbi()->createStringAttribute(definition, os);
+    CHECK_OP(os, );
 }
 
 QVariantMap U2SequenceObject::getSequenceInfo() const {
-	U2OpStatus2Log os;
-	QVariantMap resultingInfo;
-	DbiConnection con(entityRef.dbiRef, os);
-	QList<U2DataId> chainIdList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::CHAIN_ID,os);
-	CHECK_OP(os, resultingInfo);
-	QList<U2DataId> commentList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::COMMENT,os);
-	CHECK_OP(os, resultingInfo);
-	QList<U2DataId> definitionList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::DEFINITION,os);
-	CHECK_OP(os, resultingInfo);
-	if(!chainIdList.isEmpty() && !commentList.isEmpty() && !definitionList.isEmpty()) {
-		resultingInfo.insert(DNAInfo::CHAIN_ID, con.dbi->getAttributeDbi()->getStringAttribute(chainIdList.first(),os).value);
-		CHECK_OP(os, QVariantMap());
-		resultingInfo.insert(DNAInfo::COMMENT, con.dbi->getAttributeDbi()->getStringAttribute(commentList.first(),os).value);
-		CHECK_OP(os, QVariantMap());
-		resultingInfo.insert(DNAInfo::DEFINITION, con.dbi->getAttributeDbi()->getStringAttribute(definitionList.first(),os).value);
-		CHECK_OP(os, QVariantMap());
-	}
+    U2OpStatus2Log os;
+    QVariantMap resultingInfo;
+    DbiConnection con(entityRef.dbiRef, os);
+    QList<U2DataId> chainIdList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::CHAIN_ID,os);
+    CHECK_OP(os, resultingInfo);
+    QList<U2DataId> commentList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::COMMENT,os);
+    CHECK_OP(os, resultingInfo);
+    QList<U2DataId> definitionList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,DNAInfo::DEFINITION,os);
+    CHECK_OP(os, resultingInfo);
+    if(!chainIdList.isEmpty() && !commentList.isEmpty() && !definitionList.isEmpty()) {
+        resultingInfo.insert(DNAInfo::CHAIN_ID, con.dbi->getAttributeDbi()->getStringAttribute(chainIdList.first(),os).value);
+        CHECK_OP(os, QVariantMap());
+        resultingInfo.insert(DNAInfo::COMMENT, con.dbi->getAttributeDbi()->getStringAttribute(commentList.first(),os).value);
+        CHECK_OP(os, QVariantMap());
+        resultingInfo.insert(DNAInfo::DEFINITION, con.dbi->getAttributeDbi()->getStringAttribute(definitionList.first(),os).value);
+        CHECK_OP(os, QVariantMap());
+    }
     U2StringAttribute attr = U2AttributeUtils::findStringAttribute(con.dbi->getAttributeDbi(), entityRef.entityId, DNAInfo::GENBANK_HEADER, os);
     if(attr.hasValidId()) {
         resultingInfo.insert(DNAInfo::GENBANK_HEADER, attr.value);
@@ -330,82 +330,82 @@ QVariantMap U2SequenceObject::getSequenceInfo() const {
     if (!name.isEmpty()) {
         resultingInfo.insert(DNAInfo::ID,name);  
     }
-	return resultingInfo;
+    return resultingInfo;
 }
 
 QString U2SequenceObject::getStringAttribute(const QString& seqAttr) const {
-	return getSequenceInfo().value(seqAttr).toString();
+    return getSequenceInfo().value(seqAttr).toString();
 }
 
 void U2SequenceObject::setStringAttribute(const QString& newStringAttributeValue, const QString& type) {
-	U2OpStatus2Log os;
-	DbiConnection con(entityRef.dbiRef, os);
-	CHECK_OP(os, );
-	QList<U2DataId> oldStringAttributeList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,type,os);
-	CHECK_OP(os, );
-	if(!oldStringAttributeList.isEmpty()){
-		con.dbi->getAttributeDbi()->removeObjectAttributes(oldStringAttributeList.first(),os);
-		CHECK_OP(os, );
-	}
-	U2StringAttribute newStringAttribute(entityRef.entityId, type, newStringAttributeValue);
-	con.dbi->getAttributeDbi()->createStringAttribute(newStringAttribute, os);
-	CHECK_OP(os, );
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+    QList<U2DataId> oldStringAttributeList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,type,os);
+    CHECK_OP(os, );
+    if(!oldStringAttributeList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(oldStringAttributeList.first(),os);
+        CHECK_OP(os, );
+    }
+    U2StringAttribute newStringAttribute(entityRef.entityId, type, newStringAttributeValue);
+    con.dbi->getAttributeDbi()->createStringAttribute(newStringAttribute, os);
+    CHECK_OP(os, );
 }
 
 qint64 U2SequenceObject::getIntegerAttribute(const QString& seqAttr) const {
-	return getSequenceInfo().value(seqAttr).toInt();
+    return getSequenceInfo().value(seqAttr).toInt();
 }
 
 void U2SequenceObject::setIntegerAttribute(int newIntegerAttributeValue, const QString& type) {
-	U2OpStatus2Log os;
-	DbiConnection con(entityRef.dbiRef, os);
-	CHECK_OP(os, );
-	QList<U2DataId> oldIntegerAttributeList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,type,os);
-	CHECK_OP(os, );
-	if(!oldIntegerAttributeList.isEmpty()){
-		con.dbi->getAttributeDbi()->removeObjectAttributes(oldIntegerAttributeList.first(),os);
-		CHECK_OP(os, );
-	}
-	U2IntegerAttribute newIntegerAttribute(entityRef.entityId, type, newIntegerAttributeValue);
-	con.dbi->getAttributeDbi()->createIntegerAttribute(newIntegerAttribute, os);
-	CHECK_OP(os, );
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+    QList<U2DataId> oldIntegerAttributeList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,type,os);
+    CHECK_OP(os, );
+    if(!oldIntegerAttributeList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(oldIntegerAttributeList.first(),os);
+        CHECK_OP(os, );
+    }
+    U2IntegerAttribute newIntegerAttribute(entityRef.entityId, type, newIntegerAttributeValue);
+    con.dbi->getAttributeDbi()->createIntegerAttribute(newIntegerAttribute, os);
+    CHECK_OP(os, );
 }
 
 double U2SequenceObject::getRealAttribute(const QString& seqAttr) const {
-	return getSequenceInfo().value(seqAttr).toReal();
+    return getSequenceInfo().value(seqAttr).toReal();
 }
 
 void U2SequenceObject::setRealAttribute(double newRealAttributeValue, const QString& type) {
-	U2OpStatus2Log os;
-	DbiConnection con(entityRef.dbiRef, os);
-	CHECK_OP(os, );
-	QList<U2DataId> oldRealAttributeList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,type,os);
-	CHECK_OP(os, );
-	if(!oldRealAttributeList.isEmpty()){
-		con.dbi->getAttributeDbi()->removeObjectAttributes(oldRealAttributeList.first(),os);
-		CHECK_OP(os, );
-	}
-	U2RealAttribute newRealAttribute(entityRef.entityId, type, newRealAttributeValue);
-	con.dbi->getAttributeDbi()->createRealAttribute(newRealAttribute, os);
-	CHECK_OP(os, );
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+    QList<U2DataId> oldRealAttributeList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,type,os);
+    CHECK_OP(os, );
+    if(!oldRealAttributeList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(oldRealAttributeList.first(),os);
+        CHECK_OP(os, );
+    }
+    U2RealAttribute newRealAttribute(entityRef.entityId, type, newRealAttributeValue);
+    con.dbi->getAttributeDbi()->createRealAttribute(newRealAttribute, os);
+    CHECK_OP(os, );
 }
 
 QByteArray U2SequenceObject::getByteArrayAttribute(const QString& seqAttr) const {
-	return getSequenceInfo().value(seqAttr).toByteArray();
+    return getSequenceInfo().value(seqAttr).toByteArray();
 }
 
 void U2SequenceObject::setByteArrayAttribute(const QByteArray& newByteArrayAttributeValue, const QString& type) {
-	U2OpStatus2Log os;
-	DbiConnection con(entityRef.dbiRef, os);
-	CHECK_OP(os, );
-	QList<U2DataId> oldByteArrayAttributeList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,type,os);
-	CHECK_OP(os, );
-	if(!oldByteArrayAttributeList.isEmpty()){
-		con.dbi->getAttributeDbi()->removeObjectAttributes(oldByteArrayAttributeList.first(),os);
-		CHECK_OP(os, );
-	}
-	U2ByteArrayAttribute newByteArrayAttribute(entityRef.entityId, type, newByteArrayAttributeValue);
-	con.dbi->getAttributeDbi()->createByteArrayAttribute(newByteArrayAttribute, os);
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+    QList<U2DataId> oldByteArrayAttributeList = con.dbi->getAttributeDbi()->getObjectAttributes(entityRef.entityId,type,os);
+    CHECK_OP(os, );
+    if(!oldByteArrayAttributeList.isEmpty()){
+        con.dbi->getAttributeDbi()->removeObjectAttributes(oldByteArrayAttributeList.first(),os);
+        CHECK_OP(os, );
+    }
+    U2ByteArrayAttribute newByteArrayAttribute(entityRef.entityId, type, newByteArrayAttributeValue);
+    con.dbi->getAttributeDbi()->createByteArrayAttribute(newByteArrayAttribute, os);
 }
 
 

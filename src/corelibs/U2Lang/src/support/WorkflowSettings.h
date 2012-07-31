@@ -40,7 +40,7 @@ signals:
 #define SETTINGS QString("workflowview/")
 
 class U2LANG_EXPORT WorkflowSettings : public QObject {
-	Q_OBJECT
+    Q_OBJECT
 public:
     static bool showGrid();
     static void setShowGrid(bool v);

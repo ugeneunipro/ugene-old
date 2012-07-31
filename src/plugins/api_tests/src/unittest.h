@@ -42,12 +42,12 @@ namespace U2 {
 class UnitTest {
 public:
     virtual void Test() = 0;
-	virtual void SetUp() {};
-	virtual void TearDown() {};
-	virtual void SetError(const QString& err) {	error = err; }
-	virtual QString GetError() { return error; }
+    virtual void SetUp() {};
+    virtual void TearDown() {};
+    virtual void SetError(const QString& err) { error = err; }
+    virtual QString GetError() { return error; }
 protected:
-	QString error;
+    QString error;
 };
 
 template<class T> QString toString(const T &t) { return QString("%1").arg(t); }

@@ -227,16 +227,16 @@ void WorkflowSettings::setScriptingMode(bool md) {
 }
 
 bool WorkflowSettings::runInSeparateProcess() {
-	if (!AppContext::isGUIMode()) {
-		return false; //for command line mode ugene runs workflows in threads
-	}
-	
+    if (!AppContext::isGUIMode()) {
+        return false; //for command line mode ugene runs workflows in threads
+    }
+
     bool res = AppContext::getSettings()->getValue(RUN_IN_SEPARATE_PROC, QVariant(true)).value<bool>();
-	if (res) {
-		QString path = getCmdlineUgenePath();
-		res = !path.isEmpty();
-	}
-	return res;
+    if (res) {
+        QString path = getCmdlineUgenePath();
+        res = !path.isEmpty();
+    }
+    return res;
 }
 
 void WorkflowSettings::setRunInSeparateProcess(bool m) {
@@ -274,17 +274,17 @@ static QString lookupCmdlineUgenePath() {
 static bool lookupDone = false;
 
 QString WorkflowSettings::getCmdlineUgenePath() {
-	if (!AppContext::getSettings()->contains(CMDLINE_UGENE_PATH)) {
-		if (lookupDone) {
-			return QString();
-		}
-		QString path = lookupCmdlineUgenePath();
-		if (path.isEmpty()) {
-			coreLog.info(tr("Command line UGENE path not found, a possibility to run in separate process will be disabled"));
-			return QString();
-		}
-		setCmdlineUgenePath(path);
-	}
+    if (!AppContext::getSettings()->contains(CMDLINE_UGENE_PATH)) {
+        if (lookupDone) {
+            return QString();
+        }
+        QString path = lookupCmdlineUgenePath();
+        if (path.isEmpty()) {
+            coreLog.info(tr("Command line UGENE path not found, a possibility to run in separate process will be disabled"));
+            return QString();
+        }
+        setCmdlineUgenePath(path);
+    }
     return AppContext::getSettings()->getValue(CMDLINE_UGENE_PATH).value<QString>();
 }
 

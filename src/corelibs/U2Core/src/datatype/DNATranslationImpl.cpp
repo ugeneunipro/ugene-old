@@ -36,7 +36,7 @@ DNATranslation1to1Impl::DNATranslation1to1Impl(const QString& id, const QString&
 }
 
 qint64 DNATranslation1to1Impl::translate(const char* src, qint64 src_len, char* dst, qint64 dst_capacity) const {
-	qint64 len = qMin(src_len, dst_capacity);
+    qint64 len = qMin(src_len, dst_capacity);
     TextUtils::translate(map, src, len, dst);
     return len;
 }

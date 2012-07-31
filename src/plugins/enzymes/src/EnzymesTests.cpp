@@ -304,10 +304,10 @@ QList<Task*> GTest_DigestIntoFragments::onSubTaskFinished(Task* subTask) {
     }
     
     DigestSequenceTaskConfig cfg;
-	cfg.searchForRestrictionSites = searchForEnzymes;
-	cfg.enzymeData = enzymesToSearch;
+    cfg.searchForRestrictionSites = searchForEnzymes;
+    cfg.enzymeData = enzymesToSearch;
 
-	DigestSequenceTask* t = new DigestSequenceTask(seqObj, aObj, aObj, cfg);
+    DigestSequenceTask* t = new DigestSequenceTask(seqObj, aObj, aObj, cfg);
     res.append(t);
     return res;
 }

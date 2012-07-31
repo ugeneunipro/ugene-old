@@ -34,89 +34,89 @@ static QString LINKDATA_OBJ_NAME = "LinkData";
 static QString LINKDATA_USERDATA_OBJ_NAME = "userdata";
 
 LinkDataRequestHandler::LinkDataRequestHandler(QEventLoop* _eventLoop) : eventLoop(_eventLoop), error("") {
-	assert(eventLoop != NULL);
+    assert(eventLoop != NULL);
 }
 
 bool LinkDataRequestHandler::hasError() const {
-	return !error.isEmpty();
+    return !error.isEmpty();
 }
 
 const QString LinkDataRequestHandler::errorString() const {
-	return error;
+    return error;
 }
 
 QByteArray LinkDataRequestHandler::getResult() const {
-	return result;
+    return result;
 }
 
 void LinkDataRequestHandler::sl_onReplyFinished(QNetworkReply* reply) {
-	if (reply->error() == QNetworkReply::NoError) {
-		result.append(reply->readAll());
-	} else {
-		error = reply->errorString();
-	}
-	eventLoop->exit();
+    if (reply->error() == QNetworkReply::NoError) {
+        result.append(reply->readAll());
+    } else {
+        error = reply->errorString();
+    }
+    eventLoop->exit();
 }
 
 static QString readScript (const QString& filename)
 {
-	QFile file(filename);
-	if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		QTextStream stream(&file);
-		return stream.readAll();
-	}
-	return "";
+    QFile file(filename);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream stream(&file);
+        return stream.readAll();
+    }
+    return "";
 }
 
 void LinkDataScriptLibrary::init(WorkflowScriptEngine* engine) {
-	QScriptValue global = engine->globalObject();
-	QScriptValue linkData = engine->newObject();
-	QScriptValue userdata = engine->newObject();
-	userdata.setProperty("fetchFile", engine->newFunction(fetchFile));
-	linkData.setProperty(LINKDATA_USERDATA_OBJ_NAME, userdata);
-	global.setProperty(LINKDATA_OBJ_NAME, linkData);
-	QString script = readScript(":/linkdata_support/src/linkdata.js");
-	assert(!script.isEmpty());
-	engine->evaluate(script);
-	scriptLog.trace("LinkData script registered");
+    QScriptValue global = engine->globalObject();
+    QScriptValue linkData = engine->newObject();
+    QScriptValue userdata = engine->newObject();
+    userdata.setProperty("fetchFile", engine->newFunction(fetchFile));
+    linkData.setProperty(LINKDATA_USERDATA_OBJ_NAME, userdata);
+    global.setProperty(LINKDATA_OBJ_NAME, linkData);
+    QString script = readScript(":/linkdata_support/src/linkdata.js");
+    assert(!script.isEmpty());
+    engine->evaluate(script);
+    scriptLog.trace("LinkData script registered");
 }
 
 QScriptValue LinkDataScriptLibrary::fetchFile(QScriptContext *ctx, QScriptEngine *engine) {
-	if(ctx->argumentCount() < 2 && ctx->argumentCount() >3) {
-		return ctx->throwError(QObject::tr("Incorrect number of arguments"));
-	}
+    if(ctx->argumentCount() < 2 && ctx->argumentCount() >3) {
+        return ctx->throwError(QObject::tr("Incorrect number of arguments"));
+    }
 
-	QString workId = ctx->argument(0).toString();
-	if(workId.isNull() || workId.isEmpty()) {
-		return ctx->throwError(QObject::tr("Invalid argument"));
-	}
-	QString filename = ctx->argument(1).toString();
-	if(filename.isNull() || filename.isEmpty()) {
-		return ctx->throwError(QObject::tr("Invalid argument"));
-	}
+    QString workId = ctx->argument(0).toString();
+    if(workId.isNull() || workId.isEmpty()) {
+        return ctx->throwError(QObject::tr("Invalid argument"));
+    }
+    QString filename = ctx->argument(1).toString();
+    if(filename.isNull() || filename.isEmpty()) {
+        return ctx->throwError(QObject::tr("Invalid argument"));
+    }
 
-	QNetworkRequest request(LINKDATA_API_URL.arg(workId).arg(filename));
-	QNetworkAccessManager networkManager;
-	QNetworkReply *reply = networkManager.get(request);
-	QEventLoop eventLoop;
-	LinkDataRequestHandler handler(&eventLoop);
-	handler.connect(&networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(sl_onReplyFinished(QNetworkReply*)));
-	
-	eventLoop.exec();
+    QNetworkRequest request(LINKDATA_API_URL.arg(workId).arg(filename));
+    QNetworkAccessManager networkManager;
+    QNetworkReply *reply = networkManager.get(request);
+    QEventLoop eventLoop;
+    LinkDataRequestHandler handler(&eventLoop);
+    handler.connect(&networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(sl_onReplyFinished(QNetworkReply*)));
 
-	if(handler.hasError()) {
-		return ctx->throwError(handler.errorString());
-	}
+    eventLoop.exec();
 
-	QScriptValue result = engine->evaluate("("+handler.getResult()+")");
-	if(result.isObject()) {
-		return result;
-	} else {
-		return ctx->throwError(LinkDataRequestHandler::tr("Invalid response"));
-	}
+    if(handler.hasError()) {
+        return ctx->throwError(handler.errorString());
+    }
 
-	return result;
+    QScriptValue result = engine->evaluate("("+handler.getResult()+")");
+    if(result.isObject()) {
+        return result;
+    } else {
+        return ctx->throwError(LinkDataRequestHandler::tr("Invalid response"));
+    }
+
+    return result;
 }
 
 } //U2

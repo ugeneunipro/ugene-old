@@ -370,7 +370,7 @@ void PanView::updateActions() {
     }
     zoomToSequenceAction->setEnabled(visibleRange.startPos != 0 || visibleRange.endPos() != seqLen);
 
-	PanViewRenderArea* panViewRenderArea = static_cast<PanViewRenderArea*>(renderArea);
+    PanViewRenderArea* panViewRenderArea = static_cast<PanViewRenderArea*>(renderArea);
 
     increasePanViewHeight->setEnabled(panViewRenderArea->canIncreaseLines());
     decreasePanViewHeight->setEnabled(panViewRenderArea->canDecreaseLines());

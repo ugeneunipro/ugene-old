@@ -44,7 +44,7 @@ frameView(NULL), coherentRangeView(NULL), ignoreMouseSelectionEvents(false)
     seqLen = ctx->getSequenceLength();
     setFocusPolicy(Qt::WheelFocus);
 
-	coefScrollBarMapping = (seqLen >= INT_MAX) ? (((double)INT_MAX)/seqLen) : 1;
+    coefScrollBarMapping = (seqLen >= INT_MAX) ? (((double)INT_MAX)/seqLen) : 1;
 
     scrollBar = new GScrollBar(Qt::Horizontal, this);
     
@@ -75,9 +75,9 @@ void GSequenceLineView::updateScrollBar() {
     scrollBar->disconnect(this);
 
     scrollBar->setMinimum(0);
-	scrollBar->setMaximum(int (seqLen * coefScrollBarMapping) );
+    scrollBar->setMaximum(int (seqLen * coefScrollBarMapping) );
 
-	scrollBar->setSliderPosition(int(coefScrollBarMapping * visibleRange.startPos));
+    scrollBar->setSliderPosition(int(coefScrollBarMapping * visibleRange.startPos));
 
     //todo:
     int singleStep = getSingleStep();
@@ -110,7 +110,7 @@ void GSequenceLineView::sl_onScrollBarMoved(int pos) {
         coherentRangeView->sl_onScrollBarMoved(pos);
         return;
     }
-	assert(coefScrollBarMapping != 0);
+    assert(coefScrollBarMapping != 0);
     setStartPos(pos / coefScrollBarMapping);
 
     if (lastPressPos!=-1) {
@@ -227,7 +227,7 @@ void GSequenceLineView::mouseMoveEvent(QMouseEvent* me) {
             selLen = seqLen - selStart;
         }
 
-		setSelection(U2Region(selStart, selLen));
+        setSelection(U2Region(selStart, selLen));
 
     }
     QWidget::mouseMoveEvent(me);

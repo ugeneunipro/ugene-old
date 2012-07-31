@@ -65,7 +65,7 @@ static QColor cl(const QString& txt) {
 
 
 const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
-	QMutexLocker locker(&allKeys_mutex);
+    QMutexLocker locker(&allKeys_mutex);
     static QVector<GBFeatureKeyInfo> features(GBFeatureKey_NUM_KEYS);
     static bool inited = false;
     if (inited) {
@@ -155,7 +155,7 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
 
 
 const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
-	QMutexLocker locker(&getKeyGroups_mutex);
+    QMutexLocker locker(&getKeyGroups_mutex);
     static QMultiMap<QString, GBFeatureKey> groups;
     
     if (groups.isEmpty()) {
@@ -273,7 +273,7 @@ bool GBFeatureUtils::isFeatureHasNoValue(const QString& featureName)
 }
 
 GBFeatureKey GBFeatureUtils::getKey(const QString& text) {
-	QMutexLocker locker(&getKey_mutex);
+    QMutexLocker locker(&getKey_mutex);
     static QHash<QString, GBFeatureKey> keysByText;
     if (keysByText.isEmpty()) {
         foreach(const GBFeatureKeyInfo& ki, allKeys()) {

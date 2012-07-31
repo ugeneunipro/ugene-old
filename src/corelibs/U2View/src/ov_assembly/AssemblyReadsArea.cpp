@@ -847,7 +847,7 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
         CHECK_OP(os, )
         SaveDocFlags fl;
         fl |= SaveDoc_Overwrite;
-		fl |= SaveDoc_DestroyAfter;
+        fl |= SaveDoc_DestroyAfter;
 
         QList<GObject*> objs;
         foreach(const U2AssemblyRead & r, reads) {

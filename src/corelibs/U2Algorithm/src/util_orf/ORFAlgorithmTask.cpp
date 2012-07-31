@@ -36,22 +36,22 @@ ORFFindTask::ORFFindTask(const ORFAlgorithmSettings& s,const U2EntityRef& _entit
 }
 
 void ORFFindTask::run(){
-	ORFFindAlgorithm::find(dynamic_cast<ORFFindResultsListener*>(this),
-		config,
-		entityRef,
-		stateInfo.cancelFlag,
-		stateInfo.progress);
+    ORFFindAlgorithm::find(dynamic_cast<ORFFindResultsListener*>(this),
+    config,
+    entityRef,
+    stateInfo.cancelFlag,
+    stateInfo.progress);
 }
 
 void ORFFindTask::onResult(const ORFFindResult& r, U2OpStatus& os) {
     QMutexLocker locker(&lock);
-	if(config.isResultsLimited){
-		if (newResults.size() >= config.maxResult2Search) {
-			os.setCanceled(true);
-			algoLog.info(QString("Max result {%1} is achieved").arg(config.maxResult2Search));
-			return;
-		}
-	}
+    if(config.isResultsLimited){
+        if (newResults.size() >= config.maxResult2Search) {
+            os.setCanceled(true);
+            algoLog.info(QString("Max result {%1} is achieved").arg(config.maxResult2Search));
+            return;
+        }
+    }
     assert((r.region.length + r.joinedRegion.length) % 3 == 0);
     newResults.append(r);
 }

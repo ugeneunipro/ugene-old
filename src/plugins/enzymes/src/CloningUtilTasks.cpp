@@ -129,13 +129,13 @@ AnnotationData* DigestSequenceTask::createFragment( int pos1, const DNAFragmentT
 
 Task::ReportResult DigestSequenceTask::report()
 {
-	checkForConservedAnnotations();
+    checkForConservedAnnotations();
 
-	if (hasError() || isCanceled()) {
+    if (hasError() || isCanceled()) {
         return ReportResult_Finished;
     }
-	
-	saveResults();
+
+    saveResults();
     
     return ReportResult_Finished;
 }
@@ -315,23 +315,23 @@ void DigestSequenceTask::saveResults()
 
 QString DigestSequenceTask::generateReport() const
 {
-	QString res;
+    QString res;
 
-	if (hasError()) {
-		return res;
-	}
+    if (hasError()) {
+        return res;
+    }
 
-	QString topology = dnaObj->isCircular() ? tr("circular") : tr("linear");
+    QString topology = dnaObj->isCircular() ? tr("circular") : tr("linear");
     res+= tr("<h3><br>Digest into fragments %1 (%2)</h3>").arg(dnaObj->getDocument()->getName()).arg(topology);
     res+=tr("<br>Generated %1 fragments.").arg(results.count());
     int counter = 1;
     foreach (const SharedAnnotationData& sdata, results) {
         int startPos = sdata->location->regions.first().startPos + 1;
         int endPos = sdata->location->regions.last().endPos();
-		int len = 0;
-		foreach (const U2Region& r, sdata->location->regions) {
-			len += r.endPos() - r.startPos;	
-		}
+        int len = 0;
+        foreach (const U2Region& r, sdata->location->regions) {
+            len += r.endPos() - r.startPos;
+        }
         res+=tr("<br><br>&nbsp;&nbsp;&nbsp;&nbsp;%1:&nbsp;&nbsp;&nbsp;&nbsp;From %3 (%2) To %5 (%4) - %6 bp ").arg(counter)
                   .arg(startPos).arg(sdata->findFirstQualifierValue(QUALIFIER_LEFT_TERM))
                   .arg(endPos).arg(sdata->findFirstQualifierValue(QUALIFIER_RIGHT_TERM))
@@ -345,24 +345,24 @@ QString DigestSequenceTask::generateReport() const
 
 void DigestSequenceTask::checkForConservedAnnotations()
 {
-	QMap<QString, U2Region>::const_iterator it = cfg.conservedRegions.constBegin();
-	for( ; it != cfg.conservedRegions.constEnd(); ++it) {
-		bool found = false;
-		U2Region annRegion = it.value();
-		foreach (const SharedAnnotationData& data, results) {
-			U2Region resRegion = data->location->regions.first();
-			if (resRegion.contains(annRegion)) {
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			QString locationStr = QString("%1..%2").arg(annRegion.startPos + 1).arg(annRegion.endPos());
-			setError(tr("Conserved annotation %1 (%2) is disrupted by the digestion. Try changing the restriction sites.")
-				.arg(it.key()).arg(locationStr) );
-			return;
-		}
-	}
+    QMap<QString, U2Region>::const_iterator it = cfg.conservedRegions.constBegin();
+    for( ; it != cfg.conservedRegions.constEnd(); ++it) {
+        bool found = false;
+        U2Region annRegion = it.value();
+        foreach (const SharedAnnotationData& data, results) {
+            U2Region resRegion = data->location->regions.first();
+            if (resRegion.contains(annRegion)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            QString locationStr = QString("%1..%2").arg(annRegion.startPos + 1).arg(annRegion.endPos());
+            setError(tr("Conserved annotation %1 (%2) is disrupted by the digestion. Try changing the restriction sites.")
+                .arg(it.key()).arg(locationStr) );
+            return;
+        }
+    }
 }
 
 

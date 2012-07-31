@@ -427,8 +427,8 @@ int main(int argc, char **argv)
     SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistry = new SplicedAlignmentTaskRegistry();
     appContext->setSplicedAlignmentTaskRegistry(splicedAlignmentTaskRegistry);
 
-	WorkflowScriptRegistry* workflowScriptRegistry = new WorkflowScriptRegistry();
-	appContext->setWorkflowScriptRegistry(workflowScriptRegistry);
+    WorkflowScriptRegistry* workflowScriptRegistry = new WorkflowScriptRegistry();
+    appContext->setWorkflowScriptRegistry(workflowScriptRegistry);
 
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     

@@ -51,7 +51,7 @@ const QByteArray ClustalWAlnFormat::CLUSTAL_HEADER = "CLUSTAL";
 ClustalWAlnFormat::ClustalWAlnFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("aln")) 
 {
     formatName = tr("CLUSTALW");
-	formatDescription = tr("Clustalw is a format for storing multiple sequence alignments");
+    formatDescription = tr("Clustalw is a format for storing multiple sequence alignments");
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
 }
 

@@ -60,7 +60,7 @@ class LoadInfoTask;
 class ConvertToSQLiteTask;
 
 class BAMImporterTask : public DocumentProviderTask {
-	Q_OBJECT
+    Q_OBJECT
 public:
     BAMImporterTask(const GUrl& url, bool useGui, const QVariantMap &hints);
     QList<Task*> onSubTaskFinished(Task* subTask);

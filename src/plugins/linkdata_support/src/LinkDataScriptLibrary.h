@@ -30,25 +30,25 @@ class WorkflowScriptEngine;
 
 class LinkDataScriptLibrary {
 public:
-	static void init(WorkflowScriptEngine* engine);
+    static void init(WorkflowScriptEngine* engine);
 
-	static QScriptValue fetchFile(QScriptContext *ctx, QScriptEngine *engine);
+    static QScriptValue fetchFile(QScriptContext *ctx, QScriptEngine *engine);
 
 };
 
 class LinkDataRequestHandler : public QObject {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	LinkDataRequestHandler(QEventLoop* eventLoop);
-	bool hasError() const;
-	const QString errorString() const;
-	QByteArray getResult() const;
+    LinkDataRequestHandler(QEventLoop* eventLoop);
+    bool hasError() const;
+    const QString errorString() const;
+    QByteArray getResult() const;
 private slots:
-	void sl_onReplyFinished(QNetworkReply* reply);
+    void sl_onReplyFinished(QNetworkReply* reply);
 private:
-	QEventLoop* eventLoop;
-	QByteArray result;
-	QString error;
+    QEventLoop* eventLoop;
+    QByteArray result;
+    QString error;
 };
 
 

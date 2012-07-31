@@ -35,44 +35,44 @@ namespace U2 {
 
 DNAStatsWindow::DNAStatsWindow(ADVSequenceObjectContext* context)
 : MWMDIWindow(tr("Statistics for %1").arg(context->getSequenceObject()->getGObjectName())), 
-			  ctx(context), updateTask(NULL)
+              ctx(context), updateTask(NULL)
 {
     QVBoxLayout* l = new QVBoxLayout(this);
     l->setMargin(0);
     setLayout(l);
 
     webView = new DNAStatsWebView(this);
-	webView->addAction(new QAction("New action!", this));
+    webView->addAction(new QAction("New action!", this));
     l->addWidget(webView);
-	connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskStateChanged(Task*)));
-	
-	update();
+    connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_onTaskStateChanged(Task*)));
+
+    update();
 }
 
 void DNAStatsWindow::update()
 {
-	if (updateTask == NULL) {
-		updateTask = new DNAStatProfileTask(ctx);
-		AppContext::getTaskScheduler()->registerTopLevelTask(updateTask);
-	}
-	
+    if (updateTask == NULL) {
+        updateTask = new DNAStatProfileTask(ctx);
+        AppContext::getTaskScheduler()->registerTopLevelTask(updateTask);
+    }
+
 }
 
 void DNAStatsWindow::sl_onTaskStateChanged( Task* task )
 {
-	if (task == updateTask && task->getState() == Task::State_Finished) {
-		webView->setHtml(updateTask->getResult());
-		updateTask = NULL;
-	}
+    if (task == updateTask && task->getState() == Task::State_Finished) {
+        webView->setHtml(updateTask->getResult());
+        updateTask = NULL;
+    }
 }
 
 
 void DNAStatsWebView::contextMenuEvent( QContextMenuEvent* event )
 {
-	QMenu menu;
-	menu.addAction(new QAction("Settings", this));
+    QMenu menu;
+    menu.addAction(new QAction("Settings", this));
 
-	menu.exec(event->globalPos());
+    menu.exec(event->globalPos());
 }
 
 } //namespace

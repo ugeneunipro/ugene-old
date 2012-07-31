@@ -402,24 +402,24 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
     foreach(const U2Region& region, range) {
         int start = region.startPos;
         int end = qMin(region.endPos(), (qint64)msa.getNumRows());
-	    for (int seq = start; seq < end; seq++) {
-	        for (int pos = startPos; pos <= lastPos; pos++) {
-	            U2Region baseXRange = getBaseXRange(pos, true);
-	            QRect cr(baseXRange.startPos, baseYRange.startPos, baseXRange.length+1, baseYRange.length);
-	            assert(cr.left() < w && cr.top() < h); Q_UNUSED(w); Q_UNUSED(h);
-	            char c = msa.charAt(seq, pos);
-	            QColor color = colorScheme->getColor(seq, pos);
-	            
-	            if (color.isValid()) {
-	                p.fillRect(cr, color);
-	            }
-	            
-	            if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
-	                p.drawText(cr, Qt::AlignCenter, QString(c));
-	            }
-	        }
+        for (int seq = start; seq < end; seq++) {
+            for (int pos = startPos; pos <= lastPos; pos++) {
+                U2Region baseXRange = getBaseXRange(pos, true);
+                QRect cr(baseXRange.startPos, baseYRange.startPos, baseXRange.length+1, baseYRange.length);
+                assert(cr.left() < w && cr.top() < h); Q_UNUSED(w); Q_UNUSED(h);
+                char c = msa.charAt(seq, pos);
+                QColor color = colorScheme->getColor(seq, pos);
+
+                if (color.isValid()) {
+                    p.fillRect(cr, color);
+                }
+
+                if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
+                    p.drawText(cr, Qt::AlignCenter, QString(c));
+                }
+            }
             baseYRange.startPos += editor->getRowHeight();
-	    }
+        }
     }
 }
 

@@ -51,11 +51,11 @@ DNAStatPlugin::DNAStatPlugin() : Plugin(tr("DNA Statistics"), tr("Provides stati
     statViewCtx = new DNAStatMSAEditorContext(this);
     statViewCtx->init();
     
-	distanceViewCtx = new DistanceMatrixMSAEditorContext(this);
+    distanceViewCtx = new DistanceMatrixMSAEditorContext(this);
     distanceViewCtx->init();
-	
-	dnaStatsViewCtx = new DNAViewStatsContext(this);
-	dnaStatsViewCtx->init();
+
+    dnaStatsViewCtx = new DNAViewStatsContext(this);
+    dnaStatsViewCtx->init();
 
 }
 
@@ -140,39 +140,39 @@ DNAViewStatsContext::DNAViewStatsContext( QObject* p )
 
 void DNAViewStatsContext::buildMenu( GObjectView* v, QMenu* m )
 {
-	AnnotatedDNAView* view = qobject_cast<AnnotatedDNAView*>(v);
-	SAFE_POINT(view != NULL, "View is NULL", );
+    AnnotatedDNAView* view = qobject_cast<AnnotatedDNAView*>(v);
+    SAFE_POINT(view != NULL, "View is NULL", );
 
-	QList<GObjectViewAction *> actions = getViewActions(v);
- 	foreach(GObjectViewAction* a, actions) {
-		m->addAction(a);
-	}    
+    QList<GObjectViewAction *> actions = getViewActions(v);
+     foreach(GObjectViewAction* a, actions) {
+        m->addAction(a);
+    }
 }
 
 void DNAViewStatsContext::initViewContext( GObjectView* view )
 {
-	AnnotatedDNAView* dnaView = qobject_cast<AnnotatedDNAView*>(view);
-	
-	SAFE_POINT(dnaView != NULL, "Annotated view is NULL", );
-		
-	GObjectViewAction* dnaStatsAction = new GObjectViewAction(this, view, tr("Statistics"));
+    AnnotatedDNAView* dnaView = qobject_cast<AnnotatedDNAView*>(view);
+
+    SAFE_POINT(dnaView != NULL, "Annotated view is NULL", );
+
+    GObjectViewAction* dnaStatsAction = new GObjectViewAction(this, view, tr("Statistics"));
     dnaStatsAction->setObjectName("Statistics");
-	connect(dnaStatsAction, SIGNAL(triggered()), SLOT(sl_showDnaStats()));
-	addViewAction(dnaStatsAction);	
+    connect(dnaStatsAction, SIGNAL(triggered()), SLOT(sl_showDnaStats()));
+    addViewAction(dnaStatsAction);
 }
 
 void DNAViewStatsContext::sl_showDnaStats()
 {
-	GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(sender());
-	SAFE_POINT(viewAction != NULL, "ViewAction is NULL", );
+    GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(sender());
+    SAFE_POINT(viewAction != NULL, "ViewAction is NULL", );
 
-	AnnotatedDNAView* dnaView = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
-	SAFE_POINT(dnaView != NULL, "View is NULL", );
-	
-	ADVSequenceObjectContext* ctx = dnaView->getSequenceInFocus();
-	SAFE_POINT( ctx != NULL, "Context is NULL", );
+    AnnotatedDNAView* dnaView = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
+    SAFE_POINT(dnaView != NULL, "View is NULL", );
 
-	DNAStatsWindow* w = new DNAStatsWindow(ctx);
+    ADVSequenceObjectContext* ctx = dnaView->getSequenceInFocus();
+    SAFE_POINT( ctx != NULL, "Context is NULL", );
+
+    DNAStatsWindow* w = new DNAStatsWindow(ctx);
     w->setWindowIcon(QIcon(":core/images/chart_bar.png"));
     AppContext::getMainWindow()->getMDIManager()->addMDIWindow(w);
 }

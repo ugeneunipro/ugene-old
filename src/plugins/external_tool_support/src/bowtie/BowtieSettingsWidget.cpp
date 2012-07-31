@@ -42,7 +42,7 @@ BowtieSettingsWidget::BowtieSettingsWidget(QWidget *parent):
 
 QMap<QString,QVariant> BowtieSettingsWidget::getDnaAssemblyCustomSettings() {
     QMap<QString, QVariant> settings;
-	
+
     switch(mismatchesComboBox->currentIndex()) {
     case 0:
         settings.insert(BowtieTask::OPTION_N_MISMATCHES, mismatchesSpinBox->value());

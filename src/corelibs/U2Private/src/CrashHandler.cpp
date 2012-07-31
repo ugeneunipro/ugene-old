@@ -36,10 +36,10 @@
 
 #if defined(Q_OS_WIN32)
   #ifdef UGENE_X86_64 //see http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4dc15026-884c-4f8a-8435-09d0111d708d/
-	extern "C"
-	{
-		void rollbackStack();
-	}
+    extern "C"
+    {
+        void rollbackStack();
+    }
   #endif
 #endif
 
@@ -106,18 +106,18 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
   #ifdef UGENE_X86 //see http://social.msdn.microsoft.com/Forums/en-US/vcgeneral/thread/4dc15026-884c-4f8a-8435-09d0111d708d/
         _asm add esp, 10240; //roll back stack and current frame pointer
   #else
-		rollbackStack();//TODO:need hack for x86_64
+        rollbackStack();//TODO:need hack for x86_64
   #endif
 #endif
         QString anotherError = QString::number(EXCEPTION_STACK_OVERFLOW, 16) + "|Stack overflow"; //previous error was dropped in the stack unwinding 
         st.ShowCallstack(GetCurrentThread(), pExceptionInfo->ContextRecord);
         runMonitorProcess(anotherError);
-		return EXCEPTION_EXECUTE_HANDLER;
+        return EXCEPTION_EXECUTE_HANDLER;
     }
     else {
-	    QString error;
-	    switch(pExceptionInfo->ExceptionRecord->ExceptionCode) {
-		case EXCEPTION_ACCESS_VIOLATION: error = "Access violation";
+        QString error;
+        switch(pExceptionInfo->ExceptionRecord->ExceptionCode) {
+        case EXCEPTION_ACCESS_VIOLATION: error = "Access violation";
             break;
         case EXCEPTION_DATATYPE_MISALIGNMENT: error = "Data type misalignment";
             break;
@@ -176,7 +176,7 @@ LONG CrashHandler::CrashHandlerFunc(PEXCEPTION_POINTERS pExceptionInfo ) {
 
         runMonitorProcess(QString::number(pExceptionInfo->ExceptionRecord->ExceptionCode, 16) + "|" + error + "::" + QString::number((int)pExceptionInfo->ExceptionRecord->ExceptionAddress, 16));
         return EXCEPTION_EXECUTE_HANDLER;
-	}
+    }
 }
 #else
 

@@ -21,7 +21,7 @@ ExpertDiscoveryPosNegDialog::ExpertDiscoveryPosNegDialog(QWidget *parent)
     filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true)+
         ";;" + DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, false);
 
-	negPerPositivespinBox->setDisabled(!oneSequenceCheckBox->isChecked());
+    negPerPositivespinBox->setDisabled(!oneSequenceCheckBox->isChecked());
 }
 
 void ExpertDiscoveryPosNegDialog::accept(){
@@ -30,7 +30,7 @@ void ExpertDiscoveryPosNegDialog::accept(){
 
     firstFileName = firstFileEdit->text();
     secondFileName = secondFileEdit->text();
-	negativePerPositive =  negPerPositivespinBox->value();
+    negativePerPositive =  negPerPositivespinBox->value();
 
     if (oneSequenceCheckBox->isChecked()) {
         secondFileName = firstFileName;
@@ -53,7 +53,7 @@ void ExpertDiscoveryPosNegDialog::sl_oneSequence() {
 
     secondFileEdit->setDisabled(oneSequenceCheckBox->isChecked());
     openSecondButton->setDisabled(oneSequenceCheckBox->isChecked());
-	negPerPositivespinBox->setDisabled(!oneSequenceCheckBox->isChecked());
+    negPerPositivespinBox->setDisabled(!oneSequenceCheckBox->isChecked());
     generateNeg = oneSequenceCheckBox->isChecked();
 
 }

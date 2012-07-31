@@ -40,37 +40,37 @@ class MAlignment;
 class GTest_Bowtie : public GTest {
     Q_OBJECT
 public:
-	SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_Bowtie, "bowtie", TaskFlag_FailOnSubtaskCancel);
-	~GTest_Bowtie();
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_Bowtie, "bowtie", TaskFlag_FailOnSubtaskCancel);
+    ~GTest_Bowtie();
     void prepare();
-	void run();
+    void run();
     Task::ReportResult report();
     void cleanup();
     QString getTempDataDir();
-	QList<Task*> onSubTaskFinished(Task* subTask);
-	
+    QList<Task*> onSubTaskFinished(Task* subTask);
+
 private:    
-	void parseBowtieOutput(MAlignment& result, QString text);
-	DnaAssemblyToRefTaskSettings config;
+    void parseBowtieOutput(MAlignment& result, QString text);
+    DnaAssemblyToRefTaskSettings config;
     QString readsFileName;
     GUrl readsFileUrl;
-	QString indexName;
-	QString patternFileName;
-	QString negativeError;
-	bool usePrebuildIndex;
-	bool subTaskFailed;
-	LoadDocumentTask* resultLoadTask;
-	LoadDocumentTask* patternLoadTask;
-	BowtieTask* bowtieTask;
-	MAlignment ma1;
-	MAlignment ma2;
-	DocumentFormatId format;
-	DocumentFormatId patternFormat;
+    QString indexName;
+    QString patternFileName;
+    QString negativeError;
+    bool usePrebuildIndex;
+    bool subTaskFailed;
+    LoadDocumentTask* resultLoadTask;
+    LoadDocumentTask* patternLoadTask;
+    BowtieTask* bowtieTask;
+    MAlignment ma1;
+    MAlignment ma2;
+    DocumentFormatId format;
+    DocumentFormatId patternFormat;
 };
 
 class BowtieTests {
 public:
-	static QList<XMLTestFactory*> createTestFactories();
+    static QList<XMLTestFactory*> createTestFactories();
 };
 } //namespace U2
 

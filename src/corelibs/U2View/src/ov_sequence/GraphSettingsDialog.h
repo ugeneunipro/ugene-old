@@ -31,21 +31,21 @@ class MinMaxSelectorWidget;
 class WindowStepSelectorWidget;
 
 class GraphSettingsDialog : public QDialog 
-{	
-	Q_OBJECT
+{
+    Q_OBJECT
 public:
-	GraphSettingsDialog(GSequenceGraphDrawer* d, const U2Region& range, QWidget* parent);
-	WindowStepSelectorWidget* getWindowSelector() { return wss; }
-	MinMaxSelectorWidget* getMinMaxSelector() { return mms; }
-	const QMap<QString,QColor>& getColors() { return colorMap; }
+    GraphSettingsDialog(GSequenceGraphDrawer* d, const U2Region& range, QWidget* parent);
+    WindowStepSelectorWidget* getWindowSelector() { return wss; }
+    MinMaxSelectorWidget* getMinMaxSelector() { return mms; }
+    const QMap<QString,QColor>& getColors() { return colorMap; }
 private slots:
-		void sl_onPickColorButtonClicked();
-		void sl_onCancelClicked();
-		void sl_onOkClicked();
+        void sl_onPickColorButtonClicked();
+        void sl_onCancelClicked();
+        void sl_onOkClicked();
 private:
-	WindowStepSelectorWidget* wss;
-	MinMaxSelectorWidget* mms;
-	QMap<QString,QColor> colorMap;
+    WindowStepSelectorWidget* wss;
+    MinMaxSelectorWidget* mms;
+    QMap<QString,QColor> colorMap;
 };
 
 }//ns

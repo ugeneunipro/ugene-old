@@ -209,7 +209,7 @@ public:
     
     static bool isGUIMode() {return getInstance()->_isGUIMode(); }
 
-	static WorkflowScriptRegistry* getWorkflowScriptRegistry() { return getInstance()->_getWorkflowScriptRegistry(); }
+    static WorkflowScriptRegistry* getWorkflowScriptRegistry() { return getInstance()->_getWorkflowScriptRegistry(); }
 
     static QString getActiveWindowName() {return getInstance()->_getActiveWindowName();}
     static void setActiveWindowName(const QString &name) {getInstance()->_setActiveWindowName(name);}
@@ -272,7 +272,7 @@ protected:
     virtual GUITestBase* _getGUITestBase() const = 0;
     virtual SplicedAlignmentTaskRegistry* _getSplicedAlignmentTaskRegistry() const = 0;
     virtual OPWidgetFactoryRegistry* _getOPWidgetFactoryRegistry() const = 0;
-	virtual WorkflowScriptRegistry* _getWorkflowScriptRegistry() const = 0;	
+    virtual WorkflowScriptRegistry* _getWorkflowScriptRegistry() const = 0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

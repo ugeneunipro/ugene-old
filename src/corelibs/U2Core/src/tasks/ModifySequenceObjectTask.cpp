@@ -62,7 +62,7 @@ regionToReplace(_regionTodelete), sequence2Insert(seq2Insert)
 }
 
 Task::ReportResult ModifySequenceContentTask::report(){
-	CHECK(!(regionToReplace.isEmpty() && sequence2Insert.seq.isEmpty()), ReportResult_Finished);
+    CHECK(!(regionToReplace.isEmpty() && sequence2Insert.seq.isEmpty()), ReportResult_Finished);
     CHECK_EXT(!curDoc->isStateLocked(), setError(tr("Document is locked")), ReportResult_Finished);
         
     U2Region seqRegion(0, seqObj->getSequenceLength());
@@ -114,21 +114,21 @@ void ModifySequenceContentTask::fixAnnotations(){
                 QList<Annotation*> annList = ato->getAnnotations();
                 foreach(Annotation *an, annList){
                     QVector<U2Region> locs = an->getRegions();
-					
+
                     QList< QVector<U2Region> > newRegions = U1AnnotationUtils::fixLocationsForReplacedRegion(regionToReplace, sequence2Insert.seq.length(), an->getRegions(), strat);
 
                     if (newRegions[0].isEmpty()) {
                         ato->removeAnnotation(an);
                     }
-					else{
-						an->replaceRegions(newRegions[0]);					
-						
-						for (int i = 1; i < newRegions.size(); i++) {
-							Annotation* copy = new Annotation(an->data());
-							QStringList groupNames = an->getFullGroupsNames();
-							ato->addAnnotation(copy, groupNames);
-						}	
-					}
+                    else{
+                        an->replaceRegions(newRegions[0]);
+
+                        for (int i = 1; i < newRegions.size(); i++) {
+                            Annotation* copy = new Annotation(an->data());
+                            QStringList groupNames = an->getFullGroupsNames();
+                            ato->addAnnotation(copy, groupNames);
+                        }
+                    }
                 }
             }
         }

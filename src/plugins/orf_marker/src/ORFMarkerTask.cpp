@@ -56,9 +56,9 @@ void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
     s->setValue(ORFSettingsKeys::SEARCH_REGION, QVariant::fromValue(cfg.searchRegion));
     s->setValue(ORFSettingsKeys::CIRCULAR_SEARCH, cfg.circularSearch);
     s->setValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::getStrandStringId(cfg.strand));
-	s->setValue(ORFSettingsKeys::INCLUDE_STOP_CODON, cfg.includeStopCodon);
-	s->setValue(ORFSettingsKeys::MAX_RESULT,cfg.maxResult2Search);
-	s->setValue(ORFSettingsKeys::IS_RESULT_LIMITED,cfg.isResultsLimited);
+    s->setValue(ORFSettingsKeys::INCLUDE_STOP_CODON, cfg.includeStopCodon);
+    s->setValue(ORFSettingsKeys::MAX_RESULT,cfg.maxResult2Search);
+    s->setValue(ORFSettingsKeys::IS_RESULT_LIMITED,cfg.isResultsLimited);
 }
 
 void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
@@ -68,8 +68,8 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
     cfg.allowOverlap = s->getValue(ORFSettingsKeys::ALLOW_OVERLAP, false).toBool();
     cfg.circularSearch = s->getValue(ORFSettingsKeys::CIRCULAR_SEARCH, false).toBool();
     cfg.minLen = s->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt();
-	cfg.maxResult2Search =  s->getValue(ORFSettingsKeys::MAX_RESULT,200000).toInt();
-	cfg.isResultsLimited = s->getValue(ORFSettingsKeys::IS_RESULT_LIMITED,true).toBool();
+    cfg.maxResult2Search =  s->getValue(ORFSettingsKeys::MAX_RESULT,200000).toInt();
+    cfg.isResultsLimited = s->getValue(ORFSettingsKeys::IS_RESULT_LIMITED,true).toBool();
 
     QString strandId = s->getValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::STRAND_BOTH).toString();
     cfg.strand = ORFAlgorithmSettings::getStrandByStringId(strandId);
@@ -78,8 +78,8 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
     if (!translId.isEmpty()) {
         cfg.proteinTT = AppContext::getDNATranslationRegistry()->lookupTranslation(translId);
     }
-	
-	cfg.includeStopCodon = s->getValue(ORFSettingsKeys::INCLUDE_STOP_CODON, false).toBool();
+
+    cfg.includeStopCodon = s->getValue(ORFSettingsKeys::INCLUDE_STOP_CODON, false).toBool();
     cfg.searchRegion = s->getValue(ORFSettingsKeys::SEARCH_REGION).value<U2Region>();
 }
 
@@ -88,7 +88,7 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
 // find ORFS and save 2 annotations task
 
 FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj,const U2EntityRef& _entityRef, 
-													 const ORFAlgorithmSettings& settings, const QString& gName )
+                                                     const ORFAlgorithmSettings& settings, const QString& gName )
   :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), groupName(gName), entityRef(_entityRef)
 {
     fTask = new ORFFindTask(cfg, entityRef);
@@ -122,10 +122,10 @@ Task::ReportResult U2::FindORFsToAnnotationsTask::report()
         annotations.append(new Annotation(data));
     }
 
-	if (groupName.isEmpty()) {
-		groupName = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
-	}
-	aObj->addAnnotations(annotations, groupName);
+    if (groupName.isEmpty()) {
+        groupName = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
+    }
+    aObj->addAnnotations(annotations, groupName);
     
 
     return ReportResult_Finished;

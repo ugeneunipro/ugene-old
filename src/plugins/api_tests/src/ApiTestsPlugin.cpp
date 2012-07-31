@@ -28,10 +28,10 @@ Plugin("UGENE 2.0 API tests", "Tests for UGENE 2.0 public API") {
     XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
     assert(xmlTestFormat!=NULL);
 
-	XMLTestFactory* f = UnitTestSuite::createFactory();
+    XMLTestFactory* f = UnitTestSuite::createFactory();
     bool res = xmlTestFormat->registerTestFactory(f);
     SAFE_POINT(res, "API tests is not registered",);
-	Q_UNUSED(res);
+    Q_UNUSED(res);
 }
 
 } // namespace U2

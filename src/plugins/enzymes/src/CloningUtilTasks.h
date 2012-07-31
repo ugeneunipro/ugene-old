@@ -43,10 +43,10 @@ namespace U2 {
 class U2SequenceObject;
 
 struct DigestSequenceTaskConfig {
-	DigestSequenceTaskConfig() : searchForRestrictionSites(false) {}
-	QMap<QString,U2Region> conservedRegions;
-	QList<SEnzymeData> enzymeData;
-	bool searchForRestrictionSites;	
+    DigestSequenceTaskConfig() : searchForRestrictionSites(false) {}
+    QMap<QString,U2Region> conservedRegions;
+    QList<SEnzymeData> enzymeData;
+    bool searchForRestrictionSites;
 };
 
 struct GenomicPosition {
@@ -62,10 +62,10 @@ class DigestSequenceTask : public Task {
     Q_OBJECT
 public:
     DigestSequenceTask(U2SequenceObject* dnaObj, AnnotationTableObject* destTable, 
-		AnnotationTableObject* sourceTable, const DigestSequenceTaskConfig& cfg);
+        AnnotationTableObject* sourceTable, const DigestSequenceTaskConfig& cfg);
     virtual void prepare();
     virtual void run();
-	virtual QString generateReport() const;
+    virtual QString generateReport() const;
     virtual ReportResult report();
 
 private:
@@ -74,14 +74,14 @@ private:
     void saveResults();
     AnnotationData* createFragment( int pos1, const DNAFragmentTerm& leftTerm,
                                     int pos2, const DNAFragmentTerm& rightTerm );
-	void checkForConservedAnnotations();
-	bool isCircular;
+    void checkForConservedAnnotations();
+    bool isCircular;
     U2Region seqRange;
     AnnotationTableObject *sourceObj, *destObj;
     U2SequenceObject*  dnaObj;
     DigestSequenceTaskConfig cfg;
-	QMap<GenomicPosition, SEnzymeData> cutSiteMap;
-	QList<SharedAnnotationData> results;
+    QMap<GenomicPosition, SEnzymeData> cutSiteMap;
+    QList<SharedAnnotationData> results;
 
 };
 

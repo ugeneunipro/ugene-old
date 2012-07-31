@@ -51,21 +51,21 @@ void FindAlgorithmTask::run() {
         config.pattern.length(),
         config.singleShot,
         config.maxErr,
-		config.maxRegExpResult,
+        config.maxRegExpResult,
         stateInfo.cancelFlag,
         stateInfo.progress,
         currentPos,
-		currentLen);
+        currentLen);
 }
 
 void FindAlgorithmTask::onResult(const FindAlgorithmResult& r) {
-	if(newResults.size() >= config.maxResult2Find){
-		stateInfo.cancelFlag = true;
-		return;
-	}
-    lock.lock();	
+    if(newResults.size() >= config.maxResult2Find){
+        stateInfo.cancelFlag = true;
+        return;
+    }
+    lock.lock();
     newResults.append(r);
-	lock.unlock();	
+    lock.unlock();
 }
 
 QList<FindAlgorithmResult> FindAlgorithmTask::popResults() {

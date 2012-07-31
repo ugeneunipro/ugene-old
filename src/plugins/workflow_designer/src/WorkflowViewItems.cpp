@@ -356,21 +356,21 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
         break;
     case ItemSceneHasChanged:
         {
-	        WorkflowScene* ws = getWorkflowScene();
-	        if (ws) {
-	            ItemViewStyle* viewStyle = styles.value(ItemStyles::EXTENDED);
-	            ExtendedProcStyle* extStyle = qgraphicsitem_cast<ExtendedProcStyle*>(viewStyle);
-	            assert(extStyle);
-	            WorkflowView* view = ws->getController();
-	            if (view) {
-	                connect(extStyle, SIGNAL(linkActivated(const QString&)),
-                        view->getPropertyEditor(), SLOT(sl_linkActivated(const QString&)));
-	            }
-	
-	            foreach(WorkflowPortItem* pit, ports) {
-	                ws->addItem(pit);
-	            }
-	        }
+            WorkflowScene* ws = getWorkflowScene();
+            if (ws) {
+                ItemViewStyle* viewStyle = styles.value(ItemStyles::EXTENDED);
+                ExtendedProcStyle* extStyle = qgraphicsitem_cast<ExtendedProcStyle*>(viewStyle);
+                assert(extStyle);
+                WorkflowView* view = ws->getController();
+                if (view) {
+                    connect(extStyle, SIGNAL(linkActivated(const QString&)),
+                    view->getPropertyEditor(), SLOT(sl_linkActivated(const QString&)));
+                }
+
+                foreach(WorkflowPortItem* pit, ports) {
+                    ws->addItem(pit);
+                }
+            }
         }
         break;
     case ItemSceneChange:

@@ -37,7 +37,7 @@ class AnnotatedDNAView;
 class GCFramePlotFactory : public GSequenceGraphFactory {
     Q_OBJECT
 public:
-	GCFramePlotFactory(QObject* p);
+    GCFramePlotFactory(QObject* p);
     virtual QList<GSequenceGraphData*> createGraphs(GSequenceGraphView* v);
     virtual GSequenceGraphDrawer* getDrawer(GSequenceGraphView* v);
     virtual bool isEnabled(U2SequenceObject* o) const;
@@ -53,7 +53,7 @@ public:
 private:
     void windowStrategyWithoutMemorize(QVector<float>& res, const QByteArray& seq, int startPos, const GSequenceGraphWindowData* d, int nSteps);
     QBitArray map;
-	int offset;
+    int offset;
 };
 
 } // namespace
