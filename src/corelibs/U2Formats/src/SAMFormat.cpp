@@ -93,6 +93,7 @@ SAMFormat::SAMFormat( QObject* p ): DocumentFormat(p, DocumentFormatFlag_Support
 		"storing read alignments against reference sequence");
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
     skipDetection = false;
+    formatFlags |= DocumentFormatFlag_Hidden;
 }
 
 FormatCheckResult SAMFormat::checkRawData( const QByteArray& rawData, const GUrl&) const {

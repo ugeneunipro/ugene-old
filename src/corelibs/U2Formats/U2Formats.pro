@@ -5,6 +5,7 @@ HEADERS += src/ABIFormat.h \
            src/AbstractVariationFormat.h \
            src/ACEFormat.h \
            src/ASNFormat.h \
+           src/BAMUtils.h \
            src/ClustalWAlnFormat.h \
            src/DocumentFormatUtils.h \
            src/EMBLGenbankAbstractDocument.h \
@@ -54,6 +55,7 @@ SOURCES += src/ABIFormat.cpp \
            src/AbstractVariationFormat.cpp \
            src/ACEFormat.cpp \
            src/ASNFormat.cpp \
+           src/BAMUtils.cpp \
            src/ClustalWAlnFormat.cpp \
            src/DocumentFormatUtils.cpp \
            src/EMBLGenbankAbstractDocument.cpp \

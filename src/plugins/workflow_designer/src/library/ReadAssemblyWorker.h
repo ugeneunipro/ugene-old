@@ -28,6 +28,7 @@ namespace U2 {
 
 class Document;
 class DocumentFormat;
+class DocumentProviderTask;
 
 namespace LocalWorkflow {
 
@@ -54,6 +55,19 @@ public:
 
 }; // ReadAssemblyWorkerFactory
 
+class ConvertToIndexedBamTask : public Task {
+public:
+    ConvertToIndexedBamTask(const DocumentFormatId &formatId, const GUrl &url);
+
+    virtual void run();
+    GUrl getResultUrl() const;
+
+private:
+    DocumentFormatId formatId;
+    GUrl url;
+    GUrl result;
+};
+
 class ReadAssemblyTask : public Task {
     Q_OBJECT
 public:
@@ -69,6 +83,9 @@ private:
     DbiDataStorage *storage;
     DocumentFormat *format;
     Document *doc;
+
+    ConvertToIndexedBamTask *convertTask;
+    DocumentProviderTask *importTask;
 };
 
 } // LocalWorkflow

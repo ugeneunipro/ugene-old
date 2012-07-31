@@ -32,6 +32,8 @@
 
 #include <U2Designer/DelegateEditors.h>
 
+#include <U2Formats/BAMUtils.h>
+
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 
@@ -86,11 +88,51 @@ void ReadAssemblyWorker::sl_taskFinished() {
 /************************************************************************/
 /* Task */
 /************************************************************************/
-ReadAssemblyTask::ReadAssemblyTask(const QString &url, DbiDataStorage *storage)
-: Task(tr("Read assembly from %1").arg(url), TaskFlag_None),
-url(url), storage(storage), format(NULL), doc(NULL)
+ConvertToIndexedBamTask::ConvertToIndexedBamTask(const DocumentFormatId &_formatId, const GUrl &_url)
+: Task("Convert assembly file to sorted BAM", TaskFlag_None), formatId(_formatId), url(_url)
 {
 
+}
+
+void ConvertToIndexedBamTask::run() {
+    GUrl bamUrl = url;
+    if (BaseDocumentFormats::SAM == formatId) {
+        bamUrl = BAMUtils::convertSamToBam(url, stateInfo);
+        CHECK_OP(stateInfo, );
+    } else {
+        CHECK_EXT(BaseDocumentFormats::BAM == formatId, setError("Only BAM/SAM files could be converted"), );
+    }
+
+    bool sorted = BAMUtils::isSortedBam(bamUrl, stateInfo);
+    CHECK_OP(stateInfo, );
+
+    GUrl sortedBamUrl = bamUrl;
+    if (!sorted) {
+        sortedBamUrl = BAMUtils::sortBam(bamUrl, stateInfo);
+        CHECK_OP(stateInfo, );
+    }
+
+    bool indexed = BAMUtils::hasValidBamIndex(sortedBamUrl);
+    if (!indexed) {
+        BAMUtils::createBamIndex(sortedBamUrl, stateInfo);
+        CHECK_OP(stateInfo, );
+    }
+    result = sortedBamUrl;
+}
+
+GUrl ConvertToIndexedBamTask::getResultUrl() const {
+    return result;
+}
+
+ReadAssemblyTask::ReadAssemblyTask(const QString &url, DbiDataStorage *storage)
+: Task(tr("Read assembly from %1").arg(url), TaskFlag_None),
+url(url), storage(storage), format(NULL), doc(NULL), convertTask(NULL), importTask(NULL)
+{
+
+}
+
+static bool isConvertingFormat(const DocumentFormatId &formatId) {
+    return (BaseDocumentFormats::SAM == formatId || BaseDocumentFormats::BAM == formatId);
 }
 
 void ReadAssemblyTask::prepare() {
@@ -107,6 +149,12 @@ void ReadAssemblyTask::prepare() {
 
     foreach (const FormatDetectionResult &f, fs) {
         if (NULL != f.format) {
+            if (isConvertingFormat(f.format->getFormatId())) {
+                convertTask = new ConvertToIndexedBamTask(f.format->getFormatId(), url);
+                addSubTask(convertTask);
+                return;
+            }
+
             const QSet<GObjectType> &types = f.format->getSupportedObjectTypes();
             if (types.contains(GObjectTypes::ASSEMBLY)) {
                 format = f.format;
@@ -119,8 +167,8 @@ void ReadAssemblyTask::prepare() {
 
             QVariantMap hints;
             hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
-            DocumentProviderTask *t = f.importer->createImportTask(f, false, hints);
-            addSubTask(t);
+            importTask = f.importer->createImportTask(f, false, hints);
+            addSubTask(importTask);
             return;
         }
     }
@@ -133,12 +181,15 @@ void ReadAssemblyTask::prepare() {
 
 QList<Task*> ReadAssemblyTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> result;
+    CHECK(NULL != subTask, result);
     CHECK(!subTask->hasError(), result);
 
-    DocumentProviderTask *t = dynamic_cast<DocumentProviderTask*>(subTask);
-    CHECK(NULL != t, result);
-
-    doc = t->takeDocument(false);
+    if (importTask == subTask) {
+        doc = importTask->takeDocument(false);
+    } else if (convertTask == subTask) {
+        url = convertTask->getResultUrl().getURLString();
+        format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::BAM);
+    }
     return result;
 }
 
@@ -160,6 +211,7 @@ void ReadAssemblyTask::run() {
             if (BaseDocumentFormats::UGENEDB == format->getFormatId()) {
                 fId = DEFAULT_DBI_ID;
             } else if (BaseDocumentFormats::BAM == format->getFormatId()) {
+                SAFE_POINT(NULL != convertTask, "Internal error! Converting stage is missed", );
                 fId = BAM_DBI_ID;
             }
             U2DbiFactory *dbiFactory = AppContext::getDbiRegistry()->getDbiFactoryById(fId);

@@ -168,7 +168,6 @@ void DocumentFormatRegistryImpl::init() {
     registerFormat(nexus);
 
     SAMFormat *sam = new SAMFormat(this);
-    sam->setNeverDetect(true);
     registerFormat(sam);
 
     MegaFormat *meg = new MegaFormat(this);

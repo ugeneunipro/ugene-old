@@ -28,14 +28,12 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Formats/BAMUtils.h>
+
 #include "BAMDbiPlugin.h"
 #include "BAMFormat.h"
 #include "Exception.h"
 #include "IOException.h"
-
-extern "C" {
-#include <bam_sort.c>
-}
 
 #include "SamtoolsBasedDbi.h"
 
@@ -74,18 +72,17 @@ void SamtoolsBasedDbi::init(const QHash<QString, QString> &properties, const QVa
             throw Exception(BAMDbiPlugin::tr("Non-local files are not supported"));
         }
         QByteArray urlBA = url.getURLString().toAscii();
-        bool ok = this->initBamStructures(urlBA);
-        if (!ok) {
-            this->cleanup();
-            QByteArray sortedFileUrl = this->sortBamFile(urlBA);
-            if (sortedFileUrl.isEmpty()) {
-                throw Exception(BAMDbiPlugin::tr("Error sorting: %1").arg(urlBA.constData()));
-            }
+        bool sorted = BAMUtils::isSortedBam(GUrl(urlBA), os);
+        CHECK_OP_EXT(os, throw Exception(os.getError()), );
+        if (!sorted) {
+            throw Exception("Only indexed sorted BAM files could be used by this DBI");
+        }
 
-            bool sortedOk = this->initBamStructures(sortedFileUrl);
-            if (!sortedOk) {
-                throw Exception(BAMDbiPlugin::tr("Can't build index for: %1").arg(sortedFileUrl.constData()));
-            }
+        QByteArray sortedFileUrl = urlBA;
+
+        bool ok = this->initBamStructures(sortedFileUrl);
+        if (!ok) {
+            throw Exception(BAMDbiPlugin::tr("Can't build index for: %1").arg(sortedFileUrl.constData()));
         }
 
         assembliesCount = header->n_targets;
@@ -103,61 +100,25 @@ void SamtoolsBasedDbi::init(const QHash<QString, QString> &properties, const QVa
     }
 }
 
-inline static int bytes2MB(qint64 bytes) {
-    return (int) (bytes / (1024 * 1024)) + 1;
-}
-
-inline static qint64 mB2bytes(int mb) {
-    return (qint64)mb * 1024 * 1024;
-}
-
-#define INITIAL_SAMTOOLS_MEM_SIZE_MB bytes2MB(500000000)
-#define SAMTOOLS_MEM_BOOST 5
-
 QByteArray SamtoolsBasedDbi::sortBamFile(const QByteArray &fileName) {
-    QByteArray sortedFileBaseName = fileName + ".sorted";
-    QByteArray sortedFileName = sortedFileBaseName + ".bam";
-
-    // get memory resource
-    AppSettings *appSettings = AppContext::getAppSettings();
-    AppResourcePool *resPool = appSettings->getAppResourcePool();
-    AppResource *memory = resPool->getResource(RESOURCE_MEMORY);
-    SAFE_POINT(NULL != memory, "No memory resource", QByteArray());
-
-    // calculate needed memory
-    QFileInfo info(fileName);
-    qint64 fileSizeBytes = info.size();
-    SAFE_POINT(fileSizeBytes >= 0, QString("Unknown file size: %1").arg(fileName.constData()), QByteArray());
-
-    int fileSizeMB = bytes2MB(fileSizeBytes);
-    int maxMemMB = qMin(SAMTOOLS_MEM_BOOST*fileSizeMB, INITIAL_SAMTOOLS_MEM_SIZE_MB);
-    while (!memory->isAvailable(maxMemMB)) {
-        // reduce used memory
-        maxMemMB = maxMemMB * 2 / 3;
+    U2OpStatusImpl os;
+    GUrl sortedBamUrl = BAMUtils::sortBam(GUrl(fileName), os);
+    if (os.hasError()) {
+        throw Exception(os.getError());
     }
 
-    // sort bam
-    bool samtoolsError = false;
-    memory->acquire(maxMemMB);
-    {
-        coreLog.details(BAMDbiPlugin::tr("Sort bam file: \"%1\" using %2 Mb of memory. Result sorted file is: \"%3\"")
-            .arg(fileName.constData()).arg(maxMemMB).arg(sortedFileName.constData()));
-        size_t maxMemBytes = (size_t)(mB2bytes(maxMemMB)); // maxMemMB < 500 Mb, so the conversation is correct!
-        bam_sort_core(0, fileName.constData(), sortedFileBaseName.constData(), maxMemBytes);
-    }
-    memory->release(maxMemMB);
-    if (samtoolsError) {
-        throw Exception(BAMDbiPlugin::tr("Samtools error sorting file: %1").arg(fileName.constData()));
-    }
+    QByteArray sortedFileName = sortedBamUrl.getURLString().toAscii();
+    SAFE_POINT(!sortedFileName.isEmpty(), "Empty sorted file name", "");
 
     return sortedFileName;
 }
 
 bool SamtoolsBasedDbi::buildBamIndex(const QByteArray &fileName) {
-    coreLog.details(BAMDbiPlugin::tr("Build index for bam file: \"%1\"").arg(fileName.constData()));
-    int error = bam_index_build(fileName.constData());
-    if (-1 == error) {
-        coreLog.details(BAMDbiPlugin::tr("Error. Can't build the index"));
+    U2OpStatusImpl os;
+    BAMUtils::createBamIndex(GUrl(fileName), os);
+
+    if (os.hasError()) {
+        coreLog.details(os.getError());
         return false;
     } else {
         coreLog.details(BAMDbiPlugin::tr("Index is built successfully"));
@@ -172,12 +133,11 @@ bool SamtoolsBasedDbi::initBamStructures(const QByteArray &fileName) {
         throw IOException(BAMDbiPlugin::tr("Can't open file '%1'").arg(fileName.constData()));
     }
 
-    index = bam_index_load(fileName.constData());
-    if (NULL == index) {
-        bool ok = this->buildBamIndex(fileName);
-        if (!ok) {
-            return false;
-        }
+    bool indexed = BAMUtils::hasValidBamIndex(GUrl(fileName));
+    if (indexed) {
+        index = bam_index_load(fileName.constData());
+    } else {
+        throw Exception("Only indexed sorted BAM files could be used by this DBI");
     }
     if (NULL == index) {
         throw IOException(BAMDbiPlugin::tr("Can't load index file for '%1'").arg(fileName.constData()));

@@ -112,6 +112,9 @@ private:
     U2Region getCorrectRegion(const U2DataId &assemblyId, const U2Region &r, U2OpStatus &os);
 }; // SamtoolsBasedAssemblyDbi
 
+/**
+ * This DBI could be initialized to work only with sorted indexed BAM files.
+ */
 class SamtoolsBasedDbi : public U2AbstractDbi {
 public:
     SamtoolsBasedDbi();
