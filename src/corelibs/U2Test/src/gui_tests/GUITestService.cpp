@@ -183,6 +183,7 @@ void GUITestService::runAllGUITests() {
             }
         }
         log.trace("GTRUNNER - runAllGUITests - going to run test " + testName);
+        clearSandbox();
         t->run(os);
 
         TaskStateInfo os2;

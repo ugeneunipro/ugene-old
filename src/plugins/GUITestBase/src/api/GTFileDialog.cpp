@@ -181,11 +181,11 @@ void GTFileDialogUtils::selectFile()
         break;
 
     case GTGlobals::UseMouse:
-        if (! w->rect().contains(w->visualRect(index))) {
+        if (! w->viewport()->rect().contains(w->visualRect(index))) {
             GTMouseDriver::moveTo(os, w->mapToGlobal(w->geometry().center()));
             GTMouseDriver::click(os);
         }
-        while (! w->rect().contains(w->visualRect(index))) {
+        while (! w->viewport()->rect().contains(w->visualRect(index))) {
             GTMouseDriver::scroll(os, -1);
             GTGlobals::sleep(100);
         }
