@@ -228,9 +228,6 @@ void DocumentUpdater::ReloadDocuments( QList<Document*> docs2Reload ){
     foreach(Document* doc, docs2Reload) {
         QList<GObjectViewWindow*> viewWnds = GObjectViewUtils::findViewsWithAnyOfObjects(doc->getObjects());
         foreach(GObjectViewWindow* vw, viewWnds) {
-            if (viewWindows.contains(vw)) {
-                continue;
-            }
             viewWindows.append(vw);
 
             GObjectViewFactoryId id = vw->getViewFactoryId();

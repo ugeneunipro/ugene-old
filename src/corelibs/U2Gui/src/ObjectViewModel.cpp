@@ -485,7 +485,11 @@ QList<GObjectViewWindow*> GObjectViewUtils::findViewsWithAnyOfObjects(const QLis
     QList<GObjectViewWindow*> res;
     foreach(GObject* obj, objs) {
         QList<GObjectViewWindow*> tmp = findViewsWithObject(obj);
-        res+=tmp;
+        foreach(GObjectViewWindow* vw, tmp) {
+            if(!res.contains(vw)) {
+                res+=tmp;
+            }
+        }  
     }
     return res;
 }
