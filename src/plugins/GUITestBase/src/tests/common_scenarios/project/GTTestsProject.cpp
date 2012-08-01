@@ -133,6 +133,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     QMenu *m = GTMenu::showMainMenu(os, MWMENU_FILE);
     QAction *result = GTMenu::getMenuItem(os, m, ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
+    GTGlobals::sleep();
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+    GTGlobals::sleep(100);
 
     CHECK_SET_ERR(result == NULL, "Export menu item present in menu without any project created");
 }
