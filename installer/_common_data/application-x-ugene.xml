@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+
+  <mime-type type="application/x-ugene-uprj">
+    <comment>Unipro UGENE project file</comment>
+    <comment xml:lang="en">Unipro UGENE project file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.uprj"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-uwl">
+    <comment>UGENE Workflow Language</comment>
+    <comment xml:lang="en">UGENE Workflow Language</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.uwl"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-uql">
+    <comment>UGENE Query Language</comment>
+    <comment xml:lang="en">UGENE Query Language</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.uql"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-abi">
+    <comment>ABIF file</comment>
+    <comment xml:lang="en">ABIF file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.ab1"/>
+    <glob pattern="*.abi"/>
+    <glob pattern="*.abif"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-aln">
+    <comment>Clustal alignment file</comment>
+    <comment xml:lang="en">Clustal alignment file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.aln"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-embl">
+    <comment>EMBL file</comment>
+    <comment xml:lang="en">EMBL file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.em"/>
+    <glob pattern="*.emb"/>
+    <glob pattern="*.embl"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-sw">
+    <comment>Swiss-Prot file</comment>
+    <comment xml:lang="en">Swiss-Prot file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.sw"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-fa">
+    <comment>FASTA sequence file</comment>
+    <comment xml:lang="en">FASTA sequence file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.fa"/>
+    <glob pattern="*.mpfa"/>
+    <glob pattern="*.fna"/>
+    <glob pattern="*.fsa"/>
+    <glob pattern="*.fas"/>
+    <glob pattern="*.fasta"/>
+    <glob pattern="*.seq"/>
+    <glob pattern="*.seqs"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-fastq">
+    <comment>FASTQ file</comment>
+    <comment xml:lang="en">FASTQ file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.fastq"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-gb">
+    <comment>Genbank plain text file</comment>
+    <comment xml:lang="en">Genbank plain text file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.gb"/>
+    <glob pattern="*.gbk"/>
+    <glob pattern="*.gen"/>
+    <glob pattern="*.genbank"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-gff">
+    <comment>GFF file</comment>
+    <comment xml:lang="en">GFF file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.gff"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-msf">
+    <comment>MSF multiple sequence file</comment>
+    <comment xml:lang="en">MSF multiple sequence file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.msf"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-newick">
+    <comment>NEWICK tree file</comment>
+    <comment xml:lang="en">NEWICK tree file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.newick"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-pdb">
+    <comment>Protein Data Bank file</comment>
+    <comment xml:lang="en">Protein Data Bank file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.pdb"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-sam-bam">
+    <comment>SAM/BAM genome assembly</comment>
+    <comment xml:lang="en">SAM/BAM genome assembly</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.sam"/>
+    <glob pattern="*.bam"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-srfa">
+    <comment>FASTA short reads file</comment>
+    <comment xml:lang="en">FASTA short reads file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.srfa"/>
+    <glob pattern="*.srfasta"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-sto">
+    <comment>Stockholm alignment file</comment>
+    <comment xml:lang="en">Stockholm alignment file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.sto"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-db">
+    <comment>UGENE Database file</comment>
+    <comment xml:lang="en">UGENE Database file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.ugenedb"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-scf">
+    <comment>SCF file</comment>
+    <comment xml:lang="en">SCF file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.scf"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-mmdb">
+    <comment>MMDB file</comment>
+    <comment xml:lang="en">MMDB file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.prt"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-hmm">
+    <comment>HMMER file</comment>
+    <comment xml:lang="en">HMMER file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.hmm"/>
+    <icon name="application-x-ugene-ext"/>
+  </mime-type>
+
+  <mime-type type="application/x-ugene-hmm">
+    <comment>ACE file</comment>
+    <comment xml:lang="en">ACE file</comment>
+    <sub-class-of type="text/plain"/>
+    <glob pattern="*.ace"/>
+    <icon name="application-x-ugene-ext"/>
+    <magic priority="50">
+        <match type="string" offset="0" value="AS "/>
+     </magic>
+  </mime-type>
+
+</mime-info>
+
