@@ -45,7 +45,8 @@ static const QString EMPTY_ACTION_ID("empty-input-action");
  * MultiplexerWorker
  *******************************/
 MultiplexerWorker::MultiplexerWorker(Actor *p)
-: BaseWorker(p, false), inChannel1(NULL), inChannel2(NULL), outChannel(NULL), rule(ONE_TO_ONE)
+: BaseWorker(p, false), inChannel1(NULL), inChannel2(NULL), outChannel(NULL), rule(ONE_TO_ONE),
+hasMultiData(false), messagesInited(false)
 {
 }
 

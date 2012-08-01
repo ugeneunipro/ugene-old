@@ -136,7 +136,7 @@ Marker *MarkerFactory::createInstanse(const QString &type, const QVariant &addit
         m = new SequenceMarker(type, "NewSequenceMarker");
     }
 
-    if (m->hasAdditionalParameter()) {
+    if (NONE != m->hasAdditionalParameter()) {
         m->setAdditionalParameter(additionalParam);
     }
 
@@ -163,8 +163,8 @@ void Marker::addValue(QString name, QString value) {
     values.insert(name, value);
 }
 
-bool Marker::hasAdditionalParameter() {
-    return false;
+ParameterState Marker::hasAdditionalParameter() {
+    return NONE;
 }
 
 void Marker::setAdditionalParameter(const QVariant &) {
@@ -382,8 +382,8 @@ Marker *QualifierMarker::clone() {
     return new QualifierMarker(*this);
 }
 
-bool QualifierMarker::hasAdditionalParameter() {
-    return true;
+ParameterState QualifierMarker::hasAdditionalParameter() {
+    return REQUIRED;
 }
 
 void QualifierMarker::setAdditionalParameter(const QVariant &param) {
@@ -437,8 +437,8 @@ Marker *AnnotationMarker::clone() {
     return new AnnotationMarker(*this);
 }
 
-bool AnnotationMarker::hasAdditionalParameter() {
-    return true;
+ParameterState AnnotationMarker::hasAdditionalParameter() {
+    return NOT_REQUIRED;
 }
 
 void AnnotationMarker::setAdditionalParameter(const QVariant &param) {

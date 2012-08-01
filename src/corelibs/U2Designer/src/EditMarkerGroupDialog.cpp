@@ -90,7 +90,7 @@ void EditMarkerGroupDialog::updateUi() {
     markerModel = new MarkerListCfgModel(this, this->marker);
     table->setModel(markerModel);
 
-    if (marker->hasAdditionalParameter()) {
+    if (NONE != marker->hasAdditionalParameter()) {
         addParamLabel->setText(marker->getAdditionalParameterName()+":");
         addParamEdit->setText(marker->getAdditionalParameter().toString());
         addParamLabel->setVisible(true);
@@ -260,13 +260,14 @@ void EditMarkerGroupDialog::accept() {
         MarkerEditorWidget *parent = dynamic_cast<MarkerEditorWidget*>(this->parent());
         QString message;
 
-        /*if (marker->hasAdditionalParameter()) {
+        ParameterState state = marker->hasAdditionalParameter();
+        if (NONE != state) {
             marker->setAdditionalParameter(addParamEdit->text());
-            if (addParamEdit->text().isEmpty()) {
-                QMessageBox::critical(this, tr("Error"), tr("%1 is not set").arg(marker->getAdditionalParameterName()));
+            if (REQUIRED == state && addParamEdit->text().isEmpty()) {
+                QMessageBox::critical(this, tr("Error"), tr("Parameter '%1' is not set").arg(marker->getAdditionalParameterName()));
                 return;
             }
-        }*/
+        }
 
         if (isNew) {
             if (!parent->checkAddMarkerGroupResult(marker, message)) {

@@ -358,7 +358,7 @@ void GrouperSlotsCfgModel::addGrouperSlot(const GrouperOutSlot &newSlot) {
 
 void GrouperSlotsCfgModel::setNewAction(const QString &outSlotName, const GrouperSlotAction &action) {
     QList<GrouperOutSlot>::iterator i = outSlots.begin();
-    for (; i != outSlots.end(); i++) {
+    for (; i != outSlots.end(); ++i) {
         if (i->getOutSlotId() == outSlotName) {
             i->setAction(action);
             emit si_actionEdited(*i);

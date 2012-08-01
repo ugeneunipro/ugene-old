@@ -334,7 +334,7 @@ void SAMFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     storeEntry(io, objectsMap, os);
 }
 
-void SAMFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
+void SAMFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &/*os*/) {
     SAFE_POINT(objectsMap.contains(GObjectTypes::MULTIPLE_ALIGNMENT), "Clustal entry storing: no alignment", );
     const QList<GObject*> &als = objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT];
     SAFE_POINT(als.size() > 0, "Clustal entry storing: alignment objects count error", );

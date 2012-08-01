@@ -123,7 +123,7 @@ bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1
             QList<MAlignmentRow> rows2 = al2.getRows();
             QList<MAlignmentRow>::const_iterator it1 = rows1.constBegin();
             QList<MAlignmentRow>::const_iterator it2 = rows2.constBegin();
-            for (; it1 != rows1.constEnd(); it1++, it2++) {
+            for (; it1 != rows1.constEnd(); ++it1, ++it2) {
                 bool equal = *it1 == *it2;
                 if (!equal) {
                     return false;

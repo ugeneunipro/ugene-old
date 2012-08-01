@@ -92,6 +92,12 @@ enum MarkerGroup {
     TEXT
 };
 
+enum ParameterState {
+    NONE,
+    NOT_REQUIRED,
+    REQUIRED
+};
+
 class U2LANG_EXPORT Marker : public QObject{
     Q_OBJECT
 public:
@@ -102,7 +108,7 @@ public:
     virtual QString getMarkingResult(const QVariant &object);
     virtual MarkerGroup getGroup() = 0;
     virtual Marker *clone() = 0;
-    virtual bool hasAdditionalParameter();
+    virtual ParameterState hasAdditionalParameter();
     virtual void setAdditionalParameter(const QVariant &param);
     virtual QVariant getAdditionalParameter();
     virtual QString getAdditionalParameterName();
@@ -155,7 +161,7 @@ public:
     virtual QString getMarkingResult(const QVariant &object);
     virtual MarkerGroup getGroup();
     virtual Marker *clone();
-    virtual bool hasAdditionalParameter();
+    virtual ParameterState hasAdditionalParameter();
     virtual void setAdditionalParameter(const QVariant &param);
     virtual QVariant getAdditionalParameter();
     virtual QString getAdditionalParameterName();
@@ -177,7 +183,7 @@ public:
     virtual QString getMarkingResult(const QVariant &object);
     virtual MarkerGroup getGroup();
     virtual Marker *clone();
-    virtual bool hasAdditionalParameter();
+    virtual ParameterState hasAdditionalParameter();
     virtual void setAdditionalParameter(const QVariant &param);
     virtual QVariant getAdditionalParameter();
     virtual QString getAdditionalParameterName();
