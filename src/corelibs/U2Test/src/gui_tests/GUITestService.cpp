@@ -177,14 +177,17 @@ void GUITestService::runAllGUITests() {
         GUITestTeamcityLogger::testStarted(testName);
 
         TaskStateInfo os;
+        log.trace("GTRUNNER - runAllGUITests - going to run initial checks before " + testName);
         foreach(GUITest* t, initTests) {
             if (t) {
                 t->run(os);
             }
         }
-        log.trace("GTRUNNER - runAllGUITests - going to run test " + testName);
+
         clearSandbox();
+        log.trace("GTRUNNER - runAllGUITests - going to run test " + testName);
         t->run(os);
+        log.trace("GTRUNNER - runAllGUITests - finished running test " + testName);
 
         TaskStateInfo os2;
         foreach(GUITest* t, postTests) {
@@ -192,7 +195,6 @@ void GUITestService::runAllGUITests() {
                 t->run(os2);
             }
         }
-        log.trace("GTRUNNER - runAllGUITests - finished running test " + testName);
 
         QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
 
@@ -200,6 +202,7 @@ void GUITestService::runAllGUITests() {
         GUITestTeamcityLogger::teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
     }
 
+    log.trace("GTRUNNER - runAllGUITests - shutting down UGENE");
     AppContext::getTaskScheduler()->cancelAllTasks();
     AppContext::getMainWindow()->getQMainWindow()->close();
 }
@@ -321,6 +324,8 @@ void GUITestService::setQtFileDialogView()
 
 void GUITestService::clearSandbox()
 {
+    log.trace("GUITestService __ clearSandbox");
+
     QString pathToSandbox = GUITest::testDir + "_common_data/scenarios/sandbox/";
     QDir sandbox(pathToSandbox);
 

@@ -42,6 +42,7 @@
 #include "tests/common_scenarios/msa_editor/GTTestsMsaEditor.h"
 #include "tests/common_scenarios/annotations/GTTestsAnnotations.h"
 #include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
+#include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE) \
@@ -372,9 +373,17 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0002_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0002_2);
 
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0003);
+
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_2);
+
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0009);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations/edit
@@ -392,6 +401,16 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0004_2);
 
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/annotations/qualifiers
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
