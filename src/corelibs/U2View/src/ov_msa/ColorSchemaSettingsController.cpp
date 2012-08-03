@@ -486,7 +486,8 @@ int CreateColorSchemaDialog::createNewScheme(){
 }
 
 void CreateColorSchemaDialog::sl_createSchema(){
-    if(!isSchemaNameValid(schemeName->text())){return;}
+    QString description;
+    if(!isSchemaNameValid(schemeName->text(), description)){return;}
 
     int index = alphabetComboBox->currentIndex();
     if(index < 0 || index >= alphabetComboBox->count()){return;}

@@ -100,7 +100,7 @@ signals:
             void sl_alphabetChanged(int);
     private:
         bool isNameExist(const QString&);
-        bool isSchemaNameValid(const QString&, QString& description = QString());
+        bool isSchemaNameValid(const QString&, QString&);
     private:
         QStringList usedNames;
         CustomColorSchema* newSchema;
