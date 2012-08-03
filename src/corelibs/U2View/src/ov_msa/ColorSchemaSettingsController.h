@@ -23,6 +23,7 @@
 #define _U2_COLOR_SCHEMA_SETTINGS_CONTROLLER_H_
 
 #include <ui/ui_ColorSchemaSettingsWidget.h>
+#include <ui/ui_CreateMSAScheme.h>
 
 #include <U2Gui/AppSettingsGUI.h>
 
@@ -37,6 +38,7 @@ namespace U2 {
     public:
         QString name;
         DNAAlphabetType type;
+        bool defaultAlpType;
         QMap<char, QColor> alpColors;
     };
 
@@ -81,11 +83,27 @@ signals:
             void sl_onColorsDirButton();
             void sl_onChangeColorSchema();
             void sl_onAddColorSchema();
+            void sl_schemaChanged(int);
+    private:        
+        QList<CustomColorSchema> customSchemas;
+    };
+    
+    class CreateColorSchemaDialog: public QDialog, public Ui_CreateMSAScheme{
+        Q_OBJECT
+    public:
+        CreateColorSchemaDialog(CustomColorSchema*, QStringList usedNames);
+        int createNewScheme();
+        private slots:
+            void sl_createSchema();
+            void sl_cancel();
             void sl_schemaNameEdited(const QString&);
+            void sl_alphabetChanged(int);
     private:
         bool isNameExist(const QString&);
-        bool isSchemaNameValid(const QString&, QString&);
-        QList<CustomColorSchema> customSchemas;
+        bool isSchemaNameValid(const QString&, QString& description = QString());
+    private:
+        QStringList usedNames;
+        CustomColorSchema* newSchema;
     };
 
 } // U2

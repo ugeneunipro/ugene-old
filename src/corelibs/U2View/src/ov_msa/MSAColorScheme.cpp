@@ -61,9 +61,6 @@ MSAColorScheme* MSAColorSchemeCustomSettingsFactory::create(QObject* p, MAlignme
     return new MSAColorSchemeStatic(p, this, o, colorsPerChar);
 }
 
-void MSAColorSchemeCustomSettingsFactory::sl_onCustomSettingsChanged(){
-
-}
 
 
 MSAColorSchemePercIdentFactory::MSAColorSchemePercIdentFactory(QObject* p, const QString& _id, const QString& _name, DNAAlphabetType _atype) 
@@ -377,12 +374,15 @@ MSAColorSchemeRegistry::MSAColorSchemeRegistry() {
 }
 
 MSAColorSchemeRegistry::~MSAColorSchemeRegistry(){
+    deleteOldCustomFactories();
+}
+
+void MSAColorSchemeRegistry::deleteOldCustomFactories(){
     foreach(MSAColorSchemeFactory* f, customColorers){
         delete f;
     }
     customColorers.clear();
 }
-
 
 
 QList<MSAColorSchemeFactory*> MSAColorSchemeRegistry::getMSAColorSchemes(DNAAlphabetType atype) const {
@@ -698,27 +698,6 @@ static void addJalviewNucl(QVector<QColor>& colorsPerChar) {
     SET_C('U', colorsPerChar['T'].lighter(105)); 
 }
 
-static void addCustomNucl(QVector<QColor>& colorsPerChar) {
-     QMap<DNAAlphabetType, QMap<char, QColor> > mapAlphabetColors;// = ColorSchemaSettingsUtils::getColors();
-     QMap<char, QColor> alphabetColors = mapAlphabetColors[DNAAlphabet_NUCL];
-
-     QMapIterator<char, QColor> it(alphabetColors);
-     while(it.hasNext()){
-         it.next();
-         SET_C(it.key(), it.value());
-     }
-}
-
-static void addCustomAmino(QVector<QColor>& colorsPerChar) {
-    QMap<DNAAlphabetType, QMap<char, QColor> > mapAlphabetColors; // = ColorSchemaSettingsUtils::getColors();
-    QMap<char, QColor> alphabetColors = mapAlphabetColors[DNAAlphabet_AMINO];
-
-    QMapIterator<char, QColor> it(alphabetColors);
-    while(it.hasNext()){
-        it.next();
-        SET_C(it.key(), it.value());
-    }
-}
 
 //SET_C('', "#"); 
 
@@ -757,7 +736,7 @@ void MSAColorSchemeRegistry::initCustomSchema(){
 }
 
 void MSAColorSchemeRegistry::sl_onCustomSettingsChanged(){
-    customColorers.clear();
+    deleteOldCustomFactories();
     initCustomSchema();
     emit si_customSettingsChanged(); 
 }

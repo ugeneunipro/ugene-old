@@ -37,6 +37,9 @@ class U2GUI_EXPORT GUIUtils : public QObject {
 public:
     
     static QAction* findAction(const QList<QAction*>& actions, const QString& name);
+
+    static QAction* getCheckedAction(QList<QAction*> actions);
+    static QAction* findActionByData(QList<QAction*> actions, const QString& data);
     
     static QAction* findActionAfter(const QList<QAction*>& actions, const QString& name);
 

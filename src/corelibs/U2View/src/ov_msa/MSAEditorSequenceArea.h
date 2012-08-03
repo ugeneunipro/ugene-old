@@ -250,13 +250,15 @@ private slots:
     void sl_modelChanged();
 
     void sl_customColorSettingsChanged();
-
+    void sl_showCustomSettings();
 protected:
     virtual void wheelEvent (QWheelEvent * event);
 
 private:
     void buildMenu(QMenu* m);
     void prepareColorSchemeMenuActions();
+
+    void initCustomSchemeActions(const QString& id, DNAAlphabetType type);
 
     void updateActions();
     
@@ -276,10 +278,6 @@ private:
 
     bool checkState() const;
     void validateRanges();          //called on resize/refont like events
-
-    QAction* getCheckedSchemaAction();
-    QAction* findActionById(QString id);
-    QString getCheckedActionId(); 
 
     MSAEditor*      editor;
     MSAEditorUI*    ui;
@@ -309,7 +307,7 @@ private:
     QAction*        sortByNameAction;
     QAction*        viewModeAction;
     QAction*        reverseComplementAction;
-
+    QAction*        lookMSASchemesSettingsAction;
     
     QPixmap*        cachedView;
     bool            completeRedraw;

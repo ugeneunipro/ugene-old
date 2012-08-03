@@ -20,10 +20,15 @@ public:
 protected:
     void mouseReleaseEvent(QMouseEvent *);
     void paintEvent(QPaintEvent*);
+private slots:
+    void sl_onClear();
+    void sl_onRestore();
 private:
     QPixmap* alphabetColorsView;
     QMap<char, QColor>& newColors;
+    QMap<char, QColor> storedColors;
     QMap<char, QRect> charsPlacement;
+
 };
 
 }

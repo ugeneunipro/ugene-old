@@ -39,6 +39,25 @@
 
 namespace U2 {
 
+QAction* GUIUtils::getCheckedAction(QList<QAction*> actions){
+        foreach(QAction* action, actions) {
+            if(action->isChecked()){
+                return action;
+            }
+        }
+        return NULL;
+}
+
+QAction* GUIUtils::findActionByData(QList<QAction*> actions, const QString& data){
+        foreach(QAction* action, actions) {
+            if(action->data() == data){
+                return action;
+            }
+        }
+        return NULL;
+}
+
+
 QAction* GUIUtils::findAction(const QList<QAction*>& actions, const QString& name) {
     foreach(QAction* a, actions) {
         const QString& aname =  a->objectName();

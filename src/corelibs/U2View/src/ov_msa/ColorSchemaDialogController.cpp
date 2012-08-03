@@ -5,11 +5,13 @@
 
 namespace U2{
 
-ColorSchemaDialogController::ColorSchemaDialogController(QMap<char, QColor>& colors):QDialog(), newColors(colors){}
+ColorSchemaDialogController::ColorSchemaDialogController(QMap<char, QColor>& colors):QDialog(), newColors(colors), storedColors(colors){}
 
 int ColorSchemaDialogController::adjustAlphabetColors(){    
     setupUi(this);
     alphabetColorsView = new QPixmap(alphabetColorsFrame->size());
+    connect(clearButton, SIGNAL(clicked()), SLOT(sl_onClear()));
+    connect(restoreButton, SIGNAL(clicked()), SLOT(sl_onRestore()));
 
     update();
 
@@ -41,8 +43,6 @@ void ColorSchemaDialogController::paintEvent(QPaintEvent*){
 
     QMapIterator<char, QColor> it(newColors);
 
-    int i = 0;
-    int j = 0;
     for(int i = 0; i < rows; ++i){
         painter.drawLine(0, i * rect_height, alphabetColorsView->size().width(), i * rect_height);
         for(int j = 0; j < columns; ++j){
@@ -62,6 +62,23 @@ void ColorSchemaDialogController::paintEvent(QPaintEvent*){
 
     QPainter dialogPainter(this);
     dialogPainter.drawPixmap(alphabetColorsFrame->geometry().x(), alphabetColorsFrame->geometry().y(), *alphabetColorsView);
+}
+
+void ColorSchemaDialogController::sl_onClear(){
+    storedColors = newColors;
+
+    QMapIterator<char, QColor> it(newColors);
+    while(it.hasNext()){
+        it.next();
+        newColors[it.key()] = QColor(Qt::white);
+    }
+
+    update();
+}
+
+void ColorSchemaDialogController::sl_onRestore(){
+    newColors = storedColors;
+    update();
 }
 
 void ColorSchemaDialogController::mouseReleaseEvent(QMouseEvent * event){

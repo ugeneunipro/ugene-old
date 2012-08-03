@@ -63,6 +63,10 @@ public:
 
     char getDefaultSymbol() const {return defSym;}
 
+    bool isDefault(){return id.contains("DEFAULT");}
+
+    bool isExtended(){return id.contains("EXTENDED");}
+
     bool isRaw() const {return type == DNAAlphabet_RAW;}
     
     bool isNucleic() const {return type == DNAAlphabet_NUCL;}

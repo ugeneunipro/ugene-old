@@ -23,6 +23,7 @@
 #include "MSAEditor.h"
 #include "MSAColorScheme.h"
 #include "CreateSubalignimentDialogController.h"
+#include "ColorSchemaSettingsController.h"
 
 #include <U2Algorithm/CreateSubalignmentTask.h>
 
@@ -54,6 +55,7 @@
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/AppSettingsGUI.h>
 
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
@@ -222,56 +224,16 @@ void MSAEditorSequenceArea::prepareColorSchemeMenuActions() {
         connect(action, SIGNAL(triggered()), SLOT(sl_changeColorScheme()));
         colorSchemeMenuActions.append(action);
     }
-
-    QList<MSAColorSchemeFactory*> customFactories = csr->getMSACustomColorSchemes(atype);
-    foreach(MSAColorSchemeFactory* f, customFactories) {
-        QAction* action = new QAction(f->getName(), NULL);
-        action->setObjectName(f->getName());
-        action->setCheckable(true);
-        action->setChecked(f == csf);
-        action->setData(f->getId());
-        connect(action, SIGNAL(triggered()), SLOT(sl_changeColorScheme()));
-        customColorSchemeMenuActions.append(action);
-    }
-   
-}
-
-QString MSAEditorSequenceArea::getCheckedActionId(){
-    QList<QAction*> tmpAction; tmpAction << colorSchemeMenuActions << customColorSchemeMenuActions;
-    foreach(QAction* a, tmpAction){
-        if(a->isChecked()){return a->data().toString();}
-    }
-    return QString("");
-}
-
-QAction* MSAEditorSequenceArea::getCheckedSchemaAction(){
-    QList<QAction*> tmpAction; tmpAction << colorSchemeMenuActions << customColorSchemeMenuActions;
-    foreach(QAction* action, tmpAction) {
-        if(action->isChecked()){
-            return action;
-        }
-    }
-    return NULL;
-}
-
-QAction* MSAEditorSequenceArea::findActionById(QString id){
-    foreach(QAction* action, colorSchemeMenuActions) {
-        if(action->data() == id){
-            return action;
-        }
-    }
-    return NULL;
+    initCustomSchemeActions(csf->getId(), atype);
 }
 
 
-void MSAEditorSequenceArea::sl_customColorSettingsChanged(){    
-    QString id = getCheckedActionId();
 
+void MSAEditorSequenceArea::initCustomSchemeActions(const QString& id, DNAAlphabetType atype){
     deleteOldCustomSchemes();
-    
-    MSAColorSchemeRegistry* csr = AppContext::getMSAColorSchemeRegistry();
-    DNAAlphabetType atype = editor->getMSAObject()->getAlphabet()->getType();
 
+    MSAColorSchemeRegistry* csr = AppContext::getMSAColorSchemeRegistry();
+    
     QList<MSAColorSchemeFactory*> customFactories = csr->getMSACustomColorSchemes(atype);
     foreach(MSAColorSchemeFactory* f, customFactories) {
         QAction* action = new QAction(f->getName(), NULL);
@@ -282,9 +244,16 @@ void MSAEditorSequenceArea::sl_customColorSettingsChanged(){
         connect(action, SIGNAL(triggered()), SLOT(sl_changeColorScheme()));
         customColorSchemeMenuActions.append(action);
     }
-    QAction* a = getCheckedSchemaAction();
+}
+
+
+void MSAEditorSequenceArea::sl_customColorSettingsChanged(){    
+    DNAAlphabetType atype = editor->getMSAObject()->getAlphabet()->getType();
+    QAction* a = GUIUtils::getCheckedAction(customColorSchemeMenuActions);
+    initCustomSchemeActions(a == NULL ? "" :a->data().toString(), atype);
+    
     if(!a){
-        QAction* a = findActionById(atype == DNAAlphabet_AMINO ? MSAColorScheme::UGENE_AMINO : MSAColorScheme::UGENE_NUCL);
+        QAction* a = GUIUtils::findActionByData(QList<QAction*>() << colorSchemeMenuActions << customColorSchemeMenuActions, atype == DNAAlphabet_AMINO ? MSAColorScheme::UGENE_AMINO : MSAColorScheme::UGENE_NUCL);
         if(a){a->setChecked(true);}
     }
     
@@ -300,7 +269,7 @@ void MSAEditorSequenceArea::deleteOldCustomSchemes(){
 
 void MSAEditorSequenceArea::sl_changeColorScheme() {
     QAction* a = qobject_cast<QAction*>(sender());
-    if(!a){a = getCheckedSchemaAction();}
+    if(!a){a = GUIUtils::getCheckedAction(customColorSchemeMenuActions);}
     if(!a){return;}
 
     QString id = a->data().toString();
@@ -1175,6 +1144,10 @@ void MSAEditorSequenceArea::sl_buildContextMenu(GObjectView*, QMenu* m) {
     }
 
 }
+void MSAEditorSequenceArea::sl_showCustomSettings(){
+    AppContext::getAppSettingsGUI()->showSettingsDialog(ColorSchemaSettingsPageId);
+}
+
 
 void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     QAction* copyMenuAction = GUIUtils::findAction(m->actions(), MSAE_MENU_LOAD);
@@ -1210,18 +1183,16 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
         colorsSchemeMenu->addAction(a);
     }
 
-    QMenu* customColorSchemaMenu = new QMenu(tr("Custom colors"), colorsSchemeMenu);    
-    colorsSchemeMenu->menuAction()->setObjectName("Custom colors");
+    QMenu* customColorSchemaMenu = new QMenu(tr("Custom schemes"), colorsSchemeMenu);    
+    colorsSchemeMenu->menuAction()->setObjectName("Custom schemes");    
+
     foreach(QAction* a, customColorSchemeMenuActions) {
         customColorSchemaMenu->addAction(a);
-    }
+    }    
     if(customColorSchemeMenuActions.isEmpty()){
-        customColorSchemaMenu->setEnabled(false);
-        customColorSchemaMenu->menuAction()->setText(tr("Custom schema (No one scheme found in folder)"));
-    }
-    else{
-        customColorSchemaMenu->setEnabled(true);
-        customColorSchemaMenu->menuAction()->setText(tr("Custom schema"));
+        lookMSASchemesSettingsAction = new QAction(tr("Create new color scheme"), this);    
+        connect(lookMSASchemesSettingsAction, SIGNAL(triggered()), SLOT(sl_showCustomSettings()));
+        customColorSchemaMenu->addAction(lookMSASchemesSettingsAction);
     }
 
     colorsSchemeMenu->addMenu(customColorSchemaMenu);
@@ -1752,6 +1723,7 @@ void MSAEditorSequenceArea::fillSelectionWithGaps( )
     }
     
 }
+
 
 void MSAEditorSequenceArea::sl_reverseComplementCurrentSelection() {
     MAlignmentObject* maObj = editor->getMSAObject();

@@ -67,8 +67,6 @@ class U2VIEW_EXPORT MSAColorSchemeCustomSettingsFactory : public MSAColorSchemeF
 public:
     MSAColorSchemeCustomSettingsFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype, const QVector<QColor>& colorsPerChar);
     virtual MSAColorScheme* create(QObject* p, MAlignmentObject* obj);
-private slots:
-    void sl_onCustomSettingsChanged();
 private:
     QVector<QColor> colorsPerChar;
 };
@@ -220,6 +218,7 @@ signals:
 private slots:
    void sl_onCustomSettingsChanged();
 private:
+    void deleteOldCustomFactories();
     void initBuiltInSchemes();
     void initCustomSchema();
 
