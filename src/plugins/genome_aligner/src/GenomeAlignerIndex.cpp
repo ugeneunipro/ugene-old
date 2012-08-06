@@ -264,8 +264,11 @@ BinarySearchResult GenomeAlignerIndex::bitMaskBinarySearch(BMType bitValue, BMTy
 
 #ifdef OPENCL_SUPPORT
 BinarySearchResult *GenomeAlignerIndex::bitMaskBinarySearchOpenCL(const BMType *bitValues, int size, BMType bitFilter) {
+
     taskLog.details(QString("Binary search on GPU of %1 Mb search-values in %2 Mb base values")
         .arg((8*size)/(1024*1024)).arg((8*indexPart.getLoadedPartSize())/(1024*1024)));
+    assert(indexPart.getLoadedPartSize() != 0);
+
     BinaryFindOpenCL bf((NumberType*)indexPart.bitMask, indexPart.getLoadedPartSize(), (NumberType*)bitValues, size, bitFilter);
 
     NumberType *ans = bf.launch();
@@ -459,6 +462,19 @@ void GenomeAlignerIndex::initSArray(SAType start, SAType length, SAType &arrLen)
         //setError("Index .ref file is corrupted.");
         return;
     }
+
+// 	QString partFileName = indexPart.refFile->fileName();
+// 	partFileName.resize(partFileName.length() - 4);
+// 	partFileName += "_p%1";
+// 	QFile partFile(partFileName.arg(currentPart, 2, 10, QChar('0')));
+// 	algoLog.details(QString("Dumping part %1 to file %2").arg(currentPart).arg(partFile.fileName()));
+// 	if(partFile.exists()) {
+// 		partFile.remove();
+// 	}
+// 	partFile.open(QIODevice::WriteOnly);
+// 	partFile.write(indexPart.seq, length);
+// 	partFile.close();
+
     const char *seq = indexPart.seq;
 
     SAType *arunner = sArray;

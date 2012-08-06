@@ -35,20 +35,20 @@ typedef cl_long NumberType;
 
 class U2ALGORITHM_EXPORT BinaryFindOpenCL {
 public:
-    BinaryFindOpenCL(const NumberType* _numbers, const int _numbersSize, const NumberType* _findNumbers, const int _findNumbersSize, const NumberType filter = CL_LONG_MAX);
+    BinaryFindOpenCL(const NumberType* _haystack, const int _haystackSize, const NumberType* _needles, const int _needlesSize, const NumberType filter = CL_LONG_MAX);
     ~BinaryFindOpenCL();
     NumberType* launch();
     bool hasError() {return isError;}
 private:
     bool hasOPENCLError(cl_int err, QString errorMessage);
-    void prepareBinarySearch(const NumberType* arr, int lowerBound, int upperBound,
-                             NumberType* resBounds, NumberType* resValues, const int depthNum);
+    void initMiniHaystack(const NumberType* haystack, int lowerBound, int upperBound,
+                             NumberType* miniHaystackOffsets, NumberType* miniHaystack, const int miniHaystackSize);
     bool isError;
 
-    const NumberType* numbers;
-    const int numbersSize;
-    const NumberType* findNumbers;
-    const size_t findNumbersSize;
+    const NumberType* haystack;
+    const int haystackSize;
+    const NumberType* needles;
+    const size_t needlesSize;
     const NumberType filter;
 
     cl_event clEvent1;
@@ -58,11 +58,11 @@ private:
     cl_command_queue clCommandQueue;
     cl_context clContext;
 
-    cl_mem buf_sortedArray;
-    cl_mem buf_findMeArray;
+    cl_mem buf_sortedHaystackArray;
+    cl_mem buf_needlesArray;
     cl_mem buf_outPutArray;
-    cl_mem buf_preSaveBounds;
-    cl_mem buf_preSaveValues;
+    cl_mem buf_miniHaystackOffsets;
+    cl_mem buf_miniHaystack;
 };
 
 }//namespace

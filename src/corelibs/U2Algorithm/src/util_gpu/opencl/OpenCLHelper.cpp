@@ -55,6 +55,8 @@ namespace U2 {
     const static char * clReleaseContext_n ("clReleaseContext");
     const static char * clReleaseMemObject_n ("clReleaseMemObject");
 
+	const static char * clGetKernelWorkGroupInfo_n ("clGetKernelWorkGroupInfo");
+
     OpenCLHelper::OpenCLHelper() : openclLib( OPENCL_DRIVER_LIB )  {
 
         coreLog.details( QObject::tr("Loading OPENCL driver library") );
@@ -222,8 +224,13 @@ namespace U2 {
             return;
         }
 
-
-
+		clGetKernelWorkGroupInfo_p = clGetKernelWorkGroupInfo_f( openclLib.resolve(clGetKernelWorkGroupInfo_n));
+		if( !clGetKernelWorkGroupInfo_p ) {
+			coreLog.details( QObject::tr("Cannot resolve symbol %1").arg(clGetKernelWorkGroupInfo_n) );
+			status = Error_BadDriverLib;
+			return;
+		}
+		
         status = Error_NoError;
     }
 

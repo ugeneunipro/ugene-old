@@ -92,6 +92,25 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
     foreach(const QString& read, activeShortReadsUrl) {
         shortReadsList->addItem(read);
     }
+
+	/**
+	//HACK for testing UGENE-1092
+	refSeqEdit->setText("W:/chrY.fa");
+	samBox->setChecked(true);
+	sl_onSamBoxClicked();
+	QFile::remove("W:/chrY.sam");
+	buildResultUrl(GUrl("W:/chrY.fa"));
+    if (NULL != customGUI) {
+        QString error;
+        if (!customGUI->buildIndexUrl(GUrl("W:/chrY.fa"), prebuiltIndex, error)) {
+            QMessageBox::information(this, "DNA Assembly", error);
+        }
+    }
+
+	shortReadsList->clear();
+	shortReadsList->addItem(new QListWidgetItem(QString("W:\\s_5_1_R3403B_sequence.fasta")));
+	//KCAH!!
+	**/
 }
 
 void DnaAssemblyDialog::updateState() {

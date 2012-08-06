@@ -60,7 +60,8 @@ void GenomeAlignerFindTask::prepare() {
         return;
     }
 
-    alignerTaskCount = AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
+	// no reason to have several parallel subtasks using openCL since they'll be waiting on the same mutex anyway
+	alignerTaskCount = alignContext->openCL ? 1 : AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
     setMaxParallelSubtasks(alignerTaskCount);
     for (int i=0; i<alignerTaskCount; i++) {
         waiterCount = 0;
@@ -238,6 +239,10 @@ void ShortReadAligner::run() {
             return;
         }
         stateInfo.setProgress(stateInfo.getProgress() + 25/index->getPartCount());
+		if(0 == parent->index->getLoadedPart().getLoadedPartSize()) {
+			algoLog.info(tr("Index size for part %1/%2 is zero, skipping it.").arg(part + 1).arg(index->getPartCount()));
+			continue;
+		}
 
         if (part > 0) {
             SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
