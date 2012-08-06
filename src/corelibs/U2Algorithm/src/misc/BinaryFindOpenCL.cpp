@@ -37,10 +37,6 @@
 
 namespace U2 {
 
-void __stdcall znotify(const char *errinfo, const void *private_info, size_t cb, void *user_data) {
-	algoLog.error(errinfo);
-}
-
 NumberType* BinaryFindOpenCL::launch() {
 
     time_t time1 = time(NULL);
@@ -77,7 +73,7 @@ NumberType* BinaryFindOpenCL::launch() {
 	cl_device_id deviceId = (cl_device_id) AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu()->getId();
 
     algoLog.trace("Creating a context");
-    clContext = openCLHelper.clCreateContext_p(0, clNumDevices, &deviceId, znotify, NULL, &err);
+    clContext = openCLHelper.clCreateContext_p(0, clNumDevices, &deviceId, NULL, NULL, &err);
     if (hasOPENCLError(err, "clContext() failed")) return 0;
 
     //open and read file contains OPENCL code
