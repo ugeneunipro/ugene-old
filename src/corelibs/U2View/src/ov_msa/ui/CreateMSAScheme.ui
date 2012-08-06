@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Create MSA color scheme</string>
+   <string>Create Alignment Color Scheme</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
