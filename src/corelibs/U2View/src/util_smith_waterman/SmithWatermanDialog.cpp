@@ -331,6 +331,8 @@ bool SmithWatermanDialog::readPattern(DNATranslation* aminoTT) {
     }
 
     QString inputPattern = teditPattern->toPlainText();
+    inputPattern.replace(QRegExp("\\s"), "");
+
     if (inputPattern.isEmpty()) {
         QMessageBox::critical(this, windowTitle(),  tr("Pattern is empty"));
         return false;
