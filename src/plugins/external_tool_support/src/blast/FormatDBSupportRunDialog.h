@@ -32,7 +32,7 @@ namespace U2 {
 class FormatDBSupportRunDialog : public QDialog, public Ui_FormatDBSupportRunDialog {
     Q_OBJECT
 public:
-    FormatDBSupportRunDialog(FormatDBSupportTaskSettings& settings, QWidget* parent);
+    FormatDBSupportRunDialog(const QString& name, FormatDBSupportTaskSettings& settings, QWidget* parent);
 private slots:
     void sl_formatDB();
     void sl_lineEditChanged();
@@ -41,6 +41,7 @@ private slots:
     void sl_onBrowseInputDir();
     void sl_onBrowseDatabasePath();
 private:
+    QString                         name;//name of tool that used for formating database
     FormatDBSupportTaskSettings&    settings;
 };
 

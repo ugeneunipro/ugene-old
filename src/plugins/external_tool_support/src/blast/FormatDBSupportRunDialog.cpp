@@ -20,6 +20,7 @@
  */
 
 #include "FormatDBSupportRunDialog.h"
+#include "FormatDBSupport.h"
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Gui/LastUsedDirHelper.h>
@@ -31,8 +32,8 @@ namespace U2 {
 
 ////////////////////////////////////////
 //FormatDBWithExtFileSpecifySupportRunDialog
-FormatDBSupportRunDialog::FormatDBSupportRunDialog(FormatDBSupportTaskSettings& _settings, QWidget* _parent) :
-        QDialog(_parent), settings(_settings)
+FormatDBSupportRunDialog::FormatDBSupportRunDialog(const QString &_name, FormatDBSupportTaskSettings &_settings, QWidget *_parent) :
+        QDialog(_parent), name(_name), settings(_settings)
 {
     setupUi(this);
 
@@ -40,6 +41,9 @@ FormatDBSupportRunDialog::FormatDBSupportRunDialog(FormatDBSupportTaskSettings& 
     connect(inputDirToolButton,SIGNAL(clicked()),SLOT(sl_onBrowseInputDir()));
     connect(databasePathToolButton,SIGNAL(clicked()),SLOT(sl_onBrowseDatabasePath()));
     connect(inputFilesLineEdit,SIGNAL(textChanged(QString)), SLOT(sl_lineEditChanged()));
+    connect(inputDirLineEdit,SIGNAL(textChanged(QString)), SLOT(sl_lineEditChanged()));
+    connect(inputFilesRadioButton,SIGNAL(toggled(bool)), SLOT(sl_lineEditChanged()));
+    connect(inputDirRadioButton,SIGNAL(toggled(bool)), SLOT(sl_lineEditChanged()));
     connect(databasePathLineEdit,SIGNAL(textChanged(QString)), SLOT(sl_lineEditChanged()));
     connect(databaseTitleLineEdit,SIGNAL(textChanged(QString)), SLOT(sl_lineEditChanged()));
     connect(baseNamelineEdit,SIGNAL(textChanged(QString)), SLOT(sl_lineEditChanged()));
@@ -103,6 +107,63 @@ void FormatDBSupportRunDialog::sl_onBrowseDatabasePath(){
     databasePathLineEdit->setFocus();
 }
 void FormatDBSupportRunDialog::sl_lineEditChanged(){
+    bool hasSpacesInInputFiles=false;
+    bool hasSpacesInOutputDBPath=false;
+    if(name == FORMATDB_TOOL_NAME){
+        if(inputFilesRadioButton->isChecked()){
+            if(inputFilesLineEdit->text().contains(' ')){
+                QPalette p = inputFilesLineEdit->palette();
+                p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
+                inputFilesLineEdit->setPalette(p);
+                inputFilesLineEdit->setToolTip(tr("Input files paths contain space characters."));
+                hasSpacesInInputFiles=true;
+            }else{
+                QPalette p = inputFilesLineEdit->palette();
+                p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
+                inputFilesLineEdit->setPalette(p);
+                inputFilesLineEdit->setToolTip("");
+            }
+        }else{
+            if(inputDirLineEdit->text().contains(' ')){
+                QPalette p = inputDirLineEdit->palette();
+                p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
+                inputDirLineEdit->setPalette(p);
+                inputDirLineEdit->setToolTip(tr("Input files paths contain space characters."));
+                hasSpacesInInputFiles=true;
+            }else{
+                QPalette p = inputDirLineEdit->palette();
+                p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
+                inputDirLineEdit->setPalette(p);
+                inputDirLineEdit->setToolTip("");
+            }
+        }
+    }
+    if(name == MAKEBLASTDB_TOOL_NAME){
+        if(databasePathLineEdit->text().contains(' ')){
+            QPalette p = databasePathLineEdit->palette();
+            p.setColor(QPalette::Base, QColor(255,200,200));//pink color
+            databasePathLineEdit->setPalette(p);
+            databasePathLineEdit->setToolTip(tr("Output database path contain space characters."));
+            hasSpacesInOutputDBPath=true;
+        }else{
+            QPalette p = databasePathLineEdit->palette();
+            p.setColor(QPalette::Base, QColor(255,255,255));//white color
+            databasePathLineEdit->setPalette(p);
+            databasePathLineEdit->setToolTip("");
+        }
+        if(baseNamelineEdit->text().contains(' ')){
+            QPalette p = baseNamelineEdit->palette();
+            p.setColor(QPalette::Base, QColor(255,200,200));//pink color
+            baseNamelineEdit->setPalette(p);
+            baseNamelineEdit->setToolTip(tr("Output database path contain space characters."));
+            hasSpacesInOutputDBPath=true;
+        }else{
+            QPalette p = baseNamelineEdit->palette();
+            p.setColor(QPalette::Base, QColor(255,255,255));//white color
+            baseNamelineEdit->setPalette(p);
+            baseNamelineEdit->setToolTip("");
+        }
+    }
     bool isFilledInputFilesOrDirLineEdit =
             (!inputFilesLineEdit->text().isEmpty() && inputFilesRadioButton->isChecked()) ||
             (!inputDirLineEdit->text().isEmpty() && inputDirRadioButton->isChecked());
@@ -112,7 +173,9 @@ void FormatDBSupportRunDialog::sl_lineEditChanged(){
     formatButton->setEnabled(isFilledBaseNamelineEdit &&
                              isFilledDatabasePathLineEdit &&
                              isFilledDatabaseTitleLineEdit &&
-                             isFilledInputFilesOrDirLineEdit);
+                             isFilledInputFilesOrDirLineEdit &&
+                             !hasSpacesInInputFiles &&
+                             !hasSpacesInOutputDBPath);
 }
 
 QStringList getAllFiles(QDir inputDir, QString filter, bool isIncludeFilter=true);

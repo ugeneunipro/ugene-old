@@ -153,7 +153,7 @@ void FormatDBSupport::sl_runWithExtFileSpecify(){
 
     //Call select input file and setup settings dialog
     FormatDBSupportTaskSettings settings;
-    FormatDBSupportRunDialog formatDBRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
+    FormatDBSupportRunDialog formatDBRunDialog(name, settings, AppContext::getMainWindow()->getQMainWindow());
     if(formatDBRunDialog.exec() != QDialog::Accepted){
         return;
     }

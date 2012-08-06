@@ -85,7 +85,32 @@ BlastPlusSupportRunDialog::BlastPlusSupportRunDialog(U2SequenceObject* _dnaso, Q
 void BlastPlusSupportRunDialog::sl_lineEditChanged(){
     bool isFilledDatabasePathLineEdit = !databasePathLineEdit->text().isEmpty();
     bool isFilledBaseNameLineEdit = !baseNameLineEdit->text().isEmpty();
-    okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit);
+    bool hasSpacesInDBPath=false;
+    if(databasePathLineEdit->text().contains(' ')){
+        QPalette p = databasePathLineEdit->palette();
+        p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
+        databasePathLineEdit->setPalette(p);
+        databasePathLineEdit->setToolTip(tr("Database path contain space characters."));
+        hasSpacesInDBPath=true;
+    }else{
+        QPalette p = databasePathLineEdit->palette();
+        p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
+        databasePathLineEdit->setPalette(p);
+        databasePathLineEdit->setToolTip("");
+    }
+    if(baseNameLineEdit->text().contains(' ')){
+        QPalette p = baseNameLineEdit->palette();
+        p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
+        baseNameLineEdit->setPalette(p);
+        baseNameLineEdit->setToolTip(tr("Database name contain space characters."));
+        hasSpacesInDBPath=true;
+    }else{
+        QPalette p = baseNameLineEdit->palette();
+        p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
+        baseNameLineEdit->setPalette(p);
+        baseNameLineEdit->setToolTip("");
+    }
+    okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit && !hasSpacesInDBPath);
 }
 bool BlastPlusSupportRunDialog::checkToolPath(){
 
@@ -225,7 +250,32 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_lineEditChanged(){
     bool isFilledDatabasePathLineEdit = !databasePathLineEdit->text().isEmpty();
     bool isFilledBaseNameLineEdit = !baseNameLineEdit->text().isEmpty();
     bool isInputFileLineEdit = !inputFileLineEdit->text().isEmpty();
-    okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit && isInputFileLineEdit);
+    bool hasSpacesInDBPath=false;
+    if(databasePathLineEdit->text().contains(' ')){
+        QPalette p = databasePathLineEdit->palette();
+        p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
+        databasePathLineEdit->setPalette(p);
+        databasePathLineEdit->setToolTip(tr("Database path contain space characters."));
+        hasSpacesInDBPath=true;
+    }else{
+        QPalette p = databasePathLineEdit->palette();
+        p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
+        databasePathLineEdit->setPalette(p);
+        databasePathLineEdit->setToolTip("");
+    }
+    if(baseNameLineEdit->text().contains(' ')){
+        QPalette p = baseNameLineEdit->palette();
+        p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
+        baseNameLineEdit->setPalette(p);
+        baseNameLineEdit->setToolTip(tr("Database name contain space characters."));
+        hasSpacesInDBPath=true;
+    }else{
+        QPalette p = baseNameLineEdit->palette();
+        p.setColor(QPalette::Active, QPalette::Base, QColor(255,255,255));//white color
+        baseNameLineEdit->setPalette(p);
+        baseNameLineEdit->setToolTip("");
+    }
+    okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit && isInputFileLineEdit && !hasSpacesInDBPath);
 }
 
 void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(const QString& str){

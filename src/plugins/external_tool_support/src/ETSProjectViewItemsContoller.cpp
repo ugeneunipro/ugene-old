@@ -127,7 +127,7 @@ void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
             settings.inputFilesPath.append(doc->getURLString());
         }
     }
-    FormatDBSupportRunDialog formatDBRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
+    FormatDBSupportRunDialog formatDBRunDialog(s->getToolNames().at(0), settings, AppContext::getMainWindow()->getQMainWindow());
     if(formatDBRunDialog.exec() != QDialog::Accepted){
         return;
     }
