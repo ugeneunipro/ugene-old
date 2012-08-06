@@ -34,6 +34,9 @@
 #include <U2Algorithm/OpenCLUtils.h>
 #include <U2Algorithm/OpenCLHelper.h>
 
+const float B_TO_MB_FACTOR = 1.0f / 1048576.0f;
+const QString MEM_LACK_LOG_MESSAGE = "Smith-Waterman algorithm failed to allocate %1 MB RAM for processing input data";
+
 namespace U2 {   
 
 SmithWatermanAlgorithmOPENCL::SmithWatermanAlgorithmOPENCL()  :
@@ -91,6 +94,11 @@ bool hasOPENCLError(int err, QString errorMessage) {
     }
 }
 
+void SmithWatermanAlgorithmOPENCL::processBadAlloc(const float memoryInBytes) const
+{
+    algoLog.error(MEM_LACK_LOG_MESSAGE.arg(QString::number(memoryInBytes * B_TO_MB_FACTOR)));
+}
+
 void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore) {
 
     setValues(sm, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore);
@@ -103,8 +111,14 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
     //alphChars is sorted
     const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
     int profLen = subLen * (queryLength + 1) * (alphChars[ alphChars.size()-1 ] + 1);
+    ScoreType *  queryProfile = NULL;
+    try {
+        queryProfile = new ScoreType[profLen];
+    } catch(const std::bad_alloc &) {
+        processBadAlloc(profLen * sizeof(ScoreType));
+        return;
+    }
 
-    ScoreType *  queryProfile = new ScoreType[profLen];
     gauto_array<ScoreType> qpm(queryProfile); // to ensure the data is deallocated correctly
 
     for (int i = 0; i < profLen; i++) {
@@ -153,10 +167,17 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
 
     int sizeRow = calcSizeRow(partsNumber, partSeqSize);
 
-    ScoreType* g_HdataTmp = new ScoreType[sizeRow];
+    ScoreType* g_HdataTmp = NULL;
+    ScoreType* g_directionsRec = NULL;
+    try {
+        g_HdataTmp = new ScoreType[sizeRow];
+        g_directionsRec = new ScoreType[sizeRow];    
+    } catch(const std::bad_alloc &) {
+        processBadAlloc(sizeRow * sizeof(ScoreType));
+        return;
+    }
+
     gauto_array<ScoreType> g_HdataTmpPtr(g_HdataTmp);
-    
-    ScoreType* g_directionsRec = new ScoreType[sizeRow];
     gauto_array<ScoreType> g_directionsRecPtr(g_directionsRec);
 
     for (int i = 0; i < sizeRow; i++) {

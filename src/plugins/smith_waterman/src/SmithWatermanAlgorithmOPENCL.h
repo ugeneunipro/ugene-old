@@ -47,6 +47,7 @@ private:
     int calcPartsNumber(int seqLibLength, int overlapLength);
     int calcPartSeqSize(int seqLibLength, int overlapLength, int partsNumber);
     int calcSizeRow(int partsNumber, int partSeqSize);
+    void processBadAlloc(const float memoryInBytes) const;
 
     const int MAX_BLOCKS_NUMBER;
     const int MAX_SHARED_VECTOR_LENGTH;
