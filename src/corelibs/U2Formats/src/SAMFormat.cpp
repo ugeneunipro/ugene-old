@@ -92,6 +92,7 @@ SAMFormat::SAMFormat( QObject* p ): DocumentFormat(p, DocumentFormatFlag_Support
     formatDescription = tr("The Sequence Alignment/Map (SAM) format is a generic alignment format for"
         "storing read alignments against reference sequence");
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
+    supportedObjectTypes+=GObjectTypes::ASSEMBLY;
     skipDetection = false;
     formatFlags |= DocumentFormatFlag_Hidden;
 }

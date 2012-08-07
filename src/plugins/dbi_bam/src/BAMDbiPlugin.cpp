@@ -71,7 +71,7 @@ BAMDbiPlugin::BAMDbiPlugin() : Plugin(tr("BAM format support"), tr("Interface fo
     DocumentFormatFlags flags = DocumentFormatFlags(DocumentFormatFlag_NoPack)
         | DocumentFormatFlag_NoFullMemoryLoad
         | DocumentFormatFlag_Hidden
-        | DocumentFormatFlag_SingleObjectFormat;
+        | DocumentFormatFlag_SupportWriting;
     DocumentFormat *bamDbi = new DbiDocumentFormat(SamtoolsBasedDbiFactory::ID, BaseDocumentFormats::BAM, tr("BAM File"), QStringList("bam"), flags);
     AppContext::getDocumentFormatRegistry()->registerFormat(bamDbi);
     AppContext::getDbiRegistry()->registerDbiFactory(new SamtoolsBasedDbiFactory());

@@ -55,6 +55,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/SequencesToMSAWorker.h \
            src/library/StatisticWorkers.h \
            src/library/Text2SequenceWorker.h \
+           src/library/WriteAssemblyWorkers.h \
            src/library/WriteVariationWorker.h \
            src/util/GrouperActionUtils.h \
            src/util/SaveSchemaImageUtils.h
@@ -123,6 +124,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/SequencesToMSAWorker.cpp \
            src/library/StatisticWorkers.cpp \
            src/library/Text2SequenceWorker.cpp \
+           src/library/WriteAssemblyWorkers.cpp \
            src/library/WriteVariationWorker.cpp \
            src/util/GrouperActionUtils.cpp \
            src/util/SaveSchemaImageUtils.cpp

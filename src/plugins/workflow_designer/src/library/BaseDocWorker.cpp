@@ -320,5 +320,18 @@ Task* BaseDocWriter::processDocs()
     return tlist.size() == 1 ? tlist.first() : new MultiTask(tr("Save documents"), tlist);
 }
 
+QString BaseDocWriter::getUniqueObjectName(const Document *doc, const QString &name) {
+    QString result = name;
+    int num = 0;
+    bool found = false;
+    while (NULL != doc->findGObjectByName(result)) {
+        found = true;
+        num++;
+        result = name + QString("_%1").arg(num);
+    }
+
+    return found ? result : name;
+}
+
 } // Workflow namespace
 } // U2 namespace

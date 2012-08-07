@@ -167,19 +167,6 @@ bool TextWriter::isStreamingSupport() const {
     return false;
 }
 
-static inline QString getUniqueObjectName(const Document *doc, const QString &name) {
-    QString result = name;
-    int num = 0;
-    bool found = false;
-    while (NULL != doc->findGObjectByName(result)) {
-        found = true;
-        num++;
-        result = name + QString("_%1").arg(num);
-    }
-    
-    return found ? result : name;
-}
-
 /**
  * It can change sequence name for setting unique object name
  */
@@ -188,7 +175,8 @@ static U2SequenceObject *addSeqObject(Document *doc, DNASequence &seq) {
     SAFE_POINT(0 != seq.length(), "Add sequence to document: empty length", NULL);
 
     if (doc->findGObjectByName(seq.getName())) {
-        seq.setName(getUniqueObjectName(doc, seq.getName()));
+        QString uniqueName = BaseDocWriter::getUniqueObjectName(doc, seq.getName());
+        seq.setName(uniqueName);
     }
     algoLog.trace(QString("Adding seq [%1] to %3 doc %2").arg(seq.getName()).arg(doc->getURLString()).arg(doc->getDocumentFormat()->getFormatName()));
 

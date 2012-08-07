@@ -57,6 +57,8 @@ public:
     */
     static void reads2samtools(U2DbiIterator<U2AssemblyRead> *reads, U2OpStatus &os, ReadsContainer &result);
 
+    static void read2samtools(const U2AssemblyRead &reads, U2OpStatus &os, bam1_t &result);
+
     /** Helpers for different fields of bam1_t */
 
     static QByteArray cigar2samtools(QList<U2CigarToken> cigar, U2OpStatus &os);

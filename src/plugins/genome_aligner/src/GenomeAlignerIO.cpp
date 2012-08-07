@@ -260,6 +260,7 @@ void GenomeAlignerDbiWriter::close() {
     U2AssemblyPackStat packStatus;
     wDbi->pack(assembly.id, packStatus, status);
     checkOperationStatus(status);
+    sqliteDbi->flush(status);
 }
 
 } //U2

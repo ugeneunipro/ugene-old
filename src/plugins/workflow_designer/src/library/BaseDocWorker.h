@@ -69,11 +69,15 @@ public:
     virtual Task* tick() ;
     virtual void cleanup() ;
     virtual QStringList getOutputFiles();
+
+    static QString getUniqueObjectName(const Document *doc, const QString &name);
+
 protected:
     virtual void data2doc(Document*, const QVariantMap&) = 0;
     virtual bool isStreamingSupport() const;
     virtual void storeEntry(IOAdapter *, const QVariantMap &, int) {}
-    Task* processDocs();
+    virtual Task* processDocs();
+
 protected:
     CommunicationChannel *ch;
     DocumentFormat *format;

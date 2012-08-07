@@ -142,57 +142,61 @@ void SamtoolsAdapter::reads2samtools(U2DbiIterator<U2AssemblyRead> *reads, U2OpS
     while(reads->hasNext()) {
         U2AssemblyRead r = reads->next();
         bam1_t resRead;
-        bam1_core_t &core = resRead.core;
-
-        memset(&resRead, 0, sizeof(resRead));
-
-        core.tid = 0;
-        core.pos = r->leftmostPos;
-
-        core.bin = bam_reg2bin(r->leftmostPos, r->leftmostPos+r->effectiveLen);
-        core.qual = r->mappingQuality;
-        core.l_qname = r->name.length() + 1;
-
-        core.flag = r->flags;
-        core.n_cigar = r->cigar.length();
-
-        core.l_qseq = r->readSequence.size();
-        core.mtid = 0;
-        core.mpos = 0;
-        core.isize = 0;
-
-        QByteArray quality = r->quality;
-        if(quality.isEmpty()) {
-            quality = QByteArray(core.l_qseq, 0xFF);
-        }
-
-        QByteArray cigar = cigar2samtools(r->cigar, os);
-        QByteArray seq = sequence2samtools(r->readSequence, os);
-        int dataLen = r->name.length() + 1 + cigar.length() + seq.length() + quality.length();
-        quint8 * data = new quint8[dataLen];
-        quint8 * dest = data;
-        copyArray(dest, r->name);
-        copyChar(dest, '\0');
-        copyArray(dest, cigar);
-        copyArray(dest, seq);
-        copyArray(dest, quality);
-
-        // No tags. TODO: is this good?
-        resRead.l_aux = 0;
-        resRead.data_len = resRead.m_data = dataLen;
-        resRead.data = data;
-
-        CHECK_OP(os,);
-
-        // TODO: remove checks, make tests
-        //CHECK_EXT(cigar2samtools(r->cigar, os).size() == 4*r->cigar.size(), os.setError("Internal SamtoolsAdapter cigar length check failed"),);
-        //check_seq2samtools(resRead, r->readSequence, os);
-        //CHECK_OP(os,);
-        //check_qual(resRead, quality, os);
-        //CHECK_OP(os,);
-
+        read2samtools(r, os, resRead);
+        CHECK_OP(os, );
         result.append(resRead);
     }
+}
+
+void SamtoolsAdapter::read2samtools(const U2AssemblyRead &r, U2OpStatus &os, bam1_t &resRead) {
+    bam1_core_t &core = resRead.core;
+
+    memset(&resRead, 0, sizeof(resRead));
+
+    core.tid = 0;
+    core.pos = r->leftmostPos;
+
+    core.bin = bam_reg2bin(r->leftmostPos, r->leftmostPos+r->effectiveLen);
+    core.qual = r->mappingQuality;
+    core.l_qname = r->name.length() + 1;
+
+    core.flag = r->flags;
+    core.n_cigar = r->cigar.length();
+
+    core.l_qseq = r->readSequence.size();
+    core.mtid = 0;
+    core.mpos = 0;
+    core.isize = 0;
+
+    QByteArray quality = r->quality;
+    if(quality.isEmpty()) {
+        quality = QByteArray(core.l_qseq, 0xFF);
+    }
+
+    QByteArray cigar = cigar2samtools(r->cigar, os);
+    QByteArray seq = sequence2samtools(r->readSequence, os);
+    int dataLen = r->name.length() + 1 + cigar.length() + seq.length() + quality.length();
+    quint8 * data = new quint8[dataLen];
+    quint8 * dest = data;
+    copyArray(dest, r->name);
+    copyChar(dest, '\0');
+    copyArray(dest, cigar);
+    copyArray(dest, seq);
+    copyArray(dest, quality);
+
+    // No tags. TODO: is this good?
+    resRead.l_aux = 0;
+    resRead.data_len = resRead.m_data = dataLen;
+    resRead.data = data;
+
+    CHECK_OP(os,);
+
+    // TODO: remove checks, make tests
+    //CHECK_EXT(cigar2samtools(r->cigar, os).size() == 4*r->cigar.size(), os.setError("Internal SamtoolsAdapter cigar length check failed"),);
+    //check_seq2samtools(resRead, r->readSequence, os);
+    //CHECK_OP(os,);
+    //check_qual(resRead, quality, os);
+    //CHECK_OP(os,);
 }
 
 static bool startPosLessThan(const bam1_t &a, const bam1_t &b) {

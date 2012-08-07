@@ -112,7 +112,7 @@ void ConvertToIndexedBamTask::run() {
         CHECK_OP(stateInfo, );
     }
 
-    bool indexed = BAMUtils::hasValidBamIndex(sortedBamUrl);
+    bool indexed = sorted && BAMUtils::hasValidBamIndex(sortedBamUrl);
     if (!indexed) {
         BAMUtils::createBamIndex(sortedBamUrl, stateInfo);
         CHECK_OP(stateInfo, );
