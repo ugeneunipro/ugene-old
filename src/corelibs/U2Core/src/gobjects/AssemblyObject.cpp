@@ -23,6 +23,12 @@
 
 namespace U2 {
 
+AssemblyObject::AssemblyObject(const U2EntityRef& ref, const QString& objectName, const QVariantMap& hints) 
+: GObject(GObjectTypes::ASSEMBLY, objectName, hints)
+{
+    this->entityRef = ref;
+}
+
 GObject* AssemblyObject::clone(const U2DbiRef&, U2OpStatus&) const {
     //TODO: run real cloning here!
     AssemblyObject* cln = new AssemblyObject(entityRef, getGObjectName(), getGHintsMap());
