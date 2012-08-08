@@ -102,15 +102,15 @@ QWidget* ExternalToolSupportSettingsPageWidget::createPathEditor(QWidget *parent
     connect(clearToolPathButton, SIGNAL(clicked()), this, SLOT(sl_onPathEditWidgetClick()));
     connect(clearToolPathButton,SIGNAL(clicked()),toolPathEdit,SLOT(sl_clear()));
 
+    
     QHBoxLayout* layout = new QHBoxLayout(widget);
     layout->setSpacing(0);
     layout->setMargin(0);
     layout->addWidget(toolPathEdit);
-    QHBoxLayout* layout2 = new QHBoxLayout(widget);
-    layout2->addWidget(selectToolPathButton);
-    layout2->addWidget(clearToolPathButton);
-    layout->addLayout(layout2);
-    buttonsWidth=layout2->minimumSize().width();
+    layout->addWidget(selectToolPathButton);
+    layout->addWidget(clearToolPathButton);
+
+    buttonsWidth = clearToolPathButton->size().width() + selectToolPathButton->size().width() + 2; //'2' is a magic number, even with a zero spacing we need it here        
 
     return widget;
 }
