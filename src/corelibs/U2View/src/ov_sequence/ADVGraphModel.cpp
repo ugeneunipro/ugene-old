@@ -131,7 +131,7 @@ void GSequenceGraphUtils::fitToScreen(const QVector<float>& data, int dataStartB
 }
 
 int GSequenceGraphUtils::getNumSteps(const U2Region& range, int w, int s) { 
-    assert(range.length >= w);
+    if(range.length < w) return 1;
     int steps = (range.length  - w) / s + 1;
     return steps;
 }
@@ -389,7 +389,7 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
     const U2Region& vr = view->getVisibleRange();
 
     int step = wdata.step;
-    int win = wdata.window;
+    int win = wdata.window, win2 = (win+1)/2;
     qint64 seqLen = view->getSequenceLength();
 
     points.firstPoints.resize(numPoints);
@@ -402,9 +402,6 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
     */
     min = UNKNOWN_VAL;
     max = UNKNOWN_VAL;
-    if (vr.length < win) {
-        return;
-    }
     int alignedFirst = 0; //start point for the first window
     int alignedLast = 0; //start point for the last window
     align(vr.startPos, vr.endPos(), win, step, seqLen, alignedFirst, alignedLast);
@@ -436,8 +433,10 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
         }
     } else {
         points.useIntervals = false;
-        calculateWithExpand(d, points, alignedFirst, alignedLast);
-        calculateCutoffPoints(d, points, alignedFirst, alignedLast);
+        if(vr.startPos + win2 <= seqLen){
+            calculateWithExpand(d, points, alignedFirst, alignedLast);
+            calculateCutoffPoints(d, points, alignedFirst, alignedLast);      
+        }
     }
 
     // Calculate min-max values, ignore unknown values
@@ -484,7 +483,16 @@ void GSequenceGraphDrawer::calculateCutoffPoints(GSequenceGraphData* d, PairVect
     Q_UNUSED(alignedFirst);
     Q_UNUSED(alignedLast);
     points.cutoffPoints.clear();
-    d->ga->calculate(points.cutoffPoints, view->getSequenceObject(), U2Region(view->getVisibleRange()), &wdata);
+   
+    int win = wdata.window;
+    U2SequenceObject* o = view->getSequenceObject();
+
+    U2Region r(alignedFirst, alignedLast - alignedFirst + win);
+    if( r.startPos + win > o->getSequenceLength() ){
+        return;
+    }
+
+    d->ga->calculate(points.cutoffPoints, view->getSequenceObject(), r, &wdata);
 }
 
 void GSequenceGraphDrawer::calculateWithFit(GSequenceGraphData* d, PairVector& points, int alignedFirst, int alignedLast) {
@@ -522,6 +530,11 @@ void GSequenceGraphDrawer::calculateWithExpand(GSequenceGraphData* d, PairVector
     U2Region r(alignedFirst, alignedLast - alignedFirst + win);
     U2SequenceObject* o = view->getSequenceObject();
     QVector<float> res;
+
+    if( r.startPos + win > o->getSequenceLength() ){
+        return;
+    }
+
     d->ga->calculate(res, o, r, &wdata);
     const U2Region& vr = view->getVisibleRange();
 
@@ -554,6 +567,10 @@ void GSequenceGraphDrawer::calculateWithExpand(GSequenceGraphData* d, PairVector
     }
 
     //restore boundary points if possible
+    if(res.size() < 2){
+        return;
+    }
+
     if (hasBeforeStep && res[0]!=UNKNOWN_VAL && res[1]!=UNKNOWN_VAL) {
         assert(firstBaseOffset > 0);
         float k = firstBaseOffset / (float)step;
