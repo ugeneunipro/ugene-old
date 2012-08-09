@@ -195,9 +195,9 @@ void GenomeAlignerCUDAHelper::alignReads(IndexPart& indexPart, AlignContext* ctx
     taskLog.details(QString("Copying %1 bytes of reference sequence to device").arg(seqSize*sizeof(char)));
     SAFE_CALL( cudaMemcpy(seqDev, indexPart.seq , seqSize*sizeof(char), cudaMemcpyHostToDevice  ) );
         
-    cudaAlignReads(readsDev,readSizesDev,readOffsetsDev,readsNumber,seqDev,seqSize,
-        sArrayDev,suffixSize,bmArrayDev,suffixSize,ctx->bitFilter,indexPart.getLoadedSeqStart(),
-        indexPart.getLoadedPartSize(), ctx->nMismatches, ctx->w, resultsDev );
+//     cudaAlignReads(readsDev,readSizesDev,readOffsetsDev,readsNumber,seqDev,seqSize,
+//         sArrayDev,suffixSize,bmArrayDev,suffixSize,ctx->bitFilter,indexPart.getLoadedSeqStart(),
+//         indexPart.getLoadedPartSize(), ctx->nMismatches, ctx->w, resultsDev );
     
     QVector<int> results;
     results.resize(2*readsNumber);

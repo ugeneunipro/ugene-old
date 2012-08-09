@@ -288,8 +288,8 @@ BinarySearchResult * GenomeAlignerIndex::findBitValuesUsingCUDA( BMType *bitValu
     // estimate memory size?
     SuffixSearchCUDA ss;
     
-    result = (BinarySearchResult*)ss.runSearch( indexPart.bitMask, 
-        indexPart.getLoadedPartSize(), bitValues, size, bitFilter);
+//     result = (BinarySearchResult*)ss.runSearch( indexPart.bitMask, 
+//         indexPart.getLoadedPartSize(), bitValues, size, bitFilter);
          
 #endif // GA_BUILD_WITH_CUDA
     

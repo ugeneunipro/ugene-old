@@ -38,7 +38,7 @@
 namespace U2 {
 
 template <typename T>
-QString numArrToStr(T* arr, int size, boolean hex = false) {
+QString numArrToStr(T* arr, int size, bool hex = false) {
 	if(NULL == arr) {
 		return QString("null");
 	}
