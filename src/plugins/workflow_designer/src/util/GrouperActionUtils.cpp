@@ -366,7 +366,7 @@ QVariant MergerStringPerformer::finishAction(U2OpStatus &) {
 }
 
 MergeAnnotationPerformer::MergeAnnotationPerformer(const QString &outSlot, const GrouperSlotAction &action, WorkflowContext *context)
-: ActionPerformer(outSlot, action, context)
+: ActionPerformer(outSlot, action, context), offset(0)
 {
     started = true;
 }
