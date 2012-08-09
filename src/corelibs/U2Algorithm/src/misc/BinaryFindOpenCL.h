@@ -38,12 +38,14 @@ public:
     BinaryFindOpenCL(const NumberType* _haystack, const int _haystackSize, const NumberType* _needles, const int _needlesSize, const int *_windowSizes);
     ~BinaryFindOpenCL();
     NumberType* launch();
-    bool hasError() {return isError;}
+	bool hasError() {return isError;}
 private:
     bool hasOPENCLError(cl_int err, QString errorMessage);
     void initMiniHaystack(const NumberType* haystack, int lowerBound, int upperBound,
                              NumberType* miniHaystackOffsets, NumberType* miniHaystack, const int miniHaystackSize);
-    bool isError;
+	void logProfilingInfo(const OpenCLHelper &openCLHelper, const cl_event &event, const QString &msgPrefix);
+
+	bool isError;
 
     const NumberType* haystack;
     const int haystackSize;

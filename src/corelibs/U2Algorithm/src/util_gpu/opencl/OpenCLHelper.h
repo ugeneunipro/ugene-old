@@ -171,6 +171,14 @@ public:
 		void *param_value,
 		size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_1;
 
+	typedef CL_API_ENTRY cl_int ( CL_API_CALL *clGetEventProfilingInfo_f)(
+		cl_event event,
+		cl_profiling_info param_name,
+		size_t param_value_size,
+		void *param_value,
+		size_t *param_value_size_ret) CL_API_SUFFIX__VERSION_1_1;
+
+
     clGetPlatformIDs_f clGetPlatformIDs_p;
     clGetPlatformInfo_f clGetPlatformInfo_p;
     clGetDeviceIDs_f clGetDeviceIDs_p;
@@ -198,6 +206,7 @@ public:
     clReleaseMemObject_f clReleaseMemObject_p;
 
 	clGetKernelWorkGroupInfo_f clGetKernelWorkGroupInfo_p;
+	clGetEventProfilingInfo_f clGetEventProfilingInfo_p;
 
     enum OpenCLHelperError {
         Error_NoError,

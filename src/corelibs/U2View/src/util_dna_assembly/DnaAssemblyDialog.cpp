@@ -95,20 +95,20 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
 
 	/*
 	//HACK for testing UGENE-1092
-	refSeqEdit->setText("W:/chrY-mini.fa");
+	refSeqEdit->setText("W:/chrY-trunc.fa");
 	samBox->setChecked(true);
 	sl_onSamBoxClicked();
-	QFile::remove("W:/chrY-mini.sam");
-	buildResultUrl(GUrl("W:/chrY-mini.fa"));
+	QFile::remove("W:/chrY-trunc.sam");
+	buildResultUrl(GUrl("W:/chrY-trunc.fa"));
     if (NULL != customGUI) {
         QString error;
-        if (!customGUI->buildIndexUrl(GUrl("W:/chrY-mini.fa"), prebuiltIndex, error)) {
+        if (!customGUI->buildIndexUrl(GUrl("W:/chrY-trunc.fa"), prebuiltIndex, error)) {
             QMessageBox::information(this, "DNA Assembly", error);
         }
     }
 
 	shortReadsList->clear();
-	shortReadsList->addItem(new QListWidgetItem(QString("W:\\chrY-mini-reads.fasta")));
+	shortReadsList->addItem(new QListWidgetItem(QString("W:\\chrY-trunc-reads.fasta")));
 	//KCAH!!
 	*/
 }

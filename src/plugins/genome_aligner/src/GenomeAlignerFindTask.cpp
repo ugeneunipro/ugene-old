@@ -303,6 +303,7 @@ void ShortReadAlignerCPU::run() {
 					continue;
 				}
 				BMType currentBitFilter = ((quint64)0 - 1) << (62 - currentW * 2);
+// 				algoLog.details(QString("bitFilter value for needle #%1 is 0x%2").arg(i).arg(currentBitFilter, sizeof(BMType) * 2, 16, QChar('0')));
 
 				if (part > 0 || alignContext->openCL) { //for avoiding a QVector deep copy
 					SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
@@ -334,7 +335,7 @@ void ShortReadAlignerCPU::run() {
 				}
 
 				bmr = index->bitMaskBinarySearch(bv, currentBitFilter);
-// 				algoLog.details(QString("needle %1 found at offset %2").arg(i).arg(bmr));
+//				algoLog.details(QString("needle %1 found at offset %2").arg(i).arg(bmr));
 				index->alignShortRead(shortRead, bv, pos, bmr, alignContext, currentBitFilter, currentW);
 
 				if (!alignContext->bestMode) {
@@ -404,7 +405,7 @@ void ShortReadAlignerOpenCL::run() {
 		if (!parent->runOpenCLBinarySearch()) {
 			return;
 		}
-//  		algoLog.details(QString("search results: %1").arg(numArrToStr(parent->binarySearchResults, alignContext->bitValuesV.size())));
+// 		algoLog.details(QString("search results: %1").arg(numArrToStr(parent->binarySearchResults, alignContext->bitValuesV.size())));
 		stateInfo.setProgress(stateInfo.getProgress() + 50/index->getPartCount());
 
 		SearchQuery **q = const_cast<SearchQuery**>(alignContext->queries.constData());
@@ -420,7 +421,7 @@ void ShortReadAlignerOpenCL::run() {
 				continue;
 			}
 			BMType currentBitFilter = ((quint64)0 - 1) << (62 - currentW * 2);
-// 			algoLog.details(QString("bitFilter value for needle #%1 is 0x%2").arg(i).arg(currentBitFilter, sizeof(BMType) * 2, 16, QChar('0')));
+//			algoLog.details(QString("bitFilter value for needle #%1 is 0x%2").arg(i).arg(currentBitFilter, sizeof(BMType) * 2, 16, QChar('0')));
 
 			if (part > 0 || alignContext->openCL) { //for avoiding a QVector deep copy
 				SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );

@@ -57,6 +57,7 @@ namespace U2 {
     const static char * clReleaseMemObject_n ("clReleaseMemObject");
 
 	const static char * clGetKernelWorkGroupInfo_n ("clGetKernelWorkGroupInfo");
+	const static char * clGetEventProfilingInfo_n ("clGetEventProfilingInfo");
 
     OpenCLHelper::OpenCLHelper() : openclLib( OPENCL_DRIVER_LIB )  {
 
@@ -235,6 +236,13 @@ namespace U2 {
 		clGetKernelWorkGroupInfo_p = clGetKernelWorkGroupInfo_f( openclLib.resolve(clGetKernelWorkGroupInfo_n));
 		if( !clGetKernelWorkGroupInfo_p ) {
 			coreLog.details( QObject::tr("Cannot resolve symbol %1").arg(clGetKernelWorkGroupInfo_n) );
+			status = Error_BadDriverLib;
+			return;
+		}
+
+		clGetEventProfilingInfo_p = clGetEventProfilingInfo_f( openclLib.resolve(clGetEventProfilingInfo_n));
+		if( !clGetEventProfilingInfo_p ) {
+			coreLog.details( QObject::tr("Cannot resolve symbol %1").arg(clGetEventProfilingInfo_n) );
 			status = Error_BadDriverLib;
 			return;
 		}

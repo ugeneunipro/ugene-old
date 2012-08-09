@@ -187,11 +187,12 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         if (!alignContext.bestMode) {
             pWriteTask->setSeqWriter(seqWriter);
         }
-        taskLog.details(QString("Genome aligner index creation time: %1").arg((double)time/(1000*1000)));
+        taskLog.details(QString("Genome aligner index creation time: %1 sec.").arg((double)time/(1000*1000)));
     }
 
     if (subTask == findTask) {
-        taskLog.details(QString("Bunch of reads aligning time: %1").arg((double)time/(1000*1000)));
+        taskLog.details(QString("%1 reads with up to %2 mismatches aligned in %3 sec.")
+			.arg(alignContext.queries.size()).arg(alignContext.nMismatches).arg((double)time/(1000*1000)));
         indexLoadTime += findTask->getIndexLoadTime();
 
         if (alignContext.bestMode) {
@@ -216,7 +217,7 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         }
 
         readsCount += readTask->bunchSize;
-        taskLog.details(QString("Reading (and complementing) of %1 short-reads  time: %2")
+        taskLog.details(QString("%1 short reads read and complemented in %2 sec.")
             .arg(readTask->bunchSize).arg((double)time/(1000*1000)));
 
         /*findTask = new GenomeAlignerFindTask(index, &alignContext, pWriteTask);

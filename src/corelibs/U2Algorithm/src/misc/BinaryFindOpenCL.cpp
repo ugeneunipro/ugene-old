@@ -38,19 +38,22 @@
 namespace U2 {
 
 template <typename T>
-QString numArrToStr(T* arr, int size) {
+QString numArrToStr(T* arr, int size, bool hex = false) {
 	if(NULL == arr) {
 		return QString("null");
 	}
 
 	QString ret("");
 	ret += '[';
-	for(int i = 0; i < size -1; i++) {
-		ret += QString::number(arr[i]);
-		ret += ", ";
-	}
-	if(size > 0) {
-		ret += QString::number(arr[size - 1]);
+	for(int i = 0; i < size; i++) {
+		if(hex) {
+			ret += QString("0x%1").arg(arr[i], sizeof(T) * 2, 16, QChar('0'));
+		} else {
+			ret += QString::number(arr[i]);
+		}
+		if(i < size - 1) {
+			ret += ", ";
+		}
 	}
 	ret += ']';
 
@@ -83,16 +86,17 @@ NumberType* BinaryFindOpenCL::launch() {
     gauto_array<NumberType> miniHaystackPtr(miniHaystack);
 
     initMiniHaystack(haystack, lowerBound, upperBound, miniHaystackOffsets, miniHaystack, miniHaystackSize);
-// 	algoLog.details(QString("miniHaystack: %1").arg(numArrToStr(miniHaystack, miniHaystackSize)));
+// 	algoLog.details(QString("miniHaystack: %1").arg(numArrToStr(miniHaystack, miniHaystackSize, true)));
 // 	algoLog.details(QString("miniHaystackOffsets: %1").arg(numArrToStr(miniHaystackOffsets, miniHaystackSize)));
 
 	// the number of needles a particular kernel execution should search for
 	int workItemSize = 20000;
 	if (needlesSize < workItemSize) {
-		workItemSize = needlesSize / 2 + 1;
+		workItemSize = needlesSize;
 	}
 
-// 	binarySearch_classic((NumberType*)haystack, (NumberType*)needles, needlesSize, workItemSize, (NumberType*)miniHaystackOffsets, (NumberType*)miniHaystack, miniHaystackSize, filter);
+// 	binarySearch_classic((NumberType*)haystack, (NumberType*)needles, needlesSize, workItemSize,
+// 		(NumberType*)miniHaystackOffsets, (NumberType*)miniHaystack, miniHaystackSize, filter);
 // 	return (NumberType*)needles;
 
     const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
@@ -121,65 +125,74 @@ NumberType* BinaryFindOpenCL::launch() {
 	if(hasOPENCLError(err, "clGetKernelWorkGroupInfo() failed")) return 0;
 	algoLog.details(QObject::tr("Device's preferred work group size multiple is %1, using this number").arg(preferredWorkGroupSize));
 
-	const size_t globalWorkSize = (size_t)ceil((double)needlesSize / (preferredWorkGroupSize * workItemSize));
-	algoLog.info(QString("needles: %1, haystack size: %2").arg(needlesSize).arg(haystackSize));
-	algoLog.details(QObject::tr("globalWorkSize = %1, work item size = %2").arg(globalWorkSize).arg(workItemSize));
+	// if the global work size is greater than the device's preferred workgroup size (PWS), round it up to a multiple
+	// of PWS to ensure that work groups of exactly that size are created by OpenCL impl
+	size_t globalWorkSize = (size_t)ceil((double)needlesSize / workItemSize);
+	if(globalWorkSize > preferredWorkGroupSize) {
+		globalWorkSize = (size_t)ceil((double)globalWorkSize / preferredWorkGroupSize) * preferredWorkGroupSize;
+	}
+	algoLog.details(QString("needles: %1, haystack size: %2").arg(needlesSize).arg(haystackSize));
+	algoLog.details(QString("global work size = %1, work item size = %2").arg(globalWorkSize).arg(workItemSize));
 
     buf_needlesArray = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
                                              sizeof(NumberType) * needlesSize, (void*)needles, &err);
-    if (hasOPENCLError(err, "buf_needlesArray clCreateBuffer")) return 0;
+    if (hasOPENCLError(err, "clCreateBuffer(buf_needlesArray)")) return 0;
     usageGPUMem += sizeof(NumberType) * needlesSize;
 
     const int outputArraySize = needlesSize;
 
 	buf_windowSizesArray = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
 		sizeof(cl_int) * needlesSize, (void*)windowSizes, &err);
-	if (hasOPENCLError(err, "buf_windowSizesArray clCreateBuffer")) return 0;
+	if (hasOPENCLError(err, "clCreateBuffer(buf_windowSizesArray)")) return 0;
 	usageGPUConstantMem += sizeof(cl_int) * needlesSize;
 
     buf_sortedHaystackArray = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
                                              sizeof(NumberType) * haystackSize, (void*)haystack, &err);
-    if (hasOPENCLError(err, "buf_sortedHaystackArray clCreateBuffer")) return 0;
+    if (hasOPENCLError(err, "clCreateBuffer (buf_sortedHaystackArray)")) return 0;
     usageGPUConstantMem += sizeof(NumberType) * haystackSize;
 
     buf_miniHaystackOffsets = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
                                              sizeof(NumberType) * miniHaystackSize, (void*)miniHaystackOffsets, &err);
-    if (hasOPENCLError(err, "buf_miniHaystackOffsets clCreateBuffer")) return 0;
+    if (hasOPENCLError(err, "clCreateBuffer (buf_miniHaystackOffsets)")) return 0;
     usageGPUConstantMem += sizeof(NumberType) * miniHaystackSize;
 
     buf_miniHaystack = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
                                              sizeof(NumberType) * miniHaystackSize, (void*)miniHaystack, &err);
-    if (hasOPENCLError(err, "buf_miniHaystack clCreateBuffer")) return 0;
+    if (hasOPENCLError(err, "clCreateBuffer (buf_miniHaystack)")) return 0;
     usageGPUConstantMem += sizeof(NumberType) * miniHaystackSize;
 
-    cl_uint n = 0;
+    cl_uint kernelArgNum = 0;
 
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&buf_sortedHaystackArray);
-    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(n))) return 0;
+    err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_mem), (void*)&buf_sortedHaystackArray);
+    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
 
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&buf_needlesArray);
-    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(n))) return 0;
+    err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_mem), (void*)&buf_needlesArray);
+    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
 
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&needlesSize);
-    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(n))) return 0;
+    err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_int), (void*)&needlesSize);
+    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
 
-	err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&buf_windowSizesArray);
-	if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(n))) return 0;
+	err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_mem), (void*)&buf_windowSizesArray);
+	if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
 
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&workItemSize);
-    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(n))) return 0;
+    err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_int), (void*)&workItemSize);
+    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
 
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&buf_miniHaystackOffsets);
-    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(n))) return 0;
+    err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_mem), (void*)&buf_miniHaystackOffsets);
+    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
 
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&buf_miniHaystack);
-    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(n))) return 0;
+    err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_mem), (void*)&buf_miniHaystack);
+    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
 
-    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&miniHaystackSize);
-    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(n))) return 0;
+    err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_int), (void*)&miniHaystackSize);
+    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
 
-    clCommandQueue = openCLHelper.clCreateCommandQueue_p(clContext, deviceId, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err);
-    if (hasOPENCLError(err, "cl::CommandQueue() failed ")) return 0;
+	// try creating a queue with profiling enabled if that's possible and without if not
+    clCommandQueue = openCLHelper.clCreateCommandQueue_p(clContext, deviceId, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE | CL_QUEUE_PROFILING_ENABLE, &err);
+	if(CL_INVALID_QUEUE_PROPERTIES == err) {
+		clCommandQueue = openCLHelper.clCreateCommandQueue_p(clContext, deviceId, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, &err);
+	}
+	if (hasOPENCLError(err, "clCommandQueue() failed ")) return 0;
 
     err = openCLHelper.clEnqueueNDRangeKernel_p(
                     clCommandQueue,
@@ -190,28 +203,28 @@ NumberType* BinaryFindOpenCL::launch() {
                     NULL,//&preferredWorkGroupSize,
                     0,
                     NULL,
-                    NULL);//&clEvent1);
+                    &clEvent1);
     if (hasOPENCLError(err, "clEnqueueNDRangeKernel")) return 0;
 
-	err = openCLHelper.clFlush_p(clCommandQueue);
-	if (hasOPENCLError(err, "clFlush")) return 0;
 	err = openCLHelper.clFinish_p(clCommandQueue);
-	if (hasOPENCLError(err, "clFinish")) return 0;
-// 	err = openCLHelper.clWaitForEvents_p(1, &clEvent1);
-// 	if (hasOPENCLError(err, "clWaitForEvents 1")) return 0;
+	if (hasOPENCLError(err, "clFinish 1")) return 0;
+
+	logProfilingInfo(openCLHelper, clEvent1, QString("OpenCL kernel execution time (binary search)"));
 
     NumberType* outputArray = new NumberType[outputArraySize];
     err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, buf_needlesArray, CL_FALSE, 0, sizeof(NumberType) * outputArraySize, outputArray, 0, NULL, &clEvent2);
-    if (hasOPENCLError(err, "clCommandQueue")) {
+    if (hasOPENCLError(err, "clEnqueueReadBuffer")) {
         delete[] outputArray;
         return 0;
     }
 
-    err = openCLHelper.clWaitForEvents_p(1, &clEvent2);
-    if (hasOPENCLError(err, "clWaitForEvents")) {
-        delete[] outputArray;
-        return 0;
-    }
+	err = openCLHelper.clFinish_p(clCommandQueue);
+	if (hasOPENCLError(err, "clFinish 2")) {
+		delete[] outputArray;
+		return 0;
+	}
+
+	logProfilingInfo(openCLHelper, clEvent2, QString("OpenCL binary search results copying time"));
 
     time_t time2 = time(NULL);
     algoLog.details(QObject::tr("GPU execution time: %1, GPUMem usage: %2 Mb, GPUContantMem %3 Kb")
@@ -326,11 +339,41 @@ BinaryFindOpenCL::BinaryFindOpenCL(const NumberType *_haystack,
 
 bool BinaryFindOpenCL::hasOPENCLError(int err, QString errorMessage) {
     if(err != 0) {
-        algoLog.error(QString("OPENCL: %1; Error code (%2)").arg(errorMessage).arg(err));
+		switch(err) {
+			case CL_INVALID_BUFFER_SIZE:
+				algoLog.error(QString("OPENCL: %1; Error code %2 (Invalid buffer size)").arg(errorMessage).arg(err));
+				break;
+			case CL_MEM_OBJECT_ALLOCATION_FAILURE:
+				algoLog.error(QString("OPENCL: %1; Error code %2 (Memory object allocation failure)").arg(errorMessage).arg(err));
+				break;
+			case CL_OUT_OF_HOST_MEMORY:
+				algoLog.error(QString("OPENCL: %1; Error code %2 (Out of host memory)").arg(errorMessage).arg(err));
+				break;
+			case CL_OUT_OF_RESOURCES:
+				algoLog.error(QString("OPENCL: %1; Error code %2 (Out of resources)").arg(errorMessage).arg(err));
+				break;
+			default:
+				algoLog.error(QString("OPENCL: %1; Error code %2").arg(errorMessage).arg(err));
+				break;
+		}
         return true;
     } else {
         return false;
     }
+}
+
+void BinaryFindOpenCL::logProfilingInfo(const OpenCLHelper &openCLHelper, const cl_event &event, const QString &msgPrefix) {
+	cl_int err;
+	cl_ulong clt1 = 0, clt2 = 0, clt3 = 0, clt4 = 0;
+	if((err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_QUEUED, sizeof(cl_ulong), &clt1, NULL)) != 0
+		|| (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_SUBMIT, sizeof(cl_ulong), &clt2, NULL)) != 0
+		|| (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &clt3, NULL)) != 0
+		|| (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &clt4, NULL)) != 0) {
+			algoLog.details(QString("OpenCL profiling info unavailable (%1)").arg(err));
+	} else {
+		algoLog.details(QString("%1: %2/%3/%4 microseconds (since queued/submitted/execution started)")
+			.arg(msgPrefix).arg((clt4 - clt1)/1000).arg((clt4 - clt2)/1000).arg((clt4 - clt3)/1000));
+	}
 }
 
 }//namespace
