@@ -79,7 +79,7 @@ void GTest_BinaryFindOpenCL::prepare() {
     if (AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu() == 0) {
         stateInfo.setError(QString("No enabled gpu's found"));
     } else {
-        BinaryFindOpenCL bf(numbers.constData(), numbers.size(), findNumbers.constData(), findNumbers.size());
+        BinaryFindOpenCL bf(numbers.constData(), numbers.size(), findNumbers.constData(), findNumbers.size(), windowSizes.constData());
         results = bf.launch();
     }
 }

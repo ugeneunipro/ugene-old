@@ -48,7 +48,8 @@ public:
     void alignShortRead(SearchQuery *qu, BMType bitValue, int startPos, BinarySearchResult firstResult, AlignContext *settings, BMType bitFilter, int w);
     BinarySearchResult bitMaskBinarySearch(BMType bitValue, BMType bitFilter);
 #ifdef OPENCL_SUPPORT
-    BinarySearchResult *bitMaskBinarySearchOpenCL(const BMType *bitValues, int size, quint64 BMType);
+    BinarySearchResult *bitMaskBinarySearchOpenCL(const BMType *bitValues, int size, const int *windowSizes);
+		//quint64 BMType);
 #endif
     BinarySearchResult *findBitValuesUsingCUDA(BMType *bitValues, int size, BMType filter);
     QString getSeqName() const {return seqObjName;}

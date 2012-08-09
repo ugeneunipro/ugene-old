@@ -41,7 +41,7 @@ namespace U2 {
 
 #ifdef GA_BUILD_WITH_CUDA
 
-extern "C" void cudaBinarySearch(quint64* pList1Dev, int nList1Length, quint64* pList2Dev, int nList2Length);
+extern "C" void cudaBinarySearch(quint64* pList1Dev, int nList1Length, quint64* pList2Dev, int nList2Length, int *windowSizes);
 
 extern "C" void cudaAlignReads(char* readsData, 
                                int* readSizes,
@@ -61,14 +61,16 @@ extern "C" void cudaAlignReads(char* readsData,
                                quint32* results);
 
 quint64* U2::SuffixSearchCUDA::runSearch( const quint64* numbers, const int numbersSize, 
-                                            const quint64* query, const int querySize, quint64 filter )
+                                            const quint64* query, const int querySize, const int *windowSizes )
 {
     cudaMalloc((void **)&numbersListDev, numbersSize * sizeof(quint64));
     cudaMalloc((void **)&queryListDev,querySize * sizeof(quint64));
+	cudaMalloc((void **)&windowSizesDev, querySize* sizeof(int));
     cudaMemcpy(numbersListDev, numbers, numbersSize * sizeof(quint64), cudaMemcpyHostToDevice);
     cudaMemcpy(queryListDev, query, querySize * sizeof(quint64), cudaMemcpyHostToDevice);
+	cudaMemcpy(windowSizesDev, windowSizes, querySize * sizeof(int), cudaMemcpyHostToDevice);
     
-    cudaBinarySearch(numbersListDev, numbersSize, queryListDev, querySize);
+    cudaBinarySearch(numbersListDev, numbersSize, queryListDev, querySize, windowSizesDev);
     quint64* results = new quint64[querySize];
     cudaMemcpy(results, queryListDev, querySize * sizeof(quint64), cudaMemcpyDeviceToHost);
     

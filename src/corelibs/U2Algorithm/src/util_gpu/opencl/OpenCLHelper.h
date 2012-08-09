@@ -139,7 +139,9 @@ public:
         const cl_event *event_wait_list,
         cl_event *event) CL_API_SUFFIX__VERSION_1_1;
 
-    typedef CL_API_ENTRY cl_int ( CL_API_CALL *clFinish_f)(cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_1;
+	typedef CL_API_ENTRY cl_int ( CL_API_CALL *clFlush_f)(cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_1;
+
+	typedef CL_API_ENTRY cl_int ( CL_API_CALL *clFinish_f)(cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_1;
 
     typedef CL_API_ENTRY cl_int ( CL_API_CALL *clReleaseEvent_f)(cl_event event) CL_API_SUFFIX__VERSION_1_1;
 
@@ -184,6 +186,7 @@ public:
     clEnqueueNDRangeKernel_f clEnqueueNDRangeKernel_p;
     clWaitForEvents_f clWaitForEvents_p;
     clEnqueueReadBuffer_f clEnqueueReadBuffer_p;
+	clFlush_f clFlush_p;
     clFinish_f clFinish_p;
     clBuildProgram_f clBuildProgram_p;
     clReleaseEvent_f clReleaseEvent_p;

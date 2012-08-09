@@ -45,6 +45,7 @@ namespace U2 {
     const static char * clEnqueueNDRangeKernel_n ("clEnqueueNDRangeKernel");
     const static char * clWaitForEvents_n ("clWaitForEvents");
     const static char * clEnqueueReadBuffer_n ("clEnqueueReadBuffer");
+	const static char * clFlush_n ("clFlush");
     const static char * clFinish_n ("clFinish");
     const static char * clBuildProgram_n ("clBuildProgram");
     const static char * clReleaseEvent_n ("clReleaseEvent");
@@ -168,12 +169,19 @@ namespace U2 {
             return;
         }
 
-        clFinish_p = clFinish_f( openclLib.resolve(clFinish_n));
-        if( !clFinish_p ) {
-            coreLog.details( QObject::tr("Cannot resolve symbol %1").arg(clFinish_n) );
-            status = Error_BadDriverLib;
-            return;
-        }
+		clFlush_p = clFlush_f( openclLib.resolve(clFlush_n));
+		if( !clFlush_p ) {
+			coreLog.details( QObject::tr("Cannot resolve symbol %1").arg(clFlush_n) );
+			status = Error_BadDriverLib;
+			return;
+		}
+
+		clFinish_p = clFinish_f( openclLib.resolve(clFinish_n));
+		if( !clFinish_p ) {
+			coreLog.details( QObject::tr("Cannot resolve symbol %1").arg(clFinish_n) );
+			status = Error_BadDriverLib;
+			return;
+		}
 
         clBuildProgram_p = clBuildProgram_f( openclLib.resolve(clBuildProgram_n));
         if( !clBuildProgram_p ) {

@@ -2,13 +2,10 @@
 typedef long NumberType;
 
 __kernel void
-        binarySearch_classic( __const __global NumberType* haystack,
-                                      __global NumberType* needlesArr,
+        binarySearch_classic(__const __global NumberType* haystack,
+                                     __global NumberType* needlesArr,
                              __const int needlesArrSize,
-
-//                              __const   unsigned int globalLowerBound,
-//                              __const   unsigned int globalUpperBound,
-
+							 __const __global int *windowSizes,
 							 // the number of needles a particular kernel execution should search for
                              __const int workItemSize, 
 							 // indices into the big haystack where the values from the mini haystack can be found
@@ -16,14 +13,8 @@ __kernel void
 							 // a shrunken down version of the haystack, containing more or less evenly spaced values from it
 							 // first and last values are the same as in the big haystack
                              __const __global NumberType* miniHaystack,
-                             __const int miniHaystackSize,
-//                             __local NumberType* local_miniHaystack,
-                             __const NumberType filter)
+                             __const int miniHaystackSize)
 {
-//     event_t event = 0;
-	/*** This was the main cause of issue UGENE-1092 ***/
-//     async_work_group_copy(local_miniHaystack, miniHaystack, miniHaystackSize, event);
-
     int start = get_global_id(0) * workItemSize, 
 		end = min(start + workItemSize, needlesArrSize);
 
@@ -40,10 +31,16 @@ __kernel void
 
     for (int i = start; i < end; i++)
     {
-		// apply the bitmask right away
+		long filter = ((long)0 - 1) << (62 - windowSizes[i] * 2);
         needle = needlesArr[i] & filter;
 
-        // needle > max(haystack)
+		// needle < min(haystack)
+		if (needle < (miniHaystack[0] & filter)) {
+			needlesArr[i] = -1;
+			continue;
+		}
+
+		// needle > max(haystack)
         if (needle > (miniHaystack[miniHaystackSize - 1] & filter)) {
             needlesArr[i] = -1;
             continue;
@@ -56,7 +53,7 @@ __kernel void
 		}
 
         low = 0;
-        hi = miniHaystackSize;
+        hi = miniHaystackSize - 1;
         mid = miniHaystackSize / 2;
         curValue = miniHaystack[mid];
 

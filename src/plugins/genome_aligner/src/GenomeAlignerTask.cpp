@@ -357,6 +357,7 @@ void ReadShortReadsSubTask::run() {
     }
     alignContext.queries.clear();
     alignContext.bitValuesV.clear();
+	alignContext.windowSizes.clear();
     alignContext.readNumbersV.clear();
     alignContext.positionsAtReadV.clear();
 
@@ -470,6 +471,7 @@ void ReadShortReadsSubTask::run() {
     }
 
     alignContext.isReadingFinished = true;
+	algoLog.details(QString("ReadShortReadsSubTask finished loading %1 more short reads, total progress: %2%").arg(alignContext.queries.size()).arg(seqReader->getProgress()));
     alignContext.alignerWait.wakeAll();
 }
 
@@ -486,12 +488,20 @@ inline bool ReadShortReadsSubTask::add(int &CMAX, int &W, int &q, int &readNum, 
     }
 
     const char* querySeq = query->constData();
+
+	int win = query->length() < GenomeAlignerTask::MIN_SHORT_READ_LENGTH ?
+		GenomeAlignerTask::calculateWindowSize(alignContext.absMismatches,
+			alignContext.nMismatches, alignContext.ptMismatches, query->length(), query->length()) :
+		GenomeAlignerTask::calculateWindowSize(alignContext.absMismatches,
+			alignContext.nMismatches, alignContext.ptMismatches, alignContext.minReadLength, alignContext.maxReadLength);
+
     for (int i = 0; i < W - q + 1; i+=q) {
         const char *seq = querySeq + i;
         BMType bv = parent->index->getBitValue(seq, qMin(GenomeAlignerIndex::charsInMask, W - i));
-        alignContext.bitValuesV.push_back(bv);
-        alignContext.readNumbersV.push_back(readNum);
-        alignContext.positionsAtReadV.push_back(i);
+        alignContext.bitValuesV.append(bv);
+        alignContext.readNumbersV.append(readNum);
+        alignContext.positionsAtReadV.append(i);
+		alignContext.windowSizes.append(win);
     }
     readNum++;
     alignContext.queries.append(query);

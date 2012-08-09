@@ -33,9 +33,10 @@ public:
     SuffixSearchCUDA() {}
     quint64* runSearch(const quint64* _numbers, const int _numbersSize, 
         const quint64* _findNumbers, const int _findNumbersSize, 
-        quint64 filter);
+        const int* _windowSizes);
 private:
     quint64 *numbersListDev, *queryListDev; 
+	int *windowSizesDev;
 
 };
 

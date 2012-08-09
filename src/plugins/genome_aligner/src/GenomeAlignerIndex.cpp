@@ -263,13 +263,13 @@ BinarySearchResult GenomeAlignerIndex::bitMaskBinarySearch(BMType bitValue, BMTy
 }
 
 #ifdef OPENCL_SUPPORT
-BinarySearchResult *GenomeAlignerIndex::bitMaskBinarySearchOpenCL(const BMType *bitValues, int size, BMType bitFilter) {
+BinarySearchResult *GenomeAlignerIndex::bitMaskBinarySearchOpenCL(const BMType *bitValues, int size, const int *windowSizes) {
 
-    taskLog.details(QString("Binary search on GPU of %1 Mb search-values in %2 Mb base values")
-        .arg((8*size)/(1024*1024)).arg((8*indexPart.getLoadedPartSize())/(1024*1024)));
+	taskLog.details(QString("Binary search on GPU of %1 Mb search-values in %2 Mb base values")
+        .arg((8*size)/(1 << 20)).arg((8*indexPart.getLoadedPartSize())/(1 << 20)));
     assert(indexPart.getLoadedPartSize() != 0);
 
-    BinaryFindOpenCL bf((NumberType*)indexPart.bitMask, indexPart.getLoadedPartSize(), (NumberType*)bitValues, size, bitFilter);
+    BinaryFindOpenCL bf((NumberType*)indexPart.bitMask, indexPart.getLoadedPartSize(), (NumberType*)bitValues, size, windowSizes);
 
     NumberType *ans = bf.launch();
 

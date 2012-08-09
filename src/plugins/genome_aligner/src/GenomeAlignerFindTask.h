@@ -47,7 +47,7 @@ class PrepareVectorsSubTask;
 class AlignContext {
 public:
     AlignContext(): w(-1), ptMismatches(0), nMismatches(0), absMismatches(0), bestMode(false),
-        openCL(false), useCUDA(0), minReadLength(-1), maxReadLength(-1), bitFilter(0), isReadingFinished(false) {}
+        openCL(false), useCUDA(0), minReadLength(-1), maxReadLength(-1), /*bitFilter(0),*/ isReadingFinished(false) {}
     int w;
     int ptMismatches;
     int nMismatches;
@@ -57,9 +57,9 @@ public:
     bool useCUDA;
     int minReadLength;
     int maxReadLength;
-    BMType bitFilter;
     QVector<SearchQuery*> queries;
     QVector<BMType> bitValuesV;
+	QVector<int> windowSizes;
     QVector<int> readNumbersV;
     QVector<int> positionsAtReadV;
 
@@ -72,7 +72,8 @@ public:
 #define MAX_PERCENTAGE 100
 class GenomeAlignerFindTask : public Task {
     Q_OBJECT
-    friend class ShortReadAligner;
+    friend class ShortReadAlignerCPU;
+	friend class ShortReadAlignerOpenCL;
 public:
     GenomeAlignerFindTask(GenomeAlignerIndex *i, AlignContext *s, GenomeAlignerWriteTask *writeTask);
     ~GenomeAlignerFindTask();
@@ -82,6 +83,7 @@ public:
     void loadPartForAligning(int part);
     void getDataForAligning(int &first, int &length);
     void waitDataForAligning(int &first, int &length);
+
 #ifdef OPENCL_SUPPORT
     bool runOpenCLBinarySearch();
 #endif
@@ -92,7 +94,7 @@ private:
     GenomeAlignerIndex *index;
     GenomeAlignerWriteTask *writeTask;
     AlignContext *alignContext;
-    BinarySearchResult *bitMaskResults;
+    BinarySearchResult *binarySearchResults;
 
     int alignerTaskCount;
     int waiterCount;
@@ -114,15 +116,28 @@ private:
 
 typedef QVector<SearchQuery*>::iterator QueryIter;
 
-class ShortReadAligner : public Task {
+class ShortReadAlignerCPU : public Task {
     Q_OBJECT
 public:
-    ShortReadAligner(GenomeAlignerIndex *index, AlignContext *alignContext, GenomeAlignerWriteTask *writeTask);
+    ShortReadAlignerCPU(int taskNo, GenomeAlignerIndex *index, AlignContext *alignContext, GenomeAlignerWriteTask *writeTask);
     virtual void run();
 private:
+	int taskNo;
     GenomeAlignerIndex *index;
     AlignContext *alignContext;
     GenomeAlignerWriteTask *writeTask;
+};
+
+class ShortReadAlignerOpenCL : public Task {
+	Q_OBJECT
+public:
+	ShortReadAlignerOpenCL(int taskNo, GenomeAlignerIndex *index, AlignContext *alignContext, GenomeAlignerWriteTask *writeTask);
+	virtual void run();
+private:
+	int taskNo;
+	GenomeAlignerIndex *index;
+	AlignContext *alignContext;
+	GenomeAlignerWriteTask *writeTask;
 };
 
 } //U2

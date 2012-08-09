@@ -35,7 +35,7 @@ typedef cl_long NumberType;
 
 class U2ALGORITHM_EXPORT BinaryFindOpenCL {
 public:
-    BinaryFindOpenCL(const NumberType* _haystack, const int _haystackSize, const NumberType* _needles, const int _needlesSize, const NumberType filter = CL_LONG_MAX);
+    BinaryFindOpenCL(const NumberType* _haystack, const int _haystackSize, const NumberType* _needles, const int _needlesSize, const int *_windowSizes);
     ~BinaryFindOpenCL();
     NumberType* launch();
     bool hasError() {return isError;}
@@ -49,7 +49,7 @@ private:
     const int haystackSize;
     const NumberType* needles;
     const size_t needlesSize;
-    const NumberType filter;
+    const int *windowSizes;
 
     cl_event clEvent1;
     cl_event clEvent2;
@@ -60,6 +60,7 @@ private:
 
     cl_mem buf_sortedHaystackArray;
     cl_mem buf_needlesArray;
+	cl_mem buf_windowSizesArray;
     cl_mem buf_outPutArray;
     cl_mem buf_miniHaystackOffsets;
     cl_mem buf_miniHaystack;
