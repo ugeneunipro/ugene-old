@@ -71,6 +71,8 @@ public:
 
     DetView* getDetView() const {return detView;}
 
+    QToolButton* getWidgetStateMenuButton() const {return widgetStateMenuButton;}
+
     virtual void centerPosition(int pos, QWidget* skipView = NULL);
     
     ADVSequenceObjectContext*   getActiveSequenceContext() const {return (seqContexts.isEmpty()) ? NULL : seqContexts.first();}
@@ -148,6 +150,7 @@ protected slots:
 // QT 4.5.0 bug workaround
 public slots:
     void sl_closeView();
+    void sl_showStateMenu();
 
 private slots:
     void sl_saveScreenshot();
@@ -161,7 +164,7 @@ private:
     virtual void updateMinMaxHeight();
 
     void addStateActions(QMenu& m);
-
+    QToolButton* addButtonWithActionToToolbar(QAction * buttonAction, QToolBar * toolBar) const;
     void addRulersMenu(QMenu& m);
     void addSelectMenu(QMenu& m);
 
@@ -190,10 +193,13 @@ private:
     QAction*        zoomToRangeAction;
     QAction*        createNewRulerAction;
     QAction*        shotScreenAction;
-
+    QAction*        closeViewAction;
+    
     QList<QMenu*>   tbMenues;
     QToolButton*    ttButton;
+    QToolButton*    widgetStateMenuButton;
     GAutoDeleteList<QAction> rulerActions;
+    QList<QString> * buttonTabOrederedNames;
 
     PanView::ZoomUseObject zoomUseObject;
 
@@ -218,22 +224,15 @@ protected:
 protected slots:
     void sl_advFocusChanged(ADVSequenceWidget* prevFocus, ADVSequenceWidget* newFocus);
     void sl_actionTriggered(QAction* a);
-    void sl_showStateMenu();
-    void sl_closeView();
 
 private:
-    void populateToolBars();
     void updateActiveState();
     QString getShortAlphabetName(DNAAlphabet* al);
 
     ADVSingleSequenceWidget*        ctx;
     QToolBar*                       toolBar;
-    QToolBar*                       closeBar;
     QLabel*                         pixLabel;
     QLabel*                         nameLabel;
-
-    QAction*        closeViewAction;
-    QToolButton*    widgetStateMenuButton;
 };
 
 }//namespace

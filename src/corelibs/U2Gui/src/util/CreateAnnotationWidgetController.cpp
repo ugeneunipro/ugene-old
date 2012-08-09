@@ -183,8 +183,7 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
         //QString name = AppContext::getSettings()->getValue(SETTINGS_LAST_USED_ANNOTATION_NAME, QString("misc_feature")).toString();
         annotationNameEdit->setText("misc_feature");
     }
-    annotationNameEdit->selectAll();
-
+    
     groupNameEdit->setText(model.groupName.isEmpty() ? GROUP_NAME_AUTO : model.groupName);
 
     if (!model.data->location->isEmpty()) {
@@ -337,7 +336,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     showNameGroupsButton->setIcon(iconPredefAnnot);
     showNameGroupsButton->setToolTip(tr("Predefined annotation names"));
     showNameGroupsButton->setText(QString());
-
+    
     locationLabel = new QLabel(groupAnnotParams);
 
     locationEdit = new QLineEdit(groupAnnotParams);
@@ -388,8 +387,10 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     mainLayout->addWidget(groupAnnotParams);
     w->setLayout(mainLayout);
 
-    QWidget::setTabOrder(groupNameEdit, annotationNameEdit);
-    QWidget::setTabOrder(annotationNameEdit, locationEdit);
+    QWidget::setTabOrder(groupNameEdit, groupNameButton);
+    QWidget::setTabOrder(groupNameButton, annotationNameEdit);
+    QWidget::setTabOrder(annotationNameEdit, showNameGroupsButton);
+    QWidget::setTabOrder(showNameGroupsButton, locationEdit);
 
     QObject::connect(newFileRB, SIGNAL(toggled(bool)), newFileEdit, SLOT(setEnabled(bool)));
     QObject::connect(newFileRB, SIGNAL(toggled(bool)), newFileButton, SLOT(setEnabled(bool)));

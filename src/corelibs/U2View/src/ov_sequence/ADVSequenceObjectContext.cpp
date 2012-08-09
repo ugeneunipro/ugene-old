@@ -220,6 +220,8 @@ QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
         foreach(QAction* a, translations->actions()) {
             m->addAction(a);
         }
+
+        m->menuAction()->setObjectName("AminoTranslationAction");
     }
     return m;
 }

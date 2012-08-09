@@ -24,6 +24,7 @@
 
 #include <U2Core/global.h>
 #include <QtGui/QToolBar>
+#include <QAction>
 
 namespace U2 {
 
@@ -32,11 +33,21 @@ namespace U2 {
 
 class U2GUI_EXPORT HBar : public QToolBar {
 public:
-    HBar(QWidget* w) : QToolBar(w){}
+    HBar(QWidget* w) : QToolBar(w), tabOrdered(false), buttonTabOrderList(NULL) {}
+
+    void setButtonTabOrderList(QList<QString> * buttonNamesInNeededOrder);
+
 protected:
     void paintEvent(QPaintEvent* ) {
         //do not draw any special toolbar control -> make is merged with parent widget
     }
+    virtual void setVisible(bool visible);
+
+private:
+    void setButtonsTabOrder() const;
+
+    bool tabOrdered;
+    QList<QString> * buttonTabOrderList;
 };
 
 } //namespace

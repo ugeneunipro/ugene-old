@@ -36,6 +36,7 @@
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
+#include <U2View/ADVSequenceWidget.h>
 
 
 namespace U2 {
@@ -100,8 +101,6 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         connectSlots();
 
         checkState();
-
-        setFocusProxy(textPattern);
         btnSearch->setAutoDefault(true);
 
         FindPatternEventFilter* findPatternEventFilter = new FindPatternEventFilter(this);
@@ -121,7 +120,10 @@ void FindPatternWidget::updateShowOptions()
         + QString("</a>");
 
     lblShowMoreLess->setText(linkText);
-
+    lblShowMoreLess->setTextInteractionFlags(Qt::LinksAccessibleByKeyboard | Qt::LinksAccessibleByMouse);
+    
+    QWidget * bottomFocus = (btnSearch->isEnabled()) ? dynamic_cast<QWidget *>(btnSearch) :
+                                                       dynamic_cast<QWidget *>(lblShowMoreLess);
     // Show/hide the additional options
     if (showMore) {
         groupAlgorithm->hide();
@@ -130,6 +132,8 @@ void FindPatternWidget::updateShowOptions()
         annotsWidget->hide();
 
         setMinimumSize(QSize(170, 150));
+
+        QWidget::setTabOrder(textPattern, bottomFocus);
     }
     else {
         groupAlgorithm->show();
@@ -138,8 +142,10 @@ void FindPatternWidget::updateShowOptions()
         annotsWidget->show();
 
         setMinimumSize(QSize(170, 780));
+        
+        QWidget::setTabOrder(annotsWidget, bottomFocus);
     }
-
+    QWidget::setTabOrder(bottomFocus, lblShowMoreLess);
     // Change the mode
     showMore = !showMore;
 }
@@ -409,12 +415,19 @@ void FindPatternWidget::updateLayout()
         boxUseMaxResultLen->hide();
         boxMaxResultLen->hide();
         enableDisableMatchSpin();
+        lblMatch->show();
+        spinMatch->show();
+        QWidget::setTabOrder(boxAlgorithm, spinMatch);
     }
     else if (selectedAlgorithm == FindAlgorithmPatternSettings_Subst) {
         useAmbiguousBasesBox->show();
         boxUseMaxResultLen->hide();
         boxMaxResultLen->hide();
+        QWidget::setTabOrder(boxAlgorithm, useAmbiguousBasesBox);
         enableDisableMatchSpin();
+        lblMatch->show();
+        spinMatch->show();
+        QWidget::setTabOrder(spinMatch, useAmbiguousBasesBox);
     }
     else if (selectedAlgorithm == FindAlgorithmPatternSettings_RegExp) {
         useAmbiguousBasesBox->setChecked(false);
@@ -423,6 +436,8 @@ void FindPatternWidget::updateLayout()
         boxMaxResultLen->show();
         spinMatch->hide();
         lblMatch->hide();
+        QWidget::setTabOrder(boxAlgorithm, boxUseMaxResultLen);
+        QWidget::setTabOrder(boxUseMaxResultLen, boxMaxResultLen);
     }
 
     // "Search in" group
@@ -694,11 +709,12 @@ void FindPatternWidget::tunePercentBox()
 void FindPatternWidget::sl_onTabInPatternFieldPressed()
 {
     if (btnSearch->isEnabled()) {
-        btnSearch->setFocus();
+        btnSearch->setFocus(Qt::TabFocusReason);
+    } else {
+        lblShowMoreLess->setFocus(Qt::TabFocusReason);
     }
     return;
 }
-
 
 void FindPatternWidget::sl_onEnterInPatternFieldPressed()
 {

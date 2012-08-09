@@ -138,27 +138,29 @@ void ADVSingleSequenceWidget::init() {
     
     setFixedHeight(linesLayout->minimumSize().height());
 
+    buttonTabOrederedNames = new QList<QString>;
+
     QToolBar* hBar = headerWidget->getToolBar();
     
-    hBar->addAction(selectRangeAction1);
+    addButtonWithActionToToolbar(selectRangeAction1, hBar);
+    buttonTabOrederedNames->append(selectRangeAction1->objectName());
     hBar->addSeparator();
 
     if (seqCtx->getComplementTT() != NULL) {
-        QAction* showComplementAction = detView->getShowComplementAction();
-        hBar->addAction(showComplementAction);
+        addButtonWithActionToToolbar(detView->getShowComplementAction(), hBar);
+        buttonTabOrederedNames->append(detView->getShowComplementAction()->objectName());
     }
+
     if (seqCtx->getAminoTT() != NULL) {
-        QAction* showTranslationAction = detView->getShowTranslationAction();
-        hBar->addAction(showTranslationAction);
+        addButtonWithActionToToolbar(detView->getShowTranslationAction(), hBar);
+        buttonTabOrederedNames->append(detView->getShowTranslationAction()->objectName());
     }
 
     if (seqCtx->getAminoTT() != NULL) {        
-        ttButton = new QToolButton(hBar);
         QMenu* ttMenu = seqCtx->createTranslationsMenu();
-        ttButton->setDefaultAction(ttMenu->menuAction());
-        ttButton->setPopupMode(QToolButton::InstantPopup);
-        hBar->addWidget(ttButton);
         tbMenues.append(ttMenu);
+        addButtonWithActionToToolbar(ttMenu->menuAction(), hBar)->setPopupMode(QToolButton::InstantPopup);
+        buttonTabOrederedNames->append(ttMenu->menuAction()->objectName());
         hBar->addSeparator();
     } else {
         ttButton = NULL;
@@ -167,14 +169,40 @@ void ADVSingleSequenceWidget::init() {
     QAction* shotScreenAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Capture screen"), this);
     shotScreenAction->setObjectName("capture_screen");
     connect(shotScreenAction, SIGNAL(triggered()), this, SLOT(sl_saveScreenshot()));
-    hBar->addAction(shotScreenAction);
+    
+    addButtonWithActionToToolbar(shotScreenAction, hBar);
+    buttonTabOrederedNames->append(shotScreenAction->objectName());
 
-    hBar->addAction(panView->getZoomInAction());
-    hBar->addAction(panView->getZoomOutAction());
-    //hBar->addAction(panView->getZoomToSelectionAction());
-    hBar->addAction(zoomToRangeAction);
-    hBar->addAction(panView->getZoomToSequenceAction());
+    addButtonWithActionToToolbar(panView->getZoomInAction(), hBar);
+    buttonTabOrederedNames->append(panView->getZoomInAction()->objectName());
+
+    addButtonWithActionToToolbar(panView->getZoomOutAction(), hBar);
+    buttonTabOrederedNames->append(panView->getZoomOutAction()->objectName());
+
+    addButtonWithActionToToolbar(zoomToRangeAction, hBar);
+    buttonTabOrederedNames->append(zoomToRangeAction->objectName());
+
+    addButtonWithActionToToolbar(panView->getZoomToSequenceAction(), hBar);
+    buttonTabOrederedNames->append(panView->getZoomToSequenceAction()->objectName());
+
     hBar->addWidget(panView->getPanViewActions());
+    buttonTabOrederedNames->append(panView->getPanViewActions()->objectName());
+    
+    widgetStateMenuButton = new QToolButton(this);
+    widgetStateMenuButton->setIcon(QIcon(":core/images/adv_widget_menu.png"));
+    widgetStateMenuButton->setFixedWidth(20);
+    widgetStateMenuButton->setToolTip(tr("Toggle view"));
+    widgetStateMenuButton->setObjectName("toggle_view_button_" + getSequenceObject()->getGObjectName());
+    connect(widgetStateMenuButton, SIGNAL(pressed()), SLOT(sl_showStateMenu()));
+
+    closeViewAction = new QAction(tr("Remove sequence"), this);
+    closeViewAction->setObjectName("remove_sequence");
+    connect(closeViewAction, SIGNAL(triggered()), SLOT(sl_closeView()));
+
+    hBar->addWidget(widgetStateMenuButton);
+    buttonTabOrederedNames->append(widgetStateMenuButton->objectName());
+
+    dynamic_cast<HBar *>(hBar)->setButtonTabOrderList(buttonTabOrederedNames);
 
     updateSelectionActions();
 
@@ -191,6 +219,19 @@ ADVSingleSequenceWidget::~ADVSingleSequenceWidget() {
     foreach(QMenu* m, tbMenues) {
         delete m;
     }
+
+    delete buttonTabOrederedNames;
+}
+
+QToolButton* ADVSingleSequenceWidget::addButtonWithActionToToolbar(QAction * buttonAction, QToolBar * toolBar) const {
+    assert(NULL != buttonAction && NULL != toolBar && !buttonAction->objectName().isEmpty());
+
+    QToolButton* button = new QToolButton(toolBar);
+    button->setDefaultAction(buttonAction);
+    button->setObjectName(buttonAction->objectName());
+    toolBar->addWidget(button);
+
+    return button;
 }
 
 bool ADVSingleSequenceWidget::isPanViewCollapsed() const {
@@ -493,16 +534,16 @@ void ADVSingleSequenceWidget::addADVSequenceWidgetAction(ADVSequenceWidgetAction
     ADVSequenceWidget::addADVSequenceWidgetAction(a);
     if (a->addToBar) {
         QToolBar* tb = headerWidget->getToolBar();
-        if (a->menu()!=NULL) {
-            QToolButton* tt = new QToolButton(tb);
-            tt->setObjectName(a->objectName());
-            tt->setDefaultAction(a);
-            tt->setPopupMode(QToolButton::InstantPopup);
-            tb->insertWidget(tb->actions().first(), tt);
-        } else {
-            tb->insertAction(tb->actions().first(), a);
-        }
+        QToolButton* tt = new QToolButton(tb);
+        tt->setObjectName(a->objectName());
+        tt->setDefaultAction(a);
         
+        if (a->menu()!=NULL) {
+            tt->setPopupMode(QToolButton::InstantPopup);
+        }
+
+        tb->insertWidget(tb->actions().first(), tt);
+        buttonTabOrederedNames->prepend(a->objectName());
     }
 }
 
@@ -803,6 +844,18 @@ void ADVSingleSequenceWidget::onSequenceObjectRenamed(const QString&) {
     headerWidget->updateTitle();
 }
 
+void ADVSingleSequenceWidget::sl_showStateMenu() {
+    QPointer<QToolButton> widgetStateMenuButtonPtr(widgetStateMenuButton);
+
+    QMenu m;
+    addStateActions(m);
+    m.addAction(closeViewAction);
+    m.exec(QCursor::pos());
+
+    if (!widgetStateMenuButtonPtr.isNull()) { //if not self closed
+        widgetStateMenuButtonPtr->setDown(false);
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 // header
@@ -854,26 +907,17 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     toolBar->setObjectName("tool_bar_" + ctx->getSequenceObject()->getGObjectName());
     toolBar->layout()->setSpacing(0);
     toolBar->layout()->setMargin(0);
-
-    /// close bar
-    closeBar = new HBar(this);
-    closeBar->layout()->setSpacing(0);
-    closeBar->layout()->setMargin(0);
-
-        
+   
     setLayout(l);
 
     l->addWidget(pixLabel);
     l->addWidget(nameLabel);
     l->addStretch();
     l->addWidget(toolBar);
-    l->addWidget(closeBar);
 
 
     connect(toolBar, SIGNAL(actionTriggered(QAction*)), SLOT(sl_actionTriggered(QAction*)));
-    connect(closeBar, SIGNAL(actionTriggered(QAction*)), SLOT(sl_actionTriggered(QAction*)));
 
-    populateToolBars();
     updateActiveState();
 
 }
@@ -884,26 +928,9 @@ void ADVSingleSequenceHeaderWidget::updateTitle() {
     setTitle(newTitle);
 }
 
-void ADVSingleSequenceHeaderWidget::populateToolBars() {
-    // close bar
-    widgetStateMenuButton = new QToolButton(this);
-    widgetStateMenuButton->setIcon(QIcon(":core/images/adv_widget_menu.png"));
-    widgetStateMenuButton->setFixedWidth(20);
-    widgetStateMenuButton->setToolTip(tr("Toggle view"));
-    widgetStateMenuButton->setObjectName("toggle_view_button_" + ctx->getSequenceObject()->getGObjectName());
-    connect(widgetStateMenuButton, SIGNAL(pressed()), SLOT(sl_showStateMenu()));
-
-
-    closeViewAction = new QAction(tr("Remove sequence"), ctx);
-    closeViewAction->setObjectName("remove_sequence");
-    connect(closeViewAction, SIGNAL(triggered()), SLOT(sl_closeView()));
-
-    closeBar->addWidget(widgetStateMenuButton);
-}
-
 bool ADVSingleSequenceHeaderWidget::eventFilter(QObject *o, QEvent *e) {
     if (o == pixLabel && e->type() == QEvent::MouseButtonPress) {
-        sl_showStateMenu();
+        ctx->sl_showStateMenu();
         return true;
     }
     return false;
@@ -926,35 +953,6 @@ void ADVSingleSequenceHeaderWidget::updateActiveState() {
     pixLabel->setEnabled(focused);
     ctx->getSelectRangeAction()->setShortcutContext(focused ? Qt::WindowShortcut : Qt::WidgetShortcut);
     //toolBar->setEnabled(focused); TODO: click on disabled buttons does not switch focus!
-}
-
-void ADVSingleSequenceHeaderWidget::sl_showStateMenu() {
-    QPointer<QToolButton> widgetStateMenuButtonPtr(widgetStateMenuButton);
-
-    QMenu m;
-    ctx->addStateActions(m);
-    m.addAction(closeViewAction);
-    m.exec(QCursor::pos());
-
-    if (!widgetStateMenuButtonPtr.isNull()) { //if not self closed
-        widgetStateMenuButtonPtr->setDown(false);
-    }
-}
-
-
-void ADVSingleSequenceHeaderWidget::sl_closeView() {
-#ifdef Q_OS_LINUX
-    if(QString("4.5.0") == qVersion())
-    {
-        QTimer::singleShot(0,ctx,SLOT(sl_closeView()));
-    }
-    else
-    {
-#endif // Q_OS_LINUX
-        ctx->closeView();
-#ifdef Q_OS_LINUX
-    }
-#endif // Q_OS_LINUX
 }
 
 void ADVSingleSequenceHeaderWidget::mouseDoubleClickEvent(QMouseEvent *e) {

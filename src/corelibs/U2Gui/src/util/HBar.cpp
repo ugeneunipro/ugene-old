@@ -20,3 +20,51 @@
  */
 
 #include "HBar.h"
+
+namespace U2 {
+
+void HBar::setButtonTabOrderList(QList<QString> * buttonNamesInNeededOrder) {
+    assert(NULL != buttonNamesInNeededOrder);
+    buttonTabOrderList = buttonNamesInNeededOrder;
+}
+
+void HBar::setVisible(bool visible)
+{
+    QWidget::setVisible(visible);
+
+    if(!tabOrdered && NULL != buttonTabOrderList) {
+        setButtonsTabOrder();
+        tabOrdered = true;
+    }
+}
+
+void HBar::setButtonsTabOrder() const {
+    assert(!buttonTabOrderList->isEmpty());
+
+    QList<QObject *> barElements = children();
+    QWidget * prevButton = NULL;
+    QWidget * curButton = NULL;
+
+    for(QList<QString>::const_iterator it = buttonTabOrderList->constBegin(); it != buttonTabOrderList->constEnd(); it++) {
+        foreach(QObject * element, barElements) {
+            if(element->objectName().contains(*it)) {
+                if(NULL != prevButton) {
+                    curButton = qobject_cast<QWidget *>(element);
+                } else {
+                    prevButton = qobject_cast<QWidget *>(element);
+                }
+                if(NULL == curButton || NULL == prevButton) {
+                    break;
+                }
+                
+                QWidget::setTabOrder(prevButton, curButton);
+                prevButton = curButton;
+
+                break;
+            }
+        }
+        assert(NULL != prevButton);
+    }
+}
+
+} //namespace
