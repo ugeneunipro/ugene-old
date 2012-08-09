@@ -106,12 +106,25 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
 }
 
 void DbiDocumentFormat::storeDocument(Document* d, IOAdapter*, U2OpStatus& os) {
-    // 1. get db
-    // 2. call sync
     QString url = d->getURLString();
-    DbiConnection handle(U2DbiRef(id, url), true, os);
+    U2DbiRef dstDbiRef(id, url);
+    DbiConnection dstCon(dstDbiRef, true, os);
+    CHECK_OP(os, );
+
+    foreach (GObject *object, d->findGObjectByType(GObjectTypes::ASSEMBLY)) {
+        U2DbiRef srcDbiRef = object->getEntityRef().dbiRef;
+        if (srcDbiRef == dstDbiRef) { // do not need to import
+            continue;
+        }
+        AssemblyObject *srcObj = dynamic_cast<AssemblyObject*>(object);
+        CHECK_EXT(NULL != srcObj, os.setError("NULL source assembly object"), );
+
+        AssemblyObject::dbi2dbiClone(srcObj, dstDbiRef, os);
+        CHECK_OP(os, );
+    }
+
     if (!os.isCoR()) {
-        handle.dbi->flush(os);
+        dstCon.dbi->flush(os);
     }
 }
 

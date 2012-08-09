@@ -34,6 +34,8 @@ public:
     AssemblyObject(const U2EntityRef& ref, const QString& objectName, const QVariantMap& hints);
 
     virtual GObject* clone(const U2DbiRef&, U2OpStatus& ) const;
+
+    static U2EntityRef dbi2dbiClone(const AssemblyObject *const srcObj, const U2DbiRef &dstDbiRef, U2OpStatus &os);
 };
 
 }//namespace

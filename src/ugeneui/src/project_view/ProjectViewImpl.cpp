@@ -23,6 +23,7 @@
 
 #include <AppContextImpl.h>
 
+#include <U2Core/CopyDocumentTask.h>
 #include <U2Core/ProjectService.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
@@ -923,64 +924,31 @@ void ProjectViewImpl::sl_relocate() {
 
 void ProjectViewImpl::sl_saveCopy() {
     const DocumentSelection* ds = getDocumentSelection();
-    Document* d = ds->isEmpty() ? NULL : ds->getSelectedDocuments().first();
-    if (d == NULL) {
+    Document* srcDoc = ds->isEmpty() ? NULL : ds->getSelectedDocuments().first();
+    if (srcDoc == NULL) {
         return;
     }
-    if (!d->isLoaded()) {
+    if (!srcDoc->isLoaded()) {
         return;
     }
     LastUsedDirHelper h;
-    CopyDocumentDialogController dialog(d, w);
+    CopyDocumentDialogController dialog(srcDoc, w);
     int result = dialog.exec();
-    if (result == QDialog::Accepted){
+    if (result == QDialog::Accepted) {
         h.url = dialog.getDocumentURL();
         if (h.url.isEmpty()) {
             return;
         }
-        if (AppContext::getProject()->findDocumentByURL(h.url)) {
+        QString dstUrl = h.url;
+        if (AppContext::getProject()->findDocumentByURL(dstUrl)) {
             QMessageBox::critical(w, tr("Error"), tr("Document with the same URL is added to the project. \n Remove it from the project first."));
             return;
         }
         bool addToProject = dialog.getAddToProjectFlag();
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(h.url));
-        DocumentFormatRegistry *dfr =  AppContext::getDocumentFormatRegistry();
-        DocumentFormat *df = dfr->getFormatById(dialog.getDocumentFormatId());
-        if (iof == NULL) {
-            return;
-        }
-        QList<GObject*> objs = d->getObjects();
-        U2OpStatus2Log os;
-        std::auto_ptr<Document> dp(df->createNewLoadedDocument(iof, h.url, os, d->getGHintsMap()));
-        CHECK_OP(os, );
-        foreach(GObject* go, objs){
-            if(df->isObjectOpSupported(dp.get(), DocumentFormat::DocObjectOp_Add, go->getGObjectType())){
-                GObject *cl = go->clone(dp->getDbiRef(), os);
-                if (cl->getGObjectType() == GObjectTypes::MULTIPLE_ALIGNMENT){
-                    QString name=QFileInfo(dialog.getDocumentURL()).baseName();
-                    cl->setGObjectName(name);
-                    cl->setModified(false);
-                }
-                dp->addObject(cl);
-            }
-        }
-        foreach(GObject* o, dp->getObjects()) {
-            GObjectUtils::updateRelationsURL(o, d->getURL(), h.url);
-        }
-        Document *d = dp.release();
-        if (addToProject) {
-            Project *p = AppContext::getProject();
-            d->setModified(true);
-            p->addDocument(d);
-        }  
-        SaveDocumentTask* t = new SaveDocumentTask(d, iof, h.url);
-        if (!addToProject) {
-            t->addFlag(SaveDoc_DestroyAfter);
-        }
+        CopyDocumentTask *t = new CopyDocumentTask(srcDoc, dialog.getDocumentFormatId(), dstUrl, addToProject);
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
 }
-
 
 void ProjectViewImpl::highlightItem(Document* doc){
     assert(doc);

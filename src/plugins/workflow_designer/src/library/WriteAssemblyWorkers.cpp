@@ -203,9 +203,7 @@ void WriteAssemblyWorkerFactory::init() {
     {
         QVariantMap formatsMap;
         foreach (const DocumentFormatId &fid, supportedFormats) {
-            if (BaseDocumentFormats::UGENEDB != fid) { // temporary excluded because of UGENE-1137
-                formatsMap[fid] = fid;
-            }
+            formatsMap[fid] = fid;
         }
 
         ComboBoxDelegate *formatComboDelegate = new ComboBoxDelegate(formatsMap);

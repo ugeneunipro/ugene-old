@@ -56,7 +56,8 @@ Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const G
     U2DbiRef tmpDbiRef;
     const QSet<GObjectType> &types = getSupportedObjectTypes();
     bool useTmpDbi = types.contains(GObjectTypes::SEQUENCE)
-        || types.contains(GObjectTypes::VARIANT_TRACK);
+        || types.contains(GObjectTypes::VARIANT_TRACK)
+        || types.contains(GObjectTypes::ASSEMBLY);
     if (useTmpDbi) {
         if (hints.contains(DBI_REF_HINT)) {
             tmpDbiRef = hints.value(DBI_REF_HINT).value<U2DbiRef>();

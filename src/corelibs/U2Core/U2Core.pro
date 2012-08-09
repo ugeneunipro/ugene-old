@@ -132,6 +132,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/AddSequencesToAlignmentTask.h \
            src/tasks/BackgroundTaskRunner.h \
            src/tasks/CopyDataTask.h \
+           src/tasks/CopyDocumentTask.h \
            src/tasks/CreateAnnotationTask.h \
            src/tasks/DocumentProviderTask.h \
            src/tasks/ExtractAnnotatedRegionTask.h \
@@ -260,6 +261,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/AddSequencesToAlignmentTask.cpp \
            src/tasks/BackgroundTaskRunner.cpp \
            src/tasks/CopyDataTask.cpp \
+           src/tasks/CopyDocumentTask.cpp \
            src/tasks/CreateAnnotationTask.cpp \
            src/tasks/DocumentProviderTask.cpp \
            src/tasks/ExtractAnnotatedRegionTask.cpp \

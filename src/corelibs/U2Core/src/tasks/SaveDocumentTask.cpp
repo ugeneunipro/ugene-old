@@ -40,8 +40,8 @@
 
 namespace U2 {
 
-SaveDocumentTask::SaveDocumentTask(Document* _doc, IOAdapterFactory* _io, const GUrl& _url)
-: Task(tr("Save document"), TaskFlag_None), doc(_doc), iof(_io), url(_url), flags(SaveDoc_Overwrite)
+SaveDocumentTask::SaveDocumentTask(Document* _doc, IOAdapterFactory* _io, const GUrl& _url, SaveDocFlags _flags)
+: Task(tr("Save document"), TaskFlag_None), doc(_doc), iof(_io), url(_url), flags(_flags)
 {
     assert(doc!=NULL);
     if (iof == NULL) {
