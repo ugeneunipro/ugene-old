@@ -357,7 +357,7 @@ FormatCheckResult GTFFormat::checkRawData(const QByteArray& rawData, const GUrl&
         numToIterate = fileLines.size() - 1;
     }
 
-    for (int i = 1; i < numToIterate; ++i) {
+    for (int i = 0; i < numToIterate; ++i) {
         if (!fileLines[i].trimmed().isEmpty()) { // e.g. the last line in file can be empty
             parseAndValidateLine(fileLines[i], validationStatus);
         }
