@@ -34,19 +34,9 @@ Would you like to send the following crash report to UGENE team?</string>
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="additionalInfoLabel">
-     <property name="text">
-      <string>Additional information (optional)</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPlainTextEdit" name="additionalInfoTextEdit"/>
-   </item>
-   <item>
     <widget class="QLabel" name="emailLabel">
      <property name="text">
-      <string>Enter your e-mail to stay in touch (optional)</string>
+      <string>Please, enter your e-mail to stay in touch and help us improve UGENE (optional)</string>
      </property>
     </widget>
    </item>
@@ -56,6 +46,16 @@ Would you like to send the following crash report to UGENE team?</string>
       <number>200</number>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="additionalInfoLabel">
+     <property name="text">
+      <string>Additional information (optional)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPlainTextEdit" name="additionalInfoTextEdit"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">

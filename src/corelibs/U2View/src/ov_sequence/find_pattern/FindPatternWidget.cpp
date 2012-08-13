@@ -38,6 +38,8 @@
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceWidget.h>
 
+#include <U2Gui/LastUsedDirHelper.h>
+
 
 namespace U2 {
 
@@ -130,6 +132,7 @@ void FindPatternWidget::updateShowOptions()
         groupSearchIn->hide();
         groupOther->hide();
         annotsWidget->hide();
+        loadFromFileGroupBox->hide();
 
         setMinimumSize(QSize(170, 150));
 
@@ -140,6 +143,7 @@ void FindPatternWidget::updateShowOptions()
         groupSearchIn->show();
         groupOther->show();
         annotsWidget->show();
+        loadFromFileGroupBox->show();
 
         setMinimumSize(QSize(170, 780));
         
@@ -277,6 +281,10 @@ void FindPatternWidget::connectSlots()
     // A sequence has been modified (a subsequence added, removed, etc.)
     connect(annotatedDnaView, SIGNAL(si_sequenceModified(ADVSequenceObjectContext*)),
         this, SLOT(sl_onSequenceModified(ADVSequenceObjectContext*)));
+
+    connect(loadFromFileToolButton, SIGNAL( clicked() ), SLOT( sl_onFileSelectorClicked()));
+    connect(loadFromFileGroupBox, SIGNAL( toggled(bool) ), SLOT( sl_onFileSelectorToggled(bool)));
+
 }
 
 
@@ -484,6 +492,21 @@ void FindPatternWidget::showHideErrorMessage(bool show, ErrorMessageFlag errorMe
                     text += QString(tr("Warning: input value contains characters that"
                         " do not match the active alphabet!"));
                     break;
+                case PatternsWithBadAlphabetInFile:
+                    if (!text.isEmpty()) {
+                        text += "\n";
+                    }
+                    text += QString(tr("Warning: file contains patterns that"
+                        " do not match the active alphabet! Those patterns were ignored "));
+                    break;
+                case PatternsWithBadRegionInFile:
+                    if (!text.isEmpty()) {
+                        text += "\n";
+                    }
+                    text += QString(tr("Warning: file contains patterns that"
+                        " longer than the search region! Those patterns were ignored. Please input a shorter value or select another region! "));
+                    break;
+
                 default:
                     FAIL("Unexpected value of the error flag in show/hide error message for pattern!",);
             }
@@ -554,26 +577,10 @@ void FindPatternWidget::setRegionToWholeSequence()
 
 void FindPatternWidget::verifyPatternAlphabet()
 {
-    ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
-    SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus on pattern search!",);
-
-    DNAAlphabet* alphabet = activeContext->getAlphabet();
-    if (!isAminoSequenceSelected && SeqTranslIndex_Translation == boxSeqTransl->currentIndex()) {
-        DNATranslation* translation = activeContext->getAminoTT();
-        SAFE_POINT(NULL != translation, "Failed to get translation on pattern search!",);
-
-        alphabet = translation->getDstAlphabet();
-    }
-
     QString pattern = textPattern->toPlainText();
     pattern = pattern.toUpper();
 
-    bool alphabetIsOk =
-        (TextUtils::fits(alphabet->getMap(),
-        pattern.toLocal8Bit().data(),
-        pattern.size()))    ||
-        (useAmbiguousBasesBox->isChecked())   ||
-        (FindAlgorithmPatternSettings_RegExp == selectedAlgorithm);
+    bool alphabetIsOk = checkAlphabet(pattern);
 
     if (!alphabetIsOk) {
         showHideErrorMessage(true, PatternAlphabetDoNotMatch);
@@ -602,7 +609,9 @@ void FindPatternWidget::sl_onSequenceModified(ADVSequenceObjectContext* /* conte
 void FindPatternWidget::checkState()
 {
     // Disable the "Search" button if the pattern is empty
-    if (textPattern->toPlainText().isEmpty()) {
+    //and pattern is not loaded from a file
+    if (textPattern->toPlainText().isEmpty()
+        && !loadFromFileGroupBox->isChecked()) {
         btnSearch->setDisabled(true);
         return;
     }
@@ -612,27 +621,24 @@ void FindPatternWidget::checkState()
         btnSearch->setDisabled(true);
         return;
     }
-
-    // Disable if the length of the pattern is greater than the search region length
-    int maxError = getMaxError();
-    qint64 patternLength = textPattern->toPlainText().length();
-    qint64 minMatch = patternLength - maxError;
-    SAFE_POINT(minMatch > 0, "Search pattern length is greater than max error value!",);
-
-    qint64 regionLength = editEnd->text().toLongLong() - editStart->text().toLongLong() + 1;
-    SAFE_POINT(regionLength > 0, "Incorrect region length when enabling/disabling the pattern search button.",);
-
-    if (minMatch > regionLength) {
-        btnSearch->setDisabled(true);
-        highlightBackground(textPattern);
-        showHideErrorMessage(true, PatternIsTooLong);
-        return;
-    }
-    else {
-        doNotHighlightBackground(textPattern);
-        showHideErrorMessage(false, PatternIsTooLong);
+    if(!loadFromFileGroupBox->isChecked()){
+        // Disable if the length of the pattern is greater than the search region length
+        bool regionOk = checkPatternRegion(textPattern->toPlainText());
+        
+        if (!regionOk) {
+            btnSearch->setDisabled(true);
+            highlightBackground(textPattern);
+            showHideErrorMessage(true, PatternIsTooLong);
+            return;
+        }
+        else {
+            doNotHighlightBackground(textPattern);
+            showHideErrorMessage(false, PatternIsTooLong);
+        }
     }
 
+    showHideErrorMessage(false, PatternsWithBadRegionInFile);
+    showHideErrorMessage(false, PatternsWithBadAlphabetInFile);
     // Otherwise enable the button
     btnSearch->setDisabled(false);
 }
@@ -640,7 +646,7 @@ void FindPatternWidget::checkState()
 
 void FindPatternWidget::enableDisableMatchSpin()
 {
-    if (textPattern->toPlainText().isEmpty() || isAminoSequenceSelected) {
+    if ((textPattern->toPlainText().isEmpty() && !loadFromFileGroupBox->isChecked()) || isAminoSequenceSelected) {
         spinMatch->setEnabled(false);
     }
     else {
@@ -673,10 +679,8 @@ U2Region FindPatternWidget::getCompleteSearchRegion(bool& regionIsCorrect, qint6
     return U2Region(value1, value2 - value1);
 }
 
-
-int FindPatternWidget::getMaxError() const
-{
-    return int((float)(1 - float(spinMatch->value()) / 100) * textPattern->toPlainText().length());
+int FindPatternWidget::getMaxError( const QString& pattern ) const{
+    return int((float)(1 - float(spinMatch->value()) / 100) * pattern.length());
 }
 
 
@@ -729,14 +733,55 @@ void FindPatternWidget::sl_onEnterInPatternFieldPressed()
 
 void FindPatternWidget::sl_onSearchClicked()
 {
-    SAFE_POINT(!textPattern->toPlainText().isEmpty(), "Internal error: can't search for an empty string!",);
+    SAFE_POINT(!textPattern->toPlainText().isEmpty() || loadFromFileGroupBox->isChecked(), "Internal error: can't search for an empty string!",);
+    
+    if (loadFromFileGroupBox->isChecked()){
 
+        LoadPatternsFileTask* loadTask = new LoadPatternsFileTask(filePathLineEdit->text());
+        connect(loadTask, SIGNAL(si_stateChanged()), SLOT(sl_loadPatternTaskStateChanged()));
+        AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
+    }else{
+        initFindPatternTask(textPattern->toPlainText().toLocal8Bit().toUpper());
+        updateAnnotationsWidget();
+    }
+}
+
+
+void FindPatternWidget::updateAnnotationsWidget()
+{
+    // Updating the annotations widget
+    SAFE_POINT(NULL != annotatedDnaView->getSequenceInFocus(),
+        "There is no sequence in focus to update the annotations widget on the 'Search in Sequence' tab.",);
+    CreateAnnotationModel newAnnotModel;
+    newAnnotModel.hideLocation = true;
+    newAnnotModel.sequenceObjectRef = annotatedDnaView->getSequenceInFocus()->getSequenceObject();
+    newAnnotModel.sequenceLen = annotatedDnaView->getSequenceInFocus()->getSequenceLength();
+    annotController->updateWidgetForAnnotationModel(newAnnotModel);
+}
+
+#define FIND_PATTER_LAST_DIR "Find_pattern_last_dir"
+
+void FindPatternWidget::sl_onFileSelectorClicked(){
+    LastUsedDirHelper lod(FIND_PATTER_LAST_DIR);
+    lod.url = QFileDialog::getOpenFileName(NULL, tr("File with newline-separated patterns"), lod.dir);
+
+    if (!lod.url.isEmpty()) {
+        filePathLineEdit->setText(lod.url);
+    }
+}
+
+void FindPatternWidget::sl_onFileSelectorToggled( bool on ){
+    textPattern->setDisabled(on);
+    checkState();
+}
+
+void FindPatternWidget::initFindPatternTask( const QString& pattern ){
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
 
     FindAlgorithmTaskSettings settings;
     settings.sequence = activeContext->getSequenceObject()->getWholeSequenceData();
-    settings.pattern = textPattern->toPlainText().toLocal8Bit().toUpper();
+    settings.pattern = pattern.toLocal8Bit().toUpper();
 
     // Strand
     if (isAminoSequenceSelected) {
@@ -779,7 +824,7 @@ void FindPatternWidget::sl_onSearchClicked()
     // Limit results number to the specified value
     settings.maxResult2Find = boxUseMaxResult->isChecked() ?
         boxMaxResult->value() :
-        DEFAULT_RESULTS_NUM_LIMIT;
+    DEFAULT_RESULTS_NUM_LIMIT;
 
     // Region
     bool regionIsCorrectRef = false;
@@ -793,11 +838,11 @@ void FindPatternWidget::sl_onSearchClicked()
 
     // Algorithm settings
     settings.patternSettings = static_cast<FindAlgorithmPatternSettings>(selectedAlgorithm);
-    settings.maxErr = getMaxError();
+    settings.maxErr = getMaxError(pattern);
     settings.useAmbiguousBases = useAmbiguousBasesBox->isChecked();
     settings.maxRegExpResult = boxUseMaxResultLen->isChecked() ?
         boxMaxResultLen->value() :
-        DEFAULT_REGEXP_RESULT_LENGTH_LIMIT;
+    DEFAULT_REGEXP_RESULT_LENGTH_LIMIT;
 
     // Preparing the annotations object and other annotations parameters
     annotController->prepareAnnotationObject();
@@ -815,21 +860,109 @@ void FindPatternWidget::sl_onSearchClicked()
 
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
 
-    updateAnnotationsWidget();
 }
 
+void FindPatternWidget::sl_loadPatternTaskStateChanged(){
+    LoadPatternsFileTask* loadTask = qobject_cast<LoadPatternsFileTask*>(sender());
+    if (!loadTask){
+        return;
+    }
+    if(!loadTask->isFinished() || loadTask->isCanceled()){
+        return;
+    }
+    if (loadTask->hasError()){
 
-void FindPatternWidget::updateAnnotationsWidget()
-{
-    // Updating the annotations widget
-    SAFE_POINT(NULL != annotatedDnaView->getSequenceInFocus(),
-        "There is no sequence in focus to update the annotations widget on the 'Search in Sequence' tab.",);
-    CreateAnnotationModel newAnnotModel;
-    newAnnotModel.hideLocation = true;
-    newAnnotModel.sequenceObjectRef = annotatedDnaView->getSequenceInFocus()->getSequenceObject();
-    newAnnotModel.sequenceLen = annotatedDnaView->getSequenceInFocus()->getSequenceLength();
-    annotController->updateWidgetForAnnotationModel(newAnnotModel);
+        return;
+    }
+    bool noBadRegion = true;
+    bool noBadAlphabet = true;
+
+    foreach(const QString& pattern, loadTask->getPatterns()){
+        //check
+        bool isAlphabetOk = checkAlphabet(pattern);
+        bool isRegionOk = checkPatternRegion(pattern);
+        //initTask
+        if(isAlphabetOk && isRegionOk ){
+            initFindPatternTask(pattern);
+        }
+        noBadRegion &= isRegionOk;
+        noBadAlphabet &= isAlphabetOk;
+    }
+
+    if(!noBadAlphabet){
+        showHideErrorMessage(true, PatternsWithBadAlphabetInFile);
+    }
+    if(!noBadRegion){
+        showHideErrorMessage(true, PatternsWithBadRegionInFile);
+    }
 }
 
+bool FindPatternWidget::checkAlphabet( const QString& pattern ){
+    ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
+    SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus on pattern search!", false);
+
+    DNAAlphabet* alphabet = activeContext->getAlphabet();
+    if (!isAminoSequenceSelected && SeqTranslIndex_Translation == boxSeqTransl->currentIndex()) {
+        DNATranslation* translation = activeContext->getAminoTT();
+        SAFE_POINT(NULL != translation, "Failed to get translation on pattern search!", false);
+
+        alphabet = translation->getDstAlphabet();
+    }
+
+    bool alphabetIsOk = (TextUtils::fits(alphabet->getMap(),
+        pattern.toLocal8Bit().data(),
+        pattern.size()))    ||
+        (useAmbiguousBasesBox->isChecked())   ||
+        (FindAlgorithmPatternSettings_RegExp == selectedAlgorithm);
+
+    return alphabetIsOk;
+}
+
+bool FindPatternWidget::checkPatternRegion( const QString& pattern ){
+    int maxError = getMaxError(pattern);
+    qint64 patternLength = pattern.length();
+    qint64 minMatch = patternLength - maxError;
+    SAFE_POINT(minMatch > 0, "Search pattern length is greater than max error value!",false);
+
+    qint64 regionLength = editEnd->text().toLongLong() - editStart->text().toLongLong() + 1;
+    SAFE_POINT(regionLength > 0, "Incorrect region length when enabling/disabling the pattern search button.", false);
+
+    if (minMatch > regionLength) {
+        return false;
+    }
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//LoadPatternsFileTask
+LoadPatternsFileTask::LoadPatternsFileTask( const QString& _filePath )
+:Task("Load pattern from file", TaskFlag_None)
+,filePath(_filePath){
+    
+}
+
+void LoadPatternsFileTask::run(){
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        setError(QString("Cannot open a file: %1").arg(filePath));
+    }
+
+    QTextStream stream(&file);
+    int fileSize = file.size();
+
+    while (!stream.atEnd() && !stateInfo.cancelFlag) {
+
+        int streamPos = stream.device()->pos();
+        stateInfo.progress = (100*streamPos)/fileSize;
+        QString pattern = stream.readLine();
+        if (!pattern.isEmpty()){
+            patterns.append(pattern);
+        }
+
+    }
+
+
+    file.close();
+}
 
 } // namespace

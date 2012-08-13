@@ -26,6 +26,8 @@
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
+#include <U2Core/Task.h>
+
 #include <QtGui/QtGui>
 
 
@@ -48,7 +50,9 @@ enum RegionSelectionIndex {
 
 enum ErrorMessageFlag {
     PatternIsTooLong,
-    PatternAlphabetDoNotMatch
+    PatternAlphabetDoNotMatch,
+    PatternsWithBadAlphabetInFile,
+    PatternsWithBadRegionInFile
 };
 
 
@@ -70,6 +74,18 @@ protected:
     bool eventFilter(QObject* obj, QEvent *event);
 };
 
+class LoadPatternsFileTask: public Task{
+    Q_OBJECT
+public:
+    LoadPatternsFileTask(const QString& _filePath);
+    QList<QString> getPatterns(){return patterns;}
+    void run();
+
+private:
+    QString filePath;
+    QList<QString> patterns;
+
+};
 
 
 class FindPatternWidget : public QWidget, private Ui_FindPatternForm
@@ -89,6 +105,11 @@ private slots:
     void sl_onSequenceTranslationChanged(int);
     void sl_onSearchPatternChanged();
     void sl_onSearchClicked();
+
+    void sl_onFileSelectorClicked();
+    void sl_onFileSelectorToggled(bool on);
+    void sl_loadPatternTaskStateChanged();
+
 
     /**
      * If the search button is enabled, launches the search
@@ -121,7 +142,7 @@ private:
     void updateShowOptions();
     void connectSlots();
     void tunePercentBox();
-    int getMaxError() const;
+    int getMaxError(const QString& pattern) const;
 
     /**
      * Enables or disables the Search button depending on
@@ -129,6 +150,7 @@ private:
      * and on the validity of the region.
      */
     void checkState();
+    bool checkPatternRegion(const QString& pattern);
 
     /**
      * The "Match" spin is disabled if this is an amino acid sequence or
@@ -143,10 +165,13 @@ private:
     void showHideErrorMessage(bool show, ErrorMessageFlag errorMessageFlag);
 
     void verifyPatternAlphabet();
+    bool checkAlphabet(const QString& pattern);
 
     void setRegionToWholeSequence();
 
     U2Region getCompleteSearchRegion(bool& regionIsCorrect, qint64 maxLen) const;
+
+    void initFindPatternTask(const QString& pattern);
 
     AnnotatedDNAView* annotatedDnaView;
     CreateAnnotationWidgetController* annotController;
