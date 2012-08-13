@@ -309,7 +309,7 @@ Task::ReportResult GTest_CalculateFirstTypeError::report() {
         //printf("Expected: %i", exp);
         //printf(" Actual: %i \r\n", act);
         if(act != exp){
-            stateInfo.setError(  QString("Expected and Actual values are different: %1 %2").arg(s).arg(result.size()) );
+            stateInfo.setError(  QString("Expected and Actual values are different: %1 %2").arg(exp).arg(act) );
             return ReportResult_Finished;
         }
         i++;
@@ -392,13 +392,13 @@ void GTest_CalculateSecondTypeError::run() {
 }
 
 Task::ReportResult GTest_CalculateSecondTypeError::report() {
-    int s = expectedResult.size(), i = offset + 1;
+    int s = expectedResult.size(), i = offset + 1; 
     foreach(int exp, expectedResult) {
         int act = qRound(1/result[i]);
         printf("Expected: %i", exp);
         printf(" Actual: %i \r\n", act);
         if(act != exp){
-            stateInfo.setError(  QString("Expected and Actual values are different: %1 %2").arg(s).arg(result.size()) );
+            stateInfo.setError(  QString("Expected and Actual values are different: %1 %2").arg(exp).arg(act) );
             return ReportResult_Finished;
         }
         i++;
