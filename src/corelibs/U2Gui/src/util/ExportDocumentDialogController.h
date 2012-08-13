@@ -19,24 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_COPY_DOCUMENT_DIALOG_CONTROLLER_H_
-#define _U2_COPY_DOCUMENT_DIALOG_CONTROLLER_H_
+#ifndef _U2_EXPORT_DOCUMENT_DIALOG_CONTROLLER_H_
+#define _U2_EXPORT_DOCUMENT_DIALOG_CONTROLLER_H_
 
 #include <U2Core/global.h>
 #include <U2Core/DocumentModel.h>
 #include <QtGui/QDialog>
 
-class Ui_CopyDocumentDialog;
+class Ui_ExportDocumentDialog;
 
 namespace U2 {
 
 class SaveDocumentGroupController;
 
-class U2GUI_EXPORT CopyDocumentDialogController : public QDialog {
+class U2GUI_EXPORT ExportDocumentDialogController : public QDialog {
     Q_OBJECT
 public:
-    CopyDocumentDialogController(Document* d, QWidget* p);
-    ~CopyDocumentDialogController();
+    ExportDocumentDialogController(Document* d, QWidget* p);
+    ~ExportDocumentDialogController();
 
     QString getDocumentURL() const;
     
@@ -46,9 +46,9 @@ public:
 
 private:
     SaveDocumentGroupController* saveController;
-    Ui_CopyDocumentDialog* ui;
+    Ui_ExportDocumentDialog* ui;
 };
 
-}//ns
+} // _U2_EXPORT_DOCUMENT_DIALOG_CONTROLLER_H_
 
 #endif

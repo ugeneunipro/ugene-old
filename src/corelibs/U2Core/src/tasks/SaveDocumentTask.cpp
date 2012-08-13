@@ -150,9 +150,18 @@ Task::ReportResult SaveDocumentTask::report() {
     if (doc) {
         doc->setLastUpdateTime();
     }
-    if (flags.testFlag(SaveDoc_DestroyAfter)) {
-        doc->unload();
+    bool dontUnload = flags.testFlag(SaveDoc_DestroyButDontUnload);
+    if (flags.testFlag(SaveDoc_DestroyAfter) || dontUnload) {
+        if (!dontUnload) {
+            doc->unload();
+        }
         delete doc;
+    }
+    if (flags.testFlag(SaveDoc_OpenAfter)) {
+        Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(url);
+        if (NULL != openTask) {
+            AppContext::getTaskScheduler()->registerTopLevelTask(openTask);
+        }
     }
     return Task::ReportResult_Finished;
 }

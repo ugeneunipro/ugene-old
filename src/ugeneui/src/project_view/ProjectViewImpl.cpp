@@ -52,7 +52,7 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
-#include <U2Gui/CopyDocumentDialogController.h>
+#include <U2Gui/ExportDocumentDialogController.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceWidget.h>
@@ -368,10 +368,10 @@ void ProjectViewImpl::enable() {
     relocateDocumentAction->setIcon(QIcon(":ugene/images/relocate.png"));
     connect(relocateDocumentAction, SIGNAL(triggered()), SLOT(sl_relocate()));
 
-    saveCopyAction = new QAction(tr("Save a copy.."), w);
-	saveCopyAction->setObjectName("Save a copy..");
-    saveCopyAction->setIcon(QIcon(":ugene/images/save_copy.png"));
-    connect(saveCopyAction, SIGNAL(triggered()), SLOT(sl_saveCopy()));
+    exportDocumentAction = new QAction(tr("Export document.."), w);
+	exportDocumentAction->setObjectName("Export document..");
+    exportDocumentAction->setIcon(QIcon(":ugene/images/save_copy.png"));
+    connect(exportDocumentAction, SIGNAL(triggered()), SLOT(sl_exportDocument()));
 
     initView();
 
@@ -791,7 +791,7 @@ void ProjectViewImpl::buildRelocateMenu(QMenu* m) {
                 }
             }
             if(allObjectsWitable){
-                m->addAction(saveCopyAction);
+                m->addAction(exportDocumentAction);
                 return;
             }
         }
@@ -922,7 +922,7 @@ void ProjectViewImpl::sl_relocate() {
 	AppContext::getTaskScheduler()->registerTopLevelTask(new RelocateDocumentTask(d->getURL(), GUrl(h.url, GUrl_File)));    
 }
 
-void ProjectViewImpl::sl_saveCopy() {
+void ProjectViewImpl::sl_exportDocument() {
     const DocumentSelection* ds = getDocumentSelection();
     Document* srcDoc = ds->isEmpty() ? NULL : ds->getSelectedDocuments().first();
     if (srcDoc == NULL) {
@@ -932,7 +932,7 @@ void ProjectViewImpl::sl_saveCopy() {
         return;
     }
     LastUsedDirHelper h;
-    CopyDocumentDialogController dialog(srcDoc, w);
+    ExportDocumentDialogController dialog(srcDoc, w);
     int result = dialog.exec();
     if (result == QDialog::Accepted) {
         h.url = dialog.getDocumentURL();
@@ -945,7 +945,21 @@ void ProjectViewImpl::sl_saveCopy() {
             return;
         }
         bool addToProject = dialog.getAddToProjectFlag();
-        CopyDocumentTask *t = new CopyDocumentTask(srcDoc, dialog.getDocumentFormatId(), dstUrl, addToProject);
+
+        IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(dstUrl));
+        CHECK_EXT(iof != NULL, coreLog.error(QString("Can not create IO factory for %1").arg(dstUrl)), );
+        DocumentFormatRegistry *dfr =  AppContext::getDocumentFormatRegistry();
+        DocumentFormatId formatId = dialog.getDocumentFormatId();
+        DocumentFormat *df = dfr->getFormatById(formatId);
+        CHECK_EXT(df != NULL, coreLog.error(QString("Unknown document format IO factory: %1").arg(formatId)), );
+
+        Document *dstDoc = srcDoc->getSimpleCopy(df, iof, dstUrl);
+
+        SaveDocFlags flags = SaveDocFlags(SaveDoc_Roll) | SaveDoc_DestroyButDontUnload;
+        if (addToProject) {
+            flags |= SaveDoc_OpenAfter;
+        }
+        SaveDocumentTask *t = new SaveDocumentTask(dstDoc, iof, dstUrl, flags);
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
 }

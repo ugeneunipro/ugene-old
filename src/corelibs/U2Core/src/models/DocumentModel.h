@@ -376,6 +376,8 @@ public:
     inline void setDocumentOwnsDbiResources(bool value) { documentOwnsDbiResources = value; }
 
     static void setupToEngine(QScriptEngine *engine);
+
+    Document *getSimpleCopy(DocumentFormat *df, IOAdapterFactory *io, const GUrl &url) const;
 private:
     static QScriptValue toScriptValue(QScriptEngine *engine, Document* const &in);
     static void fromScriptValue(const QScriptValue &object, Document* &out);

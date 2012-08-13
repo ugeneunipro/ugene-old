@@ -19,9 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include "CopyDocumentDialogController.h"
+#include "ExportDocumentDialogController.h"
 #include "SaveDocumentGroupController.h"
-#include "ui/ui_CopyDocumentDialog.h"
+#include "ui/ui_ExportDocumentDialog.h"
 
 #include "U2Gui/DialogUtils.h"
 
@@ -36,8 +36,8 @@
 
 namespace U2{
 
-CopyDocumentDialogController::CopyDocumentDialogController(Document* d, QWidget *p) : QDialog(p) {
-    ui = new Ui_CopyDocumentDialog();
+ExportDocumentDialogController::ExportDocumentDialogController(Document* d, QWidget *p) : QDialog(p) {
+    ui = new Ui_ExportDocumentDialog();
     ui->setupUi(this);
 
     SaveDocumentGroupControllerConfig conf;
@@ -56,7 +56,7 @@ CopyDocumentDialogController::CopyDocumentDialogController(Document* d, QWidget 
     ui->fileNameEdit->setText(fileName);
 }
 
-QString CopyDocumentDialogController::getDocumentURL() const {
+QString ExportDocumentDialogController::getDocumentURL() const {
     QString path = saveController->getSaveFileName();
     if(ui->compressCheck->isChecked()) {
         QString suffix = path.split(".").last();
@@ -67,16 +67,16 @@ QString CopyDocumentDialogController::getDocumentURL() const {
     return path;
 }
 
-DocumentFormatId CopyDocumentDialogController::getDocumentFormatId() const {
+DocumentFormatId ExportDocumentDialogController::getDocumentFormatId() const {
     return saveController->getFormatIdToSave();
 }
 
-CopyDocumentDialogController::~CopyDocumentDialogController()
+ExportDocumentDialogController::~ExportDocumentDialogController()
 {
     delete ui;
 }
 
-bool CopyDocumentDialogController::getAddToProjectFlag() const
+bool ExportDocumentDialogController::getAddToProjectFlag() const
 {
     return ui->addToProjCheck->isChecked();
 }

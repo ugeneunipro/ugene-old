@@ -24,7 +24,6 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/AddNewDocumentDialogImpl.h \
            src/util/AuthenticationDialog.h \
            src/util/BaseDocumentFormatConfigurators.h \
-           src/util/CopyDocumentDialogController.h \
            src/util/CreateAnnotationDialog.h \
            src/util/CreateAnnotationWidgetController.h \
            src/util/CreateDocumentFromTextDialogController.h \
@@ -34,6 +33,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/DownloadRemoteFileDialog.h \
            src/util/EditQualifierDialog.h \
            src/util/EditSequenceDialogController.h \
+           src/util/ExportDocumentDialogController.h \
            src/util/ExportImageDialog.h \
            src/util/GlassView.h \
            src/util/GObjectComboBoxController.h \
@@ -60,12 +60,12 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/logview/LogView.h
 FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthentificationDialog.ui \
-         src/util/ui/CopyDocumentDialog.ui \
          src/util/ui/CreateDocumentFromTextDialog.ui \
          src/util/ui/CreateObjectRelationDialog.ui \
          src/util/ui/DownloadRemoteFileDialog.ui \
          src/util/ui/EditQualifierDialog.ui \
          src/util/ui/EditSequenceDialog.ui \
+         src/util/ui/ExportDocumentDialog.ui \
          src/util/ui/ExportImageDialog.ui \
          src/util/ui/FormatSettingsDialog.ui \
          src/util/ui/MultipartDocFormatConfiguratorWidget.ui \
@@ -94,7 +94,6 @@ SOURCES += src/MainWindow.cpp \
            src/util/AddNewDocumentDialogImpl.cpp \
            src/util/AuthenticationDialog.cpp \
            src/util/BaseDocumentFormatConfigurators.cpp \
-           src/util/CopyDocumentDialogController.cpp \
            src/util/CreateAnnotationDialog.cpp \
            src/util/CreateAnnotationWidgetController.cpp \
            src/util/CreateDocumentFromTextDialogController.cpp \
@@ -104,6 +103,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/DownloadRemoteFileDialog.cpp \
            src/util/EditQualifierDialog.cpp \
            src/util/EditSequenceDialogController.cpp \
+           src/util/ExportDocumentDialogController.cpp \
            src/util/ExportImageDialog.cpp \
            src/util/GlassView.cpp \
            src/util/GObjectComboBoxController.cpp \

@@ -122,7 +122,7 @@ private slots:
 	void sl_onActivated(GObject*);
     void sl_filterTextChanged(const QString& t);
     void sl_relocate();
-    void sl_saveCopy();
+    void sl_exportDocument();
 
 private:
     void saveWidgetState(ProjectViewWidget* w);
@@ -143,7 +143,7 @@ private:
     QAction*    addExistingDocumentAction;
     QAction*    saveSelectedDocsAction;
     QAction*    relocateDocumentAction;
-    QAction*    saveCopyAction;
+    QAction*    exportDocumentAction;
     bool saveProjectOnClose;
 
 	ProjectViewWidget* w;

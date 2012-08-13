@@ -251,6 +251,14 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
     assert(!isModified());
 }
 
+Document *Document::getSimpleCopy(DocumentFormat *df, IOAdapterFactory *io, const GUrl &url) const {
+    Document *result = new Document(df, io, url, this->dbiRef, QList<GObject*>(), this->getGHintsMap());
+    result->objects = this->objects;
+    result->documentOwnsDbiResources = false;
+
+    return result;
+}
+
 static void deallocateDbiResources(GObject* obj, DbiConnection &con, U2OpStatus &os) {
     SAFE_POINT(obj != NULL, "NULL object was provided!",);
     U2EntityRef objRef = obj->getEntityRef();
