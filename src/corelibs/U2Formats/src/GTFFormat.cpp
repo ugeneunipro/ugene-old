@@ -189,7 +189,7 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& 
         // Verify the sequence name (error doesn't occur, just warning)
         if (!sequenceName.isEmpty()) {
             if (gtfLineData.seqName != sequenceName) {
-                coreLog.trace(tr("GTF parsing warning: different sequence names were detected"
+                ioLog.trace(tr("GTF parsing warning: different sequence names were detected"
                     " in an input GTF file. Sequence name '%1' is used.").arg(sequenceName));
             }
         }
@@ -199,7 +199,7 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& 
 
         // Verify the feature field
         if (validationStatus.isIncorrectFeatureField()) {
-            coreLog.trace(tr("GTF parsing error: unexpected value of the \"feature\""
+            ioLog.trace(tr("GTF parsing error: unexpected value of the \"feature\""
                 " value \"%1\" at line %2!").arg(gtfLineData.feature).arg(lineNumber));
         }
 
@@ -218,7 +218,7 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& 
 
         if (validationStatus.isIncorrectScore()) {
             // Write the error to the log, but open the file
-            coreLog.trace(tr("GTF parsing error: incorrect score"
+            ioLog.trace(tr("GTF parsing error: incorrect score"
                 " value \"%1\" at line %2!").arg(gtfLineData.score).arg(lineNumber));
         }
         else if (NO_VALUE_STR != gtfLineData.score) {
@@ -227,7 +227,7 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& 
 
 
         if (validationStatus.isIncorrectFrame()) {
-            coreLog.trace(tr("GTF parsing error: incorrect frame"
+            ioLog.trace(tr("GTF parsing error: incorrect frame"
                 " value \"%1\" at line %2!").arg(gtfLineData.frame).arg(lineNumber));
         }
         else if (NO_VALUE_STR != gtfLineData.frame) {
@@ -248,19 +248,19 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& 
         }
 
         if (validationStatus.isIncorrectFormatOfAttributes()) {
-            coreLog.trace(tr("GTF parsing error: invalid attributes"
+            ioLog.trace(tr("GTF parsing error: invalid attributes"
                 " format at line %1!").arg(lineNumber));
         }
 
 
         // Verify that mandatory attributes "gene_id" and "transcript_id" are present
         if (validationStatus.isGeneIdAbsent()) {
-            coreLog.trace(tr("GTF parsing error: mandatory attribute '") +
+            ioLog.trace(tr("GTF parsing error: mandatory attribute '") +
                 GENE_ID_QUALIFIER_NAME + tr("' is absent at line %1!").arg(lineNumber));
         }
 
         if (validationStatus.isTranscriptIdAbsent()) {
-            coreLog.trace(tr("GTF parsing error: mandatory attribute '") +
+            ioLog.trace(tr("GTF parsing error: mandatory attribute '") +
                 TRANSCRIPT_ID_QUALIFIER_NAME + tr("' is absent at line %1!").arg(lineNumber));
         }
 
@@ -268,7 +268,7 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& 
         // Verify the strand
         if (validationStatus.isIncorrectStrand()) {
             // Write the error to the log, but open the file
-            coreLog.trace(tr("GTF parsing error: incorrect strand"
+            ioLog.trace(tr("GTF parsing error: incorrect strand"
                 " value \"%1\" at line %2!").arg(gtfLineData.strand).arg(lineNumber));
         }
         else if ("+" == gtfLineData.strand) {
@@ -287,7 +287,7 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& 
     }
 
     if (false == fileIsValid) {
-        coreLog.error("GTF parsing error: one or more errors occurred while parsing the input file,"
+        ioLog.error("GTF parsing error: one or more errors occurred while parsing the input file,"
             " see TRACE log for details!");
     }
 
@@ -618,7 +618,7 @@ void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                         }
                         else {
                             noErrorsDuringStoring = false;
-                            coreLog.trace(tr("GTF saving error: unknown value"
+                            ioLog.trace(tr("GTF saving error: unknown value"
                                 " of the strand qualifier \"%1\" of an annotation"
                                 " \"%2\" was skipped!").arg(qualifier.name).arg(annotName));
                         }
@@ -659,7 +659,7 @@ void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
     }
 
     if (!noErrorsDuringStoring) {
-        coreLog.error(tr("GTF saving error: one or more errors occurred while saving a file,"
+        ioLog.error(tr("GTF saving error: one or more errors occurred while saving a file,"
             " see TRACE log for details!"));
     }
 }

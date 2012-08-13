@@ -50,6 +50,7 @@ public:
     static const DocumentFormatId PLAIN_ASN;
     static const DocumentFormatId MSF;
     static const DocumentFormatId ACE;
+    static const DocumentFormatId BED;
     static const DocumentFormatId GFF;
     static const DocumentFormatId GTF;
     static const DocumentFormatId FPKM_TRACKING_FORMAT;

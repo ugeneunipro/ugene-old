@@ -194,7 +194,7 @@ QList<SharedAnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QSt
         // Verify the sequence name (error doesn't occur, just warning)
         if (!seqName.isEmpty()) {
             if (fpkmTrLineData.seqName != seqName) {
-                coreLog.trace(tr("FPKM Tracking Format parsing error: different sequence names were detected"
+                ioLog.trace(tr("FPKM Tracking Format parsing error: different sequence names were detected"
                     " in an input file. Sequence name '%1' is used.").arg(seqName));
             }
         }
@@ -210,7 +210,7 @@ QList<SharedAnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QSt
         // Add qualifiers
         if (validationStatus.isEmptyTrackingId()) {
             // Write the error to the log, but open the file
-            coreLog.trace(tr("FPKM Tracking Format parsing error: tracking ID"
+            ioLog.trace(tr("FPKM Tracking Format parsing error: tracking ID"
                 " value is empty at line %1!").arg(lineNumber));
         } else {
             annotData->qualifiers.push_back(
@@ -233,12 +233,12 @@ QList<SharedAnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QSt
 
         // Additional warnings
         if (validationStatus.isIncorrectLength()) {
-            coreLog.trace(tr("FPKM Tracking Format parsing error: incorrect"
+            ioLog.trace(tr("FPKM Tracking Format parsing error: incorrect"
                 " length value at line %1!").arg(lineNumber));
         }
 
         if (validationStatus.isIncorrectCoverage()) {
-            coreLog.trace(tr("FPKM Tracking Format parsing error: incorrect"
+            ioLog.trace(tr("FPKM Tracking Format parsing error: incorrect"
                 " coverage value at line %1!").arg(lineNumber));
         }
 
@@ -250,7 +250,7 @@ QList<SharedAnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QSt
     }
 
     if (false == fileIsValid) {
-        coreLog.error("FPKM Tracking Format parsing error: one or more errors occurred while parsing the input file,"
+        ioLog.error("FPKM Tracking Format parsing error: one or more errors occurred while parsing the input file,"
             " see TRACE log for details!");
     }
 
@@ -585,7 +585,7 @@ void FpkmTrackingFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus&
 
             QVector<U2Region> annotRegions = annot->getRegions();
 
-            foreach (const U2Region region, annotRegions) {
+            foreach (const U2Region& region, annotRegions) {
 
                 // Fill in the values from the annotation qualifiers
                 QStringList lineFields;
@@ -640,7 +640,7 @@ void FpkmTrackingFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus&
 
                     // Use an appropriate string when there is no value
                     if (columnValue.isEmpty()) {
-                        columnValue = NO_VALUE_STR;                        
+                        columnValue = NO_VALUE_STR;
                     }
 
                     // Append the value
@@ -660,7 +660,7 @@ void FpkmTrackingFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus&
     }
 
     if (!noErrorsDuringStoring) {
-        coreLog.error(tr("FPKM Tracking Format saving error: one or more errors occurred while saving a file,"
+        ioLog.error(tr("FPKM Tracking Format saving error: one or more errors occurred while saving a file,"
             " see TRACE log for details!"));
     }
 }

@@ -38,6 +38,7 @@
 #include <U2Formats/FastqFormat.h>
 #include <U2Formats/ASNFormat.h>
 #include <U2Formats/MSFFormat.h>
+#include <U2Formats/BedFormat.h>
 #include <U2Formats/GFFFormat.h>
 #include <U2Formats/GTFFormat.h>
 #include <U2Formats/FpkmTrackingFormat.h>
@@ -154,6 +155,9 @@ void DocumentFormatRegistryImpl::init() {
 
     MSFFormat* msf = new MSFFormat(this);
     registerFormat(msf);
+
+    BedFormat* bed = new BedFormat(this);
+    registerFormat(bed);
 
     GFFFormat *gff = new GFFFormat(this);
     registerFormat(gff);

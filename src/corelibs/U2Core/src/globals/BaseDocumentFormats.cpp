@@ -41,6 +41,7 @@ const DocumentFormatId BaseDocumentFormats::INDEX("index");
 const DocumentFormatId BaseDocumentFormats::FASTQ("fastq");
 const DocumentFormatId BaseDocumentFormats::PLAIN_ASN("mmdb");
 const DocumentFormatId BaseDocumentFormats::MSF("msf");
+const DocumentFormatId BaseDocumentFormats::BED("bed");
 const DocumentFormatId BaseDocumentFormats::GFF("gff");
 const DocumentFormatId BaseDocumentFormats::GTF("gtf");
 const DocumentFormatId BaseDocumentFormats::FPKM_TRACKING_FORMAT("fpkm-tracking");
