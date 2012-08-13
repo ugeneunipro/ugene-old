@@ -37,6 +37,8 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
 
+#include <memory>
+
 
 namespace U2{
 
