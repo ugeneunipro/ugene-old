@@ -138,14 +138,14 @@ void GenomeAlignerFindTask::loadPartForAligning(int part) {
 
     QMutexLocker lock(&loadPartMutex);
     if (!partLoaded) {
-        taskLog.details(QString("loading part %1").arg(part));
+        taskLog.trace(QString("loading index part %1").arg(part + 1));
         if (!index->loadPart(part)) {
             setError("Incorrect index file. Please, try to create a new index file.");
         }
         partLoaded = true;
         openCLFinished = false;
         nextElementToGive = 0;
-        taskLog.details(QString("finish to load part %1").arg(part));
+        taskLog.trace(QString("finished loading index part %1").arg(part + 1));
     }
 }
 
@@ -376,7 +376,9 @@ void ShortReadAlignerOpenCL::run() {
 
 	for (int part = 0; part < index->getPartCount(); part++) {
 		stateInfo.setProgress(100 * part / index->getPartCount());
+        quint64 t0 = GTimer::currentTimeMicros();
 		parent->loadPartForAligning(part);
+        algoLog.details(QString("Index part %1 loaded in %2 sec.").arg(part + 1).arg((GTimer::currentTimeMicros() - t0) / double(1000000), 0, 'f', 3));
 		if (parent->hasError()) {
 			return;
 		}
@@ -387,6 +389,7 @@ void ShortReadAlignerOpenCL::run() {
 		}
 
 		// wait until all short reads are loaded
+        t0 = GTimer::currentTimeMicros();
 		do {
 			if (part > 0) {
 				SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
@@ -397,6 +400,7 @@ void ShortReadAlignerOpenCL::run() {
 // 			algoLog.details(QString("ShortReadAlignerOpenCL subtask %1: fetched %3 needles starting at offset %2, next element=%4, queries=%5, bitValues=%6")
 // 				.arg(taskNo).arg(first).arg(length).arg(parent->nextElementToGive).arg(alignContext->queries.size()).arg(alignContext->bitValuesV.size()));
 		} while(length > 0);
+        algoLog.details(QString("%1 queries fetched in %2 sec.").arg(alignContext->queries.size()).arg((GTimer::currentTimeMicros() - t0) / double(1000000), 0, 'f', 3));
 
 // 		algoLog.details(QString("needles: %1").arg(numArrToStr(alignContext->bitValuesV.constData(), alignContext->bitValuesV.size(), true)));
 // 		algoLog.details(QString("window sizes: %1").arg(numArrToStr(alignContext->windowSizes.constData(), alignContext->windowSizes.size())));
@@ -415,6 +419,7 @@ void ShortReadAlignerOpenCL::run() {
 		const int *windowSizes = alignContext->windowSizes.constData();
 		const int totalResults = alignContext->bitValuesV.size();
 
+        t0 = GTimer::currentTimeMicros();
 		for (int i = 0; i < totalResults; i++) {
 			int currentW = alignContext->windowSizes.at(i);
 			if(0 == currentW) {
@@ -464,6 +469,7 @@ void ShortReadAlignerOpenCL::run() {
 				}
 			}
 		}
+        algoLog.details(QString("binary search results applied in %1 ms").arg((GTimer::currentTimeMicros() - t0) / double(1000), 0, 'f', 3));
 	}
 #endif
 }

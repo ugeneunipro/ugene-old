@@ -41,10 +41,10 @@ public:
 	bool hasError() {return isError;}
 private:
     bool hasOPENCLError(cl_int err, QString errorMessage);
-    void initMiniHaystack(const NumberType* haystack, int lowerBound, int upperBound,
-                             NumberType* miniHaystackOffsets, NumberType* miniHaystack, const int miniHaystackSize);
+//     void initMiniHaystack(const NumberType* haystack, int lowerBound, int upperBound,
+//                              NumberType* miniHaystackOffsets, NumberType* miniHaystack, const int miniHaystackSize);
 	void logProfilingInfo(const OpenCLHelper &openCLHelper, const cl_event &event, const QString &msgPrefix);
-
+    
 	bool isError;
 
     const NumberType* haystack;
@@ -64,8 +64,8 @@ private:
     cl_mem buf_needlesArray;
 	cl_mem buf_windowSizesArray;
     cl_mem buf_outPutArray;
-    cl_mem buf_miniHaystackOffsets;
-    cl_mem buf_miniHaystack;
+//     cl_mem buf_miniHaystackOffsets;
+//     cl_mem buf_miniHaystack;
 };
 
 }//namespace

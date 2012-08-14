@@ -217,8 +217,8 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         }
 
         readsCount += readTask->bunchSize;
-        taskLog.details(QString("%1 short reads read and complemented in %2 sec.")
-            .arg(readTask->bunchSize).arg((double)time/(1000*1000)));
+        taskLog.details(QString("GenomeAlignerTask: %1 short reads loaded and complemented in %2 sec, file progress %3%.")
+            .arg(readTask->bunchSize).arg(time / (double)1000000, 0, 'f', 2).arg(seqReader->getProgress()));
 
         /*findTask = new GenomeAlignerFindTask(index, &alignContext, pWriteTask);
         findTask->setSubtaskProgressWeight(0.0f);
@@ -472,7 +472,6 @@ void ReadShortReadsSubTask::run() {
     }
 
     alignContext.isReadingFinished = true;
-	algoLog.details(QString("ReadShortReadsSubTask finished loading %1 more short reads, total progress: %2%").arg(alignContext.queries.size()).arg(seqReader->getProgress()));
     alignContext.alignerWait.wakeAll();
 }
 

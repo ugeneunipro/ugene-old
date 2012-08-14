@@ -265,9 +265,10 @@ BinarySearchResult GenomeAlignerIndex::bitMaskBinarySearch(BMType bitValue, BMTy
 #ifdef OPENCL_SUPPORT
 BinarySearchResult *GenomeAlignerIndex::bitMaskBinarySearchOpenCL(const BMType *bitValues, int size, const int *windowSizes) {
 
-	taskLog.details(QString("Binary search on GPU of %1 Mb search-values in %2 Mb base values")
+	taskLog.details(QString("Binary search on GPU for %1 Mb search-values in %2 Mb base values")
         .arg((8*size)/(1 << 20)).arg((8*indexPart.getLoadedPartSize())/(1 << 20)));
     assert(indexPart.getLoadedPartSize() != 0);
+    assert(size > 0);
 
     BinaryFindOpenCL bf((NumberType*)indexPart.bitMask, indexPart.getLoadedPartSize(), (NumberType*)bitValues, size, windowSizes);
 
