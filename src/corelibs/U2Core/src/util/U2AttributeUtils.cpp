@@ -23,6 +23,7 @@
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -104,5 +105,50 @@ U2StringAttribute getAttribute<U2StringAttribute>(U2AttributeDbi* adbi, const U2
     return adbi->getStringAttribute(attrId, os);
 }
 
+void U2AttributeUtils::copyObjectAttributes(const U2DataId &srcObjId, const U2DataId &dstObjId,
+                                 U2AttributeDbi *srcAttributeDbi, U2AttributeDbi *dstAttributeDbi,
+                                 U2OpStatus &os) {
+    CHECK_EXT(NULL != srcAttributeDbi, os.setError("NULL source attribute dbi"), );
+    CHECK_EXT(NULL != dstAttributeDbi, os.setError("NULL destination attribute dbi"), );
+
+    U2Dbi *dstDbi = dstAttributeDbi->getRootDbi();
+    U2Dbi *srcDbi = srcAttributeDbi->getRootDbi();
+    CHECK_EXT(NULL != srcDbi, os.setError("NULL source root dbi"), );
+    CHECK_EXT(NULL != dstDbi, os.setError("NULL destination root dbi"), );
+
+    if (!dstDbi->getFeatures().contains(U2DbiFeature_WriteAttributes)) {
+        os.setError("Destination dbi does not support writing");
+        return;
+    }
+
+    QList<U2DataId> attrIds = srcAttributeDbi->getObjectAttributes(srcObjId, "", os);
+    CHECK_OP(os, );
+
+    foreach (const U2DataId &attrId, attrIds) {
+        U2DataType attrType = srcDbi->getEntityTypeById(attrId);
+        if (U2Type::AttributeInteger == attrType) {
+            U2IntegerAttribute attr = srcAttributeDbi->getIntegerAttribute(attrId, os);
+            CHECK_OP(os, );
+            attr.objectId = dstObjId;
+            dstAttributeDbi->createIntegerAttribute(attr, os);
+        } else if (U2Type::AttributeReal == attrType) {
+            U2RealAttribute attr = srcAttributeDbi->getRealAttribute(attrId, os);
+            CHECK_OP(os, );
+            attr.objectId = dstObjId;
+            dstAttributeDbi->createRealAttribute(attr, os);
+        } else if (U2Type::AttributeString == attrType) {
+            U2StringAttribute attr = srcAttributeDbi->getStringAttribute(attrId, os);
+            CHECK_OP(os, );
+            attr.objectId = dstObjId;
+            dstAttributeDbi->createStringAttribute(attr, os);
+        } else if (U2Type::AttributeByteArray == attrType) {
+            U2ByteArrayAttribute attr = srcAttributeDbi->getByteArrayAttribute(attrId, os);
+            CHECK_OP(os, );
+            attr.objectId = dstObjId;
+            dstAttributeDbi->createByteArrayAttribute(attr, os);
+        }
+        CHECK_OP(os, );
+    }
+}
 
 } //namespace

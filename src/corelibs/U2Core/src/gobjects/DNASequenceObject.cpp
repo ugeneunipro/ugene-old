@@ -213,15 +213,19 @@ void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& 
 }
 
 GObject* U2SequenceObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os) const {
+    DbiConnection srcCon(this->entityRef.dbiRef, os);
+    CHECK_OP(os, NULL);
+    DbiConnection dstCon(dbiRef, true, os);
+    CHECK_OP(os, NULL);
+
     U2Sequence seq = U2SequenceUtils::copySequence(entityRef, dbiRef, os);
     CHECK_OP(os, NULL);
 
     U2SequenceObject* res = new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id), getGHintsMap());
 
-    //TODO: copy attributes of the sequence. Now it can only try copying GenBank header
-    QString gbHeader;
-    gbHeader = getStringAttribute(DNAInfo::GENBANK_HEADER);
-    res->setStringAttribute(gbHeader, DNAInfo::GENBANK_HEADER);
+    U2AttributeUtils::copyObjectAttributes(entityRef.entityId, seq.id,
+        srcCon.dbi->getAttributeDbi(), dstCon.dbi->getAttributeDbi(), os);
+    CHECK_OP(os, NULL);
 
     return res;
 }

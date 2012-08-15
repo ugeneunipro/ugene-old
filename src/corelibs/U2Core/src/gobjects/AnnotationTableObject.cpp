@@ -670,7 +670,8 @@ GObject* AnnotationTableObject::clone(const U2DbiRef&, U2OpStatus&) const {
     AnnotationTableObject* cln = new AnnotationTableObject(getGObjectName(), getGHintsMap());
     cln->setIndexInfo(getIndexInfo());
     QMap<AnnotationGroup*, AnnotationGroup*>remap;
-    remap[rootGroup] = cln->rootGroup = new AnnotationGroup(cln, rootGroup->getGroupName(), NULL);
+    cln->rootGroup = new AnnotationGroup(cln, rootGroup->getGroupName(), NULL);
+    remap[rootGroup] = cln->rootGroup;
     QList<AnnotationGroup*> lst;
     lst << rootGroup->getSubgroups();
     while(!lst.isEmpty()){
@@ -1011,7 +1012,8 @@ GObject* FeaturesTableObject::clone( const U2DbiRef& ref, U2OpStatus& os ) const
     FeaturesTableObject* cln = new FeaturesTableObject(getGObjectName(), ref, getGHintsMap());
     cln->setIndexInfo(getIndexInfo());
     QMap<AnnotationGroup*, AnnotationGroup*>remap;
-    remap[rootGroup] = cln->aObject->rootGroup = new AnnotationGroup(cln->aObject, rootGroup->getGroupName(), NULL);
+    cln->aObject->rootGroup = new AnnotationGroup(cln->aObject, rootGroup->getGroupName(), NULL);
+    remap[rootGroup] = cln->aObject->rootGroup;
     QList<AnnotationGroup*> lst;
     lst << rootGroup->getSubgroups();
     while(!lst.isEmpty()){

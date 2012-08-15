@@ -108,24 +108,32 @@ public:
     /** 
         Creates int64 attribute in database. ObjectId must be already set in attribute and present in the same database 
         Requires U2DbiFeature_WriteAttribute feature support
+
+        NOTE: When you create a new attribute, do not forget to add it to the clone method of the corresponding object!
     */    
     virtual void createIntegerAttribute(U2IntegerAttribute& a, U2OpStatus& os) = 0;
 
     /** 
         Creates real64 attribute in database. ObjectId must be already set in attribute and present in the same database 
         Requires U2DbiFeature_WriteAttribute feature support
+
+        NOTE: When you create a new attribute, do not forget to add it to the clone method of the corresponding object!
     */    
     virtual void createRealAttribute(U2RealAttribute& a, U2OpStatus& os) = 0;
 
     /** 
         Creates String attribute in database. ObjectId must be already set in attribute and present in the same database 
         Requires U2DbiFeature_WriteAttribute feature support
+
+        NOTE: When you create a new attribute, do not forget to add it to the clone method of the corresponding object!
     */    
     virtual void createStringAttribute(U2StringAttribute& a, U2OpStatus& os) = 0;
 
     /** 
         Creates Byte attribute in database. ObjectId must be already set in attribute and present in the same database 
         Requires U2DbiFeature_WriteAttribute feature support
+
+        NOTE: When you create a new attribute, do not forget to add it to the clone method of the corresponding object!
     */    
     virtual void createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpStatus& os) = 0;
     

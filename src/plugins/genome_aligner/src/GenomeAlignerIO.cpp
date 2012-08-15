@@ -25,6 +25,7 @@
 #include <U2Core/Counter.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2CoreAttributes.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2AlphabetUtils.h>
@@ -223,7 +224,7 @@ GenomeAlignerDbiWriter::GenomeAlignerDbiWriter(QString dbiFilePath, QString refN
 
     U2IntegerAttribute lenAttr;
     lenAttr.objectId = assembly.id;
-    lenAttr.name = "reference_length_attribute";
+    lenAttr.name = U2BaseAttributeName::reference_length;
     lenAttr.version = 1;
     lenAttr.value = refLength;
     dbiHandle->dbi->getAttributeDbi()->createIntegerAttribute(lenAttr, status);

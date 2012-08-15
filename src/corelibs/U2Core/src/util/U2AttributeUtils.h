@@ -54,6 +54,10 @@ public:
 
     static void removeAttribute(U2AttributeDbi* adbi, const U2DataId& attrId, U2OpStatus& os);
 
+    static void copyObjectAttributes(const U2DataId &srcObjId, const U2DataId &dstObjId,
+        U2AttributeDbi *srcAttributeDbi, U2AttributeDbi *dstAttributeDbi,
+        U2OpStatus &os);
+
 };
 
 } //namespace

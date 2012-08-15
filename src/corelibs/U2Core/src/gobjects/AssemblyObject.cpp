@@ -21,6 +21,7 @@
 
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2AttributeUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2ObjectDbi.h>
@@ -98,15 +99,10 @@ U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, con
     CHECK_OP(os, U2EntityRef());
 
     // copy attributes
-    U2AttributeDbi *dstAttributeDbi = dstCon.dbi->getAttributeDbi();
     U2AttributeDbi *srcAttributeDbi = srcCon.dbi->getAttributeDbi();
-    if (NULL != srcAttributeDbi && NULL != dstAttributeDbi) {
-        U2IntegerAttribute lengthAttr = srcAttributeDbi->getIntegerAttribute(srcObjId, os);
-        CHECK_OP(os, U2EntityRef());
-        lengthAttr.objectId = assembly.id;
-        dstAttributeDbi->createIntegerAttribute(lengthAttr, os);
-        CHECK_OP(os, U2EntityRef());
-    }
+    U2AttributeDbi *dstAttributeDbi = dstCon.dbi->getAttributeDbi();
+    U2AttributeUtils::copyObjectAttributes(srcObjId, assembly.id, srcAttributeDbi, dstAttributeDbi, os);
+    CHECK_OP(os, U2EntityRef());
 
     U2EntityRef dstEntityRef(dstDbiRef, assembly.id);
     return dstEntityRef;

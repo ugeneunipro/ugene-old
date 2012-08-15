@@ -29,6 +29,7 @@
 #include "ConvertToSQLiteTask.h"
 #include "LoadBamInfoTask.h"
 
+#include <U2Core/U2CoreAttributes.h>
 #include <U2Core/U2Dbi.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -720,7 +721,7 @@ void ConvertToSQLiteTask::run() {
                     {
                         U2IntegerAttribute lenAttr;
                         lenAttr.objectId = assembly.id;
-                        lenAttr.name = "reference_length_attribute";
+                        lenAttr.name = U2BaseAttributeName::reference_length;
                         lenAttr.version = assembly.version;
                         lenAttr.value = reference.getLength();
                         U2OpStatusImpl status;
@@ -732,7 +733,7 @@ void ConvertToSQLiteTask::run() {
                     if(!reference.getMd5().isEmpty()) {
                         U2ByteArrayAttribute md5Attr;
                         md5Attr.objectId = assembly.id;
-                        md5Attr.name = "reference_md5_attribute";
+                        md5Attr.name = U2BaseAttributeName::reference_md5;
                         md5Attr.version = assembly.version;
                         md5Attr.value = reference.getMd5();
                         U2OpStatusImpl status;
@@ -744,7 +745,7 @@ void ConvertToSQLiteTask::run() {
                     if(!reference.getSpecies().isEmpty()) {
                         U2ByteArrayAttribute speciesAttr;
                         speciesAttr.objectId = assembly.id;
-                        speciesAttr.name = "reference_species_attribute";
+                        speciesAttr.name = U2BaseAttributeName::reference_species;
                         speciesAttr.version = assembly.version;
                         speciesAttr.value = reference.getSpecies();
                         U2OpStatusImpl status;
@@ -756,7 +757,7 @@ void ConvertToSQLiteTask::run() {
                     if(!reference.getUri().isEmpty()) {
                         U2StringAttribute uriAttr;
                         uriAttr.objectId = assembly.id;
-                        uriAttr.name = "reference_uri_attribute";
+                        uriAttr.name = U2BaseAttributeName::reference_uri;
                         uriAttr.version = assembly.version;
                         uriAttr.value = reference.getUri();
                         U2OpStatusImpl status;
@@ -775,7 +776,7 @@ void ConvertToSQLiteTask::run() {
                 {
                     U2IntegerAttribute maxProwAttr;
                     maxProwAttr.objectId = assembly.id;
-                    maxProwAttr.name = "max_prow_attribute";
+                    maxProwAttr.name = U2BaseAttributeName::max_prow;
                     maxProwAttr.version = assembly.version;
                     maxProwAttr.value = maxProw;
                     attributeDbi->createIntegerAttribute(maxProwAttr, opStatus);
@@ -799,10 +800,9 @@ void ConvertToSQLiteTask::run() {
                     }
                 }
                 if(!coverageStat.coverage.isEmpty()) {
-                    static const QByteArray COVERAGE_STAT_ATTRIBUTE_NAME("coverageStat");
                     U2ByteArrayAttribute attribute;
                     attribute.objectId = assembly.id;
-                    attribute.name = COVERAGE_STAT_ATTRIBUTE_NAME;
+                    attribute.name = U2BaseAttributeName::coverage_statistics;
                     attribute.value = U2AssemblyUtils::serializeCoverageStat(coverageStat);
                     attribute.version = assembly.version;
                     attributeDbi->createByteArrayAttribute(attribute, opStatus);

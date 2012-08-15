@@ -24,6 +24,7 @@
 
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/U2CoreAttributes.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -58,7 +59,7 @@ namespace U2 {
 // AssemblyModel
 //==============================================================================
 
-const QByteArray AssemblyModel::COVERAGE_STAT_ATTRIBUTE_NAME("coverageStat");
+const QByteArray AssemblyModel::COVERAGE_STAT_ATTRIBUTE_NAME(U2BaseAttributeName::coverage_statistics.toAscii());
 
 AssemblyModel::AssemblyModel(const DbiConnection& dbiCon_) : 
 cachedModelLength(NO_VAL), cachedModelHeight(NO_VAL), assemblyDbi(0), dbiHandle(dbiCon_),
@@ -160,16 +161,15 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
     if(NO_VAL == cachedModelLength) {
         // try to set length from attributes
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
-        static const QByteArray REFERENCE_ATTRIBUTE_NAME("reference_length_attribute");
         if(attributeDbi != NULL) {
-            U2IntegerAttribute attr = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, REFERENCE_ATTRIBUTE_NAME, os);
+            U2IntegerAttribute attr = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, U2BaseAttributeName::reference_length, os);
             LOG_OP(os);
             if(attr.hasValidId()) {
                 cachedModelLength = attr.value;
             }
             // ignore incorrect attribute value and remove corrupted attribute (auto-fix incorrectly converted ugenedb)
             if(cachedModelLength == 0) {
-                coreLog.details(QString("ignored incorrect value of attribute %1: should be > 0, got %2. Bad attribute removed!").arg(QString(REFERENCE_ATTRIBUTE_NAME)).arg(cachedModelLength));
+                coreLog.details(QString("ignored incorrect value of attribute %1: should be > 0, got %2. Bad attribute removed!").arg(QString(U2BaseAttributeName::reference_length)).arg(cachedModelLength));
                 cachedModelLength = NO_VAL;
                 U2AttributeUtils::removeAttribute(attributeDbi, attr.id, os);
             }
@@ -183,7 +183,7 @@ qint64 AssemblyModel::getModelLength(U2OpStatus & os) {
 
             // and save in attribute
             U2IntegerAttribute attr;
-            U2AttributeUtils::init(attr, assembly, REFERENCE_ATTRIBUTE_NAME);
+            U2AttributeUtils::init(attr, assembly, U2BaseAttributeName::reference_length);
             attr.value = cachedModelLength;
             attributeDbi->createIntegerAttribute(attr, os);
         }
@@ -199,9 +199,8 @@ QByteArray AssemblyModel::getReferenceMd5(U2OpStatus& os) {
     if(!md5Retrieved) {
         md5Retrieved = true;
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
-        static const QByteArray MD5_ATTRIBUTE_NAME("reference_md5_attribute");
         if (attributeDbi != NULL) {
-            U2ByteArrayAttribute attr = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, MD5_ATTRIBUTE_NAME, os);
+            U2ByteArrayAttribute attr = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, U2BaseAttributeName::reference_md5, os);
             if(attr.hasValidId()) {
                 referenceMd5 = attr.value;
             }
@@ -213,9 +212,8 @@ QByteArray AssemblyModel::getReferenceMd5(U2OpStatus& os) {
 qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {
     if(NO_VAL == cachedModelHeight) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
-        static const QByteArray MAX_PROW_ATTRIBUTE_NAME("max_prow_attribute");
         if(attributeDbi != NULL) {
-            U2IntegerAttribute attr = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, MAX_PROW_ATTRIBUTE_NAME, os);
+            U2IntegerAttribute attr = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, U2BaseAttributeName::max_prow, os);
             LOG_OP(os);
             if(attr.hasValidId()) {
                 if(attr.version == assembly.version) {
@@ -233,7 +231,7 @@ qint64 AssemblyModel::getModelHeight(U2OpStatus & os) {
             if(! os.isCoR()) {
                 // ...and store it in a new attribure
                 U2IntegerAttribute attr;
-                U2AttributeUtils::init(attr, assembly, MAX_PROW_ATTRIBUTE_NAME);
+                U2AttributeUtils::init(attr, assembly, U2BaseAttributeName::max_prow);
                 attr.value = cachedModelHeight;
                 attributeDbi->createIntegerAttribute(attr, os);
             }
@@ -450,9 +448,8 @@ qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
     if(cachedReadsNumber == NO_VAL) {
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
         //U2OpStatusImpl os;
-        static const QByteArray READS_COUNT_ATTRIBUTE_NAME("count_reads_attribute");
         if(attributeDbi != NULL) {
-            U2IntegerAttribute attr = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, READS_COUNT_ATTRIBUTE_NAME, os);
+            U2IntegerAttribute attr = U2AttributeUtils::findIntegerAttribute(attributeDbi, assembly.id, U2BaseAttributeName::count_reads, os);
             LOG_OP(os);
             // If attribute found...
             if(attr.hasValidId()) {
@@ -473,7 +470,7 @@ qint64 AssemblyModel::getReadsNumber(U2OpStatus & os) {
             if(! os.isCoR()) {
                 // ...and store it in a new attribure
                 U2IntegerAttribute attr;
-                U2AttributeUtils::init(attr, assembly, READS_COUNT_ATTRIBUTE_NAME);
+                U2AttributeUtils::init(attr, assembly, U2BaseAttributeName::count_reads);
                 attr.value = cachedReadsNumber;
                 attributeDbi->createIntegerAttribute(attr, os);
             }
@@ -537,9 +534,8 @@ QByteArray AssemblyModel::getReferenceSpecies(U2OpStatus & os) {
     if(!speciesRetrieved) {
         speciesRetrieved = true;
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
-        static const QByteArray SPECIES_ATTRIBUTE_NAME("reference_species_attribute");
         if (attributeDbi != NULL) {
-            U2ByteArrayAttribute attr = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, SPECIES_ATTRIBUTE_NAME, os);
+            U2ByteArrayAttribute attr = U2AttributeUtils::findByteArrayAttribute(attributeDbi, assembly.id, U2BaseAttributeName::reference_species, os);
             if(attr.hasValidId()) {
                 referenceSpecies = attr.value;
             }
@@ -552,9 +548,8 @@ QString AssemblyModel::getReferenceUri(U2OpStatus & os) {
     if(!uriRetrieved) {
         uriRetrieved = true;
         U2AttributeDbi * attributeDbi = dbiHandle.dbi->getAttributeDbi();
-        static const QByteArray URI_ATTRIBUTE_NAME("reference_uri_attribute");
         if(attributeDbi != NULL) {
-            U2StringAttribute attr = U2AttributeUtils::findStringAttribute(attributeDbi, assembly.id, URI_ATTRIBUTE_NAME, os);
+            U2StringAttribute attr = U2AttributeUtils::findStringAttribute(attributeDbi, assembly.id, U2BaseAttributeName::reference_uri, os);
             if(attr.hasValidId()) {
                 referenceUri = attr.value;
             }

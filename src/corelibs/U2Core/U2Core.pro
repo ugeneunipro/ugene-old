@@ -194,6 +194,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/PhyTree.cpp \
            src/datatype/PWMatrix.cpp \
            src/datatype/SMatrix.cpp \
+           src/datatype/U2CoreAttributes.cpp \
            src/datatype/U2Region.cpp \
            src/datatype/Vector3D.cpp \
            src/dbi/DbiDocumentFormat.cpp \

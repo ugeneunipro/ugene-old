@@ -30,7 +30,7 @@ namespace U2 {
 // Reserved attribute names
 
 class U2CORE_EXPORT U2BaseAttributeName {
-
+public:
     /** 
     Reserved to represent length: sequence or alignment 
     This attribute can be artificial and derived directly from structure values 
@@ -58,6 +58,33 @@ class U2CORE_EXPORT U2BaseAttributeName {
     /** Structure creation date */
     static const QString create_date; //    = "creation-time";
 
+
+/************************************************************************/
+/* Assembly attributes */
+/************************************************************************/
+    /** Length of reference sequence */
+    static const QString reference_length;
+
+    /** Uri to the reference sequence */
+    static const QString reference_uri;
+
+    /** MD5 hash of the reference */
+    static const QString reference_md5;
+
+    /** Species of the reference sequence */
+    static const QString reference_species;
+
+    /** Maximum row number */
+    static const QString max_prow;
+
+    /** Reads number */
+    static const QString count_reads;
+
+    /** Coverage statistics */
+    static const QString coverage_statistics;
+
 };
+
+} // U2
 
 #endif
