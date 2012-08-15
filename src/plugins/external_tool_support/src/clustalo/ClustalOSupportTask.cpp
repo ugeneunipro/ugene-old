@@ -224,7 +224,9 @@ void ClustalOWithExtFileSpecifySupportTask::prepare(){
 
     DocumentFormatId alnFormat = formats.first();
     QVariantMap hints;
-    hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+    if(alnFormat == BaseDocumentFormats::FASTA){
+        hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+    }
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.inputFilePath));
     loadDocumentTask = new LoadDocumentTask(alnFormat, settings.inputFilePath,iof, hints);
 

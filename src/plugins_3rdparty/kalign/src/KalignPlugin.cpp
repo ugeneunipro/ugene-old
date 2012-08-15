@@ -36,6 +36,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/BaseDocumentFormats.h>
 
 #include <U2Algorithm/MSAAlignAlgRegistry.h>
 
@@ -129,7 +130,9 @@ void KalignPlugin::sl_runKalignTask() {
         }
         DocumentFormatId alnFormat = formats.first();
         QVariantMap hints;
-        hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+        if(alnFormat == BaseDocumentFormats::FASTA){
+            hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+        }
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(sourceUrl));
         LoadDocumentTask* task = new LoadDocumentTask(alnFormat, sourceUrl, iof, hints);
         connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_documentLoaded(Task*)));

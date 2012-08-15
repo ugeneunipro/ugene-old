@@ -145,7 +145,6 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
         
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         QVariantMap hints;
-        hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
         loadTmpDocumentTask = new LoadDocumentTask(BaseDocumentFormats::MSF, outputUrl, iof, hints);
                         
         loadTmpDocumentTask->setSubtaskProgressWeight(5);
@@ -216,7 +215,9 @@ void TCoffeeWithExtFileSpecifySupportTask::prepare(){
     DocumentFormatId alnFormat = formats.first();
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.inputFilePath));
     QVariantMap hints;
-    hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+    if(alnFormat == BaseDocumentFormats::FASTA){
+        hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+    }
     loadDocumentTask = new LoadDocumentTask(alnFormat, settings.inputFilePath, iof, hints);
     addSubTask(loadDocumentTask);
 }
