@@ -34,6 +34,7 @@
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Algorithm/FindAlgorithmTask.h>
@@ -291,22 +292,27 @@ Task::ReportResult GenomeAlignerTask::report() {
         haveResults = false;
         return ReportResult_Finished;
     }
+
+    qint64 aligned = readsAligned;
+    if (!alignContext.bestMode) {
+        SAFE_POINT_EXT(NULL != pWriteTask,
+            stateInfo.setError("No parallel write task in non best mode"), ReportResult_Finished);
+        aligned = pWriteTask->getWrittenReadsCount();
+    }
     
     if (readsCount > 0) {
         taskLog.info(tr("The aligning is finished."));
         taskLog.info(tr("Whole working time = %1.").arg((GTimer::currentTimeMicros() - inf.startTime)/(1000*1000)));
-        if (alignContext.bestMode) {
-            taskLog.info(tr("%1% reads aligned.").arg(100*(double)readsAligned/readsCount));
+        taskLog.info(tr("%1% reads aligned.").arg(100*(double)aligned/readsCount));
+        if (alignContext.bestMode) { // not parallel writing could be measured
             taskLog.info(tr("Short-reads loading time = %1").arg(shortreadLoadTime/(1000*1000)));
             taskLog.info(tr("Results writing time = %1").arg(resultWriteTime/(1000*1000)));
-        } else {
-            taskLog.info(tr("%1% reads aligned.").arg(100*(double)pWriteTask->getWrittenReadsCount()/readsCount));
         }
         taskLog.info(tr("Index loading time = %1").arg(indexLoadTime));
         taskLog.info(tr("Short-reads IO time = %1").arg(shortreadIOTime/(1000*1000)));
     }
 
-    haveResults = (readsAligned > 0);
+    haveResults = (aligned > 0);
     
     return ReportResult_Finished;
 }
