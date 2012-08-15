@@ -112,6 +112,24 @@ private:
     U2Region getCorrectRegion(const U2DataId &assemblyId, const U2Region &r, U2OpStatus &os);
 }; // SamtoolsBasedAssemblyDbi
 
+class SamtoolsBasedAttributeDbi : public U2SimpleAttributeDbi {
+public:
+    SamtoolsBasedAttributeDbi(SamtoolsBasedDbi &dbi);
+
+    virtual QStringList getAvailableAttributeNames(U2OpStatus &os);
+    virtual QList<U2DataId> getObjectAttributes(const U2DataId &objectId, const QString &attributeName, U2OpStatus &os);
+    virtual QList<U2DataId> getObjectPairAttributes(const U2DataId &bjectId, const U2DataId &childId, const QString &attributeName, U2OpStatus &os);
+    virtual U2IntegerAttribute getIntegerAttribute(const U2DataId &attributeId, U2OpStatus &os);
+    virtual U2RealAttribute getRealAttribute(const U2DataId &attributeId, U2OpStatus &os);
+    virtual U2StringAttribute getStringAttribute(const U2DataId &attributeId, U2OpStatus &os);
+    virtual U2ByteArrayAttribute getByteArrayAttribute(const U2DataId &attributeId, U2OpStatus &os);
+
+    virtual QList<U2DataId> sort(const U2DbiSortConfig& sc, qint64 offset, qint64 count, U2OpStatus& os);
+
+private:
+    SamtoolsBasedDbi &dbi;
+}; // SamtoolsBasedAttributeDbi
+
 /**
  * This DBI could be initialized to work only with sorted indexed BAM files.
  */
@@ -126,6 +144,7 @@ public:
     virtual U2DataType getEntityTypeById(const U2DataId &id) const;
     virtual U2ObjectDbi *getObjectDbi();
     virtual U2AssemblyDbi *getAssemblyDbi();
+    virtual U2AttributeDbi *getAttributeDbi();
 
     const bamFile getBamFile() const;
     const bam_header_t *getHeader() const;
@@ -138,6 +157,7 @@ private:
     bam_index_t *index;
     std::auto_ptr<SamtoolsBasedObjectDbi> objectDbi;
     std::auto_ptr<SamtoolsBasedAssemblyDbi> assemblyDbi;
+    std::auto_ptr<SamtoolsBasedAttributeDbi> attributeDbi;
     int assembliesCount;
 
     void createObjectDbi();

@@ -26,6 +26,8 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/U2AttributeUtils.h>
+#include <U2Core/U2CoreAttributes.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -256,6 +258,31 @@ void BAMUtils::createBamIndex(const GUrl &bamUrl, U2OpStatus &os) {
     }
 }
 
+static qint64 getSequenceLength(U2Dbi *dbi, const U2DataId &objectId, U2OpStatus &os) {
+    qint64 seqLength = -1;
+
+    U2AssemblyDbi *assemblyDbi = dbi->getAssemblyDbi();
+    SAFE_POINT_EXT(NULL != assemblyDbi, os.setError("NULL assembly DBI"), seqLength);
+
+    U2AttributeDbi *attributeDbi = dbi->getAttributeDbi();
+    bool useMaxPos = true;
+    if (NULL != attributeDbi) {
+        U2IntegerAttribute attr = U2AttributeUtils::findIntegerAttribute(attributeDbi, objectId,
+            U2BaseAttributeName::reference_length, os);
+        CHECK_OP(os, seqLength);
+        if (attr.hasValidId()) {
+            seqLength = attr.value;
+            useMaxPos = false;
+        }
+    }
+    if (useMaxPos) {
+        seqLength = assemblyDbi->getMaxEndPos(objectId, os) + 1;
+        CHECK_OP(os, seqLength);
+    }
+
+    return seqLength;
+}
+
 static void createHeader(bam_header_t *header, const QList<GObject*> &objects, U2OpStatus &os) {
     CHECK_EXT(NULL != header, os.setError("NULL header"), );
 
@@ -271,16 +298,13 @@ static void createHeader(bam_header_t *header, const QList<GObject*> &objects, U
         AssemblyObject *assemblyObj = dynamic_cast<AssemblyObject*>(obj);
         SAFE_POINT_EXT(NULL != assemblyObj, os.setError("NULL assembly object"), );
 
-        DbiConnection con(assemblyObj->getEntityRef().dbiRef, os);
+        DbiConnection con(obj->getEntityRef().dbiRef, os);
         CHECK_OP(os, );
 
-        U2AssemblyDbi *dbi = con.dbi->getAssemblyDbi();
-        SAFE_POINT_EXT(NULL != dbi, os.setError("NULL assembly DBI"), );
-
-        qint64 seqLength = dbi->getMaxEndPos(assemblyObj->getEntityRef().entityId, os);
+        qint64 seqLength = getSequenceLength(con.dbi, obj->getEntityRef().entityId, os);
         CHECK_OP(os, );
 
-        QByteArray seqName = assemblyObj->getGObjectName().toAscii();
+        QByteArray seqName = obj->getGObjectName().toAscii();
         header->target_name[objIdx] = new char[seqName.length() + 1];
         {
             char *name = header->target_name[objIdx];

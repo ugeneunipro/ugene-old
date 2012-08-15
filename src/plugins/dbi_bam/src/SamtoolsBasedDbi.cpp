@@ -25,6 +25,7 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2CoreAttributes.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -39,6 +40,8 @@
 
 namespace U2 {
 namespace BAM {
+
+static const QByteArray ATTRIBUTE_SEP(":~!ugene-attribute!~:");
 
 /************************************************************************/
 /* SamtoolsBasedDbi */
@@ -87,6 +90,7 @@ void SamtoolsBasedDbi::init(const QHash<QString, QString> &properties, const QVa
 
         assembliesCount = header->n_targets;
         assemblyDbi.reset(new SamtoolsBasedAssemblyDbi(*this));
+        attributeDbi.reset(new SamtoolsBasedAttributeDbi(*this));
         createObjectDbi();
 
         initProperties = properties;
@@ -153,6 +157,7 @@ bool SamtoolsBasedDbi::initBamStructures(const QByteArray &fileName) {
 void SamtoolsBasedDbi::cleanup() {
     assemblyDbi.reset();
     objectDbi.reset();
+    attributeDbi.reset();
     if (NULL != header) {
         bam_header_destroy(header);
         header = NULL;
@@ -177,9 +182,13 @@ void SamtoolsBasedDbi::createObjectDbi() {
 }
 
 U2DataType SamtoolsBasedDbi::getEntityTypeById(const U2DataId &id) const {
-    CHECK(!id.isEmpty(), U2Type::Unknown);
+    QString idStr = id;
+    if (idStr.endsWith(ATTRIBUTE_SEP + U2BaseAttributeName::reference_length)) {
+        return U2Type::AttributeInteger;
+    }
+    CHECK(!idStr.isEmpty(), U2Type::Unknown);
     bool ok = true;
-    int dbId = id.toInt(&ok);
+    int dbId = idStr.toInt(&ok);
     CHECK(ok, U2Type::Unknown);
 
     if(dbId <= assembliesCount) {
@@ -212,6 +221,14 @@ U2AssemblyDbi *SamtoolsBasedDbi::getAssemblyDbi() {
 U2ObjectDbi *SamtoolsBasedDbi::getObjectDbi() {
     if(U2DbiState_Ready == state) {
         return objectDbi.get();
+    } else {
+        return NULL;
+    }
+}
+
+U2AttributeDbi *SamtoolsBasedDbi::getAttributeDbi() {
+    if(U2DbiState_Ready == state) {
+        return attributeDbi.get();
     } else {
         return NULL;
     }
@@ -250,14 +267,11 @@ QList<U2DataId> SamtoolsBasedObjectDbi::getObjects(U2DataType type, qint64 offse
         os.setError(BAMDbiPlugin::tr("Invalid samtools DBI state")), QList<U2DataId>());
 
     if(U2Type::Assembly == type) {
-        QList<U2DataId> result;
         qint64 lastExc = offset + count;
         if (U2_DBI_NO_LIMIT == count) {
             lastExc = assemblyObjectIds.size();
         }
-        for (int i=offset; i<lastExc; i++) {
-            result << assemblyObjectIds[i];
-        }
+        QList<U2DataId> result = assemblyObjectIds.mid(offset, lastExc);
         return result;
     } else {
         return QList<U2DataId>();
@@ -586,6 +600,79 @@ U2Region SamtoolsBasedAssemblyDbi::getCorrectRegion(const U2DataId &assemblyId, 
 
     U2Region result(startPos, length);
     return result;
+}
+
+/************************************************************************/
+/* SamtoolsBasedAttributeDbi */
+/************************************************************************/
+SamtoolsBasedAttributeDbi::SamtoolsBasedAttributeDbi(SamtoolsBasedDbi &_dbi)
+: U2SimpleAttributeDbi(&_dbi), dbi(_dbi)
+{
+
+}
+
+QStringList SamtoolsBasedAttributeDbi::getAvailableAttributeNames(U2OpStatus &os) {
+    QStringList result;
+    result << U2BaseAttributeName::reference_length;
+
+    return result;
+}
+
+QList<U2DataId> SamtoolsBasedAttributeDbi::getObjectAttributes(const U2DataId &objectId, const QString &attributeName, U2OpStatus &/*os*/) {
+    QList<U2DataId> result;
+    if (attributeName.isEmpty()) {
+        result << objectId + ATTRIBUTE_SEP + U2BaseAttributeName::reference_length.toAscii();
+    } else if (U2BaseAttributeName::reference_length == attributeName) {
+        result << objectId + ATTRIBUTE_SEP + U2BaseAttributeName::reference_length.toAscii();
+    }
+
+    return result;
+}
+
+QList<U2DataId> SamtoolsBasedAttributeDbi::getObjectPairAttributes(const U2DataId &/*objectId*/, const U2DataId &/*childId*/, const QString &/*attributeName*/, U2OpStatus &/*os*/) {
+    return QList<U2DataId>();
+}
+
+U2IntegerAttribute SamtoolsBasedAttributeDbi::getIntegerAttribute(const U2DataId &attributeId, U2OpStatus &os) {
+    U2IntegerAttribute result;
+    QString idStr = attributeId;
+    QStringList tokens = idStr.split(ATTRIBUTE_SEP);
+    CHECK(2 == tokens.size(), result);
+
+    QString attrName = tokens[1];
+    if (U2BaseAttributeName::reference_length == attrName) {
+        QByteArray objIdStr = tokens[0].toAscii();
+        bool ok = false;
+        int id = objIdStr.toInt(&ok);
+        CHECK_EXT(ok, os.setError("Assembly id error"), result);
+
+        const bam_header_t *header = dbi.getHeader();
+        CHECK_EXT(NULL != header, os.setError("NULL header"), result);
+        CHECK_EXT(id < header->n_targets, os.setError("Unknown assembly id"), result);
+        qint64 length =  header->target_len[id];
+        result = U2IntegerAttribute(U2DataId(objIdStr), U2BaseAttributeName::reference_length, length);
+        result.id = attributeId;
+        result.value = length;
+    }
+
+    return result;
+}
+
+U2RealAttribute SamtoolsBasedAttributeDbi::getRealAttribute(const U2DataId &attributeId, U2OpStatus &os) {
+    return U2RealAttribute();
+}
+
+U2StringAttribute SamtoolsBasedAttributeDbi::getStringAttribute(const U2DataId &attributeId, U2OpStatus &os) {
+    return U2StringAttribute();
+}
+
+U2ByteArrayAttribute SamtoolsBasedAttributeDbi::getByteArrayAttribute(const U2DataId &attributeId, U2OpStatus &os) {
+    return U2ByteArrayAttribute();
+}
+
+QList<U2DataId> SamtoolsBasedAttributeDbi::sort(const U2DbiSortConfig& sc, qint64 offset, qint64 count, U2OpStatus& os) {
+    U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
+    return QList<U2DataId>();
 }
 
 /************************************************************************/

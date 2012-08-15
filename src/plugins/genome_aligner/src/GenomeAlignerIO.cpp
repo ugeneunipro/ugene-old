@@ -156,7 +156,7 @@ GenomeAlignerDbiReader::GenomeAlignerDbiReader(U2AssemblyDbi *_rDbi, U2Assembly 
 : rDbi(_rDbi), assembly(_assembly)
 {
     wholeAssembly.startPos = 0;
-    wholeAssembly.length = rDbi->getMaxEndPos(assembly.id, status);
+    wholeAssembly.length = rDbi->getMaxEndPos(assembly.id, status) + 1;
     currentRead = reads.end();
     readNumber = 0;
     maxRow = rDbi->getMaxPackedRow(assembly.id, wholeAssembly, status);
