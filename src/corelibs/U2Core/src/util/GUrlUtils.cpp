@@ -259,4 +259,16 @@ void GUrlUtils::removeDir(const QString& dirPath, U2OpStatus& os) {
     QDir().rmdir(dirPath);
 }
 
+void GUrlUtils::removeFile( const QString& filePath, U2OpStatus& os ){
+    CHECK_EXT(!filePath.isEmpty(), os.setError(tr("File path is not specified")), );
+    QFileInfo info(filePath);
+
+    CHECK_EXT(!info.isDir(), os.setError(tr("Directory path instead of file path")), );
+
+    if(info.exists()){
+        QFile::remove(info.absoluteFilePath());
+    }
+    
+}
+
 }//namespace

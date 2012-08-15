@@ -1,4 +1,5 @@
 include(samtools.pri)
+
 # Input
 HEADERS += src/SamtoolsAdapter.h \
            src/samtools/bam.h \
@@ -66,6 +67,7 @@ SOURCES += src/SamtoolsAdapter.cpp \
            src/samtools/bcftools/bcf.c \
            src/samtools/bcftools/bcf2qcall.c \
            src/samtools/bcftools/bcfutils.c \
+		   src/samtools/bcftools/call1.c \
            src/samtools/bcftools/em.c \
            src/samtools/bcftools/fet.c \
            src/samtools/bcftools/index.c \

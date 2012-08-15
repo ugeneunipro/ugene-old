@@ -65,10 +65,10 @@ bcf_t *vcf_open(const char *fn, const char *mode)
 	bp->v = v;
 	v->refhash = bcf_str2id_init();
 	if (strchr(mode, 'r')) {
-		v->fp = strcmp(fn, "-")? gzopen(fn, "r") : gzdopen(fileno(stdin), "r");
+		v->fp = (strcmp(fn, "-")!=0 && fn!=NULL)? gzopen(fn, "r") : gzdopen(fileno(stdin), "r");
 		v->ks = ks_init(v->fp);
 	} else if (strchr(mode, 'w'))
-		v->fpout = strcmp(fn, "-")? fopen(fn, "w") : stdout;
+		v->fpout = (strcmp(fn, "-")  && fn!=NULL)? fopen(fn, "w") : stdout;
 	return bp;
 }
 

@@ -103,6 +103,25 @@ typedef struct {
 	bam_pileup1_t **plp;
 } mplp_pileup_t;
 
+typedef struct {
+    int     b_illumina13;
+    int     b_use_orphan;
+    int     b_disable_baq;
+    int     capq_thres;
+    int     max_depth;
+    int     b_ext_baq;
+    char*   bed;
+    char*   reg;
+    int     min_mq;
+    int     min_baseq;
+    int     extq;
+    int     tandemq;
+    int     b_no_indel;
+    int     max_indel_depth;
+    int     openq;
+    char*   pl_list;
+} UGENE_mpileup_settings;
+
 static int mplp_func(void *data, bam1_t *b)
 {
 	extern int bam_realn(bam1_t *b, const char *ref);
@@ -167,14 +186,14 @@ static void group_smpl(mplp_pileup_t *m, bam_sample_t *sm, kstring_t *buf,
 			}
 			if (m->n_plp[id] == m->m_plp[id]) {
 				m->m_plp[id] = m->m_plp[id]? m->m_plp[id]<<1 : 8;
-				m->plp[id] = realloc(m->plp[id], sizeof(bam_pileup1_t) * m->m_plp[id]);
+				m->plp[id] = (bam_pileup1_t *)realloc(m->plp[id], sizeof(bam_pileup1_t) * m->m_plp[id]);
 			}
 			m->plp[id][m->n_plp[id]++] = *p;
 		}
 	}
 }
 
-static int mpileup(mplp_conf_t *conf, int n, char **fn)
+static int mpileup(mplp_conf_t *conf, int n, char **fn, const char* bcfOut)
 {
 	extern void *bcf_call_add_rg(void *rghash, const char *hdtext, const char *list);
 	extern void bcf_call_del_rghash(void *rghash);
@@ -199,15 +218,15 @@ static int mpileup(mplp_conf_t *conf, int n, char **fn)
 	memset(&gplp, 0, sizeof(mplp_pileup_t));
 	memset(&buf, 0, sizeof(kstring_t));
 	memset(&bc, 0, sizeof(bcf_call_t));
-	data = calloc(n, sizeof(void*));
-	plp = calloc(n, sizeof(void*));
-	n_plp = calloc(n, sizeof(int*));
+	data = (mplp_aux_t **)calloc(n, sizeof(void*));
+	plp = (const bam_pileup1_t **)calloc(n, sizeof(void*));
+	n_plp = (int*)calloc(n, sizeof(int*));
 	sm = bam_smpl_init();
 
 	// read the header and initialize data
 	for (i = 0; i < n; ++i) {
 		bam_header_t *h_tmp;
-		data[i] = calloc(1, sizeof(mplp_aux_t));
+		data[i] = (mplp_aux_t *)calloc(1, sizeof(mplp_aux_t));
 		data[i]->fp = strcmp(fn[i], "-") == 0? bam_dopen(fileno(stdin), "r") : bam_open(fn[i], "r");
 		data[i]->conf = conf;
 		h_tmp = bam_header_read(data[i]->fp);
@@ -237,38 +256,39 @@ static int mpileup(mplp_conf_t *conf, int n, char **fn)
 		}
 	}
 	gplp.n = sm->n;
-	gplp.n_plp = calloc(sm->n, sizeof(int));
-	gplp.m_plp = calloc(sm->n, sizeof(int));
-	gplp.plp = calloc(sm->n, sizeof(void*));
+	gplp.n_plp = (int*)calloc(sm->n, sizeof(int));
+	gplp.m_plp = (int*)calloc(sm->n, sizeof(int));
+	gplp.plp = (bam_pileup1_t **)calloc(sm->n, sizeof(void*));
 
 	fprintf(stderr, "[%s] %d samples in %d input files\n", __func__, sm->n, n);
 	// write the VCF header
 	if (conf->flag & MPLP_GLF) {
 		kstring_t s;
-		bh = calloc(1, sizeof(bcf_hdr_t));
+		bh = (bcf_hdr_t *)calloc(1, sizeof(bcf_hdr_t));
 		s.l = s.m = 0; s.s = 0;
-		bp = bcf_open("-", (conf->flag&MPLP_NO_COMP)? "wu" : "w");
+		//bp = bcf_open("-", (conf->flag&MPLP_NO_COMP)? "wu" : "w");
+        bp = bcf_open(bcfOut, (conf->flag&MPLP_NO_COMP)? "wu" : "w");
 		for (i = 0; i < h->n_targets; ++i) {
 			kputs(h->target_name[i], &s);
 			kputc('\0', &s);
 		}
 		bh->l_nm = s.l;
-		bh->name = malloc(s.l);
+		bh->name = (char *)malloc(s.l);
 		memcpy(bh->name, s.s, s.l);
 		s.l = 0;
 		for (i = 0; i < sm->n; ++i) {
 			kputs(sm->smpl[i], &s); kputc('\0', &s);
 		}
 		bh->l_smpl = s.l;
-		bh->sname = malloc(s.l);
+		bh->sname = (char *)malloc(s.l);
 		memcpy(bh->sname, s.s, s.l);
-		bh->txt = malloc(strlen(BAM_VERSION) + 64);
+		bh->txt = (char *)malloc(strlen(BAM_VERSION) + 64);
 		bh->l_txt = 1 + sprintf(bh->txt, "##samtoolsVersion=%s\n", BAM_VERSION);
 		free(s.s);
 		bcf_hdr_sync(bh);
 		bcf_hdr_write(bp, bh);
 		bca = bcf_call_init(-1., conf->min_baseQ);
-		bcr = calloc(sm->n, sizeof(bcf_callret1_t));
+		bcr = (bcf_callret1_t *)calloc(sm->n, sizeof(bcf_callret1_t));
 		bca->rghash = rghash;
 		bca->openQ = conf->openQ, bca->extQ = conf->extQ, bca->tandemQ = conf->tandemQ;
 		bca->min_frac = conf->min_frac;
@@ -285,7 +305,7 @@ static int mpileup(mplp_conf_t *conf, int n, char **fn)
 		fprintf(stderr, "(%s) Max depth is above 1M. Potential memory hog!\n", __func__);
 	if (max_depth * sm->n < 8000) {
 		max_depth = 8000 / sm->n;
-		fprintf(stderr, "<%s> Set max per-file depth to %d\n", __func__, max_depth);
+        fprintf(stderr, "<%s> Set max per-file depth to %d\n", __func__, max_depth);
 	}
 	max_indel_depth = conf->max_indel_depth * sm->n;
 	bam_mplp_set_maxcnt(iter, max_depth);
@@ -300,7 +320,7 @@ static int mpileup(mplp_conf_t *conf, int n, char **fn)
 		}
 		if (conf->flag & MPLP_GLF) {
 			int total_depth, _ref0, ref16;
-			bcf1_t *b = calloc(1, sizeof(bcf1_t));
+			bcf1_t *b = (bcf1_t *)calloc(1, sizeof(bcf1_t));
 			for (i = total_depth = 0; i < n; ++i) total_depth += n_plp[i];
 			group_smpl(&gplp, sm, &buf, n, fn, n_plp, plp, conf->flag & MPLP_IGNORE_RG);
 			_ref0 = (ref && pos < ref_len)? ref[pos] : 'N';
@@ -317,7 +337,7 @@ static int mpileup(mplp_conf_t *conf, int n, char **fn)
 				for (i = 0; i < gplp.n; ++i)
 					bcf_call_glfgen(gplp.n_plp[i], gplp.plp[i], -1, bca, bcr + i);
 				if (bcf_call_combine(gplp.n, bcr, -1, &bc) >= 0) {
-					b = calloc(1, sizeof(bcf1_t));
+					b = (bcf1_t *)calloc(1, sizeof(bcf1_t));
 					bcf_call2bcf(tid, pos, &bc, b, (conf->flag&(MPLP_FMT_DP|MPLP_FMT_SP))? bcr : 0,
 								 (conf->flag&MPLP_FMT_SP), bca, ref);
 					bcf_write(bp, bh, b);
@@ -404,7 +424,7 @@ static int read_file_list(const char *file_list,int *n,char **argv[])
         return 1;
     }
 
-    files = calloc(nfiles,sizeof(char*));
+    files = (char **)calloc(nfiles,sizeof(char*));
     nfiles = 0;
     while ( fgets(buf,MAX_PATH_LEN,fh) ) 
     {
@@ -412,7 +432,7 @@ static int read_file_list(const char *file_list,int *n,char **argv[])
         while ( len>0 && isspace(buf[len-1]) ) len--;
         if ( !len ) continue;
 
-        files[nfiles] = malloc(sizeof(char)*(len+1)); 
+        files[nfiles] = (char *)malloc(sizeof(char)*(len+1)); 
         strncpy(files[nfiles],buf,len);
         files[nfiles][len] = 0;
         nfiles++;
@@ -429,7 +449,7 @@ static int read_file_list(const char *file_list,int *n,char **argv[])
 }
 #undef MAX_PATH_LEN
 
-int bam_mpileup(int argc, char *argv[])
+int bam_mpileup(int argc, char *argv[], UGENE_mpileup_settings* settings, const char* outBcf)
 {
 	int c;
     const char *file_list = NULL;
@@ -445,7 +465,30 @@ int bam_mpileup(int argc, char *argv[])
 	mplp.openQ = 40; mplp.extQ = 20; mplp.tandemQ = 100;
 	mplp.min_frac = 0.002; mplp.min_support = 1;
 	mplp.flag = MPLP_NO_ORPHAN | MPLP_REALN;
-	while ((c = getopt(argc, argv, "Agf:r:l:M:q:Q:uaRC:BDSd:L:b:P:o:e:h:Im:F:EG:6Os")) >= 0) {
+
+    mplp.flag |= MPLP_NO_COMP | MPLP_GLF;
+    mplp.fai = fai_load(argv[2]);
+    if (mplp.fai == 0) return 1;
+
+    //from UGENE
+    if(settings->b_illumina13 == 1) mplp.flag |= MPLP_ILLUMINA13;
+    use_orphan = settings->b_use_orphan;
+    if(settings->b_disable_baq == 1) mplp.flag &= ~MPLP_REALN;
+    mplp.capQ_thres = settings->capq_thres;
+    mplp.max_depth = settings->max_depth;
+    if(settings->b_ext_baq == 1) mplp.flag |= MPLP_EXT_BAQ;
+    if(settings->bed && strlen(settings->bed)!=0) mplp.bed = bed_read(settings->bed);
+    if(settings->reg && strlen(settings->reg)!=0) mplp.reg = strdup(settings->reg);
+    mplp.min_mq = settings->min_mq;
+    mplp.min_baseQ = settings->min_baseq;
+    mplp.extQ = settings->extq;
+    mplp.tandemQ = settings->tandemq;
+    if(settings->b_no_indel == 1) mplp.flag |= MPLP_NO_INDEL;
+    mplp.max_indel_depth = settings->max_indel_depth;
+    mplp.openQ = settings->openq;
+    if(settings->pl_list && strlen(settings->pl_list)!=0) mplp.pl_list = strdup(settings->pl_list);
+    
+	/*while ((c = getopt(argc, argv, "Agf:r:l:M:q:Q:uaRC:BDSd:L:b:P:o:e:h:Im:F:EG:6Os")) >= 0) {
 		switch (c) {
 		case 'f':
 			mplp.fai = fai_load(optarg);
@@ -491,7 +534,9 @@ int bam_mpileup(int argc, char *argv[])
 			}
 			break;
 		}
-	}
+	}*/
+
+
 	if (use_orphan) mplp.flag &= ~MPLP_NO_ORPHAN;
 	if (argc == 1) {
 		fprintf(stderr, "\n");
@@ -534,10 +579,10 @@ int bam_mpileup(int argc, char *argv[])
 	}
     if (file_list) {
         if ( read_file_list(file_list,&nfiles,&fn) ) return 1;
-        mpileup(&mplp,nfiles,fn);
+        mpileup(&mplp,nfiles,fn, outBcf);
         for (c=0; c<nfiles; c++) free(fn[c]);
         free(fn);
-    } else mpileup(&mplp, argc - optind, argv + optind);
+    } else mpileup(&mplp, argc - optind, argv + optind, outBcf);
 	if (mplp.rghash) bcf_str2id_thorough_destroy(mplp.rghash);
 	free(mplp.reg); free(mplp.pl_list);
 	if (mplp.fai) fai_destroy(mplp.fai);

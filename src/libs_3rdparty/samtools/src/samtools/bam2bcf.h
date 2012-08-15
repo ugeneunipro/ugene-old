@@ -2,6 +2,7 @@
 #define BAM2BCF_H
 
 #include <stdint.h>
+#include <bam.h>
 #include "errmod.h"
 #include "bcftools/bcf.h"
 

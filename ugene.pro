@@ -10,7 +10,7 @@ SUBDIRS += \
           src/libs_3rdparty/qscore \
           src/libs_3rdparty/sqlite3 \
           src/libs_3rdparty/gtest \
-          src/libs_3rdparty/samtools \
+		  src/libs_3rdparty/samtools \
           src/corelibs/U2Core \
           src/corelibs/U2Test \
           src/corelibs/U2Algorithm \
@@ -33,6 +33,7 @@ SUBDIRS += \
           src/plugins_3rdparty/phylip \
           src/plugins_3rdparty/kalign \
           src/plugins_3rdparty/ptools \
+		  src/plugins_3rdparty/variants \
           src/plugins/biostruct3d_view \
           src/plugins/chroma_view \
           src/plugins/circular_view \

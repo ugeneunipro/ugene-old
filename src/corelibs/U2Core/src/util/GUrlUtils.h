@@ -91,6 +91,9 @@ public:
 
     static void removeDir(const QString& path, U2OpStatus& os);
 
+    /*removes file if exists and if its a file*/
+    static void removeFile(const QString& filePath, U2OpStatus& os);
+
 };
 
 } //namespace

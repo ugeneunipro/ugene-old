@@ -173,7 +173,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
     searchQualifierAction->setIcon(QIcon(":core/images/zoom_whole.png"));
     connect (searchQualifierAction, SIGNAL(triggered()), SLOT(sl_searchQualifier()));
 
-    invertAnnotationSelectionAction = new QAction(tr("Inver annotation selection"), this);
+    invertAnnotationSelectionAction = new QAction(tr("Invert annotation selection"), this);
     connect (invertAnnotationSelectionAction, SIGNAL(triggered()), SLOT(sl_invertSelection()));
 
     copyColumnTextAction = new QAction(tr("Copy column text"), this);

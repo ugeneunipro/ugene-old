@@ -51,7 +51,7 @@
 	{																\
 		kstream_t *ks = (kstream_t*)calloc(1, sizeof(kstream_t));	\
 		ks->f = f;													\
-		ks->buf = malloc(__bufsize);								\
+		ks->buf = (unsigned char*)malloc(__bufsize);								\
 		return ks;													\
 	}																\
 	static inline void ks_destroy(kstream_t *ks)					\

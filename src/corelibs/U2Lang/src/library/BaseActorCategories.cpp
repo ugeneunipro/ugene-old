@@ -59,6 +59,10 @@ const Descriptor BaseActorCategories::CATEGORY_RNA_SEQ() {
     return Descriptor("rna", tr("NGS: RNA Analysis"), "");
 }
 
+const Descriptor BaseActorCategories::CATEGORY_CALL_VARIATIONS() {
+    return Descriptor("var", tr("NGS: Variant Calling"), "");
+}
+
 const Descriptor BaseActorCategories::CATEGORY_TRANSCRIPTION() {
     return Descriptor("tr", tr("Transcription Factor"), ""); 
 }
