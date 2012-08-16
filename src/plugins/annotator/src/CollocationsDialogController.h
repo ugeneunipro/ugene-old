@@ -88,20 +88,25 @@ class CollocationSearchTask : public Task , public CollocationsAlgorithmListener
     Q_OBJECT
 public:
     CollocationSearchTask(const QList<AnnotationTableObject*> &table, const QSet<QString>& names, const CollocationsAlgorithmSettings& cfg);
-    CollocationSearchTask(const QList<SharedAnnotationData> &table, const QSet<QString>& names, const CollocationsAlgorithmSettings& cfg);
+    CollocationSearchTask(const QList<SharedAnnotationData> &table, const QSet<QString>& names, const CollocationsAlgorithmSettings& cfg, bool keepSourceAnns = false);
     void run();
 
     QVector<U2Region> popResults();
+    QList<SharedAnnotationData> popResultAnnotations();
 
     virtual void onResult(const U2Region& r);
 
 private:
     CollocationsAlgorithmItem& getItem(const QString& name);
+    bool isSuitableRegion(const U2Region &r, const QVector<U2Region> &resultRegions) const;
     
     QMap<QString, CollocationsAlgorithmItem> items;
     CollocationsAlgorithmSettings cfg;
     QVector<U2Region>  results;
     QMutex          lock;
+
+    const bool keepSourceAnns;
+    QList<SharedAnnotationData> sourceAnns;
 };
 
 }//namespace

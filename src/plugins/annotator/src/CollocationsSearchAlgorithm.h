@@ -63,6 +63,7 @@ public:
     U2Region searchRegion;
     int distance;
     CollocationsAlgorithm::SearchType st;
+    QString resultAnnotationsName;
 };
 
 

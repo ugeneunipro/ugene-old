@@ -24,6 +24,7 @@
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -305,7 +306,7 @@ CDCResultItem::CDCResultItem(const U2Region& _r) : r(_r) {
 // task
 CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*> &table, const QSet<QString>& names,
                                              const CollocationsAlgorithmSettings& cfg) 
-: Task(tr("collocation_search_task"), TaskFlag_None), cfg(cfg)
+: Task(tr("collocation_search_task"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(false)
 {
     GCOUNTER(cvar, tvar, "CollocationSearchTask");
     assert(cfg.distance >= 0);
@@ -329,8 +330,8 @@ CollocationSearchTask::CollocationSearchTask(const QList<AnnotationTableObject*>
 }
 
 CollocationSearchTask::CollocationSearchTask(const QList<SharedAnnotationData> &table, const QSet<QString>& names, 
-                      const CollocationsAlgorithmSettings& cfg) 
-: Task(tr("collocation_search_task"), TaskFlag_None), cfg(cfg)
+                      const CollocationsAlgorithmSettings& cfg, bool _keepSourceAnns) 
+: Task(tr("collocation_search_task"), TaskFlag_None), cfg(cfg), lock(QMutex::Recursive), keepSourceAnns(_keepSourceAnns)
 {
     assert(cfg.distance >= 0);
     assert(!names.isEmpty());
@@ -341,10 +342,15 @@ CollocationSearchTask::CollocationSearchTask(const QList<SharedAnnotationData> &
         const QString& name = a->name;
         if (names.contains(name)) {
             CollocationsAlgorithmItem& item = getItem(name);
+            bool hasRegions = false;
             foreach(const U2Region& r, a->location->regions) {
                 if (cfg.searchRegion.intersects(r)) {
+                    hasRegions = true;
                     item.regions.append(r);
                 }
+            }
+            if (keepSourceAnns && hasRegions) {
+                sourceAnns << a;
             }
         }
     }
@@ -363,17 +369,64 @@ void CollocationSearchTask::run() {
 
 
 void CollocationSearchTask::onResult(const U2Region& r) {
-    lock.lock();
+    QMutexLocker locker(&lock);
     results.append(r);
-    lock.unlock();
 }
 
 QVector<U2Region> CollocationSearchTask::popResults() {
-    lock.lock();
+    QMutexLocker locker(&lock);
     QVector<U2Region> tmp = results;
     results.clear();
-    lock.unlock();
     return tmp;
+}
+
+QList<SharedAnnotationData> CollocationSearchTask::popResultAnnotations() {
+    QMutexLocker locker(&lock);
+    QVector<U2Region> res = this->popResults();
+
+    QList<SharedAnnotationData> result;
+    if (keepSourceAnns) {
+        foreach (const SharedAnnotationData &a, sourceAnns) {
+            QVector<U2Region> resRegs;
+            foreach(const U2Region &r, a->location->regions) {
+                if (isSuitableRegion(r, res)) {
+                    resRegs << r;
+                }
+            }
+            if (!resRegs.isEmpty()) {
+                const AnnotationData &srcAnnData = *(a.data());
+                SharedAnnotationData resAnn(new AnnotationData(srcAnnData));
+                resAnn->location->regions = resRegs;
+                result << resAnn;
+            }
+        }
+    } else {
+        foreach(const U2Region &r, res) {
+            SharedAnnotationData data; data = new AnnotationData();
+            data->location->regions.append(r);
+            data->setStrand(U2Strand::Direct);
+            data->name = cfg.resultAnnotationsName;
+            result.append(data);
+        }
+    }
+
+    return result;
+}
+
+bool CollocationSearchTask::isSuitableRegion(const U2Region &r, const QVector<U2Region> &resultRegions) const {
+    foreach(const U2Region &res, resultRegions) {
+        if (CollocationsAlgorithm::NormalSearch == cfg.st) {
+            if (res.contains(r)) {
+                return true;
+            }
+        } else {
+            if (res.intersects(r)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 }//namespace

@@ -57,8 +57,6 @@ private slots:
 
 protected:
     IntegralBus *input, *output;
-    QString resultName;
-    QSet<QString> names;
     CollocationsAlgorithmSettings cfg;
 }; 
 
