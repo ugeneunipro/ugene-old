@@ -218,5 +218,24 @@ QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(QString
     }
 }
 
+Task::ReportResult CufflinksSupportTask::report()
+{
+    if (url.isEmpty()) {
+        return ReportResult_Finished;
+    }
+
+    // Remove the subdirectory for temporary files created in prepare()
+    QDir tmpDir(QFileInfo(url).absoluteDir());
+    foreach (QString file, tmpDir.entryList(QDir::Files | QDir::Hidden)) {
+        tmpDir.remove(file);
+    }
+
+    if (!tmpDir.rmdir(tmpDir.absolutePath())) {
+        stateInfo.setError("Can not remove directory for temporary files.");
+        emit si_stateChanged();
+    }
+    return ReportResult_Finished;
+}
+
 
 } // namespace U2

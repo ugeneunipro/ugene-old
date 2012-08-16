@@ -50,6 +50,7 @@ public:
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
+    Task::ReportResult report();
 
     QList<SharedAnnotationData> getTranscriptGtfAnnots() const { return transcriptGtfAnnots; };
     QList<SharedAnnotationData> getIsoformAnnots() const { return isoformLevelAnnots; };
