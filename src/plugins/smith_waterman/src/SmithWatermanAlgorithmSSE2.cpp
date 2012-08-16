@@ -77,7 +77,7 @@ namespace U2 {
     const quint64 directionSearchSeqSize = 2 * sizeof(int) * (patternLengthDivisibleByN + 1);
 
     const quint64 MatrixCalculationRequiredSpace = matrixPtrsSize + matrixSize + tempSize + eArraySize + fArraySize +
-                                maxArraySize + queryProfSize + directionMatrixSize +
+                                maxArraySize + queryProfSize + directionMatrixSize + directionSearchSeqSize +
                                 (sizeof(int) + sizeof(char)) * (patternLengthDivisibleByN + 1);
 
     return MatrixCalculationRequiredSpace / b_to_mb_factor;

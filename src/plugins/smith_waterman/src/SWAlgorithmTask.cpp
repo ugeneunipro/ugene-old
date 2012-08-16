@@ -103,7 +103,7 @@ void SWAlgorithmTask::setupTask(int maxScore) {
     // divide sequence by PARTS_NUMBER parts
     int idealThreadCount = AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
 
-    quint64 partsNumber = 0;
+    qint64 partsNumber = 0;
     double computationMatrixSquare = 0.0;
 
     switch(algType) {

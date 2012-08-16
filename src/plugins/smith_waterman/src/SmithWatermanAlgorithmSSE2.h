@@ -36,10 +36,10 @@ public:
 
     virtual void launch(const SMatrix& substitutionMatrix, QByteArray const & _patternSeq, QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore);
     
-    static quint64 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq,
-                                                                        QByteArray const & _searchSeq, const qint32 gapOpen,
-                                                                        const qint32 gapExtension, const quint32 minScore,
-                                                                        const quint32 maxScore);
+    static quint64 estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq,
+                                            QByteArray const & _searchSeq, const qint32 gapOpen,
+                                            const qint32 gapExtension, const quint32 minScore,
+                                            const quint32 maxScore);
 
 private:
     static const int nElementsInVec = 8;
