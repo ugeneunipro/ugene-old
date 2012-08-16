@@ -41,16 +41,17 @@ public:
 
     virtual void launch(const SMatrix& m, QByteArray const & _patternSeq, QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore);
     static quint64 estimateNeededGpuMemory( const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq );
+    static quint64 estimateNeededRamAmount( const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq );
+
 private:
 
     int calcOverlap(int queryLength);
-    int calcPartsNumber(int seqLibLength, int overlapLength);
-    int calcPartSeqSize(int seqLibLength, int overlapLength, int partsNumber);
-    int calcSizeRow(int partsNumber, int partSeqSize);
-    void processBadAlloc(const float memoryInBytes) const;
-
-    const int MAX_BLOCKS_NUMBER;
-    const int MAX_SHARED_VECTOR_LENGTH;
+    static int calcPartsNumber(int seqLibLength, int overlapLength);
+    static int calcPartSeqSize(int seqLibLength, int overlapLength, int partsNumber);
+    static int calcSizeRow(int partsNumber, int partSeqSize);
+    
+    static const int MAX_BLOCKS_NUMBER;
+    static const int MAX_SHARED_VECTOR_LENGTH;
 
     cl_event clEvent;
     cl_kernel clKernel;

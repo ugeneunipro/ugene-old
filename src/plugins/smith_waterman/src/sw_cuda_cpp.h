@@ -38,6 +38,7 @@ public:
 
     QList<resType> launch(const char * seqLib, int seqLibLength, ScoreType* queryProfile, ScoreType qProfLen, int queryLength, ScoreType gapOpen, ScoreType gapExtension, ScoreType maxScore);
     static quint64 estimateNeededGpuMemory( int seqLibLength, ScoreType qProfLen, int queryLength );
+    static quint64 estimateNeededRamAmount(int seqLibLength, ScoreType qProfLen, int queryLength);
     static const int MAX_BLOCKS_NUMBER;
     static const int MAX_SHARED_VECTOR_LENGTH;
 };

@@ -39,6 +39,50 @@ namespace U2 {
 //     static bool PRINT_F_SHIFT = false;
 //     static bool PRINT_H = false;
 
+    quint64 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq,
+                                                                QByteArray const & _searchSeq, const qint32 gapOpen,
+                                                                const qint32 gapExtension, const quint32 minScore,
+                                                                const quint32 maxScore) {
+    const double b_to_mb_factor = 1048576.0;
+
+    const quint64 queryLength = _patternSeq.length();
+    const quint64 searchLength = _searchSeq.length();
+
+    const quint32 iter = (queryLength + nElementsInVec - 1) / nElementsInVec;
+    const int alphaSize = sm.getAlphabet()->getNumAlphabetChars();
+    
+    const quint64 queryProfSize = 'Z' * alphaSize * iter * sizeof(__m128i);
+
+    const quint64 patternLengthDivisibleByN = queryLength + 1 + nElementsInVec - (queryLength + 1) % nElementsInVec;
+    
+    const quint64 tempSize = nElementsInVec * sizeof(ScoreType);
+    const quint64 eArraySize = (nElementsInVec + patternLengthDivisibleByN) * sizeof(ScoreType);
+    const quint64 fArraySize = (nElementsInVec + patternLengthDivisibleByN) * sizeof(ScoreType);
+    const quint64 maxArraySize = (nElementsInVec + patternLengthDivisibleByN) * sizeof(ScoreType);
+
+    qint32 maxGapPenalty = (gapOpen > gapExtension) ? gapOpen : gapExtension;
+    assert(0 > maxGapPenalty);
+
+    quint64 matrixLength = queryLength - (maxScore - minScore) / maxGapPenalty + 1;    
+    if (searchLength + 1 < matrixLength) {
+        matrixLength = searchLength + 1;
+    }
+
+    const quint64 matrixLengthDivisibleByN = matrixLength + nElementsInVec - matrixLength % nElementsInVec;
+    
+    const quint64 matrixPtrsSize = sizeof(ScoreType *) * matrixLengthDivisibleByN;
+    const quint64 matrixSize = sizeof(ScoreType) * matrixLengthDivisibleByN * patternLengthDivisibleByN;
+
+    const quint64 directionMatrixSize = matrixLengthDivisibleByN * (patternLengthDivisibleByN + 1) * sizeof(char);
+    const quint64 directionSearchSeqSize = 2 * sizeof(int) * (patternLengthDivisibleByN + 1);
+
+    const quint64 MatrixCalculationRequiredSpace = matrixPtrsSize + matrixSize + tempSize + eArraySize + fArraySize +
+                                maxArraySize + queryProfSize + directionMatrixSize +
+                                (sizeof(int) + sizeof(char)) * (patternLengthDivisibleByN + 1);
+
+    return MatrixCalculationRequiredSpace / b_to_mb_factor;
+}
+
 void SmithWatermanAlgorithmSSE2::launch(const SMatrix& _substitutionMatrix, QByteArray const & _patternSeq, QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore) {
     setValues(_substitutionMatrix, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore);
     int maxScor = 0;
@@ -66,8 +110,11 @@ void SmithWatermanAlgorithmSSE2::calculateMatrix() {
     int matrixLengthDivisibleByN = matrixLength;
     int patternLengthDivisibleByN = patternSeq.length() + 1;
 
-    while (matrixLengthDivisibleByN % nElementsInVec != 0) matrixLengthDivisibleByN++;
-    while (patternLengthDivisibleByN % nElementsInVec != 0) patternLengthDivisibleByN++;    
+    matrixLengthDivisibleByN += nElementsInVec - matrixLengthDivisibleByN % nElementsInVec;
+    patternLengthDivisibleByN += nElementsInVec - patternLengthDivisibleByN % nElementsInVec;
+
+//    while (matrixLengthDivisibleByN % nElementsInVec != 0) matrixLengthDivisibleByN++;
+//    while (patternLengthDivisibleByN % nElementsInVec != 0) patternLengthDivisibleByN++;
 
     ScoreType * temp = (ScoreType*)_mm_malloc(nElementsInVec*sizeof(ScoreType),16);
     for (int pp = 0; pp < nElementsInVec; pp++) temp[pp] = 0;

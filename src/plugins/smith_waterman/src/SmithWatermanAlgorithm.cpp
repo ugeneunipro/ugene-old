@@ -24,6 +24,7 @@
 #include <U2Core/Timer.h>
 #include <U2Core/Log.h>
 
+const double B_TO_MB_FACTOR = 1048576.0;
 
 namespace U2 {
 
@@ -42,7 +43,33 @@ SmithWatermanAlgorithm::SmithWatermanAlgorithm() {
     storedResults = 0; 
 }
 
+quint64 SmithWatermanAlgorithm::estimateNeededRamAmount(const qint32 gapOpen, const qint32 gapExtension,
+                                                        const quint32 minScore, const quint32 maxScore,
+                                                        QByteArray const & patternSeq, QByteArray const & searchSeq) {
+    const quint64 queryLength = patternSeq.length();
+    const quint64 searchLength = searchSeq.length();
 
+    const qint32 maxGapPenalty = (gapOpen > gapExtension) ? gapOpen : gapExtension;
+    assert(0 > maxGapPenalty);
+
+    quint64 matrixLength = queryLength - (maxScore - minScore) / maxGapPenalty + 1;    
+
+    if (searchLength + 1 < matrixLength) {
+        matrixLength = searchLength + 1;
+    }
+    
+    const quint64 maxPairSequencesSize = (searchLength + 1) * sizeof(PairAlignSequences);
+    const quint64 matrixSize = matrixLength * (queryLength + 2) * sizeof(int);
+    const quint64 directionMatrixSize = matrixLength * (queryLength + 2) * sizeof(char);
+    const quint64 EMatrixSize = (queryLength + 2) * sizeof(int);
+    const quint64 FMatrixSize = (queryLength + 2) * sizeof(int);
+    const quint64 directionSearchSeqSize = 2 * (queryLength + 2) * sizeof(int);
+
+    const quint64 memToAllocInBytes = (queryLength + 2) * ((sizeof(int) * 3)  + sizeof(char)) +
+        maxPairSequencesSize + matrixSize + directionMatrixSize + EMatrixSize + FMatrixSize + directionSearchSeqSize;
+
+    return memToAllocInBytes / B_TO_MB_FACTOR;
+}
 
 //notes: Gap < 0
 bool SmithWatermanAlgorithm::calculateMatrixLength() {    
@@ -300,7 +327,7 @@ void SmithWatermanAlgorithm::calculateMatrix() {
 //        for(int k = 1; k < patternSeq.length() + 1; k++) str += QString::number(matrix[getRow(i)][k]) + " ";
 //       log.info(str);
 
-    }        
+    }
 }
 
 

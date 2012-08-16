@@ -42,6 +42,9 @@ public:
     
     QList<PairAlignSequences> getResults();
     static void sortByScore(QList<PairAlignSequences> & pairAlignmentStrings);
+    static quint64 estimateNeededRamAmount(const qint32 gapOpen, const qint32 gapExtension,
+                                           const quint32 minScore, const quint32 maxScore,
+                                           QByteArray const & patternSeq, QByteArray const & searchSeq);
 
 protected:
     bool calculateMatrixLength();
@@ -61,7 +64,7 @@ protected:
     QByteArray searchSeq;
 
     int gapOpen;
-    int gapExtension;    
+    int gapExtension;
     int minScore;
     int matrixLength;
     int storedResults;

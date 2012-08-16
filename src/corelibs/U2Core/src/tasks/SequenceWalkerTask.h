@@ -43,12 +43,12 @@ public:
     SequenceWalkerConfig();
 
     const char*     seq;            //  sequence to split
-    int             seqSize;        //  size of the sequence to split
+    quint64         seqSize;        //  size of the sequence to split
     U2Region         range;          //  if not empty -> only this region is processed
     DNATranslation* complTrans; 
     DNATranslation* aminoTrans;
     
-    int             chunkSize;          // optimal chunk size, used by default for all regions except last one
+    quint64         chunkSize;          // optimal chunk size, used by default for all regions except last one
     int             lastChunkExtraLen;  // extra length allowed to be added to the last chunk
     int             overlapSize;        // overlap for 2 neighbor regions
     int             nThreads;

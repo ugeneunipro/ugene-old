@@ -77,9 +77,9 @@ private:
     QList<SmithWatermanResult> resultList;
     SmithWatermanSettings sWatermanConfig;
     SequenceWalkerTask* t;
-    union {
-        CudaGpuModel * cudaGpu;        
-    } gpuModel;
+    
+    CudaGpuModel * cudaGpu;
+    OpenCLGpuModel * openClGpu;
 };
 
 class SWResultsPostprocessingTask : public Task{

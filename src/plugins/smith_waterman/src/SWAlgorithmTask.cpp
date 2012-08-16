@@ -44,6 +44,8 @@
 
 using namespace std;
 
+const double B_TO_MB_FACTOR = 1048576.0;
+
 namespace U2 {
 
 SWAlgorithmTask::SWAlgorithmTask(const SmithWatermanSettings& s,
@@ -59,17 +61,17 @@ SWAlgorithmTask::SWAlgorithmTask(const SmithWatermanSettings& s,
         }
     }
 
-    //acquiring resourses for GPU computations
+    int maxScore = calculateMaxScore(s.ptrn, s.pSm);    
+
+    minScore = (maxScore * s.percentOfScore) / 100;        
+    if ( (maxScore * (int)s.percentOfScore) % 100 != 0) minScore += 1;
+
+    //acquiring resources for GPU computations
     if( SW_cuda == algType ) {
         addTaskResource(TaskResourceUsage( RESOURCE_CUDA_GPU, 1, true /*prepareStage*/));
     } else if( SW_opencl == algType ) {
         addTaskResource(TaskResourceUsage( RESOURCE_OPENCL_GPU, 1, true /*prepareStage*/));
-    }
-
-    int maxScore = calculateMaxScore(s.ptrn, s.pSm);    
-    
-    minScore = (maxScore * s.percentOfScore) / 100;        
-    if ( (maxScore * (int)s.percentOfScore) % 100 != 0) minScore += 1;    
+    }  
 
     setupTask(maxScore);
 }
@@ -91,7 +93,7 @@ void SWAlgorithmTask::setupTask(int maxScore) {
     c.strandToWalk = sWatermanConfig.strand;
     algoLog.details(QString("Strand: %1 ").arg(c.strandToWalk));
     
-    int overlapSize = calculateMatrixLength(sWatermanConfig.sqnc, 
+    quint64 overlapSize = calculateMatrixLength(sWatermanConfig.sqnc, 
         sWatermanConfig.ptrn, 
         sWatermanConfig.gapModel.scoreGapOpen, 
         sWatermanConfig.gapModel.scoreGapExtd, 
@@ -101,59 +103,126 @@ void SWAlgorithmTask::setupTask(int maxScore) {
     // divide sequence by PARTS_NUMBER parts
     int idealThreadCount = AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
 
-    int PARTS_NUMBER = 0;     
-    if (algType == SW_sse2) {
-        PARTS_NUMBER = idealThreadCount * 2.5;
-    } else if (algType == SW_classic){
-        PARTS_NUMBER = idealThreadCount;
-    } else if (algType == SW_cuda || algType == SW_opencl) {
-        PARTS_NUMBER = 1;
+    quint64 partsNumber = 0;
+    double computationMatrixSquare = 0.0;
+
+    switch(algType) {
+        case SW_sse2:
+            computationMatrixSquare = 16195823.0; //this constant is considered to be optimal computation matrix square (square = localSequence.length * pattern.length) for given algorithm realization and the least minimum score value
+            c.nThreads = idealThreadCount * 2.5;
+            break;
+        case SW_classic:
+            computationMatrixSquare = 7519489.29; //the same as previous
+            c.nThreads = idealThreadCount;
+            break;
+        case SW_cuda:
+        case SW_opencl:
+            computationMatrixSquare = 58484916.67; //the same as previous
+            c.nThreads = 1;
+            break;
+        default:
+            assert(0);
     }
 
-    if ((PARTS_NUMBER != 1) && (PARTS_NUMBER - 1) * overlapSize < sWatermanConfig.globalRegion.length) {
-        c.chunkSize = (c.seqSize + overlapSize * (PARTS_NUMBER - 1)) / PARTS_NUMBER;
-        if (c.chunkSize == overlapSize) c.chunkSize++;
-        c.overlapSize = overlapSize;            
+    partsNumber = static_cast<int>(sWatermanConfig.sqnc.size() / (computationMatrixSquare / sWatermanConfig.ptrn.size()) + 1.0);
+    if(partsNumber < c.nThreads) {
+        partsNumber = c.nThreads;
     }
-    else {
-        c.overlapSize = 0;    
-        c.chunkSize = c.seqSize;
-        PARTS_NUMBER = 1;
-    }    
+
+    c.chunkSize = (c.seqSize + overlapSize * (partsNumber - 1)) / partsNumber;
+    if (c.chunkSize == overlapSize) c.chunkSize++;
+    c.overlapSize = overlapSize;
+
+    c.lastChunkExtraLen = partsNumber - 1;    
     
-    c.lastChunkExtraLen = PARTS_NUMBER - 1;    
-    c.nThreads = PARTS_NUMBER;
+    //acquiring memory resources for computations
+    switch(algType) {
+        case SW_cuda:
+#ifdef SW2_BUILD_WITH_CUDA
+            addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, SmithWatermanAlgorithmCUDA::estimateNeededRamAmount(
+                sWatermanConfig.pSm, sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads)) / B_TO_MB_FACTOR, true));
+#endif
+            break;
+        case SW_opencl:
+#ifdef SW2_BUILD_WITH_OPENCL
+            addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, SmithWatermanAlgorithmOPENCL::estimateNeededRamAmount(
+                sWatermanConfig.pSm, sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads)) / B_TO_MB_FACTOR, true));
+#endif
+            break;
+        case SW_classic:
+            addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,
+                SmithWatermanAlgorithm::estimateNeededRamAmount(sWatermanConfig.gapModel.scoreGapOpen, sWatermanConfig.gapModel.scoreGapExtd,
+                minScore, maxScore,
+                sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads)),
+                true));
+            break;
+        case SW_sse2:
+#ifdef SW2_BUILD_WITH_SSE2
+            addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,
+                SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(sWatermanConfig.pSm, sWatermanConfig.ptrn,
+                    sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads), sWatermanConfig.gapModel.scoreGapOpen,
+                    sWatermanConfig.gapModel.scoreGapExtd, minScore, maxScore),
+                true));
+#endif
+            break;
+        default:
+            assert(0);
+    }
 
-    t = new SequenceWalkerTask(c, this, tr("Smith Waterman2 SequenceWalker"));    
+    t = new SequenceWalkerTask(c, this, tr("Smith Waterman2 SequenceWalker"));
     addSubTask(t);
 }
 
 void SWAlgorithmTask::prepare() {
+    const SequenceWalkerConfig & config = t->getConfig();
+
     if( SW_cuda == algType ) {
-        CudaGpuModel *& gpu = gpuModel.cudaGpu;
-        gpu = AppContext::getCudaGpuRegistry()->acquireAnyReadyGpu();
-        assert( gpu );
+        cudaGpu = AppContext::getCudaGpuRegistry()->acquireAnyReadyGpu();
+        assert( cudaGpu );
 #ifdef SW2_BUILD_WITH_CUDA
-        quint64 needMemBytes = SmithWatermanAlgorithmCUDA::estimateNeededGpuMemory( 
-                sWatermanConfig.pSm, sWatermanConfig.ptrn, sWatermanConfig.sqnc );
-        quint64 gpuMemBytes = gpu->getGlobalMemorySizeBytes();
+        quint64 needMemBytes = SmithWatermanAlgorithmCUDA::estimateNeededGpuMemory(
+                sWatermanConfig.pSm, sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(config.chunkSize * config.nThreads));
+        quint64 gpuMemBytes = cudaGpu->getGlobalMemorySizeBytes();
         if( gpuMemBytes < needMemBytes ) {
             stateInfo.setError( tr("Not enough memory on CUDA-enabled device. "
                 "The space required is %1 bytes, but only %2 bytes are available. Device id: %3, device name: %4").
-                                arg(QString::number(needMemBytes), QString::number(gpuMemBytes), QString::number(gpu->getId()), QString(gpu->getName()))
+                                arg(QString::number(needMemBytes), QString::number(gpuMemBytes), QString::number(cudaGpu->getId()), QString(cudaGpu->getName()))
                               );
             return;
         } else {
             algoLog.details( tr("The Smith-Waterman search allocates ~%1 bytes (%2 Mb) on CUDA device").
-                arg(QString::number(needMemBytes), QString::number(needMemBytes/1024/1024+1)) );
+                arg(QString::number(needMemBytes), QString::number(needMemBytes / B_TO_MB_FACTOR)) );
         }
 
-        coreLog.details(QString("GPU model: %1").arg(gpuModel.cudaGpu->getId()));
+        coreLog.details(QString("GPU model: %1").arg(cudaGpu->getId()));
 
-        cudaSetDevice( gpuModel.cudaGpu->getId() );
+        cudaSetDevice( cudaGpu->getId() );
 #else
         assert(false);  
 #endif 
+    }
+    else if(SW_opencl == algType) {
+        openClGpu = AppContext::getOpenCLGpuRegistry()->acquireAnyReadyGpu();
+        assert(openClGpu);
+#ifdef SW2_BUILD_WITH_OPENCL
+        const quint64 needMemBytes = SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory(
+            sWatermanConfig.pSm, sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(config.chunkSize * config.nThreads));
+        const quint64 gpuMemBytes = openClGpu->getGlobalMemorySizeBytes();
+        
+        if(gpuMemBytes < needMemBytes) {
+            stateInfo.setError(QString("Not enough memory on OpenCL-enabled device. "
+                "The space required is %1 bytes, but only %2 bytes are available. Device id: %3, device name: %4").
+                arg(QString::number(needMemBytes), QString::number(gpuMemBytes), QString::number(openClGpu->getId()), QString(openClGpu->getName())));
+            return;
+        } else {
+            algoLog.details(QString("The Smith-Waterman search allocates ~%1 bytes (%2 Mb) on OpenCL device").
+                arg(QString::number(needMemBytes), QString::number(needMemBytes / B_TO_MB_FACTOR)));
+        }
+
+        coreLog.details(QString("GPU model: %1").arg(openClGpu->getId()));
+#else
+        assert(0);
+#endif
     }
 }
 
@@ -311,7 +380,9 @@ int SWAlgorithmTask::calculateMaxScore(const QByteArray & seq, const SMatrix& su
 Task::ReportResult SWAlgorithmTask::report() {
 
     if( SW_cuda == algType ) {
-        gpuModel.cudaGpu->setAcquired(false);
+        cudaGpu->setAcquired(false);
+    } else if(SW_opencl == algType) {
+        openClGpu->setAcquired(false);
     }
 
     SmithWatermanResultListener* rl = sWatermanConfig.resultListener;

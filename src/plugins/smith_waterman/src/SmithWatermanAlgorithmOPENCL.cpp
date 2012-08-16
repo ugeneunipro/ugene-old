@@ -34,14 +34,14 @@
 #include <U2Algorithm/OpenCLUtils.h>
 #include <U2Algorithm/OpenCLHelper.h>
 
-const float B_TO_MB_FACTOR = 1.0f / 1048576.0f;
-const QString MEM_LACK_LOG_MESSAGE = "Smith-Waterman algorithm failed to allocate %1 MB RAM for processing input data";
+const double B_TO_MB_FACTOR = 1048576.0;
 
-namespace U2 {   
+namespace U2 {
+
+const int SmithWatermanAlgorithmOPENCL::MAX_BLOCKS_NUMBER = AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu()->getMaxComputeUnits();
+const int SmithWatermanAlgorithmOPENCL::MAX_SHARED_VECTOR_LENGTH = 32;
 
 SmithWatermanAlgorithmOPENCL::SmithWatermanAlgorithmOPENCL()  :
-        MAX_BLOCKS_NUMBER(AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu()->getMaxComputeUnits()),
-        MAX_SHARED_VECTOR_LENGTH(32),
         clEvent(NULL), clKernel(NULL), clProgram(NULL),
         clCommandQueue(NULL), clContext(NULL), queryProfBuf(NULL),
         seqLibProfBuf(NULL), hDataMaxBuf(NULL), hDataUpBufTmp(NULL),
@@ -49,15 +49,38 @@ SmithWatermanAlgorithmOPENCL::SmithWatermanAlgorithmOPENCL()  :
         directionsRecBufTmp(NULL), directionsMaxBuf(NULL)
 {}
 
-quint64 SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory( const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq ) {
-    Q_UNUSED(sm); Q_UNUSED(_patternSeq); Q_UNUSED(_searchSeq);
-        //TODO
-        //const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
-        //int subLen = alphChars.size();
-        //int qLen = _patternSeq.size();        
-        //int profLen = subLen * (qLen + 1) * (alphChars[ alphChars.size()-1 ] + 1);
+quint64 SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq) {
+    const quint64 queryLength = _patternSeq.size();
+    const quint64 searchLen = _searchSeq.size();
+    const quint64 subLen = sm.getAlphabet()->getNumAlphabetChars();
+    const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
+    const quint64 profLen = subLen * (queryLength + 1) * (alphChars[ alphChars.size()-1 ] + 1);
 
-        return 0;//sw_cuda_cpp::estimateNeededGpuMemory( _searchSeq.size(), profLen, qLen );
+    const quint64 overlapLength = queryLength * 3;
+    const quint64 partsNumber = calcPartsNumber(searchLen, overlapLength);
+    const quint64 partSeqSize = calcPartSeqSize(searchLen, overlapLength, partsNumber);
+    const quint64 sizeRow = calcSizeRow(partsNumber, partSeqSize);
+
+    const quint64 memToAlloc = sizeof(char) * (_searchSeq.length() + 1) + profLen * sizeof(cl_int) + sizeof(ScoreType) * sizeRow * 7;
+
+    return memToAlloc * 8 / 5; //factor 8/5 is used because OpenCL won't allocate all or almost all available GPU memory
+}
+
+quint64 SmithWatermanAlgorithmOPENCL::estimateNeededRamAmount( const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq ) {
+    const quint64 queryLength = _patternSeq.size();
+    const quint64 searchLen = _searchSeq.size();
+    const quint64 subLen = sm.getAlphabet()->getNumAlphabetChars();
+    const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
+    const quint64 profLen = subLen * (queryLength + 1) * (alphChars[ alphChars.size()-1 ] + 1);
+
+    const quint64 overlapLength = queryLength * 3;
+    const quint64 partsNumber = calcPartsNumber(searchLen, overlapLength);
+    const quint64 partSeqSize = calcPartSeqSize(searchLen, overlapLength, partsNumber);
+    const quint64 sizeRow = calcSizeRow(partsNumber, partSeqSize);
+    
+    const quint64 memToAlloc = 2 * sizeof(ScoreType) * sizeRow + sizeof(ScoreType) * profLen;
+
+    return memToAlloc;
 }
 
 //TODO: calculate maximum alignment length
@@ -66,8 +89,8 @@ int SmithWatermanAlgorithmOPENCL::calcOverlap(int queryLength) {
 }
 
 //number of parts of the sequence which we divide
-int SmithWatermanAlgorithmOPENCL::calcPartsNumber(int seqLibLength, int overlapLength) {
-    int partsNumber = (seqLibLength + overlapLength - 1) / overlapLength;
+int SmithWatermanAlgorithmOPENCL::calcPartsNumber(int searchLen, int overlapLength) {
+    int partsNumber = (searchLen + overlapLength - 1) / overlapLength;
 
     if (partsNumber > MAX_BLOCKS_NUMBER) {
         partsNumber = MAX_BLOCKS_NUMBER;
@@ -76,8 +99,8 @@ int SmithWatermanAlgorithmOPENCL::calcPartsNumber(int seqLibLength, int overlapL
 }
 
 //size of sequence's part
-int SmithWatermanAlgorithmOPENCL::calcPartSeqSize(int seqLibLength, int overlapLength, int partsNumber) {
-    return (seqLibLength + (partsNumber - 1) * (overlapLength + 1)) / partsNumber;
+int SmithWatermanAlgorithmOPENCL::calcPartSeqSize(int searchLen, int overlapLength, int partsNumber) {
+    return (searchLen + (partsNumber - 1) * (overlapLength + 1)) / partsNumber;
 }
 
 //size of vector that contain all results
@@ -94,11 +117,6 @@ bool hasOPENCLError(int err, QString errorMessage) {
     }
 }
 
-void SmithWatermanAlgorithmOPENCL::processBadAlloc(const float memoryInBytes) const
-{
-    algoLog.error(MEM_LACK_LOG_MESSAGE.arg(QString::number(memoryInBytes * B_TO_MB_FACTOR)));
-}
-
 void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore) {
 
     setValues(sm, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore);
@@ -110,14 +128,9 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
 
     //alphChars is sorted
     const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
-    int profLen = subLen * (queryLength + 1) * (alphChars[ alphChars.size()-1 ] + 1);
+    quint64 profLen = subLen * (queryLength + 1) * (alphChars[ alphChars.size()-1 ] + 1);
     ScoreType *  queryProfile = NULL;
-    try {
-        queryProfile = new ScoreType[profLen];
-    } catch(const std::bad_alloc &) {
-        processBadAlloc(profLen * sizeof(ScoreType));
-        return;
-    }
+    queryProfile = new ScoreType[profLen];
 
     gauto_array<ScoreType> qpm(queryProfile); // to ensure the data is deallocated correctly
 
@@ -153,8 +166,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
     //calculate lengths
     const int overlapLength = queryLength * 3;
 
-    int seqLibLength = _searchSeq.size();
-    int partsNumber = calcPartsNumber(seqLibLength, overlapLength);
+    int partsNumber = calcPartsNumber(searchLen, overlapLength);
 
     int queryDevider = 1;
     if (queryLength > MAX_SHARED_VECTOR_LENGTH) {
@@ -163,19 +175,15 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
 
     int partQuerySize = (queryLength + queryDevider - 1) / queryDevider;
 
-    int partSeqSize = calcPartSeqSize(seqLibLength, overlapLength, partsNumber);
+    int partSeqSize = calcPartSeqSize(searchLen, overlapLength, partsNumber);
 
-    int sizeRow = calcSizeRow(partsNumber, partSeqSize);
+    quint64 sizeRow = calcSizeRow(partsNumber, partSeqSize);
 
     ScoreType* g_HdataTmp = NULL;
     ScoreType* g_directionsRec = NULL;
-    try {
-        g_HdataTmp = new ScoreType[sizeRow];
-        g_directionsRec = new ScoreType[sizeRow];    
-    } catch(const std::bad_alloc &) {
-        processBadAlloc(sizeRow * sizeof(ScoreType));
-        return;
-    }
+
+    g_HdataTmp = new ScoreType[sizeRow];
+    g_directionsRec = new ScoreType[sizeRow];
 
     gauto_array<ScoreType> g_HdataTmpPtr(g_HdataTmp);
     gauto_array<ScoreType> g_directionsRecPtr(g_directionsRec);
@@ -187,48 +195,48 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
 
     queryProfBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
         sizeof(cl_int) * profLen, queryProfile, &err);
-    if (hasOPENCLError(err, "Can't allocate memory in buffer")) return;
+    if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(cl_int) * profLen / B_TO_MB_FACTOR)))) return;
 
     seqLibProfBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
         sizeof(char) * (_searchSeq.length() + 1), searchSeq.data(), &err);
-    if (hasOPENCLError(err, "Can't allocate memory in buffer")) return;
+    if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(char) * (_searchSeq.length() + 1) / B_TO_MB_FACTOR)))) return;
 
     hDataMaxBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_HdataTmp, &err);
-    if (hasOPENCLError(err, "Can't allocate memory in buffer")) return;
+    if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
 
     hDataUpBufTmp = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_HdataTmp, &err);
-    if (hasOPENCLError(err, "Can't allocate memory in buffer")) return;
+    if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
     cl_mem* hDataUpBuf = &hDataUpBufTmp;
 
     hDataRecBufTmp = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_HdataTmp, &err);
-    if (hasOPENCLError(err, "Can't allocate memory in buffer")) return;
+    if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
     cl_mem* hDataRecBuf = &hDataRecBufTmp;
 
     cl_mem* hDataTmpBuf = NULL;
 
     fDataUpBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_HdataTmp, &err);
-    if (hasOPENCLError(err, "Can't allocate memory in buffer")) return;
+    if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
 
     directionsUpBufTmp = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_directionsRec, &err);
-    if (hasOPENCLError(err, "Can't allocate memory in buffer")) return;
+    if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
     cl_mem* directionsUpBuf = &directionsUpBufTmp;
 
     directionsRecBufTmp = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_directionsRec, &err);
-    if (hasOPENCLError(err, "Can't allocate memory in buffer")) return;
+    if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
     cl_mem* directionsRecBuf = &directionsRecBufTmp;
 
     directionsMaxBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_directionsRec, &err);
-    if (hasOPENCLError(err, "Can't allocate memory in buffer")) return;
+    if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
 
     algoLog.trace(QString("partsNumber: %1 queryDevider: %2").arg(partsNumber).arg(queryDevider));
-    algoLog.trace(QString("seqLen: %1 partSeqSize: %2 overlapSize: %3").arg(seqLibLength).arg(partSeqSize).arg(overlapLength));
+    algoLog.trace(QString("seqLen: %1 partSeqSize: %2 overlapSize: %3").arg(searchLen).arg(partSeqSize).arg(overlapLength));
     algoLog.trace(QString("queryLen %1 partQuerySize: %2 sizeRow: %3").arg(queryLength).arg(partQuerySize).arg(sizeRow));
 
     //open and read file contains OPENCL code
@@ -297,7 +305,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&overlapLength);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //13: seqLibLength
+    //13: searchLen
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&searchLen);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 

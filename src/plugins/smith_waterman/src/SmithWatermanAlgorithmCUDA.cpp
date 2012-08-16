@@ -43,6 +43,17 @@ namespace U2 {
         return sw_cuda_cpp::estimateNeededGpuMemory( _searchSeq.size(), profLen, qLen );
     }
 
+    quint64 SmithWatermanAlgorithmCUDA::estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq) {
+        const int qLen = _patternSeq.size();
+        const int subLen = sm.getAlphabet()->getNumAlphabetChars();
+        const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
+        const int profLen = subLen * (qLen + 1) * (alphChars[ alphChars.size()-1 ] + 1);
+
+        const quint64 memToAlloc = sizeof(ScoreType) * profLen + sw_cuda_cpp::estimateNeededRamAmount(_searchSeq.size(), profLen, qLen);
+
+        return memToAlloc;
+    }
+
     void SmithWatermanAlgorithmCUDA::launch(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore) {
     
         algoLog.details("START SmithWatermanAlgorithmCUDA::launch");

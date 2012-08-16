@@ -83,6 +83,16 @@ quint64 sw_cuda_cpp::estimateNeededGpuMemory( int seqLibLength, ScoreType qProfL
     return memToAlloc * 1.2; //just for safety
 }
 
+quint64 sw_cuda_cpp::estimateNeededRamAmount(int seqLibLength, ScoreType qProfLen, int queryLength) {
+    const int overlapLength = calcOverlap(queryLength);
+    const int partsNumber = calcPartsNumber(seqLibLength, overlapLength);
+    const int partSeqSize = calcPartSeqSize(seqLibLength, overlapLength, partsNumber);
+    const int sizeRow = calcSizeRow(seqLibLength, overlapLength, partsNumber, partSeqSize);
+
+    const quint64 memToAlloc = 3 * sizeRow * sizeof(ScoreType);
+    return memToAlloc;
+}
+
 //IMPORTANT: these settings depend on the video card
 //TODO: develop logic for calculation this settings
 const int sw_cuda_cpp::MAX_BLOCKS_NUMBER = 14;
