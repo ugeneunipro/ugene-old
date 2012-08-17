@@ -130,7 +130,9 @@ void SWAlgorithmTask::setupTask(int maxScore) {
     }
 
     c.chunkSize = (c.seqSize + overlapSize * (partsNumber - 1)) / partsNumber;
-    if (c.chunkSize == overlapSize) c.chunkSize++;
+    if (c.chunkSize <= overlapSize) {
+        c.chunkSize = overlapSize + 1;
+    }
     c.overlapSize = overlapSize;
 
     c.lastChunkExtraLen = partsNumber - 1;    

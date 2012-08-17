@@ -132,7 +132,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
 
     //alphChars is sorted
     const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
-    quint64 profLen = subLen * (queryLength + 1) * (alphChars[ alphChars.size()-1 ] + 1);
+    qint64 profLen = subLen * (queryLength + 1) * (alphChars[ alphChars.size()-1 ] + 1);
     ScoreType *  queryProfile = NULL;
     queryProfile = new ScoreType[profLen];
 
@@ -181,7 +181,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
 
     int partSeqSize = calcPartSeqSize(searchLen, overlapLength, partsNumber);
 
-    quint64 sizeRow = calcSizeRow(partsNumber, partSeqSize);
+    qint64 sizeRow = calcSizeRow(partsNumber, partSeqSize);
 
     ScoreType* g_HdataTmp = NULL;
     ScoreType* g_directionsRec = NULL;

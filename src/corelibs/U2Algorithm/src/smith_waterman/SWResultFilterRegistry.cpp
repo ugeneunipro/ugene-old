@@ -29,9 +29,9 @@ namespace U2 {
 SWResultFilterRegistry::SWResultFilterRegistry(QObject* pOwn): 
     QObject(pOwn)
 {
-    registerFilter(new SWRF_EmptyFilter());
+    registerFilter(new SWRF_WithoutIntersect());
     
-    SmithWatermanResultFilter* f = new SWRF_WithoutIntersect();
+    SmithWatermanResultFilter* f = new SWRF_EmptyFilter();
     registerFilter(f);
     defaultFilterId = f->getId();
 }
