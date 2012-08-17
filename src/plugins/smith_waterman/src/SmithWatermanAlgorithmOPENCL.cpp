@@ -38,7 +38,7 @@ const double B_TO_MB_FACTOR = 1048576.0;
 
 namespace U2 {
 
-const int SmithWatermanAlgorithmOPENCL::MAX_BLOCKS_NUMBER = AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu()->getMaxComputeUnits();
+int SmithWatermanAlgorithmOPENCL::MAX_BLOCKS_NUMBER = 0;
 const int SmithWatermanAlgorithmOPENCL::MAX_SHARED_VECTOR_LENGTH = 32;
 
 SmithWatermanAlgorithmOPENCL::SmithWatermanAlgorithmOPENCL()  :
@@ -90,6 +90,10 @@ int SmithWatermanAlgorithmOPENCL::calcOverlap(int queryLength) {
 
 //number of parts of the sequence which we divide
 int SmithWatermanAlgorithmOPENCL::calcPartsNumber(int searchLen, int overlapLength) {
+    if(0 == MAX_BLOCKS_NUMBER) {
+        MAX_BLOCKS_NUMBER = AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu()->getMaxComputeUnits();
+    }
+
     int partsNumber = (searchLen + overlapLength - 1) / overlapLength;
 
     if (partsNumber > MAX_BLOCKS_NUMBER) {

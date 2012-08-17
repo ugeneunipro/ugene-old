@@ -50,7 +50,7 @@ private:
     static int calcPartSeqSize(int seqLibLength, int overlapLength, int partsNumber);
     static int calcSizeRow(int partsNumber, int partSeqSize);
     
-    static const int MAX_BLOCKS_NUMBER;
+    static int MAX_BLOCKS_NUMBER;
     static const int MAX_SHARED_VECTOR_LENGTH;
 
     cl_event clEvent;
