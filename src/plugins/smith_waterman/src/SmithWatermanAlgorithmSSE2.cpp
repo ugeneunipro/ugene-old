@@ -113,9 +113,6 @@ void SmithWatermanAlgorithmSSE2::calculateMatrix() {
     matrixLengthDivisibleByN += nElementsInVec - matrixLengthDivisibleByN % nElementsInVec;
     patternLengthDivisibleByN += nElementsInVec - patternLengthDivisibleByN % nElementsInVec;
 
-//    while (matrixLengthDivisibleByN % nElementsInVec != 0) matrixLengthDivisibleByN++;
-//    while (patternLengthDivisibleByN % nElementsInVec != 0) patternLengthDivisibleByN++;
-
     ScoreType * temp = (ScoreType*)_mm_malloc(nElementsInVec*sizeof(ScoreType),16);
     for (int pp = 0; pp < nElementsInVec; pp++) temp[pp] = 0;
 

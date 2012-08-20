@@ -124,9 +124,9 @@ void SWAlgorithmTask::setupTask(int maxScore) {
             assert(0);
     }
 
-    partsNumber = static_cast<int>(sWatermanConfig.sqnc.size() / (computationMatrixSquare / sWatermanConfig.ptrn.size()) + 1.0);
+    partsNumber = static_cast<qint64>(sWatermanConfig.sqnc.size() / (computationMatrixSquare / sWatermanConfig.ptrn.size()) + 1.0);
     if(partsNumber < c.nThreads) {
-        partsNumber = c.nThreads;
+        c.nThreads = partsNumber;
     }
 
     c.chunkSize = (c.seqSize + overlapSize * (partsNumber - 1)) / partsNumber;
