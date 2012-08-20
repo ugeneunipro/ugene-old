@@ -202,7 +202,9 @@ void OpenAnnotatedDNAViewTask::open() {
         }
     }
     if (seqObjects.isEmpty()) { //object was removed asynchronously with the task
-        stateInfo.setError(tr("No sequence objects found"));
+        if(0 == stateInfo.cancelFlag) {
+            stateInfo.setError(tr("No sequence objects found"));
+        }
         return;
     }
     QString viewName = deriveViewName(seqObjects);
