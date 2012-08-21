@@ -267,6 +267,7 @@ static void deallocateDbiResources(GObject* obj, DbiConnection &con, U2OpStatus 
         U2DbiRef dbiRef = objRef.dbiRef;
 
         if (dbiRef.isValid()) {
+            assert(NULL != con.dbi);
             con.dbi->getObjectDbi()->removeObject(objRef.entityId, os);
         }
     }

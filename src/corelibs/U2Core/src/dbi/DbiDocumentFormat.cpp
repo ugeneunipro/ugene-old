@@ -76,32 +76,30 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
     QList<GObject*> objects;
     U2EntityRef ref;
     ref.dbiRef = srcDbiRef;
+
+    U2DbiRef documentRef;
+
     foreach(U2DataId id, objectIds) {
         U2DataType objectType = handle.dbi->getEntityTypeById(id);
-        switch (objectType) {
-            case U2Type::Assembly:
-                {
-                    ref.entityId = id;
-                    U2OpStatusImpl status;
-                    QString name = handle.dbi->getAssemblyDbi()->getAssemblyObject(id, status).visualName;
-                    if(status.hasError()) {
-                        coreLog.error(status.getError());
-                        break;
-                    }
-                    if (name.isEmpty()) {
-                        assert(false);
-                        name = "Assembly";
-                    }
-                    objects.append(new AssemblyObject(ref, name, QVariantMap()));
-                    break;
-                }
-            default: // do nothing
-                break;
+        if(U2Type::Assembly == objectType) {
+            ref.entityId = id;
+            U2OpStatusImpl status;
+            QString name = handle.dbi->getAssemblyDbi()->getAssemblyObject(id, status).visualName;
+            if(status.hasError()) {
+                coreLog.error(status.getError());
+                continue;
+            }
+            if (name.isEmpty()) {
+                assert(false);
+                name = "Assembly";
+            }
+            objects.append(new AssemblyObject(ref, name, QVariantMap()));
+            documentRef = srcDbiRef;
         }
     }
     renameObjectsIfNamesEqual(objects);
     
-    Document* d = new Document(this, io->getFactory(), io->getURL(), U2DbiRef(), objects, fs);
+    Document* d = new Document(this, io->getFactory(), io->getURL(), documentRef, objects, fs);
     return d;
 }
 
