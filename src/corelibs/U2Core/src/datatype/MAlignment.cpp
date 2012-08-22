@@ -265,12 +265,12 @@ void MAlignmentRow::insertChars(int pos, const char* str, int len) {
 // Removes up to n characters starting from the specified position
 void MAlignmentRow::removeChars(int pos, int n) {
     int coreEnd = getCoreEnd();
-    assert(pos >=0 && n>=0 && pos + n <= coreEnd);
+    assert(pos >= 0 && n >= 0);
     if (pos >= coreEnd) {  //out of the sequence range -> nothing to do
         //empty
     } else if (pos + n < offset) {  // before the sequence -> reduce offset
         offset-=n;
-    } else if (pos  < offset) { //left clip
+    } else if (pos < offset) { //left clip
         offset = 0;
         int dLen = n - offset;
         sequence = sequence.mid(dLen);
