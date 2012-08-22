@@ -240,7 +240,10 @@ void U2SequenceObject::setCircular(bool isCircular) {
     U2OpStatus2Log os;
     DbiConnection con(entityRef.dbiRef, os);
     CHECK_OP(os, );
-    con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os).circular = isCircular;
+    U2Sequence u2seq = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os);
+    CHECK_OP(os, );
+    u2seq.circular = isCircular;
+    con.dbi->getSequenceDbi()->updateSequenceObject(u2seq,os);
     CHECK_OP(os, );
     cachedCircular = newVal;
 
