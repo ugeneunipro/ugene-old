@@ -75,6 +75,7 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
     
     updateAvailableEnzymeWidget();
     seqNameLabel->setText(dnaObj->getGObjectName());
+    circularBox->setChecked(dnaObj->isCircular());
 
     QList<Task*> topLevelTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
     foreach(Task* t, topLevelTasks) {
@@ -141,6 +142,7 @@ void DigestSequenceDialog::accept()
 
     DigestSequenceTaskConfig cfg;
     cfg.enzymeData = resultEnzymes;
+    cfg.forceCircular = circularBox->isChecked();
 
     int itemCount = conservedAnnsWidget->count();
     for (int row = 0; row < itemCount; ++row ) {

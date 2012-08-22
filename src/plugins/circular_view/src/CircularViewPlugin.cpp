@@ -213,7 +213,7 @@ void CircularViewContext::sl_showCircular() {
         CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), true);
         a->view = new CircularView(sw, sw->getSequenceContext());
         a->rmapWidget=new RestrctionMapWidget(sw->getSequenceContext(),splitter);
-        
+        sw->getSequenceObject()->setCircular(true);
         splitter->addView(a->view,a->rmapWidget);
         sw->getAnnotatedDNAView()->insertWidgetIntoSplitter(splitter);
         splitter->adaptSize();
@@ -228,6 +228,7 @@ void CircularViewContext::sl_showCircular() {
             if(splitter->isEmpty()) {
                 removeCircularView(sw->getAnnotatedDNAView());
             }
+            sw->getSequenceObject()->setCircular(false);
         }
         a->view = NULL;
     }

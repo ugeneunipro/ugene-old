@@ -246,6 +246,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="circularBox">
+     <property name="toolTip">
+      <string>Use this option to treat the molecule as circular</string>
+     </property>
+     <property name="text">
+      <string>Circular molecule</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="hintLabel">
      <property name="text">
       <string>&lt;hint label&gt;</string>

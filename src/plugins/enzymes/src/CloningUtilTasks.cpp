@@ -80,7 +80,7 @@ DigestSequenceTask::DigestSequenceTask( U2SequenceObject* so, AnnotationTableObj
 
 void DigestSequenceTask::prepare() {
     seqRange = U2Region(0, dnaObj->getSequenceLength());
-    isCircular = dnaObj->isCircular();
+    isCircular = dnaObj->isCircular() || cfg.forceCircular;
     
     if (cfg.searchForRestrictionSites) {
         assert(sourceObj == destObj);

@@ -43,10 +43,11 @@ namespace U2 {
 class U2SequenceObject;
 
 struct DigestSequenceTaskConfig {
-    DigestSequenceTaskConfig() : searchForRestrictionSites(false) {}
+    DigestSequenceTaskConfig() : searchForRestrictionSites(false), forceCircular(false) {}
     QMap<QString,U2Region> conservedRegions;
     QList<SEnzymeData> enzymeData;
     bool searchForRestrictionSites;
+    bool forceCircular;
 };
 
 struct GenomicPosition {

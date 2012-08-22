@@ -230,8 +230,21 @@ GObject* U2SequenceObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os) const {
     return res;
 }
 
-void U2SequenceObject::setCircular(bool) {
-    //TODO:
+void U2SequenceObject::setCircular(bool isCircular) {
+
+    TriState newVal = isCircular ? TriState_Yes : TriState_No;
+    if ( newVal == cachedCircular ) {
+        return;
+    }
+
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+    con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os).circular = isCircular;
+    CHECK_OP(os, );
+    cachedCircular = newVal;
+
+
 }
 
 void U2SequenceObject::setQuality(const DNAQuality& q) {
