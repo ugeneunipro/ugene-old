@@ -609,8 +609,9 @@ void MAlignment::removeChars(int row, int pos, int n) {
     MAlignmentRow& r = rows[row];
     bool lengthHolder = length == r.getCoreEnd();
     r.removeChars(pos, n);
+    trim();
     if (lengthHolder) {
-        length = qMax(length - n, calculateMinLength());
+        length = calculateMinLength();
     }
 }
 
@@ -625,8 +626,9 @@ void MAlignment::removeChars(int row, const QList<int>& columns) {
     MAlignmentRow& r = rows[row];
     bool lengthHolder = length == r.getCoreEnd();
     r.removeChars(columns);
+    trim();
     if (lengthHolder) {
-        length = qMax(length - n, calculateMinLength());
+        length = calculateMinLength();
     }
 }
 
@@ -650,7 +652,7 @@ void MAlignment::removeRegion(int startPos, int startRow, int nBases, int nRows,
     trim();
 
     if (lengthHolder) {
-        length = qMax(length - nBases, calculateMinLength());
+        length = calculateMinLength();
     }
 }
 

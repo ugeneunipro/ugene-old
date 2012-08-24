@@ -373,7 +373,7 @@ bool MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int 
         }
         int endRow = startRow + nRows;
         for (int row = startRow; row < endRow; ++row) {
-            n += deleteGap(row, startPos + shift, qAbs(shift));
+            n += deleteGap(row, startPos + shift, ~shift + 1 /*equivalent to shift * (-1)*/);
         }
     }    
 
