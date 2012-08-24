@@ -41,8 +41,6 @@ public:
 	bool hasError() {return isError;}
 private:
     bool hasOPENCLError(cl_int err, QString errorMessage);
-//     void initMiniHaystack(const NumberType* haystack, int lowerBound, int upperBound,
-//                              NumberType* miniHaystackOffsets, NumberType* miniHaystack, const int miniHaystackSize);
 	void logProfilingInfo(const OpenCLHelper &openCLHelper, const cl_event &event, const QString &msgPrefix);
     
 	bool isError;

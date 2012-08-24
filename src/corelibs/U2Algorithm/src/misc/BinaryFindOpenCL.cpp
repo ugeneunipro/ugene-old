@@ -72,33 +72,7 @@ NumberType* BinaryFindOpenCL::launch() {
 
     cl_int err = CL_SUCCESS;
 
-// 	int miniHaystackSize = haystackSize / 1024 + 1;
-// 	if(1 == miniHaystackSize) {
-// 		miniHaystackSize = 2;
-// 	} else if(miniHaystackSize > 1024) {
-// 		miniHaystackSize = 1024;
-// 	}
-// 
-//     NumberType* miniHaystackOffsets = new NumberType[miniHaystackSize];
-//     gauto_array<NumberType> miniHaystackOffsetsPtr(miniHaystackOffsets);
-// 
-//     NumberType* miniHaystack = new NumberType[miniHaystackSize];
-//     gauto_array<NumberType> miniHaystackPtr(miniHaystack);
-// 
-//     initMiniHaystack(haystack, lowerBound, upperBound, miniHaystackOffsets, miniHaystack, miniHaystackSize);
-// 	algoLog.details(QString("miniHaystack: %1").arg(numArrToStr(miniHaystack, miniHaystackSize, true)));
-// 	algoLog.details(QString("miniHaystackOffsets: %1").arg(numArrToStr(miniHaystackOffsets, miniHaystackSize)));
-
 	// the number of needles a particular kernel execution should search for
-	int workItemSize = 20000;
-	if (needlesSize < workItemSize) {
-		workItemSize = needlesSize;
-	}
-
-// 	binarySearch_classic((NumberType*)haystack, (NumberType*)needles, needlesSize, workItemSize,
-// 		(NumberType*)miniHaystackOffsets, (NumberType*)miniHaystack, miniHaystackSize, filter);
-// 	return (NumberType*)needles;
-
     const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
     if (!openCLHelper.isLoaded()) {
         coreLog.error(openCLHelper.getErrorString());
@@ -127,19 +101,17 @@ NumberType* BinaryFindOpenCL::launch() {
 
 	// if the global work size is greater than the device's preferred workgroup size (PWS), round it up to a multiple
 	// of PWS to ensure that work groups of exactly that size are created by OpenCL impl
-	size_t globalWorkSize = (size_t)ceil((double)needlesSize / workItemSize);
-	if(globalWorkSize > preferredWorkGroupSize) {
-		globalWorkSize = (size_t)ceil((double)globalWorkSize / preferredWorkGroupSize) * preferredWorkGroupSize;
-	}
+	size_t globalWorkSize = (size_t)ceil((double)needlesSize/ preferredWorkGroupSize) * preferredWorkGroupSize;
+
 	algoLog.details(QString("needles: %1, haystack size: %2").arg(needlesSize).arg(haystackSize));
-	algoLog.details(QString("global work size = %1, work item size = %2").arg(globalWorkSize).arg(workItemSize));
+	algoLog.details(QString("global work size = %1").arg(globalWorkSize));
 
     buf_needlesArray = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
                                              sizeof(NumberType) * needlesSize, (void*)needles, &err);
     if (hasOPENCLError(err, "clCreateBuffer(buf_needlesArray)")) return 0;
     usageGPUMem += sizeof(NumberType) * needlesSize;
 
-    const int outputArraySize = needlesSize;
+    const int outputArraySize = (int)needlesSize;
 
 	buf_windowSizesArray = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
 		sizeof(cl_int) * needlesSize, (void*)windowSizes, &err);
@@ -150,16 +122,6 @@ NumberType* BinaryFindOpenCL::launch() {
                                              sizeof(NumberType) * haystackSize, (void*)haystack, &err);
     if (hasOPENCLError(err, "clCreateBuffer (buf_sortedHaystackArray)")) return 0;
     usageGPUConstantMem += sizeof(NumberType) * haystackSize;
-
-//     buf_miniHaystackOffsets = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-//                                              sizeof(NumberType) * miniHaystackSize, (void*)miniHaystackOffsets, &err);
-//     if (hasOPENCLError(err, "clCreateBuffer (buf_miniHaystackOffsets)")) return 0;
-//     usageGPUConstantMem += sizeof(NumberType) * miniHaystackSize;
-// 
-//     buf_miniHaystack = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-//                                              sizeof(NumberType) * miniHaystackSize, (void*)miniHaystack, &err);
-//     if (hasOPENCLError(err, "clCreateBuffer (buf_miniHaystack)")) return 0;
-//     usageGPUConstantMem += sizeof(NumberType) * miniHaystackSize;
 
     cl_uint kernelArgNum = 0;
 
@@ -178,18 +140,6 @@ NumberType* BinaryFindOpenCL::launch() {
 	err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_mem), (void*)&buf_windowSizesArray);
 	if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
 
-    err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_int), (void*)&workItemSize);
-    if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
-
-//     err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_mem), (void*)&buf_miniHaystackOffsets);
-//     if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
-// 
-//     err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_mem), (void*)&buf_miniHaystack);
-//     if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
-// 
-//     err = openCLHelper.clSetKernelArg_p(clKernel, kernelArgNum++, sizeof(cl_int), (void*)&miniHaystackSize);
-//     if (hasOPENCLError(err, QString("clSetKernelArg argNum: %1").arg(kernelArgNum))) return 0;
-
 	// try creating a queue with profiling enabled if that's possible and without if not
     clCommandQueue = openCLHelper.clCreateCommandQueue_p(clContext, deviceId, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE | CL_QUEUE_PROFILING_ENABLE, &err);
 	if(CL_INVALID_QUEUE_PROPERTIES == err) {
@@ -203,7 +153,7 @@ NumberType* BinaryFindOpenCL::launch() {
                     1,
                     NULL,
                     &globalWorkSize,
-                    NULL,//&preferredWorkGroupSize,
+                    NULL,
                     0,
                     NULL,
                     &clEvent1);
@@ -237,27 +187,6 @@ NumberType* BinaryFindOpenCL::launch() {
 
     return outputArray;
 }
-
-// void BinaryFindOpenCL::initMiniHaystack(const NumberType* arr, int lowerBound, int upperBound,
-//                          NumberType* miniHaystackOffsets, NumberType* miniHaystack, const int miniHaystackSize) {
-//  
-// 	int lastIdx = miniHaystackSize - 1;
-//     if (miniHaystackSize > 1) {
-//         const int step = (upperBound - lowerBound)  / (lastIdx);
-//         for (int i = 1; i < lastIdx; i++) {
-//             miniHaystackOffsets[i] = step * i;
-// 			assert(miniHaystackOffsets[i] < haystackSize);
-//             miniHaystack[i] = arr[miniHaystackOffsets[i]];
-//         }
-//     }
-//     miniHaystackOffsets[0] = lowerBound;
-// 	assert(miniHaystackOffsets[0] < haystackSize);
-//     miniHaystack[0] = arr[miniHaystackOffsets[0]];
-// 
-//     miniHaystackOffsets[lastIdx] = upperBound - 1;
-// 	assert(miniHaystackOffsets[lastIdx] < haystackSize);
-//     miniHaystack[lastIdx] = arr[miniHaystackOffsets[lastIdx]];
-// }
 
 BinaryFindOpenCL::~BinaryFindOpenCL() {
     algoLog.details(QObject::tr("clear OpenCL resources"));
@@ -296,14 +225,6 @@ BinaryFindOpenCL::~BinaryFindOpenCL() {
         err = openCLHelper.clReleaseMemObject_p(buf_outPutArray);
         hasOPENCLError(err, "clReleaseMemObject(buf_outPutArray) failed");
     }
-//     if (buf_miniHaystackOffsets) {
-//         err = openCLHelper.clReleaseMemObject_p(buf_miniHaystackOffsets);
-//         hasOPENCLError(err, "clReleaseMemObject(buf_miniHaystackOffsets) failed");
-//     }
-//     if (buf_miniHaystack) {
-//         err = openCLHelper.clReleaseMemObject_p(buf_miniHaystack);
-//         hasOPENCLError(err, "clReleaseMemObject(buf_miniHaystack) failed");
-//     }
 
 	if (clEvent1) {
 		err = openCLHelper.clReleaseEvent_p (clEvent1);
@@ -336,8 +257,6 @@ BinaryFindOpenCL::BinaryFindOpenCL(const NumberType *_haystack,
     buf_needlesArray = 0;
 	buf_windowSizesArray = 0;
     buf_outPutArray = 0;
-//     buf_miniHaystackOffsets = 0;
-//     buf_miniHaystack = 0;
 }
 
 bool BinaryFindOpenCL::hasOPENCLError(int err, QString errorMessage) {
