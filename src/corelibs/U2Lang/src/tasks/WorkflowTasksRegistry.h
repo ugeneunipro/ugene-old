@@ -19,34 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WORKFLOW_ENVIMPL_H_
-#define _U2_WORKFLOW_ENVIMPL_H_
+#ifndef _U2_WORKFLOW_TASKS_REGISTRY_
+#define _U2_WORKFLOW_TASKS_REGISTRY_
 
-#include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/ReadDocumentTaskFactory.h>
 
 namespace U2 {
-
 namespace Workflow {
 
-/**
- * Workflow environment container implementation
- */
-class U2LANG_EXPORT WorkflowEnvImpl : public WorkflowEnv {
-protected:
-    virtual ~WorkflowEnvImpl();
-    
-    virtual DataTypeRegistry* initDataRegistry();
-    virtual ActorPrototypeRegistry* initProtoRegistry();
-    virtual DomainFactoryRegistry* initDomainRegistry();
-    virtual DataTypeValueFactoryRegistry* initDataTypeValueFactoryRegistry();
-    virtual ExternalToolCfgRegistry* initExternalToolCfgRegistry();
-    virtual SchemaActorsRegistry *initSchemaActorsRegistry();
-    virtual WorkflowTasksRegistry *initWorkflowTasksRegistry();
-    
-}; // WorkflowEnvImpl
+class U2LANG_EXPORT WorkflowTasksRegistry {
+public:
+    WorkflowTasksRegistry();
+    ~WorkflowTasksRegistry();
 
-} //namespace Workflow
+    void registerReadDocumentTaskFactory(ReadDocumentTaskFactory *factory);
+    ReadDocumentTaskFactory *getReadDocumentTaskFactory(const QString &id);
 
-} //namespace U2
+private:
+    QMap<QString, ReadDocumentTaskFactory*> readTasks;
+};
 
-#endif
+} // Workflow
+} // U2
+
+#endif // _U2_WORKFLOW_TASKS_REGISTRY_

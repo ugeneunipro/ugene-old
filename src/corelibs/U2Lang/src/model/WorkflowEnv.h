@@ -36,6 +36,7 @@ namespace Workflow {
 
 class DomainFactoryRegistry;
 class ActorPrototypeRegistry;
+class WorkflowTasksRegistry;
 
 /**
  * base class for workflow environment
@@ -55,6 +56,7 @@ public:
     static DataTypeValueFactoryRegistry* getDataTypeValueFactoryRegistry() { return getInstance()->dvfReg; }
     static ExternalToolCfgRegistry* getExternalCfgRegistry() {return getInstance()->ecfgReg;}
     static SchemaActorsRegistry *getSchemaActorsRegistry() {return getInstance()->schemaActorsReg;}
+    static WorkflowTasksRegistry *getWorkflowTasksRegistry() {return getInstance()->workflowTasksRegistry;}
     
 protected:
     static WorkflowEnv* instance;
@@ -70,6 +72,7 @@ protected:
     virtual DataTypeValueFactoryRegistry* initDataTypeValueFactoryRegistry() = 0;
     virtual ExternalToolCfgRegistry* initExternalToolCfgRegistry() = 0;
     virtual SchemaActorsRegistry *initSchemaActorsRegistry() = 0;
+    virtual WorkflowTasksRegistry *initWorkflowTasksRegistry() = 0;
     
 protected:
     DataTypeRegistry* data;
@@ -78,6 +81,7 @@ protected:
     DataTypeValueFactoryRegistry* dvfReg;
     ExternalToolCfgRegistry *ecfgReg;
     SchemaActorsRegistry *schemaActorsReg;
+    WorkflowTasksRegistry *workflowTasksRegistry;
     
 }; // WorkflowEnv
 

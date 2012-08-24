@@ -19,34 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WORKFLOW_ENVIMPL_H_
-#define _U2_WORKFLOW_ENVIMPL_H_
+#include <U2Core/U2SafePoints.h>
 
-#include <U2Lang/WorkflowEnv.h>
+#include "WorkflowTasksRegistry.h"
 
 namespace U2 {
-
 namespace Workflow {
 
-/**
- * Workflow environment container implementation
- */
-class U2LANG_EXPORT WorkflowEnvImpl : public WorkflowEnv {
-protected:
-    virtual ~WorkflowEnvImpl();
-    
-    virtual DataTypeRegistry* initDataRegistry();
-    virtual ActorPrototypeRegistry* initProtoRegistry();
-    virtual DomainFactoryRegistry* initDomainRegistry();
-    virtual DataTypeValueFactoryRegistry* initDataTypeValueFactoryRegistry();
-    virtual ExternalToolCfgRegistry* initExternalToolCfgRegistry();
-    virtual SchemaActorsRegistry *initSchemaActorsRegistry();
-    virtual WorkflowTasksRegistry *initWorkflowTasksRegistry();
-    
-}; // WorkflowEnvImpl
+WorkflowTasksRegistry::WorkflowTasksRegistry() {
 
-} //namespace Workflow
+}
 
-} //namespace U2
+WorkflowTasksRegistry::~WorkflowTasksRegistry() {
+    foreach (const QString &id, readTasks.keys()) {
+        ReadDocumentTaskFactory *factory = readTasks.value(id);
+        delete factory;
+    }
+    readTasks.clear();
+}
 
-#endif
+void WorkflowTasksRegistry::registerReadDocumentTaskFactory(ReadDocumentTaskFactory *factory) {
+    SAFE_POINT(NULL != factory, "NULL ReadDocumentTaskFactory", );
+    SAFE_POINT(!readTasks.contains(factory->getId()),
+        QString("Double ReadDocumentTaskFactory registering: %1").arg(factory->getId()), );
+
+    readTasks[factory->getId()] = factory;
+}
+
+ReadDocumentTaskFactory *WorkflowTasksRegistry::getReadDocumentTaskFactory(const QString &id) {
+    return readTasks.value(id, NULL);
+}
+
+} // Workflow
+} // U2
+

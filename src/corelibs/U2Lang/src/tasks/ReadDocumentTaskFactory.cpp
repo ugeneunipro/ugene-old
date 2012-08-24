@@ -19,34 +19,47 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WORKFLOW_ENVIMPL_H_
-#define _U2_WORKFLOW_ENVIMPL_H_
-
-#include <U2Lang/WorkflowEnv.h>
+#include "ReadDocumentTaskFactory.h"
 
 namespace U2 {
-
 namespace Workflow {
 
-/**
- * Workflow environment container implementation
- */
-class U2LANG_EXPORT WorkflowEnvImpl : public WorkflowEnv {
-protected:
-    virtual ~WorkflowEnvImpl();
-    
-    virtual DataTypeRegistry* initDataRegistry();
-    virtual ActorPrototypeRegistry* initProtoRegistry();
-    virtual DomainFactoryRegistry* initDomainRegistry();
-    virtual DataTypeValueFactoryRegistry* initDataTypeValueFactoryRegistry();
-    virtual ExternalToolCfgRegistry* initExternalToolCfgRegistry();
-    virtual SchemaActorsRegistry *initSchemaActorsRegistry();
-    virtual WorkflowTasksRegistry *initWorkflowTasksRegistry();
-    
-}; // WorkflowEnvImpl
+const QString ReadFactories::READ_ASSEMBLY("read-assembly-task-factory");
 
-} //namespace Workflow
+ReadDocumentTask::ReadDocumentTask(const QString &_url, const QString &name, TaskFlags f)
+: Task(name, f), url(_url)
+{
 
-} //namespace U2
+}
 
-#endif
+ReadDocumentTask::~ReadDocumentTask() {
+    result.clear();
+}
+
+QList<SharedDbiDataHandler> ReadDocumentTask::takeResult() {
+    QList<SharedDbiDataHandler> ret = result;
+    result.clear();
+
+    return ret;
+}
+
+QString ReadDocumentTask::getUrl() const {
+    return url;
+}
+
+ReadDocumentTaskFactory::ReadDocumentTaskFactory(const QString &_id)
+: id(_id)
+{
+
+}
+
+ReadDocumentTaskFactory::~ReadDocumentTaskFactory() {
+
+}
+
+QString ReadDocumentTaskFactory::getId() const {
+    return id;
+}
+
+} // Workflow
+} // U2

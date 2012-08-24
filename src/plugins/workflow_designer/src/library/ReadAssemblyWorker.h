@@ -55,40 +55,6 @@ public:
 
 }; // ReadAssemblyWorkerFactory
 
-class ConvertToIndexedBamTask : public Task {
-public:
-    ConvertToIndexedBamTask(const DocumentFormatId &formatId, const GUrl &url, WorkflowContext *ctx);
-
-    virtual void run();
-    GUrl getResultUrl() const;
-
-private:
-    DocumentFormatId formatId;
-    GUrl url;
-    GUrl result;
-    WorkflowContext *ctx;
-};
-
-class ReadAssemblyTask : public Task {
-    Q_OBJECT
-public:
-    ReadAssemblyTask(const QString &url, WorkflowContext *ctx);
-    virtual void prepare();
-    virtual void run();
-    virtual QList<Task*> onSubTaskFinished(Task *subTask);
-
-    QList<QVariantMap> results;
-
-private:
-    QString url;
-    WorkflowContext *ctx;
-    DocumentFormat *format;
-    Document *doc;
-
-    ConvertToIndexedBamTask *convertTask;
-    DocumentProviderTask *importTask;
-};
-
 } // LocalWorkflow
 } // U2
 

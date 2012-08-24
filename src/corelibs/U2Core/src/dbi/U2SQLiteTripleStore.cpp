@@ -234,12 +234,11 @@ QString U2SQLiteTripleStore::getValue(const QString &key, const QString &role, U
     q.bindString(1, key);
     q.bindString(2, role);
 
-    if (q.step()) {
-        QString result = q.getString(0);
-        q.ensureDone();
-        return result;
+    QStringList results;
+    while (q.step()) {
+        results << q.getString(0);
     }
-    return "";
+    return results.isEmpty() ? "" : results.last();
 }
 
 qint64 U2SQLiteTripleStore::getTripletId(const Triplet &triplet, bool &found, U2OpStatus &os) const {

@@ -24,6 +24,7 @@
 #include "WorkflowDocument.h"
 #include "WorkflowSettingsController.h"
 #include "WorkflowSamples.h"
+#include "tasks/ReadAssemblyTask.h"
 
 #include "library/CoreLib.h"
 #include "library/IncludedProtoFactoryImpl.h"
@@ -32,6 +33,7 @@
 
 #include <U2Lang/IncludedProtoFactory.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowTasksRegistry.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
@@ -97,6 +99,8 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
     registerCMDLineHelp();
     processCMDLineOptions();  
     Workflow::CoreLib::initIncludedWorkers();
+    ReadDocumentTaskFactory *factory = new ReadAssemblyTaskFactory();
+    WorkflowEnv::getWorkflowTasksRegistry()->registerReadDocumentTaskFactory(factory);
 }
 
 void WorkflowDesignerPlugin::processCMDLineOptions() {

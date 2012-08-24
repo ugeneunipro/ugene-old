@@ -57,6 +57,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/Text2SequenceWorker.h \
            src/library/WriteAssemblyWorkers.h \
            src/library/WriteVariationWorker.h \
+           src/tasks/ReadAssemblyTask.h \
            src/util/GrouperActionUtils.h \
            src/util/SaveSchemaImageUtils.h
 FORMS += src/ui/ChooseItemDialog.ui \
@@ -126,6 +127,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/Text2SequenceWorker.cpp \
            src/library/WriteAssemblyWorkers.cpp \
            src/library/WriteVariationWorker.cpp \
+           src/tasks/ReadAssemblyTask.cpp \
            src/util/GrouperActionUtils.cpp \
            src/util/SaveSchemaImageUtils.cpp
 RESOURCES += workflow_designer.qrc

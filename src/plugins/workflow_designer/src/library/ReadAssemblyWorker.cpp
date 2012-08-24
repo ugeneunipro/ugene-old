@@ -44,7 +44,9 @@
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
+#include <U2Lang/ReadDocumentTaskFactory.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowTasksRegistry.h>
 
 #include "DocActors.h"
 
@@ -72,209 +74,27 @@ void ReadAssemblyWorker::init() {
 }
 
 Task *ReadAssemblyWorker::createReadTask(const QString &url) {
-    return new ReadAssemblyTask(url, context);
+    WorkflowTasksRegistry *registry = WorkflowEnv::getWorkflowTasksRegistry();
+    SAFE_POINT(NULL != registry, "NULL WorkflowTasksRegistry", NULL);
+    ReadDocumentTaskFactory *factory = registry->getReadDocumentTaskFactory(ReadFactories::READ_ASSEMBLY);
+    SAFE_POINT(NULL != factory, QString("NULL WorkflowTasksRegistry: %1").arg(ReadFactories::READ_ASSEMBLY), NULL);
+
+    return factory->createTask(url, QVariantMap(), context);
 }
 
 void ReadAssemblyWorker::sl_taskFinished() {
-    ReadAssemblyTask *t = qobject_cast<ReadAssemblyTask*>(sender());
+    ReadDocumentTask *t = qobject_cast<ReadDocumentTask*>(sender());
     if (!t->isFinished() || t->hasError()) {
         return;
     }
-    foreach(const QVariantMap &m, t->results) {
-        cache.append(Message(mtype, m));
-    }
-    t->results.clear();
-}
-
-/************************************************************************/
-/* Task */
-/************************************************************************/
-ConvertToIndexedBamTask::ConvertToIndexedBamTask(const DocumentFormatId &_formatId, const GUrl &_url, WorkflowContext *_ctx)
-: Task("Convert assembly file to sorted BAM", TaskFlag_None), formatId(_formatId), url(_url), ctx(_ctx)
-{
-
-}
-
-void ConvertToIndexedBamTask::run() {
-    AppFileStorage *fileStorage = AppContext::getAppFileStorage();
-    CHECK_EXT(NULL != fileStorage, stateInfo.setError("NULL file storage"), );
-
-    QString cashedSortedBam = FileStorageUtils::getSortedBamUrl(url.getURLString(), ctx->getWorkflowProcess());
-    if (!cashedSortedBam.isEmpty()) {
-        result = cashedSortedBam;
-        return;
-    }
-
-    GUrl bamUrl = url;
-    if (BaseDocumentFormats::SAM == formatId) {
-        QString bam = FileStorageUtils::getSamToBamConvertInfo(url.getURLString(), ctx->getWorkflowProcess());
-        if (bam.isEmpty()) {
-            QString dir = fileStorage->createDirectory();
-            bamUrl = dir + "/" + url.fileName() + ".bam";
-            BAMUtils::convertSamToBam(url, bamUrl, stateInfo);
-            CHECK_OP(stateInfo, );
-
-            FileStorageUtils::addSamToBamConvertInfo(url.getURLString(), bamUrl.getURLString(), ctx->getWorkflowProcess());
-        } else {
-            bamUrl = bam;
-        }
-    } else {
-        CHECK_EXT(BaseDocumentFormats::BAM == formatId, setError("Only BAM/SAM files could be converted"), );
-    }
-
-    bool sorted = BAMUtils::isSortedBam(bamUrl, stateInfo);
-    CHECK_OP(stateInfo, );
-
-    GUrl sortedBamUrl = bamUrl;
-    if (!sorted) {
-        QString dir = fileStorage->createDirectory();
-        QString baseName;
-        if (dir.isEmpty()) {
-            baseName = bamUrl.getURLString();
-        } else {
-            baseName = dir + "/" + bamUrl.fileName();
-        }
-        baseName +=  ".sorted";
-        sortedBamUrl = BAMUtils::sortBam(bamUrl, baseName, stateInfo);
-        CHECK_OP(stateInfo, );
-    }
-
-    bool indexed = sorted && BAMUtils::hasValidBamIndex(sortedBamUrl);
-    if (!indexed) {
-        BAMUtils::createBamIndex(sortedBamUrl, stateInfo);
-        CHECK_OP(stateInfo, );
-    }
-
-    // if the file was sorted then it is needed to be saved in the file storage
-    if (!sorted) {
-        FileStorageUtils::addSortedBamUrl(bamUrl.getURLString(), sortedBamUrl.getURLString(), ctx->getWorkflowProcess());
-    }
-    result = sortedBamUrl;
-}
-
-GUrl ConvertToIndexedBamTask::getResultUrl() const {
-    return result;
-}
-
-ReadAssemblyTask::ReadAssemblyTask(const QString &_url, WorkflowContext *_ctx)
-: Task(tr("Read assembly from %1").arg(_url), TaskFlag_None),
-url(_url), ctx(_ctx), format(NULL), doc(NULL), convertTask(NULL), importTask(NULL)
-{
-
-}
-
-static bool isConvertingFormat(const DocumentFormatId &formatId) {
-    return (BaseDocumentFormats::SAM == formatId || BaseDocumentFormats::BAM == formatId);
-}
-
-void ReadAssemblyTask::prepare() {
-    QFileInfo fi(url);
-    if(!fi.exists()){
-        stateInfo.setError(tr("File '%1' not exists").arg(url));
-        return;
-    }
-
-    FormatDetectionConfig conf;
-    conf.useImporters = true;
-    conf.excludeHiddenFormats = false;
-    QList<FormatDetectionResult> fs = DocumentUtils::detectFormat(url, conf);
-
-    foreach (const FormatDetectionResult &f, fs) {
-        if (NULL != f.format) {
-            if (isConvertingFormat(f.format->getFormatId())) {
-                convertTask = new ConvertToIndexedBamTask(f.format->getFormatId(), url, ctx);
-                addSubTask(convertTask);
-                return;
-            }
-
-            const QSet<GObjectType> &types = f.format->getSupportedObjectTypes();
-            if (types.contains(GObjectTypes::ASSEMBLY)) {
-                format = f.format;
-                break;
-            }
-        } else if (NULL != f.importer) {
-            U2OpStatusImpl os;
-            U2DbiRef dbiRef = ctx->getDataStorage()->createTmpDbi(os);
-            SAFE_POINT_OP(os, );
-
-            QVariantMap hints;
-            hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
-            importTask = f.importer->createImportTask(f, false, hints);
-            addSubTask(importTask);
-            return;
-        }
-    }
-
-    if (format == NULL) {
-        stateInfo.setError(tr("Unsupported document format"));
-        return;
-    }
-}
-
-QList<Task*> ReadAssemblyTask::onSubTaskFinished(Task *subTask) {
-    QList<Task*> result;
-    CHECK(NULL != subTask, result);
-    CHECK(!subTask->hasError(), result);
-
-    if (importTask == subTask) {
-        doc = importTask->takeDocument(false);
-    } else if (convertTask == subTask) {
-        url = convertTask->getResultUrl().getURLString();
-        format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::BAM);
-    }
-    return result;
-}
-
-void ReadAssemblyTask::run() {
-    if (NULL == format && NULL == doc) {
-        return;
-    }
-
-    std::auto_ptr<Document> docPtr(NULL);
-    bool useGC = true;
-    if (NULL == doc) {
-        useGC = false;
-        ioLog.info(tr("Reading assembly from %1 [%2]").arg(url).arg(format->getFormatName()));
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-        QVariantMap hints;
-        {
-            // TODO: fix this hardcoded DBI id recognition
-            U2DbiFactoryId fId;
-            if (BaseDocumentFormats::UGENEDB == format->getFormatId()) {
-                fId = DEFAULT_DBI_ID;
-            } else if (BaseDocumentFormats::BAM == format->getFormatId()) {
-                SAFE_POINT(NULL != convertTask, "Internal error! Converting stage is missed", );
-                fId = BAM_DBI_ID;
-            }
-            U2DbiFactory *dbiFactory = AppContext::getDbiRegistry()->getDbiFactoryById(fId);
-            SAFE_POINT(NULL != dbiFactory, QString("Unknown dbi factory id: %").arg(fId), );
-
-            U2OpStatusImpl os;
-            U2DbiRef dbiRef(dbiFactory->getId(), U2DataId(url.toAscii()));
-            ctx->getDataStorage()->openDbi(dbiRef, os);
-            CHECK_OP(os, );
-
-            hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
-        }
-        docPtr.reset(format->loadDocument(iof, url, hints, stateInfo));
-        CHECK_OP(stateInfo, );
-    } else {
-        useGC = true;
-        docPtr.reset(doc);
-        doc = NULL;
-    }
-    CHECK(NULL != docPtr.get(), );
-    docPtr->setDocumentOwnsDbiResources(false);
-
-    foreach(GObject* go, docPtr->findGObjectByType(GObjectTypes::ASSEMBLY)) {
-        AssemblyObject *assemblyObj = dynamic_cast<AssemblyObject*>(go);
-        CHECK_EXT(NULL != assemblyObj, taskLog.error(tr("Incorrect assembly object in %1").arg(url)), );
-
+    QList<SharedDbiDataHandler> result = t->takeResult();
+    QString url = t->getUrl();
+    foreach(const SharedDbiDataHandler &handler, result) {
         QVariantMap m;
         m.insert(BaseSlots::URL_SLOT().getId(), url);
-        SharedDbiDataHandler handler = ctx->getDataStorage()->getDataHandler(assemblyObj->getEntityRef(), useGC);
         m.insert(BaseSlots::ASSEMBLY_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
-        results.append(m);
+
+        cache.append(Message(mtype, m));
     }
 }
 

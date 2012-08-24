@@ -27,6 +27,7 @@
 #include <U2Lang/Schema.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/BaseTypes.h>
+#include <U2Lang/WorkflowTasksRegistry.h>
 
 namespace U2 {
 namespace Workflow {
@@ -76,6 +77,11 @@ ExternalToolCfgRegistry* WorkflowEnvImpl::initExternalToolCfgRegistry() {
 SchemaActorsRegistry *WorkflowEnvImpl::initSchemaActorsRegistry() {
     SchemaActorsRegistry *actorsRegistry = new SchemaActorsRegistry();
     return actorsRegistry;
+}
+
+WorkflowTasksRegistry *WorkflowEnvImpl::initWorkflowTasksRegistry() {
+    WorkflowTasksRegistry *workflowTasksRegistry = new WorkflowTasksRegistry();
+    return workflowTasksRegistry;
 }
 
 }//namespace Workflow

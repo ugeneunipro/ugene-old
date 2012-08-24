@@ -54,7 +54,9 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/WorkflowIOTasks.h \
            src/support/WorkflowRunTask.h \
            src/support/WorkflowSettings.h \
-           src/support/WorkflowUtils.h
+           src/support/WorkflowUtils.h \
+           src/tasks/ReadDocumentTaskFactory.h \
+           src/tasks/WorkflowTasksRegistry.h
 SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BaseAttributes.cpp \
            src/library/BasePorts.cpp \
@@ -103,7 +105,9 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/WorkflowIOTasks.cpp \
            src/support/WorkflowRunTask.cpp \
            src/support/WorkflowSettings.cpp \
-           src/support/WorkflowUtils.cpp
+           src/support/WorkflowUtils.cpp \
+           src/tasks/ReadDocumentTaskFactory.cpp \
+           src/tasks/WorkflowTasksRegistry.cpp
 
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
