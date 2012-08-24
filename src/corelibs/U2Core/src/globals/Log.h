@@ -25,6 +25,7 @@
 #include <U2Core/global.h>
 
 #include <QtCore/QMetaType>
+#include <QtCore/QMutex>
 #include <QtCore/QTime>
 #include <QtCore/QStringList>
 
@@ -102,6 +103,8 @@ private:
     void message(const LogMessage& m);
     QList<Logger*> loggers;
     QList<LogListener*> listeners;
+    QMutex lock;
+
 
 signals:
     void si_message(const LogMessage& m);
