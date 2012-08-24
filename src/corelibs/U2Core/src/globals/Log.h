@@ -103,7 +103,6 @@ private:
     void message(const LogMessage& m);
     QList<Logger*> loggers;
     QList<LogListener*> listeners;
-    QMutex lock;
 
 
 signals:
