@@ -97,10 +97,9 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
     //}
     
     registerCMDLineHelp();
-    processCMDLineOptions();  
+    registerWorkflowTasks();
+    processCMDLineOptions();
     Workflow::CoreLib::initIncludedWorkers();
-    ReadDocumentTaskFactory *factory = new ReadAssemblyTaskFactory();
-    WorkflowEnv::getWorkflowTasksRegistry()->registerReadDocumentTaskFactory(factory);
 }
 
 void WorkflowDesignerPlugin::processCMDLineOptions() {
@@ -128,6 +127,16 @@ void WorkflowDesignerPlugin::sl_saveSchemaImageTaskFinished() {
     
     QString imgUrl = saveImgTask->getImageLink();
     fprintf(stdout, "%s", imgUrl.toLocal8Bit().constData());
+}
+
+void WorkflowDesignerPlugin::registerWorkflowTasks() {
+    WorkflowTasksRegistry *registry = WorkflowEnv::getWorkflowTasksRegistry();
+
+    ReadDocumentTaskFactory *readAssemblyFactory = new ReadAssemblyTaskFactory();
+    bool ok = registry->registerReadDocumentTaskFactory(readAssemblyFactory);
+    if (!ok) {
+        coreLog.error("Can not register read assembly task");
+    }
 }
 
 void WorkflowDesignerPlugin::registerCMDLineHelp() {

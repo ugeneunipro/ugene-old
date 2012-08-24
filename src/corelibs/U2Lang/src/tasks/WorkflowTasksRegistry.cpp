@@ -38,12 +38,13 @@ WorkflowTasksRegistry::~WorkflowTasksRegistry() {
     readTasks.clear();
 }
 
-void WorkflowTasksRegistry::registerReadDocumentTaskFactory(ReadDocumentTaskFactory *factory) {
-    SAFE_POINT(NULL != factory, "NULL ReadDocumentTaskFactory", );
+bool WorkflowTasksRegistry::registerReadDocumentTaskFactory(ReadDocumentTaskFactory *factory) {
+    SAFE_POINT(NULL != factory, "NULL ReadDocumentTaskFactory", false);
     SAFE_POINT(!readTasks.contains(factory->getId()),
-        QString("Double ReadDocumentTaskFactory registering: %1").arg(factory->getId()), );
+        QString("Double ReadDocumentTaskFactory registering: %1").arg(factory->getId()), false);
 
     readTasks[factory->getId()] = factory;
+    return true;
 }
 
 ReadDocumentTaskFactory *WorkflowTasksRegistry::getReadDocumentTaskFactory(const QString &id) {

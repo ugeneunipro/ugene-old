@@ -32,7 +32,11 @@ public:
     WorkflowTasksRegistry();
     ~WorkflowTasksRegistry();
 
-    void registerReadDocumentTaskFactory(ReadDocumentTaskFactory *factory);
+    /**
+     * Returns true if the factory was successfully registered.
+     * Returns false if the factory with this id already exists
+     */
+    bool registerReadDocumentTaskFactory(ReadDocumentTaskFactory *factory);
     ReadDocumentTaskFactory *getReadDocumentTaskFactory(const QString &id);
 
 private:

@@ -45,6 +45,7 @@ public:
     //~WorkflowDesignerPlugin ();
 private:
     void registerCMDLineHelp();
+    void registerWorkflowTasks();
     void processCMDLineOptions();
     
 private slots:
