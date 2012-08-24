@@ -19,7 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
 #include <QMutexLocker>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/AppFileStorage.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/BaseTypes.h>
@@ -33,11 +39,28 @@ namespace U2 {
 
 namespace Workflow {
 
+static QString getWorkflowId(WorkflowContext *ctx) {
+    qint64 pid = QApplication::applicationPid();
+    QString wId = QByteArray::number(pid) + "_" + QByteArray::number(qint64(ctx));
+
+    return wId;
+}
+
 WorkflowContext::WorkflowContext(const QList<Actor*> &procs)
-: storage(NULL)
+: storage(NULL), process("")
 {
     foreach (Actor *p, procs) {
         procMap.insert(p->getId(), p);
+    }
+    
+    { // register WD process
+        AppFileStorage *fileStorage = AppContext::getAppFileStorage();
+        CHECK(NULL != fileStorage, );
+
+        U2OpStatusImpl os;
+        process = WorkflowProcess(getWorkflowId(this));
+        fileStorage->registerWorkflowProcess(process, os);
+        CHECK_OP(os, );
     }
 }
 
@@ -46,6 +69,15 @@ WorkflowContext::~WorkflowContext() {
         QFile::remove(url);
     }
     delete storage;
+
+    // unregister WD process
+    if (!process.getId().isEmpty()) {
+        AppFileStorage *fileStorage = AppContext::getAppFileStorage();
+        CHECK(NULL != fileStorage, );
+
+        U2OpStatusImpl os;
+        fileStorage->unregisterWorkflowProcess(process, os);
+    }
 }
 
 bool WorkflowContext::init() {
@@ -202,6 +234,14 @@ QString WorkflowContext::getCorrespondingSeqSlot(const QString &annsSlot) {
         res += path;
     }
     return res;
+}
+
+const WorkflowProcess &WorkflowContext::getWorkflowProcess() const {
+    return process;
+}
+
+WorkflowProcess &WorkflowContext::getWorkflowProcess() {
+    return process;
 }
 
 } // Workflow

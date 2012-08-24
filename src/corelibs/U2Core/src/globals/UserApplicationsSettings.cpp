@@ -49,6 +49,7 @@ namespace U2 {
 #define COLLECTING_STATISTICS QString("collecting_statistics")
 #define WINDOW_LAYOUT  QString("tabbed_windows")
 #define RESET_SETTINGS_FLAG QString("reset_settings")
+#define FILE_STORAGE_DIR    QString("file_storage_dir")
 
 //TODO: create a special ENV header to keep all env-vars ugene depends
 #define UGENE_SKIP_TMP_DIR_CLEANUP "UGENE_SKIP_TMP_DIR_CLEANUP"
@@ -178,6 +179,14 @@ QString UserAppsSettings::getCurrentProcessTemporaryDirPath(const QString& domai
         tmpDirPath += "/" + domain;
     }
     return tmpDirPath;
+}
+
+QString UserAppsSettings::getFileStorageDir() const {
+    return AppContext::getSettings()->getValue(SETTINGS_ROOT + FILE_STORAGE_DIR, QDir::homePath()+"/.UGENE_files").toString();
+}
+
+void UserAppsSettings::setFileStorageDir(const QString &newPath) {
+    AppContext::getSettings()->setValue(SETTINGS_ROOT + FILE_STORAGE_DIR, newPath);
 }
 
 }//namespace

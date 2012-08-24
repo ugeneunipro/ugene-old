@@ -40,6 +40,8 @@
 #include <U2Core/Version.h>
 #include <U2Core/VirtualFileSystem.h>
 #include "U2Core/TmpDirChecker.h"
+#include <U2Core/AppFileStorage.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -429,6 +431,16 @@ int main(int argc, char **argv)
 
     WorkflowScriptRegistry* workflowScriptRegistry = new WorkflowScriptRegistry();
     appContext->setWorkflowScriptRegistry(workflowScriptRegistry);
+
+    AppFileStorage *appFileStorage = new AppFileStorage();
+    U2OpStatusImpl os;
+    appFileStorage->init(os);
+    if (os.hasError()) {
+        coreLog.error(os.getError());
+        delete appFileStorage;
+    } else {
+        appContext->setAppFileStorage(appFileStorage);
+    }
 
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     

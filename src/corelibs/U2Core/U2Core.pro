@@ -57,8 +57,10 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2ObjectDbi.h \
            src/dbi/U2SequenceDbi.h \
            src/dbi/U2SqlHelpers.h \
+           src/dbi/U2SQLiteTripleStore.h \
            src/dbi/U2VariantDbi.h \
            src/globals/AppContext.h \
+           src/globals/AppFileStorage.h \
            src/globals/AppGlobalObject.h \
            src/globals/AppResources.h \
            src/globals/AppSettings.h \
@@ -131,6 +133,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/AddDocumentTask.h \
            src/tasks/AddSequencesToAlignmentTask.h \
            src/tasks/BackgroundTaskRunner.h \
+           src/tasks/CleanupFileStorageTask.h \
            src/tasks/CopyDataTask.h \
            src/tasks/CopyDocumentTask.h \
            src/tasks/CreateAnnotationTask.h \
@@ -152,6 +155,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/TaskStarter.h \
            src/tasks/TLSTask.h \
            src/tasks/TmpDirChecker.h \
+           src/util/FileStorageUtils.h \
            src/util/FormatUtils.h \
            src/util/GAutoDeleteList.h \
            src/util/GUrlUtils.h \
@@ -201,7 +205,9 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/dbi/U2DbiRegistry.cpp \
            src/dbi/U2DbiUtils.cpp \
            src/dbi/U2SqlHelpers.cpp \
+           src/dbi/U2SQLiteTripleStore.cpp \
            src/globals/AppContext.cpp \
+           src/globals/AppFileStorage.cpp \
            src/globals/AppGlobalObject.cpp \
            src/globals/AppResources.cpp \
            src/globals/AutoAnnotationsSupport.cpp \
@@ -261,6 +267,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/AddDocumentTask.cpp \
            src/tasks/AddSequencesToAlignmentTask.cpp \
            src/tasks/BackgroundTaskRunner.cpp \
+           src/tasks/CleanupFileStorageTask.cpp \
            src/tasks/CopyDataTask.cpp \
            src/tasks/CopyDocumentTask.cpp \
            src/tasks/CreateAnnotationTask.cpp \
@@ -281,6 +288,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/TaskStarter.cpp \
            src/tasks/TLSTask.cpp \
            src/tasks/TmpDirChecker.cpp \
+           src/util/FileStorageUtils.cpp \
            src/util/FormatUtils.cpp \
            src/util/GAutoDeleteList.cpp \
            src/util/GUrlUtils.cpp \

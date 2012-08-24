@@ -81,6 +81,7 @@ class GUITestBase;
 class SplicedAlignmentTaskRegistry;
 class OPWidgetFactoryRegistry;
 class WorkflowScriptRegistry;
+class AppFileStorage;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -214,6 +215,8 @@ public:
     static QString getActiveWindowName() {return getInstance()->_getActiveWindowName();}
     static void setActiveWindowName(const QString &name) {getInstance()->_setActiveWindowName(name);}
     static GUITestBase *getGUITestBase() {return getInstance()->_getGUITestBase();}
+
+    static AppFileStorage *getAppFileStorage() {return getInstance()->_getAppFileStorage();}
     
 protected:
     static AppContext* getInstance() {assert(instance); return instance;}
@@ -273,6 +276,7 @@ protected:
     virtual SplicedAlignmentTaskRegistry* _getSplicedAlignmentTaskRegistry() const = 0;
     virtual OPWidgetFactoryRegistry* _getOPWidgetFactoryRegistry() const = 0;
     virtual WorkflowScriptRegistry* _getWorkflowScriptRegistry() const = 0;
+    virtual AppFileStorage *_getAppFileStorage() const = 0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

@@ -20,6 +20,7 @@
  */
 
 #include "AppContextImpl.h"
+#include <U2Core/AppFileStorage.h>
 #include <U2Core/AppGlobalObject.h>
 
 namespace U2 {
@@ -31,6 +32,7 @@ AppContextImpl::~AppContextImpl() {
         AppGlobalObject* obj = appGlobalObjects[i];
         delete obj;
     }
+    delete appFileStorage;
 }
 
 AppContextImpl* AppContextImpl::getApplicationContext() { 

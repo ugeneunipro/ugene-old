@@ -19,38 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/GUrl.h>
-#include <U2Core/U2OpStatus.h>
+#ifndef _U2_CLEANUP_FILE_STORAGE_TASK_
+#define _U2_CLEANUP_FILE_STORAGE_TASK_
 
-#ifndef _U2_BAM_UTILS_H_
-#define _U2_BAM_UTILS_H_
+#include <U2Core/Task.h>
 
 namespace U2 {
 
-class Document;
-
-class U2FORMATS_EXPORT BAMUtils : public QObject {
+class U2CORE_EXPORT CleanupFileStorageTask : public Task {
+    Q_OBJECT
 public:
-    /**
-     * Returns the url to the output BAM file
-     */
-    static void convertSamToBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os);
+    CleanupFileStorageTask();
 
-    static bool isSortedBam(const GUrl &bamUrl, U2OpStatus &os);
-
-    /**
-     * @sortedBamBaseName is the result file path without extension.
-     * Returns @sortedBamBaseName.bam
-     */
-    static GUrl sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2OpStatus &os);
-
-    static bool hasValidBamIndex(const GUrl &bamUrl);
-
-    static void createBamIndex(const GUrl &bamUrl, U2OpStatus &os);
-
-    static void writeDocument(Document *doc, U2OpStatus &os);
+    virtual void run();
 };
 
 } // U2
 
-#endif // _U2_BAM_UTILS_H_
+#endif // _U2_CLEANUP_FILE_STORAGE_TASK_

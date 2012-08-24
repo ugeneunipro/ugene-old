@@ -58,9 +58,9 @@ static void closeFiles(samfile_t *in, samfile_t *out) {
     }
 }
 
-GUrl BAMUtils::convertSamToBam(const GUrl &samUrl, U2OpStatus &os) {
+void BAMUtils::convertSamToBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os) {
     QByteArray samFileName = samUrl.getURLString().toAscii();
-    QByteArray bamFileName = samFileName + ".bam";
+    QByteArray bamFileName = bamUrl.getURLString().toAscii();
 
     samfile_t *in = NULL;
     samfile_t *out = NULL;
@@ -71,18 +71,18 @@ GUrl BAMUtils::convertSamToBam(const GUrl &samUrl, U2OpStatus &os) {
         if (NULL == in) {
             os.setError(QString("[main_samview] fail to open \"%1\" for reading").arg(samFileName.constData()));
             closeFiles(in, out);
-            return QString();
+            return;
         }
         if (NULL == in->header) {
             os.setError(QString("[main_samview] fail to read the header from \"%1\"").arg(samFileName.constData()));
             closeFiles(in, out);
-            return QString();
+            return;
         }
         out = samopen(bamFileName.constData(), "wb", in->header);
         if (NULL == out) {
             os.setError(QString("[main_samview] fail to open \"%1\" for writing").arg(bamFileName.constData()));
             closeFiles(in, out);
-            return QString();
+            return;
         }
     }
 
@@ -100,7 +100,7 @@ GUrl BAMUtils::convertSamToBam(const GUrl &samUrl, U2OpStatus &os) {
     }
 
     closeFiles(in, out);
-    return QString(bamFileName);
+    return;
 }
 
 static bool isSorted(const QString &headerText) {
@@ -197,11 +197,10 @@ inline static qint64 mB2bytes(int mb) {
 #define INITIAL_SAMTOOLS_MEM_SIZE_MB bytes2MB(500000000)
 #define SAMTOOLS_MEM_BOOST 5
 
-GUrl BAMUtils::sortBam(const GUrl &bamUrl, U2OpStatus &os) {
+GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2OpStatus &os) {
     const QByteArray &bamFileName = bamUrl.getURLString().toAscii();
 
-    QByteArray sortedFileBaseName = bamFileName + ".sorted";
-    QByteArray sortedFileName = sortedFileBaseName + ".bam";
+    QByteArray sortedFileName = sortedBamBaseName.toAscii() + ".bam";
 
     // get memory resource
     AppSettings *appSettings = AppContext::getAppSettings();
@@ -227,7 +226,7 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, U2OpStatus &os) {
         coreLog.details(BAMUtils::tr("Sort bam file: \"%1\" using %2 Mb of memory. Result sorted file is: \"%3\"")
             .arg(bamFileName.constData()).arg(maxMemMB).arg(sortedFileName.constData()));
         size_t maxMemBytes = (size_t)(mB2bytes(maxMemMB)); // maxMemMB < 500 Mb, so the conversation is correct!
-        bam_sort_core(0, bamFileName.constData(), sortedFileBaseName.constData(), maxMemBytes);
+        bam_sort_core(0, bamFileName.constData(), sortedBamBaseName.toAscii().constData(), maxMemBytes);
     }
     memory->release(maxMemMB);
 

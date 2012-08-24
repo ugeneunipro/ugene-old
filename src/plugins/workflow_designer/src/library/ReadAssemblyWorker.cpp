@@ -21,12 +21,13 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AssemblyObject.h>
-#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/FileStorageUtils.h>
 #include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentProviderTask.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -71,7 +72,7 @@ void ReadAssemblyWorker::init() {
 }
 
 Task *ReadAssemblyWorker::createReadTask(const QString &url) {
-    return new ReadAssemblyTask(url, context->getDataStorage());
+    return new ReadAssemblyTask(url, context);
 }
 
 void ReadAssemblyWorker::sl_taskFinished() {
@@ -88,17 +89,35 @@ void ReadAssemblyWorker::sl_taskFinished() {
 /************************************************************************/
 /* Task */
 /************************************************************************/
-ConvertToIndexedBamTask::ConvertToIndexedBamTask(const DocumentFormatId &_formatId, const GUrl &_url)
-: Task("Convert assembly file to sorted BAM", TaskFlag_None), formatId(_formatId), url(_url)
+ConvertToIndexedBamTask::ConvertToIndexedBamTask(const DocumentFormatId &_formatId, const GUrl &_url, WorkflowContext *_ctx)
+: Task("Convert assembly file to sorted BAM", TaskFlag_None), formatId(_formatId), url(_url), ctx(_ctx)
 {
 
 }
 
 void ConvertToIndexedBamTask::run() {
+    AppFileStorage *fileStorage = AppContext::getAppFileStorage();
+    CHECK_EXT(NULL != fileStorage, stateInfo.setError("NULL file storage"), );
+
+    QString cashedSortedBam = FileStorageUtils::getSortedBamUrl(url.getURLString(), ctx->getWorkflowProcess());
+    if (!cashedSortedBam.isEmpty()) {
+        result = cashedSortedBam;
+        return;
+    }
+
     GUrl bamUrl = url;
     if (BaseDocumentFormats::SAM == formatId) {
-        bamUrl = BAMUtils::convertSamToBam(url, stateInfo);
-        CHECK_OP(stateInfo, );
+        QString bam = FileStorageUtils::getSamToBamConvertInfo(url.getURLString(), ctx->getWorkflowProcess());
+        if (bam.isEmpty()) {
+            QString dir = fileStorage->createDirectory();
+            bamUrl = dir + "/" + url.fileName() + ".bam";
+            BAMUtils::convertSamToBam(url, bamUrl, stateInfo);
+            CHECK_OP(stateInfo, );
+
+            FileStorageUtils::addSamToBamConvertInfo(url.getURLString(), bamUrl.getURLString(), ctx->getWorkflowProcess());
+        } else {
+            bamUrl = bam;
+        }
     } else {
         CHECK_EXT(BaseDocumentFormats::BAM == formatId, setError("Only BAM/SAM files could be converted"), );
     }
@@ -108,7 +127,15 @@ void ConvertToIndexedBamTask::run() {
 
     GUrl sortedBamUrl = bamUrl;
     if (!sorted) {
-        sortedBamUrl = BAMUtils::sortBam(bamUrl, stateInfo);
+        QString dir = fileStorage->createDirectory();
+        QString baseName;
+        if (dir.isEmpty()) {
+            baseName = bamUrl.getURLString();
+        } else {
+            baseName = dir + "/" + bamUrl.fileName();
+        }
+        baseName +=  ".sorted";
+        sortedBamUrl = BAMUtils::sortBam(bamUrl, baseName, stateInfo);
         CHECK_OP(stateInfo, );
     }
 
@@ -117,6 +144,11 @@ void ConvertToIndexedBamTask::run() {
         BAMUtils::createBamIndex(sortedBamUrl, stateInfo);
         CHECK_OP(stateInfo, );
     }
+
+    // if the file was sorted then it is needed to be saved in the file storage
+    if (!sorted) {
+        FileStorageUtils::addSortedBamUrl(bamUrl.getURLString(), sortedBamUrl.getURLString(), ctx->getWorkflowProcess());
+    }
     result = sortedBamUrl;
 }
 
@@ -124,9 +156,9 @@ GUrl ConvertToIndexedBamTask::getResultUrl() const {
     return result;
 }
 
-ReadAssemblyTask::ReadAssemblyTask(const QString &url, DbiDataStorage *storage)
-: Task(tr("Read assembly from %1").arg(url), TaskFlag_None),
-url(url), storage(storage), format(NULL), doc(NULL), convertTask(NULL), importTask(NULL)
+ReadAssemblyTask::ReadAssemblyTask(const QString &_url, WorkflowContext *_ctx)
+: Task(tr("Read assembly from %1").arg(_url), TaskFlag_None),
+url(_url), ctx(_ctx), format(NULL), doc(NULL), convertTask(NULL), importTask(NULL)
 {
 
 }
@@ -150,7 +182,7 @@ void ReadAssemblyTask::prepare() {
     foreach (const FormatDetectionResult &f, fs) {
         if (NULL != f.format) {
             if (isConvertingFormat(f.format->getFormatId())) {
-                convertTask = new ConvertToIndexedBamTask(f.format->getFormatId(), url);
+                convertTask = new ConvertToIndexedBamTask(f.format->getFormatId(), url, ctx);
                 addSubTask(convertTask);
                 return;
             }
@@ -162,7 +194,7 @@ void ReadAssemblyTask::prepare() {
             }
         } else if (NULL != f.importer) {
             U2OpStatusImpl os;
-            U2DbiRef dbiRef = storage->createTmpDbi(os);
+            U2DbiRef dbiRef = ctx->getDataStorage()->createTmpDbi(os);
             SAFE_POINT_OP(os, );
 
             QVariantMap hints;
@@ -219,7 +251,7 @@ void ReadAssemblyTask::run() {
 
             U2OpStatusImpl os;
             U2DbiRef dbiRef(dbiFactory->getId(), U2DataId(url.toAscii()));
-            storage->openDbi(dbiRef, os);
+            ctx->getDataStorage()->openDbi(dbiRef, os);
             CHECK_OP(os, );
 
             hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
@@ -240,7 +272,7 @@ void ReadAssemblyTask::run() {
 
         QVariantMap m;
         m.insert(BaseSlots::URL_SLOT().getId(), url);
-        SharedDbiDataHandler handler = storage->getDataHandler(assemblyObj->getEntityRef(), useGC);
+        SharedDbiDataHandler handler = ctx->getDataStorage()->getDataHandler(assemblyObj->getEntityRef(), useGC);
         m.insert(BaseSlots::ASSEMBLY_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
         results.append(m);
     }

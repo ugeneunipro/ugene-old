@@ -78,6 +78,7 @@ public:
         splicedAlignmentTaskRegistry = NULL;
         opWidgetFactoryRegistry = NULL;
         workflowScriptRegistry = NULL;
+        appFileStorage = NULL;
         aaSupport = NULL;
         dbiRegistry = NULL;
         rfr = NULL;
@@ -252,6 +253,11 @@ public:
         workflowScriptRegistry = _wsr;
     }
 
+    void setAppFileStorage(AppFileStorage *afs) {
+        assert(appFileStorage == NULL || afs == NULL);
+        appFileStorage = afs;
+    }
+
     void setGUIMode(bool v) {
         guiMode = v;
     }
@@ -322,6 +328,7 @@ protected:
     virtual SplicedAlignmentTaskRegistry*   _getSplicedAlignmentTaskRegistry() const { return splicedAlignmentTaskRegistry; }
     virtual OPWidgetFactoryRegistry*        _getOPWidgetFactoryRegistry() const { return opWidgetFactoryRegistry; }
     virtual WorkflowScriptRegistry*         _getWorkflowScriptRegistry() const { return workflowScriptRegistry; }
+    virtual AppFileStorage*                 _getAppFileStorage() const { return appFileStorage; }
 
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -385,6 +392,7 @@ private:
     SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistry;
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry;
     WorkflowScriptRegistry* workflowScriptRegistry;
+    AppFileStorage *appFileStorage;
     bool guiMode;
     QString activeWindow;
 

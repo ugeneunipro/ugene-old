@@ -58,6 +58,7 @@ public:
     QString style;
     QString downloadsDirPath;
     QString temporaryDirPath;
+    QString fileStorageDirPath;
     bool useDefaultWebBrowser;
     bool openLastProjectFlag;
     bool enableStatistics;
@@ -80,6 +81,8 @@ private slots:
     void sl_transFileClicked();
     void sl_browseButtonClicked();
     void sl_browseTmpDirButtonClicked();
+    void sl_browseFileStorageButtonClicked();
+    void sl_cleanupStorage();
 };
 
 }//namespace

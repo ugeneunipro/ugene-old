@@ -23,6 +23,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/CleanupFileStorageTask.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/Log.h>
 
@@ -79,6 +80,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageController::getSavedState()
     state->enableStatistics = s->isStatisticsCollectionEnabled();
     state->tabbedWindowLayout = s->tabbedWindowLayout();
     state->resetSettings = s->resetSettings();
+    state->fileStorageDirPath = s->getFileStorageDir();
     return state;
 }
 
@@ -94,6 +96,7 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     st->setEnableCollectingStatistics(state->enableStatistics);
     st->setTabbedWindowLayout(state->tabbedWindowLayout);
     st->setResetSettings(state->resetSettings);
+    st->setFileStorageDir(state->fileStorageDirPath);
     
     QStyle* style = QStyleFactory::create(state->style);
     if (style!=NULL) {
@@ -105,6 +108,10 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     TmpDirChecker tmpDirChecker;
     if (!tmpDirChecker.checkPath(state->temporaryDirPath)) {
         uiLog.error("You do not have permission to write to \"" + state->temporaryDirPath + "\" directory\"");
+    }
+
+    if (!tmpDirChecker.checkPath(state->fileStorageDirPath)) {
+        uiLog.error("You do not have permission to write to \"" + state->fileStorageDirPath + "\" directory\"");
     }
 }
 
@@ -120,6 +127,8 @@ UserApplicationsSettingsPageWidget::UserApplicationsSettingsPageWidget(UserAppli
     connect(langButton, SIGNAL(clicked()), SLOT(sl_transFileClicked()));
     connect(browseDownloadDirButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     connect(browseTmpDirButton,SIGNAL(clicked()),SLOT(sl_browseTmpDirButtonClicked()));
+    connect(browseFileStorageButton,SIGNAL(clicked()),SLOT(sl_browseFileStorageButtonClicked()));
+    connect(cleanupStorageButton,SIGNAL(clicked()),SLOT(sl_cleanupStorage()));
     
     QMapIterator<QString, QString> it(ctrl->translations);
     while (it.hasNext()) {
@@ -141,6 +150,7 @@ void UserApplicationsSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     enableStatisticsEdit->setChecked(state->enableStatistics);
     tabbedButton->setChecked(state->tabbedWindowLayout);
     mdiButton->setChecked(!state->tabbedWindowLayout);
+    fileStorageDirPathEdit->setText(state->fileStorageDirPath);
     
     int idx = langCombo->findData(state->translFile);
     if (idx < 0) {
@@ -181,6 +191,7 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& e
     state->enableStatistics = enableStatisticsEdit->isChecked();
     state->tabbedWindowLayout = tabbedButton->isChecked();
     state->resetSettings = resetSettingsBox->isChecked();
+    state->fileStorageDirPath = fileStorageDirPathEdit->text();
 
     return state;
 }
@@ -233,4 +244,23 @@ void UserApplicationsSettingsPageWidget::sl_browseTmpDirButtonClicked()
     }
 
 }
+
+void UserApplicationsSettingsPageWidget::sl_browseFileStorageButtonClicked()
+{
+
+    QString path = fileStorageDirPathEdit->text();
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (!dir.isEmpty()) {
+        fileStorageDirPathEdit->setText(dir);
+    }
+
+}
+
+void UserApplicationsSettingsPageWidget::sl_cleanupStorage()
+{
+    CleanupFileStorageTask *t = new CleanupFileStorageTask();
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
+}
+
 } //namespace

@@ -106,7 +106,7 @@ void SamtoolsBasedDbi::init(const QHash<QString, QString> &properties, const QVa
 
 QByteArray SamtoolsBasedDbi::sortBamFile(const QByteArray &fileName) {
     U2OpStatusImpl os;
-    GUrl sortedBamUrl = BAMUtils::sortBam(GUrl(fileName), os);
+    GUrl sortedBamUrl;// = BAMUtils::sortBam(GUrl(fileName), os);
     if (os.hasError()) {
         throw Exception(os.getError());
     }

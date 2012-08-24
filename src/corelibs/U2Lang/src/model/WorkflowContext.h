@@ -24,6 +24,8 @@
 
 #include <QMutex>
 
+#include <U2Core/AppFileStorage.h>
+
 #include <U2Lang/Datatype.h>
 #include <U2Lang/DbiDataStorage.h>
 
@@ -60,12 +62,16 @@ public:
      */
     void addExternalProcessFile(const QString &url);
 
+    const WorkflowProcess &getWorkflowProcess() const;
+    WorkflowProcess &getWorkflowProcess();
+
 private:
     DbiDataStorage *storage;
     QMap<QString, Actor*> procMap;
 
     QMutex addFileMutex;
     QStringList externalProcessFiles;
+    WorkflowProcess process;
 };
 
 } // Workflow

@@ -19,38 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/GUrl.h>
-#include <U2Core/U2OpStatus.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppFileStorage.h>
+#include <U2Core/U2SafePoints.h>
 
-#ifndef _U2_BAM_UTILS_H_
-#define _U2_BAM_UTILS_H_
+#include "CleanupFileStorageTask.h"
 
 namespace U2 {
 
-class Document;
+CleanupFileStorageTask::CleanupFileStorageTask()
+: Task(tr("Cleanup file storage"), TaskFlag_None)
+{
 
-class U2FORMATS_EXPORT BAMUtils : public QObject {
-public:
-    /**
-     * Returns the url to the output BAM file
-     */
-    static void convertSamToBam(const GUrl &samUrl, const GUrl &bamUrl, U2OpStatus &os);
+}
 
-    static bool isSortedBam(const GUrl &bamUrl, U2OpStatus &os);
+void CleanupFileStorageTask::run() {
+    AppFileStorage *fileStorage = AppContext::getAppFileStorage();
+    CHECK_EXT(NULL != fileStorage, stateInfo.setError("NULL file storage"), );
 
-    /**
-     * @sortedBamBaseName is the result file path without extension.
-     * Returns @sortedBamBaseName.bam
-     */
-    static GUrl sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2OpStatus &os);
-
-    static bool hasValidBamIndex(const GUrl &bamUrl);
-
-    static void createBamIndex(const GUrl &bamUrl, U2OpStatus &os);
-
-    static void writeDocument(Document *doc, U2OpStatus &os);
-};
+    fileStorage->cleanup(stateInfo);
+}
 
 } // U2
-
-#endif // _U2_BAM_UTILS_H_

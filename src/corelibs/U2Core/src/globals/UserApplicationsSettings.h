@@ -73,6 +73,9 @@ public:
     bool resetSettings() const;
     void setResetSettings(bool b);
 
+    QString getFileStorageDir() const;
+    void setFileStorageDir(const QString &newPath);
+
 signals:
     void si_temporaryPathChanged();
     void si_windowLayoutChanged();
