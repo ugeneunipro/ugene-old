@@ -37,29 +37,6 @@
 
 namespace U2 {
 
-template <typename T>
-QString numArrToStr(T* arr, int size, bool hex = false) {
-	if(NULL == arr) {
-		return QString("null");
-	}
-
-	QString ret("");
-	ret += '[';
-	for(int i = 0; i < size; i++) {
-		if(hex) {
-			ret += QString("0x%1").arg(arr[i], sizeof(T) * 2, 16, QChar('0'));
-		} else {
-			ret += QString::number(arr[i]);
-		}
-		if(i < size - 1) {
-			ret += ", ";
-		}
-	}
-	ret += ']';
-
-	return ret;
-}
-
 NumberType* BinaryFindOpenCL::launch() {
 
     time_t time1 = time(NULL);
@@ -221,11 +198,6 @@ BinaryFindOpenCL::~BinaryFindOpenCL() {
 		err = openCLHelper.clReleaseMemObject_p(buf_windowSizesArray);
 		hasOPENCLError(err, "clReleaseMemObject(buf_windowSizesArray) failed");
 	}
-    if (buf_outPutArray) {
-        err = openCLHelper.clReleaseMemObject_p(buf_outPutArray);
-        hasOPENCLError(err, "clReleaseMemObject(buf_outPutArray) failed");
-    }
-
 	if (clEvent1) {
 		err = openCLHelper.clReleaseEvent_p (clEvent1);
 		hasOPENCLError(err, "clReleaseEvent 1 failed");
@@ -256,7 +228,6 @@ BinaryFindOpenCL::BinaryFindOpenCL(const NumberType *_haystack,
     buf_sortedHaystackArray = 0;
     buf_needlesArray = 0;
 	buf_windowSizesArray = 0;
-    buf_outPutArray = 0;
 }
 
 bool BinaryFindOpenCL::hasOPENCLError(int err, QString errorMessage) {

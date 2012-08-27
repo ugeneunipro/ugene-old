@@ -61,9 +61,6 @@ private:
     cl_mem buf_sortedHaystackArray;
     cl_mem buf_needlesArray;
 	cl_mem buf_windowSizesArray;
-    cl_mem buf_outPutArray;
-//     cl_mem buf_miniHaystackOffsets;
-//     cl_mem buf_miniHaystack;
 };
 
 }//namespace
