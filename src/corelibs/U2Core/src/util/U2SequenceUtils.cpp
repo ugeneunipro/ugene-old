@@ -373,7 +373,7 @@ void U2SequenceImporter::_addBlock2Db(const char* data, qint64 len, U2OpStatus& 
         emptySequence = true;
         if (singleThread) {
             SAFE_POINT(0 == committedLength, "Sequence object is not created, but sequence data already exists", );
-            sequence.length = sequenceBuffer.length();
+            sequence.length = len;
             updateLength = false;
         }
         con.dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
