@@ -228,6 +228,13 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
                 break;
             }
         }
+
+        if(sizeof(void*) == 4) { // means that it is 32 bit system
+            err = addExcludeTests(fullTestDirPath, testDirEl.attribute("exclude_32"), xlist);
+            if(!err.isEmpty()) {
+                break;
+            }
+        }
         
         QString testFormatName = testDirEl.attribute("test-format");
         bool recursive = testDirEl.attribute("recursive") != "false";
