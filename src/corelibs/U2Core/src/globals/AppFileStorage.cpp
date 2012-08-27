@@ -242,10 +242,12 @@ void AppFileStorage::cleanup(U2OpStatus &os) {
         if (info.isFileToFileInfo()) {
             data.erase(i);
             QString url = info.getValue();
+            bool inTheStorage = url.startsWith(storageDir);
             bool removed = removeFile(url);
             if (removed) {
                 removeFile(url + ".bai");
-
+            }
+            if (removed || !inTheStorage) {
                 U2OpStatus2Log logOs;
                 storage->removeValue(info, logOs);
             } else {
