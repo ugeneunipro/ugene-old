@@ -407,6 +407,7 @@ bool SAMFormat::getSectionTags( QByteArray &line, const QByteArray &sectionName,
     if(!line.startsWith(sectionName)) return false;
     QByteArray tagsLine = QByteArray::fromRawData(line.constData() + 3, line.length() - 3);
     tags = tagsLine.split(SPACE);
+    tags.removeAll("");
     return true;
 }
 

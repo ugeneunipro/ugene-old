@@ -116,6 +116,9 @@ void ConvertToIndexedBamTask::run() {
     // if the file was sorted then it is needed to be saved in the file storage
     if (!sorted) {
         FileStorageUtils::addSortedBamUrl(bamUrl.getURLString(), sortedBamUrl.getURLString(), ctx->getWorkflowProcess());
+        if (bamUrl != url) { // add "SAM file - SORTED_BAM - sorted BAM file"
+            FileStorageUtils::addSortedBamUrl(url.getURLString(), sortedBamUrl.getURLString(), ctx->getWorkflowProcess());
+        }
     }
     result = sortedBamUrl;
 }

@@ -453,7 +453,9 @@ int bamFetchFunction(const bam1_t *b, void *data) {
             read->cigar = tokens;
         }
         read->readSequence = values[SEQ_COL];
-        read->quality = values[QUAL_COL];
+        if ("*" != values[QUAL_COL]) {
+            read->quality = values[QUAL_COL];
+        }
         read->effectiveLen = bam_cigar2qlen(&(b->core), bam1_cigar(b));
         delete[] samStr;
         read->id = read->name
@@ -463,7 +465,7 @@ int bamFetchFunction(const bam1_t *b, void *data) {
 
     // add new border intersected reads
     qint64 endPos = read->leftmostPos + read->effectiveLen;
-    if (endPos > (qint64)it->nextPosToRead) {
+    if (endPos >= (qint64)it->nextPosToRead) {
         it->newBorderReadIds << read->id;
     }
 

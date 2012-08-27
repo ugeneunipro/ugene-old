@@ -290,7 +290,7 @@ static void createHeader(bam_header_t *header, const QList<GObject*> &objects, U
     header->target_len = new uint32_t[header->n_targets];
 
     QByteArray headerText;
-    headerText += "@HD\tVN:1.4\tSO:coordinate\r\n";
+    headerText += "@HD\tVN:1.4\tSO:coordinate\n";
 
     int objIdx = 0;
     foreach (GObject *obj, objects) {
@@ -312,7 +312,7 @@ static void createHeader(bam_header_t *header, const QList<GObject*> &objects, U
         }
         header->target_len[objIdx] = seqLength;
 
-        headerText += QString("@SQ\tSN:%1\tLN:%2\r\n").arg(seqName.constData()).arg(seqLength);
+        headerText += QString("@SQ\tSN:%1\tLN:%2\n").arg(seqName.constData()).arg(seqLength);
 
         objIdx++;
     }
@@ -341,7 +341,7 @@ static void writeObjects(samfile_t *out, const QList<GObject*> &objects, U2OpSta
         U2DataId assemblyId = assemblyObj->getEntityRef().entityId;
         qint64 maxPos = dbi->getMaxEndPos(assemblyId, os);
         U2Region wholeAssembly(0, maxPos + 1);
-        QScopedPointer< U2DbiIterator<U2AssemblyRead> > reads(dbi->getReads(assemblyId, wholeAssembly, os));
+        QScopedPointer< U2DbiIterator<U2AssemblyRead> > reads(dbi->getReads(assemblyId, wholeAssembly, os, true));
         CHECK_OP(os, );
 
         bam1_t *read = bam_init1();

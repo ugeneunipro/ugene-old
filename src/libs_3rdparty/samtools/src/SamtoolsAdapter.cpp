@@ -133,6 +133,19 @@ inline static void copyArray(data_ptr &dest, const QByteArray array) {
     dest += array.length();
 }
 
+static const int SAMTOOLS_QUALITY_OFFSET = 33;
+static const char SAMTOOLS_QUALITY_OFF_CHAR = 0xff;
+inline static void copyQuality(data_ptr &dest, const QByteArray &quality) {
+    QByteArray samtoolsQuality = quality;
+    // shift qulity for samtools
+    if (quality.size() > 0 && SAMTOOLS_QUALITY_OFF_CHAR != quality.data()[0]) {
+        for (int i=0; i<quality.size(); i++) {
+            samtoolsQuality.data()[i] -= SAMTOOLS_QUALITY_OFFSET;
+        }
+    }
+    copyArray(dest, samtoolsQuality);
+}
+
 inline static void copyChar(data_ptr &dest, quint8 c) {
     *dest = c;
     ++dest;
@@ -170,7 +183,7 @@ void SamtoolsAdapter::read2samtools(const U2AssemblyRead &r, U2OpStatus &os, bam
 
     QByteArray quality = r->quality;
     if(quality.isEmpty()) {
-        quality = QByteArray(core.l_qseq, 0xFF);
+        quality = QByteArray(core.l_qseq, 0xff);
     }
 
     QByteArray cigar = cigar2samtools(r->cigar, os);
@@ -182,7 +195,7 @@ void SamtoolsAdapter::read2samtools(const U2AssemblyRead &r, U2OpStatus &os, bam
     copyChar(dest, '\0');
     copyArray(dest, cigar);
     copyArray(dest, seq);
-    copyArray(dest, quality);
+    copyQuality(dest, quality);
 
     // No tags. TODO: is this good?
     resRead.l_aux = 0;
