@@ -87,7 +87,7 @@ KalignPlugin::KalignPlugin()
             toolsSubmenu->setObjectName(MWMENU_TOOLS_MALIGN);
         }
         toolsSubmenu->addAction(kalignAction);
-        connect(kalignAction,SIGNAL(triggered()),SLOT(sl_runKalignTask()));
+        connect(kalignAction,SIGNAL(triggered()),SLOT(sl_runWithExtFileSpecify()));
     }
     
     LocalWorkflow::KalignWorkerFactory::init(); //TODO
@@ -108,58 +108,18 @@ KalignPlugin::KalignPlugin()
     }
 }
 
-void KalignPlugin::sl_runKalignTask() {
+void KalignPlugin::sl_runWithExtFileSpecify() {
     
     //Call select input file and setup settings dialog
-    LastUsedDirHelper lod;
-    QString fileName = QFileDialog::getOpenFileName(AppContext::getMainWindow()->getQMainWindow(), tr("Open multiple alignment"), lod.dir);
-    if(fileName != NULL) {
-        lod.url = fileName;
-        GUrl sourceUrl(fileName);
 
-        DocumentFormatConstraints c;
-        c.checkRawData = true;
-        c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
-        c.rawData = IOAdapterUtils::readFileHeader(sourceUrl);
-        QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
-        if (formats.isEmpty()) {
-            NotificationStack* nStack = AppContext::getMainWindow()->getNotificationStack();
-            Notification *t = new Notification(tr("input_format_error"), Error_Not);
-            nStack->addNotification(t);
-            return;
-        }
-        DocumentFormatId alnFormat = formats.first();
-        QVariantMap hints;
-        if(alnFormat == BaseDocumentFormats::FASTA){
-            hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
-        }
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(sourceUrl));
-        LoadDocumentTask* task = new LoadDocumentTask(alnFormat, sourceUrl, iof, hints);
-        connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_documentLoaded(Task*)));
-        AppContext::getTaskScheduler()->registerTopLevelTask(task);
-    }        
-}
-
-void KalignPlugin::sl_documentLoaded(Task* task) {
-    if (task->hasError() || task->isCanceled()) {
+    KalignTaskSettings settings;
+    KalignAlignWithExtFileSpecifyDialogController kalignRunDialog(AppContext::getMainWindow()->getQMainWindow(), settings);
+    if(kalignRunDialog.exec() != QDialog::Accepted){
         return;
-    }
-    LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(task);
-    Document* doc = loadTask->getDocument();
-    assert(doc != NULL);
-    MAlignmentObject* mAObject = qobject_cast<MAlignmentObject*>(doc->getObjects().first());
-    assert(mAObject!=NULL);
-    
-    KalignTaskSettings s;
-    s.inputFilePath = doc->getURLString();
-    KalignDialogController dlg(AppContext::getMainWindow()->getQMainWindow(), mAObject->getMAlignment(), s, false);
-
-    int rc = dlg.exec();
-    if (rc != QDialog::Accepted) {
-        return;
-    }
-    Task * kalignTask = new KAlignAndSaveTask(loadTask->takeDocument(), s);
+        }
+    KalignWithExtFileSpecifySupportTask* kalignTask=new KalignWithExtFileSpecifySupportTask(settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(kalignTask);
+
 }
 
 KalignPlugin::~KalignPlugin() {
@@ -214,7 +174,7 @@ void KalignMSAEditorContext::sl_align() {
     MAlignmentObject* obj = ed->getMSAObject(); 
     
     KalignTaskSettings s;
-    KalignDialogController dlg(ed->getWidget(), obj->getMAlignment(), s, true);
+    KalignDialogController dlg(ed->getWidget(), obj->getMAlignment(), s);
     
     int rc = dlg.exec();
     if (rc != QDialog::Accepted) {

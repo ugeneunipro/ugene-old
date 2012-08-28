@@ -22,9 +22,13 @@
 #include "ClustalWSupportRunDialog.h"
 #include <U2Core/DNAAlphabet.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Core/DocumentUtils.h>
+#include <QtGui/QMessageBox>
 
+#include <U2Gui/LastUsedDirHelper.h>
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
+#include <U2Core/GUrlUtils.h>
 
 namespace U2 {
 ////////////////////////////////////////
@@ -33,9 +37,13 @@ ClustalWSupportRunDialog::ClustalWSupportRunDialog(const MAlignment& _ma, Clusta
         QDialog(_parent), ma(_ma), settings(_settings)
 {
     setupUi(this);
+    inputGroupBox->setVisible(false);
+    this->setFixedHeight(370);
     connect(this->iterationTypeCheckBox,SIGNAL(toggled(bool)),this,SLOT(sl_iterationTypeEnabled(bool)));
     connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
+
+
     if(ma.getAlphabet()->isAmino()){
         gapOpenSpinBox->setValue(10.0);
         gapExtSpinBox->setValue(0.2);
@@ -100,28 +108,9 @@ ClustalWWithExtFileSpecifySupportRunDialog::ClustalWWithExtFileSpecifySupportRun
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
-    QWidget * widget = new QWidget(_parent);
-    inputFileLineEdit= new FileLineEdit(DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true),
-        "", false, widget);
-    inputFileLineEdit->setText("");
-    QToolButton * selectToolPathButton = new QToolButton(widget);
-    selectToolPathButton->setVisible(true);
-    selectToolPathButton->setText("...");
-    connect(selectToolPathButton, SIGNAL(clicked()), inputFileLineEdit, SLOT(sl_onBrowse()));
-    connect(inputFileLineEdit,SIGNAL(textChanged(QString)),this, SLOT(sl_inputFileLineEditChanged(QString)));
+    connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
+    connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
 
-    QHBoxLayout* layout = new QHBoxLayout(widget);
-    layout->addWidget(inputFileLineEdit);
-    layout->addWidget(selectToolPathButton);
-
-    QGroupBox* inputFileGroupBox=new QGroupBox(tr("Select input file"),widget);
-    inputFileGroupBox->setLayout(layout);
-    QBoxLayout* parentLayout = qobject_cast<QBoxLayout*>(this->layout());
-    assert(parentLayout);
-    parentLayout->insertWidget(0, inputFileGroupBox);
-    alignButton->setEnabled(false);
-
-    connect(this->iterationTypeCheckBox,SIGNAL(toggled(bool)),this,SLOT(sl_iterationTypeEnabled(bool)));
     connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
 
@@ -132,9 +121,32 @@ ClustalWWithExtFileSpecifySupportRunDialog::ClustalWWithExtFileSpecifySupportRun
     weightMatrixComboBox->addItem("GONNET");
     weightMatrixComboBox->addItem("ID");
 }
-void ClustalWWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(const QString& str){
-    alignButton->setEnabled(!str.isEmpty());
+
+void ClustalWWithExtFileSpecifySupportRunDialog::sl_inputPathButtonClicked() {
+    LastUsedDirHelper lod;
+    lod.url = QFileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir, 
+        DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
+    if (lod.url.isEmpty()) {
+        return;
+    }
+    inputFileLineEdit->setText(lod.url);
 }
+
+void ClustalWWithExtFileSpecifySupportRunDialog::sl_outputPathButtonClicked() {
+    LastUsedDirHelper lod;
+    lod.url = QFileDialog::getSaveFileName(this, tr("Save an multiple alignment file"), lod.dir);
+    if (lod.url.isEmpty()) {
+        return;
+    }
+    outputFileLineEdit->setText(lod.url);
+    buildMultipleAlignmentUrl(lod.url);
+}
+
+void ClustalWWithExtFileSpecifySupportRunDialog::buildMultipleAlignmentUrl(const GUrl &alnUrl) {
+    GUrl url = GUrlUtils::rollFileName(alnUrl.dirPath() + "/" + alnUrl.baseFileName()+ ".aln", DocumentUtils::getNewDocFileNameExcludesHint());
+    outputFileLineEdit->setText(url.getURLString());
+}
+
 void ClustalWWithExtFileSpecifySupportRunDialog::sl_iterationTypeEnabled(bool checked){
     if(checked){
         iterationTypeComboBox->removeItem(0);
@@ -168,16 +180,23 @@ void ClustalWWithExtFileSpecifySupportRunDialog::sl_align(){
     }
     if(iterationTypeCheckBox->isChecked()){
         settings.iterationType=iterationTypeComboBox->currentText();
-        if(maxIterationsCheckBox->isChecked()){
-            settings.numIterations=maxIterationsSpinBox->value();
+    if(maxIterationsCheckBox->isChecked()){
+        settings.numIterations=maxIterationsSpinBox->value();
         }
-    }    if(!inputFileLineEdit->text().isEmpty()){
-        settings.inputFilePath=inputFileLineEdit->text();
-    }else{
-        assert(NULL);
-        reject();
-    }
-    accept();
+        }    
+    if(inputFileLineEdit->text().isEmpty()){
+        QMessageBox::information(this, tr("Kalign with Align"),
+            tr("Input file is not set!") );
+        }else if(outputFileLineEdit->text().isEmpty()){
+            QMessageBox::information(this, tr("Kalign with Align"),
+                tr("Output file is not set!") );
+        }
+        else{
+            settings.outputFilePath=outputFileLineEdit->text();
+            settings.inputFilePath=inputFileLineEdit->text();
+            QDialog::accept();
+            }
+
 }
 
 }//namespace

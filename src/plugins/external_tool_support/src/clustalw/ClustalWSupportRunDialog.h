@@ -49,10 +49,12 @@ public:
 private slots:
     void sl_align();
     void sl_iterationTypeEnabled(bool checked);
-    void sl_inputFileLineEditChanged(const QString& str);
+    void sl_inputPathButtonClicked();
+    void sl_outputPathButtonClicked();
 private:
     ClustalWSupportTaskSettings&    settings;
-    FileLineEdit*                   inputFileLineEdit;
+    void buildMultipleAlignmentUrl(const GUrl &alnUrl);
+
 };
 
 }//namespace

@@ -72,6 +72,7 @@ public:
     QString iterationType;
     int     numIterations;
     QString inputFilePath;
+    QString outputFilePath;
     QString matrix;
     bool    outOrderInput; // false - aligned, true - input
 };
@@ -98,6 +99,7 @@ private:
     ExternalToolRunTask*        clustalWTask;
     LoadDocumentTask*           loadTemporyDocumentTask;
     ClustalWSupportTaskSettings settings;
+
 };
 
 class ClustalWWithExtFileSpecifySupportTask : public Task {
@@ -118,6 +120,7 @@ private:
     LoadDocumentTask*           loadDocumentTask;
     ClustalWSupportTask*        clustalWSupportTask;
     ClustalWSupportTaskSettings settings;
+
 };
 
 class ClustalWLogParser : public ExternalToolLogParser {

@@ -57,6 +57,7 @@ public:
     float   termGapPenalty;
     float   secret;
     QString inputFilePath;
+    QString outputFilePath;
 };
 
 class KalignTask : public TLSTask {
@@ -92,6 +93,8 @@ public:
     StateLock*                  lock;
     KalignTask*                 kalignTask;
     KalignTaskSettings          config;
+    LoadDocumentTask*   loadDocumentTask;
+
 };
 
 /**
@@ -116,10 +119,10 @@ private:
 
 
 
-class KAlignAndSaveTask : public Task {
+class KalignWithExtFileSpecifySupportTask : public Task {
 public:
-    KAlignAndSaveTask(Document* doc, const KalignTaskSettings& config);
-    ~KAlignAndSaveTask();
+    KalignWithExtFileSpecifySupportTask(const KalignTaskSettings& config);
+    ~KalignWithExtFileSpecifySupportTask();
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
@@ -130,6 +133,7 @@ private:
     SaveDocumentTask*   saveDocumentTask;
     Task*               kalignGObjectTask;
     KalignTaskSettings  config;
+    LoadDocumentTask*   loadDocumentTask;
 };
 
 

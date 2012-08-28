@@ -334,7 +334,6 @@ QList<Task*> MuscleAddSequencesToProfileTask::onSubTaskFinished(Task* subTask) {
         }
         return res;
     }
-
     res.append(new MuscleGObjectTask(maObj, s));
     return res;
 }
@@ -498,23 +497,25 @@ QList<Task*> MuscleWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTas
         assert(muscleGObjectTask != NULL);
         res.append(muscleGObjectTask);
     } else if (subTask == muscleGObjectTask){
-        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.inputFilePath)),config.inputFilePath);
+        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.outputFilePath)),config.outputFilePath);
         res.append(saveDocumentTask);
     } else if (subTask == saveDocumentTask){
-        Project* proj = AppContext::getProject();
-        if (proj == NULL) {
-            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
-        } else {
-            Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
-            if (projDoc) {
-                projDoc->setLastUpdateTime();
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
-            } else {
-                // Add document to project
-                res.append(new AddDocumentAndOpenViewTask(currentDocument));
-                cleanDoc = false;
-            }
-        }
+        //Project* proj = AppContext::getProject();
+        //if (proj == NULL) {
+        //    res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
+        //} else {
+        //    Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
+        //    if (projDoc) {
+        //        projDoc->setLastUpdateTime();
+        //        res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
+        //    } else {
+        //        // Add document to project
+        //        res.append(new AddDocumentAndOpenViewTask(currentDocument));
+        //        cleanDoc = false;
+        //    }
+        //}
+        Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(config.outputFilePath);
+        res << openTask;
     }
     return res;
 }

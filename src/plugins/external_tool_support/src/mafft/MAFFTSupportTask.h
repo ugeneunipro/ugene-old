@@ -55,6 +55,8 @@ public:
     float   gapExtenstionPenalty;
     int     maxNumberIterRefinement;
     QString inputFilePath;
+    QString outputFilePath;
+
 };
 
 

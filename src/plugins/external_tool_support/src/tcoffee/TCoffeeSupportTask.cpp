@@ -239,23 +239,25 @@ QList<Task*> TCoffeeWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subTa
         tCoffeeSupportTask=new TCoffeeSupportTask(mAObject,settings);
         res.append(tCoffeeSupportTask);
     } else if (subTask == tCoffeeSupportTask){
-        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.inputFilePath)),settings.inputFilePath);
+        saveDocumentTask = new SaveDocumentTask(currentDocument,AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.outputFilePath)),settings.outputFilePath);
         res.append(saveDocumentTask);
     } else if (subTask==saveDocumentTask){
-        Project* proj = AppContext::getProject();
-        if (proj == NULL) {
-            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
-        } else {
-            Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
-            if (projDoc != NULL) {
-                projDoc->setLastUpdateTime();
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
-            } else {
-                // Add document to project
-                res.append(new AddDocumentAndOpenViewTask(currentDocument));
-                cleanDoc = false;
-            }
-        }
+        //Project* proj = AppContext::getProject();
+        //if (proj == NULL) {
+        //    res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
+        //} else {
+        //    Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
+        //    if (projDoc != NULL) {
+        //        projDoc->setLastUpdateTime();
+        //        res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
+        //    } else {
+        //        // Add document to project
+        //        res.append(new AddDocumentAndOpenViewTask(currentDocument));
+        //        cleanDoc = false;
+        //    }
+        //}
+        Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(settings.outputFilePath);
+        res << openTask;
     }
     return res;
 }

@@ -25,7 +25,11 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Core/GUrlUtils.h>
 
+#include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
 
@@ -36,6 +40,7 @@ ClustalOSupportRunDialog::ClustalOSupportRunDialog(const MAlignment& _ma, Clusta
         QDialog(_parent), ma(_ma), settings(_settings)
 {
     setupUi(this);
+    inputGroupBox->setVisible(false);
     connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
     numberOfCPUSpinBox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
@@ -63,26 +68,8 @@ ClustalOWithExtFileSpecifySupportRunDialog::ClustalOWithExtFileSpecifySupportRun
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
-    QWidget * widget = new QWidget(_parent);
-    inputFileLineEdit= new FileLineEdit(DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true),
-        "", false, widget);
-    inputFileLineEdit->setText("");
-    QToolButton * selectToolPathButton = new QToolButton(widget);
-    selectToolPathButton->setVisible(true);
-    selectToolPathButton->setText("...");
-    connect(selectToolPathButton, SIGNAL(clicked()), inputFileLineEdit, SLOT(sl_onBrowse()));
-    connect(inputFileLineEdit,SIGNAL(textChanged(QString)),this, SLOT(sl_inputFileLineEditChanged(QString)));
-
-    QHBoxLayout* layout = new QHBoxLayout(widget);
-    layout->addWidget(inputFileLineEdit);
-    layout->addWidget(selectToolPathButton);
-
-    QGroupBox* inputFileGroupBox=new QGroupBox(tr("Select input file"),widget);
-    inputFileGroupBox->setLayout(layout);
-    QBoxLayout* parentLayout = qobject_cast<QBoxLayout*>(this->layout());
-    assert(parentLayout);
-    parentLayout->insertWidget(0, inputFileGroupBox);
-    alignButton->setEnabled(false);
+    connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
+    connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
 
     connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
@@ -90,10 +77,30 @@ ClustalOWithExtFileSpecifySupportRunDialog::ClustalOWithExtFileSpecifySupportRun
     numberOfCPUSpinBox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     numberOfCPUSpinBox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
 }
-void ClustalOWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(const QString& str){
-    alignButton->setEnabled(!str.isEmpty());
+void ClustalOWithExtFileSpecifySupportRunDialog::sl_inputPathButtonClicked() {
+    LastUsedDirHelper lod;
+    lod.url = QFileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir, 
+        DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
+    if (lod.url.isEmpty()) {
+        return;
+    }
+    inputFileLineEdit->setText(lod.url);
 }
 
+void ClustalOWithExtFileSpecifySupportRunDialog::sl_outputPathButtonClicked() {
+    LastUsedDirHelper lod;
+    lod.url = QFileDialog::getSaveFileName(this, tr("Save an multiple alignment file"), lod.dir);
+    if (lod.url.isEmpty()) {
+        return;
+    }
+    outputFileLineEdit->setText(lod.url);
+    buildMultipleAlignmentUrl(lod.url);
+}
+
+void ClustalOWithExtFileSpecifySupportRunDialog::buildMultipleAlignmentUrl(const GUrl &alnUrl) {
+    GUrl url = GUrlUtils::rollFileName(alnUrl.dirPath() + "/" + alnUrl.baseFileName()+ ".aln", DocumentUtils::getNewDocFileNameExcludesHint());
+    outputFileLineEdit->setText(url.getURLString());
+}
 void ClustalOWithExtFileSpecifySupportRunDialog::sl_align(){
     if(iterationNumberCheckBox->isChecked()){
         settings.numIterations = iterationNumberSpinBox->value();
@@ -106,14 +113,19 @@ void ClustalOWithExtFileSpecifySupportRunDialog::sl_align(){
     }
     settings.setAutoOptions = setAutoCheckBox->isChecked();
     settings.numberOfProcessors = numberOfCPUSpinBox->value();
+    if(inputFileLineEdit->text().isEmpty()){
+        QMessageBox::information(this, tr("Kalign with Align"),
+            tr("Input file is not set!") );
+        }else if(outputFileLineEdit->text().isEmpty()){
+            QMessageBox::information(this, tr("Kalign with Align"),
+                tr("Output file is not set!") );
+        }
+        else{
+            settings.outputFilePath=outputFileLineEdit->text();
+            settings.inputFilePath=inputFileLineEdit->text();
+            QDialog::accept();
+            }
 
-    if(!inputFileLineEdit->text().isEmpty()){
-        settings.inputFilePath=inputFileLineEdit->text();
-    }else{
-        assert(NULL);
-        reject();
-    }
-    accept();
 }
 
 }//namespace

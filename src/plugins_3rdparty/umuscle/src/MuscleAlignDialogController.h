@@ -25,10 +25,8 @@
 #include "MuscleTask.h"
 
 #include <U2Core/GAutoDeleteList.h>
-#include <U2Gui/DialogUtils.h>
-
 #include <ui/ui_MuscleAlignDialog.h>
-
+#include <U2Gui/DialogUtils.h>
 #include <QtGui/QDialog>
 
 namespace U2 {
@@ -90,6 +88,7 @@ private:
     MAlignment                          ma;
     MuscleTaskSettings&                 settings;
     GAutoDeleteList<MuscleAlignPreset>  presets;
+
 };
 
 class MuscleAlignWithExtFileSpecifyDialogController : public QDialog, public Ui_MuscleAlignmentDialog {
@@ -103,12 +102,14 @@ public slots:
 
 private slots:
     void sl_onPresetChanged(int current);
-    void sl_inputFileLineEditChanged(const QString& str);
+    void sl_inputPathButtonClicked();
+    void sl_outputPathButtonClicked();
 private:
     void initPresets();
     MuscleTaskSettings&                 settings;
     GAutoDeleteList<MuscleAlignPreset>  presets;
-    FileLineEdit*                       inputFileLineEdit;
+    void buildMultipleAlignmentUrl(const GUrl &alnUrl);
+
 };
 
 

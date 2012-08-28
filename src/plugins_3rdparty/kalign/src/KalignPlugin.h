@@ -42,8 +42,7 @@ public:
     KalignPlugin();
     ~KalignPlugin();
 public slots:
-    void sl_runKalignTask();
-    void sl_documentLoaded(Task* task);
+    void sl_runWithExtFileSpecify();
 
 private:
     KalignMSAEditorContext* ctx;

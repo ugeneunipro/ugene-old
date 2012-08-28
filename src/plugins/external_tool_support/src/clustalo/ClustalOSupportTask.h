@@ -88,7 +88,7 @@ public:
     bool    setAutoOptions;         // --auto                         Set options automatically (might overwrite some of your options)
     int     numberOfProcessors;     // --threads=<n>                  Number of processors to use
     QString inputFilePath;          // -i, --in, --infile={<file>,-}  Multiple sequence input file (- for stdin)
-
+    QString outputFilePath;
 };
 
 

@@ -192,41 +192,47 @@ KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject 
 }
 
 //////////////////////////////////////////////////////////////////////////
-/// KAlignWithExtFileSpecifySupportTask
+/// KalignWithExtFileSpecifySupportTask
 
-
-KAlignAndSaveTask::KAlignAndSaveTask(Document* doc, const KalignTaskSettings& _config )
+KalignWithExtFileSpecifySupportTask::KalignWithExtFileSpecifySupportTask(const KalignTaskSettings& _config )
 :  Task("Run KAlign alignment task on external file", TaskFlags_NR_FOSCOE), config(_config)
 {
     mAObject = NULL;
-    currentDocument = doc;
+    currentDocument = NULL;
     cleanDoc = true;
     saveDocumentTask = NULL;
+    loadDocumentTask = NULL;
     kalignGObjectTask = NULL;
 }
 
-KAlignAndSaveTask::~KAlignAndSaveTask() {
+KalignWithExtFileSpecifySupportTask::~KalignWithExtFileSpecifySupportTask() {
     if (cleanDoc) {
         delete currentDocument;
     }
 }
 
-void KAlignAndSaveTask::prepare() {
-    assert(currentDocument!=NULL);
-    MAlignmentObject* mAObject = qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
-    assert(mAObject!=NULL);
+void KalignWithExtFileSpecifySupportTask::prepare() {
 
-    if(WorkflowSettings::runInSeparateProcess()) {
-        kalignGObjectTask = new KalignGObjectRunFromSchemaTask(mAObject, config);
-    } else {
-        kalignGObjectTask = new KalignGObjectTask(mAObject, config);
-    }
+    DocumentFormatConstraints c;
+    c.checkRawData = true;
+    c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
+    c.rawData = IOAdapterUtils::readFileHeader(config.inputFilePath);
+    QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
+    if (formats.isEmpty()) {
+        stateInfo.setError(  tr("input_format_error") );
+        return;
+        }
+    DocumentFormatId alnFormat = formats.first();
+    QVariantMap hints;
+    if(alnFormat == BaseDocumentFormats::FASTA){
+        hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+        }
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.inputFilePath));
+    loadDocumentTask = new LoadDocumentTask(alnFormat, config.inputFilePath, iof, hints);
+    addSubTask(loadDocumentTask);
+    }        
 
-	assert(kalignGObjectTask != NULL);
-    addSubTask(kalignGObjectTask);
-}
-
-QList<Task*> KAlignAndSaveTask::onSubTaskFinished( Task* subTask ) {
+QList<Task*> KalignWithExtFileSpecifySupportTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> res;
     if (subTask->hasError()) {
         stateInfo.setError(subTask->getError());
@@ -234,28 +240,46 @@ QList<Task*> KAlignAndSaveTask::onSubTaskFinished( Task* subTask ) {
     }
     if (hasError() || isCanceled()) {
         return res;
+
     }
-    if (subTask == kalignGObjectTask){
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.inputFilePath));
-        saveDocumentTask = new SaveDocumentTask(currentDocument,iof,config.inputFilePath);
+        if (subTask == loadDocumentTask){
+        currentDocument = loadDocumentTask->takeDocument();
+        SAFE_POINT(currentDocument != NULL, QString("Failed loading document: %1").arg(loadDocumentTask->getURLString()), res);
+        SAFE_POINT(currentDocument->getObjects().length() == 1, QString("Number of objects != 1 : %1").arg(loadDocumentTask->getURLString()), res);
+        mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
+        SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
+        if (WorkflowSettings::runInSeparateProcess()) {
+            kalignGObjectTask = new KalignGObjectRunFromSchemaTask(mAObject, config);
+        } else {
+            kalignGObjectTask = new KalignGObjectTask(mAObject, config);
+        }
+        assert(kalignGObjectTask != NULL);
+        res.append(kalignGObjectTask);
+    } else if (subTask == kalignGObjectTask){
+        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.outputFilePath));
+        saveDocumentTask = new SaveDocumentTask(currentDocument,iof,config.outputFilePath);
         res.append(saveDocumentTask);
     } else if (subTask == saveDocumentTask){
-        Project* proj = AppContext::getProject();
-        if (proj == NULL) {
-            res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
-        } else {
-            Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
-            if (projDoc != NULL) {
-                projDoc->setLastUpdateTime();
-                res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
-            } else {
-                // Add document to project
-                res.append(new AddDocumentAndOpenViewTask(currentDocument));
-                cleanDoc = false;
-            }
-        }
+        //Project* proj = AppContext::getProject();
+        //if (proj == NULL) {
+        //    res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURL(), currentDocument->getGHintsMap()));
+        //} else {
+        //    Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
+        //    if (projDoc != NULL) {
+        //        projDoc->setLastUpdateTime();
+        //        res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
+        //    } else {
+        //        // Add document to project
+        //        res.append(new AddDocumentAndOpenViewTask(currentDocument));
+        //        cleanDoc = false;
+        //    }
+        //}
+        Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(config.outputFilePath);
+        res << openTask;
     }
     return res;
 }
-
+//Task::ReportResult KalignWithExtFileSpecifySupportTask::report(){
+//    return ReportResult_Finished;
+//    }
 } //namespace

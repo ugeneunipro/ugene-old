@@ -73,7 +73,7 @@ public:
     //number of threads: 0 - auto, 1 - serial
     int nThreads;
     QString         inputFilePath;
-
+    QString         outputFilePath;
 };
 
 class MuscleTask : public Task {

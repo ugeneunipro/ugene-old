@@ -45,10 +45,11 @@ public:
     TCoffeeWithExtFileSpecifySupportRunDialog(TCoffeeSupportTaskSettings& settings, QWidget* parent);
 private slots:
     void sl_align();
-    void sl_inputFileLineEditChanged(const QString& str);
+    void sl_inputPathButtonClicked();
+    void sl_outputPathButtonClicked();
 private:
     TCoffeeSupportTaskSettings&     settings;
-    FileLineEdit*                   inputFileLineEdit;
+    void buildMultipleAlignmentUrl(const GUrl &alnUrl);
 };
 
 }//namespace

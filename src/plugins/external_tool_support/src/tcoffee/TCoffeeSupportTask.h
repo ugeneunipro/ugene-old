@@ -45,6 +45,7 @@ public:
     float   gapExtenstionPenalty;
     int     numIterations;
     QString inputFilePath;
+    QString outputFilePath;
 };
 
 

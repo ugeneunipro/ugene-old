@@ -47,10 +47,11 @@ public:
     ClustalOWithExtFileSpecifySupportRunDialog(ClustalOSupportTaskSettings& settings, QWidget* parent);
 private slots:
     void sl_align();
-    void sl_inputFileLineEditChanged(const QString& str);
+    void sl_inputPathButtonClicked();
+    void sl_outputPathButtonClicked();
 private:
     ClustalOSupportTaskSettings&    settings;
-    FileLineEdit*                   inputFileLineEdit;
+    void buildMultipleAlignmentUrl(const GUrl &alnUrl);
 };
 
 }//namespace
