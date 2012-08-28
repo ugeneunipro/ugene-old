@@ -19,27 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_TOPHAT_SUPPORT_H_
-#define _U2_TOPHAT_SUPPORT_H_
-
-#include <U2Core/ExternalToolRegistry.h>
-
-#define TOPHAT_TOOL_NAME    "TopHat"
-#define TOPHAT_TMP_DIR      "tophat"
+#include "TopHatSettings.h"
 
 
 namespace U2 {
 
-class TopHatSupport : public ExternalTool
+TopHatSettings::TopHatSettings()
+    : noNovelJunctions(false),
+      fusionSearch(false),
+      transcriptomeOnly(false),
+      prefilterMultihits(false),
+      solexa13quals(false),
+      bowtieMode(vMode),
+      useBowtie1(false),
+      workflowContext(NULL),
+      storage(NULL)
 {
-    Q_OBJECT
+}
 
-public:
-    TopHatSupport(const QString& name, const QString& path = "");
-};
-
-
-
-} // namespace
-
-#endif
+}

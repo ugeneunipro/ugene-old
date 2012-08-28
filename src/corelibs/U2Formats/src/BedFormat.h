@@ -109,6 +109,9 @@ public:
 
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
+    /** Gets annotation data from a BED file, but doesn't create an annotation table */
+    static QList<SharedAnnotationData> getAnnotData(IOAdapter* io, U2OpStatus& os);
+
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 

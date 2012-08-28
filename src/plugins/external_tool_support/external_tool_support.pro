@@ -72,7 +72,9 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/utils/ExternalToolValidateTask.h \
            src/bowtie/bowtie_tests/bowtieTests.h \
            src/bwa/bwa_tests/bwaTests.h \
-           src/cufflinks/CufflinksTests.h
+           src/cufflinks/CufflinksTests.h \
+    src/tophat/TopHatSupportTask.h \
+    src/tophat/TopHatSettings.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BowtieBuildSettings.ui \
          src/ui/BowtieSettings.ui \
@@ -158,7 +160,9 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/utils/ExternalToolValidateTask.cpp \
            src/bowtie/bowtie_tests/bowtieTests.cpp \
            src/bwa/bwa_tests/bwaTests.cpp \
-           src/cufflinks/CufflinksTests.cpp
+           src/cufflinks/CufflinksTests.cpp \
+    src/tophat/TopHatSupportTask.cpp \
+    src/tophat/TopHatSettings.cpp
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

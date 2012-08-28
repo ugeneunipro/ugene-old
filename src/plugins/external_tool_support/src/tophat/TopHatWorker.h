@@ -22,6 +22,8 @@
 #ifndef _U2_TOPHAT_WORKER_H
 #define _U2_TOPHAT_WORKER_H
 
+#include "TopHatSettings.h"
+
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 
@@ -53,11 +55,20 @@ public:
     virtual void cleanup();
 
 private slots:
-    void sl_taskFinished();
+    void sl_topHatTaskFinished();
 
 protected:
-    CommunicationChannel* input;
-    CommunicationChannel* output;
+    IntegralBus* input;
+    IntegralBus* output;
+    TopHatSettings settings;
+
+    bool settingsAreCorrect;
+
+    /**
+     * If the second slot is binded the reads are considered to be paired
+     * and are input from both slots (1:1).
+     */
+    bool bindedToSecondSlot;
 };
 
 
@@ -68,6 +79,45 @@ public:
     static void init();
     TopHatWorkerFactory() : DomainFactory(ACTOR_ID) {}
     virtual Worker* createWorker(Actor* actor) { return new TopHatWorker(actor); }
+
+    static const QString BOWTIE_INDEX_DIR;
+    static const QString BOWTIE_INDEX_BASENAME;
+    static const QString REF_SEQ;
+    static const QString MATE_INNER_DISTANCE;
+    static const QString MATE_STANDARD_DEVIATION;
+    static const QString LIBRARY_TYPE;
+    static const QString NO_NOVEL_JUNCTIONS;
+    static const QString RAW_JUNCTIONS;
+    static const QString KNOWN_TRANSCRIPT;
+    static const QString MAX_MULTIHITS;
+    static const QString SEGMENT_LENGTH;
+    static const QString DISCORDANT_PAIR_ALIGNMENTS;
+    static const QString FUSION_SEARCH;
+    static const QString TRANSCRIPTOME_ONLY;
+    static const QString TRANSCRIPTOME_MAX_HITS;
+    static const QString PREFILTER_MULTIHITS;
+    static const QString MIN_ANCHOR_LENGTH;
+    static const QString SPLICE_MISMATCHES;
+    static const QString TRANSCRIPTOME_MISMATCHES;
+    static const QString GENOME_READ_MISMATCHES;
+    static const QString READ_MISMATCHES;
+    static const QString SEGMENT_MISMATCHES;
+    static const QString SOLEXA_1_3_QUALS;
+    static const QString BOWTIE_VERSION;
+    static const QString BOWTIE_N_MODE;
+    static const QString BOWTIE_TOOL_PATH;
+    static const QString SAMTOOLS_TOOL_PATH;
+    static const QString EXT_TOOL_PATH;
+    static const QString TMP_DIR_PATH;
+
+    static const QString FIRST_IN_SLOT_ID;
+    static const QString SECOND_IN_SLOT_ID;
+
+    static const QString OUT_MAP_DESCR_ID;
+    static const QString ACCEPTED_HITS_SLOT_ID;
+    static const QString JUNCTIONS_SLOT_ID;
+    static const QString INSERTIONS_SLOT_ID;
+    static const QString DELETIONS_SLOT_ID;
 };
 
 } // namespace LocalWorkflow

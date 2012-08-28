@@ -324,10 +324,7 @@ Task* CufflinksWorker::tick()
 
     if (input->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(input);
-        if (inputMessage.isEmpty()) {
-            output->transit();
-            return NULL;
-        }
+        SAFE_POINT(!inputMessage.isEmpty(), "Internal error: message can't be NULL!", NULL);
 
         // Get the assembly ID
         SharedDbiDataHandler assemblyId = inputMessage.getData().toMap().value(BaseSlots::ASSEMBLY_SLOT().getId()).value<SharedDbiDataHandler>();

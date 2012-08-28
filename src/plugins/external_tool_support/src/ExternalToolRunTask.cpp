@@ -33,9 +33,13 @@
 
 namespace U2 {
 
-ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QStringList& _arguments, ExternalToolLogParser*  _logParser, const QString& _workingDirectory)
-: Task(_toolName + " run task", TaskFlag_None), arguments(_arguments), 
-  logParser(_logParser), toolName(_toolName), externalToolProcess(NULL), workingDirectory(_workingDirectory)
+ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QStringList& _arguments, ExternalToolLogParser*  _logParser, const QString& _workingDirectory, const QStringList& additionalPaths)
+: Task(_toolName + " run task", TaskFlag_None),
+  arguments(_arguments),
+  logParser(_logParser),
+  toolName(_toolName),
+  externalToolProcess(NULL),
+  workingDirectory(_workingDirectory)
 {
     ExternalTool * tool = AppContext::getExternalToolRegistry()->getByName(toolName);
     if (tool == NULL) {
@@ -51,6 +55,13 @@ ExternalToolRunTask::ExternalToolRunTask(const QString& _toolName, const QString
 //        return;
     }
     program=tool->getPath();
+
+    processEnvironment = QProcessEnvironment::systemEnvironment();
+    foreach (QString path, additionalPaths) {
+        path = processEnvironment.value("PATH") + ":" + path;
+        processEnvironment.insert("PATH", path);
+    }
+
     coreLog.trace("Creating run task for: " + toolName);
 }
 
@@ -68,6 +79,7 @@ void ExternalToolRunTask::run(){
         return;
     }
     externalToolProcess = new QProcess();//???
+    externalToolProcess->setProcessEnvironment(processEnvironment);
     ExternalToolRunTaskHelper* h = new ExternalToolRunTaskHelper(this);
     connect(externalToolProcess,SIGNAL(readyReadStandardOutput()), h, SLOT(sl_onReadyToReadLog()));
     connect(externalToolProcess,SIGNAL(readyReadStandardError()), h, SLOT(sl_onReadyToReadErrLog()));

@@ -477,6 +477,17 @@ int readBedLine(QString &buffer, IOAdapter* io, gauto_array<char>& charbuff) {
     return buffer.length();
 }
 
+
+QList<SharedAnnotationData> BedFormat::getAnnotData(IOAdapter *io, U2OpStatus &os)
+{
+    std::auto_ptr<QObject> parent(new QObject());
+    BedFormat bedFormat(parent.get());
+    QString seqName;
+    QString annotName = "misc_feature";
+    return bedFormat.parseDocument(io, seqName, annotName, os);
+}
+
+
 /**
  * Gets an attribute value in one of the following formats:
  *   1) name="value"

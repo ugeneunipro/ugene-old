@@ -28,6 +28,8 @@
 namespace U2 {
 
 
+enum BowtieMode {vMode = 0, nMode = 1};
+
 class RnaSeqLibraryType
 {
 public:
