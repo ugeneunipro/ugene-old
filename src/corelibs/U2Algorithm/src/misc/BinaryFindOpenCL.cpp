@@ -42,7 +42,6 @@ NumberType* BinaryFindOpenCL::launch() {
     time_t time1 = time(NULL);
 
     size_t usageGPUMem = 0;
-    size_t usageGPUConstantMem = 0;
 
     const int lowerBound = 0;
     const int upperBound = haystackSize;
@@ -88,17 +87,15 @@ NumberType* BinaryFindOpenCL::launch() {
     if (hasOPENCLError(err, "clCreateBuffer(buf_needlesArray)")) return 0;
     usageGPUMem += sizeof(NumberType) * needlesSize;
 
-    const int outputArraySize = (int)needlesSize;
-
 	buf_windowSizesArray = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
 		sizeof(cl_int) * needlesSize, (void*)windowSizes, &err);
 	if (hasOPENCLError(err, "clCreateBuffer(buf_windowSizesArray)")) return 0;
-	usageGPUConstantMem += sizeof(cl_int) * needlesSize;
+	usageGPUMem += sizeof(cl_int) * needlesSize;
 
     buf_sortedHaystackArray = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
                                              sizeof(NumberType) * haystackSize, (void*)haystack, &err);
     if (hasOPENCLError(err, "clCreateBuffer (buf_sortedHaystackArray)")) return 0;
-    usageGPUConstantMem += sizeof(NumberType) * haystackSize;
+    usageGPUMem += sizeof(NumberType) * haystackSize;
 
     cl_uint kernelArgNum = 0;
 
@@ -141,8 +138,8 @@ NumberType* BinaryFindOpenCL::launch() {
 
 	logProfilingInfo(openCLHelper, clEvent1, QString("OpenCL kernel execution time (binary search)"));
 
-    NumberType* outputArray = new NumberType[outputArraySize];
-    err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, buf_needlesArray, CL_FALSE, 0, sizeof(NumberType) * outputArraySize, outputArray, 0, NULL, &clEvent2);
+    NumberType* outputArray = new NumberType[needlesSize];
+    err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, buf_needlesArray, CL_FALSE, 0, sizeof(NumberType) * needlesSize, outputArray, 0, NULL, &clEvent2);
     if (hasOPENCLError(err, "clEnqueueReadBuffer")) {
         delete[] outputArray;
         return 0;
@@ -157,10 +154,9 @@ NumberType* BinaryFindOpenCL::launch() {
 	logProfilingInfo(openCLHelper, clEvent2, QString("OpenCL binary search results copying time"));
 
     time_t time2 = time(NULL);
-    algoLog.details(QObject::tr("GPU execution time: %1 sec, GPUMem usage: %2 Mb, GPUConstantMem usage: %3 Mb")
+    algoLog.details(QObject::tr("GPU execution time: %1 sec, GPUMem usage: %2 Mb")
                  .arg((time2 - time1))
-                 .arg(usageGPUMem / (1 << 20))
-                 .arg(usageGPUConstantMem / (1 << 20)));
+                 .arg(usageGPUMem / (1 << 20)));
 
     return outputArray;
 }
