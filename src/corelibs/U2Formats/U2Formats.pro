@@ -8,6 +8,7 @@ HEADERS += src/ABIFormat.h \
            src/BAMUtils.h \
            src/BedFormat.h \
            src/ClustalWAlnFormat.h \
+		   src/DNAQualityIOUtils.h \
            src/DocumentFormatUtils.h \
            src/EMBLGenbankAbstractDocument.h \
            src/EMBLPlainTextFormat.h \
@@ -60,6 +61,7 @@ SOURCES += src/ABIFormat.cpp \
            src/BedFormat.cpp \
            src/ClustalWAlnFormat.cpp \
            src/DocumentFormatUtils.cpp \
+		   src/DNAQualityIOUtils.cpp \
            src/EMBLGenbankAbstractDocument.cpp \
            src/EMBLPlainTextFormat.cpp \
            src/FastaFormat.cpp \
