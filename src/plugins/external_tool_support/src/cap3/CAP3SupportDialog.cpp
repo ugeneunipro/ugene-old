@@ -36,7 +36,8 @@ CAP3SupportDialog::CAP3SupportDialog(CAP3SupportTaskSettings& s, QWidget* parent
 : QDialog(parent), settings(s)
 {
     setupUi(this);
-    
+
+    tabWidget->setCurrentIndex(0);
     QString outputUrl;
     outputPathLineEdit->setText(outputUrl);
 

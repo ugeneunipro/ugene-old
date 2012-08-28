@@ -35,17 +35,29 @@
 namespace U2  {
 
 void DNAQualityIOUtils::writeDNAQuality(const U2SequenceObject* seqObj, const QString& dstFilePath, 
-                                        bool appendData, U2OpStatus& stateInfo) {
+                                        bool appendData, bool decode, U2OpStatus& stateInfo) {
     
     const DNAQuality& seqQuality = seqObj->getQuality();
     const QString& seqName = seqObj->getSequenceName();
-    writeDNAQuality(seqName, seqQuality,dstFilePath, appendData, stateInfo );
+    writeDNAQuality(seqName, seqQuality,dstFilePath, appendData, decode, stateInfo );
 
    
 }
 
+
+static QByteArray getDecodedQuality(const DNAQuality& quality) {
+    QByteArray res;
+    for (int i = 0, sz = quality.qualCodes.size(); i < sz; ++i) {
+        QByteArray buf;
+        buf.setNum( quality.getValue(i) );
+        res.append(buf);
+        res.append(" ");
+    }
+    return res;
+}
+
 void DNAQualityIOUtils::writeDNAQuality( const QString& seqName, const DNAQuality& seqQuality, 
-                                        const QString& dstFilePath, bool appendData, 
+                                        const QString& dstFilePath, bool appendData, bool decode, 
                                         U2OpStatus& stateInfo )
 {
     if (seqQuality.isEmpty()) {
@@ -69,7 +81,7 @@ void DNAQualityIOUtils::writeDNAQuality( const QString& seqName, const DNAQualit
     data.append(">");
     data.append(seqName.toAscii());
     data.append("\n");
-    data.append(seqQuality.qualCodes);
+    data.append( decode ? getDecodedQuality(seqQuality) : seqQuality.qualCodes );
     data.append("\n");
 
     if (0 == ioAdapter->writeBlock(data)) {

@@ -36,6 +36,8 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/IOAdapter.h>
 
+#include <U2Formats/DNAQualityIOUtils.h>
+
 #include <U2Gui/OpenViewTask.h>
 
 namespace U2 {
@@ -249,8 +251,9 @@ void PrepareInputForCAP3Task::prepare() {
             setError(seqReader.getErrorMessage());
             return;
         }
-
+        
         QString outPath = outputDir + "/" + QString("%1_misc").arg(inputGUrls.first().baseFileName());
+        qualityFilePath = outPath + ".qual";
 
         if (!seqWriter.init(outPath)) {
             setError(tr("Failed to initialize sequence writer."));
@@ -284,6 +287,13 @@ void PrepareInputForCAP3Task::run()
         if (!ok) {
             setError(tr("Failed to write sequence %1").arg(seq->getName()));
             return;
+        }
+        
+        if (!seq->quality.isEmpty()) {
+            DNAQualityIOUtils::writeDNAQuality(seqName, seq->quality, qualityFilePath, true /*append*/, true /*decode*/, stateInfo );
+            if (stateInfo.hasError()) {
+                return;
+            }
         }
     }
     

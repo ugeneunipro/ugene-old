@@ -37,7 +37,8 @@ DNAQuality::DNAQuality( const QByteArray& qualScore, DNAQualityType t /* = DNAQu
 int DNAQuality::getValue( int pos ) const
 {
     assert(pos >=0 && pos < qualCodes.count());
-    return  ( (int)qualCodes.at(pos) - 33 );
+    return  type == DNAQualityType_Sanger ? 
+        ( (int)qualCodes.at(pos) - 33 ) : ( (int)qualCodes.at(pos) - 64 );
 }
 
 char DNAQuality::encode( int val, DNAQualityType type )

@@ -98,7 +98,7 @@ private:
     QStringList filesToCopy;
     StreamSequenceReader seqReader;
     StreamShortReadWriter seqWriter;
-    QString outputDir, preparedPath;
+    QString outputDir, preparedPath, qualityFilePath;
     bool onlyCopyFiles;
 };
 

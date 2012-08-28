@@ -37,7 +37,7 @@ ExportPhredQualityScoresTask::ExportPhredQualityScoresTask( const U2SequenceObje
 
 void ExportPhredQualityScoresTask::run() {
     
-    DNAQualityIOUtils::writeDNAQuality(seqObj, config.dstFilePath, config.appendData, stateInfo);
+    DNAQualityIOUtils::writeDNAQuality(seqObj, config.dstFilePath, config.appendData, false, stateInfo);
 
 }
 
