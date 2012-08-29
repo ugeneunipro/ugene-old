@@ -39,6 +39,7 @@ HEADERS += src/ABIFormat.h \
            src/StreamSequenceWriter.h \
            src/SwissProtPlainTextFormat.h \
            src/VCF4VariationFormat.h \
+           src/WIGFormat.h \
            src/sqlite_dbi/SQLiteAnnotationDbi.h \
            src/sqlite_dbi/SQLiteAssemblyDbi.h \
            src/sqlite_dbi/SQLiteAttributeDbi.h \
@@ -89,6 +90,7 @@ SOURCES += src/ABIFormat.cpp \
            src/StreamSequenceWriter.cpp \
            src/SwissProtPlainTextFormat.cpp \
            src/VCF4VariationFormat.cpp \
+           src/WIGFormat.cpp \
            src/sqlite_dbi/SQLiteAnnotationDbi.cpp \
            src/sqlite_dbi/SQLiteAssemblyDbi.cpp \
            src/sqlite_dbi/SQLiteAttributeDbi.cpp \

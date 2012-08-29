@@ -272,7 +272,8 @@ static bool isLoadToMem(const DocumentFormatId& id){
     // files that use dbi not loaded to memory
     if(id == BaseDocumentFormats::FASTA || id ==  BaseDocumentFormats::PLAIN_GENBANK ||
         id == BaseDocumentFormats::RAW_DNA_SEQUENCE || id == BaseDocumentFormats::FASTQ
-        || id == BaseDocumentFormats::GFF || id == BaseDocumentFormats::PDW){
+        || id == BaseDocumentFormats::GFF || id == BaseDocumentFormats::PDW
+        || id == BaseDocumentFormats::WIG){
             return false;
     }
     return true;
