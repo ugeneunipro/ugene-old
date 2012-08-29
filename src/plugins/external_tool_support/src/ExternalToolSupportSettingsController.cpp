@@ -260,7 +260,8 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
        (selectedItems.at(0)->text(0) != "BLAST+") &&
        (selectedItems.at(0)->text(0) != "GPU-BLAST+") &&
        (selectedItems.at(0)->text(0) != "Bowtie") &&
-       (selectedItems.at(0)->text(0) != "Cufflinks Tools"))
+       (selectedItems.at(0)->text(0) != "Cufflinks Tools") &&
+       (selectedItems.at(0)->text(0) != "Bowtie 2 Tools"))
     {
         descriptionTextEdit->setText(AppContext::getExternalToolRegistry()->getByName(selectedItems.at(0)->text(0))->getDescription());
         if(!externalToolsInfo[selectedItems.at(0)->text(0)].version.isEmpty()){
@@ -296,12 +297,22 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
     }
 
     if(selectedItems.at(0)->text(0) == "Cufflinks Tools"){
-        descriptionTextEdit->setText("<i>Cufflinks</i> assembles transcripts, estimates"
+        descriptionTextEdit->setText(tr("<i>Cufflinks</i> assembles transcripts, estimates"
             " their abundances, and tests for differential expression and regulation"
             " in RNA-Seq samples. It accepts aligned RNA-Seq reads and assembles"
             " the alignments into a parsimonious set of transcripts. It also estimates"
             " the relative abundances of these transcripts based on how many reads"
-            " support each one, taking into account biases in library preparation protocols. ");
+            " support each one, taking into account biases in library preparation protocols. "));
+    }
+
+    if(selectedItems.at(0)->text(0) == "Bowtie 2 Tools"){
+        descriptionTextEdit->setText(tr("<i>Bowtie 2</i> is an ultrafast and memory-efficient tool"
+            " for aligning sequencing reads to long reference sequences. It is particularly good"
+            " at aligning reads of about 50 up to 100s or 1000s of characters, and particularly"
+            " good at aligning to relatively long (e.g. mammalian) genomes."
+            " <br/><br/>It indexes the genome with an FM index to keep its memory footprint small:"
+            " for the human genome, its memory footprint is typically around 3.2Gb."
+            " <br/><br/><i>Bowtie 2</i> supports gapped, local, and paired-end alignment modes."));
     }
 }
 void ExternalToolSupportSettingsPageWidget::sl_onPathEditWidgetClick(){

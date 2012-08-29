@@ -19,22 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BOWTIE_SUPPORT_H_
-#define _U2_BOWTIE_SUPPORT_H_
+#ifndef _U2_BOWTIE2_SUPPORT_H_
+#define _U2_BOWTIE2_SUPPORT_H_
 
-#include "U2Core/ExternalToolRegistry.h"
+#include <U2Core/ExternalToolRegistry.h>
+
+#define BOWTIE2_ALIGN_TOOL_NAME "Bowtie 2 aligner"
+#define BOWTIE2_BUILD_TOOL_NAME "Bowtie 2 build indexer"
+#define BOWTIE2_INSPECT_TOOL_NAME "Bowtie 2 index inspector"
+
+#define BOWTIE2_TMP_DIR "bowtie2"
 
 namespace U2 {
 
-#define BOWTIE_TOOL_NAME "Bowtie aligner"
-#define BOWTIE_BUILD_TOOL_NAME "Bowtie build indexer"
-
-class BowtieSupport : public ExternalTool {
+class Bowtie2Support : public ExternalTool
+{
     Q_OBJECT
+
 public:
-    BowtieSupport(const QString &name, const QString &path = "");
+    Bowtie2Support(const QString& name, const QString& path = "");
 };
 
 } // namespace U2
 
-#endif // _U2_BOWTIE_SUPPORT_H_
+#endif

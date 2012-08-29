@@ -28,6 +28,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bowtie/BowtieSettingsWidget.h \
            src/bowtie/BowtieSupport.h \
            src/bowtie/BowtieTask.h \
+           src/bowtie2/Bowtie2Support.h \
            src/bwa/BwaSettingsWidget.h \
            src/bwa/BwaSupport.h \
            src/bwa/BwaTask.h \
@@ -57,6 +58,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/mrbayes/MrBayesSupport.h \
            src/mrbayes/MrBayesTask.h \
            src/mrbayes/MrBayesTests.h \
+           src/samtools/SamToolsExtToolSupport.h \
            src/spidey/SpideySupport.h \
            src/spidey/SpideySupportTask.h \
            src/tcoffee/TCoffeeSupport.h \
@@ -73,8 +75,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bowtie/bowtie_tests/bowtieTests.h \
            src/bwa/bwa_tests/bwaTests.h \
            src/cufflinks/CufflinksTests.h \
-    src/tophat/TopHatSupportTask.h \
-    src/tophat/TopHatSettings.h
+           src/tophat/TopHatSupportTask.h \
+           src/tophat/TopHatSettings.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BowtieBuildSettings.ui \
          src/ui/BowtieSettings.ui \
@@ -116,6 +118,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bowtie/BowtieSettingsWidget.cpp \
            src/bowtie/BowtieSupport.cpp \
            src/bowtie/BowtieTask.cpp \
+           src/bowtie2/Bowtie2Support.cpp \
            src/bwa/BwaSettingsWidget.cpp \
            src/bwa/BwaSupport.cpp \
            src/bwa/BwaTask.cpp \
@@ -145,6 +148,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/mrbayes/MrBayesSupport.cpp \
            src/mrbayes/MrBayesTask.cpp \
            src/mrbayes/MrBayesTests.cpp \
+           src/samtools/SamToolsExtToolSupport.cpp \
            src/spidey/SpideySupport.cpp \
            src/spidey/SpideySupportTask.cpp \
            src/tcoffee/TCoffeeSupport.cpp \
@@ -161,8 +165,8 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bowtie/bowtie_tests/bowtieTests.cpp \
            src/bwa/bwa_tests/bwaTests.cpp \
            src/cufflinks/CufflinksTests.cpp \
-    src/tophat/TopHatSupportTask.cpp \
-    src/tophat/TopHatSettings.cpp
+           src/tophat/TopHatSupportTask.cpp \
+           src/tophat/TopHatSettings.cpp
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

@@ -77,10 +77,12 @@
 #include "bowtie/BowtieTask.h"
 #include "bowtie/BowtieSettingsWidget.h"
 #include "bowtie/bowtie_tests/bowtieTests.h"
+#include "bowtie2/Bowtie2Support.h"
 #include "bwa/BwaSupport.h"
 #include "bwa/BwaTask.h"
 #include "bwa/BwaSettingsWidget.h"
 #include "bwa/bwa_tests/bwaTests.h"
+#include "samtools/SamToolsExtToolSupport.h"
 #include "spidey/SpideySupport.h"
 #include "spidey/SpideySupportTask.h"
 #include "cufflinks/CuffdiffWorker.h"
@@ -211,16 +213,34 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     AppContext::getExternalToolRegistry()->registerEntry(tBlastXPlusTool);
     BlastPlusSupport* rpsblastTool = new BlastPlusSupport(RPSBLAST_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(rpsblastTool);
+
+    // CAP3
     CAP3Support* cap3Tool = new CAP3Support(CAP3_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(cap3Tool);
+
+    // Bowtie
     BowtieSupport* bowtieSupport = new BowtieSupport(BOWTIE_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(bowtieSupport);
     BowtieSupport* bowtieBuildSupport = new BowtieSupport(BOWTIE_BUILD_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(bowtieBuildSupport);
+
+    // Bowtie 2
+    Bowtie2Support* bowtie2AlignSupport = new Bowtie2Support(BOWTIE2_ALIGN_TOOL_NAME);
+    Bowtie2Support* bowtie2BuildSupport = new Bowtie2Support(BOWTIE2_BUILD_TOOL_NAME);
+    Bowtie2Support* bowtie2InspectSupport = new Bowtie2Support(BOWTIE2_INSPECT_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(bowtie2AlignSupport);
+    AppContext::getExternalToolRegistry()->registerEntry(bowtie2BuildSupport);
+    AppContext::getExternalToolRegistry()->registerEntry(bowtie2InspectSupport);
+
+    // BWA
     BwaSupport* bwaSupport = new BwaSupport(BWA_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(bwaSupport);
 
-    //Spidey
+    // SAMtools (external tool)
+    SamToolsExtToolSupport* samToolsExtToolSupport = new SamToolsExtToolSupport(SAMTOOLS_EXT_TOOL_NAME);
+    AppContext::getExternalToolRegistry()->registerEntry(samToolsExtToolSupport);
+
+    // Spidey
     SpideySupport* spideySupport = new SpideySupport(SPIDEY_TOOL_NAME);
     AppContext::getExternalToolRegistry()->registerEntry(spideySupport);
 

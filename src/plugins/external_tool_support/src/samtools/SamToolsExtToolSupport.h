@@ -19,39 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include "TopHatSupport.h"
+#ifndef _U2_SAMTOOLS_EXT_TOOL_SUPPORT_H_
+#define _U2_SAMTOOLS_EXT_TOOL_SUPPORT_H_
 
-#include <U2Core/AppContext.h>
+#include <U2Core/ExternalToolRegistry.h>
 
-#include <U2Gui/MainWindow.h>
+#define SAMTOOLS_EXT_TOOL_NAME "SAMtools "
 
 
 namespace U2 {
 
-
-TopHatSupport::TopHatSupport(const QString& name, const QString& path)
-    : ExternalTool(name, path)
+class SamToolsExtToolSupport : public ExternalTool
 {
-    if (AppContext::getMainWindow()) {
-        icon = QIcon(":external_tool_support/images/cmdline.png");
-        grayIcon = QIcon(":external_tool_support/images/cmdline_gray.png");
-        warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
-    }
+    Q_OBJECT
 
-#ifdef Q_OS_WIN
-    executableFileName = "tophat.exe";
-#else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-    executableFileName = "tophat";
-#endif
-#endif
-
-    validMessage = "tophat:";
-    description = "<i>TopHat</i> is a program that aligns RNA-Seq reads to a genome"
-        " in order to identify exon-exon splice junctions. It is built on"
-        " the ultrafast short read mapping program Bowtie.";
-
-    toolKitName = "TopHat";
-}
+public:
+    SamToolsExtToolSupport(const QString& name, const QString& path = "");
+};
 
 } // namespace
+
+#endif

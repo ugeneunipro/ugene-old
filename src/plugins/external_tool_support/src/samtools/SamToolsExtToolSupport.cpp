@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "TopHatSupport.h"
+#include "SamToolsExtToolSupport.h"
 
 #include <U2Core/AppContext.h>
 
@@ -28,8 +28,7 @@
 
 namespace U2 {
 
-
-TopHatSupport::TopHatSupport(const QString& name, const QString& path)
+SamToolsExtToolSupport::SamToolsExtToolSupport(const QString& name, const QString& path)
     : ExternalTool(name, path)
 {
     if (AppContext::getMainWindow()) {
@@ -39,19 +38,19 @@ TopHatSupport::TopHatSupport(const QString& name, const QString& path)
     }
 
 #ifdef Q_OS_WIN
-    executableFileName = "tophat.exe";
+    executableFileName = "samtools.exe";
 #else
 #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-    executableFileName = "tophat";
+    executableFileName = "samtools";
 #endif
 #endif
 
-    validMessage = "tophat:";
-    description = "<i>TopHat</i> is a program that aligns RNA-Seq reads to a genome"
-        " in order to identify exon-exon splice junctions. It is built on"
-        " the ultrafast short read mapping program Bowtie.";
+    validMessage = "samtools (Tools for alignments in the SAM format)";
+    description = "<i>SAMtools</i> is a set of utilities for interacting"
+        " with and post-processing short DNA sequence read alignments."
+        " This external tool is required to run <i>TopHat</i> external tool.";
 
-    toolKitName = "TopHat";
+    toolKitName = "SAMtools";
 }
 
 } // namespace

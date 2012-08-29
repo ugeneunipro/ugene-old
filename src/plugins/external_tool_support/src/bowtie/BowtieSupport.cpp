@@ -54,7 +54,7 @@ BowtieSupport::BowtieSupport(const QString &name, const QString &path):
     }
     validationArguments.append("--version");
     validMessage="version";
-    description=tr("<i>Bowtie<i> is an ultrafast, memory-efficient short read aligner. "
+    description=tr("<i>Bowtie</i> is an ultrafast, memory-efficient short read aligner. "
                    "It aligns short DNA sequences (reads) to the human genome at "
                    "a rate of over 25 million 35-bp reads per hour. "
                    "Bowtie indexes the genome with a Burrows-Wheeler index to keep "
