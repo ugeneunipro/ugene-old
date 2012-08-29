@@ -91,7 +91,7 @@ private:
     bool prebuiltIndex;
     GenomeAlignerIndex *index;
     int qualityThreshold;
-    int readMemSize;
+    quint64 readMemSize;
     int seqPartSize;
     SearchQuery *lastQuery;
     bool noDataToAlign;
@@ -107,45 +107,6 @@ private:
     float currentProgress;
 
     void setupCreateIndexTask();
-};
-
-class ReadShortReadsSubTask : public Task {
-    Q_OBJECT
-public:
-    ReadShortReadsSubTask(SearchQuery **lastQuery,
-                          GenomeAlignerReader *seqReader,
-                          const DnaAssemblyToRefTaskSettings& settings,
-                          AlignContext &alignContext,
-                          quint64 freeMemorySize);
-    virtual void run();
-
-    uint bunchSize;
-    int minReadLength;
-    int maxReadLength;
-
-private:
-    SearchQuery **lastQuery;
-    GenomeAlignerReader *seqReader;
-    const DnaAssemblyToRefTaskSettings &settings;
-    AlignContext &alignContext;
-    quint64 freeMemorySize;
-
-    inline bool add(int &CMAX, int &W, int &q, int &readNum, SearchQuery *query, GenomeAlignerTask *parent);
-
-    static const int ONE_SEARCH_QUERY_SIZE = 38; //~38 bytes for one search query?
-};
-
-class WriteAlignedReadsSubTask : public Task {
-    Q_OBJECT
-public:
-    WriteAlignedReadsSubTask(GenomeAlignerWriter *seqWriter, QVector<SearchQuery*> &queries, quint64 &readsAligned);
-    virtual void run();
-private:
-    GenomeAlignerWriter *seqWriter;
-    QVector<SearchQuery*> &queries;
-    quint64 &readsAligned;
-
-    inline void setReadWritten(SearchQuery *read, SearchQuery *revCompl);
 };
 
 } //namespace
