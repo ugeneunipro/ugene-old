@@ -40,10 +40,19 @@ public:
     NumberType* launch();
 	bool hasError() {return isError;}
 private:
+    int initOpenCL();
+    int createBuffers();
+
+    int runBinaryFindKernel();
+
     bool hasOPENCLError(cl_int err, QString errorMessage);
-	void logProfilingInfo(const OpenCLHelper &openCLHelper, const cl_event &event, const QString &msgPrefix);
-    
+	void logProfilingInfo(const cl_event &event, const QString &msgPrefix);
+
 	bool isError;
+
+    OpenCLGpuModel* device;
+    cl_ulong deviceGlobalMemSize;
+    cl_ulong maxAllocateBufferSize;
 
     const NumberType* haystack;
     const int haystackSize;
@@ -51,9 +60,10 @@ private:
     const size_t needlesSize;
     const int *windowSizes;
 
+    cl_device_id deviceId;
     cl_event clEvent1;
     cl_event clEvent2;
-    cl_kernel clKernel;
+    cl_kernel binaryFindKernel;
     cl_program clProgram;
     cl_command_queue clCommandQueue;
     cl_context clContext;
@@ -68,4 +78,3 @@ private:
 #endif /*OPENCL_SUPPORT*/
 
 #endif // _U2_BINARYFINDOPENCL_H_
-

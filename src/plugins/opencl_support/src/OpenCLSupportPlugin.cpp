@@ -164,6 +164,14 @@ OpenCLSupportPlugin::OpenCLSupportError OpenCLSupportPlugin::obtainGpusInfo( QSt
             if (hasOPENCLError(errCode, errStr)) {
                 return Error_OpenCLError;
             }
+
+            cl_ulong maxAllocateMemorySize = 0;
+
+            errCode = openCLHelper.clGetDeviceInfo_p(deviceId, CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(cl_ulong), &maxAllocateMemorySize, &actualParamSize);
+            if (hasOPENCLError(errCode, errStr)) {
+                return Error_OpenCLError;
+            }
+
             //******************************
             cl_ulong localMemSize = 0;
 
@@ -200,11 +208,18 @@ OpenCLSupportPlugin::OpenCLSupportError OpenCLSupportPlugin::obtainGpusInfo( QSt
                 return Error_OpenCLError;
             }
 
+            cl_context deviceContext = openCLHelper.clCreateContext_p(0, 1, &deviceId, NULL, NULL, &errCode);
+            if (hasOPENCLError(errCode, errStr)) {                
+                return Error_OpenCLError;
+            }
+
             //create OpenCL model
             OpenCLGpuModel * openCLGpuModel = new OpenCLGpuModel( vendorName + " " + deviceName,
+                                                                  OpenCLGpuContext((long)deviceContext),
                                                                   OpenCLGpuId((long)deviceId),
                                                                   (qint64)platformIDs.get()[i],
                                                                   globalMemSize,
+                                                                  maxAllocateMemorySize,
                                                                   localMemSize,
                                                                   maxComputeUnits,
                                                                   maxWorkGroupSize,

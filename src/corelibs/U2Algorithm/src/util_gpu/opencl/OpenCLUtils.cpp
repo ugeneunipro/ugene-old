@@ -77,6 +77,23 @@ cl_program OpenCLUtils::createProgramByResource(
     return clProgram;
 }
 
+size_t OpenCLUtils::getPreferredWorkGroupSize(
+                cl_kernel kernel,
+                cl_device_id deviceId,
+                const OpenCLHelper& openCLHelper,
+                cl_int &err) {
+
+    size_t preferredWorkGroupSize = 0;
+    err = openCLHelper.clGetKernelWorkGroupInfo_p(kernel, deviceId, CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE,
+        sizeof(size_t), &preferredWorkGroupSize, NULL);
+
+    if (err != CL_SUCCESS) {
+        preferredWorkGroupSize = 32; // set default value to prevent calculation error because of this "performance hint" error
+    }
+
+    return preferredWorkGroupSize;
+}
+
 }//namespace
 
 #endif /*OPENCL_SUPPORT*/
