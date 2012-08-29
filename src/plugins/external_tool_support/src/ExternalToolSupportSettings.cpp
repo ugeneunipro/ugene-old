@@ -81,6 +81,7 @@ bool ExternalToolSupportSettings::getExternalTools() {
         }
     }
     prevNumberExternalTools = numberExternalTools;
+    ExternalToolSupportSettings::setExternalTools();
     return true;//bad code
 }
 
