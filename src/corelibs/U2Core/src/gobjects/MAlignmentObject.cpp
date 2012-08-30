@@ -50,14 +50,15 @@ void MAlignmentObject::saveState(){
 }
 
 void MAlignmentObject::releaseState(){
-    emit si_completeStateChanged(true);
+    if(!isStateLocked()) {
+        emit si_completeStateChanged(true);
 
-    MAlignment maBefore = memento->getState();
-    setModified(true);
-    MAlignmentModInfo mi;
+        MAlignment maBefore = memento->getState();
+        setModified(true);
+        MAlignmentModInfo mi;
 
-    emit si_alignmentChanged(maBefore, mi);
-
+        emit si_alignmentChanged(maBefore, mi);
+    }
 }
 
 
