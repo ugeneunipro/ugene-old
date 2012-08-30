@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Export document</string>
+   <string>Export Document</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -86,7 +86,7 @@
      <item>
       <widget class="QPushButton" name="createButton">
        <property name="text">
-        <string>Save</string>
+        <string>Export</string>
        </property>
       </widget>
      </item>

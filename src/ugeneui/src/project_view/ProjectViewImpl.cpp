@@ -368,8 +368,8 @@ void ProjectViewImpl::enable() {
     relocateDocumentAction->setIcon(QIcon(":ugene/images/relocate.png"));
     connect(relocateDocumentAction, SIGNAL(triggered()), SLOT(sl_relocate()));
 
-    exportDocumentAction = new QAction(tr("Export document.."), w);
-	exportDocumentAction->setObjectName("Export document..");
+    exportDocumentAction = new QAction(tr("Export document..."), w);
+	exportDocumentAction->setObjectName("Export document...");
     exportDocumentAction->setIcon(QIcon(":ugene/images/save_copy.png"));
     connect(exportDocumentAction, SIGNAL(triggered()), SLOT(sl_exportDocument()));
 
