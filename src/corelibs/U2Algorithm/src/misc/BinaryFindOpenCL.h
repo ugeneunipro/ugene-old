@@ -48,6 +48,8 @@ private:
     bool hasOPENCLError(cl_int err, QString errorMessage);
 	void logProfilingInfo(const cl_event &event, const QString &msgPrefix);
 
+    int checkCreateBuffer(const QString &bufferName, cl_mem &buf, cl_mem_flags flags, size_t thisBufferSize, void *ptr, size_t &usageGPUMem);
+
 	bool isError;
 
     OpenCLGpuModel* device;

@@ -132,6 +132,26 @@ int BinaryFindOpenCL::initOpenCL() {
     return err;
 }
 
+int BinaryFindOpenCL::checkCreateBuffer(const QString &bufferName, cl_mem &buf, cl_mem_flags flags, size_t thisBufferSize, void *ptr, size_t &usageGPUMem) {
+
+    const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
+    if (!openCLHelper.isLoaded()) {
+        coreLog.error(openCLHelper.getErrorString());
+        return -1;
+    }
+    cl_int err = CL_SUCCESS;
+    usageGPUMem += thisBufferSize;
+
+    algoLog.details(QString("Creating buffer %1 bytes").arg(thisBufferSize));
+    SAFE_POINT(thisBufferSize <= maxAllocateBufferSize, QString("Too big buffer: %1Mb").arg(thisBufferSize/(1024*1024)), -1);
+    SAFE_POINT(usageGPUMem <= deviceGlobalMemSize, QString("Too much memory used: %1Mb").arg(usageGPUMem/(1024*1024)), -1);
+
+    buf = openCLHelper.clCreateBuffer_p(clContext, flags, thisBufferSize, ptr, &err);
+    hasOPENCLError(err, QString("clCreateBuffer(%1)").arg(bufferName));
+
+    return err;
+}
+
 int BinaryFindOpenCL::createBuffers() {
     const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
     if (!openCLHelper.isLoaded()) {
@@ -139,35 +159,14 @@ int BinaryFindOpenCL::createBuffers() {
         return -1;
     }
     cl_int err = CL_SUCCESS;
+
     size_t usageGPUMem = 0;
-    size_t thisBufferSize = 0;
-
-    thisBufferSize = sizeof(NumberType) * needlesSize;
-    usageGPUMem += thisBufferSize;
-    SAFE_POINT(thisBufferSize <= maxAllocateBufferSize, QString("Too big buffer: %1Mb").arg(thisBufferSize/(1024*1024)), NULL);
-    SAFE_POINT(usageGPUMem <= deviceGlobalMemSize, QString("Too much memory used: %1Mb").arg(usageGPUMem/(1024*1024)), NULL);
-    buf_needlesArray = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
-        thisBufferSize, (void*)needles, &err);
-    if (hasOPENCLError(err, "clCreateBuffer(buf_needlesArray)")) return err;
-
-    thisBufferSize = sizeof(cl_int) * needlesSize;
-    usageGPUMem += thisBufferSize;
-    SAFE_POINT(thisBufferSize <= maxAllocateBufferSize, QString("Too big buffer: %1Mb").arg(thisBufferSize/(1024*1024)), NULL);
-    SAFE_POINT(usageGPUMem <= deviceGlobalMemSize, QString("Too much memory used: %1Mb").arg(usageGPUMem/(1024*1024)), NULL);
-    buf_windowSizesArray = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
-        thisBufferSize, (void*)windowSizes, &err);
-    if (hasOPENCLError(err, "clCreateBuffer(buf_windowSizesArray)")) return err;
-
-    thisBufferSize = sizeof(NumberType) * haystackSize;
-    usageGPUMem += thisBufferSize;
-    SAFE_POINT(thisBufferSize <= maxAllocateBufferSize, QString("Too big buffer: %1Mb").arg(thisBufferSize/(1024*1024)), NULL);
-    SAFE_POINT(usageGPUMem <= deviceGlobalMemSize, QString("Too much memory used: %1Mb").arg(usageGPUMem/(1024*1024)), NULL);
-    buf_sortedHaystackArray = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-        thisBufferSize, (void*)haystack, &err);
-    if (hasOPENCLError(err, "clCreateBuffer (buf_sortedHaystackArray)")) return err;
+    err |= checkCreateBuffer("buf_windowSizesArray", buf_windowSizesArray, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(cl_int)*needlesSize, (void*)windowSizes, usageGPUMem);
+    err |= checkCreateBuffer("buf_needlesArray", buf_needlesArray, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(NumberType)*needlesSize, (void*)needles, usageGPUMem);
+    err |= checkCreateBuffer("buf_sortedHaystackArray", buf_sortedHaystackArray, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(NumberType)*haystackSize, (void*)haystack, usageGPUMem);
+    SAFE_POINT(err == 0, "Creating OpenCL buffer error", err);
 
     algoLog.details(QObject::tr("GPU memory usage: %1 Mb").arg(usageGPUMem / (1 << 20)));
-
     return err;
 }
 
