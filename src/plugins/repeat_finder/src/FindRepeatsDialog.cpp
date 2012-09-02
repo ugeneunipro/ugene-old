@@ -69,6 +69,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
 {
     sc = _sc;
     setupUi(this);
+    tabWidget->setCurrentIndex(0);
     
     CreateAnnotationModel m;
     m.hideLocation = true;

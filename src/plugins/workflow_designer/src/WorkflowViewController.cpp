@@ -172,7 +172,7 @@ scriptingMode(false) {
     
     tabs->insertTab(SamplesTab, samples, tr("Samples"));
     splitter->addWidget(tabs);
-
+    
     sceneView = new GlassView(scene);
     connect(samples, SIGNAL(setupGlass(GlassPane*)), sceneView, SLOT(setGlass(GlassPane*)));
     connect(samples, SIGNAL(sampleSelected(QString)), this, SLOT(sl_pasteSample(QString)));

@@ -52,6 +52,7 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
 : QDialog(p),seqCtx(ctx), timer(NULL), animationCounter(0)
 {
     setupUi(this);
+    tabWidget->setCurrentIndex(0);
         
     dnaObj = qobject_cast<U2SequenceObject*>(ctx->getSequenceGObject());
     sourceObj = NULL;

@@ -47,6 +47,7 @@ SmithWatermanDialog::SmithWatermanDialog(QWidget* w,
     ctxSeq = ctx;
     dialogConfig = _dialogConfig;
     setupUi(this);
+    tabWidget->setCurrentIndex(0);
     rs = new RegionSelector(this, ctx->getSequenceLength(), true, ctx->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
 

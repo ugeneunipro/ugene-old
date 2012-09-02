@@ -48,6 +48,8 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
             QDialog(_parent)
 {
     setupUi(this);
+    optionsTab->setCurrentIndex(0);
+
     //I don`t know what this in local BLAST
     phiPatternEdit->hide();
     phiPatternLabel->hide();

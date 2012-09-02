@@ -72,6 +72,7 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
 : QDialog(_ctx->getAnnotatedDNAView()->getWidget()) 
 {
     setupUi(this);
+    tabWidget->setCurrentIndex(0);
 
     ctx = _ctx;
     task = NULL;

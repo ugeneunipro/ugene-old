@@ -128,6 +128,7 @@ SendSelectionDialog::SendSelectionDialog(const U2SequenceObject* dnaso, bool _is
     ca_m.sequenceLen = dnaso->getSequenceLength();
     ca_c = new CreateAnnotationWidgetController(ca_m, this);
     setupUi(this);
+    optionsTab->setCurrentIndex(0);
     int idx = 2;
     QWidget *wdgt;
     wdgt = ca_c->getWidget();

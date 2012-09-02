@@ -45,6 +45,7 @@ CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWid
 {
     
     setupUi(this);
+    tabWidget->setCurrentIndex(0);
         
     seqObj = ctx->getSequenceObject();
 

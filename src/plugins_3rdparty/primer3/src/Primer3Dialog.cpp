@@ -35,6 +35,7 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
         defaultSettings(defaultSettings)
 {
     ui.setupUi(this);
+    ui.tabWidget->setCurrentIndex(0);
 
     {
         CreateAnnotationModel createAnnotationModel;

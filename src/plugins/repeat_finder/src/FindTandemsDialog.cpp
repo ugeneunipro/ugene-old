@@ -61,7 +61,8 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
 {
     sc = _sc;
     setupUi(this);
-    
+    tabWidget->setCurrentIndex(0);
+
     CreateAnnotationModel m;
     m.hideLocation = true;
     m.data->name = GBFeatureUtils::getKeyInfo(GBFeatureKey_repeat_unit).text;

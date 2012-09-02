@@ -43,6 +43,7 @@ static const int DEFAULT_PART_SIZE = 10;
 
 GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaAssemblyAlgorithmMainWidget(parent) {
     setupUi(this);
+    tabWidget->setCurrentIndex(0);
     layout()->setContentsMargins(0,0,0,0);
 
     connect(buildIndexFileButton, SIGNAL(clicked()), SLOT(sl_onSetIndexDirButtonClicked()));

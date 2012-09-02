@@ -43,6 +43,7 @@ ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragm
 : QDialog(p), fragments(fragmentList)
 {
     setupUi(this);
+    tabWidget->setCurrentIndex(0);
     
     foreach (const DNAFragment& frag, fragments) {
         QString fragItem = QString("%1 (%2) %3").arg(frag.getSequenceName())
