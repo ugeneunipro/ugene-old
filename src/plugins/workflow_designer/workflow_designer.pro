@@ -44,6 +44,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/MSA2SequenceWorker.h \
            src/library/MultiplexerWorker.h \
            src/library/PassFilterWorker.h \
+           src/library/ReadAnnotationsWorker.h \
            src/library/ReadAssemblyWorker.h \
            src/library/ReadVariationWorker.h \
            src/library/RemoteDBFetcherWorker.h \
@@ -114,6 +115,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/MSA2SequenceWorker.cpp \
            src/library/MultiplexerWorker.cpp \
            src/library/PassFilterWorker.cpp \
+           src/library/ReadAnnotationsWorker.cpp \
            src/library/ReadAssemblyWorker.cpp \
            src/library/ReadVariationWorker.cpp \
            src/library/RemoteDBFetcherWorker.cpp \

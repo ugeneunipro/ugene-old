@@ -50,6 +50,7 @@
 #include "library/ReadVariationWorker.h"
 #include "library/WriteAssemblyWorkers.h"
 #include "library/WriteVariationWorker.h"
+#include "library/ReadAnnotationsWorker.h"
 
 #include "RemoteDBFetcherWorker.h"
 
@@ -290,6 +291,7 @@ void CoreLib::init() {
     ReadAssemblyWorkerFactory::init();
     AssemblyToSequencesWorkerFactory::init();
     WriteAssemblyWorkerFactory::init();
+    ReadAnnotationsWorkerFactory::init();
 
     initUsersWorkers();
     initExternalToolsWorkers();
