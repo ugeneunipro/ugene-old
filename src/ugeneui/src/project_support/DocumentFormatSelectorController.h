@@ -29,16 +29,17 @@
 
 #include <QtGui/QRadioButton>
 #include <QtGui/QToolButton>
+#include <QtGui/QComboBox>
 
 namespace U2 {
 
 class DocumentFormatSelectorController: public QDialog, public Ui_DocumentFormatSelectorDialog {
 	Q_OBJECT
 
-    DocumentFormatSelectorController(const QList<FormatDetectionResult>& results, QWidget *p);
+    DocumentFormatSelectorController(QList<FormatDetectionResult>& results, QWidget *p);
 
 public:
-    static int selectResult(const GUrl& url, const QByteArray& rawData, const QList<FormatDetectionResult>& results);
+    static int selectResult(const GUrl& url, QByteArray& rawData, QList<FormatDetectionResult>& results);
     static QString score2Text(int score);
 
 private:
@@ -50,6 +51,7 @@ private slots:
 private:
     QList<QRadioButton*>    radioButtons;
     QList<QToolButton*>     moreButtons;
+    QComboBox *userSelectedFormat;
     const QList<FormatDetectionResult>& formatDetectionResults;
 };
 

@@ -30,7 +30,7 @@
 namespace U2{
 
 
-DocumentFormatSelectorController::DocumentFormatSelectorController(const QList<FormatDetectionResult>& results, QWidget *p) 
+DocumentFormatSelectorController::DocumentFormatSelectorController(QList<FormatDetectionResult>& results, QWidget *p) 
 : QDialog(p), formatDetectionResults(results)
 {
 	setupUi(this);
@@ -38,7 +38,7 @@ DocumentFormatSelectorController::DocumentFormatSelectorController(const QList<F
 
 
 
-int DocumentFormatSelectorController::selectResult(const GUrl& url, const QByteArray& rawData, const QList<FormatDetectionResult>& results) {
+int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& rawData, QList<FormatDetectionResult>& results){
     SAFE_POINT(!results.isEmpty(), "Results list is empty!", -1);
     if (results.size() == 1) {
         return 0;
@@ -53,8 +53,10 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, const QByteA
     d.previewEdit->setPlainText(safeData);
 
     QVBoxLayout *vbox = new QVBoxLayout();
+    QList<DocumentFormatId> detectedIds;
     for (int i =0; i < results.size(); i++) {
         const FormatDetectionResult& r = results[i];
+        detectedIds.append(r.format->getFormatId());
         QString text;
         if (r.format != NULL) {
             text = tr("<b>%1</b> format. Score: %2 <i>(%3)</i>").arg(r.format->getFormatName()).arg(r.score()).arg(score2Text(r.score()));
@@ -83,6 +85,29 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, const QByteA
         vbox->addLayout(hbox);
         d.radioButtons << rb;
     }
+    //additional option: user selecting format
+    {
+        QString text(tr("Choose format by myself"));
+        QHBoxLayout* hbox = new QHBoxLayout();
+        QRadioButton* rb = new QRadioButton();
+        QLabel* label = new QLabel(text);
+        label->setAlignment(Qt::AlignLeft);
+        label->setSizePolicy(QSizePolicy::Expanding, label->sizePolicy().verticalPolicy());
+        d.userSelectedFormat = new QComboBox();
+        foreach(DocumentFormatId id, AppContext::getDocumentFormatRegistry()->getRegisteredFormats()){
+            QString formatName = AppContext::getDocumentFormatRegistry()->getFormatById(id)->getFormatName();
+            if(!detectedIds.contains(id)){
+                d.userSelectedFormat->insertItem(0, formatName, id);
+            }
+        }
+
+        hbox->addWidget(rb);
+        hbox->addWidget(label);
+        hbox->addStretch(2);
+        hbox->addWidget(d.userSelectedFormat);
+        vbox->addLayout(hbox);
+        d.radioButtons << rb;
+    }
     vbox->addStretch();
     d.optionsBox->setLayout(vbox);
 
@@ -90,7 +115,13 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, const QByteA
     if (rc == QDialog::Rejected) {
         return -1;
     }
-    int idx = d.getSelectedFormatIdx();  
+    int idx = d.getSelectedFormatIdx();
+    if(idx == results.size()){
+        FormatDetectionResult *r = new FormatDetectionResult();
+        DocumentFormatId id = d.userSelectedFormat->itemData(d.userSelectedFormat->currentIndex()).toString();
+        r->format = AppContext::getDocumentFormatRegistry()->getFormatById(id);
+        results.insert(idx, *r);
+    }
     return idx;
 }
 
