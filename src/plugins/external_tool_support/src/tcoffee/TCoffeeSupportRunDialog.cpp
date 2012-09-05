@@ -38,7 +38,7 @@ TCoffeeSupportRunDialog::TCoffeeSupportRunDialog(TCoffeeSupportTaskSettings& _se
 {
     setupUi(this);
     inputGroupBox->setVisible(false);
-    this->setFixedHeight(160);
+    this->adjustSize();
     connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
 }
@@ -61,6 +61,7 @@ TCoffeeWithExtFileSpecifySupportRunDialog::TCoffeeWithExtFileSpecifySupportRunDi
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
+    this->adjustSize();
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
     connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
     connect(this->cancelButton, SIGNAL(clicked()), this, SLOT(reject()));

@@ -57,10 +57,8 @@ KalignDialogController::KalignDialogController(QWidget* w, const MAlignment& _ma
 {
     setupUi(this);
     setupUiExt();
-    //this->setMaximumHeight(this->maximumHeight() - inputGroupBox->height());
-    //this->height(this->height() - inputGroupBox->height());
-    this->setFixedHeight(270);
     inputGroupBox->setVisible(false);
+    this->adjustSize();
     translateCheckBox->setEnabled(ma.getAlphabet()->isNucleic());
     DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
@@ -115,7 +113,7 @@ KalignAlignWithExtFileSpecifyDialogController::KalignAlignWithExtFileSpecifyDial
 : QDialog(w), settings(_settings)
     {
     setupUi(this);
-
+    this->adjustSize();
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
     connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
 

@@ -38,7 +38,7 @@ ClustalWSupportRunDialog::ClustalWSupportRunDialog(const MAlignment& _ma, Clusta
 {
     setupUi(this);
     inputGroupBox->setVisible(false);
-    this->setFixedHeight(370);
+    this->adjustSize();
     connect(this->iterationTypeCheckBox,SIGNAL(toggled(bool)),this,SLOT(sl_iterationTypeEnabled(bool)));
     connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
@@ -108,6 +108,7 @@ ClustalWWithExtFileSpecifySupportRunDialog::ClustalWWithExtFileSpecifySupportRun
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
+    this->adjustSize();
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
     connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
 

@@ -41,6 +41,7 @@ ClustalOSupportRunDialog::ClustalOSupportRunDialog(const MAlignment& _ma, Clusta
 {
     setupUi(this);
     inputGroupBox->setVisible(false);
+    this->adjustSize();
     connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
     numberOfCPUSpinBox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
@@ -68,6 +69,7 @@ ClustalOWithExtFileSpecifySupportRunDialog::ClustalOWithExtFileSpecifySupportRun
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
+    this->adjustSize();
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
     connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
 

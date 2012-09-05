@@ -40,10 +40,12 @@ MuscleAlignDialogController::MuscleAlignDialogController(QWidget* w, const MAlig
     : QDialog(w), ma(_ma), settings(_settings)
 {
     setupUi(this);
-    rangeEndSB->setMaximum(ma.getLength());
-    rangeEndSB->setValue(ma.getLength());
     translateCheckBox->setEnabled(ma.getAlphabet()->isNucleic());
     inputGroupBox->setVisible(false);
+    this->adjustSize();
+
+    rangeEndSB->setMaximum(ma.getLength());
+    rangeEndSB->setValue(ma.getLength());
 
     if (settings.alignRegion) {
         customRangeRB->setChecked(true);
@@ -121,6 +123,7 @@ MuscleAlignWithExtFileSpecifyDialogController::MuscleAlignWithExtFileSpecifyDial
 : QDialog(w), settings(_settings)
 {
     setupUi(this);
+    this->adjustSize();
     //add input and output files 
 
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
