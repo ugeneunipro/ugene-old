@@ -45,7 +45,7 @@ public:
                     cl_kernel kernel,
                     cl_device_id deviceId,
                     const OpenCLHelper& openCLHelper,
-                    cl_int &err); // performance hint, returnes 32 if error
+                    cl_int &err); // performance hint, returnes 32 if error, ignoring err
 };
 
 }//namespace

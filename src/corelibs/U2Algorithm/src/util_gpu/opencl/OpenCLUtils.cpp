@@ -83,11 +83,12 @@ size_t OpenCLUtils::getPreferredWorkGroupSize(
                 const OpenCLHelper& openCLHelper,
                 cl_int &err) {
 
+    cl_int err2 = 0;
     size_t preferredWorkGroupSize = 0;
-    err = openCLHelper.clGetKernelWorkGroupInfo_p(kernel, deviceId, CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE,
+    err2 |= openCLHelper.clGetKernelWorkGroupInfo_p(kernel, deviceId, CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE,
         sizeof(size_t), &preferredWorkGroupSize, NULL);
 
-    if (err != CL_SUCCESS) {
+    if (err2 != CL_SUCCESS) {
         preferredWorkGroupSize = 32; // set default value to prevent calculation error because of this "performance hint" error
     }
 
