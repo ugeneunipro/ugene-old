@@ -23,6 +23,7 @@
 #define _U2_USER_APPLICATIONS_SETTINGS_H_
 
 #include <U2Core/global.h>
+#include <U2Core/U2OpStatus.h>
 
 namespace U2 {
 
@@ -63,6 +64,9 @@ public:
     // temporary dir for the current process: userTemporaryDirPath + "ugene_tmp/p" + processId + "/domain"
     // domain is used here to avoid collision between different algorithms
     QString getCurrentProcessTemporaryDirPath(const QString& domain = QString()) const;
+
+    // returns the temropary path: userTemporaryDirPath + "ugene_tmp/p" + processId + "/domain/" + tmpSubDir
+    QString createCurrentProcessTemporarySubDir(U2OpStatus &os, const QString &domain = QString()) const;
 
     bool isStatisticsCollectionEnabled() const;
     void setEnableCollectingStatistics(bool b);

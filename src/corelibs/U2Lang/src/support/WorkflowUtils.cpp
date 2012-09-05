@@ -827,6 +827,29 @@ bool WorkflowUtils::isBindingValid(const QList<Actor*> &procList, Port *endPort,
     return pathExists(start, endPort, path);
 }
 
+#define WIN_LAUNCH_CMD_COMMAND "cmd /C "
+#define START_WAIT_MSEC 3000
+
+bool WorkflowUtils::startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments) {
+    process->start(program, arguments);
+    bool started = process->waitForStarted(START_WAIT_MSEC);
+
+#ifdef Q_OS_WIN32
+    if(!started) {
+        QString execStr = WIN_LAUNCH_CMD_COMMAND + program;
+        foreach (const QString arg, arguments) {
+            execStr += " " + arg;
+        }
+        process->start(execStr);
+        coreLog.error(tr("Can't run an executable file \"%1\". Try to run it as a cmd line command: \"%2\"")
+            .arg(program).arg(execStr));
+        started = process->waitForStarted(START_WAIT_MSEC);
+    }
+#endif
+
+    return started;
+}
+
 /*****************************
  * PrompterBaseImpl
  *****************************/

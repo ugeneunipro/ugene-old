@@ -26,6 +26,9 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/Log.h>
+
+#include <U2Lang/WorkflowUtils.h>
+
 #include <QtCore/QString>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -90,9 +93,9 @@ void ExternalToolRunTask::run(){
         algoLog.details(tr("Working directory is \"%1\"").arg(externalToolProcess->workingDirectory()));
     }
 
-    externalToolProcess->start(program, arguments);
-    //externalToolProcess->state()
-    if (!externalToolProcess->waitForStarted(3000)){
+    bool started = WorkflowUtils::startExternalProcess(externalToolProcess, program, arguments);
+
+    if (!started){
         ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
         if (tool->isValid()){
             stateInfo.setError(tr("Can not run %1 tool.").arg(toolName));

@@ -466,27 +466,9 @@ void LaunchExternalToolTask::run() {
     }
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     externalProcess->setProcessEnvironment(env);
-    externalProcess->start(execString);
     taskLog.details(tr("Running external process: %1").arg(execString));
 
-    bool startOk = externalProcess->waitForStarted(START_WAIT_MSEC);
-
-#ifdef Q_OS_WIN32
-    if(!startOk) {
-        QStringList args = parseCombinedArgString(execString);
-        if (!args.isEmpty()) {
-            QFileInfo fi(args.first());
-            if (!fi.isAbsolute()) {
-                QString append = args.size() > 1 ? " ..." : "";
-                taskLog.error(tr("Can't run an executable file \"%1%2\". Try to run it as a cmd line command: \"%3%4\"")
-                    .arg(args.first()).arg(append).arg(WIN_LAUNCH_CMD_COMMAND + args.first()).arg(append));
-                externalProcess->start(WIN_LAUNCH_CMD_COMMAND + execString);
-                taskLog.details(tr("Running external process: %1").arg(WIN_LAUNCH_CMD_COMMAND + execString));
-                startOk = externalProcess->waitForStarted(START_WAIT_MSEC);
-            }
-        }
-    }
-#endif
+    bool startOk = WorkflowUtils::startExternalProcess(externalProcess, execString, QStringList());
 
     if(!startOk) {
         stateInfo.setError(tr("Can't launch %1").arg(execString));

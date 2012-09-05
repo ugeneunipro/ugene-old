@@ -24,6 +24,9 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/Log.h>
+
+#include <U2Lang/WorkflowUtils.h>
+
 #include <QtCore/QString>
 
 namespace U2 {
@@ -71,8 +74,12 @@ void ExternalToolValidateTask::prepare(){
 }
 void ExternalToolValidateTask::run(){
     externalToolProcess=new QProcess();
-    externalToolProcess->start(program, arguments);
-    if(!externalToolProcess->waitForStarted(3000)){
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    externalToolProcess->setProcessEnvironment(env);
+
+    bool started = WorkflowUtils::startExternalProcess(externalToolProcess, program, arguments);
+
+    if(!started){
         stateInfo.setError(tr("Tool does not start.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
         isValid=false;
         return;

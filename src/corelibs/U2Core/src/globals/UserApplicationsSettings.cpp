@@ -181,6 +181,39 @@ QString UserAppsSettings::getCurrentProcessTemporaryDirPath(const QString& domai
     return tmpDirPath;
 }
 
+static const int MAX_ATTEMPTS = 500;
+
+QString UserAppsSettings::createCurrentProcessTemporarySubDir(U2OpStatus &os, const QString &domain) const {
+    QDir baseDir(getCurrentProcessTemporaryDirPath(domain));
+    if (!baseDir.exists()) {
+        bool created = baseDir.mkpath(baseDir.absolutePath());
+        if (!created) {
+            os.setError(QString("Can not create the directory: %1").arg(baseDir.absolutePath()));
+            return "";
+        }
+    }
+
+    uint time = QDateTime::currentDateTime().toTime_t();
+    QString baseDirName = QByteArray::number(time);
+
+    // create sub dir
+    int idx = 0;
+    QString result;
+    bool created = false;
+    do {
+        result = baseDirName + "_" + QByteArray::number(idx);
+        created = baseDir.mkdir(result);
+        idx++;
+
+        if (idx > MAX_ATTEMPTS) {
+            os.setError(QString("Can not create a sub-directory in: %1").arg(baseDir.absolutePath()));
+            return "";
+        }
+    } while (!created);
+
+    return baseDir.absolutePath() + "/" + result;
+}
+
 QString UserAppsSettings::getFileStorageDir() const {
     return AppContext::getSettings()->getValue(SETTINGS_ROOT + FILE_STORAGE_DIR, QDir::homePath()+"/.UGENE_files").toString();
 }

@@ -94,6 +94,8 @@ public:
     static void applyPathsToBusMap(QStrStrMap &busMap, const SlotPathMap &pathMap);
 
     static bool isBindingValid(const QList<Actor*> &procList, Port *endPort, const QString &binding, const QStringList &path);
+
+    static bool startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments);
     
 private:
     static QStringList initExtensions();
