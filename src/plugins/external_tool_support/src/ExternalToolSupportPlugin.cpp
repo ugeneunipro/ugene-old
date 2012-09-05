@@ -38,6 +38,7 @@
 
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Gui/GUIUtils.h>
 
 #include <U2Test/XMLTestFormat.h>
@@ -91,6 +92,8 @@
 #include "cufflinks/CuffmergeWorker.h"
 #include "tophat/TopHatSupport.h"
 #include "tophat/TopHatWorker.h"
+#include "ceas/CEASReportWorker.h"
+#include "ceas/CEASSupport.h"
 
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
@@ -175,54 +178,57 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         toolsSubmenu->addAction(mAFFTAction);
         toolsSubmenu->addAction(tCoffeeAction);
     }
+    ExternalToolRegistry *etRegistry = AppContext::getExternalToolRegistry();
+    CHECK(NULL != etRegistry, );
+
     //FormatDB
     FormatDBSupport* formatDBTool = new FormatDBSupport(FORMATDB_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(formatDBTool);
+    etRegistry->registerEntry(formatDBTool);
 
     //FormatDB from CUDA-BlastP
     FormatDBSupport* cudaFormatDBTool = new FormatDBSupport(CUDA_FORMATDB_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(cudaFormatDBTool);
+    etRegistry->registerEntry(cudaFormatDBTool);
 
     //MakeBLASTDB from BLAST+
     FormatDBSupport* makeBLASTDBTool = new FormatDBSupport(MAKEBLASTDB_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(makeBLASTDBTool);
+    etRegistry->registerEntry(makeBLASTDBTool);
 
     //MakeBLASTDB from GPU-BLAST+
 //     FormatDBSupport* gpuMakeBLASTDBTool = new FormatDBSupport(GPU_MAKEBLASTDB_TOOL_NAME); // https://ugene.unipro.ru/tracker/browse/UGENE-945
-//     AppContext::getExternalToolRegistry()->registerEntry(gpuMakeBLASTDBTool);
+//     etRegistry->registerEntry(gpuMakeBLASTDBTool);
 
     //BlastAll
     BlastAllSupport* blastallTool = new BlastAllSupport(BLASTALL_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(blastallTool);
+    etRegistry->registerEntry(blastallTool);
 
     //CUDA-BlastP
     BlastAllSupport* cudaBlastPTool = new BlastAllSupport(CUDA_BLASTP_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(cudaBlastPTool);
+    etRegistry->registerEntry(cudaBlastPTool);
 
     BlastPlusSupport* blastNPlusTool = new BlastPlusSupport(BLASTN_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(blastNPlusTool);
+    etRegistry->registerEntry(blastNPlusTool);
     BlastPlusSupport* blastPPlusTool = new BlastPlusSupport(BLASTP_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(blastPPlusTool);
+    etRegistry->registerEntry(blastPPlusTool);
 //     BlastPlusSupport* gpuBlastPPlusTool = new BlastPlusSupport(GPU_BLASTP_TOOL_NAME); // https://ugene.unipro.ru/tracker/browse/UGENE-945
-//     AppContext::getExternalToolRegistry()->registerEntry(gpuBlastPPlusTool);
+//     etRegistry->registerEntry(gpuBlastPPlusTool);
     BlastPlusSupport* blastXPlusTool = new BlastPlusSupport(BLASTX_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(blastXPlusTool);
+    etRegistry->registerEntry(blastXPlusTool);
     BlastPlusSupport* tBlastNPlusTool = new BlastPlusSupport(TBLASTN_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(tBlastNPlusTool);
+    etRegistry->registerEntry(tBlastNPlusTool);
     BlastPlusSupport* tBlastXPlusTool = new BlastPlusSupport(TBLASTX_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(tBlastXPlusTool);
+    etRegistry->registerEntry(tBlastXPlusTool);
     BlastPlusSupport* rpsblastTool = new BlastPlusSupport(RPSBLAST_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(rpsblastTool);
+    etRegistry->registerEntry(rpsblastTool);
 
     // CAP3
     CAP3Support* cap3Tool = new CAP3Support(CAP3_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(cap3Tool);
+    etRegistry->registerEntry(cap3Tool);
 
     // Bowtie
     BowtieSupport* bowtieSupport = new BowtieSupport(BOWTIE_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(bowtieSupport);
+    etRegistry->registerEntry(bowtieSupport);
     BowtieSupport* bowtieBuildSupport = new BowtieSupport(BOWTIE_BUILD_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(bowtieBuildSupport);
+    etRegistry->registerEntry(bowtieBuildSupport);
 
     // Bowtie 2
     Bowtie2Support* bowtie2AlignSupport = new Bowtie2Support(BOWTIE2_ALIGN_TOOL_NAME);
@@ -234,7 +240,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
     // BWA
     BwaSupport* bwaSupport = new BwaSupport(BWA_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(bwaSupport);
+    etRegistry->registerEntry(bwaSupport);
 
     // SAMtools (external tool)
     SamToolsExtToolSupport* samToolsExtToolSupport = new SamToolsExtToolSupport(SAMTOOLS_EXT_TOOL_NAME);
@@ -242,21 +248,25 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
     // Spidey
     SpideySupport* spideySupport = new SpideySupport(SPIDEY_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(spideySupport);
+    etRegistry->registerEntry(spideySupport);
 
     // TopHat
     TopHatSupport* tophatTool = new TopHatSupport(TOPHAT_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(tophatTool);
+    etRegistry->registerEntry(tophatTool);
 
     // Cufflinks external tools
     CufflinksSupport* cuffcompareTool = new CufflinksSupport(CUFFCOMPARE_TOOL_NAME);
+    etRegistry->registerEntry(cuffcompareTool);
     CufflinksSupport* cuffdiffTool = new CufflinksSupport(CUFFDIFF_TOOL_NAME);
+    etRegistry->registerEntry(cuffdiffTool);
     CufflinksSupport* cufflinksTool = new CufflinksSupport(CUFFLINKS_TOOL_NAME);
+    etRegistry->registerEntry(cufflinksTool);
     CufflinksSupport* cuffmergeTool = new CufflinksSupport(CUFFMERGE_TOOL_NAME);
-    AppContext::getExternalToolRegistry()->registerEntry(cuffcompareTool);
-    AppContext::getExternalToolRegistry()->registerEntry(cuffdiffTool);
-    AppContext::getExternalToolRegistry()->registerEntry(cufflinksTool);
-    AppContext::getExternalToolRegistry()->registerEntry(cuffmergeTool);
+    etRegistry->registerEntry(cuffmergeTool);
+
+    // CEAS
+    CEASSupport *ceasTool = new CEASSupport(CEASSupport::TOOL_NAME);
+    etRegistry->registerEntry(ceasTool);
 
 
     if (AppContext::getMainWindow()) {
@@ -371,7 +381,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     }    
 
     if (!toolsDir.isEmpty()) {
-        foreach(ExternalTool* curTool, AppContext::getExternalToolRegistry()->getAllEntries()){
+        foreach(ExternalTool* curTool, etRegistry->getAllEntries()){
              if(!curTool->getPath().isEmpty()){ 
                  continue;
              }
@@ -407,7 +417,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         QStringList paths;
     #endif
 #endif
-        foreach(ExternalTool* curTool, AppContext::getExternalToolRegistry()->getAllEntries()){
+        foreach(ExternalTool* curTool, etRegistry->getAllEntries()){
             foreach(const QString& curPath, paths){
                 if(curTool->getPath().isEmpty()){
                     QString exePath = curPath+"/"+curTool->getExecutableFileName();
@@ -440,6 +450,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     LocalWorkflow::CufflinksWorkerFactory::init();
     LocalWorkflow::CuffmergeWorkerFactory::init();
     LocalWorkflow::TopHatWorkerFactory::init();
+    LocalWorkflow::CEASReportWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

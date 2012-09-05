@@ -45,6 +45,7 @@ public:
     static const Descriptor CATEGORY_DATAFLOW();
     static const Descriptor CATEGORY_INCLUDES();
     static const Descriptor CATEGORY_SCHEMAS();
+    static const Descriptor CATEGORY_CHIP_SEQ();
     
 }; // BaseActorCategories
 

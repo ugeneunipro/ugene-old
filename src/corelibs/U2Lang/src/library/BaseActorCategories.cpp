@@ -87,5 +87,9 @@ const Descriptor BaseActorCategories::CATEGORY_SCHEMAS() {
     return Descriptor("sch", tr("Schemas"),"");
 }
 
+const Descriptor BaseActorCategories::CATEGORY_CHIP_SEQ() {
+    return Descriptor("chs", tr("NGS: ChIP-Seq analysis"), "");
+}
+
 }//Workflow namespace
 }//GB2 namespace

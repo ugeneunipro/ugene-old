@@ -36,6 +36,10 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/cap3/CAP3SupportDialog.h \
            src/cap3/CAP3SupportTask.h \
            src/cap3/CAP3Worker.h \
+           src/ceas/CEASReportWorker.h \
+           src/ceas/CEASSettings.h \
+           src/ceas/CEASSupport.h \
+           src/ceas/CEASSupportTask.h \
            src/clustalw/ClustalWSupport.h \
            src/clustalw/ClustalWSupportRunDialog.h \
            src/clustalw/ClustalWSupportTask.h \
@@ -126,6 +130,10 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/cap3/CAP3SupportDialog.cpp \
            src/cap3/CAP3SupportTask.cpp \
            src/cap3/CAP3Worker.cpp \
+           src/ceas/CEASReportWorker.cpp \
+           src/ceas/CEASSettings.cpp \
+           src/ceas/CEASSupport.cpp \
+           src/ceas/CEASSupportTask.cpp \
            src/clustalw/ClustalWSupport.cpp \
            src/clustalw/ClustalWSupportRunDialog.cpp \
            src/clustalw/ClustalWSupportTask.cpp \

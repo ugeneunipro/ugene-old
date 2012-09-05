@@ -309,9 +309,12 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
         parsedData.additionalFields[SCORE_QUALIFIER_NAME] = scoreStr;
 
         // Validate the value: it should be an integer value between 0 and 1000
-        bool scoreIsInt;
-        int score = scoreStr.toInt(&scoreIsInt);
-        if (scoreIsInt) {
+        bool scoreIsOk;
+        double score = scoreStr.toInt(&scoreIsOk);
+        if (!scoreIsOk) {
+            score = scoreStr.toDouble(&scoreIsOk);
+        }
+        if (scoreIsOk) {
             if (score < 0 || score > 1000) {
                 status.incorrectScore = true;
             }
@@ -654,7 +657,7 @@ QList<SharedAnnotationData> BedFormat::parseDocument(
         }
 
         // Add a qualifier with the sequence name
-        annotData->qualifiers.push_back(U2Qualifier(CHROM_QUALIFIER_NAME, seqName));
+        annotData->qualifiers.push_back(U2Qualifier(CHROM_QUALIFIER_NAME, bedLineData.seqName));
 
         // Additionally, verify the strand information
         if (bedLineData.additionalFields.keys().contains(STRAND_QUALIFIER_NAME)) {
