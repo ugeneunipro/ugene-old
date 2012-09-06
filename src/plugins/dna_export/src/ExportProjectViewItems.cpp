@@ -72,30 +72,30 @@
 namespace U2 {
 
 ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : QObject(p) {
-    exportSequencesToSequenceFormatAction = new QAction(tr("Export sequences"), this);
+    exportSequencesToSequenceFormatAction = new QAction(tr("Export sequences..."), this);
     exportSequencesToSequenceFormatAction->setObjectName(ACTION_EXPORT_SEQUENCE);
     connect(exportSequencesToSequenceFormatAction, SIGNAL(triggered()), SLOT(sl_saveSequencesToSequenceFormat()));
 
-    exportSequencesAsAlignmentAction = new QAction(tr("Export sequences as alignment"), this);
+    exportSequencesAsAlignmentAction = new QAction(tr("Export sequences as alignment..."), this);
     exportSequencesAsAlignmentAction->setObjectName(ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT);
     connect(exportSequencesAsAlignmentAction, SIGNAL(triggered()), SLOT(sl_saveSequencesAsAlignment()));
 
-    exportAlignmentAsSequencesAction = new QAction(tr("Export alignment to sequence format"), this);
+    exportAlignmentAsSequencesAction = new QAction(tr("Export alignment to sequence format..."), this);
     connect(exportAlignmentAsSequencesAction, SIGNAL(triggered()), SLOT(sl_saveAlignmentAsSequences()));
 
-    exportNucleicAlignmentToAminoAction = new QAction(tr("Export nucleic alignment to amino translation"), this);
+    exportNucleicAlignmentToAminoAction = new QAction(tr("Export nucleic alignment to amino translation..."), this);
     connect(exportNucleicAlignmentToAminoAction, SIGNAL(triggered()), SLOT(sl_exportNucleicAlignmentToAmino()));
 
-    importAnnotationsFromCSVAction = new QAction(tr("Import annotations from CSV file"), this);
+    importAnnotationsFromCSVAction = new QAction(tr("Import annotations from CSV file..."), this);
     connect(importAnnotationsFromCSVAction, SIGNAL(triggered()), SLOT(sl_importAnnotationsFromCSV()));
 
-    exportDNAChromatogramAction = new QAction(tr("Export chromatogram to SCF"), this);
+    exportDNAChromatogramAction = new QAction(tr("Export chromatogram to SCF..."), this);
     connect(exportDNAChromatogramAction, SIGNAL(triggered()), SLOT(sl_exportChromatogramToSCF()));
 
-    exportAnnotations2CSV = new QAction(tr("Export annotations"), this);
+    exportAnnotations2CSV = new QAction(tr("Export annotations..."), this);
     connect(exportAnnotations2CSV, SIGNAL(triggered()), SLOT(sl_exportAnnotations()));
     
-    exportSequenceQuality = new QAction(tr("Export sequence quality"), this);
+    exportSequenceQuality = new QAction(tr("Export sequence quality..."), this);
     connect(exportSequenceQuality, SIGNAL(triggered()), SLOT(sl_exportSequenceQuality()));
     
     ProjectView* pv = AppContext::getProjectView();
@@ -228,7 +228,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
     ExportSequencesDialog d(allowMerge, allowComplement, allowTranslate, allowBackTranslate, defaultFileName,
         BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
     
-    d.setWindowTitle(exportSequencesToSequenceFormatAction->text());
+    //d.setWindowTitle(exportSequencesToSequenceFormatAction->text());
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return;
@@ -284,7 +284,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
     GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + seqUrl.baseFileName() + "." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
     
     ExportSequences2MSADialog d(AppContext::getMainWindow()->getQMainWindow(), defaultUrl.getURLString());
-    d.setWindowTitle(exportSequencesAsAlignmentAction->text());
+    //d.setWindowTitle(exportSequencesAsAlignmentAction->text());
     int rc = d.exec();
     if (rc != QDialog::Accepted) {
         return;
@@ -316,7 +316,7 @@ void ExportProjectViewItemsContoller::sl_saveAlignmentAsSequences() {
     MAlignmentObject* maObject = qobject_cast<MAlignmentObject*>(obj);
     const MAlignment& ma = maObject->getMAlignment();
     ExportMSA2SequencesDialog d(AppContext::getMainWindow()->getQMainWindow());
-    d.setWindowTitle(exportAlignmentAsSequencesAction->text());
+    //d.setWindowTitle(exportAlignmentAsSequencesAction->text());
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return;
@@ -348,7 +348,7 @@ void ExportProjectViewItemsContoller::sl_exportNucleicAlignmentToAmino() {
 
     ExportMSA2MSADialog d(defaultUrl.getURLString(), BaseDocumentFormats::CLUSTAL_ALN, true, AppContext::getMainWindow()->getQMainWindow());
     
-    d.setWindowTitle(exportAlignmentAsSequencesAction->text());
+    //d.setWindowTitle(exportAlignmentAsSequencesAction->text());
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return;

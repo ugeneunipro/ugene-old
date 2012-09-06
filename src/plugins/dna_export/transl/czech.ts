@@ -663,7 +663,7 @@
     <name>U2::ExportMSA2SequencesDialog</name>
     <message>
         <location filename="../src/ui/ExportMSA2SequencesDialog.ui" line="14"/>
-        <source>Convert alignment to separate sequences</source>
+        <source>Convert Alignment to Separate Sequences</source>
         <translation>Převést zarovnání na oddělené sekvence</translation>
     </message>
     <message>
@@ -734,7 +734,7 @@
     </message>
     <message>
         <location filename="../src/ExportProjectViewItems.cpp" line="52"/>
-        <source>Export sequences as alignment</source>
+        <source>Export Sequences as Alignment</source>
         <translation>Vyvést sekvence jako zarovnání</translation>
     </message>
     <message>
@@ -830,7 +830,7 @@
     <name>U2::ExportSequences2MSADialog</name>
     <message>
         <location filename="../src/ui/ExportSequences2MSADialog.ui" line="14"/>
-        <source>Export sequences as alignment</source>
+        <source>Export Sequences as Alignment</source>
         <translation>Vyvést sekvence jako zarovnání</translation>
     </message>
     <message>
@@ -873,7 +873,7 @@
     <name>U2::ExportSequencesDialog</name>
     <message>
         <location filename="../src/ui/ExportSequencesDialog.ui" line="20"/>
-        <source>Export selected sequences</source>
+        <source>Export Selected Sequences</source>
         <translation>Vyvést vybrané sekvence</translation>
     </message>
     <message>
@@ -993,7 +993,7 @@
     </message>
     <message>
         <location filename="../src/ExportSequencesDialog.cpp" line="37"/>
-        <source>Export sequences</source>
+        <source>Export Sequences</source>
         <translation>Vyvést sekvence</translation>
     </message>
     <message>

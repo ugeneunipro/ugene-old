@@ -1010,7 +1010,7 @@
     <name>U2::ExportMSA2SequencesDialog</name>
     <message>
         <location filename="../src/ui/ExportMSA2SequencesDialog.ui" line="14"/>
-        <source>Convert alignment to separate sequences</source>
+        <source>Convert Alignment to Separate Sequences</source>
         <translation>Конвертировать выравнивание в разные последовательности</translation>
     </message>
     <message>
@@ -1081,7 +1081,7 @@
     </message>
     <message>
         <location filename="../src/ExportProjectViewItems.cpp" line="76"/>
-        <source>Export sequences as alignment</source>
+        <source>Export Sequences as Alignment</source>
         <translation>Экспорт последовательностей как выравнивания</translation>
     </message>
     <message>
@@ -1177,7 +1177,7 @@
     <name>U2::ExportSequences2MSADialog</name>
     <message>
         <location filename="../src/ui/ExportSequences2MSADialog.ui" line="14"/>
-        <source>Export sequences as alignment</source>
+        <source>Export Sequences as Alignment</source>
         <translation>Экспорт последовательностей как выравнивания</translation>
     </message>
     <message>
@@ -1220,7 +1220,7 @@
     <name>U2::ExportSequencesDialog</name>
     <message>
         <location filename="../src/ui/ExportSequencesDialog.ui" line="20"/>
-        <source>Export selected sequences</source>
+        <source>Export Selected Sequences</source>
         <translation>Экспорт выбранных последовательностей</translation>
     </message>
     <message>
@@ -1348,7 +1348,7 @@
     </message>
     <message>
         <location filename="../src/ExportSequencesDialog.cpp" line="60"/>
-        <source>Export sequences</source>
+        <source>Export Sequences</source>
         <translation>Экспорт последовательностей</translation>
     </message>
     <message>

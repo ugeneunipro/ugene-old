@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Convert alignment to separate sequences</string>
+   <string>Convert Alignment to Separate Sequences</string>
   </property>
   <property name="modal">
    <bool>true</bool>

@@ -57,7 +57,7 @@ ExportSequencesDialog::ExportSequencesDialog(bool m, bool allowComplement, bool 
     conf.fileDialogButton = fileButton;
     conf.defaultFormatId = id;
     conf.defaultFileName = defaultFileName;
-    conf.saveTitle = tr("Export sequences");
+    conf.saveTitle = tr("Export Sequences");
     saveGroupContoller = new SaveDocumentGroupController(conf, this);
 
     multiMode = m;

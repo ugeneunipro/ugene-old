@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Export sequences as alignment</string>
+   <string>Export Sequences as Alignment</string>
   </property>
   <property name="modal">
    <bool>true</bool>

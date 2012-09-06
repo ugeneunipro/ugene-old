@@ -104,6 +104,12 @@
               <property name="enabled">
                <bool>false</bool>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>55</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="maximum">
                <double>10.000000000000000</double>
               </property>
@@ -143,6 +149,12 @@
              <widget class="QDoubleSpinBox" name="gapExtSpinBox">
               <property name="enabled">
                <bool>false</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>55</width>
+                <height>0</height>
+               </size>
               </property>
               <property name="maximum">
                <double>10.000000000000000</double>
@@ -189,7 +201,7 @@
               </property>
               <property name="minimumSize">
                <size>
-                <width>49</width>
+                <width>55</width>
                 <height>0</height>
                </size>
               </property>

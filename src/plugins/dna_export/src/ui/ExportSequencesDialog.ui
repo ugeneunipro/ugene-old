@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Export selected sequences</string>
+   <string>Export Selected Sequences</string>
   </property>
   <property name="modal">
    <bool>true</bool>
