@@ -60,6 +60,7 @@ GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaA
 #endif
 
     systemSize = AppContext::getAppSettings()->getAppResourcePool()->getMaxMemorySizeInMB();
+    systemSize = systemSize < 2000 ? systemSize : 2000; // TODO: UGENE-1181
     partSlider->setEnabled(false);
     readSlider->setMinimum(MIN_READ_SIZE);
     readSlider->setMaximum(systemSize);
@@ -139,7 +140,8 @@ void GenomeAlignerSettingsWidget::prebuiltIndex(bool value) {
 }
 
 bool GenomeAlignerSettingsWidget::isParametersOk(QString &error) {
-    if (systemSize < readSlider->value() + 13*partSlider->value()) {
+    bool gpuOk = (gpuBox->isChecked() == false) || ((gpuBox->isChecked() == true) && (partSlider->value() <= 10)); // 128MB is the minimum size for a buffer, according to CL_DEVICE_MAX_MEM_ALLOC_SIZE OpenCL documentation
+    if ((systemSize < readSlider->value() + 13*partSlider->value()) || !gpuOk) {
         error = "There is no enough memory for the aligning on your computer. Try to reduce a memory size for short reads or for the reference fragment.";
         return false;
     }

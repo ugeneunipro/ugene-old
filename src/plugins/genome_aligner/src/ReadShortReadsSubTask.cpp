@@ -138,7 +138,7 @@ void ReadShortReadsSubTask::run() {
             ONE_SEARCH_QUERY_SIZE + query->length() +
             query->getNameLength() +
             qualLength;
-        memoryRequiredForOneRead *= 2; // FIXME: UGENE-1114
+        memoryRequiredForOneRead *= 4; // FIXME: UGENE-1114
 
 
         if (alignReversed) {
