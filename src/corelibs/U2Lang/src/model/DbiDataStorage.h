@@ -56,6 +56,7 @@ public:
     void openDbi(const U2DbiRef &dbiRef, U2OpStatus &os);
 
 private:
+    DbiDataStorage(const DbiDataStorage &) {}
     TmpDbiHandle *dbiHandle;
     QMap<U2DbiId, DbiConnection*> connections;
     /* DbiRef <-> temporary */

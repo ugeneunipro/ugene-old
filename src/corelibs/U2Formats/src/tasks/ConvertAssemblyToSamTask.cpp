@@ -144,7 +144,7 @@ void ConvertAssemblyToSamTask::run() {
             wholeAssembly.length = assDbi->getMaxEndPos(assembly.id, status);
 
             QByteArray refSeqName = assembly.visualName.replace(QRegExp("\\s|\\t"), "_").toAscii();
-            U2DbiIterator<U2AssemblyRead> *dbiIterator = assDbi->getReads(assembly.id, wholeAssembly, status, true);
+            QSharedPointer< U2DbiIterator<U2AssemblyRead> > dbiIterator(assDbi->getReads(assembly.id, wholeAssembly, status, true));
 
             DNASequence seq;
             qint64 prevPos = 0;

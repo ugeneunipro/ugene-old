@@ -68,10 +68,10 @@ bool DbiDataStorage::init() {
     dbiHandle = new TmpDbiHandle(WORKFLOW_SESSION_TMP_DBI_ALIAS, os);
     CHECK_OP(os, false);
 
-    DbiConnection *connection = new DbiConnection(dbiHandle->getDbiRef(), os);
+    QScopedPointer<DbiConnection> connection(new DbiConnection(dbiHandle->getDbiRef(), os));
     CHECK_OP(os, false);
 
-    connections[dbiHandle->getDbiRef().dbiId] = connection;
+    connections[dbiHandle->getDbiRef().dbiId] = connection.take();
     return true;
 }
 
@@ -149,11 +149,11 @@ DbiConnection *DbiDataStorage::getConnection(const U2DbiRef &dbiRef, U2OpStatus 
     if (connections.contains(dbiRef.dbiId)) {
         return connections[dbiRef.dbiId];
     } else {
-        DbiConnection *connection = new DbiConnection(dbiRef, os);
+        QScopedPointer<DbiConnection> connection(new DbiConnection(dbiRef, os));
         CHECK_OP(os, NULL);
 
-        connections[dbiRef.dbiId] = connection;
-        return connection;
+        connections[dbiRef.dbiId] = connection.data();
+        return connection.take();
     }
 }
 
@@ -169,21 +169,21 @@ U2DbiRef DbiDataStorage::createTmpDbi(U2OpStatus &os) {
     SAFE_POINT(!dbiList.contains(dbiRef.dbiId),
                QString("Temp dbi already exists: %1").arg(dbiRef.dbiId), dbiRef);
 
-    DbiConnection con(dbiRef, true, os);
+    QScopedPointer<DbiConnection> con(new DbiConnection(dbiRef, true, os));
     SAFE_POINT_OP(os, U2DbiRef());
 
     dbiList[dbiRef.dbiId] = true;
-    connections[dbiRef.dbiId] = new DbiConnection(con);
+    connections[dbiRef.dbiId] = con.take();
 
     return dbiRef;
 }
 
 void DbiDataStorage::openDbi(const U2DbiRef &dbiRef, U2OpStatus &os) {
-    DbiConnection con(dbiRef, false, os);
-    SAFE_POINT_OP(os, );
+    QScopedPointer<DbiConnection> con(new DbiConnection(dbiRef, false, os));
+    CHECK_OP(os, );
 
     dbiList[dbiRef.dbiId] = false;
-    connections[dbiRef.dbiId] = new DbiConnection(con);
+    connections[dbiRef.dbiId] = con.take();
 }
 
 /************************************************************************/
