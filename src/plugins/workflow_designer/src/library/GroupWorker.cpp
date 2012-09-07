@@ -43,6 +43,7 @@ namespace LocalWorkflow {
 
 static const QString INPUT_PORT("input-data");
 static const QString OUTPUT_PORT("output-data");
+static const QString GROUP_SIZE_SLOT_ID("group-size");
 
 static const QString OPER_ATTR_ID("group-op");
 
@@ -89,6 +90,8 @@ Task *GroupWorker::tick() {
             foundId = 0;
             if (1 == groupedData.size()) {
                 perfs = groupedData[0];
+            } else {
+                groupSize[foundId] = 0;
             }
             GrouperActionUtils::applyActions(context, outSlots, mData, perfs);
         } else {
@@ -115,15 +118,19 @@ Task *GroupWorker::tick() {
             if (foundId < 0) {
                 foundId = uniqueData.size();
                 uniqueData[foundId] = gsData;
+                groupSize[foundId] = 0;
             }
         }
         groupedData[foundId] = perfs;
+        groupSize[foundId] = groupSize[foundId] + 1;
+
     }
     if (inChannel->isEnded()) {
         foreach (int id, groupedData.keys()) {
             QMap<QString, ActionPerformer*> perfs = groupedData[id];
 
             QVariantMap data;
+            data[GROUP_SIZE_SLOT_ID] = QByteArray::number(groupSize[id]);
             // create output data set from action performers
             foreach (const QString &slotId, perfs.keys()) {
                 ActionPerformer *perf = perfs[slotId];
@@ -174,8 +181,14 @@ void GroupWorkerFactory::init() {
         Descriptor inputDesc1(INPUT_PORT, GroupWorker::tr("Input data flow"), GroupWorker::tr("Input data flow"));
         portDescs << new PortDescriptor(inputDesc1, emptyTypeSet, true);
 
+        Descriptor groupSizeDesc(GROUP_SIZE_SLOT_ID, GroupWorker::tr("Group size"),
+            GroupWorker::tr("Size of the created group."));
+        QMap<Descriptor, DataTypePtr> outTypeMap;
+        outTypeMap[groupSizeDesc] = BaseTypes::STRING_TYPE();
+        DataTypePtr outTypeSet(new MapDataType("Grouped data", outTypeMap));
+
         Descriptor outputDesc(OUTPUT_PORT, GroupWorker::tr("Grouped output data flow"), GroupWorker::tr("Grouped output data flow"));
-        portDescs << new PortDescriptor(outputDesc, emptyTypeSet, false, true);
+        portDescs << new PortDescriptor(outputDesc, outTypeSet, false, true);
     }
 
     QList<Attribute*> attrs;

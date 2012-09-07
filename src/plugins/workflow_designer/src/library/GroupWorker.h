@@ -64,6 +64,7 @@ private:
 
     QMap<int, PerformersMap> groupedData;
     QMap<int, QVariant> uniqueData;
+    QMap<int, int> groupSize;
 }; // GroupWorker
 
 class GroupWorkerFactory : public DomainFactory {
