@@ -67,14 +67,13 @@ protected:
 class U2DESIGNER_EXPORT URLLineEdit : public QLineEdit {
     Q_OBJECT
 public:
-    URLLineEdit(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QWidget *parent, const QString &format = "")
-        : QLineEdit(parent), FileFilter(filter), type(type), multi(multi), isPath(isPath), saveFile(saveFile), fileFormat(format) {}
-
+    URLLineEdit(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QWidget *parent, const QString &format = "");
 protected:
     void focusOutEvent ( QFocusEvent * event );
 private slots:
     void sl_onBrowse();
     void sl_onBrowseWithAdding();
+    void sl_editingFinished();
 
 signals:
     void si_finished();

@@ -166,12 +166,53 @@ QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
 /********************************
 * URLLineEdit
 ********************************/
+
+URLLineEdit::URLLineEdit( const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QWidget *parent, const QString &format /*= ""*/ ) : 
+                            QLineEdit(parent), FileFilter(filter), type(type), multi(multi), isPath(isPath), saveFile(saveFile), fileFormat(format){
+                                connect(this, SIGNAL(editingFinished()), this, SLOT(sl_editingFinished()));
+
+}
+
 void URLLineEdit::sl_onBrowse() {
     this->browse(false);
 }
 
 void URLLineEdit::sl_onBrowseWithAdding() {
     this->browse(true);
+}
+
+void URLLineEdit::sl_editingFinished(){
+    QString name = text();
+    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
+    if (NULL != format && !name.isEmpty()) {
+        QString newName(name);
+        GUrl url(newName);
+        QString lastSuffix = url.lastFileSuffix();
+        if ("gz" == lastSuffix) {
+            int dotPos = url.getURLString().length() - lastSuffix.length() - 1;
+            if ((dotPos >= 0) && (QChar('.') == url.getURLString()[dotPos])) {
+                newName = url.getURLString().left(dotPos);
+                GUrl tmp(newName);
+                lastSuffix = tmp.lastFileSuffix(); 
+            }
+        }
+        bool foundExt = false;
+        foreach (QString supExt, format->getSupportedDocumentFileExtensions()) {
+            if (lastSuffix == supExt) {
+                foundExt = true;
+                break;
+            }
+        }
+        if (!foundExt) {
+            name = name + "." + format->getSupportedDocumentFileExtensions().first();
+        } else {
+            int dotPos = newName.length() - lastSuffix.length() - 1;
+            if ((dotPos < 0) || (QChar('.') != newName[dotPos])) {
+                name = name + "." + format->getSupportedDocumentFileExtensions().first();
+            }
+        }
+    }
+    setText(name);
 }
 
 void URLLineEdit::browse(bool addFiles) {
