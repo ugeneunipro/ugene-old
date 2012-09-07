@@ -208,8 +208,12 @@ QString WriteDocPrompter::composeRichDoc() {
  * ReadDocPrompter
  *****************************/
 QString ReadDocPrompter::composeRichDoc() {
-    const QString& id = BaseAttributes::URL_IN_ATTRIBUTE().getId();
-    return spec.arg(getHyperlink(id, getURL(id)));
+    if (spec.contains("%1")) {
+        const QString& id = BaseAttributes::URL_IN_ATTRIBUTE().getId();
+        return spec.arg(getHyperlink(id, getURL(id)));
+    } else {
+        return spec;
+    }
 }
 
 }//namespace Workflow

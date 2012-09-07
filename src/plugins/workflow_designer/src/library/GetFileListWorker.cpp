@@ -32,6 +32,8 @@
 #include <U2Designer/DelegateEditors.h>
 #include <U2Gui/GUIUtils.h>
 
+#include "../util/FilesIterator.h"
+
 #include "GetFileListWorker.h"
 
 namespace U2 {
@@ -111,80 +113,24 @@ excludeFilter(excFilter), absolute(absolute), recursive(recursive)
 
 void ScanDirectoryTask::run() {
     QDir rootDir(dirPath);
-    QStringList usedDirs;
-    QFileInfoList unusedDirs; // it is needed for avoiding cycles because of symlinks
-    unusedDirs << QFileInfo(dirPath);
-
     QString rootPath = rootDir.absolutePath();
     if (!rootPath.endsWith("/")) {
         rootPath += "/";
     }
 
-    QRegExp incRx(includeFilter);
-    QRegExp excRx(excludeFilter);
-    incRx.setPatternSyntax(QRegExp::Wildcard);
-    excRx.setPatternSyntax(QRegExp::Wildcard);
+    QScopedPointer<FilesIterator> iter(FilesIteratorFactory::createDirectoryScanner(
+        QStringList() << dirPath, includeFilter, excludeFilter, recursive));
 
-
-    while (!unusedDirs.isEmpty()) {
-        QFileInfo entry = unusedDirs.takeFirst();
-        if (usedDirs.contains(entry.absoluteFilePath())) {
-            continue;
+    QString fileName = iter->getNextFile();
+    while (!fileName.isEmpty()) {
+        if (absolute) {
+            results << fileName;
+        } else {
+            results << fileName.replace(rootPath, "");
         }
 
-        QDir dir(entry.absoluteFilePath());
-        QFileInfoList nested;
-        QFileInfoList files = scanDirectory(dir, nested);
-        foreach (const QFileInfo &path, files) {
-            QString absPath = path.absoluteFilePath();
-            QString relPath = absPath;
-            relPath.replace(rootPath, "");
-
-            bool matched = true;
-            if (!includeFilter.isEmpty()) {
-                matched = incRx.exactMatch(relPath);
-            }
-            if (!excludeFilter.isEmpty()) {
-                matched = matched && !excRx.exactMatch(relPath);
-            }
-            if (matched) {
-                if (absolute) {
-                    results << absPath;
-                } else {
-                    results << relPath;
-                }
-            }
-        }
-        if (recursive) {
-            unusedDirs << nested;
-        }
-        usedDirs << dir.absolutePath();
+        fileName = iter->getNextFile();
     }
-}
-
-QFileInfoList ScanDirectoryTask::scanDirectory(const QDir &dir, QFileInfoList &nestedDirs) {
-    QFileInfoList result;
-    if (!dir.exists()) {
-        return result;
-    }
-
-    QFileInfoList entries = dir.entryInfoList();
-    foreach (const QFileInfo &entry, entries) {
-        if (entry.isDir()) {
-            if ("." == entry.fileName() || ".." == entry.fileName()) {
-                continue;
-            }
-            if (entry.isSymLink()) {
-                nestedDirs << QFileInfo(entry.symLinkTarget());
-            } else {
-                nestedDirs << entry;
-            }
-        } else if (entry.isFile()) {
-            result << entry;
-        }
-    }
-
-    return result;
 }
 
 /************************************************************************/

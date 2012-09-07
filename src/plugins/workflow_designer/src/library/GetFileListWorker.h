@@ -88,8 +88,6 @@ private:
     bool absolute;
     bool recursive;
     QStringList results;
-
-    static QFileInfoList scanDirectory(const QDir &dir, QFileInfoList &nestedDirs);
 };
 
 } // LocalWorkflow

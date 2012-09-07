@@ -62,6 +62,7 @@ private:
     QList<GrouperOutSlot> outSlots;
     DataTypePtr inType;
 
+    // TODO: needs to be refactored (extract class)
     QMap<int, PerformersMap> groupedData;
     QMap<int, QVariant> uniqueData;
     QMap<int, int> groupSize;

@@ -29,12 +29,17 @@
 #include <U2Core/MAlignment.h>
 
 namespace U2 {
+
+class FilesIterator;
+
 namespace LocalWorkflow {
 
 class GenericDocReader : public BaseWorker {
     Q_OBJECT
 public:
-    GenericDocReader(Actor *a) : BaseWorker(a), ch(NULL) {}
+    GenericDocReader(Actor *a) : BaseWorker(a), ch(NULL), files(NULL) {}
+    virtual ~GenericDocReader();
+
     virtual void init();
     virtual Task *tick();
     virtual bool isDone();
@@ -47,9 +52,9 @@ protected:
     virtual Task *createReadTask(const QString &url) = 0;
 
     CommunicationChannel *ch;
-    QList<QString> urls;
     QList<Message> cache;
     DataTypePtr mtype;
+    FilesIterator *files;
 };
 
 /************************************************************************/

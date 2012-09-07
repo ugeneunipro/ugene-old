@@ -49,6 +49,83 @@
 namespace U2 {
 namespace Workflow {
 
+/************************************************************************/
+/* GenericReadDocProto */
+/************************************************************************/
+#define ICOLOR QColor(85,85,255)
+
+const QString GenericReadDocProto::FILE_OR_DIR("input-type");
+const QString GenericReadDocProto::INPUT_PATH("in-path");
+const QString GenericReadDocProto::RECURSIVE("recursive");
+const QString GenericReadDocProto::INCLUDE_NAME_FILTER("include-name-filter");
+const QString GenericReadDocProto::EXCLUDE_NAME_FILTER("exclude-name-filter");
+
+const QString GenericReadDocProto::INPUT_FILES("Files");
+const QString GenericReadDocProto::INPUT_DIRS("Directories");
+
+GenericReadDocProto::GenericReadDocProto(const Descriptor &desc)
+: IntegralBusActorPrototype(desc)
+{
+    {
+        Descriptor fileOrDir(FILE_OR_DIR,
+            QObject::tr("Input type"),
+            QObject::tr("Choose input type: file or directory"));
+        Descriptor inPath(INPUT_PATH,
+            QObject::tr("Input directory"),
+            QObject::tr("Input directory"));
+        Descriptor isRecursive(RECURSIVE,
+            QObject::tr("Recursive reading"),
+            QObject::tr("Get files from all nested directories or just from the current one"));
+        Descriptor includeFilter(INCLUDE_NAME_FILTER,
+            QObject::tr("Relative path include filter"),
+            QObject::tr("Filter files by relative path using this regular expression. "
+            "<p><i>Set it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
+        Descriptor excludeFilter(EXCLUDE_NAME_FILTER,
+            QObject::tr("Relative path exclude filter"),
+            QObject::tr("Exclude files which relative paths are matched by this regular expression. "
+            "<p><i>Set it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
+
+        attrs << new Attribute(fileOrDir, BaseTypes::STRING_TYPE(), false, INPUT_FILES);
+        Attribute *filesUrlAttr = new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false);
+        filesUrlAttr->addRelation(new VisibilityRelation(fileOrDir.getId(), INPUT_FILES));
+        attrs << filesUrlAttr;
+
+        Attribute *dirsUrlAttr = new Attribute(inPath, BaseTypes::STRING_TYPE(), false);
+        dirsUrlAttr->addRelation(new VisibilityRelation(fileOrDir.getId(), INPUT_DIRS));
+        attrs << dirsUrlAttr;
+
+        Attribute *recursiveAttr = new Attribute(isRecursive, BaseTypes::BOOL_TYPE(), false, false);
+        recursiveAttr->addRelation(new VisibilityRelation(fileOrDir.getId(), INPUT_DIRS));
+        attrs << recursiveAttr;
+
+        Attribute *incAttr = new Attribute(includeFilter, BaseTypes::STRING_TYPE());
+        incAttr->addRelation(new VisibilityRelation(fileOrDir.getId(), INPUT_DIRS));
+        attrs << incAttr;
+
+        Attribute *excAttr = new Attribute(excludeFilter, BaseTypes::STRING_TYPE());
+        excAttr->addRelation(new VisibilityRelation(fileOrDir.getId(), INPUT_DIRS));
+        attrs << excAttr;
+    }
+
+    setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
+    getEditor()->addDelegate(
+        new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true),
+        BaseAttributes::URL_IN_ATTRIBUTE().getId());
+    getEditor()->addDelegate(
+        new URLDelegate(QString(), QString(), true, true),
+        INPUT_PATH);
+    {
+        QVariantMap types;
+        types[INPUT_FILES] = INPUT_FILES;
+        types[INPUT_DIRS] = INPUT_DIRS;
+        getEditor()->addDelegate(new ComboBoxDelegate(types), FILE_OR_DIR);
+    }
+
+    if(AppContext::isGUIMode()) {
+        setIcon( GUIUtils::createRoundIcon(ICOLOR, 22) );
+    }
+}
+
 const QString GenericSeqActorProto::MODE_ATTR("mode");
 const QString GenericSeqActorProto::GAP_ATTR("merge-gap");
 const QString GenericSeqActorProto::ACC_ATTR("accept-accession");
@@ -57,10 +134,8 @@ const QString GenericSeqActorProto::LIMIT_ATTR("sequence-count-limit");
 const QString GenericSeqActorProto::TYPE("generic.seq");
 const QString GenericMAActorProto::TYPE("generic.ma");
 
-#define ICOLOR QColor(85,85,255)
-
-GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLibConstants::GENERIC_READ_SEQ_PROTO_ID)
-{    
+GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConstants::GENERIC_READ_SEQ_PROTO_ID)
+{
     setDisplayName(U2::Workflow::CoreLib::tr("Read Sequence"));
     desc = U2::Workflow::CoreLib::tr("Reads sequences and annotations if any from local or remote files.");
     QMap<Descriptor, DataTypePtr> m;
@@ -90,7 +165,6 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
             "<p>Read only first N sequences from each file."
             "<br>Set 0 value for reading all sequences.</p>"));
 
-        attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
         attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, SPLIT);
         attrs << new Attribute(gd, BaseTypes::NUM_TYPE(), false, 10);
         attrs << new Attribute(ld, BaseTypes::NUM_TYPE(), false, 0);
@@ -98,29 +172,26 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
     }
 
     QMap<QString, PropertyDelegate*> delegates;
-    QVariantMap modeMap;
-    QString splitStr = SeqReadPrompter::tr("Split");
-    QString mergeStr = SeqReadPrompter::tr("Merge");
-    modeMap[splitStr] = SPLIT;
-    modeMap[mergeStr] = MERGE;
-    delegates[MODE_ATTR] = new ComboBoxDelegate(modeMap);
+    {
+        QVariantMap modeMap;
+        QString splitStr = SeqReadPrompter::tr("Split");
+        QString mergeStr = SeqReadPrompter::tr("Merge");
+        modeMap[splitStr] = SPLIT;
+        modeMap[mergeStr] = MERGE;
+        getEditor()->addDelegate(new ComboBoxDelegate(modeMap), MODE_ATTR);
+    }
     {
         QVariantMap m; m["minimum"] = 0; m["maximum"] = INT_MAX;
-        delegates[GAP_ATTR] = new SpinBoxDelegate(m);
-        delegates[LIMIT_ATTR] = new SpinBoxDelegate(m);
+        getEditor()->addDelegate(new SpinBoxDelegate(m), GAP_ATTR);
+        getEditor()->addDelegate(new SpinBoxDelegate(m), LIMIT_ATTR);
     }
-    delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true);
-    setEditor(new DelegateEditor(delegates));
-    setPrompter(new ReadDocPrompter(U2::Workflow::CoreLib::tr("Reads sequence(s) from <u>%1</u>.")));
+    //setPrompter(new ReadDocPrompter(U2::Workflow::CoreLib::tr("Reads sequence(s) from <u>%1</u>.")));
+    setPrompter(new ReadDocPrompter(U2::Workflow::CoreLib::tr("Reads sequence(s) from file(s).")));
 
     QString seqSlotId = BasePorts::OUT_SEQ_PORT_ID() + "." + BaseSlots::DNA_SEQUENCE_SLOT().getId();
     QString annsSlotId = BasePorts::OUT_SEQ_PORT_ID() + "." + BaseSlots::ANNOTATION_TABLE_SLOT().getId();
     addSlotRelation(BasePorts::OUT_SEQ_PORT_ID(), BaseSlots::DNA_SEQUENCE_SLOT().getId(),
         BasePorts::OUT_SEQ_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
-    
-    if(AppContext::isGUIMode()) {
-        setIcon( GUIUtils::createRoundIcon(ICOLOR, 22) );
-    }
 }
 
 GenericMAActorProto::GenericMAActorProto() : IntegralBusActorPrototype(CoreLibConstants::GENERIC_READ_MA_PROTO_ID) 

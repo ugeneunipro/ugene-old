@@ -30,6 +30,20 @@
 namespace U2 {
 namespace Workflow {
 
+class GenericReadDocProto : public IntegralBusActorPrototype {
+public:
+    GenericReadDocProto(const Descriptor &desc);
+
+    static const QString FILE_OR_DIR;
+    static const QString INPUT_PATH;
+    static const QString RECURSIVE;
+    static const QString INCLUDE_NAME_FILTER;
+    static const QString EXCLUDE_NAME_FILTER;
+
+    static const QString INPUT_FILES;
+    static const QString INPUT_DIRS;
+};
+
 class GenericMAActorProto : public IntegralBusActorPrototype {
 public:
     static const QString TYPE;
@@ -37,7 +51,7 @@ public:
     virtual bool isAcceptableDrop(const QMimeData*, QVariantMap*) const;
 };
 
-class GenericSeqActorProto : public IntegralBusActorPrototype {
+class GenericSeqActorProto : public GenericReadDocProto {
 public:
     enum Mode{
         SPLIT,

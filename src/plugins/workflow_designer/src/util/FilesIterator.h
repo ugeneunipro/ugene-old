@@ -1,0 +1,90 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#include <QDir>
+#include <QFileInfoList>
+#include <QString>
+#include <QStringList>
+
+#ifndef _U2_FILES_ITERATOR_
+#define _U2_FILES_ITERATOR_
+
+namespace U2 {
+
+class FilesIterator;
+
+class FilesIteratorFactory {
+public:
+    static FilesIterator * createDirectoryScanner(const QStringList &dirs, const QString &includeFilter,
+        const QString &excludeFilter, bool recursive);
+
+    static FilesIterator * createFileList(const QStringList &files);
+};
+
+class FilesIterator {
+public:
+    FilesIterator() {}
+
+    /** Returns empty string if there are no more files */
+    virtual QString getNextFile() = 0;
+
+    virtual bool hasNext() = 0;
+};
+
+/************************************************************************/
+/* Iterators */
+/************************************************************************/
+class DirectoryScanner : public FilesIterator {
+public:
+    DirectoryScanner(const QStringList &dirs, const QString &includeFilter, const QString &excludeFilter, bool recursive);
+
+    virtual QString getNextFile();
+    virtual bool hasNext();
+
+private:
+    QString includeFilter;
+    QString excludeFilter;
+    bool recursive;
+
+    QStringList usedDirs;
+    QFileInfoList unusedDirs;
+    QRegExp incRx;
+    QRegExp excRx;
+
+    QStringList readyResults;
+
+    static QFileInfoList scanDirectory(const QDir &dir, QFileInfoList &nestedDirs);
+};
+
+class FileList : public FilesIterator {
+public:
+    FileList(const QStringList &files);
+
+    virtual QString getNextFile();
+    virtual bool hasNext();
+
+private:
+    QStringList files;
+};
+
+} // U2
+
+#endif _U2_FILES_ITERATOR_

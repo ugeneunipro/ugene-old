@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include "../util/FilesIterator.h"
+
 #include "GenericReadWorker.h"
 #include "GenericReadActor.h"
 #include "CoreLib.h"
@@ -60,21 +62,41 @@ namespace LocalWorkflow {
  * GenericDocReader
  **************************/
 void GenericDocReader::init() {
-    urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
     assert(ports.size() == 1);
     ch = ports.values().first();
+    QString inputType;
+    Attribute *typeAttr = actor->getParameter(GenericReadDocProto::FILE_OR_DIR);
+    if (NULL != typeAttr) {
+        inputType = typeAttr->getAttributeValue<QString>(context);
+    } else {
+        inputType = GenericReadDocProto::INPUT_FILES;
+    }
+    if (GenericReadDocProto::INPUT_DIRS == inputType) {
+        QStringList dirUrls = WorkflowUtils::expandToUrls(actor->getParameter(GenericReadDocProto::INPUT_PATH)->getAttributeValue<QString>(context));
+        bool recursive = actor->getParameter(GenericReadDocProto::RECURSIVE)->getAttributeValue<bool>(context);
+        QString includeFilter = actor->getParameter(GenericReadDocProto::INCLUDE_NAME_FILTER)->getAttributeValue<QString>(context);
+        QString excludeFilter = actor->getParameter(GenericReadDocProto::EXCLUDE_NAME_FILTER)->getAttributeValue<QString>(context);
+        files = FilesIteratorFactory::createDirectoryScanner(dirUrls, includeFilter, excludeFilter, recursive);
+    } else {
+        QStringList urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
+        files = FilesIteratorFactory::createFileList(urls);
+    }
+}
+
+GenericDocReader::~GenericDocReader() {
+    delete files;
 }
 
 Task *GenericDocReader::tick() {
-    if (cache.isEmpty() && !urls.isEmpty()) {
-        Task *t = createReadTask(urls.takeFirst());
+    if (cache.isEmpty() && files->hasNext()) {
+        Task *t = createReadTask(files->getNextFile());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }
     while (!cache.isEmpty()) {
         ch->put(cache.takeFirst());
     }
-    if (urls.isEmpty()) {
+    if (!files->hasNext()) {
         setDone();
         ch->setEnded();
     }
