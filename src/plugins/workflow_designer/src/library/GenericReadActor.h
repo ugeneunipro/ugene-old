@@ -47,6 +47,7 @@ public:
     static const QString MODE_ATTR;
     static const QString GAP_ATTR;
     static const QString ACC_ATTR;
+    static const QString LIMIT_ATTR;
     static const QString TYPE;
 
     GenericSeqActorProto();

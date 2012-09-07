@@ -52,6 +52,7 @@ namespace Workflow {
 const QString GenericSeqActorProto::MODE_ATTR("mode");
 const QString GenericSeqActorProto::GAP_ATTR("merge-gap");
 const QString GenericSeqActorProto::ACC_ATTR("accept-accession");
+const QString GenericSeqActorProto::LIMIT_ATTR("sequence-count-limit");
 
 const QString GenericSeqActorProto::TYPE("generic.seq");
 const QString GenericMAActorProto::TYPE("generic.ma");
@@ -84,10 +85,15 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
         Descriptor acd(GenericSeqActorProto::ACC_ATTR, SeqReadPrompter::tr("Accession filter"), 
             SeqReadPrompter::tr("Reports only sequences containing the specified regular expression."
                                 "<p><i>Leave it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
+        Descriptor ld(LIMIT_ATTR, SeqReadPrompter::tr("Sequence count limit"),
+            SeqReadPrompter::tr("<i>Split mode</i> only."
+            "<p>Read only first N sequences from each file."
+            "<br>Set 0 value for reading all sequences.</p>"));
 
         attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
         attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, SPLIT);
         attrs << new Attribute(gd, BaseTypes::NUM_TYPE(), false, 10);
+        attrs << new Attribute(ld, BaseTypes::NUM_TYPE(), false, 0);
         attrs << new Attribute(acd, BaseTypes::STRING_TYPE(), false, QString());
     }
 
@@ -101,6 +107,7 @@ GenericSeqActorProto::GenericSeqActorProto() : IntegralBusActorPrototype(CoreLib
     {
         QVariantMap m; m["minimum"] = 0; m["maximum"] = INT_MAX;
         delegates[GAP_ATTR] = new SpinBoxDelegate(m);
+        delegates[LIMIT_ATTR] = new SpinBoxDelegate(m);
     }
     delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true);
     setEditor(new DelegateEditor(delegates));

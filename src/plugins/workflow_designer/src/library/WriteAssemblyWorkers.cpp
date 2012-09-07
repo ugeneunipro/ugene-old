@@ -209,10 +209,6 @@ void WriteAssemblyWorkerFactory::init() {
         ComboBoxDelegate *formatComboDelegate = new ComboBoxDelegate(formatsMap);
         QObject::connect(formatComboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_formatChanged(const QString &)));
         proto->getEditor()->addDelegate(formatComboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
-
-        ComboBoxDelegate *indexComboDelegate = new ComboBoxDelegate(formatsMap);
-        QObject::connect(formatComboDelegate, SIGNAL(si_valueChanged(const QString &)), childProto->getUrlDelegate(), SLOT(sl_formatChanged(const QString &)));
-        proto->getEditor()->addDelegate(formatComboDelegate, BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
     }
     proto->setPrompter(new WriteDocPrompter(WriteBAMWorker::tr("Save all assemblies from <u>%1</u> to <u>%2</u>."),
         BaseSlots::ASSEMBLY_SLOT().getId()));

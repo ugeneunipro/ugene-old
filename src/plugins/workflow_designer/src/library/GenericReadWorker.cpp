@@ -178,6 +178,9 @@ void GenericSeqReader::init() {
     if (GenericSeqActorProto::MERGE == mode) {
         QString mergeToken = DocumentReadingMode_SequenceMergeGapSize;
         cfg[mergeToken] = actor->getParameter(GenericSeqActorProto::GAP_ATTR)->getAttributeValue<int>(context);
+        cfg[GenericSeqActorProto::LIMIT_ATTR] = 0; // no limit in merge mode
+    } else {        
+        cfg[GenericSeqActorProto::LIMIT_ATTR] = actor->getParameter(GenericSeqActorProto::LIMIT_ATTR)->getAttributeValue<int>(context);
     }
     selector.accExpr = actor->getParameter(GenericSeqActorProto::ACC_ATTR)->getAttributeValue<QString>(context);
 }
@@ -187,8 +190,14 @@ void GenericSeqReader::sl_taskFinished() {
     if (!t->isFinished() || t->hasError()) {
         return;
     }
+    int limit = cfg[GenericSeqActorProto::LIMIT_ATTR].toInt();
+    int currentCount = 0;
     foreach(const QVariantMap& m, t->results) {
+        if (0 != limit && currentCount >= limit) {
+            break;
+        }
         cache.append(Message(mtype, m));
+        currentCount++;
     }
     t->results.clear();
 }

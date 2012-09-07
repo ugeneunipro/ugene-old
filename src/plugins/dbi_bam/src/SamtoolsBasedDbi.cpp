@@ -56,7 +56,7 @@ SamtoolsBasedDbi::~SamtoolsBasedDbi() {
     this->cleanup();
 }
 
-QVariantMap SamtoolsBasedDbi::shutdown(U2OpStatus &os) {
+QVariantMap SamtoolsBasedDbi::shutdown(U2OpStatus &/*os*/) {
     cleanup();
     return QVariantMap();
 }
@@ -101,33 +101,6 @@ void SamtoolsBasedDbi::init(const QHash<QString, QString> &properties, const QVa
     } catch(const Exception &e) {
         os.setError(e.getMessage());
         this->cleanup();
-    }
-}
-
-QByteArray SamtoolsBasedDbi::sortBamFile(const QByteArray &fileName) {
-    U2OpStatusImpl os;
-    GUrl sortedBamUrl;// = BAMUtils::sortBam(GUrl(fileName), os);
-    if (os.hasError()) {
-        throw Exception(os.getError());
-    }
-
-    QByteArray sortedFileName = sortedBamUrl.getURLString().toAscii();
-    SAFE_POINT(!sortedFileName.isEmpty(), "Empty sorted file name", "");
-
-    return sortedFileName;
-}
-
-bool SamtoolsBasedDbi::buildBamIndex(const QByteArray &fileName) {
-    U2OpStatusImpl os;
-    BAMUtils::createBamIndex(GUrl(fileName), os);
-
-    if (os.hasError()) {
-        coreLog.details(os.getError());
-        return false;
-    } else {
-        coreLog.details(BAMDbiPlugin::tr("Index is built successfully"));
-        index = bam_index_load(fileName.constData());
-        return true;
     }
 }
 
@@ -198,7 +171,7 @@ U2DataType SamtoolsBasedDbi::getEntityTypeById(const U2DataId &id) const {
     }
 }
 
-const bamFile SamtoolsBasedDbi::getBamFile() const {
+bamFile SamtoolsBasedDbi::getBamFile() const {
     return bamHandler;
 }
 
@@ -522,7 +495,7 @@ U2Assembly SamtoolsBasedAssemblyDbi::getAssemblyObject(const U2DataId &id, U2OpS
     return result;
 }
 
-int bamCountFunction(const bam1_t *b, void *data) {
+int bamCountFunction(const bam1_t * /*b*/, void *data) {
     qint64 *count = (qint64*)data;
     (*count)++;
     return 0;
@@ -613,7 +586,7 @@ SamtoolsBasedAttributeDbi::SamtoolsBasedAttributeDbi(SamtoolsBasedDbi &_dbi)
 
 }
 
-QStringList SamtoolsBasedAttributeDbi::getAvailableAttributeNames(U2OpStatus &os) {
+QStringList SamtoolsBasedAttributeDbi::getAvailableAttributeNames(U2OpStatus &/*os*/) {
     QStringList result;
     result << U2BaseAttributeName::reference_length;
 
@@ -660,19 +633,19 @@ U2IntegerAttribute SamtoolsBasedAttributeDbi::getIntegerAttribute(const U2DataId
     return result;
 }
 
-U2RealAttribute SamtoolsBasedAttributeDbi::getRealAttribute(const U2DataId &attributeId, U2OpStatus &os) {
+U2RealAttribute SamtoolsBasedAttributeDbi::getRealAttribute(const U2DataId &/*attributeId*/, U2OpStatus &/*os*/) {
     return U2RealAttribute();
 }
 
-U2StringAttribute SamtoolsBasedAttributeDbi::getStringAttribute(const U2DataId &attributeId, U2OpStatus &os) {
+U2StringAttribute SamtoolsBasedAttributeDbi::getStringAttribute(const U2DataId &/*attributeId*/, U2OpStatus &/*os*/) {
     return U2StringAttribute();
 }
 
-U2ByteArrayAttribute SamtoolsBasedAttributeDbi::getByteArrayAttribute(const U2DataId &attributeId, U2OpStatus &os) {
+U2ByteArrayAttribute SamtoolsBasedAttributeDbi::getByteArrayAttribute(const U2DataId &/*attributeId*/, U2OpStatus &/*os*/) {
     return U2ByteArrayAttribute();
 }
 
-QList<U2DataId> SamtoolsBasedAttributeDbi::sort(const U2DbiSortConfig& sc, qint64 offset, qint64 count, U2OpStatus& os) {
+QList<U2DataId> SamtoolsBasedAttributeDbi::sort(const U2DbiSortConfig &/*sc*/, qint64 /*offset*/, qint64 /*count*/, U2OpStatus &os) {
     U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     return QList<U2DataId>();
 }

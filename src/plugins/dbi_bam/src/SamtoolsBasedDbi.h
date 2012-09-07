@@ -146,19 +146,19 @@ public:
     virtual U2AssemblyDbi *getAssemblyDbi();
     virtual U2AttributeDbi *getAttributeDbi();
 
-    const bamFile getBamFile() const;
+    bamFile getBamFile() const;
     const bam_header_t *getHeader() const;
     const bam_index_t *getIndex() const;
 
 private:
     GUrl url;
+    int assembliesCount;
     bamFile bamHandler;
     bam_header_t *header;
     bam_index_t *index;
     std::auto_ptr<SamtoolsBasedObjectDbi> objectDbi;
     std::auto_ptr<SamtoolsBasedAssemblyDbi> assemblyDbi;
     std::auto_ptr<SamtoolsBasedAttributeDbi> attributeDbi;
-    int assembliesCount;
 
     void createObjectDbi();
     void cleanup();
@@ -166,14 +166,6 @@ private:
      *  Returns true if all right
      */
     bool initBamStructures(const QByteArray &fileName);
-    /**
-     *  Returns true if the index was built
-     */
-    bool buildBamIndex(const QByteArray &fileName);
-    /**
-     * Returns sorted bam file name
-     */
-    QByteArray sortBamFile(const QByteArray &fileName);
 }; // SamtoolsBasedDbi
 
 class SamtoolsBasedDbiFactory : public U2DbiFactory {
