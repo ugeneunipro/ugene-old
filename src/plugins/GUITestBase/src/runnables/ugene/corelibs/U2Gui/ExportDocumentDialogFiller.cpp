@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "CopyDocumentDialogFiller.h"
+#include "ExportDocumentDialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
@@ -31,11 +31,11 @@
 
 namespace U2 {
 
-#define GT_CLASS_NAME "GTUtilsDialog::CopyToFileAsDialogFiller"
-CopyDocumentDialogFiller::CopyDocumentDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name, 
-                         CopyDocumentDialogFiller::FormatToUse _format, bool compressFile,
+#define GT_CLASS_NAME "ExportDocumentDialogFiller"
+ExportDocumentDialogFiller::ExportDocumentDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name, 
+                         ExportDocumentDialogFiller::FormatToUse _format, bool compressFile,
                          bool addToProject, GTGlobals::UseMethod method):
-Filler(_os, "CopyDocumentDialog"),
+Filler(_os, "ExportDocumentDialog"),
 path(_path), name(_name), useMethod(method), format(_format), compressFile(compressFile), addToProject(addToProject) {
     QString __path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (__path.at(__path.count() - 1) != '/') {
@@ -51,7 +51,7 @@ path(_path), name(_name), useMethod(method), format(_format), compressFile(compr
 }
 
 #define GT_METHOD_NAME "run"
-void CopyDocumentDialogFiller::run()
+void ExportDocumentDialogFiller::run()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");

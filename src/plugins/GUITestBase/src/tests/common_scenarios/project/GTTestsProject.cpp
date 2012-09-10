@@ -43,7 +43,7 @@
 #include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/CopyDocumentDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 
@@ -175,10 +175,10 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "1.gb");
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document", GTGlobals::UseMouse));
 
-    Runnable *filler = new CopyDocumentDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "1.gb", 
-                                                   CopyDocumentDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
+    Runnable *filler = new ExportDocumentDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "1.gb", 
+                                                   ExportDocumentDialogFiller::Genbank, true, true, GTGlobals::UseMouse);
     GTUtilsDialog::waitForDialog(os, filler);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
@@ -225,9 +225,9 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/genbank/.dir/murine.gb");
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Save a copy..", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "murine.gb"));
-    GTUtilsDialog::waitForDialog(os, new CopyDocumentDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os));
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "murine_copy1.gb"));

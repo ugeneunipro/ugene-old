@@ -13,7 +13,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
-            src/runnables/ugene/corelibs/U2Gui/CopyDocumentDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h \
             src/runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h \
@@ -122,7 +122,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.cpp \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
-            src/runnables/ugene/corelibs/U2Gui/CopyDocumentDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.cpp \
