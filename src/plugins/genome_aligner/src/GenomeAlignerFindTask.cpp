@@ -267,28 +267,15 @@ void ShortReadAlignerCPU::run() {
         }
         stateInfo.setProgress(stateInfo.getProgress() + 25/index->getPartCount());
 		if(0 == parent->index->getLoadedPart().getLoadedPartSize()) {
-			algoLog.info(tr("Index size for part %1/%2 is zero, skipping it.").arg(part + 1).arg(index->getPartCount()));
+			algoLog.trace(tr("Index size for part %1/%2 is zero, skipping it.").arg(part + 1).arg(index->getPartCount()));
 			continue;
 		}
 
 		do {
-			// fetch a batch of reads
-			if (part > 0) {
-				SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
-				parent->getDataForAligning(first, length);
-			} else {
-				parent->waitDataForAligning(first, length);
-			}
-
-			if(0 == length) {
+            parent->waitDataForAligning(first, length);
+			if (0 == length) {
 				break;
 			}
-// 			algoLog.details(QString("ShortReadAlignerCPU subtask %1: fetched %3 needles starting at offset %2, next element=%4, queries=%5, bitValues=%6")
-// 				.arg(taskNo).arg(first).arg(length).arg(parent->nextElementToGive).arg(alignContext->queries.size()).arg(alignContext->bitValuesV.size()));
-// 
-// 			algoLog.details(QString("needles: %1").arg(numArrToStr(alignContext->bitValuesV.constData(), alignContext->bitValuesV.size(), true)));
-// 			algoLog.details(QString("window sizes: %1").arg(numArrToStr(alignContext->windowSizes.constData(), alignContext->windowSizes.size())));
-// 			algoLog.details(QString("haystack: %1").arg(numArrToStr(index->getLoadedPart().bitMask, (int)(index->getLoadedPart().getLoadedPartSize()), true)));
 
 			SearchQuery **q = const_cast<SearchQuery**>(alignContext->queries.constData());
 			const BMType *bitValues = alignContext->bitValuesV.constData();
@@ -303,10 +290,8 @@ void ShortReadAlignerCPU::run() {
 					continue;
 				}
 				BMType currentBitFilter = ((quint64)0 - 1) << (62 - currentW * 2);
-// 				algoLog.details(QString("bitFilter value for needle #%1 is 0x%2").arg(i).arg(currentBitFilter, sizeof(BMType) * 2, 16, QChar('0')));
 
-				if (part > 0 || alignContext->openCL) { //for avoiding a QVector deep copy
-					SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
+				if (alignContext->isReadingFinished) { //for avoiding a QVector deep copy
 					bv = bitValues[i];
 					rn = readNumbers[i];
 					pos = par[i];
@@ -335,7 +320,6 @@ void ShortReadAlignerCPU::run() {
 				}
 
 				bmr = index->bitMaskBinarySearch(bv, currentBitFilter);
-//				algoLog.details(QString("needle %1 found at offset %2").arg(i).arg(bmr));
 				index->alignShortRead(shortRead, bv, pos, bmr, alignContext, currentBitFilter, currentW);
 
 				if (!alignContext->bestMode) {
@@ -378,38 +362,27 @@ void ShortReadAlignerOpenCL::run() {
 		stateInfo.setProgress(100 * part / index->getPartCount());
         quint64 t0 = GTimer::currentTimeMicros();
 		parent->loadPartForAligning(part);
-        algoLog.details(QString("Index part %1 loaded in %2 sec.").arg(part + 1).arg((GTimer::currentTimeMicros() - t0) / double(1000000), 0, 'f', 3));
+        algoLog.trace(QString("Index part %1 loaded in %2 sec.").arg(part + 1).arg((GTimer::currentTimeMicros() - t0) / double(1000000), 0, 'f', 3));
 		if (parent->hasError()) {
 			return;
 		}
 		stateInfo.setProgress(stateInfo.getProgress() + 25 / index->getPartCount());
 		if(0 == parent->index->getLoadedPart().getLoadedPartSize()) {
-			algoLog.info(tr("Index size for part %1/%2 is zero, skipping it.").arg(part + 1).arg(index->getPartCount()));
+			algoLog.trace(tr("Index size for part %1/%2 is zero, skipping it.").arg(part + 1).arg(index->getPartCount()));
 			continue;
 		}
 
 		// wait until all short reads are loaded
         t0 = GTimer::currentTimeMicros();
 		do {
-			if (part > 0) {
-				SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
-				parent->getDataForAligning(first, length);
-			} else { //if (0 == part) then wait for reading shortreads
-				parent->waitDataForAligning(first, length);
-			}
-// 			algoLog.details(QString("ShortReadAlignerOpenCL subtask %1: fetched %3 needles starting at offset %2, next element=%4, queries=%5, bitValues=%6")
-// 				.arg(taskNo).arg(first).arg(length).arg(parent->nextElementToGive).arg(alignContext->queries.size()).arg(alignContext->bitValuesV.size()));
+            parent->waitDataForAligning(first, length);
 		} while(length > 0);
-        algoLog.details(QString("%1 queries fetched in %2 sec.").arg(alignContext->queries.size()).arg((GTimer::currentTimeMicros() - t0) / double(1000000), 0, 'f', 3));
-
-// 		algoLog.details(QString("needles: %1").arg(numArrToStr(alignContext->bitValuesV.constData(), alignContext->bitValuesV.size(), true)));
-// 		algoLog.details(QString("window sizes: %1").arg(numArrToStr(alignContext->windowSizes.constData(), alignContext->windowSizes.size())));
-// 		algoLog.details(QString("haystack: %1").arg(numArrToStr(index->getLoadedPart().bitMask, (int)(index->getLoadedPart().getLoadedPartSize()), true)));
+        SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
+        algoLog.trace(QString("%1 queries fetched in %2 sec.").arg(alignContext->queries.size()).arg((GTimer::currentTimeMicros() - t0) / double(1000000), 0, 'f', 3));
 
 		if (!parent->runOpenCLBinarySearch()) {
 			return;
 		}
-// 		algoLog.details(QString("search results: %1").arg(numArrToStr(parent->binarySearchResults, alignContext->bitValuesV.size())));
 		stateInfo.setProgress(stateInfo.getProgress() + 50/index->getPartCount());
 
 		SearchQuery **q = const_cast<SearchQuery**>(alignContext->queries.constData());
@@ -426,27 +399,15 @@ void ShortReadAlignerOpenCL::run() {
 				continue;
 			}
 			BMType currentBitFilter = ((quint64)0 - 1) << (62 - currentW * 2);
-//			algoLog.details(QString("bitFilter value for needle #%1 is 0x%2").arg(i).arg(currentBitFilter, sizeof(BMType) * 2, 16, QChar('0')));
 
-			if (part > 0 || alignContext->openCL) { //for avoiding a QVector deep copy
-				SAFE_POINT(alignContext->isReadingFinished, "Synchronization error", );
-				bv = bitValues[i];
-				rn = readNumbers[i];
-				pos = par[i];
-				if (i < totalResults - 1) {
-					rn1 = readNumbers[i + 1];
-				}
-				shortRead = q[rn];
-			} else {
-				QMutexLocker lock(&alignContext->listM);
-				bv = alignContext->bitValuesV.at(i);
-				rn = alignContext->readNumbersV.at(i);
-				pos = alignContext->positionsAtReadV.at(i);
-				if (i < totalResults - 1) {
-					rn1 = alignContext->readNumbersV.at(i + 1);
-				}
-				shortRead = alignContext->queries.at(rn);
+			bv = bitValues[i];
+			rn = readNumbers[i];
+			pos = par[i];
+			if (i < totalResults - 1) {
+				rn1 = readNumbers[i + 1];
 			}
+			shortRead = q[rn];
+
 			revCompl = shortRead->getRevCompl();
 			if (alignContext->bestMode) {
 				if (0 == shortRead->firstMCount()) {
@@ -469,7 +430,7 @@ void ShortReadAlignerOpenCL::run() {
 				}
 			}
 		}
-        algoLog.details(QString("binary search results applied in %1 ms").arg((GTimer::currentTimeMicros() - t0) / double(1000), 0, 'f', 3));
+        algoLog.trace(QString("binary search results applied in %1 ms").arg((GTimer::currentTimeMicros() - t0) / double(1000), 0, 'f', 3));
 	}
 #endif
 }

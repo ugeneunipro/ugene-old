@@ -67,7 +67,7 @@ BinaryFindOpenCL::BinaryFindOpenCL(const NumberType *_haystack,
 }
 
 BinaryFindOpenCL::~BinaryFindOpenCL() {
-    algoLog.details(QObject::tr("clear OpenCL resources"));
+    algoLog.trace(QObject::tr("clear OpenCL resources"));
     cl_int err = CL_SUCCESS;
     const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
 
@@ -142,7 +142,7 @@ int BinaryFindOpenCL::checkCreateBuffer(const QString &bufferName, cl_mem &buf, 
     cl_int err = CL_SUCCESS;
     usageGPUMem += thisBufferSize;
 
-    algoLog.details(QString("Creating buffer %1 bytes").arg(thisBufferSize));
+    algoLog.trace(QString("Creating buffer %1 bytes").arg(thisBufferSize));
     SAFE_POINT(thisBufferSize <= maxAllocateBufferSize, QString("Too big buffer: %1Mb").arg(thisBufferSize/(1024*1024)), -1);
     SAFE_POINT(usageGPUMem <= deviceGlobalMemSize, QString("Too much memory used: %1Mb").arg(usageGPUMem/(1024*1024)), -1);
 
@@ -166,7 +166,7 @@ int BinaryFindOpenCL::createBuffers() {
     err |= checkCreateBuffer("buf_sortedHaystackArray", buf_sortedHaystackArray, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(NumberType)*haystackSize, (void*)haystack, usageGPUMem);
     SAFE_POINT(err == 0, "Creating OpenCL buffer error", err);
 
-    algoLog.details(QObject::tr("GPU memory usage: %1 Mb").arg(usageGPUMem / (1 << 20)));
+    algoLog.trace(QObject::tr("GPU memory usage: %1 Mb").arg(usageGPUMem / (1 << 20)));
     return err;
 }
 
@@ -180,13 +180,13 @@ int BinaryFindOpenCL::runBinaryFindKernel() {
 
     size_t preferredWorkGroupSize = OpenCLUtils::getPreferredWorkGroupSize(binaryFindKernel, deviceId, openCLHelper, err);
     if(hasOPENCLError(err, "getPreferredWorkGroupSize() failed")) return err;
-    algoLog.details(QObject::tr("Device's preferred work group size multiple is %1").arg(preferredWorkGroupSize));
+    algoLog.trace(QObject::tr("Device's preferred work group size multiple is %1").arg(preferredWorkGroupSize));
 
     // if the global work size is greater than the device's preferred workgroup size (PWS), round it up to a multiple
     // of PWS to ensure that work groups of exactly that size are created by OpenCL impl
     size_t globalWorkSize = (size_t)ceil((double)needlesSize/ preferredWorkGroupSize) * preferredWorkGroupSize;
-    algoLog.details(QString("needles: %1, haystack size: %2").arg(needlesSize).arg(haystackSize));
-    algoLog.details(QString("global work size = %1").arg(globalWorkSize));
+    algoLog.trace(QString("needles: %1, haystack size: %2").arg(needlesSize).arg(haystackSize));
+    algoLog.trace(QString("global work size = %1").arg(globalWorkSize));
 
     cl_uint kernelArgNum = 0;
     err = openCLHelper.clSetKernelArg_p(binaryFindKernel, kernelArgNum++, sizeof(cl_mem), (void*)&buf_sortedHaystackArray);
@@ -286,9 +286,9 @@ void BinaryFindOpenCL::logProfilingInfo(const cl_event &event, const QString &ms
 		|| (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_SUBMIT, sizeof(cl_ulong), &clt2, NULL)) != 0
 		|| (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &clt3, NULL)) != 0
 		|| (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &clt4, NULL)) != 0) {
-			algoLog.details(QString("OpenCL profiling info unavailable (%1)").arg(err));
+			algoLog.trace(QString("OpenCL profiling info unavailable (%1)").arg(err));
 	} else {
-		algoLog.details(QString("%1: %2/%3/%4 ms (since queued/submitted/execution started)").arg(msgPrefix)
+		algoLog.trace(QString("%1: %2/%3/%4 ms (since queued/submitted/execution started)").arg(msgPrefix)
             .arg((clt4 - clt1) / (double)1000000, 0, 'f', 2)
             .arg((clt4 - clt2) / (double)1000000, 0, 'f', 2)
             .arg((clt4 - clt3) / (double)1000000, 0, 'f', 2));
