@@ -150,10 +150,8 @@ void SendReportDialog::sl_onOKclicked() {
 
 QString ReportSender::getOSVersion() {
     QString result;
-#if defined(UGENE_X86_64)
-    result = "Windows x64";
-#elif defined(Q_OS_WIN32)
-    result = "Windows x86";
+#if defined(Q_OS_WIN32)
+    result = "Windows";
 #elif defined(Q_OS_LINUX)
     result = "Linux";
 #elif defined(Q_OS_MAC)
@@ -161,6 +159,13 @@ QString ReportSender::getOSVersion() {
 #else
     result = "Unsupported OS";
 #endif
+
+#if defined(UGENE_X86_64)
+    result += " x64";
+#else
+    result += " x86";
+#endif
+
     return result;
 }
 
