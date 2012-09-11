@@ -24,6 +24,7 @@
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTMenu.h"
+#include "api/GTAction.h"
 #include "api/GTFileDialog.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsProject.h"
@@ -852,20 +853,11 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     CHECK_SET_ERR(mainWindow != NULL, "Main Window not found");
     CHECK_SET_ERR(toolBarSe2 != NULL, "Tool bar not found");
 
-    QAction *zoomAction = mainWindow->findChild<QAction*>("zoom_to_range_se2");
-    CHECK_SET_ERR(zoomAction != NULL, "Zoom to range action not found");
-    QWidget *zoomButton = toolBarSe2->widgetForAction(zoomAction);
+    QAbstractButton* zoomButton = GTAction::button(os, "zoom_to_range_se2");
     CHECK_SET_ERR(zoomButton != NULL, "Zoom button not found");
-
-    QAction *zoomInSe2 = mainWindow->findChild<QAction*>("action_zoom_in_se2");
-    QAction *zoomOutSe2 = mainWindow->findChild<QAction*>("action_zoom_out_se2");
-    CHECK_SET_ERR(zoomInSe2 != NULL, "Zoom In action not found");
-    CHECK_SET_ERR(zoomOutSe2 != NULL, "Zoom Out action not found");
-
-    QWidget *zoomInButton = toolBarSe2->widgetForAction(zoomInSe2);
-    QWidget *zoomOutButton = toolBarSe2->widgetForAction(zoomInSe2);
-
+    QAbstractButton* zoomInButton = GTAction::button(os, "action_zoom_in_se2");
     CHECK_SET_ERR(zoomInButton != NULL, "Zoom In button not found");
+    QAbstractButton* zoomOutButton = GTAction::button(os, "action_zoom_out_se2");
     CHECK_SET_ERR(zoomOutButton != NULL, "Zoom Out button not found");
 
 // 2. Click on toolbar button Zoom to range for sequence se2. Select region 20..50, then click OK.
