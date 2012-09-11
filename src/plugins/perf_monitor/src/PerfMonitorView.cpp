@@ -126,11 +126,4 @@ void PerfTreeItem::updateVisual() {
     setText(1, QString::number(counter->scaledTotal()));
     setText(2, counter->suffix);
 }
-
-/*int main() {
-  struct proc_t usage;
-  look_up_our_self(&usage);
-  printf("usage: %lu\n", usage.vsize);
-}*/
-
 } //namespace
