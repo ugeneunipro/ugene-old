@@ -16,12 +16,12 @@ public:
     DereplicationData(const QList<SharedDbiDataHandler> &srcSeqs,
         DbiDataStorage *storage,
         const QString &comparingAlgoId,
-        int accuracy);
+        double accuracy);
 
     QList<SharedDbiDataHandler> & getSeqs();
     DbiDataStorage * getStorage() const;
     QString getComparingAlgoId() const;
-    int getAccuracy() const;
+    double getAccuracy() const;
 
     SharedDbiDataHandler takeRandomSequence();
 
@@ -29,7 +29,7 @@ private:
     QList<SharedDbiDataHandler> srcSeqs;
     DbiDataStorage *storage;
     QString comparingAlgoId;
-    int accuracy;
+    double accuracy;
 };
 
 class DereplicationTask : public Task {

@@ -28,7 +28,7 @@ private:
 
     QString derepAlgoId;
     QString compAlgoId;
-    int accuracy;
+    double accuracy;
 
     bool taskInRunning;
 

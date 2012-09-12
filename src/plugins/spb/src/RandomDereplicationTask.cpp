@@ -14,6 +14,7 @@ RandomDereplicationTask::RandomDereplicationTask(const DereplicationData &data)
 }
 
 void RandomDereplicationTask::run() {
+    qsrand(QDateTime::currentDateTime().toTime_t());
     QScopedPointer<ComparingAlgorithm> algo(
         ComparingAlgorithmFactory::createAlgorithm(data.getComparingAlgoId()));
     if (NULL == algo.data()) {
@@ -41,7 +42,7 @@ void RandomDereplicationTask::run() {
             QByteArray seqData = seqObj->getSequenceData(U2_REGION_MAX, stateInfo);
             CHECK_OP(stateInfo, );
 
-            int res = algo->compare(leaderData, seqData);
+            double res = algo->compare(leaderData, seqData);
             if (res >= data.getAccuracy()) {
                 data.getSeqs().removeOne(seqId);
             }

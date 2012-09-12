@@ -21,15 +21,15 @@ class ComparingAlgorithm {
 public:
     ComparingAlgorithm();
 
-    /** Returns the percent of sequences identity */
-    virtual int compare(const U2SequenceObject *seq1,
+    /** Returns the percent of sequences identity: 0.0 .. 100.0 */
+    virtual double compare(const U2SequenceObject *seq1,
         const U2SequenceObject *seq2);
-    virtual int compare(const QByteArray &seq1, const QByteArray &seq2) = 0;
+    virtual double compare(const QByteArray &seq1, const QByteArray &seq2) = 0;
 };
 
 class DefaultComparingAlgorithm : public ComparingAlgorithm {
 public:
-    virtual int compare(const QByteArray &seq1, const QByteArray &seq2);
+    virtual double compare(const QByteArray &seq1, const QByteArray &seq2);
 
 private:
     void align(MAlignment &ma);

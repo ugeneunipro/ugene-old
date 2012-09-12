@@ -39,7 +39,7 @@ void DereplicateSequencesWorker::init() {
 
     derepAlgoId = actor->getParameter(DEREPLICATION_ALGO_ATTR_ID)->getAttributeValue<QString>(context);
     compAlgoId = actor->getParameter(COMPARING_ALGO_ATTR_ID)->getAttributeValue<QString>(context);
-    accuracy = actor->getParameter(ACCURACY_ATTR_ID)->getAttributeValue<int>(context);
+    accuracy = actor->getParameter(ACCURACY_ATTR_ID)->getAttributeValue<double>(context);
 }
 
 bool DereplicateSequencesWorker::isReady() {
@@ -79,9 +79,9 @@ void DereplicateSequencesWorker::sl_taskFinished() {
         outPort->put(Message(outPort->getBusType(), data));
     }
 
-    taskInRunning = false;
     setDone();
     outPort->setEnded();
+    taskInRunning = false;
 }
 
 void DereplicateSequencesWorker::cleanup() {
@@ -124,10 +124,10 @@ void DereplicateSequencesWorkerFactory::init() {
     QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap percMap;
-        percMap["minimum"] = QVariant(0); 
-        percMap["maximum"] = QVariant(100); 
+        percMap["minimum"] = QVariant(0.0); 
+        percMap["maximum"] = QVariant(100.0); 
         percMap["suffix"] = "%";
-        delegates[ACCURACY_ATTR_ID] = new SpinBoxDelegate(percMap);
+        delegates[ACCURACY_ATTR_ID] = new DoubleSpinBoxDelegate(percMap);
 
         QVariantMap cAlgos;
         cAlgos[ComparingAlgorithmFactory::DEFAULT] = ComparingAlgorithmFactory::DEFAULT;

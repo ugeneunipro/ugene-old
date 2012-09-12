@@ -7,7 +7,7 @@ namespace SPB {
 DereplicationData::DereplicationData(const QList<SharedDbiDataHandler> &_srcSeqs,
         DbiDataStorage *_storage,
         const QString &_comparingAlgoId,
-        int _accuracy)
+        double _accuracy)
 : srcSeqs(_srcSeqs), storage(_storage), comparingAlgoId(_comparingAlgoId),
 accuracy(_accuracy)
 {
@@ -26,7 +26,7 @@ QString DereplicationData::getComparingAlgoId() const {
     return comparingAlgoId;
 }
 
-int DereplicationData::getAccuracy() const {
+double DereplicationData::getAccuracy() const {
     return accuracy;
 }
 

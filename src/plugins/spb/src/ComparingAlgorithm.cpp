@@ -1,3 +1,4 @@
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -19,7 +20,7 @@ ComparingAlgorithm::ComparingAlgorithm() {
 
 }
 
-int ComparingAlgorithm::compare(const U2SequenceObject *seq1,
+double ComparingAlgorithm::compare(const U2SequenceObject *seq1,
     const U2SequenceObject *seq2) {
     U2OpStatusImpl os;
 
@@ -34,12 +35,13 @@ int ComparingAlgorithm::compare(const U2SequenceObject *seq1,
 /************************************************************************/
 /* DefaultComparingAlgorithm */
 /************************************************************************/
-int DefaultComparingAlgorithm::compare(const QByteArray &seq1,
+double DefaultComparingAlgorithm::compare(const QByteArray &seq1,
     const QByteArray &seq2) {
 
     MAlignment ma("Alignment");
     ma.addRow(MAlignmentRow("seq1", seq1));
     ma.addRow(MAlignmentRow("seq2", seq2));
+    U2AlphabetUtils::assignAlphabet(ma);
 
     align(ma);
 
@@ -51,13 +53,12 @@ int DefaultComparingAlgorithm::compare(const QByteArray &seq1,
     }
 
     double result = double(ma.getLength() - mismatches) / ma.getLength();
-    int resultPercent = int(result * 100);
 
-    return resultPercent;
+    return result * 100;
 }
 
 void DefaultComparingAlgorithm::align(MAlignment &ma) {
-    
+
 }
 
 inline bool DefaultComparingAlgorithm::symbolsEqual(char c1, char c2) {

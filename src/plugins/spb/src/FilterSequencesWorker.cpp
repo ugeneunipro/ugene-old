@@ -68,7 +68,7 @@ Task * FilterSequencesWorker::tick() {
         QVariantMap data = m.getData().toMap();
         SharedDbiDataHandler seqId = data.value(IN_SEQ_1_SLOT_ID).value<SharedDbiDataHandler>();
 
-        int accuracy = actor->getParameter(ACCURACY_ATTR_ID)->getAttributeValue<int>(context);
+        double accuracy = actor->getParameter(ACCURACY_ATTR_ID)->getAttributeValue<double>(context);
         QString algoId = actor->getParameter(ALGO_ATTR_ID)->getAttributeValue<QString>(context);
 
         Task *t = new FilterSequenceTask(seqId, sequencesToFind, accuracy, algoId, context);
@@ -102,7 +102,7 @@ void FilterSequencesWorker::sl_taskFinished() {
 /************************************************************************/
 FilterSequenceTask::FilterSequenceTask(const SharedDbiDataHandler &_srcSeq,
                   const QList<SharedDbiDataHandler> &_sequencesToFind,
-                  int _accuracy, const QString &_algoId, WorkflowContext *_ctx)
+                  double _accuracy, const QString &_algoId, WorkflowContext *_ctx)
 : Task("Filter sequence", TaskFlag_None), srcSeq(_srcSeq),
 sequencesToFind(_sequencesToFind), accuracy(_accuracy), algoId(_algoId),
 ctx(_ctx), result(false)
@@ -137,7 +137,7 @@ void FilterSequenceTask::run() {
             taskLog.error("SPB: NULL sequence object");
             continue;
         }
-        int res = algo->compare(srcSeqObj.data(), seqObj.data());
+        double res = algo->compare(srcSeqObj.data(), seqObj.data());
         if (res >= accuracy) { // sequences are equal
             result = true;
             break;
@@ -195,10 +195,10 @@ void FilterSequencesWorkerFactory::init() {
     QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap percMap;
-        percMap["minimum"] = QVariant(0); 
-        percMap["maximum"] = QVariant(100); 
+        percMap["minimum"] = QVariant(0.0); 
+        percMap["maximum"] = QVariant(100.0); 
         percMap["suffix"] = "%";
-        delegates[ACCURACY_ATTR_ID] = new SpinBoxDelegate(percMap);
+        delegates[ACCURACY_ATTR_ID] = new DoubleSpinBoxDelegate(percMap);
 
         QVariantMap algos;
         algos[ComparingAlgorithmFactory::DEFAULT] = ComparingAlgorithmFactory::DEFAULT;

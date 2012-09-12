@@ -55,7 +55,7 @@ class FilterSequenceTask : public Task {
 public:
     FilterSequenceTask(const SharedDbiDataHandler &srcSeq,
         const QList<SharedDbiDataHandler> &sequencesToFind,
-        int accuracy, const QString &algoId, WorkflowContext *ctx);
+        double accuracy, const QString &algoId, WorkflowContext *ctx);
 
     virtual void run();
     virtual void cleanup();
@@ -64,7 +64,7 @@ public:
 private:
     SharedDbiDataHandler srcSeq;
     QList<SharedDbiDataHandler> sequencesToFind;
-    int accuracy;
+    double accuracy;
     QString algoId;
     WorkflowContext *ctx;
     bool result;
