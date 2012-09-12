@@ -71,7 +71,9 @@ private:
 
     QStringList readyResults;
 
-    static QFileInfoList scanDirectory(const QDir &dir, QFileInfoList &nestedDirs);
+private:
+    QFileInfoList scanDirectory(const QDir &dir);
+    bool isPassedByFilters(const QString &fileName) const;
 };
 
 class FileList : public FilesIterator {

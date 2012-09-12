@@ -54,25 +54,11 @@ QString DirectoryScanner::getNextFile() {
         }
 
         QDir dir(entry.absoluteFilePath());
-        QFileInfoList nested;
-        QFileInfoList files = scanDirectory(dir, nested);
+        QFileInfoList files = scanDirectory(dir);
         foreach (const QFileInfo &path, files) {
-            QString absPath = path.absoluteFilePath();
-            QString relPath = path.fileName();
-
-            bool matched = true;
-            if (!includeFilter.isEmpty()) {
-                matched = incRx.exactMatch(relPath);
+            if (isPassedByFilters(path.fileName())) {
+                readyResults << path.absoluteFilePath();
             }
-            if (!excludeFilter.isEmpty()) {
-                matched = matched && !excRx.exactMatch(relPath);
-            }
-            if (matched) {
-                readyResults << absPath;
-            }
-        }
-        if (recursive) {
-            unusedDirs << nested;
         }
         usedDirs << dir.absolutePath();
     }
@@ -82,6 +68,18 @@ QString DirectoryScanner::getNextFile() {
     } else {
         return "";
     }
+}
+
+bool DirectoryScanner::isPassedByFilters(const QString &fileName) const {
+    bool passed = true;
+    if (!includeFilter.isEmpty()) {
+        passed = incRx.exactMatch(fileName);
+    }
+    if (!excludeFilter.isEmpty()) {
+        passed = passed && !excRx.exactMatch(fileName);
+    }
+
+    return passed;
 }
 
 bool DirectoryScanner::hasNext() {
@@ -94,12 +92,13 @@ bool DirectoryScanner::hasNext() {
     }
 }
 
-QFileInfoList DirectoryScanner::scanDirectory(const QDir &dir, QFileInfoList &nestedDirs) {
+QFileInfoList DirectoryScanner::scanDirectory(const QDir &dir) {
     QFileInfoList result;
     if (!dir.exists()) {
         return result;
     }
 
+    QFileInfoList nestedDirs;
     QFileInfoList entries = dir.entryInfoList();
     foreach (const QFileInfo &entry, entries) {
         if (entry.isDir()) {
@@ -114,6 +113,9 @@ QFileInfoList DirectoryScanner::scanDirectory(const QDir &dir, QFileInfoList &ne
         } else if (entry.isFile()) {
             result << entry;
         }
+    }
+    if (recursive) {
+        unusedDirs << nestedDirs;
     }
 
     return result;
