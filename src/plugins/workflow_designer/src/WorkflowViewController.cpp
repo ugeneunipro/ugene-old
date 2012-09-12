@@ -1316,10 +1316,10 @@ void WorkflowView::sl_pasteItems(const QString& s) {
     disconnect(scene, SIGNAL(selectionChanged()), this, SLOT(sl_editItem()));
     scene->clearSelection();
     connect(scene, SIGNAL(selectionChanged()), SLOT(sl_editItem()));
-    
+
     QList<Iteration> oldIterations = scene->getIterations();
     scene->setIterations(QList<Iteration>());
-    
+
     QString msg = HRSceneSerializer::string2Scene(lastPaste, scene, NULL, true, true);
     if (!msg.isEmpty()) {
         uiLog.error("Paste issues: " + msg);
@@ -1327,12 +1327,18 @@ void WorkflowView::sl_pasteItems(const QString& s) {
     // merge iteration data
     QList<Iteration> iterations = scene->getIterations();
     scene->setIterations(oldIterations);
+    QList<Iteration> current = scene->getIterations();
     if (!iterations.isEmpty()) {
-        QList<Iteration> current = scene->getIterations();
         if(current.isEmpty()) {
             current = iterations;
         }
-        if (iterations.size() == 1 || current.size() == 1) {
+        if(iterations.size() == 1 && current.size() == 1){
+            //one-to-one
+            int size = current[0].cfg.size();
+            current[0].cfg.unite(iterations[0].cfg);
+            size = current[0].cfg.size();
+            scene->setIterations(current);
+        }else if (iterations.size() == 1 || current.size() == 1) {
             // one-to-many mapping
             Iteration& it = iterations.size() == 1 ? iterations[0] : current[0];
             QList<Iteration>& target = iterations.size() == 1 ? current : iterations;
@@ -1358,9 +1364,7 @@ void WorkflowView::sl_pasteItems(const QString& s) {
                     current.append(pasted);
                 }
             }
-            scene->setIterations(current);
         }
-        propertyEditor->resetIterations();
     }
     scene->connectConfigurationEditors();
 
@@ -1368,10 +1372,10 @@ void WorkflowView::sl_pasteItems(const QString& s) {
     foreach(QGraphicsItem * it, scene->selectedItems()) {
         it->moveBy(shift, shift);
     }
-    remapActorsIds();
+    remapActorsIds(current);
 }
 
-void WorkflowView::remapActorsIds(){
+void WorkflowView::remapActorsIds(QList<Iteration> &lst){
     QMap<ActorId, ActorId> mapIds;
 
     foreach(QGraphicsItem * it, scene->selectedItems()) {
@@ -1383,6 +1387,12 @@ void WorkflowView::remapActorsIds(){
             mapIds[oldId] = newId;
         }
     }
+
+    for(QList<Iteration>::iterator i = lst.begin(); i != lst.end(); i++){
+        i->remapAfterPaste(mapIds);
+    }
+    scene->setIterations(lst);
+    propertyEditor->resetIterations();
 
     foreach(QGraphicsItem * it, scene->selectedItems()) {
         if(it->type() == WorkflowProcessItemType) {

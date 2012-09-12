@@ -450,6 +450,20 @@ void Iteration::remap(QMap<ActorId, ActorId> map) {
     cfg = newCfg;
 }
 
+void Iteration::remapAfterPaste(QMap<ActorId, ActorId> map) {
+    CfgMap newCfg;
+    QMapIterator< ActorId, QVariantMap> it(cfg);
+    while (it.hasNext()){
+        it.next();
+        if(map.contains(it.key())){
+            newCfg.insert(map.take(it.key()), it.value());
+        }else{
+            newCfg.insert(it.key(), it.value());
+        }
+    }
+    cfg = newCfg;
+}
+
 bool Iteration::isEmpty() const {
     return cfg.isEmpty();
 }

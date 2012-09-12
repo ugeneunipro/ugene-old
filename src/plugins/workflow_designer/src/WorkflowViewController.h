@@ -233,7 +233,7 @@ protected:
     bool onCloseEvent();
 
 private:
-    void remapActorsIds();
+    void remapActorsIds(QList<Iteration> &lst);
     void createActions();
     void saveState();
     

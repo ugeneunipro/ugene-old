@@ -144,6 +144,8 @@ public:
     // when actor changes id (if schema was deeply copied)
     // we need to remap iteration's data to new actorId
     void remap(QMap<ActorId, ActorId>);
+
+    void remapAfterPaste(QMap<ActorId, ActorId>);
     
     bool isEmpty() const;
 
