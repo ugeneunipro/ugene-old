@@ -195,11 +195,12 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
 
     if (subTask == findTask) {
         taskLog.details(QString("%1 reads with up to %2 mismatches aligned in %3 sec.")
-			.arg(alignContext.queries.size()).arg(alignContext.nMismatches).arg((double)time/(1000*1000)));
+            .arg(alignContext.queries.size()).arg(alignContext.nMismatches).arg((double)time/(1000*1000)));
         indexLoadTime += findTask->getIndexLoadTime();
 
         if (alignContext.bestMode) {
-            writeTask  = new WriteAlignedReadsSubTask(seqWriter, alignContext.queries, readsAligned);
+            // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
+            writeTask  = new WriteAlignedReadsSubTask(alignContext.listM, seqWriter, alignContext.queries, readsAligned);
             writeTask->setSubtaskProgressWeight(0.0f);
             subTasks.append(writeTask);
             return subTasks;
@@ -222,12 +223,6 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         readsCount += readTask->bunchSize;
         taskLog.details(QString("GenomeAlignerTask: %1 short reads loaded and complemented in %2 sec, file progress %3%.")
             .arg(readTask->bunchSize).arg(time / (double)1000000, 0, 'f', 2).arg(seqReader->getProgress()));
-
-        /*findTask = new GenomeAlignerFindTask(index, &alignContext, pWriteTask);
-        findTask->setSubtaskProgressWeight(0.0f);
-        subTasks.append(findTask);
-        findTask->setSubtaskProgressWeight(seqReader->getProgress()/100.0f - currentProgress);
-        currentProgress = seqReader->getProgress()/100.0f;*/
     }
 
     if (subTask == createIndexTask || subTask == findTask || subTask == writeTask) {
@@ -236,8 +231,11 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
             shortreadIOTime += time;
         }
         if (!noDataToAlign) {
+            alignContext.listM.lock();
             alignContext.isReadingStarted = false;
             alignContext.isReadingFinished = false;
+            alignContext.listM.unlock();
+
             alignContext.minReadLength = INT_MAX;
             alignContext.maxReadLength = 0;
             readTask = new ReadShortReadsSubTask(&lastQuery, seqReader, settings, alignContext, readMemSize*1024*1024);
@@ -277,7 +275,7 @@ Task::ReportResult GenomeAlignerTask::report() {
     if (justBuildIndex) {
         return ReportResult_Finished;
     }
-    
+
     if (seqWriter->getWrittenReadsCount() == 0) {
         haveResults = false;
         return ReportResult_Finished;
@@ -289,7 +287,7 @@ Task::ReportResult GenomeAlignerTask::report() {
             stateInfo.setError("No parallel write task in non best mode"), ReportResult_Finished);
         aligned = pWriteTask->getWrittenReadsCount();
     }
-    
+
     if (readsCount > 0) {
         taskLog.info(tr("The aligning is finished."));
         taskLog.info(tr("Whole working time = %1.").arg((GTimer::currentTimeMicros() - inf.startTime)/(1000*1000)));
@@ -303,7 +301,7 @@ Task::ReportResult GenomeAlignerTask::report() {
     }
 
     haveResults = (aligned > 0);
-    
+
     return ReportResult_Finished;
 }
 

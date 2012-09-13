@@ -23,8 +23,8 @@
 
 namespace U2 {
 
-WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(GenomeAlignerWriter *_seqWriter, QVector<SearchQuery*> &_queries, quint64 &r)
-: Task("WriteAlignedReadsSubTask", TaskFlag_None), seqWriter(_seqWriter), queries(_queries), readsAligned(r)
+WriteAlignedReadsSubTask::WriteAlignedReadsSubTask(QMutex &_listM, GenomeAlignerWriter *_seqWriter, QVector<SearchQuery*> &_queries, quint64 &r)
+: Task("WriteAlignedReadsSubTask", TaskFlag_None), seqWriter(_seqWriter), queries(_queries), readsAligned(r), listM(_listM)
 {
 
 }
@@ -40,6 +40,9 @@ void WriteAlignedReadsSubTask::setReadWritten(SearchQuery *read, SearchQuery *re
 }
 
 void WriteAlignedReadsSubTask::run() {
+    // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
+    QMutexLocker lock(&listM);
+
     stateInfo.setProgress(0);
     SearchQuery *read = NULL;
     SearchQuery *revCompl = NULL;

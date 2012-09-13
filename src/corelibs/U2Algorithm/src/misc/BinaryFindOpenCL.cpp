@@ -56,7 +56,7 @@ BinaryFindOpenCL::BinaryFindOpenCL(const NumberType *_haystack,
     clContext = 0;
     buf_sortedHaystackArray = 0;
     buf_needlesArray = 0;
-	buf_windowSizesArray = 0;
+    buf_windowSizesArray = 0;
 
     device = AppContext::getOpenCLGpuRegistry()->getAnyEnabledGpu();
     deviceId = (cl_device_id) device->getId();
@@ -91,18 +91,18 @@ BinaryFindOpenCL::~BinaryFindOpenCL() {
         err = openCLHelper.clReleaseMemObject_p(buf_needlesArray);
         hasOPENCLError(err, "clReleaseMemObject(buf_needlesArray) failed");
     }
-	if (buf_windowSizesArray) {
-		err = openCLHelper.clReleaseMemObject_p(buf_windowSizesArray);
-		hasOPENCLError(err, "clReleaseMemObject(buf_windowSizesArray) failed");
-	}
-	if (clEvent1) {
-		err = openCLHelper.clReleaseEvent_p (clEvent1);
-		hasOPENCLError(err, "clReleaseEvent 1 failed");
-	}
-	if (clEvent2) {
-		err = openCLHelper.clReleaseEvent_p (clEvent2);
-		hasOPENCLError(err, "clReleaseEvent 2 failed");
-	}
+    if (buf_windowSizesArray) {
+        err = openCLHelper.clReleaseMemObject_p(buf_windowSizesArray);
+        hasOPENCLError(err, "clReleaseMemObject(buf_windowSizesArray) failed");
+    }
+    if (clEvent1) {
+        err = openCLHelper.clReleaseEvent_p (clEvent1);
+        hasOPENCLError(err, "clReleaseEvent 1 failed");
+    }
+    if (clEvent2) {
+        err = openCLHelper.clReleaseEvent_p (clEvent2);
+        hasOPENCLError(err, "clReleaseEvent 2 failed");
+    }
 }
 
 
@@ -222,7 +222,7 @@ NumberType* BinaryFindOpenCL::launch() {
 
     cl_int err = CL_SUCCESS;
 
-	// the number of needles a particular kernel execution should search for
+    // the number of needles a particular kernel execution should search for
     const OpenCLHelper& openCLHelper = AppContext::getOpenCLGpuRegistry()->getOpenCLHelper();
     if (!openCLHelper.isLoaded()) {
         coreLog.error(openCLHelper.getErrorString());
@@ -238,35 +238,37 @@ NumberType* BinaryFindOpenCL::launch() {
     if(hasOPENCLError(err, "runBinaryFindKernel failed")) return 0;
 
     NumberType* outputArray = new NumberType[needlesSize];
-    err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, buf_needlesArray, CL_FALSE, 0, sizeof(NumberType) * needlesSize, outputArray, 0, NULL, &clEvent2);
+    err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, buf_needlesArray, CL_TRUE, 0, sizeof(NumberType) * needlesSize, outputArray, 0, NULL, &clEvent2);
     if (hasOPENCLError(err, "clEnqueueReadBuffer")) {
         delete[] outputArray; outputArray = 0;
     }
+    logProfilingInfo(clEvent2, QString("OpenCL binary search results copying time"));
 
-	logProfilingInfo(clEvent2, QString("OpenCL binary search results copying time"));
+    err = openCLHelper.clFinish_p(clCommandQueue);
+    if(hasOPENCLError(err, "clFinish failed")) return 0;
 
     return outputArray;
 }
 
 bool BinaryFindOpenCL::hasOPENCLError(int err, QString errorMessage) {
     if(err != 0) {
-		switch(err) {
-			case CL_INVALID_BUFFER_SIZE:
-				algoLog.error(QString("OPENCL: %1; Error code %2 (Invalid buffer size)").arg(errorMessage).arg(err));
-				break;
-			case CL_MEM_OBJECT_ALLOCATION_FAILURE:
-				algoLog.error(QString("OPENCL: %1; Error code %2 (Memory object allocation failure)").arg(errorMessage).arg(err));
-				break;
-			case CL_OUT_OF_HOST_MEMORY:
-				algoLog.error(QString("OPENCL: %1; Error code %2 (Out of host memory)").arg(errorMessage).arg(err));
-				break;
-			case CL_OUT_OF_RESOURCES:
-				algoLog.error(QString("OPENCL: %1; Error code %2 (Out of resources)").arg(errorMessage).arg(err));
-				break;
-			default:
-				algoLog.error(QString("OPENCL: %1; Error code %2").arg(errorMessage).arg(err));
-				break;
-		}
+        switch(err) {
+            case CL_INVALID_BUFFER_SIZE:
+                algoLog.error(QString("OPENCL: %1; Error code %2 (Invalid buffer size)").arg(errorMessage).arg(err));
+                break;
+            case CL_MEM_OBJECT_ALLOCATION_FAILURE:
+                algoLog.error(QString("OPENCL: %1; Error code %2 (Memory object allocation failure)").arg(errorMessage).arg(err));
+                break;
+            case CL_OUT_OF_HOST_MEMORY:
+                algoLog.error(QString("OPENCL: %1; Error code %2 (Out of host memory)").arg(errorMessage).arg(err));
+                break;
+            case CL_OUT_OF_RESOURCES:
+                algoLog.error(QString("OPENCL: %1; Error code %2 (Out of resources)").arg(errorMessage).arg(err));
+                break;
+            default:
+                algoLog.error(QString("OPENCL: %1; Error code %2").arg(errorMessage).arg(err));
+                break;
+        }
         return true;
     } else {
         return false;
@@ -280,19 +282,19 @@ void BinaryFindOpenCL::logProfilingInfo(const cl_event &event, const QString &ms
         return;
     }
 
-	cl_int err;
-	cl_ulong clt1 = 0, clt2 = 0, clt3 = 0, clt4 = 0;
-	if((err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_QUEUED, sizeof(cl_ulong), &clt1, NULL)) != 0
-		|| (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_SUBMIT, sizeof(cl_ulong), &clt2, NULL)) != 0
-		|| (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &clt3, NULL)) != 0
-		|| (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &clt4, NULL)) != 0) {
-			algoLog.trace(QString("OpenCL profiling info unavailable (%1)").arg(err));
-	} else {
-		algoLog.trace(QString("%1: %2/%3/%4 ms (since queued/submitted/execution started)").arg(msgPrefix)
+    cl_int err;
+    cl_ulong clt1 = 0, clt2 = 0, clt3 = 0, clt4 = 0;
+    if((err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_QUEUED, sizeof(cl_ulong), &clt1, NULL)) != 0
+        || (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_SUBMIT, sizeof(cl_ulong), &clt2, NULL)) != 0
+        || (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &clt3, NULL)) != 0
+        || (err = openCLHelper.clGetEventProfilingInfo_p(event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &clt4, NULL)) != 0) {
+            algoLog.trace(QString("OpenCL profiling info unavailable (%1)").arg(err));
+    } else {
+        algoLog.trace(QString("%1: %2/%3/%4 ms (since queued/submitted/execution started)").arg(msgPrefix)
             .arg((clt4 - clt1) / (double)1000000, 0, 'f', 2)
             .arg((clt4 - clt2) / (double)1000000, 0, 'f', 2)
             .arg((clt4 - clt3) / (double)1000000, 0, 'f', 2));
-	}
+    }
 }
 
 }//namespace

@@ -56,6 +56,12 @@ freeMemorySize(m)
     maxReadLength = 0;
 }
 
+void ReadShortReadsSubTask::readingFinishedWakeAll() {
+    QMutexLocker(&alignContext.listM);
+    alignContext.isReadingFinished = true;
+    alignContext.readShortReadsWait.wakeAll();
+}
+
 void ReadShortReadsSubTask::run() {
     stateInfo.setProgress(0);
     GTIMER(cvar, tvar, "ReadSubTask");
@@ -66,15 +72,20 @@ void ReadShortReadsSubTask::run() {
     foreach (SearchQuery *qu, alignContext.queries) {
         delete qu;
     }
-    alignContext.queries.clear();
-    alignContext.bitValuesV.clear();
-	alignContext.windowSizes.clear();
-    alignContext.readNumbersV.clear();
-    alignContext.positionsAtReadV.clear();
+
+    {
+        // Noone can touch these vectors without sync
+        QMutexLocker lock(&alignContext.listM);
+        const int vectorsReserve = 2*1024*1024; // why realloc often; little optimization
+        alignContext.queries.resize(0); alignContext.queries.reserve(vectorsReserve);
+        alignContext.bitValuesV.resize(0); alignContext.bitValuesV.reserve(vectorsReserve);
+        alignContext.windowSizes.resize(0); alignContext.windowSizes.reserve(vectorsReserve);
+        alignContext.readNumbersV.resize(0); alignContext.readNumbersV.reserve(vectorsReserve);
+        alignContext.positionsAtReadV.resize(0); alignContext.positionsAtReadV.reserve(vectorsReserve);
+    }
 
     if (isCanceled()) {
-        alignContext.isReadingFinished = true;
-        alignContext.alignerWait.wakeAll();
+        readingFinishedWakeAll();
         return;
     }
     bunchSize = 0;
@@ -103,8 +114,7 @@ void ReadShortReadsSubTask::run() {
         if (NULL == query) {
             if (!seqReader->isEnd()) {
                 setError("Short-reads object type must be a sequence, but not a multiple alignment");
-                alignContext.isReadingFinished = true;
-                alignContext.alignerWait.wakeAll();
+                readingFinishedWakeAll();
                 return;
             }
             break;
@@ -177,16 +187,17 @@ void ReadShortReadsSubTask::run() {
 
         if (!alignContext.openCL) {
             if (alignBunchSize > ALIGN_DATA_SIZE) {
-                alignContext.alignerWait.wakeAll();
+                alignContext.readShortReadsWait.wakeAll();
+                alignBunchSize=0; // it's nice to have a warm computer in winter, but let aligner threads sleep more
             }
         }
     }
 
-    alignContext.isReadingFinished = true;
-    alignContext.alignerWait.wakeAll();
+    readingFinishedWakeAll();
 }
 
 inline bool ReadShortReadsSubTask::add(int &CMAX, int &W, int &q, int &readNum, SearchQuery *query, GenomeAlignerTask *parent) {
+    // ReadShortReadsSubTask is adding new data what can lead to realloc. Noone can touch these vectors without sync
     QMutexLocker lock(&alignContext.listM);
     W = query->length();
     if (!alignContext.absMismatches) {
@@ -200,22 +211,31 @@ inline bool ReadShortReadsSubTask::add(int &CMAX, int &W, int &q, int &readNum, 
 
     const char* querySeq = query->constData();
 
-	int win = query->length() < GenomeAlignerTask::MIN_SHORT_READ_LENGTH ?
-		GenomeAlignerTask::calculateWindowSize(alignContext.absMismatches,
-			alignContext.nMismatches, alignContext.ptMismatches, query->length(), query->length()) :
-		GenomeAlignerTask::calculateWindowSize(alignContext.absMismatches,
-			alignContext.nMismatches, alignContext.ptMismatches, alignContext.minReadLength, alignContext.maxReadLength);
+    int win = query->length() < GenomeAlignerTask::MIN_SHORT_READ_LENGTH ?
+        GenomeAlignerTask::calculateWindowSize(alignContext.absMismatches,
+            alignContext.nMismatches, alignContext.ptMismatches, query->length(), query->length()) :
+        GenomeAlignerTask::calculateWindowSize(alignContext.absMismatches,
+            alignContext.nMismatches, alignContext.ptMismatches, alignContext.minReadLength, alignContext.maxReadLength);
 
     for (int i = 0; i < W - q + 1; i+=q) {
         const char *seq = querySeq + i;
         BMType bv = parent->index->getBitValue(seq, qMin(GenomeAlignerIndex::charsInMask, W - i));
+
         alignContext.bitValuesV.append(bv);
         alignContext.readNumbersV.append(readNum);
         alignContext.positionsAtReadV.append(i);
-		alignContext.windowSizes.append(win);
+        alignContext.windowSizes.append(win);
     }
     readNum++;
     alignContext.queries.append(query);
+
+//     // !!!Stress testing!!!
+//     alignContext.bitValuesV.squeeze();
+//     alignContext.readNumbersV.squeeze();
+//     alignContext.positionsAtReadV.squeeze();
+//     alignContext.windowSizes.squeeze();
+//     alignContext.queries.squeeze();
+
     return true;
 }
 

@@ -66,7 +66,7 @@ public:
     bool isReadingFinished;
     bool isReadingStarted;
     QMutex listM;
-    QWaitCondition alignerWait;
+    QWaitCondition readShortReadsWait;
 };
 
 #define MAX_PERCENTAGE 100
@@ -81,7 +81,6 @@ public:
     virtual void prepare();
 
     void loadPartForAligning(int part);
-    void getDataForAligning(int &first, int &length);
     void waitDataForAligning(int &first, int &length);
 
 #ifdef OPENCL_SUPPORT
@@ -104,7 +103,7 @@ private:
     bool openCLFinished;
 
     QMutex loadPartMutex;
-    QMutex shortReadsMutex;
+    QMutex waitDataForAligningMutex;
     QMutex waitMutex;
     QWaitCondition waiter;
     QMutex openCLMutex;

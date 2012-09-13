@@ -33,7 +33,7 @@ namespace U2 {
 class WriteAlignedReadsSubTask : public Task {
     Q_OBJECT
 public:
-    WriteAlignedReadsSubTask(GenomeAlignerWriter *seqWriter, QVector<SearchQuery*> &queries, quint64 &readsAligned);
+    WriteAlignedReadsSubTask(QMutex &listM, GenomeAlignerWriter *seqWriter, QVector<SearchQuery*> &queries, quint64 &readsAligned);
     virtual void run();
 private:
     GenomeAlignerWriter *seqWriter;
@@ -41,6 +41,7 @@ private:
     quint64 &readsAligned;
 
     inline void setReadWritten(SearchQuery *read, SearchQuery *revCompl);
+    QMutex &listM;
 };
 
 } //namespace
