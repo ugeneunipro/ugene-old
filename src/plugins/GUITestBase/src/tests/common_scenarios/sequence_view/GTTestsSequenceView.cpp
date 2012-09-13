@@ -273,7 +273,108 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep(1000);
 }
+GUI_TEST_CLASS_DEFINITION(test_0006) {
 
+//1. Enable Auto-annotations
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << "Restriction Sites");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTGlobals::sleep();
+
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "ORFs");
+    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTGlobals::sleep();
+
+    //2. Open any PBD file from samples
+    //Expected state: there is no auto-annotations for opened sequences
+
+    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+
+    GTGlobals::sleep();
+    GTUtilsAnnotationsTreeView::findItem(os, "enzymes", false);
+    GTUtilsAnnotationsTreeView::findItem(os, "orfs", false);
+    GTGlobals::sleep();
+
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0006_1) {
+    //1. Enable Auto-annotations
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << "Restriction Sites");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTGlobals::sleep();
+
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "ORFs");
+    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTGlobals::sleep();
+
+    //1. Disable Auto-annotations
+    Runnable *chooser2 = new PopupChooser(os, QStringList() << "Restriction Sites");
+    GTUtilsDialog::waitForDialog(os, chooser2);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTGlobals::sleep();
+
+    Runnable *chooser3 = new PopupChooser(os, QStringList() << "ORFs");
+    GTUtilsDialog::waitForDialog(os, chooser3);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTGlobals::sleep();
+
+    //3. Enable Auto-annotations
+    Runnable *chooser4 = new PopupChooser(os, QStringList() << "Restriction Sites");
+    GTUtilsDialog::waitForDialog(os, chooser4);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTGlobals::sleep();
+
+    Runnable *chooser5 = new PopupChooser(os, QStringList() << "ORFs");
+    GTUtilsDialog::waitForDialog(os, chooser5);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTGlobals::sleep();
+
+    //2. Open any PBD file from samples
+    //Expected state: there is no auto-annotations for opened sequences
+    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+    GTGlobals::sleep();
+
+    //Expected state: there is no auto-annotations for opened sequences
+    GTGlobals::sleep();
+    GTUtilsAnnotationsTreeView::findItem(os, "enzymes", false);
+    GTUtilsAnnotationsTreeView::findItem(os, "orfs", false);
+    GTGlobals::sleep();
+
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0006_2) {
+    //2. Open any PBD file from samples
+    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+
+    //1. Enable Auto-annotations
+    QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
+    Runnable *chooser = new PopupChooser(os, QStringList() << "Restriction Sites");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTGlobals::sleep();
+
+    Runnable *chooser1 = new PopupChooser(os, QStringList() << "ORFs");
+    GTUtilsDialog::waitForDialog(os, chooser1);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTGlobals::sleep();
+
+    //Expected state: there is no auto-annotations for opened sequences
+    GTGlobals::sleep();
+    GTUtilsAnnotationsTreeView::findItem(os, "enzymes", false);
+    GTUtilsAnnotationsTreeView::findItem(os, "orfs", false);
+    GTGlobals::sleep();
+
+    }
 } // namespace GUITest_common_scenarios_sequence_view
 
 } // namespace U2

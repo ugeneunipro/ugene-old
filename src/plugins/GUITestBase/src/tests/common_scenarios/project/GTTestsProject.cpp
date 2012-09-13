@@ -355,7 +355,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025) {
     GTGlobals::sleep(1000);
     GTMouseDriver::click(os, Qt::RightButton);
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "misc_feature", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "misc_feature", "complement(1.. 20)"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 

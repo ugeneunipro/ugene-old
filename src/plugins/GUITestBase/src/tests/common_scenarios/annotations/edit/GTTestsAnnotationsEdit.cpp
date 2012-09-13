@@ -524,5 +524,147 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
     GTGlobals::sleep();
     }
 
+GUI_TEST_CLASS_DEFINITION(test_0005) {
+    //Rename annotation
+    // Steps:
+
+    // 1. Open data/samples/FASTA/human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    //2. Press <Ctrl>+N
+        //2.1 CHECK if dialog box titled with "Create annotation" appeared
+        //2.2 CHECK if "Create new table" radio button is checked
+    //3. Specify the annotation with the next data and the press "Create":
+    //Group name: group
+    //Annotation name: misc_feature
+    //Location: 1..1000
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group", "misc_feature", "1..1000"));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    //4. CHECK if new gb-format document is loaded into the annotation editor
+        //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
+        //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
+    GTGlobals::sleep();
+    GTUtilsAnnotationsTreeView::findItem(os, "group");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+
+    //5. Select misc_feature annotation and press <DEL>
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
+    GTGlobals::sleep();
+    //6. CHECK if misc_feature annotation is removed
+        //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
+    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", false);
+    GTGlobals::sleep();
+
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0005_1) {
+    //Rename annotation
+    // Steps:
+
+    // 1. Open data/samples/FASTA/human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    //2. Press <Ctrl>+N
+        //2.1 CHECK if dialog box titled with "Create annotation" appeared
+        //2.2 CHECK if "Create new table" radio button is checked
+    //3. Specify the annotation with the next data and the press "Create":
+    //Group name: group
+    //Annotation name: misc_feature
+    //Location: 1..1000
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group", "misc_feature", "1..1000"));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    //4. CHECK if new gb-format document is loaded into the annotation editor
+        //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
+        //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
+    GTGlobals::sleep();
+    GTUtilsAnnotationsTreeView::findItem(os, "group");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+
+    //5. Select misc_feature annotation and press <DEL>
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
+    GTGlobals::sleep();
+    //6. CHECK if misc_feature annotation is removed
+        //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
+    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", false);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group_new", "misc_feature_1", "1..500"));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    GTUtilsAnnotationsTreeView::findItem(os, "group_new");
+    GTUtilsAnnotationsTreeView::findItem(os, "group");
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1");
+
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
+
+    GTGlobals::sleep();
+    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1", false);
+    GTGlobals::sleep();
+
+    }
+GUI_TEST_CLASS_DEFINITION(test_0005_2) {
+
+    //Rename annotation
+    // Steps:
+
+    // 1. Open data/samples/FASTA/human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    //2. Press <Ctrl>+N
+        //2.1 CHECK if dialog box titled with "Create annotation" appeared
+        //2.2 CHECK if "Create new table" radio button is checked
+    //3. Specify the annotation with the next data and the press "Create":
+    //Group name: group
+    //Annotation name: misc_feature
+    //Location: 1..1000
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group", "misc_feature", "1..1000"));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group_new", "misc_feature_1", "1..500"));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    //4. CHECK if new gb-format document is loaded into the annotation editor
+        //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
+        //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
+    GTGlobals::sleep();
+    GTUtilsAnnotationsTreeView::findItem(os, "group");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+
+    GTGlobals::sleep();
+    GTUtilsAnnotationsTreeView::findItem(os, "group_new");
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1");
+
+    //5. Select misc_feature annotation and press <DEL>
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
+    GTGlobals::sleep();
+
+    //6. CHECK if misc_feature annotation is removed
+        //TODO: 6.1 CHECK if "group" subgroups/annotations counter displays (0,0)
+    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", false);
+    GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1", false);
+    GTGlobals::sleep();
+
+    }
+
 } // namespace GUITest_common_scenarios_annotations_edit
 } // namespace U2

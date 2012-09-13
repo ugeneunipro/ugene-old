@@ -37,6 +37,14 @@ void CreateAnnotationWidgetChecker::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
+    //QAbstractButton *newTableRButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "newFileRB", dialog));
+    //GT_CHECK(newTableRButton != NULL, "Radiobutton is NULL");
+    //GT_CHECK((newTableRButton->isEnabled()==newTableRB) && (newTableRButton->isChecked()==newTableRB), "newFileRB is not enabled and checked");
+
+    //QAbstractButton *radioButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "existingObjectRB", dialog));
+    //GT_CHECK(radioButton != NULL, "Radiobutton is NULL");
+    //GT_CHECK((radioButton->isEnabled() != newTableRB) && (radioButton->isChecked() != newTableRB), "existingObjectRB is enabled or checked");
+
     QAbstractButton *radioButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "existingObjectRB", dialog));
     GT_CHECK(radioButton != NULL, "Radiobutton is NULL");
     GT_CHECK(!radioButton->isEnabled() && !radioButton->isCheckable(), "radioButton is enabled or checkable");
@@ -48,6 +56,31 @@ void CreateAnnotationWidgetChecker::run() {
     QAbstractButton *b = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "existingObjectButton", dialog));
     GT_CHECK(b != NULL, "Button is NULL");
     GT_CHECK(b->isEnabled() == false, "Button is enabled");
+
+    QAbstractButton *newTableRB = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "newFileRB", dialog));
+    GT_CHECK(newTableRB != NULL, "Radiobutton is NULL");
+    GT_CHECK(newTableRB->isEnabled() && newTableRB->isChecked(), "radioButton is not enabled and checked");
+
+    if (!groupName.isEmpty()) {
+        QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("groupNameEdit");
+        GT_CHECK(lineEdit != NULL, "line edit not found");
+        QString text = lineEdit->text();
+        GT_CHECK (text == groupName, "This name is not expected name");
+        }
+
+    if (!annotationName.isEmpty()) {
+        QLineEdit *lineEdit1 = dialog->findChild<QLineEdit*>("annotationNameEdit");
+        GT_CHECK(lineEdit1 != NULL, "line edit not found");
+        QString text1 = lineEdit1->text();
+        GT_CHECK (text1 == annotationName, "This name is not expected name");
+        }
+
+    if (!location.isEmpty()) {
+        QLineEdit *lineEdit2 = dialog->findChild<QLineEdit*>("locationEdit");
+        GT_CHECK(lineEdit2 != NULL, "line edit not found");
+        QString text2 = lineEdit2->text();
+        GT_CHECK (text2 == location, "This name is not expected name");
+        }
 
     QWidget *cancelButton = GTWidget::findWidget(os, "cancel_button", dialog);
     GT_CHECK(cancelButton != NULL, "Cancel button is NULL");

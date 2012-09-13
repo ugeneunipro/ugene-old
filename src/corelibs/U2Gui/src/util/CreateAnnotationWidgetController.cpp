@@ -261,6 +261,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     existingObjectButton->setIcon(loadSelectedDocIcon);
     existingObjectButton->setText("...");
     newFileRB = new QRadioButton(groupSaveAnnots);
+    newFileRB->setObjectName("newFileRB");
     newFileRB->setText(tr("Create new table"));
     newFileEdit = new QLineEdit(groupSaveAnnots);
     newFileEdit->setEnabled(false);

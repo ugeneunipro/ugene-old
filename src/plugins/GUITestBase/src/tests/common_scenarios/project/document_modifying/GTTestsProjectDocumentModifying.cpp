@@ -59,7 +59,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTMouseDriver::click(os, Qt::RightButton);
 
 // Press Ctrl+N and add annotation to it annotations table.
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "CCC", "1.. 10"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "CCC", "1.. 10"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
@@ -86,7 +86,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) { //CHANGES another annotation created
     GTMouseDriver::click(os, Qt::RightButton);
 
     // Press Ctrl+N and add annotation to it annotations table.
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "GROUP", "Annotation", "4.. 18"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "GROUP", "Annotation", "4.. 18"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
@@ -135,7 +135,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTMouseDriver::click(os, Qt::RightButton);
 
 // Press Ctrl+N and add annotation "misc_feature" to the annotations table in 1.gb document.
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "misc_feature", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "misc_feature", "complement(1.. 20)"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 

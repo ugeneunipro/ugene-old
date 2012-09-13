@@ -58,7 +58,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTGlobals::sleep(2000);
 
     GTKeyboardDriver::keyClick(os, 'N', GTKeyboardDriver::key["ctrl"]);
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetChecker(os));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetChecker(os, true, "group", "misc_feature", "1 ..1000"));
     GTGlobals::sleep();
 }
 

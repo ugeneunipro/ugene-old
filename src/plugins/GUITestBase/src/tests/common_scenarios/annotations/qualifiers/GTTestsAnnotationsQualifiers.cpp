@@ -46,16 +46,16 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "ann1", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann1", "complement(1.. 20)"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "ann2", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann2", "complement(1.. 20)"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "ann3", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann3", "complement(1.. 20)"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
 
@@ -74,7 +74,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "DDD", "D", "join(10..16,18..20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "DDD", "D", "join(10..16,18..20)"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
@@ -92,7 +92,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "DDD", "D", "join(10..16,18..20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "DDD", "D", "join(10..16,18..20)"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
@@ -110,12 +110,12 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a1_group", "a1", "10..16"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "a1_group", "a1", "10..16"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a2_group", "a1", "18..20"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "a2_group", "a1", "18..20"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
@@ -134,12 +134,12 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a1_group", "a1", "10..16"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "a1_group", "a1", "10..16"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "a2_group", "a1", "18..20"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "a2_group", "a1", "18..20"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
@@ -158,16 +158,16 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "ann1", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann1", "complement(1.. 20)"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "ann2", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann2", "complement(1.. 20)"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "ann3", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann3", "complement(1.. 20)"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
 
@@ -186,16 +186,16 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "ann1", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann1", "complement(1.. 20)"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "ann2", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann2", "complement(1.. 20)"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, "<auto>", "ann3", "complement(1.. 20)"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann3", "complement(1.. 20)"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"), Qt::RightButton);
 

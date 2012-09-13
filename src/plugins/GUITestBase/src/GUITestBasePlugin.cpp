@@ -182,6 +182,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004_1);
 
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0005, "Failed test");
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0006_1);
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0006_2);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/sequence edit/
@@ -400,6 +403,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0004_2);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0005_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_edit::test_0005_2);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations/qualifiers
