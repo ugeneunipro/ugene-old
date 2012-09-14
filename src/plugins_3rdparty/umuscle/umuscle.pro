@@ -10,6 +10,7 @@ HEADERS += src/MuscleAdapter.h \
            src/MuscleUtils.h \
            src/MuscleWorker.h \
            src/MuscleWorkPool.h \
+           src/ProfileToProfileWorker.h \
            src/TaskLocalStorage.h \
            src/muscle/alpha.h \
            src/muscle/clust.h \
@@ -55,6 +56,7 @@ SOURCES += src/MuscleAdapter.cpp \
            src/MuscleUtils.cpp \
            src/MuscleWorker.cpp \
            src/MuscleWorkPool.cpp \
+           src/ProfileToProfileWorker.cpp \
            src/refinehorizP.cpp \
            src/refinevertP.cpp \
            src/TaskLocalStorage.cpp \

@@ -351,7 +351,12 @@ Task::ReportResult MuscleAddSequencesToProfileTask::report() {
 MuscleGObjectTask::MuscleGObjectTask(MAlignmentObject* _obj, const MuscleTaskSettings& _config) 
 : AlignGObjectTask("", TaskFlags_NR_FOSCOE,_obj), lock(NULL), muscleTask(NULL), config(_config)
 {
-    QString aliName = obj->getDocument()->getName();
+    QString aliName;
+    if (NULL == obj->getDocument()) {
+        aliName = MA_OBJECT_NAME;
+    } else {
+        aliName = obj->getDocument()->getName();
+    }
     QString tn;
     switch(config.op) {
         case MuscleTaskOp_Align:

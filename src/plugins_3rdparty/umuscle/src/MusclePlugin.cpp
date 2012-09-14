@@ -23,6 +23,7 @@
 #include "MuscleTask.h"
 #include "MuscleWorker.h"
 #include "MuscleAlignDialogController.h"
+#include "ProfileToProfileWorker.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
@@ -78,6 +79,7 @@ MusclePlugin::MusclePlugin()
         connect(muscleAction,SIGNAL(triggered()),SLOT(sl_runWithExtFileSpecify()));
     }
     LocalWorkflow::MuscleWorkerFactory::init();
+    LocalWorkflow::ProfileToProfileWorkerFactory::init();
     //uMUSCLE Test
     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
     XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
