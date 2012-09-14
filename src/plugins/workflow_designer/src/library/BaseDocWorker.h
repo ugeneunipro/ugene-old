@@ -95,7 +95,7 @@ protected:
     virtual QStringList takeUrlList(const QVariantMap &data, U2OpStatus &os);
 
 private:
-    void createAdaptersAndDocs(const QStringList &urls);
+    void createAdaptersAndDocs(const QStringList &urls, U2OpStatus &os);
 };
 
 }// Workflow namespace

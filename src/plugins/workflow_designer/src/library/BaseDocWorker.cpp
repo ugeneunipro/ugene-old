@@ -223,7 +223,7 @@ QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) 
     return urls;
 }
 
-void BaseDocWriter::createAdaptersAndDocs(const QStringList &urls) {
+void BaseDocWriter::createAdaptersAndDocs(const QStringList &urls, U2OpStatus &os) {
     bool streaming = this->isStreamingSupport();
 
     foreach (const QString &anUrl, urls) {
@@ -235,10 +235,14 @@ void BaseDocWriter::createAdaptersAndDocs(const QStringList &urls) {
             iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(anUrl));
             if (createNewAdapter) {
                 IOAdapter *io = iof->createIOAdapter();
-                openIOAdapter(io, anUrl, SaveDocFlags(fileMode), usedUrls);
-                ioLog.details(tr("Creating %1 [%2]").arg(io->getURL().getURLString()).arg(format->getFormatName()));
-                usedUrls.insert(io->getURL().getURLString());
-                adapters.insert(anUrl, io);
+                if (openIOAdapter(io, anUrl, SaveDocFlags(fileMode), usedUrls)) {
+                    ioLog.details(tr("Creating %1 [%2]").arg(io->getURL().getURLString()).arg(format->getFormatName()));
+                    usedUrls.insert(io->getURL().getURLString());
+                    adapters.insert(anUrl, io);
+                } else {
+                    os.setError(tr("Can not open a file for writing: %1").arg(anUrl));
+                    return;
+                }
             }
         }
         if (createNewDoc) {
@@ -269,7 +273,8 @@ Task* BaseDocWriter::tick() {
         SAFE_POINT_OP(os, new FailTask(os.getError()));
         QStringList urls = this->takeUrlList(data, os);
         SAFE_POINT_OP(os, new FailTask(os.getError()));
-        this->createAdaptersAndDocs(urls);
+        this->createAdaptersAndDocs(urls, os);
+        CHECK_OP(os, new FailTask(os.getError()));
 
         bool streaming = this->isStreamingSupport();
         foreach (const QString &anUrl, urls) {
