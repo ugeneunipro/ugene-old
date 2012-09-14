@@ -50,6 +50,19 @@ QList<OpenCLGpuModel *> OpenCLGpuRegistry::getRegisteredGpus() const {
     return gpus.values();
 }
 
+QList<OpenCLGpuModel *> OpenCLGpuRegistry::getEnabledGpus() const {
+    QList<OpenCLGpuModel*> registeredGpus = getRegisteredGpus();
+
+    QList<OpenCLGpuModel*> enabledGpus;
+    foreach (OpenCLGpuModel* m, registeredGpus) {
+        if (m && m->isEnabled()) {
+            enabledGpus.append(m);
+        }
+    }
+
+    return enabledGpus;
+}
+
 OpenCLGpuModel * OpenCLGpuRegistry::getAnyEnabledGpu() const {
     QHash<OpenCLGpuId, OpenCLGpuModel*>::const_iterator it = std::find_if( gpus.begin(), gpus.end(), std::mem_fun(&OpenCLGpuModel::isEnabled) );
     if( gpus.end() != it ) {

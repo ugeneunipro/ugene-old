@@ -106,6 +106,7 @@ public:
     void registerOpenCLGpu( OpenCLGpuModel * gpu );
     OpenCLGpuModel * getGpuById( OpenCLGpuId id ) const;
     QList<OpenCLGpuModel*> getRegisteredGpus() const;
+    QList<OpenCLGpuModel*> getEnabledGpus() const;
 
     OpenCLGpuModel * getAnyEnabledGpu() const;
 

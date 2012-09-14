@@ -52,7 +52,7 @@ GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaA
 
     buildIndexFileButton->toggle();
 #ifdef OPENCL_SUPPORT
-    if (AppContext::getOpenCLGpuRegistry()->empty()) {
+    if (AppContext::getOpenCLGpuRegistry()->getEnabledGpus().empty()) {
 #endif
         gpuBox->setEnabled(false);
 #ifdef OPENCL_SUPPORT
