@@ -276,7 +276,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 //1. Enable Auto-annotations
-
+    GTGlobals::sleep();
+    GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
     QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
 
@@ -304,6 +305,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     //1. Enable Auto-annotations
+    GTGlobals::sleep();
+    GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
     QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
 
@@ -354,6 +357,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     //2. Open any PBD file from samples
+    GTGlobals::sleep();
+    GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
 
     //1. Enable Auto-annotations

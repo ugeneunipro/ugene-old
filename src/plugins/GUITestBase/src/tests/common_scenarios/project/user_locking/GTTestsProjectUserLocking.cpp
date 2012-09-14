@@ -47,7 +47,41 @@ namespace GUITest_common_scenarios_project_user_locking {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 
-    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj5.uprj");
+#define GT_CLASS_NAME "GUITest_common_scenarios_project_user_locking_test_0002::CreateAnnnotationDialogComboBoxChecker"
+#define GT_METHOD_NAME "run"
+    class CreateAnnnotationDialogComboBoxChecker : public Filler {
+    public:
+        CreateAnnnotationDialogComboBoxChecker(U2OpStatus &_os, const QString &radioButtonName): Filler(_os, ""), buttonName(radioButtonName){}
+        void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            GT_CHECK(dialog != NULL, "activeModalWidget is NULL");
+
+            QRadioButton *btn = dialog->findChild<QRadioButton*>("existingObjectRB");
+            GT_CHECK(btn != NULL, "Radio button not found");
+
+            if (! btn->isEnabled()) {
+                GTMouseDriver::moveTo(os, btn->mapToGlobal(btn->rect().topLeft()));
+                GTMouseDriver::click(os);
+            }
+
+            QComboBox *comboBox = dialog->findChild<QComboBox*>();
+            GT_CHECK(comboBox != NULL, "ComboBox not found");
+
+            GT_CHECK(comboBox->count() == 0, "ComboBox is not empty");
+
+            QPushButton *cancelButton = dialog->findChild<QPushButton*>("cancel_button");
+            GT_CHECK(cancelButton != NULL, "Button \"cancel\" not found");
+
+            GTWidget::click(os, cancelButton);
+        }
+
+    private:
+        QString buttonName;
+    };
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj5.uprj");
     GTUtilsApp::checkUGENETitle(os, "proj5 UGENE");
     GTUtilsDocument::checkDocument(os, "1.gb");
 
@@ -57,9 +91,9 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     GTGlobals::sleep(2000);
 
-    GTKeyboardDriver::keyClick(os, 'N', GTKeyboardDriver::key["ctrl"]);
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetChecker(os, true, "group", "misc_feature", "1 ..1000"));
-    GTGlobals::sleep();
+    GTUtilsDialog::waitForDialog(os, new CreateAnnnotationDialogComboBoxChecker(os, ""));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) 
