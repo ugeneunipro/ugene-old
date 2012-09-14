@@ -43,7 +43,7 @@ public:
 private:
     QVector<NumberType> numbers;
     QVector<NumberType> findNumbers;
-	QVector<int> windowSizes;
+    QVector<int> windowSizes;
     QVector<NumberType> expectedResults;
     NumberType* results;
 };

@@ -65,10 +65,10 @@ quint64* U2::SuffixSearchCUDA::runSearch( const quint64* numbers, const int numb
 {
     cudaMalloc((void **)&numbersListDev, numbersSize * sizeof(quint64));
     cudaMalloc((void **)&queryListDev,querySize * sizeof(quint64));
-	cudaMalloc((void **)&windowSizesDev, querySize* sizeof(int));
+    cudaMalloc((void **)&windowSizesDev, querySize* sizeof(int));
     cudaMemcpy(numbersListDev, numbers, numbersSize * sizeof(quint64), cudaMemcpyHostToDevice);
     cudaMemcpy(queryListDev, query, querySize * sizeof(quint64), cudaMemcpyHostToDevice);
-	cudaMemcpy(windowSizesDev, windowSizes, querySize * sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(windowSizesDev, windowSizes, querySize * sizeof(int), cudaMemcpyHostToDevice);
     
     cudaBinarySearch(numbersListDev, numbersSize, queryListDev, querySize, windowSizesDev);
     quint64* results = new quint64[querySize];

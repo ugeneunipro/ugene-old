@@ -41,7 +41,7 @@ const int GenomeAlignerFindTask::ALIGN_DATA_SIZE = 100000;
 
 GenomeAlignerFindTask::GenomeAlignerFindTask(U2::GenomeAlignerIndex *i, AlignContext *s, GenomeAlignerWriteTask *w)
 : Task("GenomeAlignerFindTask", TaskFlag_None),
-index(i), writeTask(w), alignContext(s), binarySearchResults(NULL)
+index(i), writeTask(w), alignContext(s)
 {
     partLoaded = false;
     openCLFinished = false;
@@ -205,46 +205,6 @@ void GenomeAlignerFindTask::waitDataForAligning(int &first, int &length) {
     }
 
     unsafeGetData(first, length);
-//     if (alignContext->isReadingFinished) {
-//         alignContext->readShortReadsWait.wakeAll();
-//     }
-}
-
-#ifdef OPENCL_SUPPORT
-bool GenomeAlignerFindTask::runOpenCLBinarySearch() {
-    QMutexLocker lock(&openCLMutex);
-
-    // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
-    QMutexLocker vectorsLock(&alignContext->listM); // should never happen, because in this realization there is only one OpenCL thread, waiting until all reads are read
-
-    if (!openCLFinished) {
-        openCLFinished = true;
-        delete[] binarySearchResults;
-        if (0 == alignContext->bitValuesV.size()) {
-            binarySearchResults = NULL;
-            return false;
-        }
-        binarySearchResults = index->bitMaskBinarySearchOpenCL(alignContext->bitValuesV.constData(), alignContext->bitValuesV.size(), 
-            alignContext->windowSizes.constData());
-        if (NULL == binarySearchResults) {
-            setError("OpenCL binary find error");
-            return false;
-        }
-    }
-
-    if (NULL == binarySearchResults) {
-        return false;
-    }
-
-    return true;
-}
-#endif
-
-GenomeAlignerFindTask::~GenomeAlignerFindTask() {
-    if(alignContext->openCL) {
-        // otherwise it's a pointer to QVector data, which will be deleted automatically
-        delete[] binarySearchResults;
-    }
 }
 
 ShortReadAlignerCPU::ShortReadAlignerCPU(int taskNo, GenomeAlignerIndex *i, AlignContext *s, GenomeAlignerWriteTask *w)
@@ -341,9 +301,11 @@ ShortReadAlignerOpenCL::ShortReadAlignerOpenCL(int taskNo, GenomeAlignerIndex *i
 
 void ShortReadAlignerOpenCL::run() {
 #ifdef OPENCL_SUPPORT
-    assert(alignContext->openCL);
+    assert(alignContext && alignContext->openCL);
 
     GenomeAlignerFindTask *parent = static_cast<GenomeAlignerFindTask*>(getParentTask());
+    SAFE_POINT_EXT(NULL != parent, setError("OpenCL aligner parent error"),);
+
     SearchQuery *shortRead = NULL;
     SearchQuery *revCompl = NULL;
     int first = 0;
@@ -356,6 +318,7 @@ void ShortReadAlignerOpenCL::run() {
     int rn1 = 0;
     int pos = 0;
 
+    SAFE_POINT_EXT (NULL != index, setError("OpenCL aligner index error"),);
     for (int part = 0; part < index->getPartCount(); part++) {
         stateInfo.setProgress(100 * part / index->getPartCount());
         quint64 t0 = GTimer::currentTimeMicros();
@@ -376,14 +339,16 @@ void ShortReadAlignerOpenCL::run() {
             parent->waitDataForAligning(first, length);
         } while(length > 0);
 
-        if (!parent->runOpenCLBinarySearch()) {
-            return;
-        }
-        stateInfo.setProgress(stateInfo.getProgress() + 50/index->getPartCount());
-
-
         // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
+        SAFE_POINT_EXT (NULL != alignContext, setError("OpenCL aligner context error"),);
         alignContext->listM.lock();
+
+        CHECK_EXT(0 != alignContext->bitValuesV.size(),,);
+        BinarySearchResult* binarySearchResults = index->bitMaskBinarySearchOpenCL(alignContext->bitValuesV.constData(), alignContext->bitValuesV.size(), 
+            alignContext->windowSizes.constData());
+        SAFE_POINT_EXT (NULL != binarySearchResults, setError("OpenCL binary find error"),);
+
+        stateInfo.setProgress(stateInfo.getProgress() + 50/index->getPartCount());
 
         const int totalResults = alignContext->bitValuesV.size();
         t0 = GTimer::currentTimeMicros();
@@ -412,7 +377,8 @@ void ShortReadAlignerOpenCL::run() {
                 }
             }
 
-            bmr = parent->binarySearchResults[i];
+            SAFE_POINT_EXT (NULL != binarySearchResults, setError("OpenCL binary find error"),);
+            bmr = binarySearchResults[i];
             index->alignShortRead(shortRead, bv, pos, bmr, alignContext, currentBitFilter, currentW);
 
             if (!alignContext->bestMode) {
@@ -425,6 +391,8 @@ void ShortReadAlignerOpenCL::run() {
             }
         }
         algoLog.trace(QString("binary search results applied in %1 ms").arg((GTimer::currentTimeMicros() - t0) / double(1000), 0, 'f', 3));
+
+        delete[] binarySearchResults; binarySearchResults = NULL;
         alignContext->listM.unlock();
     }
 

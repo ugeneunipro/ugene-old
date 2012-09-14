@@ -155,7 +155,7 @@ void GenomeAlignerIndexTask::run() {
     SAType maxLength = index->indexPart.getMaxLength();
 
     try {
-		assert(0!=maxLength);
+        assert(0!=maxLength);
         index->indexPart.bitMask = new BMType[maxLength];
         index->indexPart.sArray = new SAType[maxLength];
         index->indexPart.seq = new char[maxLength];

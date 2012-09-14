@@ -59,7 +59,7 @@ public:
     int maxReadLength;
     QVector<SearchQuery*> queries;
     QVector<BMType> bitValuesV;
-	QVector<int> windowSizes;
+    QVector<int> windowSizes;
     QVector<int> readNumbersV;
     QVector<int> positionsAtReadV;
 
@@ -73,19 +73,14 @@ public:
 class GenomeAlignerFindTask : public Task {
     Q_OBJECT
     friend class ShortReadAlignerCPU;
-	friend class ShortReadAlignerOpenCL;
+    friend class ShortReadAlignerOpenCL;
 public:
     GenomeAlignerFindTask(GenomeAlignerIndex *i, AlignContext *s, GenomeAlignerWriteTask *writeTask);
-    ~GenomeAlignerFindTask();
     virtual void run();
     virtual void prepare();
 
     void loadPartForAligning(int part);
     void waitDataForAligning(int &first, int &length);
-
-#ifdef OPENCL_SUPPORT
-    bool runOpenCLBinarySearch();
-#endif
 
     qint64 getIndexLoadTime() const {return indexLoadTime;}
 
@@ -93,7 +88,6 @@ private:
     GenomeAlignerIndex *index;
     GenomeAlignerWriteTask *writeTask;
     AlignContext *alignContext;
-    BinarySearchResult *binarySearchResults;
 
     int alignerTaskCount;
     int waiterCount;
@@ -106,7 +100,6 @@ private:
     QMutex waitDataForAligningMutex;
     QMutex waitMutex;
     QWaitCondition waiter;
-    QMutex openCLMutex;
 
     void unsafeGetData(int &first, int &length);
 
@@ -121,22 +114,22 @@ public:
     ShortReadAlignerCPU(int taskNo, GenomeAlignerIndex *index, AlignContext *alignContext, GenomeAlignerWriteTask *writeTask);
     virtual void run();
 private:
-	int taskNo;
+    int taskNo;
     GenomeAlignerIndex *index;
     AlignContext *alignContext;
     GenomeAlignerWriteTask *writeTask;
 };
 
 class ShortReadAlignerOpenCL : public Task {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ShortReadAlignerOpenCL(int taskNo, GenomeAlignerIndex *index, AlignContext *alignContext, GenomeAlignerWriteTask *writeTask);
-	virtual void run();
+    ShortReadAlignerOpenCL(int taskNo, GenomeAlignerIndex *index, AlignContext *alignContext, GenomeAlignerWriteTask *writeTask);
+    virtual void run();
 private:
-	int taskNo;
-	GenomeAlignerIndex *index;
-	AlignContext *alignContext;
-	GenomeAlignerWriteTask *writeTask;
+    int taskNo;
+    GenomeAlignerIndex *index;
+    AlignContext *alignContext;
+    GenomeAlignerWriteTask *writeTask;
 };
 
 } //U2

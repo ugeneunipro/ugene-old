@@ -38,7 +38,7 @@ public:
     BinaryFindOpenCL(const NumberType* _haystack, const int _haystackSize, const NumberType* _needles, const int _needlesSize, const int *_windowSizes);
     ~BinaryFindOpenCL();
     NumberType* launch();
-	bool hasError() {return isError;}
+    bool hasError() {return isError;}
 private:
     int initOpenCL();
     int createBuffers();
@@ -46,11 +46,11 @@ private:
     int runBinaryFindKernel();
 
     bool hasOPENCLError(cl_int err, QString errorMessage);
-	void logProfilingInfo(const cl_event &event, const QString &msgPrefix);
+    void logProfilingInfo(const cl_event &event, const QString &msgPrefix);
 
     int checkCreateBuffer(const QString &bufferName, cl_mem &buf, cl_mem_flags flags, size_t thisBufferSize, void *ptr, size_t &usageGPUMem);
 
-	bool isError;
+    bool isError;
 
     OpenCLGpuModel* device;
     cl_ulong deviceGlobalMemSize;
@@ -72,7 +72,7 @@ private:
 
     cl_mem buf_sortedHaystackArray;
     cl_mem buf_needlesArray;
-	cl_mem buf_windowSizesArray;
+    cl_mem buf_windowSizesArray;
 };
 
 }//namespace

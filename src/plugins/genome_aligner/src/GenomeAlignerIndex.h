@@ -49,7 +49,6 @@ public:
     BinarySearchResult bitMaskBinarySearch(BMType bitValue, BMType bitFilter);
 #ifdef OPENCL_SUPPORT
     BinarySearchResult *bitMaskBinarySearchOpenCL(const BMType *bitValues, int size, const int *windowSizes);
-		//quint64 BMType);
 #endif
     BinarySearchResult *findBitValuesUsingCUDA(BMType *bitValues, int size, BMType filter);
     QString getSeqName() const {return seqObjName;}

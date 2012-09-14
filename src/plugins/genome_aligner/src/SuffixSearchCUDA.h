@@ -36,7 +36,7 @@ public:
         const int* _windowSizes);
 private:
     quint64 *numbersListDev, *queryListDev; 
-	int *windowSizesDev;
+    int *windowSizesDev;
 
 };
 
