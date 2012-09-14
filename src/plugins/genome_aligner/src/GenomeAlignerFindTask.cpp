@@ -248,7 +248,7 @@ void ShortReadAlignerCPU::run() {
             }
 
             // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
-            alignContext->listM.lock();
+            QMutexLocker(&alignContext->listM);
 
             last = first + length;
             for (int i = first; i < last; i++) {
@@ -287,8 +287,6 @@ void ShortReadAlignerCPU::run() {
                     }
                 }
             }
-
-            alignContext->listM.unlock();
         } while(true);
     }
 }
@@ -341,7 +339,7 @@ void ShortReadAlignerOpenCL::run() {
 
         // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
         SAFE_POINT_EXT (NULL != alignContext, setError("OpenCL aligner context error"),);
-        alignContext->listM.lock();
+        QMutexLocker(&alignContext->listM);
 
         CHECK_EXT(0 != alignContext->bitValuesV.size(),,);
         BinarySearchResult* binarySearchResults = index->bitMaskBinarySearchOpenCL(alignContext->bitValuesV.constData(), alignContext->bitValuesV.size(), 
@@ -393,7 +391,6 @@ void ShortReadAlignerOpenCL::run() {
         algoLog.trace(QString("binary search results applied in %1 ms").arg((GTimer::currentTimeMicros() - t0) / double(1000), 0, 'f', 3));
 
         delete[] binarySearchResults; binarySearchResults = NULL;
-        alignContext->listM.unlock();
     }
 
 #endif
