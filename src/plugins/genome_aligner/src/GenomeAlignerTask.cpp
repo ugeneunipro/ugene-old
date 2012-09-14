@@ -145,7 +145,14 @@ void GenomeAlignerTask::prepare() {
 
 QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
-    if (hasError() || isCanceled()) {
+
+    if (subTask == createIndexTask) {
+        SAFE_POINT(createIndexTask != NULL, "Create index task error", subTasks);
+        delete index; index = NULL;
+        index = createIndexTask->index;
+    }
+
+    if (justBuildIndex || hasError() || isCanceled()) {
         if (!justBuildIndex && !alignContext.bestMode) {
             pWriteTask->setFinished();
         }
@@ -153,12 +160,8 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     }
 
     assert(createIndexTask != NULL);
-    if (justBuildIndex) {
-        return subTasks;
-    }
     qint64 time=(subTask->getTimeInfo().finishTime - subTask->getTimeInfo().startTime);
     if (subTask == createIndexTask) {
-        index = createIndexTask->index;
         seqReader = settings.getCustomValue(OPTION_READS_READER, qVariantFromValue(GenomeAlignerReaderContainer()))
             .value<GenomeAlignerReaderContainer>().reader;
         if (NULL == seqReader) {
