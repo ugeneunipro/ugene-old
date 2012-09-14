@@ -49,13 +49,17 @@ static void filterAmbiguousSlots(QList<Descriptor>& keys, const QMap<Descriptor,
     }
 }
 
-static Actor* getLinkedActor(ActorId id, Port* output) {
+static Actor* getLinkedActor(ActorId id, Port* output, QList<Actor*> visitedActors) {
+    if (visitedActors.contains(output->owner())) {
+        return NULL;
+    }
+    visitedActors << output->owner();
     if (output->owner()->getId() == id) {
         return output->owner();
     }
     foreach(Port* transit, output->owner()->getInputPorts()) {
         foreach(Port* p, transit->getLinks().uniqueKeys()) {
-            Actor* a = getLinkedActor(id,p);
+            Actor* a = getLinkedActor(id, p, visitedActors);
             if (a) return a;
         }
     }
@@ -142,7 +146,7 @@ QList<Actor*> IntegralBusPort::getProducers(const QString& slot) {
 Actor* IntegralBusPort::getLinkedActorById(ActorId id) const {
     QList<Actor*> res;
     foreach(Port* peer, getLinks().uniqueKeys()) {
-        Actor* ac = getLinkedActor(id,peer);
+        Actor* ac = getLinkedActor(id, peer, QList<Actor*>());
         if(ac != NULL) {
             res << ac;
         }
