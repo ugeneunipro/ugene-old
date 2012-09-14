@@ -171,7 +171,7 @@ DNATranslation* GObjectUtils::findComplementTT(DNAAlphabet* al) {
 }
 
 DNATranslation* GObjectUtils::findAminoTT(U2SequenceObject* so, bool fromHintsOnly, const QString& table) {
-    if (!so->getAlphabet()->isNucleic()) {
+    if (!so || !so->getAlphabet()->isNucleic()) {
         return NULL;
     }
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();

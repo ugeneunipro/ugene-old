@@ -65,6 +65,12 @@ void AssemblySequenceArea::initCellRenderer(QString id) {
 
 void AssemblySequenceArea::drawAll() {
     if(canDrawSequence()) {
+        if (redraw) {
+            cachedView.fill(Qt::transparent);
+            QPainter p(&cachedView);
+            redraw = false;
+            drawSequence(p);
+        }
         QPainter p(this);
         p.drawPixmap(0, 0, cachedView);
     }

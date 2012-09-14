@@ -175,6 +175,7 @@ private:
 
     AnnotatedDNAView* annotatedDnaView;
     CreateAnnotationWidgetController* annotController;
+    bool annotModelPrepared;
 
     bool isAminoSequenceSelected;
     bool showMore;

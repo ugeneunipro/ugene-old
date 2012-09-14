@@ -88,6 +88,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         annotModel.sequenceLen = annotatedDnaView->getSequenceInFocus()->getSequenceLength();
 
         annotController = new CreateAnnotationWidgetController(annotModel, this, compact);
+        annotModelPrepared = false;
 
         setContentsMargins(0, 0, 0, 0);
         
@@ -845,7 +846,10 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern ){
     DEFAULT_REGEXP_RESULT_LENGTH_LIMIT;
 
     // Preparing the annotations object and other annotations parameters
-    annotController->prepareAnnotationObject();
+    if (!annotModelPrepared){
+        annotController->prepareAnnotationObject();
+        annotModelPrepared = true;
+    }
     const CreateAnnotationModel& annotModel = annotController->getModel();
     QString annotName = annotModel.data->name;
     QString annotGroup = annotModel.groupName;
@@ -895,6 +899,8 @@ void FindPatternWidget::sl_loadPatternTaskStateChanged(){
     if(!noBadRegion){
         showHideErrorMessage(true, PatternsWithBadRegionInFile);
     }
+    annotModelPrepared = false;
+    updateAnnotationsWidget();
 }
 
 bool FindPatternWidget::checkAlphabet( const QString& pattern ){
