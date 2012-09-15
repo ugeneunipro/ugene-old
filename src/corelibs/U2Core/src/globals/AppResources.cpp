@@ -69,7 +69,7 @@ AppResourcePool::~AppResourcePool() {
     qDeleteAll(resources.values());
 }
 
-int AppResourcePool::getTotalPhysicalMemory() const {
+int AppResourcePool::getTotalPhysicalMemory() {
     int totalPhysicalMemory = defaultMemoryLimitMb;
 
 #if defined(Q_OS_WIN32)
