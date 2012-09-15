@@ -28,6 +28,7 @@
 #include <U2Test/GTest.h>
 
 #include <QtCore/QThread>
+#include <QtCore/QProcess>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
