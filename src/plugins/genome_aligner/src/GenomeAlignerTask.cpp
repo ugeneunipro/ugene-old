@@ -106,6 +106,9 @@ justBuildIndex(_justBuildIndex), bunchSize(0), index(NULL), lastQuery(NULL)
         } else {
             QString tempDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("aligner");
             QString indexDir = settings.getCustomValue(OPTION_INDEX_DIR, tempDir).toString();
+            QDir indexQDir(indexDir);
+            indexQDir.mkpath(indexDir);
+
             indexFileName = indexDir + "/" + settings.refSeqUrl.baseFileName() + "." + GenomeAlignerIndex::HEADER_EXTENSION;
         }
     } else {

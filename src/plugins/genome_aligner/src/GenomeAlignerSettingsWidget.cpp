@@ -68,9 +68,8 @@ GenomeAlignerSettingsWidget::GenomeAlignerSettingsWidget(QWidget* parent) : DnaA
 
     QString indexDirPath = GenomeAlignerSettingsUtils::getIndexDir();
     QDir indexDir(indexDirPath);
-    if (!indexDir.exists()) {
-        indexDir.mkpath(indexDirPath);
-    }
+    indexDir.mkpath(indexDirPath);
+
     indexDirEdit->setText(indexDirPath);
 
     partSizeLabel->setText(QByteArray::number(partSlider->value()) + " Mb");
