@@ -92,9 +92,15 @@ public:
     
     static AppResourcePool* instance();
 
+    static int getTotalPhysicalMemory();
+
+    static const int x32MaxMemoryLimitMb = 3*512;       // 1536Mb
+    static const int x64MaxMemoryLimitMb = 2*1024*1024; // 2Tb
 private:
+    static const int defaultMemoryLimitMb = 8*1024;
+
     QHash<int, AppResource*> resources;
-    
+
     int idealThreadCount;
 
     AppResource* threadResource;

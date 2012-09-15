@@ -25,7 +25,6 @@
 #include <U2Core/Settings.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/U2SafePoints.h>
-
 #include <U2Test/GTest.h>
 
 #include <QtCore/QThread>
@@ -43,18 +42,19 @@ namespace U2 {
 AppResourcePool::AppResourcePool() {
     Settings* s = AppContext::getSettings();
     idealThreadCount = s->getValue(SETTINGS_ROOT + "idealThreadCount", QThread::idealThreadCount()).toInt();
-    
+
     int maxThreadCount = s->getValue(SETTINGS_ROOT + "maxThreadCount", 1000).toInt();
     threadResource = new AppResource(RESOURCE_THREAD, maxThreadCount, tr("Threads"));
     registerResource(threadResource);
 
-    qint64 maxMemValMb = 0;
+    int totalPhysicalMemory = getTotalPhysicalMemory();
+    int maxMem = s->getValue(SETTINGS_ROOT + "maxMem", totalPhysicalMemory).toInt(); 
 #if defined(Q_OS_MAC64) || defined(Q_OS_WIN64) || defined(UGENE_X86_64) || defined( __amd64__ ) || defined( __AMD64__ ) || defined( __x86_64__ ) || defined( _M_X64 )
-    maxMemValMb = 8*1024; //8 Gb
+    maxMem = maxMem > x64MaxMemoryLimitMb ? x64MaxMemoryLimitMb : maxMem;
 #else
-    maxMemValMb = 3*512; //1.5 Gb
+    maxMem = maxMem > x32MaxMemoryLimitMb ? x32MaxMemoryLimitMb : maxMem;
 #endif
-    int maxMem = s->getValue(SETTINGS_ROOT + "maxMem", maxMemValMb).toInt(); 
+
     memResource = new AppResource(RESOURCE_MEMORY, maxMem, tr("Memory"), tr("Mb"));
     registerResource(memResource);
 
@@ -67,6 +67,41 @@ AppResourcePool::AppResourcePool() {
 
 AppResourcePool::~AppResourcePool() {
     qDeleteAll(resources.values());
+}
+
+int AppResourcePool::getTotalPhysicalMemory() const {
+    int totalPhysicalMemory = defaultMemoryLimitMb;
+
+#if defined(Q_OS_WIN32)
+    MEMORYSTATUSEX memory_status;
+    ZeroMemory(&memory_status, sizeof(MEMORYSTATUSEX));
+    memory_status.dwLength = sizeof(memory_status);
+    if (GlobalMemoryStatusEx(&memory_status)) {
+        totalPhysicalMemory = memory_status.ullTotalPhys / (1024 * 1024);
+    } else {
+        coreLog.error("Total physical memory: getting info error");
+    }
+
+#elif defined(Q_OS_LINUX)
+    QProcess p;
+    p.start("awk", QStringList() << "/MemTotal/ {print $2}" << "/proc/meminfo");
+    p.waitForFinished();
+    QString memory = p.readAllStandardOutput();
+    p.close();
+    totalPhysicalMemory = memory.toLong() / 1024;
+
+#elif defined(Q_OS_MAC)
+// TODO
+//     QProcess p;
+//     p.start("sysctl", QStringList() << "kern.version" << "hw.physmem");
+//     p.waitForFinished();
+//     QString system_info = p.readAllStandardOutput();
+//     p.close();
+#else
+    coreLog.error("Total physical memory: Unsupported OS");
+#endif
+
+    return totalPhysicalMemory;
 }
 
 void AppResourcePool::setIdealThreadCount(int n) {

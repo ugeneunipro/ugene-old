@@ -61,9 +61,13 @@ AppSettingsGUIPageWidget* ResourceSettingsGUIPageController::createWidget(AppSet
 
 ResourceSettingsGUIPageWidget::ResourceSettingsGUIPageWidget(ResourceSettingsGUIPageController*) {
     setupUi(this);
+
+    int maxMem = AppResourcePool::x32MaxMemoryLimitMb;
 #if defined(Q_OS_MAC64) || defined(Q_OS_WIN64) || defined(UGENE_X86_64) || defined( __amd64__ ) || defined( __AMD64__ ) || defined( __x86_64__ ) || defined( _M_X64 )
-    memBox->setMaximum(8*1024); //8GB
+    maxMem = AppResourcePool::x64MaxMemoryLimitMb;
 #endif
+
+    memBox->setMaximum(maxMem);
     connect(threadBox, SIGNAL(valueChanged(int)), SLOT(sl_threadsCountChanged(int)));
     connect(cpuBox, SIGNAL(valueChanged(int)), SLOT(sl_cpuCountChanged(int)));
 }
@@ -78,7 +82,7 @@ void ResourceSettingsGUIPageWidget::setState(AppSettingsGUIPageState* s) {
 AppSettingsGUIPageState* ResourceSettingsGUIPageWidget::getState(QString& err) const {
     Q_UNUSED(err);
     ResourceSettingsGUIPageState* state = new ResourceSettingsGUIPageState();
-    state->nCpus =cpuBox->value();
+    state->nCpus = cpuBox->value();
     state->nThreads = threadBox->value();
     state->maxMem = memBox->value();
     return state;
