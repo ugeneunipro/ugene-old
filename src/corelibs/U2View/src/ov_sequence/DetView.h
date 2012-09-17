@@ -51,6 +51,8 @@ public:
     void setShowComplement(bool t);
     void setShowTranslation(bool t);
 
+    void setDisableTranslationAction(bool t);
+
     QAction* getShowComplementAction() const {return showComplementAction;}
     QAction* getShowTranslationAction() const {return showTranslationAction;}
 

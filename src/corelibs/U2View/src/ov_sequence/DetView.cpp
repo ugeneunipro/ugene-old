@@ -167,6 +167,10 @@ void DetView::setShowTranslation(bool t) {
     updateSize();
 }
 
+void DetView::setDisableTranslationAction(bool t){
+    showTranslationAction->setDisabled(t);
+}
+
 void DetView::mouseReleaseEvent(QMouseEvent* me) {
     //click with 'alt' shift selects single base in GSingleSeqWidget;
     //here we adjust this behavior -> if click was done in translation line -> select 3 bases
