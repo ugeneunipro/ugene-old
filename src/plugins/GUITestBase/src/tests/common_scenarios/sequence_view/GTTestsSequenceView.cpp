@@ -45,25 +45,66 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.pdb");
     GTGlobals::sleep(3000);
-    qDebug() << "Its widget: " << qApp->widgetAt(QCursor::pos()) << "His name is: " <<  qApp->widgetAt(QCursor::pos())->objectName() << "\n\n\n\n\n\n\n";
-    return;
 
+    QWidget *w0 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
+    QWidget *w1 = GTWidget::findWidget(os, "ADV_single_sequence_widget_1");
+    QWidget *w2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_2");
+    QWidget *w3 = GTWidget::findWidget(os, "ADV_single_sequence_widget_3");
+
+    QAbstractButton* b0 = GTAction::button(os,"Show circular view", w0);
+    QAbstractButton* b1 = GTAction::button(os,"Show circular view", w1);
+    QAbstractButton* b2 = GTAction::button(os,"Show circular view", w2);
+    QAbstractButton* b3 = GTAction::button(os,"Show circular view", w3);
+    GTGlobals::sleep(3000);
+
+    CHECK_SET_ERR(b0 == NULL, "b0 is not NULL");
+    CHECK_SET_ERR(b1 == NULL, "b1 is not NULL");
+    CHECK_SET_ERR(b2 != NULL, "b2 is NULL");
+    CHECK_SET_ERR(b3 != NULL, "b3 is NULL");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.pdb");
     GTGlobals::sleep(3000);
-    qDebug() << "Its widget: " << qApp->widgetAt(QCursor::pos()) << "His name is: " <<  qApp->widgetAt(QCursor::pos())->objectName() << "\n\n\n\n\n\n\n";
-    return;
+
+    QWidget *w0 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
+    QWidget *w1 = GTWidget::findWidget(os, "ADV_single_sequence_widget_1");
+    QWidget *w2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_2");
+    QWidget *w3 = GTWidget::findWidget(os, "ADV_single_sequence_widget_3");
+
+    QAbstractButton* b0 = GTAction::button(os,"complement_action", w0);
+    QAbstractButton* b1 = GTAction::button(os,"complement_action", w1);
+    QAbstractButton* b2 = GTAction::button(os,"complement_action", w2);
+    QAbstractButton* b3 = GTAction::button(os,"complement_action", w3);
+    GTGlobals::sleep(3000);
+
+    CHECK_SET_ERR(b0 == NULL, "b0 is not NULL");
+    CHECK_SET_ERR(b1 == NULL, "b1 is not NULL");
+    CHECK_SET_ERR(b2 != NULL, "b2 is NULL");
+    CHECK_SET_ERR(b3 != NULL, "b3 is NULL");
 
     }
 GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
     GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.pdb");
     GTGlobals::sleep(3000);
-    qDebug() << "Its widget: " << qApp->widgetAt(QCursor::pos()) << "His name is: " <<  qApp->widgetAt(QCursor::pos())->objectName() << "\n\n\n\n\n\n\n";
-    return;
+
+    QWidget *w0 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
+    QWidget *w1 = GTWidget::findWidget(os, "ADV_single_sequence_widget_1");
+    QWidget *w2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_2");
+    QWidget *w3 = GTWidget::findWidget(os, "ADV_single_sequence_widget_3");
+
+    QAbstractButton* b0 = GTAction::button(os,"translation_action", w0);
+    QAbstractButton* b1 = GTAction::button(os,"translation_action", w1);
+    QAbstractButton* b2 = GTAction::button(os,"translation_action", w2);
+    QAbstractButton* b3 = GTAction::button(os,"translation_action", w3);
+    GTGlobals::sleep(3000);
+
+    CHECK_SET_ERR(b0 == NULL, "b0 is not NULL");
+    CHECK_SET_ERR(b1 == NULL, "b1 is not NULL");
+    CHECK_SET_ERR(b2 != NULL, "b2 is NULL");
+    CHECK_SET_ERR(b3 != NULL, "b3 is NULL");
 
     }
 

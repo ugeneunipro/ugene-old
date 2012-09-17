@@ -25,6 +25,7 @@
 #include <QtGui/QWidget>
 #include <QtGui/QMainWindow>
 #include <QtGui/QAbstractButton>
+#include <QtGui/QToolButton>
 
 namespace U2 {
 
@@ -34,13 +35,24 @@ namespace U2 {
 QAbstractButton* GTAction::button(U2OpStatus &os, const QString &actionName, QObject *parent) {
 
     QAction* a = findAction(os, actionName, parent);
+    if (!a) {
+        a = findAction(os, actionName);
+    }
     GT_CHECK_RESULT(a != NULL, "action is NULL", NULL);
 
     QList<QWidget*> associated = a->associatedWidgets();
     foreach(QWidget* w, associated) {
         QAbstractButton *tb = qobject_cast<QAbstractButton*>(w);
         if (tb) {
-            return tb;
+            if (parent) {
+                QList<QToolButton*> childButtons = parent->findChildren<QToolButton*>(); // da. daa.
+                if (childButtons.contains(dynamic_cast<QToolButton*>(tb))) {
+                    return tb;
+                }
+            }
+            else {
+                return tb;
+            }
         }
     }
 
