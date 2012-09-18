@@ -552,7 +552,9 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
             QList<U2Region> lowerCaseRegs = U1AnnotationUtils::getRelatedLowerCaseRegions(dnaso, atos);
             QString fastaHeader = dnaso->getGObjectName();
             int tagSize = QString(SEQUENCE_TAG).size(), headerSize = fastaHeader.size();
-            fastaHeader = fastaHeader.left(headerSize - tagSize);  //removing previously added tag
+            if(fastaHeader.indexOf(QString(SEQUENCE_TAG), 0) != -1){
+                fastaHeader = fastaHeader.left(headerSize - tagSize);  //removing previously added tag
+            }
             fastaHeader.prepend(">");
             fastaHeader.append( '\n' );
             qbaRow = fastaHeader.toAscii();
