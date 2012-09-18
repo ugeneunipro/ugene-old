@@ -20,6 +20,10 @@ ComparingAlgorithm::ComparingAlgorithm() {
 
 }
 
+ComparingAlgorithm::~ComparingAlgorithm() {
+
+}
+
 double ComparingAlgorithm::compare(const U2SequenceObject *seq1,
     const U2SequenceObject *seq2) {
     U2OpStatusImpl os;
@@ -35,15 +39,18 @@ double ComparingAlgorithm::compare(const U2SequenceObject *seq1,
 /************************************************************************/
 /* DefaultComparingAlgorithm */
 /************************************************************************/
+DefaultComparingAlgorithm::DefaultComparingAlgorithm()
+: aligner(NULL)
+{
+
+}
+DefaultComparingAlgorithm::~DefaultComparingAlgorithm() {
+    delete aligner;
+}
+
 double DefaultComparingAlgorithm::compare(const QByteArray &seq1,
     const QByteArray &seq2) {
-
-    MAlignment ma("Alignment");
-    ma.addRow(MAlignmentRow("seq1", seq1));
-    ma.addRow(MAlignmentRow("seq2", seq2));
-    U2AlphabetUtils::assignAlphabet(ma);
-
-    align(ma);
+    MAlignment ma = align(seq1, seq2);
 
     int mismatches = 0;
     QByteArray row1 = ma.getRow(0).toByteArray(ma.getLength());
@@ -57,8 +64,15 @@ double DefaultComparingAlgorithm::compare(const QByteArray &seq1,
     return result * 100;
 }
 
-void DefaultComparingAlgorithm::align(MAlignment &ma) {
+MAlignment DefaultComparingAlgorithm::align(const QByteArray &seq1, const QByteArray &seq2) {
+    if (NULL == aligner) {
+        aligner = PairwiseAlignerFactory::createAligner(PairwiseAlignerFactory::NEEDLEMAN_WUNSCH, seq1, seq2);
+        CHECK(NULL != aligner, MAlignment());
+    } else {
+        aligner->setSeqs(seq1, seq2);
+    }
 
+    return aligner->align();
 }
 
 inline bool DefaultComparingAlgorithm::symbolsEqual(char c1, char c2) {

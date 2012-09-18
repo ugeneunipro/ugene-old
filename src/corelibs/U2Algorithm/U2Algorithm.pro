@@ -17,6 +17,8 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/molecular_geometry/MolecularSurface.h \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.h \
            src/molecular_geometry/VanDerWaalsSurface.h \
+           src/pairwise_alignment/NWAligner.h \
+           src/pairwise_alignment/PairwiseAligner.h \
            src/phyltree/CreatePhyTreeSettings.h \
            src/phyltree/PhyTreeGenerator.h \
            src/phyltree/PhyTreeGeneratorRegistry.h \
@@ -91,6 +93,8 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/molecular_geometry/MolecularSurface.cpp \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.cpp \
            src/molecular_geometry/VanDerWaalsSurface.cpp \
+           src/pairwise_alignment/NWAligner.cpp \
+           src/pairwise_alignment/PairwiseAligner.cpp \
            src/phyltree/CreatePhyTreeSettings.cpp \
            src/phyltree/PhyTreeGeneratorRegistry.cpp \
            src/phyltree/PhyTreeGeneratorTask.cpp \

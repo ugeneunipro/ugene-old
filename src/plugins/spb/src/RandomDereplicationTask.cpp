@@ -23,42 +23,43 @@ void RandomDereplicationTask::run() {
     }
 
     initialSeqCount = data.getSeqs().size();
+    QMap<int, SharedDbiDataHandler> idMap;
+    QMap<int, DNASequence> seqMap;
+    for (int i=0; i<initialSeqCount; i++) {
+        SharedDbiDataHandler id = data.getSeqs().at(i);
+        idMap[i] = id;
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(data.getStorage(), id));
+        CHECK_EXT(NULL != seqObj.data(), setError("NULL sequence object"), );
+        seqMap[i] = seqObj->getWholeSequence();
+    }
 
-    while (!data.getSeqs().isEmpty()) {
-        SharedDbiDataHandler leaderId = data.takeRandomSequence();
-        result << leaderId;
-
-        QScopedPointer<U2SequenceObject> leader(StorageUtils::getSequenceObject(data.getStorage(), leaderId));
-        CHECK_EXT(NULL != leader.data(), setError("NULL sequence object"), );
-
-        QByteArray leaderData = leader->getSequenceData(U2_REGION_MAX, stateInfo);
-        CHECK_OP(stateInfo, );
+    while (!idMap.isEmpty()) {
+        int leaderIdx = idMap.begin().key();
+        result << idMap.take(leaderIdx);
+        DNASequence leaderSeq = seqMap.take(leaderIdx);
 
         // TODO: must be parallelized
-        foreach (const SharedDbiDataHandler &seqId, data.getSeqs()) {
-            QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(data.getStorage(), seqId));
-            CHECK_EXT(NULL != seqObj.data(), setError("NULL sequence object"), );
+        foreach (int i, seqMap.keys()) {
+            const DNASequence &seq = seqMap[i];
 
-            QByteArray seqData = seqObj->getSequenceData(U2_REGION_MAX, stateInfo);
-            CHECK_OP(stateInfo, );
-
-            double res = algo->compare(leaderData, seqData);
+            double res = algo->compare(leaderSeq.seq, seq.seq);
             if (res >= data.getAccuracy()) {
-                data.getSeqs().removeOne(seqId);
+                idMap.remove(i);
+                seqMap.remove(i);
             }
         }
-        if (updateProgress()) {
+        if (updateProgress(idMap.size())) {
             return;
         }
     }
 }
 
 static const int UPDATE_STEP = 50;
-inline bool RandomDereplicationTask::updateProgress() {
+inline bool RandomDereplicationTask::updateProgress(int seqsRemain) {
     iterationIdx++;
     if (iterationIdx > UPDATE_STEP) {
         iterationIdx = 0;
-        double p = double(initialSeqCount - data.getSeqs().size()) / initialSeqCount;
+        double p = double(initialSeqCount - seqsRemain) / initialSeqCount;
         stateInfo.setProgress(int(100 * p));
         return stateInfo.isCanceled();
     }

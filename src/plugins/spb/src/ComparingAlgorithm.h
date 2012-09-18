@@ -1,8 +1,10 @@
-#include <U2Core/MAlignment.h>
-#include <U2Core/DNASequenceObject.h>
-
 #ifndef _SPB_COMPARING_ALGORITHM_H_
 #define _SPB_COMPARING_ALGORITHM_H_
+
+#include <U2Algorithm/PairwiseAligner.h>
+
+#include <U2Core/MAlignment.h>
+#include <U2Core/DNASequenceObject.h>
 
 using namespace U2;
 
@@ -20,6 +22,7 @@ public:
 class ComparingAlgorithm {
 public:
     ComparingAlgorithm();
+    virtual ~ComparingAlgorithm();
 
     /** Returns the percent of sequences identity: 0.0 .. 100.0 */
     virtual double compare(const U2SequenceObject *seq1,
@@ -29,11 +32,16 @@ public:
 
 class DefaultComparingAlgorithm : public ComparingAlgorithm {
 public:
+    DefaultComparingAlgorithm();
+    virtual ~DefaultComparingAlgorithm();
     virtual double compare(const QByteArray &seq1, const QByteArray &seq2);
 
 private:
-    void align(MAlignment &ma);
+    MAlignment align(const QByteArray &seq1, const QByteArray &seq2);
     bool symbolsEqual(char c1, char c2);
+
+private:
+    PairwiseAligner *aligner;
 };
 
 } // SPB

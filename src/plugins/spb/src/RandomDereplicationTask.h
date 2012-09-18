@@ -16,7 +16,7 @@ private:
     int initialSeqCount;
 
 private:
-    bool updateProgress();
+    bool updateProgress(int seqsRemain);
 };
 
 } // SPB
