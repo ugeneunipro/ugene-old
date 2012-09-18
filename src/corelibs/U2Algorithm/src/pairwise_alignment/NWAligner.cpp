@@ -31,7 +31,7 @@
 namespace U2 {
 
 NWAligner::NWAligner(const QByteArray &seq1, const QByteArray &seq2)
-: PairwiseAligner(seq1, seq2)
+: PairwiseAligner(seq1, seq2), fMatrix(NULL)
 {
     GTIMER(cvar, tvar, "NWAligner::NWAligner");
     DNAAlphabet *alphabet = U2AlphabetUtils::findBestAlphabet(seq1 + seq2);
@@ -175,6 +175,7 @@ void FMatrix::cleanup() {
 }
 
 void FMatrix::init(const QByteArray &seq1, const QByteArray &seq2) {
+    cleanup();
     h = seq1.size() + 1;
     w = seq2.size() + 1;
 
