@@ -124,14 +124,14 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
 void CircularViewContext::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
     
     ADVSingleSequenceWidget* sw = qobject_cast<ADVSingleSequenceWidget*>(w);
-    
-    CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
-    SAFE_POINT(a != NULL || !sw->getSequenceObject()->getAlphabet()->isNucleic(), "Circular view action is not found", );
     if(!sw->getSequenceObject()->getAlphabet()->isNucleic()){
         return;
     }
+
     CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), false);
     if(splitter != NULL) {
+        CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
+        SAFE_POINT(a != NULL, "Circular view action is not found", );
         splitter->removeView(a->view,a->rmapWidget);
         delete a->view;
         delete a->rmapWidget;
