@@ -19,12 +19,16 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtGui/QMessageBox>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
-
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Gui/AppSettingsGUI.h>
 #include "BowtieSettingsWidget.h"
 #include "BowtieTask.h"
+#include "BowtieSupport.h"
 
 namespace U2 {
 
@@ -85,7 +89,29 @@ void BowtieSettingsWidget::buildIndexUrl(const GUrl &) {
     // do nothing
 }
 
-bool BowtieSettingsWidget::isParametersOk(QString &) {
+bool BowtieSettingsWidget::isParametersOk(QString& error) {
+    
+    ExternalTool* bowtie = AppContext::getExternalToolRegistry()->getByName(BOWTIE_TOOL_NAME);
+    ExternalTool* bowtieBuild = AppContext::getExternalToolRegistry()->getByName(BOWTIE_BUILD_TOOL_NAME);
+    bool bowtieToolsExist = bowtie && bowtieBuild; 
+
+    if( !bowtieToolsExist || bowtie->getPath().isEmpty() || bowtieBuild->getPath().isEmpty() ) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(tr("DNA Assembly"));
+        msgBox.setInformativeText(tr("Do you want to select it now?"));
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        msgBox.setText(tr("Path for <i>Bowtie</i> and <i>Bowtie-build</i> tools is not set."));
+        int ret = msgBox.exec();
+        if (ret == QMessageBox::Yes) {
+            AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_EXTERNAL_TOOLS);
+        }
+        
+        return false;
+    }
+
+    
+    
     return true;
 }
 

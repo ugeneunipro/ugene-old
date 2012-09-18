@@ -152,7 +152,9 @@ void DnaAssemblyDialog::accept() {
     if (NULL != customGUI) {
         QString error;
         if (!customGUI->isParametersOk(error)) {
-            QMessageBox::information(this, tr("DNA Assembly"), error);
+            if (!error.isEmpty()) {
+                QMessageBox::information(this, tr("Align short reads"), error);
+            }
             return;
         }
         if (!customGUI->isIndexOk(error, refSeqEdit->text())) {
@@ -167,33 +169,7 @@ void DnaAssemblyDialog::accept() {
             }
         }
     }
-    if (getAlgorithmName() == "Bowtie") {
-        if(AppContext::getExternalToolRegistry()->getByName("Bowtie ")->getPath().isEmpty() ||
-           AppContext::getExternalToolRegistry()->getByName("Bowtie-build")->getPath().isEmpty()) {
-            QMessageBox msgBox;
-            msgBox.setWindowTitle(tr("DNA Assembly"));
-            msgBox.setInformativeText(tr("Do you want to select it now?"));
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::Yes);
-            msgBox.setText(tr("Path for <i>Bowtie</i> tools is not selected."));
-            int ret = msgBox.exec();
-            switch (ret) {
-            case QMessageBox::Yes:
-                AppContext::getAppSettingsGUI()->showSettingsDialog(APP_SETTINGS_EXTERNAL_TOOLS);
-                break;
-            case QMessageBox::No:
-                return;
-                break;
-            default:
-                assert(NULL);
-                break;
-            }
-            if(AppContext::getExternalToolRegistry()->getByName("Bowtie ")->getPath().isEmpty() ||
-               AppContext::getExternalToolRegistry()->getByName("Bowtie-build")->getPath().isEmpty()) {
-                return;
-            }
-        }
-    }
+    
     if (refSeqEdit->text().isEmpty()) {
         QMessageBox::information(this, tr("DNA Assembly"),
             tr("Reference sequence url is not set!") );
