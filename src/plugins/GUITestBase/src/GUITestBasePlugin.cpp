@@ -43,6 +43,7 @@
 #include "tests/common_scenarios/annotations/GTTestsAnnotations.h"
 #include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
 #include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
+#include "tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE) \
@@ -364,6 +365,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0021);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0021_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0021_2);
+
+//////////////////////////////////////////////////////////////////////////
+// Common scenarios/document_from_text/
+//////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0001_2);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations

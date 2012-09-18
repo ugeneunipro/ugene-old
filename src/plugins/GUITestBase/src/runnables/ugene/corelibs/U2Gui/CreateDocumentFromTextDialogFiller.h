@@ -30,7 +30,7 @@ namespace U2 {
     public:
         enum documentFormat {FASTA, Genbank};
         CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, const QString &_documentLocation,
-                             documentFormat _format, const QString &_sequenceName, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+                             documentFormat _format, const QString &_sequenceName, bool saveFile = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
         QString documentLocation;
@@ -38,6 +38,7 @@ namespace U2 {
         QString sequenceName;
         documentFormat format;
         QMap<documentFormat, QString> comboBoxItems;
+        bool saveFile;
 
         GTGlobals::UseMethod useMethod;
     };

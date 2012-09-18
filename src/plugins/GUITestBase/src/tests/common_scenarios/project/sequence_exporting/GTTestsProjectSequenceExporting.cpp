@@ -265,7 +265,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
         "ACGTGTGTGTACGACAGACGACAGCAGACGACAGACAGACAGACAGCAAGAGAGAGAGAG",
         testDir + "_common_data/scenarios/sandbox/",
         CreateDocumentFiller::Genbank,
-        "Sequence"
+        "Sequence", false
     );
     GTUtilsDialog::waitForDialog(os, filler);
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);

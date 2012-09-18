@@ -24,6 +24,7 @@
 #include "api/GTPlainTextEdit.h"
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
+#include "api/GTCheckBox.h"
 
 #include <QtCore/QDir>
 #include <QtGui/QPushButton>
@@ -33,12 +34,13 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::createDocumentFiller"
 CreateDocumentFiller::CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, const QString &_documentLocation,
-    documentFormat _format, const QString &_sequenceName, GTGlobals::UseMethod method):
+    documentFormat _format, const QString &_sequenceName, bool saveFile, GTGlobals::UseMethod method):
 Filler(_os, "CreateDocumentFromTextDialog"), format(_format), useMethod(method)
 {
     sequenceName = _sequenceName;
     pasteDataHere = _pasteDataHere;
-    QString __documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + _documentLocation + "/" + _sequenceName);
+    QString __documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + _documentLocation);
+    // + "/" + _sequenceName
     documentLocation = __documentLocation;
     comboBoxItems[FASTA] = "FASTA";
     comboBoxItems[Genbank] = "Genbank";
@@ -70,6 +72,9 @@ void CreateDocumentFiller::run()
     QLineEdit *lineEditName = dialog->findChild<QLineEdit*>("nameEdit");
     GT_CHECK(lineEdit != NULL, "line edit not found");
     GTLineEdit::setText(os, lineEditName, sequenceName);
+
+    QCheckBox* saveFileCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "saveImmediatelyBox", dialog));
+    GTCheckBox::setChecked(os, saveFileCheckBox);
 
     QPushButton *createButton = dialog->findChild<QPushButton*>(QString::fromUtf8("OKButton"));
     GT_CHECK(createButton != NULL, "Create button not found");

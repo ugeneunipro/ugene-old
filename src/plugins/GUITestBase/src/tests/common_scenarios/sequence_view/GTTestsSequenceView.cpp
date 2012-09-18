@@ -320,16 +320,17 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTGlobals::sleep();
     GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
-    QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
 
+    QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
     Runnable *chooser = new PopupChooser(os, QStringList() << "Restriction Sites");
     GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
+    QWidget* toggleAutoAnnotationsButton1 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "ORFs");
     GTUtilsDialog::waitForDialog(os, chooser1);
-    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTWidget::click(os, toggleAutoAnnotationsButton1);
     GTGlobals::sleep();
 
     //2. Open any PBD file from samples
@@ -349,38 +350,43 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     GTGlobals::sleep();
     GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
-    QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
 
+    QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
     Runnable *chooser = new PopupChooser(os, QStringList() << "Restriction Sites");
     GTUtilsDialog::waitForDialog(os, chooser);
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
+    QWidget* toggleAutoAnnotationsButton1 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "ORFs");
     GTUtilsDialog::waitForDialog(os, chooser1);
-    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTWidget::click(os, toggleAutoAnnotationsButton1);
     GTGlobals::sleep();
 
     //1. Disable Auto-annotations
+    QWidget* toggleAutoAnnotationsButton2 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
     Runnable *chooser2 = new PopupChooser(os, QStringList() << "Restriction Sites");
     GTUtilsDialog::waitForDialog(os, chooser2);
-    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTWidget::click(os, toggleAutoAnnotationsButton2);
     GTGlobals::sleep();
 
+    QWidget* toggleAutoAnnotationsButton3 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
     Runnable *chooser3 = new PopupChooser(os, QStringList() << "ORFs");
     GTUtilsDialog::waitForDialog(os, chooser3);
-    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTWidget::click(os, toggleAutoAnnotationsButton3);
     GTGlobals::sleep();
 
     //3. Enable Auto-annotations
+    QWidget* toggleAutoAnnotationsButton4 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
     Runnable *chooser4 = new PopupChooser(os, QStringList() << "Restriction Sites");
     GTUtilsDialog::waitForDialog(os, chooser4);
-    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTWidget::click(os, toggleAutoAnnotationsButton4);
     GTGlobals::sleep();
 
+    QWidget* toggleAutoAnnotationsButton5 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
     Runnable *chooser5 = new PopupChooser(os, QStringList() << "ORFs");
     GTUtilsDialog::waitForDialog(os, chooser5);
-    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTWidget::click(os, toggleAutoAnnotationsButton5);
     GTGlobals::sleep();
 
     //2. Open any PBD file from samples
@@ -409,9 +415,10 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
+    QWidget* toggleAutoAnnotationsButton1 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
     Runnable *chooser1 = new PopupChooser(os, QStringList() << "ORFs");
     GTUtilsDialog::waitForDialog(os, chooser1);
-    GTWidget::click(os, toggleAutoAnnotationsButton);
+    GTWidget::click(os, toggleAutoAnnotationsButton1);
     GTGlobals::sleep();
 
     //Expected state: there is no auto-annotations for opened sequences
