@@ -27,6 +27,7 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
 #include <U2Core/Task.h>
+#include <U2Core/DNASequenceSelection.h>
 
 #include <QtGui/QtGui>
 
@@ -45,7 +46,8 @@ enum SeqTranslIndex {
 
 enum RegionSelectionIndex {
     RegionSelectionIndex_WholeSequence,
-    RegionSelectionIndex_CustomRegion
+    RegionSelectionIndex_CustomRegion,
+    RegionSelectionIndex_CurrentSelectedRegion
 };
 
 enum ErrorMessageFlag {
@@ -131,6 +133,8 @@ private slots:
     /** A sequence part was added, removed or replaced */
     void sl_onSequenceModified(ADVSequenceObjectContext*);
 
+    void sl_onSelectedRegionChanged(LRegionsSelection* thiz, const QVector<U2Region>& added, const QVector<U2Region>& removed);
+
 private:
     void initLayout();
     void initAlgorithmLayout();
@@ -197,6 +201,8 @@ private:
     QSpinBox* boxMaxResultLen;
 
     QWidget* annotsWidget;
+
+    DNASequenceSelection *currentSelection;
 
     static const int DEFAULT_RESULTS_NUM_LIMIT;
     static const int DEFAULT_REGEXP_RESULT_LENGTH_LIMIT;
