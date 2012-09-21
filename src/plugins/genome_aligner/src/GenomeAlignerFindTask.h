@@ -65,7 +65,7 @@ public:
 
     bool isReadingFinished;
     bool isReadingStarted;
-    QMutex listM;
+    QMutex listM, readingStatusMutex;
     QWaitCondition readShortReadsWait;
 };
 
@@ -94,7 +94,6 @@ private:
     int nextElementToGive;
     qint64 indexLoadTime;
     bool partLoaded;
-    bool openCLFinished;
 
     QMutex loadPartMutex;
     QMutex waitDataForAligningMutex;

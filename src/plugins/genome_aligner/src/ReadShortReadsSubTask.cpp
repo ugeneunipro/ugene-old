@@ -57,7 +57,7 @@ freeMemorySize(m)
 }
 
 void ReadShortReadsSubTask::readingFinishedWakeAll() {
-    QMutexLocker(&alignContext.listM);
+    QMutexLocker(&alignContext.readingStatusMutex);
     alignContext.isReadingFinished = true;
     alignContext.readShortReadsWait.wakeAll();
 }

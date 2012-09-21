@@ -44,7 +44,6 @@ GenomeAlignerFindTask::GenomeAlignerFindTask(U2::GenomeAlignerIndex *i, AlignCon
 index(i), writeTask(w), alignContext(s)
 {
     partLoaded = false;
-    openCLFinished = false;
     nextElementToGive = 0;
     indexLoadTime = 0;
     waiterCount = 0;
@@ -120,7 +119,6 @@ void GenomeAlignerFindTask::loadPartForAligning(int part) {
             setError("Incorrect index file. Please, try to create a new index file.");
         }
         partLoaded = true;
-        openCLFinished = false;
         nextElementToGive = 0;
         taskLog.trace(QString("finished loading index part %1").arg(part + 1));
     }
@@ -168,41 +166,30 @@ void GenomeAlignerFindTask::unsafeGetData(int &first, int &length) {
 void GenomeAlignerFindTask::waitDataForAligning(int &first, int &length) {
     QMutexLocker lock(&waitDataForAligningMutex);
 
-    bool isReadingStarted = false;
-    bool isReadingFinished = false;
-    if (alignContext->openCL) {
-        do {
-            alignContext->listM.lock();
-            isReadingStarted = alignContext->isReadingStarted;
-            isReadingFinished = alignContext->isReadingFinished;
-            alignContext->listM.unlock();
-
-            if (isReadingStarted && isReadingFinished) {
-                break;
-            }
-
-            alignContext->readShortReadsWait.wait(&waitDataForAligningMutex);
+    bool needToWait = false;
+    do {
+        QMutexLocker(&alignContext->readingStatusMutex);
+        bool isReadingStarted = alignContext->isReadingStarted;
+        bool isReadingFinished = alignContext->isReadingFinished;
+        if (isReadingStarted && isReadingFinished) {
+            break;
         }
-        while (true);
-    } else {
-        int bitValuesVSize = 0;
-        do {
+
+        alignContext->readShortReadsWait.wait(&alignContext->readingStatusMutex);
+
+        if (alignContext->openCL) {
+            needToWait = true; // wait while all reads are read
+        }
+        else {
             // ReadShortReadsSubTask can add new data what can lead to realloc. Noone can touch these vectors without sync
             alignContext->listM.lock();
-            bitValuesVSize = alignContext->bitValuesV.size();
-
-            isReadingStarted = alignContext->isReadingStarted;
-            isReadingFinished = alignContext->isReadingFinished;
+            int bitValuesVSize = alignContext->bitValuesV.size();
             alignContext->listM.unlock();
 
-            if (isReadingStarted && isReadingFinished) {
-                break;
-            }
-
-            alignContext->readShortReadsWait.wait(&waitDataForAligningMutex);
+            needToWait = !(isReadingStarted && bitValuesVSize-nextElementToGive >= ALIGN_DATA_SIZE);  //while (not enough reads) wait
         }
-        while (!(isReadingStarted && bitValuesVSize-nextElementToGive >= ALIGN_DATA_SIZE)); //while (not enough reads) wait
     }
+    while (needToWait);
 
     unsafeGetData(first, length);
 }
