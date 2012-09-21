@@ -369,6 +369,7 @@ void U2SequenceImporter::_addBlock2Db(const char* data, qint64 len, U2OpStatus& 
 
     bool updateLength = true;
     bool emptySequence = false;
+    bool justCreated = false;
     if (!sequenceCreated) {
         emptySequence = true;
         if (singleThread) {
@@ -379,12 +380,18 @@ void U2SequenceImporter::_addBlock2Db(const char* data, qint64 len, U2OpStatus& 
         con.dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
         CHECK_OP(os, );
         sequenceCreated = true;
+        justCreated = true;
     }
 
     QVariantMap hints;
     hints[U2SequenceDbiHints::UPDATE_SEQUENCE_LENGTH] = updateLength;
     hints[U2SequenceDbiHints::EMPTY_SEQUENCE] = emptySequence;
-    con.dbi->getSequenceDbi()->updateSequenceData(sequence.id, U2Region(sequence.length, 0), arr, hints, os);
+    U2Region reg(sequence.length, 0);
+    if (justCreated) {
+        reg.startPos = 0;
+        reg.length = 0;
+    }
+    con.dbi->getSequenceDbi()->updateSequenceData(sequence.id, reg, arr, hints, os);
     CHECK_OP(os, );
     if (committedLength == sequence.length) {
         sequence.length += len;

@@ -86,10 +86,8 @@ void SequencesToMSAWorker::sl_onTaskFinished(Task* t) {
         outPort->put( Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), qVariantFromValue(ma)) );
     }
 
-    QVariantMap emptyContext;
     SAFE_POINT(inPort->isEnded(), "Internal error. The scheme is broken", );
     if (inPort->isEnded()) {
-        outPort->setContext(emptyContext);
         outPort->setEnded();
         setDone();
     }
@@ -110,7 +108,8 @@ void SequencesToMSAWorkerFactory::init() {
 
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
-        p << new PortDescriptor(id, DataTypePtr(new MapDataType("seq2msa.seq", inM)), true /*input*/);
+        p << new PortDescriptor(id, DataTypePtr(new MapDataType("seq2msa.seq", inM)), true,
+            false, IntegralBusPort::BLIND_INPUT);
 
         QMap<Descriptor, DataTypePtr> outM;
         outM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
