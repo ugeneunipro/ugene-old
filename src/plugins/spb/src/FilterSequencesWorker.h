@@ -11,6 +11,9 @@ using namespace U2::LocalWorkflow;
 
 namespace SPB {
 
+class FullIndexComparer;
+class SequencesStorage;
+
 class FilterSequencesWorker : public BaseWorker {
     Q_OBJECT
 public:
@@ -29,7 +32,12 @@ private:
     IntegralBus *inPort2;
     IntegralBus *outPort;
 
+    double accuracy;
+    QString algoId;
     QList<SharedDbiDataHandler> sequencesToFind;
+    SequencesStorage *sequences;
+    FullIndexComparer *comparer;
+
 }; // FilterSequencesWorker
 
 class FilterSequencesWorkerFactory : public DomainFactory {
@@ -53,19 +61,16 @@ protected:
 
 class FilterSequenceTask : public Task {
 public:
-    FilterSequenceTask(const SharedDbiDataHandler &srcSeq,
-        const QList<SharedDbiDataHandler> &sequencesToFind,
-        double accuracy, const QString &algoId, WorkflowContext *ctx);
+    FilterSequenceTask(FullIndexComparer *comparer,
+        const SharedDbiDataHandler &srcSeq, WorkflowContext *ctx);
 
     virtual void run();
     virtual void cleanup();
     bool isFiltered() const;
 
 private:
+    FullIndexComparer *comparer;
     SharedDbiDataHandler srcSeq;
-    QList<SharedDbiDataHandler> sequencesToFind;
-    double accuracy;
-    QString algoId;
     WorkflowContext *ctx;
     bool result;
 }; // FilterSequenceTask

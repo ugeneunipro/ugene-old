@@ -1,3 +1,5 @@
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Designer/DelegateEditors.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -5,6 +7,7 @@
 #include <U2Lang/WorkflowEnv.h>
 
 #include "ComparingAlgorithm.h"
+#include "FullIndexComparer.h"
 #include "SpbPlugin.h"
 
 #include "FilterSequencesWorker.h"
@@ -27,9 +30,9 @@ static const QString ACCURACY_ATTR_ID("comparing-accuracy");
 /* Worker */
 /************************************************************************/
 FilterSequencesWorker::FilterSequencesWorker(Actor *a)
-: BaseWorker(a, false)
+: BaseWorker(a, false), sequences(NULL), comparer(NULL)
 {
-
+    accuracy = 0.0;
 }
 
 void FilterSequencesWorker::init() {
@@ -39,6 +42,9 @@ void FilterSequencesWorker::init() {
 
     inPort1->addComplement(outPort);
     outPort->addComplement(inPort1);
+
+    accuracy = actor->getParameter(ACCURACY_ATTR_ID)->getAttributeValue<double>(context);
+    algoId = actor->getParameter(ALGO_ATTR_ID)->getAttributeValue<QString>(context);
 }
 
 bool FilterSequencesWorker::isReady() {
@@ -68,10 +74,12 @@ Task * FilterSequencesWorker::tick() {
         QVariantMap data = m.getData().toMap();
         SharedDbiDataHandler seqId = data.value(IN_SEQ_1_SLOT_ID).value<SharedDbiDataHandler>();
 
-        double accuracy = actor->getParameter(ACCURACY_ATTR_ID)->getAttributeValue<double>(context);
-        QString algoId = actor->getParameter(ALGO_ATTR_ID)->getAttributeValue<QString>(context);
+        if (NULL == sequences) {
+            sequences = new SequencesStorage(sequencesToFind);
+            comparer = new FullIndexComparer(accuracy, *sequences, algoId);
+        }
 
-        Task *t = new FilterSequenceTask(seqId, sequencesToFind, accuracy, algoId, context);
+        Task *t = new FilterSequenceTask(comparer, seqId, context);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (inPort1->isEnded()) {
@@ -83,6 +91,8 @@ Task * FilterSequencesWorker::tick() {
 }
 
 void FilterSequencesWorker::cleanup() {
+    delete comparer;
+    delete sequences;
     sequencesToFind.clear();
 }
 
@@ -100,11 +110,9 @@ void FilterSequencesWorker::sl_taskFinished() {
 /************************************************************************/
 /* Task */
 /************************************************************************/
-FilterSequenceTask::FilterSequenceTask(const SharedDbiDataHandler &_srcSeq,
-                  const QList<SharedDbiDataHandler> &_sequencesToFind,
-                  double _accuracy, const QString &_algoId, WorkflowContext *_ctx)
-: Task("Filter sequence", TaskFlag_None), srcSeq(_srcSeq),
-sequencesToFind(_sequencesToFind), accuracy(_accuracy), algoId(_algoId),
+FilterSequenceTask::FilterSequenceTask(FullIndexComparer *_comparer,
+                   const SharedDbiDataHandler &_srcSeq, WorkflowContext *_ctx)
+: Task("Filter sequence", TaskFlag_None), comparer(_comparer), srcSeq(_srcSeq),
 ctx(_ctx), result(false)
 {
 
@@ -115,11 +123,10 @@ bool FilterSequenceTask::isFiltered() const {
 }
 
 void FilterSequenceTask::run() {
-    QScopedPointer<ComparingAlgorithm> algo(ComparingAlgorithmFactory::createAlgorithm(algoId));
-    if (NULL == algo.data()) {
-        stateInfo.setError(tr("Unknown comparing algorithm").arg(algoId));
-        cleanup();
-        return;
+    if (!comparer->getSequences().isInitialized()) {
+        comparer->getSequences().initialize(ctx->getDataStorage(), stateInfo);
+        CHECK_OP(stateInfo, );
+        comparer->initialize();
     }
 
     QScopedPointer<U2SequenceObject> srcSeqObj(
@@ -130,24 +137,11 @@ void FilterSequenceTask::run() {
         return;
     }
 
-    foreach (const SharedDbiDataHandler &seqId, sequencesToFind) {
-        QScopedPointer<U2SequenceObject> seqObj(
-            StorageUtils::getSequenceObject(ctx->getDataStorage(), seqId));
-        if (NULL == seqObj.data()) {
-            taskLog.error("SPB: NULL sequence object");
-            continue;
-        }
-        double res = algo->compare(srcSeqObj.data(), seqObj.data());
-        if (res >= accuracy) { // sequences are equal
-            result = true;
-            break;
-        }
-    }
-    cleanup();
+    result = comparer->hasSimilars(srcSeqObj->getWholeSequenceData());
 }
 
 void FilterSequenceTask::cleanup() {
-    sequencesToFind.clear();
+
 }
 
 /************************************************************************/

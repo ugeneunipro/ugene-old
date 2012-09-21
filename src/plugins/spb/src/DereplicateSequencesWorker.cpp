@@ -1,4 +1,5 @@
 #include <U2Core/FailTask.h>
+#include <U2Core/Timer.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -72,6 +73,10 @@ void DereplicateSequencesWorker::sl_taskFinished() {
     if (!t->isFinished() || t->hasError()) {
         return;
     }
+
+    quint64 timeMicSec = GTimer::currentTimeMicros() - t->getTimeInfo().startTime;
+    quint64 time = timeMicSec / (1000*1000);
+    taskLog.details(tr("Dereplication task time: %1 sec").arg(time));
 
     foreach (const SharedDbiDataHandler &seqId, t->takeResult()) {
         QVariantMap data;

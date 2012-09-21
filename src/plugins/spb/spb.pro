@@ -6,6 +6,7 @@ HEADERS += src/ComparingAlgorithm.h \
            src/DereplicationTask.h \
            src/DistanceReportWorker.h \
            src/FilterSequencesWorker.h \
+           src/FullIndexComparer.h \
            src/RandomDereplicationTask.h \
            src/SpbPlugin.h
 SOURCES += src/ComparingAlgorithm.cpp \
@@ -13,5 +14,6 @@ SOURCES += src/ComparingAlgorithm.cpp \
            src/DereplicationTask.cpp \
            src/DistanceReportWorker.cpp \
            src/FilterSequencesWorker.cpp \
+           src/FullIndexComparer.cpp \
            src/RandomDereplicationTask.cpp \
            src/SpbPlugin.cpp

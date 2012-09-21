@@ -39,13 +39,17 @@ double ComparingAlgorithm::compare(const U2SequenceObject *seq1,
 /************************************************************************/
 /* DefaultComparingAlgorithm */
 /************************************************************************/
+const int DefaultComparingAlgorithm::MIN_INDEX_WINDOW_SIZE = 8;
+
 DefaultComparingAlgorithm::DefaultComparingAlgorithm()
-: aligner(NULL)
+: aligner(NULL), accuracy(0.0), index(NULL)
 {
 
 }
+
 DefaultComparingAlgorithm::~DefaultComparingAlgorithm() {
     delete aligner;
+    delete index;
 }
 
 double DefaultComparingAlgorithm::compare(const QByteArray &seq1,
@@ -73,6 +77,46 @@ MAlignment DefaultComparingAlgorithm::align(const QByteArray &seq1, const QByteA
     }
 
     return aligner->align();
+}
+
+void DefaultComparingAlgorithm::setSeq1(const QByteArray &value, double _accuracy) {
+    seq1 = value;
+    accuracy = _accuracy;
+    createIndex();
+}
+
+void DefaultComparingAlgorithm::setSeq2(const QByteArray &value) {
+    seq2 = value;
+}
+
+double DefaultComparingAlgorithm::compare() {
+    bool found = true;
+    if (NULL != index) {
+        int found = false;
+        SArrayIndex::SAISearchContext context;
+        int w = index->getPrefixSize();
+        for (int i=0; (i <= seq2.size() - w); i++) {
+            const char *s = seq2.constData() + i;
+            if (index->find(&context, s)) {
+                found = true;
+                break;
+            }
+        }
+    }
+    if (found) {
+        return compare(seq1, seq2);
+    }
+    return accuracy - 0.01;
+}
+
+void DefaultComparingAlgorithm::createIndex() {
+    delete index; index = NULL;
+    double misCount = seq1.size() * (100.0 - accuracy) / 100.0;
+    int w = int( seq1.size() / (misCount + 1) );
+    if (w >= MIN_INDEX_WINDOW_SIZE) {
+        TaskStateInfo os;
+        index = new SArrayIndex(seq1.constData(), seq1.size(), w, os);
+    }
 }
 
 inline bool DefaultComparingAlgorithm::symbolsEqual(char c1, char c2) {
