@@ -175,7 +175,7 @@ void MSAEditorStatusWidget::sl_findNext() {
         // if s == pos.y -> search from the current base, otherwise search from the seq start
         int p = (s == pos.y()) ? pos.x() : 0; 
         for (; p < (aliLen - pat.length() + 1); p++) {
-            char c = row.chatAt(p);
+            char c = row.charAt(p);
             if (c != MAlignment_GapChar && MSAUtils::equalsIgnoreGaps(row, p, pat)) {
                 // select the result now
                 MSAEditorSelection sel(p,s, pat.length(), 1);
@@ -208,7 +208,7 @@ void MSAEditorStatusWidget::sl_findPrev() {
         //if s == pos.y -> search from the current base, otherwise search from the seq end
         int p = (s == pos.y() ? pos.x() : (aliLen - pat.length() + 1));
         while (p >=0) {
-            if (row.chatAt(p) != MAlignment_GapChar && MSAUtils::equalsIgnoreGaps(row, p, pat)) {
+            if (row.charAt(p) != MAlignment_GapChar && MSAUtils::equalsIgnoreGaps(row, p, pat)) {
                 // select the result now
                 MSAEditorSelection sel(p,s, pat.length(), 1);
                 seqArea->setSelection(sel);

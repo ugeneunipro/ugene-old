@@ -149,7 +149,7 @@ void AlignmentLogoRenderArea::evaluateHeights() {
         for (int idx = 0; idx < numRows; idx++) {
             const MAlignmentRow& row = ma.getRow(idx);
             assert(pos < ma.getLength());
-            char ch = row.chatAt(pos);
+            char ch = row.charAt(pos);
             if(acceptableChars->contains(ch)) {
                 int arrIdx = pos - settings.startPos;
                 assert(arrIdx >= 0);

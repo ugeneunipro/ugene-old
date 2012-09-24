@@ -1768,7 +1768,7 @@ QPair<QString, int> MSAEditorSequenceArea::getGappedColumnInfo() const{
     const MAlignment& msa = editor->getMSAObject()->getMAlignment();
     const MAlignmentRow& row = msa.getRow(getSelectedRows().startPos);
     int len = row.getUngappedLength();
-    QChar current = row.chatAt(selection.topLeft().x());
+    QChar current = row.charAt(selection.topLeft().x());
     if(current == MAlignment_GapChar){
         return QPair<QString, int>(QString("gap"),len);
     }else{ 

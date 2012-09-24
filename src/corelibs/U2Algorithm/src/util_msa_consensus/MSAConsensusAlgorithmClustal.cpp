@@ -46,13 +46,13 @@ char MSAConsensusAlgorithmClustal::getConsensusChar(const MAlignment& msa, int p
     if (!msa.getAlphabet()->isAmino()) {
         // for nucleic alphabet work as strict algorithm but use ' ' as default
         char  defChar = ' ';
-        char pc = msa.getRows().first().chatAt(pos);
+        char pc = msa.getRows().first().charAt(pos);
         if (pc == MAlignment_GapChar) {
             pc = defChar;
         }
         for (int s = 1, nSeq = msa.getNumRows(); s < nSeq; s++) {
             const MAlignmentRow& row = msa.getRow(s);
-            char c = row.chatAt(pos);
+            char c = row.charAt(pos);
             if (c != pc) {
                 pc = defChar;
                 break;
@@ -76,7 +76,7 @@ char MSAConsensusAlgorithmClustal::getConsensusChar(const MAlignment& msa, int p
         QByteArray currentGroup; //TODO: optimize 'currentGroup' related code!
         for (int s = 0, nSeq = msa.getNumRows(); s < nSeq; s++) {
             const MAlignmentRow& row = msa.getRow(s);
-            char c = row.chatAt(pos);
+            char c = row.charAt(pos);
             if (!currentGroup.contains(c)) {
                 currentGroup.append(c);
             }

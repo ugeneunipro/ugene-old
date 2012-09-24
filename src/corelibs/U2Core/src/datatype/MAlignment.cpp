@@ -341,8 +341,8 @@ bool MAlignmentRow::isRowContentEqual(const MAlignmentRow& row) const {
     }
     bool equal = true;
     for (int i = ngs1 + 1; i < nge1 && equal; i++) {
-        char c1 = chatAt(i);
-        char c2 = row.chatAt(i);
+        char c1 = charAt(i);
+        char c2 = row.charAt(i);
         equal = c1 ==  c2;
     }
     return equal;

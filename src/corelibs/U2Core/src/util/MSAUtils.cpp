@@ -35,10 +35,10 @@ bool MSAUtils::equalsIgnoreGaps(const MAlignmentRow& row, int startPos, const QB
     int sLen = row.getCoreEnd();
     int pLen = pat.size();
     for (int i = startPos, j = 0; i  < sLen && j < pLen; i++, j++) {
-        char c1 = row.chatAt(i);
+        char c1 = row.charAt(i);
         char c2 = pat[j];
         while(c1 == MAlignment_GapChar && ++i < sLen) {
-            c1 = row.chatAt(i);
+            c1 = row.charAt(i);
         }
         if (c1 != c2) {
             return false;

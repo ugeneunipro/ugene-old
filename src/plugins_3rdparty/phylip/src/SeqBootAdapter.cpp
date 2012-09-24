@@ -111,7 +111,7 @@ void SeqBoot::generateSequencesFromAlignment( const MAlignment& ma, const Create
     for (int k=0; k<spp; k++){
         for(int j=0; j<sites; j++) {
             const MAlignmentRow& rowK = ma.getRow(k);
-            nodep_boot[k][j] = rowK.chatAt(j);
+            nodep_boot[k][j] = rowK.charAt(j);
         }
     }
 

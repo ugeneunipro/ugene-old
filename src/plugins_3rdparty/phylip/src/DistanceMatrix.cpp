@@ -77,7 +77,7 @@ void DistanceMatrix::calculateOutOfAlignment( const MAlignment& ma, const Create
 		for (int k=0; k<spp; k++){
 			for(int j=0; j<sites; j++) {
 				const MAlignmentRow& rowK = ma.getRow(k);
-				y[k][j] = rowK.chatAt(j);
+				y[k][j] = rowK.charAt(j);
 			}
 		}
 		makeweights();
@@ -133,7 +133,7 @@ void DistanceMatrix::calculateOutOfAlignment( const MAlignment& ma, const Create
 		for (int k=0; k<spp; k++){
 			for(int j=0; j<sites; j++){
 				const MAlignmentRow& rowK = ma.getRow(k);
-				charstate = rowK.chatAt(j);
+				charstate = rowK.charAt(j);
 				switch (charstate) {
 					case 'A':
 						aa = ala;

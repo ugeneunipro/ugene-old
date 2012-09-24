@@ -55,7 +55,7 @@ int MSAEditorBaseOffsetCache::getBaseCounts(int seqNum, int aliPos, bool inclAli
     int i = 0;
     int cnt = _getBaseCounts(seqNum, aliPos, i);
     for (; i < endPos; i++) {
-        if (row.chatAt(i) != MAlignment_GapChar) {
+        if (row.charAt(i) != MAlignment_GapChar) {
             cnt++;
         }
     }

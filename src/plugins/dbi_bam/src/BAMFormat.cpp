@@ -171,13 +171,13 @@ void BAMFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
                         int end = row.getLastNonGapIdx() + 1;
                         bool gap = true;
                         for(int index = start;index < end;index++) {
-                            if(MAlignment_GapChar == row.chatAt(index)) {
+                            if(MAlignment_GapChar == row.charAt(index)) {
                                 if(!gap) {
                                     cigar.push_back(Alignment::CigarOperation(0, Alignment::CigarOperation::Deletion));
                                     gap = true;
                                 }
                             } else {
-                                sequence.push_back(row.chatAt(index));
+                                sequence.push_back(row.charAt(index));
                                 if(row.hasQuality()) {
                                     quality.push_back(DNAQuality::encode(
                                             row.getCoreQuality().getValue(index - row.getCoreStart()),

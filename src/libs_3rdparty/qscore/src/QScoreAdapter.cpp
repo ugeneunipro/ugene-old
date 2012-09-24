@@ -12,7 +12,7 @@ namespace U2 {
 
       char *sequence = new char[ma.getLength() + 1];
       for(int position = 0;position < ma.getLength();position++) {
-          sequence[position] = aseq.chatAt(position);
+          sequence[position] = aseq.charAt(position);
       }
       sequence[ma.getLength()] = '\0';
 

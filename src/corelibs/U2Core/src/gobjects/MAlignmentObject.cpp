@@ -169,7 +169,7 @@ int MAlignmentObject::deleteGap(int pos, int maxGaps) {
     foreach(const MAlignmentRow& row, msa.getRows()) {
         int nGaps = 0;
         for (int i = pos; i < pos + max; i++, nGaps++) {
-            if (row.chatAt(i) != MAlignment_GapChar) { 
+            if (row.charAt(i) != MAlignment_GapChar) { 
                 break;
             }
         }
@@ -389,7 +389,7 @@ bool MAlignmentObject::isRegionEmpty(int startPos, int startRow, int numChars, i
     for (int row = startRow; row < startRow + numRows; ++row ) {
         for( int pos = startPos; pos < startPos + numChars; ++pos ) {
             const MAlignmentRow& r = msa.getRows().at(row);
-            if (r.chatAt(pos) != MAlignment_GapChar) {
+            if (r.charAt(pos) != MAlignment_GapChar) {
                 emptyBlock = false;
                 break;
             }

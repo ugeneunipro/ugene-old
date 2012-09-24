@@ -426,7 +426,7 @@ static void addSequenceToMSA(MAlignment& ma, const QByteArray& path, QByteArray&
                         }
                     } while (insCoordsPos == prevInsCoordsPos+1);
                 } 
-                newSeq.append(row.chatAt(seqPos));
+                newSeq.append(row.charAt(seqPos));
                 if (i == 0) {
                     msaPathChangesNew.append(msaPathChanges[seqPos]);
                 }

@@ -84,7 +84,7 @@ public:
     void setQuality(const DNAQuality& quality);
 
     // Returns symbol in the specified position
-    inline char chatAt(int pos) const;
+    inline char charAt(int pos) const;
 
     // Compares 2 rows. Rows are equal if their offsets, packed and names are equal
     inline bool operator!=(const MAlignmentRow& r) const;
@@ -314,11 +314,11 @@ private:
 
 inline char MAlignment::charAt(int seqNum, int pos) const {
     const MAlignmentRow& mai = rows[seqNum];
-    char c = mai.chatAt(pos);
+    char c = mai.charAt(pos);
     return c;
 }
 
-inline char MAlignmentRow::chatAt(int pos) const {
+inline char MAlignmentRow::charAt(int pos) const {
     int seqPos = pos - offset;
     if (seqPos < 0 || seqPos >= sequence.size()) {
         return MAlignment_GapChar;

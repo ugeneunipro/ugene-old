@@ -74,15 +74,15 @@ QVector<PositionStats> SiteconAlgorithm::calculateDispersionAndAverage(const MAl
         foreach(DiPropertySitecon* p, props) { // for every property
             float average = 0; //average in a column
             foreach(const MAlignmentRow& row, ma.getRows()) { // collect di-position stat for all sequence in alignment
-                average+=p->getOriginal(row.chatAt(i), row.chatAt(i+1));
+                average+=p->getOriginal(row.charAt(i), row.charAt(i+1));
             }
             average/=N;
 
             float dispersion = 0; // dispersion in a column
             for (int j = 0; j < ma.getNumRows(); j++) {// collect di-position stat for all sequence in alignment
                 const MAlignmentRow& row = ma.getRow(j);
-                char c1 = row.chatAt(i);
-                char c2 = row.chatAt(i+1);
+                char c1 = row.charAt(i);
+                char c2 = row.charAt(i+1);
                 float v = p->getOriginal(c1, c2);
                 dispersion+=(average - v)*(average - v);
             }
@@ -252,7 +252,7 @@ void SiteconAlgorithm::calculateACGTContent(const MAlignment& ma, SiteconBuildSe
     int total = ma.getNumRows() * ma.getLength();
     foreach(const MAlignmentRow& row, ma.getRows()) {
 		for (int i=0; i < maLen; i++) {
-            char c = row.chatAt(i);
+            char c = row.charAt(i);
             if (c == 'A') {
                 bs.acgtContent[0]++;
             } else if (c == 'C') {

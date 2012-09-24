@@ -273,7 +273,7 @@ void DNAStatMSAProfileTask::computeStats() {
         cs.consChar = MAlignment_GapChar;
         for (int i = 0; i< s.ma.getNumRows(); i++) {
             const MAlignmentRow& row = s.ma.getRow(i);
-            char c = row.chatAt(pos);
+            char c = row.charAt(pos);
             unusedChars.remove(c);
             int idx = char2index.value(c);
             int v = ++cs.charFreqs[idx];
