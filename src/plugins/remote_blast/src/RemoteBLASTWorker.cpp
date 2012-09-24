@@ -98,7 +98,7 @@ void RemoteBLASTWorkerFactory::init() {
     {
         QVariantMap m;
         m["minimum"] = 1;
-        m["maximum"] = 500;
+        m["maximum"] = 5000;
         delegates[MAX_HITS] = new SpinBoxDelegate(m);
     }
 
