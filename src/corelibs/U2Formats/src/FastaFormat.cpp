@@ -163,7 +163,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             }while(buff[0] == fastaCommentStartChar && len > 0);
         }
 
-        if (len == 0) { //end if stream
+        if (len == 0 && io->isEof()) { //end if stream
             break;
         }
         CHECK_EXT(lineOk, os.setError(FastaFormat::tr("Line is too long")), ); 
@@ -187,16 +187,21 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         }
         int sequenceLen = 0;
         while (!os.isCoR()) {
-            len = io->readLine(buff, READ_BUFF_SIZE);
-            if (len <= 0) {
+            do{
+                len = io->readLine(buff, READ_BUFF_SIZE);
+            }while(len <= 0 && !io->isEof());
+
+            if (len <= 0 && io->isEof()) {
                 break;
             }
-            len = TextUtils::remove(buff, len, TextUtils::WHITES);
             buff[len] = 0;
 
             if(buff[0] != fastaCommentStartChar && buff[0] != fastaHeaderStartChar){
-                seqImporter.addBlock(buff, len, os);
-                sequenceLen += len;
+                len = TextUtils::remove(buff, len, TextUtils::WHITES);
+                if(len > 0){
+                    seqImporter.addBlock(buff, len, os);
+                    sequenceLen += len;
+                }
             }else if( buff[0] == fastaHeaderStartChar){
                 headerReaded = true;
                 break;
