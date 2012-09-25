@@ -372,6 +372,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0001_1);
     REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0001_2);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0002_2);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0003_1);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0003_2);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations

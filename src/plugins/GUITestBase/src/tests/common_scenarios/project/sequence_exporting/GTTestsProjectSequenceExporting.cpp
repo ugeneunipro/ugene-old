@@ -262,7 +262,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     Runnable *filler = new CreateDocumentFiller(os,
-        "ACGTGTGTGTACGACAGACGACAGCAGACGACAGACAGACAGACAGCAAGAGAGAGAGAG",
+        "ACGTGTGTGTACGACAGACGACAGCAGACGACAGACAGACAGACAGCAAGAGAGAGAGAG", true,
+        CreateDocumentFiller::StandardRNA, 
         testDir + "_common_data/scenarios/sandbox/",
         CreateDocumentFiller::Genbank,
         "Sequence", false

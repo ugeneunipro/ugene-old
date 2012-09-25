@@ -29,17 +29,22 @@ namespace U2 {
     class CreateDocumentFiller : public Filler {
     public:
         enum documentFormat {FASTA, Genbank};
-        CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, const QString &_documentLocation,
-                             documentFormat _format, const QString &_sequenceName, bool saveFile = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+        enum documentAlphabet {StandardDNA, StandardRNA, ExtendedDNA, ExtendedRNA, StandardAmino, AllSymbols};
+
+        CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool customSettings, documentAlphabet _alphabet, const QString &_documentLocation,
+                             documentFormat _format, const QString &_sequenceName, bool saveFile, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
-        QString documentLocation;
+
         QString pasteDataHere;
-        QString sequenceName;
+        bool customSettings;
+        documentAlphabet alphabet;
+        QMap<documentAlphabet, QString> comboBoxAlphabetItems;
+        QString documentLocation;
         documentFormat format;
         QMap<documentFormat, QString> comboBoxItems;
+        QString sequenceName;
         bool saveFile;
-
         GTGlobals::UseMethod useMethod;
     };
 
