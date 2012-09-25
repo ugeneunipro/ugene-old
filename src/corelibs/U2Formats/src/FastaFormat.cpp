@@ -102,7 +102,7 @@ FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUr
     int n = TextUtils::skip(TextUtils::WHITES, data, size);
     int newSize = size - n;
     const char* newData = data + n;
-    if (newSize <= 0 || newData[0] != '>' ) {
+    if (newSize <= 0 || (newData[0] != '>' && newData[0] != ';') ) {
         return FormatDetection_NotMatched;
     }
     bool hasBinaryBlocks = TextUtils::contains(TextUtils::BINARY, data, size);
@@ -124,6 +124,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
     static char fastaHeaderStartChar = '>';
+    static char fastaCommentStartChar = ';';
     static QBitArray fastaHeaderStart = TextUtils::createBitMap(fastaHeaderStartChar);
 
     writeLockReason.clear();
@@ -152,9 +153,16 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     qint64 sequenceStart = 0;
     int sequenceNumber = 0;
     DbiConnection con(dbiRef, os);
+    bool headerReaded = false;
+    
     while (!os.isCoR()) {
-        //read header
-        len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+        //skip start comments and read header
+        if(!headerReaded){
+            do{
+                len = io->readLine(buff, READ_BUFF_SIZE);
+            }while(buff[0] == fastaCommentStartChar && len > 0);
+        }
+
         if (len == 0) { //end if stream
             break;
         }
@@ -179,15 +187,21 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         }
         int sequenceLen = 0;
         while (!os.isCoR()) {
-            len = io->readUntil(buff, READ_BUFF_SIZE, fastaHeaderStart, IOAdapter::Term_Exclude);
+            len = io->readLine(buff, READ_BUFF_SIZE);
             if (len <= 0) {
                 break;
             }
             len = TextUtils::remove(buff, len, TextUtils::WHITES);
             buff[len] = 0;
 
-            seqImporter.addBlock(buff, len, os);
-            sequenceLen += len;
+            if(buff[0] != fastaCommentStartChar && buff[0] != fastaHeaderStartChar){
+                seqImporter.addBlock(buff, len, os);
+                sequenceLen += len;
+            }else if( buff[0] == fastaHeaderStartChar){
+                headerReaded = true;
+                break;
+            }
+
             CHECK_OP(os, );
             os.setProgress(io->getProgress());
         } 
