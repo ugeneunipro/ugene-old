@@ -113,6 +113,7 @@ protected slots:
     void sl_resetZoom(); 
     void sl_buildTree();
     void sl_openTree();
+    void sl_align();
     
 protected:
     virtual QWidget* createWidget();
@@ -150,6 +151,7 @@ private:
     QAction*          buildTreeAction;
     QAction*          saveScreenshotAction;
     QAction*          saveSvgAction;
+    QAction*          alignAction;
 
     CreatePhyTreeSettings settings;
     PhyTreeGeneratorLauncherTask* treeGeneratorTask;

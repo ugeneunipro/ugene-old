@@ -361,6 +361,7 @@ void MSAEditor::buildStaticToolbar(QToolBar* tb) {
     tb->addAction(changeFontAction);
     tb->addAction(buildTreeAction);
     tb->addAction(saveScreenshotAction);
+    tb->addAction(alignAction);
     GObjectView::buildStaticToolbar(tb);
 }
 
@@ -459,6 +460,10 @@ QWidget* MSAEditor::createWidget() {
     saveSvgAction->setObjectName("Export as SVG");
     connect(saveSvgAction, SIGNAL(triggered()), ui, SLOT(sl_saveSvgImage()));
 
+    alignAction = new QAction(QIcon(":core/images/align.png"), tr("Align"), this);
+    alignAction->setObjectName("Align");
+    connect(alignAction, SIGNAL(triggered()), this, SLOT(sl_align()));
+
     initDragAndDropSupport();
     return ui;
 }
@@ -541,6 +546,28 @@ void MSAEditor::initDragAndDropSupport()
     assert(ui!= NULL);
     ui->setAcceptDrops(true);
     ui->installEventFilter(this);
+}
+
+void MSAEditor::sl_align(){
+    QMenu m, *mm;
+
+    addLoadMenu(&m);
+    addCopyMenu(&m);
+    addEditMenu(&m);
+    addAlignMenu(&m);
+    addTreeMenu(&m);
+    addStatisticsMenu(&m);
+    addViewMenu(&m);
+    addExportMenu(&m);
+    addAdvancedMenu(&m);
+
+    emit si_buildPopupMenu(this, &m);
+
+    GUIUtils::disableEmptySubmenus(&m);
+
+    mm = GUIUtils::findSubMenu(&m, MSAE_MENU_ALIGN);
+
+    mm->exec(QCursor::pos());
 }
 
 //////////////////////////////////////////////////////////////////////////
