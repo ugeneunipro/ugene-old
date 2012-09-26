@@ -35,7 +35,6 @@
 #include <U2Gui/AppSettingsGUI.h>
 
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
-#include <U2Algorithm/DnaAssemblyMultiTask.h>
 
 #include "DnaAssemblyDialog.h"
 #include "DnaAssemblyGUIExtension.h"
@@ -215,13 +214,19 @@ const GUrl DnaAssemblyDialog::getRefSeqUrl() {
     return refSeqEdit->text();
 }
 
-const QList<GUrl> DnaAssemblyDialog::getShortReadUrls() {
-    QList<GUrl> urls;
+const QList<ShortReadSet> DnaAssemblyDialog::getShortReadSets()
+{
+    QList<ShortReadSet> sets;
+
     int numItems = shortReadsTable->topLevelItemCount();
+
     for( int i =0; i < numItems; ++i) {
-        urls.append(shortReadsTable->topLevelItem(i)->data(0,0).toString());
+        ShortReadsTableItem* item = static_cast<ShortReadsTableItem*> ( shortReadsTable->topLevelItem(i) );
+        sets.append( ShortReadSet(item->getUrl(), item->getType(), item->getOrder()));
+
     }
-    return urls;
+    return sets;
+
 }
 
 const QString DnaAssemblyDialog::getAlgorithmName() {
@@ -385,10 +390,7 @@ void DnaAssemblyGUIUtils::runAssembly2ReferenceDialog(const QStringList& shortRe
         s.algName = dlg.getAlgorithmName();
         s.resultFileName = dlg.getResultFileName();
         s.setCustomSettings( dlg.getCustomSettings() );
-        QList<GUrl> urls = dlg.getShortReadUrls();
-        foreach(const GUrl& url, urls) {
-            s.shortReadSets.append(url);
-        }
+        s.shortReadSets = dlg.getShortReadSets();
         s.prebuiltIndex = dlg.isPrebuiltIndex();
         s.openView = true;
         Task* assemblyTask = new DnaAssemblyMultiTask(s, true);
@@ -409,6 +411,21 @@ ShortReadsTableItem::ShortReadsTableItem(QTreeWidget *treeWidget, const QString 
     setData(0, 0, url);
 
     updateState();
+}
+
+GUrl ShortReadsTableItem::getUrl() const
+{
+    return data(0,0).toString();
+}
+
+ShortReadSet::ShortReadsType ShortReadsTableItem::getType() const
+{
+    return readTypeBox->currentText() == READS_TYPE_PAIRED ? ShortReadSet::PairedEndReads : ShortReadSet::SingleEndReads;
+}
+
+ShortReadSet::MateOrder ShortReadsTableItem::getOrder() const
+{
+    return mateTypeBox->currentText() == MATE_DOWNSTREAM ? ShortReadSet::DownstreamMate : ShortReadSet::UpstreamMate;
 }
 
 void ShortReadsTableItem::addItemToTable(ShortReadsTableItem *item, QTreeWidget *treeWidget)

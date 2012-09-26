@@ -40,14 +40,14 @@ public:
     };
 
     enum MateOrder {
-        UpstreamMate, DownstreaMate
+        UpstreamMate, DownstreamMate
     };
 
     GUrl url;
     ShortReadsType type;
     MateOrder order;
     ShortReadSet(const GUrl& _url) : url(_url), type(SingleEndReads), order(UpstreamMate) {}
-
+    ShortReadSet(const GUrl& _url, ShortReadsType t, MateOrder m) : url(_url), type(t), order(m) {}
 
 };
 

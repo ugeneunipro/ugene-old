@@ -29,6 +29,8 @@
 #include <QtCore/QVariant>
 #include <QtCore/QStringList>
 
+#include <U2Algorithm/DnaAssemblyMultiTask.h>
+
 
 namespace U2 {
 
@@ -46,6 +48,10 @@ private:
 
 public:
     ShortReadsTableItem(QTreeWidget* widget, const QString url);
+    GUrl getUrl() const;
+    ShortReadSet::ShortReadsType getType() const;
+    ShortReadSet::MateOrder getOrder() const;
+
     static void addItemToTable(ShortReadsTableItem* item, QTreeWidget* treeWidget);
 };
 
@@ -56,7 +62,7 @@ class DnaAssemblyDialog : public QDialog, private Ui::AssemblyToRefDialog {
 public:
     DnaAssemblyDialog(QWidget* p = NULL, const QStringList& shortReadsUrls = QStringList(), const QString& refSeqUrl = QString());
     const GUrl getRefSeqUrl();
-    const QList<GUrl> getShortReadUrls();
+    const QList<ShortReadSet> getShortReadSets();
     const QString getAlgorithmName();
     const QString getResultFileName();
     bool isPrebuiltIndex() const;
