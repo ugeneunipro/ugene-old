@@ -47,12 +47,10 @@ QString DnaAssemblyDialog::methodName;
 bool DnaAssemblyDialog::prebuiltIndex = false;
 bool DnaAssemblyDialog::samOutput = false;
 
-#define READS_TYPE_PAIRED   "Paired-end"
-#define READS_TYPE_SINGLE   "Single-end"
-
-#define MATE_               "None"
-#define MATE_UPSTREAM       "Upstream"
-#define MATE_DOWNSTREAM     "Downstream"
+#define LIBRARY_TYPE_PAIRED     "Paired-end"
+#define LIBRARY_TYPE_SINGLE     "Single-end"
+#define MATE_UPSTREAM           "Upstream"
+#define MATE_DOWNSTREAM         "Downstream"
 
 DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUrls, const QString& refSeqUrl)
 : QDialog(p), assemblyRegistry(AppContext::getDnaAssemblyAlgRegistry()), customGUI(NULL)
@@ -72,7 +70,13 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
             methodNamesBox->setCurrentIndex(res);
         }
     }
+    
     shortReadsTable->installEventFilter(this);
+    QHeaderView* header = shortReadsTable->header();
+    header->setClickable( false );
+    header->setStretchLastSection( false );
+    header->setResizeMode( 0, QHeaderView::Stretch );
+
     prebuiltIndexCheckBox->setChecked(prebuiltIndex);
     sl_onAlgorithmChanged(methodNamesBox->currentText());
     sl_onPrebuiltIndexBoxClicked();
@@ -83,6 +87,7 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
     connect(methodNamesBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_onAlgorithmChanged(const QString &)));
     connect(prebuiltIndexCheckBox, SIGNAL(clicked()), SLOT(sl_onPrebuiltIndexBoxClicked()));
     connect(samBox, SIGNAL(clicked()), SLOT(sl_onSamBoxClicked()));
+    connect(libraryComboBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_onLibraryTypeChanged()));
     
     QString activeRefSeqUrl = refSeqUrl.isEmpty() ? lastRefSeqUrl : refSeqUrl;
     if (!activeRefSeqUrl.isEmpty()) {
@@ -103,7 +108,10 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
     }*/
 
 	/*
-	//HACK for testing UGENE-1092
+
+    //TODO Delete this crap after 01.11.2012
+	
+    //HACK for testing UGENE-1092
 	refSeqEdit->setText("W:/chrY-trunc.fa");
 	samBox->setChecked(true);
 	sl_onSamBoxClicked();
@@ -138,6 +146,7 @@ void DnaAssemblyDialog::sl_onAddShortReadsButtonClicked() {
 
     foreach(const QString& f, fileNames) {
         ShortReadsTableItem* item = new ShortReadsTableItem(shortReadsTable, f);
+        item->setLibraryType( libraryComboBox->currentIndex() == 0 ? LIBRARY_TYPE_SINGLE : LIBRARY_TYPE_PAIRED);
         ShortReadsTableItem::addItemToTable(item, shortReadsTable);
     }
 
@@ -312,6 +321,14 @@ void DnaAssemblyDialog::addGuiExtension() {
     
     // insert new extension widget
     DnaAssemblyAlgorithmEnv* env = assemblyRegistry->getAlgorithm(methodNamesBox->currentText());
+    
+    if (!env->supportsPairedEndLibrary()) {
+        libraryComboBox->setEnabled(false);
+        libraryComboBox->setCurrentIndex(0);
+    } else {
+        libraryComboBox->setEnabled(true);
+    }
+    
     if (NULL == env) {
         adjustSize();
         return;
@@ -381,6 +398,15 @@ bool DnaAssemblyDialog::eventFilter( QObject * obj, QEvent * event ) {
     }
 }
 
+void DnaAssemblyDialog::sl_onLibraryTypeChanged()
+{
+    int count = shortReadsTable->topLevelItemCount();
+    for (int i = 0; i < count; ++i) {
+        ShortReadsTableItem* item = static_cast<ShortReadsTableItem*> (shortReadsTable->topLevelItem(i));
+        item->setLibraryType( libraryComboBox->currentIndex() == 0 ? LIBRARY_TYPE_SINGLE : LIBRARY_TYPE_PAIRED );
+    }
+}
+
 void DnaAssemblyGUIUtils::runAssembly2ReferenceDialog(const QStringList& shortReadUrls, const QString& refSeqUrl) {
     DnaAssemblyDialog dlg(QApplication::activeWindow(), shortReadUrls, refSeqUrl);
     if (dlg.exec()) {
@@ -398,19 +424,15 @@ void DnaAssemblyGUIUtils::runAssembly2ReferenceDialog(const QStringList& shortRe
     }
 }
 
-ShortReadsTableItem::ShortReadsTableItem(QTreeWidget *treeWidget, const QString url) : QTreeWidgetItem(treeWidget)
+ShortReadsTableItem::ShortReadsTableItem(QTreeWidget *treeWidget, const QString& url) : QTreeWidgetItem(treeWidget)
 {
-    readTypeBox = new QComboBox(treeWidget);
-    readTypeBox->addItem(READS_TYPE_SINGLE);
-    readTypeBox->addItem(READS_TYPE_PAIRED);
-
+  
     mateTypeBox = new QComboBox(treeWidget);
     mateTypeBox->addItem(MATE_UPSTREAM);
     mateTypeBox->addItem(MATE_DOWNSTREAM);
 
     setData(0, 0, url);
-
-    updateState();
+    setData(1, 0, LIBRARY_TYPE_SINGLE);
 }
 
 GUrl ShortReadsTableItem::getUrl() const
@@ -418,9 +440,9 @@ GUrl ShortReadsTableItem::getUrl() const
     return data(0,0).toString();
 }
 
-ShortReadSet::ShortReadsType ShortReadsTableItem::getType() const
+ShortReadSet::LibraryType ShortReadsTableItem::getType() const
 {
-    return readTypeBox->currentText() == READS_TYPE_PAIRED ? ShortReadSet::PairedEndReads : ShortReadSet::SingleEndReads;
+    return data(1,0).toString() == LIBRARY_TYPE_PAIRED ? ShortReadSet::PairedEndReads : ShortReadSet::SingleEndReads;
 }
 
 ShortReadSet::MateOrder ShortReadsTableItem::getOrder() const
@@ -431,13 +453,20 @@ ShortReadSet::MateOrder ShortReadsTableItem::getOrder() const
 void ShortReadsTableItem::addItemToTable(ShortReadsTableItem *item, QTreeWidget *treeWidget)
 {
     treeWidget->addTopLevelItem(item);
-    treeWidget->setItemWidget(item,1,item->readTypeBox);
     treeWidget->setItemWidget(item,2,item->mateTypeBox);
 }
 
-void ShortReadsTableItem::updateState()
+void ShortReadsTableItem::setLibraryType( const QString& libraryType )
 {
-    mateTypeBox->setEnabled(readTypeBox->currentText() == READS_TYPE_PAIRED);
+    setData(1,0, libraryType);
+    if (libraryType == LIBRARY_TYPE_SINGLE) {
+        mateTypeBox->setCurrentIndex(0);
+        mateTypeBox->setEnabled(false);
+    } else {
+        mateTypeBox->setEnabled(true);
+    }
 }
+
+
 
 } // U2

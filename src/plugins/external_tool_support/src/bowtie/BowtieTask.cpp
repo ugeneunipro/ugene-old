@@ -135,15 +135,21 @@ bool BowtieAssembleTask::isHaveResults()const {
 }
 
 void BowtieAssembleTask::prepare() {
-    if(settings.indexFileName.isEmpty()) {
-        if(settings.prebuiltIndex) {
-            settings.indexFileName = settings.refSeqUrl.dirPath() + "/" + settings.refSeqUrl.baseFileName();
-        } else {
-            settings.indexFileName = settings.resultFileName.dirPath() + "/" + settings.resultFileName.baseFileName();
-        }
-    }
     {
         QString indexSuffixes[] = {".1.ebwt", ".2.ebwt", ".3.ebwt", ".4.ebwt", ".rev.1.ebwt", ".rev.2.ebwt" };
+
+        if(settings.indexFileName.isEmpty()) {
+            if(settings.prebuiltIndex) {
+                QString indexName = QFileInfo(settings.refSeqUrl.getURLString()).fileName();
+                for (int i = 0; i < 6; ++i) {
+                    indexName.remove(indexSuffixes[i]);
+                }
+                settings.indexFileName = settings.refSeqUrl.dirPath() + "/" + indexName;
+            } else {
+                settings.indexFileName = settings.resultFileName.dirPath() + "/" + settings.resultFileName.baseFileName();
+            }
+        }
+
         for(int i=0; i < 6; i++) {
             QFileInfo file(settings.indexFileName + indexSuffixes[i]);
             if(!file.exists()) {
@@ -215,8 +221,7 @@ void BowtieAssembleTask::prepare() {
         arguments.append(QString::number(threads));
     }
 
-    // TODO: improve format detection!!!!
-
+    // We assume all datasets have the same format
     if(!settings.shortReadSets.isEmpty())
     {
         QList<GUrl> shortReadUrls = settings.getShortReadUrls();
@@ -226,20 +231,50 @@ void BowtieAssembleTask::prepare() {
                 arguments.append("-f");
             } else if(detectionResults.first().format->getFormatId() == BaseDocumentFormats::RAW_DNA_SEQUENCE) {
                 arguments.append("-r");
+            } else if (detectionResults.first().format->getFormatId() != BaseDocumentFormats::FASTQ) {
+                setError(tr("Unknown short reads format %1").arg(detectionResults.first().format->getFormatId()));
             }
         }
+    } else {
+        setError("Short read list is empty!");
+        return;
     }
     arguments.append("-S");
     arguments.append(settings.indexFileName);
     {
-        QString readUrlsArgument;
-        for(int index = 0;index < settings.shortReadSets.size();index++) {
-            if(0 != index) {
-                readUrlsArgument.append(",");
+        // we assume that all datasets have same library type
+        ShortReadSet::LibraryType libType = settings.shortReadSets.at(0).type;
+        int setCount = settings.shortReadSets.size();
+        
+        if (libType == ShortReadSet::SingleEndReads ) {
+            QStringList readUrlsArgument;
+            for(int index = 0;index < setCount;index++) {
+                readUrlsArgument.append(settings.shortReadSets[index].url.getURLString());
             }
-            readUrlsArgument.append(settings.shortReadSets[index].url.getURLString());
+            arguments.append(readUrlsArgument.join(","));
+        } else {
+            
+            QStringList upstreamReads,downstreamReads;
+            
+            for ( int i = 0; i<setCount; ++i) {
+                const ShortReadSet& set = settings.shortReadSets.at(i);
+                if (set.order == ShortReadSet::UpstreamMate) {
+                    upstreamReads.append(set.url.getURLString());
+                } else {
+                    downstreamReads.append(set.url.getURLString());
+                }
+            } 
+
+            if ( upstreamReads.count() != downstreamReads.count() ) {
+                setError("Unequal number of upstream and downstream reads!");
+                return;
+            }
+
+            arguments.append("-1");
+            arguments.append(upstreamReads.join(","));
+            arguments.append("-2");
+            arguments.append(downstreamReads.join(","));
         }
-        arguments.append(readUrlsArgument);
     }
     arguments.append(settings.resultFileName.getURLString());
     ExternalToolRunTask *task = new ExternalToolRunTask(BOWTIE_TOOL_NAME, arguments, &logParser);

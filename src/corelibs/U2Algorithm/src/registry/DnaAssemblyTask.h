@@ -35,7 +35,7 @@ class Document;
 
 class U2ALGORITHM_EXPORT ShortReadSet {
 public:
-    enum ShortReadsType {
+    enum LibraryType {
         SingleEndReads, PairedEndReads
     };
 
@@ -44,10 +44,10 @@ public:
     };
 
     GUrl url;
-    ShortReadsType type;
+    LibraryType type;
     MateOrder order;
     ShortReadSet(const GUrl& _url) : url(_url), type(SingleEndReads), order(UpstreamMate) {}
-    ShortReadSet(const GUrl& _url, ShortReadsType t, MateOrder m) : url(_url), type(t), order(m) {}
+    ShortReadSet(const GUrl& _url, LibraryType t, MateOrder m) : url(_url), type(t), order(m) {}
 
 };
 
@@ -63,7 +63,6 @@ public:
     QList<GUrl> getShortReadUrls() const;
 
 public:
-    QList<DNASequence> shortReads;
     QList<ShortReadSet> shortReadSets;
     GUrl refSeqUrl;
     GUrl resultFileName;

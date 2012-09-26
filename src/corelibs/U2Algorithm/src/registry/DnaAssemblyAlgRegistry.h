@@ -58,13 +58,15 @@ private:
 class U2ALGORITHM_EXPORT DnaAssemblyAlgorithmEnv {
 public:
     DnaAssemblyAlgorithmEnv(const QString& id, DnaAssemblyToRefTaskFactory* tf , 
-        DnaAssemblyGUIExtensionsFactory* guiExt, bool supportsIndexFiles, bool supportsDbi);
+        DnaAssemblyGUIExtensionsFactory* guiExt, bool supportsIndexFiles, bool supportsDbi,
+        bool supportsPairedEndLibrary = false);
 
     virtual ~DnaAssemblyAlgorithmEnv();
     
     const QString& getId()  const {return id;}
     bool isIndexFilesSupported() const {return supportsIndexFiles;}
     bool isDbiSupported() const {return supportsDbi;}
+    bool supportsPairedEndLibrary() const { return supportsPEReads; }
     
     DnaAssemblyToRefTaskFactory* getTaskFactory() const {return taskFactory;}
     DnaAssemblyGUIExtensionsFactory* getGUIExtFactory() const {return guiExtFactory;}
@@ -78,6 +80,7 @@ protected:
     DnaAssemblyGUIExtensionsFactory* guiExtFactory;
     bool supportsIndexFiles;
     bool supportsDbi;
+    bool supportsPEReads;
 };
 
 } // namespace

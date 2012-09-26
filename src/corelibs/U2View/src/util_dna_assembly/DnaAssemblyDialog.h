@@ -40,17 +40,18 @@ class DnaAssemblyAlgorithmMainWidget;
 
 class ShortReadsTableItem : public QTreeWidgetItem {
 
-    QComboBox* readTypeBox;
     QComboBox* mateTypeBox;
 
 private:
     void updateState();
 
 public:
-    ShortReadsTableItem(QTreeWidget* widget, const QString url);
+    ShortReadsTableItem(QTreeWidget* widget, const QString& url);
     GUrl getUrl() const;
-    ShortReadSet::ShortReadsType getType() const;
+    ShortReadSet::LibraryType getType() const;
     ShortReadSet::MateOrder getOrder() const;
+    void setLibraryType(const QString& libraryType);
+    
 
     static void addItemToTable(ShortReadsTableItem* item, QTreeWidget* treeWidget);
 };
@@ -80,6 +81,7 @@ private slots:
     void sl_onAlgorithmChanged(const QString &text);
     void sl_onPrebuiltIndexBoxClicked();
     void sl_onSamBoxClicked();
+    void sl_onLibraryTypeChanged();
 
 private:
     void updateState();
