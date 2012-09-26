@@ -96,7 +96,8 @@ call %INSTALL_DIR%/copy_plugin.cmd assembly_browser
 call %INSTALL_DIR%/copy_plugin.cmd expert_discovery
 call %INSTALL_DIR%/copy_plugin.cmd ptools
 call %INSTALL_DIR%/copy_plugin.cmd dna_flexibility
-
+call %INSTALL_DIR%/copy_plugin.cmd spb
+call %INSTALL_DIR%/copy_plugin.cmd variants
 
 
 cd %INSTALL_DIR%
