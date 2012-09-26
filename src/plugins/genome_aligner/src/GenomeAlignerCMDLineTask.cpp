@@ -152,7 +152,9 @@ void GenomeAlignerCMDLineTask::prepare()
     }
     
     settings.resultFileName = resultPath;
-    settings.shortReadUrls = shortReadUrls;
+    foreach (const GUrl& url, shortReadUrls ) {
+        settings.shortReadSets.append(url);
+    }
     settings.refSeqUrl = refPath;
     settings.indexFileName = indexPath;
     settings.openView = false;

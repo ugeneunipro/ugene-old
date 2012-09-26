@@ -219,11 +219,11 @@ void BwaTask::prepare() {
         buildIndexTask = new BwaBuildIndexTask(settings.refSeqUrl.getURLString(), indexFileName, settings);
     }
     if(!justBuildIndex) {
-        if(settings.shortReadUrls.size() > 1) {
+        if(settings.shortReadSets.size() > 1) {
             setError(tr("Multiple read files are not supported"));
             return;
         }
-        assembleTask = new BwaAssembleTask(indexFileName, settings.shortReadUrls.first().getURLString(), settings.resultFileName.getURLString(), settings);
+        assembleTask = new BwaAssembleTask(indexFileName, settings.shortReadSets.first().url.getURLString(), settings.resultFileName.getURLString(), settings);
     }
 
     if(!settings.prebuiltIndex) {

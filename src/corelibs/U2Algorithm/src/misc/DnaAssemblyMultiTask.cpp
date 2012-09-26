@@ -38,7 +38,7 @@ namespace U2 {
 
 DnaAssemblyMultiTask::DnaAssemblyMultiTask( const DnaAssemblyToRefTaskSettings& s, bool view, bool _justBuildIndex )
 : Task("DnaAssemblyMultiTask", TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), settings(s),
-assemblyToRefTask(NULL), shortReadUrls(s.shortReadUrls), openView(view), justBuildIndex(_justBuildIndex)
+assemblyToRefTask(NULL), shortReadSets(s.shortReadSets), openView(view), justBuildIndex(_justBuildIndex)
 {
 
 }

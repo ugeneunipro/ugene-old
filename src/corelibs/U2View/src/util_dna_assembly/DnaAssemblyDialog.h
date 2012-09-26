@@ -35,6 +35,21 @@ namespace U2 {
 class DnaAssemblyAlgRegistry;
 class DnaAssemblyAlgorithmMainWidget;
 
+
+class ShortReadsTableItem : public QTreeWidgetItem {
+
+    QComboBox* readTypeBox;
+    QComboBox* mateTypeBox;
+
+private:
+    void updateState();
+
+public:
+    ShortReadsTableItem(QTreeWidget* widget, const QString url);
+    static void addItemToTable(ShortReadsTableItem* item, QTreeWidget* treeWidget);
+};
+
+
 class DnaAssemblyDialog : public QDialog, private Ui::AssemblyToRefDialog {
     Q_OBJECT
 

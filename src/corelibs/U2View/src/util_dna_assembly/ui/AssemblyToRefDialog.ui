@@ -154,16 +154,22 @@
     </widget>
    </item>
    <item>
-    <widget class="QListWidget" name="shortReadsList">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="toolTip">
-      <string>Add short reads here. &lt;b&gt;At least one read&lt;/b&gt; should be presented.</string>
-     </property>
+    <widget class="QTreeWidget" name="shortReadsTable">
+     <column>
+      <property name="text">
+       <string>Path</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Type</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Order</string>
+      </property>
+     </column>
     </widget>
    </item>
    <item>

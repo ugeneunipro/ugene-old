@@ -214,9 +214,13 @@ void BowtieAssembleTask::prepare() {
         arguments.append(QString("--threads"));
         arguments.append(QString::number(threads));
     }
-    if(!settings.shortReadUrls.isEmpty())
+
+    // TODO: improve format detection!!!!
+
+    if(!settings.shortReadSets.isEmpty())
     {
-        QList<FormatDetectionResult> detectionResults = DocumentUtils::detectFormat(settings.shortReadUrls.first());
+        QList<GUrl> shortReadUrls = settings.getShortReadUrls();
+        QList<FormatDetectionResult> detectionResults = DocumentUtils::detectFormat(shortReadUrls.first());
         if(!detectionResults.isEmpty()) {
             if(detectionResults.first().format->getFormatId() == BaseDocumentFormats::FASTA) {
                 arguments.append("-f");
@@ -229,11 +233,11 @@ void BowtieAssembleTask::prepare() {
     arguments.append(settings.indexFileName);
     {
         QString readUrlsArgument;
-        for(int index = 0;index < settings.shortReadUrls.size();index++) {
+        for(int index = 0;index < settings.shortReadSets.size();index++) {
             if(0 != index) {
                 readUrlsArgument.append(",");
             }
-            readUrlsArgument.append(settings.shortReadUrls[index].getURLString());
+            readUrlsArgument.append(settings.shortReadSets[index].url.getURLString());
         }
         arguments.append(readUrlsArgument);
     }

@@ -133,7 +133,9 @@ void GTest_DnaAssemblyToReferenceTask::prepare()
     settings.refSeqUrl = refSeqUrl;
     settings.indexFileName = indexFileName;
     settings.resultFileName = resultFileName;
-    settings.shortReadUrls = shortReadUrls;
+    foreach (const GUrl& url, shortReadUrls) {
+        settings.shortReadSets.append( url );
+    }
     foreach (const QString& optionName, customOptions.keys()) {
         settings.setCustomValue(optionName, customOptions.value(optionName));
     }

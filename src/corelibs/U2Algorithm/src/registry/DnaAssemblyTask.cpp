@@ -43,6 +43,16 @@ void DnaAssemblyToRefTaskSettings::setCustomValue( const QString& optionName, co
     customSettings.insert(optionName,val);
 }
 
+QList<GUrl> DnaAssemblyToRefTaskSettings::getShortReadUrls() const
+{
+    QList<GUrl> res;
+    foreach (const ShortReadSet& set, shortReadSets) {
+        res.append(set.url);
+    }
+
+    return res;
+}
+
 void DnaAssemblyToRefTaskSettings::setCustomSettings( const QMap<QString, QVariant>& settings ) {
     customSettings = settings;
 }

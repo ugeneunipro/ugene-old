@@ -168,7 +168,8 @@ QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
         seqReader = settings.getCustomValue(OPTION_READS_READER, qVariantFromValue(GenomeAlignerReaderContainer()))
             .value<GenomeAlignerReaderContainer>().reader;
         if (NULL == seqReader) {
-            seqReader = new GenomeAlignerUrlReader(settings.shortReadUrls);
+            QList<GUrl> urls = settings.getShortReadUrls();
+            seqReader = new GenomeAlignerUrlReader(urls);
         }
 
         if (seqReader->isEnd()) {

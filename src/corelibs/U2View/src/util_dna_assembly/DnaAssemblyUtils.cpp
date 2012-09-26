@@ -93,7 +93,11 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         s.algName = dlg.getAlgorithmName();
         s.resultFileName = dlg.getResultFileName();
         s.setCustomSettings( dlg.getCustomSettings() );
-        s.shortReadUrls = dlg.getShortReadUrls();
+        QList<GUrl> urls = dlg.getShortReadUrls();
+        foreach(const GUrl& url, urls) {
+            s.shortReadSets.append( url);
+        }
+
         s.prebuiltIndex = dlg.isPrebuiltIndex();
         s.openView = true;
         Task* assemblyTask = new DnaAssemblyMultiTask(s, true);

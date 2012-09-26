@@ -44,7 +44,7 @@ private:
     DnaAssemblyToRefTaskSettings settings;
     DnaAssemblyToReferenceTask* assemblyToRefTask;
     //Document* doc;
-    QList<GUrl> shortReadUrls;
+    QList<ShortReadSet> shortReadSets;
     bool openView;
     bool justBuildIndex;
 }; 

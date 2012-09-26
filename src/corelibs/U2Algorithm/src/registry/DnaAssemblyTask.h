@@ -31,6 +31,27 @@ namespace U2 {
 
 class Document;
 
+
+
+class U2ALGORITHM_EXPORT ShortReadSet {
+public:
+    enum ShortReadsType {
+        SingleEndReads, PairedEndReads
+    };
+
+    enum MateOrder {
+        UpstreamMate, DownstreaMate
+    };
+
+    GUrl url;
+    ShortReadsType type;
+    MateOrder order;
+    ShortReadSet(const GUrl& _url) : url(_url), type(SingleEndReads), order(UpstreamMate) {}
+
+
+};
+
+
 class U2ALGORITHM_EXPORT DnaAssemblyToRefTaskSettings {
 public:
     DnaAssemblyToRefTaskSettings() : prebuiltIndex(false), openView(false), samOutput(true) {}
@@ -39,14 +60,16 @@ public:
     QVariant getCustomValue(const QString& optionName, const QVariant& defaultVal) const;
     bool hasCustomValue(const QString & name) const;
     void setCustomValue(const QString& optionName, const QVariant& val);
-    
+    QList<GUrl> getShortReadUrls() const;
+
 public:
     QList<DNASequence> shortReads;
-    QList<GUrl> shortReadUrls;
+    QList<ShortReadSet> shortReadSets;
     GUrl refSeqUrl;
     GUrl resultFileName;
     QString indexFileName;
     QString algName;
+    bool pairedReads;
     bool prebuiltIndex;
     bool openView;
     bool samOutput;
@@ -61,7 +84,7 @@ public:
     DnaAssemblyToReferenceTask(const DnaAssemblyToRefTaskSettings& settings, TaskFlags flags = TaskFlags_FOSCOE, bool justBuildIndex = false);
     virtual ~DnaAssemblyToReferenceTask() {}
     bool isHaveResult() const {return haveResults;}
-    
+
 protected:
     const DnaAssemblyToRefTaskSettings& settings;
     bool justBuildIndex;

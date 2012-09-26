@@ -211,7 +211,7 @@ void GTest_Bowtie::prepare() {
         return;
     }
     
-    config.shortReadUrls.append(readsFileUrl);
+    config.shortReadSets.append(readsFileUrl);
     config.refSeqUrl = GUrl(env->getVar("COMMON_DATA_DIR")+"/"+indexName);
     config.prebuiltIndex = usePrebuildIndex;
     config.resultFileName = GUrl(tmpDataDir+"/"+QString::number(getTaskId()));
