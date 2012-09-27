@@ -25,6 +25,7 @@
 
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/AppContext.h>
 
 #include <U2Gui/GScrollBar.h>
 #include <U2Gui/ObjectViewModel.h>
@@ -343,9 +344,12 @@ void GSequenceLineView::wheelEvent(QWheelEvent *we) {
 }
 
 void GSequenceLineView::sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>& added, const QVector<U2Region>& removed) {
-    setFocus();
+    QWidget* prevFocusedWidget = QApplication::focusWidget();
+    if(prevFocusedWidget != this){
+        setFocus();
+        prevFocusedWidget->setFocus();
+    }
     if (visibleRange.intersects(added) || visibleRange.intersects(removed)) {
-        addUpdateFlags(GSLV_UF_FocusChanged);
         addUpdateFlags(GSLV_UF_SelectionChanged);
         update();
     }
