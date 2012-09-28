@@ -1,6 +1,7 @@
 #include "DereplicateSequencesWorker.h"
 #include "DistanceReportWorker.h"
 #include "FilterSequencesWorker.h"
+#include "RandomFilterWorker.h"
 
 #include "SpbPlugin.h"
 
@@ -17,6 +18,7 @@ SpbPlugin::SpbPlugin()
     DereplicateSequencesWorkerFactory::init();
     DistanceReportWorkerFactory::init();
     FilterSequencesWorkerFactory::init();
+    RandomFilterWorkerFactory::init();
 }
 
 SpbPlugin::~SpbPlugin() {
