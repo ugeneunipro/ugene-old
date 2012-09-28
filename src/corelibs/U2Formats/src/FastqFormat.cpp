@@ -147,14 +147,19 @@ static void readQuality(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, int
 
     int readed = 0;
     while (!io->isEof() && (readed < count)) {
-        int elapsedCount = count - readed;
-        int readedCount = io->readBlock(buff, elapsedCount);
-        CHECK_EXT(readedCount >= 0, os.setError(U2::FastqFormat::tr("Error while reading quality")),);
+        bool eolnFound = false;
+        int readedCount = io->readUntil(buff, BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &eolnFound);
+        CHECK_EXT(readedCount >= 0, os.setError(U2::FastqFormat::tr("Error while reading sequence")),);
 
         QByteArray trimmed = QByteArray(buffArray.data(), readedCount);
         trimmed = trimmed.trimmed();
 
-        readed += trimmed.size();
+        int qualitySize = sequence.size() + trimmed.size();
+        if (eolnFound && (qualitySize > count)) { // read quality sequence name line, reverting back
+            io->skip(-readedCount);
+            return;
+        }
+
         sequence.append(trimmed);
     }
 }
