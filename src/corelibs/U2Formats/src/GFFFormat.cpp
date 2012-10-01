@@ -207,16 +207,23 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
 
     U2SequenceImporter seqImporter(hints, true);
 
-    int lineNumber = 1;
+    int lineNumber = 2;
     QMap<QString,Annotation*> joinedAnnotations;
     bool fastaSectionStarts = false;
     QString headerName, objName;
     QByteArray seq;
     QSet<QString> names;
     TmpDbiObjects dbiObjects(dbiRef, os);
-    while((len = readLongLine(qstrbuf, io, buff)) > 0){
-        //retrieving annotations from  document
+    while(!io->isEof()){
+        len = readLongLine(qstrbuf, io, buff);
+        //skip empty lines
+        if(TextUtils::remove(buff.data, len, TextUtils::WHITES) == 0){
+            ioLog.info(GFFFormat::tr("Parsing error: file contains empty line %1, line skipped").arg(lineNumber));
+            lineNumber++;
+            continue;
+        }
         words = parseLine(qstrbuf);
+        //retrieving annotations from  document
         if(fastaSectionStarts){
             if(words[0].startsWith(">") && headerName.isEmpty()){
                 headerName = words.join(" ").remove(">");
