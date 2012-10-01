@@ -203,7 +203,12 @@ void CreateDocumentFromTextDialogController::sl_indexChanged( int index ){
         return;
     }
     QFileInfo fi(filepath);
-    ui->filepathEdit->setText(fi.absoluteDir().absolutePath() + "/" + fi.baseName() + "." + newExt);
+    QString abspath = fi.absoluteDir().absolutePath();
+    if(abspath.at(abspath.size()-1) == QChar('/')){
+        ui->filepathEdit->setText(abspath + fi.baseName() + "." + newExt);
+    }else{
+        ui->filepathEdit->setText(abspath + "/" + fi.baseName() + "." + newExt);
+    }
 }
 
 CreateDocumentFromTextDialogController::~CreateDocumentFromTextDialogController()
