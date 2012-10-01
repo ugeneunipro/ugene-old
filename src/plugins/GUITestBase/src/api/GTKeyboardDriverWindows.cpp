@@ -42,6 +42,13 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
     }
 
     switch (key) {
+        case '-':
+            if (modifiers != 0) {
+                keyPress(os, modifiers);
+            }
+            keyPress(os, VK_OEM_MINUS);
+            break;
+
         case '_':
             if (modifiers != 0) {
                 keyPress(os, modifiers);

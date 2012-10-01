@@ -31,7 +31,8 @@ namespace U2 {
         enum documentFormat {FASTA, Genbank};
         enum documentAlphabet {StandardDNA, StandardRNA, ExtendedDNA, ExtendedRNA, StandardAmino, AllSymbols};
 
-        CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool customSettings, documentAlphabet _alphabet, const QString &_documentLocation,
+        CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool customSettings, documentAlphabet _alphabet, bool skipUnknownSymbols,
+                             bool replaceUnknownSymbols, const QString symbol, const QString &_documentLocation,
                              documentFormat _format, const QString &_sequenceName, bool saveFile, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
@@ -39,6 +40,9 @@ namespace U2 {
         QString pasteDataHere;
         bool customSettings;
         documentAlphabet alphabet;
+        bool skipUnknownSymbols;
+        bool replaceUnknownSymbols;
+        QString symbol;
         QMap<documentAlphabet, QString> comboBoxAlphabetItems;
         QString documentLocation;
         documentFormat format;

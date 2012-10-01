@@ -40,8 +40,8 @@ namespace GUITest_common_scenarios_document_from_text {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     Runnable *filler = new CreateDocumentFiller(os,
-        "ACAAGTCGGATTTATA", false,
-        CreateDocumentFiller::StandardRNA, 
+        "ACAAGTCGGATTTATA", false, 
+        CreateDocumentFiller::StandardRNA, true, false, "",
         testDir + "_common_data/scenarios/sandbox/result",
         CreateDocumentFiller::FASTA,
         "result", true
@@ -62,8 +62,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     Runnable *filler = new CreateDocumentFiller(os,
-        "ACAAGTCGGATTTATA", false,
-        CreateDocumentFiller::StandardRNA, 
+        "ACAAGTCGGATTTATA", false, 
+        CreateDocumentFiller::StandardRNA, true, false, "",
         testDir + "_common_data/scenarios/sandbox/result",
         CreateDocumentFiller::FASTA,
         "result", false
@@ -86,8 +86,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0001_2) {
     Runnable *filler = new CreateDocumentFiller(os,
-        "ACAAGTCGGATTTATA", false,
-        CreateDocumentFiller::StandardRNA, 
+        "ACAAGTCGGATTTATA", false, 
+        CreateDocumentFiller::StandardRNA, true, false, "",
         testDir + "_common_data/scenarios/sandbox/result",
         CreateDocumentFiller::Genbank,
         "result", true
@@ -109,8 +109,8 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
     Runnable *filler = new CreateDocumentFiller(os,
-        "ACAAGTCGGATTTATA", false,
-        CreateDocumentFiller::StandardRNA, 
+        "ACAAGTCGGATTTATA", false, 
+        CreateDocumentFiller::StandardRNA, true, false, "",
         testDir + "_common_data/scenarios/sandbox/result",
         CreateDocumentFiller::Genbank,
         "result", true
@@ -131,8 +131,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     Runnable *filler = new CreateDocumentFiller(os,
-        "ACAAGTCGGATTTATAACAAGTCGGATTTATA", false,
-        CreateDocumentFiller::StandardRNA, 
+        "ACAAGTCGGATTTATAACAAGTCGGATTTATA", false, 
+        CreateDocumentFiller::StandardRNA, true, false, "",
         testDir + "_common_data/scenarios/sandbox/result",
         CreateDocumentFiller::Genbank,
         "result", false
@@ -154,8 +154,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     Runnable *filler = new CreateDocumentFiller(os,
-        "ACAAGTCGGATTTATA", false,
-        CreateDocumentFiller::StandardDNA, 
+        "ACAAGTCGGATTTATA", false, 
+        CreateDocumentFiller::StandardDNA, true, false, "",
         testDir + "_common_data/scenarios/sandbox/result",
         CreateDocumentFiller::Genbank,
         "result", true
@@ -176,8 +176,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTUtilsDocument::removeDocument(os, "result.gb");
 
     Runnable *filler1 = new CreateDocumentFiller(os,
-        "ACAA", false,
-        CreateDocumentFiller::StandardRNA, 
+        "ACAA", false, 
+        CreateDocumentFiller::StandardRNA, true, false, "",
         testDir + "_common_data/scenarios/sandbox/result_new",
         CreateDocumentFiller::Genbank,
         "result_new", true
@@ -198,8 +198,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
     Runnable *filler = new CreateDocumentFiller(os,
-        "FKMDNYTRVEPPG,DD.JFUYBVYERHGK", true,
-        CreateDocumentFiller::AllSymbols, 
+        "FKMDNYTRVEPPG,DD.JFUYBVYERHGK", true, 
+        CreateDocumentFiller::AllSymbols, true, false, "",
         testDir + "_common_data/scenarios/sandbox/result",
         CreateDocumentFiller::FASTA,
         "result", true
@@ -221,8 +221,8 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
 GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     Runnable *filler = new CreateDocumentFiller(os,
-        "FKMDNYTRVEPPG,DD.JFUYBVYERHGK", true,
-        CreateDocumentFiller::AllSymbols, 
+        "FKMDNYTRVEPPG,DD.JFUYBVYERHGK", true, 
+        CreateDocumentFiller::AllSymbols, true, false, "",
         testDir + "_common_data/scenarios/sandbox/result",
         CreateDocumentFiller::Genbank,
         "result", true
@@ -244,8 +244,8 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     Runnable *filler = new CreateDocumentFiller(os,
-        "ACGT", true,
-        CreateDocumentFiller::StandardDNA, 
+        "ACGT", true, 
+        CreateDocumentFiller::StandardDNA, true, false, "",
         testDir + "_common_data/scenarios/sandbox/result",
         CreateDocumentFiller::FASTA,
         "result", false
@@ -260,6 +260,126 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTGlobals::sleep();
 
     GTUtilsSequenceView::checkSequence(os, "ACGT");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::StandardDNA, true, false, "",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "NACCGTTAAAGCCAGT");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0004_1) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::StandardDNA, true, false, "",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::Genbank,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "NACCGTTAAAGCCAGT");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0004_2) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::StandardRNA, true, false, "",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "NACCGAAUAGCCAG");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0005) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::StandardDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "-NACCGTTAA---AGCC-----AGT--");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0005_1) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::StandardDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::Genbank,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "-NACCGTTAA---AGCC-----AGT--");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0005_2) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::StandardRNA, false, true, "A",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "ANACCGAAAAAAUAGCCAAAAAAGAAA");
     }
 } // namespace GUITest_common_scenarios_document_from_text
 } // namespace U2

@@ -29,14 +29,19 @@
 
 #include <QtCore/QDir>
 #include <QtGui/QPushButton>
+#include <QtGui/QRadioButton>
 #include <QtGui/QApplication>
 
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::createDocumentFiller"
-CreateDocumentFiller::CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool _customSettings = false, documentAlphabet _alphabet = StandardDNA, const QString &_documentLocation = QString(),
-    documentFormat _format = FASTA, const QString &_sequenceName = QString(), bool saveFile = false, GTGlobals::UseMethod method):
-Filler(_os, "CreateDocumentFromTextDialog"), customSettings(_customSettings), alphabet(_alphabet), format(_format), saveFile(saveFile), useMethod(method) 
+CreateDocumentFiller::CreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool _customSettings = false, documentAlphabet _alphabet = StandardDNA, 
+                                           bool _skipUnknownSymbols = true, bool _replaceUnknownSymbols = false, const QString _symbol = "", 
+                                           const QString &_documentLocation = QString(),
+                                           documentFormat _format = FASTA, const QString &_sequenceName = QString(), 
+                                           bool saveFile = false, GTGlobals::UseMethod method):
+Filler(_os, "CreateDocumentFromTextDialog"), customSettings(_customSettings), alphabet(_alphabet), skipUnknownSymbols(_skipUnknownSymbols), symbol(_symbol),
+replaceUnknownSymbols(_replaceUnknownSymbols), format(_format), saveFile(saveFile), useMethod(method) 
 {
     sequenceName = _sequenceName;
     pasteDataHere = _pasteDataHere;
@@ -69,6 +74,19 @@ void CreateDocumentFiller::run()
         QComboBox *alphabetComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "alphabetBox", dialog));
         GT_CHECK(alphabetComboBox != NULL, "ComboBox not found");
 
+        if (skipUnknownSymbols){
+            QRadioButton* skipUnknownSymbols = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "skipRB", dialog));
+            skipUnknownSymbols->setChecked(true);
+            }
+        else {
+            QRadioButton* replaceUnknownSymbols = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "replaceRB", dialog));
+            replaceUnknownSymbols->setChecked(true);
+
+            QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("symbolToReplaceEdit");
+            GT_CHECK(lineEdit != NULL, "line edit not found");
+            GTLineEdit::setText(os, lineEdit, symbol);
+            }
+
         int alphabetIndex = alphabetComboBox->findText(comboBoxAlphabetItems[alphabet]);
         GT_CHECK(alphabetIndex != -1, QString("item \"%1\" in combobox not found").arg(comboBoxAlphabetItems[alphabet]));
         
@@ -92,7 +110,7 @@ void CreateDocumentFiller::run()
     }
 
     QLineEdit *lineEditName = dialog->findChild<QLineEdit*>("nameEdit");
-    GT_CHECK(lineEdit != NULL, "line edit not found");
+    GT_CHECK(lineEditName != NULL, "line edit not found");
     GTLineEdit::setText(os, lineEditName, sequenceName);
 
     if (saveFile){
