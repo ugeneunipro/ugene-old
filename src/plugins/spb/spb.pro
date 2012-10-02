@@ -9,7 +9,8 @@ HEADERS += src/ComparingAlgorithm.h \
            src/FullIndexComparer.h \
            src/RandomDereplicationTask.h \
            src/SpbPlugin.h \
-    src/RandomFilterWorker.h
+    src/RandomFilterWorker.h \
+    src/GenerateUrlWorker.h
 SOURCES += src/ComparingAlgorithm.cpp \
            src/DereplicateSequencesWorker.cpp \
            src/DereplicationTask.cpp \
@@ -18,4 +19,5 @@ SOURCES += src/ComparingAlgorithm.cpp \
            src/FullIndexComparer.cpp \
            src/RandomDereplicationTask.cpp \
            src/SpbPlugin.cpp \
-    src/RandomFilterWorker.cpp
+    src/RandomFilterWorker.cpp \
+    src/GenerateUrlWorker.cpp

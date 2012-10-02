@@ -25,7 +25,7 @@ static const QString OUT_PORT_ID("filtered-sequences");
  * Worker
  *****************************************/
 RandomFilterWorker::RandomFilterWorker(Actor *a)
-    : BaseWorker(a), inPort(NULL), outPort(NULL)
+    : BaseWorker(a, false), inPort(NULL), outPort(NULL)
 {
 
 }
@@ -70,6 +70,7 @@ void RandomFilterWorker::sendData() {
             iter--;
             QVariantMap data;
             data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(takeRandomSequence(seqs));
+            data[BaseSlots::URL_SLOT().getId()] = url;
             outPort->put(Message(outPort->getBusType(), data));
         }
     }
@@ -108,6 +109,7 @@ void RandomFilterWorkerFactory::init() {
 
         QMap<Descriptor, DataTypePtr> outMap;
         outMap[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
+        outMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         portDescs << new PortDescriptor(OUT_PORT_ID, DataTypePtr(new MapDataType("out.sequences", outMap)), false, true);
     }
 
