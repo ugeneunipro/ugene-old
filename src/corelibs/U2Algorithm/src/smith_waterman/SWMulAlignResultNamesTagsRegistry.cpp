@@ -83,7 +83,7 @@ QString SWMulAlignResultNamesTagsRegistry::parseStringWithTags(const QString & s
                 break;
             }
             
-            QVariant tagExpansionData = NULL;
+            QVariant tagExpansionData;
             if(PTRN_NAME_PREFIX_TAG_SHORTHAND == tagShorthand) {
                 tagExpansionData.setValue(expansionSet.patternName);
             } else if(SEQ_NAME_PREFIX_TAG_SHORTHAND == tagShorthand) {
