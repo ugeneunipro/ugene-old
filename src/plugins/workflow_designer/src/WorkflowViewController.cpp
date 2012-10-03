@@ -1293,6 +1293,12 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         scene->setIterated(false);
         sl_updateUi();
         scene->connectConfigurationEditors();
+        scene->sl_selectAll();
+        foreach(QGraphicsItem* it, scene->selectedItems()){
+            (static_cast<StyledItem*>(it))->setStyle(WorkflowSettings::defaultStyle());
+        }
+        scene->sl_deselectAll();
+        scene->update();
     } else {
         scene->clearScene();
         propertyEditor->resetIterations();
