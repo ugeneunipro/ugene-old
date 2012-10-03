@@ -72,8 +72,8 @@ static bool revScoreComparator(const SmithWatermanResult &s0, const SmithWaterma
     if (s0.score < s1.score) {
         res = false;
     } else if (s0.score == s1.score) {
-        const U2Region& r0 = s0.region;
-        const U2Region& r1 = s1.region;
+        const U2Region& r0 = s0.refSubseq;
+        const U2Region& r1 = s1.refSubseq;
         res = r0 < r1;
     } else {
         res = true;
@@ -92,7 +92,7 @@ bool SmithWatermanUtil::removeIdenticalResults(QList<SmithWatermanResult>* lst) 
         while (j < size) {
             const SmithWatermanResult& currItem = results[i];
             const SmithWatermanResult& someItem = results[j];
-            if (currItem.region == someItem.region && 
+            if (currItem.refSubseq == someItem.refSubseq && 
                 currItem.strand == someItem.strand) {
                 results.removeAt(j);
                 size--;

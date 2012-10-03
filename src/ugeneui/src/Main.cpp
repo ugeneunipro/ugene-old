@@ -55,6 +55,7 @@
 #include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Algorithm/SWResultFilterRegistry.h>
+#include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Algorithm/MSAAlignAlgRegistry.h>
@@ -439,6 +440,9 @@ int main(int argc, char **argv)
 
     SmithWatermanTaskFactoryRegistry* swar = new SmithWatermanTaskFactoryRegistry();
     appContext->setSmithWatermanTaskFactoryRegistry(swar);
+
+    SWMulAlignResultNamesTagsRegistry * swmarntr = new SWMulAlignResultNamesTagsRegistry();
+    appContext->setSWMulAlignResultNamesTagsRegistry(swmarntr);
 
     RepeatFinderTaskFactoryRegistry* rfr = new RepeatFinderTaskFactoryRegistry();
     appContext->setRepeatFinderTaskFactoryRegistry(rfr);

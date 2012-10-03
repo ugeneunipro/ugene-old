@@ -41,7 +41,8 @@ enum SaveDocFlag {
     SaveDoc_Roll = 0x2, 
     SaveDoc_DestroyAfter = 0x4,
     SaveDoc_DestroyButDontUnload = 0x8,
-    SaveDoc_OpenAfter = 0x16
+    SaveDoc_OpenAfter = 0x16,
+    SaveDoc_UnloadAfter = 0x80
 };
 
 typedef QFlags<SaveDocFlag>  SaveDocFlags;

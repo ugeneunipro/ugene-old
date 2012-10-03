@@ -19,31 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef PAIRALIGNMENTSTRINGS_H
-#define PAIRALIGNMENTSTRINGS_H
-
+#include "SWMulAlignSubseqPropTag.h"
 #include <U2Core/U2Region.h>
 
 namespace U2 {
 
-class PairAlignSequences {
-public:
-    PairAlignSequences();
-    void setValues(int _score, const U2Region & _refSubseqInterval, const U2Region & _ptrnSubseqInterval, QByteArray _pairAlignment);
-    
-    U2Region refSubseqInterval;
-    U2Region ptrnSubseqInterval;
-    int score;
-    QByteArray pairAlignment;
+QString SWMulAlignSubseqPropTag::expandTag(const QVariant & argument) const {
+    assert(argument.canConvert<U2Region>());
+    U2Region subsequence = argument.value<U2Region>();
 
-    bool isAminoTranslated;
-    bool isDNAComplemented;
+    quint64 tagExpansion = 0;
+    switch(posType) {
+        case START:
+            tagExpansion = subsequence.startPos;
+            break;
+        case END:
+            tagExpansion = subsequence.endPos();
+            break;
+        case LENGTH:
+            tagExpansion = subsequence.length;
+            break;
+        default:
+            assert(0);
+    }
 
-    static const char UP = 'u';
-    static const char LEFT = 'l';
-    static const char DIAG = 'd';
-};
+    return QString::number(tagExpansion);
+}
 
-}//namespace
-
-#endif
+} //namespace

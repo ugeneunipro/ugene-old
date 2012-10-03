@@ -32,9 +32,10 @@ class SmithWatermanAlgorithmCUDA : public SmithWatermanAlgorithm {
 public:
     typedef int ScoreType;
 
-    virtual void launch(const SMatrix& m, QByteArray const & _patternSeq, QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore);
-    static quint64 estimateNeededGpuMemory( const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq );
-    static quint64 estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq);
+    virtual void launch(const SMatrix& m, QByteArray const & _patternSeq, QByteArray const & _searchSeq, int _gapOpen,
+        int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView resultView);
+    static quint64 estimateNeededGpuMemory( const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq, const SmithWatermanSettings::SWResultView resultView);
+    static quint64 estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq, const SmithWatermanSettings::SWResultView resultView);
 private:
 
 };

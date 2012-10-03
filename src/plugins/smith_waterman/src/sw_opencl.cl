@@ -1,5 +1,7 @@
 //#ifdef SW2_BUILD_WITH_CUDA
 
+#define NULL 0
+
 typedef int ScoreType;
 
 //global function
@@ -11,7 +13,9 @@ __kernel void calculateMatrix(global const char * seqLib,
 				global ScoreType* g_FdataUp,
 				global ScoreType* g_directionsUp, 
 				global ScoreType* g_directionsRec, 
-				global ScoreType* g_directionsMax,                                
+				global ScoreType* g_directionsMax,
+				global int* g_directionsMatrix,
+				global int* g_backtraceBegins,
                                 __const int queryStartPos,
                                 __const int partSeqSize,
                                 __const int partsNumber,
@@ -21,11 +25,14 @@ __kernel void calculateMatrix(global const char * seqLib,
                                 __const int gapOpen,
                                 __const int gapExtension,
                                 __const int queryPartLength,
+								__const char leftSymbolDirectMatrix,
+								__const char diagSymbolDirectMatrix,
+								__const char upSymbolDirectMatrix,
+								__const char stopSymbolDirectMatrix,
                                 __local ScoreType* shared_H,
                                 __local ScoreType* shared_E,
                                 __local ScoreType* shared_direction)
 {
-
         //registers
         int patternPos = get_local_id(0); // threadIdx.x;
         int globalPatternPos =  queryStartPos + patternPos;
@@ -39,9 +46,9 @@ __kernel void calculateMatrix(global const char * seqLib,
         int seqPos = 0, globalPos = 0, diagNum = 0;
         ScoreType substScore = 0;
         ScoreType E = 0, E_left = 0, F = 0, F_up = 0, H = 0,
-                H_left = 0, H_up = 0, H_upleft = 0, E_left_init = 0,
-                H_left_init = 0, directionLeft = 0, directionUp = 0,
-                directionUpLeft = 0, direction = 0, directionInit = 0,
+                H_left = 0, H_up = 0, H_upleft = 0,
+                directionLeft = 0, directionUp = 0,
+                directionUpLeft = 0, direction = 0,
                 maxScore = 0;
 
 
@@ -56,8 +63,6 @@ __kernel void calculateMatrix(global const char * seqLib,
 
         diagNum = (partSeqSize + queryPartLength - 1);
         for (int iteration = 0; iteration < diagNum; iteration++) {        
-
-
                 //check boundaries
                 bool isActual = seqPos < seqLibLength && seqPos >= seqStartPos && seqPos < seqStartPos + partSeqSize && globalPatternPos < queryLength;
                 if (isActual) {
@@ -95,18 +100,23 @@ __kernel void calculateMatrix(global const char * seqLib,
                         H = max(H, H_upleft + substScore);
 
                         //chose direction
+						char directionForMatrix = stopSymbolDirectMatrix;
+
                         if (H == 0) {
                                 direction = seqPos + 1;
                         }
                         else if (H == E) {
                                 direction = directionLeft;
+								directionForMatrix = upSymbolDirectMatrix;
                         }
                         else if (H == F) {
                                 direction = directionUp;
+								directionForMatrix = leftSymbolDirectMatrix;
                         }
                         //(H == H_upleft + substScore)
                         else {
                                 direction = directionUpLeft;
+								directionForMatrix = diagSymbolDirectMatrix;
                         }
 
                         shared_E[patternPos + 1] = E;
@@ -120,11 +130,20 @@ __kernel void calculateMatrix(global const char * seqLib,
                         directionUp = direction;
                         directionUpLeft = directionLeft;
 
+						if(NULL != g_directionsMatrix) {
+							g_directionsMatrix[seqLibLength * globalPatternPos + seqPos] = (int)directionForMatrix;
+						}
+
                         //collect best result
                         maxScore = max(H, g_HdataMax[globalPos]);
                         if (maxScore == H) {
                                 g_HdataMax[globalPos] = maxScore;
                                 g_directionsMax[globalPos] = direction;
+								
+								if(NULL != g_directionsMatrix && NULL != g_backtraceBegins) {
+									g_backtraceBegins[globalPos * 2] = globalPatternPos;
+									g_backtraceBegins[globalPos * 2 + 1] = seqPos;
+								}
                         }
 
                         //if this last iteration then start prepare next

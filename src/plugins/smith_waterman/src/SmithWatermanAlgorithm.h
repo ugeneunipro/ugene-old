@@ -25,6 +25,7 @@
 #include "PairAlignSequences.h"
 
 #include <U2Core/SMatrix.h>
+#include <U2Algorithm/SmithWatermanSettings.h>
 
 #include <QtCore/QVector>
 #include <QtCore/QByteArray>
@@ -37,14 +38,19 @@ public:
     SmithWatermanAlgorithm();
     virtual ~SmithWatermanAlgorithm() {};
 
-    virtual void launch(const SMatrix& m, QByteArray const & _patternSeq,
-        QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore);
+    virtual void launch(const SMatrix& m, QByteArray const & _patternSeq, QByteArray const & _searchSeq,
+        int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView);
     
     QList<PairAlignSequences> getResults();
     static void sortByScore(QList<PairAlignSequences> & pairAlignmentStrings);
     static quint64 estimateNeededRamAmount(const qint32 gapOpen, const qint32 gapExtension,
                                            const quint32 minScore, const quint32 maxScore,
-                                           QByteArray const & patternSeq, QByteArray const & searchSeq);
+                                           QByteArray const & patternSeq, QByteArray const & searchSeq,
+                                           const SmithWatermanSettings::SWResultView resultView);
+	static const char STOP;
+	static const char UP;
+	static const char LEFT;
+	static const char DIAG;
 
 protected:
     bool calculateMatrixLength();
@@ -54,7 +60,7 @@ protected:
     int maximum(int var1, int var2, int var3, int var4 = 0);
     void setValues(const SMatrix& _substitutionMatrix, 
         QByteArray const & _patternSeq, QByteArray const & _searchSeq, 
-        int _gapOpen, int _gapExtension, int _minScore);
+        int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView);
 
     QList<PairAlignSequences> pairAlignmentStrings;
 
@@ -67,16 +73,11 @@ protected:
     int gapExtension;
     int minScore;
     int matrixLength;
-    int storedResults;
+    SmithWatermanSettings::SWResultView resultView;
 
     QVector<QVector<char> > directionMatrix;
 
     void backtrace(int row, int col, int score);
-
-    static const char STOP;
-    static const char UP;
-    static const char LEFT;
-    static const char DIAG;
 
     struct KeyOfPairAlignSeq
     {

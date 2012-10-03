@@ -20,10 +20,22 @@
  */
 
 #include "SmithWatermanReportCallback.h"
+#include <U2Core/DocumentModel.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/SaveDocumentTask.h>
 
 namespace U2 {
 
-SmithWatermanReportCallbackImpl::SmithWatermanReportCallbackImpl(
+// SmithWatermanReportCallbackAnnotImpl realization //////////////////////////////////////////////////////////////////////////
+
+SmithWatermanReportCallbackAnnotImpl::SmithWatermanReportCallbackAnnotImpl(
                                 AnnotationTableObject* _aobj,
                                 const QString& _annotationName,
                                 const QString& _annotationGroup,
@@ -34,7 +46,7 @@ SmithWatermanReportCallbackImpl::SmithWatermanReportCallbackImpl(
 {
 }
 
-QString SmithWatermanReportCallbackImpl::report(const QList<SmithWatermanResult>& results) {    
+QString SmithWatermanReportCallbackAnnotImpl::report(const QList<SmithWatermanResult>& results) {    
     if (autoReport && aObj.isNull()) {
         return tr("Annotation object not found.");
     }
@@ -55,6 +67,114 @@ QString SmithWatermanReportCallbackImpl::report(const QList<SmithWatermanResult>
         aObj->addAnnotations(annotations, annotationGroup);
     }
     return QString();
+}
+
+// SmithWatermanReportCallbackMAImpl realization //////////////////////////////////////////////////////////////////////////
+
+const quint8 SmithWatermanReportCallbackMAImpl::countOfSimultLoadedMADocs = 5;
+
+SmithWatermanReportCallbackMAImpl::SmithWatermanReportCallbackMAImpl(const QString & _resultFolderName,
+    const QString & _mobjectNamesTemplate, const QString & _refSubseqTemplate, const QString & _ptrnSubseqTemplate,
+    const QByteArray & _refSequence, const QByteArray & _pattern, const QString & _refSeqName, const QString & _patternName,
+    DNAAlphabet * _alphabet)
+    : resultDirPath(_resultFolderName), mobjectNamesTemplate(_mobjectNamesTemplate), refSubseqTemplate(_refSubseqTemplate),
+    ptrnSubseqTemplate(_ptrnSubseqTemplate), refSequence(_refSequence), pattern(_pattern), expansionInfo(_refSeqName, _patternName),
+    alphabet(_alphabet) {}
+
+QString SmithWatermanReportCallbackMAImpl::report(const QList<SmithWatermanResult> & results) {
+    quint8 countOfLoadedDocs = 0;
+    TaskStateInfo stateInfo;
+    SWMulAlignResultNamesTagsRegistry * tagsRegistry = AppContext::getSWMulAlignResultNamesTagsRegistry();
+    Project * currentProject = AppContext::getProject();
+    TaskScheduler * taskScheduler = AppContext::getTaskScheduler();
+    
+    tagsRegistry->resetCounters();
+
+    foreach(SmithWatermanResult pairAlignSeqs, results) {
+        assert(!(pairAlignSeqs.ptrnSubseq.startPos == 0 && pairAlignSeqs.ptrnSubseq.length == 0) &&
+            !(pairAlignSeqs.refSubseq.startPos == 0 && pairAlignSeqs.refSubseq.length == 0));
+
+        DocumentFormat * format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN);
+        Document * alignmentDoc = NULL;
+
+        const QString newFileName = tagsRegistry->parseStringWithTags(mobjectNamesTemplate, expansionInfo);
+        QString newFileUrl = resultDirPath + newFileName + '.' + format->getSupportedDocumentFileExtensions().first();
+        changeGivenUrlIfDocumentExists(newFileUrl, currentProject);
+
+        alignmentDoc = format->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(newFileUrl), stateInfo);
+        CHECK_OP(stateInfo, tr("SmithWatermanReportCallback failed to create new MA document"));
+    
+        QByteArray curResultRefSubseq = refSequence.mid(pairAlignSeqs.refSubseq.startPos, pairAlignSeqs.refSubseq.length);
+        QByteArray curResultPtrnSubseq = pattern.mid(pairAlignSeqs.ptrnSubseq.startPos, pairAlignSeqs.ptrnSubseq.length);
+        alignSequences(curResultRefSubseq, curResultPtrnSubseq, pairAlignSeqs.pairAlignment);
+        
+        expansionInfo.curProcessingSubseq = &pairAlignSeqs.refSubseq;
+        MAlignmentRow refSubsequence(tagsRegistry->parseStringWithTags(refSubseqTemplate, expansionInfo), curResultRefSubseq);
+        expansionInfo.curProcessingSubseq = &pairAlignSeqs.ptrnSubseq;
+        MAlignmentRow patternSubsequence(tagsRegistry->parseStringWithTags(ptrnSubseqTemplate, expansionInfo), curResultPtrnSubseq);
+        QList<MAlignmentRow> rows;
+        rows.append(refSubsequence);
+        rows.append(patternSubsequence);
+
+        MAlignment msa(newFileName, alphabet, rows);
+        MAlignmentObject * docObject = new MAlignmentObject(msa);
+        alignmentDoc->addObject(docObject);
+        currentProject->addDocument(alignmentDoc);
+        
+        SaveDocFlags flags = SaveDoc_Overwrite;
+        Task * saveMADocument = NULL;
+                
+        if(countOfLoadedDocs < SmithWatermanReportCallbackMAImpl::countOfSimultLoadedMADocs) { 
+            ++countOfLoadedDocs;
+        } else {
+            flags |= SaveDoc_UnloadAfter;
+        }
+
+        saveMADocument = new SaveDocumentTask(alignmentDoc, flags);
+        
+        taskScheduler->registerTopLevelTask(saveMADocument);
+    }
+
+    return QString();
+}
+
+void SmithWatermanReportCallbackMAImpl::alignSequences(QByteArray & refSequence, QByteArray & ptrnSequence,
+                                                        const QByteArray & pairwiseAlignment) {
+    quint32 refSeqCurrentPosition = refSequence.length();
+    quint32 ptrnSeqCurrentPosition = ptrnSequence.length();
+
+    for(qint32 i = 0; i < pairwiseAlignment.length(); ++i) {
+        switch (pairwiseAlignment[i]) {
+            case SmithWatermanResult::DIAG:
+                --refSeqCurrentPosition;
+                --ptrnSeqCurrentPosition;
+                continue;
+        	    break;
+            case SmithWatermanResult::UP:
+                ptrnSequence.insert(ptrnSeqCurrentPosition, MAlignment_GapChar);
+                --refSeqCurrentPosition;
+                break;
+            case SmithWatermanResult::LEFT:
+                refSequence.insert(refSeqCurrentPosition, MAlignment_GapChar);
+                --ptrnSeqCurrentPosition;
+                break;
+            default:
+                assert(0);
+        }
+    }
+}
+
+void SmithWatermanReportCallbackMAImpl::changeGivenUrlIfDocumentExists(QString & givenUrl, const Project * curProject) {
+    if(NULL != curProject->findDocumentByURL(GUrl(givenUrl))) {
+        for(size_t i = 1; ; i++) {
+            QString tmpUrl = givenUrl;
+            tmpUrl.replace(".", "(" + QString::number(i) + ").");
+            if(NULL == curProject->findDocumentByURL(GUrl(tmpUrl))) {
+                givenUrl = tmpUrl;
+                break;
+            }
+        }
+    }
 }
 
 } // namespace

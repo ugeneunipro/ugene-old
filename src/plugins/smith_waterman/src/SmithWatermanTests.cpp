@@ -55,14 +55,14 @@ void GTest_SmithWatermnan::sortByScore(QList<SmithWatermanResult> & resultsForSo
                 resultsForSort[j] = buf;
             }
             if (resultsForSort.at(i).score == resultsForSort.at(j).score &&
-                resultsForSort.at(i).region.startPos > resultsForSort.at(j).region.startPos) {
+                resultsForSort.at(i).refSubseq.startPos > resultsForSort.at(j).refSubseq.startPos) {
                     SmithWatermanResult buf = resultsForSort.at(i);
                     resultsForSort[i] = resultsForSort.at(j);
                     resultsForSort[j] = buf;
             }
             if (resultsForSort.at(i).score == resultsForSort.at(j).score &&
-                resultsForSort.at(i).region.startPos == resultsForSort.at(j).region.startPos &&
-                resultsForSort.at(i).region.length > resultsForSort.at(j).region.length) {
+                resultsForSort.at(i).refSubseq.startPos == resultsForSort.at(j).refSubseq.startPos &&
+                resultsForSort.at(i).refSubseq.length > resultsForSort.at(j).refSubseq.length) {
                     SmithWatermanResult buf = resultsForSort.at(i);
                     resultsForSort[i] = resultsForSort.at(j);
                     resultsForSort[j] = buf;
@@ -297,7 +297,7 @@ Task::ReportResult GTest_SmithWatermnan::report() {
     
     for (int i = 0; i < resultList.size(); i++) {
         if (expectedRes.at(i).score != resultList.at(i).score ||
-            expectedRes.at(i).sInterval != resultList.at(i).region) {
+            expectedRes.at(i).sInterval != resultList.at(i).refSubseq) {
                 stateInfo.setError(QString("Not expected result"));
                 return ReportResult_Finished;
         }

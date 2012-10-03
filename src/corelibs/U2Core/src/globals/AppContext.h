@@ -50,6 +50,7 @@ class TestFramework;
 class DBXRefRegistry;
 class SubstMatrixRegistry;
 class SmithWatermanTaskFactoryRegistry;
+class SWMulAlignResultNamesTagsRegistry;
 class MolecularSurfaceFactoryRegistry;
 class SWResultFilterRegistry;
 class MSAColorSchemeRegistry;
@@ -142,6 +143,8 @@ public:
     static SubstMatrixRegistry* getSubstMatrixRegistry() {return getInstance()->_getSubstMatrixRegistry();}
 
     static SmithWatermanTaskFactoryRegistry* getSmithWatermanTaskFactoryRegistry() {return getInstance()->_getSmithWatermanTaskFactoryRegistry();}
+
+    static SWMulAlignResultNamesTagsRegistry * getSWMulAlignResultNamesTagsRegistry() {return getInstance()->_getSWMulAlignResultNamesTagsRegistry();}
 
     static MolecularSurfaceFactoryRegistry* getMolecularSurfaceFactoryRegistry() {return getInstance()->_getMolecularSurfaceFactoryRegistry();}
 
@@ -247,6 +250,7 @@ protected:
     virtual SubstMatrixRegistry*        _getSubstMatrixRegistry() const = 0;
     virtual SmithWatermanTaskFactoryRegistry* _getSmithWatermanTaskFactoryRegistry() const = 0;
     virtual MolecularSurfaceFactoryRegistry* _getMolecularSurfaceFactoryRegistry()const = 0;
+    virtual SWMulAlignResultNamesTagsRegistry * _getSWMulAlignResultNamesTagsRegistry() const = 0;
     virtual SWResultFilterRegistry*     _getSWResultFilterRegistry() const = 0;
     virtual MSAColorSchemeRegistry*     _getMSAColorSchemeRegistry() const = 0;
     virtual SecStructPredictAlgRegistry* _getSecStructPredictAlgRegistry() const = 0;

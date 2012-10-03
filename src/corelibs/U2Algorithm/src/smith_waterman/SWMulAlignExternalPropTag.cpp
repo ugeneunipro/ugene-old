@@ -19,31 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef PAIRALIGNMENTSTRINGS_H
-#define PAIRALIGNMENTSTRINGS_H
+#include "SWMulAlignExternalPropTag.h"
 
-#include <U2Core/U2Region.h>
+#include <QtCore/QDate>
+#include <QtCore/QTime>
+
+const QString timeFormat = "hh.mm.ss";
 
 namespace U2 {
 
-class PairAlignSequences {
-public:
-    PairAlignSequences();
-    void setValues(int _score, const U2Region & _refSubseqInterval, const U2Region & _ptrnSubseqInterval, QByteArray _pairAlignment);
-    
-    U2Region refSubseqInterval;
-    U2Region ptrnSubseqInterval;
-    int score;
-    QByteArray pairAlignment;
+QString SWMulAlignExternalPropTag::expandTag(const QVariant & argument) const {
+    QString tagExpansion;
 
-    bool isAminoTranslated;
-    bool isDNAComplemented;
+    switch(type) {
+    case DATE:
+        tagExpansion = QDate::currentDate().toString(Qt::ISODate);
+        break;
+    case TIME:
+        tagExpansion = QTime::currentTime().toString(timeFormat);
+        break;
+    case COUNTER:
+        tagExpansion = QString::number(++counter);
+        break;
+    default:
+        assert(0);
+    }
 
-    static const char UP = 'u';
-    static const char LEFT = 'l';
-    static const char DIAG = 'd';
-};
+    return tagExpansion;
+}
 
-}//namespace
-
-#endif
+} // namespace

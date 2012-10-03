@@ -19,31 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef PAIRALIGNMENTSTRINGS_H
-#define PAIRALIGNMENTSTRINGS_H
+#ifndef _U2_SW_MUL_ALIGN_SEQ_PREFIX_TAG_H_
+#define _U2_SW_MUL_ALIGN_SEQ_PREFIX_TAG_H_
 
-#include <U2Core/U2Region.h>
+#include "SWMulAlignResultNamesTag.h"
 
 namespace U2 {
 
-class PairAlignSequences {
+class SWMulAlignSeqPrefixTag : public SWMulAlignResultNamesTag {
 public:
-    PairAlignSequences();
-    void setValues(int _score, const U2Region & _refSubseqInterval, const U2Region & _ptrnSubseqInterval, QByteArray _pairAlignment);
-    
-    U2Region refSubseqInterval;
-    U2Region ptrnSubseqInterval;
-    int score;
-    QByteArray pairAlignment;
+    inline SWMulAlignSeqPrefixTag(const QString _shorthand, const QString _label, const quint32 _prefixLength);
+    virtual QString expandTag(const QVariant & argument) const;
 
-    bool isAminoTranslated;
-    bool isDNAComplemented;
-
-    static const char UP = 'u';
-    static const char LEFT = 'l';
-    static const char DIAG = 'd';
+private:
+    quint32 prefixLength;
 };
 
-}//namespace
 
-#endif
+
+inline SWMulAlignSeqPrefixTag::SWMulAlignSeqPrefixTag(const QString _shorthand, const QString _label, const quint32 _prefixLength)
+    : SWMulAlignResultNamesTag(_shorthand, _label), prefixLength(_prefixLength) {
+    acceptableForSubseqNamesOnly = false;
+}
+
+} // namespace
+
+#endif // _U2_SW_MUL_ALIGN_SEQ_PREFIX_TAG_H_

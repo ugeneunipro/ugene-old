@@ -133,7 +133,7 @@ void SWAlgorithmPlugin::regDependedIMPLFromOtherPlugins() {
 }
 
 SWAlgorithmADVContext::SWAlgorithmADVContext(QObject* p) : 
-GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID)
+GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID), dialogConfig()
 {
 }
 

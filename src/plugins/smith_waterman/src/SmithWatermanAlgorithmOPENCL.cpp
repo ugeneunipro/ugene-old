@@ -34,6 +34,8 @@
 #include <U2Algorithm/OpenCLUtils.h>
 #include <U2Algorithm/OpenCLHelper.h>
 
+//#include <iostream>
+
 const double B_TO_MB_FACTOR = 1048576.0;
 
 namespace U2 {
@@ -49,24 +51,35 @@ SmithWatermanAlgorithmOPENCL::SmithWatermanAlgorithmOPENCL()  :
         directionsRecBufTmp(NULL), directionsMaxBuf(NULL)
 {}
 
-quint64 SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq) {
+quint64 SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory(const SMatrix& sm, QByteArray const & _patternSeq,
+                                                                QByteArray const & _searchSeq) {
     const quint64 queryLength = _patternSeq.size();
     const quint64 searchLen = _searchSeq.size();
     const quint64 subLen = sm.getAlphabet()->getNumAlphabetChars();
     const QByteArray & alphChars = sm.getAlphabet()->getAlphabetChars();
     const quint64 profLen = subLen * (queryLength + 1) * (alphChars[ alphChars.size()-1 ] + 1);
+    quint32 queryDevider = 1;
+    if (queryLength > MAX_SHARED_VECTOR_LENGTH) {
+        queryDevider = (queryLength + MAX_SHARED_VECTOR_LENGTH - 1) / MAX_SHARED_VECTOR_LENGTH;
+    }
 
     const quint64 overlapLength = queryLength * 3;
     const quint64 partsNumber = calcPartsNumber(searchLen, overlapLength);
     const quint64 partSeqSize = calcPartSeqSize(searchLen, overlapLength, partsNumber);
     const quint64 sizeRow = calcSizeRow(partsNumber, partSeqSize);
+    const quint64 partQuerySize = (queryLength + queryDevider - 1) / queryDevider;
 
-    const quint64 memToAlloc = sizeof(char) * (_searchSeq.length() + 1) + profLen * sizeof(cl_int) + sizeof(ScoreType) * sizeRow * 7;
+    const quint64 sharedArraysSize = 3 * partQuerySize * sizeof(int);
 
-    return memToAlloc * 8 / 5; //factor 8/5 is used because OpenCL won't allocate all or almost all available GPU memory
+    const quint64 memToAlloc = sizeof(char) * (_searchSeq.length() + 1) + profLen * sizeof(cl_int) + sizeof(ScoreType) * sizeRow * 7 +
+                                sharedArraysSize;
+
+    return memToAlloc; //factor 8/5 is used because OpenCL won't allocate all or almost all available GPU memory
 }
 
-quint64 SmithWatermanAlgorithmOPENCL::estimateNeededRamAmount( const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq ) {
+quint64 SmithWatermanAlgorithmOPENCL::estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq,
+                                                                QByteArray const & _searchSeq,
+                                                                const SmithWatermanSettings::SWResultView resultView) {
     const quint64 queryLength = _patternSeq.size();
     const quint64 searchLen = _searchSeq.size();
     const quint64 subLen = sm.getAlphabet()->getNumAlphabetChars();
@@ -78,9 +91,17 @@ quint64 SmithWatermanAlgorithmOPENCL::estimateNeededRamAmount( const SMatrix& sm
     const quint64 partSeqSize = calcPartSeqSize(searchLen, overlapLength, partsNumber);
     const quint64 sizeRow = calcSizeRow(partsNumber, partSeqSize);
     
-    const quint64 memToAlloc = 2 * sizeof(ScoreType) * sizeRow + sizeof(ScoreType) * profLen;
+    quint64 directionMatrixSize = 0;
+    quint64 backtraceBeginsSize = 0;
+    if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        directionMatrixSize = searchLen * queryLength * sizeof(int);
+        backtraceBeginsSize = 2 * sizeRow * sizeof(int);
+    }
 
-    return memToAlloc;
+    const quint64 memToAlloc = 2 * sizeof(ScoreType) * sizeRow + sizeof(ScoreType) * profLen +
+                                directionMatrixSize + backtraceBeginsSize;
+
+    return memToAlloc / B_TO_MB_FACTOR;
 }
 
 //TODO: calculate maximum alignment length
@@ -121,9 +142,10 @@ bool hasOPENCLError(int err, QString errorMessage) {
     }
 }
 
-void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore) {
+void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & _patternSeq, QByteArray const & _searchSeq,
+    int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView) {
 
-    setValues(sm, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore);
+    setValues(sm, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore, _resultView);
     algoLog.details(QObject::tr("START SmithWatermanAlgorithmOPENCL::launch"));
 
     int queryLength = patternSeq.size();
@@ -185,18 +207,29 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
 
     ScoreType* g_HdataTmp = NULL;
     ScoreType* g_directionsRec = NULL;
+    int * g_directionsMatrix = NULL;
+    int * g_backtraceBegins = NULL;
 
     g_HdataTmp = new ScoreType[sizeRow];
     g_directionsRec = new ScoreType[sizeRow];
-
+    if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        g_directionsMatrix = new int[searchLen * queryLength];
+        g_backtraceBegins = new int[2 * sizeRow];
+    }
+    
     gauto_array<ScoreType> g_HdataTmpPtr(g_HdataTmp);
     gauto_array<ScoreType> g_directionsRecPtr(g_directionsRec);
+    gauto_array<int> g_directionsMatrixPtr(g_directionsMatrix);
+    gauto_array<int> g_backtraceBeginsPtr(g_backtraceBegins);
 
-    for (int i = 0; i < sizeRow; i++) {
-        g_HdataTmp[i] = 0;
-        g_directionsRec[i] = 0;
+    if(NULL != g_directionsMatrix && NULL != g_backtraceBegins) {
+        memset(static_cast<void *>(g_directionsMatrix), 0, searchLen * queryLength * sizeof(int));
+        memset(static_cast<void *>(g_backtraceBegins), 0, 2 * sizeRow * sizeof(int));
     }
 
+    memset(static_cast<void *>(g_HdataTmp), 0, sizeRow * sizeof(ScoreType));
+    memset(static_cast<void *>(g_directionsRec), 0, sizeRow * sizeof(ScoreType));
+        
     queryProfBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
         sizeof(cl_int) * profLen, queryProfile, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(cl_int) * profLen / B_TO_MB_FACTOR)))) return;
@@ -238,6 +271,20 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
     directionsMaxBuf = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
         sizeof(ScoreType) * (sizeRow), g_directionsRec, &err);
     if (hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(ScoreType) * (sizeRow) / B_TO_MB_FACTOR)))) return;
+
+    directionsMatrix = NULL;
+    if(NULL != g_directionsMatrix) {
+        directionsMatrix = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+            sizeof(int) * queryLength * searchLen, g_directionsMatrix, &err);
+        if(hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(int) * queryLength * searchLen / B_TO_MB_FACTOR)))) return;
+    }
+
+    backtraceBegins = NULL;
+    if(NULL != g_backtraceBegins) {
+        backtraceBegins = openCLHelper.clCreateBuffer_p(clContext, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+            sizeof(int) * 2 * sizeRow, g_backtraceBegins, &err);
+        if(hasOPENCLError(err, QString("Can't allocate %1 MB memory in GPU buffer").arg(QString::number(sizeof(int) * sizeRow * 2 / B_TO_MB_FACTOR)))) return;
+    }
 
     algoLog.trace(QString("partsNumber: %1 queryDevider: %2").arg(partsNumber).arg(queryDevider));
     algoLog.trace(QString("seqLen: %1 partSeqSize: %2 overlapSize: %3").arg(searchLen).arg(partSeqSize).arg(overlapLength));
@@ -292,54 +339,78 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (void*)&directionsMaxBuf);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //9: queryStartPos
+    //9: g_directionsMatrix
+    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (NULL != directionsMatrix) ? static_cast<void *>(&directionsMatrix) : NULL);
+    if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
+
+    //10: g_patternSubseqs
+    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_mem), (NULL != backtraceBegins) ? static_cast<void *>(&backtraceBegins) : NULL);
+    if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
+
+    //11: queryStartPos
     cl_int queryStartPos = 0;
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&queryStartPos);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //10: partSeqSize
+    //12: partSeqSize
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&partSeqSize);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //11: partsNumber
+    //13: partsNumber
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&partsNumber);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //12: overlapLength
+    //14: overlapLength
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&overlapLength);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //13: searchLen
+    //15: searchLen
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&searchLen);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //14: queryLength
+    //16: queryLength
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&queryLength);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //15: gapOpen
+    //17: gapOpen
     cl_int clGapOpen = -1 * gapOpen;
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&clGapOpen);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //16: gapExtension
+    //18: gapExtension
     cl_int clGapExtension = -1 * gapExtension;
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&clGapExtension);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //17: queryPartLength
+    //19: queryPartLength
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int), (void*)&partQuerySize);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //18: shared_E
+    //20: LEFT symbol in directionsMatrix
+    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&LEFT);
+    if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
+
+    //21: DIAG symbol in directionsMatrix
+    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&DIAG);
+    if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
+
+    //22: UP symbol in directionsMatrix
+    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&UP);
+    if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
+
+    //23: STOP symbol in directionMatrix
+    err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_char), (void*)&STOP);
+    if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
+
+    //24: shared_E
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int) * partQuerySize, NULL);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //19: shared_direction
+    //25: shared_direction
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int) * partQuerySize, NULL);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
-    //20: shared_direction
+    //26: shared_direction
     err = openCLHelper.clSetKernelArg_p(clKernel, n++, sizeof(cl_int) * partQuerySize, NULL);
     if (hasOPENCLError(err, QObject::tr("Kernel::setArg(%1) failed").arg(n))) return;
 
@@ -353,6 +424,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
     //run kernel
     const size_t szGlobalWorkSize = partsNumber * partQuerySize;
     const size_t szLocalWorkSize = partQuerySize;
+    
 
     for (int i = 0; i < queryDevider; i++) {
         err = openCLHelper.clEnqueueNDRangeKernel_p(
@@ -402,7 +474,7 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
 
         //queryStartPos
         queryStartPos = (i+1) * partQuerySize;
-        err = openCLHelper.clSetKernelArg_p(clKernel, 9, sizeof(cl_int), (void*)&queryStartPos);
+        err = openCLHelper.clSetKernelArg_p(clKernel, 11, sizeof(cl_int), (void*)&queryStartPos);
         if (hasOPENCLError(err, "Kernel::setArg(9) failed")) return;
     }
 
@@ -429,31 +501,113 @@ void SmithWatermanAlgorithmOPENCL::launch(const SMatrix& sm, QByteArray const & 
         err = openCLHelper.clReleaseEvent_p (clEvent);
         if (hasOPENCLError(err, "clReleaseEvent 3 failed")) return;
     }
+    if(NULL != g_directionsMatrix) {
+        err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, directionsMatrix, CL_FALSE, 0, sizeof(int) * queryLength * searchLen,
+                                                g_directionsMatrix, 0, NULL, &clEvent);
+        if (hasOPENCLError(err, "clEnqueueReadBuffer failed")) return;
+
+        err = openCLHelper.clWaitForEvents_p(1, &clEvent);
+        if (hasOPENCLError(err, "clWaitForEvents failed")) return;
+
+        if (clEvent) {
+            err = openCLHelper.clReleaseEvent_p (clEvent);
+            if (hasOPENCLError(err, "clReleaseEvent 4 failed")) return;
+        }
+    }
+    if(NULL != g_backtraceBegins) {
+        err = openCLHelper.clEnqueueReadBuffer_p(clCommandQueue, backtraceBegins, CL_FALSE, 0, sizeof(int) * 2 * sizeRow,
+            g_backtraceBegins, 0, NULL, &clEvent);
+        if (hasOPENCLError(err, "clEnqueueReadBuffer failed")) return;
+
+        err = openCLHelper.clWaitForEvents_p(1, &clEvent);
+        if (hasOPENCLError(err, "clWaitForEvents failed")) return;
+
+        if (clEvent) {
+            err = openCLHelper.clReleaseEvent_p (clEvent);
+            if (hasOPENCLError(err, "clReleaseEvent 5 failed")) return;
+        }
+    }
 
     err = openCLHelper.clFinish_p(clCommandQueue);
     if (hasOPENCLError(err, "clFinish failed")) return;
 
+    //using namespace std;
+    //cout <<"after: " <<endl;	
+    //for (int i = 0; i < sizeRow; i++) {
+    //    cout <<g_HdataTmp[i] <<" ";
+    //}
+    //cout <<endl;
+    //cout <<"directions: " <<endl;
+    //for (int i = 0; i < sizeRow; i++) {
+    //    cout <<g_directionsRec[i] <<" ";
+    //}
+    //cout <<endl;
+    //if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+    //    cout << "Directions Matrix:" << endl << " ";
+    //    for(int i = 0; i < searchLen; ++i) {
+    //        cout << " " << searchSeq[i];
+    //    }
+    //    cout << endl;
 
-    // 	   cout <<"after: " <<endl;	
-    //        for (int i = 0; i < sizeRow; i++) {
-    //            cout <<g_HdataTmp[i] <<" ";
+    //    for(int i = 0; i < searchLen * queryLength; ++i) {
+    //        if(0 == i % searchLen) {
+    //            cout << endl;
+    //            cout << searchSeq[i / searchLen] << " ";
     //        }
-    //        cout <<endl;
-    //        cout <<"directions: " <<endl;
-    //        for (int i = 0; i < sizeRow; i++) {
-    //            cout <<g_directionsRec[i] <<" ";
-    //        }
-    //        cout <<endl;
+    //        cout << static_cast<char>(g_directionsMatrix[i]) << " ";
+    //    }
+
+    //    cout << endl << "Backtrace begins: " << endl;
+    //    for(int i = 0; i < sizeRow; ++i) {
+    //        cout << "|" << g_backtraceBegins[2 * i] << " " << g_backtraceBegins[2 * i + 1] << "| ";
+    //    }
+    //    cout << endl;
+    //}
 
     //collect results
     PairAlignSequences tmp;
     for (int j = 0; j < (sizeRow); j++) {
         if (g_HdataTmp[j] >= minScore) {
-            tmp.intervalSeq1.startPos = g_directionsRec[j];
-            tmp.intervalSeq1.length = j - tmp.intervalSeq1.startPos + 1 - (j) / (partSeqSize + 1) * overlapLength - (j) / (partSeqSize + 1);
+            tmp.refSubseqInterval.startPos = g_directionsRec[j];
+            tmp.refSubseqInterval.length = j - tmp.refSubseqInterval.startPos + 1 - (j) / (partSeqSize + 1) * overlapLength - (j) / (partSeqSize + 1);
             tmp.score = g_HdataTmp[j];
-            //                        cout <<"score: " <<tmp.score <<" reg: " <<tmp.intervalSeq1.startPos <<".." <<tmp.intervalSeq1.endPos() <<endl;
+
+            if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+                qint32 pairAlignOffset = 0;
+                
+                qint32 row = g_backtraceBegins[2 * j];
+                qint32 column = g_backtraceBegins[2 * j + 1];
+                while(STOP != g_directionsMatrix[searchLen * row + column]) {
+                    if(DIAG == g_directionsMatrix[searchLen * row + column]) {
+                        tmp.pairAlignment[pairAlignOffset++] = DIAG;
+                        row--;
+                        column--;
+                    } else if(LEFT == g_directionsMatrix[searchLen * row + column]) {
+                        tmp.pairAlignment[pairAlignOffset++] = LEFT;
+                        column--;
+                    } else if(UP == g_directionsMatrix[searchLen * row + column]) {
+                        tmp.pairAlignment[pairAlignOffset++] = UP;
+                        row--;
+                    }
+                    if(0 >= row || 0 >= column) {
+                        break;
+                    }
+                }
+
+                QByteArray tmpAlignment = tmp.pairAlignment;
+                tmpAlignment.replace(LEFT, UP);
+                for(qint32 i = 0; i < tmp.pairAlignment.length(); ++i) {
+                    if(UP == tmp.pairAlignment[i]) {
+                        tmpAlignment[i] = LEFT;
+                    }
+                }
+                tmp.pairAlignment = tmpAlignment;
+
+                tmp.ptrnSubseqInterval.startPos = row;
+                tmp.ptrnSubseqInterval.length = g_backtraceBegins[2 * j] - row;
+            }
             pairAlignmentStrings.append(tmp);
+            tmp.pairAlignment.clear();
         }
     }
 
@@ -518,6 +672,14 @@ SmithWatermanAlgorithmOPENCL::~SmithWatermanAlgorithmOPENCL() {
     }
     if (directionsMaxBuf) {
         err = openCLHelper.clReleaseMemObject_p (directionsMaxBuf);
+        hasOPENCLError(err, "clReleaseEvent failed");
+    }
+    if(directionsMatrix) {
+        err = openCLHelper.clReleaseMemObject_p(directionsMatrix);
+        hasOPENCLError(err, "clReleaseEvent failed");
+    }
+    if(backtraceBegins) {
+        err = openCLHelper.clReleaseMemObject_p(backtraceBegins);
         hasOPENCLError(err, "clReleaseEvent failed");
     }
 

@@ -57,7 +57,7 @@ private:
     SmithWatermanSettings settings;
     QString transId, mtrx;
     SmithWatermanTaskFactory* algo;
-    QMap<Task*, SmithWatermanReportCallbackImpl*> callbacks;
+    QMap<Task*, SmithWatermanReportCallbackAnnotImpl*> callbacks;
 };
 
 class SWQDActorFactory : public QDActorPrototype {

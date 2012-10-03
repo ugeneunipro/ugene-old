@@ -59,8 +59,8 @@ static bool revScoreComparator(const SmithWatermanResult &s0, const SmithWaterma
     if (s0.score < s1.score) {
         res = false;
     } else if (s0.score == s1.score) {
-        U2Region r0 = s0.region;
-        U2Region r1 = s1.region;
+        U2Region r0 = s0.refSubseq;
+        U2Region r1 = s1.refSubseq;
         res = r0 < r1;
     } else {
         res = true;
@@ -99,8 +99,8 @@ SmithWatermanResultFilter* SWRF_WithoutIntersect::clone() const {
 bool SWRF_WithoutIntersect::needErase(
                         const SmithWatermanResult& currItem,
                         const SmithWatermanResult& someItem) const {
-    U2Region currRegion = currItem.region;
-    U2Region someRegion = someItem.region;
+    U2Region currRegion = currItem.refSubseq;
+    U2Region someRegion = someItem.refSubseq;
     if (currRegion.intersects(someRegion) && 
         currItem.strand == someItem.strand) {
         return true;

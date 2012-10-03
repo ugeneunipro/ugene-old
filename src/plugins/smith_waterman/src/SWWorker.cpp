@@ -487,7 +487,7 @@ Task* SWWorker::tick() {
             SmithWatermanSettings config(cfg);
             config.ptrn = p.toAscii();
 
-            SmithWatermanReportCallbackImpl* rcb = new SmithWatermanReportCallbackImpl( NULL, resultName, QString());
+            SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl( NULL, resultName, QString());
             config.resultCallback = rcb;
             config.resultListener = new SmithWatermanResultListener(); //FIXME: where to delete?
 
@@ -517,7 +517,7 @@ void SWWorker::sl_taskFinished(Task* t) {
     assert(!subs.isEmpty());
     QStringList ptrns;
     foreach(Task * sub, subs) {
-        SmithWatermanReportCallbackImpl* rcb = callbacks.take(sub);
+        SmithWatermanReportCallbackAnnotImpl* rcb = callbacks.take(sub);
         assert(rcb != NULL);
         if(rcb) {
             foreach(SharedAnnotationData a, rcb->getAnotations()) {

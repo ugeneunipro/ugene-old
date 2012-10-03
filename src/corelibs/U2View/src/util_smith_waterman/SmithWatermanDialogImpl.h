@@ -35,6 +35,8 @@
 #include <U2Algorithm/SWResultFilterRegistry.h>
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 
+#include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
+
 #include <U2Gui/RegionSelector.h>
 
 namespace U2 {
@@ -45,6 +47,8 @@ public:
     SmithWatermanDialog(QWidget* p, 
                         ADVSequenceObjectContext* ctx,
                         SWDialogConfig* dialogConfig);
+    ~SmithWatermanDialog();
+    virtual bool eventFilter(QObject * object, QEvent * event);
 
 private slots:
     void sl_bttnViewMatrix();
@@ -54,13 +58,23 @@ private slots:
 
     //void sl_remoteRunButtonClicked();
     void sl_patternChanged();
-    
+    void sl_resultViewChanged(const QString & text);
+    void sl_browseAlignFilesDir();
+    void sl_templateButtonPressed(); // suppose that template buttons have the following label: "[tag] tag_name"
+    void sl_templateEditInFocus();
+    void sl_templateEditLostFocus();
+    void sl_cancelButton();
+
+signals:
+    void templateEditInFocus();
+    void templateEditLostFocus();
+
 private:
     void clearAll();
     void loadDialogConfig();
     void saveDialogConfig();
     bool readParameters();
-    void updateVisualState();
+    void updatePatternFieldVisualState();
 
     bool readPattern(DNATranslation* aminoTT);
     bool readRegion();
@@ -73,6 +87,16 @@ private:
     void connectGUI();
     void addAnnotationWidget();
 
+    void changeResultSavingWidgets(const QString & currentText);
+    void initResultDirPath();
+    void fillTemplateButtonsList();
+    void connectTemplateButtonsGui();
+    void fillTemplateNamesFieldsByDefault();
+    QString validateResultDirPath() const;
+
+    static bool checkTemplateButtonName(const QString & name);
+    static void stripFormatSymbolsFromPatternName(QString & patternName);
+
     SubstMatrixRegistry* substMatrixRegistry;
     SWResultFilterRegistry* swResultFilterRegistry;
     SmithWatermanTaskFactoryRegistry* swTaskFactoryRegistry;
@@ -82,9 +106,13 @@ private:
     SmithWatermanTaskFactory* realization;
 
     ADVSequenceObjectContext* ctxSeq;
-    CreateAnnotationWidgetController* ac;
+    CreateAnnotationWidgetController* annotationController;
 
-    RegionSelector* rs;
+    RegionSelector* regionSelector;
+
+    SWMulAlignResultNamesTagsRegistry * tagsRegistry;
+    QList<QPushButton *> * templateButtons;
+    QBitArray * templateButtonsApplicability;
 };
 
 } // namespace

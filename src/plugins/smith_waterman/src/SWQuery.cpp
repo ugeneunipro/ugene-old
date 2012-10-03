@@ -199,7 +199,7 @@ Task* QDSWActor::getAlgorithmTask(const QVector<U2Region>& searchLocation) {
     task = new Task(tr("SSearch"), TaskFlag_NoRun);
     foreach(const U2Region& r, searchLocation) {
         SmithWatermanSettings stngs(settings);
-        SmithWatermanReportCallbackImpl* rcb = new SmithWatermanReportCallbackImpl(NULL,"",QString());
+        SmithWatermanReportCallbackAnnotImpl* rcb = new SmithWatermanReportCallbackAnnotImpl(NULL,"",QString());
         stngs.resultCallback = rcb;
         stngs.resultListener = new SmithWatermanResultListener();
         stngs.globalRegion = r;
@@ -218,7 +218,7 @@ void QDSWActor::sl_onAlgorithmTaskFinished(Task*) {
     assert(rcb);*/
     //const QList<SharedAnnotationData>& res = rcb->getAnotations();
     QList<SharedAnnotationData> res;
-    QMapIterator<Task*, SmithWatermanReportCallbackImpl*> iter(callbacks);
+    QMapIterator<Task*, SmithWatermanReportCallbackAnnotImpl*> iter(callbacks);
     while (iter.hasNext()) {
         iter.next();
         res << iter.value()->getAnotations();

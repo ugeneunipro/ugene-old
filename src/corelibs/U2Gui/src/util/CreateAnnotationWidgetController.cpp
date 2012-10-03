@@ -265,6 +265,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     newFileRB->setText(tr("Create new table"));
     newFileEdit = new QLineEdit(groupSaveAnnots);
     newFileEdit->setEnabled(false);
+    newFileEdit->setObjectName("newFilePath");
     newFileButton = new QToolButton(groupSaveAnnots);
     newFileButton->setEnabled(false);
     newFileButton->setText("...");

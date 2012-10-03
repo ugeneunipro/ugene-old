@@ -146,6 +146,8 @@ public:
 
     void setSWResultFilterRegistry (SWResultFilterRegistry* _swrfr) { assert( swrfr == NULL || _swrfr == NULL ); swrfr = _swrfr; }
 
+    void setSWMulAlignResultNamesTagsRegistry (SWMulAlignResultNamesTagsRegistry * _swmarntr) { assert( swmarntr == NULL || _swmarntr == NULL ); swmarntr = _swmarntr; }
+
     void setMSAColorSchemeRegistry(MSAColorSchemeRegistry* _mcsr) {assert( mcsr == NULL || _mcsr == NULL ); mcsr = _mcsr;}
     
     void setSecStructPedictAlgRegistry(SecStructPredictAlgRegistry* _sspar) {assert( secStructPredictRegistry == NULL || _sspar == NULL ); secStructPredictRegistry = _sspar;}
@@ -300,6 +302,7 @@ protected:
     
     virtual MolecularSurfaceFactoryRegistry*   _getMolecularSurfaceFactoryRegistry() const {return msfr;}
     virtual SWResultFilterRegistry*     _getSWResultFilterRegistry() const {return swrfr;}
+    virtual SWMulAlignResultNamesTagsRegistry * _getSWMulAlignResultNamesTagsRegistry() const {return swmarntr;}
     virtual MSAColorSchemeRegistry*     _getMSAColorSchemeRegistry() const {return mcsr;}
     virtual SecStructPredictAlgRegistry* _getSecStructPredictAlgRegistry() const {return secStructPredictRegistry;}
     virtual CudaGpuRegistry *            _getCudaGpuRegistry() const { return cgr; }
@@ -363,6 +366,7 @@ private:
     SmithWatermanTaskFactoryRegistry* swar;
     MolecularSurfaceFactoryRegistry* msfr;
     SWResultFilterRegistry*  swrfr;
+    SWMulAlignResultNamesTagsRegistry * swmarntr;
     AppSettingsGUI* asg;
     MSAColorSchemeRegistry* mcsr;
     SecStructPredictAlgRegistry* secStructPredictRegistry;

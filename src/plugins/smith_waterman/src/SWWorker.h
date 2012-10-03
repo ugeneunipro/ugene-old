@@ -67,7 +67,7 @@ private:
 
 private:
     IntegralBus *input, *output;
-    QMap<Task*, SmithWatermanReportCallbackImpl*> callbacks;
+    QMap<Task*, SmithWatermanReportCallbackAnnotImpl*> callbacks;
     QMap<Task*, QByteArray> patterns;
     QMap<QString, QString> patternNames;
     QMap<QString, QString> fastaHeaders;

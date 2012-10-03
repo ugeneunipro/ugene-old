@@ -25,20 +25,23 @@
 #include <stdlib.h>
 
 #include <U2Core/Log.h>
-
+#include "SmithWatermanAlgorithm.h"
 #include "sw_cuda_cpp.h"
 
 #include <stdio.h>
 
 typedef int ScoreType;
 
-extern QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* queryProfile, ScoreType qProfLen, int queryLength, ScoreType gapOpen, ScoreType gapExtension, ScoreType maxScore);
+extern QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* queryProfile, ScoreType qProfLen, int queryLength,
+                                        ScoreType gapOpen, ScoreType gapExtension, ScoreType maxScore,
+										U2::SmithWatermanSettings::SWResultView resultView);
 
 static U2::Logger log("Smith Waterman CUDA");
 
-QList<resType> sw_cuda_cpp::launch(const char * seqLib, int seqLibLength, ScoreType* queryProfile, ScoreType qProfLen, int queryLength, ScoreType gapOpen, ScoreType gapExtension, ScoreType maxScore) {
+QList<resType> sw_cuda_cpp::launch(const char * seqLib, int seqLibLength, ScoreType* queryProfile, ScoreType qProfLen, int queryLength,
+                                    ScoreType gapOpen, ScoreType gapExtension, ScoreType maxScore, U2::SmithWatermanSettings::SWResultView resultView) {
 
-    return calculateOnGPU(seqLib, seqLibLength, queryProfile, qProfLen, queryLength, gapOpen, gapExtension, maxScore);
+    return calculateOnGPU(seqLib, seqLibLength, queryProfile, qProfLen, queryLength, gapOpen, gapExtension, maxScore, resultView);
 }
 
 //TODO: calculate maximum alignment length
@@ -67,7 +70,7 @@ int calcSizeRow(int seqLibLength, int overlapLength, int partsNumber, int partSe
 }
 
 
-quint64 sw_cuda_cpp::estimateNeededGpuMemory( int seqLibLength, ScoreType qProfLen, int queryLength ) {
+quint64 sw_cuda_cpp::estimateNeededGpuMemory( int seqLibLength, ScoreType qProfLen, int queryLength, const U2::SmithWatermanSettings::SWResultView resultView) {
 
     int sizeP = qProfLen * sizeof(ScoreType);
     int sizeL = (seqLibLength) * sizeof(char);
@@ -78,18 +81,32 @@ quint64 sw_cuda_cpp::estimateNeededGpuMemory( int seqLibLength, ScoreType qProfL
     int sizeRow = calcSizeRow(seqLibLength, overlapLength, partsNumber, partSeqSize);
 
     int sizeN = 7 * sizeRow * sizeof(ScoreType);
+	
+int directionMatrixSize = 0;
+	int backtraceBeginsSize = 0;
+	if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+		directionMatrixSize = sizeof(int) * queryLength * seqLibLength;
+		backtraceBeginsSize = sizeof(int) * sizeRow * 2;
+	}
 
     quint64 memToAlloc = sizeL + sizeP + sizeN; //see cudaMallocs in sw_cuda.cu for details
     return memToAlloc * 1.2; //just for safety
 }
 
-quint64 sw_cuda_cpp::estimateNeededRamAmount(int seqLibLength, ScoreType qProfLen, int queryLength) {
+quint64 sw_cuda_cpp::estimateNeededRamAmount(int seqLibLength, ScoreType qProfLen, int queryLength, const U2::SmithWatermanSettings::SWResultView resultView) {
     const int overlapLength = calcOverlap(queryLength);
     const int partsNumber = calcPartsNumber(seqLibLength, overlapLength);
     const int partSeqSize = calcPartSeqSize(seqLibLength, overlapLength, partsNumber);
     const int sizeRow = calcSizeRow(seqLibLength, overlapLength, partsNumber, partSeqSize);
 
-    const quint64 memToAlloc = 3 * sizeRow * sizeof(ScoreType);
+    int directionMatrixSize = 0;
+    int backtraceBeginsSize = 0;
+    if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        directionMatrixSize = sizeof(int) * queryLength * seqLibLength;
+        backtraceBeginsSize = sizeof(int) * sizeRow * 2;
+    }
+
+    const quint64 memToAlloc = 3 * sizeRow * sizeof(ScoreType) + directionMatrixSize + backtraceBeginsSize;
     return memToAlloc;
 }
 
@@ -102,13 +119,16 @@ const int sw_cuda_cpp::MAX_SHARED_VECTOR_LENGTH = 128;
 //__global__ 
 extern void calculateMatrix_wrap(int blockSize, int threadNum, const char * seqLib, ScoreType* queryProfile,                                       
                                  ScoreType* g_HdataUp, ScoreType* g_HdataRec, ScoreType* g_HdataMax,
-                                 ScoreType* g_FdataUp,
-                                 ScoreType* g_directionsUp, ScoreType* g_directionsRec, ScoreType* g_directionsMax,
-                                 int iteration);
+                                 ScoreType* g_FdataUp, ScoreType* g_directionsUp, ScoreType* g_directionsRec,
+                                 ScoreType* g_directionsMax, int iteration, int * g_directionsMatrix,
+                                 int * g_backtraceBegins);
 
-extern void setConstants(int partSeqSize, int partsNumber, int overlapLength, int seqLibLength, int queryLength, int gapOpen, int gapExtension, int maxScore, int queryPartLength);
+extern void setConstants(int partSeqSize, int partsNumber, int overlapLength, int seqLibLength, int queryLength, int gapOpen,
+                            int gapExtension, int maxScore, int queryPartLength, char upSymbolDirectMatrix, char leftSymbolDirectMatrix,
+                            char diagSymbolDirectMatrix, char stopSymbolDirectMatrix);
 
-QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* queryProfile, ScoreType qProfLen, int queryLength, ScoreType gapOpen, ScoreType gapExtension, ScoreType maxScore) {
+QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* queryProfile, ScoreType qProfLen, int queryLength,
+                                ScoreType gapOpen, ScoreType gapExtension, ScoreType maxScore, U2::SmithWatermanSettings::SWResultView resultView) {
 
     //TODO: calculate maximum alignment length
     const int overlapLength = calcOverlap(queryLength);
@@ -140,7 +160,21 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     }
 
     ScoreType* directionRow = new ScoreType[sizeRow];
-
+	
+	size_t directionMatrixSize = 0;
+	size_t backtraceBeginsSize = 0;
+	int * globalMatrix = NULL;
+	int * backtraceBegins = NULL;
+	if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+		directionMatrixSize = seqLibLength * queryLength * sizeof(int);
+		backtraceBeginsSize = 2 * sizeRow * sizeof(int);
+		
+		globalMatrix = new int[directionMatrixSize / sizeof(int)];
+		backtraceBegins = new int[backtraceBeginsSize / sizeof(int)];
+		
+		memset(globalMatrix, 0, directionMatrixSize);
+		memset(backtraceBegins, 0, backtraceBeginsSize);
+	}
     //************************** sizes of arrays
 
     size_t sizeQ = sizeRow * sizeof(ScoreType);
@@ -160,6 +194,8 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     ScoreType* g_directionsUp;
     ScoreType* g_directionsMax;
     ScoreType* g_directionsRec;
+    int * g_directionsMatrix = NULL;
+    int * g_backtraceBegins = NULL;
 
     //************************** allocate global memory on device
 
@@ -172,8 +208,14 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     cudaMalloc((void **)& g_directionsMax, sizeQ);
     cudaMalloc((void **)& g_HdataRec, sizeQ);
     cudaMalloc((void **)& g_directionsRec, sizeQ);
+	
+	if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+		cudaError errorMatrix = cudaMalloc(reinterpret_cast<void **>(&g_directionsMatrix), directionMatrixSize);
+		cudaError errorBacktrace = cudaMalloc(reinterpret_cast<void **>(&g_backtraceBegins), backtraceBeginsSize);
+	}
 
-    log.details(QString("GLOBAL MEMORY USED %1 KB").arg((sizeL + sizeP + sizeQ * 7) / 1024));
+    log.details(QString("GLOBAL MEMORY USED %1 KB").arg((sizeL + sizeP + sizeQ * 7
+														+ directionMatrixSize + backtraceBeginsSize) / 1024));
 
     //************************** copy from host to device
 
@@ -186,6 +228,10 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     cudaMemcpy(g_directionsMax, zerroArr, sizeQ, cudaMemcpyHostToDevice);
     cudaMemcpy(g_directionsRec, zerroArr, sizeQ, cudaMemcpyHostToDevice);
     cudaMemcpy(g_HdataRec, zerroArr, sizeQ, cudaMemcpyHostToDevice);
+	if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+		cudaMemcpy(g_directionsMatrix, globalMatrix, directionMatrixSize, cudaMemcpyHostToDevice);
+		cudaMemcpy(g_backtraceBegins, backtraceBegins, backtraceBeginsSize, cudaMemcpyHostToDevice);
+	}
 
     //************************** start calculation
 
@@ -195,7 +241,10 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     dim3 dimGrid(partQuerySize);
 
     //move constants variables to constant cuda memory
-    setConstants(partSeqSize, partsNumber, overlapLength, seqLibLength, queryLength, gapOpen, gapExtension, maxScore, partQuerySize);
+    setConstants(partSeqSize, partsNumber, overlapLength, seqLibLength,
+                queryLength, gapOpen, gapExtension, maxScore, partQuerySize,
+                U2::SmithWatermanAlgorithm::UP, U2::SmithWatermanAlgorithm::LEFT, U2::SmithWatermanAlgorithm::DIAG,
+                U2::SmithWatermanAlgorithm::STOP);
 
     size_t sh_mem_size = sizeof(ScoreType) * (dimGrid.x + 1) * 3;
     log.details(QString("SHARED MEM SIZE USED: %1 B").arg(sh_mem_size));
@@ -205,7 +254,7 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
         calculateMatrix_wrap( dimBlock.x, dimGrid.x, g_seqLib,
             g_queryProfile, g_HdataUp, g_HdataRec, g_HdataMax,
             g_FdataUp, g_directionsUp, g_directionsRec,
-            g_directionsMax, i * partQuerySize);
+            g_directionsMax, i * partQuerySize, g_directionsMatrix, g_backtraceBegins);
 
         cudaError hasErrors = cudaThreadSynchronize();
 
@@ -240,15 +289,54 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     //Copy vectors on host and find actual results
     cudaMemcpy(tempRow, g_HdataMax, sizeQQ, cudaMemcpyDeviceToHost);
     cudaMemcpy(directionRow, g_directionsMax, sizeQQ, cudaMemcpyDeviceToHost);
+	if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+		cudaMemcpy(globalMatrix, g_directionsMatrix, directionMatrixSize, cudaMemcpyDeviceToHost);
+		cudaMemcpy(backtraceBegins, g_backtraceBegins, backtraceBeginsSize, cudaMemcpyDeviceToHost);
+	}
 
     QList<resType> pas;
     resType res;
     for (int j = 0; j < (sizeRow); j++) {
         if (tempRow[j] >= maxScore) {
-            res.reg.startPos = directionRow[j];
-            res.reg.length = j - res.reg.startPos + 1 - (j) / (partSeqSize + 1) * overlapLength - (j) / (partSeqSize + 1);
+            res.refSubseq.startPos = directionRow[j];
+            res.refSubseq.length = j - res.refSubseq.startPos + 1 - (j) / (partSeqSize + 1) * overlapLength - (j) / (partSeqSize + 1);
             res.score = tempRow[j];
 //             log.info(QString("score: %1, reg: %2..%3").arg(res.score).arg(res.reg.startPos).arg(res.reg.endPos()));
+            if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+                qint32 pairAlignOffset = 0;
+
+                qint32 row = backtraceBegins[2 * j];
+                qint32 column = backtraceBegins[2 * j + 1];
+                while(U2::SmithWatermanAlgorithm::STOP != globalMatrix[seqLibLength * row + column]) {
+                    if(U2::SmithWatermanAlgorithm::DIAG == globalMatrix[seqLibLength * row + column]) {
+                        res.pairAlign[pairAlignOffset++] = U2::SmithWatermanAlgorithm::DIAG;
+                        row--;
+                        column--;
+                    } else if(U2::SmithWatermanAlgorithm::LEFT == globalMatrix[seqLibLength * row + column]) {
+                        res.pairAlign[pairAlignOffset++] = U2::SmithWatermanAlgorithm::LEFT;
+                        column--;
+                    } else if(U2::SmithWatermanAlgorithm::UP == globalMatrix[seqLibLength * row + column]) {
+                        res.pairAlign[pairAlignOffset++] = U2::SmithWatermanAlgorithm::UP;
+                        row--;
+                    }
+                    if(0 >= row || 0 >= column) {
+                        break;
+                    }
+                }
+
+                QByteArray tmpAlignment = res.pairAlign;
+                tmpAlignment.replace(U2::SmithWatermanAlgorithm::LEFT, U2::SmithWatermanAlgorithm::UP);
+                for(qint32 i = 0; i < res.pairAlign.length(); ++i) {
+                    if(U2::SmithWatermanAlgorithm::UP == res.pairAlign[i]) {
+                        tmpAlignment[i] = U2::SmithWatermanAlgorithm::LEFT;
+                    }
+                }
+                res.pairAlign = tmpAlignment;
+
+                res.patternSubseq.startPos = row;
+                res.patternSubseq.length = backtraceBegins[2 * j] - row;
+            }
+            
             pas.append(res);
         }
     }
@@ -263,10 +351,17 @@ QList<resType> calculateOnGPU(const char * seqLib, int seqLibLength, ScoreType* 
     cudaFree(g_directionsUp);
     cudaFree(g_directionsMax);
     cudaFree(g_directionsRec);
+    
+    if(U2::SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        cudaFree(g_directionsMatrix);
+        cudaFree(g_backtraceBegins);
+    }
 
     delete[] tempRow;
     delete[] directionRow;
     delete[] zerroArr;
+	delete[] globalMatrix;
+	delete[] backtraceBegins;
 
     return pas;
 }

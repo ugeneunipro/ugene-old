@@ -44,6 +44,11 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/smith_waterman/SmithWatermanTaskFactoryRegistry.h \
            src/smith_waterman/SmithWatermanUtil.h \
            src/smith_waterman/SWResultFilterRegistry.h \
+           src/smith_waterman/SWMulAlignExternalPropTag.h \
+           src/smith_waterman/SWMulAlignResultNamesTag.h \
+           src/smith_waterman/SWMulAlignResultNamesTagsRegistry.h \
+           src/smith_waterman/SWMulAlignSeqPrefixTag.h \
+           src/smith_waterman/SWMulAlignSubseqPropTag.h \
            src/structural_alignment/StructuralAlignmentAlgorithm.h \
            src/structural_alignment/StructuralAlignmentAlgorithmFactory.h \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.h \
@@ -116,6 +121,10 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/smith_waterman/SmithWatermanTaskFactoryRegistry.cpp \
            src/smith_waterman/SmithWatermanUtil.cpp \
            src/smith_waterman/SWResultFilterRegistry.cpp \
+           src/smith_waterman/SWMulAlignExternalPropTag.cpp \
+           src/smith_waterman/SWMulAlignResultNamesTagsRegistry.cpp \
+           src/smith_waterman/SWMulAlignSeqPrefixTag.cpp \
+           src/smith_waterman/SWMulAlignSubseqPropTag.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithm.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithmFactory.cpp \
            src/structural_alignment/StructuralAlignmentAlgorithmRegistry.cpp \

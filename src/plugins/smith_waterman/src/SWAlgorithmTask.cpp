@@ -141,21 +141,25 @@ void SWAlgorithmTask::setupTask(int maxScore) {
     switch(algType) {
         case SW_cuda:
 #ifdef SW2_BUILD_WITH_CUDA
-            addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, SmithWatermanAlgorithmCUDA::estimateNeededRamAmount(
-                sWatermanConfig.pSm, sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads)) / B_TO_MB_FACTOR, true));
+            addTaskResource(TaskResourceUsage( RESOURCE_MEMORY,
+                SmithWatermanAlgorithmCUDA::estimateNeededRamAmount(sWatermanConfig.pSm, sWatermanConfig.ptrn,
+                    sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads), sWatermanConfig.resultView),
+                true));
 #endif
             break;
         case SW_opencl:
 #ifdef SW2_BUILD_WITH_OPENCL
-            addTaskResource(TaskResourceUsage( RESOURCE_MEMORY, SmithWatermanAlgorithmOPENCL::estimateNeededRamAmount(
-                sWatermanConfig.pSm, sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads)) / B_TO_MB_FACTOR, true));
+            addTaskResource(TaskResourceUsage( RESOURCE_MEMORY,
+                SmithWatermanAlgorithmOPENCL::estimateNeededRamAmount(sWatermanConfig.pSm, sWatermanConfig.ptrn,
+                    sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads), sWatermanConfig.resultView),
+                true));
 #endif
             break;
         case SW_classic:
             addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,
-                SmithWatermanAlgorithm::estimateNeededRamAmount(sWatermanConfig.gapModel.scoreGapOpen, sWatermanConfig.gapModel.scoreGapExtd,
-                minScore, maxScore,
-                sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads)),
+                SmithWatermanAlgorithm::estimateNeededRamAmount(sWatermanConfig.gapModel.scoreGapOpen,
+                    sWatermanConfig.gapModel.scoreGapExtd, minScore, maxScore, sWatermanConfig.ptrn,
+                    sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads), sWatermanConfig.resultView),
                 true));
             break;
         case SW_sse2:
@@ -163,7 +167,7 @@ void SWAlgorithmTask::setupTask(int maxScore) {
             addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,
                 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(sWatermanConfig.pSm, sWatermanConfig.ptrn,
                     sWatermanConfig.sqnc.left(c.chunkSize * c.nThreads), sWatermanConfig.gapModel.scoreGapOpen,
-                    sWatermanConfig.gapModel.scoreGapExtd, minScore, maxScore),
+                    sWatermanConfig.gapModel.scoreGapExtd, minScore, maxScore, sWatermanConfig.resultView),
                 true));
 #endif
             break;
@@ -183,7 +187,7 @@ void SWAlgorithmTask::prepare() {
         assert( cudaGpu );
 #ifdef SW2_BUILD_WITH_CUDA
         quint64 needMemBytes = SmithWatermanAlgorithmCUDA::estimateNeededGpuMemory(
-                sWatermanConfig.pSm, sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(config.chunkSize * config.nThreads));
+                sWatermanConfig.pSm, sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(config.chunkSize * config.nThreads), sWatermanConfig.resultView);
         quint64 gpuMemBytes = cudaGpu->getGlobalMemorySizeBytes();
         if( gpuMemBytes < needMemBytes ) {
             stateInfo.setError( tr("Not enough memory on CUDA-enabled device. "
@@ -273,7 +277,7 @@ void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
     sw->launch(sWatermanConfig.pSm, sWatermanConfig.ptrn, localSeq, 
         sWatermanConfig.gapModel.scoreGapOpen + sWatermanConfig.gapModel.scoreGapExtd, 
         sWatermanConfig.gapModel.scoreGapExtd, 
-        minScore);
+        minScore, sWatermanConfig.resultView);
     QString algName;
     if (algType == SW_cuda) {
         algName = "CUDA";
@@ -295,18 +299,18 @@ void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
         res[i].isAminoTranslated = t->isAminoTranslated();
 
         if (t->isAminoTranslated()) {
-            res[i].intervalSeq1.startPos *= 3;
-            res[i].intervalSeq1.length *= 3;
+            res[i].refSubseqInterval.startPos *= 3;
+            res[i].refSubseqInterval.length *= 3;
         }
 
         
         if (t->isDNAComplemented()) {
             const U2Region& wr = t->getGlobalRegion();
-            res[i].intervalSeq1.startPos =
-                wr.endPos() - res[i].intervalSeq1.endPos() - sWatermanConfig.globalRegion.startPos;
+            res[i].refSubseqInterval.startPos =
+                wr.endPos() - res[i].refSubseqInterval.endPos() - sWatermanConfig.globalRegion.startPos;
         }
         else {
-            res[i].intervalSeq1.startPos += 
+            res[i].refSubseqInterval.startPos += 
                 (t->getGlobalRegion().startPos - sWatermanConfig.globalRegion.startPos);
         }        
     }
@@ -317,23 +321,22 @@ void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
     delete sw;
 }
 
-void SWAlgorithmTask::removeResultFromOverlap(QList<PairAlignSequences> & res) {     
-    for (int i = 0; i < res.size() - 1; i++) {
-        for (int j = i + 1; j < res.size(); j++) {
-            if (res.at(i).intervalSeq1 == res.at(j).intervalSeq1 && res.at(i).isDNAComplemented == res.at(j).isDNAComplemented) {
-                if (res.at(i).score > res.at(j).score) {
-                    res.removeAt(j);
-                    j--;
-                } else {
-                    res.removeAt(i);
-                    i--;
-                    j=res.size();
-                }
-                
+void SWAlgorithmTask::removeResultFromOverlap(QList<PairAlignSequences> & res) {
+for(QList<PairAlignSequences>::iterator i = res.begin(); i < res.end() - 1; ++i) {
+        for(QList<PairAlignSequences>::iterator j = i + 1; j < res.end(); ++j) {
+            if ((*i).refSubseqInterval == (*j).refSubseqInterval && (*i).isDNAComplemented == (*j).isDNAComplemented &&
+                (((*i).ptrnSubseqInterval == (*j).ptrnSubseqInterval) | (sWatermanConfig.resultView == SmithWatermanSettings::ANNOTATIONS))) {
+                    if ((*i).score > (*j).score) {
+                        res.erase(j);
+                        j--;
+                    } else {
+                        res.erase(i);
+                        i--;
+                        j = res.end();
+                    }
             }
         }
     }
-    
 }
 
 
@@ -429,13 +432,14 @@ void SWResultsPostprocessingTask::prepare(){
 
 void SWResultsPostprocessingTask::run(){
     SmithWatermanResult r;
-    for (int i = 0; i < resPAS.size(); i++) {
-
-        r.strand = resPAS.at(i).isDNAComplemented ? U2Strand::Complementary : U2Strand::Direct;
-        r.trans = resPAS.at(i).isAminoTranslated;
-        r.region = resPAS.at(i).intervalSeq1;
-        r.region.startPos += sWatermanConfig.globalRegion.startPos;
-        r.score = resPAS.at(i).score;
+    for(QList<PairAlignSequences>::const_iterator i = resPAS.constBegin(); i != resPAS.constEnd(); ++i) {
+        r.strand = (*i).isDNAComplemented ? U2Strand::Complementary : U2Strand::Direct;
+        r.trans = (*i).isAminoTranslated;
+        r.refSubseq = (*i).refSubseqInterval;
+        r.refSubseq.startPos += sWatermanConfig.globalRegion.startPos;
+        r.ptrnSubseq = (*i).ptrnSubseqInterval;
+        r.score = (*i).score;
+        r.pairAlignment = (*i).pairAlignment;
 
         resultList.append(r);
     }
@@ -445,7 +449,7 @@ void SWResultsPostprocessingTask::run(){
         rf->applyFilter(&resultList);
     }
     foreach( const SmithWatermanResult & r, resultList ) { /* push results after filters */
-        sWatermanConfig.resultListener->pushResult( r );
+        sWatermanConfig.resultListener->pushResult(r);
     }
 }
 

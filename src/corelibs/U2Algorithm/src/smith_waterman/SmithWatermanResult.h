@@ -34,7 +34,7 @@ struct U2ALGORITHM_EXPORT SmithWatermanResult {
         SharedAnnotationData data;
         data = new AnnotationData;
         data->name = name;
-        data->location->regions << region;
+        data->location->regions << refSubseq;
         data->setStrand(strand);
         data->qualifiers.append(U2Qualifier("score", QString::number(score)));
         return data;
@@ -49,7 +49,13 @@ struct U2ALGORITHM_EXPORT SmithWatermanResult {
     U2Strand strand;
     bool trans;
     float score;
-    U2Region region;
+    U2Region refSubseq;
+    U2Region ptrnSubseq;
+    QByteArray pairAlignment;
+
+    static const char UP = 'u';
+    static const char LEFT = 'l';
+    static const char DIAG = 'd';
 };
 
 class U2ALGORITHM_EXPORT SmithWatermanResultListener {

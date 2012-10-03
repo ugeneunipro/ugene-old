@@ -62,6 +62,15 @@ struct SWDialogConfig {
         searchType  = SmithWatermanSearchType_noSearch;
         strand      = StrandOption_DirectOnly;
         rangeType   = SmithWatermanRangeType_noRange;
+
+        resultView = SmithWatermanSettings::MULTIPLE_ALIGNMENT;
+
+        alignFilesNamesTmpl = QString("");
+        refSubseqNamesTmpl = QString("");
+        ptrnSubseqNamesTmpl = QString("");
+        patternSequenceName = QString("");
+
+		enableAdvancedMASettings = false;
     }
     QByteArray ptrn;
 
@@ -75,6 +84,15 @@ struct SWDialogConfig {
     SmithWatermanSearchType searchType;                
     StrandOption strand;
     SmithWatermanRangeType  rangeType;
+    
+    SmithWatermanSettings::SWResultView resultView;
+
+    QString alignFilesNamesTmpl;
+    QString refSubseqNamesTmpl;
+    QString ptrnSubseqNamesTmpl;
+    QString patternSequenceName;
+
+	bool enableAdvancedMASettings;
 };
 
 class U2VIEW_EXPORT SmithWatermanDialogController {

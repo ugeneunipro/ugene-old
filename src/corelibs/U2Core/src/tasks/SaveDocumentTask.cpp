@@ -157,6 +157,12 @@ Task::ReportResult SaveDocumentTask::report() {
         }
         delete doc;
     }
+    if(flags.testFlag(SaveDoc_UnloadAfter)) {
+        if(!doc->unload()) {
+            stateInfo.setError(tr("Document '%1' can't be unloaded: ").arg(doc->getName()) + tr("unexpected error"));
+            coreLog.error(stateInfo.getError());
+        }
+    }
     if (flags.testFlag(SaveDoc_OpenAfter)) {
         Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(url);
         if (NULL != openTask) {

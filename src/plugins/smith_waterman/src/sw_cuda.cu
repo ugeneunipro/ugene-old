@@ -5,14 +5,14 @@ typedef int ScoreType;
 // CUDA global constants
 __constant__ int partSeqSize, partsNumber, overlapLength, seqLibLength, queryLength;
 __constant__ int gapOpen, gapExtension, maxScore, queryPartLength;
-
+__constant__ char upSymbolDirectMatrix, leftSymbolDirectMatrix, diagSymbolDirectMatrix, stopSymbolDirectMatrix;
 
 //global function
 __global__ void calculateMatrix(const char * seqLib, ScoreType* queryProfile,
 								ScoreType* g_HdataUp, ScoreType* g_HdataRec, ScoreType* g_HdataMax,
 								ScoreType* g_FdataUp,
 								ScoreType* g_directionsUp, ScoreType* g_directionsRec, ScoreType* g_directionsMax,
-								int queryStartPos) 
+								int queryStartPos, int * g_directionsMatrix, int * g_backtraceBegins) 
 {
 
 	//registers
@@ -25,9 +25,9 @@ __global__ void calculateMatrix(const char * seqLib, ScoreType* queryProfile,
 	int seqPos = 0, globalPos = 0, diagNum = 0;
 	ScoreType substScore = 0;	
 	ScoreType E = 0, E_left = 0, F = 0, F_up = 0, H = 0,
-		H_left = 0, H_up = 0, H_upleft = 0, E_left_init = 0, 
-		H_left_init = 0, directionLeft = 0, directionUp = 0, 
-		directionUpLeft = 0, direction = 0, directionInit = 0,
+		H_left = 0, H_up = 0, H_upleft = 0,
+		directionLeft = 0, directionUp = 0, 
+		directionUpLeft = 0, direction = 0,
 		maxScore = 0;
 
 
@@ -86,18 +86,23 @@ __global__ void calculateMatrix(const char * seqLib, ScoreType* queryProfile,
 			H = max(H, H_upleft + substScore);	
 
 			//chose direction
+			char directionForMatrix = stopSymbolDirectMatrix;
+
 			if (H == 0) {		 
 				direction = seqPos + 1;				
 			}
 			else if (H == E) {
 				direction = directionLeft;
+				directionForMatrix = upSymbolDirectMatrix;
 			}	
 			else if (H == F) {
 				direction = directionUp;
+				directionForMatrix = leftSymbolDirectMatrix;
 			}	
 			//(H == H_upleft + substScore)
 			else {
 				direction = directionUpLeft;
+				directionForMatrix = diagSymbolDirectMatrix;
 			}		
 				
 			shared_E[patternPos + 1] = E;
@@ -111,11 +116,20 @@ __global__ void calculateMatrix(const char * seqLib, ScoreType* queryProfile,
 			directionUp = direction;			
 			directionUpLeft = directionLeft;
 
+			if(0 != g_directionsMatrix) {
+				g_directionsMatrix[seqLibLength * globalPatternPos + seqPos] = (int)directionForMatrix;
+			}
+
 			//collect best result
 			maxScore = max(H, g_HdataMax[globalPos]);
 			if (maxScore == H) {
 				g_HdataMax[globalPos] = maxScore;
 				g_directionsMax[globalPos] = direction;
+
+				if(NULL != g_directionsMatrix && NULL != g_backtraceBegins) {
+					g_backtraceBegins[globalPos * 2] = globalPatternPos;
+					g_backtraceBegins[globalPos * 2 + 1] = seqPos;
+				}
 			}
 
 			//if this last iteration then start prepare next
@@ -139,16 +153,19 @@ void calculateMatrix_wrap(int blockSize, int threadNum, const char * seqLib, Sco
 						  ScoreType* g_HdataUp, ScoreType* g_HdataRec, ScoreType* g_HdataMax,
 						  ScoreType* g_FdataUp,
 						  ScoreType* g_directionsUp, ScoreType* g_directionsRec, ScoreType* g_directionsMax,
-						  int iteration) 
+						  int iteration, int * g_directionsMatrix, int * g_backtraceBegins) 
 {
 	size_t sh_mem_size = sizeof(ScoreType) * (threadNum + 1) * 3;
 	calculateMatrix<<<blockSize, threadNum, sh_mem_size>>>(seqLib,
 		queryProfile, g_HdataUp, 
 		g_HdataRec, g_HdataMax, g_FdataUp,                                   
-		g_directionsUp, g_directionsRec, g_directionsMax, iteration);
+		g_directionsUp, g_directionsRec, g_directionsMax, iteration,
+		g_directionsMatrix, g_backtraceBegins);
 }
 
-void setConstants(int partSeqSize, int partsNumber, int overlapLength, int seqLibLength, int queryLength, int gapOpen, int gapExtension, int maxScore, int queryPartLength) {
+void setConstants(int partSeqSize, int partsNumber, int overlapLength, int seqLibLength, int queryLength, int gapOpen,
+					int gapExtension, int maxScore, int queryPartLength, char upSymbolDirectMatrix, char leftSymbolDirectMatrix,
+					char diagSymbolDirectMatrix, char stopSymbolDirectMatrix) {
 	cudaMemcpyToSymbol("partSeqSize",    &partSeqSize,    sizeof(partSeqSize));
 	cudaMemcpyToSymbol("partsNumber",    &partsNumber,    sizeof(partsNumber));
 	cudaMemcpyToSymbol("overlapLength",    &overlapLength,    sizeof(overlapLength));
@@ -158,6 +175,10 @@ void setConstants(int partSeqSize, int partsNumber, int overlapLength, int seqLi
 	cudaMemcpyToSymbol("gapExtension",    &gapExtension,    sizeof(gapExtension));
 	cudaMemcpyToSymbol("maxScore",    &maxScore,    sizeof(maxScore));
 	cudaMemcpyToSymbol("queryPartLength",    &queryPartLength,    sizeof(queryPartLength));
+	cudaMemcpyToSymbol("upSymbolDirectMatrix", &upSymbolDirectMatrix, sizeof(upSymbolDirectMatrix));
+	cudaMemcpyToSymbol("leftSymbolDirectMatrix", &leftSymbolDirectMatrix, sizeof(leftSymbolDirectMatrix));
+	cudaMemcpyToSymbol("diagSymbolDirectMatrix", &diagSymbolDirectMatrix, sizeof(diagSymbolDirectMatrix));
+	cudaMemcpyToSymbol("stopSymbolDirectMatrix", &stopSymbolDirectMatrix, sizeof(stopSymbolDirectMatrix));
 }
 
 //#endif //SW2_BUILD_WITH_CUDA

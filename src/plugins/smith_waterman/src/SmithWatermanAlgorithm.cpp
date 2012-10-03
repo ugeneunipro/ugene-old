@@ -24,8 +24,6 @@
 #include <U2Core/Timer.h>
 #include <U2Core/Log.h>
 
-const double B_TO_MB_FACTOR = 1048576.0;
-
 namespace U2 {
 
 const char SmithWatermanAlgorithm::STOP = 's';
@@ -40,12 +38,14 @@ SmithWatermanAlgorithm::SmithWatermanAlgorithm() {
     gapExtension = 0;
     minScore = 0;
     matrixLength = 0;
-    storedResults = 0; 
 }
 
 quint64 SmithWatermanAlgorithm::estimateNeededRamAmount(const qint32 gapOpen, const qint32 gapExtension,
                                                         const quint32 minScore, const quint32 maxScore,
-                                                        QByteArray const & patternSeq, QByteArray const & searchSeq) {
+                                                        QByteArray const & patternSeq, QByteArray const & searchSeq,
+                                                        const SmithWatermanSettings::SWResultView resultView) {
+    const double b_to_mb_factor = 1048576.0;
+
     const quint64 queryLength = patternSeq.length();
     const quint64 searchLength = searchSeq.length();
 
@@ -60,15 +60,23 @@ quint64 SmithWatermanAlgorithm::estimateNeededRamAmount(const qint32 gapOpen, co
     
     const quint64 maxPairSequencesSize = (searchLength + 1) * sizeof(PairAlignSequences);
     const quint64 matrixSize = matrixLength * (queryLength + 2) * sizeof(int);
-    const quint64 directionMatrixSize = matrixLength * (queryLength + 2) * sizeof(char);
     const quint64 EMatrixSize = (queryLength + 2) * sizeof(int);
     const quint64 FMatrixSize = (queryLength + 2) * sizeof(int);
-    const quint64 directionSearchSeqSize = 2 * (queryLength + 2) * sizeof(int);
 
+    quint64 directionArraySize = 0;
+    
+    if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+       directionArraySize = 2 * (queryLength + 2) * sizeof(int);
+    } else if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        directionArraySize = matrixLength * (queryLength + 2) * sizeof(char);
+    } else {
+        assert(0);
+    }
+    
     const quint64 memToAllocInBytes = (queryLength + 2) * ((sizeof(int) * 3)  + sizeof(char)) +
-        maxPairSequencesSize + matrixSize + directionMatrixSize + EMatrixSize + FMatrixSize + directionSearchSeqSize;
+        maxPairSequencesSize + matrixSize + EMatrixSize + FMatrixSize + directionArraySize;
 
-    return memToAllocInBytes / B_TO_MB_FACTOR;
+    return memToAllocInBytes / b_to_mb_factor;
 }
 
 //notes: Gap < 0
@@ -111,7 +119,7 @@ bool SmithWatermanAlgorithm::calculateMatrixLength() {
 
 void SmithWatermanAlgorithm::setValues(const SMatrix& _substitutionMatrix, 
                                        QByteArray const & _patternSeq, QByteArray const & _searchSeq, 
-                                       int _gapOpen, int _gapExtension, int _minScore) {
+                                       int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView) {
 
     substitutionMatrix = _substitutionMatrix;
     patternSeq = _patternSeq;
@@ -119,15 +127,15 @@ void SmithWatermanAlgorithm::setValues(const SMatrix& _substitutionMatrix,
     gapOpen = _gapOpen;
     gapExtension = _gapExtension;
     minScore = _minScore;    
-
+    resultView = _resultView;
 }
 
 void SmithWatermanAlgorithm::launch(const SMatrix& _substitutionMatrix, 
                                     QByteArray const & _patternSeq, QByteArray const & _searchSeq, 
-                                    int _gapOpen, int _gapExtension, int _minScore) 
+                                    int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView) 
 {    
     //set values
-    setValues(_substitutionMatrix, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore);
+    setValues(_substitutionMatrix, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore, _resultView);
 
 //launch algorithm
 
@@ -199,12 +207,12 @@ void SmithWatermanAlgorithm::sortByScore( QList<PairAlignSequences> & res) {
                 KeyOfPairAlignSeq::exchange(res[i],res[j]);
             }
             else if (res.at(i).score == res.at(j).score 
-                && res.at(i).intervalSeq1.startPos > res.at(j).intervalSeq1.startPos) {
+                && res.at(i).refSubseqInterval.startPos > res.at(j).refSubseqInterval.startPos) {
                     KeyOfPairAlignSeq::exchange(res[i], res[j]);
             }
             else if (res.at(i).score == res.at(j).score 
-                && res.at(i).intervalSeq1.startPos == res.at(j).intervalSeq1.startPos
-                && res.at(i).intervalSeq1.length > res.at(j).intervalSeq1.length) {
+                && res.at(i).refSubseqInterval.startPos == res.at(j).refSubseqInterval.startPos
+                && res.at(i).refSubseqInterval.length > res.at(j).refSubseqInterval.length) {
                     KeyOfPairAlignSeq::exchange(res[i], res[j]);
             }
         }
@@ -239,27 +247,31 @@ void SmithWatermanAlgorithm::calculateMatrix() {
 
     for (int tt = 0; tt < matrixLength; tt++) {            
         matrix.append(rowInts);
-        directionMatrix.append(rowChars);            
+        if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+            directionMatrix.append(rowChars);
+        }
     }
 
     PairAlignSequences p;
-    QByteArray pairAlign;
-    U2Region sReg;
-    U2Region pReg;
 
-    QVector<QVector<int> > directionSearchSeq;    
-    directionSearchSeq.push_back(rowInts);
-    directionSearchSeq.push_back(rowInts);
+    QVector<QVector<int> > directionSearchSeq;
+    if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+        directionSearchSeq.push_back(rowInts);
+        directionSearchSeq.push_back(rowInts);
+    }
 
     int even = 0;
     int odd = 0;
     for (int i = 1; i < searchSeq.length() + 1; i++) {
         ch = searchSeq.at(i - 1);
-        even = i % 2;
-        odd = (i + 1) % 2;
+        
+        if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+            even = i % 2;
+            odd = (i + 1) % 2;
 
-        directionSearchSeq[odd][0] = i - 1;
-        p.score = 0;
+            directionSearchSeq[odd][0] = i - 1;
+            p.score = 0;
+        }
 
         for (int j = 1; j < patternSeq.length()+1; j++) {                
 
@@ -277,41 +289,50 @@ void SmithWatermanAlgorithm::calculateMatrix() {
 
             substValue = matrix[getRow(i-1)][j-1] 
                 + substitutionMatrix.getScore(ch, patternSeq.at(j-1));
-
+            
             //Get max value and store them
             max = maximum(EMatrix[j], FMatrix[j], substValue);
             matrix[getRow(i)][j] = max;
-
-            //Save direction from we come here for back trace
-//             if (max == 0) directionMatrix[getRow(i)][j] = STOP; 
-//             else if (max == EMatrix[j]) directionMatrix[getRow(i)][j] = LEFT;
-//             else if (max == FMatrix[j]) directionMatrix[getRow(i)][j] = UP;
-//             else if (max == substValue) directionMatrix[getRow(i)][j] = DIAG;
-/*
-            //If value meet the conditions then start backtrace()
-
-            if ( max >= minScore ) backtrace(i, j, max);                
-            */
             
-            if (max == 0) {
-                directionSearchSeq[even][j] = i;                
-            }
-            else if (max == EMatrix[j]) {
-                directionSearchSeq[even][j] = directionSearchSeq[even][j - 1];                
-            }
-            else if (max == FMatrix[j]) {
-                directionSearchSeq[even][j] = directionSearchSeq[odd][j];                                
-            }
-            else if (max == substValue) {
-                directionSearchSeq[even][j] = directionSearchSeq[odd][j - 1];                
-            }
-            if (max >= p.score) {
-                p.intervalSeq1.startPos = directionSearchSeq[even][j];
-                p.intervalSeq1.length = i - directionSearchSeq[even][j];
-                p.score = max;
+            if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+                //Save direction from we come here for back trace
+                 if (max == 0) {
+                     directionMatrix[getRow(i)][j] = STOP;
+                 } else if (max == EMatrix[j]) {
+                     directionMatrix[getRow(i)][j] = LEFT;
+                 } else if (max == FMatrix[j]) {
+                     directionMatrix[getRow(i)][j] = UP;
+                 } else if (max == substValue) {
+                     directionMatrix[getRow(i)][j] = DIAG;
+                 }
+
+                //If value meet the conditions then start backtrace()
+                if (max >= minScore) {
+                    backtrace(i, j, max);
+                }
+            } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+                if (max == 0) {
+                    directionSearchSeq[even][j] = i;                
+                }
+                else if (max == EMatrix[j]) {
+                    directionSearchSeq[even][j] = directionSearchSeq[even][j - 1];                
+                }
+                else if (max == FMatrix[j]) {
+                    directionSearchSeq[even][j] = directionSearchSeq[odd][j];                                
+                }
+                else if (max == substValue) {
+                    directionSearchSeq[even][j] = directionSearchSeq[odd][j - 1];                
+                }
+                if (max >= p.score) {
+                    p.refSubseqInterval.startPos = directionSearchSeq[even][j];
+                    p.refSubseqInterval.length = i - directionSearchSeq[even][j];
+                    p.score = max;
+                }
+            } else {
+                assert(0);
             }
         }
-        if (p.score >= minScore) {
+        if (SmithWatermanSettings::ANNOTATIONS == resultView && p.score >= minScore) {
             pairAlignmentStrings.append(p);
         }
 
@@ -337,53 +358,30 @@ void SmithWatermanAlgorithm::backtrace(int row, int col, int score) {
     QByteArray pairAlign;
     int rBegin = row, cBegin = col;
 
-        //algorithm back trace
-        while (directionMatrix[getRow(row)][col] != STOP) {
-            if (DIAG == directionMatrix[getRow(row)][col]) {
-                // substitution                
-                pairAlign.append(PairAlignSequences::DIAG);
+    //algorithm back trace
+    while (directionMatrix[getRow(row)][col] != STOP) {
+        if (DIAG == directionMatrix[getRow(row)][col]) {
+            // substitution                
+            pairAlign.append(PairAlignSequences::DIAG);
+            row--; col--;
+        } else if (LEFT == directionMatrix[getRow(row)][col]) {
+            // insertion                                
+            pairAlign.append(PairAlignSequences::LEFT);
+            col--;          
+        } else if (UP == directionMatrix[getRow(row)][col]) {
+            // must be a deletion                                                            
+            pairAlign.append(PairAlignSequences::UP);
+            row--;
+        }                                                                            
 
-                row--; col--;
-                // skip to the next iteration
-                continue;
-            }
-
-            if (LEFT == directionMatrix[getRow(row)][col]) {
-                // insertion                                
-                pairAlign.append(PairAlignSequences::LEFT);
-
-                col--;
-                // skip to the next iteration
-                continue;            
-            }
-
-            if (UP == directionMatrix[getRow(row)][col]) {
-                // must be a deletion                                                            
-                pairAlign.append(PairAlignSequences::UP);
-
-                row--;
-                // skip to the next iteration
-                continue;
-            }                                                                            
-
-        }                
-        //Save sequences
-        U2Region sReg(row, rBegin - row);
-        U2Region pReg(col, cBegin - col);
+    }                
+    //Save sequences
+    U2Region sReg(row, rBegin - row);
+    U2Region pReg(col, cBegin - col);
         
-
-
-//             PairAlignSequences p;
-//             p.setValues(score, pairAlign, sReg, pReg);
-//             pairAlignmentStrings.append(p);
-//             storedResults++;
-
-        PairAlignSequences p;
-        p.setValues(score, sReg);
-        pairAlignmentStrings.append(p);
-        storedResults++;
-
-
+    PairAlignSequences p;
+    p.setValues(score, sReg, pReg, pairAlign);
+    pairAlignmentStrings.append(p);
 }
 
 //GetRow with shift
