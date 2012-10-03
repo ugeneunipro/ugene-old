@@ -468,6 +468,7 @@ void BlastPlusSupportCommonTask::parseXMLHsp(const QDomNode &xml,const QString &
             float percent = (float)identities / (float)align_len * 100.;
             QString str = QString::number(identities) + '/' + QString::number(align_len) + " (" + QString::number(percent,'g',4) + "%)";
             ad->qualifiers.push_back(U2Qualifier( "identities", str ));
+            ad->qualifiers.push_back(U2Qualifier( "identity_percent", QString::number(percent) ));
         }
     }
 
