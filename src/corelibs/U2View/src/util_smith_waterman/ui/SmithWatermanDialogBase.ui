@@ -522,7 +522,7 @@
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item alignment="Qt::AlignTop">
+         <item>
           <widget class="QWidget" name="annotationsWidget" native="true">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
