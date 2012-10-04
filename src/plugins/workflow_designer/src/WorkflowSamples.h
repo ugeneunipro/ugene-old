@@ -84,16 +84,13 @@ public:
     }
 
 public slots:
-    void test();
-    void setItem(QTreeWidgetItem*);
+    void setItem(QTreeWidgetItem *it){item = it;};
 signals:
     void itemActivated(QTreeWidgetItem * item);
     void cancel();
 protected:
     virtual void mouseDoubleClickEvent ( QMouseEvent * event );
     virtual void keyPressEvent ( QKeyEvent * event );
-    //    virtual void mousePressEvent ( QMouseEvent * event );
-    //virtual void mouseReleaseEvent ( QMouseEvent * event );
 private:
     QTextDocument*      m_document;
     QTreeWidgetItem*    item;
@@ -107,21 +104,7 @@ public:
     static const QString MIME_TYPE;
 
     SamplesWidget(WorkflowScene *scene, QWidget *parent = 0);
-//     QList<Descriptor> getCategories() const;
-//     QList<Descriptor> getItems(const Descriptor& cat) const;
-//     QMenu* createMenu(const QString& name);
-// 
-//     QVariant saveState() const;
-//     void restoreState(const QVariant&);
-// 
-//     public slots:
-//         void resetSelection();
-// 
-// signals:
-//         void processSelected(Workflow::ActorPrototype*);
-// 
-// protected:
-//     void contextMenuEvent(QContextMenuEvent *e);
+
 public slots:
     void cancelItem();
 protected:
@@ -133,6 +116,7 @@ protected:
 private slots:
     void handleTreeItem(QTreeWidgetItem * item);
     void activateItem(QTreeWidgetItem * item);
+    void sl_refreshSampesItems();
     
 signals:
     void setupGlass(GlassPane*);
@@ -144,7 +128,5 @@ private:
 };
 
 }//namespace
-
-//Q_DECLARE_METATYPE(QAction *)
 
 #endif

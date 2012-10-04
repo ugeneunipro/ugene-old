@@ -29,6 +29,7 @@
 
 #include <U2Designer/WorkflowGUIUtils.h>
 #include <U2Lang/WorkflowUtils.h>
+#include <U2Lang/WorkflowSettings.h>
 
 #include <QtCore/QDir>
 #include <QtCore/QFile>
@@ -77,51 +78,10 @@ public:
         opt.rect.setSize(widget->size());
         return style->sizeFromContents(QStyle::CT_ItemViewItem, &opt, QSize(), widget);
     }
-
-//     void QStyledItemDelegate::paint(QPainter *painter,
-//         const QStyleOptionViewItem &option, const QModelIndex &index) const
-//     {
-//         Q_ASSERT(index.isValid());
-// 
-//         QStyleOptionViewItemV4 opt = option;
-//         initStyleOption(&opt, index);
-// 
-//         const QWidget *widget = qobject_cast<QWidget*>(parent());//QStyledItemDelegatePrivate::widget(option);
-//         QStyle *style = widget ? widget->style() : QApplication::style();
-//         style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, widget);
-//     }
-
-    /*void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const
-    {
-        QStyledItemDelegate::initStyleOption(option, index);
-        QWidget* owner;
-        if ((owner = qobject_cast<QWidget*>(parent()))) {
-            option->rect.setWidth(owner->width());
-            option->rect.setHeight(0);
-        }
-//         QVariant value = index.data(Qt::FontRole);
-//         if (value.isValid() && !value.isNull()) {
-//             option->font = qvariant_cast<QFont>(value).resolve(option->font);
-//             option->fontMetrics = QFontMetrics(option->font);
-//         }
-// 
-//         value = index.data(Qt::TextAlignmentRole);
-//         if (value.isValid() && !value.isNull())
-//             option->displayAlignment = (Qt::Alignment)value.toInt();
-// 
-//         value = index.data(Qt::ForegroundRole);
-//         if (qVariantCanConvert<QBrush>(value))
-//             option->palette.setBrush(QPalette::Text, qvariant_cast<QBrush>(value));
-
-        if (QStyleOptionViewItemV2 *v2 = qstyleoption_cast<QStyleOptionViewItemV2 *>(option)) {
-            v2->features |= QStyleOptionViewItemV2::WrapText;
-        }
-    }*/
 };
 
 SamplesWidget::SamplesWidget(WorkflowScene *scene, QWidget *parent) : QTreeWidget(parent) {
     setColumnCount(1);
-    //header()->hide();
     setHeaderHidden(true);
     setItemDelegate(new SampleDelegate(this));
     setWordWrap(true);
@@ -134,12 +94,11 @@ SamplesWidget::SamplesWidget(WorkflowScene *scene, QWidget *parent) : QTreeWidge
 
     glass = new SamplePane(scene);
 
-    //connect(this, SIGNAL(itemActivated(QTreeWidgetItem*,int)), SLOT(handleItem(QTreeWidgetItem*)));
     connect(this, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), SLOT(handleTreeItem(QTreeWidgetItem*)));
-    //connect(this, SIGNAL(itemSelectionChanged()), glass, SLOT(test()));
     connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), SLOT(activateItem(QTreeWidgetItem*)));
     connect(glass, SIGNAL(itemActivated(QTreeWidgetItem*)), SLOT(activateItem(QTreeWidgetItem*)));
     connect(glass, SIGNAL(cancel()), SLOT(cancelItem()));
+    connect(WorkflowSettings::watcher, SIGNAL(changed()), this, SLOT(sl_refreshSampesItems()));
 }
 
 void SamplesWidget::activateItem(QTreeWidgetItem * item) {
@@ -149,13 +108,9 @@ void SamplesWidget::activateItem(QTreeWidgetItem * item) {
 }
 
 void SamplesWidget::handleTreeItem(QTreeWidgetItem * item) {
-//     bool show = false;
      if (item && !item->data(0, DATA_ROLE).isValid()) {
          item = NULL;
-//         glass->setItem(item);
-//         show = true;
      }
-//     emit setupGlass(show ? glass : NULL);
 
     glass->setItem(item);
     emit setupGlass(glass);
@@ -179,18 +134,12 @@ void SamplesWidget::addCategory( const SampleCategory& cat )
     cf.setBold(true);
     ci->setData(0, Qt::FontRole, cf);
     ci->setData(0, Qt::BackgroundRole, QColor(255,255,160, 127));
-    //QFont sf;
-    //sf.setBold(true);
-    //sf.setItalic(true);
 
     foreach(const Sample& item, cat.items) {
         QTreeWidgetItem* ib = new QTreeWidgetItem(ci, QStringList(item.d.getDisplayName()));
         ib->setData(0, DATA_ROLE, item.content);
-        //ib->setData(0, ICON_ROLE, item.ico.pixmap(200));
-        //ib->setData(0, INFO_ROLE, qVariantFromValue<Descriptor>(item.d));
         QTextDocument* doc = new QTextDocument(this);
         ib->setData(0, DOC_ROLE, qVariantFromValue<QTextDocument*>(doc));
-        //ib->setData(0, Qt::FontRole, sf);
         Descriptor d = item.d;
         QIcon ico = item.ico;
         if (ico.isNull()) {
@@ -200,32 +149,12 @@ void SamplesWidget::addCategory( const SampleCategory& cat )
     }
 }
 
-void SamplePane::setItem(QTreeWidgetItem* it) {
-    item = it;
-//     if (!item) {
-//         m_document->clear();
-//         return;
-//     }
-//     Descriptor d = it->data(0, INFO_ROLE).value<Descriptor>();
-//     QString text = 
-//         "<html>"
-//         "<table align='center' border='0'>"
-//         "<tr><td><h1 align='center'>%1</h1></td></tr>"
-//         "<tr><td><img src=\"%2\"/>%3</td></tr>"
-//         "<tr><td bgcolor='gainsboro' align='center'><font color='maroon' size='+2'>%4</font></td></tr>"
-//         "</table>"
-//         "</html>";
-//     QString img("img://img");
-//     m_document->addResource(QTextDocument::ImageResource, QUrl(img), it->data(0, ICON_ROLE));
-//     
-//     //QString img = QString("<table align='left' width='250' border='0'><tr><td><img src=\"img://img\"/></td></tr></table>");
-//     QString body = Qt::escape(d.getDocumentation()).replace("\n", "<br>");
-//     text = text.arg(d.getDisplayName()).arg(img).arg(body).arg(tr("Double click to load the sample"));
-//     m_document->setHtml(text);
-}
-
-void SamplePane::test() {
-    uiLog.error("Acha!!!");
+void SamplesWidget::sl_refreshSampesItems(){
+    clear();
+    foreach(const SampleCategory& cat, SampleRegistry::getCategories()) {
+        addCategory(cat);
+    }
+    expandAll();
 }
 
 void SamplePane::mouseDoubleClickEvent( QMouseEvent *e) {

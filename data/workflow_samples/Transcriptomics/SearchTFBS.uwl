@@ -1,156 +1,161 @@
 #!UGENE_WORKFLOW
 #Predicts binding sites for number of transcription factors of interest using SITECON algorithm.The present workflow sample is designed for simultaneous recognition of binding sites for 3 different transcription factor types, you can expand it for recognition of any desired number of transription factor types.SITECON - is a program pakage for recognition of potential transcription factor binding sites basing on the data about conservative conformational and physicochemical properties revealed on the basis of the binding sites sets analysis.Citing SITECON        Please cite:Oshchepkov D.Y., Vityaev E.E., Grigorovich D.A., Ignatieva E.V., Khlebodarova T.M.SITECON:a tool for detecting conservative conformational and physicochemicalproperties in transcription factor binding site alignments and for siterecognition. // Nucleic Acids Res. 2004 Jul 1;32(Web Server issue):W208-12.
 
+
+
 workflow "Search for transcription factor binding sites ( TFBS) in genomic sequences"{
 
-    read-sequence {
+    read-sequence-1 {
         type:read-sequence;
         name:"Read sequence";
-        merge-gap:10;
-        mode:0;
     }
-    sitecon-search {
+    sitecon-search-2 {
         type:sitecon-search;
         name:"Search for TFBS with SITECON";
-        err1:0;
-        err2:0.001;
-        min-score:85;
-        result-name:misc_feature;
         strand:0;
     }
-    sitecon-search2 {
+    sitecon-search-3 {
         type:sitecon-search;
         name:"Search for TFBS with SITECON 2";
-        err1:0;
-        err2:0.001;
-        min-score:85;
-        result-name:misc_feature;
         strand:0;
     }
-    sitecon-search3 {
+    sitecon-search-1 {
         type:sitecon-search;
         name:"Search for TFBS with SITECON 3";
-        err1:0;
-        err2:0.001;
-        min-score:85;
-        result-name:misc_feature;
         strand:0;
     }
-    write-genbank {
+    write-sequence-1 {
         type:write-sequence;
-		document-format:genbank;
         name:"Write Genbank";
-        accumulate:true;
-        write-mode:2;
+        document-format:genbank;
     }
-    sitecon-read {
+    sitecon-read-1 {
         type:sitecon-read;
         name:"Read SITECON model";
     }
-    sitecon-read2 {
+    sitecon-read-2 {
         type:sitecon-read;
         name:"Read SITECON model 2";
     }
-    sitecon-read3 {
+    sitecon-read-3 {
         type:sitecon-read;
         name:"Read SITECON model 3";
     }
 
-    read-sequence.sequence->sitecon-search.in-sequence.sequence
-    sitecon-read.sitecon-model->sitecon-search.in-sitecon.sitecon-model
-    read-sequence.sequence->sitecon-search2.in-sequence.sequence
-    sitecon-read2.sitecon-model->sitecon-search2.in-sitecon.sitecon-model
-    read-sequence.sequence->sitecon-search3.in-sequence.sequence
-    sitecon-read3.sitecon-model->sitecon-search3.in-sitecon.sitecon-model
-    sitecon-search3.annotations->write-genbank.in-sequence.annotations
-    read-sequence.annotations->write-genbank.in-sequence.annotations
-    sitecon-search.annotations->write-genbank.in-sequence.annotations
-    sitecon-search2.annotations->write-genbank.in-sequence.annotations
-    read-sequence.sequence->write-genbank.in-sequence.sequence
+
+    .actor-bindings {
+        sitecon-read-2.out-sitecon->sitecon-search-3.in-sitecon
+        sitecon-search-3.out-annotations->sitecon-search-1.in-sequence
+        sitecon-read-1.out-sitecon->sitecon-search-2.in-sitecon
+        sitecon-search-1.out-annotations->write-sequence-1.in-sequence
+        sitecon-search-2.out-annotations->sitecon-search-3.in-sequence
+        sitecon-read-3.out-sitecon->sitecon-search-1.in-sitecon
+        read-sequence-1.out-sequence->sitecon-search-2.in-sequence
+    }
+
+    read-sequence-1.sequence->sitecon-search-2.in-sequence.sequence
+    sitecon-read-1.sitecon-model->sitecon-search-2.in-sitecon.sitecon-model
+    read-sequence-1.sequence->sitecon-search-3.in-sequence.sequence
+    sitecon-read-2.sitecon-model->sitecon-search-3.in-sitecon.sitecon-model
+    read-sequence-1.sequence->sitecon-search-1.in-sequence.sequence
+    sitecon-read-3.sitecon-model->sitecon-search-1.in-sitecon.sitecon-model
+    sitecon-search-1.annotations->write-sequence-1.in-sequence.annotations
+    read-sequence-1.annotations->write-sequence-1.in-sequence.annotations
+    sitecon-search-2.annotations->write-sequence-1.in-sequence.annotations
+    sitecon-search-3.annotations->write-sequence-1.in-sequence.annotations
+    read-sequence-1.sequence->write-sequence-1.in-sequence.sequence
 
     .meta {
         visual {
-            read-sequence {
+            read-sequence-1 {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads sequence(s) from file(s).</p></body></html>";
                 tooltip:"Reads sequences and annotations if any from local or remote files.";
-                pos:"-795 -585";
-                style:simple;
+                pos:"-930 -555";
+                style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
-            sitecon-search {
+            sitecon-search-2 {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Search for TFBS with SITECON</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>For each sequence from <span style=' text-decoration: underline;'>Read sequence</span>, search transcription factor binding sites (TFBS) with all profiles provided by <span style=' text-decoration: underline;'>Read SITECON model</span>,.<br />Recognize sites with <span style=' text-decoration: underline;'>similarity </span><a href='param:min-score'><span style=' text-decoration: underline; color:#0000ff;'>85</span></a><span style=' text-decoration: underline;'>%</span>, process <a href='param:strand'><span style=' text-decoration: underline; color:#0000ff;'>both strands</span></a>.<br />Output the list of found regions annotated as <a href='param:result-name'><span style=' text-decoration: underline; color:#0000ff;'>misc_feature</span></a>.</p></body></html>";
                 tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
-                pos:"-630 -585";
-                style:simple;
+                pos:"-765 -555";
+                style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:183.18;
                 in-sitecon.angle:273.814;
                 out-annotations.angle:360;
             }
-            sitecon-search2 {
+            sitecon-search-3 {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Search for TFBS with SITECON 2</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>For each sequence from <span style=' text-decoration: underline;'>Read sequence</span>, search transcription factor binding sites (TFBS) with all profiles provided by <span style=' text-decoration: underline;'>Read SITECON model 2</span>,.<br />Recognize sites with <span style=' text-decoration: underline;'>similarity </span><a href='param:min-score'><span style=' text-decoration: underline; color:#0000ff;'>85</span></a><span style=' text-decoration: underline;'>%</span>, process <a href='param:strand'><span style=' text-decoration: underline; color:#0000ff;'>both strands</span></a>.<br />Output the list of found regions annotated as <a href='param:result-name'><span style=' text-decoration: underline; color:#0000ff;'>misc_feature</span></a>.</p></body></html>";
                 tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
-                pos:"-510 -585";
-                style:simple;
+                pos:"-555 -555";
+                style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:183.576;
                 in-sitecon.angle:273.576;
                 out-annotations.angle:360;
             }
-            sitecon-search3 {
+            sitecon-search-1 {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Search for TFBS with SITECON 3</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>For each sequence from <span style=' text-decoration: underline;'>Read sequence</span>, search transcription factor binding sites (TFBS) with all profiles provided by <span style=' text-decoration: underline;'>Read SITECON model 3</span>,.<br />Recognize sites with <span style=' text-decoration: underline;'>similarity </span><a href='param:min-score'><span style=' text-decoration: underline; color:#0000ff;'>85</span></a><span style=' text-decoration: underline;'>%</span>, process <a href='param:strand'><span style=' text-decoration: underline; color:#0000ff;'>both strands</span></a>.<br />Output the list of found regions annotated as <a href='param:result-name'><span style=' text-decoration: underline; color:#0000ff;'>misc_feature</span></a>.</p></body></html>";
                 tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
-                pos:"-390 -585";
-                style:simple;
+                pos:"-330 -555";
+                style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:178.21;
                 in-sitecon.angle:271.364;
                 out-annotations.angle:360;
             }
-            write-genbank {
+            write-sequence-1 {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write Genbank</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all sequences from <span style=' text-decoration: underline;'>Read sequence</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
                 tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
-                pos:"-240 -585";
-                style:simple;
+                pos:"-75 -555";
+                style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
-            read-sequence.out-sequence->sitecon-search.in-sequence {
-                text-pos:"-27.5 -24";
-            }
-            sitecon-search.out-annotations->sitecon-search2.in-sequence {
-                text-pos:"-45 -37";
-            }
-            sitecon-search2.out-annotations->sitecon-search3.in-sequence {
-                text-pos:"-45 -37";
-            }
-            sitecon-read {
+            sitecon-read-1 {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read SITECON model</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Read model(s) from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a></p></body></html>";
                 tooltip:"Reads SITECON profiles from file(s). The files can be local or Internet URLs.";
-                pos:"-630 -465";
-                style:simple;
+                pos:"-750 -315";
+                style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sitecon.angle:88.727;
             }
-            sitecon-read2 {
+            sitecon-read-2 {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read SITECON model 2</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Read model(s) from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a></p></body></html>";
                 tooltip:"Reads SITECON profiles from file(s). The files can be local or Internet URLs.";
-                pos:"-510 -465";
-                style:simple;
+                pos:"-540 -315";
+                style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sitecon.angle:85.486;
             }
-            sitecon-read3 {
+            sitecon-read-3 {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read SITECON model 3</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Read model(s) from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a></p></body></html>";
                 tooltip:"Reads SITECON profiles from file(s). The files can be local or Internet URLs.";
-                pos:"-390 -465";
-                style:simple;
+                pos:"-330 -315";
+                style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sitecon.angle:90;
             }
-            sitecon-read.out-sitecon->sitecon-search.in-sitecon {
+            read-sequence-1.out-sequence->sitecon-search-2.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            sitecon-search-2.out-annotations->sitecon-search-3.in-sequence {
+                text-pos:"-45 -37";
+            }
+            sitecon-search-3.out-annotations->sitecon-search-1.in-sequence {
+                text-pos:"-45 -37";
+            }
+            sitecon-read-1.out-sitecon->sitecon-search-2.in-sitecon {
                 text-pos:"-37 -24";
             }
-            sitecon-read2.out-sitecon->sitecon-search2.in-sitecon {
+            sitecon-read-2.out-sitecon->sitecon-search-3.in-sitecon {
                 text-pos:"-37 -24";
             }
-            sitecon-read3.out-sitecon->sitecon-search3.in-sitecon {
+            sitecon-read-3.out-sitecon->sitecon-search-1.in-sitecon {
                 text-pos:"-37 -24";
             }
-            sitecon-search3.out-annotations->write-genbank.in-sequence {
+            sitecon-search-1.out-annotations->write-sequence-1.in-sequence {
                 text-pos:"-45 -37";
             }
         }
