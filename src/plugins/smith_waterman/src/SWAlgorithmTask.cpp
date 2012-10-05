@@ -322,18 +322,18 @@ void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
 }
 
 void SWAlgorithmTask::removeResultFromOverlap(QList<PairAlignSequences> & res) {
-for(QList<PairAlignSequences>::iterator i = res.begin(); i < res.end() - 1; ++i) {
-        for(QList<PairAlignSequences>::iterator j = i + 1; j < res.end(); ++j) {
-            if ((*i).refSubseqInterval == (*j).refSubseqInterval && (*i).isDNAComplemented == (*j).isDNAComplemented &&
-                (((*i).ptrnSubseqInterval == (*j).ptrnSubseqInterval) | (sWatermanConfig.resultView == SmithWatermanSettings::ANNOTATIONS))) {
-                    if ((*i).score > (*j).score) {
-                        res.erase(j);
-                        j--;
-                    } else {
-                        res.erase(i);
-                        i--;
-                        j = res.end();
-                    }
+    for (int i = 0; i < res.size() - 1; i++) {
+        for (int j = i + 1; j < res.size(); j++) {
+            if (res.at(i).refSubseqInterval == res.at(j).refSubseqInterval && res.at(i).isDNAComplemented == res.at(j).isDNAComplemented) {
+                if (res.at(i).score > res.at(j).score) {
+                    res.removeAt(j);
+                    j--;
+                } else {
+                    res.removeAt(i);
+                    i--;
+                    j=res.size();
+                }
+
             }
         }
     }
