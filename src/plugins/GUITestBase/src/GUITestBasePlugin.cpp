@@ -44,6 +44,7 @@
 #include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
 #include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
 #include "tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h"
+#include "tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE) \
@@ -437,6 +438,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007);
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/smith_waterman_dialog
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0002);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

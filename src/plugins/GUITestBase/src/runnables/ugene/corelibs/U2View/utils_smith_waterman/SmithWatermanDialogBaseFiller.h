@@ -24,18 +24,26 @@
 
 #include "GTUtilsDialog.h"
 #include "api/GTRegionSelector.h"
+#include <U2Algorithm/SmithWatermanSettings.h>
 
 namespace U2 {
 
     class SmithWatermanDialogFiller : public Filler {
     public:
         enum Button {Search, Cancel};
-        SmithWatermanDialogFiller(U2OpStatus &_os, const QString& _pattern = "", const GTRegionSelector::RegionSelectorSettings& _s = GTRegionSelector::RegionSelectorSettings()) : Filler(_os, "SmithWatermanDialogBase"), button(Search), pattern(_pattern), s(_s){}
+        SmithWatermanDialogFiller(U2OpStatus &_os, const QString& _pattern = "",
+                                  const GTRegionSelector::RegionSelectorSettings& _s = GTRegionSelector::RegionSelectorSettings());
+        SmithWatermanDialogFiller(U2OpStatus &_os, const SmithWatermanSettings::SWResultView _resultView,
+                                  const QString & _resultFilesPath, const QString& _pattern = "",
+                                  const GTRegionSelector::RegionSelectorSettings& _s = GTRegionSelector::RegionSelectorSettings());
         virtual void run();
         Button button;
     private:
         QString pattern;
         GTRegionSelector::RegionSelectorSettings s;
+        SmithWatermanSettings::SWResultView resultView;
+        QString resultFilesPath;
+        bool autoSetupAlgorithmParams;
     };
 }
 

@@ -26,13 +26,36 @@
 
 #include <QtGui/QApplication>
 #include <QtGui/QAbstractButton>
+#include <QtGui/QSpinBox>
+#include <QtGui/QRadioButton>
+#include <QtGui/QGroupBox>
+
+const int CLASSIC_SW_REALIZATION_INDEX = 1;
+const int RESULT_INTERSECTION_FILTER_INDEX = 0;
+const QString TEST_NAME_FOR_MA_RESULTS = "_test]";
+const QString TEST_NAME_FOR_ANNOT_RESULTS = "test";
+const QString ANNOTATION_RESULT_FILE_NAME = "Annotations.gb";
+
+const double GAP_OPEN_PENALTY = -3.0;
+const double GAP_EXTENDING_PENALTY = -2.0;
+const int RESULT_SCORE_PERCENTAGE = 45;
 
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::SmithWatermanDialogFiller"
 #define GT_METHOD_NAME "run"
-void SmithWatermanDialogFiller::run() {
 
+SmithWatermanDialogFiller::SmithWatermanDialogFiller(U2OpStatus &_os, const SmithWatermanSettings::SWResultView _resultView,
+    const QString & _resultFilesPath, const QString& _pattern, const GTRegionSelector::RegionSelectorSettings& _s)
+    : Filler(_os, "SmithWatermanDialogBase"), button(Search), pattern(_pattern), s(_s), resultView(_resultView),
+    resultFilesPath(_resultFilesPath), autoSetupAlgorithmParams(true) {}
+
+SmithWatermanDialogFiller::SmithWatermanDialogFiller(U2OpStatus &_os, const QString& _pattern,
+    const GTRegionSelector::RegionSelectorSettings& _s)
+    : Filler(_os, "SmithWatermanDialogBase"), button(Search), pattern(_pattern), s(_s),
+    resultView(SmithWatermanSettings::ANNOTATIONS), resultFilesPath(""), autoSetupAlgorithmParams(false) {}
+
+void SmithWatermanDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -43,6 +66,51 @@ void SmithWatermanDialogFiller::run() {
     }
 
     QTabWidget *tabWidget = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabWidget", dialog));
+    
+    GTTabWidget::setCurrentIndex(os, tabWidget, 1);
+    QComboBox * resultViewVariants = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "resultViewVariants", dialog));
+    int resultViewIndex;
+    if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+        resultViewIndex = 0;
+    } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+        resultViewIndex = 1;
+    } else {
+        assert(0);
+    }
+    resultViewVariants->setCurrentIndex(resultViewIndex);
+        
+    if(!resultFilesPath.isEmpty()) {
+        QLineEdit * resultFilePathContainer = NULL;
+        if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+            resultFilePathContainer = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "alignmentFilesPath", dialog));
+        } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+            QRadioButton * newFileRB = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "newFileRB", dialog));
+            newFileRB->setChecked(true);
+            resultFilePathContainer = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "newFilePath", dialog));
+            resultFilesPath += ANNOTATION_RESULT_FILE_NAME;
+        }
+        assert(NULL != resultFilePathContainer);
+        resultFilePathContainer->setText(resultFilesPath);
+    }
+
+    if(autoSetupAlgorithmParams) {
+        if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+            QGroupBox * advOptions = qobject_cast<QGroupBox *>(GTWidget::findWidget(os, "advOptions", dialog));
+            advOptions->setChecked(true);
+
+            QLineEdit * mObjectNameTmpl = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "mObjectNameTmpl", dialog));
+            mObjectNameTmpl->setText(mObjectNameTmpl->text() + TEST_NAME_FOR_MA_RESULTS);
+
+            QLineEdit * refSubseqNameTmpl = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "refSubseqNameTmpl", dialog));
+            refSubseqNameTmpl->setText(refSubseqNameTmpl->text() + TEST_NAME_FOR_MA_RESULTS);
+        } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+            QLineEdit * annotationNameEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "annotationNameEdit", dialog));
+            annotationNameEdit->setText(TEST_NAME_FOR_ANNOT_RESULTS);
+        } else {
+            assert(0);
+        }
+    }
+
     GTTabWidget::setCurrentIndex(os, tabWidget, 0);
 
     RegionSelector *regionSelector = qobject_cast<RegionSelector*>(GTWidget::findWidget(os, "range_selector", dialog));
@@ -50,6 +118,23 @@ void SmithWatermanDialogFiller::run() {
 
     QTextEdit* textEdit = qobject_cast<QTextEdit*>(GTWidget::findWidget(os, "teditPattern", dialog));
     GTTextEdit::setText(os, textEdit, pattern);
+    
+    if(autoSetupAlgorithmParams) {
+        QComboBox * comboRealization = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "comboRealization", dialog));
+        comboRealization->setCurrentIndex(CLASSIC_SW_REALIZATION_INDEX);
+		
+		QComboBox * comboResultFilter = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "comboResultFilter", dialog));
+		comboResultFilter->setCurrentIndex(RESULT_INTERSECTION_FILTER_INDEX);
+
+        QSpinBox * spinScorePercent = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "spinScorePercent", dialog));
+        spinScorePercent->setValue(RESULT_SCORE_PERCENTAGE);
+
+        QDoubleSpinBox * dblSpinGapOpen = qobject_cast<QDoubleSpinBox *>(GTWidget::findWidget(os, "dblSpinGapOpen", dialog));
+        dblSpinGapOpen->setValue(GAP_OPEN_PENALTY);
+
+        QDoubleSpinBox * dblSpinGapExtd = qobject_cast<QDoubleSpinBox *>(GTWidget::findWidget(os, "dblSpinGapExtd", dialog));
+        dblSpinGapExtd->setValue(GAP_EXTENDING_PENALTY);
+    }
 
     QAbstractButton *searchButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "bttnRun", dialog));
     GTWidget::click(os, searchButton);
