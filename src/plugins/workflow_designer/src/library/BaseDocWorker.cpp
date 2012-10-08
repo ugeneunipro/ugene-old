@@ -260,7 +260,7 @@ bool BaseDocWriter::isStreamingSupport() const {
     return format->isStreamingSupport();
 }
 
-Task* BaseDocWriter::tick() {
+Task * BaseDocWriter::tick() {
     U2OpStatusImpl os;
     while(ch->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(ch);

@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/AppContext.h>
+#include <U2Core/FilesIterator.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -31,8 +32,6 @@
 
 #include <U2Designer/DelegateEditors.h>
 #include <U2Gui/GUIUtils.h>
-
-#include "../util/FilesIterator.h"
 
 #include "GetFileListWorker.h"
 

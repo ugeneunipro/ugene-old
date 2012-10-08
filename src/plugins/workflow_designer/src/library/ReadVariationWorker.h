@@ -22,6 +22,7 @@
 #ifndef _READ_VARIATION_LIST_WORKER_
 #define _READ_VARIATION_LIST_WORKER_
 
+#include "GenericReadActor.h"
 #include "GenericReadWorker.h"
 
 namespace U2 {
@@ -37,8 +38,13 @@ protected slots:
     virtual void sl_taskFinished();
 
 protected:
-    virtual Task* createReadTask(const QString &url);
+    virtual Task * createReadTask(const QString &url, const QString &datasetName);
 }; // ReadVariationWorker
+
+class ReadVariationProto : public GenericReadDocProto {
+public:
+    ReadVariationProto();
+}; // ReadVariationProto
 
 class ReadVariationWorkerFactory : public DomainFactory {
 public:
@@ -46,22 +52,26 @@ public:
 
     ReadVariationWorkerFactory() : DomainFactory(ACTOR_ID) {}
     static void init();
-    virtual Worker *createWorker(Actor *a);
+    virtual Worker * createWorker(Actor *a);
 
 }; // ReadVariationWorkerFactory
 
 class ReadVariationTask : public Task {
     Q_OBJECT
 public:
-    ReadVariationTask(const QString &url, DbiDataStorage *storage);
+    ReadVariationTask(const QString &url, const QString &datasetName, DbiDataStorage *storage);
+    virtual ~ReadVariationTask();
+
     virtual void prepare();
     virtual void run();
 
-    QList<QVariantMap> results;
+    QList<QVariantMap> takeResults();
 
 private:
     QString url;
+    QString datasetName;
     DbiDataStorage *storage;
+    QList<QVariantMap> results;
 };
 
 } // LocalWorkflow

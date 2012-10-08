@@ -22,6 +22,7 @@
 #ifndef _READ_ASSEMBLY_WORKER_
 #define _READ_ASSEMBLY_WORKER_
 
+#include "GenericReadActor.h"
 #include "GenericReadWorker.h"
 
 namespace U2 {
@@ -42,8 +43,13 @@ protected slots:
     virtual void sl_taskFinished();
 
 protected:
-    virtual Task *createReadTask(const QString &url);
+    virtual Task * createReadTask(const QString &url, const QString &datasetName);
 }; // ReadAssemblyWorker
+
+class ReadAssemblyProto : public GenericReadDocProto {
+public:
+    ReadAssemblyProto();
+}; // ReadAssemblyProto
 
 class ReadAssemblyWorkerFactory : public DomainFactory {
 public:

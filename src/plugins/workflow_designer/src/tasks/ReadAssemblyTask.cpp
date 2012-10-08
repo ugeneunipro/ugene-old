@@ -34,6 +34,7 @@
 
 #include <U2Formats/BAMUtils.h>
 
+#include <U2Lang/BaseSlots.h>
 #include <U2Lang/WorkflowContext.h>
 
 #include "ReadAssemblyTask.h"
@@ -50,8 +51,9 @@ ReadAssemblyTaskFactory::ReadAssemblyTaskFactory()
 
 }
 
-ReadDocumentTask *ReadAssemblyTaskFactory::createTask(const QString &url, const QVariantMap &/*hints*/, WorkflowContext *ctx) {
-    return new ReadAssemblyTask(url, ctx);
+ReadDocumentTask *ReadAssemblyTaskFactory::createTask(const QString &url, const QVariantMap &hints, WorkflowContext *ctx) {
+    QString datasetName = hints.value(BaseSlots::DATASET_SLOT().getId(), "").toString();
+    return new ReadAssemblyTask(url, datasetName, ctx);
 }
 
 /************************************************************************/
@@ -127,9 +129,9 @@ GUrl ConvertToIndexedBamTask::getResultUrl() const {
     return result;
 }
 
-ReadAssemblyTask::ReadAssemblyTask(const QString &_url, WorkflowContext *_ctx)
-: ReadDocumentTask(_url, tr("Read assembly from %1").arg(_url), TaskFlag_None),
-url(_url), ctx(_ctx), format(NULL), doc(NULL), convertTask(NULL), importTask(NULL)
+ReadAssemblyTask::ReadAssemblyTask(const QString &url, const QString &datasetName, WorkflowContext *_ctx)
+: ReadDocumentTask(url, datasetName, tr("Read assembly from %1").arg(url), TaskFlag_None),
+ctx(_ctx), format(NULL), doc(NULL), convertTask(NULL), importTask(NULL)
 {
 
 }

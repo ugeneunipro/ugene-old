@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "../util/FilesIterator.h"
-
 #include "GenericReadWorker.h"
 #include "GenericReadActor.h"
 #include "CoreLib.h"
@@ -48,6 +46,7 @@
 
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseAttributes.h>
+#include <U2Lang/Dataset.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Formats/DocumentFormatUtils.h>
@@ -64,23 +63,9 @@ namespace LocalWorkflow {
 void GenericDocReader::init() {
     assert(ports.size() == 1);
     ch = ports.values().first();
-    QString inputType;
-    Attribute *typeAttr = actor->getParameter(GenericReadDocProto::FILE_OR_DIR);
-    if (NULL != typeAttr) {
-        inputType = typeAttr->getAttributeValue<QString>(context);
-    } else {
-        inputType = GenericReadDocProto::INPUT_FILES;
-    }
-    if (GenericReadDocProto::INPUT_DIRS == inputType) {
-        QStringList dirUrls = WorkflowUtils::expandToUrls(actor->getParameter(GenericReadDocProto::INPUT_PATH)->getAttributeValue<QString>(context));
-        bool recursive = actor->getParameter(GenericReadDocProto::RECURSIVE)->getAttributeValue<bool>(context);
-        QString includeFilter = actor->getParameter(GenericReadDocProto::INCLUDE_NAME_FILTER)->getAttributeValue<QString>(context);
-        QString excludeFilter = actor->getParameter(GenericReadDocProto::EXCLUDE_NAME_FILTER)->getAttributeValue<QString>(context);
-        files = FilesIteratorFactory::createDirectoryScanner(dirUrls, includeFilter, excludeFilter, recursive);
-    } else {
-        QStringList urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
-        files = FilesIteratorFactory::createFileList(urls);
-    }
+    Attribute *urlAttr = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
+    QList<Dataset> sets = urlAttr->getAttributeValue< QList<Dataset> >(context);
+    files = new DatasetFilesIterator(sets);
 }
 
 GenericDocReader::~GenericDocReader() {
@@ -89,7 +74,8 @@ GenericDocReader::~GenericDocReader() {
 
 Task *GenericDocReader::tick() {
     if (cache.isEmpty() && files->hasNext()) {
-        Task *t = createReadTask(files->getNextFile());
+        QString newUrl = files->getNextFile();
+        Task *t = createReadTask(newUrl, files->getLastDatasetName());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     }
@@ -122,8 +108,9 @@ void GenericMSAReader::sl_taskFinished() {
     }
     foreach(MAlignment ma, t->results) {
         QVariantMap m;
-        m.insert(BaseSlots::URL_SLOT().getId(), t->url);
-        m.insert(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId(), qVariantFromValue<MAlignment>(ma)); 
+        m[BaseSlots::URL_SLOT().getId()] = t->url;
+        m[BaseSlots::DATASET_SLOT().getId()] = t->datasetName;
+        m[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<MAlignment>(ma);
         cache.append(Message(mtype, m));
     }
 }
@@ -131,6 +118,12 @@ void GenericMSAReader::sl_taskFinished() {
 /**************************
  * LoadMSATask
  **************************/
+LoadMSATask::LoadMSATask(const QString &_url, const QString &_datasetName)
+: Task(tr("Read MSA from %1").arg(_url), TaskFlag_None), url(_url), datasetName(_datasetName)
+{
+
+}
+
 void LoadMSATask::prepare() {
     int memUseMB = 0;
     QFileInfo file(url);
@@ -205,6 +198,12 @@ void GenericSeqReader::init() {
         cfg[GenericSeqActorProto::LIMIT_ATTR] = actor->getParameter(GenericSeqActorProto::LIMIT_ATTR)->getAttributeValue<int>(context);
     }
     selector.accExpr = actor->getParameter(GenericSeqActorProto::ACC_ATTR)->getAttributeValue<QString>(context);
+}
+
+Task * GenericSeqReader::createReadTask(const QString &url, const QString &datasetName) {
+    QVariantMap hints = cfg;
+    hints[BaseSlots::DATASET_SLOT().getId()] = datasetName;
+    return new LoadSeqTask(url, hints, &selector, context->getDataStorage());
 }
 
 void GenericSeqReader::sl_taskFinished() {
@@ -294,9 +293,10 @@ void LoadSeqTask::run() {
                 continue;
             }
             QVariantMap m;
-            m.insert(BaseSlots::URL_SLOT().getId(), url);
+            m[BaseSlots::URL_SLOT().getId()] = url;
+            m[BaseSlots::DATASET_SLOT().getId()] = cfg.value(BaseSlots::DATASET_SLOT().getId(), "");
             SharedDbiDataHandler handler = storage->getDataHandler(go->getEntityRef());
-            m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
+            m[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
             QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(go, 
                 GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, 
                 allLoadedAnnotations, UOF_LoadedOnly);
@@ -344,9 +344,10 @@ void LoadSeqTask::run() {
                 QVariantMap m;
                 U2EntityRef seqRef = U2SequenceUtils::import(storage->getDbiRef(), s, os);
                 CHECK_OP(os, );
-                m.insert(BaseSlots::URL_SLOT().getId(), url);
+                m[BaseSlots::URL_SLOT().getId()] = url;
+                m[BaseSlots::DATASET_SLOT().getId()] = cfg.value(BaseSlots::DATASET_SLOT().getId(), "");
                 SharedDbiDataHandler handler = storage->getDataHandler(seqRef);
-                m.insert(BaseSlots::DNA_SEQUENCE_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
+                m[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
                 results.append(m);
             }
         }

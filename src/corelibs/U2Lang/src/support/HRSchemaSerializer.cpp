@@ -32,6 +32,7 @@
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/Dataset.h>
 #include <U2Lang/ExternalToolCfg.h>
 #include <U2Lang/GrouperSlotAttribute.h>
 #include <U2Lang/IncludedProtoFactory.h>
@@ -110,6 +111,13 @@ const QString HRSchemaSerializer::ALIAS                 = "alias";
 const QString HRSchemaSerializer::IN_SLOT               = "in-slot";
 const QString HRSchemaSerializer::ACTION                = "action";
 const QString HRSchemaSerializer::OUT_SLOT_ATTR         = "out-slot";
+const QString HRSchemaSerializer::DATASET_NAME          = "dataset";
+const QString HRSchemaSerializer::DIRECTORY_URL         = "dir";
+const QString HRSchemaSerializer::FILE_URL              = "file";
+const QString HRSchemaSerializer::PATH                  = "path";
+const QString HRSchemaSerializer::EXC_FILTER            = "exclude-name-filter";
+const QString HRSchemaSerializer::INC_FILTER            = "include-name-filter";
+const QString HRSchemaSerializer::RECURSIVE             = "recursive";
 
 template <class T>
 static void setIfNotNull(const T & what, T * to) {
@@ -407,11 +415,14 @@ HRSchemaSerializer::ParsedPairs::ParsedPairs(HRSchemaSerializer::Tokenizer & tok
     while(tokenizer.notEmpty() && tokenizer.look() != BLOCK_END) {
         QString tok = tokenizer.take();
         QString next = tokenizer.take();
+        QString value = tokenizer.take();
         if( next == EQUALS_SIGN ) {
-            equalPairs[tok] = tokenizer.take();
+            equalPairs[tok] = value;
+            equalPairsList << StringPair(tok, value);
         }
         else if(next == BLOCK_START) {
-            blockPairs.insertMulti(tok, tokenizer.take());
+            blockPairs.insertMulti(tok, value);
+            blockPairsList << StringPair(tok, value);
             tokenizer.assertToken(BLOCK_END);
         }
         else {
@@ -675,6 +686,97 @@ void HRSchemaSerializer::parseBodyHeader(Tokenizer & tokenizer, Metadata * meta,
     }
 }
 
+void HRSchemaSerializer::deprecatedUrlAttribute(Actor *proc, const QString &urls) {
+    QStringList urlList = urls.split(SEMICOLON);
+    Dataset dSet;
+    foreach (const QString &url, urlList) {
+        dSet.addUrl(new FileUrlContainer(url));
+    }
+    Attribute *a = proc->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
+    if (NULL != a) {
+        QList<Dataset> sets;
+        sets << dSet;
+        a->setAttributeValue(qVariantFromValue< QList<Dataset> >(sets));
+    }
+}
+
+void HRSchemaSerializer::parseUrlAttribute(Actor *proc, QList<StringPair> &blockPairs) {
+    QList<Dataset> sets;
+    QStringList setBlocks;
+    foreach (const StringPair &pair, blockPairs) {
+        if (BaseAttributes::URL_IN_ATTRIBUTE().getId() == pair.first) {
+            setBlocks << pair.second;
+            blockPairs.removeOne(pair);
+        }
+    }
+    foreach (const QString &block, setBlocks) {
+        Tokenizer tokenizer;
+        tokenizer.tokenize(block);
+
+        QString name;
+        QList<URLContainer*> urls;
+        try {
+            while (tokenizer.notEmpty()) {
+                QString tok = tokenizer.take();
+                if (DATASET_NAME == tok) {
+                    tokenizer.assertToken(EQUALS_SIGN);
+                    name = tokenizer.take();
+                } else if (FILE_URL == tok) {
+                    tokenizer.assertToken(EQUALS_SIGN);
+                    urls << new FileUrlContainer(tokenizer.take());
+                } else if (DIRECTORY_URL == tok) {
+                    urls << parseDirectoryUrl(tokenizer);
+                }
+            }
+
+            if (name.isEmpty()) {
+                throw ReadFailed(tr("Url definition does not contain dataset name"));
+            }
+        } catch (ReadFailed ex) {
+            foreach (URLContainer *url, urls) {
+                delete url;
+            }
+            throw ReadFailed(ex.what);
+        }
+        Dataset dSet(name);
+        foreach (URLContainer *url, urls) {
+            dSet.addUrl(url);
+        }
+        sets << dSet;
+    }
+
+    Attribute *a = proc->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
+    if (NULL != a) {
+        a->setAttributeValue(qVariantFromValue< QList<Dataset> >(sets));
+    }
+}
+
+URLContainer * HRSchemaSerializer::parseDirectoryUrl(Tokenizer &tokenizer) {
+    QString sign = tokenizer.take();
+    if (EQUALS_SIGN == sign) {
+        return new DirUrlContainer(tokenizer.take());
+    } else if (BLOCK_START == sign) {
+        ParsedPairs pairs(tokenizer);
+        tokenizer.assertToken(BLOCK_END);
+        QString path = pairs.equalPairs.value(PATH, "");
+        QString incFilter = pairs.equalPairs.value(INC_FILTER, "");
+        QString excFilter = pairs.equalPairs.value(EXC_FILTER, "");
+        QString recursiveStr = pairs.equalPairs.value(RECURSIVE, "false");
+        DataTypeValueFactory * valueFactory = WorkflowEnv::getDataTypeValueFactoryRegistry()->getById(BaseTypes::BOOL_TYPE()->getId());
+        bool recursive = false;
+        bool ok = false;
+        QVariant v = valueFactory->getValueFromString(recursiveStr, &ok);
+        if (ok) {
+            recursive = v.toBool();
+        }
+
+        return new DirUrlContainer(path, incFilter, excFilter, recursive);
+    } else {
+        throw new ReadFailed(tr("Directory url definition: '%1' or '%2' are expected, '%3' is found")
+            .arg(BLOCK_START).arg(EQUALS_SIGN).arg(sign));
+    }
+}
+
 Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const QString & actorName, 
                                                    QMap<QString, Actor*> & actorMap, QMap<ActorId, ActorId>* idMap) {
     if( actorName.contains(QRegExp("\\s")) ) {
@@ -704,7 +806,7 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
         proc = proto->createInstance(actorName, procScriptText.isEmpty() ? NULL : new AttributeScript(procScriptText));
     }
     actorMap[actorName] = proc;
-    
+
     QString procName = pairs.equalPairs.take(NAME_ATTR);
     if( procName.isEmpty() ) {
         throw ReadFailed(tr("Name attribute not set for %1 element").arg(actorName));
@@ -715,7 +817,7 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
     if(idMap != NULL && !oldId.isEmpty()) {
         idMap->insert(oldId, proc->getId());
     }
-    
+
     foreach(const QString & key, pairs.blockPairs.uniqueKeys()) {
         Attribute *a = proc->getParameter(key);
         if (NULL == a) {
@@ -723,13 +825,19 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
         }
         if (GROUPER_SLOT_GROUP == a->getGroup()) {
             parseGrouperOutSlots(proc, pairs.blockPairs.values(key), key);
+        } else if (a->getId() == BaseAttributes::URL_IN_ATTRIBUTE().getId()) {
+            parseUrlAttribute(proc, pairs.blockPairsList);
         } else {
             proc->getParameter(key)->getAttributeScript().setScriptText(pairs.blockPairs.value(key));
         }
     }
     
     foreach( const QString & key, pairs.equalPairs.keys() ) {
-        proc->getParameter(key)->setAttributeValue(getAttrValue(proc, key, pairs.equalPairs.value(key)));
+        if (BaseAttributes::URL_IN_ATTRIBUTE().getId() == key) {
+            deprecatedUrlAttribute(proc, pairs.equalPairs.value(key));
+        } else {
+            proc->getParameter(key)->setAttributeValue(getAttrValue(proc, key, pairs.equalPairs.value(key)));
+        }
     }
 
     return proc;
@@ -1687,6 +1795,63 @@ QString HRSchemaSerializer::grouperOutSlotsDefinition(Attribute *attribute) {
     return result;
 }
 
+class HRUrlSerializer : public URLContainerVisitor {
+public:
+    HRUrlSerializer(int _tabCount) : tabCount(_tabCount) {}
+
+    virtual void visit(FileUrlContainer *url) {
+        result = HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::FILE_URL, url->getUrl(), tabCount);
+    }
+
+    virtual void visit(DirUrlContainer *url) {
+        if (url->getIncludeFilter().isEmpty() && url->getExcludeFilter().isEmpty() && !url->isRecursive()) {
+            result = HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::DIRECTORY_URL, url->getUrl(), tabCount);
+            return;
+        }
+
+        QString res;
+        res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::PATH, url->getUrl(), tabCount+1);
+        if (!url->getIncludeFilter().isEmpty()) {
+            res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::INC_FILTER, url->getIncludeFilter(), tabCount+1);
+        }
+        if (!url->getExcludeFilter().isEmpty()) {
+            res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::EXC_FILTER, url->getExcludeFilter(), tabCount+1);
+        }
+        if (url->isRecursive()) {
+            QString recStr("false");
+            if (url->isRecursive()) {
+                recStr = "true";
+            }
+            res += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::RECURSIVE, recStr, tabCount+1);
+        }
+        result = HRSchemaSerializer::makeBlock(HRSchemaSerializer::DIRECTORY_URL, HRSchemaSerializer::NO_NAME, res, tabCount);
+    }
+
+    const QString & getResult() {
+        return result;
+    }
+
+private:
+    int tabCount;
+    QString result;
+};
+
+static QString inUrlDefinitionBlocks(const QList<Dataset> &sets) {
+    QString res;
+    foreach (const Dataset &dSet, sets) {
+        QString setDef;
+        setDef += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::DATASET_NAME, dSet.getName(), 3);
+        foreach (URLContainer *url, dSet.getUrls()) {
+            HRUrlSerializer us(3);
+            url->accept(&us);
+            setDef += us.getResult();
+        }
+        res += HRSchemaSerializer::makeBlock(BaseAttributes::URL_IN_ATTRIBUTE().getId(),
+            HRSchemaSerializer::NO_NAME, setDef, 2);
+    }
+    return res;
+}
+
 static QString elementsDefinitionBlock(Actor * actor, bool copyMode) {
     assert(actor != NULL);
     QString res;
@@ -1701,13 +1866,21 @@ static QString elementsDefinitionBlock(Actor * actor, bool copyMode) {
         res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::SCRIPT_ATTR, HRSchemaSerializer::NO_NAME, 
             actorScript->getScriptText() + HRSchemaSerializer::NEW_LINE, 2, false, true);
     }
-    
+
     // save local attributes
     foreach(Attribute * attribute, actor->getParameters().values()) {
         assert(attribute != NULL);
         if (attribute->getGroup() == GROUPER_SLOT_GROUP) {
             res += HRSchemaSerializer::grouperOutSlotsDefinition(attribute);
         } else {
+            if (attribute->getId() == BaseAttributes::URL_IN_ATTRIBUTE().getId()) {
+                QVariant v = attribute->getAttributePureValue();
+                if (v.canConvert< QList<Dataset> >()) {
+                    QList<Dataset> sets = v.value< QList<Dataset> >();
+                    res += inUrlDefinitionBlocks(sets);
+                    continue;
+                }
+            }
             QString attributeId = attribute->getId();
             assert(!attributeId.contains(QRegExp("\\s")));
             

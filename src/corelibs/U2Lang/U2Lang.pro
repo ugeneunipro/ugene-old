@@ -9,6 +9,9 @@ HEADERS += src/library/BaseActorCategories.h \
            src/library/LastReadyScheduler.h \
            src/library/LocalDomain.h \
            src/library/ScriptLibrary.h \
+           src/model/url_attribute/Dataset.h \
+           src/model/url_attribute/URLAttribute.h \
+           src/model/url_attribute/URLContainer.h \
            src/model/ActorModel.h \
            src/model/ActorPrototypeRegistry.h \
            src/model/Aliasing.h \
@@ -65,6 +68,9 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/library/LastReadyScheduler.cpp \
            src/library/LocalDomain.cpp \
            src/library/ScriptLibrary.cpp \
+           src/model/url_attribute/Dataset.cpp \
+           src/model/url_attribute/URLAttribute.cpp \
+           src/model/url_attribute/URLContainer.cpp \
            src/model/ActorModel.cpp \
            src/model/ActorPrototypeRegistry.cpp \
            src/model/Aliasing.cpp \

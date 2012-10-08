@@ -134,6 +134,8 @@ public:
      */
     virtual void updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap);
 
+    virtual bool validate(QStringList &errorList);
+
     
 private:
     void debugCheckAttributeId() const;

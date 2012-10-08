@@ -22,6 +22,7 @@
 #ifndef _U2_READ_ANNOTATIONS_WORKER_
 #define _U2_READ_ANNOTATIONS_WORKER_
 
+#include "GenericReadActor.h"
 #include "GenericReadWorker.h"
 
 namespace U2 {
@@ -37,8 +38,13 @@ protected slots:
     virtual void sl_taskFinished();
 
 protected:
-    virtual Task *createReadTask(const QString &url);
+    virtual Task * createReadTask(const QString &url, const QString &datasetName);
 }; // ReadAnnotationsWorker
+
+class ReadAnnotationsProto : public GenericReadDocProto {
+public:
+    ReadAnnotationsProto();
+}; // ReadAnnotationsProto
 
 class ReadAnnotationsWorkerFactory : public DomainFactory {
 public:
@@ -53,15 +59,18 @@ public:
 class ReadAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    ReadAnnotationsTask(const QString &url);
+    ReadAnnotationsTask(const QString &url, const QString &datasetName);
     virtual void prepare();
     virtual void run();
     virtual void cleanup();
 
     QList<QVariantMap> takeResults();
+    const QString & getDatasetName() const;
 
 private:
     QString url;
+    QString datasetName;
+
     QList<QVariantMap> results;
 };
 

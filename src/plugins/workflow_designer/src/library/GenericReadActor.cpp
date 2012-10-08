@@ -31,6 +31,7 @@
 #include <U2Lang/BasePorts.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/URLAttribute.h>
 
 #include <U2Core/DNAInfo.h>
 #include <U2Core/DNASequenceObject.h>
@@ -54,72 +55,15 @@ namespace Workflow {
 /************************************************************************/
 #define ICOLOR QColor(85,85,255)
 
-const QString GenericReadDocProto::FILE_OR_DIR("input-type");
-const QString GenericReadDocProto::INPUT_PATH("in-path");
-const QString GenericReadDocProto::RECURSIVE("recursive");
-const QString GenericReadDocProto::INCLUDE_NAME_FILTER("include-name-filter");
-const QString GenericReadDocProto::EXCLUDE_NAME_FILTER("exclude-name-filter");
-
-const QString GenericReadDocProto::INPUT_FILES("Files");
-const QString GenericReadDocProto::INPUT_DIRS("Directories");
-
 GenericReadDocProto::GenericReadDocProto(const Descriptor &desc)
 : IntegralBusActorPrototype(desc)
 {
     {
-        Descriptor fileOrDir(FILE_OR_DIR,
-            QObject::tr("Input type"),
-            QObject::tr("Choose input type: file or directory"));
-        Descriptor inPath(INPUT_PATH,
-            QObject::tr("Input directory"),
-            QObject::tr("Input directory"));
-        Descriptor isRecursive(RECURSIVE,
-            QObject::tr("Recursive reading"),
-            QObject::tr("Get files from all nested directories or just from the current one"));
-        Descriptor includeFilter(INCLUDE_NAME_FILTER,
-            QObject::tr("Relative path include filter"),
-            QObject::tr("Filter files by relative path using this regular expression. "
-            "<p><i>Set it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
-        Descriptor excludeFilter(EXCLUDE_NAME_FILTER,
-            QObject::tr("Relative path exclude filter"),
-            QObject::tr("Exclude files which relative paths are matched by this regular expression. "
-            "<p><i>Set it empty to switch off this filter. Use <b>*</b> and <b>?</b> to mask some symbols.</i></p>"));
-
-        attrs << new Attribute(fileOrDir, BaseTypes::STRING_TYPE(), false, INPUT_FILES);
-        Attribute *filesUrlAttr = new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false);
-        filesUrlAttr->addRelation(new VisibilityRelation(fileOrDir.getId(), INPUT_FILES));
-        attrs << filesUrlAttr;
-
-        Attribute *dirsUrlAttr = new Attribute(inPath, BaseTypes::STRING_TYPE(), false);
-        dirsUrlAttr->addRelation(new VisibilityRelation(fileOrDir.getId(), INPUT_DIRS));
-        attrs << dirsUrlAttr;
-
-        Attribute *recursiveAttr = new Attribute(isRecursive, BaseTypes::BOOL_TYPE(), false, false);
-        recursiveAttr->addRelation(new VisibilityRelation(fileOrDir.getId(), INPUT_DIRS));
-        attrs << recursiveAttr;
-
-        Attribute *incAttr = new Attribute(includeFilter, BaseTypes::STRING_TYPE());
-        incAttr->addRelation(new VisibilityRelation(fileOrDir.getId(), INPUT_DIRS));
-        attrs << incAttr;
-
-        Attribute *excAttr = new Attribute(excludeFilter, BaseTypes::STRING_TYPE());
-        excAttr->addRelation(new VisibilityRelation(fileOrDir.getId(), INPUT_DIRS));
-        attrs << excAttr;
+        attrs << new URLAttribute(BaseAttributes::URL_IN_ATTRIBUTE(),
+            BaseTypes::URL_DATASETS_TYPE(), true);
     }
 
     setEditor(new DelegateEditor(QMap<QString, PropertyDelegate*>()));
-    getEditor()->addDelegate(
-        new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true),
-        BaseAttributes::URL_IN_ATTRIBUTE().getId());
-    getEditor()->addDelegate(
-        new URLDelegate(QString(), QString(), true, true),
-        INPUT_PATH);
-    {
-        QVariantMap types;
-        types[INPUT_FILES] = INPUT_FILES;
-        types[INPUT_DIRS] = INPUT_DIRS;
-        getEditor()->addDelegate(new ComboBoxDelegate(types), FILE_OR_DIR);
-    }
 
     if(AppContext::isGUIMode()) {
         setIcon( GUIUtils::createRoundIcon(ICOLOR, 22) );
@@ -140,6 +84,7 @@ GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConsta
     desc = U2::Workflow::CoreLib::tr("Reads sequences and annotations if any from local or remote files.");
     QMap<Descriptor, DataTypePtr> m;
     m[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+    m[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
     m[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
     m[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
 
@@ -185,8 +130,7 @@ GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConsta
         getEditor()->addDelegate(new SpinBoxDelegate(m), GAP_ATTR);
         getEditor()->addDelegate(new SpinBoxDelegate(m), LIMIT_ATTR);
     }
-    //setPrompter(new ReadDocPrompter(U2::Workflow::CoreLib::tr("Reads sequence(s) from <u>%1</u>.")));
-    setPrompter(new ReadDocPrompter(U2::Workflow::CoreLib::tr("Reads sequence(s) from file(s).")));
+    setPrompter(new ReadDocPrompter(U2::Workflow::CoreLib::tr("Reads sequence(s) from <u>%1</u>.")));
 
     QString seqSlotId = BasePorts::OUT_SEQ_PORT_ID() + "." + BaseSlots::DNA_SEQUENCE_SLOT().getId();
     QString annsSlotId = BasePorts::OUT_SEQ_PORT_ID() + "." + BaseSlots::ANNOTATION_TABLE_SLOT().getId();
@@ -194,7 +138,7 @@ GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConsta
         BasePorts::OUT_SEQ_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
 }
 
-GenericMAActorProto::GenericMAActorProto() : IntegralBusActorPrototype(CoreLibConstants::GENERIC_READ_MA_PROTO_ID) 
+GenericMAActorProto::GenericMAActorProto() : GenericReadDocProto(CoreLibConstants::GENERIC_READ_MA_PROTO_ID) 
 {
     setDisplayName(U2::Workflow::CoreLib::tr("Read Alignment"));
     desc = U2::Workflow::CoreLib::tr("Reads multiple sequence alignments (MSAs) from local or remote files."
@@ -202,6 +146,7 @@ GenericMAActorProto::GenericMAActorProto() : IntegralBusActorPrototype(CoreLibCo
 
     QMap<Descriptor, DataTypePtr> m;
     m[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+    m[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
     m[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
     DataTypePtr blockTypeset(new MapDataType(Descriptor(TYPE), m));
     bool treg = WorkflowEnv::getDataTypeRegistry()->registerEntry(blockTypeset);
@@ -209,9 +154,7 @@ GenericMAActorProto::GenericMAActorProto() : IntegralBusActorPrototype(CoreLibCo
 
     ports << new PortDescriptor(Descriptor(BasePorts::OUT_MSA_PORT_ID(), U2::Workflow::CoreLib::tr("Multiple sequence alignment"), ""), 
                                 blockTypeset, false, true);
-    
-    attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
-    setEditor(new DelegateEditor(BaseAttributes::URL_IN_ATTRIBUTE().getId(), new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(),true)));
+
     setPrompter(new ReadDocPrompter(U2::Workflow::CoreLib::tr("Reads MSA(s) from <u>%1</u>.")));
     
     if( AppContext::isGUIMode() ) {

@@ -58,6 +58,7 @@ DataTypeValueFactoryRegistry* WorkflowEnvImpl::initDataTypeValueFactoryRegistry(
     ret->registerEntry( new StringTypeValueFactory() );
     ret->registerEntry( new BoolTypeValueFactory() );
     ret->registerEntry( new NumTypeValueFactory() );
+    ret->registerEntry( new UrlTypeValueFactory() );
     return ret;
 }
 

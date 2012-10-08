@@ -27,6 +27,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseAttributes.h>
+#include <U2Lang/URLAttribute.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Gui/DialogUtils.h>
@@ -73,10 +74,7 @@ QString DocActorProto::prepareDocumentFilter() {
  *****************************/
 ReadDocActorProto::ReadDocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports, 
                                      const QList<Attribute*>& _attrs ) : DocActorProto( _fid, _desc, _ports, _attrs ) {
-    attrs << new Attribute( BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true );
-    QMap< QString, PropertyDelegate* > delegateMap;
-    delegateMap[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate( prepareDocumentFilter(), QString(), true );
-    setEditor( new DelegateEditor( delegateMap ) );
+    attrs << new URLAttribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::URL_DATASETS_TYPE(), true);
 }
 
 bool ReadDocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * params ) const {

@@ -65,8 +65,8 @@ void ReadVariationWorker::init() {
     mtype = outBus->getBusType();
 }
 
-Task *ReadVariationWorker::createReadTask(const QString &url) {
-    return new ReadVariationTask(url, context->getDataStorage());
+Task * ReadVariationWorker::createReadTask(const QString &url, const QString &datasetName) {
+    return new ReadVariationTask(url, datasetName, context->getDataStorage());
 }
 
 void ReadVariationWorker::sl_taskFinished() {
@@ -74,19 +74,29 @@ void ReadVariationWorker::sl_taskFinished() {
     if (!t->isFinished() || t->hasError()) {
         return;
     }
-    foreach(const QVariantMap &m, t->results) {
+    
+    foreach(const QVariantMap &m, t->takeResults()) {
         cache.append(Message(mtype, m));
     }
-    t->results.clear();
 }
 
 /************************************************************************/
 /* Task */
 /************************************************************************/
-ReadVariationTask::ReadVariationTask(const QString &url, DbiDataStorage *storage)
-: Task(tr("Read variations from %1").arg(url), TaskFlag_None), url(url), storage(storage)
+ReadVariationTask::ReadVariationTask(const QString &url, const QString &_datasetName, DbiDataStorage *storage)
+: Task(tr("Read variations from %1").arg(url), TaskFlag_None), url(url), datasetName(_datasetName), storage(storage)
 {
 
+}
+
+ReadVariationTask::~ReadVariationTask() {
+    results.clear();
+}
+
+QList<QVariantMap> ReadVariationTask::takeResults() {
+    QList<QVariantMap> ret = results;
+    results.clear();
+    return ret;
 }
 
 void ReadVariationTask::prepare() {
@@ -138,9 +148,10 @@ void ReadVariationTask::run() {
         CHECK_EXT(NULL != trackObj, taskLog.error(tr("Incorrect track object in %1").arg(url)), )
 
         QVariantMap m;
-        m.insert(BaseSlots::URL_SLOT().getId(), url);
+        m[BaseSlots::URL_SLOT().getId()] = url;
+        m[BaseSlots::DATASET_SLOT().getId()] = datasetName;
         SharedDbiDataHandler handler = storage->getDataHandler(trackObj->getEntityRef());
-        m.insert(BaseSlots::VARIATION_TRACK_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
+        m[BaseSlots::VARIATION_TRACK_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
         results.append(m);
     }
 }
@@ -148,42 +159,33 @@ void ReadVariationTask::run() {
 /************************************************************************/
 /* Factory */
 /************************************************************************/
-void ReadVariationWorkerFactory::init() {
-    QList<PortDescriptor*> portDescs;
+ReadVariationProto::ReadVariationProto()
+: GenericReadDocProto(ReadVariationWorkerFactory::ACTOR_ID)
+{
+    setDisplayName(ReadVariationWorker::tr("Read Variations"));
+    setDocumentation(ReadVariationWorker::tr("Reads variations from files and produces variations tracks"));
     {
         QMap<Descriptor, DataTypePtr> outTypeMap;
         outTypeMap[BaseSlots::VARIATION_TRACK_SLOT()] = BaseTypes::VARIATION_TRACK_TYPE();
         outTypeMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+        outTypeMap[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr outTypeSet(new MapDataType(BasePorts::OUT_VARIATION_TRACK_PORT_ID(), outTypeMap));
 
         Descriptor outDesc(BasePorts::OUT_VARIATION_TRACK_PORT_ID(),
             ReadVariationWorker::tr("Variation track"),
             ReadVariationWorker::tr("Variation track"));
 
-        portDescs << new PortDescriptor(outDesc, outTypeSet, false, true);
+        ports << new PortDescriptor(outDesc, outTypeSet, false, true);
     }
 
-    QList<Attribute*> attrs;
-    {
-        attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
-    }
-
-    QMap<QString, PropertyDelegate*> delegates;
-    {
-        delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true);
-    }
-
-    Descriptor protoDesc(ReadVariationWorkerFactory::ACTOR_ID,
-        ReadVariationWorker::tr("Read Variations"),
-        ReadVariationWorker::tr("Reads variations from files and produces variations tracks"));
-
-    ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
-    proto->setEditor(new DelegateEditor(delegates));
-    proto->setPrompter(new ReadDocPrompter(ReadVariationWorker::tr("Reads variations from <u>%1</u>.")));
+    setPrompter(new ReadDocPrompter(ReadVariationWorker::tr("Reads variations from <u>%1</u>.")));
     if (AppContext::isGUIMode()) {
-        proto->setIcon( GUIUtils::createRoundIcon(QColor(85,85,255), 22));
+        setIcon( GUIUtils::createRoundIcon(QColor(85,85,255), 22));
     }
+}
 
+void ReadVariationWorkerFactory::init() {
+    ActorPrototype *proto = new ReadVariationProto();
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATASRC(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new ReadVariationWorkerFactory());
 }

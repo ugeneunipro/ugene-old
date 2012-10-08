@@ -42,6 +42,8 @@ class QTabWidget;
 
 namespace U2 {
 using namespace Workflow;
+class DatasetsController;
+class SpecialParametersPanel;
 class WorkflowView;
 class WorkflowScene;
 class WorkflowPalette;
@@ -98,6 +100,7 @@ public slots:
     void sl_reset();
     void setLocked(bool b) {locked = b;}
     void setModified(bool b);
+    void setModified();
     void centerView();
     void setHint(int i) {hint=i; update();}
     void sl_openDocuments();
@@ -294,8 +297,29 @@ private:
     QListWidget*    infoList;
     QSplitter*      infoSplitter;
     QTabWidget*     tabs;
+    SpecialParametersPanel* specialParameters;
     bool            scriptingMode;
     RunMode runMode;
+};
+
+class SpecialParametersPanel : public QWidget {
+    Q_OBJECT
+public:
+    SpecialParametersPanel(QWidget *parent = NULL);
+    virtual ~SpecialParametersPanel();
+
+    void editActor(Actor *a);
+    void reset();
+
+signals:
+    void si_dataChanged();
+
+private:
+    DatasetsController *controller;
+
+private:
+    void addWidget();
+    void removeWidget();
 };
 
 }//namespace

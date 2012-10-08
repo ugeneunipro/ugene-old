@@ -56,6 +56,7 @@
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/DesignerUtils.h>
 #include <U2Designer/GrouperEditor.h>
+#include <U2Designer/DatasetsController.h>
 #include <U2Designer/MarkerEditor.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/GlassView.h>
@@ -73,6 +74,7 @@
 #include <U2Lang/IncludedProtoFactory.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/MapDatatypeEditor.h>
+#include <U2Lang/URLAttribute.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowManager.h>
 #include <U2Lang/WorkflowRunTask.h>
@@ -185,6 +187,9 @@ scriptingMode(false) {
     infoSplitter = new QSplitter(Qt::Vertical, splitter);
     infoSplitter->addWidget(sceneView);
     {
+        specialParameters = new SpecialParametersPanel(infoSplitter);
+        connect(specialParameters, SIGNAL(si_dataChanged()), scene, SLOT(setModified()));
+        connect(specialParameters, SIGNAL(si_dataChanged()), scene, SLOT(sl_updateDocs()));
         QGroupBox* w = new QGroupBox(infoSplitter);
         w->setFlat(true);
         w->setTitle(tr("Error list"));
@@ -194,7 +199,9 @@ scriptingMode(false) {
         vl->setContentsMargins(0,0,0,0);
         vl->addWidget(infoList);
         w->hide();
+        specialParameters->hide();
         infoSplitter->addWidget(w);
+        infoSplitter->addWidget(specialParameters);
     }
     splitter->addWidget(infoSplitter);
 
@@ -985,8 +992,8 @@ bool WorkflowView::sl_validate(bool notify) {
         }
         infoList->parentWidget()->show();
         QList<int> s = infoSplitter->sizes();
-        if (s.last() == 0) {
-            s.last() = qMin(infoList->sizeHint().height(), 300);
+        if (s[s.size() - 2] == 0) {
+            s[s.size() - 2] = qMin(infoList->sizeHint().height(), 300);
             infoSplitter->setSizes(s);
         }
     } else {
@@ -1446,7 +1453,9 @@ void WorkflowView::sl_editItem() {
     if (list.size() == 1) {
         QGraphicsItem* it = list.at(0);
         if (it->type() == WorkflowProcessItemType) {
-            propertyEditor->editActor(qgraphicsitem_cast<WorkflowProcessItem*>(it)->getProcess());
+            Actor *a = qgraphicsitem_cast<WorkflowProcessItem*>(it)->getProcess();
+            propertyEditor->editActor(a);
+            specialParameters->editActor(a);
             return;
         }
         Port* p = NULL;
@@ -1466,6 +1475,7 @@ void WorkflowView::sl_editItem() {
         propertyEditor->editPort(p);
     } else {
         propertyEditor->reset();
+        specialParameters->reset();
     }
 }
 
@@ -2244,6 +2254,10 @@ void WorkflowScene::setModified(bool b) {
     modified = b;
 }
 
+void WorkflowScene::setModified() {
+    setModified(true);
+}
+
 void WorkflowScene::drawBackground(QPainter * painter, const QRectF & rect)
 {
     if (WorkflowSettings::showGrid()) {
@@ -2327,6 +2341,54 @@ void WorkflowScene::connectConfigurationEditors() {
             }
         }
     }
+}
+
+/************************************************************************/
+/* SpecialParametersPanel */
+/************************************************************************/
+SpecialParametersPanel::SpecialParametersPanel(QWidget *parent)
+: QWidget(parent), controller(NULL)
+{
+    QVBoxLayout *l = new QVBoxLayout(this);
+    l->setContentsMargins(0, 0, 0, 0);
+    this->setLayout(l);
+}
+
+SpecialParametersPanel::~SpecialParametersPanel() {
+    delete controller;
+    controller = NULL;
+}
+
+void SpecialParametersPanel::editActor(Actor *a) {
+    reset();
+
+    Attribute *attr = a->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
+    CHECK(NULL != attr, );
+    URLAttribute *urlAttr = dynamic_cast<URLAttribute*>(attr);
+    CHECK(NULL != urlAttr, );
+
+    controller = new DatasetsController(urlAttr);
+    connect(controller, SIGNAL(si_attributeChanged()), SIGNAL(si_dataChanged()));
+    addWidget();
+    this->show();
+}
+
+void SpecialParametersPanel::reset() {
+    removeWidget();
+
+    delete controller;
+    controller = NULL;
+    this->hide();
+}
+
+void SpecialParametersPanel::addWidget() {
+    CHECK(NULL != controller, );
+    this->layout()->addWidget(controller->getWigdet());
+}
+
+void SpecialParametersPanel::removeWidget() {
+    CHECK(NULL != controller, );
+    this->layout()->removeWidget(controller->getWigdet());
 }
 
 }//namespace

@@ -24,6 +24,8 @@
 #include <QString>
 #include <QStringList>
 
+#include <U2Core/global.h>
+
 #ifndef _U2_FILES_ITERATOR_
 #define _U2_FILES_ITERATOR_
 
@@ -31,7 +33,7 @@ namespace U2 {
 
 class FilesIterator;
 
-class FilesIteratorFactory {
+class U2CORE_EXPORT FilesIteratorFactory {
 public:
     static FilesIterator * createDirectoryScanner(const QStringList &dirs, const QString &includeFilter,
         const QString &excludeFilter, bool recursive);
@@ -39,9 +41,10 @@ public:
     static FilesIterator * createFileList(const QStringList &files);
 };
 
-class FilesIterator {
+class U2CORE_EXPORT FilesIterator {
 public:
     FilesIterator() {}
+    virtual ~FilesIterator() {}
 
     /** Returns empty string if there are no more files */
     virtual QString getNextFile() = 0;
@@ -52,9 +55,10 @@ public:
 /************************************************************************/
 /* Iterators */
 /************************************************************************/
-class DirectoryScanner : public FilesIterator {
+class U2CORE_EXPORT DirectoryScanner : public FilesIterator {
 public:
     DirectoryScanner(const QStringList &dirs, const QString &includeFilter, const QString &excludeFilter, bool recursive);
+    virtual ~DirectoryScanner();
 
     virtual QString getNextFile();
     virtual bool hasNext();
@@ -76,9 +80,10 @@ private:
     bool isPassedByFilters(const QString &fileName) const;
 };
 
-class FileList : public FilesIterator {
+class U2CORE_EXPORT FileList : public FilesIterator {
 public:
     FileList(const QStringList &files);
+    virtual ~FileList();
 
     virtual QString getNextFile();
     virtual bool hasNext();
@@ -89,4 +94,4 @@ private:
 
 } // U2
 
-#endif _U2_FILES_ITERATOR_
+#endif // _U2_FILES_ITERATOR_

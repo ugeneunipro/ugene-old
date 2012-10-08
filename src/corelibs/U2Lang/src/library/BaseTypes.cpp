@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Lang/Dataset.h>
+#include <U2Lang/URLContainer.h>
 #include <U2Lang/WorkflowEnv.h>
 
 #include "BaseTypes.h"
@@ -35,6 +37,7 @@ static const QString STRING_TYPE_ID("string");
 static const QString STRING_LIST_TYPE_ID("string-list");
 static const QString BOOL_TYPE_ID("bool");
 static const QString NUM_TYPE_ID("number");
+static const QString URL_DATASETS_TYPE_ID("url-datasets");
 static const QString ANY_TYPE_ID("void");
 
 using namespace Workflow;
@@ -167,6 +170,18 @@ DataTypePtr BaseTypes::ANY_TYPE() {
     return dtr->getById(ANY_TYPE_ID);
 }
 
+DataTypePtr BaseTypes::URL_DATASETS_TYPE() {
+    DataTypeRegistry* dtr = WorkflowEnv::getDataTypeRegistry();
+    assert(dtr);
+    static bool startup = true;
+    if (startup)
+    {
+        dtr->registerEntry(DataTypePtr(new DataType(URL_DATASETS_TYPE_ID, tr("Url datasets"), tr("A list of urls grouped into datasets"))));
+        startup = false;
+    }
+    return dtr->getById(URL_DATASETS_TYPE_ID);
+}
+
 static void setIfNotNull( bool * to, bool val ) {
     if( to != NULL ) {
         *to = val;
@@ -224,6 +239,25 @@ QVariant NumTypeValueFactory::getValueFromString( const QString & str, bool * ok
 
     setIfNotNull(okArg, false);
     return QVariant();
+}
+
+/************************************************************************/
+/* UrlTypeValueFactory */
+/************************************************************************/
+QVariant UrlTypeValueFactory::getValueFromString(const QString &str, bool *ok) const {
+    QStringList urls = str.split(";", QString::SkipEmptyParts);
+    Dataset dSet;
+    foreach (const QString url, urls) {
+        dSet.addUrl(URLContainerFactory::createUrlContainer(url));
+    }
+    QList<Dataset> sets;
+    sets << dSet;
+    *ok = true;
+    return qVariantFromValue< QList<Dataset> >(sets);
+}
+
+QString UrlTypeValueFactory::getId() const {
+    return BaseTypes::URL_DATASETS_TYPE()->getId();
 }
 
 } // U2

@@ -49,6 +49,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/Dataset.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowUtils.h>
 
@@ -63,28 +64,34 @@ static int ct = 0;
  * TextReader
  *************************************/
 void TextReader::init() {
-    urls = WorkflowUtils::expandToUrls(actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
+    QList<Dataset> sets = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue< QList<Dataset> >(context);
+    urls = new DatasetFilesIterator(sets);
 
     assert(ports.size() == 1);
     ch = ports.values().first();
 }
 
-Task *TextReader::tick() {
+void TextReader::sendMessage(const QByteArray &data) {
+    QVariantMap m; 
+    m[BaseSlots::TEXT_SLOT().getId()] = QString(data);
+    m[BaseSlots::URL_SLOT().getId()] = url;
+    m[BaseSlots::DATASET_SLOT().getId()] = urls->getLastDatasetName();
+    ch->put( Message(mtype, m));
+}
+
+Task * TextReader::tick() {
     if(io && io->isOpen()) {
         QByteArray buf;
         buf.resize(1024);
         buf.fill(0);
         int read = io->readLine(buf.data(), 1024);
         buf.resize(read);
-        QVariantMap m; 
-        m[BaseSlots::TEXT_SLOT().getId()] = QString(buf);
-        m[BaseSlots::URL_SLOT().getId()] = url;
-        ch->put( Message(mtype, m));
+        sendMessage(buf);
         if(io->isEof()) {
             io->close();
         }
-    } else {
-        url = urls.takeFirst();
+    } else if (urls->hasNext()) {
+        url = urls->getNextFile();
         IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
         io = iof->createIOAdapter();
         if(!io->open(url,IOAdapterMode_Read)) {
@@ -108,10 +115,7 @@ Task *TextReader::tick() {
                 buf.resize( offs + READ_BLOCK_SZ );
             } while(read == READ_BLOCK_SZ);
             
-            QVariantMap m; 
-            m[BaseSlots::TEXT_SLOT().getId()] = QString(buf);
-            m[BaseSlots::URL_SLOT().getId()] = url;
-            ch->put( Message(mtype, m));
+            sendMessage(buf);
             io->close();
         } else {
             QByteArray buf;
@@ -119,17 +123,13 @@ Task *TextReader::tick() {
             buf.fill(0);
             int read = io->readLine(buf.data(), 1024);
             buf.resize(read);
-            QVariantMap m; 
-            QString str(buf);
-            m[BaseSlots::TEXT_SLOT().getId()] = QString(buf);
-            m[BaseSlots::URL_SLOT().getId()] = url;
-            ch->put( Message(mtype, m));
+            sendMessage(buf);
             if(io->isEof()) {
                 io->close();
             }
         }
     }
-    if(urls.isEmpty() && (!io || !io->isOpen())) {
+    if (!urls->hasNext() && (!io || !io->isOpen())) {
         ch->setEnded();
         setDone();
     }

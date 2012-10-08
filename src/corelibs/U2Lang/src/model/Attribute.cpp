@@ -24,6 +24,7 @@
 #include <QtCore/QStringList>
 
 #include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/WorkflowUtils.h>
 #include "Attribute.h"
 
 namespace U2 {
@@ -145,6 +146,17 @@ AttributeGroup Attribute::getGroup() {
 
 void Attribute::updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap) {
     Q_UNUSED(actorIdsMap);
+}
+
+bool Attribute::validate(QStringList &errorList) {
+    if(!isRequiredAttribute()) {
+        return true;
+    }
+    if( (isEmpty() || isEmptyString()) && getAttributeScript().isEmpty()) {
+        errorList.append(U2::WorkflowUtils::tr("Required parameter is not set: %1").arg(getDisplayName()));
+        return false;
+    }
+    return true;
 }
 
 /*************************************

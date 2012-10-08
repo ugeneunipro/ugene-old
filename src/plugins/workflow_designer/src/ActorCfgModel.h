@@ -85,7 +85,7 @@ private:
     bool setAttributeValue( const Attribute * attr, QVariant & attrValue ) const;
     void setupAttributesScripts();
     Attribute *getAttributeByRow(int row) const;
-    bool isVisible(const QVector<const AttributeRelation*> &relations) const;
+    bool isVisible(Attribute *a) const;
     
 private:
     Actor*              subject;

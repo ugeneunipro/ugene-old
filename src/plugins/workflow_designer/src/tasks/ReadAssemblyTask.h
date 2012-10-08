@@ -38,13 +38,12 @@ class WorkflowContext;
 class ReadAssemblyTask : public ReadDocumentTask {
     Q_OBJECT
 public:
-    ReadAssemblyTask(const QString &url, WorkflowContext *ctx);
+    ReadAssemblyTask(const QString &url, const QString &datasetName, WorkflowContext *ctx);
     virtual void prepare();
     virtual void run();
     virtual QList<Task*> onSubTaskFinished(Task *subTask);
 
 private:
-    QString url;
     WorkflowContext *ctx;
     DocumentFormat *format;
     Document *doc;

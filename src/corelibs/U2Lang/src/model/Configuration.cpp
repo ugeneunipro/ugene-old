@@ -95,13 +95,7 @@ void Configuration::setValidator(ConfigurationValidator* v) {
 bool Configuration::validate(QStringList& errorList) const {
     bool good = true;
     foreach(Attribute* a, getParameters()) {
-        if( !a->isRequiredAttribute() ) {
-            continue;
-        }
-        if( (a->isEmpty() || a->isEmptyString()) &&a->getAttributeScript().isEmpty()) {
-            good = false;
-            errorList.append(U2::WorkflowUtils::tr("Required parameter is not set: %1").arg(a->getDisplayName()));
-        }
+        good &= a->validate(errorList);
     }
     if (validator) {
         good &= validator->validate(this, errorList);

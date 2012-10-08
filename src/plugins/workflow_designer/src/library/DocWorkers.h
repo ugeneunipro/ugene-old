@@ -29,6 +29,9 @@
 
 
 namespace U2 {
+
+class DatasetFilesIterator;
+
 namespace LocalWorkflow {
 
 // generic sequence writer
@@ -61,15 +64,19 @@ protected:
 class TextReader : public BaseDocReader {
     Q_OBJECT
 public:
-    TextReader(Actor* a) : BaseDocReader(a, CoreLibConstants::TEXT_TYPESET_ID, BaseDocumentFormats::PLAIN_TEXT), io(NULL) {}
+    TextReader(Actor* a) : BaseDocReader(a, CoreLibConstants::TEXT_TYPESET_ID, BaseDocumentFormats::PLAIN_TEXT),
+        io(NULL), urls(NULL) {}
     void init();
     Task *tick();
 protected:
     virtual void doc2data(Document* doc);
 private:
     IOAdapter *io;
-    QStringList urls;
+    DatasetFilesIterator *urls;
     QString url;
+
+private:
+    void sendMessage(const QByteArray &data);
 };
 
 class TextWriter : public BaseDocWriter {

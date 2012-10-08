@@ -30,6 +30,7 @@
 #include <U2Core/CMDLineCoreOptions.h>
 #include <U2Remote/SerializeUtils.h>
 
+#include <U2Lang/URLAttribute.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/WorkflowManager.h>
@@ -139,11 +140,16 @@ static void setSchemaCMDLineOptions( Schema * schema, int optionsStartAtIdx ) {
                 arg( param.first ));
             continue;
         }
-        QList<Iteration> & iterations = schema->getIterations();
-        QList<Iteration>::iterator it = iterations.begin();
-        while( it != iterations.end() ) { // TODO: make different values for different iterations
-            it->cfg[id].insert( paramName, value );
-            ++it;
+        // TODO: fix this cast!
+        if (NULL == dynamic_cast<URLAttribute*>(attr)) {
+            QList<Iteration> & iterations = schema->getIterations();
+            QList<Iteration>::iterator it = iterations.begin();
+            while( it != iterations.end() ) { // TODO: make different values for different iterations
+                it->cfg[id].insert( paramName, value );
+                ++it;
+            }
+        } else {
+            attr->setAttributeValue(value);
         }
     }
 }

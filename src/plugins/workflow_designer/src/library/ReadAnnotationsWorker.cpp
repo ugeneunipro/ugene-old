@@ -66,8 +66,8 @@ void ReadAnnotationsWorker::init() {
     mtype = outBus->getBusType();
 }
 
-Task *ReadAnnotationsWorker::createReadTask(const QString &url) {
-    Task *t = new ReadAnnotationsTask(url);
+Task * ReadAnnotationsWorker::createReadTask(const QString &url, const QString &datasetName) {
+    Task *t = new ReadAnnotationsTask(url, datasetName);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     return t;
 }
@@ -86,57 +86,53 @@ void ReadAnnotationsWorker::sl_taskFinished() {
 /************************************************************************/
 /* Factory */
 /************************************************************************/
-void ReadAnnotationsWorkerFactory::init() {
-    QList<PortDescriptor*> portDescs;
-    {
+ReadAnnotationsProto::ReadAnnotationsProto()
+: GenericReadDocProto(ReadAnnotationsWorkerFactory::ACTOR_ID)
+{
+    setDisplayName(ReadAnnotationsWorker::tr("Read Annotations"));
+    setDocumentation(ReadAnnotationsWorker::tr("Reads annotations from files"));
+
+    { // ports description
         QMap<Descriptor, DataTypePtr> outTypeMap;
         outTypeMap[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
         outTypeMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+        outTypeMap[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr outTypeSet(new MapDataType(BasePorts::OUT_ANNOTATIONS_PORT_ID(), outTypeMap));
 
         Descriptor outDesc(BasePorts::OUT_ANNOTATIONS_PORT_ID(),
             ReadAnnotationsWorker::tr("Annotations"),
             ReadAnnotationsWorker::tr("Annotations."));
 
-        portDescs << new PortDescriptor(outDesc, outTypeSet, false, true);
+        ports << new PortDescriptor(outDesc, outTypeSet, false, true);
     }
 
-    QList<Attribute*> attrs;
-    {
-        attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
-    }
-
-    QMap<QString, PropertyDelegate*> delegates;
-    {
-        delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true);
-    }
-
-    Descriptor protoDesc(ReadAnnotationsWorkerFactory::ACTOR_ID,
-        ReadAnnotationsWorker::tr("Read Annotations"),
-        ReadAnnotationsWorker::tr("Reads annotations from files"));
-
-    ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
-    proto->setEditor(new DelegateEditor(delegates));
-    proto->setPrompter(new ReadDocPrompter(ReadAnnotationsWorker::tr("Reads annotations from <u>%1</u>.")));
+    setPrompter(new ReadDocPrompter(ReadAnnotationsWorker::tr("Reads annotations from <u>%1</u>.")));
     if (AppContext::isGUIMode()) {
-        proto->setIcon(GUIUtils::createRoundIcon(QColor(85,85,255), 22));
+        setIcon(GUIUtils::createRoundIcon(QColor(85,85,255), 22));
     }
+}
 
+void ReadAnnotationsWorkerFactory::init() {
+    ActorPrototype *proto = new ReadAnnotationsProto();
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATASRC(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new ReadAnnotationsWorkerFactory());
 }
 
-Worker *ReadAnnotationsWorkerFactory::createWorker(Actor *a) {
+Worker * ReadAnnotationsWorkerFactory::createWorker(Actor *a) {
     return new ReadAnnotationsWorker(a);
 }
 
 /************************************************************************/
 /* Task */
 /************************************************************************/
-ReadAnnotationsTask::ReadAnnotationsTask(const QString &_url)
-: Task(tr("Read annotations from %1").arg(_url), TaskFlag_None), url(_url)
+ReadAnnotationsTask::ReadAnnotationsTask(const QString &_url, const QString &_datasetName)
+: Task(tr("Read annotations from %1").arg(_url), TaskFlag_None), url(_url), datasetName(_datasetName)
 {
 
+}
+
+const QString & ReadAnnotationsTask::getDatasetName() const {
+    return datasetName;
 }
 
 void ReadAnnotationsTask::prepare() {
@@ -188,6 +184,7 @@ void ReadAnnotationsTask::run() {
 
         QVariantMap m;
         m[BaseSlots::URL_SLOT().getId()] = url;
+        m[BaseSlots::DATASET_SLOT().getId()] = datasetName;
         m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<QList<SharedAnnotationData> >(dataList);
         results.append(m);
     }

@@ -40,6 +40,7 @@ public:
     static DataTypePtr STRING_LIST_TYPE();
     static DataTypePtr BOOL_TYPE();
     static DataTypePtr NUM_TYPE();
+    static DataTypePtr URL_DATASETS_TYPE();
     static DataTypePtr ANY_TYPE();
     
 }; // BaseTypes
@@ -82,6 +83,15 @@ public:
     virtual QString getId() const { return BaseTypes::NUM_TYPE()->getId(); }
 
 }; // NumTypeValueFactory
+
+/**
+* Factory for datasets based url values
+*/
+class UrlTypeValueFactory : public DataTypeValueFactory {
+public:
+    virtual QVariant getValueFromString(const QString &str, bool *ok = NULL) const;
+    virtual QString getId() const;
+}; // UrlTypeValueFactory
 
 }
 

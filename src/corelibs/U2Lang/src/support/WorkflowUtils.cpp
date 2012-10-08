@@ -22,6 +22,7 @@
 #include "WorkflowUtils.h"
 
 #include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/Dataset.h>
 #include <U2Lang/Descriptor.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/IntegralBusType.h>
@@ -568,6 +569,13 @@ static QStringList initLowerToUpperList() {
 static const QStringList lowerToUpperList = initLowerToUpperList();
 
 QString WorkflowUtils::getStringForParameterDisplayRole(const QVariant & value) {
+    if (value.canConvert< QList<Dataset> >()) {
+        QString res;
+        foreach (const Dataset &dSet, value.value< QList<Dataset> >()) {
+            res += dSet.getName() + "; ";
+        }
+        return res;
+    }
     QString str = value.toString();
     if(lowerToUpperList.contains(str)) {
         return str.at(0).toUpper() + str.mid(1);
@@ -850,6 +858,16 @@ bool WorkflowUtils::startExternalProcess(QProcess *process, const QString &progr
     return started;
 }
 
+QStringList WorkflowUtils::getDatasetsUrls(const QList<Dataset> &sets) {
+    QStringList result;
+    foreach (const Dataset &dSet, sets) {
+        foreach (URLContainer *url, dSet.getUrls()) {
+            result << url->getUrl();
+        }
+    }
+    return result;
+}
+
 /*****************************
  * PrompterBaseImpl
  *****************************/
@@ -862,7 +880,14 @@ QVariant PrompterBaseImpl::getParameter(const QString& id) {
 }
 
 QString PrompterBaseImpl::getURL(const QString& id, bool * empty ) {
-    QString url = getParameter(id).toString();
+    QVariant urlVar = getParameter(id);
+    QString url;
+    if (urlVar.canConvert< QList<Dataset> >()) {
+        QStringList urls = WorkflowUtils::getDatasetsUrls(urlVar.value< QList<Dataset> >());
+        url = urls.join(";");
+    } else {
+        url = getParameter(id).toString();
+    }
     if( empty != NULL ) { *empty = false; }
     if( !target->getParameter(id)->getAttributeScript().isEmpty() ) {
         url = "got from user script";

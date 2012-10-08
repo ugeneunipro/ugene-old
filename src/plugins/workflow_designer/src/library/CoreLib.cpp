@@ -154,6 +154,7 @@ void CoreLib::init() {
         QMap<Descriptor, DataTypePtr> m;
         m[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         m[BaseSlots::TEXT_SLOT()] = BaseTypes::STRING_TYPE();
+        m[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr dtl(new MapDataType(Descriptor(CoreLibConstants::TEXT_TYPESET_ID), m));
         dr->registerEntry(dtl);
         

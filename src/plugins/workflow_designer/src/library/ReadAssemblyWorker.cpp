@@ -73,13 +73,15 @@ void ReadAssemblyWorker::init() {
     mtype = outBus->getBusType();
 }
 
-Task *ReadAssemblyWorker::createReadTask(const QString &url) {
+Task * ReadAssemblyWorker::createReadTask(const QString &url, const QString &datasetName) {
     WorkflowTasksRegistry *registry = WorkflowEnv::getWorkflowTasksRegistry();
     SAFE_POINT(NULL != registry, "NULL WorkflowTasksRegistry", NULL);
     ReadDocumentTaskFactory *factory = registry->getReadDocumentTaskFactory(ReadFactories::READ_ASSEMBLY);
     SAFE_POINT(NULL != factory, QString("NULL WorkflowTasksRegistry: %1").arg(ReadFactories::READ_ASSEMBLY), NULL);
 
-    return factory->createTask(url, QVariantMap(), context);
+    QVariantMap hints;
+    hints[BaseSlots::DATASET_SLOT().getId()] = datasetName;
+    return factory->createTask(url, hints, context);
 }
 
 void ReadAssemblyWorker::sl_taskFinished() {
@@ -91,8 +93,9 @@ void ReadAssemblyWorker::sl_taskFinished() {
     QString url = t->getUrl();
     foreach(const SharedDbiDataHandler &handler, result) {
         QVariantMap m;
-        m.insert(BaseSlots::URL_SLOT().getId(), url);
-        m.insert(BaseSlots::ASSEMBLY_SLOT().getId(), qVariantFromValue<SharedDbiDataHandler>(handler));
+        m[BaseSlots::URL_SLOT().getId()] = url;
+        m[BaseSlots::DATASET_SLOT().getId()] = t->getDatasetName();
+        m[BaseSlots::ASSEMBLY_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(handler);
 
         cache.append(Message(mtype, m));
     }
@@ -101,42 +104,34 @@ void ReadAssemblyWorker::sl_taskFinished() {
 /************************************************************************/
 /* Factory */
 /************************************************************************/
-void ReadAssemblyWorkerFactory::init() {
-    QList<PortDescriptor*> portDescs;
-    {
+ReadAssemblyProto::ReadAssemblyProto()
+: GenericReadDocProto(ReadAssemblyWorkerFactory::ACTOR_ID)
+{
+    setDisplayName(ReadAssemblyWorker::tr("Read Assembly"));
+    setDocumentation(ReadAssemblyWorker::tr("Reads assembly from files"));
+
+    { // ports description
         QMap<Descriptor, DataTypePtr> outTypeMap;
         outTypeMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ASSEMBLY_TYPE();
         outTypeMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+        outTypeMap[BaseSlots::DATASET_SLOT()] = BaseTypes::STRING_TYPE();
         DataTypePtr outTypeSet(new MapDataType(BasePorts::OUT_ASSEMBLY_PORT_ID(), outTypeMap));
 
         Descriptor outDesc(BasePorts::OUT_ASSEMBLY_PORT_ID(),
             ReadAssemblyWorker::tr("Assembly"),
             ReadAssemblyWorker::tr("Assembly"));
 
-        portDescs << new PortDescriptor(outDesc, outTypeSet, false, true);
+        ports << new PortDescriptor(outDesc, outTypeSet, false, true);
     }
 
-    QList<Attribute*> attrs;
-    {
-        attrs << new Attribute(BaseAttributes::URL_IN_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
-    }
-
-    QMap<QString, PropertyDelegate*> delegates;
-    {
-        delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true);
-    }
-
-    Descriptor protoDesc(ReadAssemblyWorkerFactory::ACTOR_ID,
-        ReadAssemblyWorker::tr("Read Assembly"),
-        ReadAssemblyWorker::tr("Reads assembly from files"));
-
-    ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
-    proto->setEditor(new DelegateEditor(delegates));
-    proto->setPrompter(new ReadDocPrompter(ReadAssemblyWorker::tr("Reads assembly from <u>%1</u>.")));
+    setPrompter(new ReadDocPrompter(ReadAssemblyWorker::tr("Reads assembly from <u>%1</u>.")));
     if (AppContext::isGUIMode()) {
-        proto->setIcon(GUIUtils::createRoundIcon(QColor(85,85,255), 22));
+        setIcon(GUIUtils::createRoundIcon(QColor(85,85,255), 22));
     }
+}
 
+void ReadAssemblyWorkerFactory::init() {
+    ActorPrototype *proto = new ReadAssemblyProto();
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_DATASRC(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new ReadAssemblyWorkerFactory());
 }

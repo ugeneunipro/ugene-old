@@ -38,6 +38,7 @@ public:
     static const Descriptor FASTA_HEADER_SLOT();
     static const Descriptor VARIATION_TRACK_SLOT();
     static const Descriptor ASSEMBLY_SLOT();
+    static const Descriptor DATASET_SLOT();
     
 }; // BaseSlots
 

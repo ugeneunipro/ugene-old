@@ -32,6 +32,7 @@
 #include <U2Lang/Port.h>
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/GrouperOutSlot.h>
+#include <U2Lang/URLContainer.h>
 
 
 namespace U2 {
@@ -42,6 +43,8 @@ class ExternalProcessConfig;
 class DataConfig;
 class AttributeConfig;
 struct WorkflowSchemaReaderData;
+
+typedef QPair<QString, QString> StringPair;
 
 class U2LANG_EXPORT HRSchemaSerializer : public QObject {
     Q_OBJECT
@@ -107,6 +110,13 @@ public:
     static const QString IN_SLOT;
     static const QString ACTION;
     static const QString OUT_SLOT_ATTR;
+    static const QString DATASET_NAME;
+    static const QString DIRECTORY_URL;
+    static const QString FILE_URL;
+    static const QString PATH;
+    static const QString EXC_FILTER;
+    static const QString INC_FILTER;
+    static const QString RECURSIVE;
     
 public:
     struct U2LANG_EXPORT ReadFailed {
@@ -140,6 +150,9 @@ public:
         ParsedPairs() {}
         QMap<QString, QString> equalPairs;
         QMap<QString, QString> blockPairs;
+
+        QList<StringPair> equalPairsList;
+        QList<StringPair> blockPairsList;
         
         static QPair<QString, QString> parseOneEqual(Tokenizer & tokenizer);
     }; // ParsedPairs
@@ -214,6 +227,9 @@ public:
 
 private:
     static GrouperSlotAction parseAction(Tokenizer &tokenizer);
+    static void parseUrlAttribute(Actor *proc, QList<StringPair> &blockPairs);
+    static void deprecatedUrlAttribute(Actor *proc, const QString &urls);
+    static URLContainer * parseDirectoryUrl(Tokenizer &tokenizer);
 };
 
 } // U2

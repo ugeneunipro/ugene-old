@@ -24,6 +24,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
+#include <U2Lang/Dataset.h>
 #include <U2Lang/Descriptor.h>
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/IntegralBusModel.h>
@@ -96,6 +97,8 @@ public:
     static bool isBindingValid(const QList<Actor*> &procList, Port *endPort, const QString &binding, const QStringList &path);
 
     static bool startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments);
+
+    static QStringList getDatasetsUrls(const QList<Dataset> &sets);
     
 private:
     static QStringList initExtensions();

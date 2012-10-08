@@ -155,6 +155,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/TaskStarter.h \
            src/tasks/TLSTask.h \
            src/tasks/TmpDirChecker.h \
+           src/util/FilesIterator.h \
            src/util/FileStorageUtils.h \
            src/util/FormatUtils.h \
            src/util/GAutoDeleteList.h \
@@ -288,6 +289,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/TaskStarter.cpp \
            src/tasks/TLSTask.cpp \
            src/tasks/TmpDirChecker.cpp \
+           src/util/FilesIterator.cpp \
            src/util/FileStorageUtils.cpp \
            src/util/FormatUtils.cpp \
            src/util/GAutoDeleteList.cpp \

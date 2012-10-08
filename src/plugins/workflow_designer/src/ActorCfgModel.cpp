@@ -22,6 +22,7 @@
 #include <QtCore/QDebug>
 
 #include <U2Core/Log.h>
+#include <U2Lang/URLAttribute.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/IntegralBusType.h>
@@ -176,7 +177,11 @@ int ActorCfgModel::rowCount( const QModelIndex & parent ) const {
     return attrs.isEmpty() || parent.isValid() ? 0 : attrs.size()/*rows*/;
 }
 
-bool ActorCfgModel::isVisible(const QVector<const AttributeRelation*> &relations) const {
+bool ActorCfgModel::isVisible(Attribute *a) const {
+    if (NULL != dynamic_cast<URLAttribute*>(a)) {
+        return false;
+    }
+    const QVector<const AttributeRelation*> &relations = a->getRelations();
     bool hasVisibilityRelations = false;
     foreach(const AttributeRelation *relation, relations) {
         if (VISIBILITY == relation->getType()) {
@@ -204,7 +209,7 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
             def[a->getId()] = a->getAttributePureValue();
         }
         Attribute *currentAttribute = attrs.at(index.row());
-        if (!isVisible(currentAttribute->getRelations())) {
+        if (!isVisible(currentAttribute)) {
             return 0;
         }
     } else {
@@ -217,7 +222,7 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
             }
         }
         Attribute *currentAttribute = attrs.at(index.row());
-        if (!isVisible(currentAttribute->getRelations())) {
+        if (!isVisible(currentAttribute)) {
             return 0;
         }
     }
@@ -308,7 +313,7 @@ Attribute* ActorCfgModel::getAttributeByRow(int row) const{
 
     QList<Attribute*>visibleAttrs;
     foreach(Attribute* a, attrs) {
-        if (isVisible(a->getRelations())) {
+        if (isVisible(a)) {
             visibleAttrs << a;
         }
     }

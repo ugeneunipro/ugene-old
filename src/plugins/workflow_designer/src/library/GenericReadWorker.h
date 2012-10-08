@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-class FilesIterator;
+class DatasetFilesIterator;
 
 namespace LocalWorkflow {
 
@@ -49,12 +49,12 @@ protected slots:
     virtual void sl_taskFinished() = 0;
 
 protected:
-    virtual Task *createReadTask(const QString &url) = 0;
+    virtual Task * createReadTask(const QString &url, const QString &datasetName) = 0;
 
     CommunicationChannel *ch;
     QList<Message> cache;
     DataTypePtr mtype;
-    FilesIterator *files;
+    DatasetFilesIterator *files;
 };
 
 /************************************************************************/
@@ -87,11 +87,12 @@ public:
 class LoadMSATask : public Task {
     Q_OBJECT
 public:
-    LoadMSATask(QString url) : Task(tr("Read MSA from %1").arg(url), TaskFlag_None), url(url) {}
+    LoadMSATask(const QString &url, const QString &datasetName);
     virtual void prepare();
     virtual void run();
 
     QString url;
+    QString datasetName;
     QList<MAlignment> results;
 };
 
@@ -106,7 +107,9 @@ protected slots:
     virtual void sl_taskFinished();
 
 protected:
-    virtual Task *createReadTask(const QString &url) {return new LoadMSATask(url);}
+    virtual Task *createReadTask(const QString &url, const QString &datasetName) {
+        return new LoadMSATask(url, datasetName);
+    }
 };
 
 class GenericSeqReader : public GenericDocReader {
@@ -119,9 +122,7 @@ protected slots:
     virtual void sl_taskFinished();
 
 protected:
-    virtual Task *createReadTask(const QString &url) {
-        return new LoadSeqTask(url, cfg, &selector, context->getDataStorage());
-    }
+    virtual Task * createReadTask(const QString &url, const QString &datasetName);
     QVariantMap cfg;
     DNASelector selector;
 };
