@@ -63,6 +63,14 @@ public:
     QString getHint(const QString& dbName);
     //TODO: move this to AppContext
     static RemoteDBRegistry& getRemoteDBRegistry();
+
+public:
+    static const QString GENBANK_DNA;
+    static const QString GENBANK_PROTEIN;
+    static const QString PDB;
+    static const QString SWISS_PROT;
+    static const QString UNIPROTKB_SWISS_PROT;
+    static const QString UNIPROTKB_TREMBL;
 };
 
 

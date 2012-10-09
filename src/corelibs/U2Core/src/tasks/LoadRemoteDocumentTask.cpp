@@ -50,12 +50,12 @@ namespace U2 {
 
 const QString NCBI_ESEARCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=%1&term=%2&tool=UGENE");
 const QString NCBI_EFETCH_URL("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=%1&id=%2&retmode=text&rettype=%3&tool=UGENE");
-const QString GENBANK_DNA("NCBI GenBank (DNA sequence)");
-const QString GENBANK_PROTEIN("NCBI protein sequence database");
-const QString PDB("PDB");
-const QString SWISS_PROT("SWISS-PROT");
-const QString UNIPROTKB_SWISS_PROT("UniProtKB/Swiss-Prot");
-const QString UNIPROTKB_TREMBL("UniProtKB/TrEMBL");
+const QString RemoteDBRegistry::GENBANK_DNA("NCBI GenBank (DNA sequence)");
+const QString RemoteDBRegistry::GENBANK_PROTEIN("NCBI protein sequence database");
+const QString RemoteDBRegistry::PDB("PDB");
+const QString RemoteDBRegistry::SWISS_PROT("SWISS-PROT");
+const QString RemoteDBRegistry::UNIPROTKB_SWISS_PROT("UniProtKB/Swiss-Prot");
+const QString RemoteDBRegistry::UNIPROTKB_TREMBL("UniProtKB/TrEMBL");
 
 LoadRemoteDocumentTask::LoadRemoteDocumentTask( const GUrl& fileUrl) 
 : DocumentProviderTask(tr("Load remote document"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), copyDataTask(NULL),

@@ -19,34 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include "RemoteDBFetcherWorker.h"
-
-#include <U2Core/DocumentModel.h>
-#include <U2Core/AppContext.h>
-
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/AnnotationTableObject.h>
-
 #include <U2Core/AnnotationData.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/FailTask.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/LoadRemoteDocumentTask.h>
 
-#include <U2Lang/ActorModel.h>
-#include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/ActorPrototypeRegistry.h>
-
-#include <U2Lang/BaseSlots.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BasePorts.h>
-#include <U2Lang/BaseActorCategories.h>
-
-#include <U2Lang/CoreLibConstants.h>
 #include <U2Designer/DelegateEditors.h>
 
-#include <U2Core/LoadRemoteDocumentTask.h>
-#include <U2Core/FailTask.h>
-
 #include <U2Gui/GUIUtils.h>
+
+#include <U2Lang/ActorModel.h>
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/WorkflowEnv.h>
+
+#include "RemoteDBFetcherWorker.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -207,13 +203,12 @@ const QMap<QString, QString> RemoteDBFetcherFactory::cuteDbNames = RemoteDBFetch
 
 QMap<QString, QString> RemoteDBFetcherFactory::initCuteDbNames() {
     QMap<QString, QString> ret;
-    // FIXME: use constants. see LoadRemoteDocumentTask.cpp
-    ret["NCBI GenBank (DNA sequence)"] ="ncbi dna";
-    ret["NCBI protein sequence database"] ="ncbi protein";
-    ret["PDB"] = "pdb";
-    ret["SWISS-PROT"] = "swiss-prot";
-    ret["UniProtKB/Swiss-Prot"] = "uniprot-swiss-prot";
-    ret["UniProtKB/TrEMBL"] = "uniprot-trembl";
+    ret[RemoteDBRegistry::GENBANK_DNA] ="ncbi dna";
+    ret[RemoteDBRegistry::GENBANK_PROTEIN] ="ncbi protein";
+    ret[RemoteDBRegistry::PDB] = "pdb";
+    ret[RemoteDBRegistry::SWISS_PROT] = "swiss-prot";
+    ret[RemoteDBRegistry::UNIPROTKB_SWISS_PROT] = "uniprot-swiss-prot";
+    ret[RemoteDBRegistry::UNIPROTKB_TREMBL] = "uniprot-trembl";
     return ret;
 }
 
