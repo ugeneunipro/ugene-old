@@ -28,6 +28,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QDoubleSpinBox" name="intMinBox">
+       <property name="decimals">
+        <number>7</number>
+       </property>
        <property name="maximum">
         <double>400000000.000000000000000</double>
        </property>
@@ -42,6 +45,9 @@
      </item>
      <item>
       <widget class="QDoubleSpinBox" name="intMaxBox">
+       <property name="decimals">
+        <number>7</number>
+       </property>
        <property name="maximum">
         <double>400000000.000000000000000</double>
        </property>
@@ -61,6 +67,9 @@
    </item>
    <item row="1" column="1">
     <widget class="QDoubleSpinBox" name="lessBox">
+     <property name="decimals">
+      <number>7</number>
+     </property>
      <property name="maximum">
       <double>400000000.000000000000000</double>
      </property>
@@ -88,6 +97,9 @@
    </item>
    <item row="2" column="1">
     <widget class="QDoubleSpinBox" name="greaterBox">
+     <property name="decimals">
+      <number>7</number>
+     </property>
      <property name="maximum">
       <double>400000000.000000000000000</double>
      </property>
