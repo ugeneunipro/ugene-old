@@ -344,10 +344,11 @@ void GSequenceLineView::wheelEvent(QWheelEvent *we) {
 }
 
 void GSequenceLineView::sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>& added, const QVector<U2Region>& removed) {
-    QWidget* prevFocusedWidget = QApplication::focusWidget();
-    if(prevFocusedWidget != this){
+    if(QApplication::focusWidget() != this){
         setFocus();
-        prevFocusedWidget->setFocus();
+        if (NULL != QApplication::focusWidget()) {
+            QApplication::focusWidget()->setFocus();
+        }
     }
     if (visibleRange.intersects(added) || visibleRange.intersects(removed)) {
         addUpdateFlags(GSLV_UF_SelectionChanged);

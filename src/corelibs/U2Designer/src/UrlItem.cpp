@@ -26,7 +26,7 @@
 namespace U2 {
 
 UrlItem::UrlItem(const QString &url, QListWidget *parent)
-: QListWidgetItem(url, NULL)
+: QListWidgetItem(url, parent)
 {
 
 }
