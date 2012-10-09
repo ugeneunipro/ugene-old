@@ -203,8 +203,8 @@ const QMap<QString, QString> RemoteDBFetcherFactory::cuteDbNames = RemoteDBFetch
 
 QMap<QString, QString> RemoteDBFetcherFactory::initCuteDbNames() {
     QMap<QString, QString> ret;
-    ret[RemoteDBRegistry::GENBANK_DNA] ="ncbi dna";
-    ret[RemoteDBRegistry::GENBANK_PROTEIN] ="ncbi protein";
+    ret[RemoteDBRegistry::GENBANK_DNA] ="ncbi-dna";
+    ret[RemoteDBRegistry::GENBANK_PROTEIN] ="ncbi-protein";
     ret[RemoteDBRegistry::PDB] = "pdb";
     ret[RemoteDBRegistry::SWISS_PROT] = "swiss-prot";
     ret[RemoteDBRegistry::UNIPROTKB_SWISS_PROT] = "uniprot-swiss-prot";
