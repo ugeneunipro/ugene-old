@@ -496,7 +496,11 @@ bool MWDockManagerImpl::eventFilter(QObject *obj, QEvent *event) {
 
 void MWDockManagerImpl::toggleDock(DockData* d) {
     if (d->dock!=NULL) {
+        MWMDIWindow *ww = AppContext::getMainWindow()->getMDIManager()->getActiveWindow();
         closeDock(d);
+        if (ww != NULL) {
+            ww->setFocus();
+        }
     } else {
         openDock(d);
     }
