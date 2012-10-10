@@ -68,95 +68,126 @@ void BwaBuildIndexTask::LogParser::parseErrOutput(const QString &partOfLog) {
 
 // BwaAssembleTask
 
-BwaAssembleTask::BwaAssembleTask(const QString &indexPath, const QString &readsPath, const QString &resultPath, const DnaAssemblyToRefTaskSettings &settings):
+BwaAlignTask::BwaAlignTask(const QString &indexPath, const QList<ShortReadSet>& shortReadSets, const QString &resultPath, const DnaAssemblyToRefTaskSettings &settings):
     Task("Bwa reads assembly", TaskFlags_NR_FOSCOE),
     indexPath(indexPath),
-    readsPath(readsPath),
+    readSets(shortReadSets),
     resultPath(resultPath),
-    settings(settings)
+    settings(settings),
+    alignmentPerformed(false)
 {
 }
 
-void BwaAssembleTask::prepare() {
-    QStringList arguments;
-    arguments.append("aln");
+void BwaAlignTask::prepare() {
 
-    arguments.append("-n");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_N, 0.04).toString());
 
-    arguments.append("-o");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_GAP_OPENS, 1).toString());
-
-    arguments.append("-e");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_GAP_EXTENSIONS, -1).toString());
-
-    arguments.append("-i");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_INDEL_OFFSET, 5).toString());
-
-    arguments.append("-d");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_LONG_DELETION_EXTENSIONS, 10).toString());
-
-    arguments.append("-l");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_SEED_LENGTH, 32).toString());
-
-    arguments.append("-k");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_SEED_DIFFERENCES, 2).toString());
-
-    arguments.append("-m");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_QUEUE_ENTRIES, 2000000).toString());
-
-    arguments.append("-t");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_THREADS, 1).toString());
-
-    arguments.append("-M");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_MISMATCH_PENALTY, 3).toString());
-
-    arguments.append("-O");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_GAP_OPEN_PENALTY, 11).toString());
-
-    arguments.append("-E");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_GAP_EXTENSION_PENALTY, 4).toString());
-
-    arguments.append("-R");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_BEST_HITS, 30).toString());
-
-    arguments.append("-q");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_QUALITY_THRESHOLD, 0).toString());
-
-    arguments.append("-B");
-    arguments.append(settings.getCustomValue(BwaTask::OPTION_BARCODE_LENGTH, 0).toString());
-
-    if(settings.getCustomValue(BwaTask::OPTION_COLORSPACE, false).toBool()) {
-        arguments.append("-c");
+    if (readSets.size() == 0) {
+        setError(tr("Short reads are not provided"));
+        return;
     }
 
-    if(settings.getCustomValue(BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS, false).toBool()) {
-        arguments.append("-L");
+    settings.pairedReads = readSets.at(0).type == ShortReadSet::PairedEndReads;
+
+    if (settings.pairedReads && readSets.size() != 2) {
+        setError(tr("In paired-end mode it possible to analyze only 2 read sets using BWA"));
+        return;
     }
 
-    if(settings.getCustomValue(BwaTask::OPTION_NON_ITERATIVE_MODE, false).toBool()) {
-        arguments.append("-N");
-    }
 
-    arguments.append("-f");
-    arguments.append(resultPath + ".sai");
-    arguments.append(indexPath);
-    arguments.append(readsPath);
-    alignTask = new ExternalToolRunTask(BWA_TOOL_NAME, arguments, &logParser);
-    addSubTask(alignTask);
+    foreach (const ShortReadSet& readSet, readSets) {
+        QStringList arguments;
+        arguments.append("aln");
+
+        arguments.append("-n");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_N, 0.04).toString());
+
+        arguments.append("-o");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_GAP_OPENS, 1).toString());
+
+        arguments.append("-e");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_GAP_EXTENSIONS, -1).toString());
+
+        arguments.append("-i");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_INDEL_OFFSET, 5).toString());
+
+        arguments.append("-d");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_LONG_DELETION_EXTENSIONS, 10).toString());
+
+        arguments.append("-l");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_SEED_LENGTH, 32).toString());
+
+        arguments.append("-k");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_SEED_DIFFERENCES, 2).toString());
+
+        arguments.append("-m");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_QUEUE_ENTRIES, 2000000).toString());
+
+        arguments.append("-t");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_THREADS, 1).toString());
+
+        arguments.append("-M");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MISMATCH_PENALTY, 3).toString());
+
+        arguments.append("-O");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_GAP_OPEN_PENALTY, 11).toString());
+
+        arguments.append("-E");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_GAP_EXTENSION_PENALTY, 4).toString());
+
+        arguments.append("-R");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_BEST_HITS, 30).toString());
+
+        arguments.append("-q");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_QUALITY_THRESHOLD, 0).toString());
+
+        arguments.append("-B");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_BARCODE_LENGTH, 0).toString());
+
+        if(settings.getCustomValue(BwaTask::OPTION_COLORSPACE, false).toBool()) {
+            arguments.append("-c");
+        }
+
+        if(settings.getCustomValue(BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS, false).toBool()) {
+            arguments.append("-L");
+        }
+
+        if(settings.getCustomValue(BwaTask::OPTION_NON_ITERATIVE_MODE, false).toBool()) {
+            arguments.append("-N");
+        }
+
+        arguments.append("-f");
+        arguments.append(readSet.url.getURLString() + ".sai");
+        arguments.append(indexPath);
+        arguments.append(readSet.url.getURLString());
+        Task* alignTask = new ExternalToolRunTask(BWA_TOOL_NAME, arguments, &logParser);
+        addSubTask(alignTask);
+        alignTasks.append(alignTask);
+    }
 }
 
-QList<Task *> BwaAssembleTask::onSubTaskFinished(Task *subTask) {
+QList<Task *> BwaAlignTask::onSubTaskFinished(Task *subTask) {
     QList<Task *> result;
 
-    if(subTask == alignTask) {
+    alignTasks.removeOne(subTask);
+
+    if(alignTasks.size() == 0 && !alignmentPerformed) {
         QStringList arguments;
-        arguments.append("samse");
+
+        settings.pairedReads ? arguments.append("sampe") : arguments.append("samse");
+
         arguments.append("-f");
         arguments.append(resultPath);
         arguments.append(indexPath);
-        arguments.append(resultPath + ".sai");
-        arguments.append(readsPath);
+
+        foreach (const ShortReadSet& set, readSets) {
+            arguments.append(set.url.getURLString() + ".sai");
+        }
+
+        foreach(const ShortReadSet& set, readSets) {
+            arguments.append(set.url.getURLString());
+        }
+
+        alignmentPerformed = true;
         ExternalToolRunTask *task = new ExternalToolRunTask(BWA_TOOL_NAME, arguments, &logParser);
         result.append(task);
     }
@@ -166,14 +197,14 @@ QList<Task *> BwaAssembleTask::onSubTaskFinished(Task *subTask) {
 
 // BwaAssembleTask::LogParser
 
-BwaAssembleTask::LogParser::LogParser() {
+BwaAlignTask::LogParser::LogParser() {
 }
 
-void BwaAssembleTask::LogParser::parseOutput(const QString &partOfLog) {
+void BwaAlignTask::LogParser::parseOutput(const QString &partOfLog) {
     ExternalToolLogParser::parseErrOutput(partOfLog);
 }
 
-void BwaAssembleTask::LogParser::parseErrOutput(const QString &partOfLog) {
+void BwaAlignTask::LogParser::parseErrOutput(const QString &partOfLog) {
     ExternalToolLogParser::parseErrOutput(partOfLog);
 }
 
@@ -219,11 +250,11 @@ void BwaTask::prepare() {
         buildIndexTask = new BwaBuildIndexTask(settings.refSeqUrl.getURLString(), indexFileName, settings);
     }
     if(!justBuildIndex) {
-        if(settings.shortReadSets.size() > 1) {
+        /*if(settings.shortReadSets.size() > 1) {
             setError(tr("Multiple read files are not supported"));
             return;
-        }
-        assembleTask = new BwaAssembleTask(indexFileName, settings.shortReadSets.first().url.getURLString(), settings.resultFileName.getURLString(), settings);
+        }*/
+        assembleTask = new BwaAlignTask(indexFileName, settings.shortReadSets, settings.resultFileName.getURLString(), settings);
     }
 
     if(!settings.prebuiltIndex) {

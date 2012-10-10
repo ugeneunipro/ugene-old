@@ -68,7 +68,7 @@ QList<Task*> DnaAssemblyMultiTask::onSubTaskFinished( Task* subTask ) {
 
     if (subTask == assemblyToRefTask) {
         qint64 time=(subTask->getTimeInfo().finishTime - subTask->getTimeInfo().startTime);
-        taskLog.details(QString("Assembly to reference task time: %1").arg((double)time/(1000*1000)));
+        taskLog.details(QString("Align to reference task time: %1").arg((double)time/(1000*1000)));
     }
 
     if ( subTask == assemblyToRefTask && settings.openView ) {
@@ -93,17 +93,17 @@ QList<Task*> DnaAssemblyMultiTask::onSubTaskFinished( Task* subTask ) {
 QString DnaAssemblyMultiTask::generateReport() const {
     QString res;
     if (hasError() || isCanceled()) {
-        return QString("Assembly task finished with error: %1").arg(getError());
+        return QString("Alignment task finished with error: %1").arg(getError());
     }
 
     if (justBuildIndex) {
         res = settings.algName + QString(" index-file for %1 was built successfully")
         .arg(settings.refSeqUrl.fileName());
     } else if (assemblyToRefTask->isHaveResult()) {
-        res = QString("Assembly to reference %1 was finished successfully")
+        res = QString("Alignment to reference %1 was finished successfully")
         .arg(settings.refSeqUrl.fileName());
     } else {
-        res = QString("Assembly to reference %1 was failed. No possible alignment was found")
+        res = QString("Alignment to reference %1 was failed. No possible alignment was found")
         .arg(settings.refSeqUrl.fileName());
     }
     return res;

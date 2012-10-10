@@ -320,7 +320,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
 
     AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BowtieTask::taskName, new BowtieTaskFactory(), 
         new BowtieGUIExtensionsFactory(), true/*Index*/, false /*Dbi*/, true/*Paired-reads*/));
-    AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BwaTask::taskName, new BwaTaskFactory(), new BwaGUIExtensionsFactory(), true, false));
+    AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BwaTask::taskName, new BwaTaskFactory(),
+        new BwaGUIExtensionsFactory(), true/*Index*/, false/*Dbi*/, true/*Paired*/));
 
     {
         GTestFormatRegistry *tfr = AppContext::getTestFramework()->getTestFormatRegistry();

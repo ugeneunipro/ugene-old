@@ -49,10 +49,10 @@ private:
     DnaAssemblyToRefTaskSettings settings;
 };
 
-class BwaAssembleTask : public Task {
+class BwaAlignTask : public Task {
     Q_OBJECT
 public:
-    BwaAssembleTask(const QString &indexPath, const QString &readsPath, const QString &resultPath, const DnaAssemblyToRefTaskSettings &settings);
+    BwaAlignTask(const QString &indexPath, const QList<ShortReadSet>& shortReadSets, const QString &resultPath, const DnaAssemblyToRefTaskSettings &settings);
 
     void prepare();
 protected slots:
@@ -66,12 +66,13 @@ private:
         void parseErrOutput(const QString &partOfLog);
     };
 
-    ExternalToolRunTask *alignTask;
+    QList<Task*> alignTasks;
     LogParser logParser;
     QString indexPath;
-    QString readsPath;
+    QList<ShortReadSet> readSets;
     QString resultPath;
     DnaAssemblyToRefTaskSettings settings;
+    bool alignmentPerformed;
 };
 
 class BwaTask : public DnaAssemblyToReferenceTask {
@@ -106,7 +107,7 @@ public:
     static const QString OPTION_NON_ITERATIVE_MODE;
 private:
     BwaBuildIndexTask *buildIndexTask;
-    BwaAssembleTask *assembleTask;
+    BwaAlignTask *assembleTask;
 };
 
 class BwaTaskFactory : public DnaAssemblyToRefTaskFactory {
