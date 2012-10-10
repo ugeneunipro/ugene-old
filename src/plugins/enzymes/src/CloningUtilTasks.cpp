@@ -97,7 +97,6 @@ AnnotationData* DigestSequenceTask::createFragment( int pos1, const DNAFragmentT
                                                    int pos2, const DNAFragmentTerm& rightTerm )
 {
     AnnotationData* ad = new AnnotationData();
-    assert(pos1 != pos2 );
     if (pos1  < pos2) {
         ad->location->regions.append(U2Region(pos1, pos2 - pos1 ));
     } else {
@@ -116,9 +115,9 @@ AnnotationData* DigestSequenceTask::createFragment( int pos1, const DNAFragmentT
     QString rightOverhangStrand = rightTerm.isDirect ? OVERHANG_STRAND_DIRECT : OVERHANG_STRAND_COMPL;
     ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_STRAND, rightOverhangStrand));
     
-    QString leftOverhangType = leftTerm.enzymeId.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
+    QString leftOverhangType = leftTerm.enzymeId.isEmpty() || leftTerm.overhang.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
     ad->qualifiers.append(U2Qualifier(QUALIFIER_LEFT_TYPE, leftOverhangType) );
-    QString rightOverhangType = rightTerm.enzymeId.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
+    QString rightOverhangType = rightTerm.enzymeId.isEmpty() || rightTerm.overhang.isEmpty() ? OVERHANG_TYPE_BLUNT : OVERHANG_TYPE_STICKY;
     ad->qualifiers.append(U2Qualifier(QUALIFIER_RIGHT_TYPE, rightOverhangType) );
 
     ad->qualifiers.append(U2Qualifier(QUALIFIER_SOURCE, dnaObj->getGObjectName()));
