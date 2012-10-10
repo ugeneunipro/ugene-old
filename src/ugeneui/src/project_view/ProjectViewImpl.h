@@ -53,6 +53,9 @@ private slots:
 private:
     void excludeDocumentsInTasks(const QList<Task*>& tasks, QList<Document*>& documents);
     void update();
+    void notifyUserAndReloadDocuments(const QList<Document*> &outdatedDocs);
+    void notifyUserAndProcessRemovedDocuments(const QList<Document*> &removedDocs);
+    bool isAnyDialogOpened() const;
 
     Task* updateTask;
     bool recursion;

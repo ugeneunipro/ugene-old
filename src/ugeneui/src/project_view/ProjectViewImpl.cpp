@@ -114,6 +114,7 @@ void DocumentUpdater::update() {
 
     // build list of documents which files were modified between calls to sl_update()
     QList<Document*> outdatedDocs;
+    QList<Document *> removedDocs;
     foreach(Document* doc, docs2check) {
         if (!doc->isLoaded()) {
             continue;
@@ -130,27 +131,94 @@ void DocumentUpdater::update() {
         // last update time is updated by save/load tasks
         // if it's a null the document was not loaded or saved => reload is pointless
         // if it's not a null and file not exists => file was deleted (don't reload)
-        if (updTime.isNull() || !fi.exists()) {
+        if (updTime.isNull()) {
             continue;
         }
-        if (fi.lastModified() != updTime) { // file was modified
+        if (fi.lastModified() != updTime && fi.exists()) { // file was modified
             outdatedDocs.append(doc);
         }
-    }
-
-    if (outdatedDocs.isEmpty()) {
-        return;
+        if(!fi.exists()) { // file was removed from its directory
+            removedDocs.append(doc);
+        }
     }
     
-    coreLog.trace(QString("Found %1 outdated docs!").arg(outdatedDocs.size()));
+    if(!outdatedDocs.isEmpty())
+        notifyUserAndReloadDocuments(outdatedDocs);
+
+    if(!removedDocs.isEmpty())
+        notifyUserAndProcessRemovedDocuments(removedDocs);
+}
+
+bool DocumentUpdater::isAnyDialogOpened() const
+{
     foreach(GObjectViewWindow*  vw, GObjectViewUtils::getAllActiveViews()) {
         if (hasActiveDialogs(vw)) {
             coreLog.trace(QString("View: '%1' has active dialogs, skipping reload").arg(vw->windowTitle()));
-            return;
+            return true;
         }
     }
+    return false;
+}
 
-    
+void DocumentUpdater::notifyUserAndProcessRemovedDocuments(const QList<Document*> &removedDocs)
+{
+    coreLog.trace(QString("Found %1 changed doc(s)!").arg(removedDocs.size()));
+    if(isAnyDialogOpened())
+        return;
+
+    // query user what documents he wants to reload
+    // reloaded document modification time will be updated in load task
+    QListIterator<Document*> iter(removedDocs);
+    Project *curProject = AppContext::getProject();
+    TaskScheduler * taskScheduler = AppContext::getTaskScheduler();
+
+    QString newFileUrl;
+    Task *saveDoc = NULL;
+    QString saveFileFilter;
+    while (iter.hasNext()) {
+        Document* doc = iter.next();
+        QMessageBox::StandardButton btn = QMessageBox::question(
+            dynamic_cast<QWidget *>(AppContext::getMainWindow()),
+            U2_APP_TITLE,
+            tr("Document '%1' was removed from its original directory. Do you wish to save it? "
+            "Otherwise it will be removed from current project.").arg(doc->getName()),
+            QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll);
+
+        switch (btn) {
+        case QMessageBox::Yes:
+            saveFileFilter = doc->getDocumentFormat()->getSupportedDocumentFileExtensions().join(" *.").prepend("*.");
+            newFileUrl = QFileDialog::getSaveFileName(dynamic_cast<QWidget *>(AppContext::getMainWindow()),
+                                                      tr("Save as"), doc->getURLString(), saveFileFilter);
+            
+            saveDoc = new SaveDocumentTask(doc, doc->getIOAdapterFactory(), newFileUrl);
+            taskScheduler->registerTopLevelTask(saveDoc);
+            doc->setURL(GUrl(newFileUrl));
+            break;
+
+        case QMessageBox::No:
+            curProject->removeDocument(doc);
+            break;
+
+        case QMessageBox::NoToAll:
+            curProject->removeDocument(doc);
+            while (iter.hasNext()) {
+                doc = iter.next();
+                curProject->removeDocument(doc);
+            }
+            break;
+
+        default:
+            assert(0);
+        }
+    }
+}
+
+void DocumentUpdater::notifyUserAndReloadDocuments(const QList<Document*> & outdatedDocs)
+{
+    coreLog.trace(QString("Found %1 outdated docs!").arg(outdatedDocs.size()));
+    if(isAnyDialogOpened())
+        return;
+
     // query user what documents he wants to reload
     // reloaded document modification time will be updated in load task
     QList<Document*> docs2Reload;
@@ -158,33 +226,38 @@ void DocumentUpdater::update() {
     while (iter.hasNext()) {
         Document* doc = iter.next();
         QMessageBox::StandardButton btn = QMessageBox::question(
-            QApplication::activeWindow(),
+            dynamic_cast<QWidget *>(AppContext::getMainWindow()),
             U2_APP_TITLE,
             tr("Document '%1' was modified. Do you wish to reload it?").arg(doc->getName()),
             QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll);
 
         switch (btn) {
-            case QMessageBox::Yes:
+        case QMessageBox::Yes:
+            docs2Reload.append(doc);
+            break;
+
+        case QMessageBox::YesToAll:
+            docs2Reload.append(doc);
+            while (iter.hasNext()) {
+                doc = iter.next();
                 docs2Reload.append(doc);
-                break;
-            case QMessageBox::YesToAll:
-                docs2Reload.append(doc);
-                while (iter.hasNext()) {
-                    doc = iter.next();
-                    docs2Reload.append(doc);
-                }
-                break;
-            case QMessageBox::No:
+            }
+            break;
+
+        case QMessageBox::No:
+            doc->setLastUpdateTime();
+            break;
+
+        case QMessageBox::NoToAll:
+            doc->setLastUpdateTime();
+            while (iter.hasNext()) {
+                doc = iter.next();
                 doc->setLastUpdateTime();
-                break;
-            case QMessageBox::NoToAll:
-                doc->setLastUpdateTime();
-                while (iter.hasNext()) {
-                    doc = iter.next();
-                    doc->setLastUpdateTime();
-                }
-                break;
-                default:;
+            }
+            break;
+
+        default:
+            assert(0);
         }
     }
 
@@ -195,7 +268,6 @@ void DocumentUpdater::update() {
     // setup multi task : reload documents + open views
 
     ReloadDocuments(docs2Reload);
-
 }
 
 void DocumentUpdater::sl_updateTaskStateChanged() {
