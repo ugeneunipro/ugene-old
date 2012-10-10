@@ -110,9 +110,9 @@ private:
 
     RegionSelector* regionSelector;
 
-    SWMulAlignResultNamesTagsRegistry * tagsRegistry;
-    QList<QPushButton *> * templateButtons;
-    QBitArray * templateButtonsApplicability;
+    SWMulAlignResultNamesTagsRegistry *tagsRegistry;
+    QList<QPushButton *> *templateButtons;
+    QBitArray *templateButtonsApplicability;
 };
 
 } // namespace

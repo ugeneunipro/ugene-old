@@ -31,7 +31,7 @@ QString SWMulAlignSubseqPropTag::expandTag(const QVariant & argument) const {
     quint64 tagExpansion = 0;
     switch(posType) {
         case START:
-            tagExpansion = subsequence.startPos;
+            tagExpansion = subsequence.startPos + 1;
             break;
         case END:
             tagExpansion = subsequence.endPos();

@@ -63,7 +63,7 @@ struct SWDialogConfig {
         strand      = StrandOption_DirectOnly;
         rangeType   = SmithWatermanRangeType_noRange;
 
-        resultView = SmithWatermanSettings::MULTIPLE_ALIGNMENT;
+        resultView = SmithWatermanSettings::ANNOTATIONS;
 
         alignFilesNamesTmpl = QString("");
         refSubseqNamesTmpl = QString("");
@@ -71,6 +71,7 @@ struct SWDialogConfig {
         patternSequenceName = QString("");
 
 		enableAdvancedMASettings = false;
+        countOfLaunchesAlgorithm = 0;
     }
     QByteArray ptrn;
 
@@ -93,6 +94,7 @@ struct SWDialogConfig {
     QString patternSequenceName;
 
 	bool enableAdvancedMASettings;
+    int countOfLaunchesAlgorithm;
 };
 
 class U2VIEW_EXPORT SmithWatermanDialogController {

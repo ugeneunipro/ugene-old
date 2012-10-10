@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "SmithWatermanDialog.h"
 #include "SmithWatermanDialogImpl.h"
 
 #include <QtCore/QStringList>
@@ -54,7 +53,8 @@ const quint8 COUNT_OF_TEMPLATE_BUTTONS_IN_ROW = 2;
 const char * RUN_BUTTON_ANNOT_RESULT_LABEL = "Search";
 const char * RUN_BUTTON_MA_RESULT_LABEL = "Align";
 const char * RESULT_DIR_NOT_FOUND_MESSAGE = "Directory you have chosen for alignment files does not exist";
-const QString DEFAULT_PATTERN_SEQUENCE_NAME = "Pattern";
+const QString DEFAULT_PATTERN_SEQUENCE_NAME = "P";
+const QChar DEFAULT_SHORTHANDS_SEPARATOR = '_';
 
 namespace U2 {
 
@@ -231,21 +231,33 @@ bool SmithWatermanDialog::checkTemplateButtonName(const QString & name) {
 
 void SmithWatermanDialog::fillTemplateNamesFieldsByDefault() {
     const QStringList * defaultMobjectTags = tagsRegistry->getDefaultTagsForMobjectsNames();
-    const QString defaultMobjectTagsString = defaultMobjectTags->join(QString(CLOSE_SQUARE_BRACKET) + OPEN_SQUARE_BRACKET).append(CLOSE_SQUARE_BRACKET).prepend(OPEN_SQUARE_BRACKET);
+    const QString defaultMobjectTagsString = defaultMobjectTags->join(QString(CLOSE_SQUARE_BRACKET)
+                                                                      + DEFAULT_SHORTHANDS_SEPARATOR
+                                                                      + OPEN_SQUARE_BRACKET)
+                                             .append(CLOSE_SQUARE_BRACKET)
+                                             .prepend(OPEN_SQUARE_BRACKET);
     mObjectNameTmpl->setText(defaultMobjectTagsString);
     delete defaultMobjectTags;
 
     const QStringList * defaultRefSubseqTags = tagsRegistry->getDefaultTagsForRefSubseqNames();
-    const QString defaultRefSubseqTagsString = defaultRefSubseqTags->join(QString(CLOSE_SQUARE_BRACKET) + OPEN_SQUARE_BRACKET).append(CLOSE_SQUARE_BRACKET).prepend(OPEN_SQUARE_BRACKET);
+    const QString defaultRefSubseqTagsString = defaultRefSubseqTags->join(QString(CLOSE_SQUARE_BRACKET)
+                                                                          + DEFAULT_SHORTHANDS_SEPARATOR
+                                                                          + OPEN_SQUARE_BRACKET)
+                                               .append(CLOSE_SQUARE_BRACKET)
+                                               .prepend(OPEN_SQUARE_BRACKET);
     refSubseqNameTmpl->setText(defaultRefSubseqTagsString);
     delete defaultRefSubseqTags;
 
     const QStringList * defaultPtrnSubseqTags = tagsRegistry->getDefaultTagsForPtrnSubseqNames();
-    const QString defaultPtrnSubseqTagsString = defaultPtrnSubseqTags->join(QString(CLOSE_SQUARE_BRACKET) + OPEN_SQUARE_BRACKET).append(CLOSE_SQUARE_BRACKET).prepend(OPEN_SQUARE_BRACKET);
+    const QString defaultPtrnSubseqTagsString = defaultPtrnSubseqTags->join(QString(CLOSE_SQUARE_BRACKET)
+                                                                            + DEFAULT_SHORTHANDS_SEPARATOR
+                                                                            + OPEN_SQUARE_BRACKET)
+                                                .append(CLOSE_SQUARE_BRACKET)
+                                                .prepend(OPEN_SQUARE_BRACKET);
     patternSubseqNameTmpl->setText(defaultPtrnSubseqTagsString);
     delete defaultPtrnSubseqTags;
     
-    patternSequenceName->setText(DEFAULT_PATTERN_SEQUENCE_NAME);
+    patternSequenceName->setText(DEFAULT_PATTERN_SEQUENCE_NAME + QString::number(dialogConfig->countOfLaunchesAlgorithm));
 }
 
 void SmithWatermanDialog::updatePatternFieldVisualState() {
@@ -612,7 +624,7 @@ void SmithWatermanDialog::stripFormatSymbolsFromPatternName(QString & patternNam
     const qint32 fastaSequenceNameStart = patternName.indexOf(QRegExp("\\s*>"));
 
     if(0 == fastaSequenceNameStart) {
-        const qint32 fastaSequenceNameEnd = patternName.indexOf(QRegExp("\\Z"), fastaSequenceNameStart);
+        const qint32 fastaSequenceNameEnd = patternName.indexOf(QRegExp("\\s"), fastaSequenceNameStart);
         patternName.replace(fastaSequenceNameStart, fastaSequenceNameEnd - fastaSequenceNameStart, "");
     } else if (-1 != fastaSequenceNameStart) {
         return;
@@ -803,6 +815,7 @@ void SmithWatermanDialog::saveDialogConfig() {
         dialogConfig->patternSequenceName = patternName;
     }
 	dialogConfig->enableAdvancedMASettings = advOptions->isChecked();
+    dialogConfig->countOfLaunchesAlgorithm++;
 
     return;
 }

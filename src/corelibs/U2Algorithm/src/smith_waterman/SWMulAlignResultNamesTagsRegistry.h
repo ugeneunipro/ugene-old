@@ -80,6 +80,7 @@ public:
 private:
     bool registerTag(SWMulAlignResultNamesTag * tag);
     QString tagExpansion(const QString & shorthand, const QVariant & argument = NULL) const;
+    QList<SWMulAlignResultNamesTag *> * getTagsWithCorrectOrder() const;
 
     QMutex mutex;
     QHash<const QString, SWMulAlignResultNamesTag *> tags;
@@ -87,25 +88,31 @@ private:
 
 
 
-inline SWMulAlignResultNamesTagsRegistry::~SWMulAlignResultNamesTagsRegistry() {
+inline QList<QPushButton *> * SWMulAlignResultNamesTagsRegistry::getTagsButtons() const
+{
+    QList<QPushButton *> * tagsButtons = new QList<QPushButton *>;
+    QList<SWMulAlignResultNamesTag *> *arrangedTags = getTagsWithCorrectOrder();
+
+    foreach(SWMulAlignResultNamesTag * tag, *arrangedTags) {
+        QPushButton * button = new QPushButton(OPEN_SQUARE_BRACKET + tag->getShorthand() +
+            CLOSE_SQUARE_BRACKET + SHORTHAND_AND_LABEL_SEPARATOR + tag->getLabel());
+        button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        tagsButtons->append(button);
+    }
+    delete arrangedTags;
+
+    return tagsButtons;
+}
+
+inline SWMulAlignResultNamesTagsRegistry::~SWMulAlignResultNamesTagsRegistry()
+{
     foreach(SWMulAlignResultNamesTag * tag, tags.values()) {
         delete tag;
     }
 }
 
-inline QList<QPushButton *> * SWMulAlignResultNamesTagsRegistry::getTagsButtons() const {
-    QList<QPushButton *> * tagsButtons = new QList<QPushButton *>;
-    foreach(SWMulAlignResultNamesTag * tag, tags.values()) {
-        QPushButton * button = new QPushButton(OPEN_SQUARE_BRACKET + tag->getShorthand() +
-                                                CLOSE_SQUARE_BRACKET + SHORTHAND_AND_LABEL_SEPARATOR + tag->getLabel());
-        button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        tagsButtons->append(button);
-    }
-
-    return tagsButtons;
-}
-
-inline QBitArray * SWMulAlignResultNamesTagsRegistry::getBitmapOfTagsApplicability() const {
+inline QBitArray * SWMulAlignResultNamesTagsRegistry::getBitmapOfTagsApplicability() const
+{
     QBitArray * bitmap = new QBitArray(tags.count());
     quint8 counter = 0;
 
@@ -119,7 +126,8 @@ inline QBitArray * SWMulAlignResultNamesTagsRegistry::getBitmapOfTagsApplicabili
     return bitmap;
 }
 
-inline void SWMulAlignResultNamesTagsRegistry::resetCounters() {
+inline void SWMulAlignResultNamesTagsRegistry::resetCounters()
+{
     foreach(SWMulAlignResultNamesTag * tag, tags.values()) {
         SWMulAlignExternalPropTag * externalPropertyTag = dynamic_cast<SWMulAlignExternalPropTag *>(tag);
         if(NULL != externalPropertyTag) {
@@ -130,16 +138,18 @@ inline void SWMulAlignResultNamesTagsRegistry::resetCounters() {
     }
 }
 
-inline QStringList * SWMulAlignResultNamesTagsRegistry::getDefaultTagsForMobjectsNames() const {
+inline QStringList * SWMulAlignResultNamesTagsRegistry::getDefaultTagsForMobjectsNames() const
+{
     QStringList * result = new QStringList();
-    result->append(SEQ_NAME_PREFIX_TAG_SHORTHAND);
     result->append(PTRN_NAME_PREFIX_TAG_SHORTHAND);
+    result->append(SEQ_NAME_PREFIX_TAG_SHORTHAND);
     result->append(COUNTER_TAG_SHORTHAND);
 
     return result;
 }
 
-inline QStringList * SWMulAlignResultNamesTagsRegistry::getDefaultTagsForRefSubseqNames() const {
+inline QStringList * SWMulAlignResultNamesTagsRegistry::getDefaultTagsForRefSubseqNames() const
+{
     QStringList * result = new QStringList();
     result->append(SEQ_NAME_PREFIX_TAG_SHORTHAND);
     result->append(SUBSEQ_START_POS_TAG_SHORTHAND);
@@ -148,7 +158,8 @@ inline QStringList * SWMulAlignResultNamesTagsRegistry::getDefaultTagsForRefSubs
     return result;
 }
 
-inline QStringList * SWMulAlignResultNamesTagsRegistry::getDefaultTagsForPtrnSubseqNames() const {
+inline QStringList * SWMulAlignResultNamesTagsRegistry::getDefaultTagsForPtrnSubseqNames() const
+{
     QStringList * result = new QStringList();
     result->append(PTRN_NAME_PREFIX_TAG_SHORTHAND);
     result->append(SUBSEQ_START_POS_TAG_SHORTHAND);
