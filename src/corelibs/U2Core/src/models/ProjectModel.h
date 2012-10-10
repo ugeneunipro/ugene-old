@@ -43,6 +43,7 @@ class U2OpStatus;
 #define ProjectLoaderHint_ForceFormatOptions "force-format-options"
 #define ProjectLoaderHint_LoadWithoutView "load-without-view"
 #define ProjectLoaderHint_LoadUnloadedDocument "load-unloaded-document"
+#define ProjectLoaderHint_UseImporters "use-importers"
 #define ProjectLoaderHint_MultipleFilesMode_URLDocument "multiple-files-mode-url-document"
 #define ProjectLoaderHint_MultipleFilesMode_URLsDocumentConsistOf "multiple-files-mode-urls-document-consist-of"
 #define ProjectLoaderHint_MultipleFilesMode_SaveDocumentFlag "multiple-files-mode-save-document-flag"

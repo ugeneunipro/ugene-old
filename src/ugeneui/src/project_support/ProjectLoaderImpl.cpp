@@ -277,7 +277,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
 	    foreach(const GUrl& url, urls){
 		    FormatDetectionResult dr;
 		    FormatDetectionConfig conf;
-		    conf.useImporters = true;
+            conf.useImporters = hints.value(ProjectLoaderHint_UseImporters, true).toBool();
 		    conf.bestMatchesOnly = false;
 		    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, conf);
 		    if(formats.isEmpty()){
@@ -337,7 +337,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
             QList<FormatDetectionResult> formats;
             if(hintsOverDocuments.value(ProjectLoaderHint_MultipleFilesMode_Flag, false).toBool() == false){
                 FormatDetectionConfig conf;
-                conf.useImporters = true;
+                conf.useImporters = hints.value(ProjectLoaderHint_UseImporters, true).toBool();
                 conf.bestMatchesOnly = false;
                 formats = DocumentUtils::detectFormat(url, conf);
             }

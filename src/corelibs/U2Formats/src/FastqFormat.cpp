@@ -49,27 +49,33 @@ It was originally developed at the Wellcome Trust Sanger Institute to bundle a F
 but has recently become the de facto standard for storing the output of high throughput sequencing instruments.");
 }
 
+
+#define STATE_START_PARSING     44
+#define STATE_QUALITY_HEADER    45
+#define STATE_SEQ_HEADER        46
+#define STATE_SEQ               47
+#define STATE_QUALITY           48
+
 FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUrl&) const {
     const char* data = rawData.constData();
     int size = rawData.size();
 
     int sequenceCount = 0;
-    int from = 0;
-    while (from>=0) {
-        // DNA sequence
-        from = rawData.indexOf('@', from);
-        if (from>=0) {
-            sequenceCount++;
-        }
-        else {
-            break;
-        }
 
-        // Quality sequence
-        from = rawData.indexOf('+', from);
-        sequenceCount = from>=0 ? sequenceCount+1 : sequenceCount;
+    QList<QByteArray> lines = rawData.split('\n');
+    int state = STATE_START_PARSING;
+
+    foreach (const QByteArray& line, lines) {
+        if (line.startsWith('@')) {
+            if (state != STATE_START_PARSING && state != STATE_SEQ  ) {
+                return FormatDetection_NotMatched;
+            }
+            sequenceCount++;
+            state = STATE_SEQ_HEADER;
+        } else {
+            state = STATE_SEQ;
+        }
     }
-    sequenceCount /= 2;
 
     bool hasBinaryBlocks = TextUtils::contains(TextUtils::BINARY, data, size);
     if (hasBinaryBlocks || (sequenceCount == 0)) {
