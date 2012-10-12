@@ -117,7 +117,6 @@ bool SWMulAlignResultNamesTagsRegistry::registerTag(SWMulAlignResultNamesTag * t
 QList<SWMulAlignResultNamesTag *> * SWMulAlignResultNamesTagsRegistry::getTagsWithCorrectOrder() const
 {
     QList<SWMulAlignResultNamesTag *> *result = new QList<SWMulAlignResultNamesTag *>;
-    result->reserve(tags.size());
     qint16 tagIndex = 0;
     QString tagShorthand;
     foreach(SWMulAlignResultNamesTag * tag, tags.values()) {

@@ -71,7 +71,7 @@ struct SWDialogConfig {
         patternSequenceName = QString("");
 
 		enableAdvancedMASettings = false;
-        countOfLaunchesAlgorithm = 0;
+        countOfLaunchesAlgorithm = 1;
     }
     QByteArray ptrn;
 
