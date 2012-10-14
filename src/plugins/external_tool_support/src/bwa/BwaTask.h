@@ -73,6 +73,7 @@ private:
     QString resultPath;
     DnaAssemblyToRefTaskSettings settings;
     bool alignmentPerformed;
+    inline QString getSAIPath(const QString& pathToReads);
 };
 
 class BwaTask : public DnaAssemblyToReferenceTask {

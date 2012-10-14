@@ -56,6 +56,7 @@ private:
     QString indexName;
     QString patternFileName;
     QString negativeError;
+    QString resultDirPath;
     bool usePrebuildIndex;
     bool subTaskFailed;
     LoadDocumentTask* resultLoadTask;

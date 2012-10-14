@@ -37,6 +37,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/GUrlUtils.h>
 
 #include <U2Formats/SAMFormat.h>
 
@@ -282,11 +283,18 @@ void GTest_Bwa::prepare() {
         setError("Can't create tmp data dir!");
         return;
     }
+
+    resultDirPath = tmpDataDir + "/" + QString::number(getTaskId());
+    GUrlUtils::prepareDirLocation(resultDirPath,stateInfo);
+    if (hasError()) {
+        setError("Failed to create result data dir!");
+        return;
+    }
     
     config.shortReadSets.append(readsFileUrl);
     config.refSeqUrl = GUrl(env->getVar("COMMON_DATA_DIR") + "/" + indexName);
     config.prebuiltIndex = usePrebuildIndex;
-    config.resultFileName = GUrl(tmpDataDir + "/" + QString::number(getTaskId()));
+    config.resultFileName = GUrl(resultDirPath + "/result.sam");
     config.algName = BwaTask::taskName;
     config.openView = false;
     bwaTask = new BwaTask(config);
@@ -431,12 +439,11 @@ void GTest_Bwa::cleanup() {
             }
         }
     }
+    
     //delete tmp result
-    QFileInfo tmpResult(config.resultFileName.getURLString());
-    if (tmpResult.exists()) {
-        ioLog.trace(QString("Deleting tmp result file :%1").arg(tmpResult.absoluteFilePath()));
-        QFile::remove(tmpResult.absoluteFilePath());
-        QFile::remove(tmpResult.absoluteFilePath() + ".sai");
+    if (QFileInfo(resultDirPath).exists()) {
+        ioLog.trace(QString("Deleting tmp result dir %1").arg(resultDirPath));
+        GUrlUtils::removeDir(resultDirPath, stateInfo);
     }
 
     ma1.clear();

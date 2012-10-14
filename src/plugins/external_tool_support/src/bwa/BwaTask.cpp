@@ -78,6 +78,11 @@ BwaAlignTask::BwaAlignTask(const QString &indexPath, const QList<ShortReadSet>& 
 {
 }
 
+QString BwaAlignTask::getSAIPath(const QString& shortReadsUrl) {
+    return QFileInfo(resultPath).absoluteDir().absolutePath() + "/" + QFileInfo(shortReadsUrl).fileName() + ".sai";
+}
+ 
+
 void BwaAlignTask::prepare() {
 
 
@@ -156,7 +161,7 @@ void BwaAlignTask::prepare() {
         }
 
         arguments.append("-f");
-        arguments.append(readSet.url.getURLString() + ".sai");
+        arguments.append( getSAIPath( readSet.url.getURLString()) );
         arguments.append(indexPath);
         arguments.append(readSet.url.getURLString());
         Task* alignTask = new ExternalToolRunTask(BWA_TOOL_NAME, arguments, &logParser);
@@ -180,7 +185,7 @@ QList<Task *> BwaAlignTask::onSubTaskFinished(Task *subTask) {
         arguments.append(indexPath);
 
         foreach (const ShortReadSet& set, readSets) {
-            arguments.append(set.url.getURLString() + ".sai");
+            arguments.append( getSAIPath( set.url.getURLString() ) );
         }
 
         foreach(const ShortReadSet& set, readSets) {
