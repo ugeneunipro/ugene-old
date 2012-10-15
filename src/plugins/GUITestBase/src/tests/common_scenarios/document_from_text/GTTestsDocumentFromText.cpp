@@ -501,6 +501,125 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     GTUtilsSequenceView::checkSequence(os, "NACCGAAU---AGCCAG");
     }
 
+GUI_TEST_CLASS_DEFINITION(test_0008) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::ExtendedRNA, true, false, "A",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "RNACCGAAUAGCCDMAG");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0008_1) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::ExtendedRNA, true, false, "A",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::Genbank,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "RNACCGAAUAGCCDMAG");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0008_2) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOU---AGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::ExtendedRNA, true, false, "A",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "RNACCGAAU---AGCCDMAG");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0009) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "RNACCGTTAA---AGCCD---MAGT--");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0009_1) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::Genbank,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "RNACCGTTAA---AGCCD---MAGT--");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0009_2) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGT---TAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "RNACCGT---TAA---AGCCD---MAGT--");
+    }
 
 } // namespace GUITest_common_scenarios_document_from_text
 } // namespace U2
