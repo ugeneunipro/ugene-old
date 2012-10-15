@@ -88,6 +88,8 @@ class OpenQDViewTask : public ObjectViewTask {
 public:
     OpenQDViewTask(Document* doc);
     virtual void open();
+private:
+    Document* document;
 };
 
 }//namespace

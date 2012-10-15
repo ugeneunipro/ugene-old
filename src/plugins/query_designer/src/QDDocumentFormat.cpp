@@ -138,7 +138,7 @@ Task* QDViewFactory::createViewTask( const MultiGSelection& multiSelection, bool
 
 //OpenViewTask
 //////////////////////////////////////////////////////////////////////////
-OpenQDViewTask::OpenQDViewTask( Document* doc ) : ObjectViewTask(QDViewFactory::ID) {
+OpenQDViewTask::OpenQDViewTask( Document* doc ) : ObjectViewTask(QDViewFactory::ID), document(doc){
     if (!doc->isLoaded()) {
         documentsToLoad.append(doc);
     } else {
@@ -163,6 +163,7 @@ void OpenQDViewTask::open() {
         assert(o && !o->getScene());
         QueryViewController* view = new QueryViewController;
         view->loadScene(o->getSceneRawData());
+        view->setSchemeUri(document->getURL().getURLString());
         AppContext::getMainWindow()->getMDIManager()->addMDIWindow(view);
         AppContext::getMainWindow()->getMDIManager()->activateWindow(view);
     }

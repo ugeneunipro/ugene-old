@@ -146,6 +146,7 @@ public:
     static void setupConstraintEditor(QDConstraint* c);
     void enableSaveAction(bool enable);
     QDActor *getActor() {return currentActor;}
+    void setSchemeUri(QString uri) {schemeUri = uri;};
 protected:
     bool onCloseEvent();
 private slots:
