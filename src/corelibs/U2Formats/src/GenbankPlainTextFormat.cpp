@@ -217,11 +217,11 @@ bool GenbankPlainTextFormat::readIdLine(ParserState* st) {
         loi.division = tokens[5];
         loi.date = tokens[6];
         st->entry->tags.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
-        st->entry->circular = loi.topology == "circular";
+        st->entry->circular = loi.topology == LOCUS_TAG_CIRCULAR;
     } else {
         st->entry->tags.insert(DNAInfo::ID, tokens[0]);
         st->entry->tags.insert(DNAInfo::EMBL_ID, locusStr);
-        st->entry->circular = locusStr.contains("circular");
+        st->entry->circular = locusStr.contains(LOCUS_TAG_CIRCULAR, Qt::CaseInsensitive);
     }
     return true;
 }
@@ -592,7 +592,7 @@ static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString
             loc = loc.append(tokens[3]);
         }else{
             if (so->isCircular()) {
-                loc = padToLen(loc.append("CIRCULAR"), 52);
+                loc = padToLen(loc.append(EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR), 52);
             }
         }
     } else {

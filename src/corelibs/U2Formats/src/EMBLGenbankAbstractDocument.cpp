@@ -82,7 +82,7 @@ Document* EMBLGenbankAbstractDocument::loadDocument(IOAdapter* io, const U2DbiRe
 
 const QString EMBLGenbankAbstractDocument::UGENE_MARK("UNIMARK");
 const QString EMBLGenbankAbstractDocument::DEFAULT_OBJ_NAME("unnamed");
-
+const QString EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR("CIRCULAR");
 
 void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QList<GObject*>& objects, QVariantMap& fs, U2OpStatus& os, QString& writeLockReason) {
     DbiOperationsBlock opBlock(dbiRef, os);
