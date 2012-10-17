@@ -69,7 +69,6 @@ public:
     FindPatternEventFilter(QObject* parent);
 
 signals:
-    void si_enterPressed();
     void si_tabPressed();
 
 protected:
@@ -176,6 +175,10 @@ private:
     U2Region getCompleteSearchRegion(bool& regionIsCorrect, qint64 maxLen) const;
 
     void initFindPatternTask(const QString& pattern);
+
+    /** Checks if there are several patterns in textPattern which are separated by new line symbol,
+    parse them out and returns */
+    QStringList getPatternsFromTextPatternField() const;
 
     AnnotatedDNAView* annotatedDnaView;
     CreateAnnotationWidgetController* annotController;

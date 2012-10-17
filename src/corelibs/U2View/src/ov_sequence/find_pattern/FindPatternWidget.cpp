@@ -40,6 +40,7 @@
 
 #include <U2Gui/LastUsedDirHelper.h>
 
+const QChar FASTA_HEADER_START_SYMBOL = '>';
 
 namespace U2 {
 
@@ -56,10 +57,6 @@ bool FindPatternEventFilter::eventFilter(QObject* obj, QEvent* event)
         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         if (Qt::Key_Tab == keyEvent->key()) {
             emit si_tabPressed();
-            return true;
-        }
-        if (Qt::Key_Enter == keyEvent->key() || Qt::Key_Return == keyEvent->key()) {
-            emit si_enterPressed();
             return true;
         }
     }
@@ -108,7 +105,6 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
 
         FindPatternEventFilter* findPatternEventFilter = new FindPatternEventFilter(this);
         textPattern->installEventFilter(findPatternEventFilter);
-        connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterInPatternFieldPressed()));
         connect(findPatternEventFilter, SIGNAL(si_tabPressed()), SLOT(sl_onTabInPatternFieldPressed()));
 
         currentSelection = NULL;
@@ -555,37 +551,6 @@ void FindPatternWidget::showHideErrorMessage(bool show, ErrorMessageFlag errorMe
 
 void FindPatternWidget::sl_onSearchPatternChanged()
 {
-    // Trim the pattern and make it upper-case
-    QString patternInTextEdit = textPattern->toPlainText();
-    QString patternResult;
-
-    QTextCursor cursorInTextEdit = textPattern->textCursor();
-    int numOfNonSpaceCharsBeforeCursor = 0;
-    int cursorPosition = 0;
-    if (!cursorInTextEdit.isNull()) {
-        cursorPosition = cursorInTextEdit.position();
-    }
-
-    for (int i = 0; i < patternInTextEdit.size(); ++i) {
-        QChar ch = patternInTextEdit[i];
-        if (!ch.isSpace()) {
-            patternResult.append(ch);
-            if (i < cursorPosition) {
-                numOfNonSpaceCharsBeforeCursor++;
-            }
-        }
-    }
-
-    patternResult = patternResult.toUpper();
-
-    if (patternResult != patternInTextEdit) {
-        textPattern->setPlainText(patternResult);
-
-        // Move cursor to the same place
-        cursorInTextEdit.setPosition(numOfNonSpaceCharsBeforeCursor, QTextCursor::MoveAnchor);
-        textPattern->setTextCursor(cursorInTextEdit);
-    }
-
     checkState();
     tunePercentBox();
     enableDisableMatchSpin();
@@ -609,10 +574,9 @@ void FindPatternWidget::setRegionToWholeSequence()
 
 void FindPatternWidget::verifyPatternAlphabet()
 {
-    QString pattern = textPattern->toPlainText();
-    pattern = pattern.toUpper();
-
-    bool alphabetIsOk = checkAlphabet(pattern);
+    QString patterns = getPatternsFromTextPatternField().join("");
+    
+    bool alphabetIsOk = checkAlphabet(patterns);
 
     if (!alphabetIsOk) {
         showHideErrorMessage(true, PatternAlphabetDoNotMatch);
@@ -621,8 +585,6 @@ void FindPatternWidget::verifyPatternAlphabet()
         showHideErrorMessage(false, PatternAlphabetDoNotMatch);
     }
 }
-
-
 
 void FindPatternWidget::sl_onSequenceTranslationChanged(int /* index */)
 {
@@ -773,11 +735,30 @@ void FindPatternWidget::sl_onSearchClicked()
         connect(loadTask, SIGNAL(si_stateChanged()), SLOT(sl_loadPatternTaskStateChanged()));
         AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
     }else{
-        initFindPatternTask(textPattern->toPlainText().toLocal8Bit().toUpper());
-        updateAnnotationsWidget();
+        foreach(QString pattern, getPatternsFromTextPatternField()) {
+            initFindPatternTask(pattern);
+            updateAnnotationsWidget();
+        }
     }
 }
 
+QStringList FindPatternWidget::getPatternsFromTextPatternField() const
+{
+    QString inputText = textPattern->toPlainText().toLocal8Bit().toUpper();
+    QStringList result;
+
+    if(inputText.contains(FASTA_HEADER_START_SYMBOL)) {
+        result = inputText.split(FASTA_HEADER_START_SYMBOL, QString::SkipEmptyParts);
+        for(QStringList::Iterator i = result.begin(); i != result.end(); i++) {
+            QStringList patternWithName = (*i).split(QRegExp("\\s+"), QString::SkipEmptyParts);
+            (*i) = patternWithName.last();
+        }
+    }
+    else
+        result = inputText.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+
+    return result;
+}
 
 void FindPatternWidget::updateAnnotationsWidget()
 {
@@ -1004,11 +985,10 @@ void LoadPatternsFileTask::run(){
     int fileSize = file.size();
 
     while (!stream.atEnd() && !stateInfo.cancelFlag) {
-
         int streamPos = stream.device()->pos();
         stateInfo.progress = (100*streamPos)/fileSize;
         QString pattern = stream.readLine();
-        if (!pattern.isEmpty()){
+        if (!pattern.isEmpty() && 0 != pattern.indexOf(QRegExp("\\s*>"))) {
             patterns.append(pattern);
         }
 

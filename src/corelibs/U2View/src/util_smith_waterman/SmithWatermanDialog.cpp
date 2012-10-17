@@ -616,7 +616,7 @@ bool SmithWatermanDialog::readPattern(DNATranslation* aminoTT)
     }
 
     QString inputPattern = teditPattern->toPlainText();
-    stripFormatSymbolsFromPatternName(inputPattern);
+    stripFormatSymbolsFromPattern(inputPattern);
 
     if (inputPattern.isEmpty()) {
         QMessageBox::critical(this, windowTitle(),  tr("Pattern is empty"));
@@ -639,18 +639,18 @@ bool SmithWatermanDialog::readPattern(DNATranslation* aminoTT)
     return true;
 }
 
-void SmithWatermanDialog::stripFormatSymbolsFromPatternName(QString & patternName)
+void SmithWatermanDialog::stripFormatSymbolsFromPattern(QString & pattern)
 {
-    const qint32 fastaSequenceNameStart = patternName.indexOf(QRegExp("\\s*>"));
+    const qint32 fastaSequenceNameStart = pattern.indexOf(QRegExp("\\s*>"));
 
-    if(0 == fastaSequenceNameStart) {
-        const qint32 fastaSequenceNameEnd = patternName.indexOf(QRegExp("\\s"), fastaSequenceNameStart);
-        patternName.replace(fastaSequenceNameStart, fastaSequenceNameEnd - fastaSequenceNameStart, "");
-    } else if(-1 != fastaSequenceNameStart)
+    if(0 == fastaSequenceNameStart)
+        pattern = pattern.split(QRegExp("\\s+"), QString::SkipEmptyParts).last();
+    else if(-1 != fastaSequenceNameStart)
         return;
-
-    patternName.replace(QRegExp("\\A\\d"), "");
-    patternName.replace(QRegExp("\\s"), "");
+    else {
+        pattern.replace(QRegExp("\\s+"), "");
+        pattern.replace(QRegExp("\\d+"), "");
+    }
 }
 
 void SmithWatermanDialog::clearAll()

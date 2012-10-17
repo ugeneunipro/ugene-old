@@ -95,7 +95,7 @@ private:
     QString validateResultDirPath() const;
 
     static bool checkTemplateButtonName(const QString & name);
-    static void stripFormatSymbolsFromPatternName(QString & patternName);
+    static void stripFormatSymbolsFromPattern(QString & pattern);
 
     SubstMatrixRegistry* substMatrixRegistry;
     SWResultFilterRegistry* swResultFilterRegistry;
