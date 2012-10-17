@@ -784,7 +784,11 @@ void FindPatternWidget::updateAnnotationsWidget()
     // Updating the annotations widget
     SAFE_POINT(NULL != annotatedDnaView->getSequenceInFocus(),
         "There is no sequence in focus to update the annotations widget on the 'Search in Sequence' tab.",);
-    CreateAnnotationModel newAnnotModel;
+    CreateAnnotationModel newAnnotModel = annotController->getModel();
+    
+    if(!newAnnotModel.newDocUrl.isEmpty())
+        newAnnotModel.newDocUrl = "";
+
     newAnnotModel.hideLocation = true;
     newAnnotModel.sequenceObjectRef = annotatedDnaView->getSequenceInFocus()->getSequenceObject();
     newAnnotModel.sequenceLen = annotatedDnaView->getSequenceInFocus()->getSequenceLength();
