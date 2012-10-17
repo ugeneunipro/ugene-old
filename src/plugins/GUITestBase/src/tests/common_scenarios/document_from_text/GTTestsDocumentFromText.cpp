@@ -621,5 +621,248 @@ GUI_TEST_CLASS_DEFINITION(test_0009_2) {
     GTUtilsSequenceView::checkSequence(os, "RNACCGT---TAA---AGCCD---MAGT--");
     }
 
+GUI_TEST_CLASS_DEFINITION(test_0010) {
+//    Creating new document from text
+
+//  1. Open menu {File->New Document From Text}
+//  Expected result: Create document dialog has appear
+
+//  2. Fill the next fields in dialog:
+//    {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
+//    {Custom settings} set checked
+//    {Alphabet} Extended RNA alphabet
+//    {Replace unknown symbols} set checked {Text field} -
+//    {Document location} _common_data/scenarios/sandbox/result.fa
+//    {Document Format} FASTA
+//    {Save file immidiately} set checked
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::ExtendedRNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+//  3. Click Create button
+//  Expected result: 
+//   - result.fa document added to project
+//   - sequence view opened
+//   - sequence are RNACCG--AA--UAGCCD---MAG---
+    
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "RNACCG--AA--UAGCCD---MAG---");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010_1) {
+    //CHANGES: using genbank format
+    //    Creating new document from text
+
+    //  1. Open menu {File->New Document From Text}
+    //  Expected result: Create document dialog has appear
+
+    //  2. Fill the next fields in dialog:
+    //    {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
+    //    {Custom settings} set checked
+    //    {Alphabet} Extended RNA alphabet
+    //    {Replace unknown symbols} set checked {Text field} -
+    //    {Document location} _common_data/scenarios/sandbox/result.fa
+    //    {Document Format} FASTA
+    //    {Save file immidiately} set checked
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::ExtendedRNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::Genbank,
+        "result.gb", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    //  3. Click Create button
+    //  Expected result: 
+    //   - result.fa document added to project
+    //   - sequence view opened
+    //   - sequence are RNACCG--AA--UAGCCD---MAG---
+
+
+    GTUtilsDocument::checkDocument(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "RNACCG--AA--UAGCCD---MAG---");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010_2) {
+    //CHANGES: using keys instead mouse
+    //    Creating new document from text
+
+    //  1. Open menu {File->New Document From Text}
+    //  Expected result: Create document dialog has appear
+
+    //  2. Fill the next fields in dialog:
+    //    {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
+    //    {Custom settings} set checked
+    //    {Alphabet} Extended RNA alphabet
+    //    {Replace unknown symbols} set checked {Text field} -
+    //    {Document location} _common_data/scenarios/sandbox/result.fa
+    //    {Document Format} FASTA
+    //    {Save file immidiately} set checked
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::ExtendedRNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true, GTGlobals::UseMouse
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseMouse);
+    GTGlobals::sleep();
+
+    //  3. Click Create button
+    //  Expected result: 
+    //   - result.fa document added to project
+    //   - sequence view opened
+    //   - sequence are RNACCG--AA--UAGCCD---MAG---
+
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "RNACCG--AA--UAGCCD---MAG---");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011) {
+    //    Creating new document from text
+
+    //  1. Open menu {File->New Document From Text}
+    //  Expected result: Create document dialog has appear
+
+    //  2. Fill the next fields in dialog:
+    //  {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
+    //  {Custom settings} set checked
+    //  {Alphabet} Standard RNA alphabet
+    //  {Replace unknown symbols} set checked {Text field} -
+    //  {Document location} _common_data/scenarios/sandbox/result.fa
+    //  {Document Format} FASTA
+    //  {Save file immidiately} set checked
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::StandardRNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    //  3. Click Create button
+    //  Expected result: 
+    //  - result.fa document added to project
+    //  - sequence view opened
+    //  - sequence are -NACCG--AA--UAGCC-----AG---
+
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "-NACCG--AA--UAGCC-----AG---");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_1) {
+    //CHANGES: using genbank format
+    //    Creating new document from text
+
+    //  1. Open menu {File->New Document From Text}
+    //  Expected result: Create document dialog has appear
+
+    //  2. Fill the next fields in dialog:
+    //  {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
+    //  {Custom settings} set checked
+    //  {Alphabet} Standard RNA alphabet
+    //  {Replace unknown symbols} set checked {Text field} -
+    //  {Document location} _common_data/scenarios/sandbox/result.fa
+    //  {Document Format} FASTA
+    //  {Save file immidiately} set checked
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::StandardRNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::Genbank,
+        "result.gb", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    //  3. Click Create button
+    //  Expected result: 
+    //  - result.fa document added to project
+    //  - sequence view opened
+    //  - sequence are -NACCG--AA--UAGCC-----AG---
+
+
+    GTUtilsDocument::checkDocument(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "-NACCG--AA--UAGCC-----AG---");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_2) {
+    //    Creating new document from text
+
+    //  1. Open menu {File->New Document From Text}
+    //  Expected result: Create document dialog has appear
+
+    //  2. Fill the next fields in dialog:
+    //  {Paste data here} RNACCGTTAAIOUAGCCDOOPMAGTZZ
+    //  {Custom settings} set checked
+    //  {Alphabet} Standard RNA alphabet
+    //  {Replace unknown symbols} set checked {Text field} -
+    //  {Document location} _common_data/scenarios/sandbox/result.fa
+    //  {Document Format} FASTA
+    //  {Save file immidiately} set checked
+    Runnable *filler = new CreateDocumentFiller(os,
+        "RNACCGTTAAIOUAGCCDOOPMAGTZZ", true, 
+        CreateDocumentFiller::StandardRNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result",
+        CreateDocumentFiller::FASTA,
+        "result", true, GTGlobals::UseMouse
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseMouse);
+    GTGlobals::sleep();
+
+    //  3. Click Create button
+    //  Expected result: 
+    //  - result.fa document added to project
+    //  - sequence view opened
+    //  - sequence are -NACCG--AA--UAGCC-----AG---
+
+
+    GTUtilsDocument::checkDocument(os, "result");
+    GTGlobals::sleep();
+
+    GTUtilsSequenceView::checkSequence(os, "-NACCG--AA--UAGCC-----AG---");
+}
+
 } // namespace GUITest_common_scenarios_document_from_text
 } // namespace U2

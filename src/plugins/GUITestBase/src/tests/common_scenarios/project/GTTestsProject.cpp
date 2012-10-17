@@ -212,6 +212,26 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0013) {
+    //Add "Open project in new window" (0001629)
+
+    //1. Open project _common_data\scenario\project\proj1.uprj
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj1.uprj");
+    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
+    GTUtilsProject::checkProject(os);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxOpenAnotherProject(os));
+
+    //2. Do menu {File->Open}. Open project _common_data\scenario\project\proj2.uprj
+    //Expected state: dialog with text "Open project in new window" has appear
+
+    GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj"); // TODO: ask Shutov what to do
+
+    /*
+    this test just checking appearing of dialog not its behavior    
+    */
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0014) {
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE),ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "1HTQ", 2));

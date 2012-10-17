@@ -63,4 +63,26 @@ void MessageBoxNoToAllOrNo::run() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::MessageBoxOpenAnotherProject"
+#define GT_METHOD_NAME "run"
+void MessageBoxOpenAnotherProject::run(){
+    
+    QWidget* activeModal = QApplication::activeModalWidget();
+    QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
+    GT_CHECK(messageBox != NULL, "messageBox is NULL");
+    
+    QAbstractButton* button = messageBox->findChild<QAbstractButton*>(QString::fromUtf8("New Window"));
+    GT_CHECK(button != NULL, "There are no New Window buttons in messagebox");
+
+    button = messageBox->findChild<QAbstractButton*>(QString::fromUtf8("This Window"));
+    GT_CHECK(button != NULL, "There are no This Window buttons in messagebox");    
+
+    button = messageBox->button(QMessageBox::Abort);
+    GT_CHECK(button != NULL, "There are no Abort buttons in messagebox");
+
+    GTWidget::click(os, button);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 }

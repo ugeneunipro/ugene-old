@@ -42,6 +42,12 @@ namespace U2 {
         MessageBoxNoToAllOrNo(U2OpStatus &_os) : Filler(_os, ""){}
         virtual void run();
     };
+
+    class MessageBoxOpenAnotherProject : public Filler {
+    public:
+        MessageBoxOpenAnotherProject(U2OpStatus &_os) : Filler(_os, ""){}
+        virtual void run();
+    };
 }
 
 #endif
