@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Converts multiple alignment file(s) of any format to ClustalW document(s). If source file is a sequence format (e.g. FASTA), all contained sequences are added to the result alignment. Yet no real alignment is performed, this particular shema illustrates pure data format conversion.
 #
 #To get this schema working, you only need to select "Alignment Reader" task, so its' parameters appear in Property Inspector panel, and specify source file(s) at "URL" field.  Launch the schema with pressing Ctrl+R shortcut.

@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #This sample describes how to identify sequences with the specified length.
 #
 #First, the schema reads sequences input by a user.

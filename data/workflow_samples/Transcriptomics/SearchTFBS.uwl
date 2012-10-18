@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Predicts binding sites for number of transcription factors of interest using SITECON algorithm.The present workflow sample is designed for simultaneous recognition of binding sites for 3 different transcription factor types, you can expand it for recognition of any desired number of transription factor types.SITECON - is a program pakage for recognition of potential transcription factor binding sites basing on the data about conservative conformational and physicochemical properties revealed on the basis of the binding sites sets analysis.Citing SITECON        Please cite:Oshchepkov D.Y., Vityaev E.E., Grigorovich D.A., Ignatieva E.V., Khlebodarova T.M.SITECON:a tool for detecting conservative conformational and physicochemicalproperties in transcription factor binding site alignments and for siterecognition. // Nucleic Acids Res. 2004 Jul 1;32(Web Server issue):W208-12.
 
 

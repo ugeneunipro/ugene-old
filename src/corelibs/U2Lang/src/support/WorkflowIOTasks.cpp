@@ -94,7 +94,7 @@ Task::ReportResult LoadWorkflowTask::report() {
 }
 
 LoadWorkflowTask::FileFormat LoadWorkflowTask::detectFormat(const QString & rawData) {
-    if(rawData.trimmed().startsWith(HRSchemaSerializer::HEADER_LINE)) {
+    if(HRSchemaSerializer::isHeaderLine(rawData.trimmed())) {
         return HR;
     } else if(rawData.trimmed().startsWith("<!DOCTYPE GB2WORKFLOW>")) {
         return XML;

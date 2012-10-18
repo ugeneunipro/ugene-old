@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #This schema allows to add PHRED quality scores to the sequence and save output to Fastq. For example, one can read a Fasta file, import PHRED quality values from corresponding qualities file and export the result to Fastq.
 #To execute the schema do the following:
 #1) Select "Sequence Reader" task and specify source file(s) at "URL" field in the Property Editor.

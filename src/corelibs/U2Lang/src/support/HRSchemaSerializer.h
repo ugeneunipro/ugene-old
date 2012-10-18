@@ -57,6 +57,7 @@ public:
     static const QString UNKNOWN_ERROR;
     static const QString NO_ERROR;
     static const QString HEADER_LINE;
+    static const QString DEPRECATED_HEADER_LINE;
     static const QString OLD_XML_HEADER;
     static const QString INCLUDE;
     static const QString INCLUDE_AS;
@@ -225,11 +226,14 @@ public:
     
     static QMap<ActorId, ActorId> deepCopy(const Schema& from, Schema* to, U2OpStatus &os);
 
+    static bool isHeaderLine(const QString &line);
+
 private:
     static GrouperSlotAction parseAction(Tokenizer &tokenizer);
     static void parseUrlAttribute(Actor *proc, QList<StringPair> &blockPairs);
     static void deprecatedUrlAttribute(Actor *proc, const QString &urls);
     static URLContainer * parseDirectoryUrl(Tokenizer &tokenizer);
+    static void checkHeaderLine(const QString &line, Tokenizer &tokenizer);
 };
 
 } // U2

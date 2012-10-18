@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Reads an HMM from a file and searches input sequences for significantly similar matches, saves found signals to a file.You can specify several input files for both HMM and sequences, the schema will process Cartesian product of inputs. That is, each sequence will be searched with all specified HMMs in turn.To specify task parameters, select it and edit interesting fields in table "Parameters" of Property Inspector panel.Schedule the workflow for execution by pressing CTRL+R shortcut. You can watch its" progress in Task View of UGENE.
 
 workflow "Search sequences with profile HMM"{

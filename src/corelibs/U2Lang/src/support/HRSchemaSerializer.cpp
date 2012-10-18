@@ -57,7 +57,8 @@ const QString HRSchemaSerializer::QUOTE                 = "\"";
 const QString HRSchemaSerializer::NEW_LINE              = "\n";
 const QString HRSchemaSerializer::UNKNOWN_ERROR         = HRSchemaSerializer::tr("Error: unknown exception caught");
 const QString HRSchemaSerializer::NO_ERROR              = "";
-const QString HRSchemaSerializer::HEADER_LINE           = "#!UGENE_WORKFLOW";
+const QString HRSchemaSerializer::HEADER_LINE           = "#@UGENE_WORKFLOW";
+const QString HRSchemaSerializer::DEPRECATED_HEADER_LINE= "#!UGENE_WORKFLOW";
 const QString HRSchemaSerializer::OLD_XML_HEADER        = "<!DOCTYPE GB2WORKFLOW>";
 const QString HRSchemaSerializer::INCLUDE               = "include";
 const QString HRSchemaSerializer::INCLUDE_AS            = "as";
@@ -519,15 +520,23 @@ struct WorkflowSchemaReaderData {
     QList<PortAlias> portAliases;
 }; // WorkflowSchemaReaderData
 
+bool HRSchemaSerializer::isHeaderLine(const QString &line) {
+    return (line.startsWith(HEADER_LINE) ||
+        line.startsWith(DEPRECATED_HEADER_LINE));
+}
+
+void HRSchemaSerializer::checkHeaderLine(const QString &line, Tokenizer &tokenizer) {
+    if(!isHeaderLine(line)) {
+        if( tokenizer.notEmpty() && line + " " + tokenizer.take() == OLD_XML_HEADER ) {
+             throw ReadFailed(tr("XML schema format is obsolete and not supported"));
+        }
+        throw ReadFailed(tr("Bad header: expected '%1', got '%2'").arg(HEADER_LINE).arg(line));
+     }
+}
+
 void HRSchemaSerializer::parseHeader(Tokenizer & tokenizer, Metadata * meta) {
     QString head = tokenizer.take();
-    QString realHead = HEADER_LINE.trimmed();
-    if(!head.startsWith(realHead)) {
-        if( tokenizer.notEmpty() && head + " " + tokenizer.take() == OLD_XML_HEADER ) {
-            throw ReadFailed(tr("XML schema format is obsolete and not supported"));
-        }
-        throw ReadFailed(tr("Bad header: expected '%1', got '%2'").arg(realHead).arg(head));
-    }
+    checkHeaderLine(head, tokenizer);
     QString desc;
     while(tokenizer.look().startsWith(SERVICE_SYM)) {
         desc += tokenizer.take().mid(SERVICE_SYM.size()) + HRSchemaSerializer::NEW_LINE;
@@ -605,7 +614,7 @@ void HRSchemaSerializer::parseIncludes(Tokenizer &tokenizer, QList<QString> incl
     QString error;
 
     // construct the needed proto from the file content
-    if(rawData.startsWith(HRSchemaSerializer::HEADER_LINE)) {
+    if(isHeaderLine(rawData)) {
         if ("etc" == ext) {
             includeType = EXTERNAL_TOOL;
             cfg = string2Actor(rawData);

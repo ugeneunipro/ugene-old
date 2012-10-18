@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #This sample describes how to search for TFBS with different methods and how to write the results into one output file.
 #
 #First, the schema reads sequences input by a user. Then, each sequence goes to searching TFBS elements. At that time two reading elements reads the matrix and model for TFBS searching and transfering this data into TFBS searching elements. After that the TFBS searching elements searches TFBS in the input sequences. After that the two data flows multiplexes into one output data flow. And finally, the multiplexed data are written into file, specified by a user.

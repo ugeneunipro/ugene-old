@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #This schema filters sequences with quality >= than parameter "quality" and writes result in file in FASTQ format
 
 workflow "Quality filter"{

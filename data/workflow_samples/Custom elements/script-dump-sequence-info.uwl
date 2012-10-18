@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #For all incoming sequences, dump sequence name and sequence size to output
 
 workflow "Dump sequence info"{
