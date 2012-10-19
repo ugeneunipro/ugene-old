@@ -51,6 +51,7 @@ namespace U2 {
 #define ALPH_ATTR "alph"
 #define SERVICE_ATTR "service"
 #define PATTERN_ATTR "phi-pattern"
+#define ENTREZ_QUERY_ATTR "entrez_query"
 
 class ParametersLists {
 public:
@@ -87,6 +88,7 @@ public:
     static const QString sequence;
     static const QString service;
     static const QString phiPattern;
+    static const QString entrezQuery;
 
     static const QString cdd_eValue;
     static const QString cdd_hits;

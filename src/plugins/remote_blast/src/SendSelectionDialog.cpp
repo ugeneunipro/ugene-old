@@ -307,7 +307,10 @@ void SendSelectionDialog::sl_OK() {
         double eValue = evalueSpinBox->value();
         if(shortSequenceCheckBox->isChecked())
             eValue = 1000;
-        addParametr(requestParameters,ReqParams::expect,eValue);    
+        addParametr(requestParameters,ReqParams::expect,eValue);
+
+        if(false == entrezQueryEdit->text().isEmpty())
+            addParametr(requestParameters, ReqParams::entrezQuery, entrezQueryEdit->text());
 
         int maxHit = quantitySpinBox->value();
         addParametr(requestParameters,ReqParams::hits,maxHit);

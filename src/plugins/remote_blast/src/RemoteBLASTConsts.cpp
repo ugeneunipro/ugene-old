@@ -79,6 +79,7 @@ const QString ReqParams::lowCaseMask = "LCASE_MASK";
 const QString ReqParams::sequence = "QUERY";
 const QString ReqParams::service = "SERVICE";
 const QString ReqParams::phiPattern = "PHI_PATTERN";
+const QString ReqParams::entrezQuery = "ENTREZ_QUERY";
 
 const QString ReqParams::cdd_eValue = "evalue";
 const QString ReqParams::cdd_hits = "maxhits";

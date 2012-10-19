@@ -125,6 +125,10 @@ void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
         }
         addParametr(request,ReqParams::gapCost,gapCost);
 
+        QString entrezQuery = el.attribute(ENTREZ_QUERY_ATTR);
+        if(false == entrezQuery.isEmpty()) 
+            addParametr(request,ReqParams::entrezQuery,entrezQuery);
+
         QString alph = el.attribute(ALPH_ATTR);
         if(alph.isEmpty()) {
             failMissingValue(ALPH_ATTR);

@@ -49,6 +49,7 @@ const QString DATABASE("db");
 const QString EXPECT("e-val");
 const QString MAX_HITS("max-hits");
 const QString SHORT_SEQ("short-sequence");
+const QString ENTREZ_QUERY("entrez-query");
 const QString ANNOTATION_NAME("result-name");
 const QString ORIGINAL_OUT("blast-output");
 
@@ -75,6 +76,8 @@ void RemoteBLASTWorkerFactory::init() {
         RemoteBLASTWorker::tr("Maximum number of hits."));
     Descriptor short_seq(SHORT_SEQ,RemoteBLASTWorker::tr("Short sequence"),
         RemoteBLASTWorker::tr("Optimize search for short sequences."));
+    Descriptor entrezQuery(ENTREZ_QUERY,RemoteBLASTWorker::tr("Entrez query"),
+        RemoteBLASTWorker::tr("Enter an Entrez query to limit search"));
     Descriptor annotateAs(ANNOTATION_NAME,RemoteBLASTWorker::tr("Annotate as"),
         RemoteBLASTWorker::tr("Name for annotations"));
     Descriptor output(ORIGINAL_OUT, RemoteBLASTWorker::tr("BLAST output"),
@@ -84,6 +87,10 @@ void RemoteBLASTWorkerFactory::init() {
     a << new Attribute(evalue,BaseTypes::STRING_TYPE(),false,10);
     a << new Attribute(hits,BaseTypes::NUM_TYPE(),false,10);
     a << new Attribute(short_seq,BaseTypes::BOOL_TYPE(),false,false);
+    Attribute* entrezQueryAttr= new Attribute(entrezQuery, BaseTypes::STRING_TYPE(), false);
+    entrezQueryAttr->addRelation(new VisibilityRelation(DATABASE, "ncbi-blastn"));
+    entrezQueryAttr->addRelation(new VisibilityRelation(DATABASE, "ncbi-blastp"));
+    a << entrezQueryAttr;
     a << new Attribute(annotateAs,BaseTypes::STRING_TYPE(),false);
     a << new Attribute(output, BaseTypes::STRING_TYPE(),false);
 
@@ -191,6 +198,10 @@ Task* RemoteBLASTWorker::tick() {
             }
             else {
                 addParametr(cfg.params, ReqParams::filter, "L");
+            }
+            QString entrezQueryStr = actor->getParameter(ENTREZ_QUERY)->getAttributeValue<QString>(context);
+            if(false == entrezQueryStr.isEmpty()) {
+                addParametr(cfg.params, ReqParams::entrezQuery, entrezQueryStr);
             }
             addParametr(cfg.params, ReqParams::expect, evalue);
             
