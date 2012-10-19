@@ -157,7 +157,7 @@ AWidget::AWidget() {
     p.setPen(Qt::lightGray);
     Version v = Version::appVersion();
     QString version = v.text;
-    QString text = "Unipro UGENE v" + version + "\n" + __DATE__;
+    QString text = "Unipro UGENE v" + version + "\n" + QString("%1-bit version").arg(Version::appArchitecture) + "\n" + __DATE__;
     p.drawText(QRect(10, 20, width()-10, 60), text);
     p.end();
 

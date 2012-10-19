@@ -482,7 +482,7 @@ int main(int argc, char **argv)
     
     //3 run QT 
     t1.stop();
-    coreLog.info(AppContextImpl::tr("UGENE started"));
+    coreLog.info(AppContextImpl::tr("%1-bit version of UGENE started").arg(Version::appArchitecture));
     ShutdownTask watchQuit(&app);
     int rc = app.exec();
 

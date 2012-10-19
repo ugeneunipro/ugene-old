@@ -563,7 +563,7 @@ int main(int argc, char **argv)
 
     //3 run QT GUI
     t1.stop();
-    coreLog.info(AppContextImpl::tr("UGENE started"));
+    coreLog.info(AppContextImpl::tr("%1-bit version of UGENE started").arg(Version::appArchitecture));
     if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
         ts->registerTopLevelTask(new CheckUpdatesTask(true));
     }

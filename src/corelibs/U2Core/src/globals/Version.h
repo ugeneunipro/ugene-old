@@ -49,10 +49,12 @@ public:
     int         major;
     int         minor;
     int         patch;
+
     bool        debug;
     QString     text;
     QString     suffix;
     bool        isDevVersion;
+    const static int         appArchitecture;
     const static QString     buildDate;
 };
 

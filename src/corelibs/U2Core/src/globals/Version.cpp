@@ -34,6 +34,7 @@ namespace U2 {
 #define VERSION_DEV_SUFFIX "dev"
 
 const QString Version::buildDate = __DATE__;
+const int Version::appArchitecture = QT_POINTER_SIZE * 8;
 
 Version::Version() {
     major = minor = patch = 0;
