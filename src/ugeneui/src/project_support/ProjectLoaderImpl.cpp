@@ -445,7 +445,9 @@ Task* ProjectLoaderImpl::createProjectLoadingTask(const GUrl& url, const QVarian
     msgBox.setWindowTitle(U2_APP_TITLE);
     msgBox.setText(tr("New project can either be opened in a new window or replace the project in the existing. How would you like to open the project?"));
     QPushButton *newWindow = msgBox.addButton(tr("New Window"), QMessageBox::ActionRole);
+    newWindow->setObjectName("New Window");
     QPushButton *oldWindow = msgBox.addButton(tr("This Window"), QMessageBox::ActionRole);
+    oldWindow->setObjectName("This Window");
     msgBox.addButton(QMessageBox::Abort);
     msgBox.exec();
 
