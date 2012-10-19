@@ -164,13 +164,20 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
 
     switch(m) {
     case GTGlobals::UseMouse:
-        GTMouseDriver::moveTo(os, actionPos(os, menu, action));
+    {
+        QPoint menuCornerPosition = menu->mapToGlobal(QPoint());
+        QPoint actionPosition = actionPos(os, menu, action);
+
+        GTMouseDriver::moveTo(os, QPoint(menuCornerPosition.x(), actionPosition.y())); // move cursor to action by Y
         GTGlobals::sleep(200);
+        GTMouseDriver::moveTo(os, actionPosition); // move cursor to action
+        GTGlobals::sleep(200);
+
         if (!openMenuOnly || clickingSubMenu) {
             GTMouseDriver::click(os);
         }
         break;
-
+    }
     case GTGlobals::UseKey:
         while(action != menu->activeAction()) {
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
