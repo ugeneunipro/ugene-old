@@ -1,6 +1,6 @@
 Name:    ugene
 Summary: Integrated bioinformatics toolkit
-Version: 1.5.2
+Version: 1.11.2
 Release: 1%{?dist}
 #The entire source code is GPLv2+ except:
 #file src/libs_3rdparty/qtbindings_core/src/qtscriptconcurrent.h which is GPLv2
@@ -10,10 +10,9 @@ Group:   Applications/Engineering
 URL:     http://ugene.unipro.ru
 Source0: http://ugene.unipro.ru/downloads/%{name}-%{version}.tar.gz
 
-Buildroot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: qt-devel >= 4.5.0 zlib-devel desktop-file-utils
+BuildRequires: qt-devel >= 4.7.0 qt-webkit-devel >= 4.7.0 zlib-devel desktop-file-utils
 #We need strict versions of qt for correct work of src/libs_3rdparty/qtbindings_*
-Requires:  qt >= 4.5.0 qt-x11 >= 4.5.0
+Requires:  qt >= 4.7.0 qt-x11 >= 4.7.0 qtwebkit >= 4.7.0
 
 %description
 Unipro UGENE is a cross-platform visual environment for DNA and protein
@@ -30,20 +29,16 @@ is a designer for custom bioinformatics workflows.
         INSTALL_BINDIR=%{_bindir} \
         INSTALL_LIBDIR=%{_libdir} \
         INSTALL_DATADIR=%{_datadir} \
-        INSTALL_MANDIR=%{_mandir}
+        INSTALL_MANDIR=%{_mandir} \
+        UGENE_EXCLUDE_LIST_ENABLED=1
 
 make %{?_smp_mflags}
 
 %install
-rm -rf %{buildroot}
 make install INSTALL_ROOT=%{buildroot}
 desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
 
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root,-)
 %{_bindir}/*
 %{_libdir}/%{name}/
 %{_datadir}/applications/*
@@ -53,6 +48,9 @@ rm -rf %{buildroot}
 %doc COPYRIGHT LICENSE
 
 %changelog
+* Mon Oct 3 2012 Yulia Algaer <yalgaer@unipro.ru> - 1.11.2-1 
+- Upstream version change
+
 * Mon Sep 21 2009 Ivan Efremov <iefremov@unipro.ru> - 1.5.2-1 
 - Upstream version change
 
