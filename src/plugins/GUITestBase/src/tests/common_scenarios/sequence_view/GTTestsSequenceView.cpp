@@ -43,7 +43,7 @@ namespace GUITest_common_scenarios_sequence_view {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 
-    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.pdb");
+    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
     GTGlobals::sleep(3000);
 
     QWidget *w0 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
@@ -65,7 +65,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
-    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.pdb");
+    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
     GTGlobals::sleep(3000);
 
     QWidget *w0 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
@@ -87,7 +87,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     }
 GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
-    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.pdb");
+    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
     GTGlobals::sleep(3000);
 
     QWidget *w0 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");

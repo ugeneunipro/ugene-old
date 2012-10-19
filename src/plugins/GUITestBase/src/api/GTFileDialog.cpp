@@ -164,6 +164,8 @@ void GTFileDialogUtils::selectFile()
 
     QFileSystemModel *model = qobject_cast<QFileSystemModel*>(w->model());
     QModelIndex index = model->index(path + fileName);
+    GT_CHECK(index.isValid(), "File <" + path + fileName + "> not found");
+
     QPoint indexCenter;
 
     switch(method) {
