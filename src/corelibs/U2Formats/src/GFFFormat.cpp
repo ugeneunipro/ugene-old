@@ -207,7 +207,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
 
     U2SequenceImporter seqImporter(hints, true);
 
-    int lineNumber = 2;
+    int lineNumber = 2;//because first line checked in method validateHeader above
     QMap<QString,Annotation*> joinedAnnotations;
     bool fastaSectionStarts = false;
     QString headerName, objName;
