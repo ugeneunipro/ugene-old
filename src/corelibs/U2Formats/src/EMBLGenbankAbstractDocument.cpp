@@ -457,9 +457,9 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
         return SharedAnnotationData();
     }
 
-    Genbank::LocationParser::parseLocation(cbuff+21, qlen-21, a->location, seqLen);
+    QString errorReport = Genbank::LocationParser::parseLocation(cbuff+21, qlen-21, a->location, seqLen);
     if (a->location->isEmpty()) {
-        si.setError(EMBLGenbankAbstractDocument::tr("Error parsing location"));
+        si.setError(errorReport);
         return SharedAnnotationData();
     }
     // omit sorting because of splitted annotations 
