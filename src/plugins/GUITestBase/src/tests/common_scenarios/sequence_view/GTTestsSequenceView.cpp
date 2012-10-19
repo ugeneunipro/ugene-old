@@ -322,15 +322,21 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
     QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
-    Runnable *chooser = new PopupChooser(os, QStringList() << "Restriction Sites");
-    GTUtilsDialog::waitForDialog(os, chooser);
+//  !!! dirty fastfix of test, very temporary
+    QToolBar* tb = qobject_cast<QToolBar*>(toggleAutoAnnotationsButton->parent());
+    QToolButton* extensionButton = tb->findChild<QToolButton*>("qt_toolbar_ext_button");
+//
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
+    GTWidget::click(os, extensionButton);
+    GTGlobals::sleep(1000);
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
-    QWidget* toggleAutoAnnotationsButton1 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
-    Runnable *chooser1 = new PopupChooser(os, QStringList() << "ORFs");
-    GTUtilsDialog::waitForDialog(os, chooser1);
-    GTWidget::click(os, toggleAutoAnnotationsButton1);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
+    GTWidget::click(os, extensionButton);
+    GTGlobals::sleep(1000);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     //2. Open any PBD file from samples
@@ -352,41 +358,47 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
     QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
-    Runnable *chooser = new PopupChooser(os, QStringList() << "Restriction Sites");
-    GTUtilsDialog::waitForDialog(os, chooser);
+//  !!! dirty fastfix of test, very temporary
+    QToolBar* tb = qobject_cast<QToolBar*>(toggleAutoAnnotationsButton->parent());
+    QToolButton* extensionButton = tb->findChild<QToolButton*>("qt_toolbar_ext_button");
+//
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
+    GTWidget::click(os, extensionButton);
+    GTGlobals::sleep(1000);
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
-    QWidget* toggleAutoAnnotationsButton1 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
-    Runnable *chooser1 = new PopupChooser(os, QStringList() << "ORFs");
-    GTUtilsDialog::waitForDialog(os, chooser1);
-    GTWidget::click(os, toggleAutoAnnotationsButton1);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
+    GTWidget::click(os, extensionButton);
+    GTGlobals::sleep(1000);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     //1. Disable Auto-annotations
-    QWidget* toggleAutoAnnotationsButton2 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
-    Runnable *chooser2 = new PopupChooser(os, QStringList() << "Restriction Sites");
-    GTUtilsDialog::waitForDialog(os, chooser2);
-    GTWidget::click(os, toggleAutoAnnotationsButton2);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
+    GTWidget::click(os, extensionButton);
+    GTGlobals::sleep(1000);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
-    QWidget* toggleAutoAnnotationsButton3 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
-    Runnable *chooser3 = new PopupChooser(os, QStringList() << "ORFs");
-    GTUtilsDialog::waitForDialog(os, chooser3);
-    GTWidget::click(os, toggleAutoAnnotationsButton3);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
+    GTWidget::click(os, extensionButton);
+    GTGlobals::sleep(1000);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     //3. Enable Auto-annotations
-    QWidget* toggleAutoAnnotationsButton4 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
-    Runnable *chooser4 = new PopupChooser(os, QStringList() << "Restriction Sites");
-    GTUtilsDialog::waitForDialog(os, chooser4);
-    GTWidget::click(os, toggleAutoAnnotationsButton4);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
+    GTWidget::click(os, extensionButton);
+    GTGlobals::sleep(1000);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
-    QWidget* toggleAutoAnnotationsButton5 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
-    Runnable *chooser5 = new PopupChooser(os, QStringList() << "ORFs");
-    GTUtilsDialog::waitForDialog(os, chooser5);
-    GTWidget::click(os, toggleAutoAnnotationsButton5);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
+    GTWidget::click(os, extensionButton);
+    GTGlobals::sleep(1000);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     //2. Open any PBD file from samples
@@ -410,15 +422,21 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
 
     //1. Enable Auto-annotations
     QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
-    Runnable *chooser = new PopupChooser(os, QStringList() << "Restriction Sites");
-    GTUtilsDialog::waitForDialog(os, chooser);
+//  !!! dirty fastfix of test, very temporary
+    QToolBar* tb = qobject_cast<QToolBar*>(toggleAutoAnnotationsButton->parent());
+    QToolButton* extensionButton = tb->findChild<QToolButton*>("qt_toolbar_ext_button");
+//
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
+    GTWidget::click(os, extensionButton);
+    GTGlobals::sleep(1000);
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
-    QWidget* toggleAutoAnnotationsButton1 = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
-    Runnable *chooser1 = new PopupChooser(os, QStringList() << "ORFs");
-    GTUtilsDialog::waitForDialog(os, chooser1);
-    GTWidget::click(os, toggleAutoAnnotationsButton1);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
+    GTWidget::click(os, extensionButton);
+    GTGlobals::sleep(1000);
+    GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     //Expected state: there is no auto-annotations for opened sequences
