@@ -118,7 +118,7 @@ bool EMBLPlainTextFormat::readIdLine(ParserState* s) {
         loi.topology = tokens[2];
         loi.molecule = tokens[3];
         loi.division = tokens[5];
-        s->entry->circular = loi.topology == LOCUS_TAG_CIRCULAR;
+        s->entry->circular = loi.topology.compare(LOCUS_TAG_CIRCULAR, Qt::CaseInsensitive) == 0;
     } else {
         // remember just in case
         s->entry->tags.insert(DNAInfo::EMBL_ID, idLineStr);

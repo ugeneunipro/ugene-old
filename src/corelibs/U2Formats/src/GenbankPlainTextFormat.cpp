@@ -217,7 +217,7 @@ bool GenbankPlainTextFormat::readIdLine(ParserState* st) {
         loi.division = tokens[5];
         loi.date = tokens[6];
         st->entry->tags.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
-        st->entry->circular = loi.topology == LOCUS_TAG_CIRCULAR;
+        st->entry->circular = loi.topology.compare(LOCUS_TAG_CIRCULAR, Qt::CaseInsensitive) == 0;
     } else {
         st->entry->tags.insert(DNAInfo::ID, tokens[0]);
         st->entry->tags.insert(DNAInfo::EMBL_ID, locusStr);
