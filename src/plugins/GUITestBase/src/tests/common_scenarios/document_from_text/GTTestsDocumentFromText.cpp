@@ -864,5 +864,150 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
     GTUtilsSequenceView::checkSequence(os, "-NACCG--AA--UAGCC-----AG---");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0012) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "ACAAGTCGGATTTATA", false, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result.fa",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result.fa");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.fa");
+    GTGlobals::sleep();
+
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0012_1) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "ACAAGTCGGATTTATA", false, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result.gb",
+        CreateDocumentFiller::Genbank,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.gb");
+    GTGlobals::sleep();
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0012_2) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "ACAAGTC---GGATTTATA", false, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result.fa",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::checkDocument(os, "result.fa");
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" , "result.fa");
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0013) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "ACAAGTCGGATTTATA", false, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result.fa",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+    GTUtilsDocument::checkDocument(os, "result.fa");
+    GTGlobals::sleep();
+
+    GTUtilsProjectTreeView::rename(os, "result", "result_new");
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "result_new") != NULL, "Item result_new not found in tree widget");
+
+    }
+GUI_TEST_CLASS_DEFINITION(test_0013_1) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "ACAAGTCGGATTTATA", false, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result.gb",
+        CreateDocumentFiller::Genbank,
+        "result", true
+        );
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+    GTUtilsDocument::checkDocument(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsProjectTreeView::rename(os, "result", "result_new");
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "result_new") != NULL, "Item result_new not found in tree widget");
+    }
+GUI_TEST_CLASS_DEFINITION(test_0013_2) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "ACAAGTCG---GATTTATA", false, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result.fa",
+        CreateDocumentFiller::FASTA,
+        "result", true
+        );
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+    GTUtilsDocument::checkDocument(os, "result.fa");
+    GTGlobals::sleep();
+
+    GTUtilsProjectTreeView::rename(os, "result", "result_new");
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "result_new") != NULL, "Item result_new not found in tree widget");
+    }
 } // namespace GUITest_common_scenarios_document_from_text
 } // namespace U2
