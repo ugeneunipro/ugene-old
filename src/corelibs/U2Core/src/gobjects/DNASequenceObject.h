@@ -58,6 +58,8 @@ public:
     
     void setWholeSequence(const DNASequence& seq);
 
+    virtual void setGObjectName(const QString& newName);
+
     bool isCircular() const;
     
     void setCircular(bool v);

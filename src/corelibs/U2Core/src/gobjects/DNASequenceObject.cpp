@@ -428,6 +428,25 @@ void U2SequenceObject::setByteArrayAttribute(const QByteArray& newByteArrayAttri
     con.dbi->getAttributeDbi()->createByteArrayAttribute(newByteArrayAttribute, os);
 }
 
+void U2SequenceObject::setGObjectName( const QString& newName ){
+    if (cachedName == newName){
+        return;
+    }
+
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+    U2Sequence u2seq = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os);
+    CHECK_OP(os, );
+
+    u2seq.visualName = newName;
+    con.dbi->getSequenceDbi()->updateSequenceObject(u2seq,os);
+    CHECK_OP(os, );
+    cachedName = newName;
+
+    GObject::setGObjectName(newName);
+}
+
 
 
 }//namespace
