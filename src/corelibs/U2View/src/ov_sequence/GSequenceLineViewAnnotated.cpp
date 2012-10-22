@@ -219,8 +219,8 @@ void GSequenceLineViewAnnotated::mousePressEvent(QMouseEvent * me) {
     bool singleBaseSelectionMode = km.testFlag(Qt::AltModifier);
     bool annotationEvent = false; // true if mouse pressed in some annotation area
     if (renderArea->rect().contains(p) && me->button()== Qt::LeftButton && !singleBaseSelectionMode) {
-        bool expandAnnotationSelectionToSequence = me->modifiers().testFlag(Qt::ControlModifier);
-        if (!me->modifiers().testFlag(Qt::ShiftModifier)) {
+        bool expandAnnotationSelectionToSequence = me->modifiers().testFlag(Qt::ShiftModifier);
+        if (!(me->modifiers().testFlag(Qt::ControlModifier) || me->modifiers().testFlag(Qt::ShiftModifier))) {
             ctx->getAnnotationsSelection()->clear();
         }
         QList<AnnotationSelectionData> selected = selectAnnotationByCoord(p);
