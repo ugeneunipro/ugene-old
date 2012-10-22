@@ -126,6 +126,7 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     connect(findPatternAction, SIGNAL(triggered()), SLOT(sl_onFindPatternClicked()));
 
     addSequencePart = new QAction(tr("Insert subsequence..."), this);
+    addSequencePart->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_I));
   	addSequencePart->setObjectName(ACTION_EDIT_INSERT_SUBSEQUENCE);
     connect(addSequencePart, SIGNAL(triggered()), this, SLOT(sl_addSequencePart()));
 
@@ -134,6 +135,7 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     connect(removeSequencePart, SIGNAL(triggered()), this, SLOT(sl_removeSequencePart()));
 
     replaceSequencePart = new QAction(tr("Replace subsequence..."), this);
+    replaceSequencePart ->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
   	replaceSequencePart->setObjectName(ACTION_EDIT_REPLACE_SUBSEQUENCE);
     connect(replaceSequencePart, SIGNAL(triggered()), this, SLOT(sl_replaceSequencePart()));
 
@@ -296,6 +298,13 @@ bool AnnotatedDNAView::eventFilter(QObject* o, QEvent* e) {
         ADVSequenceWidget* v = qobject_cast<ADVSequenceWidget*>(o);
         if ( v!=NULL ) {
             updateScrollAreaHeight();
+        }
+    } else if(e->type() == QEvent::KeyPress){
+        ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
+        if (!seqCtx->getSequenceSelection()->isEmpty()) {
+            replaceSequencePart->setEnabled(true);
+        }else{
+            replaceSequencePart->setEnabled(false);
         }
     }
 
@@ -496,10 +505,13 @@ void AnnotatedDNAView::addEditMenu(QMenu* m) {
         rm->setEnabled(true);
     };
     rm->menuAction()->setObjectName(ADV_MENU_EDIT);
-    if (seqCtx->getSequenceSelection()->isEmpty()) {
-        rm->addAction(addSequencePart);
-    } else {
-        rm->addAction(replaceSequencePart);
+
+    rm->addAction(addSequencePart);
+    rm->addAction(replaceSequencePart);
+    if (!seqCtx->getSequenceSelection()->isEmpty()) {
+        replaceSequencePart->setEnabled(true);
+    }else{
+        replaceSequencePart->setEnabled(false);
     }
     rm->addAction(removeSequencePart);
     if (seqCtx->getComplementTT() != NULL) {
@@ -1001,6 +1013,9 @@ void AnnotatedDNAView::sl_addSequencePart(){
     cfg.mode = EditSequenceMode_Insert;
     cfg.source = U2Region(0, seqObj->getSequenceLength());
     cfg.alphabet = seqObj->getAlphabet();
+
+    const QVector<U2Region>& selection = seqCtx->getSequenceSelection()->getSelectedRegions();
+    cfg.selectionRegions = selection;
         
     EditSequenceDialogController dialog(cfg, getSequenceWidgetInFocus());
     int result = dialog.exec();
@@ -1011,6 +1026,7 @@ void AnnotatedDNAView::sl_addSequencePart(){
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_sequenceModifyTaskStateChanged()));
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
+    seqCtx->getSequenceSelection()->clear();
 }
 
 void AnnotatedDNAView::sl_removeSequencePart(){
@@ -1046,6 +1062,10 @@ void AnnotatedDNAView::sl_replaceSequencePart() {
     ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
     U2SequenceObject *seqObj = seqCtx->getSequenceObject();
 
+    if(seqCtx->getSequenceSelection()->getSelectedRegions().isEmpty()){
+        return;
+    }
+
     EditSequencDialogConfig cfg;
 
     cfg.mode = EditSequenceMode_Replace;
@@ -1053,6 +1073,8 @@ void AnnotatedDNAView::sl_replaceSequencePart() {
     cfg.alphabet = seqObj->getAlphabet();
     U2Region selection = seqCtx->getSequenceSelection()->getSelectedRegions().first();
     cfg.initialText = seqObj->getSequenceData(selection);
+
+    cfg.selectionRegions.append(selection);
     
     EditSequenceDialogController dlg(cfg, getSequenceWidgetInFocus());
     int result = dlg.exec();

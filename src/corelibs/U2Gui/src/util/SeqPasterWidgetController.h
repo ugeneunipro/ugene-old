@@ -31,6 +31,7 @@ class Ui_SeqPasterWidget;
 
 namespace U2{
 
+
 class U2GUI_EXPORT SeqPasterWidgetController : public QWidget {
     Q_OBJECT
 public:
@@ -41,6 +42,8 @@ public:
     DNASequence getSequence() const {return resultSeq;}
     void disableCustomSettings();
     void setPreferredAlphabet(DNAAlphabet *alp);
+    void selectText();
+    void setEventFilter(QObject* evFilter);
 
     static QByteArray getNormSequence(DNAAlphabet * alph, const QByteArray & seq, bool replace, QChar replaceChar);
     

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>457</width>
-    <height>293</height>
+    <height>315</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -65,19 +65,87 @@
        <property name="title">
         <string>Position to insert</string>
        </property>
-       <widget class="QSpinBox" name="insertPositionSpin">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>51</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="maximum">
-         <number>99999</number>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QToolButton" name="startPosToolButton">
+          <property name="toolTip">
+           <string>Press to insert before the start of the sequence</string>
+          </property>
+          <property name="text">
+           <string>start</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="insertPositionSpin">
+          <property name="maximum">
+           <number>99999</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QToolButton" name="endPosToolButton">
+          <property name="toolTip">
+           <string>Press to insert to the end of the sequence</string>
+          </property>
+          <property name="text">
+           <string>end</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="0" colspan="3">
+         <widget class="QGroupBox" name="selectionGroupBox">
+          <property name="title">
+           <string>Selection</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QToolButton" name="beforeSelectionToolButton">
+             <property name="toolTip">
+              <string>Press to insert before the selection</string>
+             </property>
+             <property name="text">
+              <string>before</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QToolButton" name="afterSelectionToolButton">
+             <property name="toolTip">
+              <string>Press to insert after the selection</string>
+             </property>
+             <property name="text">
+              <string>after</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="selectionLineEdit">
+             <property name="toolTip">
+              <string>To change the regsion select it on a sequence</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>

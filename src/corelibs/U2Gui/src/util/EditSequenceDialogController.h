@@ -39,12 +39,29 @@ enum EditSequenceDialogMode {
     EditSequenceMode_Insert
 };
 
+/**
+ * A workaround to listen to enter in the pattern field and
+ * make a correct (almost) tab order.
+ */
+class U2GUI_EXPORT SeqPasterEventFilter : public QObject
+{
+    Q_OBJECT
+public:
+    SeqPasterEventFilter(QObject* parent);
+
+signals:
+    void si_enterPressed();
+
+protected:
+    bool eventFilter(QObject* obj, QEvent *event);
+};
 
 struct U2GUI_EXPORT EditSequencDialogConfig {
     EditSequenceDialogMode mode;
     U2Region source;
     DNAAlphabet* alphabet;
     QByteArray initialText;
+    QVector<U2Region> selectionRegions; 
 };
 
 class U2GUI_EXPORT EditSequenceDialogController : public QDialog {
@@ -64,10 +81,16 @@ private slots:
     void sl_browseButtonClicked();
     void sl_indexChanged(int);
     void sl_mergeAnnotationsToggled(bool);
+    void sl_startPositionliClicked();
+    void sl_endPositionliClicked();
+    void sl_beforeSlectionClicked();
+    void sl_afterSlectionClicked();
+    void sl_enterPressed();
 
 private:
     void addSeqpasterWidget();
     bool modifyCurrentDocument();
+
 
 
     QString filter;
@@ -75,6 +98,8 @@ private:
     SeqPasterWidgetController *w;
     EditSequencDialogConfig config;
     Ui_EditSequenceDialog* ui;
+
+    int seqEndPos;
 };
 
 }//ns

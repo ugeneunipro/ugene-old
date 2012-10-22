@@ -25,6 +25,8 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 
@@ -33,10 +35,31 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <QtGui/QKeyEvent>
 
 
 namespace U2{
 
+//////////////////////////////////////////////////////////////////////////
+//SeqPasterEventFilter
+bool SeqPasterEventFilter::eventFilter( QObject* obj, QEvent *event ){
+    if (QEvent::KeyPress == event->type()) {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        if (Qt::Key_Return == keyEvent->key()) {
+            emit si_enterPressed();
+            return true;
+        }
+    }
+    return QObject::eventFilter(obj, event);
+}
+
+SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
+:QObject(parent){
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+//EditSequenceDialogController
     EditSequenceDialogController::EditSequenceDialogController( EditSequencDialogConfig cfg, QWidget* p)
 : QDialog(p), filter(""), pos(1), config(cfg) {
     ui = new Ui_EditSequenceDialog;
@@ -47,25 +70,50 @@ namespace U2{
     w->disableCustomSettings();
     w->setPreferredAlphabet(cfg.alphabet);
 
+    //selection
+    ui->selectionGroupBox->setEnabled(false);
+    if (!cfg.selectionRegions.isEmpty()){
+        ui->selectionLineEdit->setText(Genbank::LocationParser::buildLocationString(cfg.selectionRegions));
+    }
+    connect(ui->beforeSelectionToolButton, SIGNAL(clicked()), this, SLOT(sl_beforeSlectionClicked()));
+    connect(ui->afterSelectionToolButton, SIGNAL(clicked()), this, SLOT(sl_afterSlectionClicked()));
+
+    seqEndPos = cfg.source.length + 1;
+
+    ui->insertPositionSpin->setMinimum(1);
+    ui->insertPositionSpin->setMaximum(seqEndPos);
+
     if (cfg.mode == EditSequenceMode_Insert) { 
         setWindowTitle(tr("Insert sequence"));
+        if (!cfg.selectionRegions.isEmpty()){
+            ui->selectionGroupBox->setEnabled(true);
+            sl_beforeSlectionClicked();
+        }
     } else {
         setWindowTitle(tr("Replace sequence")); 
         ui->splitRB->setEnabled(false);
         ui->split_separateRB->setEnabled(false);
         //ui->insertPositionSpin->setEnabled(false);
         ui->insertPositionBox->setEnabled(false);
+        w->selectText();
     }
     
-    ui->insertPositionSpin->setMinimum(1);
-    ui->insertPositionSpin->setMaximum(cfg.source.length + 1);
-
     connect(ui->formatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_indexChanged(int)));
 
     ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
     ui->formatBox->addItem("Genbank", BaseDocumentFormats::PLAIN_GENBANK);
     connect(ui->mergeAnnotationsBox, SIGNAL(toggled(bool)), this, SLOT(sl_mergeAnnotationsToggled(bool)));
     sl_indexChanged(0);
+
+    connect(ui->startPosToolButton, SIGNAL(clicked()), this, SLOT(sl_startPositionliClicked()));
+    connect(ui->endPosToolButton, SIGNAL(clicked()), this, SLOT(sl_endPositionliClicked()));
+
+    //event filter
+    SeqPasterEventFilter* evFilter= new SeqPasterEventFilter(this);
+    w->setEventFilter(evFilter);
+    connect(evFilter, SIGNAL(si_enterPressed()), this, SLOT(sl_enterPressed()));
+
+
 }
 
 void EditSequenceDialogController::accept(){
@@ -179,5 +227,31 @@ bool EditSequenceDialogController::modifyCurrentDocument()
 {
     return !ui->saveToAnotherBox->isChecked();
 }
+
+void EditSequenceDialogController::sl_startPositionliClicked(){
+    ui->insertPositionSpin->setValue(1);
+}
+
+void EditSequenceDialogController::sl_endPositionliClicked(){
+    ui->insertPositionSpin->setValue(seqEndPos);
+}
+
+void EditSequenceDialogController::sl_beforeSlectionClicked(){
+    SAFE_POINT(!config.selectionRegions.isEmpty(), "No selection", );
+    U2Region containingregion = U2Region::containingRegion(config.selectionRegions);
+    ui->insertPositionSpin->setValue(containingregion.startPos+1);
+}
+
+void EditSequenceDialogController::sl_afterSlectionClicked(){
+    SAFE_POINT(!config.selectionRegions.isEmpty(), "No selection", );
+    U2Region containingregion = U2Region::containingRegion(config.selectionRegions);
+    ui->insertPositionSpin->setValue(containingregion.endPos()+1);
+}
+
+void EditSequenceDialogController::sl_enterPressed(){
+    accept();
+}
+
+
 } // U2
 

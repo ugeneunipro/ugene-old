@@ -141,4 +141,17 @@ SeqPasterWidgetController::~SeqPasterWidgetController()
     delete ui;
 }
 
+void SeqPasterWidgetController::selectText(){
+    ui->sequenceEdit->selectAll();
+    ui->sequenceEdit->setFocus(Qt::OtherFocusReason);
+}
+
+void SeqPasterWidgetController::setEventFilter( QObject* evFilter ){
+    if (evFilter == NULL){
+        return;
+    }
+    ui->sequenceEdit->installEventFilter(evFilter);
+}
+
+
 }//ns
