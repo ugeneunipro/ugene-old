@@ -76,7 +76,7 @@ void GSequenceLineView::updateScrollBar() {
     scrollBar->disconnect(this);
 
     scrollBar->setMinimum(0);
-    scrollBar->setMaximum(int (seqLen * coefScrollBarMapping) );
+    scrollBar->setMaximum(int ((seqLen - visibleRange.length) * coefScrollBarMapping + 1) );
 
     scrollBar->setSliderPosition(int(coefScrollBarMapping * visibleRange.startPos));
 
@@ -87,7 +87,7 @@ void GSequenceLineView::updateScrollBar() {
     scrollBar->setSingleStep(singleStep/coefScrollBarMapping );
     scrollBar->setPageStep(pageStep * coefScrollBarMapping);
 
-    scrollBar->setDisabled(visibleRange.length == seqLen);
+    //scrollBar->setDisabled(visibleRange.length == seqLen - visibleRange.length);
 
     connect(scrollBar, SIGNAL(valueChanged(int)), SLOT(sl_onScrollBarMoved(int)));
 }
