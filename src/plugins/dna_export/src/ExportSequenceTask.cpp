@@ -100,7 +100,7 @@ static QList<ExportSequenceItem> toAmino(const ExportSequenceItem& ei, bool allF
         transEi.sequence.alphabet = ei.aminoTT->getDstAlphabet();
         
         //translate sequence
-        transEi.sequence.seq = QByteArray(ei.sequence.length() / 3, '\0');
+        transEi.sequence.seq = QByteArray((ei.sequence.length() - i)/ 3, '\0');
         if (transEi.sequence.length() == 0 && ei.sequence.length() != 0) {
             si.setError(L10N::outOfMemory());
             return res;
