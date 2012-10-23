@@ -66,7 +66,6 @@ macx {
 unix {
     target.path = $$UGENE_INSTALL_DIR/$$UGENE_RELATIVE_DESTDIR
     INSTALLS += target
-    QMAKE_LFLAGS += -Wl,-rpath=\\\$\$ORIGIN
 }
 
 # Prepare version info for NSIS installer
