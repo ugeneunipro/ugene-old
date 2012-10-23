@@ -25,6 +25,9 @@
 #include <U2Core/Task.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -270,5 +273,36 @@ void GUrlUtils::removeFile( const QString& filePath, U2OpStatus& os ){
     }
     
 }
+
+bool GUrlUtils::canWriteFile( const QString& path ){
+    bool res = false;
+
+    QFile tmpFile(path);
+    tmpFile.open(QIODevice::WriteOnly);
+    if(tmpFile.isWritable()){
+        res = true;
+        tmpFile.close();
+        tmpFile.remove();
+    }else{
+        res = false;
+    }
+    return res;
+}
+
+QString GUrlUtils::getDefaultDataPath(){
+    QString res;
+
+    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath();
+
+    if (!QDir(path).exists()) {
+        if (!QDir().mkpath(path)) {
+            return res;
+        }
+    }
+    res = path;
+
+    return res;
+}
+
 
 }//namespace

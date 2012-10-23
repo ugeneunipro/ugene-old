@@ -68,6 +68,10 @@ public:
     // returns the temropary path: userTemporaryDirPath + "ugene_tmp/p" + processId + "/domain/" + tmpSubDir
     QString createCurrentProcessTemporarySubDir(U2OpStatus &os, const QString &domain = QString()) const;
 
+    // default UGENE data dir
+    QString getDefaultDataDirPath() const;
+    void setDefaultDataDirPath(const QString& newPath);
+
     bool isStatisticsCollectionEnabled() const;
     void setEnableCollectingStatistics(bool b);
 

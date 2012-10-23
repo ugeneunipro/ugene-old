@@ -46,6 +46,7 @@ namespace U2 {
 #define DOWNLOAD_DIR    QString("download_file")
 #define RECENTLY_DOWNLOADED QString("recently_downloaded")
 #define TEMPORARY_DIR QString("temporary_dir")
+#define DATA_DIR QString("data_dir")
 #define COLLECTING_STATISTICS QString("collecting_statistics")
 #define WINDOW_LAYOUT  QString("tabbed_windows")
 #define RESET_SETTINGS_FLAG QString("reset_settings")
@@ -152,6 +153,14 @@ QString UserAppsSettings::getUserTemporaryDirPath() const {
 void UserAppsSettings::setUserTemporaryDirPath(const QString& newPath) {
     AppContext::getSettings()->setValue(SETTINGS_ROOT + TEMPORARY_DIR, newPath);
     emit si_temporaryPathChanged();
+}
+
+QString UserAppsSettings::getDefaultDataDirPath() const{
+    return AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation)+"/UGENE_Data").toString();
+}
+
+void UserAppsSettings::setDefaultDataDirPath( const QString& newPath ){
+    AppContext::getSettings()->setValue(SETTINGS_ROOT + DATA_DIR, newPath);
 }
 
 bool UserAppsSettings::isStatisticsCollectionEnabled() const {

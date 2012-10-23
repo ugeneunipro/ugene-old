@@ -224,7 +224,21 @@ void ConvertToSQLiteDialog::accept() {
     } else if(!destinationUrl.isLocalFile()) {
         ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
         QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination URL must point to a local file"));
-    } else {
+    } else if(!GUrlUtils::canWriteFile(destinationUrl.getURLString())){
+        QString defaultDataDestinationUrl;
+
+        defaultDataDestinationUrl = GUrlUtils::getDefaultDataPath();
+        defaultDataDestinationUrl += "/" + destinationUrl.fileName();
+
+        QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Cannot write to %1. You may change permissions or a file path. Destination is changed to default UGENE data path: %2")
+            .arg(destinationUrl.getURLString()).arg(defaultDataDestinationUrl));
+
+        if (!defaultDataDestinationUrl.isEmpty()){
+            ui.destinationUrlEdit->setText(defaultDataDestinationUrl);
+        }
+        
+
+    }else{
         bool selected = false;
         foreach(const bool& i, bamInfo.getSelected()) {
             if(i) {
