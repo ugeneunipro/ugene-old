@@ -79,6 +79,7 @@ void AutoAnnotationsADVAction::updateMenu()
     }
     foreach (AutoAnnotationsUpdater* updater, updaters) {
         QAction* toggleAction = new QAction(updater->getName(), this);
+        toggleAction->setObjectName(updater->getName());
         toggleAction->setProperty(AUTO_ANNOTATION_GROUP_NAME, updater->getGroupName());
         bool enabled = updater->checkConstraints(constraints);
         toggleAction->setEnabled(enabled);

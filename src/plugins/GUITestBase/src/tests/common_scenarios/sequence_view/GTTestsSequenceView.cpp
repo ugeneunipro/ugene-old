@@ -317,8 +317,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 //1. Enable Auto-annotations
-    GTGlobals::sleep();
-    GTGlobals::sleep();
+//     GTGlobals::sleep();
+//     GTGlobals::sleep();
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
     QWidget* toggleAutoAnnotationsButton = GTWidget::findWidget(os, "toggleAutoAnnotationsButton");
@@ -328,14 +328,18 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 //
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
-    GTWidget::click(os, extensionButton);
-    GTGlobals::sleep(1000);
+    if (extensionButton->isVisible()) {
+        GTWidget::click(os, extensionButton);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
-    GTWidget::click(os, extensionButton);
-    GTGlobals::sleep(1000);
+    if (extensionButton->isVisible()) {
+        GTWidget::click(os, extensionButton);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
@@ -364,40 +368,52 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
 //
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
-    GTWidget::click(os, extensionButton);
-    GTGlobals::sleep(1000);
+    if (extensionButton->isVisible()) {
+        GTWidget::click(os, extensionButton);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
-    GTWidget::click(os, extensionButton);
-    GTGlobals::sleep(1000);
+    if (extensionButton->isVisible()) {
+        GTWidget::click(os, extensionButton);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     //1. Disable Auto-annotations
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
-    GTWidget::click(os, extensionButton);
-    GTGlobals::sleep(1000);
+    if (extensionButton->isVisible()) {
+        GTWidget::click(os, extensionButton);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
-    GTWidget::click(os, extensionButton);
-    GTGlobals::sleep(1000);
+    if (extensionButton->isVisible()) {
+        GTWidget::click(os, extensionButton);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     //3. Enable Auto-annotations
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
-    GTWidget::click(os, extensionButton);
-    GTGlobals::sleep(1000);
+    if (extensionButton->isVisible()) {
+        GTWidget::click(os, extensionButton);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
-    GTWidget::click(os, extensionButton);
-    GTGlobals::sleep(1000);
+    if (extensionButton->isVisible()) {
+        GTWidget::click(os, extensionButton);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
@@ -428,14 +444,18 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
 //
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
-    GTWidget::click(os, extensionButton);
-    GTGlobals::sleep(1000);
+    if (extensionButton->isVisible()) {
+        GTWidget::click(os, extensionButton);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ORFs"));
-    GTWidget::click(os, extensionButton);
-    GTGlobals::sleep(1000);
+    if (extensionButton->isVisible()) {
+        GTWidget::click(os, extensionButton);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, toggleAutoAnnotationsButton);
     GTGlobals::sleep();
 

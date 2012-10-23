@@ -165,7 +165,7 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
     switch(m) {
     case GTGlobals::UseMouse:
     {
-        QPoint menuCornerPosition = menu->mapToGlobal(QPoint());
+        QPoint menuCornerPosition = menu->mapToGlobal(QPoint(10, 0));
         QPoint actionPosition = actionPos(os, menu, action);
 
         GTMouseDriver::moveTo(os, QPoint(menuCornerPosition.x(), actionPosition.y())); // move cursor to action by Y
