@@ -40,6 +40,9 @@
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U1AnnotationUtils.h>
 
+const char FASTA_HEADER_START_SYMBOL = '>';
+const char FASTA_COMMENT_START_SYMBOL = ';';
+
 namespace U2 {
 
 /* TRANSLATOR U2::FastaFormat */
@@ -65,7 +68,7 @@ static QVariantMap analyzeRawData(const QByteArray& data) {
     QString line;
     do {
         line = input.readLine();
-        if (line[0] == '>') {
+        if (line[0] == FASTA_HEADER_START_SYMBOL) {
             nSequences++;
             if (len > 0) {
                 minLen = minLen == -1 ? len : qMin(minLen, len);
@@ -102,7 +105,7 @@ FormatCheckResult FastaFormat::checkRawData(const QByteArray& rawData, const GUr
     int n = TextUtils::skip(TextUtils::WHITES, data, size);
     int newSize = size - n;
     const char* newData = data + n;
-    if (newSize <= 0 || (newData[0] != '>' && newData[0] != ';') ) {
+    if (newSize <= 0 || (newData[0] != FASTA_HEADER_START_SYMBOL && newData[0] != FASTA_COMMENT_START_SYMBOL) ) {
         return FormatDetection_NotMatched;
     }
     bool hasBinaryBlocks = TextUtils::contains(TextUtils::BINARY, data, size);
@@ -123,9 +126,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
 {
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
-    static char fastaHeaderStartChar = '>';
-    static char fastaCommentStartChar = ';';
-    static QBitArray fastaHeaderStart = TextUtils::createBitMap(fastaHeaderStartChar);
+    static char fastaCommentStartChar = FASTA_COMMENT_START_SYMBOL;
+    static QBitArray fastaHeaderStart = TextUtils::createBitMap(FASTA_HEADER_START_SYMBOL);
 
     writeLockReason.clear();
     GUrl docUrl = io->getURL();
@@ -169,7 +171,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         CHECK_EXT(lineOk, os.setError(FastaFormat::tr("Line is too long")), ); 
         
         QString headerLine = QString(QByteArray::fromRawData(buff+1, len-1)).trimmed();
-        CHECK_EXT(buff[0] == fastaHeaderStartChar, os.setError(FastaFormat::tr("First line is not a FASTA header")), ); 
+        CHECK_EXT(buff[0] == FASTA_HEADER_START_SYMBOL, os.setError(FastaFormat::tr("First line is not a FASTA header")), ); 
         
         //read sequence
         if (sequenceNumber == 0 || !merge) {
@@ -196,13 +198,13 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             }
             buff[len] = 0;
 
-            if(buff[0] != fastaCommentStartChar && buff[0] != fastaHeaderStartChar){
+            if(buff[0] != fastaCommentStartChar && buff[0] != FASTA_HEADER_START_SYMBOL){
                 len = TextUtils::remove(buff, len, TextUtils::WHITES);
                 if(len > 0){
                     seqImporter.addBlock(buff, len, os);
                     sequenceLen += len;
                 }
-            }else if( buff[0] == fastaHeaderStartChar){
+            }else if( buff[0] == FASTA_HEADER_START_SYMBOL){
                 headerReaded = true;
                 break;
             }
@@ -281,7 +283,7 @@ static void saveSequence(IOAdapter* io, const DNASequence& sequence, U2OpStatus&
 
     QByteArray block;
     QString hdr = sequence.getName();
-    block.append('>').append(hdr).append('\n');
+    block.append(FASTA_HEADER_START_SYMBOL).append(hdr).append('\n');
     if (io->writeBlock( block ) != block.length()) {
         os.setError(L10N::errorWritingFile(io->getURL()));
         return;
@@ -320,8 +322,7 @@ void FastaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObje
 }
 
 DNASequence *FastaFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
-    static char fastaHeaderStartChar = '>';
-    static QBitArray fastaHeaderStart = TextUtils::createBitMap(fastaHeaderStartChar);
+    static QBitArray fastaHeaderStart = TextUtils::createBitMap(FASTA_HEADER_START_SYMBOL);
     static QBitArray nonWhites = ~TextUtils::WHITES;
 
     CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
@@ -339,7 +340,7 @@ DNASequence *FastaFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
     CHECK(len > 0, NULL); //end of stream
     CHECK_EXT(lineOk, os.setError(FastaFormat::tr("Line is too long")), NULL);
     QByteArray headerLine = QByteArray(buff + 1, len-1).trimmed();
-    CHECK_EXT(buff[0] == fastaHeaderStartChar, os.setError(FastaFormat::tr("First line is not a FASTA header")), NULL);
+    CHECK_EXT(buff[0] == FASTA_HEADER_START_SYMBOL, os.setError(FastaFormat::tr("First line is not a FASTA header")), NULL);
     
     //read sequence
     QByteArray sequence;
@@ -368,6 +369,28 @@ DNASequence *FastaFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
 
 void FastaFormat::storeSequence(const DNASequence& sequence, IOAdapter* io, U2OpStatus& os) {
     saveSequence(io, sequence, os);
+}
+
+QStringList FastaFormat::getSequencesFromUserInput(const QString &userInput)
+{
+    QStringList result;
+
+    if(userInput.contains(FASTA_HEADER_START_SYMBOL)) {
+        result = userInput.trimmed().split(FASTA_HEADER_START_SYMBOL, QString::SkipEmptyParts);
+
+        for(QStringList::Iterator i = result.begin(); i != result.end(); i++) {
+            QStringList patternWithNameAndComments = (*i).split(QRegExp("\\s+"), QString::SkipEmptyParts);
+            
+            for(int j = patternWithNameAndComments.count() - 1; j != -1; j--) {
+                if(FASTA_COMMENT_START_SYMBOL != patternWithNameAndComments[j][0]) {
+                    (*i) = patternWithNameAndComments[j];
+                    break;
+                }
+            }
+        }
+    }
+
+    return result;
 }
 
 }//namespace

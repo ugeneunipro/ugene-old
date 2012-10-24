@@ -40,7 +40,16 @@
 
 #include <U2Gui/LastUsedDirHelper.h>
 
-const QChar FASTA_HEADER_START_SYMBOL = '>';
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Formats/RawDNASequenceFormat.h>
+#include <U2Formats/FastaFormat.h>
+
+const QString NEW_LINE_SYMBOL = "\n";
+const QString COLOR_NAME_FOR_INFO_MESSAGES = "green";
+const QString STYLESHEET_COLOR_DEFINITION = "color: ";
+const QString STYLESHEET_DEFINITIONS_SEPARATOR = ";";
 
 namespace U2 {
 
@@ -54,11 +63,22 @@ FindPatternEventFilter::FindPatternEventFilter(QObject* parent)
 bool FindPatternEventFilter::eventFilter(QObject* obj, QEvent* event)
 {
     if (QEvent::KeyPress == event->type()) {
-        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        QKeyEvent *keyEvent = dynamic_cast<QKeyEvent*>(event);
         if (Qt::Key_Tab == keyEvent->key()) {
             emit si_tabPressed();
             return true;
         }
+        if ((Qt::Key_Enter == keyEvent->key() || Qt::Key_Return == keyEvent->key())) {
+            if(!(Qt::ControlModifier & keyEvent->modifiers())) {
+                emit si_enterPressed();
+                return true;
+            }
+            else {
+                keyEvent->setModifiers(keyEvent->modifiers() & ~Qt::ControlModifier);
+                return false;
+            }
+        }
+
     }
     return QObject::eventFilter(obj, event);
 }
@@ -101,13 +121,16 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         connectSlots();
 
         checkState();
+        setFocusProxy(textPattern);
         btnSearch->setAutoDefault(true);
 
-        FindPatternEventFilter* findPatternEventFilter = new FindPatternEventFilter(this);
+        FindPatternEventFilter *findPatternEventFilter = new FindPatternEventFilter(this);
         textPattern->installEventFilter(findPatternEventFilter);
         connect(findPatternEventFilter, SIGNAL(si_tabPressed()), SLOT(sl_onTabInPatternFieldPressed()));
+        connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterInPatternFieldPressed()));
 
         currentSelection = NULL;
+        showHideMessage(true, UseMultiplePatternsTip);
     }
 }
 
@@ -491,20 +514,24 @@ void FindPatternWidget::updateLayout()
     }
 }
 
-void FindPatternWidget::showHideErrorMessage(bool show, ErrorMessageFlag errorMessageFlag)
+void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag )
 {
     if (show) {
-        if (!errorFlags.contains(errorMessageFlag)) {
-            errorFlags.append(errorMessageFlag);
+        if (!messageFlags.contains(messageFlag)) {
+            messageFlags.append(messageFlag);
         }
     }
     else {
-        errorFlags.removeAll(errorMessageFlag);
+        messageFlags.removeAll(messageFlag);
     }
 
-    if (!errorFlags.isEmpty()) {
+    if (!messageFlags.isEmpty()) {
+        static QString storedTextColor = currentColorOfMessageText();
+        if(storedTextColor != currentColorOfMessageText())
+            changeColorOfMessageText(storedTextColor);
+
         QString text = "";
-        foreach (ErrorMessageFlag flag, errorFlags) {
+        foreach (MessageFlag flag, messageFlags) {
             switch (flag) {
                 case PatternIsTooLong:
                     if (!text.isEmpty()) {
@@ -534,6 +561,14 @@ void FindPatternWidget::showHideErrorMessage(bool show, ErrorMessageFlag errorMe
                     text += QString(tr("Warning: file contains patterns that"
                         " longer than the search region! Those patterns were ignored. Please input a shorter value or select another region! "));
                     break;
+                case UseMultiplePatternsTip:
+                    if (!text.isEmpty()) {
+                        text += "\n";
+                    }
+                    text += QString(tr("Info: You may use Ctrl+Enter"
+                        " to input multiple patterns "));
+                    changeColorOfMessageText(COLOR_NAME_FOR_INFO_MESSAGES);
+                    break;
 
                 default:
                     FAIL("Unexpected value of the error flag in show/hide error message for pattern!",);
@@ -548,18 +583,67 @@ void FindPatternWidget::showHideErrorMessage(bool show, ErrorMessageFlag errorMe
     }
 }
 
+void FindPatternWidget::changeColorOfMessageText(const QString &newColorName)
+{
+    QString currentStyleSheet = lblErrorMessage->styleSheet();
+    currentStyleSheet.replace(currentColorOfMessageText(), newColorName);
+    lblErrorMessage->setStyleSheet(currentStyleSheet);
+}
+
+QString FindPatternWidget::currentColorOfMessageText() const
+{
+    const QString currentStyleSheet = lblErrorMessage->styleSheet();
+    const int startOfColorDefinitionPosition = currentStyleSheet.indexOf(STYLESHEET_COLOR_DEFINITION);
+    const int endOfColorDefinitionPosition = currentStyleSheet.indexOf(STYLESHEET_DEFINITIONS_SEPARATOR,
+        startOfColorDefinitionPosition);
+    const QString currentMessageTextColor = currentStyleSheet.mid(startOfColorDefinitionPosition
+                                                                  + STYLESHEET_COLOR_DEFINITION.length(),
+                                                                  endOfColorDefinitionPosition
+                                                                  - startOfColorDefinitionPosition
+                                                                  - STYLESHEET_COLOR_DEFINITION.length());
+    return currentMessageTextColor;
+}
 
 void FindPatternWidget::sl_onSearchPatternChanged()
 {
-    checkState();
-    tunePercentBox();
-    enableDisableMatchSpin();
+    static QString patterns = "";
+    if(patterns != textPattern->toPlainText()) {
+        patterns = textPattern->toPlainText();
+        showHideMessage(patterns.isEmpty(), UseMultiplePatternsTip);
+        // make patterns sequences uppercased
+        if(!isUppercased(patterns)) {
+            foreach(QString pattern, getPatternsFromTextPatternField()) {
+                if(!isUppercased(pattern))
+                    patterns.replace(pattern, pattern.toUpper());
+            }
 
-    // Show a warning if the pattern alphabet doesn't match,
-    // but do not block the "Search" button
-    verifyPatternAlphabet();
+            QTextCursor cursorInTextEdit = textPattern->textCursor();
+            int cursorPosition = cursorInTextEdit.position();
+
+            textPattern->setPlainText(patterns);
+
+            cursorInTextEdit.setPosition(cursorPosition);
+            textPattern->setTextCursor(cursorInTextEdit);
+        }
+        
+        checkState();
+        tunePercentBox();
+        enableDisableMatchSpin();
+
+        // Show a warning if the pattern alphabet doesn't match,
+        // but do not block the "Search" button
+        verifyPatternAlphabet();
+    }
 }
 
+bool FindPatternWidget::isUppercased(const QString &input)
+{
+    foreach(QChar character, input) {
+        if(!character.isUpper())
+            return false;
+    }
+    return true;
+}
 
 void FindPatternWidget::setRegionToWholeSequence()
 {
@@ -579,10 +663,10 @@ void FindPatternWidget::verifyPatternAlphabet()
     bool alphabetIsOk = checkAlphabet(patterns);
 
     if (!alphabetIsOk) {
-        showHideErrorMessage(true, PatternAlphabetDoNotMatch);
+        showHideMessage(true, PatternAlphabetDoNotMatch);
     }
     else {
-        showHideErrorMessage(false, PatternAlphabetDoNotMatch);
+        showHideMessage(false, PatternAlphabetDoNotMatch);
     }
 }
 
@@ -622,17 +706,17 @@ void FindPatternWidget::checkState()
         if (!regionOk) {
             btnSearch->setDisabled(true);
             highlightBackground(textPattern);
-            showHideErrorMessage(true, PatternIsTooLong);
+            showHideMessage(true, PatternIsTooLong);
             return;
         }
         else {
             doNotHighlightBackground(textPattern);
-            showHideErrorMessage(false, PatternIsTooLong);
+            showHideMessage(false, PatternIsTooLong);
         }
     }
 
-    showHideErrorMessage(false, PatternsWithBadRegionInFile);
-    showHideErrorMessage(false, PatternsWithBadAlphabetInFile);
+    showHideMessage(false, PatternsWithBadRegionInFile);
+    showHideMessage(false, PatternsWithBadAlphabetInFile);
     // Otherwise enable the button
     btnSearch->setDisabled(false);
 }
@@ -703,7 +787,6 @@ void FindPatternWidget::tunePercentBox()
     spinMatch->setValue(newValue);
 }
 
-
 void FindPatternWidget::sl_onTabInPatternFieldPressed()
 {
     if (btnSearch->isEnabled()) {
@@ -724,17 +807,15 @@ void FindPatternWidget::sl_onEnterInPatternFieldPressed()
     }
 }
 
-
 void FindPatternWidget::sl_onSearchClicked()
 {
     SAFE_POINT(!textPattern->toPlainText().isEmpty() || loadFromFileGroupBox->isChecked(), "Internal error: can't search for an empty string!",);
     
-    if (loadFromFileGroupBox->isChecked()){
-
+    if(loadFromFileGroupBox->isChecked()) {
         LoadPatternsFileTask* loadTask = new LoadPatternsFileTask(filePathLineEdit->text());
         connect(loadTask, SIGNAL(si_stateChanged()), SLOT(sl_loadPatternTaskStateChanged()));
         AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
-    }else{
+    } else {
         foreach(QString pattern, getPatternsFromTextPatternField()) {
             initFindPatternTask(pattern);
             updateAnnotationsWidget();
@@ -744,17 +825,10 @@ void FindPatternWidget::sl_onSearchClicked()
 
 QStringList FindPatternWidget::getPatternsFromTextPatternField() const
 {
-    QString inputText = textPattern->toPlainText().toLocal8Bit().toUpper();
-    QStringList result;
+    QString inputText = textPattern->toPlainText().toLocal8Bit();
+    QStringList result = FastaFormat::getSequencesFromUserInput(inputText);
 
-    if(inputText.contains(FASTA_HEADER_START_SYMBOL)) {
-        result = inputText.split(FASTA_HEADER_START_SYMBOL, QString::SkipEmptyParts);
-        for(QStringList::Iterator i = result.begin(); i != result.end(); i++) {
-            QStringList patternWithName = (*i).split(QRegExp("\\s+"), QString::SkipEmptyParts);
-            (*i) = patternWithName.last();
-        }
-    }
-    else
+    if(result.isEmpty())
         result = inputText.split(QRegExp("\\s+"), QString::SkipEmptyParts);
 
     return result;
@@ -778,16 +852,19 @@ void FindPatternWidget::updateAnnotationsWidget()
 
 #define FIND_PATTER_LAST_DIR "Find_pattern_last_dir"
 
-void FindPatternWidget::sl_onFileSelectorClicked(){
+void FindPatternWidget::sl_onFileSelectorClicked()
+{
     LastUsedDirHelper lod(FIND_PATTER_LAST_DIR);
-    lod.url = QFileDialog::getOpenFileName(NULL, tr("File with newline-separated patterns"), lod.dir);
 
-    if (!lod.url.isEmpty()) {
+    QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
+    lod.url = QFileDialog::getOpenFileName(dynamic_cast<QWidget *>(AppContext::getMainWindow()),
+                                           tr("Select file to open..."), lod.dir, filter);
+    if (!lod.url.isEmpty())
         filePathLineEdit->setText(lod.url);
-    }
 }
 
-void FindPatternWidget::sl_onFileSelectorToggled( bool on ){
+void FindPatternWidget::sl_onFileSelectorToggled(bool on)
+{
     textPattern->setDisabled(on);
     checkState();
 }
@@ -910,10 +987,10 @@ void FindPatternWidget::sl_loadPatternTaskStateChanged(){
     }
 
     if(!noBadAlphabet){
-        showHideErrorMessage(true, PatternsWithBadAlphabetInFile);
+        showHideMessage(true, PatternsWithBadAlphabetInFile);
     }
     if(!noBadRegion){
-        showHideErrorMessage(true, PatternsWithBadRegionInFile);
+        showHideMessage(true, PatternsWithBadRegionInFile);
     }
     annotModelPrepared = false;
     updateAnnotationsWidget();
@@ -970,32 +1047,74 @@ void FindPatternWidget::sl_onSelectedRegionChanged( LRegionsSelection* thiz, con
 //////////////////////////////////////////////////////////////////////////
 //LoadPatternsFileTask
 LoadPatternsFileTask::LoadPatternsFileTask( const QString& _filePath )
-:Task("Load pattern from file", TaskFlag_None)
-,filePath(_filePath){
+    : Task("Load pattern from file", TaskFlag_None), filePath(_filePath)
+{
     
 }
 
-void LoadPatternsFileTask::run(){
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly)) {
-        setError(QString("Cannot open a file: %1").arg(filePath));
+Document * LoadPatternsFileTask::getDocumentFromFilePath()
+{
+    GUrl fileUrl(filePath);
+    Project *project = AppContext::getProject();
+    Q_ASSERT(project);
+    Document *doc = project->findDocumentByURL(filePath);
+
+    // document already present in the project
+    if (NULL != doc) {
+        return doc;
     }
 
-    QTextStream stream(&file);
-    int fileSize = file.size();
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(filePath);
+    if (formats.isEmpty()) {
+        stateInfo.setError(tr("Detecting format error for file %1").arg(filePath));
+        return NULL;
+    }
 
-    while (!stream.atEnd() && !stateInfo.cancelFlag) {
-        int streamPos = stream.device()->pos();
-        stateInfo.progress = (100*streamPos)/fileSize;
-        QString pattern = stream.readLine();
-        if (!pattern.isEmpty() && 0 != pattern.indexOf(QRegExp("\\s*>"))) {
-            patterns.append(pattern);
+    DocumentFormat *format = formats.first().format;
+    if(NULL != dynamic_cast<RawDNASequenceFormat *>(format)) {
+        isRawSequence = true;
+        return NULL;
+    }
+    Q_ASSERT(format);
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileUrl));
+
+    QVariantMap hints;
+    doc = format->loadDocument(iof, fileUrl, hints, stateInfo);
+    
+    CHECK_OP(stateInfo, NULL);
+
+    return doc;
+}
+
+void LoadPatternsFileTask::run()
+{
+    Document *doc = getDocumentFromFilePath();
+    if(NULL != doc && isRawSequence) {
+        const QList<GObject *> &objectsFromDoc = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+
+        foreach(GObject *object, objectsFromDoc) {
+            U2SequenceObject *sequenceObject = qobject_cast<U2SequenceObject*>(object);
+            assert(NULL != sequenceObject);
+            QByteArray sequence = sequenceObject->getWholeSequenceData();
+            patterns.append(sequence);
         }
+    } else {
+        QFile file(filePath);
+        if (!file.open(QIODevice::ReadOnly))
+            setError(QString("Cannot open a file: %1").arg(filePath));
 
+        QTextStream stream(&file);
+        int fileSize = file.size();
+
+        while(!stream.atEnd() && !stateInfo.cancelFlag) {
+            int streamPos = stream.device()->pos();
+            stateInfo.progress = 100 * streamPos / fileSize;
+            QString pattern = stream.readLine();
+            if (!pattern.isEmpty() && !patterns.contains(pattern))
+                patterns.append(pattern);
+        }
+        file.close();
     }
-
-
-    file.close();
 }
 
 } // namespace

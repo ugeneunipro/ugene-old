@@ -50,11 +50,12 @@ enum RegionSelectionIndex {
     RegionSelectionIndex_CurrentSelectedRegion
 };
 
-enum ErrorMessageFlag {
+enum MessageFlag {
     PatternIsTooLong,
     PatternAlphabetDoNotMatch,
     PatternsWithBadAlphabetInFile,
-    PatternsWithBadRegionInFile
+    PatternsWithBadRegionInFile,
+    UseMultiplePatternsTip
 };
 
 
@@ -69,6 +70,7 @@ public:
     FindPatternEventFilter(QObject* parent);
 
 signals:
+    void si_enterPressed();
     void si_tabPressed();
 
 protected:
@@ -78,14 +80,16 @@ protected:
 class LoadPatternsFileTask: public Task{
     Q_OBJECT
 public:
-    LoadPatternsFileTask(const QString& _filePath);
+    LoadPatternsFileTask(const QString &_filePath);
     QList<QString> getPatterns(){return patterns;}
     void run();
 
 private:
+    Document *getDocumentFromFilePath();
+
     QString filePath;
     QList<QString> patterns;
-
+    bool isRawSequence;
 };
 
 
@@ -165,7 +169,7 @@ private:
     void updateAnnotationsWidget();
 
     /** Allows showing of several error messages. */
-    void showHideErrorMessage(bool show, ErrorMessageFlag errorMessageFlag);
+    void showHideMessage(bool show, MessageFlag messageFlag);
 
     void verifyPatternAlphabet();
     bool checkAlphabet(const QString& pattern);
@@ -177,8 +181,14 @@ private:
     void initFindPatternTask(const QString& pattern);
 
     /** Checks if there are several patterns in textPattern which are separated by new line symbol,
-    parse them out and returns */
+    parse them out and returns. */
     QStringList getPatternsFromTextPatternField() const;
+
+    /** Checks whether the input string is uppercased or not. */
+    static bool isUppercased(const QString &input);
+
+    void changeColorOfMessageText(const QString &colorName);
+    QString currentColorOfMessageText() const;
 
     AnnotatedDNAView* annotatedDnaView;
     CreateAnnotationWidgetController* annotController;
@@ -189,7 +199,7 @@ private:
     bool regionIsCorrect;
     int selectedAlgorithm;
 
-    QList<ErrorMessageFlag> errorFlags;
+    QList<MessageFlag> messageFlags;
 
     /** Widgets in the Algorithm group */
     QHBoxLayout* layoutMismatch;
