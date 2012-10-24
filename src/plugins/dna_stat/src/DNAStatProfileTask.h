@@ -46,7 +46,7 @@ private:
     QVector<qint64>         contentCounter;
     //TODO: optimize
     QMap<QByteArray, int>   diNuclCounter;
-    int nA, nT, nC, nG;
+    qint64 nA, nT, nC, nG;
     QString resultText;
     // static tables
     static QMap<char,double> pMWMap; // protein molecular weight

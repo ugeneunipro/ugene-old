@@ -129,7 +129,7 @@ void DNAStatProfileTask::run(){
     DNAAlphabet* al = dnaObj->getAlphabet();
     if (al->isNucleic()) {
 
-        float gcContent = 100.0 * (nG + nC) / (float) seqLen;
+        double gcContent = 100.0 * (nG + nC) / (double) seqLen;
         resultText += "<tr><td><b>GC content:</b></td><td>" + QString("%1 %").arg(gcContent, 0, 'f', 2) + "</td></tr>\n";
 
         // Calculating molar weight
@@ -137,20 +137,20 @@ void DNAStatProfileTask::run(){
         bool isRna = al->getId() == BaseDNAAlphabetIds::NUCL_RNA_DEFAULT() ||
             al->getId() == BaseDNAAlphabetIds::NUCL_RNA_EXTENDED();
 
-        float molarWeight = 0;
+        double molarWeight = 0;
         if (isRna) {
             molarWeight = nA * 329.21 + nT * 306.17 + nC * 305.18 + nG * 345.21 + 159.0;
         } else {
             molarWeight = nA * 313.21 + nT * 304.2 + nC * 289.18 + nG * 329.21 + 17.04;
         }
 
-        int molarAbsCoef = nA*15400 + nT*8800 + nC*7300 + nG*11700;
+        qint64 molarAbsCoef = nA*15400 + nT*8800 + nC*7300 + nG*11700;
 
-        float meltingTm = 0;
+        double meltingTm = 0;
         if (seqLen < 15) {
             meltingTm = (nA+nT) * 2 + (nG + nC) * 4;
         } else {
-            meltingTm = 64.9 + 41*(nG + nC-16.4)/(float)(nA+nT+nG+nC);
+            meltingTm = 64.9 + 41*(nG + nC-16.4)/(double)(nA+nT+nG+nC);
         }
 
         resultText += "<tr><td><b>Molar Weight:</b></td><td>" + QString("%1 Da").arg(molarWeight, 0, 'f', 2) + "</td></tr>\n";
@@ -167,7 +167,7 @@ void DNAStatProfileTask::run(){
         
         static const double MWH2O = 18.0;
         double mw = 0;
-        for (int i = 0; i < seqLen; ++i ) {
+        for (qint64 i = 0; i < seqLen; ++i ) {
             mw += pMWMap.value( seq.at(i) );
         }
         mw = mw - (seqLen - 1)*MWH2O;
@@ -198,7 +198,7 @@ void DNAStatProfileTask::run(){
         if (cnt == 0) {
             continue;
         }
-        float percentage = cnt/(float)seqLen * 100;
+        double percentage = cnt/(double)seqLen * 100;
         resultText+=QString("<tr><td><b>%1</b></td><td>%2</td><td>%3</td></tr>").arg(symbol).arg(QString::number(cnt)).arg(QString::number(percentage, 'g', 4));
     }
     resultText+= "</table>\n";
@@ -211,8 +211,8 @@ void DNAStatProfileTask::run(){
         QMap<QByteArray, int>::const_iterator it(diNuclCounter.begin());
         for(;it != diNuclCounter.end(); it++){
             const QByteArray diNucl = it.key();
-            const int cnt = it.value();
-            float percentage = cnt/(float)seqLen * 100;
+            const qint64 cnt = it.value();
+            double percentage = cnt/(double)seqLen * 100;
             resultText+=QString("<tr><td><b>%1</b></td><td>%2</td><td>%3</td></tr>").arg(QString(diNucl)).arg(QString::number(cnt)).arg(QString::number(percentage, 'g', 4));
         }
         resultText+= "</table>\n";
@@ -255,7 +255,7 @@ void DNAStatProfileTask::computeStats(){
             }
             nucPair[0] = nucPair[1];
             nucPair[1] = c;
-            if (!nucPair.contains("-") && !nucPair.contains("N")) {
+            if (nucPair.contains("-") || nucPair.contains("N")) {
                 continue;
             }
             if (diNuclCounter.contains(nucPair)){
@@ -272,7 +272,7 @@ void DNAStatProfileTask::computeStats(){
 double DNAStatProfileTask::calcPi( const QByteArray& seq )
 {
     QMap<char,int> countMap;
-    for (int i = 0; i < seqLen; ++i) {
+    for (qint64 i = 0; i < seqLen; ++i) {
         char r = seq.at(i);
         if ( pKaMap.contains( r ) ) {
             countMap[r]++;
