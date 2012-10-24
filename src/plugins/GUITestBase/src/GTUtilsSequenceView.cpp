@@ -42,6 +42,8 @@
 #include <QtGui/QPlainTextEdit>
 #include <QtGui/QPushButton>
 
+#include <U2View/ADVSingleSequenceWidget.h>
+
 namespace U2 {
 
 #define GT_CLASS_NAME "GTSequenceReader"
@@ -77,17 +79,8 @@ void GTUtilsSequenceView::getSequenceAsString(U2OpStatus &os, QString &sequence)
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK(mdiWindow != NULL, "MDI window == NULL");
 
-    QPoint posToActiveWindow = mdiWindow->mapToGlobal(mdiWindow->rect().center());
-    GTMouseDriver::moveTo(os, posToActiveWindow);
-
-    while (!QString(qApp->widgetAt(posToActiveWindow)->metaObject()->className()).contains("U2::PanViewRenderArea")) {
-        posToActiveWindow.setY(posToActiveWindow.y() - 20);
-        GTMouseDriver::moveTo(os, posToActiveWindow);
-        GTGlobals::sleep(100);
-    }
-
-    GTMouseDriver::moveTo(os, posToActiveWindow);
-    GTMouseDriver::click(os);
+    QWidget *mdiSequenceWidget = mdiWindow->findChild<ADVSingleSequenceWidget*>();
+    GTWidget::click(os, mdiSequenceWidget);
 
     Runnable *filler = new selectSequenceRegionDialogFiller(os);
     GTUtilsDialog::waitForDialog(os, filler);
