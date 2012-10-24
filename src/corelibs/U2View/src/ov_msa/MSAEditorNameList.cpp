@@ -228,15 +228,26 @@ void MSAEditorNameList::paintEvent(QPaintEvent*) {
 
 void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
     int key = e->key();
+    static int newSeq = 0;
     switch(key) {
          case Qt::Key_Delete:
              ui->seqArea->deleteCurrentSelection();    
              break;
         case Qt::Key_Up:
-            ui->seqArea->moveSelection(0, -1);    
+            if(Qt::ShiftModifier == e->modifiers()) {
+                if (ui->seqArea->isSeqInRange(--newSeq) ) 
+                    updateSelection(newSeq);
+            }
+            else
+                ui->seqArea->moveSelection(0, -1);
             break;
         case Qt::Key_Down:
-            ui->seqArea->moveSelection(0,  1);    
+            if(Qt::ShiftModifier == e->modifiers()) {
+                if (ui->seqArea->isSeqInRange(++newSeq) ) 
+                    updateSelection(newSeq);
+            }
+            else
+                ui->seqArea->moveSelection(0, 1);
             break;
         case Qt::Key_Left:
             nhBar->triggerAction(QAbstractSlider::SliderSingleStepSub);
@@ -276,12 +287,22 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
                 ui->seqArea->cancelSelection();
             }
             break;
+        case Qt::Key_Shift:
+            {
+                newSeq = curSeq = ui->seqArea->getSelectedRows().startPos;
+            }
+
   }
     QWidget::keyPressEvent(e);
 }
 
 void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
     if ((e->button() == Qt::LeftButton)){
+        if(Qt::ShiftModifier == e->modifiers()) {
+            QWidget::mousePressEvent(e);
+            scribbling = true;
+            return;
+        }
         origin = e->pos();
         curSeq = ui->seqArea->getSequenceNumByY(e->y());
         if (ui->isCollapsibleMode()) {

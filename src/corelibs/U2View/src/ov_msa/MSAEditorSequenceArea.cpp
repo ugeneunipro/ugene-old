@@ -764,6 +764,11 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
     }
 
     if ((e->button() == Qt::LeftButton)){
+        if(Qt::ShiftModifier == e->modifiers()) {
+            QWidget::mousePressEvent(e);
+            scribbling = true;
+            return;
+        }
         origin = e->pos();
         QPoint p = coordToPos(e->pos());
         if(isInRange(p)) {
@@ -791,27 +796,82 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
     int key = e->key();
     bool shift = e->modifiers().testFlag(Qt::ShiftModifier);
     bool ctrl = e->modifiers().testFlag(Qt::ControlModifier);
+    static QPoint selectionStart(0, 0);
+    static QPoint selectionEnd(0, 0);
     if (ctrl && (key == Qt::Key_Left || key == Qt::Key_Right || key == Qt::Key_Up || key == Qt::Key_Down)) {
         //remap to page_up/page_down
         shift = key == Qt::Key_Up || key == Qt::Key_Down;
         key =  (key == Qt::Key_Up || key == Qt::Key_Left) ? Qt::Key_PageUp : Qt::Key_PageDown;
     }
     //part of these keys are assigned to actions -> so them never passed to keyPressEvent (action handling has higher priority)
+    int endX, endY;
     switch(key) {
         case Qt::Key_Escape:
              cancelSelection();
              break;
         case Qt::Key_Left:
-            moveSelection(-1,0);
+            if(Qt::ShiftModifier != e->modifiers()) {
+                moveSelection(-1,0);
+                break;
+            }
+            selectionEnd.setX(selectionEnd.x() - 1);
+            endX = selectionEnd.x();
+            if (isPosInRange(endX) ) {
+                if (endX != -1) {
+                    int firstColumn = qMin(selectionStart.x(),endX);
+                    int width = qAbs(endX - selectionStart.x()) + 1;
+                    MSAEditorSelection selection(firstColumn, selection.y(), width, selection.height());
+                    setSelection(selection);
+                }
+            }
             break;
         case Qt::Key_Right:
-            moveSelection(1,0);
+            if(Qt::ShiftModifier != e->modifiers()) {
+                moveSelection(1,0);
+                break;
+            }
+            selectionEnd.setX(selectionEnd.x() + 1);
+            endX = selectionEnd.x();
+            if (isPosInRange(endX) ) {
+                if (endX != -1) {
+                    int firstColumn = qMin(selectionStart.x(),endX);
+                    int width = qAbs(endX - selectionStart.x()) + 1;
+                    MSAEditorSelection selection(firstColumn, selection.y(), width, selection.height());
+                    setSelection(selection);
+                }
+            }
             break;
         case Qt::Key_Up:
-            moveSelection(0,-1);
+            if(Qt::ShiftModifier != e->modifiers()) {
+                moveSelection(0,-1);
+                break;
+            }
+            selectionEnd.setY(selectionEnd.y() - 1);
+            endY = selectionEnd.y();
+            if (isSeqInRange(endY) ) {
+                if (endY != -1) {
+                    int startSeq = qMin(selectionStart.y(),endY);
+                    int height = qAbs(endY - selectionStart.y()) + 1;
+                    MSAEditorSelection selection(selection.x(), startSeq, selection.width(), height );
+                    setSelection(selection);
+                }
+            }
             break;
         case Qt::Key_Down:
-            moveSelection(0,1);
+            if(Qt::ShiftModifier != e->modifiers()) {
+                moveSelection(0,1);
+                break;
+            }
+            selectionEnd.setY(selectionEnd.y() + 1);
+            endY = selectionEnd.y();
+            if (isSeqInRange(endY) ) {
+                if (endY != -1) {
+                    int startSeq = qMin(selectionStart.y(),endY);
+                    int height = qAbs(endY - selectionStart.y()) + 1;
+                    MSAEditorSelection selection(selection.x(), startSeq, selection.width(), height );
+                    setSelection(selection);
+                }
+            }
             break;
         case Qt::Key_Home:
             cancelSelection();
@@ -888,6 +948,10 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             break;
         case Qt::Key_Insert:
             fillSelectionWithGaps();
+            break;
+        case Qt::Key_Shift:
+            selectionStart = selection.topLeft();
+            selectionEnd = selection.topLeft();
             break;
     }
     QWidget::keyPressEvent(e);
