@@ -73,6 +73,7 @@ void Schema::reset() {
         procs.clear();
         delete graph;
         graph = NULL;
+        qDeleteAll(wizards);
     }
 }
 
@@ -420,6 +421,15 @@ void Schema::replacePortAliases(const PortAlias &subPortAlias) {
         newPortAliases.append(origPortAlias);
     }
     this->portAliases = newPortAliases;
+}
+
+const QList<Wizard*> & Schema::getWizards() const {
+    return wizards;
+}
+
+void Schema::setWizards(const QList<Wizard*> &value) {
+    qDeleteAll(wizards);
+    wizards = value;
 }
 
 /**************************

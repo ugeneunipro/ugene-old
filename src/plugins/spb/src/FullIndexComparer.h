@@ -30,9 +30,7 @@ public:
     void initialize();
     bool isInitialized() const;
 
-    void findSimilars(const QByteArray &seq);
     bool hasSimilars(const QByteArray &seq);
-    void removeFoundedSimilars();
     void removeSimilars(int seqNum);
 
     SequencesStorage & getSequences();
@@ -44,6 +42,9 @@ private:
 
     int getWindowsSizeByLength(quint64 len);
     int getMatchCountByLength(quint64 len);
+
+    void findSimilars(const QByteArray &seq);
+    void removeFoundedSimilars();
 
 private:
     bool initialized;

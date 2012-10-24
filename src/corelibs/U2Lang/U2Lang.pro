@@ -9,9 +9,6 @@ HEADERS += src/library/BaseActorCategories.h \
            src/library/LastReadyScheduler.h \
            src/library/LocalDomain.h \
            src/library/ScriptLibrary.h \
-           src/model/url_attribute/Dataset.h \
-           src/model/url_attribute/URLAttribute.h \
-           src/model/url_attribute/URLContainer.h \
            src/model/ActorModel.h \
            src/model/ActorPrototypeRegistry.h \
            src/model/Aliasing.h \
@@ -59,7 +56,14 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/WorkflowSettings.h \
            src/support/WorkflowUtils.h \
            src/tasks/ReadDocumentTaskFactory.h \
-           src/tasks/WorkflowTasksRegistry.h
+           src/tasks/WorkflowTasksRegistry.h \
+           src/model/url_attribute/Dataset.h \
+           src/model/url_attribute/URLAttribute.h \
+           src/model/url_attribute/URLContainer.h \
+           src/model/wizard/Wizard.h \
+           src/model/wizard/WizardPage.h \
+           src/model/wizard/WizardWidget.h \
+           src/support/wizard/HRWizardSerializer.h
 SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BaseAttributes.cpp \
            src/library/BasePorts.cpp \
@@ -68,15 +72,13 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/library/LastReadyScheduler.cpp \
            src/library/LocalDomain.cpp \
            src/library/ScriptLibrary.cpp \
-           src/model/url_attribute/Dataset.cpp \
-           src/model/url_attribute/URLAttribute.cpp \
-           src/model/url_attribute/URLContainer.cpp \
            src/model/ActorModel.cpp \
            src/model/ActorPrototypeRegistry.cpp \
            src/model/Aliasing.cpp \
            src/model/Attribute.cpp \
            src/model/AttributeRelation.cpp \
            src/model/Configuration.cpp \
+           src/model/ConfigurationEditor.cpp \
            src/model/Datatype.cpp \
            src/model/DbiDataHandler.cpp \
            src/model/DbiDataStorage.cpp \
@@ -113,8 +115,14 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/WorkflowSettings.cpp \
            src/support/WorkflowUtils.cpp \
            src/tasks/ReadDocumentTaskFactory.cpp \
-           src/tasks/WorkflowTasksRegistry.cpp
-
+           src/tasks/WorkflowTasksRegistry.cpp \
+           src/model/url_attribute/Dataset.cpp \
+           src/model/url_attribute/URLAttribute.cpp \
+           src/model/url_attribute/URLContainer.cpp \
+           src/model/wizard/Wizard.cpp \
+           src/model/wizard/WizardPage.cpp \
+           src/model/wizard/WizardWidget.cpp \
+           src/support/wizard/HRWizardSerializer.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

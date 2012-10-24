@@ -36,15 +36,19 @@ class U2DESIGNER_EXPORT DatasetsController : public QObject {
     Q_OBJECT
 public:
     DatasetsController(URLAttribute *attr);
+    DatasetsController(QList<Dataset> &sets);
     ~DatasetsController();
 
     QWidget * getWigdet();
+    QList<Dataset> & getDatasets();
 
 signals:
     void si_attributeChanged();
 
 private:
     URLAttribute *attr;
+    QList<Dataset> &sets;
+
     QMap<UrlItem*, URLContainer*> urlMap;
     QMap<UrlItem*, Dataset*> itemSetMap;
     QMap<DatasetWidget*, Dataset*> setMap;
@@ -63,6 +67,7 @@ private slots:
     void sl_addDataset(const QString &name, U2OpStatus &os);
 
 private:
+    void initialize();
     DatasetWidget * createDatasetWidget(Dataset &dSet);
     void createItemWidget(URLContainer *url, DatasetWidget *inDataWidget);
     void checkName(const QString &name, U2OpStatus &os);

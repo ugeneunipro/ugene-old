@@ -72,7 +72,7 @@ private:
 }; // AttributeScript
 
 /**
- * Existing types of attibutes
+ * Existing types of attributes
  */
 enum AttributeGroup {
     COMMON_GROUP,

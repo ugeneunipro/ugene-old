@@ -24,6 +24,7 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/Log.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -35,6 +36,7 @@
 #include <U2Lang/Dataset.h>
 #include <U2Lang/ExternalToolCfg.h>
 #include <U2Lang/GrouperSlotAttribute.h>
+#include <U2Lang/HRWizardSerializer.h>
 #include <U2Lang/IncludedProtoFactory.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/Marker.h>
@@ -44,7 +46,6 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/WorkflowUtils.h>
-
 
 #include "HRSchemaSerializer.h"
 
@@ -283,37 +284,66 @@ static bool isBlockLine(const QString & str) {
     }
 }
 
-void HRSchemaSerializer::Tokenizer::tokenize(const QString & d) {
+static const int WIZARD_PAGE_DEPTH = 3;
+static const int ELEMENT_DEPTH = 1;
+void HRSchemaSerializer::Tokenizer::tokenizeSchema(const QString & d) {
     depth = 0;
     QString data = d;
     QTextStream stream(&data);
     bool isElemDef = false;
     bool elemDefHeader = false;
-    while(1) {
+    bool pageDef = false;
+    bool pageDefHeader = false;
+    do {
         QString line = stream.readLine().trimmed();
         if(line.isEmpty()) {
-            if(stream.atEnd()) {
-                break;
-            }
             continue;
         }
         if( line.startsWith(SERVICE_SYM) ) {
-            tokens.append(line);
+            appendToken(line);
             continue;
         }
-        if(depth == 1) {
+        if (ELEMENT_DEPTH == depth) {
             isElemDef = !line.startsWith(META_START) && !line.startsWith(DOT_ITERATION_START) && !line.contains(DATAFLOW_SIGN) 
                 && !line.startsWith(INPUT_START) && !line.startsWith(OUTPUT_START) && !line.startsWith(ATTRIBUTES_START);
             elemDefHeader = true;
         } else {
             elemDefHeader = false;
         }
-        if(isElemDef && !elemDefHeader && isBlockLine(line)) {
+        if (WIZARD_PAGE_DEPTH == depth) {
+            pageDef = line.startsWith(HRWizardParser::PAGE);
+            pageDefHeader = true;
+        } else {
+            pageDefHeader = false;
+        }
+        if(isBlockLine(line) &&
+            ((pageDef && !pageDefHeader) || (isElemDef && !elemDefHeader))) {
             tokenizeBlock(line, stream);
             continue;
         }
         tokenizeLine(line, stream);
-    }
+    } while (!stream.atEnd());
+}
+
+void HRSchemaSerializer::Tokenizer::tokenize(const QString &d, int unparseableBlockDepth) {
+    depth = 0;
+    QString data = d;
+    QTextStream stream(&data);
+    do {
+        QString line = stream.readLine().trimmed();
+        if (line.isEmpty()) {
+            continue;
+        }
+        if (line.startsWith(SERVICE_SYM)) {
+            appendToken(line);
+            continue;
+        }
+        if (isBlockLine(line) && depth >= unparseableBlockDepth) {
+            tokenizeBlock(line, stream);
+        } else {
+            tokenizeLine(line, stream);
+        }
+    } while (!stream.atEnd());
 }
 
 static void skipDelimiters(QTextStream & s) {
@@ -507,7 +537,7 @@ void HRSchemaSerializer::FlowGraph::minimize() {
 struct WorkflowSchemaReaderData {
     WorkflowSchemaReaderData(const QString & bytes, Schema * s, Metadata * m, QMap<ActorId, ActorId>* im) 
     : schema(s), meta(m), idMap(im) {
-        tokenizer.tokenize(bytes);
+        tokenizer.tokenizeSchema(bytes);
     }
     
     HRSchemaSerializer::Tokenizer tokenizer;
@@ -518,6 +548,7 @@ struct WorkflowSchemaReaderData {
     QList<QPair<Port*, Port*> > links;
     QMap<ActorId, ActorId> * idMap;
     QList<PortAlias> portAliases;
+    QList<Wizard*> wizards;
 }; // WorkflowSchemaReaderData
 
 bool HRSchemaSerializer::isHeaderLine(const QString &line) {
@@ -720,7 +751,7 @@ void HRSchemaSerializer::parseUrlAttribute(Actor *proc, QList<StringPair> &block
     }
     foreach (const QString &block, setBlocks) {
         Tokenizer tokenizer;
-        tokenizer.tokenize(block);
+        tokenizer.tokenizeSchema(block);
 
         QString name;
         QList<URLContainer*> urls;
@@ -915,7 +946,7 @@ void HRSchemaSerializer::parseGrouperOutSlots(Actor *proc, const QStringList &ou
     QStringList names;
 
     foreach (const QString &slotDef, outSlotDefs) {
-        tokenizer.tokenize(slotDef);
+        tokenizer.tokenizeSchema(slotDef);
         QString name;
         QString inSlot;
         std::auto_ptr<GrouperSlotAction> action(NULL);
@@ -1511,6 +1542,14 @@ static void parseMeta(WorkflowSchemaReaderData & data) {
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             HRSchemaSerializer::parseAliasesHelp(data.tokenizer, data.actorMap.values());
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        } else if (HRWizardParser::WIZARD == tok) {
+            data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+            HRWizardParser ws(data.tokenizer, data.actorMap);
+            U2OpStatusImpl os;
+            Wizard *w = ws.parseWizard(os);
+            CHECK_OP_EXT(os, throw HRSchemaSerializer::ReadFailed(os.getError()), );
+            data.wizards << w;
+            data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
         } else {
             throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::UNDEFINED_META_BLOCK.arg(tok));
         }
@@ -1633,6 +1672,7 @@ QString HRSchemaSerializer::string2Schema(const QString & bytes, Schema * schema
             setFlows(data);
             addEmptyValsToBindings(data.actorMap.values());
             data.schema->setPortAliases(data.portAliases);
+            data.schema->setWizards(data.wizards);
         }
     } catch( const HRSchemaSerializer::ReadFailed & ex ) {
         return ex.what;
@@ -2143,6 +2183,10 @@ static QString metaData(const Schema & schema, const HRSchemaSerializer::NamesMa
     }
 
     res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::VISUAL_START, HRSchemaSerializer::NO_NAME, visualData(schema, nmap), 2);
+    foreach (Wizard *w, schema.getWizards()) {
+        HRWizardSerializer ws;
+        res += ws.serialize(w, 2);
+    }
     return res;
 }
 

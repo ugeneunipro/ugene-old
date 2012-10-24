@@ -32,6 +32,8 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 
+#include "PropertyWidget.h"
+
 #include "DelegateEditors.h"
 
 namespace U2 {
@@ -39,31 +41,35 @@ namespace U2 {
 /********************************
  * SpinBoxDelegate
  ********************************/
-QWidget *SpinBoxDelegate::createEditor(QWidget *parent,
+PropertyWidget * SpinBoxDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+    return new SpinBoxWidget(spinProperties, parent);
+}
+
+QWidget * SpinBoxDelegate::createEditor(QWidget *parent,
     const QStyleOptionViewItem &/* option */,
     const QModelIndex &/* index */) const
 {
-    currentEditor = new QSpinBox(parent);
-    connect(currentEditor, SIGNAL(valueChanged(int)), SIGNAL(si_valueChanged(int)));
-    WorkflowUtils::setQObjectProperties(*currentEditor, spinProperties);
+    SpinBoxWidget *editor = new SpinBoxWidget(spinProperties, parent);
+    connect(editor, SIGNAL(valueChanged(int)), SIGNAL(si_valueChanged(int)));
 
-    return currentEditor;
+    currentEditor = editor;
+
+    return editor;
 }
 
 void SpinBoxDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
 {
     int value = index.model()->data(index, ConfigurationEditor::ItemValueRole).toInt();
-    QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
+    SpinBoxWidget *spinBox = static_cast<SpinBoxWidget*>(editor);
     spinBox->setValue(value);
 }
 
 void SpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
-    QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
-    spinBox->interpretText();
-    int value = spinBox->value();
+    SpinBoxWidget *spinBox = static_cast<SpinBoxWidget*>(editor);
+    int value = spinBox->value().toInt();
     model->setData(index, value, ConfigurationEditor::ItemValueRole);
 }
 
@@ -74,7 +80,7 @@ QVariant SpinBoxDelegate::getDisplayValue( const QVariant& v) const {
     return editor.text();
 }
 
-void SpinBoxDelegate::setEditorProperty(const char* name, const QVariant& val ) {
+void SpinBoxDelegate::setEditorProperty(const char* name, const QVariant& val) {
     spinProperties[name] = val;
     if (!currentEditor.isNull()) {
         currentEditor->setProperty(name, val);
@@ -84,30 +90,30 @@ void SpinBoxDelegate::setEditorProperty(const char* name, const QVariant& val ) 
 /********************************
 * DoubleSpinBoxDelegate
 ********************************/
-QWidget *DoubleSpinBoxDelegate::createEditor(QWidget *parent,
+PropertyWidget * DoubleSpinBoxDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+    return new DoubleSpinBoxWidget(spinProperties, parent);
+}
+
+QWidget * DoubleSpinBoxDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &/* option */,
                                        const QModelIndex &/* index */) const
 {
-    QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
-    WorkflowUtils::setQObjectProperties(*editor, spinProperties);
-
-    return editor;
+    return new DoubleSpinBoxWidget(spinProperties, parent);
 }
 
 void DoubleSpinBoxDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
 {
-    double value = index.model()->data(index, ConfigurationEditor::ItemValueRole).toDouble();
-    QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
+    QVariant value = index.model()->data(index, ConfigurationEditor::ItemValueRole);
+    DoubleSpinBoxWidget *spinBox = static_cast<DoubleSpinBoxWidget*>(editor);
     spinBox->setValue(value);
 }
 
 void DoubleSpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
-    QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
-    spinBox->interpretText();
-    double value = spinBox->value();
+    DoubleSpinBoxWidget *spinBox = static_cast<DoubleSpinBoxWidget*>(editor);
+    double value = spinBox->value().toDouble();
     model->setData(index, value, ConfigurationEditor::ItemValueRole);
 }
 
@@ -121,22 +127,18 @@ QVariant DoubleSpinBoxDelegate::getDisplayValue( const QVariant& v) const {
 /********************************
 * ComboBoxDelegate
 ********************************/
+PropertyWidget * ComboBoxDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+    return new ComboBoxWidget(items, parent);
+}
+
 QWidget *ComboBoxDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &/* option */,
                                        const QModelIndex &/* index */) const
 {
-    QComboBox *editor = new QComboBox(parent);
-    //editor->setFrame(false);
-    //editor->setSizePolicy(QSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred));
+    ComboBoxWidget *editor = new ComboBoxWidget(items, parent);
+    connect(editor, SIGNAL(valueChanged(const QString &)),
+        this, SIGNAL(si_valueChanged(const QString &)));
 
-    QMapIterator<QString, QVariant> it(items);
-    while (it.hasNext())
-    {
-        it.next();
-        editor->addItem(it.key(), it.value());
-    }
-    
-    connect( editor, SIGNAL( activated( const QString & ) ), this, SIGNAL( si_valueChanged( const QString & ) ) );
     return editor;
 }
 
@@ -144,17 +146,15 @@ void ComboBoxDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
 {
     QVariant val = index.model()->data(index, ConfigurationEditor::ItemValueRole);
-    QComboBox *box = static_cast<QComboBox*>(editor);
-    int idx = box->findData(val);
-    box->setCurrentIndex(idx);
+    ComboBoxWidget *box = static_cast<ComboBoxWidget*>(editor);
+    box->setValue(val);
 }
 
 void ComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
-    QComboBox *box = static_cast<QComboBox*>(editor);
-    QVariant val = box->itemData(box->currentIndex());
-    model->setData(index, val, ConfigurationEditor::ItemValueRole);
+    ComboBoxWidget *box = static_cast<ComboBoxWidget*>(editor);
+    model->setData(index, box->value(), ConfigurationEditor::ItemValueRole);
 }
 
 QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
@@ -164,200 +164,33 @@ QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
 }
 
 /********************************
-* URLLineEdit
-********************************/
-
-URLLineEdit::URLLineEdit( const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QWidget *parent, const QString &format /*= ""*/ ) : 
-                            QLineEdit(parent), FileFilter(filter), type(type), multi(multi), isPath(isPath), saveFile(saveFile), fileFormat(format){
-                                connect(this, SIGNAL(editingFinished()), this, SLOT(sl_editingFinished()));
-
-}
-
-void URLLineEdit::sl_onBrowse() {
-    this->browse(false);
-}
-
-void URLLineEdit::sl_onBrowseWithAdding() {
-    this->browse(true);
-}
-
-void URLLineEdit::sl_editingFinished(){
-    QString name = text();
-    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
-    if (NULL != format && !name.isEmpty()) {
-        QString newName(name);
-        GUrl url(newName);
-        QString lastSuffix = url.lastFileSuffix();
-        if ("gz" == lastSuffix) {
-            int dotPos = url.getURLString().length() - lastSuffix.length() - 1;
-            if ((dotPos >= 0) && (QChar('.') == url.getURLString()[dotPos])) {
-                newName = url.getURLString().left(dotPos);
-                GUrl tmp(newName);
-                lastSuffix = tmp.lastFileSuffix(); 
-            }
-        }
-        bool foundExt = false;
-        foreach (QString supExt, format->getSupportedDocumentFileExtensions()) {
-            if (lastSuffix == supExt) {
-                foundExt = true;
-                break;
-            }
-        }
-        if (!foundExt) {
-            name = name + "." + format->getSupportedDocumentFileExtensions().first();
-        } else {
-            int dotPos = newName.length() - lastSuffix.length() - 1;
-            if ((dotPos < 0) || (QChar('.') != newName[dotPos])) {
-                name = name + "." + format->getSupportedDocumentFileExtensions().first();
-            }
-        }
-    }
-    setText(name);
-}
-
-void URLLineEdit::browse(bool addFiles) {
-    LastUsedDirHelper lod(type);
-    QString lastDir = lod.dir;
-    if(!text().isEmpty()) {
-        QString curPath(text());
-        int slashPos = curPath.lastIndexOf("/");
-        slashPos = qMax(slashPos, curPath.lastIndexOf("\\"));
-        if (slashPos >= 0) {
-            QDir dir(curPath.left(slashPos + 1));
-            if (dir.exists()) {
-                lastDir = dir.absolutePath();
-            }
-        }
-    }
-
-    QString name;
-    if(isPath || multi){
-        QStringList lst;
-        if (isPath) {
-            QString dir = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
-            lst << dir;
-        } else {
-            lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lastDir, FileFilter);
-        }
-
-        if (addFiles) {
-            name = this->text();
-            if (!lst.isEmpty()) {
-                name += ";";
-            }
-        }
-        name += lst.join(";");
-        if (!lst.isEmpty()) {
-            lod.url = lst.first();
-        }
-    } else {
-        if(saveFile) {
-            lod.url = name = QFileDialog::getSaveFileName(NULL, tr("Select a file"), lastDir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
-            this->checkExtension(name);
-        } else {
-            lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir, FileFilter );
-        }
-    }
-    if (!name.isEmpty()) {
-        if (name.length() > this->maxLength()) {
-            this->setMaxLength(name.length() + this->maxLength());
-        }
-        setText(name);
-    }
-    setFocus();
-}
-
-void URLLineEdit::focusOutEvent ( QFocusEvent * event) {
-    // TODO: fix this low level code. It is made for fixing UGENE-577
-    if (Qt::MouseFocusReason == event->reason()) {
-        QLayout *layout = this->parentWidget()->layout();
-        for (int i=1; i<layout->count(); i++) { //for each QToolButton in the layout
-            QWidget *w = layout->itemAt(i)->widget();
-            if (w->underMouse()) {
-                return;
-            }
-        }
-    }
-    emit si_finished();
-}
-
-void URLLineEdit::checkExtension(QString &name) {
-    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
-    if (NULL != format && !name.isEmpty()) {
-        QString newName(name);
-        GUrl url(newName);
-        QString lastSuffix = url.lastFileSuffix();
-        if ("gz" == lastSuffix) {
-            int dotPos = newName.length() - lastSuffix.length() - 1;
-            if ((dotPos >= 0) && (QChar('.') == newName[dotPos])) {
-                newName = url.getURLString().left(dotPos);
-                GUrl tmp(newName);
-                lastSuffix = tmp.lastFileSuffix(); 
-            }
-        }
-        bool foundExt = false;
-        foreach (QString supExt, format->getSupportedDocumentFileExtensions()) {
-            if (lastSuffix == supExt) {
-                foundExt = true;
-                break;
-            }
-        }
-        if (!foundExt) {
-            name = name + "." + format->getSupportedDocumentFileExtensions().first();
-        } else {
-            int dotPos = newName.length() - lastSuffix.length() - 1;
-            if ((dotPos < 0) || (QChar('.') != newName[dotPos])) {
-                name = name + "." + format->getSupportedDocumentFileExtensions().first();
-            }
-        }
-    }
-}
-
-/********************************
 * URLDelegate
 ********************************/
-QWidget *URLDelegate::createEditor(QWidget *parent,
+URLWidget * URLDelegate::createWidget(QWidget *parent) const {
+    URLLineEdit *documentURLEdit = new URLLineEdit(FileFilter, type, multi, isPath, saveFile, NULL, fileFormat);
+    return new URLWidget(documentURLEdit, parent);
+}
+
+PropertyWidget * URLDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+    return createWidget(parent);
+}
+
+QWidget * URLDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &/* option */,
                                        const QModelIndex &/* index */) const
 {
-    QWidget * widget = new QWidget(parent);
-    URLLineEdit* documentURLEdit = new URLLineEdit(FileFilter, type, multi, isPath, saveFile, widget, fileFormat);
-    documentURLEdit->setObjectName("URLLineEdit");
-    documentURLEdit->setFrame(false);
-    documentURLEdit->setSizePolicy(QSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred));
-    widget->setFocusProxy(documentURLEdit);
-    QToolButton * toolButton = new QToolButton(widget);
-    toolButton->setVisible( showButton );
-    toolButton->setText("...");
-    toolButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred));
-    connect(toolButton, SIGNAL(clicked()), documentURLEdit, SLOT(sl_onBrowse()));
-    
-    QHBoxLayout *layout = new QHBoxLayout(widget);
-    layout->setSpacing(0);
-    layout->setMargin(0);
-    layout->addWidget(documentURLEdit);
-    layout->addWidget(toolButton);
-
-    if (multi) {
-        QToolButton *toolButton = new QToolButton(widget);
-        toolButton->setVisible( showButton && !text.isEmpty() );
-        toolButton->setText(tr("add"));
-        toolButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred));
-        connect(toolButton, SIGNAL(clicked()), documentURLEdit, SLOT(sl_onBrowseWithAdding()));
-        layout->addWidget(toolButton);
-        connect(documentURLEdit, SIGNAL(textChanged(const QString &)), SLOT(sl_textChanged(const QString &)));
-    }
+    URLWidget *widget = createWidget(parent);
 
     currentEditor = widget;
-    connect(documentURLEdit, SIGNAL(si_finished()), SLOT(sl_commit()));
+    connect(widget, SIGNAL(finished()), SLOT(sl_commit()));
     return widget;
 }
 
 void URLDelegate::sl_commit() {
-    URLLineEdit *edit = static_cast<URLLineEdit*>(sender());
+    URLWidget *editor = static_cast<URLWidget*>(sender());
 
-    if(edit->text() != text) {
-        text = edit->text();
+    if(editor->value().toString() != text) {
+        text = editor->value().toString();
         if (currentEditor) {
             emit commitData(currentEditor);
         }
@@ -367,18 +200,16 @@ void URLDelegate::sl_commit() {
 void URLDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
 {
-    QString val = index.model()->data(index, ConfigurationEditor::ItemValueRole).toString();
-    QLineEdit* ed = editor->findChild<QLineEdit*>("URLLineEdit");
-    assert(ed);
-    ed->setText(val);
+    QVariant val = index.model()->data(index, ConfigurationEditor::ItemValueRole);
+    URLWidget *lineEdit = dynamic_cast<URLWidget*>(editor);
+    lineEdit->setValue(val);
 }
 
 void URLDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
-    QLineEdit* ed = editor->findChild<QLineEdit*>("URLLineEdit");
-    assert(ed);
-    QString val = ed->text().replace('\\', '/').trimmed();
+    URLWidget *lineEdit = dynamic_cast<URLWidget*>(editor);
+    QString val = lineEdit->value().toString().replace('\\', '/').trimmed();
     QStringList urls = val.split(";", QString::SkipEmptyParts);
     val = urls.join(";");
     model->setData(index, val, ConfigurationEditor::ItemValueRole);
@@ -388,37 +219,6 @@ void URLDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
             vl.append(s.trimmed());
         }
         model->setData(index, vl, ConfigurationEditor::ItemListValueRole);
-    }
-}
-
-void URLDelegate::sl_showEditorButton( bool show ) {
-    showButton = show;
-}
-
-void URLDelegate::sl_formatChanged(const QString &newFormat) {
-    if (newFormat.isEmpty()) {
-        return;
-    }
-
-    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(newFormat);
-    QString fileFilter;
-    if (NULL != format) {
-        FileFilter = DialogUtils::prepareDocumentsFileFilter(newFormat, true);
-    } else {
-        FileFilter = newFormat + " files (*." + newFormat + ")";
-    }
-    fileFormat = newFormat;
-}
-
-void URLDelegate::sl_textChanged(const QString &text) {
-    if (!multi) {
-        return;
-    }
-    URLLineEdit *documentURLEdit = static_cast<URLLineEdit*>(sender());
-    QLayout *layout = documentURLEdit->parentWidget()->layout();
-
-    if (3 == layout->count()) { // QLineEdit and 2xQToolButton
-        layout->itemAt(2)->widget()->setVisible(showButton && !text.isEmpty());
     }
 }
 
@@ -546,16 +346,8 @@ QVariant AttributeScriptDelegate::getDisplayValue(const QVariant& val) const{
 }
 
 /********************************
- * AttributeScriptDelegate
+ * StringListDelegate
  ********************************/
-//InputPortDataDelegate::InputPortDataDelegate(const QVariantMap& items, QObject *parent ) : ComboBoxDelegate(items, parent) {
-//}
-//
-//InputPortDataDelegate::~InputPortDataDelegate() {
-//}
-
-/* class WCOREAPI_EXPORT ListLineEdit : public QLineEdit */
-
 void StingListEdit::sl_onExpand()
 {
     QDialog editor(0);
@@ -597,58 +389,59 @@ void StingListEdit::focusOutEvent ( QFocusEvent * ) {
     emit si_finished();
 }
 
-/* class ListEditDelegate : public PropertyDelegate */
-
-const QString StringListDelegate::EDITOR("ListLineEdit");
-
-QWidget* StringListDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const {
-    QWidget *widget = new QWidget(parent);
-
-    StingListEdit *edit = new StingListEdit(widget);
-    edit->setObjectName(EDITOR);
+StingListWidget::StingListWidget(QWidget *parent)
+: PropertyWidget(parent)
+{
+    edit = new StingListEdit(this);
     edit->setFrame(false);
-    edit->setSizePolicy(QSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred));
-    widget->setFocusProxy(edit);
+    edit->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    addMainWidget(edit);
 
-    QToolButton *button = new QToolButton(widget);
-    button->setVisible(showButton);
+    QToolButton *button = new QToolButton(this);
     button->setText("...");
-    button->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Preferred));
+    button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     connect(button, SIGNAL(clicked()), edit, SLOT(sl_onExpand()));
+    layout()->addWidget(button);
 
-    QHBoxLayout *layout = new QHBoxLayout(widget);
-    layout->setSpacing(0);
-    layout->setMargin(0);
-    layout->addWidget(edit);
-    layout->addWidget(button);
+    connect(edit, SIGNAL(si_finished()), SIGNAL(finished()));
+}
+
+QVariant StingListWidget::value() {
+    return edit->text();
+}
+
+void StingListWidget::setValue(const QVariant &value) {
+    edit->setText(value.toString());
+}
+
+PropertyWidget * StringListDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+    return new StingListWidget(parent);
+}
+
+QWidget * StringListDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const {
+    StingListWidget *widget = new StingListWidget(parent);
+    connect(widget, SIGNAL(finished()), SLOT(sl_commit()));
 
     currentEditor = widget;
-    connect(edit, SIGNAL(si_finished()), SLOT(sl_commit()));
-
     return widget;
 }
 
 void StringListDelegate::sl_commit() {
-    //sender()->disconnect(this);
     emit commitData(currentEditor);
 }
 
 void StringListDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-    QString val = index.model()->data(index, ConfigurationEditor::ItemValueRole).toString();
-
-    QLineEdit *ed = editor->findChild<QLineEdit*>(EDITOR);
-    assert(ed);
-
-    ed->setText(val);
+    QVariant val = index.model()->data(index, ConfigurationEditor::ItemValueRole);
+    StingListWidget *lineEdit = dynamic_cast<StingListWidget*>(editor);
+    lineEdit->setValue(val);
 }
 
 void StringListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-    QLineEdit *ed = editor->findChild<QLineEdit*>(EDITOR);
-    assert(ed);
+    StingListWidget *lineEdit = dynamic_cast<StingListWidget*>(editor);
     
-    QString val = ed->text();
+    QString val = lineEdit->value().toString();
     model->setData(index, val, ConfigurationEditor::ItemValueRole);
 
     QVariantList vl;
@@ -659,14 +452,9 @@ void StringListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
     model->setData(index, vl, ConfigurationEditor::ItemListValueRole);
 }
 
-void StringListDelegate::sl_showEditorButton(bool show) {
-    showButton = show;
-}
-
 /********************************
  * StringSelectorDelegate
 ********************************/
-
 QWidget *StringSelectorDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const {
     QWidget * editor = new QWidget(parent);
     valueEdit = new QLineEdit(editor);
@@ -694,7 +482,6 @@ QWidget *StringSelectorDelegate::createEditor(QWidget *parent, const QStyleOptio
 }
 
 void StringSelectorDelegate::sl_commit() {
-    //sender()->disconnect(this);
     emit commitData(currentEditor);
 }
 
@@ -727,31 +514,30 @@ void StringSelectorDelegate::setModelData(QWidget *, QAbstractItemModel *model, 
 /********************************
  * CharacterDelegate
  ********************************/
-QWidget *CharacterDelegate::createEditor(QWidget *parent,
+PropertyWidget * CharacterDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+    return new DefaultPropertyWidget(1, parent);
+}
+
+QWidget * CharacterDelegate::createEditor(QWidget *parent,
                                    const QStyleOptionViewItem &/* option */,
                                    const QModelIndex &/* index */) const
 {
-    QLineEdit * lineEdit = new QLineEdit(parent);
-    lineEdit->setMaxLength(1);
-    return lineEdit;
+    return new DefaultPropertyWidget(1, parent);
 }
 
 void CharacterDelegate::setEditorData(QWidget *editor,
                                 const QModelIndex &index) const
 {
-    QString val = index.model()->data(index, ConfigurationEditor::ItemValueRole).toString();
-    QLineEdit * lineEdit = qobject_cast<QLineEdit*>(editor);
-    assert(lineEdit);
-    lineEdit->setText(val);
+    QVariant val = index.model()->data(index, ConfigurationEditor::ItemValueRole);
+    DefaultPropertyWidget *lineEdit = dynamic_cast<DefaultPropertyWidget*>(editor);
+    lineEdit->setValue(val);
 }
 
 void CharacterDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                const QModelIndex &index) const
 {
-    QLineEdit * lineEdit = qobject_cast<QLineEdit*>(editor);
-    assert(lineEdit);
-    QString val = lineEdit->text();
-    model->setData(index, val, ConfigurationEditor::ItemValueRole);
+    DefaultPropertyWidget *lineEdit = dynamic_cast<DefaultPropertyWidget*>(editor);
+    model->setData(index, lineEdit->value().toString(), ConfigurationEditor::ItemValueRole);
 }
 
 }//namespace U2

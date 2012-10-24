@@ -125,8 +125,10 @@ public:
         QString what;
     }; // ReadFailed
     
-    struct U2LANG_EXPORT Tokenizer {
-        void tokenize(const QString & data);
+    class U2LANG_EXPORT Tokenizer {
+    public:
+        void tokenizeSchema(const QString & data);
+        void tokenize(const QString & data, int unparseableBlockDepth = INT_MAX);
         void tokenizeLine(const QString & line, QTextStream & s);
         void tokenizeBlock(const QString & line, QTextStream & s);
         void addToken(const QString & t);
@@ -145,8 +147,9 @@ public:
         QStringList tokens;
         int depth;
     }; // Tokenizer
-    
-    struct U2LANG_EXPORT ParsedPairs {
+
+    class U2LANG_EXPORT ParsedPairs {
+    public:
         ParsedPairs(Tokenizer & tokenizer);
         ParsedPairs() {}
         QMap<QString, QString> equalPairs;
@@ -157,8 +160,9 @@ public:
         
         static QPair<QString, QString> parseOneEqual(Tokenizer & tokenizer);
     }; // ParsedPairs
-    
-    struct U2LANG_EXPORT FlowGraph {
+
+    class U2LANG_EXPORT FlowGraph {
+    public:
         FlowGraph( const QList<QPair<Port*, Port*> >& d );
         bool findPath(Actor * from, Port * to) const;
         void removeDuplicates();

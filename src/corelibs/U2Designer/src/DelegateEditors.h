@@ -22,6 +22,8 @@
 #ifndef _U2_WORKFLOW_URL_H_
 #define _U2_WORKFLOW_URL_H_
 
+#include <U2Designer/URLLineEdit.h>
+
 #include <U2Lang/ConfigurationEditor.h>
 
 #include <QtCore/QModelIndex>
@@ -42,6 +44,8 @@
 #include <QtCore/QCoreApplication>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QTextEdit>
+
+#include "PropertyWidget.h"
 
 namespace U2 {
 
@@ -64,43 +68,18 @@ protected:
     
 }; // DelegateEditor
 
-class U2DESIGNER_EXPORT URLLineEdit : public QLineEdit {
-    Q_OBJECT
-public:
-    URLLineEdit(const QString& filter, const QString& type, bool multi, bool isPath, bool saveFile, QWidget *parent, const QString &format = "");
-protected:
-    void focusOutEvent ( QFocusEvent * event );
-private slots:
-    void sl_onBrowse();
-    void sl_onBrowseWithAdding();
-    void sl_editingFinished();
-
-signals:
-    void si_finished();
-    
-private:
-    QString FileFilter;
-    QString type;
-    bool    multi;
-    bool    isPath;
-    bool    saveFile;
-    QString fileFormat;
-
-    void browse(bool addFiles = false);
-    void checkExtension(QString &name);
-};
-
 class U2DESIGNER_EXPORT URLDelegate : public PropertyDelegate {
     Q_OBJECT
 public:
     URLDelegate(const QString& filter, const QString& type, bool multi = false, bool isPath = false, bool saveFile = true, QObject *parent = 0, const QString &format = "")
-        : PropertyDelegate(parent), FileFilter(filter), type(type), multi(multi), isPath(isPath), showButton( true ), saveFile(saveFile),
+        : PropertyDelegate(parent), FileFilter(filter), type(type), multi(multi), isPath(isPath), saveFile(saveFile),
         currentEditor(NULL), fileFormat(format) {
     }
     virtual ~URLDelegate() {}
 
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
         const QModelIndex &index) const;
+    virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
 
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
     virtual void setModelData(QWidget *editor, QAbstractItemModel *model,
@@ -110,24 +89,21 @@ public:
         return new URLDelegate(FileFilter, type, multi, isPath, saveFile, parent(), fileFormat);
     }
 
-public slots:
-    void sl_showEditorButton( bool show );
+private slots:
     void sl_commit();
-    void sl_formatChanged(const QString &newFormat);
     
 protected:
     QString FileFilter;
     QString type;
     bool    multi;
     bool    isPath;
-    bool    showButton;
     bool    saveFile; // sets when you need only 1 file for reading (is set with multi=false)
     mutable QWidget* currentEditor;
     QString text;
     QString fileFormat;
 
-private slots:
-    void sl_textChanged(const QString &text);
+private:
+    URLWidget * createWidget(QWidget *parent) const;
 };
 
 class U2DESIGNER_EXPORT SpinBoxDelegate : public PropertyDelegate {
@@ -139,6 +115,7 @@ public:
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
         const QModelIndex &index) const;
+    virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
 
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
     void setModelData(QWidget *editor, QAbstractItemModel *model,
@@ -155,7 +132,7 @@ signals:
     void si_valueChanged(int);
 private:
     QVariantMap spinProperties;
-    mutable QPointer<QWidget> currentEditor;
+    mutable QPointer<SpinBoxWidget> currentEditor;
 };
 
 class U2DESIGNER_EXPORT DoubleSpinBoxDelegate : public PropertyDelegate {
@@ -166,6 +143,7 @@ public:
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
           const QModelIndex &index) const;
+    virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
 
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
     void setModelData(QWidget *editor, QAbstractItemModel *model,
@@ -188,6 +166,7 @@ public:
 
       QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
           const QModelIndex &index) const;
+      virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
 
       void setEditorData(QWidget *editor, const QModelIndex &index) const;
       void setModelData(QWidget *editor, QAbstractItemModel *model,
@@ -287,16 +266,30 @@ private slots:
     void sl_onExpand();
 };
 
+class StingListWidget : public PropertyWidget {
+    Q_OBJECT
+public:
+    StingListWidget(QWidget *parent = NULL);
+    virtual QVariant value();
+    virtual void setValue(const QVariant &value);
+
+signals:
+    void finished();
+
+private:
+    StingListEdit *edit;
+};
+
 class U2DESIGNER_EXPORT StringListDelegate : public PropertyDelegate {
     Q_OBJECT
 
 public:
-    StringListDelegate(QObject *parent = 0) : PropertyDelegate(parent), showButton(true) {}
+    StringListDelegate(QObject *parent = 0) : PropertyDelegate(parent) {}
     virtual ~StringListDelegate() {}
 
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                                     const QModelIndex &index) const;
-
+    virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
 
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
@@ -306,12 +299,9 @@ public:
     }
 
 public slots:
-    void sl_showEditorButton(bool show);
     void sl_commit();
 
 private:
-    static const QString EDITOR;
-    bool showButton;
     mutable QWidget *currentEditor;
 };
 
@@ -357,7 +347,8 @@ public:
     CharacterDelegate(QObject *parent = 0) : PropertyDelegate(parent) {}
     virtual ~CharacterDelegate() {}
     
-    virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    virtual QWidget * createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
     virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 

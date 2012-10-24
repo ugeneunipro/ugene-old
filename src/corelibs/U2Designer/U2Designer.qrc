@@ -5,6 +5,7 @@
         <file>images/down.png</file>
         <file>images/exit.png</file>
         <file>images/file.png</file>
+        <file>images/logo.png</file>
         <file>images/up.png</file>
     </qresource>
 </RCC>

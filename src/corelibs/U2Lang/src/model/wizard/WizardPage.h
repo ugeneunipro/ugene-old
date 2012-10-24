@@ -1,0 +1,107 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#ifndef _U2_WIZARDPAGE_H_
+#define _U2_WIZARDPAGE_H_
+
+#include <U2Core/U2OpStatus.h>
+
+#include <U2Lang/WizardWidget.h>
+
+namespace U2 {
+
+class TemplatedPageContent;
+class TemplatedPageVisitor;
+
+class U2LANG_EXPORT WizardPage {
+public:
+    WizardPage(const QString &id, const QString &title);
+    virtual ~WizardPage();
+
+    void setNext(WizardPage *value);
+    WizardPage * getNext() const;
+
+    const QString & getId() const;
+    const QString & getTitle() const;
+    void setContent(TemplatedPageContent *value);
+    TemplatedPageContent * getContent();
+
+private:
+    QString id;
+    WizardPage *next;
+    QString title;
+
+    TemplatedPageContent *content;
+};
+
+class U2LANG_EXPORT TemplatedPageContent {
+public:
+    TemplatedPageContent(const QString &templateId);
+    virtual ~TemplatedPageContent();
+
+    virtual void accept(TemplatedPageVisitor *visitor) = 0;
+
+    const QString & getTemplateId() const;
+
+private:
+    QString templateId;
+};
+
+class PageContentFactory {
+public:
+    static TemplatedPageContent * createContent(const QString &id, U2OpStatus &os);
+};
+
+/**
+ * Default page template consists of two areas (horizontal layout):
+ * logo area (1/3 of the page)and parameters area(2/3).
+ */
+class U2LANG_EXPORT DefaultPageContent : public TemplatedPageContent {
+public:
+    DefaultPageContent();
+    virtual ~DefaultPageContent();
+
+    virtual void accept(TemplatedPageVisitor *visitor);
+
+    void addParamWidget(WizardWidget *widget);
+    void setLogoPath(const QString &path);
+
+    LogoWidget * getLogoArea();
+    WidgetsArea * getParamsArea();
+
+private:
+    LogoWidget *logoArea;
+    WidgetsArea *paramsArea;
+
+public:
+    static const QString ID;
+    static const QString PARAMETERS;
+};
+
+/////////////////////////////////////////////////////
+class U2LANG_EXPORT TemplatedPageVisitor {
+public:
+    virtual void visit(DefaultPageContent *) = 0;
+};
+
+} // U2
+
+#endif // _U2_WIZARDPAGE_H_

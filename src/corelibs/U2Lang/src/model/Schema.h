@@ -24,6 +24,7 @@
 
 #include <U2Lang/Aliasing.h>
 #include <U2Lang/Attribute.h>
+#include <U2Lang/Wizard.h>
 
 #include <QtCore/QPair>
 
@@ -96,6 +97,9 @@ public:
 
     QString getTypeName() const;
     void setTypeName(const QString &typeName);
+
+    const QList<Wizard*> & getWizards() const;
+    void setWizards(const QList<Wizard*> &value);
     
 private:
     // set of actors
@@ -117,6 +121,7 @@ private:
     QList<PortAlias> portAliases;
     // if you include this schema to another schema then here is new type name
     QString includedTypeName;
+    QList<Wizard*> wizards;
 
 private:
     void setAliasedAttributes(Actor *proc, Actor *subProc);

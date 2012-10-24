@@ -22,6 +22,8 @@
 #ifndef _U2_WORKFLOW_CFG_EDITOR_H_
 #define _U2_WORKFLOW_CFG_EDITOR_H_
 
+#include <U2Core/U2OpStatus.h>
+
 #include <U2Lang/Attribute.h>
 
 #include <QtGui/QItemDelegate>
@@ -72,16 +74,37 @@ signals:
 }; // ConfigurationEditor
 
 /**
+ * Abstract class for property widgets: spin box, url line...
+ */
+class U2LANG_EXPORT PropertyWidget : public QWidget {
+public:
+    PropertyWidget(QWidget *parent = NULL);
+    virtual ~PropertyWidget();
+
+    virtual QVariant value() = 0;
+    virtual void setValue(const QVariant &value) = 0;
+
+    /**
+     * Returns the widget that can be registered as a field of wizard pages.
+     * Returns NULL if there is no such widget.
+     */
+    virtual QWidget * getField();
+
+protected:
+    void addMainWidget(QWidget *w);
+};
+
+/**
  * provides display and editing facilities for data items
  * in our case, inheritors will provide this facilities for attributes of configuration
  */
 class U2LANG_EXPORT PropertyDelegate : public QItemDelegate {
 public:
-    PropertyDelegate(QObject * parent = 0) : QItemDelegate(parent) {}
-    virtual ~PropertyDelegate() {}
-    virtual QVariant getDisplayValue(const QVariant& v) const {return v;}
-    virtual PropertyDelegate *clone() {return new PropertyDelegate(parent());}
-    
+    PropertyDelegate(QObject *parent = 0);
+    virtual ~PropertyDelegate();
+    virtual QVariant getDisplayValue(const QVariant &v) const;
+    virtual PropertyDelegate * clone();
+    virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
 }; // PropertyDelegate
 
 }//GB2 namespace

@@ -58,6 +58,7 @@
 #include <U2Designer/GrouperEditor.h>
 #include <U2Designer/DatasetsController.h>
 #include <U2Designer/MarkerEditor.h>
+#include <U2Designer/WizardController.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/GlassView.h>
 #include <U2Gui/MainWindow.h>
@@ -343,6 +344,8 @@ void WorkflowView::createActions() {
     saveAsAction->setIcon(QIcon(":workflow_designer/images/filesaveas.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
 
+    showWizard = new QAction("Show wizard", this);
+    connect(showWizard, SIGNAL(triggered()), SLOT(sl_showWizard()));
 
     loadAction = new QAction(tr("&Load schema"), this);
     loadAction->setIcon(QIcon(":workflow_designer/images/fileopen.png"));
@@ -679,10 +682,6 @@ static void removeUrlLocationParameter( Actor * actor ) {
         delete attr;
         delete actor->getEditor()->removeDelegate( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() );
     }
-    URLDelegate * urlDelegate = qobject_cast<URLDelegate*>( actor->getEditor()->getDelegate( BaseAttributes::URL_IN_ATTRIBUTE().getId() ) );
-    if( NULL != urlDelegate ) {
-        urlDelegate->sl_showEditorButton( true );
-    }
 }
 
 // FIXME: move to utils classes
@@ -828,6 +827,7 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     scriptingMode->setDefaultAction( scriptingModeMenu->menuAction() );
     scriptingMode->setPopupMode( QToolButton::InstantPopup );
     tb->addWidget( scriptingMode );
+    tb->addAction(showWizard);
 }
 
 void WorkflowView::setupViewMenu(QMenu* m) {
@@ -1521,6 +1521,18 @@ void WorkflowView::sl_saveSceneAs() {
     Task* t = new SaveWorkflowSceneTask(scene, meta);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     sl_updateTitle();
+}
+
+void WorkflowView::sl_showWizard() {
+    if (scene->getWizards().size() > 0) {
+        WizardController controller(scene->getWizards().first());
+        QWizard *w = controller.createGui();
+        if (w->exec()) {
+            controller.assignParameters();
+            scene->sl_updateDocs();
+            scene->setModified();
+        }
+    }
 }
 
 void WorkflowView::sl_loadScene() {
@@ -2251,6 +2263,8 @@ void WorkflowScene::sl_reset() {
     }
     iterations.clear();
     iterated = false;
+    qDeleteAll(wizards);
+    wizards.clear();
 }
 
 void WorkflowScene::setModified(bool b) {
@@ -2344,6 +2358,15 @@ void WorkflowScene::connectConfigurationEditors() {
             }
         }
     }
+}
+
+const QList<Wizard*> & WorkflowScene::getWizards() const {
+    return wizards;
+}
+
+void WorkflowScene::setWizards(const QList<Wizard*> &value) {
+    qDeleteAll(wizards);
+    wizards = value;
 }
 
 /************************************************************************/

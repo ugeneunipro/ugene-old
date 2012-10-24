@@ -92,6 +92,9 @@ public:
 
     QString getTypeName() const;
     void setTypeName(const QString &typeName);
+
+    const QList<Wizard*> & getWizards() const;
+    void setWizards(const QList<Wizard*> &value);
     
 public slots:
     void sl_deleteItem();
@@ -142,6 +145,7 @@ private:
     // if it isn't iterated then there are one iteration and it isn't shown to a user
     bool iterated;
     QString includedTypeName;
+    QList<Wizard*> wizards;
     
 }; // WorkflowScene
 
@@ -232,6 +236,8 @@ private slots:
     void sl_xmlSchemaLoaded(Task*);
     void sl_editExternalTool();
     void sl_findPrototype();    
+
+    void sl_showWizard();
 protected:
     bool onCloseEvent();
 
@@ -290,6 +296,8 @@ private:
     QList<QAction*> scriptingActions;
     
     QAction* unlockAction;
+
+    QAction* showWizard;
 
     QSplitter*      splitter;
     WorkflowPalette* palette;

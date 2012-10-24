@@ -20,9 +20,13 @@
  */
 
 #include <U2Core/Log.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Lang/Aliasing.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/HRWizardSerializer.h>
 
 #include "ItemViewStyle.h"
 #include "HRSceneSerializer.h"
@@ -154,6 +158,10 @@ static QString metaData(WorkflowScene * scene, const HRSchemaSerializer::NamesMa
             HRSchemaSerializer::schemaPortAliases(nmap, scene->getPortAliases()), 2);
     }
     res += HRSchemaSerializer::makeBlock(HRSchemaSerializer::VISUAL_START, HRSchemaSerializer::NO_NAME, visualData(scene->items(), nmap), 2);
+    foreach (Wizard *w, scene->getWizards()) {
+        HRWizardSerializer ws;
+        res += ws.serialize(w, 2);
+    }
     return res;
 }
 
@@ -230,7 +238,7 @@ QString HRSceneSerializer::items2String(const QList<QGraphicsItem*> & items, con
 struct WorkflowSceneReaderData {
     WorkflowSceneReaderData(const QString & bytes, WorkflowScene * s, Metadata * m, bool se, bool ni) 
     : scene(s), meta(m), select(se), pasteMode(ni), graph(NULL) {
-        tokenizer.tokenize(bytes); 
+        tokenizer.tokenizeSchema(bytes); 
     }
     
     HRSchemaSerializer::Tokenizer tokenizer;
@@ -255,6 +263,7 @@ struct WorkflowSceneReaderData {
         HRSchemaSerializer::ParsedPairs pairs;
     };
     QList<LinkData> links;
+    QList<Wizard*> wizards;
 }; // WorkflowSceneReaderData
 
 static void parseActorDefinition(WorkflowSceneReaderData & data, const QString & actorName) {
@@ -484,6 +493,14 @@ static void parseMeta(WorkflowSceneReaderData & data) {
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
             HRSchemaSerializer::parseAliasesHelp(data.tokenizer, data.actorMap.values());
             data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
+        } else if (HRWizardParser::WIZARD == tok) {
+            data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_START);
+            HRWizardParser ws(data.tokenizer, data.actorMap);
+            U2OpStatusImpl os;
+            Wizard *w = ws.parseWizard(os);
+            CHECK_OP_EXT(os, throw HRSchemaSerializer::ReadFailed(os.getError()), );
+            data.wizards << w;
+            data.tokenizer.assertToken(HRSchemaSerializer::BLOCK_END);
         } else {
             throw HRSchemaSerializer::ReadFailed(HRSchemaSerializer::UNDEFINED_META_BLOCK.arg(tok));
         }
@@ -706,6 +723,7 @@ QString HRSceneSerializer::string2Scene(const QString & bytes, WorkflowScene * s
             }
             scene->setIterations(data.iterations);
             scene->setPortAliases(data.portAliases);
+            scene->setWizards(data.wizards);
         }
     } catch(const HRSchemaSerializer::ReadFailed & ex) {
         return ex.what;

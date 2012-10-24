@@ -105,14 +105,24 @@ private:
 /* Controller */
 /************************************************************************/
 DatasetsController::DatasetsController(URLAttribute *_attr)
-: QObject(), attr(_attr), datasetsWidget(NULL)
+: QObject(), attr(_attr), sets(attr->getDatasets()), datasetsWidget(NULL)
 {
-    SAFE_POINT(attr->getDatasets().size() > 0, "0 datasets count", );
+    initialize();
+}
+
+DatasetsController::DatasetsController(QList<Dataset> &_sets)
+: QObject(), attr(NULL), sets(_sets), datasetsWidget(NULL)
+{
+    initialize();
+}
+
+void DatasetsController::initialize() {
+    SAFE_POINT(sets.size() > 0, "0 datasets count", );
     datasetsWidget = new DatasetsListWidget();
 
-    for (QList<Dataset>::iterator i = attr->getDatasets().begin();
-        i != attr->getDatasets().end(); i++) {
-        datasetsWidget->appendDataset(i->getName(), createDatasetWidget(*i));
+    for (QList<Dataset>::iterator i = sets.begin();
+        i != sets.end(); i++) {
+            datasetsWidget->appendDataset(i->getName(), createDatasetWidget(*i));
     }
     connect(datasetsWidget, SIGNAL(si_addDataset(const QString &, U2OpStatus &)),
         SLOT(sl_addDataset(const QString &, U2OpStatus &)));
@@ -125,6 +135,10 @@ DatasetsController::~DatasetsController() {
 
 QWidget * DatasetsController::getWigdet() {
     return datasetsWidget;
+}
+
+QList<Dataset> & DatasetsController::getDatasets() {
+    return sets;
 }
 
 void DatasetsController::createItemWidget(URLContainer *url, DatasetWidget *inDataWidget) {
@@ -219,10 +233,10 @@ void DatasetsController::sl_datasetDeleted() {
     Dataset *dSet = setMap.take(inData);
     SAFE_POINT(NULL != dSet, "NULL dataset", );
 
-    for (QList<Dataset>::iterator i = attr->getDatasets().begin();
-        i != attr->getDatasets().end(); i++) {
+    for (QList<Dataset>::iterator i = sets.begin();
+        i != sets.end(); i++) {
         if (&(*i) == dSet) {
-            attr->getDatasets().erase(i);
+            sets.erase(i);
             break;
         }
     }
@@ -234,10 +248,10 @@ void DatasetsController::sl_datasetDeleted() {
     }
 
     // add empty default dataset is the last one is deleted
-    if (attr->getDatasets().isEmpty()) {
-        attr->getDatasets() << Dataset();
-        datasetsWidget->appendDataset(attr->getDatasets().first().getName(),
-            createDatasetWidget(attr->getDatasets().first()));
+    if (sets.isEmpty()) {
+        sets << Dataset();
+        datasetsWidget->appendDataset(sets.first().getName(),
+            createDatasetWidget(sets.first()));
     }
     updateAttribute();
 }
@@ -252,9 +266,9 @@ void DatasetsController::checkName(const QString &name, U2OpStatus &os) {
 void DatasetsController::sl_addDataset(const QString &name, U2OpStatus &os) {
     checkName(name, os);
     CHECK_OP(os, );
-    attr->getDatasets() << Dataset(name);
-    datasetsWidget->appendDataset(attr->getDatasets().last().getName(),
-        createDatasetWidget(attr->getDatasets().last()));
+    sets << Dataset(name);
+    datasetsWidget->appendDataset(sets.last().getName(),
+        createDatasetWidget(sets.last()));
     updateAttribute();
 }
 
@@ -273,7 +287,9 @@ void DatasetsController::sl_renameDataset(const QString &newName, U2OpStatus &os
 }
 
 void DatasetsController::updateAttribute() {
-    attr->updateValue();
+    if (NULL != attr) {
+        attr->updateValue();
+    }
     emit si_attributeChanged();
 }
 
