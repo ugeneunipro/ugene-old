@@ -27,6 +27,9 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/qcombobox.h>
 
+// TODO: this is a fast fix
+#include <U2View/ADVSingleSequenceWidget.h>
+
 namespace U2 {
 
 #define GT_CLASS_NAME "GTWidget"
@@ -40,6 +43,12 @@ void GTWidget::click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton, QP
 
     if (p.isNull()) {
         p = w->rect().center();
+
+        // TODO: this is a fast fix
+        QWidget *adv = qobject_cast<ADVSingleSequenceWidget*>(w);
+        if (adv) {
+            p += QPoint(0, 8);
+        }
     }
     GTMouseDriver::moveTo(os, w->mapToGlobal(p));
     GTMouseDriver::click(os, mouseButton);
