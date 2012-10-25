@@ -143,7 +143,8 @@ static const QString ORDER_PATTERN = ORDER_KEYWORD + "\\{{1,1}([^\\{\\}]*)\\}{1,
 static const QString SCHEMA_STRAND_ATTR = "schema-strand";
 static const QString SCHEMA_STRAND_PATTERN = SCHEMA_STRAND_ATTR + "\\s*:\\s*(direct|complement|both)\\s*;";
 
-const QString QDDocument::HEADER_LINE("#!UGENE_QUERY");
+const QString QDDocument::HEADER_LINE("#@UGENE_QUERY");
+const QString QDDocument::DEPRECATED_HEADER_LINE("#!UGENE_QUERY");
 const QString QDDocument::GROUPS_SECTION("groups");
 
 QDDocument::~QDDocument() {
@@ -399,6 +400,11 @@ void QDDocument::saveOrder(const QList<QDActor*>& actors) {
     foreach(QDActor* a, actors) {
         order.append(a->getParameters()->getLabel());
     }
+}
+
+bool QDDocument::isHeaderLine(const QString &line) {
+    return (line.startsWith(HEADER_LINE) ||
+            line.startsWith(DEPRECATED_HEADER_LINE));
 }
 
 //Mapper

@@ -101,7 +101,7 @@ void QDDocFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& ) {
 
 FormatCheckResult QDDocFormat::checkRawData( const QByteArray& rawData, const GUrl&) const {
     const QString& data = rawData;
-    if(data.trimmed().startsWith(QDDocument::HEADER_LINE)) {
+    if(QDDocument::isHeaderLine(data.trimmed())) {
         return FormatDetection_Matched;
     }
     return FormatDetection_NotMatched;

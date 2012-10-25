@@ -112,8 +112,12 @@ public:
     void parseSchemaStrand(const QString& str);
     QDStrandOption getSchemaStrand() const { return schemaStrand; }
     void setSchemaStrand(QDStrandOption stOp) { schemaStrand = stOp; }
+
+    static bool isHeaderLine(const QString &line);
+
 public:
     static const QString HEADER_LINE;
+    static const QString DEPRECATED_HEADER_LINE;
     static const QString GROUPS_SECTION;
     static const QString ID_PATTERN;
 private:
