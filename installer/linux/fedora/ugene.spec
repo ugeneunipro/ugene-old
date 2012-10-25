@@ -45,7 +45,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
 %{_datadir}/pixmaps/*
 %{_datadir}/%{name}/
 %{_mandir}/man1/*
-%doc COPYRIGHT LICENSE
+%doc COPYRIGHT LICENSE LISENCE.3rd_party
 
 %changelog
 * Mon Oct 3 2012 Yulia Algaer <yalgaer@unipro.ru> - 1.11.2-1 
