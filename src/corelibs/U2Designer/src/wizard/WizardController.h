@@ -68,13 +68,14 @@ public:
     virtual void visit(LogoWidget *lw);
 
     QWidget * getResult();
-
     QList<PropertyWizardController*> & getControllers();
+    QBoxLayout * getLayout();
 
 private:
     int labelSize;
     QWidget *result;
     QList<PropertyWizardController*> controllers;
+    QBoxLayout *layout;
 
 private:
     void setGroupBoxLayout(GroupBox *gb);
@@ -104,6 +105,8 @@ public:
 
     void setLayout(QLayout *l);
 
+    static const int MARGIN;
+
 private slots:
     void sl_collapse();
     void sl_expand();
@@ -115,10 +118,8 @@ private:
     QLabel *tip;
     QToolButton *showHideButton;
 
-    static const int MARGIN;
-
 private:
-    void changeView(const QString &buttonText, const QString &showHide, int bottomMargin);
+    void changeView(const QString &buttonText, const QString &showHide);
 };
 
 } // U2

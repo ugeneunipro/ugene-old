@@ -76,7 +76,6 @@ QWizardPage * WizardController::createPage(WizardPage *page) {
     result->setLayout(pcc.getResult());
     controllers << pcc.getControllers();
 
-    result->adjustSize();
     return result;
 }
 
@@ -84,13 +83,13 @@ QWizardPage * WizardController::createPage(WizardPage *page) {
 /* WidgetCreator */
 /************************************************************************/
 WidgetCreator::WidgetCreator()
-: labelSize(0), result(NULL)
+: labelSize(0), result(NULL), layout(NULL)
 {
 
 }
 
 WidgetCreator::WidgetCreator(int _labelSize)
-: labelSize(_labelSize), result(NULL)
+: labelSize(_labelSize), result(NULL), layout(NULL)
 {
 
 }
@@ -114,9 +113,9 @@ void WidgetCreator::visit(AttributeWidget *aw) {
 
 void WidgetCreator::visit(WidgetsArea *wa) {
     result = new QWidget();
-    QVBoxLayout *layout = new QVBoxLayout();
+    layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
     result->setLayout(layout);
-    QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::MinimumExpanding);
     foreach (WizardWidget *w, wa->getWidgets()) {
         WidgetCreator wc(wa->getLabelSize());
         w->accept(&wc);
@@ -126,6 +125,7 @@ void WidgetCreator::visit(WidgetsArea *wa) {
             controllers << wc.getControllers();
         }
     }
+    QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::Minimum);
     layout->addSpacerItem(spacer);
 }
 
@@ -138,15 +138,20 @@ void WidgetCreator::visit(GroupWidget *gw) {
 
 void WidgetCreator::visit(LogoWidget *lw) {
     result = new QWidget();
-    QVBoxLayout *layout = new QVBoxLayout();
+    layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
     result->setLayout(layout);
 
     QLabel *label = new QLabel(result);
+    QPixmap pix;
     if (lw->isDefault()) {
-        label->setPixmap(QPixmap(QString(":U2Designer/images/logo.png")));
+        pix = QPixmap(QString(":U2Designer/images/logo.png"));
     } else {
-        label->setPixmap(QPixmap(lw->getLogoPath()));
+        pix = QPixmap(lw->getLogoPath());
     }
+    pix = pix.scaled(191, 338, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    label->setPixmap(pix);
+    label->setFixedSize(pix.size());
     layout->addWidget(label);
 }
 
@@ -158,8 +163,12 @@ QList<PropertyWizardController*> & WidgetCreator::getControllers() {
     return controllers;
 }
 
+QBoxLayout * WidgetCreator::getLayout() {
+    return layout;
+}
+
 void WidgetCreator::setGroupBoxLayout(GroupBox *gb) {
-    gb->setLayout(result->layout());
+    gb->setLayout(layout);
     result->setLayout(NULL);
     delete result;
     result = gb;
@@ -176,7 +185,7 @@ PageContentCreator::PageContentCreator()
 
 void PageContentCreator::visit(DefaultPageContent *content) {
     QHBoxLayout *layout = new QHBoxLayout();
-    result = layout;
+    layout->setContentsMargins(0, 0, 0, 0);
     { // create logo
         WidgetCreator logoWC;
         content->getLogoArea()->accept(&logoWC);
@@ -189,11 +198,15 @@ void PageContentCreator::visit(DefaultPageContent *content) {
         WidgetCreator paramsWC;
         content->getParamsArea()->accept(&paramsWC);
         if (NULL != paramsWC.getResult()) {
-            paramsWC.getResult()->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+            if (NULL != paramsWC.getLayout()) {
+                QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::MinimumExpanding);
+                paramsWC.getLayout()->addSpacerItem(spacer);
+            }
             layout->addWidget(paramsWC.getResult());
             controllers << paramsWC.getControllers();
         }
     }
+    result = layout;
 }
 
 QLayout * PageContentCreator::getResult() {
@@ -213,16 +226,16 @@ GroupBox::GroupBox(bool collapsible, const QString &title)
 : QGroupBox(title), hLayout(NULL), tip(NULL), showHideButton(NULL)
 {
     ui = new QWidget(this);
-    ui->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
+    ui->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
     QVBoxLayout *layout = new QVBoxLayout();
     QGroupBox::setLayout(layout);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
+    layout->setContentsMargins(MARGIN, MARGIN, MARGIN, MARGIN);
 
     if (collapsible) {
         hLayout = new QHBoxLayout();
         tip = new QLabel(this);
         hLayout->addWidget(tip);
+        hLayout->setContentsMargins(0, 0, 0, 0);
         showHideButton = new QToolButton(this);
         showHideButton->setFixedSize(19, 19);
         hLayout->addWidget(showHideButton);
@@ -239,21 +252,16 @@ GroupBox::GroupBox(bool collapsible, const QString &title)
 
 void GroupBox::sl_collapse() {
     ui->hide();
-    changeView("+", tr("Show"), MARGIN);
+    changeView("+", tr("Show"));
 }
 
 void GroupBox::sl_expand() {
     ui->show();
-    changeView("-", tr("Hide"), 0);
+    changeView("-", tr("Hide"));
 }
 
 void GroupBox::setLayout(QLayout *l) {
     ui->setLayout(l);
-    CHECK(NULL != hLayout, );
-    QMargins m = l->contentsMargins();
-    m.setBottom(hLayout->contentsMargins().bottom());
-    m.setTop(hLayout->contentsMargins().top());
-    hLayout->setContentsMargins(m);
 }
 
 void GroupBox::sl_onCheck() {
@@ -264,7 +272,7 @@ void GroupBox::sl_onCheck() {
     }
 }
 
-void GroupBox::changeView(const QString &buttonText, const QString &showHide, int bottomMargin) {
+void GroupBox::changeView(const QString &buttonText, const QString &showHide) {
     CHECK(NULL != showHideButton, );
     showHideButton->setText(buttonText);
 
@@ -277,12 +285,11 @@ void GroupBox::changeView(const QString &buttonText, const QString &showHide, in
     showHideButton->setToolTip(tip->text());
 
     CHECK(NULL != hLayout, );
-    QMargins m = hLayout->contentsMargins();
-    m.setBottom(bottomMargin);
-    if (title().isEmpty()) {
-        m.setTop(MARGIN);
+    if (!title().isEmpty()) {
+        QMargins m = layout()->contentsMargins();
+        m.setTop(0);
+        layout()->setContentsMargins(m);
     }
-    hLayout->setContentsMargins(m);
 }
 
 } // U2
