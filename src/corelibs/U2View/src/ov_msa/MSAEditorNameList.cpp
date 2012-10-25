@@ -307,6 +307,11 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
         curSeq = ui->seqArea->getSequenceNumByY(e->y());
         if (ui->isCollapsibleMode()) {
             MSACollapsibleItemModel* m = ui->getCollapseModel();
+            int dbg = m->displayedRowsCount(), repchikDbg = m->getLastPos();
+            if(curSeq >= m->displayedRowsCount()){
+                QWidget::mousePressEvent(e);
+                return;
+            }
             if (m->isTopLevel(curSeq)) {
                 const U2Region& yRange = ui->seqArea->getSequenceYRange(curSeq, true);
                 bool selected = isRowInSelection(curSeq);
@@ -314,6 +319,7 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
                 QRect buttonRect = calculateButtonRect(textRect);
                 if (buttonRect.contains(origin)) {
                     m->toggle(curSeq);
+                    QWidget::mousePressEvent(e);
                     return;
                 }
             }

@@ -246,4 +246,19 @@ int MSACollapsibleItemModel::itemAt(int pos) const {
     }
 }
 
+int MSACollapsibleItemModel::displayedRowsCount(){
+    MSAEditor* ed = ui->getEditor();
+    MAlignmentObject* o = ed->getMSAObject();
+    const MAlignment& ma = o->getMAlignment();
+    int size = ma.getNumRows();
+    if (!items.isEmpty()) {
+        foreach(const MSACollapsableItem item, items){
+            if(item.isCollapsed){
+                size -= item.numRows - 1; 
+            }
+        }
+    }
+    return size;
+}
+
 } //namespace

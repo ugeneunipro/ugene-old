@@ -55,6 +55,8 @@ public:
     int getItemPos(int index) const { return positions.at(index); }
 
     MSACollapsableItem getItem(int index) const { return items.at(index); }
+    
+    int displayedRowsCount();
 
 signals:
     void toggled();

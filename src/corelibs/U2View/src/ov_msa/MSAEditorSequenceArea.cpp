@@ -436,7 +436,7 @@ bool MSAEditorSequenceArea::isPosInRange(int p) const {
 }
 
 bool MSAEditorSequenceArea::isSeqInRange(int s) const {
-    return s >= 0 && s < editor->getNumSequences();
+    return s >= 0 && s < ui->collapseModel->displayedRowsCount();;
 }
 
 
@@ -1060,7 +1060,7 @@ QPoint MSAEditorSequenceArea::coordToPos(const QPoint& coord) const {
     int lastSeq = getLastVisibleSequence(true);
     if (ui->isCollapsibleMode()) {
         MSACollapsibleItemModel* m = ui->getCollapseModel();
-        lastSeq = m->getLastPos();
+        lastSeq = m->displayedRowsCount();
     }
     for (int i=getFirstVisibleSequence(); i<=lastSeq; i++) {
         U2Region r = getSequenceYRange(i, false);
@@ -1748,6 +1748,7 @@ void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
         return;
     }
     MSACollapsibleItemModel* m = ui->getCollapseModel();
+    ui->setCollapsibleMode(enabled);
     if (enabled) {
         MAlignment ma = msaObject->getMAlignment();
         QVector<U2Region> unitedRows;
@@ -1759,7 +1760,6 @@ void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
     } else {
         m->reset();
     }
-    ui->setCollapsibleMode(enabled);
     updateVScrollBar();
 }
 
