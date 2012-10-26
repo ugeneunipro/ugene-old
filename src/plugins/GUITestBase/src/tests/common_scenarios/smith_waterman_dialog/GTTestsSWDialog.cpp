@@ -73,7 +73,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     const QString alignmentFileExtension = ".aln";
 
     for(int i = 2; i > 0; i--) {
-        const QString expectedFileName = "P0_S_" + QString::number(i) + "_test]" + alignmentFileExtension;
+        const QString expectedFileName = "P1_S_" + QString::number(i) + "_test]" + alignmentFileExtension;
         GTUtilsDocument::checkDocument(os, expectedFileName);
         
         GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, expectedFileName.left(expectedFileName.length()
@@ -85,12 +85,12 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
         CHECK_SET_ERR(2 == sequencesNameList.length(), seqNumberMismatchErrorMessage + expectedFileName);
         switch(i) {
         case 1:
-            CHECK_SET_ERR(sequencesNameList[0] == "S_2_15_test]" && sequencesNameList[1] == "P0_4_16",
+            CHECK_SET_ERR(sequencesNameList[0] == "S_2_15_test]" && sequencesNameList[1] == "P1_4_16",
                 seqNameMismatchErrorMessage + expectedFileName);
             break;
 
         case 2:
-            CHECK_SET_ERR(sequencesNameList[0] == "S_34_42_test]" && sequencesNameList[1] == "P0_5_13",
+            CHECK_SET_ERR(sequencesNameList[0] == "S_34_42_test]" && sequencesNameList[1] == "P1_5_13",
                 seqNameMismatchErrorMessage + expectedFileName);
             break;
 
