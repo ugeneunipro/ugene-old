@@ -5,7 +5,7 @@
     <name>Dialog</name>
     <message>
         <location filename="../src/ui/RemoteBLASTDialog.ui" line="14"/>
-        <source>Search through a remote database</source>
+        <source>Search Through a Remote Database</source>
         <translation>Запрос к удаленной базе данных</translation>
     </message>
     <message>

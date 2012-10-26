@@ -249,7 +249,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/RemoteBLASTDialog.ui" line="14"/>
-        <source>Search through a remote database</source>
+        <source>Search Through a Remote Database</source>
         <translation></translation>
     </message>
     <message>
