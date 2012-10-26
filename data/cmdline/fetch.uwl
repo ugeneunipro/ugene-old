@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Fetches sequences from remote database. The supported databases are accesed via alias.
 #
 #Database		Alias

@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Create alignment with T-Coffee. T-Coffee is a collection of tools for computing, evaluating and manipulating multiple alignments of DNA, RNA, Protein Sequences. Must have an installed T-Coffee package.
 
 workflow align-tcoffee{

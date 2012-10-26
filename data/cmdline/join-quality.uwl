@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Adds PHRED quality scores to the sequence and save output to Fastq. For example, one can read a Fasta file, import PHRED quality values from corresponding qualities file and export the result to Fastq.
 
 workflow "Import PHRED quality scores"{

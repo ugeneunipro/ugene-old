@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Create alignment with MAFFT. MAFFT is a multiple sequence alignment program for unix-like operating systems. Must have an installed MAFFT package.
 
 workflow align-mafft{

@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Bowtie is fast and memory efficient short read aligner. This task allows to align shortreads to reference genome from pre-built index
 
 workflow "Bowtie aligner"{

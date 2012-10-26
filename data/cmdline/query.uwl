@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Annotates a sequence in compliance with a UGENE Query Language (UQL) schema.
 
 workflow "Annotate with UQL Schema"{

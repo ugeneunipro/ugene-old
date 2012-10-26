@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles(models). In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.
 
 workflow sitecon-search{

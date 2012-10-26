@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Build hmm profile using hmmer2
 
 workflow hmm2-build{

@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Create alignment with ClustalO. ClustalO is a general purpose multiple sequence alignment program for proteins. Must have an installed ClustalO package.
 
 

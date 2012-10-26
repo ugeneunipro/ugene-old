@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Create alignment with Kalign algorithm. Kalign is a fast and accurate multiple sequence alignment algorithm designed to align large numbers of protein sequences.
 #
 

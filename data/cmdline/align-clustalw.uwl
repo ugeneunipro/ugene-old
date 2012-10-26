@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Create alignment with ClustalW. ClustalW is a general purpose multiple sequence alignment program for DNA or proteins. Must have an installed ClustalW package.
 
 workflow align-clustalw{

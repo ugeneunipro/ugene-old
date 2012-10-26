@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Finds Open Reading Frames (ORFs) in each supplied nucleotide sequence, stores found regions as annotations.
 
 workflow find-orfs{

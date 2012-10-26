@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Converts multiple sequence alignment from one document format to another
 
 workflow convert-msa{

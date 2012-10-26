@@ -1,4 +1,4 @@
-#!UGENE_WORKFLOW
+#@UGENE_WORKFLOW
 #Build position weight matrix from existing multiple sequence alignment
 
 workflow "Build weight matrix"{
