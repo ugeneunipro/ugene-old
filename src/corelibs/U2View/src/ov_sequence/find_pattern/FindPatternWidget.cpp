@@ -205,8 +205,12 @@ void FindPatternWidget::initLayout()
 
 void FindPatternWidget::initAlgorithmLayout()
 {
-    boxAlgorithm->addItem(tr("InsDel"), FindAlgorithmPatternSettings_InsDel);
-    boxAlgorithm->addItem(tr("Substitute"), FindAlgorithmPatternSettings_Subst);
+    
+    boxAlgorithm->addItem(tr("Exact"), FindAlgorithmPatternSettings_Exact);
+    if(!isAminoSequenceSelected) {
+        boxAlgorithm->addItem(tr("InsDel"), FindAlgorithmPatternSettings_InsDel);
+        boxAlgorithm->addItem(tr("Substitute"), FindAlgorithmPatternSettings_Subst);
+    }
     boxAlgorithm->addItem(tr("Regular expression"), FindAlgorithmPatternSettings_RegExp);
 
     layoutMismatch = new QHBoxLayout(this);
@@ -468,6 +472,14 @@ void FindPatternWidget::sl_onFocusChanged(
 void FindPatternWidget::updateLayout()
 {
     // Algorithm group
+    if (selectedAlgorithm == FindAlgorithmPatternSettings_Exact) {
+        useAmbiguousBasesBox->setChecked(false);
+        useAmbiguousBasesBox->hide();
+        boxUseMaxResultLen->hide();
+        boxMaxResultLen->hide();
+        spinMatch->hide();
+        lblMatch->hide();
+    }
     if (selectedAlgorithm == FindAlgorithmPatternSettings_InsDel) {
         useAmbiguousBasesBox->setChecked(false);
         useAmbiguousBasesBox->hide();
