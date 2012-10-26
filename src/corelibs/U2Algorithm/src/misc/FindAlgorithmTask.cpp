@@ -24,8 +24,11 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/Counter.h>
+#include <U2Core/AppResources.h>
 
 namespace U2 {
+
+class StrandContext;
 
 FindAlgorithmTask::FindAlgorithmTask(const FindAlgorithmTaskSettings& s) 
 : Task (tr("Find in sequence task"), TaskFlag_None), config(s), currentPos(0),currentLen(0)
@@ -35,6 +38,10 @@ FindAlgorithmTask::FindAlgorithmTask(const FindAlgorithmTaskSettings& s)
     complementRun = false;
     currentPos = s.searchRegion.startPos;
     assert(config.strand == FindAlgorithmStrand_Direct || config.complementTT!=NULL);
+
+    addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,
+        FindAlgorithm::estimateRamUsageInMbytes(config.patternSettings, NULL != config.proteinTT,
+        config.pattern.length(), config.maxErr), true));
 }
 
 void FindAlgorithmTask::run() {

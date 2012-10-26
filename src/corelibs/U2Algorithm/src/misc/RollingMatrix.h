@@ -69,6 +69,11 @@ public:
         }
     }
 
+    static quint64 getMatrixSizeInBytes(const int _n, const int _m)
+    {
+        return _n * _m * sizeof(int);
+    }
+
 private:
 
     int getIdx(int x, int y) const { 

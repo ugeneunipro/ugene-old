@@ -50,6 +50,11 @@ public:
     
     StrandContext() : pattern(NULL) {}
 
+    static quint64 estimateRamUsageForOneContext(int width, int height)
+    {
+        return DynTable::estimateTableSizeInBytes(width, height);
+    }
+
     DynTable dynTable;
     RollingArray<char> rollArr;
     const char* pattern;
@@ -757,9 +762,22 @@ void FindAlgorithm::find(
     }
 }
 
+int FindAlgorithm::estimateRamUsageInMbytes(const FindAlgorithmPatternSettings patternSettings,
+    const bool searchInAminoTT, const int patternLength, const int maxError)
+{
+    const int bytesToMbytesFactor = 1048576;
+    quint64 ramUsage = 0;
 
+    if(FindAlgorithmPatternSettings_InsDel == patternSettings) {
+        ramUsage = 2 * StrandContext::estimateRamUsageForOneContext(patternLength + maxError,
+                                                                        patternLength);
+        if(searchInAminoTT) {
+            ramUsage *= 4;
+        }
+    } else if(FindAlgorithmPatternSettings_Subst == patternSettings && searchInAminoTT)
+        ramUsage = 7 * patternLength * sizeof(char);
 
-
-
+    return ramUsage / bytesToMbytesFactor;
+}
 
 }//namespace

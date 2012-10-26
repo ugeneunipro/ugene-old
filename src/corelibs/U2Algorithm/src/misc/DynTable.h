@@ -77,6 +77,12 @@ public:
         if (x<0) {return y+1;}
         return RollingMatrix::get(x, y);
     }
+
+    static quint64 estimateTableSizeInBytes(const int n, const int m)
+    {
+        return RollingMatrix::getMatrixSizeInBytes(n, m);
+    }
+
 protected:
     void match( int x, int y, bool ok )
     {

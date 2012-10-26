@@ -174,6 +174,8 @@ public:
                 currentLen);
     }
 
+    static int estimateRamUsageInMbytes(const FindAlgorithmPatternSettings patternSettings,
+        const bool searchInAminoTT, const int patternLength, const int maxError);
 };
 
 
