@@ -162,14 +162,24 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
     QMenu* actionMenu = action->menu();
     bool clickingSubMenu = actionMenu ? true : false;
 
+    QPoint currentCursorPosition = GTMouseDriver::getMousePosition();
+    QPoint menuCorner = menu->mapToGlobal(QPoint(0, 0));
+
+    bool verticalMenu = currentCursorPosition.y() < menuCorner.y(); // TODO: assuming here that submenu is always lower then menu
+
     switch(m) {
     case GTGlobals::UseMouse:
     {
-        QPoint menuCornerPosition = menu->mapToGlobal(QPoint(10, 0));
         QPoint actionPosition = actionPos(os, menu, action);
 
-        GTMouseDriver::moveTo(os, QPoint(menuCornerPosition.x(), actionPosition.y())); // move cursor to action by Y
-        GTGlobals::sleep(200);
+        QPoint firstMoveTo = QPoint(actionPosition.x(), currentCursorPosition.y()); // move by X first
+        if (verticalMenu) {
+            firstMoveTo = QPoint(currentCursorPosition.x(), actionPosition.y()); // move by Y first
+        }
+
+        GTMouseDriver::moveTo(os, firstMoveTo); // move by Y first
+        GTGlobals::sleep(100);
+
         GTMouseDriver::moveTo(os, actionPosition); // move cursor to action
         GTGlobals::sleep(200);
 

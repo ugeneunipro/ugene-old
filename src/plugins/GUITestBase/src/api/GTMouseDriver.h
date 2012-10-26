@@ -31,8 +31,7 @@ class GTMouseDriver {
 public:
     // fails if given coordinates are not in the screen's rect
     // Linux: fails if there is an opening X display error
-    static void moveTo(U2::U2OpStatus &os, const int x, const int y);
-    static void moveTo(U2OpStatus &os, const QPoint& p) { return moveTo(os, p.x(), p.y());}
+    static void moveTo(U2OpStatus &os, const QPoint& p) { mousePos = p; moveToP(os, p.x(), p.y()); }
 
     // fails if press or release fails
     // Linux: fails if there is an opening X display error
@@ -46,6 +45,12 @@ public:
 
     // Linux: fails if there is an opening X display error
     static void scroll(U2OpStatus &os, int value); //positive values for scrolling up, negative for scrolling down
+
+    static QPoint getMousePosition() { return mousePos; }
+private:
+    static QPoint mousePos;
+
+    static void moveToP(U2::U2OpStatus &os, const int x, const int y); // platform-depended realization of moveTo
 };
 
 } //namespace

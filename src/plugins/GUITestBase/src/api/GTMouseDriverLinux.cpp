@@ -32,9 +32,10 @@ namespace U2 {
 #ifdef __linux__
 
 #define GT_CLASS_NAME "GTMouseDriver Linux"
+QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
-#define GT_METHOD_NAME "moveTo"
-void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
+#define GT_METHOD_NAME "moveToP"
+void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 {
     QByteArray display_name = qgetenv("DISPLAY");
     GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");

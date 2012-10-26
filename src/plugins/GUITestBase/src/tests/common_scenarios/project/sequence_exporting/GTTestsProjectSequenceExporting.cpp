@@ -96,7 +96,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     CHECK_SET_ERR(activeWindow != NULL, "there is no active MDI window");
 
     QPoint p = activeWindow->mapToGlobal(activeWindow->rect().center());
-    GTMouseDriver::moveTo(os, p.x(), 200);
+    GTMouseDriver::moveTo(os, QPoint(p.x(), 200));
     GTMouseDriver::click(os, Qt::RightButton);
 
 // Expected state: sequence view [1..4] has been opened, with sequence "AAAT"

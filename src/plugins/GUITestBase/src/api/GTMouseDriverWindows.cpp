@@ -31,9 +31,10 @@ namespace U2 {
 #ifdef _WIN32
 
 #define GT_CLASS_NAME "GTMouseDriver Windows"
+QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
-#define GT_METHOD_NAME "moveTo"
-void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
+#define GT_METHOD_NAME "moveToP"
+void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 {
     // get screen resolution
     HDC hDCScreen = GetDC(NULL);

@@ -32,9 +32,10 @@ namespace U2 {
 
 #ifdef  Q_OS_MAC
 #define GT_CLASS_NAME "GTMouseDriverMac"
+QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
-#define GT_METHOD_NAME "moveTo"
-void GTMouseDriver::moveTo(U2::U2OpStatus &os, const int x, const int y)
+#define GT_METHOD_NAME "moveToP"
+void GTMouseDriver::moveToP(U2::U2OpStatus &os, const int x, const int y)
 {
     CGDirectDisplayID displayID = CGMainDisplayID();
     size_t horres = CGDisplayPixelsWide (displayID);
