@@ -200,7 +200,7 @@ void PhyNode::addToTrack(QSet<const PhyNode*>& track) const {
     track.insert(this);
     foreach(PhyBranch* b, branches) {
         b->node1->addToTrack(track);
-        b->node1->addToTrack(track);
+        b->node2->addToTrack(track);
     }
 }
 
