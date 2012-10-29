@@ -55,7 +55,8 @@ enum MessageFlag {
     PatternAlphabetDoNotMatch,
     PatternsWithBadAlphabetInFile,
     PatternsWithBadRegionInFile,
-    UseMultiplePatternsTip
+    UseMultiplePatternsTip,
+    AnnotationNotValidName
 };
 
 
@@ -138,6 +139,9 @@ private slots:
 
     void sl_onSelectedRegionChanged(LRegionsSelection* thiz, const QVector<U2Region>& added, const QVector<U2Region>& removed);
 
+    /** annotation name/group name was changed */
+    void sl_onAnotationNameEdited();
+
 private:
     void initLayout();
     void initAlgorithmLayout();
@@ -169,7 +173,7 @@ private:
     void updateAnnotationsWidget();
 
     /** Allows showing of several error messages. */
-    void showHideMessage(bool show, MessageFlag messageFlag);
+    void showHideMessage(bool show, MessageFlag messageFlag, const QString& additionalMsg = QString());
 
     void verifyPatternAlphabet();
     bool checkAlphabet(const QString& pattern);

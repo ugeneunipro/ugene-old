@@ -317,6 +317,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
 
     groupNameEdit = new QLineEdit(groupAnnotParams);
     groupNameEdit->setObjectName("groupNameEdit");
+    connect(groupNameEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_groupNameEdited(const QString&)));
+    connect(groupNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_groupNameEdited(const QString&)));
 
     groupNameButton = new QToolButton(groupAnnotParams);
     QIcon iconGroupAuto;
@@ -329,6 +331,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
 
     annotationNameEdit = new QLineEdit(groupAnnotParams);
     annotationNameEdit->setObjectName("annotationNameEdit");
+    connect(annotationNameEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_annotationNameEdited(const QString&)));
+    connect(annotationNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_annotationNameEdited(const QString&)));
 
     annotationNameEdit->setMaxLength(100);
 
@@ -640,12 +644,21 @@ bool CreateAnnotationWidgetController::isNewObject() const
 
 void CreateAnnotationWidgetController::setFocusToNameEdit()
 {
+    SAFE_POINT(annotationNameEdit != NULL, "No annotation name line edit", );
     annotationNameEdit->setFocus();
 }
 
 bool CreateAnnotationWidgetController::useAutoAnnotationModel() const
 {
     return useAutoAnnotationsRB->isChecked();
+}
+
+void CreateAnnotationWidgetController::sl_annotationNameEdited( const QString& text ){
+    emit si_annotationNamesEdited();
+}
+
+void CreateAnnotationWidgetController::sl_groupNameEdited( const QString& text ){
+    emit si_annotationNamesEdited();
 }
 
 } // namespace

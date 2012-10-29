@@ -106,6 +106,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
 
         annotController = new CreateAnnotationWidgetController(annotModel, this, compact);
         annotModelPrepared = false;
+        connect(annotController, SIGNAL(si_annotationNamesEdited()), SLOT(sl_onAnotationNameEdited()));
 
         setContentsMargins(0, 0, 0, 0);
         
@@ -526,7 +527,7 @@ void FindPatternWidget::updateLayout()
     }
 }
 
-void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag )
+void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, const QString& additionalMsg )
 {
     if (show) {
         if (!messageFlags.contains(messageFlag)) {
@@ -581,6 +582,18 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag )
                         " to input multiple patterns "));
                     changeColorOfMessageText(COLOR_NAME_FOR_INFO_MESSAGES);
                     break;
+                case AnnotationNotValidName:
+                    if (!text.isEmpty()) {
+                        text += "\n";
+                    }
+                    text += QString(tr("Warning: annotation name or annotation group name are invalid. "));
+                    if (!additionalMsg.isEmpty()){
+                        text += QString(tr("Reason: "));
+                        text += additionalMsg;
+                    }
+                    text += QString(tr(" Please input valid annotation names "));
+                    break;
+
 
                 default:
                     FAIL("Unexpected value of the error flag in show/hide error message for pattern!",);
@@ -727,6 +740,15 @@ void FindPatternWidget::checkState()
         }
     }
 
+    //validate annotation name
+    QString v = annotController->validate();
+    if(!v.isEmpty()){
+        showHideMessage(true, AnnotationNotValidName, v);
+        annotController->setFocusToNameEdit();
+        return;
+    }
+
+    showHideMessage(false, AnnotationNotValidName);
     showHideMessage(false, PatternsWithBadRegionInFile);
     showHideMessage(false, PatternsWithBadAlphabetInFile);
     // Otherwise enable the button
@@ -956,6 +978,10 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern ){
         annotController->prepareAnnotationObject();
         annotModelPrepared = true;
     }
+
+    QString v = annotController->validate();
+    SAFE_POINT(v.isEmpty(), "Annotation names are invalid", );
+
     const CreateAnnotationModel& annotModel = annotController->getModel();
     QString annotName = annotModel.data->name;
     QString annotGroup = annotModel.groupName;
@@ -1055,6 +1081,10 @@ void FindPatternWidget::sl_onSelectedRegionChanged( LRegionsSelection* thiz, con
         editStart->setText(QString::number(1));
         editEnd->setText(QString::number(annotatedDnaView->getSequenceInFocus()->getSequenceLength()));
     }
+}
+
+void FindPatternWidget::sl_onAnotationNameEdited(){
+    checkState();
 }
 
 //////////////////////////////////////////////////////////////////////////

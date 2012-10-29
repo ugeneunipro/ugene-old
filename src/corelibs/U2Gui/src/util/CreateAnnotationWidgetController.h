@@ -103,6 +103,9 @@ public:
     /** It is called from the constructor and updateWidgetForAnnotationModel(...) */
     void commonWidgetUpdate(const CreateAnnotationModel& model);
 
+signals:
+    void si_annotationNamesEdited();
+
 private slots:
     void sl_onNewDocClicked();
     void sl_onLoadObjectsClicked();
@@ -110,6 +113,10 @@ private slots:
     void sl_groupName();
     void sl_complementLocation();
     void sl_setPredefinedGroupName();
+
+    //edit slots
+    void sl_annotationNameEdited(const QString& text);
+    void sl_groupNameEdited(const QString& text);
 
 private:
     void initLayout(AnnotationWidgetMode layoutMode);
