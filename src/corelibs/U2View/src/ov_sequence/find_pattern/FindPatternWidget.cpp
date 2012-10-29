@@ -832,6 +832,7 @@ void FindPatternWidget::sl_onSearchClicked()
             initFindPatternTask(pattern);
             updateAnnotationsWidget();
         }
+        annotModelPrepared = false;
     }
 }
 
