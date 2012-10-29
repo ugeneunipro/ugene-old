@@ -67,21 +67,32 @@ QList<SEnzymeData> EnzymesIO::readEnzymes(const QString& url, TaskStateInfo& ti)
             break;
     }
     
+    QList<SEnzymeData> resToDelete;
     //assign alphabet if needed.
     for (int i=0, n = res.count(); i<n; i++) {
         SEnzymeData& d = res[i];
-        if (d->alphabet == NULL) {
-            d->alphabet = U2AlphabetUtils::findBestAlphabet(d->seq);
-            if(!d->alphabet){
-                algoLog.error(tr("No enzyme alphabet: '%1', sequence '%2'")
-                    .arg(d->id).arg(QString(d->seq)));
-            }
-            if (!d->alphabet->isNucleic()) {
-                algoLog.error(tr("Non-nucleic enzyme alphabet: '%1', alphabet: %2, sequence '%3'")
-                    .arg(d->id).arg(d->alphabet->getId()).arg(QString(d->seq)));
+        if (d->seq == QByteArray("?")){
+            algoLog.trace(tr("The enzyme '%1' has unknown sequence").arg(d->id));
+            resToDelete.append(d);
+        }else{
+            if (d->alphabet == NULL) {
+                d->alphabet = U2AlphabetUtils::findBestAlphabet(d->seq);
+                if(!d->alphabet){
+                    algoLog.error(tr("No enzyme alphabet: '%1', sequence '%2'")
+                        .arg(d->id).arg(QString(d->seq)));
+                }
+                if (!d->alphabet->isNucleic()) {
+                    algoLog.error(tr("Non-nucleic enzyme alphabet: '%1', alphabet: %2, sequence '%3'")
+                        .arg(d->id).arg(d->alphabet->getId()).arg(QString(d->seq)));
+                }
             }
         }
     }
+    //Remove not needed elements
+    foreach(SEnzymeData d, resToDelete){
+        res.removeAll(d);
+    }
+
     return res;
 }
 
