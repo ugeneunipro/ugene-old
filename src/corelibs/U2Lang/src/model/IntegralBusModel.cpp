@@ -256,11 +256,7 @@ void IntegralBusPort::setupBusMap() {
         if (elementDatatype->isList()) {
             candidates += WorkflowUtils::findMatchingTypesAsStringList(from, elementDatatype->getDatatypeByDescriptor());
             QString res = candidates.join(";");
-            if(candidates.size() != 1) {
-                busMap.insert(key.getId(), "");
-            } else {
-                busMap.insert(key.getId(), res);
-            }
+            busMap.insert(key.getId(), res);
         } else if (candidates.size() == 0) {
             //no unambiguous match, reset
             busMap.insert(key.getId(), "");
