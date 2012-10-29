@@ -285,6 +285,8 @@ Task * BaseDocWriter::tick() {
             } else {
                 Document *doc = docs.value(anUrl);
                 data2doc(doc, data);
+            }
+            if (!outputs.contains(anUrl)) {
                 outputs << anUrl;
             }
         }

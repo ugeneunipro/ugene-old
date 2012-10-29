@@ -342,7 +342,7 @@ Task::ReportResult WorkflowIterationRunTask::report() {
     }
     fileLinks = getOutputFiles(schema->getProcesses());
     foreach (const QString &url, fileLinks) {
-        ioLog.trace(QString("%1:;%2").arg(OUTPUT_FILE_URL).arg(url));
+        ioLog.trace(RunCmdlineWorkflowTask::createOutputFileLog(url));
     }
     return ReportResult_Finished;
 }
@@ -768,9 +768,9 @@ void RunCmdlineWorkflowTask::sl_onReadStandardOutput() {
                 }
                 break;
             } else if (word.startsWith(OUTPUT_FILE_URL)) {
-                QStringList msgPassedWords = word.split(":;");
-                if(msgPassedWords.size() == 2) {
-                    createdFilesUlrs.append(msgPassedWords[1]);
+                QString url = RunCmdlineWorkflowTask::parseOutputFile(line);
+                if (!url.isEmpty()) {
+                    createdFilesUlrs.append(url);
                 }
                 break;
             }
@@ -804,6 +804,20 @@ int RunCmdlineWorkflowTask::getMsgNum(const QString & ids) {
 
 int RunCmdlineWorkflowTask::getMsgPassed(const QString & ids) {
     return msgPassed.value(ids, 0);
+}
+
+static const QString URL_SEPARATOR(":;");
+
+QString RunCmdlineWorkflowTask::createOutputFileLog(const QString &url) {
+    return OUTPUT_FILE_URL + URL_SEPARATOR + url;
+}
+
+QString RunCmdlineWorkflowTask::parseOutputFile(const QString &logLine) {
+    QStringList words = logLine.split(URL_SEPARATOR);
+    if (words.size() != 2) {
+        return "";
+    }
+    return words[1].trimmed();
 }
 
 }//namespace

@@ -167,7 +167,10 @@ public:
     int getMsgPassed(const QString & ids);
     void writeLog(QStringList &lines);
     QStringList getCreatedFilesUrls() const;
-    
+
+    static QString createOutputFileLog(const QString &url);
+    static QString parseOutputFile(const QString &logLine);
+
 private slots:
     void sl_onError(QProcess::ProcessError);
     void sl_onReadStandardOutput();
