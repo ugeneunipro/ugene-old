@@ -61,17 +61,17 @@ cp -R "$RELEASE_DIR/../../data"  "${TARGET_APP_DIR}"
 
 echo
 echo copying core shared libs
-cp -v "$RELEASE_DIR/libU2Algorithm.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Core.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Designer.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Formats.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Gui.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Lang.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Private.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Remote.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2Test.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libU2View.so.1" "${TARGET_APP_DIR}"
-cp -v "$RELEASE_DIR/libugenedb.so.1" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libU2Algorithm.so" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libU2Core.so" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libU2Designer.so" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libU2Formats.so" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libU2Gui.so" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libU2Lang.so" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libU2Private.so" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libU2Remote.so" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libU2Test.so" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libU2View.so" "${TARGET_APP_DIR}"
+cp -v "$RELEASE_DIR/libugenedb.so" "${TARGET_APP_DIR}"
 
 echo
 echo copying qt libraries
