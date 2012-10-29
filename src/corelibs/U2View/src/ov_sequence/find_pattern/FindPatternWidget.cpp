@@ -743,6 +743,7 @@ void FindPatternWidget::checkState()
     //validate annotation name
     QString v = annotController->validate();
     if(!v.isEmpty()){
+        btnSearch->setDisabled(true);
         showHideMessage(true, AnnotationNotValidName, v);
         annotController->setFocusToNameEdit();
         return;
