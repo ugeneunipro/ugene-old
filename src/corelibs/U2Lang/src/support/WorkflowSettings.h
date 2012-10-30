@@ -75,7 +75,6 @@ public:
     static bool runInSeparateProcess();
     static void setRunInSeparateProcess(bool m);
     
-    static void setCmdlineUgenePath(const QString & path);
     static QString getCmdlineUgenePath();
 
     static void setExternalToolDirectory(const QString &newDir);

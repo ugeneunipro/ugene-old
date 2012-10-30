@@ -276,22 +276,15 @@ static QString lookupCmdlineUgenePath() {
 static bool lookupDone = false;
 
 QString WorkflowSettings::getCmdlineUgenePath() {
-    if (!AppContext::getSettings()->contains(CMDLINE_UGENE_PATH)) {
-        if (lookupDone) {
-            return QString();
-        }
-        QString path = lookupCmdlineUgenePath();
-        if (path.isEmpty()) {
-            coreLog.info(tr("Command line UGENE path not found, a possibility to run in separate process will be disabled"));
-            return QString();
-        }
-        setCmdlineUgenePath(path);
+    if (lookupDone) {
+        return QString();
     }
-    return AppContext::getSettings()->getValue(CMDLINE_UGENE_PATH).value<QString>();
-}
-
-void WorkflowSettings::setCmdlineUgenePath(const QString & path) {
-    AppContext::getSettings()->setValue(CMDLINE_UGENE_PATH, path);
+    QString path = lookupCmdlineUgenePath();
+    if (path.isEmpty()) {
+        coreLog.info(tr("Command line UGENE path not found, a possibility to run in separate process will be disabled"));
+        return QString();
+    }
+    return path;
 }
 
 void WorkflowSettings::setIncludedElementsDirectory(const QString &newDir) {
