@@ -165,7 +165,12 @@ Task * WriteAnnotationsWorker::tick() {
             taskList << new SaveDocumentTask(doc, fl, excludeFileNames);
         }
     }
-    return taskList.size() == 1 ? taskList.first() : new MultiTask(tr("Save annotations"), taskList);
+    if (taskList.isEmpty()) {
+        return NULL;
+    } else if (1 == taskList.size()) {
+        return taskList.first();
+    }
+    return new MultiTask(tr("Save annotations"), taskList);
 }
 
 void WriteAnnotationsWorker::cleanup() {

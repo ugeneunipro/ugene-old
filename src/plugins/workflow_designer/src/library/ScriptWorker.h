@@ -33,11 +33,10 @@ namespace LocalWorkflow {
 class ScriptWorkerTask: public Task {
     Q_OBJECT
 public:
-    ScriptWorkerTask(WorkflowScriptEngine *_engine, AttributeScript*  _script ):Task(tr("Script worker task"),TaskFlag_None), isList(false),engine(_engine),script(_script) {}
+    ScriptWorkerTask(WorkflowScriptEngine *engine, AttributeScript *script);
     void run();
-    QVariant getResult() const {return result;}
-    WorkflowScriptEngine *getEngine() {return engine;}
-    bool isList;
+    QVariant getResult() const;
+    WorkflowScriptEngine * getEngine();
 
 private:
     QVariant result;
@@ -48,7 +47,7 @@ private:
 class ScriptPromter : public PrompterBase<ScriptPromter> {
     Q_OBJECT
 public:
-    ScriptPromter( Actor * p = 0 ) : PrompterBase<ScriptPromter>(p) {};
+    ScriptPromter(Actor * p = 0) : PrompterBase<ScriptPromter>(p) {}
 protected:
     QString composeRichDoc();
 };
@@ -58,7 +57,7 @@ class ScriptWorker: public BaseWorker {
 public:
     ScriptWorker(Actor *a);
     virtual void init();
-    virtual Task* tick();
+    virtual Task * tick();
     virtual void cleanup();
 
 private slots:
@@ -67,27 +66,29 @@ private slots:
 private:
     void bindAttributeVariables();
     void bindPortVariables();
-    //QVariant scriptResult;
 
-    CommunicationChannel *input, *output;
+    CommunicationChannel *input;
+    CommunicationChannel *output;
     WorkflowScriptEngine *engine;
     AttributeScript *script;  
     bool taskFinished;
 };
 
 class ScriptWorkerFactory: public DomainFactory {
-    
 public:
     ScriptWorkerFactory(QString name) : DomainFactory(name) {}
-    static bool init(QList<DataTypePtr > input, QList<DataTypePtr > output, QList<Attribute*> attrs,
-        const QString& name,const QString &description, const QString &actorFilePath);
-    virtual Worker* createWorker(Actor* a) {return new ScriptWorker(a);}
 
+    virtual Worker * createWorker(Actor *a);
+
+    static bool init(QList<DataTypePtr> input, QList<DataTypePtr> output, QList<Attribute*> attrs,
+        const QString &name,const QString &description, const QString &actorFilePath);
+
+public:
     static const QString ACTOR_ID;
 };
 
 
-} // Workflow namespace
-} // U2 namespace
+} // LocalWorkflow
+} // U2
 
 #endif

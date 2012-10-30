@@ -671,10 +671,13 @@ QScriptValue WorkflowScriptLibrary::getAnnotationRegion(QScriptContext *ctx, QSc
         }
     }
 
+    QScriptValue array = engine->newArray(result.size());
+    for (int i=0; i<result.size(); i++) {
+        QScriptValue v = engine->newVariant(QVariant::fromValue<Workflow::SharedDbiDataHandler>(result.at(i)));
+        array.setProperty(i, v);
+    }
     QScriptValue calee = ctx->callee();
-    QScriptValue flag = engine->globalObject();
-    flag.setProperty("list", engine->newVariant(true));
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<QList<Workflow::SharedDbiDataHandler> >(result)));
+    calee.setProperty("res", array);
     return calee.property("res");
 }
 

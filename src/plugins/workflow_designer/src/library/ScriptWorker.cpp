@@ -53,50 +53,66 @@ const static QString OUTPUT_PORT_TYPE("output-for-");
 static const QString IN_PORT_ID("in");
 static const QString OUT_PORT_ID("out");
 
+ScriptWorkerTask::ScriptWorkerTask(WorkflowScriptEngine *_engine, AttributeScript *_script)
+: Task(tr("Script worker task"), TaskFlag_None), engine(_engine), script(_script)
+{
+
+}
+
 void ScriptWorkerTask::run() {
-    //QScriptEngine engine;
     QMap<QString, QScriptValue> scriptVars;
-    foreach( const Descriptor & key, script->getScriptVars().uniqueKeys() ) {
+    foreach(const Descriptor &key, script->getScriptVars().uniqueKeys()) {
         assert(!key.getId().isEmpty());
         if(!(script->getScriptVars().value(key)).isNull()) {
             scriptVars[key.getId()] = engine->newVariant(script->getScriptVars().value(key));
-        }
-        else {
+        } else {
             scriptVars[key.getId()] = engine->newVariant(engine->globalObject().property(key.getId().toAscii().data()).toVariant());
         }
     }
 
     WorkflowScriptLibrary::initEngine(engine);
     QScriptValue scriptResultValue = ScriptTask::runScript(engine, scriptVars, script->getScriptText(), stateInfo);
-    if(engine->hasUncaughtException()) {
+    if (engine->hasUncaughtException()) {
         scriptResultValue = engine->uncaughtException();
         QString message = scriptResultValue.toString();
         stateInfo.setError(tr("Error in line ") + QString::number(engine->uncaughtExceptionLineNumber()) + ":" + message.split(":").last());
     }
     result = scriptResultValue.toVariant();
 
-    if(engine->globalObject().property("list").toBool()) {
-        isList = true;
-    }
-
     if( stateInfo.cancelFlag ) {
-        if( !stateInfo.hasError() ) {
+        if(!stateInfo.hasError()) {
             stateInfo.setError("Script task canceled");
         }
     }
+}
 
+QVariant ScriptWorkerTask::getResult() const {
+    return result;
+}
+
+WorkflowScriptEngine * ScriptWorkerTask::getEngine() {
+    return engine;
 }
 
 QString ScriptPromter::composeRichDoc() {
     return target->getProto()->getDocumentation();
 }
 
-bool ScriptWorkerFactory::init(QList<DataTypePtr > input, QList<DataTypePtr > output, QList<Attribute *> attrs,
-                               const QString& name, const QString &description, const QString &actorFilePath) {
-    ActorPrototype * proto = IncludedProtoFactory::getScriptProto(input, output, attrs, name, description, actorFilePath);
+bool ScriptWorkerFactory::init(QList<DataTypePtr> input,
+                               QList<DataTypePtr> output,
+                               QList<Attribute*> attrs,
+                               const QString &name,
+                               const QString &description,
+                               const QString &actorFilePath) {
+    ActorPrototype *proto = IncludedProtoFactory::getScriptProto(
+        input, output, attrs, name, description, actorFilePath);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_SCRIPT(), proto);
     IncludedProtoFactory::registerScriptWorker(ACTOR_ID + name);
     return true;
+}
+
+Worker * ScriptWorkerFactory::createWorker(Actor *a) {
+    return new ScriptWorker(a);
 }
 
 ScriptWorker::ScriptWorker(Actor *a)
@@ -127,8 +143,7 @@ void ScriptWorker::bindPortVariables() {
             IntegralBusPort * busPort = qobject_cast<IntegralBusPort*>(actor->getPort(portId));
             Q_UNUSED(busPort);
             assert(busPort != NULL);
-            
-            //Actor * bindedAttrOwner = busPort->getLinkedActorById(actorId);
+
             attrId.prepend("in_");
             if( script->hasVarWithId(attrId)) {
                 script->setVarValueWithId(attrId, busData.value(slotDesc));
@@ -138,19 +153,18 @@ void ScriptWorker::bindPortVariables() {
 }
 
 void ScriptWorker::bindAttributeVariables() {
-    QMap<QString,Attribute*> attrs = actor->getParameters();
-    QMap<QString,Attribute*>::iterator it;
+    QMap<QString, Attribute*> attrs = actor->getParameters();
+    QMap<QString, Attribute*>::iterator it;
     for(it = attrs.begin(); it!=attrs.end();it++) {
-        Attribute* attr = it.value();
+        Attribute *attr = it.value();
         if(script->hasVarWithId(attr->getId())) {
-            script->setVarValueWithId(attr->getId(),attr->getAttributePureValue());
+            script->setVarValueWithId(attr->getId(), attr->getAttributePureValue());
         }
     }
 }
 
-Task *ScriptWorker::tick() {
-    //AttributeScript *script = actor->getScript();
-    if( script->isEmpty() ) {
+Task * ScriptWorker::tick() {
+    if(script->isEmpty()) {
         coreLog.error(tr("no script text"));
         return new FailTask(tr("no script text"));
     }
@@ -206,11 +220,16 @@ void ScriptWorker::sl_taskFinished() {
     }
 
     QVariantMap map;
+    bool hasSeqArray = false;
     foreach(const Descriptor &desc, ptr->getAllDescriptors()) {
         QString varName = "out_" + desc.getId();
-        //MAlignment ma = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<MAlignment>();
         if (BaseSlots::DNA_SEQUENCE_SLOT().getId() == desc.getId()) {
-            SharedDbiDataHandler seqId = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<SharedDbiDataHandler>();
+            QScriptValue value = t->getEngine()->globalObject().property(varName.toAscii().data());
+            if (value.isArray()) {
+                hasSeqArray = true;
+                continue;
+            }
+            SharedDbiDataHandler seqId = value.toVariant().value<SharedDbiDataHandler>();
             if (!seqId.constData() || !seqId.constData()->isValid()) {
                 continue;
             }
@@ -218,10 +237,11 @@ void ScriptWorker::sl_taskFinished() {
         map[desc.getId()] = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant();
     }
     if (output) {
-        if (t->isList) {
+        if (hasSeqArray) {
             QString varName = "out_" + BaseSlots::DNA_SEQUENCE_SLOT().getId();
-            QList<SharedDbiDataHandler> seqs = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant().value<QList<SharedDbiDataHandler> >();
-            foreach(SharedDbiDataHandler seqId, seqs) {
+            QScriptValue value = t->getEngine()->globalObject().property(varName.toAscii().data());
+            for (int i=0; i<value.property("length").toInt32(); i++) {
+                SharedDbiDataHandler seqId = value.property(i).toVariant().value<SharedDbiDataHandler>();
                 if (seqId.constData() && seqId.constData()->isValid()) {
                     map[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = QVariant::fromValue<SharedDbiDataHandler>(seqId);
                     output->put(Message(ptr,map));
@@ -240,5 +260,5 @@ void ScriptWorker::cleanup() {
     delete engine;
 }
 
-} //namespace LocalWorkflow
-} //namespace U2
+} // LocalWorkflow
+} // U2
