@@ -81,6 +81,7 @@ protected:
 	virtual void closeEvent(QCloseEvent* e); 
     virtual void dragEnterEvent(QDragEnterEvent *event);
     virtual void dropEvent ( QDropEvent * event );
+    virtual bool focusNextPrevChild ( bool next );
 protected:
 	MainWindowImpl* owner;
 };
@@ -128,6 +129,10 @@ void MWStub::dropEvent(QDropEvent *event)
             }
         }
     }
+}
+
+bool MWStub::focusNextPrevChild(bool next) {
+    return false;
 }
 
 //////////////////////////////////////////////////////////////////////////
