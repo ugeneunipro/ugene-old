@@ -46,7 +46,6 @@ namespace U2 {
 #define RUN_MODE   SETTINGS + "runMode"
 #define SCRIPT_MODE SETTINGS + "scriptMode"
 #define RUN_IN_SEPARATE_PROC SETTINGS + "runInSeparateProcess"
-#define CMDLINE_UGENE_PATH SETTINGS + "cmdlineUgenePath"
 #define EXTERNAL_TOOL_WORKER_PATH SETTINGS + "externalToolWorkerPath"
 #define INCLUDED_WORKER_PATH SETTINGS + "includedWorkerPath"
 
