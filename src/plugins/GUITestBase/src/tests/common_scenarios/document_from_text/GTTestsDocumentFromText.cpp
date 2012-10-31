@@ -18,19 +18,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-
 #include "runnables/qt/MessageBoxFiller.h"
 #include "GTTestsDocumentFromText.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
+#include "api/GTWidget.h"
+#include "api/GTPlainTextEdit.h"
+#include "api/GTLineEdit.h"
+#include "api/GTAction.h"
 #include "api/GTMenu.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
+#include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsSequenceView.h"
+#include <QtGui/QApplication>
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h"
 
@@ -1009,5 +1014,205 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2) {
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "result_new") != NULL, "Item result_new not found in tree widget");
     }
+
+GUI_TEST_CLASS_DEFINITION(test_0014) {
+    Runnable *filler = new CancelCreateDocumentFiller(os,
+        "", false, 
+        CancelCreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "",
+        CancelCreateDocumentFiller::FASTA,
+        "", false
+        );
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
+    GTGlobals::sleep();
+
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0014_1) {
+    Runnable *filler = new CancelCreateDocumentFiller(os,
+        "AAAA", false, 
+        CancelCreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "",
+        CancelCreateDocumentFiller::Genbank,
+        "", false
+        );
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
+    GTGlobals::sleep();
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0014_2) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "AAA", false, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result.fa",
+        CreateDocumentFiller::FASTA,
+        "result", false
+        );
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsProject::checkProject(os, GTUtilsProject::Exists);
+    GTGlobals::sleep();
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0015) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "AAA\n", false, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result.fa",
+        CreateDocumentFiller::FASTA,
+        "result", false
+        );
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QAction *showComplementAction = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement = GTAction::button(os, "complement_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
+
+    GTGlobals::sleep();
+    QAction *showTranslationAction = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation = GTAction::button(os, "translation_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggleViewButton"));
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QAction *showComplementAction1 = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement1 = GTAction::button(os, "complement_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
+
+    GTGlobals::sleep();
+    QAction *showTranslationAction1 = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
+
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0015_1) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "AAA", false, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result.fa",
+        CreateDocumentFiller::FASTA,
+        "result", false
+        );
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QAction *showComplementAction = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement = GTAction::button(os, "complement_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
+
+    GTGlobals::sleep();
+    QAction *showTranslationAction = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation = GTAction::button(os, "translation_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
+
+    Runnable *chooser = new PopupChooser(os, QStringList() << "toggleDetailsView");
+    GTUtilsDialog::waitForDialog(os, chooser);
+    GTWidget::click(os, GTWidget::findWidget(os, "toggleViewButton"));
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QAction *showComplementAction1 = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement1 = GTAction::button(os, "complement_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
+
+    GTGlobals::sleep();
+    QAction *showTranslationAction1 = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
+
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0015_2) {
+    Runnable *filler = new CreateDocumentFiller(os,
+        "AAA\n", false, 
+        CreateDocumentFiller::ExtendedDNA, false, true, "-",
+        testDir + "_common_data/scenarios/sandbox/result.fa",
+        CreateDocumentFiller::FASTA,
+        "result", false
+        );
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), "NewDocumentFromText", GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QAction *showTranslationAction = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement = GTAction::button(os, "complement_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement -> isEnabled() == false, "button is not disabled");
+
+    GTGlobals::sleep();
+    QAction *showComplementAction = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation = GTAction::button(os, "translation_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation -> isEnabled() == false, "button is not disabled");
+
+    GTGlobals::sleep();
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "show_hide_details_view"));
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_result"));
+    GTGlobals::sleep();
+
+    GTGlobals::sleep();
+    QAction *showComplementAction1 = GTAction::findAction(os, "complement_action");
+    QAbstractButton* complement1 = GTAction::button(os, "complement_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(complement1 -> isEnabled() == true, "button is not enabled");
+
+    GTGlobals::sleep();
+    QAction *showTranslationAction1 = GTAction::findAction(os, "translation_action");
+    QAbstractButton* translation1 = GTAction::button(os, "translation_action");
+    GTGlobals::sleep();
+    CHECK_SET_ERR(translation1 -> isEnabled() == true, "button is not enabled");
+
+    }
+
 } // namespace GUITest_common_scenarios_document_from_text
 } // namespace U2

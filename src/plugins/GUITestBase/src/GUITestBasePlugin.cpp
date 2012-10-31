@@ -423,6 +423,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0013_1);
     REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0013_2);
 
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0014);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0014_1);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0014_2);
+
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_document_from_text::test_0015, "https://ugene.unipro.ru/tracker/browse/UGENE-1099");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_document_from_text::test_0015_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1099");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_document_from_text::test_0015_2, "https://ugene.unipro.ru/tracker/browse/UGENE-1099");
+
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations
 /////////////////////////////////////////////////////////////////////////

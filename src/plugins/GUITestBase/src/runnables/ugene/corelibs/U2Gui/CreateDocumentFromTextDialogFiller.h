@@ -52,6 +52,32 @@ namespace U2 {
         GTGlobals::UseMethod useMethod;
     };
 
+    class CancelCreateDocumentFiller : public Filler {
+    public:
+        enum documentFormat {FASTA, Genbank};
+        enum documentAlphabet {StandardDNA, StandardRNA, ExtendedDNA, ExtendedRNA, StandardAmino, AllSymbols};
+
+        CancelCreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool customSettings, documentAlphabet _alphabet, bool skipUnknownSymbols,
+            bool replaceUnknownSymbols, const QString symbol, const QString &_documentLocation,
+            documentFormat _format, const QString &_sequenceName, bool saveFile, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+        virtual void run();
+    private:
+
+        QString pasteDataHere;
+        bool customSettings;
+        documentAlphabet alphabet;
+        bool skipUnknownSymbols;
+        bool replaceUnknownSymbols;
+        QString symbol;
+        QMap<documentAlphabet, QString> comboBoxAlphabetItems;
+        QString documentLocation;
+        documentFormat format;
+        QMap<documentFormat, QString> comboBoxItems;
+        QString sequenceName;
+        bool saveFile;
+        GTGlobals::UseMethod useMethod;
+        };
+
 }
 
 #endif

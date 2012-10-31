@@ -88,6 +88,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
     // close project
     if (AppContext::getProject() != NULL) {
 
+        GTGlobals::sleep();
         GTWidget::click(os, GTUtilsProjectTreeView::getTreeWidget(os));
         GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
         GTGlobals::sleep(100);

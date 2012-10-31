@@ -54,6 +54,9 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
     }
 
     switch(key) {
+    case '\n':
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["enter"]), 1, 0);
+        break;
     case '_':
         key = '-';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
@@ -96,6 +99,9 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
     GT_CHECK(display != 0, "display is NULL");
 
     switch(key) {
+    case '\n':
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["enter"]), 0, 0);
+        break;
     case '_':
         key = '-';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);

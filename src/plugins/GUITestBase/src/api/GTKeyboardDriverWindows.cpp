@@ -67,7 +67,11 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
         case '/':
             keyPress(os, VK_DIVIDE, modifiers);
             break;
-        
+
+        case '\n':
+            keyPress(os, GTKeyboardDriver::key["enter"], modifiers);
+            break;
+
         case ':':
             if (modifiers != 0) {
                 keyPress(os, modifiers);
@@ -129,6 +133,10 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 
         case '/':
             keyRelease(os, VK_DIVIDE, modifiers);
+            break;
+
+        case '\n':
+            keyRelease(os, GTKeyboardDriver::key["enter"], modifiers);
             break;
 
         case ':':

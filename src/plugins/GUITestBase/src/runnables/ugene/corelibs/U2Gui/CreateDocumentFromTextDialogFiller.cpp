@@ -127,4 +127,98 @@ void CreateDocumentFiller::run()
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+
+#define GT_CLASS_NAME "GTUtilsDialog::cancelCreateDocumentFiller"
+CancelCreateDocumentFiller::CancelCreateDocumentFiller(U2OpStatus &_os, const QString &_pasteDataHere, bool _customSettings = false, documentAlphabet _alphabet = StandardDNA, 
+                                           bool _skipUnknownSymbols = true, bool _replaceUnknownSymbols = false, const QString _symbol = "", 
+                                           const QString &_documentLocation = QString(),
+                                           documentFormat _format = FASTA, const QString &_sequenceName = QString(), 
+                                           bool saveFile = false, GTGlobals::UseMethod method):
+Filler(_os, "CreateDocumentFromTextDialog"), customSettings(_customSettings), alphabet(_alphabet), skipUnknownSymbols(_skipUnknownSymbols), symbol(_symbol),
+replaceUnknownSymbols(_replaceUnknownSymbols), format(_format), saveFile(saveFile), useMethod(method) 
+    {
+    sequenceName = _sequenceName;
+    pasteDataHere = _pasteDataHere;
+    QString __documentLocation = QDir::cleanPath(QDir::currentPath() + "/" + _documentLocation);
+    documentLocation = __documentLocation;
+    comboBoxItems[FASTA] = "FASTA";
+    comboBoxItems[Genbank] = "Genbank";
+    comboBoxAlphabetItems[StandardDNA] = "Standard DNA";
+    comboBoxAlphabetItems[StandardRNA] = "Standard RNA";
+    comboBoxAlphabetItems[ExtendedDNA] = "Extended DNA";
+    comboBoxAlphabetItems[ExtendedRNA] = "Extended RNA";
+    comboBoxAlphabetItems[StandardAmino] = "Standard amino";
+    comboBoxAlphabetItems[AllSymbols] = "All symbols";
+    }
+
+#define GT_METHOD_NAME "run"
+void CancelCreateDocumentFiller::run()
+    {
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog != NULL, "dialog not found");
+
+    QPlainTextEdit *plainText = dialog->findChild<QPlainTextEdit*>("sequenceEdit");
+    GT_CHECK(plainText != NULL, "plain text not found");
+    GTPlainTextEdit::setPlainText(os, plainText, pasteDataHere);
+
+    if (customSettings){
+        QGroupBox* customSettingsCheckBox = qobject_cast<QGroupBox*>(GTWidget::findWidget(os, "groupBox", dialog));
+        customSettingsCheckBox->setChecked(true);
+
+        QComboBox *alphabetComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "alphabetBox", dialog));
+        GT_CHECK(alphabetComboBox != NULL, "ComboBox not found");
+
+        if (skipUnknownSymbols){
+            QRadioButton* skipUnknownSymbols = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "skipRB", dialog));
+            skipUnknownSymbols->setChecked(true);
+            }
+        else {
+            QRadioButton* replaceUnknownSymbols = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "replaceRB", dialog));
+            replaceUnknownSymbols->setChecked(true);
+
+            QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("symbolToReplaceEdit");
+            GT_CHECK(lineEdit != NULL, "line edit not found");
+            GTLineEdit::setText(os, lineEdit, symbol);
+            }
+
+        int alphabetIndex = alphabetComboBox->findText(comboBoxAlphabetItems[alphabet]);
+        GT_CHECK(alphabetIndex != -1, QString("item \"%1\" in combobox not found").arg(comboBoxAlphabetItems[alphabet]));
+
+        if (alphabetComboBox->currentIndex() != alphabetIndex){
+            GTComboBox::setCurrentIndex(os, alphabetComboBox, alphabetIndex);
+            }
+        }
+
+    QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("filepathEdit");
+    GT_CHECK(lineEdit != NULL, "line edit not found");
+    GTLineEdit::setText(os, lineEdit, documentLocation);
+
+    QComboBox *comboBox = dialog->findChild<QComboBox*>();
+    GT_CHECK(comboBox != NULL, "ComboBox not found");
+
+    int index = comboBox->findText(comboBoxItems[format]);
+    GT_CHECK(index != -1, QString("item \"%1\" in combobox not found").arg(comboBoxItems[format]));
+
+    if (comboBox->currentIndex() != index){
+        GTComboBox::setCurrentIndex(os, comboBox, index);
+        }
+
+    QLineEdit *lineEditName = dialog->findChild<QLineEdit*>("nameEdit");
+    GT_CHECK(lineEditName != NULL, "line edit not found");
+    GTLineEdit::setText(os, lineEditName, sequenceName);
+
+    if (saveFile){
+        QCheckBox* saveFileCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "saveImmediatelyBox", dialog));
+        GTCheckBox::setChecked(os, saveFileCheckBox);
+        }
+
+    QPushButton *cancelButton = dialog->findChild<QPushButton*>(QString::fromUtf8("cancelButton"));
+    GT_CHECK(cancelButton != NULL, "Create button not found");
+
+    GTWidget::click(os, cancelButton);
+    }
+
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 }
