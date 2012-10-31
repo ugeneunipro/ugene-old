@@ -45,6 +45,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Formats/RawDNASequenceFormat.h>
 #include <U2Formats/FastaFormat.h>
+#include <U2Formats/GenbankFeatures.h>
 
 const QString NEW_LINE_SYMBOL = "\n";
 const QString COLOR_NAME_FOR_INFO_MESSAGES = "green";
@@ -158,6 +159,8 @@ private:
     }
 };
 
+typedef QPair<QString, QString> NamePattern;
+
 FindPatternEventFilter::FindPatternEventFilter(QObject* parent)
     : QObject(parent)
 {
@@ -219,6 +222,11 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         layoutAnnots->setSpacing(0);
         layoutAnnots->setContentsMargins(0, 0, 8, 0);
 
+        usePatternNamesCheckBox = new QCheckBox(tr("Use pattern names"));
+        usePatternNamesCheckBox->setToolTip(tr("Use names of patterns as annotations names. In case the patterns are in FASTA format"));
+        connect(usePatternNamesCheckBox, SIGNAL(clicked()), SLOT(sl_onUsePatternNamesClicked()));
+        layoutAnnots->addWidget(usePatternNamesCheckBox);
+
         DNAAlphabet* alphabet = activeContext->getAlphabet();
         isAminoSequenceSelected = alphabet->isAmino();
 
@@ -259,6 +267,7 @@ void FindPatternWidget::updateShowOptions()
         groupSearchIn->hide();
         groupOther->hide();
         annotsWidget->hide();
+        usePatternNamesCheckBox->hide();
         loadFromFileGroupBox->hide();
 
         setMinimumSize(QSize(170, 150));
@@ -270,11 +279,13 @@ void FindPatternWidget::updateShowOptions()
         groupSearchIn->show();
         groupOther->show();
         annotsWidget->show();
+        usePatternNamesCheckBox->show();
         loadFromFileGroupBox->show();
 
         setMinimumSize(QSize(170, 780));
         
         QWidget::setTabOrder(annotsWidget, bottomFocus);
+        QWidget::setTabOrder(usePatternNamesCheckBox, bottomFocus);
     }
     QWidget::setTabOrder(bottomFocus, lblShowMoreLess);
     // Change the mode
@@ -805,7 +816,14 @@ void FindPatternWidget::setRegionToWholeSequence()
 void FindPatternWidget::verifyPatternAlphabet()
 {
     U2OpStatusImpl os;
-    QString patterns = getPatternsFromTextPatternField(os).join("");
+    
+    QStringList patternNoNames;
+    QList<NamePattern > patternsWithNames = getPatternsFromTextPatternField(os);
+    foreach(const NamePattern& name_pattern, patternsWithNames ){
+        patternNoNames.append(name_pattern.second);
+    }
+
+    QString patterns = patternNoNames.join("");
     
     bool alphabetIsOk = checkAlphabet(patterns);
 
@@ -974,25 +992,29 @@ void FindPatternWidget::sl_onSearchClicked()
         AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
     } else {
         U2OpStatus2Log os;
-        foreach(QString pattern, getPatternsFromTextPatternField(os)) {
-            if (pattern.isEmpty()) {
+        const QList <NamePattern >& patterns = getPatternsFromTextPatternField(os);
+        foreach(const NamePattern& pattern, patterns) {
+            if (pattern.second.isEmpty()) {
                 uiLog.error(tr("Empty pattern"));
                 continue;
             }
-            initFindPatternTask(pattern);
+            initFindPatternTask(pattern.second, pattern.first);
             updateAnnotationsWidget();
         }
         annotModelPrepared = false;
     }
 }
 
-QStringList FindPatternWidget::getPatternsFromTextPatternField(U2OpStatus &os) const
+QList <QPair<QString, QString> > FindPatternWidget::getPatternsFromTextPatternField(U2OpStatus &os) const
 {
     QString inputText = textPattern->toPlainText().toLocal8Bit();
-    QStringList result = FastaFormat::getSequencesFromUserInput(inputText, os);
+    QList <NamePattern > result = FastaFormat::getSequencesAndNamesFromUserInput(inputText, os);
 
     if(result.isEmpty()) {
-        result = inputText.split(QRegExp("\n"), QString::SkipEmptyParts);
+        QStringList patterns = inputText.split(QRegExp("\n"), QString::SkipEmptyParts);
+        foreach(const QString& pattern, patterns){
+            result.append(qMakePair(QString(""), pattern));
+        }
     }
 
     return result;
@@ -1033,7 +1055,7 @@ void FindPatternWidget::sl_onFileSelectorToggled(bool on)
     checkState();
 }
 
-void FindPatternWidget::initFindPatternTask( const QString& pattern ){
+void FindPatternWidget::initFindPatternTask( const QString& pattern, const QString& patternName){
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
 
@@ -1112,7 +1134,28 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern ){
     SAFE_POINT(v.isEmpty(), "Annotation names are invalid", );
 
     const CreateAnnotationModel& annotModel = annotController->getModel();
-    QString annotName = annotModel.data->name;
+    QString annotName;
+    
+    bool useAnnotationName = true;
+    if (usePatternNamesCheckBox->isChecked()){
+        if(!patternName.isEmpty()){
+
+            QString newPatternName = patternName;
+            if (newPatternName.length() >= GBFeatureUtils::MAX_KEY_LEN){
+                newPatternName = patternName.left(GBFeatureUtils::MAX_KEY_LEN);
+            }
+
+            if (Annotation::isValidAnnotationName(newPatternName)){
+                annotName = newPatternName;
+                useAnnotationName = false;
+            }
+        }
+    }
+    
+    if(useAnnotationName){
+        annotName = annotModel.data->name;
+    }
+    
     QString annotGroup = annotModel.groupName;
 
     // Creating and registering the task
@@ -1142,13 +1185,14 @@ void FindPatternWidget::sl_loadPatternTaskStateChanged(){
     bool noBadRegion = true;
     bool noBadAlphabet = true;
 
-    foreach(const QString& pattern, loadTask->getPatterns()){
+    const QList<NamePattern>& namesPatterns = loadTask->getNamesPatterns();
+    foreach(const NamePattern& namePattern, namesPatterns){
         //check
-        bool isAlphabetOk = checkAlphabet(pattern);
-        bool isRegionOk = checkPatternRegion(pattern);
+        bool isAlphabetOk = checkAlphabet(namePattern.second);
+        bool isRegionOk = checkPatternRegion(namePattern.second);
         //initTask
         if(isAlphabetOk && isRegionOk ){
-            initFindPatternTask(pattern);
+            initFindPatternTask(namePattern.second, namePattern.first);
         }
         noBadRegion &= isRegionOk;
         noBadAlphabet &= isAlphabetOk;
@@ -1216,6 +1260,11 @@ void FindPatternWidget::sl_onAnotationNameEdited(){
     checkState();
 }
 
+void FindPatternWidget::sl_onUsePatternNamesClicked(){
+    bool isAnnotNamesEnabled = !usePatternNamesCheckBox->isChecked();
+    annotController->setEnabledNameEdit(isAnnotNamesEnabled);
+}
+
 //////////////////////////////////////////////////////////////////////////
 //LoadPatternsFileTask
 LoadPatternsFileTask::LoadPatternsFileTask( const QString& _filePath )
@@ -1268,7 +1317,8 @@ void LoadPatternsFileTask::run()
             U2SequenceObject *sequenceObject = qobject_cast<U2SequenceObject*>(object);
             assert(NULL != sequenceObject);
             QByteArray sequence = sequenceObject->getWholeSequenceData();
-            patterns.append(sequence);
+            QString seqName = sequenceObject->getSequenceName();
+            namesPatterns.append(qMakePair(seqName, QString(sequence)));
         }
     } else {
         QFile file(filePath);
@@ -1282,8 +1332,19 @@ void LoadPatternsFileTask::run()
             int streamPos = stream.device()->pos();
             stateInfo.progress = 100 * streamPos / fileSize;
             QString pattern = stream.readLine();
-            if (!pattern.isEmpty() && !patterns.contains(pattern))
-                patterns.append(pattern);
+            if (!pattern.isEmpty()){
+                bool contains = false;
+                foreach(const NamePattern& namePattern, namesPatterns){
+                    if (namePattern.second == pattern){
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains){
+                    namesPatterns.append(qMakePair(QString(""), pattern));
+                }
+                
+            }
         }
         file.close();
     }

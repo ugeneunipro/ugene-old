@@ -83,14 +83,14 @@ class LoadPatternsFileTask: public Task{
     Q_OBJECT
 public:
     LoadPatternsFileTask(const QString &_filePath);
-    QList<QString> getPatterns(){return patterns;}
+    QList<QPair<QString, QString> > getNamesPatterns(){return namesPatterns;}
     void run();
 
 private:
     Document *getDocumentFromFilePath();
 
     QString filePath;
-    QList<QString> patterns;
+    QList<QPair<QString, QString> > namesPatterns;
     bool isRawSequence;
 };
 
@@ -143,6 +143,8 @@ private slots:
     /** annotation name/group name was changed */
     void sl_onAnotationNameEdited();
 
+    void sl_onUsePatternNamesClicked();
+
 private:
     void initLayout();
     void initAlgorithmLayout();
@@ -183,11 +185,11 @@ private:
 
     U2Region getCompleteSearchRegion(bool& regionIsCorrect, qint64 maxLen) const;
 
-    void initFindPatternTask(const QString& pattern);
+    void initFindPatternTask(const QString& pattern, const QString& patternName = QString());
 
     /** Checks if there are several patterns in textPattern which are separated by new line symbol,
-    parse them out and returns. */
-    QStringList getPatternsFromTextPatternField(U2OpStatus &os) const;
+    parse them out and returns with their names (if they're exist). */
+    QList <QPair<QString, QString> > getPatternsFromTextPatternField(U2OpStatus &os) const;
 
     /** Checks whether the input string is uppercased or not. */
     static bool hasWrongChars(const QString &input);
@@ -221,6 +223,7 @@ private:
     QSpinBox* boxMaxResultLen;
 
     QWidget* annotsWidget;
+    QCheckBox* usePatternNamesCheckBox;
 
     DNASequenceSelection *currentSelection;
 

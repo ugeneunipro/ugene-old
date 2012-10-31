@@ -395,8 +395,8 @@ static QString skipComments(const QString &userInput, U2OpStatus &os) {
     return result.join("\n");
 }
 
-QStringList FastaFormat::getSequencesFromUserInput(const QString &userInput, U2OpStatus &os) {
-    QStringList result;
+QList <QPair<QString, QString> > FastaFormat::getSequencesAndNamesFromUserInput( const QString &userInput, U2OpStatus &os ){
+    QList <QPair<QString, QString> > result;
 
     if(userInput.contains(FASTA_HEADER_START_SYMBOL)) {
         QString patterns = skipComments(userInput, os);
@@ -412,7 +412,7 @@ QStringList FastaFormat::getSequencesFromUserInput(const QString &userInput, U2O
                 }
                 sequence += line;
             }
-            result << sequence;
+            result.append(qMakePair(name, sequence));
         }
     }
 

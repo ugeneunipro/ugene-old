@@ -91,6 +91,8 @@ public:
 
     void setFocusToNameEdit();
 
+    void setEnabledNameEdit(bool enbaled);
+
     QWidget* getWidget() const {return w;}
 
     const CreateAnnotationModel&    getModel() const {return model;}

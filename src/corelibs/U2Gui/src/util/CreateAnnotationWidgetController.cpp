@@ -651,6 +651,11 @@ void CreateAnnotationWidgetController::setFocusToNameEdit()
     annotationNameEdit->setFocus();
 }
 
+void CreateAnnotationWidgetController::setEnabledNameEdit( bool enbaled ){
+    SAFE_POINT(annotationNameEdit != NULL, "No annotation name line edit", );
+    annotationNameEdit->setEnabled(enbaled);
+}
+
 bool CreateAnnotationWidgetController::useAutoAnnotationModel() const
 {
     return useAutoAnnotationsRB->isChecked();
@@ -663,5 +668,6 @@ void CreateAnnotationWidgetController::sl_annotationNameEdited( const QString& t
 void CreateAnnotationWidgetController::sl_groupNameEdited( const QString& text ){
     emit si_annotationNamesEdited();
 }
+
 
 } // namespace
