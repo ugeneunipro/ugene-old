@@ -53,8 +53,8 @@ public:
 protected:
     CommunicationChannel *input;
     QString             fileName;
-    bool                firstFileIsAdded;
     QList<U2SequenceObject*> seqObjList;
+    Task*               currentTask;
 
 };
 

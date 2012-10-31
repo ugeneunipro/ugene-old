@@ -116,7 +116,7 @@ QString ExportPhredQualityPrompter::composeRichDoc() {
 /*************************************
  * ExportPhredQualityWorker
  *************************************/
-ExportPhredQualityWorker::ExportPhredQualityWorker(Actor* a) : BaseWorker(a), input(NULL), firstFileIsAdded(false) {
+ExportPhredQualityWorker::ExportPhredQualityWorker(Actor* a) : BaseWorker(a), input(NULL), currentTask(NULL) {
 
 }
 
@@ -127,32 +127,31 @@ void ExportPhredQualityWorker::init() {
 
 Task* ExportPhredQualityWorker::tick() {
 
-    QList<Task*> exportTasks;
-    while (!input->isEnded()) {
+    if (currentTask != NULL && currentTask->getState() != Task::State_Finished) {
+        return NULL;
+    }
 
-        SharedDbiDataHandler seqId = input->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
+    if ( input->hasMessage() ) {
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         U2SequenceObject* seqObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
         if ( NULL == seqObj ) {
-            continue;
+            return NULL;
         }
 
+        // Optimize clean up
         seqObjList.append(seqObj);
 
         ExportQualityScoresConfig cfg;
         cfg.dstFilePath = fileName;
-        if (!firstFileIsAdded) {
+        if (currentTask == NULL) {
             cfg.appendData = false;
-            firstFileIsAdded = true;
         }
 
-        exportTasks.append( new ExportPhredQualityScoresTask(seqObj, cfg));
-
+        currentTask = new ExportPhredQualityScoresTask(seqObj, cfg);
+        return currentTask;
     }
-
-    if (!exportTasks.isEmpty()) {
-        return new MultiTask("ExportQualityScoresOfSequenceList", exportTasks);
-    }
-
+    
     setDone();
     return NULL;
 }
