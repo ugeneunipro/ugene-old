@@ -114,7 +114,7 @@ QString ImportPhredQualityPrompter::composeRichDoc() {
 /*************************************
  * ImportPhredQualityWorker
  *************************************/
-ImportPhredQualityWorker::ImportPhredQualityWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {
+ImportPhredQualityWorker::ImportPhredQualityWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL), readTask(NULL) {
 }
 
 void ImportPhredQualityWorker::init() {
@@ -125,55 +125,46 @@ void ImportPhredQualityWorker::init() {
 }
 
 Task* ImportPhredQualityWorker::tick() {
-    while (!input->isEnded()) {
-        SharedDbiDataHandler seqId = input->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
+    
+    if (input->hasMessage()) {
+
+        if (readTask == NULL) {
+            readTask = new ReadQualityScoresTask(fileName, type);
+            return readTask;
+        } else if (readTask->getState() != Task::State_Finished) {
+            return NULL;
+        }
+
+        Message inputMessage = getMessageAndSetupScriptValues(input);
+        SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         if (NULL == seqObj.get()) {
-            continue;
+            return NULL;
         }
-        DNASequence dna = seqObj->getWholeSequence();
-        seqList << dna;
-    }
-    
-    if (seqList.isEmpty() ) {
-         algoLog.error( tr("Sequence list is empty.") );
-         setDone();
-         return NULL;
-    }
-
-    Task* t = new ReadQualityScoresTask(fileName, type);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    
-    return t;
-}
-
-void ImportPhredQualityWorker::sl_taskFinished() {
-    ReadQualityScoresTask* readQualitiesTask = qobject_cast<ReadQualityScoresTask*>(sender());
-    if (readQualitiesTask->getState() != Task::State_Finished) {
-       return;
-    }
-    
-    QMap<QString,DNAQuality> qualities = readQualitiesTask->getResult();
-    for (int i =0; i < seqList.size(); i++){
-        DNASequence& seq = seqList[i];
-        const QString& name = seq.getName();
-        if (qualities.contains(name)) {
-            seq.quality = qualities.value(name);
+        const QMap<QString,DNAQuality>& qualities = readTask->getResult();
+        
+        // It's OK to copy whole sequence because we do not to expect reads to be bigger than 1000 bp
+        DNASequence seq = seqObj->getWholeSequence();
+        
+        const QString& seqName = seq.getName();
+        if (qualities.contains(seqName)) {
+            const DNAQuality& qual = qualities.value(seqName);
+            if (seq.length() == qual.qualCodes.length()) {
+                seq.quality = qual;
+            }
         }
         SharedDbiDataHandler handler = context->getDataStorage()->putSequence(seq);
         output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), qVariantFromValue<SharedDbiDataHandler>(handler)));
-    }
-    
-    if (input->isEnded()) {
-        setDone();
+    } else if (input->isEnded()) {
         output->setEnded();
+        setDone();
+        algoLog.trace(tr("Import of qualities is finished.") );
     }
-    
-    algoLog.trace(tr("Import of qualities is finished.") );
+
+    return NULL;
 }
 
 void ImportPhredQualityWorker::cleanup() {
-    seqList.clear();
 }
 
 } //namespace LocalWorkflow

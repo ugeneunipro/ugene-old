@@ -50,16 +50,11 @@ public:
     virtual Task* tick();
     virtual void cleanup();
     
-private slots:
-    void sl_taskFinished();
-
 protected:
     CommunicationChannel *input, *output;
-    QString resultName,transId;
     ReadQualityScoresTask* readTask;
     QString             fileName;
     DNAQualityType      type;
-    QList<DNASequence>  seqList;
 }; 
 
 class ImportPhredQualityWorkerFactory : public DomainFactory {

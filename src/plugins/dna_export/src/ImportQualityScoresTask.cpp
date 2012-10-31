@@ -46,6 +46,10 @@ ReadQualityScoresTask::ReadQualityScoresTask( const QString& file, DNAQualityTyp
 
 void ReadQualityScoresTask::run() {
     
+    if (!checkRawData()) {
+        return;
+    }
+    
     IOAdapterFactory* f = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     std::auto_ptr<IOAdapter> io( f->createIOAdapter() );
     
@@ -57,12 +61,12 @@ void ReadQualityScoresTask::run() {
     int headerCounter = -1;
     QByteArray readBuf(READ_BUF_SIZE+1, 0);
     char* buf = readBuf.data();
-
-
+    int lineCount = 0;
+    
     while (!stateInfo.cancelFlag) {
         
         int len = io->readUntil(buf, READ_BUF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include); 
- 
+        ++lineCount;
         stateInfo.progress = io->getProgress();
 
         if (len == 0) {
@@ -85,7 +89,8 @@ void ReadQualityScoresTask::run() {
             bool ok = false;
             values.append( valStr.toInt(&ok) );
             if (!ok) {
-                setError(QString("Failed parse quality value: file %1, seq name %2").arg(fileName).arg(headers[headerCounter]));
+                setError(tr("Failed parse quality value: file %1, line %2").arg(fileName).arg(lineCount));
+                return;
             }
         }
     }
@@ -97,7 +102,7 @@ void ReadQualityScoresTask::run() {
 
 void ReadQualityScoresTask::recordQuality( int headerCounter )
 {
-    if (headerCounter > -1) {
+    if (headerCounter != -1) {
         QByteArray qualCodes;
         foreach (int v, values) {
             char code = DNAQuality::encode(v, type);
@@ -106,6 +111,35 @@ void ReadQualityScoresTask::recordQuality( int headerCounter )
         result.insert(headers[headerCounter], DNAQuality(qualCodes,type));
         //log.trace( QString("Phred quality parsed: %1 %2").arg(headers[headerCounter]).arg(qualCodes.constData()) );
     }
+}
+
+#define RAW_BUF_SIZE 256
+
+bool ReadQualityScoresTask::checkRawData()
+{
+    IOAdapterFactory* f = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+    std::auto_ptr<IOAdapter> io( f->createIOAdapter() );
+
+    QByteArray buf;
+    buf.reserve(RAW_BUF_SIZE);
+
+    if (!io->open(fileName, IOAdapterMode_Read )) {
+        setError(tr("Failed to open quality file %1").arg(fileName));
+        return false;
+    }
+    int len =  io->readBlock(buf.data(), RAW_BUF_SIZE);
+    if (len == 0) {
+        setError(tr("Failed to read data from quality file %1, probably it is empty").arg(fileName));         
+        return false;
+    }
+    if (buf[0] != '>') {
+        setError(tr("File  %1 is not a quality file").arg(fileName));
+        return false;
+    }
+
+    io->close();
+    return true;
+    
 }
 
 

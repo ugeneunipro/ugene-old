@@ -48,10 +48,11 @@ public:
 
     void run();
     
-    QMap<QString,DNAQuality> getResult() const { return result; }
+    const QMap<QString,DNAQuality>& getResult() const { return result; }
     
 private:
     void recordQuality( int headerCounter );
+    bool checkRawData();
     QString                     fileName;
     DNAQualityType              type;
     QStringList                 headers;
