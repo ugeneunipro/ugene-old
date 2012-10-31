@@ -26,8 +26,9 @@
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
-#include <U2Core/Task.h>
 #include <U2Core/DNASequenceSelection.h>
+#include <U2Core/Task.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <QtGui/QtGui>
 
@@ -186,10 +187,12 @@ private:
 
     /** Checks if there are several patterns in textPattern which are separated by new line symbol,
     parse them out and returns. */
-    QStringList getPatternsFromTextPatternField() const;
+    QStringList getPatternsFromTextPatternField(U2OpStatus &os) const;
 
     /** Checks whether the input string is uppercased or not. */
-    static bool isUppercased(const QString &input);
+    static bool hasWrongChars(const QString &input);
+
+    void setCorrectPatternsString();
 
     void changeColorOfMessageText(const QString &colorName);
     QString currentColorOfMessageText() const;

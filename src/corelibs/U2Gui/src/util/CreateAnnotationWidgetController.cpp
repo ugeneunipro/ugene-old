@@ -534,6 +534,9 @@ void CreateAnnotationWidgetController::updateModel() {
         model.annotationObjectRef = occ->getSelectedObject();
         model.newDocUrl = "";
     } else {
+        if (model.annotationObjectRef.isValid()) { // TODO: remove this and updateModel call from validate
+            return;
+        }
         model.annotationObjectRef = GObjectReference();
         model.newDocUrl = newFileEdit->text();
     }

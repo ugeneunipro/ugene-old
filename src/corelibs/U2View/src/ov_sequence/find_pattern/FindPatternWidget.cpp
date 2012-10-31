@@ -53,6 +53,110 @@ const QString STYLESHEET_DEFINITIONS_SEPARATOR = ";";
 
 namespace U2 {
 
+class FastaPatternsWalker {
+public:
+    FastaPatternsWalker(const QString &_patternsString, int _cursor = 0)
+        : patternsString(_patternsString.toAscii()), cursor(_cursor)
+    {
+        current = -1;
+        header = false;
+        comment = false;
+    }
+
+    bool hasNext() const {
+        return (current < patternsString.size() - 1);
+    }
+
+    char next() {
+        if (!hasNext()) {
+            return 0;
+        }
+        current++;
+        if (!updateMetaStart()) {
+            if (isMetaChars() && '\n' == patternsString[current]) {
+                header = false;
+                comment = false;
+            }
+        }
+        return patternsString[current];
+    }
+
+    bool isSequenceChar() const {
+        CHECK(-1 != current, false);
+        CHECK(current < patternsString.size(), false);
+        return !isMetaChars();
+    }
+
+    bool isHeader() const {
+        return header;
+    }
+
+    bool isComment() const {
+        return comment;
+    }
+
+    /** moves current place to the previous */
+    void removeCurrent() {
+        CHECK(-1 != current, );
+        CHECK(current < patternsString.size(), );
+        patternsString.remove(current, 1);
+        if (current < cursor) {
+            cursor--;
+        }
+        current--;
+    }
+
+    bool isCorrect() const {
+        if (!isSequenceChar()) {
+            return true;
+        }
+        QChar c(patternsString[current]);
+        if (c.isLetter()) {
+            return c.isUpper();
+        } else {
+            return ('\n' == c);
+        }
+    }
+
+    void setCurrent(char value) {
+        CHECK(-1 != current, );
+        CHECK(current < patternsString.size(), );
+        patternsString[current] = value;
+    }
+
+    int getCursor() const {
+        return cursor;
+    }
+
+    QString getString() const {
+        return patternsString;
+    }
+
+private:
+    QByteArray patternsString;
+    int cursor;
+    int current;
+    bool comment;
+    bool header;
+
+private:
+    bool updateMetaStart() {
+        char c = patternsString[current];
+        if (FastaFormat::FASTA_COMMENT_START_SYMBOL != c &&
+            FastaFormat::FASTA_HEADER_START_SYMBOL != c) {
+            return false;
+        }
+        if ((0 == current) || ('\n' == patternsString[current-1])) {
+            comment = (FastaFormat::FASTA_COMMENT_START_SYMBOL == c);
+            header = (FastaFormat::FASTA_HEADER_START_SYMBOL == c);
+            return true;
+        }
+        return false;
+    }
+    bool isMetaChars() const {
+        return header || comment;
+    }
+};
 
 FindPatternEventFilter::FindPatternEventFilter(QObject* parent)
     : QObject(parent)
@@ -632,25 +736,12 @@ QString FindPatternWidget::currentColorOfMessageText() const
 void FindPatternWidget::sl_onSearchPatternChanged()
 {
     static QString patterns = "";
-    if(patterns != textPattern->toPlainText()) {
+    if (patterns != textPattern->toPlainText()) {
         patterns = textPattern->toPlainText();
         showHideMessage(patterns.isEmpty(), UseMultiplePatternsTip);
-        // make patterns sequences uppercased
-        if(!isUppercased(patterns)) {
-            foreach(QString pattern, getPatternsFromTextPatternField()) {
-                if(!isUppercased(pattern))
-                    patterns.replace(pattern, pattern.toUpper());
-            }
 
-            QTextCursor cursorInTextEdit = textPattern->textCursor();
-            int cursorPosition = cursorInTextEdit.position();
+        setCorrectPatternsString();
 
-            textPattern->setPlainText(patterns);
-
-            cursorInTextEdit.setPosition(cursorPosition);
-            textPattern->setTextCursor(cursorInTextEdit);
-        }
-        
         checkState();
         tunePercentBox();
         enableDisableMatchSpin();
@@ -661,11 +752,41 @@ void FindPatternWidget::sl_onSearchPatternChanged()
     }
 }
 
-bool FindPatternWidget::isUppercased(const QString &input)
+void FindPatternWidget::setCorrectPatternsString() {
+    QTextCursor cursorInTextEdit = textPattern->textCursor();
+    FastaPatternsWalker walker(textPattern->toPlainText(), cursorInTextEdit.position());
+
+    while (walker.hasNext()) {
+        QChar character(walker.next());
+        if (walker.isCorrect()) {
+            continue;
+        }
+        if (character.isLetter()) {
+            if(!character.isUpper()) {
+                walker.setCurrent(character.toUpper().toAscii());
+            }
+        } else {
+            if ('\n' != character) {
+                walker.removeCurrent();
+            }
+        }
+    }
+
+    if (textPattern->toPlainText() != walker.getString()) {
+        textPattern->setText(walker.getString());
+        cursorInTextEdit.setPosition(walker.getCursor());
+        textPattern->setTextCursor(cursorInTextEdit);
+    }
+}
+
+bool FindPatternWidget::hasWrongChars(const QString &input)
 {
-    foreach(QChar character, input) {
-        if(!character.isUpper())
+    FastaPatternsWalker walker(input);
+    while (walker.hasNext()) {
+        walker.next();
+        if (!walker.isCorrect()) {
             return false;
+        }
     }
     return true;
 }
@@ -683,7 +804,8 @@ void FindPatternWidget::setRegionToWholeSequence()
 
 void FindPatternWidget::verifyPatternAlphabet()
 {
-    QString patterns = getPatternsFromTextPatternField().join("");
+    U2OpStatusImpl os;
+    QString patterns = getPatternsFromTextPatternField(os).join("");
     
     bool alphabetIsOk = checkAlphabet(patterns);
 
@@ -851,7 +973,12 @@ void FindPatternWidget::sl_onSearchClicked()
         connect(loadTask, SIGNAL(si_stateChanged()), SLOT(sl_loadPatternTaskStateChanged()));
         AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
     } else {
-        foreach(QString pattern, getPatternsFromTextPatternField()) {
+        U2OpStatus2Log os;
+        foreach(QString pattern, getPatternsFromTextPatternField(os)) {
+            if (pattern.isEmpty()) {
+                uiLog.error(tr("Empty pattern"));
+                continue;
+            }
             initFindPatternTask(pattern);
             updateAnnotationsWidget();
         }
@@ -859,13 +986,14 @@ void FindPatternWidget::sl_onSearchClicked()
     }
 }
 
-QStringList FindPatternWidget::getPatternsFromTextPatternField() const
+QStringList FindPatternWidget::getPatternsFromTextPatternField(U2OpStatus &os) const
 {
     QString inputText = textPattern->toPlainText().toLocal8Bit();
-    QStringList result = FastaFormat::getSequencesFromUserInput(inputText);
+    QStringList result = FastaFormat::getSequencesFromUserInput(inputText, os);
 
-    if(result.isEmpty())
-        result = inputText.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    if(result.isEmpty()) {
+        result = inputText.split(QRegExp("\n"), QString::SkipEmptyParts);
+    }
 
     return result;
 }
