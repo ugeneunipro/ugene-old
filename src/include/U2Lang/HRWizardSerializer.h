@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Lang/src/support/wizard/HRWizardSerializer.h"
+#include "../../corelibs/U2Lang/src/support/serialize/HRWizardSerializer.h"

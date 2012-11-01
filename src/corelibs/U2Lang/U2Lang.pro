@@ -44,7 +44,6 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/WorkflowScriptEngine.h \
            src/model/WorkflowTransport.h \
            src/support/CoreLibConstants.h \
-           src/support/HRSchemaSerializer.h \
            src/support/MapDatatypeEditor.h \
            src/support/MarkerUtils.h \
            src/support/SchemaSerializer.h \
@@ -63,7 +62,8 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/wizard/Wizard.h \
            src/model/wizard/WizardPage.h \
            src/model/wizard/WizardWidget.h \
-           src/support/wizard/HRWizardSerializer.h
+           src/support/serialize/HRSchemaSerializer.h \
+           src/support/serialize/HRWizardSerializer.h
 SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BaseAttributes.cpp \
            src/library/BasePorts.cpp \
@@ -103,7 +103,6 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/WorkflowScriptEngine.cpp \
            src/model/WorkflowTransport.cpp \
            src/support/CoreLibConstants.cpp \
-           src/support/HRSchemaSerializer.cpp \
            src/support/MapDatatypeEditor.cpp \
            src/support/MarkerUtils.cpp \
            src/support/SchemaSerializer.cpp \
@@ -122,7 +121,8 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/wizard/Wizard.cpp \
            src/model/wizard/WizardPage.cpp \
            src/model/wizard/WizardWidget.cpp \
-           src/support/wizard/HRWizardSerializer.cpp
+           src/support/serialize/HRSchemaSerializer.cpp \
+           src/support/serialize/HRWizardSerializer.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

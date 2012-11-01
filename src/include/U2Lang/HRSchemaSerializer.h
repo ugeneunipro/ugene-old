@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Lang/src/support/HRSchemaSerializer.h"
+#include "../../corelibs/U2Lang/src/support/serialize/HRSchemaSerializer.h"
