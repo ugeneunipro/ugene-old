@@ -116,6 +116,8 @@ private slots:
     void sl_complementLocation();
     void sl_setPredefinedGroupName();
 
+    void sl_documentsComboUpdated();
+
     //edit slots
     void sl_annotationNameEdited(const QString& text);
     void sl_groupNameEdited(const QString& text);

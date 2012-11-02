@@ -121,6 +121,8 @@ void CreateAnnotationWidgetController::updateWidgetForAnnotationModel(const Crea
 
     occ->updateConstrains(occc);
 
+    connect(occ, SIGNAL(si_comboBoxChanged()), SLOT(sl_documentsComboUpdated()));
+
     commonWidgetUpdate(newModel);
 }
 
@@ -501,12 +503,14 @@ QString CreateAnnotationWidgetController::validate() {
         locationEdit->setFocus();
         return INVALID_LOCATION;
     }
-    foreach(U2Region reg, model.data->getRegions()){
-        if( reg.endPos() > model.sequenceLen || reg.startPos < 0 || reg.endPos() < reg.startPos) {
-            return INVALID_LOCATION;
+    if (!model.hideLocation){
+        foreach(U2Region reg, model.data->getRegions()){
+            if( reg.endPos() > model.sequenceLen || reg.startPos < 0 || reg.endPos() < reg.startPos) {
+                return INVALID_LOCATION;
+            }
         }
     }
-
+    
 //    AppContext::getSettings()->setValue(SETTINGS_LAST_USED_ANNOTATION_NAME, model.data->name);
 
     return QString::null;
@@ -534,7 +538,7 @@ void CreateAnnotationWidgetController::updateModel() {
         model.annotationObjectRef = occ->getSelectedObject();
         model.newDocUrl = "";
     } else {
-        if (model.annotationObjectRef.isValid()) { // TODO: remove this and updateModel call from validate
+        if (model.annotationObjectRef.isValid()) {
             return;
         }
         model.annotationObjectRef = GObjectReference();
@@ -659,6 +663,10 @@ void CreateAnnotationWidgetController::setEnabledNameEdit( bool enbaled ){
 bool CreateAnnotationWidgetController::useAutoAnnotationModel() const
 {
     return useAutoAnnotationsRB->isChecked();
+}
+
+void CreateAnnotationWidgetController::sl_documentsComboUpdated(){
+    commonWidgetUpdate(model);
 }
 
 void CreateAnnotationWidgetController::sl_annotationNameEdited( const QString& text ){

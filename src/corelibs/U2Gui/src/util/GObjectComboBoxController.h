@@ -56,6 +56,9 @@ public:
 
     void updateConstrains(const GObjectComboBoxControllerConstraints& c);
 
+signals:
+    void si_comboBoxChanged();
+
 private slots:
     void sl_onDocumentAdded(Document* d);
     void sl_onDocumentRemoved(Document* d);

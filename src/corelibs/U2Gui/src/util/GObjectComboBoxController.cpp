@@ -128,12 +128,15 @@ void GObjectComboBoxController::addObject(GObject* obj) {
     connect(obj, SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
     combo->addItem(obj->isUnloaded() ? unloadedObjectIcon: objectIcon, itemText(obj), 
                         QVariant::fromValue<GObjectReference>(GObjectReference(obj)));
+
+    emit si_comboBoxChanged();
 }
 
 void GObjectComboBoxController::removeObject(const GObjectReference& ref) {
     int n = findItem(combo, ref);
     if (n >= 0) {
         combo->removeItem(n);
+        emit si_comboBoxChanged();
     }
 }
 
