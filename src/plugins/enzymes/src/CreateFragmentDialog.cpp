@@ -58,7 +58,7 @@ CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWid
 
 }
 
-CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, QWidget* p )
+CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, const U2Region& region, QWidget* p )
 : QDialog(p)
 {
     setupUi(this);
@@ -75,6 +75,7 @@ CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, QWidget* p )
     }
 
     rs=new RegionSelector(this, seqObj->getSequenceLength(), false);
+    rs->setRegion(region);
     rangeSelectorLayout->addWidget(rs);
 
     setupAnnotationsWidget();

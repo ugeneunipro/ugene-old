@@ -232,6 +232,9 @@ void RegionSelector::setRegion(const U2Region& value){
     }
     startEdit->setText(QString::number(value.startPos+1));
     endEdit->setText(QString::number(value.endPos()));
+    if (! (value.startPos == 0 && value.length == maxLen) ) {
+        comboBox->setCurrentIndex(customIndex);
+    }
     emit si_regionChanged(value);
 
 }

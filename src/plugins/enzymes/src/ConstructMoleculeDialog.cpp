@@ -345,7 +345,7 @@ void ConstructMoleculeDialog::sl_onAddFromProjectButtonClicked()
             U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
             
             if (seqObj) {
-                CreateFragmentDialog dlg(seqObj, this);
+                CreateFragmentDialog dlg(seqObj, U2Region(0, seqObj->getSequenceLength()), this);
                 if (dlg.exec() == QDialog::Accepted) {
                     DNAFragment frag = dlg.getFragment();
                         QString fragItem = QString("%1 (%2) %3").arg(frag.getSequenceName())

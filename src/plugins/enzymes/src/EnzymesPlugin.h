@@ -53,12 +53,16 @@ public:
 
 protected slots:
     void sl_search();
+    void sl_createPCRProduct();
 
 protected:
     virtual void buildMenu(GObjectView* v, QMenu* m);
     virtual void initViewContext(GObjectView* view);
     QList<QAction*> cloningActions;
+    QAction* createPCRProductAction;
 };
+
+
 
 } //namespace
 

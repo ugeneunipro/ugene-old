@@ -36,7 +36,7 @@ class CreateFragmentDialog : public QDialog, public Ui_CreateFragmentDialog {
     Q_OBJECT
 public:
     CreateFragmentDialog(ADVSequenceObjectContext* seqCtx, QWidget* p);
-    CreateFragmentDialog(U2SequenceObject* seqObj, QWidget* p);
+    CreateFragmentDialog(U2SequenceObject* seqObj, const U2Region& region, QWidget* p);
     virtual void accept();
     const DNAFragment& getFragment() { return dnaFragment; }
 private:

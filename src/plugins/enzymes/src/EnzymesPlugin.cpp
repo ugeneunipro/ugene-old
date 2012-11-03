@@ -33,6 +33,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/AnnotationSelection.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/DialogUtils.h>
@@ -40,6 +41,7 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVSequenceWidget.h>
 #include <U2View/ADVUtils.h>
 
 
@@ -206,7 +208,7 @@ EnzymesPlugin::~EnzymesPlugin()
 //////////////////////////////////////////////////////////////////////////
 
 
-EnzymesADVContext::EnzymesADVContext(QObject* p,const QList<QAction*>& actions) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID), cloningActions(actions)
+EnzymesADVContext::EnzymesADVContext(QObject* p,const QList<QAction*>& actions) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID), cloningActions(actions),createPCRProductAction(NULL)
 {
 }
 
@@ -215,6 +217,10 @@ void EnzymesADVContext::initViewContext(GObjectView* view) {
     ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":enzymes/images/enzymes.png"), tr("Find restriction sites..."), 50);
     a->addAlphabetFilter(DNAAlphabet_NUCL);
     connect(a, SIGNAL(triggered()), SLOT(sl_search()));
+    
+    createPCRProductAction = new GObjectViewAction(av, av, "Create PCR product...");
+    connect(createPCRProductAction, SIGNAL(triggered()), SLOT(sl_createPCRProduct()));
+
 }
 
 
@@ -229,6 +235,11 @@ void EnzymesADVContext::sl_search() {
     FindEnzymesDialog d(seqCtx);
     d.exec();
 }
+
+// TODO: move definitions to core
+#define PRIMER_ANNOTATION_GROUP_NAME    "pair"
+#define PRIMER_ANNOTATION_NAME			"primer"
+
 
 void EnzymesADVContext::buildMenu( GObjectView* v, QMenu* m )
 {
@@ -246,6 +257,48 @@ void EnzymesADVContext::buildMenu( GObjectView* v, QMenu* m )
     QAction* exportMenuAction = GUIUtils::findAction(m->actions(), ADV_MENU_EXPORT);
     m->insertMenu(exportMenuAction, cloningMenu);
 
+    if(!av->getAnnotationsSelection()->getSelection().isEmpty()) {
+        QString annName = av->getAnnotationsSelection()->getSelection().first().annotation->getAnnotationName();
+        
+        if (annName == PRIMER_ANNOTATION_NAME) {
+            cloningMenu->addAction( createPCRProductAction );    
+        }
+    }
+        
+
 }
+
+
+void EnzymesADVContext::sl_createPCRProduct()
+{
+    GObjectViewAction* action = qobject_cast<GObjectViewAction*>(sender());
+    assert(action!=NULL);
+    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(action->getObjectView());
+    assert(av!=NULL);
+    
+    Annotation* a = av->getAnnotationsSelection()->getSelection().first().annotation;
+    const QList<AnnotationGroup*> groups = a->getGroups();
+    foreach( AnnotationGroup* group, groups) {
+        if (group->getGroupName().startsWith(PRIMER_ANNOTATION_GROUP_NAME) ) {
+            assert(group->getAnnotations().size() == 2);
+            if (group->getAnnotations().size() == 2) {
+                Annotation* a1 = group->getAnnotations().at(0);
+                Annotation* a2 = group->getAnnotations().at(1);
+                int startPos = a1->getLocation()->regions.at(0).startPos;
+                assert(a2->getLocation()->strand == U2Strand::Complementary);
+                int endPos = a2->getLocation()->regions.at(0).endPos();
+                
+                U2SequenceObject* seqObj = av->getSequenceInFocus()->getSequenceObject();
+                U2Region region(startPos, endPos - startPos );
+                CreateFragmentDialog dlg(seqObj, region, av->getSequenceWidgetInFocus() );
+                dlg.setWindowTitle("Create PCR product");
+                dlg.exec();
+            }
+        }
+    }
+
+
+}
+
 
 } //namespace
