@@ -1,0 +1,265 @@
+#@UGENE_WORKFLOW
+#Call variants for an input assembly and a reference sequence using SAMTools mpileup and bcftool
+
+
+workflow "Call Variants with SAMTools"{
+
+    read-assembly {
+        type:read-assembly;
+        name:"Read Assembly";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    write-variations {
+        type:write-variations;
+        name:"Write Variations";
+        document-format:vcf;
+        write-mode:0;
+    }
+    call_variants {
+        type:call_variants;
+        name:"Call Variants";
+    }
+
+
+    .actor-bindings {
+        read-assembly.out-assembly->call_variants.in-assembly
+        read-sequence.out-sequence->call_variants.in-sequence
+        call_variants.out-variations->write-variations.in-variations
+    }
+
+    call_variants.variation-track->write-variations.in-variations.variation-track
+    read-assembly.assembly->call_variants.in-assembly.assembly
+    read-assembly.url->call_variants.in-assembly.url
+    read-sequence.sequence->call_variants.in-sequence.sequence
+    read-sequence.url->call_variants.in-sequence.url
+
+    .meta {
+		wizard {
+			name : "Call Variants Wizard";
+			page {
+				 id : 1;
+				 next : 2;
+				 title: "Input reference sequence and BAM file";
+				  parameters-area {
+					group {
+						title : "Input files";
+						label-size: 120;
+						read-sequence.url-in {
+							label : "Reference sequence file";
+						}
+						read-assembly.url-in{
+							label : "Sorted BAM file";
+						}
+                    }
+			      }
+		    }
+			page {
+				id : 2;
+				next : 3;
+				title: "SAMTools mpileup parameters";
+				  parameters-area {
+					group {
+						title : "Parameters";
+						label-size: 200;
+						call_variants.use_orphan {
+							
+						}
+						call_variants.disable_baq {
+							
+						}
+						call_variants.capq_thres {
+							
+						}
+						call_variants.max_depth {
+							
+						}
+						call_variants.ext_baq {
+							
+						}
+						call_variants.bed {
+							
+						}
+						call_variants.reg {
+							
+						}
+						call_variants.min_mq{
+							
+						}
+						call_variants.min_baseq{
+							
+						}
+				    }
+					group {
+						title : "Additional";
+						label-size: 200;
+						type : hideable;
+						call_variants.illumina13-encoding {
+							
+					    }
+						call_variants.extQ{
+							
+						}
+						call_variants.tandemQ{
+							
+						}
+						call_variants.no_indel{
+							
+						}
+						call_variants.max_indel_depth{
+							
+						}
+						call_variants.openQ{
+							
+						}
+						call_variants.pl_list{
+							
+						}
+				    }
+				}
+			}
+			page {
+				id : 3;
+				next : 4;
+				title: "SAMTools bcfview parameters";
+				  parameters-area {
+					group {
+						title : "Parameters";
+						label-size: 200;
+						call_variants.keepalt{
+							
+						}
+						call_variants.fix_pl{
+							
+						}
+						call_variants.no_geno{
+							
+						}
+						call_variants.acgt_only{
+							
+						}
+						call_variants.bcf_bed{
+							
+						}
+						call_variants.qcall{
+							
+						}
+						call_variants.samples{
+							
+						}
+						call_variants.min_smpl_frac{
+							
+						}
+						call_variants.call_gt{
+							
+						}
+						
+					}
+					group {
+						title : "Additional";
+						label-size: 200;
+						type : hideable;
+						call_variants.indel_frac{
+							
+						}
+						call_variants.pref{
+							
+						}
+						call_variants.ptype{
+							
+						}
+						call_variants.theta{
+							
+						}
+						call_variants.ccall{
+							
+						}
+						call_variants.n1{
+							
+						}
+						call_variants.n_perm{
+							
+						}
+						call_variants.min_perm_p{
+							
+						}
+				  }
+				  }
+				  
+			}
+			page {
+				id : 4;
+				title: "Output variations file";
+				  parameters-area {
+					group {
+						title : "Output file";
+						label-size: 100;
+						write-variations.url-out{
+						
+						}
+						write-variations.document-format{
+						
+						}
+						
+						write-variations.write-mode{
+						}
+                    }
+			      }
+			}
+		}
+        visual {
+            read-assembly {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read Assembly</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads assembly from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
+                tooltip:"Reads assembly from files";
+                pos:"-675 -555";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-assembly.angle:360;
+            }
+            read-sequence {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read Sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads sequence(s) from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
+                tooltip:"Reads sequences and annotations if any from local or remote files.";
+                pos:"-675 -420";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            write-variations {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write Variations</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all variations from <span style=' text-decoration: underline;'>Call Variants</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#0000ff;'>toy_vars.vcf</span></a>.</p></body></html>";
+                tooltip:"Writes all supplied variations to file(s) in selected format";
+                pos:"-240 -495";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-variations.angle:180;
+            }
+            call_variants {
+                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Call Variants</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>For reference sequence from <span style=' text-decoration: underline;'>Read Sequence</span>, call variants with assembly data provided by <span style=' text-decoration: underline;'>Read Assembly</span>,.</p></body></html>";
+                tooltip:"Call SNPs and INDELS with samtools mpileup and bcftools";
+                pos:"-495 -495";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-assembly.angle:150;
+                in-sequence.angle:210;
+                out-variations.angle:360;
+            }
+            read-sequence.out-sequence->call_variants.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            call_variants.out-variations->write-variations.in-variations {
+                text-pos:"-45 -37";
+            }
+            read-assembly.out-assembly->call_variants.in-assembly {
+                text-pos:"-26.5 -24";
+            }
+        }
+    }
+}
+
