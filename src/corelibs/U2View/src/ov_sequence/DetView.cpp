@@ -167,8 +167,9 @@ void DetView::setShowTranslation(bool t) {
     updateSize();
 }
 
-void DetView::setDisableTranslationAction(bool t){
+void DetView::setDisabledDetViewActions(bool t){
     showTranslationAction->setDisabled(t);
+    showComplementAction->setDisabled(t);
 }
 
 void DetView::mouseReleaseEvent(QMouseEvent* me) {

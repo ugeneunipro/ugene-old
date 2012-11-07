@@ -264,7 +264,7 @@ void ADVSingleSequenceWidget::setViewCollapsed(bool v) {
     foreach(GSequenceLineView* seqView, lineViews) {
         seqView->setHidden(v);
     }
-    detView->setDisableTranslationAction(v);
+    detView->setDisabledDetViewActions(v);
     updateMinMaxHeight();
 }
 
@@ -286,7 +286,7 @@ void ADVSingleSequenceWidget::setDetViewCollapsed(bool v) {
         getSequenceContext()->setTranslationsVisible(!v);
     }
     detView->setHidden(v);
-    detView->setDisableTranslationAction(v);
+    detView->setDisabledDetViewActions(v);
 
     updateMinMaxHeight();
 }
