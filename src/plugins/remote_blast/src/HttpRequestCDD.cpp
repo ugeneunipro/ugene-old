@@ -163,7 +163,7 @@ void HttpRequestCDD::parseHit(QByteArray &b,ResponseBuffer &buf) {
     QString id;
     while(!b.contains("</TABLE>")) {
         
-        while(!b.contains("lcl|") && !b.contains("</TABLE>")) {
+        while(!(b.contains("lcl|") || b.contains("gi ")) && !b.contains("</TABLE>")) {
             b = buf.readLine();
         } 
 
