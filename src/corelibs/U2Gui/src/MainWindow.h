@@ -37,7 +37,7 @@ class QToolBar;
 class QMainWindow;
 
 // menu 
-#define MWMENU								"mw_menu_bar"
+#define MWMENU                              "mw_menu_bar"
 #define MWMENU_FILE                         "mwmenu_file"
 #define MWMENU_ACTIONS                      "mwmenu_actions"
 #define MWMENU_SETTINGS                     "mwmenu_settings"
@@ -92,18 +92,18 @@ class QMainWindow;
 #define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT         "export sequences as alignment"
 #define ACTION_EXPORT_ANNOTATIONS                   "action_export_annotations"
 
-#define ACTION_EDIT_SEQUENCE						"edit sequences"
-#define ACTION_EDIT_INSERT_SUBSEQUENCE		        "action_edit_insert_sub_sequences"
-#define ACTION_EDIT_REMOVE_SUBSEQUENCE		        "action_edit_remove_sub_sequences"
-#define ACTION_EDIT_REPLACE_SUBSEQUENCE		        "action_edit_replace_sub_sequences"
+#define ACTION_EDIT_SEQUENCE                        "edit sequences"
+#define ACTION_EDIT_INSERT_SUBSEQUENCE              "action_edit_insert_sub_sequences"
+#define ACTION_EDIT_REMOVE_SUBSEQUENCE              "action_edit_remove_sub_sequences"
+#define ACTION_EDIT_REPLACE_SUBSEQUENCE             "action_edit_replace_sub_sequences"
 #define ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE     "action_edit_reserve_complement_sequences"
-#define ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW		"action_edit_select_sequences_from_view"
+#define ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW       "action_edit_select_sequences_from_view"
 
-#define ACTION_BOOKMARK_TREE_VIEW					"action_bookmark_tree_view"
-#define ACTION_ACTIVATE_VIEW						"action_activate_view"
-#define ACTION_ADD_BOOKMARK							"action_add_bookmark"
-#define ACTION_RENAME_BOOKMARK						"action_rename_bookmark"
-#define ACTION_REMOVE_BOOKMARK						"action_remove_bookmark"
+#define ACTION_BOOKMARK_TREE_VIEW                   "action_bookmark_tree_view"
+#define ACTION_ACTIVATE_VIEW                        "action_activate_view"
+#define ACTION_ADD_BOOKMARK                         "action_add_bookmark"
+#define ACTION_RENAME_BOOKMARK                      "action_rename_bookmark"
+#define ACTION_REMOVE_BOOKMARK                      "action_remove_bookmark"
 
 
 #define DOCK_PROJECT_VIEW    "dock_project_view"

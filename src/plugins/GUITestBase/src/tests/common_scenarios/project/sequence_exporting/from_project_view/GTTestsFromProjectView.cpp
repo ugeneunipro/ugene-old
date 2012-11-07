@@ -174,7 +174,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
 
-    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa"));
+    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", ExportToSequenceFormatFiller::FASTA, true, true));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "HIV-1.aln"));
     GTMouseDriver::click(os, Qt::RightButton);
@@ -182,7 +182,6 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "export1.fa");
     GTUtilsProjectTreeView::scrollTo(os, "ru131");
-
 
     GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
@@ -202,6 +201,125 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
         os.setError("sequence [s] ru131 has not NOT'-' symbols at the end of sequence");
     }
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0005) {
+
+    // 1. Use menu {File->Open}. Open project data/samples/CLUSTALW/COI.aln
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTGlobals::sleep(1000);
+
+    // 3. Right click [m] COI object, in project view tree. Use context menu item {Export->Export to FASTA}
+    //    Expected state: Export aligniment dialog open
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
+    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", 
+                                ExportToSequenceFormatFiller::FASTA, true, false));
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "View States"<< "Open New View", GTGlobals::UseMouse));
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Zychia_baranovi"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+
+    QWidget *activeWindow =  GTUtilsMdi::activeWindow(os);
+    if (! activeWindow->windowTitle().contains("Zychia_baranovi") && !os.hasError()) {
+        os.setError("fasta file with sequences has been not opened");
+        }
+
+    int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(sequenceLength == 586, "Sequence length is " + QString::number(sequenceLength) + ", expected 586");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0005_1) {
+
+    // 1. Use menu {File->Open}. Open project data/samples/CLUSTALW/COI.aln
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTGlobals::sleep(1000);
+
+    // 3. Right click [m] COI object, in project view tree. Use context menu item {Export->Export to FASTA}
+    //    Expected state: Export aligniment dialog open
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
+    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", 
+        ExportToSequenceFormatFiller::FASTA, true, true));
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "View States"<< "Open New View", GTGlobals::UseMouse));
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Zychia_baranovi"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+
+    QWidget *activeWindow =  GTUtilsMdi::activeWindow(os);
+    if (! activeWindow->windowTitle().contains("Zychia_baranovi") && !os.hasError()) {
+        os.setError("fasta file with sequences has been not opened");
+        }
+
+    int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(sequenceLength == 604, "Sequence length is " + QString::number(sequenceLength) + ", expected 586");
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0005_2) {
+
+
+    // 1. Use menu {File->Open}. Open project data/samples/CLUSTALW/COI.aln
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTGlobals::sleep(1000);
+
+    // 3. Right click [m] COI object, in project view tree. Use context menu item {Export->Export to FASTA}
+    //    Expected state: Export aligniment dialog open
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
+    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", 
+        ExportToSequenceFormatFiller::FASTA, true, false));
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "View States"<< "Open New View", GTGlobals::UseMouse));
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Zychia_baranovi"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(1000);
+
+    QWidget *activeWindow =  GTUtilsMdi::activeWindow(os);
+    if (! activeWindow->windowTitle().contains("Zychia_baranovi") && !os.hasError()) {
+        os.setError("fasta file with sequences has been not opened");
+        }
+
+    int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(sequenceLength == 586, "Sequence length is " + QString::number(sequenceLength) + ", expected 586");
+
+    }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
     const QString doc1("1.gb"), doc2("2.gb");
@@ -226,7 +344,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 //     2) UGENE window titled with text "proj4 UGENE"
     GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
-
 
 // 2. Double click on [a] Annotations sequence object, in project view tree
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
@@ -265,6 +382,191 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0007) {
+
+    const QString doc1("1.gb"), doc2("2.gb");
+
+    // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTGlobals::sleep(1000);
+
+    // Expected state: 
+    //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
+    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
+    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
+    if (item1 == NULL || item2 == NULL) {
+        os.setError("Project view with document \"1.gb\" and \"2.gb\" is not opened");
+        return;
+        }
+    if (GTUtilsDocument::isDocumentLoaded(os, doc1) || GTUtilsDocument::isDocumentLoaded(os, doc2)) {
+        os.setError("Documents is not unload");
+        return;
+        }
+
+    //     2) UGENE window titled with text "proj4 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
+
+    // 2. Double click on [a] Annotations sequence object, in project view tree
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    // Expected result: NC_001363 sequence has been opened in sequence view
+    GObjectViewWindow *activeWindow = qobject_cast<GObjectViewWindow*> (GTUtilsMdi::activeWindow(os));
+    if (! activeWindow->getViewName().contains("NC_001363")) {
+        os.setError("NC_001363 sequence has been not opened in sequence view");
+        return;
+        }
+
+    // 3. Right click on [s] NC_001363 sequence object, in project view tree. Use context menu item {Export->Export sequence as alignment}
+    // Expected state: Export sequences dialog open
+    // 4. Select file to save: _common_data/scenarios/sandbox/exp2.msf and set 'file format to use' to MSF,
+    // Than to uncheck the 'add document to the project' checkbox and click Save button.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+
+    Runnable *filler = new ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
+        "exp2.sto", ExportSequenceAsAlignmentFiller::Stockholm);
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // 5. Open file _common_data/scenarios/sandbox/exp2.msf
+    GTGlobals::sleep();
+    GTFileDialog::openFile(os, dataDir + "_common_data/scenarios/sandbox/", "exp2.sto");
+    GTGlobals::sleep(1000);
+
+    // Expected state: multiple alignment view with NC_001363 sequence has been opened
+    if (GTUtilsProjectTreeView::getSelectedItem(os) != "NC_001363 sequence") {
+        os.setError("multiple alignment view with NC_001363 sequence has been not opened");
+        }
+    }
+    
+GUI_TEST_CLASS_DEFINITION(test_0007_1) {
+
+    const QString doc1("1.gb"), doc2("2.gb");
+
+    // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTGlobals::sleep(1000);
+
+    // Expected state: 
+    //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
+    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
+    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
+    if (item1 == NULL || item2 == NULL) {
+        os.setError("Project view with document \"1.gb\" and \"2.gb\" is not opened");
+        return;
+        }
+    if (GTUtilsDocument::isDocumentLoaded(os, doc1) || GTUtilsDocument::isDocumentLoaded(os, doc2)) {
+        os.setError("Documents is not unload");
+        return;
+        }
+
+    //     2) UGENE window titled with text "proj4 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
+
+    // 2. Double click on [a] Annotations sequence object, in project view tree
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    // Expected result: NC_001363 sequence has been opened in sequence view
+    GObjectViewWindow *activeWindow = qobject_cast<GObjectViewWindow*> (GTUtilsMdi::activeWindow(os));
+    if (! activeWindow->getViewName().contains("NC_001363")) {
+        os.setError("NC_001363 sequence has been not opened in sequence view");
+        return;
+        }
+
+    // 3. Right click on [s] NC_001363 sequence object, in project view tree. Use context menu item {Export->Export sequence as alignment}
+    // Expected state: Export sequences dialog open
+    // 4. Select file to save: _common_data/scenarios/sandbox/exp2.msf and set 'file format to use' to MSF,
+    // Than to uncheck the 'add document to the project' check box and click Save button.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+
+    Runnable *filler = new ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
+        "exp2.fa", ExportSequenceAsAlignmentFiller::Fasta);
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // 5. Open file _common_data/scenarios/sandbox/exp2.msf
+    GTGlobals::sleep();
+    GTFileDialog::openFile(os, dataDir + "_common_data/scenarios/sandbox/", "exp2.fa");
+    GTGlobals::sleep(1000);
+
+    // Expected state: multiple alignment view with NC_001363 sequence has been opened
+    if (GTUtilsProjectTreeView::getSelectedItem(os) != "NC_001363 sequence") {
+        os.setError("multiple alignment view with NC_001363 sequence has been not opened");
+        }
+    }
+
+GUI_TEST_CLASS_DEFINITION(test_0007_2) {
+
+    const QString doc1("1.gb"), doc2("2.gb");
+
+    // 1. Use menu {File->Open}. Open project _common_data/scenario/project/proj4.uprj
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
+    GTGlobals::sleep(1000);
+
+    // Expected state: 
+    //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
+    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
+    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
+    if (item1 == NULL || item2 == NULL) {
+        os.setError("Project view with document \"1.gb\" and \"2.gb\" is not opened");
+        return;
+        }
+    if (GTUtilsDocument::isDocumentLoaded(os, doc1) || GTUtilsDocument::isDocumentLoaded(os, doc2)) {
+        os.setError("Documents is not unload");
+        return;
+        }
+
+    //     2) UGENE window titled with text "proj4 UGENE"
+    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
+
+    // 2. Double click on [a] Annotations sequence object, in project view tree
+    QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
+    GTMouseDriver::moveTo(os, itemPos);
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    // Expected result: NC_001363 sequence has been opened in sequence view
+    GObjectViewWindow *activeWindow = qobject_cast<GObjectViewWindow*> (GTUtilsMdi::activeWindow(os));
+    if (! activeWindow->getViewName().contains("NC_001363")) {
+        os.setError("NC_001363 sequence has been not opened in sequence view");
+        return;
+        }
+
+    // 3. Right click on [s] NC_001363 sequence object, in project view tree. Use context menu item {Export->Export sequence as alignment}
+    // Expected state: Export sequences dialog open
+    // 4. Select file to save: _common_data/scenarios/sandbox/exp2.msf and set 'file format to use' to MSF,
+    // Than to uncheck the 'add document to the project' check box and click Save button.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+
+    Runnable *filler = new ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
+        "exp2.meg", ExportSequenceAsAlignmentFiller::Mega);
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // 5. Open file _common_data/scenarios/sandbox/exp2.msf
+    GTGlobals::sleep();
+    GTFileDialog::openFile(os, dataDir + "_common_data/scenarios/sandbox/", "exp2.meg");
+    GTGlobals::sleep(1000);
+
+    // Expected state: multiple alignment view with NC_001363 sequence has been opened
+    if (GTUtilsProjectTreeView::getSelectedItem(os) != "NC_001363 sequence") {
+        os.setError("multiple alignment view with NC_001363 sequence has been not opened");
+        }
+    }
 
 } // namespace
 } // namespace U2

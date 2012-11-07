@@ -684,10 +684,10 @@ public:
     OpenViewContext(QObject* p, const GObjectViewState* s, GObjectViewFactory* f) : QObject(p), state(s), factory(f){}
     OpenViewContext(QObject* p, const QString& _viewName) : QObject(p), state(NULL), factory(NULL), viewName(_viewName){}
 
-    MultiGSelection			selection;
+    MultiGSelection         selection;
     const GObjectViewState* state;
-    GObjectViewFactory*		factory;
-    QString					viewName;
+    GObjectViewFactory*     factory;
+    QString                 viewName;
 };
 
 class AddToViewContext : public QObject {
@@ -697,8 +697,8 @@ public:
             objects.append(o);
         }
     }
-    QPointer<GObjectView>		view;
-    QList<QPointer<GObject> >	objects;
+    QPointer<GObjectView>       view;
+    QList<QPointer<GObject> >   objects;
 };
 
 void ProjectViewImpl::sl_onActivated(GObject* o) {
@@ -770,7 +770,8 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
 
     //check if new view can be created
     if (f->canCreateView(ms)) {
-        QAction* action = new QAction(tr("open_view_action_%1").arg(f->getName()), actionsParent);		
+        QAction* action = new QAction(tr("open_view_action_%1").arg(f->getName()), actionsParent);
+        action->setObjectName("Open New View");
         OpenViewContext* c = new OpenViewContext(action, ms, f);
         action->setData(QVariant::fromValue((void*)c));
         connect(action, SIGNAL(triggered()), SLOT(sl_openNewView()));
@@ -803,6 +804,7 @@ void ProjectViewImpl::buildOpenViewMenu(const MultiGSelection& ms, QMenu* m) {
             continue;
         }
         QMenu* submenu = new QMenu(tr("open_view_submenu_%1").arg(f->getName()), m);
+        submenu->menuAction()->setObjectName("View States");
         foreach (QAction* a, openActions) {
             submenu->addAction(a);
         }
@@ -886,7 +888,7 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
     }
 
     buildOpenViewMenu(multiSelection, openViewMenu);
-    openViewMenu->menuAction()->setObjectName("submenu_open_view");
+    openViewMenu->menuAction()->setObjectName("Open View");
 
     buildAddToViewMenu(multiSelection, addToViewMenu);
     addToViewMenu->menuAction()->setObjectName("submenu_add_view");

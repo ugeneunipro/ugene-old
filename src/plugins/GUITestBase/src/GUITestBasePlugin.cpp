@@ -270,7 +270,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0005_1);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0005_2);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0007_1);
+    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0007_2);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/msa_editor

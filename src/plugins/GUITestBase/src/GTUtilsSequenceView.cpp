@@ -212,7 +212,7 @@ void GTUtilsSequenceView::selectSequenceRegion(U2OpStatus &os, int from, int to)
 
 #define GT_METHOD_NAME "openSequenceView"
 void GTUtilsSequenceView::openSequenceView(U2OpStatus &os, const QString &sequenceName){
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "submenu_open_view" << "action_open_view", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "action_open_view", GTGlobals::UseMouse));
 
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
     GTMouseDriver::moveTo(os, itemPos);
