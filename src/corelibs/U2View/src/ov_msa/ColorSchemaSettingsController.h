@@ -83,6 +83,7 @@ signals:
             void sl_onColorsDirButton();
             void sl_onChangeColorSchema();
             void sl_onAddColorSchema();
+            void sl_onDeleteColorSchema();
             void sl_schemaChanged(int);
     private:        
         QList<CustomColorSchema> customSchemas;

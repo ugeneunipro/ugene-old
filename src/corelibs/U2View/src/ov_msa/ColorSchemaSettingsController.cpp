@@ -38,6 +38,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/Log.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QFileDialog>
 #include <QtCore/QDir>
@@ -54,7 +55,7 @@
 #define NUCL_DEFAULT_KEYWORD   QString("NUCL_DEFAULT")
 #define NUCL_EXTENDED_KEYWORD  QString("NUCL_EXTENDED")
 
-#define NAME_FILTERS           QString(".csmsa")
+#define NAME_FILTERS           QString(".csmsa") //WARNING if add more then one filter, change corresponding functions
 
 
 namespace U2{
@@ -326,6 +327,7 @@ ColorSchemaSettingsPageWidget::ColorSchemaSettingsPageWidget(ColorSchemaSettings
     connect(colorsDirButton, SIGNAL(clicked()), SLOT(sl_onColorsDirButton()));
     connect(changeSchemaButton, SIGNAL(clicked()), SLOT(sl_onChangeColorSchema()));
     connect(addSchemaButton, SIGNAL(clicked()), SLOT(sl_onAddColorSchema()));
+    connect(deleteSchemaButton, SIGNAL(clicked()), SLOT(sl_onDeleteColorSchema()));
     connect(colorSchemas, SIGNAL(currentRowChanged(int)), SLOT(sl_schemaChanged(int)));
 
     sl_schemaChanged(colorSchemas->currentRow());
@@ -346,15 +348,17 @@ AppSettingsGUIPageState* ColorSchemaSettingsPageWidget::getState(QString& ) cons
     ColorSchemaSettingsPageState* state = new ColorSchemaSettingsPageState();
     state->colorsDir = colorsDirEdit->text();
     state->customSchemas = customSchemas;
+    int sz = customSchemas.size();
     return state;
 }
 
 void ColorSchemaSettingsPageWidget::sl_schemaChanged(int index){
     if(index < 0 || index >= colorSchemas->count()){
         changeSchemaButton->setDisabled(true);
-    }
-    else{
+        deleteSchemaButton->setDisabled(true);
+    }else{
         changeSchemaButton->setEnabled(true);
+        deleteSchemaButton->setEnabled(true);
     }
 }
 
@@ -365,6 +369,13 @@ void ColorSchemaSettingsPageWidget::sl_onColorsDirButton() {
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty()) {
         colorsDirEdit->setText(dir);
+        setColorsDir(dir);
+        customSchemas.clear();
+        colorSchemas->clear();
+        customSchemas = ColorSchemaSettingsUtils::getSchemas();
+        foreach(CustomColorSchema schema, customSchemas){
+            colorSchemas->addItem(new QListWidgetItem(schema.name, colorSchemas));
+        }
     }
 }
 
@@ -408,6 +419,26 @@ void ColorSchemaSettingsPageWidget::sl_onChangeColorSchema(){
             break;
         }
     }   
+}
+
+void ColorSchemaSettingsPageWidget::sl_onDeleteColorSchema(){
+    QListWidgetItem* item = colorSchemas->currentItem();
+    SAFE_POINT(item != NULL, "current item for deletion is NULL",);
+
+    int size1 = customSchemas.size(), size2 = colorSchemas->count();
+
+    QString schemaName = item->text();
+    for(int i = 0; i < customSchemas.size(); ++i){
+        CustomColorSchema& customSchema = customSchemas[i];
+        if(customSchema.name == schemaName){
+            SAFE_POINT(QFile::remove(getColorsDir() + QDir::separator() + schemaName + NAME_FILTERS), "cannot delete file with color schema", );
+            customSchemas.removeAt(i);
+            colorSchemas->removeItemWidget(item);
+            delete item;
+            return;            
+        }
+    }
+    SAFE_POINT(true != true, "something wrong causes color scheme deletion, this code must be unreacheble",);
 }
 
 /*Create MSA scheme dialog*/
