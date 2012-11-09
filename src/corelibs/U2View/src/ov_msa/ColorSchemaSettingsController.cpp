@@ -431,7 +431,7 @@ void ColorSchemaSettingsPageWidget::sl_onDeleteColorSchema(){
     for(int i = 0; i < customSchemas.size(); ++i){
         CustomColorSchema& customSchema = customSchemas[i];
         if(customSchema.name == schemaName){
-            SAFE_POINT(QFile::remove(getColorsDir() + QDir::separator() + schemaName + NAME_FILTERS), "cannot delete file with color schema", );
+            QFile::remove(getColorsDir() + QDir::separator() + schemaName + NAME_FILTERS)
             customSchemas.removeAt(i);
             colorSchemas->removeItemWidget(item);
             delete item;
