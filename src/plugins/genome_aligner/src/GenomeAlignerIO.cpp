@@ -30,6 +30,7 @@
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BasePorts.h>
@@ -132,11 +133,12 @@ MAlignment& GenomeAlignerMAlignmentWriter::getResult() {
 void GenomeAlignerMAlignmentWriter::write(SearchQuery *seq, SAType offset) {
     MAlignmentRow row;
     row.setName(seq->getName());
-    row.setSequence(seq->constSequence(), offset);
-    if (seq->hasQuality() && seq->getQuality().qualCodes.length() > 0) {
-        row.setQuality(seq->getQuality());
-    }
-    result.addRow(row);
+    U2OpStatus2Log os;
+    row.setRowContent(seq->constSequence(), offset, os);
+    //if (seq->hasQuality() && seq->getQuality().qualCodes.length() > 0) {
+    //    row.setQuality(seq->getQuality());
+    //}
+    result.addRow(row, os);
     writtenReadsCount++;
 }
 

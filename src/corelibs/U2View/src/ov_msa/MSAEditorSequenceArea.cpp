@@ -1607,10 +1607,11 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
     const MAlignment& msa = maObj->getMAlignment();
     const U2Region& sel = getSelectedRows();
     QString selText;
+    U2OpStatus2Log os;
     for (int i = sel.startPos; i < sel.endPos(); ++i) {
         const MAlignmentRow& row = msa.getRow(i);
         int len = selection.width();
-        QByteArray seqPart = row.mid(selection.x(), len).toByteArray(len);
+        QByteArray seqPart = row.mid(selection.x(), len, os).toByteArray(len, os);
         selText.append(seqPart);
         if (i + 1 != sel.endPos()) { // do not add line break into the last line
             selText.append("\n");
@@ -1811,8 +1812,9 @@ void MSAEditorSequenceArea::sl_reverseComplementCurrentSelection() {
             return;
         }
         const U2Region& sel = getSelectedRows();
+        U2OpStatus2Log os;
         for (int i = sel.startPos; i < sel.endPos(); i++) {
-            QByteArray curr = ma.getRow(i).toByteArray(ma.getLength());
+            QByteArray curr = ma.getRow(i).toByteArray(ma.getLength(), os);
             trans->translate(curr.data(), curr.length());
             TextUtils::reverse(curr.data(), curr.length());
             QString name = ma.getRow(i).getName();

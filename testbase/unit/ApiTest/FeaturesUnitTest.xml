@@ -7,5 +7,6 @@ FeatureTableObjectUnitTest
 + addAnnotationSingleRegion
 + addAnnotationMultipleRegion
 + addFeatureSingleRegion
++ helpic
 
 </unittest>

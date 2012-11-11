@@ -393,15 +393,15 @@ void GTest_Bwa::run() {
                     return;
                 }
 
-                DNAQuality qual1 = maItem1.getCoreQuality();
-                DNAQuality qual2 = maItem1.getCoreQuality();
-                if(qual1.type != qual2.type) {
-                    stateInfo.setError(  QString("Aligned sequences quality type \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(qual1.type).arg(qual2.type) );
-                }
-                if(qual1.qualCodes != qual2.qualCodes) {
-                    stateInfo.setError(  QString("Aligned sequences quality \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(QString(qual1.qualCodes)).arg(QString(qual2.qualCodes)) );
-                    return;
-                }
+                //DNAQuality qual1 = maItem1.getCoreQuality();
+                //DNAQuality qual2 = maItem1.getCoreQuality();
+                //if(qual1.type != qual2.type) {
+                //    stateInfo.setError(  QString("Aligned sequences quality type \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(qual1.type).arg(qual2.type) );
+                //}
+                //if(qual1.qualCodes != qual2.qualCodes) {
+                //    stateInfo.setError(  QString("Aligned sequences quality \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(QString(qual1.qualCodes)).arg(QString(qual2.qualCodes)) );
+                //    return;
+                //}
             }
         }
         if (!nameFound) {

@@ -43,7 +43,7 @@ public:
     bool            circular;
     DNAQuality      quality;
     
-    QString getName() const {return DNAInfo::getName(info);}
+    QString getName() const { return DNAInfo::getName(info);}
     void setName(const QString& name);
     bool isNull() const {return !alphabet && seq.length() == 0;}
     int length() const {return seq.length();}

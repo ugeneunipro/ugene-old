@@ -4,7 +4,11 @@
    Permission is granted to copy and use this program provided no fee is
    charged for it and provided that this copyright notice is not removed. */
 
+#include <U2Core/MAlignment.h>
+#include <U2Core/U2OpStatusUtils.h>
+
 #include "seqboot.h"
+
 
 long loci, maxalleles, groups, 
 nenzymes, reps, ws, blocksize, maxnewsites;
@@ -38,10 +42,6 @@ longer seed_boot;
 
 Phylip_Char ** getData(){
     return nodep_boot;
-}
-
-void putCharToAl(QVector<U2::MAlignment*>& mavect, int rep, int row, int pos, char ch){
-    mavect[rep]->insertChar(row, pos-1, ch);
 }
 
 
@@ -275,7 +275,7 @@ void seqboot_inputdata()
   if (j > 37)
     j = 37;
   if (printdata) {
-    fprintf(outfile, "\nBootstrapping algorithm, version %s\n\n\n",VERSION);
+    fprintf(outfile, "\nBootstrapping algorithm, version %s\n\n\n",PHY_VERSION);
     if (bootstrap)  {
       if (blocksize > 1) {
         if (regular)      
@@ -903,10 +903,12 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
         printf("</data>\n   </sequence>\n");
       }
       //putchar('\n');
-      if(j >= mavect[rep]->getNumRows()){
-        U2::MAlignmentRow curR(ma.getRow(j).getName(), curAr);
-        mavect[rep]->addRow(curR);
-      }else{
+      if (j >= mavect[rep]->getNumRows()) {
+          U2::U2OpStatus2Log os;
+          U2::MAlignmentRow curR = U2::MAlignmentRow::createRow(ma.getRow(j).getName(), curAr, os);
+          mavect[rep]->addRow(curR, os);
+      }
+      else {
         const U2::MAlignmentRow& curR = mavect[rep]->getRow(j);
         mavect[rep]->appendChars(j,curAr.data(), curAr.length());
       }

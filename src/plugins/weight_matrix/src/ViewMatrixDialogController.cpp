@@ -22,9 +22,10 @@
 #include "ViewMatrixDialogController.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/DNAAlphabet.h>
-
 #include <U2Core/DIProperties.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <QtGui/QTableWidget>
 #include <QtGui/QTableWidgetItem>
@@ -105,7 +106,11 @@ ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget 
                 }
             }
         }
-        rows.append(MAlignmentRow("", arr));
+        U2OpStatus2Log os;
+        MAlignmentRow row = MAlignmentRow::createRow("", arr, os);
+        CHECK_OP(os, );
+
+        rows.append(row);
     }
     DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     MAlignment ma(QString("Temporary alignment"), al, rows);

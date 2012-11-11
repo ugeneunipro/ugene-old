@@ -23,6 +23,7 @@
 #include "MuscleUtils.h"
 
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include "MuscleAdapter.h"
 
@@ -159,8 +160,8 @@ void convertMSA2MAlignment(MSA& msa, DNAAlphabet* al, MAlignment& res) {
             seq.append(c);
         }
         ctx->output_uIds[i] = ctx->tmp_uIds[msa.GetSeqId(i)];
-        MAlignmentRow row(name, seq);
-        res.addRow(row);      
+        U2OpStatus2Log os;
+        res.addRow(name, seq, os);
     }
 }
 

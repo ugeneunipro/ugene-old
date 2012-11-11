@@ -21,10 +21,13 @@
 
 #include "MSADistanceAlgorithmHammingRevCompl.h"
 
-#include <U2Core/MAlignment.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/MAlignment.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 
 namespace U2 {
 
@@ -61,11 +64,16 @@ void MSADistanceAlgorithmHammingRevCompl::run() {
     int nSeq = ma.getNumRows();
     MAlignment revtransl;
     revtransl.setAlphabet(ma.getAlphabet());
+    U2OpStatus2Log os;
     for (int i = 0; i < nSeq; i++) {
-        QByteArray arr = ma.getRow(i).toByteArray(ma.getLength());
+        QByteArray arr = ma.getRow(i).toByteArray(ma.getLength(), os);
         trans->translate(arr.data(), arr.length());
         TextUtils::reverse(arr.data(), arr.length());
-        revtransl.addRow(MAlignmentRow(ma.getRow(i).getName(), arr));
+        
+        revtransl.addRow(ma.getRow(i).getName(), arr, os);
+
+        CHECK_OP_EXT(os, setError(tr("An unexpected error has occurred during running"
+                                      " the Hamming reverse-complement algorithm.")),);
     }
 
     for (int i = 0; i < nSeq; i++) {

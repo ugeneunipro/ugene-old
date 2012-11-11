@@ -1,3 +1,5 @@
+#include <U2Core/U2OpStatusUtils.h>
+
 #include <U2Designer/DelegateEditors.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -102,12 +104,13 @@ void DistanceReportTask::run() {
 void DistanceReportTask::addRowInfo(const MAlignmentRow &alignedRow) {
     result += alignedRow.getName();
 
-    QByteArray alignedArray = alignedRow.toByteArray(alignedMsa.getLength());
+    U2OpStatus2Log os;
+    QByteArray alignedArray = alignedRow.toByteArray(alignedMsa.getLength(), os);
 
     for (int i=0; i<mainMsa.getNumRows(); i++) {
         const MAlignmentRow &row = alignedMsa.getRow(i);
 
-        int sim = getSimilarity(row.toByteArray(alignedMsa.getLength()), alignedArray);
+        int sim = getSimilarity(row.toByteArray(alignedMsa.getLength(), os), alignedArray);
         double simD = 100 * double(sim) / alignedMsa.getLength();
         result += "," + QByteArray::number(simD);
     }

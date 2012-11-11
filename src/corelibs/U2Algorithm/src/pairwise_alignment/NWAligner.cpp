@@ -19,14 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/Timer.h>
+#include "NWAligner.h"
 
 #include <U2Algorithm/SubstMatrixRegistry.h>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/Timer.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
-#include "NWAligner.h"
 
 namespace U2 {
 
@@ -123,8 +125,12 @@ MAlignment NWAligner::align() {
     }
 
     MAlignment result(MA_OBJECT_NAME, sMatrix.getAlphabet());
-    result.addRow(MAlignmentRow("seq1", aligned1));
-    result.addRow(MAlignmentRow("seq2", aligned2));
+    U2OpStatus2Log os;
+    result.addRow("seq1", aligned1, os);
+    CHECK_OP(os, MAlignment());
+
+    result.addRow("seq2", aligned2, os);
+    CHECK_OP(os, MAlignment());
 
     return result;
 }

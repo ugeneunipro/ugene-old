@@ -92,8 +92,7 @@ QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished( Task* subTask )
         DNAAlphabet* newAlphabet = U2AlphabetUtils::deriveCommonAlphabet(dnaObj->getAlphabet(), bufMa.getAlphabet());
         if (newAlphabet != NULL) {
             bufMa.setAlphabet(newAlphabet);
-            MAlignmentRow row(dnaObj->getGObjectName(), dnaObj->getWholeSequenceData(), 0);
-            bufMa.addRow(row);
+            bufMa.addRow(dnaObj->getGObjectName(), dnaObj->getWholeSequenceData(), stateInfo);
         } else {
             stateInfo.setError(tr("Sequence %1 from %2 has different alphabet").arg(dnaObj->getGObjectName()).arg(loadTask->getDocument()->getURLString()));
         }

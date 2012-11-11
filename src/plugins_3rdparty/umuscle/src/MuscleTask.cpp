@@ -43,6 +43,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/SimpleWorkflowTask.h>
@@ -158,6 +159,8 @@ void MuscleTask::doAlign(bool refine) {
         }
     } 
     assert(!hasError());
+    U2OpStatus2Log os;
+
     if(!isCanceled()) {
         assert(!resultSubMA.isEmpty());
         resultMA.setAlphabet(inputMA.getAlphabet());
@@ -181,12 +184,12 @@ void MuscleTask::doAlign(bool refine) {
         QByteArray gapSeq(resultSubMA.getLength(),MAlignment_GapChar);
         for(int i=0, n = nSeq; i < n; i++) {
             if(!existID[i]) {
-                MAlignmentRow row(inputMA.getRow(i).getName(), gapSeq);
+                MAlignmentRow row = MAlignmentRow::createRow(inputMA.getRow(i).getName(), gapSeq, os);
                 if(config.stableMode) {
-                    resultSubMA.addRow(row,i);
+                    resultSubMA.addRow(row, i, os);
                 } else {
                     ids[j] = i;
-                    resultSubMA.addRow(row);
+                    resultSubMA.addRow(row, os);
                 }
                 j++;
             }
@@ -199,13 +202,13 @@ void MuscleTask::doAlign(bool refine) {
 
             for(int i=0, n = inputMA.getNumRows(); i < n; i++) {
                 const MAlignmentRow& row= inputMA.getRow(ids[i]);
-                resultMA.addRow(MAlignmentRow(row.getName(), emptySeq));
+                resultMA.addRow(row.getName(), emptySeq, os);
             }
             if (config.regionToAlign.startPos != 0) {
 				for(int i=0; i < nSeq; i++)  {
 					int regionLen = config.regionToAlign.startPos;
-					MAlignmentRow inputRow = inputMA.getRow(ids[i]).mid(0,regionLen);
-					resultMA.appendChars(i, inputRow.toByteArray(regionLen).constData(), regionLen);
+					MAlignmentRow inputRow = inputMA.getRow(ids[i]).mid(0,regionLen, os);
+					resultMA.appendChars(i, inputRow.toByteArray(regionLen, os).constData(), regionLen);
 				}
             }
             resultMA += resultSubMA;
@@ -213,8 +216,8 @@ void MuscleTask::doAlign(bool refine) {
                 int subStart = config.regionToAlign.endPos();
                 int subLen = inputMA.getLength() - config.regionToAlign.endPos();
 				for(int i = 0; i < nSeq; i++) {
-					MAlignmentRow inputRow = inputMA.getRow(ids[i]).mid(subStart,subLen);
-					resultMA.appendChars(i, inputRow.toByteArray(subLen).constData(), subLen);
+					MAlignmentRow inputRow = inputMA.getRow(ids[i]).mid(subStart, subLen, os);
+					resultMA.appendChars(i, inputRow.toByteArray(subLen, os).constData(), subLen);
 				}
             }
             delete[] ids;
@@ -312,7 +315,8 @@ QList<Task*> MuscleAddSequencesToProfileTask::onSubTaskFinished(Task* subTask) {
             al = U2AlphabetUtils::deriveCommonAlphabet(al, objAl);
             CHECK_EXT(al != NULL, setError(tr("Sequences in file have different alphabets %1").arg(loadTask->getDocument()->getURLString())), res);
         }
-        s.profile.addRow(MAlignmentRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData()));
+        U2OpStatus2Log os;
+        s.profile.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
     }
     if(!seqObjects.isEmpty()) {
         s.profile.setAlphabet(al);

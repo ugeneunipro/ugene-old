@@ -7,7 +7,7 @@
    Permission is granted to copy and use this program provided no fee is
    charged for it and provided that this copyright notice is not removed. */
 
-#define VERSION "3.69"
+#define PHY_VERSION "3.69"
 
 /* Debugging options */
 /* Define this to disable assertions */

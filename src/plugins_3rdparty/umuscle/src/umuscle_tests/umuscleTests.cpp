@@ -38,6 +38,9 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
 
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <QtCore/QDir>
 
 /* TRANSLATOR U2::GTest*/
@@ -356,7 +359,9 @@ void GTest_uMuscleAddUnalignedSequenceToProfile::prepare() {
     unalignedMA.setAlphabet(aliObj->getMAlignment().getAlphabet());
     foreach (GObject* obj, seqObjs) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
-        unalignedMA.addRow(MAlignmentRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData()));
+        U2OpStatus2Log os;
+        unalignedMA.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
+        CHECK_OP_EXT(os, stateInfo.setError("An error has occurred during adding a row"),);
     }
     if (unalignedMA.getNumRows()!=gapPositionsForSeqs.size()) {
         stateInfo.setError( QString("number of sequences not matches number of gaps in test: %1 sequences and %2 gap lines")
@@ -393,9 +398,10 @@ Task::ReportResult GTest_uMuscleAddUnalignedSequenceToProfile::report() {
         return ReportResult_Finished;
     }
 
+    U2OpStatus2Log os;
     for (int i = origAliSeqs, j = 0; i < ma.getNumRows(); i++, j++) {
 		const MAlignmentRow& row = ma.getRow(i);
-        QByteArray seq = row.toByteArray(ma.getLength());
+        QByteArray seq = row.toByteArray(ma.getLength(), os);
         QList<int> seqGaps = gapPositionsForSeqs[j];
         for (int pos = 0; pos < seq.size(); pos++) {
             char c = seq[pos];
@@ -507,8 +513,8 @@ MAlignment GTest_Muscle_Load_Align_QScore::dna_to_ma(QList<GObject*> dnaSeqs) {
             stateInfo.setError(  QString("Can't cast GObject to U2SequenceObject") );
             return ma;
         }
-        MAlignmentRow item(seq->getSequenceName(), seq->getWholeSequenceData());
-        ma.addRow(item);
+        U2OpStatus2Log os;
+        ma.addRow(seq->getSequenceName(), seq->getWholeSequenceData(), os);
     }
     return ma;
 }
@@ -649,8 +655,7 @@ MAlignment Muscle_Load_Align_Compare_Task::dna_to_ma(QList<GObject*> dnaSeqs) {
             stateInfo.setError(  QString("Can't cast GObject to U2SequenceObject") );
             return ma;
         }
-        MAlignmentRow row(seq->getSequenceName(), seq->getWholeSequenceData());
-        ma.addRow(row);
+        ma.addRow(seq->getSequenceName(), seq->getWholeSequenceData(), stateInfo);
     }
     return ma;
 }

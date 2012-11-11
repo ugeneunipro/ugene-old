@@ -475,7 +475,7 @@ bool TaskSchedulerImpl::addToPriorityQueue(Task* task, TaskInfo* pti) {
     if (runPrepare) {
         setTaskInsidePrepare(task, true);
         task->prepare();
-        setTaskInsidePrepare(task, false);
+          setTaskInsidePrepare(task, false);
         ti->wasPrepared = true;
     }
     promoteTask(ti, Task::State_Prepared);

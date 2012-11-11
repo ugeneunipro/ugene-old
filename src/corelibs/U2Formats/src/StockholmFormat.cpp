@@ -33,6 +33,7 @@
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/MAlignmentInfo.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Core/TextUtils.h>
 
@@ -421,7 +422,9 @@ static bool checkSeqLength( const MAlignment& msa ) {
     for ( int i = 0; i < sz; ++i ) {
         const MAlignmentRow & row = msa.getRow(i);
         int rowLength = row.getCoreLength();
-        if ( !( ret = ret && ( seq_length == rowLength ) ) ) { break; }
+        if ( !( ret = ret && ( seq_length == rowLength ) ) ) {
+            break;
+        }
     }
     return ret;
 }
@@ -495,8 +498,8 @@ static bool loadOneMsa( IOAdapter* io, U2OpStatus& tsi, MAlignment& msa, Annotat
                 if ( nameWasBefore( msa, QString( name.data() ) ) ) {
                     throw StockholmFormat::BadFileData( StockholmFormat::tr( "invalid file: equal sequence names in one block" ) );
                 }
-                MAlignmentRow row(name.data(), seq);
-                msa.addRow(row);
+                U2OpStatus2Log os;
+                msa.addRow(name.data(), seq, os);
             }
             else {
                 const MAlignmentRow& row = msa.getRow(seq_ind);
@@ -643,6 +646,7 @@ static void save( IOAdapter* io, const MAlignment& msa, const QString& name ) {
         int block_len = ( WRITE_BLOCK_LENGTH >= seq_len )? seq_len: WRITE_BLOCK_LENGTH;
 
         //write block
+        U2OpStatus2Log os;
         int nRows = msa.getNumRows();
         for( int i = 0; i < nRows; ++i ) {
             const MAlignmentRow& row = msa.getRow(i);
@@ -651,7 +655,7 @@ static void save( IOAdapter* io, const MAlignment& msa, const QString& name ) {
             name += getNameSeqGap( name_max_len - row.getName().size() );
             ret = io->writeBlock( name );
             checkValThrowException<int>( true, name.size(), ret, StockholmFormat::WriteError(io->getURL()) );
-            QByteArray seq = row.mid( cur_seq_pos, block_len ).toByteArray(block_len) + NEW_LINE;
+            QByteArray seq = row.mid( cur_seq_pos, block_len, os ).toByteArray(block_len, os) + NEW_LINE;
             ret = io->writeBlock( seq );
             checkValThrowException<int>( true, seq.size(), ret, StockholmFormat::WriteError(io->getURL()) );
         }

@@ -57,8 +57,9 @@ double DefaultComparingAlgorithm::compare(const QByteArray &seq1,
     MAlignment ma = align(seq1, seq2);
 
     int mismatches = 0;
-    QByteArray row1 = ma.getRow(0).toByteArray(ma.getLength());
-    QByteArray row2 = ma.getRow(1).toByteArray(ma.getLength());
+    U2OpStatus2Log os;
+    QByteArray row1 = ma.getRow(0).toByteArray(ma.getLength(), os);
+    QByteArray row2 = ma.getRow(1).toByteArray(ma.getLength(), os);
     for (int i=0; i<ma.getLength(); i++) {
         mismatches += (int)(!symbolsEqual(row1[i], row2[i]));
     }

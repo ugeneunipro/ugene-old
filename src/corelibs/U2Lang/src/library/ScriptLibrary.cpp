@@ -21,18 +21,20 @@
 
 #include "ScriptLibrary.h"
 
-#include <U2Core/Log.h>
-#include <U2Core/DNASequence.h>
-#include <U2Core/MAlignment.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/MSAUtils.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNASequence.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/Log.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Lang/DbiDataHandler.h>
 #include <U2Lang/DbiDataStorage.h>
 #include <U2Lang/WorkflowScriptEngine.h>
+
 
 namespace U2 {
 
@@ -415,7 +417,8 @@ QScriptValue WorkflowScriptLibrary::getSequenceFromAlignment(QScriptContext *ctx
 
     MAlignmentRow aRow = align.getRow(row);
     aRow.simplify();
-    QByteArray arr = aRow.toByteArray(aRow.getCoreLength());
+    U2OpStatus2Log os;
+    QByteArray arr = aRow.toByteArray(aRow.getCoreLength(), os);
     if(ctx->argumentCount() == 4) {
         var = ctx->argument(2).toVariant();
         int beg = var.toInt(&ok);
@@ -492,7 +495,8 @@ QScriptValue WorkflowScriptLibrary::createAlignment(QScriptContext *ctx, QScript
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
     }
     align.setAlphabet(seq.alphabet);
-    align.addRow( MAlignmentRow(seq.getName(),seq.seq) );
+    U2OpStatus2Log os;
+    align.addRow(seq.getName(), seq.seq, os);
 
     for(int i = 1; i < ctx->argumentCount(); i++) {
         DNASequence seq = getSequence(ctx, engine, i);
@@ -502,7 +506,7 @@ QScriptValue WorkflowScriptLibrary::createAlignment(QScriptContext *ctx, QScript
         if(seq.alphabet != align.getAlphabet()) {
             return ctx->throwError(QObject::tr("Alphabets of each sequence must be the same"));
         }
-        align.addRow(MAlignmentRow(seq.getName(),seq.seq));
+        align.addRow(seq.getName(), seq.seq, os);
     }
 
     QScriptValue calee = ctx->callee();
@@ -542,7 +546,8 @@ QScriptValue WorkflowScriptLibrary::addToAlignment(QScriptContext *ctx, QScriptE
             row = -1;
         }
     }
-    align.addRow(MAlignmentRow(seq.getName(),seq.seq),row);
+    U2OpStatus2Log os;
+    align.addRow(seq.getName(), seq.seq, row, os);
 
     QScriptValue calee = ctx->callee();
     calee.setProperty("res", engine->newVariant(QVariant::fromValue<MAlignment>(align)));
@@ -570,7 +575,8 @@ QScriptValue WorkflowScriptLibrary::removeFromAlignment(QScriptContext *ctx, QSc
         return ctx->throwError(QObject::tr("Row is out of range"));
     }
 
-    aln.removeRow(row);
+    U2OpStatus2Log os;
+    aln.removeRow(row, os);
     QScriptValue calee = ctx->callee();
     calee.setProperty("res", engine->newVariant(QVariant::fromValue<MAlignment>(aln)));
     return calee.property("res");

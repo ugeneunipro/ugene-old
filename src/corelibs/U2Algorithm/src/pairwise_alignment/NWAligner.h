@@ -22,9 +22,10 @@
 #ifndef _U2_NW_ALIGNER_H_
 #define _U2_NW_ALIGNER_H_
 
+#include <U2Algorithm/PairwiseAligner.h>
+
 #include <U2Core/SMatrix.h>
 
-#include <U2Algorithm/PairwiseAligner.h>
 
 namespace U2 {
 

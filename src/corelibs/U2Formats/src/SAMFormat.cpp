@@ -169,237 +169,241 @@ static void prepareRead(const QByteArray& core, const QByteArray& quality, QByte
 }
 
 Document* SAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& _fs, U2OpStatus& os) {
-    CHECK_EXT(io != NULL   && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
-        
-    QList<GObject*> objects;
-    QVariantMap fs = _fs;
+    FAIL("Not implemented", NULL);
 
-    QString lockReason;
+    //CHECK_EXT(io != NULL   && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
+    //    
+    //QList<GObject*> objects;
+    //QVariantMap fs = _fs;
 
-    QMap<QString, MAlignment> maMap; //file may contain multiple MA objects
-    MAlignment defaultMA("Alignment " + io->getURL().baseFileName());
+    //QString lockReason;
 
-    QByteArray readBuffer(READ_BUFF_SIZE, '\0');
-    char* buff  = readBuffer.data();
-    bool lineOk = false;
+    //QMap<QString, MAlignment> maMap; //file may contain multiple MA objects
+    //MAlignment defaultMA("Alignment " + io->getURL().baseFileName());
 
-    QByteArray fields[11];
+    //QByteArray readBuffer(READ_BUFF_SIZE, '\0');
+    //char* buff  = readBuffer.data();
+    //bool lineOk = false;
 
-    int len = 0;
-    while(!os.isCoR() && (len = io->readLine(buff, READ_BUFF_SIZE, &lineOk)) > 0) {
-        QByteArray line = QByteArray::fromRawData( buff, len );
+    //QByteArray fields[11];
 
-        if(line.startsWith(SAM_SECTION_START)) { //Parse sections
+    //int len = 0;
+    //while(!os.isCoR() && (len = io->readLine(buff, READ_BUFF_SIZE, &lineOk)) > 0) {
+    //    QByteArray line = QByteArray::fromRawData( buff, len );
 
-            QList<QByteArray> tags;
+    //    if(line.startsWith(SAM_SECTION_START)) { //Parse sections
 
-            if(getSectionTags(line, SECTION_SEQUENCE, tags)) { //Parse sequence section
-                foreach(QByteArray tag, tags) {
-                    if(tag.startsWith(TAG_SEQUENCE_NAME)) { // Set alignment name
-                        QString maName = QByteArray::fromRawData(tag.constData() + 3, tag.length() - 3);
-                        MAlignment ma;
-                        ma.setName(maName);
-                        maMap[maName] = ma;
-                    }
-                }
-            } else if(getSectionTags(line, SECTION_HEADER, tags)) { //Parse header section
-                foreach(QByteArray tag, tags) {
-                    if(tag.startsWith(TAG_VERSION)) { //Check file format version
-                        QByteArray versionStr = QByteArray::fromRawData(tag.constData() + 3, tag.length() - 3);
-                        QList<QByteArray> version = versionStr.split('.');
-                        if (version[0].toInt() != 1 && version[1].toInt() > 3) {
-                            os.setError(SAMFormat::tr("Unsupported file version \"%1\"").arg(QString(versionStr)));
-                            return NULL;
-                        }
-                    }
-                }
-            }
-            // Skip other sections
+    //        QList<QByteArray> tags;
 
-            continue;
-        }
+    //        if(getSectionTags(line, SECTION_SEQUENCE, tags)) { //Parse sequence section
+    //            foreach(QByteArray tag, tags) {
+    //                if(tag.startsWith(TAG_SEQUENCE_NAME)) { // Set alignment name
+    //                    QString maName = QByteArray::fromRawData(tag.constData() + 3, tag.length() - 3);
+    //                    MAlignment ma;
+    //                    ma.setName(maName);
+    //                    maMap[maName] = ma;
+    //                }
+    //            }
+    //        } else if(getSectionTags(line, SECTION_HEADER, tags)) { //Parse header section
+    //            foreach(QByteArray tag, tags) {
+    //                if(tag.startsWith(TAG_VERSION)) { //Check file format version
+    //                    QByteArray versionStr = QByteArray::fromRawData(tag.constData() + 3, tag.length() - 3);
+    //                    QList<QByteArray> version = versionStr.split('.');
+    //                    if (version[0].toInt() != 1 && version[1].toInt() > 3) {
+    //                        os.setError(SAMFormat::tr("Unsupported file version \"%1\"").arg(QString(versionStr)));
+    //                        return NULL;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        // Skip other sections
 
-        QList<QByteArray> fieldValues = line.split(SPACE);
+    //        continue;
+    //    }
 
-        int readFieldsCount = fieldValues.count();
+    //    QList<QByteArray> fieldValues = line.split(SPACE);
 
-        //if(readFieldsCount < 11) readFieldsCount--;
-        QBitArray terminators = TextUtils::WHITES | TextUtils::LINE_BREAKS;
-        char lastTerminator = lineOk ? '\n' : 0;
+    //    int readFieldsCount = fieldValues.count();
 
-        while(readFieldsCount < 11 && (len = io->readUntil(buff, READ_BUFF_SIZE, terminators, IOAdapter::Term_Include, &lineOk)) > 0) {
-            QByteArray addline = QByteArray::fromRawData( buff, len - 1 ).simplified();
-            fieldValues[readFieldsCount - 1].append(addline);
-            lastTerminator = buff[len-1];
-            if(lineOk)
-                break;
-            else {
-                fieldValues[readFieldsCount - 1].append(lastTerminator);
-            }
-        }
-        {
-            bool merge = readFieldsCount < 11 ? false : true;
-            /*if(readFieldsCount < 11)*/ {
-                while(!TextUtils::LINE_BREAKS.at(lastTerminator) && (len = io->readUntil(buff, READ_BUFF_SIZE, terminators, IOAdapter::Term_Include, &lineOk)) > 0) {
-                    if(!lineOk) {
-                        len++;
-                    }
-                    QByteArray addline = QByteArray::fromRawData( buff, len - 1).simplified();
-                    if(merge) {
-                        fieldValues[readFieldsCount - 1].append(addline);
-                    } else {
-                        fieldValues.append(addline);
-                        readFieldsCount++;
-                    }
-                    lastTerminator = buff[len - 1];
-                    merge = !lineOk;
-                }
-            }
+    //    //if(readFieldsCount < 11) readFieldsCount--;
+    //    QBitArray terminators = TextUtils::WHITES | TextUtils::LINE_BREAKS;
+    //    char lastTerminator = lineOk ? '\n' : 0;
 
-            // skipping optional tags
-            if(!TextUtils::LINE_BREAKS.at(lastTerminator))
-                while((len = io->readLine(buff, READ_BUFF_SIZE, &lineOk)) > 0 && !lineOk);
-        }
+    //    while(readFieldsCount < 11 && (len = io->readUntil(buff, READ_BUFF_SIZE, terminators, IOAdapter::Term_Include, &lineOk)) > 0) {
+    //        QByteArray addline = QByteArray::fromRawData( buff, len - 1 ).simplified();
+    //        fieldValues[readFieldsCount - 1].append(addline);
+    //        lastTerminator = buff[len-1];
+    //        if(lineOk)
+    //            break;
+    //        else {
+    //            fieldValues[readFieldsCount - 1].append(lastTerminator);
+    //        }
+    //    }
+    //    {
+    //        bool merge = readFieldsCount < 11 ? false : true;
+    //        /*if(readFieldsCount < 11)*/ {
+    //            while(!TextUtils::LINE_BREAKS.at(lastTerminator) && (len = io->readUntil(buff, READ_BUFF_SIZE, terminators, IOAdapter::Term_Include, &lineOk)) > 0) {
+    //                if(!lineOk) {
+    //                    len++;
+    //                }
+    //                QByteArray addline = QByteArray::fromRawData( buff, len - 1).simplified();
+    //                if(merge) {
+    //                    fieldValues[readFieldsCount - 1].append(addline);
+    //                } else {
+    //                    fieldValues.append(addline);
+    //                    readFieldsCount++;
+    //                }
+    //                lastTerminator = buff[len - 1];
+    //                merge = !lineOk;
+    //            }
+    //        }
 
-        if(readFieldsCount < 11) {
-            os.setError(SAMFormat::tr("Unexpected end of file"));
-            return NULL;
-        }
+    //        // skipping optional tags
+    //        if(!TextUtils::LINE_BREAKS.at(lastTerminator))
+    //            while((len = io->readLine(buff, READ_BUFF_SIZE, &lineOk)) > 0 && !lineOk);
+    //    }
 
-        for(int i=0; i < qMin(11, readFieldsCount); i++) {
-            fields[i] = fieldValues[i];
-             if (!validateField(i, fields[i], &os)) {
-                 return NULL;
-            }
-        }
+    //    if(readFieldsCount < 11) {
+    //        os.setError(SAMFormat::tr("Unexpected end of file"));
+    //        return NULL;
+    //    }
 
-        QString rname = fields[2];
+    //    for(int i=0; i < qMin(11, readFieldsCount); i++) {
+    //        fields[i] = fieldValues[i];
+    //         if (!validateField(i, fields[i], &os)) {
+    //             return NULL;
+    //        }
+    //    }
 
-        if(rname != "*" && !maMap.contains(rname)) {
-            //ioLog.info(SAMFormat::tr("Reference sequence \"%1\" not present in @SQ header").arg(rname));
-            rname = "*";
-        }
+    //    QString rname = fields[2];
 
-        MAlignmentRow row;
+    //    if(rname != "*" && !maMap.contains(rname)) {
+    //        //ioLog.info(SAMFormat::tr("Reference sequence \"%1\" not present in @SQ header").arg(rname));
+    //        rname = "*";
+    //    }
 
-        //short flag = fields[1].toShort();
+    //    MAlignmentRow row;
 
-        row.setName(fields[0]);
-        if(fields[9] == "*") {
-            row.setSequence("", 0);
-        } else {
-                row.setSequence(fields[9], fields[3].toInt()-1);
-        }
+    //    //short flag = fields[1].toShort();
 
-        if(fields[10] != "*") {
-            row.setQuality(DNAQuality(fields[10]));
-        }
+    //    row.setName(fields[0]);
+    //    if(fields[9] == "*") {
+    //        row.setRowContent("", 0);
+    //    } else {
+    //            row.setRowContent(fields[9], fields[3].toInt()-1);
+    //    }
 
-        if(rname == "*") {
-            defaultMA.addRow(row);
-        } else {
-            maMap[rname].addRow(row);
-        }
+    //    if(fields[10] != "*") {
+    //        row.setQuality(DNAQuality(fields[10]));
+    //    }
 
-        os.setProgress(io->getProgress());
-    }
+    //    if(rname == "*") {
+    //        defaultMA.addRow(row);
+    //    } else {
+    //        maMap[rname].addRow(row);
+    //    }
 
-    foreach(MAlignment ma, maMap.values()) {
-        U2AlphabetUtils::assignAlphabet(ma);
-        CHECK_EXT(ma.getAlphabet() != NULL, os.setError( SAMFormat::tr("Alphabet is unknown")), NULL);
-        objects.append(new MAlignmentObject(ma));
-    }
+    //    os.setProgress(io->getProgress());
+    //}
 
-    if (defaultMA.getRows().count() != 0) {
-        U2AlphabetUtils::assignAlphabet(defaultMA);
-        CHECK_EXT(defaultMA.getAlphabet() != NULL, os.setError( SAMFormat::tr("Alphabet is unknown")), NULL);
-        objects.append(new MAlignmentObject(defaultMA));
-    }
+    //foreach(MAlignment ma, maMap.values()) {
+    //    U2AlphabetUtils::assignAlphabet(ma);
+    //    CHECK_EXT(ma.getAlphabet() != NULL, os.setError( SAMFormat::tr("Alphabet is unknown")), NULL);
+    //    objects.append(new MAlignmentObject(ma));
+    //}
 
-    CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
-    
-    DocumentFormatUtils::updateFormatHints(objects, fs);
-    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs, lockReason);
-    return doc;
+    //if (defaultMA.getRows().count() != 0) {
+    //    U2AlphabetUtils::assignAlphabet(defaultMA);
+    //    CHECK_EXT(defaultMA.getAlphabet() != NULL, os.setError( SAMFormat::tr("Alphabet is unknown")), NULL);
+    //    objects.append(new MAlignmentObject(defaultMA));
+    //}
+
+    //CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
+    //
+    //DocumentFormatUtils::updateFormatHints(objects, fs);
+    //Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs, lockReason);
+    //return doc;
 }
 
 
 void SAMFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
-    //TODO: sorting options?
-    CHECK_EXT(d!=NULL, os.setError(L10N::badArgument("doc")), );
-    CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), );
+    FAIL("Not implemented", );
+    ////TODO: sorting options?
+    //CHECK_EXT(d!=NULL, os.setError(L10N::badArgument("doc")), );
+    //CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), );
 
-    QMap< GObjectType, QList<GObject*> > objectsMap;
-    QList<GObject*> als; als << d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
-    objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT] = als;
-    storeEntry(io, objectsMap, os);
+    //QMap< GObjectType, QList<GObject*> > objectsMap;
+    //QList<GObject*> als; als << d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
+    //objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT] = als;
+    //storeEntry(io, objectsMap, os);
 }
 
 void SAMFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &/*os*/) {
-    SAFE_POINT(objectsMap.contains(GObjectTypes::MULTIPLE_ALIGNMENT), "Clustal entry storing: no alignment", );
-    const QList<GObject*> &als = objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT];
-    SAFE_POINT(als.size() > 0, "Clustal entry storing: alignment objects count error", );
+    FAIL("Not implemented", );
+    //SAFE_POINT(objectsMap.contains(GObjectTypes::MULTIPLE_ALIGNMENT), "Clustal entry storing: no alignment", );
+    //const QList<GObject*> &als = objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT];
+    //SAFE_POINT(als.size() > 0, "Clustal entry storing: alignment objects count error", );
 
-    QList<const MAlignmentObject*> maList;
-    foreach(GObject *obj, als) {
-        const MAlignmentObject* maObj = qobject_cast<const MAlignmentObject*>(obj);
-        assert(maObj != NULL);
-        maList.append(maObj);
-    }
+    //QList<const MAlignmentObject*> maList;
+    //foreach(GObject *obj, als) {
+    //    const MAlignmentObject* maObj = qobject_cast<const MAlignmentObject*>(obj);
+    //    assert(maObj != NULL);
+    //    maList.append(maObj);
+    //}
 
-    QByteArray tab = "\t";
-    QByteArray block;
+    //QByteArray tab = "\t";
+    //QByteArray block;
 
-    //Writing header
-    block.append(SECTION_HEADER).append("\t").append("VN:").append(VERSION).append("\n");
-    if (io->writeBlock( block ) != block.length()) {
-        throw 0;
-    }
+    ////Writing header
+    //block.append(SECTION_HEADER).append("\t").append("VN:").append(VERSION).append("\n");
+    //if (io->writeBlock( block ) != block.length()) {
+    //    throw 0;
+    //}
 
-    //Writing sequence section
-    foreach(const MAlignmentObject* maObj, maList) {
-        const MAlignment &ma = maObj->getMAlignment();
-        block.clear();
-        block.append(SECTION_SEQUENCE).append(tab).append(TAG_SEQUENCE_NAME).append(":").append(ma.getName().replace(QRegExp("\\s|\\t"), "_"))
-            .append(tab).append(TAG_SEQUENCE_LENGTH).append(":").append(QByteArray::number(ma.getLength())).append("\n");
-        if (io->writeBlock( block ) != block.length()) {
-            throw 0;
-        }
-    }
+    ////Writing sequence section
+    //foreach(const MAlignmentObject* maObj, maList) {
+    //    const MAlignment &ma = maObj->getMAlignment();
+    //    block.clear();
+    //    block.append(SECTION_SEQUENCE).append(tab).append(TAG_SEQUENCE_NAME).append(":").append(ma.getName().replace(QRegExp("\\s|\\t"), "_"))
+    //        .append(tab).append(TAG_SEQUENCE_LENGTH).append(":").append(QByteArray::number(ma.getLength())).append("\n");
+    //    if (io->writeBlock( block ) != block.length()) {
+    //        throw 0;
+    //    }
+    //}
 
-    //Writing alignment section
-    foreach(const MAlignmentObject* maObj, maList) {
-        const MAlignment &ma = maObj->getMAlignment();
-        QByteArray rname(ma.getName().replace(QRegExp("\\s|\\t"), "_").toAscii());
-        foreach(MAlignmentRow row, ma.getRows()) {
-            block.clear();
-            //const QByteArray &core = row.getCore();
-            QByteArray qname = QString(row.getName()).replace(QRegExp("\\s|\\t"), "_").toAscii();
-            QByteArray flag("0"); // can contains strand, mapped/unmapped, etc.
-            QByteArray pos = QByteArray::number(row.getCoreStart()+1);
-            QByteArray mapq("255"); //255 indicating the mapping quality is not available
-            QByteArray mrnm("*");
-            QByteArray mpos("0");
-            QByteArray isize("0");
-            QByteArray seq;
-            QByteArray qual;
-            QByteArray cigar;
+    ////Writing alignment section
+    //foreach(const MAlignmentObject* maObj, maList) {
+    //    const MAlignment &ma = maObj->getMAlignment();
+    //    QByteArray rname(ma.getName().replace(QRegExp("\\s|\\t"), "_").toAscii());
+    //    foreach(MAlignmentRow row, ma.getRows()) {
+    //        block.clear();
+    //        //const QByteArray &core = row.getCore();
+    //        QByteArray qname = QString(row.getName()).replace(QRegExp("\\s|\\t"), "_").toAscii();
+    //        QByteArray flag("0"); // can contains strand, mapped/unmapped, etc.
+    //        QByteArray pos = QByteArray::number(row.getCoreStart()+1);
+    //        QByteArray mapq("255"); //255 indicating the mapping quality is not available
+    //        QByteArray mrnm("*");
+    //        QByteArray mpos("0");
+    //        QByteArray isize("0");
+    //        QByteArray seq;
+    //        QByteArray qual;
+    //        QByteArray cigar;
 
-            prepareRead(row.getCore(), row.getCoreQuality().qualCodes, seq, qual, cigar);
-            if (row.hasQuality()) {
-                row.getCoreQuality().qualCodes;
-            } else {
-                qual.reserve(seq.length());
-                qual.fill('I', seq.length());
-            }
-            
-            block = qname + tab + flag + tab+ rname + tab + pos + tab + mapq + tab + cigar + tab + mrnm
-                + tab + mpos + tab + isize + tab + seq + tab + qual + "\n";
-            if (io->writeBlock( block ) != block.length()) {
-                throw 0;
-            }
-        }
-    }
+    //        prepareRead(row.getCore(), row.getCoreQuality().qualCodes, seq, qual, cigar);
+    //        if (row.hasQuality()) {
+    //            row.getCoreQuality().qualCodes;
+    //        } else {
+    //            qual.reserve(seq.length());
+    //            qual.fill('I', seq.length());
+    //        }
+    //        
+    //        block = qname + tab + flag + tab+ rname + tab + pos + tab + mapq + tab + cigar + tab + mrnm
+    //            + tab + mpos + tab + isize + tab + seq + tab + qual + "\n";
+    //        if (io->writeBlock( block ) != block.length()) {
+    //            throw 0;
+    //        }
+    //    }
+    //}
 }
 
 bool SAMFormat::getSectionTags( QByteArray &line, const QByteArray &sectionName, QList<QByteArray> &tags )

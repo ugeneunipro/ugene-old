@@ -20,17 +20,21 @@
  */
 
 #include "MegaFormat.h"
-#include <U2Formats/DocumentFormatUtils.h>
-#include <U2Core/U2OpStatus.h>
+
+#include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
-#include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/TextUtils.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
+
+#include <U2Formats/DocumentFormatUtils.h>
+
 
 namespace U2 {
 
@@ -244,7 +248,7 @@ void MegaFormat::workUpIndels(MAlignment& al) {
                 newSeq[j]=firstSequence[j];
             }
         }
-        al.setRowSequence(i, newSeq);
+        al.setRowContent(i, newSeq);
     }
 }
 
@@ -301,7 +305,9 @@ void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::U2OpStatu
         }
         //add the sequence to the list
         if (firstBlock) {
-            al.addRow(MAlignmentRow(name, value));
+            al.addRow(name, value, os);
+            CHECK_OP(os, );
+
             sequenceIdx++;
         } else {
             if (sequenceIdx<al.getNumRows()) {
@@ -369,8 +375,9 @@ void MegaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObjec
                 line.append(' ');
             }
             
-            QByteArray currentBlock=item.mid(writtenLength, BLOCK_LENGTH).
-                toByteArray(writtenLength + BLOCK_LENGTH > seqLength ? seqLength - writtenLength : BLOCK_LENGTH);
+            U2OpStatus2Log os;
+            QByteArray currentBlock=item.mid(writtenLength, BLOCK_LENGTH, os).
+                toByteArray(writtenLength + BLOCK_LENGTH > seqLength ? seqLength - writtenLength : BLOCK_LENGTH, os);
             line.append(currentBlock).append('\n');
             
             len = io->writeBlock(line);

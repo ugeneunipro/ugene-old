@@ -134,7 +134,7 @@ void getoptions()
   /*for (;;) {
     cleerhome();
     printf("\nNucleic acid sequence Distance Matrix program,");
-    printf(" version %s\n\n",VERSION);
+    printf(" version %s\n\n",PHY_VERSION);
     printf("Settings for this run:\n");
     printf("  D  Distance (F84, Kimura, Jukes-Cantor, LogDet)?  %s\n",
            kimura ? "Kimura 2-parameter" :
@@ -388,7 +388,7 @@ void getoptions()
     if (!printdata)
     return;
     fprintf(outfile, "\nNucleic acid sequence Distance Matrix program,");
-    fprintf(outfile, " version %s\n\n",VERSION); */
+    fprintf(outfile, " version %s\n\n",PHY_VERSION); */
 }  /* getoptions */
 
 

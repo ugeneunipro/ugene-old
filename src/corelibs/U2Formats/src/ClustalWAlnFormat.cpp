@@ -34,6 +34,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Algorithm/MSAConsensusUtils.h>
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
@@ -137,7 +138,7 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVar
                 // this is consensus line - skip it
             } else {
                 assert(al.getNumRows() == sequenceIdx);
-                al.addRow(MAlignmentRow(name, value));
+                al.addRow(name, value, os);
             }
         } else {
             int rowIdx = -1;
@@ -242,6 +243,7 @@ void ClustalWAlnFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList
     const char* spaces = TextUtils::SPACE_LINE.constData();
 
     //write sequence
+    U2OpStatus2Log os;
     for(int i = 0; i < aliLen; i+=seqPerPage) {
         int partLen = i + seqPerPage > aliLen ? aliLen - i : seqPerPage;
         foreach(const MAlignmentRow& row, ma.getRows()) {
@@ -251,7 +253,7 @@ void ClustalWAlnFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList
             }
             TextUtils::replace(line.data(), line.length(), TextUtils::WHITES, '_');
             line.append(QByteArray::fromRawData(spaces, seqStart - line.length()));
-            line.append(row.mid(i, partLen).toByteArray(partLen));
+            line.append(row.mid(i, partLen, os).toByteArray(partLen, os));
             line.append(' ');
             line.append(QString::number(qMin(i+seqPerPage, aliLen)));
             assert(line.length() <= MAX_LINE_LEN);

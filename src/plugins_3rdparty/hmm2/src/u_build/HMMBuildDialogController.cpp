@@ -13,6 +13,7 @@
 #include <U2Core/Counter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
@@ -321,9 +322,10 @@ void HMMBuildTask::_run() {
         stateInfo.setError(  tr("error_creating_msa") );
         return;
     }
+    U2OpStatus2Log os;
     for (int i=0; i<ma.getNumRows();i++) {
 		const MAlignmentRow& row = ma.getRow(i);
-        QByteArray seq = row.toByteArray(ma.getLength());
+        QByteArray seq = row.toByteArray(ma.getLength(), os);
 		free(msa->aseq[i]);
         msa->aseq[i] = sre_strdup(seq.constData(), seq.size());
         QByteArray name = row.getName().toAscii();

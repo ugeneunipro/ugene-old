@@ -21,10 +21,12 @@
 
 #include "MAlignmentObject.h"
 
-#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/DNASequence.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 
 namespace U2 {
 
@@ -74,12 +76,13 @@ void MAlignmentObject::insertGap(int seqNum, int pos, int nGaps) {
 
     MAlignment maBefore = msa;
     int length = msa.getLength();
+    U2OpStatus2Log os;
     for(int i = 0; i < seqNum; i++) {
-        msa.insertChars(i, length, MAlignment_GapChar, nGaps);
+        msa.insertGaps(i, length, nGaps, os);
     }
-    msa.insertChars(seqNum, pos, MAlignment_GapChar, nGaps);
+    msa.insertGaps(seqNum, pos, nGaps, os);
     for(int i = seqNum + 1; i < msa.getNumRows(); i++) {
-        msa.insertChars(i, length, MAlignment_GapChar, nGaps);
+        msa.insertGaps(i, length, nGaps, os);
     }
     msa.trim();
 
@@ -94,9 +97,9 @@ void MAlignmentObject::insertGap(int pos, int nGaps) {
     SAFE_POINT(nGaps > 0, "Invalid number of gaps!",);
     
     MAlignment maBefore = msa;
-    QByteArray gap(nGaps, MAlignment_GapChar);
+    U2OpStatus2Log os;
     for (int i=0, n = msa.getNumRows(); i < n; i++) {
-        msa.insertChars(i, pos, MAlignment_GapChar, nGaps);
+        msa.insertGaps(i, pos, nGaps, os);
     }
 
     setModified(true);
@@ -113,16 +116,17 @@ void MAlignmentObject::insertGap( U2Region seqences, int pos, int nGaps ) {
     int startSeq = seqences.startPos;
     int endSeq = startSeq + seqences.length;
 
+    U2OpStatus2Log os;
     for(int i = 0; i < startSeq; i++) {
-        msa.insertChars(i, length, MAlignment_GapChar, nGaps);
+        msa.insertGaps(i, length, nGaps, os);
     }
     
     for (int i = startSeq; i < endSeq; ++i ) {
-        msa.insertChars( i, pos, MAlignment_GapChar, nGaps);
+        msa.insertGaps( i, pos, nGaps, os);
     }
     
     for(int i = endSeq; i < msa.getNumRows(); i++) {
-        msa.insertChars(i, length, MAlignment_GapChar, nGaps);
+        msa.insertGaps(i, length, nGaps, os);
     }
     msa.trim();
 
@@ -148,7 +152,8 @@ int MAlignmentObject::deleteGap(int seqNum, int pos, int maxGaps) {
     if (n == 0) {
         return 0;
     }
-    msa.removeChars(seqNum, pos, n);
+    U2OpStatus2Log os;
+    msa.removeChars(seqNum, pos, n, os);
     
     setModified(true);
 
@@ -182,8 +187,9 @@ int MAlignmentObject::deleteGap(int pos, int maxGaps) {
         return  0;
     }
     int nDeleted = minGaps;
+    U2OpStatus2Log os;
     for (int i = 0, n = msa.getNumRows(); i < n; i++) {
-        msa.removeChars(i, pos, nDeleted);
+        msa.removeChars(i, pos, nDeleted, os);
     }
     msa.setLength(msa.getLength() - nDeleted);
 
@@ -206,8 +212,8 @@ void MAlignmentObject::addRow(const DNASequence& seq, int seqIdx) {
     assert(newAlphabet != NULL);
     msa.setAlphabet(newAlphabet);
 
-    MAlignmentRow row(seq.getName(), seq.seq, 0);
-    msa.addRow(row, seqIdx);
+    U2OpStatus2Log os;
+    msa.addRow(seq.getName(), seq.seq, seqIdx, os);
     
     setModified(true);
 
@@ -218,8 +224,9 @@ void MAlignmentObject::addRow(const DNASequence& seq, int seqIdx) {
 void MAlignmentObject::removeRow(int seqNum) {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
 
+    U2OpStatus2Log os;
     MAlignment maBefore = msa;
-    msa.removeRow(seqNum);
+    msa.removeRow(seqNum, os);
     setModified(true);
 
     MAlignmentModInfo mi;

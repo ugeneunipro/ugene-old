@@ -23,6 +23,7 @@
 
 #include <U2Core/MAlignmentInfo.h>
 #include <U2Core/SMatrix.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <gobject/uHMMObject.h>
 #include "uhmm3Utilities.h"
@@ -178,7 +179,8 @@ ESL_MSA * UHMM3Utilities::convertMSA( const MAlignment & ma ) {
             esl_msa_Destroy( msa );
             return NULL;
         }
-		QByteArray sequence = row.toByteArray(ma.getLength());
+        U2OpStatus2Log os;
+		QByteArray sequence = row.toByteArray(ma.getLength(), os);
         copyData(sequence, msa->aseq[i] );
     }
     

@@ -10,8 +10,9 @@
 #include "seq.h"
 
 #include <QVector>
-
-#include <U2Core/MAlignment.h>
+namespace U2 {
+    class MAlignment;
+}
 
 typedef enum {
   seqs, morphology, restsites, genefreqs
@@ -90,9 +91,6 @@ extern long *newerwhere;  /* Map [0..newergroups-1] => [1..newersites] */
 extern long *newerhowmany ;  /* Number of chars for each [0..newergroups-1] */
 extern long **charorder  ;  /* Permutation [0..spp-1][0..newergroups-1] */
 extern long **sppord      ;  /* Permutation [0..newergroups-1][0..spp-1] */
-
-void putCharToAl(QVector<U2::MAlignment*>& mavect, int rep, int row, int pos, char ch);
-
 
 #ifndef OLDC
 /* function prototypes */

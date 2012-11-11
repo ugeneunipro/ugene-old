@@ -22,7 +22,9 @@
 #include "PFMatrix.h"
 #include "DIProperties.h"
 
-#include "U2Core/DNAAlphabet.h"
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2OpStatusUtils.h>
+
 
 namespace U2 {
 
@@ -70,9 +72,10 @@ PFMatrix::PFMatrix(const MAlignment &align, PFMatrixType _type): type(_type) {
     int size = (type == PFM_MONONUCLEOTIDE) ? 4 : 16;
     data.resize(size * length);
     qMemSet(data.data(), 0, size*length*sizeof(int));
+    U2OpStatus2Log os;
     if (type == PFM_MONONUCLEOTIDE) {
         for (int i = 0, n = align.getNumRows(); i < n; i++) {
-            const QByteArray row = align.getRow(i).toByteArray(length);
+            const QByteArray row = align.getRow(i).toByteArray(length, os);
             for (int j = 0; j < length; j++) {
                 char curr = row[j];
                 data[DiProperty::index(curr) * length + j]++;
@@ -80,7 +83,7 @@ PFMatrix::PFMatrix(const MAlignment &align, PFMatrixType _type): type(_type) {
         }
     } else {
         for (int i = 0, n = align.getNumRows(); i < n; i++) {
-            const QByteArray row = align.getRow(i).toByteArray(length + 1);
+            const QByteArray row = align.getRow(i).toByteArray(length + 1, os);
             for (int j = 0; j < length; j++) {
                 char curr = row[j];
                 char next = row[j+1];

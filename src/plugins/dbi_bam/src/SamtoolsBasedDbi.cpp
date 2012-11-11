@@ -670,7 +670,7 @@ U2DbiFactoryId SamtoolsBasedDbiFactory::getId()const {
 }
 
 FormatCheckResult SamtoolsBasedDbiFactory::isValidDbi(const QHash<QString, QString> &properties, const QByteArray &rawData, U2OpStatus & /*os*/) const {
-    BAMFormat f;
+    BAMFormatUtils f;
     FormatCheckResult res = f.checkRawData(rawData, properties.value(U2_DBI_OPTION_URL));
     return res;
 }

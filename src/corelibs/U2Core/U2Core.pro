@@ -15,6 +15,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/DNAInfo.h \
            src/datatype/DNAQuality.h \
            src/datatype/DNASequence.h \
+           src/datatype/DNASequenceUtils.h \
            src/datatype/DNATranslation.h \
            src/datatype/DNATranslationImpl.h \
            src/datatype/FeatureColors.h \
@@ -189,6 +190,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/DNAInfo.cpp \
            src/datatype/DNAQuality.cpp \
            src/datatype/DNASequence.cpp \
+           src/datatype/DNASequenceUtils.cpp \
            src/datatype/DNATranslation.cpp \
            src/datatype/DNATranslationImpl.cpp \
            src/datatype/FeatureColors.cpp \
@@ -313,3 +315,4 @@ TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+

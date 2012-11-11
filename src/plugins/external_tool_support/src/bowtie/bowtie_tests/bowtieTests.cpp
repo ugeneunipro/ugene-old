@@ -38,6 +38,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/SAMFormat.h>
 
@@ -333,15 +334,15 @@ void GTest_Bowtie::run() {
                     return;
                 }
 
-                DNAQuality qual1 = maItem1.getCoreQuality();
-                DNAQuality qual2 = maItem1.getCoreQuality();
-                if(qual1.type != qual2.type) {
-                    stateInfo.setError(  QString("Aligned sequences quality type \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(qual1.type).arg(qual2.type) );
-                }
-                if(qual1.qualCodes != qual2.qualCodes) {
-                    stateInfo.setError(  QString("Aligned sequences quality \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(QString(qual1.qualCodes)).arg(QString(qual2.qualCodes)) );
-                    return;
-                }
+                //DNAQuality qual1 = maItem1.getCoreQuality();
+                //DNAQuality qual2 = maItem1.getCoreQuality();
+                //if(qual1.type != qual2.type) {
+                //    stateInfo.setError(  QString("Aligned sequences quality type \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(qual1.type).arg(qual2.type) );
+                //}
+                //if(qual1.qualCodes != qual2.qualCodes) {
+                //    stateInfo.setError(  QString("Aligned sequences quality \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(QString(qual1.qualCodes)).arg(QString(qual2.qualCodes)) );
+                //    return;
+                //}
             }
         }
         if (!nameFound) {
@@ -398,9 +399,11 @@ void GTest_Bowtie::parseBowtieOutput( MAlignment& result, QString text ) {
         int offset = rx.cap(3).toInt();
         QByteArray sequence = rx.cap(4).toAscii();
         QByteArray quality = rx.cap(5).toAscii();
-        MAlignmentRow row(name, sequence, offset);
-        row.setQuality(DNAQuality(quality));
-        result.addRow(row);
+
+        U2OpStatus2Log os;
+        MAlignmentRow row = MAlignmentRow::createRow(name, sequence, offset, os);
+//        row.setQuality(DNAQuality(quality));
+        result.addRow(row, os);
 
         pos += rx.matchedLength();
 

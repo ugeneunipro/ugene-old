@@ -25,6 +25,8 @@
 
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/U2OpStatusUtils.h>
+
 #include <U2Gui/GUIUtils.h>
 
 #include <QtGui/QApplication>
@@ -178,7 +180,8 @@ void MSAEditorNameList::sl_copyCurrentSequence() {
     if (maObj) {
         const MAlignmentRow& row = maObj->getMAlignment().getRow(n);
         //TODO: trim large sequence?
-        QApplication::clipboard()->setText(row.toByteArray(maObj->getLength()));
+        U2OpStatus2Log os;
+        QApplication::clipboard()->setText(row.toByteArray(maObj->getLength(), os));
     }
 }
 

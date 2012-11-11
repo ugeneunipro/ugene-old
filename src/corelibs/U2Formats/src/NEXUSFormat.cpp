@@ -22,18 +22,20 @@
 #include "NEXUSFormat.h"
 #include "NEXUSParser.h"
 
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
+
 
 namespace U2 
 {
@@ -410,11 +412,15 @@ bool NEXUSParser::readDataContents(Context &ctx) {
                     value.replace(ctx["gap"], QChar(MAlignment_GapChar));
                 }
 
+                U2OpStatus2Log os;
+                MAlignmentRow newRow = MAlignmentRow::createRow(name, value.toAscii(), os);
+                CHECK_OP(os, false);
+
                 if (rows.contains(name)) {
                     MAlignmentRow &row = rows[name];
-                    row.append( MAlignmentRow(name, value.toAscii()), row.getCoreEnd() );
+                    row.append(newRow, row.getCoreEnd(), os);
                 } else {
-                    rows.insert(name, MAlignmentRow(name, value.toAscii()));
+                    rows.insert(name, newRow);
                 }
 
                 reportProgress();
@@ -759,7 +765,8 @@ void writeMAligment(const MAlignment &ma, IOAdapter *io, U2OpStatus&) {
 
         name = name.leftJustified(nameMaxLen);
 
-        QTextStream(&line) << tabs << name << " " << row.toByteArray(nchar) << "\n";
+        U2OpStatus2Log os;
+        QTextStream(&line) << tabs << name << " " << row.toByteArray(nchar, os) << "\n";
         io->writeBlock(line);
         line.clear();
     }

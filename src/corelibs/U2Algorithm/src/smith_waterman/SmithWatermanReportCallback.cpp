@@ -109,9 +109,13 @@ QString SmithWatermanReportCallbackMAImpl::report(const QList<SmithWatermanResul
         alignSequences(curResultRefSubseq, curResultPtrnSubseq, pairAlignSeqs.pairAlignment);
         
         expansionInfo.curProcessingSubseq = &pairAlignSeqs.refSubseq;
-        MAlignmentRow refSubsequence(tagsRegistry->parseStringWithTags(refSubseqTemplate, expansionInfo), curResultRefSubseq);
+        MAlignmentRow refSubsequence = MAlignmentRow::createRow(tagsRegistry->parseStringWithTags(refSubseqTemplate, expansionInfo), curResultRefSubseq, stateInfo);
+        CHECK_OP(stateInfo, tr("Failed to add a reference subsequence row."));
+
         expansionInfo.curProcessingSubseq = &pairAlignSeqs.ptrnSubseq;
-        MAlignmentRow patternSubsequence(tagsRegistry->parseStringWithTags(ptrnSubseqTemplate, expansionInfo), curResultPtrnSubseq);
+        MAlignmentRow patternSubsequence= MAlignmentRow::createRow(tagsRegistry->parseStringWithTags(ptrnSubseqTemplate, expansionInfo), curResultPtrnSubseq, stateInfo);
+        CHECK_OP(stateInfo, tr("Failed to add a pattern subsequence row."));
+
         QList<MAlignmentRow> rows;
         rows.append(refSubsequence);
         rows.append(patternSubsequence);

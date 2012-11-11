@@ -22,23 +22,25 @@
 #include "DocumentFormatUtils.h"
 
 #include <U2Core/AnnotationSettings.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/BioStruct3D.h>
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/MAlignment.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/MAlignmentObject.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/GenbankFeatures.h>
+
 
 namespace U2 {
 
@@ -158,9 +160,10 @@ QList<DNASequence> DocumentFormatUtils::toSequences(const GObject* obj) {
     const MAlignmentObject* maObj = qobject_cast<const MAlignmentObject*>(obj);
     SAFE_POINT(maObj != NULL, "MAlignmentObject is NULL", res);
     DNAAlphabet* al = maObj->getMAlignment().getAlphabet();
+    U2OpStatus2Log os;
     foreach(const MAlignmentRow& row, maObj->getMAlignment().getRows()) {
         DNASequence seq;
-        seq.seq = row.toByteArray(row.getCoreEnd());
+        seq.seq = row.toByteArray(row.getCoreEnd(), os);
         seq.setName(row.getName());
         seq.alphabet = al;
         res << seq;

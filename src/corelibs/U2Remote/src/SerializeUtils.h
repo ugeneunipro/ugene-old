@@ -29,6 +29,8 @@
 #include <U2Core/MAlignment.h>
 #include <U2Remote/RemoteMachine.h>
 #include <U2Core/VirtualFileSystem.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <stdlib.h> //for calloc
 
@@ -255,8 +257,11 @@ inline bool SerializeUtils::deserializeValue<MAlignmentRow>( const QVariant & da
     int offset = 0;
     if ( !deserializeValue<int>( args[2], &offset) ) { return false; }
 
-    *row= MAlignmentRow(name, array, offset);
+    U2OpStatus2Log os;
+    MAlignmentRow createdRow = MAlignmentRow::createRow(name, array, offset, os);
+    CHECK_OP_EXT(os, row = NULL, false);
 
+    *row = createdRow;
     return true;
 }
 

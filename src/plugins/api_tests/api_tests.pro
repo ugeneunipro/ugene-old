@@ -4,6 +4,8 @@ include (api_tests.pri)
 HEADERS += \
     src/ApiTestsPlugin.h \
     src/unittest.h \
+    src/core/datatype/msa/MAlignmentUnitTests.h \
+    src/core/datatype/msa/MAlignmentRowUnitTests.h \
     src/core/dbi/DbiTest.h \
     src/core/dbi/assembly/AssemblyDbiTestUtil.h \
     src/core/dbi/assembly/AssemblyDbiUnitTests.h \
@@ -15,6 +17,8 @@ HEADERS += \
     src/UnitTestSuite.h 
 SOURCES += \
     src/ApiTestsPlugin.cpp \
+    src/core/datatype/msa/MAlignmentUnitTests.cpp \
+    src/core/datatype/msa/MAlignmentRowUnitTests.cpp \
     src/core/dbi/DbiTest.cpp \
     src/core/dbi/assembly/AssemblyDbiTestUtil.cpp \
     src/core/dbi/assembly/AssemblyDbiUnitTests.cpp \

@@ -26,7 +26,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNAAlphabet.h>
-
+#include <U2Core/U2OpStatusUtils.h>
 
 #include "MAlignmentUtilTasks.h"
 
@@ -72,8 +72,7 @@ void TranslateMSA2AminoTask::run() {
         QByteArray buf(buflen,'\0');
         translation->translate(dna.seq.constData(), dna.length(), buf.data(), buflen);
         buf.replace("*","X");
-        MAlignmentRow row(dna.getName(), buf);  
-        resultMA.addRow(row);
+        resultMA.addRow(dna.getName(), buf, stateInfo);
     }
 }
 
@@ -128,6 +127,7 @@ void AlignInAminoFormTask::run() {
     // However, what if the rows have equal names?
     // Do we have to keep some MAP<old seq, new seq> in memory? 
 
+    U2OpStatus2Log os;
     foreach (const MAlignmentRow& row, rows) {
         int rowIdx = MSAUtils::getRowIndexByName(bufMA, row.getName());
         if (rowIdx == -1) {
@@ -137,7 +137,7 @@ void AlignInAminoFormTask::run() {
         for (int pos =0; pos < row.getCoreEnd(); ++pos) {
             char c = newMA.charAt(rowIdx, pos);
             if (c == MAlignment_GapChar) {
-                bufMA.insertChars(rowIdx, pos, MAlignment_GapChar, 3);
+                bufMA.insertGaps(rowIdx, pos, 3, os);
             }
         }
     }

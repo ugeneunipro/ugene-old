@@ -22,28 +22,27 @@
 #ifndef _U2_BAM_FORMAT_H_
 #define _U2_BAM_FORMAT_H_
 
-#include <U2Core/DocumentModel.h>
+#include <U2Core/GUrl.h>
+#include <U2Core/U2FormatCheckResult.h>
+
+#include <QtCore/QStringList>
+
 
 namespace U2 {
 namespace BAM {
 
-class BAMFormat : public DocumentFormat
+class BAMFormatUtils : public QObject
 {
     Q_OBJECT
 public:
-    BAMFormat(QObject *parent = NULL);
+    BAMFormatUtils(QObject *parent = NULL);
 
-    virtual DocumentFormatId getFormatId()const;
-    virtual const QString &getFormatName()const;
-    virtual void storeDocument(Document *d, IOAdapter *io, U2OpStatus &os);
-    virtual FormatCheckResult checkRawData(const QByteArray &rawData, const GUrl& url = GUrl())const;
+    FormatCheckResult checkRawData(const QByteArray &rawData, const GUrl& url = GUrl()) const;
 
-protected:
-    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& targetDb, const QVariantMap& hints, U2OpStatus& os);
+    QStringList getSupportedDocumentFileExtensions() const { return fileExtensions; }
 
 private:
-    static const QString FORMAT_ID;
-    const QString formatName;
+    QStringList fileExtensions;
 };
 
 } // namespace BAM

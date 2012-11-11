@@ -524,7 +524,10 @@ void ADVExportContext::prepareMAFromAnnotations(MAlignment& ma, bool translate, 
         QByteArray rowSequence;
         AnnotationSelection::getAnnotationSequence(rowSequence, a, MAlignment_GapChar, seqRef,  doComplement? complTT : NULL, aminoTT, os);
         CHECK_OP(os, );
-        ma.addRow(MAlignmentRow(rowName, rowSequence));
+
+        ma.addRow(rowName, rowSequence, os);
+        CHECK_OP(os, );
+
         names.insert(rowName);
     }
 }
@@ -578,7 +581,7 @@ void ADVExportContext::prepareMAFromSequences(MAlignment& ma, bool translate, U2
                 int len = aminoTT->translate(seq.data(), seq.size());
                 seq.resize(len);
             }
-            MAlignmentRow row(ExportUtils::genUniqueName(names, seqCtx->getSequenceGObject()->getGObjectName()), seq);
+            MAlignmentRow row = MAlignmentRow::createRow(ExportUtils::genUniqueName(names, seqCtx->getSequenceGObject()->getGObjectName()), seq, os);
             names.insert(row.getName());
             rows.append(row);
         }
@@ -586,7 +589,7 @@ void ADVExportContext::prepareMAFromSequences(MAlignment& ma, bool translate, U2
 
     ma.setAlphabet(al);
     foreach(const MAlignmentRow& row, rows) {
-        ma.addRow(row);
+        ma.addRow(row, os);
     }
 }
 

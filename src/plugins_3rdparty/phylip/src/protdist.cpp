@@ -92,7 +92,7 @@ void prot_getoptions(const QString& matrixModel)
   boolean done;
 
   if (printdata)
-    fprintf(outfile, "\nProtein distance algorithm, version %s\n\n",VERSION);
+    fprintf(outfile, "\nProtein distance algorithm, version %s\n\n",PHY_VERSION);
   putchar('\n');
   weights = false;
   printdata = false;
@@ -142,7 +142,7 @@ void prot_getoptions(const QString& matrixModel)
 
   /*do {
     cleerhome();
-    printf("\nProtein distance algorithm, version %s\n\n",VERSION);
+    printf("\nProtein distance algorithm, version %s\n\n",PHY_VERSION);
     printf("Settings for this run:\n");
     printf("  P  Use JTT, PMB, PAM, Kimura, categories model?  %s\n",
            usejtt ? "Jones-Taylor-Thornton matrix" :

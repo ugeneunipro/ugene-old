@@ -28,6 +28,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/Log.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Core/TextUtils.h>
 #include <QtCore/QFile>
@@ -152,15 +153,16 @@ QVector<float> SiteconAlgorithm::calculateFirstTypeError(const MAlignment& ma, c
     // 2. Calculate score for excluded sequence
     // 3. Distribute percentage for all scores
 
+    U2OpStatus2Log os;
 	int maLen = ma.getLength();
     for (int i=0; i < ma.getNumRows() && !ts.cancelFlag; i++) {
         const MAlignmentRow& row = ma.getRow(i);
         MAlignment subMA = ma;
-        subMA.removeRow(i);
+        subMA.removeRow(i, os);
         QVector<PositionStats> matrix = calculateDispersionAndAverage(subMA, s, ts);
         QVector<PositionStats> normalizedMatrix = normalize(matrix, s);
         calculateWeights(subMA, normalizedMatrix, s, true, ts);
-        float p = calculatePSum(row.toByteArray(maLen), maLen, normalizedMatrix, s, devThresh);
+        float p = calculatePSum(row.toByteArray(maLen, os), maLen, normalizedMatrix, s, devThresh);
         scores.append(p);
     }
     QVector<float> res(100, 0);

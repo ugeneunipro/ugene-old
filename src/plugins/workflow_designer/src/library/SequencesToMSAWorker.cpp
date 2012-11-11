@@ -23,8 +23,11 @@
 
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+
 #include <U2Designer/DelegateEditors.h>
+
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseSlots.h>
@@ -71,10 +74,15 @@ void MSAFromSequencesTask::run() {
     CHECK(sequences_.size() > 0, );
     DNASequence seq = sequences_.first();
     ma.setAlphabet(seq.alphabet);
-    ma.addRow( MAlignmentRow(seq.getName(),seq.seq) );
+
+    U2OpStatus2Log os;
+    ma.addRow(seq.getName(), seq.seq, os);
+    CHECK_OP_EXT(os, setError("An error has occurred during converting an alignment to sequences."),);
+
     for (int i=1; i<sequences_.size(); i++) {
         DNASequence sqnc = sequences_.at(i);
-        ma.addRow( MAlignmentRow(sqnc.getName(),sqnc.seq) );
+        ma.addRow(sqnc.getName(), sqnc.seq, os);
+        CHECK_OP_EXT(os, setError("An error has occurred during converting an alignment to sequences."),);
     }
 }
 

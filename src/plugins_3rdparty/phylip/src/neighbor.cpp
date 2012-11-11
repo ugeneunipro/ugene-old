@@ -52,8 +52,8 @@ void neighbor_getoptions()
   long inseed0 = 1, loopcount;
   //Char ch;
 
-  //fprintf(outfile, "\nNeighbor-Joining/UPGMA method version %s\n\n",VERSION);
-  printf("\nNeighbor-Joining/UPGMA method version %s\n\n",VERSION);
+  //fprintf(outfile, "\nNeighbor-Joining/UPGMA method version %s\n\n",PHY_VERSION);
+  printf("\nNeighbor-Joining/UPGMA method version %s\n\n",PHY_VERSION);
   putchar('\n');
   jumble = false;
   lower = false;
@@ -69,7 +69,7 @@ void neighbor_getoptions()
   loopcount = 0;
   /*for(;;) {
     cleerhome();
-    printf("\nNeighbor-Joining/UPGMA method version %s\n\n",VERSION);
+    printf("\nNeighbor-Joining/UPGMA method version %s\n\n",PHY_VERSION);
     printf("Settings for this run:\n");
     printf("  N       Neighbor-joining or UPGMA tree?  %s\n",
            (njoin ? "Neighbor-joining" : "UPGMA"));

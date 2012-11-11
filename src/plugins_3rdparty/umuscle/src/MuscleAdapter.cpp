@@ -30,6 +30,7 @@
 #include <U2Core/MAlignment.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <algorithm>
 #include <QtCore/QVector>
@@ -439,7 +440,7 @@ static void addSequenceToMSA(MAlignment& ma, const QByteArray& path, QByteArray&
                 }
             }
             assert(newSeq.length() == newLen);
-			ma.setRowSequence(i, newSeq);
+			ma.setRowContent(i, newSeq);
         }
         msaPathChanges.clear();
         msaPathChanges+=msaPathChangesNew;
@@ -449,7 +450,8 @@ static void addSequenceToMSA(MAlignment& ma, const QByteArray& path, QByteArray&
     int ma2Len = ma.getLength(); Q_UNUSED(ma2Len);
     assert(aseqLen == ma2Len);  // gapped sequence has the same length as alignment
 
-    ma.addRow(MAlignmentRow(name, alignedSeq));
+    U2OpStatus2Log os;
+    ma.addRow(name, alignedSeq, os);
 }
 
 void MuscleAdapter::addUnalignedSequencesToProfile(const MAlignment& ma, const MAlignment& unalignedSeqs, MAlignment& res, TaskStateInfo& ti) {

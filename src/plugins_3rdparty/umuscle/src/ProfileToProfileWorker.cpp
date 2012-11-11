@@ -24,6 +24,7 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -115,8 +116,9 @@ void ProfileToProfileTask::prepare() {
     int maxThreads = 1;//AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount();
     setMaxParallelSubtasks(maxThreads);
 
+    U2OpStatus2Log os;
     foreach (const MAlignmentRow &row, masterMsa.getRows()) {
-        result.addRow(row);
+        result.addRow(row, os);
     }
 
     QList<Task*> tasks = createAlignTasks();
@@ -148,7 +150,8 @@ void ProfileToProfileTask::appendResult(Task *task) {
     MAlignmentObject *obj = t->getMAObject();
     const QList<MAlignmentRow> &newRows = obj->getMAlignment().getRows();
     if (newRows.size() == masterMsa.getRows().size() + 1) {
-        result.addRow(newRows.last());
+        U2OpStatus2Log os;
+        result.addRow(newRows.last(), os);
     }
 
     delete obj;
@@ -157,9 +160,10 @@ void ProfileToProfileTask::appendResult(Task *task) {
 QList<Task*> ProfileToProfileTask::createAlignTasks() {
     QList<Task*> tasks;
     while (canCreateTask()) {
+        U2OpStatus2Log os;
         MuscleTaskSettings cfg;
         cfg.op = MuscleTaskOp_ProfileToProfile;
-        cfg.profile.addRow(secondMsa.getRow(seqIdx));
+        cfg.profile.addRow(secondMsa.getRow(seqIdx), os);
         cfg.profile.setAlphabet(secondMsa.getAlphabet());
 
         MAlignmentObject *obj = new MAlignmentObject(masterMsa);

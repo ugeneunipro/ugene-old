@@ -21,13 +21,14 @@
 
 #include "MSAUtils.h"
 
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/U2OpStatus.h>
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/U2AlphabetUtils.h>
-
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
+
 
 namespace U2 {
 
@@ -68,8 +69,7 @@ MAlignment MSAUtils::seq2ma(const QList<DNASequence>& list, U2OpStatus& os) {
         }
         ma.setAlphabet(al);
         //TODO: handle memory overflow
-        MAlignmentRow row(seq.getName(), seq.seq, 0);
-        ma.addRow(row);
+        ma.addRow(seq.getName(), seq.seq, os);
     }
     CHECK_OP(os, MAlignment());
     return ma;
@@ -101,8 +101,9 @@ QList<DNASequence> MSAUtils::ma2seq(const MAlignment& ma, bool trimGaps) {
     QBitArray gapCharMap = TextUtils::createBitMap(MAlignment_GapChar);
     int len = ma.getLength();
     DNAAlphabet* al = ma.getAlphabet();
+    U2OpStatus2Log os;
     foreach(const MAlignmentRow& row, ma.getRows()) {
-        DNASequence s(row.getName(), row.toByteArray(len), al);
+        DNASequence s(row.getName(), row.toByteArray(len, os), al);
         if (trimGaps) {
             int newLen = TextUtils::remove(s.seq.data(), s.length(), gapCharMap);
             s.seq.resize(newLen);
@@ -125,7 +126,8 @@ bool MSAUtils::checkPackedModelSymmetry(MAlignment& ali, U2OpStatus& ti) {
     }
     for (int i=0, n = ali.getNumRows(); i < n; i++) {
         const MAlignmentRow& row = ali.getRow(i);
-        if (row.getCoreLength() != coreLen) {
+        int rowCoreLength = row.getCoreLength();
+        if (rowCoreLength != coreLen) {
             ti.setError(tr("Sequences in alignment have different sizes!"));
             return false;
         }

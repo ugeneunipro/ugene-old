@@ -116,8 +116,7 @@ MAlignment Kalign_Load_Align_Compare_Task::dna_to_ma(QList<GObject*> dnaSeqs) {
             stateInfo.setError(  QString("Can't cast GObject to U2SequenceObject") );
             return ma;
         }
-        MAlignmentRow row(seq->getSequenceName(), seq->getWholeSequenceData());
-        ma.addRow(row);
+        ma.addRow(seq->getSequenceName(), seq->getWholeSequenceData(), stateInfo);
     }
     return ma;
 }
@@ -366,8 +365,7 @@ MAlignment GTest_Kalign_Load_Align_QScore::dna_to_ma(QList<GObject*> dnaSeqs) {
             stateInfo.setError(  QString("Can't cast GObject to U2SequenceObject") );
             return ma;
         }
-        MAlignmentRow row(seq->getSequenceName(), seq->getWholeSequenceData());
-        ma.addRow(row);
+        ma.addRow(seq->getSequenceName(), seq->getWholeSequenceData(), stateInfo);
     }
     return ma;
 }

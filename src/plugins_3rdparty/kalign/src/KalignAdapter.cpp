@@ -27,6 +27,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <algorithm>
 #include <cctype>
@@ -106,6 +107,12 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
 	for(quint32 i = 0 ; i < numseq; i++) {
 		const MAlignmentRow& row= ma.getRow(i);
 		aln->sl[i] = row.getCoreLength() - row.getCore().count('-');
+
+        int rowCoreLength = row.getCoreLength();
+        QString rowCore = row.getCore();
+        int gapsCount = row.getCore().count('-');
+        int result = aln->sl[i];
+
 		aln->lsn[i] = row.getName().length();
 	}
 
@@ -391,7 +398,8 @@ void KalignAdapter::alignUnsafe(const MAlignment& ma, MAlignment& res, TaskState
 			seq += QString(aln->s[f][j],'-') + aln->seq[f][j];
 		}
 		seq += QString(aln->s[f][aln->sl[f]],'-');
-		res.addRow(MAlignmentRow(QString(aln->sn[f]), seq.toAscii()));
+        U2OpStatus2Log os;
+		res.addRow(QString(aln->sn[f]), seq.toAscii(), os);
 	}
 
 

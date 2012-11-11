@@ -172,7 +172,9 @@ void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
 // BAM importer
 BAMImporter::BAMImporter() : DocumentImporter("bam-importer", tr("BAM/SAM file import")){
     //prepare sorted extensions list
-    QSet<QString> extsSet; BAMFormat bam; SAMFormat sam;
+    QSet<QString> extsSet;
+    BAMFormatUtils bam;
+    SAMFormat sam;
     extsSet.unite(bam.getSupportedDocumentFileExtensions().toSet()).unite(sam.getSupportedDocumentFileExtensions().toSet());
     QStringList exts = extsSet.toList();
     qSort(exts);
@@ -184,8 +186,8 @@ BAMImporter::BAMImporter() : DocumentImporter("bam-importer", tr("BAM/SAM file i
 #define SAM_HINT "bam-importer-sam-hint"
 
 FormatCheckResult BAMImporter::checkRawData(const QByteArray& rawData, const GUrl& url) {
-    BAMFormat bamFormat;
-    FormatCheckResult bamScore = bamFormat.checkRawData(rawData, url);
+    BAMFormatUtils bamFormatUtils;
+    FormatCheckResult bamScore = bamFormatUtils.checkRawData(rawData, url);
 
     SAMFormat samFormat;
     FormatCheckResult samScore = samFormat.checkRawData(rawData, url);

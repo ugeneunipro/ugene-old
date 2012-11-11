@@ -454,13 +454,13 @@ void ACEFormat::load(IOAdapter *io, QList<GObject*> &objects, U2OpStatus &os) {
         }
 
         MAlignment al(consName);
-        al.addRow(MAlignmentRow(consName, consensus));
+        al.addRow(consName, consensus, os);
+        CHECK_OP(os, );
 
         //AF
         parseAFTag(io, os, buff, count, posMap, complMap, names);
-        if (os.hasError()){
-            return;
-        }
+        CHECK_OP(os, );
+
         //RD and QA
         while (!os.isCoR() && count>0) {
             parseRDandQATag(io, os, buff, posMap, complMap, names, name, sequence);
@@ -474,9 +474,11 @@ void ACEFormat::load(IOAdapter *io, QList<GObject*> &objects, U2OpStatus &os) {
             }
             MAlignmentRow row;
             row.setName(rowName);
-            row.setSequence(sequence, pos);
+            row.setRowContent(sequence, pos, os);
+            CHECK_OP(os, );
 
-            al.addRow(row);
+            al.addRow(row, os);
+            CHECK_OP(os, );
 
             count--;
             os.setProgress(io->getProgress());

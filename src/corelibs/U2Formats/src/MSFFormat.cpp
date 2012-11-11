@@ -21,18 +21,21 @@
 
 #include "MSFFormat.h"
 
-#include <U2Formats/DocumentFormatUtils.h>
-#include <U2Core/U2OpStatus.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Core/L10n.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/TextUtils.h>
 #include <U2Core/MSAUtils.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
+
+#include <U2Formats/DocumentFormatUtils.h>
+
 
 namespace U2 {
 
@@ -153,7 +156,8 @@ void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& ti) {
         }
 
         seqs.insert(name, check);
-        al.addRow(MAlignmentRow(name));
+        U2OpStatus2Log os;
+        al.addRow(name, QByteArray(), os);
         if (sum < CHECK_SUM_MOD) {
             sum = (sum + check) % CHECK_SUM_MOD;
         }
@@ -195,10 +199,11 @@ void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& ti) {
     }
 
     //checksum
+    U2OpStatus2Log seqCheckOs;
     for (int i=0; i<al.getNumRows(); i++) {
         const MAlignmentRow& row = al.getRow(i);
         int expectedCheckSum = seqs[row.getName()];
-        int sequenceCheckSum = getCheckSum(row.toByteArray(al.getLength()));
+        int sequenceCheckSum = getCheckSum(row.toByteArray(al.getLength(), seqCheckOs));
         if ( expectedCheckSum < CHECK_SUM_MOD &&  sequenceCheckSum != expectedCheckSum) {
             ti.setError(MSFFormat::tr("Check sum test failed"));
             return;
@@ -260,7 +265,7 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
     static int maxCheckSumLen = 4;
     QMap <QString, int> checkSums;
     foreach(const MAlignmentRow& row , ma.getRows()) {
-        QByteArray sequence = row.toByteArray(maLen).replace(MAlignment_GapChar, '.');
+        QByteArray sequence = row.toByteArray(maLen, os).replace(MAlignment_GapChar, '.');
         int seqCheckSum = getCheckSum(sequence);
         checkSums.insert(row.getName(), seqCheckSum);
         checkSum = (checkSum + seqCheckSum) % CHECK_SUM_MOD;
@@ -318,6 +323,9 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
 
         //write sequence
         foreach(const MAlignmentRow& row, ma.getRows()) {
+
+            QString rowName = row.getName();
+
             QByteArray line = row.getName().toLocal8Bit();
             line.replace(' ', '_'); // since ' ' is a delimiter for MSF parser spaces in name not supported
             line = line.leftJustified(maxNameLen+1);
@@ -325,8 +333,30 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
             for (int j = 0; j < CHARS_IN_ROW && i + j < maLen; j += CHARS_IN_WORD) {
                 line += ' ';
                 int nChars = qMin(CHARS_IN_WORD, maLen - (i + j));
-                line += row.mid(i + j, nChars).toByteArray(nChars).replace(MAlignment_GapChar, '.');
+                MAlignmentRow rowPart = row.mid(i + j, nChars, os);
+
+
+                DNASequence testSeq = rowPart.getSequence();
+                QList<U2MsaGap> testGapModel = rowPart.getGapModel();
+                for (int i = 0, n = testGapModel.size(); i < n; ++i) {
+                    U2MsaGap gap = testGapModel[i];
+                }
+
+
+                if (os.hasError()) {
+                    bool test = true;
+                }
+                QByteArray bytes = rowPart.toByteArray(nChars, os);
+                if (os.hasError()) {
+                    bool test = true;
+                }
+                bytes.replace(MAlignment_GapChar, '.');
+
+                line += bytes;
+
+                //line += row.mid(i + j, nChars, os).toByteArray(nChars, os).replace(MAlignment_GapChar, '.');
             }
+            SAFE_POINT_OP(os, );
             line += '\n';
             if (writeBlock(io, os, line)) {
                 return;
