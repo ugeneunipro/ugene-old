@@ -197,6 +197,7 @@ void DigestSequenceTask::run()
 
     QMap<GenomicPosition,SEnzymeData>::const_iterator prev = cutSiteMap.constBegin(), current = cutSiteMap.constBegin();
     int count = 2;
+    qint64 seqLen = dnaObj->getSequenceLength();
     
     while ( (++current) != cutSiteMap.constEnd() )  {
         int pos1 = prev.key().coord;
@@ -239,7 +240,10 @@ void DigestSequenceTask::run()
         rightTerm.overhang = dnaObj->getSequenceData(U2Region(rightCutPos, rightOverhangStart - rightCutPos));
         rightTerm.enzymeId = enzyme2->id.toAscii();
         rightTerm.isDirect = rightStrandDirect ? rightCutDirect > rightCutCompl : rightCutDirect < rightCutCompl;
-
+        if (rightOverhangStart > seqLen) {
+            int leftCutPos = rightOverhangStart - seqLen;
+            rightTerm.overhang  += dnaObj->getSequenceData(U2Region(0, leftCutPos));
+        }
         AnnotationData* ad = createFragment(leftCutPos, leftTerm,  rightCutPos, rightTerm);
         ad->name = QString("Fragment %1").arg(count);
         results.append(SharedAnnotationData(ad));
@@ -270,8 +274,7 @@ void DigestSequenceTask::run()
     int leftOverhangStart = prev.key().coord + qMin(lcDirectStrandCut, lcComplementStrandCut);
     bool leftOverhangIsDirect = lcStrandDirect ? lcDirectStrandCut < lcComplementStrandCut : 
         lcDirectStrandCut > lcComplementStrandCut;
-    
-    qint64 seqLen = dnaObj->getSequenceLength();
+        
     if (lastCutPos >= seqLen) {
         // last restriction site is situated between sequence start and end
         assert(isCircular);
