@@ -501,7 +501,9 @@ void QueryScene::addActor(QDActor* actor, const QPointF& pos) {
         QDElement* uv = new QDElement(su);
         unit2view[su] = uv;
         addItem(uv);
-        uv->setPos(pos.x() + dx, y);
+        QPointF p(pos.x() + dx, y);
+        while(ajustPosForNewItem(uv, p));
+        uv->setPos(p);
         dx += UNIT_PADDING + uv->boundingRect().width();
     }
     foreach(QDConstraint* c, actor->getParamConstraints()) {
@@ -520,6 +522,23 @@ void QueryScene::addActor(QDActor* actor, const QPointF& pos) {
     setModified(true);
     emit si_itemAdded();
 }
+
+bool QueryScene::ajustPosForNewItem(QDElement *targetItem, QPointF &posToAjust){
+    QRectF itemRect = targetItem->boundingRect();
+    itemRect.moveTo(posToAjust);
+    foreach(QDElement *el, getElements()){
+        if(el == targetItem) continue;
+        QPointF elPos = el->pos();
+        QRectF elRect = el->sceneBoundingRect(); 
+        if( itemRect.intersects(elRect) ){
+            float yy = elRect.bottomLeft().y();
+            posToAjust = QPointF(posToAjust.x(), yy);
+            return true;
+        }
+    }
+    return false;
+}
+
 
 void QueryScene::addDistanceConstraint(QDElement* src, QDElement* dst, QDDistanceType distType, int min, int max) {
     if(src!=dst) {

@@ -109,6 +109,7 @@ private:
     QList<QGraphicsItem*> unitsIntersectedByRow(int idx) const;
     QList<QGraphicsItem*> getElements(const QRectF& area);
     void setupDistanceDialog(QDDistanceType kind);
+    bool ajustPosForNewItem(QDElement *item, QPointF &posToAjust);
 private:
     QDElement*              dropCandidateLeft;
     QDElement*              dropCandidateRight;
