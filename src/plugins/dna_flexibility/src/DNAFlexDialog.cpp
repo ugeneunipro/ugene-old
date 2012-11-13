@@ -28,6 +28,8 @@
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 
+#include <QtGui/QMessageBox>
+
 
 namespace U2 {
 
@@ -85,7 +87,16 @@ void DNAFlexDialog::accept()
     // TODO
 
     // Preparing the annotations object and other annotations parameters
-    annotController->prepareAnnotationObject();
+    QString err = annotController->validate();
+    if (!err.isEmpty()) {
+        QMessageBox::warning(this, tr("Error"), err);
+        return;
+    } 
+    bool objectPrepared = annotController->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        return;
+    }
     const CreateAnnotationModel& annotModel = annotController->getModel();
     QString annotName = annotModel.data->name;
     QString annotGroup = annotModel.groupName;

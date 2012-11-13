@@ -53,7 +53,7 @@ cachedAlphabet(NULL), cachedLength(-1), cachedCircular(TriState_Unknown)
 
 bool U2SequenceObject::checkConstraints(const GObjectConstraints* c) const {
     const U2SequenceObjectConstraints* dnac = qobject_cast<const U2SequenceObjectConstraints*>(c);
-    SAFE_POINT(dnac != NULL, "Not a U2SequenceObjectConstraints!", NULL);
+    SAFE_POINT(dnac != NULL, "Not a U2SequenceObjectConstraints!", false);
 
     if (dnac->sequenceSize != NO_LENGTH_CONSTRAINT) {
         qint64 seqLen = getSequenceLength();
@@ -62,7 +62,8 @@ bool U2SequenceObject::checkConstraints(const GObjectConstraints* c) const {
         }
     }
     if (dnac->alphabetType != DNAAlphabet_RAW) {
-        DNAAlphabetType aType = getAlphabet()->getType();
+        DNAAlphabet* dalphabet = getAlphabet();
+        SAFE_POINT(dalphabet != NULL, "U2SequenceObject::no alphabet", false);
         if (dnac->alphabetType != aType) {
             return false;
         }

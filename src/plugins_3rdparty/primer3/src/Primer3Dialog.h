@@ -42,7 +42,7 @@ public:
     const CreateAnnotationModel &getCreateAnnotationModel()const;
     U2Region getRegion(bool *ok = NULL)const;
     QString checkModel();
-    void prepareAnnotationObject();
+    bool prepareAnnotationObject();
 public:
     static bool parseIntervalList(QString inputString, QString delimiter, QList<QPair<int, int> > *outputList);
     static QString intervalListToString(QList<QPair<int, int> > intervalList, QString delimiter);

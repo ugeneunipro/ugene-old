@@ -128,7 +128,11 @@ void RemoteBLASTViewContext::sl_showDialog() {
             cfg.aminoT = aminoT;
             cfg.complT = complT;
 
-            Task * t = new RemoteBLASTToAnnotationsTask(cfg, r.startPos, dlg.getAnnotationObject(), dlg.getUrl(),dlg.getGroupName());
+            AnnotationTableObject* aobject = dlg.getAnnotationObject();
+            if (aobject == NULL){
+                return;
+            }
+            Task * t = new RemoteBLASTToAnnotationsTask(cfg, r.startPos, aobject, dlg.getUrl(),dlg.getGroupName());
             AppContext::getTaskScheduler()->registerTopLevelTask( t );
         }
     }

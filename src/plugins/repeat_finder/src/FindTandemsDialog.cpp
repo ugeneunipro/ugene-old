@@ -214,7 +214,11 @@ void FindTandemsDialog::accept() {
         return;
     }
 
-    ac->prepareAnnotationObject();
+    bool objectPrepared = ac->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        return;
+    }
     DNASequence seq = sc->getSequenceObject()->getWholeSequenceData();
 
     FindTandemsTaskSettings settings;

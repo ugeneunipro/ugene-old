@@ -81,7 +81,9 @@ public:
     // for a validated model creates new document (newDocUrl), adds annotation table object 
     // to the document created and stores the reference to the object to annotationObject
     // Does nothing if annotationObject is not NULL
-    void prepareAnnotationObject();
+    // returns true if annotation object is prepared
+    // return false otherwise
+    bool prepareAnnotationObject();
 
     // add model property instead ??
     bool isNewObject() const;

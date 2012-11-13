@@ -94,7 +94,11 @@ void BlastAllSupportRunDialog::sl_runQuery(){
         settings.aobj->addObjectRelation(GObjectRelation(ca_c->getModel().sequenceObjectRef, GObjectRelationRole::SEQUENCE));
     }
     else {
-        ca_c->prepareAnnotationObject();
+        bool objectPrepared = ca_c->prepareAnnotationObject();
+        if (!objectPrepared){
+            QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+            return;
+        }
         settings.aobj = ca_c->getModel().getAnnotationObject();
     }
     settings.groupName=ca_c->getModel().groupName;

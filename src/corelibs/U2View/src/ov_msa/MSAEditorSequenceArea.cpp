@@ -194,12 +194,15 @@ MSAEditorSequenceArea::~MSAEditorSequenceArea() {
 }
 
 void MSAEditorSequenceArea::prepareColorSchemeMenuActions() {
+    SAFE_POINT(editor != NULL, "MSAEditorSequenceArea::no editor", );
     Settings* s = AppContext::getSettings();
     MAlignmentObject* maObj = editor->getMSAObject();
     if (maObj == NULL)
         return;
 
-    DNAAlphabetType atype = maObj->getMAlignment().getAlphabet()->getType();
+    DNAAlphabet* alph = maObj->getMAlignment().getAlphabet();
+    SAFE_POINT(editor != NULL, "MSAEditorSequenceArea::no alphabet", );
+    DNAAlphabetType atype = alph->getType();
     MSAColorSchemeRegistry* csr = AppContext::getMSAColorSchemeRegistry();
     connect(csr, SIGNAL(si_customSettingsChanged()), SLOT(sl_customColorSettingsChanged()));
 

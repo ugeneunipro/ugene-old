@@ -361,7 +361,7 @@ void SmithWatermanDialog::setParameters()
 
 void SmithWatermanDialog::initResultDirPath()
 {
-    QString lastDir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR).toString();
+    QString lastDir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR, QString(""), true).toString();
     if (lastDir.isEmpty() || !QDir(lastDir).exists()) {
         lastDir = QDir::homePath();
         const Project * curProject = AppContext::getProject();
@@ -404,7 +404,7 @@ void SmithWatermanDialog::sl_browseAlignFilesDir()
     const QString name = QFileDialog::getExistingDirectory(this, tr("Choose folder"), openUrl);
     if (!name.isEmpty()) {
         alignmentFilesPath->setText(name + '/');
-        AppContext::getSettings()->setValue(SETTINGS_LASTDIR, name);
+        AppContext::getSettings()->setValue(SETTINGS_LASTDIR, name, true);
     }
 }
 
@@ -462,7 +462,11 @@ void SmithWatermanDialog::sl_bttnRun()
     }
     if (readParameters()) {
         if(SmithWatermanSettings::ANNOTATIONS == config.resultView) {
-            annotationController->prepareAnnotationObject();
+            bool objectPrepared = annotationController->prepareAnnotationObject();
+            if (!objectPrepared){
+                QMessageBox::critical(this, tr("Error!"), "Cannot create an annotation object. Please check settings");
+                return;
+            }
             const CreateAnnotationModel& m = annotationController->getModel();
             AnnotationTableObject* obj = m.getAnnotationObject();
             QString annotationName = m.data->name;

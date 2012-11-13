@@ -35,14 +35,14 @@ public:
     SettingsImpl(QSettings::Scope scope);
     ~SettingsImpl();
     
-    QStringList getAllKeys(const QString& path);
+    QStringList getAllKeys(const QString& path) const;
     void cleanSection(const QString& path);
 
     virtual bool contains(const QString& key) const;
     virtual void remove(const QString& key);
 
-    virtual QVariant getValue(const QString& key, const QVariant& defaultValue = QVariant()) const;
-    virtual void setValue(const QString& key, const QVariant& value);
+    virtual QVariant getValue(const QString& key, const QVariant& defaultValue = QVariant(), bool versionedValue = false) const;
+    virtual void setValue(const QString& key, const QVariant& value, bool versionedValue = false);
 
     virtual QString toVersionKey(const QString& key) const;
 

@@ -388,8 +388,11 @@ void QDDialog::sl_okBtnClicked() {
         rs->showErrorMessage();
         return;
     }
-
-    cawc->prepareAnnotationObject();
+    bool objectPrepared = cawc->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        return;
+    }
     const CreateAnnotationModel& m = cawc->getModel();
     
     U2SequenceObject *seqObj = ctx->getSequenceObject();

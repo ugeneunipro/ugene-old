@@ -109,7 +109,7 @@ void ProjectServiceImpl::sl_saveAs() {
         return;
     }
 
-    AppContext::getSettings()->setValue(SETTINGS_DIR + "last_dir", fullPath);
+    AppContext::getSettings()->setValue(SETTINGS_DIR + "last_dir", fullPath, true);
     
     AppContext::getProject()->setProjectName(d.projectNameEdit->text());
     

@@ -1126,7 +1126,9 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern, const QStri
 
     // Preparing the annotations object and other annotations parameters
     if (!annotModelPrepared){
-        annotController->prepareAnnotationObject();
+        
+        bool objectPrepared = annotController->prepareAnnotationObject();
+        SAFE_POINT(objectPrepared, "Cannot create an annotation object. Please check settings", );
         annotModelPrepared = true;
     }
 

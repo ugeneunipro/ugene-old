@@ -38,12 +38,12 @@ AutoAnnotationsUpdater::AutoAnnotationsUpdater( const QString& nm, const QString
 : groupName(gName), name(nm)
 {
     
-    checkedByDefault = AppContext::getSettings()->getValue(AUTO_ANNOTATION_SETTINGS + groupName, false).toBool();
+    checkedByDefault = AppContext::getSettings()->getValue(AUTO_ANNOTATION_SETTINGS + groupName, false, true).toBool();
 }
 
 AutoAnnotationsUpdater::~AutoAnnotationsUpdater()
 {
-    AppContext::getSettings()->setValue(AUTO_ANNOTATION_SETTINGS + groupName, checkedByDefault);
+    AppContext::getSettings()->setValue(AUTO_ANNOTATION_SETTINGS + groupName, checkedByDefault, true);
 }
 
 QList<AutoAnnotationsUpdater*> AutoAnnotationsSupport::getAutoAnnotationUpdaters()

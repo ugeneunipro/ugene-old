@@ -25,6 +25,8 @@
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
 
+#include <QtGui/QMessageBox>
+
 #include "SendSelectionDialog.h"
 
 
@@ -194,7 +196,11 @@ AnnotationTableObject* SendSelectionDialog::getAnnotationObject() const {
         return aobj;
     }
     else {
-        ca_c->prepareAnnotationObject();
+        bool objectPrepared = ca_c->prepareAnnotationObject();
+        if (!objectPrepared){
+            QMessageBox::warning(NULL, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+            return NULL;
+        }
         return ca_c->getModel().getAnnotationObject();
     }
     

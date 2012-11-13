@@ -82,7 +82,11 @@ void SaveGraphCutoffsDialogController::accept(){
     if(!validate()){
         return;
     }
-    ac->prepareAnnotationObject();
+    bool objectPrepared = ac->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::critical(this, tr("Error!"), "Cannot create an annotation object. Please check settings");
+        return;
+    }
     const CreateAnnotationModel &mm = ac->getModel();
     int startPos = gd->cachedFrom, step = gd->cachedS, window = gd->cachedW;
     PairVector& points = gd->cachedData;
@@ -134,7 +138,7 @@ bool SaveGraphCutoffsDialogController::isAcceptableValue(float val){
 
 bool SaveGraphCutoffsDialogController::validate(){
     if(minCutoffBox->value() >= maxCutoffBox->value()){
-        QMessageBox::critical(NULL, tr("Error!"), "Minimum cutoff value greater or equal maximum!");
+        QMessageBox::critical(this, tr("Error!"), "Minimum cutoff value greater or equal maximum!");
         return false;
     }
     return true;

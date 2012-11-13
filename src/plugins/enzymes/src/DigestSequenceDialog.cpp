@@ -135,8 +135,11 @@ void DigestSequenceDialog::accept()
         QMessageBox::information(this, windowTitle(), err);
         return;
     }
-
-    ac->prepareAnnotationObject();
+    bool objectPrepared = ac->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        return;
+    }
     const CreateAnnotationModel& m = ac->getModel();
     AnnotationTableObject* aObj = m.getAnnotationObject();
     assert(aObj != NULL);

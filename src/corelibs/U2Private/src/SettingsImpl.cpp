@@ -53,8 +53,6 @@ static QString preparePath(const QString& pathName) {
     return result;
 }
 
-
-
 SettingsImpl::SettingsImpl(QSettings::Scope scope) {
     QString fileName;
     QStringList envList = QProcess::systemEnvironment();
@@ -114,19 +112,50 @@ void SettingsImpl::remove(const QString& pathName) {
 }
 
 
-QVariant SettingsImpl::getValue(const QString& pathName, const QVariant& defaultValue) const {
+QVariant SettingsImpl::getValue(const QString& pathName, const QVariant& defaultValue, bool versionedValue) const {
     QMutexLocker lock(&threadSafityLock);
 
     QString path = pathName;
     QString key = preparePath(path);
+
+    if (versionedValue){
+        //find versioned value in the key path
+        settings->beginGroup(key);
+        QStringList allKeys = settings->allKeys();
+        settings->endGroup();
+
+        QString versionedKey = toVersionKey(key);
+
+        bool found = false;
+        foreach (const QString& settingsKey, allKeys){
+            if (QString(key + "/" + settingsKey) == versionedKey){
+                found = true;
+                break;
+            }
+        }
+        if (!found){
+            return defaultValue;
+        }
+
+        key = versionedKey;
+    }
+
     return settings->value(key, defaultValue);
 }
 
-void SettingsImpl::setValue(const QString& pathName, const QVariant& value) {
+void SettingsImpl::setValue(const QString& pathName, const QVariant& value, bool versionedValue) {
     QMutexLocker lock(&threadSafityLock);
 
     QString path = pathName;
     QString key = preparePath(path);
+    
+    if (versionedValue){
+        //TODO: delete versioned keys?
+        
+        //create versioned key
+        key = toVersionKey(key);
+    }
+
     settings->setValue(key, value);
 }
 
@@ -139,7 +168,7 @@ QString SettingsImpl::toVersionKey(const QString& key) const {
     return key + VERSION_KEY_SUFFIX;
 }
 
-QStringList SettingsImpl::getAllKeys(const QString& path) {
+QStringList SettingsImpl::getAllKeys(const QString& path) const{
     QMutexLocker lock(&threadSafityLock);
 
     QString key = preparePath(path);

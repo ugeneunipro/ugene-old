@@ -97,9 +97,9 @@ U2Region Primer3Dialog::getRegion(bool *ok) const
     return rs->getRegion(ok);
 }
 
-void Primer3Dialog::prepareAnnotationObject()
+bool Primer3Dialog::prepareAnnotationObject()
 {
-   createAnnotationWidgetController->prepareAnnotationObject();
+   return createAnnotationWidgetController->prepareAnnotationObject();
 }
 
 QString Primer3Dialog::intervalListToString(QList<QPair<int, int> > intervalList, QString delimiter) {

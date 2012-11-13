@@ -75,7 +75,11 @@ void CreateAnnotationDialog::sl_onCreateClicked(bool) {
         QMessageBox::warning(this, tr("Error"), err);
         return;
     } 
-    annWidgetController->prepareAnnotationObject();
+    bool objectPrepared = annWidgetController->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        return;
+    }
     model = annWidgetController->getModel();
     accept();
 }

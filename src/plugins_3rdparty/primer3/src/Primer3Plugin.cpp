@@ -174,8 +174,11 @@ void Primer3ADVContext::sl_showDialog() {
                 QMessageBox::warning(QApplication::activeWindow(), dialog.windowTitle(), err);
                 return;
             }
-            
-            dialog.prepareAnnotationObject();
+            bool objectPrepared = dialog.prepareAnnotationObject();;
+            if (!objectPrepared){
+                QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+                return;
+            }
             const CreateAnnotationModel &model = dialog.getCreateAnnotationModel();
             AppContext::getTaskScheduler()->registerTopLevelTask(
                 new Primer3ToAnnotationsTask(settings, seqCtx->getSequenceObject(), model.getAnnotationObject(), model.groupName, ""));

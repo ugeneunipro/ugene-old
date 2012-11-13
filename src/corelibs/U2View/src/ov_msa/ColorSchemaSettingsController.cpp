@@ -70,7 +70,7 @@ static QString getColorsDir() {
     QString settingsFile = AppContext::getSettings()->fileName();
     QString settingsDir = QDir(QFileInfo(settingsFile).absolutePath()).filePath(SETTINGS_SUB_DIRECTORY); 
     
-    QString res = AppContext::getSettings()->getValue(SETTINGS_ROOT + COLOR_SCHEMA_DIR, settingsDir).toString();
+    QString res = AppContext::getSettings()->getValue(SETTINGS_ROOT + COLOR_SCHEMA_DIR, settingsDir, true).toString();
 
     return res;
 }
@@ -79,7 +79,7 @@ static void setColorsDir(const QString &colorsDir) {
     QString settingsFile = AppContext::getSettings()->fileName();
     QString settingsDir = QFileInfo(settingsFile).absolutePath();
     if (settingsDir != colorsDir) {
-        AppContext::getSettings()->setValue(SETTINGS_ROOT + COLOR_SCHEMA_DIR, colorsDir);
+        AppContext::getSettings()->setValue(SETTINGS_ROOT + COLOR_SCHEMA_DIR, colorsDir, true);
     }
 }
 

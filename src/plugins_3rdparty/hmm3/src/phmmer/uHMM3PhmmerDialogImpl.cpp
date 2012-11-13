@@ -158,8 +158,11 @@ void UHMM3PhmmerDialogImpl::sl_okButtonClicked() {
         QMessageBox::critical( this, tr( "Error: bad arguments!" ), err );
         return;
     }
-    
-    annotationsWidgetController->prepareAnnotationObject();
+    bool objectPrepared = annotationsWidgetController->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        return;
+    }
     const CreateAnnotationModel & annModel = annotationsWidgetController->getModel();
     UHMM3PhmmerToAnnotationsTask * phmmerTask = new UHMM3PhmmerToAnnotationsTask( model.queryfile, model.dbSequence,
         annModel.getAnnotationObject(), annModel.groupName, annModel.data->name, model.phmmerSettings );

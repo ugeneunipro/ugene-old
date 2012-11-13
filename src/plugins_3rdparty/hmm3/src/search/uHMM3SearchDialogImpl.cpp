@@ -164,8 +164,11 @@ void UHMM3SearchDialogImpl::sl_okButtonClicked() {
         QMessageBox::critical( this, tr( "Error: bad arguments!" ), err );
         return;
     }
-    
-    annotationsWidgetController->prepareAnnotationObject();
+    bool objectPrepared = annotationsWidgetController->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        return;
+    }
     const CreateAnnotationModel & annModel = annotationsWidgetController->getModel();
     UHMM3SWSearchToAnnotationsTask * searchTask = new UHMM3SWSearchToAnnotationsTask( model.hmmfile, model.sequence,
         annModel.getAnnotationObject(), annModel.groupName, annModel.data->name, model.searchSettings );

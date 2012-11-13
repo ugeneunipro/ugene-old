@@ -239,8 +239,12 @@ void FindRepeatsDialog::accept() {
     }
     
     RFAlgorithm algo = algoCheck->isChecked() ? RFAlgorithm(algoCombo->itemData(algoCombo->currentIndex()).toInt()) : RFAlgorithm_Auto;
-
-    ac->prepareAnnotationObject();
+     
+    bool objectPrepared = ac->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        return;
+    }
     
     FindRepeatsTaskSettings settings;
     const CreateAnnotationModel& cam = ac->getModel();

@@ -108,7 +108,11 @@ void HMMSearchDialogController::sl_okClicked() {
         return;
     }
 
-    createController->prepareAnnotationObject();
+    bool objectPrepared = createController->prepareAnnotationObject();
+    if (!objectPrepared){
+        QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+        return;
+    }
     
     const CreateAnnotationModel& cm = createController->getModel();
     QString annotationName = cm.data->name;

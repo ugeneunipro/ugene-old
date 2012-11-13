@@ -35,7 +35,7 @@ namespace U2 {
 
 QString GenomeAlignerSettingsUtils::getIndexDir() {
     QString defaultDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("aligner");
-    QString res = AppContext::getSettings()->getValue(SETTINGS_ROOT + INDEX_DIR, defaultDir).toString();
+    QString res = AppContext::getSettings()->getValue(SETTINGS_ROOT + INDEX_DIR, defaultDir, true).toString();
 
     return res;
 }
@@ -43,7 +43,7 @@ QString GenomeAlignerSettingsUtils::getIndexDir() {
 void GenomeAlignerSettingsUtils::setIndexDir(const QString &indexDir) {
     QString defaultDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("aligner");
     if (defaultDir != indexDir) {
-        AppContext::getSettings()->setValue(SETTINGS_ROOT + INDEX_DIR, indexDir);
+        AppContext::getSettings()->setValue(SETTINGS_ROOT + INDEX_DIR, indexDir, true);
     }
 }
 

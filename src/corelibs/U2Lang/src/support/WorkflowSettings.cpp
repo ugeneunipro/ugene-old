@@ -114,16 +114,16 @@ void WorkflowSettings::setDefaultFont(const QFont& f)
 const QString WorkflowSettings::getUserDirectory() {
     Settings *s = AppContext::getSettings();
     QString defaultPath = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/workflow_samples/" + "users/";
-    QString path = s->getValue(DIR, defaultPath).toString();
+    QString path = s->getValue(DIR, defaultPath, true).toString();
     return path;
 }
 
 void WorkflowSettings::setUserDirectory(const QString &newDir) {
     Settings *s = AppContext::getSettings();
     QString defaultPath = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/workflow_samples/" + "users/";
-    QString path = s->getValue(DIR, defaultPath).toString();
+    QString path = s->getValue(DIR, defaultPath, true).toString();
 
-    AppContext::getSettings()->setValue(DIR, newDir);
+    AppContext::getSettings()->setValue(DIR, newDir, true);
 
     if(path != newDir) {
         QDir dir(path);
@@ -144,7 +144,7 @@ const QString WorkflowSettings::getExternalToolDirectory() {
     GUrl url(s->fileName());
     QString defaultPath = url.dirPath();
     defaultPath += "/ExternalToolConfig/";
-    QString path = s->getValue(EXTERNAL_TOOL_WORKER_PATH, defaultPath).toString();
+    QString path = s->getValue(EXTERNAL_TOOL_WORKER_PATH, defaultPath, true).toString();
     return path;
 }
 
@@ -153,9 +153,9 @@ void WorkflowSettings::setExternalToolDirectory(const QString &newDir) {
     GUrl url(s->fileName());
     QString defaultPath = url.dirPath();
     defaultPath += "/ExternalToolConfig/";
-    QString path = s->getValue(EXTERNAL_TOOL_WORKER_PATH, defaultPath).toString();
+    QString path = s->getValue(EXTERNAL_TOOL_WORKER_PATH, defaultPath, true).toString();
 
-    s->setValue(EXTERNAL_TOOL_WORKER_PATH, newDir);
+    s->setValue(EXTERNAL_TOOL_WORKER_PATH, newDir, true);
 
     if(path != newDir) {
         QDir dir(path);
@@ -287,7 +287,7 @@ QString WorkflowSettings::getCmdlineUgenePath() {
 }
 
 void WorkflowSettings::setIncludedElementsDirectory(const QString &newDir) {
-    AppContext::getSettings()->setValue(INCLUDED_WORKER_PATH, newDir);
+    AppContext::getSettings()->setValue(INCLUDED_WORKER_PATH, newDir, true);
 }
 
 const QString WorkflowSettings::getIncludedElementsDirectory() {
@@ -295,7 +295,7 @@ const QString WorkflowSettings::getIncludedElementsDirectory() {
     GUrl url(s->fileName());
     QString defaultPath = url.dirPath();
     defaultPath += "/IncludedWorkers/";
-    QString path = s->getValue(INCLUDED_WORKER_PATH, defaultPath).toString();
+    QString path = s->getValue(INCLUDED_WORKER_PATH, defaultPath, true).toString();
     return path;
 }
 

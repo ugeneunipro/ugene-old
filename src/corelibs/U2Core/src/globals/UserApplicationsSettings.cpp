@@ -172,11 +172,11 @@ void UserAppsSettings::setEnableCollectingStatistics(bool b) {
 }
 
 bool UserAppsSettings::tabbedWindowLayout() const {
-    return AppContext::getSettings()->getValue(SETTINGS_ROOT + WINDOW_LAYOUT).toBool();
+    return AppContext::getSettings()->getValue(SETTINGS_ROOT + WINDOW_LAYOUT, false, true).toBool();
 }
 
 void UserAppsSettings::setTabbedWindowLayout(bool b) {
-    AppContext::getSettings()->setValue(SETTINGS_ROOT + WINDOW_LAYOUT, b);
+    AppContext::getSettings()->setValue(SETTINGS_ROOT + WINDOW_LAYOUT, b, true);
     emit si_windowLayoutChanged();
 }
 

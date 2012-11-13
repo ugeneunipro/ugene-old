@@ -335,7 +335,16 @@ void ORFDialog::accept()
     if (ac->useAutoAnnotationModel()) {
         AutoAnnotationUtils::triggerAutoAnnotationsUpdate(ctx, ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
     } else {
-        ac->prepareAnnotationObject();
+        QString err = ac->validate();
+        if (!err.isEmpty()) {
+            QMessageBox::warning(this, tr("Error"), err);
+            return;
+        } 
+        bool objectPrepared = ac->prepareAnnotationObject();
+        if (!objectPrepared){
+            QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
+            return;
+        }
         const CreateAnnotationModel& m = ac->getModel();
         AnnotationTableObject* aObj = m.getAnnotationObject();
         FindORFsToAnnotationsTask* orfTask =

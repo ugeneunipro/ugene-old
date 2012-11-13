@@ -138,7 +138,7 @@ void ProjectLoaderImpl::sl_newProject() {
     QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
     ProjectDialogController d(ProjectDialogController::New_Project,p);
 	int rc = d.exec();
-	AppContext::getSettings()->setValue(SETTINGS_DIR + "last_dir",d.projectFolderEdit->text());
+	AppContext::getSettings()->setValue(SETTINGS_DIR + "last_dir",d.projectFolderEdit->text(), true);
 
 	if (rc == QDialog::Rejected) {
 		updateState();
@@ -225,20 +225,20 @@ void ProjectLoaderImpl::sl_openRecentFile() {
 
 void ProjectLoaderImpl::prependToRecentProjects(const QString& url) {
     assert(!url.isEmpty());
-	QStringList recentFiles = AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME).toStringList();
+	QStringList recentFiles = AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME, QStringList(), true).toStringList();
     recentFiles.removeAll(QString()); //remove all empty tokens if fount (a kind of cleanup)
 	recentFiles.removeAll(url); // remove URL from the old position
 	recentFiles.prepend(url); // make URL first
 	while(recentFiles.size() > MAX_RECENT_FILES) {
 		recentFiles.pop_back();
 	}
-	AppContext::getSettings()->setValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME, recentFiles);
+	AppContext::getSettings()->setValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME, recentFiles, true);
 }
 
 void ProjectLoaderImpl::updateRecentProjectsMenu() {
     assert(recentProjectsMenu!=NULL);
     recentProjectsMenu->clear();
-    QStringList recentFiles =AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME).toStringList();
+    QStringList recentFiles =AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME, QStringList(), true).toStringList();
     Project* p = AppContext::getProject();
     foreach (QString f, recentFiles) {
         if ((p==NULL || f != p->getProjectURL()) && !f.isEmpty()) {
@@ -505,7 +505,7 @@ void ProjectLoaderImpl::sl_serviceStateChanged(Service* s, ServiceState prevStat
 
 
 QString ProjectLoaderImpl::getLastProjectURL() {
-    QStringList recentFiles =AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME).toStringList();
+    QStringList recentFiles =AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME, QStringList(), true).toStringList();
     if (!recentFiles.isEmpty()) {
         return recentFiles.first();
     }
@@ -515,13 +515,13 @@ QString ProjectLoaderImpl::getLastProjectURL() {
 void ProjectLoaderImpl::prependToRecentItems( const QString& url )
 {
     assert(!url.isEmpty());
-    QStringList recentFiles =AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_ITEMS_SETTINGS_NAME).toStringList();
+    QStringList recentFiles =AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_ITEMS_SETTINGS_NAME, QStringList(), true).toStringList();
     recentFiles.removeAll(url);
     recentFiles.prepend(url);
     while(recentFiles.size() > MAX_RECENT_FILES) {
         recentFiles.pop_back();
     }
-    AppContext::getSettings()->setValue(SETTINGS_DIR + RECENT_ITEMS_SETTINGS_NAME, recentFiles);
+    AppContext::getSettings()->setValue(SETTINGS_DIR + RECENT_ITEMS_SETTINGS_NAME, recentFiles, true);
     
 }
 
@@ -535,7 +535,7 @@ void ProjectLoaderImpl::updateRecentItemsMenu()
 {
     assert(recentItemsMenu!=NULL);
     recentItemsMenu->clear();
-    QStringList recentFiles =AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_ITEMS_SETTINGS_NAME).toStringList();
+    QStringList recentFiles =AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_ITEMS_SETTINGS_NAME, QStringList(), true).toStringList();
     recentItemsMenu->menuAction()->setEnabled(!recentFiles.isEmpty());
     Project* p = AppContext::getProject();
     foreach (QString f, recentFiles) {
@@ -590,7 +590,7 @@ ProjectDialogController::ProjectDialogController(ProjectDialogController::Mode m
     setupUi(this);
     setModal(true);
     fileEditIsEmpty = false;
-    QString lastDir =AppContext::getSettings()->getValue(SETTINGS_DIR + "last_dir", QString("")).toString();
+    QString lastDir =AppContext::getSettings()->getValue(SETTINGS_DIR + "last_dir", QString(""), true).toString();
     projectFolderEdit->setText(lastDir);
 
     if (m == Save_Project) {

@@ -150,7 +150,7 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
         showNameGroupsButton->setPopupMode(QToolButton::InstantPopup);
     }
 
-    QString dir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR).toString();
+    QString dir = AppContext::getSettings()->getValue(SETTINGS_LASTDIR, QString(""), true).toString();
     if (dir.isEmpty() || !QDir(dir).exists()) {
         dir = QDir::homePath();
         Project* prj = AppContext::getProject();
@@ -414,7 +414,7 @@ void CreateAnnotationWidgetController::sl_onNewDocClicked() {
     QString name = QFileDialog::getSaveFileName(NULL, tr("Save file"), openUrl, filter);
     if (!name.isEmpty()) {
         newFileEdit->setText(name);
-        AppContext::getSettings()->setValue(SETTINGS_LASTDIR, QFileInfo(name).absoluteDir().absolutePath());
+        AppContext::getSettings()->setValue(SETTINGS_LASTDIR, QFileInfo(name).absoluteDir().absolutePath(), true);
     }
 }
 class PTCAnnotationObjectFilter: public PTCObjectRelationFilter {
@@ -546,23 +546,25 @@ void CreateAnnotationWidgetController::updateModel() {
     }
 }
 
-void CreateAnnotationWidgetController::prepareAnnotationObject() {
+bool CreateAnnotationWidgetController::prepareAnnotationObject() {
     QString v = validate();
-    SAFE_POINT(v.isEmpty(), "Annotation model is not valid", );
+    SAFE_POINT(v.isEmpty(), "Annotation model is not valid", false);
     if (!model.annotationObjectRef.isValid() && newFileRB->isChecked()) {
-        assert(!model.newDocUrl.isEmpty());
-        assert(AppContext::getProject()->findDocumentByURL(model.newDocUrl)==NULL);
+        SAFE_POINT(!model.newDocUrl.isEmpty(), "newDocUrl is empty", false);
+        SAFE_POINT(AppContext::getProject()->findDocumentByURL(model.newDocUrl)==NULL, "cannot create a document that is already in the project", false);
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
         DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_GENBANK);
         U2OpStatus2Log os;
         Document* d = df->createNewLoadedDocument(iof, model.newDocUrl, os);
-        CHECK_OP(os, );
+        CHECK_OP(os, false);
         AnnotationTableObject* aobj = new AnnotationTableObject("Annotations");
         aobj->addObjectRelation(GObjectRelation(model.sequenceObjectRef, GObjectRelationRole::SEQUENCE));
         d->addObject(aobj);
         AppContext::getProject()->addDocument(d);
         model.annotationObjectRef = aobj;
     }
+
+    return true;
 }
 
 static bool caseInsensitiveLessThan(const QString &s1, const QString &s2) {
