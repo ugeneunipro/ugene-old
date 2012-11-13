@@ -380,7 +380,10 @@ QString GObjectViewUtils::genUniqueViewName(const Document* doc, const GObject* 
     QString objName = obj->getGObjectName();
     const GObjectTypeInfo& ti = GObjectTypes::getTypeInfo(obj->getGObjectType());
     QString objType = " [" + ti.treeSign + "] ";
-    QString viewName = doc->getURL().baseFileName() + objType + objName;
+    QString docSuffix = doc->getURL().lastFileSuffix();
+    QString docName = doc->getURL().fileName();
+    docName.chop(docSuffix.length() == 0 ? 0 : docSuffix.length() + 1);
+    QString viewName = docName + objType + objName;
     return genUniqueViewName(viewName);
 }
 
