@@ -64,6 +64,7 @@ bool U2SequenceObject::checkConstraints(const GObjectConstraints* c) const {
     if (dnac->alphabetType != DNAAlphabet_RAW) {
         DNAAlphabet* dalphabet = getAlphabet();
         SAFE_POINT(dalphabet != NULL, "U2SequenceObject::no alphabet", false);
+        DNAAlphabetType aType = dalphabet->getType();
         if (dnac->alphabetType != aType) {
             return false;
         }
