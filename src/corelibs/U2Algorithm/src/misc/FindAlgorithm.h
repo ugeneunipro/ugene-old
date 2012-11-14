@@ -120,7 +120,6 @@ searchRegion(searchRegion), singleShot(singleShot), maxErr(maxErr), patternSetti
     int                                 maxResult2Find;
 };
 
-
 class U2ALGORITHM_EXPORT FindAlgorithm {
 public:
     // Note: pattern is never affected by either aminoTT or complTT

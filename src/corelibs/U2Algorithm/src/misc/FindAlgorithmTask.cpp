@@ -25,6 +25,17 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/Counter.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/DNASequenceObject.h>
+
+#include <U2Core/DocumentModel.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Formats/RawDNASequenceFormat.h>
+#include <U2Formats/FastaFormat.h>
+#include <U2Formats/GenbankFeatures.h>
+#include <U2Core/IOAdapterUtils.h>
 
 namespace U2 {
 
@@ -81,6 +92,95 @@ QList<FindAlgorithmResult> FindAlgorithmTask::popResults() {
     newResults.clear();
     lock.unlock();
     return res;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//LoadPatternsFileTask
+LoadPatternsFileTask::LoadPatternsFileTask( const QString& _filePath )
+: Task("Load pattern from file", TaskFlag_None), filePath(_filePath)
+{
+
+}
+
+Document * LoadPatternsFileTask::getDocumentFromFilePath()
+{
+    GUrl fileUrl(filePath);
+    Project *project = AppContext::getProject();
+    Document *doc = NULL;
+    if(project != NULL){
+        Document *doc = project->findDocumentByURL(filePath);
+
+        // document already present in the project
+        if (NULL != doc) {
+            return doc;
+        }
+    }
+
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(filePath);
+    if (formats.isEmpty()) {
+        stateInfo.setError(tr("Detecting format error for file %1").arg(filePath));
+        return NULL;
+    }
+
+    DocumentFormat *format = formats.first().format;
+    if(NULL != dynamic_cast<RawDNASequenceFormat *>(format)) {
+        isRawSequence = true;
+        return NULL;
+    }
+    Q_ASSERT(format);
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileUrl));
+
+    QVariantMap hints;
+    doc = format->loadDocument(iof, fileUrl, hints, stateInfo);
+
+    CHECK_OP(stateInfo, NULL);
+
+    return doc;
+}
+
+void LoadPatternsFileTask::run()
+{
+    typedef QPair<QString, QString> NamePattern;
+
+    Document *doc = getDocumentFromFilePath();
+    if(NULL != doc && isRawSequence) {
+        const QList<GObject *> &objectsFromDoc = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+
+        foreach(GObject *object, objectsFromDoc) {
+            U2SequenceObject *sequenceObject = qobject_cast<U2SequenceObject*>(object);
+            assert(NULL != sequenceObject);
+            QByteArray sequence = sequenceObject->getWholeSequenceData();
+            QString seqName = sequenceObject->getSequenceName();
+            namesPatterns.append(qMakePair(seqName, QString(sequence)));
+        }
+    } else {
+        QFile file(filePath);
+        if (!file.open(QIODevice::ReadOnly))
+            setError(QString("Cannot open a file: %1").arg(filePath));
+
+        QTextStream stream(&file);
+        int fileSize = file.size();
+
+        while(!stream.atEnd() && !stateInfo.cancelFlag) {
+            int streamPos = stream.device()->pos();
+            stateInfo.progress = 100 * streamPos / fileSize;
+            QString pattern = stream.readLine();
+            if (!pattern.isEmpty()){
+                bool contains = false;
+                foreach(const NamePattern& namePattern, namesPatterns){
+                    if (namePattern.second == pattern){
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains){
+                    namesPatterns.append(qMakePair(QString(""), pattern));
+                }
+
+            }
+        }
+        file.close();
+    }
 }
 
 } //namespace

@@ -55,6 +55,10 @@ protected:
     IntegralBus *input, *output;
     QString resultName;
     QMap<Task*, QByteArray> patterns;
+    QMap<Task*, QPair< QString, QByteArray> > filePatterns;
+    QList<QPair<QString, QString> > namesPatterns;
+    bool patternFileLoaded;
+    bool useNames;
 }; 
 
 class FindWorkerFactory : public DomainFactory {

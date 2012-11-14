@@ -66,6 +66,24 @@ private:
     QMutex lock;
 };
 
+
+class Document;
+
+class U2ALGORITHM_EXPORT LoadPatternsFileTask: public Task{
+    Q_OBJECT
+public:
+    LoadPatternsFileTask(const QString &_filePath);
+    QList<QPair<QString, QString> > getNamesPatterns(){return namesPatterns;}
+    void run();
+
+private:
+    Document *getDocumentFromFilePath();
+
+    QString filePath;
+    QList<QPair<QString, QString> > namesPatterns;
+    bool isRawSequence;
+};
+
 } //namespace
 
 #endif

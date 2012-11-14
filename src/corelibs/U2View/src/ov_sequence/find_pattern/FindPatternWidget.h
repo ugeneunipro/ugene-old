@@ -79,22 +79,6 @@ protected:
     bool eventFilter(QObject* obj, QEvent *event);
 };
 
-class LoadPatternsFileTask: public Task{
-    Q_OBJECT
-public:
-    LoadPatternsFileTask(const QString &_filePath);
-    QList<QPair<QString, QString> > getNamesPatterns(){return namesPatterns;}
-    void run();
-
-private:
-    Document *getDocumentFromFilePath();
-
-    QString filePath;
-    QList<QPair<QString, QString> > namesPatterns;
-    bool isRawSequence;
-};
-
-
 class FindPatternWidget : public QWidget, private Ui_FindPatternForm
 {
     Q_OBJECT

@@ -38,6 +38,8 @@
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Algorithm/FindAlgorithmTask.h>
 #include <U2Designer/DelegateEditors.h>
+#include <U2Formats/GenbankFeatures.h>
+#include <U2Core/AnnotationTableObject.h>
 
 #include "CoreLib.h"
 #include "FindWorker.h"
@@ -52,6 +54,8 @@ namespace LocalWorkflow {
  ***************************/
 static const QString NAME_ATTR("result-name");
 static const QString PATTERN_ATTR("pattern");
+static const QString PATTERN_FILE_ATTR("pattern_file");
+static const QString USE_NAMES_ATTR("use-names");
 static const QString ERR_ATTR("max-mismatches-num");
 static const QString ALGO_ATTR("allow-ins-del");
 static const QString AMINO_ATTR("amino");
@@ -96,6 +100,14 @@ void FindWorkerFactory::init() {
             FindWorker::tr("Pattern(s)"),
             FindWorker::tr("Semicolon-separated list of patterns to search for."));
 
+        Descriptor pf(PATTERN_FILE_ATTR,
+            FindWorker::tr("Pattern file"),
+            FindWorker::tr("Load pattern from file in any sequence format or in newline-delimited format"));
+
+        Descriptor un(USE_NAMES_ATTR,
+            FindWorker::tr("Use pattern names"),
+            FindWorker::tr("If patterns are loaded from a file, use names of pattern sequences as annotation names. The name from the parameters is used by default"));
+
         Descriptor ed(ERR_ATTR, FindWorker::tr("Max Mismatches"),
             FindWorker::tr("Maximum number of mismatches between a substring"
                 " and a pattern."));
@@ -118,6 +130,8 @@ void FindWorkerFactory::init() {
         
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
         a << new Attribute(pd, BaseTypes::STRING_TYPE(), false);
+        a << new Attribute(pf, BaseTypes::STRING_TYPE(), false);
+        a << new Attribute(un, BaseTypes::BOOL_TYPE(), false, false);
         a << new Attribute(ed, BaseTypes::NUM_TYPE(), false, 0);
         a << new Attribute(BaseAttributes::STRAND_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::STRAND_BOTH());
         a << new Attribute(ald, BaseTypes::BOOL_TYPE(), false, false);
@@ -127,7 +141,7 @@ void FindWorkerFactory::init() {
     }
     
     Descriptor desc(ACTOR_ID,
-        FindWorker::tr("Find Substrings"),
+        FindWorker::tr("Find Pattern"),
         FindWorker::tr("Searches regions in a sequence similar to a pattern"
             " sequence. Outputs a set of annotations."));
 
@@ -141,6 +155,9 @@ void FindWorkerFactory::init() {
         lenMap["minimum"] = QVariant(0); 
         lenMap["maximum"] = QVariant(INT_MAX);
         delegates[ERR_ATTR] = new SpinBoxDelegate(lenMap);
+    }
+    {
+        delegates[PATTERN_FILE_ATTR] = new URLDelegate("", "File with patterns", false, false);
     }
     {
         delegates[BaseAttributes::STRAND_ATTRIBUTE().getId()] = new ComboBoxDelegate(BaseAttributes::STRAND_ATTRIBUTE_VALUES_MAP());
@@ -231,12 +248,26 @@ QString FindPrompter::composeRichDoc() {
     } else {
         patternStr = tr("patterns from <u>%1</u>").arg(patternProd->getLabel());
     }
+
+    QString patternFileStr;
+    QString filePathParam = getParameter(PATTERN_FILE_ATTR).toString();
+    if (!filePathParam.isEmpty()) {
+        QString pattern = getHyperlink(PATTERN_FILE_ATTR, filePathParam);
+        
+        patternFileStr = tr(" and <u>%1</u>").arg(pattern);
+
+        bool useNames = getParameter(USE_NAMES_ATTR).toBool();
+        if (useNames){
+            patternFileStr+=tr(" using pattern names");
+        }
+    }
     QString doc = tr("Searches regions in each sequence from <u>%1</u>"
-        " similar to %2.<br/>%3<br/>Searches in"
-        " <u>%4</u> of a %5sequence. Outputs the regions found"
-        " annotated as <u>%6</u>.")
+        " similar to %2%3.<br/>%4<br/>Searches in"
+        " <u>%5</u> of a %6sequence. Outputs the regions found"
+        " annotated as <u>%7</u>.")
         .arg(seqName)
         .arg(patternStr)
+        .arg(patternFileStr)
         .arg(matches)
         .arg(strandName)
         .arg(searchInTranslationSelected)
@@ -248,7 +279,11 @@ QString FindPrompter::composeRichDoc() {
 /***************************
  * FindWorker
  ***************************/
-FindWorker::FindWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL) {
+FindWorker::FindWorker(Actor* a) : BaseWorker(a), input(NULL), output(NULL)
+,patternFileLoaded(false)
+,useNames(false)
+{
+
 }
 
 void FindWorker::init() {
@@ -257,6 +292,20 @@ void FindWorker::init() {
 }
 
 Task* FindWorker::tick() {
+    if (!patternFileLoaded){
+        QString patternFilePath = actor->getParameter(PATTERN_FILE_ATTR)->getAttributeValue<QString>(context);
+        patternFileLoaded = true;
+        if (!patternFilePath.isEmpty()){
+            QList<Task*> subs;
+
+            LoadPatternsFileTask * loadPatternTask = new LoadPatternsFileTask(patternFilePath);
+            subs.append(loadPatternTask);
+
+            MultiTask * multiFind = new MultiTask(tr("Load file with patterns"), subs);
+            connect(new TaskSignalMapper(multiFind), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+            return multiFind;
+        }
+    }
     if (input->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(input);
         if (inputMessage.isEmpty()) {
@@ -304,7 +353,9 @@ Task* FindWorker::tick() {
                     cfg.proteinTT  = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(seq.alphabet);
             }
         }
-        
+
+        useNames = actor->getParameter(USE_NAMES_ATTR)->getAttributeValue<bool>(context);
+
         // for each pattern run find task
         QStringList ptrnStrs;
         if (qm.contains(BaseSlots::TEXT_SLOT().getId())) {
@@ -312,10 +363,11 @@ Task* FindWorker::tick() {
         } else {
             ptrnStrs = actor->getParameter(PATTERN_ATTR)->getAttributeValue<QString>(context).split(PATTERN_DELIMITER, QString::SkipEmptyParts);
         }
-        if(ptrnStrs.isEmpty()) {
+        if(ptrnStrs.isEmpty() && namesPatterns.isEmpty()) {
             return new FailTask(tr("Empty pattern given"));
         }
         QList<Task*> subs;
+        //pattern in parameters
         foreach(const QString & p, ptrnStrs) {
             assert(!p.isEmpty());
             FindAlgorithmTaskSettings config(cfg);
@@ -324,6 +376,17 @@ Task* FindWorker::tick() {
             patterns.insert(findTask, config.pattern);
             subs << findTask;
         }
+
+        //patterns from file
+        typedef QPair<QString, QString> NamePattern;
+        foreach(const NamePattern& np, namesPatterns){
+            FindAlgorithmTaskSettings config(cfg);
+            config.pattern = np.second.toUpper().toAscii();
+            Task * findTask = new FindAlgorithmTask(config);
+            filePatterns.insert(findTask, qMakePair(np.first,config.pattern));
+            subs << findTask;
+        }
+
         assert(!subs.isEmpty());
         
         MultiTask * multiFind = new MultiTask(tr("Find algorithm subtasks"), subs);
@@ -343,16 +406,51 @@ void FindWorker::sl_taskFinished(Task* t) {
     assert(!subs.isEmpty());
     QStringList ptrns;
     QList<FindAlgorithmResult> annData;
+    QList<SharedAnnotationData> result;
     foreach(Task * sub, subs) {
         FindAlgorithmTask * findTask = qobject_cast<FindAlgorithmTask*>(sub);
-        assert(findTask != NULL);
-        annData << findTask->popResults();
-        ptrns << patterns.value(findTask);
+        if(findTask != NULL){
+            //parameters pattern
+            if (!filePatterns.contains(sub)){
+                annData << findTask->popResults();
+                ptrns << patterns.value(findTask);
+            }else{ //file pattern
+                QString name = resultName;
+                if (useNames){
+                    QString pattName = filePatterns.value(findTask).first;
+                    if(!pattName.isEmpty()){
+
+                        QString newPatternName = pattName;
+                        if (newPatternName.length() >= GBFeatureUtils::MAX_KEY_LEN){
+                            newPatternName = pattName.left(GBFeatureUtils::MAX_KEY_LEN);
+                        }
+
+                        if (Annotation::isValidAnnotationName(newPatternName)){
+                            name = newPatternName;
+                        }
+                    }
+                }
+                const QList<SharedAnnotationData>& curResult = FindAlgorithmResult::toTable(findTask->popResults(), name);
+                result.append(curResult);
+                if (output){
+                    algoLog.info(tr("Found %1 matches of pattern '%2'").arg(curResult.size()).arg(QString(filePatterns.value(findTask).second)));
+                }
+            }
+            
+        }else{
+            LoadPatternsFileTask * loadTask = qobject_cast<LoadPatternsFileTask*>(sub);
+            if (loadTask != NULL){
+                namesPatterns = loadTask->getNamesPatterns();
+            }
+            return;
+        }
     }
     if(output) {
-        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(FindAlgorithmResult::toTable(annData, resultName));
+        const QList<SharedAnnotationData>& curResult = FindAlgorithmResult::toTable(annData, resultName);
+        result.append(curResult);
+        QVariant v = qVariantFromValue<QList<SharedAnnotationData> >(result);
         output->put(Message(BaseTypes::ANNOTATION_TABLE_TYPE(), v));
-        algoLog.info(tr("Found %1 matches of pattern '%2'").arg(annData.size()).arg(ptrns.join(PATTERN_DELIMITER)));
+        algoLog.info(tr("Found %1 matches of pattern '%2'").arg(curResult.size()).arg(ptrns.join(PATTERN_DELIMITER)));
     }
 }
 

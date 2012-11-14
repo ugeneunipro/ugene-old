@@ -128,6 +128,4 @@ void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult>& result
     coreLog.info(tr("Removed %1 overlapped results.").arg(removed));
 }
 
-
-
 } // namespace
