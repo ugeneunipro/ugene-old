@@ -35,7 +35,7 @@ namespace U2{
 class U2GUI_EXPORT SeqPasterWidgetController : public QWidget {
     Q_OBJECT
 public:
-    SeqPasterWidgetController(QWidget *p = NULL, const QByteArray& initText = QByteArray());
+    SeqPasterWidgetController(QWidget *p = NULL, const QByteArray& initText = QByteArray(), bool needWarning = false);
     ~SeqPasterWidgetController();
 
     QString validate(); 
@@ -53,6 +53,7 @@ private:
     DNAAlphabet *preferred;
     DNASequence resultSeq;
     Ui_SeqPasterWidget* ui;
+    bool additionalWarning;
 };
 
 }//ns

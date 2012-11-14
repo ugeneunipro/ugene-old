@@ -150,7 +150,7 @@ void EditSequenceDialogController::accept(){
 }
 
 void EditSequenceDialogController::addSeqpasterWidget(){
-    w = new SeqPasterWidgetController(this, config.initialText);
+    w = new SeqPasterWidgetController(this, config.initialText, true);
     ui->globalLayout->insertWidget(0, w);
 
 }

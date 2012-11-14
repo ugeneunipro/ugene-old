@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+#include <QMessageBox>
 
 #include"SeqPasterWidgetController.h"
 #include "ui/ui_SeqPasterWidget.h"
@@ -28,8 +29,8 @@
 
 namespace U2{
 
-SeqPasterWidgetController::SeqPasterWidgetController( QWidget *p, const QByteArray& initText ): 
-QWidget(p), preferred(0) 
+SeqPasterWidgetController::SeqPasterWidgetController( QWidget *p, const QByteArray& initText, bool needWarning ): 
+QWidget(p), preferred(0), additionalWarning(needWarning) 
 {
     ui = new Ui_SeqPasterWidget;
     //TODO: add not null project checking
@@ -108,6 +109,15 @@ QString SeqPasterWidgetController::validate(){
 
     QChar replaceChar = replace ? ui->symbolToReplaceEdit->text().at(0) : QChar();
     QByteArray normSequence = getNormSequence(alph, seq, replace, replaceChar);
+    if((seq != normSequence) && additionalWarning){
+        QString message(tr("Some of symbols, which doesn't match alphabet has been "));
+        if (replace){
+            message.append(tr("replaced"));
+        }else{
+            message.append(tr("removed"));
+        }
+        QMessageBox::critical(this, this->windowTitle(), message);
+    }
     resultSeq = DNASequence("New Sequence", normSequence, alph);
     return QString();
 }
