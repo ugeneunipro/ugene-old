@@ -44,7 +44,9 @@ private:
     IntegralBus * inPort;
     IntegralBus * outPort;
     QMap<Task*, QList<SharedAnnotationData> > annsMap;
-    
+
+private:
+    void addTaskAnnotations(const QVariant &data, Task *t);
 }; // ImportAnnotationsWorker
 
 class ImportAnnotationsWorkerFactory : public DomainFactory {

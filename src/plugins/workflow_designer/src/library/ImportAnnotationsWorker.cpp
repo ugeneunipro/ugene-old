@@ -63,10 +63,6 @@ void ImportAnnotationsWorker::init() {
 Task * ImportAnnotationsWorker::tick() {
     if (inPort->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(inPort);
-        if (inputMessage.isEmpty()) {
-            outPort->transit();
-            return NULL;
-        }
         QList<QString> urls = WorkflowUtils::expandToUrls(
             actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
         
@@ -81,13 +77,22 @@ Task * ImportAnnotationsWorker::tick() {
         }
         Task * ret = new MultiTask(tr("Load documents with annotations"), loadTasks);
         connect(new TaskSignalMapper(ret), SIGNAL(si_taskFinished(Task*)), SLOT(sl_docsLoaded(Task*)));
-        annsMap[ret] = QVariantUtils::var2ftl(inputMessage.getData().toMap().value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).toList());
+
+        addTaskAnnotations(inputMessage.getData(), ret);
         return ret;
     } else if (inPort->isEnded()) {
         setDone();
         outPort->setEnded();
     }
     return NULL;
+}
+
+void ImportAnnotationsWorker::addTaskAnnotations(const QVariant &data, Task *t) {
+    QVariantMap dataMap = data.toMap();
+    if (dataMap.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
+        QVariantList annsList = dataMap[BaseSlots::ANNOTATION_TABLE_SLOT().getId()].toList();
+        annsMap[t] = QVariantUtils::var2ftl(annsList);
+    }
 }
 
 static QList<SharedAnnotationData> getAnnsFromDoc(Document* doc) {
