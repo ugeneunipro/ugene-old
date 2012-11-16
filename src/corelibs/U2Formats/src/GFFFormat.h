@@ -48,7 +48,7 @@ protected:
 private:
     void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& si);
 
-    QStringList parseLine(QString line) const;
+    QStringList parseLine(const QString &line) const;
 
     QString formatName;
 };

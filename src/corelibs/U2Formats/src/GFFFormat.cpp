@@ -38,7 +38,7 @@
 
 namespace U2{
 
-#define READ_BUFF_SIZE 4096         //file reader buffer size
+#define READ_BUFF_SIZE 32768         //file reader buffer size
 #define SAVE_LINE_LEN 70            //line length for 
 
 GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("gff")){
@@ -442,7 +442,7 @@ FormatCheckResult GFFFormat::checkRawData(const QByteArray& rawData, const GUrl&
     return res;
 }
 
-QStringList GFFFormat::parseLine( QString line ) const{
+QStringList GFFFormat::parseLine( const QString &line ) const{
     QChar prev('a'); //as default value not empty char
     QString pair;
     QStringList result;
