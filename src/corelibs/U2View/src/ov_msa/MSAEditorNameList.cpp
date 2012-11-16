@@ -472,6 +472,8 @@ void MSAEditorNameList::sl_fontChanged() {
 }
 
 void MSAEditorNameList::sl_modelChanged() {
+    MSAEditorSelection selection;
+    ui->seqArea->setSelection(selection);
     completeRedraw = true;
     update();
 }
