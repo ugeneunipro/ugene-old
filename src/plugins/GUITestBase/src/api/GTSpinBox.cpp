@@ -37,6 +37,8 @@ void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::Us
     QRect spinBoxRect;
     int key;
 
+    GT_CHECK(spinBox->isEnabled(), "SpinBox is not enabled");
+
     if (spinBox->value() != v) {
         switch(useMethod) {
         case GTGlobals::UseMouse:

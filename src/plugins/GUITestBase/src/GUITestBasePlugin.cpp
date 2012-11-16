@@ -46,6 +46,7 @@
 #include "tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h"
 #include "tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h"
 #include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
+#include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE) \
@@ -503,7 +504,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/option_panel
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GTTests_Option_Panel::test_0006);
-   
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/dp_view
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0013);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

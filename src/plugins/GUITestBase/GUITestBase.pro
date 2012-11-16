@@ -36,6 +36,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / dotplot
             src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h \
+            src/runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h \
 #   Runnables / UGENE / plugins / dna_export
             src/runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h \
@@ -81,6 +82,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.h \
+            src/tests/common_scenarios/dp_view/GTTestsDpView.h \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.h \
             src/api/GTRegionSelector.h \
@@ -148,6 +150,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / dotplot
             src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.cpp \
+            src/runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.cpp \
 #   Runnables / UGENE / plugins / dna_export
             src/runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.cpp \
@@ -193,6 +196,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/document_from_text/GTTestsDocumentFromText.cpp \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.cpp \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.cpp \
+            src/tests/common_scenarios/dp_view/GTTestsDpView.cpp \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.cpp \
             src/api/GTRegionSelector.cpp \
