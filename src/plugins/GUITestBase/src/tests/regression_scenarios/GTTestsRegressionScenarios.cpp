@@ -505,6 +505,30 @@ GUI_TEST_CLASS_DEFINITION(test_1022) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1199) {
+//1. Open any samples/PDB/1CF7.pdb file.
+    GTFileDialog::openFile(os, dataDir+"samples/PDB/", "1CF7.PDB");
+
+//2. Select document in project tree view. Press 'Delete'
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        
+//Expected state: document removed, UGENE not crashes.
+    GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1083) {
+//1. open files data\samples\FASTA\human_T1.fa
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+//2. select sequence oject in projrct tree view. press delete
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+//Expected state: UGENE is not crashed
+    GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace

@@ -45,6 +45,7 @@
 #include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
 #include "tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h"
 #include "tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h"
+#include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE) \
@@ -104,6 +105,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1021_4);
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1022, "https://ugene.unipro.ru/tracker/browse/UGENE-1022");
+
+    REGISTER_TEST(GUITest_regression_scenarios::test_1199);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1083);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
@@ -494,6 +498,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0002);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/option_panel
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GTTests_Option_Panel::test_0006);
+   
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

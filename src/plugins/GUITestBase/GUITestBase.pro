@@ -80,6 +80,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h \
             src/tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h \
+            src/tests/common_scenarios/options_panel/GTTestsOptionPanel.h \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.h \
             src/api/GTRegionSelector.h \
@@ -191,6 +192,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.cpp \
             src/tests/common_scenarios/document_from_text/GTTestsDocumentFromText.cpp \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.cpp \
+            src/tests/common_scenarios/options_panel/GTTestsOptionPanel.cpp \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.cpp \
             src/api/GTRegionSelector.cpp \
