@@ -101,6 +101,7 @@ private:
     MSAEditorUI*        ui;
     QScrollBar*         nhBar;
     int                 curSeq;
+    int                 startSelectingSeq;
     QPoint              origin;
     bool                scribbling,shifting;
 

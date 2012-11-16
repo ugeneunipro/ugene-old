@@ -50,6 +50,7 @@ MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI* _ui) : editor(_ui->e
     completeRedraw = true;
     curPos = -1;
     scribbling = false;
+    selecting = false;
     cachedView = new QPixmap();
 
     connect(ui->seqArea, SIGNAL(si_startChanged(const QPoint&, const QPoint&)), SLOT(sl_startChanged(const QPoint&, const QPoint&)));
@@ -458,13 +459,16 @@ void MSAEditorConsensusArea::sl_changeConsensusThreshold(int val) {
 
 void MSAEditorConsensusArea::mousePressEvent(QMouseEvent *e) {
     int x = e->x();
-    curPos = ui->seqArea->getColumnNumByX(x);
-    if ((curPos !=-1) && (e->buttons() & Qt::LeftButton)) {
-        int height = editor->getNumSequences(); 
-        // select current column
-        MSAEditorSelection selection(curPos, 0, 1, height);
-        ui->seqArea->setSelection(selection);
-        scribbling = true;
+    if (e->buttons() & Qt::LeftButton) {
+        selecting = true;
+        curPos = ui->seqArea->getColumnNumByX(x, selecting);
+        if (curPos !=-1) {
+            int height = editor->getNumSequences();
+            // select current column
+            MSAEditorSelection selection(curPos, 0, 1, height);
+            ui->seqArea->setSelection(selection);
+            scribbling = true;
+        }
     }
     QWidget::mousePressEvent(e);
 }
@@ -472,7 +476,7 @@ void MSAEditorConsensusArea::mousePressEvent(QMouseEvent *e) {
 void MSAEditorConsensusArea::mouseMoveEvent( QMouseEvent *e )
 {
     if ((e->buttons() & Qt::LeftButton) && scribbling) {
-        int newPos = ui->seqArea->getColumnNumByX(e->x());
+        int newPos = ui->seqArea->getColumnNumByX(e->x(), selecting);
         if ( ui->seqArea->isPosInRange(newPos)) {
             ui->seqArea->updateHBarPosition(newPos);
         }
@@ -484,10 +488,11 @@ void MSAEditorConsensusArea::mouseMoveEvent( QMouseEvent *e )
 void MSAEditorConsensusArea::mouseReleaseEvent( QMouseEvent *e )
 {
     if (e->button() == Qt::LeftButton) {
-        int newPos = ui->seqArea->getColumnNumByX(e->x());
+        int newPos = ui->seqArea->getColumnNumByX(e->x(), selecting);
         updateSelection(newPos);
         curPos = newPos;
         scribbling = false;
+        selecting = false;
     }
     
     ui->seqArea->getHBar()->setupRepeatAction(QAbstractSlider::SliderNoAction);
@@ -516,7 +521,7 @@ void MSAEditorConsensusArea::sl_onScrollBarActionTriggered( int scrollAction )
     if (scrollAction ==  QAbstractSlider::SliderSingleStepAdd || scrollAction == QAbstractSlider::SliderSingleStepSub) {
     if (scribbling) {
          QPoint coord = mapFromGlobal(QCursor::pos());
-         int newPos = ui->seqArea->getColumnNumByX(coord.x());
+         int newPos = ui->seqArea->getColumnNumByX(coord.x(), selecting);
          updateSelection(newPos);
         }
     }

@@ -48,6 +48,7 @@ MSAEditorNameList::MSAEditorNameList(MSAEditorUI* _ui, QScrollBar* _nhBar) : lab
     scribbling = false;
     shifting = false;
     curSeq = -1;
+    startSelectingSeq = curSeq;
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     
     connect(editor, SIGNAL(si_buildStaticMenu(GObjectView*, QMenu*)), SLOT(sl_buildStaticMenu(GObjectView*, QMenu*)));
@@ -157,9 +158,8 @@ void MSAEditorNameList::buildMenu(QMenu* m) {
 
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     assert(editMenu!=NULL);
-    editMenu->addAction(removeCurrentSequenceAction);
     editMenu->insertAction(editMenu->actions().first(), editSequenceNameAction);
-   
+    editMenu->insertAction(editMenu->actions().last(), removeCurrentSequenceAction);
 }
 
 int MSAEditorNameList::getSelectedRow() const {
@@ -293,6 +293,7 @@ void MSAEditorNameList::keyPressEvent (QKeyEvent *e) {
         case Qt::Key_Shift:
             {
                 newSeq = curSeq = ui->seqArea->getSelectedRows().startPos;
+                startSelectingSeq = curSeq;
             }
 
   }
@@ -310,7 +311,7 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
         curSeq = ui->seqArea->getSequenceNumByY(e->y());
         if (ui->isCollapsibleMode()) {
             MSACollapsibleItemModel* m = ui->getCollapseModel();
-            int dbg = m->displayedRowsCount(), repchikDbg = m->getLastPos();
+            //int dbg = m->displayedRowsCount(), repchikDbg = m->getLastPos();
             if(curSeq >= m->displayedRowsCount()){
                 QWidget::mousePressEvent(e);
                 return;
@@ -333,9 +334,18 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
                 shifting = true;
             }
         } else {
+            startSelectingSeq = ui->seqArea->getSequenceNumByY(e->y());
+            if (!ui->seqArea->isSeqInRange(startSelectingSeq) ) {
+                if (e->y() < origin.y()) {
+                    startSelectingSeq = 0;
+                } else {
+                    startSelectingSeq = ui->editor->getNumSequences() - 1;
+                }
+            }
             rubberBand->setGeometry(QRect(origin, QSize()));
             rubberBand->show();
             ui->seqArea->cancelSelection();
+            scribbling = true;
         }
         if ( ui->seqArea->isSeqInRange(curSeq) ) {
             scribbling = true;
@@ -395,6 +405,7 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
             moveSelectedRegion(shift);
             shifting = false;
         } else {
+            curSeq = (startSelectingSeq < 0) ? 0 : startSelectingSeq;
             updateSelection(newSeq);
         }
         scribbling = false;
@@ -703,6 +714,7 @@ void MSAEditorNameList::moveSelectedRegion( int shift )
     if ( !maObj->isStateLocked() ) {
         maObj->moveRowsBlock(firstRowInSelection, numRowsInSelection, shift);
         curSeq += shift;
+        startSelectingSeq = curSeq;
         int selectionStart = firstRowInSelection + shift;
         MSAEditorSelection selection(0, selectionStart, editor->getAlignmentLen(), numRowsInSelection );
         ui->seqArea->setSelection(selection);

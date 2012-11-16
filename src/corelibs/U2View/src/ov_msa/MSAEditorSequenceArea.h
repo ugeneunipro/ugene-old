@@ -43,7 +43,61 @@ class GObjectView;
 class MSAColorScheme;
 class MAlignment;
 class MAlignmentModInfo;
+class MAlignmentObject;
 
+class ModificationType {
+public:
+    static const int NoType = 0;
+    static const int Reverse = 1;
+    static const int Complement = 3;
+    static const int ReverseComplement = 7;
+
+    ModificationType(int _type = NoType) : type(_type) {}
+
+    ModificationType operator + (const ModificationType & another) {
+        switch (type + another.type) {
+        case NoType + NoType: return ModificationType(NoType);
+        case NoType + Reverse: return ModificationType(Reverse);
+        case NoType + Complement: return ModificationType(Complement);
+        case NoType + ReverseComplement: return ModificationType(ReverseComplement);
+        case Reverse + Reverse: return ModificationType(NoType);
+        case Reverse + Complement: return ModificationType(ReverseComplement);
+        case Reverse + ReverseComplement: return ModificationType(Complement);
+        case Complement + Complement: return ModificationType(NoType);
+        case Complement + ReverseComplement: return ModificationType(Reverse);
+        case ReverseComplement + ReverseComplement: return ModificationType(NoType);
+        }
+        return ModificationType(NoType);
+    }
+
+    int getType() {
+        return type;
+    }
+
+    bool operator == (const ModificationType & another) {
+        return type == another.type;
+    }
+
+    bool operator == (int _type) {
+        return type == _type;
+    }
+
+    bool operator != (const ModificationType & another) {
+        return type != another.type;
+    }
+
+    bool operator != (int _type) {
+        return type != _type;
+    }
+
+    ModificationType & operator = (int _type) {
+        type = _type;
+        return *this;
+    }
+
+private:
+    int type;
+};
 
 class U2VIEW_EXPORT MSAEditorSelection {
 public:
@@ -102,7 +156,7 @@ public:
 
     U2Region getBaseXRange(int pos, bool useVirtualCoords) const;
     
-    int getColumnNumByX(int x) const;
+    int getColumnNumByX(int x, bool selecting = false) const;
     int getXByColumnNum(int columnNum) const;
 
     void setFirstVisibleBase(int pos);
@@ -236,6 +290,8 @@ private slots:
     void sl_sortByName();
     void sl_setCollapsingMode(bool enabled);
     void sl_reverseComplementCurrentSelection();
+    void sl_reverseCurrentSelection();
+    void sl_complementCurrentSelection();
 
     void sl_onPosChangeRequest(int pos);
 
@@ -279,6 +335,8 @@ private:
     bool checkState() const;
     void validateRanges();          //called on resize/refont like events
 
+    void reverseComplementModification(ModificationType& type);
+
     MSAEditor*      editor;
     MSAEditorUI*    ui;
     GScrollBar*     shBar;
@@ -288,7 +346,7 @@ private:
     int             startPos; //first visible x pos 
     int             startSeq; //first visible y pos
 
-    bool                scribbling, shifting;
+    bool                scribbling, shifting, selecting;
     QPoint              origin; // global window coordinates
     QPoint              cursorPos; // mouse cursor position in alignment coordinates
     MSAEditorSelection  selection;
@@ -307,6 +365,8 @@ private:
     QAction*        sortByNameAction;
     QAction*        viewModeAction;
     QAction*        reverseComplementAction;
+    QAction*        reverseAction;
+    QAction*        complementAction;
     QAction*        lookMSASchemesSettingsAction;
     
     QPixmap*        cachedView;

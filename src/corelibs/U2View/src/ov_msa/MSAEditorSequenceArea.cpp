@@ -91,6 +91,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     highlightSelection = false;
     scribbling = false;
     shifting = false;
+    selecting = false;
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
    
@@ -170,6 +171,14 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     reverseComplementAction->setObjectName("replace_selected_rows_with_reverse-complement");
     connect(reverseComplementAction, SIGNAL(triggered()), SLOT(sl_reverseComplementCurrentSelection()));
 
+    reverseAction = new QAction(tr("Replace selected rows with reverse"), this);
+    reverseAction->setObjectName("replace_selected_rows_with_reverse");
+    connect(reverseAction, SIGNAL(triggered()), SLOT(sl_reverseCurrentSelection()));
+
+    complementAction = new QAction(tr("Replace selected rows with complement"), this);
+    complementAction->setObjectName("replace_selected_rows_with_complement");
+    connect(complementAction, SIGNAL(triggered()), SLOT(sl_complementCurrentSelection()));
+
     
     connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
@@ -194,15 +203,12 @@ MSAEditorSequenceArea::~MSAEditorSequenceArea() {
 }
 
 void MSAEditorSequenceArea::prepareColorSchemeMenuActions() {
-    SAFE_POINT(editor != NULL, "MSAEditorSequenceArea::no editor", );
     Settings* s = AppContext::getSettings();
     MAlignmentObject* maObj = editor->getMSAObject();
     if (maObj == NULL)
         return;
 
-    DNAAlphabet* alph = maObj->getMAlignment().getAlphabet();
-    SAFE_POINT(editor != NULL, "MSAEditorSequenceArea::no alphabet", );
-    DNAAlphabetType atype = alph->getType();
+    DNAAlphabetType atype = maObj->getMAlignment().getAlphabet()->getType();
     MSAColorSchemeRegistry* csr = AppContext::getMSAColorSchemeRegistry();
     connect(csr, SIGNAL(si_customSettingsChanged()), SLOT(sl_customColorSettingsChanged()));
 
@@ -314,6 +320,8 @@ void MSAEditorSequenceArea::updateActions() {
     sortByNameAction->setEnabled(!readOnly);
     viewModeAction->setEnabled(!readOnly);
     reverseComplementAction->setEnabled(!readOnly && maObj->getAlphabet()->isNucleic());
+    reverseAction->setEnabled(!readOnly && maObj->getAlphabet()->isNucleic());
+    complementAction->setEnabled(!readOnly && maObj->getAlphabet()->isNucleic());
 
     assert(checkState());
 }
@@ -641,11 +649,21 @@ int MSAEditorSequenceArea::getNumVisibleSequences(bool countClipped) const {
     return res;
 }
 
-int MSAEditorSequenceArea::getColumnNumByX(int x) const {
+int MSAEditorSequenceArea::getColumnNumByX(int x, bool selecting) const {
     int colOffs = x / editor->getColumnWidth();
     int pos = startPos + colOffs;
-    if ((pos >= editor->getAlignmentLen()) || (pos < 0)) {
-        return -1; 
+    if (!selecting) {
+        if ((pos >= editor->getAlignmentLen()) || (pos < 0)) {
+            return -1;
+        }
+    }
+    else {
+        if (pos < 0) {
+            pos = 0;
+        }
+        if (pos >= editor->getAlignmentLen()) {
+            pos = editor->getAlignmentLen() - 1;
+        }
     }
     return pos;
 
@@ -658,9 +676,19 @@ int MSAEditorSequenceArea::getXByColumnNum(int columnNum) const {
 int MSAEditorSequenceArea::getSequenceNumByY(int y) const {
     int seqOffs = y / editor->getRowHeight();
     int seq = startSeq + seqOffs;
-    if ((seq >= editor->getNumSequences()) || (seq < 0)) {
-        return -1; 
+    if (!selecting) {
+        if ((seq >= editor->getNumSequences()) || (seq < 0)) {
+            return -1;
+        }
     }
+    else {
+    if (seq < 0) {
+        seq = 0;
+    }
+    if (seq >= editor->getNumSequences()) {
+        seq = editor->getNumSequences() - 1;
+    }
+}
     return seq;
 }
 
@@ -690,9 +718,9 @@ U2Region MSAEditorSequenceArea::getSequenceYRange(int seq, bool useVirtualCoords
 
 void MSAEditorSequenceArea::updateSelection( const QPoint& newPos)
 {
-    if (!isInRange(newPos)) {
-        return;
-    }
+    //if (!isInRange(newPos)) {
+    //    return;
+    //}
     
     int width = qAbs(newPos.x() - cursorPos.x()) + 1;
     int height = qAbs(newPos.y() - cursorPos.y()) + 1;
@@ -719,8 +747,8 @@ void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
 
         if (shifting) {
             shiftSelectedRegion( newCurPos.x() - cursorPos.x() );
-        } else {
-            rubberBand->setGeometry(QRect(origin, e->pos()).normalized());
+        } else if (selecting){
+                rubberBand->setGeometry(QRect(origin, e->pos()).normalized());
         }
     }
 
@@ -738,20 +766,19 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
     }
     if (scribbling) {
         QPoint newCurPos = coordToAbsolutePos(e->pos());
-        if (isInRange(newCurPos) ) {            
-            if (e->pos() == origin) {
-                // special case: click but don't drag
-                shifting = false;
-            }
-            if (shifting) {
-                int shift = newCurPos.x() - cursorPos.x();
-                shiftSelectedRegion(shift);
-            } else {
-                updateSelection(newCurPos);
-            }
+        if (e->pos() == origin) {
+            // special case: click but don't drag
+            shifting = false;
+        }
+        if (shifting) {
+            int shift = newCurPos.x() - cursorPos.x();
+            shiftSelectedRegion(shift);
+        } else {
+            updateSelection(newCurPos);
         }
         shifting = false;
         scribbling = false;
+        selecting = false;
     }
     shBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
     svBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
@@ -776,17 +803,25 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
         QPoint p = coordToPos(e->pos());
         if(isInRange(p)) {
             setCursorPos(p);
+
             MSAEditorSelection s = ui->seqArea->getSelection();
             if ( s.getRect().contains(cursorPos) ){
                 shifting = true;
                 editor->getMSAObject()->saveState();                
-            } else {
-                rubberBand->setGeometry(QRect(origin, QSize()));
-                rubberBand->show();
-                ui->seqArea->cancelSelection();
             }
-            scribbling = true;
         }
+        if (!shifting) {
+            selecting = true;
+            origin = e->pos();
+            QPoint q = coordToAbsolutePos(e->pos());
+            if(isInRange(q)) {
+                setCursorPos(q);
+            }
+            rubberBand->setGeometry(QRect(origin, QSize()));
+            rubberBand->show();
+            ui->seqArea->cancelSelection();
+        }
+        scribbling = true;
     }
 
     QWidget::mousePressEvent(e);
@@ -1050,7 +1085,7 @@ int MSAEditorSequenceArea::coordToPos(int x) const {
 
 
 QPoint MSAEditorSequenceArea::coordToAbsolutePos(const QPoint& coord) const {
-    int column = getColumnNumByX(coord.x());
+    int column = getColumnNumByX(coord.x(), selecting);
     int row = getSequenceNumByY(coord.y());
 
     return QPoint(column, row);
@@ -1199,7 +1234,7 @@ void MSAEditorSequenceArea::sl_buildContextMenu(GObjectView*, QMenu* m) {
     assert(editMenu!=NULL);
 
     QList<QAction*> actions; 
-    actions << delSelectionAction << delColAction << insSymAction << reverseComplementAction;
+    actions << delSelectionAction << insSymAction << reverseComplementAction << reverseAction << complementAction << delColAction << removeAllGapsAction;
     
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
     assert(copyMenu != NULL);
@@ -1228,9 +1263,9 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     assert(editMenu!=NULL);
     QList<QAction*> actions; 
-    actions << removeAllGapsAction << reverseComplementAction;
+    actions << reverseComplementAction  << reverseAction << complementAction << removeAllGapsAction;
     editMenu->insertActions(editMenu->isEmpty() ? NULL : editMenu->actions().first(), actions);
-    
+
     QMenu * exportMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EXPORT);
     assert(exportMenu != NULL);
     exportMenu->addAction(createSubaligniment);
@@ -1793,7 +1828,9 @@ void MSAEditorSequenceArea::fillSelectionWithGaps( )
 }
 
 
-void MSAEditorSequenceArea::sl_reverseComplementCurrentSelection() {
+void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type) {
+    if (type == ModificationType::NoType)
+        return;
     MAlignmentObject* maObj = editor->getMSAObject();
     if (maObj == NULL || maObj->isStateLocked()) {
         return;
@@ -1804,11 +1841,9 @@ void MSAEditorSequenceArea::sl_reverseComplementCurrentSelection() {
     if (selection.height() == 0) {
         return;
     }
-
     assert(isInRange(selection.topLeft()));
     assert(isInRange( QPoint(selection.x() + selection.width() - 1, selection.y() + selection.height() - 1) ) );
-    
-    if ( !selection.isNull() ) {        
+    if ( !selection.isNull()) {
         MAlignment ma = maObj->getMAlignment();
         DNATranslation* trans = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(ma.getAlphabet());
         if (trans == NULL || !trans->isOne2One()) {
@@ -1818,19 +1853,66 @@ void MSAEditorSequenceArea::sl_reverseComplementCurrentSelection() {
         U2OpStatus2Log os;
         for (int i = sel.startPos; i < sel.endPos(); i++) {
             QByteArray curr = ma.getRow(i).toByteArray(ma.getLength(), os);
-            trans->translate(curr.data(), curr.length());
-            TextUtils::reverse(curr.data(), curr.length());
+            switch (type.getType())
+            {
+            case ModificationType::Reverse:
+                TextUtils::reverse(curr.data(), curr.length());
+                break;
+            case ModificationType::Complement:
+                trans->translate(curr.data(), curr.length());
+                break;
+            case ModificationType::ReverseComplement:
+                TextUtils::reverse(curr.data(), curr.length());
+                trans->translate(curr.data(), curr.length());
+                break;
+            }
             QString name = ma.getRow(i).getName();
+            ModificationType oldType(ModificationType::NoType);
             if (name.endsWith("|revcompl")) {
                 name.resize(name.length() - QString("|revcompl").length());
-            } else {
+                oldType = ModificationType::ReverseComplement;
+            } else if (name.endsWith("|compl")) {
+                name.resize(name.length() - QString("|compl").length());
+                oldType = ModificationType::Complement;
+            } else if (name.endsWith("|rev")) {
+                name.resize(name.length() - QString("|rev").length());
+                oldType = ModificationType::Reverse;
+            }
+            ModificationType newType = type + oldType;
+            switch (newType.getType())
+            {
+            case ModificationType::NoType:
+                break;
+            case ModificationType::Reverse:
+                name.append("|rev");
+                break;
+            case ModificationType::Complement:
+                name.append("|compl");
+                break;
+            case ModificationType::ReverseComplement:
                 name.append("|revcompl");
+                break;
             }
             DNASequence seq(name, curr, maObj->getAlphabet());
             maObj->removeRow(i);
             maObj->addRow(seq, i);
         }
     }
+}
+
+void MSAEditorSequenceArea::sl_reverseComplementCurrentSelection() {
+    ModificationType type(ModificationType::ReverseComplement);
+    reverseComplementModification(type);
+}
+
+void MSAEditorSequenceArea::sl_reverseCurrentSelection() {
+    ModificationType type(ModificationType::Reverse);
+    reverseComplementModification(type);
+}
+
+void MSAEditorSequenceArea::sl_complementCurrentSelection() {
+    ModificationType type(ModificationType::Complement);
+    reverseComplementModification(type);
 }
 
 QPair<QString, int> MSAEditorSequenceArea::getGappedColumnInfo() const{

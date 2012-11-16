@@ -105,6 +105,7 @@ private:
     void drawHistogram(QPainter& p);
     void drawSelection(QPainter& p);
 
+
     U2Region getYRange(MSAEditorConsElement e) const;
 
     MSAEditor*          editor;
@@ -115,7 +116,7 @@ private:
     QAction*            copyConsensusWithGapsAction;
     QAction*            configureConsensusAction;
     int                 curPos;
-    bool                scribbling;
+    bool                scribbling, selecting;
 
     MSAEditorConsensusCache*    consensusCache;
     

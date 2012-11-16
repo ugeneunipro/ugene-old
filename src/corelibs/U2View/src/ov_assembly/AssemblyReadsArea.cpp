@@ -636,7 +636,7 @@ void AssemblyReadsArea::wheelEvent(QWheelEvent * e) {
             }
         }
     }
-    QWidget::wheelEvent(e);
+    e->accept();
 }
 
 void AssemblyReadsArea::mousePressEvent(QMouseEvent * e) {
