@@ -62,7 +62,7 @@ DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
     selectionX(NULL),selectionY(NULL),sequenceX(NULL),sequenceY(NULL), direct(true), inverted(false), nearestInverted(false), ignorePanView(false), keepAspectRatio(false),
     zoom(1.0f, 1.0f), shiftX(0), shiftY(0),
     minLen(100), identity(100),
-    pixMapUpdateNeeded(true), deleteDotPlotFlag(false), filtration(false), dotPlotTask(NULL), pixMap(NULL), miniMap(NULL),
+    pixMapUpdateNeeded(true), deleteDotPlotFlag(false), filtration(false), createDotPlot(false), dotPlotTask(NULL), pixMap(NULL), miniMap(NULL),
     nearestRepeat(NULL),
     clearedByRepitSel(false)
 {
@@ -355,9 +355,12 @@ void DotPlotWidget::sl_taskFinished(Task *task) {
         return;
     }
 
-    GCOUNTER(c, t, "Create dotplot");
-    dpFilteredResults->clear();
-    dpFilteredResultsRevCompl->clear();
+    if (createDotPlot) {
+        GCOUNTER(c, t, "Create dotplot");
+        dpFilteredResults->clear();
+        dpFilteredResultsRevCompl->clear();
+        createDotPlot = false;
+    }
 
     if (!dpDirectResultListener->stateOk || !dpRevComplResultsListener->stateOk) {
         DotPlotDialogs::tooManyResults();
@@ -602,6 +605,7 @@ bool DotPlotWidget::sl_showLoadFileDialog() {
             &direct,
             &inverted
     );
+    createDotPlot = true;
 
     TaskScheduler* ts = AppContext::getTaskScheduler();
     ts->registerTopLevelTask(dotPlotTask);
@@ -739,6 +743,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
     }
 
     dotPlotTask = new MultiTask("Searching repeats", tasks, true);
+    createDotPlot = true;
 
     TaskScheduler* ts = AppContext::getTaskScheduler();
     ts->registerTopLevelTask(dotPlotTask);
