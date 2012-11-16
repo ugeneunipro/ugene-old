@@ -31,6 +31,8 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ExternalToolRegistry.h>
 
+#include <U2Formats/SAMFormat.h>
+
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/AppSettingsGUI.h>
 
@@ -281,7 +283,7 @@ void DnaAssemblyDialog::sl_onSamBoxClicked() {
     samOutput = samBox->isChecked();
 
     if (!refSeqEdit->text().isEmpty()) {
-        buildResultUrl(refSeqEdit->text());
+        buildResultUrl(resultFileNameEdit->text(), true);
     }
 }
 
@@ -369,16 +371,23 @@ void DnaAssemblyDialog::addGuiExtension() {
     }
 }
 
-void DnaAssemblyDialog::buildResultUrl(const GUrl& refUrl ) {
+void DnaAssemblyDialog::buildResultUrl(const GUrl& refUrl, bool ignoreExtension ) {
     QByteArray extension;
+    SAMFormat sf;
+    QStringList extensions = sf.getSupportedDocumentFileExtensions();
+    if(extensions.contains(refUrl.completeFileSuffix()) && !ignoreExtension){
+        samOutput = true;
+        samBox->setChecked(true);
+    }
+    
     if (samOutput) {
         extension = "sam";
     } else {
         extension = "ugenedb";
     }
     QString tmpUrl = QString(refUrl.dirPath() + "/" + refUrl.baseFileName()+ ".%1").arg(extension.constData());
-    GUrl url = GUrlUtils::rollFileName(tmpUrl, DocumentUtils::getNewDocFileNameExcludesHint());
-    resultFileNameEdit->setText(url.getURLString());
+    
+    resultFileNameEdit->setText(tmpUrl);
 }
 
 bool DnaAssemblyDialog::eventFilter( QObject * obj, QEvent * event ) {

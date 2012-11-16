@@ -86,7 +86,7 @@ private slots:
 private:
     void updateState();
     void addGuiExtension();
-    void buildResultUrl(const GUrl& url);
+    void buildResultUrl(const GUrl& url, bool ignoreExtension = false);
     void accept();
 
 
