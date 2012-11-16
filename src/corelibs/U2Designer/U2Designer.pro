@@ -24,8 +24,13 @@ HEADERS += src/DatasetsController.h \
            _tmp/ui/ui_InputDataWidget.h \
            _tmp/ui/ui_ItemBox.h \
            src/support/URLLineEdit.h \
+           src/wizard/ElementSelectorController.h \
            src/wizard/PropertyWizardController.h \
-           src/wizard/WizardController.h
+           src/wizard/SelectorActors.h \
+           src/wizard/WDWizardPage.h \
+           src/wizard/WidgetController.h \
+           src/wizard/WizardController.h \
+           src/wizard/WizardPageController.h
 FORMS += src/ui/AnnsActionDialog.ui \
          src/ui/DatasetsListWidget.ui \
          src/ui/DatasetWidget.ui \
@@ -59,8 +64,13 @@ SOURCES += src/DatasetsController.cpp \
            src/UrlItem.cpp \
            src/WorkflowGUIUtils.cpp \
            src/support/URLLineEdit.cpp \
+           src/wizard/ElementSelectorController.cpp \
            src/wizard/PropertyWizardController.cpp \
-           src/wizard/WizardController.cpp
+           src/wizard/SelectorActors.cpp \
+           src/wizard/WDWizardPage.cpp \
+           src/wizard/WidgetController.cpp \
+           src/wizard/WizardController.cpp \
+           src/wizard/WizardPageController.cpp
 RESOURCES += U2Designer.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

@@ -59,9 +59,16 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/url_attribute/Dataset.h \
            src/model/url_attribute/URLAttribute.h \
            src/model/url_attribute/URLContainer.h \
+           src/model/wizard/ElementSelectorWidget.h \
+           src/model/wizard/IdMapping.h \
+           src/model/wizard/PortMapping.h \
+           src/model/wizard/SelectorValue.h \
+           src/model/wizard/SlotMapping.h \
+           src/model/wizard/Variable.h \
            src/model/wizard/Wizard.h \
            src/model/wizard/WizardPage.h \
            src/model/wizard/WizardWidget.h \
+           src/model/wizard/WizardWidgetVisitor.h \
            src/support/serialize/HRSchemaSerializer.h \
            src/support/serialize/HRWizardSerializer.h
 SOURCES += src/library/BaseActorCategories.cpp \
@@ -118,6 +125,12 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/url_attribute/Dataset.cpp \
            src/model/url_attribute/URLAttribute.cpp \
            src/model/url_attribute/URLContainer.cpp \
+           src/model/wizard/ElementSelectorWidget.cpp \
+           src/model/wizard/IdMapping.cpp \
+           src/model/wizard/PortMapping.cpp \
+           src/model/wizard/SelectorValue.cpp \
+           src/model/wizard/SlotMapping.cpp \
+           src/model/wizard/Variable.cpp \
            src/model/wizard/Wizard.cpp \
            src/model/wizard/WizardPage.cpp \
            src/model/wizard/WizardWidget.cpp \

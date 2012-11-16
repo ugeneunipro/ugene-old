@@ -23,7 +23,9 @@
 
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/IntegralBusType.h>
+#include <U2Lang/Wizard.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowUtils.h>
 
 #include "Schema.h"
 
@@ -77,13 +79,8 @@ void Schema::reset() {
     }
 }
 
-Actor* Schema::actorById( ActorId id) {
-    foreach(Actor* a, procs) {
-        if (a->getId() == id) {
-            return a;
-        }
-    }
-    return NULL;
+Actor * Schema::actorById( ActorId id) {
+    return WorkflowUtils::actorById(procs, id);
 }
 
 QList<Actor*> Schema::actorsByOwnerId(ActorId id) {

@@ -1212,7 +1212,11 @@ void WorkflowView::sl_importSchemaToElement() {
     Schema schema = scene->getSchema();
 
     QString error;
-    if (WorkflowUtils::validateSchemaForIncluding(schema, error)) {
+    if (!scene->getWizards().isEmpty()) {
+        error = WorkflowView::tr("The schema contains a wizard. Sorry, but current version of "
+            "UGENE doesn't support of wizards in the includes.");
+        QMessageBox::critical(this, tr("Error"), error);
+    } else if (WorkflowUtils::validateSchemaForIncluding(schema, error)) {
         ImportSchemaDialog d(this);
         if (d.exec()) {
             Schema *s = new Schema();
@@ -1525,9 +1529,12 @@ void WorkflowView::sl_saveSceneAs() {
 
 void WorkflowView::sl_showWizard() {
     if (scene->getWizards().size() > 0) {
-        WizardController controller(scene->getWizards().first());
-        QWizard *w = controller.createGui();
-        if (w->exec()) {
+        QString str = HRSceneSerializer::scene2String(scene, meta);
+        Schema schema = scene->getSchema();
+        Wizard *w = scene->getWizards().first();
+        WizardController controller(&schema, w);
+        QWizard *gui = controller.createGui();
+        if (gui->exec() && !controller.isBroken()) {
             controller.assignParameters();
             scene->sl_updateDocs();
             scene->setModified();

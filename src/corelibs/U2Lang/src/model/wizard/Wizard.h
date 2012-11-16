@@ -23,6 +23,10 @@
 #define _U2_WIZARD_H_
 
 #include <U2Core/global.h>
+#include <U2Core/U2OpStatus.h>
+
+#include <U2Lang/Schema.h>
+#include <U2Lang/Variable.h>
 
 namespace U2 {
 
@@ -33,6 +37,10 @@ public:
     Wizard(const QString &name, const QList<WizardPage*> &pages);
     virtual ~Wizard();
 
+    void validate(const Workflow::Schema *schema, U2OpStatus &os) const;
+    void addVariable(const Variable &v);
+    QMap<QString, Variable> getVariables() const;
+
     const QString & getName() const;
     const QList<WizardPage*> & getPages() const;
 
@@ -41,6 +49,7 @@ public:
 private:
     QString name;
     QList<WizardPage*> pages;
+    QMap<QString, Variable> vars;
 };
 
 } // U2

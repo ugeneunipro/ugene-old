@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2SafePoints.h>
+
 #include "WizardPage.h"
 
 namespace U2 {
@@ -27,7 +29,7 @@ namespace U2 {
 * WizardPage
 *********************************/
 WizardPage::WizardPage(const QString &_id, const QString &_title)
-: id(_id), next(NULL), title(_title)
+: id(_id), title(_title)
 {
 }
 
@@ -35,12 +37,43 @@ WizardPage::~WizardPage() {
     delete content;
 }
 
-void WizardPage::setNext(WizardPage *value) {
-    next = value;
+void WizardPage::validate(const QList<Workflow::Actor*> &actors, U2OpStatus &os) const {
+    if (NULL == content) {
+        os.setError(QObject::tr("NULL page content"));
+        return;
+    }
+    content->validate(actors, os);
+    CHECK_OP(os, );
 }
 
-WizardPage * WizardPage::getNext() const {
-    return next;
+void WizardPage::setNext(const QString &nextId) {
+    this->nextId = nextId;
+    nextIds.clear();
+}
+
+void WizardPage::setNext(const QString &nextId, const Predicate &predicate, U2OpStatus &os) {
+    if (nextIds.contains(predicate)) {
+        os.setError(QObject::tr("Double condition: %1").arg(predicate.toString()));
+        return;
+    }
+    this->nextId.clear();
+    nextIds[predicate] = nextId;
+}
+
+QString WizardPage::getNextId(const QMap<QString, Variable> &vars) const {
+    if (nextIds.isEmpty()) {
+        return nextId;
+    }
+    foreach (const Predicate &p, nextIds.keys()) {
+        if (p.isTrue(vars)) {
+            return nextIds[p];
+        }
+    }
+    return "";
+}
+
+bool WizardPage::isFinal() const {
+    return (nextId.isEmpty() && nextIds.isEmpty());
 }
 
 const QString & WizardPage::getId() const {
@@ -57,6 +90,15 @@ void WizardPage::setContent(TemplatedPageContent *value) {
 
 TemplatedPageContent * WizardPage::getContent() {
     return content;
+}
+
+/** for serializing */
+const QMap<Predicate, QString> & WizardPage::nextIdMap() const {
+    return nextIds;
+}
+
+const QString & WizardPage::plainNextId() const {
+    return nextId;
 }
 
 /**********************************
@@ -104,6 +146,22 @@ DefaultPageContent::~DefaultPageContent() {
 
 void DefaultPageContent::accept(TemplatedPageVisitor *visitor) {
     visitor->visit(this);
+}
+
+void DefaultPageContent::validate(const QList<Workflow::Actor*> &actors, U2OpStatus &os) const {
+    if (NULL == logoArea) {
+        os.setError(QObject::tr("NULL logo area"));
+        return;
+    }
+    if (NULL == paramsArea) {
+        os.setError(QObject::tr("NULL parameters area"));
+        return;
+    }
+
+    logoArea->validate(actors, os);
+    CHECK_OP(os, );
+    paramsArea->validate(actors, os);
+    CHECK_OP(os, );
 }
 
 void DefaultPageContent::addParamWidget(WizardWidget *widget) {

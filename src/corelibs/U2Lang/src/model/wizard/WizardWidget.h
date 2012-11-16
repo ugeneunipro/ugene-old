@@ -22,6 +22,8 @@
 #ifndef _U2_WIZARDWIDGET_H_
 #define _U2_WIZARDWIDGET_H_
 
+#include <U2Core/U2OpStatus.h>
+
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/Attribute.h>
 #include <U2Lang/URLAttribute.h>
@@ -29,6 +31,8 @@
 namespace U2 {
 
 class WizardWidgetVisitor;
+
+using namespace Workflow;
 
 /************************************************************************/
 /* WizardWidget */
@@ -39,6 +43,7 @@ public:
     virtual ~WizardWidget();
 
     virtual void accept(WizardWidgetVisitor *visitor) = 0;
+    virtual void validate(const QList<Actor*> &actors, U2OpStatus &os) const;
 };
 
 /************************************************************************/
@@ -71,6 +76,7 @@ public:
     virtual ~WidgetsArea();
 
     virtual void accept(WizardWidgetVisitor *visitor);
+    virtual void validate(const QList<Actor*> &actors, U2OpStatus &os) const;
 
     void addWidget(WizardWidget *widget);
     const QList<WizardWidget*> & getWidgets() const;
@@ -134,10 +140,11 @@ public:
 
 class U2LANG_EXPORT AttributeWidget : public WizardWidget {
 public:
-    AttributeWidget(Workflow::Actor *actor, Attribute *attr);
+    AttributeWidget(const QString &actorId, const QString &attrId);
     virtual ~AttributeWidget();
 
     virtual void accept(WizardWidgetVisitor *visitor);
+    virtual void validate(const QList<Actor*> &actors, U2OpStatus &os) const;
 
     QString getActorId() const;
     QString getAttributeId() const;
@@ -147,24 +154,10 @@ public:
     QVariantMap getProperties() const;
     QString getProperty(const QString &id) const;
 
-    Workflow::Actor * getActor();
-    Attribute * getAttribute();
-
 private:
-    Workflow::Actor *actor;
-    Attribute *attr;
+    QString actorId;
+    QString attrId;
     QVariantMap hints;
-};
-
-/************************************************************************/
-/* WizardWidgetVisitor */
-/************************************************************************/
-class U2LANG_EXPORT WizardWidgetVisitor {
-public:
-    virtual void visit(AttributeWidget *) = 0;
-    virtual void visit(WidgetsArea *) = 0;
-    virtual void visit(GroupWidget *) = 0;
-    virtual void visit(LogoWidget *) = 0;
 };
 
 } // U2

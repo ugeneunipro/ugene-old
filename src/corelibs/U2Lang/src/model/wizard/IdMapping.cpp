@@ -19,50 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2SafePoints.h>
-
-#include <U2Lang/WizardPage.h>
-
-#include "Wizard.h"
+#include "IdMapping.h"
 
 namespace U2 {
 
-const QString Wizard::DEFAULT_NAME("Wizard");
-
-Wizard::Wizard(const QString &_name, const QList<WizardPage*> &_pages)
-: name(_name), pages(_pages)
+IdMapping::IdMapping(const QString &_srcId, const QString &_dstId)
+: srcId(_srcId), dstId(_dstId)
 {
 
 }
 
-Wizard::~Wizard() {
-    foreach (WizardPage *page, pages) {
-        delete page;
-    }
-    pages.clear();
+IdMapping::~IdMapping() {
+
 }
 
-const QString & Wizard::getName() const {
-    return name;
+QString IdMapping::getSrcId() const {
+    return srcId;
 }
 
-const QList<WizardPage*> & Wizard::getPages() const {
-    return pages;
+QString IdMapping::getDstId() const {
+    return dstId;
 }
 
-void Wizard::validate(const Workflow::Schema *schema, U2OpStatus &os) const {
-    foreach (WizardPage *page, pages) {
-        page->validate(schema->getProcesses(), os);
-        CHECK_OP(os, );
-    }
-}
-
-void Wizard::addVariable(const Variable &v) {
-    vars[v.getName()] = v;
-}
-
-QMap<QString, Variable> Wizard::getVariables() const {
-    return vars;
+void IdMapping::invertMapping() {
+    qSwap<QString>(srcId, dstId);
 }
 
 } // U2

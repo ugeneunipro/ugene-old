@@ -19,50 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2SafePoints.h>
-
-#include <U2Lang/WizardPage.h>
-
-#include "Wizard.h"
+#include "SlotMapping.h"
 
 namespace U2 {
 
-const QString Wizard::DEFAULT_NAME("Wizard");
-
-Wizard::Wizard(const QString &_name, const QList<WizardPage*> &_pages)
-: name(_name), pages(_pages)
+SlotMapping::SlotMapping(const QString &srcSlotId, const QString &dstSlotId)
+: IdMapping(srcSlotId, dstSlotId)
 {
 
 }
 
-Wizard::~Wizard() {
-    foreach (WizardPage *page, pages) {
-        delete page;
+void SlotMapping::validate(DataTypePtr srcSlotType, DataTypePtr dstSlotType,
+    U2OpStatus &os) const {
+    if (srcSlotType != dstSlotType) {
+        os.setError(QObject::tr("Slots %1, %2 have different types").arg(srcId).arg(dstId));
     }
-    pages.clear();
-}
-
-const QString & Wizard::getName() const {
-    return name;
-}
-
-const QList<WizardPage*> & Wizard::getPages() const {
-    return pages;
-}
-
-void Wizard::validate(const Workflow::Schema *schema, U2OpStatus &os) const {
-    foreach (WizardPage *page, pages) {
-        page->validate(schema->getProcesses(), os);
-        CHECK_OP(os, );
-    }
-}
-
-void Wizard::addVariable(const Variable &v) {
-    vars[v.getName()] = v;
-}
-
-QMap<QString, Variable> Wizard::getVariables() const {
-    return vars;
 }
 
 } // U2

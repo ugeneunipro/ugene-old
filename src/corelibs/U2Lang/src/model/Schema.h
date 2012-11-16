@@ -24,7 +24,6 @@
 
 #include <U2Lang/Aliasing.h>
 #include <U2Lang/Attribute.h>
-#include <U2Lang/Wizard.h>
 
 #include <QtCore/QPair>
 
@@ -36,6 +35,8 @@ Q_DECLARE_METATYPE(IterationCfg)
 Q_DECLARE_METATYPE(CfgMap)
 
 namespace U2 {
+
+class Wizard;
 
 namespace Workflow {
 

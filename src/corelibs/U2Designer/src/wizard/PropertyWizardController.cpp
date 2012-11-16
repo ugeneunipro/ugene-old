@@ -19,15 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QHBoxLayout>
-#include <QLineEdit>
-#include <QSpinBox>
-
 #include <U2Core/U2SafePoints.h>
 
 #include "../PropertyWidget.h"
 
 #include <U2Lang/BaseTypes.h>
+#include <U2Lang/WorkflowUtils.h>
 
 #include "PropertyWizardController.h"
 
@@ -36,32 +33,35 @@ namespace U2 {
 /************************************************************************/
 /* WizardAttributeController */
 /************************************************************************/
-PropertyWizardController::PropertyWizardController(AttributeWidget *_widget)
-: widget(_widget)
+PropertyWizardController::PropertyWizardController(WizardController *wc, AttributeWidget *_widget)
+: WidgetController(wc), widget(_widget)
 {
-
+    actor = WorkflowUtils::actorById(wc->getCurrentActors(), widget->getActorId());
 }
 
 PropertyWizardController::~PropertyWizardController() {
 
 }
 
-void PropertyWizardController::assignPropertyValue() {
-    widget->getAttribute()->setAttributeValue(getResult());
+Attribute * PropertyWizardController::attribute() {
+    return actor->getParameter(widget->getAttributeId());
+}
+
+void PropertyWizardController::sl_valueChanged(const QVariant &newValue) {
+    wc->setWidgetValue(widget, newValue);
 }
 
 /************************************************************************/
 /* InUrlDatasetsController */
 /************************************************************************/
-InUrlDatasetsController::InUrlDatasetsController(AttributeWidget *widget)
-: PropertyWizardController(widget), dsc(NULL)
+InUrlDatasetsController::InUrlDatasetsController(WizardController *wc, AttributeWidget *widget)
+: PropertyWizardController(wc, widget), dsc(NULL)
 {
-    URLAttribute *attr = dynamic_cast<URLAttribute*>(widget->getAttribute());
+    /*URLAttribute *attr = dynamic_cast<URLAttribute*>(attribute());
     SAFE_POINT(NULL != attr, "NULL url attribute in widget", );
     foreach (const Dataset &set, attr->getDatasets()) {
         sets << set;
-    }
-    dsc = new DatasetsController(sets);
+    }*/
 }
 
 InUrlDatasetsController::~InUrlDatasetsController() {
@@ -69,81 +69,68 @@ InUrlDatasetsController::~InUrlDatasetsController() {
 }
 
 QWidget * InUrlDatasetsController::createGUI(U2OpStatus & os) {
-    CHECK_EXT(NULL != dsc, os.setError("NULL datasets controller"), NULL);
+    if (NULL != dsc) {
+        delete dsc;
+    }
+    QVariant value = wc->getWigetValue(widget);
+    if (value.canConvert< QList<Dataset> >()) {
+        sets = value.value< QList<Dataset> >();
+    } else {
+        coreLog.error("Can not convert value to dataset list");
+        sets.clear();
+        sets << Dataset();
+    }
+    dsc = new DatasetsController(sets);
+    connect(dsc, SIGNAL(si_attributeChanged()), SLOT(sl_datasetsChanged()));
     return dsc->getWigdet();
 }
 
-QVariant InUrlDatasetsController::getResult() {
-    CHECK(NULL != dsc, QVariant());
-    return qVariantFromValue< QList<Dataset> >(dsc->getDatasets());
-}
-
-/************************************************************************/
-/* SimpleAttributeWidget */
-/************************************************************************/
-LabeledPropertyWidget::LabeledPropertyWidget(const QString &labelText, PropertyWidget *widget, QWidget *parent)
-: QWidget(parent)
-{
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    setLayout(layout);
-
-    label = new QLabel(labelText, this);
-    layout->addWidget(label);
-    layout->addWidget(widget);
-
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-}
-
-void LabeledPropertyWidget::setLabelWidth(int width) {
-    label->setFixedWidth(width);
+void InUrlDatasetsController::sl_datasetsChanged() {
+    sl_valueChanged(qVariantFromValue< QList<Dataset> >(sets));
 }
 
 /************************************************************************/
 /* SimpleAttributeController */
 /************************************************************************/
-DefaultPropertyController::DefaultPropertyController(AttributeWidget *widget, int _labelSize)
-: PropertyWizardController(widget), propWidget(NULL), labelSize(_labelSize)
+DefaultPropertyController::DefaultPropertyController(WizardController *wc, AttributeWidget *widget, int _labelSize)
+: PropertyWizardController(wc, widget), labelSize(_labelSize)
 {
 
 }
 
 DefaultPropertyController::~DefaultPropertyController() {
-    CHECK(NULL != propWidget, );
-    CHECK(NULL == propWidget->parent(), );
-    delete propWidget;
+
 }
 
 QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
     CHECK_EXT(AttributeWidgetHints::DEFAULT == widget->getProperty(AttributeWidgetHints::TYPE),
         os.setError("Widget type is not default"), NULL);
 
-    Attribute *attr = widget->getAttribute();
-    Workflow::Actor *actor = widget->getActor();
     PropertyDelegate *delegate = actor->getEditor()->getDelegate(widget->getAttributeId());
 
+    PropertyWidget *propWidget = NULL;
     if (NULL != delegate) {
         propWidget = delegate->createWizardWidget(os, NULL);
         SAFE_POINT_OP(os, NULL);
-    } else if (BaseTypes::URL_DATASETS_TYPE() == attr->getAttributeType()) {
+    } else if (BaseTypes::URL_DATASETS_TYPE() == attribute()->getAttributeType()) {
         URLLineEdit *lineEdit = new URLLineEdit("", "", true, false, false, NULL);
         propWidget = new URLWidget(lineEdit);
     } else {
         propWidget = new DefaultPropertyWidget();
     }
 
-    propWidget->setValue(attr->getAttributePureValue());
+    connect(propWidget, SIGNAL(si_valueChanged(const QVariant &)), SLOT(sl_valueChanged(const QVariant &)));
+
+    propWidget->setValue(wc->getWigetValue(widget));
     QString label = widget->getProperty(AttributeWidgetHints::LABEL);
+    if (label.isEmpty()) {
+        label = attribute()->getDisplayName();
+    }
     LabeledPropertyWidget *result = new LabeledPropertyWidget(label, propWidget, NULL);
     if (labelSize >= 0) {
         result->setLabelWidth(labelSize);
     }
     return result;
-}
-
-QVariant DefaultPropertyController::getResult() {
-    CHECK(NULL != propWidget, QVariant());
-    return propWidget->value();
 }
 
 } // U2

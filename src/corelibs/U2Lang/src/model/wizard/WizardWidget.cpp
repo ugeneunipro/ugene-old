@@ -19,6 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Lang/WizardWidgetVisitor.h>
+#include <U2Lang/WorkflowUtils.h>
+
 #include "WizardWidget.h"
 
 namespace U2 {
@@ -31,6 +36,10 @@ WizardWidget::WizardWidget() {
 }
 
 WizardWidget::~WizardWidget() {
+
+}
+
+void WizardWidget::validate(const QList<Actor*> & /*actors*/, U2OpStatus & /*os*/) const {
 
 }
 
@@ -86,6 +95,13 @@ WidgetsArea::~WidgetsArea() {
 
 void WidgetsArea::accept(WizardWidgetVisitor *visitor) {
     visitor->visit(this);
+}
+
+void WidgetsArea::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
+    foreach (WizardWidget *w, widgets) {
+        w->validate(actors, os);
+        CHECK_OP(os, );
+    }
 }
 
 void WidgetsArea::addWidget(WizardWidget *widget) {
@@ -162,8 +178,8 @@ const QString AttributeWidgetHints::DEFAULT("default");
 const QString AttributeWidgetHints::DATASETS("datasets");
 const QString AttributeWidgetHints::LABEL("label");
 
-AttributeWidget::AttributeWidget(Workflow::Actor *_actor, Attribute *_attr)
-: WizardWidget(), actor(_actor), attr(_attr)
+AttributeWidget::AttributeWidget(const QString &_actorId, const QString &_attrId)
+: WizardWidget(), actorId(_actorId), attrId(_attrId)
 {
 
 }
@@ -176,12 +192,24 @@ void AttributeWidget::accept(WizardWidgetVisitor *visitor) {
     visitor->visit(this);
 }
 
+void AttributeWidget::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
+    Actor *actor = WorkflowUtils::actorById(actors, actorId);
+    if (NULL == actor) {
+        os.setError(QObject::tr("Unknown actor id: %1").arg(actorId));
+        return;
+    }
+    if (!actor->hasParameter(attrId)) {
+        os.setError(QObject::tr("Actor '%1' does not have this parameter: %2").arg(actorId).arg(attrId));
+        return;
+    }
+}
+
 QString AttributeWidget::getActorId() const {
-    return actor->getId();
+    return actorId;
 }
 
 QString AttributeWidget::getAttributeId() const {
-    return attr->getId();
+    return attrId;
 }
 
 void AttributeWidget::setWigdetHints(const QVariantMap &value) {
@@ -204,17 +232,9 @@ QString AttributeWidget::getProperty(const QString &id) const {
     if (AttributeWidgetHints::TYPE == id && value.isEmpty()) {
         return AttributeWidgetHints::DEFAULT;
     } else if (AttributeWidgetHints::LABEL == id && value.isEmpty()) {
-        return attr->getDisplayName();
+        return "";
     }
     return value;
-}
-
-Workflow::Actor * AttributeWidget::getActor() {
-    return actor;
-}
-
-Attribute * AttributeWidget::getAttribute() {
-    return attr;
 }
 
 } // U2

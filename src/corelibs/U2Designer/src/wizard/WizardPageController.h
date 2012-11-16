@@ -19,50 +19,37 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2SafePoints.h>
+#ifndef _U2_WIZARDPAGECONTROLLER_H_
+#define _U2_WIZARDPAGECONTROLLER_H_
 
 #include <U2Lang/WizardPage.h>
+#include <U2Lang/Schema.h>
 
-#include "Wizard.h"
+#include <U2Designer/WizardController.h>
 
 namespace U2 {
 
-const QString Wizard::DEFAULT_NAME("Wizard");
+class WidgetController;
+class WDWizardPage;
 
-Wizard::Wizard(const QString &_name, const QList<WizardPage*> &_pages)
-: name(_name), pages(_pages)
-{
+class WizardPageController {
+public:
+    WizardPageController(WizardController *wc, WizardPage *page);
+    virtual ~WizardPageController();
 
-}
+    void applyLayout(WDWizardPage *wPage);
+    int nextId() const;
 
-Wizard::~Wizard() {
-    foreach (WizardPage *page, pages) {
-        delete page;
-    }
-    pages.clear();
-}
+private:
+    WizardController *wc;
+    WizardPage *page;
+    QList<WidgetController*> controllers;
 
-const QString & Wizard::getName() const {
-    return name;
-}
-
-const QList<WizardPage*> & Wizard::getPages() const {
-    return pages;
-}
-
-void Wizard::validate(const Workflow::Schema *schema, U2OpStatus &os) const {
-    foreach (WizardPage *page, pages) {
-        page->validate(schema->getProcesses(), os);
-        CHECK_OP(os, );
-    }
-}
-
-void Wizard::addVariable(const Variable &v) {
-    vars[v.getName()] = v;
-}
-
-QMap<QString, Variable> Wizard::getVariables() const {
-    return vars;
-}
+private:
+    void removeLayout(QLayout *l);
+    void setError(WDWizardPage *wPage);
+};
 
 } // U2
+
+#endif // _U2_WIZARDPAGECONTROLLER_H_

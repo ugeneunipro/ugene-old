@@ -22,73 +22,70 @@
 #ifndef _U2_PROPERTYWIZARDCONTROLLER_H_
 #define _U2_PROPERTYWIZARDCONTROLLER_H_
 
-#include <QLabel>
-
 #include <U2Core/U2OpStatus.h>
 
 #include <U2Designer/DatasetsController.h>
+#include <U2Designer/WizardController.h>
 
 #include <U2Lang/ConfigurationEditor.h>
 #include <U2Lang/WizardWidget.h>
+
+#include "WidgetController.h"
 
 namespace U2 {
 
 /************************************************************************/
 /* WizardAttributeController */
 /************************************************************************/
-class PropertyWizardController {
+class PropertyWizardController : public WidgetController {
+    Q_OBJECT
 public:
-    PropertyWizardController(AttributeWidget *widget);
+    PropertyWizardController(WizardController *wc, AttributeWidget *widget);
     virtual ~PropertyWizardController();
 
     virtual QWidget * createGUI(U2OpStatus &os) = 0;
-    virtual QVariant getResult() = 0;
-
-    void assignPropertyValue();
 
 protected:
+    Actor *actor;
     AttributeWidget *widget;
+
+protected:
+    Attribute * attribute();
+
+protected slots:
+    void sl_valueChanged(const QVariant &newValue);
 };
 
 /************************************************************************/
 /* InUrlDatasetsController */
 /************************************************************************/
 class InUrlDatasetsController : public PropertyWizardController {
+    Q_OBJECT
 public:
-    InUrlDatasetsController(AttributeWidget *widget);
+    InUrlDatasetsController(WizardController *wc, AttributeWidget *widget);
     virtual ~InUrlDatasetsController();
 
     virtual QWidget * createGUI(U2OpStatus &os);
-    virtual QVariant getResult();
 
 private:
     DatasetsController *dsc;
     QList<Dataset> sets;
+
+private slots:
+    void sl_datasetsChanged();
 };
 
 /************************************************************************/
 /* DefaultPropertyController */
 /************************************************************************/
-class LabeledPropertyWidget : public QWidget {
-public:
-    LabeledPropertyWidget(const QString &labelText, PropertyWidget *widget, QWidget *parent = NULL);
-
-    void setLabelWidth(int width);
-
-private:
-    QLabel *label;
-};
-
 class DefaultPropertyController : public PropertyWizardController {
 public:
-    DefaultPropertyController(AttributeWidget *widget, int labelSize);
+    DefaultPropertyController(WizardController *wc, AttributeWidget *widget, int labelSize);
     virtual ~DefaultPropertyController();
 
     virtual QWidget * createGUI(U2OpStatus & os);
-    virtual QVariant getResult();
 
 private:
-    PropertyWidget *propWidget;
     int labelSize;
 };
 

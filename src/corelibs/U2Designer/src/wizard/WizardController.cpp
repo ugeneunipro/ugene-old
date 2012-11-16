@@ -30,28 +30,36 @@
 #include <U2Gui/MainWindow.h>
 
 #include <U2Lang/WizardPage.h>
+#include <U2Lang/WorkflowUtils.h>
 
+#include "ElementSelectorController.h"
 #include "PropertyWizardController.h"
+#include "WDWizardPage.h"
+#include "WizardPageController.h"
 
 #include "WizardController.h"
 
 namespace U2 {
 
-WizardController::WizardController(Wizard *w)
-: wizard(w)
+WizardController::WizardController(Schema *s, Wizard *w)
+: schema(s), wizard(w)
 {
-
+    broken = false;
+    currentActors = s->getProcesses();
+    vars = w->getVariables();
 }
 
 WizardController::~WizardController() {
-
+    qDeleteAll(pageControllers);
 }
 
 QWizard * WizardController::createGui() {
-    controllers.clear();
     QWizard *result = new QWizard((QWidget*)AppContext::getMainWindow()->getQMainWindow());
+    int idx = 0;
     foreach (WizardPage *page, wizard->getPages()) {
-        result->addPage(createPage(page));
+        result->setPage(idx, createPage(page));
+        idMap[page->getId()] = idx;
+        idx++;
     }
     result->setWizardStyle(QWizard::ClassicStyle);
     result->setModal(true);
@@ -61,35 +69,149 @@ QWizard * WizardController::createGui() {
 }
 
 void WizardController::assignParameters() {
-    foreach (PropertyWizardController *pwc, controllers) {
-        pwc->assignPropertyValue();
+    foreach (const QString &attrId, propValues.keys()) {
+        Attribute *attr = getAttributeById(attrId);
+        if (NULL == attr) {
+            continue;
+        }
+        attr->setAttributeValue(propValues[attrId]);
     }
 }
 
-QWizardPage * WizardController::createPage(WizardPage *page) {
-    QWizardPage *result = new QWizardPage();
-    result->setTitle(page->getTitle());
-    result->setFinalPage(NULL == page->getNext());
+const QList<Actor*> & WizardController::getCurrentActors() const {
+    return currentActors;
+}
 
-    PageContentCreator pcc;
-    page->getContent()->accept(&pcc);
-    result->setLayout(pcc.getResult());
-    controllers << pcc.getControllers();
+QVariant WizardController::getWigetValue(AttributeWidget *widget) const {
+    QString attrId;
+    Attribute *attr = getAttribute(widget, attrId);
+    CHECK(NULL != attr, QVariant());
+
+    if (propValues.contains(attrId)) {
+        return propValues[attrId];
+    }
+    return attr->getAttributePureValue();
+}
+
+void WizardController::setWidgetValue(AttributeWidget *widget, const QVariant &value) {
+    QString attrId;
+    Attribute *attr = getAttribute(widget, attrId);
+    CHECK(NULL != attr, );
+
+    propValues[attrId] = value;
+}
+
+Attribute * WizardController::getAttribute(AttributeWidget *widget, QString &attrId) const {
+    U2OpStatusImpl os;
+    widget->validate(currentActors, os);
+    CHECK_OP(os, NULL);
+    Actor *actor = WorkflowUtils::actorById(currentActors, widget->getActorId());
+    Attribute *attr = actor->getParameter(widget->getAttributeId());
+
+    attrId = getAttributeId(actor, attr);
+    return attr;
+}
+
+QString WizardController::getAttributeId(Actor *actor, Attribute *attr) const {
+    ActorPrototype *proto = actor->getProto();
+    return proto->getId() + "." + actor->getId() + "." + attr->getId();
+}
+
+Attribute * WizardController::getAttributeById(const QString &attrId) const {
+    QStringList tokens = attrId.split("."); // protoId.actorId.attrId
+    CHECK(3 == tokens.size(), NULL);
+    Actor *actor = WorkflowUtils::actorById(currentActors, tokens[1]);
+    CHECK(NULL != actor, NULL);
+    ActorPrototype *proto = actor->getProto();
+    CHECK(tokens[0] == proto->getId(), NULL);
+
+    return actor->getParameter(tokens[2]);
+}
+
+QWizardPage * WizardController::createPage(WizardPage *page) {
+    WizardPageController *controller = new WizardPageController(this, page);
+    WDWizardPage *result = new WDWizardPage(controller);
+
+    pageControllers << controller;
 
     return result;
+}
+
+int WizardController::getQtId(const QString &hrId) const {
+    return idMap[hrId];
+}
+
+const QMap<QString, Variable> & WizardController::getVariables() const {
+    return vars;
+}
+
+QVariant WizardController::getSelectorValue(ElementSelectorWidget *widget) {
+    SAFE_POINT(vars.contains(widget->getActorId()),
+        QObject::tr("Undefined variable: %1").arg(widget->getActorId()), QVariant());
+    Variable &v = vars[widget->getActorId()];
+    if (v.isAssigned()) {
+        return v.getValue();
+    }
+
+    // variable is not assigned yet => selector is not registered
+    registerSelector(widget);
+    SelectorValue sv = widget->getValues().first();
+    v.setValue(sv.getValue());
+    // now variable is assigned, selector is registered
+    setSelectorValue(widget, sv.getValue());
+    return sv.getValue();
+}
+
+void WizardController::setSelectorValue(ElementSelectorWidget *widget, const QVariant &value) {
+    SAFE_POINT(vars.contains(widget->getActorId()),
+        QObject::tr("Undefined variable: %1").arg(widget->getActorId()), );
+    Variable &v = vars[widget->getActorId()];
+    v.setValue(value.toString());
+    replaceCurrentActor(widget->getActorId(), value.toString());
+}
+
+void WizardController::registerSelector(ElementSelectorWidget *widget) {
+    if (selectors.contains(widget->getActorId())) {
+        SAFE_POINT(false, QObject::tr("Actors selector is already defined: %1").arg(widget->getActorId()), );
+    }
+    U2OpStatusImpl os;
+    SelectorActors actors(widget, currentActors, os);
+    SAFE_POINT_OP(os, );
+    selectors[widget->getActorId()] = actors;
+}
+
+void WizardController::replaceCurrentActor(const QString &actorId, const QString &selectorValue) {
+    if (!selectors.contains(actorId)) {
+        SAFE_POINT(false, QObject::tr("Unknown actors selector: %1").arg(actorId), );
+    }
+    Actor *currentA = WorkflowUtils::actorById(currentActors, actorId);
+    SAFE_POINT(NULL != currentA, QObject::tr("Unknown actor id: %1").arg(actorId), );
+    Actor *newA = selectors[actorId].getActor(selectorValue);
+    SAFE_POINT(NULL != newA, QObject::tr("Unknown actors selector value id: %1").arg(selectorValue), );
+
+    int idx = currentActors.indexOf(currentA);
+    currentActors.replace(idx, newA);
+}
+
+void WizardController::setBroken() {
+    broken = true;
+}
+
+bool WizardController::isBroken() const {
+    return broken;
 }
 
 /************************************************************************/
 /* WidgetCreator */
 /************************************************************************/
-WidgetCreator::WidgetCreator()
-: labelSize(0), result(NULL), layout(NULL)
+WidgetCreator::WidgetCreator(WizardController *_wc)
+: wc(_wc), labelSize(0), result(NULL), layout(NULL)
 {
 
 }
 
-WidgetCreator::WidgetCreator(int _labelSize)
-: labelSize(_labelSize), result(NULL), layout(NULL)
+WidgetCreator::WidgetCreator(WizardController *_wc, int _labelSize)
+: wc(_wc), labelSize(_labelSize), result(NULL), layout(NULL)
 {
 
 }
@@ -99,9 +221,9 @@ void WidgetCreator::visit(AttributeWidget *aw) {
     PropertyWizardController *controller = NULL;
 
     if (AttributeWidgetHints::DEFAULT == type) {
-        controller = new DefaultPropertyController(aw, labelSize);
+        controller = new DefaultPropertyController(wc, aw, labelSize);
     } else if (AttributeWidgetHints::DATASETS == type) {
-        controller = new InUrlDatasetsController(aw);
+        controller = new InUrlDatasetsController(wc, aw);
     } else {
         SAFE_POINT(false, QString("Unknown widget type: %1").arg(type), );
     }
@@ -117,12 +239,12 @@ void WidgetCreator::visit(WidgetsArea *wa) {
     layout->setContentsMargins(0, 0, 0, 0);
     result->setLayout(layout);
     foreach (WizardWidget *w, wa->getWidgets()) {
-        WidgetCreator wc(wa->getLabelSize());
-        w->accept(&wc);
-        if (NULL != wc.getResult()) {
-            wc.getResult()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
-            layout->addWidget(wc.getResult());
-            controllers << wc.getControllers();
+        WidgetCreator wcr(wc, wa->getLabelSize());
+        w->accept(&wcr);
+        if (NULL != wcr.getResult()) {
+            wcr.getResult()->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
+            layout->addWidget(wcr.getResult());
+            controllers << wcr.getControllers();
         }
     }
     QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::Minimum);
@@ -155,11 +277,18 @@ void WidgetCreator::visit(LogoWidget *lw) {
     layout->addWidget(label);
 }
 
+void WidgetCreator::visit(ElementSelectorWidget *esw) {
+    ElementSelectorController *controller = new ElementSelectorController(wc, esw, labelSize);
+    controllers << controller;
+    U2OpStatusImpl os;
+    result = controller->createGUI(os);
+}
+
 QWidget * WidgetCreator::getResult() {
     return result;
 }
 
-QList<PropertyWizardController*> & WidgetCreator::getControllers() {
+QList<WidgetController*> & WidgetCreator::getControllers() {
     return controllers;
 }
 
@@ -177,8 +306,8 @@ void WidgetCreator::setGroupBoxLayout(GroupBox *gb) {
 /************************************************************************/
 /* PageContentCreator */
 /************************************************************************/
-PageContentCreator::PageContentCreator()
-: result(NULL)
+PageContentCreator::PageContentCreator(WizardController *_wc)
+: wc(_wc), result(NULL)
 {
 
 }
@@ -187,7 +316,7 @@ void PageContentCreator::visit(DefaultPageContent *content) {
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     { // create logo
-        WidgetCreator logoWC;
+        WidgetCreator logoWC(wc);
         content->getLogoArea()->accept(&logoWC);
         if (NULL != logoWC.getResult()) {
             layout->addWidget(logoWC.getResult());
@@ -195,7 +324,7 @@ void PageContentCreator::visit(DefaultPageContent *content) {
         }
     }
     { // create parameters
-        WidgetCreator paramsWC;
+        WidgetCreator paramsWC(wc);
         content->getParamsArea()->accept(&paramsWC);
         if (NULL != paramsWC.getResult()) {
             if (NULL != paramsWC.getLayout()) {
@@ -213,7 +342,7 @@ QLayout * PageContentCreator::getResult() {
     return result;
 }
 
-QList<PropertyWizardController*> & PageContentCreator::getControllers() {
+QList<WidgetController*> & PageContentCreator::getControllers() {
     return controllers;
 }
 

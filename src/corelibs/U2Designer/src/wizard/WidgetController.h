@@ -19,50 +19,41 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2SafePoints.h>
+#ifndef _U2_WIDGETCONTROLLER_H_
+#define _U2_WIDGETCONTROLLER_H_
 
-#include <U2Lang/WizardPage.h>
+#include <U2Core/U2OpStatus.h>
 
-#include "Wizard.h"
+#include <U2Lang/ConfigurationEditor.h>
+
+#include <QLabel>
+#include <QWidget>
 
 namespace U2 {
 
-const QString Wizard::DEFAULT_NAME("Wizard");
+class WizardController;
 
-Wizard::Wizard(const QString &_name, const QList<WizardPage*> &_pages)
-: name(_name), pages(_pages)
-{
+class WidgetController : public QObject {
+public:
+    WidgetController(WizardController *wc);
+    virtual ~WidgetController();
 
-}
+    virtual QWidget * createGUI(U2OpStatus &os) = 0;
 
-Wizard::~Wizard() {
-    foreach (WizardPage *page, pages) {
-        delete page;
-    }
-    pages.clear();
-}
+protected:
+    WizardController *wc;
+};
 
-const QString & Wizard::getName() const {
-    return name;
-}
+class LabeledPropertyWidget : public QWidget {
+public:
+    LabeledPropertyWidget(const QString &labelText, PropertyWidget *widget, QWidget *parent = NULL);
 
-const QList<WizardPage*> & Wizard::getPages() const {
-    return pages;
-}
+    void setLabelWidth(int width);
 
-void Wizard::validate(const Workflow::Schema *schema, U2OpStatus &os) const {
-    foreach (WizardPage *page, pages) {
-        page->validate(schema->getProcesses(), os);
-        CHECK_OP(os, );
-    }
-}
-
-void Wizard::addVariable(const Variable &v) {
-    vars[v.getName()] = v;
-}
-
-QMap<QString, Variable> Wizard::getVariables() const {
-    return vars;
-}
+private:
+    QLabel *label;
+};
 
 } // U2
+
+#endif // _U2_WIDGETCONTROLLER_H_

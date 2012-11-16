@@ -868,6 +868,15 @@ QStringList WorkflowUtils::getDatasetsUrls(const QList<Dataset> &sets) {
     return result;
 }
 
+Actor * WorkflowUtils::actorById(const QList<Actor*> &actors, const ActorId &id) {
+    foreach(Actor *a, actors) {
+        if (a->getId() == id) {
+            return a;
+        }
+    }
+    return NULL;
+}
+
 /*****************************
  * PrompterBaseImpl
  *****************************/

@@ -443,6 +443,16 @@ void HRSchemaSerializer::Tokenizer::tokenizeLine(const QString & l, QTextStream 
 }
 
 HRSchemaSerializer::ParsedPairs::ParsedPairs(HRSchemaSerializer::Tokenizer & tokenizer) {
+    init(tokenizer);
+}
+
+HRSchemaSerializer::ParsedPairs::ParsedPairs(const QString & data, int unparseableBlockDepth) {
+    HRSchemaSerializer::Tokenizer tokenizer;
+    tokenizer.tokenize(data, unparseableBlockDepth);
+    init(tokenizer);
+}
+
+void HRSchemaSerializer::ParsedPairs::init(Tokenizer & tokenizer) {
     while(tokenizer.notEmpty() && tokenizer.look() != BLOCK_END) {
         QString tok = tokenizer.take();
         QString next = tokenizer.take();

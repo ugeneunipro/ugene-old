@@ -24,6 +24,8 @@
 
 #include <U2Core/U2OpStatus.h>
 
+#include <U2Lang/Schema.h>
+#include <U2Lang/Variable.h>
 #include <U2Lang/WizardWidget.h>
 
 namespace U2 {
@@ -36,17 +38,26 @@ public:
     WizardPage(const QString &id, const QString &title);
     virtual ~WizardPage();
 
-    void setNext(WizardPage *value);
-    WizardPage * getNext() const;
+    void validate(const QList<Workflow::Actor*> &actors, U2OpStatus &os) const;
+
+    void setNext(const QString &id);
+    void setNext(const QString &id, const Predicate &predicate, U2OpStatus &os);
+    QString getNextId(const QMap<QString, Variable> &vars) const;
+    bool isFinal() const;
 
     const QString & getId() const;
     const QString & getTitle() const;
     void setContent(TemplatedPageContent *value);
     TemplatedPageContent * getContent();
 
+    /** for serializing */
+    const QMap<Predicate, QString> & nextIdMap() const;
+    const QString & plainNextId() const;
+
 private:
     QString id;
-    WizardPage *next;
+    QString nextId;
+    QMap<Predicate, QString> nextIds; // predicate <-> id
     QString title;
 
     TemplatedPageContent *content;
@@ -58,6 +69,7 @@ public:
     virtual ~TemplatedPageContent();
 
     virtual void accept(TemplatedPageVisitor *visitor) = 0;
+    virtual void validate(const QList<Workflow::Actor*> &actors, U2OpStatus &os) const = 0;
 
     const QString & getTemplateId() const;
 
@@ -80,6 +92,7 @@ public:
     virtual ~DefaultPageContent();
 
     virtual void accept(TemplatedPageVisitor *visitor);
+    virtual void validate(const QList<Workflow::Actor*> &actors, U2OpStatus &os) const;
 
     void addParamWidget(WizardWidget *widget);
     void setLogoPath(const QString &path);

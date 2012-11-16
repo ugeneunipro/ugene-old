@@ -23,6 +23,7 @@
 
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Lang/URLContainer.h>
 #include <U2Lang/WorkflowUtils.h>
 
 #include "PropertyWidget.h"
@@ -40,6 +41,7 @@ DefaultPropertyWidget::DefaultPropertyWidget(int maxLength, QWidget *parent)
         lineEdit->setMaxLength(maxLength);
     }
     addMainWidget(lineEdit);
+    connect(lineEdit, SIGNAL(textChanged(const QString &)), SLOT(sl_valueChanged(const QString &)));
 }
 
 QVariant DefaultPropertyWidget::value() {
@@ -48,6 +50,10 @@ QVariant DefaultPropertyWidget::value() {
 
 void DefaultPropertyWidget::setValue(const QVariant &value) {
     lineEdit->setText(value.toString());
+}
+
+void DefaultPropertyWidget::sl_valueChanged(const QString &value) {
+    emit si_valueChanged(value);
 }
 
 /************************************************************************/
@@ -60,7 +66,7 @@ SpinBoxWidget::SpinBoxWidget(const QVariantMap &spinProperties, QWidget *parent)
     WorkflowUtils::setQObjectProperties(*spinBox, spinProperties);
     addMainWidget(spinBox);
 
-    connect(spinBox, SIGNAL(valueChanged(int)), SIGNAL(valueChanged(int)));
+    connect(spinBox, SIGNAL(valueChanged(int)), SLOT(sl_valueChanged(int)));
 }
 
 QVariant SpinBoxWidget::value() {
@@ -76,6 +82,11 @@ bool SpinBoxWidget::setProperty(const char *name, const QVariant &value) {
     return spinBox->setProperty(name, value);
 }
 
+void SpinBoxWidget::sl_valueChanged(int value) {
+    emit valueChanged(value);
+    emit si_valueChanged(value);
+}
+
 /************************************************************************/
 /* DoubleSpinBoxWidget */
 /************************************************************************/
@@ -85,6 +96,8 @@ DoubleSpinBoxWidget::DoubleSpinBoxWidget(const QVariantMap &spinProperties, QWid
     spinBox = new QDoubleSpinBox(this);
     WorkflowUtils::setQObjectProperties(*spinBox, spinProperties);
     addMainWidget(spinBox);
+
+    connect(spinBox, SIGNAL(valueChanged(double)), SLOT(sl_valueChanged(double)));
 }
 
 QVariant DoubleSpinBoxWidget::value() {
@@ -94,6 +107,10 @@ QVariant DoubleSpinBoxWidget::value() {
 
 void DoubleSpinBoxWidget::setValue(const QVariant &value) {
     spinBox->setValue(value.toDouble());
+}
+
+void DoubleSpinBoxWidget::sl_valueChanged(double value) {
+    emit si_valueChanged(value);
 }
 
 /************************************************************************/
@@ -110,6 +127,8 @@ ComboBoxWidget::ComboBoxWidget(const QVariantMap &items, QWidget *parent)
     }
     connect(comboBox, SIGNAL(activated(const QString &)),
         this, SIGNAL(valueChanged(const QString &)));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)),
+        this, SLOT(sl_valueChanged(int)));
 }
 
 QVariant ComboBoxWidget::value() {
@@ -121,6 +140,10 @@ void ComboBoxWidget::setValue(const QVariant &value) {
     comboBox->setCurrentIndex(idx);
 }
 
+void ComboBoxWidget::sl_valueChanged(int) {
+    emit si_valueChanged(value());
+}
+
 /************************************************************************/
 /* URLWidget */
 /************************************************************************/
@@ -130,6 +153,7 @@ URLWidget::URLWidget(URLLineEdit *_urlLine, QWidget *parent)
     SAFE_POINT(NULL != urlLine, "NULL url line widget", );
     urlLine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     connect(urlLine, SIGNAL(si_finished()), SIGNAL(finished()));
+    connect(urlLine, SIGNAL(textChanged(const QString &)), SLOT(sl_textChanged(const QString &)));
     addMainWidget(urlLine);
 
     QToolButton * toolButton = new QToolButton(this);
@@ -144,12 +168,12 @@ URLWidget::URLWidget(URLLineEdit *_urlLine, QWidget *parent)
         addButton->setText(tr("add"));
         addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
         connect(addButton, SIGNAL(clicked()), urlLine, SLOT(sl_onBrowseWithAdding()));
-        connect(urlLine, SIGNAL(textChanged(const QString &)), SLOT(sl_textChanged(const QString &)));
         layout()->addWidget(addButton);
     }
 }
 
 void URLWidget::sl_textChanged(const QString &text) {
+    emit si_valueChanged(text);
     if (!urlLine->isMulti()) {
         return;
     }
@@ -162,7 +186,19 @@ QVariant URLWidget::value() {
 }
 
 void URLWidget::setValue(const QVariant &value) {
-    urlLine->setText(value.toString());
+    QString urlString;
+    if (value.canConvert< QList<Dataset> >()) {
+        QStringList urls;
+        foreach (const Dataset &set, value.value< QList<Dataset> >()) {
+            foreach (URLContainer *c, set.getUrls()) {
+                urls << c->getUrl();
+            }
+        }
+        urlString = urls.join(";");
+    } else {
+        urlString = value.toString();
+    }
+    urlLine->setText(urlString);
 }
 
 } // U2

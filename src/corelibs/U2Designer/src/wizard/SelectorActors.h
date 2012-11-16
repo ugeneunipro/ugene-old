@@ -19,50 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2SafePoints.h>
+#ifndef _U2_SELECTORACTORS_H_
+#define _U2_SELECTORACTORS_H_
 
-#include <U2Lang/WizardPage.h>
+#include <U2Core/U2OpStatus.h>
 
-#include "Wizard.h"
+#include <U2Lang/ActorModel.h>
+#include <U2Lang/ElementSelectorWidget.h>
 
 namespace U2 {
 
-const QString Wizard::DEFAULT_NAME("Wizard");
+class U2DESIGNER_EXPORT SelectorActors {
+public:
+    SelectorActors();
+    SelectorActors(ElementSelectorWidget *widget, const QList<Actor*> &allActors, U2OpStatus &os);
+    virtual ~SelectorActors();
 
-Wizard::Wizard(const QString &_name, const QList<WizardPage*> &_pages)
-: name(_name), pages(_pages)
-{
+    Actor * getActor(const QString &value) const;
+    Actor * getSourceActor() const;
+    const QList<PortMapping> & getMappings(const QString &value) const;
 
-}
-
-Wizard::~Wizard() {
-    foreach (WizardPage *page, pages) {
-        delete page;
-    }
-    pages.clear();
-}
-
-const QString & Wizard::getName() const {
-    return name;
-}
-
-const QList<WizardPage*> & Wizard::getPages() const {
-    return pages;
-}
-
-void Wizard::validate(const Workflow::Schema *schema, U2OpStatus &os) const {
-    foreach (WizardPage *page, pages) {
-        page->validate(schema->getProcesses(), os);
-        CHECK_OP(os, );
-    }
-}
-
-void Wizard::addVariable(const Variable &v) {
-    vars[v.getName()] = v;
-}
-
-QMap<QString, Variable> Wizard::getVariables() const {
-    return vars;
-}
+private:
+    ElementSelectorWidget *widget;
+    QMap<QString, Actor*> actors; // selectorValue <-> actor
+    Actor *srcActor;
+};
 
 } // U2
+
+#endif // _U2_SELECTORACTORS_H_

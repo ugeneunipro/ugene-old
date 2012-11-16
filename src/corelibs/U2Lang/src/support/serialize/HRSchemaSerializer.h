@@ -151,6 +151,7 @@ public:
     class U2LANG_EXPORT ParsedPairs {
     public:
         ParsedPairs(Tokenizer & tokenizer);
+        ParsedPairs(const QString & data, int unparseableBlockDepth = INT_MAX);
         ParsedPairs() {}
         QMap<QString, QString> equalPairs;
         QMap<QString, QString> blockPairs;
@@ -159,6 +160,8 @@ public:
         QList<StringPair> blockPairsList;
         
         static QPair<QString, QString> parseOneEqual(Tokenizer & tokenizer);
+    private:
+        void init(Tokenizer & tokenizer);
     }; // ParsedPairs
 
     class U2LANG_EXPORT FlowGraph {

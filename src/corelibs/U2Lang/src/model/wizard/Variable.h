@@ -19,50 +19,47 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2SafePoints.h>
+#ifndef _U2_VARIABLE_H_
+#define _U2_VARIABLE_H_
 
-#include <U2Lang/WizardPage.h>
-
-#include "Wizard.h"
+#include <U2Core/global.h>
+#include <U2Core/U2OpStatus.h>
 
 namespace U2 {
 
-const QString Wizard::DEFAULT_NAME("Wizard");
+class U2LANG_EXPORT Variable {
+public:
+    Variable();
+    Variable(const QString &name);
+    virtual ~Variable();
 
-Wizard::Wizard(const QString &_name, const QList<WizardPage*> &_pages)
-: name(_name), pages(_pages)
-{
+    const QString & getName() const;
+    const QString & getValue() const;
+    void setValue(const QString &value);
+    bool isAssigned() const;
+    bool operator == (const Variable &other) const;
 
-}
+private:
+    QString name;
+    QString value;
+    bool assigned;
+};
 
-Wizard::~Wizard() {
-    foreach (WizardPage *page, pages) {
-        delete page;
-    }
-    pages.clear();
-}
+class U2LANG_EXPORT Predicate {
+public:
+    Predicate();
+    Predicate(const Variable &v, const QString &value);
 
-const QString & Wizard::getName() const {
-    return name;
-}
+    bool isTrue(const QMap<QString, Variable> &vars) const;
+    bool operator < (const Predicate &other) const;
+    QString toString() const;
 
-const QList<WizardPage*> & Wizard::getPages() const {
-    return pages;
-}
+    static Predicate fromString(const QString &string, U2OpStatus &os);
 
-void Wizard::validate(const Workflow::Schema *schema, U2OpStatus &os) const {
-    foreach (WizardPage *page, pages) {
-        page->validate(schema->getProcesses(), os);
-        CHECK_OP(os, );
-    }
-}
-
-void Wizard::addVariable(const Variable &v) {
-    vars[v.getName()] = v;
-}
-
-QMap<QString, Variable> Wizard::getVariables() const {
-    return vars;
-}
+private:
+    Variable var;
+};
 
 } // U2
+
+#endif // _U2_VARIABLE_H_

@@ -41,6 +41,7 @@ namespace U2 {
 static const int NO_LIMIT = -1;
 
 class DefaultPropertyWidget : public PropertyWidget {
+    Q_OBJECT
 public:
     DefaultPropertyWidget(int maxLength = NO_LIMIT, QWidget *parent = NULL);
     virtual QVariant value();
@@ -48,6 +49,9 @@ public:
 
 private:
     QLineEdit *lineEdit;
+
+private slots:
+    void sl_valueChanged(const QString &value);
 };
 
 /************************************************************************/
@@ -68,12 +72,16 @@ signals:
 
 private:
     QSpinBox *spinBox;
+
+private slots:
+    void sl_valueChanged(int value);
 };
 
 /************************************************************************/
 /* DoubleSpinBoxWidget */
 /************************************************************************/
 class DoubleSpinBoxWidget : public PropertyWidget {
+    Q_OBJECT
 public:
     DoubleSpinBoxWidget(const QVariantMap &spinProperties, QWidget *parent = NULL);
     virtual QVariant value();
@@ -81,6 +89,9 @@ public:
 
 private:
     QDoubleSpinBox *spinBox;
+
+private slots:
+    void sl_valueChanged(double value);
 };
 
 /************************************************************************/
@@ -98,6 +109,9 @@ signals:
 
 private:
     QComboBox *comboBox;
+
+private slots:
+    void sl_valueChanged(int index);
 };
 
 /************************************************************************/

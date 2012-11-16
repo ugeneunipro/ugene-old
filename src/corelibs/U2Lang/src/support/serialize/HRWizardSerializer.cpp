@@ -37,6 +37,13 @@ const QString HRWizardParser::LOGO_PATH("logo-path");
 const QString HRWizardParser::DEFAULT("default");
 const QString HRWizardParser::HIDEABLE("hideable");
 const QString HRWizardParser::LABEL_SIZE("label-size");
+const QString HRWizardParser::ELEMENT_ID("element-id");
+const QString HRWizardParser::PROTOTYPE("prototype");
+const QString HRWizardParser::VALUE("value");
+const QString HRWizardParser::PORT_MAPPING("port-mapping");
+const QString HRWizardParser::SLOTS_MAPPRING("slots-mapping");
+const QString HRWizardParser::SRC_PORT("src-port");
+const QString HRWizardParser::DST_PORT("dst-port");
 
 HRWizardParser::HRWizardParser(HRSchemaSerializer::Tokenizer &_tokenizer,
                                        const QMap<QString, Actor*> &_actorMap)
@@ -53,7 +60,12 @@ Wizard * HRWizardParser::takeResult() {
     QList<WizardPage*> retPages = pages;
     pages.clear();
     pagesMap.clear();
-    return new Wizard(wizardName, retPages);
+
+    Wizard *result = new Wizard(wizardName, retPages);
+    foreach (const QString &name, vars.keys()) {
+        result->addVariable(vars[name]);
+    }
+    return result;
 }
 
 Wizard * HRWizardParser::parseWizard(U2OpStatus &os) {
@@ -89,82 +101,105 @@ void HRWizardParser::parsePage(U2OpStatus &os) {
         os.setError(tr("Several wizard pages have equal ids: %1").arg(id));
         return;
     }
-    nextIds[id] = pairs.equalPairs.value(NEXT, "");
-    if (id == nextIds[id]) {
-        os.setError(tr("Page's id and next id are equal: %1").arg(id));
-        return;
-    }
 
     QString templateId = pairs.equalPairs.value(TEMPLATE, DefaultPageContent::ID);
     QScopedPointer<TemplatedPageContent> content(PageContentFactory::createContent(templateId, os));
     CHECK_OP(os, );
-    PageContentParser pcp(pairs, actorMap, os);
+    PageContentParser pcp(pairs, actorMap, vars, os);
     content->accept(&pcp);
     CHECK_OP(os, );
 
-    WizardPage *page = new WizardPage(id, title);
+    QScopedPointer<WizardPage> page(new WizardPage(id, title));
+    parseNextIds(pairs, page.data(), os);
+    CHECK_OP(os, );
     page->setContent(content.take());
-    pagesMap[id] = page;
+    pagesMap[id] = page.take();
 }
 
 void HRWizardParser::finilizePagesOrder(U2OpStatus &os) {
-    QString lastId;
-    QList<QString> ids = nextIds.keys();
-    // Check loops, first page id and last page id
-    foreach (const QString &id, nextIds.keys()) {
-        if (nextIds[id].isEmpty()) {
-            if (!lastId.isEmpty()) {
-                os.setError(tr("Two pages of the wizard are defined as last: %1, %2").arg(lastId).arg(id));
-                return;
-            }
-            lastId = id;
-        } else {
-            if (!nextIds.keys().contains(nextIds[id])) {
-                os.setError(tr("Unknown next page id: %1").arg(nextIds[id]));
-                return;
-            }
-            if (!ids.contains(nextIds[id])) {
-                os.setError(tr("Two pages of the wizard have equal next page ids: %1").arg(nextIds[id]));
-                return;
-            }
-            ids.removeOne(nextIds[id]);
-        }
-    }
-    if (ids.isEmpty()) {
-        os.setError(tr("Some pages of the widget are looped"));
-        return;
-    } else if (ids.size() > 1) {
-        os.setError(tr("Several pages of the wizard are defined as first: %1, %2, ...").arg(ids[0]).arg(ids[1]));
-        return;
-    }
+    pages = pagesMap.values();
+    //QString lastId;
+    //QList<QString> ids = nextIds.keys();
+    //// Check loops, first page id and last page id
+    //foreach (const QString &id, nextIds.keys()) {
+    //    if (nextIds[id].isEmpty()) {
+    //        if (!lastId.isEmpty()) {
+    //            os.setError(tr("Two pages of the wizard are defined as last: %1, %2").arg(lastId).arg(id));
+    //            return;
+    //        }
+    //        lastId = id;
+    //    } else {
+    //        if (!nextIds.keys().contains(nextIds[id])) {
+    //            os.setError(tr("Unknown next page id: %1").arg(nextIds[id]));
+    //            return;
+    //        }
+    //        if (!ids.contains(nextIds[id])) {
+    //            os.setError(tr("Two pages of the wizard have equal next page ids: %1").arg(nextIds[id]));
+    //            return;
+    //        }
+    //        ids.removeOne(nextIds[id]);
+    //    }
+    //}
+    //if (ids.isEmpty()) {
+    //    os.setError(tr("Some pages of the widget are looped"));
+    //    return;
+    //} else if (ids.size() > 1) {
+    //    os.setError(tr("Several pages of the wizard are defined as first: %1, %2, ...").arg(ids[0]).arg(ids[1]));
+    //    return;
+    //}
 
-    // Create pages list saving order
-    QString currentId = ids.first();
-    while ("" != currentId) {
-        QString nextId = nextIds[currentId];
+    //// Create pages list saving order
+    //QString currentId = ids.first();
+    //while ("" != currentId) {
+    //    QString nextId = nextIds[currentId];
 
-        WizardPage *page = pagesMap[currentId];
-        if (!nextId.isEmpty()) {
-            page->setNext(pagesMap[nextId]);
+    //    WizardPage *page = pagesMap[currentId];
+    //    if (!nextId.isEmpty()) {
+    //        page->setNext(pagesMap[nextId]->getId());
+    //    }
+    //    pages << page;
+    //    currentId = nextId;
+    //}
+}
+
+void HRWizardParser::parseNextIds(HRSchemaSerializer::ParsedPairs &pairs, WizardPage *page, U2OpStatus &os) {
+    if (pairs.equalPairs.contains(NEXT)) {
+        QString nextId = pairs.equalPairs.value(NEXT);
+        if (page->getId() == nextId) {
+            os.setError(tr("Page's id and next id are equal: %1").arg(nextId));
+            return;
         }
-        pages << page;
-        currentId = nextId;
+        if (pairs.blockPairs.contains(NEXT)) {
+            os.setError(HRWizardParser::tr("Double definition of next id in the page with id: %1").arg(page->getId()));
+            return;
+        }
+        return;
+    }
+    if (pairs.blockPairs.contains(NEXT)) {
+        HRSchemaSerializer::ParsedPairs predPairs(pairs.blockPairs[NEXT]);
+        foreach (const QString &id, predPairs.equalPairs.keys()) {
+            Predicate p = Predicate::fromString(predPairs.equalPairs[id], os);
+            CHECK_OP(os, );
+            page->setNext(id, p, os);
+            CHECK_OP(os, );
+        }
     }
 }
 
 /************************************************************************/
 /* WizardWidgetParser */
 /************************************************************************/
-WizardWidgetParser::WizardWidgetParser(const QString &_data, const QMap<QString, Actor*> &_actorMap, U2OpStatus &_os)
-: data(_data), actorMap(_actorMap), os(_os)
+WizardWidgetParser::WizardWidgetParser(const QString &_data,
+    const QMap<QString, Actor*> &_actorMap,
+    QMap<QString, Variable> &_vars,
+    U2OpStatus &_os)
+: data(_data), actorMap(_actorMap), vars(_vars), os(_os)
 {
 
 }
 
 void WizardWidgetParser::visit(AttributeWidget *aw) {
-    HRSchemaSerializer::Tokenizer tokenizer;
-    tokenizer.tokenize(data, 0);
-    pairs = HRSchemaSerializer::ParsedPairs(tokenizer);
+    pairs = HRSchemaSerializer::ParsedPairs(data, 0);
     validateAttributePairs();
     CHECK_OP(os, );
     QVariantMap hints;
@@ -174,54 +209,24 @@ void WizardWidgetParser::visit(AttributeWidget *aw) {
     aw->setWigdetHints(hints);
 }
 
-void WizardWidgetParser::visit(WidgetsArea *w) {
-    HRSchemaSerializer::Tokenizer tokenizer;
-    tokenizer.tokenize(data, 0);
-    pairs = HRSchemaSerializer::ParsedPairs(tokenizer);
+void WizardWidgetParser::visit(WidgetsArea *wa) {
+    pairs = HRSchemaSerializer::ParsedPairs(data, 0);
 
-    getTitle(w);
-    getLabelSize(w);
+    getTitle(wa);
+    getLabelSize(wa);
 
     foreach (const StringPair &pair, pairs.blockPairsList) {
-        WizardWidgetParser wParser(pair.second, actorMap, os);
-        if (LogoWidget::ID == pair.first) {
-            QScopedPointer<LogoWidget> logo(new LogoWidget());
-            logo->accept(&wParser);
-            CHECK_OP(os, );
-            w->addWidget(logo.take());
-        } else if (GroupWidget::ID == pair.first) {
-            QScopedPointer<GroupWidget> group(new GroupWidget());
-            group->accept(&wParser);
-            CHECK_OP(os, );
-            w->addWidget(group.take());
-        } else {
-            QStringList vals = pair.first.split(HRSchemaSerializer::DOT, QString::SkipEmptyParts);
-            if (2 != vals.size()) {
-                os.setError(HRWizardParser::tr("Unknown widget name: %1").arg(pair.first));
-                return;
-            }
-            QString actorId = vals[0];
-            QString attrId = vals[1];
-            if (!actorMap.contains(actorId)) {
-                os.setError(HRWizardParser::tr("Unknown actor id: %1").arg(actorId));
-                return;
-            }
-            if (!actorMap[actorId]->hasParameter(attrId)) {
-                os.setError(HRWizardParser::tr("Actor '%1' does not have this parameter: %2").arg(actorId).arg(attrId));
-                return;
-            }
-            QScopedPointer<AttributeWidget> attr(new AttributeWidget(actorMap[actorId], actorMap[actorId]->getParameter(attrId)));
-            attr->accept(&wParser);
-            CHECK_OP(os, );
-            w->addWidget(attr.take());
-        }
+        WizardWidgetParser wParser(pair.second, actorMap, vars, os);
+        QScopedPointer<WizardWidget> w(createWidget(pair.first));
+        CHECK_OP(os, );
+        w->accept(&wParser);
+        CHECK_OP(os, );
+        wa->addWidget(w.take());
     }
 }
 
 void WizardWidgetParser::visit(LogoWidget *lw) {
-    HRSchemaSerializer::Tokenizer tokenizer;
-    tokenizer.tokenize(data, 0);
-    pairs = HRSchemaSerializer::ParsedPairs(tokenizer);
+    pairs = HRSchemaSerializer::ParsedPairs(data, 0);
     if (pairs.equalPairs.contains(HRWizardParser::LOGO_PATH)) {
         lw->setLogoPath(pairs.equalPairs.value(HRWizardParser::LOGO_PATH));
     }
@@ -236,6 +241,100 @@ void WizardWidgetParser::visit(GroupWidget *gw) {
         gw->setType(GroupWidget::DEFAULT);
     } else if (HRWizardParser::HIDEABLE == typeStr) {
         gw->setType(GroupWidget::HIDEABLE);
+    }
+}
+
+void WizardWidgetParser::visit(ElementSelectorWidget *esw) {
+    pairs = HRSchemaSerializer::ParsedPairs(data, 0);
+    if (!pairs.equalPairs.contains(HRWizardParser::ELEMENT_ID)) {
+        os.setError(HRWizardParser::tr("Element id is undefined in the element selector"));
+        return;
+    }
+    QString actorId = pairs.equalPairs[HRWizardParser::ELEMENT_ID];
+    if (!actorMap.contains(actorId)) {
+        os.setError(HRWizardParser::tr("Undefined actor id: %1").arg(actorId));
+        return;
+    }
+    esw->setActorId(actorId);
+    if (pairs.equalPairs.contains(AttributeWidgetHints::LABEL)) {
+        esw->setLabel(pairs.equalPairs[AttributeWidgetHints::LABEL]);
+    }
+    ActorPrototype *srcProto = actorMap[actorId]->getProto();
+    foreach (const StringPair &pair, pairs.blockPairsList) {
+        if (pair.first != HRWizardParser::VALUE) {
+            os.setError(HRWizardParser::tr("Unknown block name in element selector definition: %1").arg(pair.first));
+            return;
+        }
+        SelectorValue value = parseSelectorValue(srcProto, pair.second);
+        CHECK_OP(os, );
+        esw->addValue(value);
+    }
+    addVariable(Variable(actorId));
+    CHECK_OP(os, );
+}
+
+SelectorValue WizardWidgetParser::parseSelectorValue(ActorPrototype *srcProto, const QString &valueDef) {
+    HRSchemaSerializer::ParsedPairs pairs(valueDef, 0);
+    if (!pairs.equalPairs.contains(HRWizardParser::ID)) {
+        os.setError(HRWizardParser::tr("Id is undefined in some selector value definition"));
+        return SelectorValue("", "");
+    }
+    QString id = pairs.equalPairs[HRWizardParser::ID];
+    if (!pairs.equalPairs.contains(HRWizardParser::PROTOTYPE)) {
+        os.setError(HRWizardParser::tr("Prototype is undefined in the selector value definition: %1").arg(id));
+        return SelectorValue("", "");
+    }
+    QString protoId = pairs.equalPairs[HRWizardParser::PROTOTYPE];
+    SelectorValue result(id, protoId);
+    result.setName(pairs.equalPairs[HRWizardParser::NAME]);
+    if (srcProto->getId() == protoId) {
+        if (!pairs.blockPairsList.isEmpty()) {
+            os.setError(HRWizardParser::tr("The same prototype could not be mapped: %1").arg(protoId));
+        }
+        return result;
+    }
+    foreach (const StringPair &pair, pairs.blockPairsList) {
+        if (pair.first != HRWizardParser::PORT_MAPPING) {
+            os.setError(HRWizardParser::tr("Unknown block name in selector value definition: %1").arg(pair.first));
+            return result;
+        }
+        PortMapping mapping = parsePortMapping(pair.second);
+        CHECK_OP(os, result);
+        result.addPortMapping(mapping);
+    }
+    return result;
+}
+
+PortMapping WizardWidgetParser::parsePortMapping(const QString &mappingDef) {
+    HRSchemaSerializer::ParsedPairs pairs(mappingDef, 0);
+    if (!pairs.equalPairs.contains(HRWizardParser::SRC_PORT)) {
+        os.setError(HRWizardParser::tr("Undefined source port id for some port mapping"));
+        return PortMapping("", "");
+    }
+    if (!pairs.equalPairs.contains(HRWizardParser::DST_PORT)) {
+        os.setError(HRWizardParser::tr("Undefined destination port id for some port mapping"));
+        return PortMapping("", "");
+    }
+    QString srcPortId = pairs.equalPairs[HRWizardParser::SRC_PORT];
+    QString dstPortId = pairs.equalPairs[HRWizardParser::DST_PORT];
+    PortMapping result(srcPortId, dstPortId);
+    foreach (const StringPair &pair, pairs.blockPairsList) {
+        if (pair.first != HRWizardParser::SLOTS_MAPPRING) {
+            os.setError(HRWizardParser::tr("Unknown block name in port mapping definition: %1").arg(pair.first));
+            return result;
+        }
+        parseSlotsMapping(result, pair.second);
+        CHECK_OP(os, result);
+    }
+    return result;
+}
+
+void WizardWidgetParser::parseSlotsMapping(PortMapping &pm, const QString &mappingDef) {
+    HRSchemaSerializer::ParsedPairs pairs(mappingDef, 0);
+    foreach (const StringPair &pair, pairs.equalPairsList) {
+        QString srcSlotId = pair.first;
+        QString dstSlotId = pair.second;
+        pm.addSlotMapping(SlotMapping(srcSlotId, dstSlotId));
     }
 }
 
@@ -269,24 +368,52 @@ void WizardWidgetParser::getTitle(WidgetsArea *wa) {
     }
 }
 
+WizardWidget * WizardWidgetParser::createWidget(const QString &id) {
+    if (LogoWidget::ID == id) {
+        return new LogoWidget();
+    } else if (GroupWidget::ID == id) {
+        return new GroupWidget();
+    } else if (ElementSelectorWidget::ID == id) {
+        return new ElementSelectorWidget();
+    } else {
+        QStringList vals = id.split(HRSchemaSerializer::DOT, QString::SkipEmptyParts);
+        if (2 != vals.size()) {
+            os.setError(HRWizardParser::tr("Unknown widget name: %1").arg(id));
+            return NULL;
+        }
+        return new AttributeWidget(vals[0], vals[1]);
+    }
+}
+
+void WizardWidgetParser::addVariable(const Variable &v) {
+    if (vars.contains(v.getName())) {
+        os.setError(QObject::tr("The variable is already defined: %1").arg(v.getName()));
+        return;
+    }
+    vars[v.getName()] = v;
+}
+
 /************************************************************************/
 /* PageContentParser */
 /************************************************************************/
 PageContentParser::PageContentParser(HRSchemaSerializer::ParsedPairs &_pairs,
-const QMap<QString, Actor*> &_actorMap, U2OpStatus &_os)
-: pairs(_pairs), actorMap(_actorMap), os(_os)
+    const QMap<QString, Actor*> &_actorMap,
+    QMap<QString, Variable> &_vars,
+    U2OpStatus &_os)
+: pairs(_pairs), actorMap(_actorMap), vars(_vars), os(_os)
 {
 
 }
 
 void PageContentParser::visit(DefaultPageContent *content) {
     foreach (const StringPair &pair, pairs.blockPairsList) {
-        WizardWidgetParser wParser(pair.second, actorMap, os);
+        WizardWidgetParser wParser(pair.second, actorMap, vars, os);
         if (LogoWidget::ID == pair.first) {
             content->getLogoArea()->accept(&wParser);
         } else if (DefaultPageContent::PARAMETERS == pair.first) {
             content->getParamsArea()->accept(&wParser);
         }
+        CHECK_OP(os, );
     }
 }
 
@@ -313,10 +440,7 @@ QString HRWizardSerializer::serializePage(WizardPage *page, int depth) {
     QString pageData;
 
     pageData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::ID, page->getId(), depth + 1);
-    if (NULL != page->getNext()) {
-        pageData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::NEXT,
-            page->getNext()->getId(), depth + 1);
-    }
+    pageData += HRWizardSerializer::serializeNextId(page, depth + 1);
     if (!page->getTitle().isEmpty()) {
         pageData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::TITLE,
             page->getTitle(), depth + 1);
@@ -332,6 +456,22 @@ QString HRWizardSerializer::serializePage(WizardPage *page, int depth) {
 
     return HRSchemaSerializer::makeBlock(HRWizardParser::PAGE,
         HRSchemaSerializer::NO_NAME, pageData, depth);
+}
+
+QString HRWizardSerializer::serializeNextId(WizardPage *page, int depth) {
+    if (page->nextIdMap().isEmpty()) {
+        if (page->plainNextId().isEmpty()) {
+            return "";
+        }
+        return HRSchemaSerializer::makeEqualsPair(HRWizardParser::NEXT, page->plainNextId(), depth);
+    }
+    QString nextData;
+    foreach (const Predicate &p, page->nextIdMap().keys()) {
+        QString id = page->nextIdMap()[p];
+        nextData += HRSchemaSerializer::makeEqualsPair(id, p.toString(), depth + 1);
+    }
+    return HRSchemaSerializer::makeBlock(HRWizardParser::NEXT,
+        HRSchemaSerializer::NO_NAME, nextData, depth);
 }
 
 /************************************************************************/
@@ -352,8 +492,7 @@ void WizardWidgetSerializer::visit(AttributeWidget *aw) {
             writeData = (AttributeWidgetHints::DEFAULT != aw->getProperty(id));
         }
         if (writeData) {
-            wData += HRSchemaSerializer::makeEqualsPair(AttributeWidgetHints::TYPE,
-                aw->getProperty(id), depth + 1);
+            wData += HRSchemaSerializer::makeEqualsPair(id, aw->getProperty(id), depth + 1);
         }
     }
 
@@ -403,6 +542,59 @@ void WizardWidgetSerializer::visit(LogoWidget *lw) {
     }
     result = HRSchemaSerializer::makeBlock(LogoWidget::ID,
         HRSchemaSerializer::NO_NAME, wData, depth);
+}
+
+void WizardWidgetSerializer::visit(ElementSelectorWidget *esw) {
+    QString wData;
+    wData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::ELEMENT_ID,
+        esw->getActorId(), depth + 1);
+    if (!esw->getLabel().isEmpty()) {
+        wData += HRSchemaSerializer::makeEqualsPair(AttributeWidgetHints::LABEL,
+            esw->getLabel(), depth + 1);
+    }
+    foreach (const SelectorValue &value, esw->getValues()) {
+        wData += serializeSelectorValue(value, depth + 1);
+    }
+    result = HRSchemaSerializer::makeBlock(ElementSelectorWidget::ID,
+        HRSchemaSerializer::NO_NAME, wData, depth);
+}
+
+QString WizardWidgetSerializer::serializeSlotsMapping(const QList<SlotMapping> &mappings, int depth) const {
+    QString smData;
+    foreach (const SlotMapping &mapping, mappings) {
+        smData += HRSchemaSerializer::makeEqualsPair(mapping.getSrcId(),
+            mapping.getDstId(), depth + 1);
+    }
+    return HRSchemaSerializer::makeBlock(HRWizardParser::SLOTS_MAPPRING,
+        HRSchemaSerializer::NO_NAME, smData, depth);
+}
+
+QString WizardWidgetSerializer::serializePortMapping(const PortMapping &mapping, int depth) const {
+    QString pmData;
+    pmData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::SRC_PORT,
+        mapping.getSrcId(), depth + 1);
+    pmData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::DST_PORT,
+        mapping.getDstId(), depth + 1);
+    pmData += serializeSlotsMapping(mapping.getMappings(), depth + 1);
+    return HRSchemaSerializer::makeBlock(HRWizardParser::PORT_MAPPING,
+        HRSchemaSerializer::NO_NAME, pmData, depth);
+}
+
+QString WizardWidgetSerializer::serializeSelectorValue(const SelectorValue &value, int depth) const {
+    QString vData;
+    vData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::ID,
+        value.getValue(), depth + 1);
+    vData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::PROTOTYPE,
+        value.getProtoId(), depth + 1);
+    if (!value.getName().isEmpty()) {
+        vData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::NAME,
+            value.getName(), depth + 1);
+    }
+    foreach (const PortMapping &mapping, value.getMappings()) {
+        vData += serializePortMapping(mapping, depth + 1);
+    }
+    return HRSchemaSerializer::makeBlock(HRWizardParser::VALUE,
+        HRSchemaSerializer::NO_NAME, vData, depth);
 }
 
 const QString & WizardWidgetSerializer::getResult() {

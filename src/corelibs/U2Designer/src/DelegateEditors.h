@@ -89,6 +89,9 @@ public:
         return new URLDelegate(FileFilter, type, multi, isPath, saveFile, parent(), fileFormat);
     }
 
+public slots:
+    void sl_formatChanged(const QString &newFormat);
+
 private slots:
     void sl_commit();
     
@@ -98,7 +101,7 @@ protected:
     bool    multi;
     bool    isPath;
     bool    saveFile; // sets when you need only 1 file for reading (is set with multi=false)
-    mutable QWidget* currentEditor;
+    mutable URLWidget *currentEditor;
     QString text;
     QString fileFormat;
 

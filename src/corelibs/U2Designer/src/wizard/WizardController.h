@@ -28,29 +28,60 @@
 #include <QToolButton>
 #include <QWizard>
 
+#include <U2Lang/ElementSelectorWidget.h>
+#include <U2Lang/Schema.h>
 #include <U2Lang/Wizard.h>
 #include <U2Lang/WizardPage.h>
 #include <U2Lang/WizardWidget.h>
+#include <U2Lang/WizardWidgetVisitor.h>
+
+#include "SelectorActors.h"
 
 namespace U2 {
 
-class PropertyWizardController;
+class WidgetController;
+class WizardPageController;
 
 class U2DESIGNER_EXPORT WizardController : public QObject {
     Q_OBJECT
 public:
-    WizardController(Wizard *w);
+    WizardController(Schema *s, Wizard *w);
     virtual ~WizardController();
 
     QWizard * createGui();
     void assignParameters();
+    const QList<Actor*> & getCurrentActors() const;
+
+    QVariant getWigetValue(AttributeWidget *widget) const;
+    void setWidgetValue(AttributeWidget *widget, const QVariant &value);
+
+    QVariant getSelectorValue(ElementSelectorWidget *widget);
+    void setSelectorValue(ElementSelectorWidget *widget, const QVariant &value);
+
+    int getQtId(const QString &hrId) const;
+    const QMap<QString, Variable> & getVariables() const;
+
+    void setBroken();
+    bool isBroken() const;
 
 private:
+    bool broken;
+    Schema *schema;
     Wizard *wizard;
-    QList<PropertyWizardController*> controllers;
+    QList<WizardPageController*> pageControllers;
+    QVariantMap propValues; // protoId.actorId.attrId <-> value
+    QList<Actor*> currentActors;
+    QMap<QString, int> idMap; // hr-id <-> qt-id
+    QMap<QString, Variable> vars;
+    QMap<QString, SelectorActors> selectors; // varName <-> actors
 
 private:
     QWizardPage * createPage(WizardPage *page);
+    Attribute * getAttribute(AttributeWidget *widget, QString &attrId) const;
+    Attribute * getAttributeById(const QString &attrId) const;
+    QString getAttributeId(Actor *actor, Attribute *attr) const;
+    void registerSelector(ElementSelectorWidget *widget);
+    void replaceCurrentActor(const QString &actorId, const QString &selectorValue);
 };
 
 /************************************************************************/
@@ -59,22 +90,24 @@ private:
 class GroupBox;
 class WidgetCreator : public WizardWidgetVisitor {
 public:
-    WidgetCreator();
-    WidgetCreator(int labelSize);
+    WidgetCreator(WizardController *wc);
+    WidgetCreator(WizardController *wc, int labelSize);
 
     virtual void visit(AttributeWidget *aw);
     virtual void visit(WidgetsArea *wa);
     virtual void visit(GroupWidget *gw);
     virtual void visit(LogoWidget *lw);
+    virtual void visit(ElementSelectorWidget *esw);
 
     QWidget * getResult();
-    QList<PropertyWizardController*> & getControllers();
+    QList<WidgetController*> & getControllers();
     QBoxLayout * getLayout();
 
 private:
+    WizardController *wc;
     int labelSize;
     QWidget *result;
-    QList<PropertyWizardController*> controllers;
+    QList<WidgetController*> controllers;
     QBoxLayout *layout;
 
 private:
@@ -83,16 +116,17 @@ private:
 
 class PageContentCreator : public TemplatedPageVisitor {
 public:
-    PageContentCreator();
+    PageContentCreator(WizardController *wc);
 
     virtual void visit(DefaultPageContent *content);
 
     QLayout * getResult();
-    QList<PropertyWizardController*> & getControllers();
+    QList<WidgetController*> & getControllers();
 
 private:
+    WizardController *wc;
     QLayout *result;
-    QList<PropertyWizardController*> controllers;
+    QList<WidgetController*> controllers;
 };
 
 /************************************************************************/

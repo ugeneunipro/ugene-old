@@ -28,9 +28,9 @@
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowUtils.h>
 
-#include <U2Gui/ScriptEditorDialog.h>
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ScriptEditorDialog.h>
 
 #include "PropertyWidget.h"
 
@@ -179,11 +179,9 @@ QWidget * URLDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &/* option */,
                                        const QModelIndex &/* index */) const
 {
-    URLWidget *widget = createWidget(parent);
-
-    currentEditor = widget;
-    connect(widget, SIGNAL(finished()), SLOT(sl_commit()));
-    return widget;
+    currentEditor = createWidget(parent);
+    connect(currentEditor, SIGNAL(finished()), SLOT(sl_commit()));
+    return currentEditor;
 }
 
 void URLDelegate::sl_commit() {
@@ -220,6 +218,21 @@ void URLDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
         }
         model->setData(index, vl, ConfigurationEditor::ItemListValueRole);
     }
+}
+
+void URLDelegate::sl_formatChanged(const QString &newFormat) {
+    if (newFormat.isEmpty()) {
+        return;
+    }
+
+    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(newFormat);
+    QString fileFilter;
+    if (NULL != format) {
+        FileFilter = DialogUtils::prepareDocumentsFileFilter(newFormat, true);
+    } else {
+        FileFilter = newFormat + " files (*." + newFormat + ")";
+    }
+    fileFormat = newFormat;
 }
 
 /********************************

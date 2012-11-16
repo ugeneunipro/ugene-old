@@ -25,9 +25,11 @@
 #include <U2Core/U2OpStatus.h>
 
 #include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/Variable.h>
 #include <U2Lang/Wizard.h>
 #include <U2Lang/WizardPage.h>
 #include <U2Lang/WizardWidget.h>
+#include <U2Lang/WizardWidgetVisitor.h>
 
 namespace U2 {
 
@@ -43,7 +45,8 @@ private:
     HRSchemaSerializer::Tokenizer &tokenizer;
     const QMap<QString, Actor*> &actorMap;
     QString wizardName;
-    QList<WizardPage*> pages; // this list keeps the order of pages too
+    QList<WizardPage*> pages;
+    QMap<QString, Variable> vars;
 
     QMap<QString, QString> nextIds; // id <-> nextId
     QMap<QString, WizardPage*> pagesMap; // id <-> page
@@ -52,6 +55,7 @@ private:
     void parsePage(U2OpStatus &os);
     void finilizePagesOrder(U2OpStatus &os);
     Wizard * takeResult();
+    void parseNextIds(HRSchemaSerializer::ParsedPairs &pairs, WizardPage *page, U2OpStatus &os);
 
 public:
     static const QString WIZARD;
@@ -66,6 +70,13 @@ public:
     static const QString DEFAULT;
     static const QString HIDEABLE;
     static const QString LABEL_SIZE;
+    static const QString ELEMENT_ID;
+    static const QString PROTOTYPE;
+    static const QString VALUE;
+    static const QString PORT_MAPPING;
+    static const QString SLOTS_MAPPRING;
+    static const QString SRC_PORT;
+    static const QString DST_PORT;
 };
 
 class U2LANG_EXPORT HRWizardSerializer {
@@ -74,6 +85,7 @@ public:
 
 private:
     QString serializePage(WizardPage *page, int depth);
+    QString serializeNextId(WizardPage *page, int depth);
 };
 
 /************************************************************************/
@@ -81,16 +93,21 @@ private:
 /************************************************************************/
 class WizardWidgetParser : public WizardWidgetVisitor {
 public:
-    WizardWidgetParser(const QString &data, const QMap<QString, Actor*> &actorMap, U2OpStatus &os);
+    WizardWidgetParser(const QString &data,
+        const QMap<QString, Actor*> &actorMap,
+        QMap<QString, Variable> &vars,
+        U2OpStatus &os);
 
     virtual void visit(AttributeWidget *aw);
     virtual void visit(WidgetsArea *w);
     virtual void visit(LogoWidget *lw);
     virtual void visit(GroupWidget *gw);
+    virtual void visit(ElementSelectorWidget *esw);
 
 private:
     QString data;
     const QMap<QString, Actor*> &actorMap;
+    QMap<QString, Variable> &vars;
     U2OpStatus &os;
 
     HRSchemaSerializer::ParsedPairs pairs;
@@ -99,18 +116,26 @@ private:
     void validateAttributePairs();
     void getLabelSize(WidgetsArea *wa);
     void getTitle(WidgetsArea *wa);
+    WizardWidget * createWidget(const QString &id);
+    SelectorValue parseSelectorValue(ActorPrototype *srcProto, const QString &valueDef);
+    PortMapping parsePortMapping(const QString &mappingDef);
+    void parseSlotsMapping(PortMapping &pm, const QString &mappingDef);
+    void addVariable(const Variable &v);
 };
 
 class PageContentParser : public TemplatedPageVisitor {
 public:
     PageContentParser(HRSchemaSerializer::ParsedPairs &pairs,
-        const QMap<QString, Actor*> &actorMap, U2OpStatus &os);
+        const QMap<QString, Actor*> &actorMap,
+        QMap<QString, Variable> &vars,
+        U2OpStatus &os);
 
     virtual void visit(DefaultPageContent *content);
 
 private:
     HRSchemaSerializer::ParsedPairs &pairs;
     const QMap<QString, Actor*> &actorMap;
+    QMap<QString, Variable> &vars;
     U2OpStatus &os;
 };
 
@@ -125,6 +150,7 @@ public:
     virtual void visit(WidgetsArea *wa);
     virtual void visit(GroupWidget *gw);
     virtual void visit(LogoWidget *lw);
+    virtual void visit(ElementSelectorWidget *esw);
 
     const QString & getResult();
 
@@ -132,6 +158,11 @@ private:
     int depth;
     QString result;
     QString addInfo;
+
+private:
+    QString serializeSlotsMapping(const QList<SlotMapping> &mappings, int depth) const;
+    QString serializePortMapping(const PortMapping &mapping, int depth) const;
+    QString serializeSelectorValue(const SelectorValue &value, int depth) const;
 };
 
 class PageContentSerializer : public TemplatedPageVisitor {

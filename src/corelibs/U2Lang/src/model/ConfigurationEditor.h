@@ -77,6 +77,7 @@ signals:
  * Abstract class for property widgets: spin box, url line...
  */
 class U2LANG_EXPORT PropertyWidget : public QWidget {
+    Q_OBJECT
 public:
     PropertyWidget(QWidget *parent = NULL);
     virtual ~PropertyWidget();
@@ -89,6 +90,9 @@ public:
      * Returns NULL if there is no such widget.
      */
     virtual QWidget * getField();
+
+signals:
+    void si_valueChanged(const QVariant &value);
 
 protected:
     void addMainWidget(QWidget *w);

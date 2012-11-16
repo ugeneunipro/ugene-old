@@ -19,50 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2SafePoints.h>
+#ifndef _U2_WIZARDWIDGETVISITOR_H_
+#define _U2_WIZARDWIDGETVISITOR_H_
 
-#include <U2Lang/WizardPage.h>
-
-#include "Wizard.h"
+#include <U2Lang/ElementSelectorWidget.h>
+#include <U2Lang/WizardWidget.h>
 
 namespace U2 {
 
-const QString Wizard::DEFAULT_NAME("Wizard");
-
-Wizard::Wizard(const QString &_name, const QList<WizardPage*> &_pages)
-: name(_name), pages(_pages)
-{
-
-}
-
-Wizard::~Wizard() {
-    foreach (WizardPage *page, pages) {
-        delete page;
-    }
-    pages.clear();
-}
-
-const QString & Wizard::getName() const {
-    return name;
-}
-
-const QList<WizardPage*> & Wizard::getPages() const {
-    return pages;
-}
-
-void Wizard::validate(const Workflow::Schema *schema, U2OpStatus &os) const {
-    foreach (WizardPage *page, pages) {
-        page->validate(schema->getProcesses(), os);
-        CHECK_OP(os, );
-    }
-}
-
-void Wizard::addVariable(const Variable &v) {
-    vars[v.getName()] = v;
-}
-
-QMap<QString, Variable> Wizard::getVariables() const {
-    return vars;
-}
+class U2LANG_EXPORT WizardWidgetVisitor {
+public:
+    virtual void visit(AttributeWidget *) = 0;
+    virtual void visit(WidgetsArea *) = 0;
+    virtual void visit(GroupWidget *) = 0;
+    virtual void visit(LogoWidget *) = 0;
+    virtual void visit(ElementSelectorWidget *) = 0;
+};
 
 } // U2
+
+#endif // _U2_WIZARDWIDGETVISITOR_H_

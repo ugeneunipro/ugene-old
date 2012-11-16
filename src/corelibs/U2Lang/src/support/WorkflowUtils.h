@@ -99,7 +99,9 @@ public:
     static bool startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments);
 
     static QStringList getDatasetsUrls(const QList<Dataset> &sets);
-    
+
+    static Actor * actorById(const QList<Actor*> &actors, const ActorId &id);
+
 private:
     static QStringList initExtensions();
     
