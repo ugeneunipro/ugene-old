@@ -457,7 +457,9 @@ void FixedMdiArea::setViewMode( QMdiArea::ViewMode mode )
 }
 
 void FixedMdiArea::closeSubWindow(int idx) {
+#if QT_VERSION <= 0x040800 //In Qt version 4.8.0 was added default behaviour for closing tab.
     subWindowList().at(idx)->close();
+#endif
 }
 
 //Workaround for QTBUG-17428: Superfluous RestoreAction for tabbed QMdiSubWindows
