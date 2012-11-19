@@ -46,9 +46,9 @@ ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragm
     tabWidget->setCurrentIndex(0);
     
     foreach (const DNAFragment& frag, fragments) {
-        QString fragItem = QString("%1 (%2) %3").arg(frag.getSequenceName())
+        QString fragItem = QString("%1 (%2) %3 [%4 bp]").arg(frag.getSequenceName())
             .arg(frag.getSequenceDocName())
-            .arg(frag.getName());
+            .arg(frag.getName()).arg(frag.getLength());
         fragmentListWidget->addItem(fragItem);
     }
 
@@ -60,6 +60,7 @@ ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragm
     molConstructWidget->setColumnWidth(1, molConstructWidget->width()*0.5);
    
     connect(browseButton, SIGNAL(clicked()), SLOT(sl_onBrowseButtonClicked()));
+    connect(fragmentListWidget, SIGNAL( itemDoubleClicked ( QListWidgetItem* ) ),  SLOT(sl_onTakeButtonClicked()));
     connect(takeButton, SIGNAL(clicked()), SLOT(sl_onTakeButtonClicked()));
     connect(takeAllButton, SIGNAL(clicked()), SLOT(sl_onTakeAllButtonClicked()));
     connect(fromProjectButton, SIGNAL(clicked()), SLOT(sl_onAddFromProjectButtonClicked()));
@@ -361,8 +362,6 @@ void ConstructMoleculeDialog::sl_onAddFromProjectButtonClicked()
         }
     }    
 }
-
-
 
 
 } // U2
