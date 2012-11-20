@@ -28,11 +28,11 @@ namespace U2 {
 
     class DotPlotFiller : public Filler {
     public:
-        DotPlotFiller(U2OpStatus &_os, int _minLen, int _identity = 0, bool _invertedRepeats = false) : Filler(_os, "DotPlotDialog"), minLen(_minLen), identity(_identity), invertedRepeats(_invertedRepeats) {}
+        DotPlotFiller(U2OpStatus &_os, int _minLen=100, int _identity = 0, bool _invertedRepeats = false, bool _but1kpressed=false) : Filler(_os, "DotPlotDialog"), minLen(_minLen), identity(_identity), invertedRepeats(_invertedRepeats), but1kpressed(_but1kpressed) {}
         virtual void run();
     private:
         int minLen, identity;
-        bool invertedRepeats;
+        bool invertedRepeats, but1kpressed;
     };
 }
 

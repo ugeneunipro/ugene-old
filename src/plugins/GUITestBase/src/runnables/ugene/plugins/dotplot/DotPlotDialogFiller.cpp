@@ -23,6 +23,7 @@
 #include "api/GTWidget.h"
 #include "api/GTSpinBox.h"
 #include "api/GTCheckBox.h"
+#include <QtGui/QPushButton>
 
 #include <QtGui/QApplication>
 
@@ -36,7 +37,12 @@ void DotPlotFiller::run() {
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
     QSpinBox *minLenBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "minLenBox", dialog));
-    GTSpinBox::setValue(os, minLenBox, minLen);
+    if(but1kpressed){
+        GTWidget::click(os, GTWidget::findWidget(os, "1k", dialog));
+        GT_CHECK(minLenBox->value()==2,"minLem not 2, 1k button works wrong");
+    }
+    else
+        GTSpinBox::setValue(os, minLenBox, minLen);
 
     if (identity) {
         QSpinBox *identityBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "identityBox", dialog));

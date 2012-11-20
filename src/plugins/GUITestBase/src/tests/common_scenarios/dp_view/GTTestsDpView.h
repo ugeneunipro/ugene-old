@@ -24,15 +24,24 @@ k
 #define GTTESTS_DP_VIEW_H_
 
 #include <U2Test/GUITestBase.h>
+#include "GTUtilsDialog.h"
 
 namespace U2 {
+class EscClicker : public Filler {
+public:
+    EscClicker(U2OpStatus &_os)
+        :Filler(_os, GUIDialogWaiter::WaitSettings("dotplot context menu", GUIDialogWaiter::Popup)){}
+    virtual void run();
+
+};
 
 namespace GUITest_Common_scenarios_dp_view {
 #undef GUI_TEST_PREFIX
 #define GUI_TEST_PREFIX "GUITest_Common_scenarios_dp_view_"
 
 GUI_TEST_CLASS_DECLARATION(test_0013)
-
+GUI_TEST_CLASS_DECLARATION(test_0014)
+GUI_TEST_CLASS_DECLARATION(test_0020)
 
 #undef GUI_TEST_PREFIX
 } // namespace U2

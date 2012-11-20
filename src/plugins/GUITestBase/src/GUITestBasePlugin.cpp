@@ -509,6 +509,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/dp_view
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0013);
+    REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0014);
+    REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0020);
+
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
