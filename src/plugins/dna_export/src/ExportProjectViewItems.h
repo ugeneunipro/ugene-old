@@ -47,8 +47,7 @@ private slots:
     void sl_exportSequenceQuality();
 
 private:
-    void addExportMenu(QMenu& m);
-    void addImportMenu(QMenu& m);
+    void addExportImportMenu(QMenu& m);
 
     QAction* exportSequencesToSequenceFormatAction;
     QAction* exportSequencesAsAlignmentAction;

@@ -162,6 +162,8 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
 
     connectToResourceTracker();
 
+    tree->setExpandsOnDoubleClick(false);
+
     // if any window is active - check it content 
     sl_windowActivated(mdi->getActiveWindow());
 }
@@ -399,7 +401,14 @@ bool ProjectTreeController::eventFilter(QObject* o, QEvent* e) {
             ProjViewItem *item = static_cast<ProjViewItem *>(((QTreeWidget *)o)->selectedItems().last());
             if (item->isObjectItem() && !item->flags().testFlag(Qt::ItemIsEditable)) {
                 ProjViewObjectItem *objItem = static_cast<ProjViewObjectItem*>(item);
+                SAFE_POINT(objItem, "ProjectTreeController::eventFilter::cannot cast to ProjViewObjectItem", true);
+                SAFE_POINT(objItem->obj, "ProjectTreeController::eventFilter::no object", true);
                 emit si_returnPressed(objItem->obj);
+            }else if(item->isDocumentItem()) {
+                ProjViewDocumentItem *docItem = static_cast<ProjViewDocumentItem*>(item);
+                SAFE_POINT(docItem, "ProjectTreeController::eventFilter::cannot cast to ProjViewDocumentItem", true);
+                SAFE_POINT(docItem->doc, "ProjectTreeController::eventFilter::no document", true);
+                emit si_returnPressed(docItem->doc);
             }
 
         }
@@ -448,6 +457,7 @@ void ProjectTreeController::sl_onCloseEditor(QWidget*,QAbstractItemDelegate::End
 }
 
 void ProjectTreeController::updateSelection() {
+    SAFE_POINT(tree, "ProjectTreeController::no project tree", );
 	QList<QTreeWidgetItem*> items = tree->selectedItems();
 	if (items.isEmpty()) {
 		objectSelection.clear();
@@ -458,11 +468,14 @@ void ProjectTreeController::updateSelection() {
 	QList<GObject*> selectedObjs;
 	foreach(QTreeWidgetItem* item , items) {
 		ProjViewItem* pvi = static_cast<ProjViewItem*>(item);
+        SAFE_POINT(pvi, "ProjectTreeController::cannot cast to ProjViewItem", );
 		if (pvi->isDocumentItem()) {
 			ProjViewDocumentItem* di = static_cast<ProjViewDocumentItem*>(pvi);
+            SAFE_POINT(di, "ProjectTreeController::cannot cast to ProjViewDocumentItem", );
 			selectedDocs.push_back(di->doc);
         } else if (pvi->isObjectItem()) {
 			ProjViewObjectItem* oi = static_cast<ProjViewObjectItem*>(pvi);
+            SAFE_POINT(oi, "ProjectTreeController::cannot cast to ProjViewObjectItem", );
 			selectedObjs.push_back(oi->obj);
 		}
 	}
@@ -477,30 +490,26 @@ void ProjectTreeController::sl_onItemDoubleClicked(QTreeWidgetItem * item, int) 
 		emit si_doubleClicked((static_cast<ProjViewObjectItem*>(pvi))->obj);
 	} else if (pvi->isDocumentItem()) {
         Document* d = (static_cast<ProjViewDocumentItem*>(pvi))->doc;
-        if (!d->isLoaded() && pvi->childCount() == 0) { //children > 0 -> expand action
+        SAFE_POINT(d, "ProjectTreeController::sl_onItemDoubleClicked::No document for an item", );
+        if (!d->isLoaded() && pvi->childCount() == 0) { 
             assert(loadSelectedDocumentsAction->isEnabled());
             loadSelectedDocumentsAction->trigger();
+        }else{
+            //children > 0 -> expand action
+            pvi->setExpanded(true);
+            emit si_doubleClicked(d);
         }
     } else {
 		assert(pvi->isTypeItem());
+        bool isExapanded = pvi->isExpanded();
+        pvi->setExpanded(!isExapanded);
 	}
 }
 
 void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
     QMenu m;
 
-    if (loadSelectedDocumentsAction->isEnabled()) {
-        m.addAction(loadSelectedDocumentsAction);
-    }
-    if (unloadSelectedDocumentsAction->isEnabled()) {
-        m.addAction(unloadSelectedDocumentsAction);
-    }
-    if (addReadonlyFlagAction->isEnabled()) {
-        m.addAction(addReadonlyFlagAction);
-    }
-    if (removeReadonlyFlagAction->isEnabled()) {
-        m.addAction(removeReadonlyFlagAction);
-    }
+    m.addSeparator();
 
     ProjectView* pv = AppContext::getProjectView();
     if (pv != NULL) {
@@ -511,24 +520,37 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
         addMenu->menuAction()->setObjectName( ACTION_PROJECT__ADD_MENU);
         addMenu->addAction(addExistingDocumentAction);
         addMenu->addAction(addObjectToDocumentAction);
+    }
 
-        QMenu* editMenu = m.addMenu(tr("Edit"));
-        editMenu->menuAction()->setObjectName( ACTION_PROJECT__EDIT_MENU);
+    QMenu* editMenu = m.addMenu(tr("Edit"));
+    editMenu->menuAction()->setObjectName( ACTION_PROJECT__EDIT_MENU);
+    if(pv != NULL){
         editMenu->addAction(renameAction);
     }
+    if (addReadonlyFlagAction->isEnabled()) {
+        editMenu->addAction(addReadonlyFlagAction);
+    }
+    if (removeReadonlyFlagAction->isEnabled()) {
+        editMenu->addAction(removeReadonlyFlagAction);
+    }
 
-    QMenu* removeMenu = m.addMenu(tr("Remove"));
-    removeMenu->menuAction()->setObjectName( ACTION_PROJECT__REMOVE_MENU);
     if (removeSelectedDocumentsAction->isEnabled()) {
         removeSelectedDocumentsAction->setObjectName( ACTION_PROJECT__REMOVE_SELECTED);
-        removeMenu->addAction(removeSelectedDocumentsAction);
+        editMenu->addAction(removeSelectedDocumentsAction);
     }
     if (removeSelectedObjectsAction->isEnabled()) {
-        removeMenu->addAction(removeSelectedObjectsAction);
+        editMenu->addAction(removeSelectedObjectsAction);
     }
-    removeMenu->setEnabled(!removeMenu->actions().isEmpty());
+    editMenu->setEnabled(!editMenu->actions().isEmpty());
 
-        emit si_onPopupMenuRequested(m);
+    emit si_onPopupMenuRequested(m);
+
+    if (loadSelectedDocumentsAction->isEnabled()) {
+        m.addAction(loadSelectedDocumentsAction);
+    }
+    if (unloadSelectedDocumentsAction->isEnabled()) {
+        m.addAction(unloadSelectedDocumentsAction);
+    }
     m.setObjectName("popMenu");
 	m.exec(QCursor::pos());
 }

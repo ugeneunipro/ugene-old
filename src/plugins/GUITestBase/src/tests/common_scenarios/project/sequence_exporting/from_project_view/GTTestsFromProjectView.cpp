@@ -75,7 +75,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 3. Right click on [s] NC_001363 sequence object, in project view tree. Use context menu item {Export->Export sequences}
 // Expected state: Export sequences dialog open
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE, GTGlobals::UseMouse));
 
 // 4. Fill the next field in dialog:
 //     {Export to file:} _common_data/scenarios/sandbox/exp.fasta
@@ -121,7 +121,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // 3. Right click on [s] NC_001363 sequence object, in project view tree. Use context menu item {Export->Export sequence as alignment}
 // Expected state: Export sequences dialog open
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse));
 
 // 4. Select file to save: _common_data/scenarios/sandbox/exp2.aln and set 'file format to use' to CLUSTALW,
 // Than to uncheck the 'add document to the project' checkbox and click Save button.
@@ -152,7 +152,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT, GTGlobals::UseMouse));
 
     Runnable *filler = new ExportSequenceAsAlignmentFiller(os,
         testDir+"_common_data/scenarios/sandbox/",
@@ -172,7 +172,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
     GTGlobals::sleep(1000);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
 
     GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", ExportToSequenceFormatFiller::FASTA, true, true));
 
@@ -212,7 +212,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     // 3. Right click [m] COI object, in project view tree. Use context menu item {Export->Export to FASTA}
     //    Expected state: Export aligniment dialog open
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
     GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", 
                                 ExportToSequenceFormatFiller::FASTA, true, false));
 
@@ -251,7 +251,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     // 3. Right click [m] COI object, in project view tree. Use context menu item {Export->Export to FASTA}
     //    Expected state: Export aligniment dialog open
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
     GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", 
         ExportToSequenceFormatFiller::FASTA, true, true));
 
@@ -291,7 +291,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     // 3. Right click [m] COI object, in project view tree. Use context menu item {Export->Export to FASTA}
     //    Expected state: Export aligniment dialog open
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION));
     GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, dataDir + " _common_data/scenarios/sandbox/", "export1.fa", 
         ExportToSequenceFormatFiller::FASTA, true, false));
 
@@ -362,7 +362,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 // Expected state: Export sequences dialog open
 // 4. Select file to save: _common_data/scenarios/sandbox/exp2.msf and set 'file format to use' to MSF,
 // Than to uncheck the 'add document to the project' checkbox and click Save button.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
 
     Runnable *filler = new ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
         "exp2.msf", ExportSequenceAsAlignmentFiller::Msf);
@@ -424,7 +424,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     // Expected state: Export sequences dialog open
     // 4. Select file to save: _common_data/scenarios/sandbox/exp2.msf and set 'file format to use' to MSF,
     // Than to uncheck the 'add document to the project' checkbox and click Save button.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
 
     Runnable *filler = new ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
         "exp2.sto", ExportSequenceAsAlignmentFiller::Stockholm);
@@ -486,7 +486,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     // Expected state: Export sequences dialog open
     // 4. Select file to save: _common_data/scenarios/sandbox/exp2.msf and set 'file format to use' to MSF,
     // Than to uncheck the 'add document to the project' check box and click Save button.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
 
     Runnable *filler = new ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
         "exp2.fa", ExportSequenceAsAlignmentFiller::Fasta);
@@ -548,7 +548,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     // Expected state: Export sequences dialog open
     // 4. Select file to save: _common_data/scenarios/sandbox/exp2.msf and set 'file format to use' to MSF,
     // Than to uncheck the 'add document to the project' check box and click Save button.
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
 
     Runnable *filler = new ExportSequenceAsAlignmentFiller(os, dataDir + "_common_data/scenarios/sandbox/",
         "exp2.meg", ExportSequenceAsAlignmentFiller::Mega);

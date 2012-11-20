@@ -139,6 +139,9 @@ signals:
 	void si_doubleClicked(GObject*);
     void si_returnPressed(GObject*);
 
+    void si_doubleClicked(Document*);
+    void si_returnPressed(Document*);
+
 private slots:
 	void sl_onTreeSelectionChanged();
 	void sl_onContextMenuRequested(const QPoint & pos);

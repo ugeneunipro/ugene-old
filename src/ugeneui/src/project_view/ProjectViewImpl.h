@@ -123,6 +123,7 @@ private slots:
 	void sl_onMDIWindowAdded(MWMDIWindow*);
 	void sl_onViewPersistentStateChanged(GObjectViewWindow* thiz);
 	void sl_onActivated(GObject*);
+    void sl_onActivated(Document*);
     void sl_filterTextChanged(const QString& t);
     void sl_relocate();
     void sl_exportDocument();
@@ -134,7 +135,7 @@ private:
     void buildOpenViewMenu(const MultiGSelection& ms, QMenu* m);
     void buildAddToViewMenu(const MultiGSelection& ms, QMenu* m);
     void buildRelocateMenu(QMenu* m);
-    QList<QAction*> selectOpenViewActions(GObjectViewFactory* f, const MultiGSelection& ms, QObject* actionsParent);
+    QList<QAction*> selectOpenViewActions(GObjectViewFactory* f, const MultiGSelection& ms, QObject* actionsParent, bool tryActivate = false);
     void saveViewState(GObjectViewWindow* v, const QString& stateName);
     void updateMWTitle();
 	

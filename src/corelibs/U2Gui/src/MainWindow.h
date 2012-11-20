@@ -83,8 +83,7 @@ class QMainWindow;
 #define ACTION_DOCUMENT__UNLOCK                         "action_document_unlock"
 
 
-#define ACTION_PROJECT__EXPORT_MENU_ACTION          "action_project__export_menu_action"
-#define ACTION_PROJECT__IMPORT_MENU_ACTION          "action_project__import_menu_action"
+#define ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION          "action_project__export_import_menu_action"
 #define ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION  "action_project__export_as_sequence_action"
 #define ACTION_PROJECT__EXPORT_TO_AMINO_ACTION      "action_project__export_to_amino_action"
 

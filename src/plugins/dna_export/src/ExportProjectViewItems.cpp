@@ -105,14 +105,12 @@ ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : Q
 
 
 void ExportProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
-    addExportMenu(m);
-    addImportMenu(m);
+    addExportImportMenu(m);
 }
 
 #define ACTION_PROJECT__EXPORT_MENU "action_project__export_menu"
-#define ACTION_PROJECT__IMPORT_MENU "action_project__import_menu"
 
-void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
+void ExportProjectViewItemsContoller::addExportImportMenu(QMenu& m) {
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
     QMenu* sub = NULL;
@@ -120,7 +118,7 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
     MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
     QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
     if (!set.isEmpty()) {
-        sub = new QMenu(tr("Export"));
+        sub = new QMenu(tr("Export/Import"));
         sub->addAction(exportSequencesToSequenceFormatAction);
         sub->addAction(exportSequencesAsAlignmentAction);
         foreach (GObject* obj, set) {
@@ -131,7 +129,7 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
     } else {
         set = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &ms, UOF_LoadedOnly);
         if (set.size() == 1) {
-            sub = new QMenu(tr("Export"));
+            sub = new QMenu(tr("Export/Import"));
             exportAlignmentAsSequencesAction->setObjectName(ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION);
             sub->addAction(exportAlignmentAsSequencesAction);
             GObject* obj = set.first();
@@ -146,7 +144,7 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
     set = SelectionUtils::findObjects(GObjectTypes::ANNOTATION_TABLE, &ms, UOF_LoadedOnly);
     if (set.size() == 1) {
         if (sub == NULL) {
-            sub = new QMenu(tr("Export"));
+            sub = new QMenu(tr("Export/Import"));
         }
         sub->addAction(exportAnnotations2CSV);
     }
@@ -154,26 +152,28 @@ void ExportProjectViewItemsContoller::addExportMenu(QMenu& m) {
     set = SelectionUtils::findObjects(GObjectTypes::CHROMATOGRAM, &ms, UOF_LoadedOnly);
     if (set.size() == 1) {
         if (sub == NULL) {
-            sub = new QMenu(tr("Export"));
+            sub = new QMenu(tr("Export/Import"));
         }
         sub->addAction(exportDNAChromatogramAction);
+    }
+
+    //import part
+    set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
+    set.append(SelectionUtils::findObjects(GObjectTypes::ANNOTATION_TABLE, &ms, UOF_LoadedOnly));
+    if (!set.isEmpty()) {
+        if (sub == NULL) {
+            sub = new QMenu(tr("Export/Import"));
+        }
+        sub->addAction(importAnnotationsFromCSVAction);
     }
     
     if (sub != NULL) {
         sub->setObjectName(ACTION_PROJECT__EXPORT_MENU);
-        sub->menuAction()->setObjectName(ACTION_PROJECT__EXPORT_MENU_ACTION);
-        QAction* beforeAction = GUIUtils::findActionAfter(m.actions(), ACTION_PROJECT__ADD_MENU);
+        sub->menuAction()->setObjectName(ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION);
+        QAction* beforeAction = GUIUtils::findActionAfter(m.actions(), ACTION_PROJECT__EDIT_MENU);
         m.insertMenu(beforeAction, sub);
     }
-}
-
-void ExportProjectViewItemsContoller::addImportMenu(QMenu& m) {
-    QMenu* importMenu = new QMenu(tr("Import"));
-    importMenu->setObjectName(ACTION_PROJECT__IMPORT_MENU);
-    importMenu->menuAction()->setObjectName(ACTION_PROJECT__IMPORT_MENU_ACTION);
-    importMenu->addAction(importAnnotationsFromCSVAction);
-    QAction* beforeAction = GUIUtils::findActionAfter(m.actions(), ACTION_PROJECT__ADD_MENU);
-    m.insertMenu(beforeAction, importMenu);
+    
 }
 
 static bool hasComplementForAll(const QList<GObject*>& set) {

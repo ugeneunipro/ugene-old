@@ -529,6 +529,8 @@ void ProjectViewImpl::initView() {
     connect(projectTreeController, SIGNAL(si_onPopupMenuRequested(QMenu&)), SLOT(sl_onDocTreePopupMenuRequested(QMenu&)));
     connect(projectTreeController, SIGNAL(si_doubleClicked(GObject*)), SLOT(sl_onActivated(GObject*)));
     connect(projectTreeController, SIGNAL(si_returnPressed(GObject*)), SLOT(sl_onActivated(GObject*)));
+    connect(projectTreeController, SIGNAL(si_doubleClicked(Document*)), SLOT(sl_onActivated(Document*)));
+    connect(projectTreeController, SIGNAL(si_returnPressed(Document*)), SLOT(sl_onActivated(Document*)));
     
     w->groupModeMenu->addAction(projectTreeController->getGroupByDocumentAction());
     w->groupModeMenu->addAction(projectTreeController->getGroupByTypeAction());
@@ -711,12 +713,55 @@ void ProjectViewImpl::sl_onActivated(GObject* o) {
     QList<QAction*> openActions;
     QList<GObjectViewFactory*> fs = AppContext::getObjectViewFactoryRegistry()->getAllFactories();
     foreach(GObjectViewFactory* f, fs) {
-        QList<QAction*> tmp = selectOpenViewActions(f, ms, &activeViewsMenu);
+        QList<QAction*> tmp = selectOpenViewActions(f, ms, &activeViewsMenu, true);
         openActions<<tmp;
     }
+    if (openActions.size() == 1 ) {
+        QAction* a = openActions.first();
+        a->trigger();
+        return;
+    } 
     if (openActions.isEmpty()) { 
         if (o->isUnloaded()) {
             AppContext::getTaskScheduler()->registerTopLevelTask(new LoadUnloadedDocumentTask(o->getDocument()));
+        }
+        return;
+    }
+    foreach(QAction* a, openActions) {
+        activeViewsMenu.addAction(a);
+    }
+    activeViewsMenu.exec(QCursor::pos());
+}
+
+void ProjectViewImpl::sl_onActivated( Document* d){
+    SAFE_POINT(d != NULL, "No double-clicked document found", );
+
+    MultiGSelection ms;
+    GObjectSelection gs;
+    DocumentSelection ds; 
+
+    
+    if (d->isLoaded()){
+        //find view for loaded objects in document    
+        gs.addToSelection(d->getObjects());
+        ms.addSelection(&gs);
+    }else{
+        //try create view for unloaded
+        ds.addToSelection(QList<Document*>() << d);
+        ms.addSelection(&ds);
+    }
+    
+    
+    QMenu activeViewsMenu(tr("active_views_menu"), NULL);
+    QList<QAction*> openActions;
+    QList<GObjectViewFactory*> fs = AppContext::getObjectViewFactoryRegistry()->getAllFactories();
+    foreach(GObjectViewFactory* f, fs) {
+        QList<QAction*> tmp = selectOpenViewActions(f, ms, &activeViewsMenu, true);
+        openActions<<tmp;
+    }
+    if (openActions.isEmpty()) { 
+        if (!d->isLoaded()) {
+            AppContext::getTaskScheduler()->registerTopLevelTask(new LoadUnloadedDocumentTask(d));
         }
         return;
     }
@@ -729,10 +774,12 @@ void ProjectViewImpl::sl_onActivated(GObject* o) {
         activeViewsMenu.addAction(a);
     }
     activeViewsMenu.exec(QCursor::pos());
+  
+
 }
 
 
-QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, const MultiGSelection& ms, QObject* actionsParent) {
+QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, const MultiGSelection& ms, QObject* actionsParent, bool tryActivate) {
     QList<QAction*> res;
 
     //check if object is already displayed in some view.
@@ -768,6 +815,10 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
         }
     }
 
+    if (tryActivate && res.size() == 1){
+        return res;
+    }
+
     //check if new view can be created
     if (f->canCreateView(ms)) {
         QAction* action = new QAction(tr("open_view_action_%1").arg(f->getName()), actionsParent);
@@ -777,6 +828,11 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
         connect(action, SIGNAL(triggered()), SLOT(sl_openNewView()));
         res.append(action);
     }
+
+    if (tryActivate && res.size() == 1){
+        return res;
+    }
+
     //check saved state can be activated
     QList<GObjectViewState*> viewStates = GObjectViewUtils::selectStates(f, ms, AppContext::getProject()->getGObjectViewStates());
     foreach(GObjectViewState* s, viewStates) {
@@ -803,12 +859,9 @@ void ProjectViewImpl::buildOpenViewMenu(const MultiGSelection& ms, QMenu* m) {
             m->addAction(openAction);
             continue;
         }
-        QMenu* submenu = new QMenu(tr("open_view_submenu_%1").arg(f->getName()), m);
-        submenu->menuAction()->setObjectName("View States");
         foreach (QAction* a, openActions) {
-            submenu->addAction(a);
+            m->addAction(a);
         }
-        m->addAction(submenu->menuAction());
     }
 }
 
@@ -898,6 +951,8 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
 
     openViewMenu->setDisabled(openViewMenu->isEmpty());
     m.insertMenu(m.actions().first(), openViewMenu);
+
+    m.addSeparator();
 
     bool hasModifiedDocs = false;
     foreach(Document* doc, docSelection->getSelectedDocuments()) {
