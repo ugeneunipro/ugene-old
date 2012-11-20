@@ -60,7 +60,7 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
     const char* data = rawData.constData();
     int size = rawData.size();
 
-    int sequenceCount = 0;
+    int sequenceCount = 0, qualCount = 0, linesCount = 0;
 
     QList<QByteArray> lines = rawData.split('\n');
     int state = STATE_START_PARSING;
@@ -72,14 +72,28 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
             }
             sequenceCount++;
             state = STATE_SEQ_HEADER;
-        } else {
+        } else if(line.startsWith('+')){
+            qualCount++;
+        }else{
             state = STATE_SEQ;
         }
+        if(!line.isEmpty()) linesCount++;
     }
 
     bool hasBinaryBlocks = TextUtils::contains(TextUtils::BINARY, data, size);
     if (hasBinaryBlocks || (sequenceCount == 0)) {
         return FormatDetection_NotMatched;
+    }
+
+    //check whats every seq had its own qual
+    if (linesCount%4 > 2 || linesCount%4 == 0){
+        if(sequenceCount != qualCount){
+            return FormatDetection_NotMatched;
+        }
+    }else{
+        if((sequenceCount - 1) != qualCount){
+            return FormatDetection_NotMatched;
+        }
     }
 
     FormatCheckResult res(FormatDetection_HighSimilarity);

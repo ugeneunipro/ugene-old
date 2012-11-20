@@ -174,7 +174,7 @@ void SequenceDbiUnitTests_getSequenceObject::Test() {
 
     U2OpStatusImpl os;
     const U2Sequence& actual = sequenceDbi->getSequenceObject(id, os);
-    CHECK_OP(os, );
+    CHECK_NO_ERROR(os);
     CHECK_EXT(SequenceTestData::compareSequences(actual, expected), SetError("incorrect expected sequence"), );
 }
 

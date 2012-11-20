@@ -213,13 +213,13 @@ void AttributeDbiUnitTests_getAvailableAttributeNames::Test() {
 
     U2OpStatusImpl os;
     QStringList actual = attributeDbi->getAvailableAttributeNames(os);
-    SAFE_POINT_OP(os, );
+    CHECK_NO_ERROR(os);
 
-    SAFE_POINT(actual.size() == names.size(), "incorrect expected available attribute names size", );
+    CHECK_TRUE(actual.size() == names.size(), "incorrect expected available attribute names size");
     foreach(const QString& name, names) {
-        SAFE_POINT(actual.removeOne(name), "available attribute name not removed", );
+        CHECK_TRUE(actual.removeOne(name), "available attribute name not removed");
     }
-    SAFE_POINT(actual.size() == 0, "available attribute names size should be 0", );
+    CHECK_TRUE(actual.size() == 0, "available attribute names size should be 0");
 }
 
 void AttributeDbiUnitTests_getObjectAttributes::Test() {
@@ -316,18 +316,18 @@ void AttributeDbiUnitTests_removeAttributes::Test() {
     const U2DataId& objectId = AttributeTestData::getObjects()->first();
     U2OpStatusImpl os;
     const QList<U2DataId>& attrs = attributeDbi->getObjectAttributes(objectId, "", os);
-    SAFE_POINT_OP(os, );
+    CHECK_NO_ERROR(os);
 
     {
         U2OpStatusImpl os;
         attributeDbi->removeAttributes(attrs, os);
-        SAFE_POINT_OP(os, );
+        CHECK_NO_ERROR(os);
     }
     {
         U2OpStatusImpl os;
         const QList<U2DataId>& attrs = attributeDbi->getObjectAttributes(objectId, "", os);
-        SAFE_POINT_OP(os, );
-        SAFE_POINT(attrs.isEmpty(), "attribute list should be empty", );
+        CHECK_NO_ERROR(os);
+        CHECK_TRUE(attrs.isEmpty(), "attribute list should be empty");
     }
 }
 
@@ -338,12 +338,12 @@ void AttributeDbiUnitTests_removeObjectAttributes::Test() {
     {
         U2OpStatusImpl os;
         attributeDbi->removeObjectAttributes(objectId, os);
-        SAFE_POINT_OP(os, );
+        CHECK_NO_ERROR(os);
     }
     U2OpStatusImpl os;
     const QList<U2DataId>& attrs = attributeDbi->getObjectAttributes(objectId, "", os);
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(attrs.isEmpty(), "object attribute list should be empty", );
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(attrs.isEmpty(), "object attribute list should be empty");
 }
 
 void AttributeDbiUnitTests_IntegerAttribute::Test() {
@@ -356,13 +356,13 @@ void AttributeDbiUnitTests_IntegerAttribute::Test() {
     {
         U2OpStatusImpl os;
         attributeDbi->createIntegerAttribute(attr, os);
-        SAFE_POINT_OP(os, );
+        CHECK_NO_ERROR(os);
     }
 
     U2OpStatusImpl os;
     U2IntegerAttribute actual = attributeDbi->getIntegerAttribute(attr.id, os);
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(compareAttributes(actual, attr), "incorrect integer attribute", );
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(compareAttributes(actual, attr), "incorrect integer attribute");
 }
 
 void AttributeDbiUnitTests_RealAttribute::Test() {
@@ -375,13 +375,13 @@ void AttributeDbiUnitTests_RealAttribute::Test() {
     {
         U2OpStatusImpl os;
         attributeDbi->createRealAttribute(attr, os);
-        SAFE_POINT_OP(os, );
+        CHECK_NO_ERROR(os);
     }
 
     U2OpStatusImpl os;
     U2RealAttribute actual = attributeDbi->getRealAttribute(attr.id, os);
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(compareAttributes(actual, attr), "incorrect real attribute", );
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(compareAttributes(actual, attr), "incorrect real attribute");
 }
 
 
@@ -395,13 +395,13 @@ void AttributeDbiUnitTests_StringAttribute::Test() {
     {
         U2OpStatusImpl os;
         attributeDbi->createStringAttribute(attr, os);
-        SAFE_POINT_OP(os, );
+        CHECK_NO_ERROR(os);
     }
 
     U2OpStatusImpl os;
     U2StringAttribute actual = attributeDbi->getStringAttribute(attr.id, os);
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(compareAttributes(actual, attr), "incorrect string attribute", );
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(compareAttributes(actual, attr), "incorrect string attribute");
 }
 
 void AttributeDbiUnitTests_ByteArrayAttribute::Test() {
@@ -414,13 +414,13 @@ void AttributeDbiUnitTests_ByteArrayAttribute::Test() {
     {
         U2OpStatusImpl os;
         attributeDbi->createByteArrayAttribute(attr, os);
-        SAFE_POINT_OP(os, );
+        CHECK_NO_ERROR(os);
     }
 
     U2OpStatusImpl os;
     U2ByteArrayAttribute actual = attributeDbi->getByteArrayAttribute(attr.id, os);
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(compareAttributes(actual, attr), "incorrect byte array attribute", );
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(compareAttributes(actual, attr), "incorrect byte array attribute");
 }
 
 } //namspace

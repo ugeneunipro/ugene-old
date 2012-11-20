@@ -107,8 +107,8 @@ void AssemblyDbiUnitTests_getAssemblyObject::Test() {
     const U2DataId id = AssemblyTestData::getAssemblyIds()->first();
     U2OpStatusImpl os;
     U2Assembly assembly = assemblyDbi->getAssemblyObject(id, os);
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(assembly.id == id, "assembly id is not equals to oiginal id", );
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(id, assembly.id,"assembly id is not equals to oiginal id" );
 }
 
 void AssemblyDbiUnitTests_getAssemblyObjectInvalid::Test() {
@@ -120,7 +120,7 @@ void AssemblyDbiUnitTests_getAssemblyObjectInvalid::Test() {
     const U2DataId& invalidId = testData.getValue<QByteArray>(INVALID_ASSEMBLY_ID);
     U2OpStatusImpl os;
     const U2Assembly& assembly = assemblyDbi->getAssemblyObject(invalidId, os);
-    SAFE_POINT(assembly.id.isEmpty(), "assembly id is empty", );
+    CHECK_TRUE(assembly.id.isEmpty(), "assembly id is empty");
 }
 
 void AssemblyDbiUnitTests_countReads::Test() {
@@ -138,15 +138,15 @@ void AssemblyDbiUnitTests_countReads::Test() {
     {
         U2OpStatusImpl os;
         qint64 numReads = assemblyDbi->countReads(id, U2_REGION_MAX, os);
-        SAFE_POINT_OP(os, );
-        SAFE_POINT(testData.getValue<qint64>(TOTAL_NUM_READS) == numReads, "incorrect total num reads", );
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(numReads, testData.getValue<qint64>(TOTAL_NUM_READS), "incorrect total num reads");
     }
 
     U2OpStatusImpl os;
     const U2Region& testRegion = testData.getValue<U2Region>(NUM_READS_IN);
     qint64 numReads = assemblyDbi->countReads(id, testRegion, os);
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(testData.getValue<qint64>(NUM_READS_OUT) ==  numReads, "incorrect total num reads", );
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(numReads, testData.getValue<qint64>(NUM_READS_OUT), "incorrect total num reads");
 }
 
 void AssemblyDbiUnitTests_countReadsInvalid::Test() {
@@ -157,7 +157,7 @@ void AssemblyDbiUnitTests_countReadsInvalid::Test() {
     const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
     U2OpStatusImpl os;
     qint64 val = assemblyDbi->countReads(id, U2_REGION_MAX, os);
-    SAFE_POINT(val == -1, "count reads should be -1", );
+    CHECK_EQUAL(-1, val, "count reads should be -1")
 }
 
 void AssemblyDbiUnitTests_getReads::Test() {
@@ -206,12 +206,12 @@ void AssemblyDbiUnitTests_getReads::Test() {
 
     std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReads(id, region, os));
-    SAFE_POINT_OP(os, );
+    CHECK_NO_ERROR(os);
 
     QVariantList expectedVar = testData.getValue<QVariantList>(GET_READS_OUT);
     QList<U2AssemblyRead> expectedReads;
     AssemblyDbiTestUtil::var2readList(expectedVar, expectedReads);
-    SAFE_POINT(AssemblyDbiTestUtil::compareReadLists(iter.get(), expectedReads), "incorrect expected reads", );
+    CHECK_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.get(), expectedReads), "incorrect expected reads");
 }
 
 void AssemblyDbiUnitTests_getReadsInvalid::Test() {
@@ -224,7 +224,7 @@ void AssemblyDbiUnitTests_getReadsInvalid::Test() {
     U2OpStatusImpl os;
     std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReads(id, U2_REGION_MAX, os));
-    SAFE_POINT(iter.get() == NULL, "expected reads should be NULL", );
+    CHECK_TRUE(iter.get() == NULL, "expected reads should be NULL");
 }
 
 void AssemblyDbiUnitTests_getReadsByRow::Test() {
@@ -269,12 +269,12 @@ void AssemblyDbiUnitTests_getReadsByRow::Test() {
 
     std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReadsByRow(id, region, begin, end, os));
-    SAFE_POINT_OP(os, );
+    CHECK_NO_ERROR(os);
 
     QVariantList expectedVar = testData.getValue<QVariantList>(GET_READS_BY_ROW_OUT);
     QList<U2AssemblyRead> expectedReads;
     AssemblyDbiTestUtil::var2readList(expectedVar, expectedReads);
-    SAFE_POINT(AssemblyDbiTestUtil::compareReadLists(iter.get(), expectedReads), "incorrect expected reads", );
+    CHECK_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.get(), expectedReads), "incorrect expected reads");
 }
 
 void AssemblyDbiUnitTests_getReadsByRowInvalid::Test() {
@@ -296,7 +296,7 @@ void AssemblyDbiUnitTests_getReadsByRowInvalid::Test() {
 
     std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReadsByRow(id, region, begin, end, os));
-    SAFE_POINT(iter.get() == NULL, "expected reads by row should be NULL", );
+    CHECK_TRUE(iter.get() == NULL, "expected reads by row should be NULL");
 }
 
 void AssemblyDbiUnitTests_getReadsByName::Test() {
@@ -319,7 +319,7 @@ void AssemblyDbiUnitTests_getReadsByName::Test() {
     }
 
     QVariantList readsVar = testData.getValue<QVariantList>(READS_BY_NAME_IN);
-    SAFE_POINT(!readsVar.isEmpty(), "reads list should not be empty", );
+    CHECK_TRUE(!readsVar.isEmpty(), "reads list should not be empty");
 
     QList<U2AssemblyRead> reads;
     AssemblyDbiTestUtil::var2readList(readsVar, reads);
@@ -330,14 +330,14 @@ void AssemblyDbiUnitTests_getReadsByName::Test() {
         U2OpStatusImpl os;
         BufferedDbiIterator<U2AssemblyRead> it(reads);
         assemblyDbi->addReads(id, &it, os);
-        SAFE_POINT_OP(os, );
+        CHECK_NO_ERROR(os);
     }
 
     U2OpStatusImpl os;
     std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReadsByName(id, name, os));
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(AssemblyDbiTestUtil::compareReadLists(iter.get(), reads), "incorrect expected read list", );
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.get(), reads), "incorrect expected read list");
 }
 
 void AssemblyDbiUnitTests_getReadsByNameInvalid::Test() {
@@ -351,7 +351,7 @@ void AssemblyDbiUnitTests_getReadsByNameInvalid::Test() {
     U2OpStatusImpl os;
     std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReadsByName(id, "", os));
-    SAFE_POINT(iter.get() == NULL, "reads by name should be NULL", );
+    CHECK_TRUE(iter.get() == NULL, "reads by name should be NULL");
 }
 
 void AssemblyDbiUnitTests_getMaxPackedRow::Test() {
@@ -365,8 +365,8 @@ void AssemblyDbiUnitTests_getMaxPackedRow::Test() {
     U2OpStatusImpl os;
 
     qint64 actual = assemblyDbi->getMaxPackedRow(id, testData.getValue<U2Region>(MAX_PACKED_ROW_IN), os);
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(actual == testData.getValue<qint64>(MAX_PACKED_ROW_OUT), "incorrect max packed row", );
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(actual == testData.getValue<qint64>(MAX_PACKED_ROW_OUT), "incorrect max packed row");
 }
 
 void AssemblyDbiUnitTests_getMaxPackedRowInvalid::Test() {
@@ -378,7 +378,7 @@ void AssemblyDbiUnitTests_getMaxPackedRowInvalid::Test() {
     const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
     U2OpStatusImpl os;
     qint64 val = assemblyDbi->getMaxPackedRow(id, U2_REGION_MAX, os);
-    SAFE_POINT(val == -1, "max packed row should be -1", );
+    CHECK_TRUE(val == -1, "max packed row should be -1");
 }
 
 void AssemblyDbiUnitTests_getMaxEndPos::Test() {
@@ -389,8 +389,8 @@ void AssemblyDbiUnitTests_getMaxEndPos::Test() {
     U2DataId id = AssemblyTestData::getAssemblyIds()->first();
     U2OpStatusImpl os;
     qint64 val = assemblyDbi->getMaxEndPos(id, os);
-    SAFE_POINT_OP(os, );
-    SAFE_POINT(testData.getValue<qint64>(MAX_END_POS) == val, "incorrect max end position", );
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(testData.getValue<qint64>(MAX_END_POS) == val, "incorrect max end position");
 }
 
 void AssemblyDbiUnitTests_getMaxEndPosInvalid::Test() {
@@ -402,7 +402,7 @@ void AssemblyDbiUnitTests_getMaxEndPosInvalid::Test() {
     const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
     U2OpStatusImpl os;
     qint64 val = assemblyDbi->getMaxEndPos(id, os);
-    SAFE_POINT(val == -1, "max end position should be -1", );
+    CHECK_TRUE(val == -1, "max end position should be -1");
 }
 
 void AssemblyDbiUnitTests_createAssemblyObject::Test() {
@@ -413,10 +413,10 @@ void AssemblyDbiUnitTests_createAssemblyObject::Test() {
     U2OpStatusImpl os;
 
     assemblyDbi->createAssemblyObject(assembly, "/", NULL, importInfo, os);
-    SAFE_POINT_OP(os, );
+    CHECK_NO_ERROR(os);
 
     U2Assembly res = assemblyDbi->getAssemblyObject(assembly.id, os);
-    SAFE_POINT_OP(os, );
+    CHECK_NO_ERROR(os);
 }
 
 void AssemblyDbiUnitTests_removeReads::Test() {
@@ -432,7 +432,7 @@ void AssemblyDbiUnitTests_removeReads::Test() {
     {
         std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
         iter.reset(assemblyDbi->getReads(id, region, os));
-        SAFE_POINT_OP(os, );
+        CHECK_NO_ERROR(os);
 
         while (iter->hasNext()) {
             const U2AssemblyRead& read = iter->next();
@@ -441,11 +441,11 @@ void AssemblyDbiUnitTests_removeReads::Test() {
     }
 
     assemblyDbi->removeReads(id, readIds, os);
-    SAFE_POINT_OP(os, );
+    CHECK_NO_ERROR(os);
 
     std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReads(id, region, os));
-    SAFE_POINT(!iter->hasNext(), "reads list should be empty", );
+    CHECK_TRUE(!iter->hasNext(), "reads list should be empty");
 
 }
 
@@ -458,7 +458,7 @@ void AssemblyDbiUnitTests_removeReadsInvalid::Test() {
     const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
     U2OpStatusImpl os;
     assemblyDbi->removeReads(id, QList<U2DataId>(), os);
-    SAFE_POINT(os.hasError(), "error should be thrown", );
+    CHECK_TRUE(os.hasError(), "error should be thrown");
 }
 
 void AssemblyDbiUnitTests_addReads::Test() {
@@ -489,12 +489,12 @@ void AssemblyDbiUnitTests_addReads::Test() {
     U2OpStatusImpl os;
 
     assemblyDbi->addReads(id, &it, os);
-    SAFE_POINT_OP(os, );
+    CHECK_NO_ERROR(os);
 
     foreach(U2AssemblyRead read, reads) {
         std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
         iter.reset(assemblyDbi->getReads(id, U2_REGION_MAX, os));
-        SAFE_POINT_OP(os, );
+        CHECK_NO_ERROR(os);
 
         bool added = false;
         while (iter->hasNext()) {
@@ -503,7 +503,7 @@ void AssemblyDbiUnitTests_addReads::Test() {
                 break;
             }
         }
-        SAFE_POINT(added, "incorrect compared reads", );
+        CHECK_TRUE(added, "incorrect compared reads");
     }
 }
 
@@ -518,7 +518,7 @@ void AssemblyDbiUnitTests_addReadsInvalid::Test() {
     BufferedDbiIterator<U2AssemblyRead> it(reads);
     U2OpStatusImpl os;
     assemblyDbi->addReads(id, &it, os);
-    SAFE_POINT(os.hasError(), "error should be thrown", );
+    CHECK_TRUE(os.hasError(), "error should be thrown");
 }
 
 void AssemblyDbiUnitTests_pack::Test() {
@@ -529,10 +529,10 @@ void AssemblyDbiUnitTests_pack::Test() {
     U2OpStatusImpl os;
 
     assemblyDbi->pack(id, stats, os);
-    SAFE_POINT_OP(os, );
+    CHECK_NO_ERROR(os);
         
-    SAFE_POINT(stats.maxProw == 29, "incorrect max prow", );
-    SAFE_POINT(stats.readsCount == 44, "incorrect count reads", );
+    CHECK_TRUE(stats.maxProw == 29, "incorrect max prow");
+    CHECK_TRUE(stats.readsCount == 44, "incorrect count reads");
 }
 
 void AssemblyDbiUnitTests_packInvalid::Test() {
@@ -545,7 +545,7 @@ void AssemblyDbiUnitTests_packInvalid::Test() {
     U2AssemblyPackStat stat;
     U2OpStatusImpl os;
     assemblyDbi->pack(id, stat, os);
-    SAFE_POINT(os.hasError(), "error should be thrown", );
+    CHECK_TRUE(os.hasError(), "error should be thrown");
 }
 
 void AssemblyDbiUnitTests_calculateCoverage::Test() {
@@ -557,9 +557,9 @@ void AssemblyDbiUnitTests_calculateCoverage::Test() {
     U2AssemblyCoverageStat c;
     c.coverage.resize(1);
     assemblyDbi->calculateCoverage(id, region, c, os);
-    SAFE_POINT_OP(os, );
+    CHECK_NO_ERROR(os);
     int res = c.coverage.first().maxValue;
-    SAFE_POINT(res == 1, "incorrect calculate Coverage", );
+    CHECK_TRUE(res == 1, "incorrect calculate Coverage");
 }
 
 void AssemblyDbiUnitTests_calculateCoverageInvalid::Test() {
@@ -572,7 +572,7 @@ void AssemblyDbiUnitTests_calculateCoverageInvalid::Test() {
     U2AssemblyCoverageStat c;
     U2OpStatusImpl os;
     assemblyDbi->calculateCoverage(id, region, c, os);
-    SAFE_POINT(os.hasError(), "error should be thrown", );
+    CHECK_TRUE(os.hasError(), "error should be thrown");
 }
 
 } //namespace
