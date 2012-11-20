@@ -77,11 +77,10 @@ class QMainWindow;
 #define ACTION_PROJECT__ADD_NEW_DOCUMENT            "action_project__add_new_document"
 #define ACTION_PROJECT__ADD_EXISTING_DOCUMENT       "action_project__add_existing_document"
 
-#define ACTION_PROJECT__EDIT_MENU                    "action_project__edit_menu"
+#define ACTION_PROJECT__EDIT_MENU                   "action_project__edit_menu"
 
-#define ACTION_DOCUMENT__LOCK                           "action_document_lock"
-#define ACTION_DOCUMENT__UNLOCK                         "action_document_unlock"
-
+#define ACTION_DOCUMENT__LOCK                       "action_document_lock"
+#define ACTION_DOCUMENT__UNLOCK                     "action_document_unlock"
 
 #define ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION          "action_project__export_import_menu_action"
 #define ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION  "action_project__export_as_sequence_action"
@@ -90,6 +89,7 @@ class QMainWindow;
 #define ACTION_EXPORT_SEQUENCE                      "export sequences"
 #define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT         "export sequences as alignment"
 #define ACTION_EXPORT_ANNOTATIONS                   "action_export_annotations"
+#define ACTION_EXPORT_CHROMATOGRAM                  "action_export_chromatogram"
 
 #define ACTION_EDIT_SEQUENCE                        "edit sequences"
 #define ACTION_EDIT_INSERT_SUBSEQUENCE              "action_edit_insert_sub_sequences"
@@ -103,7 +103,6 @@ class QMainWindow;
 #define ACTION_ADD_BOOKMARK                         "action_add_bookmark"
 #define ACTION_RENAME_BOOKMARK                      "action_rename_bookmark"
 #define ACTION_REMOVE_BOOKMARK                      "action_remove_bookmark"
-
 
 #define DOCK_PROJECT_VIEW    "dock_project_view"
 #define DOCK_TASK_VIEW       "dock_task_view"

@@ -275,13 +275,20 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0004);
+
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0005_1);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0005_2);
+
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0006);
+
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0007_1);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0007_2);
+
+    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0008, "Test for Windows crash");
+    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0008_1, "Test for Windows crash");
+    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_project_sequence_exporting_from_project_view::test_0008_2, "Test for Windows crash");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/msa_editor
@@ -488,8 +495,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/annotations/qualifiers
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0001_2);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0002_2);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0003_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0003_2);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006);

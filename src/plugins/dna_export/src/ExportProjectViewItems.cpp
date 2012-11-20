@@ -68,6 +68,7 @@
 
 #define ACTION_EXPORT_SEQUENCE "export sequences"
 #define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT "export sequences as alignment"
+#define ACTION_EXPORT_CHROMATOGRAM "action_export_chromatogram"
 
 namespace U2 {
 
@@ -90,6 +91,7 @@ ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : Q
     connect(importAnnotationsFromCSVAction, SIGNAL(triggered()), SLOT(sl_importAnnotationsFromCSV()));
 
     exportDNAChromatogramAction = new QAction(tr("Export chromatogram to SCF..."), this);
+    exportDNAChromatogramAction->setObjectName("action_export_chromatogram");
     connect(exportDNAChromatogramAction, SIGNAL(triggered()), SLOT(sl_exportChromatogramToSCF()));
 
     exportAnnotations2CSV = new QAction(tr("Export annotations..."), this);

@@ -43,6 +43,8 @@
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h"
+#include "runnables/qt/MessageBoxFiller.h"
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
@@ -566,6 +568,52 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     if (GTUtilsProjectTreeView::getSelectedItem(os) != "NC_001363 sequence") {
         os.setError("multiple alignment view with NC_001363 sequence has been not opened");
         }
+    }
+GUI_TEST_CLASS_DEFINITION(test_0008) {
+    GTFileDialog::openFile(os, dataDir + "samples/ABIF/", "A01.abi");
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
+    GTGlobals::sleep(1000);
+    
+    Runnable *filler = new ExportChromatogramFiller(os, "C:/", 
+        "pagefile.sys", ExportChromatogramFiller::SCF, false, true, true);
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "A01.abi"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    }
+GUI_TEST_CLASS_DEFINITION(test_0008_1) {
+    GTFileDialog::openFile(os, dataDir + "samples/ABIF/", "A01.abi");
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
+    GTGlobals::sleep(1000);
+
+    Runnable *filler = new ExportChromatogramFiller(os, "C:/", 
+        "pagefile.sys", ExportChromatogramFiller::SCF, true, true, true);
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "A01.abi"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    }
+GUI_TEST_CLASS_DEFINITION(test_0008_2) {
+    GTFileDialog::openFile(os, dataDir + "samples/ABIF/", "A01.abi");
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
+    GTGlobals::sleep(1000);
+
+    Runnable *filler = new ExportChromatogramFiller(os, "D:/", 
+        "pagefile.sys", ExportChromatogramFiller::SCF, false, true, false);
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "A01.abi"));
+    GTMouseDriver::click(os, Qt::RightButton);
     }
 
 } // namespace

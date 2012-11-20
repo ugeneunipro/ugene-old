@@ -32,6 +32,9 @@ public:
     // fails if textEdit is NULL
     // or a set text differs from a given text
     static void setText(U2OpStatus& os, QTextEdit* textEdit, const QString &text);
+
+    static void clear(U2OpStatus& os, QTextEdit* textEdit);
+
 };
 
 }

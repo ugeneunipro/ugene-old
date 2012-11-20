@@ -22,6 +22,7 @@
 #include "GTTextEdit.h"
 #include "GTWidget.h"
 #include "GTKeyboardDriver.h"
+#include "GTKeyboardUtils.h"
 
 namespace U2 {
 
@@ -32,11 +33,29 @@ void GTTextEdit::setText(U2OpStatus& os, QTextEdit* textEdit, const QString &tex
 
     GT_CHECK(textEdit != NULL, "plainTextEdit is NULL");
 
+    clear(os, textEdit);
     GTWidget::setFocus(os, textEdit);
 
     GTKeyboardDriver::keySequence(os, text);
     GTGlobals::sleep(500);
 }
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clear"
+void GTTextEdit::clear(U2OpStatus& os, QTextEdit* textEdit) {
+
+    GT_CHECK(textEdit != NULL, "textEdit is NULL");
+
+    GTWidget::setFocus(os, textEdit);
+
+    GTKeyboardUtils::selectAll(os);
+    GTGlobals::sleep(100);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(1000);
+
+    QString s = textEdit->toPlainText();
+    GT_CHECK(s.isEmpty() == true, "Can't clear text, textEdit is not empty");
+    }
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
