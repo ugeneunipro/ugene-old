@@ -51,6 +51,7 @@
 namespace U2 {
 
 #define RULER_NOTCH_SIZE 2
+#define MAX_VISIBLE_ROWS 20
 
 PanView::ZoomUseObject::ZoomUseObject()
 : usingZoom(false), panView(NULL) {}
@@ -379,7 +380,15 @@ void PanView::updateActions() {
     decreasePanViewHeight->setEnabled(panViewRenderArea->canDecreaseLines());
     increase5PanViewHeight->setEnabled(panViewRenderArea ->canIncreaseLines());
     decrease5PanViewHeight->setEnabled(panViewRenderArea ->canDecreaseLines());
-    resetAnnotations->setEnabled(!panViewRenderArea->isDefaultSize());
+    if(!panViewRenderArea->isDefaultSize()){
+        if(getRowsManager()->getNumRows()<MAX_VISIBLE_ROWS && panViewRenderArea->isAllLinesShown()){
+            resetAnnotations->setEnabled(false);
+        }else{
+            resetAnnotations->setEnabled(true);
+        }
+    }else{
+        resetAnnotations->setEnabled(true);
+    }
     //showAllAnnotations->setEnabled(!((PanViewRenderArea*)renderArea)->isAllLinesShown());
     panViewToolButton->setEnabled(isVisible() && (increasePanViewHeight->isEnabled() || decreasePanViewHeight->isEnabled() || 
         increase5PanViewHeight->isEnabled() || decrease5PanViewHeight->isEnabled() || resetAnnotations->isEnabled()));
@@ -957,7 +966,7 @@ int PanViewRenderArea::getRowLine(int i) const {
 
 #define MIN_VISIBLE_ROWS  1
 #define EXTRA_EMPTY_ROWS  0
-#define MAX_VISIBLE_ROWS 20
+
 
 void PanViewRenderArea::setRowLinesOffset(int r) {
     int maxRows = getPanView()->getRowsManager()->getNumRows();
