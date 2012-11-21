@@ -28,6 +28,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
@@ -117,7 +118,6 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTToolbar.h \
             src/api/GTWidget.h \
             src/api/GTAction.h \
-    src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h
 
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
@@ -164,6 +164,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp \
 #   Utils classes
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \
@@ -242,5 +243,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTreeWidget.cpp \
             src/api/GTWidget.cpp \
             src/api/GTAction.cpp \
-    src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp
+
 

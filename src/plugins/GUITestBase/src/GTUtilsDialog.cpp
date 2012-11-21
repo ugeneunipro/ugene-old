@@ -23,7 +23,6 @@
 
 #include <QtCore/QTimer>
 #include <QtGui/QApplication>
-#include <QDebug>
 
 namespace U2 {
 
@@ -82,9 +81,6 @@ void GUIDialogWaiter::checkDialog() {
             break;
     }
 
-    if (widget) {
-        uiLog.trace(widget->objectName() + ", expected " + settings.objectName);
-    }
     if (widget && !hadRun && isExpectedName(widget->objectName(), settings.objectName)) {
         timer->stop();
         uiLog.trace("-------------------------");
