@@ -64,7 +64,7 @@ CircularViewPlugin::CircularViewPlugin() : Plugin(tr("CircularView"), tr("Enable
 CircularViewPlugin::~CircularViewPlugin() {
 }
 
-#define CIRCULAR_ACTION_NAME   "CIRCULAR_ACTION"
+#define CIRCULAR_ACTION_NAME   "CircularViewAction"
 #define CIRCULAR_VIEW_NAME     "CIRCULAR_VIEW"
 
 CircularViewContext::CircularViewContext(QObject* p)
@@ -101,7 +101,6 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     }
     
     CircularViewAction* action = new CircularViewAction();
-    action->setObjectName("Show circular view");
     action->setIcon(QIcon(":circular_view/images/circular.png"));
     action->setCheckable(true);
     action->setChecked(false);
