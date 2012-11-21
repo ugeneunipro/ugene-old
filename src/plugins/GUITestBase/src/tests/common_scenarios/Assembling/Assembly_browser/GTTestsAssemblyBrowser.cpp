@@ -18,7 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-#include "/home/vmalin/ugene/trunk/src/corelibs/U2View/src/ov_assembly/AssemblyRuler.h"
 #include "GTTestsAssemblyBrowser.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
