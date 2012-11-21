@@ -33,24 +33,12 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsSequenceView.h"
+#include "GTUtilsDialog.h"
 #include "runnables/qt/PopupChooser.h"
-#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
+#include "runnables/qt/MessageBoxFiller.h"
 
-
-
-
-#include "api/GTGlobals.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/Log.h>
-#include <U2Gui/MainWindow.h>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenuBar>
-#include <QtGui/QApplication>
 namespace U2 {
 
 void EscClicker::run()
@@ -59,6 +47,43 @@ void EscClicker::run()
     GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["esc"]);
 }
 namespace GUITest_Common_scenarios_dp_view {
+
+GUI_TEST_CLASS_DEFINITION(test_0011){
+//1. Use menu {Tools->Build Dot plot}.
+//Expected state: dialog "Build dotplot from sequences" has appear.
+//2. Fill the next fields in dialog:
+//    {File with first sequence} _common_data/scenarios/dp_view/dp1.fa
+//    {File with second sequence} _common_data/scenarios/dp_view/dp2.fa
+//3. Click Next button
+//Expected state: dialog "Dotplot" has appear.
+//4. Fill the next fields in dialog:
+//    {Minimum repeat length} 8bp
+//    {repeats identity} 80%
+//5. Click OK button
+    QMenu *menu;
+    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
+    Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa", testDir + "_common_data/scenarios/dp_view/dp2.fa");
+    GTUtilsDialog::waitForDialog(os, filler2);
+
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Build dotplot");
+//Expected state: Dot plot view has appear. There is 1 line at view.
+//6. Use context menu on dot plot view {Dotplot->Remove}
+//Expected state: save "Dotplot" has appear.
+//7. Click No button
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Dotplot"<<"Remove"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::showContextMenu(os,GTWidget::findWidget(os,"dotplot widget"));
+
+//Expected state: Dot plot view has closed.
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    QWidget *w=GTWidget::findWidget(os,"dotplot widget",NULL, options);
+
+    CHECK_SET_ERR(w==NULL, "Dotplot not deleted");
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0013) {
 
@@ -97,7 +122,6 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 
     GTMenu::clickMenuItem(os, menu, QStringList() << "Build dotplot");
     GTUtilsProjectTreeView::openView(os);
-   // GTGlobals::sleep();
 
 //6. Call dotplot context menu
 //7. Alt-Tab or activate another view
@@ -108,13 +132,13 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
 //Expected state: menu repaints correctly, UGENE not crashed
     for(int i=0;i<4;i++){
         GTUtilsDialog::waitForDialog(os, new EscClicker(os));
-        QPoint p = GTWidget::findWidget(os,"documentTreeWidget")->geometry().center();
-        GTMouseDriver::moveTo(os,p);
-        GTMouseDriver::click(os);
-        GTMenu::showContextMenu(os,GTWidget::findWidget(os,"dotplot widget"));
 
+        GTWidget::click(os, GTWidget::findWidget(os, GTUtilsProjectTreeView::widgetName));
+        QWidget* dpWidget = GTWidget::findWidget(os, "dotplot widget");
+        CHECK_SET_ERR(dpWidget != NULL, "no dpWidget");
+
+        GTMenu::showContextMenu(os, dpWidget);
     }
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0020) {

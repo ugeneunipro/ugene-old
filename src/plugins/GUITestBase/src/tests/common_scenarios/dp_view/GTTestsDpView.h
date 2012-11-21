@@ -39,6 +39,7 @@ namespace GUITest_Common_scenarios_dp_view {
 #undef GUI_TEST_PREFIX
 #define GUI_TEST_PREFIX "GUITest_Common_scenarios_dp_view_"
 
+GUI_TEST_CLASS_DECLARATION(test_0011)
 GUI_TEST_CLASS_DECLARATION(test_0013)
 GUI_TEST_CLASS_DECLARATION(test_0014)
 GUI_TEST_CLASS_DECLARATION(test_0020)

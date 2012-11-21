@@ -60,6 +60,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
 
 // 3. Press ctrl+f. Check focus. Find subsequence TA
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);

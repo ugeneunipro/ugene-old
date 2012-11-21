@@ -85,6 +85,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.h \
             src/tests/common_scenarios/dp_view/GTTestsDpView.h \
+            src/tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.h \
             src/api/GTRegionSelector.h \
@@ -115,7 +116,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTTreeWidget.h \
             src/api/GTToolbar.h \
             src/api/GTWidget.h \
-            src/api/GTAction.h
+            src/api/GTAction.h \
+    src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h
+
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables
@@ -201,6 +204,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.cpp \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.cpp \
             src/tests/common_scenarios/dp_view/GTTestsDpView.cpp \
+            src/tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.cpp \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.cpp \
             src/api/GTRegionSelector.cpp \
@@ -237,4 +241,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTToolbar.cpp \
             src/api/GTTreeWidget.cpp \
             src/api/GTWidget.cpp \
-            src/api/GTAction.cpp
+            src/api/GTAction.cpp \
+    src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp
+

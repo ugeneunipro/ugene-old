@@ -56,6 +56,12 @@ showCoverage(AssemblyBrowserSettings::getShowCoverageOnRuler())
     connectSlots();
     sl_redraw();
     setMouseTracking(true);
+
+    QObject *startPositionParent = new QObject(this);
+    startPositionParent->setObjectName("start position");
+    startPositionObject = new QObject(startPositionParent);
+
+    this->setObjectName("AssemblyRuler");
 }
 
 void AssemblyRuler::connectSlots() {
@@ -117,6 +123,8 @@ void AssemblyRuler::drawCursor(QPainter & p) {
     
     //4. draw cursor label
     p.drawText(offsetRect, Qt::AlignCenter, cursorLabel);
+    startPositionObject->setObjectName(cursorLabel);
+
     if(!showCoords) {
         return;
     }

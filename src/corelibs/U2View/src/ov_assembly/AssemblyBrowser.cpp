@@ -99,7 +99,7 @@ showInfoAction(0), exportToSamAction(0)
     GCOUNTER( cvar, tvar, "AssemblyBrowser:open" );
     initFont();
     setupActions();
- 
+
     if(gobject) {
         objects.append(o);
         requiredObjects.append(o);

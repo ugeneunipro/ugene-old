@@ -46,7 +46,8 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
     } else {
         setWindowTitle("Import BAM file");
     }
-    
+this->setObjectName("Import BAM file");
+
     connect(ui.bamInfoButton, SIGNAL(clicked()), SLOT(sl_bamInfoButtonClicked()));
     connect(ui.selectAllToolButton, SIGNAL(clicked()), SLOT(sl_selectAll()));
     connect(ui.selectNoneToolButton, SIGNAL(clicked()), SLOT(sl_unselectAll()));

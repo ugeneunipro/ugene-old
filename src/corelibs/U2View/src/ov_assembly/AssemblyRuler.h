@@ -81,6 +81,7 @@ private:
     
     bool showCoords;
     bool showCoverage;
+    QObject *startPositionObject;
 };
 
 } //ns

@@ -42,11 +42,11 @@ void DotPlotFiller::run() {
         GT_CHECK(minLenBox->value()==2,"minLem not 2, 1k button works wrong");
     }
     else
-        GTSpinBox::setValue(os, minLenBox, minLen);
+        GTSpinBox::setValue(os, minLenBox, minLen,GTGlobals::UseKey);
 
     if (identity) {
         QSpinBox *identityBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "identityBox", dialog));
-        GTSpinBox::setValue(os, identityBox, identity);
+        GTSpinBox::setValue(os, identityBox, identity,GTGlobals::UseKey);
     }
 
     QCheckBox* invertedCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "invertedCheckBox", dialog));

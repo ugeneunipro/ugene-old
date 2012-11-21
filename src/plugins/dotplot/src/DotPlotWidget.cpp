@@ -113,6 +113,8 @@ DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
 
     exitButton->setAutoFillBackground(true);
     exitButton->setAutoRaise(true);
+
+    this->setObjectName("dotplot widget");
 }
 
 // init menu items, actions and connect signals
@@ -131,6 +133,7 @@ void DotPlotWidget::initActionsAndSignals() {
     connect(loadDotPlotAction, SIGNAL(triggered()), SLOT(sl_showLoadFileDialog()));
 
     deleteDotPlotAction = new QAction(tr("Remove"), this);
+    deleteDotPlotAction->setObjectName("Remove");
     connect(deleteDotPlotAction, SIGNAL(triggered()), SLOT(sl_showDeleteDialog()));
 
     filterDotPlotAction = new QAction(tr("Filter Results"), this);
@@ -209,6 +212,8 @@ void DotPlotWidget::buildPopupMenu(QMenu *m) const {
         assert(!m->actions().isEmpty());
 
         QMenu* dotPlotMenu = new QMenu(tr("Dotplot"), m);
+        //dotPlotMenu->set
+        dotPlotMenu->menuAction()->setObjectName("Dotplot");
         QMenu* saveMenu = new QMenu(tr("Save/Load"), dotPlotMenu);
 
         saveMenu->addAction(saveImageAction);
@@ -223,6 +228,7 @@ void DotPlotWidget::buildPopupMenu(QMenu *m) const {
 
         QAction *b = *(m->actions().begin());
         m->insertMenu(b, dotPlotMenu);
+        m->setObjectName("dotplot context menu");
     }
 }
 

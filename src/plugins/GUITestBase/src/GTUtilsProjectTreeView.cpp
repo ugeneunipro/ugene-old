@@ -41,6 +41,7 @@ void GTUtilsProjectTreeView::openView(U2OpStatus& os) {
     GTGlobals::FindOptions options;
     options.failIfNull = false;
 
+    GTGlobals::sleep(500);
     QWidget *documentTreeWidget = GTWidget::findWidget(os, widgetName, NULL, options);
     if (!documentTreeWidget) {
         toggleView(os);

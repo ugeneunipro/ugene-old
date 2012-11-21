@@ -134,6 +134,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_4) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
+
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
     GTGlobals::sleep(1000);
 
@@ -155,6 +156,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     offsetsVisible = GTUtilsMSAEditorSequenceArea::offsetsVisible(os);
     CHECK_SET_ERR(offsetsVisible == true, "Offsets are not visible");
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
