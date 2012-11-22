@@ -48,8 +48,9 @@ CufflinksSupportTask::CufflinksSupportTask(const CufflinksSettings& _settings)
     : Task(tr("Running Cufflinks task"), TaskFlags_NR_FOSE_COSC),
       settings(_settings),
       logParser(NULL),
-      cufflinksExtToolTask(NULL),
-      tmpDoc(NULL)
+      tmpDoc(NULL),
+      convertAssToSamTask(NULL),
+      cufflinksExtToolTask(NULL)
 {
 }
 

@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-void DNASequenceUtils::append(DNASequence& sequence, const DNASequence& appendedSequence, U2OpStatus& os) {
+void DNASequenceUtils::append(DNASequence& sequence, const DNASequence& appendedSequence, U2OpStatus& /* os */) {
     sequence.seq = sequence.constSequence() + appendedSequence.constSequence();
 }
 

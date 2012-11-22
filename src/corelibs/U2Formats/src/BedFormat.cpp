@@ -102,7 +102,7 @@ BedFormat::BedFormat(QObject* p)
 }
 
 
-Document* BedFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os)
+Document* BedFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& /* fs */, U2OpStatus& os)
 {
     CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
     QList<GObject*> objects;
@@ -242,7 +242,7 @@ bool validateBlocks(const QString& blockCountStr, const QString& blockSizesStr, 
     QVector<int> blockSizes;
     QVector<int> blockStarts;
     for (int i = 0; i < blockCount; ++i) {
-        int size = blockSizesStrValues[i].toInt(&conversionIsOk);
+        blockSizesStrValues[i].toInt(&conversionIsOk);
         if (false == conversionIsOk) {
             return false;
         }

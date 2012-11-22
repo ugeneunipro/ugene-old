@@ -53,18 +53,18 @@ ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(GUrl db, GUrl sam)
 
 ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(const DbiConnection *h, GUrl sam)
 : Task("ConvertAssemblyToSamTask", (TaskFlag)(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)),
+    dbFileUrl(NULL),
     samFileUrl(sam),
-    handle(h),
-    dbFileUrl(NULL)
+    handle(h)
 {
 }
 
 ConvertAssemblyToSamTask::ConvertAssemblyToSamTask(const U2EntityRef& entityRef, GUrl sam)
 : Task("ConvertAssemblyToSamTask", (TaskFlag)(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)),
-    samFileUrl(sam),
-    handle(NULL),
     dbFileUrl(NULL),
-    assemblyEntityRef(entityRef)
+    samFileUrl(sam),
+    assemblyEntityRef(entityRef),
+    handle(NULL)
 {
 }
 

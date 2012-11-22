@@ -154,7 +154,7 @@ QList<SharedAnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QSt
 
     // Validate the header
     length = readFpkmTrLine(qstrbuf, io, buff);
-    if (length = 0) {
+    if (0 == length) {
         return result;
     }
     QStringList columnsNames;

@@ -46,7 +46,7 @@ MAlignmentRow::MAlignmentRow()
 {
 }
 
-MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& bytes, U2OpStatus& os) {
+MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& bytes, U2OpStatus& /* os */) {
     QByteArray newSequenceBytes;
     QList<U2MsaGap> newGapsModel;
 
@@ -56,7 +56,7 @@ MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& by
     return MAlignmentRow(newSequence, newGapsModel);
 }
 
-MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& bytes, int offset, U2OpStatus& os) {
+MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& bytes, int offset, U2OpStatus& /* os */) {
     QByteArray newSequenceBytes;
     QList<U2MsaGap> newGapsModel;
 
@@ -244,7 +244,7 @@ void MAlignmentRow::append(const MAlignmentRow& anotherRow, int lengthBefore, U2
     DNASequenceUtils::append(sequence, anotherRow.sequence, os);
 }
 
-void MAlignmentRow::setRowContent(const QByteArray& bytes, int offset, U2OpStatus& os) {
+void MAlignmentRow::setRowContent(const QByteArray& bytes, int offset, U2OpStatus& /* os */) {
     QByteArray newSequenceBytes;
     QList<U2MsaGap> newGapsModel;
 
@@ -893,7 +893,7 @@ bool MAlignment::crop(const U2Region& region, const QSet<QString>& rowNames) {
     return true;
 }
 
-void MAlignment::addRow(const MAlignmentRow& row, int rowIndex, U2OpStatus& os) {
+void MAlignment::addRow(const MAlignmentRow& row, int rowIndex, U2OpStatus& /* os */) {
     MAStateCheck check(this);
 
     length = qMax(row.getCoreEnd(), length);
@@ -969,7 +969,6 @@ void MAlignment::appendChars(int row, const char* str, int len) {
     CHECK_OP(os, );
 
     rowLength = rows[row].getRowLength();
-    int rowCoreLength = rows[row].getCoreLength();
 
     length = qMax(length, rowLength);
 }
@@ -1014,7 +1013,6 @@ void MAlignment::removeRegion(int startPos, int startRow, int nBases, int nRows,
     U2OpStatus2Log os;
     for (int i = startRow + nRows; --i >= startRow;) {
         MAlignmentRow& r = rows[i];
-        int rowLength = r.getCoreEnd();
         lengthHolder = lengthHolder || length == r.getCoreEnd();
 
         r.removeChars(startPos, nBases, os);
@@ -1147,7 +1145,6 @@ void MAlignment::moveRowsBlock(int startRow, int numRows, int delta)
     int i = 0;
     int k = qAbs(delta);
 
-    int rowsLength = rows.length();
     SAFE_POINT(( delta > 0 && startRow + numRows + delta - 1 < rows.length())
         || (delta < 0 && startRow + delta >= 0 && startRow + qAbs(delta) <= rows.length()),
         QString("Incorrect parameters in MAlignment::moveRowsBlock: "

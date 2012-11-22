@@ -120,55 +120,55 @@ FormatCheckResult SAMFormat::checkRawData( const QByteArray& rawData, const GUrl
     return FormatDetection_VeryHighSimilarity;
 }
 
-static void prepareRead(const QByteArray& core, const QByteArray& quality, QByteArray& seq, QByteArray& qual, QByteArray& cigar) {
-    bool gap = true;
-    int lastCigarPos = 0;
+//static void prepareRead(const QByteArray& core, const QByteArray& quality, QByteArray& seq, QByteArray& qual, QByteArray& cigar) {
+//    bool gap = true;
+//    int lastCigarPos = 0;
+//
+//    QList<U2CigarToken> cigarTokens;
+//
+//    for(int i = 0, coreLen = core.length(); i < coreLen; i++) {
+//        char c = core[i];
+//        if(c == MAlignment_GapChar) {
+//            if(!gap) {
+//                if(i != lastCigarPos) {
+//                    cigarTokens.append(U2CigarToken(U2CigarOp_M, i - lastCigarPos));
+//                }
+//                gap = true;
+//                lastCigarPos = i;
+//            }
+//        } else {
+//            seq.push_back(c);
+//            if(!quality.isEmpty()) {
+//                qual.push_back(DNAQuality::encode(quality[i], DNAQualityType_Sanger));
+//            }
+//            if(gap) {
+//                if(i != lastCigarPos) {
+//                    cigarTokens.append(U2CigarToken(U2CigarOp_N, i - lastCigarPos));
+//                }
+//                gap = false;
+//                lastCigarPos = i;
+//            }
+//        }
+//    }
+//    if(lastCigarPos != core.length() - 1) {
+//        cigarTokens.append(U2CigarToken(gap ? U2CigarOp_N : U2CigarOp_M, core.length() - 1 - lastCigarPos));
+//    }
+//    if(cigarTokens.isEmpty()) {
+//        cigar = QByteArray("*");
+//    } else {
+//        foreach(U2CigarToken token, cigarTokens) {
+//            assert(token.count != 0);
+//            cigar.append(QString::number(token.count));
+//            switch(token.op) {
+//                case U2CigarOp_M: cigar.append("M"); break;
+//                case U2CigarOp_N: cigar.append("N"); break;
+//                default:;
+//            }
+//        }
+//    }
+//}
 
-    QList<U2CigarToken> cigarTokens;
-
-    for(int i = 0, coreLen = core.length(); i < coreLen; i++) {
-        char c = core[i];
-        if(c == MAlignment_GapChar) {
-            if(!gap) {
-                if(i != lastCigarPos) {
-                    cigarTokens.append(U2CigarToken(U2CigarOp_M, i - lastCigarPos));
-                }
-                gap = true;
-                lastCigarPos = i;
-            }
-        } else {
-            seq.push_back(c);
-            if(!quality.isEmpty()) {
-                qual.push_back(DNAQuality::encode(quality[i], DNAQualityType_Sanger));
-            }
-            if(gap) {
-                if(i != lastCigarPos) {
-                    cigarTokens.append(U2CigarToken(U2CigarOp_N, i - lastCigarPos));
-                }
-                gap = false;
-                lastCigarPos = i;
-            }
-        }
-    }
-    if(lastCigarPos != core.length() - 1) {
-        cigarTokens.append(U2CigarToken(gap ? U2CigarOp_N : U2CigarOp_M, core.length() - 1 - lastCigarPos));
-    }
-    if(cigarTokens.isEmpty()) {
-        cigar = QByteArray("*");
-    } else {
-        foreach(U2CigarToken token, cigarTokens) {
-            assert(token.count != 0);
-            cigar.append(QString::number(token.count));
-            switch(token.op) {
-                case U2CigarOp_M: cigar.append("M"); break;
-                case U2CigarOp_N: cigar.append("N"); break;
-                default:;
-            }
-        }
-    }
-}
-
-Document* SAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& _fs, U2OpStatus& os) {
+Document* SAMFormat::loadDocument(IOAdapter* /* io */, const U2DbiRef& /* dbiRef */, const QVariantMap& /* _fs */, U2OpStatus& /* os */) {
     FAIL("Not implemented", NULL);
 
     //CHECK_EXT(io != NULL   && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
@@ -326,7 +326,7 @@ Document* SAMFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 }
 
 
-void SAMFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
+void SAMFormat::storeDocument(Document* /* d */, IOAdapter* /* io */, U2OpStatus& /* os */) {
     FAIL("Not implemented", );
     ////TODO: sorting options?
     //CHECK_EXT(d!=NULL, os.setError(L10N::badArgument("doc")), );
@@ -338,7 +338,7 @@ void SAMFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     //storeEntry(io, objectsMap, os);
 }
 
-void SAMFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &/*os*/) {
+void SAMFormat::storeEntry(IOAdapter * /* io */, const QMap< GObjectType, QList<GObject*> > & /* objectsMap */, U2OpStatus &/*os*/) {
     FAIL("Not implemented", );
     //SAFE_POINT(objectsMap.contains(GObjectTypes::MULTIPLE_ALIGNMENT), "Clustal entry storing: no alignment", );
     //const QList<GObject*> &als = objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT];

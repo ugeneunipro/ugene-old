@@ -323,9 +323,6 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
 
         //write sequence
         foreach(const MAlignmentRow& row, ma.getRows()) {
-
-            QString rowName = row.getName();
-
             QByteArray line = row.getName().toLocal8Bit();
             line.replace(' ', '_'); // since ' ' is a delimiter for MSF parser spaces in name not supported
             line = line.leftJustified(maxNameLen+1);
@@ -334,27 +331,9 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
                 line += ' ';
                 int nChars = qMin(CHARS_IN_WORD, maLen - (i + j));
                 MAlignmentRow rowPart = row.mid(i + j, nChars, os);
-
-
-                DNASequence testSeq = rowPart.getSequence();
-                QList<U2MsaGap> testGapModel = rowPart.getGapModel();
-                for (int i = 0, n = testGapModel.size(); i < n; ++i) {
-                    U2MsaGap gap = testGapModel[i];
-                }
-
-
-                if (os.hasError()) {
-                    bool test = true;
-                }
                 QByteArray bytes = rowPart.toByteArray(nChars, os);
-                if (os.hasError()) {
-                    bool test = true;
-                }
                 bytes.replace(MAlignment_GapChar, '.');
-
                 line += bytes;
-
-                //line += row.mid(i + j, nChars, os).toByteArray(nChars, os).replace(MAlignment_GapChar, '.');
             }
             SAFE_POINT_OP(os, );
             line += '\n';
