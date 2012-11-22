@@ -80,6 +80,8 @@ MAlignment MSAUtils::seq2ma(const QList<GObject*>& list, U2OpStatus& os, bool us
     foreach(GObject* obj, list) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
         if (dnaObj == NULL) {
+            if (MAlignmentObject* maObj = qobject_cast<MAlignmentObject*>(obj))
+                return maObj->getMAlignment();
             continue;
         }
         if (useGenbankHeader) {
