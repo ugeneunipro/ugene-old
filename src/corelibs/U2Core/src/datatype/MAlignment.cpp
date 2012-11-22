@@ -412,14 +412,16 @@ void MAlignmentRow::removeChars(int pos, int count, U2OpStatus& os) {
         return;
     }
 
-    int startPosInSeq = -1;
-    int endPosInSeq = -1;
-    getStartAndEndSequencePositions(pos, count, startPosInSeq, endPosInSeq);
+    if (pos < getRowLengthWithoutTrailing()) {
+        int startPosInSeq = -1;
+        int endPosInSeq = -1;
+        getStartAndEndSequencePositions(pos, count, startPosInSeq, endPosInSeq);
 
-    // Remove inside a gap
-    if (startPosInSeq < endPosInSeq) {
-        DNASequenceUtils::removeChars(sequence, startPosInSeq, endPosInSeq, os);
-        CHECK_OP(os, );
+        // Remove inside a gap
+        if ((startPosInSeq < endPosInSeq) && (-1 != startPosInSeq) && (-1 != endPosInSeq)) {
+            DNASequenceUtils::removeChars(sequence, startPosInSeq, endPosInSeq, os);
+            CHECK_OP(os, );
+        }
     }
 
     // Remove gaps from the gaps model
@@ -443,7 +445,7 @@ bool MAlignmentRow::isRowContentEqual(const MAlignmentRow& row) const {
 
             QList<U2MsaGap> secondRowGaps = row.getGapModel();
             if (!secondRowGaps.isEmpty() &&
-                (MAlignment_GapChar == charAt(getRowLength() - 1)))
+                (MAlignment_GapChar == row.charAt(row.getRowLength() - 1)))
             {
                 secondRowGaps.removeLast();
             }
@@ -587,8 +589,6 @@ void MAlignmentRow::crop(int pos, int count, U2OpStatus& os) {
     if (pos >= getRowLengthWithoutTrailing()) {
         // Clear the row content
         DNASequenceUtils::makeEmpty(sequence);
-        //gaps = QList<U2MsaGap>();
-        //return;
     }
     else {
         int startPosInSeq = -1;
