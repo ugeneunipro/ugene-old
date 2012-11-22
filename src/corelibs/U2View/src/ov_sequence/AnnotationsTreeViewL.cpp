@@ -62,12 +62,12 @@
 
 namespace U2 {
 
-class TreeSorter {
+class TreeSorterL {
 public:
-    TreeSorter(AnnotationsTreeViewL* t) : w(t) {
+    TreeSorterL(AnnotationsTreeViewL* t) : w(t) {
         w->setSortingEnabled(false);
     }
-    virtual ~TreeSorter() {
+    virtual ~TreeSorterL() {
         w->setSortingEnabled(true);
     }
     AnnotationsTreeViewL* w;
@@ -437,7 +437,7 @@ void AnnotationsTreeViewL::sl_onAnnotationGroupSelectionChanged(AnnotationGroupS
 
 void AnnotationsTreeViewL::sl_onAnnotationObjectAdded(AnnotationTableObject* obj) {
     GTIMER(c2,t2,"AnnotationsTreeView::sl_onAnnotationObjectAdded");
-    TreeSorter ts(this);
+    TreeSorterL ts(this);
     
     assert(findGroupItem(obj->getRootGroup()) == NULL);
     LazyAnnotationTreeViewModel *model = static_cast<LazyAnnotationTreeViewModel *>(tree->model());
@@ -466,7 +466,7 @@ void AnnotationsTreeViewL::sl_onAnnotationObjectAdded(AnnotationTableObject* obj
 }
 
 void AnnotationsTreeViewL::sl_onAnnotationObjectRemoved(AnnotationTableObject* obj) {
-    TreeSorter ts(this);
+    TreeSorterL ts(this);
 
     AVGroupItemL* groupItem = findGroupItem(obj->getRootGroup());
     if (groupItem) {
@@ -490,7 +490,7 @@ void AnnotationsTreeViewL::sl_onAnnotationsInGroupRemoved(const QList<Annotation
 
 void AnnotationsTreeViewL::sl_onAnnotationsAdded(const QList<Annotation*>& as) {
     GTIMER(c1,t1,"AnnotationsTreeView::sl_onAnnotationsAdded");
-    TreeSorter ts(this);
+    TreeSorterL ts(this);
 
     QSet<AVGroupItemL*> toUpdate;
     foreach(Annotation* a, as) {
@@ -524,7 +524,7 @@ void AnnotationsTreeViewL::sl_onAnnotationsAdded(const QList<Annotation*>& as) {
 }
 
 void AnnotationsTreeViewL::sl_onAnnotationsRemoved(const QList<Annotation*>& as) {
-    TreeSorter ts(this);
+    TreeSorterL ts(this);
     
     tree->disconnect(this, SIGNAL(sl_onItemSelectionChanged()));
 
@@ -1546,7 +1546,7 @@ void AnnotationsTreeViewL::updateAllAnnotations(ATVAnnUpdateFlags flags) {
 }
 
 void AnnotationsTreeViewL::addQualifierColumn(const QString& q) {
-    TreeSorter ts(this);
+    TreeSorterL ts(this);
 
     qColumns.append(q);
     int nColumns = headerLabels.size() + qColumns.size();
@@ -1569,7 +1569,7 @@ void AnnotationsTreeViewL::removeQualifierColumn(const QString& q) {
         return;
     }
 
-    TreeSorter ts(this);
+    TreeSorterL ts(this);
 
     //tree->setColumnCount(headerLabels.size() + qColumns.size());
     LazyAnnotationTreeViewModel *lm = static_cast<LazyAnnotationTreeViewModel*>(tree->model());
@@ -1595,7 +1595,7 @@ void AnnotationsTreeViewL::updateState(const QVariantMap& map) {
     //QByteArray geom = map.value(COLUMNS_GEOM).toByteArray();
     
     if (columns != qColumns && !columns.isEmpty()) {
-        TreeSorter ts(this);
+        TreeSorterL ts(this);
         foreach(QString q, qColumns) {
             removeQualifierColumn(q);
         }
