@@ -60,6 +60,7 @@ MAlignmentRowUnitTests
 + insertGaps_negativeNumOfChars
 + charAt_allCharsNoOffset
 + charAt_offsetAndTrailing
++ charAt_onlyCharsInRow
 + remove_empty
 + remove_insideGap1
 + remove_insideGap2
@@ -74,6 +75,7 @@ MAlignmentRowUnitTests
 + remove_insideOneGap1
 + remove_insideOneGap2
 + remove_insideOneGapLong
++ remove_insideTrailingGap
 + remove_insideCharsOne
 + remove_negativePosition
 + remove_negativeNumOfChars
@@ -83,6 +85,10 @@ MAlignmentRowUnitTests
 + remove_emptyAfterRemove
 + remove_oneCharInGaps
 + rowsEqual_sameContent
++ rowsEqual_noGaps
++ rowsEqual_trailingInFirst
++ rowsEqual_trailingInSecond
++ rowsEqual_trailingInBoth
 + rowsEqual_diffGapModelsGap
 + rowsEqual_diffGapModelsOffset
 + rowsEqual_diffNumOfGaps

@@ -201,6 +201,7 @@ DECLARE_TEST(MAlignmentRowUnitTests, insertGaps_negativeNumOfChars);
  *   ^ insideOneGap1       - a region inside a long gap is removed (middle and end gaps in "---")
  *   ^ insideOneGap2       - a gap inside a long gap is removed (middle in "---")
  *   ^ insideOneGapLong    - several gaps inside longer gaps region
+ *   ^ insideTrailingGap   - remove gap chars inside a long trailing gap
  *   ^ insideCharsOne      - one char inside non-gap chars region
  *   ^ negativePosition    - negative 'pos' has been specified => error
  *   ^ negativeNumOfChars  - negative 'count' has been specified => error
@@ -224,6 +225,7 @@ DECLARE_TEST(MAlignmentRowUnitTests, remove_fromLastPos);
 DECLARE_TEST(MAlignmentRowUnitTests, remove_insideOneGap1);
 DECLARE_TEST(MAlignmentRowUnitTests, remove_insideOneGap2);
 DECLARE_TEST(MAlignmentRowUnitTests, remove_insideOneGapLong);
+DECLARE_TEST(MAlignmentRowUnitTests, remove_insideTrailingGap);
 DECLARE_TEST(MAlignmentRowUnitTests, remove_insideCharsOne);
 DECLARE_TEST(MAlignmentRowUnitTests, remove_toBiggerPosition);
 DECLARE_TEST(MAlignmentRowUnitTests, remove_negativePosition);
@@ -238,19 +240,29 @@ DECLARE_TEST(MAlignmentRowUnitTests, remove_oneCharInGaps);
  * Getting a char at the specified position:
  *   ^ allCharsNoOffset  - verify all indexes of a row without gap offset in the beginning
  *   ^ offsetAndTrailing - verify gaps at the beginning and end of a row
+ *   ^ onlyCharsInRow    - there are no gaps in the row
  */
 DECLARE_TEST(MAlignmentRowUnitTests, charAt_allCharsNoOffset);
 DECLARE_TEST(MAlignmentRowUnitTests, charAt_offsetAndTrailing);
+DECLARE_TEST(MAlignmentRowUnitTests, charAt_onlyCharsInRow);
 
 /**
  * Checking if rows are equal (method "isRowContentEqual", "operator==", "operator!="):
- *   ^ sameContent         - rows content are equal
+ *   ^ sameContent         - rows contents are equal
+ *   ^ noGaps              - rows contents are equal, there are no gaps in the rows
+ *   ^ trailingInFirst     - rows contents are equal except there is a trailing gap in the first row
+ *   ^ trailingInSecond    - rows contents are equal except there is a trailing gap in the second row
+ *   ^ trailingInBoth      - rows contents are equal except trailing gaps, i.e. both rows have trailing gaps and sizes of the gaps are different
  *   ^ diffGapModelsGap    - gaps models are different (lengths of gaps are different)
  *   ^ diffGapModelsOffset - gaps models are different (offsets of gaps are different)
  *   ^ diffNumOfGaps       - gaps models are different (number of gaps differs)
  *   ^ diffSequences       - sequences differ
  */
 DECLARE_TEST(MAlignmentRowUnitTests, rowsEqual_sameContent);
+DECLARE_TEST(MAlignmentRowUnitTests, rowsEqual_noGaps);
+DECLARE_TEST(MAlignmentRowUnitTests, rowsEqual_trailingInFirst);
+DECLARE_TEST(MAlignmentRowUnitTests, rowsEqual_trailingInSecond);
+DECLARE_TEST(MAlignmentRowUnitTests, rowsEqual_trailingInBoth);
 DECLARE_TEST(MAlignmentRowUnitTests, rowsEqual_diffGapModelsGap);
 DECLARE_TEST(MAlignmentRowUnitTests, rowsEqual_diffGapModelsOffset);
 DECLARE_TEST(MAlignmentRowUnitTests, rowsEqual_diffNumOfGaps);
@@ -318,7 +330,7 @@ DECLARE_TEST(MAlignmentRowUnitTests, crop_posMoreThanLength);
  */
 DECLARE_TEST(MAlignmentRowUnitTests, mid_general);
 
-/** Converting to upper case */
+/** Converting to upper case. It is also verified that the name of the row is not changed. */
 DECLARE_TEST(MAlignmentRowUnitTests, upperCase_general);
 
 /**
@@ -408,6 +420,7 @@ DECLARE_METATYPE(MAlignmentRowUnitTests, remove_fromLastPos)
 DECLARE_METATYPE(MAlignmentRowUnitTests, remove_insideOneGap1)
 DECLARE_METATYPE(MAlignmentRowUnitTests, remove_insideOneGap2)
 DECLARE_METATYPE(MAlignmentRowUnitTests, remove_insideOneGapLong)
+DECLARE_METATYPE(MAlignmentRowUnitTests, remove_insideTrailingGap)
 DECLARE_METATYPE(MAlignmentRowUnitTests, remove_insideCharsOne)
 DECLARE_METATYPE(MAlignmentRowUnitTests, remove_negativePosition)
 DECLARE_METATYPE(MAlignmentRowUnitTests, remove_negativeNumOfChars)
@@ -418,7 +431,12 @@ DECLARE_METATYPE(MAlignmentRowUnitTests, remove_emptyAfterRemove)
 DECLARE_METATYPE(MAlignmentRowUnitTests, remove_oneCharInGaps)
 DECLARE_METATYPE(MAlignmentRowUnitTests, charAt_allCharsNoOffset)
 DECLARE_METATYPE(MAlignmentRowUnitTests, charAt_offsetAndTrailing)
+DECLARE_METATYPE(MAlignmentRowUnitTests, charAt_onlyCharsInRow)
 DECLARE_METATYPE(MAlignmentRowUnitTests, rowsEqual_sameContent)
+DECLARE_METATYPE(MAlignmentRowUnitTests, rowsEqual_noGaps)
+DECLARE_METATYPE(MAlignmentRowUnitTests, rowsEqual_trailingInFirst)
+DECLARE_METATYPE(MAlignmentRowUnitTests, rowsEqual_trailingInSecond)
+DECLARE_METATYPE(MAlignmentRowUnitTests, rowsEqual_trailingInBoth)
 DECLARE_METATYPE(MAlignmentRowUnitTests, rowsEqual_diffGapModelsGap)
 DECLARE_METATYPE(MAlignmentRowUnitTests, rowsEqual_diffGapModelsOffset)
 DECLARE_METATYPE(MAlignmentRowUnitTests, rowsEqual_diffNumOfGaps)

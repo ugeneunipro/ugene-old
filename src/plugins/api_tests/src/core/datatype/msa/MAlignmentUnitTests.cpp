@@ -254,6 +254,31 @@ IMPLEMENT_TEST(MAlignmentUnitTests, trim_empty) {
     CHECK_FALSE(result, "Method trim() returned 'true' unexpectedly!");
 }
 
+IMPLEMENT_TEST(MAlignmentUnitTests, trim_trailingGapInOne) {
+    QByteArray firstSequence("ACGT");
+    QByteArray secondSequence("CAC-");
+
+    U2OpStatusImpl os;
+    MAlignmentRow row1 = MAlignmentRow::createRow("First row", firstSequence, os);
+    CHECK_NO_ERROR(os);
+
+    MAlignmentRow row2 = MAlignmentRow::createRow("Second row", secondSequence, os);
+    CHECK_NO_ERROR(os);
+
+    QList<MAlignmentRow> rows;
+    rows << row1 << row2;
+
+    MAlignment almnt = MAlignment("Alignment", NULL, rows);
+
+    bool result = almnt.trim();
+
+    CHECK_FALSE(result, "Method trim() returned 'true' unexpectedly!");
+    CHECK_EQUAL(4, almnt.getLength(), "alignment length");
+    CHECK_EQUAL("ACGT", MAlignmentTestUtils::getRowData(almnt, 0), "first row data");
+    CHECK_EQUAL("CAC-", MAlignmentTestUtils::getRowData(almnt, 1), "second row data");
+    CHECK_EQUAL(1, almnt.getRow(1).getGapModel().size(), "number of gaps in the second row");
+}
+
 /** Tests simplify */
 IMPLEMENT_TEST(MAlignmentUnitTests, simplify_withGaps) {
     MAlignment almnt = MAlignmentTestUtils::initTestAlignment();
@@ -508,6 +533,26 @@ IMPLEMENT_TEST(MAlignmentUnitTests, insertGaps_validParams) {
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(10, almnt.getLength(), "alignment length");
     CHECK_EQUAL("---A---G-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+}
+
+IMPLEMENT_TEST(MAlignmentUnitTests, insertGaps_toBeginningLength) {
+    QByteArray firstSequence("ACGT");
+    QByteArray secondSequence("ACC");
+
+    U2OpStatusImpl os;
+    MAlignmentRow row1 = MAlignmentRow::createRow("First", firstSequence, os);
+    CHECK_NO_ERROR(os);
+    MAlignmentRow row2 = MAlignmentRow::createRow("Second", secondSequence, os);
+    CHECK_NO_ERROR(os);
+
+    QList<MAlignmentRow> rows;
+    rows << row1 << row2;
+    MAlignment almnt("Alignment", NULL, rows);
+
+    almnt.insertGaps(1, 0, 2, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(5, almnt.getLength(), "alignment length");
+    CHECK_EQUAL("--ACC", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
 }
 
 IMPLEMENT_TEST(MAlignmentUnitTests, insertGaps_negativeRowIndex) {

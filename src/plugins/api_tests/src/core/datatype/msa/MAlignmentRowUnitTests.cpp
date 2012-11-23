@@ -888,6 +888,16 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, remove_insideOneGapLong) {
     CHECK_EQUAL(3, row.getGapModel().count(), "number of gaps");
 }
 
+IMPLEMENT_TEST(MAlignmentRowUnitTests, remove_insideTrailingGap) {
+    U2OpStatusImpl os;
+    MAlignmentRow row = MAlignmentRow::createRow("Test row", "AC-GT----", os);
+    CHECK_NO_ERROR(os);
+    row.removeChars(5, 2, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL("AC-GT--", MAlignmentRowTestUtils::getRowData(row), "row data");
+    CHECK_EQUAL(2, row.getGapModel().count(), "number of gaps");
+}
+
 IMPLEMENT_TEST(MAlignmentRowUnitTests, remove_insideCharsOne) {
     MAlignmentRow row = MAlignmentRowTestUtils::initTestRowForModification();
     U2OpStatusImpl os;
@@ -1019,10 +1029,88 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, charAt_offsetAndTrailing) {
     CHECK_EQUAL('-', ch, "char 4");
 }
 
+IMPLEMENT_TEST(MAlignmentRowUnitTests, charAt_onlyCharsInRow) {
+    U2OpStatusImpl os;
+    MAlignmentRow row = MAlignmentRow::createRow("Test row", "ACG", os);
+    CHECK_NO_ERROR(os);
+
+    char ch = row.charAt(-1);
+    CHECK_EQUAL('-', ch, "char -1");
+
+    ch = row.charAt(0);
+    CHECK_EQUAL('A', ch, "char 0");
+
+    ch = row.charAt(1);
+    CHECK_EQUAL('C', ch, "char 1");
+
+    ch = row.charAt(2);
+    CHECK_EQUAL('G', ch, "char 2");
+
+    ch = row.charAt(3);
+    CHECK_EQUAL('-', ch, "char 3");
+}
+
+
 /** Tests rowEqual */
 IMPLEMENT_TEST(MAlignmentRowUnitTests, rowsEqual_sameContent) {
     MAlignmentRow firstRow = MAlignmentRowTestUtils::initTestRowWithGapsInMiddle();
     MAlignmentRow secondRow = MAlignmentRowTestUtils::initTestRowWithGapsInMiddle();
+
+    bool result = firstRow.isRowContentEqual(secondRow);
+    CHECK_TRUE(result, "The first and the second rows are NOT equal unexpectedly!");
+
+    CHECK_TRUE(firstRow == secondRow, "Incorrect 'operator=='!");
+    CHECK_FALSE(firstRow != secondRow, "Incorrect 'operator!='!");
+}
+
+IMPLEMENT_TEST(MAlignmentRowUnitTests, rowsEqual_noGaps) {
+    U2OpStatusImpl os;
+    MAlignmentRow firstRow = MAlignmentRow::createRow("First", "ACT", os);
+    CHECK_NO_ERROR(os);
+    MAlignmentRow secondRow = MAlignmentRow::createRow("Second", "ACT", os);
+    CHECK_NO_ERROR(os);
+
+    bool result = firstRow.isRowContentEqual(secondRow);
+    CHECK_TRUE(result, "The first and the second rows are NOT equal unexpectedly!");
+
+    CHECK_TRUE(firstRow == secondRow, "Incorrect 'operator=='!");
+    CHECK_FALSE(firstRow != secondRow, "Incorrect 'operator!='!");
+}
+
+IMPLEMENT_TEST(MAlignmentRowUnitTests, rowsEqual_trailingInFirst) {
+    U2OpStatusImpl os;
+    MAlignmentRow firstRow = MAlignmentRow::createRow("First", "AC-GT-", os);
+    CHECK_NO_ERROR(os);
+    MAlignmentRow secondRow = MAlignmentRow::createRow("Second", "AC-GT", os);
+    CHECK_NO_ERROR(os);
+
+    bool result = firstRow.isRowContentEqual(secondRow);
+    CHECK_TRUE(result, "The first and the second rows are NOT equal unexpectedly!");
+
+    CHECK_TRUE(firstRow == secondRow, "Incorrect 'operator=='!");
+    CHECK_FALSE(firstRow != secondRow, "Incorrect 'operator!='!");
+}
+
+IMPLEMENT_TEST(MAlignmentRowUnitTests, rowsEqual_trailingInSecond) {
+    U2OpStatusImpl os;
+    MAlignmentRow firstRow = MAlignmentRow::createRow("First", "AC-GT", os);
+    CHECK_NO_ERROR(os);
+    MAlignmentRow secondRow = MAlignmentRow::createRow("Second", "AC-GT--", os);
+    CHECK_NO_ERROR(os);
+
+    bool result = firstRow.isRowContentEqual(secondRow);
+    CHECK_TRUE(result, "The first and the second rows are NOT equal unexpectedly!");
+
+    CHECK_TRUE(firstRow == secondRow, "Incorrect 'operator=='!");
+    CHECK_FALSE(firstRow != secondRow, "Incorrect 'operator!='!");
+}
+
+IMPLEMENT_TEST(MAlignmentRowUnitTests, rowsEqual_trailingInBoth) {
+    U2OpStatusImpl os;
+    MAlignmentRow firstRow = MAlignmentRow::createRow("First", "AC-GT---", os);
+    CHECK_NO_ERROR(os);
+    MAlignmentRow secondRow = MAlignmentRow::createRow("Second", "AC-GT--", os);
+    CHECK_NO_ERROR(os);
 
     bool result = firstRow.isRowContentEqual(secondRow);
     CHECK_TRUE(result, "The first and the second rows are NOT equal unexpectedly!");
@@ -1395,6 +1483,9 @@ IMPLEMENT_TEST(MAlignmentRowUnitTests, upperCase_general) {
     CHECK_NO_ERROR(os);
     row.toUpperCase();
     CHECK_EQUAL("AVN-*Y-S", MAlignmentRowTestUtils::getRowData(row), "row data");
+
+    QString actualRowName = row.getName();
+    CHECK_EQUAL("Row name", actualRowName, "row name");
 }
 
 /** Tests replaceChars */

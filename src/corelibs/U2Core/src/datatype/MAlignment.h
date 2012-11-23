@@ -152,7 +152,10 @@ public:
      */
     int getUngappedPosition(int pos) const;
 
-    /** Exactly compares the rows: sequences and gap models must match exactly. */ 
+    /**
+     * Exactly compares the rows. Sequences and gap models must match.
+     * However, the rows are considered equal if they differ by trailing gaps only.
+     */ 
     bool isRowContentEqual(const MAlignmentRow& row) const;
 
     /** Compares 2 rows. Rows are equal if their contents and names are equal. */

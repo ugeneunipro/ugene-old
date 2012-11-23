@@ -95,13 +95,14 @@ DECLARE_TEST(MAlignmentUnitTests, numOfRows_empty);
  *   ^ nothingToTrim     - trim() returns "false"
  *   ^ rowWithoutGaps    - no errors when an alignment contains a row without gaps
  *   ^ empty             - trim() returns "false"
+ *   ^ trailingGapInOne  - there are two rows and nothing to trim, one row has a trailing gap
  */
 DECLARE_TEST(MAlignmentUnitTests, trim_biggerLength);
 DECLARE_TEST(MAlignmentUnitTests, trim_leadingGapColumns);
 DECLARE_TEST(MAlignmentUnitTests, trim_nothingToTrim);
 DECLARE_TEST(MAlignmentUnitTests, trim_rowWithoutGaps);
 DECLARE_TEST(MAlignmentUnitTests, trim_empty);
-
+DECLARE_TEST(MAlignmentUnitTests, trim_trailingGapInOne);
 
 /**
  * Removing all gaps from an alignment:
@@ -147,14 +148,16 @@ DECLARE_TEST(MAlignmentUnitTests, charAt_gap);
 
 /**
  * Inserting gaps into an alignment:
- *   ^ validParams      - gaps are inserted into a row
- *   ^ negativeRowIndex - row index is negative => error
- *   ^ tooBigRowIndex   - row index is greater than the number of rows => error
- *   ^ negativePos      - position is negative => error
- *   ^ tooBigPos        - position is greater than the alignment length => error
- *   ^ negativeCount    - gaps count is negative => error
+ *   ^ validParams       - gaps are inserted into a row
+ *   ^ toBeginningLength - a gap is inserted to a row beginning, the length of the alignment is properly recalculated
+ *   ^ negativeRowIndex  - row index is negative => error
+ *   ^ tooBigRowIndex    - row index is greater than the number of rows => error
+ *   ^ negativePos       - position is negative => error
+ *   ^ tooBigPos         - position is greater than the alignment length => error
+ *   ^ negativeCount     - gaps count is negative => error
  */
 DECLARE_TEST(MAlignmentUnitTests, insertGaps_validParams);
+DECLARE_TEST(MAlignmentUnitTests, insertGaps_toBeginningLength);
 DECLARE_TEST(MAlignmentUnitTests, insertGaps_negativeRowIndex);
 DECLARE_TEST(MAlignmentUnitTests, insertGaps_tooBigRowIndex);
 DECLARE_TEST(MAlignmentUnitTests, insertGaps_negativePos);
@@ -289,6 +292,7 @@ DECLARE_METATYPE(MAlignmentUnitTests, trim_leadingGapColumns);
 DECLARE_METATYPE(MAlignmentUnitTests, trim_nothingToTrim);
 DECLARE_METATYPE(MAlignmentUnitTests, trim_rowWithoutGaps);
 DECLARE_METATYPE(MAlignmentUnitTests, trim_empty);
+DECLARE_METATYPE(MAlignmentUnitTests, trim_trailingGapInOne);
 DECLARE_METATYPE(MAlignmentUnitTests, simplify_withGaps);
 DECLARE_METATYPE(MAlignmentUnitTests, simplify_withoutGaps);
 DECLARE_METATYPE(MAlignmentUnitTests, simplify_empty);
@@ -303,6 +307,7 @@ DECLARE_METATYPE(MAlignmentUnitTests, getRows_rowNames);
 DECLARE_METATYPE(MAlignmentUnitTests, charAt_nonGapChar);
 DECLARE_METATYPE(MAlignmentUnitTests, charAt_gap);
 DECLARE_METATYPE(MAlignmentUnitTests, insertGaps_validParams);
+DECLARE_METATYPE(MAlignmentUnitTests, insertGaps_toBeginningLength);
 DECLARE_METATYPE(MAlignmentUnitTests, insertGaps_negativeRowIndex);
 DECLARE_METATYPE(MAlignmentUnitTests, insertGaps_tooBigRowIndex);
 DECLARE_METATYPE(MAlignmentUnitTests, insertGaps_negativePos);

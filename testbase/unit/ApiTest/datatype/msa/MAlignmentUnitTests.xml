@@ -21,6 +21,7 @@ MAlignmentUnitTests
 + trim_nothingToTrim
 + trim_rowWithoutGaps
 + trim_empty
++ trim_trailingGapInOne
 + simplify_withGaps
 + simplify_withoutGaps
 + simplify_empty
@@ -35,6 +36,7 @@ MAlignmentUnitTests
 + charAt_nonGapChar
 + charAt_gap
 + insertGaps_validParams
++ insertGaps_toBeginningLength
 + insertGaps_negativeRowIndex
 + insertGaps_tooBigRowIndex
 + insertGaps_negativePos
