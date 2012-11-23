@@ -157,7 +157,7 @@ void GObject::updateRefInRelations(const GObjectReference& oldRef, const GObject
 // GObjectReference
 
 GObjectReference::GObjectReference(const GObject* obj, bool deriveLoadedType) {
-    SAFE_POINT(obj!=NULL && obj->getDocument()!=NULL, "GObjectReference:: no object and annotation", );
+    assert(obj!=NULL && obj->getDocument()!=NULL);
     docUrl = obj->getDocument()->getURLString();
     objName = obj->getGObjectName();
     if (obj->isUnloaded() && deriveLoadedType) {
