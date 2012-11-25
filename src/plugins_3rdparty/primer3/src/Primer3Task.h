@@ -110,10 +110,12 @@ public:
     Task::ReportResult report();
     void sumStat(Primer3TaskSettings *st);
 
-    QList<PrimerPair> getBestPairs()const;
+    const QList<PrimerPair>& getBestPairs()const { return bestPairs; }
+    const QList<Primer>& getSinglePrimers() const { return singlePrimers; }
 private:
     Primer3TaskSettings settings;
     QList<PrimerPair> bestPairs;
+    QList<Primer> singlePrimers;
 
     int offset;
 };
@@ -129,13 +131,15 @@ public:
     void prepare();
     Task::ReportResult report();
 
-    QList<PrimerPair> getBestPairs()const;
+    const QList<PrimerPair>& getBestPairs() const  { return bestPairs; }
+    const QList<Primer>& getSinglePrimers() const { return singlePrimers; }
 private:
     static const int CHUNK_SIZE = 1024*256;
 
     QList<Primer3Task *> regionTasks;
     Primer3TaskSettings settings;
     QList<PrimerPair> bestPairs;
+    QList<Primer> singlePrimers;
 
     friend class Primer3ToAnnotationsTask;
 };

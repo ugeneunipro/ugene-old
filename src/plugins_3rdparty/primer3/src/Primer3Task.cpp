@@ -423,6 +423,25 @@ void Primer3Task::run()
     for(int index = 0;index < primers.best_pairs.num_pairs;index++)
     {
         bestPairs.append(PrimerPair(primers.best_pairs.pairs[index], offset));
+    } 
+    
+    int maxCount = 0;
+    settings.getIntProperty("PRIMER_NUM_RETURN", &maxCount);
+    
+    if (settings.getTask() == pick_left_only) {
+        if (primers.left != NULL) {
+            for (int i = 0; i < settings.getSeqArgs()->left_expl.ok && i < maxCount; ++i) {
+                singlePrimers.append( Primer( * ( primers.left + i ) ));
+            }
+            
+        }
+    } else if (settings.getTask() == pick_right_only) {
+        if (primers.right != NULL) {
+            for (int i = 0; i < settings.getSeqArgs()->right_expl.ok && i < maxCount; ++i) {
+                singlePrimers.append( Primer( * ( primers.right + i ) ));
+            }
+
+        }
     }
 
     if(primers.best_pairs.num_pairs > 0)
@@ -491,10 +510,6 @@ void Primer3Task::sumStat(Primer3TaskSettings *st) {
     st->getSeqArgs()->pair_expl.ok += settings.getSeqArgs()->pair_expl.ok;
 }
 
-QList<PrimerPair> Primer3Task::getBestPairs()const
-{
-    return bestPairs;
-}
 
 // Primer3SWTask
 
@@ -533,6 +548,7 @@ Task::ReportResult Primer3SWTask::report()
     foreach(Primer3Task *task, regionTasks)
     {
         bestPairs.append(task->getBestPairs());
+        singlePrimers.append(task->getSinglePrimers());
     }
     if(regionTasks.size() > 1)
     {
@@ -548,10 +564,6 @@ Task::ReportResult Primer3SWTask::report()
     return Task::ReportResult_Finished;
 }
 
-QList<PrimerPair> Primer3SWTask::getBestPairs()const
-{
-    return bestPairs;
-}
 
 //////////////////////////////////////////////////////////////////////////
 ////Primer3ToAnnotationsTask
@@ -671,10 +683,10 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
 
     assert( searchTask );
 
-    QList<PrimerPair> bestPairs = searchTask->getBestPairs();
+    const QList<PrimerPair>& bestPairs = searchTask->getBestPairs();
 
     int index = 0;
-    foreach(PrimerPair pair, bestPairs)
+    foreach(const PrimerPair& pair, bestPairs)
     {
         QList<SharedAnnotationData> annotations;
         if(NULL != pair.getLeftPrimer())
@@ -693,6 +705,21 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
                 new CreateAnnotationsTask(aobj, groupName + "/pair " + QString::number(index + 1), annotations));
         index++;
     }
+
+    if (settings.getTask() == pick_left_only || settings.getTask() == pick_right_only) {
+        const QList<Primer> singlePrimers = searchTask->getSinglePrimers();
+        QList<SharedAnnotationData> annotations;
+        U2Strand s = settings.getTask() == pick_left_only ? U2Strand::Direct : U2Strand::Complementary; 
+        foreach (const Primer& p, singlePrimers ) {
+            annotations.append(oligoToAnnotation("primer", p, 0, s ));
+        }
+
+        if (annotations.size() > 0) {
+            AppContext::getTaskScheduler()->registerTopLevelTask(
+                new CreateAnnotationsTask(aobj, groupName, annotations));
+        }
+    }
+
     return ReportResult_Finished;
 }
 
