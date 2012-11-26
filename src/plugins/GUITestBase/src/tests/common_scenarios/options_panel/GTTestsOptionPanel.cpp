@@ -38,6 +38,8 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/qt/PopupChooser.h"
 
 
 namespace U2 {
@@ -64,9 +66,10 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 // 3. Press ctrl+f. Check focus. Find subsequence TA
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
 
     QWidget *w = QApplication::focusWidget();
-    CHECK_SET_ERR(w && w->objectName()=="Show circular view", "Focus is not on FindPattern widget");
+    CHECK_SET_ERR(w && w->objectName()=="textPattern", "Focus is not on FindPattern widget");
 
     GTKeyboardDriver::keySequence(os, "TA");
     GTGlobals::sleep(1000);
@@ -80,5 +83,38 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0006_1) {
+
+// DEFFERS: OTHER SOURSE FILE, OTHER SUBSEQUENCE
+// PROJECT IS CLOSED MANUALY TO CACHE MESSAGEBOX
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    QWidget *w = QApplication::focusWidget();
+    CHECK_SET_ERR(w && w->objectName()=="textPattern", "Focus is on widget: " + w->objectName());
+
+
+
+    GTKeyboardDriver::keySequence(os, "TTTTTAAAAA");
+    GTGlobals::sleep(1000);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+
+
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"action_project__edit_menu"<<"action_project__remove_selected_action"));
+    GTGlobals::sleep(500);
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep();
+
+}
 } // namespace GUITest_common_scenarios_annotations_edit
 } // namespace U2

@@ -32,6 +32,7 @@ namespace GTTests_Option_Panel {
 #define GUI_TEST_PREFIX "GTTests_Option_Panel_"
 
 GUI_TEST_CLASS_DECLARATION(test_0006)
+GUI_TEST_CLASS_DECLARATION(test_0006_1)
 
 
 #undef GUI_TEST_PREFIX
