@@ -91,7 +91,9 @@ QString WorkflowProcess::getTempDirectory() const {
     QDir dir(tempDirectory);
     if (!dir.exists()) {
         bool created = dir.mkpath(tempDirectory);
-        coreLog.error(QString("Can not create a directory: %1").arg(tempDirectory));
+        if (!created) {
+            coreLog.error(QString("Can not create a directory: %1").arg(tempDirectory));
+        }
     }
     return tempDirectory;
 }
@@ -195,7 +197,10 @@ void AppFileStorage::registerWorkflowProcess(WorkflowProcess &process, U2OpStatu
     QString wdDirPath = storageDir + "/" + WD_DIR_NAME + "/" + process.getId();
     QDir wdDir(wdDirPath);
     bool created = wdDir.mkpath(wdDirPath);
-    CHECK_EXT(created, QString("Can not create a directory: %1").arg(wdDirPath), );
+    if (!created) {
+        os.setError(QString("Can not create a directory: %1").arg(wdDirPath));
+        return;
+    }
 
     process.tempDirectory = wdDirPath;
 }
@@ -223,7 +228,7 @@ void removeDirIfEmpty(const QString &url) {
     }
 }
 
-void AppFileStorage::unregisterWorkflowProcess(WorkflowProcess &process, U2OpStatus &os) {
+void AppFileStorage::unregisterWorkflowProcess(WorkflowProcess &process, U2OpStatus & /*os*/) {
     process.unuseFiles();
 
     removeDirIfEmpty(process.tempDirectory);

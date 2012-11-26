@@ -2243,10 +2243,6 @@ QString HRSchemaSerializer::items2String(const QList<Actor*> &actors, const QLis
 QMap<ActorId, ActorId> HRSchemaSerializer::deepCopy(const Schema& from, Schema* to, U2OpStatus &os) {
     assert(to != NULL);
     QString data = schema2String(from, NULL, true);
-    QFile f("D:/tmp.uwl");
-    f.open(QIODevice::WriteOnly);
-    f.write(data.toAscii());
-    f.close();
     QMap<ActorId, ActorId> idMap;
     QString err = string2Schema(data, to, NULL, &idMap);
     if(!err.isEmpty()) {

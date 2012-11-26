@@ -95,6 +95,7 @@ MAlignment NWAligner::align() {
         float scoreDiag = fMatrix->getFValue(i-1, j-1);
         float scoreUp = fMatrix->getFValue(i, j-1);
         float scoreLeft = fMatrix->getFValue(i-1, j);
+        Q_UNUSED(scoreUp);
 
         if (score == scoreDiag + sMatrix.getScore(seq1[i-1], seq2[j-1])) {
             aligned1.prepend(seq1[i-1]);
