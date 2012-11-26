@@ -454,8 +454,7 @@ void CreateAnnotationWidgetController::sl_onLoadObjectsClicked() {
 }
 
 QString CreateAnnotationWidgetController::validate() {
-    updateModel();
-
+    updateModel(true);
     if (!model.annotationObjectRef.isValid()) {
         if (model.newDocUrl.isEmpty()) {
             return tr("Select annotation saving parameters");
@@ -517,7 +516,7 @@ QString CreateAnnotationWidgetController::validate() {
 }
 
 
-void CreateAnnotationWidgetController::updateModel() {
+void CreateAnnotationWidgetController::updateModel(bool forValidation) {
     SAFE_POINT(model.data != NULL, "Model data is null", );
 
     model.data->name = annotationNameEdit->text();
@@ -538,15 +537,15 @@ void CreateAnnotationWidgetController::updateModel() {
         model.annotationObjectRef = occ->getSelectedObject();
         model.newDocUrl = "";
     } else {
-        if (model.annotationObjectRef.isValid()) {
-            return;
+        if (!forValidation){
+            model.annotationObjectRef = GObjectReference();
         }
-        model.annotationObjectRef = GObjectReference();
         model.newDocUrl = newFileEdit->text();
     }
 }
 
 bool CreateAnnotationWidgetController::prepareAnnotationObject() {
+    updateModel(false);
     QString v = validate();
     SAFE_POINT(v.isEmpty(), "Annotation model is not valid", false);
     if (!model.annotationObjectRef.isValid() && newFileRB->isChecked()) {

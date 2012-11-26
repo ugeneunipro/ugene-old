@@ -1158,10 +1158,13 @@ void FindPatternWidget::initFindPatternTask( const QString& pattern, const QStri
     
     QString annotGroup = annotModel.groupName;
 
+    AnnotationTableObject* aTableObj = annotModel.getAnnotationObject();
+    SAFE_POINT(aTableObj != NULL, "FindPatternWidget::AnnotationTableObject is NULL", );
+
     // Creating and registering the task
     bool removeOverlaps = removeOverlapsBox->isChecked();
     FindPatternTask* task = new FindPatternTask(settings,
-        annotModel.getAnnotationObject(),
+        aTableObj,
         annotName,
         annotGroup,
         removeOverlaps);

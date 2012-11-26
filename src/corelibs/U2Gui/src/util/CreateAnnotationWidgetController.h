@@ -126,7 +126,7 @@ private slots:
 
 private:
     void initLayout(AnnotationWidgetMode layoutMode);
-    void updateModel();
+    void updateModel(bool forValidation);
 
     CreateAnnotationModel       model;
     GObjectComboBoxController*  occ;
