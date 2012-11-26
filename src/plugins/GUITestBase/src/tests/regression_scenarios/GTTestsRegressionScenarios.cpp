@@ -30,7 +30,9 @@
 #include "api/GTTreeWidget.h"
 #include "api/GTLineEdit.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsOptionsPanel.h"
 #include "GTUtilsBookmarksTreeView.h"
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsMdi.h"
@@ -637,6 +639,35 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
     CHECK_SET_ERR(s.contains("too long"),"Error message is: "+s);
     GTGlobals::sleep(500);
 //Expected: error message appears if the annotations are invalid
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1262) {
+    //1. Open human_t1.fa
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    //2. Find any pattern. A new annotation document is created
+    GTUtilsOptionsPanel::runFindPatternWithHotKey("AGGAAAAAATGCTAAGGGCAGCCAGAGAGAGGTCAGG", os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EDIT_MENU<<ACTION_PROJECT__REMOVE_SELECTED));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+
+    //3. Delete created annotations document
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    //4. Click search again
+    GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+
+    //delete new doc
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EDIT_MENU<<ACTION_PROJECT__REMOVE_SELECTED));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+
 }
 
 } // GUITest_regression_scenarios namespace

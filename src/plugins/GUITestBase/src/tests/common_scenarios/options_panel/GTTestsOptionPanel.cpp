@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+
 #include <QFile>
 #include <QTextStream>
 #include "GTTestsOptionPanel.h"
@@ -34,6 +35,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsSequenceView.h"
+#include "GTUtilsOptionsPanel.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
@@ -65,15 +67,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTGlobals::sleep();
 
 // 3. Press ctrl+f. Check focus. Find subsequence TA
-    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep();
-
-    QWidget *w = QApplication::focusWidget();
-    CHECK_SET_ERR(w && w->objectName()=="textPattern", "Focus is not on FindPattern widget");
-
-    GTKeyboardDriver::keySequence(os, "TA");
-    GTGlobals::sleep(1000);
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTUtilsOptionsPanel::runFindPatternWithHotKey("TA", os);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
@@ -89,15 +83,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
 // PROJECT IS CLOSED MANUALY TO CACHE MESSAGEBOX
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
-    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep();
-
-    QWidget *w = QApplication::focusWidget();
-    CHECK_SET_ERR(w && w->objectName()=="textPattern", "Focus is on widget: " + w->objectName());
-
-    GTKeyboardDriver::keySequence(os, "TTTTTAAAAA");
-    GTGlobals::sleep(1000);
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
@@ -105,8 +91,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"action_project__edit_menu"<<"action_project__remove_selected_action"));
-    GTGlobals::sleep(500);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EDIT_MENU<<ACTION_PROJECT__REMOVE_SELECTED));
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep();

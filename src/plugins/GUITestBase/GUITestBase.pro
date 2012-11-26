@@ -61,6 +61,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsToolTip.h \
             src/GTUtilsTaskTreeView.h \
             src/GTUtilsMsaEditorSequenceArea.h \
+            src/GTUtilsOptionsPanel.h \
 #   Tests
             src/tests/GUIInitialChecks.h \
 #   Tests/Regression Scenarios
@@ -181,6 +182,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsToolTip.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/GTUtilsMsaEditorSequenceArea.cpp \
+            src/GTUtilsOptionsPanel.cpp \
 #   Tests
             src/tests/GUIInitialChecks.cpp \
 #   Tests/Regression Scenarios
