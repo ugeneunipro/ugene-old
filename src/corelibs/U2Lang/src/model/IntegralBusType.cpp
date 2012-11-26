@@ -26,6 +26,7 @@
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/GrouperOutSlot.h>
 #include <U2Core/Log.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
@@ -42,33 +43,28 @@ Descriptor IntegralBusType::assignSlotDesc(const Descriptor& d, const Port* p) {
 }
 
 ActorId IntegralBusType::parseSlotDesc(const QString& id) {
-    QStringList lst = id.split(":");
-    QString sid = lst.first();
-    ActorId aid = str2aid(sid);
-    return aid;
+    U2OpStatus2Log os;
+    IntegralBusSlot slot = IntegralBusSlot::fromString(id, os);
+    return slot.actorId();
 }
 
 QString IntegralBusType::parseAttributeIdFromSlotDesc(const QString & str) {
-    QStringList lst = str.split(":");
-    if( lst.size() == 2 ) {
-        return lst.at(1);
-    } else {
-        return QString();
-    }
+    U2OpStatus2Log os;
+    IntegralBusSlot slot = IntegralBusSlot::fromString(str, os);
+    return slot.getId();
 }
 
 void IntegralBusType::remapSlotString(QString &slotStr, const QMap<ActorId, ActorId> &actorIdsMap) {
-    QStringList lst = slotStr.split(":");
-    SAFE_POINT(lst.size() > 0, "Bad slot id", );
+    U2OpStatus2Log os;
+    IntegralBusSlot slot = IntegralBusSlot::fromString(slotStr, os);
+    SAFE_POINT_OP(os, );
 
-    QString idStr = lst.first();
-    ActorId oldId = str2aid(idStr);
+    ActorId oldId = slot.actorId();
     if (actorIdsMap.contains(oldId)) {
         ActorId newId = actorIdsMap[oldId];
-        QString newIdStr = aid2str(newId);
-        lst.replace(0, newIdStr);
-        QString newSlotStr = lst.join(":");
-        coreLog.trace("remapping old="+slotStr+" to new="+newSlotStr);        
+        slot.replaceActorId(oldId, newId);
+        QString newSlotStr = slot.toString();
+        coreLog.trace("remapping old="+slotStr+" to new="+newSlotStr);
         slotStr = newSlotStr;
     }
 }

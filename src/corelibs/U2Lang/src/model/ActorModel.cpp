@@ -19,8 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Lang/ConfigurationEditor.h>
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/GrouperSlotAttribute.h>
+#include <U2Lang/WorkflowUtils.h>
+
 #include "ActorModel.h"
-#include "ConfigurationEditor.h"
 
 namespace U2 {
 namespace Workflow {
@@ -213,6 +220,86 @@ void Actor::remap(const QMap<ActorId, ActorId>& m) {
     foreach(Port* p, ports) {
         p->remap(m);
     }
+}
+
+void Actor::update(const QMap<ActorId, ActorId> &actorsMapping) {
+    foreach (Port *p, getPorts()) {
+        p->updateBindings(actorsMapping);
+    }
+    if (CoreLibConstants::GROUPER_ID == proto->getId()) {
+        updateGrouperSlots(actorsMapping);
+    }
+}
+
+void Actor::updateGrouperSlots(const QMap<ActorId, ActorId> &actorsMapping) {
+    bool grouperSlotsDeleted = false;
+
+    SAFE_POINT(1 == getOutputPorts().size(), "Grouper port error 1", );
+    SAFE_POINT(1 == getInputPorts().size(), "Grouper port error 2", );
+    Port *outPort = getOutputPorts().first();
+    SAFE_POINT(outPort->getOutputType()->isMap(), "Grouper port error 3", );
+    QMap<Descriptor, DataTypePtr> outBusMap = outPort->getOutputType()->getDatatypesMap();
+    QMap<Descriptor, DataTypePtr> inBusMap;
+    {
+        Port *inPort = getInputPorts().first();
+        inBusMap = WorkflowUtils::getBusType(inPort);
+    }
+
+    // refresh in slot attribute
+    {
+        Attribute *attr = getParameter(CoreLibConstants::GROUPER_SLOT_ATTR);
+        QString groupSlot = attr->getAttributeValueWithoutScript<QString>();
+        groupSlot = GrouperOutSlot::readable2busMap(groupSlot);
+        U2OpStatus2Log os;
+        IntegralBusSlot slot = IntegralBusSlot::fromString(groupSlot, os);
+        foreach (const ActorId &oldId, actorsMapping.keys()) {
+            slot.replaceActorId(oldId, actorsMapping[oldId]);
+        }
+        groupSlot = slot.toString();
+        bool found = false;
+        foreach (const Descriptor &d, inBusMap.keys()) {
+            if (d.getId() == groupSlot) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            groupSlot = "";
+        }
+        attr->setAttributeValue(groupSlot);
+    }
+    // refresh out slots
+    {
+        GrouperOutSlotAttribute *attr = dynamic_cast<GrouperOutSlotAttribute*>(getParameter(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR));
+        QList<GrouperOutSlot> &outSlots = attr->getOutSlots();
+        QList<GrouperOutSlot>::iterator i = outSlots.begin();
+        while (i != outSlots.end()) {
+            QString in = i->getBusMapInSlotId();
+            U2OpStatus2Log os;
+            IntegralBusSlot slot = IntegralBusSlot::fromString(in, os);
+            foreach (const ActorId &oldId, actorsMapping.keys()) {
+                slot.replaceActorId(oldId, actorsMapping[oldId]);
+            }
+            in = slot.toString();
+            i->setBusMapInSlotStr(in);
+            bool found = false;
+            foreach (const Descriptor &d, inBusMap.keys()) {
+                if (d.getId() == in) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                outBusMap.remove(i->getOutSlotId());
+                i = outSlots.erase(i);
+            } else {
+                ++i;
+            }
+        }
+    }
+
+    DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outBusMap));
+    outPort->setNewType(newType);
 }
 
 /**************************

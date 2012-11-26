@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Lang/SchemaSerializer.h>
 #include "WorkflowEnv.h"
 
 namespace U2 {

@@ -22,7 +22,6 @@
 #include "WorkflowViewItems.h"
 #include "ItemViewStyle.h"
 #include "WorkflowViewController.h"
-#include "HRSceneSerializer.h"
 #include "WorkflowEditor.h"
 
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -70,7 +69,6 @@ WorkflowProcessItem::WorkflowProcessItem(Actor* prc) : process(prc) {
 WorkflowProcessItem::~WorkflowProcessItem()
 {
     qDeleteAll(styles.values());
-    delete process;
     qDeleteAll(ports);
 }
 
@@ -92,7 +90,7 @@ bool WorkflowProcessItem::containsStyle(const StyleId & id) const {
     return styles.contains(id);
 }
 
-WorkflowPortItem* WorkflowProcessItem::getPort(const QString& id) const {
+WorkflowPortItem * WorkflowProcessItem::getPort(const QString& id) const {
     foreach(WorkflowPortItem* pit, ports) {
         if (pit->getPort()->getId() == id) {
             return pit;
@@ -153,9 +151,7 @@ void WorkflowProcessItem::setStyle(StyleId s) {
 
 QRectF WorkflowProcessItem::boundingRect(void) const {
     QRectF brect = currentStyle->boundingRect();
-    if (/*getWorkflowScene()->getRunner()*/ true) {
-        brect.setTop(brect.top() - QFontMetrics(QFont()).height()*2 - 2);
-    }
+    brect.setTop(brect.top() - QFontMetrics(QFont()).height()*2 - 2);
     return brect;
 }
 
@@ -667,38 +663,14 @@ WorkflowPortItem* WorkflowPortItem::checkBindCandidate(const QGraphicsItem* it) 
     return NULL;
 }
 
-WorkflowBusItem* WorkflowPortItem::tryBind(WorkflowPortItem* otherPit) {
-    WorkflowBusItem* dit = NULL;
-   
-    if (port->canBind(otherPit->getPort())) {
-        Port *src = port;
-        Port *dest = otherPit->getPort();
-        if (port->isInput()) {
-            src = otherPit->getPort();
-            dest = port;
-        }
-        if (WorkflowUtils::isPathExist(src, dest)) {
-            return NULL;
-        }
-
-        dit = new WorkflowBusItem(this, otherPit);
-        flows << dit;
-        otherPit->flows << dit;
-        WorkflowScene * sc = qobject_cast<WorkflowScene*>(scene());
-        assert(sc != NULL);
-        
-        sc->addItem(dit);
-        sc->setModified(true);
-        dit->updatePos();
-    }
-    return dit;
-}
-
 void WorkflowPortItem::removeDataFlow(WorkflowBusItem* flow) {
     assert(flows.contains(flow));
     flows.removeOne(flow);
-    port->removeLink(flow->getBus());
     assert(!flows.contains(flow));
+}
+
+void WorkflowPortItem::addDataFlow(WorkflowBusItem *flow) {
+    flows << flow;
 }
 
 QPointF WorkflowPortItem::head(const QGraphicsItem* item) const {
@@ -933,16 +905,19 @@ void WorkflowPortItem::mouseReleaseEvent ( QGraphicsSceneMouseEvent * event ) {
         //bool done = false;
         WorkflowPortItem* otherPit = NULL;
         foreach(QGraphicsItem * it, li) {
-            otherPit = checkBindCandidate(it);
-            WorkflowBusItem* dit;
-            if (otherPit && (dit = tryBind(otherPit))) {
-                scene()->clearSelection();
-                IntegralBusPort* bp = qobject_cast<IntegralBusPort*>(dit->getInPort()->getPort());
-                if (bp) {
-                    bp->setupBusMap();
+            WorkflowView *ctl = getWorkflowScene()->getController();
+            if (ctl) {
+                otherPit = checkBindCandidate(it);
+                WorkflowBusItem* dit;
+                if (otherPit && (dit = ctl->tryBind(this, otherPit))) {
+                    scene()->clearSelection();
+                    IntegralBusPort* bp = qobject_cast<IntegralBusPort*>(dit->getInPort()->getPort());
+                    if (bp) {
+                        bp->setupBusMap();
+                    }
+                    dit->getInPort()->setSelected(true);
+                    break;
                 }
-                dit->getInPort()->setSelected(true);
-                break;
             }
         }
         prepareGeometryChange();
@@ -990,7 +965,8 @@ QVariant WorkflowPortItem::itemChange ( GraphicsItemChange change, const QVarian
 
 ////////////////// Flow //////////////
 
-WorkflowBusItem::WorkflowBusItem(WorkflowPortItem* p1, WorkflowPortItem* p2) 
+WorkflowBusItem::WorkflowBusItem(WorkflowPortItem* p1, WorkflowPortItem* p2, Link *link)
+: bus(link)
 {
     if (p1->getPort()->isInput()) {
         assert(!p2->getPort()->isInput());
@@ -1001,7 +977,6 @@ WorkflowBusItem::WorkflowBusItem(WorkflowPortItem* p1, WorkflowPortItem* p2)
         dst = p2;
         src = p1;
     }
-    bus = new Link(p1->getPort(), p2->getPort());
 
     setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -1014,13 +989,10 @@ WorkflowBusItem::WorkflowBusItem(WorkflowPortItem* p1, WorkflowPortItem* p2)
 WorkflowBusItem::~WorkflowBusItem()
 {
     assert(bus == NULL);
-    //delete text;
 }
 
 
 void WorkflowBusItem::updatePos() {
-//     QPointF p1 = dst->pos();
-//     QPointF p2 = src->pos();
     QPointF p1 = dst->headToScene();
     QPointF p2 = src->headToScene();
 
@@ -1032,8 +1004,13 @@ QVariant WorkflowBusItem::itemChange ( GraphicsItemChange change, const QVariant
         dst->removeDataFlow(this);
         src->removeDataFlow(this);
         disconnect(dst->getPort(), SIGNAL(bindingChanged()), this, SLOT(sl_update()));
-        //dst = src = NULL;
-        delete bus; bus = NULL;
+        WorkflowView *ctl = getWorkflowScene()->getController();
+        if (NULL != ctl) {
+            ctl->onBusRemoved(bus);
+        } else {
+            delete bus;
+        }
+        bus = NULL;
     }
 
     return QGraphicsItem::itemChange(change, value);

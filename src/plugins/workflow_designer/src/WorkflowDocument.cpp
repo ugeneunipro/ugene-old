@@ -35,7 +35,6 @@
 #include <U2Lang/WorkflowUtils.h>
 
 #include "WorkflowViewController.h"
-#include "HRSceneSerializer.h"
 #include "WorkflowDocument.h"
 
 /* TRANSLATOR U2::IOAdapter */
@@ -119,7 +118,7 @@ void WorkflowDocFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& )
     WorkflowGObject* wo = qobject_cast<WorkflowGObject*>(d->getObjects().first());
     assert(wo && wo->getView());
 
-    QByteArray rawData = HRSceneSerializer::scene2String(wo->getView()->getScene(), wo->getView()->getMeta()).toUtf8();
+    QByteArray rawData = HRSchemaSerializer::schema2String(*wo->getView()->getSchema(), &wo->getView()->getMeta()).toUtf8();
     int nWritten = 0;
     int nTotal = rawData.size();
     while(nWritten < nTotal) {

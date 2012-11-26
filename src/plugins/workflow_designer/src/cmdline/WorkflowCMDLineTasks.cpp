@@ -142,11 +142,16 @@ static void setSchemaCMDLineOptions( Schema * schema, int optionsStartAtIdx ) {
         }
         // TODO: fix this cast!
         if (NULL == dynamic_cast<URLAttribute*>(attr)) {
-            QList<Iteration> & iterations = schema->getIterations();
-            QList<Iteration>::iterator it = iterations.begin();
-            while( it != iterations.end() ) { // TODO: make different values for different iterations
-                it->cfg[id].insert( paramName, value );
-                ++it;
+            QList<Iteration> iterations = schema->getIterations();
+            if (0 == iterations.size()) {
+                attr->setAttributeValue(value);
+            } else {
+                QList<Iteration>::iterator it = iterations.begin();
+                while( it != iterations.end() ) { // TODO: make different values for different iterations
+                    it->cfg[id].insert( paramName, value );
+                    ++it;
+                }
+                schema->setIterations(iterations);
             }
         } else {
             attr->setAttributeValue(value);

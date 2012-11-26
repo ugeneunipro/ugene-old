@@ -171,7 +171,7 @@ void RemoteWorkflowRunTask::prepare()
         }
     }
 
-    schema.getIterations() = iterations;
+    schema.setIterations(iterations);
     QByteArray rawData = HRSchemaSerializer::schema2String(schema, NULL).toUtf8();
     
     taskSettings.insert(CoreLibConstants::WORKFLOW_SCHEMA_ATTR, rawData);

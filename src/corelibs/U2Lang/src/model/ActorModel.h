@@ -198,6 +198,8 @@ public:
      * It is needed to update all of ids which are used by this actor
      */
     virtual void updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap);
+
+    void update(const QMap<ActorId, ActorId> &actorsMapping);
     
 signals:
     void si_labelChanged();
@@ -231,7 +233,9 @@ protected:
     AttributeScript * script;
     // an actor could be a subactor of some another
     ActorId owner;
-    
+
+private:
+    void updateGrouperSlots(const QMap<ActorId, ActorId> &actorsMapping);
 }; // Actor
 
 /**

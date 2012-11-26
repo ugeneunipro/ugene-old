@@ -39,12 +39,11 @@ public:
     static const QString SCHEMA_PATHS_SETTINGS_TAG;
     
 public:
-    SaveWorkflowSceneTask(WorkflowScene* scene, const Metadata& meta);
-    Task::ReportResult report();
+    SaveWorkflowSceneTask(Schema *schema, const Metadata& meta);
     virtual void run();
     
 private:
-    QPointer<WorkflowScene> scene;
+    Schema *schema;
     Metadata meta;
     QString rawData;
 };
@@ -52,13 +51,14 @@ private:
 class LoadWorkflowSceneTask : public Task {
     Q_OBJECT
 public:
-    LoadWorkflowSceneTask(WorkflowScene* scene, Metadata* meta, const QString& url);
+    LoadWorkflowSceneTask(Schema *schema, Metadata *meta, WorkflowScene *scene, const QString &url);
     virtual void run();
     virtual Task::ReportResult report();
     
 private:
-    WorkflowScene* scene;
-    Metadata * meta;
+    Schema *schema;
+    Metadata *meta;
+    WorkflowScene *scene;
     QString url;
     QString rawData;
     LoadWorkflowTask::FileFormat format;

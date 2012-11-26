@@ -438,11 +438,7 @@ CommunicationChannel* LocalDomainFactory::createConnection(Link* l) {
 
 Scheduler* LocalDomainFactory::createScheduler(Schema* sh) {
     Scheduler *sc = NULL;
-    if (NULL == sh->getActorBindingsGraph()) {
-        sc = new SimplestSequentialScheduler(sh);
-    } else {
-        sc = new LastReadyScheduler(sh);
-    }
+    sc = new LastReadyScheduler(sh);
     return sc;
 }
 

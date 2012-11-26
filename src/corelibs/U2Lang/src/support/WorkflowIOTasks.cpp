@@ -28,7 +28,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Lang/HRSchemaSerializer.h>
-#include <U2Lang/SchemaSerializer.h>
 
 #include "WorkflowIOTasks.h"
 

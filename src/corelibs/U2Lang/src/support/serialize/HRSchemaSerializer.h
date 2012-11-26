@@ -42,7 +42,7 @@ using namespace Workflow;
 class ExternalProcessConfig;
 class DataConfig;
 class AttributeConfig;
-struct WorkflowSchemaReaderData;
+class WorkflowSchemaReaderData;
 
 typedef QPair<QString, QString> StringPair;
 
@@ -190,7 +190,7 @@ public:
     static QString parseAt(const QString & dottedStr, int ind);
     static Iteration parseIteration(Tokenizer & tokenizer, const QString & iterationName, 
                                         const QMap<QString, Actor*> & actorMap, bool pasteMode = false);
-    static ActorBindingsGraph parseActorBindings(Tokenizer &tokenizer, const QMap<QString, Actor*> &actorMap, QList<QPair<Port*, Port*> > &links);
+    static void parseActorBindings(Tokenizer &tokenizer, WorkflowSchemaReaderData &data);
     static void parseParameterAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap);
     static void parsePortAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap, QList<PortAlias> &portAliases);
 
@@ -217,13 +217,14 @@ public:
     static QString elementsDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode = false);
     static QString markersDefinition(const QList<Actor*> & procs, const NamesMap & nmap, bool copyMode = false);
     static QString grouperOutSlotsDefinition(Attribute *attribute);
-    static QString actorBindings(const ActorBindingsGraph *graph, const NamesMap &nmap, bool copyMode = false);
+    static QString actorBindings(const ActorBindingsGraph & graph, const NamesMap &nmap, bool copyMode = false);
     static QString dataflowDefinition(const QList<Actor*> & procs, const NamesMap & nmap);
     static QString iterationsDefinition(const QList<Iteration> & iterations, const NamesMap & nmap, bool checkDummyIteration = true);
     static QString schemaParameterAliases(const QList<Actor*> & procs, const NamesMap& nmap);
     static QString schemaPortAliases(const NamesMap &nmap, const QList<PortAlias> &portAliases);
     static NamesMap generateElementNames(const QList<Actor*>& procs);
     static QString schema2String(const Schema & schema, const Metadata * meta, bool copyMode = false);
+    static QString items2String(const QList<Actor*> &actors, const QList<Iteration> & iterations, const Metadata *meta);
 
     static ExternalProcessConfig* string2Actor(const QString & bytes);
     static QString actor2String(ExternalProcessConfig *cfg);
@@ -242,6 +243,36 @@ private:
     static URLContainer * parseDirectoryUrl(Tokenizer &tokenizer);
     static void checkHeaderLine(const QString &line, Tokenizer &tokenizer);
 };
+
+class WorkflowSchemaReaderData {
+public:
+    WorkflowSchemaReaderData(const QString & bytes, Schema * s, Metadata * m, QMap<ActorId, ActorId>* im) 
+        : schema(s), meta(m), idMap(im) {
+        graphDefined = false;
+        tokenizer.tokenizeSchema(bytes);
+    }
+
+    HRSchemaSerializer::Tokenizer tokenizer;
+    Schema * schema;
+    Metadata * meta;
+    QMap<QString, Actor*> actorMap;
+    QList<QPair<Port*, Port*> > dataflowLinks;
+    QList<QPair<Port*, Port*> > links;
+    QMap<ActorId, ActorId> * idMap;
+    QList<PortAlias> portAliases;
+    QList<Wizard*> wizards;
+
+    bool isGraphDefined() const {
+        return graphDefined;
+    }
+
+    void defineGraph() {
+        graphDefined = true;
+    }
+
+private:
+    bool graphDefined;
+}; // WorkflowSchemaReaderData
 
 } // U2
 

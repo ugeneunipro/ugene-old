@@ -45,7 +45,7 @@ void LastReadyScheduler::init() {
         w->init();
     }
 
-    topologicSortedGraph = schema->getActorBindingsGraph()->getTopologicalSortedGraph(schema->getProcesses());
+    topologicSortedGraph = schema->getActorBindingsGraph().getTopologicalSortedGraph(schema->getProcesses());
 }
 
 bool LastReadyScheduler::isReady() {

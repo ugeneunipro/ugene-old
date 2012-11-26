@@ -94,13 +94,21 @@ public:
 
     static void applyPathsToBusMap(QStrStrMap &busMap, const SlotPathMap &pathMap);
 
-    static bool isBindingValid(const QList<Actor*> &procList, Port *endPort, const QString &binding, const QStringList &path);
-
     static bool startExternalProcess(QProcess *process, const QString &program, const QStringList &arguments);
 
     static QStringList getDatasetsUrls(const QList<Dataset> &sets);
 
     static Actor * actorById(const QList<Actor*> &actors, const ActorId &id);
+
+    static QMap<Descriptor, DataTypePtr> getBusType(Port *inPort);
+
+    static bool isBindingValid(const QString &srcSlotId, const QMap<Descriptor, DataTypePtr> &srcBus,
+        const QString &dstSlotId, const QMap<Descriptor, DataTypePtr> &dstBus);
+
+    /** Returns the string which is not contained by @uniqueStrs list
+     * Result is created from @str rolling @sep + number suffix
+     */
+    static QString createUniqueString(const QString &str, const QString &sep, const QStringList &uniqueStrs);
 
 private:
     static QStringList initExtensions();

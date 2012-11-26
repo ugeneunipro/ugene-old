@@ -99,6 +99,8 @@ public:
     // empty implementation
     virtual void remap(const QMap<ActorId, ActorId>&);
 
+    virtual void updateBindings(const QMap<ActorId, ActorId>&);
+
 signals:
     // emitted when link is added or removed from bindings
     void bindingChanged();

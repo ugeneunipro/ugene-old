@@ -23,12 +23,13 @@
 
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
+#include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/WorkflowIOTasks.h>
 #include <U2Lang/WorkflowSettings.h>
+#include "WorkflowViewItems.h"
 #include "WorkflowViewController.h"
 #include "SaveSchemaImageUtils.h"
-#include "HRSceneSerializer.h"
 
 #include <QtCore/QFile>
 
@@ -165,12 +166,15 @@ QString GoogleChartImage::getUrlArguments() const {
  * SaveSchemaImageUtils
  ********************************/
 QPixmap SaveSchemaImageUtils::generateSchemaSnapshot(const QString & data) {
-    WorkflowScene* scene = new WorkflowScene();
-    QString msg = HRSceneSerializer::string2Scene(data, scene, NULL, true);
+    Schema schema;
+    Metadata meta;
+    QString msg = HRSchemaSerializer::string2Schema(data, &schema, &meta);
     if (!msg.isEmpty()) {
         log.trace(QString("Snapshot issues: cannot read scene: '%1'").arg(msg));
         return QPixmap();
     }
+    SceneCreator sc(&schema, meta);
+    WorkflowScene* scene = sc.createScene(NULL);
     
     QRectF bounds = scene->itemsBoundingRect();
     QPixmap pixmap(bounds.size().toSize());

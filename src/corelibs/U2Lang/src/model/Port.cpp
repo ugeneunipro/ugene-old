@@ -102,6 +102,10 @@ void Port::setParameter(const QString& name, const QVariant& val) {
 void Port::remap(const QMap<ActorId, ActorId>&) {
 }
 
+void Port::updateBindings(const QMap<ActorId, ActorId>&) {
+
+}
+
 bool Port::canBind(const Port* other) const {
     if (this == other || proc == other->proc || isInput() == other->isInput()) {
         return false;

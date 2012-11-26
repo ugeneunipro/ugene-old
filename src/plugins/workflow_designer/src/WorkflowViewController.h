@@ -49,6 +49,9 @@ class WorkflowScene;
 class WorkflowPalette;
 class WorkflowEditor;
 class WorkflowGObject;
+class WorkflowBusItem;
+class WorkflowPortItem;
+class WorkflowProcessItem;
 class WorkflowRunTask;
 
 class WorkflowScene : public QGraphicsScene {
@@ -56,46 +59,29 @@ class WorkflowScene : public QGraphicsScene {
 public:
     WorkflowScene(WorkflowView *parent = 0);
     virtual ~WorkflowScene();
-    bool isModified() const {return modified;} //FIXME draft support
+    bool isModified() const {return modified;}
     bool isLocked() const {return locked;}
 
     WorkflowView* getController() const { return controller; }
-
     WorkflowAbstractRunner* getRunner() const {return runner;}
     void setRunner(WorkflowAbstractRunner* r) {runner = r;}
 
-    QList<Actor*> getSelectedProcItems() const;
-    QList<Actor*> getAllProcs() const;
-    
-    Actor* getActor(ActorId) const;
+    QList<Actor*> getSelectedActors() const;
 
-    Schema getSchema() const;
-    QList<Iteration> getIterations() const {return iterations;}
-    void setIterations(const QList<Iteration>& lst);
-
-    void addProcess(Actor*, const QPointF&);
-    Actor * createActor( ActorPrototype * proto, const QVariantMap & params = QVariantMap() );
     void clearScene();
 
     void setupLinkCtxMenu(const QString& href, Actor* actor, const QPoint& pos);
-
-    const QList<PortAlias> &getPortAliases() const;
-    bool addPortAlias(const PortAlias &alias);
-    void setPortAliases(const QList<PortAlias> &aliases);
 
     bool isIterated() const;
     /*
      * If it isn't iterated then there is one iteration that isn't shown to a user.
      * This hidden iteration is @defaultIteration.
      */
-    void setIterated(bool iterated, const Iteration &defaultIteration = Iteration(tr("Default iteration")));
+    void setIterated(bool value);
+    void iterationsChanged();
 
-    QString getTypeName() const;
-    void setTypeName(const QString &typeName);
+    WorkflowBusItem * addFlow(WorkflowPortItem *from, WorkflowPortItem *to, Link *link);
 
-    const QList<Wizard*> & getWizards() const;
-    void setWizards(const QList<Wizard*> &value);
-    
 public slots:
     void sl_deleteItem();
     void sl_selectAll();
@@ -110,7 +96,6 @@ public slots:
     void sl_updateDocs() {
         emit configurationChanged();
     }
-    void sl_refreshBindings();
     void connectConfigurationEditors();
 
 signals:
@@ -120,8 +105,6 @@ signals:
 
 protected:    
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * mouseEvent);
     void contextMenuEvent(QGraphicsSceneContextMenuEvent * contextMenuEvent);
 
@@ -131,21 +114,15 @@ protected:
 
     void drawBackground(QPainter * painter, const QRectF & rect );
 
-    bool refreshGrouperSlots(Actor *proc);
-
 private:
     WorkflowView* controller;
     bool modified, locked;
-    QList<Iteration> iterations;
 
     WorkflowAbstractRunner* runner;
     int hint;
     QAction* openDocumentsAction;
-    QList<PortAlias> portAliases;
     // if it isn't iterated then there are one iteration and it isn't shown to a user
     bool iterated;
-    QString includedTypeName;
-    QList<Wizard*> wizards;
     
 }; // WorkflowScene
 
@@ -156,8 +133,6 @@ public:
     WorkflowView(WorkflowGObject* go);
     ~WorkflowView();
 
-    //WorkflowDesignerService* getService() const {return service;}
-
     WorkflowEditor* getPropertyEditor() const { return propertyEditor; }
 
     virtual void setupMDIToolbar(QToolBar* tb);
@@ -167,16 +142,27 @@ public:
     bool confirmModified();
 
     ActorPrototype* selectedProto() const {
-        return currentProc;
+        return currentProto;
     }
 
     Actor* getActor() {
         return currentActor;
     }
+    void addProcess(Actor *proc, const QPointF &pos);
+    void removeProcessItem(WorkflowProcessItem *item);
+    void removeBusItem(WorkflowBusItem *item);
+    void onBusRemoved(Link *link);
+    Actor * createActor(ActorPrototype *proto, const QVariantMap &params) const;
+    QList<Iteration> getIterations() const;
+    QList<Iteration> getIterations(const QList<Actor*> &actors) const;
+    void setIterations(const QList<Iteration> &iters);
+    WorkflowBusItem * tryBind(WorkflowPortItem *port1, WorkflowPortItem *port2);
 
-    WorkflowScene* getScene() const {return scene;}
-    Workflow::Metadata getMeta() const {return meta;}
-    
+    WorkflowScene * getScene() const {return scene;}
+    Workflow::Schema * getSchema() const;
+    const Workflow::Metadata & getMeta();
+    Workflow::Metadata getMeta(const QList<WorkflowProcessItem*> &items);
+
     void refreshView() {sl_refreshActorDocs();}
     
     /**
@@ -194,7 +180,7 @@ private slots:
     void sl_editItem();
     void sl_onSelectionChanged();
     void sl_showEditor();
-    void sl_selectProcess(Workflow::ActorPrototype*);
+    void sl_selectPrototype(Workflow::ActorPrototype*);
     void sl_procItemAdded();
     void sl_rescaleScene(const QString &scale);
     void sl_exportScene();
@@ -235,25 +221,28 @@ private slots:
     void sl_protoDeleted(const QString& id);
     void sl_xmlSchemaLoaded(Task*);
     void sl_editExternalTool();
-    void sl_findPrototype();    
+    void sl_findPrototype();
 
+    void sl_updateSchema();
     void sl_showWizard();
 protected:
     bool onCloseEvent();
 
 private:
-    void remapActorsIds(QList<Iteration> &lst);
     void createActions();
     void saveState();
+    void setSceneIterated(bool iterated, const Iteration &defaultIteration);
     
     void localHostLaunch();
     void remoteLaunch();
-    
+
+    bool sceneRecreation;
     WorkflowGObject* go;
     QGraphicsView* sceneView;
     WorkflowScene* scene;
+    Schema *schema;
     Workflow::Metadata meta;
-    ActorPrototype* currentProc;
+    ActorPrototype* currentProto;
     Actor* currentActor;
 
     QAction* deleteAction;
@@ -294,7 +283,7 @@ private:
     QList<QAction*> styleActions;
     QList<QAction*> runModeActions;
     QList<QAction*> scriptingActions;
-    
+
     QAction* unlockAction;
 
     QAction* showWizard;
@@ -308,6 +297,24 @@ private:
     SpecialParametersPanel* specialParameters;
     bool            scriptingMode;
     RunMode runMode;
+};
+
+class SceneCreator {
+public:
+    SceneCreator(Schema *schema, const Workflow::Metadata &meta);
+    virtual ~SceneCreator();
+
+    WorkflowScene * createScene(WorkflowView *controller);
+    WorkflowScene * recreateScene(WorkflowScene *scene);
+
+private:
+    Schema *schema;
+    Workflow::Metadata meta;
+    WorkflowScene *scene;
+
+    WorkflowScene * createScene();
+    WorkflowProcessItem * createProcess(Actor *actor);
+    void createBus(const QMap<Port*, WorkflowPortItem*> &ports, Link *link);
 };
 
 class SpecialParametersPanel : public QWidget {

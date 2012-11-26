@@ -21,8 +21,10 @@
 
 #include "WorkflowUtils.h"
 
+#include <U2Lang/BaseTypes.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/Dataset.h>
+#include <U2Lang/Datatype.h>
 #include <U2Lang/Descriptor.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/IntegralBusType.h>
@@ -426,16 +428,6 @@ Descriptor WorkflowUtils::getCurrentMatchingDescriptor(const QList<Descriptor> &
         if (!currentVal.isEmpty()) {
             return Descriptor(currentVal, tr("<List of values>"), tr("List of values"));
         } else {
-            /*QString id;
-            bool first = true;
-            for (int i=0; i<candidates.size(); i++) {
-                if (!first) {
-                    id += ";";
-                }
-                id += candidates[i].getId();
-                first = false;
-            }
-            return Descriptor(id, tr("<List of values>"), tr("List of values"));*/
             return EMPTY_VALUES_DESC;
         }
     } else {
@@ -816,25 +808,6 @@ static bool pathExists(Actor *start, Port *end, QStringList path) {
     return false;
 }
 
-bool WorkflowUtils::isBindingValid(const QList<Actor*> &procList, Port *endPort, const QString &binding, const QStringList &path) {
-    Actor *start = NULL;
-    int pos = binding.indexOf(":");
-    if (-1 != pos) {
-        QString actorId = binding.left(pos);
-        foreach (Actor *p, procList) {
-            if (p->getId() == actorId) {
-                start = p;
-                break;
-            }
-        }
-    }
-    if (NULL == start) {
-        return false;
-    }
-
-    return pathExists(start, endPort, path);
-}
-
 #define WIN_LAUNCH_CMD_COMMAND "cmd /C "
 #define START_WAIT_MSEC 3000
 
@@ -875,6 +848,89 @@ Actor * WorkflowUtils::actorById(const QList<Actor*> &actors, const ActorId &id)
         }
     }
     return NULL;
+}
+
+QMap<Descriptor, DataTypePtr> WorkflowUtils::getBusType(Port *inPort) {
+    QMap<Port*,Link*> links = inPort->getLinks();
+    if (links.size() == 1) {
+        Port *src = links.keys().first();
+        assert(src->isOutput());
+        IntegralBusPort *bus = dynamic_cast<IntegralBusPort*>(src);
+        assert(NULL != bus);
+        DataTypePtr type = bus->getType();
+        return type->getDatatypesMap();
+    }
+    return QMap<Descriptor, DataTypePtr>();
+}
+
+bool WorkflowUtils::isBindingValid(const QString &srcSlotId, const QMap<Descriptor, DataTypePtr> &srcBus,
+    const QString &dstSlotId, const QMap<Descriptor, DataTypePtr> &dstBus) {
+    DataTypePtr srcType;
+    // Check that incoming bus contains source slot
+    bool found = false;
+    foreach (const Descriptor &d,  srcBus.keys()) {
+        if (d.getId() == srcSlotId) {
+            srcType = srcBus.value(d);
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        return false;
+    }
+
+    // Check that source and destination slots have equal types
+    foreach (const Descriptor &d, dstBus.keys()) {
+        if (d.getId() == dstSlotId) {
+            DataTypePtr destType = dstBus.value(d);
+            QString stringTypeId("string");
+            if (destType == srcType) {
+                return true;
+            } else if (destType == BaseTypes::ANNOTATION_TABLE_TYPE()) {
+                return (srcType == BaseTypes::ANNOTATION_TABLE_LIST_TYPE());
+            } else if (destType == BaseTypes::ANNOTATION_TABLE_LIST_TYPE()) {
+                return (srcType == BaseTypes::ANNOTATION_TABLE_TYPE());
+            } else if (destType->getId() == stringTypeId) {
+                return (srcType == BaseTypes::STRING_LIST_TYPE());
+            } else if (destType == BaseTypes::STRING_LIST_TYPE()) {
+                return (srcType->getId() == stringTypeId);
+            }
+            break;
+        }
+    }
+
+    return false;
+}
+
+QString WorkflowUtils::createUniqueString(const QString &str, const QString &sep, const QStringList &uniqueStrs) {
+    QString result = str;
+    int number = 0;
+    bool found = false;
+    foreach (const QString &uniq, uniqueStrs) {
+        if (uniq == str) {
+            found = true;
+            number = qMax(number, 1);
+        } else {
+            int idx = uniq.lastIndexOf(sep);
+            if (-1 != idx) {
+                QString left = uniq.left(idx);
+                if (str == left) {
+                    QString right = uniq.mid(idx + 1);
+                    bool ok = false;
+                    int num = right.toInt(&ok);
+                    if(ok) {
+                        found = true;
+                        number = qMax(number, num + 1);
+                    }
+                }
+            }
+        }
+    }
+
+    if (found) {
+        result += sep + QString::number(number);
+    }
+    return result;
 }
 
 /*****************************

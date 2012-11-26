@@ -21,13 +21,14 @@
 
 #include "WorkflowSamples.h"
 #include "WorkflowViewController.h"
-#include "HRSceneSerializer.h"
 #include <util/SaveSchemaImageUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
 
 #include <U2Designer/WorkflowGUIUtils.h>
+
+#include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/WorkflowSettings.h>
 
@@ -242,8 +243,9 @@ void LoadSamplesTask::scanDir( const QString& s) {
         Sample sample;
         sample.content = in.readAll();
         
+        Schema schema;
         Metadata meta;
-        QString err = HRSceneSerializer::string2Scene(sample.content, NULL, &meta);
+        QString err = HRSchemaSerializer::string2Schema(sample.content, &schema, &meta);
         if(!err.isEmpty()) {
             coreLog.error(tr("Failed to load sample: %1").arg(err));
             continue;

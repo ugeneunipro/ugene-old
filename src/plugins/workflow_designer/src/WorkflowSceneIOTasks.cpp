@@ -29,7 +29,6 @@
 #include <U2Lang/HRSchemaSerializer.h>
 
 #include "WorkflowViewController.h"
-#include "HRSceneSerializer.h"
 #include "SceneSerializer.h"
 #include "WorkflowDocument.h"
 #include "WorkflowSceneIOTasks.h"
@@ -42,11 +41,11 @@ using namespace Workflow;
  **********************************/
 const QString SaveWorkflowSceneTask::SCHEMA_PATHS_SETTINGS_TAG = "workflow_settings/schema_paths";
 
-SaveWorkflowSceneTask::SaveWorkflowSceneTask(WorkflowScene* s, const Metadata& m)
-: Task(tr("Save workflow scene task"), TaskFlag_None), scene(s), meta(m) {
+SaveWorkflowSceneTask::SaveWorkflowSceneTask(Schema *s, const Metadata& m)
+: Task(tr("Save workflow scene task"), TaskFlag_None), schema(s), meta(m) {
     GCOUNTER(cvar,tvar,"SaveWorkflowSceneTask");
-    assert(scene != NULL);
-    rawData = HRSceneSerializer::scene2String(scene, meta);
+    assert(schema != NULL);
+    rawData = HRSchemaSerializer::schema2String(*schema, &meta);
     
     // add ( name, path ) pair to settings. need for running schemas in cmdline by name
     Settings * settings = AppContext::getSettings();
@@ -71,21 +70,15 @@ void SaveWorkflowSceneTask::run() {
     out << rawData;
 }
 
-Task::ReportResult SaveWorkflowSceneTask::report() {
-    if (!stateInfo.hasError() && !scene.isNull()) {
-        scene->setModified(false);
-    }
-    return ReportResult_Finished;
-}
-
 /**********************************
  * LoadWorkflowSceneTask
  **********************************/
-LoadWorkflowSceneTask::LoadWorkflowSceneTask(WorkflowScene* s, Workflow::Metadata* m, const QString& u):
-Task(tr("Load workflow scene"),TaskFlag_None), scene(s), meta(m), url(u) {
+LoadWorkflowSceneTask::LoadWorkflowSceneTask(Schema *_schema, Metadata *_meta, WorkflowScene *_scene, const QString &_url):
+Task(tr("Load workflow scene"),TaskFlag_None), schema(_schema), meta(_meta), scene(_scene), url(_url) {
     GCOUNTER(cvar,tvar, "LoadWorkflowSceneTask");
-    assert(scene != NULL);
+    assert(schema != NULL);
     assert(meta != NULL);
+    assert(scene != NULL);
 }
 
 void LoadWorkflowSceneTask::run() {
@@ -108,33 +101,38 @@ Task::ReportResult LoadWorkflowSceneTask::report() {
     if(hasError()) {
         return ReportResult_Finished;
     }
-    
+
     QString err;
     if (!scene->items().isEmpty()) {
         scene->clearScene();
+        meta->reset();
+        schema->reset();
     }
     if(format == LoadWorkflowTask::HR) {
-        err = HRSceneSerializer::string2Scene(rawData, scene, meta);
+        err = HRSchemaSerializer::string2Schema(rawData, schema, meta);
     } else if(format == LoadWorkflowTask::XML) {
         QDomDocument xml;
         QMap<ActorId, ActorId> remapping;
         xml.setContent(rawData);
         err = SceneSerializer::xml2scene(xml.documentElement(), scene, remapping);
         SchemaSerializer::readMeta(meta, xml.documentElement());
-        scene->setIterations(QList<Iteration>());
+        schema->setIterations(QList<Iteration>());
         scene->setModified(false);
         meta->url = url;
     } else {
         // cause check for errors in the begin
         assert(false);
     }
-    
+
     if(!err.isEmpty()) {
         setError(tr("Error while parsing file: %1").arg(err));
         scene->sl_reset();
+        schema->reset();
         meta->reset();
         return ReportResult_Finished;
     }
+    SceneCreator sc(schema, *meta);
+    sc.recreateScene(scene);
     scene->setModified(false);
     scene->connectConfigurationEditors();
     meta->url = url;

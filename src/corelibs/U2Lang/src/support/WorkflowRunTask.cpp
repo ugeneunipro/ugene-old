@@ -66,6 +66,9 @@ static const QString OUTPUT_FILE_URL("output-file-url");
 WorkflowRunTask::WorkflowRunTask(const Schema& sh, QList<Iteration> lst, const QMap<ActorId, ActorId>& remap) :
 WorkflowAbstractRunner(tr("Execute workflow"), TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported), rmap(remap), flows(sh.getFlows()) {
     GCOUNTER( cvar, tvar, "WorkflowRunTask" );
+    if (lst.isEmpty()) { //  non-iterated schema
+        lst << Iteration("Default iteration");
+    }
     assert(!lst.isEmpty());
     foreach(const Iteration& it, lst) {
         WorkflowIterationRunTask* t = new WorkflowIterationRunTask(sh, it);
@@ -391,8 +394,12 @@ QStringList WorkflowIterationRunTask::getFiles() const {
 WorkflowRunInProcessTask::WorkflowRunInProcessTask(const Schema & sc, const QList<Iteration> & its) :
 WorkflowAbstractRunner(tr("Execute workflow in separate process"), TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported) {
     GCOUNTER(cvar, tvar, "WorkflowRunInProcessTask");
-    assert(!its.isEmpty());
-    foreach(const Iteration& it, its) {
+    QList<Iteration> iters = its;
+    if (iters.isEmpty()) { //  non-iterated schema
+        iters << Iteration("Default iteration");
+    }
+    assert(!iters.isEmpty());
+    foreach(const Iteration& it, iters) {
         WorkflowIterationRunInProcessTask * t = new WorkflowIterationRunInProcessTask(sc, it);
         addSubTask(t);
     }
@@ -489,7 +496,7 @@ Task(QString("Execute iteration '%1'").arg(it.name), TaskFlags_NR_FOSCOE), schem
     rmap = HRSchemaSerializer::deepCopy(sc, schema, stateInfo);
     SAFE_POINT_OP(stateInfo, );
     schema->applyConfiguration(it, rmap);
-    schema->getIterations().clear();
+    schema->setIterations(QList<Iteration>());
     saveSchemaTask = new SaveWorkflowTask(schema, meta, true);
     saveSchemaTask->setSubtaskProgressWeight(0);
     addSubTask(saveSchemaTask);

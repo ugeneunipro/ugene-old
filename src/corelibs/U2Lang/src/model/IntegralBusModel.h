@@ -22,6 +22,8 @@
 #ifndef _U2_WORKFLOW_BUS_MODEL_H_
 #define _U2_WORKFLOW_BUS_MODEL_H_
 
+#include <U2Core/U2OpStatus.h>
+
 #include <U2Lang/ActorModel.h>
 
 // destSlotId <-> sourceActorId:sourceSlotId
@@ -73,6 +75,7 @@ public:
     virtual bool validate(QStringList&) const;
     // reimplemented from Configuration
     virtual void remap(const QMap<ActorId, ActorId>&);
+    virtual void updateBindings(const QMap<ActorId, ActorId> &actorsMapping);
     
     // used when loading schema
     void setBusMapValue(const QString & slotId, const QString & value);
@@ -82,7 +85,10 @@ protected:
     //bool getNearestData(const Descriptor & key, QStringList candidates);
     //
     mutable bool recursing;
-    
+
+private:
+    QStrStrMap getBusMap() const;
+    SlotPathMap getPathsMap() const;
 }; // IntegralBusPort
 
 /**
@@ -135,6 +141,37 @@ protected:
     QString slot;
     
 }; // ScreenedParamValidator
+
+class U2LANG_EXPORT IntegralBusSlot {
+public:
+    IntegralBusSlot();
+    IntegralBusSlot(const QString &slotId, const QString &portId, const ActorId &actorId);
+
+    QString getId() const;
+    QString portId() const;
+    ActorId actorId() const;
+
+    void replaceActorId(const ActorId &oldId, const ActorId &newId);
+
+    QString toString() const;
+    static QString listToString(const QList<IntegralBusSlot> &slotList);
+
+    static IntegralBusSlot fromString(const QString &slotString, U2OpStatus &os);
+    static QList<IntegralBusSlot> listFromString(const QString &slotsString, U2OpStatus &os);
+
+private:
+    QString id;
+    QString port;
+    ActorId actor;
+
+    static const QString SLOTS_SEP;
+    static const QString INNER_SEP;
+};
+
+//class U2LANG_EXPORT BindingPath {
+//public:
+//    BindingPath();
+//};
 
 }//namespace Workflow
 }//namespace U2

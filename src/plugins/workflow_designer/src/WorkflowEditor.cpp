@@ -249,13 +249,13 @@ void WorkflowEditor::reset() {
 
 void WorkflowEditor::resetIterations() {
     //disconnect(iterationList, SIGNAL(listChanged()), this, SLOT(commitIterations()));
-    iterationList->setList(owner->getScene()->getIterations());
+    iterationList->setList(owner->getIterations());
     //connect(iterationList, SIGNAL(listChanged()), SLOT(commitIterations()));
 }
 
 void WorkflowEditor::commitIterations() {
     uiLog.trace("committing iterations data");
-    owner->getScene()->setIterations(iterationList->list());
+    owner->setIterations(iterationList->list());
 }
 
 void WorkflowEditor::sl_iteratedChanged() {

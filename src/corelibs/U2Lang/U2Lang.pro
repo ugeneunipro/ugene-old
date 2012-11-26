@@ -70,6 +70,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/wizard/WizardWidget.h \
            src/model/wizard/WizardWidgetVisitor.h \
            src/support/serialize/HRSchemaSerializer.h \
+           src/support/serialize/HRVisualSerializer.h \
            src/support/serialize/HRWizardSerializer.h
 SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BaseAttributes.cpp \
@@ -135,6 +136,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/wizard/WizardPage.cpp \
            src/model/wizard/WizardWidget.cpp \
            src/support/serialize/HRSchemaSerializer.cpp \
+           src/support/serialize/HRVisualSerializer.cpp \
            src/support/serialize/HRWizardSerializer.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

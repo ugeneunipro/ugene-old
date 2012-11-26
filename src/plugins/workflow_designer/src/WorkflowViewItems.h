@@ -136,7 +136,7 @@ public:
     WorkflowBusItem* getDataFlow(const WorkflowPortItem* other) const;
     WorkflowPortItem* checkBindCandidate(const QGraphicsItem* it) const;
     WorkflowPortItem* findNearbyBindingCandidate(const QPointF& at) const;
-    WorkflowBusItem* tryBind(WorkflowPortItem* otherPort);
+    void addDataFlow(WorkflowBusItem* flow);
     void removeDataFlow(WorkflowBusItem* flow);
     // position of the arrow tip in items coordinates 
     QPointF head(const QGraphicsItem* item) const;
@@ -186,7 +186,7 @@ class WorkflowBusItem : public QObject, public StyledItem {
     friend class WorkflowPortItem;
     friend class WorkflowProcessItem;
 public:
-    WorkflowBusItem(WorkflowPortItem* p1, WorkflowPortItem* p2);
+    WorkflowBusItem(WorkflowPortItem* p1, WorkflowPortItem* p2, Link *link);
     virtual ~WorkflowBusItem();
     WorkflowPortItem *getInPort() const {return dst;}
     WorkflowPortItem *getOutPort() const {return src;}
@@ -200,9 +200,10 @@ public:
 
     void saveState(QDomElement& ) const;
     void loadState(QDomElement& );
-    
+
     QGraphicsItem* getText() const {return text;}
-    
+    void updatePos();
+
 protected:
     QVariant itemChange ( GraphicsItemChange change, const QVariant & value );
     //void mouseMoveEvent ( QGraphicsSceneMouseEvent * event );
@@ -214,7 +215,6 @@ private slots:
     void sl_update();
 
 private:
-    void updatePos();
     Link* bus;
     WorkflowPortItem *dst, *src;
     QGraphicsItem* text;

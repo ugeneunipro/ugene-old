@@ -44,7 +44,31 @@ class Actor;
 class Link;
 class Iteration;
 class Port;
-class ActorBindingsGraph;
+
+/**
+ * Schema's actors' graph
+ * saves with schema to file and loads with it
+ */
+class U2LANG_EXPORT ActorBindingsGraph {
+public:
+    ActorBindingsGraph() {}
+    virtual ~ActorBindingsGraph() {}
+
+    void clear();
+    bool isEmpty() const;
+
+    bool validateGraph(QString &message) const;
+    bool addBinding(Port *source, Port *dest);
+    bool contains(Port *source, Port *dest) const;
+    void removeBinding(Port *source, Port *dest);
+    const QMap<Port*, QList<Port*> > & getBindings() const;
+    QMap<Port*, QList<Port*> > & getBindings();
+    QMap<int, QList<Actor*> > getTopologicalSortedGraph(QList<Actor*> actors) const;
+    QList<Link*> getFlows() const;
+
+private:
+    QMap<Port*, QList<Port*> > bindings;
+}; // ActorBindingsGraph
 
 /**
  * Schema is oriented graph of actors
@@ -56,11 +80,15 @@ public:
     virtual ~Schema();
     Schema( const Schema & other );
     Schema & operator=( const Schema & other );
-    
+
+    void reset();
+    void update();
+    void merge(const Schema &other);
+
     // after schema is copied its actor's id's changed
     // in that case we need to configurate new schema with values from Iteration using actors mapping
     void applyConfiguration(const Iteration&, QMap<ActorId, ActorId>);
-    
+
     Actor* actorById(ActorId);
     QList<Actor*> actorsByOwnerId(ActorId);
     int iterationById(int);
@@ -69,26 +97,27 @@ public:
     void setDomain(const QString & d);
     
     const QList<Iteration> & getIterations() const;
-    QList<Iteration> & getIterations();
+    void setIterations(const QList<Iteration> &value);
+    void addIteration(const Iteration &value);
+    void applyIteration(const Iteration &iter);
+    Iteration extractIterationFromConfig() const;
 
-    void setActorBindingsGraph(const ActorBindingsGraph &graph);
-    const ActorBindingsGraph *getActorBindingsGraph() const;
-    ActorBindingsGraph *getActorBindingsGraph();
-    
+    const ActorBindingsGraph & getActorBindingsGraph() const;
+
     const QList<Actor*> & getProcesses() const;
-    void addProcess(Actor * a);
-    
-    const QList<Link*> & getFlows() const;
+    void addProcess(Actor *actor);
+    void removeProcess(Actor *actor);
+    void renameProcess(const ActorId &oldId, const ActorId &newId);
+
+    QList<Link*> getFlows() const;
     void addFlow(Link* l);
-    
+    void removeFlow(Link* l);
+
     void setDeepCopyFlag(bool flag);
-    
-    void reset();
-    
+
     bool hasParamAliases() const;
     bool hasAliasHelp() const;
     bool hasPortAliases() const;
-
     const QList<PortAlias> &getPortAliases() const;
     bool addPortAlias(const PortAlias &alias);
     void setPortAliases(const QList<PortAlias> &aliases);
@@ -101,12 +130,12 @@ public:
 
     const QList<Wizard*> & getWizards() const;
     void setWizards(const QList<Wizard*> &value);
-    
+
+    static ActorId uniqueActorId(const QString &id, const QList<Actor*> &procs);
+
 private:
     // set of actors
     QList<Actor*> procs;
-    // set of links between actors
-    QList<Link*> flows;
     // list of iterations that user has fulfilled
     QList<Iteration> iterations;
     // name of domain in which we work now
@@ -117,7 +146,7 @@ private:
     // if true -> need to delete all corresponding data
     bool deepCopy;
     // keeps how ports are visually connected (it often repeats flows)
-    ActorBindingsGraph *graph;
+    ActorBindingsGraph graph;
     // keeps new names of ports (and inner slots) for includes
     QList<PortAlias> portAliases;
     // if you include this schema to another schema then here is new type name
@@ -132,6 +161,7 @@ private:
     void replacePortAliases(const PortAlias &subPortAlias);
 
     bool recursiveExpand(QList<QString> &schemaIds);
+    void update(const QMap<ActorId, ActorId> &actorsMapping);
     
 }; // Schema
 
@@ -174,6 +204,42 @@ public:
     
 }; // Iteration
 
+class U2LANG_EXPORT ActorVisualData {
+public:
+    ActorVisualData();
+    ActorVisualData(const ActorId &actorId);
+    ActorId getActorId() const;
+
+    QPointF getPos(bool &contains) const;
+    QString getStyle(bool &contains) const;
+    QColor getColor(bool &contains) const;
+    QFont getFont(bool &contains) const;
+    QRectF getRect(bool &contains) const;
+    qreal getPortAngle(const QString &portId, bool &contains) const;
+
+    void setPos(const QPointF &value);
+    void setStyle(const QString &value);
+    void setColor(const QColor &value);
+    void setFont(const QFont &value);
+    void setRect(const QRectF &value);
+    void setPortAngle(const QString &portId, qreal value);
+
+    QMap<QString, qreal> getAngleMap() const;
+
+private:
+    ActorId actorId;
+
+    QPointF pos; bool posInited;
+    QString styleId; bool styleInited;
+    QColor color; bool colorInited;
+    QFont font; bool fontInited;
+    QRectF rect; bool rectInited;
+    QMap<QString, qreal> angleMap;
+
+private:
+    void initialize();
+};
+
 /**
  * Schema's metadata
  * saves with schema to file and loads with it
@@ -183,36 +249,44 @@ public:
 class U2LANG_EXPORT Metadata {
 public:
     Metadata();
-    
+
     void reset();
-    
+    void resetVisual();
+    void mergeVisual(const Metadata &other);
+
+    ActorVisualData getActorVisualData(const ActorId &actorId, bool &contains) const;
+    void setActorVisualData(const ActorVisualData &data);
+
+    QPointF getTextPos(const ActorId &srcActorId, const QString &srcPortId,
+        const ActorId &dstActorId, const QString &dstPortId, bool &contains) const;
+
+    void setTextPos(const ActorId &srcActorId, const QString &srcPortId,
+        const ActorId &dstActorId, const QString &dstPortId,
+        const QPointF &value);
+
+    void removeActorMeta(const ActorId &actorId);
+    void renameActors(const QMap<ActorId, ActorId> &actorsMapping);
+
+    QList<ActorVisualData> getActorsVisual() const;
+    QMap<QString, QPointF> getTextPosMap() const;
+
 public:
     QString name;
     QString url;
     QString comment;
-    
-}; // Metadata
-
-/**
- * Schema's actors' graph
- * saves with schema to file and loads with it
- */
-class U2LANG_EXPORT ActorBindingsGraph {
-public:
-    ActorBindingsGraph() {}
-    virtual ~ActorBindingsGraph() {}
-
-    bool validateGraph(QString &message) const;
-    bool addBinding(Port *source, Port *dest);
-    bool contains(Port *source, Port *dest) const;
-    void removeBinding(Port *source, Port *dest);
-    const QMap<Port*, QList<Port*> > & getBindings() const;
-    QMap<Port*, QList<Port*> > & getBindings();
-    QMap<int, QList<Actor*> > getTopologicalSortedGraph(QList<Actor*> actors) const;
 
 private:
-    QMap<Port*, QList<Port*> > bindings;
-}; // ActorBindingsGraph
+    QMap<ActorId, ActorVisualData> actorVisual;
+    QMap<QString, QPointF> textPosMap; // actorId.portId->actorId.portId <-> textPos
+
+private:
+    QString getPortString(const ActorId &actorId, const QString &portId) const;
+    ActorId getActorId(const QString &portStr) const;
+    QString getLinkString(const ActorId &srcActorId, const QString &srcPortId,
+        const ActorId &dstActorId, const QString &dstPortId) const;
+    bool isActorLinked(const ActorId &actorId, const QString &linkStr) const;
+    QString renameLink(const QString &linkStr, const QMap<ActorId, ActorId> &actorsMapping) const;
+}; // Metadata
 
 }//Workflow namespace
 
