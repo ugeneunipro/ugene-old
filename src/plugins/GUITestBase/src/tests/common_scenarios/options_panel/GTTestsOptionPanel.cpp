@@ -95,13 +95,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     QWidget *w = QApplication::focusWidget();
     CHECK_SET_ERR(w && w->objectName()=="textPattern", "Focus is on widget: " + w->objectName());
 
-
-
     GTKeyboardDriver::keySequence(os, "TTTTTAAAAA");
     GTGlobals::sleep(1000);
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-
-
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");

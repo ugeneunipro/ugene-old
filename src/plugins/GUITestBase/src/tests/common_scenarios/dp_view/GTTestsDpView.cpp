@@ -84,6 +84,65 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
     CHECK_SET_ERR(w==NULL, "Dotplot not deleted");
 
 }
+GUI_TEST_CLASS_DEFINITION(test_0011_1){
+//DIFFERENCE: ONE SEQUENCE USED
+    QMenu *menu;
+    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
+    Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
+    GTUtilsDialog::waitForDialog(os, filler2);
+
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Build dotplot");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Dotplot"<<"Remove"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::showContextMenu(os,GTWidget::findWidget(os,"dotplot widget"));
+    GTGlobals::sleep(500);
+
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    QWidget *w=GTWidget::findWidget(os,"dotplot widget",NULL, options);
+
+    CHECK_SET_ERR(w==NULL, "Dotplot not deleted");
+}
+GUI_TEST_CLASS_DEFINITION(test_0011_2){//commit DotPlotWidget.cpp exitButton
+//DIFFERENCE: EXITBUTTON IS USED
+    QMenu *menu;
+    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
+    Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
+    GTUtilsDialog::waitForDialog(os, filler2);
+
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Build dotplot");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTWidget::click(os, GTWidget::findWidget(os, "exitButton"));
+    GTGlobals::sleep(500);
+
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    QWidget *w=GTWidget::findWidget(os,"dotplot widget",NULL, options);
+
+    CHECK_SET_ERR(w==NULL, "Dotplot not deleted");
+}
+GUI_TEST_CLASS_DEFINITION(test_0011_3){
+    //DIFFERENCE: EXITBUTTON IS USED
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/dp_view/", "dp1.fa");
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 8, 80,false,false));
+
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTWidget::click(os, GTWidget::findWidget(os, "exitButton"));
+    GTGlobals::sleep(500);
+
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    QWidget *w=GTWidget::findWidget(os,"dotplot widget",NULL, options);
+
+    CHECK_SET_ERR(w==NULL, "Dotplot not deleted");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0013) {
 

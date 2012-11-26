@@ -113,6 +113,7 @@ DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
 
     exitButton->setAutoFillBackground(true);
     exitButton->setAutoRaise(true);
+    exitButton->setObjectName("exitButton");
 
     this->setObjectName("dotplot widget");
 }
