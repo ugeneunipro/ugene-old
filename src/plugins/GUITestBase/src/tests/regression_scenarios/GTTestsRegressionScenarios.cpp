@@ -28,6 +28,7 @@
 #include "api/GTAction.h"
 #include "api/GTWidget.h"
 #include "api/GTTreeWidget.h"
+#include "api/GTLineEdit.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsDialog.h"
@@ -36,6 +37,11 @@
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include <QLineEdit>
+#include "GTUtilsLog.h"
+
 
 #include <U2View/ADVConstants.h>
 
@@ -527,6 +533,110 @@ GUI_TEST_CLASS_DEFINITION(test_1083) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 //Expected state: UGENE is not crashed
     GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1107){//commit GUIInitionalChecks
+//1) Open an MSA file (e.g. _common_data\scenarios\msa\ma2_gapped.aln)
+
+    GTFileDialog::openFile(os, testDir+"_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2) Menu File->Close Project
+//3) Press No in the Save current project dialog
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+//Expected state: UGENE not crashes
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1165){
+//1. Open file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
+//2. open context menu in msa, "Add"->"Sequence from file...",
+//3. browse the file "data/samples/FASTA/human_T1.fa".
+    QWidget *nameList;
+    nameList=GTWidget::findWidget(os,"msa_editor_name_list");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_LOAD_SEQ"<<"Sequence from file"));
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, dataDir + "/samples/FASTA/", "human_T1.fa");
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    GTMenu::showContextMenu(os,nameList);
+//4. Then choose any sequence in sequence names area (except that which you've just added), press "Delete"
+//Expected state: UGENE not crashes
+    GTWidget::click(os,nameList);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"]);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
+
+//1) Align shortreads with genome aligner
+//Tools -> Align to reference -> Align short reads
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, testDir + "_common_data/fasta/","N.fa", testDir + "_common_data/fasta/", "RAW.fa",true)) ;
+    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTLogTracer l;
+
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Align to reference" << "Align short reads");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os,QMessageBox::Ok));
+    GTGlobals::sleep(10000);
+
+    GTUtilsLog::check(os, l);
+
+    //}
+//Reference sequence: _common_data/fasta/N.fa  /home/vmalin/ugene/trunk/test/_common_data/fasta/N.ugenedb
+//Short reads: _common_data/reads/shortreads15Mb.fasta
+
+//Click "Start"
+
+//2) wait for dialog to appear, click "OK"
+
+//repeat these steps 3 times, UGENE shouldn't crash
+}
+GUI_TEST_CLASS_DEFINITION(test_1255){
+//1. Open human_T1.fa sequence
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+//2. Open Find Pattern on the Option Panel. Enter a vaild pattern
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keySequence(os, "TA");
+//3. Input invalid annotation name (empty, too long, illegal)
+    GTWidget::click(os, GTWidget::findWidget(os, "lblShowMoreLess"));
+
+    for (int i=0; i<15; i++){
+        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
+        GTGlobals::sleep(50);
+    }
+
+    QLabel *label;
+    label = (QLabel*)GTWidget::findWidget(os,"lblErrorMessage");
+
+    QLineEdit *annotationNameEdit;
+    annotationNameEdit=(QLineEdit *)GTWidget::findWidget(os,"annotationNameEdit");
+
+    GTLineEdit::setText(os,annotationNameEdit,"");
+    GTGlobals::sleep(100);
+    QString s=label->text();
+    CHECK_SET_ERR(s.contains("empty"),"Error message is: "+s);
+    GTGlobals::sleep(500);
+
+    for (int i=0; i<5; i++){
+        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
+        GTGlobals::sleep(50);
+    }
+    GTLineEdit::setText(os,annotationNameEdit," test");
+    GTGlobals::sleep(100);
+    s=label->text();
+    CHECK_SET_ERR(s.contains("Illegal"),"Error message is: "+s);
+    GTGlobals::sleep(500);
+
+    for (int i=0; i<5; i++){
+        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
+        GTGlobals::sleep(50);
+    }
+    GTLineEdit::setText(os,annotationNameEdit,"Too long annotation name");
+    GTGlobals::sleep(100);
+    s=label->text();
+    CHECK_SET_ERR(s.contains("too long"),"Error message is: "+s);
+    GTGlobals::sleep(500);
+//Expected: error message appears if the annotations are invalid
 }
 
 } // GUITest_regression_scenarios namespace

@@ -85,6 +85,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0000) {
 
 GUI_TEST_CLASS_DEFINITION(post_test_0001) {
 
+    GTGlobals::sleep(1000);
     // close project
     if (AppContext::getProject() != NULL) {
 
