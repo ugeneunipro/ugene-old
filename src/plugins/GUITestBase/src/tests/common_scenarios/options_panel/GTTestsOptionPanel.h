@@ -27,9 +27,9 @@ k
 
 namespace U2 {
 
-namespace GTTests_Option_Panel {
+namespace GUITest_common_scenarios_options_panel {
 #undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GTTests_Option_Panel_"
+#define GUI_TEST_PREFIX "GUITest_common_scenarios_options_panel_"
 
 GUI_TEST_CLASS_DECLARATION(test_0006)
 GUI_TEST_CLASS_DECLARATION(test_0006_1)

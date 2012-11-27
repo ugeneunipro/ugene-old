@@ -46,7 +46,7 @@
 
 namespace U2 {
 
-namespace GTTests_Option_Panel {
+namespace GUITest_common_scenarios_options_panel {
 
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {

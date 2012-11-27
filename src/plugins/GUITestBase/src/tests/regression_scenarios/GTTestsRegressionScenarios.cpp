@@ -593,6 +593,81 @@ GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
 
 //repeat these steps 3 times, UGENE shouldn't crash
 }
+
+GUI_TEST_CLASS_DEFINITION(test_1252){
+//    1. Open human_t1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    2. Find any pattern. A new annotation document is created
+    GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+//    3. Delete found annotations from human_t1 annotations tree
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+//    4. Delete created annotations document
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EDIT_MENU<<ACTION_PROJECT__REMOVE_SELECTED));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(500);
+//check delition of annotation document
+    GTGlobals::FindOptions f;
+    f.failIfNull=false;
+    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "Annotations",f)==NULL, "Annotations document not deleted");
+//    5. Click search again
+    GTWidget::click(os, GTWidget::findWidget(os,"btnSearch"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+// delete annotations manually to cache MessageBox
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EDIT_MENU<<ACTION_PROJECT__REMOVE_SELECTED));
+    GTMouseDriver::click(os, Qt::RightButton);
+//    Expected: pattern is found and annotation is stored in a new document
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1252_1){
+//DIFFERENCE: DEL KEY IS USED TO DELETE ANNOTATION DOCUMENT
+//    1. Open human_t1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    2. Find any pattern. A new annotation document is created
+    GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+//    3. Delete found annotations from human_t1 annotations tree
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+//    4. Delete created annotations document
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+//check delition of annotation document
+    GTGlobals::FindOptions f;
+    f.failIfNull=false;
+    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "Annotations",f)==NULL, "Annotations document not deleted");
+//    5. Click search again
+    GTWidget::click(os, GTWidget::findWidget(os,"btnSearch"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+// delete annotations manually to cache MessageBox
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EDIT_MENU<<ACTION_PROJECT__REMOVE_SELECTED));
+    GTMouseDriver::click(os, Qt::RightButton);
+//    Expected: pattern is found and annotation is stored in a new document
+
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1255){
 //1. Open human_T1.fa sequence
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
