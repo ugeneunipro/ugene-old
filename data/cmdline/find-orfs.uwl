@@ -2,7 +2,6 @@
 #Finds Open Reading Frames (ORFs) in each supplied nucleotide sequence, stores found regions as annotations.
 
 workflow find-orfs{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -53,14 +52,12 @@ workflow find-orfs{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-780 -600";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             orf-search {
-                tooltip:"Finds Open Reading Frames (ORFs) in each supplied nucleotide sequence, stores found regions as annotations.<p>Protein sequences are skipped if any supplied to input.<p><dfn>ORFs are DNA sequence regions that could potentially encode a protein, and usually give a good indication of the presence of a gene in the surrounding sequence.</dfn></p><p>In the sequence, ORFs are located between a start-code sequence (initiation codon) and a stop-code sequence (termination codon), defined by the selected genetic code.</p>";
                 pos:"-615 -600";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -68,7 +65,6 @@ workflow find-orfs{
                 out-annotations.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-285 -600";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -83,4 +79,3 @@ workflow find-orfs{
         }
     }
 }
-

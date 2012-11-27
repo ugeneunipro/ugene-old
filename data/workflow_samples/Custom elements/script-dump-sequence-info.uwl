@@ -2,7 +2,6 @@
 #For all incoming sequences, dump sequence name and sequence size to output
 
 workflow "Dump sequence info"{
-
     Script-Dump-sequence-info {
         type:"Script-Dump Sequence Info";
         name:"Dump sequence info";
@@ -29,7 +28,6 @@ out_text=getName(in_sequence) + ": " + size(in_sequence);
     .meta {
         visual {
             Script-Dump-sequence-info {
-                tooltip:"Evaluates user's script";
                 pos:"-555 -585";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -37,14 +35,12 @@ out_text=getName(in_sequence) + ": " + size(in_sequence);
                 out.angle:360;
             }
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-780 -585";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             write-text {
-                tooltip:"Write strings to a file";
                 pos:"-360 -585";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -59,4 +55,3 @@ out_text=getName(in_sequence) + ": " + size(in_sequence);
         }
     }
 }
-

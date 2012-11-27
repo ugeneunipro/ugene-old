@@ -2,7 +2,6 @@
 #Adds PHRED quality scores to the sequence and save output to Fastq. For example, one can read a Fasta file, import PHRED quality values from corresponding qualities file and export the result to Fastq.
 
 workflow "Import PHRED quality scores"{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -37,21 +36,18 @@ workflow "Import PHRED quality scores"{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-795 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             write-fastq {
-                tooltip:"Writes all supplied sequences to file(s) in FASTQ format.";
                 pos:"-300 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
             import-phred-qualities {
-                tooltip:"Add corresponding PHRED quality scores to the sequences. You can use this worker to convert .fasta and .qual pair to fastq format";
                 pos:"-600 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -67,4 +63,3 @@ workflow "Import PHRED quality scores"{
         }
     }
 }
-

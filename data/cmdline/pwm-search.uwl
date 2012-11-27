@@ -2,7 +2,6 @@
 #Search for transcription factor binding sites (TFBS) with weight matrices
 
 workflow "Search weight matrix"{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -52,21 +51,18 @@ workflow "Search weight matrix"{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-765 -585";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             wmatrix-read {
-                tooltip:"Reads weight matrices from file(s). The files can be local or Internet URLs.";
                 pos:"-765 -390";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-wmatrix.angle:360;
             }
             wmatrix-search {
-                tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified weight matrices. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
                 pos:"-585 -480";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -75,7 +71,6 @@ workflow "Search weight matrix"{
                 out-annotations.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-285 -480";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -93,4 +88,3 @@ workflow "Search weight matrix"{
         }
     }
 }
-

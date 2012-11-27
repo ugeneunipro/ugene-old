@@ -2,7 +2,6 @@
 #Build hmm profile using hmmer2
 
 workflow hmm2-build{
-
     read-msa {
         type:read-msa;
         name:"Read alignment";
@@ -45,14 +44,12 @@ workflow hmm2-build{
         }
         visual {
             read-msa {
-                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
                 pos:"-750 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             hmm2-build {
-                tooltip:"Builds a HMM profile from a multiple sequence alignment.<p>The HMM profile is a statistical model which captures position-specific information about how conserved each column of the alignment is, and which residues are likely.";
                 pos:"-555 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -60,7 +57,6 @@ workflow hmm2-build{
                 out-hmm2.angle:360;
             }
             hmm2-write-profile {
-                tooltip:"Saves all input HMM profiles to specified location.";
                 pos:"-360 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -75,4 +71,3 @@ workflow hmm2-build{
         }
     }
 }
-

@@ -2,7 +2,6 @@
 #Search each input sequence for significantly similar sequence matches to all specified HMM profiles using hmmer2 tools.
 
 workflow hmm2-search{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -53,21 +52,18 @@ workflow hmm2-search{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-780 -765";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             hmm2-read-profile {
-                tooltip:"Reads HMM profiles from file(s). The files can be local or Internet URLs.";
                 pos:"-780 -525";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-hmm2.angle:360;
             }
             hmm2-search {
-                tooltip:"Searches each input sequence for significantly similar sequence matches to all specified HMM profiles. In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence";
                 pos:"-615 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -76,7 +72,6 @@ workflow hmm2-search{
                 out-annotations.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-330 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -94,4 +89,3 @@ workflow hmm2-search{
         }
     }
 }
-

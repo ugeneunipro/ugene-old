@@ -2,7 +2,6 @@
 #Annotates a sequence in compliance with a UGENE Query Language (UQL) schema.
 
 workflow "Annotate with UQL Schema"{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -42,7 +41,6 @@ workflow "Annotate with UQL Schema"{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-585 -585";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -50,14 +48,12 @@ workflow "Annotate with UQL Schema"{
                 out-sequence.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-210 -585";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
             query {
-                tooltip:"Analyzes a nucleotide sequence using different algorithms                      (Repeat finder, ORF finder, etc.) imposing constraints                      on the positional relationship of the results.";
                 pos:"-420 -585";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -73,4 +69,3 @@ workflow "Annotate with UQL Schema"{
         }
     }
 }
-

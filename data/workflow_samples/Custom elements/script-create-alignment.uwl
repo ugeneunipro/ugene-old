@@ -2,7 +2,6 @@
 #This schema creates alignment from input sequences with length < given length, alignes it with MUSCLE and writes output alignment in file in ClustalW format
 
 workflow "Create alignment"{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -40,14 +39,12 @@ if (length < len) {
     .meta {
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-810 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             Script-Create-alignment-example {
-                tooltip:"Creates alignment from sequences with length less than len";
                 pos:"-675 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -58,7 +55,6 @@ if (length < len) {
                 text-pos:"-27.5 -24";
             }
             muscle {
-                tooltip:"MUSCLE is public domain multiple alignment software for protein and nucleotide sequences.<p><dfn>MUSCLE stands for MUltiple Sequence Comparison by Log-Expectation.</dfn></p>";
                 pos:"-465 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -69,7 +65,6 @@ if (length < len) {
                 text-pos:"-32.5 -24";
             }
             write-msa {
-                tooltip:"Writes all supplied alignments to file(s) in selected format";
                 pos:"-210 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -81,4 +76,3 @@ if (length < len) {
         }
     }
 }
-

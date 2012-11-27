@@ -2,7 +2,6 @@
 #This schema filters sequences with quality >= than parameter "quality" and writes result in file in FASTQ format
 
 workflow "Quality filter"{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -37,21 +36,18 @@ if (hasQuality(in_sequence)) {
     .meta {
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-780 -600";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             write-fastq {
-                tooltip:"Writes all supplied sequences to file(s) in FASTQ format.";
                 pos:"-330 -600";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
             Script-Quality-filter-example {
-                tooltip:"Filter's sequences for quality";
                 pos:"-600 -600";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -67,4 +63,3 @@ if (hasQuality(in_sequence)) {
         }
     }
 }
-

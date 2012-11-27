@@ -7,10 +7,7 @@
 #After running the schema, target fastq file will appear in the same folder as the source file, with the same name but diffrent extension.
 #
 
-
-
 workflow "Convert seq/qual pair to Fastq"{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -25,7 +22,6 @@ workflow "Convert seq/qual pair to Fastq"{
         document-format:fastq;
     }
 
-
     .actor-bindings {
         read-sequence.out-sequence->import-phred-qualities.in-sequence
         import-phred-qualities.out-sequence->write-sequence.in-sequence
@@ -38,16 +34,12 @@ workflow "Convert seq/qual pair to Fastq"{
     .meta {
         visual {
             read-sequence {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads sequence(s) from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-750 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             import-phred-qualities {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Import PHRED qualities</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Import PHRED quality scores in file <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a> to the sequences and send the sequences to the output.</p></body></html>";
-                tooltip:"Add corresponding PHRED quality scores to the sequences. You can use this worker to convert .fasta and .qual pair to fastq format";
                 pos:"-585 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -58,8 +50,6 @@ workflow "Convert seq/qual pair to Fastq"{
                 text-pos:"-27.5 -24";
             }
             write-sequence {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all sequences from <span style=' text-decoration: underline;'>Import PHRED qualities</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
-                tooltip:"Writes all supplied sequences to file(s) in selected format.";
                 pos:"-285 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -71,4 +61,3 @@ workflow "Convert seq/qual pair to Fastq"{
         }
     }
 }
-

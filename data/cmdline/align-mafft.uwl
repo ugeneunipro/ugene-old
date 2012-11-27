@@ -2,7 +2,6 @@
 #Create alignment with MAFFT. MAFFT is a multiple sequence alignment program for unix-like operating systems. Must have an installed MAFFT package.
 
 workflow align-mafft{
-
     read-msa {
         type:read-msa;
         name:"Read alignment";
@@ -49,14 +48,12 @@ workflow align-mafft{
         }
         visual {
             read-msa {
-                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
                 pos:"-750 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             mafft {
-                tooltip:"MAFFT is a multiple sequence alignment program for unix-like operating systems. <p><dfn>It offers a range of multiple alignment methods, L-INS-i (accurate; for alignment of &lt;&#126;200 sequences), FFT-NS-2 (fast; for alignment of &lt;&#126;10,000 sequences), etc. </dfn></p>";
                 pos:"-540 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -64,7 +61,6 @@ workflow align-mafft{
                 out-msa.angle:360;
             }
             write-msa {
-                tooltip:"Writes all supplied alignments to file(s) in selected format";
                 pos:"-300 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -79,4 +75,3 @@ workflow align-mafft{
         }
     }
 }
-

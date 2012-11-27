@@ -3,7 +3,6 @@
 
 
 workflow "Call Variants with SAMTools"{
-
     read-assembly {
         type:read-assembly;
         name:"Read Assembly";
@@ -217,32 +216,24 @@ workflow "Call Variants with SAMTools"{
 		}
         visual {
             read-assembly {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read Assembly</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads assembly from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
-                tooltip:"Reads assembly from files";
                 pos:"-675 -555";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-assembly.angle:360;
             }
             read-sequence {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read Sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads sequence(s) from <a href='param:url-in'><span style=' text-decoration: underline; color:#ff0000;'>unset</span></a>.</p></body></html>";
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-675 -420";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             write-variations {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write Variations</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all variations from <span style=' text-decoration: underline;'>Call Variants</span> to <a href='param:url-out'><span style=' text-decoration: underline; color:#0000ff;'>toy_vars.vcf</span></a>.</p></body></html>";
-                tooltip:"Writes all supplied variations to file(s) in selected format";
                 pos:"-240 -495";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-variations.angle:180;
             }
             call_variants {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Call Variants</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>For reference sequence from <span style=' text-decoration: underline;'>Read Sequence</span>, call variants with assembly data provided by <span style=' text-decoration: underline;'>Read Assembly</span>,.</p></body></html>";
-                tooltip:"Call SNPs and INDELS with samtools mpileup and bcftools";
                 pos:"-495 -495";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -262,4 +253,3 @@ workflow "Call Variants with SAMTools"{
         }
     }
 }
-

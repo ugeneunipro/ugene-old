@@ -2,7 +2,6 @@
 #Run local NCBI BLAST search. BLAST finds regions of similarity between biological sequences. Must have an installed NCBI BLAST package.
 
 workflow local-blast+{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -54,21 +53,18 @@ workflow local-blast+{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-765 -615";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-330 -615";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
             blast-plus {
-                tooltip:"Finds annotations for DNA sequence in local database";
                 pos:"-585 -615";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -84,4 +80,3 @@ workflow local-blast+{
         }
     }
 }
-

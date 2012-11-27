@@ -2,7 +2,6 @@
 #Build frequency matrix from existing multiple sequence alignment
 
 workflow "Build frequency matrix"{
-
     read-msa {
         type:read-msa;
         name:"Read alignment";
@@ -34,14 +33,12 @@ workflow "Build frequency matrix"{
         }
         visual {
             read-msa {
-                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
                 pos:"-780 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             fmatrix-build {
-                tooltip:"Builds frequency matrix. Frequency matrices are used for probabilistic recognition of transcription factor binding sites.";
                 pos:"-600 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -49,7 +46,6 @@ workflow "Build frequency matrix"{
                 out-fmatrix.angle:360;
             }
             fmatrix-write {
-                tooltip:"Saves all input frequency matrices to specified location.";
                 pos:"-390 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -64,4 +60,3 @@ workflow "Build frequency matrix"{
         }
     }
 }
-

@@ -2,7 +2,6 @@
 #Extract sequences from annotated regions
 
 workflow {
-
     filter-annotations {
         type:filter-annotations;
         name:"Filter annotations by name";
@@ -61,7 +60,6 @@ workflow {
         }
         visual {
             filter-annotations {
-                tooltip:"Filters annotations by name";
                 pos:"-645 -720";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -69,7 +67,6 @@ workflow {
                 out-annotations.angle:360;
             }
             extract-annotated-sequence {
-                tooltip:"Creates sequences from annotated regions of input sequence";
                 pos:"-480 -720";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -78,14 +75,12 @@ workflow {
                 out-sequence.angle:360;
             }
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-780 -720";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             write-fasta {
-                tooltip:"Writes all supplied sequences to file(s) in FASTA format.";
                 pos:"-255 -720";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -104,4 +99,3 @@ workflow {
         }
     }
 }
-

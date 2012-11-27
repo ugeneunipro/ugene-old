@@ -2,7 +2,6 @@
 #Build position weight matrix from existing multiple sequence alignment
 
 workflow "Build weight matrix"{
-
     read-msa {
         type:read-msa;
         name:"Read alignment";
@@ -37,14 +36,12 @@ workflow "Build weight matrix"{
         }
         visual {
             read-msa {
-                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
                 pos:"-780 -690";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             wmatrix-build {
-                tooltip:"Builds weight matrix. Weight matrices are used for probabilistic recognition of transcription factor binding sites.";
                 pos:"-570 -690";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -52,7 +49,6 @@ workflow "Build weight matrix"{
                 out-wmatrix.angle:360;
             }
             wmatrix-write {
-                tooltip:"Saves all input weight matrices to specified location.";
                 pos:"-375 -690";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -68,4 +64,3 @@ workflow "Build weight matrix"{
         }
     }
 }
-

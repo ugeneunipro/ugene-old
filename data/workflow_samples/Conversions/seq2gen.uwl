@@ -6,7 +6,6 @@
 #You can override the target file location by editing "URL" parameter of "Write Genbank" task. In this case all data from different sources will be saved to the single location (unless you change "Accumulate objects" parameter, see related docs).
 
 workflow "Convert sequence to Genbank"{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -27,14 +26,12 @@ workflow "Convert sequence to Genbank"{
     .meta {
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-720 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-465 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -46,4 +43,3 @@ workflow "Convert sequence to Genbank"{
         }
     }
 }
-

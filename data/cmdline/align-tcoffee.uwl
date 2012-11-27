@@ -2,7 +2,6 @@
 #Create alignment with T-Coffee. T-Coffee is a collection of tools for computing, evaluating and manipulating multiple alignments of DNA, RNA, Protein Sequences. Must have an installed T-Coffee package.
 
 workflow align-tcoffee{
-
     tcoffee {
         type:tcoffee;
         name:"Align with T-Coffee";
@@ -43,8 +42,6 @@ workflow align-tcoffee{
         }
         visual {
             tcoffee {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Align with T-Coffee</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>For each MSA, build the alignment using <span style=' text-decoration: underline;'>&quot;T-Coffee&quot;</span> and send it to output.</p></body></html>";
-                tooltip:"T-Coffee is a multiple sequence alignment package. ";
                 pos:"-585 -600";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -53,8 +50,6 @@ workflow align-tcoffee{
                 out-msa.angle:360;
             }
             read-msa {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Read alignment</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Reads MSA(s) from <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
-                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
                 pos:"-795 -600";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -62,8 +57,6 @@ workflow align-tcoffee{
                 out-msa.angle:360;
             }
             write-msa {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write alignment</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all MSAs from <span style=' text-decoration: underline;'>Align with T-Coffee</span> to <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
-                tooltip:"Writes all supplied alignments to file(s) in selected format";
                 pos:"-300 -600";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -78,4 +71,3 @@ workflow align-tcoffee{
         }
     }
 }
-

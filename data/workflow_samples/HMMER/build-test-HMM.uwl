@@ -2,7 +2,6 @@
 #Builds a new profile HMM from input alignment, calibrates the HMM and saves to a file. Then runs a test HMM search over sample sequence and saves test results to Genbank file.To run this schema, you need to specify appropriate locations for input/output files. This is achieved by selecting a task and editing interesting parameters in Property Inspector panel.Optionally, fine tune the build/search parameters as you see fit. Then schedule the workflow for execution by pressing CTRL+R shortcut. You can watch its" progress in a Task View of UGENE.
 
 workflow "Build HMM from alignment and test it"{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -57,21 +56,18 @@ workflow "Build HMM from alignment and test it"{
     .meta {
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-780 -525";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             read-msa {
-                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
                 pos:"-780 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             hmm2-build {
-                tooltip:"Builds a HMM profile from a multiple sequence alignment.<p>The HMM profile is a statistical model which captures position-specific information about how conserved each column of the alignment is, and which residues are likely.";
                 pos:"-630 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -79,14 +75,12 @@ workflow "Build HMM from alignment and test it"{
                 out-hmm2.angle:360;
             }
             hmm2-write-profile {
-                tooltip:"Saves all input HMM profiles to specified location.";
                 pos:"-435 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-hmm2.angle:180;
             }
             hmm2-search {
-                tooltip:"Searches each input sequence for significantly similar sequence matches to all specified HMM profiles. In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence";
                 pos:"-435 -540";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -95,7 +89,6 @@ workflow "Build HMM from alignment and test it"{
                 out-annotations.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-195 -540";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -119,4 +112,3 @@ workflow "Build HMM from alignment and test it"{
         }
     }
 }
-

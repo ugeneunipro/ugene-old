@@ -2,7 +2,6 @@
 #Finds annotations for DNA sequence in remote database: NCBI BLSAT or CDD. Result annotations store to file in genbank format. Source data can be of any format containing sequences or alignments
 
 workflow remote-request{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -52,14 +51,12 @@ workflow remote-request{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-780 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             blast-ncbi {
-                tooltip:"Finds annotations for DNA sequence in remote database";
                 pos:"-600 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -67,7 +64,6 @@ workflow remote-request{
                 out-annotations.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-360 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -82,4 +78,3 @@ workflow remote-request{
         }
     }
 }
-

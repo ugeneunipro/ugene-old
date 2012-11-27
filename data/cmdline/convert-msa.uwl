@@ -2,7 +2,6 @@
 #Converts multiple sequence alignment from one document format to another
 
 workflow convert-msa{
-
     read-msa {
         type:read-msa;
         name:"Read alignment";
@@ -29,14 +28,12 @@ workflow convert-msa{
         }
         visual {
             read-msa {
-                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
                 pos:"-780 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             write-msa {
-                tooltip:"Writes all supplied alignments to file(s) in selected format";
                 pos:"-480 -630";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -48,4 +45,3 @@ workflow convert-msa{
         }
     }
 }
-

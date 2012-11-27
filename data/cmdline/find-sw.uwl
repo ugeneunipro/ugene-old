@@ -2,7 +2,6 @@
 #Find pattern in supplied sequence using Smith-Waterman algorithm
 
 workflow find-sw{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -55,14 +54,12 @@ workflow find-sw{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-750 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             ssearch {
-                tooltip:"Finds regions of similarity to the specified pattern in each input sequence (nucleotide or protein one). <p>Under the hood is the well-known Smith-Waterman algorithm for performing local sequence alignment.";
                 pos:"-570 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -70,7 +67,6 @@ workflow find-sw{
                 out-annotations.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-300 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -85,4 +81,3 @@ workflow find-sw{
         }
     }
 }
-

@@ -2,7 +2,6 @@
 #Builds statistical profile for SITECON. The SITECON is a program for probabilistic recognition of transcription factor binding sites.
 
 workflow sitecon-build{
-
     read-msa {
         type:read-msa;
         name:"Read alignment";
@@ -43,14 +42,12 @@ workflow sitecon-build{
         }
         visual {
             read-msa {
-                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
                 pos:"-765 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             sitecon-build {
-                tooltip:"Builds statistical profile for SITECON. The SITECON is a program for probabilistic recognition of transcription factor binding sites.";
                 pos:"-570 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -58,7 +55,6 @@ workflow sitecon-build{
                 out-sitecon.angle:360;
             }
             sitecon-write {
-                tooltip:"Saves all input SITECON profiles to specified location.";
                 pos:"-345 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -73,4 +69,3 @@ workflow sitecon-build{
         }
     }
 }
-

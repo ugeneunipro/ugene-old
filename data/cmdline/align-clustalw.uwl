@@ -2,7 +2,6 @@
 #Create alignment with ClustalW. ClustalW is a general purpose multiple sequence alignment program for DNA or proteins. Must have an installed ClustalW package.
 
 workflow align-clustalw{
-
     read-msa {
         type:read-msa;
         name:"Read alignment";
@@ -49,14 +48,12 @@ workflow align-clustalw{
         }
         visual {
             read-msa {
-                tooltip:"Reads multiple sequence alignments (MSAs) from local or remote files.<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).";
                 pos:"-750 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-msa.angle:360;
             }
             clustalw {
-                tooltip:"Aligns multiple sequence alignments (MSAs) supplied with ClustalW.<p>ClustalW is a general purpose multiple sequence alignment program for DNA or proteins.Visit <a href='http://www.clustal.org/'>http://www.clustal.org/</a> to learn more about it.";
                 pos:"-585 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -64,7 +61,6 @@ workflow align-clustalw{
                 out-msa.angle:360;
             }
             write-msa {
-                tooltip:"Writes all supplied alignments to file(s) in selected format";
                 pos:"-345 -660";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -79,4 +75,3 @@ workflow align-clustalw{
         }
     }
 }
-

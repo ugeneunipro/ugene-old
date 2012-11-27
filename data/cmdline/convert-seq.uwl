@@ -2,7 +2,6 @@
 #Converts sequence from one document format to another
 
 workflow convert-seq{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -33,14 +32,12 @@ workflow convert-seq{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-795 -615";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             write-sequence {
-                tooltip:"Writes all supplied alignments to file(s) in selected format";
                 pos:"-525 -615";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -52,4 +49,3 @@ workflow convert-seq{
         }
     }
 }
-

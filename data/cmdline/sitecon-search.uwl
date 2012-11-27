@@ -2,7 +2,6 @@
 #Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles(models). In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.
 
 workflow sitecon-search{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -58,21 +57,18 @@ workflow sitecon-search{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-765 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             sitecon-read {
-                tooltip:"Reads SITECON profiles from file(s). The files can be local or Internet URLs.";
                 pos:"-765 -450";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sitecon.angle:360;
             }
             sitecon-search {
-                tooltip:"Searches each input sequence for transcription factor binding sites significantly similar to specified SITECON profiles. In case several profiles were supplied, searches with all profiles one by one and outputs merged set of annotations for each sequence.";
                 pos:"-615 -540";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -81,7 +77,6 @@ workflow sitecon-search{
                 out-annotations.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-300 -540";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -99,4 +94,3 @@ workflow sitecon-search{
         }
     }
 }
-

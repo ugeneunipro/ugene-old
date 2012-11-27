@@ -2,7 +2,6 @@
 #Generates a random DNA sequence with specified nucleotide content
 
 workflow "Generate DNA"{
-
     generate-dna {
         type:generate-dna;
         name:"Generate DNA";
@@ -47,16 +46,12 @@ workflow "Generate DNA"{
         }
         visual {
             generate-dna {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Generate DNA</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Generates random DNA sequence(s)</p></body></html>";
-                tooltip:"Generates random DNA sequences with given nucleotide content that can be specified manually or evaluated from the reference file.";
                 pos:"-690 -690";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             write-sequence {
-                description:"<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0//EN' 'http://www.w3.org/TR/REC-html40/strict.dtd'> <html><head><meta name='qrichtext' content='1' /><style type='text/css'> p, li { white-space: pre-wrap; } </style></head><body style=' font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;'> <p align='center' style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'><span style=' font-weight:600;'>Write sequence</span></p> <hr /> <p style=' margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;'>Save all sequences from <span style=' text-decoration: underline;'>Generate DNA</span> to <span style=' text-decoration: underline; color:#ff0000;'>unset</span>.</p></body></html>";
-                tooltip:"Writes all supplied sequences to file(s) in selected format.";
                 pos:"-495 -690";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -69,4 +64,3 @@ workflow "Generate DNA"{
         }
     }
 }
-

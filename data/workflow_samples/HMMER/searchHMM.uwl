@@ -2,7 +2,6 @@
 #Reads an HMM from a file and searches input sequences for significantly similar matches, saves found signals to a file.You can specify several input files for both HMM and sequences, the schema will process Cartesian product of inputs. That is, each sequence will be searched with all specified HMMs in turn.To specify task parameters, select it and edit interesting fields in table "Parameters" of Property Inspector panel.Schedule the workflow for execution by pressing CTRL+R shortcut. You can watch its" progress in Task View of UGENE.
 
 workflow "Search sequences with profile HMM"{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -38,21 +37,18 @@ workflow "Search sequences with profile HMM"{
     .meta {
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-750 -675";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             hmm2-read-profile {
-                tooltip:"Reads HMM profiles from file(s). The files can be local or Internet URLs.";
                 pos:"-750 -480";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-hmm2.angle:360;
             }
             hmm2-search {
-                tooltip:"Searches each input sequence for significantly similar sequence matches to all specified HMM profiles. In case several profiles were supplied, searches with all profiles one by one and outputs united set of annotations for each sequence";
                 pos:"-585 -570";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -61,7 +57,6 @@ workflow "Search sequences with profile HMM"{
                 out-annotations.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-315 -570";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -79,4 +74,3 @@ workflow "Search sequences with profile HMM"{
         }
     }
 }
-

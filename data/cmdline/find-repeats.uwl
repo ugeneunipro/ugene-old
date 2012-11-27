@@ -2,7 +2,6 @@
 #Find repeat units in supplied sequence
 
 workflow find-repeats{
-
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
@@ -59,14 +58,12 @@ workflow find-repeats{
         }
         visual {
             read-sequence {
-                tooltip:"Reads sequences and annotations if any from local or remote files.";
                 pos:"-735 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-sequence.angle:360;
             }
             repeats-search {
-                tooltip:"Finds repeats in each supplied sequence, stores found regions as annotations.";
                 pos:"-570 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -74,7 +71,6 @@ workflow find-repeats{
                 out-annotations.angle:360;
             }
             write-genbank {
-                tooltip:"Writes all supplied sequences and related annotations to file(s) in Genbank format.";
                 pos:"-285 -645";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
@@ -89,4 +85,3 @@ workflow find-repeats{
         }
     }
 }
-
