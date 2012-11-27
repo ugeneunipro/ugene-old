@@ -42,9 +42,16 @@
 namespace U2 {
 
 void EscClicker::run()
-{
-    GTGlobals::sleep(1000);
-    GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["esc"]);
+{   GTGlobals::sleep(1000);
+    if(mouse){
+        QPoint p = GTMouseDriver::getMousePosition();
+        p.setX(p.x()-50);
+        GTMouseDriver::moveTo(os,p);
+        GTMouseDriver::click(os);
+    }
+    else{
+        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["esc"]);
+    }
 }
 namespace GUITest_Common_scenarios_dp_view {
 
@@ -193,6 +200,51 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
         GTUtilsDialog::waitForDialog(os, new EscClicker(os));
 
         GTWidget::click(os, GTWidget::findWidget(os, GTUtilsProjectTreeView::widgetName));
+        QWidget* dpWidget = GTWidget::findWidget(os, "dotplot widget");
+        CHECK_SET_ERR(dpWidget != NULL, "no dpWidget");
+
+        GTMenu::showContextMenu(os, dpWidget);
+    }
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014_1){
+    //DIFFERENCE: ANNOTATION TREE WIDGET IS USED
+    QMenu *menu;
+    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 4));
+    Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
+    GTUtilsDialog::waitForDialog(os, filler2);
+
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Build dotplot");
+    GTUtilsProjectTreeView::openView(os);
+
+    for(int i=0;i<4;i++){
+        GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+
+        GTWidget::click(os, GTWidget::findWidget(os, GTUtilsAnnotationsTreeView::widgetName));
+        QWidget* dpWidget = GTWidget::findWidget(os, "dotplot widget");
+        CHECK_SET_ERR(dpWidget != NULL, "no dpWidget");
+
+        GTMenu::showContextMenu(os, dpWidget);
+    }
+}
+GUI_TEST_CLASS_DEFINITION(test_0014_2){
+    //DIFFERENCE: ANNOTATION TREE WIDGET IS USED
+    QMenu *menu;
+    menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os, 4));
+    Runnable *filler2 = new BuildDotPlotFiller(os, testDir + "_common_data/scenarios/dp_view/dp1.fa","",false,true);
+    GTUtilsDialog::waitForDialog(os, filler2);
+
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Build dotplot");
+    GTUtilsProjectTreeView::openView(os);
+
+    for(int i=0;i<4;i++){
+        GTUtilsDialog::waitForDialog(os, new EscClicker(os,true));
+
+        GTWidget::click(os, GTWidget::findWidget(os, GTUtilsAnnotationsTreeView::widgetName));
         QWidget* dpWidget = GTWidget::findWidget(os, "dotplot widget");
         CHECK_SET_ERR(dpWidget != NULL, "no dpWidget");
 

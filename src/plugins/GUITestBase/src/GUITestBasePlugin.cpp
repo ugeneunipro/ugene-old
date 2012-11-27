@@ -534,7 +534,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0011_3);
 
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0013);
+
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0014);
+    REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0014_1);
+    REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0014_2);
+
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0020);
 
     REGISTER_TEST(GUITest_Assembly_browser::test_0001);

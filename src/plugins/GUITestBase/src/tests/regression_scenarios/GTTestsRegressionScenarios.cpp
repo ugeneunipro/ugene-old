@@ -613,8 +613,8 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
     QLineEdit *annotationNameEdit;
     annotationNameEdit=(QLineEdit *)GTWidget::findWidget(os,"annotationNameEdit");
 
+//3.1 Input invalid annotation name (empty)
     GTLineEdit::setText(os,annotationNameEdit,"");
-    GTGlobals::sleep(100);
     QString s=label->text();
     CHECK_SET_ERR(s.contains("empty"),"Error message is: "+s);
     GTGlobals::sleep(500);
@@ -623,8 +623,10 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
         GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
         GTGlobals::sleep(50);
     }
+
+//3.2 Input invalid annotation name (illegal)
+
     GTLineEdit::setText(os,annotationNameEdit," test");
-    GTGlobals::sleep(100);
     s=label->text();
     CHECK_SET_ERR(s.contains("Illegal"),"Error message is: "+s);
     GTGlobals::sleep(500);
@@ -633,8 +635,8 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
         GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
         GTGlobals::sleep(50);
     }
+//3.3 Input invalid annotation name (illegal)
     GTLineEdit::setText(os,annotationNameEdit,"Too long annotation name");
-    GTGlobals::sleep(100);
     s=label->text();
     CHECK_SET_ERR(s.contains("too long"),"Error message is: "+s);
     GTGlobals::sleep(500);

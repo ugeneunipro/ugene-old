@@ -29,10 +29,11 @@ k
 namespace U2 {
 class EscClicker : public Filler {
 public:
-    EscClicker(U2OpStatus &_os)
-        :Filler(_os, GUIDialogWaiter::WaitSettings("dotplot context menu", GUIDialogWaiter::Popup)){}
+    EscClicker(U2OpStatus &_os, bool _mouse=false)
+        :Filler(_os, GUIDialogWaiter::WaitSettings("dotplot context menu", GUIDialogWaiter::Popup)),mouse(_mouse){}
     virtual void run();
-
+private:
+    bool mouse;
 };
 
 namespace GUITest_Common_scenarios_dp_view {
@@ -46,6 +47,9 @@ GUI_TEST_CLASS_DECLARATION(test_0011_3)
 
 GUI_TEST_CLASS_DECLARATION(test_0013)
 GUI_TEST_CLASS_DECLARATION(test_0014)
+GUI_TEST_CLASS_DECLARATION(test_0014_1)
+GUI_TEST_CLASS_DECLARATION(test_0014_2)
+
 GUI_TEST_CLASS_DECLARATION(test_0020)
 
 #undef GUI_TEST_PREFIX
