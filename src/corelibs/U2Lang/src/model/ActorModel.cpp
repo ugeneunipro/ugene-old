@@ -25,6 +25,7 @@
 #include <U2Lang/ConfigurationEditor.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/GrouperSlotAttribute.h>
+#include <U2Lang/IntegralBusType.h>
 #include <U2Lang/WorkflowUtils.h>
 
 #include "ActorModel.h"
@@ -232,8 +233,6 @@ void Actor::update(const QMap<ActorId, ActorId> &actorsMapping) {
 }
 
 void Actor::updateGrouperSlots(const QMap<ActorId, ActorId> &actorsMapping) {
-    bool grouperSlotsDeleted = false;
-
     SAFE_POINT(1 == getOutputPorts().size(), "Grouper port error 1", );
     SAFE_POINT(1 == getInputPorts().size(), "Grouper port error 2", );
     Port *outPort = getOutputPorts().first();
@@ -245,38 +244,40 @@ void Actor::updateGrouperSlots(const QMap<ActorId, ActorId> &actorsMapping) {
         inBusMap = WorkflowUtils::getBusType(inPort);
     }
 
-    // refresh in slot attribute
+    // update in slot attribute
     {
         Attribute *attr = getParameter(CoreLibConstants::GROUPER_SLOT_ATTR);
         QString groupSlot = attr->getAttributeValueWithoutScript<QString>();
-        groupSlot = GrouperOutSlot::readable2busMap(groupSlot);
-        U2OpStatus2Log os;
-        IntegralBusSlot slot = IntegralBusSlot::fromString(groupSlot, os);
-        foreach (const ActorId &oldId, actorsMapping.keys()) {
-            slot.replaceActorId(oldId, actorsMapping[oldId]);
-        }
-        groupSlot = slot.toString();
-        bool found = false;
-        foreach (const Descriptor &d, inBusMap.keys()) {
-            if (d.getId() == groupSlot) {
-                found = true;
-                break;
+        if (!groupSlot.isEmpty()) {
+            groupSlot = GrouperOutSlot::readable2busMap(groupSlot);
+            U2OpStatus2Log logOs;
+            IntegralBusSlot slot = IntegralBusSlot::fromString(groupSlot, logOs);
+            foreach (const ActorId &oldId, actorsMapping.keys()) {
+                slot.replaceActorId(oldId, actorsMapping[oldId]);
             }
+            groupSlot = slot.toString();
+            bool found = false;
+            foreach (const Descriptor &d, inBusMap.keys()) {
+                if (d.getId() == groupSlot) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                groupSlot = "";
+            }
+            attr->setAttributeValue(groupSlot);
         }
-        if (!found) {
-            groupSlot = "";
-        }
-        attr->setAttributeValue(groupSlot);
     }
-    // refresh out slots
+    // update out slots
     {
         GrouperOutSlotAttribute *attr = dynamic_cast<GrouperOutSlotAttribute*>(getParameter(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR));
         QList<GrouperOutSlot> &outSlots = attr->getOutSlots();
         QList<GrouperOutSlot>::iterator i = outSlots.begin();
         while (i != outSlots.end()) {
             QString in = i->getBusMapInSlotId();
-            U2OpStatus2Log os;
-            IntegralBusSlot slot = IntegralBusSlot::fromString(in, os);
+            U2OpStatus2Log logOs;
+            IntegralBusSlot slot = IntegralBusSlot::fromString(in, logOs);
             foreach (const ActorId &oldId, actorsMapping.keys()) {
                 slot.replaceActorId(oldId, actorsMapping[oldId]);
             }
@@ -300,6 +301,35 @@ void Actor::updateGrouperSlots(const QMap<ActorId, ActorId> &actorsMapping) {
 
     DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outBusMap));
     outPort->setNewType(newType);
+}
+
+void Actor::replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings) {
+    foreach (Port *p, getPorts()) {
+        p->replaceActor(oldActor, newActor, mappings);
+    }
+    if (CoreLibConstants::GROUPER_ID == proto->getId()) {
+        {
+            Attribute *attr = getParameter(CoreLibConstants::GROUPER_SLOT_ATTR);
+            QString groupSlot = attr->getAttributeValueWithoutScript<QString>();
+            groupSlot = GrouperOutSlot::readable2busMap(groupSlot);
+            foreach (const PortMapping &pm, mappings) {
+                IntegralBusUtils::remapPathedSlotString(groupSlot, oldActor->getId(), newActor->getId(), pm);
+            }
+            attr->setAttributeValue(groupSlot);
+        }
+
+        {
+            GrouperOutSlotAttribute *attr = dynamic_cast<GrouperOutSlotAttribute*>(getParameter(CoreLibConstants::GROUPER_OUT_SLOTS_ATTR));
+            QList<GrouperOutSlot>::iterator i = attr->getOutSlots().begin();
+            for (; i!=attr->getOutSlots().end(); i++) {
+                QString in = i->getBusMapInSlotId();
+                foreach (const PortMapping &pm, mappings) {
+                    IntegralBusUtils::remapPathedSlotString(in, oldActor->getId(), newActor->getId(), pm);
+                }
+                i->setBusMapInSlotStr(in);
+            }
+        }
+    }
 }
 
 /**************************

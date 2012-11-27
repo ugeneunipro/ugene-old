@@ -106,6 +106,10 @@ void Port::updateBindings(const QMap<ActorId, ActorId>&) {
 
 }
 
+void Port::replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings) {
+
+}
+
 bool Port::canBind(const Port* other) const {
     if (this == other || proc == other->proc || isInput() == other->isInput()) {
         return false;

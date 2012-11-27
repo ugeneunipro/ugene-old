@@ -82,7 +82,7 @@ const QList<Actor*> & WizardController::getCurrentActors() const {
     return currentActors;
 }
 
-QVariant WizardController::getWigetValue(AttributeWidget *widget) const {
+QVariant WizardController::getWidgetValue(AttributeWidget *widget) const {
     QString attrId;
     Attribute *attr = getAttribute(widget, attrId);
     CHECK(NULL != attr, QVariant());
@@ -199,6 +199,27 @@ void WizardController::setBroken() {
 
 bool WizardController::isBroken() const {
     return broken;
+}
+
+WizardController::ApplyResult WizardController::applyChanges(Metadata &meta) {
+    assignParameters();
+    if (selectors.isEmpty()) {
+        return OK;
+    }
+
+    foreach (const QString &varName, selectors.keys()) {
+        SAFE_POINT(vars.contains(varName),
+            QObject::tr("Undefined variable: %1").arg(varName), ACTORS_REPLACED);
+        Variable &v = vars[varName];
+        SelectorActors &s = selectors[varName];
+        Actor *newActor = s.getActor(v.getValue());
+        Actor *oldActor = s.getSourceActor();
+        if (newActor != oldActor) {
+            schema->replaceProcess(oldActor, newActor, s.getMappings(v.getValue()));
+            meta.replaceProcess(oldActor->getId(), newActor->getId(), s.getMappings(v.getValue()));
+        }
+    }
+    return ACTORS_REPLACED;
 }
 
 /************************************************************************/

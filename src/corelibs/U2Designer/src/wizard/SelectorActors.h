@@ -37,7 +37,7 @@ public:
 
     Actor * getActor(const QString &value) const;
     Actor * getSourceActor() const;
-    const QList<PortMapping> & getMappings(const QString &value) const;
+    QList<PortMapping> getMappings(const QString &value) const;
 
 private:
     ElementSelectorWidget *widget;

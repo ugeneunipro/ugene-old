@@ -76,9 +76,13 @@ public:
     // reimplemented from Configuration
     virtual void remap(const QMap<ActorId, ActorId>&);
     virtual void updateBindings(const QMap<ActorId, ActorId> &actorsMapping);
+    virtual void replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings);
     
     // used when loading schema
     void setBusMapValue(const QString & slotId, const QString & value);
+
+    /** input ports only */
+    void copyInput(IntegralBusPort *port, const PortMapping &mapping);
     
 protected:
     virtual DataTypePtr getBusType() const;

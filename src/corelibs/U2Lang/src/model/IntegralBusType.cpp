@@ -168,5 +168,57 @@ void IntegralBusType::addOutput(DataTypePtr t, const Port* producer) {
 
 }
 
+/************************************************************************/
+/* IntegralBusUtils */
+/************************************************************************/
+void IntegralBusUtils::remapBus(QStrStrMap &busMap, const ActorId &oldId, const ActorId &newId, const PortMapping &mapping) {
+    foreach (QString key, busMap.uniqueKeys()) {
+        U2OpStatus2Log os;
+        QList<IntegralBusSlot> slotList = IntegralBusSlot::listFromString(busMap[key], os);
+        QList<IntegralBusSlot> newSlots;
+        foreach (const IntegralBusSlot &slot, slotList) {
+            IntegralBusSlot newSlot = slot;
+            if (slot.actorId() == oldId) {
+                U2OpStatusImpl os;
+                QString newSlotId = mapping.getDstSlotId(slot.getId(), os);
+                if (!os.hasError()) {
+                    newSlot = IntegralBusSlot(newSlotId, "", newId);
+                }
+            }
+            newSlots << newSlot;
+        }
+        busMap[key] = IntegralBusSlot::listToString(newSlots);
+    }
+}
+
+void IntegralBusUtils::remapPathedSlotString(QString &pathedSlotStr, const ActorId &oldId, const ActorId &newId, const PortMapping &mapping) {
+    if (pathedSlotStr.isEmpty()) {
+        return;
+    }
+    QString slotStr;
+    QStringList path;
+    BusMap::parseSource(pathedSlotStr, slotStr, path);
+
+    U2OpStatus2Log logOs;
+    IntegralBusSlot slot = IntegralBusSlot::fromString(slotStr, logOs);
+    if (slot.actorId() == oldId) {
+        U2OpStatusImpl os;
+        QString newSlot = mapping.getDstSlotId(slot.getId(), os);
+        if (!os.hasError()) {
+            slot = IntegralBusSlot(newSlot, "", newId);
+        }
+    }
+    pathedSlotStr = slot.toString();
+
+    if (!path.isEmpty()) {
+        for (QStringList::iterator i=path.begin(); i!=path.end(); i++) {
+            if (*i == oldId) {
+                *i = newId;
+            }
+        }
+        pathedSlotStr += ">" + path.join(",");
+    }
+}
+
 }//Workflow namespace
 }//GB2namespace

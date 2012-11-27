@@ -22,6 +22,8 @@
 #ifndef _U2_PORTMAPPING_H_
 #define _U2_PORTMAPPING_H_
 
+#include <U2Core/U2OpStatus.h>
+
 #include "SlotMapping.h"
 
 namespace U2 {
@@ -32,9 +34,12 @@ public:
 
     void addSlotMapping(const SlotMapping &value);
     const QList<SlotMapping> & getMappings() const;
+    QString getDstSlotId(const QString &srcSloId, U2OpStatus &os) const;
 
     void validate(const QMap<Descriptor, DataTypePtr> &srcType,
         const QMap<Descriptor, DataTypePtr> &dstType, U2OpStatus &os) const;
+
+    static PortMapping getMappingBySrcPort(const QString &srcPortId, const QList<PortMapping> &mappings, U2OpStatus &os);
 
 private:
     QList<SlotMapping> slotList;

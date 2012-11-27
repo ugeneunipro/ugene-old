@@ -21,6 +21,7 @@
 
 #include <memory>
 
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/ActorModel.h>
@@ -72,10 +73,11 @@ void Schema::reset() {
     if (deepCopy) {
         qDeleteAll(procs);
         procs.clear();
-        qDeleteAll(wizards);
     }
     iterations.clear();
     graph.clear();
+    qDeleteAll(wizards);
+    wizards.clear();
 }
 
 Actor * Schema::actorById( ActorId id) {
@@ -553,6 +555,45 @@ void Schema::merge(const Schema &other) {
     }
 }
 
+void Schema::replaceProcess(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings) {
+    CHECK(procs.contains(oldActor), );
+    CHECK(!procs.contains(newActor), );
+    QMap<int, QList<Actor*> > top = graph.getTopologicalSortedGraph(procs);
+
+    // replace actors flows
+    foreach (Port *p, oldActor->getPorts()) {
+        U2OpStatus2Log os;
+        PortMapping pm = PortMapping::getMappingBySrcPort(p->getId(), mappings, os);
+        if (os.hasError()) {
+            continue;
+        }
+        foreach (Link *l, p->getLinks()) {
+            Port *p1 = l->source() == p ? l->destination() : l->source();
+            Port *p2 = newActor->getPort(pm.getDstId());
+            removeFlow(l);
+            Link *newLink = new Link(p1, p2);
+            addFlow(newLink);
+            if (p2->isInput()) {
+                IntegralBusPort *oldPort = dynamic_cast<IntegralBusPort*>(p);
+                IntegralBusPort *newPort = dynamic_cast<IntegralBusPort*>(p2);
+                newPort->copyInput(oldPort, pm);
+            }
+        }
+    }
+
+    int beginLevel = top.size() - 1;
+    for (int level=beginLevel; level>=0; level--) {
+        foreach (Actor *a, top[level]) {
+            if (a != oldActor) {
+                a->replaceActor(oldActor, newActor, mappings);
+            }
+        }
+    }
+
+    procs.removeOne(oldActor);
+    procs.append(newActor);
+}
+
 /**************************
  * Iteration
  **************************/
@@ -826,9 +867,70 @@ QString Metadata::renameLink(const QString &linkStr, const QMap<ActorId, ActorId
     return getLinkString(srcTokens[0], srcTokens[1], dstTokens[0], dstTokens[1]);
 }
 
+QString Metadata::renameLink(const QString &linkStr, const ActorId &oldId, const ActorId &newId, const QList<PortMapping> &mappings) const {
+    QStringList tokens = linkStr.split("->");
+    CHECK(2 == tokens.size(), linkStr);
+
+    QStringList srcTokens = tokens[0].split(".");
+    CHECK(2 == srcTokens.size(), linkStr);
+    QStringList dstTokens = tokens[1].split(".");
+    CHECK(2 == dstTokens.size(), linkStr);
+
+    if (srcTokens[0] == oldId) {
+        U2OpStatus2Log os;
+        PortMapping m = PortMapping::getMappingBySrcPort(srcTokens[1], mappings, os);
+        srcTokens[0] = newId;
+        srcTokens[1] = m.getDstId();
+    }
+    if (dstTokens[0] == oldId) {
+        U2OpStatus2Log os;
+        PortMapping m = PortMapping::getMappingBySrcPort(dstTokens[1], mappings, os);
+        dstTokens[0] = newId;
+        dstTokens[1] = m.getDstId();
+    }
+    return getLinkString(srcTokens[0], srcTokens[1], dstTokens[0], dstTokens[1]);
+}
+
 void Metadata::mergeVisual(const Metadata &other) {
     actorVisual.unite(other.actorVisual);
     textPosMap.unite(other.textPosMap);
+}
+
+void Metadata::replaceProcess(const ActorId &oldId, const ActorId &newId, const QList<PortMapping> &mappings) {
+    bool contains = false;
+    if (actorVisual.contains(oldId)) {
+        ActorVisualData oldV = actorVisual[oldId];
+        ActorVisualData newV(newId);
+        QPointF p = oldV.getPos(contains);
+        if (contains) {
+            newV.setPos(p);
+        }
+        QString s = oldV.getStyle(contains);
+        if (contains) {
+            newV.setStyle(s);
+        }
+        QColor c = oldV.getColor(contains);
+        if (contains) {
+            newV.setColor(c);
+        }
+        QFont f = oldV.getFont(contains);
+        if (contains) {
+            newV.setFont(f);
+        }
+        QRectF r = oldV.getRect(contains);
+        if (contains) {
+            newV.setRect(r);
+        }
+        actorVisual.remove(oldId);
+        actorVisual[newId] = newV;
+    }
+    foreach (const QString &linkStr, textPosMap.keys()) {
+        QString newLinkStr = renameLink(linkStr, oldId, newId, mappings);
+        if (newLinkStr != linkStr) {
+            textPosMap[newLinkStr] = textPosMap[linkStr];
+            textPosMap.remove(linkStr);
+        }
+    }
 }
 
 /**************************

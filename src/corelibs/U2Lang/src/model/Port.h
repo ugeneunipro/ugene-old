@@ -22,9 +22,10 @@
 #ifndef _U2_WORKFLOW_PORT_H_
 #define _U2_WORKFLOW_PORT_H_
 
-#include <U2Lang/Peer.h>
-#include <U2Lang/Datatype.h>
 #include <U2Lang/Configuration.h>
+#include <U2Lang/Datatype.h>
+#include <U2Lang/Peer.h>
+#include <U2Lang/PortMapping.h>
 
 namespace U2 {
 
@@ -98,8 +99,8 @@ public:
     // reimplemented Configuration::remap
     // empty implementation
     virtual void remap(const QMap<ActorId, ActorId>&);
-
     virtual void updateBindings(const QMap<ActorId, ActorId>&);
+    virtual void replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings);
 
 signals:
     // emitted when link is added or removed from bindings

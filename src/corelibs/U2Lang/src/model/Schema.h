@@ -24,6 +24,7 @@
 
 #include <U2Lang/Aliasing.h>
 #include <U2Lang/Attribute.h>
+#include <U2Lang/PortMapping.h>
 
 #include <QtCore/QPair>
 
@@ -108,6 +109,7 @@ public:
     void addProcess(Actor *actor);
     void removeProcess(Actor *actor);
     void renameProcess(const ActorId &oldId, const ActorId &newId);
+    void replaceProcess(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings);
 
     QList<Link*> getFlows() const;
     void addFlow(Link* l);
@@ -266,6 +268,7 @@ public:
 
     void removeActorMeta(const ActorId &actorId);
     void renameActors(const QMap<ActorId, ActorId> &actorsMapping);
+    void replaceProcess(const ActorId &oldId, const ActorId &newId, const QList<PortMapping> &mappings);
 
     QList<ActorVisualData> getActorsVisual() const;
     QMap<QString, QPointF> getTextPosMap() const;
@@ -286,6 +289,7 @@ private:
         const ActorId &dstActorId, const QString &dstPortId) const;
     bool isActorLinked(const ActorId &actorId, const QString &linkStr) const;
     QString renameLink(const QString &linkStr, const QMap<ActorId, ActorId> &actorsMapping) const;
+    QString renameLink(const QString &linkStr, const ActorId &oldId, const ActorId &newId, const QList<PortMapping> &mappings) const;
 }; // Metadata
 
 }//Workflow namespace

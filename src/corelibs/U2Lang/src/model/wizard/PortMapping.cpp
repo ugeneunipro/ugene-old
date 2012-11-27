@@ -97,4 +97,24 @@ void PortMapping::validateMappingsCount(const QMap<Descriptor, DataTypePtr> &src
     }
 }
 
+PortMapping PortMapping::getMappingBySrcPort(const QString &srcPortId, const QList<PortMapping> &mappings, U2OpStatus &os) {
+    foreach (const PortMapping &m, mappings) {
+        if (m.getSrcId() == srcPortId) {
+            return m;
+        }
+    }
+    os.setError(QString("No mapping for port: %1").arg(srcPortId));
+    return PortMapping("", "");
+}
+
+QString PortMapping::getDstSlotId(const QString &srcSlotId, U2OpStatus &os) const {
+    foreach (const SlotMapping &m, slotList) {
+        if (m.getSrcId() == srcSlotId) {
+            return m.getDstId();
+        }
+    }
+    os.setError(QString("No mapping for slot: %1").arg(srcSlotId));
+    return "";
+}
+
 } // U2

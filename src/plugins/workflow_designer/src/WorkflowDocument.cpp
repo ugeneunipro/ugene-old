@@ -118,7 +118,9 @@ void WorkflowDocFormat::storeDocument( Document* d, IOAdapter* io, U2OpStatus& )
     WorkflowGObject* wo = qobject_cast<WorkflowGObject*>(d->getObjects().first());
     assert(wo && wo->getView());
 
-    QByteArray rawData = HRSchemaSerializer::schema2String(*wo->getView()->getSchema(), &wo->getView()->getMeta()).toUtf8();
+    const Metadata &meta = wo->getView()->getMeta();
+    const Schema *schema = wo->getView()->getSchema();
+    QByteArray rawData = HRSchemaSerializer::schema2String(*schema, &meta).toUtf8();
     int nWritten = 0;
     int nTotal = rawData.size();
     while(nWritten < nTotal) {

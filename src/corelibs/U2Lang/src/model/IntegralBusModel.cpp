@@ -271,6 +271,51 @@ void IntegralBusPort::updateBindings(const QMap<ActorId, ActorId> &actorsMapping
     setParameter(PATHS_ATTR_ID, qVariantFromValue<SlotPathMap>(pathMap));
 }
 
+void IntegralBusPort::replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings) {
+    Port::replaceActor(oldActor, newActor, mappings);
+    if (isOutput()) {
+        return;
+    }
+
+    QStrStrMap busMap = getBusMap();
+    foreach (Port *p, oldActor->getOutputPorts()) {
+        U2OpStatus2Log os;
+        PortMapping pm = PortMapping::getMappingBySrcPort(p->getId(), mappings, os);
+        if (os.hasError()) {
+            continue;
+        }
+        IntegralBusUtils::remapBus(busMap, oldActor->getId(), newActor->getId(), pm);
+    }
+    setParameter(BUS_MAP_ATTR_ID, qVariantFromValue<QStrStrMap>(busMap));
+
+    SlotPathMap pathMap = getPathsMap();
+    QMap<ActorId, ActorId> actorsMapping;
+    actorsMapping[oldActor->getId()] = newActor->getId();
+    IntegralBusType::remapPaths(pathMap, actorsMapping);
+    setParameter(PATHS_ATTR_ID, qVariantFromValue<SlotPathMap>(pathMap));
+}
+
+void IntegralBusPort::copyInput(IntegralBusPort *port, const PortMapping &mapping) {
+    CHECK(isInput(), );
+    CHECK(port->isInput(), );
+    QStrStrMap myBusMap;
+    QStrStrMap busMap = port->getBusMap();
+    foreach (const QString &slotId, busMap.keys()) {
+        U2OpStatus2Log os;
+        myBusMap[mapping.getDstSlotId(slotId, os)] = busMap[slotId];
+    }
+    setParameter(BUS_MAP_ATTR_ID, qVariantFromValue<QStrStrMap>(myBusMap));
+
+    SlotPathMap myPathMap;
+    SlotPathMap pathMap = port->getPathsMap();
+    foreach (const SlotPair &pair, pathMap.keys()) {
+        U2OpStatus2Log os;
+        SlotPair myPair(mapping.getDstSlotId(pair.first, os), pair.second);
+        myPathMap[myPair] = pathMap[pair];
+    }
+    setParameter(PATHS_ATTR_ID, qVariantFromValue<SlotPathMap>(myPathMap));
+}
+
 QStrStrMap IntegralBusPort::getBusMap() const {
     Attribute *busAttr = getParameter(BUS_MAP_ATTR_ID);
     CHECK(NULL != busAttr, QStrStrMap());

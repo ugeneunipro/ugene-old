@@ -69,7 +69,7 @@ Actor * SelectorActors::getSourceActor() const {
     return srcActor;
 }
 
-const QList<PortMapping> & SelectorActors::getMappings(const QString &value) const {
+QList<PortMapping> SelectorActors::getMappings(const QString &value) const {
     foreach (const SelectorValue &sv, widget->getValues()) {
         if (sv.getValue() == value) {
             return sv.getMappings();

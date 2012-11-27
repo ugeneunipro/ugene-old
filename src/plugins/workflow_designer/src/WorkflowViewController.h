@@ -161,6 +161,7 @@ public:
     WorkflowScene * getScene() const {return scene;}
     Workflow::Schema * getSchema() const;
     const Workflow::Metadata & getMeta();
+    const Workflow::Metadata & updateMeta();
     Workflow::Metadata getMeta(const QList<WorkflowProcessItem*> &items);
 
     void refreshView() {sl_refreshActorDocs();}
@@ -232,7 +233,7 @@ private:
     void createActions();
     void saveState();
     void setSceneIterated(bool iterated, const Iteration &defaultIteration);
-    
+    void recreateScene();
     void localHostLaunch();
     void remoteLaunch();
 

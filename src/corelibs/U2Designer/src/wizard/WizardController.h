@@ -45,14 +45,19 @@ class WizardPageController;
 class U2DESIGNER_EXPORT WizardController : public QObject {
     Q_OBJECT
 public:
+    enum U2DESIGNER_EXPORT ApplyResult {
+        OK,
+        ACTORS_REPLACED
+    };
+public:
     WizardController(Schema *s, Wizard *w);
     virtual ~WizardController();
 
     QWizard * createGui();
-    void assignParameters();
+    ApplyResult applyChanges(Metadata &meta);
     const QList<Actor*> & getCurrentActors() const;
 
-    QVariant getWigetValue(AttributeWidget *widget) const;
+    QVariant getWidgetValue(AttributeWidget *widget) const;
     void setWidgetValue(AttributeWidget *widget, const QVariant &value);
 
     QVariant getSelectorValue(ElementSelectorWidget *widget);
@@ -82,6 +87,7 @@ private:
     QString getAttributeId(Actor *actor, Attribute *attr) const;
     void registerSelector(ElementSelectorWidget *widget);
     void replaceCurrentActor(const QString &actorId, const QString &selectorValue);
+    void assignParameters();
 };
 
 /************************************************************************/

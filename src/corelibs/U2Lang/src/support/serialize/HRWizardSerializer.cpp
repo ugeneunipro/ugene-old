@@ -173,6 +173,7 @@ void HRWizardParser::parseNextIds(HRSchemaSerializer::ParsedPairs &pairs, Wizard
             os.setError(HRWizardParser::tr("Double definition of next id in the page with id: %1").arg(page->getId()));
             return;
         }
+        page->setNext(nextId);
         return;
     }
     if (pairs.blockPairs.contains(NEXT)) {

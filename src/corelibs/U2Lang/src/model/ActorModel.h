@@ -30,8 +30,9 @@
 #include <U2Lang/Configuration.h>
 #include <U2Lang/ConfigurationEditor.h>
 #include <U2Lang/ConfigurationValidator.h>
-#include <U2Lang/Port.h>
 #include <U2Lang/Peer.h>
+#include <U2Lang/Port.h>
+#include <U2Lang/PortMapping.h>
 
 namespace U2 {
 
@@ -200,6 +201,7 @@ public:
     virtual void updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap);
 
     void update(const QMap<ActorId, ActorId> &actorsMapping);
+    void replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings);
     
 signals:
     void si_labelChanged();

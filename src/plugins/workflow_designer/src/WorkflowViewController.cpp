@@ -658,6 +658,7 @@ void WorkflowView::removeBusItem(WorkflowBusItem *item) {
 void WorkflowView::onBusRemoved(Link *link) {
     if (!sceneRecreation) {
         schema->removeFlow(link);
+        schema->update();
     }
 }
 
@@ -1313,7 +1314,8 @@ void WorkflowView::sl_copyItems() {
     }
 
     QList<Actor*> actors = scene->getSelectedActors();
-    lastPaste = HRSchemaSerializer::items2String(actors, getIterations(actors), &getMeta(procs));
+    updateMeta();
+    lastPaste = HRSchemaSerializer::items2String(actors, getIterations(actors), &meta);
     pasteAction->setEnabled(true);
     QApplication::clipboard()->setText(lastPaste);
     pasteCount = 0;
@@ -1404,14 +1406,10 @@ void WorkflowView::sl_pasteItems(const QString& s) {
     }
     renamePastedSchemaActors(pastedS, pastedM, schema);
     schema->merge(pastedS);
-    getMeta();
+    updateMeta();
     meta.mergeVisual(pastedM);
     pastedS.setDeepCopyFlag(false);
-
-    sceneRecreation = true;
-    SceneCreator sc(schema, meta);
-    sc.recreateScene(scene);
-    sceneRecreation = false;
+    recreateScene();
     scene->connectConfigurationEditors();
 
     foreach (QGraphicsItem *it, scene->items()) {
@@ -1427,6 +1425,13 @@ void WorkflowView::sl_pasteItems(const QString& s) {
     foreach(QGraphicsItem * it, scene->selectedItems()) {
         it->moveBy(shift, shift);
     }
+}
+
+void WorkflowView::recreateScene() {
+    sceneRecreation = true;
+    SceneCreator sc(schema, meta);
+    sc.recreateScene(scene);
+    sceneRecreation = false;
 }
 
 void WorkflowView::sl_procItemAdded() {
@@ -1532,7 +1537,12 @@ void WorkflowView::sl_showWizard() {
         WizardController controller(schema, w);
         QWizard *gui = controller.createGui();
         if (gui->exec() && !controller.isBroken()) {
-            controller.assignParameters();
+            updateMeta();
+            WizardController::ApplyResult res = controller.applyChanges(meta);
+            if (WizardController::ACTORS_REPLACED == res) {
+                recreateScene();
+                schema->setWizards(QList<Wizard*>());
+            }
             scene->sl_updateDocs();
             scene->setModified();
         }
@@ -1713,6 +1723,10 @@ Workflow::Schema * WorkflowView::getSchema() const {
 }
 
 const Workflow::Metadata & WorkflowView::getMeta() {
+    return updateMeta();
+}
+
+const Workflow::Metadata & WorkflowView::updateMeta() {
     meta.resetVisual();
     foreach (QGraphicsItem *it, scene->items()) {
         switch (it->type()) {
