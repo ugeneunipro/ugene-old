@@ -38,11 +38,13 @@
 #include "GTUtilsMdi.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include <QLineEdit>
 #include "GTUtilsLog.h"
+#include "../corelibs/U2View/src/ov_sequence/ADVSingleSequenceWidget.h"
 
 
 #include <U2View/ADVConstants.h>
@@ -593,6 +595,34 @@ GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
 
 //repeat these steps 3 times, UGENE shouldn't crash
 }
+GUI_TEST_CLASS_DEFINITION(test_1212){
+//    1. Open any sequence. (human_t1.fa)
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    2. Do "Select->Sequence Region..."
+//    3. In single selection mode enter any region
+//    4. Press "Go" and UGENE hangs up/crashes
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,"100..200"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+//    Expected: region is selected
+    ADVSingleSequenceWidget *w=(ADVSingleSequenceWidget*)GTWidget::findWidget(os,"ADV_single_sequence_widget_0");
+    CHECK_SET_ERR(!w->getSequenceSelection()->isEmpty(), "No selected region");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1212_1){
+//    1. Open any sequence. (human_t1.fa)
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    2. Do "Select->Sequence Region..."
+//    3. In single selection mode enter any region
+//    4. Press "Go" and UGENE hangs up/crashes
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,"0..199950"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+//    Expected: region is selected
+    ADVSingleSequenceWidget *w=(ADVSingleSequenceWidget*)GTWidget::findWidget(os,"ADV_single_sequence_widget_0");
+    CHECK_SET_ERR(!w->getSequenceSelection()->isEmpty(), "No selected region");
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_1252){
 //    1. Open human_t1.fa
@@ -613,9 +643,7 @@ GUI_TEST_CLASS_DEFINITION(test_1252){
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(500);
 //check delition of annotation document
-    GTGlobals::FindOptions f;
-    f.failIfNull=false;
-    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "Annotations",f)==NULL, "Annotations document not deleted");
+   CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "Annotations", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
 //    5. Click search again
     GTWidget::click(os, GTWidget::findWidget(os,"btnSearch"));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
@@ -650,9 +678,7 @@ GUI_TEST_CLASS_DEFINITION(test_1252_1){
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(500);
 //check delition of annotation document
-    GTGlobals::FindOptions f;
-    f.failIfNull=false;
-    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "Annotations",f)==NULL, "Annotations document not deleted");
+    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "Annotations", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
 //    5. Click search again
     GTWidget::click(os, GTWidget::findWidget(os,"btnSearch"));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
@@ -664,8 +690,6 @@ GUI_TEST_CLASS_DEFINITION(test_1252_1){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EDIT_MENU<<ACTION_PROJECT__REMOVE_SELECTED));
     GTMouseDriver::click(os, Qt::RightButton);
 //    Expected: pattern is found and annotation is stored in a new document
-
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1255){
