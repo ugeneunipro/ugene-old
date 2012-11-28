@@ -539,6 +539,26 @@ GUI_TEST_CLASS_DEFINITION(test_1083) {
     GTUtilsProject::checkProject(os, GTUtilsProject::Empty);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1093) {
+//    1. do menu "tools->Align to refrence->Align short reads"
+
+//    2. fill next fields in appeared dialog:
+//        Refrence sequence "_common_data\scenarios\_regression\1093\refrence.fa"
+//        SAM output checkbox {set checked}
+//        Short reads add next file: "_common_data\scenarios\_regression\1093\read.fa"
+
+//    3. Press 'Align'
+//    Expected state: message window appears "The short reads can't be mapped to the reference sequence!"
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, testDir + "_common_data/scenarios/_regression/1093/","refrence.fa", testDir + "_common_data/scenarios/_regression/1093/", "read.fa",true)) ;
+    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
+    GTMenu::clickMenuItem(os, menu, QStringList() << "Align to reference" << "Align short reads");
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os,QMessageBox::Ok));
+
+    GTGlobals::sleep(10000);
+//The short reads can't be mapped to the reference sequence!
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1107){//commit GUIInitionalChecks
 //1) Open an MSA file (e.g. _common_data\scenarios\msa\ma2_gapped.aln)
 
