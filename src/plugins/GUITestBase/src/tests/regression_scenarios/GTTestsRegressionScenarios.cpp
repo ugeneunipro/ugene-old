@@ -29,6 +29,7 @@
 #include "api/GTWidget.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTLineEdit.h"
+#include "api/GTComboBox.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsBookmarksTreeView.h"
@@ -42,9 +43,8 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
-#include <QLineEdit>
 #include "GTUtilsLog.h"
-#include "../corelibs/U2View/src/ov_sequence/ADVSingleSequenceWidget.h"
+#include <U2View/ADVSingleSequenceWidget.h>
 
 
 #include <U2View/ADVConstants.h>
@@ -568,6 +568,58 @@ GUI_TEST_CLASS_DEFINITION(test_1165){
     GTWidget::click(os,nameList);
     GTGlobals::sleep(500);
     GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"]);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1189){
+//1) Open samples/FASTA/human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//2) Press Ctrl+F, click "Show more options"
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "lblShowMoreLess"));
+//3) Select any region of the sequence
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,100,200));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+//4) Select "Selected region" in "Region" combobox of "Search in" area.
+    QComboBox *regBox =(QComboBox*)GTWidget::findWidget(os, "boxRegion");
+    GTComboBox::setCurrentIndex(os,regBox,2);
+//5) Ensure that two lineedits became visible and contain correct region
+    QLineEdit *start = (QLineEdit*)GTWidget::findWidget(os,"editStart");
+    CHECK_SET_ERR(start->isVisible(), "editStart line is not visiable");
+    CHECK_SET_ERR(start->text()=="100","Wrong startValue. Current value is: "+start->text());
+
+    QLineEdit *end = (QLineEdit*)GTWidget::findWidget(os,"editEnd");
+    CHECK_SET_ERR(end->isVisible(), "editEnd line is not visiable");
+    CHECK_SET_ERR(end->text()=="201","Wrong endValue. Current value is: "+end->text());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1189_1){
+//1) Open samples/FASTA/human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//2) Press Ctrl+F, click "Show more options"
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "lblShowMoreLess"));
+//3) Select any region of the sequence
+    GTWidget::click(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+    QPoint p;
+    p=GTMouseDriver::getMousePosition();
+    p.setX(p.x()-100);
+    GTMouseDriver::moveTo(os,p);
+    GTMouseDriver::press(os);
+    p.setX(p.x()+200);
+    GTMouseDriver::moveTo(os,p);
+    GTMouseDriver::release(os);
+//4) Select "Selected region" in "Region" combobox of "Search in" area.
+    QComboBox *regBox =(QComboBox*)GTWidget::findWidget(os, "boxRegion");
+    GTComboBox::setCurrentIndex(os,regBox,2);
+//5) Ensure that two lineedits became visible and contain correct region
+    QLineEdit *start = (QLineEdit*)GTWidget::findWidget(os,"editStart");
+    CHECK_SET_ERR(start->isVisible(), "editStart line is not visiable");
+
+    QLineEdit *end = (QLineEdit*)GTWidget::findWidget(os,"editEnd");
+    CHECK_SET_ERR(end->isVisible(), "editEnd line is not visiable");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1190){//add AlignShortReadsFiller
