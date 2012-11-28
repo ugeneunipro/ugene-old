@@ -479,17 +479,17 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0002_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0002_2);
 
-    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0003);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0003);
 
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_2);
 
-    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0005);
-    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0006);
-    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0007);
-    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0008);
-    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0009);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0005);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0006);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0007);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0008);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0009);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations/edit
@@ -516,17 +516,31 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0001_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0001_2);
+
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0002_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0002_2);
+
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0003_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0003_2);
-    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004);
-    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005);
-    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006);
-    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007);
-/////////////////////////////////////////////////////////////////////////
+
+//    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004_1);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004_2);
+
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005_1);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005_2);
+
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006_1);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006_2);
+
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007_1);
+    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007_2);
+    /////////////////////////////////////////////////////////////////////////
 // Common scenarios/smith_waterman_dialog
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0001);
@@ -553,6 +567,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0020);
 
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Assembling/Assembly browser
+/////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_Assembly_browser::test_0001);
     REGISTER_TEST(GUITest_Assembly_browser::test_0002);
     REGISTER_TEST(GUITest_Assembly_browser::test_0004);
