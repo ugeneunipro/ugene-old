@@ -58,7 +58,7 @@ QWizard * WizardController::createGui() {
     int idx = 0;
     foreach (WizardPage *page, wizard->getPages()) {
         result->setPage(idx, createPage(page));
-        idMap[page->getId()] = idx;
+        pageIdMap[page->getId()] = idx;
         idx++;
     }
     result->setWizardStyle(QWizard::ClassicStyle);
@@ -137,8 +137,8 @@ QWizardPage * WizardController::createPage(WizardPage *page) {
     return result;
 }
 
-int WizardController::getQtId(const QString &hrId) const {
-    return idMap[hrId];
+int WizardController::getQtPageId(const QString &hrId) const {
+    return pageIdMap[hrId];
 }
 
 const QMap<QString, Variable> & WizardController::getVariables() const {
@@ -202,6 +202,9 @@ bool WizardController::isBroken() const {
 }
 
 WizardController::ApplyResult WizardController::applyChanges(Metadata &meta) {
+    if (isBroken()) {
+        return BROKEN;
+    }
     assignParameters();
     if (selectors.isEmpty()) {
         return OK;
@@ -255,10 +258,10 @@ void WidgetCreator::visit(AttributeWidget *aw) {
 }
 
 void WidgetCreator::visit(WidgetsArea *wa) {
-    result = new QWidget();
+    QWidget *scrollContent = new QWidget();
     layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
-    result->setLayout(layout);
+    scrollContent->setLayout(layout);
     foreach (WizardWidget *w, wa->getWidgets()) {
         WidgetCreator wcr(wc, wa->getLabelSize());
         w->accept(&wcr);
@@ -270,10 +273,24 @@ void WidgetCreator::visit(WidgetsArea *wa) {
     }
     QSpacerItem *spacer = new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::Minimum);
     layout->addSpacerItem(spacer);
+    setupScrollArea(scrollContent);
+}
+
+void WidgetCreator::setupScrollArea(QWidget *scrollContent) {
+    scrollContent->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    widgetsArea = new QScrollArea();
+    widgetsArea->setWidget(scrollContent);
+    widgetsArea->setWidgetResizable(true);
+    widgetsArea->setFrameShape(QFrame::NoFrame);
+    result = widgetsArea;
 }
 
 void WidgetCreator::visit(GroupWidget *gw) {
     visit((WidgetsArea*)gw);
+    result = widgetsArea->takeWidget();
+    delete widgetsArea;
+    widgetsArea = NULL;
+
     bool collapsible = (gw->getType() == GroupWidget::HIDEABLE);
     GroupBox *gb = new GroupBox(collapsible, gw->getTitle());
     setGroupBoxLayout(gb);
@@ -294,8 +311,8 @@ void WidgetCreator::visit(LogoWidget *lw) {
     }
     pix = pix.scaled(191, 338, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     label->setPixmap(pix);
-    label->setFixedSize(pix.size());
     layout->addWidget(label);
+    result->setFixedSize(pix.size());
 }
 
 void WidgetCreator::visit(ElementSelectorWidget *esw) {
@@ -319,7 +336,6 @@ QBoxLayout * WidgetCreator::getLayout() {
 
 void WidgetCreator::setGroupBoxLayout(GroupBox *gb) {
     gb->setLayout(layout);
-    result->setLayout(NULL);
     delete result;
     result = gb;
 }
@@ -336,10 +352,14 @@ PageContentCreator::PageContentCreator(WizardController *_wc)
 void PageContentCreator::visit(DefaultPageContent *content) {
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
+    int paramsHeight = content->getPageDefaultHeight();
+    int paramsWidth = content->getPageWidth();
     { // create logo
         WidgetCreator logoWC(wc);
         content->getLogoArea()->accept(&logoWC);
         if (NULL != logoWC.getResult()) {
+            paramsHeight = logoWC.getResult()->height();
+            paramsWidth -= logoWC.getResult()->width();
             layout->addWidget(logoWC.getResult());
             controllers << logoWC.getControllers();
         }
@@ -353,9 +373,11 @@ void PageContentCreator::visit(DefaultPageContent *content) {
                 paramsWC.getLayout()->addSpacerItem(spacer);
             }
             layout->addWidget(paramsWC.getResult());
+            paramsWC.getResult()->setMinimumSize(paramsWidth, paramsHeight);
             controllers << paramsWC.getControllers();
         }
     }
+    layout->setAlignment(Qt::AlignBottom);
     result = layout;
 }
 

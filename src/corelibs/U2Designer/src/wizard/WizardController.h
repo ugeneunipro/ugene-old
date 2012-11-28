@@ -25,6 +25,7 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QScrollArea>
 #include <QToolButton>
 #include <QWizard>
 
@@ -47,7 +48,8 @@ class U2DESIGNER_EXPORT WizardController : public QObject {
 public:
     enum U2DESIGNER_EXPORT ApplyResult {
         OK,
-        ACTORS_REPLACED
+        ACTORS_REPLACED,
+        BROKEN
     };
 public:
     WizardController(Schema *s, Wizard *w);
@@ -63,9 +65,15 @@ public:
     QVariant getSelectorValue(ElementSelectorWidget *widget);
     void setSelectorValue(ElementSelectorWidget *widget, const QVariant &value);
 
-    int getQtId(const QString &hrId) const;
+    /** Returns id of the Qt page object by @hrId.
+     * @hrId - human-readable id of the page.
+     */
+    int getQtPageId(const QString &hrId) const;
     const QMap<QString, Variable> & getVariables() const;
 
+    /** Wizard pages are validated in runtime. If some page is not validated
+     * then wizard becomes broken
+     */
     void setBroken();
     bool isBroken() const;
 
@@ -76,7 +84,7 @@ private:
     QList<WizardPageController*> pageControllers;
     QVariantMap propValues; // protoId.actorId.attrId <-> value
     QList<Actor*> currentActors;
-    QMap<QString, int> idMap; // hr-id <-> qt-id
+    QMap<QString, int> pageIdMap; // hr-id <-> qt-id
     QMap<QString, Variable> vars;
     QMap<QString, SelectorActors> selectors; // varName <-> actors
 
@@ -115,9 +123,11 @@ private:
     QWidget *result;
     QList<WidgetController*> controllers;
     QBoxLayout *layout;
+    QScrollArea *widgetsArea;
 
 private:
     void setGroupBoxLayout(GroupBox *gb);
+    void setupScrollArea(QWidget *scrollContent);
 };
 
 class PageContentCreator : public TemplatedPageVisitor {

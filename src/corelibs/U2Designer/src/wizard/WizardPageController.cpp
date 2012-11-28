@@ -44,7 +44,6 @@ void WizardPageController::applyLayout(WDWizardPage *wPage) {
     qDeleteAll(controllers);
     controllers.clear();
     QLayout *old = wPage->layout();
-    wPage->setLayout(NULL);
     removeLayout(old);
 
     U2OpStatusImpl os;
@@ -90,7 +89,7 @@ int WizardPageController::nextId() const {
     if (id.isEmpty()) {
         return -1;
     }
-    return wc->getQtId(id);
+    return wc->getQtPageId(id);
 }
 
 } // U2

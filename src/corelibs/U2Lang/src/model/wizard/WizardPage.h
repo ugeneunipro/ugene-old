@@ -97,12 +97,22 @@ public:
     void addParamWidget(WizardWidget *widget);
     void setLogoPath(const QString &path);
 
+    /** Default height of the page in pixels. Default height can be changed
+     * to another one by logo widget.
+     */
+    int getPageDefaultHeight() const;
+    /** The width in pixels of whole page: logo + parameters */
+    int getPageWidth() const;
+
     LogoWidget * getLogoArea();
     WidgetsArea * getParamsArea();
 
 private:
     LogoWidget *logoArea;
     WidgetsArea *paramsArea;
+
+    static const int HEIGHT; // px
+    static const int WIDTH; // px
 
 public:
     static const QString ID;

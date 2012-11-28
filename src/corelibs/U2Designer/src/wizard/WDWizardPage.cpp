@@ -39,6 +39,19 @@ void WDWizardPage::initializePage () {
     controller->applyLayout(this);
 }
 
+void WDWizardPage::showEvent(QShowEvent *event) {
+    if (wizard()->currentPage() == this) {
+        setupDialogSize();
+    }
+    QWizardPage::showEvent(event);
+}
+
+void WDWizardPage::setupDialogSize() {
+    wizard()->setFixedSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    wizard()->adjustSize();
+    wizard()->setFixedSize(wizard()->size());
+}
+
 int WDWizardPage::nextId() const {
     return controller->nextId();
 }

@@ -131,6 +131,8 @@ TemplatedPageContent * PageContentFactory::createContent(const QString &id, U2Op
 *********************************/
 const QString DefaultPageContent::ID("default");
 const QString DefaultPageContent::PARAMETERS("parameters-area");
+const int DefaultPageContent::HEIGHT = 400;
+const int DefaultPageContent::WIDTH = 700;
 
 DefaultPageContent::DefaultPageContent()
 : TemplatedPageContent(ID)
@@ -178,6 +180,14 @@ LogoWidget * DefaultPageContent::getLogoArea() {
 
 WidgetsArea * DefaultPageContent::getParamsArea() {
     return paramsArea;
+}
+
+int DefaultPageContent::getPageDefaultHeight() const {
+    return HEIGHT;
+}
+
+int DefaultPageContent::getPageWidth() const {
+    return WIDTH;
 }
 
 } // U2

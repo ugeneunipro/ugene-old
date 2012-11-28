@@ -29,6 +29,7 @@ namespace U2 {
 class WizardPageController;
 
 class WDWizardPage : public QWizardPage {
+    Q_OBJECT
 public:
     WDWizardPage(WizardPageController *controller, QWidget *parent = NULL);
     virtual ~WDWizardPage();
@@ -36,8 +37,14 @@ public:
     virtual void initializePage();
     virtual int nextId() const;
 
+protected:
+    virtual void showEvent(QShowEvent *event);
+
 private:
     WizardPageController *controller;
+
+private:
+    void setupDialogSize();
 };
 
 } // U2
