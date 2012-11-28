@@ -175,7 +175,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/project/anonymous project/
 //////////////////////////////////////////////////////////////////////////
 
-//     REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_anonymous_project::test_0003);
 
 //////////////////////////////////////////////////////////////////////////
@@ -381,9 +380,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0014_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0014_2);
 
-//     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0015);
-//     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0015_1);
-//     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0015_2);
+
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0016_1);
@@ -483,17 +480,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0002_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0002_2);
 
-    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0003);
 
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_2);
 
-    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0005);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0006);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0007);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0008);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations::test_0009);
+
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations/edit
@@ -529,21 +521,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0003_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0003_2);
 
-//    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004_1);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0004_2);
 
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005_1);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0005_2);
-
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006_1);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0006_2);
-
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007_1);
-    //REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007_2);
     /////////////////////////////////////////////////////////////////////////
 // Common scenarios/smith_waterman_dialog
 /////////////////////////////////////////////////////////////////////////
