@@ -156,6 +156,8 @@ void MSAEditorNameList::buildMenu(QMenu* m) {
     assert(copyMenu!=NULL);
     copyMenu->addAction(copyCurrentSequenceAction);
 
+    copyCurrentSequenceAction->setDisabled(getSelectedRow() == -1);
+
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     assert(editMenu!=NULL);
     editMenu->insertAction(editMenu->actions().first(), editSequenceNameAction);

@@ -1272,6 +1272,7 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     exportMenu->addAction(saveSequence);
     
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
+    copySelectionAction->setDisabled(selection.isNull());
     copyMenu->addAction(copySelectionAction);
 
     QMenu* viewMenu = GUIUtils::findSubMenu(m, MSAE_MENU_VIEW);
