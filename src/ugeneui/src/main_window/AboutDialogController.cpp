@@ -171,7 +171,10 @@ AWidget::AWidget() {
 
     density = 5;
     page = 0;
-
+    QObject *parent = new QObject(this);
+    parent->setObjectName("parent");
+    QObject *child = new QObject(parent);
+    child->setObjectName(text);
     startTimer(15);
 }
 

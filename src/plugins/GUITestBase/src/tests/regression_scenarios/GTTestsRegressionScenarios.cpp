@@ -549,6 +549,78 @@ GUI_TEST_CLASS_DEFINITION(test_1107){//commit GUIInitionalChecks
     GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
 //Expected state: UGENE not crashes
 }
+GUI_TEST_CLASS_DEFINITION(test_1113){//commit AboutDialogController.cpp
+//1. Open UGENE
+//2. Press F1
+    class EscClicker : public Filler {
+    public:
+        EscClicker(U2OpStatus& _os) : Filler(_os, "AboutDialog"){}
+        virtual void run(){
+            GTGlobals::sleep();
+            QWidget* dialog = QApplication::activeModalWidget();
+//getting an info string
+            QWidget *w = new QWidget();
+            w=dialog->findChild<QWidget*>("about_widget");
+            CHECK_SET_ERR(w!=NULL, "aboutWidget not found");
+
+            QObject *parent = new QObject();
+            parent= w->findChild<QObject*>("parent");
+            CHECK_SET_ERR(parent!=NULL, "parentObject not found");
+
+            QObject *child = new QObject();
+            child=parent->findChild<QObject*>();
+            CHECK_SET_ERR(child!=NULL, "childObject not found");
+
+            QString text = child->objectName();
+            CHECK_SET_ERR(text.contains("64-bit")||text.contains("32-bit"),text);
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["f1"]);
+    GTGlobals::sleep(1000);
+//Expected state: About dialog appeared, shown info includes platform info (32/64)
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1113_1){//commit AboutDialogController.cpp
+//1. Open UGENE
+//2. Help->About
+    class EscClicker : public Filler {
+    public:
+        EscClicker(U2OpStatus& _os) : Filler(_os, "AboutDialog"){}
+        virtual void run(){
+            GTGlobals::sleep();
+            QWidget* dialog = QApplication::activeModalWidget();
+//getting an info string
+            QWidget *w = new QWidget();
+            w=dialog->findChild<QWidget*>("about_widget");
+            CHECK_SET_ERR(w!=NULL, "aboutWidget not found");
+
+            QObject *parent = new QObject();
+            parent= w->findChild<QObject*>("parent");
+            CHECK_SET_ERR(parent!=NULL, "parentObject not found");
+
+            QObject *child = new QObject();
+            child=parent->findChild<QObject*>();
+            CHECK_SET_ERR(child!=NULL, "childObject not found");
+
+            QString text = child->objectName();
+            CHECK_SET_ERR(text.contains("64-bit")||text.contains("32-bit"),text);
+
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_HELP);
+    GTMenu::clickMenuItem(os, menu, QStringList() << ACTION__ABOUT);
+    GTGlobals::sleep(1000);
+//Expected state: About dialog appeared, shown info includes platform info (32/64)
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_1165){
 //1. Open file "data/samples/CLUSTALW/COI.aln"
