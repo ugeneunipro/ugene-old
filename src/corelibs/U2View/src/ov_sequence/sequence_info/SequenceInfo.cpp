@@ -69,6 +69,7 @@ void SequenceInfo::initLayout()
     QLabel* captionSeqRegionLength = new QLabel(CAPTION_SEQ_REGION_LENGTH);
     qint64 length = currentRegion.length;
     sequenceRegionLength = new QLabel(QString::number(length));
+    sequenceRegionLength->setObjectName("Length");
     lengthLayout->addRow(captionSeqRegionLength, sequenceRegionLength);
     mainLayout->addLayout(lengthLayout);
 

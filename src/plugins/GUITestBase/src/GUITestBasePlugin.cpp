@@ -539,6 +539,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0001_1);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0003_1);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0006_1);
 /////////////////////////////////////////////////////////////////////////

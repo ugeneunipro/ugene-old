@@ -172,24 +172,36 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
                            "</td><td>5 &nbsp;&nbsp;</td></tr></table>");
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(l->text()==s, "Found: " + l->text());
-/*Expected state: next statistics has shown
-AA:  21 960
-AC:  10 523
-AG:  13 845
-AT:  16 514
-CA:  15 012
-CC:  9 963
-CG:  1 646
-CT:  13 420
-GA:  11 696
-GC:  7 577
-GG:  8 802
-GT:  9 546
-TA:  14 174
-TC:  11 978
-TG:  13 329
-TT:  19 964*/
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0003){//commit sequenceInfo
+//    Options panel. Information tab. Sequence length
+//    1. Open file (samples/FASTA/human_T1.fa)
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    2. Activate Information tab on Options panel at the right edge of UGENE window.
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+
+    QLabel *w=(QLabel*)GTWidget::findWidget(os,"Length");
+    GTWidget::click(os, w);
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(w->text()=="199 950 ", "Found: " + w->text());
+//    Expected state: sequence length must be 199950
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003_1){//commit sequenceInfo
+//    Options panel. Information tab. Sequence length
+//    1. Open file (_common_data/scenarios/_regression/1093/refrence.fa)
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/_regression/1093/","refrence.fa");
+//    2. Activate Information tab on Options panel at the right edge of UGENE window.
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+
+    QLabel *w=(QLabel*)GTWidget::findWidget(os,"Length");
+    GTWidget::click(os, w);
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(w->text()=="114 ", "Found: " + w->text());
+//    Expected state: sequence length must be 199950
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 // 
