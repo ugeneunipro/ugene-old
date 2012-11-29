@@ -76,6 +76,7 @@ void SequenceInfo::initLayout()
     charOccurLabel = new QLabel(this);
     charOccurWidget = new ShowHideSubgroupWidget(
         CHAR_OCCUR_GROUP_ID, tr("Characters Occurrence"), charOccurLabel, true);
+    charOccurWidget->setObjectName("Characters Occurrence");
 
     mainLayout->addWidget(charOccurWidget);
 
@@ -83,6 +84,7 @@ void SequenceInfo::initLayout()
     dinuclLabel = new QLabel(this);
     dinuclWidget = new ShowHideSubgroupWidget(
         DINUCL_OCCUR_GROUP_ID, tr("Dinucleotides"), dinuclLabel, false);
+    dinuclWidget->setObjectName("Dinucleotides");
 
     mainLayout->addWidget(dinuclWidget);
 

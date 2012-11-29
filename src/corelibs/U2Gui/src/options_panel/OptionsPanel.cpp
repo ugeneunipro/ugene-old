@@ -54,6 +54,8 @@ void OptionsPanel::addGroup(OPWidgetFactory* factory)
     GroupHeaderImageWidget* headerImageWidget =
         widget->createHeaderImageWidget(groupParameters.getGroupId(), groupParameters.getIcon());
 
+    headerImageWidget->setObjectName(groupParameters.getGroupId());
+
     // Listen for signals from the header image widget
     connect(headerImageWidget, SIGNAL(si_groupHeaderPressed(QString, bool)),
         this, SLOT(sl_groupHeaderPressed(QString, bool)));

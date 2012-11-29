@@ -31,6 +31,9 @@ namespace GUITest_common_scenarios_options_panel {
 #undef GUI_TEST_PREFIX
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_options_panel_"
 
+GUI_TEST_CLASS_DECLARATION(test_0001)
+GUI_TEST_CLASS_DECLARATION(test_0001_1)
+
 GUI_TEST_CLASS_DECLARATION(test_0006)
 GUI_TEST_CLASS_DECLARATION(test_0006_1)
 

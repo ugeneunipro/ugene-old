@@ -48,6 +48,40 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_options_panel {
 
+GUI_TEST_CLASS_DEFINITION(test_0001){
+//    Options panel. Information tab. Character occurence
+//    1. Open file (samples/FASTA/human_T1.fa)
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//    2. Activate Information tab on Options panel at the right edge of UGENE window.
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+
+    QWidget *w=GTWidget::findWidget(os,"Characters Occurrence");
+    GTWidget::click(os, w);
+    QLabel *l=w->findChild<QLabel*>();
+    QString *s=new QString("<table cellspacing=5><tr><td><b>A:&nbsp;&nbsp;</td><td>62 842 &nbsp;&nbsp;</td><td>31.4%&nbsp;&nbsp;</td></tr><tr><td><b>C:&nbsp;&nbsp;</td><td>40 041 &nbsp;&nbsp;</td><td>20.0%&nbsp;&nbsp;</td></tr><tr><td><b>G:&nbsp;&nbsp;</td><td>37 622 &nbsp;&nbsp;</td><td>18.8%&nbsp;&nbsp;</td></tr><tr><td><b>T:&nbsp;&nbsp;</td><td>59 445 &nbsp;&nbsp;</td><td>29.7%&nbsp;&nbsp;</td></tr></table>");
+    CHECK_SET_ERR(l->text()==s, "Found: " + l->text());
+//    Expected state: next statistics has shown
+//    A: 62 842 31.4%
+//    C: 40 041 20.0%
+//    G: 37 622 18.8%
+//    T: 59 445 29.7%
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0001_1){
+//    Options panel. Information tab. Character occurence
+//    1. Open file (_common_data/scenarios/_regression/1093/refrence.fa)
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/_regression/1093/","refrence.fa");
+//    2. Activate Information tab on Options panel at the right edge of UGENE window.
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+
+    QWidget *w=GTWidget::findWidget(os,"Characters Occurrence");
+    GTWidget::click(os, w);
+    QLabel *l=w->findChild<QLabel*>();
+    QString *s=new QString("<table cellspacing=5><tr><td><b>A:&nbsp;&nbsp;</td><td>31 &nbsp;&nbsp;</td><td>27.2%&nbsp;&nbsp;</td></tr><tr><td><b>C:&nbsp;&nbsp;</td><td>30 &nbsp;&nbsp;</td><td>26.3%&nbsp;&nbsp;</td></tr><tr><td><b>G:&nbsp;&nbsp;</td><td>26 &nbsp;&nbsp;</td><td>22.8%&nbsp;&nbsp;</td></tr><tr><td><b>T:&nbsp;&nbsp;</td><td>27 &nbsp;&nbsp;</td><td>23.7%&nbsp;&nbsp;</td></tr></table>");
+    CHECK_SET_ERR(l->text()==s, "Found: " + l->text());
+
+}
+
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
 
