@@ -104,6 +104,8 @@ public:
     virtual QVariant value();
     virtual void setValue(const QVariant &value);
 
+    static ComboBoxWidget * createBooleanWidget(QWidget *parent = NULL);
+
 signals:
     void valueChanged(const QString &value);
 

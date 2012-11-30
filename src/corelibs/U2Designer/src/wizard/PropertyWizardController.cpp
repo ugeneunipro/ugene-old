@@ -106,22 +106,11 @@ QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
     CHECK_EXT(AttributeWidgetHints::DEFAULT == widget->getProperty(AttributeWidgetHints::TYPE),
         os.setError("Widget type is not default"), NULL);
 
-    PropertyDelegate *delegate = actor->getEditor()->getDelegate(widget->getAttributeId());
-
-    PropertyWidget *propWidget = NULL;
-    if (NULL != delegate) {
-        propWidget = delegate->createWizardWidget(os, NULL);
-        SAFE_POINT_OP(os, NULL);
-    } else if (BaseTypes::URL_DATASETS_TYPE() == attribute()->getAttributeType()) {
-        URLLineEdit *lineEdit = new URLLineEdit("", "", true, false, false, NULL);
-        propWidget = new URLWidget(lineEdit);
-    } else {
-        propWidget = new DefaultPropertyWidget();
-    }
-
+    PropertyWidget *propWidget = createPropertyWidget(os);
+    CHECK_OP(os, NULL);
     connect(propWidget, SIGNAL(si_valueChanged(const QVariant &)), SLOT(sl_valueChanged(const QVariant &)));
-
     propWidget->setValue(wc->getWidgetValue(widget));
+
     QString label = widget->getProperty(AttributeWidgetHints::LABEL);
     if (label.isEmpty()) {
         label = attribute()->getDisplayName();
@@ -130,6 +119,25 @@ QWidget * DefaultPropertyController::createGUI(U2OpStatus &os) {
     if (labelSize >= 0) {
         result->setLabelWidth(labelSize);
     }
+    return result;
+}
+
+PropertyWidget * DefaultPropertyController::createPropertyWidget(U2OpStatus &os) {
+    PropertyDelegate *delegate = actor->getEditor()->getDelegate(widget->getAttributeId());
+    PropertyWidget *result = NULL;
+
+    if (NULL != delegate) {
+        result = delegate->createWizardWidget(os, NULL);
+        SAFE_POINT_OP(os, NULL);
+    } else if (BaseTypes::BOOL_TYPE() == attribute()->getAttributeType()) {
+        result = ComboBoxWidget::createBooleanWidget();
+    } else if (BaseTypes::URL_DATASETS_TYPE() == attribute()->getAttributeType()) {
+        URLLineEdit *lineEdit = new URLLineEdit("", "", true, false, false, NULL);
+        result = new URLWidget(lineEdit);
+    } else {
+        result = new DefaultPropertyWidget();
+    }
+
     return result;
 }
 

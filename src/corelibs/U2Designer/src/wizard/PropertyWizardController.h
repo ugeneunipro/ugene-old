@@ -87,6 +87,9 @@ public:
 
 private:
     int labelSize;
+
+private:
+    PropertyWidget * createPropertyWidget(U2OpStatus &os);
 };
 
 } // U2

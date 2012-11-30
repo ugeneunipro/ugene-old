@@ -144,6 +144,13 @@ void ComboBoxWidget::sl_valueChanged(int) {
     emit si_valueChanged(value());
 }
 
+ComboBoxWidget * ComboBoxWidget::createBooleanWidget(QWidget *parent) {
+    QVariantMap values;
+    values[ComboBoxWidget::tr("False")] = false;
+    values[ComboBoxWidget::tr("True")] = true;
+    return new ComboBoxWidget(values, parent);
+}
+
 /************************************************************************/
 /* URLWidget */
 /************************************************************************/
