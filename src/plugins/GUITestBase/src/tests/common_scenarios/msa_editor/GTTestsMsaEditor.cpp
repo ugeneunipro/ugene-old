@@ -1418,15 +1418,18 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     GTGlobals::sleep();
 
     GTUtilsMSAEditorSequenceArea::selectArea(os);
+    GTGlobals::sleep();
 // copy to clipboard
-    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+//    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_COPY" << "copy_selection"));
+    GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep();
 
 // Expected state: every sequense name the same as it amino translation
     QString clipboardText = GTClipboard::text(os);
     QString expectedMSA = "L\nS\nD\nS\nP\nK";
 
-    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+    CHECK_SET_ERR(clipboardText == expectedMSA, clipboardText);
 
     GTGlobals::sleep();
 }
@@ -2032,7 +2035,9 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(2, 0));
 // copy to clipboard
-    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+//    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTUtilsDialog::waitForDialog(os,new PopupChooser(os,QStringList()<<MSAE_MENU_COPY<<"copy_selection"));
+    GTMouseDriver::click(os,Qt::RightButton);
     GTGlobals::sleep();
 
     QString clipboardText = GTClipboard::text(os);
