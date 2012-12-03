@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTUtilsMSAEditorSequenceArea.h"
+#include "../../GTUtilsMsaEditorSequenceArea.h"
 #include "GTTestsRegressionScenarios.h"
 #include "api/GTGlobals.h"
 #include "api/GTMouseDriver.h"
