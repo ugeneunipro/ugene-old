@@ -258,12 +258,12 @@ static QList<GObject*> createNewObjects(const QHash< U2SequenceObject*, QList<An
 {
     QList<GObject*> objects;
     // Creating sequence object for group sequence with the same alphabets. Amount of different alphabets = amount of sequence objects
+    bool init = false;
     for(QMap<DNAAlphabetType, QList<U2SequenceObject*> >::const_iterator it = mapObjects2Alpabets.begin(); it != mapObjects2Alpabets.end(); ++it){
         U2SequenceImporter seqImport;
         QString seqName = newUrl.fileName() ;
         if(mapObjects2Alpabets.size() > 1){
             seqName += getSuffixByAlphabet(it.key());
-            static bool init = false;
             if(!init){
                 hints[ProjectLoaderHint_MergeMode_DifferentAlphabets] = QString(QObject::tr("Loaded sequences have different alphabets. "
                     "That's why several sequence objects are created, each for specified alphabet. All sequences at one object have the same alphabet "
