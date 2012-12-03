@@ -39,7 +39,7 @@ ElementSelectorController::~ElementSelectorController() {
 
 }
 
-QWidget * ElementSelectorController::createGUI(U2OpStatus &os) {
+QWidget * ElementSelectorController::createGUI(U2OpStatus & /*os*/) {
     QVariantMap values;
     foreach (const SelectorValue &value, widget->getValues()) {
         values[value.getName()] = value.getValue();

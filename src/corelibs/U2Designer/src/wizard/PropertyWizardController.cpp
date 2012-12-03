@@ -57,11 +57,7 @@ void PropertyWizardController::sl_valueChanged(const QVariant &newValue) {
 InUrlDatasetsController::InUrlDatasetsController(WizardController *wc, AttributeWidget *widget)
 : PropertyWizardController(wc, widget), dsc(NULL)
 {
-    /*URLAttribute *attr = dynamic_cast<URLAttribute*>(attribute());
-    SAFE_POINT(NULL != attr, "NULL url attribute in widget", );
-    foreach (const Dataset &set, attr->getDatasets()) {
-        sets << set;
-    }*/
+
 }
 
 InUrlDatasetsController::~InUrlDatasetsController() {
@@ -128,7 +124,7 @@ PropertyWidget * DefaultPropertyController::createPropertyWidget(U2OpStatus &os)
 
     if (NULL != delegate) {
         result = delegate->createWizardWidget(os, NULL);
-        SAFE_POINT_OP(os, NULL);
+        CHECK_OP(os, NULL);
     } else if (BaseTypes::BOOL_TYPE() == attribute()->getAttributeType()) {
         result = ComboBoxWidget::createBooleanWidget();
     } else if (BaseTypes::URL_DATASETS_TYPE() == attribute()->getAttributeType()) {

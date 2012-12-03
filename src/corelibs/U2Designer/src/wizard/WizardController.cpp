@@ -39,6 +39,22 @@
 
 #include "WizardController.h"
 
+#define WIZARD_SAFE_POINT_EXT(condition, message, extraOp, result)  \
+    if (!(condition)) { \
+    coreLog.error(QString("Wizard error: %1").arg(message)); \
+    extraOp; \
+    return result; \
+    } \
+
+#define WIZARD_SAFE_POINT_OP_EXT(os, extraOp, result)  \
+    WIZARD_SAFE_POINT_EXT(!os.hasError(), os.getError(), extraOp, result) \
+
+#define WIZARD_SAFE_POINT(condition, message, result)  \
+    WIZARD_SAFE_POINT_EXT(condition, message, setBroken(), result) \
+
+#define WIZARD_SAFE_POINT_OP(os, result)  \
+    WIZARD_SAFE_POINT_OP_EXT(os, setBroken(), result) \
+
 namespace U2 {
 
 WizardController::WizardController(Schema *s, Wizard *w)
@@ -146,7 +162,7 @@ const QMap<QString, Variable> & WizardController::getVariables() const {
 }
 
 QVariant WizardController::getSelectorValue(ElementSelectorWidget *widget) {
-    SAFE_POINT(vars.contains(widget->getActorId()),
+    WIZARD_SAFE_POINT(vars.contains(widget->getActorId()),
         QObject::tr("Undefined variable: %1").arg(widget->getActorId()), QVariant());
     Variable &v = vars[widget->getActorId()];
     if (v.isAssigned()) {
@@ -163,7 +179,7 @@ QVariant WizardController::getSelectorValue(ElementSelectorWidget *widget) {
 }
 
 void WizardController::setSelectorValue(ElementSelectorWidget *widget, const QVariant &value) {
-    SAFE_POINT(vars.contains(widget->getActorId()),
+    WIZARD_SAFE_POINT(vars.contains(widget->getActorId()),
         QObject::tr("Undefined variable: %1").arg(widget->getActorId()), );
     Variable &v = vars[widget->getActorId()];
     v.setValue(value.toString());
@@ -172,22 +188,22 @@ void WizardController::setSelectorValue(ElementSelectorWidget *widget, const QVa
 
 void WizardController::registerSelector(ElementSelectorWidget *widget) {
     if (selectors.contains(widget->getActorId())) {
-        SAFE_POINT(false, QObject::tr("Actors selector is already defined: %1").arg(widget->getActorId()), );
+        WIZARD_SAFE_POINT(false, QObject::tr("Actors selector is already defined: %1").arg(widget->getActorId()), );
     }
     U2OpStatusImpl os;
     SelectorActors actors(widget, currentActors, os);
-    SAFE_POINT_OP(os, );
+    WIZARD_SAFE_POINT_OP(os, );
     selectors[widget->getActorId()] = actors;
 }
 
 void WizardController::replaceCurrentActor(const QString &actorId, const QString &selectorValue) {
     if (!selectors.contains(actorId)) {
-        SAFE_POINT(false, QObject::tr("Unknown actors selector: %1").arg(actorId), );
+        WIZARD_SAFE_POINT(false, QObject::tr("Unknown actors selector: %1").arg(actorId), );
     }
     Actor *currentA = WorkflowUtils::actorById(currentActors, actorId);
-    SAFE_POINT(NULL != currentA, QObject::tr("Unknown actor id: %1").arg(actorId), );
+    WIZARD_SAFE_POINT(NULL != currentA, QObject::tr("Unknown actor id: %1").arg(actorId), );
     Actor *newA = selectors[actorId].getActor(selectorValue);
-    SAFE_POINT(NULL != newA, QObject::tr("Unknown actors selector value id: %1").arg(selectorValue), );
+    WIZARD_SAFE_POINT(NULL != newA, QObject::tr("Unknown actors selector value id: %1").arg(selectorValue), );
 
     int idx = currentActors.indexOf(currentA);
     currentActors.replace(idx, newA);
@@ -210,19 +226,21 @@ WizardController::ApplyResult WizardController::applyChanges(Metadata &meta) {
         return OK;
     }
 
+    ApplyResult result = OK;
     foreach (const QString &varName, selectors.keys()) {
-        SAFE_POINT(vars.contains(varName),
-            QObject::tr("Undefined variable: %1").arg(varName), ACTORS_REPLACED);
+        WIZARD_SAFE_POINT(vars.contains(varName),
+            QObject::tr("Undefined variable: %1").arg(varName), BROKEN);
         Variable &v = vars[varName];
         SelectorActors &s = selectors[varName];
         Actor *newActor = s.getActor(v.getValue());
         Actor *oldActor = s.getSourceActor();
         if (newActor != oldActor) {
+            result = ACTORS_REPLACED;
             schema->replaceProcess(oldActor, newActor, s.getMappings(v.getValue()));
             meta.replaceProcess(oldActor->getId(), newActor->getId(), s.getMappings(v.getValue()));
         }
     }
-    return ACTORS_REPLACED;
+    return result;
 }
 
 /************************************************************************/
@@ -249,12 +267,13 @@ void WidgetCreator::visit(AttributeWidget *aw) {
     } else if (AttributeWidgetHints::DATASETS == type) {
         controller = new InUrlDatasetsController(wc, aw);
     } else {
-        SAFE_POINT(false, QString("Unknown widget type: %1").arg(type), );
+        WIZARD_SAFE_POINT_EXT(false, QString("Unknown widget type: %1").arg(type), wc->setBroken(), );
     }
 
     controllers << controller;
     U2OpStatusImpl os;
     result = controller->createGUI(os);
+    WIZARD_SAFE_POINT_OP_EXT(os, wc->setBroken(), );
 }
 
 void WidgetCreator::visit(WidgetsArea *wa) {

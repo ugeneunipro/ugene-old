@@ -49,12 +49,17 @@ void WizardPageController::applyLayout(WDWizardPage *wPage) {
     U2OpStatusImpl os;
     page->validate(wc->getCurrentActors(), os);
     if (os.hasError()) {
+        coreLog.error(os.getError());
         setError(wPage);
         return;
     }
 
     PageContentCreator pcc(wc);
     page->getContent()->accept(&pcc);
+    if (wc->isBroken()) {
+        setError(wPage);
+        return;
+    }
     wPage->setLayout(pcc.getResult());
     controllers << pcc.getControllers();
 
@@ -63,12 +68,12 @@ void WizardPageController::applyLayout(WDWizardPage *wPage) {
 }
 
 void WizardPageController::setError(WDWizardPage *wPage) {
+    wc->setBroken();
     QLayout *l = new QHBoxLayout(wPage);
     QString text = QObject::tr("The page is broken. Please, close the wizard and report us the error: ugene@unipro.ru");
     wPage->setFinalPage(true);
     l->addWidget(new QLabel(text));
     wPage->setLayout(l);
-    wc->setBroken();
 }
 
 void WizardPageController::removeLayout(QLayout *l) {
@@ -85,6 +90,9 @@ void WizardPageController::removeLayout(QLayout *l) {
 }
 
 int WizardPageController::nextId() const {
+    if (wc->isBroken()) {
+        return -1;
+    }
     QString id = page->getNextId(wc->getVariables());
     if (id.isEmpty()) {
         return -1;

@@ -35,6 +35,7 @@ public:
     SelectorActors(ElementSelectorWidget *widget, const QList<Actor*> &allActors, U2OpStatus &os);
     virtual ~SelectorActors();
 
+    /** Returns NULL if there is no actor for the @value */
     Actor * getActor(const QString &value) const;
     Actor * getSourceActor() const;
     QList<PortMapping> getMappings(const QString &value) const;

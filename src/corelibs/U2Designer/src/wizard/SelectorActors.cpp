@@ -61,8 +61,7 @@ SelectorActors::~SelectorActors() {
 }
 
 Actor * SelectorActors::getActor(const QString &value) const {
-    SAFE_POINT(actors.contains(value), QObject::tr("Undefined value: %1").arg(value), NULL);
-    return actors[value];
+    return actors.value(value, NULL);
 }
 
 Actor * SelectorActors::getSourceActor() const {
