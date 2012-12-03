@@ -23,7 +23,6 @@
 #define TMPDIRCHECKER_H
 
 #include <U2Core/Task.h>
-#include <QtCore/QDir>
 
 namespace U2 {
 
@@ -35,11 +34,8 @@ public:
     ReportResult report();
     bool checkPath(QString &path);
 
-signals:
-    void si_checkFailed(QString path);
-
 private:
-    QString tempDirPath;
+    QString tmpDirPath;
 };
 
 } // namespace
