@@ -30,6 +30,7 @@
 #include "api/GTMenu.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTGlobals.h"
+#include "api/GTClipboard.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsProjectTreeView.h"
@@ -208,7 +209,46 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1){//commit sequenceInfo
     CHECK_SET_ERR(w->text()=="114 ", "Found: " + w->text());
 //    Expected state: sequence length must be 114
 }
+GUI_TEST_CLASS_DEFINITION(test_0004){
+//1. Open file (samples/FASTA/human_T1.fa)
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+//2. Activate Information tab on Options panel at the right edge of UGENE window.
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    QWidget *w=GTWidget::findWidget(os,"Characters Occurrence");
+    GTWidget::click(os, w);
 
+    QLabel *l=w->findChild<QLabel*>();
+    QPoint point=GTMouseDriver::getMousePosition();
+    QRect rect=l->geometry();
+
+    QPoint *rightPoint=new QPoint(point.x()+rect.center().x(),point.y());
+    GTMouseDriver::moveTo(os,*rightPoint);
+    GTMouseDriver::press(os);
+
+    QPoint *leftPoint=new QPoint(point.x()-rect.center().x(),point.y());
+    GTMouseDriver::moveTo(os,*leftPoint);
+    GTMouseDriver::release(os);
+
+    GTKeyboardDriver::keyClick(os,'c',GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString clipboardText = GTClipboard::text(os);
+    QString *text = new QString("A:  \n"
+                               "62 842   \n"
+                               "31.4%  \n"
+                               "C:  \n"
+                               "40 041   \n"
+                               "20.0%  \n"
+                               "G:  \n"
+                               "37 622   \n"
+                               "18.8%  \n"
+                               "T:  \n"
+                               "59 445   \n"
+                               "29.7%  ");
+    CHECK_SET_ERR(clipboardText.contains(*text), "\nExpected:\n" + *text + "\nFound: " + clipboardText);
+
+//3. Use context menu to select and copy information from "Character Occurence". Paste copied information into test editor
+//Expected state: copied and pasted iformation are identical
+}
 GUI_TEST_CLASS_DEFINITION(test_0005){
 //    Options panel. Copyng
 //    1. Open file (_common_data\fasta\multy_fa.fa). Open fiel in separate sequences mode.
