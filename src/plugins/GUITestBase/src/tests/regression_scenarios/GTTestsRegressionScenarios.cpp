@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include "GTUtilsMSAEditorSequenceArea.h"
 #include "GTTestsRegressionScenarios.h"
 #include "api/GTGlobals.h"
 #include "api/GTMouseDriver.h"
@@ -43,15 +44,48 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "GTUtilsLog.h"
 #include <U2View/ADVSingleSequenceWidget.h>
 
 
 #include <U2View/ADVConstants.h>
+#include <U2View/MSAEditor.h>
 
 namespace U2 {
 
 namespace GUITest_regression_scenarios {
+
+static QPoint getGlobalCenterPos(QWidget *widget) {
+    return widget->mapToGlobal(QPoint(widget->width()/2, widget->height()/2));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0734) {
+    //1. Open "_common_data/fasta/test.TXT".
+    GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/test.TXT");
+
+    //2. Open "_common_data/clustal/test_alignment.aln".
+    GTUtilsProject::openFiles(os, testDir + "_common_data/clustal/test_alignment.aln");
+
+    //Expected state: two documents are opened in the project view; MSA Editor are shown with test_alignment.
+    QTreeWidgetItem *seqDoc = GTUtilsProjectTreeView::findItem(os, "test.TXT");
+    QTreeWidgetItem *msaDoc = GTUtilsProjectTreeView::findItem(os, "test_alignment.aln");
+    QWidget *msaView = GTUtilsMdi::activeWindow(os);
+    CHECK(NULL != seqDoc && NULL != msaDoc, );
+    CHECK(NULL != msaView, );
+
+    //3. Drag'n'drop "Sequence4" object of "test.TXT" document from the project tree to the MSA Editor.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogBaseChecker(os, "[s] Sequence4"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
+
+    //Expected state: UGENE does not crash; a new "Sequence4" row appears in the alignment.
+    QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+    CHECK_SET_ERR(names.size() == 4, QString("Sequence count mismatch. Expected: %1. Actual: %2").arg(4).arg(names.size()));
+    CHECK_SET_ERR(names.last() == "Sequence4",
+        QString("Inserted sequence name mismatch. Expected: %1. Actual: %2").arg("Sequence4").arg(names.last()));
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0986) {
 
