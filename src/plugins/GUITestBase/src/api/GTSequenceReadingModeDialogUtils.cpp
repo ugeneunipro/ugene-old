@@ -105,10 +105,10 @@ void GTSequenceReadingModeDialogUtils::selectMode()
 #define GT_METHOD_NAME "setNumSymbolsParts"
 void GTSequenceReadingModeDialogUtils::setNumSymbolsParts()
 {
-    QSpinBox *spinBox = dialog->findChild<QSpinBox*>(INTERAL_GAP);
+    /*QSpinBox *spinBox = dialog->findChild<QSpinBox*>(INTERAL_GAP);
     GT_CHECK(spinBox != NULL, "spinBox not found");
 
-    changeSpinBoxValue(spinBox, GTSequenceReadingModeDialog::numSymbolParts);
+    changeSpinBoxValue(spinBox, GTSequenceReadingModeDialog::numSymbolParts);*/
 }
 #undef GT_METHOD_NAME
 

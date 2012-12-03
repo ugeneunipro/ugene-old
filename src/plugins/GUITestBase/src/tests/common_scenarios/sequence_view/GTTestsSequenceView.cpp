@@ -26,6 +26,7 @@
 #include "api/GTAction.h"
 #include "api/GTMenu.h"
 #include "api/GTFileDialog.h"
+#include "api/GTSequenceReadingModeDialog.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsMdi.h"
@@ -466,6 +467,21 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     GTGlobals::sleep();
 
     }
+
+GUI_TEST_CLASS_DEFINITION(test_0018) {
+    QList<QUrl> files;
+    files << testDir + "_common_data/fasta/DNA.fa";
+    files << testDir + "_common_data/fasta/DNA_1_seq.fa";
+    GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
+    GTUtilsProject::openFiles(os, files);
+
+    int length = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(2249 == length, QString("Sequence length mismatch. Expected: %1. Actual: %2").arg(2249).arg(length));
+
+    QString mergedFileName = testDir + "_common_data/fasta/merged_document.gb";
+    QFile::remove(mergedFileName);
+}
+
 } // namespace GUITest_common_scenarios_sequence_view
 
 } // namespace U2
