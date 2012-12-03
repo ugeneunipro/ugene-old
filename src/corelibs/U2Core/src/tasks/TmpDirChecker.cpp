@@ -24,6 +24,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <QFile>
+#include <QDir>
 
 namespace U2 {
 
@@ -33,11 +34,16 @@ TmpDirChecker::TmpDirChecker(): Task("Checking access rights to the temporary fo
 
 void TmpDirChecker::run()
 {
-    tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath();
-
-    if (!checkPath(tmpDirPath) && !AppContext::isGUIMode())  {
-        QString message = getError() + ". Use --tmp-dir=<path_to_file> to set new temporary directory";
-        coreLog.error((message));
+    tempDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath();
+    if (!checkPath(tempDirPath)) {
+        if (!AppContext::isGUIMode()) {
+            QString message = "You do not have permission to write to \"" + tempDirPath +
+                "\" directory. Use --tmp-dir=<path_to_file> to set new temporary directory";
+            coreLog.error((message));
+        }
+        else {
+            emit si_checkFailed(tempDirPath);
+        }
     }
 }
 
@@ -52,10 +58,18 @@ Task::ReportResult TmpDirChecker::report()
 
 bool TmpDirChecker::checkPath(QString &path)
 {
+    QDir dir;
+    dir.mkpath(path);
     QFile tmpFile(path + "/forCheck");
-
     if (!tmpFile.open(QIODevice::WriteOnly)) {
-        setError("You do not have permission to write to \"" + tmpDirPath + "\" directory");
+//#ifdef Q_OS_MAC
+//        //Mac menu differs from menus of other systems. Maybe something else?
+//        setError("You do not have permission to write to \"" + path +
+//            "\" directory. Please, set the valid temp directory in preferences (Unipro UGENE->Preferences->General->Path to temporary files)");
+//#else
+//        setError("You do not have permission to write to \"" + path +
+//            "\" directory. Please, set the valid temp directory in preferences (Tools->Preferences->General->Path to temporary files)");
+//#endif
         return false;
     } else {
         tmpFile.close();
@@ -65,4 +79,4 @@ bool TmpDirChecker::checkPath(QString &path)
     return true;
 }
 
-}
+}   //namespace U2
