@@ -568,9 +568,7 @@ int main(int argc, char **argv)
         ts->registerTopLevelTask(new CheckUpdatesTask(true));
     }
 
-    TmpDirChecker* tempDirChecker = new TmpDirChecker;
-    bool a = QObject::connect(tempDirChecker, SIGNAL(si_checkFailed(QString)), mw, SLOT(sl_tempDirPathCheckFailed(QString)));
-    ts->registerTopLevelTask(tempDirChecker);
+    ts->registerTopLevelTask(new TmpDirChecker());
 
     int rc = app.exec();
 
@@ -580,7 +578,7 @@ int main(int argc, char **argv)
     }
 
     Workflow::WorkflowEnv::shutdown();
-
+    
     delete dcu;
 
     delete splicedAlignmentTaskRegistiry;

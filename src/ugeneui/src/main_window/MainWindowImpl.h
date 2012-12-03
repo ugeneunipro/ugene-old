@@ -42,7 +42,6 @@ namespace U2 {
 class MWDockManagerImpl;
 class MWMenuManagerImpl;
 class MWToolBarManagerImpl;
-class TmpDirChecker;
 
 //workaround for QMdiArea issues
 class FixedMdiArea : public QMdiArea {
@@ -76,13 +75,11 @@ public:
     void show();
     void close();
 
-    void runClosingTask();
+	void runClosingTask();
     void setShutDownInProcess(bool flag) {shutDownInProcess = flag;}
-public slots:
-    void sl_tempDirPathCheckFailed(QString  path);
 
 private slots:
-    void sl_exitAction();
+	void sl_exitAction();
     void sl_aboutAction();
     void sl_checkUpdatesAction();
     void sl_visitWeb();
