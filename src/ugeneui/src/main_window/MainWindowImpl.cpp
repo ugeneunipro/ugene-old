@@ -26,16 +26,20 @@
 #include "MenuManager.h"
 #include "ToolBarManager.h"
 
+#include "TmpDirChangeDialogController.h"
 #include "AboutDialogController.h"
 #include "CheckUpdatesTask.h"
 
 
+#include <U2Core/TmpDirChecker.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Gui/ObjectViewModel.h>
 
 #include <U2Core/Settings.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/Task.h>
 #include <U2Core/ProjectModel.h>
 
@@ -340,6 +344,17 @@ void MainWindowImpl::sl_openWDManualAction()
 void MainWindowImpl::sl_openQDManualAction()
 {
     openManual(QD_USER_MANUAL_FILE_NAME);
+}
+void MainWindowImpl::sl_tempDirPathCheckFailed(QString path) {
+    TmpDirChangeDialogController tmpDirChangeDialogController(path, mw);
+    tmpDirChangeDialogController.exec();
+    if (tmpDirChangeDialogController.result() == QDialog::Accepted) {
+        AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(tmpDirChangeDialogController.getTmpDirPath());
+    }
+    else {
+        AppContext::getTaskScheduler()->cancelAllTasks();
+        sl_exitAction();
+    }
 }
 
 #ifdef _INSTALL_TO_PATH_ACTION
