@@ -92,11 +92,9 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     st->setUseDefaultWebBrowser(state->useDefaultWebBrowser);
     st->setOpenLastProjectAtStartup(state->openLastProjectFlag);
     st->setDownloadDirPath(state->downloadsDirPath);
-    st->setUserTemporaryDirPath(state->temporaryDirPath);
     st->setEnableCollectingStatistics(state->enableStatistics);
     st->setTabbedWindowLayout(state->tabbedWindowLayout);
     st->setResetSettings(state->resetSettings);
-    st->setFileStorageDir(state->fileStorageDirPath);
     
     QStyle* style = QStyleFactory::create(state->style);
     if (style!=NULL) {
@@ -109,9 +107,15 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     if (!tmpDirChecker.checkPath(state->temporaryDirPath)) {
         uiLog.error("You do not have permission to write to \"" + state->temporaryDirPath + "\" directory\"");
     }
+    else {
+        st->setUserTemporaryDirPath(state->temporaryDirPath);
+    }
 
     if (!tmpDirChecker.checkPath(state->fileStorageDirPath)) {
         uiLog.error("You do not have permission to write to \"" + state->fileStorageDirPath + "\" directory\"");
+    }
+    else {
+        st->setFileStorageDir(state->fileStorageDirPath);
     }
 }
 
