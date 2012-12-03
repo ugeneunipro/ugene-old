@@ -46,6 +46,13 @@
 
 namespace U2 {
 
+/*void EnterClicker::run()
+{   GTGlobals::sleep(1000);
+
+        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["enter"]);
+
+}*/
+
 namespace GUITest_common_scenarios_options_panel {
 
 GUI_TEST_CLASS_DEFINITION(test_0001){
@@ -199,7 +206,34 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1){//commit sequenceInfo
     GTWidget::click(os, w);
     GTGlobals::sleep(1000);
     CHECK_SET_ERR(w->text()=="114 ", "Found: " + w->text());
-//    Expected state: sequence length must be 199950
+//    Expected state: sequence length must be 114
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005){
+//    Options panel. Copyng
+//    1. Open file (_common_data\fasta\multy_fa.fa). Open fiel in separate sequences mode.
+    GTUtilsDialog::waitForDialog(os, new EnterClicker(os));
+    GTFileDialog::openFile(os,testDir + "_common_data/fasta/","multy_fa.fa");
+    //GTUtilsDialog::waitForDialog(os, new EnterClicker(os));
+
+//    2. Activate Information tab on Options panel at the right edge of UGENE window.
+    GTWidget::click(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    QWidget *w=GTWidget::findWidget(os,"Characters Occurrence");
+    GTWidget::click(os, w);
+
+    QLabel *l=w->findChild<QLabel*>();
+    QString s=l->text();
+
+    GTWidget::click(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_1"));
+    GTGlobals::sleep(1000);
+    //w=GTWidget::findWidget(os,"Characters Occurrence");
+    GTWidget::click(os, w);
+    //l=w->findChild<QLabel*>();
+
+    CHECK_SET_ERR(s!=l->text(), l->text());
+//    3. Activate another opened sequence.
+//    Expected state: information in options panel has changed
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {

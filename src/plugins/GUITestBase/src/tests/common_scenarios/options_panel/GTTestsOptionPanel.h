@@ -24,8 +24,22 @@ k
 #define GTTESTS_OPTION_PANEL_H_
 
 #include <U2Test/GUITestBase.h>
+#include "api/GTKeyboardDriver.h"
+#include "GTUtilsDialog.h"
 
 namespace U2 {
+
+class EnterClicker : public Filler {
+public:
+    EnterClicker(U2OpStatus &_os)
+        :Filler(_os,"SequenceReadingModeSelectorDialog"){}
+    virtual void run(){
+        GTGlobals::sleep(1000);
+
+        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["enter"]);}
+private:
+
+};
 
 namespace GUITest_common_scenarios_options_panel {
 #undef GUI_TEST_PREFIX
@@ -39,6 +53,8 @@ GUI_TEST_CLASS_DECLARATION(test_0002_1)
 
 GUI_TEST_CLASS_DECLARATION(test_0003)
 GUI_TEST_CLASS_DECLARATION(test_0003_1)
+
+GUI_TEST_CLASS_DECLARATION(test_0005)
 
 GUI_TEST_CLASS_DECLARATION(test_0006)
 GUI_TEST_CLASS_DECLARATION(test_0006_1)
