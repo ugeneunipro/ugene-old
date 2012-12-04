@@ -44,13 +44,13 @@ static const QString WD_DIR_NAME("workflow_data");
 /* FileInfo */
 /************************************************************************/
 FileInfo::FileInfo(const QString &url, const QString &role, const QString &info)
-: Triplet(url, role, info)
+: U2Triplet(url, role, info)
 {
 
 }
 
-FileInfo::FileInfo(const Triplet &triplet)
-: Triplet(triplet)
+FileInfo::FileInfo(const U2Triplet &triplet)
+: U2Triplet(triplet)
 {
 
 }
@@ -237,12 +237,12 @@ void AppFileStorage::unregisterWorkflowProcess(WorkflowProcess &process, U2OpSta
 void AppFileStorage::cleanup(U2OpStatus &os) {
     QMutexLocker lock(&cleanupMutex);
     //1. Find data
-    QList<Triplet> data = storage->getTriplets(os);
+    QList<U2Triplet> data = storage->getTriplets(os);
     CHECK_OP(os, );
 
     QStringList unremovedFiles;
     //2. Remove triplets' files
-    for (QList<Triplet>::iterator i = data.begin(); i != data.end(); i++) {
+    for (QList<U2Triplet>::iterator i = data.begin(); i != data.end(); i++) {
         FileInfo info(*i);
         if (info.isFileToFileInfo()) {
             data.erase(i);
@@ -263,7 +263,7 @@ void AppFileStorage::cleanup(U2OpStatus &os) {
     }
 
     //3. Remove triplets' data
-    foreach (const Triplet &t, data) {
+    foreach (const U2Triplet &t, data) {
         if (unremovedFiles.contains(t.getKey())) {
             continue;
         }

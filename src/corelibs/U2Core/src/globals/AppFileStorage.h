@@ -33,10 +33,10 @@ namespace U2 {
 
 class AppFileStorage;
 
-class U2CORE_EXPORT FileInfo : public Triplet {
+class U2CORE_EXPORT FileInfo : public U2Triplet {
 public:
     FileInfo(const QString &url, const QString &role, const QString &info);
-    FileInfo(const Triplet &triplet);
+    FileInfo(const U2Triplet &triplet);
 
     QString getFile() const;
     QString getInfo() const;

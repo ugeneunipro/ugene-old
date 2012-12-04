@@ -32,27 +32,27 @@ namespace U2 {
 /************************************************************************/
 /* Triplet */
 /************************************************************************/
-Triplet::Triplet(const QString &_key, const QString &_role, const QString &_value)
+U2Triplet::U2Triplet(const QString &_key, const QString &_role, const QString &_value)
 : id(-1), key(_key), role(_role), value(_value)
 {
 
 }
 
-Triplet::Triplet(const Triplet& other)
+U2Triplet::U2Triplet(const U2Triplet& other)
 : id(other.id), key(other.key), role(other.role), value(other.value)
 {
 
 }
 
-QString Triplet::getKey() const {
+QString U2Triplet::getKey() const {
     return key;
 }
 
-QString Triplet::getRole() const {
+QString U2Triplet::getRole() const {
     return role;
 }
 
-QString Triplet::getValue() const {
+QString U2Triplet::getValue() const {
     return value;
 }
 
@@ -191,7 +191,7 @@ void U2SQLiteTripleStore::shutdown(U2OpStatus &os) {
     return;
 }
 
-void U2SQLiteTripleStore::addValue(const Triplet &value, U2OpStatus &os) {
+void U2SQLiteTripleStore::addValue(const U2Triplet &value, U2OpStatus &os) {
     QMutexLocker lock(&db->lock);
     bool found = false;
 
@@ -211,7 +211,7 @@ bool U2SQLiteTripleStore::contains(const QString &key, const QString &role, U2Op
     return !value.isEmpty();
 }
 
-bool U2SQLiteTripleStore::contains(const Triplet &value, U2OpStatus &os) const {
+bool U2SQLiteTripleStore::contains(const U2Triplet &value, U2OpStatus &os) const {
     QMutexLocker lock(&db->lock);
     static const QString queryString("SELECT t.id FROM Triplets t WHERE t.key = ?1 AND t.role = ?2 AND t.value = ?3");
     SQLiteQuery q(queryString, db, os);
@@ -241,7 +241,7 @@ QString U2SQLiteTripleStore::getValue(const QString &key, const QString &role, U
     return results.isEmpty() ? "" : results.last();
 }
 
-qint64 U2SQLiteTripleStore::getTripletId(const Triplet &triplet, bool &found, U2OpStatus &os) const {
+qint64 U2SQLiteTripleStore::getTripletId(const U2Triplet &triplet, bool &found, U2OpStatus &os) const {
     QMutexLocker lock(&db->lock);
     static const QString queryString("SELECT t.id FROM Triplets t WHERE t.key = ?1 AND t.role = ?2 AND t.value = ?3");
     SQLiteQuery q(queryString, db, os);
@@ -259,7 +259,7 @@ qint64 U2SQLiteTripleStore::getTripletId(const Triplet &triplet, bool &found, U2
     return 0;
 }
 
-qint64 U2SQLiteTripleStore::insertTriplet(const Triplet &triplet, U2OpStatus &os) {
+qint64 U2SQLiteTripleStore::insertTriplet(const U2Triplet &triplet, U2OpStatus &os) {
     QMutexLocker lock(&db->lock);
     static const QString queryString("INSERT INTO Triplets(key, role, value) VALUES(?1, ?2, ?3)");
     SQLiteQuery q(queryString, db, os);
@@ -279,21 +279,21 @@ void U2SQLiteTripleStore::removeTriplet(qint64 tripletId, U2OpStatus &os) {
     q.execute();
 }
 
-QList<Triplet> U2SQLiteTripleStore::getTriplets(U2OpStatus &os) const {
+QList<U2Triplet> U2SQLiteTripleStore::getTriplets(U2OpStatus &os) const {
     QMutexLocker lock(&db->lock);
     static const QString queryString("SELECT t.id, t.key, t.role, t.value FROM Triplets t");
     SQLiteQuery q(queryString, db, os);
 
-    QList<Triplet> result;
+    QList<U2Triplet> result;
     while (q.step()) {
-        Triplet t(q.getString(1), q.getString(2), q.getString(3));
+        U2Triplet t(q.getString(1), q.getString(2), q.getString(3));
         t.id = q.getInt64(0);
         result << t;
     }
     return result;
 }
 
-void U2SQLiteTripleStore::removeValue(const Triplet &value, U2OpStatus &os) {
+void U2SQLiteTripleStore::removeValue(const U2Triplet &value, U2OpStatus &os) {
     QMutexLocker lock(&db->lock);
     static const QString queryString("DELETE FROM Triplets WHERE id = ?1");
     SQLiteQuery q(queryString, db, os);
