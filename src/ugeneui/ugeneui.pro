@@ -32,7 +32,8 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/app_settings/network_settings/NetworkSettingsGUIController.h \
            src/app_settings/resource_settings/ResourceSettingsGUIController.h \
            src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.h \
-    src/main_window/TmpDirChangeDialogController.h
+    src/main_window/TmpDirChangeDialogController.h \
+    src/main_window/TestFile.h
 FORMS += src/app_settings/ui/AppSettingsDialog.ui \
          src/main_window/ui/AboutDialog.ui \
          src/plugin_viewer/ui/PluginViewerWidget.ui \
@@ -87,6 +88,7 @@ TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+
 
 
 
