@@ -35,6 +35,7 @@
 
 namespace U2 {
 
+
 AboutDialogController::AboutDialogController(QAction* visitWebAction, QWidget *p):QDialog(p) {
     setupUi(this);
 
