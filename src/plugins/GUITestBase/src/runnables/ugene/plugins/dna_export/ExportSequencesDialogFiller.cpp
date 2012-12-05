@@ -128,9 +128,11 @@ void ExportSequenceOfSelectedAnnotationsFiller::run()
 
     GTGlobals::sleep(200);
 
-    QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>("mergeSpinBox");
-    GT_CHECK(mergeSpinBox != NULL, "SpinBox not found");
-    GTSpinBox::setValue(os, mergeSpinBox, gapLength);
+    if (gapLength){
+        QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>("mergeSpinBox");
+        GT_CHECK(mergeSpinBox != NULL, "SpinBox not found");
+        GTSpinBox::setValue(os, mergeSpinBox, gapLength);
+    }
 
     GTGlobals::sleep(200);
 
