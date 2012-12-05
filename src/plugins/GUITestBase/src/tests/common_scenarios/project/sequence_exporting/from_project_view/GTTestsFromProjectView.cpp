@@ -225,7 +225,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "View States"<< "Open New View", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "Open New View", GTGlobals::UseMouse));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Zychia_baranovi"));
     GTMouseDriver::click(os, Qt::RightButton);
@@ -264,7 +264,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "View States"<< "Open New View", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "Open New View", GTGlobals::UseMouse));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Zychia_baranovi"));
     GTMouseDriver::click(os, Qt::RightButton);
@@ -304,7 +304,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "View States"<< "Open New View", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "Open New View", GTGlobals::UseMouse));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Zychia_baranovi"));
     GTMouseDriver::click(os, Qt::RightButton);
