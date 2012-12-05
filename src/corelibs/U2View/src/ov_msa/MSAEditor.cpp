@@ -686,10 +686,10 @@ void MSAEditorUI::sl_saveSvgImage() {
     QSvgGenerator generator;
     generator.setFileName(lod.url);
     generator.setSize(QSize(width(), height()));
-    generator.setViewBox(QRect(0, 0, 800, 600));
-    generator.setTitle(tr("SVG ").arg(editor->getMSAObject()->getGObjectName()));
+    generator.setViewBox(QRect(0, 0, width(), height()));
+    generator.setTitle(tr("SVG %1").arg(editor->getMSAObject()->getGObjectName()));
     generator.setDescription(tr("An SVG image of multiple alignment created by Unipro UGENE"));
-
+    
     QPainter painter;
     painter.begin(&generator);
     painter.translate(nameList->width(), 0);
@@ -698,7 +698,6 @@ void MSAEditorUI::sl_saveSvgImage() {
     nameList->drawContent(painter);
     painter.translate(nameList->width(), 0);
     seqArea->drawContent(painter);
-    
     painter.end();
 
 }
