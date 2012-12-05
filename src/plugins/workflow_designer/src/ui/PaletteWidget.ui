@@ -39,7 +39,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="filterNameEdit"/>
+      <widget class="QLineEdit" name="filterNameEdit">
+       <property name="placeholderText">
+        <string>Type to filter by name...</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

@@ -1330,7 +1330,9 @@ void WorkflowView::sl_pasteSample(const QString& s) {
     tabs->setCurrentIndex(ElementsTab);
     if (scene->items().isEmpty()) {
         // fixing bug with pasting same schema 2 times
-        lastPaste.clear();
+        {
+            lastPaste.clear();
+        }
         sl_pasteItems(s);
         sl_setRunMode();
         sl_updateTitle();
@@ -1514,7 +1516,7 @@ void WorkflowView::sl_saveScene() {
     propertyEditor->commit();
     Task* t = new SaveWorkflowSceneTask(getSchema(), getMeta()); 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
-    // TODO: scene->setModified(false);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_onSceneSaved()));
 }
 
 void WorkflowView::sl_saveSceneAs() {
@@ -1528,7 +1530,7 @@ void WorkflowView::sl_saveSceneAs() {
     Task* t = new SaveWorkflowSceneTask(getSchema(), getMeta());
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     sl_updateTitle();
-    // TODO: scene->setModified(false);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_onSceneSaved()));
 }
 
 void WorkflowView::sl_showWizard() {
@@ -1601,6 +1603,14 @@ void WorkflowView::sl_onSceneLoaded() {
     propertyEditor->resetIterations();
 
     scene->setModified(false);
+}
+
+void WorkflowView::sl_onSceneSaved() {
+    Task *t = dynamic_cast<Task*>(sender());
+    CHECK(NULL != t, );
+    if (t->isFinished() && !t->hasError()) {
+        scene->setModified(false);
+    }
 }
 
 void WorkflowView::sl_updateTitle() {

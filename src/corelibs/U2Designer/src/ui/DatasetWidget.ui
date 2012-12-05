@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>735</width>
-    <height>205</height>
+    <height>144</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,11 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLineEdit" name="inputUrlEdit" />
+         <widget class="QLineEdit" name="inputUrlEdit">
+          <property name="placeholderText">
+           <string>Type a file path here...</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QToolButton" name="addFileButton">
