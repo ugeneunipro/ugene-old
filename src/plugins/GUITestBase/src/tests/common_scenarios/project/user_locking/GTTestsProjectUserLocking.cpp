@@ -151,7 +151,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
     QIcon itemIconBefore = item->icon(0);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_document_unlock"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EDIT_MENU<<ACTION_DOCUMENT__UNLOCK));
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
 
@@ -164,7 +164,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_document_lock"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EDIT_MENU<<ACTION_DOCUMENT__LOCK));
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
 
