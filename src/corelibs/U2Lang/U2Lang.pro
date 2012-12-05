@@ -56,6 +56,8 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/WorkflowUtils.h \
            src/tasks/ReadDocumentTaskFactory.h \
            src/tasks/WorkflowTasksRegistry.h \
+           src/library/script/DbiClassPrototype.h \
+           src/library/script/SequencePrototype.h \
            src/model/url_attribute/Dataset.h \
            src/model/url_attribute/URLAttribute.h \
            src/model/url_attribute/URLContainer.h \
@@ -123,6 +125,8 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/WorkflowUtils.cpp \
            src/tasks/ReadDocumentTaskFactory.cpp \
            src/tasks/WorkflowTasksRegistry.cpp \
+           src/library/script/DbiClassPrototype.cpp \
+           src/library/script/SequencePrototype.cpp \
            src/model/url_attribute/Dataset.cpp \
            src/model/url_attribute/URLAttribute.cpp \
            src/model/url_attribute/URLContainer.cpp \

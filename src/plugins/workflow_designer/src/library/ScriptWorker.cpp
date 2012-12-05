@@ -56,7 +56,7 @@ static const QString OUT_PORT_ID("out");
 ScriptWorkerTask::ScriptWorkerTask(WorkflowScriptEngine *_engine, AttributeScript *_script)
 : Task(tr("Script worker task"), TaskFlag_None), engine(_engine), script(_script)
 {
-
+    WorkflowScriptLibrary::initEngine(engine);
 }
 
 void ScriptWorkerTask::run() {
@@ -70,7 +70,6 @@ void ScriptWorkerTask::run() {
         }
     }
 
-    WorkflowScriptLibrary::initEngine(engine);
     QScriptValue scriptResultValue = ScriptTask::runScript(engine, scriptVars, script->getScriptText(), stateInfo);
     if (engine->hasUncaughtException()) {
         scriptResultValue = engine->uncaughtException();
@@ -223,27 +222,29 @@ void ScriptWorker::sl_taskFinished() {
     bool hasSeqArray = false;
     foreach(const Descriptor &desc, ptr->getAllDescriptors()) {
         QString varName = "out_" + desc.getId();
+        QScriptValue value = t->getEngine()->globalObject().property(varName.toAscii().data());
         if (BaseSlots::DNA_SEQUENCE_SLOT().getId() == desc.getId()) {
-            QScriptValue value = t->getEngine()->globalObject().property(varName.toAscii().data());
             if (value.isArray()) {
                 hasSeqArray = true;
                 continue;
             }
-            SharedDbiDataHandler seqId = value.toVariant().value<SharedDbiDataHandler>();
+            SharedDbiDataHandler seqId = ScriptUtils::getDbiId(value, t->getEngine());
             if (!seqId.constData() || !seqId.constData()->isValid()) {
                 continue;
             }
+            map[desc.getId()] = qVariantFromValue(seqId);
+        } else {
+            map[desc.getId()] = value.toVariant();
         }
-        map[desc.getId()] = t->getEngine()->globalObject().property(varName.toAscii().data()).toVariant();
     }
     if (output) {
         if (hasSeqArray) {
             QString varName = "out_" + BaseSlots::DNA_SEQUENCE_SLOT().getId();
             QScriptValue value = t->getEngine()->globalObject().property(varName.toAscii().data());
             for (int i=0; i<value.property("length").toInt32(); i++) {
-                SharedDbiDataHandler seqId = value.property(i).toVariant().value<SharedDbiDataHandler>();
+                SharedDbiDataHandler seqId = ScriptUtils::getDbiId(value.property(i), t->getEngine());
                 if (seqId.constData() && seqId.constData()->isValid()) {
-                    map[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = QVariant::fromValue<SharedDbiDataHandler>(seqId);
+                    map[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue(seqId);
                     output->put(Message(ptr,map));
                 }
             }

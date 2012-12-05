@@ -23,8 +23,10 @@
 #define _WORKFLOW_SCRIPT_FUNC_H_
 
 #include <U2Core/global.h>
-#include <QtScript>
 
+#include <U2Lang/DbiDataHandler.h>
+
+#include <QtScript>
 
 namespace U2 {
 
@@ -93,6 +95,11 @@ public:
     static QScriptValue debugOut(QScriptContext *ctx, QScriptEngine *);
 
 }; // WorkflowScriptLibrary
+
+class U2LANG_EXPORT ScriptUtils {
+public:
+    static Workflow::SharedDbiDataHandler getDbiId(const QScriptValue &value, QScriptEngine *engine);
+};
 
 } // U2
 

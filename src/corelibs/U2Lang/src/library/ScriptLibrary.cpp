@@ -19,6 +19,7 @@
 * MA 02110-1301, USA.
 */
 
+#include "script/SequencePrototype.h"
 #include "ScriptLibrary.h"
 
 #include <U2Core/AnnotationData.h>
@@ -56,6 +57,7 @@ const QList<WorkflowScriptFactory*> &WorkflowScriptRegistry::getFactories() cons
 }
 
 void WorkflowScriptLibrary::initEngine(WorkflowScriptEngine *engine) {
+    DbiClassPrototype::registerScriptClass<SequenceScriptClass>(engine);
     QScriptValue foo = engine->globalObject();
 
     foo.setProperty("print", engine->newFunction(print));
@@ -102,20 +104,47 @@ QScriptValue WorkflowScriptLibrary::print(QScriptContext *ctx, QScriptEngine *) 
 
 // unrefactored obsolete deprecated functions
 
-DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
-    WorkflowScriptEngine *wse = dynamic_cast<WorkflowScriptEngine*>(engine);
-    Workflow::SharedDbiDataHandler seqId = ctx->argument(argNum).toVariant().value<Workflow::SharedDbiDataHandler>();
-    std::auto_ptr<U2SequenceObject> seqObj(Workflow::StorageUtils::getSequenceObject(wse->getWorkflowContext()->getDataStorage(), seqId));
-    if (NULL == seqObj.get()) {
-        return DNASequence();
+Workflow::SharedDbiDataHandler ScriptUtils::getDbiId(const QScriptValue &value, QScriptEngine *engine) {
+    QScriptValue sClass = engine->globalObject().property(SequenceScriptClass::SCRIPT_CLASS_NAME);
+    QScriptValue idValue = value;
+    if (value.instanceOf(sClass)) {
+        QScriptValue getIdFun = value.property("getId");
+        if (getIdFun.isFunction()) {
+            idValue = getIdFun.call(value);
+        }
     }
+
+    if (idValue.isVariant()) {
+        QVariant var = idValue.toVariant();
+        if (var.canConvert<Workflow::SharedDbiDataHandler>()) {
+            return var.value<Workflow::SharedDbiDataHandler>();
+        }
+    }
+    return Workflow::SharedDbiDataHandler();
+}
+
+static DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
+    WorkflowScriptEngine *wse = dynamic_cast<WorkflowScriptEngine*>(engine);
+    CHECK(NULL != wse, DNASequence());
+
+    Workflow::SharedDbiDataHandler seqId = ScriptUtils::getDbiId(ctx->argument(argNum), engine);
+    QScopedPointer<U2SequenceObject> seqObj(Workflow::StorageUtils::getSequenceObject(wse->getWorkflowContext()->getDataStorage(), seqId));
+    CHECK(!seqObj.isNull(), DNASequence());
     return seqObj->getWholeSequence();
 }
 
-Workflow::SharedDbiDataHandler putSequence(QScriptEngine *engine, const DNASequence &seq) {
+static SequenceScriptClass * getSequenceClass(QScriptEngine *engine) {
+    QScriptValue cls = engine->globalObject().property(SequenceScriptClass::SCRIPT_CLASS_NAME);
+    return qscriptvalue_cast<SequenceScriptClass*>(cls.data());
+}
+
+static QScriptValue putSequence(QScriptEngine *engine, const DNASequence &seq) {
     WorkflowScriptEngine *wse = dynamic_cast<WorkflowScriptEngine*>(engine);
     Workflow::WorkflowContext *ctx = wse->getWorkflowContext();
-    return ctx->getDataStorage()->putSequence(seq);
+    Workflow::SharedDbiDataHandler id = ctx->getDataStorage()->putSequence(seq);
+
+    CHECK(NULL != getSequenceClass(engine), QScriptValue());
+    return getSequenceClass(engine)->DbiScriptClass::newInstance(id);
 }
 
 QScriptValue WorkflowScriptLibrary::getSubsequence(QScriptContext *ctx, QScriptEngine *engine) {
@@ -153,8 +182,7 @@ QScriptValue WorkflowScriptLibrary::getSubsequence(QScriptContext *ctx, QScriptE
         }
         QString newName(dna.getName() + "_" + QByteArray::number(beg) + "_" + QByteArray::number(end));
         DNASequence subsequence(newName, dna.seq.mid(beg, end - beg),dna.alphabet);
-        Workflow::SharedDbiDataHandler handler = putSequence(engine, subsequence);
-        calee.setProperty("res", engine->newVariant(QVariant::fromValue<Workflow::SharedDbiDataHandler>(handler)));
+        calee.setProperty("res", putSequence(engine, subsequence));
         return calee.property("res");
     }
 }
@@ -176,9 +204,8 @@ QScriptValue WorkflowScriptLibrary::concatSequence(QScriptContext *ctx, QScriptE
         result.append(dna.seq);
     }
     DNASequence concatenation("joined sequence", result, alph);
-    Workflow::SharedDbiDataHandler handler = putSequence(engine, concatenation);
     QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<Workflow::SharedDbiDataHandler>(handler)));
+    calee.setProperty("res", putSequence(engine, concatenation));
     return calee.property("res");
 }
 
@@ -198,9 +225,8 @@ QScriptValue WorkflowScriptLibrary::complement(QScriptContext *ctx, QScriptEngin
     DNATranslation *complTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation(dna.alphabet);
     complTT->translate(dna.seq.data(),dna.seq.size(), dna.seq.data(), dna.seq.size());
 
-    Workflow::SharedDbiDataHandler handler = putSequence(engine, dna);
     QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<Workflow::SharedDbiDataHandler>(handler)));
+    calee.setProperty("res", putSequence(engine, dna));
     return calee.property("res");
 }
 
@@ -254,9 +280,8 @@ QScriptValue WorkflowScriptLibrary::translate(QScriptContext *ctx, QScriptEngine
     aminoT->translate(seq.seq.data() + offset, seq.length() - offset, seq.seq.data(), seq.length());
     seq.seq.resize(seq.length()/3);
 
-    Workflow::SharedDbiDataHandler handler = putSequence(engine, seq);
     QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<Workflow::SharedDbiDataHandler>(handler)));
+    calee.setProperty("res", putSequence(engine, seq));
     return calee.property("res");
 }
 
@@ -331,9 +356,8 @@ QScriptValue WorkflowScriptLibrary::sequenceFromText(QScriptContext *ctx, QScrip
         seq.seq = QByteArray();
     }
 
-    Workflow::SharedDbiDataHandler handler = putSequence(engine, seq);
     QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<Workflow::SharedDbiDataHandler>(handler)));
+    calee.setProperty("res", putSequence(engine, seq));
     return calee.property("res");
 }
 
@@ -442,9 +466,8 @@ QScriptValue WorkflowScriptLibrary::getSequenceFromAlignment(QScriptContext *ctx
     }
     DNASequence seq(aRow.getName(),arr,align.getAlphabet());
 
-    Workflow::SharedDbiDataHandler handler = putSequence(engine, seq);
     QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<Workflow::SharedDbiDataHandler>(handler)));
+    calee.setProperty("res", putSequence(engine, seq));
     return calee.property("res");
 }
 
@@ -647,7 +670,7 @@ QScriptValue WorkflowScriptLibrary::getAnnotationRegion(QScriptContext *ctx, QSc
     if(name.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty name"));
     }
-    QList<Workflow::SharedDbiDataHandler> result;
+    QList<QScriptValue> result;
 
     foreach(const SharedAnnotationData &ann, anns) {
         if(ann->name == name) {
@@ -672,15 +695,13 @@ QScriptValue WorkflowScriptLibrary::getAnnotationRegion(QScriptContext *ctx, QSc
             resultedSeq.alphabet = seq.alphabet;
             resultedSeq.setName(seq.getName() + "_" + name);
 
-            Workflow::SharedDbiDataHandler handler = putSequence(engine, resultedSeq);
-            result << handler;
+            result << putSequence(engine, resultedSeq);
         }
     }
 
     QScriptValue array = engine->newArray(result.size());
     for (int i=0; i<result.size(); i++) {
-        QScriptValue v = engine->newVariant(QVariant::fromValue<Workflow::SharedDbiDataHandler>(result.at(i)));
-        array.setProperty(i, v);
+        array.setProperty(i, result.at(i));
     }
     QScriptValue calee = ctx->callee();
     calee.setProperty("res", array);
