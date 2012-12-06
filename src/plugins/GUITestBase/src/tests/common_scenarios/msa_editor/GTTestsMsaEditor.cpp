@@ -1321,12 +1321,15 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
 
     //Expected state: Column range = 12-14
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(11, 0), QPoint(13, 9));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
+
 
     QString clipboardText = GTClipboard::text(os);
     QString expectedMSA = "TAA\n---\nTAA\nTAA\n---\n---\n---\nTAA\nTTA\n---";
 
-    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs");
+
+    CHECK_SET_ERR(clipboardText == expectedMSA, "Clipboard string and expected MSA string differs\n"+clipboardText);
 
     GTGlobals::sleep();
 
@@ -1355,6 +1358,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_1) {
 
     //Expected state: Column range = 12-14
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(11, 0), QPoint(13, 9));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
     QString clipboardText = GTClipboard::text(os);
@@ -1389,6 +1393,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_2) {
 
     //Expected state: Column range = 12-14
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(11, 0), QPoint(13, 9));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
     QString clipboardText = GTClipboard::text(os);
