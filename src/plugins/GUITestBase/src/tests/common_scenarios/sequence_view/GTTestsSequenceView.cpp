@@ -52,16 +52,19 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     QWidget *w2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_2");
     QWidget *w3 = GTWidget::findWidget(os, "ADV_single_sequence_widget_3");
 
-    QAbstractButton* b0 = GTAction::button(os,"Show circular view", w0);
-    QAbstractButton* b1 = GTAction::button(os,"Show circular view", w1);
-    QAbstractButton* b2 = GTAction::button(os,"Show circular view", w2);
-    QAbstractButton* b3 = GTAction::button(os,"Show circular view", w3);
+    GTGlobals::FindOptions f;
+    f.failIfNull=false;
+
+    QWidget *button0 = GTWidget::findWidget(os,"CircularViewAction",w0,f);
+    QWidget *button1 = GTWidget::findWidget(os,"CircularViewAction",w1,f);
+    QWidget *button2 = GTWidget::findWidget(os,"CircularViewAction",w2);
+    QWidget *button3 = GTWidget::findWidget(os,"CircularViewAction",w3);
     GTGlobals::sleep(3000);
 
-    CHECK_SET_ERR(b0 == NULL, "b0 is not NULL");
-    CHECK_SET_ERR(b1 == NULL, "b1 is not NULL");
-    CHECK_SET_ERR(b2 != NULL, "b2 is NULL");
-    CHECK_SET_ERR(b3 != NULL, "b3 is NULL");
+    CHECK_SET_ERR(button0 == NULL, "b0 is not NULL");
+    CHECK_SET_ERR(button1 == NULL, "b1 is not NULL");
+    CHECK_SET_ERR(button2 != NULL, "b2 is NULL");
+    CHECK_SET_ERR(button3 != NULL, "b3 is NULL");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002_1) {
