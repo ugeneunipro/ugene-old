@@ -21,25 +21,28 @@
 
 #include "ScriptWorker.h"
 
-#include <U2Lang/IntegralBusModel.h>
-#include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/ActorPrototypeRegistry.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BaseSlots.h>
-#include <U2Lang/BaseActorCategories.h>
-#include <U2Designer/DelegateEditors.h>
-#include <U2Lang/CoreLibConstants.h>
-#include <U2Lang/IntegralBusType.h>
-#include <U2Lang/ScriptLibrary.h>
-#include <U2Lang/IncludedProtoFactory.h>
-
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/Log.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/Log.h>
 #include <U2Core/MAlignment.h>
+
+#include <U2Designer/DelegateEditors.h>
+
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/IncludedProtoFactory.h>
+#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/IntegralBusType.h>
+#include <U2Lang/ScriptEngineUtils.h>
+#include <U2Lang/ScriptLibrary.h>
+#include <U2Lang/SequencePrototype.h>
+#include <U2Lang/WorkflowEnv.h>
 
 
 namespace U2 {
@@ -228,7 +231,8 @@ void ScriptWorker::sl_taskFinished() {
                 hasSeqArray = true;
                 continue;
             }
-            SharedDbiDataHandler seqId = ScriptUtils::getDbiId(value, t->getEngine());
+            SharedDbiDataHandler seqId = ScriptEngineUtils::getDbiId(t->getEngine(), value,
+                SequenceScriptClass::CLASS_NAME);
             if (!seqId.constData() || !seqId.constData()->isValid()) {
                 continue;
             }
@@ -242,7 +246,8 @@ void ScriptWorker::sl_taskFinished() {
             QString varName = "out_" + BaseSlots::DNA_SEQUENCE_SLOT().getId();
             QScriptValue value = t->getEngine()->globalObject().property(varName.toAscii().data());
             for (int i=0; i<value.property("length").toInt32(); i++) {
-                SharedDbiDataHandler seqId = ScriptUtils::getDbiId(value.property(i), t->getEngine());
+                SharedDbiDataHandler seqId = ScriptEngineUtils::getDbiId(t->getEngine(), value.property(i),
+                    SequenceScriptClass::CLASS_NAME);
                 if (seqId.constData() && seqId.constData()->isValid()) {
                     map[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue(seqId);
                     output->put(Message(ptr,map));

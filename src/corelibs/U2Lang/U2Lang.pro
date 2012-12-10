@@ -8,7 +8,6 @@ HEADERS += src/library/BaseActorCategories.h \
            src/library/BaseTypes.h \
            src/library/LastReadyScheduler.h \
            src/library/LocalDomain.h \
-           src/library/ScriptLibrary.h \
            src/model/ActorModel.h \
            src/model/ActorPrototypeRegistry.h \
            src/model/Aliasing.h \
@@ -57,6 +56,8 @@ HEADERS += src/library/BaseActorCategories.h \
            src/tasks/ReadDocumentTaskFactory.h \
            src/tasks/WorkflowTasksRegistry.h \
            src/library/script/DbiClassPrototype.h \
+           src/library/script/ScriptEngineUtils.h \
+           src/library/script/ScriptLibrary.h \
            src/library/script/SequencePrototype.h \
            src/model/url_attribute/Dataset.h \
            src/model/url_attribute/URLAttribute.h \
@@ -81,7 +82,6 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/library/BaseTypes.cpp \
            src/library/LastReadyScheduler.cpp \
            src/library/LocalDomain.cpp \
-           src/library/ScriptLibrary.cpp \
            src/model/ActorModel.cpp \
            src/model/ActorPrototypeRegistry.cpp \
            src/model/Aliasing.cpp \
@@ -126,6 +126,8 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/tasks/ReadDocumentTaskFactory.cpp \
            src/tasks/WorkflowTasksRegistry.cpp \
            src/library/script/DbiClassPrototype.cpp \
+           src/library/script/ScriptEngineUtils.cpp \
+           src/library/script/ScriptLibrary.cpp \
            src/library/script/SequencePrototype.cpp \
            src/model/url_attribute/Dataset.cpp \
            src/model/url_attribute/URLAttribute.cpp \

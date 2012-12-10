@@ -96,11 +96,6 @@ public:
 
 }; // WorkflowScriptLibrary
 
-class U2LANG_EXPORT ScriptUtils {
-public:
-    static Workflow::SharedDbiDataHandler getDbiId(const QScriptValue &value, QScriptEngine *engine);
-};
-
 } // U2
 
 #endif

@@ -22,11 +22,14 @@
 #ifndef _U2_DBICLASSPROTOTYPE_H_
 #define _U2_DBICLASSPROTOTYPE_H_
 
-#include <U2Lang/WorkflowScriptEngine.h>
+#include <U2Lang/DbiDataHandler.h>
 
 #include <QObject>
+#include <QtScript>
 
 namespace U2 {
+
+class WorkflowScriptEngine;
 
 /**
  * Keeps shared dbi data handler
@@ -43,7 +46,7 @@ public:
     void release();
 
 private:
-    Workflow::SharedDbiDataHandler seqId;
+    Workflow::SharedDbiDataHandler id;
 };
 
 /**
@@ -77,14 +80,17 @@ protected:
  * static QScriptValue constructor(QScriptContext *ctx, QScriptEngine *engine);
  * 
  * and this public field for keeping script class name:
- * static const QString SCRIPT_CLASS_NAME;
+ * static const QString CLASS_NAME;
  */
 class DbiScriptClass : public QObject, public QScriptClass {
 public:
     DbiScriptClass(QScriptEngine *engine);
 
     QScriptValue prototype() const;
-    QScriptValue newInstance(const ScriptDbiData &id);
+    QScriptValue newInstance(const Workflow::SharedDbiDataHandler &id);
+
+    /** Virtual copy constructor for dbi types */
+    virtual QScriptValue newInstance(const ScriptDbiData &id, bool deepCopy) = 0;
 
 protected:
     QScriptValue proto;
@@ -110,12 +116,12 @@ void DbiClassPrototype::registerScriptClass(QScriptEngine *engine) {
 
 template<class T>
 QScriptValue DbiScriptClass::toScriptValue(QScriptEngine *engine, const ScriptDbiData &id) {
-    QScriptValue factory = engine->globalObject().property(T::SCRIPT_CLASS_NAME);
+    QScriptValue factory = engine->globalObject().property(T::CLASS_NAME);
     T *sClass = qscriptvalue_cast<T*>(factory.data());
     if (!sClass) {
         return engine->newVariant(qVariantFromValue(id));
     }
-    return sClass->DbiScriptClass::newInstance(id);
+    return sClass->newInstance(id, false /* deepCopy */);
 }
 
 } // U2

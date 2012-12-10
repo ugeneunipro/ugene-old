@@ -21,6 +21,9 @@
 
 #include <U2Core/U2SafePoints.h>
 
+#include "ScriptEngineUtils.h"
+#include <U2Lang/WorkflowScriptEngine.h>
+
 #include "DbiClassPrototype.h"
 
 namespace U2 {
@@ -37,17 +40,17 @@ ScriptDbiData::~ScriptDbiData() {
 }
 
 ScriptDbiData::ScriptDbiData(const Workflow::SharedDbiDataHandler &_seqId)
-: seqId(_seqId)
+: id(_seqId)
 {
 
 }
 
 const Workflow::SharedDbiDataHandler & ScriptDbiData::getId() const {
-    return seqId;
+    return id;
 }
 
 void ScriptDbiData::release() {
-    seqId = Workflow::SharedDbiDataHandler();
+    id = Workflow::SharedDbiDataHandler();
 }
 
 /************************************************************************/
@@ -66,7 +69,7 @@ DbiClassPrototype::~DbiClassPrototype() {
 QScriptValue DbiClassPrototype::getId() {
     CHECK(NULL != thisData(), QScriptValue::NullValue);
     Workflow::SharedDbiDataHandler id = thisData()->getId();
-    CHECK(NULL != id.constData(), QScriptValue::NullValue);
+    SCRIPT_CHECK(NULL != id.constData(), context(), "Invalid data id. Was it released?", QScriptValue::NullValue);
 
     return engine()->newVariant(qVariantFromValue(id));
 }
@@ -77,11 +80,13 @@ void DbiClassPrototype::release() {
 }
 
 ScriptDbiData * DbiClassPrototype::thisData() const {
-    return qscriptvalue_cast<ScriptDbiData*>(thisObject().data());
+    ScriptDbiData *result = qscriptvalue_cast<ScriptDbiData*>(thisObject().data());
+    SCRIPT_CHECK(NULL != result, context(), "No this object", NULL);
+    return result;
 }
 
 WorkflowScriptEngine * DbiClassPrototype::workflowEngine() const {
-    return dynamic_cast<WorkflowScriptEngine*>(engine());
+    return ScriptEngineUtils::workflowEngine(engine());
 }
 
 Workflow::DbiDataStorage * DbiClassPrototype::dataStorage() const {
@@ -105,8 +110,9 @@ QScriptValue DbiScriptClass::prototype() const {
     return proto;
 }
 
-QScriptValue DbiScriptClass::newInstance(const ScriptDbiData &id) {
-    QScriptValue data = engine()->newVariant(qVariantFromValue(id));
+QScriptValue DbiScriptClass::newInstance(const Workflow::SharedDbiDataHandler &id) {
+    ScriptDbiData dbiData(id);
+    QScriptValue data = engine()->newVariant(qVariantFromValue(dbiData));
     return engine()->newObject(this, data);
 }
 

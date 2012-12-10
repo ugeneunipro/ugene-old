@@ -19,8 +19,9 @@
 * MA 02110-1301, USA.
 */
 
-#include "script/SequencePrototype.h"
-#include "ScriptLibrary.h"
+
+#include "ScriptEngineUtils.h"
+#include "SequencePrototype.h"
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/AppContext.h>
@@ -36,6 +37,7 @@
 #include <U2Lang/DbiDataStorage.h>
 #include <U2Lang/WorkflowScriptEngine.h>
 
+#include "ScriptLibrary.h"
 
 namespace U2 {
 
@@ -104,47 +106,25 @@ QScriptValue WorkflowScriptLibrary::print(QScriptContext *ctx, QScriptEngine *) 
 
 // unrefactored obsolete deprecated functions
 
-Workflow::SharedDbiDataHandler ScriptUtils::getDbiId(const QScriptValue &value, QScriptEngine *engine) {
-    QScriptValue sClass = engine->globalObject().property(SequenceScriptClass::SCRIPT_CLASS_NAME);
-    QScriptValue idValue = value;
-    if (value.instanceOf(sClass)) {
-        QScriptValue getIdFun = value.property("getId");
-        if (getIdFun.isFunction()) {
-            idValue = getIdFun.call(value);
-        }
-    }
-
-    if (idValue.isVariant()) {
-        QVariant var = idValue.toVariant();
-        if (var.canConvert<Workflow::SharedDbiDataHandler>()) {
-            return var.value<Workflow::SharedDbiDataHandler>();
-        }
-    }
-    return Workflow::SharedDbiDataHandler();
-}
-
 static DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
-    WorkflowScriptEngine *wse = dynamic_cast<WorkflowScriptEngine*>(engine);
+    WorkflowScriptEngine *wse = ScriptEngineUtils::workflowEngine(engine);
     CHECK(NULL != wse, DNASequence());
 
-    Workflow::SharedDbiDataHandler seqId = ScriptUtils::getDbiId(ctx->argument(argNum), engine);
-    QScopedPointer<U2SequenceObject> seqObj(Workflow::StorageUtils::getSequenceObject(wse->getWorkflowContext()->getDataStorage(), seqId));
+    SharedDbiDataHandler seqId = ScriptEngineUtils::getDbiId(engine, ctx->argument(argNum),
+        SequenceScriptClass::CLASS_NAME);
+    QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(wse->getWorkflowContext()->getDataStorage(), seqId));
     CHECK(!seqObj.isNull(), DNASequence());
     return seqObj->getWholeSequence();
 }
 
-static SequenceScriptClass * getSequenceClass(QScriptEngine *engine) {
-    QScriptValue cls = engine->globalObject().property(SequenceScriptClass::SCRIPT_CLASS_NAME);
-    return qscriptvalue_cast<SequenceScriptClass*>(cls.data());
-}
-
 static QScriptValue putSequence(QScriptEngine *engine, const DNASequence &seq) {
-    WorkflowScriptEngine *wse = dynamic_cast<WorkflowScriptEngine*>(engine);
-    Workflow::WorkflowContext *ctx = wse->getWorkflowContext();
-    Workflow::SharedDbiDataHandler id = ctx->getDataStorage()->putSequence(seq);
+    WorkflowScriptEngine *wse = ScriptEngineUtils::workflowEngine(engine);
+    CHECK(NULL != wse, QScriptValue::NullValue);
+    WorkflowContext *ctx = wse->getWorkflowContext();
+    SharedDbiDataHandler id = ctx->getDataStorage()->putSequence(seq);
 
-    CHECK(NULL != getSequenceClass(engine), QScriptValue());
-    return getSequenceClass(engine)->DbiScriptClass::newInstance(id);
+    CHECK(NULL != ScriptEngineUtils::getSequenceClass(engine), QScriptValue());
+    return ScriptEngineUtils::getSequenceClass(engine)->newInstance(id);
 }
 
 QScriptValue WorkflowScriptLibrary::getSubsequence(QScriptContext *ctx, QScriptEngine *engine) {

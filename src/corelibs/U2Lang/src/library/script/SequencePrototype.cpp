@@ -19,14 +19,19 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
+
+#include "ScriptEngineUtils.h"
+#include <U2Lang/WorkflowScriptEngine.h>
 
 #include "SequencePrototype.h"
 
 namespace U2 {
 
-const QString SequenceScriptClass::SCRIPT_CLASS_NAME("Sequence");
+const QString SequenceScriptClass::CLASS_NAME("Sequence");
 
 /************************************************************************/
 /* SequencePrototype */
@@ -46,10 +51,25 @@ U2SequenceObject * SequencePrototype::getSequenceObject() const {
 
 U2SequenceObject * SequencePrototype::getValidSequenceObject() const {
     U2SequenceObject *result = getSequenceObject();
-    if (NULL == result) {
-        coreLog.error("Invalid sequence object");
-    }
+    SCRIPT_CHECK(NULL != result, context(), "Invalid sequence object", NULL);
     return result;
+}
+
+U2Region SequencePrototype::getRegion(int startPosArg, int lengthPosArg) {
+    assert(startPosArg < lengthPosArg);
+
+    U2Region r = U2_REGION_MAX;
+    if (startPosArg < context()->argumentCount()) {
+        r.startPos = context()->argument(startPosArg).toNumber();
+        SCRIPT_CHECK(r.startPos >= 0, context(), "Negative start position", U2Region());
+        if (lengthPosArg < context()->argumentCount()) {
+            r.length = context()->argument(lengthPosArg).toNumber();
+        } else {
+            r.length -= r.startPos;
+        }
+        SCRIPT_CHECK(r.length >= 0, context(), "Negative length", U2Region());
+    }
+    return r;
 }
 
 qint64 SequencePrototype::length() {
@@ -58,21 +78,30 @@ qint64 SequencePrototype::length() {
     return seqObj->getSequenceLength();
 }
 
-QString SequencePrototype::getData() {
+QString SequencePrototype::name() {
+    QScopedPointer<U2SequenceObject> seqObj(getValidSequenceObject());
+    CHECK(!seqObj.isNull(), 0);
+    return seqObj->getSequenceName();
+}
+
+QString SequencePrototype::string() {
     QScopedPointer<U2SequenceObject> seqObj(getValidSequenceObject());
     CHECK(!seqObj.isNull(), "");
 
-    U2Region r = U2_REGION_MAX;
-    if (context()->argumentCount() > 0) {
-        r.startPos = context()->argument(0).toNumber();
-        CHECK(r.startPos >= 0, "");
-        if (context()->argumentCount() > 1) {
-            r.length = context()->argument(1).toNumber();
-        } else {
-            r.length -= r.startPos;
-        }
+    return seqObj->getSequenceData(getRegion(0, 1));
+}
+
+void SequencePrototype::splice() {
+    QScopedPointer<U2SequenceObject> seqObj(getValidSequenceObject());
+    CHECK(!seqObj.isNull(), );
+    if (0 == context()->argumentCount()) {
+        return;
     }
-    return seqObj->getSequenceData(r);
+    QString data = context()->argument(0).toString();
+    DNASequence seq(data.toAscii());
+    U2OpStatus2Log os;
+    seqObj->replaceRegion(getRegion(1, 2), seq, os);
+    SCRIPT_CHECK(!os.isCoR(), context(), "Can not replace a substring", );
 }
 
 /************************************************************************/
@@ -94,12 +123,11 @@ QScriptValue SequenceScriptClass::constructor(QScriptContext *ctx, QScriptEngine
     if (1 == ctx->argumentCount()) {
         QScriptValue arg = ctx->argument(0);
         if (arg.instanceOf(ctx->callee())) {
-            return sClass->DbiScriptClass::newInstance(qscriptvalue_cast<ScriptDbiData>(arg));
+            return sClass->newInstance(qscriptvalue_cast<ScriptDbiData>(arg), true /* deepCopy */);
         } else if (arg.isVariant()) {
             QVariant var = arg.toVariant();
             if (var.canConvert<Workflow::SharedDbiDataHandler>()) {
-                Workflow::SharedDbiDataHandler id = var.value<Workflow::SharedDbiDataHandler>();
-                return sClass->DbiScriptClass::newInstance(ScriptDbiData(id));
+                return sClass->newInstance(var.value<Workflow::SharedDbiDataHandler>());
             }
         }
     } else if (2 == ctx->argumentCount()) {
@@ -110,18 +138,44 @@ QScriptValue SequenceScriptClass::constructor(QScriptContext *ctx, QScriptEngine
     return QScriptValue();
 }
 
+Workflow::SharedDbiDataHandler SequenceScriptClass::copySequence(const ScriptDbiData &id, QScriptEngine *engine) {
+    Workflow::SharedDbiDataHandler result;
+    Workflow::DbiDataStorage *storage = ScriptEngineUtils::dataStorage(engine);
+    SCRIPT_CHECK(NULL != storage, engine->currentContext(), "Data storage error", result);
+
+    QScopedPointer<U2SequenceObject> seqObj(Workflow::StorageUtils::getSequenceObject(storage, id.getId()));
+    SCRIPT_CHECK(!seqObj.isNull(), engine->currentContext(), "Invalid sequence id", result);
+
+    U2OpStatusImpl os;
+    U2Sequence clonedSeq = U2SequenceUtils::copySequence(seqObj->getEntityRef(), seqObj->getEntityRef().dbiRef, os);
+    SCRIPT_CHECK(!os.isCoR(), engine->currentContext(), "Can not copy sequence", result);
+
+    U2EntityRef newEnt(seqObj->getEntityRef().dbiRef, clonedSeq.id);
+    result = storage->getDataHandler(newEnt);
+
+    return result;
+}
+
 QScriptValue SequenceScriptClass::newInstance(const QString &data, const QString &name) {
     Workflow::DbiDataStorage *storage = workflowEngine()->getWorkflowContext()->getDataStorage();
     Workflow::SharedDbiDataHandler id = storage->putSequence(DNASequence(name, data.toAscii()));
-    return DbiScriptClass::newInstance(ScriptDbiData(id));
+    return newInstance(id);
+}
+
+QScriptValue SequenceScriptClass::newInstance(const ScriptDbiData &id, bool deepCopy) {
+    if (deepCopy) {
+        return newInstance(copySequence(id, engine()));
+    } else {
+        return newInstance(id.getId());
+    }
 }
 
 QString SequenceScriptClass::name() const {
-    return SCRIPT_CLASS_NAME;
+    return CLASS_NAME;
 }
 
 WorkflowScriptEngine * SequenceScriptClass::workflowEngine() const {
-    return dynamic_cast<WorkflowScriptEngine*>(engine());
+    return ScriptEngineUtils::workflowEngine(engine());
 }
 
 } // U2

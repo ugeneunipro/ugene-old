@@ -22,6 +22,7 @@
 #ifndef _U2_SEQUENCEPROTOTYPE_H_
 #define _U2_SEQUENCEPROTOTYPE_H_
 
+#include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2OpStatus.h>
 
 #include "DbiClassPrototype.h"
@@ -43,32 +44,53 @@ public slots:
     /** No arguments. Returns sequence length */
     qint64 length();
 
+    /** No arguments. Returns sequence name */
+    QString name();
+
     /**
      * Arguments: [startPos [, length]]
+     * Throws script exception if the startPos or the length are negative.
+     * Returns length symbols of the sequence starting from startPos.
      * If length is not specified than returns the data from startPos
-     * up to the end os the sequence. If startPos is not specified then
+     * up to the end of the sequence. If startPos is not specified then
      * returns the whole sequence data.
      */
-    QString getData();
+    QString string();
+
+    /**
+     * Arguments: string [, startPos [, length]]
+     * Exceptions and the meaning of startPos and length arguments are
+     * the same as in the "string()" method.
+     * Removes length symbols of the sequence starting from startPost
+     * and inserts string instead of them.
+     */
+    void splice();
 
 private:
     U2SequenceObject * getSequenceObject() const;
-    /** Returns NULL if this object is invalid */
+    /** Returns NULL and throws script exception if this object is invalid */
     U2SequenceObject * getValidSequenceObject() const;
+    /** startPosArg < lengthPosArg */
+    U2Region getRegion(int startPosArg, int lengthPosArg);
 };
 
 /************************************************************************/
 /* SequenceScriptClass */
 /************************************************************************/
-class SequenceScriptClass : public DbiScriptClass {
+class U2LANG_EXPORT SequenceScriptClass : public DbiScriptClass {
 public:
+    using DbiScriptClass::newInstance;
+
     SequenceScriptClass(QScriptEngine *engine);
 
     QString name() const;
     QScriptValue newInstance(const QString &data, const QString &name);
+    QScriptValue newInstance(const ScriptDbiData &id, bool deepCopy);
 
     static QScriptValue constructor(QScriptContext *ctx, QScriptEngine *engine);
-    static const QString SCRIPT_CLASS_NAME;
+    static const QString CLASS_NAME;
+
+    static Workflow::SharedDbiDataHandler copySequence(const ScriptDbiData &id, QScriptEngine *engine);
 
 private:
     WorkflowScriptEngine * workflowEngine() const;

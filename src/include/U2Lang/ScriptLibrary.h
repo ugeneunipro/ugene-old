@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Lang/src/library/ScriptLibrary.h"
+#include "../../corelibs/U2Lang/src/library/script/ScriptLibrary.h"
