@@ -23,6 +23,7 @@
 #include "MSACollapsibleModel.h"
 
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/MAlignment.h>
 
 #include <QtGui/QAction>
 
@@ -79,7 +80,11 @@ void MSAEditorUndoFramework::sl_completeStateChanged(bool _stateCompele){
 }
 
 void MSAEditorUndoFramework::sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& mi) {
-    if (maObj == NULL || lastSavedObjectVersion == maObj->getModificationVersion() || maBefore.getRows() == maObj->getMAlignment().getRows()) {return;}
+    if (maObj == NULL || lastSavedObjectVersion == maObj->getModificationVersion() ||
+            (maBefore.getRows() == maObj->getMAlignment().getRows() && maBefore.getRowNames() == maObj->getMAlignment().getRowNames()))
+    {
+        return;
+    }
     if (mi.hints.value(MODIFIER) == MAROW_SIMILARITY_SORT) {return;}
     if(!stateComplete){return;}
 
