@@ -10,11 +10,11 @@ SUBDIRS += \
           src/libs_3rdparty/qscore \
           src/libs_3rdparty/sqlite3 \
           src/libs_3rdparty/gtest \
-		  src/libs_3rdparty/samtools \
+          src/libs_3rdparty/samtools \
           src/corelibs/U2Core \
           src/corelibs/U2Test \
-          src/corelibs/U2Algorithm \
           src/corelibs/U2Formats \
+          src/corelibs/U2Algorithm \
           src/corelibs/U2Lang \
           src/corelibs/U2Private \
           src/corelibs/U2Gui \
@@ -33,7 +33,7 @@ SUBDIRS += \
           src/plugins_3rdparty/phylip \
           src/plugins_3rdparty/kalign \
           src/plugins_3rdparty/ptools \
-		  src/plugins_3rdparty/variants \
+          src/plugins_3rdparty/variants \
           src/plugins/biostruct3d_view \
           src/plugins/chroma_view \
           src/plugins/circular_view \
@@ -162,7 +162,10 @@ unix {
     ugene_starter.files = ./src/_release/ugene
     ugene_starter.path = $$UGENE_INSTALL_DIR
 
-    transl.files = ./src/_release/transl_en.qm ./src/_release/transl_ru.qm
+    transl.files = ./src/_release/transl_en.qm
+    transl.files += ./src/_release/transl_ru.qm
+    transl.files += ./src/_release/transl_cs.qm
+    transl.files += ./src/_release/transl_zh.qm
     transl.path = $$UGENE_INSTALL_DIR
     
     plugins.files = ./src/_release/plugins/*
