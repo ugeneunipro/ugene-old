@@ -13,8 +13,8 @@ SUBDIRS += \
           src/libs_3rdparty/samtools \
           src/corelibs/U2Core \
           src/corelibs/U2Test \
-          src/corelibs/U2Formats \
           src/corelibs/U2Algorithm \
+          src/corelibs/U2Formats \
           src/corelibs/U2Lang \
           src/corelibs/U2Private \
           src/corelibs/U2Gui \
