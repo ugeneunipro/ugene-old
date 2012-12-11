@@ -40,8 +40,8 @@
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "GTUtilsMdi.h"
-#include "../../../src/corelibs/U2View/src/ov_msa/MSAEditorSequenceArea.h"
 #include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorSequenceArea.h>
 namespace U2 {
 
 namespace GUITest_common_scenarios_msa_editor_colors {
