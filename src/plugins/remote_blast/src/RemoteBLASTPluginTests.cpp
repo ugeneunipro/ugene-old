@@ -185,6 +185,13 @@ void GTest_RemoteBLAST::init(XMLTestFormat *tf, const QDomElement& el) {
             expectedResults.append(id);
         }
     }
+
+    QString simpleStr = el.attribute(SIMPLE_ATTR);
+    if (simpleStr == "true") {
+        simple = true;        
+    }else{
+        simple = false;
+    }
 }
 
 void GTest_RemoteBLAST::prepare() {
@@ -227,6 +234,13 @@ Task::ReportResult GTest_RemoteBLAST::report() {
                 }
             }
         }
+    }
+
+    if(simple){
+        if(result.size() == 0){
+            stateInfo.setError(  QString("Simplified test retuns empty result"));
+        }
+        return ReportResult_Finished;
     }
 
     if(result.size() != expectedResults.size()){

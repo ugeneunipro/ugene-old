@@ -32,6 +32,7 @@ namespace U2 {
 #define BLAST_DESCRIPTION "Basic Local Alignment Search Tool, or BLAST, is an algorithm for comparing primary biological sequence information, such as the amino-acid sequences of different proteins or the nucleotides of DNA sequences. A BLAST search enables a researcher to compare a query sequence with a library or database of sequences, and identify library sequences that resemble the query sequence above a certain threshold."
 
 #define EXPECTED_ATTR "expected_results"
+#define SIMPLE_ATTR "simple"
 #define MIN_LEN_ATTR "min_length"
 #define MAX_LEN_ATTR "max_length"
 #define TRANSL_ATTR "transl"

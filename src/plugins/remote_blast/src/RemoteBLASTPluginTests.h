@@ -47,6 +47,7 @@ private:
     QString request;
     QString algoritm;
     QStringList expectedResults;
+    bool simple;
 };
 
 }//ns
