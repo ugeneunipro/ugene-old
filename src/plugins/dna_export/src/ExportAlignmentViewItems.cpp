@@ -77,7 +77,7 @@ void ExportAlignmentViewItemsController::buildMenu(GObjectView* v, QMenu* m) {
 // MSA view context
 
 MSAExportContext::MSAExportContext(MSAEditor* e) : editor(e) {
-    translateMSAAction = new QAction(tr("Amino translation of alignment rows..."), this);
+    translateMSAAction = new QAction(tr("Amino translation..."), this);
     translateMSAAction->setObjectName("amino_translation_of_alignment_rows");
     connect(translateMSAAction, SIGNAL(triggered()), SLOT(sl_exportNucleicMsaToAmino()));        
 }
@@ -104,7 +104,7 @@ void MSAExportContext::sl_exportNucleicMsaToAmino() {
 
     ExportMSA2MSADialog d(defaultUrl.getURLString(), BaseDocumentFormats::CLUSTAL_ALN, editor->getCurrentSelection().height() < 1, AppContext::getMainWindow()->getQMainWindow());
 
-    d.setWindowTitle(translateMSAAction->text());
+    d.setWindowTitle(tr("Export Amino Translation"));
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return;

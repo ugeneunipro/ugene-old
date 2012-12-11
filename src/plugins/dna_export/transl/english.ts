@@ -1914,8 +1914,8 @@ You can use this worker to convert .fasta and .qual pair to fastq format</source
     <name>U2::MSAExportContext</name>
     <message>
         <location filename="../src/ExportAlignmentViewItems.cpp" line="80"/>
-        <source>Amino translation of alignment rows...</source>
-        <translation type="unfinished"></translation>
+        <source>Amino translation...</source>
+        <translation></translation>
     </message>
 </context>
 <context>
