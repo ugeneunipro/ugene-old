@@ -75,13 +75,14 @@ namespace U2 {
 #define SETTINGS_COLOR_NUCL     "color_nucl"
 #define SETTINGS_COLOR_AMINO    "color_amino"
 
-MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb) 
+MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb)
 : editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb) 
 {
     setObjectName("msa_editor_sequence_area");
     setFocusPolicy(Qt::WheelFocus);
 
     cachedView = new QPixmap();
+
     completeRedraw = true;
 
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -180,7 +181,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(complementAction, SIGNAL(triggered()), SLOT(sl_complementCurrentSelection()));
 
     
-    connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
+   connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
     connect(editor->getMSAObject(), SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
 
@@ -1287,7 +1288,7 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     }
 
     QMenu* customColorSchemaMenu = new QMenu(tr("Custom schemes"), colorsSchemeMenu);    
-    colorsSchemeMenu->menuAction()->setObjectName("Custom schemes");    
+    customColorSchemaMenu->menuAction()->setObjectName("Custom schemes");
 
     foreach(QAction* a, customColorSchemeMenuActions) {
         customColorSchemaMenu->addAction(a);
