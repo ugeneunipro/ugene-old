@@ -46,10 +46,9 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_msa_editor_colors {
 
-class colorCheck{
-    public:
-    static void checkColor(U2OpStatus &os, QPoint p, QString expectedColor, int Xmove=0,int Ymove=0){
+void checkColor(U2OpStatus &os, QPoint p, QString expectedColor, int Xmove=0,int Ymove=0){
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    CHECK_SET_ERR(seq!=NULL,"msa_editor_sequence_area widget is NULL")
 
     QPixmap content;
     content = QPixmap::grabWidget(seq,seq->rect());
@@ -62,10 +61,11 @@ class colorCheck{
     QRgb rgb = content.toImage().pixel(seq->mapFromGlobal(p1));
     QColor color(rgb);
 
-    CHECK_SET_ERR(color.name()==expectedColor ,"Expected: " + expectedColor + " ,found: " + color.name());
 
+    CHECK_SET_ERR(color.name()==expectedColor ,"Expected: " + expectedColor + " ,found: " + color.name());
+    GTGlobals::sleep(500);
     }
-};
+
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
@@ -77,19 +77,19 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //    Expected state: background for symbols must be:
 //    A - yellow    G - blue    T - red    C - green    gap - no backround
     //check A
-    colorCheck::checkColor(os,QPoint(0, 1), "#fcff92");
+    checkColor(os,QPoint(0, 1), "#fcff92");
 
     //check G
-    colorCheck::checkColor(os,QPoint(2, 2), "#4eade1");
+    checkColor(os,QPoint(2, 2), "#4eade1");
 
     //check T
-    colorCheck::checkColor(os,QPoint(0, 2), "#ff99b1",5);
+    checkColor(os,QPoint(0, 2), "#ff99b1",5);
 
     //check C
-    colorCheck::checkColor(os,QPoint(0, 0), "#70f970");
+    checkColor(os,QPoint(0, 0), "#70f970");
 
     //check gap
-    colorCheck::checkColor(os,QPoint(4, 2), "#ffffff",0,5);
+    checkColor(os,QPoint(4, 2), "#ffffff",0,5);
 
 }
 
@@ -102,21 +102,45 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTMenu::showContextMenu(os,seq);
 //    Expected state: background for symbols must be white
     //check A
-    colorCheck::checkColor(os,QPoint(0, 1), "#ffffff");
+    checkColor(os,QPoint(0, 1), "#ffffff");
 
     //check G
-    colorCheck::checkColor(os,QPoint(2, 2), "#ffffff");
+    checkColor(os,QPoint(2, 2), "#ffffff");
 
     //check T
-    colorCheck::checkColor(os,QPoint(0, 2), "#ffffff",5);
+    checkColor(os,QPoint(0, 2), "#ffffff",5);
 
     //check C
-    colorCheck::checkColor(os,QPoint(0, 0), "#ffffff");
+    checkColor(os,QPoint(0, 0), "#ffffff");
 
     //check gap
-    colorCheck::checkColor(os,QPoint(4, 2), "#ffffff",0,5);
+    checkColor(os,QPoint(4, 2), "#ffffff",0,5);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0003){
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Use context menu {Colors->Jalview} in MSA editor area.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Colors"<<"Jalview"));
+    GTMenu::showContextMenu(os,seq);
+//Expected state: background for symbols must be:
+//A - green G - red T - blue  C - orange gap - no backround
+    //check A
+    checkColor(os,QPoint(0, 1), "#64f73f");
+
+    //check G
+    checkColor(os,QPoint(2, 2), "#eb413c");
+
+    //check T
+    checkColor(os,QPoint(0, 2), "#3c88ee",5);
+
+    //check C
+    checkColor(os,QPoint(0, 0), "#ffb340");
+
+    //check gap
+    checkColor(os,QPoint(4, 2), "#ffffff",0,5);
+}
 } // namespace
 } // namespace U2
 
