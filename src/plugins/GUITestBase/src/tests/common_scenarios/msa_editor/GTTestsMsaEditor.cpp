@@ -1606,14 +1606,16 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
-
+    //GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
 // Expected state: sequence changed from TTG -> CAA 
     GTGlobals::sleep();
-    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection"));
+    GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep();
     QString clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "CAA", "Clipboard string and expected MSA string differs");
+    CHECK_SET_ERR(clipboardText == "CAA", "Clipboard string and expected MSA string differs"+GTClipboard::text(os));
 
 //                 sequence name  changed from L -> L|revcompl
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
@@ -1627,6 +1629,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
     GTGlobals::sleep();
 
 // Expected state: sequence changed from CAA -> TTG 
+    //GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
     GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
 
@@ -2081,6 +2084,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016_1) {
 
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(2, 0));
+    GTGlobals::sleep();
 // copy to clipboard
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
@@ -2361,7 +2365,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 0));
     GTGlobals::sleep();
     for (int i=0; i<6; i++) {
-        GTKeyboardDriver::keyPress(os, ' ');
+        GTKeyboardDriver::keyClick(os, ' ');
         GTGlobals::sleep(100);
     }
 
@@ -2388,7 +2392,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020_1) {
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 0));
     GTGlobals::sleep();
     for (int i=0; i<6; i++) {
-        GTKeyboardDriver::keyPress(os, ' ');
+        GTKeyboardDriver::keyClick(os, ' ');
         GTGlobals::sleep(100);
     }
 
@@ -2415,7 +2419,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020_2) {
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 0));
     GTGlobals::sleep();
     for (int i=0; i<6; i++) {
-        GTKeyboardDriver::keyPress(os, ' ');
+        GTKeyboardDriver::keyClick(os, ' ');
         GTGlobals::sleep(100);
     }
 

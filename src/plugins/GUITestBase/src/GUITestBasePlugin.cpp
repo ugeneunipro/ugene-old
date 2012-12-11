@@ -40,6 +40,7 @@
 #include "tests/common_scenarios/project/multiple_docs/GTTestsProjectMultipleDocs.h"
 #include "tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h"
 #include "tests/common_scenarios/msa_editor/GTTestsMsaEditor.h"
+#include "tests/common_scenarios/msa_editor/colors/GTTestsMSAEditorColors.h"
 #include "tests/common_scenarios/annotations/GTTestsAnnotations.h"
 #include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
 #include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
@@ -48,6 +49,7 @@
 #include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
 #include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
+
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
 #define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE) \
@@ -408,6 +410,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0021_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0021_2);
 
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/msa_editor/colors
+/////////////////////////////////////////////////////////////////////////
+
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_colors::test_0001);
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/document_from_text/
 //////////////////////////////////////////////////////////////////////////
