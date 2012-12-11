@@ -32,9 +32,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentUtils.h>
-#include <U2Formats/RawDNASequenceFormat.h>
-#include <U2Formats/FastaFormat.h>
-#include <U2Formats/GenbankFeatures.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapterUtils.h>
 
 namespace U2 {
@@ -123,7 +121,7 @@ Document * LoadPatternsFileTask::getDocumentFromFilePath()
     }
 
     DocumentFormat *format = formats.first().format;
-    if(NULL != dynamic_cast<RawDNASequenceFormat *>(format)) {
+    if(format->getFormatId() == BaseDocumentFormats::RAW_DNA_SEQUENCE){
         isRawSequence = true;
         return NULL;
     }
