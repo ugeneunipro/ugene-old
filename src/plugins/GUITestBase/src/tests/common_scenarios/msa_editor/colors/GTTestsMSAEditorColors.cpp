@@ -46,67 +46,77 @@ namespace U2 {
 
 namespace GUITest_common_scenarios_msa_editor_colors {
 
+class colorCheck{
+    public:
+    static void checkColor(U2OpStatus &os, QPoint p, QString expectedColor, int Xmove=0,int Ymove=0){
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
 
+    QPixmap content;
+    content = QPixmap::grabWidget(seq,seq->rect());
+
+    GTUtilsMSAEditorSequenceArea::click(os, p);
+    QPoint p1 = GTMouseDriver::getMousePosition();
+    p1.setY(p1.y()+Ymove);
+    p1.setX(p1.x()+Xmove);
+
+    QRgb rgb = content.toImage().pixel(seq->mapFromGlobal(p1));
+    QColor color(rgb);
+
+    CHECK_SET_ERR(color.name()==expectedColor ,"Expected: " + expectedColor + " ,found: " + color.name());
+
+    }
+};
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
-    GTGlobals::sleep(500);
 //2. Use context menu {Colors->UGENE} in MSA editor area.
     QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Colors"<<"UGENE"));
     GTMenu::showContextMenu(os,seq);
 
-    QPixmap content;
-    content = QPixmap::grabWidget(seq,seq->rect());
 //    Expected state: background for symbols must be:
 //    A - yellow    G - blue    T - red    C - green    gap - no backround
     //check A
-    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 1));
-    QPoint p = GTMouseDriver::getMousePosition();
-    seq->mapFromGlobal(p);
-
-    QRgb rgb = content.toImage().pixel(seq->mapFromGlobal(p));
-    QColor color(rgb);
-
-    CHECK_SET_ERR(color.name()=="#fcff92" ,"Expected: #fcff92, found: " + color.name());
+    colorCheck::checkColor(os,QPoint(0, 1), "#fcff92");
 
     //check G
-    GTUtilsMSAEditorSequenceArea::click(os, QPoint(2, 2));
-    p = GTMouseDriver::getMousePosition();
-    seq->mapFromGlobal(p);
-
-    rgb = content.toImage().pixel(seq->mapFromGlobal(p));
-    CHECK_SET_ERR(QColor::fromRgb(rgb).name()=="#4eade1" ,"Expected: #4eade1, found: " + QColor::fromRgb(rgb).name());
+    colorCheck::checkColor(os,QPoint(2, 2), "#4eade1");
 
     //check T
-    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 2));
-
-    p = GTMouseDriver::getMousePosition();
-    p.setX(p.x()+5);
-    seq->mapFromGlobal(p);
-
-    rgb = content.toImage().pixel(seq->mapFromGlobal(p));
-    CHECK_SET_ERR(QColor::fromRgb(rgb).name()=="#ff99b1" ,"Expected: #ff99b1, found: " + QColor::fromRgb(rgb).name());
+    colorCheck::checkColor(os,QPoint(0, 2), "#ff99b1",5);
 
     //check C
-    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 0));
-    p = GTMouseDriver::getMousePosition();
-    seq->mapFromGlobal(p);
-
-    rgb = content.toImage().pixel(seq->mapFromGlobal(p));
-    CHECK_SET_ERR(QColor::fromRgb(rgb).name()=="#70f970" ,"Expected: #70f970, found: " + QColor::fromRgb(rgb).name());
+    colorCheck::checkColor(os,QPoint(0, 0), "#70f970");
 
     //check gap
-    GTUtilsMSAEditorSequenceArea::click(os, QPoint(4, 2));
-
-    p = GTMouseDriver::getMousePosition();
-    p.setY(p.y()+5);
-    seq->mapFromGlobal(p);
-
-    rgb = content.toImage().pixel(seq->mapFromGlobal(p));
-    CHECK_SET_ERR(QColor::fromRgb(rgb).name()=="#ffffff" ,"Expected: #ffffff, found: " + QColor::fromRgb(rgb).name());
+    colorCheck::checkColor(os,QPoint(4, 2), "#ffffff",0,5);
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0002){
+//    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Use context menu {Colors->No Colors} in MSA editor area.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Colors"<<"No colors"));
+    GTMenu::showContextMenu(os,seq);
+//    Expected state: background for symbols must be white
+    //check A
+    colorCheck::checkColor(os,QPoint(0, 1), "#ffffff");
+
+    //check G
+    colorCheck::checkColor(os,QPoint(2, 2), "#ffffff");
+
+    //check T
+    colorCheck::checkColor(os,QPoint(0, 2), "#ffffff",5);
+
+    //check C
+    colorCheck::checkColor(os,QPoint(0, 0), "#ffffff");
+
+    //check gap
+    colorCheck::checkColor(os,QPoint(4, 2), "#ffffff",0,5);
+}
+
 } // namespace
 } // namespace U2
 

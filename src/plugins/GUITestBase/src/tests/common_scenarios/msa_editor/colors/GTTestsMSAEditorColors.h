@@ -33,7 +33,7 @@ namespace GUITest_common_scenarios_msa_editor_colors {
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_msa_editor_colors_"
 
 GUI_TEST_CLASS_DECLARATION(test_0001)
-
+GUI_TEST_CLASS_DECLARATION(test_0002)
 
 #undef GUI_TEST_PREFIX
 } // namespace U2
