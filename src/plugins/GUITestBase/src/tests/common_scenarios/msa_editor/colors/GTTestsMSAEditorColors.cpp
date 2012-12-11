@@ -141,6 +141,42 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     //check gap
     checkColor(os,QPoint(4, 2), "#ffffff",0,5);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0004){
+//    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Use context menu {Colors->Persentage identity} in MSA editor area.
+//    Expected state: Background of the symbol  with the highest number of matches in the column is painted over.
+//    Intensity of colour depends on the frequency of appearance in the column.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Colors"<<"Percentage Identity"));
+    GTMenu::showContextMenu(os,seq);
+//    Symbols and columns at the descending order
+//    1. A,G,T at 2,3,9
+//    2. A at 10
+//    3. T at 6
+//    4. A,C,A,T,A,T,A at 1,4,7,8,11,12,14
+
+//    columns without colored symbols 5,13
+    checkColor(os,QPoint(0, 1), "#ccccff");//chech1
+    checkColor(os,QPoint(1, 1), "#9999ff");//chech2
+    checkColor(os,QPoint(2, 1), "#9999ff");//chech3
+    checkColor(os,QPoint(3, 1), "#ccccff");//chech4
+    checkColor(os,QPoint(4, 1), "#ffffff",5);//chech5
+    checkColor(os,QPoint(5, 1), "#9999ff",5);//chech6
+    checkColor(os,QPoint(6, 1), "#ccccff");//chech7
+    checkColor(os,QPoint(7, 2), "#ccccff",5);//chech8
+    checkColor(os,QPoint(8, 2), "#6464ff",5);//chech9
+    checkColor(os,QPoint(9, 2), "#9999ff");//chech10
+    checkColor(os,QPoint(10, 1), "#ccccff");//chech11
+    checkColor(os,QPoint(11, 2), "#ccccff",5);//chech12
+    checkColor(os,QPoint(12, 2), "#ffffff");//chech13
+    checkColor(os,QPoint(13, 2), "#ccccff");//chech14
+
+
+
+
+}
 } // namespace
 } // namespace U2
 
