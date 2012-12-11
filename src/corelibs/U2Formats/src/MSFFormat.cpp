@@ -25,6 +25,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/L10n.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>
@@ -113,7 +114,7 @@ int MSFFormat::getCheckSum(const QByteArray& seq) {
     return sum;
 }
 
-void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& ti) {
+void MSFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, U2OpStatus& ti) {
     MAlignment al(io->getURL().baseFileName());
 
     //skip comments
@@ -215,13 +216,17 @@ void MSFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& ti) {
     U2AlphabetUtils::assignAlphabet(al);
     CHECK_EXT(al.getAlphabet() != NULL, ti.setError(MSFFormat::tr("Alphabet unknown")), );
     
-    MAlignmentObject* obj = new MAlignmentObject(al);
+    U2OpStatus2Log os;
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+    CHECK_OP(os, );
+
+    MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
     objects.append(obj);
 }
 
 Document* MSFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     QList<GObject*> objs;
-    load(io, objs, os);
+    load(io, dbiRef, objs, os);
 
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);

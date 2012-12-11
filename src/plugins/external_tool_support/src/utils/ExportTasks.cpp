@@ -40,6 +40,7 @@
 #include <U2Core/U2SequenceUtils.h>
 
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 
 namespace U2 {
@@ -61,7 +62,12 @@ void SaveAlignmentTask::run() {
     DocumentFormat* f = r->getFormatById(format);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileName));
     doc.reset(f->createNewLoadedDocument(iof, fileName, stateInfo));
-    doc->addObject(new MAlignmentObject(ma));
+
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), ma, stateInfo);
+    CHECK_OP(stateInfo, );
+
+    MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
+    doc->addObject(obj);
     f->storeDocument(doc.get(), stateInfo);
 }
 

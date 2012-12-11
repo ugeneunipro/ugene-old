@@ -34,6 +34,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Algorithm/MSAConsensusUtils.h>
@@ -56,7 +57,7 @@ ClustalWAlnFormat::ClustalWAlnFormat(QObject* p) : DocumentFormat(p, DocumentFor
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
 }
 
-void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap&, U2OpStatus& os) {
+void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap&, U2OpStatus& os) {
     static int READ_BUFF_SIZE = 1024;
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
@@ -178,14 +179,17 @@ void ClustalWAlnFormat::load(IOAdapter* io, QList<GObject*>& objects, const QVar
     }
     U2AlphabetUtils::assignAlphabet(al);
     CHECK_EXT(al.getAlphabet()!=NULL, os.setError( ClustalWAlnFormat::tr("Alphabet is unknown")), );
+
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+    CHECK_OP(os, );
     
-    MAlignmentObject* obj = new MAlignmentObject(al);
+    MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
     objects.append(obj);
 }
 
 Document* ClustalWAlnFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
     QList<GObject*> objects;
-    load(io, objects, fs, os);
+    load(io, dbiRef, objects, fs, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);    
     assert(objects.size() == 1);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);

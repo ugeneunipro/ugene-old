@@ -60,14 +60,15 @@ class U2CORE_EXPORT MAlignmentObject : public GObject {
     Q_OBJECT
 public:
 
-    explicit MAlignmentObject(const MAlignment& a, const QVariantMap& hintsMap = QVariantMap())
-        : GObject(GObjectTypes::MULTIPLE_ALIGNMENT, a.getName(), hintsMap), msa(a), memento(new MSAMemento){};
+    explicit MAlignmentObject(const QString& name, const U2EntityRef& msaRef, const QVariantMap& hintsMap = QVariantMap());
 
     ~MAlignmentObject();
 
-    const MAlignment& getMAlignment() const {return msa;}
+    MAlignment getMAlignment() const;
 
-    char charAt(int seqNum, int pos) const {return msa.charAt(seqNum, pos);}
+    void setMAlignment(const MAlignment& ma, const QVariantMap& hints = QVariantMap());
+
+    char charAt(int seqNum, int pos) const;
 
     bool isRegionEmpty(int x, int y, int width, int height) const;
 
@@ -93,9 +94,7 @@ public:
 
     void crop(U2Region window, const QSet<QString>& rowNames);
 
-    void setMAlignment(const MAlignment& ma, const QVariantMap& hints = QVariantMap());
-
-    DNAAlphabet* getAlphabet() const { return msa.getAlphabet(); }
+    DNAAlphabet* getAlphabet() const;
 
     virtual void setGObjectName(const QString& newName);
 
@@ -103,13 +102,15 @@ public:
 
     bool shiftRegion( int startPos, int startRow, int nBases, int nRows, int shift);
 
-    int getLength() const {return msa.getLength();}
+    qint64 getLength() const;
+
+    qint64 getNumRows() const;
 
     void deleteGapsByAbsoluteVal(int val);
     
     void deleteAllGapColumn();
 
-    const MAlignmentRow& getRow(int row) const { return msa.getRow(row);};
+    const MAlignmentRow& getRow(int row) const;
 
     void saveState();
 
@@ -117,9 +118,10 @@ public:
 signals:
     void si_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
     void si_completeStateChanged(bool complete);
-protected:
-    MAlignment msa;
-    MSAMemento* memento;
+
+private:
+    MAlignment cachedMAlignment;
+    MSAMemento*     memento;
 };
 
 

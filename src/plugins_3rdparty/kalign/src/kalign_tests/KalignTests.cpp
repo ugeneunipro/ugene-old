@@ -35,6 +35,7 @@
 #include <U2Core/IOAdapterUtils.h>
 
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
 
@@ -142,12 +143,15 @@ QList<Task*> Kalign_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
-        const MAlignment &mailgn = dna_to_ma(list);
+        const MAlignment &malign = dna_to_ma(list);
         if(hasError()) {
             return res;
         }
 
-        ma1 = new MAlignmentObject(mailgn);
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
+        CHECK_OP(stateInfo, res);
+
+        ma1 = new MAlignmentObject(malign.getName(), msaRef);
 
         if(ma1 == NULL){
             stateInfo.setError(  QString("can't convert dna sequences to MAlignment") );
@@ -184,12 +188,15 @@ QList<Task*> Kalign_Load_Align_Compare_Task::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
-        const MAlignment &mailgn = dna_to_ma(list);
+        const MAlignment &malign = dna_to_ma(list);
         if(hasError()) {
             return res;
         }
 
-        ma2 = new MAlignmentObject(mailgn);
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
+        CHECK_OP(stateInfo, res);
+
+        ma2 = new MAlignmentObject(malign.getName(), msaRef);
 
         if(ma2 == NULL){
             stateInfo.setError(  QString("can't convert dna sequences to MAlignment") );
@@ -391,12 +398,15 @@ QList<Task*> GTest_Kalign_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
-        const MAlignment &mailgn = dna_to_ma(list);
+        const MAlignment &malign = dna_to_ma(list);
         if(hasError()) {
             return res;
         }
 
-        ma1 = new MAlignmentObject(mailgn);
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
+        CHECK_OP(stateInfo, res);
+
+        ma1 = new MAlignmentObject(malign.getName(), msaRef);
 
         if(ma1 == NULL){
             stateInfo.setError(  QString("can't convert dna sequences to MAlignment") );
@@ -433,12 +443,15 @@ QList<Task*> GTest_Kalign_Load_Align_QScore::onSubTaskFinished(Task* subTask) {
             return res;
         }
 
-        const MAlignment &mailgn = dna_to_ma(list);
+        const MAlignment &malign = dna_to_ma(list);
         if(hasError()) {
             return res;
         }
 
-        ma2 = new MAlignmentObject(mailgn);
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), malign, stateInfo);
+        CHECK_OP(stateInfo, res);
+
+        ma2 = new MAlignmentObject(malign.getName(), msaRef);
 
         if(ma2 == NULL){
             stateInfo.setError(  QString("can't convert dna sequences to MAlignment") );

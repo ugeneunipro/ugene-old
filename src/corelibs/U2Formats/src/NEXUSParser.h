@@ -67,8 +67,8 @@ class NEXUSParser
 // NEXUS File format parser
 {
 public:
-    NEXUSParser (IOAdapter *io_, U2OpStatus &ti_)
-        : io(io_), ti(ti_), tz(io)
+    NEXUSParser (IOAdapter *io_, const U2DbiRef& dbiRef_, U2OpStatus &ti_)
+        : io(io_), dbiRef(dbiRef_), ti(ti_), tz(io)
     {
         assert(io_ && "IO must exist");
     }
@@ -114,6 +114,7 @@ private:
 
 private:
     IOAdapter *io;
+    const U2DbiRef& dbiRef;
     U2OpStatus &ti;
     Tokenizer tz;
 

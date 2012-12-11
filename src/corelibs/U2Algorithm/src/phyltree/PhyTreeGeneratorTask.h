@@ -53,7 +53,7 @@ public:
     void run(){};
     ReportResult report();
 private:
-    const MAlignment&           inputMA;
+    MAlignment                  inputMA;
     PhyTree                     result;
     CreatePhyTreeSettings       settings;
     PhyTreeGeneratorTask*       task;

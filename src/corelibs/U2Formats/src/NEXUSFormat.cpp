@@ -25,6 +25,7 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/TextUtils.h>
@@ -451,7 +452,11 @@ bool NEXUSParser::readDataContents(Context &ctx) {
                 return false;
             }
 
-            addObject(new MAlignmentObject(ma));
+            U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, ma, ti);
+            CHECK_OP(ti, false);
+
+            MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
+            addObject(obj);
         } else if (cmd == END) {
             break;
         } else {
@@ -662,7 +667,7 @@ void NEXUSParser::addObject(GObject *obj) {
     objects.append(obj);
 }
 
-QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, U2OpStatus &ti) {
+QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, const U2DbiRef& dbiRef, U2OpStatus &ti) {
     assert(io && "io must exist");
 
     const int HEADER_LEN = 6;
@@ -674,7 +679,7 @@ QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, U2OpStatus &ti) {
         return QList<GObject*>();
     }
 
-    NEXUSParser parser(io, ti);
+    NEXUSParser parser(io, dbiRef, ti);
     QList<GObject*> objects = parser.loadObjects();
     
     if (parser.hasError()) {
@@ -689,7 +694,7 @@ QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, U2OpStatus &ti) {
 Document* NEXUSFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     assert(io && "IO must exist");
 
-    QList<GObject*> objects = loadObjects(io, os);
+    QList<GObject*> objects = loadObjects(io, dbiRef, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     
     Document *d = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);

@@ -469,11 +469,11 @@ QWidget* MSAEditor::createWidget() {
 }
 
 int MSAEditor::getAlignmentLen() const {
-    return msaObject->getMAlignment().getLength();
+    return msaObject->getLength();
 }
 
 int MSAEditor::getNumSequences() const {
-    return msaObject->getMAlignment().getNumRows();
+    return msaObject->getNumRows();
 }
 
 void MSAEditor::sl_onContextMenuRequested(const QPoint & pos) {

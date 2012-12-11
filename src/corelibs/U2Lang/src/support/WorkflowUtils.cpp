@@ -42,6 +42,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/StringAdapter.h>
@@ -666,7 +667,15 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, Workf
             data2text(context, BaseDocumentFormats::PLAIN_GENBANK, obj, text);
         } else if (hasAlignmentData) {
             al = data.value<MAlignment>();
-            MAlignmentObject *obj = new MAlignmentObject(al);
+            U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
+
+            U2OpStatus2Log os;
+            U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+            SAFE_POINT_OP(os, );
+
+            MAlignmentObject *obj = new MAlignmentObject(al.getName(), msaRef);
+            SAFE_POINT(NULL != obj, "NULL Msa object!",);
+
             data2text(context, BaseDocumentFormats::CLUSTAL_ALN, obj, text);
         } else {
             text += "Nothing to print";

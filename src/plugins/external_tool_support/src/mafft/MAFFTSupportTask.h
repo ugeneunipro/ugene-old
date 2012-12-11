@@ -22,16 +22,16 @@
 #ifndef _U2_MAFFT_SUPPORT_TASK_H
 #define _U2_MAFFT_SUPPORT_TASK_H
 
-#include <U2Core/Task.h>
-#include <U2Core/IOAdapter.h>
-
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
 #include "utils/ExportTasks.h"
-
-#include <U2Core/MAlignmentObject.h>
-
 #include "ExternalToolRunTask.h"
+
+#include <U2Core/IOAdapter.h>
+#include <U2Core/GObjectReference.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/Task.h>
+
 
 namespace U2 {
 
@@ -63,7 +63,7 @@ public:
 class MAFFTSupportTask : public Task {
     Q_OBJECT
 public:
-    MAFFTSupportTask(MAlignmentObject* _mAObject, const MAFFTSupportTaskSettings& settings);
+    MAFFTSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const MAFFTSupportTaskSettings& settings);
     void prepare();
     Task::ReportResult report();
 
@@ -71,8 +71,8 @@ public:
 
     MAlignment                  resultMA;
 private:
-    MAlignmentObject*           mAObject;
-    Document*                   currentDocument;
+    MAlignment                  inputMsa;
+    GObjectReference            objRef;
     Document*                   newDocument;
     QString                     url;
     MAFFTLogParser*             logParser;
@@ -82,6 +82,8 @@ private:
     LoadDocumentTask*           loadTmpDocumentTask;
     MAFFTSupportTaskSettings    settings;
 };
+
+class MAlignmentObject;
 
 class MAFFTWithExtFileSpecifySupportTask : public Task {
     Q_OBJECT

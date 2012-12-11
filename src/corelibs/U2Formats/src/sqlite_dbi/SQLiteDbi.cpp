@@ -45,7 +45,7 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     db = new DbRef();
     objectDbi = new SQLiteObjectDbi(this);
     sequenceDbi = new SQLiteSequenceDbi(this);
-    msaDbi = new SQLiteMsaRDbi(this);
+    msaDbi = new SQLiteMsaDbi(this);
     assemblyDbi = new SQLiteAssemblyDbi(this);
     crossDbi = new SQLiteCrossDatabaseReferenceDbi(this);
     attributeDbi = new SQLiteAttributeDbi(this);
@@ -78,6 +78,10 @@ U2SequenceDbi* SQLiteDbi::getSequenceDbi()  {
     return sequenceDbi;
 }
 
+U2MsaDbi* SQLiteDbi::getMsaDbi() {
+    return msaDbi;
+}
+
 U2AssemblyDbi* SQLiteDbi::getAssemblyDbi()  {
     return assemblyDbi;
 }
@@ -101,6 +105,14 @@ U2FeatureDbi* SQLiteDbi::getFeatureDbi() {
 
 SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
     return static_cast<SQLiteObjectDbi*>(objectDbi);
+}
+
+SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() {
+    return objectDbi;
+}
+
+SQLiteMsaDbi* SQLiteDbi::getSQLiteMsaDbi() {
+    return msaDbi;
 }
 
 

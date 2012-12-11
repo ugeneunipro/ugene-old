@@ -82,7 +82,7 @@ void MSAEditorBaseOffsetCache::updateCacheSize() {
     if (objVersion == globVersion) {
         return;
     }
-    int nSeq = aliObj->getMAlignment().getNumRows();
+    int nSeq = aliObj->getNumRows();
     cache.resize(nSeq);
     globVersion = objVersion;
 }

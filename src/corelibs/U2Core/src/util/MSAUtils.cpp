@@ -23,7 +23,9 @@
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObject.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2OpStatus.h>
@@ -152,13 +154,21 @@ int MSAUtils::getRowIndexByName( const MAlignment& ma, const QString& name )
 }
 
 MAlignmentObject* MSAUtils::seqObjs2msaObj(const QList<GObject*>& objects, U2OpStatus& os, bool useGenbankHeader){
+    if (objects.isEmpty()) {
+        return NULL;
+    }    
     MAlignment ma = seq2ma(objects, os, useGenbankHeader);
+    const U2DbiRef& dbiRef = objects.first()->getEntityRef().dbiRef;
 
     if (ma.isEmpty()) {
         return NULL;
     }
     ma.trim();
-    return new MAlignmentObject(ma);    
+    
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, ma, os);
+    CHECK_OP(os, NULL);
+
+    return new MAlignmentObject(ma.getName(), msaRef);
 }
 
 MAlignmentObject* MSAUtils::seqDocs2msaObj(QList<Document*> docs, U2OpStatus& os, bool useGenbankHeader){

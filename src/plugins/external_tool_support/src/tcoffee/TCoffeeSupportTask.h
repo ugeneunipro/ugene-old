@@ -22,16 +22,18 @@
 #ifndef _U2_TCOFFEE_SUPPORT_TASK_H
 #define _U2_TCOFFEE_SUPPORT_TASK_H
 
-#include <U2Core/Task.h>
-#include <U2Core/IOAdapter.h>
 
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
 #include "utils/ExportTasks.h"
-
-#include <U2Core/MAlignmentObject.h>
-
 #include "ExternalToolRunTask.h"
+
+#include <U2Core/IOAdapter.h>
+#include <U2Core/GObjectReference.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/Task.h>
+
+
 
 namespace U2 {
 
@@ -52,7 +54,7 @@ public:
 class TCoffeeSupportTask : public Task {
     Q_OBJECT
 public:
-    TCoffeeSupportTask(MAlignmentObject* _mAObject, const TCoffeeSupportTaskSettings& settings);
+    TCoffeeSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const TCoffeeSupportTaskSettings& _settings);
     void prepare();
     Task::ReportResult report();
 
@@ -60,8 +62,8 @@ public:
 
     MAlignment                  resultMA;
 private:
-    MAlignmentObject*           mAObject;
-    Document*                   currentDocument;
+    MAlignment                  inputMsa;
+    GObjectReference            objRef;
     Document*                   newDocument;
     QString                     url;
     TCoffeeLogParser*           logParser;
@@ -71,6 +73,8 @@ private:
     LoadDocumentTask*           loadTmpDocumentTask;
     TCoffeeSupportTaskSettings  settings;
 };
+
+class MAlignmentObject;
 
 class TCoffeeWithExtFileSpecifySupportTask : public Task {
     Q_OBJECT

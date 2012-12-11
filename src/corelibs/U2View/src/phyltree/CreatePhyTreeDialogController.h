@@ -1,10 +1,13 @@
 #ifndef _CREATEPHYTREEDIALOGCONTROLLER_H_
 #define _CREATEPHYTREEDIALOGCONTROLLER_H_
 
-#include <U2Core/global.h>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 
+#include <U2Core/global.h>
+#include <U2Core/MAlignment.h>
+
 #include <QtGui/QDialog>
+
 
 class Ui_CreatePhyTree;
 class QWidget;
@@ -12,7 +15,6 @@ class QWidget;
 namespace U2{
 
 class MAlignmentObject;
-class MAlignment;
 class CreatePhyTreeWidget;
 
 class U2VIEW_EXPORT CreatePhyTreeDialogController : public QDialog {
@@ -33,7 +35,7 @@ private slots:
     
 private:
     int rightMargin;
-    const MAlignment& msa;
+    MAlignment msa;
     CreatePhyTreeSettings& settings;
     QList<CreatePhyTreeWidget*> childWidgets;
     Ui_CreatePhyTree* ui;

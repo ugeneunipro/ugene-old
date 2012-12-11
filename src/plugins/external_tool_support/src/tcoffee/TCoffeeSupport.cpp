@@ -199,7 +199,7 @@ void TCoffeeSupportContext::sl_align_with_TCoffee() {
         return;
     }
 
-    TCoffeeSupportTask* tCoffeeSupportTask=new TCoffeeSupportTask(obj, settings);
+    TCoffeeSupportTask* tCoffeeSupportTask = new TCoffeeSupportTask(obj->getMAlignment(), GObjectReference(obj), settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(tCoffeeSupportTask);
 
 }

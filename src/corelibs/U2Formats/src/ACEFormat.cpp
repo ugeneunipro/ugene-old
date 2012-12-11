@@ -24,6 +24,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/MSAUtils.h>
@@ -387,7 +388,7 @@ static inline void parseRDandQATag(U2::IOAdapter *io, U2OpStatus &ti, char* buff
     
 }
 
-void ACEFormat::load(IOAdapter *io, QList<GObject*> &objects, U2OpStatus &os) {
+void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &objects, U2OpStatus &os) {
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
@@ -485,7 +486,11 @@ void ACEFormat::load(IOAdapter *io, QList<GObject*> &objects, U2OpStatus &os) {
         }
         U2AlphabetUtils::assignAlphabet(al);
         CHECK_EXT(al.getAlphabet() != NULL, ACEFormat::tr("Alphabet unknown"), );
-        MAlignmentObject* obj = new MAlignmentObject(al);
+
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+        CHECK_OP(os, );
+
+        MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
         objects.append(obj);
     }
 }
@@ -501,7 +506,7 @@ FormatCheckResult ACEFormat::checkRawData(const QByteArray& rawData, const GUrl&
 
 Document* ACEFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
     QList <GObject*> objs;
-    load(io, objs, os);
+    load(io, dbiRef, objs, os);
 
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
     

@@ -94,7 +94,7 @@ void MSAEditorNameList::updateActions() {
     
     MAlignmentObject* maObj = editor->getMSAObject();
     if (maObj){
-        removeCurrentSequenceAction->setEnabled(!maObj->isStateLocked() && maObj->getMAlignment().getNumRows() > 1);
+        removeCurrentSequenceAction->setEnabled(!maObj->isStateLocked() && maObj->getNumRows() > 1);
         editSequenceNameAction->setEnabled(!maObj->isStateLocked());
     }
 }
@@ -537,19 +537,25 @@ void MSAEditorNameList::drawContent(QPainter& p) {
     if (labels) {
         labels->setObjectName("");
     }
+
+    MAlignmentObject* msaObj = editor->getMSAObject();
+    SAFE_POINT(NULL != msaObj, "NULL Msa Object in MSAEditorNameList::drawContent!",);
+
+    MAlignment al = msaObj->getMAlignment();
+
     if (ui->isCollapsibleMode()) {
         MSACollapsibleItemModel* m = ui->getCollapseModel();
         QVector<U2Region> range;
         m->getVisibleRows(startSeq, lastSeq, range);
         U2Region yRange = ui->seqArea->getSequenceYRange(startSeq, true);
-        int numRows = editor->getNumSequences();
+        int numRows = al.getNumRows();
 
         int pos = startSeq;
         foreach(const U2Region& r, range) {
             int end = qMin((qint64)numRows, r.endPos());
             for (int s = r.startPos; s < end; s++) {
                 bool isSelected = isRowInSelection(pos);
-                drawSequenceItem(p, s, isSelected, yRange, pos);
+                drawSequenceItem(p, s, al.getRow(s).getName(), isSelected, yRange, pos);
                 yRange.startPos += ui->editor->getRowHeight();
                 pos++;
             }
@@ -557,38 +563,27 @@ void MSAEditorNameList::drawContent(QPainter& p) {
     } else {
         for (int s = startSeq; s <= lastSeq; s++) {
             bool isSelected = isRowInSelection(s);
-            drawSequenceItem(p, s, isSelected);
+            drawSequenceItem(p, s, al.getRow(s).getName(), isSelected);
         }
     }
 }
 
-void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, bool selected) {
+void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& name, bool selected) {
     p.setPen(Qt::black);
     p.setFont(getFont(selected));
 
     U2Region yRange = ui->seqArea->getSequenceYRange(s, true);
     QRect textRect = calculateTextRect(yRange, selected);
 
-    MAlignmentObject* maObj = editor->getMSAObject();
-    if (maObj == NULL)
-        return;
-
-    const MAlignment& ma = maObj->getMAlignment();
-    const MAlignmentRow& row = ma.getRow(s);
-    p.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, row.getName());
+    p.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, name);
     if (labels) {
-        labels->setObjectName(labels->objectName() + "|" + row.getName());
+        labels->setObjectName(labels->objectName() + "|" + name);
     }
 }
 
-void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, bool selected, const U2Region& yRange, int pos) {
+void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& name, bool selected, const U2Region& yRange, int pos) {
     p.setPen(Qt::black);
     p.setFont(getFont(selected));
-
-    MAlignmentObject* maObj = editor->getMSAObject();
-
-    const MAlignment& ma = maObj->getMAlignment();
-    const MAlignmentRow& row = ma.getRow(s);
 
     QRect textRect = calculateTextRect(yRange, selected);
     
@@ -623,9 +618,9 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, bool selected, cons
     }
 
     textRect = QRect(textRect.left() + CROSS_SIZE*2 + delta, textRect.top(), textRect.width() - ((5*CROSS_SIZE)/2), textRect.height());
-    style()->drawItemText(&p, textRect, Qt::AlignVCenter | Qt::AlignLeft, branchOption.palette, true, row.getName());
+    style()->drawItemText(&p, textRect, Qt::AlignVCenter | Qt::AlignLeft, branchOption.palette, true, name);
     if (labels) {
-        labels->setObjectName(labels->objectName() + "|" + row.getName());
+        labels->setObjectName(labels->objectName() + "|" + name);
     }
 }
 

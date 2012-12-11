@@ -39,12 +39,14 @@ public:
     /** Reads Msa objects by id */
     virtual U2Msa getMsaObject(const U2DataId& id, U2OpStatus& os) = 0;
 
+    /** Updates the Msa object */
+    virtual void updateMsaObject(U2Msa& msa, U2OpStatus& os) = 0;
+
     /** Returns number of sequences in MSA*/
     virtual qint64 getSequencesCount(const U2DataId& msaId, U2OpStatus& os) = 0;
 
-    /** Returns region of Msa rows. Total number of MSA rows is equal to number of sequences in MSA.
-    The 'firstRow' and 'numRows' must specify valid subset of rows in the alignment. */
-    virtual QList<U2MsaRow> getRows(const U2DataId& msaId, qint32 firstRow, qint32 numRows, U2OpStatus& os) = 0;
+    /** Returns all MSA rows */
+    virtual QList<U2MsaRow> getRows(const U2DataId& msaId, U2OpStatus& os) = 0;
     
     /** 
         Return number of sequences in alignment that intersect given coord.
@@ -85,17 +87,17 @@ public:
     virtual void createMsaObject(U2Msa& msa, const QString& folder, U2OpStatus& os) = 0;
     
     /** 
-        Removes sequences from MSA
+        Removes rows from MSA
         Automatically removes affected sequences that are not anymore located in some folder nor Msa object
         Requires: U2DbiFeature_WriteMsa feature support
     */
-    virtual void removeSequences(U2Msa& msa, const QList<U2DataId> sequenceIds, U2OpStatus& os) = 0;
+    virtual void removeRows(U2Msa& msa, const QList<U2MsaRow>& rows, U2OpStatus& os) = 0;
 
     /**  
         Adds sequences to MSA 
         Requires: U2DbiFeature_WriteMsa feature support
     */
-    virtual void addSequences(U2Msa& msa, const QList<U2MsaRow>& rows, U2OpStatus& os) = 0;
+    virtual void addRows(U2Msa& msa, QList<U2MsaRow>& rows, U2OpStatus& os) = 0;
 
 };
 

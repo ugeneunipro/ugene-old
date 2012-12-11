@@ -13,6 +13,7 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 
@@ -147,7 +148,13 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
     }else{
         MAlignment msa = MSAUtils::seq2ma(negObjects, stateInfo);
         CHECK_OP(stateInfo, );
-        negativeDoc->addObject(new MAlignmentObject(msa));
+
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(negativeDoc->getDbiRef(), msa, stateInfo);
+        CHECK_OP(stateInfo, );
+
+        MAlignmentObject* obj = new MAlignmentObject(msa.getName(), msaRef);
+
+        negativeDoc->addObject(obj);
     }
 
     if (negativeDoc) {

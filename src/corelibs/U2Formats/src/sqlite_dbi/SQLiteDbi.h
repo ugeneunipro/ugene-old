@@ -32,7 +32,7 @@ namespace U2 {
 
 class SQLiteObjectDbi;
 class SQLiteSequenceDbi;
-class SQLiteMsaRDbi;
+class SQLiteMsaDbi;
 class SQLiteAssemblyDbi;
 class SQLiteCrossDatabaseReferenceDbi;
 class SQLiteAttributeDbi;
@@ -76,7 +76,7 @@ enum SQLiteDbiObjectRank {
 #define SQLITE_DBI_VALUE_MEMORY_DB_URL ":memory:"
 
 
-class SQLiteDbi : public U2AbstractDbi {
+class U2FORMATS_EXPORT SQLiteDbi : public U2AbstractDbi {
 public:
     SQLiteDbi();
     ~SQLiteDbi();
@@ -112,6 +112,8 @@ public:
 
     virtual U2SequenceDbi* getSequenceDbi();
 
+    virtual U2MsaDbi* getMsaDbi();
+
     virtual U2AssemblyDbi* getAssemblyDbi();
     
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi();
@@ -125,6 +127,10 @@ public:
     DbRef*    getDbRef() const {return db;}
 
     SQLiteObjectDbi* getSQLiteObjectDbi() const;
+
+    SQLiteObjectDbi* getSQLiteObjectDbi();
+
+    SQLiteMsaDbi* getSQLiteMsaDbi();
 
     /** Returns properties used to initialized the database */
     virtual QHash<QString, QString> getInitProperties() const {return initProperties;}
@@ -150,7 +156,7 @@ private:
 
     SQLiteObjectDbi*                    objectDbi;
     SQLiteSequenceDbi*                  sequenceDbi;
-    SQLiteMsaRDbi*                      msaDbi;
+    SQLiteMsaDbi*                       msaDbi;
     SQLiteAssemblyDbi*                  assemblyDbi;
     SQLiteCrossDatabaseReferenceDbi*    crossDbi;
     SQLiteAttributeDbi*                 attributeDbi;
@@ -162,7 +168,7 @@ private:
     friend class SQLiteCrossDatabaseReferenceDbi;
     friend class SQLiteSequenceDbi;
     friend class SQLiteAssemblyDbi;
-    friend class SQLiteMsaRDbi;
+    friend class SQLiteMsaDbi;
     friend class SQLiteAttributeDbi;
 };
 

@@ -25,9 +25,11 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2core/U2OpStatusUtils.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -126,41 +128,32 @@ QList<Task*> SimpleInOutWorkflowTask::onSubTaskFinished(Task* subTask) {
 }
 
 //////////////////////////////////////////////////////////////////////////
-// RunSimpleMSAWorkflow
-
-SimpleMSAWorkflowTask::SimpleMSAWorkflowTask(const QString& taskName, const MAlignment& ma, const SimpleMSAWorkflowTaskConfig& _conf) 
-: Task(taskName, TaskFlags_NR_FOSCOE), conf(_conf)
+// RunSimpleMSAWorkflow4GObject
+SimpleMSAWorkflow4GObjectTask::SimpleMSAWorkflow4GObjectTask(const QString& taskName, MAlignmentObject* _maObj, const SimpleMSAWorkflowTaskConfig& _conf) 
+: Task(taskName, TaskFlags_NR_FOSCOE),
+  conf(_conf),
+  obj(_maObj),
+  lock(NULL)
 {
+    SAFE_POINT(NULL != obj, "NULL MAlignmentObject!",);
+
+    U2OpStatus2Log os;
+    MAlignment al = obj->getMAlignment();
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(obj->getEntityRef().dbiRef, al, os);
+    SAFE_POINT_OP(os,);
+
     SimpleInOutWorkflowTaskConfig sioConf;
-    sioConf.objects << new MAlignmentObject(ma);
+    sioConf.objects << new MAlignmentObject(al.getName(), msaRef);
     sioConf.inFormat = BaseDocumentFormats::FASTA;
     sioConf.outFormat = BaseDocumentFormats::FASTA;
     sioConf.outDocHints = conf.resultDocHints;
     sioConf.outDocHints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
     sioConf.extraArgs = conf.schemaArgs;
     sioConf.schemaName = conf.schemaName;
-    
+
     runWorkflowTask = new SimpleInOutWorkflowTask(sioConf);
     addSubTask(runWorkflowTask);
-}
 
-MAlignment SimpleMSAWorkflowTask::getResult() {
-    MAlignment res;
-    CHECK_OP(stateInfo, res);
-    
-    Document* d = runWorkflowTask->getDocument();
-    CHECK_EXT(d!=NULL, setError(tr("Result document not found!")), res);
-    CHECK_EXT(d->getObjects().size() == 1, setError(tr("Result document content not matched! %1").arg(d->getURLString())), res);
-    MAlignmentObject* maObj = qobject_cast<MAlignmentObject*>(d->getObjects().first());
-    CHECK_EXT(maObj!=NULL, setError(tr("Result document contains no MSA! %1").arg(d->getURLString())), res);
-    return maObj->getMAlignment();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// RunSimpleMSAWorkflow4GObject
-SimpleMSAWorkflow4GObjectTask::SimpleMSAWorkflow4GObjectTask(const QString& taskName, MAlignmentObject* _maObj, const SimpleMSAWorkflowTaskConfig& conf) 
-: SimpleMSAWorkflowTask(taskName, _maObj->getMAlignment(), conf), obj(_maObj), lock(NULL)
-{
     setUseDescriptionFromSubtask(true);
     setVerboseLogMode(true);
     docName = obj->getDocument()->getName();
@@ -192,6 +185,18 @@ Task::ReportResult SimpleMSAWorkflow4GObjectTask::report() {
 
     obj->setMAlignment(getResult());
     return ReportResult_Finished;
+}
+
+MAlignment SimpleMSAWorkflow4GObjectTask::getResult() {
+    MAlignment res;
+    CHECK_OP(stateInfo, res);
+
+    Document* d = runWorkflowTask->getDocument();
+    CHECK_EXT(d!=NULL, setError(tr("Result document not found!")), res);
+    CHECK_EXT(d->getObjects().size() == 1, setError(tr("Result document content not matched! %1").arg(d->getURLString())), res);
+    MAlignmentObject* maObj = qobject_cast<MAlignmentObject*>(d->getObjects().first());
+    CHECK_EXT(maObj!=NULL, setError(tr("Result document contains no MSA! %1").arg(d->getURLString())), res);
+    return maObj->getMAlignment();
 }
 
 

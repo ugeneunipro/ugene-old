@@ -88,8 +88,8 @@ private:
     void moveSelectedRegion( int shift );
     void drawAll();
     void drawSelection(QPainter& p);
-    void drawSequenceItem(QPainter& p, int n, bool selected);
-    void drawSequenceItem(QPainter& p, int s, bool selected, const U2Region& yRange, int pos);
+    void drawSequenceItem(QPainter& p, int s, const QString& name, bool selected);
+    void drawSequenceItem(QPainter& p, int s, const QString& name, bool selected, const U2Region& yRange, int pos);
     void drawFocus(QPainter& p);
     QFont getFont(bool selected) const;
     QRect calculateTextRect(const U2Region& yRange, bool selected) const;

@@ -12,6 +12,10 @@ SequenceDbiUnitTests
 + updateSequenceData
 + updateHugeSequenceData
 - updateSequencesData
+MsaDbiUnitTests
++ createMsaObject
++ addRows
++ removeRows
 AssemblyDbiUnitTests
 + getAssemblyObject
 + getAssemblyObjectInvalid

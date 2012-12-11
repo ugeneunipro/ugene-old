@@ -39,7 +39,6 @@ namespace U2 {
 class StateLock;
 class MAlignmentObject;
 class LoadDocumentTask;
-class SimpleMSAWorkflowTask;
 
 class KalignContext : public TLSContext {
 public:

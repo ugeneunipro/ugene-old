@@ -43,7 +43,7 @@ protected:
 
 private:
     QString formatName;
-    void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& ti);
+    void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, U2OpStatus& ti);
     static void skipWhites(IOAdapter *io, QByteArray &line);
     static void readHeader(IOAdapter* io, QByteArray &line, U2OpStatus &ti);
     static void readTitle(IOAdapter* io, QByteArray &line, U2OpStatus &ti);

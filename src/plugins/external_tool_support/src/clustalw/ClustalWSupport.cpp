@@ -200,7 +200,7 @@ void ClustalWSupportContext::sl_align_with_ClustalW() {
         return;
     }
 
-    ClustalWSupportTask* clustalWSupportTask=new ClustalWSupportTask(obj, settings);
+    ClustalWSupportTask* clustalWSupportTask = new ClustalWSupportTask(obj->getMAlignment(), GObjectReference(obj), settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(clustalWSupportTask);
 }
 

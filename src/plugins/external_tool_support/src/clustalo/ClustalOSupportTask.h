@@ -22,16 +22,17 @@
 #ifndef _U2_CLUSTALO_SUPPORT_TASK_H
 #define _U2_CLUSTALO_SUPPORT_TASK_H
 
-#include <U2Core/Task.h>
-#include <U2Core/IOAdapter.h>
-
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
 #include "utils/ExportTasks.h"
-
-#include <U2Core/MAlignmentObject.h>
-
 #include "ExternalToolRunTask.h"
+
+#include <U2Core/IOAdapter.h>
+#include <U2Core/GObjectReference.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/Task.h>
+
 
 namespace U2 {
 
@@ -95,7 +96,7 @@ public:
 class ClustalOSupportTask : public Task {
     Q_OBJECT
 public:
-    ClustalOSupportTask(MAlignmentObject* _mAObject, const ClustalOSupportTaskSettings& settings);
+    ClustalOSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const ClustalOSupportTaskSettings& settings);
     void prepare();
     Task::ReportResult report();
 
@@ -103,8 +104,8 @@ public:
 
     MAlignment                  resultMA;
 private:
-    MAlignmentObject*           mAObject;
-    Document*                   currentDocument;
+    MAlignment                  inputMsa;
+    GObjectReference            objRef;
     Document*                   newDocument;
     QString                     url;
     ClustalOLogParser*          logParser;

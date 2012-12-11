@@ -185,10 +185,9 @@ void MAFFTSupportContext::sl_align_with_MAFFT() {
     MAFFTSupportAction* action = qobject_cast<MAFFTSupportAction*>(sender());
     assert(action!=NULL);
     MSAEditor* ed = action->getMSAEditor();
-    MAlignmentObject* obj = ed->getMSAObject();
-    if (obj == NULL)
-            return;
-    assert(!obj->isStateLocked());
+    MAlignmentObject* alignmentObject = ed->getMSAObject();
+    SAFE_POINT(NULL != alignmentObject, "Alignment object is NULL during aligning with MAFFT!",);
+    SAFE_POINT(!alignmentObject->isStateLocked(), "Alignment object is locked during aligning with MAFFT!",);
 
     MAFFTSupportTaskSettings settings;
     MAFFTSupportRunDialog mAFFTRunDialog(settings, AppContext::getMainWindow()->getQMainWindow());
@@ -196,9 +195,8 @@ void MAFFTSupportContext::sl_align_with_MAFFT() {
         return;
     }
 
-    MAFFTSupportTask* mAFFTSupportTask=new MAFFTSupportTask(obj, settings);
+    MAFFTSupportTask* mAFFTSupportTask = new MAFFTSupportTask(alignmentObject->getMAlignment(), GObjectReference(alignmentObject), settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(mAFFTSupportTask);
-
 }
 
 }//namespace

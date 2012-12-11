@@ -35,6 +35,7 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -97,7 +98,12 @@ void ExportAlignmentTask::run() {
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(fileName));
     resultDocument = f->createNewLoadedDocument(iof, fileName, stateInfo);
     CHECK_OP(stateInfo, );
-    resultDocument->addObject(new MAlignmentObject(ma));
+
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(resultDocument->getDbiRef(), ma, stateInfo);
+    CHECK_OP(stateInfo, );
+
+    MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
+    resultDocument->addObject(obj);
     f->storeDocument(resultDocument, stateInfo);
 }
 
@@ -182,7 +188,12 @@ void ExportMSA2MSATask::run() {
     }
     MAlignment ma = MSAUtils::seq2ma(seqList, stateInfo);
     CHECK_OP(stateInfo, );
-    resultDocument->addObject(new MAlignmentObject(ma));
+
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(resultDocument->getDbiRef(), ma, stateInfo);
+    CHECK_OP(stateInfo, );
+
+    MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
+    resultDocument->addObject(obj);
     f->storeDocument(resultDocument, stateInfo);
 }
 

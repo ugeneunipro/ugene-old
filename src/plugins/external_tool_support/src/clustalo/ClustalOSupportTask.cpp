@@ -29,12 +29,16 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/MSAUtils.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AddDocumentTask.h>
+
 #include <U2Gui/OpenViewTask.h>
+
 
 namespace U2 {
 
@@ -47,19 +51,20 @@ void ClustalOSupportTaskSettings::reset() {
     numberOfProcessors=1;
 }
 
-ClustalOSupportTask::ClustalOSupportTask(MAlignmentObject* _mAObject, const ClustalOSupportTaskSettings& _settings) :
-        Task("Run ClustalO alignment task", TaskFlags_NR_FOSCOE),
-        mAObject(_mAObject), settings(_settings)
+ClustalOSupportTask::ClustalOSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const ClustalOSupportTaskSettings& _settings)
+    : Task("Run ClustalO alignment task", TaskFlags_NR_FOSCOE),
+      inputMsa(_inputMsa),
+      objRef(_objRef),
+      settings(_settings)
 {
     GCOUNTER( cvar, tvar, "ClustalOSupportTask" );
-    currentDocument = mAObject->getDocument();
     saveTemporaryDocumentTask=NULL;
     loadTemporyDocumentTask=NULL;
     clustalOTask=NULL;
     newDocument=NULL;
     logParser=NULL;
-    if (!mAObject->getAlphabet()->isAmino()){
-        stateInfo.setError(tr("Input sequences is non-protein sequences."));
+    if (!inputMsa.getAlphabet()->isAmino()) {
+        stateInfo.setError(tr("Amino acid sequences must be supplied as input!"));
         return;
     }
 }
@@ -94,7 +99,7 @@ void ClustalOSupportTask::prepare(){
         return;
     }
 
-    saveTemporaryDocumentTask = new SaveAlignmentTask(mAObject->getMAlignment(), url, BaseDocumentFormats::CLUSTAL_ALN);
+    saveTemporaryDocumentTask = new SaveAlignmentTask(inputMsa, url, BaseDocumentFormats::CLUSTAL_ALN);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveTemporaryDocumentTask);
 }
@@ -133,7 +138,8 @@ QList<Task*> ClustalOSupportTask::onSubTaskFinished(Task* subTask) {
         clustalOTask=new ExternalToolRunTask(CLUSTALO_TOOL_NAME,arguments, logParser);
         clustalOTask->setSubtaskProgressWeight(95);
         res.append(clustalOTask);
-    }else if(subTask==clustalOTask){
+    }
+    else if(subTask == clustalOTask){
         assert(logParser);
         delete logParser;
         if(!QFileInfo(outputUrl).exists()){
@@ -155,20 +161,37 @@ QList<Task*> ClustalOSupportTask::onSubTaskFinished(Task* subTask) {
                                      AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
         loadTemporyDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTemporyDocumentTask);
-    }else if(subTask==loadTemporyDocumentTask){
+    }
+    else if(subTask == loadTemporyDocumentTask){
         newDocument=loadTemporyDocumentTask->takeDocument();
         SAFE_POINT(newDocument!=NULL, QString("output document '%1' not loaded").arg(newDocument->getURLString()), res);
         SAFE_POINT(newDocument->getObjects().length()==1, QString("no objects in output document '%1'").arg(newDocument->getURLString()), res);
 
-        //move MAlignment from new alignment to old document
-        MAlignmentObject* newMAligmentObject=qobject_cast<MAlignmentObject*>(newDocument->getObjects().first());
+        // Get the result alignment
+        MAlignmentObject* newMAligmentObject = qobject_cast<MAlignmentObject*>(newDocument->getObjects().first());
         SAFE_POINT(newMAligmentObject!=NULL, "newDocument->getObjects().first() is not a MAlignmentObject", res);
 
         resultMA=newMAligmentObject->getMAlignment();
-        mAObject->setMAlignment(resultMA);
-        if(currentDocument != NULL){
-            currentDocument->setModified(true);
+
+        // If an alignment object has been specified, save the result to it
+        if (objRef.isValid()) {
+            GObject* obj = GObjectUtils::selectObjectByReference(objRef, UOF_LoadedOnly);
+            if (NULL != obj) {
+                MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
+                SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalO results!", res);
+
+                alObj->setMAlignment(resultMA);
+
+                Document* currentDocument = alObj->getDocument();
+                SAFE_POINT(NULL != currentDocument, "Document is NULL!", res);
+                currentDocument->setModified(true);
+            }
+            else {
+                algoLog.error(tr("Failed to apply the result of ClustalO: alignment object is not available!"));
+                return res;
+            }
         }
+
         algoLog.info(tr("ClustalO alignment successfully finished"));
         //new document deleted in destructor of LoadDocumentTask
     }
@@ -241,35 +264,33 @@ QList<Task*> ClustalOWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subT
     if (hasError() || isCanceled()) {
         return res;
     }
-    if (subTask == loadDocumentTask){
-        currentDocument=loadDocumentTask->takeDocument();
+    if (subTask == loadDocumentTask) {
+        currentDocument = loadDocumentTask->takeDocument();
         SAFE_POINT(currentDocument != NULL, QString("Failed loading document: %1").arg(loadDocumentTask->getURLString()), res);
         SAFE_POINT(currentDocument->getObjects().length() == 1, QString("Number of objects != 1 : %1").arg(loadDocumentTask->getURLString()), res);
+
         mAObject = qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
         SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
-        clustalOSupportTask=new ClustalOSupportTask(mAObject,settings);
+
+        // Launch the task, objRef is empty - the input document maybe not in project
+        clustalOSupportTask=new ClustalOSupportTask(mAObject->getMAlignment(), GObjectReference(), settings);
         res.append(clustalOSupportTask);
-    } else if (subTask == clustalOSupportTask) {
-        saveDocumentTask = new SaveDocumentTask(currentDocument, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.outputFilePath)),settings.outputFilePath);
+    }
+    else if (subTask == clustalOSupportTask) {
+        // Set the result alignment to the alignment object of the current document
+        mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
+        SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
+        mAObject->setMAlignment(clustalOSupportTask->resultMA);
+
+        // Save the current document
+        saveDocumentTask = new SaveDocumentTask(currentDocument,
+            AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.outputFilePath)),
+            settings.outputFilePath);
         res.append(saveDocumentTask);
-    } else if (subTask == saveDocumentTask) {
-        //Project* proj = AppContext::getProject();
-        //if (proj == NULL) {
-        //    res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURLString(), currentDocument->getGHintsMap()));
-        //} else {
-        //    Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
-        //    if (projDoc != NULL) {
-        //        projDoc->setLastUpdateTime();
-        //        res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
-        //    } else {
-        //        // Add document to project
-        //        res.append(new AddDocumentAndOpenViewTask(currentDocument));
-        //        cleanDoc = false;
-        //    }
-        //}
+    }
+    else if (subTask == saveDocumentTask) {
         Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(settings.outputFilePath);
         res << openTask;
-
     }
     return res;
 }

@@ -177,7 +177,7 @@ Task* ClustalOWorker::tick() {
         if( msa.isEmpty() ) {
             return new FailTask(tr("An empty MSA has been supplied to ClustalO."));
         }
-        Task* t = new ClustalOSupportTask(new MAlignmentObject(msa), cfg);
+        Task* t = new ClustalOSupportTask(msa, GObjectReference(), cfg);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {

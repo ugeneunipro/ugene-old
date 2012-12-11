@@ -28,6 +28,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
 #include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/SaveDocumentTask.h>
 
@@ -121,7 +122,11 @@ QString SmithWatermanReportCallbackMAImpl::report(const QList<SmithWatermanResul
         rows.append(patternSubsequence);
 
         MAlignment msa(newFileName, alphabet, rows);
-        MAlignmentObject * docObject = new MAlignmentObject(msa);
+
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(alignmentDoc->getDbiRef(), msa, stateInfo);
+        CHECK_OP(stateInfo, tr("Failed to create an alignment."));
+
+        MAlignmentObject * docObject = new MAlignmentObject(msa.getName(), msaRef);
         alignmentDoc->addObject(docObject);
         currentProject->addDocument(alignmentDoc);
         

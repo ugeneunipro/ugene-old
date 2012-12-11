@@ -21,6 +21,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/DNATranslation.h>
@@ -101,9 +102,15 @@ AlignInAminoFormTask::~AlignInAminoFormTask() {
 
 void AlignInAminoFormTask::prepare() {
     CHECK_EXT(maObj->getAlphabet()->isNucleic(), setError("AlignInAminoFormTask: Input alphabet it not nucleic!"), );
+
+    SAFE_POINT(NULL != maObj, "NULL maObj in AlignInAminoFormTask::prepare!",);
+    const MAlignment& msa = maObj->getMAlignment();
+    const U2DbiRef& dbiRef = maObj->getEntityRef().dbiRef;
+
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, msa, stateInfo);
+    CHECK_OP(stateInfo, );
     
-    
-    clonedObj = new MAlignmentObject(maObj->getMAlignment(), maObj->getGHintsMap());
+    clonedObj = new MAlignmentObject(msa.getName(), msaRef, maObj->getGHintsMap());
     alignTask->setMAObject(clonedObj);
     bufMA = clonedObj->getMAlignment();
     addSubTask(new TranslateMSA2AminoTask(clonedObj,traslId));

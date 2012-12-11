@@ -36,7 +36,6 @@ class StateLock;
 class MAlignmentObject;
 class LoadDocumentTask;
 class MuscleParallelTask;
-class SimpleMSAWorkflowTask;
 
 enum MuscleTaskOp {
     MuscleTaskOp_Align,

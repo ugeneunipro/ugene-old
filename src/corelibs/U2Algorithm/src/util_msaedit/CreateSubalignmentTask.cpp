@@ -26,6 +26,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -61,7 +62,13 @@ void CreateSubalignmentTask::prepare() {
     if (createCopy) {
         resultDocument = dfd->createNewLoadedDocument(iof, cfg.url, stateInfo, origDoc->getGHintsMap());
         CHECK_OP(stateInfo, );
-        resultMAObj = new MAlignmentObject(origMAObj->getMAlignment(), origMAObj->getGHintsMap());
+
+        MAlignment msa = origMAObj->getMAlignment();
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(resultDocument->getDbiRef(), origMAObj->getMAlignment(), stateInfo);
+        CHECK_OP(stateInfo, );
+
+        resultMAObj = new MAlignmentObject(msa.getName(), msaRef, origMAObj->getGHintsMap());
+
         resultDocument->addObject(resultMAObj);
         GObjectUtils::updateRelationsURL(resultMAObj, origDoc->getURL(), cfg.url);
     } else {

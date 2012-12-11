@@ -203,7 +203,7 @@ void ClustalOSupportContext::sl_align_with_ClustalO() {
         return;
     }
 
-    ClustalOSupportTask* clustalOSupportTask=new ClustalOSupportTask(obj, settings);
+    ClustalOSupportTask* clustalOSupportTask = new ClustalOSupportTask(obj->getMAlignment(), GObjectReference(obj), settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(clustalOSupportTask);
 }
 

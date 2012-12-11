@@ -157,7 +157,7 @@ MSAColorSchemeClustalX::MSAColorSchemeClustalX(QObject* p, MSAColorSchemeFactory
 {
     objVersion = 1;
     cacheVersion = 0;
-    aliLen = maObj->getMAlignment().getLength();
+    aliLen = maObj->getLength();
 
     colorByIdx[ClustalColor_BLUE]    = "#80a0f0";
     colorByIdx[ClustalColor_RED]     = "#f01505";
@@ -220,7 +220,7 @@ void MSAColorSchemeClustalX::updateCache() {
     // use 4 bits per color
     const MAlignment& ma = maObj->getMAlignment();
     int nSeq = ma.getNumRows();
-    aliLen = maObj->getMAlignment().getLength();
+    aliLen = maObj->getLength();
     cacheVersion = objVersion;
 
     bool stub = false;

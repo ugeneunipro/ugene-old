@@ -161,7 +161,7 @@ Task* TCoffeeWorker::tick() {
         if( msa.isEmpty() ) {
             return new FailTask(tr("Empty msa supplied to tcoffee"));
         }
-        Task* t = new TCoffeeSupportTask(new MAlignmentObject(msa), cfg);
+        Task* t = new TCoffeeSupportTask(msa, GObjectReference(), cfg);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {

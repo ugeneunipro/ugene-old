@@ -35,6 +35,7 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/TextObject.h>
@@ -685,7 +686,13 @@ void MSAWriter::data2doc(Document* doc, const QVariantMap& data) {
         ma.setName(name);
         ct++;
     }
-    doc->addObject(new MAlignmentObject(ma));
+
+    U2OpStatus2Log os;
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), ma, os);
+    CHECK_OP(os, );
+
+    MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
+    doc->addObject(obj);
 }
 
 bool MSAWriter::isStreamingSupport() const {

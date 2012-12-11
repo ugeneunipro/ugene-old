@@ -27,6 +27,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2AlphabetUtils.h>
@@ -132,7 +133,15 @@ Task* ExternalProcessWorker::tick() {
                 d->addObject(aobj);
             } else if(dataCfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
                 MAlignment ma = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-                d->addObject(new MAlignmentObject(ma));
+                U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
+
+                U2OpStatus2Log os;
+                U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, ma, os);
+                SAFE_POINT_OP(os, NULL);
+                    
+                MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
+                SAFE_POINT(NULL != obj, "NULL Msa object!", NULL);
+                d->addObject(obj);
             } else if (dataCfg.type == SEQ_WITH_ANNS) {
                 SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
                 U2SequenceObject *dnaObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);

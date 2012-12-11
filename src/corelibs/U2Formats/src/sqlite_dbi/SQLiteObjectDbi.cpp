@@ -19,11 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include "SQLiteMsaDbi.h"
 #include "SQLiteObjectDbi.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2SafePoints.h>
+
 
 namespace U2 {
 
@@ -184,7 +186,18 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
             SQLiteUtils::remove("Variant", "track", objectId, -1, db, os);
             break;
         case U2Type::Msa:
-            //TODO: removeMsaObject(objectId);
+            {
+                // Remove rows
+                SQLiteMsaDbi* sqliteMsaDbi = dbi->getSQLiteMsaDbi();
+                if (NULL != sqliteMsaDbi) {
+                    sqliteMsaDbi->removeAllRows(objectId, os);
+                }
+                else {
+                    os.setError("SQLiteMsaDbi is NULL during removing an MSA object!");
+                }
+                // Remove the MSA record
+                SQLiteUtils::remove("Msa", "object", objectId, 1, db, os);
+            }
             break;
         case U2Type::PhyTree:
             //TODO: removePhyTreeObject(objectId);

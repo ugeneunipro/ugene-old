@@ -472,10 +472,11 @@ public:
     MAlignment& operator+=(const MAlignment& ma);
     
     /**
-     * Compares two alignments.
-     * Only alignments of the same length, content and alphabet can be equal.
+     * Compares two alignments: lengths, alphabets, rows and infos (that include names).
      */
+    bool operator==(const MAlignment& ma) const;
     bool operator!=(const MAlignment& ma) const;
+    
 
     /** Estimates memory size consumed by alignment structure in bytes */
     int estimateMemorySize() const;

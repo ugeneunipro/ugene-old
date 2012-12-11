@@ -34,7 +34,7 @@ MSAEditorConsensusCache::MSAEditorConsensusCache(QObject* p, MAlignmentObject* o
     connect(aliObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
 
-    cache.resize(aliObj->getMAlignment().getLength());
+    cache.resize(aliObj->getLength());
 }
 
 MSAEditorConsensusCache::~MSAEditorConsensusCache() {
@@ -51,7 +51,7 @@ void MSAEditorConsensusCache::setConsensusAlgorithm(MSAConsensusAlgorithmFactory
 }
 
 void MSAEditorConsensusCache::sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&) {
-    cache.resize(aliObj->getMAlignment().getLength());
+    cache.resize(aliObj->getLength());
     currentVersion++;
 }
 

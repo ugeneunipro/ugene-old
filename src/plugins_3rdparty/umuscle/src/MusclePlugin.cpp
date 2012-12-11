@@ -180,7 +180,7 @@ void MuscleMSAEditorContext::sl_align() {
     if (!selection.isNull() ) {
         int width = selection.width();
         // it doesn't make sense to align one column!
-        if ( (width > 1) && ( width < obj->getMAlignment().getLength() ) ) {
+        if ( (width > 1) && ( width < obj->getLength() ) ) {
             s.regionToAlign = U2Region(selection.x() + 1, selection.width() - 1);
             s.alignRegion = true;
         }

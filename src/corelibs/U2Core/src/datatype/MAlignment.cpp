@@ -859,8 +859,17 @@ MAlignment& MAlignment::operator+=(const MAlignment& ma) {
     return *this;
 }
 
+bool MAlignment::operator==(const MAlignment& other) const {
+    bool lengthsAreEqual = (length==other.length);
+    bool alphabetsAreEqual = (alphabet == other.alphabet);
+    bool rowsAreEqual = (rows == other.rows);
+//    bool infosAreEqual = (info == other.info);
+
+    return lengthsAreEqual && alphabetsAreEqual && rowsAreEqual;// && infosAreEqual;
+}
+
 bool MAlignment::operator!=(const MAlignment& other) const {
-    return length!=other.length || alphabet != other.alphabet || rows != other.rows;
+    return !operator==(other);
 }
 
 int MAlignment::estimateMemorySize() const {

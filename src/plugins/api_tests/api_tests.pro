@@ -12,8 +12,13 @@ HEADERS += \
     src/core/dbi/sequence/SequenceDbiUnitTests.h \
     src/core/dbi/attribute/AttributeDbiUnitTests.h \
     src/core/dbi/features/FeaturesTableObjectUnitTest.h \
+    src/core/dbi/msa/MsaDbiUnitTests.h \
     src/core/format/fastq/FastqUnitTests.h \
     src/core/format/genbank/LocationParserUnitTests.h \
+    src/core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h \
+    src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.h \
+    src/core/gobjects/MAlignmentObjectUnitTests.h \
+    src/core/util/MAlignmentImporterExporterUnitTests.h \
     src/UnitTestSuite.h 
 SOURCES += \
     src/ApiTestsPlugin.cpp \
@@ -25,6 +30,11 @@ SOURCES += \
     src/core/dbi/sequence/SequenceDbiUnitTests.cpp \
     src/core/dbi/attribute/AttributeDbiUnitTests.cpp \
     src/core/dbi/features/FeaturesTableObjectUnitTest.cpp \
+    src/core/dbi/msa/MsaDbiUnitTests.cpp \
     src/core/format/fastq/FastqUnitTests.cpp \
     src/core/format/genbank/LocationParserUnitTests.cpp \
+    src/core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.cpp \
+    src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.cpp \
+    src/core/gobjects/MAlignmentObjectUnitTests.cpp \
+    src/core/util/MAlignmentImporterExporterUnitTests.cpp \
     src/UnitTestSuite.cpp 

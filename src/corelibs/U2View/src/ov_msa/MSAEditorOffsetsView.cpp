@@ -112,7 +112,7 @@ MSAEditorOffsetsViewWidget::~MSAEditorOffsetsViewWidget() {
 
 #define OFFS_WIDGET_BORDER 3
 void MSAEditorOffsetsViewWidget::updateView() {
-    int aliLen = cache->getMSAObject()->getMAlignment().getLength();
+    int aliLen = cache->getMSAObject()->getLength();
     QFont f = getOffsetsFont();
     QFontMetrics fm(f);
     int aliLenStrLen = int(log10((double)aliLen)) + 1; 
@@ -164,7 +164,7 @@ void MSAEditorOffsetsViewWidget::drawAll(QPainter& p) {
 
     int nSeqVisible = seqArea->getNumVisibleSequences(true);
     int startSeq = seqArea->getFirstVisibleSequence();
-    int aliLen = cache->getMSAObject()->getMAlignment().getLength();
+    int aliLen = cache->getMSAObject()->getLength();
     int lbw = fm.width('[');
     int rbw = fm.width(']');
     int pos = showStartPos ? seqArea->getFirstVisibleBase() : seqArea->getLastVisibleBase(true, true);
@@ -180,7 +180,7 @@ void MSAEditorOffsetsViewWidget::drawAll(QPainter& p) {
     }
 
     int i=0;
-    qint64 numRows = (qint64)cache->getMSAObject()->getMAlignment().getNumRows();
+    qint64 numRows = (qint64)cache->getMSAObject()->getNumRows();
     foreach(const U2Region& r, visibleRows) {
         int end = qMin(r.endPos(), numRows);;
         for (int row=r.startPos; row < end; row++) {

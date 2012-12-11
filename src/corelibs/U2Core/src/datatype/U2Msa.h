@@ -49,8 +49,22 @@ public:
 */
 class U2CORE_EXPORT U2MsaRow {
 public:
-    U2DataId        rowId;
+    /** Id of the row in the database */
+    qint64          rowId;
+
+    /** Id of the sequence of the row in the database */
     U2DataId        sequenceId;
+
+    /** Position of the row in */
+    qint64          pos;
+
+    /** Start of the row in the sequence */
+    qint64          gstart;
+
+    /** End of the row in the sequence */
+    qint64          gend;
+
+    /** A gap model for the row */
     QList<U2MsaGap> gaps;
 };
 
@@ -64,6 +78,12 @@ public:
     
     /** Alignment alphabet. All sequence in alignment must have alphabet that fits into alignment alphabet */
     U2AlphabetId    alphabet;
+
+    /** Length of the alignment */
+    qint64          length;
+
+    /** Number of rows in the alignment */
+    qint64          numOfRows;
 
     // implement U2Object
     virtual U2DataType getType() { return U2Type::Msa; }

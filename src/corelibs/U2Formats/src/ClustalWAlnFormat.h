@@ -51,7 +51,7 @@ protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
 private:
-    void load(IOAdapter* io, QList<GObject*>& objects, const QVariantMap& fs, U2OpStatus& ti);
+    void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& fs, U2OpStatus& ti);
 
     QString formatName;
 };

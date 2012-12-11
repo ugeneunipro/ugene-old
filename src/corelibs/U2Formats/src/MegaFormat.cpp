@@ -24,6 +24,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>
@@ -55,7 +56,7 @@ MegaFormat::MegaFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlag_Suppor
 
 Document* MegaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     QList<GObject*> objs;
-    load(io, objs, os);
+    load(io, dbiRef, objs, os);
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);
 }
@@ -252,7 +253,7 @@ void MegaFormat::workUpIndels(MAlignment& al) {
     }
 }
 
-void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::U2OpStatus &os) {
+void MegaFormat::load(U2::IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &objects, U2::U2OpStatus &os) {
     MAlignment al(io->getURL().baseFileName());
     QByteArray line;
     bool eof=false;
@@ -334,7 +335,10 @@ void MegaFormat::load(U2::IOAdapter *io, QList<GObject*> &objects, U2::U2OpStatu
     
     workUpIndels(al); //replace '.' by symbols from the first sequence
 
-    MAlignmentObject* obj = new MAlignmentObject(al);
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+    CHECK_OP(os, );
+
+    MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
     objects.append(obj);
 }
 

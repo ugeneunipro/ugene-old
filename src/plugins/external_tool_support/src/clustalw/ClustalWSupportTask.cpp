@@ -28,6 +28,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -51,12 +52,13 @@ void ClustalWSupportTaskSettings::reset() {
     outOrderInput=true;
 }
 
-ClustalWSupportTask::ClustalWSupportTask(MAlignmentObject* _mAObject, const ClustalWSupportTaskSettings& _settings) :
-        Task("Run ClustalW alignment task", TaskFlags_NR_FOSCOE),
-        mAObject(_mAObject), settings(_settings)
+ClustalWSupportTask::ClustalWSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const ClustalWSupportTaskSettings& _settings)
+    : Task("Run ClustalW alignment task", TaskFlags_NR_FOSCOE),
+      inputMsa(_inputMsa),
+      objRef(_objRef),
+      settings(_settings)
 {
     GCOUNTER( cvar, tvar, "ClustalWSupportTask" );
-    currentDocument = mAObject->getDocument();
     saveTemporaryDocumentTask=NULL;
     loadTemporyDocumentTask=NULL;
     clustalWTask=NULL;
@@ -94,7 +96,7 @@ void ClustalWSupportTask::prepare(){
         return;
     }
 
-    saveTemporaryDocumentTask = new SaveAlignmentTask(mAObject->getMAlignment(), url, BaseDocumentFormats::CLUSTAL_ALN);
+    saveTemporaryDocumentTask = new SaveAlignmentTask(inputMsa, url, BaseDocumentFormats::CLUSTAL_ALN);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveTemporaryDocumentTask);
 }
@@ -143,7 +145,7 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
         if(settings.noPGaps) arguments<<"-NOPGAP";
         if(settings.noHGaps) arguments<<"-NOHGAP";
         arguments << "-OUTFILE="+outputUrl;
-        logParser=new ClustalWLogParser(mAObject->getMAlignment().getNumRows());
+        logParser=new ClustalWLogParser(inputMsa.getNumRows());
         clustalWTask=new ExternalToolRunTask(CLUSTAL_TOOL_NAME,arguments, logParser);
         clustalWTask->setSubtaskProgressWeight(95);
         res.append(clustalWTask);
@@ -169,8 +171,9 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
                                      AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
         loadTemporyDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTemporyDocumentTask);
-    }else if(subTask==loadTemporyDocumentTask){
-        newDocument=loadTemporyDocumentTask->takeDocument();
+    }
+    else if (subTask == loadTemporyDocumentTask) {
+        newDocument = loadTemporyDocumentTask->takeDocument();
         SAFE_POINT(newDocument!=NULL, QString("output document '%1' not loaded").arg(newDocument->getURLString()), res);
         SAFE_POINT(newDocument->getObjects().length()==1, QString("no objects in output document '%1'").arg(newDocument->getURLString()), res);
 
@@ -179,10 +182,26 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
         SAFE_POINT(newMAligmentObject!=NULL, "newDocument->getObjects().first() is not a MAlignmentObject", res);
 
         resultMA=newMAligmentObject->getMAlignment();
-        mAObject->setMAlignment(resultMA);
-        if(currentDocument != NULL){
-            currentDocument->setModified(true);
+
+        // If an alignment object has been specified, save the result to it
+        if (objRef.isValid()) {
+            GObject* obj = GObjectUtils::selectObjectByReference(objRef, UOF_LoadedOnly);
+            if (NULL != obj) {
+                MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
+                SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalW results!", res);
+
+                alObj->setMAlignment(resultMA);
+
+                Document* currentDocument = alObj->getDocument();
+                SAFE_POINT(NULL != currentDocument, "Document is NULL!", res);
+                currentDocument->setModified(true);
+            }
+            else {
+                algoLog.error(tr("Failed to apply the result of ClustalW: alignment object is not available!"));
+                return res;
+            }
         }
+
         algoLog.info(tr("ClustalW alignment successfully finished"));
         //new document deleted in destructor of LoadDocumentTask
     }
@@ -260,26 +279,24 @@ QList<Task*> ClustalWWithExtFileSpecifySupportTask::onSubTaskFinished(Task* subT
         SAFE_POINT(currentDocument->getObjects().length() == 1, QString("Number of objects != 1 : %1").arg(loadDocumentTask->getURLString()), res);
         mAObject = qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
         SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
-        clustalWSupportTask=new ClustalWSupportTask(mAObject,settings);
+
+        // Launch the task, objRef is empty - the input document maybe not in project
+        clustalWSupportTask = new ClustalWSupportTask(mAObject->getMAlignment(), GObjectReference(), settings);
         res.append(clustalWSupportTask);
-    } else if (subTask == clustalWSupportTask) {
-        saveDocumentTask = new SaveDocumentTask(currentDocument, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.outputFilePath)),settings.outputFilePath);
+    }
+    else if (subTask == clustalWSupportTask) {
+        // Set the result alignment to the alignment object of the current document
+        mAObject=qobject_cast<MAlignmentObject*>(currentDocument->getObjects().first());
+        SAFE_POINT(mAObject != NULL, QString("MA object not found!: %1").arg(loadDocumentTask->getURLString()), res);
+        mAObject->setMAlignment(clustalWSupportTask->resultMA);
+
+        // Save the current document
+        saveDocumentTask = new SaveDocumentTask(currentDocument,
+            AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.outputFilePath)),
+            settings.outputFilePath);
         res.append(saveDocumentTask);
-    } else if (subTask == saveDocumentTask) {
-        //Project* proj = AppContext::getProject();
-        //if (proj == NULL) {
-        //    res.append(AppContext::getProjectLoader()->openWithProjectTask(currentDocument->getURLString(), currentDocument->getGHintsMap()));
-        //} else {
-        //    Document* projDoc = proj->findDocumentByURL(currentDocument->getURL());
-        //    if (projDoc != NULL) {
-        //        projDoc->setLastUpdateTime();
-        //        res.append(new LoadUnloadedDocumentAndOpenViewTask(projDoc));
-        //    } else {
-        //        // Add document to project
-        //        res.append(new AddDocumentAndOpenViewTask(currentDocument));
-        //        cleanDoc = false;
-        //    }
-        //}
+    }
+    else if (subTask == saveDocumentTask) {
         Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(settings.outputFilePath);
         res << openTask;
     }

@@ -209,7 +209,7 @@ void MSAEditorSequenceArea::prepareColorSchemeMenuActions() {
     if (maObj == NULL)
         return;
 
-    DNAAlphabetType atype = maObj->getMAlignment().getAlphabet()->getType();
+    DNAAlphabetType atype = maObj->getAlphabet()->getType();
     MSAColorSchemeRegistry* csr = AppContext::getMSAColorSchemeRegistry();
     connect(csr, SIGNAL(si_customSettingsChanged()), SLOT(sl_customColorSettingsChanged()));
 
@@ -1310,7 +1310,7 @@ void MSAEditorSequenceArea::sl_delSym() {
 }
 
 void MSAEditorSequenceArea::sl_delCol() {
-    DeleteGapsDialog dlg(this, editor->getMSAObject()->getMAlignment().getNumRows());
+    DeleteGapsDialog dlg(this, editor->getMSAObject()->getNumRows());
     if(dlg.exec() == QDialog::Accepted) {
         DeleteMode deleteMode = dlg.getDeleteMode();
         int value = dlg.getValue();
@@ -1319,7 +1319,7 @@ void MSAEditorSequenceArea::sl_delCol() {
             case DeleteByAbsoluteVal: msaObj->deleteGapsByAbsoluteVal(value);
                 break;
             case DeleteByRelativeVal: 
-                msaObj->deleteGapsByAbsoluteVal( ( msaObj->getMAlignment().getNumRows()*value ) / 100 );
+                msaObj->deleteGapsByAbsoluteVal( ( msaObj->getNumRows()*value ) / 100 );
                 break;
             case DeleteAll: msaObj->deleteAllGapColumn();
                 break;
@@ -1399,8 +1399,8 @@ void MSAEditorSequenceArea::sl_removeAllGaps() {
 bool MSAEditorSequenceArea::checkState() const {
 #ifdef _DEBUG
     MAlignmentObject* maObj = editor->getMSAObject();
-    int aliLen = maObj->getMAlignment().getLength();
-    int nSeqs = maObj->getMAlignment().getNumRows();
+    int aliLen = maObj->getLength();
+    int nSeqs = maObj->getNumRows();
     
     assert(startPos >=0 && startSeq >=0);
     int lastPos = getLastVisibleBase(true);

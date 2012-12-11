@@ -29,6 +29,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/MAlignmentInfo.h>
@@ -572,7 +573,7 @@ static void setMsaInfo( const QHash< QString, QString>& annMap, MAlignment& ma )
     ma.setInfo(info);
 }
 
-static void load( IOAdapter* io, QList<GObject*>& l, U2OpStatus& tsi, bool& uni_file) {
+static void load( IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& l, U2OpStatus& tsi, bool& uni_file) {
     QStringList names_list;
     QString filename = io->getURL().baseFileName();
     while( !io->isEof() ) {
@@ -596,7 +597,12 @@ static void load( IOAdapter* io, QList<GObject*>& l, U2OpStatus& tsi, bool& uni_
         
         annMap = getAnnotationMap( ann_bank );
         setMsaInfo( annMap, msa );
-        MAlignmentObject* obj = new MAlignmentObject(msa);
+
+        U2OpStatus2Log os;
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, msa, os);
+        CHECK_OP(os, );
+
+        MAlignmentObject* obj = new MAlignmentObject(msa.getName(), msaRef);
         obj->setIndexInfo(annMap);
         l.append( obj );
     }
@@ -683,7 +689,7 @@ Document* StockholmFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
     try {
         bool uniFile = false;
         QString lockReason;
-        load( io, objects, os, uniFile);
+        load( io, dbiRef, objects, os, uniFile);
         if ( !uniFile ) {
             lockReason = DocumentFormat::CREATED_NOT_BY_UGENE;
         }

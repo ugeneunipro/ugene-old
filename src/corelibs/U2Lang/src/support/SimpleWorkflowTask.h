@@ -91,19 +91,7 @@ public:
     QVariantMap resultDocHints;
 };
 
-class U2LANG_EXPORT SimpleMSAWorkflowTask : public Task {
-    Q_OBJECT
-
-public:
-    SimpleMSAWorkflowTask(const QString& taskName, const MAlignment& ma, const SimpleMSAWorkflowTaskConfig& conf);
-    MAlignment getResult();
-private:
-    SimpleMSAWorkflowTaskConfig conf;
-    SimpleInOutWorkflowTask* runWorkflowTask;
-};
-
-
-class U2LANG_EXPORT SimpleMSAWorkflow4GObjectTask : public SimpleMSAWorkflowTask {
+class U2LANG_EXPORT SimpleMSAWorkflow4GObjectTask : public Task {
     Q_OBJECT
 
 public:
@@ -112,12 +100,14 @@ public:
     
     void prepare();
     ReportResult report();
+    MAlignment getResult();
 
 private:
     QPointer<MAlignmentObject>  obj;
     StateLock*                  lock;
     QString                     docName;
     SimpleMSAWorkflowTaskConfig conf;
+    SimpleInOutWorkflowTask*    runWorkflowTask;
 };
 
 }    // namespace U2

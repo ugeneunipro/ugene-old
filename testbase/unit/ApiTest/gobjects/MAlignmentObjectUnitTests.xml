@@ -1,0 +1,9 @@
+<!DOCTYPE UGENE_TEST_FRAMEWORK_TEST>
+
+<unittest>
+
+MAlignmentObjectUnitTests
++ getMAlignment
++ setMAlignment
+
+</unittest>

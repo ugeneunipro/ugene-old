@@ -50,8 +50,8 @@ CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignm
     connect(noneButton, SIGNAL(clicked()), SLOT(sl_noneButtonClicked()));
     connect(invertButton, SIGNAL(clicked()), SLOT(sl_invertButtonClicked()));
 
-    int rowNumber = mobj->getMAlignment().getNumRows();
-    int alignLength = mobj->getMAlignment().getLength();
+    int rowNumber = mobj->getNumRows();
+    int alignLength = mobj->getLength();
 
     sequencesTableWidget->clearContents();
     sequencesTableWidget->setRowCount(rowNumber);
@@ -152,7 +152,7 @@ void CreateSubalignimentDialogController::accept(){
     // '-1' because in memory positions start from 0 not 1
     int start = startPosBox->value() - 1;
     int end = endPosBox->value() - 1;
-    int seqLen = mobj->getMAlignment().getLength();
+    int seqLen = mobj->getLength();
     
     if( start > end ) {
         QMessageBox::critical(this, windowTitle(), tr("Start position must be less than end position!"));

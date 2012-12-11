@@ -161,11 +161,11 @@ public:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteMsa, getRootDbi(), os);
     }
     
-    virtual void removeSequences(U2Msa&, const QList<U2DataId> , U2OpStatus &os) {
+    virtual void removeRows(U2Msa&, const QList<qint64>& , U2OpStatus &os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteMsa, getRootDbi(), os);
     }
 
-    virtual void addSequences(U2Msa&, const QList<U2MsaRow>&, U2OpStatus& os) {
+    virtual void addRows(U2Msa&, QList<U2MsaRow>&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteMsa, getRootDbi(), os);
     }
 };

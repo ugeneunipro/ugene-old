@@ -146,15 +146,14 @@ const MAlignment & ProfileToProfileTask::getResult() {
 
 void ProfileToProfileTask::appendResult(Task *task) {
     subtaskCount--;
-    MuscleGObjectTask *t = dynamic_cast<MuscleGObjectTask*>(task);
-    MAlignmentObject *obj = t->getMAObject();
-    const QList<MAlignmentRow> &newRows = obj->getMAlignment().getRows();
+    MuscleTask *t = dynamic_cast<MuscleTask*>(task);
+    SAFE_POINT(NULL != t, "NULL Muscle task!",);
+
+    const QList<MAlignmentRow> &newRows = t->resultMA.getRows();
     if (newRows.size() == masterMsa.getRows().size() + 1) {
         U2OpStatus2Log os;
         result.addRow(newRows.last(), os);
     }
-
-    delete obj;
 }
 
 QList<Task*> ProfileToProfileTask::createAlignTasks() {
@@ -166,8 +165,7 @@ QList<Task*> ProfileToProfileTask::createAlignTasks() {
         cfg.profile.addRow(secondMsa.getRow(seqIdx), os);
         cfg.profile.setAlphabet(secondMsa.getAlphabet());
 
-        MAlignmentObject *obj = new MAlignmentObject(masterMsa);
-        tasks << new MuscleGObjectTask(obj, cfg);
+        tasks << new MuscleTask(masterMsa, cfg);
 
         subtaskCount++;
         seqIdx++;
