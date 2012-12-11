@@ -31,6 +31,7 @@ workflow local-blast{
     .meta {
         aliases {
             read-sequence.url-in:in;
+            blast.blast-output:blast-out;
             blast.blast-type:p;
             blast.db-name:dbname;
             blast.db-path:dbpath;
@@ -38,6 +39,7 @@ workflow local-blast{
             blast.result-name:name;
             blast.temp-dir:tmpdir;
             blast.tool-path:toolpath;
+            blast.type-output:out-type;
             write-genbank.url-out:out;
         }
         help {
@@ -50,6 +52,8 @@ workflow local-blast{
             tmpdir:"Directory to store temporary files";
             toolpath:"BLAST location";
             out:"Output file with annotations";
+            blast-out:"Type of BLAST output file";
+            out-type:"Location of BLAST output file";
         }
         visual {
             read-sequence {
