@@ -165,9 +165,9 @@ Task::ReportResult GTest_DnaAssemblyToReferenceTask::report() {
         setError("Failed to load result alignment");
         return ReportResult_Finished;
     }
-    const MAlignment& aln = obj->getMAlignment();
-    const_cast<MAlignment&>(aln).sortRowsByName();
-    const_cast<MAlignment&>(expectedObj->getMAlignment()).sortRowsByName();
+    MAlignment aln = obj->getMAlignment();
+    aln.sortRowsByName();
+    expectedObj->getMAlignment().sortRowsByName();
     
     if (aln != expectedObj->getMAlignment()) {
         setError("Expected and result alignments don't match");
