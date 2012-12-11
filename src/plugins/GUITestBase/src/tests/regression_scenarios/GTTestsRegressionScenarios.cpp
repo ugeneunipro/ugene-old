@@ -87,6 +87,37 @@ GUI_TEST_CLASS_DEFINITION(test_0734) {
         QString("Inserted sequence name mismatch. Expected: %1. Actual: %2").arg("Sequence4").arg(names.last()));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0928) {
+    // 1. Open "samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, ""){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+
+    // 2. Click "Find ORFs" button on the sequence view toolbar.
+    // Expected state: ORF dialog appears. UGENE does not crash.
+    // 3. Click "Ok" button and wait for the end of the task.
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTWidget::click(os, GTAction::button(os, "Find ORFs"));
+    GTGlobals::sleep();
+
+    // Expected state: 837 orfs are found.
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "orf");
+    CHECK(NULL != item, );
+    CHECK_SET_ERR(item->childCount() == 837, QString("ORFs count mismatch. Expected: %1. Actual: %2").arg(837).arg(item->childCount()));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0986) {
 
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
