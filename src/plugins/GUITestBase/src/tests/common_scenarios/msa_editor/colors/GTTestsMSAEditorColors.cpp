@@ -77,7 +77,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //    Expected state: background for symbols must be:
 //    A - yellow    G - blue    T - red    C - green    gap - no backround
     //check A
-    checkColor(os,QPoint(0, 1), "#fcff92");
+    checkColor(os,QPoint(0, 1), "#fcff92",5);
 
     //check G
     checkColor(os,QPoint(2, 2), "#4eade1");
@@ -86,7 +86,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     checkColor(os,QPoint(0, 2), "#ff99b1",5);
 
     //check C
-    checkColor(os,QPoint(0, 0), "#70f970");
+    checkColor(os,QPoint(4, 0), "#70f970");
 
     //check gap
     checkColor(os,QPoint(4, 2), "#ffffff",0,5);
@@ -102,7 +102,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTMenu::showContextMenu(os,seq);
 //    Expected state: background for symbols must be white
     //check A
-    checkColor(os,QPoint(0, 1), "#ffffff");
+    checkColor(os,QPoint(0, 1), "#ffffff",5);
 
     //check G
     checkColor(os,QPoint(2, 2), "#ffffff");
@@ -111,7 +111,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     checkColor(os,QPoint(0, 2), "#ffffff",5);
 
     //check C
-    checkColor(os,QPoint(0, 0), "#ffffff");
+    checkColor(os,QPoint(4, 0), "#ffffff");
 
     //check gap
     checkColor(os,QPoint(4, 2), "#ffffff",0,5);
@@ -127,7 +127,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 //Expected state: background for symbols must be:
 //A - green G - red T - blue  C - orange gap - no backround
     //check A
-    checkColor(os,QPoint(0, 1), "#64f73f");
+    checkColor(os,QPoint(0, 1), "#64f73f",5);
 
     //check G
     checkColor(os,QPoint(2, 2), "#eb413c");
@@ -136,7 +136,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     checkColor(os,QPoint(0, 2), "#3c88ee",5);
 
     //check C
-    checkColor(os,QPoint(0, 0), "#ffb340");
+    checkColor(os,QPoint(4, 0), "#ffb340");
 
     //check gap
     checkColor(os,QPoint(4, 2), "#ffffff",0,5);
@@ -158,20 +158,21 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 //    4. A,C,A,T,A,T,A at 1,4,7,8,11,12,14
 
 //    columns without colored symbols 5,13
-    checkColor(os,QPoint(0, 1), "#ccccff");//chech1
-    checkColor(os,QPoint(1, 1), "#9999ff");//chech2
-    checkColor(os,QPoint(2, 1), "#9999ff");//chech3
+    checkColor(os,QPoint(0, 1), "#ccccff",5);//chech1
+    checkColor(os,QPoint(1, 1), "#6464ff",5);//chech2
+    checkColor(os,QPoint(2, 1), "#6464ff");//chech3
     checkColor(os,QPoint(3, 1), "#ccccff");//chech4
     checkColor(os,QPoint(4, 1), "#ffffff",5);//chech5
     checkColor(os,QPoint(5, 1), "#9999ff",5);//chech6
-    checkColor(os,QPoint(6, 1), "#ccccff");//chech7
+    checkColor(os,QPoint(6, 1), "#ccccff",5);//chech7
     checkColor(os,QPoint(7, 2), "#ccccff",5);//chech8
     checkColor(os,QPoint(8, 2), "#6464ff",5);//chech9
-    checkColor(os,QPoint(9, 2), "#9999ff");//chech10
-    checkColor(os,QPoint(10, 1), "#ccccff");//chech11
+    checkColor(os,QPoint(9, 2), "#9999ff",5);//chech10
+    checkColor(os,QPoint(10, 1), "#ccccff",5);//chech11
     checkColor(os,QPoint(11, 2), "#ccccff",5);//chech12
-    checkColor(os,QPoint(12, 2), "#ffffff");//chech13
-    checkColor(os,QPoint(13, 2), "#ccccff");//chech14
+    checkColor(os,QPoint(12, 2), "#ffffff",5);//chech13
+    checkColor(os,QPoint(13, 2), "#ccccff",5);//chech14
+
 
 
 

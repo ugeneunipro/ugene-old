@@ -388,8 +388,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0016);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0016_1);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0016_2);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0016_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1347");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0016_2, "https://ugene.unipro.ru/tracker/browse/UGENE-1347");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0017_1);
@@ -419,6 +419,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_colors::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_colors::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_colors::test_0004);
+
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/document_from_text/
 //////////////////////////////////////////////////////////////////////////
