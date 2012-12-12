@@ -717,15 +717,9 @@ U2Region MSAEditorSequenceArea::getSequenceYRange(int seq, bool useVirtualCoords
 
 #define SCROLL_STEP 1
 
-void MSAEditorSequenceArea::updateSelection( const QPoint& newPos)
-{
-    //if (!isInRange(newPos)) {
-    //    return;
-    //}
-    
+void MSAEditorSequenceArea::updateSelection( const QPoint& newPos){
     int width = qAbs(newPos.x() - cursorPos.x()) + 1;
     int height = qAbs(newPos.y() - cursorPos.y()) + 1;
-    // find top left 
     int left = qMin(newPos.x(), cursorPos.x());
     int top = qMin(newPos.y(), cursorPos.y());
     
@@ -733,7 +727,11 @@ void MSAEditorSequenceArea::updateSelection( const QPoint& newPos)
     if (newPos.x()!=-1 && newPos.y()!=-1) {
         setSelection(s);
     }
-
+    if (selection.isNull()){
+        copySelectionAction->setDisabled(true);
+    }else{
+        copySelectionAction->setEnabled(true);
+    }
 }
 
 
