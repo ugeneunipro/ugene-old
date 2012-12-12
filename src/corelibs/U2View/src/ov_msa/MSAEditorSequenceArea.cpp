@@ -102,14 +102,8 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     delSelectionAction->setShortcutContext(Qt::WidgetShortcut);
     connect(delSelectionAction, SIGNAL(triggered()), SLOT(sl_delCurrentSelection()));
 
-    copySelectionAction = new QAction(tr("Copy selection"), this);
-    copySelectionAction->setObjectName("copy_selection");
-    copySelectionAction->setShortcut(QKeySequence::Copy);
-    copySelectionAction->setShortcutContext(Qt::WidgetShortcut);
-    copySelectionAction->setToolTip(QString("%1 (%2)").arg(copySelectionAction->text())
-        .arg(copySelectionAction->shortcut().toString()));
-    connect(copySelectionAction, SIGNAL(triggered()), SLOT(sl_copyCurrentSelection()));
-    addAction(copySelectionAction);
+    connect(ui->getCopySelectionAction(), SIGNAL(triggered()), SLOT(sl_copyCurrentSelection()));
+    addAction(ui->getCopySelectionAction());
 
     delColAction = new QAction(QIcon(":core/images/msaed_remove_columns_with_gaps.png"), tr("Remove columns of gaps..."), this);
     delColAction->setObjectName("remove_columns_of_gaps");
@@ -728,9 +722,9 @@ void MSAEditorSequenceArea::updateSelection( const QPoint& newPos){
         setSelection(s);
     }
     if (selection.isNull()){
-        copySelectionAction->setDisabled(true);
+        ui->getCopySelectionAction()->setDisabled(true);
     }else{
-        copySelectionAction->setEnabled(true);
+        ui->getCopySelectionAction()->setEnabled(true);
     }
 }
 
@@ -1135,6 +1129,12 @@ void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s) {
         selection = MSAEditorSelection(s.topLeft(), s.width() - ofRange - 1, s.height());
     }
 
+    if (selection.isNull()){
+        ui->getCopySelectionAction()->setDisabled(true);
+    }else{
+        ui->getCopySelectionAction()->setEnabled(true);
+    }
+
     emit si_selectionChanged(selection, prevSelection);
     update();
 
@@ -1241,7 +1241,7 @@ void MSAEditorSequenceArea::sl_buildContextMenu(GObjectView*, QMenu* m) {
 
     if (rect().contains( mapFromGlobal(QCursor::pos()) ) ) {
         editMenu->addActions(actions);
-        copyMenu->addAction(copySelectionAction);
+        copyMenu->addAction(ui->getCopySelectionAction());
     }
 
 }
@@ -1271,8 +1271,8 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     exportMenu->addAction(saveSequence);
     
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
-    copySelectionAction->setDisabled(selection.isNull());
-    copyMenu->addAction(copySelectionAction);
+    ui->getCopySelectionAction()->setDisabled(selection.isNull());
+    copyMenu->addAction(ui->getCopySelectionAction());
 
     QMenu* viewMenu = GUIUtils::findSubMenu(m, MSAE_MENU_VIEW);
     assert(viewMenu!=NULL);

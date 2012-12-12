@@ -96,6 +96,7 @@ void MSAEditorNameList::updateActions() {
     if (maObj){
         removeCurrentSequenceAction->setEnabled(!maObj->isStateLocked() && maObj->getNumRows() > 1);
         editSequenceNameAction->setEnabled(!maObj->isStateLocked());
+        addAction(ui->getCopySelectionAction());
     }
 }
 
@@ -452,7 +453,6 @@ void MSAEditorNameList::sl_selectionChanged( const MSAEditorSelection& current, 
         return;
     }
     completeRedraw = true;
-   
     update();
 
 }

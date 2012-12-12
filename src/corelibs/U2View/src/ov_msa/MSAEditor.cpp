@@ -575,6 +575,15 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), of
     undoFWK = new MSAEditorUndoFramework(this, editor->getMSAObject());
     collapseModel = new MSACollapsibleItemModel(this);
 
+    copySelectionAction = new QAction(tr("Copy selection"), this);
+    copySelectionAction->setObjectName("copy_selection");
+    copySelectionAction->setShortcut(QKeySequence::Copy);
+    copySelectionAction->setShortcutContext(Qt::WidgetShortcut);
+    copySelectionAction->setToolTip(QString("%1 (%2)").arg(copySelectionAction->text())
+        .arg(copySelectionAction->shortcut().toString()));
+
+    addAction(copySelectionAction);
+
     setContextMenuPolicy(Qt::CustomContextMenu);
     setMinimumSize(300, 200);
 

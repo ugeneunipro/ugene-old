@@ -92,6 +92,7 @@ MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI* _ui) : editor(_ui->e
     }
     consensusCache = new MSAEditorConsensusCache(this, editor->getMSAObject(), algo);
     connect(consensusCache->getConsensusAlgorithm(), SIGNAL(si_thresholdChanged(int)), SLOT(sl_onConsensusThresholdChanged(int)));
+    addAction(ui->getCopySelectionAction());
     restoreLastUsedConsensusThreshold();
 }
 

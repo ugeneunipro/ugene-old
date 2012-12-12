@@ -175,6 +175,7 @@ public:
     MSAEditor* getEditor() const {return editor;}
     QAction* getUndoAction() const;
     QAction* getRedoAction() const;
+    QAction* getCopySelectionAction() const {return copySelectionAction;};
 
     bool isCollapsibleMode() const { return collapsibleMode; }
     void setCollapsibleMode(bool collapse) { collapsibleMode = collapse; }
@@ -202,6 +203,8 @@ private:
     MSAEditorUndoFramework*         undoFWK;
     MSACollapsibleItemModel*        collapseModel;
     bool                            collapsibleMode;
+
+    QAction                         *copySelectionAction;
 };
 
 
