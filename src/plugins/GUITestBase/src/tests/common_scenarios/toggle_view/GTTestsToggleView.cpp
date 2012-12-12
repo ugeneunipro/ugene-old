@@ -949,18 +949,12 @@ GUI_TEST_CLASS_DEFINITION(test_0011)
     CHECK_SET_ERR(mainWindow != NULL, "Main Window not found");
     CHECK_SET_ERR(toolBarSe1 != NULL, "Tool bar not found");
 
-    QAction *zoomAction = mainWindow->findChild<QAction*>("zoom_to_range_se1");
-    CHECK_SET_ERR(zoomAction != NULL, "Zoom to range action not found");
-    QWidget *zoomButton = toolBarSe1->widgetForAction(zoomAction);
+
+    QAbstractButton* zoomButton = GTAction::button(os,"zoom_to_range_se1");
     CHECK_SET_ERR(zoomButton != NULL, "Zoom button not found");
 
-    QAction *zoomInSe1 = mainWindow->findChild<QAction*>("action_zoom_in_se1");
-    QAction *zoomOutSe1 = mainWindow->findChild<QAction*>("action_zoom_out_se1");
-    CHECK_SET_ERR(zoomInSe1 != NULL, "Zoom In action not found");
-    CHECK_SET_ERR(zoomOutSe1 != NULL, "Zoom Out action not found");
-
-    QWidget *zoomInButton = toolBarSe1->widgetForAction(zoomInSe1);
-    QWidget *zoomOutButton = toolBarSe1->widgetForAction(zoomInSe1);
+    QAbstractButton* zoomInButton = GTAction::button(os,"action_zoom_in_se1");
+    QAbstractButton* zoomOutButton = GTAction::button(os,"action_zoom_out_se1");
 
     CHECK_SET_ERR(zoomInButton != NULL, "Zoom In button not found");
     CHECK_SET_ERR(zoomOutButton != NULL, "Zoom Out button not found");
@@ -997,31 +991,18 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1)
     CHECK_SET_ERR(toolBarSe1 != NULL, "Tool bar not found");
     CHECK_SET_ERR(toolBarSe2 != NULL, "Tool bar not found");
 
-    QAction *zoomAction1 = mainWindow->findChild<QAction*>("zoom_to_range_se1");
-    CHECK_SET_ERR(zoomAction1 != NULL, "Zoom to range action not found");
-    QAction *zoomAction2 = mainWindow->findChild<QAction*>("zoom_to_range_se2");
-    CHECK_SET_ERR(zoomAction2 != NULL, "Zoom to range action not found");
 
-    QWidget *zoomButton1 = toolBarSe1->widgetForAction(zoomAction1);
+    QAbstractButton* zoomButton1 = GTAction::button(os,"action_zoom_in_se1");
     CHECK_SET_ERR(zoomButton1 != NULL, "Zoom button not found");
-    QWidget *zoomButton2 = toolBarSe2->widgetForAction(zoomAction2);
+
+    QAbstractButton* zoomButton2 = GTAction::button(os,"action_zoom_in_se2");
     CHECK_SET_ERR(zoomButton2 != NULL, "Zoom button not found");
 
-    QAction *zoomInSe1 = mainWindow->findChild<QAction*>("action_zoom_in_se1");
-    QAction *zoomOutSe1 = mainWindow->findChild<QAction*>("action_zoom_out_se1");
-    CHECK_SET_ERR(zoomInSe1 != NULL, "Zoom In action not found");
-    CHECK_SET_ERR(zoomOutSe1 != NULL, "Zoom Out action not found");
+    QAbstractButton* zoomInButton1 = GTAction::button(os,"action_zoom_in_se1");
+    QAbstractButton* zoomOutButton1 = GTAction::button(os,"action_zoom_out_se1");
 
-    QAction *zoomInSe2 = mainWindow->findChild<QAction*>("action_zoom_in_se2");
-    QAction *zoomOutSe2 = mainWindow->findChild<QAction*>("action_zoom_out_se2");
-    CHECK_SET_ERR(zoomInSe2 != NULL, "Zoom In action not found");
-    CHECK_SET_ERR(zoomOutSe2 != NULL, "Zoom Out action not found");
-
-    QWidget *zoomInButton1 = toolBarSe1->widgetForAction(zoomInSe1);
-    QWidget *zoomOutButton1 = toolBarSe1->widgetForAction(zoomInSe1);
-
-    QWidget *zoomInButton2 = toolBarSe2->widgetForAction(zoomInSe2);
-    QWidget *zoomOutButton2 = toolBarSe2->widgetForAction(zoomInSe2);
+    QAbstractButton* zoomInButton2 = GTAction::button(os,"action_zoom_in_se2");
+    QAbstractButton* zoomOutButton2 = GTAction::button(os,"action_zoom_out_se2");
 
     CHECK_SET_ERR(zoomInButton1 != NULL, "Zoom In button not found");
     CHECK_SET_ERR(zoomOutButton1 != NULL, "Zoom Out button not found");
@@ -1075,37 +1056,23 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2)
     CHECK_SET_ERR(toolBarSe1 != NULL, "Tool bar not found");
     CHECK_SET_ERR(toolBarSe2 != NULL, "Tool bar not found");
 
-    QAction *zoomAction1 = mainWindow->findChild<QAction*>("zoom_to_range_se1");
-    CHECK_SET_ERR(zoomAction1 != NULL, "Zoom to range action not found");
-    QAction *zoomAction2 = mainWindow->findChild<QAction*>("zoom_to_range_se2");
-    CHECK_SET_ERR(zoomAction2 != NULL, "Zoom to range action not found");
-
-    QWidget *zoomButton1 = toolBarSe1->widgetForAction(zoomAction1);
+    QAbstractButton* zoomButton1 = GTAction::button(os,"zoom_to_range_se1");
     CHECK_SET_ERR(zoomButton1 != NULL, "Zoom button not found");
-    QWidget *zoomButton2 = toolBarSe2->widgetForAction(zoomAction2);
+    QAbstractButton* zoomButton2 = GTAction::button(os,"zoom_to_range_se2");
     CHECK_SET_ERR(zoomButton2 != NULL, "Zoom button not found");
 
-    QAction *zoomInSe1 = mainWindow->findChild<QAction*>("action_zoom_in_se1");
-    QAction *zoomOutSe1 = mainWindow->findChild<QAction*>("action_zoom_out_se1");
-    CHECK_SET_ERR(zoomInSe1 != NULL, "Zoom In action not found");
-    CHECK_SET_ERR(zoomOutSe1 != NULL, "Zoom Out action not found");
+    QAbstractButton* zoomInButton1 = GTAction::button(os,"action_zoom_in_se1");
+    QAbstractButton* zoomOutButton1 = GTAction::button(os,"action_zoom_out_se1");
 
-    QAction *zoomInSe2 = mainWindow->findChild<QAction*>("action_zoom_in_se2");
-    QAction *zoomOutSe2 = mainWindow->findChild<QAction*>("action_zoom_out_se2");
-    CHECK_SET_ERR(zoomInSe2 != NULL, "Zoom In action not found");
-    CHECK_SET_ERR(zoomOutSe2 != NULL, "Zoom Out action not found");
-
-    QWidget *zoomInButton1 = toolBarSe1->widgetForAction(zoomInSe1);
-    QWidget *zoomOutButton1 = toolBarSe1->widgetForAction(zoomInSe1);
-
-    QWidget *zoomInButton2 = toolBarSe2->widgetForAction(zoomInSe2);
-    QWidget *zoomOutButton2 = toolBarSe2->widgetForAction(zoomInSe2);
+    QAbstractButton* zoomInButton2 = GTAction::button(os,"action_zoom_in_se2");
+    QAbstractButton* zoomOutButton2 = GTAction::button(os,"action_zoom_out_se2");
 
     CHECK_SET_ERR(zoomInButton1 != NULL, "Zoom In button not found");
     CHECK_SET_ERR(zoomOutButton1 != NULL, "Zoom Out button not found");
 
     CHECK_SET_ERR(zoomInButton2 != NULL, "Zoom In button not found");
     CHECK_SET_ERR(zoomOutButton2 != NULL, "Zoom Out button not found");
+
 
     // 2. Press 'Zoom in' button for both. CHANGES: for both instead of seq1
     GTWidget::click(os, zoomInButton1);
