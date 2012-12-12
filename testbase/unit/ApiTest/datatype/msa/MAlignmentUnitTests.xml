@@ -52,7 +52,7 @@ MAlignmentUnitTests
 + removeRegion_removeEmpty
 + removeRegion_trimmed
 + renameRow_validParams
-+ setRowContent_validParamsAndTrimmed
++ setRowContent_validParamsAndNotTrimmed
 + setRowContent_lengthIsIncreased
 + upperCase_charsAndGaps
 + crop_validParams

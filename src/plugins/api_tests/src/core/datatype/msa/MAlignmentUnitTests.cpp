@@ -721,12 +721,12 @@ IMPLEMENT_TEST(MAlignmentUnitTests, renameRow_validParams) {
 }
 
 /** Tests setRowContent */
-IMPLEMENT_TEST(MAlignmentUnitTests, setRowContent_validParamsAndTrimmed) {
+IMPLEMENT_TEST(MAlignmentUnitTests, setRowContent_validParamsAndNotTrimmed) {
     MAlignment almnt = MAlignmentTestUtils::initTestAlignment();
     almnt.setRowContent(1, "---AC-");
-    CHECK_EQUAL(4, almnt.getLength(), "alignment length");
-    CHECK_EQUAL("AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
-    CHECK_EQUAL("AC-", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
+    CHECK_EQUAL(7, almnt.getLength(), "alignment length");
+    CHECK_EQUAL("---AG-T", MAlignmentTestUtils::getRowData(almnt, 0), "first row");
+    CHECK_EQUAL("---AC-", MAlignmentTestUtils::getRowData(almnt, 1), "second row");
 }
 
 IMPLEMENT_TEST(MAlignmentUnitTests, setRowContent_lengthIsIncreased) {

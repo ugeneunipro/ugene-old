@@ -195,10 +195,10 @@ DECLARE_TEST(MAlignmentUnitTests, renameRow_validParams);
 
 /**
  * Setting a new row content:
- *   ^ validParamsAndTrimmed - a row content is changed, the alignment is trimmed and the length decreases
+ *   ^ validParamsAndTrimmed - a row content is changed, the alignment is NOT trimmed
  *   ^ lengthIsIncreased     - a row content becomes longer than the initial alignment length
  */
-DECLARE_TEST(MAlignmentUnitTests, setRowContent_validParamsAndTrimmed);
+DECLARE_TEST(MAlignmentUnitTests, setRowContent_validParamsAndNotTrimmed);
 DECLARE_TEST(MAlignmentUnitTests, setRowContent_lengthIsIncreased);
 
 /** Converting all rows to upper case */
@@ -323,7 +323,7 @@ DECLARE_METATYPE(MAlignmentUnitTests, removeRegion_validParams);
 DECLARE_METATYPE(MAlignmentUnitTests, removeRegion_removeEmpty);
 DECLARE_METATYPE(MAlignmentUnitTests, removeRegion_trimmed);
 DECLARE_METATYPE(MAlignmentUnitTests, renameRow_validParams);
-DECLARE_METATYPE(MAlignmentUnitTests, setRowContent_validParamsAndTrimmed);
+DECLARE_METATYPE(MAlignmentUnitTests, setRowContent_validParamsAndNotTrimmed);
 DECLARE_METATYPE(MAlignmentUnitTests, setRowContent_lengthIsIncreased);
 DECLARE_METATYPE(MAlignmentUnitTests, upperCase_charsAndGaps)
 DECLARE_METATYPE(MAlignmentUnitTests, crop_validParams);

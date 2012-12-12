@@ -400,7 +400,6 @@ public:
     /**
      * Sets the new content for the row with the specified index.
      * Assumes that the row index is valid.
-     * The alignment is trimmed after setting the new row content.
      * Can modify the overall alignment length (increase or decrease).
      */
     void setRowContent(int row, const QByteArray& sequence);

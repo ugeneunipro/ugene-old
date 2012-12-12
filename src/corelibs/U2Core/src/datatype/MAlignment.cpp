@@ -908,10 +908,6 @@ void MAlignment::addRow(const MAlignmentRow& row, int rowIndex, U2OpStatus& /* o
     length = qMax(row.getCoreEnd(), length);
     int idx = rowIndex == -1 ? getNumRows() : qBound(0, rowIndex, getNumRows());
     rows.insert(idx, row);
-
-    foreach(const MAlignmentRow& row, getRows()) {
-        QString rowName = row.getName();
-    }
 }
 
 void MAlignment::addRow(const MAlignmentRow& row, U2OpStatus& os) {
@@ -1093,7 +1089,6 @@ void MAlignment::setRowContent(int row, const QByteArray& sequence) {
     r.setRowContent(sequence, 0, os);
     SAFE_POINT_OP(os, );
 
-    trim();
     length = calculateMinLength();
 }
 

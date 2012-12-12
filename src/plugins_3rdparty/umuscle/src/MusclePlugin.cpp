@@ -219,7 +219,7 @@ void MuscleMSAEditorContext::sl_alignSequencesToProfile() {
 
     DocumentFormatConstraints c;
     QString f1 = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, false);
-    QString f2 = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, false);
+    QString f2 = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
     QString filter = f2 + "\n" + f1;
 
     LastUsedDirHelper lod;
