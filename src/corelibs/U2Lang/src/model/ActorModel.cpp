@@ -266,7 +266,7 @@ void Actor::updateGrouperSlots(const QMap<ActorId, ActorId> &actorsMapping) {
             if (!found) {
                 groupSlot = "";
             }
-            attr->setAttributeValue(groupSlot);
+            attr->setAttributeValue(GrouperOutSlot::busMap2readable(groupSlot));
         }
     }
     // update out slots
@@ -315,7 +315,7 @@ void Actor::replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMappi
             foreach (const PortMapping &pm, mappings) {
                 IntegralBusUtils::remapPathedSlotString(groupSlot, oldActor->getId(), newActor->getId(), pm);
             }
-            attr->setAttributeValue(groupSlot);
+            attr->setAttributeValue(GrouperOutSlot::busMap2readable(groupSlot));
         }
 
         {

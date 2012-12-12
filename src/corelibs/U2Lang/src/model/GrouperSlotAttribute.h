@@ -50,6 +50,7 @@ public:
 
     virtual Attribute *clone();
     virtual void updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap);
+    virtual void setAttributeValue(const QVariant &newVal);
 };
 
 } // U2

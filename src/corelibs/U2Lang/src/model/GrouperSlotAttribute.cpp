@@ -89,4 +89,9 @@ void GroupSlotAttribute::updateActorIds(const QMap<ActorId, ActorId> &actorIdsMa
     this->setAttributeValue(slotStr);
 }
 
+void GroupSlotAttribute::setAttributeValue(const QVariant &newVal) {
+    QString slotStr = newVal.toString();
+    Attribute::setAttributeValue(GrouperOutSlot::busMap2readable(slotStr));
+}
+
 } // U2
