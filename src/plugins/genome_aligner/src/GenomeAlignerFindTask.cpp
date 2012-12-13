@@ -103,16 +103,17 @@ void GenomeAlignerFindTask::run() {
     // If reference sequence contains Ns only, ShortReadAligners will return without waiting for all short reads.
     // GenomeAlignerTask will create another ReadShortReadsSubTask on GenomeAlignerFindTask->WriteAlignedReadsSubTask subtask finish
 
-    // Wait while all short reads are read -> ReadShortReadsSubTask finished reading.
-    // If there is valid index for at least one part of reference sequence,
-    // this will finish quickly because there will be no actual reading from the disk
-    int first = 0;
-    int length = 0;
-    do 
-    {
-        waitDataForAligning(first, length);
+    // Wait while ReadShortReadsSubTask finished reading.
+    while (true) {
+        QMutexLocker(&alignContext->readingStatusMutex);
+        bool isReadingStarted = alignContext->isReadingStarted;
+        bool isReadingFinished = alignContext->isReadingFinished;
+        if (isReadingStarted && isReadingFinished) {
+            break;
+        }
+
+        alignContext->readShortReadsWait.wait(&alignContext->readingStatusMutex);
     }
-    while (length > 0);
 }
 
 void GenomeAlignerFindTask::loadPartForAligning(int part) {
