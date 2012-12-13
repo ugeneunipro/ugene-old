@@ -200,7 +200,7 @@ public:
     // -------------- backward compatibility --------------
         static void parseOldAliases(Tokenizer & tokenizer, const QMap<QString, Actor*> & actorMap);
         static void parseAliasesHelp(Tokenizer & tokenizer, const QList<Actor*> & procs);
-        static Actor* deprecatedActorsReplacer(const QString &id, ParsedPairs &pairs);
+        static Actor* deprecatedActorsReplacer(const QString &id, const QString &protoId, ParsedPairs &pairs);
     // ----------------------------------------------------
 
     // if slot has no val-> add it to binding

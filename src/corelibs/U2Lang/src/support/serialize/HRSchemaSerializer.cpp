@@ -850,7 +850,7 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
     
     QString procScriptText = pairs.blockPairs.take(SCRIPT_ATTR);
     Actor * proc = NULL;
-    proc = deprecatedActorsReplacer(actorName, pairs); //AttributeScript always empty for replaced actors
+    proc = deprecatedActorsReplacer(actorName, procType, pairs); //AttributeScript always empty for replaced actors
     if(proto == NULL && proc == NULL) {
         throw ReadFailed(tr("Unknown type of %1 element: %2").arg(actorName).arg(procType));
     }
@@ -2338,31 +2338,31 @@ QString HRSchemaSerializer::actor2String(ExternalProcessConfig *cfg ) {
     return res;
 }
 
-Actor* HRSchemaSerializer::deprecatedActorsReplacer( const QString &id, ParsedPairs &pairs ){
+Actor* HRSchemaSerializer::deprecatedActorsReplacer(const QString &id, const QString &protoId, ParsedPairs &pairs ){
     Actor *a = NULL;
     ActorPrototype *apt = NULL;
-    if(id == U2::Workflow::CoreLibConstants::WRITE_CLUSTAL_PROTO_ID){
+    if(protoId == CoreLibConstants::WRITE_CLUSTAL_PROTO_ID){
         apt = WorkflowEnv::getProtoRegistry()->getProto(SchemaSerializer::getElemType(CoreLibConstants::WRITE_MSA_PROTO_ID));
-        a = apt->createInstance(CoreLibConstants::WRITE_MSA_PROTO_ID);
+        a = apt->createInstance(id);
         a->setParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::CLUSTAL_ALN);
         pairs.blockPairs.remove("accumulate");
         pairs.equalPairs.remove("accumulate");
     }
-    if(id == U2::Workflow::CoreLibConstants::WRITE_STOCKHOLM_PROTO_ID){
+    if(protoId == CoreLibConstants::WRITE_STOCKHOLM_PROTO_ID){
         apt = WorkflowEnv::getProtoRegistry()->getProto(SchemaSerializer::getElemType(CoreLibConstants::WRITE_MSA_PROTO_ID));
-        a = apt->createInstance(CoreLibConstants::WRITE_MSA_PROTO_ID);
+        a = apt->createInstance(id);
         a->setParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::STOCKHOLM);
         pairs.blockPairs.remove("accumulate");
         pairs.equalPairs.remove("accumulate");
     }
-    if(id == U2::Workflow::CoreLibConstants::WRITE_FASTQ_PROTO_ID){
+    if(protoId == CoreLibConstants::WRITE_FASTQ_PROTO_ID){
         apt = WorkflowEnv::getProtoRegistry()->getProto(SchemaSerializer::getElemType(CoreLibConstants::WRITE_SEQ_PROTO_ID));
-        a = apt->createInstance(CoreLibConstants::WRITE_SEQ_PROTO_ID);
+        a = apt->createInstance(id);
         a->setParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::FASTQ);
     }
-    if(id == U2::Workflow::CoreLibConstants::WRITE_GENBANK_PROTO_ID){
+    if(protoId == CoreLibConstants::WRITE_GENBANK_PROTO_ID){
         apt = WorkflowEnv::getProtoRegistry()->getProto(SchemaSerializer::getElemType(CoreLibConstants::WRITE_SEQ_PROTO_ID));
-        a = apt->createInstance(CoreLibConstants::WRITE_SEQ_PROTO_ID);
+        a = apt->createInstance(id);
         a->setParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::PLAIN_GENBANK);
     }
     return a;
