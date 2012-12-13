@@ -44,6 +44,8 @@ public:
     QList<URLContainer*> getUrls() const;
     QList<URLContainer*> & getUrls();
 
+    static QList<Dataset> getDefaultDatasetList();
+
 public:
     static const QString DEFAULT_NAME;
 

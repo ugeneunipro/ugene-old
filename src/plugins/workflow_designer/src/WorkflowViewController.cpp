@@ -56,7 +56,6 @@
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/DesignerUtils.h>
 #include <U2Designer/GrouperEditor.h>
-#include <U2Designer/DatasetsController.h>
 #include <U2Designer/MarkerEditor.h>
 #include <U2Designer/WizardController.h>
 #include <U2Gui/ExportImageDialog.h>
@@ -75,7 +74,6 @@
 #include <U2Lang/IncludedProtoFactory.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/MapDatatypeEditor.h>
-#include <U2Lang/URLAttribute.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowManager.h>
 #include <U2Lang/WorkflowRunTask.h>
@@ -185,13 +183,15 @@ scriptingMode(false) {
     connect(tabs, SIGNAL(currentChanged(int)), palette, SLOT(resetSelection()));
     connect(tabs, SIGNAL(currentChanged(int)), scene, SLOT(setHint(int)));
 
+    propertyEditor = new WorkflowEditor(this);
+    propertyEditor->setIterated(scene->isIterated());
+
     sceneView->setAlignment(Qt::AlignCenter);
     infoSplitter = new QSplitter(Qt::Vertical, splitter);
     infoSplitter->addWidget(sceneView);
     {
-        specialParameters = new SpecialParametersPanel(infoSplitter);
-        connect(specialParameters, SIGNAL(si_dataChanged()), scene, SLOT(setModified()));
-        connect(specialParameters, SIGNAL(si_dataChanged()), scene, SLOT(sl_updateDocs()));
+        SpecialParametersPanel *specialParameters = new SpecialParametersPanel(propertyEditor);
+        propertyEditor->setSpecialPanel(specialParameters);
         QGroupBox* w = new QGroupBox(infoSplitter);
         w->setFlat(true);
         w->setTitle(tr("Error list"));
@@ -206,9 +206,6 @@ scriptingMode(false) {
         infoSplitter->addWidget(specialParameters);
     }
     splitter->addWidget(infoSplitter);
-
-    propertyEditor = new WorkflowEditor(this);
-    propertyEditor->setIterated(scene->isIterated());
     splitter->addWidget(propertyEditor);
 
     Settings* settings = AppContext::getSettings();
@@ -1466,7 +1463,6 @@ void WorkflowView::sl_editItem() {
         if (it->type() == WorkflowProcessItemType) {
             Actor *a = qgraphicsitem_cast<WorkflowProcessItem*>(it)->getProcess();
             propertyEditor->editActor(a);
-            specialParameters->editActor(a);
             return;
         }
         Port* p = NULL;
@@ -1486,7 +1482,6 @@ void WorkflowView::sl_editItem() {
         propertyEditor->editPort(p);
     } else {
         propertyEditor->reset();
-        specialParameters->reset();
     }
 }
 
@@ -2157,54 +2152,6 @@ void WorkflowScene::connectConfigurationEditors() {
             }
         }
     }
-}
-
-/************************************************************************/
-/* SpecialParametersPanel */
-/************************************************************************/
-SpecialParametersPanel::SpecialParametersPanel(QWidget *parent)
-: QWidget(parent), controller(NULL)
-{
-    QVBoxLayout *l = new QVBoxLayout(this);
-    l->setContentsMargins(0, 0, 0, 0);
-    this->setLayout(l);
-}
-
-SpecialParametersPanel::~SpecialParametersPanel() {
-    delete controller;
-    controller = NULL;
-}
-
-void SpecialParametersPanel::editActor(Actor *a) {
-    reset();
-
-    Attribute *attr = a->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
-    CHECK(NULL != attr, );
-    URLAttribute *urlAttr = dynamic_cast<URLAttribute*>(attr);
-    CHECK(NULL != urlAttr, );
-
-    controller = new DatasetsController(urlAttr);
-    connect(controller, SIGNAL(si_attributeChanged()), SIGNAL(si_dataChanged()));
-    addWidget();
-    this->show();
-}
-
-void SpecialParametersPanel::reset() {
-    removeWidget();
-
-    delete controller;
-    controller = NULL;
-    this->hide();
-}
-
-void SpecialParametersPanel::addWidget() {
-    CHECK(NULL != controller, );
-    this->layout()->addWidget(controller->getWigdet());
-}
-
-void SpecialParametersPanel::removeWidget() {
-    CHECK(NULL != controller, );
-    this->layout()->removeWidget(controller->getWigdet());
 }
 
 /************************************************************************/

@@ -23,6 +23,7 @@
 #include "WorkflowEditorDelegates.h"
 #include "IterationListWidget.h"
 
+#include <U2Lang/URLAttribute.h>
 #include <U2Lang/WorkflowUtils.h>
 
 #include <QtGui/QPushButton>
@@ -122,7 +123,13 @@ public:
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
         }
 
-        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        Attribute *attr = item->actor->getParameter(item->name);
+        if (NULL == dynamic_cast<URLAttribute*>(attr)) {
+            result |= Qt::ItemIsEditable;
+        }
+
+        return result;
     }
 
     QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const {

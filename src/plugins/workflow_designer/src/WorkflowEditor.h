@@ -23,6 +23,7 @@
 #define _U2_WORKFLOW_EDITOR_H_
 
 #include <U2Lang/ActorModel.h>
+#include <U2Lang/Dataset.h>
 #include <U2Lang/Schema.h>
 #include <ui/ui_WorkflowEditorWidget.h>
 
@@ -30,9 +31,11 @@
 
 namespace U2 {
 using namespace Workflow;
-class WorkflowView;
-class IterationListWidget;
 class ActorCfgModel;
+class DatasetsController;
+class IterationListWidget;
+class SpecialParametersPanel;
+class WorkflowView;
 
 class WorkflowEditor : public QWidget, Ui_WorkflowEditorWidget
 {
@@ -44,7 +47,7 @@ public:
     QVariant saveState() const;
     void restoreState(const QVariant&);
 
-    Iteration getCurrentIteration() const;
+    Iteration & getCurrentIteration() const;
     void changeScriptMode(bool _mode);
 
     void setEditable(bool editable);
@@ -52,6 +55,9 @@ public:
     bool eventFilter(QObject* object, QEvent* event);
 
     void setIterated(bool iterated);
+
+    void setSpecialPanel(SpecialParametersPanel *panel);
+    void commitDatasets(const QString &attrId, const QList<Dataset> &sets);
 
 signals:
     void iterationSelected();
@@ -67,6 +73,7 @@ public slots:
     void resetIterations();
     void commitIterations();
     void sl_iteratedChanged();
+    void sl_iterationSelected();
     void sl_resizeSplitter(bool);
     
 protected:
@@ -88,6 +95,7 @@ private:
     void changeSizes(QWidget *w, int h);
 
 private:
+    SpecialParametersPanel *specialParameters;
     IterationListWidget* iterationList;
     WorkflowView* owner;
     ConfigurationEditor* custom;
@@ -99,6 +107,31 @@ private:
     QList<QWidget *> inputPortWidget;
     QList<QWidget *> outputPortWidget;
     int paramHeight, inputHeight, outputHeight;
+};
+
+class SpecialParametersPanel : public QWidget {
+    Q_OBJECT
+public:
+    SpecialParametersPanel(WorkflowEditor *parent);
+    virtual ~SpecialParametersPanel();
+
+    void editActor(Actor *a);
+    void reset();
+
+signals:
+    void si_dataChanged();
+
+private slots:
+    void sl_datasetsChanged();
+
+private:
+    WorkflowEditor *editor;
+    QMap<QString, DatasetsController*> controllers; // attrId <-> controller
+    QMap<QString, QList<Dataset> > sets; // attrId <-> datasets
+
+private:
+    void addWidget(DatasetsController *controller);
+    void removeWidget(DatasetsController *controller);
 };
 
 

@@ -444,29 +444,49 @@ void HRSchemaSerializer::Tokenizer::tokenizeLine(const QString & l, QTextStream 
     addToken(curToken);
 }
 
-HRSchemaSerializer::ParsedPairs::ParsedPairs(HRSchemaSerializer::Tokenizer & tokenizer) {
-    init(tokenizer);
+static QString skipBlock(HRSchemaSerializer::Tokenizer & tokenizer) {
+    QString skipped;
+    while(tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
+        QString tok = tokenizer.take();
+        skipped += "\n" + valueString(tok);;
+        if( tok == HRSchemaSerializer::BLOCK_START ) {
+            skipped += skipBlock(tokenizer);
+            skipped += "\n" + HRSchemaSerializer::BLOCK_END;
+        }
+    }
+    tokenizer.take();
+    return skipped;
+}
+
+HRSchemaSerializer::ParsedPairs::ParsedPairs(HRSchemaSerializer::Tokenizer & tokenizer, bool bigBlocks) {
+    init(tokenizer, bigBlocks);
 }
 
 HRSchemaSerializer::ParsedPairs::ParsedPairs(const QString & data, int unparseableBlockDepth) {
     HRSchemaSerializer::Tokenizer tokenizer;
     tokenizer.tokenize(data, unparseableBlockDepth);
-    init(tokenizer);
+    init(tokenizer, false);
 }
 
-void HRSchemaSerializer::ParsedPairs::init(Tokenizer & tokenizer) {
+void HRSchemaSerializer::ParsedPairs::init(Tokenizer & tokenizer, bool bigBlocks) {
     while(tokenizer.notEmpty() && tokenizer.look() != BLOCK_END) {
         QString tok = tokenizer.take();
         QString next = tokenizer.take();
-        QString value = tokenizer.take();
         if( next == EQUALS_SIGN ) {
+            QString value = tokenizer.take();
             equalPairs[tok] = value;
             equalPairsList << StringPair(tok, value);
         }
         else if(next == BLOCK_START) {
+            QString value;
+            if (bigBlocks) {
+                value = skipBlock(tokenizer);
+            } else {
+                value = tokenizer.take();
+                tokenizer.assertToken(BLOCK_END);
+            }
             blockPairs.insertMulti(tok, value);
             blockPairsList << StringPair(tok, value);
-            tokenizer.assertToken(BLOCK_END);
         }
         else {
             throw ReadFailed(HRSchemaSerializer::tr("Expected %3 or %1 after %2").arg(BLOCK_START).arg(tok).arg(EQUALS_SIGN));
@@ -735,11 +755,11 @@ void HRSchemaSerializer::deprecatedUrlAttribute(Actor *proc, const QString &urls
     }
 }
 
-void HRSchemaSerializer::parseUrlAttribute(Actor *proc, QList<StringPair> &blockPairs) {
+QList<Dataset> HRSchemaSerializer::parseUrlAttribute(const QString attrId, QList<StringPair> &blockPairs) {
     QList<Dataset> sets;
     QStringList setBlocks;
     foreach (const StringPair &pair, blockPairs) {
-        if (BaseAttributes::URL_IN_ATTRIBUTE().getId() == pair.first) {
+        if (attrId == pair.first) {
             setBlocks << pair.second;
             blockPairs.removeOne(pair);
         }
@@ -780,10 +800,7 @@ void HRSchemaSerializer::parseUrlAttribute(Actor *proc, QList<StringPair> &block
         sets << dSet;
     }
 
-    Attribute *a = proc->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
-    if (NULL != a) {
-        a->setAttributeValue(qVariantFromValue< QList<Dataset> >(sets));
-    }
+    return sets;
 }
 
 URLContainer * HRSchemaSerializer::parseDirectoryUrl(Tokenizer &tokenizer) {
@@ -860,8 +877,9 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
         }
         if (GROUPER_SLOT_GROUP == a->getGroup()) {
             parseGrouperOutSlots(proc, pairs.blockPairs.values(key), key);
-        } else if (a->getId() == BaseAttributes::URL_IN_ATTRIBUTE().getId()) {
-            parseUrlAttribute(proc, pairs.blockPairsList);
+        } else if (NULL != dynamic_cast<URLAttribute*>(a)) {
+            QList<Dataset> sets = parseUrlAttribute(a->getId(), pairs.blockPairsList);
+            a->setAttributeValue(qVariantFromValue< QList<Dataset> >(sets));
         } else {
             proc->getParameter(key)->getAttributeScript().setScriptText(pairs.blockPairs.value(key));
         }
@@ -1088,16 +1106,6 @@ void HRSchemaSerializer::parseMarkerDefinition(Actor *proc, const QString &marke
     outPort->setNewType(newType);
 }
 
-static void skipBlock(HRSchemaSerializer::Tokenizer & tokenizer) {
-    while(tokenizer.look() != HRSchemaSerializer::BLOCK_END) {
-        QString tok = tokenizer.take();
-        if( tok == HRSchemaSerializer::BLOCK_START ) {
-            skipBlock(tokenizer);
-        }
-    }
-    tokenizer.take();
-}
-
 Iteration HRSchemaSerializer::parseIteration(Tokenizer & tokenizer, const QString & iterationName, 
                                              const QMap<QString, Actor*> & actorMap, bool pasteMode) {
     QPair<QString, QString> idPair = ParsedPairs::parseOneEqual(tokenizer);
@@ -1125,14 +1133,23 @@ Iteration HRSchemaSerializer::parseIteration(Tokenizer & tokenizer, const QStrin
         }
         
         tokenizer.assertToken(BLOCK_START);
-        ParsedPairs pairs(tokenizer);
+        ParsedPairs pairs(tokenizer, true /*bigBlocks*/);
         tokenizer.assertToken(BLOCK_END);
-        
-        if( !pairs.blockPairs.isEmpty() ) {
-            throw ReadFailed(tr("No block definitions allowed in .iteration block: %1").arg(iteration.name));
-        }
-        foreach(const QString & key, pairs.equalPairs.keys()) {
-            iteration.cfg[actorMap[actorName]->getId()][key] = getAttrValue(actorMap[actorName], key, pairs.equalPairs.value(key));
+
+        QString actorId = actorMap[actorName]->getId();
+        foreach (Attribute *attr, actorMap[actorName]->getParameters()) {
+            QString attrId = attr->getId();
+            if (pairs.equalPairs.contains(attrId)) {
+                iteration.cfg[actorId][attrId] =
+                    getAttrValue(actorMap[actorName], attrId, pairs.equalPairs[attrId]);
+            }
+            if (NULL == dynamic_cast<URLAttribute*>(attr)) {
+                continue;
+            }
+            QList<Dataset> sets = parseUrlAttribute(attrId, pairs.blockPairsList);
+            if (!sets.isEmpty()) {
+                iteration.cfg[actorId][attrId] = qVariantFromValue(sets);
+            }
         }
     }
     return iteration;
@@ -1811,18 +1828,18 @@ private:
     QString result;
 };
 
-static QString inUrlDefinitionBlocks(const QList<Dataset> &sets) {
+static QString inUrlDefinitionBlocks(const QString &attrId, const QList<Dataset> &sets, int depth) {
     QString res;
     foreach (const Dataset &dSet, sets) {
         QString setDef;
-        setDef += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::DATASET_NAME, dSet.getName(), 3);
+        setDef += HRSchemaSerializer::makeEqualsPair(HRSchemaSerializer::DATASET_NAME, dSet.getName(), depth + 1);
         foreach (URLContainer *url, dSet.getUrls()) {
-            HRUrlSerializer us(3);
+            HRUrlSerializer us(depth + 1);
             url->accept(&us);
             setDef += us.getResult();
         }
-        res += HRSchemaSerializer::makeBlock(BaseAttributes::URL_IN_ATTRIBUTE().getId(),
-            HRSchemaSerializer::NO_NAME, setDef, 2);
+        res += HRSchemaSerializer::makeBlock(attrId,
+            HRSchemaSerializer::NO_NAME, setDef, depth);
     }
     return res;
 }
@@ -1852,7 +1869,7 @@ static QString elementsDefinitionBlock(Actor * actor, bool copyMode) {
                 QVariant v = attribute->getAttributePureValue();
                 if (v.canConvert< QList<Dataset> >()) {
                     QList<Dataset> sets = v.value< QList<Dataset> >();
-                    res += inUrlDefinitionBlocks(sets);
+                    res += inUrlDefinitionBlocks(BaseAttributes::URL_IN_ATTRIBUTE().getId(), sets, 2);
                     continue;
                 }
             }
@@ -2045,11 +2062,16 @@ static QString elementsIterationData(const QVariantMap & data) {
     foreach( const QString & attributeId, data.uniqueKeys() ) {
         assert(!attributeId.contains(QRegExp("\\s")));
         QVariant value = data.value(attributeId);
-        assert(value.isNull() || value.canConvert<QString>());
-        QString valueStr = value.toString();
-        if(!valueStr.isEmpty()) {
-            res += HRSchemaSerializer::makeEqualsPair(attributeId, valueStr, 3);
+        assert(!value.isNull());
+        if (value.canConvert<QString>()) {
+            QString valueStr = value.toString();
+            if(!valueStr.isEmpty()) {
+                res += HRSchemaSerializer::makeEqualsPair(attributeId, valueStr, 3);
+            }
+        } else if (value.canConvert< QList<Dataset> >()) {
+            res += inUrlDefinitionBlocks(attributeId, value.value< QList<Dataset> >(), 3);
         }
+
     }
     return res;
 }

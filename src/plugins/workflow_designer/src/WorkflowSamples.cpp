@@ -242,10 +242,9 @@ void LoadSamplesTask::scanDir( const QString& s) {
         in.setCodec("UTF-8");
         Sample sample;
         sample.content = in.readAll();
-        
-        Schema schema;
+
         Metadata meta;
-        QString err = HRSchemaSerializer::string2Schema(sample.content, &schema, &meta);
+        QString err = HRSchemaSerializer::string2Schema(sample.content, NULL, &meta);
         if(!err.isEmpty()) {
             coreLog.error(tr("Failed to load sample: %1").arg(err));
             continue;

@@ -26,10 +26,16 @@
 
 #include "ActorCfgModel.h"
 
-#include <U2Core/Settings.h>
 #include <U2Core/Log.h>
-#include <U2Lang/WorkflowUtils.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Designer/DatasetsController.h>
+
+#include <U2Lang/BaseAttributes.h>
 #include <U2Lang/MapDatatypeEditor.h>
+#include <U2Lang/URLAttribute.h>
+#include <U2Lang/WorkflowUtils.h>
 
 #include <QtGui/QAction>
 #include <QtGui/QHeaderView>
@@ -41,7 +47,8 @@
 namespace U2 {
 
 WorkflowEditor::WorkflowEditor(WorkflowView *p) 
-: QWidget(p), owner(p), custom(NULL), customWidget(NULL), subject(NULL), actor(NULL)
+: QWidget(p), specialParameters(NULL), owner(p), custom(NULL),
+customWidget(NULL), subject(NULL), actor(NULL)
 {
     setupUi(this);
 
@@ -88,7 +95,7 @@ WorkflowEditor::WorkflowEditor(WorkflowView *p)
     connect(iterationList, SIGNAL(selectionChanged()), SLOT(updateIterationData()));
     connect(iterationList, SIGNAL(listChanged()), SLOT(commitIterations()));
     connect(iterationList, SIGNAL(iteratedChanged()), SLOT(sl_iteratedChanged()));
-    connect(iterationList, SIGNAL(selectionChanged()), SIGNAL(iterationSelected()));
+    connect(iterationList, SIGNAL(selectionChanged()), SLOT(sl_iterationSelected()));
 
     connect(nameEdit, SIGNAL(editingFinished()), SLOT(editingLabelFinished()));
 
@@ -97,6 +104,13 @@ WorkflowEditor::WorkflowEditor(WorkflowView *p)
     
     // FIXME
     //connect(doc, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_contextMenuForDoc(const QPoint &)));
+}
+
+void WorkflowEditor::sl_iterationSelected() {
+    if (NULL != specialParameters && NULL != actor) {
+        specialParameters->editActor(actor);
+    }
+    emit iterationSelected();
 }
 
 void WorkflowEditor::setEditable(bool editable) {
@@ -169,8 +183,8 @@ void WorkflowEditor::selectIteration(int id) {
     iterationList->selectIteration(id);
 }
 
-Iteration WorkflowEditor::getCurrentIteration() const {
-    return iterationList->list().at(iterationList->current());
+Iteration & WorkflowEditor::getCurrentIteration() const {
+    return iterationList->list()[iterationList->current()];
 }
 
 void WorkflowEditor::updateIterationData() {
@@ -245,12 +259,24 @@ void WorkflowEditor::reset() {
     paramHeight = 0;
     inputHeight = 0;
     outputHeight = 0;
+    if (NULL != specialParameters) {
+        specialParameters->setEnabled(false);
+        specialParameters->reset();
+    }
 }
 
 void WorkflowEditor::resetIterations() {
     //disconnect(iterationList, SIGNAL(listChanged()), this, SLOT(commitIterations()));
     iterationList->setList(owner->getIterations());
     //connect(iterationList, SIGNAL(listChanged()), SLOT(commitIterations()));
+}
+
+void WorkflowEditor::commitDatasets(const QString &attrId, const QList<Dataset> &sets) {
+    assert(NULL != actor);
+    Iteration &current = getCurrentIteration();
+    QVariantMap &data = current.cfg[actor->getId()];
+    data[attrId] = qVariantFromValue(sets);
+    commitIterations();
 }
 
 void WorkflowEditor::commitIterations() {
@@ -349,6 +375,9 @@ void WorkflowEditor::editActor(Actor* a) {
             outputPortBox->setVisible(false);
             outputPortBox->resize(0,0);
         }
+        if (NULL != specialParameters) {
+            specialParameters->editActor(a);
+        }
     }
 }
 
@@ -440,6 +469,9 @@ void WorkflowEditor::setDescriptor(Descriptor* d, const QString& hint) {
 
 void WorkflowEditor::edit(Configuration* cfg) {
     paramBox->setEnabled(true);
+    if (NULL != specialParameters) {
+        specialParameters->setEnabled(true);
+    }
     disconnect(paramBox, SIGNAL(toggled(bool)), tableSplitter, SLOT(setVisible(bool)));
 
     if (customWidget) {
@@ -543,6 +575,85 @@ void WorkflowEditor::sl_linkActivated(const QString& url) {
         table->selectionModel()->reset();
     }
     table->setCurrentIndex(modelIndex);
+}
+
+void WorkflowEditor::setSpecialPanel(SpecialParametersPanel *panel) {
+    assert(NULL == specialParameters);
+    specialParameters = panel;
+}
+
+/************************************************************************/
+/* SpecialParametersPanel */
+/************************************************************************/
+SpecialParametersPanel::SpecialParametersPanel(WorkflowEditor *parent)
+: QWidget(parent), editor(parent)
+{
+    QVBoxLayout *l = new QVBoxLayout(this);
+    l->setContentsMargins(0, 0, 0, 0);
+    this->setLayout(l);
+}
+
+SpecialParametersPanel::~SpecialParametersPanel() {
+    qDeleteAll(controllers);
+    controllers.clear();
+}
+
+void SpecialParametersPanel::editActor(Actor *a) {
+    reset();
+
+    bool visible = false;
+    foreach (const QString attrId, a->getParameters().keys()) {
+        Attribute *attr = a->getParameter(attrId);
+        CHECK(NULL != attr, );
+        URLAttribute *urlAttr = dynamic_cast<URLAttribute*>(attr);
+        if (NULL == urlAttr) {
+            continue;
+        }
+        QVariantMap cfg = editor->getCurrentIteration().getConfig().value(a->getId());
+        if (cfg.contains(attrId)) {
+            sets[attrId] = cfg[attrId].value< QList<Dataset> >();
+        } else {
+            sets[attrId] = Dataset::getDefaultDatasetList();
+        }
+        controllers[attrId] = new DatasetsController(sets[attrId]);
+        connect(controllers[attrId], SIGNAL(si_attributeChanged()), SLOT(sl_datasetsChanged()));
+        addWidget(controllers[attrId]);
+        visible = true;
+    }
+
+    if (visible) {
+        this->show();
+    }
+}
+
+void SpecialParametersPanel::sl_datasetsChanged() {
+    DatasetsController *ctrl = dynamic_cast<DatasetsController*>(sender());
+    CHECK(NULL != ctrl, );
+    CHECK(controllers.values().contains(ctrl), );
+    QString attrId = controllers.key(ctrl);
+    editor->commitDatasets(attrId, sets[attrId]);
+}
+
+void SpecialParametersPanel::reset() {
+    foreach (DatasetsController *controller, controllers.values()) {
+        removeWidget(controller);
+        delete controller;
+        controller = NULL;
+    }
+    controllers.clear();
+    sets.clear();
+    this->hide();
+}
+
+void SpecialParametersPanel::addWidget(DatasetsController *controller) {
+    CHECK(NULL != controller, );
+    this->layout()->addWidget(controller->getWigdet());
+}
+
+void SpecialParametersPanel::removeWidget(DatasetsController *controller) {
+    CHECK(NULL != controller, );
+    disconnect(controller, SIGNAL(si_attributeChanged()), this, SLOT(sl_datasetsChanged()));
+    this->layout()->removeWidget(controller->getWigdet());
 }
 
 }//namespace

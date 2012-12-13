@@ -28,6 +28,7 @@
 #include <QtCore/QByteArray>
 #include <U2Core/global.h>
 #include <U2Lang/Aliasing.h>
+#include <U2Lang/Dataset.h>
 #include <U2Lang/Schema.h>
 #include <U2Lang/Port.h>
 #include <U2Lang/ActorModel.h>
@@ -150,7 +151,7 @@ public:
 
     class U2LANG_EXPORT ParsedPairs {
     public:
-        ParsedPairs(Tokenizer & tokenizer);
+        ParsedPairs(Tokenizer & tokenizer, bool bigBlocks = false);
         ParsedPairs(const QString & data, int unparseableBlockDepth = INT_MAX);
         ParsedPairs() {}
         QMap<QString, QString> equalPairs;
@@ -161,7 +162,7 @@ public:
         
         static QPair<QString, QString> parseOneEqual(Tokenizer & tokenizer);
     private:
-        void init(Tokenizer & tokenizer);
+        void init(Tokenizer & tokenizer, bool bigBlocks);
     }; // ParsedPairs
 
     class U2LANG_EXPORT FlowGraph {
@@ -238,7 +239,7 @@ public:
 
 private:
     static GrouperSlotAction parseAction(Tokenizer &tokenizer);
-    static void parseUrlAttribute(Actor *proc, QList<StringPair> &blockPairs);
+    static QList<Dataset> parseUrlAttribute(const QString attrId, QList<StringPair> &blockPairs);
     static void deprecatedUrlAttribute(Actor *proc, const QString &urls);
     static URLContainer * parseDirectoryUrl(Tokenizer &tokenizer);
     static void checkHeaderLine(const QString &line, Tokenizer &tokenizer);

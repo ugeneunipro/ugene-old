@@ -77,6 +77,10 @@ QList<URLContainer*> & Dataset::getUrls() {
     return urls;
 }
 
+QList<Dataset> Dataset::getDefaultDatasetList() {
+    return QList<Dataset>() << Dataset();
+}
+
 /************************************************************************/
 /* DatasetFilesIterator */
 /************************************************************************/
