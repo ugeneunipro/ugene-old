@@ -122,6 +122,8 @@ private:
     
     bool                completeRedraw;
     QPixmap*            cachedView;
+
+    QObject *childObject;
     
     //works in interactive mode with the view -> so we need to cache it
     ConsensusSelectorDialogController* consensusDialog;

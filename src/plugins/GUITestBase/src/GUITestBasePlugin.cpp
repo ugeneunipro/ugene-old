@@ -41,6 +41,7 @@
 #include "tests/common_scenarios/project/anonymous_project/GTTestsProjectAnonymousProject.h"
 #include "tests/common_scenarios/msa_editor/GTTestsMsaEditor.h"
 #include "tests/common_scenarios/msa_editor/colors/GTTestsMSAEditorColors.h"
+#include "tests/common_scenarios/msa_editor/consensus/GTTestsMSAEditorConsensus.h"
 #include "tests/common_scenarios/annotations/GTTestsAnnotations.h"
 #include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
 #include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
@@ -419,6 +420,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_colors::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_colors::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_colors::test_0004);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/msa_editor/colors
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_consensus::test_0001);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/document_from_text/

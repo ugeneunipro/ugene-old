@@ -53,6 +53,10 @@ MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI* _ui) : editor(_ui->e
     selecting = false;
     cachedView = new QPixmap();
 
+    QObject *parent=new QObject(this);
+    parent->setObjectName("parent");
+    childObject = new QObject(parent);
+
     connect(ui->seqArea, SIGNAL(si_startChanged(const QPoint&, const QPoint&)), SLOT(sl_startChanged(const QPoint&, const QPoint&)));
     connect(ui->seqArea, SIGNAL(si_selectionChanged(const MSAEditorSelection&, const MSAEditorSelection&) ), SLOT(sl_selectionChanged(const MSAEditorSelection&, const MSAEditorSelection&)) );
     connect(ui->editor, SIGNAL(si_zoomOperationPerformed(bool)), SLOT(sl_zoomOperationPerformed(bool)));
@@ -94,10 +98,15 @@ MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI* _ui) : editor(_ui->e
     connect(consensusCache->getConsensusAlgorithm(), SIGNAL(si_thresholdChanged(int)), SLOT(sl_onConsensusThresholdChanged(int)));
     addAction(ui->getCopySelectionAction());
     restoreLastUsedConsensusThreshold();
+
+    this->setObjectName("consArea");
+
+
 }
 
 MSAEditorConsensusArea::~MSAEditorConsensusArea() {
     delete cachedView;
+    delete childObject;
 }
 
 bool MSAEditorConsensusArea::event(QEvent* e) {
@@ -193,6 +202,7 @@ void MSAEditorConsensusArea::drawConsensus(QPainter& p) {
     int lastPos = ui->seqArea->getLastVisibleBase(true);
     for (int pos = startPos; pos <= lastPos; pos++) {
         drawConsensusChar(p, pos, false);
+
     }
 }
 
@@ -210,6 +220,7 @@ void MSAEditorConsensusArea::drawConsensusChar(QPainter& p, int pos, bool select
     if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
         char c = consensusCache->getConsensusChar(pos);
         p.drawText(cr, Qt::AlignVCenter | Qt::AlignHCenter, QString(c));
+        childObject->setObjectName(childObject->objectName()+c);
     }
 }
 
