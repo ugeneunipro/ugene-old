@@ -67,7 +67,7 @@ WorkflowRunTask::WorkflowRunTask(const Schema& sh, QList<Iteration> lst, const Q
 WorkflowAbstractRunner(tr("Execute workflow"), TaskFlags(TaskFlag_NoRun) | TaskFlag_ReportingIsSupported), rmap(remap), flows(sh.getFlows()) {
     GCOUNTER( cvar, tvar, "WorkflowRunTask" );
     if (lst.isEmpty()) { //  non-iterated schema
-        lst << Iteration("Default iteration");
+        lst << sh.extractIterationFromConfig();
     }
     assert(!lst.isEmpty());
     foreach(const Iteration& it, lst) {
@@ -396,7 +396,7 @@ WorkflowAbstractRunner(tr("Execute workflow in separate process"), TaskFlags(Tas
     GCOUNTER(cvar, tvar, "WorkflowRunInProcessTask");
     QList<Iteration> iters = its;
     if (iters.isEmpty()) { //  non-iterated schema
-        iters << Iteration("Default iteration");
+        iters << sc.extractIterationFromConfig();
     }
     assert(!iters.isEmpty());
     foreach(const Iteration& it, iters) {
