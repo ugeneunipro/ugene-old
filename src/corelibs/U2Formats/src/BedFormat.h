@@ -50,6 +50,8 @@ public:
                           // Block sizes is a comma-separated list of the block sizes
                           // Block starts is a comma-separated list of block starts
 
+    bool hasTrackLine;
+
     FormatDetectionScore getFormatDetectionScore();
 
     bool isFileInvalid() {
@@ -121,10 +123,11 @@ protected:
     * A common method for parsing and validating an input file.
     * It is used during loading the file or just getting the annotations data from it.
     */
-    QList<SharedAnnotationData> parseDocument(IOAdapter* io, QString& seqName, const QString& defaultAnnotName, U2OpStatus& os);
+    QHash<QString, QList<SharedAnnotationData> > parseDocument(IOAdapter* io, const QString& defaultAnnotName, U2OpStatus& os);
 
 private:
     void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os);
+    inline void addToResults(QHash<QString, QList<SharedAnnotationData> > & resHash, QList<SharedAnnotationData>& result, const QString& seqName );
 
     static const QString FORMAT_NAME;
 

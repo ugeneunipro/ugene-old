@@ -53,7 +53,8 @@ BEDLineValidateFlags::BEDLineValidateFlags()
       incorrectStrand(false),
       incorrectThickCoordinates(false),
       incorrectItemRgb(false),
-      incorrectBlocks(false)
+      incorrectBlocks(false),
+      hasTrackLine(false)
 {
 }
 
@@ -63,7 +64,7 @@ FormatDetectionScore BEDLineValidateFlags::getFormatDetectionScore()
         return FormatDetection_NotMatched;
     }
 
-    if (incorrectScore || incorrectStrand || incorrectBlocks) {
+    if (incorrectScore || incorrectStrand || incorrectBlocks || !hasTrackLine) {
         return FormatDetection_LowSimilarity;
     }
 
@@ -117,11 +118,10 @@ Document* BedFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 
 void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
 {
-    QString sequenceName;
     QString defaultAnnotName = "misc_feature";
-    QList<SharedAnnotationData> annotations = parseDocument(io, sequenceName, defaultAnnotName, os);
+    const QHash<QString, QList<SharedAnnotationData> >& annotationsHash = parseDocument(io, defaultAnnotName, os);
 
-    foreach (SharedAnnotationData annotData, annotations) {
+    foreach(const QString& sequenceName, annotationsHash.keys()){
         QString annotTableName = sequenceName + FEATURES_TAG;
         AnnotationTableObject* annotTable = NULL;
         foreach (GObject* object, objects) {
@@ -140,7 +140,10 @@ void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
             groupName = "Group"; // or set this name if the annotation name is not appropriate
         }
 
-        annotTable->addAnnotation(new Annotation(annotData), groupName);
+        const QList<SharedAnnotationData>& annotations = annotationsHash.value(sequenceName);
+        foreach (const SharedAnnotationData& annotData, annotations) {
+            annotTable->addAnnotation(new Annotation(annotData), groupName);
+        }
     }
 }
 
@@ -425,7 +428,7 @@ FormatCheckResult BedFormat::checkRawData(const QByteArray& rawData, const GUrl&
         numToIterate = fileLines.size() - 1;
     }
 
-    bool trackLineDetected = false; // A line that starts with "track" keyword must be present
+    bool trackLineDetected = false; // A line that starts with "track" keyword should be present
     int numberOfFieldsPerLine = 0;
     bool firstAnnotLine = true;
     for (int i = 0; i < numToIterate; ++i) {
@@ -459,13 +462,14 @@ FormatCheckResult BedFormat::checkRawData(const QByteArray& rawData, const GUrl&
             }
         }
     }
+    validationStatus.hasTrackLine = trackLineDetected;
 
-    if (!trackLineDetected) {
-        return FormatDetection_NotMatched;
-    }
-    else {
+//     if (!trackLineDetected) {
+//         return FormatDetection_NotMatched;
+//     }
+//     else {
         return validationStatus.getFormatDetectionScore();
-    }
+//    }
 }
 
 #define READ_BUFF_SIZE 4096
@@ -485,9 +489,13 @@ QList<SharedAnnotationData> BedFormat::getAnnotData(IOAdapter *io, U2OpStatus &o
 {
     std::auto_ptr<QObject> parent(new QObject());
     BedFormat bedFormat(parent.get());
-    QString seqName;
     QString annotName = "misc_feature";
-    return bedFormat.parseDocument(io, seqName, annotName, os);
+    QList<SharedAnnotationData> res;
+    const QHash<QString, QList<SharedAnnotationData> >& resHash =  bedFormat.parseDocument(io, annotName, os);
+    foreach(const QString& seqName, resHash.keys()){
+        res.append(resHash.value(seqName));
+    }
+    return res;
 }
 
 
@@ -562,9 +570,12 @@ bool parseTrackLine(const QString& trackLine, QString& trackName, QString& track
 }
 
 
-QList<SharedAnnotationData> BedFormat::parseDocument(
-    IOAdapter* io, QString& seqName, const QString& defaultAnnotName, U2OpStatus& os)
+
+QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
+    IOAdapter* io, const QString& defaultAnnotName, U2OpStatus& os)
 {
+    QString seqName;
+    QHash<QString, QList<SharedAnnotationData> > resultHash;
     QList<SharedAnnotationData> result;
 
     int length;
@@ -572,6 +583,7 @@ QList<SharedAnnotationData> BedFormat::parseDocument(
     QString qstrbuf;
 
     bool fileIsValid = true;
+    bool noHeader = false;
 
     // Parse and validate the header: ignore lines with "browser"
     // Search the 'track' line and get parameters from it
@@ -591,8 +603,8 @@ QList<SharedAnnotationData> BedFormat::parseDocument(
             break; // Stop parsing the header when 'track' line has been detected
         }
         else {
-            fileIsValid = false;
-            ioLog.trace(tr("BED parsing error: unexpected line at the header of the file: '%1'!").arg(qstrbuf));
+            noHeader = true;
+            break;
         }
     }
 
@@ -615,17 +627,20 @@ QList<SharedAnnotationData> BedFormat::parseDocument(
         // Check that an annotation can be created
         if (true == validationStatus.incorrectNumberOfFields) {
             os.setError(tr("BED parsing error: incorrect number of fields at line %1!").arg(lineNumber));
-            return result;
+            addToResults(resultHash, result, seqName);
+            return resultHash;
         }
 
         if (true == validationStatus.emptyFields) {
             os.setError(tr("BED parsing error: a field at line %1 is empty!").arg(lineNumber));
-            return result;
+            addToResults(resultHash, result, seqName);
+            return resultHash;
         }
 
         if (true == validationStatus.incorrectCoordinates) {
             os.setError(tr("BED parsing error: incorrect coordinates at line %1!").arg(lineNumber));
-            return result;
+            addToResults(resultHash, result, seqName);
+            return resultHash;
         }
 
         // If file is invalid, but can be parsed an error is written to the log,
@@ -634,16 +649,15 @@ QList<SharedAnnotationData> BedFormat::parseDocument(
             fileIsValid = false;
         }
 
-        // Verify the sequence name (error doesn't occur, just warning)
         if (!seqName.isEmpty()) {
             if (bedLineData.seqName != seqName) {
-                ioLog.trace(tr("BED parsing warning: different sequence names were detected"
-                    " in an input BED file. Sequence name '%1' is used.").arg(seqName));
+                addToResults(resultHash, result, seqName);
+                seqName = bedLineData.seqName;
             }
         }
         else {
-            seqName = bedLineData.seqName;
-        }
+           seqName = bedLineData.seqName;
+       }
 
         // Create the annotation
         SharedAnnotationData annotData(new AnnotationData());
@@ -705,6 +719,8 @@ QList<SharedAnnotationData> BedFormat::parseDocument(
 
         // Move to the next line
         lineNumber++;
+
+        os.setProgress(io->getProgress());
     }
 
     if (false == fileIsValid) {
@@ -712,7 +728,8 @@ QList<SharedAnnotationData> BedFormat::parseDocument(
             " see TRACE log for details!");
     }
 
-    return result;
+    addToResults(resultHash, result, seqName);
+    return resultHash;
 }
 
 
@@ -781,9 +798,10 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                     QString trackDescrQualValue = annot->findFirstQualifierValue(TRACK_DESCR_QUALIFIER_NAME);
 
                     if (trackNameQualValue.isEmpty() || trackDescrQualValue.isEmpty()) {
-                        os.setError(tr("Unable to save annotations to a BED file,"
-                            " qualifiers '%1' and '%2' are absent!"));
-                        return;
+                        //bed files can be without headers
+//                         os.setError(tr("Unable to save annotations to a BED file,"
+//                             " qualifiers '%1' and '%2' are absent!"));
+//                         return;
                     }
                     else {
                         QString headerStr = QString("track name=\"%1\" description=\"%2\"\n").arg(trackNameQualValue).arg(trackDescrQualValue);
@@ -942,6 +960,16 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
     }
 
     ioLog.trace(tr("Finished BED saving: '%1'").arg(doc->getURLString()));
+}
+
+void BedFormat::addToResults( QHash<QString, QList<SharedAnnotationData> > & resHash, QList<SharedAnnotationData>& result, const QString& seqName ){
+    QHash<QString, QList<SharedAnnotationData> >::iterator i = resHash.find(seqName);
+    if (i != resHash.end()) {
+        i.value().append(result);
+    }else{
+        resHash.insert(seqName, result);
+    }
+    result.clear();
 }
 
 
