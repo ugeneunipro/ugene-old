@@ -148,6 +148,7 @@ static const QString XML_SCHEMA_APOLOGIZE = WorkflowView::tr("Sorry! This schema
 WorkflowView::WorkflowView(WorkflowGObject* go) 
 : MWMDIWindow(tr("Workflow Designer")), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL), pasteCount(0), 
 scriptingMode(false) {
+    elementsMenu = NULL;
     schema = new Schema();
     schema->setDeepCopyFlag(true);
 
@@ -165,6 +166,7 @@ scriptingMode(false) {
     palette->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored));
     connect(palette, SIGNAL(processSelected(Workflow::ActorPrototype*)), SLOT(sl_selectPrototype(Workflow::ActorPrototype*)));
     connect(palette, SIGNAL(si_protoDeleted(const QString&)), SLOT(sl_protoDeleted(const QString&)));
+    connect(palette, SIGNAL(si_protoListModified()), SLOT(sl_protoListModified()));
     connect(palette, SIGNAL(si_protoChanged()), scene, SLOT(sl_updateDocs()));
     
     infoList = new QListWidget(this);
@@ -611,6 +613,11 @@ void WorkflowView::sl_protoDeleted(const QString &id) {
     scene->update();
 }
 
+void WorkflowView::sl_protoListModified() {
+    CHECK(NULL != elementsMenu, );
+    palette->createMenu(elementsMenu);
+}
+
 void WorkflowView::addProcess(Actor *proc, const QPointF &pos) {
     schema->addProcess(proc);
 
@@ -866,7 +873,8 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
 }
 
 void WorkflowView::setupViewMenu(QMenu* m) {
-    m->addMenu(palette->createMenu(tr("Add element")));
+    elementsMenu = palette->createMenu(tr("Add element"));
+    m->addMenu(elementsMenu);
     m->addAction(copyAction);
     m->addAction(pasteAction);
     pasteAction->setEnabled(!lastPaste.isEmpty());

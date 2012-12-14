@@ -222,6 +222,7 @@ private slots:
     void sl_xmlSchemaLoaded(Task*);
     void sl_editExternalTool();
     void sl_findPrototype();
+    void sl_protoListModified();
 
     void sl_updateSchema();
     void sl_showWizard();
@@ -250,6 +251,7 @@ private:
     //QAction* bringToFrontAction;
     //QAction* sendToBackAction;
     QComboBox* sceneScaleCombo;
+    QMenu *elementsMenu;
     QAction* copyAction;
     QAction* pasteAction;
     QAction* cutAction;

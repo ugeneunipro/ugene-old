@@ -44,7 +44,8 @@ public:
     static const QString MIME_TYPE;
 
     WorkflowPalette(ActorPrototypeRegistry* reg, QWidget *parent = 0);
-    QMenu* createMenu(const QString& name);
+    QMenu * createMenu(const QString &name);
+    void createMenu(QMenu *menu);
 
     QVariant saveState() const;
     void restoreState(const QVariant&);
@@ -57,6 +58,7 @@ signals:
     void processSelected(Workflow::ActorPrototype*);
     void si_protoDeleted(const QString &);
     void si_protoChanged();
+    void si_protoListModified();
 private:
     WorkflowPaletteElements *elementsList;
     friend class PaletteDelegate;
@@ -70,7 +72,8 @@ class WorkflowPaletteElements : public QTreeWidget {
 public:
 
     WorkflowPaletteElements(ActorPrototypeRegistry* reg, QWidget *parent = 0);
-    QMenu* createMenu(const QString& name);
+    QMenu * createMenu(const QString &name);
+    void createMenu(QMenu *menu);
 
     QVariant saveState() const;
     void restoreState(const QVariant&);
@@ -83,6 +86,7 @@ signals:
     void processSelected(Workflow::ActorPrototype*);
     void si_protoDeleted(const QString &);
     void si_protoChanged();
+    void si_protoListModified();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *e);
