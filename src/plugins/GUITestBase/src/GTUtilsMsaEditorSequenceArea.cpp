@@ -163,6 +163,19 @@ bool GTUtilsMSAEditorSequenceArea::offsetsVisible(U2OpStatus &os) {
     return leftOffsetWidget->isVisible();
 }
 #undef GT_METHOD_NAME
+#define GT_METHOD_NAME "checkConsensus"
+void GTUtilsMSAEditorSequenceArea::checkConsensus(U2OpStatus &os, QString cons){
+    QWidget *consArea = GTWidget::findWidget(os,"consArea");
+    CHECK_SET_ERR(consArea!=NULL,"consArea is NULL");
 
+    QObject *parent = consArea->findChild<QObject*>("parent");
+    CHECK_SET_ERR(parent!=NULL,"parent is NULL");
+
+    QObject *child = parent->findChild<QObject*>();
+    CHECK_SET_ERR(child!=NULL,"child is NULL");
+    CHECK_SET_ERR(child->objectName()==cons,"Wrong consensus. Currens consensus is  "+child->objectName());
+    GTGlobals::sleep(1000);
+}
+#undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 } // namespace

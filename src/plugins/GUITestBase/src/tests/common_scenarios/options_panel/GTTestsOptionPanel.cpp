@@ -66,7 +66,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     QWidget *w=GTWidget::findWidget(os,"Characters Occurrence");
     GTWidget::click(os, w);
     QLabel *l=w->findChild<QLabel*>();
-    QString *s=new QString("<table cellspacing=5><tr><td><b>A:&nbsp;&nbsp;"
+    QString s= QString("<table cellspacing=5><tr><td><b>A:&nbsp;&nbsp;"
                            "</td><td>62 842 &nbsp;&nbsp;</td><td>31.4%&nbsp;&nbsp;"
                            "</td></tr><tr><td><b>C:&nbsp;&nbsp;</td><td>40 041 &nbsp;"
                            "&nbsp;</td><td>20.0%&nbsp;&nbsp;</td></tr><tr><td><b>G:&nbsp;"
@@ -92,7 +92,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1){
     QWidget *w=GTWidget::findWidget(os,"Characters Occurrence");
     GTWidget::click(os, w);
     QLabel *l=w->findChild<QLabel*>();
-    QString *s=new QString("<table cellspacing=5><tr><td><b>A:&nbsp;&nbsp;</td><td>31 &nbsp;&nbsp;"
+    QString s= QString("<table cellspacing=5><tr><td><b>A:&nbsp;&nbsp;</td><td>31 &nbsp;&nbsp;"
                            "</td><td>27.2%&nbsp;&nbsp;</td></tr><tr><td><b>C:&nbsp;&nbsp;"
                            "</td><td>30 &nbsp;&nbsp;</td><td>26.3%&nbsp;&nbsp;</td></tr><tr><td><b>G:&nbsp;"
                            "&nbsp;</td><td>26 &nbsp;&nbsp;</td><td>22.8%&nbsp;&nbsp;"
@@ -113,7 +113,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     QWidget *w=GTWidget::findWidget(os,"Dinucleotides");
     GTWidget::click(os, w);
     QLabel *l=w->findChild<QLabel*>();
-    QString *s=new QString("<table cellspacing=5><tr><td><b>AA:&nbsp;&nbsp;</td><td>"
+    QString s=QString("<table cellspacing=5><tr><td><b>AA:&nbsp;&nbsp;</td><td>"
                            "21 960 &nbsp;&nbsp;</td></tr><tr><td><b>AC:&nbsp;&nbsp;</td>"
                            "<td>10 523 &nbsp;&nbsp;</td></tr><tr><td><b>AG:&nbsp;&nbsp;"
                            "</td><td>13 845 &nbsp;&nbsp;</td></tr><tr><td><b>AT:&nbsp;"
@@ -161,7 +161,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
     QWidget *w=GTWidget::findWidget(os,"Dinucleotides");
     GTWidget::click(os, w);
     QLabel *l=w->findChild<QLabel*>();
-    QString *s=new QString("<table cellspacing=5><tr><td><b>AA:&nbsp;&nbsp;"
+    QString s=QString("<table cellspacing=5><tr><td><b>AA:&nbsp;&nbsp;"
                            "</td><td>6 &nbsp;&nbsp;</td></tr><tr><td><b>AC:&nbsp;&nbsp;"
                            "</td><td>9 &nbsp;&nbsp;</td></tr><tr><td><b>AG:&nbsp;&nbsp;"
                            "</td><td>3 &nbsp;&nbsp;</td></tr><tr><td><b>AT:&nbsp;&nbsp;"
@@ -221,12 +221,12 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     QPoint point=GTMouseDriver::getMousePosition();
     QRect rect=l->geometry();
 
-    QPoint *rightPoint=new QPoint(point.x()+rect.center().x(),point.y());
-    GTMouseDriver::moveTo(os,*rightPoint);
+    QPoint rightPoint=QPoint(point.x()+rect.center().x(),point.y());
+    GTMouseDriver::moveTo(os,rightPoint);
     GTMouseDriver::press(os);
 
-    QPoint *leftPoint=new QPoint(point.x()-rect.center().x(),point.y());
-    GTMouseDriver::moveTo(os,*leftPoint);
+    QPoint leftPoint=QPoint(point.x()-rect.center().x(),point.y());
+    GTMouseDriver::moveTo(os,leftPoint);
     GTMouseDriver::release(os);
 
     GTKeyboardDriver::keyClick(os,'c',GTKeyboardDriver::key["ctrl"]);

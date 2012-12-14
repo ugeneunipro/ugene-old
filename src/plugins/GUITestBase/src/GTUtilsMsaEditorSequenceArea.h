@@ -32,6 +32,8 @@ public:
     static void checkSelectedRect(U2OpStatus &os, const QRect &expectedRect);
     static void checkSorted(U2OpStatus &os, bool sortedState = true);
 
+    static void checkConsensus(U2OpStatus &os, QString cons);
+
     // MSAEditorNameList
     static QStringList getNameList(U2OpStatus &os);
 

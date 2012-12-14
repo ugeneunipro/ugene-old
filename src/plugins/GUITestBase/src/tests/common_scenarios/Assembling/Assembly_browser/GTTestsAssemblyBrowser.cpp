@@ -69,8 +69,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     QWidget* assRuler;
     assRuler= GTWidget::findWidget(os,"AssemblyRuler");
 
-    QObject *l = new QObject();
-    l = assRuler->findChild<QObject*>("start position");
+    QObject *l = assRuler->findChild<QObject*>("start position");
     CHECK_SET_ERR(l != NULL, "first QObject for taking cursor name not found");
 
     QObject *startPositionObject = l->findChild<QObject*>();
