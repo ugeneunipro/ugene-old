@@ -232,7 +232,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     GTKeyboardDriver::keyClick(os,'c',GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     QString clipboardText = GTClipboard::text(os);
-    QString *text = new QString("A:  \n"
+    QString text = QString("A:  \n"
                                "62 842   \n"
                                "31.4%  \n"
                                "C:  \n"
@@ -244,7 +244,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
                                "T:  \n"
                                "59 445   \n"
                                "29.7%  ");
-    CHECK_SET_ERR(clipboardText.contains(*text), "\nExpected:\n" + *text + "\nFound: " + clipboardText);
+    CHECK_SET_ERR(clipboardText.contains(text), "\nExpected:\n" + text + "\nFound: " + clipboardText);
 
 //3. Use context menu to select and copy information from "Character Occurence". Paste copied information into test editor
 //Expected state: copied and pasted iformation are identical
