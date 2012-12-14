@@ -22,8 +22,10 @@
 #include "ConsensusSelectorDialogFiller.h"
 #include "api/GTComboBox.h"
 #include "api/GTWidget.h"
+#include "api/GTSpinBox.h"
 
 #include <QComboBox>
+#include <QSpinBox>
 #include <QApplication>
 
 namespace U2 {
@@ -38,6 +40,12 @@ void ConsensusSelectionDialogFiller::run() {
     QComboBox *consensusCombo=dialog->findChild<QComboBox*>("consensusCombo");
     GT_CHECK(consensusCombo!=NULL, "consensusCombo is NULL")
     GTComboBox::setCurrentIndex(os,consensusCombo,comboBoxVal);
+
+    if(spinVal){
+        QSpinBox *thresholdSpin=dialog->findChild<QSpinBox*>("thresholdSpin");
+        GT_CHECK(thresholdSpin!=NULL, "consensusCombo is NULL")
+        GTSpinBox::setValue(os,thresholdSpin,spinVal,GTGlobals::UseKey);
+    }
 
     GTWidget::click(os, GTWidget::findWidget(os,"okButton"));
 

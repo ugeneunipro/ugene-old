@@ -198,6 +198,7 @@ void MSAEditorConsensusArea::drawConsensus(QPainter& p) {
     f.setWeight(QFont::DemiBold);
     p.setFont(f);
 
+    childObject->setObjectName("");
     int startPos = ui->seqArea->getFirstVisibleBase();
     int lastPos = ui->seqArea->getLastVisibleBase(true);
     for (int pos = startPos; pos <= lastPos; pos++) {

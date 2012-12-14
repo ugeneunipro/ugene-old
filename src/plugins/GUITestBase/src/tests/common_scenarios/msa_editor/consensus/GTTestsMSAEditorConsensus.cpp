@@ -26,6 +26,7 @@
 #include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
 #include "api/GTTreeWidget.h"
+#include "api/GTSpinBox.h"
 #include "api/GTGlobals.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsDialog.h"
@@ -37,6 +38,14 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_msa_editor_consensus {
+
+void checkConsensus(U2OpStatus &os, QString cons){
+    QWidget *consArea = GTWidget::findWidget(os,"consArea");
+    QObject *parent = consArea->findChild<QObject*>("parent");
+    QObject *child = parent->findChild<QObject*>();
+    CHECK_SET_ERR(child->objectName()==cons,"Wrong consensus. Currens consensus is  "+child->objectName());
+    GTGlobals::sleep(1000);
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0001){
 //    Check consensus in MSA editor
@@ -52,14 +61,31 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,0));
     GTMenu::showContextMenu(os,seq);
 
-    QWidget *consArea = GTWidget::findWidget(os,"consArea");
-    QObject *parent = consArea->findChild<QObject*>("parent");
-    QObject *child = parent->findChild<QObject*>();
-    CHECK_SET_ERR(child->objectName().contains("            "),"Wrong consensus name");
-    GTGlobals::sleep();
-
+    checkConsensus(os,"              ");
 //    Expected state: consensus must be empty
 
+}
+GUI_TEST_CLASS_DEFINITION(test_0002){
+//Check consensus in MSA editor
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Use context menu {Consensus mode} in MSA editor area.
+//Expected state: consensus representstion dialog appeared
+//3. Select Default consensus type. Set 100% treshhold
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,1,100));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "aagc+tattaataa");
+//Expected state: consensus must be aagc+tattaataa
+
+//4. Set 1% treshhold.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,1,1));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "AAGC+TATTAATAA");
+//Expected state: consensus must be AAGC+TATTAATAA
 }
 } // namespace
 } // namespace U2
