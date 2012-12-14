@@ -88,6 +88,38 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 //Expected state: consensus must be AAGC+TATTAATAA
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0002_1){
+//Check consensus in MSA editor
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Use context menu {Consensus mode} in MSA editor area.
+//Expected state: consensus representstion dialog appeared
+//3. Select Default consensus type. Set 100% treshhold
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,1,30));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "AAGC+TATTAATAA");
+//Expected state: consensus must be AAGC+TATTAATAA
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0002_2){
+//Check consensus in MSA editor
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Use context menu {Consensus mode} in MSA editor area.
+//Expected state: consensus representstion dialog appeared
+//3. Select Default consensus type. Set 100% treshhold
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,1,60));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "AAGc+TaTTAAtaa");
+//Expected state: consensus must be AAGc+TaTTAAtaa
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0003){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
@@ -110,6 +142,38 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 //Expected state: consensus must be AAGC-TATTAAT-A
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0003_1){
+//Check consensus in MSA editor
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Use context menu {Consensus mode} in MSA editor area.
+//Expected state: consensus representstion dialog appeared
+//3. Select Strict consensus type. Set 100% treshhold.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,3,30));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "AAGCTTATTAATAA");
+//Expected state: consensus must be AAGCTTATTAATAA
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003_2){
+//Check consensus in MSA editor
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Use context menu {Consensus mode} in MSA editor area.
+//Expected state: consensus representstion dialog appeared
+//3. Select Strict consensus type. Set 100% treshhold.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,3,60));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "AAG--T-TTAA---");
+//Expected state: consensus must be AAG--T-TTAA---
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0004){
 //Check consensus in MSA editor
 //1. Open document _common_data\scenarios\msa\ma2_gapped.aln
@@ -130,6 +194,38 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     checkConsensus(os, "AAGMYTWTTAA---");
 //4. Set 60% treshhold.
 //Expected state: consensus must be AAGMYTWTTAA---
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004_1){
+//Check consensus in MSA editor
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Use context menu {Consensus mode} in MSA editor area.
+//Expected state: consensus representstion dialog appeared
+//3. Select Levitsky consensus type. Set 90% treshhold.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,2,70));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "WAGYYTWYTAW---");
+//Expected state: consensus must be WAGYYTWYTAW---
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004_2){
+//Check consensus in MSA editor
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Use context menu {Consensus mode} in MSA editor area.
+//Expected state: consensus representstion dialog appeared
+//3. Select Levitsky consensus type. Set 90% treshhold.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,2,100));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "W-------------");
+//Expected state: consensus must be W-------------
 }
 } // namespace
 } // namespace U2
