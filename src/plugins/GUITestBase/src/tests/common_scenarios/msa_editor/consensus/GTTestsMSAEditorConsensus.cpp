@@ -87,6 +87,28 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     checkConsensus(os, "AAGC+TATTAATAA");
 //Expected state: consensus must be AAGC+TATTAATAA
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0003){
+//Check consensus in MSA editor
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Use context menu {Consensus mode} in MSA editor area.
+//Expected state: consensus representstion dialog appeared
+//3. Select Strict consensus type. Set 100% treshhold.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,3,100));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "--------------");
+//Expected state: consensus must be --------------
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,3,50));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "AAGC-TATTAAT-A");
+//4. Set 50% treshhold.
+//Expected state: consensus must be AAGC-TATTAAT-A
+}
 } // namespace
 } // namespace U2
 
