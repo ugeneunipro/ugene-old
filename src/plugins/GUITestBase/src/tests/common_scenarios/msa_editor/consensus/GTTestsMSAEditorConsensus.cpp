@@ -109,6 +109,28 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 //4. Set 50% treshhold.
 //Expected state: consensus must be AAGC-TATTAAT-A
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0004){
+//Check consensus in MSA editor
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Use context menu {Consensus mode} in MSA editor area.
+//Expected state: consensus representstion dialog appeared
+//3. Select Levitsky consensus type. Set 90% treshhold.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,2,90));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "WAGHH--HTWW---");
+//Expected state: consensus must be WAGHH--HTWW---
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,2,60));
+    GTMenu::showContextMenu(os,seq);
+    checkConsensus(os, "AAGMYTWTTAA---");
+//4. Set 60% treshhold.
+//Expected state: consensus must be AAGMYTWTTAA---
+}
 } // namespace
 } // namespace U2
 
