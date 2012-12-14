@@ -85,6 +85,16 @@ private:
     QString seqFileName;
 };
 
+
+class GTest_RemoveColumnsOfGaps : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_RemoveColumnsOfGaps, "remove-columns-of-gaps");
+    void prepare();
+private:
+    QString inputDocCtxName;
+};
+
 class CreateSubalignimentTests {
 public:
     static QList< XMLTestFactory* > createTestFactories();

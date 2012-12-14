@@ -373,6 +373,7 @@ void MAlignmentObject::deleteGapsByAbsoluteVal(int val) {
 
         if(gapCount >= val) {
             removeRegion(i, 0, 1, msa.getNumRows(), true, false);
+            msa = getMAlignment();
             length--;
             i--;
         }
@@ -402,6 +403,7 @@ void MAlignmentObject::deleteAllGapColumn() {
 
         if(gapCount == msa.getNumRows()) {
             removeRegion(i, 0, 1, msa.getNumRows(), true, false);
+            msa = getMAlignment();
             length--;
             i--;
         }

@@ -29,6 +29,7 @@
 namespace U2{
 
 #define DOC_ATTR "doc_name"
+#define IN_FILE_NAME_ATTR "in"
 #define SEQ_NAMES_ATTR "sequences"
 #define SEQ_FILE_ATTR "seq_file_name"
 #define WINDOW_ATTR "window"
@@ -366,11 +367,53 @@ Task::ReportResult GTest_AddSequenceToAlignment::report(){
 
 //////////////////////////////////////////////////////////////////////////
 
+void GTest_RemoveColumnsOfGaps::init(XMLTestFormat* /* tf */, const QDomElement& el) {
+    inputDocCtxName = el.attribute(IN_FILE_NAME_ATTR);
+    if(inputDocCtxName.isEmpty()){
+        failMissingValue(IN_FILE_NAME_ATTR);
+        return;
+    }
+}
+
+void GTest_RemoveColumnsOfGaps::prepare(){
+    Document *doc = getContext<Document>(this, inputDocCtxName);
+    if (NULL == doc) {
+        stateInfo.setError(GTest::tr("context not found %1").arg(inputDocCtxName));
+        return;
+    }
+
+    QList<GObject*> list = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
+    if (list.size() == 0) {
+        stateInfo.setError(GTest::tr("container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT));
+        return;
+    }
+
+    GObject *obj = list.first();
+    if (NULL == obj) {
+        stateInfo.setError(QString("object with type \"%1\" not found").arg(GObjectTypes::MULTIPLE_ALIGNMENT));
+        return;
+    }
+    assert(NULL != obj);
+
+    MAlignmentObject *maObj = qobject_cast<MAlignmentObject*>(obj);
+    if (NULL == maObj) {
+        stateInfo.setError(QString("error can't cast to multiple alignment from GObject"));
+        return;
+    }
+
+    maObj->deleteAllGapColumn();
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+
 QList< XMLTestFactory* > CreateSubalignimentTests::createTestFactories(){
     QList< XMLTestFactory* > res;
     res.append( GTest_CreateSubalignimentTask::createFactory() );
     res.append( GTest_RemoveAlignmentRegion::createFactory() );
     res.append( GTest_AddSequenceToAlignment::createFactory() );
+    res.append( GTest_RemoveColumnsOfGaps::createFactory() );
+
     return res;
 }
 
