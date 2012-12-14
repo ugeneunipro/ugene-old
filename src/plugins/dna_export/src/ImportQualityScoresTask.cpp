@@ -87,10 +87,12 @@ void ReadQualityScoresTask::run() {
         QList<QByteArray> valList = valsBuf.split(' ');
         foreach(const QByteArray& valStr, valList) {
             bool ok = false;
-            values.append( valStr.toInt(&ok) );
-            if (!ok) {
-                setError(tr("Failed parse quality value: file %1, line %2").arg(fileName).arg(lineCount));
-                return;
+            if(!valStr.isEmpty()){
+                values.append( valStr.toInt(&ok) );
+                if (!ok) {
+                    setError(tr("Failed parse quality value: file %1, line %2").arg(fileName).arg(lineCount));
+                    return;
+                }
             }
         }
     }

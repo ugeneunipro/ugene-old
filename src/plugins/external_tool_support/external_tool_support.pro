@@ -1,5 +1,6 @@
-include(external_tool_support.pri)
+include (external_tool_support.pri)
 
+# Input
 HEADERS += src/ETSProjectViewItemsContoller.h \
            src/ExternalToolRunTask.h \
            src/ExternalToolSupportL10N.h \
@@ -40,20 +41,24 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/ceas/CEASSettings.h \
            src/ceas/CEASSupport.h \
            src/ceas/CEASSupportTask.h \
-           src/clustalw/ClustalWSupport.h \
-           src/clustalw/ClustalWSupportRunDialog.h \
-           src/clustalw/ClustalWSupportTask.h \
-           src/clustalw/ClustalWWorker.h \
            src/clustalo/ClustalOSupport.h \
            src/clustalo/ClustalOSupportRunDialog.h \
            src/clustalo/ClustalOSupportTask.h \
            src/clustalo/ClustalOWorker.h \
+           src/clustalw/ClustalWSupport.h \
+           src/clustalw/ClustalWSupportRunDialog.h \
+           src/clustalw/ClustalWSupportTask.h \
+           src/clustalw/ClustalWWorker.h \
            src/cufflinks/CuffdiffWorker.h \
            src/cufflinks/CufflinksSettings.h \
            src/cufflinks/CufflinksSupport.h \
            src/cufflinks/CufflinksSupportTask.h \
            src/cufflinks/CufflinksWorker.h \
            src/cufflinks/CuffmergeWorker.h \
+           src/macs/MACSSettings.h \
+           src/macs/MACSSupport.h \
+           src/macs/MACSTask.h \
+           src/macs/MACSWorker.h \
            src/mafft/MAFFTSupport.h \
            src/mafft/MAFFTSupportRunDialog.h \
            src/mafft/MAFFTSupportTask.h \
@@ -69,7 +74,9 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/tcoffee/TCoffeeSupportRunDialog.h \
            src/tcoffee/TCoffeeSupportTask.h \
            src/tcoffee/TCoffeeWorker.h \
+           src/tophat/TopHatSettings.h \
            src/tophat/TopHatSupport.h \
+           src/tophat/TopHatSupportTask.h \
            src/tophat/TopHatWorker.h \
            src/utils/BlastRunCommonDialog.h \
            src/utils/BlastTaskSettings.h \
@@ -77,17 +84,15 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/utils/ExternalToolSupportAction.h \
            src/utils/ExternalToolValidateTask.h \
            src/bowtie/bowtie_tests/bowtieTests.h \
-           src/bwa/bwa_tests/bwaTests.h \
-           src/tophat/TopHatSupportTask.h \
-           src/tophat/TopHatSettings.h
+           src/bwa/bwa_tests/bwaTests.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BowtieBuildSettings.ui \
          src/ui/BowtieSettings.ui \
          src/ui/BwaBuildSettings.ui \
          src/ui/BwaSettings.ui \
          src/ui/CAP3SupportDialog.ui \
-         src/ui/ClustalWSupportRunDialog.ui \
          src/ui/ClustalOSupportRunDialog.ui \
+         src/ui/ClustalWSupportRunDialog.ui \
          src/ui/ETSSettingsWidget.ui \
          src/ui/FormatDBSupportRunDialog.ui \
          src/ui/MAFFTSupportRunDialog.ui \
@@ -133,20 +138,24 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/ceas/CEASSettings.cpp \
            src/ceas/CEASSupport.cpp \
            src/ceas/CEASSupportTask.cpp \
-           src/clustalw/ClustalWSupport.cpp \
-           src/clustalw/ClustalWSupportRunDialog.cpp \
-           src/clustalw/ClustalWSupportTask.cpp \
-           src/clustalw/ClustalWWorker.cpp \
            src/clustalo/ClustalOSupport.cpp \
            src/clustalo/ClustalOSupportRunDialog.cpp \
            src/clustalo/ClustalOSupportTask.cpp \
            src/clustalo/ClustalOWorker.cpp \
+           src/clustalw/ClustalWSupport.cpp \
+           src/clustalw/ClustalWSupportRunDialog.cpp \
+           src/clustalw/ClustalWSupportTask.cpp \
+           src/clustalw/ClustalWWorker.cpp \
            src/cufflinks/CuffdiffWorker.cpp \
            src/cufflinks/CufflinksSettings.cpp \
            src/cufflinks/CufflinksSupport.cpp \
            src/cufflinks/CufflinksSupportTask.cpp \
            src/cufflinks/CufflinksWorker.cpp \
            src/cufflinks/CuffmergeWorker.cpp \
+           src/macs/MACSSettings.cpp \
+           src/macs/MACSSupport.cpp \
+           src/macs/MACSTask.cpp \
+           src/macs/MACSWorker.cpp \
            src/mafft/MAFFTSupport.cpp \
            src/mafft/MAFFTSupportRunDialog.cpp \
            src/mafft/MAFFTSupportTask.cpp \
@@ -162,7 +171,9 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/tcoffee/TCoffeeSupportRunDialog.cpp \
            src/tcoffee/TCoffeeSupportTask.cpp \
            src/tcoffee/TCoffeeWorker.cpp \
+           src/tophat/TopHatSettings.cpp \
            src/tophat/TopHatSupport.cpp \
+           src/tophat/TopHatSupportTask.cpp \
            src/tophat/TopHatWorker.cpp \
            src/utils/BlastRunCommonDialog.cpp \
            src/utils/BlastTaskSettings.cpp \
@@ -170,9 +181,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/utils/ExternalToolSupportAction.cpp \
            src/utils/ExternalToolValidateTask.cpp \
            src/bowtie/bowtie_tests/bowtieTests.cpp \
-           src/bwa/bwa_tests/bwaTests.cpp \
-           src/tophat/TopHatSupportTask.cpp \
-           src/tophat/TopHatSettings.cpp
+           src/bwa/bwa_tests/bwaTests.cpp
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

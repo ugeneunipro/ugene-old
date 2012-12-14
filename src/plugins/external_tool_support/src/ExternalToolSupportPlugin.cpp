@@ -94,6 +94,8 @@
 #include "tophat/TopHatWorker.h"
 #include "ceas/CEASReportWorker.h"
 #include "ceas/CEASSupport.h"
+#include "macs/MACSWorker.h"
+#include "macs/MACSSupport.h"
 
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
@@ -267,6 +269,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     // CEAS
     CEASSupport *ceasTool = new CEASSupport(CEASSupport::TOOL_NAME);
     etRegistry->registerEntry(ceasTool);
+
+    // MACS
+    MACSSupport *macs = new MACSSupport(MACSSupport::TOOL_NAME);
+    etRegistry->registerEntry(macs);
 
 
     if (AppContext::getMainWindow()) {
@@ -453,6 +459,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     LocalWorkflow::CuffmergeWorkerFactory::init();
     LocalWorkflow::TopHatWorkerFactory::init();
     LocalWorkflow::CEASReportWorkerFactory::init();
+    LocalWorkflow::MACSWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service
