@@ -77,11 +77,13 @@ EnzymesSelectorWidget::EnzymesSelectorWidget() {
     totalEnzymes = 0;
     minLength = 1;
 
-    connect(enzymesFileButton, SIGNAL(clicked()), SLOT(sl_selectFile()));
+    connect(enzymesFileButton, SIGNAL(clicked()), SLOT(sl_openEnzymesFile()));
+    connect(saveEnzymesButton, SIGNAL(clicked()), SLOT(sl_saveEnzymesFile()));
     connect(selectAllButton, SIGNAL(clicked()), SLOT(sl_selectAll()));
     connect(selectNoneButton, SIGNAL(clicked()), SLOT(sl_selectNone()));
     connect(selectByLengthButton, SIGNAL(clicked()), SLOT(sl_selectByLength()));
     connect(invertSelectionButton, SIGNAL(clicked()), SLOT(sl_inverseSelection()));
+    connect(loadSelectionButton, SIGNAL(clicked()), SLOT(sl_loadSelectionFromFile()));
     connect(saveSelectionButton, SIGNAL(clicked()), SLOT(sl_saveSelectionToFile()));
     connect(enzymeInfo, SIGNAL(clicked()), SLOT(sl_openDBPage()));
     connect(enzymesFilterEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_filterTextChanged(const QString&)));
@@ -295,7 +297,7 @@ void EnzymesSelectorWidget::updateStatus() {
     emit si_selectionModified(totalEnzymes, nChecked);
 }
 
-void EnzymesSelectorWidget::sl_selectFile() {
+void EnzymesSelectorWidget::sl_openEnzymesFile() {
     LastUsedDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
     dir.url = QFileDialog::getOpenFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
     if (!dir.url.isEmpty()) {
@@ -370,12 +372,26 @@ void EnzymesSelectorWidget::sl_inverseSelection() {
 }
 
 void EnzymesSelectorWidget::sl_saveSelectionToFile() {
-    LastUsedDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
-    dir.url = QFileDialog::getSaveFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
-    if (!dir.url.isEmpty()) {
-        saveFile(dir.url);
+    
+    QString selectionData =  checkedEnzymesEdit->toPlainText();        
+    
+    if (selectionData.size() == 0) {
+        QMessageBox::warning(this, tr("Save selection"), tr("Can not save empty selection!"));
+        return;
     }
-    updateStatus();
+
+    LastUsedDirHelper dir;
+    dir.url = QFileDialog::getSaveFileName(this, tr("Select enzymes selection"), dir.dir );
+    if (!dir.url.isEmpty()) {
+        QFile data(dir.url);
+        if (!data.open(QFile::WriteOnly)) {
+            QMessageBox::critical(this, tr("Save selection"), tr("Failed to open %1 for writing").arg(dir.url));
+            return;
+        }
+        QTextStream out(&data);
+        out << selectionData;
+    }
+
 }
 
 void EnzymesSelectorWidget::sl_openDBPage() {
@@ -430,6 +446,67 @@ void EnzymesSelectorWidget::initSelection()
         selStr = EnzymeSettings::COMMON_ENZYMES;
     }
     lastSelection = selStr.split(ENZYME_LIST_SEPARATOR).toSet();
+}
+
+void EnzymesSelectorWidget::sl_loadSelectionFromFile()
+{
+    LastUsedDirHelper dir;
+    dir.url = QFileDialog::getOpenFileName(this, tr("Select enzymes selection"), dir.dir, DialogUtils::prepareFileFilter(tr("Selection files"), QStringList("*")) );
+    if (!dir.url.isEmpty()) {
+        
+        QFile selectionFile(dir.url);
+        if (!selectionFile.open(QIODevice::ReadOnly)) {
+            QMessageBox::critical(this, tr("Load selection"), tr("Failed to open selection file %1").arg(dir.url));    
+            return;
+        }
+        
+        QSet<QString> enzymeNames;
+        QTextStream in(&selectionFile);
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            QStringList enzymes = line.split(QRegExp("[,;\\s]+"), QString::SkipEmptyParts );
+            foreach (const QString& enz, enzymes) {
+                enzymeNames.insert(enz);
+            }
+        }
+
+        if (enzymeNames.isEmpty()) {
+            QMessageBox::critical(this, tr("Load selection"), tr("Enzymes selection is empty!"));    
+            return;
+        }
+        
+        ignoreItemChecks =  true;
+        for(int i=0, n = tree->topLevelItemCount(); i<n; i++){
+            EnzymeGroupTreeItem* gi = static_cast<EnzymeGroupTreeItem*>(tree->topLevelItem(i));
+            for (int j=0, m = gi->childCount(); j < m; j++) {
+                EnzymeTreeItem* item = static_cast<EnzymeTreeItem*>(gi->child(j));
+                QString eName = item->enzyme->id;
+                if (enzymeNames.contains(eName)) {
+                    item->setCheckState(0, Qt::Checked);
+                    enzymeNames.remove(eName);
+                } else {
+                    item->setCheckState(0, Qt::Unchecked);
+                }
+            }
+            gi->updateVisual();
+        }
+        ignoreItemChecks = false;
+        
+        updateStatus();
+
+        foreach (const QString& enzyme, enzymeNames) {
+            ioLog.error(tr("Failed to load %1 from selection.").arg(enzyme));
+        }
+    }            
+}
+
+void EnzymesSelectorWidget::sl_saveEnzymesFile()
+{
+    LastUsedDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
+    dir.url = QFileDialog::getSaveFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
+    if (!dir.url.isEmpty()) {
+        saveFile(dir.url);
+    }
 }
 
 FindEnzymesDialog::FindEnzymesDialog(ADVSequenceObjectContext* sctx)
