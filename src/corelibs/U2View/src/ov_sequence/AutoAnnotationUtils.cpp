@@ -28,6 +28,7 @@
 #include <U2View/ADVAnnotationCreation.h>
 
 #include "ADVSequenceObjectContext.h"
+#include "AnnotatedDNAView.h"
 #include "AutoAnnotationUtils.h"
 
 
@@ -37,8 +38,9 @@ const QString AutoAnnotationsADVAction::ACTION_NAME("AutoAnnotationUpdateAction"
 
 #define AUTO_ANNOTATION_GROUP_NAME "AutoAnnotatationGroupName"
 
-AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, AutoAnnotationObject* obj) 
-: ADVSequenceWidgetAction(ACTION_NAME, tr("Automatic Annotations Highlighting")), aaObj(obj), updatesCount(0)
+AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, 
+                                                   AutoAnnotationObject* obj) 
+: ADVSequenceWidgetAction(ACTION_NAME, tr("Automatic Annotations Highlighting")), aaObj(obj),  updatesCount(0)
 {
     seqWidget = v;
     addToBar = true;
@@ -61,6 +63,7 @@ AutoAnnotationsADVAction::AutoAnnotationsADVAction(ADVSequenceWidget* v, AutoAnn
     aaObj->update();
 }
 
+#define MAX_SEQ_SIZE_TO_ENABLE_AUTO_ANNOTATIONS 10000
 
 void AutoAnnotationsADVAction::updateMenu()
 {
@@ -68,8 +71,24 @@ void AutoAnnotationsADVAction::updateMenu()
     if (seqWidget->getSequenceContexts().count() > 0) {
         constraints.alphabet = seqWidget->getSequenceContexts().first()->getAlphabet();
     }
+
+    // Auto annotations should not be enabled by default for very large sequences 
+    // or when there are many small sequences. This flag controls such behavior.
+    bool largeSequence = false;
+ 
     if(seqWidget->getSequenceObjects().count() > 0){
         constraints.hints = seqWidget->getSequenceObjects().first()->getGHints();
+        
+        int totalLen = 0;
+        
+        AnnotatedDNAView* view = seqWidget->getAnnotatedDNAView();
+        if (view != NULL) {
+            const QList<ADVSequenceObjectContext*>& ctxList = view->getSequenceContexts();
+            foreach (const ADVSequenceObjectContext* ctx, ctxList) {
+                totalLen += ctx->getSequenceLength();
+            }
+        }
+        largeSequence = totalLen > MAX_SEQ_SIZE_TO_ENABLE_AUTO_ANNOTATIONS;
     }
     
     QList<AutoAnnotationsUpdater*> updaters = AppContext::getAutoAnnotationsSupport()->getAutoAnnotationUpdaters();
@@ -84,7 +103,7 @@ void AutoAnnotationsADVAction::updateMenu()
         bool enabled = updater->checkConstraints(constraints);
         toggleAction->setEnabled(enabled);
         toggleAction->setCheckable(true);
-        bool checked = updater->isCheckedByDefault();
+        bool checked = updater->isCheckedByDefault() && !largeSequence;
         toggleAction->setChecked(checked);
         aaObj->setGroupEnabled(updater->getGroupName(), checked);
         connect( toggleAction, SIGNAL(toggled(bool)), SLOT(sl_toggle(bool)) );
