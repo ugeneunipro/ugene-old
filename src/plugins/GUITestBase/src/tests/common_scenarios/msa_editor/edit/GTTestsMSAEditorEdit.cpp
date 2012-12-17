@@ -84,6 +84,45 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2){
 //Expected state: Conocephalus_percaudata TAGCT-TATTAA--, sequence length 14, right offset 14
 }
 
+void test_3(U2OpStatus &os, int i=0, QString expectedSec=""){
+//2. Select 6th symbol for Phaneroptera_falcata sequence. Use context menu {Edit->Insert gap}.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(13,i));
+
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "fill_selection_with_gaps"));
+    GTMenu::showContextMenu(os,seq);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,i), QPoint(14, i));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    QString clipboardTest = GTClipboard::text(os);
+
+    CHECK_SET_ERR(clipboardTest==expectedSec,clipboardTest);
+    //Expected state: Phaneroptera_falcata AAGAC-TTCTTTTAA, sequence length 15, right offset 14
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003){
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_3(os,0,"AAGACTTCTTTTA-A");
+//Expected state: Phaneroptera_falcata AAGAC-TTCTTTTAA, sequence length 15, right offset 14
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003_1){
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_3(os,3,"AAGTC---TATTA-A");
+//Expected state: DIFFERENCE: Tettigonia_viridissima AAGTC---TATTA-A, sequence length 15, right offset 14
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003_2){
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_3(os,7,"AAGTCTTT---TA-A");
+//Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J AAGTCTTT---TA-A, sequence length 15, right offset 14
+}
 } // namespace
 } // namespace U2
 
