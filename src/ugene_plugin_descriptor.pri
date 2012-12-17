@@ -128,11 +128,13 @@ PLUGIN_LICENSE_FILE=$$_PRO_FILE_PWD_/*.license
 !debug_and_release|build_pass {
     CONFIG(debug, debug|release) {
         unix: system (cat $$PLUGIN_LICENSE_FILE > _debug/plugins/$${PLUGIN_ID}.license)
-        win32: system (copy "$$PLUGIN_LICENSE_FILE" "_debug/plugins/$${PLUGIN_ID}.license")
+	PLUGIN_LICENSE_FILE_REP=$$replace(PLUGIN_LICENSE_FILE, "/","\\")
+        win32: system (copy $$PLUGIN_LICENSE_FILE_REP _debug\\plugins\\$${PLUGIN_ID}.license)
     }
     CONFIG(release, debug|release) {
         unix: system (cat $$PLUGIN_LICENSE_FILE > _release/plugins/$${PLUGIN_ID}.license)
-        win32: system (copy "$$PLUGIN_LICENSE_FILE" "_debug/plugins/$${PLUGIN_ID}.license")
+        PLUGIN_LICENSE_FILE_REP=$$replace(PLUGIN_LICENSE_FILE, "/","\\")
+        win32: system (copy $$PLUGIN_LICENSE_FILE_REP _release\\plugins\\$${PLUGIN_ID}.license)
     }
 }
 
