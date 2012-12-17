@@ -32,8 +32,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/app_settings/network_settings/NetworkSettingsGUIController.h \
            src/app_settings/resource_settings/ResourceSettingsGUIController.h \
            src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.h \
-    src/main_window/TmpDirChangeDialogController.h \
-    src/main_window/TestFile.h
+           src/main_window/TmpDirChangeDialogController.h
 FORMS += src/app_settings/ui/AppSettingsDialog.ui \
          src/main_window/ui/AboutDialog.ui \
          src/plugin_viewer/ui/PluginViewerWidget.ui \
@@ -82,7 +81,7 @@ SOURCES += src/Main.cpp \
            src/app_settings/network_settings/NetworkSettingsGUIController.cpp \
            src/app_settings/resource_settings/ResourceSettingsGUIController.cpp \
            src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp \
-    src/main_window/TmpDirChangeDialogController.cpp
+           src/main_window/TmpDirChangeDialogController.cpp
 RESOURCES += ugeneui.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

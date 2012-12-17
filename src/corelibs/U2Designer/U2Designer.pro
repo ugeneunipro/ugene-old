@@ -18,11 +18,6 @@ HEADERS += src/DatasetsController.h \
            src/QDScheduler.h \
            src/UrlItem.h \
            src/WorkflowGUIUtils.h \
-           _tmp/ui/ui_DatasetsWidget.h \
-           _tmp/ui/ui_DirectoryItem.h \
-           _tmp/ui/ui_FileItem.h \
-           _tmp/ui/ui_InputDataWidget.h \
-           _tmp/ui/ui_ItemBox.h \
            src/support/URLLineEdit.h \
            src/wizard/ElementSelectorController.h \
            src/wizard/PropertyWizardController.h \
