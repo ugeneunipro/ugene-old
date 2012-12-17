@@ -163,6 +163,8 @@ public:
     static IntegralBusSlot fromString(const QString &slotString, U2OpStatus &os);
     static QList<IntegralBusSlot> listFromString(const QString &slotsString, U2OpStatus &os);
 
+    bool operator==(const IntegralBusSlot&) const;
+
 private:
     QString id;
     QString port;

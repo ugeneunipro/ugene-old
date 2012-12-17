@@ -635,5 +635,14 @@ QList<IntegralBusSlot> IntegralBusSlot::listFromString(const QString &slotsStrin
     return result;
 }
 
+bool IntegralBusSlot::operator==( const IntegralBusSlot& ibs) const{
+    if (getId() == ibs.getId()
+        && portId() == ibs.portId()
+        && actorId() == ibs.actorId()){
+            return true;
+    }
+    return false;
+}
+
 }//Workflow namespace
 }//GB2namespace

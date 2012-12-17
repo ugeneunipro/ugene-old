@@ -242,7 +242,7 @@ public:
                 break;
             }
             foreach(const IntegralBusSlot& ibsl2, slots2){
-                if (ibsl1.toString() == ibsl2.toString()){//TODO: need check by vaskin
+                if (ibsl1 == ibsl2){
                     hasCommonElements = true;
                     break;
                 }
