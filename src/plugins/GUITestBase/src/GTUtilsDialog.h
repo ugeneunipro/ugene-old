@@ -38,7 +38,7 @@ public:
     enum DialogType {Modal, Popup};
 
     struct WaitSettings {
-        WaitSettings(const QString& _objectName="", DialogType _dialogType = GUIDialogWaiter::Modal, int _timeout = 20000) : dialogType(_dialogType), objectName(_objectName), timeout(_timeout){}
+        WaitSettings(const QString& _objectName="", DialogType _dialogType = GUIDialogWaiter::Modal, int _timeout = 120000) : dialogType(_dialogType), objectName(_objectName), timeout(_timeout){}
 
         DialogType dialogType;
         QString objectName;
