@@ -91,9 +91,24 @@ CEASSupportTask::~CEASSupportTask() {
 }
 
 void CEASSupportTask::cleanup() {
+
     delete bedDoc; bedDoc = NULL;
     delete wigDoc; wigDoc = NULL;
     delete logParser; logParser = NULL;
+
+    //remove tmp files
+    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
+    QDir tmpDir(tmpDirPath);
+    if(tmpDir.exists()){
+        foreach(QString file, tmpDir.entryList()){
+            tmpDir.remove(file);
+        }
+        if(!tmpDir.rmdir(tmpDir.absolutePath())){
+            //stateInfo.setError(tr("Subdir for temporary files exists. Can not remove this directory."));
+            //return;
+        }
+    }
+
 }
 
 void CEASSupportTask::prepare() {
@@ -104,16 +119,16 @@ void CEASSupportTask::prepare() {
     createBedDoc();
     CHECK_OP(stateInfo, );
 
-    createWigDoc();
-    CHECK_OP(stateInfo, );
+//     createWigDoc();
+//     CHECK_OP(stateInfo, );
 
     bedTask = new SaveDocumentTask(bedDoc);
     addSubTask(bedTask);
     activeSubtasks++;
 
-    wigTask = new SaveDocumentTask(wigDoc);
-    addSubTask(wigTask);
-    activeSubtasks++;
+//     wigTask = new SaveDocumentTask(wigDoc);
+//     addSubTask(wigTask);
+//     activeSubtasks++;
 }
 
 void CEASSupportTask::createBedDoc() {
@@ -162,7 +177,8 @@ QList<Task*> CEASSupportTask::onSubTaskFinished(Task* subTask) {
         activeSubtasks--;
         if (canStartETTask()) {
             settings.getCeasSettings().setBedFile(bedDoc->getURLString());
-            settings.getCeasSettings().setWigFile(wigDoc->getURLString());
+            //settings.getCeasSettings().setWigFile(wigDoc->getURLString());
+            settings.getCeasSettings().setWigFile(settings.getWigData());
             QStringList args = settings.getCeasSettings().getArgumentList();
 
             logParser = new ExternalToolLogParser();

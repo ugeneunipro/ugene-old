@@ -61,7 +61,7 @@ class CEASSupportTask : public Task {
     Q_OBJECT
 public:
     CEASSupportTask(const CEASTaskSettings &settings);
-    ~CEASSupportTask();
+    virtual ~CEASSupportTask();
 
     virtual void prepare();
     virtual QList<Task*> onSubTaskFinished(Task* subTask);

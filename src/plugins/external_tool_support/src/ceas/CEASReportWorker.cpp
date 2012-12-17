@@ -82,6 +82,8 @@ Task *CEASReportWorker::tick() {
         CEASSupportTask *t = new CEASSupportTask(settings);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
+    }if (inChannel->isEnded()) {
+        setDone();
     }
     return NULL;
 }
@@ -118,8 +120,8 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
     }
 
     QVariant bedVar = data[BED_SLOT_ID];
-    QList<SharedAnnotationData> bedData = QVariantUtils::var2ftl(bedVar.toList());
-    QString wigData = data[WIG_SLOT_ID].toString();
+    const QList<SharedAnnotationData>& bedData = QVariantUtils::var2ftl(bedVar.toList());
+    const QString& wigData = data[WIG_SLOT_ID].toString();
 
     CEASSettings ceas = createCEASSettings(os);
     CHECK_OP(os, CEASTaskSettings());
