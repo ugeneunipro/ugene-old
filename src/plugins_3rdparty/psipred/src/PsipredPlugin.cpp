@@ -43,6 +43,8 @@
 #include "PsipredAlgTask.h"
 #include "sspred_utils.h"
 
+#define PSIPRED_PLUGIN_NAME "PsiPred"
+
 namespace U2 {
 
 
@@ -52,12 +54,12 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 }
 
 
-PsipredPlugin::PsipredPlugin() : Plugin(tr("PsiPred"), tr("PsiPred protein secondary structure prediction")) {
+PsipredPlugin::PsipredPlugin() : Plugin(tr(PSIPRED_PLUGIN_NAME), tr("PsiPred protein secondary structure prediction"),false) {
    
     // Register PsiPred algorithm
     SecStructPredictAlgRegistry* registry = AppContext::getSecStructPredictAlgRegistry();
     SecStructPredictTaskFactory* taskFactory = new PsipredAlgTask::Factory;
-    registry->registerAlgorithm(taskFactory, PsipredAlgTask::taskName);
+    registry->registerAlgorithm(taskFactory, PSIPRED_PLUGIN_NAME);
     
     //Register PsiPred annotation settings
     AnnotationSettingsRegistry* asr =AppContext::getAnnotationsSettingsRegistry();

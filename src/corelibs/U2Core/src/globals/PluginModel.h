@@ -23,6 +23,7 @@
 #define _U2_PLUGINMODEL_H_
 
 #include <U2Core/global.h>
+#include <U2Core/GUrl.h>
 
 #include <QtCore/QString>
 #include <QtCore/QList>
@@ -49,8 +50,8 @@ enum PluginState {
 class U2CORE_EXPORT Plugin : public QObject {
     Q_OBJECT
 public:
-    Plugin(const QString & _name, const QString& _desc, PluginState _state = PluginState_Loaded) 
-        : name(_name), description(_desc), state(_state){}
+    Plugin(const QString & _name, const QString& _desc, const bool _isFree = true, PluginState _state = PluginState_Loaded)
+        : name(_name), description(_desc), isFreeValue(_isFree), state(_state){}
     
     //plugin is deallocated by plugin_support service when it's removed or on application shutting down
     virtual ~Plugin(){}
@@ -59,8 +60,14 @@ public:
 
     const QString& getDescription() const {return description;}
 
+    const GUrl& getLicensePath() const {return licensePath;}
+    void setLicensePath(const QString& licensePath);
 
     PluginState getState() const {return state;}
+
+    bool isFree() const {return isFreeValue;}
+    bool isLicenseAccepted() const {return isLicenseAcceptedValue;}
+    void acceptLicense();
 
     // returns list of services provided by the plugin
     // after plugin is loaded all services from this list are automatically registered 
@@ -69,7 +76,10 @@ public:
 protected:
     QString         name, description;
     QList<Service*> services;
+    bool            isFreeValue;
+    bool            isLicenseAcceptedValue;
     PluginState     state;
+    GUrl            licensePath;
 };
 
 
@@ -85,6 +95,7 @@ public:
     //plugin will not be removed from the plugin list during the next app run
     virtual void setRemoveFlag(Plugin* p, bool v) = 0;
     virtual bool getRemoveFlag(Plugin* p) const = 0;
+    virtual void setLicenseAccepted(Plugin* p) = 0;
     virtual bool isAllPluginsLoaded() const = 0;
 
 signals:

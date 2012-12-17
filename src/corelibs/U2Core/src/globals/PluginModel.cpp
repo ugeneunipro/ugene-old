@@ -20,3 +20,14 @@
  */
 
 #include "PluginModel.h"
+
+namespace U2 {
+void Plugin::setLicensePath(const QString & _licensePath){
+    licensePath=GUrl(_licensePath);
+}
+
+void Plugin::acceptLicense(){
+    isLicenseAcceptedValue=true;
+}
+
+}//namespace

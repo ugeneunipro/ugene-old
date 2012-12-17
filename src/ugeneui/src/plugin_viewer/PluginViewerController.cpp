@@ -74,7 +74,11 @@ void PluginViewerController::createWindow() {
     }
 
     QList<int> sizes; sizes<<200<<500;
-    ui.splitter->setSizes(sizes);
+    //ui.splitter->setSizes(sizes);
+    ui.licenseLabel->hide();
+    ui.licenseView->hide();
+    ui.acceptLicenseButton->hide();
+
     ui.treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     
     connectVisualActions();
@@ -134,6 +138,8 @@ void PluginViewerController::connectVisualActions() {
 
     connect(ui.treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),SLOT(sl_treeCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
     connect(ui.treeWidget, SIGNAL(customContextMenuRequested(const QPoint&)),SLOT(sl_treeCustomContextMenuRequested(const QPoint&)));
+    connect(ui.showLicenseButton,SIGNAL(clicked()),SLOT(sl_showHideLicense()));
+    connect(ui.acceptLicenseButton,SIGNAL(clicked()),SLOT(sl_acceptLicense()));
 }
 
 void PluginViewerController::disconnectVisualActions() {
@@ -365,6 +371,19 @@ void PluginViewerController::updateState() {
 
 void PluginViewerController::sl_treeCurrentItemChanged(QTreeWidgetItem * current, QTreeWidgetItem * previous) {
     Q_UNUSED(current); Q_UNUSED(previous);
+    if(current == previous){
+        return;
+    }
+    PlugViewPluginItem* curentItem=dynamic_cast<PlugViewPluginItem*>(current);
+    if(!curentItem->plugin->isFree()){
+        if(!curentItem->plugin->isLicenseAccepted()){
+            showLicense();
+        }else{
+            hideLicense();
+        }
+    }else{
+        hideLicense();
+    }
     updateState();
 }
 
@@ -399,6 +418,49 @@ void PluginViewerController::sl_treeCustomContextMenuRequested(const QPoint & po
     menu->exec(QCursor::pos());
 }
 
+void PluginViewerController::sl_showHideLicense(){
+    if(ui.licenseView->isHidden()){
+        showLicense();
+    }else{
+        hideLicense();
+    }
+}
+void PluginViewerController::sl_acceptLicense(){
+    PlugViewPluginItem* curentItem=dynamic_cast<PlugViewPluginItem*>(ui.treeWidget->currentItem());
+    showLicense();
+    AppContext::getPluginSupport()->setLicenseAccepted(curentItem->plugin);
+}
+
+void PluginViewerController::showLicense(){
+    ui.showLicenseButton->setText(tr("Hide License"));
+    ui.licenseView->show();
+    ui.licenseLabel->show();
+    PlugViewPluginItem* curentItem=dynamic_cast<PlugViewPluginItem*>(ui.treeWidget->currentItem());
+    if(!curentItem->plugin->isFree()){
+        if(!curentItem->plugin->isLicenseAccepted()){
+            ui.acceptLicenseButton->show();
+        }else{
+            ui.acceptLicenseButton->hide();
+        }
+    }else{
+        ui.acceptLicenseButton->hide();
+    }
+
+    //Opening license file
+    QFile licenseFile(curentItem->plugin->getLicensePath().getURLString());
+    if (!licenseFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+        ui.licenseView->setText(tr("License file not found."));
+    }else{
+        ui.licenseView->setText(QString(licenseFile.readAll()));
+        licenseFile.close();
+    }
+}
+void PluginViewerController::hideLicense(){
+    ui.showLicenseButton->setText(tr("Show License"));
+    ui.licenseView->hide();
+    ui.licenseLabel->hide();
+    ui.acceptLicenseButton->hide();
+}
 //////////////////////////////////////////////////////////////////////////
 // TreeItems
 

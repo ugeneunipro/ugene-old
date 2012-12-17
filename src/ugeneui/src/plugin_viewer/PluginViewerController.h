@@ -62,15 +62,19 @@ private slots:
     void sl_onServiceRegistered(Service* s);
     void sl_onServiceUnregistered(Service* s);
     void sl_taskStateChanged();
+    void sl_showHideLicense();
+    void sl_acceptLicense();
 
 private: 
     void connectStaticActions();
     void connectVisualActions();
-	void disconnectVisualActions();
+    void disconnectVisualActions();
     void buildItems();
     void createWindow();
-	void updateActions();
+    void updateActions();
     void updateState();
+    void showLicense();
+    void hideLicense();
 
 	PlugViewPluginItem* findPluginItem(Plugin* p) const;
 	PlugViewServiceItem* findServiceItem(Service* s) const;

@@ -12,11 +12,14 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/Settings.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/PluginModel.h>
 
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+
+#include <U2View/LicenseDialog.h>
 
 #include <QtGui/qfiledialog.h>
 #include <QtGui/qmessagebox.h>
@@ -66,6 +69,24 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
 void CreatePhyTreeDialogController::sl_okClicked(){
     
     settings.algorithmId = ui->algorithmBox->currentText();
+
+    //Check license
+    if (settings.algorithmId == "PHYLIP Neighbor Joining"){//This bad hack :(
+        QList<Plugin*> plugins=AppContext::getPluginSupport()->getPlugins();
+        foreach (Plugin* plugin, plugins){
+            if(plugin->getName() == "PHYLIP"){
+                if(!plugin->isLicenseAccepted()){
+                    LicenseDialog licenseDialog(plugin);
+                    int ret = licenseDialog.exec();
+                    if(ret != QDialog::Accepted){
+                        return;
+                    }
+                }
+                break;
+            }
+        }
+    }
+
     if (ui->fileNameEdit->text().isEmpty()) {
         QMessageBox::warning(this, tr("Warning"), tr("Please, input the file name."));
         ui->fileNameEdit->setFocus();

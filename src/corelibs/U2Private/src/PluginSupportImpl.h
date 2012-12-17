@@ -67,6 +67,8 @@ public:
     virtual void setRemoveFlag(Plugin* p, bool v);
     virtual bool getRemoveFlag(Plugin* p) const;
 
+    virtual void setLicenseAccepted(Plugin* p);
+
 
     static bool isDefaultPluginsDir(const QString& url);
     static QDir getDefaultPluginsDir();

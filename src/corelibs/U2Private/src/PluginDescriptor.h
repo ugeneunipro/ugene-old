@@ -71,6 +71,7 @@ public:
     QString             pluginVendor;
     GUrl                descriptorUrl;
     GUrl                libraryUrl;
+    GUrl                licenseUrl;
     PlatformInfo        platform;
     PluginMode          mode;
     QList<DependsInfo>  dependsList;

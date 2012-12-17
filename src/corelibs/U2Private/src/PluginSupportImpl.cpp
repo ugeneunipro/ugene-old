@@ -41,6 +41,7 @@ namespace U2 {
 /* TRANSLATOR U2::PluginSupportImpl */
 #define PLUGINS_LIST_SETTINGS QString("plugin_support/list/")
 #define SKIP_LIST_SETTINGS QString("plugin_support/skip_list/")
+#define PLUGINS_ACCEPTED_LICENSE_LIST QString("plugin_support/accepted_list/")
 
 static QStringList findAllPluginsInDefaultPluginsDir();
 
@@ -313,7 +314,12 @@ bool PluginSupportImpl::getRemoveFlag(Plugin* p) const {
     PluginRef* r = findRef(p);
     return r->removeFlag;
 }
-
+void PluginSupportImpl::setLicenseAccepted(Plugin *p){
+    p->acceptLicense();
+    PluginRef* r = findRef(p);
+    assert(r!=NULL);
+    updateSavedState(r);
+}
 void PluginSupportImpl::updateSavedState(PluginRef* ref) {
     if (ref->library == NULL) {
         // skip core plugin
@@ -322,6 +328,7 @@ void PluginSupportImpl::updateSavedState(PluginRef* ref) {
     Settings* settings = AppContext::getSettings();
     QString pluginListSettingsDir = settings->toVersionKey(PLUGINS_LIST_SETTINGS);
     QString skipListSettingsDir = settings->toVersionKey(SKIP_LIST_SETTINGS);
+    QString pluginAcceptedLicenseSettingsDir = settings->toVersionKey(PLUGINS_ACCEPTED_LICENSE_LIST);
     QString descUrl = ref->pluginDesc.descriptorUrl.getURLString();
     QString pluginId = ref->pluginDesc.id;
     if (ref->removeFlag) {
@@ -345,6 +352,10 @@ void PluginSupportImpl::updateSavedState(PluginRef* ref) {
                 settings->setValue(skipListSettingsDir, skipFiles);
             }
         }
+    }
+
+    if (!ref->plugin->isFree()){
+        settings->setValue(pluginAcceptedLicenseSettingsDir + versionAppendix + pluginId + "license",ref->plugin->isLicenseAccepted());
     }
 }
 
@@ -409,6 +420,22 @@ Task::ReportResult AddPluginTask::report() {
     if (p == NULL) {
         stateInfo.setError(  tr("Plugin initialization failed: %1").arg(libUrl) );
         return ReportResult_Finished;
+    }
+    p->setLicensePath(desc.licenseUrl.getURLString());
+
+    if (!p->isFree()){
+        QString versionAppendix = Version::buildDate;
+        if (!Version::appVersion().isDevVersion){
+            versionAppendix.clear();
+        }else{
+            versionAppendix.replace(" ", ".");
+            versionAppendix.append("-");
+        }
+        Settings* settings = AppContext::getSettings();
+        QString pluginAcceptedLicenseSettingsDir = settings->toVersionKey(PLUGINS_ACCEPTED_LICENSE_LIST);
+        if(settings->getValue(pluginAcceptedLicenseSettingsDir + versionAppendix + desc.id + "license").toBool()){
+            p->acceptLicense();
+        }
     }
 
     ref = new PluginRef(p, lib.release(), desc);

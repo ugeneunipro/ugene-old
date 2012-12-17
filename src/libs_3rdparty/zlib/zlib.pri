@@ -38,7 +38,7 @@ win32 {
     QMAKE_MSVC_PROJECT_NAME=lib_3rd_zlib
 }
 
-unix {
-    target.path = $$UGENE_INSTALL_DIR/$$UGENE_RELATIVE_DESTDIR
-    INSTALLS += target
-}
+#unix {
+#    target.path = $$UGENE_INSTALL_DIR/$$UGENE_RELATIVE_DESTDIR
+#    INSTALLS += target
+#}

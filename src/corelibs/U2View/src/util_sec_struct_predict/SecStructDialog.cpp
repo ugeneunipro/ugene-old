@@ -27,6 +27,7 @@
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/PluginModel.h>
 
 #include <U2Algorithm/SecStructPredictAlgRegistry.h>
 #include <U2Algorithm/SecStructPredictTask.h>
@@ -35,6 +36,7 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/LicenseDialog.h>
 
 #include <QtCore/QMutableListIterator>
 #include <QtGui/QHeaderView>
@@ -116,6 +118,22 @@ void SecStructDialog::sl_onStartPredictionClicked() {
     SAFE_POINT(task == NULL, "Found pending prediction task!", );
 
     SecStructPredictTaskFactory* factory = sspr->getAlgorithm(algorithmComboBox->currentText());
+
+    //Check license
+    QString algorithm=algorithmComboBox->currentText();
+    QList<Plugin*> plugins=AppContext::getPluginSupport()->getPlugins();
+    foreach (Plugin* plugin, plugins){
+        if(plugin->getName() == algorithm){
+            if(!plugin->isFree() && !plugin->isLicenseAccepted()){
+                LicenseDialog licenseDialog(plugin);
+                int ret = licenseDialog.exec();
+                if(ret != QDialog::Accepted){
+                    return;
+                }
+            }
+            break;
+        }
+    }
 
     //prepare target sequence
     rangeStart = rangeStartSpinBox->value();

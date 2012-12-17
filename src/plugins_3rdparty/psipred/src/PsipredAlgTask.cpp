@@ -33,7 +33,6 @@
 
 namespace U2 {
 
-const QString PsipredAlgTask::taskName(tr("PsiPred"));
 QMutex PsipredAlgTask::runLock;
 
 PsipredAlgTask::PsipredAlgTask(const QByteArray& inputSeq) : SecStructPredictTask(inputSeq)

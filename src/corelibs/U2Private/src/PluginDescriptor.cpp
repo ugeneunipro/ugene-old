@@ -138,7 +138,12 @@ PluginDesc PluginDescriptorHelper::readPluginDescriptor(const QString& descUrl, 
         error = tr("Required element not found %1").arg("library");
         return failResult;
     }
-    
+    QString licenseUrl = QString(result.id+".license");
+    if (QFileInfo(licenseUrl).isRelative()) { //if path is relative, use descriptor dir as 'current folder'
+        licenseUrl = QFileInfo(descUrl).absoluteDir().canonicalPath() + "/" + licenseUrl;
+    }
+    result.licenseUrl = licenseUrl;
+
     result.name = pluginElement.firstChildElement("name").text();
     if (result.name.isNull()) {
         error = tr("Required element not found %1").arg("name");
@@ -208,6 +213,7 @@ bool PluginDesc::operator == (const PluginDesc& pd) const  {
         && ugeneVersion == pd.ugeneVersion 
         && qtVersion == pd.qtVersion
         && libraryUrl == pd.libraryUrl
+        && licenseUrl == pd.licenseUrl
         && platform == pd.platform
         && mode == pd.mode;
 }
