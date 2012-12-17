@@ -52,6 +52,9 @@ p, li { white-space: pre-wrap; }
           <property name="text">
            <string>Filter duplicated annotations</string>
           </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item row="0" column="1">

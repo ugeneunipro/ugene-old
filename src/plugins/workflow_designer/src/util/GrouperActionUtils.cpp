@@ -383,10 +383,12 @@ static void shiftAnns(QList<SharedAnnotationData> &newAnns, qint64 offset) {
 
 bool MergeAnnotationPerformer::applyAction(const QVariant &newData) {
     QList<SharedAnnotationData> newAnns;
-    if (QString("QList<U2::SharedAnnotationData>") == newData.typeName()) { // wtf?
-        newAnns << qVariantValue<QList<SharedAnnotationData> >(newData);
-    } else {
+    if (newData.canConvert< QList<SharedAnnotationData> >()) {
+        newAnns << newData.value< QList<SharedAnnotationData> >();
+    } else if (newData.canConvert<SharedAnnotationData>()) {
         newAnns << newData.value<SharedAnnotationData>();
+    } else {
+        coreLog.error("Grouper: can not get annotations from QVariant");
     }
 
 
