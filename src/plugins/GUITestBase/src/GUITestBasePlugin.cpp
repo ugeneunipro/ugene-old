@@ -42,6 +42,7 @@
 #include "tests/common_scenarios/msa_editor/GTTestsMsaEditor.h"
 #include "tests/common_scenarios/msa_editor/colors/GTTestsMSAEditorColors.h"
 #include "tests/common_scenarios/msa_editor/consensus/GTTestsMSAEditorConsensus.h"
+#include "tests/common_scenarios/msa_editor/edit/GTTestsMSAEditorEdit.h"
 #include "tests/common_scenarios/annotations/GTTestsAnnotations.h"
 #include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
 #include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
@@ -438,6 +439,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_consensus::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_consensus::test_0004_2);
 
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/msa_editor/edit
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0001_2);
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/document_from_text/
 //////////////////////////////////////////////////////////////////////////
