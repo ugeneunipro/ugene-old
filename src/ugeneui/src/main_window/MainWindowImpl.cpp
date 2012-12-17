@@ -461,10 +461,11 @@ void FixedMdiArea::setViewMode( QMdiArea::ViewMode mode )
     if (mode == QMdiArea::TabbedView) {
         //FIXME QTBUG-9293, Adding a close button to tabbed QMdiSubWindows
         QList<QTabBar*> tb = findChildren<QTabBar*>();
-        assert(tb.size() == 1);
-        if (tb.size() == 1) {
-            tb.first()->setTabsClosable(true);
-            connect(tb.first(), SIGNAL(tabCloseRequested(int)), SLOT(closeSubWindow(int)));
+        foreach(QTabBar *t ,tb){
+            if(t->parentWidget() == this){
+                t->setTabsClosable(true);
+                connect(t, SIGNAL(tabCloseRequested(int)), SLOT(closeSubWindow(int)));
+            }
         }
     } else {
         //TODO QTBUG-3269: switching between TabbedView and SubWindowView does not preserve maximized window state
