@@ -302,6 +302,18 @@ void BowtieAssembleTask::LogParser::parseErrOutput(const QString &partOfLog) {
             }
         }
     }
+
+    QStringList log = lastPartOfLog;
+    QStringList::iterator i = log.begin();
+    for (; i!=log.end(); i++) {
+        if(i->contains("Out of memory")) {
+            QStringList errors;
+            for (int strings=0; i!=log.end() && strings<2; i++, strings++) {
+                errors << *i;
+            }
+            setLastError(errors.join(" "));
+        }
+    }
 }
 
 bool BowtieAssembleTask::LogParser::isHaveResults()const {

@@ -211,6 +211,19 @@ void BwaAlignTask::LogParser::parseOutput(const QString &partOfLog) {
 
 void BwaAlignTask::LogParser::parseErrOutput(const QString &partOfLog) {
     ExternalToolLogParser::parseErrOutput(partOfLog);
+    QStringList log = lastPartOfLog;
+    QStringList::iterator i = log.begin();
+    for (; i!=log.end(); i++) {
+        if(i->contains("This application has requested the Runtime to terminate")) {
+            QStringList errors;
+            for (int strings=0; i!=log.end() && strings<2; i++, strings++) {
+                errors << *i;
+            }
+            setLastError(errors.join(" "));
+        } else if (i->contains("Abort!")) {
+            setLastError(*i);
+        }
+    }
 }
 
 // BwaTask

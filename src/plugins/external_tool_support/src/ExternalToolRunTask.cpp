@@ -182,8 +182,7 @@ void ExternalToolLogParser::parseOutput(const QString& partOfLog){
     lastLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
         if(buf.contains("error",Qt::CaseInsensitive)){
-            ioLog.error(buf);
-            lastError = buf;
+            setLastError(buf);
         }else{
             ioLog.trace(buf);
         }
@@ -196,13 +195,18 @@ void ExternalToolLogParser::parseErrOutput(const QString& partOfLog){
     lastErrLine=lastPartOfLog.takeLast();
     foreach(const QString& buf, lastPartOfLog){
         if(buf.contains("error",Qt::CaseInsensitive)){
-            ioLog.error(buf);
-            lastError = buf;
+            setLastError(buf);
         }else{
             ioLog.trace(buf);
         }
     }
 }
+
+void ExternalToolLogParser::setLastError(const QString &value) {
+    ioLog.error(value);
+    lastError = value;
+}
+
 ////////////////////////////////////////
 //ExternalToolSupportUtils
 void ExternalToolSupportUtils::removeTmpDir( const QString& tmpDirUrl, U2OpStatus& os) {

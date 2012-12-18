@@ -86,7 +86,10 @@ public:
     virtual void parseOutput(const QString& partOfLog);
     virtual void parseErrOutput(const QString& partOfLog);
     QString getLastError() const {return lastError;}
-    
+
+protected:
+    void setLastError(const QString &value);
+
 private:
     /* If any error occurred, this variable will be non-empty */
     QString     lastError;
