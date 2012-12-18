@@ -75,9 +75,9 @@ QMenu* MWMenuManagerImpl::createTopLevelMenu(const QString& sysName, const QStri
 #ifndef Q_OS_MAC
         qmenu->setEnabled(false);
 #else
-        if (!QApplication::testAttribute(Qt::AA_DontUseNativeMenuBar)) {
-            qmenu->setEnabled(false);
-        }
+//        if (!QApplication::testAttribute(Qt::AA_DontUseNativeMenuBar)) {          //UGENE-339, not tested for attribute set
+//            qmenu->setEnabled(false);
+//        }
 #endif
     }
 #endif
