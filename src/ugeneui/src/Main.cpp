@@ -561,9 +561,6 @@ int main(int argc, char **argv)
     GReportableCounter launchCounter("ugeneui launch", "", 1);
     ++launchCounter.totalCount;
 
-    GReportableCounter launchBitsCounter(QString("ugeneui %1-bit launch").arg(Version::appArchitecture), "", 1);
-    ++launchBitsCounter.totalCount;
-
     //3 run QT GUI
     t1.stop();
     coreLog.info(AppContextImpl::tr("%1-bit version of UGENE started").arg(Version::appArchitecture));
