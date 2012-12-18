@@ -94,7 +94,9 @@ void ExportSequenceViewItemsController::buildMenu(GObjectView* v, QMenu* m) {
 
 void ExportSequenceViewItemsController::init(){
     GObjectViewWindowContext::init();
-    buildMenu(av, AppContext::getMainWindow()->getTopLevelMenu(MWMENU_ACTIONS));
+    if(!viewResources.value(av).isEmpty()){
+        buildMenu(av, AppContext::getMainWindow()->getTopLevelMenu(MWMENU_ACTIONS));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

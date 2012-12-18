@@ -366,6 +366,9 @@ public:
 
     virtual qint64 getNameByThreadId(Qt::HANDLE id) const = 0;
 
+signals:
+    void si_noTasksInScheduler();
+
 protected:
 
     TaskResources& getTaskResources(Task* t) {return t->taskResources;}
