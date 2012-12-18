@@ -28,8 +28,11 @@ namespace U2 {
 
 class DeleteGapsDialogFiller : public Filler {
 public:
-    DeleteGapsDialogFiller(U2OpStatus &os) : Filler(os, "DeleteGapsDialog"){}
+    DeleteGapsDialogFiller(U2OpStatus &os, int _radioButNum=0) : Filler(os, "DeleteGapsDialog"),
+        radioButNum(_radioButNum){}
     virtual void run();
+private:
+    int radioButNum;
 };
 
 }

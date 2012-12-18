@@ -35,9 +35,14 @@ void DeleteGapsDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    QRadioButton* withNumberOfGaps = dialog->findChild<QRadioButton*>("absoluteRadioButton");
-    GTRadioButton::click(os, withNumberOfGaps);
-
+    if (radioButNum==1){
+        QRadioButton* allColumnsOfGaps = dialog->findChild<QRadioButton*>("allRadioButton");
+        GTRadioButton::click(os, allColumnsOfGaps);
+    }
+    else{
+        QRadioButton* withNumberOfGaps = dialog->findChild<QRadioButton*>("absoluteRadioButton");
+        GTRadioButton::click(os, withNumberOfGaps);
+    }
     QAbstractButton *removeButton = dialog->findChild<QAbstractButton*>("deleteButton");
     GTWidget::click(os, removeButton);
 }

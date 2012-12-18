@@ -34,7 +34,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "runnables/qt/PopupChooser.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "GTUtilsMdi.h"
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
@@ -288,6 +288,55 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1){
 *    Mecopoda_elongata__Ishigaki__J     AAGCTTTTAA---
 *    Podisma_sapporensis                AAGAATAATTA--
 *    Hetrodes_pupus_EF540832            AAGCTTTTAA--- */
+
+}
+GUI_TEST_CLASS_DEFINITION(test_0008){
+//Check remove columns with gaps
+//1. Open document _common_data\scenarios\msa\ma2_gap_col.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+//2. Place cursor on 4th column of alignment. Use msa editor context menu (at the column with gaps) {Edit->Remove column of gaps}.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(3,3));
+
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "remove_columns_of_gaps"));
+    GTUtilsDialog::waitForDialog(os,new DeleteGapsDialogFiller(os,1));
+    GTMenu::showContextMenu(os,seq);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(12, 9));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    QString clipboardTest = GTClipboard::text(os);
+    QString expectedSeq=QString("AAGCTTCTTTTAA\n"
+                                "AAGTTACTAA---\n"
+                                "TAG---TTATTAA\n"
+                                "AAGC---TATTAA\n"
+                                "TAGTTATTAA---\n"
+                                "TAGTTATTAA---\n"
+                                "TAGTTATTAA---\n"
+                                "AAGCTTT---TAA\n"
+                                "A--AGAATAATTA\n"
+                                "AAGCTTTTAA---");
+
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+clipboardTest +"\nFound:\n"+ expectedSeq);
+//Expected state: "Remove column of gaps" dialog appears
+
+//3. Choose option "Delete all columns of gaps" and click "Delete" button
+/*Expected state: length 13, right offsets 13
+Phaneroptera_falcata               AAGCTTCTTTTAA
+Isophya_altaica_EF540820           AAGTTACTAA---
+Bicolorana_bicolor_EF540830        TAG---TTATTAA
+Tettigonia_viridissima             AAGC---TATTAA
+Conocephalus_discolor              TAGTTATTAA---
+Conocephalus_sp.                   TAGTTATTAA---
+Conocephalus_percaudata            TAGTTATTAA---
+Mecopoda_elongata__Ishigaki__J     AAGCTTT---TAA
+Podisma_sapporensis                A--AGAATAATTA
+Hetrodes_pupus_EF540832            AAGCTTTTAA---
+*/
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0008_1){
 
 }
 
