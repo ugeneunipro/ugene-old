@@ -236,7 +236,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
                                     "AAGAATAATTA---\n"
                                     "AAGCCTTTTAA---");
 
-    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+clipboardTest +"\nFound:\n"+ expectedSeq);
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+ expectedSeq +"\nFound:\n" + clipboardTest);
 /*    Expected state: length 14, right offsets 14
 *    Phaneroptera_falcata               AAGACTTCTTTTAA
 *    Isophya_altaica_EF540820           AAGCTTACTAA---
@@ -276,7 +276,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1){
                                 "AAGAATAATTA--\n"
                                 "AAGCTTTTAA---");
 
-    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+clipboardTest +"\nFound:\n"+ expectedSeq);
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+ expectedSeq +"\nFound:\n"+clipboardTest);
 /*    Expected state: length 14, right offsets 14
 *    Phaneroptera_falcata               AAGCTTCTTTTAA
 *    Isophya_altaica_EF540820           AAGTTACTAA---
@@ -318,7 +318,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
                                 "A--AGAATAATTA\n"
                                 "AAGCTTTTAA---");
 
-    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+clipboardTest +"\nFound:\n"+ expectedSeq);
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+ expectedSeq  +"\nFound:\n" + clipboardTest);
 //Expected state: "Remove column of gaps" dialog appears
 
 //3. Choose option "Delete all columns of gaps" and click "Delete" button
@@ -337,7 +337,157 @@ Hetrodes_pupus_EF540832            AAGCTTTTAA---
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0008_1){
+//Check remove columns with gaps
+//1. Open document _common_data\scenarios\msa\ma2_gap_col.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+//2. Place cursor on 4th column of alignment. Use msa editor context menu (at the column with gaps) {Edit->Remove column of gaps}.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(3,3));
 
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTUtilsDialog::waitForDialog(os,new DeleteGapsDialogFiller(os,1));
+    GTWidget::click(os,seq);
+    GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"],GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(1000);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(12, 9));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    QString clipboardTest = GTClipboard::text(os);
+    QString expectedSeq=QString("AAGCTTCTTTTAA\n"
+                                "AAGTTACTAA---\n"
+                                "TAG---TTATTAA\n"
+                                "AAGC---TATTAA\n"
+                                "TAGTTATTAA---\n"
+                                "TAGTTATTAA---\n"
+                                "TAGTTATTAA---\n"
+                                "AAGCTTT---TAA\n"
+                                "A--AGAATAATTA\n"
+                                "AAGCTTTTAA---");
+
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+ expectedSeq +"\nFound:\n"+clipboardTest);
+//Expected state: "Remove column of gaps" dialog appears
+
+//3. Choose option "Delete all columns of gaps" and click "Delete" button
+/*Expected state: length 13, right offsets 13
+Phaneroptera_falcata               AAGCTTCTTTTAA
+Isophya_altaica_EF540820           AAGTTACTAA---
+Bicolorana_bicolor_EF540830        TAG---TTATTAA
+Tettigonia_viridissima             AAGC---TATTAA
+Conocephalus_discolor              TAGTTATTAA---
+Conocephalus_sp.                   TAGTTATTAA---
+Conocephalus_percaudata            TAGTTATTAA---
+Mecopoda_elongata__Ishigaki__J     AAGCTTT---TAA
+Podisma_sapporensis                A--AGAATAATTA
+Hetrodes_pupus_EF540832            AAGCTTTTAA---
+*/
+}
+
+
+void test_9(U2OpStatus &os, int i=0){
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    QString gaps;
+    QString expectedSeq;
+
+    if(i){
+        GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(i,0), QPoint(i, 9));
+    }
+    else{
+        GTUtilsMSAEditorSequenceArea::click(os,QPoint(13,0));
+    }
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTGlobals::sleep(100);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    GTGlobals::sleep(100);
+    GTWidget::click(os,seq);
+
+    if(i){
+        GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(i,0), QPoint(i+1, 9));
+        GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+        gaps=QString("--\n--\n--\n--\n--\n--\n--\n--\n--\n--");
+    }
+    else{
+        GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(14,0), QPoint(15, 9));
+        GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+        gaps=QString("-A\n--\n--\n--\n--\n--\n--\n--\n--\n--");
+    }
+
+    GTGlobals::sleep(500);
+    QString clipboardTest = GTClipboard::text(os);
+
+
+    CHECK_SET_ERR(clipboardTest==gaps,"\n Expected: \n" + gaps + "\nFound:\n" + clipboardTest);
+//Expected state: two columns with gaps added to the end of sequence.
+//3. Move cursor at 15th symbol in first sequence. Use msa editor context menu {Edit->Delete column of gaps}.
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "remove_columns_of_gaps"));
+    GTUtilsDialog::waitForDialog(os,new DeleteGapsDialogFiller(os,1));
+    GTMenu::showContextMenu(os,seq);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(14, 9));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    clipboardTest = GTClipboard::text(os);
+    if(i){
+        expectedSeq=QString("AAGACTTCTTTTAA\n"
+                            "AAGCTTACTAA---\n"
+                            "TAGT---TTATTAA\n"
+                            "AAGTC---TATTAA\n"
+                            "TAGCTTATTAA---\n"
+                            "TAGCTTATTAA---\n"
+                            "TAGCTTATTAA---\n"
+                            "AAGTCTTT---TAA\n"
+                            "A---AGAATAATTA\n"
+                            "AAGCCTTTTAA---");
+    }
+    else{
+        expectedSeq=QString("AAGACTTCTTTTA-A\n"
+                            "AAGCTTACTAA----\n"
+                            "TAGT---TTATTAA-\n"
+                            "AAGTC---TATTAA-\n"
+                            "TAGCTTATTAA----\n"
+                            "TAGCTTATTAA----\n"
+                            "TAGCTTATTAA----\n"
+                            "AAGTCTTT---TAA-\n"
+                            "A---AGAATAATTA-\n"
+                            "AAGCCTTTTAA----");
+    }
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+ expectedSeq  +"\nFound:\n" + clipboardTest);
+/*Expected state:
+Phaneroptera_falcata               AAGACTTCTTTTA-A
+Isophya_altaica_EF540820           AAGCTTACTAA----
+Bicolorana_bicolor_EF540830        TAGT---TTATTAA-
+Tettigonia_viridissima             AAGTC---TATTAA-
+Conocephalus_discolor              TAGCTTATTAA----
+Conocephalus_sp.                   TAGCTTATTAA----
+Conocephalus_percaudata            TAGCTTATTAA----
+Mecopoda_elongata__Ishigaki__J     AAGTCTTT---TAA-
+Podisma_sapporensis                A---AGAATAATTA-
+Hetrodes_pupus_EF540832            AAGCCTTTTAA----
+*/
+}
+GUI_TEST_CLASS_DEFINITION(test_0009){
+//Check remove columns with gaps
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Put cursor at last symbol in first sequence, click "Space" two times.
+    test_9(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009_1){
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//DIFFERENCE: 2. Select column 3, click "Space" two times.
+    test_9(os,2);
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009_2){
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//DIFFERENCE: 2. Select column 9, click "Space" two times.
+    test_9(os,8);
 }
 
 } // namespace
