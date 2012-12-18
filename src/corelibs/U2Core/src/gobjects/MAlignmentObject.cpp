@@ -363,6 +363,7 @@ void MAlignmentObject::deleteGapsByAbsoluteVal(int val) {
     MAlignment msa = getMAlignment();
     int length = msa.getLength();
     MAlignment maBefore = msa;
+    QList<int> colsForDelete;
     for(int i = 0; i < length; i++) { //columns
         int gapCount = 0;
         for(int j = 0; j < msa.getNumRows(); j++) { //sequences
@@ -372,16 +373,16 @@ void MAlignmentObject::deleteGapsByAbsoluteVal(int val) {
         }
 
         if(gapCount >= val) {
-            removeRegion(i, 0, 1, msa.getNumRows(), true, false);
-            msa = getMAlignment();
-            length--;
-            i--;
+            colsForDelete.prepend(i);               //invert order
         }
     }
-    
-    if (msa.isEmpty()) {
-        msa = maBefore;
+    if (msa.getLength() == colsForDelete.count()) {
         return;
+    } else {
+        foreach (int colNumber, colsForDelete) {
+            removeRegion(colNumber, 0, 1, msa.getNumRows(), true, false);
+        }
+        msa = getMAlignment();
     }
     setMAlignment(msa);
 
