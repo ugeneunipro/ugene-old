@@ -334,7 +334,7 @@ class U2GUI_EXPORT GObjectViewWindowContext : public QObject, public GObjectView
 public:
     GObjectViewWindowContext(QObject* p, const GObjectViewFactoryId& id);
     virtual ~GObjectViewWindowContext();
-    void init();
+    virtual void init();
 
     QList<GObjectViewAction*> getViewActions(GObjectView* view) const;
 

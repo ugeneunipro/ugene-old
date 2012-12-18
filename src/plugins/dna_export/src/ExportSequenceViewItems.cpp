@@ -77,7 +77,7 @@ ExportSequenceViewItemsController::ExportSequenceViewItemsController(QObject* p)
 
 
 void ExportSequenceViewItemsController::initViewContext(GObjectView* v) {
-    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
+    av = qobject_cast<AnnotatedDNAView*>(v);
     ADVExportContext* vc= new ADVExportContext(av);
     addViewResource(av, vc);
 }
@@ -92,6 +92,10 @@ void ExportSequenceViewItemsController::buildMenu(GObjectView* v, QMenu* m) {
     vc->buildMenu(m);
 }
 
+void ExportSequenceViewItemsController::init(){
+    GObjectViewWindowContext::init();
+    buildMenu(av, AppContext::getMainWindow()->getTopLevelMenu(MWMENU_ACTIONS));
+}
 
 //////////////////////////////////////////////////////////////////////////
 // ADV view context

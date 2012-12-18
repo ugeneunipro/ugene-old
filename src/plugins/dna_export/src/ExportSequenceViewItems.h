@@ -40,11 +40,14 @@ class ExportSequenceViewItemsController : public GObjectViewWindowContext {
     Q_OBJECT
 public:
     ExportSequenceViewItemsController(QObject* p);
+    void init();
 
 
 protected:
     virtual void initViewContext(GObjectView* view);
     virtual void buildMenu(GObjectView* v, QMenu* m);
+private:
+    AnnotatedDNAView* av;
 };
 
 class ADVExportContext : public QObject {
