@@ -42,6 +42,11 @@ BowtieSettingsWidget::BowtieSettingsWidget(QWidget *parent):
 
     threadsSpinBox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     threadsSpinBox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
+#ifdef Q_OS_WIN
+    threadsSpinBox->setValue(1);
+    threadsLabel->setVisible(false);
+    threadsSpinBox->setVisible(false);
+#endif
 }
 
 QMap<QString,QVariant> BowtieSettingsWidget::getDnaAssemblyCustomSettings() {

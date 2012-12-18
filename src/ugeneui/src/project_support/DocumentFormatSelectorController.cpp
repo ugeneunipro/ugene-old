@@ -33,7 +33,7 @@ namespace U2{
 DocumentFormatSelectorController::DocumentFormatSelectorController(QList<FormatDetectionResult>& results, QWidget *p) 
 : QDialog(p), formatDetectionResults(results)
 {
-	setupUi(this);
+    setupUi(this);
 }
 
 
@@ -56,7 +56,9 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
     QList<DocumentFormatId> detectedIds;
     for (int i =0; i < results.size(); i++) {
         const FormatDetectionResult& r = results[i];
-        detectedIds.append(r.format->getFormatId());
+        if (NULL != r.format) {
+            detectedIds.append(r.format->getFormatId());
+        }
         QString text;
         if (r.format != NULL) {
             text = tr("<b>%1</b> format. Score: %2 <i>(%3)</i>").arg(r.format->getFormatName()).arg(r.score()).arg(score2Text(r.score()));
