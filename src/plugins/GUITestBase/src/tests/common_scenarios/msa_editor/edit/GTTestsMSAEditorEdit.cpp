@@ -123,6 +123,93 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2){
     test_3(os,7,"AAGTCTTT---TA-A");
 //Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J AAGTCTTT---TA-A, sequence length 15, right offset 14
 }
+
+void test_4(U2OpStatus &os, int startPos, int endPos, QString expectedSeq, int i=0, int context=0){
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(startPos,i), QPoint(endPos, i));
+
+    if(context){
+        QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove selection"));
+        GTMenu::showContextMenu(os,seq);
+    }
+    else{
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    }
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,i), QPoint(14, i));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    QString clipboardTest = GTClipboard::text(os);
+
+    CHECK_SET_ERR(clipboardTest==expectedSeq,clipboardTest);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004){
+//    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Select 1..5 region for Phaneroptera_falcata sequence. Press "delete".
+    test_4(os,0,4,"TTCTTTTAA-----");
+//    Expected state: Phaneroptera_falcata TTCTTTTAA-----, sequence length 14, right offset 9
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004_1){
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_4(os,0,4,"---TATTAA-----",3);
+//    Expected state: DIFFERENCE: Tettigonia_viridissima ---TATTAA-----, sequence length 14, right offset 9
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004_2){
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_4(os,0,4,"TTT---TAA-----",7);
+//    Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J TTT---TAA-----, sequence length 14, right offset 9
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005){
+//    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Select 6..9 symbol for Phaneroptera_falcata sequence. Use context menu {Edit->Delete selection}.
+    test_4(os,5,8,"AAGACTTTAA----");
+//    Expected state: Phaneroptera_falcata AAGACTTTAA----, sequence length 14, right offsets 10
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005_1){
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_4(os,5,8,"AAGTCATTAA----",3);
+//    Expected state: DIFFERENCE: Tettigonia_viridissima AAGTCATTAA----, sequence length 14, right offset 10
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005_2){
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_4(os,5,8,"AAGTC--TAA----",7);
+//    Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J AAGTC--TAA----, sequence length 14, right offset 10
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006){
+//    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Select 13..14 symbol for Phaneroptera_falcata sequence. Use context menu {Edit->Delete selection}.
+    test_4(os,12,13,"AAGACTTCTTTT--",0,1);
+//    Expected state: Phaneroptera_falcata AAGACTTCTTTT--, sequence length 14, right offsets 12
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006_1){
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_4(os,12,13,"AAGTC---TATT--",3,1);
+//    Expected state: DIFFERENCE: Tettigonia_viridissima AAGTC---TATT--, sequence length 14, right offsets 12
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006_2){
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_4(os,12,13,"AAGTCTTT---T--",7,1);
+//    Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J AAGTCTTT---T--, sequence length 14, right offsets 12
+}
 } // namespace
 } // namespace U2
 

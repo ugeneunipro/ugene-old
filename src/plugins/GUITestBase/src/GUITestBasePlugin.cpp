@@ -133,7 +133,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1212_1);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1252);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1252_1);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1252_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1329");
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1255);
 
@@ -405,9 +405,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0019_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0019_2);
 
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0020);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0020_1);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0020_2);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0020,"https://ugene.unipro.ru/tracker/browse/UGENE-1346");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0020_1,"https://ugene.unipro.ru/tracker/browse/UGENE-1346");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0020_2,"https://ugene.unipro.ru/tracker/browse/UGENE-1346");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0021);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0021_1);
@@ -449,6 +449,19 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0003_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0003_2);
+
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0004_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0004_2);
+
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0005_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0005_2);
+
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0006_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0006_2);
+
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/document_from_text/
 //////////////////////////////////////////////////////////////////////////
