@@ -210,6 +210,87 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2){
     test_4(os,12,13,"AAGTCTTT---T--",7,1);
 //    Expected state: DIFFERENCE: Mecopoda_elongata__Ishigaki__J AAGTCTTT---T--, sequence length 14, right offsets 12
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0007){
+//    Check remove all gaps
+//    1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Use msa editor context menu {Edit->Remove all gaps}.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove all gaps"));
+    GTMenu::showContextMenu(os,seq);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(13, 9));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    QString clipboardTest = GTClipboard::text(os);
+    QString expectedSeq=QString(    "AAGACTTCTTTTAA\n"
+                                    "AAGCTTACTAA---\n"
+                                    "TAGTTTATTAA---\n"
+                                    "AAGTCTATTAA---\n"
+                                    "TAGCTTATTAA---\n"
+                                    "TAGCTTATTAA---\n"
+                                    "TAGCTTATTAA---\n"
+                                    "AAGTCTTTTAA---\n"
+                                    "AAGAATAATTA---\n"
+                                    "AAGCCTTTTAA---");
+
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+clipboardTest +"\nFound:\n"+ expectedSeq);
+/*    Expected state: length 14, right offsets 14
+*    Phaneroptera_falcata               AAGACTTCTTTTAA
+*    Isophya_altaica_EF540820           AAGCTTACTAA---
+*    Bicolorana_bicolor_EF540830        TAGTTTATTAA---
+*    Tettigonia_viridissima             AAGTCTATTAA---
+*    Conocephalus_discolor              TAGCTTATTAA---
+*    Conocephalus_sp.                   TAGCTTATTAA---
+*    Conocephalus_percaudata            TAGCTTATTAA---
+*    Mecopoda_elongata__Ishigaki__J     AAGTCTTTTAA---
+*    Podisma_sapporensis                AAGAATAATTA---
+*    Hetrodes_pupus_EF540832            AAGCCTTTTAA--- */
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007_1){
+//    Check remove all gaps
+//DIFFERENSE:    1. Open document _common_data\scenarios\msa\ma2_gap_col.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+//    2. Use msa editor context menu {Edit->Remove all gaps}.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove all gaps"));
+    GTMenu::showContextMenu(os,seq);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(12, 9));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    QString clipboardTest = GTClipboard::text(os);
+    QString expectedSeq=QString("AAGCTTCTTTTAA\n"
+                                "AAGTTACTAA---\n"
+                                "TAGTTATTAA---\n"
+                                "AAGCTATTAA---\n"
+                                "TAGTTATTAA---\n"
+                                "TAGTTATTAA---\n"
+                                "TAGTTATTAA---\n"
+                                "AAGCTTTTAA---\n"
+                                "AAGAATAATTA--\n"
+                                "AAGCTTTTAA---");
+
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+clipboardTest +"\nFound:\n"+ expectedSeq);
+/*    Expected state: length 14, right offsets 14
+*    Phaneroptera_falcata               AAGCTTCTTTTAA
+*    Isophya_altaica_EF540820           AAGTTACTAA---
+*    Bicolorana_bicolor_EF540830        TAGTTATTAA---
+*    Tettigonia_viridissima             AAGCTATTAA---
+*    Conocephalus_discolor              TAGTTATTAA---
+*    Conocephalus_sp.                   TAGTTATTAA---
+*    Conocephalus_percaudata            TAGTTATTAA---
+*    Mecopoda_elongata__Ishigaki__J     AAGCTTTTAA---
+*    Podisma_sapporensis                AAGAATAATTA--
+*    Hetrodes_pupus_EF540832            AAGCTTTTAA--- */
+
+}
+
 } // namespace
 } // namespace U2
 
