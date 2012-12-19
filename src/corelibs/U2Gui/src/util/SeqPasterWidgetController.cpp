@@ -116,7 +116,7 @@ QString SeqPasterWidgetController::validate(){
         }else{
             message.append(tr("removed"));
         }
-        QMessageBox::critical(this, this->windowTitle(), message);
+        QMessageBox::critical(this, parentWidget()->windowTitle(), message);
     }
     resultSeq = DNASequence("New Sequence", normSequence, alph);
     return QString();
