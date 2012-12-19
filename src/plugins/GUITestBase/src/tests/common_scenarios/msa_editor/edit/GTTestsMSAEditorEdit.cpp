@@ -35,6 +35,7 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
 
@@ -658,6 +659,65 @@ GUI_TEST_CLASS_DEFINITION(test_0011_3){
     CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+ expectedSeq +"\nFound:\n"+clipboardTest);
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0012){
+//Check copy
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Select region 3..8 for Conocephalus_discolor sequence. Press Ctrl+C.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(2,4), QPoint(7, 4));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+//Expected state: GCTTAT has copied to clipboard
+    QString clipboardTest = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardTest=="GCTTAT","\n Expected: \nGCTTAT\nFound:\n"+clipboardTest);
+//3. Select region 6..12 for Conocephalus_discolor sequence. Use context menu {Copy->Copy selection}.
+    GTWidget::click(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(5,4), QPoint(11, 4));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_COPY" << "copy_selection"));
+    GTMenu::showContextMenu(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    GTGlobals::sleep(500);
+//Expected state: TATTAA- has copied to clipboard
+    clipboardTest = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardTest=="TATTAA-","\n Expected: \nTATTAA-\nFound:\n"+clipboardTest);
+}
+
+void test_13(U2OpStatus &os, int comboVal, int SpinVal, QString ExpectedCons){
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,comboVal,SpinVal));
+    GTMenu::showContextMenu(os,seq);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"MSAE_MENU_COPY" << "Copy consensus",GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os,seq);
+
+    QString clipboardText=GTClipboard::text(os);
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(clipboardText==ExpectedCons,"\n Expected: \n"+ ExpectedCons +"\nFound:\n"+clipboardText);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013){
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_13(os,1,100,"aagc+tattaataa");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013_1){
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_13(os,1,1,"AAGC+TATTAATAA");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013_2){
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+    test_13(os,2,75,"WAGYYTWYTAW");
+}
+
 } // namespace
 } // namespace U2
 
