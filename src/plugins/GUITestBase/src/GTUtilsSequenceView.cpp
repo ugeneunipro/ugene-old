@@ -50,10 +50,11 @@ namespace U2 {
 #define GT_METHOD_NAME "run"
 class GTSequenceReader : public Filler {
 public:
-    GTSequenceReader(U2OpStatus &_os, QString *_str):Filler(_os, ""), str(_str){}
+    GTSequenceReader(U2OpStatus &_os, QString *_str):Filler(_os, "EditSequenceDialog"), str(_str){}
     void run()
     {
         QWidget *widget = QApplication::activeModalWidget();
+        GT_CHECK(widget != NULL, "active widget not found");
 
         QPlainTextEdit *textEdit = widget->findChild<QPlainTextEdit*>();
         GT_CHECK(textEdit != NULL, "PlainTextEdit not found");

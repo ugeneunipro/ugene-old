@@ -46,7 +46,7 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTSequenceReadingModeDialogUtils"
 
-GTSequenceReadingModeDialogUtils::GTSequenceReadingModeDialogUtils(U2OpStatus &o) : Filler(o, ""), dialog(NULL)
+GTSequenceReadingModeDialogUtils::GTSequenceReadingModeDialogUtils(U2OpStatus &o) : Filler(o, "MultipleDocumentsReadingModeSelectorController"), dialog(NULL)
 {
 }
 

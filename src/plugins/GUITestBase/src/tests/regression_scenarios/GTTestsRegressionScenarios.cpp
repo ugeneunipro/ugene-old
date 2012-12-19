@@ -93,7 +93,7 @@ GUI_TEST_CLASS_DEFINITION(test_0928) {
 
     class OkClicker : public Filler {
     public:
-        OkClicker(U2OpStatus& _os) : Filler(_os, ""){}
+        OkClicker(U2OpStatus& _os) : Filler(_os, "ORFDialogBase"){}
         virtual void run() {
             QWidget *w = QApplication::activeWindow();
             CHECK(NULL != w, );
@@ -125,7 +125,7 @@ GUI_TEST_CLASS_DEFINITION(test_0986) {
 
     class EscClicker : public Filler {
     public:
-        EscClicker(U2OpStatus& _os) : Filler(_os, ""){}
+        EscClicker(U2OpStatus& _os) : Filler(_os, "SmithWatermanDialogBase"){}
         virtual void run(){ GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["esc"]); }
     };
 
