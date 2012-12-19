@@ -145,7 +145,7 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
     
     resetAnnotations = new QAction(tr("Reset Rows Number"), menu);
     connect(resetAnnotations, SIGNAL(triggered()), renderArea, SLOT(sl_resetToDefault()));
-   
+
     menu->addAction(showAllAnnotations);
     menu->addAction(increase5PanViewHeight);
     menu->addAction(increasePanViewHeight);
@@ -387,7 +387,7 @@ void PanView::updateActions() {
             resetAnnotations->setEnabled(true);
         }
     }else{
-        resetAnnotations->setEnabled(true);
+        resetAnnotations->setEnabled(false);
     }
     //showAllAnnotations->setEnabled(!((PanViewRenderArea*)renderArea)->isAllLinesShown());
     panViewToolButton->setEnabled(isVisible() && (increasePanViewHeight->isEnabled() || decreasePanViewHeight->isEnabled() || 
