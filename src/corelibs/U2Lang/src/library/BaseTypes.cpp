@@ -245,15 +245,26 @@ QVariant NumTypeValueFactory::getValueFromString( const QString & str, bool * ok
 /* UrlTypeValueFactory */
 /************************************************************************/
 QVariant UrlTypeValueFactory::getValueFromString(const QString &str, bool *ok) const {
+    *ok = true;
     QStringList urls = str.split(";", QString::SkipEmptyParts);
     Dataset dSet;
     foreach (const QString url, urls) {
-        dSet.addUrl(URLContainerFactory::createUrlContainer(url));
+        URLContainer *cnt = URLContainerFactory::createUrlContainer(url);
+        if(cnt){
+            dSet.addUrl(cnt);
+        }else{
+            *ok = false;
+        }
     }
-    QList<Dataset> sets;
-    sets << dSet;
-    *ok = true;
-    return qVariantFromValue< QList<Dataset> >(sets);
+
+    if(dSet.getUrls().isEmpty()){
+        *ok = false;
+        return QVariant(QVariant::Invalid);
+    }else{
+        QList<Dataset> sets;
+        sets << dSet;
+        return qVariantFromValue< QList<Dataset> >(sets);
+    }
 }
 
 QString UrlTypeValueFactory::getId() const {
