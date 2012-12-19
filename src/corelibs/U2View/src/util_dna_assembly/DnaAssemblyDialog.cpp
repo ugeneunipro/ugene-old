@@ -166,7 +166,9 @@ void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
     }
 
     refSeqEdit->setText(lod.url);
-    buildResultUrl(lod.url);
+    if(resultFileNameEdit->text().isEmpty()){
+            buildResultUrl(lod.url);
+    }
     if (NULL != customGUI) {
         QString error;
         if (!customGUI->buildIndexUrl(lod.url, prebuiltIndex, error)) {
