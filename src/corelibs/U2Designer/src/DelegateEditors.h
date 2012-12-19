@@ -140,8 +140,7 @@ private:
 
 class U2DESIGNER_EXPORT DoubleSpinBoxDelegate : public PropertyDelegate {
 public:
-    DoubleSpinBoxDelegate(const QVariantMap& props = QVariantMap(), QObject *parent = 0) : 
-      PropertyDelegate(parent), spinProperties(props) {}
+    DoubleSpinBoxDelegate(const QVariantMap& props = QVariantMap(), QObject *parent = 0);
     virtual ~DoubleSpinBoxDelegate() {}
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
@@ -156,6 +155,8 @@ public:
     virtual PropertyDelegate *clone() {
         return new DoubleSpinBoxDelegate(spinProperties, parent());
     }
+
+    static const int DEFAULT_DECIMALS_VALUE;
 
 private:
     QVariantMap spinProperties;

@@ -90,6 +90,16 @@ void SpinBoxDelegate::setEditorProperty(const char* name, const QVariant& val) {
 /********************************
 * DoubleSpinBoxDelegate
 ********************************/
+const int DoubleSpinBoxDelegate::DEFAULT_DECIMALS_VALUE = 5;
+
+DoubleSpinBoxDelegate::DoubleSpinBoxDelegate(const QVariantMap &props, QObject *parent)
+: PropertyDelegate(parent), spinProperties(props)
+{
+    if (!spinProperties.contains("decimals")) {
+        spinProperties["decimals"] = DEFAULT_DECIMALS_VALUE;
+    }
+}
+
 PropertyWidget * DoubleSpinBoxDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
     return new DoubleSpinBoxWidget(spinProperties, parent);
 }
