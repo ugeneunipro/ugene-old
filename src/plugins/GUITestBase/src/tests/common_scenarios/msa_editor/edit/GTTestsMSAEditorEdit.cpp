@@ -29,16 +29,18 @@
 #include "api/GTSpinBox.h"
 #include "api/GTGlobals.h"
 #include "api/GTClipboard.h"
-#include "GTUtilsApp.h"
+#include "api/GTAction.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
-#include "GTUtilsMdi.h"
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
 
+
+#include <U2Core/AppContext.h>
+#include <QtGui/QMainWindow>
 namespace U2 {
 void test_1(U2OpStatus &os,int i, QString expectedSec, int j=0){
 
@@ -490,6 +492,172 @@ GUI_TEST_CLASS_DEFINITION(test_0009_2){
     test_9(os,8);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0011){
+//Check Undo/Redo functional
+//1. Open document _common_data\scenarios\msa\ma.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma.aln");
+//2. Select region 4..11 from Zychia_baranovi sequence. Press "Delete" button.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(3,8), QPoint(10,8));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(200);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,8), QPoint(11,8));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    QString clipboardText = GTClipboard::text(os);
+    GTWidget::click(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR(clipboardText=="TTAA--------","\nExpected: TTAA--------\nFound:\n"+clipboardText);
+//Expected state: Zychia_baranovi TTAA
+
+//3. Click Undo button on toolbar panel.
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    GTWidget::click(os,undo);
+//Expected state: Zychia_baranovi TTAGATTATTAA
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,8), QPoint(11,8));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    clipboardText = GTClipboard::text(os);
+    GTWidget::click(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR(clipboardText=="TTAGATTATTAA","\nExpected: TTAGATTATTAA\nFound:\n"+clipboardText);
+
+//4. Click Redo button on toolbar panel.msa_action_redo
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+    GTWidget::click(os,redo);
+//Expected state: Zychia_baranovi TTAA
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,8), QPoint(11,8));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText=="TTAA--------","\nExpected: TTAA--------\nFound:\n"+clipboardText);
+}
+GUI_TEST_CLASS_DEFINITION(test_0011_1){
+//Check Undo/Redo functional
+//1. Open document _common_data\scenarios\msa\ma.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma.aln");
+//2. Select region 4..11 from Zychia_baranovi sequence. Press "Delete" button.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(3,8), QPoint(10,8));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(200);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,8), QPoint(11,8));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    QString clipboardText = GTClipboard::text(os);
+    GTWidget::click(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR(clipboardText=="TTAA--------","\nExpected: TTAA--------\nFound:\n"+clipboardText);
+//Expected state: Zychia_baranovi TTAA
+
+//DIFFERENCE: 3. Click ctrl+z
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+//Expected state: Zychia_baranovi TTAGATTATTAA
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,8), QPoint(11,8));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    clipboardText = GTClipboard::text(os);
+    GTWidget::click(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    CHECK_SET_ERR(clipboardText=="TTAGATTATTAA","\nExpected: TTAGATTATTAA\nFound:\n"+clipboardText);
+
+//4.DIFFERENCE: 3. Click ctrl+shift+z
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+//Expected state: Zychia_baranovi TTAA
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,8), QPoint(11,8));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText=="TTAA--------","\nExpected: TTAA--------\nFound:\n"+clipboardText);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_2){
+//Check Undo/Redo functional
+//1. Open document _common_data\scenarios\msa\ma.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Use msa editor context menu {Edit->Remove all gaps}.
+    QWidget* seq=GTWidget::findWidget(os, "msa_editor_sequence_area");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "Remove all gaps"));
+    GTMenu::showContextMenu(os,seq);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(13, 9));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    QString clipboardTest = GTClipboard::text(os);
+    QString  expectedSeq=QString("AAGACTTCTTTTAA\n"
+                                 "AAGCTTACTAA---\n"
+                                 "TAGTTTATTAA---\n"
+                                 "AAGTCTATTAA---\n"
+                                 "TAGCTTATTAA---\n"
+                                 "TAGCTTATTAA---\n"
+                                 "TAGCTTATTAA---\n"
+                                 "AAGTCTTTTAA---\n"
+                                 "AAGAATAATTA---\n"
+                                 "AAGCCTTTTAA---");
+
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+ expectedSeq +"\nFound:\n"+clipboardTest);
+//3. Click Undo button on toolbar panel.
+    QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
+    GTWidget::click(os,undo);
+
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(13, 9));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    clipboardTest = GTClipboard::text(os);
+    QString modyfiedSeq=QString("AAGACTTCTTTTAA\n"
+                        "AAGCTTACTAA---\n"
+                        "TAGT---TTATTAA\n"
+                        "AAGTC---TATTAA\n"
+                        "TAGCTTATTAA---\n"
+                        "TAGCTTATTAA---\n"
+                        "TAGCTTATTAA---\n"
+                        "AAGTCTTT---TAA\n"
+                        "A---AGAATAATTA\n"
+                        "AAGCCTTTTAA---");
+
+    CHECK_SET_ERR(clipboardTest==modyfiedSeq,"\n Expected: \n"+ expectedSeq +"\nFound:\n"+clipboardTest);
+//4. Click Redo button on toolbar panel.
+    QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
+    GTWidget::click(os,redo);
+
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(13, 9));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    clipboardTest = GTClipboard::text(os);
+
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+ expectedSeq +"\nFound:\n"+clipboardTest);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011_3){
+//Check Undo/Redo functional
+//1. Open document _common_data\scenarios\msa\ma.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Insert seversl spaces somewhere
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,0));
+    for(int i=0; i<6; i++){
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        GTGlobals::sleep(200);
+    }
+//3. Undo this
+    for (int i=0; i<6; i++){
+        GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
+        GTGlobals::sleep(200);
+    }
+//Expected state: First sequwnce is AAGACTTCTTTTAA
+    GTWidget::click(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(13, 0));
+    GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep(500);
+    QString clipboardTest = GTClipboard::text(os);
+    QString expectedSeq=QString("AAGACTTCTTTTAA");
+    CHECK_SET_ERR(clipboardTest==expectedSeq,"\n Expected: \n"+ expectedSeq +"\nFound:\n"+clipboardTest);
+
+}
 } // namespace
 } // namespace U2
 

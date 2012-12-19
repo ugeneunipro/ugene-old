@@ -471,6 +471,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0009_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0009_2);
+
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_2);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor_edit::test_0011_3,"https://ugene.unipro.ru/tracker/browse/UGENE-1367");
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/document_from_text/
 //////////////////////////////////////////////////////////////////////////
