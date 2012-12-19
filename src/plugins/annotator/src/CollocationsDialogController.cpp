@@ -403,7 +403,11 @@ QList<SharedAnnotationData> CollocationSearchTask::popResultAnnotations() {
     } else {
         foreach(const U2Region &r, res) {
             SharedAnnotationData data; data = new AnnotationData();
-            data->location->regions.append(r);
+            if (cfg.includeBoundaries) {
+                data->location->regions.append(r);
+            } else {
+                data->location->regions.append(cutResult(r));
+            }
             data->setStrand(U2Strand::Direct);
             data->name = cfg.resultAnnotationsName;
             result.append(data);
@@ -411,6 +415,30 @@ QList<SharedAnnotationData> CollocationSearchTask::popResultAnnotations() {
     }
 
     return result;
+}
+
+U2Region CollocationSearchTask::cutResult(const U2Region &res) const {
+    qint64 left = res.endPos();
+    qint64 right = res.startPos;
+
+    foreach (const CollocationsAlgorithmItem &item, items) {
+        foreach(const U2Region &r, item.regions) {
+            if (r.startPos == res.startPos) {
+                if (r.endPos() < left) {
+                    left = r.endPos();
+                }
+            }
+            if (r.endPos() == res.endPos()) {
+                if (right < r.startPos) {
+                    right = r.startPos;
+                }
+            }
+        }
+    }
+    if (left < right) {
+        return U2Region(left, right - left);
+    }
+    return res;
 }
 
 bool CollocationSearchTask::isSuitableRegion(const U2Region &r, const QVector<U2Region> &resultRegions) const {

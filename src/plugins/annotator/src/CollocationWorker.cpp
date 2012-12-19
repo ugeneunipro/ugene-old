@@ -54,6 +54,7 @@ static const QString ANN_ATTR("annotations");
 static const QString LEN_ATTR("region-size");
 static const QString FIT_ATTR("must-fit");
 static const QString TYPE_ATTR("result-type");
+static const QString INC_BOUNDARY_ATTR("include-boundary");
 
 static const QString COPY_TYPE_ATTR("copy");
 static const QString NEW_TYPE_ATTR("annotate");
@@ -107,15 +108,20 @@ void CollocationWorkerFactory::init() {
         Descriptor ld(LEN_ATTR, CollocationWorker::tr("Region size"), CollocationWorker::tr("Effectively this is the maximum allowed distance between the interesting annotations in a group"));
         Descriptor fd(FIT_ATTR, CollocationWorker::tr("Must fit into region"), CollocationWorker::tr("Whether the interesting annotations should entirely fit into the specified region to form a group"));
         Descriptor td(TYPE_ATTR, CollocationWorker::tr("Result type"), CollocationWorker::tr("Copy original annotations or annotate found regions with new ones"));
+        Descriptor id(INC_BOUNDARY_ATTR, CollocationWorker::tr("Include boundaries"),
+            CollocationWorker::tr("Include most left and most right boundary annotations regions into result or exclude them"));
         Attribute *nameAttr = new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("misc_feature"));
         Attribute *typeAttr = new Attribute(td, BaseTypes::STRING_TYPE(), false, NEW_TYPE_ATTR);
+        Attribute *boundAttr = new Attribute(id, BaseTypes::BOOL_TYPE(), false, true);
         a << typeAttr;
         a << nameAttr;
+        a << boundAttr;
         a << new Attribute(ad, BaseTypes::STRING_TYPE(), true);
         a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, QVariant(1000));
         a << new Attribute(fd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
 
         nameAttr->addRelation(new VisibilityRelation(TYPE_ATTR, newAnnsStr));
+        boundAttr->addRelation(new VisibilityRelation(TYPE_ATTR, newAnnsStr));
     }
 
     Descriptor desc(ACTOR_ID, CollocationWorker::tr("Collocation Search"), 
@@ -210,6 +216,7 @@ Task* CollocationWorker::tick() {
         QSet<QString> names = QSet<QString>::fromList(annotations.split(QRegExp("\\W+"), QString::SkipEmptyParts));
         QVariantMap qm = inputMessage.getData().toMap();
         QString resultType = actor->getParameter(TYPE_ATTR)->getAttributeValue<QString>(context);
+        cfg.includeBoundaries = actor->getParameter(INC_BOUNDARY_ATTR)->getAttributeValue<bool>(context);
 
         SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));

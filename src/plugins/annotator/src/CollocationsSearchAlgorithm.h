@@ -59,11 +59,13 @@ private:
 
 class CollocationsAlgorithmSettings {
 public:
-    CollocationsAlgorithmSettings() : distance(-1), st(CollocationsAlgorithm::NormalSearch) {}
+    CollocationsAlgorithmSettings()
+        : distance(-1), st(CollocationsAlgorithm::NormalSearch), includeBoundaries(true) {}
     U2Region searchRegion;
     int distance;
     CollocationsAlgorithm::SearchType st;
     QString resultAnnotationsName;
+    bool includeBoundaries;
 };
 
 
