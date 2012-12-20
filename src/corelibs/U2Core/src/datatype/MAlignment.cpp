@@ -148,6 +148,8 @@ void MAlignmentRow::splitBytesToCharsAndGaps(const QByteArray& input, QByteArray
                 if (1 == gapsCount) {
                     gapsOffset = i;
                 }
+                SAFE_POINT(gapsOffset >= 0, "Negative gap offset!", );
+                SAFE_POINT(gapsCount > 0, "Non-positive gap length!", );
                 U2MsaGap gap(gapsOffset, gapsCount);
                 gapsModel.append(gap);
             }
@@ -169,6 +171,7 @@ void MAlignmentRow::addOffsetToGapModel(QList<U2MsaGap>& gapModel, int offset) {
             firstGap.gap += offset;
         }
         else {
+            SAFE_POINT(offset >= 0, "Negative gap offset!", );
             U2MsaGap beginningGap(0, offset);
             gapModel.insert(0, beginningGap);
         }
@@ -176,11 +179,14 @@ void MAlignmentRow::addOffsetToGapModel(QList<U2MsaGap>& gapModel, int offset) {
         // Shift other gaps
         if (gapModel.count() > 1) {
             for (int i = 1; i < gapModel.count(); ++i) {
-                gapModel[i].offset += offset;
+                qint64 newOffset = gapModel[i].offset + offset;
+                SAFE_POINT(newOffset >= 0, "Negative gap offset!", );
+                gapModel[i].offset = newOffset;
             }
         }
     }
     else {
+        SAFE_POINT(offset >= 0, "Negative gap offset!", );
         U2MsaGap gap(0, offset);
         gapModel.append(gap);
     }
@@ -377,7 +383,9 @@ void MAlignmentRow::mergeConsecutiveGaps() {
             "Incorrect gap model during merging consecutive gaps!",);
         if (currectGapStart == previousGapEnd + 1) {
             // Merge gaps
-            newGapModel[indexInNewGapModel].gap += gaps[i].gap;
+            qint64 newGapLength = newGapModel[indexInNewGapModel].gap + gaps[i].gap;
+            SAFE_POINT(newGapLength > 0, "Non-positive gap length!", )
+            newGapModel[indexInNewGapModel].gap = newGapLength;
         }
         else {
             // Add the gap to the list
@@ -556,17 +564,20 @@ void MAlignmentRow::removeGapsFromGapModel(int pos, int count) {
         else {
             if (gap.offset < pos) {
                 gap.gap -= count;
+                SAFE_POINT(gap.gap >= 0, "Non-positive gap length!", );
                 newGapModel << gap;
             }
             else if (gap.offset < endRegionPos) {
                 gap.gap = gapEnd - endRegionPos;
                 gap.offset = pos;
-                SAFE_POINT(gap.gap > 0, "Internal error in MAlignmentRow::removeGapsFromGapModel!", );
+                SAFE_POINT(gap.gap > 0, "Non-positive gap length!", );
+                SAFE_POINT(gap.offset >= 0, "Negative gap offset!", );
                 newGapModel << gap;
             }
             else {
                 // Shift the gap
                 gap.offset -= count;
+                SAFE_POINT(gap.offset >= 0, "Negative gap offset!", );
                 newGapModel << gap;
             }
         }

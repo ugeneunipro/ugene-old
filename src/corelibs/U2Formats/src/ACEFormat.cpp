@@ -309,7 +309,7 @@ static inline void parseAFTag(U2::IOAdapter *io, U2OpStatus &ti, char* buff, int
     } 
 }
 
-static inline void parseRDandQATag(U2::IOAdapter *io, U2OpStatus &ti, char* buff, QMap< QString, int> &, QMap< QString, bool> &, QSet<QString> &names, QString& name, QByteArray& sequence){
+static inline void parseRDandQATag(U2::IOAdapter *io, U2OpStatus &ti, char* buff, QSet<QString> &names, QString& name, QByteArray& sequence){
     QString line;
     qint64 len = 0;
     bool ok = true;
@@ -384,8 +384,19 @@ static inline void parseRDandQATag(U2::IOAdapter *io, U2OpStatus &ti, char* buff
     sequence.replace('*',MAlignment_GapChar);
     sequence.replace('N',MAlignment_GapChar);
     sequence.replace('X',MAlignment_GapChar);
+}
 
-    
+/**
+ * Offsets in an ACE file are specified relatively to the reference sequence,
+ * so "pos" can be negative.
+ */
+static inline int getSmallestOffset(const QMap<QString, int>& posMap) {
+    int smallestOffset = 0;
+    foreach (int value, posMap) {
+        smallestOffset = qMin(smallestOffset, value - 1);
+    }
+
+    return smallestOffset;
 }
 
 void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &objects, U2OpStatus &os) {
@@ -396,7 +407,6 @@ void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &obj
 
     QByteArray sequence;
     QSet<QString> names;
-    QMap< QString, int> posMap;
     QMap< QString, bool> complMap;
 
      //skip leading whites if present
@@ -459,16 +469,26 @@ void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &obj
         CHECK_OP(os, );
 
         //AF
+        QMap< QString, int> posMap;
         parseAFTag(io, os, buff, count, posMap, complMap, names);
         CHECK_OP(os, );
 
+        int smallestOffset = getSmallestOffset(posMap);
+        if (smallestOffset < 0) {
+            al.insertGaps(0, 0, qAbs(smallestOffset), os);
+            CHECK_OP(os, );
+        }
+
         //RD and QA
         while (!os.isCoR() && count>0) {
-            parseRDandQATag(io, os, buff, posMap, complMap, names, name, sequence);
+            parseRDandQATag(io, os, buff, names, name, sequence);
             CHECK_OP(os, );
             
             bool isComplement = complMap.take(name);
             int pos = posMap.value(name) - 1;
+            if (smallestOffset < 0) {
+                pos += qAbs(smallestOffset);
+            }
             QString rowName(name);
             if(true == isComplement){
                 rowName.append("(rev-compl)");

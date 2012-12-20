@@ -503,12 +503,14 @@ private:
     static bool registerMeta;
 };
 
-inline const MAlignmentRow& MAlignment::getRow(int row) const {
+inline const MAlignmentRow& MAlignment::getRow(int rowIndex) const {
     static MAlignmentRow emptyRow;
-    SAFE_POINT(row >= 0 && (row < rows.count()),
+    int rowsCount = rows.count();
+    SAFE_POINT(0 != rowsCount, "No rows!", emptyRow);
+    SAFE_POINT(rowIndex >= 0 && (rowIndex < rowsCount),
         "Internal error: unexpected row index was passed to MAlignmnet::getRow!",
         emptyRow);
-    return rows.at(row);
+    return rows.at(rowIndex);
 }
 
 
