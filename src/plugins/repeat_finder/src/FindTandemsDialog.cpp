@@ -214,12 +214,16 @@ void FindTandemsDialog::accept() {
         return;
     }
 
+    DNASequence seq = sc->getSequenceObject()->getSequenceData(range);
+    if (seq.isNull()) {
+        QMessageBox::warning(this, tr("Error"), tr("Not enough memory error ocurred while preparing data."));
+        return;
+    }
     bool objectPrepared = ac->prepareAnnotationObject();
     if (!objectPrepared){
         QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
         return;
     }
-    DNASequence seq = sc->getSequenceObject()->getWholeSequenceData();
 
     FindTandemsTaskSettings settings;
     const CreateAnnotationModel& cam = ac->getModel();
@@ -227,7 +231,6 @@ void FindTandemsDialog::accept() {
     settings.maxPeriod = maxPeriod;
 //    settings.mismatches = (100-identPerc) * minPeriod / 100;
     settings.seqRegion = range;
-//    settings.seqRegion = range;
     settings.algo = (TSConstants::TSAlgo)algoComboBox->currentIndex();
     settings.minRepeatCount = minRepeatsBox->value();
     settings.minTandemSize = qMax(FindTandemsTaskSettings::DEFAULT_MIN_TANDEM_SIZE, minTandemSizeBox->value());

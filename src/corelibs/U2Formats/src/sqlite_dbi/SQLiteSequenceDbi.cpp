@@ -78,27 +78,34 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
     SQLiteQuery q("SELECT sstart, send, data FROM SequenceData WHERE sequence = ?1 "
         "AND  (send >= ?2 AND sstart < ?3) ORDER BY sstart", db, os);
 
-    q.bindDataId(1, sequenceId);
-    q.bindInt64(2, region.startPos);
-    q.bindInt64(3, region.endPos());
-    qint64 pos = region.startPos;
-    qint64 regionLengthToRead = region.length;
-    while (q.step()) {
-        qint64 sstart = q.getInt64(0);
-        qint64 send = q.getInt64(1);
-        qint64 length = send - sstart;
-        QByteArray data = q.getBlob(2);
+    try {
+        q.bindDataId(1, sequenceId);
+        q.bindInt64(2, region.startPos);
+        q.bindInt64(3, region.endPos());
+        qint64 pos = region.startPos;
+        qint64 regionLengthToRead = region.length;
+        while (q.step()) {
+            qint64 sstart = q.getInt64(0);
+            qint64 send = q.getInt64(1);
+            qint64 length = send - sstart;
+            QByteArray data = q.getBlob(2);
 
-        int copyStart = pos - sstart;
-        int copyLength = qMin(regionLengthToRead, length - copyStart);
-        res.append(data.constData() + copyStart, copyLength);
-        pos += copyLength;
-        regionLengthToRead -= copyLength;
-        SAFE_POINT(regionLengthToRead >= 0,
-            "An error occurred during reading sequence data from dbi.",
-            QByteArray());
+            int copyStart = pos - sstart;
+            int copyLength = qMin(regionLengthToRead, length - copyStart);
+            res.append(data.constData() + copyStart, copyLength);
+            pos += copyLength;
+            regionLengthToRead -= copyLength;
+            SAFE_POINT(regionLengthToRead >= 0,
+                "An error occurred during reading sequence data from dbi.",
+                QByteArray());
+        }
+        return res;
     }
-    return res;
+    catch (...) {
+        os.setError("Exception was thrown");
+        coreLog.error("An exception was thrown during reading sequence data from dbi.");
+        return QByteArray();
+    }
 }
 
 
