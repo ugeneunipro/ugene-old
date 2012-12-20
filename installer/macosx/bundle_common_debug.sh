@@ -4,6 +4,7 @@ function add-plugin {
 
     PLUGIN_LIB="lib${plugin}d.dylib"
     PLUGIN_DESC="${plugin}d.plugin"
+    PLUGIN_LICENSE="${plugin}d.license"
 
     if [ ! -f ${DEBUG_DIR}/plugins/${PLUGIN_LIB} ] ;  
     then  
@@ -16,9 +17,16 @@ function add-plugin {
         echo "Plugin descriptor file not found: ${PLUGIN_DESC} !"
         exit 1
     fi
-    
+
+    if [ ! -f ${DEBUG_DIR}/plugins/${PLUGIN_LICENSE} ] ; 
+    then
+        echo "Plugin descriptor file not found: ${PLUGIN_LICENSE} !"
+        exit 1
+    fi
+
     cp "${DEBUG_DIR}/plugins/${PLUGIN_LIB}"  "${TARGET_EXE_DIR}/plugins/"
     cp "${DEBUG_DIR}/plugins/${PLUGIN_DESC}" "${TARGET_EXE_DIR}/plugins/"
+    cp "${DEBUG_DIR}/plugins/${PLUGIN_LICENSE}" "${TARGET_EXE_DIR}/plugins/"
     #changeQtInstallNames "plugins/${PLUGIN_LIB}"
     changeCoreInstallNames "plugins/${PLUGIN_LIB}"
 }

@@ -109,6 +109,7 @@ function add-plugin {
 
     PLUGIN_LIB="lib${plugin}.so"
     PLUGIN_DESC="${plugin}.plugin"
+    PLUGIN_LICENSE="${plugin}.plugin"
     
     echo $PLUGIN_LIB
     echo
@@ -124,9 +125,16 @@ function add-plugin {
         echo "Plugin descriptor file not found: ${PLUGIN_DESC} !"
         exit 1
     fi
-   
+
+    if [ ! -f ${RELEASE_DIR}/plugins/${PLUGIN_LICENSE} ] ; 
+    then
+        echo "Plugin descriptor file not found: ${PLUGIN_LICENSE} !"
+        exit 1
+    fi
+    
     cp -v "${RELEASE_DIR}/plugins/${PLUGIN_LIB}"  "${TARGET_APP_DIR}/plugins/"
     cp -v "${RELEASE_DIR}/plugins/${PLUGIN_DESC}" "${TARGET_APP_DIR}/plugins/"
+    cp -v "${RELEASE_DIR}/plugins/${PLUGIN_LICENSE}" "${TARGET_APP_DIR}/plugins/"
 }
 
 echo copying plugins
