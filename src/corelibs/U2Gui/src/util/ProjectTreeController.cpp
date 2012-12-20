@@ -536,10 +536,10 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
 
     if (removeSelectedDocumentsAction->isEnabled()) {
         removeSelectedDocumentsAction->setObjectName( ACTION_PROJECT__REMOVE_SELECTED);
-        editMenu->addAction(removeSelectedDocumentsAction);
+        m.addAction(removeSelectedDocumentsAction);
     }
     if (removeSelectedObjectsAction->isEnabled()) {
-        editMenu->addAction(removeSelectedObjectsAction);
+        m.addAction(removeSelectedObjectsAction);
     }
     editMenu->setEnabled(!editMenu->actions().isEmpty());
 

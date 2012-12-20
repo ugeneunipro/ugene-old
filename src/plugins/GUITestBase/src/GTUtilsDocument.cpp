@@ -81,7 +81,7 @@ void GTUtilsDocument::checkDocument(U2OpStatus &os, const QString &documentName,
 
 void GTUtilsDocument::removeDocument(U2OpStatus &os, const QString &documentName, GTGlobals::UseMethod method)
 {
-    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__EDIT_MENU << ACTION_PROJECT__REMOVE_SELECTED, method);
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_SELECTED, method);
 
     switch (method) {
     case GTGlobals::UseMouse:
