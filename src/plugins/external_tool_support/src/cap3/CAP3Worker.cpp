@@ -130,9 +130,14 @@ Task* CAP3Worker::tick() {
 void CAP3Worker::sl_taskFinished() {
     CAP3SupportTask* t = qobject_cast<CAP3SupportTask*>(sender());
     if (t->getState() != Task::State_Finished) return;
-    QVariant v = qVariantFromValue<MAlignment>(t->getResultAlignment()->getMAlignment());
-    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), v));
-    algoLog.info(tr("Aligned %1 with CAP3").arg(t->getResultAlignment()->getMAlignment().getName()));
+
+    MAlignment al = t->getResultAlignment()->getMAlignment();
+    SAFE_POINT(NULL != output, "NULL output!", );
+    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(al);
+    QVariantMap msgData;
+    msgData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
+    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), msgData));
+    algoLog.info(tr("Aligned %1 with CAP3").arg(al.getName()));
 }
 
 void CAP3Worker::cleanup() {

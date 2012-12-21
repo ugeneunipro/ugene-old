@@ -117,6 +117,14 @@ U2Msa MAlignmentImporter::importMsaObject(const DbiConnection& con, const MAlign
     msa.length = al.getLength();
     msa.numOfRows = al.getNumRows();
 
+    msa.visualName = al.getName();
+    if (msa.visualName.isEmpty()) {
+        QDate date = QDate::currentDate();
+        QString generatedName = "MSA" + date.toString();
+        coreLog.trace(QString("A multiple alignment name was empty! Generated a new name %1").arg(generatedName));
+        msa.visualName = generatedName;
+    }
+
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL MSA Dbi during importing an alignment!", U2Msa());
 

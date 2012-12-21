@@ -37,7 +37,7 @@
 #include <U2Core/FailTask.h>
 
 #include <U2Core/Log.h>
-#include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentObject.h>
 
 /* TRANSLATOR U2::SiteconIO */
 /* TRANSLATOR U2::LocalWorkflow::SiteconBuildWorker */
@@ -157,8 +157,13 @@ Task* SiteconBuildWorker::tick() {
         SiteconModel model = data.value(SiteconWorkerFactory::SITECON_MODEL_TYPE_ID).value<SiteconModel>();
         QString url = data.value(BaseSlots::URL_SLOT().getId()).toString();
         
-        const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-        Task* t = new SiteconBuildTask(cfg, ma, url);
+        QVariantMap qm = inputMessage.getData().toMap();
+        SharedDbiDataHandler msaId = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
+        std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
+        SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
+        MAlignment msa = msaObj->getMAlignment();
+
+        Task* t = new SiteconBuildTask(cfg, msa, url);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {

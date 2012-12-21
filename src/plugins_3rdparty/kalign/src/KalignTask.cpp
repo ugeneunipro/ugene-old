@@ -73,6 +73,9 @@ KalignTask::KalignTask(const MAlignment& ma, const KalignTaskSettings& _config)
     GCOUNTER( cvar, tvar, "KalignTask" );
     inputSubMA = inputMA;
     resultSubMA.setAlphabet(inputSubMA.getAlphabet());
+    QString inputMAName = inputMA.getName();
+    resultMA.setName(inputMAName);
+    resultSubMA.setName(inputMAName);
     tpm = Task::Progress_Manual;
     quint64 mem = inputMA.getNumRows() * sizeof(float);
     addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,  (mem * mem + 3 * mem) / (1024 * 1024)));

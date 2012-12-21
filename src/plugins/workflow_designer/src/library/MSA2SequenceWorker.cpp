@@ -59,7 +59,13 @@ Task * Alignment2SequenceWorker::tick() {
             output->transit();
             return NULL;
         }
-        MAlignment ma = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+
+        QVariantMap qm = inputMessage.getData().toMap();
+        SharedDbiDataHandler msaId = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
+        std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
+        SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
+        MAlignment ma = msaObj->getMAlignment();
+
         if(ma.isEmpty()) {
             return new FailTask(tr("empty input alignment"));
         }

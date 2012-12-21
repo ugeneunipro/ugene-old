@@ -108,9 +108,20 @@ bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1
 
             return seq1 == seq2;
         }
-    } else if (BaseTypes::MULTIPLE_ALIGNMENT_TYPE() == dataType) {
-        MAlignment al1 = data1.value<MAlignment>();
-        MAlignment al2 = data2.value<MAlignment>();
+    }
+    else if (BaseTypes::MULTIPLE_ALIGNMENT_TYPE() == dataType) {
+        SharedDbiDataHandler alId1 = data1.value<SharedDbiDataHandler>();
+        SharedDbiDataHandler alId2 = data2.value<SharedDbiDataHandler>();
+
+        std::auto_ptr<MAlignmentObject> alObj1(StorageUtils::getMsaObject(context->getDataStorage(), alId1));
+        SAFE_POINT(NULL != alObj1.get(), "NULL MSA Object!", NULL);
+
+        std::auto_ptr<MAlignmentObject> alObj2(StorageUtils::getMsaObject(context->getDataStorage(), alId2));
+        SAFE_POINT(NULL != alObj2.get(), "NULL MSA Object!", NULL);
+
+
+        MAlignment al1 = alObj1->getMAlignment();
+        MAlignment al2 = alObj2->getMAlignment();
 
         if (GroupOperations::BY_NAME() == groupOp) {
             return al1.getName() == al2.getName();
@@ -131,7 +142,8 @@ bool GrouperActionUtils::equalData(const QString &groupOp, const QVariant &data1
             }
             return true;
         }
-    } else if (BaseTypes::STRING_TYPE() == dataType) {
+    }
+    else if (BaseTypes::STRING_TYPE() == dataType) {
         return data1.toString() == data2.toString();
     }
 
@@ -295,7 +307,8 @@ bool Sequence2MSAPerformer::applyAction(const QVariant &newData) {
 }
 
 QVariant Sequence2MSAPerformer::finishAction(U2OpStatus &) {
-    return qVariantFromValue<MAlignment>(result);
+    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(result);
+    return qVariantFromValue<SharedDbiDataHandler>(msaId);
 }
 
 MergerMSAPerformer::MergerMSAPerformer(const QString &outSlot, const GrouperSlotAction &action, WorkflowContext *context)
@@ -305,7 +318,10 @@ MergerMSAPerformer::MergerMSAPerformer(const QString &outSlot, const GrouperSlot
 }
 
 bool MergerMSAPerformer::applyAction(const QVariant &newData) {
-    MAlignment newAl = newData.value<MAlignment>();
+    SharedDbiDataHandler newAlId = newData.value<SharedDbiDataHandler>();
+    std::auto_ptr<MAlignmentObject> newAlObj(StorageUtils::getMsaObject(context->getDataStorage(), newAlId));
+    SAFE_POINT(NULL != newAlObj.get(), "NULL MSA Object!", false);
+    MAlignment newAl = newAlObj->getMAlignment();
 
     if (!started) {
         QString name;
@@ -340,7 +356,8 @@ bool MergerMSAPerformer::applyAction(const QVariant &newData) {
 }
 
 QVariant MergerMSAPerformer::finishAction(U2OpStatus &) {
-    return qVariantFromValue<MAlignment>(result);
+    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(result);
+    return qVariantFromValue<SharedDbiDataHandler>(msaId);
 }
 
 MergerStringPerformer::MergerStringPerformer(const QString &outSlot, const GrouperSlotAction &action, WorkflowContext *context)

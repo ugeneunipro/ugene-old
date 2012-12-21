@@ -160,7 +160,12 @@ Task* MAFFTWorker::tick() {
             AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
         }
         
-        MAlignment msa = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+        QVariantMap qm = inputMessage.getData().toMap();
+        SharedDbiDataHandler msaId = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
+        std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
+        SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
+        MAlignment msa = msaObj->getMAlignment();
+
         if( msa.isEmpty() ) {
             return new FailTask(tr("An empty MSA has been supplied to MAFFT."));
         }
@@ -178,7 +183,12 @@ void MAFFTWorker::sl_taskFinished() {
     MAFFTSupportTask* t = qobject_cast<MAFFTSupportTask*>(sender());
     if (t->getState() != Task::State_Finished) return;
     QVariant v = qVariantFromValue<MAlignment>(t->resultMA);
-    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), v));
+
+    SAFE_POINT(NULL != output, "NULL output!", );
+    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(t->resultMA);
+    QVariantMap msgData;
+    msgData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
+    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), msgData));
     algoLog.info(tr("Aligned %1 with MAFFT").arg(t->resultMA.getName()));
 }
 

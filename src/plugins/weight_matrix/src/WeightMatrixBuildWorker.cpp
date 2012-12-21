@@ -140,11 +140,16 @@ Task* PWMatrixBuildWorker::tick() {
             return NULL;
         }
         mtype = PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE();
-        QVariantMap data = inputMessage.getData().toMap();
         cfg.algo = actor->getParameter(ALG_ATTR)->getAttributeValue<QString>(context);
         cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
-        const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-        Task* t = new PWMatrixBuildTask(cfg, ma);
+
+        QVariantMap qm = inputMessage.getData().toMap();
+        SharedDbiDataHandler msaId = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
+        std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
+        SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
+        MAlignment msa = msaObj->getMAlignment();
+
+        Task* t = new PWMatrixBuildTask(cfg, msa);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {
@@ -232,8 +237,14 @@ Task* PFMatrixBuildWorker::tick() {
         mtype = PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE();
         QVariantMap data = inputMessage.getData().toMap();
         cfg.type = actor->getParameter(TYPE_ATTR)->getAttributeValue<bool>(context) ? PM_DINUCLEOTIDE : PM_MONONUCLEOTIDE;
-        const MAlignment& ma = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-        Task* t = new PFMatrixBuildTask(cfg, ma);
+
+        QVariantMap qm = inputMessage.getData().toMap();
+        SharedDbiDataHandler msaId = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
+        std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
+        SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
+        MAlignment msa = msaObj->getMAlignment();
+
+        Task* t = new PFMatrixBuildTask(cfg, msa);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
     } else if (input->isEnded()) {

@@ -25,6 +25,7 @@
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/VariantTrackObject.h>
 
@@ -47,6 +48,7 @@ public:
     /* NOTE: deallocate memory! */
     virtual U2Object *getObject(const SharedDbiDataHandler &handler, const U2DataType &type);
     virtual SharedDbiDataHandler putSequence(const DNASequence &sequence);
+    virtual SharedDbiDataHandler putAlignment(const MAlignment &al);
     virtual bool deleteObject(const U2DataId &objectId, const U2DataType &type);
 
     /* If @useGC is true then the data will be removed from the database by GC */
@@ -73,6 +75,8 @@ public:
     static VariantTrackObject *getVariantTrackObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
     /* NOTE: deallocate memory! */
     static AssemblyObject *getAssemblyObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
+    /* NOTE: deallocate memory! */
+    static MAlignmentObject *getMsaObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
 };
     
 } // Workflow

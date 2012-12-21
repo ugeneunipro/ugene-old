@@ -87,13 +87,15 @@ public:
 class LoadMSATask : public Task {
     Q_OBJECT
 public:
-    LoadMSATask(const QString &url, const QString &datasetName);
+    LoadMSATask(const QString &url, const QString &datasetName, DbiDataStorage *storage);
     virtual void prepare();
     virtual void run();
 
     QString url;
     QString datasetName;
-    QList<MAlignment> results;
+    QVariantMap cfg;
+    QList<QVariant> results;
+    DbiDataStorage *storage;
 };
 
 class GenericMSAReader : public GenericDocReader {
@@ -108,7 +110,7 @@ protected slots:
 
 protected:
     virtual Task *createReadTask(const QString &url, const QString &datasetName) {
-        return new LoadMSATask(url, datasetName);
+        return new LoadMSATask(url, datasetName, context->getDataStorage());
     }
 };
 

@@ -59,6 +59,8 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual bool isStreamingSupport() const;
+public:
+    static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };
 
 class TextReader : public BaseDocReader {

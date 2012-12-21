@@ -132,16 +132,10 @@ Task* ExternalProcessWorker::tick() {
                 }
                 d->addObject(aobj);
             } else if(dataCfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
-                MAlignment ma = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
-                U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
-
-                U2OpStatus2Log os;
-                U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, ma, os);
-                SAFE_POINT_OP(os, NULL);
-                    
-                MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
-                SAFE_POINT(NULL != obj, "NULL Msa object!", NULL);
-                d->addObject(obj);
+                SharedDbiDataHandler msaId = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
+                MAlignmentObject* msaObj = StorageUtils::getMsaObject(context->getDataStorage(), msaId);
+                SAFE_POINT(NULL != msaObj, "NULL MSA Object!", NULL);
+                d->addObject(msaObj);
             } else if (dataCfg.type == SEQ_WITH_ANNS) {
                 SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
                 U2SequenceObject *dnaObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
@@ -267,11 +261,25 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                         }
                         seqsForMergingBySlotId.insert(slotId, refs);
                     }
-                } else if(cfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
+                }
+                else if(cfg.type == BaseTypes::MULTIPLE_ALIGNMENT_TYPE()->getId()) {
                     MAlignmentObject *obj =  static_cast<MAlignmentObject *> (d->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT, UOF_LoadedAndUnloaded).first());
+                    SAFE_POINT(obj != NULL, "NULL MSA Object!", );
                     DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
-                    v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<MAlignment>(obj->getMAlignment());
-                } else if(cfg.type == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
+
+                    MAlignment al = obj->getMAlignment();
+                    if (al.getAlphabet() == NULL) {
+                        DNAAlphabet* alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::RAW());
+                        al.setAlphabet(alphabet);
+                    }
+                    if (al.getName().isEmpty()) {
+                        al.setName("Multiple alignment");
+                    }
+
+                    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(al);
+                    v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
+                }
+                else if(cfg.type == BaseTypes::ANNOTATION_TABLE_TYPE()->getId()) {
                     AnnotationTableObject *obj = static_cast<AnnotationTableObject *>(d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE, UOF_LoadedAndUnloaded).first());
                     QList<SharedAnnotationData> list;
                     foreach(Annotation* a, obj->getAnnotations()) {
@@ -279,7 +287,8 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                     }
                     DataTypePtr dataType = WorkflowEnv::getDataTypeRegistry()->getById(cfg.type);
                     v[WorkflowUtils::getSlotDescOfDatatype(dataType).getId()] = qVariantFromValue(list);
-                } else if(cfg.type == SEQ_WITH_ANNS) {
+                }
+                else if(cfg.type == SEQ_WITH_ANNS) {
                     if(!d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).isEmpty()) {
                         U2SequenceObject *seqObj = static_cast<U2SequenceObject *>(d->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded).first());
                         DNASequence seq = seqObj->getWholeSequence();

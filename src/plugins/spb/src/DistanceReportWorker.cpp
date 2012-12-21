@@ -41,8 +41,17 @@ Task * DistanceReportWorker::tick() {
     if (inPort->hasMessage()) {
         Message m = getMessageAndSetupScriptValues(inPort);
         QVariantMap data = m.getData().toMap();
-        MAlignment mainMsa = data.value(MAIN_MSA_SLOT_ID).value<MAlignment>();
-        MAlignment alignedMsa = data.value(ALIGNED_MSA_SLOT_ID).value<MAlignment>();
+
+        SharedDbiDataHandler mainMsaId = data.value(MAIN_MSA_SLOT_ID).value<SharedDbiDataHandler>();
+        std::auto_ptr<MAlignmentObject> mainMsaObj(StorageUtils::getMsaObject(context->getDataStorage(), mainMsaId));
+        SAFE_POINT(NULL != mainMsaObj.get(), "NULL main MSA object!", NULL);
+        MAlignment mainMsa = mainMsaObj->getMAlignment();
+
+        SharedDbiDataHandler alignedMsaId = data.value(ALIGNED_MSA_SLOT_ID).value<SharedDbiDataHandler>();
+        std::auto_ptr<MAlignmentObject> alignedMsaObj(StorageUtils::getMsaObject(context->getDataStorage(), alignedMsaId));
+        SAFE_POINT(NULL != alignedMsaObj.get(), "NULL aligned MSA object!", NULL);
+        MAlignment alignedMsa = alignedMsaObj->getMAlignment();
+
         bool excludeGaps = actor->getParameter(GAPS_ATTR_ID)->getAttributeValue<bool>(context);
 
         Task *t = new DistanceReportTask(mainMsa, alignedMsa, excludeGaps);

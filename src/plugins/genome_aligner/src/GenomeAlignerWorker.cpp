@@ -201,8 +201,13 @@ void GenomeAlignerWorker::sl_taskFinished() {
         return;
     }
     
-    QVariant v = qVariantFromValue<MAlignment>(dynamic_cast<GenomeAlignerMAlignmentWriter*>(writer)->getResult());
-    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), v));
+    MAlignment al = dynamic_cast<GenomeAlignerMAlignmentWriter*>(writer)->getResult();
+    SAFE_POINT(NULL != output, "NULL output!", );
+    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(al);
+    QVariantMap msgData;
+    msgData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
+    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), msgData));
+
     if (reads->isEnded()) {
         output->setEnded();
     }

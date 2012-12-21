@@ -676,9 +676,16 @@ QStringList SeqWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) {
 * MSAWriter
 *************************************/
 void MSAWriter::data2doc(Document* doc, const QVariantMap& data) {
+    data2document(doc, data, context);
+}
+
+void MSAWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext* context) {
     CHECK(data.contains(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()), );
-    const QVariant &maVar = data[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()];
-    MAlignment ma = maVar.value<MAlignment>();
+    SharedDbiDataHandler msaId = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
+    std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
+    SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", );
+    MAlignment ma = msaObj->getMAlignment();
+
     SAFE_POINT(!ma.isEmpty(), tr("Empty alignment passed for writing to %1").arg(doc->getURLString()), )
 
     if (ma.getName().isEmpty()) {

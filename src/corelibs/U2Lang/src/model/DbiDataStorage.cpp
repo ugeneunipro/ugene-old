@@ -27,7 +27,9 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceDbi.h>
@@ -94,6 +96,12 @@ U2Object *DbiDataStorage::getObject(const SharedDbiDataHandler &handler, const U
         SAFE_POINT_OP(os, NULL);
 
         return new U2Sequence(seq);
+    } else if (2 == type) {
+        U2MsaDbi *dbi = connection->dbi->getMsaDbi();
+        U2Msa msa = dbi->getMsaObject(objectId, os);
+        SAFE_POINT_OP(os, NULL);
+
+        return new U2Msa(msa);
     //} else if (U2Type::VariantTrack == type) {
     } else if (5 == type) {
         U2VariantDbi *dbi = connection->dbi->getVariantDbi();
@@ -126,6 +134,21 @@ SharedDbiDataHandler DbiDataStorage::putSequence(const DNASequence &dnaSeq) {
 
     SharedDbiDataHandler handler(new DbiDataHandler(ent, connection->dbi->getObjectDbi(), true));
     
+    return handler;
+}
+
+SharedDbiDataHandler DbiDataStorage::putAlignment(const MAlignment &al) {
+    assert(NULL != dbiHandle);
+
+    U2OpStatus2Log os;
+    U2EntityRef ent = MAlignmentImporter::createAlignment(dbiHandle->getDbiRef(), al, os);
+    CHECK_OP(os, SharedDbiDataHandler());
+
+    DbiConnection *connection = this->getConnection(dbiHandle->getDbiRef(), os);
+    CHECK_OP(os, SharedDbiDataHandler());
+
+    SharedDbiDataHandler handler(new DbiDataHandler(ent, connection->dbi->getObjectDbi(), true));
+
     return handler;
 }
 
@@ -222,6 +245,17 @@ AssemblyObject *StorageUtils::getAssemblyObject(DbiDataStorage *storage, const S
 
     QVariantMap hints;
     return new AssemblyObject(assemblyRef, objName, hints);
+}
+
+MAlignmentObject *StorageUtils::getMsaObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
+    CHECK(NULL != handler.constData(), NULL);
+    QScopedPointer<U2Msa> msa(dynamic_cast<U2Msa*>(storage->getObject(handler, 2)));
+    CHECK(NULL != msa.data(), NULL);
+
+    U2EntityRef msaRef(handler->getDbiRef(), msa->id);
+    QString objName = msa->visualName;
+
+    return new MAlignmentObject(objName, msaRef);
 }
 
 } // Workflow

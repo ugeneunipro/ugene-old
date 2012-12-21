@@ -91,7 +91,14 @@ void SequencesToMSAWorker::sl_onTaskFinished(Task* t) {
     MAlignment ma = maTask->getResult();
 
     if (!ma.isEmpty()) {
-        outPort->put( Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), qVariantFromValue(ma)) );
+        if (ma.getName().isEmpty()) {
+            ma.setName("Multiple alignment");
+        }
+
+        SAFE_POINT(NULL != outPort, "NULL outPort!",);
+        SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(ma);
+    
+        outPort->put( Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), qVariantFromValue<SharedDbiDataHandler>(msaId)) );
     }
 
     SAFE_POINT(inPort->isEnded(), "Internal error. The scheme is broken", );

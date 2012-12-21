@@ -35,6 +35,7 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/MSAUtils.h>
@@ -106,11 +107,11 @@ void GenericMSAReader::sl_taskFinished() {
     if (!t->isFinished() || t->hasError()) {
         return;
     }
-    foreach(MAlignment ma, t->results) {
+    foreach(const QVariant& msaHandler, t->results) {
         QVariantMap m;
         m[BaseSlots::URL_SLOT().getId()] = t->url;
         m[BaseSlots::DATASET_SLOT().getId()] = t->datasetName;
-        m[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<MAlignment>(ma);
+        m[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = msaHandler;
         cache.append(Message(mtype, m));
     }
 }
@@ -118,8 +119,11 @@ void GenericMSAReader::sl_taskFinished() {
 /**************************
  * LoadMSATask
  **************************/
-LoadMSATask::LoadMSATask(const QString &_url, const QString &_datasetName)
-: Task(tr("Read MSA from %1").arg(_url), TaskFlag_None), url(_url), datasetName(_datasetName)
+LoadMSATask::LoadMSATask(const QString &_url, const QString &_datasetName, DbiDataStorage* _storage)
+: Task(tr("Read MSA from %1").arg(_url), TaskFlag_None),
+  url(_url),
+  datasetName(_datasetName),
+  storage(_storage)
 {
 
 }
@@ -167,19 +171,28 @@ void LoadMSATask::run() {
     }
     ioLog.info(tr("Reading MSA from %1 [%2]").arg(url).arg(format->getFormatName()));
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    std::auto_ptr<Document> doc(format->loadDocument(iof, url, QVariantMap(), stateInfo));
+
+    cfg.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(storage->getDbiRef()));
+    std::auto_ptr<Document> doc(format->loadDocument(iof, url, cfg, stateInfo));
     CHECK_OP(stateInfo, );
+    doc->setDocumentOwnsDbiResources(false);
+
     if (!doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT).isEmpty()) {
         foreach(GObject* go, doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT)) {
-            results.append(((MAlignmentObject*)go)->getMAlignment());
+            SharedDbiDataHandler handler = storage->getDataHandler(go->getEntityRef());
+            QVariant res = qVariantFromValue<SharedDbiDataHandler>(handler);
+            results.append(res);
         }
     } else {
         MAlignment ma = MSAUtils::seq2ma(doc->findGObjectByType(GObjectTypes::SEQUENCE), stateInfo);
-        if (!hasError()) {
-            results.append(ma);
-        } 
-    }
 
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(storage->getDbiRef(), ma, stateInfo);
+        CHECK_OP(stateInfo, );
+
+        SharedDbiDataHandler handler = storage->getDataHandler(msaRef);
+        QVariant res = qVariantFromValue<SharedDbiDataHandler>(handler);
+        results.append(res);
+    }
 }
 
 /**************************

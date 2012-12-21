@@ -236,9 +236,14 @@ Task* HMMBuildWorker::tick() {
             calSettings.seed = actor->getParameter(SEED_ATTR)->getAttributeValue<int>(context);
             calSettings.nThreads = actor->getParameter(THREADS_ATTR)->getAttributeValue<int>(context);
             calibrate = actor->getParameter(CALIBRATE_ATTR)->getAttributeValue<bool>(context);
-            const MAlignment& ma = inputMessage.getData().toMap().value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<MAlignment>();
+
+            QVariantMap qm = inputMessage.getData().toMap();
+            SharedDbiDataHandler msaId = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
+            std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
+            SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
+            MAlignment msa = msaObj->getMAlignment();
             
-            Task* t = new HMMBuildTask(cfg, ma);
+            Task* t = new HMMBuildTask(cfg, msa);
             connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
             return t;
         } else if (input->isEnded()) {

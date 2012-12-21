@@ -64,6 +64,8 @@ ClustalWSupportTask::ClustalWSupportTask(const MAlignment& _inputMsa, const GObj
     clustalWTask=NULL;
     newDocument=NULL;
     logParser=NULL;
+    resultMA.setAlphabet(inputMsa.getAlphabet());
+    resultMA.setName(inputMsa.getName());
 }
 
 void ClustalWSupportTask::prepare(){

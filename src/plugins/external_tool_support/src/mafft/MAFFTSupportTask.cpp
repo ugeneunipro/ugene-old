@@ -61,6 +61,8 @@ MAFFTSupportTask::MAFFTSupportTask(const MAlignment& _inputMsa, const GObjectRef
     mAFFTTask=NULL;
     newDocument=NULL;
     logParser=NULL;
+    resultMA.setAlphabet(inputMsa.getAlphabet());
+    resultMA.setName(inputMsa.getName());
 }
 
 void MAFFTSupportTask::prepare(){

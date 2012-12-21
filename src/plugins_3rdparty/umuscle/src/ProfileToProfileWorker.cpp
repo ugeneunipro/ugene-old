@@ -66,9 +66,17 @@ void ProfileToProfileWorker::init() {
 Task * ProfileToProfileWorker::tick() {
     if (inPort->hasMessage()) {
         Message m = getMessageAndSetupScriptValues(inPort);
-        QVariantMap data = m.getData().toMap();
-        MAlignment masterMsa = data.value(MASTER_PROFILE_SLOT_ID).value<MAlignment>();
-        MAlignment secondMsa = data.value(SECOND_PROFILE_SLOT_ID).value<MAlignment>();
+
+        QVariantMap qm = m.getData().toMap();
+        SharedDbiDataHandler masterMsaId = qm.value(MASTER_PROFILE_SLOT_ID).value<SharedDbiDataHandler>();
+        std::auto_ptr<MAlignmentObject> masterMsaObj(StorageUtils::getMsaObject(context->getDataStorage(), masterMsaId));
+        SAFE_POINT(NULL != masterMsaObj.get(), "NULL MSA Object!", NULL);
+        MAlignment masterMsa = masterMsaObj->getMAlignment();
+
+        SharedDbiDataHandler secondMsaId = qm.value(SECOND_PROFILE_SLOT_ID).value<SharedDbiDataHandler>();
+        std::auto_ptr<MAlignmentObject> secondMsaObj(StorageUtils::getMsaObject(context->getDataStorage(), secondMsaId));
+        SAFE_POINT(NULL != secondMsaObj.get(), "NULL MSA Object!", NULL);
+        MAlignment secondMsa = secondMsaObj->getMAlignment();
 
         Task *t = new ProfileToProfileTask(masterMsa, secondMsa);
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
@@ -93,9 +101,16 @@ void ProfileToProfileWorker::sl_taskFinished() {
         return;
     }
 
-    QVariantMap data;
-    data[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<MAlignment>(t->getResult());
-    outPort->put(Message(outPort->getBusType(), data));
+    if (outPort) {
+        QVariantMap channelContext = outPort->getContext();
+        MAlignment resultAl = t->getResult();
+        resultAl.setName("Aligned");
+        SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(resultAl);
+        QVariantMap msgData;
+        msgData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
+        outPort->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), msgData));
+        algoLog.info(tr("Aligned profile to profile with MUSCLE").arg(t->getResult().getName()));
+    }
 }
 
 /************************************************************************/

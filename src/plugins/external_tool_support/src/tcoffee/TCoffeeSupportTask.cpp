@@ -60,6 +60,8 @@ TCoffeeSupportTask::TCoffeeSupportTask(const MAlignment& _inputMsa, const GObjec
     tCoffeeTask=NULL;
     newDocument=NULL;
     logParser=NULL;
+    resultMA.setAlphabet(inputMsa.getAlphabet());
+    resultMA.setName(inputMsa.getName());
 }
 
 void TCoffeeSupportTask::prepare(){

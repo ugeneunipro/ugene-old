@@ -91,6 +91,10 @@ MuscleTask::MuscleTask(const MAlignment& ma, const MuscleTaskSettings& _config)
     int nSeq = ma.getNumRows();
     int memUseMB = qint64(aliLen) * qint64(nSeq) * 200 / (1024 * 1024); //200x per char in alignment
     TaskResourceUsage tru(RESOURCE_MEMORY, memUseMB);
+
+    QString inputAlName = inputMA.getName();
+    resultMA.setName(inputAlName);
+    resultSubMA.setName(inputAlName);
     
     inputSubMA = inputMA;
     if (config.alignRegion && config.regionToAlign.length != inputMA.getLength()) {
