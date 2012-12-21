@@ -109,7 +109,7 @@ function add-plugin {
 
     PLUGIN_LIB="lib${plugin}.so"
     PLUGIN_DESC="${plugin}.plugin"
-    PLUGIN_LICENSE="${plugin}.plugin"
+    PLUGIN_LICENSE="${plugin}.license"
     
     echo $PLUGIN_LIB
     echo
