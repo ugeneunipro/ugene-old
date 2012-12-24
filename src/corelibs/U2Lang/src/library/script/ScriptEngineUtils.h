@@ -43,6 +43,7 @@ public:
     static DbiDataStorage * dataStorage(QScriptEngine *engine);
     static SequenceScriptClass * getSequenceClass(QScriptEngine *engine);
     static SharedDbiDataHandler getDbiId(QScriptEngine *engine, const QScriptValue &value, const QString &className);
+    static SharedDbiDataHandler getDbiId(QScriptEngine *engine, const QScriptValue &value);
     static QScriptValue toScriptValue(QScriptEngine *engine, const QVariant &value, DataTypePtr type);
     static QVariant fromScriptValue(QScriptEngine *engine, const QScriptValue &value, DataTypePtr type);
 };

@@ -138,18 +138,11 @@ void ScriptWorker::bindPortVariables() {
             continue;
         }
 
-        QVariantMap busData = bus->look().getData().toMap();
-        foreach(const QString & slotDesc, busData.keys()) { 
-            ActorId actorId = IntegralBusType::parseSlotDesc(slotDesc);
-            QString attrId = IntegralBusType::parseAttributeIdFromSlotDesc(slotDesc);
-            QString portId = bus->getPortId();
-            IntegralBusPort * busPort = qobject_cast<IntegralBusPort*>(actor->getPort(portId));
-            Q_UNUSED(busPort);
-            assert(busPort != NULL);
-
-            attrId.prepend("in_");
+        QVariantMap busData = bus->lookMessage().getData().toMap();
+        foreach(const QString & slotId, busData.keys()) {
+            QString attrId = "in_" + slotId;
             if( script->hasVarWithId(attrId)) {
-                script->setVarValueWithId(attrId, busData.value(slotDesc));
+                script->setVarValueWithId(attrId, busData.value(slotId));
             }
         }
     }

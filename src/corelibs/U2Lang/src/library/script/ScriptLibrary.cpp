@@ -104,8 +104,6 @@ QScriptValue WorkflowScriptLibrary::print(QScriptContext *ctx, QScriptEngine *) 
     return 0;
 }
 
-// unrefactored obsolete deprecated functions
-
 static DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
     WorkflowScriptEngine *wse = ScriptEngineUtils::workflowEngine(engine);
     CHECK(NULL != wse, DNASequence());
@@ -115,6 +113,16 @@ static DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int a
     QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(wse->getWorkflowContext()->getDataStorage(), seqId));
     CHECK(!seqObj.isNull(), DNASequence());
     return seqObj->getWholeSequence();
+}
+
+static MAlignment getAlignment(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
+    WorkflowScriptEngine *wse = ScriptEngineUtils::workflowEngine(engine);
+    CHECK(NULL != wse, MAlignment());
+
+    SharedDbiDataHandler msaId = ScriptEngineUtils::getDbiId(engine, ctx->argument(argNum));
+    QScopedPointer<MAlignmentObject> msaObj(StorageUtils::getMsaObject(wse->getWorkflowContext()->getDataStorage(), msaId));
+    CHECK(!msaObj.isNull(), MAlignment());
+    return msaObj->getMAlignment();
 }
 
 static QScriptValue putSequence(QScriptEngine *engine, const DNASequence &seq) {
@@ -127,6 +135,15 @@ static QScriptValue putSequence(QScriptEngine *engine, const DNASequence &seq) {
     return ScriptEngineUtils::getSequenceClass(engine)->newInstance(id);
 }
 
+static QScriptValue putAlignment(QScriptEngine *engine, const MAlignment &msa) {
+    WorkflowScriptEngine *wse = ScriptEngineUtils::workflowEngine(engine);
+    CHECK(NULL != wse, QScriptValue::NullValue);
+    WorkflowContext *ctx = wse->getWorkflowContext();
+    SharedDbiDataHandler id = ctx->getDataStorage()->putAlignment(msa);
+    return engine->newVariant(qVariantFromValue(id));
+}
+
+// unrefactored obsolete deprecated functions
 QScriptValue WorkflowScriptLibrary::getSubsequence(QScriptContext *ctx, QScriptEngine *engine) {
     if(ctx->argumentCount() != 3) {
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
@@ -404,7 +421,7 @@ QScriptValue WorkflowScriptLibrary::getSequenceFromAlignment(QScriptContext *ctx
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    MAlignment align = ctx->argument(0).toVariant().value<MAlignment>();
+    MAlignment align = getAlignment(ctx, engine, 0);
     if(align.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid alignment"));
     }
@@ -458,7 +475,7 @@ QScriptValue WorkflowScriptLibrary::findInAlignment(QScriptContext *ctx, QScript
 
     QString name;
     DNASequence seq;
-    MAlignment aln = ctx->argument(0).toVariant().value<MAlignment>();
+    MAlignment aln = getAlignment(ctx, engine, 0);
     if(aln.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid alignment"));
     }
@@ -512,9 +529,7 @@ QScriptValue WorkflowScriptLibrary::createAlignment(QScriptContext *ctx, QScript
         align.addRow(seq.getName(), seq.seq, os);
     }
 
-    QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<MAlignment>(align)));
-    return calee.property("res");
+    return putAlignment(engine, align);
 }
 
 QScriptValue WorkflowScriptLibrary::addToAlignment(QScriptContext *ctx, QScriptEngine *engine) {
@@ -522,8 +537,7 @@ QScriptValue WorkflowScriptLibrary::addToAlignment(QScriptContext *ctx, QScriptE
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    MAlignment align = ctx->argument(0).toVariant().value<MAlignment>();
-
+    MAlignment align = getAlignment(ctx, engine, 0);
     DNASequence seq = getSequence(ctx, engine, 1);
     if(seq.seq.isEmpty()) {
         return ctx->throwError(QObject::tr("Empty or invalid sequence"));
@@ -552,9 +566,7 @@ QScriptValue WorkflowScriptLibrary::addToAlignment(QScriptContext *ctx, QScriptE
     U2OpStatus2Log os;
     align.addRow(seq.getName(), seq.seq, row, os);
 
-    QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<MAlignment>(align)));
-    return calee.property("res");
+    return putAlignment(engine, align);
 }
 
 QScriptValue WorkflowScriptLibrary::removeFromAlignment(QScriptContext *ctx, QScriptEngine *engine) {
@@ -562,7 +574,7 @@ QScriptValue WorkflowScriptLibrary::removeFromAlignment(QScriptContext *ctx, QSc
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    MAlignment aln = ctx->argument(0).toVariant().value<MAlignment>();
+    MAlignment aln = getAlignment(ctx, engine, 0);
     if(aln.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid alignment"));
     }
@@ -580,9 +592,7 @@ QScriptValue WorkflowScriptLibrary::removeFromAlignment(QScriptContext *ctx, QSc
 
     U2OpStatus2Log os;
     aln.removeRow(row, os);
-    QScriptValue calee = ctx->callee();
-    calee.setProperty("res", engine->newVariant(QVariant::fromValue<MAlignment>(aln)));
-    return calee.property("res");
+    return putAlignment(engine, aln);
 }
 
 QScriptValue WorkflowScriptLibrary::rowNum(QScriptContext *ctx, QScriptEngine *engine) {
@@ -590,7 +600,7 @@ QScriptValue WorkflowScriptLibrary::rowNum(QScriptContext *ctx, QScriptEngine *e
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    MAlignment aln = ctx->argument(0).toVariant().value<MAlignment>();
+    MAlignment aln = getAlignment(ctx, engine, 0);
     if(aln.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid alignment"));
     }
@@ -606,7 +616,7 @@ QScriptValue WorkflowScriptLibrary::columnNum(QScriptContext *ctx, QScriptEngine
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    MAlignment aln = ctx->argument(0).toVariant().value<MAlignment>();
+    MAlignment aln = getAlignment(ctx, engine, 0);
     if(aln.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid alignment"));
     }
@@ -622,7 +632,7 @@ QScriptValue WorkflowScriptLibrary::alignmentAlphabetType(QScriptContext *ctx, Q
         return ctx->throwError(QObject::tr("Incorrect number of arguments"));
     }
 
-    MAlignment aln = ctx->argument(0).toVariant().value<MAlignment>();
+    MAlignment aln = getAlignment(ctx, engine, 0);
     if(aln.isEmpty()) {
         return ctx->throwError(QObject::tr("Invalid alignment"));
     }

@@ -68,6 +68,16 @@ SharedDbiDataHandler ScriptEngineUtils::getDbiId(QScriptEngine *engine, const QS
     return SharedDbiDataHandler();
 }
 
+SharedDbiDataHandler ScriptEngineUtils::getDbiId(QScriptEngine *engine, const QScriptValue &value) {
+    if (value.isVariant()) {
+        QVariant var = value.toVariant();
+        if (var.canConvert<SharedDbiDataHandler>()) {
+            return var.value<SharedDbiDataHandler>();
+        }
+    }
+    return SharedDbiDataHandler();
+}
+
 QScriptValue ScriptEngineUtils::toScriptValue(QScriptEngine *engine, const QVariant &value, DataTypePtr type) {
     if (BaseTypes::DNA_SEQUENCE_TYPE() == type) {
         SequenceScriptClass *sClass = getSequenceClass(engine);
