@@ -34,6 +34,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h \
@@ -158,6 +159,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.cpp \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.cpp \

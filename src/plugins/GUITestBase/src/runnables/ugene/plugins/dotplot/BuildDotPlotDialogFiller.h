@@ -32,9 +32,12 @@ namespace U2 {
                            const QString &_secondFileEdit="", bool _mergeFirstBoxChecked = false,
                            bool _oneSequenceBoxChecked=false, bool _mergeSecondBoxChecked=false,
                            int _gapFirstVal=5, int _gapSecondVal=5) : Filler(_os, "DotPlotFilesDialog"),
-            firstFileEdit(_firstFileEdit), secondFileEdit(_secondFileEdit),
-            mergeFirstBoxChecked(_mergeFirstBoxChecked), oneSequenceBoxChecked(_oneSequenceBoxChecked),
-            mergeSecondBoxChecked(_mergeSecondBoxChecked),gapFirstVal(_gapFirstVal),gapSecondVal(_gapSecondVal){}
+            mergeFirstBoxChecked(_mergeFirstBoxChecked),
+            oneSequenceBoxChecked(_oneSequenceBoxChecked),
+            mergeSecondBoxChecked(_mergeSecondBoxChecked),
+            firstFileEdit(_firstFileEdit),
+            secondFileEdit(_secondFileEdit),
+            gapFirstVal(_gapFirstVal),gapSecondVal(_gapSecondVal){}
         virtual void run();
     private:
         bool mergeFirstBoxChecked, oneSequenceBoxChecked,mergeSecondBoxChecked;
