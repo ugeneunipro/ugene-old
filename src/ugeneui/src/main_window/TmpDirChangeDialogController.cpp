@@ -20,9 +20,10 @@ QString TmpDirChangeDialogController::getTmpDirPath() {
 }
 
 void TmpDirChangeDialogController::sl_changeDirButtonClicked() {
-    tmpDirPath = QFileDialog::getExistingDirectory(parentWidget(), tr("Choose Directory"), tmpDirPath,
+    QString newPath = QFileDialog::getExistingDirectory(parentWidget(), tr("Choose Directory"), tmpDirPath,
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    tmpDirPathEdit->setText(tmpDirPath);
+    if (newPath.isEmpty() == false)
+        tmpDirPathEdit->setText(newPath);
 }
 
 void TmpDirChangeDialogController::sl_exitAppButtonClicked() {
@@ -30,6 +31,7 @@ void TmpDirChangeDialogController::sl_exitAppButtonClicked() {
 }
 
 void TmpDirChangeDialogController::sl_okButtonClicked() {
+    tmpDirPath = tmpDirPathEdit->text();
     if (!tmpDirChecker->checkPath(tmpDirPath)) {
         QString message = "You do not have permission to write to \"" + tmpDirPath +
                              "\" directory. Please, set the valid temp directory:";
