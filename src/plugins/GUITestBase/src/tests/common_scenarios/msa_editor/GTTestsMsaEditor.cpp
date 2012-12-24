@@ -1615,7 +1615,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 
     GTGlobals::sleep();
     QString clipboardText = GTClipboard::text(os);
-    CHECK_SET_ERR(clipboardText == "CAA", "Clipboard string and expected MSA string differs"+GTClipboard::text(os));
+    CHECK_SET_ERR(clipboardText == "CAA", "Clipboard string and expected MSA string differs"+clipboardText);
 
 //                 sequence name  changed from L -> L|revcompl
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
