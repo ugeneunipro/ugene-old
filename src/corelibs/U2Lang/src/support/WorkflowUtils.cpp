@@ -618,6 +618,7 @@ static void data2text(WorkflowContext *context, DocumentFormatId formatId, GObje
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::STRING);
     DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
     std::auto_ptr<Document> d(new Document(df, iof, GUrl(), context->getDataStorage()->getDbiRef(), objList));
+    d->setDocumentOwnsDbiResources(false);
     StringAdapter *io = dynamic_cast<StringAdapter*>(iof->createIOAdapter());
     io->open(GUrl(), IOAdapterMode_Write);
     U2OpStatusImpl os;
@@ -633,59 +634,40 @@ static void data2text(WorkflowContext *context, DocumentFormatId formatId, GObje
 #define MSA_TYPE QVariant::UserType
 #define ANNOTATIONS_TYPE QVariant::List
 
-void WorkflowUtils::print(const QString &slotString, const QVariant &data, WorkflowContext *context) {
+void WorkflowUtils::print(const QString &slotString, const QVariant &data, DataTypePtr type, WorkflowContext *context) {
     QString text = slotString + ":\n";
-    QString type = QVariant::typeToName(data.type());
-    if (STRING_TYPE == data.type()) {
+    if ("string" == type->getId()
+        || BaseTypes::STRING_LIST_TYPE() == type) {
         text += data.toString();
-    } else if (SEQUENCE_TYPE == data.type()) {
+    } else if (BaseTypes::DNA_SEQUENCE_TYPE() == type) {
         U2SequenceObject *obj = StorageUtils::getSequenceObject(context->getDataStorage(), data.value<SharedDbiDataHandler>());
+        CHECK(NULL != obj, );
         data2text(context, BaseDocumentFormats::FASTA, obj, text);
-    } else {
-        bool annType = false;
-        bool hasAlignmentData = false;
+    } else if (BaseTypes::MULTIPLE_ALIGNMENT_TYPE() == type) {
+        MAlignmentObject *obj = StorageUtils::getMsaObject(context->getDataStorage(), data.value<SharedDbiDataHandler>());
+        CHECK(NULL != obj, );
+        data2text(context, BaseDocumentFormats::CLUSTAL_ALN, obj, text);
+    } else if (BaseTypes::ANNOTATION_TABLE_TYPE() == type
+        || BaseTypes::ANNOTATION_TABLE_LIST_TYPE() == type) {
         QList<SharedAnnotationData> anns;
-        MAlignment al;
-        if (QVariant::List == data.type()) {
-            annType = true;
-            anns = QVariantUtils::var2ftl(data.toList());
-        } else {
+        if (BaseTypes::ANNOTATION_TABLE_TYPE() == type) {
             anns = qVariantValue<QList<SharedAnnotationData> >(data);
-            if (anns.size() > 0 ) {
-                annType = true;
-            } else {
-                al = data.value<MAlignment>();
-                hasAlignmentData = !al.isEmpty();
-            }
-        }
-
-        if (annType) {
-            AnnotationTableObject *obj = new AnnotationTableObject("Slot annotations");
-            foreach(SharedAnnotationData d, anns) {
-                obj->addAnnotation(new Annotation(d));
-            }
-            data2text(context, BaseDocumentFormats::PLAIN_GENBANK, obj, text);
-        } else if (hasAlignmentData) {
-            al = data.value<MAlignment>();
-            U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
-
-            U2OpStatus2Log os;
-            U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
-            SAFE_POINT_OP(os, );
-
-            MAlignmentObject *obj = new MAlignmentObject(al.getName(), msaRef);
-            SAFE_POINT(NULL != obj, "NULL Msa object!",);
-
-            data2text(context, BaseDocumentFormats::CLUSTAL_ALN, obj, text);
         } else {
-            text += "Nothing to print";
+            anns = QVariantUtils::var2ftl(data.toList());
         }
+        AnnotationTableObject *obj = new AnnotationTableObject("Slot annotations");
+        foreach(SharedAnnotationData d, anns) {
+            obj->addAnnotation(new Annotation(d));
+        }
+        data2text(context, BaseDocumentFormats::PLAIN_GENBANK, obj, text);
+    } else {
+        text += "Can not print data of this type: " + type->getDisplayName();
     }
     printf("\n%s\n", text.toAscii().data());
 }
 
 bool WorkflowUtils::validateSchemaForIncluding(const Schema &s, QString &error) {
-    // TEMPORARY disallow filters element in includes
+    // TEMPORARY disallow filter and grouper elements in includes
     static QString errorStr = tr("The %1 element is a %2. Sorry, but current version of "
         "UGENE doesn't support of filters and groupers in the includes.");
     foreach (Actor *actor, s.getProcesses()) {

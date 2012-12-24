@@ -86,7 +86,7 @@ public:
     
     static QString getParamIdFromHref(const QString& href);
 
-    static void print(const QString &slotString, const QVariant &data, WorkflowContext *context);
+    static void print(const QString &slotString, const QVariant &data, DataTypePtr type, WorkflowContext *context);
 
     static bool validateSchemaForIncluding(const Schema &s, QString &error);
 
