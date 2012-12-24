@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>429</width>
-    <height>125</height>
+    <width>430</width>
+    <height>124</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,8 +31,11 @@
        <property name="minimumSize">
         <size>
          <width>145</width>
-         <height>2</height>
+         <height>20</height>
         </size>
+       </property>
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
@@ -55,7 +58,7 @@
        <property name="minimumSize">
         <size>
          <width>145</width>
-         <height>2</height>
+         <height>20</height>
         </size>
        </property>
       </widget>
@@ -80,8 +83,8 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>20</width>
-       <height>10</height>
+       <width>17</width>
+       <height>18</height>
       </size>
      </property>
     </spacer>
