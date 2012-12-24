@@ -67,6 +67,7 @@ public:
     virtual Message getMessageAndSetupScriptValues( CommunicationChannel * channel );
 
     QMap<QString, IntegralBus*> &getPorts() {return ports;}
+    Actor * getActor() const {return actor;}
     
 private:
     // bind values from input ports to script vars. 

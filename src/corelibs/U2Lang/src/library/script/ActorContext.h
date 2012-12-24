@@ -19,34 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_SCRIPTENGINEUTILS_H_
-#define _U2_SCRIPTENGINEUTILS_H_
+#ifndef _U2_ACTORCONTEXT_H_
+#define _U2_ACTORCONTEXT_H_
 
-#include <U2Lang/WorkflowScriptEngine.h>
+#include <U2Lang/LocalDomain.h>
 
 #include <QtScript>
 
-#define SCRIPT_CHECK(condition, ctx, error, result) \
-    if (!(condition)) { \
-    ctx->throwError(error); \
-    return result; \
-    }
-
 namespace U2 {
-
-class SequenceScriptClass;
 using namespace Workflow;
+namespace LocalWorkflow {
 
-class U2LANG_EXPORT ScriptEngineUtils {
+class U2LANG_EXPORT ActorContext {
 public:
-    static WorkflowScriptEngine * workflowEngine(QScriptEngine *engine);
-    static DbiDataStorage * dataStorage(QScriptEngine *engine);
-    static SequenceScriptClass * getSequenceClass(QScriptEngine *engine);
-    static SharedDbiDataHandler getDbiId(QScriptEngine *engine, const QScriptValue &value, const QString &className);
-    static QScriptValue toScriptValue(QScriptEngine *engine, const QVariant &value, DataTypePtr type);
-    static QVariant fromScriptValue(QScriptEngine *engine, const QScriptValue &value, DataTypePtr type);
+    static QScriptValue createContext(BaseWorker *worker, QScriptEngine *engine);
+
+    static const QString OUTPUT;
+    static const QString INPUT;
+    static const QString PARAMETERS;
+
+private:
+    static QScriptValue createInBus(IntegralBus *bus, QScriptEngine *engine);
+    static QScriptValue createOutBus(Port *port, QScriptEngine *engine);
 };
 
+} // LocalWorkflow
 } // U2
 
-#endif // _U2_SCRIPTENGINEUTILS_H_
+#endif // _U2_ACTORCONTEXT_H_

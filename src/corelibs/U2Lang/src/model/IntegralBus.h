@@ -40,7 +40,8 @@ public:
     BusMap(const QStrStrMap &busMap, const QMap<QString, QStringList> &listMap, const SlotPathMap &paths);
     BusMap(const QStrStrMap &busMap, bool breaksDataflow, const QString &actorId);
 
-    QVariantMap getMessageMap(CommunicationChannel* ch, QVariantMap &context);
+    QVariantMap takeMessageMap(CommunicationChannel* ch, QVariantMap &context);
+    QVariantMap lookMessageMap(CommunicationChannel *ch);
     QVariantMap composeMessageMap(const Message &m, const QVariantMap &context);
 
     static void parseSource(const QString &src, QString &srcId, QStringList &path);
@@ -55,6 +56,9 @@ private:
 
     bool breaksDataflow;
     QString actorId;
+
+private:
+    QVariantMap getMessageData(const Message &m) const;
 };
 
 /**
@@ -88,6 +92,7 @@ public:
     virtual void setEnded();
     virtual int capacity() const {return 1;}
     virtual void setCapacity(int) {}
+    virtual Message lookMessage() const;
     
     virtual QVariantMap getContext() const {return context;}
     virtual void setContext(const QVariantMap& m);

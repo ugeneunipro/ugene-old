@@ -55,6 +55,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/WorkflowUtils.h \
            src/tasks/ReadDocumentTaskFactory.h \
            src/tasks/WorkflowTasksRegistry.h \
+           src/library/script/ActorContext.h \
            src/library/script/DbiClassPrototype.h \
            src/library/script/ScriptEngineUtils.h \
            src/library/script/ScriptLibrary.h \
@@ -125,6 +126,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/WorkflowUtils.cpp \
            src/tasks/ReadDocumentTaskFactory.cpp \
            src/tasks/WorkflowTasksRegistry.cpp \
+           src/library/script/ActorContext.cpp \
            src/library/script/DbiClassPrototype.cpp \
            src/library/script/ScriptEngineUtils.cpp \
            src/library/script/ScriptLibrary.cpp \

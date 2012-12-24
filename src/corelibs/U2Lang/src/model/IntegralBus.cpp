@@ -82,17 +82,27 @@ inline bool equalPaths(const SlotPathMap &allPaths, const QStringList &ipath, co
     return false;
 }
 
-QVariantMap BusMap::getMessageMap(CommunicationChannel* ch, QVariantMap &context) {
+QVariantMap BusMap::takeMessageMap(CommunicationChannel* ch, QVariantMap &context) {
     assert(input);
-    QVariantMap result;
     Message m = ch->get();
-
     assert(m.getData().type() == QVariant::Map);
     QVariantMap imap = m.getData().toMap();
     context.unite(imap);
+
+    return getMessageData(m);
+}
+
+QVariantMap BusMap::lookMessageMap(CommunicationChannel *ch) {
+    return getMessageData(ch->look());
+}
+
+QVariantMap BusMap::getMessageData(const Message &m) const {
+    assert(m.getData().type() == QVariant::Map);
+    QVariantMap imap = m.getData().toMap();
     QStringList ipath;
     QString ikey;
 
+    QVariantMap result;
     foreach(QString src, imap.uniqueKeys()) {
         QVariant ival = imap.value(src);
 
@@ -257,7 +267,7 @@ Message IntegralBus::get() {
     QVariantMap result;
     QVariantMap messageContext;
     foreach (CommunicationChannel* ch, outerChannels) {
-        QVariantMap midResult = busMap->getMessageMap(ch, messageContext);
+        QVariantMap midResult = busMap->takeMessageMap(ch, messageContext);
         result.unite(midResult);
     }
 
@@ -292,6 +302,20 @@ Message IntegralBus::look() const {
         result.unite(message.getData().toMap());
     }
     return Message(busType, result);
+}
+
+Message IntegralBus::lookMessage() const {
+    QVariantMap result;
+    foreach (CommunicationChannel* ch, outerChannels) {
+        result.unite(busMap->lookMessageMap(ch));
+    }
+    QVariant data;
+    if (busType->isMap()) {
+        data.setValue(result);
+    } else if (1 == result.size()) {
+        data = result.values().first();
+    }
+    return Message(busType, data);
 }
 
 Message IntegralBus::composeMessage(const Message& m) {

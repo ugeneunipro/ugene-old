@@ -31,6 +31,7 @@
 
 #include <U2Designer/DelegateEditors.h>
 
+#include <U2Lang/ActorContext.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseSlots.h>
@@ -165,40 +166,70 @@ void ScriptWorker::bindAttributeVariables() {
     }
 }
 
+bool ScriptWorker::isNeedToBeDone() const {
+    bool result = false;
+    if (actor->getInputPorts().isEmpty()) {
+        result = taskFinished;
+    } else {
+        bool hasNotEnded = false;
+        foreach (Port *port, actor->getInputPorts()) {
+            IntegralBus *input = ports[port->getId()];
+            SAFE_POINT(NULL != input, "NULL input bus", NULL);
+            if (!input->isEnded()) {
+                hasNotEnded = true;
+                break;
+            }
+        }
+        result = !hasNotEnded;
+    }
+    return result;
+}
+
+bool ScriptWorker::isNeedToBeRun() const {
+    bool result = true;
+    if (actor->getInputPorts().isEmpty()) {
+        result = !taskFinished;
+    } else {
+        foreach (Port *port, actor->getInputPorts()) {
+            IntegralBus *input = ports[port->getId()];
+            SAFE_POINT(NULL != input, "NULL input bus", NULL);
+            if (!input->hasMessage()) {
+                result = false;
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+void ScriptWorker::setDone() {
+    BaseWorker::setDone();
+    foreach (Port *port, actor->getOutputPorts()) {
+        IntegralBus *output = ports[port->getId()];
+        SAFE_POINT(NULL != output, "NULL output bus", );
+        output->setEnded();
+    }
+}
+
 Task * ScriptWorker::tick() {
     if(script->isEmpty()) {
         coreLog.error(tr("no script text"));
         return new FailTask(tr("no script text"));
     }
-    if(input != NULL) {
-        if (input->hasMessage()) {
-            bindPortVariables();
-            bindAttributeVariables();
 
-            getMessageAndSetupScriptValues(input);
-
-            Task *t = new ScriptWorkerTask(engine, script);
-            connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-            return t;
-        } else if (input->isEnded()) {
-            setDone();
-            if(output != NULL) {
-                output->setEnded();
-            }
+    if (isNeedToBeRun()) {
+        //WorkflowScriptLibrary::initEngine(engine);
+        //engine->globalObject().setProperty("ctx", ActorContext::createContext(this, engine), QScriptValue::ReadOnly);
+        bindPortVariables();
+        bindAttributeVariables();
+        foreach (Port *port, actor->getInputPorts()) {
+            getMessageAndSetupScriptValues(ports[port->getId()]);
         }
-    } else {
-        if(taskFinished) {
-            setDone();
-            if(output != NULL) {
-                output->setEnded();
-            }
-        } else {
-            bindPortVariables();
-            bindAttributeVariables();
-            Task *t = new ScriptWorkerTask(engine, script);
-            connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-            return t;
-        }
+        Task *t = new ScriptWorkerTask(engine, script);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (isNeedToBeDone()) {
+        setDone();
     }
     return NULL;
 }
@@ -221,6 +252,26 @@ void ScriptWorker::sl_taskFinished() {
         }
     }
 
+    /*QScriptValue ctx = t->getEngine()->globalObject().property("ctx");
+    CHECK(!ctx.isNull() && !ctx.isUndefined(), );
+    QScriptValue out = ctx.property(ActorContext::OUTPUT);
+    CHECK(!out.isNull() && !out.isUndefined(), );
+    foreach (Port *port, actor->getOutputPorts()) {
+        IntegralBus *bus = ports[port->getId()];
+        QScriptValue portArray = out.property(port->getId());
+        CHECK(!portArray.isNull() && !portArray.isUndefined(), );
+
+        QVariantMap map;
+        QMap<Descriptor, DataTypePtr> types = port->getOwnTypeMap();
+        foreach (const Descriptor &slotDesc, port->getOutputType()->getDatatypesMap().keys()) {
+            QScriptValue value = portArray.property(slotDesc.getId());
+            CHECK(!value.isNull() && !value.isUndefined(), );
+
+            QVariant v = ScriptEngineUtils::fromScriptValue(t->getEngine(), value, types[slotDesc.getId()]);
+            map[slotDesc.getId()] = v;
+        }
+        bus->put(Message(bus->getBusType(), map));
+    }*/
     QVariantMap map;
     bool hasSeqArray = false;
     foreach(const Descriptor &desc, ptr->getAllDescriptors()) {

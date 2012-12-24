@@ -59,6 +59,7 @@ public:
     virtual void init();
     virtual Task * tick();
     virtual void cleanup();
+    virtual void setDone();
 
 private slots:
     void sl_taskFinished();
@@ -72,6 +73,10 @@ private:
     WorkflowScriptEngine *engine;
     AttributeScript *script;  
     bool taskFinished;
+
+private:
+    bool isNeedToBeDone() const;
+    bool isNeedToBeRun() const;
 };
 
 class ScriptWorkerFactory: public DomainFactory {

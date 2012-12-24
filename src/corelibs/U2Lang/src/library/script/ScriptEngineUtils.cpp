@@ -21,6 +21,8 @@
 
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Lang/BaseTypes.h>
+
 #include "SequencePrototype.h"
 #include <U2Lang/WorkflowScriptEngine.h>
 
@@ -64,6 +66,28 @@ SharedDbiDataHandler ScriptEngineUtils::getDbiId(QScriptEngine *engine, const QS
         }
     }
     return SharedDbiDataHandler();
+}
+
+QScriptValue ScriptEngineUtils::toScriptValue(QScriptEngine *engine, const QVariant &value, DataTypePtr type) {
+    if (BaseTypes::DNA_SEQUENCE_TYPE() == type) {
+        SequenceScriptClass *sClass = getSequenceClass(engine);
+        CHECK(NULL != sClass, engine->newVariant(value));
+
+        if (value.canConvert<SharedDbiDataHandler>()) {
+            SharedDbiDataHandler seqId = value.value<SharedDbiDataHandler>();
+            return sClass->newInstance(seqId, false);
+        }
+    }
+    return engine->newVariant(value);
+}
+
+QVariant ScriptEngineUtils::fromScriptValue(QScriptEngine *engine, const QScriptValue &value, DataTypePtr type) {
+    if (BaseTypes::DNA_SEQUENCE_TYPE() == type) {
+        SharedDbiDataHandler seqId = ScriptEngineUtils::getDbiId(engine, value,
+            SequenceScriptClass::CLASS_NAME);
+        return qVariantFromValue(seqId);
+    }
+    return value.toVariant();
 }
 
 } // U2
