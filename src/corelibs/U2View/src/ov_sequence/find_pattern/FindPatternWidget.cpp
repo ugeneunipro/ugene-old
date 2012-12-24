@@ -209,7 +209,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         annotModel.sequenceObjectRef = annotatedDnaView->getSequenceInFocus()->getSequenceObject();
         annotModel.sequenceLen = annotatedDnaView->getSequenceInFocus()->getSequenceLength();
 
-        annotController = new CreateAnnotationWidgetController(annotModel, this, compact);
+        annotController = new CreateAnnotationWidgetController(annotModel, this, optPanel);
         annotModelPrepared = false;
         connect(annotController, SIGNAL(si_annotationNamesEdited()), SLOT(sl_onAnotationNameEdited()));
 
@@ -280,7 +280,7 @@ void FindPatternWidget::updateShowOptions()
         usePatternNamesCheckBox->show();
         loadFromFileGroupBox->show();
 
-        setMinimumSize(QSize(170, 780));
+        setMinimumSize(QSize(170, 1013));
         
         QWidget::setTabOrder(annotsWidget, bottomFocus);
         QWidget::setTabOrder(usePatternNamesCheckBox, bottomFocus);
@@ -640,8 +640,7 @@ void FindPatternWidget::updateLayout()
     }
 }
 
-void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, const QString& additionalMsg )
-{
+void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, const QString& additionalMsg ){
     if (show) {
         if (!messageFlags.contains(messageFlag)) {
             messageFlags.append(messageFlag);

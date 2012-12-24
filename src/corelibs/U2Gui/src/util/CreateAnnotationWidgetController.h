@@ -63,7 +63,7 @@ public:
 };
 
 // Layout mode of the annotation widget
-enum AnnotationWidgetMode {normal, compact};
+enum AnnotationWidgetMode {normal, compact, optPanel};
 
 class U2GUI_EXPORT CreateAnnotationWidgetController : public QObject {
 Q_OBJECT

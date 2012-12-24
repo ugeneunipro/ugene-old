@@ -226,7 +226,11 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
         w->resize(492, 218);
         sizePolicy = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
         w->setMinimumSize(QSize(400, 58));
-    } else {
+    } else if (layoutMode == optPanel) {
+        w->resize(170, 369);
+        sizePolicy = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        w->setMinimumSize(QSize(170, 369));
+    }else{
         w->resize(170, 369);
         sizePolicy = QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
         w->setMinimumSize(QSize(170, 0));
