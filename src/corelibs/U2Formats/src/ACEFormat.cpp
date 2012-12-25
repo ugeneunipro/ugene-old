@@ -530,6 +530,10 @@ Document* ACEFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
     
+    if(objs.isEmpty()){
+        os.setError(ACEFormat::tr("File doesn't contain any msa objects"));
+        return NULL;
+    }
     Document *doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);
 
     return doc;
