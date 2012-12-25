@@ -26,6 +26,7 @@
 #include "ExportAnnotationsDialog.h"
 #include "ExportAnnotations2CSVTask.h"
 #include "ExportSequences2MSADialog.h"
+#include "ExportBlastResultDialog.h"
 #include "GetSequenceByIdDialog.h"
 
 #include <U2Core/AppContext.h>
@@ -139,6 +140,9 @@ ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     sequenceByDBXref = new QAction(tr("Export sequences by 'db_xref'"), this);
     connect(sequenceByDBXref, SIGNAL(triggered()), SLOT(sl_getSequenceByDBXref()));
 
+    blastResultToAlignmentAction = new QAction(tr("Export BLAST result to alignment..."), this);
+    connect(blastResultToAlignmentAction, SIGNAL(triggered()), SLOT(sl_exportBlastResultToAlignment()));
+
     connect(view->getAnnotationsSelection(), 
         SIGNAL(si_selectionChanged(AnnotationSelection*, const QList<Annotation*>&, const QList<Annotation*>& )), 
         SLOT(sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation*>&, const QList<Annotation*>&)));
@@ -219,6 +223,8 @@ void ADVExportContext::buildMenu(QMenu* m) {
     bool isShowId = false;
     bool isShowAccession = false;
     bool isShowDBXref = false;
+    bool isBlastResult = false;
+
     QString name;
     if(!view->getAnnotationsSelection()->getSelection().isEmpty()) {
         name = view->getAnnotationsSelection()->getSelection().first().annotation->getAnnotationName();
@@ -234,8 +240,12 @@ void ADVExportContext::buildMenu(QMenu* m) {
             isShowAccession = true;
         } else if(!isShowDBXref && !sel.annotation->findFirstQualifierValue("db_xref").isEmpty()) {
             isShowDBXref = true;
-        }
+        } 
+        
+        // TODO: add global blast identifiers to corelibs
+        isBlastResult = name == "blast result"; 
     }
+
     if(isShowId || isShowAccession || isShowDBXref) {
         name = name.isEmpty() ? "" : "from '" + name + "'";
         QMenu *fetchMenu = new QMenu(tr("Fetch sequences from remote database"));
@@ -252,6 +262,9 @@ void ADVExportContext::buildMenu(QMenu* m) {
             sequenceByDBXref->setText(tr("Fetch sequences by 'db_xref' %1").arg(name));
             fetchMenu->addAction(sequenceByDBXref);
         }
+    }
+    if (isBlastResult) {
+        exportMenu->addAction(blastResultToAlignmentAction);
     }
 }
 
@@ -720,6 +733,34 @@ void ADVExportContext::fetchSequencesFromRemoteDB(const QString & listId) {
         }
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
+}
+
+void ADVExportContext::sl_exportBlastResultToAlignment()
+{
+    
+    DocumentFormatConstraints c;
+    c.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
+
+    ExportBlastResultDialog d(view->getWidget());
+    int rc = d.exec();
+    if (rc != QDialog::Accepted) {
+        return;
+    }
+
+    MAlignment ma(MA_OBJECT_NAME);
+    U2OpStatusImpl os;
+    // TODO: create correct alignment file
+    prepareMAFromAnnotations(ma, false, os);
+
+    if (os.hasError()) {
+        QMessageBox::critical(NULL, L10N::errorTitle(), os.getError());
+        return;
+    }
+
+
+    Task* t = ExportUtils::wrapExportTask(new ExportAlignmentTask(ma, d.url, d.format), d.addToProjectFlag);
+    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 } //namespace

@@ -70,6 +70,7 @@ protected slots:
 
     void sl_onSequenceContextAdded(ADVSequenceObjectContext* c);
     void sl_onSequenceContextRemoved(ADVSequenceObjectContext* c);
+    void sl_exportBlastResultToAlignment();
 
     void sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation*>& added, const QList<Annotation*>& removed);
     void sl_onSequenceSelectionChanged(LRegionsSelection* thiz, const QVector<U2Region>& added, const QVector<U2Region>& removed);
@@ -95,6 +96,7 @@ private:
     QAction*  sequenceById;
     QAction*  sequenceByAccession;
     QAction*  sequenceByDBXref;
+    QAction*  blastResultToAlignmentAction;
 
 };
 

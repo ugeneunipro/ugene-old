@@ -1,4 +1,4 @@
-include (dna_export.pri) 
+include (dna_export.pri)
 
 # Input
 HEADERS += src/CSVColumnConfiguration.h \
@@ -10,11 +10,13 @@ HEADERS += src/CSVColumnConfiguration.h \
            src/ExportAlignmentViewItems.h \
            src/ExportAnnotations2CSVTask.h \
            src/ExportAnnotationsDialog.h \
+           src/ExportBlastResultDialog.h \
            src/ExportChromatogramDialog.h \
            src/ExportMSA2MSADialog.h \
            src/ExportMSA2SequencesDialog.h \
            src/ExportProjectViewItems.h \
            src/ExportQualityScoresTask.h \
+           src/ExportQualityScoresWorker.h \
            src/ExportSequences2MSADialog.h \
            src/ExportSequencesDialog.h \
            src/ExportSequenceTask.h \
@@ -27,12 +29,12 @@ HEADERS += src/CSVColumnConfiguration.h \
            src/ImportAnnotationsFromCSVTask.h \
            src/ImportQualityScoresTask.h \
            src/ImportQualityScoresWorker.h \
-           src/WriteAnnotationsWorker.h \
-    src/ExportQualityScoresWorker.h
+           src/WriteAnnotationsWorker.h
 FORMS += src/ui/BaseContentDialog.ui \
          src/ui/CSVColumnConfigurationDialog.ui \
          src/ui/DNASequenceGeneratorDialog.ui \
          src/ui/ExportAnnotationsDialog.ui \
+         src/ui/ExportBlastResultDialog.ui \
          src/ui/ExportChromatogramDialog.ui \
          src/ui/ExportMSA2MSADialog.ui \
          src/ui/ExportMSA2SequencesDialog.ui \
@@ -48,11 +50,13 @@ SOURCES += src/CSVColumnConfigurationDialog.cpp \
            src/ExportAlignmentViewItems.cpp \
            src/ExportAnnotations2CSVTask.cpp \
            src/ExportAnnotationsDialog.cpp \
+           src/ExportBlastResultDialog.cpp \
            src/ExportChromatogramDialog.cpp \
            src/ExportMSA2MSADialog.cpp \
            src/ExportMSA2SequencesDialog.cpp \
            src/ExportProjectViewItems.cpp \
            src/ExportQualityScoresTask.cpp \
+           src/ExportQualityScoresWorker.cpp \
            src/ExportSequences2MSADialog.cpp \
            src/ExportSequencesDialog.cpp \
            src/ExportSequenceTask.cpp \
@@ -65,6 +69,5 @@ SOURCES += src/CSVColumnConfigurationDialog.cpp \
            src/ImportAnnotationsFromCSVTask.cpp \
            src/ImportQualityScoresTask.cpp \
            src/ImportQualityScoresWorker.cpp \
-           src/WriteAnnotationsWorker.cpp \
-    src/ExportQualityScoresWorker.cpp
+           src/WriteAnnotationsWorker.cpp
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
