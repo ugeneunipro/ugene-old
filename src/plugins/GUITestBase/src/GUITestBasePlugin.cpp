@@ -51,6 +51,7 @@
 #include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
 #include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
+//#include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
 
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
@@ -613,10 +614,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007_2);
 
-    /////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
 // Common scenarios/smith_waterman_dialog
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0001);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sw_dialog::test_0001,"https://ugene.unipro.ru/tracker/browse/UGENE-1380");
     REGISTER_TEST(GUITest_common_scenarios_sw_dialog::test_0002);
 
 /////////////////////////////////////////////////////////////////////////
@@ -655,6 +656,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_Assembly_browser::test_0002);
     REGISTER_TEST(GUITest_Assembly_browser::test_0004);
 
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Assembling/Assembly browser
+/////////////////////////////////////////////////////////////////////////
+//    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
