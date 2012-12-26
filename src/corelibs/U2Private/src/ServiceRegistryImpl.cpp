@@ -295,15 +295,14 @@ bool DisableServiceTask::isGUITesting() const {
 void DisableServiceTask::prepare() {
     sr->activeServiceTasks.push_back(this);
     const QList<Task*>& activeTopTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
+
     int nTopLevelTasks = activeTopTasks.count();
-    if (nTopLevelTasks > 1) {
+    if (nTopLevelTasks > 1) { // [parent] of DisableServiceTask
         foreach(Task* t, activeTopTasks) {
             coreLog.details(tr("Active top-level task name: %1").arg(t->getTaskName()));
         }
-        if (!isGUITesting()) { // GUI Tests contain tests on closing Project which is Service
-            stateInfo.setError(  tr("Active task was found") );
-            return;
-        }
+        stateInfo.setError(  tr("Active task was found") );
+        return;
     }
     if (!sr->services.contains(s)) {
         stateInfo.setError(  tr("Service is not registered: %1").arg(s->getName()) );
