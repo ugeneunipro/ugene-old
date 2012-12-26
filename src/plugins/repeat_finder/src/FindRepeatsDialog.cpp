@@ -239,12 +239,7 @@ void FindRepeatsDialog::accept() {
     }
     
     RFAlgorithm algo = algoCheck->isChecked() ? RFAlgorithm(algoCombo->itemData(algoCombo->currentIndex()).toInt()) : RFAlgorithm_Auto;
-
-    DNASequence seq = sc->getSequenceObject()->getSequenceData(range);
-    if (seq.isNull()) {
-        QMessageBox::warning(this, tr("Error"), tr("Not enough memory error ocurred while preparing data."));
-        return;
-    }
+     
     bool objectPrepared = ac->prepareAnnotationObject();
     if (!objectPrepared){
         QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
@@ -267,7 +262,7 @@ void FindRepeatsDialog::accept() {
     settings.filterNested = !allowNestedCheck->isChecked();
     settings.excludeTandems = excludeTandemsBox->isChecked();
     
-    FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, seq, 
+    FindRepeatsToAnnotationsTask* t = new FindRepeatsToAnnotationsTask(settings, sc->getSequenceObject()->getWholeSequence(), 
         cam.data->name, cam.groupName, cam.annotationObjectRef);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
