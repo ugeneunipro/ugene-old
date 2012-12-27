@@ -37,6 +37,7 @@ const int FindTandemsTaskSettings::DEFAULT_MIN_TANDEM_SIZE = 9;
 FindTandemsToAnnotationsTask::FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq, const QString& _an, const QString& _gn, const GObjectReference& _aor):
 Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(true), mainSeq(seq), annName(_an), annGroup(_gn), annObjRef(_aor)
 {
+    GCOUNTER( cvar, tvar, "FindTandemsToAnnotationsTask" );
     setVerboseLogMode(true);
     if (annObjRef.isValid()) {
         LoadUnloadedDocumentTask::addLoadingSubtask(this, 
@@ -48,6 +49,7 @@ Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(true), ma
 FindTandemsToAnnotationsTask::FindTandemsToAnnotationsTask(const FindTandemsTaskSettings& s, const DNASequence& seq)
 : Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(false), mainSeq(seq)
 {
+    GCOUNTER( cvar, tvar, "FindTandemsToAnnotationsTask" );
     setVerboseLogMode(true);
     addSubTask(new TandemFinder(s, mainSeq));
 }
@@ -107,7 +109,7 @@ settings(_settings),regionCount(0){
         settings.seqRegion= U2Region(0, directSequence.length());
     }
     startTime = GTimer::currentTimeMicros();
-    sequence = (char*)directSequence.constData() + settings.seqRegion.startPos;
+    sequence = (char*)directSequence.constData();// + settings.seqRegion.startPos;
 }
 
 class TF_WalkerConfig: public SequenceWalkerConfig{
@@ -221,7 +223,7 @@ ConcreteTandemFinder::ConcreteTandemFinder(QString taskName, const char* _sequen
         Q_ASSERT( settings.minRepeatCount>1 );
         int suffArrMemory;
         if (settings.algo == TSConstants::AlgoSuffixBinary){
-            suffArrMemory = seqSize/4 + seqSize*sizeof(quint32) + (1<<qMin(prefixLength*2,24))*sizeof(quint64)*7/6;
+            suffArrMemory = seqSize/4 + seqSize*sizeof(quint32) + ((size_t)1<<qMin(prefixLength*2,24))*sizeof(quint64)*7/6;
         }else{
             suffArrMemory = seqSize*sizeof(quint32)*2;
         }

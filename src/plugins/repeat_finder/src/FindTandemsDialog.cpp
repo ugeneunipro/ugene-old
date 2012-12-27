@@ -214,7 +214,7 @@ void FindTandemsDialog::accept() {
         return;
     }
 
-    DNASequence seq = sc->getSequenceObject()->getSequenceData(range);
+    DNASequence seq = sc->getSequenceObject()->getWholeSequence();
     if (seq.isNull()) {
         QMessageBox::warning(this, tr("Error"), tr("Not enough memory error ocurred while preparing data."));
         return;
