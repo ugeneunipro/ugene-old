@@ -109,7 +109,7 @@ settings(_settings),regionCount(0){
         settings.seqRegion= U2Region(0, directSequence.length());
     }
     startTime = GTimer::currentTimeMicros();
-    sequence = (char*)directSequence.constData();// + settings.seqRegion.startPos;
+    sequence = (char*)directSequence.constData() + settings.seqRegion.startPos;
 }
 
 class TF_WalkerConfig: public SequenceWalkerConfig{
