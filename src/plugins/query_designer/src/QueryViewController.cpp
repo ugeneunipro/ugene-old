@@ -76,6 +76,8 @@ showSchemeLbl(false), showDesc(true), showOrder(true), modified(false) {
     initTitle();
     initRuler();
     initDescription();
+
+    setObjectName("QueryScene");
 }
 
 QueryScene::~QueryScene() {
@@ -501,6 +503,7 @@ void QueryScene::addActor(QDActor* actor, const QPointF& pos) {
         QDElement* uv = new QDElement(su);
         unit2view[su] = uv;
         addItem(uv);
+        uv->setObjectName("QDElement");
         QPointF p(pos.x() + dx, y);
         while(ajustPosForNewItem(uv, p));
         uv->setPos(p);
@@ -656,8 +659,10 @@ QueryViewController::QueryViewController() : MWMDIWindow(tr("Query Designer")), 
 
     sceneView = new GlassView(scene);
     sceneView->setDragMode(QGraphicsView::RubberBandDrag);
+    sceneView->setObjectName("sceneView");
 
     palette = new QueryPalette(this);
+    palette->setObjectName("palette");
     groupsEditor = new QDGroupsEditor(this);
     QDSamplesWidget* samples = new QDSamplesWidget(scene, this);
 

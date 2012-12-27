@@ -51,7 +51,7 @@
 #include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
 #include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
-//#include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
+#include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
 
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
@@ -659,7 +659,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/Assembly browser
 /////////////////////////////////////////////////////////////////////////
-    //REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001_2);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

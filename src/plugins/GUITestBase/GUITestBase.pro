@@ -64,6 +64,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsTaskTreeView.h \
             src/GTUtilsMsaEditorSequenceArea.h \
             src/GTUtilsOptionsPanel.h \
+            src/GTUtilsQueryDesigner.h \
 #   Tests
             src/tests/GUIInitialChecks.h \
 #   Tests/Regression Scenarios
@@ -94,6 +95,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.h \
             src/tests/common_scenarios/dp_view/GTTestsDpView.h \
             src/tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h \
+            src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.h \
             src/api/GTRegionSelector.h \
@@ -190,6 +192,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/GTUtilsMsaEditorSequenceArea.cpp \
             src/GTUtilsOptionsPanel.cpp \
+            src/GTUtilsQueryDesigner.cpp \
 #   Tests
             src/tests/GUIInitialChecks.cpp \
 #   Tests/Regression Scenarios
@@ -220,6 +223,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.cpp \
             src/tests/common_scenarios/dp_view/GTTestsDpView.cpp \
             src/tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.cpp \
+            src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.cpp \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.cpp \
             src/api/GTRegionSelector.cpp \
@@ -257,3 +261,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTreeWidget.cpp \
             src/api/GTWidget.cpp \
             src/api/GTAction.cpp \
+
