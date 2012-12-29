@@ -70,13 +70,10 @@ private:
 class U2LANG_EXPORT FileExtensionRelation : public AttributeRelation {
 public:
     FileExtensionRelation(const QString &relatedAttrId, const QString &currentFormatId)
-        : AttributeRelation(relatedAttrId), currentFormatId(currentFormatId) {}
+        : AttributeRelation(relatedAttrId){}
 
     virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const;
     virtual RelationType getType() const {return FILE_EXTENSION;}
-
-private:
-    QString currentFormatId;
 };
 
 } // U2 namespace

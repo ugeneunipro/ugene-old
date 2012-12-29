@@ -25,8 +25,15 @@
 #include <QLineEdit>
 
 #include <U2Core/global.h>
+#include <QtGui>
+#include <QObject>
+
+class QLineEdit;
+class QTreeWidget;
 
 namespace U2 {
+
+class GSuggestCompletion;
 
 class U2DESIGNER_EXPORT URLLineEdit : public QLineEdit {
     Q_OBJECT
@@ -59,10 +66,30 @@ private:
     bool isPath;
     bool saveFile;
     QString fileFormat;
+    GSuggestCompletion *completer;
 
 private:
     void browse(bool addFiles = false);
     void checkExtension(QString &name);
+};
+
+class GSuggestCompletion : public QObject{
+    Q_OBJECT
+public:
+    GSuggestCompletion(QString fileFormat, QLineEdit *parent = 0);
+    ~GSuggestCompletion();
+    bool eventFilter(QObject *obj, QEvent *ev);
+    void showCompletion(const QStringList &choices);
+
+public slots:
+    void doneCompletion();
+    void sl_textEdited(const QString&);
+
+private:
+    QString fileFormat;
+    QLineEdit *editor;
+    QTreeWidget *popup;
+    QTimer *timer;
 };
 
 } // U2

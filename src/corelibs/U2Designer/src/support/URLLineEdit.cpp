@@ -43,6 +43,7 @@ URLLineEdit::URLLineEdit(const QString &filter,
 : QLineEdit(parent), FileFilter(filter), type(type), multi(multi),
 isPath(isPath), saveFile(saveFile), fileFormat(format)
 {
+    completer = new GSuggestCompletion(fileFormat, this);
     connect(this, SIGNAL(editingFinished()), this, SLOT(sl_editingFinished()));
 }
 
@@ -55,6 +56,7 @@ void URLLineEdit::sl_onBrowseWithAdding() {
 }
 
 void URLLineEdit::sl_editingFinished(){
+    /*
     QString name = text();
     DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
     if (NULL != format && !name.isEmpty()) {
@@ -86,6 +88,7 @@ void URLLineEdit::sl_editingFinished(){
         }
     }
     setText(name);
+    */
 }
 
 void URLLineEdit::browse(bool addFiles) {
@@ -189,6 +192,158 @@ void URLLineEdit::checkExtension(QString &name) {
 
 bool URLLineEdit::isMulti() {
     return multi;
+}
+
+GSuggestCompletion::GSuggestCompletion(QString fileFormat, QLineEdit *parent): QObject(parent), editor(parent), fileFormat(fileFormat){
+    popup = new QTreeWidget;
+    popup->setWindowFlags(Qt::Popup);
+    popup->setFocusPolicy(Qt::NoFocus);
+    popup->setFocusProxy(parent);
+    popup->setMouseTracking(true);
+
+    popup->setColumnCount(2);
+    popup->setUniformRowHeights(true);
+    popup->setRootIsDecorated(false);
+    popup->setEditTriggers(QTreeWidget::NoEditTriggers);
+    popup->setSelectionBehavior(QTreeWidget::SelectRows);
+    popup->setFrameStyle(QFrame::Box | QFrame::Plain);
+    popup->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    popup->header()->hide();
+
+    popup->installEventFilter(this);
+
+    connect(popup, SIGNAL(itemClicked(QTreeWidgetItem*,int)),
+        SLOT(doneCompletion()));
+
+    timer = new QTimer(this);
+    timer->setSingleShot(true);
+    timer->setInterval(500);
+    connect(editor, SIGNAL(textEdited(QString)), SLOT(sl_textEdited(QString)));
+}
+
+GSuggestCompletion::~GSuggestCompletion(){
+    delete popup;
+}
+
+bool GSuggestCompletion::eventFilter(QObject *obj, QEvent *ev){
+    if (obj != popup)
+        return false;
+
+    if (ev->type() == QEvent::MouseButtonPress) {
+        popup->hide();
+        editor->setFocus();
+        return true;
+    }
+
+    if (ev->type() == QEvent::KeyPress) {
+
+        bool consumed = false;
+        int key = static_cast<QKeyEvent*>(ev)->key();
+        switch (key) {
+         case Qt::Key_Enter:
+         case Qt::Key_Return:
+             doneCompletion();
+             consumed = true;
+
+         case Qt::Key_Escape:
+             editor->setFocus();
+             popup->hide();
+             consumed = true;
+
+         case Qt::Key_Up:
+         case Qt::Key_Down:
+         case Qt::Key_Home:
+         case Qt::Key_End:
+         case Qt::Key_PageUp:
+         case Qt::Key_PageDown:
+             break;
+
+         default:
+             editor->setFocus();
+             editor->event(ev);
+             //popup->hide();
+             break;
+        }
+
+        return consumed;
+    }
+
+    return false;
+}
+
+#define GSUGGEST_URL "http://google.com/complete/search?output=toolbar&q=%1"
+
+void GSuggestCompletion::showCompletion(const QStringList &choices){
+    if (choices.isEmpty()){
+        popup->hide();
+        return;
+    }
+    const QPalette &pal = editor->palette();
+    QColor color = pal.color(QPalette::Disabled, QPalette::WindowText);
+
+    popup->setUpdatesEnabled(false);
+    popup->clear();
+    for (int i = 0; i < choices.count(); ++i) {
+        QTreeWidgetItem * item;
+        item = new QTreeWidgetItem(popup);
+        item->setText(0, choices[i]);
+    }
+    popup->setCurrentItem(popup->topLevelItem(0));
+    popup->resizeColumnToContents(0);
+    popup->adjustSize();
+    popup->setUpdatesEnabled(true);
+
+    int h = popup->sizeHintForRow(0) * qMin(10, choices.count()) + 3;
+    //popup->resize(popup->width(), h);
+
+    popup->resize(editor->width(), h);
+
+    popup->move(editor->mapToGlobal(QPoint(0, editor->height())));
+    //popup->setFocus();
+    popup->show();
+}
+
+void GSuggestCompletion::doneCompletion(){
+    timer->stop();
+    popup->hide();
+    editor->setFocus();
+    QTreeWidgetItem *item = popup->currentItem();
+    if (item) {
+        editor->setText(item->text(0));
+        QMetaObject::invokeMethod(editor, "returnPressed");
+    }
+}
+
+void GSuggestCompletion::sl_textEdited(const QString &fileName){
+    if (fileName.isEmpty()){
+        popup->hide();
+        return;
+    }
+
+    QString fName = fileName;
+    if(fName.endsWith(".")){
+        fName = fName.left(fName.size()-1);
+    }
+
+    QStringList choices, hits;
+    QFileInfo f(fileName);
+    QString curExt = f.suffix(), baseName = f.completeBaseName();
+    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
+    foreach(QString ext, format->getSupportedDocumentFileExtensions()){
+        if(!curExt.isEmpty()){
+            if (ext.startsWith(curExt, Qt::CaseInsensitive)){
+                choices.append(baseName + "." + ext);
+            }
+        }  
+    }
+    if(choices.isEmpty()){
+        foreach(QString ext, format->getSupportedDocumentFileExtensions()){
+            choices.append(fileName + "." + ext);
+        }
+    }
+    //TODO: add ".gz" to choises
+
+    showCompletion(choices);
 }
 
 } // U2

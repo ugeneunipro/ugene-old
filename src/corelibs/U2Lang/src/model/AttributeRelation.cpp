@@ -38,7 +38,6 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
     QString newFormatId = influencingValue.toString();
     GUrl url(urlStr);
 
-    DocumentFormat *currentFormat = AppContext::getDocumentFormatRegistry()->getFormatById(currentFormatId);
     DocumentFormat *newFormat = AppContext::getDocumentFormatRegistry()->getFormatById(newFormatId);
     QString extension;
     if (NULL == newFormat) {
@@ -58,6 +57,12 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
             GUrl tmp(urlString);
             lastSuffix = tmp.lastFileSuffix(); 
         }
+    }
+
+    DocumentFormat *currentFormat = AppContext::getDocumentFormatRegistry()->selectFormatByFileExtension(lastSuffix);
+    QString currentFormatId("");
+    if(currentFormat){
+       currentFormatId = currentFormat->getFormatId();
     }
 
     bool foundExt = false;
@@ -85,8 +90,6 @@ QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue
         }
     }
 
-    const_cast<QString&>(currentFormatId).clear();
-    const_cast<QString&>(currentFormatId).append(newFormatId);
     urlString += "." + extension;
     if (withGz) {
         urlString += ".gz";
