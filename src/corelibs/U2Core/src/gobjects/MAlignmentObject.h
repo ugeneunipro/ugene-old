@@ -35,9 +35,10 @@ class DNASequence;
 
 class MAlignmentModInfo {
 public:
-    MAlignmentModInfo() : sequenceContentChanged(true), sequenceListChanged(true) {}
+    MAlignmentModInfo() : sequenceContentChanged(true), sequenceListChanged(true), middleState(false) {}
     bool sequenceContentChanged;
     bool sequenceListChanged;
+    bool middleState;
     QVariantMap hints;
 
 private:
@@ -66,7 +67,7 @@ public:
 
     MAlignment getMAlignment() const;
 
-    void setMAlignment(const MAlignment& ma, const QVariantMap& hints = QVariantMap());
+    void setMAlignment(const MAlignment& ma, MAlignmentModInfo mi = MAlignmentModInfo(), const QVariantMap& hints = QVariantMap());
 
     char charAt(int seqNum, int pos) const;
 

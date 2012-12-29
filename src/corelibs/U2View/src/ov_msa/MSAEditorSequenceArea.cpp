@@ -1795,7 +1795,8 @@ void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
         m->reset(unitedRows);
         QVariantMap hint;
         hint[MODIFIER] = MAROW_SIMILARITY_SORT;
-        msaObject->setMAlignment(ma, hint);
+        MAlignmentModInfo mi;
+        msaObject->setMAlignment(ma, mi, hint);
     } else {
         m->reset();
     }

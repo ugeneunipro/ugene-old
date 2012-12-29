@@ -81,7 +81,7 @@ void MSAEditorUndoFramework::sl_completeStateChanged(bool _stateCompele){
 
 void MSAEditorUndoFramework::sl_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& mi) {
     if (maObj == NULL || lastSavedObjectVersion == maObj->getModificationVersion() ||
-            (maBefore.getRows() == maObj->getMAlignment().getRows() && maBefore.getRowNames() == maObj->getMAlignment().getRowNames()))
+            ((maBefore.getRows() == maObj->getMAlignment().getRows()) && (maBefore.getRowNames() == maObj->getMAlignment().getRowNames())))
     {
         return;
     }

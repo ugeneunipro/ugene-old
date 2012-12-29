@@ -202,7 +202,8 @@ void MSACollapsibleItemModel::sl_alignmentChanged(const MAlignment& maBefore, co
 
     QVariantMap hints;
     hints[MODIFIER] = MAROW_SIMILARITY_SORT;
-    obj->setMAlignment(ma, hints);
+    MAlignmentModInfo mi;
+    obj->setMAlignment(ma, mi, hints);
 }
 
 int MSACollapsibleItemModel::getLastPos() const {
