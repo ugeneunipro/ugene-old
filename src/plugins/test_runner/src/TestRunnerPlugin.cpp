@@ -52,7 +52,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 
 TestRunnerPlugin::TestRunnerPlugin() : Plugin(tr("test_runner_plug_name"), tr("test_runner_desc")) {
     if (AppContext::getCMDLineRegistry()->hasParameter( CMDLineCoreOptions::SUITE_URLS )) {
-        connect( AppContext::getTaskScheduler(), SIGNAL( si_noTasksInScheduler() ), SLOT(sl_startTestRunner()));
+        connect(  AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), SLOT(sl_startTestRunner()));
     }
     else {
         services.push_back(new TestRunnerService());
