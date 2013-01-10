@@ -28,23 +28,31 @@
 
 namespace U2 {
 
-    class SmithWatermanDialogFiller : public Filler {
-    public:
-        enum Button {Search, Cancel};
-        SmithWatermanDialogFiller(U2OpStatus &_os, const QString& _pattern = "",
-                                  const GTRegionSelector::RegionSelectorSettings& _s = GTRegionSelector::RegionSelectorSettings());
-        SmithWatermanDialogFiller(U2OpStatus &_os, const SmithWatermanSettings::SWResultView _resultView,
-                                  const QString & _resultFilesPath, const QString& _pattern = "",
-                                  const GTRegionSelector::RegionSelectorSettings& _s = GTRegionSelector::RegionSelectorSettings());
-        virtual void run();
-        Button button;
-    private:
-        QString pattern;
-        GTRegionSelector::RegionSelectorSettings s;
-        SmithWatermanSettings::SWResultView resultView;
-        QString resultFilesPath;
-        bool autoSetupAlgorithmParams;
-    };
-}
+class SmithWatermanDialogFiller : public Filler {
+public:
+    enum Button {Search, Cancel};
+    enum SwRealization {CLASSIC, SSE2};
+    SmithWatermanDialogFiller(U2OpStatus &_os, const QString& _pattern = "",
+        const GTRegionSelector::RegionSelectorSettings& _s
+        = GTRegionSelector::RegionSelectorSettings(), SwRealization _realization = CLASSIC);
 
-#endif
+    SmithWatermanDialogFiller(U2OpStatus &_os, SwRealization _realization,
+        const SmithWatermanSettings::SWResultView _resultView, const QString & _resultFilesPath,
+        const QString& _pattern = "", const GTRegionSelector::RegionSelectorSettings& _s
+        = GTRegionSelector::RegionSelectorSettings());
+
+    virtual void run();
+    Button button;
+
+private:
+    QString pattern;
+    GTRegionSelector::RegionSelectorSettings s;
+    SmithWatermanSettings::SWResultView resultView;
+    QString resultFilesPath;
+    bool autoSetupAlgorithmParams;
+    SwRealization realization;
+};
+
+} // namespace U2
+
+#endif // _U2_GT_RUNNABLES_SMITH_WATERMAN_DIALOG_BASE_FILLER_H_

@@ -30,11 +30,12 @@
 #include <QtGui/QRadioButton>
 #include <QtGui/QGroupBox>
 
-const int CLASSIC_SW_REALIZATION_INDEX = 1;
 const int RESULT_INTERSECTION_FILTER_INDEX = 0;
 const QString TEST_NAME_FOR_MA_RESULTS = "_test]";
 const QString TEST_NAME_FOR_ANNOT_RESULTS = "test";
 const QString ANNOTATION_RESULT_FILE_NAME = "Annotations.gb";
+static const QString CLASSIC_SW_REALIZATION_NAME = "Classic 2";
+static const QString SSE2_SW_REALIZATION_NAME = "SSE2";
 
 const double GAP_OPEN_PENALTY = -3.0;
 const double GAP_EXTENDING_PENALTY = -2.0;
@@ -45,15 +46,18 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::SmithWatermanDialogFiller"
 #define GT_METHOD_NAME "run"
 
-SmithWatermanDialogFiller::SmithWatermanDialogFiller(U2OpStatus &_os, const SmithWatermanSettings::SWResultView _resultView,
-    const QString & _resultFilesPath, const QString& _pattern, const GTRegionSelector::RegionSelectorSettings& _s)
-    : Filler(_os, "SmithWatermanDialogBase"), button(Search), pattern(_pattern), s(_s), resultView(_resultView),
-    resultFilesPath(_resultFilesPath), autoSetupAlgorithmParams(true) {}
+    SmithWatermanDialogFiller::SmithWatermanDialogFiller(U2OpStatus &_os, SwRealization _realization,
+        const SmithWatermanSettings::SWResultView _resultView, const QString & _resultFilesPath,
+        const QString& _pattern, const GTRegionSelector::RegionSelectorSettings& _s)
+    : Filler(_os, "SmithWatermanDialogBase"), button(Search), pattern(_pattern), s(_s),
+    resultView(_resultView), resultFilesPath(_resultFilesPath), autoSetupAlgorithmParams(true),
+    realization(_realization) {}
 
 SmithWatermanDialogFiller::SmithWatermanDialogFiller(U2OpStatus &_os, const QString& _pattern,
-    const GTRegionSelector::RegionSelectorSettings& _s)
+    const GTRegionSelector::RegionSelectorSettings& _s, SwRealization _realization)
     : Filler(_os, "SmithWatermanDialogBase"), button(Search), pattern(_pattern), s(_s),
-    resultView(SmithWatermanSettings::ANNOTATIONS), resultFilesPath(""), autoSetupAlgorithmParams(false) {}
+    resultView(SmithWatermanSettings::ANNOTATIONS), resultFilesPath(""), realization(_realization),
+    autoSetupAlgorithmParams(false) {}
 
 void SmithWatermanDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
@@ -121,7 +125,20 @@ void SmithWatermanDialogFiller::run() {
     
     if(autoSetupAlgorithmParams) {
         QComboBox * comboRealization = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "comboRealization", dialog));
-        comboRealization->setCurrentIndex(CLASSIC_SW_REALIZATION_INDEX);
+        QString realizationName;
+        switch(realization) {
+        case CLASSIC:
+            realizationName = CLASSIC_SW_REALIZATION_NAME;
+            break;
+        case SSE2:
+            realizationName = SSE2_SW_REALIZATION_NAME;
+            break;
+        default:
+            Q_ASSERT(false);
+        }
+
+        const int swRealizationIndex = comboRealization->findText(realizationName);
+        comboRealization->setCurrentIndex(swRealizationIndex);
 		
 		QComboBox * comboResultFilter = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "comboResultFilter", dialog));
 		comboResultFilter->setCurrentIndex(RESULT_INTERSECTION_FILTER_INDEX);

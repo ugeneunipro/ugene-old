@@ -58,7 +58,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 	GTUtilsDocument::checkDocument(os, "search.txt");
 
 // 3. Run Smith-Waterman Search by SW dialog
-	Runnable * swDialog = new SmithWatermanDialogFiller(os, SmithWatermanSettings::MULTIPLE_ALIGNMENT, testDir + "_common_data/scenarios/sandbox/",
+	Runnable * swDialog = new SmithWatermanDialogFiller(os, SmithWatermanDialogFiller::CLASSIC, SmithWatermanSettings::MULTIPLE_ALIGNMENT, testDir + "_common_data/scenarios/sandbox/",
 		patternSequence);
 	GTUtilsDialog::waitForDialog(os, swDialog);
 
@@ -119,7 +119,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDocument::checkDocument(os, "search.txt");
 
 // 3. Run Smith-Waterman Search by SW dialog
-    Runnable * swDialog = new SmithWatermanDialogFiller(os, SmithWatermanSettings::ANNOTATIONS, testDir + "_common_data/scenarios/sandbox/",
+    Runnable * swDialog = new SmithWatermanDialogFiller(os, SmithWatermanDialogFiller::CLASSIC, SmithWatermanSettings::ANNOTATIONS, testDir + "_common_data/scenarios/sandbox/",
         patternSequence);
     GTUtilsDialog::waitForDialog(os, swDialog);
 

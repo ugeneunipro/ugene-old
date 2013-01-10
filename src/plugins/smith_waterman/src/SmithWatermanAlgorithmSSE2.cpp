@@ -75,7 +75,7 @@ namespace U2 {
 
     quint64 directionArraySize = 0;
     if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-        directionArraySize = matrixLengthDivisibleByN * (patternLengthDivisibleByN + 1) * sizeof(char);
+        directionArraySize = matrixLength * (queryLength + 2) * sizeof(char);
     } else if (SmithWatermanSettings::ANNOTATIONS == resultView) {
         directionArraySize = 2 * sizeof(int) * (patternLengthDivisibleByN + 1);
     } else {
@@ -206,12 +206,14 @@ void SmithWatermanAlgorithmSSE2::calculateMatrix() {
     QVector<char> rowChars;
     QVector<int> rowInts;
     for (int tt = 0; tt < patternLengthDivisibleByN + 1; tt++) {    
-        rowChars.append(STOP);
         rowInts.append(0);
     }
 
     if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-        for (int tt = 0; tt < matrixLengthDivisibleByN; tt++) {                
+        for (int tt = 0; tt < patternSeq.length() + 2; tt++) {        
+            rowChars.append(STOP);
+        }
+        for (int tt = 0; tt < matrixLength; tt++) {
             directionMatrix.append(rowChars);
         }
     }
@@ -293,18 +295,18 @@ void SmithWatermanAlgorithmSSE2::calculateMatrix() {
                 if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
                     //Save direction from we come here for back trace
                     if (max == 0) {
-                        directionMatrix[getRow(i)][j] = STOP;
+                        directionMatrix[getRow(i)][col] = STOP;
                     } else if (max == EArray[eIndex]) {
-                        directionMatrix[getRow(i)][j] = LEFT;
+                        directionMatrix[getRow(i)][col] = LEFT;
                     } else if (max == FArray[pp]) {
-                        directionMatrix[getRow(i)][j] = UP;
+                        directionMatrix[getRow(i)][col] = UP;
                     } else if (max == temp[pp - j]) {
-                        directionMatrix[getRow(i)][j] = DIAG;
+                        directionMatrix[getRow(i)][col] = DIAG;
                     }
 
                     //If value meet the conditions then start backtrace()
                     if (max >= minScore) {
-                        backtrace(i, j, max);
+                        backtrace(i, col, max);
                     }
                 } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
                     if (max == 0) {
@@ -330,11 +332,11 @@ void SmithWatermanAlgorithmSSE2::calculateMatrix() {
         if (SmithWatermanSettings::ANNOTATIONS == resultView && p.score >= minScore) {
             pairAlignmentStrings.append(p);
         }
-        //Print matrix
-        //          for(int k = 0; k < patternSeq.length() + 1 ; k++) cout <<matrix[getRow(i)][k] <<" ";
-        //          cout <<endl;            
-        //         for(int k = 1; k < patternSeq.length() + 1; k++) cout <<directionMatrix[getRow(i)][k] <<" ";
-        //         cout <<endl;        
+//        Print matrix
+//                  for(int k = 0; k < patternSeq.length() + 1 ; k++) cout <<matrix[getRow(i)][k] <<" ";
+//                  cout <<endl;            
+//                 for(int k = 1; k < patternSeq.length() + 1; k++) cout <<directionMatrix[getRow(i)][k] <<" ";
+//                 cout <<endl;        
 
     }
 //Free memory
