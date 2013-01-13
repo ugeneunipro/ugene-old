@@ -44,7 +44,6 @@ URLLineEdit::URLLineEdit(const QString &filter,
 isPath(isPath), saveFile(saveFile), fileFormat(format)
 {
     completer = new GSuggestCompletion(fileFormat, this);
-    connect(this, SIGNAL(editingFinished()), this, SLOT(sl_editingFinished()));
 }
 
 void URLLineEdit::sl_onBrowse() {
@@ -53,42 +52,6 @@ void URLLineEdit::sl_onBrowse() {
 
 void URLLineEdit::sl_onBrowseWithAdding() {
     this->browse(true);
-}
-
-void URLLineEdit::sl_editingFinished(){
-    /*
-    QString name = text();
-    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
-    if (NULL != format && !name.isEmpty()) {
-        QString newName(name);
-        GUrl url(newName);
-        QString lastSuffix = url.lastFileSuffix();
-        if ("gz" == lastSuffix) {
-            int dotPos = url.getURLString().length() - lastSuffix.length() - 1;
-            if ((dotPos >= 0) && (QChar('.') == url.getURLString()[dotPos])) {
-                newName = url.getURLString().left(dotPos);
-                GUrl tmp(newName);
-                lastSuffix = tmp.lastFileSuffix(); 
-            }
-        }
-        bool foundExt = false;
-        foreach (QString supExt, format->getSupportedDocumentFileExtensions()) {
-            if (lastSuffix == supExt) {
-                foundExt = true;
-                break;
-            }
-        }
-        if (!foundExt) {
-            name = name + "." + format->getSupportedDocumentFileExtensions().first();
-        } else {
-            int dotPos = newName.length() - lastSuffix.length() - 1;
-            if ((dotPos < 0) || (QChar('.') != newName[dotPos])) {
-                name = name + "." + format->getSupportedDocumentFileExtensions().first();
-            }
-        }
-    }
-    setText(name);
-    */
 }
 
 void URLLineEdit::browse(bool addFiles) {
@@ -300,7 +263,8 @@ void GSuggestCompletion::doneCompletion(){
     editor->setFocus();
     QTreeWidgetItem *item = popup->currentItem();
     if (item) {
-        editor->setText(item->text(0));
+        QFileInfo f(editor->text());
+        editor->setText(f.absoluteDir().absolutePath() + QDir::separator() + item->text(0));
         QMetaObject::invokeMethod(editor, "returnPressed");
     }
 }
@@ -317,23 +281,29 @@ void GSuggestCompletion::sl_textEdited(const QString &fileName){
     }
 
     QStringList choices, hits;
-    QFileInfo f(fileName);
-    QString curExt = f.suffix(), baseName = f.completeBaseName();
+    QFileInfo f(fName);
+    QString curExt = f.suffix(), baseName = f.completeBaseName(), completeFileName = f.fileName();
     DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
-    foreach(QString ext, format->getSupportedDocumentFileExtensions()){
+    QStringList formats = format->getSupportedDocumentFileExtensions();
+    formats.append("gz");
+    choices.append(completeFileName);
+    foreach(QString ext, formats){
         if(!curExt.isEmpty()){
             if (ext.startsWith(curExt, Qt::CaseInsensitive)){
                 choices.append(baseName + "." + ext);
+                if (ext != "gz"){
+                    choices.append(baseName + "." + ext + ".gz");
+                }
             }
         }  
     }
-    if(choices.isEmpty()){
+
+    if(choices.size() == 1){
         foreach(QString ext, format->getSupportedDocumentFileExtensions()){
-            choices.append(fileName + "." + ext);
-            choices.append(fileName + "." + ext + ".gz");
+            choices.append(completeFileName + "." + ext);
+            choices.append(completeFileName + "." + ext + ".gz");
         }
     }
-    //TODO: add ".gz" to choises
 
     showCompletion(choices);
 }

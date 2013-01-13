@@ -54,7 +54,6 @@ protected:
 private slots:
     void sl_onBrowse();
     void sl_onBrowseWithAdding();
-    void sl_editingFinished();
 
 signals:
     void si_finished();
