@@ -89,7 +89,6 @@ private:
     QString fileFormat;
     QLineEdit *editor;
     QTreeWidget *popup;
-    QTimer *timer;
 };
 
 } // U2

@@ -201,7 +201,7 @@ GSuggestCompletion::GSuggestCompletion(QString fileFormat, QLineEdit *parent): Q
     popup->setFocusProxy(parent);
     popup->setMouseTracking(true);
 
-    popup->setColumnCount(2);
+    popup->setColumnCount(1);
     popup->setUniformRowHeights(true);
     popup->setRootIsDecorated(false);
     popup->setEditTriggers(QTreeWidget::NoEditTriggers);
@@ -212,12 +212,7 @@ GSuggestCompletion::GSuggestCompletion(QString fileFormat, QLineEdit *parent): Q
 
     popup->installEventFilter(this);
 
-    connect(popup, SIGNAL(itemClicked(QTreeWidgetItem*,int)),
-        SLOT(doneCompletion()));
-
-    timer = new QTimer(this);
-    timer->setSingleShot(true);
-    timer->setInterval(500);
+    connect(popup, SIGNAL(itemClicked(QTreeWidgetItem*,int)), SLOT(doneCompletion()));
     connect(editor, SIGNAL(textEdited(QString)), SLOT(sl_textEdited(QString)));
 }
 
@@ -252,6 +247,10 @@ bool GSuggestCompletion::eventFilter(QObject *obj, QEvent *ev){
 
          case Qt::Key_Up:
          case Qt::Key_Down:
+             /*
+         case Qt::Key_Left:
+         case Qt::Key_Right:
+         */
          case Qt::Key_Home:
          case Qt::Key_End:
          case Qt::Key_PageUp:
@@ -261,7 +260,6 @@ bool GSuggestCompletion::eventFilter(QObject *obj, QEvent *ev){
          default:
              editor->setFocus();
              editor->event(ev);
-             //popup->hide();
              break;
         }
 
@@ -270,8 +268,6 @@ bool GSuggestCompletion::eventFilter(QObject *obj, QEvent *ev){
 
     return false;
 }
-
-#define GSUGGEST_URL "http://google.com/complete/search?output=toolbar&q=%1"
 
 void GSuggestCompletion::showCompletion(const QStringList &choices){
     if (choices.isEmpty()){
@@ -294,17 +290,12 @@ void GSuggestCompletion::showCompletion(const QStringList &choices){
     popup->setUpdatesEnabled(true);
 
     int h = popup->sizeHintForRow(0) * qMin(10, choices.count()) + 3;
-    //popup->resize(popup->width(), h);
-
     popup->resize(editor->width(), h);
-
     popup->move(editor->mapToGlobal(QPoint(0, editor->height())));
-    //popup->setFocus();
     popup->show();
 }
 
 void GSuggestCompletion::doneCompletion(){
-    timer->stop();
     popup->hide();
     editor->setFocus();
     QTreeWidgetItem *item = popup->currentItem();
@@ -339,6 +330,7 @@ void GSuggestCompletion::sl_textEdited(const QString &fileName){
     if(choices.isEmpty()){
         foreach(QString ext, format->getSupportedDocumentFileExtensions()){
             choices.append(fileName + "." + ext);
+            choices.append(fileName + "." + ext + ".gz");
         }
     }
     //TODO: add ".gz" to choises
