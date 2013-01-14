@@ -88,6 +88,7 @@ ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : Q
     connect(exportNucleicAlignmentToAminoAction, SIGNAL(triggered()), SLOT(sl_exportNucleicAlignmentToAmino()));
 
     importAnnotationsFromCSVAction = new QAction(tr("Import annotations from CSV file..."), this);
+    importAnnotationsFromCSVAction->setObjectName("import_annotations_from_CSV_file");
     connect(importAnnotationsFromCSVAction, SIGNAL(triggered()), SLOT(sl_importAnnotationsFromCSV()));
 
     exportDNAChromatogramAction = new QAction(tr("Export chromatogram to SCF..."), this);

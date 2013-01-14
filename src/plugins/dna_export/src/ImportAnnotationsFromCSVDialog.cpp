@@ -54,7 +54,7 @@ namespace U2 {
 #define A_NAME              QString("annotation_name")
 #define T_SEPARATOR         QString("token_separator")
 #define SKIP_LINES_COUNT    QString("skip_lines_count")
-#define SKIP_LINES_PREFIX    QString("skip_lines_prefix")
+#define SKIP_LINES_PREFIX   QString("skip_lines_prefix")
 
 ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w) 
 : QDialog (w)

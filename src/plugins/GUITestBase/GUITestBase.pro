@@ -49,6 +49,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h \
+            src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h \
 #   Utils classes
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
@@ -91,6 +92,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h \
             src/tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h \
             src/tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h \
+            src/tests/common_scenarios/annotations_import/GTTestsAnnotationsImport.h \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.h \
             src/tests/common_scenarios/dp_view/GTTestsDpView.h \
@@ -157,6 +159,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \
@@ -176,7 +179,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp \
+            src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.cpp \
 #   Utils classes
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \
@@ -219,6 +222,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.cpp \
             src/tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.cpp \
             src/tests/common_scenarios/document_from_text/GTTestsDocumentFromText.cpp \
+            src/tests/common_scenarios/annotations_import/GTTestsAnnotationsImport.cpp \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.cpp \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.cpp \
             src/tests/common_scenarios/dp_view/GTTestsDpView.cpp \

@@ -47,6 +47,7 @@
 #include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
 #include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
 #include "tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h"
+#include "tests/common_scenarios/annotations_import/GTTestsAnnotationsImport.h"
 #include "tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h"
 #include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
 #include "tests/common_scenarios/dp_view/GTTestsDpView.h"
@@ -254,35 +255,43 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_2);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_3);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0001_4);
+
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0002_1);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0002_2);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0002_3);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0002_4);
+
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0003_1);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0003_2);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0003_3);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0003_4);
+
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004_2);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004_3);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0004_4);
+
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0009);
+
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0011_1);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0011_2);
+
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0012_1);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0012_2);
+
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0013);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0013_1);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0013_2);
+
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0014);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0014_1);
     REGISTER_TEST(GUITest_common_scenarios_toggle_view::test_0014_2);
@@ -387,8 +396,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0014);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0014_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0014_2);
-
-
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0016_1);
@@ -548,6 +555,22 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_document_from_text::test_0015, "https://ugene.unipro.ru/tracker/browse/UGENE-1099");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_document_from_text::test_0015_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1099");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_document_from_text::test_0015_2, "https://ugene.unipro.ru/tracker/browse/UGENE-1099");
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Annotations import
+/////////////////////////////////////////////////////////////////////////
+
+    REGISTER_TEST(GUITest_common_scenarios_annotations_import::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_import::test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_import::test_0001_2);
+
+    REGISTER_TEST(GUITest_common_scenarios_annotations_import::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_import::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_import::test_0002_2);
+
+    REGISTER_TEST(GUITest_common_scenarios_annotations_import::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_import::test_0003_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_import::test_0003_2);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations

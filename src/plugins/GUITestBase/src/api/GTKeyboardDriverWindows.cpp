@@ -64,6 +64,14 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
             keyPress(os, VK_OEM_COMMA, modifiers);
             break;
 
+        case ']':
+            keyPress(os, VK_OEM_6, modifiers);
+            break;
+
+        case '[':
+            keyPress(os, VK_OEM_4, modifiers);
+            break;
+
         case '/':
             keyPress(os, VK_DIVIDE, modifiers);
             break;
@@ -102,7 +110,18 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
             }
             keyPress(os, '0', GTKeyboardDriver::key["shift"]);
             break;
-
+        case '#':
+             if (modifiers != 0) {
+                keyPress(os, modifiers);
+            }
+            keyPress(os, '3', GTKeyboardDriver::key["shift"]);
+            break;
+        case '$':
+            if (modifiers != 0) {
+                keyPress(os, modifiers);
+                }
+            keyPress(os, '4', GTKeyboardDriver::key["shift"]);
+            break;
         default:
             keyPress(os, (int)key, modifiers);
             break;
@@ -129,6 +148,14 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 
         case ',':
             keyRelease(os, VK_OEM_COMMA, modifiers);
+            break;
+
+        case ']':
+            keyRelease(os, VK_OEM_6, modifiers);
+            break;
+
+        case '[':
+            keyRelease(os, VK_OEM_4, modifiers);
             break;
 
         case '/':
@@ -168,6 +195,18 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
             if (modifiers != 0) {
                 keyRelease(os, modifiers);
             }
+            break;
+        case '#':
+            keyRelease(os, '3', GTKeyboardDriver::key["shift"]);
+            if (modifiers != 0) {
+                keyRelease(os, modifiers);
+            }
+            break;
+        case '$':
+            keyRelease(os, '4', GTKeyboardDriver::key["shift"]);
+            if (modifiers != 0) {
+                keyRelease(os, modifiers);
+                }
             break;
         default:
             keyRelease(os, (int)key, modifiers);
