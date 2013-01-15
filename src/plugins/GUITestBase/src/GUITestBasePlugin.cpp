@@ -696,7 +696,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Tree viewer
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002_2);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
