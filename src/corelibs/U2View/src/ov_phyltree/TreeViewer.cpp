@@ -381,6 +381,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
     buttonPopup->addMenu(cameraMenu);
 
     updateActionsState();
+    this->setObjectName("treeView");
 }
 
 TreeViewerUI::~TreeViewerUI() {

@@ -179,6 +179,7 @@ scriptingMode(false) {
     tabs->insertTab(SamplesTab, samples, tr("Samples"));
     splitter->addWidget(tabs);
     sceneView = new GlassView(scene);
+    sceneView->setObjectName("sceneView");
     connect(samples, SIGNAL(setupGlass(GlassPane*)), sceneView, SLOT(setGlass(GlassPane*)));
     connect(samples, SIGNAL(sampleSelected(QString)), this, SLOT(sl_pasteSample(QString)));
     connect(tabs, SIGNAL(currentChanged(int)), samples, SLOT(cancelItem()));
@@ -2186,6 +2187,7 @@ WorkflowScene * SceneCreator::createScene(WorkflowView *controller) {
     scene->setSceneRect(QRectF(-WS, -WS, WS, WS));
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     return createScene();
+    scene->setObjectName("scene");
 }
 
 WorkflowScene * SceneCreator::createScene() {

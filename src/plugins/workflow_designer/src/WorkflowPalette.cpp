@@ -82,6 +82,7 @@ WorkflowPalette::WorkflowPalette(ActorPrototypeRegistry* reg, QWidget *parent)
     connect(elementsList, SIGNAL(si_protoListModified()), SIGNAL(si_protoListModified()));
 
     connect(filterNameEdit, SIGNAL(textChanged(const QString &)), elementsList, SLOT(sl_nameFilterChanged(const QString &)));
+    this->setObjectName("palette");
 }
 
 QMenu* WorkflowPalette::createMenu(const QString &name) {
@@ -227,6 +228,7 @@ WorkflowPaletteElements::WorkflowPaletteElements(ActorPrototypeRegistry* reg, QW
     //setTextElideMode (Qt::ElideMiddle);
     setContent(reg);
     connect(reg, SIGNAL(si_registryModified()), SLOT(rebuild()));
+    this->setObjectName("WorkflowPaletteElements");
 }
 
 QMenu * WorkflowPaletteElements::createMenu(const QString &name) {
@@ -315,6 +317,7 @@ void WorkflowPaletteElements::setContent(ActorPrototypeRegistry* reg) {
             while(category->child(i)) {
                 QString s1 = category->child(i)->data(0,Qt::UserRole).value<QAction* >()->text();
                 QString s2 = action->text();
+
                 if(QString::compare(s1,s2, Qt::CaseInsensitive) > 0) {
                     categoryMap[it.key().getDisplayName()] << action;
                     category->insertChild(i,createItemWidget(action));

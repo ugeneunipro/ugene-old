@@ -53,6 +53,8 @@
 #include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
 #include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
+#include "tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h"
+#include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
 
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
@@ -680,11 +682,21 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_Assembly_browser::test_0004);
 
 /////////////////////////////////////////////////////////////////////////
-// Common scenarios/Assembling/Assembly browser
+// Common scenarios/Query designer
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001_1);
     REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001_2);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Workflow designer
+/////////////////////////////////////////////////////////////////////////
+    //REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0001);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Tree viewer
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0001);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
