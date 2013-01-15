@@ -93,9 +93,11 @@ void RepeatViewContext::initViewContext(GObjectView* v) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
     ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":repeat_finder/images/repeats.png"), tr("Find repeats..."), 40);
     a->addAlphabetFilter(DNAAlphabet_NUCL);
+    a->setObjectName("find_repeats_action");
     connect(a, SIGNAL(triggered()), SLOT(sl_showDialog()));
     ADVGlobalAction* a2 = new ADVGlobalAction(av, QIcon(":repeat_finder/images/repeats_tandem.png"), tr("Find tandems..."), 41);
     a2->addAlphabetFilter(DNAAlphabet_NUCL);
+    a2->setObjectName("find_tandems_action");
     connect(a2, SIGNAL(triggered()), SLOT(sl_showTandemDialog()));
 }
 

@@ -55,6 +55,7 @@
 #include "tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h"
 #include "tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h"
 #include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
+#include "tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h"
 
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
@@ -699,6 +700,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002_1);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002_2);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Repeat Finder
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_repeat_finder::test_0001);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

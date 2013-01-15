@@ -28,6 +28,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h \
 #   Runnables / UGENE / corelibs / U2View
@@ -103,6 +104,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.h \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.h \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h \
+            src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.h \
             src/api/GTRegionSelector.h \
@@ -163,6 +165,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
@@ -237,6 +240,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/Query_Designer/GTTestsQuerryDesigner.cpp \
             src/tests/common_scenarios/workflow_designer/GTTestsWorkflowDesigner.cpp \
             src/tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.cpp \
+            src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.cpp \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.cpp \
             src/api/GTRegionSelector.cpp \
