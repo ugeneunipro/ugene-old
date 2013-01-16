@@ -44,6 +44,15 @@ namespace U2 {
     private:
         const QString projectName;
     };
+
+    class ExportProjectDialogSizeChecker : public Filler {
+    public:
+        ExportProjectDialogSizeChecker(U2OpStatus &_os, const QString &_projectName)
+            :Filler(_os, "ExportProjectDialog"), projectName(_projectName){}
+        virtual void run();
+    private:
+        const QString projectName;
+    };
 }
 
 #endif

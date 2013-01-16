@@ -437,6 +437,14 @@ GUI_TEST_CLASS_DEFINITION(test_0031) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0032) {
+    GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/1.gb");
+
+    GTUtilsDialog::waitForDialog(os, new ExportProjectDialogSizeChecker(os, "project.uprj"));
+    GTMenu::clickMenuItem(os, GTMenu::showMainMenu(os, MWMENU_FILE), ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
+    GTGlobals::sleep();
+}
+
 }
 
 }

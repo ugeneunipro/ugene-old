@@ -46,6 +46,28 @@ void ExportProjectDialogChecker::run() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::ExportProjectDialogSizeChecker"
+#define GT_METHOD_NAME "run"
+void ExportProjectDialogSizeChecker::run() {
+
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QLineEdit *projectFolderLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "exportFolderEdit", dialog));
+    GT_CHECK(projectFolderLineEdit != NULL, "LineEdit is NULL");
+
+    QLineEdit *projectFileLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "projectFileEdit", dialog));
+    GT_CHECK(projectFileLineEdit != NULL, "LineEdit is NULL");
+
+    GT_CHECK(projectFileLineEdit->height() == projectFolderLineEdit->height(), "LineEdits vertical sizes is different");
+
+    QAbstractButton *cancelButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "CancelButton", dialog));
+    GT_CHECK(cancelButton != NULL, "CancelButton is NULL");
+    GTWidget::click(os, cancelButton);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 #define GT_CLASS_NAME "GTUtilsDialog::ExportProjectDialogFiller"
 #define GT_METHOD_NAME "run"
 void ExportProjectDialogFiller::run() {
