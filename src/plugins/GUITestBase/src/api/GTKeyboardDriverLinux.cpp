@@ -73,9 +73,27 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
         key = '9';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
         break;
+    case '$':
+        key = '4';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
+        break;
+    case '#':
+        key = '3';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
+        break;
     case ')':
         key = '0';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
+        break;
+    case '(':
+        key = '9';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
+        break;
+    case '[':
+        key = 'VK_OEM_4';
+        break;
+    case ']':
+        key = 'VK_OEM_6';
         break;
     }
 
@@ -125,11 +143,33 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
         break;
-    case ')':
+    
+    case '$':
+        key = '4';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
+        break;
+    
+    case '#':
+        key = '3';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
+        break;
 
+    case ')':
         key = '0';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
+        break;
+
+    case '[':
+        key = 'VK_OEM_4';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+        break;
+
+    case ']':
+        key = 'VK_OEM_6';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
         break;
 
     default:

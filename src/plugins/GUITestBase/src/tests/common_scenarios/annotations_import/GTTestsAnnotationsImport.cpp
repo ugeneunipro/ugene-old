@@ -64,7 +64,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsAnnotationsTreeView::findItem(os, "a1");
     GTGlobals::sleep();
 
-//    GTUtilsAnnotationsTreeView::findItem(os, "B_group")
 
 }
 GUI_TEST_CLASS_DEFINITION(test_0001_1) {
