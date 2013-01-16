@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_ANSTRACTDIFFERENTIALFORMAT_H_
-#define _U2_ANSTRACTDIFFERENTIALFORMAT_H_
+#ifndef _U2_DIFFERENTIALFORMAT_H_
+#define _U2_DIFFERENTIALFORMAT_H_
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/DocumentModel.h>
@@ -30,10 +30,18 @@
 
 namespace U2 {
 
-class U2FORMATS_EXPORT AbstractDifferentialFormat : public DocumentFormat {
+/**
+ * Common format for four cuffdiff outputs:
+ * expression, splicing, promoters and cds.
+ * http://cufflinks.cbcb.umd.edu/manual.html
+ */
+class U2FORMATS_EXPORT DifferentialFormat : public DocumentFormat {
     Q_OBJECT
 public:
-    AbstractDifferentialFormat(QObject *parent);
+    DifferentialFormat(QObject *parent);
+
+    DocumentFormatId getFormatId() const;
+    const QString & getFormatName() const;
 
     void storeDocument(Document *d, IOAdapter *io, U2OpStatus &os);
     FormatCheckResult checkRawData(const QByteArray &rawData,
@@ -42,23 +50,26 @@ public:
 protected:
     Document * loadDocument(IOAdapter *io, const U2DbiRef &targetDb,
         const QVariantMap &hints, U2OpStatus &os);
-    virtual QList<ColumnDataParser::Column> getColumns() const = 0;
-    virtual QString getAnnotationName() const = 0;
 
 private:
-    static const int BUFFER_SIZE;
-
-private:
+    QList<ColumnDataParser::Column> getColumns() const;
+    QString getAnnotationName() const;
     QList<SharedAnnotationData> parseAnnotations(const ColumnDataParser &parser,
         IOAdapter *io, QByteArray &buffer, U2OpStatus &os);
-    void writeHeader(IOAdapter *io);
+    QList<ColumnDataParser::Column> getHeaderColumns(const QList<GObject*> &anns, U2OpStatus &os);
+    void writeHeader(IOAdapter *io, const QList<ColumnDataParser::Column> &columns);
 
     static QString readLine(IOAdapter *io, QByteArray &buffer, U2OpStatus &os);
     static bool parseLocus(const QString &locus, SharedAnnotationData &data, U2OpStatus &os);
     static QString createLocus(SharedAnnotationData data, U2OpStatus &os);
     static QString createValue(SharedAnnotationData data, const ColumnDataParser::Column &column, U2OpStatus &os);
+
+private:
+    QString formatName;
+
+    static const int BUFFER_SIZE;
 };
 
 } // U2
 
-#endif // _U2_ANSTRACTDIFFERENTIALFORMAT_H_
+#endif // _U2_DIFFERENTIALFORMAT_H_

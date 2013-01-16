@@ -51,7 +51,7 @@
 #include <U2Formats/SQLiteDbi.h>
 #include <U2Formats/SimpleSNPVariationFormat.h>
 #include <U2Formats/VCF4VariationFormat.h>
-#include <U2Formats/DifferentialExpressionFormat.h>
+#include <U2Formats/DifferentialFormat.h>
 
 namespace U2 {
 
@@ -190,7 +190,7 @@ void DocumentFormatRegistryImpl::init() {
     VCF4VariationFormat *vcf4 = new VCF4VariationFormat(this);
     registerFormat(vcf4);
 
-    DifferentialExpressionFormat *diff = new DifferentialExpressionFormat(this);
+    DifferentialFormat *diff = new DifferentialFormat(this);
     registerFormat(diff);
 
     AppContext::getDbiRegistry()->registerDbiFactory(new SQLiteDbiFactory());

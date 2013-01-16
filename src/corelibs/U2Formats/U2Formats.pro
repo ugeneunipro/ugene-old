@@ -2,7 +2,6 @@ include (U2Formats.pri)
 
 # Input
 HEADERS += src/ABIFormat.h \
-           src/AbstractDifferentialFormat.h \
            src/AbstractVariationFormat.h \
            src/ACEFormat.h \
            src/ASNFormat.h \
@@ -10,7 +9,7 @@ HEADERS += src/ABIFormat.h \
            src/BedFormat.h \
            src/ClustalWAlnFormat.h \
            src/ColumnDataParser.h \
-           src/DifferentialExpressionFormat.h \
+           src/DifferentialFormat.h \
            src/DNAQualityIOUtils.h \
            src/DocumentFormatUtils.h \
            src/EMBLGenbankAbstractDocument.h \
@@ -58,7 +57,6 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.h \
            src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h
 SOURCES += src/ABIFormat.cpp \
-           src/AbstractDifferentialFormat.cpp \
            src/AbstractVariationFormat.cpp \
            src/ACEFormat.cpp \
            src/ASNFormat.cpp \
@@ -66,7 +64,7 @@ SOURCES += src/ABIFormat.cpp \
            src/BedFormat.cpp \
            src/ClustalWAlnFormat.cpp \
            src/ColumnDataParser.cpp \
-           src/DifferentialExpressionFormat.cpp \
+           src/DifferentialFormat.cpp \
            src/DNAQualityIOUtils.cpp \
            src/DocumentFormatUtils.cpp \
            src/EMBLGenbankAbstractDocument.cpp \

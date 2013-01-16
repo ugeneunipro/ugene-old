@@ -25,7 +25,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include "AbstractDifferentialFormat.h"
+#include "DifferentialFormat.h"
 
 namespace U2 {
 
@@ -35,18 +35,49 @@ static const QString LOCUS_SEP1(":");
 static const QString LOCUS_SEP2("-");
 static const QString CHROMOSOME("chromosome");
 static const QString UNKNOWN_CHR("unknown");
-static const QString LOG2_COLUMN("log2(fold_change)");
 
-/************************************************************************/
-/* DifferentialFormat */
-/************************************************************************/
-AbstractDifferentialFormat::AbstractDifferentialFormat(QObject *parent)
+DifferentialFormat::DifferentialFormat(QObject *parent)
 : DocumentFormat(parent, DocumentFormatFlags_W1, QStringList()<<"diff")
 {
+    formatName = tr("Differential");
     supportedObjectTypes += GObjectTypes::ANNOTATION_TABLE;
+    formatDescription = tr("Differential format is a text-based format for"
+        " representing Cuffdiff differential output files: expression,"
+        " splicing, promoters and cds.");
 }
 
-FormatCheckResult AbstractDifferentialFormat::checkRawData(const QByteArray &rawData,
+DocumentFormatId DifferentialFormat::getFormatId() const {
+    return BaseDocumentFormats::DIFF;
+}
+
+const QString & DifferentialFormat::getFormatName() const {
+    return formatName;
+}
+
+QList<ColumnDataParser::Column> DifferentialFormat::getColumns() const {
+    return QList<ColumnDataParser::Column>()
+        << ColumnDataParser::Column("test_id", ColumnDataParser::STRING, "-", true /*required*/)
+        << ColumnDataParser::Column("gene_id", ColumnDataParser::STRING, "-")
+        << ColumnDataParser::Column("gene", ColumnDataParser::STRING, "-")
+        << ColumnDataParser::Column(LOCUS_COLUMN, ColumnDataParser::STRING, "-", true /*required*/)
+        << ColumnDataParser::Column("sample_1", ColumnDataParser::STRING, "-", true /*required*/)
+        << ColumnDataParser::Column("sample_2", ColumnDataParser::STRING, "-", true /*required*/)
+        << ColumnDataParser::Column("status", ColumnDataParser::STRING, "-", true /*required*/)
+        << ColumnDataParser::Column("value_1", ColumnDataParser::DOUBLE, "1")
+        << ColumnDataParser::Column("value_2", ColumnDataParser::DOUBLE, "1")
+        << ColumnDataParser::Column("log2(fold_change)", ColumnDataParser::DOUBLE, "0")
+        << ColumnDataParser::Column("sqrt(JS)", ColumnDataParser::DOUBLE, "0")
+        << ColumnDataParser::Column("test_stat", ColumnDataParser::DOUBLE, "0")
+        << ColumnDataParser::Column("p_value", ColumnDataParser::DOUBLE, "1")
+        << ColumnDataParser::Column("q_value", ColumnDataParser::DOUBLE, "1")
+        << ColumnDataParser::Column("significant", ColumnDataParser::STRING, "-", true /*required*/);
+}
+
+QString DifferentialFormat::getAnnotationName() const {
+    return "differential";
+}
+
+FormatCheckResult DifferentialFormat::checkRawData(const QByteArray &rawData,
     const GUrl &) const {
     QStringList lines = QString(rawData).split("\n", QString::SkipEmptyParts);
     CHECK(lines.size() > 0, FormatDetection_NotMatched);
@@ -68,24 +99,19 @@ FormatCheckResult AbstractDifferentialFormat::checkRawData(const QByteArray &raw
         ColumnDataParser::Iterator values = parser.parseLine(*current, os);
         CHECK_OP(os, FormatDetection_NotMatched);
         bool containsLocus = false;
-        bool containsLog2 = false;
         for (; !values.isEnded(); values.takeString()) {
             if (LOCUS_COLUMN == values.currentName()) {
                 containsLocus = true;
             }
-            if (LOG2_COLUMN == values.currentName()) {
-                containsLog2 = true;
-            }
         }
         CHECK(containsLocus, FormatDetection_NotMatched);
-        CHECK(containsLog2, FormatDetection_NotMatched);
     }
 
     return FormatDetection_Matched;
 }
 
-const int AbstractDifferentialFormat::BUFFER_SIZE = 4096;
-QString AbstractDifferentialFormat::readLine(IOAdapter *io, QByteArray &buffer, U2OpStatus &os) {
+const int DifferentialFormat::BUFFER_SIZE = 4096;
+QString DifferentialFormat::readLine(IOAdapter *io, QByteArray &buffer, U2OpStatus &os) {
     bool eol = false;
     qint64 size = io->readLine(buffer.data(), BUFFER_SIZE, &eol);
     if (!eol) {
@@ -95,7 +121,7 @@ QString AbstractDifferentialFormat::readLine(IOAdapter *io, QByteArray &buffer, 
     return buffer.left(size).trimmed();
 }
 
-bool AbstractDifferentialFormat::parseLocus(const QString &locus, SharedAnnotationData &data, U2OpStatus &os) {
+bool DifferentialFormat::parseLocus(const QString &locus, SharedAnnotationData &data, U2OpStatus &os) {
     // locus == chr_name:start_pos-end_pos
     QString name;
     U2Region region;
@@ -119,7 +145,7 @@ bool AbstractDifferentialFormat::parseLocus(const QString &locus, SharedAnnotati
     return true;
 }
 
-QList<SharedAnnotationData> AbstractDifferentialFormat::parseAnnotations(
+QList<SharedAnnotationData> DifferentialFormat::parseAnnotations(
     const ColumnDataParser &parser, IOAdapter *io, QByteArray &buffer, U2OpStatus &os) {
     QList<SharedAnnotationData> anns;
     U2OpStatus2Log logOs;
@@ -158,7 +184,7 @@ QList<SharedAnnotationData> AbstractDifferentialFormat::parseAnnotations(
     return anns;
 }
 
-Document * AbstractDifferentialFormat::loadDocument(IOAdapter *io, const U2DbiRef &targetDb,
+Document * DifferentialFormat::loadDocument(IOAdapter *io, const U2DbiRef &targetDb,
     const QVariantMap &hints, U2OpStatus &os) {
     ColumnDataParser parser(getColumns(), SEPARATOR);
     QByteArray buffer(BUFFER_SIZE + 1, 0);
@@ -179,10 +205,10 @@ Document * AbstractDifferentialFormat::loadDocument(IOAdapter *io, const U2DbiRe
         QList<GObject*>() << obj, hints, "");
 }
 
-void AbstractDifferentialFormat::writeHeader(IOAdapter *io) {
+void DifferentialFormat::writeHeader(IOAdapter *io, const QList<ColumnDataParser::Column> &columns) {
     bool first = true;
     QString headerLine;
-    foreach (const ColumnDataParser::Column c, getColumns()) {
+    foreach (const ColumnDataParser::Column c, columns) {
         headerLine += (first ? "": SEPARATOR) + c.name;
         first = false;
     }
@@ -190,7 +216,7 @@ void AbstractDifferentialFormat::writeHeader(IOAdapter *io) {
     io->writeBlock(headerLine.toAscii());
 }
 
-QString AbstractDifferentialFormat::createLocus(SharedAnnotationData data, U2OpStatus &os) {
+QString DifferentialFormat::createLocus(SharedAnnotationData data, U2OpStatus &os) {
     if (data->location->isEmpty()) {
         os.setError("Annotation has not regions");
         return "";
@@ -212,7 +238,7 @@ QString AbstractDifferentialFormat::createLocus(SharedAnnotationData data, U2OpS
         + QString::number(region.endPos() - 1);
 }
 
-QString AbstractDifferentialFormat::createValue(SharedAnnotationData data,
+QString DifferentialFormat::createValue(SharedAnnotationData data,
     const ColumnDataParser::Column &column, U2OpStatus &os) {
     QVector<U2Qualifier> quals;
     data->findQualifiers(column.name, quals);
@@ -225,28 +251,72 @@ QString AbstractDifferentialFormat::createValue(SharedAnnotationData data,
     return column.defaultValue;
 }
 
-void AbstractDifferentialFormat::storeDocument(Document *d, IOAdapter *io, U2OpStatus &os) {
+QList<ColumnDataParser::Column> DifferentialFormat::getHeaderColumns(const QList<GObject*> &annObjs, U2OpStatus &os) {
+    QList<ColumnDataParser::Column> result;
+    if (annObjs.isEmpty()) {
+        os.setError("No annotation objects");
+        return result;
+    }
+
+    AnnotationTableObject *annObj = dynamic_cast<AnnotationTableObject*>(annObjs.first());
+    if (NULL == annObj) {
+        os.setError("NULL annotation object");
+        return result;
+    }
+
+    if (annObj->getAnnotations().isEmpty()) {
+        os.setError("Empty annotation object");
+        return result;
+    }
+
+    Annotation *ann = annObj->getAnnotations().first();
+    foreach (const ColumnDataParser::Column c, getColumns()) {
+        if (LOCUS_COLUMN == c.name) {
+            result << c;
+            continue;
+        }
+        QVector<U2Qualifier> quals;
+        ann->findQualifiers(c.name, quals);
+        if (!quals.isEmpty()) {
+            result << c;
+        }
+    }
+    foreach (const ColumnDataParser::Column c, getColumns()) {
+        if (c.required && !result.contains(c)) {
+            os.setError(tr("Required column is missed: %1").arg(c.name));
+            return result;
+        }
+    }
+    return result;
+}
+
+void DifferentialFormat::storeDocument(Document *d, IOAdapter *io, U2OpStatus &os) {
     QList<GObject*> anns = d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
     if (anns.isEmpty()) {
         os.setError("No annotation objects");
         return;
     }
-    writeHeader(io);
+    QList<ColumnDataParser::Column> columns = getHeaderColumns(anns, os);
+    CHECK_OP(os, );
+    writeHeader(io, columns);
     foreach (GObject *obj, anns) {
         AnnotationTableObject *annObj = dynamic_cast<AnnotationTableObject*>(obj);
         SAFE_POINT(NULL != annObj, "NULL annotation object", );
         foreach (Annotation *ann, annObj->getAnnotations()) {
             bool first = true;
             QString line;
-            foreach (const ColumnDataParser::Column c, getColumns()) {
+            U2OpStatus2Log logOs;
+            foreach (const ColumnDataParser::Column c, columns) {
                 line += (first ? "": SEPARATOR);
                 first = false;
                 if (LOCUS_COLUMN == c.name) {
-                    line += createLocus(ann->data(), os);
+                    line += createLocus(ann->data(), logOs);
                 } else {
-                    line += createValue(ann->data(), c, os);
+                    line += createValue(ann->data(), c, logOs);
                 }
-                CHECK_OP(os, );
+            }
+            if (logOs.hasError()) {
+                continue;
             }
             line += "\n";
             io->writeBlock(line.toAscii());
