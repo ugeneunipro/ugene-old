@@ -36,6 +36,7 @@
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include <QGraphicsItem>
 #include <U2Core/AppContext.h>
 #include <QGraphicsView>
@@ -273,6 +274,31 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
             }
         }
 //    Expected state: distance labels are not shown
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005){
+//Align with muscle, then build tree
+//1. Open file samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os,dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+//2. Do menu {Actions->Align->Align With Muscle}
+//Expected state: "Align with muscle" dialog appears
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
+    GTUtilsDialog::waitForDialog(os, new LicenseAgreemntDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_ALIGN<<"Align with muscle", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
+
+    GTMenu::showMainMenu(os,MWMENU_ACTIONS);
+//3. Click "Align" button
+//4. Click on "Build tree" button on toolbar
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(1000);
+//Expected state: "Create Philogenetic Tree" dialog appears
+//5. Set save path to _common_data/scenarios/sandbox/COI.nwk Click  OK button
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found");
+//Expected state: philogenetic tree appears
 }
 } // namespace GUITest_common_scenarios_tree_viewer
 } // namespace U2
