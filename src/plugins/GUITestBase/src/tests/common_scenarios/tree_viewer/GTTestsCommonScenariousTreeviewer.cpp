@@ -41,6 +41,8 @@
 #include <QGraphicsView>
 
 #include <U2View/MSAEditor.h>
+#include <U2View/GraphicsRectangularBranchItem.h>
+#include <U2View/GraphicsButtonItem.h>
 
 namespace U2 {
 
@@ -218,7 +220,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
 
-    CHECK_SET_ERR(l.hasError(), "there is no error it the log");
 //    3. Fill next fields in dialog:
 //    {Distance matrix model:} jukes-cantor
 //    {Gamma distributed rates across sites} [checked]
@@ -226,8 +227,52 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 //    {Path to file:} _common_data/scenarios/sandbox/COI.nwk
 
 //    4. Click  OK button
+    CHECK_SET_ERR(l.hasError(), "there is no error it the log");
 //    Expected state: no crash, philogenetic tree not appears
 //    Error message in the log: "Calculated weight matrix is invalid"
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004){
+//    Disabling views
+//    1. Open file samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os,dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+//    2. Click on "Build tree" button on toolbar
+//    Expected state: "Create Philogenetic Tree" dialog appears
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep();
+//    3. Set save path to _common_data/scenarios/sandbox/COI.nwk Click  OK button
+//    Expected state: philogenetic tree appears
+//    4. Disable "Show sequence name"
+//    Expected state: sequence name labels are not shown
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show Names"));
+    GTWidget::click(os,GTWidget::findWidget(os,"Show Labels"));
+
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem*> list = treeView->scene()->items();
+
+    foreach(QGraphicsItem* item, list){
+        QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+        if(node && node->isVisible()){
+            CHECK_SET_ERR(!node->text().contains("o")||!node->text().contains("a"), "names are visiable");
+        }
+    }
+//    5. Disable "Show distance labels"
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show Distances"));
+    GTWidget::click(os,GTWidget::findWidget(os,"Show Labels"));
+
+    foreach(QGraphicsItem* item, list){
+            QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+            if(node && node->isVisible()){
+                if(node->text()!="0.011"){
+                    CHECK_SET_ERR(!node->text().contains("0."), "Distances are visiable");
+                }
+            }
+        }
+//    Expected state: distance labels are not shown
 }
 } // namespace GUITest_common_scenarios_tree_viewer
 } // namespace U2

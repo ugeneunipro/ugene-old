@@ -158,10 +158,12 @@ void TreeViewer::createActions() {
     nameLabelsAction = new QAction(tr("Show Names"), ui);
     nameLabelsAction->setCheckable(true);
     nameLabelsAction->setChecked(true);
+    nameLabelsAction->setObjectName("Show Names");
 
     distanceLabelsAction = new QAction(tr("Show Distances"), ui);
     distanceLabelsAction->setCheckable(true);
     distanceLabelsAction->setChecked(true);
+    distanceLabelsAction->setObjectName("Show Distances");
 
     // Formatting
     textSettingsAction = new QAction(QIcon(":core/images/font.png"), tr("Formatting..."), ui);
@@ -222,6 +224,7 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb)
     tb->addSeparator();
     QToolButton* showLabelsButton = new QToolButton();
     QMenu* showLabelsMenu = new QMenu(tr("Show Labels"), ui);
+    showLabelsButton->setObjectName("Show Labels");
     setupShowLabelsMenu(showLabelsMenu);
     showLabelsButton->setDefaultAction(showLabelsMenu->menuAction());
     showLabelsButton->setPopupMode(QToolButton::InstantPopup);
@@ -267,6 +270,7 @@ void TreeViewer::buildStaticMenu(QMenu* m)
     m->addSeparator();
 
     QMenu* labelsMenu = new QMenu(tr("Show Labels"), ui);
+    //labelsMenu->setObjectName("Show Labels");
     setupShowLabelsMenu(labelsMenu);
     labelsMenu->setIcon(QIcon(":/core/images/text_ab.png"));
     m->addMenu(labelsMenu);
