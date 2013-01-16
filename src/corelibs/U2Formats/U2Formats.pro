@@ -2,13 +2,16 @@ include (U2Formats.pri)
 
 # Input
 HEADERS += src/ABIFormat.h \
+           src/AbstractDifferentialFormat.h \
            src/AbstractVariationFormat.h \
            src/ACEFormat.h \
            src/ASNFormat.h \
            src/BAMUtils.h \
            src/BedFormat.h \
            src/ClustalWAlnFormat.h \
-		   src/DNAQualityIOUtils.h \
+           src/ColumnDataParser.h \
+           src/DifferentialExpressionFormat.h \
+           src/DNAQualityIOUtils.h \
            src/DocumentFormatUtils.h \
            src/EMBLGenbankAbstractDocument.h \
            src/EMBLPlainTextFormat.h \
@@ -55,14 +58,17 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.h \
            src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h
 SOURCES += src/ABIFormat.cpp \
+           src/AbstractDifferentialFormat.cpp \
            src/AbstractVariationFormat.cpp \
            src/ACEFormat.cpp \
            src/ASNFormat.cpp \
            src/BAMUtils.cpp \
            src/BedFormat.cpp \
            src/ClustalWAlnFormat.cpp \
+           src/ColumnDataParser.cpp \
+           src/DifferentialExpressionFormat.cpp \
+           src/DNAQualityIOUtils.cpp \
            src/DocumentFormatUtils.cpp \
-		   src/DNAQualityIOUtils.cpp \
            src/EMBLGenbankAbstractDocument.cpp \
            src/EMBLPlainTextFormat.cpp \
            src/FastaFormat.cpp \

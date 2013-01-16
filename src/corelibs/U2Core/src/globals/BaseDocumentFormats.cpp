@@ -56,6 +56,7 @@ const DocumentFormatId BaseDocumentFormats::VCF4("vcf");
 const DocumentFormatId BaseDocumentFormats::BAM("bam");
 const DocumentFormatId BaseDocumentFormats::UGENEDB("usqlite");
 const DocumentFormatId BaseDocumentFormats::WIG("wig");
+const DocumentFormatId BaseDocumentFormats::DIFF_EXP("diff-exp");
 
 DocumentFormat* BaseDocumentFormats::get(const DocumentFormatId& formatId) {
     return AppContext::getDocumentFormatRegistry()->getFormatById(formatId);

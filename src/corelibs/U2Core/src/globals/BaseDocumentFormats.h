@@ -64,6 +64,7 @@ public:
     static const DocumentFormatId BAM;
     static const DocumentFormatId UGENEDB;
     static const DocumentFormatId WIG;
+    static const DocumentFormatId DIFF_EXP;
 
     static DocumentFormat* get(const DocumentFormatId& formatId);
 };
