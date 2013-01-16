@@ -194,7 +194,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_TREES<<"Build Tree"));
 
     GTGlobals::sleep(500);
-    GTMenu::GTMenu::showMainMenu(os,MWMENU_ACTIONS);
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 //7. Click  OK button
 //Expected state: philogenetic tree appears
     GTGlobals::sleep(500);
