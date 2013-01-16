@@ -66,7 +66,7 @@ namespace U2 {
 
 class GTGlobals {
 public:
-    enum UseMethod {UseMouse, UseKey};
+    enum UseMethod {UseMouse, UseKey, UseKeyBoard};
     enum WindowAction {Minimize, Maximize, Close, WindowActionCount};
 
     // if failIfNull is set to true, fails if object wasn't found

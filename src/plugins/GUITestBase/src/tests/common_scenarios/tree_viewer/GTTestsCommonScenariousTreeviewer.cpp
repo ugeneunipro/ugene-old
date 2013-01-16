@@ -31,6 +31,7 @@
 #include "api/GTAction.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsLog.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
@@ -200,6 +201,33 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2){
     GTGlobals::sleep(500);
     QWidget* w1 = GTWidget::findWidget(os, "treeView");
     CHECK_SET_ERR(w1!=NULL,"treeView not found");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003){
+//    Building tree with specific parameters
+//    1. Open file samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os,dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTLogTracer l;
+    GTGlobals::sleep(500);
+//    2. Click on "Build tree" button on toolbar
+//    Expected state: "Create Philogenetic Tree" dialog appears
+
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",2,true,52));
+    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+
+    CHECK_SET_ERR(l.hasError(), "there is no error it the log");
+//    3. Fill next fields in dialog:
+//    {Distance matrix model:} jukes-cantor
+//    {Gamma distributed rates across sites} [checked]
+//    {Coefficient of variation of substitution rat among sites:} 99
+//    {Path to file:} _common_data/scenarios/sandbox/COI.nwk
+
+//    4. Click  OK button
+//    Expected state: no crash, philogenetic tree not appears
+//    Error message in the log: "Calculated weight matrix is invalid"
 }
 } // namespace GUITest_common_scenarios_tree_viewer
 } // namespace U2

@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTSpinBox.h"
+#include "GTDoubleSpinBox.h"
 #include "GTWidget.h"
 
 #include "GTMouseDriver.h"
@@ -30,7 +30,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTSpinBox"
 
 #define GT_METHOD_NAME "setValue"
-void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod) {
+void GTDoubleSpinbox::setValue(U2OpStatus& os, QDoubleSpinBox *spinBox, double v, GTGlobals::UseMethod useMethod) {
     GT_CHECK(spinBox != NULL, "spinBox is NULL");
 
     QPoint arrowPos;
@@ -50,7 +50,7 @@ void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::Us
             }
 
             GTMouseDriver::moveTo(os, spinBox->mapToGlobal(arrowPos));
-            while (spinBox->value() != v) {
+            while (QString().setNum(spinBox->value()) != QString().setNum(v)) {
                 GTMouseDriver::click(os);
                 GTGlobals::sleep(100);
             }
@@ -64,7 +64,7 @@ void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::Us
             }
 
             GTWidget::setFocus(os, spinBox);
-            while (spinBox->value() != v) {
+            while (QString().setNum(spinBox->value()) != QString().setNum(v)) {
                 GTKeyboardDriver::keyClick(os, key);
                 GTGlobals::sleep(100);
             }
@@ -79,11 +79,12 @@ void GTSpinBox::setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::Us
             GTGlobals::sleep(100);
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
             GTKeyboardDriver::keySequence(os,s);
+
         }
     }
 
-    int currIndex = spinBox->value();
-    GT_CHECK(currIndex == v, "Can't set index");
+    double currIndex = spinBox->value();
+    GT_CHECK(QString().setNum(currIndex) == QString().setNum(v), "Expected: " + QString().setNum(v) + " Found: " + QString().setNum(currIndex));
 }
 #undef GT_METHOD_NAME
 

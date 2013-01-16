@@ -24,10 +24,16 @@
 #include "api/GTWidget.h"
 #include "api/GTSpinBox.h"
 #include "api/GTLineEdit.h"
+#include "api/GTCheckBox.h"
+#include "api/GTDoubleSpinBox.h"
+
 
 #include <QComboBox>
 #include <QSpinBox>
 #include <QApplication>
+#include <QGroupBox>
+#include <QCheckBox>
+#include <QDoubleSpinBox>
 
 namespace U2 {
 
@@ -42,6 +48,18 @@ void BuildTreeDialogFiller::run() {
         QLineEdit* saveLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os,"fileNameEdit"));
         GTLineEdit::setText(os,saveLineEdit, saveTree);
     }
+
+    if(model){
+        QComboBox* modelBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os,"modelBox"));
+        GTComboBox::setCurrentIndex(os,modelBox,model);
+    }
+
+    QCheckBox* gammaBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os,"gammaCheckBox"));
+    GTCheckBox::setChecked(os,gammaBox,gamma);
+    GTGlobals::sleep(500);
+
+    QDoubleSpinBox* alphaSpinBox = qobject_cast<QDoubleSpinBox*>(GTWidget::findWidget(os,"alphaSpinBox"));
+    GTDoubleSpinbox::setValue(os, alphaSpinBox,alpha,GTGlobals::UseKeyBoard);
 
     GTWidget::click(os, GTWidget::findWidget(os,"okButton"));
 
