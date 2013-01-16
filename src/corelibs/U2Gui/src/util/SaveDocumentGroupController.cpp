@@ -81,7 +81,8 @@ void SaveDocumentGroupController::sl_saveButtonClicked() {
     QString filter = DialogUtils::prepareDocumentsFileFilter(conf.dfc, false);
 
     // find the default one
-    QString selectedFilterExt = "*." + getFormatToSave()->getSupportedDocumentFileExtensions().first();
+    QStringList extList = getFormatToSave()->getSupportedDocumentFileExtensions();
+    QString selectedFilterExt = "*." + extList.first();
     QString selectedFilter;
     foreach (QString filterLine, filter.split(";;")) {
         if (filterLine.contains(selectedFilterExt)) {
@@ -96,6 +97,10 @@ void SaveDocumentGroupController::sl_saveButtonClicked() {
 	if (lod.url.isEmpty()) {
 		return;
 	}
+    QFileInfo f(lod.url);
+    if(!extList.contains(f.suffix())){
+        lod.url.append("." + extList.first());
+    }
 	conf.fileNameEdit->setText(lod.url);
 }
 
