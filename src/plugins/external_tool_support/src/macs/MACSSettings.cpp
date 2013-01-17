@@ -22,6 +22,8 @@
 
 #include "MACSSettings.h"
 
+#include <U2Core/GUrlUtils.h>
+
 namespace U2 {
 
 MACSSettings::MACSSettings() {
@@ -59,21 +61,13 @@ void MACSSettings::initDefault(){
 
 }
 
-QString getCorrectArgValue(const QString &value){
-    if (value.contains(QRegExp("\\s"))) {
-        return "\"" + value + "\"";
-    }
-    return value;
-}
-
-
 QStringList MACSSettings::getArguments( const QString& treatFilePath, const QString& conFilePath ){
     QStringList result;
 
-    result << "--treatment=" + getCorrectArgValue(treatFilePath);
+    result << "--treatment=" + GUrlUtils::getQuotedString(treatFilePath);
 
     if (!conFilePath.isEmpty()){
-        result << "--control=" + getCorrectArgValue(conFilePath);    
+        result << "--control=" + GUrlUtils::getQuotedString(conFilePath);    
     }
 
     result << "--name=" + fileNames;

@@ -309,8 +309,6 @@ void MACSWorkerFactory::init() {
  
      QList<Attribute*> attrs;
      {
-         static const QString WIGGLE_SPACE("wiggle-space");
-
          Descriptor outDir(OUTPUT_DIR,
              MACSWorker::tr("Output directory"),
              MACSWorker::tr("Directory to save MACS output files"));

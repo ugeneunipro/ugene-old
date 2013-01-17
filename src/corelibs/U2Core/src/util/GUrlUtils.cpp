@@ -304,5 +304,12 @@ QString GUrlUtils::getDefaultDataPath(){
     return res;
 }
 
+QString GUrlUtils::getQuotedString( const QString& inString ){
+    if (inString.contains(QRegExp("\\s"))) {
+        return "\"" + inString + "\"";
+    }
+    return inString;
+}
+
 
 }//namespace

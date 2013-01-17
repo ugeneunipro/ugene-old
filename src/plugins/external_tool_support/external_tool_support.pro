@@ -67,6 +67,22 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/mrbayes/MrBayesSupport.h \
            src/mrbayes/MrBayesTask.h \
            src/mrbayes/MrBayesTests.h \
+           src/peak2gene/Peak2GeneSettings.h \
+           src/peak2gene/Peak2GeneSupport.h \
+           src/peak2gene/Peak2GeneTask.h \
+           src/peak2gene/Peak2GeneWorker.h \
+		   src/conservation_plot/ConservationPlotSettings.h \
+           src/conservation_plot/ConservationPlotSupport.h \
+           src/conservation_plot/ConservationPlotTask.h \
+           src/conservation_plot/ConservationPlotWorker.h \
+           src/conduct_go/ConductGOSettings.h \
+           src/conduct_go/ConductGOSupport.h \
+           src/conduct_go/ConductGOTask.h \
+           src/conduct_go/ConductGOWorker.h \
+		   src/seqpos/SeqPosSettings.h \
+           src/seqpos/SeqPosSupport.h \
+           src/seqpos/SeqPosTask.h \
+           src/seqpos/SeqPosWorker.h \
            src/samtools/SamToolsExtToolSupport.h \
            src/spidey/SpideySupport.h \
            src/spidey/SpideySupportTask.h \
@@ -156,6 +172,22 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/macs/MACSSupport.cpp \
            src/macs/MACSTask.cpp \
            src/macs/MACSWorker.cpp \
+		   src/peak2gene/Peak2GeneSettings.cpp \
+           src/peak2gene/Peak2GeneSupport.cpp \
+           src/peak2gene/Peak2GeneTask.cpp \
+           src/peak2gene/Peak2GeneWorker.cpp \
+		   src/conservation_plot/ConservationPlotSettings.cpp \
+           src/conservation_plot/ConservationPlotSupport.cpp \
+           src/conservation_plot/ConservationPlotTask.cpp \
+           src/conservation_plot/ConservationPlotWorker.cpp \
+           src/conduct_go/ConductGOSettings.cpp \
+           src/conduct_go/ConductGOSupport.cpp \
+           src/conduct_go/ConductGOTask.cpp \
+           src/conduct_go/ConductGOWorker.cpp \
+           src/seqpos/SeqPosSettings.cpp \
+           src/seqpos/SeqPosSupport.cpp \
+           src/seqpos/SeqPosTask.cpp \
+           src/seqpos/SeqPosWorker.cpp \
            src/mafft/MAFFTSupport.cpp \
            src/mafft/MAFFTSupportRunDialog.cpp \
            src/mafft/MAFFTSupportTask.cpp \

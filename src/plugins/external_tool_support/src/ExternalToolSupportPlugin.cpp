@@ -96,6 +96,13 @@
 #include "ceas/CEASSupport.h"
 #include "macs/MACSWorker.h"
 #include "macs/MACSSupport.h"
+#include "peak2gene/Peak2GeneWorker.h"
+#include "peak2gene/Peak2GeneSupport.h"
+#include "conservation_plot/ConservationPlotWorker.h"
+#include "conservation_plot/ConservationPlotSupport.h"
+#include "seqpos/SeqPosWorker.h"
+#include "seqpos/SeqPosSupport.h"
+
 
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
@@ -273,6 +280,18 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     // MACS
     MACSSupport *macs = new MACSSupport(MACSSupport::TOOL_NAME);
     etRegistry->registerEntry(macs);
+
+    // peak2gene
+    Peak2GeneSupport *peak2gene = new Peak2GeneSupport(Peak2GeneSupport::TOOL_NAME);
+    etRegistry->registerEntry(peak2gene);
+
+    //ConservationPlot
+    ConservationPlotSupport *conservationPlot = new ConservationPlotSupport(ConservationPlotSupport::TOOL_NAME);
+    etRegistry->registerEntry(conservationPlot);
+
+    //SeqPos
+    SeqPosSupport *seqPos = new SeqPosSupport(SeqPosSupport::TOOL_NAME);
+    etRegistry->registerEntry(seqPos);
 
 
     if (AppContext::getMainWindow()) {
@@ -460,6 +479,9 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     LocalWorkflow::TopHatWorkerFactory::init();
     LocalWorkflow::CEASReportWorkerFactory::init();
     LocalWorkflow::MACSWorkerFactory::init();
+    LocalWorkflow::Peak2GeneWorkerFactory::init();
+    LocalWorkflow::ConservationPlotWorkerFactory::init();
+    LocalWorkflow::SeqPosWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

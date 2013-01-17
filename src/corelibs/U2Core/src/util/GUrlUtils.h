@@ -103,6 +103,9 @@ public:
     //returns empty string if path is not ready
     static QString getDefaultDataPath();
 
+    //Get quoted input string if it has spaces
+    static QString getQuotedString(const QString& inString);
+
 };
 
 } //namespace
