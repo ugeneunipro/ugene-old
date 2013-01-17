@@ -421,9 +421,9 @@ static bool writeKeyword(IOAdapter* io, U2OpStatus& os, const QString& key, cons
 }
 
 void GenbankPlainTextFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os) {
+    SAFE_POINT(doc != NULL, "GenbankPlainTextFormat::storeDocument::no document", );
     QList<GObject*> seqs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
     QList<GObject*> anns = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-    //int seqCounter = seqs.size();
 
     while (!seqs.isEmpty() || !anns.isEmpty()) {
 

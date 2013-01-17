@@ -534,7 +534,7 @@ void CreateAnnotationWidgetController::updateModel(bool forValidation) {
     
     if (!model.hideLocation) {
         QByteArray locEditText = locationEdit->text().toAscii();
-        Genbank::LocationParser::parseLocation(	locEditText.constData(), locationEdit->text().length(), model.data->location);
+        Genbank::LocationParser::parseLocation(	locEditText.constData(), locationEdit->text().length(), model.data->location, model.sequenceLen);
     }
 
     if (existingObjectRB->isChecked()) {

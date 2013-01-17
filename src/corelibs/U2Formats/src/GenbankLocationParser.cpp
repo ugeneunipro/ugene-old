@@ -235,9 +235,9 @@ public:
         return true;
     }
 
-    void setSeqLenForCircular(quint64 val) { seqLenForCircular = val; }
+    void setSeqLenForCircular(qint64 val) { seqLenForCircular = val; }
 private:
-    quint64 seqLenForCircular;
+    qint64 seqLenForCircular;
     
 
     bool parseNumber(quint64 &result) {
@@ -351,7 +351,7 @@ private:
                 }
             }
             if(!remoteEntry) { // ignore remote entries
-                if(seqLenForCircular != (quint64)-1 && firstBase > secondNumber){
+                if(seqLenForCircular != -1 && firstBase > secondNumber){
                     location->regions.append(toRegion(1, secondNumber));
                     location->regions.append(toRegion(firstBase, seqLenForCircular));
                     location->regionType = U2LocationRegionType_Default;
@@ -373,7 +373,7 @@ private:
                 return false;
             }
             if(!remoteEntry) { // ignore remote entries
-                if(seqLenForCircular != (quint64)-1 && firstBase > secondBase){
+                if(seqLenForCircular != -1 && firstBase > secondBase){
                     location->regions.append(toRegion(1, secondBase));
                     location->regions.append(toRegion(firstBase, seqLenForCircular));
                     location->regionType = U2LocationRegionType_Default;
