@@ -152,7 +152,7 @@ AnnotationsTreeViewL::AnnotationsTreeViewL(AnnotatedDNAView* _ctx) : ctx(_ctx){
     removeAnnsAndQsAction = new QAction(tr("Selected annotations and qualifiers"), this);
     removeAnnsAndQsAction->setObjectName("Selected annotations and qualifiers");
     removeAnnsAndQsAction->setShortcut(QKeySequence(Qt::Key_Delete));
-    removeAnnsAndQsAction->setShortcutContext(Qt::WindowShortcut);
+    removeAnnsAndQsAction->setShortcutContext(Qt::WidgetShortcut);
     connect(removeAnnsAndQsAction, SIGNAL(triggered()), SLOT(sl_removeAnnsAndQs()));
     tree->addAction(removeAnnsAndQsAction);
 

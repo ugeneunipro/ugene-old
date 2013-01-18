@@ -572,12 +572,14 @@ bool AnnotatedDNAView::canAddObject(GObject* obj) {
 
 bool AnnotatedDNAView::isChildWidgetObject(GObject* obj) const {
     foreach(ADVSequenceWidget* lv, seqViews) {
+        SAFE_POINT(lv != NULL, "AnnotatedDNAView::isChildWidgetObject::No sequence widget", false);
         if (lv->isWidgetOnlyObject(obj)) {
             return true;
         }
     }
     
     foreach(ADVSplitWidget* sw,  splitWidgets) {
+        SAFE_POINT(sw != NULL, "AnnotatedDNAView::isChildWidgetObject::No split widget", false);
         if (sw->acceptsGObject(obj)) {
             return true;
         }
