@@ -143,6 +143,14 @@ MrBayesLogParser::MrBayesLogParser(int _nchains)
 :nchains(_nchains), isMCMCRunning(false), curProgress(0){
     
 }
+void MrBayesLogParser::parseOutput(const QString& partOfLog){
+    lastPartOfLog=partOfLog.split(QChar('\n'));
+    lastPartOfLog.first()=lastLine+lastPartOfLog.first();
+    lastLine=lastPartOfLog.takeLast();
+    foreach(QString buf, lastPartOfLog){
+        ioLog.trace(buf);
+    }
+}
 void MrBayesLogParser::parseErrOutput(const QString& partOfLog){
     lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
@@ -153,7 +161,10 @@ void MrBayesLogParser::parseErrOutput(const QString& partOfLog){
             ||buf.contains(QRegExp("^-\\w"))
             ||buf.contains("No trees are sampled")){
                 algoLog.trace(buf);
+        }else if (buf.contains("lastError")){
+            //
         }else{
+            
             algoLog.info(buf);
         }
     }
