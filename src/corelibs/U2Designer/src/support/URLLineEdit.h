@@ -47,6 +47,7 @@ public:
                 const QString &format = "");
 
     bool isMulti();
+    void editingFinished();
 
 protected:
     void focusOutEvent(QFocusEvent *event);
@@ -75,7 +76,7 @@ private:
 class GSuggestCompletion : public QObject{
     Q_OBJECT
 public:
-    GSuggestCompletion(QString fileFormat, QLineEdit *parent = 0);
+    GSuggestCompletion(QString fileFormat, URLLineEdit *parent = 0);
     ~GSuggestCompletion();
     bool eventFilter(QObject *obj, QEvent *ev);
     void showCompletion(const QStringList &choices);
@@ -86,7 +87,7 @@ public slots:
 
 private:
     QString fileFormat;
-    QLineEdit *editor;
+    URLLineEdit *editor;
     QTreeWidget *popup;
 };
 

@@ -157,7 +157,13 @@ bool URLLineEdit::isMulti() {
     return multi;
 }
 
-GSuggestCompletion::GSuggestCompletion(QString fileFormat, QLineEdit *parent): QObject(parent), editor(parent), fileFormat(fileFormat){
+void URLLineEdit::editingFinished(){
+    QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
+    QCoreApplication::postEvent (this, event);
+    emit si_finished();
+}
+
+GSuggestCompletion::GSuggestCompletion(QString fileFormat, URLLineEdit *parent): QObject(parent), editor(parent), fileFormat(fileFormat){
     popup = new QTreeWidget;
     popup->setWindowFlags(Qt::Popup);
     popup->setFocusPolicy(Qt::NoFocus);
@@ -264,8 +270,12 @@ void GSuggestCompletion::doneCompletion(){
     QTreeWidgetItem *item = popup->currentItem();
     if (item) {
         QFileInfo f(editor->text());
-        editor->setText(f.absoluteDir().absolutePath() + QDir::separator() + item->text(0));
-        QMetaObject::invokeMethod(editor, "returnPressed");
+        QString absPath = f.absoluteDir().absolutePath();
+        if(!absPath.endsWith("/")){
+            absPath.append("/");
+        }
+        editor->setText(absPath + item->text(0));
+        editor->editingFinished();
     }
 }
 
