@@ -98,6 +98,7 @@ Task::ReportResult ModifySequenceContentTask::report(){
         Project *p = AppContext::getProject();
         if (p != NULL){
             tasks.append(new AddDocumentTask(newDoc));
+            //tasks.append(new LoadUnloadedDocumentAndOpenViewTask(newDoc));
         }
         AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask("Save document and add it to project (optional)", tasks));
     } 
@@ -148,7 +149,7 @@ void ModifySequenceContentTask::cloneSequenceAndAnnotations(){
     SAFE_POINT_EXT(df->isObjectOpSupported(newDoc, DocumentFormat::DocObjectOp_Add, GObjectTypes::SEQUENCE), stateInfo.setError("Failed to add sequence object to document!"), );
     U2Sequence clonedSeq = U2SequenceUtils::copySequence(oldSeqObj->getSequenceRef(), newDoc->getDbiRef(), stateInfo); 
     CHECK_OP(stateInfo, );
-    U2SequenceObject* seqObj = new U2SequenceObject(oldSeqObj->getGObjectName(), U2EntityRef(newDoc->getDbiRef(), clonedSeq.id), oldSeqObj->getGHintsMap());
+    seqObj = new U2SequenceObject(oldSeqObj->getGObjectName(), U2EntityRef(newDoc->getDbiRef(), clonedSeq.id), oldSeqObj->getGHintsMap());
     newDoc->addObject(seqObj);
 
     if (df->isObjectOpSupported(newDoc, DocumentFormat::DocObjectOp_Add, GObjectTypes::ANNOTATION_TABLE)) {
