@@ -1011,6 +1011,17 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
     CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");   
+
+//     7. Delete Start bookmark
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "start bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+
+//     Expected state: start bookmark doesn't present
+    QTreeWidgetItem* start = GTUtilsBookmarksTreeView::findItem(os,"start bookmark", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(start==NULL, "Start bookmark not deleted");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0008_1) {  //CHANGES: default names used
@@ -1094,7 +1105,18 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {  //CHANGES: default names used
     GTGlobals::sleep();
 
     RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
-    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");   
+    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");
+
+//     7. Delete Start bookmark
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_REMOVE_BOOKMARK));
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "New bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::click(os,Qt::RightButton);
+    GTGlobals::sleep(500);
+
+//     Expected state: start bookmark doesn't present
+    QTreeWidgetItem* start = GTUtilsBookmarksTreeView::findItem(os,"New bookmark", GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(start==NULL, "bookmark not deleted");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0008_2) { //CHANGES: mid and end coordinates changed
