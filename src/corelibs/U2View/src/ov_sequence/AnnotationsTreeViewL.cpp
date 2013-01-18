@@ -175,7 +175,7 @@ AnnotationsTreeViewL::AnnotationsTreeViewL(AnnotatedDNAView* _ctx) : ctx(_ctx){
     copyColumnURLAction = new QAction(tr("copy column URL"), this);
     connect(copyColumnURLAction, SIGNAL(triggered()), SLOT(sl_onCopyColumnURL()));
 
-    renameAction = new QAction(tr("Edit item"), this);
+    renameAction = new QAction(tr("Rename item"), this);
     renameAction->setShortcut(QKeySequence(Qt::Key_F2));
     renameAction->setShortcutContext(Qt::WidgetShortcut);
     connect(renameAction, SIGNAL(triggered()), SLOT(sl_rename()));

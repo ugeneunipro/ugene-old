@@ -182,7 +182,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx){
     copyColumnURLAction = new QAction(tr("copy column URL"), this);
     connect(copyColumnURLAction, SIGNAL(triggered()), SLOT(sl_onCopyColumnURL()));
 
-    renameAction = new QAction(tr("Edit item"), this);
+    renameAction = new QAction(tr("Rename item"), this);
     renameAction->setShortcut(QKeySequence(Qt::Key_F2));
     renameAction->setShortcutContext(Qt::WidgetShortcut);
     connect(renameAction, SIGNAL(triggered()), SLOT(sl_rename()));
@@ -878,6 +878,7 @@ void AnnotationsTreeView::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
     QAction* first = m->actions().first();
     m->insertAction(first, searchQualifierAction);
     m->insertAction(first, invertAnnotationSelectionAction);
+    m->insertAction(first, renameAction);
 
     m->insertSeparator(first);
     foreach(QAction* a, contextActions) {
