@@ -495,7 +495,7 @@ WorkflowPortItem::WorkflowPortItem(WorkflowProcessItem* owner, Port* p)
 : /*StyledItem(owner), */ currentStyle(owner->getStyle()),port(p),owner(owner),orientation(0), dragging(false), rotating(false),
 sticky(false), highlight(false)
 {
-    setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlags(ItemIsSelectable | ItemIsFocusable);
     setAcceptHoverEvents(true);
     QString tt = p->isInput() ? "Input port (" : "Output port (";
     tt += p->getDocumentation();
@@ -815,6 +815,13 @@ void WorkflowPortItem::paint(QPainter *painter,
         pen.setStyle(Qt::DotLine);
         painter->setPen(pen);
         painter->drawRoundedRect(boundingRect(), 30, 30, Qt::RelativeSize);
+    }
+}
+
+void WorkflowPortItem::focusOutEvent(QFocusEvent *event) {
+    if(dragging) {
+        dragging = false;
+        scene()->update();
     }
 }
 

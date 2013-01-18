@@ -165,6 +165,7 @@ protected:
     void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
     void hoverEnterEvent ( QGraphicsSceneHoverEvent * event );
     void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
+    void focusOutEvent(QFocusEvent * event);
     QVariant itemChange ( GraphicsItemChange change, const QVariant & value );
 private:
     StyleId currentStyle;
