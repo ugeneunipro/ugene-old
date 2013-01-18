@@ -292,6 +292,12 @@ void ClustalWAlnFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os
             return;
     }
 
+    for (int i = 0; i < obj->getNumRows(); i++) {
+        QString newName = obj->getRow(i).getName();
+        newName.truncate(MAX_NAME_LEN);
+        obj->renameRow(i, newName);
+    }
+
     QList<GObject*> als; als << obj;
     QMap< GObjectType, QList<GObject*> > objectsMap;
     objectsMap[GObjectTypes::MULTIPLE_ALIGNMENT] = als;
