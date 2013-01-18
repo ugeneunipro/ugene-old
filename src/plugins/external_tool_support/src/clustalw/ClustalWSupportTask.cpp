@@ -185,6 +185,11 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
 
         resultMA=newMAligmentObject->getMAlignment();
 
+        QStringList rowNames = inputMsa.getRowNames();
+        for (int i = 0; i < rowNames.length(); i++) {
+            resultMA.renameRow(i, rowNames[i]);
+        }
+
         // If an alignment object has been specified, save the result to it
         if (objRef.isValid()) {
             GObject* obj = GObjectUtils::selectObjectByReference(objRef, UOF_LoadedOnly);
