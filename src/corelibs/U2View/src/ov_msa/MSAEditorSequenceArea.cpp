@@ -1314,15 +1314,20 @@ void MSAEditorSequenceArea::sl_delCol() {
         int value = dlg.getValue();
         MAlignmentObject* msaObj = editor->getMSAObject();
         switch(deleteMode) {
-            case DeleteByAbsoluteVal: msaObj->deleteGapsByAbsoluteVal(value);
-                break;
-            case DeleteByRelativeVal: 
-                msaObj->deleteGapsByAbsoluteVal( ( msaObj->getNumRows()*value ) / 100 );
-                break;
-            case DeleteAll: msaObj->deleteAllGapColumn();
-                break;
-            default:
-                assert(0);
+        case DeleteByAbsoluteVal: msaObj->deleteGapsByAbsoluteVal(value);
+            break;
+        case DeleteByRelativeVal: {
+            int absoluteValue = ( msaObj->getNumRows()*value ) / 100;
+            if (absoluteValue < 1) {
+                absoluteValue = 1;
+            }
+            msaObj->deleteGapsByAbsoluteVal(absoluteValue);
+            break;
+        }
+        case DeleteAll: msaObj->deleteAllGapColumn();
+            break;
+        default:
+            assert(0);
         }
     }
 }
