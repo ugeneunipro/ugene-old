@@ -234,7 +234,7 @@ void DotPlotDialog::sl_invertedDefaultColorButton() {
 void DotPlotDialog::sl_loadSequenceButton(){
     QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
     LastUsedDirHelper lod("DotPlot file");
-    lod.url = QFileDialog::getOpenFileName(NULL, tr("Open file"), lod.dir, filter);
+    lod.url = QFileDialog::getOpenFileName(this, tr("Open file"), lod.dir, filter);
     if(!lod.url.isEmpty()){
         Task *tasks = new Task("Adding document to the project", TaskFlag_NoRun);
 
