@@ -143,8 +143,8 @@ int BinaryFindOpenCL::checkCreateBuffer(const QString &bufferName, cl_mem &buf, 
     usageGPUMem += thisBufferSize;
 
     algoLog.trace(QString("Creating buffer %1 bytes").arg(thisBufferSize));
-    SAFE_POINT(thisBufferSize <= maxAllocateBufferSize, QString("Too big buffer: %1Mb").arg(thisBufferSize/(1024*1024)), -1);
-    SAFE_POINT(usageGPUMem <= deviceGlobalMemSize, QString("Too much memory used: %1Mb").arg(usageGPUMem/(1024*1024)), -1);
+    SAFE_POINT(thisBufferSize <= maxAllocateBufferSize, QString("Too big buffer: %1Mb, maximum size: %2Mb").arg(thisBufferSize/(1024*1024)).arg(maxAllocateBufferSize/(1024*1024)), -1);
+    SAFE_POINT(usageGPUMem <= deviceGlobalMemSize, QString("Too much memory used: %1Mb, maximum global memory size: %2Mb").arg(usageGPUMem/(1024*1024)).arg(deviceGlobalMemSize/(1024*1024)), -1);
 
     buf = openCLHelper.clCreateBuffer_p(clContext, flags, thisBufferSize, ptr, &err);
     hasOPENCLError(err, QString("clCreateBuffer(%1)").arg(bufferName));
