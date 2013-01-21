@@ -46,7 +46,7 @@ ObjectViewTreeController::ObjectViewTreeController(QTreeWidget* w) : QObject(w),
     tree->headerItem()->setHidden(true);
     tree->setSelectionMode(QAbstractItemView::SingleSelection);
     tree->setContextMenuPolicy(Qt::CustomContextMenu);
-  	tree->setObjectName(ACTION_BOOKMARK_TREE_VIEW);
+    tree->setObjectName(ACTION_BOOKMARK_TREE_VIEW);
 
     connect(tree, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem*)), SLOT(sl_onTreeCurrentChanged(QTreeWidgetItem *, QTreeWidgetItem*)));
     connect(tree, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(sl_onContextMenuRequested(const QPoint &)));
@@ -54,25 +54,25 @@ ObjectViewTreeController::ObjectViewTreeController(QTreeWidget* w) : QObject(w),
     connect(tree, SIGNAL(itemChanged(QTreeWidgetItem*, int)), SLOT(sl_onItemChanged(QTreeWidgetItem*, int)));
 
     activateViewAction = new QAction(tr("Activate view"), this);
-  	activateViewAction->setObjectName(ACTION_ACTIVATE_VIEW);
+    activateViewAction->setObjectName(ACTION_ACTIVATE_VIEW);
     activateViewAction->setShortcut(QKeySequence(Qt::Key_Space));
     activateViewAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(activateViewAction, SIGNAL(triggered()), SLOT(sl_activateView()));
 
     addStateAction = new QAction(tr("Add bookmark"), this);
-  	addStateAction->setObjectName(ACTION_ADD_BOOKMARK);
+    addStateAction->setObjectName(ACTION_ADD_BOOKMARK);
     addStateAction->setIcon(QIcon(":core/images/bookmark_add.png"));
     connect(addStateAction, SIGNAL(triggered()), SLOT(sl_addState()));
 
     removeStateAction = new QAction(tr("Remove bookmark"), this);
-  	removeStateAction->setObjectName(ACTION_REMOVE_BOOKMARK);
+    removeStateAction->setObjectName(ACTION_REMOVE_BOOKMARK);
     removeStateAction->setIcon(QIcon(":core/images/bookmark_remove.png"));
     removeStateAction->setShortcut(QKeySequence(Qt::Key_Delete));
     removeStateAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(removeStateAction, SIGNAL(triggered()), SLOT(sl_removeState()));
 
     renameStateAction = new QAction(tr("Rename bookmark"), this);
-  	renameStateAction->setObjectName(ACTION_RENAME_BOOKMARK);
+    renameStateAction->setObjectName(ACTION_RENAME_BOOKMARK);
     renameStateAction->setIcon(QIcon(":core/images/bookmark_edit.png"));
     renameStateAction->setShortcut(QKeySequence(Qt::Key_F2));
     renameStateAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
@@ -96,6 +96,8 @@ void ObjectViewTreeController::connectModel() {
     MWMDIManager* mdi = AppContext::getMainWindow()->getMDIManager();
     connect(mdi, SIGNAL(si_windowAdded(MWMDIWindow*)), SLOT(sl_onMdiWindowAdded(MWMDIWindow*)));
     connect(mdi, SIGNAL(si_windowClosing(MWMDIWindow*)), SLOT(sl_onMdiWindowClosing(MWMDIWindow*)));
+
+    connect(mdi, SIGNAL(si_windowActivated(MWMDIWindow*)), SLOT(sl_onMdiWindowActivated(MWMDIWindow*)));
 }
 
 
@@ -179,6 +181,20 @@ OVTStateItem* ObjectViewTreeController::currentStateItem() const {
     OVTItem* i = currentItem();
     return (i != NULL && i->isStateItem()) ? static_cast<OVTStateItem*>(i) : NULL;
 }
+OVTViewItem* ObjectViewTreeController::activeViewItem() const {
+    const GObjectViewWindow* w = GObjectViewUtils::getActiveObjectViewWindow();
+    if (w == NULL) {
+        return NULL;
+    }
+    for(int i = 0; i < tree->topLevelItemCount(); i++) {
+        OVTViewItem* vi = static_cast<OVTViewItem*>(tree->topLevelItem(i));
+        if (vi->viewWindow == w) {
+            return vi;
+        }
+    }
+    return NULL;
+}
+
 
 GObjectViewState* ObjectViewTreeController::findStateToOpen() const {
     OVTStateItem* si = currentStateItem();
@@ -203,7 +219,7 @@ void ObjectViewTreeController::updateActions() {
 
     GObjectViewState* stateToOpen = findStateToOpen();
 
-    bool canAddStates = hasActiveView && vi->viewWindow->getViewFactory()->supportsSavedStates();
+    bool canAddStates = hasActiveView && vi->viewWindow->getViewFactory()->supportsSavedStates() && vi->isActiveItem();
 
     activateViewAction->setEnabled(hasActiveView || stateToOpen!=NULL);
     addStateAction->setEnabled(canAddStates);
@@ -237,7 +253,16 @@ void ObjectViewTreeController::sl_onMdiWindowClosing(MWMDIWindow* w) {
     updateActions();
 }
 
+void ObjectViewTreeController::sl_onMdiWindowActivated(MWMDIWindow* w) {
+    GObjectViewWindow* wv = qobject_cast<GObjectViewWindow*>(w);
 
+    for(int i =0; i< tree->topLevelItemCount(); i++) {
+        OVTViewItem* vi = static_cast<OVTViewItem*>(tree->topLevelItem(i));
+        bool isActiveItem = (vi->viewWindow == wv && wv != NULL);
+        vi->markAsActive(isActiveItem);
+    }
+    updateActions();
+}
 
 void ObjectViewTreeController::sl_onViewStateAdded(GObjectViewState* s) {
     OVTStateItem * si = addState(s);
@@ -351,7 +376,7 @@ void ObjectViewTreeController::makeViewPersistent(GObjectViewWindow* w) {
 }
 
 void ObjectViewTreeController::sl_addState() {
-    OVTViewItem* vi = currentViewItem(true);
+    OVTViewItem* vi = activeViewItem();
     SAFE_POINT(vi != NULL, QString("Can't find view item to add state!"),);
     SAFE_POINT(vi->viewWindow != NULL, QString("View window is NULL: %1").arg(vi->viewName),);
     if (!vi->viewWindow->isPersistent()) {
@@ -442,13 +467,13 @@ void ObjectViewTreeController::sl_onViewNameChanged(const QString& oldName) {
 /// tree items
 
 OVTViewItem::OVTViewItem(GObjectViewWindow* v, ObjectViewTreeController* c)
-: OVTItem (c), viewName(v->getViewName()), viewWindow(v)
+: OVTItem (c), viewName(v->getViewName()), viewWindow(v), isActive(false)
 {
     updateVisual();
 }
 
 OVTViewItem::OVTViewItem(const QString& _viewName, ObjectViewTreeController* c)
-: OVTItem (c), viewName(_viewName), viewWindow(NULL)
+: OVTItem (c), viewName(_viewName), viewWindow(NULL), isActive(false)
 {
     updateVisual();
 }
@@ -460,7 +485,13 @@ void OVTViewItem::updateVisual() {
     QString text = viewName;
     setText(0, text);
 }
-
+void OVTViewItem::markAsActive(bool _isActive) {
+    isActive = _isActive;
+    
+    QFont curFont = font(0);
+    curFont.setBold(isActive);
+    setFont(0, curFont);
+}
 
 OVTStateItem::OVTStateItem(GObjectViewState* _state, OVTViewItem* parent, ObjectViewTreeController* c)
 : OVTItem(c), state(_state)
