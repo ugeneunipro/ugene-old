@@ -58,7 +58,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 //2. Click on "Build tree" button on toolbar "Build Tree"
 //Expected state: "Create Philogenetic Tree" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -106,7 +106,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
 //2. Click on "Build tree" button on toolbar "Build Tree"
 //Expected state: "Create Philogenetic Tree" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     //DIFFERENCE: Context menu is used for building tree
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_TREES<<"Build Tree"));
 
@@ -160,7 +160,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2){
 //2. Click on "Build tree" button on toolbar "Build Tree"
 //Expected state: "Create Philogenetic Tree" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     //DIFFERENCE: Main menu is used for building tree
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_TREES<<"Build Tree"));
 
@@ -216,7 +216,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 //    Expected state: "Create Philogenetic Tree" dialog appears
 
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",2,true,52));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -241,7 +241,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 //    2. Click on "Build tree" button on toolbar
 //    Expected state: "Create Philogenetic Tree" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep();
@@ -284,7 +284,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 //2. Do menu {Actions->Align->Align With Muscle}
 //Expected state: "Align with muscle" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os, new LicenseAgreemntDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new LicenseAgreemntDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_ALIGN<<"Align with muscle", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
 
@@ -300,5 +300,47 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     CHECK_SET_ERR(treeView!=NULL,"TreeView not found");
 //Expected state: philogenetic tree appears
 }
+int getCoord(U2OpStatus &os, QGraphicsSimpleTextItem *node){
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    QPointF sceneCoord = node->mapToScene(node->boundingRect().bottomLeft());
+    QPoint globalCoord = treeView->mapToGlobal(sceneCoord.toPoint());
+    return globalCoord.y();
+}
+/*GUI_TEST_CLASS_DEFINITION(test_0006){
+//    Tree layouts test
+//    1. Open file _common_data/scenario/tree_view/COI.nwk
+//    Expected state: philogenetic tree appears
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
+    GTGlobals::sleep(500);
+//    2. Click on {Layout->Circilar layout} button on toolbar
+    //GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Circular"));
+    //GTWidget::click(os,GTWidget::findWidget(os,"Layout"));
+//    Expected state: tree view type changed to circular
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem*> list = treeView->scene()->items();
+
+    QString s;
+    QGraphicsSimpleTextItem * highestNode = new QGraphicsSimpleTextItem();
+    QGraphicsSimpleTextItem * lowestNode = new QGraphicsSimpleTextItem();
+
+    foreach(QGraphicsItem* item, list){
+        QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+        if(node && node->text().length()>5){
+            if(getCoord(os, highestNode)<getCoord(os, node)){highestNode = node;}
+            if(getCoord(os, lowestNode)>getCoord(os, node)){lowestNode = node;}
+
+            //s.append("\n" + node->text() + "  " + QString().setNum(globalCoord.y()));
+            //item->moveBy(200,0);
+            //GTGlobals::sleep(500);
+        }
+    }
+//    3. Click on {Layout->Unrooted layout} button on toolbar
+//    Expected state: tree view type changed to unrooted
+    s.append("\n" + highestNode->text() + "  " + QString().setNum(getCoord(os, highestNode)));
+    s.append("\n" + lowestNode->text() + "  " + QString().setNum(getCoord(os, lowestNode)));
+    os.setError(s);
+//    4. Click on {Layout->Rectangular layout} button on toolbar
+//    Expected state: tree view type changed to rectangular
+}*/
 } // namespace GUITest_common_scenarios_tree_viewer
 } // namespace U2

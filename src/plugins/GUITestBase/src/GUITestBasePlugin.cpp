@@ -686,9 +686,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Query designer
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001);
-    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001_1);
-    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001_2);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_querry_designer::test_0001,"https://ugene.unipro.ru/tracker/browse/UGENE-1397");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_querry_designer::test_0001_1,"https://ugene.unipro.ru/tracker/browse/UGENE-1397");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_querry_designer::test_0001_2,"https://ugene.unipro.ru/tracker/browse/UGENE-1397");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer
@@ -704,6 +704,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0005);
+    //REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0006);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Repeat Finder
