@@ -607,6 +607,7 @@ DescriptionItem::DescriptionItem(ExtendedProcStyle* p) : QGraphicsTextItem(p) {
 
 QRectF DescriptionItem::boundingRect() const {
     QRectF bounds = parentItem()->boundingRect();
+    bounds.setBottomRight(bounds.bottomRight() - QPointF(MARGIN, MARGIN));
     bounds.translate(R - MARGIN, R - MARGIN);
     return bounds;
 }
