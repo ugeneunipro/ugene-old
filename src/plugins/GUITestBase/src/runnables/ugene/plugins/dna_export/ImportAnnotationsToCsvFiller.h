@@ -28,29 +28,66 @@ namespace U2 {
 
     class ImportAnnotationsToCsvFiller : public Filler {
     public:
+        struct RoleParameter {
+            virtual void ke(){}
+        };
+
         enum fileFormat {BED, EMBL, FPKM, GFF, GTF, Genbank, Swiss_Prot};
-      //  enum firstLineToScip {1_line(s), 2_line(s)};
-        //ImportAnnotationsToCsvFiller::firstLineToScip _firstLines,
+        struct RoleColumnParameter {
+            RoleColumnParameter(int _column, RoleParameter* _p) : column(_column), parameter(_p){}
+            int column;
+            RoleParameter* parameter;
+        };
+        typedef QList<RoleColumnParameter> RoleParameters;
+
+        struct StartParameter : public RoleParameter {
+            StartParameter(bool _addOffset, int _numberOfBp=0) : addOffset(_addOffset), numberOfBp(_numberOfBp){}
+            bool addOffset;
+            int numberOfBp;
+        };
+
+        struct EndParameter : public RoleParameter {
+            EndParameter(bool _endPos) : endPos(_endPos){}
+            bool endPos;
+        };
+        
+        struct LengthParameter : public RoleParameter {
+        };
+        
+        struct StrandMarkParameter : public RoleParameter {
+            StrandMarkParameter(bool _markValue, QString _markValueName) : markValue(_markValue), markValueName(_markValueName){}
+            bool markValue;
+            QString markValueName;
+        };
+
+        struct IgnoreParameter : public RoleParameter {
+        };
+
+        struct NameParameter : public RoleParameter {
+        };
+
+        struct QualifierParameter : public RoleParameter {
+            QualifierParameter(const QString& _name) : name(_name){}
+            QString name;
+        };
         ImportAnnotationsToCsvFiller(U2OpStatus &_os, const QString &_fileToRead, const QString &_resultFile,
                                         ImportAnnotationsToCsvFiller::fileFormat _format, bool _addResultFileToProject, 
                                         bool _columnSeparator, const QString &_separator,
                                         bool _script, int _numberOfLines,
                                         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,
-                                        bool _removeQuotesButton, const QString &_defaultAnnotationName, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+                                        bool _removeQuotesButton, const QString &_defaultAnnotationName, const RoleParameters& roleParameters = RoleParameters(), GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
     private:
         QString fileToRead, resultFile;
         fileFormat format;
         bool addResultFileToProject, columnSeparator, script;
-        //firstLineToScip firstLines;
         int numberOfLines;
         QString separator, skipAllLinesStartsWith;
         bool interpretMultipleAsSingle, removeQuotesButton;
         QString defaultAnnotationName;
         QMap<fileFormat, QString> comboBoxItems;
-        //QMap<firstLineToScip, QString> comboBoxItems1;
+        RoleParameters roleParameters;
         GTGlobals::UseMethod useMethod;
-
     };
 }
 

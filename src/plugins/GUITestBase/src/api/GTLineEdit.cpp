@@ -34,8 +34,14 @@ namespace U2 {
 void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str) {
 
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
+    GTWidget::setFocus(os, lineEdit);
+    if (lineEdit->text() == str) {
+        return;
+    }
+    if (!lineEdit->text().isEmpty()) {
+        clear(os, lineEdit);
+    }
 
-    clear(os, lineEdit);
     GTKeyboardDriver::keySequence(os, str);
     GTGlobals::sleep(500);
 

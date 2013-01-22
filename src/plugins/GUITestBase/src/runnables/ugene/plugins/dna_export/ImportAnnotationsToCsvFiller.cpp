@@ -43,12 +43,12 @@ ImportAnnotationsToCsvFiller::ImportAnnotationsToCsvFiller(U2OpStatus &_os, cons
         ImportAnnotationsToCsvFiller::fileFormat _format, bool _addResultFileToProject, 
         bool _columnSeparator, const QString &_separator, bool _script, int _numberOfLines,
         const QString &_skipAllLinesStartsWith, bool _interpretMultipleAsSingle,
-        bool _removeQuotesButton, const QString &_defaultAnnotationName, GTGlobals::UseMethod method):
+        bool _removeQuotesButton, const QString &_defaultAnnotationName, const RoleParameters& _roleParameters, GTGlobals::UseMethod method):
 Filler(_os, "ImportAnnotationsFromCSVDialog"), fileToRead(_fileToRead), resultFile(_resultFile), format(_format), 
        addResultFileToProject(_addResultFileToProject), columnSeparator(_columnSeparator), separator(_separator), 
        script(_script), numberOfLines(_numberOfLines), 
        skipAllLinesStartsWith(_skipAllLinesStartsWith), interpretMultipleAsSingle(_interpretMultipleAsSingle),
-       removeQuotesButton(_removeQuotesButton), defaultAnnotationName(_defaultAnnotationName), useMethod(method) {
+       removeQuotesButton(_removeQuotesButton), defaultAnnotationName(_defaultAnnotationName), roleParameters(_roleParameters), useMethod(method) {
 
     comboBoxItems[BED] = "BED";
     comboBoxItems[EMBL] = "EMBL";
@@ -61,44 +61,82 @@ Filler(_os, "ImportAnnotationsFromCSVDialog"), fileToRead(_fileToRead), resultFi
 
 class RoleFiller : public Filler {
 public:
-    enum Role {Start, End, Length, strandMark, Name, Qualifier, Ignore};
-    RoleFiller(U2OpStatus &os, Role _role, QString _q = "") : Filler(os, "CSVColumnConfigurationDialog"), role(_role), q(_q) {}
+    RoleFiller(U2OpStatus &os, ImportAnnotationsToCsvFiller::RoleParameter* _parameter)
+        : Filler(os, "CSVColumnConfigurationDialog"), parameter(_parameter) {}
 
     virtual void run() {
         QWidget *dialog = QApplication::activeModalWidget();
-        //GT_CHECK(dialog != NULL, "dialog not found");
+        QCheckBox *addOffsetCheckBox = dialog->findChild<QCheckBox*>("startOffsetCheck");
+        QSpinBox *addOffsetSpinBox = dialog->findChild<QSpinBox*>("startOffsetValue");
+        QCheckBox *endPosCheckBox = dialog->findChild<QCheckBox*>("endInclusiveCheck");
+        QCheckBox *strandMarkCheckBox = dialog->findChild<QCheckBox*>("complValueCheck");
+        QLineEdit *markValueLineEdit = dialog->findChild<QLineEdit*>("complValueEdit");
         QLineEdit *qualifierLineEdit = dialog->findChild<QLineEdit*>("qualifierNameEdit");
-        switch (role) {
-        case Start:
+
+        ImportAnnotationsToCsvFiller::StartParameter* startP = dynamic_cast<ImportAnnotationsToCsvFiller::StartParameter*>(parameter);
+        if (startP) {
             GTRadioButton::click(os, dialog->findChild<QRadioButton*>("startRB"));
-            break;
-        case End:
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("endRB"));
-            break;
-        case Length:
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("lengthRB"));
-            break;
-        case strandMark:
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("complMarkRB"));
-            break;
-        case Name:
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("nameRB"));
-            break;
-        case Qualifier:
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("qualifierRB"));
-            GTLineEdit::setText(os, qualifierLineEdit, q);
-            break;
-        case Ignore:
-            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("ignoreRB"));
-            break;
+            GTCheckBox::setChecked(os, addOffsetCheckBox, startP->addOffset);
+            if (startP->addOffset) {
+                GTSpinBox::setValue(os, addOffsetSpinBox, startP->numberOfBp);
             }
-        QPushButton *okButton = dialog->findChild<QPushButton*>("okButton"); // KILL
-//        GT_CHECK(okButton != NULL, "Export button not found");
+        }
+
+        ImportAnnotationsToCsvFiller::EndParameter* endP = dynamic_cast<ImportAnnotationsToCsvFiller::EndParameter*>(parameter);
+        if (endP) {
+            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("endRB"));
+            GTCheckBox::setChecked(os, endPosCheckBox, endP->endPos);
+        }
+       
+        ImportAnnotationsToCsvFiller::LengthParameter* lenghtP = dynamic_cast<ImportAnnotationsToCsvFiller::LengthParameter*>(parameter);
+        if (lenghtP) {
+            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("lengthRB"));
+        }
+        
+        ImportAnnotationsToCsvFiller::StrandMarkParameter* strandMarkP = dynamic_cast<ImportAnnotationsToCsvFiller::StrandMarkParameter*>(parameter);
+        if (strandMarkP) {
+            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("complMarkRB"));
+            GTCheckBox::setChecked(os, strandMarkCheckBox, strandMarkP->markValue);
+            GTLineEdit::setText(os, markValueLineEdit, strandMarkP->markValueName);
+        }
+
+        ImportAnnotationsToCsvFiller::NameParameter* nameP = dynamic_cast<ImportAnnotationsToCsvFiller::NameParameter*>(parameter);
+        if (nameP) {
+            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("nameRB"));
+        }
+
+        ImportAnnotationsToCsvFiller::QualifierParameter* qualP = dynamic_cast<ImportAnnotationsToCsvFiller::QualifierParameter*>(parameter);
+        if (qualP) {
+            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("qualifierRB"));
+            GTLineEdit::setText(os, qualifierLineEdit, qualP->name);
+        }
+        
+        ImportAnnotationsToCsvFiller::IgnoreParameter* ignoreP = dynamic_cast<ImportAnnotationsToCsvFiller::IgnoreParameter*>(parameter);
+        if (ignoreP) {
+            GTRadioButton::click(os, dialog->findChild<QRadioButton*>("ignoreRB"));
+        }
+
+        delete parameter; 
+        parameter = NULL;
+        
+        QPushButton *okButton = dialog->findChild<QPushButton*>("okButton");
         GTWidget::click(os, okButton);
     }
 private:
-    Role role;
-    QString q;
+    ImportAnnotationsToCsvFiller::RoleParameter *parameter;
+};
+
+class GTTableWidget {
+public:
+    static QPoint headerItemCenter(U2OpStatus&os, QTableWidget* w, int pos) {
+        CHECK_SET_ERR_RESULT(w != NULL, "QTableWidget is NULL", QPoint());
+
+        QTableWidgetItem *widgetItem =  w->item(0, pos);
+        CHECK_SET_ERR_RESULT(widgetItem != NULL, "QTableWidgetItem is NULL", QPoint());
+
+        QPoint itemPoint = w->visualItemRect(widgetItem).center();
+        return w->mapToGlobal(itemPoint);
+    }
 };
 
 #define GT_METHOD_NAME "run"
@@ -113,7 +151,7 @@ void ImportAnnotationsToCsvFiller::run()
 
     QLineEdit *resultFileLineEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("saveFileName"));
     GT_CHECK(resultFileLineEdit != NULL, "line edit not found");
-    GTLineEdit::setText(os, resultFileLineEdit, resultFile);
+    GTLineEdit::setText(os, dialog->findChild<QLineEdit*>(QString::fromUtf8("saveFileName")), resultFile);
 
     QComboBox *comboBox = dialog->findChild<QComboBox*>();
     GT_CHECK(comboBox != NULL, "ComboBox not found");
@@ -143,7 +181,7 @@ void ImportAnnotationsToCsvFiller::run()
          }
 
     QLineEdit *firstLinesLineEdit = dialog->findChild<QLineEdit*>(QString::fromUtf8("prefixToSkipEdit"));
-    GT_CHECK(readFileLineEdit != NULL, "line edit not found");
+    GT_CHECK(firstLinesLineEdit != NULL, "line edit not found");
     GTLineEdit::setText(os, firstLinesLineEdit, skipAllLinesStartsWith);
 
     QCheckBox *separatorsModeCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("separatorsModeCheck"));
@@ -162,35 +200,11 @@ void ImportAnnotationsToCsvFiller::run()
     GTGlobals::sleep();
 
     QTableWidget *previewTable = dialog->findChild<QTableWidget*>("previewTable");
-
-    GTUtilsDialog::waitForDialog(os, new RoleFiller(os, RoleFiller::Name));
-    QTableWidgetItem *ke =  previewTable->item(0, 0);
-    QPoint p = previewTable->visualItemRect(ke).center();
-    QPoint globalP = previewTable->mapToGlobal(p);
-    GTMouseDriver::moveTo(os, globalP);
-    GTMouseDriver::click(os);
-
-    GTUtilsDialog::waitForDialog(os, new RoleFiller(os, RoleFiller::Start));
-    QTableWidgetItem *ke1 =  previewTable->item(0, 1);
-    QPoint p1 = previewTable->visualItemRect(ke1).center();
-    QPoint globalP1 = previewTable->mapToGlobal(p1);
-    GTMouseDriver::moveTo(os, globalP1);
-    GTMouseDriver::click(os);
-
-    GTUtilsDialog::waitForDialog(os, new RoleFiller(os, RoleFiller::End));
-    QTableWidgetItem *ke2 =  previewTable->item(0, 2);
-    QPoint p2 = previewTable->visualItemRect(ke2).center();
-    QPoint globalP2 = previewTable->mapToGlobal(p2);
-    GTMouseDriver::moveTo(os, globalP2);
-    GTMouseDriver::click(os);
-
-    GTUtilsDialog::waitForDialog(os, new RoleFiller(os, RoleFiller::Qualifier, "Qual"));
-    QTableWidgetItem *ke3 =  previewTable->item(0, 3);
-    QPoint p3 = previewTable->visualItemRect(ke3).center();
-    QPoint globalP3 = previewTable->mapToGlobal(p3);
-    GTMouseDriver::moveTo(os, globalP3);
-    GTMouseDriver::click(os);
-    
+    foreach (RoleColumnParameter r, roleParameters) {
+        GTUtilsDialog::waitForDialog(os, new RoleFiller(os, r.parameter));
+        GTMouseDriver::moveTo(os, GTTableWidget::headerItemCenter(os, previewTable, r.column));
+        GTMouseDriver::click(os);
+    }
     QPushButton *runButton = dialog->findChild<QPushButton*>(QString::fromUtf8("runButton")); // KILL
     GT_CHECK(runButton != NULL, "Export button not found");
     GTWidget::click(os, runButton);
