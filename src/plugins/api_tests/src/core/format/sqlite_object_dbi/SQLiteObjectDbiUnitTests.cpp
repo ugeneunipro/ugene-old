@@ -307,6 +307,9 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
     qObj.bindDataId(1, al2.id);
     qint64 msa2objects = qObj.selectInt64();
     CHECK_EQUAL(1, msa2objects, "number of MSA2 objects");
+
+    // Remove the second alignment
+    sqliteObjectDbi->removeObject(al2.id, "", os);
 }
 
 } // namespace
