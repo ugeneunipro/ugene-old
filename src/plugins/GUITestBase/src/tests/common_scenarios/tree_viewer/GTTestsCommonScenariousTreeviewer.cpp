@@ -342,5 +342,65 @@ int getCoord(U2OpStatus &os, QGraphicsSimpleTextItem *node){
 //    4. Click on {Layout->Rectangular layout} button on toolbar
 //    Expected state: tree view type changed to rectangular
 }*/
+
+GUI_TEST_CLASS_DEFINITION(test_0007){
+//Labels aligniment test
+
+//1. Open file _common_data/scenario/tree_view/COI.nwk
+//Expected state: philogenetic tree appears
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
+    GTGlobals::sleep(500);
+
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem*> list = treeView->scene()->items();
+
+    QList<int> initPos;
+    foreach(QGraphicsItem* item, list){
+        QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+        if(node && node->boundingRect().width()>100){
+            QPointF sceneCoord = node->mapToScene(node->boundingRect().bottomRight());
+            QPoint globalCoord = treeView->mapToGlobal(sceneCoord.toPoint());
+            initPos.append(globalCoord.x());
+        }
+    }
+//2. Click on "Align name labels" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Align Labels"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep(500);
+    //GTWidget::click(os, GTAction::button(os,"Align Labels"));
+
+    int i = 0;
+    foreach(QGraphicsItem* item, list){
+        QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+        if(node && node->boundingRect().width()>100 && i==0){
+            QPointF sceneCoord = node->mapToScene(node->boundingRect().bottomRight());
+            QPoint globalCoord = treeView->mapToGlobal(sceneCoord.toPoint());
+            i=globalCoord.x();
+        }
+        if(node && node->boundingRect().width()>100){
+            QPointF sceneCoord = node->mapToScene(node->boundingRect().bottomRight());
+            QPoint globalCoord = treeView->mapToGlobal(sceneCoord.toPoint());
+            CHECK_SET_ERR(i == globalCoord.x(), "elements are not aligned");
+        }
+    }
+//Expected state: sequence labels aligned at right side of the screen
+
+//3. Click on "Align name labels" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Align Labels"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep(500);
+
+    QList<int> finalPos;
+    foreach(QGraphicsItem* item, list){
+        QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+        if(node && node->boundingRect().width()>100){
+            QPointF sceneCoord = node->mapToScene(node->boundingRect().bottomRight());
+            QPoint globalCoord = treeView->mapToGlobal(sceneCoord.toPoint());
+            finalPos.append(globalCoord.x());
+        }
+    }
+    CHECK_SET_ERR(initPos==finalPos, "items aligned wrong");
+//Expected state: sequence label aligned near end of its branches
+}
 } // namespace GUITest_common_scenarios_tree_viewer
 } // namespace U2

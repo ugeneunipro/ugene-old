@@ -144,12 +144,15 @@ void TreeViewer::createActions() {
     rectangularLayoutAction = new QAction(tr("Rectangular"), layoutGroup);
     rectangularLayoutAction->setCheckable(true);
     rectangularLayoutAction->setChecked(true);
+    rectangularLayoutAction->setObjectName("Rectangular");
 
     circularLayoutAction = new QAction(tr("Circular"), layoutGroup);
     circularLayoutAction->setCheckable(true);
+    circularLayoutAction->setObjectName("Circular");
 
     unrootedLayoutAction = new QAction(tr("Unrooted"), layoutGroup);
     unrootedLayoutAction->setCheckable(true);
+    unrootedLayoutAction->setObjectName("Unrooted");
 
     // Branch Settings
     branchesSettingsAction = new QAction(QIcon(":core/images/color_wheel.png"), tr("Branch Settings..."), ui);
@@ -172,6 +175,7 @@ void TreeViewer::createActions() {
     // Note: the icon is truncated to 15 px height to look properly in the main menu when it is checked
     contAction = new QAction(QIcon(":core/images/align_tree_labels.png"), tr("Align Labels"), ui);
     contAction->setCheckable(true);
+    contAction->setObjectName("Align Labels");
 
     // Zooming
     zoomToSelAction = new QAction(QIcon(":core/images/zoom_in.png"), tr("Zoom In") , ui);
@@ -215,6 +219,7 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb)
     layoutButton->setDefaultAction(layoutMenu->menuAction());
     layoutButton->setPopupMode(QToolButton::InstantPopup);
     layoutButton->setIcon(QIcon(":core/images/tree_layout.png"));
+    layoutButton->setObjectName("Layout");
     tb->addWidget(layoutButton);
 
     // Branch Settings
