@@ -133,7 +133,7 @@ void ProfileToProfileTask::prepare() {
 
     U2OpStatus2Log os;
     foreach (const MAlignmentRow &row, masterMsa.getRows()) {
-        result.addRow(row, os);
+        result.addRow(row.getRowDBInfo(), row.getSequence(), os);
     }
 
     QList<Task*> tasks = createAlignTasks();
@@ -167,7 +167,7 @@ void ProfileToProfileTask::appendResult(Task *task) {
     const QList<MAlignmentRow> &newRows = t->resultMA.getRows();
     if (newRows.size() == masterMsa.getRows().size() + 1) {
         U2OpStatus2Log os;
-        result.addRow(newRows.last(), os);
+        result.addRow(newRows.last().getRowDBInfo(), newRows.last().getSequence(), os);
     }
 }
 
@@ -177,7 +177,7 @@ QList<Task*> ProfileToProfileTask::createAlignTasks() {
         U2OpStatus2Log os;
         MuscleTaskSettings cfg;
         cfg.op = MuscleTaskOp_ProfileToProfile;
-        cfg.profile.addRow(secondMsa.getRow(seqIdx), os);
+        cfg.profile.addRow(secondMsa.getRow(seqIdx).getRowDBInfo(), secondMsa.getRow(seqIdx).getSequence(), os);
         cfg.profile.setAlphabet(secondMsa.getAlphabet());
 
         tasks << new MuscleTask(masterMsa, cfg);

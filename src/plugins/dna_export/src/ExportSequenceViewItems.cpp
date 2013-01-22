@@ -581,10 +581,10 @@ void ADVExportContext::prepareMAFromSequences(MAlignment& ma, bool translate, U2
     }
 
     CHECK_EXT(nItems >= 2, os.setError(tr("At least 2 sequences required")), );
+    ma.setAlphabet(al);
 
     //cache sequences
     QSet<QString> names;
-    QList<MAlignmentRow> rows;
     qint64 maxLen = 0;
     foreach(ADVSequenceObjectContext* seqCtx, view->getSequenceContexts()) {
         if (seqCtx->getSequenceSelection()->isEmpty()) {
@@ -594,21 +594,16 @@ void ADVExportContext::prepareMAFromSequences(MAlignment& ma, bool translate, U2
         DNATranslation* aminoTT = ((translate || forceTranslation) && seqAl->isNucleic()) ? seqCtx->getAminoTT() : NULL;
         foreach(const U2Region& r, seqCtx->getSequenceSelection()->getSelectedRegions()) {
             maxLen = qMax(maxLen, r.length);
-            CHECK_EXT(maxLen * rows.size() <= MAX_ALI_MODEL, os.setError(tr("Alignment is too large")), );
+            CHECK_EXT(maxLen * ma.getNumRows() <= MAX_ALI_MODEL, os.setError(tr("Alignment is too large")), );
             QByteArray seq = seqCtx->getSequenceData(r);
             if (aminoTT!=NULL) {
                 int len = aminoTT->translate(seq.data(), seq.size());
                 seq.resize(len);
             }
-            MAlignmentRow row = MAlignmentRow::createRow(ExportUtils::genUniqueName(names, seqCtx->getSequenceGObject()->getGObjectName()), seq, os);
-            names.insert(row.getName());
-            rows.append(row);
+            QString rowName = ExportUtils::genUniqueName(names, seqCtx->getSequenceGObject()->getGObjectName());
+            names.insert(rowName);
+            ma.addRow(rowName, seq, os);
         }
-    }
-
-    ma.setAlphabet(al);
-    foreach(const MAlignmentRow& row, rows) {
-        ma.addRow(row, os);
     }
 }
 

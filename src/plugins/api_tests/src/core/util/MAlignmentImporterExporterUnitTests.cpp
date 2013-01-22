@@ -66,16 +66,13 @@ IMPLEMENT_TEST(MAlignmentImporterExporterUnitTests, importExportAlignment) {
     QByteArray firstSequence("---AG-T");
     QByteArray secondSequence("AG-CT-TAA");
 
-    MAlignmentRow row1 = MAlignmentRow::createRow("First row", firstSequence, os);
+    MAlignment al(alignmentName, alphabet);
+
+    al.addRow("First row", firstSequence, os);
     CHECK_NO_ERROR(os);
 
-    MAlignmentRow row2 = MAlignmentRow::createRow("Second row", secondSequence, os);
+    al.addRow("Second row", secondSequence, os);
     CHECK_NO_ERROR(os);
-
-    QList<MAlignmentRow> rows;
-    rows << row1 << row2;
-
-    MAlignment al(alignmentName, alphabet, rows);
 
     // Import the alignment
     U2EntityRef entityRef = MAlignmentImporter::createAlignment(dbiRef, al, os);

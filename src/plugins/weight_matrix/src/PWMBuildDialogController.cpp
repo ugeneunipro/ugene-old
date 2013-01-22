@@ -130,19 +130,16 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
     } else {
         mobjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
         if (!mobjs.isEmpty()) {
-            QList<MAlignmentRow> rows;
+            U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
+            MAlignment ma(dnaObj->getSequenceName(), dnaObj->getAlphabet());
             foreach (GObject* obj, mobjs) {
                 U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
                 if (dnaObj->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                     ti.setError(  tr("Wrong sequence alphabet") );
                 }
                 U2OpStatus2Log os;
-                MAlignmentRow row = MAlignmentRow::createRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
-
-                rows.append(row);
+                ma.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
             }
-            U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
-            MAlignment ma(dnaObj->getSequenceName(), dnaObj->getAlphabet(), rows);
             replaceLogo(ma);
         } else {
             PFMatrix pfm = WeightMatrixIO::readPFMatrix(iof, lod.url, ti);
@@ -161,6 +158,8 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
             for (int i = 0, n = pfm.getType() == PFM_MONONUCLEOTIDE ? 4 : 16; i < n; i++) {
                 size += pfm.getValue(i, 0);
             }
+            DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+            MAlignment ma(QString("Temporary alignment"), al);
             QList<MAlignmentRow> rows;
             for (int i = 0; i < size; i++) {
                 QByteArray arr;
@@ -181,11 +180,9 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
                     }
                 }
                 U2OpStatus2Log os;
-                MAlignmentRow row = MAlignmentRow::createRow("", arr, os);
-                rows.append(row);
+                QString rowName = QString("Row %1").arg(i);
+                ma.addRow(rowName, arr, os);
             }
-            DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
-            MAlignment ma(QString("Temporary alignment"), al, rows);
             replaceLogo(ma);
         }
     }
@@ -447,24 +444,17 @@ QList<Task*> PFMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
         } else {
             mobjs = d->findGObjectByType(GObjectTypes::SEQUENCE);
             if (!mobjs.isEmpty()) {
+                U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
+                QString baseName = d->getURL().baseFileName();
+                MAlignment ma(baseName, dnaObj->getAlphabet());
                 QList<MAlignmentRow> rows;
                 foreach (GObject* obj, mobjs) {
                     U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
                     if (dnaObj->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                         stateInfo.setError(  tr("Wrong sequence alphabet") );
                     }
-                    U2OpStatus2Log os;
-                    MAlignmentRow row = MAlignmentRow::createRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
-                    if (!os.hasError()) {
-                        rows.append(row);   
-                    }
-                    else {
-                        stateInfo.setError(tr("An unexpected error has occurred during adding a row."));
-                    }
+                    ma.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), stateInfo);
                 }
-                U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
-                QString baseName = d->getURL().baseFileName();
-                MAlignment ma(baseName, dnaObj->getAlphabet(), rows);
                 buildTask = new PFMatrixBuildTask(settings, ma);
                 res.append(buildTask);
             } else {
@@ -584,21 +574,18 @@ QList<Task*> PWMatrixBuildToFileTask::onSubTaskFinished(Task* subTask) {
         } else {
             mobjs = d->findGObjectByType(GObjectTypes::SEQUENCE);
             if (!mobjs.isEmpty()) {
-                QList<MAlignmentRow> rows;
+                U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
+                QString baseName = d->getURL().baseFileName();
+                MAlignment ma(baseName, dnaObj->getAlphabet());
                 foreach (GObject* obj, mobjs) {
                     U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
                     if (dnaObj->getAlphabet()->getType() != DNAAlphabet_NUCL) {
                         stateInfo.setError(  tr("Wrong sequence alphabet") );
                     }
-                    U2OpStatus2Log os;
-                    MAlignmentRow newRow = MAlignmentRow::createRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
-                    CHECK_OP_EXT(os, stateInfo.setError("An unexpected error has occurred during adding a row."), res);
-
-                    rows.append(newRow);
+                    ma.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), stateInfo);
+                    CHECK_OP(stateInfo, res);
                 }
-                U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
-                QString baseName = d->getURL().baseFileName();
-                MAlignment ma(baseName, dnaObj->getAlphabet(), rows);
+                
                 buildTask = new PWMatrixBuildTask(settings, ma);
                 res.append(buildTask);
             } else {

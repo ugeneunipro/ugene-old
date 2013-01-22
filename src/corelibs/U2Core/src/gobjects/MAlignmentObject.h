@@ -59,68 +59,62 @@ private:
 
 class U2CORE_EXPORT MAlignmentObject : public GObject {
     Q_OBJECT
+
 public:
-
     explicit MAlignmentObject(const QString& name, const U2EntityRef& msaRef, const QVariantMap& hintsMap = QVariantMap());
-
     ~MAlignmentObject();
 
     MAlignment getMAlignment() const;
-
     void setMAlignment(const MAlignment& ma, MAlignmentModInfo mi = MAlignmentModInfo(), const QVariantMap& hints = QVariantMap());
 
-    char charAt(int seqNum, int pos) const;
-
-    bool isRegionEmpty(int x, int y, int width, int height) const;
-
+    /** GObject methods */
     virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
-
-    void insertGap(int seqNum, int pos, int nGaps);
-    
-    void insertGap(int pos, int nGaps);
-
-    void insertGap(U2Region seqences, int pos, int nGaps);
-
-    int deleteGap(int seqNum, int pos, int maxGaps);
-    
-    int deleteGap(int pos, int maxGaps);
-
-    void addRow(const DNASequence& seq, int seqIdx = -1);
-
-    void removeRow(int seqNum);
-
-    void renameRow(int seqNum, const QString& newName);
-
-    void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool changeAlignment = true);
-
-    void crop(U2Region window, const QSet<QString>& rowNames);
-
-    DNAAlphabet* getAlphabet() const;
-
     virtual void setGObjectName(const QString& newName);
 
-    void moveRowsBlock( int firstRow, int numRows, int delta);
-
-    bool shiftRegion( int startPos, int startRow, int nBases, int nRows, int shift);
-
+    /** Const getters */
+    char charAt(int seqNum, int pos) const;
+    bool isRegionEmpty(int x, int y, int width, int height) const;
+    DNAAlphabet* getAlphabet() const;
     qint64 getLength() const;
-
     qint64 getNumRows() const;
-
-    void deleteGapsByAbsoluteVal(int val);
-    
-    void deleteAllGapColumn();
-
     const MAlignmentRow& getRow(int row) const;
 
-    void saveState();
+    /** Methods that modify the gap model only */
+    void insertGap(U2Region rows, int pos, int nGaps);
+    int deleteGap(int seqNum, int pos, int maxGaps);
+    int deleteGap(int pos, int maxGaps);
+    void deleteAllGapColumn();
 
+    /**
+     * Updates a gap model of the alignment.
+     * The map must contain valid row IDs and corresponding gap models.
+     */
+    void updateGapModel(QMap<qint64, QList<U2MsaGap> > rowsGapModel, U2OpStatus& os);
+
+
+    /** Methods to work with rows */
+    void addRow(U2MsaRow& rowInDb, const DNASequence& sequence, int rowIdx = -1);
+    void removeRow(int rowIdx);
+    void updateRow(int rowIdx, const QByteArray& seqBytes, const QList<U2MsaGap>& gapModel, U2OpStatus& os);
+    void renameRow(int rowIdx, const QString& newName);
+    void moveRowsBlock(int firstRow, int numRows, int delta);
+
+    /** Method that affect the whole alignment, including sequences */
+    void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool changeAlignment = true);
+    void crop(U2Region window, const QSet<QString>& rowNames);
+    bool shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
+    void deleteGapsByAbsoluteVal(int val);
+
+    void saveState();
     void releaseState();
+
 signals:
     void si_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
     void si_completeStateChanged(bool complete);
 
 private:
+    void updateCachedMAlignment(MAlignmentModInfo mi = MAlignmentModInfo());
+
     MAlignment cachedMAlignment;
     MSAMemento*     memento;
 };

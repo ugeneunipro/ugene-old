@@ -55,6 +55,8 @@ class TCoffeeSupportTask : public Task {
     Q_OBJECT
 public:
     TCoffeeSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const TCoffeeSupportTaskSettings& _settings);
+    ~TCoffeeSupportTask();
+
     void prepare();
     Task::ReportResult report();
 
@@ -64,7 +66,7 @@ public:
 private:
     MAlignment                  inputMsa;
     GObjectReference            objRef;
-    Document*                   newDocument;
+    QPointer<Document>          tmpDoc;
     QString                     url;
     TCoffeeLogParser*           logParser;
 

@@ -132,7 +132,6 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
     U2Msa al;
     al.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
     al.length = 5;
-    al.numOfRows = 2;
     msaDbi->createMsaObject(al, "", os);
     CHECK_NO_ERROR(os);
 
@@ -180,7 +179,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
     QList<U2MsaRow> rows;
     rows << row1 << row2;
 
-    msaDbi->addRows(al, rows, os);
+    msaDbi->addRows(al.id, rows, os);
     CHECK_NO_ERROR(os);
 
     // SECOND ALIGNMENT
@@ -188,7 +187,6 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
     U2Msa al2;
     al2.alphabet = BaseDNAAlphabetIds::AMINO_DEFAULT();
     al2.length = 6;
-    al2.numOfRows = 3;
     msaDbi->createMsaObject(al2, "", os);
     CHECK_NO_ERROR(os);
 
@@ -218,7 +216,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
     QList<U2MsaRow> al2Rows;
     al2Rows << al2Row;
 
-    msaDbi->addRows(al2, al2Rows, os);
+    msaDbi->addRows(al2.id, al2Rows, os);
     CHECK_NO_ERROR(os);
 
     // REMOVE THE FIRST ALIGNMENT OBJECT

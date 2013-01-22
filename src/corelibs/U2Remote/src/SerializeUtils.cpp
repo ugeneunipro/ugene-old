@@ -36,25 +36,29 @@ namespace U2 {
 #define HEADER_COMMENT "# UGENE remote machine settings"
 
 QString SerializeUtils::serializeRemoteMachineSettings( const RemoteMachineSettingsPtr& machineSettings ) {
-    assert( NULL != machineSettings );
-    return HEADER_COMMENT "\n" + machineSettings->serialize();
+    FAIL("Obsolete! Not implemented!", "");
+
+    //assert( NULL != machineSettings );
+    //return HEADER_COMMENT "\n" + machineSettings->serialize();
 }
 
 RemoteMachineSettingsPtr SerializeUtils::deserializeRemoteMachineSettingsFromFile( const QString & machinePath) {
-    QFile file( machinePath );
-    if( !file.open( QIODevice::ReadOnly ) ) {
-        return RemoteMachineSettingsPtr();
-    }
-    
-    QString data;
-    while (!file.atEnd()) {
-        QString line = file.readLine();
-        if (!line.startsWith("#")) {
-            data.append(line);
-        }
-    }
-    
-    return deserializeRemoteMachineSettings( data );
+    FAIL("Obsolete! Not implemented!", RemoteMachineSettingsPtr());
+
+    //QFile file( machinePath );
+    //if( !file.open( QIODevice::ReadOnly ) ) {
+    //    return RemoteMachineSettingsPtr();
+    //}
+    //
+    //QString data;
+    //while (!file.atEnd()) {
+    //    QString line = file.readLine();
+    //    if (!line.startsWith("#")) {
+    //        data.append(line);
+    //    }
+    //}
+    //
+    //return deserializeRemoteMachineSettings( data );
 }
 
 /*bool SerializeUtils::deserializeRemoteMachineSettingsFromFile( const QString & machinePath, RemoteMachineSettings ** settings ) {
@@ -77,30 +81,33 @@ RemoteMachineSettingsPtr SerializeUtils::deserializeRemoteMachineSettingsFromFil
 */
 
 static QString getDefaultProtocolId( ) {
-    QString res;
-    QList< ProtocolInfo* > infos = AppContext::getProtocolInfoRegistry()->getProtocolInfos();
-    
-    if (infos.count() > 0) {
-        res = infos.first()->getId();
-    }
+    FAIL("Obsolete! Not implemented!", "");
 
-    return res;
+    //QString res;
+    //QList< ProtocolInfo* > infos = AppContext::getProtocolInfoRegistry()->getProtocolInfos();
+    //
+    //if (infos.count() > 0) {
+    //    res = infos.first()->getId();
+    //}
+
+    //return res;
 }
 
 RemoteMachineSettingsPtr SerializeUtils::deserializeRemoteMachineSettings( const QString & data, QString * retProtoId ) {
-    
-    QString protoId = getDefaultProtocolId();
-    ProtocolInfo * protoInfo = AppContext::getProtocolInfoRegistry()->getProtocolInfo( protoId );
-    if( NULL == protoInfo ) {
-        return RemoteMachineSettingsPtr();
-    }
-        
-    RemoteMachineSettingsPtr machineSettings = protoInfo->getRemoteMachineFactory()->createSettings( data );
-    if( NULL != retProtoId ) {
-        *retProtoId = protoId;
-    }
+    FAIL("Obsolete! Not implemented!", RemoteMachineSettingsPtr());
 
-    return machineSettings;
+    //QString protoId = getDefaultProtocolId();
+    //ProtocolInfo * protoInfo = AppContext::getProtocolInfoRegistry()->getProtocolInfo( protoId );
+    //if( NULL == protoInfo ) {
+    //    return RemoteMachineSettingsPtr();
+    //}
+    //    
+    //RemoteMachineSettingsPtr machineSettings = protoInfo->getRemoteMachineFactory()->createSettings( data );
+    //if( NULL != retProtoId ) {
+    //    *retProtoId = protoId;
+    //}
+
+    //return machineSettings;
 }
 
 /*

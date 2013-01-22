@@ -3,7 +3,6 @@
 <unittest>
 
 MAlignmentRowUnitTests
-+ createRow_empty
 + createRow_fromBytes
 + createRow_fromBytesTrailing
 + createRow_fromBytesGaps
@@ -11,10 +10,6 @@ MAlignmentRowUnitTests
 + createRow_twoTrailing
 + createRow_oneMiddleGap
 + createRow_noGaps
-+ createRow_offsetNoGap
-+ createRow_offsetGap
-+ createRow_offsetOnlyGaps
-+ createRow_emptyAndOffset
 + createRow_fromSeq
 + createRow_fromSeqTrailing
 + createRow_fromSeqWithGaps

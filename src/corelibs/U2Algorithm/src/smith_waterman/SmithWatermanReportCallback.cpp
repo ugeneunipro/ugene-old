@@ -108,20 +108,16 @@ QString SmithWatermanReportCallbackMAImpl::report(const QList<SmithWatermanResul
         QByteArray curResultRefSubseq = refSequence.mid(pairAlignSeqs.refSubseq.startPos, pairAlignSeqs.refSubseq.length);
         QByteArray curResultPtrnSubseq = pattern.mid(pairAlignSeqs.ptrnSubseq.startPos, pairAlignSeqs.ptrnSubseq.length);
         alignSequences(curResultRefSubseq, curResultPtrnSubseq, pairAlignSeqs.pairAlignment);
+
+        MAlignment msa(newFileName, alphabet);
         
         expansionInfo.curProcessingSubseq = &pairAlignSeqs.refSubseq;
-        MAlignmentRow refSubsequence = MAlignmentRow::createRow(tagsRegistry->parseStringWithTags(refSubseqTemplate, expansionInfo), curResultRefSubseq, stateInfo);
+        msa.addRow(tagsRegistry->parseStringWithTags(refSubseqTemplate, expansionInfo), curResultRefSubseq, stateInfo);
         CHECK_OP(stateInfo, tr("Failed to add a reference subsequence row."));
 
         expansionInfo.curProcessingSubseq = &pairAlignSeqs.ptrnSubseq;
-        MAlignmentRow patternSubsequence= MAlignmentRow::createRow(tagsRegistry->parseStringWithTags(ptrnSubseqTemplate, expansionInfo), curResultPtrnSubseq, stateInfo);
-        CHECK_OP(stateInfo, tr("Failed to add a pattern subsequence row."));
-
-        QList<MAlignmentRow> rows;
-        rows.append(refSubsequence);
-        rows.append(patternSubsequence);
-
-        MAlignment msa(newFileName, alphabet, rows);
+        msa.addRow(tagsRegistry->parseStringWithTags(ptrnSubseqTemplate, expansionInfo), curResultPtrnSubseq, stateInfo);
+        CHECK_OP(stateInfo, tr("Failed to add a pattern subsequence row."));        
 
         U2EntityRef msaRef = MAlignmentImporter::createAlignment(alignmentDoc->getDbiRef(), msa, stateInfo);
         CHECK_OP(stateInfo, tr("Failed to create an alignment."));

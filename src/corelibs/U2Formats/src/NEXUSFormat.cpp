@@ -384,7 +384,7 @@ bool NEXUSParser::readDataContents(Context &ctx) {
         } else if (cmd == CMD_MATRIX) {
             tz.get(); // cmd name == CMD_MATRIX
 
-            QMap<QString, MAlignmentRow> rows;
+            QMap<QString, QByteArray> rows;
 
             // Read matrix
             while (true) {
@@ -414,21 +414,24 @@ bool NEXUSParser::readDataContents(Context &ctx) {
                 }
 
                 U2OpStatus2Log os;
-                MAlignmentRow newRow = MAlignmentRow::createRow(name, value.toAscii(), os);
-                CHECK_OP(os, false);
+                QByteArray bytes = value.toAscii();
 
                 if (rows.contains(name)) {
-                    MAlignmentRow &row = rows[name];
-                    row.append(newRow, row.getCoreEnd(), os);
+                    rows[name].append(bytes);
                 } else {
-                    rows.insert(name, newRow);
+                    rows[name] = bytes;
                 }
 
                 reportProgress();
             }
 
             // Build MAlignment object
-            MAlignment ma(tz.getIO()->getURL().baseFileName(), 0, rows.values());
+            U2OpStatus2Log os;
+            MAlignment ma(tz.getIO()->getURL().baseFileName());
+            foreach (QString name, rows.keys()) {
+                ma.addRow(name, rows[name], os);
+                CHECK_OP(os, false);
+            }
 
             // Determine alphabet & replace missing chars
             if (ctx.contains("missing")) {

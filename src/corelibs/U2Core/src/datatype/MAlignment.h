@@ -33,7 +33,7 @@
 
 namespace U2 {
 
-/** Default name for malignment */
+/** Default name for a multiple alignment */
 #define MA_OBJECT_NAME QString("Multiple alignment")
 
 /** Gap character */
@@ -53,32 +53,6 @@ class U2CORE_EXPORT MAlignmentRow {
     friend class MAlignment;
 
 public:
-    /** Creates an empty row */
-    MAlignmentRow();
-
-    /** Create a new row (sequence + gap model) from the bytes */
-    static MAlignmentRow createRow(const QString& name,
-        const QByteArray& bytes,
-        U2OpStatus& os);
-
-    /**
-     * Create a new row (sequence + gap model) from the bytes,
-     * appends "offset" gaps to the beginning of the row.
-     * If the row is empty, gaps are not appended
-     */
-    static MAlignmentRow createRow(const QString& name,
-        const QByteArray& bytes,
-        int offset,
-        U2OpStatus& os);
-
-    /**
-     * Sequence must not contain gaps.
-     * All gaps in the gaps model must be valid and have an offset within the bound of the sequence.
-     */
-    static MAlignmentRow createRow(const DNASequence& sequence,
-        const QList<U2MsaGap>& gaps,
-        U2OpStatus& os);
-
     /** Name of the row (equals to the sequence name), can be empty */
     QString getName() const { return sequence.getName(); }
     void setName(const QString& name) { sequence.setName(name); }
@@ -86,8 +60,25 @@ public:
     /** Returns the list of gaps for the row */
     inline const QList<U2MsaGap>& getGapModel() const;
 
+    /** Careful, the new gap model is not validated! */
+    void setGapModel(const QList<U2MsaGap>& newGapModel) { gaps = newGapModel; }
+
     /** Returns the row sequence (without gaps) */
     inline const DNASequence& getSequence() const;
+
+    /**
+     * Sets a new sequence. Be careful, gap model validity is not verified.
+     * The sequence must not contain gaps.
+     */
+    void setSequence(const DNASequence& newSequence);
+
+    /** Returns ID of the row in the database. */
+    qint64 getRowId() const { return initialRowInDb.rowId; }
+
+    void setRowId(qint64 rowId) { initialRowInDb.rowId = rowId; }
+
+    /** Returns ID of the row sequence in the database. */
+    U2MsaRow getRowDBInfo() const;
 
     /**
      * The length must be greater or equal to the row length.
@@ -186,12 +177,30 @@ public:
      */
     void replaceChars(char origChar, char resultChar, U2OpStatus& os);
 
+    /** Returns length of the sequence + number of gaps. Doesn't include trailing gaps. */
+    qint64 getRowLengthWithoutTrailing() const;
+
 private:
+    /** Create a new row (sequence + gap model) from the bytes */
+    static MAlignmentRow createRow(const QString& name,
+        const QByteArray& bytes,
+        U2OpStatus& os);
+
     /**
-     * Creates a row with the specified sequence and gap model
-     * It is assumed that the sequence doesn't contain gaps.
+     * Sequence must not contain gaps.
+     * All gaps in the gaps model (in 'rowInDb') must be valid and have an offset within the bound of the sequence.
      */
-    MAlignmentRow(const DNASequence& sequence, QList<U2MsaGap> gaps);
+    static MAlignmentRow createRow(
+        const U2MsaRow& rowInDb,
+        const DNASequence& sequence,
+        const QList<U2MsaGap>& gaps,
+        U2OpStatus& os);
+
+    /** Do NOT create a row without an alignment! */
+    MAlignmentRow();
+
+    /** Creates a row in memory. */
+    MAlignmentRow(const U2MsaRow& rowInDb, const DNASequence& sequence, const QList<U2MsaGap>& gaps);
 
     /** Splits input to sequence bytes and gaps model */
     static void splitBytesToCharsAndGaps(const QByteArray& input, QByteArray& seqBytes, QList<U2MsaGap>& gapModel);
@@ -226,14 +235,14 @@ private:
     /** Removing gaps from the row between position 'pos' and 'pos + count' */
     void removeGapsFromGapModel(int pos, int count);
 
-    /** Returns length of the sequence + number of gaps.clear Doesn't include trailing gaps. */
-    int getRowLengthWithoutTrailing();
-
-    /** The sequence of the row without gaps */
+    /** The sequence of the row without gaps (cached) */
     DNASequence         sequence;
 
     /** Gaps model of the row */
     QList<U2MsaGap>     gaps;
+
+    /** The row in the database */
+    U2MsaRow            initialRowInDb;
 };
 
 
@@ -281,7 +290,6 @@ inline const DNASequence& MAlignmentRow::getSequence() const {
 
 inline bool MAlignmentRow::operator!=(const MAlignmentRow& row) const {
     return !(*this == row);
-
 }
 
 
@@ -365,6 +373,13 @@ public:
     /** Returns all rows in the alignment */
     const QList<MAlignmentRow>& getRows() const { return rows; }
 
+    /** Returns IDs of the alignment rows in the database */
+    QList<qint64> getRowsIds() const;
+
+    U2MsaRow getRowByRowId(qint64 rowId, U2OpStatus& os) const;
+
+    DNASequence getSequenceByRowId(qint64 rowId, U2OpStatus& os) const;
+
     /** Returns all rows' names in the alignment */
     QStringList getRowNames() const;
 
@@ -419,6 +434,12 @@ public:
      */
     MAlignment mid(int start, int len) const;
 
+
+    void setRowGapModel(int rowIndex, const QList<U2MsaGap>& gapModel);
+
+    /** Updates row ID of the row at 'rowIndex' position */
+    void setRowId(int rowIndex, qint64 rowId);
+
     /**
      * Adds a new row to the alignment.
      * If rowIndex == -1 -> appends the row to the alignment.
@@ -426,10 +447,9 @@ public:
      * Does not trim the original alignment.
      * Can increase the overall alignment length.
      */
-    void addRow(const MAlignmentRow& row, U2OpStatus& os);
-    void addRow(const MAlignmentRow& row, int rowIndex, U2OpStatus& os);
-    void addRow(const QString& name, const QByteArray& bytes, U2OpStatus& os);
+    void addRow(const QString& name, const QByteArray& bytes, U2OpStatus& os);    
     void addRow(const QString& name, const QByteArray& bytes, int rowIndex, U2OpStatus& os);
+    void addRow(const U2MsaRow& rowInDb, const DNASequence& sequence, U2OpStatus& os);
 
     /**
      * Removes a row from alignment.
@@ -484,6 +504,9 @@ public:
     void check() const;
 
 private:
+    /** Helper-method for adding a row to the alignment */
+    void addRow(const MAlignmentRow& row, int rowIndex, U2OpStatus& os);
+
     /** Computes minimal length to hold the whole alignment */
     int calculateMinLength() const;
 

@@ -64,59 +64,13 @@ U2EntityRef MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, const MA
     return U2EntityRef(dbiRef, msa.id);
 }
 
-void MAlignmentImporter::updateAlignment(U2EntityRef& msaRef, const MAlignment& al, U2OpStatus& os) {
-    DbiConnection con(msaRef.dbiRef, true, os);
-    CHECK_OP(os, );
-
-    U2ObjectDbi* objectDbi = con.dbi->getObjectDbi();
-    SAFE_POINT(NULL != objectDbi, "NULL Object Dbi during importing an alignment!",);
-
-    objectDbi->removeObject(msaRef.entityId, os);
-
-    // Close the connection
-    con.close(os);
-    CHECK_OP(os, );
-
-    msaRef = createAlignment(msaRef.dbiRef, al, os);
-
-    //// Verify that the MSA object is present in the db by checking its version
-    //U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
-    //SAFE_POINT(NULL != msaDbi, "NULL MSA Dbi during updating an alignment in db!", );
-
-    //U2Msa msaObj = msaDbi->getMsaObject(msaRef.entityId, os);
-    //CHECK_OP(os, );
-
-    //// MSA object and info
-    //updateMsaObject(con, al, os);
-    //CHECK_OP(os, );
-
-    //clearMsaObjectAttributes(con, msaRef.entityId, os);
-    //CHECK_OP(os, );
-
-    //importMsaInfo(con, msaRef.entityId, al, os);
-    //CHECK_OP(os, );
-
-    //// MSA rows
-    //QList<U2Sequence> sequences = importSequences(con, al, os);
-    //CHECK_OP(os, U2EntityRef());
-
-    //importRows(con, al, msa, sequences, os);
-    //CHECK_OP(os, U2EntityRef());
-
-    //makeSequencesChildObjects(con, sequences, os);
-    //CHECK_OP(os, U2EntityRef());
-}
-
 U2Msa MAlignmentImporter::importMsaObject(const DbiConnection& con, const MAlignment& al, U2OpStatus& os) {
     U2Msa msa;
     DNAAlphabet* alphabet = al.getAlphabet();
     SAFE_POINT(NULL != alphabet, "The alignment alphabet is NULL during importing!", U2Msa());
 
     msa.alphabet.id = alphabet->getId();
-
     msa.length = al.getLength();
-    msa.numOfRows = al.getNumRows();
-
     msa.visualName = al.getName();
     if (msa.visualName.isEmpty()) {
         QDate date = QDate::currentDate();
@@ -134,23 +88,6 @@ U2Msa MAlignmentImporter::importMsaObject(const DbiConnection& con, const MAlign
     return msa;
 }
 
-//void MAlignmentImporter::updateMsaObject(const DbiConnection& con, const MAlignment& al, U2OpStatus& os) {
-//    U2Msa msa;
-//    DNAAlphabet* alphabet = al.getAlphabet();
-//    SAFE_POINT(NULL != alphabet, "The alignment alphabet is NULL during updating the alignment!", );
-//
-//    msa.alphabet.id = alphabet->getId();
-//
-//    msa.length = al.getLength();
-//    msa.numOfRows = al.getNumRows();
-//
-//    U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
-//    SAFE_POINT(NULL != msaDbi, "NULL MSA Dbi during importing an alignment!", );
-//
-//    msaDbi->updateMsaObject(msa, os);
-//    CHECK_OP(os, );
-//}
-
 void MAlignmentImporter::importMsaInfo(const DbiConnection& con, const U2DataId& msaId, const MAlignment& al, U2OpStatus& os) {
     QVariantMap alInfo = al.getInfo();
 
@@ -165,13 +102,6 @@ void MAlignmentImporter::importMsaInfo(const DbiConnection& con, const U2DataId&
         CHECK_OP(os, );
     }
 }
-
-//void MAlignmentImporter::clearMsaObjectAttributes(const DbiConnection& con, const U2DataId& msaId, U2OpStatus& os) {
-//    U2AttributeDbi* attrDbi = con.dbi->getAttributeDbi();
-//    SAFE_POINT(NULL != attrDbi, "NULL Attribute Dbi during importing an alignment!",);
-//
-//    attrDbi->removeObjectAttributes(msaId, os);
-//}
 
 QList<U2Sequence> MAlignmentImporter::importSequences(const DbiConnection& con, const MAlignment& al, U2OpStatus& os) {
     U2SequenceDbi* seqDbi = con.dbi->getSequenceDbi();
@@ -225,7 +155,7 @@ QList<U2MsaRow> MAlignmentImporter::importRows(const DbiConnection& con, const M
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL MSA Dbi during importing an alignment!", QList<U2MsaRow>());
 
-    msaDbi->addRows(msa, rows, os);
+    msaDbi->addRows(msa.id, rows, os);
     CHECK_OP(os, QList<U2MsaRow>());
 
     return rows;

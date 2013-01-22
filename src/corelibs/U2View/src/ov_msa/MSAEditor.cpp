@@ -532,7 +532,12 @@ bool MSAEditor::eventFilter(QObject*, QEvent* e) {
                 if (e->type() == QEvent::DragEnter) {
                     de->acceptProposedAction();
                 } else {     
-                    msaObject->addRow(dnaObj->getWholeSequence());
+                    U2MsaRow row;
+                    row.sequenceId = dnaObj->getEntityRef().entityId;
+                    row.gstart = 0;
+                    row.gend = dnaObj->getSequenceLength();
+
+                    msaObject->addRow(row, dnaObj->getWholeSequence());
                 }    
             }
         }

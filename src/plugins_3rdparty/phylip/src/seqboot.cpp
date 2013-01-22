@@ -905,8 +905,7 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
       //putchar('\n');
       if (j >= mavect[rep]->getNumRows()) {
           U2::U2OpStatus2Log os;
-          U2::MAlignmentRow curR = U2::MAlignmentRow::createRow(ma.getRow(j).getName(), curAr, os);
-          mavect[rep]->addRow(curR, os);
+          mavect[rep]->addRow(ma.getRow(j).getName(), curAr, os);
       }
       else {
         const U2::MAlignmentRow& curR = mavect[rep]->getRow(j);

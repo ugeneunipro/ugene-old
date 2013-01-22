@@ -86,7 +86,8 @@ ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget 
         size += matrix.getValue(i, 0);
     }
 
-    QList<MAlignmentRow> rows;
+    DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    MAlignment ma(QString("Temporary alignment"), al);
     for (int i = 0; i < size; i++) {
         QByteArray arr;
         for (int j = 0; j < len; j++) {
@@ -107,13 +108,9 @@ ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget 
             }
         }
         U2OpStatus2Log os;
-        MAlignmentRow row = MAlignmentRow::createRow("", arr, os);
+        ma.addRow(QString("Row %1").arg(i), arr, os);
         CHECK_OP(os, );
-
-        rows.append(row);
     }
-    DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
-    MAlignment ma(QString("Temporary alignment"), al, rows);
     AlignmentLogoSettings logoSettings(ma);
     logoWidget->resize(logowidth, logoheight);
     scrollArea->resize(logowidth, logoheight + 10);

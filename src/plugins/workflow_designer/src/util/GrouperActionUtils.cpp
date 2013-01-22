@@ -276,7 +276,8 @@ bool Sequence2MSAPerformer::applyAction(const QVariant &newData) {
     }
 
     U2OpStatus2Log os;
-    MAlignmentRow newRow = MAlignmentRow::createRow(seqObj->getGObjectName(), seqObj->getWholeSequenceData(), os);
+    QString rowName = seqObj->getGObjectName();
+    QByteArray bytes = seqObj->getWholeSequenceData();
 
     if (!started) {
         QString name;
@@ -296,12 +297,15 @@ bool Sequence2MSAPerformer::applyAction(const QVariant &newData) {
     }
 
     if (unique) {
-        if (!result.getRows().contains(newRow)) {
-            result.addRow(newRow, os);
+        foreach (MAlignmentRow currRow, result.getRows()) {
+            if ((currRow.getName() == rowName) &&
+                (currRow.getCore() == bytes)) {
+                    return true;
+            }
         }
-    } else {
-        result.addRow(newRow, os);
     }
+
+    result.addRow(rowName, bytes, os);
 
     return true;
 }
@@ -345,10 +349,10 @@ bool MergerMSAPerformer::applyAction(const QVariant &newData) {
     foreach (const MAlignmentRow &newRow, newAl.getRows()) {
         if (unique) {
             if (!rows.contains(newRow)) {
-                result.addRow(newRow, os);
+                result.addRow(newRow.getRowDBInfo(), newRow.getSequence(), os);
             }
         } else {
-            result.addRow(newRow, os);
+            result.addRow(newRow.getRowDBInfo(), newRow.getSequence(), os);
         }
     }
 

@@ -212,15 +212,11 @@ DECLARE_TEST(MAlignmentUnitTests, mid_validParams);
 
 /**
  * Adding a new row to the alignment:
- *   ^ appendRow           - new row is appended to the end of the alignment, the alignment length is modified
- *   ^ rowToIndex          - insert a new row to the the specified index
  *   ^ appendRowFromBytes  - a new row is created from bytes and appended to the end of the alignment
  *   ^ rowFromBytesToIndex - a new row is created from bytes and inserted to the specified index
  *   ^ zeroBound           - incorrect row index "-2" => the new row is inserted to the beginning
  *   ^ rowsNumBound        - incorrect row index more than the number of rows => the row is appended
  */
-DECLARE_TEST(MAlignmentUnitTests, addRow_appendRow);
-DECLARE_TEST(MAlignmentUnitTests, addRow_rowToIndex);
 DECLARE_TEST(MAlignmentUnitTests, addRow_appendRowFromBytes);
 DECLARE_TEST(MAlignmentUnitTests, addRow_rowFromBytesToIndex);
 DECLARE_TEST(MAlignmentUnitTests, addRow_zeroBound);
@@ -328,8 +324,6 @@ DECLARE_METATYPE(MAlignmentUnitTests, setRowContent_lengthIsIncreased);
 DECLARE_METATYPE(MAlignmentUnitTests, upperCase_charsAndGaps)
 DECLARE_METATYPE(MAlignmentUnitTests, crop_validParams);
 DECLARE_METATYPE(MAlignmentUnitTests, mid_validParams);
-DECLARE_METATYPE(MAlignmentUnitTests, addRow_appendRow);
-DECLARE_METATYPE(MAlignmentUnitTests, addRow_rowToIndex);
 DECLARE_METATYPE(MAlignmentUnitTests, addRow_appendRowFromBytes);
 DECLARE_METATYPE(MAlignmentUnitTests, addRow_rowFromBytesToIndex);
 DECLARE_METATYPE(MAlignmentUnitTests, addRow_zeroBound);

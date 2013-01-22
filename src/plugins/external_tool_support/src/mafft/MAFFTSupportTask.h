@@ -64,6 +64,8 @@ class MAFFTSupportTask : public Task {
     Q_OBJECT
 public:
     MAFFTSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const MAFFTSupportTaskSettings& settings);
+    ~MAFFTSupportTask();
+
     void prepare();
     Task::ReportResult report();
 
@@ -73,7 +75,7 @@ public:
 private:
     MAlignment                  inputMsa;
     GObjectReference            objRef;
-    Document*                   newDocument;
+    QPointer<Document>          tmpDoc;
     QString                     url;
     MAFFTLogParser*             logParser;
 

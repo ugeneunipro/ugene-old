@@ -84,12 +84,10 @@ IMPLEMENT_TEST(MsaDbiUnitTests, createMsaObject) {
 
     U2AlphabetId testAlphabet = BaseDNAAlphabetIds::AMINO_DEFAULT();
     int testLength = 10;
-    int testNumOfRows = 5;
 
     U2Msa al;
     al.alphabet = testAlphabet;
     al.length = testLength;
-    al.numOfRows = testNumOfRows;
 
     U2OpStatusImpl os;
     msaDbi->createMsaObject(al, "", os);
@@ -97,10 +95,13 @@ IMPLEMENT_TEST(MsaDbiUnitTests, createMsaObject) {
 
     const U2Msa& actual = msaDbi->getMsaObject(al.id, os);
     CHECK_NO_ERROR(os);
+
     CHECK_EQUAL(testAlphabet.id, actual.alphabet.id, "alphabet");
     CHECK_EQUAL(testLength, actual.length, "length");
-    CHECK_EQUAL(testNumOfRows, actual.numOfRows, "number of rows");
     CHECK_EQUAL(al.id, actual.id, "id");
+
+    qint64 actualNumOfRows = msaDbi->getNumOfRows(al.id, os);
+    CHECK_EQUAL(0, actualNumOfRows, "number of rows");
 }
 
 IMPLEMENT_TEST(MsaDbiUnitTests, addRows) {
@@ -111,7 +112,6 @@ IMPLEMENT_TEST(MsaDbiUnitTests, addRows) {
     U2Msa al;
     al.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
     al.length = 5;
-    al.numOfRows = 2;
     msaDbi->createMsaObject(al, "", os);
     CHECK_NO_ERROR(os);
 
@@ -147,8 +147,12 @@ IMPLEMENT_TEST(MsaDbiUnitTests, addRows) {
     QList<U2MsaRow> rows;
     rows << row1 << row2;
 
-    msaDbi->addRows(al, rows, os);
+    msaDbi->addRows(al.id, rows, os);
     CHECK_NO_ERROR(os);
+
+    // Get the number of rows
+    qint64 actualNumOfRows = msaDbi->getNumOfRows(al.id, os);
+    CHECK_EQUAL(2, actualNumOfRows, "number of rows");
 
     // Get the rows
     QList<U2MsaRow> actualRows = msaDbi->getRows(al.id, os);
@@ -184,7 +188,6 @@ IMPLEMENT_TEST(MsaDbiUnitTests, removeRows) {
     U2Msa al;
     al.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
     al.length = 5;
-    al.numOfRows = 2;
     msaDbi->createMsaObject(al, "", os);
     CHECK_NO_ERROR(os);
 
@@ -236,15 +239,19 @@ IMPLEMENT_TEST(MsaDbiUnitTests, removeRows) {
     QList<U2MsaRow> rows;
     rows << row1 << row2 << row3;
 
-    msaDbi->addRows(al, rows, os);
+    msaDbi->addRows(al.id, rows, os);
     CHECK_NO_ERROR(os);
 
     // Remove the rows
     QList<U2MsaRow> rowsToRemove;
     rowsToRemove << row1 << row3;
 
-    msaDbi->removeRows(al, rowsToRemove, os);
+    msaDbi->removeRows(al.id, rowsToRemove, os);
     CHECK_NO_ERROR(os);
+
+    // Get the number of rows
+    qint64 actualNumOfRows = msaDbi->getNumOfRows(al.id, os);
+    CHECK_EQUAL(1, actualNumOfRows, "number of rows");
 
     // Get the rows
     QList<U2MsaRow> actualRows = msaDbi->getRows(al.id, os);

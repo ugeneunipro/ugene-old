@@ -178,8 +178,37 @@ MAlignmentObject* MSAUtils::seqDocs2msaObj(QList<Document*> docs, U2OpStatus& os
         objects << doc->getObjects();
     }
     return seqObjs2msaObj(objects, os, useGenbankHeader);
-
-    
-
 }
+
+QList<qint64> MSAUtils::compareRowsAfterAlignment(const MAlignment& origMsa, MAlignment& newMsa, U2OpStatus& os) {
+    QList<qint64> rowsOrder;
+    QList<MAlignmentRow> origMsaRows = origMsa.getRows();
+    for (int i = 0, n = newMsa.getNumRows(); i < n; ++i) {
+        const MAlignmentRow& newMsaRow = newMsa.getRow(i);
+        QString rowName = newMsaRow.getName();
+
+        bool rowFound = false;
+        foreach (const MAlignmentRow& origMsaRow, origMsaRows) {
+            if (origMsaRow.getName() == rowName) {
+                rowFound = true;
+                qint64 rowId = origMsaRow.getRowDBInfo().rowId;
+                newMsa.setRowId(i, rowId);
+                rowsOrder.append(rowId);
+
+                if (origMsaRow.getSequence().length() != newMsaRow.getSequence().length()) {
+                    os.setError(tr("Unexpected length of a row sequence!"));
+                    return QList<qint64>();
+                }
+            }
+        }
+
+        if (!rowFound) {
+            os.setError(tr("Can't find a row in an alignment!"));
+            return QList<qint64>();
+        }
+    }
+    return rowsOrder;
+}
+
+
 }//namespace

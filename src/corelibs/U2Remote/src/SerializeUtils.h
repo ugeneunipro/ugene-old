@@ -50,50 +50,56 @@ public:
     }
     
     template<typename T> static bool deserializeValue( const QVariant & data, T * val ) {
-        if( NULL == val ) {
-            return false;
-        }
-        if( !data.canConvert<T>() ) {
-            return false;
-        }
-        *val = data.value<T>();
-        return true;
+        FAIL("Obsolete! Not implemented!", false);
+
+        //if( NULL == val ) {
+        //    return false;
+        //}
+        //if( !data.canConvert<T>() ) {
+        //    return false;
+        //}
+        //*val = data.value<T>();
+        //return true;
     }
     
     template<typename T> static QVariant serializeArray( T * arr, int sz ) {
-        if( NULL == arr ) {
-            return 0;
-        }
-        assert( 0 <= sz );
-        QVariantList res;
-        for( int i = 0; i < sz; ++i ) {
-            res << serializeValue<T>( arr[i] );
-        }
-        return res;
+        FAIL("Obsolete! Not implemented!", false);
+
+        //if( NULL == arr ) {
+        //    return 0;
+        //}
+        //assert( 0 <= sz );
+        //QVariantList res;
+        //for( int i = 0; i < sz; ++i ) {
+        //    res << serializeValue<T>( arr[i] );
+        //}
+        //return res;
     }
     
     /* the arr array must be allocated by caller */
     template<typename T> static bool deserializeArray( const QVariant & data, T * arr, int sz ) {
-        if( data.canConvert( QVariant::Int ) && 0 == data.toInt() ) {
-            return true;
-        }
-        if( 0 >= sz ) {
-            return false;
-        }
-        if( !data.canConvert( QVariant::List ) ) {
-            return false;
-        }
-        QVariantList args = data.toList();
-        if( args.size() != sz ) {
-            return false;
-        }
-        
-        for( int i = 0; i < sz; ++i ) {
-            if( !deserializeValue<T>( args[i], arr + i ) ) {
-                return false;
-            }
-        }
-        return true;
+        FAIL("Obsolete! Not implemented!", false);
+
+        //if( data.canConvert( QVariant::Int ) && 0 == data.toInt() ) {
+        //    return true;
+        //}
+        //if( 0 >= sz ) {
+        //    return false;
+        //}
+        //if( !data.canConvert( QVariant::List ) ) {
+        //    return false;
+        //}
+        //QVariantList args = data.toList();
+        //if( args.size() != sz ) {
+        //    return false;
+        //}
+        //
+        //for( int i = 0; i < sz; ++i ) {
+        //    if( !deserializeValue<T>( args[i], arr + i ) ) {
+        //        return false;
+        //    }
+        //}
+        //return true;
     }
     
     /* serialization of RemoteMachineSettings: human-readable QString instead of binary QVariant 
@@ -108,265 +114,293 @@ public:
 // serializeValue/deserializeValue template realizations: TODO: is it good to make them inline?
 template<>
 inline QVariant SerializeUtils::serializeValue<char*>( char * const& str ) {
-    QVariantList res;
-    if( NULL == str ) {
-        res << serializeValue<int>( -1 );
-        res << QVariant();
-    } else {
-        int len = strlen( str );
-        res << serializeValue<int>( len );
-        res << serializeArray<char>( str, len );
-    }
-    return res;
+    FAIL("Obsolete! Not implemented!", QVariant());
+
+    // QVariantList res;
+    //if( NULL == str ) {
+    //    res << serializeValue<int>( -1 );
+    //    res << QVariant();
+    //} else {
+    //    int len = strlen( str );
+    //    res << serializeValue<int>( len );
+    //    res << serializeArray<char>( str, len );
+    //}
+    //return res;
 }
 
 template<>
 inline bool SerializeUtils::deserializeValue<char*>( const QVariant & data, char ** str ) {
-    if( NULL == str ) {
-        return false;
-    }
-    *str = NULL;
+    FAIL("Obsolete! Not implemented!", false);
 
-    if( !data.canConvert( QVariant::List ) ) {
-        return false;
-    }
-    QVariantList args = data.toList();
-    if( 2 != args.size() ) {
-        return false;
-    }
+    //if( NULL == str ) {
+    //    return false;
+    //}
+    //*str = NULL;
 
-    int sz = 0;
-    if( !deserializeValue<int>( args[0], &sz ) ) { return false; }
-    if( -1 == sz ) {
-        return true;
-    }
-    assert( 0 <= sz );
-    *str = (char*)calloc( sz + 1, sizeof( char ) );
-    assert( NULL != str );
-    if( !deserializeArray<char>( args[1], *str, sz ) ) { return false; }
-    (*str)[sz] = '\0';
-    return true;
+    //if( !data.canConvert( QVariant::List ) ) {
+    //    return false;
+    //}
+    //QVariantList args = data.toList();
+    //if( 2 != args.size() ) {
+    //    return false;
+    //}
+
+    //int sz = 0;
+    //if( !deserializeValue<int>( args[0], &sz ) ) { return false; }
+    //if( -1 == sz ) {
+    //    return true;
+    //}
+    //assert( 0 <= sz );
+    //*str = (char*)calloc( sz + 1, sizeof( char ) );
+    //assert( NULL != str );
+    //if( !deserializeArray<char>( args[1], *str, sz ) ) { return false; }
+    //(*str)[sz] = '\0';
+    //return true;
 }
 
 template<>
 inline QVariant SerializeUtils::serializeValue<DNAAlphabet*>( DNAAlphabet * const& al ) {
-    QVariantList res;
-    if( NULL != al ) {
-        res << serializeValue<bool>( true );
-        res << serializeValue<QString>( al->getId() );
-    } else {
-        res << serializeValue<bool>( false );
-        res << serializeValue<QString>( "" );
-    }
-    return res;
+    FAIL("Obsolete! Not implemented!", QVariant());
+
+    // QVariantList res;
+    //if( NULL != al ) {
+    //    res << serializeValue<bool>( true );
+    //    res << serializeValue<QString>( al->getId() );
+    //} else {
+    //    res << serializeValue<bool>( false );
+    //    res << serializeValue<QString>( "" );
+    //}
+    //return res;
 }
 
 template<>
 inline bool SerializeUtils::deserializeValue<DNAAlphabet*>( const QVariant & data, DNAAlphabet ** al ) {
-    if( NULL == al ) {
-        return false;
-    }
-    *al = NULL;
-    if( !data.canConvert( QVariant::List ) ) {
-        return false;
-    }
+    FAIL("Obsolete! Not implemented!", false);
 
-    QVariantList args = data.toList();
-    if( 2 != args.size() ) {
-        return false;
-    }
+    //if( NULL == al ) {
+    //    return false;
+    //}
+    //*al = NULL;
+    //if( !data.canConvert( QVariant::List ) ) {
+    //    return false;
+    //}
 
-    bool notNullAl = false;
-    QString alId;
-    if( !deserializeValue<bool>( args[0], &notNullAl ) ) { return false; }
-    if( !deserializeValue<QString>( args[1], &alId ) ) { return false; }
-    if( notNullAl ) {
-        DNAAlphabetRegistry * alReg = AppContext::getDNAAlphabetRegistry();
-        assert( NULL != alReg );
-        *al = alReg->findById( alId );
-    }
+    //QVariantList args = data.toList();
+    //if( 2 != args.size() ) {
+    //    return false;
+    //}
 
-    return true;
+    //bool notNullAl = false;
+    //QString alId;
+    //if( !deserializeValue<bool>( args[0], &notNullAl ) ) { return false; }
+    //if( !deserializeValue<QString>( args[1], &alId ) ) { return false; }
+    //if( notNullAl ) {
+    //    DNAAlphabetRegistry * alReg = AppContext::getDNAAlphabetRegistry();
+    //    assert( NULL != alReg );
+    //    *al = alReg->findById( alId );
+    //}
+
+    //return true;
 }
 
 template<>
 inline QVariant SerializeUtils::serializeValue<DNASequence>( const DNASequence & sequence ) {
-    assert( !sequence.isNull() && NULL != sequence.alphabet );
-    QVariantList res;
-    res << serializeValue<QVariantMap>( sequence.info );
-    res << serializeValue<QByteArray>( sequence.seq );
-    res << serializeValue<DNAAlphabet*>( sequence.alphabet );
-    return res;
+    FAIL("Obsolete! Not implemented!", QVariant());
+
+    //assert( !sequence.isNull() && NULL != sequence.alphabet );
+    //QVariantList res;
+    //res << serializeValue<QVariantMap>( sequence.info );
+    //res << serializeValue<QByteArray>( sequence.seq );
+    //res << serializeValue<DNAAlphabet*>( sequence.alphabet );
+    //return res;
 }
 
 template<>
 inline bool SerializeUtils::deserializeValue<DNASequence>( const QVariant & data, DNASequence * seq ) {
-    if( NULL == seq ) {
-        return false;
-    }
-    if( !data.canConvert( QVariant::List ) ) {
-        return false;
-    }
-    QVariantList args = data.toList();
-    if( SERIALIZED_DNASEQUENCE_LIST_SZ != args.size() ) {
-        return false;
-    }
+    FAIL("Obsolete! Not implemented!", false);
 
-    if( !deserializeValue<QVariantMap>( args[0], &seq->info ) ) { return false; }
-    if( !deserializeValue<QByteArray>( args[1], &seq->seq ) ) { return false; }
-    if( !deserializeValue<DNAAlphabet*>( args[2], &seq->alphabet ) ) { return false; }
-    assert( NULL != seq->alphabet );
+    //if( NULL == seq ) {
+    //    return false;
+    //}
+    //if( !data.canConvert( QVariant::List ) ) {
+    //    return false;
+    //}
+    //QVariantList args = data.toList();
+    //if( SERIALIZED_DNASEQUENCE_LIST_SZ != args.size() ) {
+    //    return false;
+    //}
 
-    return true;
+    //if( !deserializeValue<QVariantMap>( args[0], &seq->info ) ) { return false; }
+    //if( !deserializeValue<QByteArray>( args[1], &seq->seq ) ) { return false; }
+    //if( !deserializeValue<DNAAlphabet*>( args[2], &seq->alphabet ) ) { return false; }
+    //assert( NULL != seq->alphabet );
+
+    //return true;
 }
 
 template<>
 inline QVariant SerializeUtils::serializeValue<MAlignmentRow>( const MAlignmentRow & row) {
-    QVariantList res;
-    res << serializeValue<QString>( row.getName() );
-    res << serializeValue<QByteArray>( row.getCore() );
-    res << serializeValue<int>( row.getCoreLength() );
-    return res;
+    FAIL("Obsolete! Not implemented!", QVariant());
+
+    //QVariantList res;
+    //res << serializeValue<QString>( row.getName() );
+    //res << serializeValue<QByteArray>( row.getCore() );
+    //res << serializeValue<int>( row.getCoreLength() );
+    //return res;
 }
 
 template<>
 inline QVariant SerializeUtils::serializeValue< QList<MAlignmentRow> >( const QList< MAlignmentRow> & items ) {
-    QVariantList res;
-    foreach( const MAlignmentRow & item, items ) {
-        res << serializeValue<MAlignmentRow>( item );
-    }
-    return res;
+    FAIL("Obsolete! Not implemented!", QVariant());
+
+    //QVariantList res;
+    //foreach( const MAlignmentRow & item, items ) {
+    //    res << serializeValue<MAlignmentRow>( item );
+    //}
+    //return res;
 }
 
 template<>
 inline bool SerializeUtils::deserializeValue<MAlignmentRow>( const QVariant & data, MAlignmentRow* row ) {
-    if( !data.canConvert( QVariant::List ) ) {
-        return false;
-    }
-    QVariantList args = data.toList();
-    if( 3 != args.size() ) {
-        return false;
-    }
+    FAIL("Obsolete! Not implemented!", false);
 
-    QString name;
-    if ( !deserializeValue<QString>( args[0], &name) ) { return false; }
+    //if( !data.canConvert( QVariant::List ) ) {
+    //    return false;
+    //}
+    //QVariantList args = data.toList();
+    //if( 3 != args.size() ) {
+    //    return false;
+    //}
 
-    QByteArray array;
-    if ( !deserializeValue<QByteArray>( args[1], &array) )  { return false; }
+    //QString name;
+    //if ( !deserializeValue<QString>( args[0], &name) ) { return false; }
 
-    int offset = 0;
-    if ( !deserializeValue<int>( args[2], &offset) ) { return false; }
+    //QByteArray array;
+    //if ( !deserializeValue<QByteArray>( args[1], &array) )  { return false; }
 
-    U2OpStatus2Log os;
-    MAlignmentRow createdRow = MAlignmentRow::createRow(name, array, offset, os);
-    CHECK_OP_EXT(os, row = NULL, false);
+    //int offset = 0;
+    //if ( !deserializeValue<int>( args[2], &offset) ) { return false; }
 
-    *row = createdRow;
-    return true;
+    //U2OpStatus2Log os;
+    //MAlignmentRow createdRow = MAlignmentRow::createRow(name, array, offset, os);
+    //CHECK_OP_EXT(os, row = NULL, false);
+
+    //*row = createdRow;
+    //return true;
 }
 
 template<>
 inline bool SerializeUtils::deserializeValue< QList<MAlignmentRow> >( const QVariant & data, QList< MAlignmentRow > * itemList ) {
-    if( !data.canConvert( QVariant::List ) ) {
-        return false;
-    }
+    FAIL("Obsolete! Not implemented!", false);
 
-    QVariantList args = data.toList();
-    foreach( const QVariant & arg, args ) {
-        MAlignmentRow item;
-        if( !deserializeValue<MAlignmentRow>( arg, &item ) ) { return false; }
-        itemList->append( item );
-    }
-    return true;
+    //if( !data.canConvert( QVariant::List ) ) {
+    //    return false;
+    //}
+
+    //QVariantList args = data.toList();
+    //foreach( const QVariant & arg, args ) {
+    //    MAlignmentRow item;
+    //    if( !deserializeValue<MAlignmentRow>( arg, &item ) ) { return false; }
+    //    itemList->append( item );
+    //}
+    //return true;
 }
 
 template<>
 inline QVariant SerializeUtils::serializeValue<MAlignment>( const MAlignment & ma ) {
-    QVariantList res;
-    res << serializeValue<DNAAlphabet*>( ma.getAlphabet());
-    res << serializeValue< QList<MAlignmentRow> >( ma.getRows() );
-    res << serializeValue<int>( ma.getLength() );
-    res << serializeValue<QVariantMap>( ma.getInfo() );
-    return res;
+    FAIL("Obsolete! Not implemented!", QVariant());
+
+    //QVariantList res;
+    //res << serializeValue<DNAAlphabet*>( ma.getAlphabet());
+    //res << serializeValue< QList<MAlignmentRow> >( ma.getRows() );
+    //res << serializeValue<int>( ma.getLength() );
+    //res << serializeValue<QVariantMap>( ma.getInfo() );
+    //return res;
 }
 
 template<>
 inline bool SerializeUtils::deserializeValue<MAlignment>( const QVariant & data, MAlignment * ma ) {
-    if( NULL == ma ) {
-        return false;
-    }
-    if( !data.canConvert( QVariant::List ) ) {
-        return false;
-    }
-    QVariantList args = data.toList();
-    if( SERIALIZED_MALIGNMENT_LIST_SZ != args.size() ) {
-        return false;
-    }
-    
-    DNAAlphabet* al = NULL;
-    if( !deserializeValue<DNAAlphabet*>( args[0], &al) ) { return false; }
+    FAIL("Obsolete! Not implemented!", false);
 
-    QList<MAlignmentRow> rows;
-    if( !deserializeValue< QList<MAlignmentRow> >( args[1], &rows) ) { return false; }
+    //if( NULL == ma ) {
+    //    return false;
+    //}
+    //if( !data.canConvert( QVariant::List ) ) {
+    //    return false;
+    //}
+    //QVariantList args = data.toList();
+    //if( SERIALIZED_MALIGNMENT_LIST_SZ != args.size() ) {
+    //    return false;
+    //}
+    //
+    //DNAAlphabet* al = NULL;
+    //if( !deserializeValue<DNAAlphabet*>( args[0], &al) ) { return false; }
 
-    int len = 0;
-    if( !deserializeValue<int>( args[2], &len) ) { return false; }
+    //QList<MAlignmentRow> rows;
+    //if( !deserializeValue< QList<MAlignmentRow> >( args[1], &rows) ) { return false; }
 
-    QVariantMap info;
-    if( !deserializeValue<QVariantMap>( args[3], &info ) ) { return false; }
+    //int len = 0;
+    //if( !deserializeValue<int>( args[2], &len) ) { return false; }
 
-    *ma = MAlignment(MA_OBJECT_NAME, al, rows);
-    ma->setInfo(info);
+    //QVariantMap info;
+    //if( !deserializeValue<QVariantMap>( args[3], &info ) ) { return false; }
 
-    return true;
+    //*ma = MAlignment(MA_OBJECT_NAME, al, rows);
+    //ma->setInfo(info);
+
+    //return true;
 }
 
 template<>
 inline QVariant SerializeUtils::serializeValue<VirtualFileSystem>( const VirtualFileSystem & vfs ) {
-    QVariantList res;
-    
-    res << serializeValue( vfs.getId() );
-    
-    QVariantMap resMap;
-    QStringList filenames = vfs.getAllFilenames();
-    foreach( const QString & filename, filenames ) {
-        QByteArray file = vfs.getFileByName( filename );
-        resMap.insert( filename, serializeValue( file ) );
-    }
-    res << serializeValue( resMap );
-    
-    return res;
+    FAIL("Obsolete! Not implemented!", QVariant());
+
+    //QVariantList res;
+    //
+    //res << serializeValue( vfs.getId() );
+    //
+    //QVariantMap resMap;
+    //QStringList filenames = vfs.getAllFilenames();
+    //foreach( const QString & filename, filenames ) {
+    //    QByteArray file = vfs.getFileByName( filename );
+    //    resMap.insert( filename, serializeValue( file ) );
+    //}
+    //res << serializeValue( resMap );
+    //
+    //return res;
 }
 
 template<>
 inline bool SerializeUtils::deserializeValue<VirtualFileSystem>( const QVariant & data, VirtualFileSystem * val ) {
-    if( NULL == val ) {
-        return false;
-    }
-    if( !data.canConvert( QVariant::List ) ) {
-        return false;
-    }
-    QVariantList args = data.toList();
-    if( 2 != args.size() ) {
-        return false;
-    }
-    
-    QString id;
-    if( !deserializeValue( args[0], &id ) ) { return false; }
-    val->setId( id );
-    
-    QVariantMap filesMap;
-    if( !deserializeValue( args[1], &filesMap ) ) { return false; }
-    foreach( const QString & filename, filesMap.keys() ) {
-        QByteArray fileData;
-        if( !deserializeValue( filesMap[filename], &fileData ) ) {
-            val->removeAllFiles();
-            return false;
-        }
-        val->createFile( filename, fileData );
-    }
-    
-    return true;
+    FAIL("Obsolete! Not implemented!", false);
+
+    //if( NULL == val ) {
+    //    return false;
+    //}
+    //if( !data.canConvert( QVariant::List ) ) {
+    //    return false;
+    //}
+    //QVariantList args = data.toList();
+    //if( 2 != args.size() ) {
+    //    return false;
+    //}
+    //
+    //QString id;
+    //if( !deserializeValue( args[0], &id ) ) { return false; }
+    //val->setId( id );
+    //
+    //QVariantMap filesMap;
+    //if( !deserializeValue( args[1], &filesMap ) ) { return false; }
+    //foreach( const QString & filename, filesMap.keys() ) {
+    //    QByteArray fileData;
+    //    if( !deserializeValue( filesMap[filename], &fileData ) ) {
+    //        val->removeAllFiles();
+    //        return false;
+    //    }
+    //    val->createFile( filename, fileData );
+    //}
+    //
+    //return true;
 }
 
 } // U2

@@ -40,8 +40,11 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/MsaDbiUtils.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SequenceUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/ProjectModel.h>
@@ -128,11 +131,6 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     saveSequence->setObjectName("Save sequence");
     saveSequence->setShortcutContext(Qt::WidgetShortcut);
     connect(saveSequence, SIGNAL(triggered()), SLOT(sl_saveSequence()));
-
-    insColAction = new QAction(tr("Insert column of gaps"), this);
-    insColAction->setShortcut(QKeySequence(Qt::SHIFT| Qt::Key_Space));
-    insColAction->setShortcutContext(Qt::WidgetShortcut);
-    connect(insColAction, SIGNAL(triggered()), SLOT(sl_insCol()));
     
     gotoAction = new QAction(QIcon(":core/images/goto.png"), tr("Go to position..."), this);
     gotoAction->setObjectName("action_go_to_position");
@@ -305,7 +303,6 @@ void MSAEditorSequenceArea::updateActions() {
     
     delSelectionAction->setEnabled(!readOnly);
     delColAction->setEnabled(!readOnly);
-    insColAction->setEnabled(!readOnly);
     insSymAction->setEnabled(!readOnly);
     createSubaligniment->setEnabled(!readOnly);
     saveSequence->setEnabled(!readOnly);
@@ -1152,24 +1149,6 @@ void MSAEditorSequenceArea::setCursorPos(const QPoint& p) {
     updateActions();
 }
 
-void MSAEditorSequenceArea::ins(const QPoint& p, bool columnMode) {
-    assert(isInRange(p));
-    MAlignmentObject* maObj = editor->getMSAObject();
-    if (maObj == NULL || maObj->isStateLocked()) {
-        return;
-    }
-    if (columnMode) {
-        maObj->insertGap(p.x(), 1);
-    } else {
-        const U2Region& range = getRowsAt(p.y());
-        for (int row = range.startPos; row < range.endPos(); row++) {
-            maObj->insertGap(row, p.x(), 1);
-        }
-    }
-}
-
-
-
 void MSAEditorSequenceArea::del(const QPoint& p, bool columnMode) {
     assert(isInRange(p));
     MAlignmentObject* maObj = editor->getMSAObject();
@@ -1302,11 +1281,6 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     m->insertMenu(GUIUtils::findAction(m->actions(), MSAE_MENU_EDIT), colorsSchemeMenu);    
 }
 
-
-void MSAEditorSequenceArea::sl_delSym() {
-    del(cursorPos, false);
-}
-
 void MSAEditorSequenceArea::sl_delCol() {
     DeleteGapsDialog dlg(this, editor->getMSAObject()->getNumRows());
     if(dlg.exec() == QDialog::Accepted) {
@@ -1334,10 +1308,6 @@ void MSAEditorSequenceArea::sl_delCol() {
 
 void MSAEditorSequenceArea::sl_fillCurrentSelectionWithGaps() {
     fillSelectionWithGaps();
-}
-
-void MSAEditorSequenceArea::sl_insCol() {
-    ins(cursorPos, true);
 }
 
 void MSAEditorSequenceArea::sl_goto() {
@@ -1763,7 +1733,13 @@ void MSAEditorSequenceArea::sl_addSeqFromProject()
             }
             U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
             if (seqObj) {
-                msaObject->addRow(seqObj->getWholeSequence());
+                U2MsaRow rowInDb;
+                rowInDb.rowId = -1; // set the ID automatically
+                rowInDb.sequenceId = seqObj->getEntityRef().entityId;
+                rowInDb.gstart = 0;
+                rowInDb.gend = seqObj->getSequenceLength();
+
+                msaObject->addRow(rowInDb, seqObj->getWholeSequence());
                 cancelSelection();
             }
         }
@@ -1899,9 +1875,43 @@ void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type
                 name.append("|revcompl");
                 break;
             }
-            DNASequence seq(name, curr, maObj->getAlphabet());
-            maObj->removeRow(i);
-            maObj->addRow(seq, i);
+
+            // Split the sequence into gaps and chars
+            QByteArray seqBytes;
+            QList<U2MsaGap> gapModel;
+            MsaDbiUtils::splitBytesToCharsAndGaps(curr, seqBytes, gapModel);
+
+            maObj->updateRow(i, seqBytes, gapModel, os);
+            
+            // Import the sequence
+            //U2SequenceImporter importer;
+
+            //importer.startSequence(maObj->getEntityRef().dbiRef, name, false, os);
+            //CHECK_OP(os, );
+
+            //qint64 seqLength = seqBytes.length();
+            //importer.addBlock(seqBytes, seqLength, os);
+            //CHECK_OP(os, );
+
+            //U2Sequence seqInDb = importer.finalizeSequence(os);
+            //DNAAlphabet* alphabet = U2AlphabetUtils::getById(seqInDb.alphabet);
+            //SAFE_POINT(NULL != alphabet, "NULL alphabet!", );
+
+            //DNASequence seq(name, seqBytes, alphabet);
+
+            
+
+            // Remove the obsolete row and add a new one
+            //maObj->removeRow(i);
+
+            //U2MsaRow row;
+            //row.rowId = -1; // set the ID automatically
+            //row.sequenceId = seqInDb.id;
+            //row.gstart = 0;
+            //row.gend = seqLength;
+            //row.gaps = gapModel;
+
+            //maObj->addRow(row, seq, i);
         }
     }
 }

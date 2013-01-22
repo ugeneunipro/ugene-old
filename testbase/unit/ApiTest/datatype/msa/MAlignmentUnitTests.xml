@@ -57,8 +57,6 @@ MAlignmentUnitTests
 + upperCase_charsAndGaps
 + crop_validParams
 + mid_validParams
-+ addRow_appendRow
-+ addRow_rowToIndex
 + addRow_appendRowFromBytes
 + addRow_rowFromBytesToIndex
 + addRow_zeroBound

@@ -188,12 +188,12 @@ void MuscleTask::doAlign(bool refine) {
         QByteArray gapSeq(resultSubMA.getLength(),MAlignment_GapChar);
         for(int i=0, n = nSeq; i < n; i++) {
             if(!existID[i]) {
-                MAlignmentRow row = MAlignmentRow::createRow(inputMA.getRow(i).getName(), gapSeq, os);
+                QString rowName = inputMA.getRow(i).getName();
                 if(config.stableMode) {
-                    resultSubMA.addRow(row, i, os);
+                    resultSubMA.addRow(rowName, gapSeq, i, os);
                 } else {
                     ids[j] = i;
-                    resultSubMA.addRow(row, os);
+                    resultSubMA.addRow(rowName, gapSeq, os);
                 }
                 j++;
             }

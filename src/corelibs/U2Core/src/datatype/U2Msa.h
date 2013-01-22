@@ -55,9 +55,6 @@ public:
     /** Id of the sequence of the row in the database */
     U2DataId        sequenceId;
 
-    /** Position of the row in */
-    qint64          pos;
-
     /** Start of the row in the sequence */
     qint64          gstart;
 
@@ -81,9 +78,6 @@ public:
 
     /** Length of the alignment */
     qint64          length;
-
-    /** Number of rows in the alignment */
-    qint64          numOfRows;
 
     // implement U2Object
     virtual U2DataType getType() { return U2Type::Msa; }

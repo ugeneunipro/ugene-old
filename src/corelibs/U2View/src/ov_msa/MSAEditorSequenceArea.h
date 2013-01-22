@@ -282,9 +282,7 @@ private slots:
     void sl_delCurrentSelection();
     void sl_copyCurrentSelection();
     void sl_fillCurrentSelectionWithGaps();
-    void sl_delSym();
     void sl_delCol();
-    void sl_insCol();
     void sl_goto();
     void sl_removeAllGaps();
     void sl_sortByName();
@@ -326,7 +324,6 @@ private:
     void drawFocus(QPainter& p);
     void drawSelection(QPainter &p);
 
-    void ins(const QPoint& p, bool columnMode);
     void fillSelectionWithGaps();
     void del(const QPoint& p, bool columnMode);
   
@@ -355,7 +352,6 @@ private:
     QAction*        delSelectionAction;
     QAction*        delColAction;
     QAction*        insSymAction;
-    QAction*        insColAction;
     QAction*        removeAllGapsAction;
     QAction*        gotoAction;
     QAction*        createSubaligniment;

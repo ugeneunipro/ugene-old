@@ -97,6 +97,8 @@ class ClustalOSupportTask : public Task {
     Q_OBJECT
 public:
     ClustalOSupportTask(const MAlignment& _inputMsa, const GObjectReference& _objRef, const ClustalOSupportTaskSettings& settings);
+    ~ClustalOSupportTask();
+
     void prepare();
     Task::ReportResult report();
 
@@ -106,7 +108,7 @@ public:
 private:
     MAlignment                  inputMsa;
     GObjectReference            objRef;
-    Document*                   newDocument;
+    QPointer<Document>          tmpDoc;
     QString                     url;
     ClustalOLogParser*          logParser;
 

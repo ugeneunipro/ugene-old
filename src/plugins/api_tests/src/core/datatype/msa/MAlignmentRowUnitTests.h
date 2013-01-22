@@ -47,9 +47,9 @@ public:
 };
 
 /**
- * Create a row from a byte array / from a sequence.
+ * The row is created by adding it to an alignment!
+ * It is created from a byte array / from a sequence.
  * Row core (start, end, length and bytes) and row length is also verified:
- *   ^ empty              - use the constructor without parameters to create an empty row
  *   ^ fromBytes          - create a row from a byte array, no trailing gaps
  *   ^ fromBytesTrailing  - create a row from a byte array, there are trailing gaps
  *   ^ fromBytesGaps      - create a row from a byte array, all items are gaps
@@ -57,10 +57,6 @@ public:
  *   ^ twoTrailing        - create a row from a byte array, there is only one trailing gap (gap length = 2)
  *   ^ oneMiddleGap       - create a row from a byte array, there is only one middle gap
  *   ^ noGaps             - create a row from a byte array, there is no gaps
- *   ^ offsetNoGap        - create a row from a byte array with offset, there are no gaps at the beginning of the byte array
- *   ^ offsetGap          - create a row from a byte array with offset, there is a gap at the beginning of the byte array
- *   ^ offsetOnlyGaps     - create a row from a byte array with offset, all items in the byte array are gaps
- *   ^ emptyAndOffset     - empty sequence + (offset > 0) => create a row of gaps
  *   ^ fromSeq            - create a row from a sequence (without gaps) and a gap model
  *   ^ fromSeqTrailing    - create a row from a sequence (without gaps) and a gap model, there are trailing gaps
  *   ^ fromSeqWithGaps    - create a row from a sequence with gaps (opStatus is set to error)
@@ -68,7 +64,6 @@ public:
  *   ^ negativeGapPos     - create a row from a sequence, the gap model is incorrect (negative gap position)
  *   ^ negativeGapOffset  - create a row from a sequence, the gap model is incorrect (negative gap offset)
  */
-DECLARE_TEST(MAlignmentRowUnitTests, createRow_empty);
 DECLARE_TEST(MAlignmentRowUnitTests, createRow_fromBytes);
 DECLARE_TEST(MAlignmentRowUnitTests, createRow_fromBytesTrailing);
 DECLARE_TEST(MAlignmentRowUnitTests, createRow_fromBytesGaps);
@@ -76,10 +71,6 @@ DECLARE_TEST(MAlignmentRowUnitTests, createRow_oneTrailing);
 DECLARE_TEST(MAlignmentRowUnitTests, createRow_twoTrailing);
 DECLARE_TEST(MAlignmentRowUnitTests, createRow_oneMiddleGap);
 DECLARE_TEST(MAlignmentRowUnitTests, createRow_noGaps);
-DECLARE_TEST(MAlignmentRowUnitTests, createRow_offsetNoGap);
-DECLARE_TEST(MAlignmentRowUnitTests, createRow_offsetGap);
-DECLARE_TEST(MAlignmentRowUnitTests, createRow_offsetOnlyGaps);
-DECLARE_TEST(MAlignmentRowUnitTests, createRow_emptyAndOffset);
 DECLARE_TEST(MAlignmentRowUnitTests, createRow_fromSeq);
 DECLARE_TEST(MAlignmentRowUnitTests, createRow_fromSeqTrailing);
 DECLARE_TEST(MAlignmentRowUnitTests, createRow_fromSeqWithGaps);
@@ -351,7 +342,6 @@ DECLARE_TEST(MAlignmentRowUnitTests, replaceChars_trailingGaps);
 
 } // namespace
 
-DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_empty)
 DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_fromBytes)
 DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_fromBytesTrailing)
 DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_fromBytesGaps)
@@ -359,10 +349,6 @@ DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_oneTrailing)
 DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_twoTrailing)
 DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_oneMiddleGap)
 DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_noGaps)
-DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_offsetNoGap)
-DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_offsetGap)
-DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_offsetOnlyGaps)
-DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_emptyAndOffset)
 DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_fromSeq)
 DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_fromSeqTrailing)
 DECLARE_METATYPE(MAlignmentRowUnitTests, createRow_fromSeqWithGaps)

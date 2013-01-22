@@ -39,14 +39,19 @@ public:
     /** Reads Msa objects by id */
     virtual U2Msa getMsaObject(const U2DataId& id, U2OpStatus& os) = 0;
 
-    /** Updates the Msa object */
+    /** Returns the number of rows in the MSA */
+    virtual qint64 getNumOfRows(const U2DataId& msaId, U2OpStatus& os) = 0;
+
+    /** Updates the whole Msa object */
     virtual void updateMsaObject(U2Msa& msa, U2OpStatus& os) = 0;
 
-    /** Returns number of sequences in MSA*/
-    virtual qint64 getSequencesCount(const U2DataId& msaId, U2OpStatus& os) = 0;
+    /** Updates a part of the Msa object info - the length */
+    virtual void updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os) = 0;
 
     /** Returns all MSA rows */
     virtual QList<U2MsaRow> getRows(const U2DataId& msaId, U2OpStatus& os) = 0;
+
+    virtual U2MsaRow getRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) = 0;
     
     /** 
         Return number of sequences in alignment that intersect given coord.
@@ -91,13 +96,33 @@ public:
         Automatically removes affected sequences that are not anymore located in some folder nor Msa object
         Requires: U2DbiFeature_WriteMsa feature support
     */
-    virtual void removeRows(U2Msa& msa, const QList<U2MsaRow>& rows, U2OpStatus& os) = 0;
+    virtual void removeRows(const U2DataId& msaId, const QList<U2MsaRow>& rows, U2OpStatus& os) = 0;
+
+    /**
+     * Removes the row gaps, the row.
+     * Also removes the record that the msa is a parent of the row sequence
+     * and attempts to remove the sequence after it.
+     */
+    virtual void removeRow(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os) = 0;
 
     /**  
         Adds sequences to MSA 
         Requires: U2DbiFeature_WriteMsa feature support
     */
-    virtual void addRows(U2Msa& msa, QList<U2MsaRow>& rows, U2OpStatus& os) = 0;
+    virtual void addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpStatus& os) = 0;
+
+    virtual void addRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os) = 0;
+
+    virtual void updateRow(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os) = 0;
+
+    /** Removes all previous values and sets a new gap model for a row in a MSA */
+    virtual void updateGapModel(const U2DataId& msaId, qint64 msaRowId, const QList<U2MsaGap>& gapModel, U2OpStatus& os) = 0;
+
+    /**
+     * Updates positions of the rows in the database according to the order in the list
+     * Be careful, all IDs must exactly match IDs of the MSA!
+     */
+    virtual void setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& rowIds, U2OpStatus& os) = 0;
 
 };
 

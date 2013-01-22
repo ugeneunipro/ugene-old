@@ -58,10 +58,16 @@ TCoffeeSupportTask::TCoffeeSupportTask(const MAlignment& _inputMsa, const GObjec
     saveTemporaryDocumentTask=NULL;
     loadTmpDocumentTask=NULL;
     tCoffeeTask=NULL;
-    newDocument=NULL;
+    tmpDoc=NULL;
     logParser=NULL;
     resultMA.setAlphabet(inputMsa.getAlphabet());
     resultMA.setName(inputMsa.getName());
+}
+
+TCoffeeSupportTask::~TCoffeeSupportTask() {
+    if (NULL != tmpDoc) {
+        delete tmpDoc;
+    }
 }
 
 void TCoffeeSupportTask::prepare(){
@@ -154,12 +160,12 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
         loadTmpDocumentTask->setSubtaskProgressWeight(5);
         res.append(loadTmpDocumentTask);
     } else if (subTask == loadTmpDocumentTask) {
-        newDocument = loadTmpDocumentTask->takeDocument();
-        SAFE_POINT(newDocument!=NULL, QString("output document '%1' not loaded").arg(newDocument->getURLString()), res);
-        SAFE_POINT(newDocument->getObjects().length()!=0, QString("no objects in output document '%1'").arg(newDocument->getURLString()), res);
+        tmpDoc = loadTmpDocumentTask->takeDocument();
+        SAFE_POINT(tmpDoc!=NULL, QString("output document '%1' not loaded").arg(tmpDoc->getURLString()), res);
+        SAFE_POINT(tmpDoc->getObjects().length()!=0, QString("no objects in output document '%1'").arg(tmpDoc->getURLString()), res);
 
         // Get the result alignment
-        const QList<GObject*>& newDocumentObjects = newDocument->getObjects();
+        const QList<GObject*>& newDocumentObjects = tmpDoc->getObjects();
         SAFE_POINT(!newDocumentObjects.empty(), "No objects in the temporary document!", res);
 
         MAlignmentObject* newMAligmentObject = qobject_cast<MAlignmentObject*>(newDocumentObjects.first());
@@ -174,7 +180,16 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
                 MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
                 SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying TCoffee results!", res);
 
-                alObj->setMAlignment(resultMA);
+                SAFE_POINT(resultMA.getNumRows() == inputMsa.getNumRows(), "Incorrect number of rows!", res);
+
+                QMap<qint64, QList<U2MsaGap> > rowsGapModel;
+                for (int i = 0, n = resultMA.getNumRows(); i < n; ++i) {
+                    qint64 rowId = inputMsa.getRow(i).getRowDBInfo().rowId;
+                    const QList<U2MsaGap>& newGapModel = resultMA.getRow(i).getGapModel();
+                    rowsGapModel.insert(rowId, newGapModel);
+                }
+
+                alObj->updateGapModel(rowsGapModel, stateInfo);
 
                 Document* currentDocument = alObj->getDocument();
                 SAFE_POINT(NULL != currentDocument, "Document is NULL!", res);

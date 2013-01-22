@@ -493,12 +493,11 @@ void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &obj
             if(true == isComplement){
                 rowName.append("(rev-compl)");
             }
-            MAlignmentRow row;
-            row.setName(rowName);
-            row.setRowContent(sequence, pos, os);
-            CHECK_OP(os, );
 
-            al.addRow(row, os);
+            QByteArray offsetGaps;
+            offsetGaps.fill(MAlignment_GapChar, pos);
+            sequence.prepend(offsetGaps);
+            al.addRow(rowName, sequence, os);
             CHECK_OP(os, );
 
             count--;

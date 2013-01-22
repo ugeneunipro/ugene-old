@@ -54,6 +54,18 @@ public:
 
     static MAlignmentObject* seqDocs2msaObj(QList<Document*> doc, U2OpStatus& os, bool useGenbankHeader = false);
     static MAlignmentObject* seqObjs2msaObj(const QList<GObject*>& objects, U2OpStatus& os, bool useGenbankHeader = false);
+
+    /**
+     * Compares rows in the 'origMsa' and 'newMsa' by names of the sequences.
+     * It is assumed that:
+     *   1) All rows in 'newMsa' are present in 'origMsa';
+     *   2) Corresponding sequences are the same (however, only their length are verified);
+     * The method modifies 'newMsa' to contain original rows IDs (from 'origMsa') and
+     * returns the list of rows IDs in the order of 'newMsa'.
+     * Note, that 'newMsa' may contain less rows than 'origMsa'
+     * (e.g. ClustalO may decrease the number of sequences after the alignment).
+     */
+    static QList<qint64> compareRowsAfterAlignment(const MAlignment& origMsa, MAlignment& newMsa, U2OpStatus& os);
 };
 
 

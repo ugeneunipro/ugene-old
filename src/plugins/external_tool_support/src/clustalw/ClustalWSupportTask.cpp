@@ -62,10 +62,16 @@ ClustalWSupportTask::ClustalWSupportTask(const MAlignment& _inputMsa, const GObj
     saveTemporaryDocumentTask=NULL;
     loadTemporyDocumentTask=NULL;
     clustalWTask=NULL;
-    newDocument=NULL;
+    tmpDoc=NULL;
     logParser=NULL;
     resultMA.setAlphabet(inputMsa.getAlphabet());
     resultMA.setName(inputMsa.getName());
+}
+
+ClustalWSupportTask::~ClustalWSupportTask() {
+    if (NULL != tmpDoc) {
+        delete tmpDoc;
+    }
 }
 
 void ClustalWSupportTask::prepare(){
@@ -175,12 +181,12 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
         res.append(loadTemporyDocumentTask);
     }
     else if (subTask == loadTemporyDocumentTask) {
-        newDocument = loadTemporyDocumentTask->takeDocument();
-        SAFE_POINT(newDocument!=NULL, QString("output document '%1' not loaded").arg(newDocument->getURLString()), res);
-        SAFE_POINT(newDocument->getObjects().length()==1, QString("no objects in output document '%1'").arg(newDocument->getURLString()), res);
+        tmpDoc = loadTemporyDocumentTask->takeDocument();
+        SAFE_POINT(tmpDoc!=NULL, QString("output document '%1' not loaded").arg(tmpDoc->getURLString()), res);
+        SAFE_POINT(tmpDoc->getObjects().length()==1, QString("no objects in output document '%1'").arg(tmpDoc->getURLString()), res);
 
         //move MAlignment from new alignment to old document
-        MAlignmentObject* newMAligmentObject=qobject_cast<MAlignmentObject*>(newDocument->getObjects().first());
+        MAlignmentObject* newMAligmentObject=qobject_cast<MAlignmentObject*>(tmpDoc->getObjects().first());
         SAFE_POINT(newMAligmentObject!=NULL, "newDocument->getObjects().first() is not a MAlignmentObject", res);
 
         resultMA=newMAligmentObject->getMAlignment();
@@ -197,7 +203,16 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
                 MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
                 SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalW results!", res);
 
-                alObj->setMAlignment(resultMA);
+                SAFE_POINT(resultMA.getNumRows() == inputMsa.getNumRows(), "Incorrect number of rows!", res);
+
+                QMap<qint64, QList<U2MsaGap> > rowsGapModel;
+                for (int i = 0, n = resultMA.getNumRows(); i < n; ++i) {
+                    qint64 rowId = inputMsa.getRow(i).getRowDBInfo().rowId;
+                    const QList<U2MsaGap>& newGapModel = resultMA.getRow(i).getGapModel();
+                    rowsGapModel.insert(rowId, newGapModel);
+                }
+
+                alObj->updateGapModel(rowsGapModel, stateInfo);
 
                 Document* currentDocument = alObj->getDocument();
                 SAFE_POINT(NULL != currentDocument, "Document is NULL!", res);

@@ -401,9 +401,10 @@ void GTest_Bowtie::parseBowtieOutput( MAlignment& result, QString text ) {
         QByteArray quality = rx.cap(5).toAscii();
 
         U2OpStatus2Log os;
-        MAlignmentRow row = MAlignmentRow::createRow(name, sequence, offset, os);
-//        row.setQuality(DNAQuality(quality));
-        result.addRow(row, os);
+        QByteArray offsetGaps;
+        offsetGaps.fill(MAlignment_GapChar, offset);
+        sequence.prepend(offsetGaps);
+        result.addRow(name, sequence, os);
 
         pos += rx.matchedLength();
 

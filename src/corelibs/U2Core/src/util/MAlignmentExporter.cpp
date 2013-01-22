@@ -51,10 +51,7 @@ MAlignment MAlignmentExporter::getAlignment(const U2DbiRef& dbiRef, const U2Data
     SAFE_POINT(rows.count() == sequences.count(), "Different number of rows and sequences!", MAlignment());
 
     for (int i = 0; i < rows.count(); ++i) {
-        MAlignmentRow alRow = MAlignmentRow::createRow(sequences[i], rows[i].gaps, os);
-        CHECK_OP(os, MAlignment());
-
-        al.addRow(alRow, os);
+        al.addRow(rows[i], sequences[i], os);
         CHECK_OP(os, MAlignment());
     }
 

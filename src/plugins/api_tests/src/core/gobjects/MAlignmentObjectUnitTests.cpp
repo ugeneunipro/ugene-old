@@ -60,16 +60,13 @@ MAlignment MAlignmentObjectTestData::getTestAlignment() {
     QByteArray firstSequence("---AG-T");
     QByteArray secondSequence("AG-CT-TAA");
 
-    MAlignmentRow row1 = MAlignmentRow::createRow("First row", firstSequence, os);
+    MAlignment al(alignmentName, alphabet);
+
+    al.addRow("First row", firstSequence, os);
     SAFE_POINT_OP(os, MAlignment());
 
-    MAlignmentRow row2 = MAlignmentRow::createRow("Second row", secondSequence, os);
+    al.addRow("Second row", secondSequence, os);
     SAFE_POINT_OP(os, MAlignment());
-
-    QList<MAlignmentRow> rows;
-    rows << row1 << row2;
-
-    MAlignment al(alignmentName, alphabet, rows);
 
     return al;
 }
@@ -84,16 +81,13 @@ MAlignment MAlignmentObjectTestData::getTestAlignment2() {
     QByteArray firstSequence("AC-GT--AAA");
     QByteArray secondSequence("-ACACA-GT");
 
-    MAlignmentRow row1 = MAlignmentRow::createRow("First row", firstSequence, os);
+    MAlignment al(alignmentName, alphabet);
+
+    al.addRow("First row", firstSequence, os);
     SAFE_POINT_OP(os, MAlignment());
 
-    MAlignmentRow row2 = MAlignmentRow::createRow("Second row", secondSequence, os);
+    al.addRow("Second row", secondSequence, os);
     SAFE_POINT_OP(os, MAlignment());
-
-    QList<MAlignmentRow> rows;
-    rows << row1 << row2;
-
-    MAlignment al(alignmentName, alphabet, rows);
 
     return al;
 }

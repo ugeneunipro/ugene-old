@@ -39,18 +39,12 @@ public:
      */
     static U2EntityRef createAlignment(const U2DbiRef&, const MAlignment&, U2OpStatus&);
 
-    /** Warning: data are not currently rollbacked in case of an error */
-    static void updateAlignment(U2EntityRef& msaRef, const MAlignment&, U2OpStatus&);
-
 private:
     static U2Msa importMsaObject(const DbiConnection&, const MAlignment&, U2OpStatus&);
     static void importMsaInfo(const DbiConnection&, const U2DataId& msaId, const MAlignment&, U2OpStatus&);
     static QList<U2Sequence> importSequences(const DbiConnection&, const MAlignment&, U2OpStatus&);
     static QList<U2MsaRow> importRows(const DbiConnection&, const MAlignment&, U2Msa&, QList<U2Sequence>, U2OpStatus&);
     static void makeSequencesChildObjects(const DbiConnection&, QList<U2Sequence>, U2OpStatus&);
-
-    //static void updateMsaObject(const DbiConnection&, const MAlignment&, U2OpStatus&);
-    //static void clearMsaObjectAttributes(const DbiConnection&, const U2DataId&, U2OpStatus&);
 };
 
 } // namespace
