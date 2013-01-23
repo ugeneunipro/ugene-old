@@ -40,13 +40,15 @@ public:
     void setFileLabelText(const QString& text) const;
 
     virtual void accept();
-
+    
 
 public:    
     QString url;
     DocumentFormatId format;
+    QString qualiferId;
     bool    addToProjectFlag;
     bool    useGenbankHeader;
+    bool    addRefFlag;
 
 private:    
     SaveDocumentGroupController* saveContoller;

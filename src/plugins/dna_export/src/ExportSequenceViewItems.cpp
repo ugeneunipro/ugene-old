@@ -103,6 +103,8 @@ void ExportSequenceViewItemsController::init(){
 //////////////////////////////////////////////////////////////////////////
 // ADV view context
 
+//TODO: define global BLAST text constants in CoreLibs 
+#define BLAST_ANNOTATION_NAME "blast result"
 
 ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     sequence2SequenceAction = new QAction(tr("Export selected sequence region..."), this);
@@ -242,8 +244,7 @@ void ADVExportContext::buildMenu(QMenu* m) {
             isShowDBXref = true;
         } 
         
-        // TODO: add global blast identifiers to corelibs
-        isBlastResult = name == "blast result"; 
+        isBlastResult = name == BLAST_ANNOTATION_NAME; 
     }
 
     if(isShowId || isShowAccession || isShowDBXref) {
@@ -504,6 +505,64 @@ void ADVExportContext::sl_saveSelectedAnnotations() {
 
 #define MAX_ALI_MODEL (10*1000*1000)
 
+void ADVExportContext::prepareMAFromBlastAnnotations(MAlignment& ma, const QString& qualiferId, bool includeRef, U2OpStatus& os) {
+
+    SAFE_POINT_EXT(ma.isEmpty(), os.setError(tr("Illegal parameter: input alignment is not empty!")),);
+    const QList<AnnotationSelectionData>& selection = view->getAnnotationsSelection()->getSelection();
+    CHECK_EXT(selection.size() >= 2, os.setError(tr("At least 2 annotations are required")), );
+    
+    AnnotationTableObject* ao = selection.first().annotation->getGObject();
+    ADVSequenceObjectContext* commonSeq = view->getSequenceContext(ao);
+    int maxLen = commonSeq->getSequenceLength();
+    ma.setAlphabet(commonSeq->getAlphabet());
+    QSet<QString> names;
+    int rowIdx = 0;
+
+    foreach(const AnnotationSelectionData& a, selection) {
+        
+        SAFE_POINT( a.annotation->getAnnotationName() == BLAST_ANNOTATION_NAME, 
+            tr("%1 is not a BLAST annotation").arg(a.annotation->getAnnotationName()), );
+
+        AnnotationTableObject* ao = a.annotation->getGObject();
+        ADVSequenceObjectContext* seqCtx = view->getSequenceContext(ao);
+        CHECK_EXT(seqCtx!=NULL, os.setError(tr("No sequence object found")), );
+        CHECK_EXT(seqCtx == commonSeq, os.setError(tr("Can not export BLAST annotations from different sequences")), );
+        
+        QString qVal = a.annotation->findFirstQualifierValue(qualiferId);
+        CHECK_EXT(!qVal.isEmpty(), os.setError(tr("Can not find qualifier to set as a name for BLAST sequence")), );
+
+        QString rowName = ExportUtils::genUniqueName(names, qVal);
+        U2EntityRef seqRef = seqCtx->getSequenceObject()->getSequenceRef();
+
+        maxLen = qMax(maxLen, a.getSelectedRegionsLen());
+        CHECK_EXT(maxLen * ma.getNumRows() <= MAX_ALI_MODEL, os.setError(tr("Alignment is too large")), );
+
+        QByteArray rowSequence;
+        AnnotationSelection::getAnnotationSequence(rowSequence, a, MAlignment_GapChar, seqRef,  
+            false, NULL, os);
+        CHECK_OP(os, );
+
+        ma.addRow(rowName, rowSequence, os);
+        CHECK_OP(os, );
+        int offset = a.annotation->getLocation()->regions.first().startPos;
+        ma.insertGaps(rowIdx, 0, offset, os);
+        CHECK_OP(os, );
+
+        names.insert(rowName);
+        ++rowIdx;
+    }
+
+    if (includeRef) {
+        QByteArray rowSequence = commonSeq->getSequenceObject()->getWholeSequenceData();
+        ma.addRow(commonSeq->getSequenceGObject()->getGObjectName(), rowSequence, 0, os);
+        CHECK_OP(os, );
+    }
+
+    
+
+}
+
+
 void ADVExportContext::prepareMAFromAnnotations(MAlignment& ma, bool translate, U2OpStatus& os) {
     SAFE_POINT_EXT(ma.isEmpty(), os.setError(tr("Illegal parameter: input alignment is not empty!")),);
     const QList<AnnotationSelectionData>& selection = view->getAnnotationsSelection()->getSelection();
@@ -745,8 +804,8 @@ void ADVExportContext::sl_exportBlastResultToAlignment()
 
     MAlignment ma(MA_OBJECT_NAME);
     U2OpStatusImpl os;
-    // TODO: create correct alignment file
-    prepareMAFromAnnotations(ma, false, os);
+    
+    prepareMAFromBlastAnnotations(ma, d.qualiferId, d.addRefFlag, os);
 
     if (os.hasError()) {
         QMessageBox::critical(NULL, L10N::errorTitle(), os.getError());

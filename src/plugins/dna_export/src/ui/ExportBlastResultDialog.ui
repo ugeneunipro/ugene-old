@@ -59,6 +59,13 @@
     </layout>
    </item>
    <item>
+    <widget class="QCheckBox" name="addRefBox">
+     <property name="text">
+      <string>Add reference to alignment</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="addToProjectBox">
      <property name="text">
       <string>Add document to the project</string>

@@ -78,6 +78,7 @@ protected slots:
     void updateActions();
 
 private:
+    void prepareMAFromBlastAnnotations(MAlignment& ma, const QString& nameQualId, bool includeRef, U2OpStatus& os);
     void prepareMAFromAnnotations(MAlignment& ma, bool translate, U2OpStatus& os);
     void prepareMAFromSequences(MAlignment& ma, bool translate, U2OpStatus& os);
     void fetchSequencesFromRemoteDB(const QString & listId);

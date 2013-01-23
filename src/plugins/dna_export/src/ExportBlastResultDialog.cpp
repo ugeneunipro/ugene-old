@@ -39,10 +39,10 @@ ExportBlastResultDialog::ExportBlastResultDialog(QWidget* p, const QString& defa
     setupUi(this);    
     addToProjectFlag = true;
     
+    nameIdBox->addItem("accession");
     nameIdBox->addItem("def");
     nameIdBox->addItem("id");
-    nameIdBox->addItem("accession");
-
+ 
     nameIdBox->setCurrentIndex(0);
 
 
@@ -69,7 +69,8 @@ void ExportBlastResultDialog::accept() {
     url = saveContoller->getSaveFileName();
     format = saveContoller->getFormatIdToSave();
     addToProjectFlag = addToProjectBox->isChecked();
-
+    qualiferId = nameIdBox->currentText();
+    addRefFlag = addRefBox->isChecked();
     QDialog::accept();
 }
 
