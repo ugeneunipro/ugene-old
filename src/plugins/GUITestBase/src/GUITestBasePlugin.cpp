@@ -385,9 +385,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0010_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0010_2);
 
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0011);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0011_1);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0011_2);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0011,"https://ugene.unipro.ru/tracker/browse/UGENE-1406");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0011_1,"https://ugene.unipro.ru/tracker/browse/UGENE-1406");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0011_2,"https://ugene.unipro.ru/tracker/browse/UGENE-1406");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0012_1);
@@ -720,6 +720,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0007);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0008_1);
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_1);
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_2);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Repeat Finder

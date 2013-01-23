@@ -380,6 +380,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
 
     collapseAction = buttonPopup->addAction(QObject::tr("Collapse"));
     connect(collapseAction, SIGNAL(triggered(bool)), SLOT(sl_collapseTriggered()));
+    collapseAction->setObjectName("Collapse");
 
     buttonPopup->addAction(setColorAction);
 
