@@ -179,16 +179,18 @@ void PDBFormat::PDBParser::parseBioStruct3D( BioStruct3D& biostruct, U2OpStatus&
     QByteArray readBuff(READ_BUF_SIZE+1, 0);
     char* buf = readBuff.data();
     qint64 len = 0;
-
+    
     while (!ti.isCoR()) {
 
         bool lineOk = true;
-
+    
         len = io->readUntil(buf, READ_BUF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
         if (len == 0) {
             break;
         }
-        if (!lineOk) {
+
+        // there could be no terminator if this is end of file, so we have to check for this 
+        if ( !lineOk && !io->isEof() ) {
             ti.setError(U2::PDBFormat::tr("Line is too long"));
             return;
         }
