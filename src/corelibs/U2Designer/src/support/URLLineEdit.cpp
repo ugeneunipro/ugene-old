@@ -294,7 +294,10 @@ void GSuggestCompletion::sl_textEdited(const QString &fileName){
     QFileInfo f(fName);
     QString curExt = f.suffix(), baseName = f.completeBaseName(), completeFileName = f.fileName();
     DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
-    QStringList formats = format->getSupportedDocumentFileExtensions();
+    QStringList formats;
+    if(format){
+        formats = format->getSupportedDocumentFileExtensions();
+    }
     formats.append("gz");
     choices.append(completeFileName);
     foreach(QString ext, formats){
@@ -309,9 +312,11 @@ void GSuggestCompletion::sl_textEdited(const QString &fileName){
     }
 
     if(choices.size() == 1){
-        foreach(QString ext, format->getSupportedDocumentFileExtensions()){
+        foreach(QString ext, formats){
             choices.append(completeFileName + "." + ext);
-            choices.append(completeFileName + "." + ext + ".gz");
+            if (ext != "gz"){
+                choices.append(completeFileName + "." + ext + ".gz");
+            }
         }
     }
 
