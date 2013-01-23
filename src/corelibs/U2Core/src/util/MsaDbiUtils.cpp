@@ -648,6 +648,18 @@ void MsaDbiUtils::updateRowGapModel(const U2EntityRef& msaRef, qint64 rowId, con
     msaDbi->updateGapModel(msaRef.entityId, rowId, gaps, os);
 }
 
+void MsaDbiUtils::updateRowsOrder(const U2EntityRef& msaRef, const QList<qint64>& rowsOrder, U2OpStatus& os) {
+    // Prepare the connection
+    DbiConnection con(msaRef.dbiRef, true, os);
+    CHECK_OP(os, );
+
+    U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
+    SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!", );
+
+    // Update the data
+    msaDbi->setNewRowsOrder(msaRef.entityId, rowsOrder, os);
+}
+
 void MsaDbiUtils::renameMsa(const U2EntityRef& msaRef, const QString& newName, U2OpStatus& os) {
     if (newName.isEmpty()) {
         os.setError(tr("Can't rename an alignment to an empty name!"));

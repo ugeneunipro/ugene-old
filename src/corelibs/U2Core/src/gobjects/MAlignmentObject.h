@@ -99,6 +99,14 @@ public:
     void renameRow(int rowIdx, const QString& newName);
     void moveRowsBlock(int firstRow, int numRows, int delta);
 
+    /**
+     * Updates the rows order.
+     * There must be one-to-one correspondence between the specified rows IDs
+     * and rows IDs of the alignment.
+     */
+    void updateRowsOrder(const QList<qint64>& rowIds, U2OpStatus& os);
+
+
     /** Method that affect the whole alignment, including sequences */
     void removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool changeAlignment = true);
     void crop(U2Region window, const QSet<QString>& rowNames);

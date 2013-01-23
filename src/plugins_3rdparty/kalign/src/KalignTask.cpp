@@ -41,6 +41,7 @@ extern "C" {
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MSAUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -165,8 +166,32 @@ Task::ReportResult KalignGObjectTask::report() {
     SAFE_POINT(!obj.isNull(), "Object was removed?!", ReportResult_Finished);
     CHECK_EXT(!obj->isStateLocked(), stateInfo.setError(tr("object_is_state_locked")), ReportResult_Finished);
     
-    assert(kalignTask->inputMA.getNumRows() == kalignTask->resultMA.getNumRows());
-    obj->setMAlignment(kalignTask->resultMA);    
+    // Apply the result
+    const MAlignment& inputMA = kalignTask->inputMA;
+    MAlignment resultMA = kalignTask->resultMA;
+
+    QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(inputMA, resultMA, stateInfo);
+    CHECK_OP(stateInfo, ReportResult_Finished);
+
+    if (rowsOrder.count() != inputMA.getNumRows()) {
+        stateInfo.setError("Unexpected number of rows in the result multiple alignment!");
+        return ReportResult_Finished;
+    }
+
+    QMap<qint64, QList<U2MsaGap> > rowsGapModel;
+    for (int i = 0, n = resultMA.getNumRows(); i < n; ++i) {
+        qint64 rowId = resultMA.getRow(i).getRowDBInfo().rowId;
+        const QList<U2MsaGap>& newGapModel = resultMA.getRow(i).getGapModel();
+        rowsGapModel.insert(rowId, newGapModel);
+    }
+
+    obj->updateGapModel(rowsGapModel, stateInfo);
+
+    if (rowsOrder != inputMA.getRowsIds()) {
+        obj->updateRowsOrder(rowsOrder, stateInfo);
+    }
+    /*assert(kalignTask->inputMA.getNumRows() == kalignTask->resultMA.getNumRows());
+    obj->setMAlignment(kalignTask->resultMA);    */
 
     return ReportResult_Finished;
 }

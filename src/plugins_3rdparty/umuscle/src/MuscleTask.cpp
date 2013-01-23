@@ -39,6 +39,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MSAUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2SafePoints.h>
@@ -424,12 +425,34 @@ Task::ReportResult MuscleGObjectTask::report() {
     }
     if (config.op == MuscleTaskOp_AddUnalignedToProfile) {
         assert((muscleTask->inputMA.getNumRows() + config.profile.getNumRows()) == muscleTask->resultMA.getNumRows());
-    } else if (config.op == MuscleTaskOp_Align) {
-        assert(muscleTask->inputMA.getNumRows() == muscleTask->resultMA.getNumRows());
-    } else if (config.op == MuscleTaskOp_ProfileToProfile) {
-        assert(muscleTask->inputMA.getNumRows() + config.profile.getNumRows() == muscleTask->resultMA.getNumRows());
+        obj->setMAlignment(muscleTask->resultMA);    
     }
-    obj->setMAlignment(muscleTask->resultMA);    
+    else if (config.op == MuscleTaskOp_Align || config.op == MuscleTaskOp_Refine) {
+        QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(muscleTask->inputMA, muscleTask->resultMA, stateInfo);
+        CHECK_OP(stateInfo, ReportResult_Finished);
+
+        if (rowsOrder.count() != muscleTask->inputMA.getNumRows()) {
+            stateInfo.setError("Unexpected number of rows in the result multiple alignment!");
+            return ReportResult_Finished;
+        }
+
+        QMap<qint64, QList<U2MsaGap> > rowsGapModel;
+        for (int i = 0, n = muscleTask->resultMA.getNumRows(); i < n; ++i) {            
+            qint64 rowId = muscleTask->resultMA.getRow(i).getRowDBInfo().rowId;
+            const QList<U2MsaGap>& newGapModel = muscleTask->resultMA.getRow(i).getGapModel();
+            rowsGapModel.insert(rowId, newGapModel);
+        }
+
+        obj->updateGapModel(rowsGapModel, stateInfo);
+
+        if (rowsOrder != muscleTask->inputMA.getRowsIds()) {
+            obj->updateRowsOrder(rowsOrder, stateInfo);
+        }
+    }
+    else if (config.op == MuscleTaskOp_ProfileToProfile) {
+        assert(muscleTask->inputMA.getNumRows() + config.profile.getNumRows() == muscleTask->resultMA.getNumRows());
+        obj->setMAlignment(muscleTask->resultMA);    
+    }
 
     return ReportResult_Finished;
 }

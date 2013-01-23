@@ -1246,6 +1246,8 @@ void MAlignment::setRowGapModel(int rowIndex, const QList<U2MsaGap>& gapModel) {
 void MAlignment::setRowId(int rowIndex, qint64 rowId) {
     SAFE_POINT(rowIndex >= 0 && rowIndex < getNumRows(), "Invalid row index!", );
 
+    MAlignmentRow& row = rows[rowIndex];
+    row.setRowId(rowId);
 }
 
 void MAlignment::check() const {

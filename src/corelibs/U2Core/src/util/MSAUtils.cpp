@@ -199,6 +199,7 @@ QList<qint64> MSAUtils::compareRowsAfterAlignment(const MAlignment& origMsa, MAl
                     os.setError(tr("Unexpected length of a row sequence!"));
                     return QList<qint64>();
                 }
+                break;
             }
         }
 

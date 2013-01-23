@@ -188,18 +188,32 @@ QList<Task*> ClustalOSupportTask::onSubTaskFinished(Task* subTask) {
                 MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
                 SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalO results!", res);
 
-                alObj->setMAlignment(resultMA);
+                QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(inputMsa, resultMA, stateInfo);
+                CHECK_OP(stateInfo, res);
 
-                //SAFE_POINT(resultMA.getNumRows() == inputMsa.getNumRows(), "Incorrect number of rows!", res);
+                if (rowsOrder.count() != inputMsa.getNumRows()) {
+                    // Find rows that were removed by ClustalO and remove them from MSA
+                    for (int i = inputMsa.getNumRows() - 1; i >= 0; i--) {
+                        const MAlignmentRow& alRow = inputMsa.getRow(i);
+                        qint64 rowId = alRow.getRowDBInfo().rowId;
+                        if (!rowsOrder.contains(rowId)) {
+                            alObj->removeRow(i);
+                        }
+                    }
+                }
 
-                //QMap<qint64, QList<U2MsaGap> > rowsGapModel;
-                //for (int i = 0, n = resultMA.getNumRows(); i < n; ++i) {
-                //    qint64 rowId = inputMsa.getRow(i).getRowDBInfo().rowId;
-                //    const QList<U2MsaGap>& newGapModel = resultMA.getRow(i).getGapModel();
-                //    rowsGapModel.insert(rowId, newGapModel);
-                //}
+                QMap<qint64, QList<U2MsaGap> > rowsGapModel;
+                for (int i = 0, n = resultMA.getNumRows(); i < n; ++i) {
+                    qint64 rowId = resultMA.getRow(i).getRowDBInfo().rowId;
+                    const QList<U2MsaGap>& newGapModel = resultMA.getRow(i).getGapModel();
+                    rowsGapModel.insert(rowId, newGapModel);
+                }
 
-                //alObj->updateGapModel(rowsGapModel, stateInfo);
+                alObj->updateGapModel(rowsGapModel, stateInfo);
+
+                if (rowsOrder != inputMsa.getRowsIds()) {
+                    alObj->updateRowsOrder(rowsOrder, stateInfo);
+                }
 
                 Document* currentDocument = alObj->getDocument();
                 SAFE_POINT(NULL != currentDocument, "Document is NULL!", res);

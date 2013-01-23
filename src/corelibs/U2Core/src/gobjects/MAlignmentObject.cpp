@@ -423,6 +423,15 @@ void MAlignmentObject::moveRowsBlock(int firstRow, int numRows, int shift)
     setMAlignment(msa);
 }
 
+void MAlignmentObject::updateRowsOrder(const QList<qint64>& rowIds, U2OpStatus& os) {
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
+
+    MsaDbiUtils::updateRowsOrder(entityRef, rowIds, os);
+    CHECK_OP(os, );
+
+    updateCachedMAlignment();
+}
+
 bool MAlignmentObject::shiftRegion( int startPos, int startRow, int nBases, int nRows, int shift )
 {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", false );

@@ -31,6 +31,7 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/MSAUtils.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/AddDocumentTask.h>
@@ -203,16 +204,26 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
                 MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
                 SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalW results!", res);
 
-                SAFE_POINT(resultMA.getNumRows() == inputMsa.getNumRows(), "Incorrect number of rows!", res);
+                QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(inputMsa, resultMA, stateInfo);
+                CHECK_OP(stateInfo, res);
 
+                if (rowsOrder.count() != inputMsa.getNumRows()) {
+                    stateInfo.setError("Unexpected number of rows in the result multiple alignment!");
+                    return res;
+                }
+                
                 QMap<qint64, QList<U2MsaGap> > rowsGapModel;
                 for (int i = 0, n = resultMA.getNumRows(); i < n; ++i) {
-                    qint64 rowId = inputMsa.getRow(i).getRowDBInfo().rowId;
+                    qint64 rowId = resultMA.getRow(i).getRowDBInfo().rowId;
                     const QList<U2MsaGap>& newGapModel = resultMA.getRow(i).getGapModel();
                     rowsGapModel.insert(rowId, newGapModel);
                 }
 
                 alObj->updateGapModel(rowsGapModel, stateInfo);
+
+                if (rowsOrder != inputMsa.getRowsIds()) {
+                    alObj->updateRowsOrder(rowsOrder, stateInfo);
+                }
 
                 Document* currentDocument = alObj->getDocument();
                 SAFE_POINT(NULL != currentDocument, "Document is NULL!", res);

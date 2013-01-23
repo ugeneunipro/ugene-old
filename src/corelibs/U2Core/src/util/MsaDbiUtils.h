@@ -113,6 +113,12 @@ public:
     static void updateRowGapModel(const U2EntityRef& msaRef, qint64 rowId, const QList<U2MsaGap>& gaps, U2OpStatus& os);
 
     /**
+     * Updates positions of the rows in the database according to the order in the list.
+     * All IDs must exactly match IDs of the MSA!
+     */
+    static void updateRowsOrder(const U2EntityRef& msaRef, const QList<qint64>& rowsOrder, U2OpStatus& os);
+
+    /**
      * Renames a row of the alignment, i.e. the corresponding sequence.
      * Parameter 'rowId' must contain a valid row ID in the database.
      * Parameter 'newName' must be NOT empty!
