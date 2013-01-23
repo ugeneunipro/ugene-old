@@ -686,5 +686,66 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
 //    Expected state: this node's branches has dissapered
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0012){
+//1. Run Ugene.
+//   Open file _common_data/scenarios/tree_view/D120911.tre
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "D120911.tre");
+    GTGlobals::sleep(500);
+//   Expected state: philogenetic tree appears
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem*> list = treeView->scene()->items();
+
+    QList<QGraphicsSimpleTextItem *> branchList;
+    foreach(QGraphicsItem* item, list){
+            QGraphicsSimpleTextItem * textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+            if(textItem && !textItem->text().contains("0.011")){
+                branchList.append(textItem);
+            }
+        }
+//2. Make sure the tree doesn't look like a vertical line. It should have some width
+    QList<QGraphicsItem *> lineList;
+    foreach(QGraphicsItem* item, list){
+            QGraphicsSimpleTextItem * textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+            if(!textItem){
+                lineList.append(item);
+            }
+        }
+
+    qreal w=0;
+    foreach(QGraphicsItem * item, lineList){
+        if(w<item->boundingRect().width()){
+            w = item->boundingRect().width();
+        }
+    }
+
+    CHECK_SET_ERR(w>100, "tree seems to be too narrow");
+//3. Choose any node and do the context menu command "Swap siblings"
+    QList<QGraphicsItem*> nodeList;
+    foreach(QGraphicsItem* item, list){
+        if(item->boundingRect().width()==10){
+            nodeList.append(item);
+        }
+    }
+
+    QGraphicsItem* node = nodeList.at(1);
+    QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
+    QPoint viewCord = treeView->mapFromScene(sceneCoord);
+    QPoint globalCoord = treeView->mapToGlobal(viewCord);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Swap Siblings"));
+    GTMouseDriver::moveTo(os,globalCoord);
+    GTMouseDriver::click(os);
+    GTMouseDriver::click(os,Qt::RightButton);
+
+    qreal finalW=0;
+    foreach(QGraphicsItem * item, lineList){
+        if(finalW<item->boundingRect().width()){
+            finalW = item->boundingRect().width();
+        }
+    }
+    CHECK_SET_ERR(w == finalW, "tree weights seems to be changed");
+//   Expected state: again, tree should have some width
+
+}
 } // namespace GUITest_common_scenarios_tree_viewer
 } // namespace U2

@@ -375,6 +375,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
 
     swapAction = buttonPopup->addAction(QObject::tr("Swap Siblings"));
     connect(swapAction, SIGNAL(triggered(bool)), SLOT(sl_swapTriggered()));
+    swapAction->setObjectName("Swap Siblings");
 
     buttonPopup->addAction(zoomToAction);
 
