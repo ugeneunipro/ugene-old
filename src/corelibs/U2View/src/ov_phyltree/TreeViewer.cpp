@@ -275,7 +275,7 @@ void TreeViewer::buildStaticMenu(QMenu* m)
     m->addSeparator();
 
     QMenu* labelsMenu = new QMenu(tr("Show Labels"), ui);
-    //labelsMenu->setObjectName("Show Labels");
+    labelsMenu->menuAction()->setObjectName("show_labels_action");
     setupShowLabelsMenu(labelsMenu);
     labelsMenu->setIcon(QIcon(":/core/images/text_ab.png"));
     m->addMenu(labelsMenu);

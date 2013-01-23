@@ -402,5 +402,139 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     CHECK_SET_ERR(initPos==finalPos, "items aligned wrong");
 //Expected state: sequence label aligned near end of its branches
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0008){
+//Sequence labels test
+
+//1. Open file _common_data/scenario/tree_view/COI.nwk
+//Expected state: philogenetic tree appears
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
+    GTGlobals::sleep(500);
+//2. Click on "Show sequence names" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show Names"));
+    GTWidget::click(os,GTWidget::findWidget(os,"Show Labels"));
+
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem*> list = treeView->scene()->items();
+
+    foreach(QGraphicsItem* item, list){
+        QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+        if(node && node->isVisible()){
+            CHECK_SET_ERR(!node->text().contains("o")||!node->text().contains("a"), "names are visiable");
+        }
+    }
+//Expected state: sequence name labels disappers
+
+//3. Click on "Show distance labels" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show Distances"));
+    GTWidget::click(os,GTWidget::findWidget(os,"Show Labels"));
+
+    foreach(QGraphicsItem* item, list){
+            QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+            if(node && node->isVisible()){
+                if(node->text()!="0.011"){
+                    CHECK_SET_ERR(!node->text().contains("0."), "Distances are visiable");
+                }
+            }
+        }
+//Expected state: distance labels disappers
+
+//4. Click on "Show sequence names" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show Names"));
+    GTWidget::click(os,GTWidget::findWidget(os,"Show Labels"));
+    GTGlobals::sleep(200);
+    int i=0;
+
+    foreach(QGraphicsItem* item, list){
+        QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+        if(node && node->isVisible()&&node->text().contains("o")){
+            i++;
+        }
+    }
+    CHECK_SET_ERR(i==18, "Names are not shown");
+//Expected state: sequence name labels appers
+
+//5. Click on "Show distance labels" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Show Distances"));
+    GTWidget::click(os,GTWidget::findWidget(os,"Show Labels"));
+    GTGlobals::sleep(200);
+    i=0;
+
+    foreach(QGraphicsItem* item, list){
+            QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+            if(node && node->isVisible() && node->text().contains("0.")){
+                i++;
+            }
+        }
+    CHECK_SET_ERR(i==32, "distances are not shown");
+//Expected state: distance labels appers
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0008_1){//difference: main menu is used
+//Sequence labels test
+
+//1. Open file _common_data/scenario/tree_view/COI.nwk
+//Expected state: philogenetic tree appears
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
+    GTGlobals::sleep(500);
+//2. Click on "Show sequence names" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"show_labels_action"<<"Show Names"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS,GTGlobals::UseMouse);
+
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem*> list = treeView->scene()->items();
+
+    foreach(QGraphicsItem* item, list){
+        QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+        if(node && node->isVisible()){
+            CHECK_SET_ERR(!node->text().contains("o")||!node->text().contains("a"), "names are visiable");
+        }
+    }
+//Expected state: sequence name labels disappers
+
+//3. Click on "Show distance labels" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"show_labels_action"<<"Show Distances"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS,GTGlobals::UseMouse);
+
+    foreach(QGraphicsItem* item, list){
+            QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+            if(node && node->isVisible()){
+                if(node->text()!="0.011"){
+                    CHECK_SET_ERR(!node->text().contains("0."), "Distances are visiable");
+                }
+            }
+        }
+//Expected state: distance labels disappers
+
+//4. Click on "Show sequence names" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"show_labels_action"<<"Show Names"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS,GTGlobals::UseMouse);
+    GTGlobals::sleep(200);
+    int i=0;
+
+    foreach(QGraphicsItem* item, list){
+        QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+        if(node && node->isVisible()&&node->text().contains("o")){
+            i++;
+        }
+    }
+    CHECK_SET_ERR(i==18, "Names are not shown");
+//Expected state: sequence name labels appers
+
+//5. Click on "Show distance labels" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"show_labels_action"<<"Show Distances"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS,GTGlobals::UseMouse);
+    GTGlobals::sleep(200);
+    i=0;
+
+    foreach(QGraphicsItem* item, list){
+            QGraphicsSimpleTextItem * node = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
+            if(node && node->isVisible() && node->text().contains("0.")){
+                i++;
+            }
+        }
+    CHECK_SET_ERR(i==32, "distances are not shown");
+//Expected state: distance labels appers
+}
 } // namespace GUITest_common_scenarios_tree_viewer
 } // namespace U2
