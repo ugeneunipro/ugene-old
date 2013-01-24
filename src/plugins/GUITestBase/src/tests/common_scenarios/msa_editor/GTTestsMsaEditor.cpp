@@ -2382,26 +2382,21 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
 // 
 // 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
-
-// 2. Insert some gaps to the first column. Ensure, that every column has a gap
-    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 0));
-    GTGlobals::sleep();
-    for (int i=0; i<6; i++) {
-        GTKeyboardDriver::keyClick(os, ' ');
-        GTGlobals::sleep(100);
-    }
-
-    QStringList preList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-// 3. Select Edit -> remove columns of gaps -> remove columns with number of gaps 1.
-// 4. Click OK
+// 2. Select Edit -> remove columns of gaps -> remove columns with number of gaps 1.
+// 3. Click OK
     GTUtilsDialog::waitForDialog(os, new DeleteGapsDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "remove_columns_of_gaps"));
     GTMouseDriver::click(os, Qt::RightButton);
 
 // Expected state: UGENE not crashes, deletion is not performed
-    GTGlobals::sleep(5000);
-    QStringList postList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(preList == postList, "lists of nanes of msa sequences differs");
+    GTGlobals::sleep();
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0),QPoint(0,9));
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyClick(os,'c',GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString text = GTClipboard::text(os);
+    QString expected = "A\nA\nT\nA\nT\nT\nT\nA\nA\nA";
+    CHECK_SET_ERR(text == expected, "expected: " + expected + "found: " + text);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0020_1) {
@@ -2417,45 +2412,27 @@ GUI_TEST_CLASS_DEFINITION(test_0020_1) {
         GTKeyboardDriver::keyClick(os, ' ');
         GTGlobals::sleep(100);
     }
-
-    QStringList preList = GTUtilsMSAEditorSequenceArea::getNameList(os);
 // 3. Select Edit -> remove columns of gaps -> remove columns with number of gaps 1.
+    GTWidget::click(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(0,0),QPoint(19,9));
+    GTKeyboardDriver::keyClick(os,'c',GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    QString initial = GTClipboard::text(os);
 // 4. Click OK
     GTUtilsDialog::waitForDialog(os, new DeleteGapsDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "remove_columns_of_gaps"));
     GTMouseDriver::click(os, Qt::RightButton);
 
 // Expected state: UGENE not crashes, deletion is not performed
-    GTGlobals::sleep(5000);
-    QStringList postList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(preList == postList, "lists of nanes of msa sequences differs");
-}
+    GTWidget::click(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    GTGlobals::sleep(500);
 
-GUI_TEST_CLASS_DEFINITION(test_0020_2) {
-// UGENE crashes when all columns in MSAEditor are deleted (UGENE-329)
-// 
-// 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+    GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(0,0),QPoint(19,9));
+    GTKeyboardDriver::keyClick(os,'c',GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+    QString final = GTClipboard::text(os);
 
-// 2. Insert some gaps to the first column. Ensure, that every column has a gap
-    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0, 0));
-    GTGlobals::sleep();
-    for (int i=0; i<6; i++) {
-        GTKeyboardDriver::keyClick(os, ' ');
-        GTGlobals::sleep(100);
-    }
-
-    QStringList preList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-// 3. Select Edit -> remove columns of gaps -> remove columns with number of gaps 1.
-// 4. Click OK
-    GTUtilsDialog::waitForDialog(os, new DeleteGapsDialogFiller(os));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_EDIT" << "remove_columns_of_gaps"));
-    GTMouseDriver::click(os, Qt::RightButton);
-
-// Expected state: UGENE not crashes, deletion is not performed
-    GTGlobals::sleep(5000);
-    QStringList postList = GTUtilsMSAEditorSequenceArea::getNameList(os);
-    CHECK_SET_ERR(preList == postList, "lists of nanes of msa sequences differs");
+    CHECK_SET_ERR(initial == final, "msa area was changed");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0021) {

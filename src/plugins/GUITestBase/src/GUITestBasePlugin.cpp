@@ -417,9 +417,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0019_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0019_2);
 
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0020,"https://ugene.unipro.ru/tracker/browse/UGENE-1346");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0020_1,"https://ugene.unipro.ru/tracker/browse/UGENE-1346");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0020_2,"https://ugene.unipro.ru/tracker/browse/UGENE-1346");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0020);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0020_1);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0021);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0021_1);
@@ -487,7 +486,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_2);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor_edit::test_0011_3,"https://ugene.unipro.ru/tracker/browse/UGENE-1367");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0011_3);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0012);
 
@@ -556,9 +555,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0014_1);
     REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0014_2);
 
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_document_from_text::test_0015, "https://ugene.unipro.ru/tracker/browse/UGENE-1099");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_document_from_text::test_0015_1, "https://ugene.unipro.ru/tracker/browse/UGENE-1099");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_document_from_text::test_0015_2, "https://ugene.unipro.ru/tracker/browse/UGENE-1099");
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0015);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0015_1);
+    REGISTER_TEST(GUITest_common_scenarios_document_from_text::test_0015_2);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Annotations import
@@ -698,14 +697,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Query designer
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_querry_designer::test_0001,"https://ugene.unipro.ru/tracker/browse/UGENE-1397");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_querry_designer::test_0001_1,"https://ugene.unipro.ru/tracker/browse/UGENE-1397");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_querry_designer::test_0001_2,"https://ugene.unipro.ru/tracker/browse/UGENE-1397");
+    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_querry_designer::test_0001_2);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer
 /////////////////////////////////////////////////////////////////////////
-    //REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0001);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Tree viewer
