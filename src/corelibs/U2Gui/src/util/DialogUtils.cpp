@@ -39,29 +39,9 @@
 
 namespace U2 {
 
-static bool isKDE() {
-    static bool result = false;
-
-#if defined Q_WS_X11
-    static bool checked = false;
-    
-    if (!checked) {
-        QString ds = qgetenv("DESKTOP_SESSION");
-        QString uid = qgetenv("KDE_SESSION_UID");
-        QString version = qgetenv("KDE_SESSION_VERSION");
-        result = (ds == "kde") || uid.toInt() > 0 || version.toInt() > 0;
-        checked = true;
-    }
-#endif
-
-    return result;
-}
-
 static QString getAllFilesFilter() {
-    if (isKDE()) {
-        return "*";
-    }
-    return "*.*";
+// UGENE-1248
+    return "*";
 }
 
 void DialogUtils::showProjectIsLockedWarning(QWidget* p) {
