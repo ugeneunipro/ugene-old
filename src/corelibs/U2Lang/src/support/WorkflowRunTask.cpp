@@ -680,7 +680,7 @@ void RunCmdlineWorkflowTask::writeLog(QStringList &lines) {
     QStringList::Iterator it = lines.begin();
     for (; it != lines.end(); it++) {
         QString &line = *it;
-        line = line.simplified();
+        line = line.trimmed();
         QString nameCandidate;
         int closePos = getLogNameCandidate(line, nameCandidate);
         if (-1 == closePos) {
@@ -696,7 +696,7 @@ void RunCmdlineWorkflowTask::writeLog(QStringList &lines) {
             }
 
             QString logLine = line.mid(closePos + 1);
-            logLine = logLine.simplified();
+            logLine = logLine.trimmed();
             bool commandToken = logLine.startsWith(OUTPUT_PROGRESS_TAG)
                 || logLine.startsWith(ERROR_KEYWORD)
                 || logLine.startsWith(STATE_KEYWORD)
