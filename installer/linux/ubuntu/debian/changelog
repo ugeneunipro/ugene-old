@@ -1,69 +1,186 @@
-ugene (1.9.1+repack-0ubuntu1) natty; urgency=low
+ugene (1.11.4+repack-0ubuntu4~precise) precise; urgency=low
 
-  * New upstream release
-  * Copyright information update
-  * Bump version of Qt dependecy due to upstream reasons
+  * Try to fix section issues.
 
- -- Ivan Efremov <iefremov@unipro.ru>  Thu, 10 Feb 2011 18:36:18 +0600
+ -- Yuliya Algaer <yalgaer@unipro.ru>  Wed, 23 Jan 2013 20:08:13 +0700
 
-ugene (1.7.2+repack-0ubuntu1) natty; urgency=low
+ugene (1.11.4+repack-0ubuntu3~precise) precise; urgency=low
 
-  * New upstream release
-  * debian/rules:
-    + Delete bkm directory removal rule from get-orig-source as
-      its non-existent now
-  * Bump standards-version to 3.9.1. No other changes.
+  * New upstream release. Fix some issues. Fix section issue.
 
- -- Bhavani Shankar <bhavi@ubuntu.com>  Sat, 16 Oct 2010 14:33:07 +0530
+ -- Yuliya Algaer <yalgaer@unipro.ru>  Wed, 23 Jan 2013 19:38:53 +0700
 
-ugene (1.7.1+repack-0ubuntu2) maverick; urgency=low
+ugene (1.11.4+repack-0ubuntu2~precise) precise; urgency=low
 
-  * Build depend on libqtwebkit-dev instead of libqt4-webkit-dev since it is
-    NBS
+  * New upstream release. Fix some issues.
 
- -- Scott Kitterman <scott@kitterman.com>  Fri, 13 Aug 2010 13:05:01 -0400
+ -- Yuliya Algaer <yalgaer@unipro.ru>  Wed, 23 Jan 2013 18:55:49 +0700
 
-ugene (1.7.1+repack-0ubuntu1) maverick; urgency=low
-
-  * New upstream release (LP: #606642)
-  * Switch to 3.0 (quilt) format
-  * Bump standards-version to 3.9.0. No other changes.
-  * Add ${misc:Depends} macro to Depends field (W: lintian)
-  * Add versioned dependency on debhelper (W: lintian)
-  * Casting fix dropped, fixed upstream.
-
- -- Bhavani Shankar <bhavi@ubuntu.com>  Sat, 17 Jul 2010 19:31:43 +0530
-
-ugene (1.7.0+repack-0ubuntu2) maverick; urgency=low
-
-  * Casting fix for arm; double is not same as qreal. (LP: #600820)
-
- -- David Sugar <david.sugar@canonical.com>  Thu, 01 Jul 2010 17:08:15 +0000
-
-ugene (1.7.0+repack-0ubuntu1) maverick; urgency=low
+ugene (1.11.4+repack-0ubuntu1~precise) precise; urgency=low
 
   * New upstream release.
-  * debian/control:
-    - Bump standards-version to 3.8.4. No other changes.
-    - Add libqt4-webkit-dev to build-depends.
-  * Update debian/copyright.
 
- -- Andreas Wenning <awen@awen.dk>  Mon, 24 May 2010 15:19:27 +0200
+ -- Yuliya Algaer <yalgaer@unipro.ru>  Wed, 23 Jan 2013 16:55:49 +0700
 
-ugene (1.5.2+repack-0ubuntu1) lucid; urgency=low
+ugene (1.11.3+repack-0ubuntu1~precise) precise; urgency=low
 
-  * New upstream release LP: #486583
-  * Bump standards-version to 3.8.3. No other changes.
-  * Update debian/copyright as per Ivan's suggestion.
+  * New upstream release.
 
- -- Bhavani Shankar <right2bhavi@gmail.com>  Sun, 22 Nov 2009 15:20:16 +0530
+ -- Yuliya Algaer <yalgaer@unipro.ru>  Fri, 02 Nov 2012 15:17:09 +0700
+
+
+ugene (1.11.2.1+repack-0ubuntu1~precise) precise; urgency=low
+
+  * New upstream release. Fix some issues.
+
+ -- Yuliya Algaer <yalgaer@unipro.ru>  Wed, 03 Oct 2012 15:54:39 +0700
+
+ugene (1.11.2+repack-0ubuntu3~precise) precise; urgency=low
+
+  * New upstream release. Fix some issues.
+
+ -- Yuliya Algaer <yalgaer@unipro.ru>  Tue, 02 Oct 2012 14:28:39 +0700
+
+ugene (1.11.2+repack-0ubuntu2~precise) precise; urgency=low
+
+  * New upstream release.
+
+ -- Yuliya Algaer <yalgaer@unipro.ru>  Fri, 28 Sept 2012 16:25:39 +0700
+
+ugene (1.11.2+repack-0ubuntu1~precise) precise; urgency=low
+
+  * New upstream release.
+
+ -- Yuliya Algaer <yalgaer@unipro.ru>  Wed, 26 Sept 2012 11:42:50 +0700
+
+ugene (1.11.1+repack-0ubuntu1~precise) precise; urgency=low
+
+  * New upstream release, removed not needed tests plugins.
+
+ -- Denis Kandrov <dkandrov@unipro.ru>  Tue, 07 Aug 2012 12:25:50 +0700
+
+ugene (1.11.1+repack-0ubuntu1~precise) precise; urgency=low
+
+  * New upstream release, removed not needed tests plugins.
+
+ -- Denis Kandrov <dkandrov@unipro.ru>  Tue, 07 Aug 2012 12:25:50 +0700
+
+
+ugene (1.11.0+repack-0ubuntu2~precise) precise; urgency=low
+
+  * New upstream release, removed not needed tests plugins.
+
+ -- Denis Kandrov <dkandrov@unipro.ru>  Wed, 07 Jun 2012 17:05:50 +0700
+
+ugene (1.11.0+repack-0ubuntu1~precise) precise; urgency=low
+
+  * New upstream release
+
+ -- Denis Kandrov <dkandrov@unipro.ru>  Wed, 06 Jun 2012 17:05:50 +0700
+
+
+ugene (1.10.2+repack-0ubuntu1~oneiric) oneiric; urgency=low
+
+  * New upstream release
+
+ -- Denis Kandrov <dkandrov@unipro.ru>  Tue, 21 Feb 2012 14:45:50 +0700
+
+ugene (1.9.8+repack-0ubuntu1~oneiric) oneiric; urgency=low
+
+  * Latest release oneiric build
+
+ -- Ivan Novikov <inovikov@unipro.ru>  Thu, 27 Oct 2011 15:33:13 +0700
+
+ugene (1.9.8+repack-0ubuntu1~natty) natty; urgency=low
+
+  * New upstream release
+
+ -- Ivan Novikov <inovikov@unipro.ru>  Thu, 27 Oct 2011 12:25:50 +0700
+
+ugene (1.9.5+repack-0ubuntu1~natty) natty; urgency=low
+
+  * New upstream release
+
+ -- Alexey Kuznecov <akuznecov@unipro.ru>  Wed, 03 Aug 2011 20:20:50 +0700
+
+ugene (1.9.4+repack-0ubuntu1~maverick) maverick; urgency=low
+
+  * Latest release maverick build
+ 
+ -- Alexey Kuznecov <akuznecov@unipro.ru>  Thu, 14 Jul 2011 21:15:23 +0700
+
+ugene (1.9.4+repack-0ubuntu1~natty) natty; urgency=low
+
+  * New upstream release
+  * Copyright information updated
+
+ -- Alexey Kuznecov <akuznecov@unipro.ru>  Thu, 14 Jul 2011 21:07:52 +0700
+
+ugene (1.9.3+repack-0ubuntu1~maverick) maverick; urgency=low
+
+  * Latest release maverick build
+
+ -- Konstantin Okonechnikov <k.okonechnikov@gmail.com>  Wed, 15 Jun 2011 10:42:00 +0700
+
+ugene (1.9.2+repack-0ubuntu1~maverick) maverick; urgency=low
+
+  * Latest release maverick build
+
+ -- Konstantin Okonechnikov <k.okonechnikov@gmail.com>  Tue, 29 Mar 2011 11:25:00 +0700
+
+
+ugene (1.9.1+repack-0ubuntu3) maverick; urgency=low
+
+  * Latest release maverick build, new build attempt
+
+ -- Konstantin Okonechnikov <k.okonechnikov@gmail.com>  Thu, 10 Feb 2011 10:37:17 +0700
+
+
+ugene (1.9.1+repack-0ubuntu2) maverick; urgency=low
+
+  * Latest release maverick build, new build attempt
+
+ -- Konstantin Okonechnikov <k.okonechnikov@gmail.com>  Wed, 09 Feb 2011 13:55:17 +0700
+
+
+ugene (1.9.1+repack-0ubuntu1) maverick; urgency=low
+
+  * Latest release maverick build
+
+ -- Konstantin Okonechnikov <k.okonechnikov@gmail.com>  Wed, 09 Feb 2011 12:55:17 +0700
+
+
+ugene (1.7.2+repack-0ubuntu1) lucid; urgency=low
+
+  * Latest release lucid build
+  * Merging with changes from official Ubuntu package
+
+ -- Konstantin Okonechnikov <k.okonechnikov@gmail.com>  Mon, 23 Aug 2010 16:55:17 +0700
+
+ugene (1.6.2+repack-0ubuntu2) lucid; urgency=low
+
+  * Latest release lucid build
+ -- Konstantin Okonechnikov <k.okonechnikov@gmail.com>  Wed, 12 May 2010 12:58:00 +0700
+
+ugene (1.6.2+repack-0ubuntu1~ppa1~karmic1) karmic; urgency=low
+
+  * New upstream release
+  * Copyright information updated
+ -- Konstantin Okonechnikov <k.okonechnikov@gmail>   Tue, 7 Apr 2009 00:15:00 +0600
+
+ugene (1.5.2+repack-0ubuntu1) karmic; urgency=low
+
+  * New upstream release
+  * Copyright information updated
+
+ -- Ivan Efremov <iefremov@unipro.ru>  Mon, 06 Jul 2009 12:58:00 +0700
 
 ugene (1.5.1+repack-0ubuntu1) karmic; urgency=low
 
-  * New upstream release LP: #405922
-  * Bump standards-version to 3.8.2. No other changes.
+  * New upstream release
+  * Copyright information updated
 
- -- Bhavani Shankar <right2bhavi@gmail.com>  Tue, 28 Jul 2009 22:55:13 +0530
+ -- Ivan Efremov <iefremov@unipro.ru>  Fri, 17 Jul 2009 18:04:24 +0700
 
 ugene (1.5.0+repack-0ubuntu1) karmic; urgency=low
 
@@ -71,7 +188,6 @@ ugene (1.5.0+repack-0ubuntu1) karmic; urgency=low
   * Copyright information updated
   * Versions of needed packages are bumped up
     because of some bugs in older versions
-  * Closes LP: #397779
 
  -- Ivan Efremov <iefremov@unipro.ru>  Tue, 07 Jul 2009 16:39:27 +0700
 

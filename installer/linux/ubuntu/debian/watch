@@ -1,4 +1,4 @@
 version=3
 opts=dversionmangle=s/\+repack// \
-http://ugene.unipro.ru/download.html \
+http://ugene.unipro.ru/ugene_get_latest_source.html \
   downloads/ugene-([\d.]*)\.tar\.gz debian uupdate
