@@ -39,6 +39,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/U2SafePoints.h>
 
 
 /* TRANSLATOR U2::WeightMatrixIO */
@@ -196,15 +197,12 @@ QString PWMatrixReadPrompter::composeRichDoc() {
 }
 
 QString PWMatrixWritePrompter::composeRichDoc() {
-    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(WMATRIX_IN_PORT_ID));
-    Actor* producer = input->getProducer(PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE_ID);
-    QString from = producer ? producer->getLabel() : "<font color='red'>"+tr("unset")+"</font>";
-    QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId()); 
+    IntegralBusPort *input = qobject_cast<IntegralBusPort*>(target->getPort(WMATRIX_IN_PORT_ID));
+    SAFE_POINT(NULL != input, "NULL input port", "");
+    QString from = getProducersOrUnset(WMATRIX_IN_PORT_ID, PWMatrixWorkerFactory::WMATRIX_SLOT.getId());
+    QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId());
     url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
-    QString doc = tr("Save the profile(s) from <u>%1</u> to %2.")
-        .arg(from)
-        .arg(url);
-    return doc;
+    return tr("Save the profile(s) from <u>%1</u> to %2.").arg(from).arg(url);
 }
 
 void PWMatrixReader::init() {
@@ -422,15 +420,12 @@ QString PFMatrixReadPrompter::composeRichDoc() {
 }
 
 QString PFMatrixWritePrompter::composeRichDoc() {
-    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(FMATRIX_IN_PORT_ID));
-    Actor* producer = input->getProducer(PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE_ID);
-    QString from = producer ? producer->getLabel() : "<font color='red'>"+tr("unset")+"</font>";
-    QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId()); 
+    IntegralBusPort *input = qobject_cast<IntegralBusPort*>(target->getPort(FMATRIX_IN_PORT_ID));
+    SAFE_POINT(NULL != input, "NULL input port", "");
+    QString from = getProducersOrUnset(FMATRIX_IN_PORT_ID, PFMatrixWorkerFactory::FMATRIX_SLOT.getId());
+    QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId());
     url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
-    QString doc = tr("Save the profile(s) from <u>%1</u> to %2.")
-        .arg(from)
-        .arg(url);
-    return doc;
+    return tr("Save the profile(s) from <u>%1</u> to %2.").arg(from).arg(url);
 }
 
 void PFMatrixReader::init() {

@@ -987,6 +987,7 @@ QString PrompterBaseImpl::getScreenedURL(IntegralBusPort* input, const QString& 
 QString PrompterBaseImpl::getProducers( const QString& port, const QString& slot )
 {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(port));
+    CHECK(NULL != input, "");
     QList<Actor*> producers = input->getProducers(slot);
 
     QStringList labels;
@@ -994,6 +995,12 @@ QString PrompterBaseImpl::getProducers( const QString& port, const QString& slot
         labels << a->getLabel();
     }
     return labels.join(", ");
+}
+
+QString PrompterBaseImpl::getProducersOrUnset(const QString &port, const QString &slot) {
+    static const QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+    QString prods = getProducers(port, slot);
+    return prods.isEmpty() ? unsetStr : prods;
 }
 
 QString PrompterBaseImpl::getHyperlink(const QString& id, const QString& val) {

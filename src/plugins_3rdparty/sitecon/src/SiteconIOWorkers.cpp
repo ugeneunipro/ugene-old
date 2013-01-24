@@ -38,6 +38,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/U2SafePoints.h>
 #include "SiteconIO.h"
 
 /* TRANSLATOR U2::SiteconIO */
@@ -189,15 +190,12 @@ QString SiteconReadPrompter::composeRichDoc() {
 }
 
 QString SiteconWritePrompter::composeRichDoc() {
-    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(SITECON_IN_PORT_ID));
-    Actor* producer = input->getProducer(SiteconWorkerFactory::SITECON_MODEL_TYPE_ID);
-    QString from = producer ? producer->getLabel() : "<font color='red'>"+tr("unset")+"</font>";
-    QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId()); 
+    IntegralBusPort *input = qobject_cast<IntegralBusPort*>(target->getPort(SITECON_IN_PORT_ID));
+    SAFE_POINT(NULL != input, "NULL input port", "");
+    QString from = getProducersOrUnset(SITECON_IN_PORT_ID, SiteconWorkerFactory::SITECON_SLOT.getId());
+    QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId());
     url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
-    QString doc = tr("Save the profile(s) from <u>%1</u> to %2.")
-        .arg(from)
-        .arg(url);
-    return doc;
+    return tr("Save the profile(s) from <u>%1</u> to %2.").arg(from).arg(url);
 }
 
 void SiteconReader::init() {
