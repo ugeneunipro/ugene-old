@@ -171,7 +171,6 @@ add-plugin external_tool_support
 add-plugin dbi_bam
 add-plugin ptools
 add-plugin dna_flexibility
-add-plugin spb
 add-plugin variants
 
 if [ "$1" == "-test" ]; then

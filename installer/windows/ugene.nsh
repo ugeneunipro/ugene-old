@@ -163,7 +163,6 @@ Section "Build"
     !insertmacro AddPlugin expert_discovery
     !insertmacro AddPlugin ptools
     !insertmacro AddPlugin dna_flexibility
-    !insertmacro AddPlugin spb
     !insertmacro AddPlugin variants
     
     SetOutPath $INSTDIR\tools
