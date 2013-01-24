@@ -731,14 +731,14 @@ void QueryViewController::createActions() {
 
     saveAction = new QAction(tr("Save Schema"), this);
     saveAction->setShortcut(QKeySequence::Save);
-    deleteAction->setShortcutContext(Qt::WidgetShortcut);
+    saveAction->setShortcutContext(Qt::WidgetShortcut);
     saveAction->setIcon(QIcon(":query_designer/images/filesave.png"));
     saveAction->setDisabled(true);
     connect(saveAction, SIGNAL(triggered()), SLOT(sl_saveScene()));
     
     saveAsAction = new QAction(tr("Save Schema As..."), this);
     saveAsAction->setShortcut(QKeySequence::SaveAs);
-    deleteAction->setShortcutContext(Qt::WidgetShortcut);
+    saveAsAction->setShortcutContext(Qt::WidgetShortcut);
     saveAsAction->setIcon(QIcon(":query_designer/images/filesave.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
 
