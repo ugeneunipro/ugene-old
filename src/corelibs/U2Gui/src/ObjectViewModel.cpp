@@ -148,6 +148,7 @@ void GObjectView::removeObject(GObject* o) {
     assert(!closing);
     _removeObject(o);
     if (closing) {
+        SAFE_POINT(closeInterface != NULL, "No close interface", );
         closeInterface->closeView();
     }
 }
@@ -156,6 +157,7 @@ void GObjectView::sl_onObjectRemovedFromDocument(GObject* o) {
     if (objects.contains(o)) {
         _removeObject(o);
         if (closing) {
+            SAFE_POINT(closeInterface != NULL, "No close interface", );
             closeInterface->closeView();
         }
     }
@@ -192,6 +194,7 @@ void GObjectView::sl_onDocumentRemoved(Document* d) {
             _removeObject(o);
         }
         if (closing) {
+            SAFE_POINT(closeInterface != NULL, "No close interface", );
             closeInterface->closeView();
             break;
         }

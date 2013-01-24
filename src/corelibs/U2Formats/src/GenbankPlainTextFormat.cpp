@@ -437,7 +437,7 @@ void GenbankPlainTextFormat::storeDocument(Document* doc, IOAdapter* io, U2OpSta
                 }
             }
         } else {
-            assert(!anns.isEmpty());
+            SAFE_POINT(!anns.isEmpty(), "GenbankPlainTextFormat::storeDocument::anns.isEmpty()", );
             aos << anns.takeFirst();
         }
 

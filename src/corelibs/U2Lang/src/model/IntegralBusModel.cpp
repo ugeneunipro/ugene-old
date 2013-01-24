@@ -371,12 +371,14 @@ void IntegralBusPort::setupBusMap() {
             //no unambiguous match, reset
             busMap.insert(key.getId(), "");
         } else {
-            // for string type initial value - empty. Because string type is always path to file and not needed for binding
+            // for string type initial value - empty. Because string type is always a path to a file or a dataset and not needed to be bound
             if( elementDatatype == BaseTypes::STRING_TYPE() ) {
                 // FIXME: should use special hints for descriptors?
                 foreach(const QString & str, candidates) {
                     IntegralBusSlot slot = IntegralBusSlot::fromString(str, os);
                     if (slot.getId() == BaseSlots::URL_SLOT().getId()) {
+                        candidates.removeAll(str);
+                    }else if (slot.getId() == BaseSlots::DATASET_SLOT().getId()) {
                         candidates.removeAll(str);
                     }
                 }
