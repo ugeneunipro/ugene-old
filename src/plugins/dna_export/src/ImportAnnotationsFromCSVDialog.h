@@ -58,7 +58,6 @@ private slots:
     void sl_separatorRadioToggled(bool);
     void sl_scriptRadioToggled(bool);
     void sl_removeQuotesToggled(bool);
-    void sl_separatorsModeToggled(bool);
     void sl_linesToSkipChanged(int);
     
 private:

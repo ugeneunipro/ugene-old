@@ -115,7 +115,6 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
 
     // connect this slot after initial dialog model is set up
     connect(removeQuotesCheck, SIGNAL(toggled(bool)),SLOT(sl_removeQuotesToggled(bool)));
-    connect(separatorsModeCheck, SIGNAL(toggled(bool)), SLOT(sl_separatorsModeToggled(bool)));
     connect(linesToSkipBox, SIGNAL(valueChanged(int)), SLOT(sl_linesToSkipChanged(int)));
 }
 
@@ -231,10 +230,6 @@ QString ImportAnnotationsFromCSVDialog::readFileHeader(const QString& fileName, 
 }
 
 void ImportAnnotationsFromCSVDialog::sl_removeQuotesToggled(bool) {
-    guessSeparator(true);
-}
-
-void ImportAnnotationsFromCSVDialog::sl_separatorsModeToggled(bool) {
     guessSeparator(true);
 }
 
