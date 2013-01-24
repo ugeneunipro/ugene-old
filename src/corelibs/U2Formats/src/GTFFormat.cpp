@@ -88,6 +88,7 @@ const int GTFFormat::FIELDS_COUNT_IN_EACH_LINE = 9;
 
 const QString GTFFormat::NO_VALUE_STR = ".";
 
+const QString GTFFormat::CHROMOSOME = "chromosome";
 const QString GTFFormat::SOURCE_QUALIFIER_NAME = "source";
 const QString GTFFormat::SCORE_QUALIFIER_NAME = "score";
 const QString GTFFormat::STRAND_QUALIFIER_NAME = "strand";
@@ -143,11 +144,12 @@ QList<SharedAnnotationData> GTFFormat::getAnnotData(IOAdapter* io, U2OpStatus& o
 {
     std::auto_ptr<QObject> parent(new QObject());
     GTFFormat gtfFormat(parent.get());
-    return gtfFormat.parseDocument(io, os);
+    QString seqName;
+    return gtfFormat.parseDocument(io, seqName, os);
 }
 
 
-QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& os)
+QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, QString &sequenceName, U2OpStatus& os)
 {
     QList<SharedAnnotationData> result;
 
@@ -212,6 +214,8 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& 
 
 
         // Add qualifiers
+        annotData->qualifiers << U2Qualifier(CHROMOSOME, gtfLineData.seqName);
+
         if (NO_VALUE_STR != gtfLineData.source) {
             annotData->qualifiers.push_back(U2Qualifier(SOURCE_QUALIFIER_NAME, gtfLineData.source));
         }
@@ -297,8 +301,8 @@ QList<SharedAnnotationData> GTFFormat::parseDocument(IOAdapter* io, U2OpStatus& 
 
 void GTFFormat::load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os)
 {
-    sequenceName = "";
-    QList<SharedAnnotationData> annotations = parseDocument(io, os);
+    QString sequenceName;
+    QList<SharedAnnotationData> annotations = parseDocument(io, sequenceName, os);
 
     foreach (SharedAnnotationData annotData, annotations) {
         // Get or create the annotations table
@@ -603,7 +607,10 @@ void GTFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                 QString transcriptIdAttributeStr;
                 QString otherAttributesStr;
                 foreach (U2Qualifier qualifier, annotQualifiers) {
-                    if (SOURCE_QUALIFIER_NAME == qualifier.name) {
+                    if (CHROMOSOME == qualifier.name) {
+                        lineFields[GTF_SEQ_NAME_INDEX] = qualifier.value;
+                    }
+                    else if (SOURCE_QUALIFIER_NAME == qualifier.name) {
                         lineFields[GTF_SOURCE_INDEX] = qualifier.value;
                     }
                     else if (SCORE_QUALIFIER_NAME == qualifier.name) {

@@ -47,6 +47,9 @@ public:
     FormatCheckResult checkRawData(const QByteArray &rawData,
         const GUrl &url = GUrl()) const;
 
+public:
+    static QList<SharedAnnotationData> getAnnotationData(IOAdapter *io, U2OpStatus &os);
+
 protected:
     Document * loadDocument(IOAdapter *io, const U2DbiRef &targetDb,
         const QVariantMap &hints, U2OpStatus &os);
@@ -54,6 +57,7 @@ protected:
 private:
     QList<ColumnDataParser::Column> getColumns() const;
     QString getAnnotationName() const;
+    QList<SharedAnnotationData> parseAnnotations(IOAdapter *io, U2OpStatus &os);
     QList<SharedAnnotationData> parseAnnotations(const ColumnDataParser &parser,
         IOAdapter *io, QByteArray &buffer, U2OpStatus &os);
     QList<ColumnDataParser::Column> getHeaderColumns(const QList<GObject*> &anns, U2OpStatus &os);

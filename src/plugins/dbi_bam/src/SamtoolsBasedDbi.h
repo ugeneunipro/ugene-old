@@ -66,7 +66,7 @@ int bamFetchFunction(const bam1_t *b, void *data);
 class SamtoolsBasedReadsIterator : public U2DbiIterator<U2AssemblyRead> {
     friend int bamFetchFunction(const bam1_t *b, void *data);
 public:
-    SamtoolsBasedReadsIterator(int assemblyId, const U2Region &r, SamtoolsBasedDbi &dbi);
+    SamtoolsBasedReadsIterator(int assemblyId, const U2Region &r, SamtoolsBasedDbi &dbi, const QByteArray &nameFilter = "");
     virtual ~SamtoolsBasedReadsIterator() {}
 
     virtual bool hasNext();
@@ -77,6 +77,7 @@ private:
     int assemblyId;
     U2Region r;
     SamtoolsBasedDbi &dbi;
+    QByteArray nameFilter;
 
     qint64 nextPosToRead;
     QList<U2AssemblyRead> reads;
@@ -85,9 +86,11 @@ private:
     QList<U2DataId> borderReadIds;
     QList<U2DataId> newBorderReadIds;
 
-    void fetchNextChunk();
-
     static const int BUFFERED_INTERVAL_SIZE;
+
+private:
+    void fetchNextChunk();
+    void applyNameFilter();
 }; // SamtoolsBasedReadsIterator
 
 class SamtoolsBasedAssemblyDbi : public U2SimpleAssemblyDbi {

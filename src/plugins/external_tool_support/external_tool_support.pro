@@ -49,6 +49,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/clustalw/ClustalWSupportRunDialog.h \
            src/clustalw/ClustalWSupportTask.h \
            src/clustalw/ClustalWWorker.h \
+           src/cufflinks/CuffdiffSupportTask.h \
            src/cufflinks/CuffdiffWorker.h \
            src/cufflinks/CufflinksSettings.h \
            src/cufflinks/CufflinksSupport.h \
@@ -162,6 +163,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/clustalw/ClustalWSupportRunDialog.cpp \
            src/clustalw/ClustalWSupportTask.cpp \
            src/clustalw/ClustalWWorker.cpp \
+           src/cufflinks/CuffdiffSupportTask.cpp \
            src/cufflinks/CuffdiffWorker.cpp \
            src/cufflinks/CufflinksSettings.cpp \
            src/cufflinks/CufflinksSupport.cpp \

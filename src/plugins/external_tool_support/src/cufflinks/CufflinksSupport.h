@@ -30,6 +30,7 @@
 #define CUFFMERGE_TOOL_NAME     "Cuffmerge"
 
 #define CUFFLINKS_TMP_DIR       "cufflinks"
+#define CUFFDIFF_TMP_DIR        "cuffdiff"
 
 
 namespace U2 {

@@ -187,36 +187,16 @@ QList<Task*> CufflinksSupportTask::onSubTaskFinished(Task* subTask)
 QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(QString fileName, CufflinksOutputFormat format)
 {
     QList<SharedAnnotationData> res;
-
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    if (NULL == iof) {
-        stateInfo.setError(tr("An internal error occurred during getting annotations from a Cufflinks output file!"));
-        return res;
-    }
-
     QString filePath = workingDirectory + "/" + fileName;
-
-    if(!QFile::exists(filePath)){
-        stateInfo.setError(tr("Cufflinks output file '%1' is not found!").arg(filePath));
-        return res;
+    DocumentFormatId formatId;
+    if (CufflinksOutputFpkm == format) {
+        formatId = BaseDocumentFormats::FPKM_TRACKING_FORMAT;
+    } else if (CufflinksOutputGtf == format) {
+        formatId = BaseDocumentFormats::GTF;
+    } else {
+        FAIL("Internal error: unexpected format of the Cufflinks output!", res);
     }
-
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
-    if (!io.get()->open(GUrl(filePath), IOAdapterMode_Read)) {
-        stateInfo.setError(L10N::errorOpeningFileRead(filePath));
-        return res;
-    }
-
-    switch (format) {
-        case CufflinksOutputFpkm:
-            return FpkmTrackingFormat::getAnnotData(io.get(), stateInfo);
-
-        case CufflinksOutputGtf:
-            return GTFFormat::getAnnotData(io.get(), stateInfo);
-
-        default:
-            FAIL("Internal error: unexpected format of the Cufflinks output!", res);
-    }
+    return ExternalToolSupportUtils::getAnnotationsFromFile(filePath, formatId, CUFFLINKS_TOOL_NAME, stateInfo);
 }
 
 Task::ReportResult CufflinksSupportTask::report()

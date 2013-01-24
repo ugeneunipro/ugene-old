@@ -26,6 +26,7 @@ extern "C" {
 #include <bam.h>
 }
 #include <U2Core/U2Assembly.h>
+#include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2Type.h>
 #include <QVector>
 
@@ -47,6 +48,22 @@ private:
     QVector<bam1_t> vector;
 };
 
+class ReadsContext {
+public:
+    ReadsContext(U2AssemblyDbi *assemblyDbi,
+        const U2DataId &assemblyId,
+        const QMap<U2DataId, int> &assemblyNumMap);
+
+    U2AssemblyRead getPairedRead(const U2AssemblyRead &read, bool &found, U2OpStatus &os) const;
+    int getReadAssemblyNum() const;
+    int getAssemblyNum(const U2DataId &assemblyId) const;
+
+private:
+    U2AssemblyDbi *assemblyDbi;
+    U2DataId assemblyId;
+    QMap<U2DataId, int> assemblyNumMap;
+};
+
 class SamtoolsAdapter : public QObject {
     Q_OBJECT
 public:
@@ -57,7 +74,8 @@ public:
     */
     static void reads2samtools(U2DbiIterator<U2AssemblyRead> *reads, U2OpStatus &os, ReadsContainer &result);
 
-    static void read2samtools(const U2AssemblyRead &reads, U2OpStatus &os, bam1_t &result);
+    static void read2samtools(const U2AssemblyRead &read, U2OpStatus &os, bam1_t &result);
+    static void read2samtools(const U2AssemblyRead &read, const ReadsContext &ctx, U2OpStatus &os, bam1_t &result);
 
     /** Helpers for different fields of bam1_t */
 

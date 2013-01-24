@@ -19,9 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "SamtoolsAdapter.h"
+#include <QScopedPointer>
+
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatus.h>
+
+#include "SamtoolsAdapter.h"
 
 namespace U2 {
 
@@ -161,6 +164,23 @@ void SamtoolsAdapter::reads2samtools(U2DbiIterator<U2AssemblyRead> *reads, U2OpS
     }
 }
 
+void SamtoolsAdapter::read2samtools(const U2AssemblyRead &read, const ReadsContext &ctx, U2OpStatus &os, bam1_t &result) {
+    read2samtools(read, os, result);
+    CHECK_OP(os, );
+    result.core.tid = ctx.getReadAssemblyNum();
+
+    bool paired = false;
+    U2AssemblyRead pRead;
+    if (ReadFlagsUtils::isPairedRead(read->flags)) {
+        pRead = ctx.getPairedRead(read, paired, os);
+    }
+    if (paired) {
+        // TODO: mate assembly id could be not the same!
+        result.core.mtid = ctx.getReadAssemblyNum();
+        result.core.mpos = pRead->leftmostPos;
+    }
+}
+
 void SamtoolsAdapter::read2samtools(const U2AssemblyRead &r, U2OpStatus &os, bam1_t &resRead) {
     bam1_core_t &core = resRead.core;
 
@@ -177,8 +197,8 @@ void SamtoolsAdapter::read2samtools(const U2AssemblyRead &r, U2OpStatus &os, bam
     core.n_cigar = r->cigar.length();
 
     core.l_qseq = r->readSequence.size();
-    core.mtid = 0;
-    core.mpos = 0;
+    core.mtid = -1;
+    core.mpos = -1;
     core.isize = 0;
 
     QByteArray quality = r->quality;
@@ -226,5 +246,41 @@ ReadsContainer::~ReadsContainer() {
     }
 }
 
+/************************************************************************/
+/* ReadsContext */
+/************************************************************************/
+ReadsContext::ReadsContext(U2AssemblyDbi *_assemblyDbi,
+    const U2DataId &_assemblyId,
+    const QMap<U2DataId, int> &_assemblyNumMap)
+: assemblyDbi(_assemblyDbi), assemblyId(_assemblyId), assemblyNumMap(_assemblyNumMap)
+{
+
+}
+
+U2AssemblyRead ReadsContext::getPairedRead(const U2AssemblyRead &read, bool &found, U2OpStatus &os) const {
+    found = false;
+    CHECK(ReadFlagsUtils::isPairedRead(read->flags), U2AssemblyRead());
+
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > it(assemblyDbi->getReadsByName(assemblyId, read->name, os));
+    CHECK_OP(os, U2AssemblyRead());
+
+    QList<U2AssemblyRead> result;
+    while (it->hasNext()) {
+        U2AssemblyRead r = it->next();
+        if(r->id != read->id) {
+            found = true;
+            return r;
+        }
+    }
+    return U2AssemblyRead();
+}
+
+int ReadsContext::getReadAssemblyNum() const {
+    return assemblyNumMap.value(assemblyId, 0);
+}
+
+int ReadsContext::getAssemblyNum(const U2DataId &assemblyId) const {
+    return assemblyNumMap.value(assemblyId, 0);
+}
 
 } // namespace

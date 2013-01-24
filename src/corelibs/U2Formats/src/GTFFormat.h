@@ -144,7 +144,7 @@ private:
     * A common method for parsing and validating an input GTF file.
     * It is used during loading the file or just getting the annotations data from it.
     */
-    QList<SharedAnnotationData> parseDocument(IOAdapter* io, U2OpStatus& os);
+    QList<SharedAnnotationData> parseDocument(IOAdapter* io, QString &sequenceName, U2OpStatus& os);
 
     void load(IOAdapter* io, QList<GObject*>& objects, U2OpStatus& os);
 
@@ -153,6 +153,7 @@ private:
     static const int FIELDS_COUNT_IN_EACH_LINE;
     static const QString NO_VALUE_STR;
 
+    static const QString CHROMOSOME;
     static const QString SOURCE_QUALIFIER_NAME;
     static const QString SCORE_QUALIFIER_NAME;
     static const QString STRAND_QUALIFIER_NAME; // e.g. to detect if a value was in the original GTF file
@@ -167,8 +168,6 @@ private:
      * used in the Cufflinks output. Other values are from the GTF spec.
      */
     QList<QString> GTF_FEATURE_FIELD_VALUES;
-
-    QString sequenceName;
 };
 
 

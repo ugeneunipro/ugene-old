@@ -22,6 +22,7 @@
 #ifndef _U2_EXTERNAL_TOOL_RUN_TASK_H
 #define _U2_EXTERNAL_TOOL_RUN_TASK_H
 
+#include <U2Core/AnnotationData.h>
 #include <U2Core/Task.h>
 #include <QtCore/QProcess>
 
@@ -73,8 +74,17 @@ private:
 class ExternalToolSupportUtils : public QObject {
     Q_OBJECT
 public:
-    static void removeTmpDir(const QString& absoulutePath, U2OpStatus& os);
-    static QString createTmpDir(const QString& domain, U2OpStatus& os);
+    static void removeTmpDir(const QString &absoulutePath, U2OpStatus &os);
+    static QString createTmpDir(const QString &domain, U2OpStatus &os);
+    /**
+     * Creates a new directory: prePath/domain/tmp_dir_name
+     */
+    static QString createTmpDir(const QString &prePath, const QString &domain, U2OpStatus &os);
+    static QList<SharedAnnotationData> getAnnotationsFromFile(
+        const QString &filePath,
+        const DocumentFormatId &format,
+        const QString &toolName,
+        U2OpStatus &os);
 };
 
 

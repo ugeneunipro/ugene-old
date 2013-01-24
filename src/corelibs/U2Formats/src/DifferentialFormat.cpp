@@ -184,18 +184,16 @@ QList<SharedAnnotationData> DifferentialFormat::parseAnnotations(
     return anns;
 }
 
+QList<SharedAnnotationData> DifferentialFormat::getAnnotationData(IOAdapter *io, U2OpStatus &os) {
+    DifferentialFormat format(NULL);
+    return format.parseAnnotations(io, os);
+}
+
 Document * DifferentialFormat::loadDocument(IOAdapter *io, const U2DbiRef &targetDb,
     const QVariantMap &hints, U2OpStatus &os) {
-    ColumnDataParser parser(getColumns(), SEPARATOR);
-    QByteArray buffer(BUFFER_SIZE + 1, 0);
-
-    QString headerLine = readLine(io, buffer, os);
-    CHECK_OP(os, NULL);
-    parser.init(headerLine, os);
+    QList<SharedAnnotationData> anns = parseAnnotations(io, os);
     CHECK_OP(os, NULL);
 
-    QList<SharedAnnotationData> anns = parseAnnotations(parser, io, buffer, os);
-    CHECK_OP(os, NULL);
     AnnotationTableObject *obj = new AnnotationTableObject(getAnnotationName());
     foreach (SharedAnnotationData data, anns) {
         obj->addAnnotation(new Annotation(data));
@@ -203,6 +201,18 @@ Document * DifferentialFormat::loadDocument(IOAdapter *io, const U2DbiRef &targe
 
     return new Document(this, io->getFactory(), io->getURL(), targetDb,
         QList<GObject*>() << obj, hints, "");
+}
+
+QList<SharedAnnotationData> DifferentialFormat::parseAnnotations(IOAdapter *io, U2OpStatus &os) {
+    ColumnDataParser parser(getColumns(), SEPARATOR);
+    QByteArray buffer(BUFFER_SIZE + 1, 0);
+
+    QString headerLine = readLine(io, buffer, os);
+    CHECK_OP(os, QList<SharedAnnotationData>());
+    parser.init(headerLine, os);
+    CHECK_OP(os, QList<SharedAnnotationData>());
+
+    return parseAnnotations(parser, io, buffer, os);
 }
 
 void DifferentialFormat::writeHeader(IOAdapter *io, const QList<ColumnDataParser::Column> &columns) {

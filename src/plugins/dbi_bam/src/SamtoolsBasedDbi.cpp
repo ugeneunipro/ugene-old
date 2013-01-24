@@ -331,9 +331,11 @@ U2DbiIterator<U2DataId>* SamtoolsBasedObjectDbi::getObjectsByVisualName(const QS
 /************************************************************************/
 const int SamtoolsBasedReadsIterator::BUFFERED_INTERVAL_SIZE = 1000;
 
-SamtoolsBasedReadsIterator::SamtoolsBasedReadsIterator(int assemblyId, const U2Region &_r, SamtoolsBasedDbi &dbi)
-: U2DbiIterator<U2AssemblyRead>(), assemblyId(assemblyId), dbi(dbi)
+SamtoolsBasedReadsIterator::SamtoolsBasedReadsIterator(
+    int assemblyId, const U2Region &_r, SamtoolsBasedDbi &_dbi, const QByteArray &_nameFilter)
+: U2DbiIterator<U2AssemblyRead>(), assemblyId(assemblyId), dbi(_dbi), nameFilter(_nameFilter)
 {
+    current = reads.begin();
     bool errorRegion = false;
     qint64 startPos = _r.startPos;
     qint64 endPos = _r.endPos() - 1;
@@ -360,6 +362,8 @@ SamtoolsBasedReadsIterator::SamtoolsBasedReadsIterator(int assemblyId, const U2R
 }
 
 bool SamtoolsBasedReadsIterator::hasNext() {
+    applyNameFilter();
+
     bool fetch = false;
     if (reads.isEmpty()) {
         fetch = true;
@@ -371,15 +375,33 @@ bool SamtoolsBasedReadsIterator::hasNext() {
     }
 
     reads.clear();
+    current = reads.begin();
     qint64 endPosExc = r.endPos();
     while (reads.isEmpty() && nextPosToRead < endPosExc) {
         fetchNextChunk();
+        applyNameFilter();
     }
 
     if (!reads.isEmpty()) {
         return true;
     }
     return false;
+}
+
+void SamtoolsBasedReadsIterator::applyNameFilter() {
+    if (nameFilter.isEmpty()) {
+        return;
+    }
+    while (current != reads.end()) {
+        if ((*current)->name == nameFilter) {
+            return;
+        }
+        current++;
+    }
+    if (current == reads.end()) {
+        reads.clear();
+        current = reads.begin();
+    }
 }
 
 U2AssemblyRead SamtoolsBasedReadsIterator::next() {
@@ -534,9 +556,12 @@ U2DbiIterator<U2AssemblyRead>* SamtoolsBasedAssemblyDbi::getReadsByRow(const U2D
     return NULL;
 }
 
-U2DbiIterator<U2AssemblyRead>* SamtoolsBasedAssemblyDbi::getReadsByName(const U2DataId &, const QByteArray &, U2OpStatus &os) {
-    os.setError("Operation not supported: BAM::SamtoolsBasedAssemblyDbi::getReadsByName");
-    return NULL;
+U2DbiIterator<U2AssemblyRead>* SamtoolsBasedAssemblyDbi::getReadsByName(const U2DataId &assemblyId, const QByteArray &name, U2OpStatus &os) {
+    bool ok = false;
+    int id = assemblyId.toInt(&ok);
+    CHECK_EXT(ok, os.setError("Assembly id error"), NULL);
+    U2Region targetReg = this->getCorrectRegion(assemblyId, U2_REGION_MAX, os);
+    return new SamtoolsBasedReadsIterator(id, targetReg, dbi, name);
 }
 
 qint64 SamtoolsBasedAssemblyDbi::getMaxEndPos(const U2DataId &assemblyId, U2OpStatus &os) {

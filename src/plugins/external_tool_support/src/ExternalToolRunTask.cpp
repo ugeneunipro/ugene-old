@@ -23,9 +23,16 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
+#include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Formats/DifferentialFormat.h>
+#include <U2Formats/FpkmTrackingFormat.h>
+#include <U2Formats/GTFFormat.h>
 
 #include <U2Lang/WorkflowUtils.h>
 
@@ -203,7 +210,9 @@ void ExternalToolLogParser::parseErrOutput(const QString& partOfLog){
 }
 
 void ExternalToolLogParser::setLastError(const QString &value) {
-    ioLog.error(value);
+    if (!value.isEmpty()) {
+        ioLog.error(value);
+    }
     lastError = value;
 }
 
@@ -226,20 +235,57 @@ void ExternalToolSupportUtils::removeTmpDir( const QString& tmpDirUrl, U2OpStatu
     }
 }
 
-QString ExternalToolSupportUtils::createTmpDir(const QString& domain, U2OpStatus& os) {
+QString ExternalToolSupportUtils::createTmpDir(const QString &prePath, const QString &domain, U2OpStatus &os) {
     int i = 0;
-    while (true)  {
+    while (true) {
         QString tmpDirName = QString("d_%1").arg(i);
-        QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(domain) + "/" + tmpDirName;
+        QString tmpDirPath = prePath + "/" + domain + "/" + tmpDirName;
         QDir tmpDir(tmpDirPath);
 
         if (!tmpDir.exists()) {
             if (!QDir().mkpath(tmpDirPath)) {
-                os.setError(tr("Can not create directory for temporary files."));
+                os.setError(tr("Can not create directory for temporary files: %1").arg(tmpDirPath));
             } 
             return tmpDir.absolutePath();
         }
         i++;
+    }
+}
+
+QString ExternalToolSupportUtils::createTmpDir(const QString& domain, U2OpStatus& os) {
+    QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath();
+    return createTmpDir(tmpDirPath, domain, os);
+}
+
+QList<SharedAnnotationData> ExternalToolSupportUtils::getAnnotationsFromFile(const QString &filePath,
+    const DocumentFormatId &format, const QString &toolName, U2OpStatus &os) {
+    QList<SharedAnnotationData> result;
+
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+    if (NULL == iof) {
+        os.setError(QObject::tr("An internal error occurred during getting annotations from a %1 output file!").arg(toolName));
+        return result;
+    }
+
+    if(!QFile::exists(filePath)){
+        os.setError(tr("%1 output file '%2' is not found!").arg(toolName).arg(filePath));
+        return result;
+    }
+
+    QPointer<IOAdapter> io(iof->createIOAdapter());
+    if (!io.data()->open(GUrl(filePath), IOAdapterMode_Read)) {
+        os.setError(L10N::errorOpeningFileRead(filePath));
+        return result;
+    }
+
+    if (BaseDocumentFormats::FPKM_TRACKING_FORMAT == format) {
+        return FpkmTrackingFormat::getAnnotData(io.data(), os);
+    } else if (BaseDocumentFormats::GTF == format) {
+        return GTFFormat::getAnnotData(io.data(), os);
+    } else if (BaseDocumentFormats::DIFF == format) {
+        return DifferentialFormat::getAnnotationData(io.data(), os);
+    } else {
+        FAIL(QObject::tr("Internal error: unexpected format of the %1 output!").arg(toolName), result);
     }
 }
 
