@@ -693,6 +693,7 @@ void WorkflowView::sl_toggleLock(bool b) {
     importSchemaToElement->setEnabled(b);
 
     propertyEditor->setEnabled(b);
+    propertyEditor->setSpecialPanelEnabled(b);
     palette->setEnabled(b);
 
     scene->setLocked(!b);

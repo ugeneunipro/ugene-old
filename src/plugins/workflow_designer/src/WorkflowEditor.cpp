@@ -582,6 +582,12 @@ void WorkflowEditor::setSpecialPanel(SpecialParametersPanel *panel) {
     specialParameters = panel;
 }
 
+void WorkflowEditor::setSpecialPanelEnabled(bool isEnabled) {
+    if(NULL != specialParameters) {
+        specialParameters->setDatasetsEnabled(isEnabled);
+    }
+}
+
 /************************************************************************/
 /* SpecialParametersPanel */
 /************************************************************************/
@@ -647,13 +653,24 @@ void SpecialParametersPanel::reset() {
 
 void SpecialParametersPanel::addWidget(DatasetsController *controller) {
     CHECK(NULL != controller, );
-    this->layout()->addWidget(controller->getWigdet());
+    QWidget *newWidget = controller->getWigdet();
+    if(!editor->isEnabled()) {
+        newWidget->setEnabled(false);
+    }
+    this->layout()->addWidget(newWidget);
 }
 
 void SpecialParametersPanel::removeWidget(DatasetsController *controller) {
     CHECK(NULL != controller, );
     disconnect(controller, SIGNAL(si_attributeChanged()), this, SLOT(sl_datasetsChanged()));
     this->layout()->removeWidget(controller->getWigdet());
+}
+
+void SpecialParametersPanel::setDatasetsEnabled(bool isEnabled) {
+    setEnabled(isEnabled);
+    foreach(DatasetsController *dataset, controllers.values()) {
+        dataset->getWigdet()->setEnabled(isEnabled);
+    }
 }
 
 }//namespace

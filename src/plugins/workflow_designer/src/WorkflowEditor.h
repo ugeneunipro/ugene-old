@@ -57,6 +57,7 @@ public:
     void setIterated(bool iterated);
 
     void setSpecialPanel(SpecialParametersPanel *panel);
+    void setSpecialPanelEnabled(bool isEnabled);
     void commitDatasets(const QString &attrId, const QList<Dataset> &sets);
 
 signals:
@@ -117,6 +118,7 @@ public:
 
     void editActor(Actor *a);
     void reset();
+    void setDatasetsEnabled(bool isEnabled);
 
 signals:
     void si_dataChanged();
