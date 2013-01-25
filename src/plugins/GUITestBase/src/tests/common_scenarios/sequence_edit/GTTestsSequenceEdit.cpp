@@ -124,8 +124,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //     sequence length in new document must be 199900
 //     sequence must starts with "AGAGAGA"
     GTUtilsSequenceView::openSequenceView(os, "result.gb");
-    CHECK_SET_ERR(GTUtilsSequenceView::getLengthOfSequence(os) == 199900, "Expected length differs");
-    CHECK_SET_ERR(GTUtilsSequenceView::getBeginOfSequenceAsString(os, 7) == "AGAGAGA", "Expected sequence beginning differs");
+    int length = GTUtilsSequenceView::getLengthOfSequence(os);
+    CHECK_SET_ERR(length == 199900, "Expected length differs");
+    QString seqStart = GTUtilsSequenceView::getBeginOfSequenceAsString(os, 7);
+    CHECK_SET_ERR(seqStart == "AGAGAGA", "Expected sequence beginning differs");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
