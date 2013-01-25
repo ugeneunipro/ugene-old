@@ -2495,5 +2495,21 @@ GUI_TEST_CLASS_DEFINITION(test_0021_2) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0023){
+//    1. Open file data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+//    2. Do context menu->Add->sequence from file
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os,dataDir + "samples/Genbank/", "CVU55762_new.fa");
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_LOAD<<"Sequence from file"));
+    GTMenu::showContextMenu(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
+//    3. Select data/samples/GENBANK/CVU55762_new.fa
+    GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "CVU557621", "CVU557621"));
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,18));
+    GTMouseDriver::doubleClick(os);
+//    Expected state: CVU55762 presents in list
+}
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2
