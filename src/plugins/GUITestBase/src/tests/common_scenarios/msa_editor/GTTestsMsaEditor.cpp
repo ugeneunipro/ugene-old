@@ -2506,10 +2506,34 @@ GUI_TEST_CLASS_DEFINITION(test_0023){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_LOAD<<"Sequence from file"));
     GTMenu::showContextMenu(os,GTWidget::findWidget(os, "msa_editor_sequence_area"));
 //    3. Select data/samples/GENBANK/CVU55762_new.fa
-    GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "CVU557621", "CVU557621"));
+    GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "CVU55762", "CVU55762"));
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,18));
     GTMouseDriver::doubleClick(os);
 //    Expected state: CVU55762 presents in list
+}
+GUI_TEST_CLASS_DEFINITION(test_0024){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//2. select first symbol of first sequence
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0,0));
+    GTMouseDriver::click(os);
+//3. press toolbar button "zoom to selection"
+    int initOffset  = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    //offsets are used to check zooming
+    QAbstractButton* zoom_to_sel = GTAction::button(os,"Zoom To Selection");
+    GTWidget::click(os,zoom_to_sel);
+
+    int finOffset  = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
+    CHECK_SET_ERR(initOffset>=(finOffset*2-5), "inital offset: " + QString().setNum(initOffset) + " final offset: " + QString().setNum(finOffset));
+//Expected state: MSA is zoomed
+
+//4. press toolbar button "Reset zoom"
+    GTGlobals::sleep(500);
+    QAbstractButton* reset_zoom = GTAction::button(os,"Reset Zoom");
+    GTWidget::click(os,reset_zoom);
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getRightOffset(os)==initOffset, "MSA is not zoomed back");
+//Expected state: MSA is zoomed back
+
 }
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2
