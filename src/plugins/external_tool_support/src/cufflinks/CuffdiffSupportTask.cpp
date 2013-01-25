@@ -37,7 +37,7 @@ namespace U2 {
 CuffdiffSupportTask::CuffdiffSupportTask(const CuffdiffSettings &_settings)
 : Task(tr("Running Cuffdiff task"), TaskFlags_NR_FOSE_COSC), settings(_settings)
 {
-
+    diffTask = NULL;
 }
 
 void CuffdiffSupportTask::prepare() {
@@ -75,7 +75,7 @@ QList<Task*> CuffdiffSupportTask::onSubTaskFinished(Task *subTask) {
         saveTasks.removeOne(subTask);
     }
     if (saveTasks.isEmpty()) {
-        if (diffTask.isNull()) {
+        if (NULL == diffTask) {
             tasks << createCuffdiffTask();
         } else {
             readResult();
@@ -153,13 +153,13 @@ Task * CuffdiffSupportTask::createCuffdiffTask() {
     }
 
     // create task
-    logParser = new LogParser();
+    logParser.reset(new LogParser());
     diffTask = new ExternalToolRunTask(CUFFDIFF_TOOL_NAME,
         arguments,
         logParser.data(),
         workingDir);
 
-    return diffTask.data();
+    return diffTask;
 }
 
 QList<SharedAnnotationData> CuffdiffSupportTask::readFile(const QString &fileName, const DocumentFormatId &format) {
@@ -196,7 +196,7 @@ void CuffdiffSupportTask::createTranscriptDoc() {
     DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::GTF);
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
     transcriptUrl = workingDir + "/transcripts.gtf";
-    transcriptDoc = f->createNewLoadedDocument(iof, transcriptUrl, stateInfo);
+    transcriptDoc.reset(f->createNewLoadedDocument(iof, transcriptUrl, stateInfo));
     CHECK_OP(stateInfo, );
     transcriptDoc->setDocumentOwnsDbiResources(false);
 }

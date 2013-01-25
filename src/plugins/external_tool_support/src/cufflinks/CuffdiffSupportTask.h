@@ -104,11 +104,11 @@ private:
     QString transcriptUrl;
     QScopedPointer<CuffdiffResult> result;
 
-    QPointer<Document> transcriptDoc;
+    QScopedPointer<Document> transcriptDoc;
     QList<Task*> saveTasks;
 
-    QPointer<ExternalToolLogParser> logParser;
-    QPointer<ExternalToolRunTask> diffTask;
+    QScopedPointer<ExternalToolLogParser> logParser;
+    ExternalToolRunTask *diffTask;
 
 private:
     ConvertAssemblyToSamTask * createAssemblyTask(const Workflow::SharedDbiDataHandler &id, const QString &url);
