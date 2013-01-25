@@ -518,5 +518,239 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     GTUtilsAnnotationsTreeView::findItem(os, "a1");
     GTGlobals::sleep();
     }
+GUI_TEST_CLASS_DEFINITION(test_0007) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+
+    ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (1, new ImportAnnotationsToCsvFiller::StartParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (2, new ImportAnnotationsToCsvFiller::EndParameter(true)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (3, new ImportAnnotationsToCsvFiller::QualifierParameter("Qual")));
+
+    Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns2.csv", 
+        testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true, 
+        true, "[sep123]", false, 0, "#", true, true, "MISC", roleParameters);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "import_annotations_from_CSV_file"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsProjectTreeView::findItem(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsAnnotationsTreeView::findItem(os, "a1");
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0007_1) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+
+    ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (1, new ImportAnnotationsToCsvFiller::StartParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (2, new ImportAnnotationsToCsvFiller::EndParameter(true)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (3, new ImportAnnotationsToCsvFiller::QualifierParameter("Qual")));
+
+    Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns2.csv", 
+        testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true, 
+        true, "[sep123]", false, 0, "#", false, true, "MISC", roleParameters);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "import_annotations_from_CSV_file"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsProjectTreeView::findItem(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsAnnotationsTreeView::findItem(os, "a1");
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0007_2) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+
+    ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (1, new ImportAnnotationsToCsvFiller::StartParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (2, new ImportAnnotationsToCsvFiller::EndParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (3, new ImportAnnotationsToCsvFiller::QualifierParameter("Qual")));
+
+    Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns2.csv", 
+        testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true, 
+        true, "[sep123]", false, 0, "#", true, true, "MISC", roleParameters);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "import_annotations_from_CSV_file"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsProjectTreeView::findItem(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsAnnotationsTreeView::findItem(os, "a1");
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0008) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+
+    ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (1, new ImportAnnotationsToCsvFiller::StartParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (2, new ImportAnnotationsToCsvFiller::EndParameter(true)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (3, new ImportAnnotationsToCsvFiller::QualifierParameter("Qual")));
+
+    Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv", 
+        testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true, 
+        true, ",", false, 1, "#", false, false, "MISC", roleParameters);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "import_annotations_from_CSV_file"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsProjectTreeView::findItem(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsAnnotationsTreeView::findItem(os, "a1");
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0008_1) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+
+    ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (1, new ImportAnnotationsToCsvFiller::StartParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (2, new ImportAnnotationsToCsvFiller::EndParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (3, new ImportAnnotationsToCsvFiller::QualifierParameter("Qual")));
+
+    Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv", 
+        testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true, 
+        true, ",", false, 1, "#", false, false, "MISC", roleParameters);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "import_annotations_from_CSV_file"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsProjectTreeView::findItem(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsAnnotationsTreeView::findItem(os, "a1");
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0008_2) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+
+    ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::NameParameter()));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (1, new ImportAnnotationsToCsvFiller::StartParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (2, new ImportAnnotationsToCsvFiller::EndParameter(true)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (3, new ImportAnnotationsToCsvFiller::QualifierParameter("Qual")));
+
+    Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns1.csv", 
+        testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true, 
+        true, ",", false, 0, "#", false, false, "MISC", roleParameters);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "import_annotations_from_CSV_file"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsProjectTreeView::findItem(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsAnnotationsTreeView::findItem(os, "a1");
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0009) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+
+    ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::IgnoreParameter()));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (1, new ImportAnnotationsToCsvFiller::StartParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (2, new ImportAnnotationsToCsvFiller::EndParameter(true)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (3, new ImportAnnotationsToCsvFiller::StrandMarkParameter(true, "yes")));
+
+    Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns5.csv", 
+        testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true, 
+        true, ",", false, 1, "#", true, false, "MISC", roleParameters);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "import_annotations_from_CSV_file"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsProjectTreeView::findItem(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsAnnotationsTreeView::findItem(os, "MISC");
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0009_1) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+
+    ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::IgnoreParameter()));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (1, new ImportAnnotationsToCsvFiller::StartParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (2, new ImportAnnotationsToCsvFiller::EndParameter(true)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (3, new ImportAnnotationsToCsvFiller::StrandMarkParameter(true, "yes")));
+
+    Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns5.csv", 
+        testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true, 
+        true, ",", false, 1, "#", true, false, "MISC", roleParameters);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "import_annotations_from_CSV_file"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsProjectTreeView::findItem(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsAnnotationsTreeView::findItem(os, "MISC");
+    GTGlobals::sleep();
+    }
+GUI_TEST_CLASS_DEFINITION(test_0009_2) {
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/annotations_import/", "se1.fa");
+
+    ImportAnnotationsToCsvFiller::RoleParameters roleParameters;
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (0, new ImportAnnotationsToCsvFiller::IgnoreParameter()));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (1, new ImportAnnotationsToCsvFiller::StartParameter(false)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (2, new ImportAnnotationsToCsvFiller::EndParameter(true)));
+    roleParameters.append(ImportAnnotationsToCsvFiller::RoleColumnParameter (3, new ImportAnnotationsToCsvFiller::StrandMarkParameter(true, "yes")));
+
+    Runnable *filler = new ImportAnnotationsToCsvFiller(os, testDir + "_common_data/scenarios/annotations_import/anns5.csv", 
+        testDir + "_common_data/scenarios/sandbox/result.gb", ImportAnnotationsToCsvFiller::Genbank, true, 
+        true, ",", false, 1, "#", true, false, "MISC", roleParameters);
+
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTGlobals::sleep(1000);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "import_annotations_from_CSV_file"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsProjectTreeView::findItem(os, "result.gb");
+    GTGlobals::sleep();
+
+    GTUtilsAnnotationsTreeView::findItem(os, "MISC");
+    GTGlobals::sleep();
+    }
 } // namespace GUITest_common_scenarios_annotations_import
 } // namespace U2
