@@ -27,7 +27,6 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Core/L10n.h>
-#include <U2Core/Log.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
@@ -35,11 +34,6 @@
 #define SETTINGS_ROOT QString("dna_export/")
 
 namespace U2 {
-
-const QString NEW_LINE_SYMBOL = "\n";
-const QString COLOR_NAME_FOR_WARNING_MESSAGES = "orange";
-const QString STYLESHEET_COLOR_DEFINITION = "color: ";
-const QString STYLESHEET_DEFINITIONS_SEPARATOR = ";";
 
 ExportSequences2MSADialog::ExportSequences2MSADialog(QWidget* p, const QString& defaultUrl): QDialog(p) {
     setupUi(this);    
@@ -57,12 +51,6 @@ ExportSequences2MSADialog::ExportSequences2MSADialog(QWidget* p, const QString& 
     conf.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
     saveContoller = new SaveDocumentGroupController(conf, this);
 
-    connect(formatCombo, SIGNAL(currentIndexChanged(QString)), SLOT(sl_formatChanged(QString)));
-    messageLabel->setStyleSheet(
-        "color: " + L10N::errorColorLabelStr() + ";"
-        "font: bold;");
-    messageLabel->hide();
-    sl_formatChanged(QString());
 }
 
 
@@ -86,75 +74,6 @@ void ExportSequences2MSADialog::setOkButtonText(const QString& text) const {
 
 void ExportSequences2MSADialog::setFileLabelText(const QString& text) const {
     fileLabel->setText(text);
-}
-
-void ExportSequences2MSADialog::sl_formatChanged(QString newFormat) {
-    Q_UNUSED(newFormat);
-    if (formatCombo->currentText() == "CLUSTALW") {
-        showHideMessage(true, CutNames);
-    } else {
-        showHideMessage(false, CutNames);
-    }
-}
-
-void ExportSequences2MSADialog::showHideMessage(bool show, MessageFlag messageFlag) {
-    if (show) {
-        if (!messageFlags.contains(messageFlag)) {
-            messageFlags.append(messageFlag);
-        }
-    }
-    else {
-        messageFlags.removeAll(messageFlag);
-    }
-
-    if (!messageFlags.isEmpty()) {
-        static QString storedTextColor = currentColorOfMessageText();
-        if(storedTextColor != currentColorOfMessageText())
-            changeColorOfMessageText(storedTextColor);
-
-        QString text = "";
-        foreach (MessageFlag flag, messageFlags) {
-            switch (flag) {
-                case CutNames:
-                    if (!text.isEmpty()) {
-                        text += "\n";
-                    }
-                    changeColorOfMessageText(COLOR_NAME_FOR_WARNING_MESSAGES);
-                    text += QString(tr("All sequence`s names will be cut to 39 symbols"));
-                    break;
-
-                default:
-                    assert(0);
-            }
-        }
-        messageLabel->setText(text);
-        messageLabel->show();
-    }
-    else {
-        messageLabel->hide();
-        messageLabel->setText("");
-    }
-}
-
-void ExportSequences2MSADialog::changeColorOfMessageText(const QString &newColorName)
-{
-    QString currentStyleSheet = messageLabel->styleSheet();
-    currentStyleSheet.replace(currentColorOfMessageText(), newColorName);
-    messageLabel->setStyleSheet(currentStyleSheet);
-}
-
-QString ExportSequences2MSADialog::currentColorOfMessageText() const
-{
-    const QString currentStyleSheet = messageLabel->styleSheet();
-    const int startOfColorDefinitionPosition = currentStyleSheet.indexOf(STYLESHEET_COLOR_DEFINITION);
-    const int endOfColorDefinitionPosition = currentStyleSheet.indexOf(STYLESHEET_DEFINITIONS_SEPARATOR,
-        startOfColorDefinitionPosition);
-    const QString currentMessageTextColor = currentStyleSheet.mid(startOfColorDefinitionPosition
-                                                                  + STYLESHEET_COLOR_DEFINITION.length(),
-                                                                  endOfColorDefinitionPosition
-                                                                  - startOfColorDefinitionPosition
-                                                                  - STYLESHEET_COLOR_DEFINITION.length());
-    return currentMessageTextColor;
 }
 
 }//namespace

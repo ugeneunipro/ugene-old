@@ -34,11 +34,6 @@ class SaveDocumentGroupController;
 class ExportSequences2MSADialog : public QDialog, Ui_ExportSequences2MSADialog {
     Q_OBJECT
 public:
-    enum MessageFlag {
-        CutNames
-    };
-
-public:
     ExportSequences2MSADialog(QWidget* p, const QString& defaultUrl = QString() );
     
     void setOkButtonText(const QString& text) const;
@@ -53,17 +48,9 @@ public:
     bool    addToProjectFlag;
     bool    useGenbankHeader;
 
-private:
-    void showHideMessage(bool show, MessageFlag messageFlag);
-    void changeColorOfMessageText(const QString &colorName);
-    QString currentColorOfMessageText() const;
-
-private slots:
-    void sl_formatChanged(QString newFormat);
-
-private:
+private:    
     SaveDocumentGroupController* saveContoller;
-    QList<MessageFlag> messageFlags;
+
 };
 
 }//namespace

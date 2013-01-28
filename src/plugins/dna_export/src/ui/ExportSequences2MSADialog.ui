@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>562</width>
-    <height>202</height>
+    <width>483</width>
+    <height>153</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,9 +19,6 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="fileLabel">
        <property name="text">
@@ -30,14 +27,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="fileNameEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
+      <widget class="QLineEdit" name="fileNameEdit"/>
      </item>
      <item row="0" column="2">
       <widget class="QToolButton" name="fileButton">
@@ -54,26 +44,9 @@
       </widget>
      </item>
      <item row="1" column="1" colspan="2">
-      <widget class="QComboBox" name="formatCombo">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
+      <widget class="QComboBox" name="formatCombo"/>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QLabel" name="messageLabel">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>message</string>
-     </property>
-    </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="addToProjectBox">
@@ -107,9 +80,6 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
