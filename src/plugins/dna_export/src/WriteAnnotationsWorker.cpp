@@ -207,9 +207,12 @@ void WriteAnnotationsWorkerFactory::init() {
         attrs << docFormatAttr;
         attrs << urlAttr;
         attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
-        Descriptor annotationsNameDesc(ANNOTATIONS_NAME, WriteAnnotationsWorker::tr("Annotations name"), 
-            WriteAnnotationsWorker::tr("Object name of saving annotations"));
-        attrs << new Attribute(annotationsNameDesc, BaseTypes::STRING_TYPE(), false, QVariant(ANNOTATIONS_NAME_DEF_VAL));
+        Descriptor annotationsNameDesc(ANNOTATIONS_NAME, WriteAnnotationsWorker::tr("Annotations name"),
+            WriteAnnotationsWorker::tr("Annotations name: Name of the saved"
+            " annotations. This option is only available for document formats"
+            " that support saving of annotations names."));
+        Attribute *nameAttr = new Attribute(annotationsNameDesc, BaseTypes::STRING_TYPE(), false, QVariant(ANNOTATIONS_NAME_DEF_VAL));
+        attrs << nameAttr;
         Descriptor separatorDesc(SEPARATOR, WriteAnnotationsWorker::tr("CSV separator"), 
             WriteAnnotationsWorker::tr("String which separates values in CSV files"));
         attrs << new Attribute(separatorDesc, BaseTypes::STRING_TYPE(), false, QVariant(SEPARATOR_DEFAULT_VALUE));
@@ -219,8 +222,15 @@ void WriteAnnotationsWorkerFactory::init() {
         attrs << new Attribute(writeNamesDesc, BaseTypes::BOOL_TYPE(), false, false);
 
         docFormatAttr->addRelation(new FileExtensionRelation(urlAttr->getId(), docFormatAttr->getAttributePureValue().toString()));
+        nameAttr->addRelation(new VisibilityRelation(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(),
+            QVariantList()
+            << CSV_FORMAT_ID
+            << BaseDocumentFormats::PLAIN_EMBL
+            << BaseDocumentFormats::PLAIN_GENBANK
+            << BaseDocumentFormats::GFF
+            << BaseDocumentFormats::PLAIN_SWISS_PROT));
     }
-    
+
     Descriptor protoDesc(WriteAnnotationsWorkerFactory::ACTOR_ID, 
         WriteAnnotationsWorker::tr("Write Annotations"), 
         WriteAnnotationsWorker::tr("Writes all supplied annotations to file(s) in selected formatId."));

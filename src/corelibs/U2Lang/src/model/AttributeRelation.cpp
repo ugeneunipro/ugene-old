@@ -26,8 +26,25 @@
 
 namespace U2 {
 
+VisibilityRelation::VisibilityRelation(const QString &relatedAttrId, const QVariantList &_visibilityValues)
+: AttributeRelation(relatedAttrId), visibilityValues(_visibilityValues)
+{
+
+}
+
+VisibilityRelation::VisibilityRelation(const QString &relatedAttrId, const QVariant &visibilityValue)
+: AttributeRelation(relatedAttrId)
+{
+    visibilityValues << visibilityValue;
+}
+
 QVariant VisibilityRelation::getAffectResult(const QVariant &influencingValue, const QVariant &) const {
-    return influencingValue == visibilityValue;
+    foreach (const QVariant &v, visibilityValues) {
+        if (v == influencingValue) {
+            return true;
+        }
+    }
+    return false;
 }
 
 QVariant FileExtensionRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const {

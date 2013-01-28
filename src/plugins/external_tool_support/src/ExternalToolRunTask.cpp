@@ -274,7 +274,7 @@ QList<SharedAnnotationData> ExternalToolSupportUtils::getAnnotationsFromFile(con
         return result;
     }
 
-    QPointer<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io.data()->open(GUrl(filePath), IOAdapterMode_Read)) {
         os.setError(L10N::errorOpeningFileRead(filePath));
         return result;

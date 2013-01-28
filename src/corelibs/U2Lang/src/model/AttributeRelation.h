@@ -54,14 +54,14 @@ protected:
  */
 class U2LANG_EXPORT VisibilityRelation : public AttributeRelation {
 public:
-    VisibilityRelation(const QString &relatedAttrId, const QVariant &visibilityValue)
-        : AttributeRelation(relatedAttrId), visibilityValue(visibilityValue) {}
+    VisibilityRelation(const QString &relatedAttrId, const QVariantList &visibilityValues);
+    VisibilityRelation(const QString &relatedAttrId, const QVariant &visibilityValue);
 
     virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue) const;
     virtual RelationType getType() const {return VISIBILITY;}
 
 private:
-    QVariant visibilityValue;
+    QVariantList visibilityValues;
 };
 
 /**

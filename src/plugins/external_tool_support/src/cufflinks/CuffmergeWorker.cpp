@@ -229,7 +229,7 @@ void CuffmergeWorker::takeAnnotations() {
     QVariantMap data = m.getData().toMap();
     SAFE_POINT(data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId()),
         "No annotations in a message", );
-    QVariant annsVar = data[BaseSlots::ASSEMBLY_SLOT().getId()];
+    QVariant annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
     anns << QVariantUtils::var2ftl(annsVar.toList());
 }
 
