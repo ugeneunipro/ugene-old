@@ -47,6 +47,7 @@ MAlignmentRow::MAlignmentRow()
 : sequence(DNASequence()),
   initialRowInDb(U2MsaRow())
 {
+    initialRowInDb.rowId = -1;
 }
 
 MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& bytes, U2OpStatus& /* os */) {
@@ -56,7 +57,10 @@ MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& by
     splitBytesToCharsAndGaps(bytes, newSequenceBytes, newGapsModel);
     DNASequence newSequence(name, newSequenceBytes);
 
-    return MAlignmentRow(U2MsaRow(), newSequence, newGapsModel);
+    U2MsaRow row;
+    row.rowId = -1;
+
+    return MAlignmentRow(row, newSequence, newGapsModel);
 } 
 
 MAlignmentRow MAlignmentRow::createRow(const U2MsaRow& rowInDb, const DNASequence& sequence, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
