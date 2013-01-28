@@ -124,7 +124,7 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
 
     CEASTaskSettings settings(
         ceas,
-        QVariantUtils::var2ftl(bedVar.toList()),
+        QVariantUtils::var2ftl(data[BED_SLOT_ID].toList()),
         data[WIG_SLOT_ID].toString());
 
     return settings;
