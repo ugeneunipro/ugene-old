@@ -36,6 +36,7 @@
 #include "GTUtilsBookmarksTreeView.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/qt/FontDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
@@ -45,6 +46,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 
 #include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorNameList.h>
 
 namespace U2 {
 
@@ -2534,6 +2536,29 @@ GUI_TEST_CLASS_DEFINITION(test_0024){
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getRightOffset(os)==initOffset, "MSA is not zoomed back");
 //Expected state: MSA is zoomed back
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0025){
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. press "change font button" on toolbar
+    GTUtilsDialog::waitForDialog(os, new FontDialogFiller(os));
+
+    QAbstractButton* change_font = GTAction::button(os,"Change Font");
+    GTWidget::click(os,change_font);
+    GTGlobals::sleep(500);
+
+    QWidget* nameListWidget = GTWidget::findWidget(os,"msa_editor_COI");
+    MSAEditorUI* ui = qobject_cast<MSAEditorUI*>(nameListWidget);
+
+    QFont f = ui->getEditor()->getFont();
+    QString expectedFont = "Ubuntu,10,-1,5,75,1,0,0,0,0";
+    CHECK_SET_ERR(f.toString() == expectedFont,"Expected: " + expectedFont + "found: " + f.toString())
+    ;
+//    Expected state: change font dialog appeared
+
+//    3. choose some font, press OK
+//    Expected state: font is changed
 }
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2

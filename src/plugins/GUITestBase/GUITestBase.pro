@@ -6,6 +6,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / Qt
             src/runnables/qt/MessageBoxFiller.h \
             src/runnables/qt/PopupChooser.h \
+            src/runnables/qt/FontDialogFiller.h \
 #   Runnables / UGENE
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h \
@@ -144,6 +145,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / Qt
             src/runnables/qt/MessageBoxFiller.cpp \
             src/runnables/qt/PopupChooser.cpp \
+            src/runnables/qt/FontDialogFiller.cpp \
 #   Runnables / UGENE
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.cpp \
