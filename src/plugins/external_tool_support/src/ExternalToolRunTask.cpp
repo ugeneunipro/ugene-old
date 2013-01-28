@@ -21,6 +21,7 @@
 
 #include "ExternalToolRunTask.h"
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -28,6 +29,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
+#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Formats/DifferentialFormat.h>
@@ -287,6 +289,29 @@ QList<SharedAnnotationData> ExternalToolSupportUtils::getAnnotationsFromFile(con
     } else {
         FAIL(QObject::tr("Internal error: unexpected format of the %1 output!").arg(toolName), result);
     }
+}
+
+Document * ExternalToolSupportUtils::createAnnotationsDocument(const QString &filePath,
+                             const DocumentFormatId &format,
+                             const QList<SharedAnnotationData> &anns,
+                             U2OpStatus &os) {
+     Document *doc = NULL;
+     { // create document
+         DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(format);
+         IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+         doc = f->createNewLoadedDocument(iof, filePath, os);
+         CHECK_OP(os, NULL);
+         doc->setDocumentOwnsDbiResources(false);
+     }
+
+     { // add annotations object
+         AnnotationTableObject *aobj = new AnnotationTableObject("anns");
+         foreach(const SharedAnnotationData& ann, anns) {
+             aobj->addAnnotation(new Annotation(ann));
+         }
+         doc->addObject(aobj);
+     }
+     return doc;
 }
 
 }//namespace

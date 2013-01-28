@@ -22,15 +22,18 @@
 #ifndef _U2_EXTERNAL_TOOL_RUN_TASK_H
 #define _U2_EXTERNAL_TOOL_RUN_TASK_H
 
+#include <QPointer>
+
 #include <U2Core/AnnotationData.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/Task.h>
 #include <QtCore/QProcess>
 
 namespace U2 {
 
-
 class ExternalToolLogParser;
 class ExternalToolRunTaskHelper;
+class SaveDocumentTask;
 
 class ExternalToolRunTask: public Task {
     Q_OBJECT
@@ -84,6 +87,10 @@ public:
         const QString &filePath,
         const DocumentFormatId &format,
         const QString &toolName,
+        U2OpStatus &os);
+    static Document * createAnnotationsDocument(const QString &filePath,
+        const DocumentFormatId &format,
+        const QList<SharedAnnotationData> &anns,
         U2OpStatus &os);
 };
 

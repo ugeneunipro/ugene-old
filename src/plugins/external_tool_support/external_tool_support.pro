@@ -55,6 +55,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/cufflinks/CufflinksSupport.h \
            src/cufflinks/CufflinksSupportTask.h \
            src/cufflinks/CufflinksWorker.h \
+           src/cufflinks/CuffmergeSupportTask.h \
            src/cufflinks/CuffmergeWorker.h \
            src/macs/MACSSettings.h \
            src/macs/MACSSupport.h \
@@ -169,6 +170,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/cufflinks/CufflinksSupport.cpp \
            src/cufflinks/CufflinksSupportTask.cpp \
            src/cufflinks/CufflinksWorker.cpp \
+           src/cufflinks/CuffmergeSupportTask.cpp \
            src/cufflinks/CuffmergeWorker.cpp \
            src/macs/MACSSettings.cpp \
            src/macs/MACSSupport.cpp \

@@ -65,7 +65,6 @@ private:
     CuffdiffSettings takeSettings();
     QVariantMap createMessageData(CuffdiffSupportTask *task) const;
     void takeAssembly();
-    template<class T> T param(const QString &paramId) const;
 };
 
 class CuffdiffWorkerFactory : public DomainFactory
@@ -76,18 +75,6 @@ public:
     CuffdiffWorkerFactory() : DomainFactory(ACTOR_ID) {}
     virtual Worker* createWorker(Actor* actor) { return new CuffdiffWorker(actor); }
 };
-
-/************************************************************************/
-/* Template definitions */
-/************************************************************************/
-template<class T>
-T CuffdiffWorker::param(const QString &paramId) const {
-    Attribute *attr = actor->getParameter(paramId);
-    if (NULL == attr) {
-        return T();
-    }
-    return attr->getAttributeValue<T>(context);
-}
 
 } // namespace LocalWorkflow
 } // namespace U2

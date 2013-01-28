@@ -33,18 +33,20 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/IntegralBus.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/GObject.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/Settings.h>
+
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/GObject.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/QVariantUtils.h>
+#include <U2Core/Settings.h>
 #include <U2Core/StringAdapter.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -922,6 +924,16 @@ QString WorkflowUtils::createUniqueString(const QString &str, const QString &sep
         result += sep + QString::number(number);
     }
     return result;
+}
+
+void WorkflowUtils::updateExternalToolPath(const QString &toolName, const QString &path) {
+    if (QString::compare(path, "default", Qt::CaseInsensitive) != 0) {
+        ExternalToolRegistry *registry = AppContext::getExternalToolRegistry();
+        SAFE_POINT(NULL != registry, "NULL external tool registry", );
+        ExternalTool *tool = registry->getByName(toolName);
+        SAFE_POINT(NULL != tool, QString("Unknown tool: %1").arg(toolName), );
+        tool->setPath(path);
+    }
 }
 
 /*****************************

@@ -89,7 +89,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
     // Cuffmerge
     else if (name == CUFFMERGE_TOOL_NAME) {
 #ifdef Q_OS_WIN
-        executableFileName = "cuffmerge.exe";
+        executableFileName = "cuffmerge.py";
 #else
 #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
         executableFileName = "cuffmerge";

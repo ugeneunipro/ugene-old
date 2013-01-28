@@ -68,7 +68,11 @@ public:
 
     QMap<QString, IntegralBus*> &getPorts() {return ports;}
     Actor * getActor() const {return actor;}
-    
+
+    /** Returns the value of a parameter with paramId */
+    template<class T>
+    T getValue(const QString &paramId) const;
+
 private:
     // bind values from input ports to script vars. 
     // This function is called before 'get' data from channel -> to set up parameters for scripting
@@ -164,6 +168,18 @@ public:
     virtual void destroy(Scheduler*, Schema*);
     
 }; // LocalDomainFactory
+
+/************************************************************************/
+/* Template definitions */
+/************************************************************************/
+template<class T>
+T BaseWorker::getValue(const QString &paramId) const {
+    Attribute *attr = actor->getParameter(paramId);
+    if (NULL == attr) {
+        return T();
+    }
+    return attr->getAttributeValue<T>(context);
+}
 
 }//Workflow namespace
 

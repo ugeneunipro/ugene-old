@@ -25,6 +25,7 @@
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
 
+#include "CuffmergeSupportTask.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -49,16 +50,23 @@ class CuffmergeWorker : public BaseWorker
 public:
     CuffmergeWorker(Actor* actor);
 
-    virtual void init();
-    virtual Task* tick();
-    virtual void cleanup();
+    void init();
+    Task * tick();
+    void cleanup();
 
-    private slots:
-        void sl_taskFinished();
+private slots:
+    void sl_taskFinished();
 
 protected:
-    CommunicationChannel* input;
-    CommunicationChannel* output;
+    IntegralBus *input;
+    IntegralBus *output;
+
+    QList< QList<SharedAnnotationData> > anns;
+
+private:
+    CuffmergeSettings scanParameters() const;
+    Task * createCuffmergeTask();
+    void takeAnnotations();
 };
 
 

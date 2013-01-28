@@ -119,14 +119,13 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
         return CEASTaskSettings();
     }
 
-    QVariant bedVar = data[BED_SLOT_ID];
-    const QList<SharedAnnotationData>& bedData = QVariantUtils::var2ftl(bedVar.toList());
-    const QString& wigData = data[WIG_SLOT_ID].toString();
-
     CEASSettings ceas = createCEASSettings(os);
     CHECK_OP(os, CEASTaskSettings());
 
-    CEASTaskSettings settings(ceas, bedData, wigData);
+    CEASTaskSettings settings(
+        ceas,
+        QVariantUtils::var2ftl(bedVar.toList()),
+        data[WIG_SLOT_ID].toString());
 
     return settings;
 }

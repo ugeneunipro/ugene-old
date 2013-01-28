@@ -110,6 +110,9 @@ public:
      */
     static QString createUniqueString(const QString &str, const QString &sep, const QStringList &uniqueStrs);
 
+    /** if path == "default" then nothing is changed */
+    static void updateExternalToolPath(const QString &toolName, const QString &path);
+
 private:
     static QStringList initExtensions();
     

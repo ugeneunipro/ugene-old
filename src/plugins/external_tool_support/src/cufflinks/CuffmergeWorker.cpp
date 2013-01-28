@@ -19,9 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include "CuffmergeWorker.h"
+#include "CufflinksSupport.h"
 
 #include <U2Core/L10n.h>
+#include <U2Core/QVariantUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -29,9 +31,12 @@
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
 
+#include "CuffmergeWorker.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -41,6 +46,7 @@ namespace LocalWorkflow {
  *****************************/
 const QString CuffmergeWorkerFactory::ACTOR_ID("cuffmerge");
 
+const QString MIN_ISOFORM_FRACTION("min-isoform-fraction");
 const QString REF_ANNOTATION("ref-annotation");
 const QString REF_SEQ("ref-seq");
 const QString CUFFCOMPARE_TOOL_PATH("cuffcompare-tool-path");
@@ -50,9 +56,6 @@ const QString TMP_DIR_PATH("tmp-dir");
 
 void CuffmergeWorkerFactory::init()
 {
-    QList<PortDescriptor*> portDescriptors;
-    QList<Attribute*> attributes;
-
     // Description of the element
     Descriptor cuffmergeDescriptor(ACTOR_ID,
         CuffmergeWorker::tr("Merge Assemblies with Cuffmerge"),
@@ -63,36 +66,64 @@ void CuffmergeWorkerFactory::init()
         " to Cuffmerge in order to gracefully merge input (e.g. novel) isoforms and"
         " known isoforms and maximize overall assembly quality."));
 
-    // Define parameters of the element
-    Descriptor refAnnotation(REF_ANNOTATION,
-        CuffmergeWorker::tr("Reference annotation"),
-        CuffmergeWorker::tr("Merge the input assemblies together with"
-        " this reference annotation"));
+    QList<Attribute*> attributes;
+    { // Define parameters of the element
+        Descriptor refAnnotation(REF_ANNOTATION,
+            CuffmergeWorker::tr("Reference annotation"),
+            CuffmergeWorker::tr("Merge the input assemblies together with"
+            " this reference annotation"));
 
-    Descriptor refSeq(REF_SEQ,
-        CuffmergeWorker::tr("Reference sequence"),
-        CuffmergeWorker::tr("The genomic DNA sequences for the reference."
-        " It is used to assist in classifying transfrags and excluding"
-        " artifacts (e.g. repeats). For example, transcripts consisting"
-        " mostly of lower-case bases are classified as repeats."));
+        Descriptor refSeq(REF_SEQ,
+            CuffmergeWorker::tr("Reference sequence"),
+            CuffmergeWorker::tr("The genomic DNA sequences for the reference."
+            " It is used to assist in classifying transfrags and excluding"
+            " artifacts (e.g. repeats). For example, transcripts consisting"
+            " mostly of lower-case bases are classified as repeats."));
 
-    Descriptor cuffcompareToolPath(CUFFCOMPARE_TOOL_PATH,
-        CuffmergeWorker::tr("Cuffcompare tool path"),
-        CuffmergeWorker::tr("The path to the Cuffcompare external tool in UGENE"));
+        Descriptor minIso(MIN_ISOFORM_FRACTION,
+            CuffmergeWorker::tr("Minimum isoform fraction"),
+            CuffmergeWorker::tr("Discard isoforms with abundance below this"));
 
-    Descriptor extToolPath(EXT_TOOL_PATH,
-        CuffmergeWorker::tr("Cuffmerge tool path"),
-        CuffmergeWorker::tr("The path to the Cuffmerge external tool in UGENE"));
+        Descriptor cuffcompareToolPath(CUFFCOMPARE_TOOL_PATH,
+            CuffmergeWorker::tr("Cuffcompare tool path"),
+            CuffmergeWorker::tr("The path to the Cuffcompare external tool in UGENE"));
 
-    Descriptor tmpDir(TMP_DIR_PATH,
-        CuffmergeWorker::tr("Temporary directory"),
-        CuffmergeWorker::tr("The directory for temporary files"));
+        Descriptor extToolPath(EXT_TOOL_PATH,
+            CuffmergeWorker::tr("Cuffmerge tool path"),
+            CuffmergeWorker::tr("The path to the Cuffmerge external tool in UGENE"));
 
-    attributes << new Attribute(refAnnotation, BaseTypes::STRING_TYPE(), false, QVariant(""));
-    attributes << new Attribute(refSeq, BaseTypes::STRING_TYPE(), false, QVariant(""));
-    attributes << new Attribute(cuffcompareToolPath, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
-    attributes << new Attribute(extToolPath, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
-    attributes << new Attribute(tmpDir, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
+        Descriptor tmpDir(TMP_DIR_PATH,
+            CuffmergeWorker::tr("Temporary directory"),
+            CuffmergeWorker::tr("The directory for temporary files"));
+
+        attributes << new Attribute(refAnnotation, BaseTypes::STRING_TYPE(), false, QVariant(""));
+        attributes << new Attribute(refSeq, BaseTypes::STRING_TYPE(), false, QVariant(""));
+        attributes << new Attribute(minIso, BaseTypes::NUM_TYPE(), false, QVariant(0.05));
+        attributes << new Attribute(cuffcompareToolPath, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
+        attributes << new Attribute(extToolPath, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
+        attributes << new Attribute(tmpDir, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
+    }
+
+    QList<PortDescriptor*> portDescriptors;
+    { // Define ports of the element
+        Descriptor inDesc(BasePorts::IN_ANNOTATIONS_PORT_ID(),
+            CuffmergeWorker::tr("Set of annotations"),
+            CuffmergeWorker::tr("Annotations for merging"));
+        Descriptor outDesc(BasePorts::OUT_ANNOTATIONS_PORT_ID(),
+            CuffmergeWorker::tr("Set of annotations"),
+            CuffmergeWorker::tr("Merged annotations"));
+
+        QMap<Descriptor, DataTypePtr> inTypeMap;
+        inTypeMap[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
+        DataTypePtr inType(new MapDataType(inDesc.getId(), inTypeMap));
+
+        QMap<Descriptor, DataTypePtr> outTypeMap;
+        outTypeMap[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
+        DataTypePtr outType(new MapDataType(outDesc.getId(), outTypeMap));
+
+        portDescriptors << new PortDescriptor(inDesc, inType, true, false, IntegralBusPort::BLIND_INPUT);
+        portDescriptors << new PortDescriptor(outDesc, outType, false, true);
+    }
 
     // Create the actor prototype
     ActorPrototype* proto = new IntegralBusActorPrototype(cuffmergeDescriptor,
@@ -101,12 +132,17 @@ void CuffmergeWorkerFactory::init()
 
     // Values range of some parameters
     QMap<QString, PropertyDelegate*> delegates;
-
-    delegates[REF_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
-    delegates[REF_SEQ] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
-    delegates[CUFFCOMPARE_TOOL_PATH] = new URLDelegate("", "executable", false);
-    delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
-    delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
+    {
+        delegates[REF_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
+        delegates[REF_SEQ] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
+        QVariantMap vm;
+        vm["minimum"] = 0.0;
+        vm["maximum"] = 1.0;
+        delegates[MIN_ISOFORM_FRACTION] = new DoubleSpinBoxDelegate(vm);
+        delegates[CUFFCOMPARE_TOOL_PATH] = new URLDelegate("", "executable", false);
+        delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
+        delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
+    }
 
     // Init and register the actor prototype
     proto->setEditor(new DelegateEditor(delegates));
@@ -146,27 +182,70 @@ CuffmergeWorker::CuffmergeWorker(Actor* actor)
       input(NULL),
       output(NULL)
 {
+
 }
 
+void CuffmergeWorker::init() {
+    WorkflowUtils::updateExternalToolPath(CUFFMERGE_TOOL_NAME, getValue<QString>(EXT_TOOL_PATH));
+    WorkflowUtils::updateExternalToolPath(CUFFCOMPARE_TOOL_NAME, getValue<QString>(CUFFCOMPARE_TOOL_PATH));
 
-void CuffmergeWorker::init()
-{
+    input = ports[BasePorts::IN_ANNOTATIONS_PORT_ID()];
+    output = ports[BasePorts::OUT_ANNOTATIONS_PORT_ID()];
 }
 
-
-Task* CuffmergeWorker::tick()
-{
+Task * CuffmergeWorker::tick() {
+    while (input->hasMessage()) {
+        takeAnnotations();
+    }
+    if (input->isEnded()) {
+        Task *t = createCuffmergeTask();
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    }
     return NULL;
 }
 
+void CuffmergeWorker::sl_taskFinished() {
+    CuffmergeSupportTask *t = dynamic_cast<CuffmergeSupportTask*>(sender());
+    if (!t->isFinished()) {
+        return;
+    }
 
-void CuffmergeWorker::sl_taskFinished()
-{
+    QVariantMap data;
+    data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] =
+        qVariantFromValue<QList<SharedAnnotationData> >(t->takeResult());
+    Message m(output->getBusType(), data);
+    output->put(m);
+    output->setEnded();
+    setDone();
 }
 
+void CuffmergeWorker::cleanup() {
+    anns.clear();
+}
 
-void CuffmergeWorker::cleanup()
-{
+void CuffmergeWorker::takeAnnotations() {
+    Message m = getMessageAndSetupScriptValues(input);
+    QVariantMap data = m.getData().toMap();
+    SAFE_POINT(data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId()),
+        "No annotations in a message", );
+    QVariant annsVar = data[BaseSlots::ASSEMBLY_SLOT().getId()];
+    anns << QVariantUtils::var2ftl(annsVar.toList());
+}
+
+CuffmergeSettings CuffmergeWorker::scanParameters() const {
+    CuffmergeSettings result;
+    result.minIsoformFraction = getValue<double>(MIN_ISOFORM_FRACTION);
+    result.refAnnsUrl = getValue<QString>(REF_ANNOTATION);
+    result.refSeqUrl = getValue<QString>(REF_SEQ);
+    result.workingDir = getValue<QString>(TMP_DIR_PATH);
+    return result;
+}
+
+Task * CuffmergeWorker::createCuffmergeTask() {
+    CuffmergeSettings result = scanParameters();
+    result.anns = anns;
+    return new CuffmergeSupportTask(result);
 }
 
 } // namespace LocalWorkflow

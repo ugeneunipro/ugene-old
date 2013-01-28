@@ -31,6 +31,7 @@
 
 #define CUFFLINKS_TMP_DIR       "cufflinks"
 #define CUFFDIFF_TMP_DIR        "cuffdiff"
+#define CUFFMERGE_TMP_DIR       "cuffmerge"
 
 
 namespace U2 {

@@ -357,10 +357,7 @@ CuffdiffWorker::CuffdiffWorker(Actor *actor)
 }
 
 void CuffdiffWorker::init() {
-    QString extToolPath = actor->getParameter(EXT_TOOL_PATH)->getAttributeValue<QString>(context);
-    if (QString::compare(extToolPath, "default", Qt::CaseInsensitive) != 0) {
-        AppContext::getExternalToolRegistry()->getByName(CUFFDIFF_TOOL_NAME)->setPath(extToolPath);
-    }
+    WorkflowUtils::updateExternalToolPath(CUFFDIFF_TOOL_NAME, getValue<QString>(EXT_TOOL_PATH));
 
     inAssembly = ports[BasePorts::IN_ASSEMBLY_PORT_ID()];
     inTranscript = ports[BasePorts::IN_ANNOTATIONS_PORT_ID()];
@@ -413,18 +410,18 @@ void CuffdiffWorker::cleanup() {
 
 CuffdiffSettings CuffdiffWorker::scanParameters() const {
     CuffdiffSettings result;
-    result.timeSeriesAnalysis = param<bool>(TIME_SERIES_ANALYSIS);
-    result.upperQuartileNorm = param<bool>(UPPER_QUARTILE_NORM);
-    result.hitsNorm = CuffdiffSettings::HitsNorm(param<int>(HITS_NORM));
-    result.fragBiasCorrect = param<QString>(FRAG_BIAS_CORRECT);
-    result.multiReadCorrect = param<bool>(MULTI_READ_CORRECT);
-    result.libraryType = CuffdiffSettings::Library(param<int>(LIBRARY_TYPE));
-    result.maskFile = param<QString>(MASK_FILE);
-    result.minAlignmentCount = param<int>(MIN_ALIGNMENT_COUNT);
-    result.fdr = param<double>(FDR);
-    result.maxMleIterations = param<int>(MAX_MLE_ITERATIONS);
-    result.emitCountTables = param<bool>(EMIT_COUNT_TABLES);
-    result.workingDir = param<QString>(TMP_DIR_PATH);
+    result.timeSeriesAnalysis = getValue<bool>(TIME_SERIES_ANALYSIS);
+    result.upperQuartileNorm = getValue<bool>(UPPER_QUARTILE_NORM);
+    result.hitsNorm = CuffdiffSettings::HitsNorm(getValue<int>(HITS_NORM));
+    result.fragBiasCorrect = getValue<QString>(FRAG_BIAS_CORRECT);
+    result.multiReadCorrect = getValue<bool>(MULTI_READ_CORRECT);
+    result.libraryType = CuffdiffSettings::Library(getValue<int>(LIBRARY_TYPE));
+    result.maskFile = getValue<QString>(MASK_FILE);
+    result.minAlignmentCount = getValue<int>(MIN_ALIGNMENT_COUNT);
+    result.fdr = getValue<double>(FDR);
+    result.maxMleIterations = getValue<int>(MAX_MLE_ITERATIONS);
+    result.emitCountTables = getValue<bool>(EMIT_COUNT_TABLES);
+    result.workingDir = getValue<QString>(TMP_DIR_PATH);
     return result;
 }
 

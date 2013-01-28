@@ -105,7 +105,8 @@ void ConvertAssemblyToSamTask::run() {
 
     DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::SAM);
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(samFileUrl));
-    QPointer<Document> doc = format->createNewLoadedDocument(iof, samFileUrl , stateInfo);
+    QScopedPointer<Document> doc(format->createNewLoadedDocument(iof, samFileUrl , stateInfo));
+    CHECK_OP(stateInfo, );
     foreach (const U2DataId &id, objectIds) {
         U2Assembly assembly = handle->dbi->getAssemblyDbi()->getAssemblyObject(id, stateInfo);
         CHECK_OP(stateInfo, );
@@ -115,7 +116,6 @@ void ConvertAssemblyToSamTask::run() {
     }
 
     BAMUtils::writeDocument(doc.data(), stateInfo);
-    return;
 }
 
 QString ConvertAssemblyToSamTask::generateReport() const {
