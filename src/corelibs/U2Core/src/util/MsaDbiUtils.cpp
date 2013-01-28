@@ -490,7 +490,7 @@ void MsaDbiUtils::splitBytesToCharsAndGaps(const QByteArray& input, QByteArray& 
 
 void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2OpStatus& os) {
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -611,7 +611,7 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
 
 void MsaDbiUtils::updateRowContent(const U2EntityRef& msaRef, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -638,7 +638,7 @@ void MsaDbiUtils::updateRowContent(const U2EntityRef& msaRef, qint64 rowId, cons
 
 void MsaDbiUtils::updateRowGapModel(const U2EntityRef& msaRef, qint64 rowId, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -650,7 +650,7 @@ void MsaDbiUtils::updateRowGapModel(const U2EntityRef& msaRef, qint64 rowId, con
 
 void MsaDbiUtils::updateRowsOrder(const U2EntityRef& msaRef, const QList<qint64>& rowsOrder, U2OpStatus& os) {
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -666,7 +666,7 @@ void MsaDbiUtils::renameMsa(const U2EntityRef& msaRef, const QString& newName, U
     }
 
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -697,7 +697,7 @@ void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& row
     }
 
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -744,7 +744,7 @@ void MsaDbiUtils::removeRegion(const U2EntityRef& msaRef, const QList<qint64>& r
     }
 
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -791,7 +791,7 @@ void MsaDbiUtils::crop(const U2EntityRef& msaRef, const QList<qint64> rowIds, qi
     }
 
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -843,7 +843,7 @@ void MsaDbiUtils::trim(const U2EntityRef& msaRef, U2OpStatus& os) {
     }
     
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -902,7 +902,7 @@ void MsaDbiUtils::addRow(const U2EntityRef& msaRef, qint64 posInMsa, U2MsaRow& r
     }
 
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -923,7 +923,7 @@ void MsaDbiUtils::addRow(const U2EntityRef& msaRef, qint64 posInMsa, U2MsaRow& r
 
 void MsaDbiUtils::removeRow(const U2EntityRef& msaRef, qint64 rowId, U2OpStatus& os) {
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
@@ -942,7 +942,7 @@ void MsaDbiUtils::renameRow(const U2EntityRef& msaRef, qint64 rowId, const QStri
     }
 
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, true, os);
+    DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();

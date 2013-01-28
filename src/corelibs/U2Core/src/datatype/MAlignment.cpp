@@ -1250,6 +1250,13 @@ void MAlignment::setRowId(int rowIndex, qint64 rowId) {
     row.setRowId(rowId);
 }
 
+void MAlignment::setSequenceId(int rowIndex, U2DataId sequenceId) {
+    SAFE_POINT(rowIndex >= 0 && rowIndex < getNumRows(), "Invalid row index!", );
+
+    MAlignmentRow& row = rows[rowIndex];
+    row.setSequenceId(sequenceId);
+}
+
 void MAlignment::check() const {
 #ifdef DEBUG
     assert(getNumRows() != 0 || length == 0);

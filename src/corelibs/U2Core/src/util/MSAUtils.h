@@ -60,7 +60,7 @@ public:
      * It is assumed that:
      *   1) All rows in 'newMsa' are present in 'origMsa';
      *   2) Corresponding sequences are the same (however, only their length are verified);
-     * The method modifies 'newMsa' to contain original rows IDs (from 'origMsa') and
+     * The method modifies 'newMsa' to contain original rows and sequences IDs (from 'origMsa') and
      * returns the list of rows IDs in the order of 'newMsa'.
      * Note, that 'newMsa' may contain less rows than 'origMsa'
      * (e.g. ClustalO may decrease the number of sequences after the alignment).

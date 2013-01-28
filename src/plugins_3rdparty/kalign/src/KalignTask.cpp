@@ -99,6 +99,7 @@ void KalignTask::doAlign() {
         return;
     }
     resultMA = resultSubMA;
+    MSAUtils::compareRowsAfterAlignment(inputMA, resultMA, stateInfo);
 }
 
 Task::ReportResult KalignTask::report() {

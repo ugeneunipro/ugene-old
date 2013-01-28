@@ -77,6 +77,8 @@ public:
 
     void setRowId(qint64 rowId) { initialRowInDb.rowId = rowId; }
 
+    void setSequenceId(U2DataId sequenceId) { initialRowInDb.sequenceId = sequenceId; }
+
     /** Returns ID of the row sequence in the database. */
     U2MsaRow getRowDBInfo() const;
 
@@ -439,6 +441,8 @@ public:
 
     /** Updates row ID of the row at 'rowIndex' position */
     void setRowId(int rowIndex, qint64 rowId);
+
+    void setSequenceId(int rowIndex, U2DataId sequenceId);
 
     /**
      * Adds a new row to the alignment.

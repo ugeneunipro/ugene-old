@@ -195,6 +195,9 @@ QList<qint64> MSAUtils::compareRowsAfterAlignment(const MAlignment& origMsa, MAl
                 newMsa.setRowId(i, rowId);
                 rowsOrder.append(rowId);
 
+                U2DataId sequenceId = origMsaRow.getRowDBInfo().sequenceId;
+                newMsa.setSequenceId(i, sequenceId);
+
                 if (origMsaRow.getSequence().length() != newMsaRow.getSequence().length()) {
                     os.setError(tr("Unexpected length of a row sequence!"));
                     return QList<qint64>();
