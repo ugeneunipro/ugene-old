@@ -1947,7 +1947,7 @@ You can use this worker to convert .fasta and .qual pair to fastq format</source
     </message>
     <message>
         <location filename="../src/WriteAnnotationsWorker.cpp" line="211"/>
-        <source>Annotations name: Name of the saved annotations. This option is only available for document formats that support saving of annotations names.</source>
+        <source>Name of the saved annotations. This option is only available for document formats that support saving of annotations names.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
