@@ -1446,6 +1446,7 @@ void WorkflowView::recreateScene() {
 void WorkflowView::sl_procItemAdded() {
     currentActor = NULL;
     propertyEditor->setEditable(true);
+    scene->invalidate(QRectF(), QGraphicsScene::BackgroundLayer);
     if (!currentProto) {
         return;
     }
