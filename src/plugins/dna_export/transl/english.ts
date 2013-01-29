@@ -231,6 +231,54 @@
     </message>
 </context>
 <context>
+    <name>ExportBlastResultDialog</name>
+    <message>
+        <location filename="../src/ui/ExportBlastResultDialog.ui" line="14"/>
+        <source>Export BLAST result to multiple alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExportBlastResultDialog.ui" line="25"/>
+        <source>Export to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExportBlastResultDialog.ui" line="35"/>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExportBlastResultDialog.ui" line="42"/>
+        <source>File format to use</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExportBlastResultDialog.ui" line="55"/>
+        <source>Qualifier to use as name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExportBlastResultDialog.ui" line="64"/>
+        <source>Add reference to alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExportBlastResultDialog.ui" line="71"/>
+        <source>Add document to the project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExportBlastResultDialog.ui" line="109"/>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/ExportBlastResultDialog.ui" line="119"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ExportChromatogramDialog</name>
     <message>
         <location filename="../src/ui/ExportChromatogramDialog.ui" line="14"/>
@@ -474,134 +522,158 @@
 <context>
     <name>U2::ADVExportContext</name>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="101"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="110"/>
         <source>Export selected sequence region...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="105"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="114"/>
         <source>Export sequence of selected annotations...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="113"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="122"/>
         <source>Align selected annotations...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="117"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="126"/>
         <source>Align selected annotations (amino acids)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="121"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="130"/>
         <source>Align selected sequence regions...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="125"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="134"/>
         <source>Align selected sequence regions (amino acids)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="129"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="138"/>
         <source>Export sequences by &apos;id&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="131"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="140"/>
         <source>Export sequences by &apos;accession&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="133"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="142"/>
         <source>Export sequences by &apos;db_xref&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="235"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="145"/>
+        <source>Export BLAST result to alignment...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="252"/>
         <source>Fetch sequences from remote database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="238"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="255"/>
         <source>Fetch sequences by &apos;id&apos; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="242"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="259"/>
         <source>Fetch sequences by &apos;accession&apos; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="246"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="263"/>
         <source>Fetch sequences by &apos;db_xref&apos; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="488"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="510"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="567"/>
         <source>Illegal parameter: input alignment is not empty!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="532"/>
-        <source>Illegal parameter: Input alignment is not empty!</source>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="524"/>
+        <source>%1 is not a BLAST annotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="613"/>
-        <source>Create alignment</source>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="529"/>
+        <source>Can not export BLAST annotations from different sequences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="532"/>
+        <source>Can not find qualifier to set as a name for BLAST sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ExportSequenceViewItems.cpp" line="614"/>
+        <source>Illegal parameter: Input alignment is not empty!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="690"/>
+        <source>Create alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="691"/>
         <source>Save alignment to file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="269"/>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="440"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="289"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="461"/>
         <source>No annotations selected!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="109"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="118"/>
         <source>Export annotations...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="376"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="396"/>
         <source>No sequence regions selected!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="490"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="512"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="569"/>
         <source>At least 2 annotations are required</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="505"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="584"/>
         <source>Different sequence alphabets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="560"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="642"/>
         <source>At least 2 sequences required</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="498"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="528"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="577"/>
         <source>No sequence object found</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="519"/>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="574"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="538"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="598"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="656"/>
         <source>Alignment is too large</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportSequenceViewItems.cpp" line="554"/>
+        <location filename="../src/ExportSequenceViewItems.cpp" line="636"/>
         <source>Can&apos;t derive alignment alphabet</source>
         <translation></translation>
     </message>
@@ -609,7 +681,7 @@
 <context>
     <name>U2::AddExportedDocumentAndOpenViewTask</name>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="69"/>
+        <location filename="../src/ExportTasks.cpp" line="70"/>
         <source>Document is already added to the project %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -757,7 +829,7 @@
 <context>
     <name>U2::ExportAlignmentTask</name>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="88"/>
+        <location filename="../src/ExportTasks.cpp" line="89"/>
         <source>Export alignment to &apos;%1&apos;</source>
         <translation></translation>
     </message>
@@ -845,8 +917,8 @@
     <name>U2::ExportAnnotationsDialog</name>
     <message>
         <location filename="../src/ui/ExportAnnotationsDialog.ui" line="14"/>
-        <source>Export annotations</source>
-        <translation></translation>
+        <source>Export Annotations</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/ExportAnnotationsDialog.ui" line="25"/>
@@ -880,6 +952,14 @@
     </message>
 </context>
 <context>
+    <name>U2::ExportBlastResultDialog</name>
+    <message>
+        <location filename="../src/ExportBlastResultDialog.cpp" line="65"/>
+        <source>File name is empty!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::ExportChromatogramDialog</name>
     <message>
         <location filename="../src/ExportChromatogramDialog.cpp" line="58"/>
@@ -895,7 +975,7 @@
 <context>
     <name>U2::ExportDNAChromatogramTask</name>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="193"/>
+        <location filename="../src/ExportTasks.cpp" line="204"/>
         <source>Export chromatogram to SCF</source>
         <translation type="unfinished"></translation>
     </message>
@@ -904,8 +984,8 @@
     <name>U2::ExportMSA2MSADialog</name>
     <message>
         <location filename="../src/ui/ExportMSA2MSADialog.ui" line="20"/>
-        <source>Dialog</source>
-        <translation></translation>
+        <source>Export Nucleic Alignment to Amino Translation</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/ExportMSA2MSADialog.ui" line="28"/>
@@ -971,12 +1051,12 @@
 <context>
     <name>U2::ExportMSA2MSATask</name>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="143"/>
+        <location filename="../src/ExportTasks.cpp" line="149"/>
         <source>Export alignment to alignment: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="170"/>
+        <location filename="../src/ExportTasks.cpp" line="176"/>
         <source>Out of memory</source>
         <translation></translation>
     </message>
@@ -1042,7 +1122,7 @@
 <context>
     <name>U2::ExportMSA2SequencesTask</name>
     <message>
-        <location filename="../src/ExportTasks.cpp" line="109"/>
+        <location filename="../src/ExportTasks.cpp" line="115"/>
         <source>Export alignment to sequence: %1</source>
         <translation></translation>
     </message>
@@ -1050,88 +1130,84 @@
 <context>
     <name>U2::ExportProjectViewItemsContoller</name>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="75"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="76"/>
         <source>Export sequences...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="79"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="80"/>
         <source>Export sequences as alignment...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="83"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="84"/>
         <source>Export alignment to sequence format...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="86"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="87"/>
         <source>Export nucleic alignment to amino translation...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="89"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="90"/>
         <source>Import annotations from CSV file...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="92"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="94"/>
         <source>Export chromatogram to SCF...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="95"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="98"/>
         <source>Export annotations...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="98"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="101"/>
         <source>Export sequence quality...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="123"/>
-        <location filename="../src/ExportProjectViewItems.cpp" line="134"/>
-        <location filename="../src/ExportProjectViewItems.cpp" line="149"/>
-        <location filename="../src/ExportProjectViewItems.cpp" line="157"/>
-        <source>Export</source>
-        <translation></translation>
+        <location filename="../src/ExportProjectViewItems.cpp" line="124"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="135"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="150"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="158"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="168"/>
+        <source>Export/Import</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="171"/>
-        <source>Import</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="217"/>
-        <location filename="../src/ExportProjectViewItems.cpp" line="278"/>
-        <location filename="../src/ExportProjectViewItems.cpp" line="466"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="220"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="281"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="469"/>
         <source>No sequence objects selected!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="312"/>
-        <location filename="../src/ExportProjectViewItems.cpp" line="335"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="315"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="338"/>
         <source>Select one alignment object to export</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="383"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="386"/>
         <source>Select one chromatogram object to export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="419"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="422"/>
         <source>Select one annotation object to export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="428"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="431"/>
         <source>Selected object doesn&apos;t have annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ExportProjectViewItems.cpp" line="472"/>
+        <location filename="../src/ExportProjectViewItems.cpp" line="475"/>
         <source>Set output quality file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1387,117 +1463,117 @@ var %2; //parsed line number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="153"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="152"/>
         <source>Invalid start position/end position/length configuration!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="157"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="156"/>
         <source>Multiple columns are used as a name!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="305"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="300"/>
         <source>Column separator value: [%1], hex: [%2], length: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="371"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="366"/>
         <source>Script is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="386"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="381"/>
         <source>Output file format is not set!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="381"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="376"/>
         <source>Output file name is not set!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="161"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="160"/>
         <source>Invalid default annotation name!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="282"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="277"/>
         <source>Failed to guess separator sequence!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="303"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="298"/>
         <source>Column separator</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="323"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="318"/>
         <source>CSV Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="324"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="319"/>
         <source>Select CSV file to read</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="338"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="333"/>
         <source>Enter input CSV file name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="365"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="360"/>
         <source>Separator value is not set</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="468"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="463"/>
         <source>[ignored]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="471"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="466"/>
         <source>[qualifier %1]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="474"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="469"/>
         <source>[name]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="478"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="473"/>
         <source>[start position with offset %1]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="480"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="475"/>
         <source>[start position]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="485"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="480"/>
         <source>[end position (inclusive)]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="487"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="482"/>
         <source>[end position]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="491"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="486"/>
         <source>[length]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="495"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="490"/>
         <source>[complement]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="497"/>
+        <location filename="../src/ImportAnnotationsFromCSVDialog.cpp" line="492"/>
         <source>[complement if &apos;%1&apos;]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1814,12 +1890,7 @@ You can use this worker to convert .fasta and .qual pair to fastq format</source
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ImportQualityScoresWorker.cpp" line="139"/>
-        <source>Sequence list is empty.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ImportQualityScoresWorker.cpp" line="172"/>
+        <location filename="../src/ImportQualityScoresWorker.cpp" line="161"/>
         <source>Import of qualities is finished.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1827,12 +1898,12 @@ You can use this worker to convert .fasta and .qual pair to fastq format</source
 <context>
     <name>U2::LocalWorkflow::WriteAnnotationsPrompter</name>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="256"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="271"/>
         <source>unset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="264"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="279"/>
         <source>Save all annotations from &lt;u&gt;%1&lt;/u&gt; to %2 in %3 format</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1855,57 +1926,57 @@ You can use this worker to convert .fasta and .qual pair to fastq format</source
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="168"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="173"/>
         <source>Save annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="186"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="191"/>
         <source>Input annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="187"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="192"/>
         <source>Input annotations which will be written to output file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="205"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="210"/>
         <source>Annotations name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="206"/>
-        <source>Object name of saving annotations</source>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="211"/>
+        <source>Annotations name: Name of the saved annotations. This option is only available for document formats that support saving of annotations names.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="208"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="216"/>
         <source>CSV separator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="209"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="217"/>
         <source>String which separates values in CSV files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="212"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="220"/>
         <source>Write sequence names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="213"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="221"/>
         <source>Add names of sequences into CSV file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="220"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="235"/>
         <source>Write Annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WriteAnnotationsWorker.cpp" line="221"/>
+        <location filename="../src/WriteAnnotationsWorker.cpp" line="236"/>
         <source>Writes all supplied annotations to file(s) in selected formatId.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1916,6 +1987,11 @@ You can use this worker to convert .fasta and .qual pair to fastq format</source
         <location filename="../src/ExportAlignmentViewItems.cpp" line="80"/>
         <source>Amino translation...</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/ExportAlignmentViewItems.cpp" line="107"/>
+        <source>Export Amino Translation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1958,6 +2034,29 @@ You can use this worker to convert .fasta and .qual pair to fastq format</source
     <message>
         <location filename="../src/ImportAnnotationsFromCSVTask.cpp" line="384"/>
         <source>Script result is not an array of strings!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::ReadQualityScoresTask</name>
+    <message>
+        <location filename="../src/ImportQualityScoresTask.cpp" line="93"/>
+        <source>Failed parse quality value: file %1, line %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ImportQualityScoresTask.cpp" line="129"/>
+        <source>Failed to open quality file %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ImportQualityScoresTask.cpp" line="134"/>
+        <source>Failed to read data from quality file %1, probably it is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ImportQualityScoresTask.cpp" line="138"/>
+        <source>File  %1 is not a quality file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
