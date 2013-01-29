@@ -123,6 +123,9 @@ void ObjectViewTreeController::addViewWindow(GObjectViewWindow* viewWindow) {
     if (vi == NULL) {
         vi = new OVTViewItem(viewWindow, this);
         tree->addTopLevelItem(vi);
+        if (tree->currentItem() == NULL) {
+            tree->setCurrentItem(vi);
+        }
     } else {
         assert(vi->viewWindow == NULL);
         vi->viewWindow = viewWindow;
