@@ -33,18 +33,20 @@ class U2SequenceObject;
 
 class ImportQualityScoresConfig {
 public:
-    ImportQualityScoresConfig() : createNewDocument(false) {}
+    ImportQualityScoresConfig() : createNewDocument(false), type(DNAQualityType_Sanger), format(DNAQuality::QUAL_FORMAT) {}
     QString             fileName;
     DNAQualityType      type; 
+    DNAQualityFormat    format;
     bool                createNewDocument;
     QString             dstFileName;
+    
 };
 
  
 class ReadQualityScoresTask : public Task {
     Q_OBJECT
 public:
-    ReadQualityScoresTask(const QString& fileName, DNAQualityType t);
+    ReadQualityScoresTask(const QString& fileName, DNAQualityType t, const DNAQualityFormat& f);
 
     void run();
     
@@ -55,8 +57,10 @@ private:
     bool checkRawData();
     QString                     fileName;
     DNAQualityType              type;
+    DNAQualityFormat            format;
     QStringList                 headers;
     QList<int>                  values;
+    QByteArray                  encodedQuality;
     QMap<QString, DNAQuality>   result;
 };
 

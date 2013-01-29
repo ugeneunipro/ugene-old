@@ -36,8 +36,8 @@
 namespace U2 {
 
 
-ReadQualityScoresTask::ReadQualityScoresTask( const QString& file, DNAQualityType t)
-: Task("ReadPhredQuality", TaskFlag_None), fileName(file), type(t)
+ReadQualityScoresTask::ReadQualityScoresTask( const QString& file, DNAQualityType t, const DNAQualityFormat& f)
+: Task("ReadPhredQuality", TaskFlag_None), fileName(file), type(t), format(f)
 {
 
 }
@@ -84,16 +84,20 @@ void ReadQualityScoresTask::run() {
         } 
 
         QByteArray valsBuf = readBuf.mid(0, len).trimmed();
-        QList<QByteArray> valList = valsBuf.split(' ');
-        foreach(const QByteArray& valStr, valList) {
-            bool ok = false;
-            if(!valStr.isEmpty()){
-                values.append( valStr.toInt(&ok) );
-                if (!ok) {
-                    setError(tr("Failed parse quality value: file %1, line %2").arg(fileName).arg(lineCount));
-                    return;
+        if (format == DNAQuality::QUAL_FORMAT) {
+            QList<QByteArray> valList = valsBuf.split(' ');
+            foreach(const QByteArray& valStr, valList) {
+                bool ok = false;
+                if(!valStr.isEmpty()){
+                    values.append( valStr.toInt(&ok) );
+                    if (!ok) {
+                        setError(tr("Failed parse quality value: file %1, line %2").arg(fileName).arg(lineCount));
+                        return;
+                    }
                 }
-            }
+            } 
+        } else {
+            encodedQuality = valsBuf;
         }
     }
 
@@ -106,9 +110,13 @@ void ReadQualityScoresTask::recordQuality( int headerCounter )
 {
     if (headerCounter != -1) {
         QByteArray qualCodes;
-        foreach (int v, values) {
-            char code = DNAQuality::encode(v, type);
-            qualCodes.append(code);
+        if (format == DNAQuality::QUAL_FORMAT) {
+            foreach (int v, values) {
+                char code = DNAQuality::encode(v, type);
+                qualCodes.append(code);
+            } 
+        } else {
+            qualCodes = encodedQuality;
         }
         result.insert(headers[headerCounter], DNAQuality(qualCodes,type));
         //log.trace( QString("Phred quality parsed: %1 %2").arg(headers[headerCounter]).arg(qualCodes.constData()) );
@@ -155,7 +163,7 @@ ImportPhredQualityScoresTask::ImportPhredQualityScoresTask(const QList<U2Sequenc
 }
 
 void ImportPhredQualityScoresTask::prepare() {
-    readQualitiesTask = new ReadQualityScoresTask(config.fileName, config.type);
+    readQualitiesTask = new ReadQualityScoresTask(config.fileName, config.type, config.format);
     addSubTask(readQualitiesTask);
 }
 

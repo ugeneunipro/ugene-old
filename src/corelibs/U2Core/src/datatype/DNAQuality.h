@@ -35,6 +35,8 @@ enum DNAQualityType {
     DnaQualityType_Solexa
 };
 
+typedef QString DNAQualityFormat;
+
 class U2CORE_EXPORT DNAQuality {
 public:
     DNAQuality() : type (DNAQualityType_Sanger) {}
@@ -50,7 +52,9 @@ public:
 
     QByteArray      qualCodes;
     DNAQualityType  type;
-
+    
+    static const DNAQualityFormat QUAL_FORMAT;
+    static const DNAQualityFormat ENCODED;
 };
 
 }//namespace

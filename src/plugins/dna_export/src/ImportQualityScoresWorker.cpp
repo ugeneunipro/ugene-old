@@ -46,7 +46,8 @@ namespace LocalWorkflow {
  * ImportPhredQualityWorkerFactory
  *************************************/
 const QString ImportPhredQualityWorkerFactory::ACTOR_ID("import-phred-qualities");
-const QString QUALITY_TYPE_ATTR("quality-format");
+const QString QUALITY_TYPE_ATTR("quality-type");
+const QString QUALITY_FORMAT_ATTR("quality-format");
 
 void ImportPhredQualityWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
@@ -64,11 +65,14 @@ void ImportPhredQualityWorkerFactory::init() {
     
     Descriptor qualUrl(BaseAttributes::URL_IN_ATTRIBUTE().getId(), ImportPhredQualityWorker::tr("PHRED input"), 
          ImportPhredQualityWorker::tr("Path to file with PHRED quality scores."));
-    Descriptor qualType(QUALITY_TYPE_ATTR, ImportPhredQualityWorker::tr("Quality format"), 
-        ImportPhredQualityWorker::tr("Choose format to encode quality scores."));
+    Descriptor qualType(QUALITY_TYPE_ATTR, ImportPhredQualityWorker::tr("Quality type"), 
+        ImportPhredQualityWorker::tr("Choose method to encode quality scores."));
+    Descriptor qualFormat(QUALITY_FORMAT_ATTR, ImportPhredQualityWorker::tr("File format"), 
+        ImportPhredQualityWorker::tr("Quality values can be in specialized FASTA-like PHRED qual format or encoded similar as in FASTQ files."));
 
     a << new Attribute(qualUrl, BaseTypes::STRING_TYPE(), true /*required*/, QString());
-    a << new Attribute(qualType, BaseTypes::STRING_TYPE(), false/*required*/, DNAQuality::getDNAQualityNameByType(DNAQualityType_Sanger) );    
+    a << new Attribute(qualType, BaseTypes::STRING_TYPE(), false/*required*/, DNAQuality::getDNAQualityNameByType(DNAQualityType_Sanger) );
+    a << new Attribute(qualFormat, BaseTypes::STRING_TYPE(), false, DNAQuality::QUAL_FORMAT);
 
     Descriptor desc(ACTOR_ID, ImportPhredQualityWorker::tr("Import PHRED Qualities"), 
         ImportPhredQualityWorker::tr("Add corresponding PHRED quality scores to the sequences.\nYou can use this worker to convert .fasta and .qual pair to fastq format"));
@@ -78,13 +82,23 @@ void ImportPhredQualityWorkerFactory::init() {
 
     delegates[BaseAttributes::URL_IN_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true);
     
-    QVariantMap m;
-    QStringList qualFormats = DNAQuality::getDNAQualityTypeNames();
-    foreach( const QString& name, qualFormats  ) {
-        m[name] = name;
-    }
-    delegates[QUALITY_TYPE_ATTR] = new ComboBoxDelegate(m);
     
+    {
+        QVariantMap m;
+        QStringList qualFormats = DNAQuality::getDNAQualityTypeNames();
+        foreach( const QString& name, qualFormats  ) {
+            m[name] = name;
+        }
+        delegates[QUALITY_TYPE_ATTR] = new ComboBoxDelegate(m);
+    }
+
+    {
+        QVariantMap m;
+        m[DNAQuality::QUAL_FORMAT] = DNAQuality::QUAL_FORMAT;
+        m[DNAQuality::ENCODED] = DNAQuality::ENCODED;
+        delegates[QUALITY_FORMAT_ATTR] = new ComboBoxDelegate(m);
+    }
+
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new ImportPhredQualityPrompter());
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
@@ -122,6 +136,7 @@ void ImportPhredQualityWorker::init() {
     output = ports.value(BasePorts::OUT_SEQ_PORT_ID());
     fileName = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
     type = DNAQuality::getDNAQualityTypeByName( actor->getParameter(QUALITY_TYPE_ATTR)->getAttributeValue<QString>(context) );
+    format = actor->getParameter(QUALITY_FORMAT_ATTR)->getAttributeValue<QString>(context);
 }
 
 Task* ImportPhredQualityWorker::tick() {
@@ -129,7 +144,7 @@ Task* ImportPhredQualityWorker::tick() {
     if (input->hasMessage()) {
 
         if (readTask == NULL) {
-            readTask = new ReadQualityScoresTask(fileName, type);
+            readTask = new ReadQualityScoresTask(fileName, type, format);
             return readTask;
         } else if (readTask->getState() != Task::State_Finished) {
             return NULL;

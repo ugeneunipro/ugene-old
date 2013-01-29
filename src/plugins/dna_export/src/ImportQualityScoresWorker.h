@@ -55,6 +55,7 @@ protected:
     ReadQualityScoresTask* readTask;
     QString             fileName;
     DNAQualityType      type;
+    DNAQualityFormat    format;
 }; 
 
 class ImportPhredQualityWorkerFactory : public DomainFactory {
