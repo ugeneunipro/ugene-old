@@ -117,7 +117,7 @@ FormatCheckResult SAMFormat::checkRawData( const QByteArray& rawData, const GUrl
         }
         return FormatDetection_HighSimilarity;
     }
-    return FormatDetection_VeryHighSimilarity;
+    return FormatDetection_Matched;
 }
 
 //static void prepareRead(const QByteArray& core, const QByteArray& quality, QByteArray& seq, QByteArray& qual, QByteArray& cigar) {
