@@ -256,7 +256,7 @@ void MAlignmentObject::removeRow(int rowIdx) {
     updateCachedMAlignment(mi);
 }
 
-void MAlignmentObject::updateRow(int rowIdx, const QByteArray& seqBytes, const QList<U2MsaGap>& gapModel, U2OpStatus& os) {
+void MAlignmentObject::updateRow(int rowIdx, const QString& name, const QByteArray& seqBytes, const QList<U2MsaGap>& gapModel, U2OpStatus& os) {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
 
     SAFE_POINT(rowIdx >= 0 && rowIdx < cachedMAlignment.getNumRows(), "Invalid row index!", );
@@ -264,6 +264,9 @@ void MAlignmentObject::updateRow(int rowIdx, const QByteArray& seqBytes, const Q
     qint64 rowId = row.getRowDBInfo().rowId;
 
     MsaDbiUtils::updateRowContent(entityRef, rowId, seqBytes, gapModel, os);
+    CHECK_OP(os, );
+
+    MsaDbiUtils::renameRow(entityRef, rowId, name, os);
     CHECK_OP(os, );
 
     updateCachedMAlignment();

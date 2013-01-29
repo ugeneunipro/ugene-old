@@ -1881,37 +1881,7 @@ void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type
             QList<U2MsaGap> gapModel;
             MsaDbiUtils::splitBytesToCharsAndGaps(curr, seqBytes, gapModel);
 
-            maObj->updateRow(i, seqBytes, gapModel, os);
-            
-            // Import the sequence
-            //U2SequenceImporter importer;
-
-            //importer.startSequence(maObj->getEntityRef().dbiRef, name, false, os);
-            //CHECK_OP(os, );
-
-            //qint64 seqLength = seqBytes.length();
-            //importer.addBlock(seqBytes, seqLength, os);
-            //CHECK_OP(os, );
-
-            //U2Sequence seqInDb = importer.finalizeSequence(os);
-            //DNAAlphabet* alphabet = U2AlphabetUtils::getById(seqInDb.alphabet);
-            //SAFE_POINT(NULL != alphabet, "NULL alphabet!", );
-
-            //DNASequence seq(name, seqBytes, alphabet);
-
-            
-
-            // Remove the obsolete row and add a new one
-            //maObj->removeRow(i);
-
-            //U2MsaRow row;
-            //row.rowId = -1; // set the ID automatically
-            //row.sequenceId = seqInDb.id;
-            //row.gstart = 0;
-            //row.gend = seqLength;
-            //row.gaps = gapModel;
-
-            //maObj->addRow(row, seq, i);
+            maObj->updateRow(i, name, seqBytes, gapModel, os);
         }
     }
 }

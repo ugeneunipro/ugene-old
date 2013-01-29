@@ -95,7 +95,7 @@ public:
     /** Methods to work with rows */
     void addRow(U2MsaRow& rowInDb, const DNASequence& sequence, int rowIdx = -1);
     void removeRow(int rowIdx);
-    void updateRow(int rowIdx, const QByteArray& seqBytes, const QList<U2MsaGap>& gapModel, U2OpStatus& os);
+    void updateRow(int rowIdx, const QString& name, const QByteArray& seqBytes, const QList<U2MsaGap>& gapModel, U2OpStatus& os);
     void renameRow(int rowIdx, const QString& newName);
     void moveRowsBlock(int firstRow, int numRows, int delta);
 
