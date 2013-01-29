@@ -181,6 +181,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(editor, SIGNAL(si_buildStaticToolbar(GObjectView*, QToolBar*)), SLOT(sl_buildStaticToolbar(GObjectView*, QToolBar*)));
     connect(editor, SIGNAL(si_buildPopupMenu(GObjectView* , QMenu*)), SLOT(sl_buildContextMenu(GObjectView*, QMenu*)));
     connect(editor, SIGNAL(si_zoomOperationPerformed(bool)), SLOT(sl_zoomOperationPerformed(bool)));
+    connect(editor, SIGNAL(si_fontChanged(QFont)), SLOT(sl_fontChanged(QFont)));
     connect(ui->getCollapseModel(), SIGNAL(toggled()), SLOT(sl_modelChanged()));
     
     addAction(ui->getUndoAction());
@@ -1279,6 +1280,12 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     colorsSchemeMenu->addMenu(customColorSchemaMenu);
     
     m->insertMenu(GUIUtils::findAction(m->actions(), MSAE_MENU_EDIT), colorsSchemeMenu);    
+}
+
+void MSAEditorSequenceArea::sl_fontChanged(QFont font) {
+    Q_UNUSED(font);
+    completeRedraw = true;
+    repaint();
 }
 
 void MSAEditorSequenceArea::sl_delCol() {

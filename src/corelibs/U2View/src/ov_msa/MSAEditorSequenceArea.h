@@ -305,6 +305,7 @@ private slots:
 
     void sl_customColorSettingsChanged();
     void sl_showCustomSettings();
+    void sl_fontChanged(QFont font);
 protected:
     virtual void wheelEvent (QWheelEvent * event);
 
