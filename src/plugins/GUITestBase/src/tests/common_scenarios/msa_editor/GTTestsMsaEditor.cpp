@@ -43,7 +43,9 @@
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
+
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
@@ -2502,7 +2504,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     GTGlobals::sleep(500);
 //    2. Do context menu->Add->sequence from file
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os,dataDir + "samples/Genbank/", "CVU55762_new.fa");
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os,dataDir + "samples/Genbank/", "CVU55762.gb");
     GTUtilsDialog::waitForDialog(os, ob);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_LOAD<<"Sequence from file"));
@@ -2559,6 +2561,65 @@ GUI_TEST_CLASS_DEFINITION(test_0025){
 
 //    3. choose some font, press OK
 //    Expected state: font is changed
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0026){
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. press "export as image" on toolbar
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.bmp"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+
+    QAbstractButton* saveImage = GTAction::button(os,"Export as image");
+    CHECK_SET_ERR(saveImage, "Save as image button not found");
+
+    GTWidget::click(os,saveImage);
+//    Expected state: export dialog appeared
+
+//    3. fill dialog:
+//    file name: test/_common_data/scenarios/sandbox/image.bmp
+//    press OK
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/sandbox/","image.bmp");
+//    Expected state: image is exported
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0026_1){//DIFFERENCE: context menu is used
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. press "export as image" on toolbar
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.bmp"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_EXPORT<<"Export as image"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+//    Expected state: export dialog appeared
+
+//    3. fill dialog:
+//    file name: test/_common_data/scenarios/sandbox/image.bmp
+//    press OK
+//    Expected state: image is exported
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0026_2){
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. press "export as image" on toolbar
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/bigImage.bmp",1,100));
+    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+
+    QAbstractButton* saveImage = GTAction::button(os,"Export as image");
+    CHECK_SET_ERR(saveImage, "Save as image button not found");
+
+    GTWidget::click(os,saveImage);
+//    Expected state: export dialog appeared
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/smallImage.bmp",1,50));
+    GTWidget::click(os,saveImage);
+//    3. fill dialog:
+//    file name: test/_common_data/scenarios/sandbox/image.bmp
+//    press OK
+    qint64 big = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","bigImage.jpeg");
+    qint64 small = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","smallImage.jpeg");
+
+    CHECK_SET_ERR(false, QString().setNum(big) + "  " + QString().setNum(small));
+//    Expected state: image is exported
 }
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2

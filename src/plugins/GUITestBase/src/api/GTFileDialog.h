@@ -33,6 +33,7 @@ public:
     enum ViewMode {List, Detail};
 
     GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, const QString& = "*.*", Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
+    GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, qint64* _size);
     void openFileDialog();
     void run();
 
@@ -42,11 +43,14 @@ private:
     void selectFile();
     void clickButton(Button);
     void setViewMode(ViewMode);
+    qint64 getSize();
 
     QWidget *fileDialog;
     QString path, fileName, filters;
     Button button;
     GTGlobals::UseMethod method;
+    bool isForGetSize;
+    qint64* size;
 };
 
 
@@ -55,6 +59,7 @@ public:
     enum Button {Open, Cancel};
     static void openFile(U2OpStatus &os, const QString &path, const QString &fileName,
         const QString &filters = "*.*", Button button = Open, GTGlobals::UseMethod m = GTGlobals::UseMouse);
+    static qint64 getSize(U2OpStatus &os, const QString &path, const QString &fileName);
 };
 
 } // namespace

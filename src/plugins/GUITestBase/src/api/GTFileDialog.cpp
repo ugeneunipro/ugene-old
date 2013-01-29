@@ -48,7 +48,8 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
     fileName(_fileName),
     filters(_filters),
     button(_button),
-    method(_method)
+    method(_method),
+    isForGetSize(false)
 {
     path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (path.at(path.count() - 1) != '/') {
@@ -56,6 +57,20 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
     }
 }
 
+GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, const QString &_fileName,
+                                     qint64 *_size):
+    Filler(_os, "QFileDialog"),
+    fileName(_fileName),
+    size(_size),
+    button(Cancel),
+    method(GTGlobals::UseMouse),
+    isForGetSize(true)
+{
+    path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
+    if (path.at(path.count() - 1) != '/') {
+        path += '/';
+}
+}
 #define GT_METHOD_NAME "run"
 void GTFileDialogUtils::run()
 {
@@ -64,7 +79,6 @@ void GTFileDialogUtils::run()
                    "file dialog not found");
 
     fileDialog = dialog;
-
     GTGlobals::sleep(200);
     setPath();
     GTGlobals::sleep(200);
@@ -76,7 +90,14 @@ void GTFileDialogUtils::run()
     GTGlobals::sleep(200);
     selectFile();
     GTGlobals::sleep(200);
+
+    if (isForGetSize){
+        qint64 i = getSize();
+        *size = i;
+    }
+
     clickButton(button);
+
 }
 #undef GT_METHOD_NAME
 
@@ -275,6 +296,24 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getsize"
+qint64 GTFileDialogUtils::getSize()
+{
+    QTreeView *w = fileDialog->findChild<QTreeView*>("treeView");
+    GT_CHECK_RESULT(w != NULL, "widget, which contains list of file, not found",0);
+
+    QFileSystemModel *model = qobject_cast<QFileSystemModel*>(w->model());
+    QModelIndex index = model->index(path + fileName);
+    GT_CHECK_RESULT(index.isValid(), "File <" + path + fileName + "> not found",0);
+
+    qint64 size;
+    size = model->size(index);
+    GTGlobals::sleep(100);
+
+    return size;
+}
+#undef GT_METHOD_NAME
+
 void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &fileName,
                             const QString &filters, Button button, GTGlobals::UseMethod m)
 {
@@ -284,6 +323,19 @@ void GTFileDialog::openFile(U2OpStatus &os, const QString &path, const QString &
     ob->openFileDialog();
 
     GTGlobals::sleep();
+}
+
+qint64 GTFileDialog::getSize(U2OpStatus &os,const QString &path, const QString &fileName)
+{
+    qint64 sizePtr = 0;
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, path, fileName, &sizePtr);
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    ob->openFileDialog();
+
+    GTGlobals::sleep();
+
+    return sizePtr;
 }
 
 #undef GT_CLASS_NAME

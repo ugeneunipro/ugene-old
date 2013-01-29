@@ -19,26 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "FontDialogFiller.h"
-#include "api/GTWidget.h"
-#include "api/GTKeyboardDriver.h"
+#ifndef _U2_GT_RUNNABLES_EXPORT_IMAGE_DIALOG_FILLER_H_
+#define _U2_GT_RUNNABLES_EXPORT_IMAGE_DIALOG_FILLER_H_
 
-#include <QtGui/QApplication>
-#include <QtGui/QAbstractButton>
-
+#include "GTUtilsDialog.h"
 
 namespace U2 {
 
-#define GT_CLASS_NAME "GTUtilsDialog::FontDialogFiller"
-#define GT_METHOD_NAME "run"
-void FontDialogFiller::run() {
-
-    QWidget* dialog = QApplication::activeModalWidget();
-    GT_CHECK(dialog != NULL, "dialog is NULL");
-    GTGlobals::sleep();
-
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    class ExportImage : public Filler {
+    public:
+        ExportImage(U2OpStatus &_os, QString _filePath, int _comdoValue = 0,int _spinValue=0) : Filler(_os, "ImageExportForm"),
+            filePath(_filePath),
+            comboValue(_comdoValue),
+            spinValue(_spinValue){}
+        virtual void run();
+    private:
+        QString filePath;
+        int comboValue, spinValue;
+    };
 }
-#undef GT_METHOD_NAME
-#undef GT_CLASS_NAME
-}
+
+#endif //_U2_GT_RUNNABLES_EXPORT_IMAGE_DIALOG_FILLER_H_
+
