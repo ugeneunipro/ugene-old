@@ -340,7 +340,8 @@ void MSAEditor::sl_changeFont() {
 }
 
 void MSAEditor::sl_resetZoom() {
-    QFont f(DEFAULT_FONT_FAMILY, DEFAULT_FONT_SIZE);
+    QFont f = getFont();
+    f.setPointSize(DEFAULT_FONT_SIZE);
     setFont(f);
     zoomFactor = DEFAULT_ZOOM_FACTOR;
     ResizeMode oldMode = resizeMode;
