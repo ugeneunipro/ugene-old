@@ -426,11 +426,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0023);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0024);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0025);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0025,"https://ugene.unipro.ru/tracker/browse/UGENE-1413");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026_2);
+
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0027);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0027_1);
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/msa_editor/colors
 /////////////////////////////////////////////////////////////////////////

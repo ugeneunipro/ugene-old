@@ -2621,5 +2621,40 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2){
     CHECK_SET_ERR(false, QString().setNum(big) + "  " + QString().setNum(small));
 //    Expected state: image is exported
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0027){
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. select element 4 in sequence 3
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(3,2));
+//    3. Move selected left using mouse by 6
+    GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(3,2),QPoint(9,2));
+    GTGlobals::sleep(500);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(3,2),QPoint(8,2));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "------", "Expected: ------ Found: " + clipboardText);
+//    Expected stste: area is moved,position 4-9 filled with gaps
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0027_1){
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. select element 4 in sequence 3
+    GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(3,2),QPoint(3,3));
+//    3. Move selected left using mouse by 6
+    GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(3,2),QPoint(9,2));
+    GTGlobals::sleep(500);
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(3,2),QPoint(8,3));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "------\n------", "Expected: ------\n------ Found: " + clipboardText);
+//    Expected stste: area is moved,position 4-9 filled with gaps
+}
+
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2
