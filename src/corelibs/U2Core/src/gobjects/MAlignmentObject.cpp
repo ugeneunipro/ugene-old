@@ -288,7 +288,11 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
     MAlignment msa = getMAlignment();
 
     msa.removeRegion(startPos, startRow, nBases, nRows, removeEmptyRows);
-    setMAlignment(msa);
+    MAlignmentModInfo mi;
+    if (false == changeAlignment) {
+        mi.middleState = true;
+    }
+    setMAlignment(msa, mi);
 
     U2OpStatus2Log os;
     MsaDbiUtils::trim(entityRef, os);
@@ -306,12 +310,6 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
     //SAFE_POINT_OP(os, );
 
     //updateCachedMAlignment();
-
-    MAlignmentModInfo mi;
-    if (false == changeAlignment) {
-        mi.middleState = true;
-    }
-    updateCachedMAlignment(mi);
 }
 
 void MAlignmentObject::renameRow(int rowIdx, const QString& newName) {
@@ -368,6 +366,9 @@ void MAlignmentObject::deleteGapsByAbsoluteVal(int val) {
         return;
     } else {
         foreach (int colNumber, colsForDelete) {
+            if (colNumber >= cachedMAlignment.getLength()) {
+                continue;
+            }
             removeRegion(colNumber, 0, 1, msa.getNumRows(), true, false);
         }
         msa = getMAlignment();
