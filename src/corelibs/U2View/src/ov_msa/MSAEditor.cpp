@@ -135,13 +135,13 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     font.setBold(s->getValue(SETTINGS_ROOT + SETTINGS_FONT_BOLD, false).toBool());
     calcFontPixelToPointSizeCoef();
 
-    updateActions();
-
     if ( (font.pointSize() == MIN_FONT_SIZE) && (zoomFactor < 1.0f) ) {
         resizeMode = ResizeMode_OnlyContent;
     } else {
         resizeMode = ResizeMode_FontAndContent;
     }
+
+    updateActions();
 }
 
 int MSAEditor::getRowHeight() const {
