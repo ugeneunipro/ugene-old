@@ -326,10 +326,8 @@ void SQLiteMsaDbi::removeMsaRowAndGaps(const U2DataId& msaId, const U2MsaRow& ro
 
 void SQLiteMsaDbi::removeAllRows(const U2DataId& msaId, U2OpStatus& os) {
     QList<U2MsaRow> rows = getRows(msaId, os);
-    for (int i = 0, n = rows.count(); i < n; ++i) {
-        removeRow(msaId, rows[i], os);
-        CHECK_OP(os, );
-    }
+    CHECK_OP(os, );
+    removeRows(msaId, rows, os);
 }
 
 U2Msa SQLiteMsaDbi::getMsaObject(const U2DataId& msaId, U2OpStatus& os) {
