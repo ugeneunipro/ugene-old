@@ -25,6 +25,7 @@
 #include "GTMouseDriver.h"
 #include "GTComboBox.h"
 #include "api/GTGlobals.h"
+#include "api/GTLineEdit.h"
 
 #include <U2Gui/MainWindow.h>
 #include <QtGui/QApplication>
@@ -61,10 +62,10 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &_os, const QString &_path, cons
                                      qint64 *_size):
     Filler(_os, "QFileDialog"),
     fileName(_fileName),
-    size(_size),
     button(Cancel),
     method(GTGlobals::UseMouse),
-    isForGetSize(true)
+    isForGetSize(true),
+    size(_size)
 {
     path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (path.at(path.count() - 1) != '/') {
@@ -85,11 +86,16 @@ void GTFileDialogUtils::run()
     clickButton(Open);
     GTGlobals::sleep(200);
     //setFilter();
-    GTGlobals::sleep(200);
-    setViewMode(Detail);
-    GTGlobals::sleep(200);
-    selectFile();
-    GTGlobals::sleep(200);
+    if(button == Save){//saving file
+        setName();
+    }
+    else{//opening file or getting size
+        GTGlobals::sleep(200);
+        setViewMode(Detail);
+        GTGlobals::sleep(200);
+        selectFile();
+        GTGlobals::sleep(200);
+    }
 
     if (isForGetSize){
         qint64 i = getSize();
@@ -154,6 +160,16 @@ void GTFileDialogUtils::setPath()
     }
 
     GT_CHECK(lineEdit->text() == path, "Can't open file \"" + lineEdit->text() + "\"");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setName"
+void GTFileDialogUtils::setName()
+{
+    QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
+    GT_CHECK(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT));
+
+    GTLineEdit::setText(os, lineEdit,fileName);
 }
 #undef GT_METHOD_NAME
 
@@ -231,6 +247,7 @@ void GTFileDialogUtils::clickButton(Button btn)
     QMap<Button, QString> button;
     button[Open] = "Open";
     button[Cancel] = "Cancel";
+    button[Save] = "Save";
     QPushButton *button_to_click = NULL;
 
     foreach(QPushButton *b, buttons) {
