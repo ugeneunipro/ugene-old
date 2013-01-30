@@ -125,6 +125,7 @@ void ObjectViewTreeController::addViewWindow(GObjectViewWindow* viewWindow) {
         tree->addTopLevelItem(vi);
         if (tree->currentItem() == NULL) {
             tree->setCurrentItem(vi);
+            vi->markAsActive(true);
         }
     } else {
         assert(vi->viewWindow == NULL);
