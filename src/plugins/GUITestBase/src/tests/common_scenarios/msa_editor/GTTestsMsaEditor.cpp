@@ -45,11 +45,13 @@
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
+#include <U2View/ADVConstants.h>
 
 namespace U2 {
 
@@ -2638,7 +2640,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2){
     qint64 bigSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","bigImage.jpeg");
     qint64 smallSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","smallImage.jpeg");
 
-    CHECK_SET_ERR(false, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
+    CHECK_SET_ERR(bigSize==660430 && smallSize==161184, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
 //    Expected state: image is exported
 }
 
@@ -2697,19 +2699,86 @@ GUI_TEST_CLASS_DEFINITION(test_0028){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0029){
+    //    1. open document samples/CLUSTALW/COI.aln
+        GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    //    2. Select first sequence
+        GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,0));
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence",GTGlobals::UseMouse));
+        Runnable* r = new ExportSelectedSequenceFromAlignment(os,testDir + "_common_data/scenarios/sandbox/export.fasta",ExportSelectedSequenceFromAlignment::FASTA,true);
+        GTUtilsDialog::waitForDialog(os, r);
+
+        GTMouseDriver::click(os,Qt::RightButton);
+
+        GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"export.fasta"));
+        GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"Phaneroptera_falcata"));
+        GTGlobals::sleep();
+
+        GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,42,44));
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region",GTGlobals::UseMouse));
+        GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_COPY<< "Copy sequence",GTGlobals::UseMouse));
+        GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+
+        QString clipboardText = GTClipboard::text(os);
+        CHECK_SET_ERR(clipboardText == "---", "Expected: TAGTTTATTAA, Found: " + clipboardText);
+    //    3. use MSA area context menu->export->save sequence
+    //    Exptcted state: Export sequence dialog appeared
+
+    //    4. fill dialog:
+    //    Export to file: test/_common_data/scenarios/sandbox/sequence.fa(use other extensions is branches)
+    //    Add to project: checked
+    //    Gap characters: keep
+    //    Expectes state: sequence added to project
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0029_1){//DIFFERENCE:gaps are trimmed, FASTQ format is used
 //    1. open document samples/CLUSTALW/COI.aln
-    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
 //    2. Select first sequence
-    GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,0));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence"));
-    Runnable* r = new ExportSelectedSequenceFromAlignment(os,testDir + "_common_data/scenarios/sandbox/export.fasta",ExportSelectedSequenceFromAlignment::FASTA,true);
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,2));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence",GTGlobals::UseMouse));
+    Runnable* r = new ExportSelectedSequenceFromAlignment(os,testDir + "_common_data/scenarios/sandbox/export.fasta",ExportSelectedSequenceFromAlignment::FASTQ,false);
     GTUtilsDialog::waitForDialog(os, r);
 
     GTMouseDriver::click(os,Qt::RightButton);
 
-    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"export.fasta"));
-    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"Phaneroptera_falcata"));
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"export.fastq"));
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"Bicolorana_bicolor_EF540830"));
+    GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region",GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ADV_MENU_COPY<< "Copy sequence",GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR(clipboardText == "TAGTTTATTAA", "Expected: TAGTTTATTAA, Found: " + clipboardText);
+//    3. use MSA area context menu->export->save sequence
+//    Exptcted state: Export sequence dialog appeared
+
+//    4. fill dialog:
+//    Export to file: test/_common_data/scenarios/sandbox/sequence.fa(use other extensions is branches)
+//    Add to project: checked
+//    Gap characters: keep
+//    Expectes state: sequence added to project
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0029_2){
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//    2. Select first sequence
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,2));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence",GTGlobals::UseMouse));
+    Runnable* r = new ExportSelectedSequenceFromAlignment(os,testDir + "_common_data/scenarios/sandbox/export.fasta",ExportSelectedSequenceFromAlignment::Genbank,true,false);
+    GTUtilsDialog::waitForDialog(os, r);
+
+    GTMouseDriver::click(os,Qt::RightButton);
+
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/sandbox/","export.gb");
 //    3. use MSA area context menu->export->save sequence
 //    Exptcted state: Export sequence dialog appeared
 

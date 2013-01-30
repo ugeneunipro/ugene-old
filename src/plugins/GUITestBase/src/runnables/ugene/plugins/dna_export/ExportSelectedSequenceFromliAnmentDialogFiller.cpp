@@ -70,7 +70,7 @@ void ExportSelectedSequenceFromAlignment::run()
     GTComboBox::setCurrentIndex(os, comboBox, index);
 
     QCheckBox *addToProjectBox = dialog->findChild<QCheckBox*>("addToProjectBox");
-    GTCheckBox::setChecked(os, addToProjectBox, true);
+    GTCheckBox::setChecked(os, addToProjectBox, addToProj);
 
     if(keepGaps){
         QRadioButton* keepGapsRB = dialog->findChild<QRadioButton*>("keepGapsRB");
