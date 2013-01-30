@@ -2533,6 +2533,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024){
 
 }
 
+// linux test
 GUI_TEST_CLASS_DEFINITION(test_0025){
 //    1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
@@ -2548,6 +2549,32 @@ GUI_TEST_CLASS_DEFINITION(test_0025){
 
     QFont f = ui->getEditor()->getFont();
     QString expectedFont = "Ubuntu,10,-1,5,75,1,0,0,0,0";
+
+    CHECK_SET_ERR(f.toString() == expectedFont,"Expected: " + expectedFont + "found: " + f.toString())
+    ;
+//    Expected state: change font dialog appeared
+
+//    3. choose some font, press OK
+//    Expected state: font is changed
+}
+
+// windows test
+GUI_TEST_CLASS_DEFINITION(test_0025_1){
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. press "change font button" on toolbar
+    GTUtilsDialog::waitForDialog(os, new FontDialogFiller(os));
+
+    QAbstractButton* change_font = GTAction::button(os,"Change Font");
+    GTWidget::click(os,change_font);
+    GTGlobals::sleep(500);
+
+    QWidget* nameListWidget = GTWidget::findWidget(os,"msa_editor_COI");
+    MSAEditorUI* ui = qobject_cast<MSAEditorUI*>(nameListWidget);
+
+    QFont f = ui->getEditor()->getFont();
+    QString expectedFont = "Verdana,10,-1,5,50,0,0,0,0,0";
+
     CHECK_SET_ERR(f.toString() == expectedFont,"Expected: " + expectedFont + "found: " + f.toString())
     ;
 //    Expected state: change font dialog appeared

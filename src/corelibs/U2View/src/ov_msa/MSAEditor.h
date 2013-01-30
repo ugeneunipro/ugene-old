@@ -157,7 +157,8 @@ private:
     PhyTreeGeneratorLauncherTask* treeGeneratorTask;
 };
 
-class MSAEditorUI : public QWidget {
+// U2VIEW_EXPORT: GUITesting uses MSAEditorUI
+class U2VIEW_EXPORT MSAEditorUI : public QWidget {
     Q_OBJECT
     //todo: make public accessors:
     friend class MSALabelWidget;

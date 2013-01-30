@@ -426,7 +426,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0023);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0024);
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0025);
+
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_msa_editor::test_0025, "Linux font test");
+    REGISTER_TEST_IGNORED_LINUX(GUITest_common_scenarios_msa_editor::test_0025_1, "Windows font test");
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026_1);
