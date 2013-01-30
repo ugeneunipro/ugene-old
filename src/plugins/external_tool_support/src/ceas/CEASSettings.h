@@ -38,6 +38,7 @@ public:
     void setGdbFile(const QString &value);
 
     void setImagePath(const QString &value);
+    //unused
     void setImageFormat(const QString &value);
     void setAnnsFilePath(const QString &value);
 

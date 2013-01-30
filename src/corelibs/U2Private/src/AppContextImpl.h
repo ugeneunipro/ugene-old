@@ -88,6 +88,7 @@ public:
         guiMode = false;
         activeWindow = "";
         tb = NULL;
+        dpr = NULL;
     }
 
     ~AppContextImpl();
@@ -157,6 +158,8 @@ public:
     void setOpenCLGpuRegistry( OpenCLGpuRegistry* _oclgr ) { assert( oclgr == NULL || _oclgr == NULL ); oclgr = _oclgr; }
 
     void setRecentlyDownloadedCache( RecentlyDownloadedCache* _rdc) { assert( rdc == NULL || _rdc == NULL ); rdc = _rdc;}
+
+    void setDataPathRegistry( U2DataPathRegistry* _dpr) { assert( dpr == NULL || _dpr == NULL ); dpr = _dpr;}
 
     void setProtocolInfoRegistry( ProtocolInfoRegistry * pr ) { assert( NULL == protocolInfoRegistry || NULL == pr );
         protocolInfoRegistry = pr; }
@@ -332,6 +335,7 @@ protected:
     virtual OPWidgetFactoryRegistry*        _getOPWidgetFactoryRegistry() const { return opWidgetFactoryRegistry; }
     virtual WorkflowScriptRegistry*         _getWorkflowScriptRegistry() const { return workflowScriptRegistry; }
     virtual AppFileStorage*                 _getAppFileStorage() const { return appFileStorage; }
+    virtual U2DataPathRegistry*             _getDataPathRegistry() const { return dpr; }
 
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -397,6 +401,7 @@ private:
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry;
     WorkflowScriptRegistry* workflowScriptRegistry;
     AppFileStorage *appFileStorage;
+    U2DataPathRegistry *dpr;
     bool guiMode;
     QString activeWindow;
 

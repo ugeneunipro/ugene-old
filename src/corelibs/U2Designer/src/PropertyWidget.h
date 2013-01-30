@@ -117,6 +117,28 @@ private slots:
 };
 
 /************************************************************************/
+/* ComboBoxWithUrlWidget */
+/************************************************************************/
+class ComboBoxWithUrlWidget : public PropertyWidget {
+    Q_OBJECT
+public:
+    ComboBoxWithUrlWidget( const QVariantMap &items, QWidget *parent = NULL);
+    virtual QVariant value();
+    virtual void setValue(const QVariant &value);
+
+signals:
+    void valueChanged(const QString &value);
+
+private:
+    QComboBox *comboBox;
+    int customIdx;
+
+private slots:
+        void sl_valueChanged(int index);
+        void sl_browse();
+};
+
+/************************************************************************/
 /* URLWidget */
 /************************************************************************/
 class URLWidget : public PropertyWidget {

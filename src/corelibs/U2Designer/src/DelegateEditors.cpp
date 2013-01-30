@@ -174,6 +174,47 @@ QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
 }
 
 /********************************
+* ComboBoxWithUrlsDelegate
+********************************/
+
+PropertyWidget * ComboBoxWithUrlsDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+    return new ComboBoxWithUrlWidget(items, parent);
+}
+
+QWidget *ComboBoxWithUrlsDelegate::createEditor(QWidget *parent,
+                                        const QStyleOptionViewItem &/* option */,
+                                        const QModelIndex &/* index */) const
+{
+    ComboBoxWithUrlWidget *editor = new ComboBoxWithUrlWidget(items, parent);
+    connect(editor, SIGNAL(valueChanged(const QString &)),
+        this, SIGNAL(si_valueChanged(const QString &)));
+
+    return editor;
+}
+
+void ComboBoxWithUrlsDelegate::setEditorData(QWidget *editor,
+                                     const QModelIndex &index) const
+{
+    QVariant val = index.model()->data(index, ConfigurationEditor::ItemValueRole);
+    ComboBoxWithUrlWidget *box = static_cast<ComboBoxWithUrlWidget*>(editor);
+    box->setValue(val);
+}
+
+void ComboBoxWithUrlsDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+                                    const QModelIndex &index) const
+{
+    ComboBoxWithUrlWidget *box = static_cast<ComboBoxWithUrlWidget*>(editor);
+    model->setData(index, box->value(), ConfigurationEditor::ItemValueRole);
+}
+
+
+QVariant ComboBoxWithUrlsDelegate::getDisplayValue(const QVariant& val) const {
+     QString display = items.key(val);
+     emit si_valueChanged( display );
+     return QVariant( display );
+ }
+
+/********************************
 * URLDelegate
 ********************************/
 URLWidget * URLDelegate::createWidget(QWidget *parent) const {

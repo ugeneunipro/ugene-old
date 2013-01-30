@@ -32,6 +32,7 @@ public:
     ConservationPlotSupport(const QString &name);
 
     static const QString TOOL_NAME;
+    static const QString CONSERVATION_DATA_NAME;
 
 private:
     void initialize();

@@ -312,15 +312,16 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
         parsedData.additionalFields[SCORE_QUALIFIER_NAME] = scoreStr;
 
         // Validate the value: it should be an integer value between 0 and 1000
+        // UPDATE: for MACS peaks its wrong, so validation is commented for now
         bool scoreIsOk;
         double score = scoreStr.toInt(&scoreIsOk);
         if (!scoreIsOk) {
             score = scoreStr.toDouble(&scoreIsOk);
         }
         if (scoreIsOk) {
-            if (score < 0 || score > 1000) {
-                status.incorrectScore = true;
-            }
+            //if (score < 0 || score > 1000) {
+            //    status.incorrectScore = true;
+            //}
         }
         else {
             status.incorrectScore = true;
@@ -611,8 +612,14 @@ QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
     // Read other lines
     int lineNumber = 1;
     int numOfFieldsPerLine = 0;
-    while ((length = readBedLine(qstrbuf, io, buff)) > 0) {
+    
+    //we have already red the line if there is no header
+    if (!noHeader){
+        length = readBedLine(qstrbuf, io, buff);
+    }
 
+    while (length > 0) {
+        
         // Parse and validate the line
         BEDLineValidateFlags validationStatus;
         if (1 == lineNumber) {
@@ -721,6 +728,8 @@ QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
         lineNumber++;
 
         os.setProgress(io->getProgress());
+
+        length = readBedLine(qstrbuf, io, buff);
     }
 
     if (false == fileIsValid) {

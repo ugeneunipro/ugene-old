@@ -49,7 +49,7 @@
      <item row="2" column="0">
       <widget class="QRadioButton" name="allRadioButton">
        <property name="text">
-        <string>Remove all columns of gaps</string>
+        <string>Remove all gap-only columns</string>
        </property>
       </widget>
      </item>

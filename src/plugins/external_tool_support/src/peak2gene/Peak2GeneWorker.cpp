@@ -23,6 +23,8 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/QVariantUtils.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DataPathRegistry.h>
 #include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Designer/DelegateEditors.h>
@@ -35,6 +37,7 @@
 #include <U2Lang/WorkflowEnv.h>
 
 #include "Peak2GeneWorker.h"
+#include "Peak2GeneSupport.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -139,6 +142,17 @@ QStringList Peak2GeneWorker::getOutputFiles() {
 
 
 void Peak2GeneWorkerFactory::init() {
+
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(Peak2GeneSupport::REF_GENES_DATA_NAME);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
+
     QList<PortDescriptor*> portDescs;
     
     //in port
@@ -180,10 +194,21 @@ void Peak2GeneWorkerFactory::init() {
              Peak2GeneWorker::tr("Genome file"),
              Peak2GeneWorker::tr("Select a genome file (sqlite3 file) to search refGenes. (--genome)"));
 
+         Attribute* annGrAttr = NULL;
+         if (dataPath){
+             const QList<QString>& dataNames = dataPath->getDataNames();
+             if (!dataNames.isEmpty()){
+                 annGrAttr = new Attribute(p2g_genome, BaseTypes::STRING_TYPE(), true, dataPath->getPathByName(dataNames.first()));
+             }else{
+                 annGrAttr = new Attribute(p2g_genome, BaseTypes::STRING_TYPE(), true);
+             }
+         }else{
+             annGrAttr = new Attribute(p2g_genome, BaseTypes::STRING_TYPE(), true);
+        }
 
         attrs << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
         attrs << new Attribute(fileNames, BaseTypes::STRING_TYPE(), true, QVariant("Default"));
-        attrs << new Attribute(p2g_genome, BaseTypes::STRING_TYPE(), true, QVariant(""));
+        attrs << annGrAttr;
         attrs << new Attribute(outpos, BaseTypes::STRING_TYPE(), false, QVariant(Peak2GeneSettings::OUT_TYPE_UPSTREAM));
         attrs << new Attribute(symbol, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         attrs << new Attribute(p2g_distance, BaseTypes::NUM_TYPE(), false, QVariant(3000));
@@ -200,7 +225,17 @@ void Peak2GeneWorkerFactory::init() {
 
             delegates[DISTANCE] = new SpinBoxDelegate(vm);
          }
-         delegates[GENOME] = new URLDelegate("", "",false, false);
+
+         {
+             QVariantMap vm;
+             if (dataPath){
+                 if (dataPath){
+                     vm = dataPath->getDataItemsVariantMap();
+                 }
+             }
+             delegates[GENOME] = new ComboBoxWithUrlsDelegate(vm);
+         }
+
 
          QVariantMap contentMap;
          contentMap[Peak2GeneSettings::OUT_TYPE_ALL] = Peak2GeneSettings::OUT_TYPE_ALL;

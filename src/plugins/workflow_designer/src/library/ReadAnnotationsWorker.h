@@ -39,10 +39,19 @@ protected slots:
 
 protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName);
+
+protected:
+    bool mergeAnnotations;
 }; // ReadAnnotationsWorker
 
 class ReadAnnotationsProto : public GenericReadDocProto {
 public:
+    enum Mode{
+        SPLIT,
+        MERGE,
+    };
+    static const QString MODE_ATTR;
+
     ReadAnnotationsProto();
 }; // ReadAnnotationsProto
 
@@ -59,7 +68,7 @@ public:
 class ReadAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    ReadAnnotationsTask(const QString &url, const QString &datasetName);
+    ReadAnnotationsTask(const QString &url, const QString &datasetName, bool mergeAnnotations);
     virtual void prepare();
     virtual void run();
     virtual void cleanup();
@@ -70,6 +79,7 @@ public:
 private:
     QString url;
     QString datasetName;
+    bool mergeAnnotations;
 
     QList<QVariantMap> results;
 };

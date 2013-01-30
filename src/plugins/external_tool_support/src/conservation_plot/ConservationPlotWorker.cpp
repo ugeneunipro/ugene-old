@@ -23,6 +23,8 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/QVariantUtils.h>
+#include <U2Core/DataPathRegistry.h>
+#include <U2Core/AppContext.h>
 #include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Designer/DelegateEditors.h>
@@ -34,6 +36,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
 
+#include "ConservationPlotSupport.h"
 #include "ConservationPlotWorker.h"
 
 namespace U2 {
@@ -47,9 +50,10 @@ static const QString IN_TYPE_ID("conservation_plot-data");
 
 static const QString IN_PORT_DESCR("in-data");
 
-static const QString OUTPUT_DIR("output-dir");
+static const QString OUTPUT_FILE("output-file");
 static const QString TITLE("title");
 static const QString LABEL("label");
+static const QString ASSEMBLY_VER("assembly_version");
 static const QString WINDOW_S("windos_s");
 static const QString HEIGHT("height");
 static const QString WIDTH("width");
@@ -70,8 +74,9 @@ void ConservationPlotWorker::init() {
 }
 
 Task *ConservationPlotWorker::tick() {
-    if (inChannel->hasMessage()) {
-        U2OpStatus2Log os;
+    U2OpStatus2Log os;
+
+    while (inChannel->hasMessage()) {
 
         Message m = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = m.getData().toMap();
@@ -86,22 +91,33 @@ Task *ConservationPlotWorker::tick() {
 
         const QList<SharedAnnotationData>& treatData = QVariantUtils::var2ftl(treatVar.toList());
 
-        ConservationPlotSettings settings = createConservationPlotSettings(os);
-        if (os.hasError()) {
-            return new FailTask(os.getError());
-        }
+        plotData.append(treatData);
 
-        Task* t = new ConservationPlotTask(settings, treatData);
-        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-        return t;
-    }else if (inChannel->isEnded()) {
+        
+    }
+    
+    if (!inChannel->isEnded()) {
+        return NULL;
+    }
+
+    ConservationPlotSettings settings = createConservationPlotSettings(os);
+    if (os.hasError()) {
+        return new FailTask(os.getError());
+    }
+
+    Task* t = new ConservationPlotTask(settings, plotData);
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+    return t;
+
+    if (inChannel->isEnded()) {
         setDone();
     }
+
     return NULL;
 }
 
 void ConservationPlotWorker::cleanup() {
-
+    plotData.clear();
 }
 
 void ConservationPlotWorker::sl_taskFinished() {
@@ -118,9 +134,10 @@ void ConservationPlotWorker::sl_taskFinished() {
 U2::ConservationPlotSettings ConservationPlotWorker::createConservationPlotSettings( U2OpStatus &os ){
     ConservationPlotSettings settings;
 
-    settings.outDir = actor->getParameter(OUTPUT_DIR)->getAttributeValue<QString>(context);
+    settings.outFile = actor->getParameter(OUTPUT_FILE)->getAttributeValue<QString>(context);
     settings.title = actor->getParameter(TITLE)->getAttributeValue<QString>(context);
     settings.label = actor->getParameter(LABEL)->getAttributeValue<QString>(context);
+    settings.assemblyVersion= actor->getParameter(ASSEMBLY_VER)->getAttributeValue<QString>(context);
     settings.windowSize = actor->getParameter(WINDOW_S)->getAttributeValue<int>(context);
     settings.height = actor->getParameter(HEIGHT)->getAttributeValue<int>(context);
     settings.width = actor->getParameter(WIDTH)->getAttributeValue<int>(context);
@@ -139,6 +156,16 @@ QStringList ConservationPlotWorker::getOutputFiles() {
 
 
 void ConservationPlotWorkerFactory::init() {
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(ConservationPlotSupport::CONSERVATION_DATA_NAME);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
+
     QList<PortDescriptor*> portDescs;
     
     //in port
@@ -157,15 +184,18 @@ void ConservationPlotWorkerFactory::init() {
 
     QList<Attribute*> attrs;
     {
-         Descriptor outDir(OUTPUT_DIR,
-             ConservationPlotWorker::tr("Output directory"),
-             ConservationPlotWorker::tr("The directory to store phastcons results."));
+         Descriptor outFile(OUTPUT_FILE,
+             ConservationPlotWorker::tr("Output file"),
+             ConservationPlotWorker::tr("File to store phastcons results (BMP)."));
          Descriptor titleDescr(TITLE,
              ConservationPlotWorker::tr("Title"),
              ConservationPlotWorker::tr("Title of the figure (--title)"));
          Descriptor labelDescr(LABEL,
              ConservationPlotWorker::tr("Label"),
              ConservationPlotWorker::tr("Label of data in the figure (--bed-label)"));
+         Descriptor assemblyVersion(ASSEMBLY_VER,
+             ConservationPlotWorker::tr("Assembly version"),
+             ConservationPlotWorker::tr("The directory to store phastcons scores (--phasdb)"));
          Descriptor windowSizeDescr(WINDOW_S,
              ConservationPlotWorker::tr("Window width"),
              ConservationPlotWorker::tr("Window width centered at middle of regions. (-w)"));
@@ -177,17 +207,29 @@ void ConservationPlotWorkerFactory::init() {
              ConservationPlotWorker::tr("Width of plot. (--width)"));
 
 
-        attrs << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
+        attrs << new Attribute(outFile, BaseTypes::STRING_TYPE(), true, QVariant(""));
         attrs << new Attribute(titleDescr, BaseTypes::STRING_TYPE(), true, QVariant("Average Phastcons around the Center of Sites"));
         attrs << new Attribute(labelDescr, BaseTypes::STRING_TYPE(), true, QVariant("Conservation at peak summits"));
+        Attribute* assemblyVerAttr = NULL;
+        if (dataPath){
+            const QList<QString>& dataNames = dataPath->getDataNames();
+            if (!dataNames.isEmpty()){
+                assemblyVerAttr = new Attribute(assemblyVersion, BaseTypes::STRING_TYPE(), true, dataPath->getPathByName(dataNames.first()));
+            }else{
+                assemblyVerAttr = new Attribute(assemblyVersion, BaseTypes::STRING_TYPE(), true);
+            }
+        }else{
+            assemblyVerAttr = new Attribute(assemblyVersion, BaseTypes::STRING_TYPE(), true);
+        }
+        attrs << assemblyVerAttr;
         attrs << new Attribute(windowSizeDescr, BaseTypes::NUM_TYPE(), false, QVariant(1000));
-        attrs << new Attribute(heightDescr, BaseTypes::NUM_TYPE(), false, QVariant(1000));
-        attrs << new Attribute(widthDescr, BaseTypes::NUM_TYPE(), false, QVariant(1000));
+        attrs << new Attribute(heightDescr, BaseTypes::NUM_TYPE(), false, QVariant(10));
+        attrs << new Attribute(widthDescr, BaseTypes::NUM_TYPE(), false, QVariant(10));
     }
 
     QMap<QString, PropertyDelegate*> delegates;
     {
-          delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true);
+          delegates[OUTPUT_FILE] = new URLDelegate("", "", false, false);
          {
             QVariantMap vm;
             vm["minimum"] = QVariant(0);
@@ -198,10 +240,20 @@ void ConservationPlotWorkerFactory::init() {
             delegates[HEIGHT] = new SpinBoxDelegate(vm);
             delegates[WIDTH] = new SpinBoxDelegate(vm);
          }
+
+         {
+             QVariantMap vm;
+             if (dataPath){
+                 if (dataPath){
+                     vm = dataPath->getDataItemsVariantMap();
+                 }
+             }
+             delegates[ASSEMBLY_VER] = new ComboBoxWithUrlsDelegate(vm);
+         }
     }
 
     Descriptor protoDesc(ConservationPlotWorkerFactory::ACTOR_ID,
-    ConservationPlotWorker::tr("Build consevation plot"),
+    ConservationPlotWorker::tr("Build conservation plot"),
     ConservationPlotWorker::tr("Plots the PhastCons scores profiles."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
@@ -223,11 +275,12 @@ QString ConservationPlotPrompter::composeRichDoc() {
      QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
      QString annUrl = annProducer ? annProducer->getLabel() : unsetStr;
      
-     QString dir = getHyperlink(OUTPUT_DIR, getURL(OUTPUT_DIR));
+     QString file = getHyperlink(OUTPUT_FILE, getURL(OUTPUT_FILE));
+     QString assembly = getHyperlink(ASSEMBLY_VER, getURL(ASSEMBLY_VER));
  
      res.append(tr("Uses annotations from <u>%1</u> as peak regions for conservation plot.").arg(annUrl));
-  
-     res.append(tr(" Outputs all result files in <u>%1</u> directory").arg(dir));
+     res.append(tr(" Conservations scores from <u>%1</u>.").arg(assembly));
+     res.append(tr(" Outputs the result in <u>%1</u>").arg(file));
      res.append(".");
 
     return res;

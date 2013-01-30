@@ -42,6 +42,7 @@
 #include "U2Core/TmpDirChecker.h"
 #include <U2Core/AppFileStorage.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/DataPathRegistry.h>
 
 #include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -442,6 +443,9 @@ int main(int argc, char **argv)
         appContext->setAppFileStorage(appFileStorage);
     }
 
+    U2DataPathRegistry* dpr = new U2DataPathRegistry();
+    appContext->setDataPathRegistry(dpr);
+
     TaskStatusBarCon* tsbc=new TaskStatusBarCon();
     
     // show help if need
@@ -492,6 +496,9 @@ int main(int argc, char **argv)
     delete tsbc;
     
     delete distrUtil;
+
+    appContext->setDataPathRegistry(NULL);
+    delete dpr;
     
     appContext->setVirtualFileSystemRegistry( NULL );
     delete vfsReg;

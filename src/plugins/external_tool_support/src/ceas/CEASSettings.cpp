@@ -36,12 +36,16 @@ CEASSettings::CEASSettings(const QString &_bedFile, const QString &_wigFile, con
 }
 
 void CEASSettings::initializeDefaults() {
+    bedFile = "";
+    wigFile = "";
+    gdbFile = "";
     bg = false;
     span = -1;
     profilingRes = -1;
     relativeDist = -1;
     name2 = false;
     dump = false;
+    experimentName = "tmp";
 }
 
 void CEASSettings::setBedFile(const QString &value) {
@@ -140,9 +144,16 @@ void CEASSettings::setDump(bool value) {
 
 QStringList CEASSettings::getArgumentList() const {
     QStringList result;
-    result << "--bed=" + getCorrectArgValue(bedFile);
-    result << "--wig=" + getCorrectArgValue(wigFile);
-    result << "--gt=" + getCorrectArgValue(gdbFile);
+    if (!bedFile.isEmpty()){
+        result << "--bed=" + getCorrectArgValue(bedFile);
+    }
+    if (!wigFile.isEmpty()){
+        result << "--wig=" + getCorrectArgValue(wigFile);
+    }
+    if (!gdbFile.isEmpty()){
+        result << "--gt=" + getCorrectArgValue(gdbFile);
+    }
+    
     if (!extraBedFile.isEmpty()) {
         result << "--ebed=" + getCorrectArgValue(extraBedFile);
     }

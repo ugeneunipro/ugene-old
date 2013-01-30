@@ -122,9 +122,14 @@ void CEASSupportTask::prepare() {
 //     createWigDoc();
 //     CHECK_OP(stateInfo, );
 
-    bedTask = new SaveDocumentTask(bedDoc);
-    addSubTask(bedTask);
-    activeSubtasks++;
+    if (bedDoc){
+        bedTask = new SaveDocumentTask(bedDoc);
+        addSubTask(bedTask);
+        activeSubtasks++;
+    }else{
+        addSubTask(createETTask());
+    }
+    
 
 //     wigTask = new SaveDocumentTask(wigDoc);
 //     addSubTask(wigTask);
@@ -132,21 +137,25 @@ void CEASSupportTask::prepare() {
 }
 
 void CEASSupportTask::createBedDoc() {
-    QString bedUrl = workingDir + "/" + "tmp.bed";
+    if (settings.getBedData().isEmpty()){
+        bedDoc = NULL;
+    }else{
+        QString bedUrl = workingDir + "/" + "tmp.bed";
 
-    DocumentFormat *bedFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::BED);
-    CHECK_EXT(NULL != bedFormat, stateInfo.setError("NULL bed format"), );
+        DocumentFormat *bedFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::BED);
+        CHECK_EXT(NULL != bedFormat, stateInfo.setError("NULL bed format"), );
 
-    bedDoc = bedFormat->createNewLoadedDocument(
-        IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), bedUrl, stateInfo);
-    CHECK_OP(stateInfo, );
-    bedDoc->setDocumentOwnsDbiResources(false);
+        bedDoc = bedFormat->createNewLoadedDocument(
+            IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), bedUrl, stateInfo);
+        CHECK_OP(stateInfo, );
+        bedDoc->setDocumentOwnsDbiResources(false);
 
-    AnnotationTableObject *ato = new AnnotationTableObject("bed_anns");
-    foreach (const SharedAnnotationData &sad, settings.getBedData()) {
-        ato->addAnnotation(new Annotation(sad), QString());
+        AnnotationTableObject *ato = new AnnotationTableObject("bed_anns");
+        foreach (const SharedAnnotationData &sad, settings.getBedData()) {
+            ato->addAnnotation(new Annotation(sad), QString());
+        }
+        bedDoc->addObject(ato);
     }
-    bedDoc->addObject(ato);
 }
 
 void CEASSupportTask::createWigDoc() {
@@ -167,6 +176,20 @@ void CEASSupportTask::createWigDoc() {
 bool CEASSupportTask::canStartETTask() const {
     return (0 == activeSubtasks);
 }
+Task* CEASSupportTask::createETTask(){
+    Task* res;
+    if (bedDoc){
+        settings.getCeasSettings().setBedFile(bedDoc->getURLString());
+    }
+
+    settings.getCeasSettings().setWigFile(settings.getWigData());
+    QStringList args = settings.getCeasSettings().getArgumentList();
+
+    logParser = new CEASLogParser();
+    res = new ExternalToolRunTask(CEASSupport::TOOL_NAME, args, logParser, workingDir);
+
+    return res;
+}
 
 QList<Task*> CEASSupportTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> result;
@@ -176,14 +199,7 @@ QList<Task*> CEASSupportTask::onSubTaskFinished(Task* subTask) {
     if (bedTask == subTask || wigTask == subTask) {
         activeSubtasks--;
         if (canStartETTask()) {
-            settings.getCeasSettings().setBedFile(bedDoc->getURLString());
-            //settings.getCeasSettings().setWigFile(wigDoc->getURLString());
-            settings.getCeasSettings().setWigFile(settings.getWigData());
-            QStringList args = settings.getCeasSettings().getArgumentList();
-
-            logParser = new ExternalToolLogParser();
-            etTask = new ExternalToolRunTask(CEASSupport::TOOL_NAME, args, logParser, workingDir);
-            result << etTask;
+            result << createETTask();
         }
     }
 
@@ -213,13 +229,58 @@ void CEASSupportTask::run() {
     copyFile(tmpPdfFile, settings.getCeasSettings().getImageFilePath());
     CHECK_OP(stateInfo, );
 
-    QString tmpXlsFile = workingDir + "/tmp.xls";
-    copyFile(tmpXlsFile, settings.getCeasSettings().getAnnsFilePath());
-    CHECK_OP(stateInfo, );
+    if (!settings.getBedData().isEmpty()){ //no annotation file if no bed data
+        QString tmpXlsFile = workingDir + "/tmp.xls";
+        copyFile(tmpXlsFile, settings.getCeasSettings().getAnnsFilePath());
+        CHECK_OP(stateInfo, );
+    }
 }
 
 const CEASTaskSettings & CEASSupportTask::getSettings() const {
     return settings;
 }
+
+//////////////////////////////////////////////////////////////////////////
+//CEASLogParser
+CEASLogParser::CEASLogParser()
+:ExternalToolLogParser(){
+
+}
+
+int CEASLogParser::getProgress(){
+    //parsing INFO  @ Fri, 07 Dec 2012 19:30:16: #1 read tag files...
+    int max_step = 8;
+    if(!lastPartOfLog.isEmpty()){
+        QString lastMessage=lastPartOfLog.last();
+        QRegExp rx(" #(\\d+) \\w");
+        if(lastMessage.contains(rx)){
+            SAFE_POINT(rx.indexIn(lastMessage) > -1, "bad progress index", 0);
+            int step = rx.cap(1).toInt();
+            return  (100 * step)/ float(qMax(step, max_step));
+        }
+    }
+    return progress;
+}
+
+void CEASLogParser::parseOutput( const QString& partOfLog ){
+    ExternalToolLogParser::parseOutput(partOfLog);
+}
+
+void CEASLogParser::parseErrOutput( const QString& partOfLog ){
+    lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
+    lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
+    lastErrLine=lastPartOfLog.takeLast();
+    foreach(QString buf, lastPartOfLog){
+        if(buf.contains("ERROR", Qt::CaseInsensitive)
+            || buf.contains("CRITICAL", Qt::CaseInsensitive)){
+                coreLog.error("CEAS: " + buf);
+        }else if (buf.contains("WARNING", Qt::CaseInsensitive)){
+            algoLog.info(buf);
+        }else {
+            algoLog.trace(buf);
+        }
+    }
+}
+
 
 } // U2

@@ -19,13 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AppContext.h>
-
 #include "CEASSupport.h"
+
+#include <U2Core/AppContext.h>
+#include <U2Core/DataPathRegistry.h>
+
 
 namespace U2 {
 
 const QString CEASSupport::TOOL_NAME("CEAS Tools");
+const QString CEASSupport::REF_GENES_DATA_NAME("Gene annotation table");
+
 
 CEASSupport::CEASSupport(const QString &name)
 : ExternalTool(name)
@@ -54,6 +58,12 @@ void CEASSupport::initialize() {
     validationArguments << "--version";
 
     versionRegExp=QRegExp(executableFileName + " -- (\\d+\\.\\d+\\.\\d+.\\d+) \\(package version (\\d+\\.\\d+\\.\\d+)\\)");
+
+    U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = new U2DataPath(REF_GENES_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/refGene");
+        dpr->registerEntry(dp);
+    }
 }
 
 } // U2

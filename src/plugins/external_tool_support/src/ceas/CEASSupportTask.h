@@ -25,13 +25,12 @@
 #include <U2Core/AnnotationData.h>
 #include <U2Core/Task.h>
 
+#include "ExternalToolRunTask.h"
 #include "CEASSettings.h"
 
 namespace U2 {
 
 class Document;
-class ExternalToolLogParser;
-class ExternalToolRunTask;
 class SaveDocumentTask;
 
 class CEASTaskSettings {
@@ -92,7 +91,22 @@ private:
     void createWigDoc();
     bool canStartETTask() const;
     void copyFile(const QString &src, const QString &dst);
+    Task* createETTask();
 };
+
+class CEASLogParser : public ExternalToolLogParser {
+public:
+    CEASLogParser();
+
+    int getProgress();
+    void parseOutput(const QString& partOfLog);
+    void parseErrOutput(const QString& partOfLog);
+
+private:
+    QString lastErrLine;
+    int     progress;
+};
+
 
 } // U2
 

@@ -43,7 +43,7 @@ URLLineEdit::URLLineEdit(const QString &filter,
 : QLineEdit(parent), FileFilter(filter), type(type), multi(multi),
 isPath(isPath), saveFile(saveFile), fileFormat(format)
 {
-    completer = new GSuggestCompletion(fileFormat, this);
+    //completer = new GSuggestCompletion(fileFormat, this);
 }
 
 void URLLineEdit::sl_onBrowse() {
@@ -109,15 +109,15 @@ void URLLineEdit::browse(bool addFiles) {
 void URLLineEdit::focusOutEvent (QFocusEvent *event) {
     QLineEdit::focusOutEvent(event);
     // TODO: fix this low level code. It is made for fixing UGENE-577
-    if (Qt::MouseFocusReason == event->reason()) {
-        QLayout *layout = this->parentWidget()->layout();
-        for (int i=1; i<layout->count(); i++) { //for each QToolButton in the layout
-            QWidget *w = layout->itemAt(i)->widget();
-            if (w->underMouse()) {
-                return;
-            }
-        }
-    }
+//     if (Qt::MouseFocusReason == event->reason()) {
+//         QLayout *layout = this->parentWidget()->layout();
+//         for (int i=1; i<layout->count(); i++) { //for each QToolButton in the layout
+//             QWidget *w = layout->itemAt(i)->widget();
+//             if (w->underMouse()) {
+//                 return;
+//             }
+//         }
+//     }
     emit si_finished();
 }
 

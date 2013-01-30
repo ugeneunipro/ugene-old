@@ -20,11 +20,13 @@
  */
 
 #include <QLayout>
+#include <QFileDialog>
 
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/URLContainer.h>
 #include <U2Lang/WorkflowUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
 
 #include "PropertyWidget.h"
 
@@ -149,6 +151,69 @@ ComboBoxWidget * ComboBoxWidget::createBooleanWidget(QWidget *parent) {
     values[ComboBoxWidget::tr("False")] = false;
     values[ComboBoxWidget::tr("True")] = true;
     return new ComboBoxWidget(values, parent);
+}
+
+/************************************************************************/
+/* ComboBoxWithUrlWidget */
+/************************************************************************/
+ComboBoxWithUrlWidget::ComboBoxWithUrlWidget(const QVariantMap &items, QWidget *parent)
+: PropertyWidget(parent)
+, customIdx(-1)
+{
+    comboBox = new QComboBox(this);
+    addMainWidget(comboBox);
+
+    foreach (const QString &key, items.keys()) {
+        comboBox->addItem(key, items[key]);
+    }
+
+    QToolButton * toolButton = new QToolButton(this);
+    toolButton->setText("...");
+    toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    connect(toolButton, SIGNAL(clicked()), SLOT(sl_browse()));
+    layout()->addWidget(toolButton);
+
+    connect(comboBox, SIGNAL(activated(const QString &)),
+        this, SIGNAL(valueChanged(const QString &)));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)),
+        this, SLOT(sl_valueChanged(int)));
+}
+
+QVariant ComboBoxWithUrlWidget::value() {
+    return comboBox->itemData(comboBox->currentIndex());
+}
+
+void ComboBoxWithUrlWidget::setValue(const QVariant &value) {
+    int idx = comboBox->findData(value);
+    if (idx == -1){
+        if (customIdx == -1){
+            comboBox->addItem(value.toString(), value);
+            customIdx = comboBox->findData(value);
+        }else{
+            comboBox->setItemText(customIdx, value.toString());
+            comboBox->setItemData(customIdx, value);
+        }
+        comboBox->setCurrentIndex(customIdx);
+    }else{
+        idx = comboBox->findData(value);
+        comboBox->setCurrentIndex(idx);
+    }
+}
+
+void ComboBoxWithUrlWidget::sl_valueChanged(int) {
+    emit si_valueChanged(value());
+}
+
+void ComboBoxWithUrlWidget::sl_browse(){
+    LastUsedDirHelper lod("UrlCombo");
+    QString lastDir = lod.dir;
+
+    QString name;
+    lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir);
+    if (!name.isEmpty()) {
+        setValue(name);
+    }
+    comboBox->setFocus();
 }
 
 /************************************************************************/

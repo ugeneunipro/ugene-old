@@ -102,8 +102,8 @@
 #include "conservation_plot/ConservationPlotSupport.h"
 #include "seqpos/SeqPosWorker.h"
 #include "seqpos/SeqPosSupport.h"
-
-
+#include "conduct_go/ConductGOWorker.h"
+#include "conduct_go/ConductGOSupport.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -293,6 +293,9 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     SeqPosSupport *seqPos = new SeqPosSupport(SeqPosSupport::TOOL_NAME);
     etRegistry->registerEntry(seqPos);
 
+    //ConductGO
+    ConductGOSupport *conductGO = new ConductGOSupport(ConductGOSupport::TOOL_NAME);
+    etRegistry->registerEntry(conductGO);
 
     if (AppContext::getMainWindow()) {
         ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(FORMATDB_TOOL_NAME));
@@ -460,8 +463,6 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
         }
     }
 
-
-
     if (AppContext::getMainWindow()) {
         //Add viewer for settings
         AppContext::getAppSettingsGUI()->registerPage(new ExternalToolSupportSettingsPageController());
@@ -482,6 +483,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin():Plugin(tr("External tool 
     LocalWorkflow::Peak2GeneWorkerFactory::init();
     LocalWorkflow::ConservationPlotWorkerFactory::init();
     LocalWorkflow::SeqPosWorkerFactory::init();
+    LocalWorkflow::ConductGOWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

@@ -83,6 +83,7 @@ class SplicedAlignmentTaskRegistry;
 class OPWidgetFactoryRegistry;
 class WorkflowScriptRegistry;
 class AppFileStorage;
+class U2DataPathRegistry;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -210,6 +211,8 @@ public:
     static OPWidgetFactoryRegistry* getOPWidgetFactoryRegistry() { return getInstance()->_getOPWidgetFactoryRegistry(); }
 
     static U2DbiRegistry *getDbiRegistry() { return getInstance()->_getDbiRegistry(); }
+
+    static U2DataPathRegistry* getDataPathRegistry() {return getInstance()->_getDataPathRegistry();}
     
     static bool isGUIMode() {return getInstance()->_isGUIMode(); }
 
@@ -281,6 +284,7 @@ protected:
     virtual OPWidgetFactoryRegistry* _getOPWidgetFactoryRegistry() const = 0;
     virtual WorkflowScriptRegistry* _getWorkflowScriptRegistry() const = 0;
     virtual AppFileStorage *_getAppFileStorage() const = 0;
+    virtual U2DataPathRegistry* _getDataPathRegistry() const = 0; 
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

@@ -31,18 +31,19 @@ ConservationPlotSettings::ConservationPlotSettings() {
 }
 
 void ConservationPlotSettings::initDefault(){
-    outDir = "";
+    outFile = "";
     title = "Average Phastcons around the Center of Sites";
     label = "Conservation at peak summits";
+    assemblyVersion = "";
     windowSize = 1000;
-    height = 1000;
-    width = 1000;
+    height = 10;
+    width = 10;
 }
 
-QStringList ConservationPlotSettings::getArguments( const QString& treatFilePath){
+QStringList ConservationPlotSettings::getArguments(const QList<QString>& bedFiles){
     QStringList result;
 
-    result << "--phasdb=" + GUrlUtils::getQuotedString(outDir);
+    result << "--phasdb=" + GUrlUtils::getQuotedString(assemblyVersion);
 
     if(height > 0){
         result << "--height=" + QByteArray::number(height);
@@ -57,9 +58,13 @@ QStringList ConservationPlotSettings::getArguments( const QString& treatFilePath
     }
 
     result << "--title=" + GUrlUtils::getQuotedString(title);    
+
+    //labels
     result << "--bed-label=" + GUrlUtils::getQuotedString(label);
 
-    result << GUrlUtils::getQuotedString(treatFilePath);
+    foreach(const QString& bedFile, bedFiles){
+        result << GUrlUtils::getQuotedString(bedFile);
+    }
 
     return result;
 }

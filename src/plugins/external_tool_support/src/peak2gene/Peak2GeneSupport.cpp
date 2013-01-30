@@ -22,10 +22,12 @@
 #include "Peak2GeneSupport.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DataPathRegistry.h>
 
 namespace U2 {
 
 const QString Peak2GeneSupport::TOOL_NAME("peak2gene");
+const QString Peak2GeneSupport::REF_GENES_DATA_NAME("Gene annotation table");
 
 Peak2GeneSupport::Peak2GeneSupport(const QString &name)
 : ExternalTool(name)
@@ -49,6 +51,12 @@ void Peak2GeneSupport::initialize() {
     validationArguments << "--version";
 
     versionRegExp=QRegExp(executableFileName + "v\\d+\\.\\d+");
+
+    U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = new U2DataPath(REF_GENES_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/refGene");
+        dpr->registerEntry(dp);
+    }
 }
 
 } // U2

@@ -22,10 +22,12 @@
 #include "ConservationPlotSupport.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DataPathRegistry.h>
 
 namespace U2 {
 
 const QString ConservationPlotSupport::TOOL_NAME("conservation_plot");
+const QString ConservationPlotSupport::CONSERVATION_DATA_NAME("conservation_data");
 
 ConservationPlotSupport::ConservationPlotSupport(const QString &name)
 : ExternalTool(name)
@@ -49,6 +51,12 @@ void ConservationPlotSupport::initialize() {
     validationArguments << "--version";
 
     versionRegExp=QRegExp(executableFileName + "\\d+\\.\\d+");
+
+    U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = new U2DataPath(CONSERVATION_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/phastCons", true);
+        dpr->registerEntry(dp);
+    }
 }
 
 } // U2

@@ -43,18 +43,16 @@
 namespace U2 {
 
 const QString ConservationPlotTask::BASE_DIR_NAME("ConservationPlot_tmp");
-const QString ConservationPlotTask::TREAT_NAME("treatment");
 
-ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
+ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<QList<SharedAnnotationData> >& _plotData)
 : Task("ConservationPlot annotation", TaskFlag_None)
 , settings(_settings)
 , treatDoc(NULL)
 , treatTask(NULL)
+, plotData(_plotData)
 , etTask(NULL)
 , logParser(NULL)
-, treatAnn(_treatAnn)
-, peaksDoc(NULL)
-, peaksTask(NULL)
+, activeSubtasks(0)
 {
 
 }
@@ -64,12 +62,10 @@ ConservationPlotTask::~ConservationPlotTask() {
 }
 
 void ConservationPlotTask::cleanup() {
-    treatAnn.clear();
-    conAnn.clear();
+    plotData.clear();
 
     delete treatDoc; treatDoc = NULL;
     delete logParser; logParser = NULL;
-    delete peaksDoc; peaksDoc = NULL;
 
     //remove tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
@@ -92,11 +88,24 @@ void ConservationPlotTask::prepare() {
     workingDir = appSettings->createCurrentProcessTemporarySubDir(stateInfo, BASE_DIR_NAME);
     CHECK_OP(stateInfo, );
 
-    treatDoc = createDoc(treatAnn, TREAT_NAME);
-    CHECK_OP(stateInfo, );
+    foreach(const QList<SharedAnnotationData>& bedData, plotData){
+        Document *bedDoc = NULL;
+        SaveDocumentTask *saveTask = NULL;
 
-    treatTask = new SaveDocumentTask(treatDoc);
-    addSubTask(treatTask);
+        QString name = getSettings().label;
+        if (activeSubtasks != 0){
+            name += QString("_%1").arg(activeSubtasks);
+        }
+        bedDoc = createDoc(bedData, name);
+        CHECK_OP(stateInfo, );
+
+        saveTask = new SaveDocumentTask(bedDoc);
+
+        docTaskMap.insert(bedDoc, saveTask);
+
+        activeSubtasks++;
+        addSubTask(saveTask);
+    }
     
 }
 
@@ -129,18 +138,57 @@ QList<Task*> ConservationPlotTask::onSubTaskFinished(Task* subTask) {
     CHECK(!subTask->isCanceled(), result);
     CHECK(!subTask->hasError(), result);
 
-    if (treatTask == subTask) {
-            QStringList args = settings.getArguments(treatDoc->getURLString());
+    bool containsTask = false;
+    foreach(SaveDocumentTask* sdt, docTaskMap.values()){
+        if (sdt == subTask){
+            containsTask = true;
+            break;
+        }
+    }
+
+    if (containsTask) {
+        activeSubtasks--;
+                        
+            if (activeSubtasks == 0){
+                QList<QString> docNames;
+                foreach(Document* bedDoc, docTaskMap.keys()){
+                    docNames.append(bedDoc->getURLString());
+                }
+
+                QStringList args = settings.getArguments(docNames);
+
+                logParser = new ConservationPlotLogParser();
+                etTask = new ExternalToolRunTask(ConservationPlotSupport::TOOL_NAME, args, logParser, workingDir);
+                result << etTask;
+            }
             
-            logParser = new ConservationPlotLogParser();
-            etTask = new ExternalToolRunTask(ConservationPlotSupport::TOOL_NAME, args, logParser, getSettings().outDir);
-            result << etTask;
     }
     return result;
 }
 
-void ConservationPlotTask::run() {
+void ConservationPlotTask::copyFile(const QString &src, const QString &dst) {
+    if (!QFile::exists(src)) {
+        setError(tr("Can not find a file: %1").arg(src));
+        return;
+    }
 
+    QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
+    if (!GUrlUtils::renameFileWithNameRoll(dst, stateInfo, excludeFileNames, &taskLog)) {
+        return;
+    }
+
+    bool copied = QFile::copy(src, dst);
+    if (!copied) {
+        setError(tr("Can not copy the result file to: %1").arg(dst));
+        return;
+    }
+}
+
+
+void ConservationPlotTask::run() {
+    QString tmpPdfFile = workingDir + "/tmp.bmp";
+    copyFile(tmpPdfFile, getSettings().outFile);
+    CHECK_OP(stateInfo, );
 }
 
 const ConservationPlotSettings& ConservationPlotTask::getSettings(){
@@ -153,39 +201,29 @@ ConservationPlotLogParser::ConservationPlotLogParser()
 :ExternalToolLogParser(){
 
 }
-// 
-// int ConservationPlotLogParser::getProgress(){
-//     //parsing INFO  @ Fri, 07 Dec 2012 19:30:16: #1 read tag files...
-//     int max_step = 5;
-//     if(!lastPartOfLog.isEmpty()){
-//         QString lastMessage=lastPartOfLog.last();
-//         QRegExp rx(" #(\\d+) \\w");
-//         if(lastMessage.contains(rx)){
-//             SAFE_POINT(rx.indexIn(lastMessage) > -1, "bad progress index", 0);
-//             int step = rx.cap(1).toInt();
-//             return  (100 * step)/ float(qMax(step, max_step));
-//         }
-//     }
-//     return progress;
-// }
-// 
-// void ConservationPlotLogParser::parseOutput( const QString& partOfLog ){
-//     ExternalToolLogParser::parseOutput(partOfLog);
-// }
-// 
-// void ConservationPlotLogParser::parseErrOutput( const QString& partOfLog ){
-//     lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
-//     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
-//     lastErrLine=lastPartOfLog.takeLast();
-//     foreach(QString buf, lastPartOfLog){
-//         if(buf.contains("WARNING", Qt::CaseInsensitive)
-//             || buf.contains("ERROR", Qt::CaseInsensitive)
-//             || buf.contains("CRITICAL", Qt::CaseInsensitive)){
-//             algoLog.info("ConservationPlot: " + buf);
-//         }else{
-//             algoLog.trace(buf);
-//         }
-//     }
-// }
+
+int ConservationPlotLogParser::getProgress(){
+    return 0;
+}
+
+void ConservationPlotLogParser::parseOutput( const QString& partOfLog ){
+    ExternalToolLogParser::parseOutput(partOfLog);
+}
+
+void ConservationPlotLogParser::parseErrOutput( const QString& partOfLog ){
+    lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
+    lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
+    lastErrLine=lastPartOfLog.takeLast();
+    foreach(QString buf, lastPartOfLog){
+        if(buf.contains("ERROR", Qt::CaseInsensitive)
+            || buf.contains("CRITICAL", Qt::CaseInsensitive)){
+                coreLog.error("conservation plot: " + buf);
+        }else if (buf.contains("WARNING", Qt::CaseInsensitive)){
+            algoLog.info(buf);
+        }else {
+            algoLog.trace(buf);
+        }
+    }
+}
 
 } // U2

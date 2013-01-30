@@ -43,6 +43,7 @@
 #include <U2Core/VirtualFileSystem.h>
 #include <U2Core/TmpDirChecker.h>
 #include <U2Core/AppFileStorage.h>
+#include <U2Core/DataPathRegistry.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -528,6 +529,9 @@ int main(int argc, char **argv)
         appContext->setAppFileStorage(appFileStorage);
     }
 
+    U2DataPathRegistry* dpr = new U2DataPathRegistry();
+    appContext->setDataPathRegistry(dpr);
+
     // Register all Options Panel groups on the required GObjectViews
     Init::initOptionsPanels();
     
@@ -591,6 +595,9 @@ int main(int argc, char **argv)
     
     delete vfsReg;
     appContext->setVirtualFileSystemRegistry( NULL );
+
+    appContext->setDataPathRegistry( NULL );
+    delete dpr;
     
     delete rdc;
     appContext->setRecentlyDownloadedCache(NULL);

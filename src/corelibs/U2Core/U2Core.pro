@@ -69,6 +69,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/BaseDocumentFormats.h \
            src/globals/Counter.h \
            src/globals/DataBaseRegistry.h \
+           src/globals/DataPathRegistry.h \
            src/globals/DBXRefRegistry.h \
            src/globals/DocumentFormatConfigurators.h \
            src/globals/ExternalToolRegistry.h \
@@ -220,6 +221,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/BaseDocumentFormats.cpp \
            src/globals/Counter.cpp \
            src/globals/DataBaseRegistry.cpp \
+           src/globals/DataPathRegistry.cpp \
            src/globals/DBXRefRegistry.cpp \
            src/globals/DocumentFormatConfigurators.cpp \
            src/globals/ExternalToolRegistry.cpp \

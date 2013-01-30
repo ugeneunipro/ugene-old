@@ -35,15 +35,16 @@ public:
     
     ConservationPlotSettings();
 
-    QString     outDir;
+    QString     outFile;
     QString     title;
     QString     label;
+    QString     assemblyVersion;
     qint64      windowSize;
     qint64      height;
     qint64      width;
 
 public:
-     QStringList getArguments(const QString& annFilePath);
+     QStringList getArguments(const QList<QString>& bedFiles);
 
 private:
     void initDefault();

@@ -55,19 +55,27 @@ const QString ReadAnnotationsWorkerFactory::ACTOR_ID("read-annotations");
 /************************************************************************/
 ReadAnnotationsWorker::ReadAnnotationsWorker(Actor *p)
 : GenericDocReader(p)
+, mergeAnnotations(false)
 {
 
 }
 
 void ReadAnnotationsWorker::init() {
     GenericDocReader::init();
+    ReadAnnotationsProto::Mode mode = ReadAnnotationsProto::Mode(actor->getParameter(
+        ReadAnnotationsProto::MODE_ATTR)->getAttributeValue<int>(context));
+    if (ReadAnnotationsProto::MERGE == mode) {
+        mergeAnnotations = true;
+    }else{
+        mergeAnnotations = false;
+    }
     IntegralBus *outBus = dynamic_cast<IntegralBus*>(ch);
     assert(outBus);
     mtype = outBus->getBusType();
 }
 
 Task * ReadAnnotationsWorker::createReadTask(const QString &url, const QString &datasetName) {
-    Task *t = new ReadAnnotationsTask(url, datasetName);
+    Task *t = new ReadAnnotationsTask(url, datasetName, mergeAnnotations);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     return t;
 }
@@ -86,6 +94,7 @@ void ReadAnnotationsWorker::sl_taskFinished() {
 /************************************************************************/
 /* Factory */
 /************************************************************************/
+const QString ReadAnnotationsProto::MODE_ATTR("mode.readannot");
 ReadAnnotationsProto::ReadAnnotationsProto()
 : GenericReadDocProto(ReadAnnotationsWorkerFactory::ACTOR_ID)
 {
@@ -106,10 +115,28 @@ ReadAnnotationsProto::ReadAnnotationsProto()
         ports << new PortDescriptor(outDesc, outTypeSet, false, true);
     }
 
+    Descriptor md(ReadAnnotationsProto::MODE_ATTR, ReadAnnotationsWorker::tr("Mode"),
+        ReadAnnotationsWorker::tr("If the file contains more than one annotation table, <i>Split</i> mode sends them \"as is\" to the output, " 
+        "while <i>Merge</i> appends all the annotation tables and outputs the sole merged annotation table."));
+
+
+    attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, SPLIT);
+
+    QMap<QString, PropertyDelegate*> delegates;
+    {
+        QVariantMap modeMap;
+        QString splitStr = ReadAnnotationsWorker::tr("Split");
+        QString mergeStr = ReadAnnotationsWorker::tr("Merge");
+        modeMap[splitStr] = SPLIT;
+        modeMap[mergeStr] = MERGE;
+        getEditor()->addDelegate(new ComboBoxDelegate(modeMap), MODE_ATTR);
+    }
+
     setPrompter(new ReadDocPrompter(ReadAnnotationsWorker::tr("Reads annotations from <u>%1</u>.")));
     if (AppContext::isGUIMode()) {
         setIcon(GUIUtils::createRoundIcon(QColor(85,85,255), 22));
     }
+
 }
 
 void ReadAnnotationsWorkerFactory::init() {
@@ -125,8 +152,8 @@ Worker * ReadAnnotationsWorkerFactory::createWorker(Actor *a) {
 /************************************************************************/
 /* Task */
 /************************************************************************/
-ReadAnnotationsTask::ReadAnnotationsTask(const QString &_url, const QString &_datasetName)
-: Task(tr("Read annotations from %1").arg(_url), TaskFlag_None), url(_url), datasetName(_datasetName)
+ReadAnnotationsTask::ReadAnnotationsTask(const QString &_url, const QString &_datasetName, bool _mergeAnnotations)
+: Task(tr("Read annotations from %1").arg(_url), TaskFlag_None), url(_url), datasetName(_datasetName), mergeAnnotations(_mergeAnnotations)
 {
 
 }
@@ -173,18 +200,31 @@ void ReadAnnotationsTask::run() {
     CHECK_OP(stateInfo, );
 
     QList<GObject*> annsObjList = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+
+    QVariantMap m;
+    m[BaseSlots::URL_SLOT().getId()] = url;
+    m[BaseSlots::DATASET_SLOT().getId()] = datasetName;
+
+    QList<SharedAnnotationData> dataList;
+
     foreach(GObject *go, annsObjList) {
         AnnotationTableObject *annsObj = dynamic_cast<AnnotationTableObject*>(go);
         CHECK_EXT(NULL != annsObj, stateInfo.setError("NULL annotations object"), );
 
-        QList<SharedAnnotationData> dataList;
+        if (!mergeAnnotations){
+            dataList.clear();
+        }
         foreach(Annotation *a, annsObj->getAnnotations()) {
             dataList << a->data();
         }
+       
+        if (!mergeAnnotations){
+            m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<QList<SharedAnnotationData> >(dataList);
+            results.append(m);
+        }
+    }
 
-        QVariantMap m;
-        m[BaseSlots::URL_SLOT().getId()] = url;
-        m[BaseSlots::DATASET_SLOT().getId()] = datasetName;
+    if (mergeAnnotations && !annsObjList.isEmpty()){
         m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<QList<SharedAnnotationData> >(dataList);
         results.append(m);
     }

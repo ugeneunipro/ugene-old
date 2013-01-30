@@ -295,11 +295,12 @@ void MACSLogParser::parseErrOutput( const QString& partOfLog ){
     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
     lastErrLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
-        if(buf.contains("WARNING", Qt::CaseInsensitive)
-            || buf.contains("ERROR", Qt::CaseInsensitive)
+        if(buf.contains("ERROR", Qt::CaseInsensitive)
             || buf.contains("CRITICAL", Qt::CaseInsensitive)){
-            algoLog.info("MACS: " + buf);
-        }else{
+                coreLog.error("MACS: " + buf);
+        }else if (buf.contains("WARNING", Qt::CaseInsensitive)){
+            algoLog.info(buf);
+        }else {
             algoLog.trace(buf);
         }
     }

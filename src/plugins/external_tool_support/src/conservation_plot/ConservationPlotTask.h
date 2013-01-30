@@ -38,7 +38,7 @@ class LoadDocumentTask;
 class ConservationPlotTask : public Task {
     Q_OBJECT
 public:
-    ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<SharedAnnotationData>& _treatAnn);
+    ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<QList<SharedAnnotationData> >& plotData);
     virtual ~ConservationPlotTask();
 
     virtual void prepare();
@@ -52,15 +52,15 @@ private:
     ConservationPlotSettings settings;
     QString workingDir;
 
-    QList<SharedAnnotationData> treatAnn;
-    QList<SharedAnnotationData> conAnn;
-
     Document *treatDoc;
-
-    Document *peaksDoc;
-
     SaveDocumentTask *treatTask;
-    LoadDocumentTask *peaksTask;
+
+    QMap<Document* , SaveDocumentTask* > docTaskMap;
+
+    QList<QList<SharedAnnotationData> > plotData;
+
+
+    int activeSubtasks;
 
     ExternalToolRunTask *etTask;
 
@@ -71,15 +71,16 @@ private:
 
 private:
     Document* createDoc(const QList<SharedAnnotationData>& annData, const QString& name);
+    void copyFile(const QString &src, const QString &dst);
 };
 
 class ConservationPlotLogParser : public ExternalToolLogParser {
 public:
     ConservationPlotLogParser();
 
-    //int getProgress();
-    //void parseOutput(const QString& partOfLog);
-    //void parseErrOutput(const QString& partOfLog);
+    int getProgress();
+    void parseOutput(const QString& partOfLog);
+    void parseErrOutput(const QString& partOfLog);
 
 private:
     QString lastErrLine;

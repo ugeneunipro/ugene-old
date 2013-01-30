@@ -23,6 +23,8 @@
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/DataPathRegistry.h>
+#include <U2Core/AppContext.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -34,6 +36,7 @@
 #include <U2Lang/WorkflowEnv.h>
 
 #include "CEASReportWorker.h"
+#include "CEASSupport.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -110,13 +113,20 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
     Message m = getMessageAndSetupScriptValues(inChannel);
     QVariantMap data = m.getData().toMap();
 
-    if (!data.contains(BED_SLOT_ID)) {
-        os.setError("Peak regions slot is empty");
+    QList<SharedAnnotationData> bedData;
+    QString wigData = "";
+
+    if (!(data.contains(BED_SLOT_ID) || data.contains(WIG_SLOT_ID))) {
+        os.setError("There must be peak data(bed) or signal data (wiggle)");
         return CEASTaskSettings();
-    }
-    if (!data.contains(WIG_SLOT_ID)) {
-        os.setError("Signals slot is empty");
-        return CEASTaskSettings();
+    }else{
+        if (data.contains(BED_SLOT_ID)){
+            bedData = QVariantUtils::var2ftl(data[BED_SLOT_ID].toList());
+        }
+
+        if (data.contains(WIG_SLOT_ID)){
+            wigData = data[WIG_SLOT_ID].toString();
+        }
     }
 
     CEASSettings ceas = createCEASSettings(os);
@@ -124,8 +134,8 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
 
     CEASTaskSettings settings(
         ceas,
-        QVariantUtils::var2ftl(data[BED_SLOT_ID].toList()),
-        data[WIG_SLOT_ID].toString());
+        bedData,
+        wigData);
 
     return settings;
 }
@@ -134,8 +144,8 @@ CEASSettings CEASReportWorker::createCEASSettings(U2OpStatus &/*os*/) {
     CEASSettings settings;
     settings.setImagePath(
         actor->getParameter(IMAGE_FILE_ATTR_ID)->getAttributeValue<QString>(context));
-    settings.setImageFormat(
-        actor->getParameter(IMAGE_FORMAT_ATTR_ID)->getAttributeValue<QString>(context));
+//     settings.setImageFormat(
+//         actor->getParameter(IMAGE_FORMAT_ATTR_ID)->getAttributeValue<QString>(context));
     settings.setAnnsFilePath(
         actor->getParameter(OUT_ANNS_ATTR_ID)->getAttributeValue<QString>(context));
     settings.setGdbFile(
@@ -174,6 +184,17 @@ QStringList CEASReportWorker::getOutputFiles() {
 /* Factory */
 /************************************************************************/
 void CEASReportWorkerFactory::init() {
+
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(CEASSupport::REF_GENES_DATA_NAME);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
+
     QList<PortDescriptor*> portDescs;
     {
         QMap<Descriptor, DataTypePtr> inTypeMap;
@@ -197,64 +218,76 @@ void CEASReportWorkerFactory::init() {
     QList<Attribute*> attrs;
     {
         Descriptor imageFileDesc(IMAGE_FILE_ATTR_ID,
-            CEASReportWorker::tr("Image file name"),
-            CEASReportWorker::tr("Name of the report output file."));
-        Descriptor formatDesc(IMAGE_FORMAT_ATTR_ID,
-            CEASReportWorker::tr("Image format"),
-            CEASReportWorker::tr("Output image format."));
+            CEASReportWorker::tr("Report file"),
+            CEASReportWorker::tr("Path to the report output file. Result for CEAS analysis"));
+//         Descriptor formatDesc(IMAGE_FORMAT_ATTR_ID,
+//             CEASReportWorker::tr("Image format"),
+//             CEASReportWorker::tr("Output image format."));
         Descriptor annsDesc(OUT_ANNS_ATTR_ID,
             CEASReportWorker::tr("Annotations file"),
             CEASReportWorker::tr("Name of tab-delimited output text file,"
-            " containing a row of annotations for every RefSeq gene."));
+            " containing a row of annotations for every RefSeq gene. (file is not generated if no peak location data is supplied)"));
         Descriptor gdbDesc(ANNS_TABLE_ATTR_ID,
             CEASReportWorker::tr("Gene annotations table"),
             CEASReportWorker::tr("Path to gene annotation table (e.g. a"
-            " refGene table in sqlite3 db format."));
+            " refGene table in sqlite3 db format. (--gt)"));
         Descriptor spanDesc(SPAN_ATTR_ID,
             CEASReportWorker::tr("Span size"),
             CEASReportWorker::tr("Span from TSS and TTS in the gene-centered"
             " annotation (base pairs). ChIP regions within this range from TSS"
             " and TTS are considered when calculating the coverage rates in"
-            " promoter and downstream."));
+            " promoter and downstream. (--span)"));
         Descriptor profResDesc(PROF_RES_ATTR_ID,
             CEASReportWorker::tr("Wiggle profiling resolution"),
             CEASReportWorker::tr("Wiggle profiling resolution. WARNING: Value"
             " smaller than the wig interval (resolution) may cause aliasing"
-            " error."));
+            " error. (--pf-res)"));
         Descriptor sizesDesc(SIZES_ATTR_ID,
             CEASReportWorker::tr("Promoter/downstream interval"),
             CEASReportWorker::tr("Promoter/downstream intervals for ChIP"
             " region annotation are three values or a single value can be"
             " given. If a single value is given, it will be segmented into"
             " three equal fractions (e.g. 3000 is equivalent to"
-            " 1000,2000,3000)."));
+            " 1000,2000,3000). (--rel-dist)"));
         Descriptor bisizesDesc(BISIZES_ATTR_ID,
             CEASReportWorker::tr("BiPromoter ranges"),
             CEASReportWorker::tr("Bidirectional-promoter sizes for ChIP region"
             " annotation. It's two values or a single value can be given. If a"
             " single value is given, it will be segmented into two equal"
-            " fractions (e.g. 5000 is equivalent to 2500,5000)."));
+            " fractions (e.g. 5000 is equivalent to 2500,5000). (--bisizes)"));
         Descriptor relDistDesc(REL_DIST_ATTR_ID,
             CEASReportWorker::tr("Relative distance"),
             CEASReportWorker::tr("Relative distance to TSS/TTS in WIGGLE file"
-            " profiling."));
+            " profiling. (--rel-dist)"));
         Descriptor groupsDesc(GROUP_FILES_ATTR_ID,
             CEASReportWorker::tr("Gene group files"),
             CEASReportWorker::tr("Gene groups of particular interest in wig"
             " profiling. Each gene group file must have gene names in the 1st"
-            " column. The file names are separated by commas."));
+            " column. The file names are separated by commas. (--gn-groups)"));
         Descriptor namesDesc(GROUP_NAMES_ATTR_ID,
             CEASReportWorker::tr("Gene group names"),
             CEASReportWorker::tr("<i>Set this parameter empty for using default"
             " values.</i><br>The names of the gene groups from \"Gene group"
             " files\" parameter. These names appear in the legends of the wig"
             " profiling plots.<br> Values range: comma-separated list of"
-            " strings. Default value: 'Group 1, Group 2,...Group n'."));
+            " strings. Default value: 'Group 1, Group 2,...Group n'. (--gn-group-names)"));
 
         attrs << new Attribute(imageFileDesc, BaseTypes::STRING_TYPE(), true);
-        attrs << new Attribute(formatDesc, BaseTypes::STRING_TYPE(), false, CEASTaskSettings::PDF_FORMAT);
+        //attrs << new Attribute(formatDesc, BaseTypes::STRING_TYPE(), false, CEASTaskSettings::PDF_FORMAT);
         attrs << new Attribute(annsDesc, BaseTypes::STRING_TYPE(), true);
-        attrs << new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true);
+        Attribute* annGrAttr = NULL;
+        if (dataPath){
+            const QList<QString>& dataNames = dataPath->getDataNames();
+            if (!dataNames.isEmpty()){
+                annGrAttr = new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true, dataPath->getPathByName(dataNames.first()));
+            }else{
+                annGrAttr = new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true);
+            }
+        }else{
+            annGrAttr = new Attribute(gdbDesc, BaseTypes::STRING_TYPE(), true);
+        }
+        attrs << annGrAttr;
+        
         attrs << new Attribute(spanDesc, BaseTypes::NUM_TYPE(), false, QVariant(3000));
         attrs << new Attribute(profResDesc, BaseTypes::NUM_TYPE(), false, QVariant(50));
         attrs << new Attribute(sizesDesc, BaseTypes::NUM_TYPE(), false, QVariant(3000));
@@ -267,14 +300,22 @@ void CEASReportWorkerFactory::init() {
     QMap<QString, PropertyDelegate*> delegates;
     {
         delegates[IMAGE_FILE_ATTR_ID] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
+//         {
+//             QVariantMap vm;
+//             vm[CEASTaskSettings::PDF_FORMAT] = CEASTaskSettings::PDF_FORMAT;
+//             vm[CEASTaskSettings::PNG_FORMAT] = CEASTaskSettings::PNG_FORMAT;
+//             delegates[IMAGE_FORMAT_ATTR_ID] = new ComboBoxDelegate(vm);
+//         }
+        delegates[OUT_ANNS_ATTR_ID] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
         {
             QVariantMap vm;
-            vm[CEASTaskSettings::PDF_FORMAT] = CEASTaskSettings::PDF_FORMAT;
-            vm[CEASTaskSettings::PNG_FORMAT] = CEASTaskSettings::PNG_FORMAT;
-            delegates[IMAGE_FORMAT_ATTR_ID] = new ComboBoxDelegate(vm);
+            if (dataPath){
+                if (dataPath){
+                    vm = dataPath->getDataItemsVariantMap();
+                }
+            }
+            delegates[ANNS_TABLE_ATTR_ID] = new ComboBoxWithUrlsDelegate(vm);
         }
-        delegates[OUT_ANNS_ATTR_ID] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
-        delegates[ANNS_TABLE_ATTR_ID] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false, false, false);
         {
             QVariantMap vm;
             vm["minimum"] = 1;
@@ -309,9 +350,8 @@ Worker *CEASReportWorkerFactory::createWorker(Actor *a) {
 
 QString CEASReportPrompter::composeRichDoc() {
     QString file = getHyperlink(IMAGE_FILE_ATTR_ID, getURL(IMAGE_FILE_ATTR_ID));
-    QString format = getHyperlink(IMAGE_FORMAT_ATTR_ID, getParameter(IMAGE_FORMAT_ATTR_ID).toString());
     return tr("Creates summary statistics on ChIP enrichment"
-        " and saves it to %1 in %2 format").arg(file).arg(format);
+        " and saves it to %1 ").arg(file);
 }
 
 } // LocalWorkflow
