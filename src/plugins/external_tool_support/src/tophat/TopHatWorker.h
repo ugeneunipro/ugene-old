@@ -98,8 +98,6 @@ public:
     static const QString PREFILTER_MULTIHITS;
     static const QString MIN_ANCHOR_LENGTH;
     static const QString SPLICE_MISMATCHES;
-    static const QString TRANSCRIPTOME_MISMATCHES;
-    static const QString GENOME_READ_MISMATCHES;
     static const QString READ_MISMATCHES;
     static const QString SEGMENT_MISMATCHES;
     static const QString SOLEXA_1_3_QUALS;

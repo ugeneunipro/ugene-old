@@ -118,7 +118,7 @@ void CuffmergeWorkerFactory::init()
         DataTypePtr inType(new MapDataType(inDesc.getId(), inTypeMap));
 
         QMap<Descriptor, DataTypePtr> outTypeMap;
-        outTypeMap[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
+        outTypeMap[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
         DataTypePtr outType(new MapDataType(outDesc.getId(), outTypeMap));
 
         portDescriptors << new PortDescriptor(inDesc, inType, true, false, IntegralBusPort::BLIND_INPUT);

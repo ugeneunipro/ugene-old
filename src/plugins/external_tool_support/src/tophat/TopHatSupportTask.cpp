@@ -229,8 +229,6 @@ QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask)
 
             arguments << "--min-anchor-length" << QString::number(settings.minAnchorLength);
             arguments << "--splice-mismatches" << QString::number(settings.spliceMismatches);
-            arguments << "--transcriptome-mismatches" << QString::number(settings.transcriptomeMismatches);
-            arguments << "--genome-read-mismatches" << QString::number(settings.genomeReadMismatches);
             arguments << "--read-mismatches" << QString::number(settings.readMismatches);
             arguments << "--segment-mismatches" << QString::number(settings.segmentMismatches);
 

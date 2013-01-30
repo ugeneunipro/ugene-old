@@ -54,8 +54,6 @@ public:
     bool                prefilterMultihits;
     int                 minAnchorLength;
     int                 spliceMismatches;
-    int                 transcriptomeMismatches;
-    int                 genomeReadMismatches;
     int                 readMismatches;
     int                 segmentMismatches;
     bool                solexa13quals;

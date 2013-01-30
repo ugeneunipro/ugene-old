@@ -68,8 +68,6 @@ const QString TopHatWorkerFactory::TRANSCRIPTOME_MAX_HITS("transcriptome-max-hit
 const QString TopHatWorkerFactory::PREFILTER_MULTIHITS("prefilter-multihits");
 const QString TopHatWorkerFactory::MIN_ANCHOR_LENGTH("min-anchor-length");
 const QString TopHatWorkerFactory::SPLICE_MISMATCHES("splice-mismatches");
-const QString TopHatWorkerFactory::TRANSCRIPTOME_MISMATCHES("transcriptome-mismatches");
-const QString TopHatWorkerFactory::GENOME_READ_MISMATCHES("genome-read-mismatches");
 const QString TopHatWorkerFactory::READ_MISMATCHES("read-mismatches");
 const QString TopHatWorkerFactory::SEGMENT_MISMATCHES("segment-mismatches");
 const QString TopHatWorkerFactory::SOLEXA_1_3_QUALS("solexa-1-3-quals");
@@ -286,16 +284,6 @@ void TopHatWorkerFactory::init()
         TopHatWorker::tr("The maximum number of mismatches that may appear in"
         " the <i>anchor</i> region of a spliced alignment"));
 
-    Descriptor transcriptomeMismatches(TRANSCRIPTOME_MISMATCHES,
-        TopHatWorker::tr("Transcriptome mismatches"),
-        TopHatWorker::tr("The maximum number of mismatches allowed when reads"
-        " are aligned to the transcriptome"));
-
-    Descriptor genomeReadMismatches(GENOME_READ_MISMATCHES,
-        TopHatWorker::tr("Genome read mismatches"),
-        TopHatWorker::tr("When whole reads are first mapped on the genome,"
-        " this many mismatches in each read alignment are allowed."));
-
     Descriptor readMismatches(READ_MISMATCHES,
         TopHatWorker::tr("Read mismatches"),
         TopHatWorker::tr("Final read alignments having more than these"
@@ -359,8 +347,6 @@ void TopHatWorkerFactory::init()
     attributes << new Attribute(prefilterMultihits, BaseTypes::BOOL_TYPE(), false, QVariant(false));
     attributes << new Attribute(minAnchorLength, BaseTypes::NUM_TYPE(), false, QVariant(8));
     attributes << new Attribute(spliceMismatches, BaseTypes::NUM_TYPE(), false, QVariant(0));
-    attributes << new Attribute(transcriptomeMismatches, BaseTypes::NUM_TYPE(), false, QVariant(1));
-    attributes << new Attribute(genomeReadMismatches, BaseTypes::NUM_TYPE(), false, QVariant(2));
     attributes << new Attribute(readMismatches, BaseTypes::NUM_TYPE(), false, QVariant(2));
     attributes << new Attribute(segmentMismatches, BaseTypes::NUM_TYPE(), false, QVariant(2));
     attributes << new Attribute(solexa13Quals, BaseTypes::BOOL_TYPE(), false, QVariant(false));
@@ -452,8 +438,6 @@ void TopHatWorkerFactory::init()
         vm["minimum"] = 0;
         vm["maximum"] = 3;
         vm["singleStep"] = 1;
-        delegates[TRANSCRIPTOME_MISMATCHES] = new SpinBoxDelegate(vm);
-        delegates[GENOME_READ_MISMATCHES] = new SpinBoxDelegate(vm);
         delegates[READ_MISMATCHES] = new SpinBoxDelegate(vm);
         delegates[SEGMENT_MISMATCHES] = new SpinBoxDelegate(vm);
     }
@@ -554,8 +538,6 @@ void TopHatWorker::init()
     settings.prefilterMultihits = actor->getParameter(TopHatWorkerFactory::PREFILTER_MULTIHITS)->getAttributeValue<bool>(context);
     settings.minAnchorLength = actor->getParameter(TopHatWorkerFactory::MIN_ANCHOR_LENGTH)->getAttributeValue<int>(context);
     settings.spliceMismatches = actor->getParameter(TopHatWorkerFactory::SPLICE_MISMATCHES)->getAttributeValue<int>(context);
-    settings.transcriptomeMismatches = actor->getParameter(TopHatWorkerFactory::TRANSCRIPTOME_MISMATCHES)->getAttributeValue<int>(context);
-    settings.genomeReadMismatches = actor->getParameter(TopHatWorkerFactory::GENOME_READ_MISMATCHES)->getAttributeValue<int>(context);
     settings.readMismatches = actor->getParameter(TopHatWorkerFactory::READ_MISMATCHES)->getAttributeValue<int>(context);
     settings.segmentMismatches = actor->getParameter(TopHatWorkerFactory::SEGMENT_MISMATCHES)->getAttributeValue<int>(context);
     settings.solexa13quals = actor->getParameter(TopHatWorkerFactory::SOLEXA_1_3_QUALS)->getAttributeValue<bool>(context);
