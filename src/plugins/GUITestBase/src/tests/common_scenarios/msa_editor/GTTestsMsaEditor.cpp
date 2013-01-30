@@ -39,6 +39,7 @@
 #include "runnables/qt/FontDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
@@ -2666,6 +2667,30 @@ GUI_TEST_CLASS_DEFINITION(test_0028){
     CHECK_SET_ERR(fileSize==630606, "Expected size: 630606, Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0029){
+//    1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//    2. Select first sequence
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,0));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence"));
+    Runnable* r = new ExportSelectedSequenceFromAlignment(os,testDir + "_common_data/scenarios/sandbox/export.fasta",ExportSelectedSequenceFromAlignment::FASTA,true);
+    GTUtilsDialog::waitForDialog(os, r);
+
+    GTMouseDriver::click(os,Qt::RightButton);
+
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"export.fasta"));
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"Phaneroptera_falcata"));
+    GTGlobals::sleep();
+//    3. use MSA area context menu->export->save sequence
+//    Exptcted state: Export sequence dialog appeared
+
+//    4. fill dialog:
+//    Export to file: test/_common_data/scenarios/sandbox/sequence.fa(use other extensions is branches)
+//    Add to project: checked
+//    Gap characters: keep
+//    Expectes state: sequence added to project
 }
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2
