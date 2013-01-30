@@ -2,37 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name></name>
-    <message>
-        <source>Loading CUDA driver library</source>
-        <translation type="obsolete">Loading CUDA driver library</translation>
-    </message>
-    <message>
-        <source>Cannot load driver library. Error while loading %1: </source>
-        <translation type="obsolete">Cannot load driver library. Error while loading %1:</translation>
-    </message>
-    <message>
-        <source>Initializing CUDA</source>
-        <translation type="obsolete">Initializing CUDA</translation>
-    </message>
-    <message>
-        <source>Cannot resolve symbol </source>
-        <translation type="obsolete">Cannot resolve symbol </translation>
-    </message>
-    <message>
-        <source>Obtaining number of CUDA-enabled devices</source>
-        <translation type="obsolete">Obtaining number of CUDA-enabled devices</translation>
-    </message>
-    <message>
-        <source>Cannot resolve symbol</source>
-        <translation type="obsolete">Cannot resolve symbol</translation>
-    </message>
-    <message>
-        <source>Registering CUDA-enabled GPU: %1, id: %2</source>
-        <translation type="obsolete">Registering CUDA-enabled GPU: %1, id: %2</translation>
-    </message>
-</context>
-<context>
     <name>U2::CudaSupportPlugin</name>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="42"/>
@@ -58,21 +27,6 @@
         <location filename="../src/CudaSupportPlugin.cpp" line="73"/>
         <source>Unknown error</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot load CUDA driver dynamic library.
-It is necessary to install latest Nvidia GPU driver for running GPU-accelerated algorithms on Nvidia hardware.</source>
-        <translation type="obsolete">Cannot load CUDA driver dynamic library.It is necessary to install latest Nvidia GPU driver for running GPU-accelerated algorithms on Nvidia hardware.</translation>
-    </message>
-    <message>
-        <source>Cannot obtain needed info about Nvidia GPU.
-Consider reinstallation of GPU driver. See CUDA Support plugin log for details.</source>
-        <translation type="obsolete">Cannot obtain needed info about Nvidia GPU.Consider reinstallation of GPU driver. See CUDA Support plugin log for details.</translation>
-    </message>
-    <message>
-        <source>An error occured while obtaining information about installed Nvidia GPUs.
-See CUDA Support plugin log for details</source>
-        <translation type="obsolete">An error occured while obtaining information about installed Nvidia GPUs.See CUDA Support plugin log for details</translation>
     </message>
     <message>
         <location filename="../src/CudaSupportPlugin.cpp" line="81"/>
