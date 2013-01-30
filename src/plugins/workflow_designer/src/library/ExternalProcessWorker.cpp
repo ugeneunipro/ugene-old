@@ -253,7 +253,8 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                     QString slotId = WorkflowUtils::getSlotDescOfDatatype(dataType).getId();
                     if (1 == seqObjects.size()) {
                         GObject *obj = seqObjects.first();
-                        v[slotId] = obj->getEntityRef().entityId;
+                        Workflow::SharedDbiDataHandler id = context->getDataStorage()->getDataHandler(obj->getEntityRef());
+                        v[slotId] = qVariantFromValue<SharedDbiDataHandler>(id);
                     } else if (1 < seqObjects.size()) {
                         QList<U2EntityRef> refs;
                         foreach (GObject *obj, seqObjects) {
@@ -327,7 +328,8 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             QString slotId = seqsForMergingBySlotId.keys().first();
             const QList<U2EntityRef> &refs= seqsForMergingBySlotId.value(slotId);
             foreach(const U2EntityRef &eRef, refs) {
-                v[slotId] = eRef.entityId;
+                SharedDbiDataHandler id = context->getDataStorage()->getDataHandler(eRef);
+                v[slotId] = qVariantFromValue<SharedDbiDataHandler>(id);
                 output->put(Message(dataType, v));
             }
         } else {
@@ -341,14 +343,16 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                 foreach(const U2EntityRef &eRef, refs) {
                     std::auto_ptr<U2SequenceObject> obj(new U2SequenceObject("tmp_name", eRef));
                     if (first) {
-                        seqImporter.startSequence(eRef.dbiRef, slotId, false, os);
+                        seqImporter.startSequence(context->getDataStorage()->getDbiRef(), slotId, false, os);
                         first = false;
                     }
                     U2Region wholeSeq(0, obj->getSequenceLength());
                     seqImporter.addSequenceBlock(eRef, wholeSeq, os);
                 }
                 U2Sequence seq = seqImporter.finalizeSequence(os);
-                v[slotId] = seq.id;
+                U2EntityRef eRef(context->getDataStorage()->getDbiRef(), seq.id);
+                SharedDbiDataHandler id = context->getDataStorage()->getDataHandler(eRef);
+                v[slotId] = qVariantFromValue<SharedDbiDataHandler>(id);
             }
             output->put(Message(dataType, v));
         }
