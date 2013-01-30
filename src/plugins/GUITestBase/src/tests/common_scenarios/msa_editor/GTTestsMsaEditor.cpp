@@ -47,6 +47,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h"
 
 
 #include <U2View/MSAEditor.h>
@@ -2787,6 +2788,40 @@ GUI_TEST_CLASS_DEFINITION(test_0029_2){
 //    Add to project: checked
 //    Gap characters: keep
 //    Expectes state: sequence added to project
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0031){
+//    1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//    2. Do MSA area context menu->Statistics->generate grid profile
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+//    Exptcted state: generate alignment profile dialog appeared
+
+//    3. Fill dialog: Profile mode:Counts. Click "Generate"
+    QWidget* profile = GTWidget::findWidget(os, "Alignment profile for ma2_gapped");
+    CHECK_SET_ERR(profile, "Alignment profile widget not found");
+//    Expected state: Alignment profile generated
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0031_1){//DIFFERENCE: Percentage is used
+//    1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//    2. Do MSA area context menu->Statistics->generate grid profile
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,false));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+//    Exptcted state: generate alignment profile dialog appeared
+
+//    3. Fill dialog: Profile mode:Counts. Click "Generate"
+    QWidget* profile = GTWidget::findWidget(os, "Alignment profile for ma2_gapped");
+    CHECK_SET_ERR(profile, "Alignment profile widget not found");
+//    Expected state: Alignment profile generated
+
 }
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2

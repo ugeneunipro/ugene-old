@@ -52,8 +52,10 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h \
+            src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h \
 #   Utils classes
             src/GTUtilsApp.h \
@@ -139,7 +141,6 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTWidget.h \
             src/api/GTAction.h \
             src/api/GTDoubleSpinBox.h \
-    src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.h
 
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
@@ -179,6 +180,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.cpp \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.cpp \
@@ -194,6 +196,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.cpp \
+            src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.cpp \
 #   Utils classes
             src/GTUtilsApp.cpp \
@@ -285,5 +288,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTWidget.cpp \
             src/api/GTAction.cpp \
             src/api/GTDoubleSpinBox.cpp \
-    src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.cpp
 
