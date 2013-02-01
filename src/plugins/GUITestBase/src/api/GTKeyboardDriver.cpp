@@ -31,6 +31,9 @@ namespace U2 {
 
 void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, int key, int modifiers)
 {
+	if (key == 0) {
+		int i = 100;
+	}
     GT_CHECK(key != 0, "key = 0");
 //    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 

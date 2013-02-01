@@ -56,6 +56,13 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
             keyPress(os, VK_OEM_MINUS, GTKeyboardDriver::key["shift"]);
             break;
 
+		case '=':
+			if (modifiers != 0) {
+                keyPress(os, modifiers);
+            }
+            keyPress(os, VK_OEM_PLUS, modifiers);
+            break;
+
         case '.':
             keyPress(os, VK_DECIMAL, modifiers);
             break;
@@ -142,6 +149,13 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
             }
             break;
 
+        case '=':
+            keyRelease(os, VK_OEM_PLUS);
+            if (modifiers != 0) {
+                keyRelease(os, modifiers);
+            }
+            break;
+
         case '.':
             keyRelease(os, VK_DECIMAL, modifiers);
             break;
@@ -217,8 +231,11 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 #define GT_METHOD_NAME "keyClick"
 void GTKeyboardDriver::keyClick(U2OpStatus &os, char key, int modifiers)
 {
+	if (key == 0) {
+		int i = 100;
+	}
     GT_CHECK(key != 0, "key = 0");
-    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
+//    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     keyPress(os, key, modifiers);
     keyRelease(os, key, modifiers);
@@ -242,7 +259,7 @@ INPUT GTKeyboardDriver::getKeyEvent(int key, bool keyUp) {
 void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers) {
 
     GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
-    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
+//    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     if (modifiers) {
         INPUT input = getKeyEvent(modifiers);
@@ -258,7 +275,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers) {
 void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 {
     GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
-    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
+//    GT_CHECK(QApplication::activeWindow() != NULL, "There is no activeWindow");
 
     if (modifiers) {
         INPUT input = getKeyEvent(modifiers, true);
@@ -307,6 +324,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("f9", VK_F9);
     ADD_KEY("f10", VK_F10);
     ADD_KEY("f12", VK_F12);
+	ADD_KEY("home", VK_HOME);
 
 // feel free to add other keys
 // macro VK_* defined in WinUser.h

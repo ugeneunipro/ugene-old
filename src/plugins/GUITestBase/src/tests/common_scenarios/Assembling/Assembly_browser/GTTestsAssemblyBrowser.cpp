@@ -32,6 +32,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsSequenceView.h"
+#include "GTUtilsMdi.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
@@ -44,12 +45,12 @@ namespace U2 {
 
 namespace GUITest_Assembly_browser {
 
-
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 //It is possible to reach negative coord in assembly browser (UGENE-105)
 
 //1. Open _common_data/scenarios/assembly/example-alignment.ugenedb
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.ugenedb");
+	GTWidget::click(os, GTUtilsMdi::activeWindow(os));
 //2. Zoom in until overview selection transforms to cross-hair
     for (int i = 0;i < 24;i++){
         GTKeyboardDriver::keyClick(os, '=', GTKeyboardDriver::key["shift"]);
