@@ -1287,7 +1287,6 @@ void WorkflowView::sl_selectPrototype(Workflow::ActorPrototype* p) {
     } else {
         delete currentActor;
         currentActor = createActor(p, QVariantMap());
-        propertyEditor->editActor(currentActor);
         propertyEditor->setDescriptor(p, tr("Drag the palette element to the scene or just click on the scene to add the element."));
         scene->views().at(0)->setCursor(Qt::CrossCursor);
     }
