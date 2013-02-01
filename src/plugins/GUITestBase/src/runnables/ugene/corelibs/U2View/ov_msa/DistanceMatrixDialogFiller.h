@@ -27,14 +27,27 @@ namespace U2{
 class DistanceMatrixDialogFiller : public Filler
 {
 public:
+    enum SaveFormat{HTML,CSV};
     DistanceMatrixDialogFiller(U2OpStatus &os, bool _hamming=true, bool _counts=true, bool _excludeGaps=true) :
         Filler(os,"DistanceMatrixMSAProfileDialog"),
         hamming(_hamming),
         counts(_counts),
-        excludeGaps(_excludeGaps){}
+        excludeGaps(_excludeGaps),
+        saveToFile(false){}
+
+    DistanceMatrixDialogFiller(U2OpStatus &os, SaveFormat _format,QString _path) :
+        Filler(os,"DistanceMatrixMSAProfileDialog"),
+        saveToFile(true),
+        format(_format),
+        path(_path),
+        hamming(true),
+        counts(true),
+        excludeGaps(true){}
     virtual void run();
 private:
-    bool hamming,counts,excludeGaps;
+    bool hamming,counts,excludeGaps,saveToFile;
+    SaveFormat format;
+    QString path;
 };
 
 }

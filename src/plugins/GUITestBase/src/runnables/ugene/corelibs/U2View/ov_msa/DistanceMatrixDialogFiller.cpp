@@ -31,6 +31,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QPushButton>
+#include <QtGui/QGroupBox>
 namespace U2{
 
 #define GT_CLASS_NAME "GTUtilsDialog::DistanceMatrixDialogFiller"
@@ -58,8 +59,26 @@ void DistanceMatrixDialogFiller::run(){
         GTRadioButton::click(os,percentsRB);
     }
 
+    if(saveToFile){
+        QGroupBox* saveBox = dialog->findChild<QGroupBox*>("saveBox");
+        saveBox->setChecked(true);
+
+        QLineEdit* fileEdit = dialog->findChild<QLineEdit*>("fileEdit");
+        GTLineEdit::setText(os, fileEdit,path);
+
+        if(format == HTML){
+            QRadioButton* htmlRB = dialog->findChild<QRadioButton*>("htmlRB");
+            GTRadioButton::click(os,htmlRB);
+        }
+        else{
+            QRadioButton* csvRB = dialog->findChild<QRadioButton*>("csvRB");
+            GTRadioButton::click(os,csvRB);
+        }
+    }
     QCheckBox* checkBox = dialog->findChild<QCheckBox*>("checkBox");
     GTCheckBox::setChecked(os,checkBox,excludeGaps);
+
+
     GTWidget::click(os, GTWidget::findWidget(os,"okButton"));
 }
 #undef GT_METHOD_NAME
