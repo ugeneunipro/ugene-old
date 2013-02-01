@@ -2957,5 +2957,47 @@ GUI_TEST_CLASS_DEFINITION(test_0033_1){
     CHECK_SET_ERR(profile, "Alignment profile widget not found");
 //Expected state: Alignment profile file created
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0034){
+//1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//2. Do MSA area context menu->Statistics->generate distance matrix
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os,true,false,true));
+    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, pop);
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+//Exptcted state: generata distance matrix dialog appeared
+
+//3. Fill dialog: Distance Algorithm: Hamming dissimilarity
+//        Profile mode: Counts(Percents)
+//        Exclude gakls: checked(unchecked)
+//        Click "Generate"
+    QWidget* profile = GTWidget::findWidget(os, "Distance matrix for ma2_gapped");
+    CHECK_SET_ERR(profile, "Alignment profile widget not found");
+//Expected state: Alignment profile file created
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0034_1){
+//1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//2. Do MSA area context menu->Statistics->generate distance matrix
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os,true,true,false));
+    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, pop);
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+//Exptcted state: generata distance matrix dialog appeared
+
+//3. Fill dialog: Distance Algorithm: Hamming dissimilarity
+//        Profile mode: Counts(Percents)
+//        Exclude gakls: checked(unchecked)
+//        Click "Generate"
+    QWidget* profile = GTWidget::findWidget(os, "Distance matrix for ma2_gapped");
+    CHECK_SET_ERR(profile, "Alignment profile widget not found");
+//Expected state: Alignment profile file created
+
+}
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2
