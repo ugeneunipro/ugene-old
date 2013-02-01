@@ -30,11 +30,32 @@ namespace U2 {
 class GenerateAlignmentProfileDialogFiller : public Filler
 {
 public:
-    GenerateAlignmentProfileDialogFiller(U2OpStatus &os, bool _counts=true) : Filler(os, "DNAStatMSAProfileDialog"),
-        counts(_counts){}
+    enum saveFormat{NONE,HTML, CSV};
+    GenerateAlignmentProfileDialogFiller(U2OpStatus &os, bool _counts=true, saveFormat _format=NONE,
+                                         QString _filePath = "") : Filler(os, "DNAStatMSAProfileDialog"),
+        counts(_counts),
+        format(_format),
+        filePath(_filePath)
+    {
+        checkBoxItems[NONE] = "NONE";
+        checkBoxItems[HTML] = "htmlRB";
+        checkBoxItems[CSV] = "csvRB";
+    }
+
+    GenerateAlignmentProfileDialogFiller(U2OpStatus &os, bool _gapsScore, bool _symbolScore, bool _skipGaps) : Filler(os, "DNAStatMSAProfileDialog"),
+        counts(true),
+        format(NONE),
+        gapScore(_gapsScore),
+        symdolScore(_symbolScore),
+        skipGaps(_skipGaps)
+        {}
+
     virtual void run();
 private:
-    bool counts;
+    bool counts, gapScore,symdolScore, skipGaps;
+    saveFormat format;
+    QMap<saveFormat,QString> checkBoxItems;
+    QString filePath;
 };
 
 }

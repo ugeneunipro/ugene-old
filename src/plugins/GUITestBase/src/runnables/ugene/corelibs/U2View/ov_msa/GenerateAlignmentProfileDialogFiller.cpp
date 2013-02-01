@@ -26,9 +26,11 @@
 #include "api/GTRadioButton.h"
 
 
+
 #include <QApplication>
 #include <QCheckBox>
 #include <QRadioButton>
+#include <QGroupBox>
 
 namespace U2 {
 
@@ -48,6 +50,27 @@ void GenerateAlignmentProfileDialogFiller::run() {
         QRadioButton* percentsRB = dialog->findChild<QRadioButton*>("percentsRB");
         GTRadioButton::click(os,percentsRB);
     }
+
+    if(!format==NONE){
+        QGroupBox* saveBox = dialog->findChild<QGroupBox*>("saveBox");
+        saveBox->setChecked(true);
+        GTGlobals::sleep(500);
+
+        QLineEdit* fileEdit = dialog->findChild<QLineEdit*>("fileEdit");
+        GTLineEdit::setText(os,fileEdit, filePath);
+
+        QRadioButton* formatRB = dialog->findChild<QRadioButton*>(checkBoxItems[format]);
+        GTRadioButton::click(os,formatRB);
+    }
+
+    QCheckBox* gapCB = dialog->findChild<QCheckBox*>("gapCB");
+    GTCheckBox::setChecked(os,gapCB,gapScore);
+
+    QCheckBox* unusedCB = dialog->findChild<QCheckBox*>("unusedCB");
+    GTCheckBox::setChecked(os,unusedCB,symdolScore);
+
+    QCheckBox* skipGapPositionsCB = dialog->findChild<QCheckBox*>("skipGapPositionsCB");
+    GTCheckBox::setChecked(os,skipGapPositionsCB,skipGaps);
 
     GTWidget::click(os, GTWidget::findWidget(os,"okButton"));
 

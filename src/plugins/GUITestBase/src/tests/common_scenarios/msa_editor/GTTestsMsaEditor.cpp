@@ -2790,7 +2790,7 @@ GUI_TEST_CLASS_DEFINITION(test_0029_2){
 //    Expectes state: sequence added to project
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0031){
+GUI_TEST_CLASS_DEFINITION(test_0031){//TODO: check statistic result
 //    1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
 //    2. Do MSA area context menu->Statistics->generate grid profile
@@ -2823,5 +2823,99 @@ GUI_TEST_CLASS_DEFINITION(test_0031_1){//DIFFERENCE: Percentage is used
 //    Expected state: Alignment profile generated
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0031_2){//TODO: check statistic result
+//    1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//    2. Do MSA area context menu->Statistics->generate grid profile
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,false,false));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+//    Exptcted state: generate alignment profile dialog appeared
+
+//    3. Fill dialog: Profile mode:Counts. Click "Generate"
+    QWidget* profile = GTWidget::findWidget(os, "Alignment profile for ma2_gapped");
+    CHECK_SET_ERR(profile, "Alignment profile widget not found");
+//    Expected state: Alignment profile generated
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0031_3){//TODO: check statistic result
+//    1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//    2. Do MSA area context menu->Statistics->generate grid profile
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,false,true,false));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+//    Exptcted state: generate alignment profile dialog appeared
+
+//    3. Fill dialog: Profile mode:Counts. Click "Generate"
+    QWidget* profile = GTWidget::findWidget(os, "Alignment profile for ma2_gapped");
+    CHECK_SET_ERR(profile, "Alignment profile widget not found");
+//    Expected state: Alignment profile generated
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0031_4){//TODO: check statistic result
+//    1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//    2. Do MSA area context menu->Statistics->generate grid profile
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,false,false,true));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+//    Exptcted state: generate alignment profile dialog appeared
+
+//    3. Fill dialog: Profile mode:Counts. Click "Generate"
+    QWidget* profile = GTWidget::findWidget(os, "Alignment profile for ma2_gapped");
+    CHECK_SET_ERR(profile, "Alignment profile widget not found");
+//    Expected state: Alignment profile generated
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0032){
+//    1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+        GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//    2. Do MSA area context menu->Statistics->generate grid profile
+//    Exptcted state: generata alignment profile dialog appeared
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+        GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,GenerateAlignmentProfileDialogFiller::HTML,
+                                                                                  testDir + "_common_data/scenarios/sandbox/stat.html"));
+        GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+        GTGlobals::sleep(500);
+
+        qint64 size = 0;
+        size = GTFileDialog::getSize(os, testDir + "_common_data/scenarios/sandbox/","stat.html");
+        CHECK_SET_ERR(size > 0, "file not found");
+//    3. Fill dialog: Profile mode:Counts
+//            Save profile to file: checked
+//            file path: test/_common_data/scenarios/sandbox/stat.html(stat.csv)
+//            Click "Generate"
+//    Expected state: Alignment profile file created
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0032_1){//DIFFERENCE: csv format is used
+//    1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+        GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//    2. Do MSA area context menu->Statistics->generate grid profile
+//    Exptcted state: generata alignment profile dialog appeared
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+        GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,GenerateAlignmentProfileDialogFiller::CSV,
+                                                                                  testDir + "_common_data/scenarios/sandbox/stat.html"));
+        GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+        GTGlobals::sleep(500);
+
+        qint64 size = 0;
+        size = GTFileDialog::getSize(os, testDir + "_common_data/scenarios/sandbox/","stat.csv");
+        CHECK_SET_ERR(size > 0, "file not found");
+//    3. Fill dialog:Profile mode:Counts
+//            Save profile to file: checked
+//            file path: test/_common_data/scenarios/sandbox/stat.html(stat.csv)
+//            Click "Generate"
+//    Expected state: Alignment profile file created
+}
+
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2
