@@ -48,6 +48,7 @@
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h"
 
 
 #include <U2View/MSAEditor.h>
@@ -2877,18 +2878,18 @@ GUI_TEST_CLASS_DEFINITION(test_0031_4){//TODO: check statistic result
 
 GUI_TEST_CLASS_DEFINITION(test_0032){
 //    1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
-        GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
 //    2. Do MSA area context menu->Statistics->generate grid profile
 //    Exptcted state: generata alignment profile dialog appeared
-        GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
-        GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,GenerateAlignmentProfileDialogFiller::HTML,
-                                                                                  testDir + "_common_data/scenarios/sandbox/stat.html"));
-        GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-        GTGlobals::sleep(500);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,GenerateAlignmentProfileDialogFiller::HTML,
+                                                                              testDir + "_common_data/scenarios/sandbox/stat.html"));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
 
-        qint64 size = 0;
-        size = GTFileDialog::getSize(os, testDir + "_common_data/scenarios/sandbox/","stat.html");
-        CHECK_SET_ERR(size > 0, "file not found");
+    qint64 size = 0;
+    size = GTFileDialog::getSize(os, testDir + "_common_data/scenarios/sandbox/","stat.html");
+    CHECK_SET_ERR(size > 0, "file not found");
 //    3. Fill dialog: Profile mode:Counts
 //            Save profile to file: checked
 //            file path: test/_common_data/scenarios/sandbox/stat.html(stat.csv)
@@ -2898,18 +2899,18 @@ GUI_TEST_CLASS_DEFINITION(test_0032){
 
 GUI_TEST_CLASS_DEFINITION(test_0032_1){//DIFFERENCE: csv format is used
 //    1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
-        GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
 //    2. Do MSA area context menu->Statistics->generate grid profile
 //    Exptcted state: generata alignment profile dialog appeared
-        GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
-        GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,GenerateAlignmentProfileDialogFiller::CSV,
-                                                                                  testDir + "_common_data/scenarios/sandbox/stat.html"));
-        GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-        GTGlobals::sleep(500);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate grid profile",GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new GenerateAlignmentProfileDialogFiller(os,true,GenerateAlignmentProfileDialogFiller::CSV,
+                                                                              testDir + "_common_data/scenarios/sandbox/stat.html"));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
 
-        qint64 size = 0;
-        size = GTFileDialog::getSize(os, testDir + "_common_data/scenarios/sandbox/","stat.csv");
-        CHECK_SET_ERR(size > 0, "file not found");
+    qint64 size = 0;
+    size = GTFileDialog::getSize(os, testDir + "_common_data/scenarios/sandbox/","stat.csv");
+    CHECK_SET_ERR(size > 0, "file not found");
 //    3. Fill dialog:Profile mode:Counts
 //            Save profile to file: checked
 //            file path: test/_common_data/scenarios/sandbox/stat.html(stat.csv)
@@ -2917,5 +2918,44 @@ GUI_TEST_CLASS_DEFINITION(test_0032_1){//DIFFERENCE: csv format is used
 //    Expected state: Alignment profile file created
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0033){
+//1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//2. Do MSA area context menu->Statistics->generate distance matrix
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os,true,true,true));
+    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, pop);
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+//Exptcted state: generata distance matrix dialog appeared
+
+//3. Fill dialog: Distance Algorithm: Hamming dissimilarity(Simple similiraty)
+//        Profile mode: Counts
+//        Exclude gakls: checked
+//        Click "Generate"
+    QWidget* profile = GTWidget::findWidget(os, "Distance matrix for ma2_gapped");
+    CHECK_SET_ERR(profile, "Alignment profile widget not found");
+//Expected state: Alignment profile file created
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0033_1){
+//1. Open document test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//2. Do MSA area context menu->Statistics->generate distance matrix
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os,false,true,true));
+    Runnable* pop = new PopupChooser(os,QStringList()<<MSAE_MENU_STATISTICS<<"Generate distance matrix",GTGlobals::UseMouse);
+    GTUtilsDialog::waitForDialog(os, pop);
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep(500);
+//Exptcted state: generata distance matrix dialog appeared
+
+//3. Fill dialog: Distance Algorithm: Hamming dissimilarity(Simple similiraty)
+//        Profile mode: Counts
+//        Exclude gakls: checked
+//        Click "Generate"
+    QWidget* profile = GTWidget::findWidget(os, "Distance matrix for ma2_gapped");
+    CHECK_SET_ERR(profile, "Alignment profile widget not found");
+//Expected state: Alignment profile file created
+}
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2
