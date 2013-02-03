@@ -156,4 +156,95 @@ bool BwaGUIExtensionsFactory::hasBuildIndexWidget() {
     return true;
 }
 
+
+// BwaSettingsWidget
+
+BwaSwSettingsWidget::BwaSwSettingsWidget(QWidget *parent):
+    DnaAssemblyAlgorithmMainWidget(parent)
+{
+    setupUi(this);
+    layout()->setContentsMargins(0,0,0,0);
+
+    numThreadsSpinbox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
+    numThreadsSpinbox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
+}
+
+QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() {
+    QMap<QString, QVariant> settings;
+
+    settings.insert(BwaTask::OPTION_SW_ALIGNMENT,true);
+    
+    /*{
+        QString algorithm;
+        switch(indexAlgorithmComboBox->currentIndex()) {
+        case 0:
+            algorithm = "bwtsw";
+            break;
+        case 1:
+            algorithm = "div";
+            break;
+        case 2:
+            algorithm = "is";
+            break;
+        default:
+            assert(false);
+            break;
+        }
+        settings.insert(BwaTask::OPTION_INDEX_ALGORITHM, algorithm);
+    }
+    if(maxDiffRadioButton->isChecked()) {
+        settings.insert(BwaTask::OPTION_N, maxDiffSpinBox->value());
+    } else {
+        settings.insert(BwaTask::OPTION_N, missingProbSpinBox->value());
+    }
+    settings.insert(BwaTask::OPTION_MAX_GAP_OPENS, maxGapOpensSpinBox->value());
+    if(enableLongGapsCheckBox) {
+        settings.insert(BwaTask::OPTION_MAX_GAP_EXTENSIONS, maxGapExtensionsSpinBox->value());
+    }
+    settings.insert(BwaTask::OPTION_INDEL_OFFSET, indelOffsetSpinBox->value());
+    settings.insert(BwaTask::OPTION_MAX_LONG_DELETION_EXTENSIONS, maxLongDeletionExtensionsSpinBox->value());
+    settings.insert(BwaTask::OPTION_SEED_LENGTH, seedLengthSpinBox->value());
+    settings.insert(BwaTask::OPTION_MAX_SEED_DIFFERENCES, maxSeedDifferencesSpinBox->value());
+    settings.insert(BwaTask::OPTION_MAX_QUEUE_ENTRIES, maxQueueEntriesSpinBox->value());
+    settings.insert(BwaTask::OPTION_THREADS, threadsSpinBox->value());
+    settings.insert(BwaTask::OPTION_MISMATCH_PENALTY, mismatchPenaltySpinBox->value());
+    settings.insert(BwaTask::OPTION_GAP_OPEN_PENALTY, gapOpenPenaltySpinBox->value());
+    settings.insert(BwaTask::OPTION_GAP_EXTENSION_PENALTY, gapExtensionPenaltySpinBox->value());
+    settings.insert(BwaTask::OPTION_BEST_HITS, bestHitsSpinBox->value());
+    settings.insert(BwaTask::OPTION_QUALITY_THRESHOLD, qualityThresholdSpinBox->value());
+    settings.insert(BwaTask::OPTION_BARCODE_LENGTH, barcodeLengthSpinBox->value());
+    settings.insert(BwaTask::OPTION_COLORSPACE, colorspaceCheckBox->isChecked());
+    settings.insert(BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS, longScaledGapPenaltyForLongDeletionsCheckBox->isChecked());
+    settings.insert(BwaTask::OPTION_NON_ITERATIVE_MODE, nonIterativeModeCheckBox->isChecked());
+    */
+
+    return settings;
+}
+
+void BwaSwSettingsWidget::buildIndexUrl(const GUrl &) {
+    // do nothing
+}
+
+bool BwaSwSettingsWidget::isParametersOk(QString &) {
+    return true;
+}
+
+// BwaGUIExtensionsFactory
+
+DnaAssemblyAlgorithmMainWidget *BwaSwGUIExtensionsFactory::createMainWidget(QWidget *parent) {
+    return new BwaSwSettingsWidget(parent);
+}
+
+DnaAssemblyAlgorithmBuildIndexWidget *BwaSwGUIExtensionsFactory::createBuildIndexWidget(QWidget *parent) {
+    return new BwaBuildSettingsWidget(parent);
+}
+
+bool BwaSwGUIExtensionsFactory::hasMainWidget() {
+    return true;
+}
+
+bool BwaSwGUIExtensionsFactory::hasBuildIndexWidget() {
+    return true;
+}
+
 } //namespace

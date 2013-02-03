@@ -53,19 +53,19 @@ class BwaAlignTask : public Task {
     Q_OBJECT
 public:
     BwaAlignTask(const QString &indexPath, const QList<ShortReadSet>& shortReadSets, const QString &resultPath, const DnaAssemblyToRefTaskSettings &settings);
-
     void prepare();
-protected slots:
-    QList<Task *> onSubTaskFinished(Task *subTask);
-private:
+    
     class LogParser : public ExternalToolLogParser {
     public:
         LogParser();
-
         void parseOutput(const QString &partOfLog);
         void parseErrOutput(const QString &partOfLog);
     };
 
+protected slots:
+    QList<Task *> onSubTaskFinished(Task *subTask);
+private:
+    
     QList<Task*> alignTasks;
     LogParser logParser;
     QString indexPath;
@@ -74,6 +74,19 @@ private:
     DnaAssemblyToRefTaskSettings settings;
     bool alignmentPerformed;
     inline QString getSAIPath(const QString& pathToReads);
+};
+
+class BwaSwAlignTask : public Task {
+    Q_OBJECT
+public:
+    BwaSwAlignTask(const QString &indexPath, const DnaAssemblyToRefTaskSettings &settings);
+    void prepare();
+protected slots:
+    QList<Task *> onSubTaskFinished(Task *subTask);
+private:
+    BwaAlignTask::LogParser logParser;
+    const QString indexPath;
+    DnaAssemblyToRefTaskSettings settings;
 };
 
 class BwaTask : public DnaAssemblyToReferenceTask {
@@ -106,9 +119,11 @@ public:
     static const QString OPTION_COLORSPACE;
     static const QString OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS;
     static const QString OPTION_NON_ITERATIVE_MODE;
+    static const QString OPTION_SW_ALIGNMENT;
+    static const QString ALGORITHM_BWA_ALN, ALGORITHM_BWA_SW;
 private:
     BwaBuildIndexTask *buildIndexTask;
-    BwaAlignTask *assembleTask;
+    Task *alignTask;
 };
 
 class BwaTaskFactory : public DnaAssemblyToRefTaskFactory {
@@ -116,6 +131,8 @@ public:
     DnaAssemblyToReferenceTask *createTaskInstance(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex = false);
 protected:
 };
+
+
 
 } // namespace U2
 

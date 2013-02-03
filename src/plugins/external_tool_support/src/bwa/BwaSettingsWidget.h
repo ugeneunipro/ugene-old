@@ -23,6 +23,7 @@
 #define _U2_BWA_SETTINGS_WIDGET_H_
 
 #include "ui/ui_BwaSettings.h"
+#include "ui/ui_BwaSwSettings.h"
 #include "ui/ui_BwaBuildSettings.h"
 #include "U2View/DnaAssemblyGUIExtension.h"
 
@@ -37,6 +38,16 @@ public:
     bool isParametersOk(QString &);
 };
 
+class BwaSwSettingsWidget : public DnaAssemblyAlgorithmMainWidget, Ui_BwaSwSettings {
+    Q_OBJECT
+public:
+    BwaSwSettingsWidget(QWidget *parent);
+    QMap<QString, QVariant> getDnaAssemblyCustomSettings();
+    void buildIndexUrl(const GUrl &url);
+    bool isParametersOk(QString &);
+};
+
+
 class BwaBuildSettingsWidget : public DnaAssemblyAlgorithmBuildIndexWidget, Ui_BwaBuildSettings {
     Q_OBJECT
 public:
@@ -47,6 +58,13 @@ public:
 };
 
 class BwaGUIExtensionsFactory : public DnaAssemblyGUIExtensionsFactory {
+    DnaAssemblyAlgorithmMainWidget *createMainWidget(QWidget *parent);
+    DnaAssemblyAlgorithmBuildIndexWidget *createBuildIndexWidget(QWidget *parent);
+    bool hasMainWidget();
+    bool hasBuildIndexWidget();
+};
+
+class BwaSwGUIExtensionsFactory : public DnaAssemblyGUIExtensionsFactory {
     DnaAssemblyAlgorithmMainWidget *createMainWidget(QWidget *parent);
     DnaAssemblyAlgorithmBuildIndexWidget *createBuildIndexWidget(QWidget *parent);
     bool hasMainWidget();

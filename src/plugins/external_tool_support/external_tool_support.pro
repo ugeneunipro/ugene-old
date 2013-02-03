@@ -108,6 +108,7 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BowtieSettings.ui \
          src/ui/BwaBuildSettings.ui \
          src/ui/BwaSettings.ui \
+         src/ui/BwaSwSettings.ui \
          src/ui/CAP3SupportDialog.ui \
          src/ui/ClustalOSupportRunDialog.ui \
          src/ui/ClustalWSupportRunDialog.ui \

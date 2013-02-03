@@ -66,7 +66,7 @@ void BwaBuildIndexTask::LogParser::parseErrOutput(const QString &partOfLog) {
     ExternalToolLogParser::parseErrOutput(partOfLog);
 }
 
-// BwaAssembleTask
+// BwaAlignTask
 
 BwaAlignTask::BwaAlignTask(const QString &indexPath, const QList<ShortReadSet>& shortReadSets, const QString &resultPath, const DnaAssemblyToRefTaskSettings &settings):
     Task("Bwa reads assembly", TaskFlags_NR_FOSCOE),
@@ -200,7 +200,8 @@ QList<Task *> BwaAlignTask::onSubTaskFinished(Task *subTask) {
     return result;
 }
 
-// BwaAssembleTask::LogParser
+
+// BwaAlignTask::LogParser
 
 BwaAlignTask::LogParser::LogParser() {
 }
@@ -226,6 +227,147 @@ void BwaAlignTask::LogParser::parseErrOutput(const QString &partOfLog) {
     }
 }
 
+// BwaSwAlignTask
+
+BwaSwAlignTask::BwaSwAlignTask(const QString &indexPath, const DnaAssemblyToRefTaskSettings &settings):
+    Task("Bwa reads assembly", TaskFlags_NR_FOSCOE),
+    indexPath(indexPath),
+    settings(settings)
+{
+}
+
+void BwaSwAlignTask::prepare() {
+
+
+    if (settings.shortReadSets.size() == 0) {
+        setError(tr("Short reads are not provided"));
+        return;
+    }
+
+    const ShortReadSet& readSet = settings.shortReadSets.at(0);
+
+    
+    settings.pairedReads = readSet.type == ShortReadSet::PairedEndReads;
+
+    if (settings.pairedReads ) {
+        setError(tr("BWA SW can not align paired reads"));
+        return;
+    }
+
+    QStringList arguments;
+    arguments.append("bwasw");
+    arguments.append("-f");
+    arguments.append( settings.resultFileName.getURLString() );
+    arguments.append( indexPath );
+    arguments.append( readSet.url.getURLString() );
+    
+    Task* alignTask = new ExternalToolRunTask(BWA_TOOL_NAME, arguments, &logParser);
+    addSubTask(alignTask);
+
+    /*foreach (const ShortReadSet& readSet, readSets) {
+        QStringList arguments;
+        arguments.append("bwasw");
+
+        arguments.append("-n");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_N, 0.04).toString());
+
+        arguments.append("-o");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_GAP_OPENS, 1).toString());
+
+        arguments.append("-e");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_GAP_EXTENSIONS, -1).toString());
+
+        arguments.append("-i");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_INDEL_OFFSET, 5).toString());
+
+        arguments.append("-d");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_LONG_DELETION_EXTENSIONS, 10).toString());
+
+        arguments.append("-l");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_SEED_LENGTH, 32).toString());
+
+        arguments.append("-k");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_SEED_DIFFERENCES, 2).toString());
+
+        arguments.append("-m");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_QUEUE_ENTRIES, 2000000).toString());
+
+        arguments.append("-t");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_THREADS, 1).toString());
+
+        arguments.append("-M");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_MISMATCH_PENALTY, 3).toString());
+
+        arguments.append("-O");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_GAP_OPEN_PENALTY, 11).toString());
+
+        arguments.append("-E");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_GAP_EXTENSION_PENALTY, 4).toString());
+
+        arguments.append("-R");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_BEST_HITS, 30).toString());
+
+        arguments.append("-q");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_QUALITY_THRESHOLD, 0).toString());
+
+        arguments.append("-B");
+        arguments.append(settings.getCustomValue(BwaTask::OPTION_BARCODE_LENGTH, 0).toString());
+
+        if(settings.getCustomValue(BwaTask::OPTION_COLORSPACE, false).toBool()) {
+            arguments.append("-c");
+        }
+
+        if(settings.getCustomValue(BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS, false).toBool()) {
+            arguments.append("-L");
+        }
+
+        if(settings.getCustomValue(BwaTask::OPTION_NON_ITERATIVE_MODE, false).toBool()) {
+            arguments.append("-N");
+        }
+
+        arguments.append("-f");
+        arguments.append( getSAIPath( readSet.url.getURLString()) );
+        arguments.append(indexPath);
+        arguments.append(readSet.url.getURLString());
+        Task* alignTask = new ExternalToolRunTask(BWA_TOOL_NAME, arguments, &logParser);
+        addSubTask(alignTask);
+        alignTasks.append(alignTask);
+    }*/
+}
+
+QList<Task *> BwaSwAlignTask::onSubTaskFinished(Task *subTask) {
+    QList<Task *> result;
+
+    /*alignTasks.removeOne(subTask);
+
+    if(alignTasks.size() == 0 && !alignmentPerformed) {
+        QStringList arguments;
+
+        settings.pairedReads ? arguments.append("sampe") : arguments.append("samse");
+
+        arguments.append("-f");
+        arguments.append(resultPath);
+        arguments.append(indexPath);
+
+        foreach (const ShortReadSet& set, readSets) {
+            arguments.append( getSAIPath( set.url.getURLString() ) );
+        }
+
+        foreach(const ShortReadSet& set, readSets) {
+            arguments.append(set.url.getURLString());
+        }
+
+        alignmentPerformed = true;
+        ExternalToolRunTask *task = new ExternalToolRunTask(BWA_TOOL_NAME, arguments, &logParser);
+        result.append(task);
+    }*/
+
+    return result;
+}
+ 
+
+
+
 // BwaTask
 
 const QString BwaTask::taskName = "BWA";
@@ -249,6 +391,10 @@ const QString BwaTask::OPTION_BARCODE_LENGTH = "barcode-length";
 const QString BwaTask::OPTION_COLORSPACE = "colorspace";
 const QString BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS = "long-scaled-gap-penalty-for-long-deletions";
 const QString BwaTask::OPTION_NON_ITERATIVE_MODE = "non-iterative-mode";
+const QString BwaTask::OPTION_SW_ALIGNMENT = "bwa-sw-alignment";
+const QString BwaTask::ALGORITHM_BWA_SW = "bwa-sw";
+const QString BwaTask::ALGORITHM_BWA_ALN = "bwa";
+
 
 BwaTask::BwaTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
     DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE, justBuildIndex)
@@ -268,17 +414,21 @@ void BwaTask::prepare() {
         buildIndexTask = new BwaBuildIndexTask(settings.refSeqUrl.getURLString(), indexFileName, settings);
     }
     if(!justBuildIndex) {
-        /*if(settings.shortReadSets.size() > 1) {
-            setError(tr("Multiple read files are not supported"));
-            return;
-        }*/
-        assembleTask = new BwaAlignTask(indexFileName, settings.shortReadSets, settings.resultFileName.getURLString(), settings);
+        if (settings.getCustomValue(OPTION_SW_ALIGNMENT, false) == true) {
+            if(settings.shortReadSets.size() > 1) {
+                setError(tr("Multiple read files are not supported by bwa-sw. Please combine your reads into single FASTA file."));
+                return;
+            }
+            alignTask = new BwaSwAlignTask(indexFileName, settings);
+        } else {
+            alignTask = new BwaAlignTask(indexFileName, settings.shortReadSets, settings.resultFileName.getURLString(), settings);
+        }
     }
 
     if(!settings.prebuiltIndex) {
         addSubTask(buildIndexTask);
     } else if(!justBuildIndex) {
-        addSubTask(assembleTask);
+        addSubTask(alignTask);
     } else {
         assert(false);
     }
@@ -294,7 +444,7 @@ Task::ReportResult BwaTask::report() {
 QList<Task *> BwaTask::onSubTaskFinished(Task *subTask) {
     QList<Task *> result;
     if((subTask == buildIndexTask) && !justBuildIndex) {
-        result.append(assembleTask);
+        result.append(alignTask);
     }
     return result;
 }
@@ -304,5 +454,9 @@ QList<Task *> BwaTask::onSubTaskFinished(Task *subTask) {
 DnaAssemblyToReferenceTask *BwaTaskFactory::createTaskInstance(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex) {
     return new BwaTask(settings, justBuildIndex);
 }
+
+
+
+
 
 } // namespace U2

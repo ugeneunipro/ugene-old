@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Align Short Reads</string>
+   <string>Align sequencing reads</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -28,7 +28,7 @@
         <string>Select a method to align short reads.</string>
        </property>
        <property name="text">
-        <string>Align Short Reads method</string>
+        <string>Alignment method</string>
        </property>
       </widget>
      </item>
