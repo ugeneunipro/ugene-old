@@ -469,6 +469,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0037);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0037_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0037_2);
+
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_2);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_3);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_4);
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/msa_editor/colors
 /////////////////////////////////////////////////////////////////////////

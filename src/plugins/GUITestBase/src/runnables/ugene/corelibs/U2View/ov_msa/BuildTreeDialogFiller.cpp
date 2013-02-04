@@ -65,6 +65,25 @@ void BuildTreeDialogFiller::run() {
         GTCheckBox::setChecked(os,gammaBox,false);
     }
 
+    if (replicates){
+        QGroupBox *BootstrapGroupBox = dialog->findChild<QGroupBox*>("BootstrapGroupBox");
+        BootstrapGroupBox->setChecked(true);
+
+        QSpinBox* repsSpinBox = dialog->findChild<QSpinBox*>("repsSpinBox");
+        GTSpinBox::setValue(os,repsSpinBox,replicates);
+
+        QSpinBox* seedSpinBox = dialog->findChild<QSpinBox*>("seedSpinBox");
+        GTSpinBox::setValue(os,seedSpinBox,seed);
+
+        QComboBox* ConsModeComboBox = dialog->findChild<QComboBox*>("ConsModeComboBox");
+        GTComboBox::setCurrentIndex(os,ConsModeComboBox,type);
+
+        if(type == M1){
+            QDoubleSpinBox* FractionSpinBox = dialog->findChild<QDoubleSpinBox*>("FractionSpinBox");
+            GTDoubleSpinbox::setValue(os,FractionSpinBox,fraction,GTGlobals::UseKeyBoard);
+        }
+    }
+
     GTWidget::click(os, GTWidget::findWidget(os,"okButton"));
 
 

@@ -2696,7 +2696,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028){
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
 //    press Save
     qint64 fileSize = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/", "test.svg");
-    CHECK_SET_ERR(fileSize==630606, "Expected size: 630606, Current size: " + QString().setNum(fileSize));
+    CHECK_SET_ERR(fileSize==937946, "Expected size: 630606, Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 
 }
@@ -3177,6 +3177,126 @@ GUI_TEST_CLASS_DEFINITION(test_0037_2){
 //    Distanse matrix model: F84
 //    Gamma distributed rates across sites: checked
 //    Coefficient of variation: 0.50(50.00/99.00)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0038){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
+                                                               5,BuildTreeDialogFiller::MAJORITYEXT));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(5000);//some time is needed to build tree
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84
+//    Gamma distributed rates across sites: unchecked
+//    Bootatraping and consensus tree: checked
+//    Number of replications: 100
+//    Seed: 5
+//    Consensus type: Majority Rule extended(Strict/Majority Rule/M1)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0038_1){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
+                                                               5,BuildTreeDialogFiller::STRICT));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(5000);//some time is needed to build tree
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84
+//    Gamma distributed rates across sites: unchecked
+//    Bootatraping and consensus tree: checked
+//    Number of replications: 100
+//    Seed: 5
+//    Consensus type: Majority Rule extended(Strict/Majority Rule/M1)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0038_2){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
+                                                               5,BuildTreeDialogFiller::MAJORITY));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(5000);//some time is needed to build tree
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84
+//    Gamma distributed rates across sites: unchecked
+//    Bootatraping and consensus tree: checked
+//    Number of replications: 100
+//    Seed: 5
+//    Consensus type: Majority Rule extended(Strict/Majority Rule/M1)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0038_3){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
+                                                               5,BuildTreeDialogFiller::M1));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(5000);//some time is needed to build tree
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84
+//    Gamma distributed rates across sites: unchecked
+//    Bootatraping and consensus tree: checked
+//    Number of replications: 100
+//    Seed: 5
+//    Consensus type: Majority Rule extended(Strict/Majority Rule/M1)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0038_4){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
+                                                               5,BuildTreeDialogFiller::M1,1));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(5000);//some time is needed to build tree
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84
+//    Gamma distributed rates across sites: unchecked
+//    Bootatraping and consensus tree: checked
+//    Number of replications: 100
+//    Seed: 5
+//    Consensus type: Majority Rule extended(Strict/Majority Rule/M1)
 //    Press "Build"
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
