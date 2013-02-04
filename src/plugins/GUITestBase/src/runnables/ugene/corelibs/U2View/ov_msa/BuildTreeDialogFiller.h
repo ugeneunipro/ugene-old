@@ -28,7 +28,7 @@ namespace U2 {
 
 class BuildTreeDialogFiller : public Filler {
 public:
-    enum consensusType{MAJORITYEXT,STRICT,MAJORITY,M1};
+    enum consensusType{MAJORITYEXT,STRICTCONSENSUS,MAJORITY,M1};
     BuildTreeDialogFiller(U2OpStatus &os, QString _saveTree="default", int _model=0,
                           double _alpha=0) : Filler(os, "CreatePhyTree"),
         saveTree(_saveTree),

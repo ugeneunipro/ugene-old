@@ -3212,7 +3212,7 @@ GUI_TEST_CLASS_DEFINITION(test_0038_1){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //2. Press "build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,100,testDir + "_common_data/scenarios/sandbox/COI.nwk",
-                                                               5,BuildTreeDialogFiller::STRICT));
+                                                               5,BuildTreeDialogFiller::STRICTCONSENSUS));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(5000);//some time is needed to build tree
