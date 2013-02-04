@@ -215,7 +215,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 //    2. Click on "Build tree" button on toolbar
 //    Expected state: "Create Philogenetic Tree" dialog appears
 
-    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",2,true,52));
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",2,52));
     //GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);

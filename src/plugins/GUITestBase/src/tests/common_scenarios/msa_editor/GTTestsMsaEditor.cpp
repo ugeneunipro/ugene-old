@@ -49,6 +49,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 
 
 #include <U2View/MSAEditor.h>
@@ -3044,6 +3045,142 @@ GUI_TEST_CLASS_DEFINITION(test_0035_1){
     qint64 size = GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","matrix.csv");
     CHECK_SET_ERR(size!=0,"file not created");
 //Expected state: Alignment profile file created
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0036){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",0));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84(Kimura/Jukes-Cantor/LogDet)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0036_1){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",1));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84(Kimura/Jukes-Cantor/LogDet)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0036_2){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",2));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84(Kimura/Jukes-Cantor/LogDet)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0036_3){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",3));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84(Kimura/Jukes-Cantor/LogDet)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0037){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",0,0.5));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84
+//    Gamma distributed rates across sites: checked
+//    Coefficient of variation: 0.50(50.00/99.00)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0037_1){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",0,50));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84
+//    Gamma distributed rates across sites: checked
+//    Coefficient of variation: 0.50(50.00/99.00)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0037_2){
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//2. Press "build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",0,99));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//Expected state: build tree dialog appeared
+
+//3. Fill dialog:
+//    Distanse matrix model: F84
+//    Gamma distributed rates across sites: checked
+//    Coefficient of variation: 0.50(50.00/99.00)
+//    Press "Build"
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found")
+//Expected state: tree appeared
 }
 
 } // namespace GUITest_common_scenarios_msa_editor

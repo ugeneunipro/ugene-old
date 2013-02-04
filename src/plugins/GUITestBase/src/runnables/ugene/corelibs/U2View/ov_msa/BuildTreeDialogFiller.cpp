@@ -55,12 +55,14 @@ void BuildTreeDialogFiller::run() {
     }
 
     QCheckBox* gammaBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os,"gammaCheckBox"));
-    GTCheckBox::setChecked(os,gammaBox,gamma);
-    GTGlobals::sleep(500);
-
     if(alpha){
+        GTCheckBox::setChecked(os,gammaBox,true);
+
         QDoubleSpinBox* alphaSpinBox = qobject_cast<QDoubleSpinBox*>(GTWidget::findWidget(os,"alphaSpinBox"));
         GTDoubleSpinbox::setValue(os, alphaSpinBox,alpha,GTGlobals::UseKeyBoard);
+    }
+    else{
+        GTCheckBox::setChecked(os,gammaBox,false);
     }
 
     GTWidget::click(os, GTWidget::findWidget(os,"okButton"));

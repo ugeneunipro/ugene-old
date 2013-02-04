@@ -28,18 +28,16 @@ namespace U2 {
 
 class BuildTreeDialogFiller : public Filler {
 public:
-    BuildTreeDialogFiller(U2OpStatus &os, QString _saveTree="default", int _model=0, bool _gamma=false,
+    BuildTreeDialogFiller(U2OpStatus &os, QString _saveTree="default", int _model=0,
                           double _alpha=0) : Filler(os, "CreatePhyTree"),
         saveTree(_saveTree),
         model(_model),
-        gamma(_gamma),
         alpha(_alpha){}
     virtual void run();
 private:
     QString saveTree;
     int model;
     double alpha;
-    bool gamma;
 };
 
 }
