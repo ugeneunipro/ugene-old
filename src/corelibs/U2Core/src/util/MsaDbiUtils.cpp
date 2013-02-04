@@ -98,21 +98,15 @@ bool validateAndPreparePosInMsa(const MAlignment& al, qint64& posInMsa) {
 /////////////////////////////////////////////////////////////////
 // Helper-methods for additional calculations
 
-QList<U2MsaGap> MsaDbiUtils::calculateGapModelAfterInsert(const MAlignmentRow& alRow, qint64 pos, qint64 count) {
-    SAFE_POINT(pos >= 0, QString("Invalid position '%1'!").arg(pos), alRow.getGapModel());
-    SAFE_POINT(count > 0, QString("Invalid characters count '%1'!").arg(count), alRow.getGapModel());
-
-    if (pos > alRow.getRowLength()) {
-        return alRow.getGapModel();
-    }
-
-    QList<U2MsaGap> gapModel = alRow.getGapModel();
-
+void MsaDbiUtils::calculateGapModelAfterInsert(QList<U2MsaGap>& gapModel, qint64 pos, qint64 count) {    
+    SAFE_POINT(pos >= 0, QString("Invalid position '%1'!").arg(pos), );
+    SAFE_POINT(count > 0, QString("Invalid characters count '%1'!").arg(count), );
+    
     // There are no gaps yet
     if (gapModel.isEmpty()) {
         U2MsaGap gap(pos, count);
         gapModel.append(gap);
-        return gapModel;
+        return;
     }
     // There are gaps in the row
     else {
@@ -138,8 +132,8 @@ QList<U2MsaGap> MsaDbiUtils::calculateGapModelAfterInsert(const MAlignmentRow& a
         // Gaps are inserted to the middle of the row
         else {
             // A gap is near
-            if (MAlignment_GapChar == alRow.charAt(pos) ||
-                MAlignment_GapChar == alRow.charAt(pos - 1))
+            if (gapInPosition(gapModel, pos) ||
+                gapInPosition(gapModel, pos - 1))
             {
                 // Find the gaps and append 'count' gaps to it
                 // Shift all gaps that further in the row
@@ -187,7 +181,6 @@ QList<U2MsaGap> MsaDbiUtils::calculateGapModelAfterInsert(const MAlignmentRow& a
             }
 
         }
-        return gapModel;
     }
 }
 
@@ -441,6 +434,20 @@ void MsaDbiUtils::cropCharsFromRow(MAlignmentRow& alRow, qint64 pos, qint64 coun
     alRow.setGapModel(gapModel);
 }
 
+/** Returns "true" if there is a gap on position "pos" */
+bool MsaDbiUtils::gapInPosition(const QList<U2MsaGap>& gapModel, qint64 pos) {
+    foreach (const U2MsaGap& gap, gapModel) {
+        if (gap.offset + gap.gap - 1 < pos) {
+            continue;
+        }
+        if (gap.offset > pos) {
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
 
 /////////////////////////////////////////////////////////////////
 // MSA DBI Utilities
@@ -683,19 +690,6 @@ void MsaDbiUtils::renameMsa(const U2EntityRef& msaRef, const QString& newName, U
 }
 
 void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& rowIds, qint64 pos, qint64 count, U2OpStatus& os) {
-    // Get the alignment
-    MAlignmentExporter alExporter;
-    MAlignment al = alExporter.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
-
-    // Validate the parameters
-    if (!validateRowIds(al, rowIds) ||
-        !validatePos(al, pos) ||
-        !validateCharactersCount(count))
-    {
-        os.setError(tr("Failed to insert gaps into an alignment!"));
-        return;
-    }
-
     // Prepare the connection
     DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
@@ -703,22 +697,55 @@ void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& row
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!",);
 
+    // Get the MSA properties
+    U2Msa msaObj = msaDbi->getMsaObject(msaRef.entityId, os);
+    qint64 alLength = msaObj.length;
+    qint64 numRows = msaDbi->getNumOfRows(msaRef.entityId, os);
+
+    // Validate the position
+    if (pos < 0 || pos > alLength) {
+        coreLog.trace(QString("Invalid position '%1' in '%2' alignment!").arg(pos).arg(msaObj.visualName));
+        os.setError(tr("Failed to insert gaps into an alignment!"));
+        return;
+    }
+
+    // Validate the count of gaps
+    if (count <= 0) {
+        coreLog.trace(QString("Invalid value of characters count '%1'!").arg(count));
+        os.setError(tr("Failed to insert gaps into an alignment!"));
+        return;
+    }
+
     // Insert gaps into rows
-    qint64 alLength = al.getLength();
-    for (int i = 0, n = al.getNumRows(); i < n; ++i) {
-        const MAlignmentRow& row = al.getRow(i);
-        qint64 rowId = row.getRowId();
-        if (rowIds.contains(rowId)) {
-            QList<U2MsaGap> newGapModel = calculateGapModelAfterInsert(row, pos, count);
+    QList<U2MsaRow> rows;
+    foreach (qint64 rowId, rowIds) {
+        U2MsaRow row = msaDbi->getRow(msaRef.entityId, rowId, os);
+        CHECK_OP(os, );
 
-            // Put the new gap model into the database
-            msaDbi->updateGapModel(msaRef.entityId, row.getRowId(), newGapModel, os);
-            CHECK_OP(os, );
+        rows.append(row);
+    }
 
-            // Calculate the new alignment length
-            qint64 rowLength = row.getRowLength() + count;
-            alLength = qMax(alLength, rowLength);
+    foreach (U2MsaRow row, rows) {
+        // Calculate the new gap model
+        calculateGapModelAfterInsert(row.gaps, pos, count);
+
+        // Trim trailing gap (if any) and calculate the length
+        qint64 rowLength = row.gend - row.gstart;
+        for (int i = 0, n = row.gaps.count(); i < n; ++i) {
+            const U2MsaGap& gap = row.gaps[i];
+            if ((i == n - 1) && (gap.offset >= rowLength)) {
+                row.gaps.removeAt(i);
+                break;
+            }
+            rowLength += gap.gap;
         }
+
+        // Put the new gap model into the database
+        msaDbi->updateGapModel(msaRef.entityId, row.rowId, row.gaps, os);
+        CHECK_OP(os, );
+
+        // Calculate the new alignment length        
+        alLength = qMax(alLength, rowLength);
     }
 
     // Set the new alignment length

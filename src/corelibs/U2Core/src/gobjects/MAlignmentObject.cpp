@@ -151,12 +151,6 @@ void MAlignmentObject::insertGap(U2Region rows, int pos, int count) {
     MsaDbiUtils::insertGaps(entityRef, rowIdsToInsert, pos, count, os);
     SAFE_POINT_OP(os, );
 
-    MsaDbiUtils::insertGaps(entityRef, rowIdsToShift, length, count, os);
-    SAFE_POINT_OP(os, );
-
-    MsaDbiUtils::trim(entityRef, os);
-    SAFE_POINT_OP(os, );
-
     MAlignmentModInfo mi;
     mi.sequenceListChanged = false;
     updateCachedMAlignment(mi);

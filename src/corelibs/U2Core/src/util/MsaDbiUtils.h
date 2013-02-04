@@ -53,7 +53,7 @@ public:
     /**
      * Inserts 'count' gaps to rows with specified IDs from 'pos' position.
      * Updates the alignment length.
-     * Does NOT trim the result alignment!
+     * Trims the rows.
      * Parameter 'rowIds' must contain valid IDs of the alignment rows in the database!
      * Parameter 'pos' must be >=0 and < the alignment length.
      * Parameter 'count' must be > 0.
@@ -126,8 +126,8 @@ public:
     static void renameRow(const U2EntityRef& msaRef, qint64 rowId, const QString& newName, U2OpStatus& os);
 
 private:
-    /** Calculates a new gap model for a row when 'count' gaps are inserted to 'pos' position in the row */
-    static QList<U2MsaGap> calculateGapModelAfterInsert(const MAlignmentRow& alRow, qint64 pos, qint64 count);
+    /** Calculates a new gap model when 'count' gaps are inserted to 'pos' position */
+    static void calculateGapModelAfterInsert(QList<U2MsaGap>& gapModel, qint64 pos, qint64 count);
 
     /**
      * Verifies if the alignment contains columns of gaps at the beginning.
@@ -172,6 +172,9 @@ private:
      * The row sequence and gap model are set to empty values in this case.
      */
     static void cropCharsFromRow(MAlignmentRow& alRow, qint64 pos, qint64 count);
+
+    /** Returns "true" if there is a gap on position "pos" */
+    static bool gapInPosition(const QList<U2MsaGap>& gapModel, qint64 pos);
 };
 
 } // namespace
