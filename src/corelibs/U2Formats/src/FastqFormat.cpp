@@ -39,6 +39,8 @@
 
 namespace U2 {
 
+static const int PROGRESS_UPDATE_STEP = 1000;
+
 FastqFormat::FastqFormat(QObject* p) 
 : DocumentFormat(p, DocumentFormatFlags_SW, QStringList("fastq")), fn(tr("FASTQ")) 
 {
@@ -213,6 +215,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
 
     U2SequenceImporter seqImporter(hints, true);
     int seqNumber = 0;
+    int progressUpNum = 0;
 
     while (!os.isCoR()) {
         //read header
@@ -263,6 +266,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
         CHECK_EXT(sequence.length() == qualityScores.length(), os.setError(err),);
 
         seqNumber++;
+        progressUpNum++;
         if (merge) {
             headers.append(sequenceName);
             mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
@@ -278,6 +282,10 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             objects << seqObj;
 
             U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
+        }
+        if (PROGRESS_UPDATE_STEP == progressUpNum) {
+            progressUpNum = 0;
+            os.setProgress(io->getProgress());
         }
     }
 

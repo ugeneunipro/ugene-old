@@ -49,18 +49,23 @@ void SQLiteAttributeDbi::initSqlSchema(U2OpStatus& os) {
 
     //TODO: check if index is efficient for gettting attribute for specific object
     SQLiteQuery("CREATE INDEX Attribute_name on Attribute(name)" , db, os).execute();
+    SQLiteQuery("CREATE INDEX Attribute_object on Attribute(object)" , db, os).execute();
     
     SQLiteQuery("CREATE TABLE IntegerAttribute (attribute INTEGER, value INTEGER NOT NULL, "
         " FOREIGN KEY(attribute) REFERENCES Attribute(id) )" , db, os).execute();
+    SQLiteQuery("CREATE INDEX IntegerAttribute_attribute on IntegerAttribute(attribute)" , db, os).execute();
 
     SQLiteQuery("CREATE TABLE RealAttribute (attribute INTEGER, value REAL NOT NULL, "
         " FOREIGN KEY(attribute) REFERENCES Attribute(id) )" , db, os).execute();
+    SQLiteQuery("CREATE INDEX RealAttribute_attribute on RealAttribute(attribute)" , db, os).execute();
 
     SQLiteQuery("CREATE TABLE StringAttribute (attribute INTEGER, value TEXT NOT NULL, "
         " FOREIGN KEY(attribute) REFERENCES Attribute(id) )" , db, os).execute();
+    SQLiteQuery("CREATE INDEX StringAttribute_attribute on StringAttribute(attribute)" , db, os).execute();
 
     SQLiteQuery("CREATE TABLE ByteArrayAttribute (attribute INTEGER, value BLOB NOT NULL, "
         " FOREIGN KEY(attribute) REFERENCES Attribute(id) )" , db, os).execute();
+    SQLiteQuery("CREATE INDEX ByteArrayAttribute_attribute on ByteArrayAttribute(attribute)" , db, os).execute();
 
 }
 
