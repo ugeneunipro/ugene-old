@@ -28,8 +28,10 @@ namespace U2 {
 
     class ExportMSA2MSADialogFiller : public Filler {
     public:
-        ExportMSA2MSADialogFiller(U2OpStatus &_os);
+        ExportMSA2MSADialogFiller(U2OpStatus &_os, int _formatVal = 0);
         virtual void run();
+    private:
+        int formatVal;
     };
 }
 

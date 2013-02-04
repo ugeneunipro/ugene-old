@@ -23,22 +23,31 @@
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
+#include "api/GTComboBox.h"
 
 #include <QtCore/QDir>
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#include <QtGui/QComboBox>
 
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportToSequenceFormatFiller"
 
-ExportMSA2MSADialogFiller::ExportMSA2MSADialogFiller(U2OpStatus &_os) : Filler(_os, "U2__ExportMSA2MSADialog") {}
+ExportMSA2MSADialogFiller::ExportMSA2MSADialogFiller(U2OpStatus &_os, int _formatVal) : Filler(_os, "U2__ExportMSA2MSADialog"),
+    formatVal(_formatVal){}
 
 #define GT_METHOD_NAME "run"
 void ExportMSA2MSADialogFiller::run()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
+
+    QLineEdit* fileNameEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+    GTLineEdit::setText(os, fileNameEdit,"../../test/_common_data/scenarios/sandbox/COI_transl.aln");
+
+    QComboBox* formatCombo = dialog->findChild<QComboBox*>("formatCombo");
+    GTComboBox::setCurrentIndex(os, formatCombo, formatVal);
 
     QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
     GT_CHECK(exportButton != NULL, "export button not found");

@@ -2553,7 +2553,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025){
     MSAEditorUI* ui = qobject_cast<MSAEditorUI*>(nameListWidget);
 
     QFont f = ui->getEditor()->getFont();
-    QString expectedFont = "Ubuntu,10,-1,5,75,1,0,0,0,0";
+    QString expectedFont = "Verdana,10,-1,5,50,0,0,0,0,0";
 
     CHECK_SET_ERR(f.toString() == expectedFont,"Expected: " + expectedFont + "found: " + f.toString())
     ;
@@ -3303,5 +3303,34 @@ GUI_TEST_CLASS_DEFINITION(test_0038_4){
 //Expected state: tree appeared
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0039){
+    QMap<int,QString> extMap;
+    extMap[0] = "aln";
+    extMap[1] = "fa";
+    extMap[2] = "msf";
+    extMap[3] = "meg";
+    extMap[4] = "nex";
+    extMap[5] = "sam";
+    extMap[6] = "sto";
+//1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+//2. Use project tree context menu->Export/Import->Export Nucleic Alignment to Amino Translation
+    for (int i=6; i<extMap.size(); i++){
+        GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI"));
+        GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,i));
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION<<ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
+        GTMouseDriver::click(os,Qt::RightButton);
+        GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI_transl." + extMap[i]));
+    }
+//Expected state: Export Nucleic Alignment to Amino Translation dialog appeared
+
+//3.Fill dialog:
+//    File name: test/_common_data/scenarios/sandbox/transl.aln
+//    File format: CLUSTALW(use other formats too, check extension change)
+//    Amino translation: Standart genetic code
+//    Add document to project: checked
+
+//Expected state: transl.aln appeared in project
+}
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2
