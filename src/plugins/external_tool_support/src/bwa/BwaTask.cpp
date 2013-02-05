@@ -392,8 +392,8 @@ const QString BwaTask::OPTION_COLORSPACE = "colorspace";
 const QString BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS = "long-scaled-gap-penalty-for-long-deletions";
 const QString BwaTask::OPTION_NON_ITERATIVE_MODE = "non-iterative-mode";
 const QString BwaTask::OPTION_SW_ALIGNMENT = "bwa-sw-alignment";
-const QString BwaTask::ALGORITHM_BWA_SW = "bwa-sw";
-const QString BwaTask::ALGORITHM_BWA_ALN = "bwa";
+const QString BwaTask::ALGORITHM_BWA_SW = "BWA-SW";
+const QString BwaTask::ALGORITHM_BWA_ALN = "BWA";
 
 
 BwaTask::BwaTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
