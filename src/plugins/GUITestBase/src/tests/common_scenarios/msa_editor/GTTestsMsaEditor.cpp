@@ -2500,6 +2500,70 @@ GUI_TEST_CLASS_DEFINITION(test_0021_2) {
     }
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0022){
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//2. Select character â„–3 in "Phaneroptera_falcata"(G)
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(2,0));
+    QLabel* posLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os,"Position"));
+    CHECK_SET_ERR(posLabel, "Position label not found");
+    CHECK_SET_ERR(posLabel->text()=="Pos 3 / 14", "Expected text: Pos 3/14. Found: " + posLabel->text());
+//Expected state: Statistics "Pos" in right bottom is "Pos 3/14"
+
+//3. Insert 3 gaps to first three positoons in "Phaneroptera_falcata"
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,0));
+    for(int i=0;i<3;i++){
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        GTGlobals::sleep(200);
+    }
+//4. Select char at 4 position in "Phaneroptera_falcata"(A)
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(3,0));
+    CHECK_SET_ERR(posLabel->text()=="Pos 1 / 14", "Expected text: Pos 1/14. Found: " + posLabel->text());
+//Expected state: Gaps are inserted, statistics "Pos" in right bottom is "Pos 1/14"
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0022_1){//DIFFERENCE: Column label is tested
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//2. Select character â„–3 in "Phaneroptera_falcata"(G)
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(2,0));
+    QLabel* colLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os,"Column"));
+    CHECK_SET_ERR(colLabel, "Column label not found");
+    CHECK_SET_ERR(colLabel->text()=="Col 3 / 14", "Expected text: Col 3/14. Found: " + colLabel->text());
+//Expected state: Statistics "Pos" in right bottom is "Pos 3/14"
+
+//3. Insert 3 gaps to first three positoons in "Phaneroptera_falcata"
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,0));
+    for(int i=0;i<3;i++){
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        GTGlobals::sleep(200);
+    }
+//4. Select char at 4 position in "Phaneroptera_falcata"(A)
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(3,0));
+    CHECK_SET_ERR(colLabel->text()=="Col 4 / 17", "Expected text: Col 4 / 17. Found: " + colLabel->text());
+//Expected state: Gaps are inserted, statistics "Pos" in right bottom is "Pos 1/14"
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0022_2){//DIFFERENCE: Line label is tested
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma2_gapped.aln");
+//2. Select character â„–3 in "Phaneroptera_falcata"(G)
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(2,0));
+    QLabel* lineLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os,"Line"));
+    CHECK_SET_ERR(lineLabel, "Line label not found");
+    CHECK_SET_ERR(lineLabel->text()=="Ln 1 / 10", "Expected text: Ln 1 / 10. Found: " + lineLabel->text());
+//Expected state: Statistics "Pos" in right bottom is "Pos 3/14"
+
+//3. Insert 3 gaps to first three positoons in "Phaneroptera_falcata"
+    GTUtilsMSAEditorSequenceArea::selectArea(os,QPoint(-5,0),QPoint(-5,4));
+    GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["delete"]);
+
+//4. Select char at 4 position in "Phaneroptera_falcata"(A)
+    GTUtilsMSAEditorSequenceArea::click(os,QPoint(3,0));
+    CHECK_SET_ERR(lineLabel->text()=="Ln 1 / 5", "Expected text: Ln 1 / 5. Found: " + lineLabel->text());
+//Expected state: Gaps are inserted, statistics "Pos" in right bottom is "Pos 1/14"
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0023){
 //    1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
@@ -2516,6 +2580,7 @@ GUI_TEST_CLASS_DEFINITION(test_0023){
     GTMouseDriver::doubleClick(os);
 //    Expected state: CVU55762 presents in list
 }
+
 GUI_TEST_CLASS_DEFINITION(test_0024){
 //1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
