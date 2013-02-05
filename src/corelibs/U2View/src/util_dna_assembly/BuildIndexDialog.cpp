@@ -159,13 +159,15 @@ void BuildIndexDialog::buildIndexUrl(const GUrl& refUrl ) {
 void BuildIndexDialog::accept()
 {
     if (getAlgorithmName() == "Bowtie") {
-        if(AppContext::getExternalToolRegistry()->getByName("Bowtie-build")->getPath().isEmpty()) {
+        ExternalTool *tt = AppContext::getExternalToolRegistry()->getByName("Bowtie build indexer");
+        QString sss = tt->getPath();
+        if(AppContext::getExternalToolRegistry()->getByName("Bowtie build indexer")->getPath().isEmpty()) {
             QMessageBox msgBox;
             msgBox.setWindowTitle(tr("DNA Assembly"));
             msgBox.setInformativeText(tr("Do you want to select it now?"));
             msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
             msgBox.setDefaultButton(QMessageBox::Yes);
-            msgBox.setText(tr("Path for <i>Bowtie-build</i> tool is not selected."));
+            msgBox.setText(tr("Path for <i>Bowtie build indexer</i> tool is not selected."));
             int ret = msgBox.exec();
             switch (ret) {
             case QMessageBox::Yes:
@@ -178,7 +180,7 @@ void BuildIndexDialog::accept()
                 assert(NULL);
                 break;
             }
-            if(AppContext::getExternalToolRegistry()->getByName("Bowtie-build")->getPath().isEmpty()) {
+            if(AppContext::getExternalToolRegistry()->getByName("Bowtie build indexer")->getPath().isEmpty()) {
                 return;
             }
         }
