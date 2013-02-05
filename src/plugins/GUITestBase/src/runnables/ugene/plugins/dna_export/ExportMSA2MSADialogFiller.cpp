@@ -43,11 +43,13 @@ void ExportMSA2MSADialogFiller::run()
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
-    QLineEdit* fileNameEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
-    GTLineEdit::setText(os, fileNameEdit,"../../test/_common_data/scenarios/sandbox/COI_transl.aln");
+    if(formatVal>=0){
+        QLineEdit* fileNameEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+        GTLineEdit::setText(os, fileNameEdit,"../../test/_common_data/scenarios/sandbox/COI_transl.aln");
 
-    QComboBox* formatCombo = dialog->findChild<QComboBox*>("formatCombo");
-    GTComboBox::setCurrentIndex(os, formatCombo, formatVal);
+        QComboBox* formatCombo = dialog->findChild<QComboBox*>("formatCombo");
+        GTComboBox::setCurrentIndex(os, formatCombo, formatVal);
+    }
 
     QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
     GT_CHECK(exportButton != NULL, "export button not found");

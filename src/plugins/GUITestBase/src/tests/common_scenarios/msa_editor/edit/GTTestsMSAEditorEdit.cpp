@@ -500,6 +500,24 @@ GUI_TEST_CLASS_DEFINITION(test_0009_2){
     test_9(os,8);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0010){
+//UGENE crashes when edit multiply alignment (0001744)
+//1. Open file samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//2. Open at least 2 views for multiple alignment
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gap_col.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+
+//3. Try to edit MSA(insert spaces or something
+    GTUtilsMSAEditorSequenceArea::click(os);
+    for(int i = 0; i<7; i++){
+        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["space"]);
+        GTGlobals::sleep(200);
+    }
+//Expected state: UGENE not crash
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0011){
 //Check Undo/Redo functional
 //1. Open document _common_data\scenarios\msa\ma.aln
@@ -606,7 +624,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
 //3. Click Undo button on toolbar panel.
     QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
     GTWidget::click(os,undo);
-
+    GTWidget::click(os,seq);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(13, 9));
     GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);
@@ -628,7 +646,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
 //4. Click Redo button on toolbar panel.
     QAbstractButton *redo= GTAction::button(os,"msa_action_redo");
     GTWidget::click(os,redo);
-
+    GTWidget::click(os,seq);
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(13, 9));
     GTKeyboardDriver::keyClick(os, 'c',GTKeyboardDriver::key["ctrl"]);

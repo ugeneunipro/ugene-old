@@ -1680,6 +1680,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
 
     GTUtilsMSAEditorSequenceArea::selectArea(os);
     GTMouseDriver::click(os, Qt::RightButton);
+    GTWidget::click(os,GTUtilsMdi::activeWindow(os));
 
 // Expected state: result alignement must be
 // CAA---
@@ -1689,6 +1690,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, -1), QPoint(-1, 0));
 // copy to clipboard
+
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
@@ -1712,6 +1714,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012_1) {
 
     GTUtilsMSAEditorSequenceArea::selectArea(os);
     GTMouseDriver::click(os, Qt::RightButton);
+    GTWidget::click(os,GTUtilsMdi::activeWindow(os));
 
 // Expected state: result alignement must be
 // CAA---
@@ -3332,5 +3335,7 @@ GUI_TEST_CLASS_DEFINITION(test_0039){
 
 //Expected state: transl.aln appeared in project
 }
+
+
 } // namespace GUITest_common_scenarios_msa_editor
 } // namespace U2

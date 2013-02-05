@@ -24,8 +24,10 @@
 #include "api/GTSpinBox.h"
 #include "api/GTCheckBox.h"
 #include "api/GTLineEdit.h"
+#include "api/GTComboBox.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include <QtGui/QApplication>
+#include <QtGui/QComboBox>
 
 namespace U2 {
 
@@ -35,6 +37,13 @@ void AlignShortReadsFiller::run() {
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QComboBox* methodNamesBox = dialog->findChild<QComboBox*>("methodNamesBox");
+    for(int i=0; i<methodNamesBox->count();i++){
+        if(methodNamesBox->itemText(i)=="UGENE Genome Aligner"){
+            GTComboBox::setCurrentIndex(os,methodNamesBox,i);
+        }
+    }
 
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, path, fileName);
     GTUtilsDialog::waitForDialog(os, ob);

@@ -32,6 +32,7 @@ namespace U2 {
 #define GT_METHOD_NAME "setChecked"
 void GTCheckBox::setChecked(U2OpStatus& os, QCheckBox *checkBox, bool checked) {
     GT_CHECK(checkBox != NULL, "QCheckBox == NULL");
+    GT_CHECK(checkBox->isEnabled(), "QcheckBox is disabled");
 
     bool checkBoxState = checkBox->isChecked();
     if (checked != checkBoxState) {

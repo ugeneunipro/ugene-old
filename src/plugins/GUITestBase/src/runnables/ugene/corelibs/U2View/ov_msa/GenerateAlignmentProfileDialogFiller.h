@@ -35,7 +35,10 @@ public:
                                          QString _filePath = "") : Filler(os, "DNAStatMSAProfileDialog"),
         counts(_counts),
         format(_format),
-        filePath(_filePath)
+        filePath(_filePath),
+        gapScore(false),
+        symdolScore(false),
+        skipGaps(false)
     {
         checkBoxItems[NONE] = "NONE";
         checkBoxItems[HTML] = "htmlRB";

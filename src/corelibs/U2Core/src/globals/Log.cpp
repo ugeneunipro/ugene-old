@@ -79,6 +79,8 @@ void LogServer::message(const LogMessage& m)
 
 
 Logger::Logger(const QString& category1) {
+    static int test = 0;
+    test++;
     categoryNames << category1;
     init();
 }
@@ -112,7 +114,7 @@ Logger::~Logger() {
 // TODO possible race condition at shutdown -> log service could already be destroyed
 //    LogServer* s = LogServer::getInstance();
 //    s->categories.removeOne(this);
-    categoryNames.clear();
+//    categoryNames.clear();
 }
 
 
