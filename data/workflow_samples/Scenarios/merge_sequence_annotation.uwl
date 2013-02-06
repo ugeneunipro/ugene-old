@@ -1,0 +1,88 @@
+#@UGENE_WORKFLOW
+#If you have a list of files with sequences and separate files with annotation and you want to merge sequences and annotation, this scheme might help you.
+#
+#For instance, you have sequence in FASTA format and separate annotation in GFF. You want to merge them and write annotated sequences into Genbank files.
+#
+#Be default, multiplexer takes sequences and annotation one by one, sticks one annotation to one sequence and passes it to the output. But you may change that behavior in parameters of Multiplexer.
+
+
+
+workflow "Merge sequences and annotations"{
+
+    read-annotations {
+        type:read-annotations;
+        name:"Read Annotations";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    multiplexer {
+        type:multiplexer;
+        name:Multiplexer;
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Sequence";
+        document-format:genbank;
+    }
+
+
+    .actor-bindings {
+        read-annotations.out-annotations->multiplexer.input-data-1
+        read-sequence.out-sequence->multiplexer.input-data-2
+        multiplexer.output-data->write-sequence.in-sequence
+    }
+
+    read-annotations.annotations->write-sequence.in-sequence.annotations
+    read-sequence.annotations->write-sequence.in-sequence.annotations
+    read-sequence.sequence->write-sequence.in-sequence.sequence
+
+    .meta {
+        visual {
+            multiplexer {
+                pos:"-492 -641";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                input-data-1.angle:150;
+                input-data-2.angle:210;
+                output-data.angle:360;
+            }
+            read-annotations {
+                pos:"-684 -711";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 62.25 80";
+                out-annotations.angle:360;
+            }
+            read-sequence {
+                pos:"-681 -558";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            write-sequence {
+                pos:"-241 -641";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            multiplexer.output-data->write-sequence.in-sequence {
+                text-pos:"-45 -37";
+            }
+            read-annotations.out-annotations->multiplexer.input-data-1 {
+                text-pos:"-33 -24";
+            }
+            read-sequence.out-sequence->multiplexer.input-data-2 {
+                text-pos:"-27.5 -24";
+            }
+        }
+    }
+}
+

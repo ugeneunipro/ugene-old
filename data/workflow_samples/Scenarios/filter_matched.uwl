@@ -1,0 +1,122 @@
+#@UGENE_WORKFLOW
+#Using that scheme you can select (or reject) only those sequence that match any pattern you input.
+#
+#To find sequences matching a pattern:
+#1. In Read Sequence element specify a list of sequences you need to filter
+#2. In Find Pattern element input you pattern(s) or file with pattern in any sequence or newline-delimited format.
+#3. In Write Sequence element specify an output file
+#
+#To find sequences that DO NOT match a pattern:
+#Put "Rest" instead "hasPattern" in Filter element
+
+
+
+workflow "Filter sequence that match a pattern"{
+
+    mark-sequence {
+        type:mark-sequence;
+        name:"Sequence Marker";
+        markers:m1;
+    }
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    search {
+        type:search;
+        name:"Find Pattern";
+        result-name:pattern_matched;
+    }
+    filter-by-values {
+        type:filter-by-values;
+        name:Filter;
+        text:hasPattern;
+    }
+    write-annotations {
+        type:write-annotations;
+        name:"Write Annotations";
+    }
+
+    @mark-sequence.m1 {
+        type:marker;
+        marker-type:annotations-count;
+        marker-name:pattern_count_markers;
+        annotation-name:pattern_matched;
+        ">=1":hasPattern;
+        "rest":Rest;
+    }
+
+    .actor-bindings {
+        mark-sequence.out-marked-seq->filter-by-values.in-data
+        read-sequence.out-sequence->search.in-sequence
+        search.out-annotations->mark-sequence.in-sequence
+        filter-by-values.filtered-data->write-annotations.in-annotations
+    }
+
+    read-sequence.annotations->mark-sequence.in-sequence.annotations
+    search.annotations->mark-sequence.in-sequence.annotations
+    read-sequence.sequence->mark-sequence.in-sequence.sequence
+    read-sequence.sequence->search.in-sequence.sequence
+    mark-sequence.pattern_count_markers->filter-by-values.in-data.text
+    read-sequence.annotations->write-annotations.in-annotations.annotations {
+        path-through:filter-by-values;
+    }
+    read-sequence.sequence->write-annotations.in-annotations.sequence {
+        path-through:filter-by-values;
+    }
+
+    .meta {
+        visual {
+            filter-by-values {
+                pos:"-408 -570";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                filtered-data.angle:334.213;
+                in-data.angle:69.3045;
+            }
+            mark-sequence {
+                pos:"-409 -770";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-marked-seq.angle:279.26;
+            }
+            read-sequence {
+                pos:"-872 -770";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            search {
+                pos:"-698 -770";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-annotations.angle:360;
+            }
+            write-annotations {
+                pos:"-217 -563";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 80.625 98";
+                in-annotations.angle:223.409;
+            }
+            filter-by-values.filtered-data->write-annotations.in-annotations {
+                text-pos:"-32 -27";
+            }
+            mark-sequence.out-marked-seq->filter-by-values.in-data {
+                text-pos:"-45 -28";
+            }
+            read-sequence.out-sequence->search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            search.out-annotations->mark-sequence.in-sequence {
+                text-pos:"-45 -37";
+            }
+        }
+    }
+}
+
