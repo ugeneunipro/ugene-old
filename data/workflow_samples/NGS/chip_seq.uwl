@@ -1,0 +1,302 @@
+#@UGENE_WORKFLOW
+#ChIP-seq analyses are started from MACS tool. CEAS then takes peak regions and signal wiggle file to check which chromosome is enriched with binding/modification sites, whether bindings events are significant at gene features like promoters, gene bodies, exons, introns or UTRs, and the signal aggregation at gene transcription start/end sites or meta-gene bodies (average all genes). Then peaks are investigated in these ways: 1. to check which genes are nearby so can be regarded as potential regulated genes, then perform GO analysis; 2. to check the conservation scores at the binding sites;3 the DNA motifs at binding sites.
+
+
+
+workflow "ChIP-seq analyses"{
+
+    read-annotations {
+        type:read-annotations;
+        name:"Read Annotations";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    macs-id {
+        type:macs-id;
+        name:"Find Peaks with MACS";
+    }
+    ceas-report {
+        type:ceas-report;
+        name:"Create CEAS Report";
+    }
+    conservation_plot-id {
+        type:conservation_plot-id;
+        name:"Build conservation plot";
+    }
+    seqpos-id {
+        type:seqpos-id;
+        name:"Collect Motifs with SeqPos";
+    }
+    peak2gene-id {
+        type:peak2gene-id;
+        name:"Annotate peaks with peak2gene";
+    }
+    conduct-go-id {
+        type:conduct-go-id;
+        name:"Conduct GO";
+    }
+
+
+    .actor-bindings {
+        macs-id.out-data->ceas-report.in-data
+        macs-id.out-data->conservation_plot-id.in-data
+        macs-id.out-data->seqpos-id.in-data
+        macs-id.out-data->peak2gene-id.in-data
+        read-annotations.out-annotations->macs-id.in-data
+        peak2gene-id.out-data->conduct-go-id.in-data
+    }
+
+    read-annotations.annotations->macs-id.in-data._treatment-ann
+    macs-id.wiggle-treat->ceas-report.in-data.enrichment-signal
+    macs-id.peak-regions->ceas-report.in-data.peak-regions
+    macs-id.peak-regions->conservation_plot-id.in-data.cp_treat-ann
+    macs-id.peak-regions->seqpos-id.in-data.cp_treat-ann
+    macs-id.peak-regions->peak2gene-id.in-data._treat-ann
+    peak2gene-id.gene-annotation->conduct-go-id.in-data.in-ann
+
+    .meta {
+        visual {
+            ceas-report {
+                pos:"-544 -571";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-data.angle:49.2892;
+            }
+            conduct-go-id {
+                pos:"-192 -289";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-data.angle:41.3785;
+            }
+            conservation_plot-id {
+                pos:"-208 -787";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-data.angle:180;
+            }
+            macs-id {
+                pos:"-565 -879";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-data.angle:180;
+                out-data.angle:300.069;
+            }
+            peak2gene-id {
+                pos:"-208 -475";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-data.angle:180;
+                out-data.angle:302.005;
+            }
+            read-annotations {
+                pos:"-780 -879";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 66.25 79";
+                out-annotations.angle:360;
+            }
+            seqpos-id {
+                pos:"-209 -635";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-data.angle:180;
+            }
+            macs-id.out-data->ceas-report.in-data {
+                text-pos:"-45 -16";
+            }
+            macs-id.out-data->conservation_plot-id.in-data {
+                text-pos:"8 -34";
+            }
+            macs-id.out-data->peak2gene-id.in-data {
+                text-pos:"-45 -37";
+            }
+            macs-id.out-data->seqpos-id.in-data {
+                text-pos:"-45 -37";
+            }
+            peak2gene-id.out-data->conduct-go-id.in-data {
+                text-pos:"-43 -21";
+            }
+            read-annotations.out-annotations->macs-id.in-data {
+                text-pos:"-33 -24";
+            }
+        }
+        wizard {
+            name:"ChIP-seq analyses Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"MACS - Model-based Analysis for ChIP-Seq";
+                parameters-area {
+                    group {
+                        title:"Input files";
+                        label-size:120;
+                        read-annotations.url-in {
+                            label:"Treatment annotations";
+                        }
+                    }
+                    group {
+                        title:"MACS Parameters";
+                        label-size:120;
+                        macs-id.output-dir {
+                        }
+                        macs-id.file-names {
+                        }
+                        macs-id.wiggle-output {
+                        }
+                        macs-id.wiggle-space {
+                        }
+                        macs-id.genome-size {
+                        }
+                        macs-id.p-value {
+                        }
+                        macs-id.tag-size {
+                        }
+                        macs-id.keep-duplicates {
+                        }
+                        macs-id.use-model {
+                        }
+                        macs-id.model-fold {
+                        }
+                        macs-id.shift-size {
+                        }
+                        macs-id.band-width {
+                        }
+                    }
+                    group {
+                        title:Advanced;
+                        label-size:120;
+                        type:hideable;
+                        macs-id.use-lambda {
+                        }
+                        macs-id.small-nearby {
+                        }
+                        macs-id.large-nearby {
+                        }
+                        macs-id.auto_bimodal {
+                        }
+                        macs-id.scale_large {
+                        }
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"CEAS - Enrichment on chromosome and annotation";
+                parameters-area {
+                    group {
+                        title:"CEAS Parameters";
+                        label-size:120;
+                        ceas-report.image-file {
+                        }
+                        ceas-report.anns-file {
+                        }
+                        ceas-report.anns-table {
+                        }
+                        ceas-report.span {
+                        }
+                        ceas-report.profiling-resolution {
+                        }
+                        ceas-report.promoter-sizes {
+                        }
+                        ceas-report.promoter-bisizes {
+                        }
+                        ceas-report.relative-distance {
+                        }
+                    }
+                    group {
+                        title:Advanced;
+                        label-size:120;
+                        type:hideable;
+                        ceas-report.group-files {
+                        }
+                        ceas-report.group-names {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                next:4;
+                title:"Conservation Plot - Calculates the PhastCons scores in several intervals sets";
+                parameters-area {
+                    group {
+                        title:"Conservation Plot Parameters";
+                        label-size:120;
+                        conservation_plot-id.output-file {
+                        }
+                        conservation_plot-id.title {
+                        }
+                        conservation_plot-id.label {
+                        }
+                        conservation_plot-id.assembly_version {
+                        }
+                        conservation_plot-id.windos_s {
+                        }
+                        conservation_plot-id.height {
+                        }
+                        conservation_plot-id.width {
+                        }
+                    }
+                }
+            }
+            page {
+                id:4;
+                next:5;
+                title:"SeqPos motif tool - Find motifs from given regions enriched near the centers";
+                parameters-area {
+                    group {
+                        title:"SeqPos Parameters";
+                        label-size:120;
+                        seqpos-id.output-dir {
+                        }
+                        seqpos-id.output-dir {
+                        }
+                        seqpos-id.assembly {
+                        }
+                        seqpos-id.de_novo {
+                        }
+                        seqpos-id.motif_db {
+                        }
+                        seqpos-id.out_name {
+                        }
+                        seqpos-id.reg_width {
+                        }
+                        seqpos-id.p_val {
+                        }
+                    }
+                }
+            }
+            page {
+                id:5;
+                title:"Peak2Gene and Gene Ontology - Find genes near peaks, and GO terms using Bioconductor (GO, GOstats) and DAVID at NIH";
+                parameters-area {
+                    group {
+                        title:"Peak2Gene Parameters";
+                        label-size:120;
+                        peak2gene-id.outpos {
+                        }
+                        peak2gene-id.symbol {
+                        }
+                        peak2gene-id.distance {
+                        }
+                        peak2gene-id.genome {
+                        }
+                    }
+                    group {
+                        title:"Conduct GO Parameters";
+                        label-size:120;
+                        conduct-go-id.output-dir {
+                        }
+                        conduct-go-id.title {
+                        }
+                        conduct-go-id.gene-universe {
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
