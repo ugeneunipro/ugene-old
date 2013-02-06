@@ -203,7 +203,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/MAlignment.cpp \
            src/datatype/MAlignmentInfo.cpp \
            src/datatype/Matrix44.cpp \
-           src/datatype/U2Mod.cpp \
            src/datatype/PFMatrix.cpp \
            src/datatype/PhyTree.cpp \
            src/datatype/PWMatrix.cpp \
