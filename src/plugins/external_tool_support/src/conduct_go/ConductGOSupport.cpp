@@ -40,7 +40,7 @@ void ConductGOSupport::initialize() {
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
 
-    toolKitName = TOOL_NAME;
+    toolKitName = "Cistrome";
     description = ConductGOSupport::tr("<i>Conduct GO</i> - For a list of input genes, this tool uses R/BioC packages (GO, GOstats) to identify over represented GO terms.");
 
     executableFileName = "go_analysis.py";

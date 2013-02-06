@@ -25,6 +25,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/GUIUtils.h>
@@ -199,17 +200,17 @@ AppSettingsGUIPageState* ExternalToolSupportSettingsPageWidget::getState(QString
 }
 void ExternalToolSupportSettingsPageWidget::sl_toolPathCanged(){
     PathLineEdit* s=qobject_cast<PathLineEdit*>(sender());
-    assert(s!=NULL);
-
-    if(!s->isModified()){
+    
+    if(!s || !s->isModified()){
         return;
     }
+
     QWidget* par=s->parentWidget();
     QString path=s->text();
     s->setModified(false);
 
     QList<QTreeWidgetItem*> listOfItems=treeWidget->findItems("",Qt::MatchContains|Qt::MatchRecursive);
-    assert(listOfItems.length()!=0);
+    SAFE_POINT(listOfItems.length()!=0, "ExternalToolSupportSettings, NO items're selected", );
     treeWidget->clearSelection();
     foreach(QTreeWidgetItem* item, listOfItems){
         QWidget* itemWid=treeWidget->itemWidget(item,1);
@@ -254,41 +255,27 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
         descriptionTextEdit->setText(tr("Select an external tool to view more information about it."));
         return;
     }
-    assert(selectedItems.length()==1);
+    SAFE_POINT(selectedItems.length()!=0, "ExternalToolSupportSettings, NO items're selected", );
     QString name=selectedItems.at(0)->text(0);
-    if((selectedItems.at(0)->text(0) != "BLAST") &&
-       (selectedItems.at(0)->text(0) != "CUDA-BLAST") &&
-       (selectedItems.at(0)->text(0) != "BLAST+") &&
-       (selectedItems.at(0)->text(0) != "GPU-BLAST+") &&
-       (selectedItems.at(0)->text(0) != "Bowtie") &&
-       (selectedItems.at(0)->text(0) != "Cufflinks Tools") &&
-       (selectedItems.at(0)->text(0) != "Bowtie 2 Tools"))
-    {
-        descriptionTextEdit->setText(AppContext::getExternalToolRegistry()->getByName(selectedItems.at(0)->text(0))->getDescription());
-        if(!externalToolsInfo[selectedItems.at(0)->text(0)].version.isEmpty()){
-            descriptionTextEdit->setText(descriptionTextEdit->toHtml()+tr("<br>Version: ")+externalToolsInfo[selectedItems.at(0)->text(0)].version);
-            descriptionTextEdit->setText(descriptionTextEdit->toHtml()+tr("<br>Binary path: ")+externalToolsInfo[selectedItems.at(0)->text(0)].path);
-        }
-    }
-    if(selectedItems.at(0)->text(0) == "BLAST"){
+    if(name == "BLAST"){
         descriptionTextEdit->setText(tr("The <i>Basic Local Alignment Search Tool</i> (BLAST) finds regions of local similarity between sequences. "
                            "The program compares nucleotide or protein sequences to sequence databases and calculates the statistical significance of matches. "
                           "BLAST can be used to infer functional and evolutionary relationships between sequences as well as help identify members of gene families."));
 
     }
-    if(selectedItems.at(0)->text(0) == "CUDA-BLAST"){
+    else if(name == "CUDA-BLAST"){
         descriptionTextEdit->setText(tr("The <i>Basic Local Alignment Search Tool</i> (BLAST) finds regions of local similarity between sequences. "
                            "The program compares nucleotide or protein sequences to sequence databases and calculates the statistical significance of matches. "
                           "BLAST can be used to infer functional and evolutionary relationships between sequences as well as help identify members of gene families."));
 
     }
-    if(selectedItems.at(0)->text(0) == "BLAST+"){
+    else if(name == "BLAST+"){
         descriptionTextEdit->setText(tr("<i>BLAST+</i> is a new version of the BLAST package from the NCBI."));
     }
-    if(selectedItems.at(0)->text(0) == "GPU-BLAST+"){
+    else if(name == "GPU-BLAST+"){
         descriptionTextEdit->setText(tr("<i>BLAST+</i> is a new version of the BLAST package from the NCBI."));
     }
-    if(selectedItems.at(0)->text(0) == "Bowtie"){
+    else if(name == "Bowtie"){
         descriptionTextEdit->setText(tr("<i>Bowtie<i> is an ultrafast, memory-efficient short read aligner. "
                        "It aligns short DNA sequences (reads) to the human genome at "
                        "a rate of over 25 million 35-bp reads per hour. "
@@ -296,8 +283,7 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
                        "its memory footprint small: typically about 2.2 GB for the human "
                        "genome (2.9 GB for paired-end)."));
     }
-
-    if(selectedItems.at(0)->text(0) == "Cufflinks Tools"){
+    else if(name == "Cufflinks Tools"){
         descriptionTextEdit->setText(tr("<i>Cufflinks</i> assembles transcripts, estimates"
             " their abundances, and tests for differential expression and regulation"
             " in RNA-Seq samples. It accepts aligned RNA-Seq reads and assembles"
@@ -305,8 +291,7 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
             " the relative abundances of these transcripts based on how many reads"
             " support each one, taking into account biases in library preparation protocols. "));
     }
-
-    if(selectedItems.at(0)->text(0) == "Bowtie 2 Tools"){
+    else if(name == "Bowtie 2 Tools"){
         descriptionTextEdit->setText(tr("<i>Bowtie 2</i> is an ultrafast and memory-efficient tool"
             " for aligning sequencing reads to long reference sequences. It is particularly good"
             " at aligning reads of about 50 up to 100s or 1000s of characters, and particularly"
@@ -314,6 +299,21 @@ void ExternalToolSupportSettingsPageWidget::sl_itemSelectionChanged(){
             " <br/><br/>It indexes the genome with an FM index to keep its memory footprint small:"
             " for the human genome, its memory footprint is typically around 3.2Gb."
             " <br/><br/><i>Bowtie 2</i> supports gapped, local, and paired-end alignment modes."));
+    }
+    else if(name == "Cistrome"){
+        descriptionTextEdit->setText(tr("<i>Cistrome</i> is a UGENE version of Cistrome pipeline which also includes some tools useful for ChIP-seq analysis"
+            "This pipeline is aimed to provide the following analysis steps: peak calling and annotating, motif search and gene ontology."));
+    }else{ //no description or tool custom description
+        ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(name);
+        if (!tool){
+            descriptionTextEdit->setText(tr("No description"));
+        }else{
+            descriptionTextEdit->setText(tool->getDescription());
+            if(!externalToolsInfo[name].version.isEmpty()){
+                descriptionTextEdit->setText(descriptionTextEdit->toHtml()+tr("<br>Version: ")+externalToolsInfo[name].version);
+                descriptionTextEdit->setText(descriptionTextEdit->toHtml()+tr("<br>Binary path: ")+externalToolsInfo[name].path);
+            }
+        }
     }
 }
 void ExternalToolSupportSettingsPageWidget::sl_onPathEditWidgetClick(){

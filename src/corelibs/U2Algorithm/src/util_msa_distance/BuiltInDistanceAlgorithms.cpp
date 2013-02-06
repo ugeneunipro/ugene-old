@@ -24,7 +24,7 @@
 namespace U2 {
 
     const QString BuiltInDistanceAlgorithms::HAMMING_ALGO("Hamming dissimilarity");
-	const QString BuiltInDistanceAlgorithms::SIMILARITY_ALGO("Simple similarity");
+	const QString BuiltInDistanceAlgorithms::SIMILARITY_ALGO("Identity");
     const QString BuiltInDistanceAlgorithms::HAMMING_REVCOMPL_ALGO("Hamming reverse-complement");
 
 }//namespace

@@ -42,7 +42,7 @@ void ConservationPlotSupport::initialize() {
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
 
-    toolKitName = TOOL_NAME;
+    toolKitName = "Cistrome";
     description = ConservationPlotSupport::tr("<i>ConservationPlot</i> - Draw conservation plot for many bed files.");
 
     executableFileName = "conservation_plot.py";

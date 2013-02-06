@@ -44,7 +44,7 @@ void CEASSupport::initialize() {
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
 
-    toolKitName = "CEAS Tool";
+    toolKitName = "Cistrome";
     description = CEASSupport::tr("<i>CEAS</i> - Cis-regulatory Element Annotation System -"
         " helps to characterize genome-wide protein-DNA interaction patterns from ChIP-chip"
         " and ChIP-Seq of both sharp and broad binding factors."

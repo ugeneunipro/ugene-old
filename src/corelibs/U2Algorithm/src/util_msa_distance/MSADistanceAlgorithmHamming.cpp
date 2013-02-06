@@ -45,7 +45,9 @@ MSADistanceAlgorithm* MSADistanceAlgorithmFactoryHamming::createAlgorithm(const 
     MSADistanceAlgorithm* res = new MSADistanceAlgorithmHamming(this, ma);
      if(flags.testFlag(DistanceAlgorithmFlag_ExcludeGaps)){
         res->setExcludeGaps(true);
-    }
+    }else{
+         res->setExcludeGaps(false);
+     }
     return res;
 }
 

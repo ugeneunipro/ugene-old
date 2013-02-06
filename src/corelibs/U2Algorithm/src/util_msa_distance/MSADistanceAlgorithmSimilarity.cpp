@@ -37,7 +37,7 @@ QString MSADistanceAlgorithmFactorySimilarity::getDescription() const {
 }
 
 QString MSADistanceAlgorithmFactorySimilarity::getName() const {
-    return tr("Simple similarity");
+    return tr("Simple identity");
 }
 
 
@@ -45,6 +45,8 @@ MSADistanceAlgorithm* MSADistanceAlgorithmFactorySimilarity::createAlgorithm(con
     MSADistanceAlgorithm* res = new MSADistanceAlgorithmSimilarity(this, ma);
     if(flags.testFlag(DistanceAlgorithmFlag_ExcludeGaps)){
         res->setExcludeGaps(true);
+    }else{
+        res->setExcludeGaps(false);
     }
     return res;
 }

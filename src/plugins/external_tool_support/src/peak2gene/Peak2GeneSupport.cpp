@@ -43,7 +43,7 @@ void Peak2GeneSupport::initialize() {
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
 
-    toolKitName = TOOL_NAME;
+    toolKitName = "Cistrome";
     description = Peak2GeneSupport::tr("<i>peak2gene</i> - Gets refGenes near the ChIP regions identified by a peak-caller");
 
     executableFileName = "peak2gene.py";

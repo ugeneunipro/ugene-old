@@ -42,7 +42,7 @@ void SeqPosSupport::initialize() {
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
 
-    toolKitName = TOOL_NAME;
+    toolKitName = "Cistrome";
     description = SeqPosSupport::tr("<i>SeqPos</i> - Finds motifs enriched in a set of regions.");
 
     executableFileName = "MDSeqPos.py";
