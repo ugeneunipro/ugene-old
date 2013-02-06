@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>217</width>
-    <height>101</height>
+    <width>262</width>
+    <height>116</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -69,7 +69,7 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="includeMaskEdit" />
+         <widget class="QLineEdit" name="includeMaskEdit"/>
         </item>
         <item row="0" column="0">
          <widget class="QLabel" name="label">
@@ -79,7 +79,7 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="excludeMaskEdit" />
+         <widget class="QLineEdit" name="excludeMaskEdit"/>
         </item>
        </layout>
       </item>
@@ -90,6 +90,12 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
         </property>
         <property name="text">
          <string>Recursive</string>
