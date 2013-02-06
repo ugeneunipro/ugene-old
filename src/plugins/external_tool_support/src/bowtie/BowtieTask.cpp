@@ -231,7 +231,9 @@ void BowtieAssembleTask::prepare() {
                 arguments.append("-f");
             } else if(detectionResults.first().format->getFormatId() == BaseDocumentFormats::RAW_DNA_SEQUENCE) {
                 arguments.append("-r");
-            } else if (detectionResults.first().format->getFormatId() != BaseDocumentFormats::FASTQ) {
+            } else if (detectionResults.first().format->getFormatId() == BaseDocumentFormats::FASTQ) {
+                arguments.append("-q");
+            }else{
                 setError(tr("Unknown short reads format %1").arg(detectionResults.first().format->getFormatId()));
             }
         }

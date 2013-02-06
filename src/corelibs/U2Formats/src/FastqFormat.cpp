@@ -68,7 +68,8 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
     int state = STATE_START_PARSING;
 
     foreach (const QByteArray& line, lines) {
-        if (line.startsWith('@')) {
+        char c = line.at(0);
+        if (line.startsWith('@') && QChar(line.at(1)).isLetter()) {
             if (state != STATE_START_PARSING && state != STATE_SEQ  ) {
                 return FormatDetection_NotMatched;
             }
