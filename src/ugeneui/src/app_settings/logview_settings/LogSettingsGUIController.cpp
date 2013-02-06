@@ -268,11 +268,7 @@ void LogSettingsPageWidget::sl_outFileStateChanged(int state){
 }
 
 void LogSettingsPageWidget::sl_browseFileClicked(){
-    QFileDialog dialog(this);
-    dialog.setFileMode(QFileDialog::AnyFile);
-    if(dialog.exec() == QDialog::Accepted) {
-        outFileEdit->setText(dialog.selectedFiles().first());
-    }
+    outFileEdit->setText(QFileDialog::getSaveFileName());
 }
 
 void LogSettingsPageWidget::updateColorLabel(QLabel* l, const QString& color) {
