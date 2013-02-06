@@ -103,6 +103,9 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     requiredObjects.append(msaObject);
     GCOUNTER(cvar,tvar,"MSAEditor");
 
+    U2OpStatus2Log os;
+    msaObject->setTrackMod(TrackOnUpdate, os);
+
     zoomInAction = new QAction(QIcon(":core/images/zoom_in.png"), tr("Zoom In"), this);
     zoomInAction->setObjectName("Zoom In");
     connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomIn()));

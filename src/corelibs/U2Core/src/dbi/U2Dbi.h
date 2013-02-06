@@ -27,6 +27,7 @@
 #include <U2Core/U2Feature.h>
 #include <U2Core/U2Assembly.h>
 #include <U2Core/U2Attribute.h>
+#include <U2Core/U2Mod.h>
 #include <U2Core/U2Msa.h>
 #include <U2Core/U2Sequence.h>
 #include <U2Core/GUrl.h>
@@ -45,6 +46,7 @@ class U2MsaDbi;
 class U2AssemblyDbi;
 class U2AttributeDbi;
 class U2VariantDbi;
+class U2ModDbi;
 class U2OpStatus;
 class U2Dbi;
 
@@ -89,9 +91,11 @@ enum U2DbiFeature {
     /** DBI supports read methods for remote objects  */
     U2DbiFeature_ReadCrossDatabaseReferences    = 6,
     /** DBI supports readings Variants and VariantTracks */
-    U2DbiFeature_ReadVariant                        = 7,
+    U2DbiFeature_ReadVariant                    = 7,
     /** DBI supports readings of custom properties */
     U2DbiFeature_ReadProperties                 = 8,
+    /** DBI supports reading of objects modification tracks */
+    U2DbiFeature_ReadModifications              = 9,
 
     /** DBI supports changing/storing sequences */
     U2DbiFeature_WriteSequence                  = 101,
@@ -106,10 +110,11 @@ enum U2DbiFeature {
     /** DBI supports cross database references */
     U2DbiFeature_WriteCrossDatabaseReferences   = 106,
     /** DBI supports changing/storing Variants and VariantTracks */
-    U2DbiFeature_WriteVariant                       = 107,
+    U2DbiFeature_WriteVariant                   = 107,
     /** DBI supports changing/storing custom properties */
     U2DbiFeature_WriteProperties                = 108,
-
+    /** DBI supports changing/storing of objects modification tracks */
+    U2DbiFeature_WriteModifications            = 109,
 
     /** DBI supports removal of objects */
     U2DbiFeature_RemoveObjects                  = 200,
@@ -264,6 +269,12 @@ public:
         Not NULL only if U2DbiFeature_ReadCrossDatabaseReferences supported
     */
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi() = 0;
+
+    /**
+        U2Mod related DBI routines
+        Not NULL only if U2DbiFeature_ReadModifications supported
+    */
+    virtual U2ModDbi* getModDbi()  = 0;
 
     /** 
         Reads database global properties.

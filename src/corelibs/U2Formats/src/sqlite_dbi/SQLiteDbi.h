@@ -38,6 +38,7 @@ class SQLiteCrossDatabaseReferenceDbi;
 class SQLiteAttributeDbi;
 class SQLiteVariantDbi;
 class SQLiteFeatureDbi;
+class SQLiteModDbi;
 class DbRef;
 
 
@@ -124,6 +125,8 @@ public:
 
     virtual U2FeatureDbi*   getFeatureDbi();
 
+    virtual U2ModDbi*   getModDbi();
+
     DbRef*    getDbRef() const {return db;}
 
     SQLiteObjectDbi* getSQLiteObjectDbi() const;
@@ -162,6 +165,7 @@ private:
     SQLiteAttributeDbi*                 attributeDbi;
     SQLiteVariantDbi*                   variantDbi;
     SQLiteFeatureDbi*                   featureDbi;
+    SQLiteModDbi*                       modDbi;
     SQLiteTransaction*                  operationsBlockTransaction;
     
     friend class SQLiteObjectDbi;

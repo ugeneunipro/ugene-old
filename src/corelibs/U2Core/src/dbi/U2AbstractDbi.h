@@ -36,6 +36,7 @@
 #include <U2Core/U2CrossDatabaseReferenceDbi.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2VariantDbi.h>
+#include <U2Core/U2ModDbi.h>
 
 
 namespace U2 {
@@ -76,6 +77,8 @@ public:
     virtual U2ObjectDbi* getObjectDbi()  {return NULL;}
 
     virtual U2VariantDbi* getVariantDbi()  {return NULL;}
+
+    virtual U2ModDbi* getModDbi()  {return NULL;}
     
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return NULL;}
     
@@ -129,6 +132,15 @@ public:
     virtual void moveObjects(const QList<U2DataId>&, const QString&, const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_ChangeFolders, getRootDbi(), os);
     }
+
+    virtual U2TrackModType getTrackModType(const U2DataId& objectId, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_ReadModifications, getRootDbi(), os);
+        return NoTrack;
+    }
+
+    virtual void setTrackModType(const U2DataId& objectId, U2TrackModType trackModType, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteModifications, getRootDbi(), os);
+    }
 };
 
 /** Default no-op implementation for write  methods of U2SequenceDbi */
@@ -157,7 +169,7 @@ protected:
     U2SimpleMsaDbi(U2Dbi* rootDbi) : U2MsaDbi(rootDbi) {}
 
 public:
-    virtual void createMsaObject(U2Msa&, const QString&, U2OpStatus& os) {
+    virtual U2DataId createMsaObject(const QString& folder, const QString& name, const U2AlphabetId& alphabet, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteMsa, getRootDbi(), os);
     }
     

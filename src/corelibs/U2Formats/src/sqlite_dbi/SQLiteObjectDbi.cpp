@@ -42,7 +42,8 @@ void SQLiteObjectDbi::initSqlSchema(U2OpStatus& os) {
     // rank: see SQLiteDbiObjectRank
     // name is a visual name of the object shown to user.
     SQLiteQuery("CREATE TABLE Object (id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER NOT NULL, "
-                                    "version INTEGER NOT NULL DEFAULT 1, rank INTEGER NOT NULL, name TEXT NOT NULL)", db, os).execute();
+                                    "version INTEGER NOT NULL DEFAULT 1, rank INTEGER NOT NULL, "
+                                    "name TEXT NOT NULL, trackMod INTEGER NOT NULL DEFAULT 0)", db, os).execute();
 
     // parent-child object relation
     SQLiteQuery("CREATE TABLE Parent (parent INTEGER, child INTEGER, "
@@ -213,6 +214,10 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
     }
     CHECK_OP(os, false);
 
+    // remove modifications history
+    removeObjectModHistory(objectId, os);
+    CHECK_OP(os, false);
+
     SQLiteUtils::remove("Object", "id", objectId, 1, db, os);
     return !os.hasError();
 }
@@ -220,6 +225,13 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
 void SQLiteObjectDbi::removeObjectAttributes(const U2DataId& id, U2OpStatus& os) {
     U2AttributeDbi* attributeDbi = dbi->getAttributeDbi();
     attributeDbi->removeObjectAttributes(id, os);
+}
+
+void SQLiteObjectDbi::removeObjectModHistory(const U2DataId& id, U2OpStatus& os) {
+    U2ModDbi* modDbi = dbi->getModDbi();
+    SAFE_POINT(NULL != modDbi, "NULL Mod Dbi!", );
+
+    modDbi->removeObjectMods(id, os);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -399,11 +411,6 @@ void SQLiteObjectDbi::ensureParent(const U2DataId& parentId, const U2DataId& chi
 // Helper methods
 
 void SQLiteObjectDbi::incrementVersion(const U2DataId& objectId, DbRef* db, U2OpStatus& os) {
-    // TODO: currently versions are not needed
-    if (true) {
-        return;
-    }
-
     SQLiteTransaction t(db, os);
     static const QString queryString("UPDATE Object SET version = version + 1 WHERE id = ?1");
     SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
@@ -412,10 +419,6 @@ void SQLiteObjectDbi::incrementVersion(const U2DataId& objectId, DbRef* db, U2Op
 }
 
 qint64 SQLiteObjectDbi::getObjectVersion(const U2DataId& objectId, U2OpStatus& os) {
-    // TODO: currently versions are not needed
-    if (true) {
-        return 0;
-    }
     SQLiteTransaction t(db, os);
     static const QString queryString("SELECT version FROM Object WHERE id = ?1");
     SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
@@ -423,15 +426,45 @@ qint64 SQLiteObjectDbi::getObjectVersion(const U2DataId& objectId, U2OpStatus& o
     return q->selectInt64();
 }
 
+void SQLiteObjectDbi::setTrackModType(const U2DataId& objectId, U2TrackModType trackModType, U2OpStatus& os) {
+    SQLiteQuery q("UPDATE Object SET trackMod = ?1 WHERE id = ?2", db, os);
+    CHECK_OP(os, );
+
+    q.bindInt32(1, trackModType);
+    q.bindDataId(2, objectId);
+    q.update(1);
+}
+
+U2TrackModType SQLiteObjectDbi::getTrackModType(const U2DataId& objectId, U2OpStatus& os) {
+    SQLiteQuery q("SELECT trackMod FROM Object WHERE id = ?1", db, os);
+    CHECK_OP(os, NoTrack);
+
+    q.bindDataId(1, objectId); 
+    if (q.step()) {
+        int res = q.getInt32(0);
+        SAFE_POINT(res >= 0 && res < TRACK_MOD_TYPE_NR_ITEMS, "Incorrect trackMod value!", NoTrack);
+        q.ensureDone();
+        return (U2TrackModType)res;
+    }
+    else if (!os.hasError()) {
+        os.setError(SQLiteL10N::tr("Object not found!"));
+        return NoTrack;
+    }
+
+    return NoTrack;
+}
+
 U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder, SQLiteDbiObjectRank rank, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     U2DataType type = object.getType();
     const QString &vname = object.visualName;
-    static const QString i1String("INSERT INTO Object(type, rank, name) VALUES(?1, ?2, ?3)");
+    int trackMod = object.trackModType;
+    static const QString i1String("INSERT INTO Object(type, rank, name, trackMod) VALUES(?1, ?2, ?3, ?4)");
     SQLiteQuery *i1 = t.getPreparedQuery(i1String, db, os);
     i1->bindType(1, type);
     i1->bindInt32(2, rank);
     i1->bindString(3, vname);
+    i1->bindInt32(4, trackMod);
     U2DataId res = i1->insert(type);
     if (os.hasError()) {
         return res;

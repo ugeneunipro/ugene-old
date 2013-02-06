@@ -63,6 +63,9 @@ public:
 
     /** A gap model for the row */
     QList<U2MsaGap> gaps;
+
+    /** Length of the sequence characters and gaps of the row (without trailing) */
+    qint64          length;
 };
 
 /**                                           

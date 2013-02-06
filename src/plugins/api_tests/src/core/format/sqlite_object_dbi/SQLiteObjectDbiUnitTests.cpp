@@ -129,14 +129,11 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
 
     // FIRST ALIGNMENT
     // Create an alignment
-    U2Msa al;
-    al.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
-    al.length = 5;
-    msaDbi->createMsaObject(al, "", os);
+    U2DataId msaId = msaDbi->createMsaObject("", "Test name", BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
     CHECK_NO_ERROR(os);
 
     // Add alignment info
-    U2StringAttribute attr(al.id, "MSA1 info key", "MSA1 info value");
+    U2StringAttribute attr(msaId, "MSA1 info key", "MSA1 info value");
     U2AttributeDbi* attrDbi = SQLiteObjectDbiTestData::getAttributeDbi();
     attrDbi->createStringAttribute(attr, os);
     CHECK_NO_ERROR(os);
@@ -179,19 +176,16 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
     QList<U2MsaRow> rows;
     rows << row1 << row2;
 
-    msaDbi->addRows(al.id, rows, os);
+    msaDbi->addRows(msaId, rows, os);
     CHECK_NO_ERROR(os);
 
     // SECOND ALIGNMENT
     // Create an alignment
-    U2Msa al2;
-    al2.alphabet = BaseDNAAlphabetIds::AMINO_DEFAULT();
-    al2.length = 6;
-    msaDbi->createMsaObject(al2, "", os);
+    U2DataId msaId2 = msaDbi->createMsaObject("", "Test name 2", BaseDNAAlphabetIds::AMINO_DEFAULT(), os);
     CHECK_NO_ERROR(os);
 
     // Add alignment info
-    U2StringAttribute attr2(al2.id, "MSA2 info key", "MSA2 info value");
+    U2StringAttribute attr2(msaId2, "MSA2 info key", "MSA2 info value");
     attrDbi->createStringAttribute(attr2, os);
     CHECK_NO_ERROR(os);
 
@@ -216,12 +210,12 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
     QList<U2MsaRow> al2Rows;
     al2Rows << al2Row;
 
-    msaDbi->addRows(al2.id, al2Rows, os);
+    msaDbi->addRows(msaId2, al2Rows, os);
     CHECK_NO_ERROR(os);
 
     // REMOVE THE FIRST ALIGNMENT OBJECT
     SQLiteObjectDbi* sqliteObjectDbi = SQLiteObjectDbiTestData::getSQLiteObjectDbi();
-    sqliteObjectDbi->removeObject(al.id, "", os);
+    sqliteObjectDbi->removeObject(msaId, "", os);
 
     // VERIFY THAT THERE IS ONLY THE SECOND ALIGNMENT'S RECORDS LEFT IN TABLES
     SQLiteDbi* sqliteDbi = SQLiteObjectDbiTestData::getSQLiteDbi();
@@ -250,23 +244,23 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
 
     // "MsaRow"
     SQLiteQuery qMsaRow("SELECT COUNT(*) FROM MsaRow WHERE msa = ?1", sqliteDbi->getDbRef(), os);
-    qMsaRow.bindDataId(1, al.id);
+    qMsaRow.bindDataId(1, msaId);
     qint64 msa1Rows = qMsaRow.selectInt64();
     CHECK_EQUAL(0, msa1Rows, "number of rows in MSA1");
 
     qMsaRow.reset(true);
-    qMsaRow.bindDataId(1, al2.id);
+    qMsaRow.bindDataId(1, msaId2);
     qint64 msa2Rows = qMsaRow.selectInt64();
     CHECK_EQUAL(1, msa2Rows, "number of rows in MSA2");
 
     // "MsaRowGap"
     SQLiteQuery qMsaRowGap("SELECT COUNT(*) FROM MsaRowGap WHERE msa = ?1", sqliteDbi->getDbRef(), os);
-    qMsaRowGap.bindDataId(1, al.id);
+    qMsaRowGap.bindDataId(1, msaId);
     qint64 msa1Gaps = qMsaRowGap.selectInt64();
     CHECK_EQUAL(0, msa1Gaps, "number of gaps in MSA1 rows");
 
     qMsaRowGap.reset(true);
-    qMsaRowGap.bindDataId(1, al2.id);
+    qMsaRowGap.bindDataId(1, msaId2);
     qint64 msa2Gaps = qMsaRowGap.selectInt64();
     CHECK_EQUAL(1, msa2Gaps, "number of gaps in MSA2 rows");
 
@@ -288,28 +282,28 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
 
     // "Msa"
     SQLiteQuery qMsa("SELECT COUNT(*) FROM Msa WHERE object = ?1", sqliteDbi->getDbRef(), os);
-    qMsa.bindDataId(1, al.id);
+    qMsa.bindDataId(1, msaId);
     qint64 msa1records = qMsa.selectInt64();
     CHECK_EQUAL(0, msa1records, "number of MSA1 records");
 
     qMsa.reset(true);
-    qMsa.bindDataId(1, al2.id);
+    qMsa.bindDataId(1, msaId2);
     qint64 msa2records = qMsa.selectInt64();
     CHECK_EQUAL(1, msa2records, "number of MSA2 records");
 
     // "Object"
     SQLiteQuery qObj("SELECT COUNT(*) FROM Object WHERE id = ?1", sqliteDbi->getDbRef(), os);
-    qObj.bindDataId(1, al.id);
+    qObj.bindDataId(1, msaId);
     qint64 msa1objects = qObj.selectInt64();
     CHECK_EQUAL(0, msa1objects, "number of MSA1 objects");
 
     qObj.reset(true);
-    qObj.bindDataId(1, al2.id);
+    qObj.bindDataId(1, msaId2);
     qint64 msa2objects = qObj.selectInt64();
     CHECK_EQUAL(1, msa2objects, "number of MSA2 objects");
 
     // Remove the second alignment
-    sqliteObjectDbi->removeObject(al2.id, "", os);
+    sqliteObjectDbi->removeObject(msaId2, "", os);
 }
 
 } // namespace

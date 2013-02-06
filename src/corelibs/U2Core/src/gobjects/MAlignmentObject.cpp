@@ -28,6 +28,7 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2MsaDbi.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -61,6 +62,18 @@ MAlignmentObject::MAlignmentObject(const QString& name, const U2EntityRef& msaRe
 
 MAlignmentObject::~MAlignmentObject(){
     delete memento;
+}
+
+void MAlignmentObject::setTrackMod(U2TrackModType trackMod, U2OpStatus& os) {
+    // Prepare the connection
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+
+    U2ObjectDbi* objDbi = con.dbi->getObjectDbi();
+    SAFE_POINT(NULL != objDbi, "NULL Object Dbi!",);
+
+    // Set the new status
+    objDbi->setTrackModType(entityRef.entityId, trackMod, os);
 }
 
 MAlignment MAlignmentObject::getMAlignment() const {

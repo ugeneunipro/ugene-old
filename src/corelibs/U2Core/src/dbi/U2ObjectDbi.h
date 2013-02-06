@@ -93,6 +93,12 @@ public:
     /** Returns version of the given object */
     virtual qint64 getObjectVersion(const U2DataId& objectId, U2OpStatus& os) = 0;
 
+    /** Specified whether modifications in object must be tracked or not */
+    virtual void setTrackModType(const U2DataId& objectId, U2TrackModType trackModType, U2OpStatus& os) = 0;
+
+    /** Gets the trackMod value for the object */
+    virtual U2TrackModType getTrackModType(const U2DataId& objectId, U2OpStatus& os) = 0;
+
     /** 
         Removes object from the specified folder. If folder is empty - removes object from all folders.
         Note: the object & all related data is automatically removed from database when

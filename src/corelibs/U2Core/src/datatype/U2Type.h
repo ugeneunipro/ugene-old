@@ -98,6 +98,12 @@ public:
 
 };
 
+enum U2TrackModType {
+    NoTrack = 0,
+    TrackOnUpdate = 1,
+    TRACK_MOD_TYPE_NR_ITEMS
+};
+
 /** Dbi reference: dbiURL & DBI type */
 class U2CORE_EXPORT U2DbiRef {
 public:
@@ -158,17 +164,20 @@ public:
 */
 class U2CORE_EXPORT U2Object : public U2Entity {
 public:
-    U2Object() : version(0){}
-    U2Object(U2DataId id, const U2DbiId& _dbId, qint64 v) : U2Entity(id), dbiId(_dbId), version(v) {}
+    U2Object() : version(0), trackModType(NoTrack) {}
+    U2Object(U2DataId id, const U2DbiId& _dbId, qint64 v) : U2Entity(id), dbiId(_dbId), version(v), trackModType(NoTrack) {}
     
     /** Source of the object: database id */
-    U2DbiId     dbiId;
+    U2DbiId         dbiId;
 
     /** Version of the object. Same as modification count of the object */
-    qint64      version;
+    qint64          version;
 
     /** The name of the object shown to user. Any reasonably short text */
-    QString     visualName;
+    QString         visualName;
+
+    /** Specifies whether modifications of the object must be tracked or not */
+    U2TrackModType  trackModType;
 
     /** The type of the object. Should be overridden in subclasses */
     virtual U2DataType getType() { return U2Type::Unknown; }

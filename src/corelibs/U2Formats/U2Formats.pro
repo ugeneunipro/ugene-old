@@ -47,6 +47,7 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/SQLiteAttributeDbi.h \
            src/sqlite_dbi/SQLiteDbi.h \
            src/sqlite_dbi/SQLiteFeatureDbi.h \
+           src/sqlite_dbi/SQLiteModDbi.h \
            src/sqlite_dbi/SQLiteMsaDbi.h \
            src/sqlite_dbi/SQLiteObjectDbi.h \
            src/sqlite_dbi/SQLiteSequenceDbi.h \
@@ -100,6 +101,7 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/SQLiteAttributeDbi.cpp \
            src/sqlite_dbi/SQLiteDbi.cpp \
            src/sqlite_dbi/SQLiteFeatureDbi.cpp \
+           src/sqlite_dbi/SQLiteModDbi.cpp \
            src/sqlite_dbi/SQLiteMsaDbi.cpp \
            src/sqlite_dbi/SQLiteObjectDbi.cpp \
            src/sqlite_dbi/SQLiteSequenceDbi.cpp \

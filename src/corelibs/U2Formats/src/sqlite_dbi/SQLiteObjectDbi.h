@@ -162,6 +162,12 @@ public:
     /** Returns version of the given object */
     virtual qint64 getObjectVersion(const U2DataId& objectId, U2OpStatus& os);
 
+    /** Specified whether modifications in object must be tracked or not */
+    virtual void setTrackModType(const U2DataId& objectId, U2TrackModType trackModType, U2OpStatus& os);
+
+    /** Gets the trackMod value for the object */
+    virtual U2TrackModType getTrackModType(const U2DataId& objectId, U2OpStatus& os);
+
     /** 
         Removes objects parent relation.
         If child object has no parents and is not top level 
@@ -180,6 +186,9 @@ private:
     bool removeObjectImpl(const U2DataId& id, const QString& folder, U2OpStatus& os);
 
     void removeObjectAttributes(const U2DataId& id, U2OpStatus& os);
+
+    /** Removes all modification tracks and steps for the object */
+    void removeObjectModHistory(const U2DataId& id, U2OpStatus& os);
 
     /** Updates versions */
     void onFolderUpdated(const QString& folder);

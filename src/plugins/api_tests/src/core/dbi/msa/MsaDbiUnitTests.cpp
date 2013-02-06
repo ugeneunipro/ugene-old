@@ -83,24 +83,19 @@ IMPLEMENT_TEST(MsaDbiUnitTests, createMsaObject) {
     U2MsaDbi* msaDbi = MsaTestData::getMsaDbi();
 
     U2AlphabetId testAlphabet = BaseDNAAlphabetIds::AMINO_DEFAULT();
-    int testLength = 10;
-
-    U2Msa al;
-    al.alphabet = testAlphabet;
-    al.length = testLength;
 
     U2OpStatusImpl os;
-    msaDbi->createMsaObject(al, "", os);
+    U2DataId msaId = msaDbi->createMsaObject("", "Test name", testAlphabet, os);
     CHECK_NO_ERROR(os);
 
-    const U2Msa& actual = msaDbi->getMsaObject(al.id, os);
+    const U2Msa& actual = msaDbi->getMsaObject(msaId, os);
     CHECK_NO_ERROR(os);
 
     CHECK_EQUAL(testAlphabet.id, actual.alphabet.id, "alphabet");
-    CHECK_EQUAL(testLength, actual.length, "length");
-    CHECK_EQUAL(al.id, actual.id, "id");
+    CHECK_EQUAL(0, actual.length, "length");
+    CHECK_EQUAL(msaId, actual.id, "id");
 
-    qint64 actualNumOfRows = msaDbi->getNumOfRows(al.id, os);
+    qint64 actualNumOfRows = msaDbi->getNumOfRows(msaId, os);
     CHECK_EQUAL(0, actualNumOfRows, "number of rows");
 }
 
@@ -109,10 +104,8 @@ IMPLEMENT_TEST(MsaDbiUnitTests, addRows) {
     U2MsaDbi* msaDbi = MsaTestData::getMsaDbi();
 
     // Create an alignment
-    U2Msa al;
-    al.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
-    al.length = 5;
-    msaDbi->createMsaObject(al, "", os);
+    U2AlphabetId alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    U2DataId msaId = msaDbi->createMsaObject("", "Test name", alphabet, os);
     CHECK_NO_ERROR(os);
 
     // Create sequences
@@ -147,15 +140,15 @@ IMPLEMENT_TEST(MsaDbiUnitTests, addRows) {
     QList<U2MsaRow> rows;
     rows << row1 << row2;
 
-    msaDbi->addRows(al.id, rows, os);
+    msaDbi->addRows(msaId, rows, os);
     CHECK_NO_ERROR(os);
 
     // Get the number of rows
-    qint64 actualNumOfRows = msaDbi->getNumOfRows(al.id, os);
+    qint64 actualNumOfRows = msaDbi->getNumOfRows(msaId, os);
     CHECK_EQUAL(2, actualNumOfRows, "number of rows");
 
     // Get the rows
-    QList<U2MsaRow> actualRows = msaDbi->getRows(al.id, os);
+    QList<U2MsaRow> actualRows = msaDbi->getRows(msaId, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(2, actualRows.count(), "number of rows");
 
@@ -185,10 +178,7 @@ IMPLEMENT_TEST(MsaDbiUnitTests, removeRows) {
     U2MsaDbi* msaDbi = MsaTestData::getMsaDbi();
 
     // Create an alignment
-    U2Msa al;
-    al.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
-    al.length = 5;
-    msaDbi->createMsaObject(al, "", os);
+    U2DataId msaId = msaDbi->createMsaObject("", "Test name", BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
     CHECK_NO_ERROR(os);
 
     // Create sequences
@@ -239,22 +229,22 @@ IMPLEMENT_TEST(MsaDbiUnitTests, removeRows) {
     QList<U2MsaRow> rows;
     rows << row1 << row2 << row3;
 
-    msaDbi->addRows(al.id, rows, os);
+    msaDbi->addRows(msaId, rows, os);
     CHECK_NO_ERROR(os);
 
     // Remove the rows
     QList<U2MsaRow> rowsToRemove;
     rowsToRemove << row1 << row3;
 
-    msaDbi->removeRows(al.id, rowsToRemove, os);
+    msaDbi->removeRows(msaId, rowsToRemove, os);
     CHECK_NO_ERROR(os);
 
     // Get the number of rows
-    qint64 actualNumOfRows = msaDbi->getNumOfRows(al.id, os);
+    qint64 actualNumOfRows = msaDbi->getNumOfRows(msaId, os);
     CHECK_EQUAL(1, actualNumOfRows, "number of rows");
 
     // Get the rows
-    QList<U2MsaRow> actualRows = msaDbi->getRows(al.id, os);
+    QList<U2MsaRow> actualRows = msaDbi->getRows(msaId, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(1, actualRows.count(), "number of rows");
 

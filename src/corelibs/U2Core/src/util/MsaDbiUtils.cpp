@@ -516,7 +516,10 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
     msaObj.alphabet.id = alphabet->getId();
     msaObj.length = al.getLength();
 
-    msaDbi->updateMsaObject(msaObj, os);
+    msaDbi->updateMsaName(msaRef.entityId, al.getName(), os);
+    CHECK_OP(os, );
+
+    msaDbi->updateMsaAlphabet(msaRef.entityId, alphabet->getId(), os);
     CHECK_OP(os, );
 
     //// UPDATE ROWS AND SEQUENCES
@@ -679,14 +682,8 @@ void MsaDbiUtils::renameMsa(const U2EntityRef& msaRef, const QString& newName, U
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!",);
 
-    // Get and update the Msa object
-    U2Msa msaObject = msaDbi->getMsaObject(msaRef.entityId, os);
-    CHECK_OP(os, );
-
-    if (newName != msaObject.visualName) {
-        msaObject.visualName = newName;
-        msaDbi->updateMsaObject(msaObject, os);
-    }
+    // Update the name
+    msaDbi->updateMsaName(msaRef.entityId, newName, os);
 }
 
 void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& rowIds, qint64 pos, qint64 count, U2OpStatus& os) {
@@ -729,27 +726,20 @@ void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& row
         // Calculate the new gap model
         calculateGapModelAfterInsert(row.gaps, pos, count);
 
-        // Trim trailing gap (if any) and calculate the length
-        qint64 rowLength = row.gend - row.gstart;
+        // Trim trailing gap (if any)
+        qint64 seqLength = row.gend - row.gstart;
         for (int i = 0, n = row.gaps.count(); i < n; ++i) {
             const U2MsaGap& gap = row.gaps[i];
-            if ((i == n - 1) && (gap.offset >= rowLength)) {
+            if ((i == n - 1) && (gap.offset >= seqLength)) {
                 row.gaps.removeAt(i);
                 break;
             }
-            rowLength += gap.gap;
         }
 
         // Put the new gap model into the database
         msaDbi->updateGapModel(msaRef.entityId, row.rowId, row.gaps, os);
         CHECK_OP(os, );
-
-        // Calculate the new alignment length        
-        alLength = qMax(alLength, rowLength);
     }
-
-    // Set the new alignment length
-    msaDbi->updateMsaLength(msaRef.entityId, alLength, os);
 }
 
 void MsaDbiUtils::removeRegion(const U2EntityRef& msaRef, const QList<qint64>& rowIds, qint64 pos, qint64 count, U2OpStatus& os) {
@@ -840,11 +830,17 @@ void MsaDbiUtils::crop(const U2EntityRef& msaRef, const QList<qint64> rowIds, qi
             cropCharsFromRow(row, pos, count);
 
             // Put the new sequence and gap model into the database
-            msaDbi->updateGapModel(msaRef.entityId, row.getRowId(), row.getGapModel(), os);
-            CHECK_OP(os, );
-
             QVariantMap hints;
             sequenceDbi->updateSequenceData(sequenceId, regionToReplaceInSeq, row.getSequence().constSequence(), hints, os);
+            CHECK_OP(os, );
+
+            U2MsaRow rowInDb;
+            rowInDb.rowId = row.getRowId();
+            rowInDb.sequenceId = sequenceId;
+            rowInDb.gstart = 0;
+            rowInDb.gend = row.getSequence().length();
+            rowInDb.gaps = row.getGapModel();
+            msaDbi->updateRow(msaRef.entityId, rowInDb, os);
             CHECK_OP(os, );
         }
         else {
@@ -852,9 +848,6 @@ void MsaDbiUtils::crop(const U2EntityRef& msaRef, const QList<qint64> rowIds, qi
             CHECK_OP(os, );
         }
     }
-
-    // Set the new alignment length
-    msaDbi->updateMsaLength(msaRef.entityId, count, os);
 }
 
 void MsaDbiUtils::trim(const U2EntityRef& msaRef, U2OpStatus& os) {
@@ -900,19 +893,7 @@ void MsaDbiUtils::trim(const U2EntityRef& msaRef, U2OpStatus& os) {
         // Put the new gap model into the database
         msaDbi->updateGapModel(msaRef.entityId, row.getRowId(), newGapModel, os);
         CHECK_OP(os, );
-
-        // Calculate the new alignment length
-        qint64 rowLength = row.getSequence().length() + calculateGapsLength(newGapModel);
-        if (0 == alLength) {
-            alLength = rowLength;
-        }
-        else {
-            alLength = qMax(alLength, rowLength);
-        }
     }
-
-    // Set the new alignment length
-    msaDbi->updateMsaLength(msaRef.entityId, alLength, os);
 }
 
 void MsaDbiUtils::addRow(const U2EntityRef& msaRef, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os) {
@@ -938,14 +919,6 @@ void MsaDbiUtils::addRow(const U2EntityRef& msaRef, qint64 posInMsa, U2MsaRow& r
     // Add the row
     msaDbi->addRow(msaRef.entityId, posInMsa, row, os);
     CHECK_OP(os, );
-
-    // Update the alignment length, if required
-    qint64 alLength = al.getLength();
-    qint64 rowLength = calculateRowLength(row);
-    qint64 newAlLength = qMax(rowLength, alLength);
-    if (newAlLength != alLength) {
-        msaDbi->updateMsaLength(msaRef.entityId, newAlLength, os);
-    }
 }
 
 void MsaDbiUtils::removeRow(const U2EntityRef& msaRef, qint64 rowId, U2OpStatus& os) {

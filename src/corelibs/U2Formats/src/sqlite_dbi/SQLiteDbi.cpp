@@ -27,6 +27,7 @@
 #include "SQLiteAttributeDbi.h"
 #include "SQLiteVariantDbi.h"
 #include "SQLiteFeatureDbi.h"
+#include "SQLiteModDbi.h"
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
@@ -45,6 +46,7 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
     db = new DbRef();
     objectDbi = new SQLiteObjectDbi(this);
     sequenceDbi = new SQLiteSequenceDbi(this);
+    modDbi = new SQLiteModDbi(this);
     msaDbi = new SQLiteMsaDbi(this);
     assemblyDbi = new SQLiteAssemblyDbi(this);
     crossDbi = new SQLiteCrossDatabaseReferenceDbi(this);
@@ -65,6 +67,7 @@ SQLiteDbi::~SQLiteDbi() {
     delete crossDbi;
     delete attributeDbi;
     delete featureDbi;
+    delete modDbi;
     delete db;
 }
 
@@ -101,6 +104,10 @@ U2VariantDbi* SQLiteDbi::getVariantDbi() {
 
 U2FeatureDbi* SQLiteDbi::getFeatureDbi() {
     return featureDbi;
+}
+
+U2ModDbi* SQLiteDbi::getModDbi() {
+    return modDbi;
 }
 
 SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
@@ -198,6 +205,7 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     attributeDbi->initSqlSchema(os);
     variantDbi->initSqlSchema(os);
     featureDbi->initSqlSchema(os);
+    modDbi->initSqlSchema(os);
 
     setProperty(SQLITE_DBI_OPTION_APP_VERSION, Version::appVersion().text, os);
 }
@@ -245,6 +253,8 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_WriteVariant);
     features.insert(U2DbiFeature_ReadFeatures);
     features.insert(U2DbiFeature_WriteFeatures);
+    features.insert(U2DbiFeature_ReadModifications);
+    features.insert(U2DbiFeature_WriteModifications);
 }
 
 void SQLiteDbi::setState(U2DbiState s) {
@@ -343,6 +353,7 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
     attributeDbi->shutdown(os);
     variantDbi->shutdown(os);
     featureDbi->shutdown(os);
+    modDbi->shutdown(os);
     
     setState(U2DbiState_Stopping);
     int rc = sqlite3_close(db->handle);

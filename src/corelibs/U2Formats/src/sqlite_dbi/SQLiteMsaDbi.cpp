@@ -46,8 +46,9 @@ void SQLiteMsaDbi::initSqlSchema(U2OpStatus& os) {
      //   pos      - positional number of a row in the msa (initially, equals 'id', but can be changed, e.g. in GUI by moving rows)
      //   gstart   - offset of the first element in the sequence
      //   gend     - offset of the last element in the sequence (non-inclusive)
+     //   length   - sequence and gaps length (trailing gap are not taken into account)
     SQLiteQuery("CREATE TABLE MsaRow (msa INTEGER NOT NULL, rowId INTEGER NOT NULL, sequence INTEGER NOT NULL,"
-        " pos INTEGER NOT NULL, gstart INTEGER NOT NULL, gend INTEGER NOT NULL, "
+        " pos INTEGER NOT NULL, gstart INTEGER NOT NULL, gend INTEGER NOT NULL, length INTEGER NOT NULL,"
         " FOREIGN KEY(msa) REFERENCES Msa(object), "
         " FOREIGN KEY(sequence) REFERENCES Sequence(object) )", db, os).execute();
 
@@ -61,36 +62,99 @@ void SQLiteMsaDbi::initSqlSchema(U2OpStatus& os) {
         "FOREIGN KEY(rowId) REFERENCES MsaRow(rowId) )", db, os).execute();
 }
 
-void SQLiteMsaDbi::createMsaObject(U2Msa& msa, const QString& folder, U2OpStatus& os) {
+U2DataId SQLiteMsaDbi::createMsaObject(const QString& folder, const QString& name, const U2AlphabetId& alphabet, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
+    U2Msa msa;
+    msa.visualName = name;
+    msa.alphabet = alphabet;
+    msa.length = 0;
+
+    // Create the object
     dbi->getSQLiteObjectDbi()->createObject(msa, folder, SQLiteDbiObjectRank_TopLevel, os);
-    CHECK_OP(os, );
+    CHECK_OP(os, U2DataId());
 
-    static const QString queryString("INSERT INTO Msa(object, length, alphabet, numOfRows) VALUES(?1, ?2, ?3, ?4)");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-    CHECK_OP(os, );
+    // Create a record in the Msa table
+    SQLiteQuery q("INSERT INTO Msa(object, length, alphabet, numOfRows) VALUES(?1, ?2, ?3, ?4)", db, os);
+    CHECK_OP(os, U2DataId());
 
-    q->bindDataId(1, msa.id);
-    q->bindInt64(2, msa.length);
-    q->bindString(3, msa.alphabet.id);
-    q->bindInt64(4, 0); // no rows
-    q->insert();
+    q.bindDataId(1, msa.id);
+    q.bindInt64(2, msa.length);
+    q.bindString(3, msa.alphabet.id);
+    q.bindInt64(4, 0); // no rows
+    q.insert();
+
+    return msa.id;
 }
 
-void SQLiteMsaDbi::updateMsaObject(U2Msa& msa, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
-    static const QString queryString("UPDATE Msa SET length = ?1, alphabet = ?2 WHERE object = ?3");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+void SQLiteMsaDbi::updateMsaName(const U2DataId& msaId, const QString& name, U2OpStatus& os) {
+    U2TrackModType trackMod = dbi->getObjectDbi()->getTrackModType(msaId, os);
     CHECK_OP(os, );
 
-    q->bindInt64(1, msa.length);
-    q->bindString(2, msa.alphabet.id);
-    q->bindDataId(3, msa.id);
-    q->execute();
+    // Remember version for the case when modifications tracking is required
+    qint64 version = -1;
+    if (TrackOnUpdate == trackMod) {
+        version = dbi->getObjectDbi()->getObjectVersion(msaId, os);
+        CHECK_OP(os, );
+    }
 
-    SAFE_POINT_OP(os, );
+    // Update the name
+    U2Object msaObj;
+    dbi->getSQLiteObjectDbi()->getObject(msaObj, msaId, os);
+    CHECK_OP(os, );
 
-    dbi->getSQLiteObjectDbi()->updateObject(msa, os);
+    QString oldName = msaObj.visualName;
+    msaObj.visualName = name;
+    dbi->getSQLiteObjectDbi()->updateObject(msaObj, os); // increments the version also
+
+    // Track the modification
+    if (TrackOnUpdate == trackMod) {
+        U2ModStep modStep;
+        modStep.objectId = msaId;
+        modStep.version = version;
+        modStep.modType = QByteArray("Updated msa name");
+        modStep.details = QByteArray("oldName=") + oldName.toAscii();
+        dbi->getModDbi()->createModStep(modStep, os);
+    }
+}
+
+void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& alphabet, U2OpStatus& os) {
+    U2TrackModType trackMod = dbi->getObjectDbi()->getTrackModType(msaId, os);
+    CHECK_OP(os, );
+
+    // Remember old alphabet and version for the case when modifications tracking is required
+    U2AlphabetId oldAlphabet;
+    qint64 version = -1;
+    if (TrackOnUpdate == trackMod) {
+        U2Msa msaObj = getMsaObject(msaId, os);
+        CHECK_OP(os, );
+
+        oldAlphabet = msaObj.alphabet;
+
+        version = dbi->getObjectDbi()->getObjectVersion(msaId, os);
+        CHECK_OP(os, );
+    }
+
+    // Update the alphabet
+    SQLiteQuery q("UPDATE Msa SET alphabet = ?1 WHERE object = ?2", db, os);
+    CHECK_OP(os, );
+
+    q.bindString(1, alphabet.id);
+    q.bindDataId(2, msaId);
+    q.update(1);
+
+    // Increment the alignment version
+    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    CHECK_OP(os, );
+
+    // Track the modification
+    if (TrackOnUpdate == trackMod) {
+        U2ModStep modStep;
+        modStep.objectId = msaId;
+        modStep.version = version;
+        modStep.modType = QByteArray("Updated msa alphabet");
+        modStep.details = QByteArray("oldAlphabet=") + oldAlphabet.id.toAscii();
+        dbi->getModDbi()->createModStep(modStep, os);
+    }
 }
 
 void SQLiteMsaDbi::updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os) {
@@ -104,19 +168,22 @@ void SQLiteMsaDbi::updateMsaLength(const U2DataId& msaId, qint64 length, U2OpSta
 }
 
 void SQLiteMsaDbi::createMsaRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& msaRow, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
-    static const QString queryString("INSERT INTO MsaRow(msa, rowId, sequence, pos, gstart, gend)"
-        " VALUES(?1, ?2, ?3, ?4, ?5, ?6)");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    // Calculate the row length
+    qint64 rowLength = calculateRowLength(msaRow.gend - msaRow.gstart, msaRow.gaps);
+
+    // Insert the data
+    SQLiteQuery q("INSERT INTO MsaRow(msa, rowId, sequence, pos, gstart, gend, length)"
+        " VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7)", db, os);
     CHECK_OP(os, );
 
-    q->bindDataId(1, msaId);
-    q->bindInt64(2, msaRow.rowId);
-    q->bindDataId(3, msaRow.sequenceId);
-    q->bindInt64(4, posInMsa);
-    q->bindInt64(5, msaRow.gstart);
-    q->bindInt64(6, msaRow.gend);
-    q->insert();
+    q.bindDataId(1, msaId);
+    q.bindInt64(2, msaRow.rowId);
+    q.bindDataId(3, msaRow.sequenceId);
+    q.bindInt64(4, posInMsa);
+    q.bindInt64(5, msaRow.gstart);
+    q.bindInt64(6, msaRow.gend);
+    q.bindInt64(7, rowLength);
+    q.insert();
 }
 
 void SQLiteMsaDbi::createMsaRowGap(const U2DataId& msaId, qint64 msaRowId, const U2MsaGap& msaGap, U2OpStatus& os) {
@@ -157,10 +224,20 @@ void SQLiteMsaDbi::addMsaRowAndGaps(const U2DataId& msaId, qint64 posInMsa, U2Ms
 }
 
 void SQLiteMsaDbi::addRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os) {
+    U2TrackModType trackMod = dbi->getObjectDbi()->getTrackModType(msaId, os);
+    CHECK_OP(os, );
+
+    // Remember version for the case when modifications tracking is required
+    qint64 version = -1; // Use only for modification tracking!
+    if (TrackOnUpdate == trackMod) {
+        version = dbi->getObjectDbi()->getObjectVersion(msaId, os);
+        CHECK_OP(os, );
+    }
+
+    // Append the row to the end, if "-1"
     qint64 numOfRows = getNumOfRows(msaId, os);
     CHECK_OP(os, );
 
-    // Append the row to the end, if "-1"
     QList<qint64> rowsOrder;
     if (-1 == posInMsa) {
         posInMsa = numOfRows;
@@ -176,6 +253,12 @@ void SQLiteMsaDbi::addRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row,
     addMsaRowAndGaps(msaId, posInMsa, row, os);
     CHECK_OP(os, );
 
+    // Update the alignment length
+    qint64 msaLength = getMsaLength(msaId, os);
+    if (row.length > msaLength) {
+        updateMsaLength(msaId, row.length, os);
+    }
+
     // Update the number of rows of the MSA
     numOfRows++;
     updateNumOfRows(msaId, numOfRows, os);
@@ -186,25 +269,87 @@ void SQLiteMsaDbi::addRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row,
         setNewRowsOrder(msaId, rowsOrder, os);
         CHECK_OP(os, );
     }
+
+    // Increment the alignment version
+    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    CHECK_OP(os, );
+
+    // Track the modification
+    if (TrackOnUpdate == trackMod) {
+        U2ModStep modStep;
+        modStep.objectId = msaId;
+        modStep.version = version;
+        modStep.modType = QByteArray("Added msa row");
+        modStep.details = QByteArray("rowId=") + QByteArray::number(row.rowId);
+        dbi->getModDbi()->createModStep(modStep, os);
+    }
 }
 
 void SQLiteMsaDbi::addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpStatus& os) {
+    U2TrackModType trackMod = dbi->getObjectDbi()->getTrackModType(msaId, os);
+    CHECK_OP(os, );
+
+    // Remember version for the case when modifications tracking is required
+    qint64 version = -1; // Use only for modification tracking!
+    if (TrackOnUpdate == trackMod) {
+        version = dbi->getObjectDbi()->getObjectVersion(msaId, os);
+        CHECK_OP(os, );
+    }
+
+    // Add the rows
     qint64 numOfRows = getNumOfRows(msaId, os);
     CHECK_OP(os, );
 
-    // Add the rows
     qint64 numOfRowsAdded = rows.count();
     for (int i = 0; i < numOfRowsAdded; ++i) {
         addMsaRowAndGaps(msaId, numOfRows + i, rows[i], os);
         CHECK_OP(os, );
     }
 
+    // Update the alignment length
+    qint64 maxRowLength = 0;
+    foreach (const U2MsaRow& row, rows) {
+        maxRowLength = qMax(row.length, maxRowLength);
+    }
+    
+    qint64 msaLength = getMsaLength(msaId, os);
+    if (maxRowLength > msaLength) {
+        updateMsaLength(msaId, maxRowLength, os);
+    }
+
     // Update the number of rows
     numOfRows += numOfRowsAdded;
     updateNumOfRows(msaId, numOfRows, os);
+
+    // Increment the alignment version
+    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    CHECK_OP(os, );
+
+    // Track the modification
+    if (TrackOnUpdate == trackMod) {
+        // Get the list of rows IDs
+        QByteArray rowsIds;
+        for (int i = 0, n = rows.count(); i < n; ++i) {
+            qint64 rowId = rows[i].rowId;
+            rowsIds += "rowId=";
+            rowsIds += QByteArray::number(rowId);
+            if (i != n - 1) {
+                rowsIds += "&";
+            }
+        }
+
+        // Save the data
+        U2ModStep modStep;
+        modStep.objectId = msaId;
+        modStep.version = version;
+        modStep.modType = QByteArray("Added msa rows");
+        modStep.details = rowsIds;
+        dbi->getModDbi()->createModStep(modStep, os);
+    }
 }
 
 void SQLiteMsaDbi::updateRow(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os) {
+    // Update the row
     SQLiteTransaction t(db, os);
     SQLiteQuery q("UPDATE MsaRow SET sequence = ?1, gstart = ?2, gend = ?3 WHERE msa = ?4 AND rowId = ?5", db, os);
     CHECK_OP(os, );
@@ -224,6 +369,21 @@ void SQLiteMsaDbi::updateRow(const U2DataId& msaId, const U2MsaRow& row, U2OpSta
         createMsaRowGap(msaId, row.rowId, gap, os);
         CHECK_OP(os, );
     }
+
+    // Update the row length (without trailing gaps)
+    qint64 rowSequenceLength = getRowSequenceLength(msaId, row.rowId, os);
+    CHECK_OP(os, );
+
+    qint64 newRowLength = calculateRowLength(rowSequenceLength, row.gaps);
+    updateRowLength(msaId, row.rowId, newRowLength, os);
+    CHECK_OP(os, );
+
+    // Re-calculate the alignment length
+    recalculateMsaLength(msaId, os);
+
+    // Increment the alignment version
+    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    CHECK_OP(os, );
 }
 
 QList<qint64> SQLiteMsaDbi::getRowsOrder(const U2DataId& msaId, U2OpStatus& os) {
@@ -257,6 +417,10 @@ void SQLiteMsaDbi::setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& r
         q.bindInt64(3, rowId);
         q.execute();
     }
+
+    // Increment the alignment version
+    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    CHECK_OP(os, );
 }
 
 void SQLiteMsaDbi::removeRecordFromMsaRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) {
@@ -295,6 +459,10 @@ void SQLiteMsaDbi::removeRow(const U2DataId& msaId, const U2MsaRow& row, U2OpSta
 
     // Re-calculate the rows positions
     recalculateRowsPositions(msaId, os);
+
+    // Increment the alignment version
+    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    CHECK_OP(os, );
 }
 
 void SQLiteMsaDbi::removeRows(const U2DataId& msaId, const QList<U2MsaRow>& rows, U2OpStatus& os) {
@@ -316,6 +484,10 @@ void SQLiteMsaDbi::removeRows(const U2DataId& msaId, const QList<U2MsaRow>& rows
 
     // Re-calculate the rows positions
     recalculateRowsPositions(msaId, os);
+
+    // Increment the alignment version
+    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    CHECK_OP(os, );
 }
 
 void SQLiteMsaDbi::removeMsaRowAndGaps(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os) {
@@ -328,6 +500,13 @@ void SQLiteMsaDbi::removeAllRows(const U2DataId& msaId, U2OpStatus& os) {
     QList<U2MsaRow> rows = getRows(msaId, os);
     CHECK_OP(os, );
     removeRows(msaId, rows, os);
+
+    // Re-calculate the alignment length
+    recalculateMsaLength(msaId, os);
+
+    // Increment the alignment version
+    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    CHECK_OP(os, );
 }
 
 U2Msa SQLiteMsaDbi::getMsaObject(const U2DataId& msaId, U2OpStatus& os) {
@@ -336,7 +515,7 @@ U2Msa SQLiteMsaDbi::getMsaObject(const U2DataId& msaId, U2OpStatus& os) {
 
     SAFE_POINT_OP(os, res);
 
-    SQLiteQuery q("SELECT Msa.length, Msa.alphabet FROM Msa WHERE Msa.object = ?1", db, os);
+    SQLiteQuery q("SELECT length, alphabet FROM Msa WHERE object = ?1", db, os);
     q.bindDataId(1, msaId);
     if (q.step())  {
         res.length = q.getInt64(0);
@@ -350,7 +529,7 @@ U2Msa SQLiteMsaDbi::getMsaObject(const U2DataId& msaId, U2OpStatus& os) {
 
 qint64 SQLiteMsaDbi::getNumOfRows(const U2DataId& msaId, U2OpStatus& os) {
     qint64 res = 0;
-    SQLiteQuery q("SELECT Msa.numOfRows FROM Msa WHERE Msa.object = ?1", db, os);
+    SQLiteQuery q("SELECT numOfRows FROM Msa WHERE object = ?1", db, os);
     CHECK_OP(os, res);
 
     q.bindDataId(1, msaId);
@@ -383,7 +562,7 @@ void SQLiteMsaDbi::recalculateRowsPositions(const U2DataId& msaId, U2OpStatus& o
 
 QList<U2MsaRow> SQLiteMsaDbi::getRows(const U2DataId& msaId, U2OpStatus& os) {
     QList<U2MsaRow> res;
-    SQLiteQuery q("SELECT rowId, sequence, gstart, gend FROM MsaRow WHERE msa = ?1 ORDER BY pos", db, os);
+    SQLiteQuery q("SELECT rowId, sequence, gstart, gend, length FROM MsaRow WHERE msa = ?1 ORDER BY pos", db, os);
     q.bindDataId(1, msaId);
 
     SQLiteQuery gapQ("SELECT gapStart, gapEnd FROM MsaRowGap WHERE msa = ?1 AND rowId = ?2 ORDER BY gapStart", db, os);
@@ -393,6 +572,7 @@ QList<U2MsaRow> SQLiteMsaDbi::getRows(const U2DataId& msaId, U2OpStatus& os) {
         row.sequenceId = q.getDataId(1, U2Type::Sequence);
         row.gstart = q.getInt64(2);
         row.gend = q.getInt64(3);
+        row.length = q.getInt64(4);
 
         gapQ.reset();
         gapQ.bindDataId(1, msaId);
@@ -412,7 +592,7 @@ QList<U2MsaRow> SQLiteMsaDbi::getRows(const U2DataId& msaId, U2OpStatus& os) {
 
 U2MsaRow SQLiteMsaDbi::getRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) {
     U2MsaRow res;
-    SQLiteQuery q("SELECT sequence, gstart, gend FROM MsaRow WHERE msa = ?1 AND rowId = ?2", db, os);
+    SQLiteQuery q("SELECT sequence, gstart, gend, length FROM MsaRow WHERE msa = ?1 AND rowId = ?2", db, os);
     SAFE_POINT_OP(os, res);
 
     q.bindDataId(1, msaId);
@@ -422,6 +602,7 @@ U2MsaRow SQLiteMsaDbi::getRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& o
         res.sequenceId = q.getDataId(0, U2Type::Sequence);
         res.gstart = q.getInt64(1);
         res.gend = q.getInt64(2);
+        res.length = q.getInt64(3);
         q.ensureDone();
     } else if (!os.hasError()) {
         os.setError(SQLiteL10N::tr("Msa row not found!"));
@@ -451,61 +632,106 @@ void SQLiteMsaDbi::updateNumOfRows(const U2DataId& msaId, qint64 numOfRows, U2Op
     q.update(1);
 }
 
-qint32 SQLiteMsaDbi::countSequencesAt(const U2DataId& msaId, qint64 coord, U2OpStatus& os) {
-    SQLiteQuery q("SELECT COUNT(*) FROM MsaRow WHERE msa = ?1 AND gstart <= ?2 AND gend > ?2", db, os);
-    q.bindDataId(1, msaId);
-    q.bindInt64(2, coord);
-    return (qint32)q.selectInt64();
-}
-
-QList<U2DataId> SQLiteMsaDbi::getSequencesAt(const U2DataId& msaId, qint64 coord, qint32 offset, qint32 count, U2OpStatus& os) {
-    SQLiteQuery q("SELECT sequenceId FROM MsaRow WHERE msa = ?1 AND gstart <= ?2 AND gend > ?2", offset, count, db, os);
-    q.bindDataId(1, msaId);
-    q.bindInt64(2, coord);
-    return q.selectDataIds(U2Type::Sequence);
-}
-
-qint32 SQLiteMsaDbi::countSequencesAt(const U2DataId& msaId, const U2Region& r, U2OpStatus& os) {
-    SQLiteQuery q("SELECT COUNT(*) FROM MsaRow WHERE msa = ?1 AND ((gstart <= ?2 AND gend > ?2) OR (gstart <= ?3 AND gend > ?3)", db, os);
-    q.bindDataId(1, msaId);
-    q.bindInt64(2, r.startPos);
-    q.bindInt64(3, r.endPos());
-    return (qint32)q.selectInt64();
-}
-
-QList<U2DataId> SQLiteMsaDbi::getSequencesAt(const U2DataId& msaId, const U2Region& r, qint32 offset, qint32 count, U2OpStatus& os) {
-    SQLiteQuery q("SELECT sequenceId FROM MsaRow WHERE msa = ?1 AND ((gstart <= ?2 AND gend > ?2) OR (gstart <= ?3 AND gend > ?3)", 
-        offset, count, db, os);
-    q.bindDataId(1, msaId);
-    q.bindInt64(2, r.startPos);
-    q.bindInt64(3, r.endPos());
-    return q.selectDataIds(U2Type::Sequence);
-}
-
-qint32 SQLiteMsaDbi::countSequencesWithoutGapAt(const U2DataId& msaId, qint64 coord, U2OpStatus& os) {
-    SQLiteQuery q("SELECT COUNT(*) FROM MsaRowGap WHERE msa = ?1 AND gstart <= ?2 AND gend > ?2", db, os);
-    q.bindDataId(1, msaId);
-    q.bindInt64(2, coord);
-    return (qint32)q.selectInt64();
-}
-    
-QList<U2DataId> SQLiteMsaDbi::getSequencesWithoutGapAt(const U2DataId& msaId, qint64 coord, qint32 offset, qint32 count, U2OpStatus& os) {
-    SQLiteQuery q("SELECT sequenceId FROM MsaRowGap WHERE msa = ?1 AND gstart <= ?2 AND gend > ?2", offset, count, db, os);
-    q.bindDataId(1, msaId);
-    q.bindInt64(2, coord);
-    return q.selectDataIds(U2Type::Sequence);
-}
-
-void SQLiteMsaDbi::updateGapModel(const U2DataId& msaId, qint64 msaRowId, const QList<U2MsaGap>& gapModel, U2OpStatus& os) {
+ void SQLiteMsaDbi::updateGapModel(const U2DataId& msaId, qint64 msaRowId, const QList<U2MsaGap>& gapModel, U2OpStatus& os) {
     // Remove obsolete gaps of the row
     removeRecordsFromMsaRowGap(msaId, msaRowId, os);
     CHECK_OP(os, );
 
     // Store the new gap model
-    foreach (U2MsaGap gap, gapModel) {
+    foreach (const U2MsaGap& gap, gapModel) {
         createMsaRowGap(msaId, msaRowId, gap, os);
         CHECK_OP(os, );
     }
+
+    // Update the row length (without trailing gaps)
+    qint64 rowSequenceLength = getRowSequenceLength(msaId, msaRowId, os);
+    CHECK_OP(os, );
+
+    qint64 newRowLength = calculateRowLength(rowSequenceLength, gapModel);
+    updateRowLength(msaId, msaRowId, newRowLength, os);
+    CHECK_OP(os, );
+
+    // Re-calculate the alignment length
+    recalculateMsaLength(msaId, os);
+
+    // Increment the alignment version
+    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    CHECK_OP(os, );
 }
+
+qint64 SQLiteMsaDbi::getMsaLength(const U2DataId& msaId, U2OpStatus& os) {
+    qint64 res = 0;
+    SQLiteQuery q("SELECT length FROM Msa WHERE object = ?1", db, os);
+    CHECK_OP(os, res);
+
+    q.bindDataId(1, msaId);
+    if (q.step()) {
+        res = q.getInt64(0);
+        q.ensureDone();
+    }
+    else if (!os.hasError()) {
+        os.setError(SQLiteL10N::tr("Msa object not found!"));
+    }
+
+    return res;
+}
+
+void SQLiteMsaDbi::recalculateMsaLength(const U2DataId& msaId, U2OpStatus& os) {
+    qint64 msaLength = 0;
+
+    // Get maximum row length
+    SQLiteQuery q("SELECT MAX(length) FROM MsaRow WHERE msa = ?1", db, os);
+    CHECK_OP(os, );
+
+    q.bindDataId(1, msaId);
+    if (q.step()) {
+        msaLength = q.getInt64(0);
+        q.ensureDone();
+    }
+
+    // Update the MSA length
+    updateMsaLength(msaId, msaLength, os);
+}
+
+qint64 SQLiteMsaDbi::calculateRowLength(qint64 seqLength, const QList<U2MsaGap>& gaps) {
+    qint64 res = seqLength;
+    foreach (const U2MsaGap& gap, gaps) {
+        if (gap.offset < res) { // ignore trailing gaps
+            res += gap.gap;
+        }
+    }
+    return res;
+}
+
+qint64 SQLiteMsaDbi::getRowSequenceLength(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) {
+    qint64 res = 0;
+    SQLiteQuery q("SELECT gstart, gend FROM MsaRow WHERE msa = ?1 AND rowId = ?2", db, os);
+    CHECK_OP(os, res);
+
+    q.bindDataId(1, msaId);
+    q.bindInt64(2, rowId);
+    if (q.step()) {
+        qint64 startInSeq = q.getInt64(0);
+        qint64 endInSeq = q.getInt64(1);
+        res = endInSeq - startInSeq;
+        q.ensureDone();
+    }
+    else if (!os.hasError()) {
+        os.setError(SQLiteL10N::tr("Msa row not found!"));
+    }
+
+    return res;
+}
+
+void SQLiteMsaDbi::updateRowLength(const U2DataId& msaId, qint64 rowId, qint64 newLength, U2OpStatus& os) {
+    SQLiteQuery q("UPDATE MsaRow SET length = ?1 WHERE msa = ?2 AND rowId = ?3", db, os);
+    CHECK_OP(os, );
+
+    q.bindInt64(1, newLength);
+    q.bindDataId(2, msaId);
+    q.bindInt64(3, rowId);
+    q.update(1);
+}
+
 
 } //namespace

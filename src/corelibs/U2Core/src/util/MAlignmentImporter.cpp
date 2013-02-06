@@ -82,7 +82,7 @@ U2Msa MAlignmentImporter::importMsaObject(const DbiConnection& con, const MAlign
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL MSA Dbi during importing an alignment!", U2Msa());
 
-    msaDbi->createMsaObject(msa, "", os);
+    msa.id = msaDbi->createMsaObject("", msa.visualName, msa.alphabet, os);
     CHECK_OP(os, U2Msa());
 
     return msa;

@@ -106,10 +106,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow) {
     U2MsaDbi* msaDbi = MsaSQLiteSpecificTestData::getMsaDbi();
 
     // Create an alignment
-    U2Msa al;
-    al.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
-    al.length = 5;
-    msaDbi->createMsaObject(al, "", os);
+    U2DataId msaId = msaDbi->createMsaObject("", "Test name", BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
     CHECK_NO_ERROR(os);
 
     // Create sequences
@@ -150,22 +147,22 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow) {
     QList<U2MsaRow> rows;
     rows << row1 << row2;
 
-    msaDbi->addRows(al.id, rows, os);
+    msaDbi->addRows(msaId, rows, os);
     CHECK_NO_ERROR(os);
 
     // Remove the first row
     QList<U2MsaRow> rowsToRemove;
     rowsToRemove << row1;
 
-    msaDbi->removeRows(al.id, rowsToRemove, os);
+    msaDbi->removeRows(msaId, rowsToRemove, os);
     CHECK_NO_ERROR(os);
 
     // Get the number of rows
-    qint64 actualNumOfRows = msaDbi->getNumOfRows(al.id, os);
+    qint64 actualNumOfRows = msaDbi->getNumOfRows(msaId, os);
     CHECK_EQUAL(1, actualNumOfRows, "number of rows");
 
     // Get the rows
-    QList<U2MsaRow> actualRows = msaDbi->getRows(al.id, os);
+    QList<U2MsaRow> actualRows = msaDbi->getRows(msaId, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(1, actualRows.count(), "number of rows");
 
@@ -185,7 +182,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow) {
 
     // Verify that gaps of the removed row were removed
     SQLiteQuery qGaps("SELECT COUNT(*) FROM MsaRowGap WHERE msa = ?1 AND rowId = ?2", sqliteDbi->getDbRef(), os);
-    qGaps.bindDataId(1, al.id);
+    qGaps.bindDataId(1, msaId);
     qGaps.bindInt64(2, row1.rowId);
     qint64 actualGapsNumber = qGaps.selectInt64();
     CHECK_EQUAL(0, actualGapsNumber, "removed row gaps number");

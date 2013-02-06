@@ -35,6 +35,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2FeatureKeys.h \
            src/datatype/U2Identity.h \
            src/datatype/U2IdTypes.h \
+           src/datatype/U2Mod.h \
            src/datatype/U2Msa.h \
            src/datatype/U2Range.h \
            src/datatype/U2Region.h \
@@ -54,6 +55,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2DbiUtils.h \
            src/dbi/U2FeatureDbi.h \
            src/dbi/U2FormatCheckResult.h \
+           src/dbi/U2ModDbi.h \
            src/dbi/U2MsaDbi.h \
            src/dbi/U2ObjectDbi.h \
            src/dbi/U2SequenceDbi.h \
@@ -201,6 +203,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/MAlignment.cpp \
            src/datatype/MAlignmentInfo.cpp \
            src/datatype/Matrix44.cpp \
+           src/datatype/U2Mod.cpp \
            src/datatype/PFMatrix.cpp \
            src/datatype/PhyTree.cpp \
            src/datatype/PWMatrix.cpp \
