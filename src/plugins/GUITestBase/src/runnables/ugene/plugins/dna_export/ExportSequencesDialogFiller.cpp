@@ -115,7 +115,9 @@ void ExportSequenceOfSelectedAnnotationsFiller::run()
 
     QCheckBox *annotationsCheckBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("withAnnotationsBox"));
     GT_CHECK(annotationsCheckBox != NULL, "Check box not found");
-    GTCheckBox::setChecked(os, annotationsCheckBox, exportWithAnnotations);
+    if(annotationsCheckBox->isEnabled()){
+        GTCheckBox::setChecked(os, annotationsCheckBox, exportWithAnnotations);
+    }
 
     GTGlobals::sleep(200);
 
