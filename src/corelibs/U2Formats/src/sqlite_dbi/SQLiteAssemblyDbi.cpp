@@ -25,14 +25,18 @@
 #include "assembly/RTreeAssemblyAdapter.h"
 #include "assembly/MultiTableAssemblyAdapter.h"
 
+#include <SamtoolsAdapter.h>
+
+#include <QtCore/QVarLengthArray>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/Timer.h>
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <QtCore/QVarLengthArray>
 
-#include <U2Core/Timer.h>
-#include <U2Core/AppContext.h>
+#include <U2Formats/BAMUtils.h>
 
 #include <memory>
 
@@ -317,15 +321,28 @@ AssemblyAdapter::AssemblyAdapter(const U2DataId& _assemblyId, const AssemblyComp
 //////////////////////////////////////////////////////////////////////////
 // SQLiteAssemblyUtils
 
-QByteArray SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod method, const QByteArray& name, const QByteArray& seq, const QByteArray& cigarText, 
-                           const QByteArray& qualityString, U2OpStatus& os)
+QByteArray SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod method, const U2AssemblyRead &read, U2OpStatus& os)
 {
+    const QByteArray &name = read->name;
+    const QByteArray &seq = read->readSequence;
+    QByteArray cigarText = U2AssemblyUtils::cigar2String(read->cigar);
+    const QByteArray &qualityString = read->quality;
+    const QByteArray &rnext = read->rnext;
+    QByteArray pnext = QByteArray::number(read->pnext);
+    QByteArray aux = SamtoolsAdapter::aux2string(read->aux);
+
     assert(method == SQLiteAssemblyDataMethod_NSCQ);
     if (method != SQLiteAssemblyDataMethod_NSCQ) {
         os.setError(SQLiteL10N::tr("Packing method is not supported: %1").arg(method));
         return QByteArray();
     }
     int nBytes = 1 + name.length() + 1  + seq.length() + 1 + cigarText.length() + 1 + qualityString.length();
+    if ("*" != rnext || !aux.isEmpty()) {
+        nBytes += 1 + rnext.length() + 1 + pnext.length();
+        if (!aux.isEmpty()) {
+            nBytes += 1 + aux.length();
+        }
+    }
 #if QT_VERSION >= QT_VERSION_CHECK(4, 7, 0)
     QByteArray res(nBytes, Qt::Uninitialized);
 #else
@@ -358,29 +375,62 @@ QByteArray SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod method, const 
 
     // quality
     qMemCopy(data + pos, qualityString.constData(), qualityString.length());
+    if ("*" != rnext || !aux.isEmpty()) {
+        pos+=qualityString.length();
+        data[pos] = '\n';
+        pos++;
+
+        // rnext
+        qMemCopy(data + pos, rnext.constData(), rnext.length());
+        pos+=rnext.length();
+        data[pos] = '\n';
+        pos++;
+
+        // pnext
+        qMemCopy(data + pos, pnext.constData(), pnext.length());
+        if (!aux.isEmpty()) {
+            pos+=pnext.length();
+            data[pos] = '\n';
+            pos++;
+
+            // aux
+            qMemCopy(data + pos, aux.constData(), aux.length());
+        }
+    }
 
 //#define _SQLITE_CHECK_ASSEMBLY_DATA_PACKING_
 #ifdef _SQLITE_CHECK_ASSEMBLY_DATA_PACKING_
-    QByteArray n, s, c, q;
-    unpackData(res, n, s, c, q, os);
-    assert(n == name);
-    assert(s == seq);
-    assert(c == cigarText);
-    assert(q == qualityString);
+    U2AssemblyRead tmp(new U2AssemblyReadData());
+    unpackData(res, tmp, os);
+    assert(tmp->name == name);
+    assert(tmp->readSequence == seq);
+    assert(U2AssemblyUtils::cigar2String(tmp->cigar) == cigarText);
+    assert(tmp->quality == qualityString);
+    assert(tmp->rnext == read->rnext);
+    assert(tmp->pnext == read->pnext);
+    assert(SamtoolsAdapter::aux2string(tmp->aux) == aux);
 #endif
     return res;
 }
 
-void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, QByteArray& name, QByteArray& sequence, QByteArray& cigarText, QByteArray& qualityString, U2OpStatus& os) {
+void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, U2AssemblyRead &read, U2OpStatus& os) {
+    QByteArray &name = read->name;
+    QByteArray &sequence = read->readSequence;
+    QByteArray &qualityString = read->quality;
+
     if (packedData.isEmpty()) {
         os.setError(SQLiteL10N::tr("Packed data is empty!"));
         return;
     }
     const char* data = packedData.constData();
+
+    // packing type
     if (data[0] != '0') {
         os.setError(SQLiteL10N::tr("Packing method prefix is not supported: %1").arg(data));
         return;
     }
+
+    // name
     int nameStart = 1;
     int nameEnd = packedData.indexOf('\n', nameStart);
     if (nameEnd == -1) {
@@ -389,6 +439,7 @@ void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, QByteArray& n
     }
     name.append(QByteArray(data + nameStart, nameEnd - nameStart));
 
+    // sequence
     int sequenceStart = nameEnd + 1;
     int sequenceEnd = packedData.indexOf('\n', sequenceStart);
     if (sequenceEnd == -1) {
@@ -396,18 +447,59 @@ void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, QByteArray& n
         return;
     }
     sequence.append(data + sequenceStart, sequenceEnd - sequenceStart);
-    
+
+    // cigar
     int cigarStart = sequenceEnd + 1;
     int cigarEnd = packedData.indexOf('\n', cigarStart);
-    if (sequenceEnd == -1) {
+    if (cigarEnd == -1) {
         os.setError(SQLiteL10N::tr("Data is corrupted, no CIGAR end marker found: %1").arg(data));
         return;
     }
-    cigarText.append(data + cigarStart, cigarEnd - cigarStart);
+    QByteArray cigarText(data + cigarStart, cigarEnd - cigarStart);
 
+    // quality
     int qualityStart = cigarEnd + 1;
-    if (qualityStart < packedData.length()) {
-        qualityString.append(data + qualityStart, packedData.length() - qualityStart);
+    int qualityEnd = packedData.indexOf('\n', qualityStart);
+    if (qualityEnd == -1) {
+        qualityEnd = packedData.length();
+    }
+    qualityString.append(data + qualityStart, qualityEnd - qualityStart);
+
+    if (qualityEnd != packedData.length()) {
+        // rnext
+        int rnextStart = qualityEnd + 1;
+        int rnextEnd = packedData.indexOf('\n', rnextStart);
+        if (rnextEnd == -1) {
+            os.setError(SQLiteL10N::tr("Data is corrupted, no rnext end marker found: %1").arg(data));
+            return;
+        }
+        read->rnext = QByteArray(data + rnextStart, rnextEnd - rnextStart);
+
+        // pnext
+        int pnextStart = rnextEnd + 1;
+        int pnextEnd = packedData.indexOf('\n', pnextStart);
+        if (pnextEnd == -1) {
+            pnextEnd = packedData.length();
+        }
+        QByteArray pnext(data + pnextStart, pnextEnd - pnextStart);
+        bool ok = false;
+        read->pnext = pnext.toLongLong(&ok);
+        if (!ok) {
+            os.setError(SQLiteL10N::tr("Can not convert pnext to a number: %1").arg(pnext.data()));
+            return;
+        }
+
+        // aux
+        int auxStart = pnextEnd + 1;
+        int auxEnd = packedData.length();
+        read->aux = SamtoolsAdapter::string2aux(QByteArray(data + auxStart, auxEnd - auxStart));
+    }
+
+    // parse cigar
+    QString err;
+    read->cigar = U2AssemblyUtils::parseCigar(cigarText, err);
+    if (!err.isEmpty()) {
+        os.setError(err);
     }
 }
 
@@ -473,15 +565,8 @@ U2AssemblyRead SimpleAssemblyReadLoader::load(SQLiteQuery* q) {
     if (q->hasError()) {
         return U2AssemblyRead();
     }
-    QByteArray cigarText;
-    SQLiteAssemblyUtils::unpackData(data, read->name, read->readSequence, cigarText, read->quality, q->getOpStatus());
+    SQLiteAssemblyUtils::unpackData(data, read, q->getOpStatus());
     if (q->hasError()) {
-        return U2AssemblyRead();
-    }
-    QString err;
-    read->cigar = U2AssemblyUtils::parseCigar(cigarText, err);
-    if (!err.isEmpty()) {
-        q->setError(err);
         return U2AssemblyRead();
     }
 #ifdef _DEBUG

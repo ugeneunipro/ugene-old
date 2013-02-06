@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <qendian.h>
 #include <QScopedPointer>
 
 #include <U2Core/U2SafePoints.h>
@@ -90,6 +91,176 @@ QByteArray SamtoolsAdapter::sequence2samtools(QByteArray sequence, U2OpStatus &o
         samtoolsSequence[i] = value;
     }
     return samtoolsSequence;
+}
+
+QByteArray SamtoolsAdapter::aux2string(const QList<U2AuxData> &auxData) {
+    QByteArray result;
+    foreach (const U2AuxData &aux, auxData) {
+        result.append(aux.tag, 2);
+        result.append(aux.type);
+        if ('B' == aux.type) {
+            int typeSize = 1;
+            if ('c' == aux.subType || 'C' == aux.subType) { typeSize = 1; }
+            else if ('s' == aux.subType || 'S' == aux.subType) { typeSize = 2; }
+            else if ('i' == aux.subType || 'I' == aux.subType) { typeSize = 4; }
+            else if ('f' == aux.subType) { typeSize = 4; }
+            int n = aux.value.length() / typeSize;
+            n = qToLittleEndian<int>(n);
+            result.append(aux.subType);
+            result.append((char*)&n, 4);
+        }
+        result.append(aux.value);
+        if ('Z' == aux.type || 'H' == aux.type) {
+            result.append(char(0));
+        }
+    }
+    return result;
+}
+
+template<class T>
+inline static void addNum(T num, int tSize, QByteArray &result) {
+    T leNum = qToLittleEndian<T>(num);
+    result.append((char*)&leNum, tSize);
+}
+
+QList<U2AuxData> SamtoolsAdapter::samString2aux(const QByteArray &auxString) {
+    // Adapted samtools code:
+    QList<U2AuxData> result;
+    QList<QByteArray> tokens = auxString.split('\t');
+    foreach (const QByteArray &str, tokens) {
+        U2AuxData aux;
+        if (str.length() < 6 || str[2] != ':' || str[4] != ':') {
+            coreLog.error("Samtools: missing colon in auxiliary data");
+            continue;
+        }
+        aux.tag[0] = str[0]; aux.tag[1] = str[1];
+        aux.type = str[3];
+        if (aux.type == 'A' || aux.type == 'a' || aux.type == 'c' || aux.type == 'C') { // c and C for backward compatibility
+            aux.type = 'A';
+            aux.value.append(str[5]);
+        } else if (aux.type == 'I' || aux.type == 'i') {
+            QByteArray num = str.mid(5, 4);
+            long long x = num.toLongLong();
+            long long leX = qToLittleEndian<long long>(x);
+            if (x < 0) {
+                if (x >= -127) {
+                    aux.type = 'c';
+                    aux.value.append((char*)&leX, 1);
+                } else if (x >= -32767) {
+                    aux.type = 'x';
+                    aux.value.append((char*)&leX, 2);
+                } else {
+                    aux.type = 'i';
+                    aux.value.append((char*)&leX, 4);
+                    if (x < -2147483648ll) {
+                        coreLog.error(QString("Samtools: parse warning: integer %1 is out of range.").arg(x));
+                    }
+                }
+            } else {
+                if (x <= 255) {
+                    aux.type = 'C';
+                    aux.value.append((char*)&leX, 1);
+                } else if (x <= 65535) {
+                    aux.type = 'S';
+                    aux.value.append((char*)&leX, 2);
+                } else {
+                    aux.type = 'I';
+                    aux.value.append((char*)&leX, 4);
+                    if (x > 4294967295ll) {
+                        coreLog.error(QString("Samtools: parse warning: integer %1 is out of range.").arg(x));
+                    }
+                }
+            }
+        } else if (aux.type == 'f') {
+            QByteArray num = str.mid(5, 4);
+            float leX = qToLittleEndian<float>(num.toFloat());
+            aux.value.append((char*)&leX, 4);
+        } else if (aux.type == 'd') {
+            QByteArray num = str.mid(9, 4);
+            float leX = qToLittleEndian<float>(num.toFloat());
+            aux.value.append((char*)&leX, 4);
+        } else if (aux.type == 'Z' || aux.type == 'H') {
+            int size = 1 + (str.length() - 5) + 1;
+            if (aux.type == 'H') { // check whether the hex string is valid
+                if ((str.length() - 5) % 2 == 1) {
+                    coreLog.error("Samtools: length of the hex string not even.");
+                    return result;
+                }
+                for (int i = 0; i < str.length() - 5; ++i) {
+                    int c = toupper(str.data()[5 + i]);
+                    if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F'))) {
+                        coreLog.error("Samtools: invalid hex character.");
+                        return result;
+                    }
+                }
+            }
+            aux.value = str.mid(5);
+        } else if (aux.type == 'B') {
+            int32_t k = 0;
+            if (str.length() < 8) {
+                coreLog.error("Samtools: too few values in aux type B.");
+                continue;
+            }
+            aux.subType = str[5];
+            QList<QByteArray> nums = str.mid(7).split(',');
+            foreach (const QByteArray &num, nums) {
+                if (aux.subType == 'c')      addNum<char>((char)num.toShort(), 1, aux.value);
+                else if (aux.subType == 'C') addNum<char>((char)num.toUShort(), 1, aux.value);
+                else if (aux.subType == 's') addNum<short>(num.toShort(), 2, aux.value);
+                else if (aux.subType == 'S') addNum<ushort>(num.toUShort(), 2, aux.value);
+                else if (aux.subType == 'i') addNum<int>(num.toInt(), 4, aux.value);
+                else if (aux.subType == 'I') addNum<uint>(num.toUInt(), 4, aux.value);
+                else if (aux.subType == 'f') addNum<float>(num.toFloat(), 4, aux.value);
+                else {
+                    coreLog.error("Samtools: unrecognized array type.");
+                    continue;
+                }
+            }
+        } else {
+            coreLog.error("Samtools: unrecognized type.");
+            continue;
+        }
+        result << aux;
+    }
+    return result;
+}
+
+QList<U2AuxData> SamtoolsAdapter::string2aux(const QByteArray &auxString) {
+    // Adapted samtools code:
+    QList<U2AuxData> result;
+    const char *s = auxString.data();
+    while (s < auxString.data() + auxString.length()) {
+        U2AuxData aux;
+        aux.tag[0] = s[0]; aux.tag[1] = s[1];
+        s += 2; aux.type = *s; ++s;
+        if (aux.type == 'A') { aux.value = QByteArray(s, 1); ++s; }
+        else if (aux.type == 'C') { aux.value.append(s, 1); ++s; }
+        else if (aux.type == 'c') { aux.value.append(s, 1); ++s; }
+        else if (aux.type == 'S') { aux.value.append(s, 2); s += 2; }
+        else if (aux.type == 's') { aux.value.append(s, 2); s += 2; }
+        else if (aux.type == 'I') { aux.value.append(s, 4); s += 4; }
+        else if (aux.type == 'i') { aux.value.append(s, 4); s += 4; }
+        else if (aux.type == 'f') { aux.value.append(s, 4); s += 4; }
+        else if (aux.type == 'd') { aux.value.append(s, 8); s += 8; }
+        else if (aux.type == 'Z' || aux.type == 'H') { while (*s) aux.value.append(*s++); ++s; }
+        else if (aux.type == 'B') {
+            aux.subType = *(s++);
+            qint32 n;
+            memcpy(&n, s, 4);
+            s += 4; // no point to the start of the array
+            for (qint32 i = 0; i < n; ++i) {
+                if ('c' == aux.subType || 'c' == aux.subType) { aux.value.append(s, 1); ++s; }
+                else if ('C' == aux.subType) { aux.value.append(s, 1); ++s; }
+                else if ('s' == aux.subType) { aux.value.append(s, 2); s += 2; }
+                else if ('S' == aux.subType) { aux.value.append(s, 2); s += 2; }
+                else if ('i' == aux.subType) { aux.value.append(s, 4); s += 4; }
+                else if ('I' == aux.subType) { aux.value.append(s, 4); s += 4; }
+                else if ('f' == aux.subType) { aux.value.append(s, 4); s += 4; }
+            }
+        }
+        result << aux;
+    }
+    return result;
 }
 
 static bool check_seq2samtools(const bam1_t &b, QByteArray seq, U2OpStatus &os) {
@@ -168,17 +339,10 @@ void SamtoolsAdapter::read2samtools(const U2AssemblyRead &read, const ReadsConte
     read2samtools(read, os, result);
     CHECK_OP(os, );
     result.core.tid = ctx.getReadAssemblyNum();
-
-    bool paired = false;
-    U2AssemblyRead pRead;
-    if (ReadFlagsUtils::isPairedRead(read->flags)) {
-        pRead = ctx.getPairedRead(read, paired, os);
+    if ("*" != read->rnext) {
+        result.core.mtid = ctx.getAssemblyNum(read->rnext);
     }
-    if (paired) {
-        // TODO: mate assembly id could be not the same!
-        result.core.mtid = ctx.getReadAssemblyNum();
-        result.core.mpos = pRead->leftmostPos;
-    }
+    result.core.mpos = read->pnext;
 }
 
 void SamtoolsAdapter::read2samtools(const U2AssemblyRead &r, U2OpStatus &os, bam1_t &resRead) {
@@ -208,7 +372,8 @@ void SamtoolsAdapter::read2samtools(const U2AssemblyRead &r, U2OpStatus &os, bam
 
     QByteArray cigar = cigar2samtools(r->cigar, os);
     QByteArray seq = sequence2samtools(r->readSequence, os);
-    int dataLen = r->name.length() + 1 + cigar.length() + seq.length() + quality.length();
+    QByteArray aux = aux2string(r->aux);
+    int dataLen = r->name.length() + 1 + cigar.length() + seq.length() + quality.length() + aux.length();
     quint8 * data = new quint8[dataLen];
     quint8 * dest = data;
     copyArray(dest, r->name);
@@ -216,9 +381,9 @@ void SamtoolsAdapter::read2samtools(const U2AssemblyRead &r, U2OpStatus &os, bam
     copyArray(dest, cigar);
     copyArray(dest, seq);
     copyQuality(dest, quality);
+    copyArray(dest, aux);
 
-    // No tags. TODO: is this good?
-    resRead.l_aux = 0;
+    resRead.l_aux = aux.length();
     resRead.data_len = resRead.m_data = dataLen;
     resRead.data = data;
 
@@ -249,38 +414,24 @@ ReadsContainer::~ReadsContainer() {
 /************************************************************************/
 /* ReadsContext */
 /************************************************************************/
-ReadsContext::ReadsContext(U2AssemblyDbi *_assemblyDbi,
-    const U2DataId &_assemblyId,
-    const QMap<U2DataId, int> &_assemblyNumMap)
-: assemblyDbi(_assemblyDbi), assemblyId(_assemblyId), assemblyNumMap(_assemblyNumMap)
+ReadsContext::ReadsContext(const QString &_assemblyName,
+    const QMap<QString, int> &_assemblyNumMap)
+: assemblyName(_assemblyName), assemblyNumMap(_assemblyNumMap)
 {
 
 }
 
-U2AssemblyRead ReadsContext::getPairedRead(const U2AssemblyRead &read, bool &found, U2OpStatus &os) const {
-    found = false;
-    CHECK(ReadFlagsUtils::isPairedRead(read->flags), U2AssemblyRead());
-
-    QScopedPointer< U2DbiIterator<U2AssemblyRead> > it(assemblyDbi->getReadsByName(assemblyId, read->name, os));
-    CHECK_OP(os, U2AssemblyRead());
-
-    QList<U2AssemblyRead> result;
-    while (it->hasNext()) {
-        U2AssemblyRead r = it->next();
-        if(r->id != read->id) {
-            found = true;
-            return r;
-        }
-    }
-    return U2AssemblyRead();
-}
-
 int ReadsContext::getReadAssemblyNum() const {
-    return assemblyNumMap.value(assemblyId, 0);
+    return assemblyNumMap.value(assemblyName, -1);
 }
 
-int ReadsContext::getAssemblyNum(const U2DataId &assemblyId) const {
-    return assemblyNumMap.value(assemblyId, 0);
+int ReadsContext::getAssemblyNum(const QString &assemblyName) const {
+    if ("=" == assemblyName) {
+        return getReadAssemblyNum();
+    } else if ("*" == assemblyName) {
+        return -1;
+    }
+    return assemblyNumMap.value(assemblyName, -1);
 }
 
 } // namespace

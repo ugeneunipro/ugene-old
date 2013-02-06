@@ -756,6 +756,9 @@ U2AssemblyRead AssemblyDbi::alignmentToRead(const Alignment &alignment) {
     row->quality = alignment.getQuality();
     row->mappingQuality = alignment.getMapQuality();
     row->flags = alignment.getFlags();
+    row->rnext = alignment.getNextReferenceName();
+    row->pnext = alignment.getNextPosition();
+    row->aux = alignment.getAuxData();
     foreach(const Alignment::CigarOperation &cigarOperation, alignment.getCigar()) {
         U2CigarOp cigarOp = U2CigarOp_Invalid;
         switch(cigarOperation.getOperation()) {

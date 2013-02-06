@@ -180,9 +180,6 @@ void SingleTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2A
     while (it->hasNext()) {
         U2AssemblyRead read = it->next();
         bool dnaExt = false; //TODO:
-        
-        QByteArray cigarText = U2AssemblyUtils::cigar2String(read->cigar);
-
         qint64 flags = read->flags;
         flags = flags | (dnaExt ? DnaExtAlphabet : 0);
         
@@ -202,7 +199,7 @@ void SingleTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2A
         insertQ.bindInt64(4, read->leftmostPos);
         insertQ.bindInt64(5, read->effectiveLen);
         insertQ.bindInt32(6, read->mappingQuality);
-        QByteArray packedData = SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod_NSCQ, read->name, read->readSequence, cigarText, read->quality, os);
+        QByteArray packedData = SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod_NSCQ, read, os);
         insertQ.bindBlob(7, packedData, false);
         
         insertQ.insert();

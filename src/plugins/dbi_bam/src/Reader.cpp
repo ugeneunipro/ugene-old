@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <SamtoolsAdapter.h>
+
 #include <U2Core/Log.h>
 
 #include "BAMDbiPlugin.h"
@@ -143,6 +145,7 @@ Alignment BamReader::AlignmentReader::read() {
             throw InvalidFormatException(BAMDbiPlugin::tr("Invalid mate reference id: %1").arg(nextReferenceId));
         }
         alignment.setNextReferenceId(nextReferenceId);
+        alignment.setNextReferenceName(r->referencesMap.key(nextReferenceId));
     }
     {
         int nextPosition = r->readInt32();
@@ -292,79 +295,9 @@ Alignment BamReader::AlignmentReader::read() {
         }
     }
     {
-        QMap<QByteArray, QVariant> optionalFields;
         int toRead = blockSize - 32 - nameLength - 4*cigarLength - (length + 1)/2 - length;
-        int bytesRead = 0;
-        while(bytesRead < toRead) {
-            QByteArray tag = r->readBytes(2);
-            if(!QRegExp("[A-Za-z][A-Za-z0-9]").exactMatch(tag)) {
-                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field tag: %1").arg(QString(tag)));
-            }
-            char type = r->readChar();
-            bytesRead += 3;
-            QVariant value;
-            bool isNumber = this->readNumber(type, value, bytesRead);
-            if (!isNumber) {
-            switch(type) {
-                case 'A':
-                    value = r->readChar();
-                    bytesRead += 1;
-                    break;
-                case 'Z':
-                    {
-                        QByteArray string = r->readString();
-                        value = string;
-                        bytesRead += string.size() + 1;
-                        break;
-                    }
-                case 'H':
-                    {
-                        QByteArray hexString = r->readString();
-                        if(0 != (hexString.size()%2)) {
-                            throw InvalidFormatException(BAMDbiPlugin::tr("Odd hex string length: %1").arg(hexString.size()));
-                        }
-                        QByteArray data(hexString.size()/2, 0);
-                        for(int index = 0;index < hexString.size();index++) {
-                            int digitValue = QChar(hexString[index]).digitValue();
-                            if((-1 == digitValue) || (digitValue > 0xf)) {
-                                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid hex string digit: %1").arg(hexString[index]));
-                            }
-                            if(0 == (index%2)) {
-                                data[index/2] = data[index/2] | (digitValue << 4);
-                            } else {
-                                data[index/2] = data[index/2] | digitValue;
-                            }
-                        }
-                        value = data;
-                        bytesRead += hexString.size() + 1;
-                        break;
-                    }
-                case 'B':
-                    {
-                        char arrayType = r->readChar();
-                        int arraySize = r->readInt32();
-                        bytesRead += 5;
-                        QVariantList values;
-                        for (int i=0; i<arraySize; i++) {
-                            QVariant number;
-                            bool isNumber = this->readNumber(arrayType, number, bytesRead);
-                            assert(isNumber);
-                            Q_UNUSED(isNumber);
-                            values << number;
-                        }
-                        value = values;
-                        break;
-                    }
-                default:
-                    throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field value type: %1").arg(type));
-                }
-            }
-            optionalFields.insert(tag, value);
-        }
-        if(bytesRead > toRead) {
-            throw InvalidFormatException(BAMDbiPlugin::tr("Invalid block size: %1").arg(blockSize));
-        }
-        alignment.setOptionalFields(optionalFields);
+        QList<U2AuxData> aux = SamtoolsAdapter::string2aux(r->readBytes(toRead));
+        alignment.setAuxData(aux);
     }
     return alignment;
 }

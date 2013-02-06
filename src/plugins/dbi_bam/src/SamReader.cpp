@@ -27,6 +27,8 @@
 #include "SamReader.h"
 #include "CigarValidator.h"
 
+#include <SamtoolsAdapter.h>
+
 namespace U2 {
 namespace BAM {
 
@@ -200,6 +202,7 @@ Alignment SamReader::parseAlignmentString(QByteArray line) {
             }
             alignment.setNextReferenceId(referencesMap[nextReference]);
         }
+        alignment.setNextReferenceName(nextReference);
     }
     {
         bool ok = false;
@@ -241,21 +244,17 @@ Alignment SamReader::parseAlignmentString(QByteArray line) {
         }
     }
     {
+        QByteArray samAuxString;
+        bool first = true;
         QMap<QByteArray, QVariant> optionalFields;
         for (int i = 11; i < tokens.length(); i++) {
-            QList<QByteArray> opt = tokens[i].split(':');
-            if(opt.length() != 3) {
-                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field: %1").arg(QString(tokens[i])));
+            if (!first) {
+                samAuxString += '\t';
             }
-            QByteArray tag = opt[0];
-            if(!QRegExp("[A-Za-z][A-Za-z0-9]").exactMatch(tag)) {
-                throw InvalidFormatException(BAMDbiPlugin::tr("Invalid optional field tag: %1").arg(QString(tag)));
-            }
-
-            QVariant value = opt[2];
-            optionalFields.insert(tag, value);
+            samAuxString += tokens[i];
+            first = false;
         }
-        alignment.setOptionalFields(optionalFields);
+        alignment.setAuxData(SamtoolsAdapter::samString2aux(samAuxString));
     }
     {
         // Validation of the CIGAR string.

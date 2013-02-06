@@ -36,7 +36,6 @@
 #include <U2Core/U2AlphabetUtils.h>
 
 #include "Reader.h"
-#include "Writer.h"
 #include "BAMDbiPlugin.h"
 #include "Exception.h"
 #include "BAMFormat.h"

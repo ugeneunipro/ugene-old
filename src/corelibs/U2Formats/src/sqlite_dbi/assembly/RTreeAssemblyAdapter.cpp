@@ -141,9 +141,6 @@ void RTreeAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2Assembl
         U2AssemblyRead read = it->next();
 
         bool dnaExt = false; //TODO
-        
-        QByteArray cigarText = U2AssemblyUtils::cigar2String(read->cigar);
-        
         qint64 flags = read->flags;
         flags = flags | (dnaExt ? DnaExtAlphabet : 0);
         
@@ -156,7 +153,7 @@ void RTreeAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it, U2Assembl
         insertRQ.bindInt64(1, hash);
         insertRQ.bindInt64(2, flags);
         insertRQ.bindInt32(3, read->mappingQuality);
-        QByteArray packedData = SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod_NSCQ, read->name, read->readSequence, cigarText, read->quality, os);
+        QByteArray packedData = SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod_NSCQ, read, os);
         insertRQ.bindBlob(4, packedData, false);
 
         insertRQ.insert();

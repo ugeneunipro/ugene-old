@@ -66,26 +66,28 @@ public:
     int getMapQuality()const;
     qint64 getFlags()const;
     int getNextReferenceId()const;
+    QByteArray getNextReferenceName()const;
     int getNextPosition()const;
     int getTemplateLength()const;
     const QByteArray &getName()const;
     const QList<CigarOperation> &getCigar()const;
     const QByteArray &getSequence()const;
     const QByteArray &getQuality()const;
-    const QMap<QByteArray, QVariant> &getOptionalFields()const;
+    const QList<U2AuxData> & getAuxData()const;
     void setReferenceId(int referenceId);
     void setPosition(int position);
     void setBin(int bin);
     void setMapQuality(int mapQuality);
     void setFlags(qint64 flags);
     void setNextReferenceId(int nextReferenceId);
+    void setNextReferenceName(const QByteArray &nextReferenceName);
     void setNextPosition(int nextPosition);
     void setTemplateLength(int templateLength);
     void setName(const QByteArray &name);
     void setCigar(const QList<CigarOperation> &cigar);
     void setSequence(const QByteArray &sequence);
     void setQuality(const QByteArray &quality);
-    void setOptionalFields(const QMap<QByteArray, QVariant> &optionalFields);
+    void setAuxData(const QList<U2AuxData> &aux);
 
     static int computeLength(const Alignment &alignment);
 private:
@@ -95,13 +97,14 @@ private:
     int mapQuality;
     qint64 flags;
     int nextReferenceId;
+    QByteArray nextReferenceName;
     int nextPosition;
     int templateLength;
     QByteArray name;
     QList<CigarOperation> cigar;
     QByteArray sequence;
     QByteArray quality;
-    QMap<QByteArray, QVariant> optionalFields;
+    QList<U2AuxData> aux;
 };
 
 } // namespace BAM

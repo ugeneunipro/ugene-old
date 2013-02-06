@@ -50,18 +50,15 @@ private:
 
 class ReadsContext {
 public:
-    ReadsContext(U2AssemblyDbi *assemblyDbi,
-        const U2DataId &assemblyId,
-        const QMap<U2DataId, int> &assemblyNumMap);
+    ReadsContext(const QString &assemblyName,
+        const QMap<QString, int> &assemblyNumMap);
 
-    U2AssemblyRead getPairedRead(const U2AssemblyRead &read, bool &found, U2OpStatus &os) const;
     int getReadAssemblyNum() const;
-    int getAssemblyNum(const U2DataId &assemblyId) const;
+    int getAssemblyNum(const QString &assemblyName) const;
 
 private:
-    U2AssemblyDbi *assemblyDbi;
-    U2DataId assemblyId;
-    QMap<U2DataId, int> assemblyNumMap;
+    QString assemblyName;
+    QMap<QString, int> assemblyNumMap;
 };
 
 class SamtoolsAdapter : public QObject {
@@ -81,6 +78,10 @@ public:
 
     static QByteArray cigar2samtools(QList<U2CigarToken> cigar, U2OpStatus &os);
     static QByteArray sequence2samtools(QByteArray sequence, U2OpStatus &os);
+
+    static QByteArray aux2string(const QList<U2AuxData> &aux);
+    static QList<U2AuxData> string2aux(const QByteArray &auxString);
+    static QList<U2AuxData> samString2aux(const QByteArray &auxString);
 };
 
 } // namespace

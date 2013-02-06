@@ -168,10 +168,9 @@ enum SQLiteAssemblyDataMethod {
 
 class SQLiteAssemblyUtils {
 public:
-    static QByteArray packData(SQLiteAssemblyDataMethod method, const QByteArray& name, const QByteArray& seq, 
-        const QByteArray& cigarText, const QByteArray& qualityString, U2OpStatus& os);
+    static QByteArray packData(SQLiteAssemblyDataMethod method, const U2AssemblyRead &read, U2OpStatus& os);
     
-    static void unpackData(const QByteArray& packed, QByteArray& name, QByteArray& sequence, QByteArray& cigarText, QByteArray& qualityString, U2OpStatus& os);
+    static void unpackData(const QByteArray& packed, U2AssemblyRead &read, U2OpStatus& os);
 
     static void calculateCoverage(SQLiteQuery& q, const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os);
 

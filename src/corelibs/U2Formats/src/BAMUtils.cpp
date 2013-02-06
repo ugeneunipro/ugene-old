@@ -326,31 +326,21 @@ static void createHeader(bam_header_t *header, const QList<GObject*> &objects, U
     }
 }
 
-static QMap<U2DataId, int> getNumMap(const QList<GObject*> &objects, U2OpStatus &os) {
-    QMap<U2DataId, int> result;
+static QMap<QString, int> getNumMap(const QList<GObject*> &objects, U2OpStatus &os) {
+    QMap<QString, int> result;
     int i = 0;
     foreach (GObject *obj, objects) {
         AssemblyObject *assemblyObj = dynamic_cast<AssemblyObject*>(obj);
         SAFE_POINT_EXT(NULL != assemblyObj, os.setError("NULL assembly object"), result);
 
-        DbiConnection con(assemblyObj->getEntityRef().dbiRef, os);
-        CHECK_OP(os, result);
-
-        U2AssemblyDbi *dbi = con.dbi->getAssemblyDbi();
-        SAFE_POINT_EXT(NULL != dbi, os.setError("NULL assembly DBI"), result);
-
-        U2DataId assemblyId = assemblyObj->getEntityRef().entityId;
-        result[assemblyId] = i;
+        QString name = assemblyObj->getGObjectName();
+        result[name] = i;
         i++;
     }
     return result;
 }
 
 static void writeObjects(samfile_t *out, const QList<GObject*> &objects, U2OpStatus &os) {
-    int objIdx = 0;
-    QMap<U2DataId, int> assemblyNumMap = getNumMap(objects, os);
-    CHECK_OP(os, );
-
     foreach (GObject *obj, objects) {
         AssemblyObject *assemblyObj = dynamic_cast<AssemblyObject*>(obj);
         SAFE_POINT_EXT(NULL != assemblyObj, os.setError("NULL assembly object"), );
@@ -367,18 +357,16 @@ static void writeObjects(samfile_t *out, const QList<GObject*> &objects, U2OpSta
         QScopedPointer< U2DbiIterator<U2AssemblyRead> > reads(dbi->getReads(assemblyId, wholeAssembly, os, true));
         CHECK_OP(os, );
 
-        ReadsContext ctx(dbi, assemblyId, assemblyNumMap);
+        ReadsContext ctx(assemblyObj->getGObjectName(), getNumMap(objects, os));
+        CHECK_OP(os, );
         bam1_t *read = bam_init1();
         while (reads->hasNext()) {
             U2AssemblyRead r = reads->next();
             SamtoolsAdapter::read2samtools(r, ctx, os, *read);
             CHECK_OP_EXT(os, bam_destroy1(read), );
-
-            read->core.tid = objIdx;
             samwrite(out, read);
         }
         bam_destroy1(read);
-        objIdx++;
     }
 }
 

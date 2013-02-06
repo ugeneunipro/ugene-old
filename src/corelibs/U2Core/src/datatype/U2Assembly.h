@@ -141,13 +141,29 @@ public:
     }
 };
 
+/**
+  * Auxiliary data from BAM/SAM.
+  */
+class U2CORE_EXPORT U2AuxData {
+public:
+    U2AuxData() : type(0), subType(0) {}
+    /** Two bytes for tag */
+    char tag[2];
+    /** One byte for type: AcCsSiIfZHB */
+    char type;
+    /** Value size depends on the type */
+    QByteArray value;
+    /** Type of array data. Only for array auxes */
+    char subType;
+};
+
 /** 
     Row of assembly: sequence, leftmost position and CIGAR
 */
 class U2CORE_EXPORT U2AssemblyReadData : public U2Entity, public QSharedData {
 public:
-    U2AssemblyReadData() : leftmostPos(0), effectiveLen(0), 
-        packedViewRow(0), mappingQuality(255){}
+    U2AssemblyReadData() : leftmostPos(0), effectiveLen(0),
+        packedViewRow(0), mappingQuality(255), rnext("*"), pnext(0){}
 
 
     /** Name of the read, ASCII string */
@@ -185,6 +201,15 @@ public:
     
     /** Read flags */
     qint64              flags;
+
+    /** Reference sequence name of the next mate read */
+    QByteArray rnext;
+
+    /** Left-most position of the next mate read */
+    qint64 pnext;
+
+    /** The list of auxiliary data of BAM/SAM formats */
+    QList<U2AuxData> aux;
 };
 
 typedef QSharedDataPointer<U2AssemblyReadData> U2AssemblyRead;

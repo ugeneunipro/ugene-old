@@ -56,6 +56,7 @@ Alignment::Alignment():
     mapQuality(0xff),
     flags(0),
     nextReferenceId(-1),
+    nextReferenceName("*"),
     nextPosition(-1),
     templateLength(0)
 {
@@ -85,6 +86,10 @@ int Alignment::getNextReferenceId()const {
     return nextReferenceId;
 }
 
+QByteArray Alignment::getNextReferenceName()const {
+    return nextReferenceName;
+}
+
 int Alignment::getNextPosition()const {
     return nextPosition;
 }
@@ -109,8 +114,8 @@ const QByteArray &Alignment::getQuality()const {
     return quality;
 }
 
-const QMap<QByteArray, QVariant> &Alignment::getOptionalFields()const {
-    return optionalFields;
+const QList<U2AuxData> & Alignment::getAuxData()const {
+    return aux;
 }
 
 void Alignment::setReferenceId(int referenceId) {
@@ -137,6 +142,13 @@ void Alignment::setNextReferenceId(int nextReferenceId) {
     this->nextReferenceId = nextReferenceId;
 }
 
+void Alignment::setNextReferenceName(const QByteArray &nextReferenceName) {
+    if (nextReferenceName.isEmpty()) {
+        this->nextReferenceName = "*";
+    }
+    this->nextReferenceName = nextReferenceName;
+}
+
 void Alignment::setNextPosition(int nextPosition) {
     this->nextPosition = nextPosition;
 }
@@ -161,8 +173,8 @@ void Alignment::setQuality(const QByteArray &quality) {
     this->quality = quality;
 }
 
-void Alignment::setOptionalFields(const QMap<QByteArray, QVariant> &optionalFields) {
-    this->optionalFields = optionalFields;
+void Alignment::setAuxData(const QList<U2AuxData> &aux) {
+    this->aux = aux;
 }
 
 int Alignment::computeLength(const Alignment &alignment) {
