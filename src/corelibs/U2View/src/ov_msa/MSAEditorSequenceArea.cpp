@@ -1210,13 +1210,13 @@ void MSAEditorSequenceArea::sl_buildContextMenu(GObjectView*, QMenu* m) {
     buildMenu(m);
     
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
-    assert(editMenu!=NULL);
+    SAFE_POINT(editMenu != NULL, "editMenu", );
 
     QList<QAction*> actions; 
     actions << delSelectionAction << insSymAction << reverseComplementAction << reverseAction << complementAction << delColAction << removeAllGapsAction;
     
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
-    assert(copyMenu != NULL);
+    SAFE_POINT(copyMenu != NULL, "copyMenu", );
     
 
     if (rect().contains( mapFromGlobal(QCursor::pos()) ) ) {
@@ -1235,27 +1235,28 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     m->insertAction(copyMenuAction, gotoAction);
     
     QMenu* loadSeqMenu = GUIUtils::findSubMenu(m, MSAE_MENU_LOAD);
-    assert(loadSeqMenu!=NULL);
+    SAFE_POINT(loadSeqMenu != NULL, "loadSeqMenu", );
     loadSeqMenu->addAction(addSeqFromProjectAction);
     loadSeqMenu->addAction(addSeqFromFileAction);
 
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
-    assert(editMenu!=NULL);
+    SAFE_POINT(editMenu != NULL, "editMenu", );
     QList<QAction*> actions; 
     actions << reverseComplementAction  << reverseAction << complementAction << removeAllGapsAction;
     editMenu->insertActions(editMenu->isEmpty() ? NULL : editMenu->actions().first(), actions);
 
     QMenu * exportMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EXPORT);
-    assert(exportMenu != NULL);
+    SAFE_POINT(exportMenu != NULL, "exportMenu", );
     exportMenu->addAction(createSubaligniment);
     exportMenu->addAction(saveSequence);
     
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
+    SAFE_POINT(copyMenu != NULL, "copyMenu", );
     ui->getCopySelectionAction()->setDisabled(selection.isNull());
     copyMenu->addAction(ui->getCopySelectionAction());
 
     QMenu* viewMenu = GUIUtils::findSubMenu(m, MSAE_MENU_VIEW);
-    assert(viewMenu!=NULL);
+    SAFE_POINT(viewMenu != NULL, "viewMenu", );
     viewMenu->addAction(sortByNameAction);
 
     QMenu* colorsSchemeMenu = new QMenu(tr("Colors"), NULL);

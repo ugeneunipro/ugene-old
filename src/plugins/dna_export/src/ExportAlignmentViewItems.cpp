@@ -88,6 +88,7 @@ void MSAExportContext::updateActions() {
 
 void MSAExportContext::buildMenu(QMenu* m) {
     QMenu* exportMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EXPORT);
+    SAFE_POINT(exportMenu != NULL, "exportMenu", );
     MAlignmentObject* mObject = editor->getMSAObject();
     if (mObject->getAlphabet()->isNucleic()) {
         exportMenu->addAction(translateMSAAction);

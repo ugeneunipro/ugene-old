@@ -183,7 +183,7 @@ void CircularViewContext::buildMenu(U2::GObjectView *v, QMenu *m) {
         return;
     }
     QMenu* exportMenu = GUIUtils::findSubMenu(m, ADV_MENU_EXPORT);
-    assert(exportMenu!=NULL);
+    SAFE_POINT(exportMenu != NULL, "exportMenu", );
     exportMenu->addAction(exportAction);
 }
 //////////////////////////////////////////////////////////////////////////

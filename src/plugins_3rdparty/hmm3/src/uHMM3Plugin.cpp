@@ -221,7 +221,7 @@ void UHMM3MSAEditorContext::buildMenu( GObjectView * v, QMenu * m ) {
     QList< GObjectViewAction* > list = getViewActions( v );
     assert( 1 == list.size() );
     QMenu* aMenu = GUIUtils::findSubMenu( m, MSAE_MENU_ADVANCED );
-    assert( NULL != aMenu );
+    SAFE_POINT(aMenu != NULL, "aMenu", );
     aMenu->addAction( list.first() );
 }
 

@@ -349,7 +349,7 @@ void MSAEditorConsensusArea::sl_buildContextMenu(GObjectView* v, QMenu* m) {
 
 void MSAEditorConsensusArea::buildMenu(QMenu* m) {
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
-    assert(copyMenu!=NULL);
+    SAFE_POINT(copyMenu != NULL, "copyMenu", );
     copyMenu->addAction(copyConsensusAction);
     copyMenu->addAction(copyConsensusWithGapsAction);
 

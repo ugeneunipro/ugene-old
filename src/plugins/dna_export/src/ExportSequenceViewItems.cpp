@@ -212,12 +212,14 @@ void ADVExportContext::updateActions() {
 
 void ADVExportContext::buildMenu(QMenu* m) {
     QMenu* alignMenu = GUIUtils::findSubMenu(m, ADV_MENU_ALIGN);
+    SAFE_POINT(alignMenu != NULL, "alignMenu", );
     alignMenu->addAction(sequenceToAlignmentAction);
     alignMenu->addAction(sequenceToAlignmentWithTranslationAction);
     alignMenu->addAction(annotationsToAlignmentAction);
     alignMenu->addAction(annotationsToAlignmentWithTranslatedAction);
 
     QMenu* exportMenu = GUIUtils::findSubMenu(m, ADV_MENU_EXPORT);
+    SAFE_POINT(exportMenu != NULL, "exportMenu", );
     exportMenu->addAction(sequence2SequenceAction);
     exportMenu->addAction(annotations2SequenceAction);
     exportMenu->addAction(annotations2CSVAction);

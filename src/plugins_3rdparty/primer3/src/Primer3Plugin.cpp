@@ -121,7 +121,7 @@ Primer3ADVContext::Primer3ADVContext(QObject* p) : GObjectViewWindowContext(p, A
 //    assert(list.size()==1);
 //    GObjectViewAction* a = list.first();  
 //    QMenu* aMenu = GUIUtils::findSubMenu(m, ADV_MENU_ANALYSE);
-//    assert(aMenu!=NULL);
+//    SAFE_POINT(aMenu != NULL, "aMenu", );
 //    aMenu->addAction(a);
 //}
 

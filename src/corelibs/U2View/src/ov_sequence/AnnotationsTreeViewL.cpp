@@ -814,6 +814,7 @@ void AnnotationsTreeViewL::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
 ;//        << cutAnnotationsAction << copyAnnotationsAction << pasteAnnotationsAction;
     
     QMenu* copyMenu = GUIUtils::findSubMenu(m, ADV_MENU_COPY);
+    SAFE_POINT(copyMenu != NULL, "copyMenu", );
     foreach(QAction* a, contextActions) {
         if (a->isEnabled()) {
             copyMenu->addAction(a);
@@ -834,12 +835,12 @@ void AnnotationsTreeViewL::sl_onBuildPopupMenu(GObjectView*, QMenu* m) {
 
 void AnnotationsTreeViewL::adjustMenu(QMenu* m) const {
     QMenu* addMenu = GUIUtils::findSubMenu(m, ADV_MENU_ADD);
-    assert(addMenu!=NULL);
+    SAFE_POINT(addMenu != NULL, "addMenu", );
     addMenu->addAction(addAnnotationObjectAction);
     addMenu->addAction(addQualifierAction);
 
     QMenu* removeMenu = GUIUtils::findSubMenu(m, ADV_MENU_REMOVE);
-    assert(removeMenu!=NULL);
+    SAFE_POINT(removeMenu != NULL, "removeMenu", );
     removeMenu->addAction(removeObjectsFromViewAction);
     removeMenu->addAction(removeAnnsAndQsAction);
 }

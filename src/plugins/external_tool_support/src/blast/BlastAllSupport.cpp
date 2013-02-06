@@ -152,7 +152,7 @@ void BlastAllSupportContext::initViewContext(GObjectView* view) {
 void BlastAllSupportContext::buildMenu(GObjectView* view, QMenu* m) {
         QList<GObjectViewAction *> actions = getViewActions(view);
         QMenu* analyseMenu = GUIUtils::findSubMenu(m, ADV_MENU_ANALYSE);
-        assert(analyseMenu!=NULL);
+        SAFE_POINT(analyseMenu != NULL, "analyzeMenu", );
         foreach(GObjectViewAction* a, actions) {
                 a->addToMenuWithOrder(analyseMenu);
         }

@@ -572,6 +572,7 @@ void MSAEditor::sl_align(){
     GUIUtils::disableEmptySubmenus(&m);
 
     mm = GUIUtils::findSubMenu(&m, MSAE_MENU_ALIGN);
+    SAFE_POINT(mm != NULL, "mm", );
 
     mm->exec(QCursor::pos());
 }

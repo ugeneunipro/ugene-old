@@ -236,7 +236,7 @@ void HMMMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
     assert(list.size()==1);
     GObjectViewAction* a = list.first();  
     QMenu* aMenu = GUIUtils::findSubMenu(m, MSAE_MENU_ADVANCED);
-    assert(aMenu!=NULL);
+    SAFE_POINT(aMenu != NULL, "aMenu", );
     aMenu->addAction(a);
 }
 

@@ -154,13 +154,13 @@ void MSAEditorNameList::buildMenu(QMenu* m) {
     } 
     
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
-    assert(copyMenu!=NULL);
+    SAFE_POINT(copyMenu != NULL, "copyMenu", );
     copyMenu->addAction(copyCurrentSequenceAction);
 
     copyCurrentSequenceAction->setDisabled(getSelectedRow() == -1);
 
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
-    assert(editMenu!=NULL);
+    SAFE_POINT(editMenu != NULL, "copyMenu", );
     editMenu->insertAction(editMenu->actions().first(), editSequenceNameAction);
     editMenu->insertAction(editMenu->actions().last(), removeCurrentSequenceAction);
 }

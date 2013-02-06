@@ -163,7 +163,7 @@ void MuscleMSAEditorContext::initViewContext(GObjectView* view) {
 void MuscleMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
     QList<GObjectViewAction *> actions = getViewActions(v);
     QMenu* alignMenu = GUIUtils::findSubMenu(m, MSAE_MENU_ALIGN);
-    assert(alignMenu!=NULL);
+    SAFE_POINT(alignMenu != NULL, "alignMenu", );
     foreach(GObjectViewAction* a, actions) {
 		a->addToMenuWithOrder(alignMenu);
     }    

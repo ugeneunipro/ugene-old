@@ -82,7 +82,7 @@ void DNAStatMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
 
     QList<GObjectViewAction *> actions = getViewActions(v);
     QMenu* statMenu = GUIUtils::findSubMenu(m, MSAE_MENU_STATISTICS);
-    assert(statMenu!=NULL);
+    SAFE_POINT(statMenu != NULL, "statMenu", );
     foreach(GObjectViewAction* a, actions) {
         statMenu->addAction(a);
     }    
@@ -118,7 +118,7 @@ void DistanceMatrixMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
 
     QList<GObjectViewAction *> actions = getViewActions(v);
     QMenu* statMenu = GUIUtils::findSubMenu(m, MSAE_MENU_STATISTICS);
-    assert(statMenu!=NULL);
+    SAFE_POINT(statMenu != NULL, "statMenu", );
     foreach(GObjectViewAction* a, actions) {
         statMenu->addAction(a);
     }    
