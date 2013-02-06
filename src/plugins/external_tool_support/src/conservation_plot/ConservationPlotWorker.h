@@ -48,6 +48,7 @@ public:
 private:
     IntegralBus *inChannel;
     QList<QList<SharedAnnotationData> > plotData;
+    QStringList outFiles;
 
 private:
     ConservationPlotSettings createConservationPlotSettings(U2OpStatus &os);

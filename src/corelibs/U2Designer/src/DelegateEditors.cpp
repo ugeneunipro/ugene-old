@@ -178,14 +178,14 @@ QVariant ComboBoxDelegate::getDisplayValue(const QVariant& val) const {
 ********************************/
 
 PropertyWidget * ComboBoxWithUrlsDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
-    return new ComboBoxWithUrlWidget(items, parent);
+    return new ComboBoxWithUrlWidget(items, isPath, parent);
 }
 
 QWidget *ComboBoxWithUrlsDelegate::createEditor(QWidget *parent,
                                         const QStyleOptionViewItem &/* option */,
                                         const QModelIndex &/* index */) const
 {
-    ComboBoxWithUrlWidget *editor = new ComboBoxWithUrlWidget(items, parent);
+    ComboBoxWithUrlWidget *editor = new ComboBoxWithUrlWidget(items, isPath, parent);
     connect(editor, SIGNAL(valueChanged(const QString &)),
         this, SIGNAL(si_valueChanged(const QString &)));
 
@@ -213,6 +213,47 @@ QVariant ComboBoxWithUrlsDelegate::getDisplayValue(const QVariant& val) const {
      emit si_valueChanged( display );
      return QVariant( display );
  }
+
+/********************************
+* ComboBoxWithChecksDelegate
+********************************/
+
+PropertyWidget * ComboBoxWithChecksDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
+    return new ComboBoxWithChecksWidget(items, parent);
+}
+
+QWidget *ComboBoxWithChecksDelegate::createEditor(QWidget *parent,
+                                                const QStyleOptionViewItem &/* option */,
+                                                const QModelIndex &/* index */) const
+{
+    ComboBoxWithChecksWidget* editor = new ComboBoxWithChecksWidget(items, parent);
+    connect(editor, SIGNAL(valueChanged(const QString &)),
+        this, SIGNAL(si_valueChanged(const QString &)));
+    return editor;
+}
+
+void ComboBoxWithChecksDelegate::setEditorData(QWidget *editor,
+                                             const QModelIndex &index) const
+{
+    QVariant val = index.model()->data(index, ConfigurationEditor::ItemValueRole);
+    ComboBoxWithChecksWidget *box = static_cast<ComboBoxWithChecksWidget*>(editor);
+    box->setValue(val);
+}
+
+void ComboBoxWithChecksDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+                                            const QModelIndex &index) const
+{
+    ComboBoxWithChecksWidget *box = static_cast<ComboBoxWithChecksWidget*>(editor);
+    model->setData(index, box->value(), ConfigurationEditor::ItemValueRole);
+}
+
+
+QVariant ComboBoxWithChecksDelegate::getDisplayValue(const QVariant& val) const {
+    QString display = val.toString();
+    emit si_valueChanged( display );
+    return QVariant( display );
+}
+
 
 /********************************
 * URLDelegate

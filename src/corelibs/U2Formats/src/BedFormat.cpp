@@ -290,8 +290,8 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
     // "start" can be zero, "end" is not included into the region
     bool startIsInt;
     bool endIsInt;
-    int start = fields[BED_CHROM_START_INDEX].toInt(&startIsInt);
-    int end = fields[BED_CHROM_END_INDEX].toInt(&endIsInt);
+    qint64 start = fields[BED_CHROM_START_INDEX].toLongLong(&startIsInt);
+    qint64 end = fields[BED_CHROM_END_INDEX].toLongLong(&endIsInt);
     if (!startIsInt || !endIsInt || (start < 0) || (start >= end)) {
         status.incorrectCoordinates = true;
         return parsedData;
@@ -355,9 +355,9 @@ BedLineData BedFormat::parseAndValidateLine(const QString& line, int numOfFields
         parsedData.additionalFields[THICK_START_QUALIFIER_NAME] = thickStartStr;
         parsedData.additionalFields[THICK_END_QUALIFIER_NAME] = thickEndStr;
 
-        if (false == validateThickCoordinates(thickStartStr, thickEndStr, parsedData.region)) {
-            status.incorrectThickCoordinates = true;
-        }
+        //if (false == validateThickCoordinates(thickStartStr, thickEndStr, parsedData.region)) {
+        //    status.incorrectThickCoordinates = true;
+        //}
     }
 
     // Annotation color
@@ -593,6 +593,9 @@ QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
 
     bool headerLine = true;
     while (headerLine && (length = readBedLine(qstrbuf, io, buff)) > 0) {
+        if (qstrbuf.startsWith("#")){ //skip comments
+            continue;
+        }
         if (qstrbuf.startsWith("browser")) {
             continue;
         }
@@ -622,6 +625,12 @@ QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
         
         // Parse and validate the line
         BEDLineValidateFlags validationStatus;
+
+        if (qstrbuf.startsWith("#")){//skip comments
+            os.setProgress(io->getProgress());
+            length = readBedLine(qstrbuf, io, buff);
+            continue;
+        }
         if (1 == lineNumber) {
             numOfFieldsPerLine = qstrbuf.split("\t").count();
             // "3" as there must be at least "chrom", "chromStart" and "chromEnd" fields

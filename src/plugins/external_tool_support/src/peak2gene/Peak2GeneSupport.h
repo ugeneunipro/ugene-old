@@ -33,6 +33,7 @@ public:
 
     static const QString TOOL_NAME;
     static const QString REF_GENES_DATA_NAME;
+    static const QString ENTREZ_TRANSLATION_DATA_NAME;
 
 private:
     void initialize();

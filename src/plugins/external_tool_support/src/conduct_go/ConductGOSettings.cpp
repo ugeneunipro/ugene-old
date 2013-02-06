@@ -26,6 +26,18 @@
 
 namespace U2 {
 
+const QString ConductGOSettings::UNIVERSE_HGU133A = QString("hgu133a.db");   
+const QString ConductGOSettings::UNIVERSE_HGU133B = QString("hgu133b.db");
+const QString ConductGOSettings::UNIVERSE_HGU133PLUS2 = QString("hgu133plus2.db");
+const QString ConductGOSettings::UNIVERSE_HGU95AV2 = QString("hgu95av2");
+const QString ConductGOSettings::UNIVERSE_MOUSE_430a2 = QString("mouse430a2.db");
+const QString ConductGOSettings::UNIVERSE_CELEGANS = QString("celegans.db");
+const QString ConductGOSettings::UNIVERSE_DROSOPHILA2 = QString("drosophila2.db");
+const QString ConductGOSettings::UNIVERSE_ORG_HS_EG = QString("org.Hs.eg.db");
+const QString ConductGOSettings::UNIVERSE_ORG_MM_EG = QString("org.Mm.eg.db");
+const QString ConductGOSettings::UNIVERSE_ORG_CE_EG = QString("org.Ce.eg.db");
+const QString ConductGOSettings::UNIVERSE_ORG_DM_EG = QString("org.Dm.eg.db");
+
 ConductGOSettings::ConductGOSettings() {
     initDefault();
 }

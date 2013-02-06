@@ -37,10 +37,10 @@ public:
     static const QString OUT_TYPE_DOWNSTREAM;
     static const QString OUT_TYPE_ALL;
 
+    static const QString DEFAULT_NAME;
+
     Peak2GeneSettings();
 
-    QString     outDir;
-    QString     fileNames;
     QString     outpos;
     bool        symbol;
     qint64      distance;
@@ -48,6 +48,7 @@ public:
 
 public:
      QStringList getArguments(const QString& treatFilePath);
+
 
 private:
     void initDefault();

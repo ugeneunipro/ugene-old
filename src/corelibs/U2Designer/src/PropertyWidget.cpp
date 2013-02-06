@@ -156,9 +156,10 @@ ComboBoxWidget * ComboBoxWidget::createBooleanWidget(QWidget *parent) {
 /************************************************************************/
 /* ComboBoxWithUrlWidget */
 /************************************************************************/
-ComboBoxWithUrlWidget::ComboBoxWithUrlWidget(const QVariantMap &items, QWidget *parent)
+ComboBoxWithUrlWidget::ComboBoxWithUrlWidget(const QVariantMap &items, bool _isPath, QWidget *parent)
 : PropertyWidget(parent)
 , customIdx(-1)
+, isPath(_isPath)
 {
     comboBox = new QComboBox(this);
     addMainWidget(comboBox);
@@ -209,11 +210,99 @@ void ComboBoxWithUrlWidget::sl_browse(){
     QString lastDir = lod.dir;
 
     QString name;
-    lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir);
-    if (!name.isEmpty()) {
-        setValue(name);
+    if (isPath){
+        lod.dir = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
+        if (!name.isEmpty()) {
+            setValue(name);
+        }
+    }else{
+        lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir);
+        if (!name.isEmpty()) {
+            setValue(name);
+        }
     }
+    
     comboBox->setFocus();
+}
+
+/************************************************************************/
+/* ComboBoxWithChecksWidget */
+/************************************************************************/
+ComboBoxWithChecksWidget::ComboBoxWithChecksWidget(const QVariantMap& _items, QWidget *parent)
+: PropertyWidget(parent)
+, items(_items)
+{
+    comboBox = new QComboBox(this);
+    cm = NULL;
+    addMainWidget(comboBox);
+    
+    setValue(value());
+
+    connect(comboBox, SIGNAL(activated(const QString &)),
+        this, SIGNAL(valueChanged(const QString &)));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)),
+        this, SLOT(sl_valueChanged(int)));
+   
+}
+
+QVariant ComboBoxWithChecksWidget::value() {
+    QStringList sList;
+    const QList<QString>& keys = items.keys();
+    foreach(const QString& key, keys){
+        if(items[key].toBool()){
+            sList << key;
+        }
+    }
+    return sList.join(",");
+}
+
+void ComboBoxWithChecksWidget::setValue(const QVariant &value) {
+    disconnect(cm, SIGNAL(itemChanged( const QModelIndex &)), this,
+        SLOT(sl_itemChanged( const QModelIndex &)));
+    QStringList curList = value.toString().split(",");
+    if(cm == NULL){
+        cm = new QStandardItemModel(items.size(), 1, comboBox);
+    }else{
+        cm->clear();
+        delete cm;
+        cm = new QStandardItemModel(items.size(), 1, comboBox);
+    }
+      
+    const QList<QString>& keys = items.keys();
+    int i = 0;
+    foreach(const QString& key, keys){
+        bool checked = curList.contains(key, Qt::CaseInsensitive);
+        items[key] = checked;
+        QStandardItem* item = new QStandardItem(key);
+        item->setCheckable(true); item->setEditable(false); item->setSelectable(false);
+        item->setCheckState((checked)? Qt::Checked: Qt::Unchecked);
+        item->setData(key);
+        cm->setItem(i++, item);
+    }
+    comboBox->setModel(cm);
+    QListView* vw = new QListView(comboBox);
+    vw->setModel(cm);
+    comboBox->setView(vw);
+    connect(cm, SIGNAL(itemChanged( QStandardItem * )), this,
+        SLOT(sl_itemChanged( QStandardItem * )));
+}
+
+void ComboBoxWithChecksWidget::sl_valueChanged(int) {
+    emit si_valueChanged(value());
+}
+
+void ComboBoxWithChecksWidget::sl_itemChanged( QStandardItem * item ){
+    QStandardItem* standardItem  = item;
+    QString key = standardItem->data().toString();
+    if (items.contains(key)){
+        Qt::CheckState checkState = standardItem->checkState();
+        if(checkState == Qt::Checked){
+            items[key] = true;
+        } else if(checkState == Qt::Unchecked){
+            items[key] = false;
+        }
+        emit si_valueChanged(value());
+    }
 }
 
 /************************************************************************/

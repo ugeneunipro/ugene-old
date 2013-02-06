@@ -36,8 +36,8 @@ void ConservationPlotSettings::initDefault(){
     label = "Conservation at peak summits";
     assemblyVersion = "";
     windowSize = 1000;
-    height = 10;
-    width = 10;
+    height = 1000;
+    width = 1000;
 }
 
 QStringList ConservationPlotSettings::getArguments(const QList<QString>& bedFiles){

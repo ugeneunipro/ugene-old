@@ -48,6 +48,8 @@ public:
 
     const ConductGOSettings & getSettings();
 
+    QStringList getResultFileNames();
+
 private:
     ConductGOSettings settings;
     QString workingDir;
@@ -56,13 +58,9 @@ private:
 
     Document *treatDoc;
 
-    Document *peaksDoc;
-
     SaveDocumentTask *treatTask;
-    LoadDocumentTask *peaksTask;
 
     ExternalToolRunTask *etTask;
-
     ExternalToolLogParser *logParser;
 
     static const QString BASE_DIR_NAME;
@@ -70,15 +68,12 @@ private:
 
 private:
     Document* createDoc(const QList<SharedAnnotationData>& annData, const QString& name);
+    void copyFile(const QString &src, const QString &dst);
 };
 
 class ConductGOLogParser : public ExternalToolLogParser {
 public:
     ConductGOLogParser();
-
-    //int getProgress();
-    //void parseOutput(const QString& partOfLog);
-    //void parseErrOutput(const QString& partOfLog);
 
 private:
     QString lastErrLine;

@@ -53,8 +53,10 @@ Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& _settings, const QList<Sha
 , etTask(NULL)
 , logParser(NULL)
 , treatAnn(_treatAnn)
-, peaksDoc(NULL)
+, geneTask(NULL)
 , peaksTask(NULL)
+, geneDoc(NULL)
+, peaksDoc(NULL)
 {
 
 }
@@ -70,6 +72,7 @@ void Peak2GeneTask::cleanup() {
     delete treatDoc; treatDoc = NULL;
     delete logParser; logParser = NULL;
     delete peaksDoc; peaksDoc = NULL;
+    delete geneDoc; geneDoc = NULL;
 
     //remove tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
@@ -133,32 +136,33 @@ QList<Task*> Peak2GeneTask::onSubTaskFinished(Task* subTask) {
             QStringList args = settings.getArguments(treatDoc->getURLString());
             
             logParser = new Peak2GeneLogParser();
-            etTask = new ExternalToolRunTask(Peak2GeneSupport::TOOL_NAME, args, logParser, getSettings().outDir);
+            etTask = new ExternalToolRunTask(Peak2GeneSupport::TOOL_NAME, args, logParser, workingDir);
             result << etTask;
     }
-    //else if(subTask == etTask){
+    else if(subTask == etTask){
         //read annotations
-       // QString peaksName = getSettings().outDir + "/" + getSettings().fileNames+"_peaks.bed";
-        //QString summitName = getSettings().outDir + "/" + getSettings().fileNames+"_summits.bed";
+        QString geneName = workingDir + "/" + Peak2GeneSettings::DEFAULT_NAME+"_gene_annotation.txt";
+        QString peakName = workingDir + "/" + Peak2GeneSettings::DEFAULT_NAME+"_peaks_annotation.txt";
 
-//         peaksTask=
-//             new LoadDocumentTask(BaseDocumentFormats::BED,
-//             peaksName,
-//             AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
-//         result.append(peaksTask);
-// 
-//         summitsTask=
-//             new LoadDocumentTask(BaseDocumentFormats::BED,
-//             summitName,
-//             AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
-// 
-//         result.append(summitsTask);
-//     }else if(subTask == peaksTask){
-//         peaksDoc = peaksTask->takeDocument();
-//         
-//     }else if(subTask == summitsTask){
-//         summitsDoc = summitsTask->takeDocument();
-//     }
+        geneTask=
+            new LoadDocumentTask(BaseDocumentFormats::BED,
+            geneName,
+            AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
+        result.append(geneTask);
+ 
+        peaksTask=
+            new LoadDocumentTask(BaseDocumentFormats::BED,
+            peakName,
+            AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE));
+
+        result.append(peaksTask);
+
+    }else if(subTask == geneTask){
+        geneDoc = geneTask->takeDocument();
+        
+    }else if(subTask == peaksTask){
+        peaksDoc = peaksTask->takeDocument();
+    }
 
     return result;
 }
@@ -171,13 +175,36 @@ const Peak2GeneSettings& Peak2GeneTask::getSettings(){
     return settings;
 }
 
+QList<SharedAnnotationData> Peak2GeneTask::getGenes(){
+    QList<SharedAnnotationData> res;
+
+    if (geneDoc == NULL){
+        return res;
+    }
+
+    const QList<GObject*> objects = geneDoc->getObjects();
+
+    foreach(GObject* ao, objects) {
+        if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
+            AnnotationTableObject* aobj = qobject_cast<AnnotationTableObject*>(ao);
+            if (ao){
+                const QList<Annotation* >& annots = aobj->getAnnotations();
+                foreach(Annotation* a, annots){
+                    res.append(a->data());
+                }
+            }
+        }
+    }
+
+    return res;
+}
+
 QList<SharedAnnotationData> Peak2GeneTask::getPeaks(){
     QList<SharedAnnotationData> res;
 
     if (peaksDoc == NULL){
         return res;
     }
-
     const QList<GObject*> objects = peaksDoc->getObjects();
 
     foreach(GObject* ao, objects) {
@@ -195,81 +222,11 @@ QList<SharedAnnotationData> Peak2GeneTask::getPeaks(){
     return res;
 }
 
-QList<SharedAnnotationData> Peak2GeneTask::getPeakSummits(){
-    QList<SharedAnnotationData> res;
-
-//     if (summitsDoc == NULL){
-//         return res;
-//     }
-//     const QList<GObject*> objects = summitsDoc->getObjects();
-// 
-//     foreach(GObject* ao, objects) {
-//         if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-//             AnnotationTableObject* aobj = qobject_cast<AnnotationTableObject*>(ao);
-//             if (ao){
-//                 const QList<Annotation* >& annots = aobj->getAnnotations();
-//                 foreach(Annotation* a, annots){
-//                     res.append(a->data());
-//                 }
-//             }
-//         }
-//     }
-
-    return res;
-}
-
-QString Peak2GeneTask::getWiggleUrl(){
-    QString res = "";
-    
-//     if (settings.wiggleOut){
-//         res = getSettings().outDir + "/" 
-//             + getSettings().fileNames +"_Peak2Gene_wiggle/"
-//             + "treat/"
-//             + getSettings().fileNames+"_treat_afterfiting_all.wig";
-//     }
-// 
-    return res;
-}
-
 //////////////////////////////////////////////////////////////////////////
 //Peak2GeneLogParser
 Peak2GeneLogParser::Peak2GeneLogParser()
 :ExternalToolLogParser(){
 
 }
-// 
-// int Peak2GeneLogParser::getProgress(){
-//     //parsing INFO  @ Fri, 07 Dec 2012 19:30:16: #1 read tag files...
-//     int max_step = 5;
-//     if(!lastPartOfLog.isEmpty()){
-//         QString lastMessage=lastPartOfLog.last();
-//         QRegExp rx(" #(\\d+) \\w");
-//         if(lastMessage.contains(rx)){
-//             SAFE_POINT(rx.indexIn(lastMessage) > -1, "bad progress index", 0);
-//             int step = rx.cap(1).toInt();
-//             return  (100 * step)/ float(qMax(step, max_step));
-//         }
-//     }
-//     return progress;
-// }
-// 
-// void Peak2GeneLogParser::parseOutput( const QString& partOfLog ){
-//     ExternalToolLogParser::parseOutput(partOfLog);
-// }
-// 
-// void Peak2GeneLogParser::parseErrOutput( const QString& partOfLog ){
-//     lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
-//     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
-//     lastErrLine=lastPartOfLog.takeLast();
-//     foreach(QString buf, lastPartOfLog){
-//         if(buf.contains("WARNING", Qt::CaseInsensitive)
-//             || buf.contains("ERROR", Qt::CaseInsensitive)
-//             || buf.contains("CRITICAL", Qt::CaseInsensitive)){
-//             algoLog.info("Peak2Gene: " + buf);
-//         }else{
-//             algoLog.trace(buf);
-//         }
-//     }
-// }
 
 } // U2

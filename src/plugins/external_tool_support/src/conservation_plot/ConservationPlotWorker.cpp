@@ -126,6 +126,8 @@ void ConservationPlotWorker::sl_taskFinished() {
         return;
     }
 
+    outFiles << t->getSettings().outFile;
+
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
         setDone();
     }
@@ -147,7 +149,7 @@ U2::ConservationPlotSettings ConservationPlotWorker::createConservationPlotSetti
 
 
 QStringList ConservationPlotWorker::getOutputFiles() {
-    return QStringList();
+    return outFiles;
 }
 
 /************************************************************************/
@@ -223,8 +225,8 @@ void ConservationPlotWorkerFactory::init() {
         }
         attrs << assemblyVerAttr;
         attrs << new Attribute(windowSizeDescr, BaseTypes::NUM_TYPE(), false, QVariant(1000));
-        attrs << new Attribute(heightDescr, BaseTypes::NUM_TYPE(), false, QVariant(10));
-        attrs << new Attribute(widthDescr, BaseTypes::NUM_TYPE(), false, QVariant(10));
+        attrs << new Attribute(heightDescr, BaseTypes::NUM_TYPE(), false, QVariant(1000));
+        attrs << new Attribute(widthDescr, BaseTypes::NUM_TYPE(), false, QVariant(1000));
     }
 
     QMap<QString, PropertyDelegate*> delegates;
@@ -248,7 +250,7 @@ void ConservationPlotWorkerFactory::init() {
                      vm = dataPath->getDataItemsVariantMap();
                  }
              }
-             delegates[ASSEMBLY_VER] = new ComboBoxWithUrlsDelegate(vm);
+             delegates[ASSEMBLY_VER] = new ComboBoxWithUrlsDelegate(vm, true);
          }
     }
 

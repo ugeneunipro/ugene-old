@@ -122,7 +122,7 @@ private slots:
 class ComboBoxWithUrlWidget : public PropertyWidget {
     Q_OBJECT
 public:
-    ComboBoxWithUrlWidget( const QVariantMap &items, QWidget *parent = NULL);
+    ComboBoxWithUrlWidget( const QVariantMap &items, bool isPath=false, QWidget *parent = NULL);
     virtual QVariant value();
     virtual void setValue(const QVariant &value);
 
@@ -132,11 +132,36 @@ signals:
 private:
     QComboBox *comboBox;
     int customIdx;
+    bool isPath;
 
 private slots:
         void sl_valueChanged(int index);
         void sl_browse();
 };
+
+/************************************************************************/
+/* ComboBoxWithChecksWidget */
+/************************************************************************/
+class ComboBoxWithChecksWidget: public PropertyWidget {
+    Q_OBJECT
+public:
+    ComboBoxWithChecksWidget( const QVariantMap &items, QWidget *parent = NULL);
+    virtual QVariant value();
+    virtual void setValue(const QVariant &value);
+
+signals:
+    void valueChanged(const QString &value);
+
+private:
+    QComboBox *comboBox;
+    QStandardItemModel* cm;
+    QVariantMap items;
+
+private slots:
+    void sl_valueChanged(int index);
+    void sl_itemChanged(QStandardItem * item);
+};
+
 
 /************************************************************************/
 /* URLWidget */

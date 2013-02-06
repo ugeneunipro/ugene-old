@@ -53,8 +53,6 @@ SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, const QList<SharedAnnota
 , etTask(NULL)
 , logParser(NULL)
 , treatAnn(_treatAnn)
-, peaksDoc(NULL)
-, peaksTask(NULL)
 {
 
 }
@@ -65,11 +63,9 @@ SeqPosTask::~SeqPosTask() {
 
 void SeqPosTask::cleanup() {
     treatAnn.clear();
-    conAnn.clear();
 
     delete treatDoc; treatDoc = NULL;
     delete logParser; logParser = NULL;
-    delete peaksDoc; peaksDoc = NULL;
 
     //remove tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
@@ -151,39 +147,4 @@ SeqPosLogParser::SeqPosLogParser()
 :ExternalToolLogParser(){
 
 }
-// 
-// int SeqPosLogParser::getProgress(){
-//     //parsing INFO  @ Fri, 07 Dec 2012 19:30:16: #1 read tag files...
-//     int max_step = 5;
-//     if(!lastPartOfLog.isEmpty()){
-//         QString lastMessage=lastPartOfLog.last();
-//         QRegExp rx(" #(\\d+) \\w");
-//         if(lastMessage.contains(rx)){
-//             SAFE_POINT(rx.indexIn(lastMessage) > -1, "bad progress index", 0);
-//             int step = rx.cap(1).toInt();
-//             return  (100 * step)/ float(qMax(step, max_step));
-//         }
-//     }
-//     return progress;
-// }
-// 
-// void SeqPosLogParser::parseOutput( const QString& partOfLog ){
-//     ExternalToolLogParser::parseOutput(partOfLog);
-// }
-// 
-// void SeqPosLogParser::parseErrOutput( const QString& partOfLog ){
-//     lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
-//     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
-//     lastErrLine=lastPartOfLog.takeLast();
-//     foreach(QString buf, lastPartOfLog){
-//         if(buf.contains("WARNING", Qt::CaseInsensitive)
-//             || buf.contains("ERROR", Qt::CaseInsensitive)
-//             || buf.contains("CRITICAL", Qt::CaseInsensitive)){
-//             algoLog.info("SeqPos: " + buf);
-//         }else{
-//             algoLog.trace(buf);
-//         }
-//     }
-// }
-
 } // U2

@@ -26,12 +26,12 @@
 
 namespace U2 {
 
-const QString SeqPosSettings::MOTIF_DB_CISTROME = "Cistrome curated motif database";
-const QString SeqPosSettings::MOTIF_DB_PDM = "pbm";
-const QString SeqPosSettings::MOTIF_DB_Y1H = "y1h";
-const QString SeqPosSettings::MOTIF_DB_TRANSFAC = "transfac";
-const QString SeqPosSettings::MOTIF_DB_HDPI = "hdpi";
-const QString SeqPosSettings::MOTIF_DB_JASPAR = "jaspar";
+const QString SeqPosSettings::MOTIF_DB_CISTROME = "cistrome.xml";
+const QString SeqPosSettings::MOTIF_DB_PDM = "pbm.xml";
+const QString SeqPosSettings::MOTIF_DB_Y1H = "y1h.xml";
+const QString SeqPosSettings::MOTIF_DB_TRANSFAC = "transfac.xml";
+const QString SeqPosSettings::MOTIF_DB_HDPI = "hpdi.xml";
+const QString SeqPosSettings::MOTIF_DB_JASPAR = "jaspar.xml";
 
 
 SeqPosSettings::SeqPosSettings() {
@@ -53,21 +53,24 @@ QStringList SeqPosSettings::getArguments( const QString& treatFilePath){
 
     result << GUrlUtils::getQuotedString(treatFilePath);
 
-    result << genomeAssembly;
+    result << GUrlUtils::getQuotedString(genomeAssembly);
 
     if (findDeNovo){
         result << "-d";
     }
 
-    if(motifDB != SeqPosSettings::MOTIF_DB_CISTROME){ //???
-        result << "-m " + motifDB + ".xml";
-    }
+    //if(motifDB != SeqPosSettings::MOTIF_DB_CISTROME){ //???
+        result << "-m " + motifDB;
+    //}
 
     result << "-n " + outName;
 
     result << "-p " + QByteArray::number(pVal);
 
     result << "-w " + QByteArray::number(regWidth);
+
+    result << "--verbose";
+    
 
     return result;
 }

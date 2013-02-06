@@ -107,6 +107,11 @@ void ConductGOWorker::sl_taskFinished() {
         return;
     }
 
+    const QStringList& resFileNames = t->getResultFileNames();
+    foreach(const QString& fn, resFileNames){
+        outFiles << t->getSettings().outDir + "/" + fn;
+    }
+
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
         setDone();
     }
@@ -124,7 +129,7 @@ U2::ConductGOSettings ConductGOWorker::createConductGOSettings( U2OpStatus &os )
 
 
 QStringList ConductGOWorker::getOutputFiles() {
-    return QStringList();
+    return outFiles;
 }
 
 /************************************************************************/
@@ -164,12 +169,33 @@ void ConductGOWorkerFactory::init() {
 
         attrs << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
         attrs << new Attribute(titleDescr, BaseTypes::STRING_TYPE(), true, QVariant("Default"));
-        attrs << new Attribute(guDescr, BaseTypes::STRING_TYPE(), true, QVariant("hgu133a"));
+        attrs << new Attribute(guDescr, BaseTypes::STRING_TYPE(), true, ConductGOSettings::UNIVERSE_HGU133A);
     }
 
     QMap<QString, PropertyDelegate*> delegates;
     {
           delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true);
+
+          
+          {
+              QVariantMap vm;
+
+              vm[ConductGOSettings::UNIVERSE_HGU133A] = ConductGOSettings::UNIVERSE_HGU133A;   
+              vm[ConductGOSettings::UNIVERSE_HGU133B] = ConductGOSettings::UNIVERSE_HGU133B;
+              vm[ConductGOSettings::UNIVERSE_HGU133PLUS2] = ConductGOSettings::UNIVERSE_HGU133PLUS2;
+              vm[ConductGOSettings::UNIVERSE_HGU95AV2] = ConductGOSettings::UNIVERSE_HGU95AV2;
+              vm[ConductGOSettings::UNIVERSE_MOUSE_430a2] = ConductGOSettings::UNIVERSE_MOUSE_430a2;
+              vm[ConductGOSettings::UNIVERSE_CELEGANS] = ConductGOSettings::UNIVERSE_CELEGANS;
+              vm[ConductGOSettings::UNIVERSE_DROSOPHILA2] = ConductGOSettings::UNIVERSE_DROSOPHILA2;
+              vm[ConductGOSettings::UNIVERSE_ORG_HS_EG] = ConductGOSettings::UNIVERSE_ORG_HS_EG;
+              vm[ConductGOSettings::UNIVERSE_ORG_MM_EG] = ConductGOSettings::UNIVERSE_ORG_MM_EG;
+              vm[ConductGOSettings::UNIVERSE_ORG_CE_EG] = ConductGOSettings::UNIVERSE_ORG_CE_EG;
+              vm[ConductGOSettings::UNIVERSE_ORG_DM_EG] = ConductGOSettings::UNIVERSE_ORG_DM_EG;
+
+              delegates[GENE_UNIVERSE] = new ComboBoxDelegate(vm);
+          }
+
+          
     }
 
     Descriptor protoDesc(ConductGOWorkerFactory::ACTOR_ID,

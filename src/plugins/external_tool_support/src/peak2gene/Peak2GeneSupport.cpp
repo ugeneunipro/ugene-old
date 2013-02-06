@@ -28,6 +28,7 @@ namespace U2 {
 
 const QString Peak2GeneSupport::TOOL_NAME("peak2gene");
 const QString Peak2GeneSupport::REF_GENES_DATA_NAME("Gene annotation table");
+const QString Peak2GeneSupport::ENTREZ_TRANSLATION_DATA_NAME("Entrez ID translations");
 
 Peak2GeneSupport::Peak2GeneSupport(const QString &name)
 : ExternalTool(name)
@@ -56,6 +57,9 @@ void Peak2GeneSupport::initialize() {
     if (dpr){
         U2DataPath* dp = new U2DataPath(REF_GENES_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/refGene");
         dpr->registerEntry(dp);
+
+        U2DataPath* dp1 = new U2DataPath(ENTREZ_TRANSLATION_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/geneIdTranslations");
+        dpr->registerEntry(dp1);
     }
 }
 

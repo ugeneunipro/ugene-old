@@ -22,10 +22,12 @@
 #include "SeqPosSupport.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DataPathRegistry.h>
 
 namespace U2 {
 
 const QString SeqPosSupport::TOOL_NAME("seqpos");
+const QString SeqPosSupport::ASSEMBLY_DIR("Assembly dir");
 
 SeqPosSupport::SeqPosSupport(const QString &name)
 : ExternalTool(name)
@@ -49,6 +51,13 @@ void SeqPosSupport::initialize() {
     validationArguments << "--version";
 
     versionRegExp=QRegExp("Version \\d+\\.\\d+");
+
+    U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = new U2DataPath(ASSEMBLY_DIR, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/genomes", true);
+        dpr->registerEntry(dp);
+    }
+
 }
 
 } // U2

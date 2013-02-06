@@ -53,17 +53,12 @@ private:
     QString workingDir;
 
     QList<SharedAnnotationData> treatAnn;
-    QList<SharedAnnotationData> conAnn;
 
     Document *treatDoc;
 
-    Document *peaksDoc;
-
     SaveDocumentTask *treatTask;
-    LoadDocumentTask *peaksTask;
 
     ExternalToolRunTask *etTask;
-
     ExternalToolLogParser *logParser;
 
     static const QString BASE_DIR_NAME;
@@ -76,10 +71,6 @@ private:
 class SeqPosLogParser : public ExternalToolLogParser {
 public:
     SeqPosLogParser();
-
-    //int getProgress();
-    //void parseOutput(const QString& partOfLog);
-    //void parseErrOutput(const QString& partOfLog);
 
 private:
     QString lastErrLine;

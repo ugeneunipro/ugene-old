@@ -47,6 +47,7 @@ public:
 
 private:
     IntegralBus *inChannel;
+    QStringList outFiles;
 
 private:
     ConductGOSettings createConductGOSettings(U2OpStatus &os);

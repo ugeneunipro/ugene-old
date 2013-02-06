@@ -53,8 +53,6 @@ ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, const QList<Sha
 , etTask(NULL)
 , logParser(NULL)
 , treatAnn(_treatAnn)
-, peaksDoc(NULL)
-, peaksTask(NULL)
 {
 
 }
@@ -68,7 +66,6 @@ void ConductGOTask::cleanup() {
 
     delete treatDoc; treatDoc = NULL;
     delete logParser; logParser = NULL;
-    delete peaksDoc; peaksDoc = NULL;
 
     //remove tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
@@ -139,11 +136,42 @@ QList<Task*> ConductGOTask::onSubTaskFinished(Task* subTask) {
 }
 
 void ConductGOTask::run() {
-
+    foreach(const QString& file, getResultFileNames()){
+        copyFile(workingDir+"/"+ file, getSettings().outDir + "/" + file);
+    }
 }
 
 const ConductGOSettings& ConductGOTask::getSettings(){
     return settings;
+}
+
+void ConductGOTask::copyFile(const QString &src, const QString &dst) {
+    if (!QFile::exists(src)) {
+        return;
+    }
+
+    QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
+    if (!GUrlUtils::renameFileWithNameRoll(dst, stateInfo, excludeFileNames, &taskLog)) {
+        return;
+    }
+
+    bool copied = QFile::copy(src, dst);
+    if (!copied) {
+        setError(tr("Can not copy the result file to: %1").arg(dst));
+        return;
+    }
+}
+
+
+QStringList ConductGOTask::getResultFileNames(){
+    QStringList result;
+
+    result << getSettings().title + "_CC_RESULT.txt";
+    result << getSettings().title + "_BP_RESULT.txt";
+    result << getSettings().title + "_MF_RESULT.txt";
+    result << getSettings().title + "_Conduct_GO_using_David.html";
+
+    return result;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -152,39 +180,5 @@ ConductGOLogParser::ConductGOLogParser()
 :ExternalToolLogParser(){
 
 }
-// 
-// int ConductGOLogParser::getProgress(){
-//     //parsing INFO  @ Fri, 07 Dec 2012 19:30:16: #1 read tag files...
-//     int max_step = 5;
-//     if(!lastPartOfLog.isEmpty()){
-//         QString lastMessage=lastPartOfLog.last();
-//         QRegExp rx(" #(\\d+) \\w");
-//         if(lastMessage.contains(rx)){
-//             SAFE_POINT(rx.indexIn(lastMessage) > -1, "bad progress index", 0);
-//             int step = rx.cap(1).toInt();
-//             return  (100 * step)/ float(qMax(step, max_step));
-//         }
-//     }
-//     return progress;
-// }
-// 
-// void ConductGOLogParser::parseOutput( const QString& partOfLog ){
-//     ExternalToolLogParser::parseOutput(partOfLog);
-// }
-// 
-// void ConductGOLogParser::parseErrOutput( const QString& partOfLog ){
-//     lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
-//     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
-//     lastErrLine=lastPartOfLog.takeLast();
-//     foreach(QString buf, lastPartOfLog){
-//         if(buf.contains("WARNING", Qt::CaseInsensitive)
-//             || buf.contains("ERROR", Qt::CaseInsensitive)
-//             || buf.contains("CRITICAL", Qt::CaseInsensitive)){
-//             algoLog.info("ConductGO: " + buf);
-//         }else{
-//             algoLog.trace(buf);
-//         }
-//     }
-// }
 
 } // U2

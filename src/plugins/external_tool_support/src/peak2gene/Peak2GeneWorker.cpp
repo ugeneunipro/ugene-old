@@ -47,11 +47,15 @@ const QString Peak2GeneWorkerFactory::ACTOR_ID("peak2gene-id");
 static const QString TREAT_SLOT_ID("_treat-ann");
 
 static const QString IN_TYPE_ID("peak2gene-data");
+static const QString OUT_TYPE_ID("macs-data-out");
 
 static const QString IN_PORT_DESCR("in-data");
+static const QString OUT_PORT_DESCR("out-data");
 
-static const QString OUTPUT_DIR("output-dir");
-static const QString FILE_NAMES("file-names");
+static const QString PEAK_ANNOTATION("peak-annotation");
+static const QString GENE_ANNOTATION("gene-annotation");
+
+
 static const QString OUTPOS("outpos");
 static const QString SYMBOL("symbol");
 static const QString DISTANCE("distance");
@@ -64,12 +68,14 @@ static const QString GENOME("genome");
 Peak2GeneWorker::Peak2GeneWorker(Actor *p)
 : BaseWorker(p)
 , inChannel(NULL)
+, output(NULL)
 {
 
 }
 
 void Peak2GeneWorker::init() {
     inChannel = ports.value(IN_PORT_DESCR);
+    output = ports.value(OUT_PORT_DESCR);
 }
 
 Task *Peak2GeneWorker::tick() {
@@ -113,16 +119,21 @@ void Peak2GeneWorker::sl_taskFinished() {
         return;
     }
 
+    QVariantMap data;
+    data[GENE_ANNOTATION] = qVariantFromValue<QList<SharedAnnotationData> >(t->getGenes());
+    data[PEAK_ANNOTATION] = qVariantFromValue<QList<SharedAnnotationData> >(t->getPeaks());
+
+    output->put(Message(output->getBusType(), data));
+
     if (inChannel->isEnded() && !inChannel->hasMessage()) {
         setDone();
+        output->setEnded();
     }
 }
 
 U2::Peak2GeneSettings Peak2GeneWorker::createPeak2GeneSettings( U2OpStatus &os ){
     Peak2GeneSettings settings;
 
-    settings.outDir = actor->getParameter(OUTPUT_DIR)->getAttributeValue<QString>(context);
-    settings.fileNames = actor->getParameter(FILE_NAMES)->getAttributeValue<QString>(context);
     settings.outpos = actor->getParameter(OUTPOS)->getAttributeValue<QString>(context);
     settings.symbol = actor->getParameter(SYMBOL)->getAttributeValue<bool>(context);
     settings.distance = actor->getParameter(DISTANCE)->getAttributeValue<int>(context);
@@ -169,15 +180,28 @@ void Peak2GeneWorkerFactory::init() {
     DataTypePtr inTypeSet(new MapDataType(IN_TYPE_ID, inTypeMap));
     portDescs << new PortDescriptor(inPortDesc, inTypeSet, true);
 
+    //out port
+    QMap<Descriptor, DataTypePtr> outTypeMap;
+    Descriptor geneRegDesc(GENE_ANNOTATION,
+        Peak2GeneWorker::tr("Gene regions"),
+        Peak2GeneWorker::tr("Annotation for each gene, containing all the peaks nearby."));
+    Descriptor peakRegDescr(PEAK_ANNOTATION,
+        Peak2GeneWorker::tr("Peak regions"),
+        Peak2GeneWorker::tr("Annotation for each peak, containing all the genes nearby."));
+
+    Descriptor outPortDesc(OUT_PORT_DESCR,
+        Peak2GeneWorker::tr("Peak2gene output data"),
+        Peak2GeneWorker::tr("Genes containing all the peaks nearby and peaks containing all the genes nearby."));
+
+    outTypeMap[geneRegDesc] = BaseTypes::ANNOTATION_TABLE_TYPE();
+    outTypeMap[peakRegDescr] = BaseTypes::ANNOTATION_TABLE_TYPE();
+
+    DataTypePtr outTypeSet(new MapDataType(OUT_TYPE_ID, outTypeMap));
+    portDescs << new PortDescriptor(outPortDesc, outTypeSet, false, true);
+
+
      QList<Attribute*> attrs;
      {
-         Descriptor outDir(OUTPUT_DIR,
-             Peak2GeneWorker::tr("Output directory"),
-             Peak2GeneWorker::tr("Directory to save peak2gene result output files with: genes containing all the peaks nearby and peaks containing all the genes nearby."));
-         Descriptor fileNames(FILE_NAMES,
-             Peak2GeneWorker::tr("Name"),
-             Peak2GeneWorker::tr("Name of the result file, it will output two file NAME_peaks_annotation.txt,"
-             "NAME_gene_annotation.txt. (--name)"));
          Descriptor outpos(OUTPOS,
              Peak2GeneWorker::tr("Output type"),
              Peak2GeneWorker::tr("Select which type of genes need to output. "
@@ -185,8 +209,8 @@ void Peak2GeneWorkerFactory::init() {
              "<b>down</b> for genes downstream to peak summit, "
              "<b>all</b> for both <b>up</b> and <b>down</b>. (--op)"));
          Descriptor symbol(SYMBOL,
-             Peak2GeneWorker::tr("Gene names type"),
-             Peak2GeneWorker::tr("Output gene symbol instead of refseq name. (--symbol)"));
+             Peak2GeneWorker::tr("Official gene symbols"),
+             Peak2GeneWorker::tr("Output <b>official gene symbol</b> instead of <b>refseq name</b>. (--symbol)"));
          Descriptor p2g_distance(DISTANCE,
              Peak2GeneWorker::tr("Distance"),
              Peak2GeneWorker::tr("Set a number which unit is base. It will get the refGenes in n bases from peak center. (--distance)"));
@@ -206,17 +230,14 @@ void Peak2GeneWorkerFactory::init() {
              annGrAttr = new Attribute(p2g_genome, BaseTypes::STRING_TYPE(), true);
         }
 
-        attrs << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
-        attrs << new Attribute(fileNames, BaseTypes::STRING_TYPE(), true, QVariant("Default"));
         attrs << annGrAttr;
-        attrs << new Attribute(outpos, BaseTypes::STRING_TYPE(), false, QVariant(Peak2GeneSettings::OUT_TYPE_UPSTREAM));
+        attrs << new Attribute(outpos, BaseTypes::STRING_TYPE(), false, QVariant(Peak2GeneSettings::OUT_TYPE_ALL));
         attrs << new Attribute(symbol, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         attrs << new Attribute(p2g_distance, BaseTypes::NUM_TYPE(), false, QVariant(3000));
      }
 
      QMap<QString, PropertyDelegate*> delegates;
      {
-         delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true);
          {
             QVariantMap vm;
             vm["minimum"] = QVariant(0);
@@ -268,13 +289,11 @@ QString Peak2GenePrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString treatUrl = treatProducer ? treatProducer->getLabel() : unsetStr;
     
-    QString dir = getHyperlink(OUTPUT_DIR, getURL(OUTPUT_DIR));
     QString dbUrl = getHyperlink(GENOME, getURL(GENOME));
 
     res.append(tr("Uses annotations from <u>%1</u> as peak regions ").arg(treatUrl));
-    res.append(tr(" to annotate with genes from <u>%1</u>.").arg(dbUrl));
+    res.append(tr(" to annotate with genes nearby from <u>%1</u>.").arg(dbUrl));
  
-    res.append(tr(" Outputs all result files in <u>%1</u> directory").arg(dir));
     res.append(".");
 
     return res;

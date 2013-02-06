@@ -21,8 +21,11 @@
 
 
 #include "Peak2GeneSettings.h"
+#include "Peak2GeneSupport.h"
 
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DataPathRegistry.h>
 
 namespace U2 {
 
@@ -30,25 +33,38 @@ const QString Peak2GeneSettings::OUT_TYPE_UPSTREAM = "up";
 const QString Peak2GeneSettings::OUT_TYPE_DOWNSTREAM = "down";
 const QString Peak2GeneSettings::OUT_TYPE_ALL = "all";
 
+const QString Peak2GeneSettings::DEFAULT_NAME = "Default";
+
 Peak2GeneSettings::Peak2GeneSettings() {
     initDefault();
 }
 
 void Peak2GeneSettings::initDefault(){
-    outDir = "";
-    fileNames = "Default";
-    outpos = Peak2GeneSettings::OUT_TYPE_UPSTREAM;
+    outpos = Peak2GeneSettings::OUT_TYPE_ALL;
     symbol = false;
     distance = 3000;
     genomePath = "";
 }
 
 QStringList Peak2GeneSettings::getArguments( const QString& treatFilePath){
+    QString entrezPath = "";
+    //init data path
+    
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(Peak2GeneSupport::ENTREZ_TRANSLATION_DATA_NAME);
+        if (dp && dp->isValid()){
+            if(!dp->getDataNames().isEmpty()){
+                entrezPath = dp->getPathByName(dp->getDataNames().first());
+            }
+        }
+    }
+
     QStringList result;
 
     result << "--treat=" + GUrlUtils::getQuotedString(treatFilePath);
 
-    result << "--name=" + fileNames;
+    result << "--name=" + DEFAULT_NAME;
 
     result << "--op=" + outpos;
 
@@ -59,6 +75,8 @@ QStringList Peak2GeneSettings::getArguments( const QString& treatFilePath){
     result << "--distance=" + QByteArray::number(distance);
 
     result << "--genome=" + GUrlUtils::getQuotedString(genomePath);
+
+    result << "--entrez=" + GUrlUtils::getQuotedString(entrezPath);
 
     return result;
 }

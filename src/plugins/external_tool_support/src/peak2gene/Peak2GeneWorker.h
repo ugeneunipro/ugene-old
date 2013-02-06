@@ -47,6 +47,7 @@ public:
 
 private:
     IntegralBus *inChannel;
+    IntegralBus *output;
 
 private:
     Peak2GeneSettings createPeak2GeneSettings(U2OpStatus &os);

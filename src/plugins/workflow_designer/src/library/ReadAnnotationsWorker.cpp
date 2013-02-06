@@ -120,7 +120,7 @@ ReadAnnotationsProto::ReadAnnotationsProto()
         "while <i>Merge</i> appends all the annotation tables and outputs the sole merged annotation table."));
 
 
-    attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, SPLIT);
+    attrs << new Attribute(md, BaseTypes::NUM_TYPE(), true, MERGE);
 
     QMap<QString, PropertyDelegate*> delegates;
     {

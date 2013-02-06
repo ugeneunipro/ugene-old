@@ -32,6 +32,18 @@ namespace U2 {
 
 class ConductGOSettings {
 public:
+
+    const static QString UNIVERSE_HGU133A;   
+    const static QString UNIVERSE_HGU133B;
+    const static QString UNIVERSE_HGU133PLUS2;
+    const static QString UNIVERSE_HGU95AV2;
+    const static QString UNIVERSE_MOUSE_430a2;
+    const static QString UNIVERSE_CELEGANS;
+    const static QString UNIVERSE_DROSOPHILA2;
+    const static QString UNIVERSE_ORG_HS_EG;
+    const static QString UNIVERSE_ORG_MM_EG;
+    const static QString UNIVERSE_ORG_CE_EG;
+    const static QString UNIVERSE_ORG_DM_EG;
     
     ConductGOSettings();
 

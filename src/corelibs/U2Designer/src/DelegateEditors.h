@@ -191,7 +191,7 @@ protected:
 class U2DESIGNER_EXPORT ComboBoxWithUrlsDelegate : public PropertyDelegate {
     Q_OBJECT
 public:
-    ComboBoxWithUrlsDelegate(const QVariantMap& items, QObject *parent = 0) : PropertyDelegate(parent), items(items) {}
+    ComboBoxWithUrlsDelegate(const QVariantMap& items, bool _isPath = false, QObject *parent = 0) : PropertyDelegate(parent), items(items), isPath(_isPath) {}
     virtual ~ComboBoxWithUrlsDelegate() {}
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
@@ -204,7 +204,34 @@ public:
     QVariant getDisplayValue(const QVariant&) const;
 
     virtual PropertyDelegate *clone() {
-        return new ComboBoxWithUrlsDelegate(items, parent());
+        return new ComboBoxWithUrlsDelegate(items, isPath, parent());
+    }
+
+signals:
+    void si_valueChanged( const QString & newVal ) const;
+
+protected:
+    QVariantMap items;
+    bool isPath;
+};
+
+class U2DESIGNER_EXPORT ComboBoxWithChecksDelegate: public PropertyDelegate{
+    Q_OBJECT
+public:
+    ComboBoxWithChecksDelegate(const QVariantMap& items, QObject *parent = 0) : PropertyDelegate(parent), items(items){}
+    virtual ~ComboBoxWithChecksDelegate() {}
+
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+        const QModelIndex &index) const;
+    virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
+
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model,
+        const QModelIndex &index) const;
+    QVariant getDisplayValue(const QVariant&) const;
+
+    virtual PropertyDelegate *clone() {
+        return new ComboBoxWithChecksDelegate(items, parent());
     }
 
 signals:

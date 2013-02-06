@@ -48,9 +48,8 @@ public:
 
     const Peak2GeneSettings & getSettings();
 
+    QList<SharedAnnotationData> getGenes();
     QList<SharedAnnotationData> getPeaks();
-    QList<SharedAnnotationData> getPeakSummits();
-    QString getWiggleUrl();
 
 private:
     Peak2GeneSettings settings;
@@ -61,13 +60,15 @@ private:
 
     Document *treatDoc;
 
+    Document *geneDoc;
     Document *peaksDoc;
 
     SaveDocumentTask *treatTask;
+
+    LoadDocumentTask *geneTask;
     LoadDocumentTask *peaksTask;
 
     ExternalToolRunTask *etTask;
-
     ExternalToolLogParser *logParser;
 
     static const QString BASE_DIR_NAME;
@@ -80,14 +81,6 @@ private:
 class Peak2GeneLogParser : public ExternalToolLogParser {
 public:
     Peak2GeneLogParser();
-
-    //int getProgress();
-    //void parseOutput(const QString& partOfLog);
-    //void parseErrOutput(const QString& partOfLog);
-
-private:
-    QString lastErrLine;
-    int     progress;
 };
 
 } // U2

@@ -23,6 +23,8 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/QVariantUtils.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DataPathRegistry.h>
 #include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Designer/DelegateEditors.h>
@@ -33,6 +35,8 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+
+#include "SeqPosSupport.h"
 
 #include "SeqPosWorker.h"
 
@@ -141,6 +145,16 @@ QStringList SeqPosWorker::getOutputFiles() {
 
 
 void SeqPosWorkerFactory::init() {
+    //init data path
+    U2DataPath* dataPath = NULL;
+    U2DataPathRegistry* dpr =  AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = dpr->getDataPathByName(SeqPosSupport::ASSEMBLY_DIR);
+        if (dp && dp->isValid()){
+            dataPath = dp;
+        }
+    }
+
     QList<PortDescriptor*> portDescs;
     
     //in port
@@ -183,9 +197,20 @@ void SeqPosWorkerFactory::init() {
 
 
         attrs << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
-        attrs << new Attribute(genAssembly, BaseTypes::STRING_TYPE(), true, QVariant(""));
+        Attribute* assemblyVerAttr = NULL;
+        if (dataPath){
+            const QList<QString>& dataNames = dataPath->getDataNames();
+            if (!dataNames.isEmpty()){
+                assemblyVerAttr = new Attribute(genAssembly, BaseTypes::STRING_TYPE(), true, dataPath->getPathByName(dataNames.first()));
+            }else{
+                assemblyVerAttr = new Attribute(genAssembly, BaseTypes::STRING_TYPE(), true);
+            }
+        }else{
+            assemblyVerAttr = new Attribute(genAssembly, BaseTypes::STRING_TYPE(), true);
+        }
+        attrs << assemblyVerAttr;
         attrs << new Attribute(findDeNovo, BaseTypes::BOOL_TYPE(), true, QVariant(false));
-        attrs << new Attribute(motifDB, BaseTypes::STRING_TYPE(), true, QVariant("Cistrome curated motif database"));
+        attrs << new Attribute(motifDB, BaseTypes::STRING_TYPE(), true, QVariant(SeqPosSettings::MOTIF_DB_CISTROME));
         attrs << new Attribute(outName, BaseTypes::STRING_TYPE(), true, QVariant("Default"));
         attrs << new Attribute(regW, BaseTypes::NUM_TYPE(), false, QVariant(600));
         attrs << new Attribute(pVal, BaseTypes::NUM_TYPE(), false, QVariant(0.001));
@@ -204,13 +229,22 @@ void SeqPosWorkerFactory::init() {
          }
          {
              QVariantMap contentMap;
-             contentMap[SeqPosSettings::MOTIF_DB_CISTROME] = SeqPosSettings::MOTIF_DB_CISTROME;
-             contentMap[SeqPosSettings::MOTIF_DB_PDM] = SeqPosSettings::MOTIF_DB_PDM;
-             contentMap[SeqPosSettings::MOTIF_DB_Y1H] = SeqPosSettings::MOTIF_DB_Y1H;
-             contentMap[SeqPosSettings::MOTIF_DB_TRANSFAC] = SeqPosSettings::MOTIF_DB_TRANSFAC;
-             contentMap[SeqPosSettings::MOTIF_DB_HDPI] = SeqPosSettings::MOTIF_DB_HDPI;
-             contentMap[SeqPosSettings::MOTIF_DB_JASPAR] = SeqPosSettings::MOTIF_DB_JASPAR;
-             delegates[MOTIF_DB] = new ComboBoxDelegate(contentMap);
+             contentMap[SeqPosSettings::MOTIF_DB_CISTROME] = true;
+             contentMap[SeqPosSettings::MOTIF_DB_PDM] = false;
+             contentMap[SeqPosSettings::MOTIF_DB_Y1H] = false;
+             contentMap[SeqPosSettings::MOTIF_DB_TRANSFAC] = false;
+             contentMap[SeqPosSettings::MOTIF_DB_HDPI] = false;
+             contentMap[SeqPosSettings::MOTIF_DB_JASPAR] = false;
+             delegates[MOTIF_DB] = new ComboBoxWithChecksDelegate(contentMap);
+         }
+         {
+             QVariantMap vm;
+             if (dataPath){
+                 if (dataPath){
+                     vm = dataPath->getDataItemsVariantMap();
+                 }
+             }
+             delegates[GENOME_ASSEMBLY] = new ComboBoxWithUrlsDelegate(vm, true);
          }
          {
              QVariantMap vm;
