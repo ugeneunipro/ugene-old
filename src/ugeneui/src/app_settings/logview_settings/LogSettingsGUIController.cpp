@@ -29,6 +29,7 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QColorDialog>
 #include <QtGui/QFileDialog>
+#include <QMessageBox>
 
 namespace U2 {
 
@@ -184,6 +185,18 @@ AppSettingsGUIPageState* LogSettingsPageWidget::getState(QString& err) const {
             lce->setFileOutputEnabled(outFileEdit->text());
         }else{
             lce->setFileOutputDisabled();
+        }
+    }
+
+    if (fileOutCB->isChecked()){
+        QString logFile(outFileEdit->text());
+        QFileInfo lf(logFile);
+        QFile file(logFile);
+        bool writeble = file.open(QIODevice::WriteOnly);
+        file.close();
+        if (!writeble || lf.fileName().isEmpty()){
+            QMessageBox::warning(NULL, tr("Warning"), tr("Unable to open log file for writing, log writing to file disabled"), QMessageBox::Ok);
+            fileOutCB->setChecked(false);
         }
     }
 
