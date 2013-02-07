@@ -252,8 +252,8 @@ QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask)
 
             // Add Bowtie and samtools to the PATH environment variable
             QStringList additionalPaths;
-            additionalPaths << settings.bowtiePath;
-            additionalPaths << settings.samtoolsPath;
+            additionalPaths << QFileInfo(settings.bowtiePath).dir().absolutePath();
+            additionalPaths << QFileInfo(settings.samtoolsPath).dir().absolutePath();
 
             // Create the TopHat task
             topHatExtToolTask = new ExternalToolRunTask(TOPHAT_TOOL_NAME,

@@ -926,14 +926,16 @@ QString WorkflowUtils::createUniqueString(const QString &str, const QString &sep
     return result;
 }
 
-void WorkflowUtils::updateExternalToolPath(const QString &toolName, const QString &path) {
+QString WorkflowUtils::updateExternalToolPath(const QString &toolName, const QString &path) {
+    ExternalToolRegistry *registry = AppContext::getExternalToolRegistry();
+    SAFE_POINT(NULL != registry, "NULL external tool registry", "");
+    ExternalTool *tool = registry->getByName(toolName);
+    SAFE_POINT(NULL != tool, QString("Unknown tool: %1").arg(toolName), "");
+
     if (QString::compare(path, "default", Qt::CaseInsensitive) != 0) {
-        ExternalToolRegistry *registry = AppContext::getExternalToolRegistry();
-        SAFE_POINT(NULL != registry, "NULL external tool registry", );
-        ExternalTool *tool = registry->getByName(toolName);
-        SAFE_POINT(NULL != tool, QString("Unknown tool: %1").arg(toolName), );
         tool->setPath(path);
     }
+    return tool->getPath();
 }
 
 /*****************************

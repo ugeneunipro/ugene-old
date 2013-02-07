@@ -71,6 +71,9 @@ public:
     Workflow::DbiDataStorage*               storage;
     QList<Workflow::SharedDbiDataHandler>   seqIds;
     QList<Workflow::SharedDbiDataHandler>   pairedSeqIds;
+
+public:
+    void cleanupReads();
 };
 
 }

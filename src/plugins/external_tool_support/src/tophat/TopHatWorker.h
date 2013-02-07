@@ -42,6 +42,24 @@ protected:
     QString composeRichDoc();
 };
 
+class DatasetData {
+public:
+    DatasetData(bool groupByDatasets);
+    bool isGroup() const;
+
+    /** Initialize the data by dataset on first check */
+    bool isCurrent(const QString &dataset);
+    void replaceCurrent(const QString &dataset);
+
+private:
+    bool groupByDatasets;
+    QString currentDataset;
+    bool inited;
+
+private:
+    void init(const QString &dataset);
+};
+
 
 class TopHatWorker : public BaseWorker
 {
@@ -69,6 +87,14 @@ protected:
      * and are input from both slots (1:1).
      */
     bool bindedToSecondSlot;
+    DatasetData datasetsData;
+
+private:
+    void initDatasetData();
+    QList<Actor*> getProducers(const QString &portId, const QString &slotId) const;
+    Task * runTophat();
+    /** Returns Tophat task is the dataset is changed */
+    Task * checkDatasets(const QVariantMap &data);
 };
 
 
@@ -110,6 +136,7 @@ public:
 
     static const QString FIRST_IN_SLOT_ID;
     static const QString SECOND_IN_SLOT_ID;
+    static const QString DATASET_IN_SLOT_ID;
 
     static const QString OUT_MAP_DESCR_ID;
     static const QString ACCEPTED_HITS_SLOT_ID;

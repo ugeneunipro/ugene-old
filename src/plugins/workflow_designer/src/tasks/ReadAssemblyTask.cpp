@@ -130,7 +130,7 @@ GUrl ConvertToIndexedBamTask::getResultUrl() const {
 }
 
 ReadAssemblyTask::ReadAssemblyTask(const QString &url, const QString &datasetName, WorkflowContext *_ctx)
-: ReadDocumentTask(url, datasetName, tr("Read assembly from %1").arg(url), TaskFlag_None),
+: ReadDocumentTask(url, tr("Read assembly from %1").arg(url), datasetName, TaskFlag_None),
 ctx(_ctx), format(NULL), doc(NULL), convertTask(NULL), importTask(NULL)
 {
 

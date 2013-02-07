@@ -37,4 +37,9 @@ TopHatSettings::TopHatSettings()
 {
 }
 
+void TopHatSettings::cleanupReads() {
+    seqIds.clear();
+    pairedSeqIds.clear();
+}
+
 }

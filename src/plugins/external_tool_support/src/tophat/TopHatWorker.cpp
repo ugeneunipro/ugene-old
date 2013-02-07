@@ -19,7 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include "../bowtie2/Bowtie2Support.h"
 #include "../bowtie/BowtieSupport.h"
+#include "../samtools/SamToolsExtToolSupport.h"
 #include "TopHatSupportTask.h"
 #include "TopHatWorker.h"
 
@@ -80,6 +82,7 @@ const QString TopHatWorkerFactory::TMP_DIR_PATH("temp-dir");
 
 const QString TopHatWorkerFactory::FIRST_IN_SLOT_ID("first.in");
 const QString TopHatWorkerFactory::SECOND_IN_SLOT_ID("second.in");
+const QString TopHatWorkerFactory::DATASET_IN_SLOT_ID("dataset");
 
 const QString TopHatWorkerFactory::OUT_MAP_DESCR_ID("out.tophat");
 const QString TopHatWorkerFactory::ACCEPTED_HITS_SLOT_ID("accepted.hits");
@@ -120,9 +123,16 @@ void TopHatWorkerFactory::init()
                                         " end reads, and contains the *_2 (\"right\")"
                                         " set of reads. Reads MUST appear in the same order"
                                         " as the *_1 reads."));
+    Descriptor datasetDescriptor =
+        Descriptor(DATASET_IN_SLOT_ID,
+        TopHatWorker::tr("Dataset name"),
+        TopHatWorker::tr("Group input reads into chunks for several Tophat"
+        "runs.\nSet it empty if you want to run Tophat once for all input"
+        "reads"));
 
     inputMap[firstInDescriptor] = BaseTypes::DNA_SEQUENCE_TYPE();
     inputMap[secondInDescriptor] = BaseTypes::DNA_SEQUENCE_TYPE();
+    inputMap[datasetDescriptor] = BaseTypes::STRING_TYPE();
 
     portDescriptors << new PortDescriptor(inputPortDescriptor,
                                           DataTypePtr(new MapDataType("in.sequences", inputMap)),
@@ -353,7 +363,7 @@ void TopHatWorkerFactory::init()
     attributes << new Attribute(bowtieVersion, BaseTypes::NUM_TYPE(), false, QVariant(0));
     attributes << new Attribute(bowtieNMode, BaseTypes::NUM_TYPE(), false, QVariant(0));
     attributes << new Attribute(bowtieToolPath, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
-    attributes << new Attribute(samtoolsPath, BaseTypes::STRING_TYPE(), false, QVariant());
+    attributes << new Attribute(samtoolsPath, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
     attributes << new Attribute(extToolPath, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
     attributes << new Attribute(tmpDir, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
 
@@ -444,6 +454,7 @@ void TopHatWorkerFactory::init()
 
     delegates[BOWTIE_INDEX_DIR] = new URLDelegate("", "", false, true);
     delegates[BOWTIE_TOOL_PATH] = new URLDelegate("", "executable", false);
+    delegates[SAMTOOLS_TOOL_PATH] = new URLDelegate("", "executable", false);
     delegates[REF_SEQ] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
     delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
     delegates[TMP_DIR_PATH] = new URLDelegate("", "TmpDir", false, true);
@@ -487,25 +498,39 @@ QString TopHatPrompter::composeRichDoc()
 TopHatWorker::TopHatWorker(Actor* actor)
     : BaseWorker(actor),
       input(NULL),
-      output(NULL)
+      output(NULL),
+      datasetsData(false)
 {
     bindedToSecondSlot = false;
 }
 
+QList<Actor*> TopHatWorker::getProducers(const QString &portId, const QString &slotId) const {
+    Port *port = actor->getPort(portId);
+    SAFE_POINT(NULL != port,"Internal error during initializing TopHatWorker: port is NULL!",
+        QList<Actor*>());
+
+    IntegralBusPort *bus = dynamic_cast<IntegralBusPort*>(port);
+    SAFE_POINT(NULL != bus, "Internal error during initializing TopHatWorker: bus is NULL!",
+        QList<Actor*>());
+
+    return bus->getProducers(slotId);
+}
+
+void TopHatWorker::initDatasetData() {
+    QList<Actor*> producers = getProducers(BasePorts::IN_SEQ_PORT_ID(),
+        TopHatWorkerFactory::DATASET_IN_SLOT_ID);
+    datasetsData = DatasetData(!producers.isEmpty());
+}
 
 void TopHatWorker::init()
 {
     input = ports.value(BasePorts::IN_SEQ_PORT_ID());
     output = ports.value(BasePorts::OUT_ASSEMBLY_PORT_ID());
 
+    initDatasetData();
+
     // Verify if the second slot is connected
-    Port* port = actor->getPort(BasePorts::IN_SEQ_PORT_ID());
-    SAFE_POINT(NULL != port, "Internal error during initializing TopHatWorker: port is NULL!",);
-
-    IntegralBusPort* bus = dynamic_cast<IntegralBusPort*>(port);
-    SAFE_POINT(NULL != bus, "Internal error during initializing TopHatWorker: bus is NULL!",);
-
-    QList<Actor*> producers = bus->getProducers(TopHatWorkerFactory::SECOND_IN_SLOT_ID);
+    QList<Actor*> producers = getProducers(BasePorts::IN_SEQ_PORT_ID(), TopHatWorkerFactory::SECOND_IN_SLOT_ID);
     bindedToSecondSlot = !producers.isEmpty();
 
     // Init the parameters
@@ -556,26 +581,18 @@ void TopHatWorker::init()
     }
 
     // Set version (Bowtie1 or Bowtie2) and the path to the corresponding external tool
-    int bowtieVersionVal = actor->getParameter(TopHatWorkerFactory::BOWTIE_VERSION)->getAttributeValue<int>(context);
-    QString bowtieExtToolPath = actor->getParameter(TopHatWorkerFactory::BOWTIE_TOOL_PATH)->getAttributeValue<QString>(context);
-    settings.bowtiePath = bowtieExtToolPath;
-    bool bowtiePathIsDefault = (QString::compare(bowtieExtToolPath, "default", Qt::CaseInsensitive) == 0);
-
+    int bowtieVersionVal = getValue<int>(TopHatWorkerFactory::BOWTIE_VERSION);
+    QString bowtieExtToolPath = getValue<QString>(TopHatWorkerFactory::BOWTIE_TOOL_PATH);
     if (0 != bowtieVersionVal) {
         settings.useBowtie1 = true;
-
-        if (bowtiePathIsDefault) {
-            settings.bowtiePath = AppContext::getExternalToolRegistry()->getByName(BOWTIE_TOOL_NAME)->getPath();
-        }
+        settings.bowtiePath = WorkflowUtils::updateExternalToolPath(BOWTIE_TOOL_NAME, bowtieExtToolPath);
     }
     else {
-        if (bowtiePathIsDefault) {
-            // Bowtie2 needs to be embedded as an external tool to uncomment this line
-            // settings.bowtiePath = AppContext::getExternalToolRegistry()->getByName(BOWTIE2_TOOL_NAME)->getPath();
-        }
+        settings.bowtiePath = WorkflowUtils::updateExternalToolPath(BOWTIE2_ALIGN_TOOL_NAME, bowtieExtToolPath);
     }
 
-    settings.samtoolsPath = actor->getParameter(TopHatWorkerFactory::SAMTOOLS_TOOL_PATH)->getAttributeValue<QString>(context);
+    QString samtools = getValue<QString>(TopHatWorkerFactory::SAMTOOLS_TOOL_PATH);
+    settings.samtoolsPath = WorkflowUtils::updateExternalToolPath(SAMTOOLS_EXT_TOOL_NAME, samtools);
 
     QString tmpDirPath = actor->getParameter(TopHatWorkerFactory::TMP_DIR_PATH)->getAttributeValue<QString>(context);
     if (QString::compare(tmpDirPath, "default", Qt::CaseInsensitive) != 0) {
@@ -588,43 +605,61 @@ void TopHatWorker::init()
     }
 }
 
+Task * TopHatWorker::runTophat() {
+    Task * topHatSupportTask = new TopHatSupportTask(settings);
+    connect(topHatSupportTask, SIGNAL(si_stateChanged()), SLOT(sl_topHatTaskFinished()));
+    settings.cleanupReads();
+    return topHatSupportTask;
+}
 
-Task* TopHatWorker::tick()
+Task * TopHatWorker::checkDatasets(const QVariantMap &data) {
+    if (datasetsData.isGroup()) {
+        QString dataset = data[TopHatWorkerFactory::DATASET_IN_SLOT_ID].toString();
+        if (!datasetsData.isCurrent(dataset)) {
+            datasetsData.replaceCurrent(dataset);
+            return runTophat();
+        }
+    }
+    return NULL;
+}
+
+Task * TopHatWorker::tick()
 {
-    if (false == settingsAreCorrect) {
+    if (!settingsAreCorrect) {
         return NULL;
     }
 
     if (input->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(input);
         SAFE_POINT(!inputMessage.isEmpty(), "Internal error: message can't be NULL!", NULL);
+        QVariantMap data = inputMessage.getData().toMap();
+
+        Task *result = checkDatasets(data);
 
         // Get the sequence ID
-        SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(TopHatWorkerFactory::FIRST_IN_SLOT_ID).value<SharedDbiDataHandler>();
+        SharedDbiDataHandler seqId = data[TopHatWorkerFactory::FIRST_IN_SLOT_ID].value<SharedDbiDataHandler>();
         settings.seqIds.append(seqId);
 
         // If the second slot is connected, expect the sequence of the paired read
         if (bindedToSecondSlot) {
-            SharedDbiDataHandler pairedSeqId = inputMessage.getData().toMap().value(TopHatWorkerFactory::SECOND_IN_SLOT_ID).value<SharedDbiDataHandler>();
+            SharedDbiDataHandler pairedSeqId = data[TopHatWorkerFactory::SECOND_IN_SLOT_ID].value<SharedDbiDataHandler>();
             settings.pairedSeqIds.append(pairedSeqId);
         }
+        return result;
+    } else if (input->isEnded()) {
+        if (!settings.seqIds.isEmpty()) {
+            return runTophat();
+        } else {
+            setDone();
+            output->setEnded();
+        }
     }
-    else if (input->isEnded()) {
-        Task* topHatSupportTask = new TopHatSupportTask(settings);
-        connect(topHatSupportTask, SIGNAL(si_stateChanged()), SLOT(sl_topHatTaskFinished()));
-
-        return topHatSupportTask;
-    }
-
     return NULL;
 }
 
 
 void TopHatWorker::sl_topHatTaskFinished()
 {
-    setDone();
-    output->setEnded();
-
     TopHatSupportTask* topHatSupportTask = qobject_cast<TopHatSupportTask*>(sender());
     if (Task::State_Finished != topHatSupportTask->getState()) {
         return;
@@ -660,6 +695,36 @@ void TopHatWorker::sl_topHatTaskFinished()
 
 void TopHatWorker::cleanup()
 {
+}
+
+/************************************************************************/
+/* DatasetData */
+/************************************************************************/
+DatasetData::DatasetData(bool _groupByDatasets)
+: groupByDatasets(_groupByDatasets)
+{
+    inited = false;
+}
+
+bool DatasetData::isGroup() const {
+    return groupByDatasets;
+}
+
+void DatasetData::init(const QString &dataset) {
+    SAFE_POINT(!inited, "DatasetData has already been initialized", );
+    replaceCurrent(dataset);
+}
+
+bool DatasetData::isCurrent(const QString &dataset) {
+    if (!inited) {
+        init(dataset);
+    }
+    return (currentDataset == dataset);
+}
+
+void DatasetData::replaceCurrent(const QString &dataset) {
+    currentDataset = dataset;
+    inited = true;
 }
 
 } // namespace LocalWorkflow
