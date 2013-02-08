@@ -32,14 +32,18 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsLog.h"
+#include "GTUtilsBookmarksTreeView.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include <QGraphicsItem>
 #include <U2Core/AppContext.h>
 #include <QGraphicsView>
+#include <QColor>
+#include <QRgb>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/GraphicsRectangularBranchItem.h>
@@ -48,6 +52,80 @@
 namespace U2 {
 
 namespace GUITest_common_scenarios_tree_viewer {
+GUI_TEST_CLASS_DEFINITION(test_0001){
+//Screenshoting MSA editor (regression test)
+
+//1. Open file samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os,dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+//2. Click on "Build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//Expected state: "Create Philogenetic Tree" dialog appears
+
+//3. Set save path to _common_data/scenarios/sandbox/COI.nwk . Click  OK button
+//Expected state: philogenetic tree appears
+
+//4. Use "Capture tree" button on toolbar to make screenshots
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Screen Capture"));
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", 4,50));
+    GTWidget::click(os,GTWidget::findWidget(os,"cameraMenu"));
+
+    GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","image.jpeg");
+//Expected state: images on screenshots same as on your screen
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0001_1){
+//Screenshoting MSA editor (regression test)
+
+//1. Open file samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os,dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+//2. Click on "Build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//Expected state: "Create Philogenetic Tree" dialog appears
+
+//3. Set save path to _common_data/scenarios/sandbox/COI.nwk . Click  OK button
+//Expected state: philogenetic tree appears
+
+//4. Use "Capture tree" button on toolbar to make screenshots
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Export Tree Image"<<"Screen Capture"));
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", 4,50));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"treeView"));
+
+    GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","image.jpeg");
+//Expected state: images on screenshots same as on your screen
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0001_2){
+//Screenshoting MSA editor (regression test)
+
+//1. Open file samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os,dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+//2. Click on "Build tree" button on toolbar
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+//Expected state: "Create Philogenetic Tree" dialog appears
+
+//3. Set save path to _common_data/scenarios/sandbox/COI.nwk . Click  OK button
+//Expected state: philogenetic tree appears
+
+//4. Use "Capture tree" button on toolbar to make screenshots
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Export Tree Image"<<"Screen Capture"));
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", 4,50));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+
+    GTFileDialog::getSize(os,testDir + "_common_data/scenarios/sandbox/","image.jpeg");
+//Expected state: images on screenshots same as on your screen
+}
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
 //Rebuilding tree after removing tree file
@@ -74,7 +152,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
     GTGlobals::sleep(500);
-    QWidget* w = GTWidget::findWidget(os, "treeView",NULL,GTGlobals::FindOptions(false));
 
     QTreeWidgetItem* item = GTUtilsProjectTreeView::findItem(os,GTUtilsProjectTreeView::getTreeWidget(os),"COI.nwk",GTGlobals::FindOptions(false));
     CHECK_SET_ERR(item==NULL,"COI.nkw is not deleted");
@@ -535,6 +612,90 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1){//difference: main menu is used
         }
     CHECK_SET_ERR(i==32, "distances are not shown");
 //Expected state: distance labels appers
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009){
+//UGENE crashes when tree view bookmark is activated (0001431)
+
+//1. Open Newick file (.NWK)
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
+    GTGlobals::sleep(500);
+//2. Create new bookmark for the file
+    QPoint p = GTUtilsBookmarksTreeView::getItemCenter(os, "COI [tr] Tree");
+    GTMouseDriver::moveTo(os, p);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keySequence(os, "start bookmark");
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep(500);
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+
+    p = GTUtilsBookmarksTreeView::getItemCenter(os, "start bookmark");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::doubleClick(os);
+
+    QWidget* treeView = GTWidget::findWidget(os,"treeView");
+    CHECK_SET_ERR(treeView!=NULL, "treeView not found");
+//3. Close the opened view
+
+//4. Activate bookmark
+//Expected state: UGENE not crash
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010){
+//PhyTree branch settings
+
+//1. Open file _common_data/scenario/tree_view/COI.nwk
+    GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
+    GTGlobals::sleep(500);
+//Expected state: philogenetic tree appears
+
+//2. Open context menu on branch and  select {change settings} menu item
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    QList<QGraphicsItem*> list = treeView->scene()->items();
+    QList<QGraphicsItem*> nodeList;
+
+    foreach(QGraphicsItem* item, list){
+        if(item->boundingRect().width()==10){
+            nodeList.append(item);
+        }
+    }
+
+    QGraphicsItem* node = nodeList.last();
+    QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
+    QPoint viewCord = treeView->mapFromScene(sceneCoord);
+    QPoint globalCoord = treeView->mapToGlobal(viewCord);
+
+    GTUtilsDialog::waitForDialog(os, new BranchSettingsDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Branch Settings"));
+    GTMouseDriver::moveTo(os, globalCoord);
+    GTMouseDriver::click(os);
+    GTMouseDriver::click(os,Qt::RightButton);
+
+
+    globalCoord.setX(globalCoord.x()-10);
+    QPixmap content;
+    content = QPixmap::grabWidget(treeView,treeView->rect());
+
+    QRgb rgb = content.toImage().pixel(treeView->mapFromGlobal(globalCoord));
+    QColor color(rgb);
+
+    CHECK_SET_ERR(color.name()=="#0000ff","Expected: #0000ff, found: " + color.name());
+
+//Expected state: Branch settings dialog appears
+
+//3. Change thickness and collor to differ than standard. Click OK
+//Expected state: selected branch changed
+
+//4. Select bunch of branches with holding shift button. Perform  steps 2,3 for it.
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011){

@@ -156,7 +156,7 @@ void TreeViewer::createActions() {
 
     // Branch Settings
     branchesSettingsAction = new QAction(QIcon(":core/images/color_wheel.png"), tr("Branch Settings..."), ui);
-
+    branchesSettingsAction->setObjectName("Branch Settings");
     // Show Labels
     nameLabelsAction = new QAction(tr("Show Names"), ui);
     nameLabelsAction->setCheckable(true);
@@ -187,7 +187,9 @@ void TreeViewer::createActions() {
 
     // Screen Capture
     captureTreeAction = new QAction(tr("Screen Capture..."), ui);
+    captureTreeAction->setObjectName("Screen Capture");
     exportAction = new QAction(tr("Whole Tree as SVG..."), ui);
+    exportAction->setObjectName("Whole Tree as SVG");
 }
 
 void TreeViewer::setupLayoutSettingsMenu(QMenu* m)
@@ -254,6 +256,8 @@ void TreeViewer::buildStaticToolbar(QToolBar* tb)
     cameraButton->setDefaultAction(cameraMenu->menuAction());
     cameraButton->setPopupMode(QToolButton::InstantPopup);
     cameraButton->setIcon(QIcon(":/core/images/cam2.png"));
+    cameraMenu->menuAction()->setObjectName("Export Tree Image");
+    cameraButton->setObjectName("cameraMenu");
     tb->addWidget(cameraButton);
 }
 
@@ -296,6 +300,7 @@ void TreeViewer::buildStaticMenu(QMenu* m)
     QMenu* cameraMenu = new QMenu(tr("Export Tree Image"), ui);
     setupCameraMenu(cameraMenu);
     cameraMenu->setIcon(QIcon(":/core/images/cam2.png"));
+    cameraMenu->menuAction()->setObjectName("Export Tree Image");
     m->addMenu(cameraMenu);
 
     m->addSeparator();
@@ -388,6 +393,7 @@ TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhy
     QMenu* cameraMenu = new QMenu(tr("Export Tree Image"), this);
     cameraMenu->addAction(captureAction);
     cameraMenu->addAction(exportAction);
+    cameraMenu->menuAction()->setObjectName("Export Tree Image");
     cameraMenu->setIcon(QIcon(":/core/images/cam2.png"));
     buttonPopup->addMenu(cameraMenu);
 

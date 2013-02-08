@@ -7,6 +7,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/qt/MessageBoxFiller.h \
             src/runnables/qt/PopupChooser.h \
             src/runnables/qt/FontDialogFiller.h \
+            src/runnables/qt/ColorDialogFiller.h \
 #   Runnables / UGENE
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h \
@@ -58,6 +59,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h \
 #   Utils classes
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
@@ -150,6 +152,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/qt/MessageBoxFiller.cpp \
             src/runnables/qt/PopupChooser.cpp \
             src/runnables/qt/FontDialogFiller.cpp \
+            src/runnables/qt/ColorDialogFiller.cpp \
 #   Runnables / UGENE
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.cpp \
@@ -184,6 +187,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.cpp \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.cpp \
