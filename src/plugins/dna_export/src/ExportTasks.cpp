@@ -72,9 +72,11 @@ QList<Task*> AddExportedDocumentAndOpenViewTask::onSubTaskFinished( Task* subTas
                 return subTasks;
             }
         }
-        exportTask->takeDocument();
-        subTasks << new AddDocumentTask(doc);
-        subTasks << new LoadUnloadedDocumentAndOpenViewTask(doc);
+        loadTask = LoadDocumentTask::getDefaultLoadDocTask(doc->getURL());
+        subTasks << loadTask;
+    }
+    if (subTask == loadTask) {
+        subTasks << new AddDocumentAndOpenViewTask(loadTask->takeDocument());
     }
     //TODO: provide a report if subtask fails
     return subTasks;

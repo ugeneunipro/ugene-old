@@ -25,6 +25,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 
 #include <U2Core/Task.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -32,7 +33,6 @@
 
 
 namespace U2 {
-
 
 /** A task to adds exported document to project and open view*/
 //TODO: make this task a general purpose routine
@@ -43,6 +43,7 @@ public:
     QList<Task*> onSubTaskFinished( Task* subTask );
 private:
     DocumentProviderTask* exportTask;
+    LoadDocumentTask* loadTask;
 };
 
 
