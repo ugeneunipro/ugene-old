@@ -264,8 +264,7 @@ QString DifferentialFormat::createValue(SharedAnnotationData data,
 QList<ColumnDataParser::Column> DifferentialFormat::getHeaderColumns(const QList<GObject*> &annObjs, U2OpStatus &os) {
     QList<ColumnDataParser::Column> result;
     if (annObjs.isEmpty()) {
-        os.setError("No annotation objects");
-        return result;
+        return getColumns();
     }
 
     AnnotationTableObject *annObj = dynamic_cast<AnnotationTableObject*>(annObjs.first());
@@ -275,8 +274,7 @@ QList<ColumnDataParser::Column> DifferentialFormat::getHeaderColumns(const QList
     }
 
     if (annObj->getAnnotations().isEmpty()) {
-        os.setError("Empty annotation object");
-        return result;
+        return getColumns();
     }
 
     Annotation *ann = annObj->getAnnotations().first();
@@ -302,10 +300,6 @@ QList<ColumnDataParser::Column> DifferentialFormat::getHeaderColumns(const QList
 
 void DifferentialFormat::storeDocument(Document *d, IOAdapter *io, U2OpStatus &os) {
     QList<GObject*> anns = d->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
-    if (anns.isEmpty()) {
-        os.setError("No annotation objects");
-        return;
-    }
     QList<ColumnDataParser::Column> columns = getHeaderColumns(anns, os);
     CHECK_OP(os, );
     writeHeader(io, columns);

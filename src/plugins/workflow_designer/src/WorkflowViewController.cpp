@@ -2185,7 +2185,7 @@ WorkflowScene * SceneCreator::recreateScene(WorkflowScene *_scene) {
 
 WorkflowScene * SceneCreator::createScene(WorkflowView *controller) {
     scene = new WorkflowScene(controller);
-    scene->setSceneRect(QRectF(-WS, -WS, WS, WS));
+    scene->setSceneRect(QRectF(-3*WS, -3*WS, 5*WS, 5*WS));
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     return createScene();
     scene->setObjectName("scene");
