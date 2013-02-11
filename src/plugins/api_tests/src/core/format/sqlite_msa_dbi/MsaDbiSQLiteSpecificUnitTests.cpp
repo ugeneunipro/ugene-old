@@ -151,8 +151,8 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow) {
     CHECK_NO_ERROR(os);
 
     // Remove the first row
-    QList<U2MsaRow> rowsToRemove;
-    rowsToRemove << row1;
+    QList<qint64> rowsToRemove;
+    rowsToRemove << row1.rowId;
 
     msaDbi->removeRows(msaId, rowsToRemove, os);
     CHECK_NO_ERROR(os);

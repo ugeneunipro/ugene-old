@@ -48,7 +48,6 @@ public:
 
     /** Removes all modification tracks and steps for the object */
     virtual void removeObjectMods(const U2DataId& objectId, U2OpStatus& os);
-
 };
 
 } // namespace

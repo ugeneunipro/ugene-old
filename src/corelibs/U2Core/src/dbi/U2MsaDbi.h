@@ -85,7 +85,7 @@ public:
      * Automatically removes affected sequences that are not anymore located in some folder nor Msa object
      * Requires: U2DbiFeature_WriteMsa feature support
      */
-    virtual void removeRows(const U2DataId& msaId, const QList<U2MsaRow>& rows, U2OpStatus& os) = 0;
+    virtual void removeRows(const U2DataId& msaId, const QList<qint64>& rowIds, U2OpStatus& os) = 0;
 
     /**
      * Removes the row gaps, the row.
@@ -93,13 +93,16 @@ public:
      * and attempts to remove the sequence after it.
      * Requires: U2DbiFeature_WriteMsa feature support
      */
-    virtual void removeRow(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os) = 0;
+    virtual void removeRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) = 0;
+
+    /** Updates name of the sequence of the row. */
+    virtual void updateRowName(const U2DataId& msaId, qint64 rowId, const QString& newName, U2OpStatus& os) = 0;
 
     /**
-     * Updates a row with the specified ID.
+     * Updates a row with the specified ID and its sequence.
      * Requires: U2DbiFeature_WriteMsa feature support
      */
-    virtual void updateRow(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os) = 0;
+    virtual void updateRowContent(const U2DataId& msaId, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os) = 0;
 
     /**
      * Removes all previous values and sets a new gap model for a row in a MSA

@@ -233,8 +233,8 @@ IMPLEMENT_TEST(MsaDbiUnitTests, removeRows) {
     CHECK_NO_ERROR(os);
 
     // Remove the rows
-    QList<U2MsaRow> rowsToRemove;
-    rowsToRemove << row1 << row3;
+    QList<qint64> rowsToRemove;
+    rowsToRemove << row1.rowId << row3.rowId;
 
     msaDbi->removeRows(msaId, rowsToRemove, os);
     CHECK_NO_ERROR(os);

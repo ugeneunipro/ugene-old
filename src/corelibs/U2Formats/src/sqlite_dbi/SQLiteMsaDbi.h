@@ -101,9 +101,9 @@ public:
      * Updates the number of rows of the MSA.
      * Updates all rows positions for the alignment.
      * Updates the alignment length.
-     * Increments the alignment version.
+     * Tracks modifications, if required.
      */
-    virtual void removeRows(const U2DataId& msaId, const QList<U2MsaRow>& rows, U2OpStatus& os);
+    void removeRows(const U2DataId& msaId, const QList<qint64>& rowIds, U2OpStatus& os);
 
     /**
      * Removes a row with the specified ID for the specified alignment.
@@ -111,22 +111,32 @@ public:
      * Updates all rows positions for the alignment.
      * Updates the alignment length.
      * Increments the alignment version.
+     * Tracks modifications, if required.
      */
-    virtual void removeRow(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os);
+    virtual void removeRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os);
 
     /**
      * Removes all rows from the alignment with the specified id.
      * Updates the alignment length.
      * Increments the alignment version.
+     * DO NOT USE if modifications tracking is required!
      */
     void removeAllRows(const U2DataId& msaId, U2OpStatus& os);
 
     /**
-     * Updates the row.
+     * Updates name of the sequence of the row.
+     * Increments the alignment version.
+     * Tracks modifications, if required.
+     */
+    virtual void updateRowName(const U2DataId& msaId, qint64 rowId, const QString& newName, U2OpStatus& os);
+
+    /**
+     * Updates sequence data and information about the row.
+     * Note that the row 'gstart' and 'gend' are set to the sequence bounds.
      * Updates the alignment length.
      * Increments the alignment version.
      */
-    virtual void updateRow(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os);
+    virtual void updateRowContent(const U2DataId& msaId, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os);
 
     /**
      * Removes all previous values and sets a new gap model for a row in a MSA.
@@ -164,13 +174,16 @@ private:
     void createMsaRowGap(const U2DataId& msaId, qint64 msaRowId, const U2MsaGap& msaGap, U2OpStatus& os);
 
     /** Removes records from MsaRow and MsaRowGap tables for the row. */
-    void removeMsaRowAndGaps(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os);
+    void removeMsaRowAndGaps(const U2DataId& msaId, qint64 rowId, bool removeSequence, U2OpStatus& os);
 
     /** Removes all records about the row gaps from the database. */
     void removeRecordsFromMsaRowGap(const U2DataId& msaId, qint64 rowId, U2OpStatus& os);
 
     /** Removes a record about the row from the database. */
     void removeRecordFromMsaRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os);
+
+    /** Updates a row record */
+    void updateRecordFromMsaRow(const U2DataId& msaId, const U2MsaRow& row, U2OpStatus& os);
 
     /** Updates "numOfRows" in the "Msa" table */
     void updateNumOfRows(const U2DataId& msaId, qint64 numOfRows, U2OpStatus& os);
@@ -198,6 +211,15 @@ private:
 
     /** Updates a part of the Msa object info - the length */
     void updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os);
+
+    /** Gets a sequence ID for the row */
+    U2DataId getSequenceIdByRowId(const U2DataId& msaId, qint64 rowId, U2OpStatus& os);
+
+    /** Required for store modification track of removed rows  */
+    QByteArray getRemovedRowDetails(const U2MsaRow& row);
+
+    /** Version of description in a ModStep details */
+    static QByteArray CURRENT_MOD_DETAILS_VERSION;
 };
 
 

@@ -539,23 +539,14 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
             CHECK_OP(os, );
 
             if (newRow.sequenceId == currentRow.sequenceId){
-                // Update the sequence name
+                // Update sequence and row info
                 DNASequence sequence = al.getSequenceByRowId(newRow.rowId, os);
                 CHECK_OP(os, );
 
-                U2Sequence currentSeqObj = seqDbi->getSequenceObject(newRow.sequenceId, os);
+                msaDbi->updateRowName(msaRef.entityId, newRow.rowId, sequence.getName(), os);
                 CHECK_OP(os, );
 
-                currentSeqObj.visualName = sequence.getName();
-                seqDbi->updateSequenceObject(currentSeqObj, os);
-                CHECK_OP(os, );
-
-                // Replace the sequence data
-                QVariantMap hints;
-                seqDbi->updateSequenceData(newRow.sequenceId, U2_REGION_MAX, sequence.seq, hints, os);
-
-                // Update the row info and the gaps
-                msaDbi->updateRow(msaRef.entityId, newRow, os);
+                msaDbi->updateRowContent(msaRef.entityId, newRow.rowId, sequence.seq, newRow.gaps, os);
                 CHECK_OP(os, );
             }
             else {
@@ -627,23 +618,8 @@ void MsaDbiUtils::updateRowContent(const U2EntityRef& msaRef, qint64 rowId, cons
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!", );
 
-    U2SequenceDbi* seqDbi = con.dbi->getSequenceDbi();
-    SAFE_POINT(NULL != seqDbi, "NULL Sequence Dbi!", );
-
-    // Get the row info from the database
-    U2MsaRow row = msaDbi->getRow(msaRef.entityId, rowId, os);
-    CHECK_OP(os, );
-
-    // Update the sequence data
-    QVariantMap hints;
-    seqDbi->updateSequenceData(row.sequenceId, U2_REGION_MAX, seqBytes, hints, os);
-    CHECK_OP(os, );
-
-    // Update the row info
-    row.gaps = gaps;
-    row.gstart = 0;
-    row.gend = seqBytes.length();
-    msaDbi->updateRow(msaRef.entityId, row, os);
+    // Update the data
+    msaDbi->updateRowContent(msaRef.entityId, rowId, seqBytes, gaps, os);
 }
 
 void MsaDbiUtils::updateRowGapModel(const U2EntityRef& msaRef, qint64 rowId, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
@@ -814,9 +790,6 @@ void MsaDbiUtils::crop(const U2EntityRef& msaRef, const QList<qint64> rowIds, qi
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!", );
 
-    U2SequenceDbi* sequenceDbi = con.dbi->getSequenceDbi();
-    SAFE_POINT(NULL != sequenceDbi, "NULL Sequence Dbi!", );
-
     // Crop or remove each row
     for (int i = 0, n = al.getNumRows(); i < n; ++i) {
         MAlignmentRow row = al.getRow(i);
@@ -830,17 +803,7 @@ void MsaDbiUtils::crop(const U2EntityRef& msaRef, const QList<qint64> rowIds, qi
             cropCharsFromRow(row, pos, count);
 
             // Put the new sequence and gap model into the database
-            QVariantMap hints;
-            sequenceDbi->updateSequenceData(sequenceId, regionToReplaceInSeq, row.getSequence().constSequence(), hints, os);
-            CHECK_OP(os, );
-
-            U2MsaRow rowInDb;
-            rowInDb.rowId = row.getRowId();
-            rowInDb.sequenceId = sequenceId;
-            rowInDb.gstart = 0;
-            rowInDb.gend = row.getSequence().length();
-            rowInDb.gaps = row.getGapModel();
-            msaDbi->updateRow(msaRef.entityId, rowInDb, os);
+            msaDbi->updateRowContent(msaRef.entityId, rowId, row.getSequence().constSequence(), row.getGapModel(), os);
             CHECK_OP(os, );
         }
         else {
@@ -929,11 +892,8 @@ void MsaDbiUtils::removeRow(const U2EntityRef& msaRef, qint64 rowId, U2OpStatus&
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!", );
 
-    // Find the row and remove it
-    U2MsaRow row = msaDbi->getRow(msaRef.entityId, rowId, os);
-    CHECK_OP(os, );
-
-    msaDbi->removeRow(msaRef.entityId, row, os);
+    // Remove the row
+    msaDbi->removeRow(msaRef.entityId, rowId, os);
 }
 
 void MsaDbiUtils::renameRow(const U2EntityRef& msaRef, qint64 rowId, const QString& newName, U2OpStatus& os) {
@@ -948,21 +908,8 @@ void MsaDbiUtils::renameRow(const U2EntityRef& msaRef, qint64 rowId, const QStri
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
     SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!",);
 
-    U2SequenceDbi* sequenceDbi = con.dbi->getSequenceDbi();
-    SAFE_POINT(NULL != sequenceDbi, "NULL Sequence Dbi!",);
-
-    // Find the row
-    U2MsaRow row = msaDbi->getRow(msaRef.entityId, rowId, os);
-    CHECK_OP(os, );
-
-    // Rename the sequence
-    U2Sequence seqObject = sequenceDbi->getSequenceObject(row.sequenceId, os);
-    CHECK_OP(os, );
-
-    if (newName != seqObject.visualName) {
-        seqObject.visualName = newName;
-        sequenceDbi->updateSequenceObject(seqObject, os);
-    }
+    // Update the row name
+    msaDbi->updateRowName(msaRef.entityId, rowId, newName, os);
 }
 
 
