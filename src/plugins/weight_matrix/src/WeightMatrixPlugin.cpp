@@ -25,6 +25,7 @@
 #include "PWMBuildDialogController.h"
 #include "PWMSearchDialogController.h"
 #include "WMQuery.h"
+#include "PMatrixFormat.h"
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -65,7 +66,12 @@ WeightMatrixPlugin::WeightMatrixPlugin() : Plugin(tr("Weight matrix"), tr("Searc
         toolsSubmenu->menuAction()->setObjectName("Weight matrix");
 
         toolsSubmenu->addAction(buildAction);
+
+        GObjectViewFactory *ff = new PFMatrixViewFactory(this);
+        AppContext::getObjectViewFactoryRegistry()->registerGObjectViewFactory(ff);
     }
+
+    AppContext::getDocumentFormatRegistry()->registerFormat(new PFMatrixFormat(this));
 
     LocalWorkflow::PWMatrixWorkerFactory::init();
     LocalWorkflow::PFMatrixWorkerFactory::init();

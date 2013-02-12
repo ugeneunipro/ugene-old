@@ -74,6 +74,8 @@ public:
     //create matrix from set of sequences with equal length
     PFMatrix(const QList<DNASequence*>& data, const PFMatrixType type);
 
+    PFMatrix(const PFMatrix &m):data(m.data), length(m.length), type(m.type), info(m.info){};
+
     //get internal index of position in 1-dimensional array
     int index (int row, int column) const;
 

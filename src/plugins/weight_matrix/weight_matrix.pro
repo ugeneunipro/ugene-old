@@ -7,6 +7,7 @@ HEADERS += src/WeightMatrixPlugin.h \
            src/PWMSearchDialogController.h \
            src/ViewMatrixDialogController.h \
            src/SetParametersDialogController.h \
+		   src/PMatrixFormat.h \
            src/WeightMatrixAlgorithm.h \
            src/WeightMatrixSearchTask.h \
            src/WeightMatrixIO.h \
@@ -18,6 +19,7 @@ FORMS += src/ui/PWMBuildDialog.ui \
          src/ui/PWMSearchDialog.ui \
          src/ui/SearchJASPARDatabase.ui \
          src/ui/ViewMatrixDialog.ui \
+		 src/ui/MatrixAndLogoWidget.ui \
          src/ui/SetDefaultParametersDialog.ui
 
 SOURCES += src/WeightMatrixPlugin.cpp \
@@ -26,6 +28,7 @@ SOURCES += src/WeightMatrixPlugin.cpp \
            src/PWMSearchDialogController.cpp \
            src/ViewMatrixDialogController.cpp \
            src/SetParametersDialogController.cpp \
+		   src/PMatrixFormat.cpp \
            src/WeightMatrixAlgorithm.cpp \
            src/WeightMatrixSearchTask.cpp \
            src/WeightMatrixIO.cpp \

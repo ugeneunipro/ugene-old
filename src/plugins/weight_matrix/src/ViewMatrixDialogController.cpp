@@ -32,16 +32,7 @@
 
 namespace U2 {
 
-ViewMatrixDialogController::ViewMatrixDialogController(QWidget *w) 
-    : QDialog(w), logoArea(NULL) {
-
-    setupUi(this);
-    connect(closeButton, SIGNAL(clicked()), SLOT(sl_onCloseButton()));
-}
-
-ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget *w) 
-: QDialog(w), logoArea(NULL) {
-
+MatrixAndLogoController::MatrixAndLogoController( PFMatrix matrix, QWidget *p):QWidget(p), logoArea(NULL){
     setupUi(this);
     if (matrix.getType() == PFM_MONONUCLEOTIDE) {
         tableWidget->setRowCount(4);
@@ -54,6 +45,7 @@ ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget 
             for (int j = 0, n = matrix.getLength(); j < n; j++) {
                 tableWidget->setItem(i, j, new QTableWidgetItem(QString("%1").arg(matrix.getValue(i, j))));
                 tableWidget->item(i, j)->setTextAlignment(Qt::AlignRight);
+                tableWidget->item(i, j)->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
             }
         }
     } else {
@@ -67,6 +59,7 @@ ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget 
             for (int j = 0, n = matrix.getLength(); j < n; j++) {
                 tableWidget->setItem(i, j, new QTableWidgetItem(QString("%1").arg(matrix.getValue(i, j))));
                 tableWidget->item(i, j)->setTextAlignment(Qt::AlignRight);
+                tableWidget->item(i, j)->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
             }
         }
     }
@@ -120,13 +113,9 @@ ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget 
         logoArea = new AlignmentLogoRenderArea(logoSettings, logoWidget);
     }
     logoArea->repaint();
-    
-    connect(closeButton, SIGNAL(clicked()), SLOT(sl_onCloseButton()));
 }
 
-ViewMatrixDialogController::ViewMatrixDialogController(PWMatrix matrix, QWidget *w) 
-: QDialog(w), logoArea(NULL) {
-
+MatrixAndLogoController::MatrixAndLogoController( PWMatrix matrix, QWidget *p):QWidget(p){
     setupUi(this);
     if (matrix.getType() == PWM_MONONUCLEOTIDE) {
         tableWidget->setRowCount(4);
@@ -139,6 +128,7 @@ ViewMatrixDialogController::ViewMatrixDialogController(PWMatrix matrix, QWidget 
             for (int j = 0, n = matrix.getLength(); j < n; j++) {
                 tableWidget->setItem(i, j, new QTableWidgetItem(QString("%1").arg(matrix.getValue(i, j))));
                 tableWidget->item(i, j)->setTextAlignment(Qt::AlignRight);
+                tableWidget->item(i, j)->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
             }
         }
     } else {
@@ -152,6 +142,7 @@ ViewMatrixDialogController::ViewMatrixDialogController(PWMatrix matrix, QWidget 
             for (int j = 0, n = matrix.getLength(); j < n; j++) {
                 tableWidget->setItem(i, j, new QTableWidgetItem(QString("%1").arg(matrix.getValue(i, j))));
                 tableWidget->item(i, j)->setTextAlignment(Qt::AlignRight);
+                tableWidget->item(i, j)->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
             }
         }
     }
@@ -159,20 +150,54 @@ ViewMatrixDialogController::ViewMatrixDialogController(PWMatrix matrix, QWidget 
     tableWidget->resizeColumnsToContents();
     tableWidget->setMinimumWidth(tableWidget->width());    
     tableWidget->setMinimumHeight(tableWidget->verticalHeader()->length() + tableWidget->horizontalHeader()->height() + 20);
-
     scrollArea->setHidden(true);
 
-    verticalLayout_2->setStretch(0, 1);
-    verticalLayout_2->setStretch(1, 0);
-    verticalLayout_2->setStretch(2, 0);
+    verticalLayout->setStretch(0, 1);
+    verticalLayout->setStretch(1, 0);
+    verticalLayout->setStretch(2, 0);
 
-    resize(width(), minimumHeight());
+    resize(tableWidget->width(), tableWidget->minimumHeight());
+}
 
+ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget *w): QDialog(w){
+    setupUi(this);
+    ml = new MatrixAndLogoController(matrix, this);
+    MLLayout->addWidget(ml);
+
+    setMinimumHeight(ml->height() + closeButton->height() + layout()->margin()*2 + layout()->spacing());
+    setMinimumWidth(ml->width());
+    connect(closeButton, SIGNAL(clicked()), SLOT(sl_onCloseButton()));
+}
+
+ViewMatrixDialogController::ViewMatrixDialogController(PWMatrix matrix, QWidget *w): QDialog(w){
+    setupUi(this);
+    ml = new MatrixAndLogoController(matrix, this);
+    MLLayout->addWidget(ml);
+
+    setMinimumHeight(ml->height() + closeButton->height() + layout()->margin()*2 + layout()->spacing());
+    setMinimumWidth(ml->width());
     connect(closeButton, SIGNAL(clicked()), SLOT(sl_onCloseButton()));
 }
 
 void ViewMatrixDialogController::sl_onCloseButton() {
     QDialog::reject();
+}
+
+
+MatrixViewController::MatrixViewController( PFMatrix matrix ): MWMDIWindow(tr("Matrix viewer")){
+    d = new MatrixAndLogoController(matrix, this);
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(d);
+    setMinimumSize(d->minimumSize());
+    setLayout(layout);
+}
+
+MatrixViewController::MatrixViewController( PWMatrix matrix ): MWMDIWindow(tr("Matrix viewer")){
+    d = new MatrixAndLogoController(matrix, this);
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(d);
+    setMinimumSize(d->minimumSize());
+    setLayout(layout);
 }
 
 } //namespace
