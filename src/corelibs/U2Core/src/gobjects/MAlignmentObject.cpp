@@ -427,11 +427,18 @@ void MAlignmentObject::moveRowsBlock(int firstRow, int numRows, int shift)
 {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
 
-    MAlignment msa = getMAlignment();
+    QList<qint64> rowIds = cachedMAlignment.getRowsIds();
+    QList<qint64> rowsToMove;
 
-    msa.moveRowsBlock(firstRow, numRows, shift);
+    for (int i = 0; i < numRows; ++i) {
+        rowsToMove << rowIds[firstRow + i];
+    }
 
-    setMAlignment(msa);
+    U2OpStatusImpl os;
+    MsaDbiUtils::moveRows(entityRef, rowsToMove, shift, os);
+    CHECK_OP(os, );
+
+    updateCachedMAlignment();
 }
 
 void MAlignmentObject::updateRowsOrder(const QList<qint64>& rowIds, U2OpStatus& os) {
