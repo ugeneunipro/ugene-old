@@ -455,7 +455,7 @@ int bamFetchFunction(const bam1_t *b, void *data) {
         if ("*" != values[QUAL_COL]) {
             read->quality = values[QUAL_COL];
         }
-        read->effectiveLen = bam_cigar2qlen(&(b->core), bam1_cigar(b));
+        read->effectiveLen = bam_calend(&(b->core), bam1_cigar(b));
         delete[] samStr;
         read->id = read->name
            + ";" + QByteArray::number(read->leftmostPos)

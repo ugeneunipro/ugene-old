@@ -69,15 +69,20 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
 
     foreach (const QByteArray& line, lines) {
         if (line.startsWith('@') && (line.length() > 1) && QChar(line.at(1)).isLetter()) {
-            if (state != STATE_START_PARSING && state != STATE_SEQ  ) {
+            if (state != STATE_START_PARSING && state != STATE_QUALITY  ) {
                 return FormatDetection_NotMatched;
             }
             sequenceCount++;
             state = STATE_SEQ_HEADER;
-        } else if(line.startsWith('+')){
+        } else if(line.startsWith('+') && STATE_SEQ == state){
             qualCount++;
-        }else{
-            state = STATE_SEQ;
+            state = STATE_QUALITY_HEADER;
+        } else {
+            if (STATE_SEQ_HEADER == state) {
+                state = STATE_SEQ;
+            } else if (STATE_QUALITY_HEADER == state) {
+                state = STATE_QUALITY;
+            }
         }
         if(!line.isEmpty()) linesCount++;
     }
@@ -89,7 +94,7 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
 
     //check whats every seq had its own qual
     if (linesCount%4 > 2 || linesCount%4 == 0){
-        if(sequenceCount != qualCount){
+        if ((sequenceCount != qualCount) && (sequenceCount-1 != qualCount)) {
             return FormatDetection_NotMatched;
         }
     }else{
