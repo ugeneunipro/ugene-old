@@ -77,7 +77,10 @@ void TestDbiProvider::close(){
     U2OpStatusImpl opStatus;
     if(dbi){
         if(useConnectionPool){
-            AppContext::getDbiRegistry()->getGlobalDbiPool()->releaseDbi(dbi, opStatus);
+            U2DbiRegistry* dbiReg = AppContext::getDbiRegistry();
+            if (NULL != dbiReg) {
+                dbiReg->getGlobalDbiPool()->releaseDbi(dbi, opStatus);
+            }
         }else{
             dbi->shutdown(opStatus);
             SAFE_POINT_OP(opStatus, );
