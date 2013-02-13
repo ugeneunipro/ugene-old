@@ -36,6 +36,7 @@ struct CuffmergeSettings {
     double minIsoformFraction;
     QString refAnnsUrl;
     QString refSeqUrl;
+    QString outDir;
     QString workingDir;
 
     QList< QList<SharedAnnotationData> > anns;
@@ -49,7 +50,9 @@ public:
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
+    void run();
     ReportResult report();
+    QStringList getOutputFiles() const;
 
     QList<SharedAnnotationData> takeResult();
 
@@ -64,6 +67,9 @@ private:
     ExternalToolRunTask *mergeTask;
     QList<SharedAnnotationData> result;
     QScopedPointer<ExternalToolLogParser> logParser;
+    QStringList outputFiles;
+
+    static const QString outSubDirBaseName;
 
 private:
     Task * createWriteTask(const QList<SharedAnnotationData> &anns, const QString &filePath);
@@ -71,7 +77,6 @@ private:
     QString getAnnsFilePath();
     void setupWorkingDirPath();
     void writeFileList();
-    void readResult();
 };
 
 } // U2

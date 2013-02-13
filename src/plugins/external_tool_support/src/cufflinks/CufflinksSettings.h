@@ -47,6 +47,7 @@ public:
     double              minIsoformFraction;
     QString             fragBiasCorrect;
     double              preMrnaFraction;
+    QString             outDir;
 
     // Input assembly
     Workflow::DbiDataStorage*           storage;

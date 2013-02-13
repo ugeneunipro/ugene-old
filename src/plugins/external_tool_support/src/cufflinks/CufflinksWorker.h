@@ -52,9 +52,10 @@ class CufflinksWorker : public BaseWorker
 public:
     CufflinksWorker(Actor* actor);
 
-    virtual void init();
-    virtual Task* tick();
-    virtual void cleanup();
+    void init();
+    Task *tick();
+    void cleanup();
+    QStringList getOutputFiles();
 
 private slots:
     void sl_cufflinksTaskFinished();
@@ -63,6 +64,7 @@ protected:
     IntegralBus* input;
     IntegralBus* output;
     CufflinksSettings settings;
+    QStringList outputFiles;
 
     bool settingsAreCorrect;
 };
@@ -76,6 +78,7 @@ public:
     CufflinksWorkerFactory() : DomainFactory(ACTOR_ID) {}
     virtual Worker* createWorker(Actor* actor) { return new CufflinksWorker(actor); }
 
+    static const QString OUT_DIR;
     static const QString REF_ANNOTATION;
     static const QString RABT_ANNOTATION;
     static const QString LIBRARY_TYPE;
@@ -88,9 +91,7 @@ public:
     static const QString TMP_DIR_PATH;
 
     static const QString OUT_MAP_DESCR_ID;
-    static const QString TRANSCRIPT_SLOT_DESCR_ID;
     static const QString ISO_LEVEL_SLOT_DESCR_ID;
-    static const QString GENE_LEVEL_SLOT_DESCR_ID;
 };
 
 } // namespace LocalWorkflow

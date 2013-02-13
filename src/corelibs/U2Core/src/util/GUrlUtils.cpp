@@ -311,5 +311,15 @@ QString GUrlUtils::getQuotedString( const QString& inString ){
     return inString;
 }
 
+QString GUrlUtils::createDirectory(const QString &path, const QString &suffix, U2OpStatus &os) {
+    QString newPath = rollFileName(path, suffix, QSet<QString>());
+    QDir dir(newPath);
+    bool created = dir.mkpath(newPath);
+    if (!created) {
+        os.setError(tr("Can not create a directory: %1").arg(newPath));
+    }
+    return newPath;
+}
+
 
 }//namespace

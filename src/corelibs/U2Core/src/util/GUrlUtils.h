@@ -106,6 +106,9 @@ public:
     //Get quoted input string if it has spaces
     static QString getQuotedString(const QString& inString);
 
+    // Creates the directory with a rolled path: @path + @suffix + "num". Returns the new path
+    static QString createDirectory(const QString &path, const QString &suffix, U2OpStatus &os);
+
 };
 
 } //namespace

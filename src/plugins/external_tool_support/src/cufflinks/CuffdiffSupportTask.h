@@ -59,25 +59,12 @@ struct CuffdiffSettings {
     double fdr;
     int maxMleIterations;
     bool emitCountTables;
+    QString outDir;
 
     QList<Workflow::SharedDbiDataHandler> assemblies;
     QList<SharedAnnotationData> transcript;
     Workflow::DbiDataStorage *storage;
     QString workingDir;
-};
-
-struct CuffdiffResult {
-    QList<SharedAnnotationData> splicing;
-    QList<SharedAnnotationData> promoters;
-    QList<SharedAnnotationData> cdsDiff;
-    QList<SharedAnnotationData> cdsExp;
-    QList<SharedAnnotationData> cdsFpkm;
-    QList<SharedAnnotationData> tssExp;
-    QList<SharedAnnotationData> tssFpkm;
-    QList<SharedAnnotationData> genesExp;
-    QList<SharedAnnotationData> genesFpkm;
-    QList<SharedAnnotationData> isomorfsExp;
-    QList<SharedAnnotationData> isomorfsFpkm;
 };
 
 class CuffdiffSupportTask : public Task {
@@ -95,21 +82,22 @@ public:
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
     ReportResult report();
-    CuffdiffResult takeResult();
+    QStringList getOutputFiles() const;
 
 private:
     CuffdiffSettings settings;
     QString workingDir;
     QStringList assemblyUrls;
     QString transcriptUrl;
-    QScopedPointer<CuffdiffResult> result;
 
     QScopedPointer<Document> transcriptDoc;
     QList<Task*> saveTasks;
 
     QScopedPointer<ExternalToolLogParser> logParser;
     ExternalToolRunTask *diffTask;
+    QStringList outputFiles;
 
+    static const QString outSubDirBaseName;
 private:
     ConvertAssemblyToSamTask * createAssemblyTask(const Workflow::SharedDbiDataHandler &id, const QString &url);
     Task * createTranscriptTask();
@@ -117,8 +105,8 @@ private:
     void addTranscriptObject();
     void createTranscriptDoc();
     Task * createCuffdiffTask();
-    void readResult();
-    QList<SharedAnnotationData> readFile(const QString &fileName, const DocumentFormatId &format);
+    void addOutFiles();
+    void addFile(const QString &fileName);
     void setupWorkingDir();
 };
 

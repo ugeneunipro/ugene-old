@@ -68,9 +68,10 @@ class TopHatWorker : public BaseWorker
 public:
     TopHatWorker(Actor* actor);
 
-    virtual void init();
-    virtual Task* tick();
-    virtual void cleanup();
+    void init();
+    Task *tick();
+    void cleanup();
+    QStringList getOutputFiles();
 
 private slots:
     void sl_topHatTaskFinished();
@@ -79,6 +80,7 @@ protected:
     IntegralBus* input;
     IntegralBus* output;
     TopHatSettings settings;
+    QStringList outputFiles;
 
     bool settingsAreCorrect;
 
@@ -106,6 +108,7 @@ public:
     TopHatWorkerFactory() : DomainFactory(ACTOR_ID) {}
     virtual Worker* createWorker(Actor* actor) { return new TopHatWorker(actor); }
 
+    static const QString OUT_DIR;
     static const QString BOWTIE_INDEX_DIR;
     static const QString BOWTIE_INDEX_BASENAME;
     static const QString REF_SEQ;
@@ -140,9 +143,6 @@ public:
 
     static const QString OUT_MAP_DESCR_ID;
     static const QString ACCEPTED_HITS_SLOT_ID;
-    static const QString JUNCTIONS_SLOT_ID;
-    static const QString INSERTIONS_SLOT_ID;
-    static const QString DELETIONS_SLOT_ID;
 };
 
 } // namespace LocalWorkflow

@@ -50,20 +50,20 @@ public:
     bool isReady();
     Task * tick();
     void cleanup();
+    QStringList getOutputFiles();
 
 private slots:
-    void sl_taskFinished();
+    void sl_onTaskFinished();
 
 private:
     CommunicationChannel *inAssembly;
     CommunicationChannel *inTranscript;
-    IntegralBus *output;
     QList<SharedDbiDataHandler> assemblies;
+    QStringList outputFiles;
 
 private:
     CuffdiffSettings scanParameters() const;
     CuffdiffSettings takeSettings();
-    QVariantMap createMessageData(CuffdiffSupportTask *task) const;
     void takeAssembly();
 };
 

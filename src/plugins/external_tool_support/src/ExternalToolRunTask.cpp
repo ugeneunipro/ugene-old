@@ -314,4 +314,11 @@ Document * ExternalToolSupportUtils::createAnnotationsDocument(const QString &fi
      return doc;
 }
 
+void ExternalToolSupportUtils::appendExistingFile(const QString &path, QStringList &files) {
+    GUrl url(path);
+    if (QFile::exists(url.getURLString())) {
+        files << url.getURLString();
+    }
+}
+
 }//namespace

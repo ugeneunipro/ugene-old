@@ -48,6 +48,7 @@ namespace LocalWorkflow {
  *****************************/
 const QString CufflinksWorkerFactory::ACTOR_ID("cufflinks");
 
+const QString CufflinksWorkerFactory::OUT_DIR("out-dir");
 const QString CufflinksWorkerFactory::REF_ANNOTATION("ref-annotation");
 const QString CufflinksWorkerFactory::RABT_ANNOTATION("rabt-annotation");
 const QString CufflinksWorkerFactory::LIBRARY_TYPE("library-type");
@@ -60,10 +61,7 @@ const QString CufflinksWorkerFactory::EXT_TOOL_PATH("path");
 const QString CufflinksWorkerFactory::TMP_DIR_PATH("tmp-dir");
 
 const QString CufflinksWorkerFactory::OUT_MAP_DESCR_ID("out.annotations");
-const QString CufflinksWorkerFactory::TRANSCRIPT_SLOT_DESCR_ID("transcripts.slot");
 const QString CufflinksWorkerFactory::ISO_LEVEL_SLOT_DESCR_ID("isolevel.slot");
-const QString CufflinksWorkerFactory::GENE_LEVEL_SLOT_DESCR_ID("genelevel.slot");
-
 
 void CufflinksWorkerFactory::init()
 {
@@ -88,22 +86,11 @@ void CufflinksWorkerFactory::init()
 
     QMap<Descriptor, DataTypePtr> outputMap;
 
-    Descriptor transcriptsSlotDescriptor = Descriptor(TRANSCRIPT_SLOT_DESCR_ID,
-        CufflinksWorker::tr("Transcripts"),
-        CufflinksWorker::tr("A set of annotated regions"));
-
-    Descriptor isoformLevelExprDescriptor = Descriptor(ISO_LEVEL_SLOT_DESCR_ID,
+    Descriptor isoformLevelExprDescriptor(ISO_LEVEL_SLOT_DESCR_ID,
         CufflinksWorker::tr("Isoform-level expression values"),
         CufflinksWorker::tr("A set of annotated regions"));
 
-    Descriptor geneLevelExprDescriptor = Descriptor(GENE_LEVEL_SLOT_DESCR_ID,
-        CufflinksWorker::tr("Gene-level expression values"),
-        CufflinksWorker::tr("A set of annotated regions"));
-
-    outputMap[transcriptsSlotDescriptor] = BaseTypes::ANNOTATION_TABLE_TYPE();
     outputMap[isoformLevelExprDescriptor] = BaseTypes::ANNOTATION_TABLE_TYPE();
-    outputMap[geneLevelExprDescriptor] = BaseTypes::ANNOTATION_TABLE_TYPE();
-
     DataTypeRegistry* registry = WorkflowEnv::getDataTypeRegistry();
     assert(registry);
 
@@ -126,6 +113,10 @@ void CufflinksWorkerFactory::init()
         " taking into account biases in library preparation protocols."));
 
     // Define parameters of the element
+    Descriptor outDir(OUT_DIR,
+        CufflinksWorker::tr("Output directory"),
+        CufflinksWorker::tr("The base name of output directory. It could be modified with a suffix."));
+
     Descriptor refAnnotation(REF_ANNOTATION,
         CufflinksWorker::tr("Reference annotation"),
         CufflinksWorker::tr("Tells Cufflinks to use the supplied reference"
@@ -193,6 +184,7 @@ void CufflinksWorkerFactory::init()
         CufflinksWorker::tr("Temporary directory"),
         CufflinksWorker::tr("The directory for temporary files"));
 
+    attributes << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, "");
     attributes << new Attribute(refAnnotation, BaseTypes::STRING_TYPE(), false, QVariant(""));
     attributes << new Attribute(rabtAnnotation, BaseTypes::STRING_TYPE(), false, QVariant(""));
     attributes << new Attribute(libraryType, BaseTypes::NUM_TYPE(), false, QVariant(0));
@@ -234,6 +226,7 @@ void CufflinksWorkerFactory::init()
         delegates[PRE_MRNA_FRACTION] = new DoubleSpinBoxDelegate(vm);
     }
 
+    delegates[OUT_DIR] = new URLDelegate("", "", false, true /*path*/);
     delegates[REF_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
     delegates[RABT_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
     delegates[MASK_FILE] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
@@ -282,42 +275,40 @@ CufflinksWorker::CufflinksWorker(Actor* actor)
 }
 
 
-void CufflinksWorker::init()
-{
+void CufflinksWorker::init() {
     input = ports.value(BasePorts::IN_ASSEMBLY_PORT_ID());
     output = ports.value(BasePorts::OUT_ANNOTATIONS_PORT_ID());
 
     // Init the parameters
     settingsAreCorrect = true;
-    QString extToolPath = actor->getParameter(CufflinksWorkerFactory::EXT_TOOL_PATH)->getAttributeValue<QString>(context);
+    QString extToolPath = getValue<QString>(CufflinksWorkerFactory::EXT_TOOL_PATH);
     if (QString::compare(extToolPath, "default", Qt::CaseInsensitive) != 0) {
         AppContext::getExternalToolRegistry()->getByName(CUFFLINKS_TOOL_NAME)->setPath(extToolPath);
     }
 
-    QString tmpDirPath = actor->getParameter(CufflinksWorkerFactory::TMP_DIR_PATH)->getAttributeValue<QString>(context);
+    QString tmpDirPath = getValue<QString>(CufflinksWorkerFactory::TMP_DIR_PATH);
     if (QString::compare(tmpDirPath, "default", Qt::CaseInsensitive) != 0) {
         AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(tmpDirPath);
     }
 
-    settings.referenceAnnotation = actor->getParameter(CufflinksWorkerFactory::REF_ANNOTATION)->getAttributeValue<QString>(context);
-    settings.rabtAnnotation = actor->getParameter(CufflinksWorkerFactory::RABT_ANNOTATION)->getAttributeValue<QString>(context);
+    settings.outDir = getValue<QString>(CufflinksWorkerFactory::OUT_DIR);
+    settings.referenceAnnotation = getValue<QString>(CufflinksWorkerFactory::REF_ANNOTATION);
+    settings.rabtAnnotation = getValue<QString>(CufflinksWorkerFactory::RABT_ANNOTATION);
 
-    int libType = actor->getParameter(CufflinksWorkerFactory::LIBRARY_TYPE)->getAttributeValue<int>(context);
+    int libType = getValue<int>(CufflinksWorkerFactory::LIBRARY_TYPE);
     if (!settings.libraryType.setLibraryType(libType)) {
         algoLog.error(tr("Incorrect value of the library type parameter for Cufflinks!"));
         settingsAreCorrect = false;
     }
 
-    settings.maskFile = actor->getParameter(CufflinksWorkerFactory::MASK_FILE)->getAttributeValue<QString>(context);
-    settings.multiReadCorrect = actor->getParameter(CufflinksWorkerFactory::MULTI_READ_CORRECT)->getAttributeValue<bool>(context);
-    settings.minIsoformFraction = actor->getParameter(CufflinksWorkerFactory::MIN_ISOFORM_FRACTION)->getAttributeValue<double>(context);
-    settings.fragBiasCorrect = actor->getParameter(CufflinksWorkerFactory::FRAG_BIAS_CORRECT)->getAttributeValue<QString>(context);
-    settings.preMrnaFraction = actor->getParameter(CufflinksWorkerFactory::PRE_MRNA_FRACTION)->getAttributeValue<double>(context);
+    settings.maskFile = getValue<QString>(CufflinksWorkerFactory::MASK_FILE);
+    settings.multiReadCorrect = getValue<bool>(CufflinksWorkerFactory::MULTI_READ_CORRECT);
+    settings.minIsoformFraction = getValue<double>(CufflinksWorkerFactory::MIN_ISOFORM_FRACTION);
+    settings.fragBiasCorrect = getValue<QString>(CufflinksWorkerFactory::FRAG_BIAS_CORRECT);
+    settings.preMrnaFraction = getValue<double>(CufflinksWorkerFactory::PRE_MRNA_FRACTION);
 }
 
-
-Task* CufflinksWorker::tick()
-{
+Task * CufflinksWorker::tick() {
     if (false == settingsAreCorrect) {
         return NULL;
     }
@@ -346,9 +337,7 @@ Task* CufflinksWorker::tick()
     return NULL;
 }
 
-
-void CufflinksWorker::sl_cufflinksTaskFinished()
-{
+void CufflinksWorker::sl_cufflinksTaskFinished() {
     CufflinksSupportTask* cufflinksSupportTask = qobject_cast<CufflinksSupportTask*>(sender());
     if (Task::State_Finished != cufflinksSupportTask->getState()) {
         return;
@@ -359,27 +348,21 @@ void CufflinksWorker::sl_cufflinksTaskFinished()
             WorkflowEnv::getDataTypeRegistry()->getById(CufflinksWorkerFactory::OUT_MAP_DESCR_ID);
         SAFE_POINT(0 != outputMapDataType, "Internal error: can't get DataTypePtr for output map!",);
 
-        QList<SharedAnnotationData> trascriptAnnots = cufflinksSupportTask->getTranscriptGtfAnnots();
-        QList<SharedAnnotationData> isoLevelAnnots = cufflinksSupportTask->getIsoformAnnots();
-        QList<SharedAnnotationData> geneLevelAnnots = cufflinksSupportTask->getGeneAnnots();
-
         QVariantMap messageData;
-        messageData[CufflinksWorkerFactory::TRANSCRIPT_SLOT_DESCR_ID] =
-            qVariantFromValue< QList<SharedAnnotationData> >(trascriptAnnots);
-
         messageData[CufflinksWorkerFactory::ISO_LEVEL_SLOT_DESCR_ID] =
-            qVariantFromValue< QList<SharedAnnotationData> >(isoLevelAnnots);
-
-        messageData[CufflinksWorkerFactory::GENE_LEVEL_SLOT_DESCR_ID] =
-            qVariantFromValue< QList<SharedAnnotationData> >(geneLevelAnnots);
+            qVariantFromValue< QList<SharedAnnotationData> >(cufflinksSupportTask->getIsoformAnnots());
 
         output->put(Message(outputMapDataType, messageData));
+        outputFiles << cufflinksSupportTask->getOutputFiles();
     }
 }
 
+void CufflinksWorker::cleanup() {
 
-void CufflinksWorker::cleanup()
-{
+}
+
+QStringList CufflinksWorker::getOutputFiles() {
+    return outputFiles;
 }
 
 

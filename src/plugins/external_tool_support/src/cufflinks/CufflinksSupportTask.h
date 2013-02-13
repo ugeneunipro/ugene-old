@@ -52,9 +52,8 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
     Task::ReportResult report();
 
-    QList<SharedAnnotationData> getTranscriptGtfAnnots() const { return transcriptGtfAnnots; };
-    QList<SharedAnnotationData> getIsoformAnnots() const { return isoformLevelAnnots; };
-    QList<SharedAnnotationData> getGeneAnnots() const { return geneLevelAnnots; };
+    QList<SharedAnnotationData> getIsoformAnnots() const { return isoformLevelAnnots; }
+    QStringList getOutputFiles() const;
 
 private:
     // "fileName" is the file name relatively to the working directory
@@ -70,9 +69,10 @@ private:
     ConvertAssemblyToSamTask*           convertAssToSamTask;
     ExternalToolRunTask*                cufflinksExtToolTask;
 
-    QList<SharedAnnotationData>         transcriptGtfAnnots;
     QList<SharedAnnotationData>         isoformLevelAnnots;
-    QList<SharedAnnotationData>         geneLevelAnnots;
+    QStringList                         outputFiles;
+
+    static const QString outSubDirBaseName;
 };
 
 

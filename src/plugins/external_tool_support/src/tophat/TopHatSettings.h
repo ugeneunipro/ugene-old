@@ -61,6 +61,8 @@ public:
     bool                useBowtie1;
     QString             bowtiePath;
     QString             samtoolsPath;
+    /** Working directory for the TopHat tool */
+    QString             outDir;
 
     /**
      * Input reads: if reads are paired both lists are filled.

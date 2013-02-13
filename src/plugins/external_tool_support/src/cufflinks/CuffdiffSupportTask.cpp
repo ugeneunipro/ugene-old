@@ -25,6 +25,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -33,6 +34,8 @@
 #include "CuffdiffSupportTask.h"
 
 namespace U2 {
+
+const QString CuffdiffSupportTask::outSubDirBaseName("cuffdiff_out");
 
 CuffdiffSupportTask::CuffdiffSupportTask(const CuffdiffSettings &_settings)
 : Task(tr("Running Cuffdiff task"), TaskFlags_NR_FOSE_COSC), settings(_settings)
@@ -45,6 +48,11 @@ void CuffdiffSupportTask::prepare() {
         stateInfo.setError(tr("At least 2 assemblies are required for Cuffdiff")), );
 
     setupWorkingDir();
+    CHECK_OP(stateInfo, );
+
+    settings.outDir = GUrlUtils::createDirectory(
+                settings.outDir + "/" + outSubDirBaseName,
+                "_", stateInfo);
     CHECK_OP(stateInfo, );
 
     int i = 0;
@@ -78,7 +86,7 @@ QList<Task*> CuffdiffSupportTask::onSubTaskFinished(Task *subTask) {
         if (NULL == diffTask) {
             tasks << createCuffdiffTask();
         } else {
-            readResult();
+            addOutFiles();
         }
     }
     return tasks;
@@ -112,6 +120,7 @@ Task * CuffdiffSupportTask::createTranscriptTask() {
 Task * CuffdiffSupportTask::createCuffdiffTask() {
     // prepare arguments
     QStringList arguments;
+    arguments << "--output-dir" << settings.outDir;
     if (settings.timeSeriesAnalysis) {
         arguments << "--time-series";
     }
@@ -162,34 +171,22 @@ Task * CuffdiffSupportTask::createCuffdiffTask() {
     return diffTask;
 }
 
-QList<SharedAnnotationData> CuffdiffSupportTask::readFile(const QString &fileName, const DocumentFormatId &format) {
-    QString path = workingDir + "/" + fileName;
-    return ExternalToolSupportUtils::getAnnotationsFromFile(path, format, CUFFDIFF_TOOL_NAME, stateInfo);
+void CuffdiffSupportTask::addFile(const QString &fileName) {
+    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/" + fileName, outputFiles);
 }
 
-void CuffdiffSupportTask::readResult() {
-    result.reset(new CuffdiffResult());
-    DocumentFormatId df = BaseDocumentFormats::DIFF;
-    DocumentFormatId ff = BaseDocumentFormats::FPKM_TRACKING_FORMAT;
-
-    result->splicing = readFile("splicing.diff", df);
-    result->promoters = readFile("promoters.diff", df);
-    result->cdsDiff = readFile("cds.diff", df);
-    result->cdsExp = readFile("cds_exp.diff", df);
-    result->cdsFpkm = readFile("cds.fpkm_tracking", ff);
-    result->tssExp = readFile("tss_group_exp.diff", df);
-    result->tssFpkm = readFile("tss_groups.fpkm_tracking", ff);
-    result->genesExp = readFile("gene_exp.diff", df);
-    result->genesFpkm = readFile("genes.fpkm_tracking", ff);
-    result->isomorfsExp = readFile("isoform_exp.diff", df);
-    result->isomorfsFpkm = readFile("isoforms.fpkm_tracking", ff);
-}
-
-CuffdiffResult CuffdiffSupportTask::takeResult() {
-    CHECK(NULL != result.data(), CuffdiffResult());
-    CuffdiffResult ret(*result.data());
-    result.reset(NULL);
-    return ret;
+void CuffdiffSupportTask::addOutFiles() {
+    addFile("splicing.diff");
+    addFile("promoters.diff");
+    addFile("cds.diff");
+    addFile("cds_exp.diff");
+    addFile("cds.fpkm_tracking");
+    addFile("tss_group_exp.diff");
+    addFile("tss_groups.fpkm_tracking");
+    addFile("gene_exp.diff");
+    addFile("genes.fpkm_tracking");
+    addFile("isoform_exp.diff");
+    addFile("isoforms.fpkm_tracking");
 }
 
 void CuffdiffSupportTask::createTranscriptDoc() {
@@ -213,6 +210,10 @@ void CuffdiffSupportTask::addTranscriptObject() {
         aobj->addAnnotation(new Annotation(ann));
     }
     transcriptDoc->addObject(aobj);
+}
+
+QStringList CuffdiffSupportTask::getOutputFiles() const {
+    return outputFiles;
 }
 
 CuffdiffSupportTask::LogParser::LogParser()

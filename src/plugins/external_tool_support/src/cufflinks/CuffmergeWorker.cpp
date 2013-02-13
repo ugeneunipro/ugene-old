@@ -46,13 +46,13 @@ namespace LocalWorkflow {
  *****************************/
 const QString CuffmergeWorkerFactory::ACTOR_ID("cuffmerge");
 
+const QString OUT_DIR("out-dir");
 const QString MIN_ISOFORM_FRACTION("min-isoform-fraction");
 const QString REF_ANNOTATION("ref-annotation");
 const QString REF_SEQ("ref-seq");
 const QString CUFFCOMPARE_TOOL_PATH("cuffcompare-tool-path");
 const QString EXT_TOOL_PATH("path");
 const QString TMP_DIR_PATH("tmp-dir");
-
 
 void CuffmergeWorkerFactory::init()
 {
@@ -68,6 +68,10 @@ void CuffmergeWorkerFactory::init()
 
     QList<Attribute*> attributes;
     { // Define parameters of the element
+        Descriptor outDir(OUT_DIR,
+            CuffmergeWorker::tr("Output directory"),
+            CuffmergeWorker::tr("The base name of output directory. It could be modified with a suffix."));
+
         Descriptor refAnnotation(REF_ANNOTATION,
             CuffmergeWorker::tr("Reference annotation"),
             CuffmergeWorker::tr("Merge the input assemblies together with"
@@ -96,6 +100,7 @@ void CuffmergeWorkerFactory::init()
             CuffmergeWorker::tr("Temporary directory"),
             CuffmergeWorker::tr("The directory for temporary files"));
 
+        attributes << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, "");
         attributes << new Attribute(refAnnotation, BaseTypes::STRING_TYPE(), false, QVariant(""));
         attributes << new Attribute(refSeq, BaseTypes::STRING_TYPE(), false, QVariant(""));
         attributes << new Attribute(minIso, BaseTypes::NUM_TYPE(), false, QVariant(0.05));
@@ -133,6 +138,7 @@ void CuffmergeWorkerFactory::init()
     // Values range of some parameters
     QMap<QString, PropertyDelegate*> delegates;
     {
+        delegates[OUT_DIR] = new URLDelegate("", "", false, true /*path*/);
         delegates[REF_ANNOTATION] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
         delegates[REF_SEQ] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
         QVariantMap vm;
@@ -217,11 +223,16 @@ void CuffmergeWorker::sl_taskFinished() {
     Message m(output->getBusType(), data);
     output->put(m);
     output->setEnded();
+    outputFiles << t->getOutputFiles();
     setDone();
 }
 
 void CuffmergeWorker::cleanup() {
     anns.clear();
+}
+
+QStringList CuffmergeWorker::getOutputFiles() {
+    return outputFiles;
 }
 
 void CuffmergeWorker::takeAnnotations() {
@@ -235,6 +246,7 @@ void CuffmergeWorker::takeAnnotations() {
 
 CuffmergeSettings CuffmergeWorker::scanParameters() const {
     CuffmergeSettings result;
+    result.outDir = getValue<QString>(OUT_DIR);
     result.minIsoformFraction = getValue<double>(MIN_ISOFORM_FRACTION);
     result.refAnnsUrl = getValue<QString>(REF_ANNOTATION);
     result.refSeqUrl = getValue<QString>(REF_SEQ);

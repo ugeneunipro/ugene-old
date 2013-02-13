@@ -48,6 +48,7 @@ namespace LocalWorkflow {
  *****************************/
 const QString CuffdiffWorkerFactory::ACTOR_ID("cuffdiff");
 
+static const QString OUT_DIR("out-dir");
 static const QString TIME_SERIES_ANALYSIS("time-series-analysis");
 static const QString UPPER_QUARTILE_NORM("upper-quartile-norm");
 static const QString HITS_NORM("hits-norm");
@@ -61,20 +62,6 @@ static const QString MAX_MLE_ITERATIONS("max-mle-iterations");
 static const QString EMIT_COUNT_TABLES("emit-count-tables");
 static const QString EXT_TOOL_PATH("path");
 static const QString TMP_DIR_PATH("tmp-dir");
-
-static const QString OUT_PORT("output");
-
-static const QString SPLICING_DIFF_SLOT("splicing");
-static const QString PROMOTERS_DIFF_SLOT("promoters");
-static const QString CDS_DIFF_SLOT("cds-diff");
-static const QString CDS_EXP_SLOT("cds-exp");
-static const QString CDS_FPKM_SLOT("cds-fpkm");
-static const QString TSS_EXP_SLOT("tss-groups-exp");
-static const QString TSS_FPKM_SLOT("tss-groups-fpkm");
-static const QString GENES_EXP_SLOT("genes-exp");
-static const QString GENES_FPKM_SLOT("genes-fpkm");
-static const QString ISOMORFS_EXP_SLOT("isomorfs-exp");
-static const QString ISOMORFS_FPKM_SLOT("isomorfs-fpkm");
 
 void CuffdiffWorkerFactory::init()
 {
@@ -96,6 +83,10 @@ void CuffdiffWorkerFactory::init()
         " a gene.");
 
     { // Define parameters of the element
+        Descriptor outDir(OUT_DIR,
+            CuffdiffWorker::tr("Output directory"),
+            CuffdiffWorker::tr("The base name of output directory. It could be modified with a suffix."));
+
         Descriptor timeSeriesAnalysis(TIME_SERIES_ANALYSIS,
             CuffdiffWorker::tr("Time series analysis"),
             CuffdiffWorker::tr("If set to <i>True</i>, instructs Cuffdiff to analyze"
@@ -174,6 +165,7 @@ void CuffdiffWorkerFactory::init()
             CuffdiffWorker::tr("Temporary directory"),
             CuffdiffWorker::tr("The directory for temporary files"));
 
+        attributes << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, "");
         attributes << new Attribute(timeSeriesAnalysis, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         attributes << new Attribute(upperQuartileNorm, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         attributes << new Attribute(hitsNorm, BaseTypes::NUM_TYPE(), false, QVariant(1));
@@ -196,57 +188,6 @@ void CuffdiffWorkerFactory::init()
         Descriptor annsDesc(BasePorts::IN_ANNOTATIONS_PORT_ID(),
             CuffdiffWorker::tr("Annotations"),
             CuffdiffWorker::tr("Transcript annotations"));
-        Descriptor outDesc(OUT_PORT,
-            CuffdiffWorker::tr("Cuffdiff output"),
-            CuffdiffWorker::tr("Annotations with output information: FPKM"
-            " tracking, differential expression and splicing tests,"
-            "differential coding and differential promoter use"));
-
-        Descriptor splicing(SPLICING_DIFF_SLOT,
-            CuffdiffWorker::tr("Splicing"),
-            CuffdiffWorker::tr("Lists the amount of overloading detected among"
-            " its isoforms, i.e. how much differential splicing exists between"
-            " isoforms processed from a single primary transcript"));
-        Descriptor promoters(PROMOTERS_DIFF_SLOT,
-            CuffdiffWorker::tr("Promoters"),
-            CuffdiffWorker::tr("Lists the amount of overloading detected among"
-            " its primary transcripts, i.e. how much differential promoter use"
-            " exists between samples"));
-        Descriptor cdsDiff(CDS_DIFF_SLOT,
-            CuffdiffWorker::tr("Differential coding"),
-            CuffdiffWorker::tr("The amount of overloading detected among its"
-            " coding sequences, i.e. how much differential CDS output exists"
-            " between samples"));
-        Descriptor cdsExp(CDS_EXP_SLOT,
-            CuffdiffWorker::tr("Coding sequence differential FPKM"),
-            CuffdiffWorker::tr("Tests differences in the summed FPKM of"
-            " transcripts sharing each p_id independent of tss_id"));
-        Descriptor cdsFpkm(CDS_FPKM_SLOT,
-            CuffdiffWorker::tr("Coding sequence FPKMs"),
-            CuffdiffWorker::tr("Tracks the summed FPKM of transcripts sharing"
-            " each p_id, independent of tss_id"));
-        Descriptor tssExp(TSS_EXP_SLOT,
-            CuffdiffWorker::tr("Primary transcript differential FPKM"),
-            CuffdiffWorker::tr("Tests differences in the summed FPKM of"
-            " transcripts sharing each tss_id"));
-        Descriptor tssFpkm(TSS_FPKM_SLOT,
-            CuffdiffWorker::tr("Primary transcript FPKMs"),
-            CuffdiffWorker::tr("Tracks the summed FPKM of transcripts sharing"
-            " each tss_id"));
-        Descriptor genesExp(GENES_EXP_SLOT,
-            CuffdiffWorker::tr("Gene differential FPKM"),
-            CuffdiffWorker::tr("Tests difference sin the summed FPKM of"
-            " transcripts sharing each gene_id"));
-        Descriptor genesFpkm(GENES_FPKM_SLOT,
-            CuffdiffWorker::tr("Gene FPKMs"),
-            CuffdiffWorker::tr("Tracks the summed FPKM of transcripts sharing"
-            " each gene_id"));
-        Descriptor isoExp(ISOMORFS_EXP_SLOT,
-            CuffdiffWorker::tr("Transcript differential FPKM"),
-            CuffdiffWorker::tr("Transcript differential FPKM"));
-        Descriptor isoFpkm(ISOMORFS_FPKM_SLOT,
-            CuffdiffWorker::tr("Transcript FPKMs"),
-            CuffdiffWorker::tr("Contains the estimated isoform-level expression values"));
 
         QMap<Descriptor, DataTypePtr> assemblyTypeMap;
         assemblyTypeMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ASSEMBLY_TYPE();
@@ -256,23 +197,8 @@ void CuffdiffWorkerFactory::init()
         annotationsTypeMap[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
         DataTypePtr annsType(new MapDataType(BasePorts::IN_ASSEMBLY_PORT_ID(), annotationsTypeMap));
 
-        QMap<Descriptor, DataTypePtr> outputTypeMap;
-        outputTypeMap[SPLICING_DIFF_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        outputTypeMap[PROMOTERS_DIFF_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        outputTypeMap[CDS_DIFF_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        outputTypeMap[CDS_EXP_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        outputTypeMap[CDS_FPKM_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        outputTypeMap[TSS_EXP_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        outputTypeMap[TSS_FPKM_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        outputTypeMap[GENES_EXP_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        outputTypeMap[GENES_FPKM_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        outputTypeMap[ISOMORFS_EXP_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        outputTypeMap[ISOMORFS_FPKM_SLOT] = BaseTypes::ANNOTATION_TABLE_TYPE();
-        DataTypePtr outType(new MapDataType(OUT_PORT, outputTypeMap));
-
         portDescriptors << new PortDescriptor(assemblyDesc, assemblyType, true, false, IntegralBusPort::BLIND_INPUT);
         portDescriptors << new PortDescriptor(annsDesc, annsType, true);
-        portDescriptors << new PortDescriptor(outDesc, outType, false, true);
     }
 
     // Create the actor prototype
@@ -311,6 +237,7 @@ void CuffdiffWorkerFactory::init()
         delegates[FDR] = new DoubleSpinBoxDelegate(vm);
     }
 
+    delegates[OUT_DIR] = new URLDelegate("", "", false, true /*path*/);
     delegates[FRAG_BIAS_CORRECT] = new URLDelegate("", "", false);
     delegates[MASK_FILE] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), "", false);
     delegates[EXT_TOOL_PATH] = new URLDelegate("", "executable", false);
@@ -352,7 +279,7 @@ QString CuffdiffPrompter::composeRichDoc()
  * CuffdiffWorker
  *****************************/
 CuffdiffWorker::CuffdiffWorker(Actor *actor)
-: BaseWorker(actor, false), inAssembly(NULL), inTranscript(NULL), output(NULL)
+: BaseWorker(actor, false), inAssembly(NULL), inTranscript(NULL)
 {
 }
 
@@ -361,7 +288,6 @@ void CuffdiffWorker::init() {
 
     inAssembly = ports[BasePorts::IN_ASSEMBLY_PORT_ID()];
     inTranscript = ports[BasePorts::IN_ANNOTATIONS_PORT_ID()];
-    output = ports[OUT_PORT];
 }
 
 bool CuffdiffWorker::isReady() {
@@ -386,30 +312,34 @@ Task * CuffdiffWorker::tick() {
 
     if (inTranscript->hasMessage()) {
         Task *t = new CuffdiffSupportTask(takeSettings());
-        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_onTaskFinished()));
         return t;
     } else if (inTranscript->isEnded()) {
-        output->setEnded();
         setDone();
     }
     return NULL;
 }
 
-void CuffdiffWorker::sl_taskFinished() {
-    CuffdiffSupportTask *t = qobject_cast<CuffdiffSupportTask*>(sender());
-    if (Task::State_Finished != t->getState()) {
+void CuffdiffWorker::sl_onTaskFinished() {
+    CuffdiffSupportTask *task = qobject_cast<CuffdiffSupportTask*>(sender());
+    if (Task::State_Finished != task->getState()) {
         return;
     }
-    Message m(output->getBusType(), createMessageData(t));
-    output->put(m);
+
+    outputFiles << task->getOutputFiles();
 }
 
 void CuffdiffWorker::cleanup() {
     assemblies.clear();
 }
 
+QStringList CuffdiffWorker::getOutputFiles() {
+    return outputFiles;
+}
+
 CuffdiffSettings CuffdiffWorker::scanParameters() const {
     CuffdiffSettings result;
+    result.outDir = getValue<QString>(OUT_DIR);
     result.timeSeriesAnalysis = getValue<bool>(TIME_SERIES_ANALYSIS);
     result.upperQuartileNorm = getValue<bool>(UPPER_QUARTILE_NORM);
     result.hitsNorm = CuffdiffSettings::HitsNorm(getValue<int>(HITS_NORM));
@@ -448,29 +378,6 @@ void CuffdiffWorker::takeAssembly() {
         "No assembly in a message", );
     SharedDbiDataHandler id = data[BaseSlots::ASSEMBLY_SLOT().getId()].value<SharedDbiDataHandler>();
     assemblies << id;
-}
-
-static void insert(QVariantMap &map, const QString &slotId,
-    const QList<SharedAnnotationData> &data) {
-    map[slotId] = qVariantFromValue<QList<SharedAnnotationData> >(data);
-}
-
-QVariantMap CuffdiffWorker::createMessageData(CuffdiffSupportTask *task) const {
-    QVariantMap result;
-    CuffdiffResult cr = task->takeResult();
-
-    insert(result, SPLICING_DIFF_SLOT, cr.splicing);
-    insert(result, PROMOTERS_DIFF_SLOT, cr.promoters);
-    insert(result, CDS_DIFF_SLOT, cr.cdsDiff);
-    insert(result, CDS_EXP_SLOT, cr.cdsExp);
-    insert(result, CDS_FPKM_SLOT, cr.cdsFpkm);
-    insert(result, TSS_EXP_SLOT, cr.tssExp);
-    insert(result, TSS_FPKM_SLOT, cr.tssFpkm);
-    insert(result, GENES_EXP_SLOT, cr.genesExp);
-    insert(result, GENES_FPKM_SLOT, cr.genesFpkm);
-    insert(result, ISOMORFS_EXP_SLOT, cr.isomorfsExp);
-    insert(result, ISOMORFS_FPKM_SLOT, cr.isomorfsFpkm);
-    return result;
 }
 
 } // namespace LocalWorkflow

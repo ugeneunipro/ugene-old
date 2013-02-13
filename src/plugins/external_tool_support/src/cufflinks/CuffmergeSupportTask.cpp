@@ -25,14 +25,17 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "CuffmergeSupportTask.h"
 
 namespace U2 {
 
+const QString CuffmergeSupportTask::outSubDirBaseName("cuffmerge_out");
+
 CuffmergeSupportTask::CuffmergeSupportTask(const CuffmergeSettings &_settings)
-: Task(tr("Running Cuffmerge task"), TaskFlags_NR_FOSE_COSC), settings(_settings)
+: Task(tr("Running Cuffmerge task"), TaskFlags_FOSE_COSC), settings(_settings)
 {
     mergeTask = NULL;
     fileNum = 0;
@@ -44,6 +47,11 @@ CuffmergeSupportTask::~CuffmergeSupportTask() {
 
 void CuffmergeSupportTask::prepare() {
     setupWorkingDirPath();
+
+    settings.outDir = GUrlUtils::createDirectory(
+                settings.outDir + "/" + outSubDirBaseName,
+                "_", stateInfo);
+    CHECK_OP(stateInfo, );
 
     foreach (const QList<SharedAnnotationData> &anns, settings.anns) {
         Task *t = createWriteTask(anns, getAnnsFilePath());
@@ -61,11 +69,23 @@ QList<Task*> CuffmergeSupportTask::onSubTaskFinished(Task *subTask) {
     if (writeTasks.isEmpty()) {
         if (NULL == mergeTask) {
             result << createCuffmergeTask();
-        } else {
-            readResult();
         }
     }
     return result;
+}
+
+void CuffmergeSupportTask::run() {
+    result = ExternalToolSupportUtils::getAnnotationsFromFile(
+        outDir + "/merged.gtf",
+        BaseDocumentFormats::GTF,
+        CUFFMERGE_TOOL_NAME,
+        stateInfo);
+
+    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/merged.gtf", outputFiles);
+    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/genes.fpkm_tracking", outputFiles);
+    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/isoforms.fpkm_tracking", outputFiles);
+    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/skipped.gtf", outputFiles);
+    ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/transcripts.gtf", outputFiles);
 }
 
 Task::ReportResult CuffmergeSupportTask::report() {
@@ -150,18 +170,14 @@ Task * CuffmergeSupportTask::createCuffmergeTask() {
     return mergeTask;
 }
 
-void CuffmergeSupportTask::readResult() {
-    result = ExternalToolSupportUtils::getAnnotationsFromFile(
-        outDir + "/merged.gtf",
-        BaseDocumentFormats::GTF,
-        CUFFMERGE_TOOL_NAME,
-        stateInfo);
-}
-
 QList<SharedAnnotationData> CuffmergeSupportTask::takeResult() {
     QList<SharedAnnotationData> ret = result;
     result.clear();
     return ret;
+}
+
+QStringList CuffmergeSupportTask::getOutputFiles() const {
+    return outputFiles;
 }
 
 /************************************************************************/

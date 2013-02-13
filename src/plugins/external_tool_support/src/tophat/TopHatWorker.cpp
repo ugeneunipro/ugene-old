@@ -52,6 +52,7 @@ namespace LocalWorkflow {
  *****************************/
 const QString TopHatWorkerFactory::ACTOR_ID("tophat");
 
+const QString TopHatWorkerFactory::OUT_DIR("out-dir");
 const QString TopHatWorkerFactory::BOWTIE_INDEX_DIR("bowtie-index-dir");
 const QString TopHatWorkerFactory::BOWTIE_INDEX_BASENAME("bowtie-index-basename");
 const QString TopHatWorkerFactory::REF_SEQ("ref-seq");
@@ -86,10 +87,6 @@ const QString TopHatWorkerFactory::DATASET_IN_SLOT_ID("dataset");
 
 const QString TopHatWorkerFactory::OUT_MAP_DESCR_ID("out.tophat");
 const QString TopHatWorkerFactory::ACCEPTED_HITS_SLOT_ID("accepted.hits");
-const QString TopHatWorkerFactory::JUNCTIONS_SLOT_ID("junctions");
-const QString TopHatWorkerFactory::INSERTIONS_SLOT_ID("insertions");
-const QString TopHatWorkerFactory::DELETIONS_SLOT_ID("deletions");
-
 
 void TopHatWorkerFactory::init()
 {
@@ -115,7 +112,6 @@ void TopHatWorkerFactory::init()
                        TopHatWorker::tr("TopHat input reads. When running TopHat"
                                         " with paired-end reads, this should be"
                                         " the *_1 (\"left\") set of reads."));
-
     Descriptor secondInDescriptor =
             Descriptor(SECOND_IN_SLOT_ID,
                        TopHatWorker::tr("Input reads"),
@@ -145,25 +141,7 @@ void TopHatWorkerFactory::init()
                        TopHatWorker::tr("Accepted hits"),
                        TopHatWorker::tr("A list of read alignments"));
 
-    Descriptor junctionsDescriptor =
-            Descriptor(JUNCTIONS_SLOT_ID,
-                       TopHatWorker::tr("Junctions"),
-                       TopHatWorker::tr("Junctions reported by TopHat"));
-
-    Descriptor insertionsDescriptor =
-            Descriptor(INSERTIONS_SLOT_ID,
-                       TopHatWorker::tr("Insertions"),
-                       TopHatWorker::tr("Insertions reported by TopHat"));
-
-    Descriptor deletionsDescriptor =
-            Descriptor(DELETIONS_SLOT_ID,
-                       TopHatWorker::tr("Deletions"),
-                       TopHatWorker::tr("Deletions reported by TopHat"));
-
     outputMap[acceptedHitsDescriptor] = BaseTypes::ASSEMBLY_TYPE();
-    outputMap[junctionsDescriptor] = BaseTypes::ANNOTATION_TABLE_TYPE();
-    outputMap[insertionsDescriptor] = BaseTypes::ANNOTATION_TABLE_TYPE();
-    outputMap[deletionsDescriptor] = BaseTypes::ANNOTATION_TABLE_TYPE();
 
     DataTypeRegistry* registry = WorkflowEnv::getDataTypeRegistry();
     assert(registry);
@@ -187,6 +165,10 @@ void TopHatWorkerFactory::init()
             " junctions between exons."));
 
     // Define parameters of the element
+    Descriptor outDir(OUT_DIR,
+        TopHatWorker::tr("Output directory"),
+        TopHatWorker::tr("The base name of output directory. It could be modified with a suffix."));
+
     Descriptor bowtieIndexDir(BOWTIE_INDEX_DIR,
         TopHatWorker::tr("Bowtie index directory"),
         TopHatWorker::tr("The directory with the Bowtie index for the reference sequence."));
@@ -339,6 +321,7 @@ void TopHatWorkerFactory::init()
         TopHatWorker::tr("Temporary directory"),
         TopHatWorker::tr("The directory for temporary files"));
 
+    attributes << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, "");
     attributes << new Attribute(bowtieIndexDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
     attributes << new Attribute(bowtieIndexBasename, BaseTypes::STRING_TYPE(), true, QVariant(""));
     // attributes << new Attribute(refSeq, BaseTypes::STRING_TYPE(), true, QVariant(""));
@@ -452,6 +435,7 @@ void TopHatWorkerFactory::init()
         delegates[SEGMENT_MISMATCHES] = new SpinBoxDelegate(vm);
     }
 
+    delegates[OUT_DIR] = new URLDelegate("", "", false, true /*path*/);
     delegates[BOWTIE_INDEX_DIR] = new URLDelegate("", "", false, true);
     delegates[BOWTIE_TOOL_PATH] = new URLDelegate("", "executable", false);
     delegates[SAMTOOLS_TOOL_PATH] = new URLDelegate("", "executable", false);
@@ -539,35 +523,36 @@ void TopHatWorker::init()
     settings.workflowContext = context;
     settings.storage = context->getDataStorage();
 
-    settings.bowtieIndexPathAndBasename = actor->getParameter(TopHatWorkerFactory::BOWTIE_INDEX_DIR)->getAttributeValue<QString>(context) +
-            "/" + actor->getParameter(TopHatWorkerFactory::BOWTIE_INDEX_BASENAME)->getAttributeValue<QString>(context);
+    settings.outDir = getValue<QString>(TopHatWorkerFactory::OUT_DIR);
+    settings.bowtieIndexPathAndBasename = getValue<QString>(TopHatWorkerFactory::BOWTIE_INDEX_DIR) +
+            "/" + getValue<QString>(TopHatWorkerFactory::BOWTIE_INDEX_BASENAME);
 
-    settings.mateInnerDistance = actor->getParameter(TopHatWorkerFactory::MATE_INNER_DISTANCE)->getAttributeValue<int>(context);
-    settings.mateStandardDeviation = actor->getParameter(TopHatWorkerFactory::MATE_STANDARD_DEVIATION)->getAttributeValue<int>(context);
+    settings.mateInnerDistance = getValue<int>(TopHatWorkerFactory::MATE_INNER_DISTANCE);
+    settings.mateStandardDeviation = getValue<int>(TopHatWorkerFactory::MATE_STANDARD_DEVIATION);
 
-    int libType = actor->getParameter(TopHatWorkerFactory::LIBRARY_TYPE)->getAttributeValue<int>(context);
+    int libType = getValue<int>(TopHatWorkerFactory::LIBRARY_TYPE);
     if (!settings.libraryType.setLibraryType(libType)) {
         algoLog.error(tr("Incorrect value of the library type parameter for Cufflinks!"));
         settingsAreCorrect = false;
     }
 
-    settings.noNovelJunctions = actor->getParameter(TopHatWorkerFactory::NO_NOVEL_JUNCTIONS)->getAttributeValue<bool>(context);
+    settings.noNovelJunctions = getValue<bool>(TopHatWorkerFactory::NO_NOVEL_JUNCTIONS);
 
-    settings.rawJunctions = actor->getParameter(TopHatWorkerFactory::RAW_JUNCTIONS)->getAttributeValue<QString>(context);
-    settings.knownTranscript = actor->getParameter(TopHatWorkerFactory::KNOWN_TRANSCRIPT)->getAttributeValue<QString>(context);
-    settings.maxMultihits = actor->getParameter(TopHatWorkerFactory::MAX_MULTIHITS)->getAttributeValue<int>(context);
-    settings.segmentLength = actor->getParameter(TopHatWorkerFactory::SEGMENT_LENGTH)->getAttributeValue<int>(context);
-    settings.fusionSearch = actor->getParameter(TopHatWorkerFactory::FUSION_SEARCH)->getAttributeValue<bool>(context);
-    settings.transcriptomeOnly = actor->getParameter(TopHatWorkerFactory::TRANSCRIPTOME_ONLY)->getAttributeValue<bool>(context);
-    settings.transcriptomeMaxHits = actor->getParameter(TopHatWorkerFactory::TRANSCRIPTOME_MAX_HITS)->getAttributeValue<int>(context);
-    settings.prefilterMultihits = actor->getParameter(TopHatWorkerFactory::PREFILTER_MULTIHITS)->getAttributeValue<bool>(context);
-    settings.minAnchorLength = actor->getParameter(TopHatWorkerFactory::MIN_ANCHOR_LENGTH)->getAttributeValue<int>(context);
-    settings.spliceMismatches = actor->getParameter(TopHatWorkerFactory::SPLICE_MISMATCHES)->getAttributeValue<int>(context);
-    settings.readMismatches = actor->getParameter(TopHatWorkerFactory::READ_MISMATCHES)->getAttributeValue<int>(context);
-    settings.segmentMismatches = actor->getParameter(TopHatWorkerFactory::SEGMENT_MISMATCHES)->getAttributeValue<int>(context);
-    settings.solexa13quals = actor->getParameter(TopHatWorkerFactory::SOLEXA_1_3_QUALS)->getAttributeValue<bool>(context);
+    settings.rawJunctions = getValue<QString>(TopHatWorkerFactory::RAW_JUNCTIONS);
+    settings.knownTranscript = getValue<QString>(TopHatWorkerFactory::KNOWN_TRANSCRIPT);
+    settings.maxMultihits = getValue<int>(TopHatWorkerFactory::MAX_MULTIHITS);
+    settings.segmentLength = getValue<int>(TopHatWorkerFactory::SEGMENT_LENGTH);
+    settings.fusionSearch = getValue<bool>(TopHatWorkerFactory::FUSION_SEARCH);
+    settings.transcriptomeOnly = getValue<bool>(TopHatWorkerFactory::TRANSCRIPTOME_ONLY);
+    settings.transcriptomeMaxHits = getValue<int>(TopHatWorkerFactory::TRANSCRIPTOME_MAX_HITS);
+    settings.prefilterMultihits = getValue<bool>(TopHatWorkerFactory::PREFILTER_MULTIHITS);
+    settings.minAnchorLength = getValue<int>(TopHatWorkerFactory::MIN_ANCHOR_LENGTH);
+    settings.spliceMismatches = getValue<int>(TopHatWorkerFactory::SPLICE_MISMATCHES);
+    settings.readMismatches = getValue<int>(TopHatWorkerFactory::READ_MISMATCHES);
+    settings.segmentMismatches = getValue<int>(TopHatWorkerFactory::SEGMENT_MISMATCHES);
+    settings.solexa13quals = getValue<bool>(TopHatWorkerFactory::SOLEXA_1_3_QUALS);
 
-    int bowtieModeVal = actor->getParameter(TopHatWorkerFactory::BOWTIE_N_MODE)->getAttributeValue<int>(context);
+    int bowtieModeVal = getValue<int>(TopHatWorkerFactory::BOWTIE_N_MODE);
     switch (bowtieModeVal) {
         case vMode:
             settings.bowtieMode = vMode;
@@ -657,7 +642,6 @@ Task * TopHatWorker::tick()
     return NULL;
 }
 
-
 void TopHatWorker::sl_topHatTaskFinished()
 {
     TopHatSupportTask* topHatSupportTask = qobject_cast<TopHatSupportTask*>(sender());
@@ -670,31 +654,21 @@ void TopHatWorker::sl_topHatTaskFinished()
                 WorkflowEnv::getDataTypeRegistry()->getById(TopHatWorkerFactory::OUT_MAP_DESCR_ID);
         SAFE_POINT(0 != outputMapDataType, "Internal error: can't get DataTypePtr for TopHat output map!",);
 
-        SharedDbiDataHandler acceptedHits = topHatSupportTask->getAcceptedHits();
-        QList<SharedAnnotationData> junctionAnnots = topHatSupportTask->getJunctionAnnots();
-        QList<SharedAnnotationData> insertionAnnots = topHatSupportTask->getInsertionAnnots();
-        QList<SharedAnnotationData> deletionAnnots = topHatSupportTask->getDeletionAnnots();
-
         QVariantMap messageData;
         messageData[TopHatWorkerFactory::ACCEPTED_HITS_SLOT_ID] =
-                qVariantFromValue< SharedDbiDataHandler >(acceptedHits);
-
-        messageData[TopHatWorkerFactory::JUNCTIONS_SLOT_ID] =
-                qVariantFromValue< QList<SharedAnnotationData> >(junctionAnnots);
-
-        messageData[TopHatWorkerFactory::INSERTIONS_SLOT_ID] =
-                qVariantFromValue< QList<SharedAnnotationData> >(insertionAnnots);
-
-        messageData[TopHatWorkerFactory::DELETIONS_SLOT_ID] =
-                qVariantFromValue< QList<SharedAnnotationData> >(deletionAnnots);
+                qVariantFromValue<SharedDbiDataHandler>(topHatSupportTask->getAcceptedHits());
 
         output->put(Message(outputMapDataType, messageData));
+        outputFiles << topHatSupportTask->getOutputFiles();
     }
 }
 
-
 void TopHatWorker::cleanup()
 {
+}
+
+QStringList TopHatWorker::getOutputFiles() {
+    return outputFiles;
 }
 
 /************************************************************************/

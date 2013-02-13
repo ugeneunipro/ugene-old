@@ -110,11 +110,11 @@ FormatCheckResult DifferentialFormat::checkRawData(const QByteArray &rawData,
     return FormatDetection_Matched;
 }
 
-const int DifferentialFormat::BUFFER_SIZE = 4096;
+const int DifferentialFormat::BUFFER_SIZE = 4194304;
 QString DifferentialFormat::readLine(IOAdapter *io, QByteArray &buffer, U2OpStatus &os) {
     bool eol = false;
     qint64 size = io->readLine(buffer.data(), BUFFER_SIZE, &eol);
-    if (!eol) {
+    if (!eol && !io->isEof()) {
         os.setError("Line line is too long");
         return "";
     }

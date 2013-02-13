@@ -48,16 +48,10 @@ public:
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
     Task::ReportResult report();
+    QStringList getOutputFiles() const;
 
     Workflow::SharedDbiDataHandler getAcceptedHits() const { return acceptedHits; }
-    QList<SharedAnnotationData> getJunctionAnnots() const { return junctionAnnots; }
-    QList<SharedAnnotationData> getInsertionAnnots() const { return insertionAnnots; }
-    QList<SharedAnnotationData> getDeletionAnnots() const { return deletionAnnots; }
-
 private:
-    /** The file name is specified relatively to the working directory */
-    QList<SharedAnnotationData> getAnnotsFromBedFile(QString fileName);
-
     TopHatSettings      settings;
 
     QPointer<ExternalToolLogParser>     logParser;
@@ -77,9 +71,9 @@ private:
     bool                                tmpDocPairedSaved;
 
     Workflow::SharedDbiDataHandler          acceptedHits;
-    QList<SharedAnnotationData>             junctionAnnots;
-    QList<SharedAnnotationData>             insertionAnnots;
-    QList<SharedAnnotationData>             deletionAnnots;
+    QStringList                             outputFiles;
+
+    static const QString outSubDirBaseName;
 };
 
 

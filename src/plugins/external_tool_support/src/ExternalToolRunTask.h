@@ -92,6 +92,7 @@ public:
         const DocumentFormatId &format,
         const QList<SharedAnnotationData> &anns,
         U2OpStatus &os);
+    static void appendExistingFile(const QString &path, QStringList &files);
 };
 
 

@@ -28,6 +28,7 @@
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GUrl.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
@@ -43,6 +44,8 @@
 
 
 namespace U2 {
+
+const QString CufflinksSupportTask::outSubDirBaseName("cufflinks_out");
 
 CufflinksSupportTask::CufflinksSupportTask(const CufflinksSettings& _settings)
     : Task(tr("Running Cufflinks task"), TaskFlags_NR_FOSE_COSC),
@@ -99,6 +102,11 @@ void CufflinksSupportTask::prepare()
     workingDirectory = tmpDir.absolutePath();
     url = workingDirectory + "/tmp.sam";
 
+    settings.outDir = GUrlUtils::createDirectory(
+                settings.outDir + "/" + outSubDirBaseName,
+                "_", stateInfo);
+    CHECK_OP(stateInfo, );
+
     DocumentFormat* docFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::SAM);
     tmpDoc = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(url), stateInfo);
     CHECK_OP(stateInfo, );
@@ -134,7 +142,7 @@ QList<Task*> CufflinksSupportTask::onSubTaskFinished(Task* subTask)
         // Init the arguments list
         QStringList arguments;
 
-        arguments.prepend(url);
+        arguments << "--output-dir" << settings.outDir;
 
         if (!settings.referenceAnnotation.isEmpty()) {
             arguments << "-G" << settings.referenceAnnotation;
@@ -162,6 +170,7 @@ QList<Task*> CufflinksSupportTask::onSubTaskFinished(Task* subTask)
 
         arguments << "--pre-mrna-fraction" << QString::number(settings.preMrnaFraction);
 
+        arguments << url;
 
         // Create a log parser
         logParser = new ExternalToolLogParser();
@@ -175,9 +184,10 @@ QList<Task*> CufflinksSupportTask::onSubTaskFinished(Task* subTask)
         result.append(cufflinksExtToolTask);
     }
     else if (subTask == cufflinksExtToolTask) {
-        transcriptGtfAnnots = getAnnotationsFromFile("transcripts.gtf", CufflinksOutputGtf);
+        ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/transcripts.gtf", outputFiles);
+        ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/isoforms.fpkm_tracking", outputFiles);
+        ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/genes.fpkm_tracking", outputFiles);
         isoformLevelAnnots = getAnnotationsFromFile("isoforms.fpkm_tracking", CufflinksOutputFpkm);
-        geneLevelAnnots = getAnnotationsFromFile("genes.fpkm_tracking", CufflinksOutputFpkm);
     }
 
     return result;
@@ -187,7 +197,7 @@ QList<Task*> CufflinksSupportTask::onSubTaskFinished(Task* subTask)
 QList<SharedAnnotationData> CufflinksSupportTask::getAnnotationsFromFile(QString fileName, CufflinksOutputFormat format)
 {
     QList<SharedAnnotationData> res;
-    QString filePath = workingDirectory + "/" + fileName;
+    QString filePath = settings.outDir + "/" + fileName;
     DocumentFormatId formatId;
     if (CufflinksOutputFpkm == format) {
         formatId = BaseDocumentFormats::FPKM_TRACKING_FORMAT;
@@ -217,6 +227,11 @@ Task::ReportResult CufflinksSupportTask::report()
     }
     return ReportResult_Finished;
 }
+
+QStringList CufflinksSupportTask::getOutputFiles() const {
+    return outputFiles;
+}
+
 
 
 } // namespace U2

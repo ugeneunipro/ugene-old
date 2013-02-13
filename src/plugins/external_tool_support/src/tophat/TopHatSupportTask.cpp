@@ -26,6 +26,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GUrl.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
@@ -43,6 +44,8 @@
 
 
 namespace U2 {
+
+const QString TopHatSupportTask::outSubDirBaseName("tophat_out");
 
 TopHatSupportTask::TopHatSupportTask(const TopHatSettings& _settings)
     : Task(tr("Running TopHat task"), TaskFlags_NR_FOSE_COSC),
@@ -102,6 +105,11 @@ void TopHatSupportTask::prepare()
         stateInfo.setError(ExternalToolSupportL10N::errorCreatingTmpSubrir(tmpDir.absolutePath()));
         return;
     }
+
+    settings.outDir = GUrlUtils::createDirectory(
+                settings.outDir + "/" + outSubDirBaseName,
+                "_", stateInfo);
+    CHECK_OP(stateInfo, );
 
     workingDirectory = tmpDir.absolutePath();
     url = workingDirectory + "/tmp_1.fa";
@@ -193,8 +201,7 @@ QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask)
         return result;
     }
 
-    if (subTask == saveTmpDocTask || subTask == savePairedTmpDocTask)
-    {
+    if (subTask == saveTmpDocTask || subTask == savePairedTmpDocTask) {
         if (subTask == saveTmpDocTask) {
             tmpDocSaved = true;
         }
@@ -208,6 +215,7 @@ QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask)
             // Init the arguments list
             QStringList arguments;
 
+            arguments << "--output-dir" << settings.outDir;
             arguments << "--mate-inner-dist" << QString::number(settings.mateInnerDistance);
             arguments << "--mate-std-dev" << QString::number(settings.mateStandardDeviation);
             arguments << "--library-type" << settings.libraryType.getLibraryTypeAsStr();
@@ -264,27 +272,23 @@ QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask)
 
             result.append(topHatExtToolTask);
         }
-    }
-    else if (subTask == topHatExtToolTask) {
-        QString outputDirName = "tophat_out/";
-        junctionAnnots = getAnnotsFromBedFile(outputDirName + "junctions.bed");
-        insertionAnnots = getAnnotsFromBedFile(outputDirName + "insertions.bed");
-        deletionAnnots = getAnnotsFromBedFile(outputDirName + "deletions.bed");
+    } else if (subTask == topHatExtToolTask) {
+        ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/accepted_hits.bam", outputFiles);
+        ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/junctions.bed", outputFiles);
+        ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/insertions.bed", outputFiles);
+        ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/deletions.bed", outputFiles);
 
         // Get assembly output
         Workflow::WorkflowTasksRegistry* registry = Workflow::WorkflowEnv::getWorkflowTasksRegistry();
         SAFE_POINT(NULL != registry, "Internal error during parsing TopHat output: NULL WorkflowTasksRegistry", result);
-
         Workflow::ReadDocumentTaskFactory* factory = registry->getReadDocumentTaskFactory(Workflow::ReadFactories::READ_ASSEMBLY);
         SAFE_POINT(NULL != factory, QString("Internal error during parsing TopHat output:"
                                             " NULL WorkflowTasksRegistry: %1").arg(Workflow::ReadFactories::READ_ASSEMBLY), result);
-
         SAFE_POINT(NULL != settings.workflowContext, "Internal error during parsing TopHat output: NULL workflow context!", result);
 
-        readAssemblyOutputTask = factory->createTask(workingDirectory + "/" +outputDirName + "accepted_hits.bam", QVariantMap(), settings.workflowContext);
+        readAssemblyOutputTask = factory->createTask(settings.outDir + "/accepted_hits.bam", QVariantMap(), settings.workflowContext);
         result.append(readAssemblyOutputTask);
-    }
-    else if (subTask == readAssemblyOutputTask) {
+    } else if (subTask == readAssemblyOutputTask) {
         Workflow::ReadDocumentTask* readDocTask = qobject_cast<Workflow::ReadDocumentTask*>(subTask);
         SAFE_POINT(NULL != readDocTask, "Internal error during parsing TopHat output: NULL read document task!", result);
 
@@ -299,34 +303,6 @@ QList<Task*> TopHatSupportTask::onSubTaskFinished(Task *subTask)
 
     return result;
 }
-
-
-QList<SharedAnnotationData> TopHatSupportTask::getAnnotsFromBedFile(QString fileName)
-{
-    QList<SharedAnnotationData> res;
-
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    if (NULL == iof) {
-        stateInfo.setError(tr("An internal error occurred during getting annotations from a TopHat output file!"));
-        return res;
-    }
-
-    QString filePath = workingDirectory + "/" + fileName;
-
-    if(!QFile::exists(filePath)){
-        stateInfo.setError(tr("TopHat output file '%1' is not found!").arg(filePath));
-        return res;
-    }
-
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
-    if (!io.get()->open(GUrl(filePath), IOAdapterMode_Read)) {
-        stateInfo.setError(L10N::errorOpeningFileRead(filePath));
-        return res;
-    }
-
-    return BedFormat::getAnnotData(io.get(), stateInfo);
-}
-
 
 bool removeTmpDir(QString dirName)
 {
@@ -367,6 +343,10 @@ Task::ReportResult TopHatSupportTask::report()
     }
 
     return ReportResult_Finished;
+}
+
+QStringList TopHatSupportTask::getOutputFiles() const {
+    return outputFiles;
 }
 
 }
