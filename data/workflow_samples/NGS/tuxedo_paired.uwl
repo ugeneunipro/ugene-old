@@ -1,0 +1,147 @@
+#@UGENE_WORKFLOW
+
+
+
+workflow "Tuxedo: paired reads"{
+
+    tophat {
+        type:tophat;
+        name:"Find Splice Junctions with TopHat";
+    }
+    cufflinks {
+        type:cufflinks;
+        name:"Assemble Transcripts with Cufflinks";
+    }
+    cuffmerge {
+        type:cuffmerge;
+        name:"Merge Assemblies with Cuffmerge";
+    }
+    cuffdiff {
+        type:cuffdiff;
+        name:"Test for Diff. Expression with Cuffdiff";
+    }
+    read-sequence {
+        type:read-sequence;
+        name:"Read paired reads 1";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    read-assembly {
+        type:read-assembly;
+        name:"Read Assembly";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    read-sequence-1 {
+        type:read-sequence;
+        name:"Read paired reads 2";
+        url-in {
+            dataset:Dataset;
+        }
+    }
+    multiplexer {
+        type:multiplexer;
+        name:Multiplexer;
+    }
+
+
+    .actor-bindings {
+        multiplexer.output-data->tophat.in-sequence
+        tophat.out-assembly->cufflinks.in-assembly
+        cuffmerge.out-annotations->cuffdiff.in-annotations
+        read-sequence.out-sequence->multiplexer.input-data-1
+        read-assembly.out-assembly->cuffdiff.in-assembly
+        read-sequence-1.out-sequence->multiplexer.input-data-2
+        cufflinks.out-annotations->cuffmerge.in-annotations
+    }
+
+    read-sequence-1.dataset->tophat.in-sequence.dataset
+    read-sequence.sequence->tophat.in-sequence.first.in
+    read-sequence-1.sequence->tophat.in-sequence.second.in
+    tophat.accepted.hits->cufflinks.in-assembly.assembly
+    cufflinks.isolevel.slot->cuffmerge.in-annotations.annotations
+    cuffmerge.annotations->cuffdiff.in-annotations.annotations
+    read-assembly.assembly->cuffdiff.in-assembly.assembly
+
+    .meta {
+        visual {
+            cuffdiff {
+                pos:"664 -300.333";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-annotations.angle:150;
+                in-assembly.angle:210;
+            }
+            cufflinks {
+                pos:"46 -315.333";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-assembly.angle:180;
+                out-annotations.angle:360;
+            }
+            cuffmerge {
+                pos:"369 -316.333";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-annotations.angle:180;
+                out-annotations.angle:360;
+            }
+            multiplexer {
+                pos:"-440 -314.667";
+                style:simple;
+                input-data-1.angle:150;
+                input-data-2.angle:210;
+                output-data.angle:360;
+            }
+            read-assembly {
+                pos:"389 -91.3333";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-assembly.angle:360;
+            }
+            read-sequence {
+                pos:"-673 -434";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            read-sequence-1 {
+                pos:"-676 -201.333";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            tophat {
+                pos:"-272 -315.333";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-assembly.angle:360;
+            }
+            cufflinks.out-annotations->cuffmerge.in-annotations {
+                text-pos:"-54.5 -55";
+            }
+            cuffmerge.out-annotations->cuffdiff.in-annotations {
+                text-pos:"-54.5 -55";
+            }
+            multiplexer.output-data->tophat.in-sequence {
+                text-pos:"-52.5 -77";
+            }
+            read-assembly.out-assembly->cuffdiff.in-assembly {
+                text-pos:"-44 -33";
+            }
+            read-sequence-1.out-sequence->multiplexer.input-data-2 {
+                text-pos:"-44.5 -33";
+            }
+            read-sequence.out-sequence->multiplexer.input-data-1 {
+                text-pos:"-44.5 -33";
+            }
+            tophat.out-assembly->cufflinks.in-assembly {
+                text-pos:"-45 -55";
+            }
+        }
+    }
+}
+
