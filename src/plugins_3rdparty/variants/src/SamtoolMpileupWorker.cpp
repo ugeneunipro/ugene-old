@@ -41,6 +41,8 @@
 #include <U2Core/Log.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/U2OpStatusUtils.h>
+
 #include <QtGui/QApplication>
 
 
@@ -50,6 +52,9 @@ namespace LocalWorkflow {
 
 
 const QString CallVariantsWorkerFactory::ACTOR_ID("call_variants"); 
+
+static const QString REF_SEQ_PORT_ID("ref-seq-port-id");
+static const QString ASSEMBLY_PORT_ID("assembly-port-id");
 
 //mpileup
 const QString ILLUMINA13("illumina13-encoding");
@@ -88,6 +93,36 @@ const QString N1("n1");
 const QString N_PERM("n_perm");
 const QString MIN_PERM_P("min_perm_p");
 
+class EmptySlotValidator : public ConfigurationValidator {
+public:
+    EmptySlotValidator(const QString& slot): screenedSlot(slot) {}
+
+    virtual bool validate(const Configuration* cfg, QStringList& l) const {
+        const IntegralBusPort* vport = static_cast<const IntegralBusPort*>(cfg);
+        assert(vport);
+
+        QStrStrMap bm = vport->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
+        QMapIterator<QString,QString> it(bm);
+        while (it.hasNext()){
+            it.next();
+            const QString& slot = it.key();
+            QString slotName = vport->getType()->getDatatypeDescriptor(slot).getDisplayName();
+            //assert(!slotName.isEmpty());
+            if (it.value().isEmpty()) {
+                if (screenedSlot == slot) {
+                    l.append(IntegralBusPort::tr("Error! Empty input slot: %1").arg(slotName));
+                    return false;
+                }
+            }
+        }
+            
+        return true;
+    }
+protected:
+    QString screenedSlot;
+};
+
+
 void CallVariantsWorkerFactory::init() {
     //port descriptor
     QList<PortDescriptor*> p; 
@@ -95,7 +130,7 @@ void CallVariantsWorkerFactory::init() {
         QMap<Descriptor, DataTypePtr> refSeqMap;
         refSeqMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         refSeqMap[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
-        DataTypePtr inSet(new MapDataType("ref.sequence", refSeqMap));
+        DataTypePtr inSet(new MapDataType(REF_SEQ_PORT_ID, refSeqMap));
         Descriptor id(BasePorts::IN_SEQ_PORT_ID(), CallVariantsWorker::tr("Input sequences"), 
             CallVariantsWorker::tr("A nucleotide reference sequence."));
         p << new PortDescriptor(id, inSet, true);
@@ -103,10 +138,10 @@ void CallVariantsWorkerFactory::init() {
         QMap<Descriptor, DataTypePtr> assMap;
         assMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
         assMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ASSEMBLY_TYPE();
-        DataTypePtr inAssemblySet(new MapDataType("assembly", assMap));
+        DataTypePtr inAssemblySet(new MapDataType(ASSEMBLY_PORT_ID, assMap));
         Descriptor idA(BasePorts::IN_ASSEMBLY_PORT_ID(), CallVariantsWorker::tr("Input assembly"), 
             CallVariantsWorker::tr("Position sorted alignment file"));
-        p << new PortDescriptor(idA, inAssemblySet, true);
+        p << new PortDescriptor(idA, inAssemblySet, true, false, IntegralBusPort::BLIND_INPUT);
 
         QMap<Descriptor, DataTypePtr> varMap;
         varMap[BaseSlots::VARIATION_TRACK_SLOT()] = BaseTypes::VARIATION_TRACK_TYPE();
@@ -456,6 +491,10 @@ void CallVariantsWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
 
     proto->setPrompter(new CallVariantsPrompter());
+
+    proto->setPortValidator(BasePorts::IN_ASSEMBLY_PORT_ID(), new EmptySlotValidator(BaseSlots::URL_SLOT().getId()));
+    proto->setPortValidator(BasePorts::IN_SEQ_PORT_ID(), new EmptySlotValidator(BaseSlots::URL_SLOT().getId()));
+
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CALL_VARIATIONS(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
@@ -504,14 +543,20 @@ bool CallVariantsWorker::isReady(){
 }
 
 Task* CallVariantsWorker::tick() {
-    //check params
+    U2OpStatus2Log os;
 
     //get all assemblies
+    
     while(assemblyPort->hasMessage()){
         Message inputMessage = getMessageAndSetupScriptValues(assemblyPort);
         if (!inputMessage.isEmpty()) {
+            QVariantMap data = inputMessage.getData().toMap();
+            if (!data.contains(BaseSlots::URL_SLOT().getId())){
+                os.setError(CallVariantsWorker::tr("Assembly URL slot is empty. Please, specify the URL slot"));
+                return new FailTask(os.getError());
+            }
             QString assemblyUrl;
-            assemblyUrl = inputMessage.getData().toMap().value(BaseSlots::URL_SLOT().getId()).value<QString>();
+            assemblyUrl = data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
             assemblyUrls.append(assemblyUrl);
         }
     }
@@ -526,8 +571,14 @@ Task* CallVariantsWorker::tick() {
             output->transit();
             return NULL;
         }
+        QVariantMap data = inputMessage.getData().toMap();
+        if (!data.contains(BaseSlots::URL_SLOT().getId())){
+            os.setError(CallVariantsWorker::tr("Ref sequence URL slot is empty. Please, specify the URL slot"));
+            return new FailTask(os.getError());
+        }
+
         CallVariantsTaskSettings settings;
-        settings.refSeqUrl = inputMessage.getData().toMap().value(BaseSlots::URL_SLOT().getId()).value<QString>();
+        settings.refSeqUrl = data.value(BaseSlots::URL_SLOT().getId()).value<QString>();
         settings.assemblyUrls = assemblyUrls;
 
         settings.illumina13 = actor->getParameter(ILLUMINA13)->getAttributeValue<bool>(context);

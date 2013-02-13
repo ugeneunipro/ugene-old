@@ -134,6 +134,10 @@ QList<Task*> CallVariantsTask::onSubTaskFinished( Task* subTask ){
 }
 
 Task::ReportResult CallVariantsTask::report(){
+    if (!mpileupTask || mpileupTask->hasError()){
+        return ReportResult_Finished;
+    }
+    
     GUrlUtils::removeFile(mpileupTask->getBcfOutputFilePath(), stateInfo);
 
     return ReportResult_Finished;
@@ -185,6 +189,23 @@ SamtoolsMpileupTask::SamtoolsMpileupTask( const CallVariantsTaskSettings& _setti
 }
 
 void SamtoolsMpileupTask::prepare(){
+    if (settings.refSeqUrl.isEmpty()){
+        setError(tr("No reference sequence URL to do pileup"));
+        return ;
+    }
+
+    if (settings.assemblyUrls.isEmpty()){
+        setError(tr("No assembly URL to do pileup"));
+        return ;
+    }
+
+    foreach(const QString& aUrl, settings.assemblyUrls){
+        if (aUrl.isEmpty()){
+            setError(tr("There is an assembly with an empty path"));
+            return ;
+        }
+    }
+    
     //prepare tmp file
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(CALL_VARIANTS_DIR);
     tmpMpileupOutputFile = GUrlUtils::prepareTmpFileLocation(tmpDirPath, "tmp", "bcf", stateInfo);
