@@ -120,6 +120,14 @@ public:
     static const QString OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS;
     static const QString OPTION_NON_ITERATIVE_MODE;
     static const QString OPTION_SW_ALIGNMENT;
+    static const QString OPTION_MATCH_SCORE;
+    static const QString OPTION_BAND_WIDTH;
+    static const QString OPTION_MASK_LEVEL;
+    static const QString OPTION_CHUNK_SIZE;
+    static const QString OPTION_SCORE_THRESHOLD;
+    static const QString OPTION_Z_BEST;
+    static const QString OPTION_REV_ALGN_THRESHOLD;
+    static const QString OPTION_PREFER_HARD_CLIPPING;
     static const QString ALGORITHM_BWA_ALN, ALGORITHM_BWA_SW;
 private:
     BwaBuildIndexTask *buildIndexTask;

@@ -74,6 +74,7 @@ namespace U2 {
 #define COLORSPACE_ATTR "colorspace"
 #define LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS_ATTR "long-scaled-gap-penalty-for-long-deletions"
 #define NON_ITERATIVE_MODE_ATTR "non-iterative-mode"
+#define ALG_NAME_ATTR   "alg"
 
 void GTest_Bwa::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
@@ -113,6 +114,12 @@ void GTest_Bwa::init(XMLTestFormat *tf, const QDomElement& el) {
         const QString attr = INDEX_ALGORITHM_ATTR;
         if(!el.attribute(attr).isEmpty()) {
             config.setCustomValue(BwaTask::OPTION_INDEX_ALGORITHM, el.attribute(attr));
+        }
+    }
+    {
+        const QString attr = ALG_NAME_ATTR;
+        if(el.attribute(attr) == BwaTask::ALGORITHM_BWA_SW) {
+            config.setCustomValue(BwaTask::OPTION_SW_ALIGNMENT, true);
         }
     }
     {

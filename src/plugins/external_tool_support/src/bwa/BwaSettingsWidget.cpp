@@ -174,50 +174,21 @@ QMap<QString,QVariant> BwaSwSettingsWidget::getDnaAssemblyCustomSettings() {
 
     settings.insert(BwaTask::OPTION_SW_ALIGNMENT,true);
     
-    /*{
-        QString algorithm;
-        switch(indexAlgorithmComboBox->currentIndex()) {
-        case 0:
-            algorithm = "bwtsw";
-            break;
-        case 1:
-            algorithm = "div";
-            break;
-        case 2:
-            algorithm = "is";
-            break;
-        default:
-            assert(false);
-            break;
-        }
-        settings.insert(BwaTask::OPTION_INDEX_ALGORITHM, algorithm);
+    settings.insert(BwaTask::OPTION_THREADS, numThreadsSpinbox->value());
+    settings.insert(BwaTask::OPTION_MATCH_SCORE, matchScoreSpinbox->value());
+    settings.insert(BwaTask::OPTION_MISMATCH_PENALTY, mismatchScoreSpinbox->value());
+    settings.insert(BwaTask::OPTION_GAP_OPEN_PENALTY, gapOpenSpinbox->value());
+    settings.insert(BwaTask::OPTION_GAP_EXTENSION_PENALTY, gapExtSpinbox->value());
+    settings.insert(BwaTask::OPTION_CHUNK_SIZE, chunkSizeSpinbox->value());
+    settings.insert(BwaTask::OPTION_BAND_WIDTH, bandWidthSpinbox->value());
+    settings.insert(BwaTask::OPTION_MASK_LEVEL, maskLevelSpinbox->value());
+    settings.insert(BwaTask::OPTION_SCORE_THRESHOLD, scoreThresholdSpinbox->value());
+    settings.insert(BwaTask::OPTION_Z_BEST, zBestSpinbox->value());
+    settings.insert(BwaTask::OPTION_REV_ALGN_THRESHOLD, revAlnThreshold->value());
+    if (hardClippingCheckBox->isChecked()) {
+        settings.insert(BwaTask::OPTION_PREFER_HARD_CLIPPING, true);
     }
-    if(maxDiffRadioButton->isChecked()) {
-        settings.insert(BwaTask::OPTION_N, maxDiffSpinBox->value());
-    } else {
-        settings.insert(BwaTask::OPTION_N, missingProbSpinBox->value());
-    }
-    settings.insert(BwaTask::OPTION_MAX_GAP_OPENS, maxGapOpensSpinBox->value());
-    if(enableLongGapsCheckBox) {
-        settings.insert(BwaTask::OPTION_MAX_GAP_EXTENSIONS, maxGapExtensionsSpinBox->value());
-    }
-    settings.insert(BwaTask::OPTION_INDEL_OFFSET, indelOffsetSpinBox->value());
-    settings.insert(BwaTask::OPTION_MAX_LONG_DELETION_EXTENSIONS, maxLongDeletionExtensionsSpinBox->value());
-    settings.insert(BwaTask::OPTION_SEED_LENGTH, seedLengthSpinBox->value());
-    settings.insert(BwaTask::OPTION_MAX_SEED_DIFFERENCES, maxSeedDifferencesSpinBox->value());
-    settings.insert(BwaTask::OPTION_MAX_QUEUE_ENTRIES, maxQueueEntriesSpinBox->value());
-    settings.insert(BwaTask::OPTION_THREADS, threadsSpinBox->value());
-    settings.insert(BwaTask::OPTION_MISMATCH_PENALTY, mismatchPenaltySpinBox->value());
-    settings.insert(BwaTask::OPTION_GAP_OPEN_PENALTY, gapOpenPenaltySpinBox->value());
-    settings.insert(BwaTask::OPTION_GAP_EXTENSION_PENALTY, gapExtensionPenaltySpinBox->value());
-    settings.insert(BwaTask::OPTION_BEST_HITS, bestHitsSpinBox->value());
-    settings.insert(BwaTask::OPTION_QUALITY_THRESHOLD, qualityThresholdSpinBox->value());
-    settings.insert(BwaTask::OPTION_BARCODE_LENGTH, barcodeLengthSpinBox->value());
-    settings.insert(BwaTask::OPTION_COLORSPACE, colorspaceCheckBox->isChecked());
-    settings.insert(BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS, longScaledGapPenaltyForLongDeletionsCheckBox->isChecked());
-    settings.insert(BwaTask::OPTION_NON_ITERATIVE_MODE, nonIterativeModeCheckBox->isChecked());
-    */
-
+   
     return settings;
 }
 

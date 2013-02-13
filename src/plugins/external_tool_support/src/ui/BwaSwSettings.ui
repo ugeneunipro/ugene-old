@@ -33,16 +33,19 @@
        <item row="0" column="1">
         <widget class="QGroupBox" name="groupBox">
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="3" column="1">
-           <widget class="QSpinBox" name="seedingIntervalSizeSpinbox"/>
-          </item>
-          <item row="10" column="1">
-           <widget class="QDoubleSpinBox" name="doubleSpinBox">
-            <property name="singleStep">
-             <double>0.500000000000000</double>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_37">
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
             </property>
-            <property name="value">
-             <double>5.500000000000000</double>
+            <property name="text">
+             <string>Score threshold (divided by match score)</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="margin">
+             <number>5</number>
             </property>
            </widget>
           </item>
@@ -69,13 +72,13 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
+          <item row="7" column="0">
            <widget class="QLabel" name="label_44">
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>Revese alignment threshold</string>
+             <string>Number of seeds to start rev alginment</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -85,7 +88,7 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="label_38">
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
@@ -108,59 +111,37 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_40">
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>Maximum seeding interval size</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-            <property name="margin">
-             <number>5</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_37">
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>Score threshold [divided by match score]</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-            <property name="margin">
-             <number>5</number>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="0">
-           <widget class="QCheckBox" name="checkBox">
+          <item row="9" column="0">
+           <widget class="QCheckBox" name="hardClippingCheckBox">
             <property name="text">
              <string>Prefer hard clipping in SAM output</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
+          <item row="6" column="1">
            <widget class="QSpinBox" name="zBestSpinbox">
             <property name="value">
              <number>1</number>
             </property>
            </widget>
           </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="label_41">
+          <item row="7" column="1">
+           <widget class="QSpinBox" name="revAlnThreshold">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of seed to trigger reverse alignment&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="value">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_39">
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>Length threshold coef.</string>
+             <string>Size of chunk of reads</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -170,10 +151,19 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="1">
-           <widget class="QSpinBox" name="revAlnThreshold">
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="chunkSizeSpinbox">
+            <property name="minimum">
+             <number>100</number>
+            </property>
+            <property name="maximum">
+             <number>4000000</number>
+            </property>
+            <property name="singleStep">
+             <number>1000</number>
+            </property>
             <property name="value">
-             <number>5</number>
+             <number>1000000</number>
             </property>
            </widget>
           </item>
@@ -272,7 +262,7 @@
            </widget>
           </item>
           <item row="9" column="1">
-           <widget class="QDoubleSpinBox" name="maskLevelSpinBox">
+           <widget class="QDoubleSpinBox" name="maskLevelSpinbox">
             <property name="value">
              <double>0.500000000000000</double>
             </property>
@@ -321,38 +311,6 @@
            <widget class="QSpinBox" name="matchScoreSpinbox">
             <property name="value">
              <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="0">
-           <widget class="QLabel" name="label_39">
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>Size of chunk of reads</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-            <property name="margin">
-             <number>5</number>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="1">
-           <widget class="QSpinBox" name="chunkSizeSpinbox">
-            <property name="minimum">
-             <number>100</number>
-            </property>
-            <property name="maximum">
-             <number>4000000</number>
-            </property>
-            <property name="singleStep">
-             <number>1000</number>
-            </property>
-            <property name="value">
-             <number>1000000</number>
             </property>
            </widget>
           </item>
