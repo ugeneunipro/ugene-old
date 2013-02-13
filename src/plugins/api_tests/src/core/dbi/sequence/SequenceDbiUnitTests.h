@@ -74,6 +74,11 @@ public:
     void Test();
 };
 
+class SequenceDbiUnitTests_getLongSequenceData : public UnitTest {
+public:
+    void Test();
+};
+
 class SequenceDbiUnitTests_getSequenceDataInvalid : public UnitTest {
 public:
     void Test();
@@ -107,6 +112,7 @@ Q_DECLARE_METATYPE(U2::UpdateSequenceArgs);
 Q_DECLARE_METATYPE(U2::SequenceDbiUnitTests_createSequenceObject);
 Q_DECLARE_METATYPE(U2::SequenceDbiUnitTests_getAllSequenceObjects);
 Q_DECLARE_METATYPE(U2::SequenceDbiUnitTests_getSequenceData);
+Q_DECLARE_METATYPE(U2::SequenceDbiUnitTests_getLongSequenceData);
 Q_DECLARE_METATYPE(U2::SequenceDbiUnitTests_getSequenceDataInvalid);
 Q_DECLARE_METATYPE(U2::SequenceDbiUnitTests_getSequenceObject);
 Q_DECLARE_METATYPE(U2::SequenceDbiUnitTests_getSequenceObjectInvalid);

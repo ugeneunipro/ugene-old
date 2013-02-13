@@ -16,7 +16,7 @@ const QString& GET_SEQUENCE_DATA_ID = "get_seq_data_id";
 const QString& GET_SEQUENCE_DATA_REGION = "get_seq_data_region";
 const QString& GET_SEQUENCE_DATA_OUT = "get_seq_data_out";
 
-const QString& SequenceTestData::SEQ_DB_URL("sequence-dbi.ugenedb");
+const QString& SequenceTestData::SEQ_DB_URL("sequence-dbi_big.ugenedb");
 QList<U2DataId>* SequenceTestData::sequences = NULL;
 U2SequenceDbi* SequenceTestData::sequenceDbi = NULL;
 TestDbiProvider SequenceTestData::dbiProvider = TestDbiProvider();
@@ -25,6 +25,7 @@ static bool registerTests(){
     qRegisterMetaType<U2::SequenceDbiUnitTests_createSequenceObject>("SequenceDbiUnitTests_createSequenceObject");
     qRegisterMetaType<U2::SequenceDbiUnitTests_getAllSequenceObjects>("SequenceDbiUnitTests_getAllSequenceObjects");
     qRegisterMetaType<U2::SequenceDbiUnitTests_getSequenceData>("SequenceDbiUnitTests_getSequenceData");
+    qRegisterMetaType<U2::SequenceDbiUnitTests_getLongSequenceData>("SequenceDbiUnitTests_getLongSequenceData");
     qRegisterMetaType<U2::SequenceDbiUnitTests_getSequenceDataInvalid>("SequenceDbiUnitTests_getSequenceDataInvalid");
     qRegisterMetaType<U2::SequenceDbiUnitTests_getSequenceObject>("SequenceDbiUnitTests_getSequenceObject");
     qRegisterMetaType<U2::SequenceDbiUnitTests_getSequenceObjectInvalid>("SequenceDbiUnitTests_getSequenceObjectInvalid");
@@ -232,6 +233,27 @@ void SequenceDbiUnitTests_getSequenceData::Test(){
     testData.addValue(GET_SEQUENCE_DATA_ID, 5);
     testData.addValue(GET_SEQUENCE_DATA_REGION, U2Region(5, 20));
     testData.addValue<QByteArray>(GET_SEQUENCE_DATA_OUT, "AAGTGATCGTCCTACGATCG");
+
+    int i = testData.getValue<int>(GET_SEQUENCE_DATA_ID);
+    const U2DataId& id = SequenceTestData::getSequences()->at(i);
+    const U2Region& region = testData.getValue<U2Region>(GET_SEQUENCE_DATA_REGION);
+    U2OpStatusImpl os;
+
+    const QByteArray& expected = testData.getValue<QByteArray>(GET_SEQUENCE_DATA_OUT);
+    const QByteArray& actual = sequenceDbi->getSequenceData(id, region, os);
+    CHECK_OP(os, );
+
+    CHECK_EXT(expected == actual, SetError("incorrect expected sequence data"), );
+}
+
+void SequenceDbiUnitTests_getLongSequenceData::Test(){
+
+    U2SequenceDbi* sequenceDbi = SequenceTestData::getSequenceDbi();
+    APITestData testData;
+
+    testData.addValue(GET_SEQUENCE_DATA_ID, 10);
+    testData.addValue(GET_SEQUENCE_DATA_REGION, U2Region(6, 1048570));
+    testData.addValue<QByteArray>(GET_SEQUENCE_DATA_OUT, QByteArray(1048570, 'A'));
 
     int i = testData.getValue<int>(GET_SEQUENCE_DATA_ID);
     const U2DataId& id = SequenceTestData::getSequences()->at(i);
