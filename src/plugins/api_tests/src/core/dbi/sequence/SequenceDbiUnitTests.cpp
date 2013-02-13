@@ -16,7 +16,7 @@ const QString& GET_SEQUENCE_DATA_ID = "get_seq_data_id";
 const QString& GET_SEQUENCE_DATA_REGION = "get_seq_data_region";
 const QString& GET_SEQUENCE_DATA_OUT = "get_seq_data_out";
 
-const QString& SequenceTestData::SEQ_DB_URL("sequence-dbi_big.ugenedb");
+const QString& SequenceTestData::SEQ_DB_URL("sequence-dbi.ugenedb");
 QList<U2DataId>* SequenceTestData::sequences = NULL;
 U2SequenceDbi* SequenceTestData::sequenceDbi = NULL;
 TestDbiProvider SequenceTestData::dbiProvider = TestDbiProvider();
