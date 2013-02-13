@@ -195,7 +195,7 @@ bool GenbankPlainTextFormat::readIdLine(ParserState* st) {
     }
 
     QString locusStr = st->value();
-    QStringList tokens = locusStr.split(" ", QString::SkipEmptyParts);
+    QStringList tokens = locusStr.split(QRegExp("(\t| )"), QString::SkipEmptyParts); //separators: tabs and spaces
     if (tokens.isEmpty()) {
         st->si.setError(tr("Error parsing LOCUS line"));
         return false;
