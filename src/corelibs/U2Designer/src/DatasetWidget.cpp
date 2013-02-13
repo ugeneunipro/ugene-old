@@ -81,17 +81,19 @@ void DatasetWidget::sl_addButton() {
 }
 
 void DatasetWidget::sl_addFileButton() {
-    LastUsedDirHelper lod;
+    LastUsedDirHelper lod("dataset_file");
     QStringList files = QFileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir);
     foreach (const QString &file, files) {
+        lod.url = file;
         addUrl(file);
     }
 }
 
 void DatasetWidget::sl_addDirButton() {
-    LastUsedDirHelper lod;
+    LastUsedDirHelper lod("dataset_dir");
     QString dir = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lod.dir);
     if (!dir.isEmpty()) {
+        lod.dir = dir;
         addUrl(dir);
     }
 }

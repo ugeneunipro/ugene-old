@@ -250,7 +250,8 @@ public:
         }
 
         if (hasCommonElements){
-            output.append(MACSWorker::tr("Warning: Input control and treatment annotations are the same"));
+            output.append(MACSWorker::tr("Error: Input control and treatment annotations are the same"));
+            return false;
         }
 
         return true;
