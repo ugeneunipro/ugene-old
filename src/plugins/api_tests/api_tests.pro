@@ -19,8 +19,7 @@ HEADERS += \
     src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.h \
     src/core/gobjects/MAlignmentObjectUnitTests.h \
     src/core/util/MAlignmentImporterExporterUnitTests.h \
-    src/UnitTestSuite.h \ 
-    src/core/util/MsaDbiUtilsTests.h
+    src/UnitTestSuite.h 
 SOURCES += \
     src/ApiTestsPlugin.cpp \
     src/core/datatype/msa/MAlignmentUnitTests.cpp \
@@ -38,7 +37,4 @@ SOURCES += \
     src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.cpp \
     src/core/gobjects/MAlignmentObjectUnitTests.cpp \
     src/core/util/MAlignmentImporterExporterUnitTests.cpp \
-    src/UnitTestSuite.cpp \ 
-    src/core/util/MsaDbiUtilsTests.cpp
-
-
+    src/UnitTestSuite.cpp 
