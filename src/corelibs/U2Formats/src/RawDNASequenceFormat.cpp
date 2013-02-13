@@ -61,7 +61,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
     const QBitArray& ALPHAS = TextUtils::ALPHA_NUMS;
 
     QByteArray seq;
-
+    QString seqName(io->getURL().baseFileName());
     //reading sequence
     QBuffer writer(&seq);
     writer.open(QIODevice::WriteOnly);
@@ -85,7 +85,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
         }
         if(seq.size()>0 && isStarted == false ){
             isStarted = true;
-            seqImporter.startSequence(dbiRef,"Sequence",false,os);
+            seqImporter.startSequence(dbiRef,seqName,false,os);
         }
         if(isStarted){
             seqImporter.addBlock(seq.data(),seq.size(),os);
