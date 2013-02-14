@@ -53,6 +53,7 @@ void SQLiteMsaDbi::initSqlSchema(U2OpStatus& os) {
         " pos INTEGER NOT NULL, gstart INTEGER NOT NULL, gend INTEGER NOT NULL, length INTEGER NOT NULL,"
         " FOREIGN KEY(msa) REFERENCES Msa(object), "
         " FOREIGN KEY(sequence) REFERENCES Sequence(object) )", db, os).execute();
+    SQLiteQuery("CREATE INDEX MsaRow_msa_rowId ON MsaRow(msa, rowId)", db, os).execute();
 
     SQLiteQuery("CREATE INDEX MsaRow_length ON MsaRow(length)", db, os).execute();
 
