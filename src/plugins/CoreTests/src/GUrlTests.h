@@ -26,23 +26,37 @@
 #include <QtXml/QDomElement>
 
 namespace U2 {
-    class GTest_ConvertPath : public GTest {
-        Q_OBJECT
-    public:
-        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_ConvertPath, "convert-path");
 
-        ReportResult report();
+class GTest_ConvertPath : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_ConvertPath, "convert-path");
 
-        virtual void cleanup() {};
+    ReportResult report();
 
-    private:
-        QString             originalUrl, result, expectedResult, platform;
-        bool                isFileUrl, runThisTest;
-    };
+private:
+    QString             originalUrl, result, expectedResult, platform;
+    bool                isFileUrl, runThisTest;
+};
 
-    class GUrlTests {
-    public:
-        static QList<XMLTestFactory*> createTestFactories();
-    };
+class GTest_RemoveTmpDir : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_RemoveTmpDir, "remove-temp-dir");
+
+    ReportResult report();
+
+private:
+    QString url;
+
+private:
+    void removeDir(const QString &url);
+};
+
+class GUrlTests {
+public:
+    static QList<XMLTestFactory*> createTestFactories();
+};
+
 }//namespace
 #endif

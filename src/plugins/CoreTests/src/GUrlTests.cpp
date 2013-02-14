@@ -34,45 +34,74 @@ namespace U2 {
 #define PLATFORM_WIN            "win"
 #define PLATFORM_UNIX           "unix"
 
-    void GTest_ConvertPath::init(XMLTestFormat*, const QDomElement& el) {
-        originalUrl = el.attribute(ORIGINAL_URL_ATTR);
-        expectedResult = el.attribute(EXPECTED_RESULT_ATTR);
-        platform = el.attribute(PLATFORM_ATTR);
+void GTest_ConvertPath::init(XMLTestFormat*, const QDomElement& el) {
+    originalUrl = el.attribute(ORIGINAL_URL_ATTR);
+    expectedResult = el.attribute(EXPECTED_RESULT_ATTR);
+    platform = el.attribute(PLATFORM_ATTR);
 
 #ifdef Q_OS_WIN
-        QString currPlatform = PLATFORM_WIN;
+    QString currPlatform = PLATFORM_WIN;
 #else
-        QString currPlatform = PLATFORM_UNIX;
+    QString currPlatform = PLATFORM_UNIX;
 #endif
 
-        runThisTest = (platform == currPlatform);
-        if(runThisTest) {
-            GUrl gurl(originalUrl);
-            result = gurl.getURLString();
-            isFileUrl = (gurl.getType() == GUrl_File);
+    runThisTest = (platform == currPlatform);
+    if(runThisTest) {
+        GUrl gurl(originalUrl);
+        result = gurl.getURLString();
+        isFileUrl = (gurl.getType() == GUrl_File);
+    }
+}
+
+Task::ReportResult GTest_ConvertPath::report() {
+    if(runThisTest) {
+        if(!isFileUrl) {
+            stateInfo.setError(tr("%1 isn't a File URL.").arg(originalUrl));
+        } else if (expectedResult != result) {
+            stateInfo.setError(tr("%1 was converted into %2, while %3 was expected").arg(originalUrl).arg(result).arg(expectedResult));
         }
     }
+    return ReportResult_Finished;
+}
 
-    Task::ReportResult GTest_ConvertPath::report() {
-        if(runThisTest) {
-            if(!isFileUrl) {
-                stateInfo.setError(tr("%1 isn't a File URL.").arg(originalUrl));
-            } else if (expectedResult != result) {
-                stateInfo.setError(tr("%1 was converted into %2, while %3 was expected").arg(originalUrl).arg(result).arg(expectedResult));
-            }
+/************************************************************************/
+/* GTest_RemoveTmpDir */
+/************************************************************************/
+#define TEMP_DATA_DIR_ENV_ID "TEMP_DATA_DIR" 
+#define URL_ATTR "url"
+void GTest_RemoveTmpDir::init(XMLTestFormat *tf, const QDomElement &el) {
+    url = env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/" + el.attribute(URL_ATTR);
+}
+
+Task::ReportResult GTest_RemoveTmpDir::report() {
+    removeDir(url);
+    return ReportResult_Finished;
+}
+
+void GTest_RemoveTmpDir::removeDir(const QString &url) {
+    QDir dir(url);
+    if (!dir.exists()) {
+        return;
+    }
+    foreach (const QFileInfo &entry, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries)) {
+        if (entry.isDir()) {
+            removeDir(entry.absoluteFilePath());
+        } else {
+            QFile::remove(entry.absoluteFilePath());
         }
-        return ReportResult_Finished;
     }
+    dir.rmdir(url);
+}
 
-
-    /*******************************
-    * GUrlTests
-    *******************************/
-    QList<XMLTestFactory*> GUrlTests::createTestFactories() {
-        QList<XMLTestFactory*> res;
-        res.append(GTest_ConvertPath::createFactory());
-        return res;
-    }
+/*******************************
+* GUrlTests
+*******************************/
+QList<XMLTestFactory*> GUrlTests::createTestFactories() {
+    QList<XMLTestFactory*> res;
+    res.append(GTest_ConvertPath::createFactory());
+    res.append(GTest_RemoveTmpDir::createFactory());
+    return res;
+}
 
 
 }//namespace
