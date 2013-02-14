@@ -646,6 +646,78 @@ void MsaDbiUtils::updateRowsOrder(const U2EntityRef& msaRef, const QList<qint64>
     msaDbi->setNewRowsOrder(msaRef.entityId, rowsOrder, os);
 }
 
+void MsaDbiUtils::moveRows(const U2EntityRef& msaRef, const QList<qint64>& rowsToMove, const int delta, U2OpStatus& os) {
+    DbiConnection con(msaRef.dbiRef, false, os);
+    CHECK_OP(os, );
+
+    U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
+    SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!", );
+
+    if (delta == 0 || rowsToMove.isEmpty()) {
+        return;
+    }
+
+    QList<U2MsaRow> rows = msaDbi->getRows(msaRef.entityId, os);
+    CHECK_OP(os, );
+
+    QList<qint64> rowIds;
+    for (int i = 0; i < rows.length(); ++i) {
+        rowIds << rows[i].rowId;
+    }
+
+    QList<QPair<int, int> > from_To;
+
+    if (delta < 0) {
+        int rowIndex = rowIds.indexOf(rowsToMove.first());
+        if (rowIndex == -1) {
+            os.setError("Invalid row list");
+            return;
+        }
+        int moveToIndex = rowIndex + delta >= 0 ? rowIndex + delta : 0;
+        from_To.append(QPair<int, int>(rowIndex, moveToIndex));
+        for (int i = 1; i < rowsToMove.length(); ++i) {
+            rowIndex = rowIds.indexOf(rowsToMove[i]);
+            if (rowIndex == -1) {
+                os.setError("Invalid row list");
+                return;
+            }
+            if (rowIndex <= from_To[i - 1].first) {
+                os.setError("List of rows to move is not ordered");
+                return;
+            }
+            moveToIndex = rowIndex + delta > from_To[i - 1].second ? rowIndex + delta : from_To[i - 1].second + 1;
+            from_To.append(QPair<int, int>(rowIndex, moveToIndex));
+        }
+    } else {
+        int rowIndex = rowIds.indexOf(rowsToMove.last());
+        if (rowIndex == -1) {
+            os.setError("Invalid row list");
+            return;
+        }
+        int moveToIndex = rowIndex + delta < rowIds.length() ? rowIndex + delta : rowIds.length() - 1;
+        from_To.append(QPair<int, int>(rowIndex, moveToIndex));
+        for (int i = 1; i < rowsToMove.length(); ++i) {
+            rowIndex = rowIds.indexOf(rowsToMove[rowsToMove.length() - i - 1]);
+            if (rowIndex == -1) {
+                os.setError("Invalid row list");
+                return;
+            }
+            if (rowIndex >= from_To[i - 1].first) {
+                os.setError("List of rows to move is not ordered");
+                return;
+            }
+            moveToIndex = rowIndex + delta < from_To[i - 1].second ? rowIndex + delta : from_To[i - 1].second - 1;
+            from_To.append(QPair<int, int>(rowIndex, moveToIndex));
+        }
+    }
+    QPair<int, int> coords;
+    foreach (coords, from_To) {
+        rowIds.move(coords.first, coords.second);
+    }
+    updateRowsOrder(msaRef, rowIds, os);
+    CHECK_OP(os, );
+}
+
 void MsaDbiUtils::renameMsa(const U2EntityRef& msaRef, const QString& newName, U2OpStatus& os) {
     if (newName.isEmpty()) {
         os.setError(tr("Can't rename an alignment to an empty name!"));

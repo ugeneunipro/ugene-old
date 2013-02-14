@@ -119,6 +119,14 @@ public:
     static void updateRowsOrder(const U2EntityRef& msaRef, const QList<qint64>& rowsOrder, U2OpStatus& os);
 
     /**
+     * Updates positions of the rows in the database according to the delta.
+     * If some rows can`t move, the other rows will continue to move until there is space.
+     * rowsToMove must have the same relative order as rows in database have.
+     * All IDs must exactly match IDs of the MSA!
+     */
+    static void moveRows(const U2EntityRef& msaRef, const QList<qint64>& rowsToMove, const int delta, U2OpStatus& os);
+
+    /**
      * Renames a row of the alignment, i.e. the corresponding sequence.
      * Parameter 'rowId' must contain a valid row ID in the database.
      * Parameter 'newName' must be NOT empty!
