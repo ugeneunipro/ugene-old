@@ -47,7 +47,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 DNAExportPlugin::DNAExportPlugin() : Plugin(tr("DNA export"), tr("Export and import support for DNA & protein sequences")) {
     if (AppContext::getMainWindow()) {
         services.push_back(new DNAExportService());
-        QAction* a = new QAction(tr("Generate Sequence..."), this);
+        QAction* a = new QAction(QIcon(":/core/images/add_sequence.png"), tr("Generate sequence..."), this);
         a->setObjectName("Generate Sequence");
         connect(a, SIGNAL(triggered()), SLOT(sl_generateSequence()));
         QMenu* toolsMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
@@ -75,7 +75,8 @@ DNAExportPlugin::DNAExportPlugin() : Plugin(tr("DNA export"), tr("Export and imp
 }
 
 void DNAExportPlugin::sl_generateSequence() {
-    DNASequenceGeneratorDialog dlg;
+    DNASequenceGeneratorDialog dlg(QApplication::activeWindow());
+    dlg.setWindowIcon(QIcon(":/core/images/add_sequence.png"));
     dlg.exec();
 }
 

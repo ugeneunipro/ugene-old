@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>576</width>
-    <height>350</height>
+    <width>427</width>
+    <height>392</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,38 +26,16 @@
       <string>Parameters</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="spacing">
-       <number>2</number>
-      </property>
-      <property name="topMargin">
-       <number>4</number>
-      </property>
-      <property name="bottomMargin">
-       <number>4</number>
-      </property>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
          <widget class="QLabel" name="lengthLabel">
           <property name="text">
            <string>Length</string>
           </property>
          </widget>
         </item>
-        <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
+        <item row="0" column="1">
          <widget class="QSpinBox" name="lengthSpin">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -65,6 +43,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="suffix">
            <string> bp</string>
           </property>
@@ -79,32 +60,18 @@
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_7">
-        <item>
+        <item row="1" column="0">
          <widget class="QLabel" name="label">
           <property name="text">
            <string>Window size</string>
           </property>
          </widget>
         </item>
-        <item>
-         <spacer name="horizontalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
+        <item row="1" column="1">
          <widget class="QSpinBox" name="windowSpinBox">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="suffix">
            <string> bp</string>
           </property>
@@ -122,66 +89,83 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="2">
+         <widget class="QSpinBox" name="seqNumSpin">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>10000</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>42</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="0">
          <widget class="QLabel" name="seqNumLabel">
           <property name="text">
            <string>Number of sequences</string>
           </property>
          </widget>
         </item>
-        <item>
-         <spacer name="horizontalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="seqNumSpin">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimum">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
-        <item>
+        <item row="1" column="0">
          <widget class="QCheckBox" name="seedCheckBox">
           <property name="text">
            <string>Initialize random generator manually</string>
           </property>
          </widget>
         </item>
-        <item>
-         <spacer name="horizontalSpacer_6">
+        <item row="1" column="1">
+         <spacer name="horizontalSpacer_4">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>42</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
-        <item>
+        <item row="1" column="2">
          <widget class="QSpinBox" name="seedSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="maximum">
            <number>1000</number>
           </property>

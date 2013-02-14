@@ -450,6 +450,7 @@ FixedMdiArea::FixedMdiArea(QWidget * parent) : QMdiArea(parent)
     setDocumentMode(true);
     setTabShape(QTabWidget::Rounded);
     setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
+    setStyleSheet("QTabBar::close-button {background-image: url(\":/core/images/close_tab.png\"); }");
 }
 
 void FixedMdiArea::setViewMode( QMdiArea::ViewMode mode )
@@ -473,7 +474,7 @@ void FixedMdiArea::setViewMode( QMdiArea::ViewMode mode )
 }
 
 void FixedMdiArea::closeSubWindow(int idx) {
-#if QT_VERSION < 0x040800 //In Qt version 4.8.0 was added default behaviour for closing tab.
+#if QT_VERSION < 0x040800 //In Qt version 4.8.0 was added default behavior for closing tab.
     subWindowList().at(idx)->close();
 #endif
 }
