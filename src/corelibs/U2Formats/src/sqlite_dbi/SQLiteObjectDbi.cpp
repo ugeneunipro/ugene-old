@@ -49,6 +49,8 @@ void SQLiteObjectDbi::initSqlSchema(U2OpStatus& os) {
     SQLiteQuery("CREATE TABLE Parent (parent INTEGER, child INTEGER, "
                        "FOREIGN KEY(parent) REFERENCES Object(id), "
                        "FOREIGN KEY(child) REFERENCES Object(id) )", db, os).execute();
+    SQLiteQuery("CREATE INDEX Parent_parent_child on Parent(parent, child)" , db, os).execute();
+    SQLiteQuery("CREATE INDEX Parent_child on Parent(child)" , db, os).execute();
 
     // folders 
     SQLiteQuery("CREATE TABLE Folder (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT UNIQUE NOT NULL,  "
@@ -86,7 +88,7 @@ QList<U2DataId> SQLiteObjectDbi::getObjects(U2DataType type, qint64 offset, qint
 }
 
 QList<U2DataId> SQLiteObjectDbi::getParents(const U2DataId& entityId, U2OpStatus& os) {
-    SQLiteQuery q("SELECT o.id AS id, o.type AS type FROM Parent AS p, Object AS o WHERE p.child = ?1 and p.parent = o.id", db, os);
+    SQLiteQuery q("SELECT o.id AS id, o.type AS type FROM Parent AS p, Object AS o WHERE p.parent = o.id AND p.child = ?1", db, os);
     q.bindDataId(1, entityId);
     return q.selectDataIdsExt();
 }
