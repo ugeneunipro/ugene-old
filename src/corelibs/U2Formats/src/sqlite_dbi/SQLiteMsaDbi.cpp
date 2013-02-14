@@ -54,6 +54,8 @@ void SQLiteMsaDbi::initSqlSchema(U2OpStatus& os) {
         " FOREIGN KEY(msa) REFERENCES Msa(object), "
         " FOREIGN KEY(sequence) REFERENCES Sequence(object) )", db, os).execute();
 
+    SQLiteQuery("CREATE INDEX MsaRow_length ON MsaRow(length)", db, os).execute();
+
      // Gap info for a MSA row: 
      //   msa       - msa object id
      //   rowId     - id of the row in the msa
