@@ -62,29 +62,33 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
     const char* data = rawData.constData();
     int size = rawData.size();
 
-    int sequenceCount = 0, qualCount = 0, linesCount = 0;
-
-    QList<QByteArray> lines = rawData.split('\n');
+    int sequenceCount = 0, qualCount = 0;
     int state = STATE_START_PARSING;
 
+    QList<QByteArray> lines = rawData.split('\n');
+
     foreach (const QByteArray& line, lines) {
-        if (line.startsWith('@') && (line.length() > 1) && QChar(line.at(1)).isLetter()) {
-            if (state != STATE_START_PARSING && state != STATE_QUALITY  ) {
-                return FormatDetection_NotMatched;
-            }
+        if (line.isEmpty()) {
+            continue;
+        }
+        if (line.startsWith('@')
+            && (STATE_START_PARSING == state || STATE_QUALITY == state)
+            && (line.length() > 1) && QChar(line.at(1)).isLetter()) {
             sequenceCount++;
             state = STATE_SEQ_HEADER;
         } else if(line.startsWith('+') && STATE_SEQ == state){
             qualCount++;
             state = STATE_QUALITY_HEADER;
-        } else {
-            if (STATE_SEQ_HEADER == state) {
-                state = STATE_SEQ;
-            } else if (STATE_QUALITY_HEADER == state) {
-                state = STATE_QUALITY;
+        } else if (STATE_SEQ_HEADER == state || STATE_SEQ == state) {
+            if (!QChar(line[0]).isLetter()) {
+                return FormatDetection_NotMatched;
             }
+            state = STATE_SEQ;
+        } else if (STATE_QUALITY_HEADER == state || STATE_QUALITY == state) {
+            state = STATE_QUALITY;
+        } else {
+            return FormatDetection_NotMatched;
         }
-        if(!line.isEmpty()) linesCount++;
     }
 
     bool hasBinaryBlocks = TextUtils::contains(TextUtils::BINARY, data, size);
@@ -93,8 +97,8 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
     }
 
     //check whats every seq had its own qual
-    if (linesCount%4 > 2 || linesCount%4 == 0){
-        if ((sequenceCount != qualCount) && (sequenceCount-1 != qualCount)) {
+    if (STATE_QUALITY_HEADER == state || STATE_QUALITY == state){
+        if (sequenceCount != qualCount) {
             return FormatDetection_NotMatched;
         }
     }else{
