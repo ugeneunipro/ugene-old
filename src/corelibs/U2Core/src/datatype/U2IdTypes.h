@@ -33,6 +33,7 @@ namespace U2 {
 INT32_ID(ServiceType);
 STRING_ID(GObjectViewFactoryId);
 STRING_ID(PFMatrixViewFactoryId);
+STRING_ID(PWMatrixViewFactoryId);
 
 //TODO:
 typedef QString DocumentFormatId;

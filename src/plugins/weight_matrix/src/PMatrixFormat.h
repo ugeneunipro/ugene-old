@@ -25,6 +25,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/PFMatrix.h>
+#include <U2Core/PWMatrix.h>
 #include <U2Gui/ObjectViewTasks.h>
 
 namespace U2 {
@@ -42,8 +43,6 @@ public:
 
     virtual Document* createNewLoadedDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs = QVariantMap());
 
-    virtual void storeDocument(Document* d, IOAdapter* io, U2OpStatus& os);
-
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
 protected:
@@ -57,10 +56,7 @@ class PFMatrixObject: public GObject {
     Q_OBJECT
 public:
     static const GObjectType TYPE;
-    /*
-    QDGObject(const QString& objectName, const QString& data, const QVariantMap& map = QVariantMap())
-        : GObject(TYPE, objectName), serializedScene(data), scene(NULL) { Q_UNUSED(map); }
-    */
+
     PFMatrixObject(const PFMatrix& _m, const QString& objectName, const QVariantMap& hintsMap = QVariantMap()) 
         : GObject(TYPE, objectName, hintsMap), m(_m){};
 
@@ -90,6 +86,67 @@ class OpenPFMatrixViewTask : public ObjectViewTask {
     Q_OBJECT
 public:
     OpenPFMatrixViewTask(Document* doc);
+    virtual void open();
+private:
+    Document* document;
+};
+
+class PWMatrixFormat : public DocumentFormat {
+    Q_OBJECT
+public:
+    PWMatrixFormat(QObject* p);
+
+    static const DocumentFormatId FORMAT_ID;
+
+    virtual DocumentFormatId getFormatId() const {return FORMAT_ID;}
+
+    virtual const QString& getFormatName() const {return formatName;}
+
+    virtual Document* createNewLoadedDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs = QVariantMap());
+
+    virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
+
+protected:
+    virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
+
+private:
+    QString formatName;
+};
+
+class PWMatrixObject: public GObject {
+    Q_OBJECT
+public:
+    static const GObjectType TYPE;
+
+    PWMatrixObject(const PWMatrix& _m, const QString& objectName, const QVariantMap& hintsMap = QVariantMap()) 
+        : GObject(TYPE, objectName, hintsMap), m(_m){};
+
+    virtual const PWMatrix getMatrix() const {return m;}
+
+    virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const{
+        PWMatrixObject* cln = new PWMatrixObject(m, getGObjectName(), getGHintsMap());
+        cln->setIndexInfo(getIndexInfo());
+        return cln;
+    };
+
+protected:
+    PWMatrix m;
+};
+
+class PWMatrixViewFactory : public GObjectViewFactory {
+    Q_OBJECT
+public:
+    static const PWMatrixViewFactoryId ID;
+    PWMatrixViewFactory(QObject* p = NULL) : GObjectViewFactory(ID, tr("PWM Viewer"), p) {}
+
+    virtual bool canCreateView(const MultiGSelection& multiSelection);
+    virtual Task* createViewTask(const MultiGSelection& multiSelection, bool single = false);
+};
+
+class OpenPWMatrixViewTask : public ObjectViewTask {
+    Q_OBJECT
+public:
+    OpenPWMatrixViewTask(Document* doc);
     virtual void open();
 private:
     Document* document;

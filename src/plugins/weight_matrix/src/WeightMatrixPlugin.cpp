@@ -69,9 +69,12 @@ WeightMatrixPlugin::WeightMatrixPlugin() : Plugin(tr("Weight matrix"), tr("Searc
 
         GObjectViewFactory *ff = new PFMatrixViewFactory(this);
         AppContext::getObjectViewFactoryRegistry()->registerGObjectViewFactory(ff);
+        ff = new PWMatrixViewFactory(this);
+        AppContext::getObjectViewFactoryRegistry()->registerGObjectViewFactory(ff);
     }
 
     AppContext::getDocumentFormatRegistry()->registerFormat(new PFMatrixFormat(this));
+    AppContext::getDocumentFormatRegistry()->registerFormat(new PWMatrixFormat(this));
 
     LocalWorkflow::PWMatrixWorkerFactory::init();
     LocalWorkflow::PFMatrixWorkerFactory::init();
