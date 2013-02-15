@@ -282,7 +282,7 @@ QString ConservationPlotPrompter::composeRichDoc() {
  
      res.append(tr("Uses annotations from <u>%1</u> as peak regions for conservation plot.").arg(annUrl));
      res.append(tr(" Conservations scores from <u>%1</u>.").arg(assembly));
-     res.append(tr(" Outputs the result in <u>%1</u>").arg(file));
+     res.append(tr(" Outputs the result to <u>%1</u>").arg(file));
      res.append(".");
 
     return res;

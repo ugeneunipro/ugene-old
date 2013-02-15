@@ -206,32 +206,39 @@ QList<Task*> CEASSupportTask::onSubTaskFinished(Task* subTask) {
     return result;
 }
 
-void CEASSupportTask::copyFile(const QString &src, const QString &dst) {
+bool CEASSupportTask::copyFile(const QString &src, const QString &dst) {
     if (!QFile::exists(src)) {
-        setError(tr("Can not find a file: %1").arg(src));
-        return;
+        coreLog.error(tr("CEAS error: Can not find a required output file %1.").arg(src));
+        return false;
     }
 
     QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
     if (!GUrlUtils::renameFileWithNameRoll(dst, stateInfo, excludeFileNames, &taskLog)) {
-        return;
+        return false;
     }
 
     bool copied = QFile::copy(src, dst);
     if (!copied) {
         setError(tr("Can not copy the result file to: %1").arg(dst));
-        return;
+        return true;
     }
+
+    return true;
 }
 
 void CEASSupportTask::run() {
     QString tmpPdfFile = workingDir + "/tmp.pdf";
-    copyFile(tmpPdfFile, settings.getCeasSettings().getImageFilePath());
+    if (!copyFile(tmpPdfFile, settings.getCeasSettings().getImageFilePath())){
+        settings.getCeasSettings().setImagePath("");
+    }
+    
     CHECK_OP(stateInfo, );
 
     if (!settings.getBedData().isEmpty()){ //no annotation file if no bed data
         QString tmpXlsFile = workingDir + "/tmp.xls";
-        copyFile(tmpXlsFile, settings.getCeasSettings().getAnnsFilePath());
+        if(!copyFile(tmpXlsFile, settings.getCeasSettings().getAnnsFilePath())){
+            settings.getCeasSettings().setAnnsFilePath("");
+        }
         CHECK_OP(stateInfo, );
     }
 }

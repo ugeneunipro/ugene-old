@@ -43,6 +43,7 @@
 namespace U2 {
 
 const QString MACSTask::BASE_DIR_NAME("macs_tmp");
+const QString MACSTask::BASE_SUBDIR_NAME("macs");
 const QString MACSTask::TREAT_NAME("treatment");
 const QString MACSTask::CON_NAME("control");
 
@@ -99,6 +100,11 @@ void MACSTask::cleanup() {
 void MACSTask::prepare() {
     UserAppsSettings *appSettings = AppContext::getAppSettings()->getUserAppsSettings();
     workingDir = appSettings->createCurrentProcessTemporarySubDir(stateInfo, BASE_DIR_NAME);
+    CHECK_OP(stateInfo, );
+
+    settings.outDir = GUrlUtils::createDirectory(
+        settings.outDir + "/" + BASE_SUBDIR_NAME,
+        "_", stateInfo);
     CHECK_OP(stateInfo, );
 
     treatDoc = createDoc(treatAnn, TREAT_NAME);

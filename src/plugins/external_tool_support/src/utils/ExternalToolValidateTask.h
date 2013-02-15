@@ -28,6 +28,8 @@
 namespace U2 {
 
 class ExternalToolLogParser;
+class ExternalToolValidation;
+
 class ExternalToolValidateTask: public Task {
     Q_OBJECT
 public:
@@ -46,19 +48,25 @@ public:
     QString getToolVersion()  { return version; }
 
 private:
-    void parseLog();
+    bool parseLog(const ExternalToolValidation& validation);
     void checkVersion(const QString& partOfLog);
 
-    QStringList arguments;
+    
     QString     program;
-    QProcess*   externalToolProcess;
     QString     toolName;
-    QString     expectedMessage;
-    QRegExp     checkVersionRegExp;
     QString     version;
+    QString     errorMsg;
     bool        isValid;
+
+    QList<ExternalToolValidation> validations; //original tool validation is the last one
+    
+    QRegExp     checkVersionRegExp;
+        
     QString     lastErrLine;
     QString     lastOutLine;
+
+    QProcess*   externalToolProcess;
+
 };
 
 }//namespace

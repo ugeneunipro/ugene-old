@@ -292,7 +292,7 @@ QString SeqPosPrompter::composeRichDoc() {
          res.append(tr(" Uses <u>%1</u> known motifs.").arg(motifDb.isEmpty()? unsetStr : motifDb));
      }
     
-     res.append(tr(" Outputs all result files in <u>%1</u> directory").arg(dir.isEmpty() ? unsetStr : dir));
+     res.append(tr(" Outputs all result files to <u>%1</u> directory").arg(dir.isEmpty() ? unsetStr : dir));
      res.append(".");
 
     return res;

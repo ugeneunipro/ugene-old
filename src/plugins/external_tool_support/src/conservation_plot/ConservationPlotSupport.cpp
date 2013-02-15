@@ -57,6 +57,9 @@ void ConservationPlotSupport::initialize() {
         U2DataPath* dp = new U2DataPath(CONSERVATION_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/phastCons", true);
         dpr->registerEntry(dp);
     }
+
+    additionalValidators<<DefaultExternalToolValidations::pythonValidation();
+    additionalValidators<<DefaultExternalToolValidations::rValidation();
 }
 
 } // U2

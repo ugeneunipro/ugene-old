@@ -53,6 +53,8 @@ void MACSSupport::initialize() {
     validationArguments << "--version";
 
     versionRegExp=QRegExp(executableFileName + " (\\d+\\.\\d+\\.\\d+)");
+
+    additionalValidators<<DefaultExternalToolValidations::pythonValidation();
 }
 
 } // U2

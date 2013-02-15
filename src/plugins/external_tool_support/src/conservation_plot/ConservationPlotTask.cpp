@@ -166,28 +166,32 @@ QList<Task*> ConservationPlotTask::onSubTaskFinished(Task* subTask) {
     return result;
 }
 
-void ConservationPlotTask::copyFile(const QString &src, const QString &dst) {
+bool ConservationPlotTask::copyFile(const QString &src, const QString &dst) {
     if (!QFile::exists(src)) {
-        setError(tr("Can not find a file: %1").arg(src));
-        return;
+        coreLog.error(tr("Conservation Plot error: Can not find a required output file %1.").arg(src));
+        return false;
     }
 
     QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
     if (!GUrlUtils::renameFileWithNameRoll(dst, stateInfo, excludeFileNames, &taskLog)) {
-        return;
+        return false;
     }
 
     bool copied = QFile::copy(src, dst);
     if (!copied) {
         setError(tr("Can not copy the result file to: %1").arg(dst));
-        return;
+        return true;
     }
+
+    return true;
 }
 
 
 void ConservationPlotTask::run() {
     QString tmpPdfFile = workingDir + "/tmp.bmp";
-    copyFile(tmpPdfFile, getSettings().outFile);
+    if(!copyFile(tmpPdfFile, getSettings().outFile)){
+        settings.outFile = "";
+    }
     CHECK_OP(stateInfo, );
 }
 

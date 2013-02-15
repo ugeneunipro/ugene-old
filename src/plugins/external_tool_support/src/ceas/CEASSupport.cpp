@@ -64,6 +64,10 @@ void CEASSupport::initialize() {
         U2DataPath* dp = new U2DataPath(REF_GENES_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/refGene");
         dpr->registerEntry(dp);
     }
+
+    additionalValidators<<DefaultExternalToolValidations::pythonValidation();
+    additionalValidators<<DefaultExternalToolValidations::rValidation();
+
 }
 
 } // U2

@@ -32,37 +32,42 @@
 namespace U2 {
 
 ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName) :
-        Task(_toolName + " validate task", TaskFlag_None), toolName(_toolName)
+        Task(_toolName + " validate task", TaskFlag_None), toolName(_toolName), errorMsg("")
 {
-    program=AppContext::getExternalToolRegistry()->getByName(toolName)->getPath();
-    assert(program!="");
-    arguments=AppContext::getExternalToolRegistry()->getByName(toolName)->getValidationArguments();
-    expectedMessage=AppContext::getExternalToolRegistry()->getByName(toolName)->getValidMessage();
-    if(expectedMessage==""){
-        assert(NULL);
+    ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
+    assert(tool);
+    if (tool){
+        program=tool->getPath();
+        assert(program!="");
+        validations.append(tool->getToolAdditionalValidations());
+        validations.append(tool->getToolValidation());
+        coreLog.trace("Creating validation task for: " + toolName);
+        externalToolProcess=NULL;
+        isValid=false;
+        checkVersionRegExp=tool->getVersionRegExp();
+        version="unknown";
     }
-    coreLog.trace("Creating validation task for: " + toolName);
-    externalToolProcess=NULL;
-    isValid=false;
-    checkVersionRegExp=AppContext::getExternalToolRegistry()->getByName(toolName)->getVersionRegExp();
-    version="unknown";
+    
 }
 
 ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName, const QString& path) :
-        Task(_toolName + " validate task", TaskFlag_None), toolName(_toolName)
+        Task(_toolName + " validate task", TaskFlag_None), toolName(_toolName), errorMsg("")
 {
-    program=path;
-    assert(program!="");
-    arguments=AppContext::getExternalToolRegistry()->getByName(toolName)->getValidationArguments();
-    expectedMessage=AppContext::getExternalToolRegistry()->getByName(toolName)->getValidMessage();
-    if(expectedMessage==""){
-        assert(NULL);
+    ExternalTool* tool = AppContext::getExternalToolRegistry()->getByName(toolName);
+    assert(tool);
+    if (tool){
+        program=path;
+        assert(program!="");
+        validations.append(tool->getToolAdditionalValidations());
+        ExternalToolValidation origianlValidation = tool->getToolValidation();
+        origianlValidation.executableFileName = path;
+        validations.append(origianlValidation);
+        coreLog.trace("Creating validation task for: " + toolName);
+        externalToolProcess=NULL;
+        isValid=false;
+        checkVersionRegExp=tool->getVersionRegExp();
+        version="unknown";
     }
-    coreLog.trace("Creating validation task for: " + toolName);
-    externalToolProcess=NULL;
-    isValid=false;
-    checkVersionRegExp=AppContext::getExternalToolRegistry()->getByName(toolName)->getVersionRegExp();
-    version="unknown";
 }
 ExternalToolValidateTask::~ExternalToolValidateTask(){
     delete externalToolProcess;
@@ -70,30 +75,48 @@ ExternalToolValidateTask::~ExternalToolValidateTask(){
 }
 void ExternalToolValidateTask::prepare(){
     algoLog.trace("Program executable: "+program);
-    algoLog.trace("Program arguments: "+arguments.join(" "));
+    assert(!validations.isEmpty());
+    algoLog.trace("Program arguments: "+validations.last().arguments.join(" "));
 }
 void ExternalToolValidateTask::run(){
-    externalToolProcess=new QProcess();
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    externalToolProcess->setProcessEnvironment(env);
+    foreach(const ExternalToolValidation& validation, validations){
+        if(externalToolProcess != NULL){
+            delete externalToolProcess;
+            externalToolProcess=NULL;
+        }
+        
+        externalToolProcess=new QProcess();
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        externalToolProcess->setProcessEnvironment(env);
 
-    bool started = WorkflowUtils::startExternalProcess(externalToolProcess, program, arguments);
+        bool started = WorkflowUtils::startExternalProcess(externalToolProcess, validation.executableFileName, validation.arguments);
 
-    if(!started){
-        stateInfo.setError(tr("Tool does not start.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
-        isValid=false;
-        return;
-    }
-    while(!externalToolProcess->waitForFinished(1000)){
-        if (isCanceled()) {
-            cancelProcess();
+        if(!started){
+            stateInfo.setError(tr("Tool does not start.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
+            isValid=false;
+            return;
+        }
+        while(!externalToolProcess->waitForFinished(1000)){
+            if (isCanceled()) {
+                cancelProcess();
+            }
+        }
+        if(!parseLog(validation)){
+            return;
+        }
+        
+        if (!isValid){
+            return;
         }
     }
-    parseLog();
 }
 Task::ReportResult ExternalToolValidateTask::report(){
     if(!isValid && !stateInfo.hasError()){
-        stateInfo.setError(tr("Can not find expected message.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
+        if (errorMsg.isEmpty()){
+            stateInfo.setError(tr("Can not find expected message.<br>It is possible that the specified executable file <i>%1</i> for %2 tool is invalid. You can change the path to the executable file in the external tool settings in the global preferences.").arg(program).arg(toolName));
+        }else{
+            stateInfo.setError(errorMsg);
+        }
     }
     return ReportResult_Finished;
 }
@@ -101,21 +124,40 @@ void ExternalToolValidateTask::cancelProcess(){
     externalToolProcess->kill();
 }
 
-void ExternalToolValidateTask::parseLog(){
+bool ExternalToolValidateTask::parseLog(const ExternalToolValidation& validation){
+    errorMsg = validation.possibleErrorsDescr.value(ExternalToolValidation::DEFAULT_DESCR_KEY, "");
+
     QString log=QString(externalToolProcess->readAllStandardOutput());
     if(!log.isEmpty()){
-        if(log.contains(expectedMessage)){
+        if(log.contains(validation.expectedMsg)){
             isValid=true;
             checkVersion(log);
+        }else{
+            foreach(const QString& errStr, validation.possibleErrorsDescr.keys()){
+                if(log.contains(errStr)){
+                    errorMsg = validation.possibleErrorsDescr[errStr];
+                    isValid=false;
+                    return false;
+                }
+            }
         }
     }
     QString errLog=QString(externalToolProcess->readAllStandardError());
     if(!errLog.isEmpty()){
-        if(errLog.contains(expectedMessage)){
+        if(errLog.contains(validation.expectedMsg)){
             isValid=true;
             checkVersion(errLog);
+        }else{
+            foreach(const QString& errStr, validation.possibleErrorsDescr.keys()){
+                if(errLog.contains(errStr)){
+                    errorMsg = validation.possibleErrorsDescr[errStr];
+                    isValid=false;
+                    return false;
+                }
+            }
         }
     }
+    return true;
 }
 
 void ExternalToolValidateTask::checkVersion(const QString &partOfLog){

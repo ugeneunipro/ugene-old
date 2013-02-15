@@ -43,6 +43,7 @@
 namespace U2 {
 
 const QString ConductGOTask::BASE_DIR_NAME("ConductGO_tmp");
+const QString ConductGOTask::BASE_SUBDIR_NAME("ConductGO");
 const QString ConductGOTask::TREAT_NAME("treatment");
 
 ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
@@ -86,6 +87,11 @@ void ConductGOTask::cleanup() {
 void ConductGOTask::prepare() {
     UserAppsSettings *appSettings = AppContext::getAppSettings()->getUserAppsSettings();
     workingDir = appSettings->createCurrentProcessTemporarySubDir(stateInfo, BASE_DIR_NAME);
+    CHECK_OP(stateInfo, );
+
+    settings.outDir = GUrlUtils::createDirectory(
+        settings.outDir + "/" + BASE_SUBDIR_NAME,
+        "_", stateInfo);
     CHECK_OP(stateInfo, );
 
     treatDoc = createDoc(treatAnn, TREAT_NAME);
@@ -145,31 +151,49 @@ const ConductGOSettings& ConductGOTask::getSettings(){
     return settings;
 }
 
-void ConductGOTask::copyFile(const QString &src, const QString &dst) {
+bool ConductGOTask::copyFile(const QString &src, const QString &dst) {
     if (!QFile::exists(src)) {
-        return;
+        coreLog.trace(tr("Conduct GO warning: Can not find a required output file %1.").arg(src));
+        return false;
     }
 
     QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
     if (!GUrlUtils::renameFileWithNameRoll(dst, stateInfo, excludeFileNames, &taskLog)) {
-        return;
+        return false;
     }
 
     bool copied = QFile::copy(src, dst);
     if (!copied) {
         setError(tr("Can not copy the result file to: %1").arg(dst));
-        return;
+        return false;
     }
+    return true;
 }
 
 
 QStringList ConductGOTask::getResultFileNames(){
     QStringList result;
 
-    result << getSettings().title + "_CC_RESULT.txt";
-    result << getSettings().title + "_BP_RESULT.txt";
-    result << getSettings().title + "_MF_RESULT.txt";
-    result << getSettings().title + "_Conduct_GO_using_David.html";
+    QString current;
+
+    current = getSettings().title + "_CC_RESULT.txt";
+    if (QFile::exists(workingDir+"/"+current)){
+        result << current;
+    }
+    current = getSettings().title + "_BP_RESULT.txt";
+    if (QFile::exists(workingDir+"/"+current)){
+        result << current;
+    }
+
+    current = getSettings().title + "_MF_RESULT.txt";
+    if (QFile::exists(workingDir+"/"+current)){
+        result << current;
+    }
+
+    current = getSettings().title + "_Conduct_GO_using_David.html";
+    if (QFile::exists(workingDir+"/"+current)){
+        result << current;
+    }
 
     return result;
 }

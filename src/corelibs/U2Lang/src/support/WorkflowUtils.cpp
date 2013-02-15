@@ -815,7 +815,7 @@ bool WorkflowUtils::startExternalProcess(QProcess *process, const QString &progr
             execStr += " " + arg;
         }
         process->start(execStr);
-        coreLog.error(tr("Can't run an executable file \"%1\". Try to run it as a cmd line command: \"%2\"")
+        coreLog.trace(tr("Can't run an executable file \"%1\" as it is. Try to run it as a cmd line command: \"%2\"")
             .arg(program).arg(execStr));
         started = process->waitForStarted(START_WAIT_MSEC);
     }

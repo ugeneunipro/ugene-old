@@ -90,7 +90,7 @@ private:
     void createBedDoc();
     void createWigDoc();
     bool canStartETTask() const;
-    void copyFile(const QString &src, const QString &dst);
+    bool copyFile(const QString &src, const QString &dst);
     Task* createETTask();
 };
 

@@ -34,6 +34,25 @@
 
 namespace U2 {
 
+//additional tool validations. Even with other executables 
+class U2CORE_EXPORT ExternalToolValidation {
+public:
+    
+    ExternalToolValidation(const QString& _executableFileName, const QStringList& _arguments, const QString& _expectedMsg, const QStrStrMap& _possibleErrorsDescr = QStrStrMap())
+        :executableFileName(_executableFileName)
+        ,arguments(_arguments)
+        ,expectedMsg(_expectedMsg)
+        ,possibleErrorsDescr(_possibleErrorsDescr)
+    {}
+
+public:
+    QString executableFileName;
+    QStringList arguments;
+    QString expectedMsg;
+    QStrStrMap possibleErrorsDescr;
+
+    static const QString DEFAULT_DESCR_KEY;
+};
 
 class U2CORE_EXPORT ExternalTool : public QObject {
     Q_OBJECT
@@ -53,6 +72,10 @@ public:
     const QString&      getVersion()  const { return version; }
     const QRegExp&      getVersionRegExp()  const { return versionRegExp; }
     const QString&      getToolKitName()  const { return toolKitName; }
+    const QStrStrMap&   getErrorDescriptions()  const { return errorDescriptions; }
+
+    ExternalToolValidation getToolValidation();
+    const QList<ExternalToolValidation>& getToolAdditionalValidations() const { return additionalValidators; }
 
     void setPath(const QString& _path);
     void setValid(bool _isValid);
@@ -76,6 +99,8 @@ protected:
     QRegExp     versionRegExp;
     bool        isValidTool;
     QString     toolKitName;
+    QStrStrMap  errorDescriptions;
+    QList<ExternalToolValidation> additionalValidators;
 
 }; // ExternalTool
 
@@ -98,6 +123,12 @@ protected:
     QString                         temporaryDirectory;
 
 }; // ExternalToolRegistry
+
+class U2CORE_EXPORT DefaultExternalToolValidations{
+public:
+    static ExternalToolValidation pythonValidation();
+    static ExternalToolValidation rValidation();
+};
 
 } //namespace
 #endif // U2_EXTERNAL_TOOL_REGISTRY_H

@@ -49,6 +49,10 @@ void ConductGOSupport::initialize() {
     validationArguments << "--version";
 
     versionRegExp=QRegExp(executableFileName + "\\d+\\.\\d+");
+
+    additionalValidators<<DefaultExternalToolValidations::pythonValidation();
+    additionalValidators<<DefaultExternalToolValidations::rValidation();
+
 }
 
 } // U2

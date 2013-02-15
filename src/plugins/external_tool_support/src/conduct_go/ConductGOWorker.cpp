@@ -225,7 +225,7 @@ QString ConductGOPrompter::composeRichDoc() {
  
     res.append(tr("Uses annotations from <u>%1</u> as gene list to conduct GO.").arg(annUrl));
    
-    res.append(tr(" Outputs all result files in <u>%1</u> directory").arg(dir));
+    res.append(tr(" Outputs all result files to <u>%1</u> directory").arg(dir));
     res.append(".");
 
     return res;

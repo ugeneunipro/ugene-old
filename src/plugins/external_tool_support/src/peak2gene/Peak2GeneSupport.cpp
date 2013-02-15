@@ -61,6 +61,9 @@ void Peak2GeneSupport::initialize() {
         U2DataPath* dp1 = new U2DataPath(ENTREZ_TRANSLATION_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+"cistrome/geneIdTranslations");
         dpr->registerEntry(dp1);
     }
+
+    additionalValidators<<DefaultExternalToolValidations::pythonValidation();
+
 }
 
 } // U2

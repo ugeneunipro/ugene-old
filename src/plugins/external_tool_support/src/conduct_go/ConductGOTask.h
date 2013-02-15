@@ -64,11 +64,12 @@ private:
     ExternalToolLogParser *logParser;
 
     static const QString BASE_DIR_NAME;
+    static const QString BASE_SUBDIR_NAME;
     static const QString TREAT_NAME;
 
 private:
     Document* createDoc(const QList<SharedAnnotationData>& annData, const QString& name);
-    void copyFile(const QString &src, const QString &dst);
+    bool copyFile(const QString &src, const QString &dst);
 };
 
 class ConductGOLogParser : public ExternalToolLogParser {

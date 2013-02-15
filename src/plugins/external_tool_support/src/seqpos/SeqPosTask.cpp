@@ -43,6 +43,7 @@
 namespace U2 {
 
 const QString SeqPosTask::BASE_DIR_NAME("SeqPos_tmp");
+const QString SeqPosTask::BASE_SUBDIR_NAME("SeqPos");
 const QString SeqPosTask::TREAT_NAME("treatment");
 
 SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, const QList<SharedAnnotationData>& _treatAnn)
@@ -85,6 +86,12 @@ void SeqPosTask::prepare() {
     UserAppsSettings *appSettings = AppContext::getAppSettings()->getUserAppsSettings();
     workingDir = appSettings->createCurrentProcessTemporarySubDir(stateInfo, BASE_DIR_NAME);
     CHECK_OP(stateInfo, );
+
+    settings.outDir = GUrlUtils::createDirectory(
+        settings.outDir + "/" + BASE_SUBDIR_NAME,
+        "_", stateInfo);
+    CHECK_OP(stateInfo, );
+
 
     treatDoc = createDoc(treatAnn, TREAT_NAME);
     CHECK_OP(stateInfo, );

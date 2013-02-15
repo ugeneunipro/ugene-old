@@ -71,7 +71,7 @@ private:
 
 private:
     Document* createDoc(const QList<SharedAnnotationData>& annData, const QString& name);
-    void copyFile(const QString &src, const QString &dst);
+    bool copyFile(const QString &src, const QString &dst);
 };
 
 class ConservationPlotLogParser : public ExternalToolLogParser {

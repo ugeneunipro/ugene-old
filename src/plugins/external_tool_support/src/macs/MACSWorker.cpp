@@ -574,7 +574,7 @@ QString MACSPrompter::composeRichDoc() {
  
     res.append(tr(" to call peaks."));
  
-    res.append(tr(" Outputs all files in <u>%1</u> directory").arg(dir));
+    res.append(tr(" Outputs all files to <u>%1</u> directory").arg(dir));
     if (getParameter(WIGGLE_OUTPUT).toBool()){
         res.append(tr(" and pileup with <u>%1</u> span").arg(wiggleSpan));
     }
