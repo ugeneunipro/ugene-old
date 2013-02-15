@@ -30,8 +30,8 @@
 #include <QtCore/QMutex>
 
 
-class QHttp;
-class QHttpResponseHeader;
+class QNetworkAccessManager;
+class QNetworkReply;
 class QMutex;
 
 namespace U2 {
@@ -69,13 +69,13 @@ class HttpFileAdapter: public IOAdapter {
     Q_OBJECT
 public:
     HttpFileAdapter(HttpFileAdapterFactory* f, QObject* o = NULL);
-    ~HttpFileAdapter() {if (isOpen()) close();}
+    ~HttpFileAdapter();
 
     virtual bool open(const GUrl& url, IOAdapterMode m);
 
-    bool open(const QString& host, const QString & what, const QNetworkProxy & p, quint16 port=80, bool https=false);
+    bool open(const QUrl& url, const QNetworkProxy & p);
 
-    virtual bool isOpen() const {return (bool)http;}
+    virtual bool isOpen() const {return (bool)reply;}
 
     virtual void close();
 
@@ -112,22 +112,20 @@ private:
     int begin_ptr; //pointer to the first byte of data in first chunk
     int end_ptr; //pointer to the first free byte in last chunk 
 
-    QHttp * http;
+    QNetworkAccessManager * netManager;
+    QNetworkReply * reply;
     bool badstate;
     bool is_downloaded;
     int downloaded;
     int total;
 
-//    QMutex condmut;
-//    QWaitCondition cond;
     QMutex rwmut;
     QEventLoop loop;
     GUrl gurl;
 private slots:
-    void add_data( const QHttpResponseHeader & resp );
-    void done( bool error );
-    void state( int state ); //debug only
-    void progress( int done, int total );
+    void add_data();
+    void done();
+    void progress( qint64 done, qint64 total );
 };
 
 

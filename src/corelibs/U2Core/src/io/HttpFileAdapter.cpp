@@ -30,7 +30,9 @@
 #include <QtCore/QMutex>
 #include <QtCore/QWaitCondition>
 
-#include <QtNetwork/QHttp>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkProxy>
 
 namespace U2 {
@@ -62,12 +64,18 @@ QNetworkProxy HttpFileAdapterFactory::getProxyByUrl( const QUrl & url ) const {
 
 
 HttpFileAdapter::HttpFileAdapter(HttpFileAdapterFactory* factory, QObject* o) 
-: IOAdapter(factory, o), is_cached(false), begin_ptr(-1), end_ptr(0), 
-http(0), badstate(false), is_downloaded(false), downloaded(0), total(0)
+: IOAdapter(factory, o), is_cached(false), begin_ptr(-1), end_ptr(0),
+  badstate(false), is_downloaded(false), downloaded(0), total(0)
 {
     chunk_list.push_back( QByteArray(CHUNKSIZE, char(0)) );
-}
+    netManager=new QNetworkAccessManager(this);
 
+}
+HttpFileAdapter::~HttpFileAdapter(){
+     if (isOpen()) close();
+     delete netManager;
+     netManager=NULL;
+}
 bool HttpFileAdapter::open(const GUrl& url_, IOAdapterMode m) {
     SAFE_POINT (m == IOAdapterMode_Read, QString("Illegal IO mode: %1").arg(m), false);
 
@@ -84,37 +92,28 @@ bool HttpFileAdapter::open(const GUrl& url_, IOAdapterMode m) {
 
     HttpFileAdapterFactory * f = qobject_cast<HttpFileAdapterFactory*> ( getFactory() ); 
     QNetworkProxy proxy = f->getProxyByUrl(url);
-
-    return open( url.host(), url.path() + "?" + QString(url.encodedQuery()), proxy, 
-        -1 == url.port() ? (https ? 443:80) : url.port(), https );
+    return open( url, proxy );
 }
 
-bool HttpFileAdapter::open( const QString& host, const QString & what, const QNetworkProxy & p, quint16 port, bool https )
+bool HttpFileAdapter::open( const QUrl& url, const QNetworkProxy & p)
 {
     SAFE_POINT(!isOpen(), "Adapter is already opened!", false);
 
-    if( http ) {
+    if( reply ) {
         close();
     }
-    http = new QHttp( host,  https ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttp, port );
-
-    //printf( "using proxy: %s on port %d\n", p.hostName().toStdString().c_str(), p.port() );
-    http->setProxy( p );
-    
-    connect( http, SIGNAL(dataReadProgress(int,int)), this, SLOT(progress(int,int)), Qt::DirectConnection );
-//    connect( http, SIGNAL(stateChanged(int)), this, SLOT(state(int)), Qt::DirectConnection );
-    connect( http, SIGNAL(done(bool)), this, SLOT(done(bool)), Qt::DirectConnection );
-    connect( http, SIGNAL(readyRead(const QHttpResponseHeader&)), this, SLOT(add_data(const QHttpResponseHeader&)), Qt::DirectConnection );
-    
-    if(what.length()>MAX_GET_LENGTH) {
-        QString path = what.split("?").first();
-        QByteArray params = what.split("?").last().toAscii();
-        http->post(path,params);
+    netManager->setProxy(p);
+    if(url.toString().length()>MAX_GET_LENGTH) {
+        QNetworkRequest netRequest(url);
+        reply=netManager->post(netRequest, url.encodedQuery());
     }
     else {
-        http->get( what );
+        QNetworkRequest netRequest(url);
+        reply=netManager->get(netRequest);
     }
-
+    connect( reply, SIGNAL(readyRead()), this, SLOT(add_data()), Qt::DirectConnection );
+    connect( reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(progress(qint64,qint64)), Qt::DirectConnection );//+
+    connect( reply, SIGNAL(finished()), this, SLOT(done()), Qt::DirectConnection );
     return true;
 }
 
@@ -124,10 +123,10 @@ void HttpFileAdapter::close() {
     if (!isOpen()) {
         return;
     }
-    assert( http );
-    http->abort();
-    delete http;
-    http = 0;
+    assert( reply );
+    reply->abort();
+    delete reply;
+    reply = 0;
     gurl = GUrl();
     init();
 }
@@ -195,6 +194,7 @@ qint64 HttpFileAdapter::left() const {
 }
 
 void HttpFileAdapter::init() {
+    reply=NULL;
     badstate = false;
     is_downloaded = false;
     is_cached= false;
@@ -203,14 +203,14 @@ void HttpFileAdapter::init() {
     loop.exit();
 }
 
-void HttpFileAdapter::add_data( const QHttpResponseHeader & )
+void HttpFileAdapter::add_data()
 {
     rwmut.lock();
     if( isEmpty() ) {
         begin_ptr = 0;
     }
     int howmuch = CHUNKSIZE - end_ptr; 
-    int got = http->read( chunk_list.last().data() + end_ptr, howmuch );
+    int got = reply->read( chunk_list.last().data() + end_ptr, howmuch );
 
     if( got < 0 ) {
         badstate = true;
@@ -220,8 +220,8 @@ void HttpFileAdapter::add_data( const QHttpResponseHeader & )
     }
     else {
         do {
-            QByteArray newchunck( CHUNKSIZE, (char)0 );    
-            got = http->read( newchunck.data(), CHUNKSIZE );
+            QByteArray newchunck( CHUNKSIZE, (char)0 );
+            got = reply->read( newchunck.data(), CHUNKSIZE );
 
             if( got < 0  ) {
                 badstate = true;
@@ -300,10 +300,10 @@ qint64 HttpFileAdapter::waitData( qint64 until )
     return qMin( until, stored() );
 }
 
-void HttpFileAdapter::done( bool error )
+void HttpFileAdapter::done()
 {
     is_downloaded = true;
-    badstate = error;
+    badstate = (reply->error() != QNetworkReply::NoError);
     loop.exit();
 }
 
@@ -312,12 +312,7 @@ int HttpFileAdapter::getProgress() const
     return (total ? (int)( 100 * (float)downloaded / total ) : -1);
 }
 
-void HttpFileAdapter::state( int state ) {
-    Q_UNUSED(state);
-//    printf("downloading state: %d\n", state);
-}
-
-void HttpFileAdapter::progress( int done_, int total_ )
+void HttpFileAdapter::progress( qint64 done_, qint64 total_ )
 {
     downloaded = done_;
     total = total_;
