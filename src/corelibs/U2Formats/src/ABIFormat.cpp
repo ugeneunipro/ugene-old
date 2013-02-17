@@ -89,6 +89,33 @@ Document* ABIFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     return doc;
 }
 
+DNASequence *ABIFormat::loadSequence(IOAdapter *io, U2OpStatus &os)
+{
+    CHECK_EXT((io != NULL) && (io->isOpen() == true), os.setError(L10N::badArgument("IO adapter")), NULL);
+    QByteArray readBuff;
+    QByteArray block(BUFF_SIZE, 0);
+    quint64 len = 0;
+    while ((len=io->readBlock(block.data(),BUFF_SIZE)) > 0) {
+        readBuff.append(QByteArray(block.data(), len));
+        CHECK_EXT(readBuff.size() <= CHECK_MB, os.setError(L10N::errorFileTooLarge(io->getURL())), NULL);
+    }
+
+    SeekableBuf sf;
+    sf.head = readBuff.constData();
+    sf.pos = 0;
+    sf.size = readBuff.size();
+
+    DNASequence* seq = new DNASequence();
+    DNAChromatogram cd;
+
+    if (!loadABIObjects(&sf, (*seq), cd)) {
+        os.setError(tr("Failed to load chromotogram from ABI file %1").arg(io->toString()));
+    }
+
+    return seq;
+
+}
+
 /*
 * Copyright (c) Medical Research Council 1994. All rights reserved.
 *
@@ -395,6 +422,28 @@ static void replace_nl(char *string) {
 
 Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os) {
 
+    DNASequence dna;
+    DNAChromatogram cd;
+
+    if (!loadABIObjects(fp, dna,cd)) {
+        return NULL;
+    }
+
+    QList<GObject*> objects;
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, dna.getName(), objects, dna, os);
+    CHECK_OP(os, NULL);
+    SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
+    DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, "Chromatogram");
+    objects.append(chromObj);
+    QString seqComment = dna.info.value(DNAInfo::COMMENT).toStringList().join("\n");
+    objects.append(new TextObject(seqComment, "Info"));
+    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
+    chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE));
+    return doc;
+}
+
+bool ABIFormat::loadABIObjects(SeekableBuf* fp, DNASequence &dna, DNAChromatogram &cd)
+{
     float fspacing; /* average base spacing */
     uint numPoints, numBases;
     uint signalO;
@@ -416,18 +465,18 @@ Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter
     /* DATA block numbers for traces, in order of FWO_ */
     int DataCount[4] = {9, 10, 11, 12};
 
-    DNAChromatogram cd;
     QString sequenceName;
     QString sequenceComment;
     QByteArray sequence;
+    DNAQuality quality;
 
     /* Get the index offset */
     if (-1 == getABIIndexOffset(fp, &indexO))
-        return NULL;
+        return false;
 
     /* Get the number of points */
     if (!getABIIndexEntryLW(fp,indexO,DataEntryLabel,DataCount[0], 3,&numPoints))
-        return NULL;
+        return false;
 
     /* Get the number of bases */
     if (!getABIIndexEntryLW(fp,indexO,BaseEntryLabel,1,3,&numBases)) {
@@ -532,65 +581,74 @@ Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter
     /* Read in base confidence values */
     {
     QVector<uchar> conf(numBases);
-    getABIint1(fp, indexO, BaseConfLabel, 1, conf.data(), numBases);
+    int res = getABIint1(fp, indexO, BaseConfLabel, 2, conf.data(), numBases);
 
     /* Read in the bases */
     if (!(getABIIndexEntryLW(fp, indexO, BaseEntryLabel, 1, 5, &baseO) && (SeekBuf(fp, baseO, 0) == 0) )) {
-        return NULL;
+        return false;
     }
 
     sequence = QByteArray(numBases, 0);
     if (!fp->read(sequence.data(), numBases)) {
-        return NULL;
+        return false;
     }
 
-    for (uint i = 0; i < numBases; i++) {
-        switch(sequence[i]) {
-    case 'A':
-    case 'a':
-        cd.prob_A[i] = conf[i];
-        cd.prob_C[i] = 0;
-        cd.prob_G[i] = 0;
-        cd.prob_T[i] = 0;
-        break;
+    QByteArray qualCodes(numBases, 0);
 
-    case 'C':
-    case 'c':
-        cd.prob_A[i] = 0;
-        cd.prob_C[i] = conf[i];
-        cd.prob_G[i] = 0;
-        cd.prob_T[i] = 0;
-        break;
+    if (res != -1 ) {
 
-    case 'G':
-    case 'g':
-        cd.prob_A[i] = 0;
-        cd.prob_C[i] = 0;
-        cd.prob_G[i] = conf[i];
-        cd.prob_T[i] = 0;
-        break;
+        for (uint i = 0; i < numBases; i++) {
+            qualCodes[i] = DNAQuality::encode(conf[i],DNAQualityType_Sanger);
+            switch(sequence[i]) {
+            case 'A':
+            case 'a':
+                cd.prob_A[i] = conf[i];
+                cd.prob_C[i] = 0;
+                cd.prob_G[i] = 0;
+                cd.prob_T[i] = 0;
+                break;
 
-    case 'T':
-    case 't':
-        cd.prob_A[i] = 0;
-        cd.prob_C[i] = 0;
-        cd.prob_G[i] = 0;
-        cd.prob_T[i] = conf[i];
-        break;
+            case 'C':
+            case 'c':
+                cd.prob_A[i] = 0;
+                cd.prob_C[i] = conf[i];
+                cd.prob_G[i] = 0;
+                cd.prob_T[i] = 0;
+                break;
 
-    default:
-        cd.prob_A[i] = 0;
-        cd.prob_C[i] = 0;
-        cd.prob_G[i] = 0;
-        cd.prob_T[i] = 0;
-        break;
-        } 
+            case 'G':
+            case 'g':
+                cd.prob_A[i] = 0;
+                cd.prob_C[i] = 0;
+                cd.prob_G[i] = conf[i];
+                cd.prob_T[i] = 0;
+                break;
+
+            case 'T':
+            case 't':
+                cd.prob_A[i] = 0;
+                cd.prob_C[i] = 0;
+                cd.prob_G[i] = 0;
+                cd.prob_T[i] = conf[i];
+                break;
+
+            default:
+                cd.prob_A[i] = 0;
+                cd.prob_C[i] = 0;
+                cd.prob_G[i] = 0;
+                cd.prob_T[i] = 0;
+                break;
+            }
+        }
     }
+
+    quality.qualCodes = qualCodes;
+
     }
 
     /* Read in the base positions */
     if (-1 == getABIint2(fp, indexO, BasePosEntryLabel, 1, cd.baseCalls.data(), numBases)) {
-        return NULL;
+        return false;
     }
 
     /*
@@ -662,7 +720,7 @@ skip_bases:
                     be_read_int_2(fp, (ushort *)
                     base[baseIndex((char)(fwo_>>8&255))]) &&
                     be_read_int_2(fp, (ushort *)
-                    base[baseIndex((char)(fwo_&255))])) 
+                    base[baseIndex((char)(fwo_&255))]))
                 {
                     sequenceComment.append(QString("SIGN=A=%1,C=%2,G=%3,T=%4\n").arg(A).arg(C).arg(G).arg(T));
                 }
@@ -672,7 +730,7 @@ skip_bases:
         fspacing = 0;
         if (-1 != getABIint4(fp, indexO, SpacingEntryLabel, 1, (uint *)&spacing, 1)) {
             fspacing = int_to_float(spacing);
-            sequenceComment.append(QString("SPAC=%1\n").arg(fspacing)); //-6.2f", 
+            sequenceComment.append(QString("SPAC=%1\n").arg(fspacing)); //-6.2f",
         }
         /* Correction for when spacing is negative. Why does this happen? */
         if (fspacing <= 0) {
@@ -811,19 +869,13 @@ skip_bases:
     cd.traceLength = numPoints;
     assert(cd.A.size() == int(numPoints + 1));
 
-    DNASequence dna(sequenceName, sequence);
+    dna.setName(sequenceName);
+    dna.seq = sequence;
     dna.info.insert(DNAInfo::COMMENT, sequenceComment.split("\n"));
-    
-    QList<GObject*> objects;
-    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, sequenceName, objects, dna, os);
-    CHECK_OP(os, NULL);
-    SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
-    DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, "Chromatogram");
-    objects.append(chromObj);
-    objects.append(new TextObject(sequenceComment, "Info"));
-    Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
-    chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE));
-    return doc;
+    dna.quality = quality;
+
+    return true;
+
 }
 
 }//namespace

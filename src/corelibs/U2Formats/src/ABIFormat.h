@@ -30,6 +30,7 @@ namespace U2 {
 class IOAdapter;
 class SeekableBuf;
 class U2OpStatus;
+class DNAChromatogram;
 
 class U2FORMATS_EXPORT  ABIFormat : public DocumentFormat {
     Q_OBJECT
@@ -45,9 +46,12 @@ public:
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
+    virtual DNASequence* loadSequence(IOAdapter *io, U2OpStatus &ti);
+
     
 private:
     Document* parseABI(const U2DbiRef& dbiRef, SeekableBuf*, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os);
+    bool loadABIObjects(SeekableBuf* fp, DNASequence& seq, DNAChromatogram& cd);
     QString formatName;
 };
 
