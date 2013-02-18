@@ -54,7 +54,6 @@ void SQLiteMsaDbi::initSqlSchema(U2OpStatus& os) {
         " FOREIGN KEY(msa) REFERENCES Msa(object), "
         " FOREIGN KEY(sequence) REFERENCES Sequence(object) )", db, os).execute();
     SQLiteQuery("CREATE INDEX MsaRow_msa_rowId ON MsaRow(msa, rowId)", db, os).execute();
-
     SQLiteQuery("CREATE INDEX MsaRow_length ON MsaRow(length)", db, os).execute();
 
      // Gap info for a MSA row: 
@@ -65,6 +64,7 @@ void SQLiteMsaDbi::initSqlSchema(U2OpStatus& os) {
      // Note! there is invariant: gend - gstart (of the row) == gapEnd - gapStart
     SQLiteQuery("CREATE TABLE MsaRowGap (msa INTEGER NOT NULL, rowId INTEGER NOT NULL, gapStart INTEGER NOT NULL, gapEnd INTEGER NOT NULL, "
         "FOREIGN KEY(rowId) REFERENCES MsaRow(rowId) )", db, os).execute();
+    SQLiteQuery("CREATE INDEX MsaRowGap_msa_rowId ON MsaRowGap(msa, rowId)", db, os).execute();
 }
 
 U2DataId SQLiteMsaDbi::createMsaObject(const QString& folder, const QString& name, const U2AlphabetId& alphabet, U2OpStatus& os) {

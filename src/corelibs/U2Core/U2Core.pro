@@ -165,9 +165,10 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/GAutoDeleteList.h \
            src/util/GUrlUtils.h \
            src/util/IOAdapterUtils.h \
-           src/util/MAlignmentImporter.h \
            src/util/MAlignmentExporter.h \
+           src/util/MAlignmentImporter.h \
            src/util/MsaDbiUtils.h \
+           src/util/MsaRowUtils.h \
            src/util/MSAUtils.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
@@ -304,9 +305,10 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/GAutoDeleteList.cpp \
            src/util/GUrlUtils.cpp \
            src/util/IOAdapterUtils.cpp \
-           src/util/MAlignmentImporter.cpp \
            src/util/MAlignmentExporter.cpp \
+           src/util/MAlignmentImporter.cpp \
            src/util/MsaDbiUtils.cpp \
+           src/util/MsaRowUtils.cpp \
            src/util/MSAUtils.cpp \
            src/util/QVariantUtils.cpp \
            src/util/SequenceUtils.cpp \
@@ -325,4 +327,3 @@ TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
-

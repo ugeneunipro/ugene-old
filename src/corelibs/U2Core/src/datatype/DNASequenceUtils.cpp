@@ -40,6 +40,10 @@ DnaSequencesMatchStatus DNASequenceUtils::compare(const DNASequence& firstSeq, c
 }
 
 void DNASequenceUtils::removeChars(DNASequence& sequence, int startPos, int endPos, U2OpStatus& os) {
+    removeChars(sequence.seq, startPos, endPos, os);
+}
+
+void DNASequenceUtils::removeChars(QByteArray& sequence, int startPos, int endPos, U2OpStatus& os) {
     if ((endPos <= startPos) || (startPos < 0) || (endPos > sequence.length())) {
         coreLog.trace(QString("Internal error: incorrect parameters was passed to DNASequenceUtils::removeChars,"
             "startPos '%1', endPos '%2', sequence length '%3'!").arg(startPos).arg(endPos).arg(sequence.length()));
@@ -47,7 +51,7 @@ void DNASequenceUtils::removeChars(DNASequence& sequence, int startPos, int endP
         return;
     }
 
-    sequence.seq.remove(startPos, endPos - startPos);
+    sequence.remove(startPos, endPos - startPos);
 }
 
 void DNASequenceUtils::toUpperCase(DNASequence& sequence) {

@@ -25,6 +25,7 @@
 #include "MAlignmentInfo.h"
 
 #include <U2Core/DNASequence.h>
+#include <U2Core/MsaRowUtils.h>
 #include <U2Core/U2Msa.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2Region.h>
@@ -249,11 +250,7 @@ private:
 
 
 inline int MAlignmentRow::getGapsLength() const {
-    int length = 0;
-    foreach (U2MsaGap elt, gaps) {
-        length += elt.gap;
-    }
-    return length;
+    return MsaRowUtils::getGapsLength(gaps);
 }
 
 inline int MAlignmentRow::getCoreStart() const {
@@ -267,7 +264,7 @@ inline int MAlignmentRow::getCoreEnd() const {
 
 
 inline int MAlignmentRow::getRowLength() const {
-    return sequence.length() + getGapsLength();
+    return MsaRowUtils::getRowLength(sequence.seq, gaps);
 }
 
 inline int MAlignmentRow::getUngappedLength() const {

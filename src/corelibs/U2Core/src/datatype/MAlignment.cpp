@@ -276,39 +276,7 @@ void MAlignmentRow::setSequence(const DNASequence& newSequence) {
 }
 
 char MAlignmentRow::charAt(int pos) const {
-    if (pos < 0 || pos >= getRowLength()) {
-        return MAlignment_GapChar;
-    }
-
-    int gapsLength = 0;
-    for (int i = 0; i < gaps.count(); ++i) {
-        const U2MsaGap& gap = gaps[i];
-
-        // Current gap is somewhere further in the row
-        if (gap.offset > pos) {
-            break;
-        }
-        // Inside the gap
-        else if ((pos >= gap.offset) && (pos < gap.offset + gap.gap)) {
-            return MAlignment_GapChar;
-        }
-        // Go further in the row, calculating the current gaps length
-        else {
-            gapsLength += gap.gap;
-        }
-    }
-
-    if (pos >= gapsLength + sequence.length()) {
-        return MAlignment_GapChar;
-    }
-
-    int index = pos - gapsLength;
-    bool indexIsInBounds = (index < sequence.length()) && (index >= 0);
-
-    SAFE_POINT(indexIsInBounds,
-        QString("Internal error detected in MAlignmentRow::charAt,"
-        " row length is '%1', gapsLength is '%2'!").arg(getRowLength()).arg(index), MAlignment_GapChar);
-    return sequence.seq.at(index);
+    return MsaRowUtils::charAt(sequence.seq, gaps, pos);
 }
 
 void MAlignmentRow::insertGaps(int pos, int count, U2OpStatus& os) {
@@ -480,32 +448,11 @@ bool MAlignmentRow::isRowContentEqual(const MAlignmentRow& row) const {
 }
 
 int MAlignmentRow::getUngappedPosition(int pos) const {
-    if (MAlignment_GapChar != charAt(pos)) {
-        int gapsLength = 0;
-        foreach (U2MsaGap gap, gaps) {
-            if (gap.offset < pos) {
-                gapsLength += gap.gap;
-            }
-            else {
-                break;
-            }
-        }
-        return (pos - gapsLength);
-    }
-    else {
-        return -1;
-    }
+    return MsaRowUtils::getUngappedPosition(sequence.seq, gaps, pos);
 }
 
 qint64 MAlignmentRow::getRowLengthWithoutTrailing() const {
-    int rowLengthWithoutTrailingGap = getRowLength();
-    if (!gaps.isEmpty()) {
-        if (MAlignment_GapChar == charAt(getRowLength() - 1)) {
-            U2MsaGap lastGap = gaps.last();
-            rowLengthWithoutTrailingGap -= lastGap.gap;
-        }
-    }
-    return rowLengthWithoutTrailingGap;
+    return MsaRowUtils::getRowLengthWithoutTrailing(sequence.seq, gaps);
 }
 
 void MAlignmentRow::getStartAndEndSequencePositions(int pos, int count, int& startPosInSeq, int& endPosInSeq) {

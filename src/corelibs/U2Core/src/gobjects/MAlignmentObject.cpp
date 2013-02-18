@@ -291,32 +291,20 @@ void MAlignmentObject::setGObjectName(const QString& newName) {
 
 void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int nRows, bool removeEmptyRows, bool changeAlignment) {
     SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
-
+    QList<qint64> rowIds;
     MAlignment msa = getMAlignment();
-
-    msa.removeRegion(startPos, startRow, nBases, nRows, removeEmptyRows);
-    MAlignmentModInfo mi;
-    if (false == changeAlignment) {
-        mi.middleState = true;
+    SAFE_POINT(nRows > 0 && startRow >= 0 && startRow + nRows - 1 < msa.getNumRows(), "Invalid parameters!", );
+    QList<MAlignmentRow>::ConstIterator it = msa.getRows().begin() + startRow;
+    QList<MAlignmentRow>::ConstIterator end = it + nRows;
+    for (; it != end; it++) {
+        rowIds << it->getRowId();
     }
-    setMAlignment(msa, mi);
 
     U2OpStatus2Log os;
-    MsaDbiUtils::trim(entityRef, os);
+    MsaDbiUtils::removeRegion(entityRef, rowIds, startPos, nBases, os);
     SAFE_POINT_OP(os, );
 
-    //QList<qint64> rowIds;
-    //SAFE_POINT(nRows > 0 && startRow >= 0 && startRow + nRows < msa.getNumRows(), "Invalid parameters!", );
-    //for (int i = startRow; i < startRow + nRows; ++i) {
-    //    qint64 rowId = msa.getRow(i).getRowId();
-    //    rowIds.append(rowId);
-    //}
-
-    //U2OpStatus2Log os;
-    //MsaDbiUtils::removeRegion(entityRef, rowIds, startPos, nBases, os);
-    //SAFE_POINT_OP(os, );
-
-    //updateCachedMAlignment();
+    updateCachedMAlignment();
 }
 
 void MAlignmentObject::renameRow(int rowIdx, const QString& newName) {

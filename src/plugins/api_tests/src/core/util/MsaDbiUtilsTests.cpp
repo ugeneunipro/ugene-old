@@ -28,6 +28,7 @@
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/MsaDbiUtils.h>
+#include <U2Core/MAlignmentExporter.h>
 
 namespace U2 {
 
@@ -104,6 +105,56 @@ U2EntityRef MsaDbiUtilsTestUtils::initTestAlignment(const int rowCount) {
 
         rows << row;
     }
+
+    msaDbi->addRows(msaId, rows, os);
+    CHECK_OP(os, U2EntityRef());
+
+    U2EntityRef msaRef(msaDbi->getRootDbi()->getDbiRef(), msaId);
+    return msaRef;
+}
+
+U2MsaRow MsaDbiUtilsTestUtils::addRow(const U2DataId &msaId, qint64 num, const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os) {
+    U2Sequence sequence;
+    sequence.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    sequence.visualName = name;
+    sequenceDbi->createSequenceObject(sequence, "", os);
+    CHECK_OP(os, U2MsaRow());
+
+    U2Region reg(0, 0);
+    sequenceDbi->updateSequenceData(sequence.id, reg, seq, QVariantMap(), os);
+    CHECK_OP(os, U2MsaRow());
+
+    U2MsaRow row;
+    row.rowId = num;
+    row.sequenceId = sequence.id;
+    row.gstart = 0;
+    row.gend = seq.length();
+    row.gaps = gaps;
+    return row;
+}
+
+U2EntityRef MsaDbiUtilsTestUtils::removeRegionTestAlignment() {
+    SAFE_POINT(NULL != msaDbi, "MsaDbi is NULL", U2EntityRef());
+    SAFE_POINT(NULL != sequenceDbi, "SequenceDbi is NULL", U2EntityRef());
+
+    U2OpStatusImpl os;
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_OP(os, U2EntityRef());
+
+    QList<U2MsaRow> rows;
+    rows << addRow(msaId, 0, "1", "TAAGACTTCTAA", QList<U2MsaGap>() << U2MsaGap(12, 2), os);
+    rows << addRow(msaId, 1, "2", "TAAGCTTACTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
+    rows << addRow(msaId, 2, "3", "TTAGTTTATTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
+    rows << addRow(msaId, 3, "4", "TCAGTCTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    rows << addRow(msaId, 4, "5", "TCAGTTTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    rows << addRow(msaId, 5, "6", "TTAGTCTACTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    rows << addRow(msaId, 6, "7", "TCAGATTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    rows << addRow(msaId, 7, "8", "TTAGATTGCTA", QList<U2MsaGap>() << U2MsaGap(1, 1) << U2MsaGap(12, 2), os);
+    rows << addRow(msaId, 8, "9", "TTAGATTATTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
+    rows << addRow(msaId, 9, "10", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    rows << addRow(msaId, 10, "11", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    rows << addRow(msaId, 11, "12", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    rows << addRow(msaId, 12, "13", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
 
     msaDbi->addRows(msaId, rows, os);
     CHECK_OP(os, U2EntityRef());
@@ -818,6 +869,193 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, moveRows_InvalidRowList) {
     if (!(!os.isCanceled() && os.hasError() && os.getError() == "Invalid row list")) {
         CHECK_TRUE(false, "Invalid row list");
     }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_oneRow) {
+    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2OpStatusImpl os;
+
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
+    QList<qint64> rowIds;
+    rowIds << 1;
+    MsaDbiUtils::removeRegion(msaRef, rowIds, 8, 3, os);
+    CHECK_NO_ERROR(os);
+
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(14, al.getLength(), "Wrong msa length");
+
+    QByteArray row0 = al.getRow(0).toByteArray(al.getLength(), os);
+    QByteArray row1 = al.getRow(1).toByteArray(al.getLength(), os);
+    QByteArray row2 = al.getRow(2).toByteArray(al.getLength(), os);
+    CHECK_EQUAL(QString("TAAGACTTCTAA--"), QString(row0), "Wrong msa row");
+    CHECK_EQUAL(QString("TAAGCTTA------"), QString(row1), "Wrong msa row");
+    CHECK_EQUAL(QString("TTAGTTTATTA---"), QString(row2), "Wrong msa row");
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_threeRows) {
+    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2OpStatusImpl os;
+
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
+    QList<qint64> rowIds;
+    rowIds << 1 << 8 << 5;
+    MsaDbiUtils::removeRegion(msaRef, rowIds, 2, 8, os);
+    CHECK_NO_ERROR(os);
+
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(14, al.getLength(), "Wrong msa length");
+
+    QByteArray row1 = al.getRow(1).toByteArray(al.getLength(), os);
+    QByteArray row5 = al.getRow(5).toByteArray(al.getLength(), os);
+    QByteArray row8 = al.getRow(8).toByteArray(al.getLength(), os);
+    CHECK_EQUAL(QString("TAA-----------"), QString(row1), "Wrong msa row");
+    CHECK_EQUAL(QString("T-ACTA--------"), QString(row5), "Wrong msa row");
+    CHECK_EQUAL(QString("TTA-----------"), QString(row8), "Wrong msa row");
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_lengthChange) {
+    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2OpStatusImpl os;
+
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
+    QList<qint64> rowIds;
+    rowIds << 3 << 4 << 5 << 6;
+    MsaDbiUtils::removeRegion(msaRef, rowIds, 5, 1, os);
+    CHECK_NO_ERROR(os);
+
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(13, al.getLength(), "Wrong msa length");
+
+    QByteArray row3 = al.getRow(3).toByteArray(al.getLength(), os);
+    QByteArray row4 = al.getRow(4).toByteArray(al.getLength(), os);
+    QByteArray row5 = al.getRow(5).toByteArray(al.getLength(), os);
+    QByteArray row6 = al.getRow(6).toByteArray(al.getLength(), os);
+    CHECK_EQUAL(QString("T--CAGTCTATTA"), QString(row3), "Wrong msa row");
+    CHECK_EQUAL(QString("T--CAGTTTATTA"), QString(row4), "Wrong msa row");
+    CHECK_EQUAL(QString("T--TAGTCTACTA"), QString(row5), "Wrong msa row");
+    CHECK_EQUAL(QString("T--CAGATTATTA"), QString(row6), "Wrong msa row");
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_allRows) {
+    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2OpStatusImpl os;
+
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
+    QList<qint64> rowIds;
+    rowIds << 0 << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12;
+    MsaDbiUtils::removeRegion(msaRef, rowIds, 0, 3, os);
+    CHECK_NO_ERROR(os);
+
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(11, al.getLength(), "Wrong msa length");
+
+    QByteArray row0 = al.getRow(0).toByteArray(al.getLength(), os);
+    QByteArray row1 = al.getRow(1).toByteArray(al.getLength(), os);
+    QByteArray row2 = al.getRow(2).toByteArray(al.getLength(), os);
+    QByteArray row3 = al.getRow(3).toByteArray(al.getLength(), os);
+    QByteArray row4 = al.getRow(4).toByteArray(al.getLength(), os);
+    QByteArray row5 = al.getRow(5).toByteArray(al.getLength(), os);
+    QByteArray row6 = al.getRow(6).toByteArray(al.getLength(), os);
+    QByteArray row7 = al.getRow(7).toByteArray(al.getLength(), os);
+    QByteArray row8 = al.getRow(8).toByteArray(al.getLength(), os);
+    QByteArray row9 = al.getRow(9).toByteArray(al.getLength(), os);
+    QByteArray row10 = al.getRow(10).toByteArray(al.getLength(), os);
+    QByteArray row11 = al.getRow(11).toByteArray(al.getLength(), os);
+    QByteArray row12 = al.getRow(12).toByteArray(al.getLength(), os);
+    CHECK_EQUAL(QString("GACTTCTAA--"), QString(row0), "Wrong msa row");
+    CHECK_EQUAL(QString("GCTTACTA---"), QString(row1), "Wrong msa row");
+    CHECK_EQUAL(QString("GTTTATTA---"), QString(row2), "Wrong msa row");
+    CHECK_EQUAL(QString("CA-GTCTATTA"), QString(row3), "Wrong msa row");
+    CHECK_EQUAL(QString("CA-GTTTATTA"), QString(row4), "Wrong msa row");
+    CHECK_EQUAL(QString("TA-GTCTACTA"), QString(row5), "Wrong msa row");
+    CHECK_EQUAL(QString("CA-GATTATTA"), QString(row6), "Wrong msa row");
+    CHECK_EQUAL(QString("AGATTGCTA--"), QString(row7), "Wrong msa row");
+    CHECK_EQUAL(QString("GATTATTA---"), QString(row8), "Wrong msa row");
+    CHECK_EQUAL(QString("-----------"), QString(row9), "Wrong msa row");
+    CHECK_EQUAL(QString("-----------"), QString(row10), "Wrong msa row");
+    CHECK_EQUAL(QString("-----------"), QString(row11), "Wrong msa row");
+    CHECK_EQUAL(QString("-----------"), QString(row12), "Wrong msa row");
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_all) {
+    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2OpStatusImpl os;
+
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
+    QList<qint64> rowIds;
+    rowIds << 0 << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12;
+    MsaDbiUtils::removeRegion(msaRef, rowIds, 0, 14, os);
+    CHECK_NO_ERROR(os);
+
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(0, al.getLength(), "Wrong msa length");
+
+    QByteArray row0 = al.getRow(0).toByteArray(al.getLength(), os);
+    QByteArray row12 = al.getRow(12).toByteArray(al.getLength(), os);
+    CHECK_EQUAL(QString(""), QString(row0), "Wrong msa row");
+    CHECK_EQUAL(QString(""), QString(row12), "Wrong msa row");
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_negativePos) {
+    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2OpStatusImpl os;
+
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
+    QList<qint64> rowIds;
+    rowIds << 0;
+    U2OpStatusImpl tmpOs;
+    MsaDbiUtils::removeRegion(msaRef, rowIds, -1, 14, tmpOs);
+    CHECK_TRUE(tmpOs.hasError(), "No error occurred for negative pos");
+
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(14, al.getLength(), "Wrong msa length");
+
+    QByteArray row0 = al.getRow(0).toByteArray(al.getLength(), os);
+    CHECK_EQUAL(QString("TAAGACTTCTAA--"), QString(row0), "Wrong msa row");
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongId) {
+    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2OpStatusImpl os;
+
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
+    QList<qint64> rowIds;
+    rowIds << 20;
+    U2OpStatusImpl tmpOs;
+    MsaDbiUtils::removeRegion(msaRef, rowIds, 0, 5, tmpOs);
+    CHECK_TRUE(tmpOs.hasError(), "No error occurred for negative pos");
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongCount) {
+    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    U2OpStatusImpl os;
+
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
+    QList<qint64> rowIds;
+    rowIds << 0;
+    U2OpStatusImpl tmpOs;
+    MsaDbiUtils::removeRegion(msaRef, rowIds, 0, 0, tmpOs);
+    CHECK_TRUE(tmpOs.hasError(), "No error occurred for negative pos");
+
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(14, al.getLength(), "Wrong msa length");
+
+    QByteArray row0 = al.getRow(0).toByteArray(al.getLength(), os);
+    CHECK_EQUAL(QString("TAAGACTTCTAA--"), QString(row0), "Wrong msa row");
 }
 
 }   // namespace

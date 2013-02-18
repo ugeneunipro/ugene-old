@@ -46,12 +46,17 @@ public:
     static U2EntityRef initTestAlignment(const int);
     static QStringList getRowNames(U2EntityRef msaRef);
 
+    static U2EntityRef removeRegionTestAlignment();
+
 private:
     static const QString alignmentName;
     static TestDbiProvider dbiProvider;
     static const QString& MSA_DB_URL;
     static U2MsaDbi* msaDbi;
     static U2SequenceDbi* sequenceDbi;
+
+private:
+    static U2MsaRow addRow(const U2DataId &msaId, qint64 num, const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os);
 };
 
 
@@ -104,6 +109,15 @@ DECLARE_TEST(MsaDbiUtilsUnitTests, moveRows_threeBlocksWithTwiceGluing);
 DECLARE_TEST(MsaDbiUtilsUnitTests, moveRows_UnorderedList);
 DECLARE_TEST(MsaDbiUtilsUnitTests, moveRows_InvalidRowList);
 
+DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_oneRow);
+DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_threeRows);
+DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_lengthChange);
+DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_allRows);
+DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_all);
+DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_negativePos);
+DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongId);
+DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongCount);
+
 }   // namespace
 
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, moveRows_oneLineInMiddle);
@@ -122,5 +136,14 @@ DECLARE_METATYPE(MsaDbiUtilsUnitTests, moveRows_threeBlocksWithOnceGluing);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, moveRows_threeBlocksWithTwiceGluing);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, moveRows_UnorderedList);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, moveRows_InvalidRowList);
+
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_oneRow);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_threeRows);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_lengthChange);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_allRows);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_all);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_negativePos);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_wrongId);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_wrongCount);
 
 #endif // _U2_MSA_DBI_UTILS_UNIT_TESTS_H_

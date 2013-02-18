@@ -168,10 +168,12 @@ private:
      * Calculates start and end position in the sequence,
      * depending on the start position in the row and the 'count' character from it
      */
-    static void getStartAndEndSequencePositions(const MAlignmentRow& alRow, qint64 pos, qint64 count, qint64& startPosInSeq, qint64& endPosInSeq);
+    static void getStartAndEndSequencePositions(const QByteArray &seq, const QList<U2MsaGap> &gaps,
+        qint64 pos, qint64 count,
+        qint64& startPosInSeq, qint64& endPosInSeq);
 
     /** Removes chars/gaps from the row */
-    static void removeCharsFromRow(MAlignmentRow& alRow, qint64 pos, qint64 count);
+    static void removeCharsFromRow(QByteArray &seq, QList<U2MsaGap> &gaps, qint64 pos, qint64 count);
 
     /**
      * Crops a row to region from 'pos' to 'pos' + 'count',
