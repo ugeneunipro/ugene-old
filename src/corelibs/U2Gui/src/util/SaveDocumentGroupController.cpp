@@ -78,22 +78,14 @@ DocumentFormat* SaveDocumentGroupController::getFormatToSave() const {
 
 void SaveDocumentGroupController::sl_saveButtonClicked() {
     //prepare filters
-    QString filter = DialogUtils::prepareDocumentsFileFilter(conf.dfc, false);
+    QString filter = DialogUtils::prepareDocumentsFileFilter(getFormatToSave()->getFormatId(), false);
 
     // find the default one
     QStringList extList = getFormatToSave()->getSupportedDocumentFileExtensions();
-    QString selectedFilterExt = "*." + extList.first();
-    QString selectedFilter;
-    foreach (QString filterLine, filter.split(";;")) {
-        if (filterLine.contains(selectedFilterExt)) {
-            selectedFilter = filterLine;
-            break;
-        }
-    }
 
     // show the dialog
 	LastUsedDirHelper lod;
-	lod.url = QFileDialog::getSaveFileName(conf.parentWidget, conf.saveTitle, lod, filter, &selectedFilter);
+	lod.url = QFileDialog::getSaveFileName(conf.parentWidget, conf.saveTitle, lod, filter);
 	if (lod.url.isEmpty()) {
 		return;
 	}
