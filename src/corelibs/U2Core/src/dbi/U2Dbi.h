@@ -129,6 +129,8 @@ enum U2DbiFeature {
     /** DBI provides optimized algorithm for sorting attributes */
     U2DbiFeature_AttributeSorting               = 400,
 
+    /** DBI supports undo/redo of changing operations */
+    U2DbiFeature_UndoRedo                       = 500,
 };
 
 

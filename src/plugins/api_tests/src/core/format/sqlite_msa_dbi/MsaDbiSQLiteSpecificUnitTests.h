@@ -36,18 +36,21 @@ class U2SequenceDbi;
 class MsaSQLiteSpecificTestData {
 public:
     static void init();
-
     static void shutdown();
 
     static SQLiteDbi* getSQLiteDbi();
-    static U2MsaDbi* getMsaDbi();
-    static U2SequenceDbi* getSequenceDbi();
+
+    static qint64 getModStepsNum(const U2DataId& objId, U2OpStatus& os);
+
+    static U2DataId createTestMsa(bool enableModTracking, U2OpStatus& os);
+
+    static const QString TEST_MSA_NAME;
 
 private:
+    static U2MsaRow addRow(const U2DataId &msaId, const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os);
+
     static TestDbiProvider dbiProvider;
-    static const QString& MSA_SQLITE_DB_URL;
-    static U2MsaDbi* msaDbi;
-    static U2SequenceDbi* sequenceDbi;
+    static const QString& SQLITE_MSA_DB_URL;
     static SQLiteDbi* sqliteDbi;
 };
 
@@ -57,19 +60,23 @@ private:
 // after some operations.
 ///////////////////////////////////////////////////////////////
 
+
 /**
- * Remove a row from a MSA.
- * Verifies SQLiteDbi structure after a row was deleted:
- *   1) No gaps for the row
- *   2) The sequence was deleted
- *   3) The sequence object was deleted
+ * Update a MSA name.
+ *   ^ noModTrack - modifications tracking is not enabled for the MSA.
+ *   ^ undo       - modifications tracking is enabled, check the "undo" operation.
+ *   ^ redo       - modifications tracking is enabled, check the "redo" operation.
  */
-DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_redo);
+
 
 } // namespace
 
-
-DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRow);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_redo);
 
 
 #endif

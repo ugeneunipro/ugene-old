@@ -43,25 +43,29 @@ void SQLiteModDbi::initSqlSchema(U2OpStatus& os) {
     //   details  - detailed description of the object modification
     SQLiteQuery("CREATE TABLE ModStep (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
         " object INTEGER NOT NULL,"
+        " otype INTEGER NOT NULL,"
+        " oextra BLOB NOT NULL,"
         " version INTEGER NOT NULL,"
-        " modType TEXT NOT NULL,"
+        " modType INTEGER NOT NULL,"
         " details TEXT NOT NULL,"
         " FOREIGN KEY(object) REFERENCES Object(id) )", db, os).execute();
     SQLiteQuery("CREATE INDEX ModStep_object ON ModStep(object)", db, os).execute();
 }
 
-U2ModStep SQLiteModDbi::getModStep(qint64 id, U2OpStatus& os) {
+U2ModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os) {
     U2ModStep res;
-    SQLiteQuery q("SELECT object, version, modType, details FROM ModStep WHERE id = ?1", db, os);
+    SQLiteQuery q("SELECT id, object, otype, oextra, version, modType, details FROM ModStep WHERE object = ?1 AND version = ?2", db, os);
     CHECK_OP(os, res);
 
-    q.bindInt64(1, id);
+    q.bindDataId(1, objectId);
+    q.bindInt64(2, trackVersion);
+
     if (q.step()) {
-        res.id = id;
-        res.objectId = q.getDataIdExt(0);
-        res.version = q.getInt64(1);
-        res.modType = q.getBlob(2);
-        res.details = q.getBlob(3);
+        res.id = q.getInt32(0);
+        res.objectId = q.getDataIdExt(1);
+        res.version = q.getInt64(4);
+        res.modType = q.getInt64(5);
+        res.details = q.getBlob(6);
         q.ensureDone();
     }
     else if (!os.hasError()) {
@@ -72,14 +76,25 @@ U2ModStep SQLiteModDbi::getModStep(qint64 id, U2OpStatus& os) {
 }
 
 void SQLiteModDbi::createModStep(U2ModStep& step, U2OpStatus& os) {
-    SQLiteQuery q("INSERT INTO ModStep(object, version, modType, details) VALUES(?1, ?2, ?3, ?4)", db, os);
+    SQLiteQuery q("INSERT INTO ModStep(object, otype, oextra, version, modType, details) VALUES(?1, ?2, ?3, ?4, ?5, ?6)", db, os);
     CHECK_OP(os, );
 
     q.bindDataId(1, step.objectId);
-    q.bindInt64(2, step.version);
-    q.bindString(3, step.modType);
-    q.bindString(4, step.details);
+    q.bindType(2, SQLiteUtils::toType(step.objectId));
+    q.bindBlob(3, SQLiteUtils::toDbExtra(step.objectId));
+    q.bindInt64(4, step.version);
+    q.bindInt64(5, step.modType);
+    q.bindString(6, step.details);
     step.id = q.insert();
+}
+
+void SQLiteModDbi::removeModsWithGreaterVersion(const U2DataId& objectId, qint64 version, U2OpStatus& os) {
+    SQLiteQuery q("DELETE FROM ModStep WHERE object = ?1 AND version >= ?2", db, os);
+    CHECK_OP(os, );
+
+    q.bindDataId(1, objectId);
+    q.bindInt64(2, version);
+    q.execute();
 }
 
 void SQLiteModDbi::removeObjectMods(const U2DataId& objectId, U2OpStatus& os) {

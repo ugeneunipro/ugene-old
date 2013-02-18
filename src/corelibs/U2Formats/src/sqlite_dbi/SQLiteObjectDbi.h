@@ -126,6 +126,15 @@ public:
     */
     virtual void moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder, const QString& toFolder, U2OpStatus& os);
 
+     /**
+        Undo the last update operation for the object.
+     */
+    virtual void undo(const U2DataId& objId, U2OpStatus& os);
+
+    /**
+        Redo the last update operation for the object.
+     */
+    virtual void redo(const U2DataId& objId, U2OpStatus& os);
    
 
     //////////////////////////////////////////////////////////////////////////
@@ -180,6 +189,9 @@ public:
 
     virtual void initSqlSchema(U2OpStatus& os);
 
+    /** Prepares modification details for updating object name */
+    QByteArray getModDetailsForUpdateObjectName(const QString& oldName, const QString& newName);
+
 private:
 
     /** Removes object from database, returns 'true' if object is completely erased */
@@ -192,6 +204,23 @@ private:
 
     /** Updates versions */
     void onFolderUpdated(const QString& folder);
+
+    /** Decrements an object version by 1 */
+    void decrementVersion(const U2DataId& id, U2OpStatus& os);
+
+    ///////////////////////////////////////////////////////////
+    // Undo methods does not modify object version
+    void undoUpdateObjectName(const U2DataId& id, const QByteArray& modDetails, U2OpStatus& os);
+
+    // Redo methods parse the modification details and call the corresponding method
+    // (i.e. change version, save further modSteps, etc.)
+    void redoUpdateObjectName(const U2DataId& id, const QByteArray& modDetails, U2OpStatus& os);
+
+    // Helper modification details parse methods
+    bool parseUpdateObjectNameDetails(const QByteArray& modDetails, QString& oldName, QString& newName);
+
+    ///////////////////////////////////////////////////////////
+    static const QByteArray CURRENT_MOD_DETAILS_VERSION;
 };
 
 
@@ -219,6 +248,31 @@ public:
     virtual void updateCrossReference(const U2CrossDatabaseReference& reference, U2OpStatus& os);
 
     virtual void initSqlSchema(U2OpStatus& os);
+};
+
+/** Helper class to track info about an object */
+class U2FORMATS_EXPORT ModTrackAction {
+public:
+    ModTrackAction(SQLiteDbi* dbi, const U2DataId& objectId);
+
+    /**
+        Verifies if modification tracking is enabled for the object.
+        If it is, gets the object version.
+        If there are tracking steps with greater or equal version (e.g. left from "undo"), removes these records.
+        Returns the type of modifications  tracking for the object.
+     */
+    U2TrackModType prepareTracking(U2OpStatus& os);
+
+    /**
+        If modifications tracking is enabled, save a modification step to the database.
+     */
+    void saveTrack(qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
+
+private:
+    SQLiteDbi* dbi;
+    U2DataId objectId;
+    U2TrackModType trackMod;
+    qint64 objectVersionToTrack;
 };
 
 } //namespace

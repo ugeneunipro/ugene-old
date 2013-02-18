@@ -3,6 +3,8 @@
 <unittest>
 
 MsaDbiSQLiteSpecificUnitTests
-+ removeRow
++ updateMsaName_noModTrack
++ updateMsaName_undo
++ updateMsaName_redo
 
 </unittest>

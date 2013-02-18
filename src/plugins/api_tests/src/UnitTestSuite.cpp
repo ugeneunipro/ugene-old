@@ -8,6 +8,9 @@
 #include "core/dbi/sequence/SequenceDbiUnitTests.h"
 #include "core/dbi/features/FeaturesTableObjectUnitTest.h"
 
+#include "core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h"
+
+
 namespace U2 {
 
 class GTestBuilder {
@@ -104,6 +107,7 @@ void UnitTestSuite::cleanup() {
 	AssemblyTestData::shutdown();
 	SequenceTestData::shutdown();
     FeaturesTableObjectTestData::shutdown();
+    MsaSQLiteSpecificTestData::shutdown();
 
 	if (passed){
 		taskLog.info("Test passed: " + QString::number(passed));

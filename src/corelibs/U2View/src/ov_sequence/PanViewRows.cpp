@@ -121,12 +121,6 @@ int PVRowsManager::getAnnotationRowIdx(Annotation* a) const {
     }
 }
 
-const QString& PVRowsManager::getRowKey(int rowNum) const {
-    SAFE_POINT(rowNum >= 0 && rowNum < rows.size(), "Bad row number", "");
-    PVRowData* r = rows[rowNum];
-    return r->key;
-}
-
 int PVRowsManager::getNumAnnotationsInRow(int rowNum) const {
     SAFE_POINT(rowNum >= 0 && rowNum < rows.size(), "Row number out of range", 0);
     PVRowData* r = rows[rowNum];

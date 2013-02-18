@@ -147,6 +147,16 @@ public:
     */
     virtual void moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder, const QString& toFolder, U2OpStatus& os) = 0;
 
+     /**
+        Undo the last update operation for the object.
+     */
+    virtual void undo(const U2DataId& msaId, U2OpStatus& os) = 0;
+
+    /**
+        Redo the last update operation for the object.
+     */
+    virtual void redo(const U2DataId& objId, U2OpStatus& os) = 0;
+
 };
 
 } //namespace

@@ -141,6 +141,14 @@ public:
     virtual void setTrackModType(const U2DataId& objectId, U2TrackModType trackModType, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteModifications, getRootDbi(), os);
     }
+
+    virtual void undo(const U2DataId& msaId, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_UndoRedo, getRootDbi(), os);
+    }
+
+    virtual void redo(const U2DataId& objId, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_UndoRedo, getRootDbi(), os);
+    }
 };
 
 /** Default no-op implementation for write  methods of U2SequenceDbi */

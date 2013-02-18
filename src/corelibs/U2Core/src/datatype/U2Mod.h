@@ -27,6 +27,26 @@
 
 namespace U2 {
 
+/** Modification types */
+class U2CORE_EXPORT U2ModType {
+public:
+    /** Object */
+    static const qint64 objUpdatedName        = 1;
+
+    /** MSA modification types */
+    static const qint64 msaUpdatedAlphabet    = 3001;
+    static const qint64 msaAddedRows          = 3002;
+    static const qint64 msaAddedRow           = 3003;
+    static const qint64 msaRemovedRows        = 3004;
+    static const qint64 msaRemovedRow         = 3005;
+    static const qint64 msaUpdatedRowContent  = 3006;
+    static const qint64 msaUpdatedGapModel    = 3007;
+    static const qint64 msaSetNewRowsOrder    = 3008;
+
+    static bool isObjectModType(qint64 modType) { return modType > 0 && modType < 999; }
+    static bool isMsaModType(qint64 modType) { return modType >= 3000 && modType < 3100; }
+};
+
 /** Single modification of a dbi object */
 class U2CORE_EXPORT U2ModStep {
 public:
@@ -40,7 +60,7 @@ public:
     qint64         version;
 
     /** Type of the object modification */
-    QByteArray     modType;
+    qint64         modType;
 
     /** Detailed description of the modification */
     QByteArray     details;

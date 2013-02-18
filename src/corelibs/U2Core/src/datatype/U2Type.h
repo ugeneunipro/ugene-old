@@ -79,9 +79,6 @@ public:
     /**  Assembly read */
     static const U2DataType AssemblyRead            = 1100;
 
-    /**  MSA */
-    static const U2DataType MsaRow                  = 1200;
-
     /** Sequence feature */
     static const U2DataType Feature                 = 1300;
 

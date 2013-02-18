@@ -63,7 +63,6 @@ public:
     int getAnnotationRowIdx(Annotation* a) const;
     PVRowData* getAnnotationRow(Annotation* a) const {return rowByAnnotation.value(a, NULL);}
     
-    const QString& getRowKey(int rowNum) const;
     int getNumAnnotationsInRow(int rowNum) const;
 
 private:

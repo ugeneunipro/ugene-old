@@ -371,6 +371,170 @@ void SQLiteObjectDbi::moveObjects(const QList<U2DataId>& objectIds, const QStrin
     removeObjects(objectIds, fromFolder, os);
 }
 
+void SQLiteObjectDbi::decrementVersion(const U2DataId& id, U2OpStatus& os) {
+    SQLiteQuery q("UPDATE Object SET version = version - 1 WHERE id = ?1", db, os);
+    CHECK_OP(os, );
+
+    q.bindDataId(1, id);
+    q.update(1);
+}
+
+const QByteArray SQLiteObjectDbi::CURRENT_MOD_DETAILS_VERSION = QByteArray::number(0);
+
+QByteArray SQLiteObjectDbi::getModDetailsForUpdateObjectName(const QString& oldName, const QString& newName) {
+    return CURRENT_MOD_DETAILS_VERSION + "&"
+        + oldName.toLatin1() + "&"
+        + newName.toLatin1();
+}
+
+void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
+    QString errorDescr = SQLiteL10N::tr("Can't undo an operation for the object!");
+
+    // Get the object
+    U2Object obj;
+    getObject(obj, objId, os);
+    if (os.hasError()) {
+        coreLog.trace("Error getting an object: " + os.getError());
+        os.setError(errorDescr);
+        return;
+    }
+
+    // Verify that modifications tracking is enabled for the object
+    if (TrackOnUpdate != obj.trackModType) {
+        coreLog.trace("Called 'undo' for an object without modifications tracking enabled!");
+        os.setError(errorDescr);
+        return;
+    }
+
+    // Get the modification step for the previous version
+    U2ModStep lastModStep = dbi->getModDbi()->getModStep(objId, obj.version - 1, os);
+    if (os.hasError()) {
+        coreLog.trace("Error getting the modStep for an object: " + os.getError());
+        os.setError(errorDescr);
+        return;
+    }
+    SAFE_POINT(lastModStep.version == obj.version - 1, "Unexpected modStep version!", );
+
+    // Call an appropriate "undo" depending on the object type
+    if (U2ModType::isMsaModType(lastModStep.modType)) {
+        dbi->getSQLiteMsaDbi()->undo(objId, lastModStep.modType, lastModStep.details, os);
+    }
+    else if (U2ModType::isObjectModType(lastModStep.modType)) {
+        switch (lastModStep.modType) {
+            case U2ModType::objUpdatedName:
+                undoUpdateObjectName(objId, lastModStep.details, os);
+                CHECK_OP(os, );
+                break;
+            default:
+                coreLog.trace(QString("Can't undo an unknown operation: '%1'!").arg(QString::number(lastModStep.modType)));
+                os.setError(errorDescr);
+                return;
+        }
+    }
+
+    // Decrement the object version
+    assert(obj.version > 0);
+    decrementVersion(objId, os);
+    if (os.hasError()) {
+        coreLog.trace("Can't decrement an object version!");
+        os.setError(errorDescr);
+        return;
+    }
+}
+
+void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
+    QString errorDescr = SQLiteL10N::tr("Can't undo an operation for the object!");
+
+    // Get the object
+    U2Object obj;
+    getObject(obj, objId, os);
+    if (os.hasError()) {
+        coreLog.trace("Error getting an object: " + os.getError());
+        os.setError(errorDescr);
+        return;
+    }
+
+    // Verify that modifications tracking is enabled for the object
+    if (TrackOnUpdate != obj.trackModType) {
+        coreLog.trace("Called 'undo' for an object without modifications tracking enabled!");
+        os.setError(errorDescr);
+        return;
+    }
+
+    // Get the modification step for the current version
+    U2ModStep lastModStep = dbi->getModDbi()->getModStep(objId, obj.version, os);
+    if (os.hasError()) {
+        coreLog.trace("Error getting the modStep for an object: " + os.getError());
+        os.setError(errorDescr);
+        return;
+    }
+    SAFE_POINT(lastModStep.version == obj.version, "Unexpected modStep version!", );
+
+    // Call an appropriate "undo" depending on the object type
+    if (U2ModType::isMsaModType(lastModStep.modType)) {
+        dbi->getSQLiteMsaDbi()->redo(objId, lastModStep.modType, lastModStep.details, os);
+    }
+    else if (U2ModType::isObjectModType(lastModStep.modType)) {
+        switch (lastModStep.modType) {
+            case U2ModType::objUpdatedName:
+                redoUpdateObjectName(objId, lastModStep.details, os);
+                break;
+            default:
+                coreLog.trace(QString("Can't undo an unknown operation: '%1'!").arg(QString::number(lastModStep.modType)));
+                os.setError(errorDescr);
+                return;
+        }
+    }
+}
+
+void SQLiteObjectDbi::undoUpdateObjectName(const U2DataId& id, const QByteArray& modDetails, U2OpStatus& os) {
+    // Parse the input
+    QString oldName;
+    QString newName;
+    bool ok = parseUpdateObjectNameDetails(modDetails, oldName, newName);
+    if (!ok) {
+        os.setError("An error occurred during updating an object name!");
+        return;
+    }
+
+    // Update the value
+    SQLiteQuery q("UPDATE Object SET name = ?1 WHERE id = ?2", db, os);
+    CHECK_OP(os, );
+
+    q.bindString(1, oldName);
+    q.bindDataId(2, id);
+    q.update(1);
+}
+
+void SQLiteObjectDbi::redoUpdateObjectName(const U2DataId& id, const QByteArray& modDetails, U2OpStatus& os) {
+    QString oldName;
+    QString newName;
+    bool ok = parseUpdateObjectNameDetails(modDetails, oldName, newName);
+    if (!ok) {
+        os.setError("An error occurred during updating an object name!");
+        return;
+    }
+
+    U2Object obj;
+    getObject(obj, id, os);
+    CHECK_OP(os, );
+
+    obj.visualName = newName;
+    updateObject(obj, os);
+    CHECK_OP(os, );
+}
+
+bool SQLiteObjectDbi::parseUpdateObjectNameDetails(const QByteArray& modDetails, QString& oldName, QString& newName) {
+    QList<QByteArray> modDetailsParts = modDetails.split('&');
+    SAFE_POINT(3 == modDetailsParts.count(), "Invalid modDetails!", false);
+    SAFE_POINT(QByteArray("0") == modDetailsParts[0], "Invalid modDetails version!", false);
+    SAFE_POINT(!QString(modDetailsParts[1]).isEmpty(), "Invalid modDetails!", false);
+    SAFE_POINT(!QString(modDetailsParts[2]).isEmpty(), "Invalid modDetails!", false);
+
+    oldName = modDetailsParts[1];
+    newName = modDetailsParts[2];
+    return true;
+}
 
 void SQLiteObjectDbi::removeParent(const U2DataId& parentId, const U2DataId& childId, bool removeDeadChild, U2OpStatus& os) {
     SQLiteQuery q("DELETE FROM Parent WHERE parent = ?1 AND child = ?2", db, os);
@@ -492,13 +656,21 @@ U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder,
 }
 
 void SQLiteObjectDbi::getObject(U2Object& object, const U2DataId& id, U2OpStatus& os) {
-    SQLiteQuery q("SELECT Object.name, Object.version FROM Object WHERE Object.id = ?1", db, os);
+    SQLiteQuery q("SELECT name, version, trackMod FROM Object WHERE id = ?1", db, os);
     q.bindDataId(1, id);
     if (q.step()) {
         object.id = id;
         object.dbiId = dbi->getDbiId();
         object.visualName = q.getString(0);
         object.version = q.getInt64(1);
+        int trackMod = q.getInt32(2);
+        if (trackMod >= 0 && trackMod < TRACK_MOD_TYPE_NR_ITEMS) {
+            object.trackModType = (U2TrackModType)trackMod;
+        }
+        else {
+            os.setError("Incorrect trackMod value in an object!");
+            object.trackModType = NoTrack;
+        }
         q.ensureDone();
     } else if (!os.hasError()) {
         os.setError(SQLiteL10N::tr("Object not found."));
@@ -613,5 +785,42 @@ void SQLiteCrossDatabaseReferenceDbi::updateCrossReference(const U2CrossDatabase
     q.bindDataId(5, reference.id);
     q.execute();    
 }
+
+
+ModTrackAction::ModTrackAction(SQLiteDbi* _dbi, const U2DataId& _objectId)
+    : dbi(_dbi),
+      objectId(_objectId),
+      trackMod(NoTrack)
+{
+}
+
+U2TrackModType ModTrackAction::prepareTracking(U2OpStatus& os) {
+    trackMod = dbi->getObjectDbi()->getTrackModType(objectId, os);
+    CHECK_OP(os, NoTrack);
+
+    if (TrackOnUpdate == trackMod) {
+        objectVersionToTrack = dbi->getObjectDbi()->getObjectVersion(objectId, os);
+        CHECK_OP(os, trackMod);
+
+        dbi->getModDbi()->removeModsWithGreaterVersion(objectId, objectVersionToTrack, os);
+        CHECK_OP(os, trackMod);
+    }
+
+    return trackMod;
+}
+
+void ModTrackAction::saveTrack(qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
+    SAFE_POINT(!modDetails.isEmpty(), "Empty modification details!", );
+    if (TrackOnUpdate == trackMod) {
+        U2ModStep modStep;
+        modStep.objectId = objectId;
+        modStep.version = objectVersionToTrack;
+        modStep.modType = modType;
+        modStep.details = modDetails;
+
+        dbi->getModDbi()->createModStep(modStep, os);
+    }
+}
+
 
 } //namespace

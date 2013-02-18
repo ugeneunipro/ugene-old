@@ -72,6 +72,7 @@ public:
 
     /**
      * Creates rows (and gap models for them) in the database.
+     * Ignores 'length' of the 'rows' (recalculates them).
      * The rows are appended to the end of the MSA.
      * Assigns MSA as a parent for all the sequences.
      * If a row ID equals "-1", sets a valid ID to the passed U2MsaRow instances.
@@ -84,6 +85,7 @@ public:
 
     /**
      * Creates a new row and gap model records in the database.
+     * Ignores 'row.length' (recalculates it).
      * If 'posInMsa' equals to '-1' the row is appended to the end of the MSA,
      * otherwise it is inserted to the specified position and all positions are updated.
      * Assigns MSA as a parent for the sequence.
@@ -152,6 +154,12 @@ public:
      */
     virtual void setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& rowIds, U2OpStatus& os);
 
+    /** Undo the operation for the MSA. */
+    void undo(const U2DataId& msaId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
+
+    /** Redo the operation for the MSA. */
+    void redo(const U2DataId& msaId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
+
 private:
     /** Returns length stored in Msa table */
     qint64 getMsaLength(const U2DataId& msaId, U2OpStatus& os);
@@ -218,8 +226,35 @@ private:
     /** Required for store modification track of removed rows  */
     QByteArray getRemovedRowDetails(const U2MsaRow& row);
 
+    ///////////////////////////////////////////////////////////
+    // Undo methods
+    void undoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void undoAddRows(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void undoAddRow(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void undoRemoveRows(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void undoRemoveRow(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void undoUpdateRowContent(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void undoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void undoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+
+    // Redo methods
+    void redoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void redoAddRows(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void redoAddRow(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void redoRemoveRows(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void redoRemoveRow(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void redoUpdateRowContent(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void redoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+    void redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
+
+    // Helper modification details parse methods
+    bool parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, QString alphabet);
+
+
+    ///////////////////////////////////////////////////////////
+
     /** Version of description in a ModStep details */
-    static QByteArray CURRENT_MOD_DETAILS_VERSION;
+    static const QByteArray CURRENT_MOD_DETAILS_VERSION;
 };
 
 

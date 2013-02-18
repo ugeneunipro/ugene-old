@@ -23,29 +23,26 @@
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/U2MsaDbi.h>
-#include <U2Core/U2SequenceDbi.h>
-#include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/SQLiteDbi.h>
+#include <U2Formats/SQLiteObjectDbi.h>
 
 
 namespace U2 {
 
 TestDbiProvider MsaSQLiteSpecificTestData::dbiProvider = TestDbiProvider();
-const QString& MsaSQLiteSpecificTestData::MSA_SQLITE_DB_URL("msa-sqlite-dbi.ugenedb");
-U2MsaDbi* MsaSQLiteSpecificTestData::msaDbi = NULL;
-U2SequenceDbi* MsaSQLiteSpecificTestData::sequenceDbi = NULL;
+const QString& MsaSQLiteSpecificTestData::SQLITE_MSA_DB_URL("sqlite-msa-dbi.ugenedb");
 SQLiteDbi* MsaSQLiteSpecificTestData::sqliteDbi = NULL;
+
+const QString MsaSQLiteSpecificTestData::TEST_MSA_NAME = "Test alignment";
 
 void MsaSQLiteSpecificTestData::init() {
     SAFE_POINT(NULL == sqliteDbi, "sqliteDbi has already been initialized!", );
-    SAFE_POINT(NULL == msaDbi, "msaDbi has been already initialized!", );
-    SAFE_POINT(NULL == sequenceDbi, "sequenceDbi has been already initialized!", );
 
     // Get URL
-    bool ok = dbiProvider.init(MSA_SQLITE_DB_URL, false);
-    SAFE_POINT(ok, "Dbi provider failed to initialize in MsaTestData::init()!",);
+    bool ok = dbiProvider.init(SQLITE_MSA_DB_URL, false);
+    SAFE_POINT(ok, "Dbi provider failed to initialize!",);
 
     U2Dbi* dbi = dbiProvider.getDbi();
     QString url = dbi->getDbiRef().dbiId;
@@ -59,23 +56,18 @@ void MsaSQLiteSpecificTestData::init() {
     sqliteDbi->init(initProperties, QVariantMap(), os);
     SAFE_POINT_OP(os, );
 
-    msaDbi = sqliteDbi->getMsaDbi();
-    SAFE_POINT(NULL != msaDbi, "Failed to get msaDbi!",);
-
-    sequenceDbi = sqliteDbi->getSequenceDbi();
-    SAFE_POINT(NULL != sequenceDbi, "Failed to get sequenceDbi!",);
+    // Get msa IDs
+    QList<U2DataId> ids = sqliteDbi->getObjectDbi()->getObjects(U2Type::Msa, 0, U2_DBI_NO_LIMIT, os);
+    SAFE_POINT_OP(os,);
 }
 
 void MsaSQLiteSpecificTestData::shutdown() {
     if (NULL != sqliteDbi) {
-        SAFE_POINT(NULL != msaDbi, "msaDbi must also be not NULL on this step!", );
-        SAFE_POINT(NULL != sequenceDbi, "sequenceDbi must also be not NULL on this step!", );
-
+        U2OpStatusImpl os;
+        sqliteDbi->shutdown(os);
+        SAFE_POINT_OP(os, );
         delete sqliteDbi;
-
         sqliteDbi = NULL;
-        msaDbi = NULL;
-        sequenceDbi = NULL;
     }
 }
 
@@ -86,118 +78,152 @@ SQLiteDbi* MsaSQLiteSpecificTestData::getSQLiteDbi() {
     return sqliteDbi;
 }
 
-U2MsaDbi* MsaSQLiteSpecificTestData::getMsaDbi() {
-    if (NULL == msaDbi) {
-        init();
-    }
-    return msaDbi;
+qint64 MsaSQLiteSpecificTestData::getModStepsNum(const U2DataId& objId, U2OpStatus& os) {
+    SQLiteQuery qModSteps("SELECT COUNT(*) FROM ModStep WHERE object = ?1", sqliteDbi->getDbRef(), os);
+    qModSteps.bindDataId(1, objId);
+    return qModSteps.selectInt64();
 }
 
-U2SequenceDbi* MsaSQLiteSpecificTestData::getSequenceDbi() {
-    if (NULL == sequenceDbi) {
-        init();
-    }
-    return sequenceDbi;
+U2MsaRow MsaSQLiteSpecificTestData::addRow(const U2DataId &msaId, const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os) {
+    U2Sequence sequence;
+    sequence.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    sequence.visualName = name;
+    sqliteDbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
+    CHECK_OP(os, U2MsaRow());
+
+    U2Region reg(0, 0);
+    sqliteDbi->getSequenceDbi()->updateSequenceData(sequence.id, reg, seq, QVariantMap(), os);
+    CHECK_OP(os, U2MsaRow());
+
+    U2MsaRow row;
+    row.rowId = -1;
+    row.sequenceId = sequence.id;
+    row.gstart = 0;
+    row.gend = seq.length();
+    row.gaps = gaps;
+
+    sqliteDbi->getMsaDbi()->addRow(msaId, -1, row, os);
+    CHECK_OP(os, U2MsaRow());
+    return row;
 }
 
-
-IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow) {
-    U2OpStatusImpl os;
-    U2MsaDbi* msaDbi = MsaSQLiteSpecificTestData::getMsaDbi();
-
+U2DataId MsaSQLiteSpecificTestData::createTestMsa(bool enableModTracking, U2OpStatus& os) {
     // Create an alignment
-    U2DataId msaId = msaDbi->createMsaObject("", "Test name", BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
-    CHECK_NO_ERROR(os);
+    U2AlphabetId alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    U2DataId msaId = sqliteDbi->getMsaDbi()->createMsaObject("", TEST_MSA_NAME, alphabet, os);
+    CHECK_OP(os, U2DataId());
 
-    // Create sequences
-    U2SequenceDbi* sequenceDbi = MsaSQLiteSpecificTestData::getSequenceDbi();
-    U2Sequence seq1;
-    U2Sequence seq2;
-    sequenceDbi->createSequenceObject(seq1, "", os);
-    CHECK_NO_ERROR(os);
-    sequenceDbi->createSequenceObject(seq2, "", os);
-    CHECK_NO_ERROR(os);
+    // The alignment has the following rows:
+    // T-AAGAC-TTCTA
+    // TAAGC--TACTA
+    addRow(msaId, "1", "TAAGACTTCTA", QList<U2MsaGap>() << U2MsaGap(1, 1) << U2MsaGap(7, 1), os);
+    addRow(msaId, "2", "TAAGCTACTA", QList<U2MsaGap>() << U2MsaGap(5, 2), os);
 
-    // Add rows
-    U2MsaRow row1;
-    row1.rowId = 0;
-    row1.sequenceId = seq1.id;
-    row1.gstart = 0;
-    row1.gend = 5;
+    if (enableModTracking) {
+        sqliteDbi->getObjectDbi()->setTrackModType(msaId, TrackOnUpdate, os);
+        CHECK_OP(os, U2DataId());
+    }
 
-    U2MsaGap row1gap1(0, 2);
-    U2MsaGap row1gap2(3, 1);
-    QList<U2MsaGap> row1gaps;
-    row1gaps << row1gap1 << row1gap2;
+    return msaId;
+}
 
-    row1.gaps = row1gaps;
 
-    U2MsaRow row2;
-    row2.rowId = 1;
-    row2.sequenceId = seq2.id;
-    row2.gstart = 2;
-    row2.gend = 4;
-
-    U2MsaGap row2gap(1, 2);
-    QList<U2MsaGap> row2gaps;
-    row2gaps << row2gap;
-
-    row2.gaps = row2gaps;
-
-    QList<U2MsaRow> rows;
-    rows << row1 << row2;
-
-    msaDbi->addRows(msaId, rows, os);
-    CHECK_NO_ERROR(os);
-
-    // Remove the first row
-    QList<qint64> rowsToRemove;
-    rowsToRemove << row1.rowId;
-
-    msaDbi->removeRows(msaId, rowsToRemove, os);
-    CHECK_NO_ERROR(os);
-
-    // Get the number of rows
-    qint64 actualNumOfRows = msaDbi->getNumOfRows(msaId, os);
-    CHECK_EQUAL(1, actualNumOfRows, "number of rows");
-
-    // Get the rows
-    QList<U2MsaRow> actualRows = msaDbi->getRows(msaId, os);
-    CHECK_NO_ERROR(os);
-    CHECK_EQUAL(1, actualRows.count(), "number of rows");
-
-    const U2MsaRow& actualRow = actualRows[0];
-    CHECK_EQUAL(1, actualRow.rowId, "row id");
-    CHECK_EQUAL(seq2.id, actualRow.sequenceId, "row sequence id");
-    CHECK_EQUAL(2, actualRow.gstart, "row global start");
-    CHECK_EQUAL(4, actualRow.gend, "row global end");
-    CHECK_EQUAL(1, actualRow.gaps.count(), "row gaps");
-    U2MsaGap actualRowGap = actualRow.gaps[0];
-    CHECK_EQUAL(1, actualRowGap.offset, "row gap offset");
-    CHECK_EQUAL(2, actualRowGap.gap, "row gap length");
-
-    // Verify SQLite structure is correct
-    //
+IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack) {
+    U2OpStatusImpl os;
     SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createTestMsa(false, os);
+    CHECK_NO_ERROR(os);
 
-    // Verify that gaps of the removed row were removed
-    SQLiteQuery qGaps("SELECT COUNT(*) FROM MsaRowGap WHERE msa = ?1 AND rowId = ?2", sqliteDbi->getDbRef(), os);
-    qGaps.bindDataId(1, msaId);
-    qGaps.bindInt64(2, row1.rowId);
-    qint64 actualGapsNumber = qGaps.selectInt64();
-    CHECK_EQUAL(0, actualGapsNumber, "removed row gaps number");
+    // Get current version
+    int objVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
 
-    // Verify that sequence of the removed row was removed
-    SQLiteQuery qSeq("SELECT COUNT(*) FROM Sequence WHERE object = ?1", sqliteDbi->getDbRef(), os);
-    qSeq.bindDataId(1, row1.sequenceId);
-    qint64 actualSeqNumber = qSeq.selectInt64();
-    CHECK_EQUAL(0, actualSeqNumber, "sequence");
+    // Rename the msa
+    QString newName = "Renamed alignment";
+    sqliteDbi->getMsaDbi()->updateMsaName(msaId, newName, os);
+    CHECK_NO_ERROR(os);
 
-    // Verify that the sequence object was also removed
-    SQLiteQuery qSeqObj("SELECT COUNT(*) FROM Object WHERE id = ?1", sqliteDbi->getDbRef(), os);
-    qSeqObj.bindDataId(1, row1.sequenceId);
-    qint64 actualSeqObjNumber = qSeqObj.selectInt64();
-    CHECK_EQUAL(0, actualSeqObjNumber, "sequence object");
+    // Verify the msa has been renamed
+    U2Msa msaObj = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(msaObj.visualName, newName, "name");
+
+    // Verify the version has been incremented
+    int versionAfterUpdate = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(objVersion + 1, versionAfterUpdate, "version");
+
+    // Verify that there is no modification steps
+    qint64 actualModStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(0, actualModStepsNum, "mod steps num");
+}
+
+IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_undo) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    QString msaName = MsaSQLiteSpecificTestData::TEST_MSA_NAME;
+    U2DataId msaId = MsaSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current version
+    int objVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Rename the msa
+    QString newName = "Renamed alignment";
+    sqliteDbi->getMsaDbi()->updateMsaName(msaId, newName, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify the modification step
+    U2ModStep modStep = sqliteDbi->getModDbi()->getModStep(msaId, objVersion, os);
+    QString expectedModDetails = "0&" + msaName + "&" + newName;
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(msaId, modStep.objectId, "object id");
+    CHECK_EQUAL(objVersion, modStep.version, "version in mod step");
+    CHECK_EQUAL(U2ModType::objUpdatedName, modStep.modType, "mod step type");
+    CHECK_EQUAL(expectedModDetails, QString(modStep.details), "mod step details");
+
+    // Undo msa renaming
+    sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify the object name and version has been restored
+    U2Msa msaObjAfterUndo = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(msaName, msaObjAfterUndo.visualName, "name after undo");
+    CHECK_EQUAL(objVersion, msaObjAfterUndo.version, "version after undo");
+}
+
+IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_redo) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    QString msaName = MsaSQLiteSpecificTestData::TEST_MSA_NAME;
+    U2DataId msaId = MsaSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current version
+    int objVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Rename the msa
+    QString newName = "Renamed alignment";
+    sqliteDbi->getMsaDbi()->updateMsaName(msaId, newName, os);
+    CHECK_NO_ERROR(os);
+
+    // Undo msa renaming
+    sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Redo msa renaming
+    sqliteDbi->getSQLiteObjectDbi()->redo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify the object name and version has been restored
+    U2Msa msaObjAfterUndo = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(newName, msaObjAfterUndo.visualName, "name after undo/redo");
+    CHECK_EQUAL(objVersion + 1, msaObjAfterUndo.version, "version after undo/redo");
 }
 
 } // namespace
