@@ -373,7 +373,7 @@ void censor(void)
   do {
     if (timesseen[i-1])
       if (!(mre || (mr && (2*(*timesseen[i-1]) > ntrees))
-                || (ml && ((*timesseen[i-1]) > mlfrac*ntrees))
+                || (ml && ((*timesseen[i-1]) >= int(mlfrac*ntrees+0.5)))
                 || (strict && ((*timesseen[i-1]) == ntrees)))) {
         free(grouping[i - 1]);
         free(timesseen[i - 1]);
