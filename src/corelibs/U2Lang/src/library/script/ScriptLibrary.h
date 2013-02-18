@@ -90,6 +90,13 @@ public:
     static QScriptValue filterByQualifier(QScriptContext *ctx, QScriptEngine *engine);
     static QScriptValue addQualifier(QScriptContext *ctx, QScriptEngine *engine);
     static QScriptValue getLocation(QScriptContext *ctx, QScriptEngine *engine);
+    static QScriptValue hasAnnotationName(QScriptContext *ctx, QScriptEngine *engine);
+
+    // ================== Files =======================
+    static QScriptValue writeFile(QScriptContext *ctx, QScriptEngine *engine);
+    static QScriptValue appendFile(QScriptContext *ctx, QScriptEngine *engine);
+    static QScriptValue readFile(QScriptContext *ctx, QScriptEngine *engine);
+    
     
     // ================== Misc =======================
     static QScriptValue debugOut(QScriptContext *ctx, QScriptEngine *);

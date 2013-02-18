@@ -91,6 +91,11 @@ void WorkflowScriptLibrary::initEngine(WorkflowScriptEngine *engine) {
     foo.setProperty("addQualifier", engine->newFunction(addQualifier));
     foo.setProperty("getLocation", engine->newFunction(getLocation));
     foo.setProperty("filterByQualifier", engine->newFunction(filterByQualifier));
+    foo.setProperty("hasAnnotationName", engine->newFunction(hasAnnotationName));
+
+    foo.setProperty("writeFile", engine->newFunction(writeFile));
+    foo.setProperty("appendFile", engine->newFunction(appendFile));
+    foo.setProperty("readFile", engine->newFunction(readFile));
 
     if(AppContext::getWorkflowScriptRegistry() != NULL) {
         foreach(WorkflowScriptFactory* f, AppContext::getWorkflowScriptRegistry()->getFactories()) {
@@ -793,6 +798,111 @@ QScriptValue WorkflowScriptLibrary::getLocation(QScriptContext *ctx, QScriptEngi
     QScriptValue calee = ctx->callee();
     calee.setProperty("res", engine->newVariant(QVariant::fromValue<QVector<U2Region> >(loc)));
     return calee.property("res");
+}
+
+QScriptValue WorkflowScriptLibrary::hasAnnotationName(QScriptContext *ctx, QScriptEngine *engine){
+    if(ctx->argumentCount()!= 2) {
+        return ctx->throwError(QObject::tr("Incorrect number of arguments"));
+    }
+
+    QList<SharedAnnotationData> anns = ctx->argument(0).toVariant().value< QList<SharedAnnotationData> >();
+    if(anns.isEmpty()) {
+        return ctx->throwError(QObject::tr("Invalid annotations"));
+    }
+    QString annName = ctx->argument(1).toString();
+    if(annName.isEmpty()) {
+        return ctx->throwError(QObject::tr("Empty annotation name"));
+    }
+    
+    bool hasAnnotation = false;
+    foreach(const SharedAnnotationData &ann, anns) {
+        if (ann->name == annName){
+            hasAnnotation = true;
+            break;
+        }
+    }
+
+    QScriptValue calee = ctx->callee();
+    calee.setProperty("res", hasAnnotation);
+    return calee.property("res");
+}
+
+QScriptValue WorkflowScriptLibrary::writeFile(QScriptContext *ctx, QScriptEngine *engine){
+    if(ctx->argumentCount()!= 2) {
+        return ctx->throwError(QObject::tr("Incorrect number of arguments"));
+    }
+
+    QString filePath = ctx->argument(0).toString();
+    if(filePath.isEmpty()) {
+        return ctx->throwError(QObject::tr("Invalid file path"));
+    }
+
+    QString data = ctx->argument(1).toString();
+    if(data.isEmpty()) {
+        return ctx->throwError(QObject::tr("No data to write"));
+    }
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        return ctx->throwError(QObject::tr("Cannot open the file by given path"));
+    }
+
+    file.write(data.toLatin1());
+
+    file.close();
+
+    return 0;
+}
+
+QScriptValue WorkflowScriptLibrary::appendFile(QScriptContext *ctx, QScriptEngine *engine){
+    if(ctx->argumentCount()!= 2) {
+        return ctx->throwError(QObject::tr("Incorrect number of arguments"));
+    }
+
+    QString filePath = ctx->argument(0).toString();
+    if(filePath.isEmpty()) {
+        return ctx->throwError(QObject::tr("Invalid file path"));
+    }
+
+    QString data = ctx->argument(1).toString();
+    if(data.isEmpty()) {
+        return ctx->throwError(QObject::tr("No data to write"));
+    }
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)){
+        return ctx->throwError(QObject::tr("Cannot open the file by given path"));
+    }
+
+    file.write(data.toLatin1());
+
+    file.close();
+
+    return 0;
+}
+QScriptValue WorkflowScriptLibrary::readFile(QScriptContext *ctx, QScriptEngine *engine){
+    if(ctx->argumentCount()!= 1) {
+        return ctx->throwError(QObject::tr("Incorrect number of arguments"));
+    }
+
+    QString filePath = ctx->argument(0).toString();
+    if(filePath.isEmpty()) {
+        return ctx->throwError(QObject::tr("Invalid file path"));
+    }
+    
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly |  QIODevice::Text)){
+        return ctx->throwError(QObject::tr("Cannot open the file by given path"));
+    }
+
+    QByteArray result = file.readAll();
+
+    file.close();
+
+    QScriptValue calee = ctx->callee();
+    calee.setProperty("res", QString(result));
+    return calee.property("res");
+
 }
 
 QScriptValue WorkflowScriptLibrary::debugOut(QScriptContext *ctx, QScriptEngine *) {
