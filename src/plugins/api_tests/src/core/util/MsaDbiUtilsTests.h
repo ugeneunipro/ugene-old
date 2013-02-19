@@ -43,7 +43,9 @@ public:
     static U2MsaDbi* getMsaDbi();
     static U2SequenceDbi* getSequenceDbi();
 
-    static U2EntityRef initTestAlignment(const int);
+    static U2EntityRef initTestAlignment(const qint64 rowConut);
+    static U2EntityRef initTestAlignment(const QStringList& rowsData);
+    static U2EntityRef initTestAlignment(QList<U2MsaRow>& rows);
     static QStringList getRowNames(U2EntityRef msaRef);
 
     static U2EntityRef removeRegionTestAlignment(U2OpStatus &os);
@@ -109,6 +111,23 @@ DECLARE_TEST(MsaDbiUtilsUnitTests, moveRows_threeBlocksWithTwiceGluing);
 DECLARE_TEST(MsaDbiUtilsUnitTests, moveRows_UnorderedList);
 DECLARE_TEST(MsaDbiUtilsUnitTests, moveRows_InvalidRowList);
 
+
+/**
+  * Trim gaps:
+  * trim_noGaps: trim the alignment without trimable gaps.
+  * trim_leadingGaps: trim some leading gaps.
+  * trim_trailingGaps: trim some trailing gaps.
+  * trim_leadingGapsCutOff: trim the leading gaps, some gaps are not deleted, but cut off.
+  * trim_trailingGaps: trim the trailing gaps, some gaps are not deleted, but cut off.
+  * trim_gapsOnly: trim the alignment consists from gaps only.
+  */
+DECLARE_TEST(MsaDbiUtilsUnitTests, trim_noGaps);
+DECLARE_TEST(MsaDbiUtilsUnitTests, trim_leadingGaps);
+DECLARE_TEST(MsaDbiUtilsUnitTests, trim_trailingGaps);
+DECLARE_TEST(MsaDbiUtilsUnitTests, trim_leadingGapsCutOff);
+DECLARE_TEST(MsaDbiUtilsUnitTests, trim_trailingGapsCutOff);
+DECLARE_TEST(MsaDbiUtilsUnitTests, trim_gapsOnly);
+
 DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_oneRow);
 DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_threeRows);
 DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_lengthChange);
@@ -136,6 +155,13 @@ DECLARE_METATYPE(MsaDbiUtilsUnitTests, moveRows_threeBlocksWithOnceGluing);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, moveRows_threeBlocksWithTwiceGluing);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, moveRows_UnorderedList);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, moveRows_InvalidRowList);
+
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_noGaps);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_leadingGaps);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_trailingGaps);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_leadingGapsCutOff);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_trailingGapsCutOff);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_gapsOnly);
 
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_oneRow);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_threeRows);

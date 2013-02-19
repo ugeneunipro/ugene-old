@@ -81,7 +81,10 @@ U2SequenceDbi* MsaDbiUtilsTestUtils::getSequenceDbi() {
 }
 
 
-U2EntityRef MsaDbiUtilsTestUtils::initTestAlignment(const int rowCount) {
+U2EntityRef MsaDbiUtilsTestUtils::initTestAlignment(const qint64 rowCount) {
+    getMsaDbi();
+    getSequenceDbi();
+
     SAFE_POINT(NULL != msaDbi, "MsaDbi is NULL", U2EntityRef());
     SAFE_POINT(NULL != sequenceDbi, "SequenceDbi is NULL", U2EntityRef());
 
@@ -105,6 +108,69 @@ U2EntityRef MsaDbiUtilsTestUtils::initTestAlignment(const int rowCount) {
 
         rows << row;
     }
+
+    msaDbi->addRows(msaId, rows, os);
+    CHECK_OP(os, U2EntityRef());
+
+    U2EntityRef msaRef(msaDbi->getRootDbi()->getDbiRef(), msaId);
+    return msaRef;
+}
+
+U2EntityRef MsaDbiUtilsTestUtils::initTestAlignment(const QStringList& rowsData = QStringList()) {
+    getMsaDbi();
+    getSequenceDbi();
+
+    SAFE_POINT(NULL != msaDbi, "MsaDbi is NULL", U2EntityRef());
+    SAFE_POINT(NULL != sequenceDbi, "SequenceDbi is NULL", U2EntityRef());
+
+    U2OpStatusImpl os;
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_OP(os, U2EntityRef());
+
+    qint64 rowCount = rowsData.length();
+
+    QList<U2MsaRow> rows;
+    for (int i = 0; i < rowCount; ++i) {
+        QByteArray seqData;
+        QList<U2MsaGap> gapModel;
+        MsaDbiUtils::splitBytesToCharsAndGaps(rowsData[i].toLatin1(), seqData, gapModel);
+
+        U2Sequence sequence;
+        sequence.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+        sequence.visualName = QString::number(i);
+        sequence.length = rowsData[i].length();
+        sequenceDbi->createSequenceObject(sequence, "", os);
+        CHECK_OP(os, U2EntityRef());
+        sequenceDbi->updateSequenceData(sequence.id, U2Region(0, 0), seqData, QVariantMap(), os);
+        CHECK_OP(os, U2EntityRef());
+
+        U2MsaRow row;
+        row.rowId = i;
+        row.sequenceId = sequence.id;
+        row.gstart = 0;
+        row.gend = seqData.length();
+        row.gaps = gapModel;
+
+        rows << row;
+    }
+
+    msaDbi->addRows(msaId, rows, os);
+    CHECK_OP(os, U2EntityRef());
+
+    U2EntityRef msaRef(msaDbi->getRootDbi()->getDbiRef(), msaId);
+    return msaRef;
+}
+
+U2EntityRef MsaDbiUtilsTestUtils::initTestAlignment(QList<U2MsaRow>& rows) {
+    getMsaDbi();
+    getSequenceDbi();
+
+    SAFE_POINT(NULL != msaDbi, "MsaDbi is NULL", U2EntityRef());
+    SAFE_POINT(NULL != sequenceDbi, "SequenceDbi is NULL", U2EntityRef());
+
+    U2OpStatusImpl os;
+    U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_OP(os, U2EntityRef());
 
     msaDbi->addRows(msaId, rows, os);
     CHECK_OP(os, U2EntityRef());
@@ -870,6 +936,168 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, moveRows_InvalidRowList) {
     MsaDbiUtils::moveRows(msaRef, rowsToMove, delta, os);
     if (!(!os.isCanceled() && os.hasError() && os.getError() == "Invalid row list")) {
         CHECK_TRUE(false, "Invalid row list");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, trim_noGaps) {
+    //Init test data
+    U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::initTestAlignment(QStringList() << "AACCGGTT" << "CCGGTTAA" << "GGTTAACC");
+
+    //Prepare expected state
+    QStringList expected = QStringList() << "AACCGGTT" << "CCGGTTAA" << "GGTTAACC";
+
+    //Call test function
+    MsaDbiUtils::trim(msaRef, os);
+
+    //Check actual state
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(8, al.getLength(), "Wrong msa length.");
+    CHECK_EQUAL(expected.length(), al.getNumRows(), "Wrong rows count.");
+
+    QStringList actual;
+    actual << al.getRow(0).toByteArray(al.getLength(), os);
+    actual << al.getRow(1).toByteArray(al.getLength(), os);
+    actual << al.getRow(2).toByteArray(al.getLength(), os);
+    for (int i = 0; i < expected.length(); ++i) {
+        CHECK_EQUAL(expected[i], actual[i], "Wrong msa data.");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, trim_leadingGaps) {
+    //Init test data
+    U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::initTestAlignment(QStringList() << "--AACCGGTT" << "--CCGGTTAA" << "--GGTTA--C");
+
+    //Prepare expected state
+    QStringList expected = QStringList() << "AACCGGTT" << "CCGGTTAA" << "GGTTA--C";
+
+    //Call test function
+    MsaDbiUtils::trim(msaRef, os);
+
+    //Check actual state
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(8, al.getLength(), "Wrong msa length.");
+    CHECK_EQUAL(expected.length(), al.getNumRows(), "Wrong rows count.");
+
+    QStringList actual;
+    actual << al.getRow(0).toByteArray(al.getLength(), os);
+    actual << al.getRow(1).toByteArray(al.getLength(), os);
+    actual << al.getRow(2).toByteArray(al.getLength(), os);
+    for (int i = 0; i < expected.length(); ++i) {
+        CHECK_EQUAL(expected[i], actual[i], "Wrong msa data.");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, trim_trailingGaps) {
+    //Init test data
+    U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::initTestAlignment(QStringList() << "AACCGGTT--" << "CCG--TAA--" << "GGTTAACC--");
+
+    //Prepare expected state
+    QStringList expected = QStringList() << "AACCGGTT" << "CCG--TAA" << "GGTTAACC";
+
+    //Call test function
+    MsaDbiUtils::trim(msaRef, os);
+
+    //Check actual state
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(8, al.getLength(), "Wrong msa length.");
+    CHECK_EQUAL(expected.length(), al.getNumRows(), "Wrong rows count.");
+
+    QStringList actual;
+    actual << al.getRow(0).toByteArray(al.getLength(), os);
+    actual << al.getRow(1).toByteArray(al.getLength(), os);
+    actual << al.getRow(2).toByteArray(al.getLength(), os);
+    for (int i = 0; i < expected.length(); ++i) {
+        CHECK_EQUAL(expected[i], actual[i], "Wrong msa data.");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, trim_leadingGapsCutOff) {
+    //Init test data
+    U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::initTestAlignment(QStringList() << "---TAACCGG" << "--CCGGTTAA" << "--GGTTAACC");
+
+    //Prepare expected state
+    QStringList expected = QStringList() << "-TAACCGG" << "CCGGTTAA" << "GGTTAACC";
+
+    //Call test function
+    MsaDbiUtils::trim(msaRef, os);
+
+    //Check actual state
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(8, al.getLength(), "Wrong msa length.");
+    CHECK_EQUAL(expected.length(), al.getNumRows(), "Wrong rows count.");
+
+    QStringList actual;
+    actual << al.getRow(0).toByteArray(al.getLength(), os);
+    actual << al.getRow(1).toByteArray(al.getLength(), os);
+    actual << al.getRow(2).toByteArray(al.getLength(), os);
+    for (int i = 0; i < expected.length(); ++i) {
+        CHECK_EQUAL(expected[i], actual[i], "Wrong msa data.");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, trim_trailingGapsCutOff) {
+    //Init test data
+    U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::initTestAlignment(QStringList() << "AACCGGT---" << "CCGGTTAA--" << "GGTTAACC--");
+
+    //Prepare expected state
+    QStringList expected = QStringList() << "AACCGGT-" << "CCGGTTAA" << "GGTTAACC";
+
+    //Call test function
+    MsaDbiUtils::trim(msaRef, os);
+
+    //Check actual state
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(8, al.getLength(), "Wrong msa length.");
+    CHECK_EQUAL(expected.length(), al.getNumRows(), "Wrong rows count.");
+
+    QStringList actual;
+    actual << al.getRow(0).toByteArray(al.getLength(), os);
+    actual << al.getRow(1).toByteArray(al.getLength(), os);
+    actual << al.getRow(2).toByteArray(al.getLength(), os);
+    for (int i = 0; i < expected.length(); ++i) {
+        CHECK_EQUAL(expected[i], actual[i], "Wrong msa data.");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, trim_gapsOnly) {
+    //Init test data
+    U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::initTestAlignment(QStringList() << "------" << "----" << "-----");
+
+    //Prepare expected state
+    QStringList expected = QStringList() << "" << "" << "";
+
+    //Call test function
+    MsaDbiUtils::trim(msaRef, os);
+
+    //Check actual state
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(0, al.getLength(), "Wrong msa length.");
+    CHECK_EQUAL(expected.length(), al.getNumRows(), "Wrong rows count.");
+
+    QStringList actual;
+    actual << al.getRow(0).toByteArray(al.getLength(), os);
+    actual << al.getRow(1).toByteArray(al.getLength(), os);
+    actual << al.getRow(2).toByteArray(al.getLength(), os);
+    for (int i = 0; i < expected.length(); ++i) {
+        CHECK_EQUAL(expected[i], actual[i], "Wrong msa data.");
     }
 }
 

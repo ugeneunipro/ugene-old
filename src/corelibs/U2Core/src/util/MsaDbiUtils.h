@@ -83,6 +83,7 @@ public:
     /**
      * Removes leading and trailing gaps, if required.
      * Updates the alignment length in this case.
+     * Gap mode should be correct, else some gaps may be not trimmed.
      */
     static void trim(const U2EntityRef& msaRef, U2OpStatus& os);
 
@@ -144,15 +145,17 @@ private:
 
     /**
      * Verifies if the alignment contains columns of gaps at the beginning.
-     * Returns the number of columns or zero in case if there are no such columns.
+     * Delete this columns of gaps from each row.
+     * Gaps should be ordered and should not stick together.
      */
-    static qint64 calculateLeadingGapColumnsLength(const MAlignment& al);
+    static void cutOffLeadingGaps(QList<U2MsaRow>& rows);
 
     /**
-     * Verifies if the alignment contains columns of gaps at the beginning.
-     * Returns the number of columns or zero in case if there are no such columns.
+     * Delete all gaps from gapModel after msaLength.
+     * If gap begins before the end of alignment and end after it, it will be modified:
+     * the gap`s end will be equal to the alignment`s end.
      */
-    static qint64 calculateTrailingGapColumnsLength(const MAlignment& al);
+    static void cutOffTrailingGaps(QList<U2MsaRow>& rows, const qint64 msaLength);
 
     /**
      * Removes gaps from the row between position 'pos' and 'pos + count'.

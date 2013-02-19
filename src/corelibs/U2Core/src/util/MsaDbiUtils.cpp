@@ -199,49 +199,36 @@ void MsaDbiUtils::calculateGapModelAfterInsert(QList<U2MsaGap>& gapModel, qint64
     }
 }
 
-qint64 MsaDbiUtils::calculateLeadingGapColumnsLength(const MAlignment& al) {
-    qint64 leadingGapColumnsNum = 0;
-    foreach (const MAlignmentRow& row, al.getRows()) {
-        // Return, if there are no gaps
-        if (row.getGapModel().isEmpty()) {
-            return 0;
+void MsaDbiUtils::cutOffLeadingGaps(QList<U2MsaRow>& rows) {
+    qint64 leadingGapsToRemove = 9223372036854775807;   //max of qint64
+    for (qint64 i = 0; i < rows.length(); ++i) {
+        if (leadingGapsToRemove == 0 || true == rows[i].gaps.isEmpty() || rows[i].gaps.first().offset != 0) {
+            leadingGapsToRemove = 0;
+            return;
         }
-        
-        // Return, if the first gap is not leading
-        const U2MsaGap& firstGap = row.getGapModel().first();
-        if (firstGap.offset > 0) {
-            return 0;
-        }
-
-        // Otherwise, compare with other rows
-        if (0 == leadingGapColumnsNum) {
-            leadingGapColumnsNum = firstGap.gap;
-        }
-        else {
-            leadingGapColumnsNum = qMin(leadingGapColumnsNum, firstGap.gap);
-        }
+        leadingGapsToRemove = qMin(leadingGapsToRemove, rows[i].gaps.first().gap);
     }
 
-    return leadingGapColumnsNum;
+    if (leadingGapsToRemove != 0) {
+        for (qint64  i = 0; i < rows.length(); ++i) {
+            calculateGapModelAfterRemove(rows[i].gaps, 0, leadingGapsToRemove);
+        }
+    }
 }
 
-qint64 MsaDbiUtils::calculateTrailingGapColumnsLength(const MAlignment& al) {
-    qint64 trailingGapColumnsNum = 0;
-
-    qint64 oldMsaLength = al.getLength();
-    qint64 newMsaLength = 0;
-    foreach (const MAlignmentRow& row, al.getRows()) {
-        qint64 lengthWithoutLastGap = row.getRowLengthWithoutTrailing();
-        if (0 == newMsaLength) {
-            newMsaLength = lengthWithoutLastGap;
+void MsaDbiUtils::cutOffTrailingGaps(QList<U2MsaRow>& rows, const qint64 msaLength) {
+    for (qint64 i = 0; i < rows.length(); ++i) {
+        if (true == rows[i].gaps.isEmpty()) {
+            continue;
         }
-        else {
-            newMsaLength = qMax(lengthWithoutLastGap, newMsaLength);
+        for (qint64 j = rows[i].gaps.length() - 1; j >= 0 && rows[i].gaps[j].offset >= msaLength - 1; --j) {
+            rows[i].gaps.removeAt(j);
+            continue;
+        }
+        if (false == rows[i].gaps.isEmpty() && rows[i].gaps.last().gap + rows[i].gaps.last().offset >= msaLength) {
+            rows[i].gaps.last().gap = msaLength - rows[i].gaps.last().offset - 1;
         }
     }
-    SAFE_POINT(newMsaLength <= oldMsaLength, "Length without trailing gaps can't be greater than the original length!", 0);
-
-    return oldMsaLength - newMsaLength;
 }
 
 void MsaDbiUtils::calculateGapModelAfterRemove(QList<U2MsaGap>& gapModel, qint64 pos, qint64 count) {
@@ -945,47 +932,30 @@ void MsaDbiUtils::crop(const U2EntityRef& msaRef, const QList<qint64> rowIds, qi
 }
 
 void MsaDbiUtils::trim(const U2EntityRef& msaRef, U2OpStatus& os) {
-    // Get the alignment
-    MAlignmentExporter alExporter;
-    MAlignment al = alExporter.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
-
-    // Verify if there are leading/trailing gaps to remove
-    qint64 leadingGapsToRemove = calculateLeadingGapColumnsLength(al);
-    qint64 trailingGapsToRemove = calculateTrailingGapColumnsLength(al);
-    if (0 == leadingGapsToRemove && 0 == trailingGapsToRemove) {
-        return;
-    }
-    
     // Prepare the connection
     DbiConnection con(msaRef.dbiRef, os);
     CHECK_OP(os, );
 
     U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
-    SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!",);
+    SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!", );
 
-    // Remove the gaps
-    qint64 alLength = 0;
-    for (int i = 0, n = al.getNumRows(); i < n; ++i) {
-        const MAlignmentRow& row = al.getRow(i);
-        QList<U2MsaGap> newGapModel = row.getGapModel();
-        if (leadingGapsToRemove > 0) {
-            calculateGapModelAfterRemove(newGapModel, 0, leadingGapsToRemove);
-        }
-        
-        if (trailingGapsToRemove > 0) {
-            qint64 rowLength = row.getRowLength();
-            qint64 rowLengthWithoutTrailing = row.getRowLengthWithoutTrailing();
+    qint64 msaLength = msaDbi->getMsaObject(msaRef.entityId, os).length;
+    CHECK_OP(os, );
+    SAFE_POINT(msaLength >= 0, "Msa length is negative.", );
 
-            if (rowLength > rowLengthWithoutTrailing) {
-                qint64 trailingGapsInCurrentRow = rowLength - rowLengthWithoutTrailing;
-                trailingGapsToRemove = qMin(trailingGapsToRemove, trailingGapsInCurrentRow);
+    QList<U2MsaRow> rows = msaDbi->getRows(msaRef.entityId, os);
+    CHECK_OP(os, );
+    SAFE_POINT(false == rows.isEmpty(), "Msa rows list is empty.", );
 
-                calculateGapModelAfterRemove(newGapModel, rowLength - trailingGapsToRemove, trailingGapsToRemove);
-            }
-        }
+    // Trim leading gaps
+    cutOffLeadingGaps(rows);
 
-        // Put the new gap model into the database
-        msaDbi->updateGapModel(msaRef.entityId, row.getRowId(), newGapModel, os);
+    // Trim trailing gaps
+    cutOffTrailingGaps(rows, msaLength);
+
+    // Update gap model
+    for (int i = 0; i < rows.length(); ++i) {
+        msaDbi->updateGapModel(msaRef.entityId, rows[i].rowId, rows[i].gaps, os);
         CHECK_OP(os, );
     }
 }

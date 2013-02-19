@@ -3,22 +3,28 @@
 <unittest>
 
 MsaDbiUtilsUnitTests
-- moveRows_oneLineInMiddle
-- moveRows_oneLineInMiddleToTheTop
-- moveRows_oneLineInMiddleToTheBottom
-- moveRows_oneBlockInMiddle
-- moveRows_oneBlockInMiddleToTheOutside
-- moveRows_twoBlocksInMiddleWithoutGluing
-- moveRows_twoBlocksInMiddleWithGluing
-- moveRows_twoBlocksOnTopWithoutGluing
-- moveRows_twoBlocksOnTopWithGluing
-- moveRows_twoBlocksOnBottomWithoutGluing
-- moveRows_twoBlocksOnBottomWithGluing
-- moveRows_threeBlocksWithoutGluing
-- moveRows_threeBlocksWithOnceGluing
-- moveRows_threeBlocksWithTwiceGluing
-- moveRows_UnorderedList
-- moveRows_InvalidRowList
++ moveRows_oneLineInMiddle
++ moveRows_oneLineInMiddleToTheTop
++ moveRows_oneLineInMiddleToTheBottom
++ moveRows_oneBlockInMiddle
++ moveRows_oneBlockInMiddleToTheOutside
++ moveRows_twoBlocksInMiddleWithoutGluing
++ moveRows_twoBlocksInMiddleWithGluing
++ moveRows_twoBlocksOnTopWithoutGluing
++ moveRows_twoBlocksOnTopWithGluing
++ moveRows_twoBlocksOnBottomWithoutGluing
++ moveRows_twoBlocksOnBottomWithGluing
++ moveRows_threeBlocksWithoutGluing
++ moveRows_threeBlocksWithOnceGluing
++ moveRows_threeBlocksWithTwiceGluing
++ moveRows_UnorderedList
++ moveRows_InvalidRowList
++ trim_noGaps
++ trim_leadingGaps
++ trim_trailingGaps
++ trim_leadingGapsCutOff
++ trim_trailingGapsCutOff
++ trim_gapsOnly
 +removeRegion_oneRow
 +removeRegion_threeRows
 +removeRegion_lengthChange
