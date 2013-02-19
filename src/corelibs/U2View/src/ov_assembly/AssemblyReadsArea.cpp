@@ -441,6 +441,7 @@ bool AssemblyReadsArea::findReadOnPos(const QPoint &pos, U2AssemblyRead &read) {
     QListIterator<U2AssemblyRead> it(cachedReads.data);
     while(it.hasNext()) {
         const U2AssemblyRead & r = it.next();
+        SAFE_POINT(NULL != r.data(), "NULL assembly read", false);
         if(r->packedViewRow == asmY && asmX >= r->leftmostPos && asmX < r->leftmostPos + U2AssemblyUtils::getEffectiveReadLength(r)) {
             read = r;
             found = true;

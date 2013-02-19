@@ -795,6 +795,7 @@ U2AssemblyRead MTAReadsIterator::next() {
         foreach (U2DbiIterator<U2AssemblyRead> *it, iterators) {
             if (it->hasNext()) {
                 U2AssemblyRead candidate = it->peek();
+                SAFE_POINT(NULL != candidate.data(), "NULL assembly read", candidate);
                 if (candidate->leftmostPos < minPos) {
                     minIt = it;
                     minPos = candidate->leftmostPos;
@@ -803,6 +804,7 @@ U2AssemblyRead MTAReadsIterator::next() {
         }
         if (NULL != minIt) {
             res = minIt->next();
+            SAFE_POINT(NULL != res.data(), "NULL assembly read", res);
             int currentIt = iterators.indexOf(minIt);
             const QByteArray& idExtra = idExtras.at(currentIt);
             res->id = addTable2Id(res->id, idExtra);
@@ -814,6 +816,7 @@ U2AssemblyRead MTAReadsIterator::next() {
                 U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
                 if (it->hasNext()) {
                     res = it->next();
+                    SAFE_POINT(NULL != res.data(), "NULL assembly read", res);
                     const QByteArray& idExtra = idExtras.at(currentRange);;
                     res->id = addTable2Id(res->id, idExtra);
                     break;
@@ -833,6 +836,7 @@ U2AssemblyRead MTAReadsIterator::peek() {
         foreach (U2DbiIterator<U2AssemblyRead> *it, iterators) {
             if (it->hasNext()) {
                 U2AssemblyRead candidate = it->peek();
+                SAFE_POINT(NULL != candidate.data(), "NULL assembly read", candidate);
                 if (candidate->leftmostPos < minPos) {
                     minIt = it;
                     minPos = candidate->leftmostPos;
@@ -841,6 +845,7 @@ U2AssemblyRead MTAReadsIterator::peek() {
         }
         if (NULL != minIt) {
             res = minIt->next();
+            SAFE_POINT(NULL != res.data(), "NULL assembly read", res);
             int currentIt = iterators.indexOf(minIt);
             const QByteArray& idExtra = idExtras.at(currentIt);
             res->id = addTable2Id(res->id, idExtra);
@@ -852,6 +857,7 @@ U2AssemblyRead MTAReadsIterator::peek() {
                 U2DbiIterator<U2AssemblyRead>* it = iterators[currentRange];
                 if (it->hasNext()) {
                     res = it->peek();
+                    SAFE_POINT(NULL != res.data(), "NULL assembly read", res);
                     const QByteArray& idExtra = idExtras.at(currentRange);;
                     res->id = addTable2Id(res->id, idExtra);
                     break;

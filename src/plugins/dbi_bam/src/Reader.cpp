@@ -291,7 +291,7 @@ Alignment BamReader::AlignmentReader::read() {
             }
         }
         if(hasQuality) {
-            alignment.setQuality(quality);
+            alignment.setQuality(SamtoolsAdapter::samtools2quality(quality));
         }
     }
     {

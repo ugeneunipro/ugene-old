@@ -321,12 +321,19 @@ AssemblyAdapter::AssemblyAdapter(const U2DataId& _assemblyId, const AssemblyComp
 //////////////////////////////////////////////////////////////////////////
 // SQLiteAssemblyUtils
 
+static QByteArray getQuality(const U2AssemblyRead &read) {
+    if (read->readSequence.length() == read->quality.length()) {
+        return read->quality;
+    }
+    return QByteArray(read->readSequence.length(), char(0xFF));
+}
+
 QByteArray SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod method, const U2AssemblyRead &read, U2OpStatus& os)
 {
     const QByteArray &name = read->name;
     const QByteArray &seq = read->readSequence;
     QByteArray cigarText = U2AssemblyUtils::cigar2String(read->cigar);
-    const QByteArray &qualityString = read->quality;
+    QByteArray qualityString = getQuality(read);
     const QByteArray &rnext = read->rnext;
     QByteArray pnext = QByteArray::number(read->pnext);
     QByteArray aux = SamtoolsAdapter::aux2string(read->aux);
@@ -337,8 +344,8 @@ QByteArray SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod method, const 
         return QByteArray();
     }
     int nBytes = 1 + name.length() + 1  + seq.length() + 1 + cigarText.length() + 1 + qualityString.length();
-    if ("*" != rnext || !aux.isEmpty()) {
-        nBytes += 1 + rnext.length() + 1 + pnext.length();
+    nBytes += 1 + rnext.length() + 1 + pnext.length();
+    if (!aux.isEmpty()) {
         if (!aux.isEmpty()) {
             nBytes += 1 + aux.length();
         }
@@ -375,40 +382,42 @@ QByteArray SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod method, const 
 
     // quality
     qMemCopy(data + pos, qualityString.constData(), qualityString.length());
-    if ("*" != rnext || !aux.isEmpty()) {
-        pos+=qualityString.length();
+    pos+=qualityString.length();
+    data[pos] = '\n';
+    pos++;
+
+    // rnext
+    qMemCopy(data + pos, rnext.constData(), rnext.length());
+    pos+=rnext.length();
+    data[pos] = '\n';
+    pos++;
+
+    // pnext
+    qMemCopy(data + pos, pnext.constData(), pnext.length());
+    if (!aux.isEmpty()) {
+        pos+=pnext.length();
         data[pos] = '\n';
         pos++;
 
-        // rnext
-        qMemCopy(data + pos, rnext.constData(), rnext.length());
-        pos+=rnext.length();
-        data[pos] = '\n';
-        pos++;
-
-        // pnext
-        qMemCopy(data + pos, pnext.constData(), pnext.length());
-        if (!aux.isEmpty()) {
-            pos+=pnext.length();
-            data[pos] = '\n';
-            pos++;
-
-            // aux
-            qMemCopy(data + pos, aux.constData(), aux.length());
-        }
+        // aux
+        qMemCopy(data + pos, aux.constData(), aux.length());
     }
 
-//#define _SQLITE_CHECK_ASSEMBLY_DATA_PACKING_
+#define _SQLITE_CHECK_ASSEMBLY_DATA_PACKING_
 #ifdef _SQLITE_CHECK_ASSEMBLY_DATA_PACKING_
     U2AssemblyRead tmp(new U2AssemblyReadData());
     unpackData(res, tmp, os);
+    QByteArray tmpCigar = U2AssemblyUtils::cigar2String(tmp->cigar);
+    QByteArray tmpAux = SamtoolsAdapter::aux2string(tmp->aux);
+    QByteArray tmpQual = getQuality(tmp);
     assert(tmp->name == name);
     assert(tmp->readSequence == seq);
-    assert(U2AssemblyUtils::cigar2String(tmp->cigar) == cigarText);
-    assert(tmp->quality == qualityString);
+    assert(tmpCigar == cigarText);
+    assert(tmpQual == qualityString);
     assert(tmp->rnext == read->rnext);
     assert(tmp->pnext == read->pnext);
-    assert(SamtoolsAdapter::aux2string(tmp->aux) == aux);
+    assert(tmpAux == aux);
+    assert(!os.hasError());
 #endif
     return res;
 }
@@ -459,8 +468,9 @@ void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, U2AssemblyRea
 
     // quality
     int qualityStart = cigarEnd + 1;
-    int qualityEnd = packedData.indexOf('\n', qualityStart);
-    if (qualityEnd == -1) {
+    int qualityEnd = qualityStart + sequence.length();
+    if (qualityEnd > packedData.length()) {
+        assert(false);
         qualityEnd = packedData.length();
     }
     qualityString.append(data + qualityStart, qualityEnd - qualityStart);

@@ -309,14 +309,28 @@ inline static void copyArray(data_ptr &dest, const QByteArray array) {
 
 static const int SAMTOOLS_QUALITY_OFFSET = 33;
 static const char SAMTOOLS_QUALITY_OFF_CHAR = 0xff;
-inline static void copyQuality(data_ptr &dest, const QByteArray &quality) {
+QByteArray SamtoolsAdapter::quality2samtools(const QByteArray &quality) {
     QByteArray samtoolsQuality = quality;
-    // shift qulity for samtools
     if (quality.size() > 0 && SAMTOOLS_QUALITY_OFF_CHAR != quality.data()[0]) {
         for (int i=0; i<quality.size(); i++) {
             samtoolsQuality.data()[i] -= SAMTOOLS_QUALITY_OFFSET;
         }
     }
+    return samtoolsQuality;
+}
+
+QByteArray SamtoolsAdapter::samtools2quality(const QByteArray &samtoolsQuality) {
+    QByteArray quality = samtoolsQuality;
+    if (quality.size() > 0 && SAMTOOLS_QUALITY_OFF_CHAR != quality.data()[0]) {
+        for (int i=0; i<quality.size(); i++) {
+            quality.data()[i] += SAMTOOLS_QUALITY_OFFSET;
+        }
+    }
+    return quality;
+}
+
+inline static void copyQuality(data_ptr &dest, const QByteArray &quality) {
+    QByteArray samtoolsQuality = SamtoolsAdapter::quality2samtools(quality);
     copyArray(dest, samtoolsQuality);
 }
 

@@ -78,10 +78,13 @@ public:
 
     static QByteArray cigar2samtools(QList<U2CigarToken> cigar, U2OpStatus &os);
     static QByteArray sequence2samtools(QByteArray sequence, U2OpStatus &os);
+    static QByteArray quality2samtools(const QByteArray &qualString);
+    static QByteArray samtools2quality(const QByteArray &qualString);
 
     static QByteArray aux2string(const QList<U2AuxData> &aux);
     static QList<U2AuxData> string2aux(const QByteArray &auxString);
     static QList<U2AuxData> samString2aux(const QByteArray &auxString);
+
 };
 
 } // namespace
