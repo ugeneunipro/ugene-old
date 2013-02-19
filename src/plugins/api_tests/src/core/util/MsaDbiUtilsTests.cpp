@@ -34,7 +34,7 @@ namespace U2 {
 
 const QString MsaDbiUtilsTestUtils::alignmentName = QString("MsaDbiUtils test alignment");
 TestDbiProvider MsaDbiUtilsTestUtils::dbiProvider = TestDbiProvider();
-const QString& MsaDbiUtilsTestUtils::MSA_DB_URL("msa-dbi.ugenedb");
+const QString& MsaDbiUtilsTestUtils::MSA_DB_URL("msa-dbi-utils.ugenedb");
 U2MsaDbi* MsaDbiUtilsTestUtils::msaDbi = NULL;
 U2SequenceDbi* MsaDbiUtilsTestUtils::sequenceDbi = NULL;
 
