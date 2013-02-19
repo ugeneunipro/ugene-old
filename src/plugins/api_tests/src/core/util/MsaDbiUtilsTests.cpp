@@ -133,11 +133,12 @@ U2MsaRow MsaDbiUtilsTestUtils::addRow(const U2DataId &msaId, qint64 num, const Q
     return row;
 }
 
-U2EntityRef MsaDbiUtilsTestUtils::removeRegionTestAlignment() {
+U2EntityRef MsaDbiUtilsTestUtils::removeRegionTestAlignment(U2OpStatus &os) {
+    U2MsaDbi *msaDbi = getMsaDbi();
+    U2SequenceDbi *sequenceDbi = getSequenceDbi();
     SAFE_POINT(NULL != msaDbi, "MsaDbi is NULL", U2EntityRef());
     SAFE_POINT(NULL != sequenceDbi, "SequenceDbi is NULL", U2EntityRef());
 
-    U2OpStatusImpl os;
     U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
     CHECK_OP(os, U2EntityRef());
 
@@ -155,6 +156,7 @@ U2EntityRef MsaDbiUtilsTestUtils::removeRegionTestAlignment() {
     rows << addRow(msaId, 10, "11", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
     rows << addRow(msaId, 11, "12", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
     rows << addRow(msaId, 12, "13", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    CHECK_OP(os, U2EntityRef());
 
     msaDbi->addRows(msaId, rows, os);
     CHECK_OP(os, U2EntityRef());
@@ -872,10 +874,10 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, moveRows_InvalidRowList) {
 }
 
 IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_oneRow) {
-    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
     U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
+    CHECK_NO_ERROR(os);
 
-    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
     QList<qint64> rowIds;
     rowIds << 1;
     MsaDbiUtils::removeRegion(msaRef, rowIds, 8, 3, os);
@@ -895,10 +897,10 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_oneRow) {
 }
 
 IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_threeRows) {
-    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
     U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
+    CHECK_NO_ERROR(os);
 
-    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
     QList<qint64> rowIds;
     rowIds << 1 << 8 << 5;
     MsaDbiUtils::removeRegion(msaRef, rowIds, 2, 8, os);
@@ -918,10 +920,10 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_threeRows) {
 }
 
 IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_lengthChange) {
-    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
     U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
+    CHECK_NO_ERROR(os);
 
-    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
     QList<qint64> rowIds;
     rowIds << 3 << 4 << 5 << 6;
     MsaDbiUtils::removeRegion(msaRef, rowIds, 5, 1, os);
@@ -943,10 +945,10 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_lengthChange) {
 }
 
 IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_allRows) {
-    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
     U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
+    CHECK_NO_ERROR(os);
 
-    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
     QList<qint64> rowIds;
     rowIds << 0 << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12;
     MsaDbiUtils::removeRegion(msaRef, rowIds, 0, 3, os);
@@ -986,10 +988,10 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_allRows) {
 }
 
 IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_all) {
-    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
     U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
+    CHECK_NO_ERROR(os);
 
-    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
     QList<qint64> rowIds;
     rowIds << 0 << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12;
     MsaDbiUtils::removeRegion(msaRef, rowIds, 0, 14, os);
@@ -1007,10 +1009,10 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_all) {
 }
 
 IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_negativePos) {
-    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
     U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
+    CHECK_NO_ERROR(os);
 
-    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
     QList<qint64> rowIds;
     rowIds << 0;
     U2OpStatusImpl tmpOs;
@@ -1027,10 +1029,10 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_negativePos) {
 }
 
 IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongId) {
-    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
     U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
+    CHECK_NO_ERROR(os);
 
-    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
     QList<qint64> rowIds;
     rowIds << 20;
     U2OpStatusImpl tmpOs;
@@ -1039,10 +1041,10 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongId) {
 }
 
 IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongCount) {
-    U2MsaDbi *msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
     U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
+    CHECK_NO_ERROR(os);
 
-    U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment();
     QList<qint64> rowIds;
     rowIds << 0;
     U2OpStatusImpl tmpOs;

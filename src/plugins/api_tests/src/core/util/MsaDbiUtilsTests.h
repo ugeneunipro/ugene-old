@@ -46,7 +46,7 @@ public:
     static U2EntityRef initTestAlignment(const int);
     static QStringList getRowNames(U2EntityRef msaRef);
 
-    static U2EntityRef removeRegionTestAlignment();
+    static U2EntityRef removeRegionTestAlignment(U2OpStatus &os);
 
 private:
     static const QString alignmentName;
