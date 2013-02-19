@@ -808,16 +808,33 @@ void MsaDbiUtils::insertGaps(const U2EntityRef& msaRef, const QList<qint64>& row
     }
 }
 
+static DbiConnection * getCheckedConnection(const U2DbiRef &dbiRef, U2OpStatus &os) {
+    QScopedPointer<DbiConnection> con(new DbiConnection(dbiRef, os));
+    CHECK_OP(os, NULL);
+
+    if (NULL == con->dbi) {
+        os.setError("NULL root dbi");
+        return NULL;
+    }
+
+    if (NULL == con->dbi->getMsaDbi()) {
+        os.setError("NULL MSA dbi");
+        return NULL;
+    }
+
+    if (NULL == con->dbi->getSequenceDbi()) {
+        os.setError("NULL sequence dbi");
+        return NULL;
+    }
+    return con.take();
+}
+
 void MsaDbiUtils::removeRegion(const U2EntityRef& msaRef, const QList<qint64>& rowIds, qint64 pos, qint64 count, U2OpStatus& os) {
     // Prepare the connection
-    DbiConnection con(msaRef.dbiRef, os);
+    QScopedPointer<DbiConnection> con(getCheckedConnection(msaRef.dbiRef, os));
     SAFE_POINT_OP(os, );
-
-    U2MsaDbi* msaDbi = con.dbi->getMsaDbi();
-    SAFE_POINT(NULL != msaDbi, "NULL Msa Dbi!", );
-
-    U2SequenceDbi* sequenceDbi = con.dbi->getSequenceDbi();
-    SAFE_POINT(NULL != sequenceDbi, "NULL Sequence Dbi!", );
+    U2MsaDbi* msaDbi = con->dbi->getMsaDbi();
+    U2SequenceDbi* sequenceDbi = con->dbi->getSequenceDbi();
 
     // Check parameters
     U2Msa msa = msaDbi->getMsaObject(msaRef.entityId, os);
@@ -851,6 +868,35 @@ void MsaDbiUtils::removeRegion(const U2EntityRef& msaRef, const QList<qint64>& r
     }
 
     MsaDbiUtils::trim(msaRef, os);
+    SAFE_POINT_OP(os, );
+}
+
+void MsaDbiUtils::removeEmptyRows(const U2EntityRef& msaRef, const QList<qint64>& rowIds, U2OpStatus &os) {
+    QScopedPointer<DbiConnection> con(getCheckedConnection(msaRef.dbiRef, os));
+    SAFE_POINT_OP(os, );
+    U2MsaDbi *msaDbi = con->dbi->getMsaDbi();
+    U2SequenceDbi *sequenceDbi = con->dbi->getSequenceDbi();
+
+    validateRowIds(msaDbi, msaRef.entityId, rowIds, os);
+    CHECK_OP(os, );
+
+    // find empty rows
+    QList<qint64> emptyRowIds;
+    foreach (qint64 rowId, rowIds) {
+        U2MsaRow row = msaDbi->getRow(msaRef.entityId, rowId, os);
+        SAFE_POINT_OP(os, );
+        U2Sequence seq = sequenceDbi->getSequenceObject(row.sequenceId, os);
+        SAFE_POINT_OP(os, );
+        if (0 == seq.length) {
+            emptyRowIds << row.rowId;
+        }
+    }
+    if (emptyRowIds.isEmpty()) {
+        return;
+    }
+
+    // remove empty rows
+    msaDbi->removeRows(msaRef.entityId, emptyRowIds, os);
     SAFE_POINT_OP(os, );
 }
 
