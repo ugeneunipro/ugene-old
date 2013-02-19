@@ -112,13 +112,13 @@ void TopHatSupportTask::prepare()
     CHECK_OP(stateInfo, );
 
     workingDirectory = tmpDir.absolutePath();
-    url = workingDirectory + "/tmp_1.fa";
+    url = workingDirectory + "/tmp_1.fq";
 
     taskLog.trace(tr("Preparing TopHatSupportTask: created a temporary directory '%1'.").arg(workingDirectory));
 
 
-    // Create the tmp multi-fasta document
-    DocumentFormat* docFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA);
+    // Create the tmp multi-fastq document
+    DocumentFormat* docFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTQ);
     tmpDoc = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(url), stateInfo);
     CHECK_OP(stateInfo, );
 
@@ -148,7 +148,7 @@ void TopHatSupportTask::prepare()
 
     // If there are sequences from the second slot, write them to another document
     if (!settings.pairedSeqIds.isEmpty()) {
-        urlPaired = workingDirectory + "/tmp_2.fa";
+        urlPaired = workingDirectory + "/tmp_2.fq";
 
         tmpDocPaired = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(urlPaired), stateInfo);
         CHECK_OP(stateInfo, );
