@@ -403,7 +403,7 @@ QByteArray SQLiteAssemblyUtils::packData(SQLiteAssemblyDataMethod method, const 
         qMemCopy(data + pos, aux.constData(), aux.length());
     }
 
-#define _SQLITE_CHECK_ASSEMBLY_DATA_PACKING_
+//#define _SQLITE_CHECK_ASSEMBLY_DATA_PACKING_
 #ifdef _SQLITE_CHECK_ASSEMBLY_DATA_PACKING_
     U2AssemblyRead tmp(new U2AssemblyReadData());
     unpackData(res, tmp, os);
@@ -470,7 +470,7 @@ void SQLiteAssemblyUtils::unpackData(const QByteArray& packedData, U2AssemblyRea
     int qualityStart = cigarEnd + 1;
     int qualityEnd = qualityStart + sequence.length();
     if (qualityEnd > packedData.length()) {
-        assert(false);
+        assert(packedData.length() == qualityStart);
         qualityEnd = packedData.length();
     }
     qualityString.append(data + qualityStart, qualityEnd - qualityStart);
