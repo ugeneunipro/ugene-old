@@ -6,5 +6,8 @@ MsaDbiSQLiteSpecificUnitTests
 + updateMsaName_noModTrack
 + updateMsaName_undo
 + updateMsaName_redo
++ updateMsaAlphabet_noModTrack
++ updateMsaAlphabet_undo
++ updateMsaAlphabet_redo
 
 </unittest>

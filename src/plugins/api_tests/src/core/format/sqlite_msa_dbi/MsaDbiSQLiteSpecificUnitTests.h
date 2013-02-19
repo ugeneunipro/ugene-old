@@ -71,6 +71,11 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_redo);
 
+/** Update a MSA alphabet */
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_noModTrack);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_redo);
+
 
 } // namespace
 
@@ -78,5 +83,8 @@ DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_redo);
 
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_noModTrack);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_redo);
 
 #endif

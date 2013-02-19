@@ -248,7 +248,7 @@ private:
     void redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
 
     // Helper modification details parse methods
-    bool parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, QString alphabet);
+    bool parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, U2AlphabetId& oldAlphabet, U2AlphabetId& newAlphabet);
 
 
     ///////////////////////////////////////////////////////////

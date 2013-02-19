@@ -810,8 +810,8 @@ U2TrackModType ModTrackAction::prepareTracking(U2OpStatus& os) {
 }
 
 void ModTrackAction::saveTrack(qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
-    SAFE_POINT(!modDetails.isEmpty(), "Empty modification details!", );
     if (TrackOnUpdate == trackMod) {
+        SAFE_POINT(!modDetails.isEmpty(), "Empty modification details!", );
         U2ModStep modStep;
         modStep.objectId = objectId;
         modStep.version = objectVersionToTrack;

@@ -93,6 +93,7 @@ U2DataId SQLiteMsaDbi::createMsaObject(const QString& folder, const QString& nam
 void SQLiteMsaDbi::updateMsaName(const U2DataId& msaId, const QString& name, U2OpStatus& os) {
     ModTrackAction updateAction(dbi, msaId);
     updateAction.prepareTracking(os);
+    CHECK_OP(os, );
 
     // Update the name
     U2Object msaObj;
@@ -111,20 +112,21 @@ void SQLiteMsaDbi::updateMsaName(const U2DataId& msaId, const QString& name, U2O
 }
 
 void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& alphabet, U2OpStatus& os) {
-    U2TrackModType trackMod = dbi->getObjectDbi()->getTrackModType(msaId, os);
+    ModTrackAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepareTracking(os);
     CHECK_OP(os, );
 
-    // Remember old alphabet and version for the case when modifications tracking is required
-    U2AlphabetId oldAlphabet;
-    qint64 version = -1;
+    // Get modDetails, if required
+    QByteArray modDetails;
     if (TrackOnUpdate == trackMod) {
         U2Msa msaObj = getMsaObject(msaId, os);
         CHECK_OP(os, );
+        U2AlphabetId oldAlphabet = msaObj.alphabet;
 
-        oldAlphabet = msaObj.alphabet;
+        modDetails = CURRENT_MOD_DETAILS_VERSION +
+            oldAlphabet.id.toLatin1() + "&" +
+            alphabet.id.toLatin1();
 
-        version = dbi->getObjectDbi()->getObjectVersion(msaId, os);
-        CHECK_OP(os, );
     }
 
     // Update the alphabet
@@ -139,16 +141,8 @@ void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& 
     SQLiteObjectDbi::incrementVersion(msaId, db, os);
     CHECK_OP(os, );
 
-    // Track the modification
-    if (TrackOnUpdate == trackMod) {
-        U2ModStep modStep;
-        modStep.objectId = msaId;
-        modStep.version = version;
-        modStep.modType = U2ModType::msaUpdatedAlphabet;
-        modStep.details = CURRENT_MOD_DETAILS_VERSION +
-            oldAlphabet.id.toLatin1();
-        dbi->getModDbi()->createModStep(modStep, os);
-    }
+    // Track the modification, if required
+    updateAction.saveTrack(U2ModType::msaUpdatedAlphabet, modDetails, os);
 }
 
 void SQLiteMsaDbi::updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os) {
@@ -1098,14 +1092,15 @@ void SQLiteMsaDbi::redo(const U2DataId& msaId, qint64 modType, const QByteArray&
     }
 }
 
-bool SQLiteMsaDbi::parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, QString alphabet) {
+bool SQLiteMsaDbi::parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, U2AlphabetId& oldAlphabet, U2AlphabetId& newAlphabet) {
     QList<QByteArray> modDetailsParts = modDetails.split('&');
-    SAFE_POINT(2 == modDetailsParts.count(), QString("Invalid modDetails '%1'!").arg(QString(modDetails)), false);
+    SAFE_POINT(3 == modDetailsParts.count(), QString("Invalid modDetails '%1'!").arg(QString(modDetails)), false);
     SAFE_POINT(QByteArray("0") == modDetailsParts[0], QString("Invalid modDetails version '%1'").arg(QString(modDetailsParts[0])), false);
 
-    alphabet = QString(modDetailsParts[1]);
-    U2AlphabetId alphabetId = alphabet;
-    if (!alphabetId.isValid()) {
+    oldAlphabet = QString(modDetailsParts[1]);
+    newAlphabet = QString(modDetailsParts[2]);
+    
+    if (!oldAlphabet.isValid() || !newAlphabet.isValid()) {
         return false;
     }
 
@@ -1113,8 +1108,9 @@ bool SQLiteMsaDbi::parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, Q
 }
 
 void SQLiteMsaDbi::undoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
-    QString oldAlphabet;
-    bool ok = parseUpdateMsaAlphabetDetails(modDetails, oldAlphabet);
+    U2AlphabetId oldAlphabet;
+    U2AlphabetId newAlphabet;
+    bool ok = parseUpdateMsaAlphabetDetails(modDetails, oldAlphabet, newAlphabet);
     if (!ok) {
         os.setError("An error occurred during updating an alignment alphabet!");
         return;
@@ -1124,22 +1120,22 @@ void SQLiteMsaDbi::undoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray
     SQLiteQuery q("UPDATE Msa SET alphabet = ?1 WHERE object = ?2", db, os);
     CHECK_OP(os, );
 
-    q.bindString(1, oldAlphabet);
+    q.bindString(1, oldAlphabet.id);
     q.bindDataId(2, msaId);
     q.update(1);
 }
 
 void SQLiteMsaDbi::redoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
-    QString alphabet;
-    bool ok = parseUpdateMsaAlphabetDetails(modDetails, alphabet);
+    U2AlphabetId oldAlphabet;
+    U2AlphabetId newAlphabet;
+    bool ok = parseUpdateMsaAlphabetDetails(modDetails, oldAlphabet, newAlphabet);
     if (!ok) {
         os.setError("An error occurred during updating an alignment alphabet!");
         return;
     }
 
     // Redo the updating
-    U2AlphabetId alphabetId(alphabet);
-    updateMsaAlphabet(msaId, alphabetId, os);
+    updateMsaAlphabet(msaId, newAlphabet, os);
 }
 
 void SQLiteMsaDbi::undoAddRows(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {

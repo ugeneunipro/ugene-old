@@ -146,14 +146,14 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack) {
     // Verify the msa has been renamed
     U2Msa msaObj = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(msaObj.visualName, newName, "name");
+    CHECK_EQUAL(newName, msaObj.visualName, "name");
 
     // Verify the version has been incremented
     int versionAfterUpdate = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(objVersion + 1, versionAfterUpdate, "version");
 
-    // Verify that there is no modification steps
+    // Verify that there are no modification steps
     qint64 actualModStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(0, actualModStepsNum, "mod steps num");
@@ -175,6 +175,16 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_undo) {
     sqliteDbi->getMsaDbi()->updateMsaName(msaId, newName, os);
     CHECK_NO_ERROR(os);
 
+    // Verify the msa has been renamed
+    U2Msa msaObj = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(msaObj.visualName, newName, "name");
+
+    // Verify the version has been incremented
+    int versionAfterUpdate = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(objVersion + 1, versionAfterUpdate, "version");
+
     // Verify the modification step
     U2ModStep modStep = sqliteDbi->getModDbi()->getModStep(msaId, objVersion, os);
     QString expectedModDetails = "0&" + msaName + "&" + newName;
@@ -188,7 +198,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_undo) {
     sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
     CHECK_NO_ERROR(os);
 
-    // Verify the object name and version has been restored
+    // Verify the object name and version have been restored
     U2Msa msaObjAfterUndo = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(msaName, msaObjAfterUndo.visualName, "name after undo");
@@ -219,11 +229,122 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_redo) {
     sqliteDbi->getSQLiteObjectDbi()->redo(msaId, os);
     CHECK_NO_ERROR(os);
 
-    // Verify the object name and version has been restored
+    // Verify the object name and version
     U2Msa msaObjAfterUndo = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(newName, msaObjAfterUndo.visualName, "name after undo/redo");
     CHECK_EQUAL(objVersion + 1, msaObjAfterUndo.version, "version after undo/redo");
 }
+
+IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_noModTrack) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createTestMsa(false, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current version
+    int objVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Update the msa alphabet
+    U2AlphabetId oldAlphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    U2AlphabetId newAlphabet = BaseDNAAlphabetIds::NUCL_DNA_EXTENDED();
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, newAlphabet, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify the alphabet has been changed
+    U2Msa msaObj = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(newAlphabet.id, msaObj.alphabet.id, "alphabet");
+
+    // Verify the version has been incremented
+    int versionAfterUpdate = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(objVersion + 1, versionAfterUpdate, "version");
+
+    // Verify that there are no modification steps
+    qint64 actualModStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(0, actualModStepsNum, "mod steps num");
+}
+
+IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_undo) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current version
+    int objVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Update the msa alphabet
+    U2AlphabetId oldAlphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    U2AlphabetId newAlphabet = BaseDNAAlphabetIds::NUCL_DNA_EXTENDED();
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, newAlphabet, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify the alphabet has been changed
+    U2Msa msaObj = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(newAlphabet.id, msaObj.alphabet.id, "alphabet");
+
+    // Verify the version has been incremented
+    int versionAfterUpdate = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(objVersion + 1, versionAfterUpdate, "version");
+
+    // Verify the modification step
+    U2ModStep modStep = sqliteDbi->getModDbi()->getModStep(msaId, objVersion, os);
+    QString expectedModDetails = "0&" + oldAlphabet.id + "&" + newAlphabet.id;
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(msaId, modStep.objectId, "object id");
+    CHECK_EQUAL(objVersion, modStep.version, "version in mod step");
+    CHECK_EQUAL(U2ModType::msaUpdatedAlphabet, modStep.modType, "mod step type");
+    CHECK_EQUAL(expectedModDetails, QString(modStep.details), "mod step details");
+
+    // Undo alphabet updating
+    sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify the object alphabet and version have been restored
+    U2Msa msaObjAfterUndo = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldAlphabet.id, msaObjAfterUndo.alphabet.id, "name after undo");
+    CHECK_EQUAL(objVersion, msaObjAfterUndo.version, "version after undo");
+}
+
+IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_redo) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    QString msaName = MsaSQLiteSpecificTestData::TEST_MSA_NAME;
+    U2DataId msaId = MsaSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current version
+    int objVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Update the msa alphabet
+    U2AlphabetId oldAlphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    U2AlphabetId newAlphabet = BaseDNAAlphabetIds::NUCL_DNA_EXTENDED();
+    sqliteDbi->getMsaDbi()->updateMsaAlphabet(msaId, newAlphabet, os);
+    CHECK_NO_ERROR(os);
+
+    // Undo alphabet updatig
+    sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Redo alphabet updating
+    sqliteDbi->getSQLiteObjectDbi()->redo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify the object alphabet and version
+    U2Msa msaObjAfterUndo = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(newAlphabet.id, msaObjAfterUndo.alphabet.id, "alphabet after undo/redo");
+    CHECK_EQUAL(objVersion + 1, msaObjAfterUndo.version, "version after undo/redo");
+}
+
 
 } // namespace
