@@ -47,6 +47,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include <U2Algorithm/PhyTreeGeneratorTask.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
@@ -519,6 +520,19 @@ void MSAEditor::calcFontPixelToPointSizeCoef() {
     
 }
 
+void MSAEditor::copyRowFromSequence(U2SequenceObject *seqObj, U2OpStatus &os) {
+    U2Sequence seq = U2SequenceUtils::copySequence(seqObj->getEntityRef(), msaObject->getEntityRef().dbiRef, os);
+    CHECK_OP(os, );
+
+    U2MsaRow row;
+    row.rowId = -1; // set the ID automatically
+    row.sequenceId = seq.id;
+    row.gstart = 0;
+    row.gend = seq.length;
+
+    msaObject->addRow(row, seqObj->getWholeSequence());
+}
+
 bool MSAEditor::eventFilter(QObject*, QEvent* e) {
     if (e->type() == QEvent::DragEnter || e->type() == QEvent::Drop) {
         QDropEvent* de = (QDropEvent*)e;
@@ -535,14 +549,10 @@ bool MSAEditor::eventFilter(QObject*, QEvent* e) {
                 }
                 if (e->type() == QEvent::DragEnter) {
                     de->acceptProposedAction();
-                } else {     
-                    U2MsaRow row;
-                    row.sequenceId = dnaObj->getEntityRef().entityId;
-                    row.gstart = 0;
-                    row.gend = dnaObj->getSequenceLength();
-
-                    msaObject->addRow(row, dnaObj->getWholeSequence());
-                }    
+                } else {
+                    U2OpStatus2Log os;
+                    copyRowFromSequence(dnaObj, os);
+                }
             }
         }
     }

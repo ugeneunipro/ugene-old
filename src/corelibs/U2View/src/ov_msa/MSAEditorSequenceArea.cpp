@@ -44,7 +44,6 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SequenceUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/ProjectModel.h>
@@ -1734,24 +1733,17 @@ void MSAEditorSequenceArea::sl_addSeqFromProject()
 
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings,this);
 
-    if (!objects.isEmpty()) {
-        foreach(GObject* obj, objects) {
-            if (obj->isUnloaded()) {
-                continue;
-            }
-            U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
-            if (seqObj) {
-                U2MsaRow rowInDb;
-                rowInDb.rowId = -1; // set the ID automatically
-                rowInDb.sequenceId = seqObj->getEntityRef().entityId;
-                rowInDb.gstart = 0;
-                rowInDb.gend = seqObj->getSequenceLength();
-
-                msaObject->addRow(rowInDb, seqObj->getWholeSequence());
-                cancelSelection();
-            }
+    foreach(GObject* obj, objects) {
+        if (obj->isUnloaded()) {
+            continue;
         }
-    }    
+        U2SequenceObject *seqObj = qobject_cast<U2SequenceObject*>(obj);
+        if (seqObj) {
+            U2OpStatus2Log os;
+            editor->copyRowFromSequence(seqObj, os);
+            cancelSelection();
+        }
+    }
 }
 
 void MSAEditorSequenceArea::sl_sortByName() {

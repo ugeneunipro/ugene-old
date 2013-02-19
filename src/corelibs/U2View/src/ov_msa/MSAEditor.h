@@ -27,6 +27,7 @@
 #include <U2Core/U2Region.h>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 #include <U2Core/PhyTree.h>
+#include <U2Core/U2OpStatus.h>
 
 #include <QtGui/QMenu>
 #include <QtGui/QSplitter>
@@ -45,6 +46,7 @@ class MSAEditorUndoFramework;
 class PhyTreeGeneratorLauncherTask;
 class MSAEditorTreeViewer;
 class MSACollapsibleItemModel;
+class U2SequenceObject;
 
 #define MSAE_MENU_COPY          "MSAE_MENU_COPY"
 #define MSAE_MENU_EDIT          "MSAE_MENU_EDIT"
@@ -96,7 +98,9 @@ public:
     int getRowHeight() const;
 
     int getColumnWidth() const;
-    
+
+    void copyRowFromSequence(U2SequenceObject *seqObj, U2OpStatus &os);
+
     static const float zoomMult;
    
 signals:

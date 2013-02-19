@@ -88,7 +88,8 @@ U2Sequence U2SequenceUtils::copySequence(const U2EntityRef& srcSeq, const U2DbiR
     CHECK_OP(os, res);
     QVariantMap hints;
     dstCon.dbi->getSequenceDbi()->updateSequenceData(res.id, U2Region(0, 0), wholeSeq, hints, os);
-
+    CHECK_OP(os, res);
+    res.length += wholeSeq.length();
    
     return res;
 }
