@@ -110,245 +110,103 @@ void SmithWatermanAlgorithmSSE2::launch(const SMatrix& _substitutionMatrix, QByt
 //Calculating dynamic matrix
 //and save results
 void SmithWatermanAlgorithmSSE2::calculateMatrix() {
-    char ch;
-    //ScoreType substValue = 0; //warning: unused variable substValue
-    ScoreType max = 0;
+    int i, j, n, e1, k, max, pos;
+    __m128i f1, f2, f3, f4, f5;
+    unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
+    unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
+    unsigned int iter = (pat_n + 7) >> 3;
 
-    int matrixLengthDivisibleByN = matrixLength;
-    int patternLengthDivisibleByN = patternSeq.length() + 1;
+    n = (iter + 1) * 5;
+    __m128i *buf, *matrix = (__m128i*)_mm_malloc((n + iter * 0x80) * sizeof(__m128i), 16);
+    short *score_i, *score = (short*)(matrix + n);
+    memset(matrix, 0, n * sizeof(__m128i));
 
-    matrixLengthDivisibleByN += nElementsInVec - matrixLengthDivisibleByN % nElementsInVec;
-    patternLengthDivisibleByN += nElementsInVec - patternLengthDivisibleByN % nElementsInVec;
-
-    ScoreType * temp = (ScoreType*)_mm_malloc(nElementsInVec*sizeof(ScoreType),16);
-    for (int pp = 0; pp < nElementsInVec; pp++) temp[pp] = 0;
-
-    __m128i zero = _mm_set1_epi32(0);
-    __m128i tmp = _mm_set1_epi32(0);
-
-    //Load 0 all elements of vector zero
-    zero = _mm_insert_epi16 (zero, 0, 0);
-    zero = _mm_shufflelo_epi16 (zero, 0);
-    zero = _mm_shuffle_epi32 (zero, 0);
-
-    __m128i substValVec = zero;        
-
-
-    //    int f1, f2, e1, e2;
-    __m128i f1 = zero, f2 = zero, f3 = zero;//, e1 = zero, e2 = zero, e3 = zero; //warning: unused variables e1, e2, e3
-    __m128i gapOpenVec = _mm_set1_epi32(0);
-    __m128i gapExtensionVec  = _mm_set1_epi32(0);
-    __m128i maxVec  = _mm_set1_epi32(0);
-
-    // Load gap opening penalty to all elements of a vector
-    gapOpenVec = _mm_insert_epi16 (gapOpenVec, gapOpen, 0);
-    gapOpenVec = _mm_shufflelo_epi16 (gapOpenVec, 0);
-    gapOpenVec = _mm_shuffle_epi32 (gapOpenVec, 0);
-
-    // Load gap extension penalty to all elements of a vector
-    gapExtensionVec = _mm_insert_epi16 (gapExtensionVec, gapExtension, 0);
-    gapExtensionVec = _mm_shufflelo_epi16 (gapExtensionVec, 0);
-    gapExtensionVec = _mm_shuffle_epi32 (gapExtensionVec, 0);        
-
-    ScoreType * EArray = (ScoreType*)_mm_malloc((nElementsInVec + patternLengthDivisibleByN)*sizeof(ScoreType),16);
-    ScoreType * FArray = (ScoreType*)_mm_malloc((nElementsInVec + patternLengthDivisibleByN)*sizeof(ScoreType),16);
-    ScoreType * maxArray = (ScoreType*)_mm_malloc((nElementsInVec + patternLengthDivisibleByN)*sizeof(ScoreType),16);
-    
-    for (int tt = 0; tt < patternLengthDivisibleByN; tt++) {            
-        FArray[tt] = 0;
-        EArray[tt] = 0;
+    foreach(char ch, substitutionMatrix.getAlphabet()->getAlphabetChars()){
+        score_i = score + ch * iter * 8;
+        j = 0; do *score_i++ = substitutionMatrix.getScore(ch, pat[j]); while(++j < pat_n);
+        if(j = -j & 7) do *score_i++ = -0x8000; while(--j);
     }
 
-    ScoreType ** matrix = new ScoreType*[matrixLengthDivisibleByN];    
-    matrix[0] = (ScoreType*)_mm_malloc(matrixLengthDivisibleByN*patternLengthDivisibleByN*sizeof(ScoreType), 16);
-    for (int i = 1; i < matrixLengthDivisibleByN; i++) {
-        matrix[i] = matrix[i-1] + patternLengthDivisibleByN;
-    }
-    
-    __m128i * pvScore;
-
-    int segSize = (patternSeq.length() + nElementsInVec - 1) / nElementsInVec; //count iter
-
-    int ALPHA_SIZE = substitutionMatrix.getAlphabet()->getNumAlphabetChars();
-
-    __m128i* pvQueryProf = (__m128i*)_mm_malloc
-        ('Z'*ALPHA_SIZE*segSize*sizeof(__m128i), 16);    
-
-    ScoreType * queryProfile = (ScoreType *) pvQueryProf;
-    
-    
-    QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
-    for (int i = 0; i <ALPHA_SIZE ; i++) {        
-        
-        char ch = alphaChars.at(i);
-        
-        int posI = ch * segSize * nElementsInVec;
-
-        for (int j = 0; j < segSize; j++) {
-            for (int k = j; k < segSize*nElementsInVec; k+=segSize) {                        
-                if (k >= patternSeq.length()) 
-                    queryProfile[posI + k] = 0;
-                else {
-                    queryProfile[posI + k] = 
-                        (ScoreType)substitutionMatrix.getScore(patternSeq.at(k), ch);                    
-                }
-            }                    
-        }
-    }
-
-//////////////////////////////////////////////////////////////////////////
-
-    for (int tt = 0; tt < matrixLengthDivisibleByN; tt++) 
-        for (int ww = 0; ww < patternLengthDivisibleByN; ww++) matrix[tt][ww] = 0;
-
-
-    //initialization dynamic matrices        
-    QVector<char> rowChars;
-    QVector<int> rowInts;
-    for (int tt = 0; tt < patternLengthDivisibleByN + 1; tt++) {    
-        rowInts.append(0);
-    }
-
-    if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-        for (int tt = 0; tt < patternSeq.length() + 2; tt++) {        
-            rowChars.append(STOP);
-        }
-        for (int tt = 0; tt < matrixLength; tt++) {
-            directionMatrix.append(rowChars);
-        }
-    }
-
-    ScoreType ee1 = 0, ee2 = 0;
-
+    __m128i xMax, xPos;
+    __m128i xOpen = _mm_insert_epi16(xOpen, gapOpen, 0);
+    __m128i xExt = _mm_insert_epi16(xExt, gapExtension, 0);
+    xOpen = _mm_shufflelo_epi16(xOpen, 0);
+    xExt = _mm_shufflelo_epi16(xExt, 0);
+    xOpen = _mm_unpacklo_epi32(xOpen, xOpen);
+    xExt = _mm_unpacklo_epi32(xExt, xExt);
 
     PairAlignSequences p;
 
-    QVector<QVector<int> > directionSearchSeq;
-    if(SmithWatermanSettings::ANNOTATIONS == resultView) {
-        directionSearchSeq.push_back(rowInts);
-        directionSearchSeq.push_back(rowInts);
+#define SWI(x) ((short*)(x))
+#define SWLOOP(SWA, SWB) \
+    buf = matrix + 5; \
+    score_i = score + src[i - 1] * iter * 8; \
+    xMax = _mm_xor_si128(xMax, xMax); \
+    f4 = _mm_insert_epi16(f4, i, 0); \
+    f4 = _mm_shufflelo_epi16(f4, 0); \
+    f4 = _mm_unpacklo_epi32(f4, f4); \
+    e1 = gapExtension; n = i; \
+    SWI(SWB - 5 + 1)[7] = i - 1; \
+    j = iter; do { \
+    f2 = _mm_slli_si128(_mm_load_si128(SWB), 2); \
+    f1 = _mm_slli_si128(_mm_load_si128(SWB + 1), 2); \
+    f2 = _mm_insert_epi16(f2, SWI(SWB - 5)[7], 0); \
+    f1 = _mm_insert_epi16(f1, SWI(SWB - 5 + 1)[7], 0); /* subst pos */ \
+    f2 = _mm_adds_epi16(f2, *((__m128i*)score_i)); score_i += 8; /* subst */ \
+    /* f2 f1 */ \
+    f3 = _mm_xor_si128(f3, f3); \
+    f2 = _mm_max_epi16(f2, f3); \
+    f3 = _mm_cmpeq_epi16(f3, f2); \
+    f3 = _mm_or_si128(_mm_and_si128(f3, f4), _mm_andnot_si128(f3, f1)); \
+    /* f2 f3 */ \
+    xMax = _mm_max_epi16(xMax, f2); \
+    f1 = _mm_cmpeq_epi16(f2, xMax); \
+    xPos = _mm_or_si128(_mm_and_si128(f1, f3), _mm_andnot_si128(f1, xPos)); \
+    \
+    f1 = _mm_adds_epi16(_mm_load_si128(buf + 4), xExt); \
+    f1 = _mm_max_epi16(f1, _mm_adds_epi16(_mm_load_si128(SWB), xOpen)); \
+    _mm_store_si128(buf + 4, f1); \
+    \
+    f1 = _mm_max_epi16(f1, f2); \
+    f2 = _mm_cmpeq_epi16(f2, f1); \
+    f2 = _mm_or_si128(_mm_and_si128(f2, f3), _mm_andnot_si128(f2, _mm_load_si128(SWB + 1))); \
+    \
+    _mm_store_si128(SWA, f1); \
+    _mm_store_si128(SWA + 1, f2); \
+    \
+    k = 0; do { \
+    if(e1 <= SWI(SWA)[k]) { max = SWI(SWA)[k] + gapOpen; n = SWI(SWA + 1)[k]; \
+    e1 += gapExtension; e1 = e1 > max ? e1 : max; } \
+          else { SWI(SWA)[k] = e1; SWI(SWA + 1)[k] = n; e1 += gapExtension; } \
+    } while(++k < 8); \
+    buf += 5; \
+    } while(--j); \
+    \
+    max = SWI(&xMax)[0]; n = 0; \
+    k = 1; do { \
+    e1 = SWI(&xMax)[k]; \
+    if(e1 >= max) { max = e1; n = k; } \
+    } while(++k < 8); \
+    \
+    if(max >= minScore) { \
+    n = ((SWI(&xPos)[n] - i - 1) | -0x10000) + i + 1; \
+    p.score = max; \
+    p.refSubseqInterval.startPos = n; \
+    p.refSubseqInterval.length = i - n; \
+    pairAlignmentStrings.append(p); \
+    printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score); \
     }
 
-    int even = 0;
-    int odd = 0;
+    i = 1; do {
+        SWLOOP(buf, buf + 2);
+        if(++i > src_n) break;
+        SWLOOP(buf + 2, buf);
+    } while(++i <= src_n);
 
-    //Start dynamic programming
-    for (int i = 1; i < searchSeq.length() + 1; i++) {
+#undef SWLOOP
+#undef SWI
 
-        ch = searchSeq.at(i - 1);
-
-        pvScore = pvQueryProf + ch * segSize;
-        
-        if(SmithWatermanSettings::ANNOTATIONS == resultView) {
-            even = i % 2;
-            odd = (i + 1) % 2;
-
-            directionSearchSeq[odd][0] = i - 1;
-
-            p.score = 0;
-        }
-        for (int j = 0; j < patternSeq.length(); j += nElementsInVec) {                            
-//TODO: use __m128i*, not array
-            f1 = _mm_load_si128((__m128i*) ((ScoreType *) &FArray[j]));                        
-            f1 = _mm_add_epi16(f1, gapExtensionVec);        
-
-            tmp = _mm_load_si128((__m128i*) ((ScoreType *) &matrix[getRow(i-1)][j]));
-            f2 = _mm_add_epi16(tmp, gapOpenVec);                    
-
-            f3 = _mm_max_epi16(f1, f2);                        
-
-            _mm_store_si128((__m128i*) &FArray[j], f3);            
-
-            substValVec = _mm_load_si128( pvScore++ );
-
-
-            tmp = _mm_slli_si128(tmp, 2);
-
-            tmp = _mm_insert_epi16 (tmp, matrix[getRow(i-1)][j-1], 0);
-
-            tmp = _mm_add_epi16(tmp, substValVec);
-
-            _mm_store_si128((__m128i*) &temp[0], tmp);
-
-            maxVec = _mm_max_epi16(tmp, f3);
-            
-            _mm_store_si128((__m128i*) &maxArray[0], maxVec);
-
-
-//Use non vector operations for calculate maxScore and backtrace
-            for (int pp = j; pp < j + nElementsInVec && pp < patternSeq.length(); pp++) {
-                int eIndex = pp + 1;
-                ee1 = EArray[eIndex - 1] + gapExtension;                
-                ee2 = matrix[getRow(i)][pp - 1] + gapOpen;
-
-                if (ee1 > ee2) EArray[eIndex] = ee1;
-                else EArray[eIndex] = ee2;
-                
-                if (maxArray[pp - j] > EArray[eIndex]) max = maxArray[pp - j];
-                else max = EArray[eIndex];
-
-                if (max < 0) max = 0;
-
-                matrix[getRow(i)][pp] = max;
-                int col = pp + 1;
-
-                if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-                    //Save direction from we come here for back trace
-                    if (max == 0) {
-                        directionMatrix[getRow(i)][col] = STOP;
-                    } else if (max == EArray[eIndex]) {
-                        directionMatrix[getRow(i)][col] = LEFT;
-                    } else if (max == FArray[pp]) {
-                        directionMatrix[getRow(i)][col] = UP;
-                    } else if (max == temp[pp - j]) {
-                        directionMatrix[getRow(i)][col] = DIAG;
-                    }
-
-                    //If value meet the conditions then start backtrace()
-                    if (max >= minScore) {
-                        backtrace(i, col, max);
-                    }
-                } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
-                    if (max == 0) {
-                        directionSearchSeq[even][col] = i;                
-                    }
-                    else if (max == EArray[eIndex]) {
-                        directionSearchSeq[even][col] = directionSearchSeq[even][col - 1];
-                    }
-                    else if (max == FArray[pp]) {
-                        directionSearchSeq[even][col] = directionSearchSeq[odd][col];
-                    }
-                    else if (max == temp[pp - j]) {                    
-                        directionSearchSeq[even][col] = directionSearchSeq[odd][col - 1];                
-                    }
-                    if (max >= p.score) {
-                        p.score = max;
-                        p.refSubseqInterval.startPos = directionSearchSeq[even][col];
-                        p.refSubseqInterval.length = i - p.refSubseqInterval.startPos;
-                    }
-                }
-            }
-        }    
-        if (SmithWatermanSettings::ANNOTATIONS == resultView && p.score >= minScore) {
-            pairAlignmentStrings.append(p);
-        }
-//        Print matrix
-//                  for(int k = 0; k < patternSeq.length() + 1 ; k++) cout <<matrix[getRow(i)][k] <<" ";
-//                  cout <<endl;            
-//                 for(int k = 1; k < patternSeq.length() + 1; k++) cout <<directionMatrix[getRow(i)][k] <<" ";
-//                 cout <<endl;        
-
-    }
-//Free memory
-    _mm_free(EArray);
-    _mm_free(FArray);
-    _mm_free(temp);    
-    _mm_free(maxArray);
-    _mm_free(pvQueryProf);
-    
-    //TODO: it is correct?    
-    _mm_free(matrix[0]);
-    delete matrix;
+    _mm_free(matrix);
 }
 
 int SmithWatermanAlgorithmSSE2::calculateMatrixSSE2(unsigned queryLength, unsigned char *dbSeq, unsigned dbLength, unsigned short gapOpenOrig, unsigned short gapExtend) {
