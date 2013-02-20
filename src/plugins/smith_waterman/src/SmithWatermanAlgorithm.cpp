@@ -238,7 +238,6 @@ void SmithWatermanAlgorithm::calculateMatrix() {
             p.refSubseqInterval.startPos = pos;
             p.refSubseqInterval.length = i - pos;
             pairAlignmentStrings.append(p);
-            printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
         }
     } while(++i <= src_n);
 

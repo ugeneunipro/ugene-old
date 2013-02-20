@@ -194,7 +194,6 @@ void SmithWatermanAlgorithmSSE2::calculateMatrix() {
     p.refSubseqInterval.startPos = n; \
     p.refSubseqInterval.length = i - n; \
     pairAlignmentStrings.append(p); \
-    printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score); \
     }
 
     i = 1; do {
