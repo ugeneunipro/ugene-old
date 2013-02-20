@@ -84,7 +84,7 @@ bool SmithWatermanAlgorithm::calculateMatrixLength() {
     int maxScore = 0;
     int max;    
     int substValue = 0;    
-
+    
     QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
     for (int i = 0; i < patternSeq.length(); i++) {
         max = 0;        
@@ -98,17 +98,23 @@ bool SmithWatermanAlgorithm::calculateMatrixLength() {
         }
         maxScore += max;
     }        
-
-    if (minScore > maxScore) return 0;
-
+    
+    if (minScore > maxScore) {                        
+        //Error: perhaps minScore > maxScore
+        algoLog.trace(QString("SW Error min score > max score. Min score: %1, max score: %2").arg(minScore).arg(maxScore));
+        return false;
+    }    
+    
     int gap = gapOpen;
     if (gapOpen < gapExtension) gap = gapExtension;
 
-
+    
     if (gap < 0) matrixLength = patternSeq.length() + (maxScore - minScore)/gap * (-1) + 1;    
+
     if (searchSeq.length() + 1 < matrixLength) matrixLength = searchSeq.length() + 1;
 
-    return 1;
+    return true;    
+
 }
 
 void SmithWatermanAlgorithm::setValues(const SMatrix& _substitutionMatrix, 
@@ -164,12 +170,38 @@ QList<PairAlignSequences> SmithWatermanAlgorithm::getResults() {
 }
 
 void SmithWatermanAlgorithm::sortByScore( QList<PairAlignSequences> & res) {
+    algoLog.trace("RUN sortByScore");
     QList<PairAlignSequences> buf;
     QVector<int> pos;    
     QVector<KeyOfPairAlignSeq> sortedScores;
 
-    for (int i = 0; i < res.size(); i++){ 
+//     for (int i = 0; i < res.size(); i++) {
+//         pos.append(i);        
+//         sortedScores.append(
+//             KeyOfPairAlignSeq(res.at(i).score, 
+//             res.at(i).intervalSeq1));
+//     }
+
+    for (int i = 0; i < res.size(); i++) 
         for (int j = i + 1; j < res.size(); j++) {
+
+
+//             if (sortedScores.at(i).score < sortedScores.at(j).score)
+//                 KeyOfPairAlignSeq::exchange(sortedScores[i], pos[i], sortedScores[j] , pos[j]);
+// 
+//             else if (sortedScores.at(i).score == sortedScores.at(j).score 
+//                 && sortedScores.at(i).intervalSeq1.startPos > sortedScores.at(j).intervalSeq1.startPos)                                 KeyOfPairAlignSeq::exchange(sortedScores[i], pos[i], sortedScores[j] , pos[j]);
+// 
+//             else if (sortedScores.at(i).score == sortedScores.at(j).score 
+//                 && sortedScores.at(i).intervalSeq1.startPos == sortedScores.at(j).intervalSeq1.startPos
+//                 && sortedScores.at(i).intervalSeq1.len > sortedScores.at(j).intervalSeq1.len) 
+//                 KeyOfPairAlignSeq::exchange(sortedScores[i], pos[i], sortedScores[j] , pos[j]);
+// 
+//             else if (sortedScores.at(i).score == sortedScores.at(j).score 
+//                 && sortedScores.at(i).intervalSeq1.startPos == sortedScores.at(j).intervalSeq1.startPos
+//                 && sortedScores.at(i).intervalSeq1.len == sortedScores.at(j).intervalSeq1.len
+//                 && sortedScores.at(i).intervalSeq2.startPos > sortedScores.at(j).intervalSeq2.startPos) 
+//                 KeyOfPairAlignSeq::exchange(sortedScores[i], pos[i], sortedScores[j] , pos[j]);                    
 
             if (res.at(i).score < res.at(j).score) {
                 KeyOfPairAlignSeq::exchange(res[i],res[j]);
@@ -184,65 +216,139 @@ void SmithWatermanAlgorithm::sortByScore( QList<PairAlignSequences> & res) {
                     KeyOfPairAlignSeq::exchange(res[i], res[j]);
             }
         }
-    }
+
+//         for (int i = 0; i < res.size(); i++) {        
+//             buf.append(res.at(pos.at(i)));
+//         }
+//        res = buf;
+
+
+        algoLog.trace("FINISH sortByScore");
 }
 
 
 //Calculating dynamic matrix
 //and save results
 void SmithWatermanAlgorithm::calculateMatrix() {
-    int subst, max, pos;
-    int i, j, n, e1, f1, f2, f3;
-    unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
-    unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
+    QString str;        
+    char ch;
+    int substValue = 0, max = 0;
+    int f1, f2, e1, e2;
 
-    n = pat_n * 3;
-    int *buf, *matrix = (int*)malloc(n * sizeof(int) + pat_n * 0x80);
-    char *score_i, *score = (char*)(matrix + n);
-    memset(matrix, 0, n * sizeof(int));
+    //initialization dynamic matrices
+    QVector<int> rowInts;
+    QVector<char> rowChars;
+    for (int tt = 0; tt < patternSeq.length() + 2; tt++) {        
+        rowInts.append(0);
+        rowChars.append(STOP);
+        EMatrix.append(0);
+        FMatrix.append(0);
+    }    
 
-    foreach(char ch, substitutionMatrix.getAlphabet()->getAlphabetChars()){
-        score_i = score + ch * pat_n;
-        j = 0; do score_i[j] = substitutionMatrix.getScore(ch, pat[j]); while(++j < pat_n);
+    for (int tt = 0; tt < matrixLength; tt++) {            
+        matrix.append(rowInts);
+        if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+            directionMatrix.append(rowChars);
+        }
     }
 
     PairAlignSequences p;
 
-    i = 1; do {
-        buf = matrix;
-        score_i = score + src[i - 1] * pat_n;
-        e1 = 0; p.score = 0;
-        f3 = i - 1; subst = 0;
-        j = pat_n; do {
-            f1 = buf[2] + gapExtension;
-            f2 = buf[0] + gapOpen;
-            f1 = f1 > f2 ? f1 : f2;
-            subst += *score_i++;
-            buf[2] = f1;
+    QVector<QVector<int> > directionSearchSeq;
+    if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+        directionSearchSeq.push_back(rowInts);
+        directionSearchSeq.push_back(rowInts);
+    }
 
-            max = subst; n = f3; \
-                if(max >= p.score) { p.score = max; pos = n; } \
-                    if(max <= 0) { max = 0; n = i; }
-                    if(max < f1) { max = f1; n = buf[1]; }
-                    if(max < e1) { max = e1; n = buf[1 - 3]; }
-                    subst = buf[0]; f3 = buf[1];
-                    buf[0] = max; buf[1] = n;
+    int even = 0;
+    int odd = 0;
+    for (int i = 1; i < searchSeq.length() + 1; i++) {
+        ch = searchSeq.at(i - 1);
+        
+        if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+            even = i % 2;
+            odd = (i + 1) % 2;
 
-                    e1 += gapExtension;
-                    max += gapOpen;
-                    e1 = e1 > max ? e1 : max;
-                    buf += 3;
-        } while(--j);
-
-        if(p.score >= minScore) {
-            p.refSubseqInterval.startPos = pos;
-            p.refSubseqInterval.length = i - pos;
-            pairAlignmentStrings.append(p);
-            printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
+            directionSearchSeq[odd][0] = i - 1;
+            p.score = 0;
         }
-    } while(++i <= src_n);
 
-    free(matrix);
+        for (int j = 1; j < patternSeq.length()+1; j++) {                
+
+            f1 = FMatrix[j] + gapExtension;                
+            f2 = matrix[getRow(i-1)][j] + gapOpen;
+
+            if (f1 > f2) FMatrix[j] = f1;
+            else FMatrix[j] = f2;
+
+            e1 = EMatrix[j - 1] + gapExtension;                
+            e2 = matrix[getRow(i)][j-1] + gapOpen;
+
+            if (e1 > e2) EMatrix[j] = e1;
+            else EMatrix[j] = e2;
+
+            substValue = matrix[getRow(i-1)][j-1] 
+                + substitutionMatrix.getScore(ch, patternSeq.at(j-1));
+            
+            //Get max value and store them
+            max = maximum(EMatrix[j], FMatrix[j], substValue);
+            matrix[getRow(i)][j] = max;
+            
+            if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
+                //Save direction from we come here for back trace
+                 if (max == 0) {
+                     directionMatrix[getRow(i)][j] = STOP;
+                 } else if (max == EMatrix[j]) {
+                     directionMatrix[getRow(i)][j] = LEFT;
+                 } else if (max == FMatrix[j]) {
+                     directionMatrix[getRow(i)][j] = UP;
+                 } else if (max == substValue) {
+                     directionMatrix[getRow(i)][j] = DIAG;
+                 }
+
+                //If value meet the conditions then start backtrace()
+                if (max >= minScore) {
+                    backtrace(i, j, max);
+                }
+            } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+                if (max == 0) {
+                    directionSearchSeq[even][j] = i;                
+                }
+                else if (max == EMatrix[j]) {
+                    directionSearchSeq[even][j] = directionSearchSeq[even][j - 1];                
+                }
+                else if (max == FMatrix[j]) {
+                    directionSearchSeq[even][j] = directionSearchSeq[odd][j];                                
+                }
+                else if (max == substValue) {
+                    directionSearchSeq[even][j] = directionSearchSeq[odd][j - 1];                
+                }
+                if (max >= p.score) {
+                    p.refSubseqInterval.startPos = directionSearchSeq[even][j];
+                    p.refSubseqInterval.length = i - directionSearchSeq[even][j];
+                    p.score = max;
+                }
+            } else {
+                assert(0);
+            }
+        }
+        if (SmithWatermanSettings::ANNOTATIONS == resultView && p.score >= minScore) {
+            pairAlignmentStrings.append(p);
+        }
+
+//         for (int qq = 0; qq < directionSearchSeq[0].size(); qq++) {
+//             cout <<directionSearchSeq[even][qq] <<" ";
+//         }
+//         cout <<endl;
+
+        //Print matrix
+//         QString str = "";
+//         for(int k = 1; k < patternSeq.length() + 1; k++) str += QString::number(directionSearchSeq[even][k]) + " ";
+//        for(int k = 1; k < patternSeq.length() + 1; k++) str += QString::number(FMatrix[k]) + " ";
+//        for(int k = 1; k < patternSeq.length() + 1; k++) str += QString::number(matrix[getRow(i)][k]) + " ";
+//       log.info(str);
+
+    }
 }
 
 
