@@ -1029,66 +1029,64 @@ void SQLiteMsaDbi::updateRecordFromMsaRow(const U2DataId& msaId, const U2MsaRow&
 }
 
 void SQLiteMsaDbi::undo(const U2DataId& msaId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
-    switch (modType) {
-        case U2ModType::msaUpdatedAlphabet:
-            undoUpdateMsaAlphabet(msaId, modDetails, os);
-            break;
-        case U2ModType::msaAddedRows:
-            undoAddRows(msaId, modDetails, os);
-            break;
-        case U2ModType::msaAddedRow:
-            undoAddRow(msaId, modDetails, os);
-            break;
-        case U2ModType::msaRemovedRows:
-            undoRemoveRows(msaId, modDetails, os);
-            break;
-        case U2ModType::msaRemovedRow:
-            undoRemoveRow(msaId, modDetails, os);
-            break;
-        case U2ModType::msaUpdatedRowContent:
-            undoUpdateRowContent(msaId, modDetails, os);
-            break;
-        case U2ModType::msaUpdatedGapModel:
-            undoUpdateGapModel(msaId, modDetails, os);
-            break;
-        case U2ModType::msaSetNewRowsOrder:
-            undoSetNewRowsOrder(msaId, modDetails, os);
-            break;
-        default:
-            os.setError(QString("Unexpected modification type '%1'!").arg(QString::number(modType)));
-            return;
+    if (U2ModType::msaUpdatedAlphabet == modType) {
+        undoUpdateMsaAlphabet(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaAddedRows == modType) {
+        undoAddRows(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaAddedRow == modType) {
+        undoAddRow(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaRemovedRows == modType) {
+        undoRemoveRows(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaRemovedRow == modType) {
+        undoRemoveRow(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaUpdatedRowContent == modType) {
+        undoUpdateRowContent(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaUpdatedGapModel == modType) {
+        undoUpdateGapModel(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaSetNewRowsOrder == modType) {
+        undoSetNewRowsOrder(msaId, modDetails, os);
+    }
+    else {
+        os.setError(QString("Unexpected modification type '%1'!").arg(QString::number(modType)));
+        return;
     }
 }
 
 void SQLiteMsaDbi::redo(const U2DataId& msaId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
-    switch(modType) {
-        case U2ModType::msaUpdatedAlphabet:
-            redoUpdateMsaAlphabet(msaId, modDetails, os);
-            break;
-        case U2ModType::msaAddedRows:
-            redoAddRows(msaId, modDetails, os);
-            break;
-        case U2ModType::msaAddedRow:
-            redoAddRow(msaId, modDetails, os);
-            break;
-        case U2ModType::msaRemovedRows:
-            redoRemoveRows(msaId, modDetails, os);
-            break;
-        case U2ModType::msaRemovedRow:
-            redoRemoveRow(msaId, modDetails, os);
-            break;
-        case U2ModType::msaUpdatedRowContent:
-            redoUpdateRowContent(msaId, modDetails, os);
-            break;
-        case U2ModType::msaUpdatedGapModel:
-            redoUpdateGapModel(msaId, modDetails, os);
-            break;
-        case U2ModType::msaSetNewRowsOrder:
-            redoSetNewRowsOrder(msaId, modDetails, os);
-            break;
-        default:
-            os.setError(QString("Unexpected modification type '%1'!").arg(QString::number(modType)));
-            return;
+    if (U2ModType::msaUpdatedAlphabet == modType) {
+        redoUpdateMsaAlphabet(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaAddedRows == modType) {
+        redoAddRows(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaAddedRow == modType) {
+        redoAddRow(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaRemovedRows == modType) {
+        redoRemoveRows(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaRemovedRow == modType) {
+        redoRemoveRow(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaUpdatedRowContent == modType) {
+        redoUpdateRowContent(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaUpdatedGapModel == modType) {
+        redoUpdateGapModel(msaId, modDetails, os);
+    }
+    else if (U2ModType::msaSetNewRowsOrder == modType) {
+        redoSetNewRowsOrder(msaId, modDetails, os);
+    }
+    else {
+        os.setError(QString("Unexpected modification type '%1'!").arg(QString::number(modType)));
+        return;
     }
 }
 

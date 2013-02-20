@@ -31,17 +31,17 @@ namespace U2 {
 class U2CORE_EXPORT U2ModType {
 public:
     /** Object */
-    static const qint64 objUpdatedName        = 1;
+    static const qint64 objUpdatedName;
 
     /** MSA modification types */
-    static const qint64 msaUpdatedAlphabet    = 3001;
-    static const qint64 msaAddedRows          = 3002;
-    static const qint64 msaAddedRow           = 3003;
-    static const qint64 msaRemovedRows        = 3004;
-    static const qint64 msaRemovedRow         = 3005;
-    static const qint64 msaUpdatedRowContent  = 3006;
-    static const qint64 msaUpdatedGapModel    = 3007;
-    static const qint64 msaSetNewRowsOrder    = 3008;
+    static const qint64 msaUpdatedAlphabet;
+    static const qint64 msaAddedRows;
+    static const qint64 msaAddedRow;
+    static const qint64 msaRemovedRows;
+    static const qint64 msaRemovedRow;
+    static const qint64 msaUpdatedRowContent;
+    static const qint64 msaUpdatedGapModel;
+    static const qint64 msaSetNewRowsOrder;
 
     static bool isObjectModType(qint64 modType) { return modType > 0 && modType < 999; }
     static bool isMsaModType(qint64 modType) { return modType >= 3000 && modType < 3100; }

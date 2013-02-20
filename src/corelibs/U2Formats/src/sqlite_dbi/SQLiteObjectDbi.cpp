@@ -407,28 +407,26 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
     }
 
     // Get the modification step for the previous version
-    U2ModStep lastModStep = dbi->getModDbi()->getModStep(objId, obj.version - 1, os);
+    U2ModStep modStep = dbi->getModDbi()->getModStep(objId, obj.version - 1, os);
     if (os.hasError()) {
         coreLog.trace("Error getting the modStep for an object: " + os.getError());
         os.setError(errorDescr);
         return;
     }
-    SAFE_POINT(lastModStep.version == obj.version - 1, "Unexpected modStep version!", );
+    SAFE_POINT(modStep.version == obj.version - 1, "Unexpected modStep version!", );
 
     // Call an appropriate "undo" depending on the object type
-    if (U2ModType::isMsaModType(lastModStep.modType)) {
-        dbi->getSQLiteMsaDbi()->undo(objId, lastModStep.modType, lastModStep.details, os);
+    if (U2ModType::isMsaModType(modStep.modType)) {
+        dbi->getSQLiteMsaDbi()->undo(objId, modStep.modType, modStep.details, os);
     }
-    else if (U2ModType::isObjectModType(lastModStep.modType)) {
-        switch (lastModStep.modType) {
-            case U2ModType::objUpdatedName:
-                undoUpdateObjectName(objId, lastModStep.details, os);
-                CHECK_OP(os, );
-                break;
-            default:
-                coreLog.trace(QString("Can't undo an unknown operation: '%1'!").arg(QString::number(lastModStep.modType)));
-                os.setError(errorDescr);
-                return;
+    else if (U2ModType::isObjectModType(modStep.modType)) {
+        if (U2ModType::objUpdatedName == modStep.modType) {
+            undoUpdateObjectName(objId, modStep.details, os);
+            CHECK_OP(os, );
+        }
+        else {
+            coreLog.trace(QString("Can't undo an unknown operation: '%1'!").arg(QString::number(modStep.modType)));
+            os.setError(errorDescr);
         }
     }
 
@@ -462,27 +460,27 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
     }
 
     // Get the modification step for the current version
-    U2ModStep lastModStep = dbi->getModDbi()->getModStep(objId, obj.version, os);
+    U2ModStep modStep = dbi->getModDbi()->getModStep(objId, obj.version, os);
     if (os.hasError()) {
         coreLog.trace("Error getting the modStep for an object: " + os.getError());
         os.setError(errorDescr);
         return;
     }
-    SAFE_POINT(lastModStep.version == obj.version, "Unexpected modStep version!", );
+    SAFE_POINT(modStep.version == obj.version, "Unexpected modStep version!", );
 
     // Call an appropriate "undo" depending on the object type
-    if (U2ModType::isMsaModType(lastModStep.modType)) {
-        dbi->getSQLiteMsaDbi()->redo(objId, lastModStep.modType, lastModStep.details, os);
+    if (U2ModType::isMsaModType(modStep.modType)) {
+        dbi->getSQLiteMsaDbi()->redo(objId, modStep.modType, modStep.details, os);
     }
-    else if (U2ModType::isObjectModType(lastModStep.modType)) {
-        switch (lastModStep.modType) {
-            case U2ModType::objUpdatedName:
-                redoUpdateObjectName(objId, lastModStep.details, os);
-                break;
-            default:
-                coreLog.trace(QString("Can't undo an unknown operation: '%1'!").arg(QString::number(lastModStep.modType)));
-                os.setError(errorDescr);
-                return;
+    else if (U2ModType::isObjectModType(modStep.modType)) {
+        if (U2ModType::objUpdatedName == modStep.modType) {
+            redoUpdateObjectName(objId, modStep.details, os);
+            CHECK_OP(os, );
+        }
+        else {
+            coreLog.trace(QString("Can't undo an unknown operation: '%1'!").arg(QString::number(modStep.modType)));
+            os.setError(errorDescr);
+            return;
         }
     }
 }
