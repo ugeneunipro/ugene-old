@@ -53,11 +53,11 @@ private:
 
 class HRVisualSerializer {
 public:
-    HRVisualSerializer(const Metadata &meta);
+    HRVisualSerializer(const Metadata &meta, const HRSchemaSerializer::NamesMap &nmap);
     QString serialize(int depth);
 
 private:
-    const Metadata &meta;
+    Metadata meta;
 
 private:
     QString actorVisualData(const ActorVisualData &visual, int depth);

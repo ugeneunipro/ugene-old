@@ -1677,7 +1677,8 @@ static QString newActorLabel(ActorPrototype *proto, const QList<Actor*> &procs) 
 
 Actor * WorkflowView::createActor(ActorPrototype *proto, const QVariantMap &params) const {
     assert(NULL != proto);
-    ActorId id = Schema::uniqueActorId(proto->getId(), schema->getProcesses());
+    QString pId = proto->getId().replace(QRegExp("\\s"), "-");
+    ActorId id = Schema::uniqueActorId(pId, schema->getProcesses());
     Actor *actor = proto->createInstance(id, NULL, params);
     assert(NULL != actor);
 

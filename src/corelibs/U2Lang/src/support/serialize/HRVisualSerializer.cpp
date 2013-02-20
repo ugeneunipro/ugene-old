@@ -243,10 +243,10 @@ void HRVisualParser::parseStyleData(ActorVisualData &visual, const QString &styl
 /************************************************************************/
 /* HRVisualSerializer */
 /************************************************************************/
-HRVisualSerializer::HRVisualSerializer(const Metadata &_meta)
+HRVisualSerializer::HRVisualSerializer(const Metadata &_meta, const HRSchemaSerializer::NamesMap &nmap)
 : meta(_meta)
 {
-
+    meta.renameActors(nmap);
 }
 
 QString HRVisualSerializer::serialize(int depth) {

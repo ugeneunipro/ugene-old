@@ -211,6 +211,7 @@ public:
     ActorVisualData();
     ActorVisualData(const ActorId &actorId);
     ActorId getActorId() const;
+    void setActorId(const ActorId &value);
 
     QPointF getPos(bool &contains) const;
     QString getStyle(bool &contains) const;

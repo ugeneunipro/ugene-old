@@ -2131,7 +2131,7 @@ static QString itemsMetaData(const QList<Actor*> &actors, const Metadata *meta, 
     }
 
     if (NULL != meta) {
-        HRVisualSerializer vs(*meta);
+        HRVisualSerializer vs(*meta, nmap);
         res += vs.serialize(2);
     }
     return res;

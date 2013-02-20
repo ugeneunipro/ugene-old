@@ -677,6 +677,10 @@ ActorId ActorVisualData::getActorId() const {
     return actorId;
 }
 
+void ActorVisualData::setActorId(const ActorId &value) {
+    actorId = value;
+}
+
 QPointF ActorVisualData::getPos(bool &contains) const {
     contains = posInited;
     return pos;
@@ -833,8 +837,9 @@ void Metadata::renameActors(const QMap<ActorId, ActorId> &actorsMapping) {
     foreach (const ActorId &oldId, actorsMapping.keys()) {
         if (actorVisual.contains(oldId)) {
             ActorId newId = actorsMapping[oldId];
-            actorVisual[newId] = actorVisual[oldId];
-            actorVisual.remove(oldId);
+            ActorVisualData visual = actorVisual.take(oldId);
+            visual.setActorId(newId);
+            actorVisual[newId] = visual;
         }
     }
 
