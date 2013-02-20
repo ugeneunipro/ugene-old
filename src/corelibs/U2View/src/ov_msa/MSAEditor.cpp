@@ -751,11 +751,24 @@ void MSALabelWidget::sl_fontChanged() {
     setMinimumHeight(ui->consArea->height());
 }
 
-void MSALabelWidget::mousePressEvent( QMouseEvent * )
+void MSALabelWidget::mousePressEvent( QMouseEvent * e )
 {
     ui->seqArea->cancelSelection();
+    QMouseEvent eventForSequenceArea(e->type(), QPoint(e->x(), 0), e->globalPos(), e->button(), e->buttons(), e->modifiers());
+    QApplication::instance()->notify(ui->nameList, &eventForSequenceArea);
 }
 
+void MSALabelWidget::mouseReleaseEvent( QMouseEvent * e )
+{
+    QMouseEvent eventForSequenceArea(e->type(), QPoint(e->x(), e->y() - height()), e->globalPos(), e->button(), e->buttons(), e->modifiers());
+    QApplication::instance()->notify(ui->nameList, &eventForSequenceArea);
+}
+
+void MSALabelWidget::mouseMoveEvent( QMouseEvent * e )
+{
+    QMouseEvent eventForSequenceArea(e->type(), QPoint(e->x(), e->y() - height()), e->globalPos(), e->button(), e->buttons(), e->modifiers());
+    QApplication::instance()->notify(ui->nameList, &eventForSequenceArea);
+}
 
 }//namespace
 
