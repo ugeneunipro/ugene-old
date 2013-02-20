@@ -41,8 +41,23 @@ ExportDocumentDialogController::ExportDocumentDialogController(Document* d, QWid
     ui->setupUi(this);
 
     SaveDocumentGroupControllerConfig conf;
+    //UGENE-1458
+    QMap<GObjectType, int> objPerTypeMap;
     foreach (GObject* obj, d->getObjects()) {
-        conf.dfc.supportedObjectTypes+=obj->getGObjectType();
+        GObjectType tp = obj->getGObjectType();
+        conf.dfc.supportedObjectTypes += tp;
+        if(objPerTypeMap.contains(tp)){
+            objPerTypeMap[tp] += 1;
+        }else{
+            objPerTypeMap.insert(tp, 1);
+        }
+    }
+    int maxObjs = 1;
+    foreach(int val, objPerTypeMap){ 
+        maxObjs = qMax(maxObjs, val);
+    }
+    if (maxObjs > 1){
+        conf.dfc.addFlagToExclude(DocumentFormatFlag_OnlyOneObject);
     }
     conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
     conf.fileDialogButton = ui->browseButton;

@@ -676,7 +676,7 @@ static void save( IOAdapter* io, const MAlignment& msa, const QString& name ) {
 }
 
 namespace U2 {
-StockholmFormat::StockholmFormat( QObject *obj ) : DocumentFormat( obj , DocumentFormatFlag_SupportWriting, QStringList() << "sto") {
+StockholmFormat::StockholmFormat( QObject *obj ) : DocumentFormat( obj , DocumentFormatFlags(DocumentFormatFlag_SupportWriting) | DocumentFormatFlag_OnlyOneObject, QStringList() << "sto") {
     format_name = tr( "Stockholm" );
     formatDescription = tr("A multiple sequence alignments file format");
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;

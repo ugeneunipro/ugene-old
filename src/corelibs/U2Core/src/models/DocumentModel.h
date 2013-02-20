@@ -63,6 +63,8 @@ enum DocumentFormatFlag {
     DocumentFormatFlag_NoFullMemoryLoad     = 1<<4,
     // Document is not included into format recognition by default
     DocumentFormatFlag_Hidden               = 1<<5,
+    // Document contains only one object of each supported type
+    DocumentFormatFlag_OnlyOneObject        = 1<<6,
 };
 
 

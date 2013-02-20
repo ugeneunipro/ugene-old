@@ -59,7 +59,7 @@ const int MSFFormat::CHARS_IN_WORD = 10;
 
 //TODO: recheck if it does support streaming! Fix isObjectOpSupported if not!
 
-MSFFormat::MSFFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("msf")) {
+MSFFormat::MSFFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags(DocumentFormatFlag_SupportWriting) | DocumentFormatFlag_OnlyOneObject, QStringList("msf")) {
     formatName = tr("MSF");
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
     formatDescription = tr("MSF format is used to store multiple aligned sequences. Files include the sequence name and the sequence itself, which is usually aligned with other sequences in the file.");
