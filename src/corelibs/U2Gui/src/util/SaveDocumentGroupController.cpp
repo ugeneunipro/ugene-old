@@ -47,7 +47,7 @@ SaveDocumentGroupController::SaveDocumentGroupController(const SaveDocumentGroup
 	connect(conf.fileNameEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_fileNameChanged(const QString&)));
 	connect(conf.fileDialogButton, SIGNAL(clicked()), SLOT(sl_saveButtonClicked()));
     connect(comboController->comboBox(), SIGNAL(currentIndexChanged ( const QString& )), SLOT(sl_formatChanged(const QString&)));
-
+    sl_formatChanged(QString());
 }
 
 void SaveDocumentGroupController::sl_fileNameChanged(const QString& newName) {

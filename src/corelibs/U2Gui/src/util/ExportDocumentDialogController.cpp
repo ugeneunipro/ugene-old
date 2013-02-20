@@ -65,10 +65,9 @@ ExportDocumentDialogController::ExportDocumentDialogController(Document* d, QWid
     conf.formatCombo = ui->formatCombo;
     conf.parentWidget = this; 
 
-    saveController = new SaveDocumentGroupController(conf, this);
-
     QString fileName = GUrlUtils::rollFileName(d->getURLString(), "_copy", DocumentUtils::getNewDocFileNameExcludesHint());
-    ui->fileNameEdit->setText(fileName);
+    conf.defaultFileName = fileName;
+    saveController = new SaveDocumentGroupController(conf, this);
 }
 
 QString ExportDocumentDialogController::getDocumentURL() const {
