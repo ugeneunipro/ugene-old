@@ -1,3 +1,4 @@
+#include <SamtoolsAdapter.h>
 #include "AssemblyDbiTestUtil.h"
 
 
@@ -35,7 +36,12 @@ bool AssemblyDbiTestUtil::compareReads( const U2AssemblyRead& r1, const U2Assemb
     if (r1->readSequence != r2->readSequence) {
         return false;
     }
-    if (r1->quality != r2->quality) {
+    bool q1 = SamtoolsAdapter::hasQuality(r1->quality);
+    bool q2 = SamtoolsAdapter::hasQuality(r2->quality);
+    if (q1 != q2) {
+        return false;
+    }
+    if (q1 && (r1->quality != r2->quality)) {
         return false;
     }
     if (r1->mappingQuality != r2->mappingQuality) {

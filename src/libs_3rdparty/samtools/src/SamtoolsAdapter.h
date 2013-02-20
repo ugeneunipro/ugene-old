@@ -80,6 +80,7 @@ public:
     static QByteArray sequence2samtools(QByteArray sequence, U2OpStatus &os);
     static QByteArray quality2samtools(const QByteArray &qualString);
     static QByteArray samtools2quality(const QByteArray &qualString);
+    static bool hasQuality(const QByteArray &qualString);
 
     static QByteArray aux2string(const QList<U2AuxData> &aux);
     static QList<U2AuxData> string2aux(const QByteArray &auxString);
