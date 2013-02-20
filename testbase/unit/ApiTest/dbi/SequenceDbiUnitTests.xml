@@ -1,0 +1,17 @@
+<!DOCTYPE UGENE_TEST_FRAMEWORK_TEST>
+
+<unittest>
+
+SequenceDbiUnitTests
++ getSequenceObject
++ getSequenceObjectInvalid
++ getAllSequenceObjects
++ getSequenceData
++ getLongSequenceData
++ getSequenceDataInvalid
++ createSequenceObject
++ updateSequenceData
++ updateHugeSequenceData
+- updateSequencesData
+
+</unittest>
