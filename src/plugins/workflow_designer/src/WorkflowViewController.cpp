@@ -1320,8 +1320,8 @@ void WorkflowView::sl_copyItems() {
     }
 
     QList<Actor*> actors = scene->getSelectedActors();
-    updateMeta();
-    lastPaste = HRSchemaSerializer::items2String(actors, getIterations(actors), &meta);
+    Metadata actorMeta = getMeta(procs);
+    lastPaste = HRSchemaSerializer::items2String(actors, getIterations(actors), &actorMeta);
     pasteAction->setEnabled(true);
     QApplication::clipboard()->setText(lastPaste);
     pasteCount = 0;
@@ -1419,6 +1419,7 @@ void WorkflowView::sl_pasteItems(const QString& s) {
     pastedS.setDeepCopyFlag(false);
     recreateScene();
     scene->connectConfigurationEditors();
+    propertyEditor->resetIterations();
 
     foreach (QGraphicsItem *it, scene->items()) {
         WorkflowProcessItem *proc = qgraphicsitem_cast<WorkflowProcessItem*>(it);
