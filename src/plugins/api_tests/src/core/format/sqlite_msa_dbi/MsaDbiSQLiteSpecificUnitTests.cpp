@@ -20,7 +20,7 @@
  */
 
 #include "MsaDbiSQLiteSpecificUnitTests.h"
-#include "core/util/MsaDbiUtilsTests.h"
+#include "core/util/MsaDbiUtilsUnitTests.h"
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/U2MsaDbi.h>
