@@ -41,6 +41,7 @@
 #include <U2Core/AppContext.h>
 
 #include "CollocationWorker.h"
+#include "GeneByGeneReportWorker.h"
 
 namespace U2 {
 
@@ -57,6 +58,7 @@ AnnotatorPlugin::AnnotatorPlugin() : Plugin(tr("dna_annotator_plugin"), tr("dna_
         viewCtx->init();
     }
     LocalWorkflow::CollocationWorkerFactory::init();
+    LocalWorkflow::GeneByGeneReportWorkerFactory::init();
 
     //Annotator test
     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
@@ -113,6 +115,7 @@ void AnnotatorViewContext::sl_showCollocationDialog() {
 QList<XMLTestFactory*> AnnotatorTests::createTestFactories() {
     QList<XMLTestFactory*> res;
     res.append(GTest_AnnotatorSearch::createFactory());
+    res.append(GTest_GeneByGeneApproach::createFactory());
     return res;
 }
 

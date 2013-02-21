@@ -107,7 +107,7 @@ void BlastPlusWorkerFactory::init() {
     a << new Attribute(etp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
     a << new Attribute(tdp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
     a << new Attribute(ev, BaseTypes::NUM_TYPE(), false, QVariant(10.00));
-    a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant(""));
+    a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant("blast_result"));
 
     Attribute* gaAttr= new Attribute(ga, BaseTypes::BOOL_TYPE(), false, QVariant(true));
     gaAttr->addRelation(new VisibilityRelation(BLASTPLUS_PROGRAM_NAME,"blastn"));

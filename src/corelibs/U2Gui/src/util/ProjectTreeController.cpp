@@ -1125,6 +1125,7 @@ void ProjectTreeController::sl_windowActivated(MWMDIWindow* w) {
 }
 
 void ProjectTreeController::updateObjectActiveStateVisual(GObject* o) {
+    SAFE_POINT(o!= NULL, "ProjectTreeController::updateObjectActiveStateVisual. Object is NULL", );
     if (mode.groupMode == ProjectTreeGroupMode_ByDocument) {
         ProjViewDocumentItem* di = findDocumentItem(o->getDocument());
         if (di!=NULL) {
@@ -1132,7 +1133,9 @@ void ProjectTreeController::updateObjectActiveStateVisual(GObject* o) {
         }
     } else {
          ProjViewObjectItem* oi = findGObjectItem(o);
-         oi->updateActive();
+         if (oi!=NULL) {
+            oi->updateActive();
+         }
     }
 }
 

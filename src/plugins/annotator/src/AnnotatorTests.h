@@ -29,6 +29,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2View/AnnotatedDNAView.h>
 #include "CollocationsDialogController.h"
+#include "GeneByGeneReportTask.h"
 
 namespace U2 {
 
@@ -48,6 +49,23 @@ private:
     CollocationsAlgorithm::SearchType st;
     CollocationSearchTask *searchTask;
     QVector<U2Region> expectedResults;
+};
+
+class GTest_GeneByGeneApproach : public GTest{
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_GeneByGeneApproach, "plugin_dna-annotator-gene-by-gene");
+
+    void prepare();
+    Task::ReportResult report();
+private:
+    QString seqName;
+    QString annName;
+    QString docName;
+    QString resultDocContextName;
+    bool expected;
+    float identity;
+    GeneByGeneCompareResult result;
+
 };
 
 } //namespace
