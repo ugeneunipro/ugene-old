@@ -453,6 +453,12 @@ void Schema::setWizards(const QList<Wizard*> &value) {
     wizards = value;
 }
 
+QList<Wizard*> Schema::takeWizards() {
+    QList<Wizard*> result = wizards;
+    wizards.clear();
+    return result;
+}
+
 void Schema::removeProcess(Actor *actor) {
     // remove actors flows
     foreach (Port *p, actor->getPorts()) {

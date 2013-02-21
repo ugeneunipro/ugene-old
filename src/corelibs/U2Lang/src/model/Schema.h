@@ -132,6 +132,7 @@ public:
 
     const QList<Wizard*> & getWizards() const;
     void setWizards(const QList<Wizard*> &value);
+    QList<Wizard*> takeWizards();
 
     static ActorId uniqueActorId(const QString &id, const QList<Actor*> &procs);
 

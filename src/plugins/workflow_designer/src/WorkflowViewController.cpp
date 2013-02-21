@@ -1413,6 +1413,9 @@ void WorkflowView::sl_pasteItems(const QString& s) {
         return;
     }
     renamePastedSchemaActors(pastedS, pastedM, schema);
+    if (schema->getProcesses().isEmpty()) {
+        schema->setWizards(pastedS.takeWizards());
+    }
     schema->merge(pastedS);
     updateMeta();
     meta.mergeVisual(pastedM);
@@ -1551,6 +1554,7 @@ void WorkflowView::sl_showWizard() {
                 recreateScene();
                 schema->setWizards(QList<Wizard*>());
             }
+            propertyEditor->resetIterations();
             scene->sl_updateDocs();
             scene->setModified();
         }
