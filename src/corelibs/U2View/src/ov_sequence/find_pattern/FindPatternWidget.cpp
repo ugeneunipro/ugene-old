@@ -165,9 +165,9 @@ FindPatternEventFilter::FindPatternEventFilter(QObject* parent)
 }
 
 
-bool FindPatternEventFilter::eventFilter(QObject* obj, QEvent* event)
-{
-    if (QEvent::KeyPress == event->type()) {
+bool FindPatternEventFilter::eventFilter(QObject* obj, QEvent* event) {
+    const QEvent::Type eventType = event->type();
+    if (QEvent::KeyPress == eventType) {
         QKeyEvent *keyEvent = dynamic_cast<QKeyEvent*>(event);
         if (Qt::Key_Tab == keyEvent->key()) {
             emit si_tabPressed();
@@ -183,7 +183,11 @@ bool FindPatternEventFilter::eventFilter(QObject* obj, QEvent* event)
                 return false;
             }
         }
-
+    } else if (QEvent::Show == eventType) {
+        QWidget *watched = dynamic_cast<QWidget *>(obj);
+        if (NULL != watched) {
+            watched->setFocus();
+        }
     }
     return QObject::eventFilter(obj, event);
 }
@@ -232,7 +236,6 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         connectSlots();
 
         checkState();
-        setFocusProxy(textPattern);
         btnSearch->setAutoDefault(true);
 
         FindPatternEventFilter *findPatternEventFilter = new FindPatternEventFilter(this);
