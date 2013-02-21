@@ -226,6 +226,9 @@ private:
     /** Required for store modification track of removed rows  */
     QByteArray getRemovedRowDetails(const U2MsaRow& row);
 
+    /** Replaces the old gap model with a new one, updates msa length */
+    void updateGapModeCore(const U2DataId &msaId, qint64 msaRowId, const QList<U2MsaGap> &gapModel, U2OpStatus &os);
+
     ///////////////////////////////////////////////////////////
     // Undo methods
     void undoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
@@ -249,6 +252,9 @@ private:
 
     // Helper modification details parse methods
     bool parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, U2AlphabetId& oldAlphabet, U2AlphabetId& newAlphabet);
+
+    QByteArray packGapDetails(qint64 rowId, const QList<U2MsaGap> &oldGaps, const QList<U2MsaGap> &newGaps);
+    bool unpackGapDetails(const QByteArray &modDetails, qint64 &rowId, QList<U2MsaGap> &oldGaps, QList<U2MsaGap> &newGaps);
 
 
     ///////////////////////////////////////////////////////////

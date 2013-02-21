@@ -9,5 +9,8 @@ MsaDbiSQLiteSpecificUnitTests
 + updateMsaAlphabet_noModTrack
 + updateMsaAlphabet_undo
 + updateMsaAlphabet_redo
++ updateGapModel_noModTrack
++ updateGapModel_undo
++ updateGapModel_redo
 
 </unittest>

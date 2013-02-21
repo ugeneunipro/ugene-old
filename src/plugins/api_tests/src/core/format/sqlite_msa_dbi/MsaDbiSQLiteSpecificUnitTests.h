@@ -43,6 +43,7 @@ public:
     static qint64 getModStepsNum(const U2DataId& objId, U2OpStatus& os);
 
     static U2DataId createTestMsa(bool enableModTracking, U2OpStatus& os);
+    static U2DataId createTestMsaUGM(bool enableModTracking, U2OpStatus& os);
 
     static const QString TEST_MSA_NAME;
 
@@ -76,6 +77,11 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_redo);
 
+/** Update gap model */
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateGapModel_noModTrack);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateGapModel_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateGapModel_redo);
+
 
 } // namespace
 
@@ -86,5 +92,9 @@ DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_redo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_redo);
+
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateGapModel_noModTrack);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateGapModel_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateGapModel_redo);
 
 #endif
