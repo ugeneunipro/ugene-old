@@ -719,7 +719,7 @@ void MsaDbiUtils::moveRows(const U2EntityRef& msaRef, const QList<qint64>& rowsT
     foreach (coords, from_To) {
         rowIds.move(coords.first, coords.second);
     }
-    updateRowsOrder(msaRef, rowIds, os);
+    msaDbi->setNewRowsOrder(msaRef.entityId, rowIds, os);
     CHECK_OP(os, );
 }
 
@@ -947,11 +947,11 @@ void MsaDbiUtils::trim(const U2EntityRef& msaRef, U2OpStatus& os) {
     CHECK_OP(os, );
     SAFE_POINT(false == rows.isEmpty(), "Msa rows list is empty.", );
 
-    // Trim leading gaps
-    cutOffLeadingGaps(rows);
-
     // Trim trailing gaps
     cutOffTrailingGaps(rows, msaLength);
+
+    // Trim leading gaps, it changes length of msa, msaLength doesn`t update.
+    cutOffLeadingGaps(rows);
 
     // Update gap model
     for (int i = 0; i < rows.length(); ++i) {
