@@ -35,13 +35,6 @@ namespace U2 {
 class U2MsaDbi;
 class U2SequenceDbi;
 
-class Utils {
-public:
-    static void addRow(U2Dbi *dbi, const U2DataId &msaId,
-        const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps,
-        U2OpStatus &os);
-};
-
 class MsaDbiUtilsTestUtils {
 public:
     static void init();
@@ -63,6 +56,9 @@ private:
     static const QString& MSA_DB_URL;
     static U2MsaDbi* msaDbi;
     static U2SequenceDbi* sequenceDbi;
+
+private:
+    static U2MsaRow addRow(const U2DataId &msaId, qint64 num, const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os);
 };
 
 
@@ -123,6 +119,7 @@ DECLARE_TEST(MsaDbiUtilsUnitTests, moveRows_InvalidRowList);
   * trim_trailingGaps: trim some trailing gaps.
   * trim_leadingGapsCutOff: trim the leading gaps, some gaps are not deleted, but cut off.
   * trim_trailingGaps: trim the trailing gaps, some gaps are not deleted, but cut off.
+  * trim_leadingAndTrailingGaps: trim the leading and trailing gaps with cut off.
   * trim_gapsOnly: trim the alignment consists from gaps only.
   */
 DECLARE_TEST(MsaDbiUtilsUnitTests, trim_noGaps);
@@ -130,6 +127,7 @@ DECLARE_TEST(MsaDbiUtilsUnitTests, trim_leadingGaps);
 DECLARE_TEST(MsaDbiUtilsUnitTests, trim_trailingGaps);
 DECLARE_TEST(MsaDbiUtilsUnitTests, trim_leadingGapsCutOff);
 DECLARE_TEST(MsaDbiUtilsUnitTests, trim_trailingGapsCutOff);
+DECLARE_TEST(MsaDbiUtilsUnitTests, trim_leadingAndTrailingGaps);
 DECLARE_TEST(MsaDbiUtilsUnitTests, trim_gapsOnly);
 
 DECLARE_TEST(MsaDbiUtilsUnitTests, removeRegion_oneRow);
@@ -165,6 +163,7 @@ DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_leadingGaps);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_trailingGaps);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_leadingGapsCutOff);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_trailingGapsCutOff);
+DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_leadingAndTrailingGaps);
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, trim_gapsOnly);
 
 DECLARE_METATYPE(MsaDbiUtilsUnitTests, removeRegion_oneRow);

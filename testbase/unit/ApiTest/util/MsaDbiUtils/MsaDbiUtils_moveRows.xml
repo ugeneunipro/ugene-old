@@ -19,19 +19,5 @@ MsaDbiUtilsUnitTests
 + moveRows_threeBlocksWithTwiceGluing
 + moveRows_UnorderedList
 + moveRows_InvalidRowList
-+ trim_noGaps
-+ trim_leadingGaps
-+ trim_trailingGaps
-+ trim_leadingGapsCutOff
-+ trim_trailingGapsCutOff
-+ trim_gapsOnly
-+removeRegion_oneRow
-+removeRegion_threeRows
-+removeRegion_lengthChange
-+removeRegion_allRows
-+removeRegion_all
-+removeRegion_negativePos
-+removeRegion_wrongId
-+removeRegion_wrongCount
 
 </unittest>

@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "MsaDbiUtilsTests.h"
+#include "MsaDbiUtilsUnitTests.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
@@ -179,27 +179,24 @@ U2EntityRef MsaDbiUtilsTestUtils::initTestAlignment(QList<U2MsaRow>& rows) {
     return msaRef;
 }
 
-void Utils::addRow(U2Dbi *dbi, const U2DataId &msaId,
-    const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps,
-    U2OpStatus &os) {
+U2MsaRow MsaDbiUtilsTestUtils::addRow(const U2DataId &msaId, qint64 num, const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os) {
     U2Sequence sequence;
     sequence.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
     sequence.visualName = name;
-    dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
-    CHECK_OP(os, );
+    sequenceDbi->createSequenceObject(sequence, "", os);
+    CHECK_OP(os, U2MsaRow());
 
     U2Region reg(0, 0);
-    dbi->getSequenceDbi()->updateSequenceData(sequence.id, reg, seq, QVariantMap(), os);
-    CHECK_OP(os, );
+    sequenceDbi->updateSequenceData(sequence.id, reg, seq, QVariantMap(), os);
+    CHECK_OP(os, U2MsaRow());
 
     U2MsaRow row;
-    row.rowId = -1;
+    row.rowId = num;
     row.sequenceId = sequence.id;
     row.gstart = 0;
     row.gend = seq.length();
     row.gaps = gaps;
-
-    dbi->getMsaDbi()->addRow(msaId, -1, row, os);
+    return row;
 }
 
 U2EntityRef MsaDbiUtilsTestUtils::removeRegionTestAlignment(U2OpStatus &os) {
@@ -211,25 +208,27 @@ U2EntityRef MsaDbiUtilsTestUtils::removeRegionTestAlignment(U2OpStatus &os) {
     U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
     CHECK_OP(os, U2EntityRef());
 
-    U2Dbi *dbi = msaDbi->getRootDbi();
-    SAFE_POINT(NULL != dbi, "Root dbi is NULL", U2EntityRef());
-
-    Utils::addRow(dbi, msaId, "1", "TAAGACTTCTAA", QList<U2MsaGap>() << U2MsaGap(12, 2), os);
-    Utils::addRow(dbi, msaId, "2", "TAAGCTTACTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
-    Utils::addRow(dbi, msaId, "3", "TTAGTTTATTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
-    Utils::addRow(dbi, msaId, "4", "TCAGTCTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
-    Utils::addRow(dbi, msaId, "5", "TCAGTTTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
-    Utils::addRow(dbi, msaId, "6", "TTAGTCTACTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
-    Utils::addRow(dbi, msaId, "7", "TCAGATTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
-    Utils::addRow(dbi, msaId, "8", "TTAGATTGCTA", QList<U2MsaGap>() << U2MsaGap(1, 1) << U2MsaGap(12, 2), os);
-    Utils::addRow(dbi, msaId, "9", "TTAGATTATTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
-    Utils::addRow(dbi, msaId, "10", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
-    Utils::addRow(dbi, msaId, "11", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
-    Utils::addRow(dbi, msaId, "12", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
-    Utils::addRow(dbi, msaId, "13", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    QList<U2MsaRow> rows;
+    rows << addRow(msaId, 0, "1", "TAAGACTTCTAA", QList<U2MsaGap>() << U2MsaGap(12, 2), os);
+    rows << addRow(msaId, 1, "2", "TAAGCTTACTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
+    rows << addRow(msaId, 2, "3", "TTAGTTTATTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
+    rows << addRow(msaId, 3, "4", "TCAGTCTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    rows << addRow(msaId, 4, "5", "TCAGTTTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    rows << addRow(msaId, 5, "6", "TTAGTCTACTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    rows << addRow(msaId, 6, "7", "TCAGATTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    rows << addRow(msaId, 7, "8", "TTAGATTGCTA", QList<U2MsaGap>() << U2MsaGap(1, 1) << U2MsaGap(12, 2), os);
+    rows << addRow(msaId, 8, "9", "TTAGATTATTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
+    rows << addRow(msaId, 9, "10", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    rows << addRow(msaId, 10, "11", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    rows << addRow(msaId, 11, "12", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    rows << addRow(msaId, 12, "13", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
     CHECK_OP(os, U2EntityRef());
 
-    return  U2EntityRef(msaDbi->getRootDbi()->getDbiRef(), msaId);
+    msaDbi->addRows(msaId, rows, os);
+    CHECK_OP(os, U2EntityRef());
+
+    U2EntityRef msaRef(msaDbi->getRootDbi()->getDbiRef(), msaId);
+    return msaRef;
 }
 
 QStringList MsaDbiUtilsTestUtils::getRowNames(U2EntityRef msaRef) {
@@ -1064,6 +1063,33 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, trim_trailingGapsCutOff) {
     MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(8, al.getLength(), "Wrong msa length.");
+    CHECK_EQUAL(expected.length(), al.getNumRows(), "Wrong rows count.");
+
+    QStringList actual;
+    actual << al.getRow(0).toByteArray(al.getLength(), os);
+    actual << al.getRow(1).toByteArray(al.getLength(), os);
+    actual << al.getRow(2).toByteArray(al.getLength(), os);
+    for (int i = 0; i < expected.length(); ++i) {
+        CHECK_EQUAL(expected[i], actual[i], "Wrong msa data.");
+    }
+}
+
+IMPLEMENT_TEST(MsaDbiUtilsUnitTests, trim_leadingAndTrailingGaps) {
+    //Init test data
+    U2OpStatusImpl os;
+    U2EntityRef msaRef = MsaDbiUtilsTestUtils::initTestAlignment(QStringList() << "--AACCGGTT--" << "---ACCGGT--" << "----CCGGTT---");
+
+    //Prepare expected state
+    QStringList expected = QStringList() << "AACCGGTT" << "-ACCGGT-" << "--CCGGTT";
+
+    //Call test function
+    MsaDbiUtils::trim(msaRef, os);
+
+    //Check actual state
+    MAlignmentExporter ex;
+    MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+//    CHECK_EQUAL(8, al.getLength(), "Wrong msa length.");
     CHECK_EQUAL(expected.length(), al.getNumRows(), "Wrong rows count.");
 
     QStringList actual;

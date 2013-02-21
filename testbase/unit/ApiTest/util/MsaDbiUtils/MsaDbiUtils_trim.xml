@@ -1,0 +1,14 @@
+<!DOCTYPE UGENE_TEST_FRAMEWORK_TEST>
+
+<unittest>
+
+MsaDbiUtilsUnitTests
++ trim_noGaps
++ trim_leadingGaps
++ trim_trailingGaps
++ trim_leadingGapsCutOff
++ trim_trailingGapsCutOff
++ trim_leadingAndTrailingGaps
++ trim_gapsOnly
+
+</unittest>
