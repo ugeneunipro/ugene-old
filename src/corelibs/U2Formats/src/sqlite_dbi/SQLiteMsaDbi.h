@@ -160,6 +160,11 @@ public:
     /** Redo the operation for the MSA. */
     void redo(const U2DataId& msaId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
 
+    ///////////////////////////////////////////////////////////
+
+    /** Version of description in a ModStep details */
+    static const QByteArray CURRENT_MOD_DETAILS_VERSION;
+
 private:
     /** Returns length stored in Msa table */
     qint64 getMsaLength(const U2DataId& msaId, U2OpStatus& os);
@@ -227,7 +232,9 @@ private:
     QByteArray getRemovedRowDetails(const U2MsaRow& row);
 
     /** Replaces the old gap model with a new one, updates msa length */
-    void updateGapModeCore(const U2DataId &msaId, qint64 msaRowId, const QList<U2MsaGap> &gapModel, U2OpStatus &os);
+    void updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, const QList<U2MsaGap> &gapModel, U2OpStatus &os);
+    /** Replaces old sequence and gap model, updates msa length */
+    void updateRowContentCore(const U2DataId &msaId, qint64 rowId, const QByteArray &seqBytes, const QList<U2MsaGap> &gaps, U2OpStatus &os);
 
     ///////////////////////////////////////////////////////////
     // Undo methods
@@ -252,15 +259,24 @@ private:
 
     // Helper modification details parse methods
     bool parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, U2AlphabetId& oldAlphabet, U2AlphabetId& newAlphabet);
+};
 
-    QByteArray packGapDetails(qint64 rowId, const QList<U2MsaGap> &oldGaps, const QList<U2MsaGap> &newGaps);
-    bool unpackGapDetails(const QByteArray &modDetails, qint64 &rowId, QList<U2MsaGap> &oldGaps, QList<U2MsaGap> &newGaps);
+class PackUtils {
+public:
+    /** Gaps */
+    static QByteArray packGaps(const QList<U2MsaGap> &gaps);
+    static bool unpackGaps(const QByteArray &str, QList<U2MsaGap> &gaps);
 
+    /** Gaps details */
+    static QByteArray packGapDetails(qint64 rowId, const QList<U2MsaGap> &oldGaps, const QList<U2MsaGap> &newGaps);
+    static bool unpackGapDetails(const QByteArray &modDetails, qint64 &rowId, QList<U2MsaGap> &oldGaps, QList<U2MsaGap> &newGaps);
 
-    ///////////////////////////////////////////////////////////
-
-    /** Version of description in a ModStep details */
-    static const QByteArray CURRENT_MOD_DETAILS_VERSION;
+    /** Row content details */
+    static QByteArray packRowContentDetails(qint64 rowId, const QByteArray &oldSeq, const QList<U2MsaGap> &oldGaps,
+        const QByteArray &newSeq, const QList<U2MsaGap> &newGaps);
+    static bool unpackRowContentDetails(const QByteArray &modDetails, qint64 &rowId,
+        QByteArray &oldSeq, QList<U2MsaGap> &oldGaps,
+        QByteArray &newSeq, QList<U2MsaGap> &newGaps);
 };
 
 
