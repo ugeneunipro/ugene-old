@@ -129,6 +129,7 @@ void RestrctionMapWidget::updateTreeWidget()
         items.append(item);
     }
     treeWidget->insertTopLevelItems(0, items);
+    treeWidget->sortItems(0, Qt::AscendingOrder);
 }
 
 void RestrctionMapWidget::registerAnnotationObjects()
@@ -211,7 +212,7 @@ void RestrctionMapWidget::initTreeWidget()
     QSet<AnnotationTableObject*> aObjs = ctx->getAnnotationObjects(true);
     foreach (AnnotationTableObject* obj, aObjs) {
         QList<Annotation*> anns = obj->getAnnotations();
-        foreach(Annotation* a, anns) {
+        foreach(Annotation* a, anns){
             QString aName = a->getAnnotationName();
             EnzymeFolderItem* folderItem = findEnzymeFolderByName(aName);
             if (folderItem) {
@@ -219,6 +220,7 @@ void RestrctionMapWidget::initTreeWidget()
             }        
         }
     }
+    treeWidget->sortItems(0, Qt::AscendingOrder);
 }
 
 void RestrctionMapWidget::sl_onAnnotationsInGroupRemoved( const QList<Annotation*>& anns, AnnotationGroup* group )
