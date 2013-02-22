@@ -131,7 +131,9 @@ void DatasetWidget::sl_itemChecked() {
     }
     if (1 == itemsArea->selectedItems().size()) {
         QListWidgetItem *item = itemsArea->selectedItems().first();
-        QWidget *options = dynamic_cast<UrlItem*>(item)->getOptionsWidget();
+        UrlItem *urlItem = dynamic_cast<UrlItem*>(item);
+        CHECK(NULL != urlItem, );
+        QWidget *options = urlItem->getOptionsWidget();
         if (NULL != options) {
             showOptions(options);
         }

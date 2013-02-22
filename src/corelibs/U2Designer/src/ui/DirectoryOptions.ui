@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>262</width>
+    <width>156</width>
     <height>116</height>
    </rect>
   </property>
@@ -69,7 +69,14 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="includeMaskEdit"/>
+         <widget class="QLineEdit" name="includeMaskEdit">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
         <item row="0" column="0">
          <widget class="QLabel" name="label">
@@ -79,14 +86,21 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="excludeMaskEdit"/>
+         <widget class="QLineEdit" name="excludeMaskEdit">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
       <item>
        <widget class="QCheckBox" name="recursiveBox">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>735</width>
+    <width>469</width>
     <height>144</height>
    </rect>
   </property>
@@ -31,6 +31,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="addFileButton">
+          <property name="minimumSize">
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
           <property name="toolTip">
            <string>Add file(s)</string>
           </property>
@@ -47,6 +53,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="addDirButton">
+          <property name="minimumSize">
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
           <property name="toolTip">
            <string>Add directory</string>
           </property>
@@ -63,6 +75,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="addButton">
+          <property name="minimumSize">
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
           <property name="toolTip">
            <string>Add file or direcory</string>
           </property>
@@ -95,6 +113,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="upButton">
+          <property name="minimumSize">
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
           <property name="cursor">
            <cursorShape>ArrowCursor</cursorShape>
           </property>
@@ -117,6 +141,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="downButton">
+          <property name="minimumSize">
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
           <property name="toolTip">
            <string>Down url(s)</string>
           </property>
@@ -138,7 +168,7 @@
          <widget class="QToolButton" name="deleteButton">
           <property name="minimumSize">
            <size>
-            <width>0</width>
+            <width>22</width>
             <height>22</height>
            </size>
           </property>
@@ -179,7 +209,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_2">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -211,13 +241,13 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>100</width>
+            <width>50</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>100</width>
+            <width>50</width>
             <height>16777215</height>
            </size>
           </property>
@@ -231,6 +261,12 @@
         </item>
         <item row="0" column="2">
          <widget class="QToolButton" name="renameButton">
+          <property name="minimumSize">
+           <size>
+            <width>52</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
            <string>Rename</string>
           </property>
