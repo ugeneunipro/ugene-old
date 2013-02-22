@@ -48,6 +48,9 @@ public:
     /** Return a row with the specified ID */
     virtual U2MsaRow getRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) = 0;
 
+    /** Returns the list of rows IDs in the database for the specified MSA (in increasing order) */
+    virtual QList<qint64> getRowsOrder(const U2DataId& msaId, U2OpStatus& os) = 0;
+
     /** 
      * Creates a new empty MSA object
      * Requires: U2DbiFeature_WriteMsa feature support

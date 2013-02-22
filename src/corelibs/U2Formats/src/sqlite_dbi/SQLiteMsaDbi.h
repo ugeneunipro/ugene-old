@@ -48,6 +48,9 @@ public:
     /** Returns a row with the specified ID */
     virtual U2MsaRow getRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os);
 
+    /** Returns the list of rows IDs in the database for the specified MSA (in increasing order) */
+    virtual QList<qint64> getRowsOrder(const U2DataId& msaId, U2OpStatus& os);
+
     /**
      * Creates a new empty multiple alignment in the database.
      * The folder must exist in the database.
@@ -210,9 +213,6 @@ private:
 
     /** Sets the length of the alignment to the maximum length of its rows. */
     void recalculateMsaLength(const U2DataId& msaId, U2OpStatus& os);
-
-    /** Returns the list of rows IDs in the database for the specified MSA (in increasing order) */
-    QList<qint64> getRowsOrder(const U2DataId& msaId, U2OpStatus& os);
 
     /** Calculates length of the row (characters + gaps), does NOT take into account trailing gaps. */
     qint64 calculateRowLength(qint64 seqLength, const QList<U2MsaGap>& gaps);
