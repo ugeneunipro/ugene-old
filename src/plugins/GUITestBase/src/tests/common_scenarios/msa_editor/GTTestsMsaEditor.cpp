@@ -1823,7 +1823,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1) {
     GTUtilsMdi::click(os, GTGlobals::Close);
     GTGlobals::sleep();
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Multiple alignment"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI_transl.aln"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep();
 
@@ -3378,12 +3378,11 @@ GUI_TEST_CLASS_DEFINITION(test_0039){
     extMap[2] = "msf";
     extMap[3] = "meg";
     extMap[4] = "nex";
-    extMap[5] = "sam";
-    extMap[6] = "sto";
+    extMap[5] = "sto";
 //1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //2. Use project tree context menu->Export/Import->Export Nucleic Alignment to Amino Translation
-    for (int i=6; i<extMap.size(); i++){
+    for (int i=0; i<extMap.size(); i++){
         GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI"));
         GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,i));
         GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION<<ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
