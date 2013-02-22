@@ -43,7 +43,7 @@ public:
     static qint64 getModStepsNum(const U2DataId& objId, U2OpStatus& os);
 
     static U2DataId createTestMsa(bool enableModTracking, U2OpStatus& os);
-    static U2DataId createTestMsaUGM(bool enableModTracking, U2OpStatus& os);
+    static U2DataId createNotSoSmallTestMsa(bool enableModTracking, U2OpStatus& os);
 
     static const QString TEST_MSA_NAME;
 
@@ -87,6 +87,10 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo);
 
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_noModTrack);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_redo);
+
 /** Update row name */
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_undo);
@@ -109,6 +113,10 @@ DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateGapModel_redo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowContent_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo);
+
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_noModTrack);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_redo);
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_undo);

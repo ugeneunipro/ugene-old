@@ -403,26 +403,17 @@ QList<qint64> SQLiteMsaDbi::getRowsOrder(const U2DataId& msaId, U2OpStatus& os) 
 }
 
 void SQLiteMsaDbi::setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& rowIds, U2OpStatus& os) {
-    U2TrackModType trackMod = dbi->getObjectDbi()->getTrackModType(msaId, os);
+    // Init track info
+    SQLiteTransaction t(db, os);
+    ModTrackAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepareTracking(os);
     CHECK_OP(os, );
 
-    // Remember version for the case when modifications tracking is required
-    qint64 version = -1; // Use only for modification tracking!
-    QByteArray oldRowsOrderDetails("oldRowsOrder=");
+    QByteArray modDetails;
     if (TrackOnUpdate == trackMod) {
-        version = dbi->getObjectDbi()->getObjectVersion(msaId, os);
+        QList<qint64> oldOrder = getRowsOrder(msaId, os);
         CHECK_OP(os, );
-
-        QList<qint64> rowsOrder = getRowsOrder(msaId, os);
-        CHECK_OP(os, );
-
-        for (int i = 0, n = rowsOrder.count(); i < n; ++i) {
-            oldRowsOrderDetails += QByteArray::number(rowsOrder[i]);
-
-            if (i != n - 1) {
-                oldRowsOrderDetails += "&";
-            }
-        }
+        modDetails = PackUtils::packRowOrderDetails(oldOrder, rowIds);
     }
 
     // Check that row IDs number is correct (if required, can be later removed for efficiency)
@@ -431,32 +422,16 @@ void SQLiteMsaDbi::setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& r
     SAFE_POINT(numOfRows == rowIds.count(), "Incorrect number of row IDs!", );
 
     // Set the new order
-    SQLiteTransaction t(db, os);
-    SQLiteQuery q("UPDATE MsaRow SET pos = ?1 WHERE msa = ?2 AND rowId = ?3", db, os);
+    setNewRowsOrderCore(msaId, rowIds, os);
     CHECK_OP(os, );
 
-    for (int i = 0, n = rowIds.count(); i < n; ++i) {
-        qint64 rowId = rowIds[i];
-        q.reset();
-        q.bindInt64(1, i);
-        q.bindDataId(2, msaId);
-        q.bindInt64(3, rowId);
-        q.execute();
-    }
+    // Save track info
+    updateAction.saveTrack(U2ModType::msaSetNewRowsOrder, modDetails, os);
+    CHECK_OP(os, );
 
     // Increment the alignment version
     SQLiteObjectDbi::incrementVersion(msaId, db, os);
     CHECK_OP(os, );
-
-    // Track the modification
-    if (TrackOnUpdate == trackMod) {
-        U2ModStep modStep;
-        modStep.objectId = msaId;
-        modStep.version = version;
-        modStep.modType = U2ModType::msaSetNewRowsOrder;
-        modStep.details = CURRENT_MOD_DETAILS_VERSION + oldRowsOrderDetails;
-        dbi->getModDbi()->createModStep(modStep, os);
-    }
 }
 
 void SQLiteMsaDbi::removeRecordFromMsaRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os) {
@@ -1039,6 +1014,21 @@ void SQLiteMsaDbi::updateRowContentCore(const U2DataId &msaId, qint64 rowId, con
     updateGapModelCore(msaId, rowId, gaps, os);
 }
 
+void SQLiteMsaDbi::setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64> rowIds, U2OpStatus &os) {
+    SQLiteTransaction t(db, os);
+    SQLiteQuery q("UPDATE MsaRow SET pos = ?1 WHERE msa = ?2 AND rowId = ?3", db, os);
+    CHECK_OP(os, );
+
+    for (int i = 0, n = rowIds.count(); i < n; ++i) {
+        qint64 rowId = rowIds[i];
+        q.reset();
+        q.bindInt64(1, i);
+        q.bindDataId(2, msaId);
+        q.bindInt64(3, rowId);
+        q.execute();
+    }
+}
+
 void SQLiteMsaDbi::updateRowNameCore(const U2DataId &msaId, qint64 rowId, const QString &newName, U2OpStatus &os) {
     SQLiteTransaction t(db, os);
     U2DataId sequenceId = getSequenceIdByRowId(msaId, rowId, os);
@@ -1175,11 +1165,28 @@ void SQLiteMsaDbi::redoUpdateGapModel(const U2DataId& msaId, const QByteArray& m
 }
 
 void SQLiteMsaDbi::undoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
-    // TODO
+    QList<qint64> oldOrder;
+    QList<qint64> newOrder;
+bool ok = PackUtils::unpackRowOrderDetails(modDetails, oldOrder, newOrder);
+    if (!ok) {
+        os.setError("An error occurred during updating an alignment row order!");
+        return;
+    }
+
+    // Set the old order
+    setNewRowsOrderCore(msaId, oldOrder, os);
 }
 
 void SQLiteMsaDbi::redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
-    // TODO
+    QList<qint64> oldOrder;
+    QList<qint64> newOrder;
+    bool ok = PackUtils::unpackRowOrderDetails(modDetails, oldOrder, newOrder);
+    if (!ok) {
+        os.setError("An error occurred during updating an alignment row order!");
+        return;
+    }
+
+    setNewRowsOrder(msaId, newOrder, os);
 }
 
 void SQLiteMsaDbi::undoUpdateRowName(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
@@ -1320,6 +1327,59 @@ bool PackUtils::unpackRowContentDetails(const QByteArray &modDetails, qint64 &ro
         bool ok = unpackGaps(tokens[5], newGaps);
         SAFE_POINT(ok, QString("Invalid row content string '%1'").arg(tokens[5].data()), false);
     }
+    return true;
+}
+
+QByteArray PackUtils::packRowOrder(const QList<qint64>& rowIds) {
+    QByteArray result;
+    foreach (qint64 rowId, rowIds) {
+        if (!result.isEmpty()) {
+            result += ";";
+        }
+        result += QByteArray::number(rowId);
+    }
+    return "\"" + result + "\"";
+}
+
+bool PackUtils::unpackRowOrder(const QByteArray& str, QList<qint64>& rowsIds) {
+    CHECK(str.startsWith('\"') && str.endsWith('\"'), false);
+    QByteArray orderStr = str.mid(1, str.length() - 2);
+    if (orderStr.isEmpty()) {
+        return true;
+    }
+
+    QList<QByteArray> tokens = orderStr.split(';');
+    foreach (const QByteArray &t, tokens) {
+        bool ok = false;
+        rowsIds << t.toLongLong(&ok);
+        CHECK(ok, false);
+    }
+    return true;
+}
+
+QByteArray PackUtils::packRowOrderDetails(const QList<qint64>& oldOrder, const QList<qint64>& newOrder) {
+    QByteArray result = SQLiteMsaDbi::CURRENT_MOD_DETAILS_VERSION;
+    result += packRowOrder(oldOrder);
+    result += "&";
+    result += packRowOrder(newOrder);
+    return result;
+}
+
+bool PackUtils::unpackRowOrderDetails(const QByteArray &modDetails, QList<qint64>& oldOrder, QList<qint64>& newOrder) {
+    QList<QByteArray> tokens = modDetails.split('&');
+    SAFE_POINT(3 == tokens.size(), QString("Invalid rows order modDetails string '%1'").arg(QString(modDetails)), false);
+    { // vesrion
+        SAFE_POINT("0" == tokens[0], QString("Invalid modDetails version '%1'").arg(tokens[0].data()), false);
+    }
+    { // oldOrder
+        bool ok = unpackRowOrder(tokens[1], oldOrder);
+        SAFE_POINT(ok, QString("Invalid rows order string '%1'").arg(tokens[1].data()), false);
+    }
+    { // newGaps
+        bool ok = unpackRowOrder(tokens[2], newOrder);
+        SAFE_POINT(ok, QString("Invalid rows order string '%1'").arg(tokens[2].data()), false);
+    }
+
     return true;
 }
 

@@ -15,6 +15,9 @@ MsaDbiSQLiteSpecificUnitTests
 + updateRowContent_noModTrack
 + updateRowContent_undo
 + updateRowContent_redo
++ setNewRowsOrder_noModTrack
++ setNewRowsOrder_undo
++ setNewRowsOrder_redo
 + updateRowName_noModTrack
 + updateRowName_undo
 + updateRowName_redo

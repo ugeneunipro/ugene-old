@@ -128,6 +128,36 @@ U2DataId MsaSQLiteSpecificTestData::createTestMsa(bool enableModTracking, U2OpSt
     return msaId;
 }
 
+U2DataId MsaSQLiteSpecificTestData::createNotSoSmallTestMsa(bool enableModTracking, U2OpStatus& os) {
+    // Create an alignment
+    U2AlphabetId alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    U2DataId msaId = sqliteDbi->getMsaDbi()->createMsaObject("", TEST_MSA_NAME, alphabet, os);
+    CHECK_OP(os, U2DataId());
+
+    // The alignment has the following rows:
+    // T-AAGAC-TTCTA--ATTTATTCGGGG-CTAGCTAGCA--TTTCAGCTAGCT---ACGGG
+    // TAAGC--TACTAGGGA-CTGAG-CTAG---CATTCAGCTACGAGGGGGC--AAACTACTG
+    // TTAGCTAGCTTAGCATCT--TAGCTATG--ACGTACAGCGATT-CGAC-GTA-TCAG-CT
+    // ACTTTGAC---TCGAGCGAGC---TTATTTTACGATCAC--GACCCATAAGAATA--GAGCTAT
+    // ACTGGC-TACAGCGA-TCTAGG-GGAAATC-TACTATC-T-ACGAT-CTAGTATCACGAT
+    // AC--TAGGTTCAGCTAG--CGGATCGACATTTTGTAGGACGACGT--ACTTTCCCA--CGCTA
+    // TTT--C-G-T-GTGTCACATA-C----GTCAGT----------TAACGATCGATCACACAC
+    addRow(msaId, "1", "TAAGACTTCTAATTTATTCGGGGCTAGCTAGCATTTCAGCTAGCTACGGG", QList<U2MsaGap>() << U2MsaGap(1, 1) << U2MsaGap(7, 1) << U2MsaGap(13, 2) << U2MsaGap(27, 1) << U2MsaGap(38, 2) << U2MsaGap(52, 3), os);
+    addRow(msaId, "2", "TAAGCTACTAGGGACTGAGCTAGCATTCAGCTACGAGGGGGCAAACTACTG", QList<U2MsaGap>() << U2MsaGap(5, 2) << U2MsaGap(16, 1) << U2MsaGap(22, 1) << U2MsaGap(27, 1) << U2MsaGap(49, 2), os);
+    addRow(msaId, "3", "TTAGCTAGCTTAGCATCTTAGCTATGACGTACAGCGATTCGACGTATCAGCT", QList<U2MsaGap>() << U2MsaGap(18, 2) << U2MsaGap(28, 2) << U2MsaGap(43, 1) << U2MsaGap(48, 1) << U2MsaGap(52, 1) << U2MsaGap(57, 1), os);
+    addRow(msaId, "4", "ACTTTGACTCGAGCGAGCTTATTTTACGATCACGACCCATAAGAATAGAGCTAT", QList<U2MsaGap>() << U2MsaGap(8, 3) << U2MsaGap(21, 3) << U2MsaGap(39, 2) << U2MsaGap(55, 2), os);
+    addRow(msaId, "5", "ACTGGCTACAGCGATCTAGGGGAAATCTACTATCTACGATCTAGTATCACGAT", QList<U2MsaGap>() << U2MsaGap(6, 1) << U2MsaGap(15, 1) << U2MsaGap(22, 1) << U2MsaGap(30, 1) << U2MsaGap(38, 1) << U2MsaGap(40, 1) << U2MsaGap(46, 1), os);
+    addRow(msaId, "6", "ACTAGGTTCAGCTAGCGGATCGACATTTTGTAGGACGACGTACTTTCCCACGCTA", QList<U2MsaGap>() << U2MsaGap(2, 2) << U2MsaGap(17, 2) << U2MsaGap(45, 2) << U2MsaGap(56, 2), os);
+    addRow(msaId, "7", "TTTCGTGTGTCACATACGTCAGTTAACGATCGATCACACAC", QList<U2MsaGap>() << U2MsaGap(3, 2) << U2MsaGap(6, 1) << U2MsaGap(8, 1) << U2MsaGap(10, 1) << U2MsaGap(21, 1) << U2MsaGap(23, 4) << U2MsaGap(33, 10), os);
+
+    if (enableModTracking) {
+        sqliteDbi->getObjectDbi()->setTrackModType(msaId, TrackOnUpdate, os);
+        CHECK_OP(os, U2DataId());
+    }
+
+    return msaId;
+}
+
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack) {
     U2OpStatusImpl os;
@@ -664,6 +694,434 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo) {
     CHECK_EQUAL(oldVersion, modStep.version, "version in mod step");
     CHECK_EQUAL(U2ModType::msaUpdatedRowContent, modStep.modType, "mod step type");
     CHECK_EQUAL(expectedModDetails, QString(modStep.details), "mod step details");
+}
+
+IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_noModTrack) {
+    U2OpStatusImpl os;
+    SQLiteDbi *sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createNotSoSmallTestMsa(false, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current version
+    int oldVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current row order
+    QList<qint64> oldOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_NOT_EQUAL(0, oldOrder.length(), "incorrect oreder list length");
+
+    // Get current rows
+    QList<U2MsaRow> oldRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current sequences
+    QList<QByteArray> oldSequences;
+    foreach(U2MsaRow row, oldRows) {
+        oldSequences << sqliteDbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Get current U2Msa
+    U2Msa oldMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Set new row order
+    //Expected order (indexes): 4, 5, 1, 6, 0, 2, 3
+    //Expected order (rowIds): 5, 6, 2, 7, 1, 3, 1
+    QList<qint64> newOrder = oldOrder;
+    newOrder.swap(0, 4);
+    newOrder.swap(3, 6);
+    newOrder.swap(2, 5);
+    newOrder.swap(1, 2);
+
+    sqliteDbi->getMsaDbi()->setNewRowsOrder(msaId, newOrder, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify order
+    QList<qint64> newestOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(newOrder.length(), newestOrder.length(), "row order length");
+    for (int i = 0; i < newOrder.length(); ++i) {
+        CHECK_EQUAL(newOrder[i], newestOrder[i],  "row order");
+    }
+
+    // Verify gaps and IDs
+    // Order of the list has changed
+    QList<U2MsaRow> newRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldRows.length(), newRows.length(), "rows length");
+    foreach (U2MsaRow newRow, newRows) {
+        bool ok = false;
+        foreach (U2MsaRow oldRow, oldRows) {
+            if (newRow.gaps == oldRow.gaps && newRow.gend == oldRow.gend &&
+                    newRow.gstart == oldRow.gstart && newRow.length == oldRow.length &&
+                    newRow.rowId == oldRow.rowId && newRow.sequenceId == oldRow.sequenceId);
+            ok = true;
+            break;
+        }
+        CHECK_TRUE(ok, "rows");
+    }
+
+    // Verify seq
+    // Order of the list has changed
+    foreach (U2MsaRow row, newRows) {
+        QByteArray sequence = sqliteDbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
+        CHECK_TRUE(oldSequences.contains(sequence), "sequence");
+    }
+
+    // Verify U2Msa
+    U2Msa newMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(oldMsa.alphabet == newMsa.alphabet, "msa");
+    CHECK_TRUE(oldMsa.length == newMsa.length, "msa");
+
+    // Verify version
+    int newVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldVersion + 1, newVersion, "version");
+
+    // Verify no modification steps
+    qint64 modStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(0, modStepsNum, "mod steps num");
+}
+
+IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_undo) {
+    U2OpStatusImpl os;
+    SQLiteDbi *sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createNotSoSmallTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current version
+    int oldVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current row order
+    QList<qint64> oldOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_NOT_EQUAL(0, oldOrder.length(), "incorrect oreder list length");
+
+    // Get current rows
+    QList<U2MsaRow> oldRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current sequences
+    QList<QByteArray> oldSequences;
+    foreach(U2MsaRow row, oldRows) {
+        oldSequences << sqliteDbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Get current U2Msa
+    U2Msa oldMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Set new row order
+    //Expected order (indexes): 4, 5, 1, 6, 0, 2, 3
+    QList<qint64> newOrder = oldOrder;
+    newOrder.swap(0, 4);
+    newOrder.swap(3, 6);
+    newOrder.swap(2, 5);
+    newOrder.swap(1, 2);
+
+    sqliteDbi->getMsaDbi()->setNewRowsOrder(msaId, newOrder, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify order
+    QList<qint64> newestOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(newOrder.length(), newestOrder.length(), "row order length");
+    for (int i = 0; i < newOrder.length(); ++i) {
+        CHECK_EQUAL(newOrder[i], newestOrder[i],  "row order");
+    }
+
+    // Verify gaps and IDs
+    // Order of the list has changed
+    QList<U2MsaRow> newRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldRows.length(), newRows.length(), "rows length");
+    foreach (U2MsaRow newRow, newRows) {
+        bool ok = false;
+        foreach (U2MsaRow oldRow, oldRows) {
+            if (newRow.gaps == oldRow.gaps && newRow.gend == oldRow.gend &&
+                    newRow.gstart == oldRow.gstart && newRow.length == oldRow.length &&
+                    newRow.rowId == oldRow.rowId && newRow.sequenceId == oldRow.sequenceId);
+            ok = true;
+            break;
+        }
+        CHECK_TRUE(ok, "rows");
+    }
+
+    // Verify seq
+    // Order of the list has changed
+    foreach (U2MsaRow row, newRows) {
+        QByteArray sequence = sqliteDbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
+        CHECK_TRUE(oldSequences.contains(sequence), "sequence");
+    }
+
+    // Verify U2Msa
+    U2Msa newMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(oldMsa.alphabet == newMsa.alphabet, "msa");
+    CHECK_TRUE(oldMsa.length == newMsa.length, "msa");
+
+    // Verify version
+    int newVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldVersion + 1, newVersion, "version");
+
+    // Verify no modification steps
+    qint64 modStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(1, modStepsNum, "mod steps num");
+
+    // Undo
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify order
+    newestOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldOrder.length(), newestOrder.length(), "row order length");
+    for (int i = 0; i < oldOrder.length(); ++i) {
+        CHECK_EQUAL(oldOrder[i], newestOrder[i],  "row order");
+    }
+
+    // Verify gaps and IDs
+    // Order of the list has changed
+    newRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldRows.length(), newRows.length(), "rows length");
+    foreach (U2MsaRow newRow, newRows) {
+        bool ok = false;
+        foreach (U2MsaRow oldRow, oldRows) {
+            if (newRow.gaps == oldRow.gaps && newRow.gend == oldRow.gend &&
+                    newRow.gstart == oldRow.gstart && newRow.length == oldRow.length &&
+                    newRow.rowId == oldRow.rowId && newRow.sequenceId == oldRow.sequenceId);
+            ok = true;
+            break;
+        }
+        CHECK_TRUE(ok, "rows");
+    }
+
+    // Verify seq
+    // Order of the list has changed
+    foreach (U2MsaRow row, newRows) {
+        QByteArray sequence = sqliteDbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
+        CHECK_TRUE(oldSequences.contains(sequence), "sequence");
+    }
+
+    // Verify U2Msa
+    newMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(oldMsa.alphabet == newMsa.alphabet, "msa");
+    CHECK_TRUE(oldMsa.length == newMsa.length, "msa");
+
+    // Verify version
+    newVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldVersion, newVersion, "version");
+
+    // Verify modification steps
+    modStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(1, modStepsNum, "mod steps num");
+}
+
+IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_redo) {
+    U2OpStatusImpl os;
+    SQLiteDbi *sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createNotSoSmallTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current version
+    int oldVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current row order
+    QList<qint64> oldOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_NOT_EQUAL(0, oldOrder.length(), "incorrect oreder list length");
+
+    // Get current rows
+    QList<U2MsaRow> oldRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Get current sequences
+    QList<QByteArray> oldSequences;
+    foreach(U2MsaRow row, oldRows) {
+        oldSequences << sqliteDbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Get current U2Msa
+    U2Msa oldMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Set new row order
+    //Expected order (indexes): 4, 5, 1, 6, 0, 2, 3
+    //Expected order (rowIds): 5, 6, 2, 7, 1, 3, 1
+    QList<qint64> newOrder = oldOrder;
+    newOrder.swap(0, 4);
+    newOrder.swap(3, 6);
+    newOrder.swap(2, 5);
+    newOrder.swap(1, 2);
+
+    sqliteDbi->getMsaDbi()->setNewRowsOrder(msaId, newOrder, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify order
+    QList<qint64> newestOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(newOrder.length(), newestOrder.length(), "row order length");
+    for (int i = 0; i < newOrder.length(); ++i) {
+        CHECK_EQUAL(newOrder[i], newestOrder[i],  "row order");
+    }
+
+    // Verify gaps and IDs
+    // Order of the list has changed
+    QList<U2MsaRow> newRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldRows.length(), newRows.length(), "rows length");
+    foreach (U2MsaRow newRow, newRows) {
+        bool ok = false;
+        foreach (U2MsaRow oldRow, oldRows) {
+            if (newRow.gaps == oldRow.gaps && newRow.gend == oldRow.gend &&
+                    newRow.gstart == oldRow.gstart && newRow.length == oldRow.length &&
+                    newRow.rowId == oldRow.rowId && newRow.sequenceId == oldRow.sequenceId);
+            ok = true;
+            break;
+        }
+        CHECK_TRUE(ok, "rows");
+    }
+
+    // Verify seq
+    // Order of the list has changed
+    foreach (U2MsaRow row, newRows) {
+        QByteArray sequence = sqliteDbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
+        CHECK_TRUE(oldSequences.contains(sequence), "sequence");
+    }
+
+    // Verify U2Msa
+    U2Msa newMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(oldMsa.alphabet == newMsa.alphabet, "msa");
+    CHECK_TRUE(oldMsa.length == newMsa.length, "msa");
+
+    // Verify version
+    int newVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldVersion + 1, newVersion, "version");
+
+    // Verify no modification steps
+    qint64 modStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(1, modStepsNum, "mod steps num");
+
+    // Undo
+    sqliteDbi->getObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify order
+    newestOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldOrder.length(), newestOrder.length(), "row order length");
+    for (int i = 0; i < oldOrder.length(); ++i) {
+        CHECK_EQUAL(oldOrder[i], newestOrder[i],  "row order");
+    }
+
+    // Verify gaps and IDs
+    // Order of the list has changed
+    newRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldRows.length(), newRows.length(), "rows length");
+    foreach (U2MsaRow newRow, newRows) {
+        bool ok = false;
+        foreach (U2MsaRow oldRow, oldRows) {
+            if (newRow.gaps == oldRow.gaps && newRow.gend == oldRow.gend &&
+                    newRow.gstart == oldRow.gstart && newRow.length == oldRow.length &&
+                    newRow.rowId == oldRow.rowId && newRow.sequenceId == oldRow.sequenceId);
+            ok = true;
+            break;
+        }
+        CHECK_TRUE(ok, "rows");
+    }
+
+    // Verify seq
+    // Order of the list has changed
+    foreach (U2MsaRow row, newRows) {
+        QByteArray sequence = sqliteDbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
+        CHECK_TRUE(oldSequences.contains(sequence), "sequence");
+    }
+
+    // Verify U2Msa
+    newMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(oldMsa.alphabet == newMsa.alphabet, "msa");
+    CHECK_TRUE(oldMsa.length == newMsa.length, "msa");
+
+    // Verify version
+    newVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldVersion, newVersion, "version");
+
+    // Verify modification steps
+    modStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(1, modStepsNum, "mod steps num");
+
+    // Redo
+    sqliteDbi->getObjectDbi()->redo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify order
+    newestOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(newOrder.length(), newestOrder.length(), "row order length");
+    for (int i = 0; i < newOrder.length(); ++i) {
+        CHECK_EQUAL(newOrder[i], newestOrder[i],  "row order");
+    }
+
+    // Verify gaps and IDs
+    // Order of the list has changed
+    newRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldRows.length(), newRows.length(), "rows length");
+    foreach (U2MsaRow newRow, newRows) {
+        bool ok = false;
+        foreach (U2MsaRow oldRow, oldRows) {
+            if (newRow.gaps == oldRow.gaps && newRow.gend == oldRow.gend &&
+                    newRow.gstart == oldRow.gstart && newRow.length == oldRow.length &&
+                    newRow.rowId == oldRow.rowId && newRow.sequenceId == oldRow.sequenceId);
+            ok = true;
+            break;
+        }
+        CHECK_TRUE(ok, "rows");
+    }
+
+    // Verify seq
+    // Order of the list has changed
+    foreach (U2MsaRow row, newRows) {
+        QByteArray sequence = sqliteDbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
+        CHECK_TRUE(oldSequences.contains(sequence), "sequence");
+    }
+
+    // Verify U2Msa
+    newMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(oldMsa.alphabet == newMsa.alphabet, "msa");
+    CHECK_TRUE(oldMsa.length == newMsa.length, "msa");
+
+    // Verify version
+    newVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(oldVersion + 1, newVersion, "version");
+
+    // Verify no modification steps
+    modStepsNum = MsaSQLiteSpecificTestData::getModStepsNum(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(1, modStepsNum, "mod steps num");
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_noModTrack) {

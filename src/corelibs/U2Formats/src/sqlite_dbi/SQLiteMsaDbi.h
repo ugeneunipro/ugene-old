@@ -236,6 +236,7 @@ private:
     void updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, const QList<U2MsaGap> &gapModel, U2OpStatus &os);
     /** Replaces old sequence and gap model, updates msa length */
     void updateRowContentCore(const U2DataId &msaId, qint64 rowId, const QByteArray &seqBytes, const QList<U2MsaGap> &gaps, U2OpStatus &os);
+    void setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64> rowIds, U2OpStatus &os);
     void updateRowNameCore(const U2DataId &msaId, qint64 rowId, const QString &newName, U2OpStatus &os);
 
     ///////////////////////////////////////////////////////////
@@ -281,6 +282,14 @@ public:
     static bool unpackRowContentDetails(const QByteArray &modDetails, qint64 &rowId,
         QByteArray &oldSeq, QList<U2MsaGap> &oldGaps,
         QByteArray &newSeq, QList<U2MsaGap> &newGaps);
+
+    /** Row order */
+    static QByteArray packRowOrder(const QList<qint64>& rowIds);
+    static bool unpackRowOrder(const QByteArray& str, QList<qint64>& rowsIds);
+
+    /** Row order details */
+    static QByteArray packRowOrderDetails(const QList<qint64>& oldOrder, const QList<qint64>& newOrder);
+    static bool unpackRowOrderDetails(const QByteArray &modDetails, QList<qint64>& oldOrder, QList<qint64>& newOrder);
 
     /** Row name details */
     static QByteArray packRowNameDetails(qint64 rowId, const QString &oldName, const QString &newName);
