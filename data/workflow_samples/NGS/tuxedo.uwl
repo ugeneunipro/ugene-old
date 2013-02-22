@@ -109,6 +109,173 @@ workflow Tuxedo{
                 text-pos:"-45 -55";
             }
         }
+        wizard {
+            name : "Tuxedo wizard";
+            page {
+                id : 1;
+                next : 2;
+                title : "Input RNA short-reads";
+                parameters-area {
+                    read-sequence.url-in {
+                        type : datasets;
+                    }
+                }
+            }
+            page {
+                id : 2;
+                next : 3;
+                title : "Tophat settings";
+                parameters-area {
+                    group {
+                        title : "Input reference";
+                        label-size : 200;
+                        tophat.bowtie-index-dir {}
+                        tophat.bowtie-index-basename {}
+                    }
+                    group {
+                        title : "Parameters";
+                        label-size : 200;
+                        tophat.known-transcript {}
+                        tophat.raw-junctions {}
+                    }
+                    group {
+                        title : "Additional";
+                        label-size : 200;
+                        type : hideable;
+                        tophat.mate-inner-distance {}
+                        tophat.mate-standard-deviation {}
+                        tophat.library-type {}
+                        tophat.no-novel-junctions {}
+                        tophat.max-multihits {}
+                        tophat.segment-length {}
+                        tophat.fusion-search {}
+                        tophat.transcriptome-only {}
+                        tophat.transcriptome-max-hits {}
+                        tophat.prefilter-multihits {}
+                        tophat.min-anchor-length {}
+                        tophat.splice-mismatches {}
+                        tophat.read-mismatches {}
+                        tophat.segment-mismatches {}
+                        tophat.solexa-1-3-quals {}
+                        tophat.bowtie-version {}
+                        tophat.bowtie-n-mode {}
+                        tophat.bowtie-tool-path {}
+                        tophat.samtools-tool-path {}
+                        tophat.path {}
+                        tophat.temp-dir {}
+                    }
+                }
+            }
+            page {
+                id : 3;
+                next : 4;
+                title : "Cufflinks settings";
+                parameters-area {
+                    group {
+                        title : "Parameters";
+                        label-size : 200;
+                        cufflinks.ref-annotation {}
+                        cufflinks.rabt-annotation {}
+                        cufflinks.library-type {}
+                        cufflinks.mask-file {}
+                        cufflinks.multi-read-correct {}
+                        cufflinks.min-isoform-fraction {}
+                        cufflinks.frag-bias-correct {}
+                        cufflinks.pre-mrna-fraction {}
+                    }
+                    group {
+                        title : "Additional";
+                        label-size : 200;
+                        type : hideable;
+                        cufflinks.path {}
+                        cufflinks.tmp-dir {}
+                    }
+                }
+            }
+            page {
+                id : 4;
+                next : 5;
+                title : "Cuffmerge settings";
+                parameters-area {
+                    group {
+                        title : "Parameters";
+                        label-size : 200;
+                        cuffmerge.min-isoform-fraction {}
+                        cuffmerge.ref-annotation {}
+                        cuffmerge.ref-seq {}
+                    }
+                    group {
+                        title : "Additional";
+                        label-size : 200;
+                        type : hideable;
+                        cuffmerge.cuffcompare-tool-path {}
+                        cuffmerge.path {}
+                        cuffmerge.tmp-dir {}
+                    }
+                }
+            }
+            page {
+                id : 5;
+                next : 6;
+                title : "Cuffdiff settings";
+                parameters-area {
+                    group {
+                        title : "Parameters";
+                        label-size : 200;
+                        cuffdiff.time-series-analysis {}
+                        cuffdiff.upper-quartile-norm {}
+                        cuffdiff.hits-norm {}
+                        cuffdiff.frag-bias-correct {}
+                        cuffdiff.multi-read-correct {}
+                        cuffdiff.library-type {}
+                    }
+                    group {
+                        title : "Additional";
+                        label-size : 200;
+                        type : hideable;
+                        cuffdiff.mask-file {}
+                        cuffdiff.min-alignment-count {}
+                        cuffdiff.fdr {}
+                        cuffdiff.max-mle-iterations {}
+                        cuffdiff.emit-count-tables {}
+                        cuffdiff.path {}
+                        cuffdiff.tmp-dir {}
+                    }
+                }
+            }
+            page {
+                id : 6;
+                next : 7;
+                title : "Cuffdiff input data. Requires at least two datasets";
+                parameters-area {
+                    read-assembly.url-in {
+                        type : datasets;
+                    }
+                }
+            }
+            page {
+                id : 7;
+                title : "Output data";
+                parameters-area {
+                    group {
+                        title : "Tools output directories";
+                        label-size : 100;
+                        tophat.out-dir {
+                            label : "Tophat";
+                        }
+                        cufflinks.out-dir {
+                            label : "Cufflinks";
+                        }
+                        cuffmerge.out-dir {
+                            label : "Cuffmerge";
+                        }
+                        cuffdiff.out-dir {
+                            label : "Cuffdiff";
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
