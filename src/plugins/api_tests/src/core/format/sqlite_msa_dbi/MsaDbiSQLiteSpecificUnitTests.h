@@ -87,6 +87,11 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo);
 
+/** Update row name */
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_noModTrack);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_redo);
+
 } // namespace
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack);
@@ -104,5 +109,9 @@ DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateGapModel_redo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowContent_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo);
+
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_noModTrack);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_redo);
 
 #endif
