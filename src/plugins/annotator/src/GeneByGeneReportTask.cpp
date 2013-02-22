@@ -23,6 +23,7 @@
 
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/Counter.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QSet>
@@ -312,6 +313,7 @@ void GeneByGeneReportTask::run(){
     if (isCanceled()){
         return;
     }
+    GCOUNTER(cvar, tvar, "GeneByGeneTask");
 
     GeneByGeneReportIO io(settings.outFile, settings.existingFile);
     io.prepareOutputFile(stateInfo);
