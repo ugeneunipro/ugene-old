@@ -6,20 +6,26 @@ MsaDbiSQLiteSpecificUnitTests
 + updateMsaName_noModTrack
 + updateMsaName_undo
 + updateMsaName_redo
++ updateMsaName_severalSteps
 + updateMsaAlphabet_noModTrack
 + updateMsaAlphabet_undo
 + updateMsaAlphabet_redo
+- updateMsaAlphabet_severalSteps
 + updateGapModel_noModTrack
 + updateGapModel_undo
 + updateGapModel_redo
+- updateGapModel_severalSteps
 + updateRowContent_noModTrack
 + updateRowContent_undo
 + updateRowContent_redo
+- updateRowContent_severalSteps
 + setNewRowsOrder_noModTrack
 + setNewRowsOrder_undo
 + setNewRowsOrder_redo
+- setNewRowsOrder_severalSteps
 + updateRowName_noModTrack
 + updateRowName_undo
 + updateRowName_redo
+- updateRowName_severalSteps
 
 </unittest>

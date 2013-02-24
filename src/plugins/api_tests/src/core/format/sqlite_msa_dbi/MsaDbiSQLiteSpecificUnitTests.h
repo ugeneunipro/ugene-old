@@ -67,59 +67,79 @@ private:
  *   ^ noModTrack - modifications tracking is not enabled for the MSA.
  *   ^ undo       - modifications tracking is enabled, check the "undo" operation.
  *   ^ redo       - modifications tracking is enabled, check the "redo" operation.
+ *   ^ severalSteps - modification tracking is enabled, check several "undo/redo" steps.
  */
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_redo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaName_severalSteps);
 
 /** Update a MSA alphabet */
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_redo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_severalSteps);
 
 /** Update gap model */
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateGapModel_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateGapModel_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateGapModel_redo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateGapModel_severalSteps);
 
 /** Update row content */
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps);
 
+/**
+ * Set new row order of the MSA.
+ *   ^ noModTrack - modifications tracking is not enabled for the MSA.
+ *   ^ undo       - modifications tracking is enabled, check the "undo" operation.
+ *   ^ redo       - modifications tracking is enabled, check the "redo" operation.
+ *   ^ severalSteps - modification tracking is enabled, check several "undo/redo" steps.
+ */
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_redo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_severalSteps);
 
 /** Update row name */
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_redo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_severalSteps);
 
 } // namespace
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_redo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_severalSteps);
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_redo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaAlphabet_severalSteps);
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateGapModel_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateGapModel_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateGapModel_redo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateGapModel_severalSteps);
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowContent_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps);
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_redo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_severalSteps);
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_redo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_severalSteps);
 
 #endif
