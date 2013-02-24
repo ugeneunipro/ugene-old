@@ -43,7 +43,7 @@
 
 namespace U2 {
 
-ABIFormat::ABIFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags(0), QStringList() << "ab1" << "abi" << "abif")
+ABIFormat::ABIFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlag_SupportStreaming, QStringList() << "ab1" << "abi" << "abif")
 {
     formatName = tr("ABIF");
     formatDescription = tr("A chromatogram file format");
@@ -91,6 +91,10 @@ Document* ABIFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
 
 DNASequence *ABIFormat::loadSequence(IOAdapter *io, U2OpStatus &os)
 {
+    if (io->isEof()) {
+        return NULL;
+    }
+    
     CHECK_EXT((io != NULL) && (io->isOpen() == true), os.setError(L10N::badArgument("IO adapter")), NULL);
     QByteArray readBuff;
     QByteArray block(BUFF_SIZE, 0);
@@ -109,7 +113,7 @@ DNASequence *ABIFormat::loadSequence(IOAdapter *io, U2OpStatus &os)
     DNAChromatogram cd;
 
     if (!loadABIObjects(&sf, (*seq), cd)) {
-        os.setError(tr("Failed to load chromotogram from ABI file %1").arg(io->toString()));
+        os.setError(tr("Failed to load sequence from ABI file %1").arg(io->toString()));
     }
 
     return seq;
