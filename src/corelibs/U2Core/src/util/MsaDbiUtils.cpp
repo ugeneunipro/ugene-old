@@ -853,9 +853,6 @@ void MsaDbiUtils::removeRegion(const U2EntityRef& msaRef, const QList<qint64>& r
         msaDbi->updateRowContent(msaRef.entityId, rowId, seq, row.gaps, os);
         SAFE_POINT_OP(os, );
     }
-
-    MsaDbiUtils::trim(msaRef, os);
-    SAFE_POINT_OP(os, );
 }
 
 void MsaDbiUtils::removeEmptyRows(const U2EntityRef& msaRef, const QList<qint64>& rowIds, U2OpStatus &os) {

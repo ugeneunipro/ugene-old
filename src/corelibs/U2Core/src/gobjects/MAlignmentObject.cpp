@@ -304,6 +304,9 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
     MsaDbiUtils::removeRegion(entityRef, rowIds, startPos, nBases, os);
     SAFE_POINT_OP(os, );
 
+    MsaDbiUtils::trim(entityRef, os);
+    SAFE_POINT_OP(os, );
+
     if (removeEmptyRows) {
         MsaDbiUtils::removeEmptyRows(entityRef, rowIds, os);
     }

@@ -35,6 +35,13 @@ namespace U2 {
 class U2MsaDbi;
 class U2SequenceDbi;
 
+class Utils {
+public:
+    static void addRow(U2Dbi *dbi, const U2DataId &msaId,
+        const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps,
+        U2OpStatus &os);
+};
+
 class MsaDbiUtilsTestUtils {
 public:
     static void init();

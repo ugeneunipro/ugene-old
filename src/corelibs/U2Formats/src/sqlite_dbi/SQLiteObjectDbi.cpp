@@ -623,6 +623,16 @@ void SQLiteObjectDbi::setTrackModType(const U2DataId& objectId, U2TrackModType t
     q.bindInt32(1, trackModType);
     q.bindDataId(2, objectId);
     q.update(1);
+    CHECK_OP(os, );
+
+    { // update child objects
+        SQLiteQuery q("UPDATE Object SET trackMod = ?1 WHERE id IN "
+                      "(SELECT o.id FROM Object o, Parent p WHERE p.parent = ?2 AND p.child = o.id)", db, os);
+        CHECK_OP(os, );
+        q.bindInt32(1, trackModType);
+        q.bindDataId(2, objectId);
+        q.update(1);
+    }
 }
 
 U2TrackModType SQLiteObjectDbi::getTrackModType(const U2DataId& objectId, U2OpStatus& os) {
@@ -843,5 +853,28 @@ void ModTrackAction::saveTrack(qint64 modType, const QByteArray& modDetails, U2O
     }
 }
 
+/************************************************************************/
+/* SQLiteObjectDbiUtils */
+/************************************************************************/
+void SQLiteObjectDbiUtils::renameObject(DbRef *db, SQLiteDbi *dbi, U2Object &object, const QString &newName, U2OpStatus &os) {
+    SQLiteTransaction t(db, os);
+    ModTrackAction updateAction(dbi, object.id);
+    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    CHECK_OP(os, );
+
+    SQLiteObjectDbi *objectDbi = dbi->getSQLiteObjectDbi();
+
+    QByteArray modDetails;
+    if (TrackOnUpdate == trackMod) {
+        modDetails = objectDbi->getModDetailsForUpdateObjectName(object.visualName, newName);
+    }
+
+    object.visualName = newName;
+    objectDbi->updateObject(object, os); // increments the version of object
+    CHECK_OP(os, );
+
+    updateAction.saveTrack(U2ModType::objUpdatedName, modDetails, os);
+    CHECK_OP(os, );
+}
 
 } //namespace

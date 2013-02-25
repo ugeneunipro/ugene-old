@@ -69,9 +69,11 @@ private:
  * Records of another MSA object are not removed.
  */
 DECLARE_TEST(SQLiteObjectDbiUnitTests, removeMsaObject);
+DECLARE_TEST(SQLiteObjectDbiUnitTests, setTrackModType);
 
 } // namespace
 
 DECLARE_METATYPE(SQLiteObjectDbiUnitTests, removeMsaObject);
+DECLARE_METATYPE(SQLiteObjectDbiUnitTests, setTrackModType);
 
 #endif

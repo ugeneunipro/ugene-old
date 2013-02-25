@@ -280,6 +280,16 @@ private:
     qint64 objectVersionToTrack;
 };
 
+class SQLiteObjectDbiUtils {
+public:
+    /**
+     * Updates the object name and increments the version.
+     * The changes are tracked if it is needed.
+     * Applies all changes to @object too.
+     */
+    static void renameObject(DbRef *db, SQLiteDbi *dbi, U2Object &object, const QString &newName, U2OpStatus &os);
+};
+
 } //namespace
 
 #endif

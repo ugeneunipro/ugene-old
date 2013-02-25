@@ -179,6 +179,29 @@ U2EntityRef MsaDbiUtilsTestUtils::initTestAlignment(QList<U2MsaRow>& rows) {
     return msaRef;
 }
 
+void Utils::addRow(U2Dbi *dbi, const U2DataId &msaId,
+    const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps,
+    U2OpStatus &os) {
+    U2Sequence sequence;
+    sequence.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
+    sequence.visualName = name;
+    dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
+    CHECK_OP(os, );
+
+    U2Region reg(0, 0);
+    dbi->getSequenceDbi()->updateSequenceData(sequence.id, reg, seq, QVariantMap(), os);
+    CHECK_OP(os, );
+
+    U2MsaRow row;
+    row.rowId = -1;
+    row.sequenceId = sequence.id;
+    row.gstart = 0;
+    row.gend = seq.length();
+    row.gaps = gaps;
+
+    dbi->getMsaDbi()->addRow(msaId, -1, row, os);
+}
+
 U2MsaRow MsaDbiUtilsTestUtils::addRow(const U2DataId &msaId, qint64 num, const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os) {
     U2Sequence sequence;
     sequence.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
@@ -208,27 +231,25 @@ U2EntityRef MsaDbiUtilsTestUtils::removeRegionTestAlignment(U2OpStatus &os) {
     U2DataId msaId = msaDbi->createMsaObject("", MsaDbiUtilsTestUtils::alignmentName, BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
     CHECK_OP(os, U2EntityRef());
 
-    QList<U2MsaRow> rows;
-    rows << addRow(msaId, 0, "1", "TAAGACTTCTAA", QList<U2MsaGap>() << U2MsaGap(12, 2), os);
-    rows << addRow(msaId, 1, "2", "TAAGCTTACTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
-    rows << addRow(msaId, 2, "3", "TTAGTTTATTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
-    rows << addRow(msaId, 3, "4", "TCAGTCTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
-    rows << addRow(msaId, 4, "5", "TCAGTTTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
-    rows << addRow(msaId, 5, "6", "TTAGTCTACTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
-    rows << addRow(msaId, 6, "7", "TCAGATTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
-    rows << addRow(msaId, 7, "8", "TTAGATTGCTA", QList<U2MsaGap>() << U2MsaGap(1, 1) << U2MsaGap(12, 2), os);
-    rows << addRow(msaId, 8, "9", "TTAGATTATTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
-    rows << addRow(msaId, 9, "10", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
-    rows << addRow(msaId, 10, "11", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
-    rows << addRow(msaId, 11, "12", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
-    rows << addRow(msaId, 12, "13", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    U2Dbi *dbi = msaDbi->getRootDbi();
+    SAFE_POINT(NULL != dbi, "Root dbi is NULL", U2EntityRef());
+
+    Utils::addRow(dbi, msaId, "1", "TAAGACTTCTAA", QList<U2MsaGap>() << U2MsaGap(12, 2), os);
+    Utils::addRow(dbi, msaId, "2", "TAAGCTTACTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
+    Utils::addRow(dbi, msaId, "3", "TTAGTTTATTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
+    Utils::addRow(dbi, msaId, "4", "TCAGTCTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    Utils::addRow(dbi, msaId, "5", "TCAGTTTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    Utils::addRow(dbi, msaId, "6", "TTAGTCTACTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    Utils::addRow(dbi, msaId, "7", "TCAGATTATTA", QList<U2MsaGap>() << U2MsaGap(1, 2) << U2MsaGap(5, 1), os);
+    Utils::addRow(dbi, msaId, "8", "TTAGATTGCTA", QList<U2MsaGap>() << U2MsaGap(1, 1) << U2MsaGap(12, 2), os);
+    Utils::addRow(dbi, msaId, "9", "TTAGATTATTA", QList<U2MsaGap>() << U2MsaGap(11, 3), os);
+    Utils::addRow(dbi, msaId, "10", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    Utils::addRow(dbi, msaId, "11", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    Utils::addRow(dbi, msaId, "12", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
+    Utils::addRow(dbi, msaId, "13", "", QList<U2MsaGap>() << U2MsaGap(0, 14), os);
     CHECK_OP(os, U2EntityRef());
 
-    msaDbi->addRows(msaId, rows, os);
-    CHECK_OP(os, U2EntityRef());
-
-    U2EntityRef msaRef(msaDbi->getRootDbi()->getDbiRef(), msaId);
-    return msaRef;
+    return  U2EntityRef(msaDbi->getRootDbi()->getDbiRef(), msaId);
 }
 
 QStringList MsaDbiUtilsTestUtils::getRowNames(U2EntityRef msaRef) {
@@ -1187,16 +1208,16 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_lengthChange) {
     MAlignmentExporter ex;
     MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(13, al.getLength(), "Wrong msa length");
+    CHECK_EQUAL(14, al.getLength(), "Wrong msa length");
 
     QByteArray row3 = al.getRow(3).toByteArray(al.getLength(), os);
     QByteArray row4 = al.getRow(4).toByteArray(al.getLength(), os);
     QByteArray row5 = al.getRow(5).toByteArray(al.getLength(), os);
     QByteArray row6 = al.getRow(6).toByteArray(al.getLength(), os);
-    CHECK_EQUAL(QString("T--CAGTCTATTA"), QString(row3), "Wrong msa row");
-    CHECK_EQUAL(QString("T--CAGTTTATTA"), QString(row4), "Wrong msa row");
-    CHECK_EQUAL(QString("T--TAGTCTACTA"), QString(row5), "Wrong msa row");
-    CHECK_EQUAL(QString("T--CAGATTATTA"), QString(row6), "Wrong msa row");
+    CHECK_EQUAL(QString("T--CAGTCTATTA-"), QString(row3), "Wrong msa row");
+    CHECK_EQUAL(QString("T--CAGTTTATTA-"), QString(row4), "Wrong msa row");
+    CHECK_EQUAL(QString("T--TAGTCTACTA-"), QString(row5), "Wrong msa row");
+    CHECK_EQUAL(QString("T--CAGATTATTA-"), QString(row6), "Wrong msa row");
 }
 
 IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_allRows) {

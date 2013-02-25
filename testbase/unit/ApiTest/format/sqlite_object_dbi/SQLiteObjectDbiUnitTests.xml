@@ -4,5 +4,6 @@
 
 SQLiteObjectDbiUnitTests
 + removeMsaObject
++ setTrackModType
 
 </unittest>

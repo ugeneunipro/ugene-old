@@ -114,16 +114,16 @@ U2DataId MsaSQLiteSpecificTestData::createTestMsa(bool enableModTracking, U2OpSt
     U2DataId msaId = sqliteDbi->getMsaDbi()->createMsaObject("", TEST_MSA_NAME, alphabet, os);
     CHECK_OP(os, U2DataId());
 
-    if (enableModTracking) {
-        sqliteDbi->getObjectDbi()->setTrackModType(msaId, TrackOnUpdate, os);
-        CHECK_OP(os, U2DataId());
-    }
-
     // The alignment has the following rows:
     // T-AAGAC-TTCTA
     // TAAGC--TACTA
     addRow(msaId, "1", "TAAGACTTCTA", QList<U2MsaGap>() << U2MsaGap(1, 1) << U2MsaGap(7, 1), os);
     addRow(msaId, "2", "TAAGCTACTA", QList<U2MsaGap>() << U2MsaGap(5, 2), os);
+
+    if (enableModTracking) {
+        sqliteDbi->getObjectDbi()->setTrackModType(msaId, TrackOnUpdate, os);
+        CHECK_OP(os, U2DataId());
+    }
 
     return msaId;
 }

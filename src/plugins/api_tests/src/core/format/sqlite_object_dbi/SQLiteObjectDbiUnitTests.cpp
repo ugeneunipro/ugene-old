@@ -20,6 +20,7 @@
  */
 
 #include "SQLiteObjectDbiUnitTests.h"
+#include "core/util/MsaDbiUtilsUnitTests.h"
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/U2AttributeDbi.h>
@@ -304,6 +305,50 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
 
     // Remove the second alignment
     sqliteObjectDbi->removeObject(msaId2, "", os);
+}
+
+IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, setTrackModType) {
+    U2OpStatusImpl os;
+    U2MsaDbi *msaDbi = SQLiteObjectDbiTestData::getMsaDbi();
+    SQLiteObjectDbi *objectDbi = SQLiteObjectDbiTestData::getSQLiteObjectDbi();
+
+    // Create alignment 1
+    U2DataId msaId1 = msaDbi->createMsaObject("", "Test name 1", BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    Utils::addRow(msaDbi->getRootDbi(), msaId1, "1", "ACGTACGT", QList<U2MsaGap>(), os);
+    CHECK_NO_ERROR(os);
+    QList<U2MsaRow> rows1 = msaDbi->getRows(msaId1, os);
+    CHECK_NO_ERROR(os);
+
+    // Create alignment 2
+    U2DataId msaId2 = msaDbi->createMsaObject("", "Test name 2", BaseDNAAlphabetIds::NUCL_DNA_DEFAULT(), os);
+    CHECK_NO_ERROR(os);
+    Utils::addRow(msaDbi->getRootDbi(), msaId2, "2", "CCCCCCC", QList<U2MsaGap>(), os);
+    CHECK_NO_ERROR(os);
+    QList<U2MsaRow> rows2 = msaDbi->getRows(msaId2, os);
+    CHECK_NO_ERROR(os);
+
+    // Change mod track 1
+    objectDbi->setTrackModType(msaId1, TrackOnUpdate, os);
+    CHECK_NO_ERROR(os);
+
+    U2TrackModType newType1_1 = objectDbi->getTrackModType(rows1[0].sequenceId, os);
+    CHECK_EQUAL(TrackOnUpdate, newType1_1, "new mod track type 1_1");
+
+    U2TrackModType newType1_2 = objectDbi->getTrackModType(rows2[0].sequenceId, os);
+    CHECK_EQUAL(NoTrack, newType1_2, "new mod track type 1_2");
+
+    // Change mod track 2
+    objectDbi->setTrackModType(msaId1, NoTrack, os);
+    CHECK_NO_ERROR(os);
+    objectDbi->setTrackModType(msaId2, TrackOnUpdate, os);
+    CHECK_NO_ERROR(os);
+
+    U2TrackModType newType2_1 = objectDbi->getTrackModType(rows1[0].sequenceId, os);
+    CHECK_EQUAL(NoTrack, newType2_1, "new mod track type 2_1");
+
+    U2TrackModType newType2_2 = objectDbi->getTrackModType(rows2[0].sequenceId, os);
+    CHECK_EQUAL(TrackOnUpdate, newType2_2, "new mod track type 2_2");
 }
 
 } // namespace

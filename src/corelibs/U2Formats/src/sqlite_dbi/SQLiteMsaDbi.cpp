@@ -92,24 +92,12 @@ U2DataId SQLiteMsaDbi::createMsaObject(const QString& folder, const QString& nam
 }
 
 void SQLiteMsaDbi::updateMsaName(const U2DataId& msaId, const QString& name, U2OpStatus& os) {
-    ModTrackAction updateAction(dbi, msaId);
-    updateAction.prepareTracking(os);
-    CHECK_OP(os, );
-
-    // Update the name
+    SQLiteTransaction t(db, os);
     U2Object msaObj;
     dbi->getSQLiteObjectDbi()->getObject(msaObj, msaId, os);
     CHECK_OP(os, );
 
-    QString oldName = msaObj.visualName;
-    msaObj.visualName = name;
-    dbi->getSQLiteObjectDbi()->updateObject(msaObj, os); // increments the version also
-    CHECK_OP(os, );
-
-    // Track the modification
-    QByteArray modDetails = dbi->getSQLiteObjectDbi()->getModDetailsForUpdateObjectName(oldName, name);
-    updateAction.saveTrack(U2ModType::objUpdatedName, modDetails, os);
-    CHECK_OP(os, );
+    SQLiteObjectDbiUtils::renameObject(db, dbi, msaObj, name, os);
 }
 
 void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& alphabet, U2OpStatus& os) {
@@ -362,21 +350,7 @@ void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QStr
     U2Sequence seqObject = dbi->getSequenceDbi()->getSequenceObject(sequenceId, os);
     CHECK_OP(os, );
 
-    ModTrackAction updateAction(dbi, sequenceId);
-    U2TrackModType trackMod = updateAction.prepareTracking(os);
-    CHECK_OP(os, );
-
-    QByteArray modDetails;
-    if (TrackOnUpdate == trackMod) {
-        modDetails = dbi->getSQLiteObjectDbi()->getModDetailsForUpdateObjectName(seqObject.visualName, newName);
-    }
-
-    seqObject.visualName = newName;
-    dbi->getSQLiteObjectDbi()->updateObject(seqObject, os); // increments the version of sequence object
-    CHECK_OP(os, );
-
-    updateAction.saveTrack(U2ModType::objUpdatedName, modDetails, os);
-    CHECK_OP(os, );
+    SQLiteObjectDbiUtils::renameObject(db, dbi, seqObject, newName, os);
 }
 
 void SQLiteMsaDbi::updateRowContent(const U2DataId& msaId, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
