@@ -124,6 +124,16 @@ void SQLiteObjectDbi::removeObjects(const QList<U2DataId>& dataIds, const QStrin
     onFolderUpdated(folder);
 }
 
+void SQLiteObjectDbi::updateObjectCore(U2Object &obj, U2OpStatus &os) {
+    SQLiteTransaction t(db, os);
+    static const QString queryString("UPDATE Object SET name = ?1, version = version WHERE id = ?2");
+    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
+    SAFE_POINT_OP(os, );
+    q->bindString(1, obj.visualName);
+    q->bindDataId(2, obj.id);
+    q->execute();
+}
+
 bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& folder, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
 
@@ -379,6 +389,14 @@ void SQLiteObjectDbi::decrementVersion(const U2DataId& id, U2OpStatus& os) {
     q.update(1);
 }
 
+void SQLiteObjectDbi::incrementVersion(const U2DataId& id, U2OpStatus& os) {
+    SQLiteQuery q("UPDATE Object SET version = version + 1 WHERE id = ?1", db, os);
+    CHECK_OP(os, );
+
+    q.bindDataId(1, id);
+    q.update(1);
+}
+
 const QByteArray SQLiteObjectDbi::CURRENT_MOD_DETAILS_VERSION = QByteArray::number(0);
 
 QByteArray SQLiteObjectDbi::getModDetailsForUpdateObjectName(const QString& oldName, const QString& newName) {
@@ -441,7 +459,7 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
 }
 
 void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
-    QString errorDescr = SQLiteL10N::tr("Can't undo an operation for the object!");
+    QString errorDescr = SQLiteL10N::tr("Can't redo an operation for the object!");
 
     // Get the object
     U2Object obj;
@@ -454,7 +472,7 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
 
     // Verify that modifications tracking is enabled for the object
     if (TrackOnUpdate != obj.trackModType) {
-        coreLog.trace("Called 'undo' for an object without modifications tracking enabled!");
+        coreLog.trace("Called 'redo' for an object without modifications tracking enabled!");
         os.setError(errorDescr);
         return;
     }
@@ -468,7 +486,7 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
     }
     SAFE_POINT(modStep.version == obj.version, "Unexpected modStep version!", );
 
-    // Call an appropriate "undo" depending on the object type
+    // Call an appropriate "redo" depending on the object type
     if (U2ModType::isMsaModType(modStep.modType)) {
         dbi->getSQLiteMsaDbi()->redo(objId, modStep.modType, modStep.details, os);
     }
@@ -478,10 +496,18 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
             CHECK_OP(os, );
         }
         else {
-            coreLog.trace(QString("Can't undo an unknown operation: '%1'!").arg(QString::number(modStep.modType)));
+            coreLog.trace(QString("Can't redo an unknown operation: '%1'!").arg(QString::number(modStep.modType)));
             os.setError(errorDescr);
             return;
         }
+    }
+
+    // increment the object version
+    incrementVersion(objId, os);
+    if (os.hasError()) {
+        coreLog.trace("Can't increment an object version!");
+        os.setError(errorDescr);
+        return;
     }
 }
 
@@ -518,7 +544,7 @@ void SQLiteObjectDbi::redoUpdateObjectName(const U2DataId& id, const QByteArray&
     CHECK_OP(os, );
 
     obj.visualName = newName;
-    updateObject(obj, os);
+    updateObjectCore(obj, os);
     CHECK_OP(os, );
 }
 
@@ -676,13 +702,10 @@ void SQLiteObjectDbi::getObject(U2Object& object, const U2DataId& id, U2OpStatus
 }
 
 void SQLiteObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
-    static const QString queryString("UPDATE Object SET name = ?1, version = version + 1 WHERE id = ?2");
-    SQLiteQuery *q = t.getPreparedQuery(queryString, db, os);
-    q->bindString(1, obj.visualName);
-    q->bindDataId(2, obj.id);
-    q->execute();
+    updateObjectCore(obj, os);
+    SAFE_POINT_OP(os, );
 
+    incrementVersion(obj.id, os);
     SAFE_POINT_OP(os, );
 
     obj.version = getObjectVersion(obj.id, os);

@@ -737,11 +737,15 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateGapModel_severalSteps) {
 
     // Verify the modification step
     U2ModStep modStep = sqliteDbi->getModDbi()->getModStep(msaId, finalVersion, os);
-    CHECK_NO_ERROR(os);
-    CHECK_EQUAL(msaId, modStep.objectId, "object id");
-    CHECK_EQUAL(finalVersion, modStep.version, "version in mod step");
-    CHECK_EQUAL(U2ModType::msaUpdatedGapModel, modStep.modType, "mod step type");
-    CHECK_EQUAL(expectedModDetails[expectedIndex], QString(modStep.details), "mod step details");
+    if (expectedIndex == gapModels.length() - 1) {
+        CHECK_TRUE(os.hasError(), "Unexpected modStep found");
+    } else {
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(msaId, modStep.objectId, "object id");
+        CHECK_EQUAL(finalVersion, modStep.version, "version in mod step");
+        CHECK_EQUAL(U2ModType::msaUpdatedGapModel, modStep.modType, "mod step type");
+        CHECK_EQUAL(expectedModDetails[expectedIndex], QString(modStep.details), "mod step details");
+    }
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_noModTrack) {
@@ -947,7 +951,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps) {
     // Steps count
     int valuesCount = rowContents.length();    // changes = valuesCount - 1;
     QList<int> steps;                          // negative - undo steps, positive - redo steps;
-    steps << -4 << 2 << -1 << 3;
+    steps << -6 << 4 << -3 << 2;
     int expectedIndex = valuesCount - 1;
     for (int i = 0; i < steps.length(); ++i) {
         expectedIndex += steps[i];
@@ -970,7 +974,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps) {
         QByteArray gapsToByteArraySecond;
         gapsToByteArrayFirst += "\"";
         foreach(U2MsaGap gap, rowContentFirst.second) {
-            if (false == gapsToByteArrayFirst.isEmpty()) {
+            if (gapsToByteArrayFirst.length() > 1) {
                 gapsToByteArrayFirst += ";";
             }
             gapsToByteArrayFirst += QByteArray::number(gap.offset) + "," + QByteArray::number(gap.gap);
@@ -978,7 +982,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps) {
         gapsToByteArrayFirst += "\"";
         gapsToByteArraySecond += "\"";
         foreach(U2MsaGap gap, rowContentSecond.second) {
-            if (false == gapsToByteArraySecond.isEmpty()) {
+            if (gapsToByteArraySecond.length() > 1) {
                 gapsToByteArraySecond += ";";
             }
             gapsToByteArraySecond += QByteArray::number(gap.offset) + "," + QByteArray::number(gap.gap);
@@ -1034,11 +1038,15 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps) {
 
     // Verify the modification step
     U2ModStep modStep = sqliteDbi->getModDbi()->getModStep(msaId, finalVersion, os);
-    CHECK_NO_ERROR(os);
-    CHECK_EQUAL(msaId, modStep.objectId, "object id");
-    CHECK_EQUAL(finalVersion, modStep.version, "version in mod step");
-    CHECK_EQUAL(U2ModType::msaUpdatedGapModel, modStep.modType, "mod step type");
-    CHECK_EQUAL(expectedModDetails[expectedIndex], QString(modStep.details), "mod step details");
+    if (expectedIndex == rowContents.length() - 1) {
+        CHECK_TRUE(os.hasError(), "Unexpected modStep found");
+    } else {
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(msaId, modStep.objectId, "object id");
+        CHECK_EQUAL(finalVersion, modStep.version, "version in mod step");
+        CHECK_EQUAL(U2ModType::msaUpdatedRowContent, modStep.modType, "mod step type");
+        CHECK_EQUAL(expectedModDetails[expectedIndex], QString(modStep.details), "mod step details");
+    }
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, setNewRowsOrder_noModTrack) {

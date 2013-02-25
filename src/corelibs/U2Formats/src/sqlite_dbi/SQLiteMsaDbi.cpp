@@ -1073,7 +1073,13 @@ void SQLiteMsaDbi::redoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray
     }
 
     // Redo the updating
-    updateMsaAlphabet(msaId, newAlphabet, os);
+    SQLiteQuery q("UPDATE Msa SET alphabet = ?1 WHERE object = ?2", db, os);
+    CHECK_OP(os, );
+
+    q.bindString(1, newAlphabet.id);
+    q.bindDataId(2, msaId);
+    q.update(1);
+//    updateMsaAlphabet(msaId, newAlphabet, os);
 }
 
 void SQLiteMsaDbi::undoAddRows(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
@@ -1135,7 +1141,8 @@ void SQLiteMsaDbi::redoUpdateRowContent(const U2DataId& msaId, const QByteArray&
         return;
     }
 
-    updateRowContent(msaId, rowId, newSeq, newGaps, os);
+    updateRowContentCore(msaId, rowId, newSeq, newGaps, os);
+//    updateRowContent(msaId, rowId, newSeq, newGaps, os);
 }
 
 void SQLiteMsaDbi::undoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
@@ -1161,7 +1168,8 @@ void SQLiteMsaDbi::redoUpdateGapModel(const U2DataId& msaId, const QByteArray& m
         return;
     }
 
-    updateGapModel(msaId, rowId, newGaps, os);
+//    updateGapModel(msaId, rowId, newGaps, os);
+    updateGapModelCore(msaId, rowId, newGaps, os);
 }
 
 void SQLiteMsaDbi::undoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
@@ -1186,7 +1194,8 @@ void SQLiteMsaDbi::redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& 
         return;
     }
 
-    setNewRowsOrder(msaId, newOrder, os);
+//    setNewRowsOrder(msaId, newOrder, os);
+    setNewRowsOrderCore(msaId, newOrder, os);
 }
 
 void SQLiteMsaDbi::undoUpdateRowName(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
@@ -1212,7 +1221,8 @@ void SQLiteMsaDbi::redoUpdateRowName(const U2DataId& msaId, const QByteArray& mo
         return;
     }
 
-    updateRowName(msaId, rowId, newName, os);
+//    updateRowName(msaId, rowId, newName, os);
+    updateRowNameCore(msaId, rowId, newName, os);
 }
 
 /************************************************************************/

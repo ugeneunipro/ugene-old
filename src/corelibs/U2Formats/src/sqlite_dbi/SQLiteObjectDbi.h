@@ -193,6 +193,8 @@ public:
     QByteArray getModDetailsForUpdateObjectName(const QString& oldName, const QString& newName);
 
 private:
+    /** Updates database entry for 'obj'. It does not increment its version. */
+    void updateObjectCore(U2Object& obj, U2OpStatus& os);
 
     /** Removes object from database, returns 'true' if object is completely erased */
     bool removeObjectImpl(const U2DataId& id, const QString& folder, U2OpStatus& os);
@@ -207,6 +209,9 @@ private:
 
     /** Decrements an object version by 1 */
     void decrementVersion(const U2DataId& id, U2OpStatus& os);
+
+    /** Increments an object version by 1 */
+    void incrementVersion(const U2DataId& id, U2OpStatus& os);
 
     ///////////////////////////////////////////////////////////
     // Undo methods does not modify object version
