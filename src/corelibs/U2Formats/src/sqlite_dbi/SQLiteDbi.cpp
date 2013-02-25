@@ -210,6 +210,11 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     setProperty(SQLITE_DBI_OPTION_APP_VERSION, Version::appVersion().text, os);
 }
 
+void SQLiteDbi::upgrade(U2OpStatus &os) {
+    SQLiteTransaction(db, os);
+    objectDbi->upgrade(os);
+}
+
 void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& os){
     QString appVersionText = getProperty(SQLITE_DBI_OPTION_APP_VERSION, "", os);
     if (os.hasError()) {
@@ -316,7 +321,10 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
                     break;
                 }
             }
-        } 
+        } else {
+            upgrade(os);
+            CHECK_OP(os, );
+        }
 
         dbiId = url;
         internalInit(props, os);

@@ -153,6 +153,11 @@ private:
 
     void populateDefaultSchema(U2OpStatus& os);
     void internalInit(const QHash<QString, QString>& props, U2OpStatus& os);
+    /**
+     * If the database was created by a previous version of UGENE
+     * then it must be upgraded up to the current version.
+     */
+    void upgrade(U2OpStatus &os);
 
     QString                             url;
     DbRef*                              db;

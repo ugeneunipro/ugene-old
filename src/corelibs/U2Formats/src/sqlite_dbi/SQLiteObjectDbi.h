@@ -192,6 +192,8 @@ public:
     /** Prepares modification details for updating object name */
     QByteArray getModDetailsForUpdateObjectName(const QString& oldName, const QString& newName);
 
+    void upgrade(U2OpStatus &os);
+
 private:
     /** Updates database entry for 'obj'. It does not increment its version. */
     void updateObjectCore(U2Object& obj, U2OpStatus& os);

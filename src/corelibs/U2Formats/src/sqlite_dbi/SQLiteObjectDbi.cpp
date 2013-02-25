@@ -33,6 +33,25 @@ SQLiteObjectDbi::SQLiteObjectDbi(SQLiteDbi* dbi) : U2ObjectDbi(dbi), SQLiteChild
 
 }
 
+void SQLiteObjectDbi::upgrade(U2OpStatus &os) {
+    SQLiteQuery q("PRAGMA table_info(Object)", db, os);
+    CHECK_OP(os, );
+
+    bool hasModTrack = false;
+    while (q.step()) {
+        QString colName = q.getString(1);
+        if ("trackMod" == colName) {
+            hasModTrack = true;
+            break;
+        }
+    }
+    if (hasModTrack) {
+        return;
+    }
+
+    SQLiteQuery("ALTER TABLE Object ADD trackMod INTEGER NOT NULL DEFAULT 0", db, os).execute();
+}
+
 void SQLiteObjectDbi::initSqlSchema(U2OpStatus& os) {
     if (os.hasError()) {
         return;
