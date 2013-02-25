@@ -47,17 +47,14 @@ public:
                                            const quint32 minScore, const quint32 maxScore,
                                            QByteArray const & patternSeq, QByteArray const & searchSeq,
                                            const SmithWatermanSettings::SWResultView resultView);
-	static const char STOP;
-	static const char UP;
-	static const char LEFT;
-	static const char DIAG;
+    static const char STOP;
+    static const char UP;
+    static const char LEFT;
+    static const char DIAG;
 
 protected:
     bool calculateMatrixLength();
-    void printMatrix() const;
-    int getRow(int row) const;
     bool isValidParams();
-    int maximum(int var1, int var2, int var3, int var4 = 0);
     void setValues(const SMatrix& _substitutionMatrix, 
         QByteArray const & _patternSeq, QByteArray const & _searchSeq, 
         int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView);
@@ -76,8 +73,6 @@ protected:
     SmithWatermanSettings::SWResultView resultView;
 
     QVector<QVector<char> > directionMatrix;
-
-    void backtrace(int row, int col, int score);
 
     struct KeyOfPairAlignSeq
     {
@@ -149,8 +144,8 @@ private:
     QVector<int> EMatrix;
     QVector<int> FMatrix;    
 
-    void calculateMatrix();    
-    
+    void calculateMatrixForMultipleAlignmentResult();
+    void calculateMatrixForAnnotationsResult();
 };
 
 }//namespace
