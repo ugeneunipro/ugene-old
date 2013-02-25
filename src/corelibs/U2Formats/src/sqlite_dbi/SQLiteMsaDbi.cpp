@@ -1286,7 +1286,7 @@ QByteArray PackUtils::packRowOrder(const QList<qint64>& rowIds) {
     QByteArray result;
     foreach (qint64 rowId, rowIds) {
         if (!result.isEmpty()) {
-            result += ",";
+            result += ";";
         }
         result += QByteArray::number(rowId);
     }
@@ -1300,7 +1300,7 @@ bool PackUtils::unpackRowOrder(const QByteArray& str, QList<qint64>& rowsIds) {
         return true;
     }
 
-    QList<QByteArray> tokens = orderStr.split(',');
+    QList<QByteArray> tokens = orderStr.split(';');
     foreach (const QByteArray &t, tokens) {
         bool ok = false;
         rowsIds << t.toLongLong(&ok);

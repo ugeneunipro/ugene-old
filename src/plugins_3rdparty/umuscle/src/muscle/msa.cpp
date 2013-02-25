@@ -229,7 +229,7 @@ bool MSA::IsWildcard(unsigned uSeqIndex, unsigned uIndex) const
     bool* g_IsWildcardChar =  getMuscleContext()->alpha.g_IsWildcardChar;
 	char c = GetChar(uSeqIndex, uIndex);
 	return IsWildcardChar(c);
-	}
+        }
 
 bool MSA::IsWildcard(unsigned uSeqIndex, unsigned uIndex, bool* g_IsWildcardChar) const
 	{
@@ -784,20 +784,54 @@ void MSA::AppendSeq(char *ptrSeq, unsigned uSeqLength, char *ptrLabel)
 	{
 	if (m_uSeqCount > m_uCacheSeqCount)
 		Quit("Internal error MSA::AppendSeq");
-	if (m_uSeqCount == m_uCacheSeqCount)
-		ExpandCache(m_uSeqCount + 4, uSeqLength);
-	m_szSeqs[m_uSeqCount] = ptrSeq;
+        if ((m_uSeqCount == m_uCacheSeqCount) || (uSeqLength >= m_uColCount))
+                ExpandCache(m_uSeqCount, uSeqLength);
+
+        m_szSeqs[m_uSeqCount] = new char [m_uCacheSeqLength + 1];
+        memcpy(m_szSeqs[m_uSeqCount], ptrSeq, uSeqLength);
+        memset(m_szSeqs[m_uSeqCount] + uSeqLength, '-', m_uCacheSeqLength - uSeqLength);
+        m_szSeqs[m_uSeqCount][uSeqLength] = 0;
+        m_szSeqs[m_uSeqCount][m_uCacheSeqLength] = 0;
+        delete ptrSeq;
+
 	m_szNames[m_uSeqCount] = ptrLabel;
-	++m_uSeqCount;
+        ++m_uSeqCount;
 	}
 
 void MSA::ExpandCache(unsigned uSeqCount, unsigned uColCount)
 	{
+        if (m_uCacheSeqCount <= uSeqCount) {
+            uSeqCount += 4;
+            m_uCacheSeqCount = uSeqCount;
+        }
 	if (m_IdToSeqIndex != 0 || m_SeqIndexToId != 0 || uSeqCount < m_uSeqCount)
 		Quit("Internal error MSA::ExpandCache");
 
-	if (m_uSeqCount > 0 && uColCount != m_uColCount)
-		Quit("Internal error MSA::ExpandCache, ColCount changed");
+//atiunov: strange cache behavior. ColCount can change. Cache expansion modified.
+//	if (m_uSeqCount > 0 && uColCount != m_uColCount)
+//		Quit("Internal error MSA::ExpandCache, ColCount changed");
+
+        if (uColCount > m_uColCount) {
+            if (uColCount >= m_uCacheSeqLength) {
+                unsigned uNewCacheSeqLength = m_uCacheSeqLength + DEFAULT_SEQ_LENGTH;
+                while (uColCount >= uNewCacheSeqLength) {
+                    uNewCacheSeqLength += DEFAULT_SEQ_LENGTH;
+                }
+                for (unsigned uSeqIndex = 0; uSeqIndex < m_uSeqCount; ++uSeqIndex)
+                        {
+                        char *ptrNewSeq = new char[uNewCacheSeqLength + 1];
+                        memcpy(ptrNewSeq, m_szSeqs[uSeqIndex], m_uCacheSeqLength);
+                        memset(ptrNewSeq + m_uCacheSeqLength, '-', uNewCacheSeqLength - m_uCacheSeqLength);
+                        ptrNewSeq[uNewCacheSeqLength] = 0;
+                        delete[] m_szSeqs[uSeqIndex];
+                        m_szSeqs[uSeqIndex] = ptrNewSeq;
+                        }
+
+                m_uCacheSeqLength = uNewCacheSeqLength;
+            }
+            m_uColCount = uColCount;
+            //more colcount
+        }
 
 	char **NewSeqs = new char *[uSeqCount];
 	char **NewNames = new char *[uSeqCount];
@@ -830,9 +864,6 @@ void MSA::ExpandCache(unsigned uSeqCount, unsigned uColCount)
 	m_szNames = NewNames;
 	m_Weights = NewWeights;
 
-	m_uCacheSeqCount = uSeqCount;
-	m_uCacheSeqLength = uColCount;
-	m_uColCount = uColCount;
 	}
 
 void MSA::FixAlpha()
