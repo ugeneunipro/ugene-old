@@ -133,10 +133,10 @@ bool ExternalToolValidateTask::parseLog(const ExternalToolValidation& validation
             isValid=true;
             checkVersion(log);
         }else{
+            isValid=false;
             foreach(const QString& errStr, validation.possibleErrorsDescr.keys()){
                 if(log.contains(errStr)){
                     errorMsg = validation.possibleErrorsDescr[errStr];
-                    isValid=false;
                     return false;
                 }
             }
@@ -148,10 +148,10 @@ bool ExternalToolValidateTask::parseLog(const ExternalToolValidation& validation
             isValid=true;
             checkVersion(errLog);
         }else{
+            isValid=false;
             foreach(const QString& errStr, validation.possibleErrorsDescr.keys()){
                 if(errLog.contains(errStr)){
                     errorMsg = validation.possibleErrorsDescr[errStr];
-                    isValid=false;
                     return false;
                 }
             }
