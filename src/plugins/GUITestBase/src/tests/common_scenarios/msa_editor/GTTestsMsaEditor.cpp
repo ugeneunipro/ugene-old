@@ -1811,7 +1811,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
 // 2. Convert alignment to amino. Use context menu {Export->Amino translation of alignment rows}
-    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,-1,testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows"));
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
@@ -3384,7 +3384,7 @@ GUI_TEST_CLASS_DEFINITION(test_0039){
 //2. Use project tree context menu->Export/Import->Export Nucleic Alignment to Amino Translation
     for (int i=0; i<extMap.size(); i++){
         GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI"));
-        GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,i));
+        GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,i, testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
         GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION<<ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
         GTMouseDriver::click(os,Qt::RightButton);
         GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI_transl." + extMap[i]));

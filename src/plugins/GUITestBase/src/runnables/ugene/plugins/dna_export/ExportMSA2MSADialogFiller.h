@@ -28,10 +28,11 @@ namespace U2 {
 
     class ExportMSA2MSADialogFiller : public Filler {
     public:
-        ExportMSA2MSADialogFiller(U2OpStatus &_os, int _formatVal = -1);
+        ExportMSA2MSADialogFiller(U2OpStatus &_os, int _formatVal = -1, QString _path="");
         virtual void run();
     private:
         int formatVal;
+        QString path;
     };
 }
 

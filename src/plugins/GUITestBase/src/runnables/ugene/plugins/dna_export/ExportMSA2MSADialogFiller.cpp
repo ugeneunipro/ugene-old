@@ -34,8 +34,9 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportToSequenceFormatFiller"
 
-ExportMSA2MSADialogFiller::ExportMSA2MSADialogFiller(U2OpStatus &_os, int _formatVal) : Filler(_os, "U2__ExportMSA2MSADialog"),
-    formatVal(_formatVal){}
+ExportMSA2MSADialogFiller::ExportMSA2MSADialogFiller(U2OpStatus &_os, int _formatVal, QString _path) : Filler(_os, "U2__ExportMSA2MSADialog"),
+    formatVal(_formatVal),
+    path(_path){}
 
 #define GT_METHOD_NAME "run"
 void ExportMSA2MSADialogFiller::run()
@@ -43,10 +44,11 @@ void ExportMSA2MSADialogFiller::run()
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
-    if(formatVal>=0){
+    if(!path.isEmpty()){
         QLineEdit* fileNameEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
-        GTLineEdit::setText(os, fileNameEdit,"../../test/_common_data/scenarios/sandbox/COI_transl.aln");
-
+        GTLineEdit::setText(os, fileNameEdit,path);
+    }
+    if(formatVal>=0){
         QComboBox* formatCombo = dialog->findChild<QComboBox*>("formatCombo");
         GTComboBox::setCurrentIndex(os, formatCombo, formatVal);
     }
