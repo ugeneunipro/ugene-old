@@ -260,6 +260,12 @@ void SQLiteMsaDbi::addRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row,
     numOfRows++;
     updateNumOfRows(msaId, numOfRows, os);
 
+    // Update track mod type for child sequence object
+    if (TrackOnUpdate == trackMod) {
+        dbi->getObjectDbi()->setTrackModType(row.sequenceId, TrackOnUpdate, os);
+        CHECK_OP(os, );
+    }
+
     // Increment the alignment version
     SQLiteObjectDbi::incrementVersion(msaId, db, os);
     CHECK_OP(os, );
@@ -313,6 +319,14 @@ void SQLiteMsaDbi::addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpSta
     numOfRows += numOfRowsAdded;
     updateNumOfRows(msaId, numOfRows, os);
 
+    // Update track mod type for child sequence object
+    if (TrackOnUpdate == trackMod) {
+        foreach (const U2MsaRow& row, rows) {
+            dbi->getObjectDbi()->setTrackModType(row.sequenceId, TrackOnUpdate, os);
+            CHECK_OP(os, );
+        }
+    }
+
     // Increment the alignment version
     SQLiteObjectDbi::incrementVersion(msaId, db, os);
     CHECK_OP(os, );
@@ -341,28 +355,28 @@ void SQLiteMsaDbi::addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpSta
 
 void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QString& newName, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-    ModTrackAction updateAction(dbi, msaId);
+
+    U2DataId sequenceId = getSequenceIdByRowId(msaId, rowId, os);
+    CHECK_OP(os, );
+
+    U2Sequence seqObject = dbi->getSequenceDbi()->getSequenceObject(sequenceId, os);
+    CHECK_OP(os, );
+
+    ModTrackAction updateAction(dbi, sequenceId);
     U2TrackModType trackMod = updateAction.prepareTracking(os);
     CHECK_OP(os, );
 
     QByteArray modDetails;
     if (TrackOnUpdate == trackMod) {
-        U2DataId sequenceId = getSequenceIdByRowId(msaId, rowId, os);
-        CHECK_OP(os, );
-        U2Sequence seqObject = dbi->getSequenceDbi()->getSequenceObject(sequenceId, os);
-        CHECK_OP(os, );
-
-        modDetails = PackUtils::packRowNameDetails(rowId, seqObject.visualName, newName);
+        modDetails = dbi->getSQLiteObjectDbi()->getModDetailsForUpdateObjectName(seqObject.visualName, newName);
     }
 
-    updateRowNameCore(msaId, rowId, newName, os);
+    seqObject.visualName = newName;
+    dbi->getSQLiteObjectDbi()->updateObject(seqObject, os); // increments the version of sequence object
     CHECK_OP(os, );
 
-    updateAction.saveTrack(U2ModType::msaUpdatedRowName, modDetails, os);
+    updateAction.saveTrack(U2ModType::objUpdatedName, modDetails, os);
     CHECK_OP(os, );
-
-    // Increment the alignment version
-    SQLiteObjectDbi::incrementVersion(msaId, db, os);
 }
 
 void SQLiteMsaDbi::updateRowContent(const U2DataId& msaId, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
@@ -906,9 +920,6 @@ void SQLiteMsaDbi::undo(const U2DataId& msaId, qint64 modType, const QByteArray&
     else if (U2ModType::msaSetNewRowsOrder == modType) {
         undoSetNewRowsOrder(msaId, modDetails, os);
     }
-    else if (U2ModType::msaUpdatedRowName == modType) {
-        undoUpdateRowName(msaId, modDetails, os);
-    }
     else {
         os.setError(QString("Unexpected modification type '%1'!").arg(QString::number(modType)));
         return;
@@ -939,9 +950,6 @@ void SQLiteMsaDbi::redo(const U2DataId& msaId, qint64 modType, const QByteArray&
     }
     else if (U2ModType::msaSetNewRowsOrder == modType) {
         redoSetNewRowsOrder(msaId, modDetails, os);
-    }
-    else if (U2ModType::msaUpdatedRowName == modType) {
-        redoUpdateRowName(msaId, modDetails, os);
     }
     else {
         os.setError(QString("Unexpected modification type '%1'!").arg(QString::number(modType)));
@@ -1027,19 +1035,6 @@ void SQLiteMsaDbi::setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64
         q.bindInt64(3, rowId);
         q.execute();
     }
-}
-
-void SQLiteMsaDbi::updateRowNameCore(const U2DataId &msaId, qint64 rowId, const QString &newName, U2OpStatus &os) {
-    SQLiteTransaction t(db, os);
-    U2DataId sequenceId = getSequenceIdByRowId(msaId, rowId, os);
-    CHECK_OP(os, );
-
-    U2Sequence seqObject = dbi->getSequenceDbi()->getSequenceObject(sequenceId, os);
-    CHECK_OP(os, );
-
-    // Update the data
-    seqObject.visualName = newName;
-    dbi->getSequenceDbi()->updateSequenceObject(seqObject, os);
 }
 
 /************************************************************************/
@@ -1196,33 +1191,6 @@ void SQLiteMsaDbi::redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& 
 
 //    setNewRowsOrder(msaId, newOrder, os);
     setNewRowsOrderCore(msaId, newOrder, os);
-}
-
-void SQLiteMsaDbi::undoUpdateRowName(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
-    qint64 rowId = 0;
-    QString oldName;
-    QString newName;
-    bool ok = PackUtils::unpackRowNameDetails(modDetails, rowId, oldName, newName);
-    if (!ok) {
-        os.setError("An error occurred during updating an alignment name!");
-        return;
-    }
-
-    updateRowNameCore(msaId, rowId, oldName, os);
-}
-
-void SQLiteMsaDbi::redoUpdateRowName(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
-    qint64 rowId = 0;
-    QString oldName;
-    QString newName;
-    bool ok = PackUtils::unpackRowNameDetails(modDetails, rowId, oldName, newName);
-    if (!ok) {
-        os.setError("An error occurred during updating an alignment name!");
-        return;
-    }
-
-//    updateRowName(msaId, rowId, newName, os);
-    updateRowNameCore(msaId, rowId, newName, os);
 }
 
 /************************************************************************/

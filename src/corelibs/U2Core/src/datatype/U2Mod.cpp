@@ -33,6 +33,5 @@ const qint64 U2ModType::msaRemovedRow         = 3005;
 const qint64 U2ModType::msaUpdatedRowContent  = 3006;
 const qint64 U2ModType::msaUpdatedGapModel    = 3007;
 const qint64 U2ModType::msaSetNewRowsOrder    = 3008;
-const qint64 U2ModType::msaUpdatedRowName     = 3009;
 
 } // namespace

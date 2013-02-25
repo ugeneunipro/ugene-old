@@ -237,7 +237,6 @@ private:
     /** Replaces old sequence and gap model, updates msa length */
     void updateRowContentCore(const U2DataId &msaId, qint64 rowId, const QByteArray &seqBytes, const QList<U2MsaGap> &gaps, U2OpStatus &os);
     void setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64> rowIds, U2OpStatus &os);
-    void updateRowNameCore(const U2DataId &msaId, qint64 rowId, const QString &newName, U2OpStatus &os);
 
     ///////////////////////////////////////////////////////////
     // Undo methods
@@ -249,7 +248,6 @@ private:
     void undoUpdateRowContent(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void undoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void undoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
-    void undoUpdateRowName(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
 
     // Redo methods
     void redoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
@@ -260,7 +258,6 @@ private:
     void redoUpdateRowContent(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
-    void redoUpdateRowName(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
 
     // Helper modification details parse methods
     bool parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, U2AlphabetId& oldAlphabet, U2AlphabetId& newAlphabet);
