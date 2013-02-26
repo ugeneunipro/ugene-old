@@ -1172,7 +1172,7 @@ void SQLiteMsaDbi::redoUpdateGapModel(const U2DataId& msaId, const QByteArray& m
 void SQLiteMsaDbi::undoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
     QList<qint64> oldOrder;
     QList<qint64> newOrder;
-bool ok = PackUtils::unpackRowOrderDetails(modDetails, oldOrder, newOrder);
+    bool ok = PackUtils::unpackRowOrderDetails(modDetails, oldOrder, newOrder);
     if (!ok) {
         os.setError("An error occurred during updating an alignment row order!");
         return;

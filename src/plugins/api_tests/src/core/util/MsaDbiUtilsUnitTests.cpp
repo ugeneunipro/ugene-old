@@ -202,7 +202,7 @@ void Utils::addRow(U2Dbi *dbi, const U2DataId &msaId,
     dbi->getMsaDbi()->addRow(msaId, -1, row, os);
 }
 
-U2MsaRow MsaDbiUtilsTestUtils::addRow(const U2DataId &msaId, qint64 num, const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os) {
+U2MsaRow MsaDbiUtilsTestUtils::addRow(const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os) {
     U2Sequence sequence;
     sequence.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
     sequence.visualName = name;
@@ -214,7 +214,7 @@ U2MsaRow MsaDbiUtilsTestUtils::addRow(const U2DataId &msaId, qint64 num, const Q
     CHECK_OP(os, U2MsaRow());
 
     U2MsaRow row;
-    row.rowId = num;
+    row.rowId = -1;
     row.sequenceId = sequence.id;
     row.gstart = 0;
     row.gend = seq.length();
@@ -1110,7 +1110,7 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, trim_leadingAndTrailingGaps) {
     MAlignmentExporter ex;
     MAlignment al = ex.getAlignment(msaRef.dbiRef, msaRef.entityId, os);
     CHECK_NO_ERROR(os);
-//    CHECK_EQUAL(8, al.getLength(), "Wrong msa length.");
+    CHECK_EQUAL(8, al.getLength(), "Wrong msa length.");
     CHECK_EQUAL(expected.length(), al.getNumRows(), "Wrong rows count.");
 
     QStringList actual;
@@ -1154,8 +1154,12 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_oneRow) {
     U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
     CHECK_NO_ERROR(os);
 
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    QList<qint64> baseRowIds = msaDbi->getRowsOrder(msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+
     QList<qint64> rowIds;
-    rowIds << 1;
+    rowIds << baseRowIds[1];
     MsaDbiUtils::removeRegion(msaRef, rowIds, 8, 3, os);
     CHECK_NO_ERROR(os);
 
@@ -1177,8 +1181,12 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_threeRows) {
     U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
     CHECK_NO_ERROR(os);
 
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    QList<qint64> baseRowIds = msaDbi->getRowsOrder(msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+
     QList<qint64> rowIds;
-    rowIds << 1 << 8 << 5;
+    rowIds << baseRowIds[1] << baseRowIds[8] << baseRowIds[5];
     MsaDbiUtils::removeRegion(msaRef, rowIds, 2, 8, os);
     CHECK_NO_ERROR(os);
 
@@ -1200,8 +1208,12 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_lengthChange) {
     U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
     CHECK_NO_ERROR(os);
 
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    QList<qint64> baseRowIds = msaDbi->getRowsOrder(msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+
     QList<qint64> rowIds;
-    rowIds << 3 << 4 << 5 << 6;
+    rowIds << baseRowIds[3] << baseRowIds[4] << baseRowIds[5] << baseRowIds[6];
     MsaDbiUtils::removeRegion(msaRef, rowIds, 5, 1, os);
     CHECK_NO_ERROR(os);
 
@@ -1225,8 +1237,12 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_allRows) {
     U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
     CHECK_NO_ERROR(os);
 
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    QList<qint64> baseRowIds = msaDbi->getRowsOrder(msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+
     QList<qint64> rowIds;
-    rowIds << 0 << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12;
+    rowIds = baseRowIds;
     MsaDbiUtils::removeRegion(msaRef, rowIds, 0, 3, os);
     CHECK_NO_ERROR(os);
 
@@ -1268,8 +1284,12 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_all) {
     U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
     CHECK_NO_ERROR(os);
 
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    QList<qint64> baseRowIds = msaDbi->getRowsOrder(msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+
     QList<qint64> rowIds;
-    rowIds << 0 << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12;
+    rowIds = baseRowIds;
     MsaDbiUtils::removeRegion(msaRef, rowIds, 0, 14, os);
     CHECK_NO_ERROR(os);
 
@@ -1289,8 +1309,12 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_negativePos) {
     U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
     CHECK_NO_ERROR(os);
 
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    QList<qint64> baseRowIds = msaDbi->getRowsOrder(msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+
     QList<qint64> rowIds;
-    rowIds << 0;
+    rowIds << baseRowIds[0];
     U2OpStatusImpl tmpOs;
     MsaDbiUtils::removeRegion(msaRef, rowIds, -1, 14, tmpOs);
     CHECK_TRUE(tmpOs.hasError(), "No error occurred for negative pos");
@@ -1309,8 +1333,16 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongId) {
     U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
     CHECK_NO_ERROR(os);
 
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    QList<qint64> baseRowIds = msaDbi->getRowsOrder(msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+
     QList<qint64> rowIds;
-    rowIds << 20;
+    qint64 customId;
+    while (true == baseRowIds.contains(customId)) {
+        customId = rand();
+    }
+    rowIds << customId;
     U2OpStatusImpl tmpOs;
     MsaDbiUtils::removeRegion(msaRef, rowIds, 0, 5, tmpOs);
     CHECK_TRUE(tmpOs.hasError(), "No error occurred for negative pos");
@@ -1321,8 +1353,12 @@ IMPLEMENT_TEST(MsaDbiUtilsUnitTests, removeRegion_wrongCount) {
     U2EntityRef msaRef = MsaDbiUtilsTestUtils::removeRegionTestAlignment(os);
     CHECK_NO_ERROR(os);
 
+    U2MsaDbi* msaDbi = MsaDbiUtilsTestUtils::getMsaDbi();
+    QList<qint64> baseRowIds = msaDbi->getRowsOrder(msaRef.entityId, os);
+    CHECK_NO_ERROR(os);
+
     QList<qint64> rowIds;
-    rowIds << 0;
+    rowIds << baseRowIds[0];
     U2OpStatusImpl tmpOs;
     MsaDbiUtils::removeRegion(msaRef, rowIds, 0, 0, tmpOs);
     CHECK_TRUE(tmpOs.hasError(), "No error occurred for negative pos");

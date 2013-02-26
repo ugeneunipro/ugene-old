@@ -65,7 +65,7 @@ private:
     static U2SequenceDbi* sequenceDbi;
 
 private:
-    static U2MsaRow addRow(const U2DataId &msaId, qint64 num, const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os);
+    static U2MsaRow addRow(const QByteArray &name, const QByteArray &seq, const QList<U2MsaGap> &gaps, U2OpStatus &os);
 };
 
 
