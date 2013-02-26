@@ -324,7 +324,7 @@ void SmithWatermanAlgorithm::calculateMatrixForAnnotationsResult() {
             if(p.refSubseqInterval.startPos != pos) {
                 if(p.score) {
                     pairAlignmentStrings.append(p);
-                    printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
+                    //printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
                 }
                 p.refSubseqInterval.startPos = pos;
                 p.refSubseqInterval.length = i - pos;
@@ -338,7 +338,7 @@ void SmithWatermanAlgorithm::calculateMatrixForAnnotationsResult() {
             p.refSubseqInterval.length = i - pos;
             p.score = max1;
             pairAlignmentStrings.append(p);
-            printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
+            //printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
 #endif
         }
     } while(++i <= src_n);
@@ -346,7 +346,7 @@ void SmithWatermanAlgorithm::calculateMatrixForAnnotationsResult() {
 #ifdef SW_FILT
     if(p.score) {
         pairAlignmentStrings.append(p);
-        printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
+        //printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
     }
 #endif
 
