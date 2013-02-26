@@ -9,13 +9,6 @@ PROB ScoreToProb(SCORE Score)
 	return (PROB) pow(2.0, (double) Score/INTSCALE);
 	}
 
-static const double log2e = log2(exp(1.0));
-
-double lnTolog2(double ln)
-	{
-	return ln*log2e;
-	}
-
 double log2(double x)
 	{
 	if (0 == x)
@@ -25,6 +18,13 @@ double log2(double x)
 // Multiply by inverse of log(2) just in case multiplication
 // is faster than division.
 	return log(x)*dInvLn2;
+	}
+
+static const double log2e = log2(exp(1.0));
+
+double lnTolog2(double ln)
+	{
+	return ln*log2e;
 	}
 
 SCORE ProbToScore(PROB Prob)
