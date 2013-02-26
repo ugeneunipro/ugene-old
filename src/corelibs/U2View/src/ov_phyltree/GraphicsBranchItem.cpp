@@ -57,6 +57,16 @@ void GraphicsBranchItem::updateSettings(const BranchSettings& branchSettings) {
     this->setPen(currentPen);
 }
 
+void GraphicsBranchItem::updateChildSettings(const BranchSettings& branchSettings) {
+    foreach(QGraphicsItem* graphItem, this->childItems()) {
+        GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
+        if (branchItem) {
+            branchItem->updateSettings(branchSettings);
+            branchItem->updateChildSettings(branchSettings);
+        }
+    }
+}
+
 void GraphicsBranchItem::updateTextSettings(const QFont& font, const QColor& color){
     if(distanceText){
         distanceText->setFont(font);
@@ -64,7 +74,7 @@ void GraphicsBranchItem::updateTextSettings(const QFont& font, const QColor& col
     }
     if(nameText){
         nameText->setFont(font);
-        nameText->setBrush(color);
+        nameText->setDefaultTextColor(color);
     }
 }
 
@@ -99,6 +109,7 @@ void GraphicsBranchItem::collapse() {
                 }
             }
         }
+        QList<QString> selection;
         setSelectedRecurs(true,true);
     }
 }
@@ -107,7 +118,7 @@ void GraphicsBranchItem::setSelectedRecurs(bool sel, bool recursively) {
 
     int penWidth = settings.branchThickness;
     if (sel) {
-        penWidth = settings.branchThickness + SelectedPenWidth;
+        penWidth = settings.branchThickness + SelectedPenWidth * (recursively ? 1 : 5);
     }
 
     QPen thisPen = this->pen();
@@ -130,7 +141,6 @@ void GraphicsBranchItem::setSelectedRecurs(bool sel, bool recursively) {
     }
     this->setSelected(sel);
     scene()->update();
-    
 }
 
 void GraphicsBranchItem::initText(qreal d) {
@@ -187,9 +197,9 @@ GraphicsBranchItem::GraphicsBranchItem(const QString& name): correspondingItem(N
     width = 0;
     dist = 0;
 
-    nameText = new QGraphicsSimpleTextItem(name);
+    nameText = new QGraphicsTextItem(name);
     nameText->setFont(TreeViewerUtils::getFont());
-    nameText->setBrush(Qt::darkGray);
+    nameText->setDefaultTextColor(Qt::darkGray);
     QRectF rect = nameText->boundingRect();
     nameText->setPos(GraphicsBranchItem::TextSpace, -rect.height() / 2);
     nameText->setParentItem(this);

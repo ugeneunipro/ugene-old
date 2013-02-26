@@ -31,6 +31,8 @@
 #include <QtGui/QScrollBar>
 #include <QtGui/QRubberBand>
 
+#include <U2View/MSAEditorTreeViewer.h>
+
 namespace U2 {
 
 class MSAEditor;
@@ -44,17 +46,19 @@ class MSAEditorNameList: public QWidget {
     Q_OBJECT
 public:
     MSAEditorNameList(MSAEditorUI* ui, QScrollBar* nhBar);
-    ~MSAEditorNameList();
+    virtual ~MSAEditorNameList();
 
 private slots:
-    void sl_buildStaticMenu(GObjectView* v, QMenu* m);
-    void sl_buildContextMenu(GObjectView* v, QMenu* m);
+    virtual void sl_buildStaticMenu(GObjectView* v, QMenu* m);
+    virtual void sl_buildContextMenu(GObjectView* v, QMenu* m);
     void sl_copyCurrentSequence();
     void sl_editSequenceName();
     void sl_lockedStateChanged();
     void sl_removeCurrentSequence();
+    void sl_selectReferenceSequence();
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
     void sl_onScrollBarActionTriggered( int scrollAction );
+    void sl_refrenceSeqChanged(const QString &);
     
     void sl_startChanged(const QPoint& p, const QPoint& prev);
     void sl_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);
@@ -62,6 +66,10 @@ private slots:
     void sl_nameBarMoved(int n);
     void sl_fontChanged();
     void sl_modelChanged();
+
+    void sl_onGroupColorsChanged(const GroupColorSchema&);
+protected:
+    void updateContent();
 
 protected:
     void resizeEvent(QResizeEvent* e);
@@ -75,9 +83,19 @@ protected:
     void focusInEvent(QFocusEvent* fe);
     void wheelEvent (QWheelEvent * we);
     //todo context menu?
+    int getSelectedRow() const;
+    virtual QString getTextForRow(int s);
+    virtual QString getSeqName(int s);
+
+    bool                completeRedraw;
 
 public:
+    int getRefSeqPos(); //returns -1 if refseq is not visible
     void drawContent(QPainter& p);
+    QString sequenceAtPos(QPoint p);
+
+signals:
+    void si_sequenceNameChanged(QString prevName, QString newName);
 
 private:
     bool isRowInSelection(int row);
@@ -90,27 +108,32 @@ private:
     void drawSelection(QPainter& p);
     void drawSequenceItem(QPainter& p, int s, const QString& name, bool selected);
     void drawSequenceItem(QPainter& p, int s, const QString& name, bool selected, const U2Region& yRange, int pos);
+    virtual void drawRefSequence(QPainter &p, QRect r);
     void drawFocus(QPainter& p);
     QFont getFont(bool selected) const;
     QRect calculateTextRect(const U2Region& yRange, bool selected) const;
     QRect calculateButtonRect(const QRect& itemRect) const;
-    int getSelectedRow() const;
     
     QObject*            labels; // used in GUI tests
-    MSAEditor*          editor;
     MSAEditorUI*        ui;
     QScrollBar*         nhBar;
     int                 curSeq;
     int                 startSelectingSeq;
     QPoint              origin;
     bool                scribbling,shifting;
+    GroupColorSchema    groupColors;
 
     QRubberBand*        rubberBand;
     QAction*            editSequenceNameAction;
     QAction*            copyCurrentSequenceAction;
     QAction*            removeCurrentSequenceAction;
     QPixmap*            cachedView;
-    bool                completeRedraw;
+
+    static const int CROSS_SIZE = 9;
+    static const int CHILDREN_OFFSET = 8;
+protected:
+    MSAEditor*          editor;
+
 };
 
 }//namespace

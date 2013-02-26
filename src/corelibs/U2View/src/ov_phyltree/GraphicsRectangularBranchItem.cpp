@@ -47,9 +47,10 @@ void GraphicsRectangularBranchItem::collapse() {
         int xmin = 0;
         qreal ymin = items[0]->pos().y(), ymax = 0;
         for (int i = 0, s = items.size(); i < s; ++i) {
-            if (!dynamic_cast<GraphicsRectangularBranchItem*>(items[i]))
+            GraphicsRectangularBranchItem* graphItem =  dynamic_cast<GraphicsRectangularBranchItem*>(items[i]);
+            if (!graphItem)
                 continue;
-            QPointF pos1 = items[i]->pos();
+            QPointF pos1 = graphItem ->pos();
             if (pos1.x() < xmin || xmin == 0)
                 xmin = pos1.x();
             if (pos1.y() < ymin)
@@ -57,7 +58,8 @@ void GraphicsRectangularBranchItem::collapse() {
             if (pos1.y() > ymax)
                 ymax = pos1.y();
             if (items[i] != getDistanceText() && items[i] != getNameText()) {
-                items[i]->hide();
+                graphItem->collapse();
+                graphItem->hide();
             }
         }
         if (xmin >= 2 * GraphicsRectangularBranchItem::DEFAULT_WIDTH)
@@ -80,16 +82,21 @@ void GraphicsRectangularBranchItem::collapse() {
             } else {
                 if (items[i] != getDistanceText() && items[i] != getNameText()) {
                     items[i]->show();
+                    GraphicsRectangularBranchItem* graphItem =  dynamic_cast<GraphicsRectangularBranchItem*>(items[i]);
+                    if(graphItem) {
+                        graphItem->collapse();
                 }
             }
         }
+        }
+        QList<QString> selection;
         setSelectedRecurs(true,true);
     }
     scene()->update();
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(const QString& name, GraphicsRectangularBranchItem* pitem)
-: GraphicsBranchItem(name), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up) {
+: GraphicsBranchItem(name), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), treeLevel(0) {
     setParentItem(pitem);
     setPos(0, 0);
     height = 0;
@@ -97,29 +104,30 @@ GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(const QString& name
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name)
-: GraphicsBranchItem(false), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up) {
+: GraphicsBranchItem(false), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), treeLevel(0) {
     new GraphicsRectangularBranchItem(name, this);
     setPos(x, y);
     phyBranch = NULL;
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name, qreal d)
-: GraphicsBranchItem(d, false),  cur_height_coef(1), direction(GraphicsRectangularBranchItem::up) {
+: GraphicsBranchItem(d, false),  cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), treeLevel(0) {
     new GraphicsRectangularBranchItem(name, this);
     setPos(x, y);
     phyBranch = NULL;
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal d)
-: GraphicsBranchItem(d), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL) {}
+: GraphicsBranchItem(d), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL), treeLevel(0) {}
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem()
-:  cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL) {}
+:  cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL), treeLevel(0) {}
 
 void GraphicsRectangularBranchItem::setParentItem(QGraphicsItem *item) {
     prepareGeometryChange();
     height = direction == up ? pos().y() - item->pos().y() : item->pos().y() - pos().y();
     setPos(width, direction == up ? height : -height);
+
     QAbstractGraphicsShapeItem::setParentItem(item);
 }
 
@@ -169,9 +177,9 @@ void GraphicsRectangularBranchItem::swapSiblings() {
     }
     
     PhyNode* nodeTo = phyBranch->node2;
-    int branchCount = nodeTo->branches.count();
+    int branchCount = nodeTo->getNumberOfBranches();
     if (branchCount > 2) {
-        nodeTo->branches.swap(0, 2);
+        nodeTo->swapBranches(0, 2);
     }
 }
 
@@ -191,11 +199,11 @@ void GraphicsRectangularBranchItem::redrawBranches(int& current, qreal& minDista
         return ;
     }
     
-    branches = node->branches.size();
+    branches = node->getNumberOfBranches();
     if(branches > 1){
         QList<GraphicsRectangularBranchItem*> items;
         for (int i = 0; i < branches; ++i) {
-            if (node->branches[i]->node2 != node) {
+            if (node->getSecondNodeOfBranch(i) != node) {
                 GraphicsRectangularBranchItem *item = getChildItemByPhyBranch(node->branches[i]);
                 item->redrawBranches(current, minDistance, maxDistance, NULL);
                 items.append(item);
@@ -231,7 +239,7 @@ void GraphicsRectangularBranchItem::redrawBranches(int& current, qreal& minDista
                 if (items[i] == NULL) {
                     continue;
                 }
-                qreal dist = qAbs(node->branches[i]->distance);
+                qreal dist = qAbs(node->getBranchesDistance(i));
                 if (minDistance > -1) {
                     minDistance = qMin(minDistance, dist);
                 } else {
@@ -254,6 +262,18 @@ void GraphicsRectangularBranchItem::redrawBranches(int& current, qreal& minDista
     }
 }
 
+void GraphicsRectangularBranchItem::setPhyBranch(PhyBranch* p) {
+    if(NULL != phyBranch) {
+        disconnect(phyBranch, SIGNAL(si_onAdressChanged(PhyBranch*)), this, SLOT(sl_onAdressChanged(PhyBranch*)));
+    }
+    bool res = connect(p, SIGNAL(si_onAdressChanged(PhyBranch*)), this, SLOT(sl_onAdressChanged(PhyBranch*)));
+    phyBranch = p;
+}
+
+void GraphicsRectangularBranchItem::sl_onAdressChanged(PhyBranch* newBranch) {
+    phyBranch = newBranch;
+}
+
 GraphicsRectangularBranchItem* GraphicsRectangularBranchItem::getChildItemByPhyBranch(const PhyBranch* branch){
     
     foreach (QGraphicsItem* ci, this->childItems()) {
@@ -267,5 +287,4 @@ GraphicsRectangularBranchItem* GraphicsRectangularBranchItem::getChildItemByPhyB
     return NULL;
 
 }
-
 }//namespace

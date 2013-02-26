@@ -25,12 +25,16 @@
 #include <U2Core/PluginModel.h>
 #include <U2Gui/ObjectViewModel.h>
 
+#include <U2View/MSAAlignGUIExtension.h>
 #include <U2View/SmithWatermanDialog.h>
+#include <U2Algorithm/PairwiseAlignmentTask.h>
 
 namespace U2 {
 
 class XMLTestFactory;
 class SWAlgorithmADVContext;
+class SWAlgorithmMSAContext;
+class MSAAlignAlgorithmMainWidget;
 
 class SWAlgorithmPlugin : public Plugin {
     Q_OBJECT
@@ -43,6 +47,7 @@ public slots:
 private:
     QList<XMLTestFactory*>  fs;
     SWAlgorithmADVContext * ctxADV;
+    SWAlgorithmMSAContext * ctxMSA;
 };
 
 
@@ -64,7 +69,6 @@ private:
     SWDialogConfig dialogConfig;
 };
 
-
 } //namespace
 
-#endif
+#endif  //_U2_SW_ALGORITHM_PLUGIN_H_

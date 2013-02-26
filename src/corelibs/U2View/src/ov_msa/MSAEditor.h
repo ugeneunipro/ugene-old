@@ -23,14 +23,20 @@
 #define _U2_MSA_EDITOR_H_
 
 
-#include <U2Gui/ObjectViewModel.h>
 #include <U2Core/U2Region.h>
-#include <U2Algorithm/CreatePhyTreeSettings.h>
 #include <U2Core/PhyTree.h>
 #include <U2Core/U2OpStatus.h>
 
+#include <U2Algorithm/CreatePhyTreeSettings.h>
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Core/DNASequenceObject.h>
+
+#include <QtCore/QVariantMap>
+
 #include <QtGui/QMenu>
 #include <QtGui/QSplitter>
+#include <QtGui/QTabWidget>
+#include <U2View/MSAEditorTreeManager.h>
 
 namespace U2 {
 
@@ -46,7 +52,15 @@ class MSAEditorUndoFramework;
 class PhyTreeGeneratorLauncherTask;
 class MSAEditorTreeViewer;
 class MSACollapsibleItemModel;
-class U2SequenceObject;
+class MSAEditorSimilarityColumn;
+class MSADistanceMatrix;
+class MSASNPHighligtingScheme;
+class SimilarityStatisticsSettings;
+class MSAEditorAlignmentDependentWidget;
+class TreeViewer;
+class MSAEditorMultiTreeViewer;
+class PairwiseAlignmentTask;
+
 
 #define MSAE_MENU_COPY          "MSAE_MENU_COPY"
 #define MSAE_MENU_EDIT          "MSAE_MENU_EDIT"
@@ -58,10 +72,36 @@ class U2SequenceObject;
 #define MSAE_MENU_ADVANCED      "MSAE_MENU_ADVANCED"
 #define MSAE_MENU_LOAD          "MSAE_MENU_LOAD_SEQ"
 
+class SNPSettings {
+public:
+    SNPSettings():seqName(QString("(None)")){};
+    QPoint clickPoint;
+    QString seqName;
+};
+
+class PairwiseAlignmentWidgetsSettings {
+public:
+    PairwiseAlignmentWidgetsSettings() : inNewWindow(true), pairwiseAlignmentTask(NULL),
+        showSequenceWidget(true), showAlgorithmWidget(false), showOutputWidget(false), sequenceSelectionModeOn(false) {}
+    QString firstSequenceName;
+    QString secondSequenceName;
+    QString algorithmName;
+    bool inNewWindow;
+    QString resultFileName;
+    PairwiseAlignmentTask* pairwiseAlignmentTask;
+    bool showSequenceWidget;
+    bool showAlgorithmWidget;
+    bool showOutputWidget;
+    bool sequenceSelectionModeOn;
+
+    QVariantMap customSettings;
+};
+
 class U2VIEW_EXPORT MSAEditor : public GObjectView {
     Q_OBJECT
 
     friend class OpenSavedMSAEditorTask;
+    friend class MSAEditorTreeViewerUI;
 
 public:
     MSAEditor(const QString& viewName, GObject* obj);
@@ -74,10 +114,12 @@ public:
     virtual Task* updateViewTask(const QString& stateName, const QVariantMap& stateData);
 
     virtual QVariantMap saveState();
+
+    virtual OptionsPanel* getOptionsPanel(){return optionsPanel;};
     
     MAlignmentObject* getMSAObject() const {return msaObject;}
 
-    const MSAEditorUI* getUI() const {return ui;}
+    MSAEditorUI* getUI() const {return ui;}
 
     int getAlignmentLen() const;
     
@@ -100,13 +142,27 @@ public:
     int getColumnWidth() const;
 
     void copyRowFromSequence(U2SequenceObject *seqObj, U2OpStatus &os);
-
+    void createDistanceColumn(MSADistanceMatrix* algo);
+    
     static const float zoomMult;
+
+    void setRefrence(QString ref);
+
+    QString getRefSeqName(){return snp.seqName;};
+
+    PairwiseAlignmentWidgetsSettings* getPairwiseAlignmentWidgetsSettings() { return pairwiseAlignmentWidgetsSettings; }
    
+    MSAEditorTreeManager* getTreeManager() {return &treeManager;}
+
+    void buildTree();
+
+    void addExistingTree();
+
 signals:
     void si_fontChanged(const QFont& f);
     void si_zoomOperationPerformed(bool resizeModeChanged);
-
+    void si_refrenceSeqChanged(const QString &str);
+    void si_sizeChanged(int newHeight);
 
 protected slots:
     void sl_onContextMenuRequested(const QPoint & pos);
@@ -116,8 +172,12 @@ protected slots:
     void sl_changeFont(); 
     void sl_resetZoom(); 
     void sl_buildTree();
-    void sl_openTree();
     void sl_align();
+    void sl_setSeqAsRefrence();
+
+    void sl_onSeqOrderChanged(QStringList* order);
+    void sl_showTreeOP();
+    void sl_hideTreeOP();
     
 protected:
     virtual QWidget* createWidget();
@@ -156,26 +216,50 @@ private:
     QAction*          saveScreenshotAction;
     QAction*          saveSvgAction;
     QAction*          alignAction;
+    QAction*          setAsRefrenceSequenceAction;
 
-    CreatePhyTreeSettings settings;
-    PhyTreeGeneratorLauncherTask* treeGeneratorTask;
+    QToolBar*         toolbar;
+
+    SNPSettings snp;
+    PairwiseAlignmentWidgetsSettings* pairwiseAlignmentWidgetsSettings;
+    MSAEditorTreeManager           treeManager;
+};
+
+class SinchronizedObjectView : public QObject{
+// U2VIEW_EXPORT: GUITesting uses MSAEditorUI
+    Q_OBJECT
+public:
+    SinchronizedObjectView();
+    SinchronizedObjectView(QSplitter *_spliter);
+    void addSeqArea(MSAEditorSequenceArea* _seqArea) {seqArea = _seqArea;}
+    void addObject(QWidget *obj, int index, qreal coef);
+    void addObject(QWidget *neighboringWidget, QWidget *obj, qreal coef, int neighboringShift = 0);
+    void removeObject(QWidget *obj);
+    QSplitter* getSpliter();
+private:
+    QList<QWidget *>       objects;
+    QList<int>             widgetSizes;
+    MSAEditorSequenceArea* seqArea;
+    QSplitter*             spliter;
 };
 
 // U2VIEW_EXPORT: GUITesting uses MSAEditorUI
 class U2VIEW_EXPORT MSAEditorUI : public QWidget {
+
     Q_OBJECT
     //todo: make public accessors:
-    friend class MSALabelWidget;
+    friend class MSAWidget;
     friend class MSAEditorSequenceArea;
     friend class MSAEditorConsensusArea;
     friend class MSAEditorNameList;
     friend class MSAEditorTreeViewer;
     friend class MSAEditor;
+    friend class MSAEditorSimilarityColumn;
 
 public:
     MSAEditorUI(MSAEditor* editor);
 
-    QWidget* createLabelWidget(const QString& text = QString(), Qt::Alignment ali = Qt::AlignCenter) const;
+    QWidget* createLabelWidget(const QString& text = QString(), Qt::Alignment ali = Qt::AlignCenter);
 
     MSAEditor* getEditor() const {return editor;}
     QAction* getUndoAction() const;
@@ -186,19 +270,48 @@ public:
     void setCollapsibleMode(bool collapse) { collapsibleMode = collapse; }
     MSACollapsibleItemModel* getCollapseModel() const { return collapseModel; }
 
+    MSAEditorSequenceArea* getSequenceArea() {return seqArea;}
+    MSAEditorNameList*     getEditorNameList() {return nameList;}
+
+    void createDistanceColumn(MSADistanceMatrix* algo);
+
+    void addTreeView(GObjectViewWindow* treeView);
+
+    void setSimilaritySettings(const SimilarityStatisticsSettings* settings);
+
+    void showSimilarity();
+    void hideSimilarity();
+    
+    const MSAEditorAlignmentDependentWidget* getSimilarityWidget(){return similarityStatistics;}
+
+    MSAEditorTreeViewer* getCurrentTree() const;
+
+    MSAEditorMultiTreeViewer* getMultiTreeViewer(){return multiTreeViewer;}
+
+    SinchronizedObjectView                      view;
+
 public slots:
     void sl_saveScreenshot();
     void sl_saveSvgImage();
+private slots:
+    void sl_onTabsCountChanged(int tabsCount);
+signals:
+    void si_showTreeOP();
+    void si_hideTreeOP();
 
 private:
-    MSAEditor*                      editor;
-    MSAEditorNameList*              nameList;
-    MSAEditorSequenceArea*          seqArea;
-    MSAEditorConsensusArea*         consArea;
-    MSAEditorOffsetsViewController* offsetsView;
-    MSAEditorStatusWidget*          statusWidget;
-    MSAEditorTreeViewer*            treeViewer;
-    QSplitter*                      splitter;
+    MSAEditor*                         editor;
+    MSAEditorNameList*                 nameList;
+    MSAEditorSequenceArea*             seqArea;
+    MSAEditorConsensusArea*            consArea;
+    MSAEditorOffsetsViewController*    offsetsView;
+    MSAEditorStatusWidget*             statusWidget;
+    MSAEditorTreeViewer*               treeViewer;
+    MSAEditorSimilarityColumn*         dataList;
+    MSAEditorMultiTreeViewer*          multiTreeViewer;
+    MSAEditorAlignmentDependentWidget* similarityStatistics;
+    QWidget*                           seqAreaContainer;
+    QWidget*                           nameAreaContainer;
 
     QList<QWidget*>                 nameAreaWidgets;
     QList<QWidget*>                 lw1Widgets;
@@ -212,20 +325,30 @@ private:
     QAction                         *copySelectionAction;
 };
 
-
-
-class MSALabelWidget : public QWidget {
+class MSAWidget : public QWidget {
     Q_OBJECT
 public:
-    MSALabelWidget(const MSAEditorUI* _ui, const QString & _t, Qt::Alignment _a);
-    
-    const MSAEditorUI*  ui;
-    QString             text;
-    Qt::Alignment       ali;
-
+    MSAWidget(MSAEditorUI* _ui);
+    virtual ~MSAWidget() {}
+    const QFont& getMsaEditorFont(){return ui->getEditor()->getFont();}
+    void setHeightMargin(int _heightMargin);
 protected slots:
     void sl_fontChanged();
+protected:
+    virtual void mousePressEvent(QMouseEvent *e);
+    virtual void paintEvent(QPaintEvent *e);
+
+    int heightMargin;
+    MSAEditorUI*  ui;
+};
+
+class MSALabelWidget : public MSAWidget {
+    Q_OBJECT
+public:
+    MSALabelWidget(MSAEditorUI* _ui, const QString & _t, Qt::Alignment _a);
     
+    QString             text;
+    Qt::Alignment       ali;
 
 protected:
     void paintEvent(QPaintEvent *e);
@@ -233,6 +356,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
 };
+
+
 
 
 }//namespace;

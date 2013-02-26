@@ -25,5 +25,6 @@ namespace U2 {
 
 const QString GObjectRelationRole::SEQUENCE("sequence");
 const QString GObjectRelationRole::ANNOTATION_TABLE("annotation_table");
+const QString GObjectRelationRole::PHYLOGENETIC_TREE("phylogenetic_tree");
 
 }

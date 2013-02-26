@@ -796,10 +796,174 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
 
     addMSAColorSchemeFactory(new MSAColorSchemePercIdentFactory(this, MSAColorScheme::IDENTPERC_AMINO, tr("Percentage Identity"), DNAAlphabet_AMINO));
     
-    addMSAColorSchemeFactory(new MSAColorSchemeClustalXFactory(this, MSAColorScheme::CLUSTALX_AMINO,  tr("Clustal X"), DNAAlphabet_AMINO));
+    addMSAColorSchemeFactory(new MSAColorSchemeClustalXFactory(this, MSAColorScheme::CLUSTALX_AMINO,  tr("Clustal X"), DNAAlphabet_AMINO));   
 
+}
+////////////
+//SNP
+
+MSAHighlightingSchemeRegistry::MSAHighlightingSchemeRegistry(){
+    schemes.append(new MSAHighlightingSchemeNoColorsFactory(this, MSAHighlightingScheme::EMPTY_NUCL, tr("No highlighting"), DNAAlphabet_NUCL));
+    schemes.append(new MSAHighlightingSchemeNoColorsFactory(this, MSAHighlightingScheme::EMPTY_AMINO, tr("No highlighting"), DNAAlphabet_AMINO));
+
+    schemes.append(new MSAHighlightingSchemeAgreementsFactory(this, MSAHighlightingScheme::AGREEMENTS_NUCL, tr("Agreements"), DNAAlphabet_NUCL));
+    schemes.append(new MSAHighlightingSchemeAgreementsFactory(this, MSAHighlightingScheme::AGREEMENTS_AMINO, tr("Agreements"), DNAAlphabet_AMINO));
+
+    schemes.append(new MSAHighlightingSchemeDisagreementsFactory(this, MSAHighlightingScheme::DISAGREEMENTS_NUCL, tr("Disagreements"), DNAAlphabet_NUCL));
+    schemes.append(new MSAHighlightingSchemeDisagreementsFactory(this, MSAHighlightingScheme::DISAGREEMENTS_AMINO, tr("Disagreements"), DNAAlphabet_AMINO));
+
+    schemes.append(new MSAHighlightingSchemeGapsFactory (this, MSAHighlightingScheme::GAPS_NUCL, tr("Gaps"), DNAAlphabet_NUCL));
+    schemes.append(new MSAHighlightingSchemeGapsFactory (this, MSAHighlightingScheme::GAPS_AMINO, tr("Gaps"), DNAAlphabet_AMINO));
+
+    schemes.append(new MSAHighlightingSchemeTransitionsFactory(this, MSAHighlightingScheme::TRANSITIONS_NUCL, tr("Transitions"), DNAAlphabet_NUCL));
+    schemes.append(new MSAHighlightingSchemeTransversionsFactory(this, MSAHighlightingScheme::TRANSVERSIONS_NUCL, tr("Transversions"), DNAAlphabet_NUCL));
+}
+
+MSAHighlightingSchemeFactory* MSAHighlightingSchemeRegistry::getMSAHighlightingSchemeFactoryById( const QString& id ) const {
+    foreach(MSAHighlightingSchemeFactory* f, schemes) {
+        if(f->getId() == id) {
+            return f;
+        }
+    }
+    return NULL;
+}
+
+QList<MSAHighlightingSchemeFactory*> MSAHighlightingSchemeRegistry::getMSAHighlightingSchemes( DNAAlphabetType atype ){
+    QList<MSAHighlightingSchemeFactory*> res;
+    foreach(MSAHighlightingSchemeFactory* f, schemes) {
+        if (f->getAlphabetType() == atype) {
+            res.append(f);
+        }
+    }
+    return res;
+}
+
+//Factories
+MSAHighlightingScheme* MSAHighlightingSchemeNoColorsFactory::create( QObject* p, MAlignmentObject* obj ){
+    return new MSAHighlightingSchemeEmpty(p, this, obj);
+}
+
+MSAHighlightingScheme* MSAHighlightingSchemeAgreementsFactory::create( QObject* p, MAlignmentObject* obj ){
+    return new MSAHighlightingSchemeAgreements(p, this, obj);
+}
+
+MSAHighlightingScheme* MSAHighlightingSchemeDisagreementsFactory::create(QObject* p, MAlignmentObject* obj){
+    return new MSAHighlightingSchemeDisagreements(p, this, obj);
+}
+
+
+MSAHighlightingScheme* MSAHighlightingSchemeTransitionsFactory::create( QObject* p, MAlignmentObject* obj ){
+    return new MSAHighlightingSchemeTransitions(p, this, obj);
+}
+
+MSAHighlightingScheme* MSAHighlightingSchemeTransversionsFactory::create( QObject* p, MAlignmentObject* obj ){
+    return new MSAHighlightingSchemeTransversions(p, this, obj);
+}
+
+MSAHighlightingScheme* MSAHighlightingSchemeGapsFactory::create( QObject* p, MAlignmentObject* obj ){
+    return new MSAHighlightingSchemeGaps(p, this, obj);
+}
+
+//Schemes
+
+MSAHighlightingScheme::MSAHighlightingScheme( QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o ): 
+    QObject(p), factory(f), maObj(o), useDots(false){
     
+}
 
+void MSAHighlightingScheme::process( const char refChar, char &seqChar, bool &color ){
+    if (useDots && !color){
+        seqChar = '.';
+    }
+}
+
+QString MSAHighlightingScheme::EMPTY_NUCL = "HIGHLIGHT_SCHEME_EMPTY_NUCL";
+QString MSAHighlightingScheme::EMPTY_AMINO = "HIGHLIGHT_SCHEME_EMPTY_AMINO";
+QString MSAHighlightingScheme::AGREEMENTS_NUCL = "HIGHLIGHT_SCHEME_AGREEMENTS_NUCL";
+QString MSAHighlightingScheme::AGREEMENTS_AMINO = "HIGHLIGHT_SCHEME_AGREEMENTS_AMINO";
+QString MSAHighlightingScheme::DISAGREEMENTS_NUCL = "HIGHLIGHT_SCHEME_DISAGREEMENTS_NUCL";
+QString MSAHighlightingScheme::DISAGREEMENTS_AMINO = "HIGHLIGHT_SCHEME_DISAGREEMENTS_AMINO";
+QString MSAHighlightingScheme::TRANSITIONS_NUCL = "HIGHLIGHT_SCHEME_TRANSITIONS_AMINO";
+QString MSAHighlightingScheme::TRANSVERSIONS_NUCL = "HIGHLIGHT_SCHEME_TRANSVERSIONS_AMINO";
+QString MSAHighlightingScheme::GAPS_AMINO = "HIGHLIGHT_SCHEME_GAPS_AMINO";
+QString MSAHighlightingScheme::GAPS_NUCL = "HIGHLIGHT_SCHEME_GAPS_NUCL";
+
+void MSAHighlightingSchemeAgreements::process( const char refChar, char &seqChar, bool &color ){
+    if(refChar == seqChar){
+        color = true;
+    }else{
+        color = false;
+    }
+    MSAHighlightingScheme::process(refChar, seqChar, color);
+}
+
+
+void MSAHighlightingSchemeDisagreements::process( const char refChar, char &seqChar, bool &color ){
+    if(refChar == seqChar){
+        color = false;
+    }else{
+        color = true;
+    }
+    MSAHighlightingScheme::process(refChar, seqChar, color);
+}
+
+
+void MSAHighlightingSchemeTransitions::process( const char refChar, char &seqChar, bool &color ){
+    switch (refChar){
+        case 'N':
+            color = true;
+            break;
+        case 'A':
+            color = (seqChar == 'G');
+            break;
+        case 'C':
+            color = (seqChar == 'T');
+            break;
+        case 'G':
+            color = (seqChar == 'A');
+            break;
+        case 'T':
+            color = (seqChar == 'C');
+            break;
+        default:
+            color = false;
+            break;
+    }
+    MSAHighlightingScheme::process(refChar, seqChar, color);
+}
+
+
+void MSAHighlightingSchemeTransversions::process( const char refChar, char &seqChar, bool &color ){
+    switch (refChar){
+        case 'N':
+            color = true;
+            break;
+        case 'A':
+            color = (seqChar == 'C' || seqChar == 'T');
+            break;
+        case 'C':
+            color = (seqChar == 'A' || seqChar == 'G');
+            break;
+        case 'G':
+            color = (seqChar == 'C' || seqChar == 'T');
+            break;
+        case 'T':
+            color = (seqChar == 'A' || seqChar == 'G');
+            break;
+        default:
+            color = false;
+            break;
+    }
+    MSAHighlightingScheme::process(refChar, seqChar, color);
+}
+
+void MSAHighlightingSchemeGaps::process( const char refChar, char &seqChar, bool &color ){
+    if(seqChar == '-'){
+        color = true;
+    }else{
+        color = false;
+    }
+    MSAHighlightingScheme::process(refChar, seqChar, color);
 }
 
 }//namespace

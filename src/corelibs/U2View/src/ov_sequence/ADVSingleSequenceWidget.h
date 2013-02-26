@@ -151,7 +151,8 @@ protected slots:
 public slots:
     void sl_closeView();
     void sl_showStateMenu();
-
+signals:
+    void si_updateGraphView(const QStringList &, const QVariantMap&);
 private slots:
     void sl_saveScreenshot();
 

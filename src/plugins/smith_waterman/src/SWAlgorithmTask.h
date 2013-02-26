@@ -27,6 +27,7 @@
 #include <U2Core/SequenceWalkerTask.h>
 #include <U2Algorithm/SmithWatermanSettings.h>
 #include <U2Core/SMatrix.h>
+#include <U2Algorithm/PairwiseAlignmentTask.h>
 
 #include "SmithWatermanAlgorithm.h"
 #include "PairAlignSequences.h"
@@ -61,7 +62,7 @@ public:
 private:
 
     void addResult(QList<PairAlignSequences> & res);
-    int calculateMatrixLength(const QByteArray & searchSeq, const QByteArray & patternSeq, int gapOpent, int gapExtension, int maxScore, int minScore);
+    int calculateMatrixLength(const QByteArray & searchSeq, const QByteArray & patternSeq, int gapOpen, int gapExtension, int maxScore, int minScore);
     void removeResultFromOverlap(QList<PairAlignSequences> & res);
     int calculateMaxScore(const QByteArray & seq, const SMatrix& substitutionMatrix);
 
@@ -84,7 +85,7 @@ private:
 
 class SWResultsPostprocessingTask : public Task{
     Q_OBJECT
-public: 
+public:
     SWResultsPostprocessingTask(SmithWatermanSettings &_sWatermanConfig, QList<SmithWatermanResult> &_resultList, QList<PairAlignSequences> &_resPAS);
     ~SWResultsPostprocessingTask(){};
 
@@ -97,6 +98,91 @@ private:
     QList<PairAlignSequences> resPAS;
 };
 
-}
 
-#endif
+//defines for names of Smith-Waterman algorithm settings
+#define PA_SW_GAP_OPEN "SW_gapOpen"
+#define PA_SW_GAP_EXTD "SW_gapExtd"
+#define PA_SW_PERCENT_OF_SCORE "SW_percentOfScore"
+#define PA_SW_SCORING_MATRIX_NAME "SW_scoringMatrix"
+#define PA_SW_RESULT_FILTER "SW_resultFilter"
+#define PA_SW_REALIZATION_NAME "SW_realizationName"
+#define PA_SW_DEFAULT_PERCENT_OF_SCORE 0
+#define PA_SW_DEFAULT_RESULT_FILTER "filter-intersections"
+#define PA_SW_DEFAULT_RESULT_FILE_NAME "SW_Alignment_Result"
+
+class PairwiseAlignmentSmithWatermanTaskSettings : public PairwiseAlignmentTaskSettings {
+public:
+    PairwiseAlignmentSmithWatermanTaskSettings(const PairwiseAlignmentTaskSettings &s);
+    virtual ~PairwiseAlignmentSmithWatermanTaskSettings();
+
+    virtual bool convertCustomSettings();
+
+public:
+    //all settings except sMatrix and pointers must be set up through customSettings and then must be converted by convertCustomSettings().
+    SmithWatermanReportCallbackMAImpl* reportCallback;
+    SmithWatermanResultListener* resultListener;
+    SmithWatermanResultFilter* resultFilter;
+
+    int gapOpen;
+    int gapExtd;
+    int percentOfScore;
+    QString sMatrixName;
+    SMatrix sMatrix;        //initialized by convertCustomSettings()
+};
+
+class PairwiseAlignmentSmithWatermanTask : public PairwiseAlignmentTask, public SequenceWalkerCallback {
+public:
+    PairwiseAlignmentSmithWatermanTask(PairwiseAlignmentSmithWatermanTaskSettings* _settings, SW_AlgType algType);
+    ~PairwiseAlignmentSmithWatermanTask();
+    virtual void onRegion(SequenceWalkerSubtask *t, TaskStateInfo &ti);
+    void prepare();
+    QList<PairAlignSequences> & getResult();
+    ReportResult report();
+
+    QList<Task*> onSubTaskFinished(Task* subTask);
+
+protected:
+    void addResult(QList<PairAlignSequences> & res);
+    int calculateMaxScore(const QByteArray &seq, const SMatrix& substitutionMatrix);
+    void setupTask();
+    int calculateMatrixLength(const QByteArray & searchSeq, const QByteArray & patternSeq, int gapOpen, int gapExtension, int maxScore, int minScore);
+    void removeResultFromOverlap(QList<PairAlignSequences> & res);
+    QList<PairAlignSequences> expandResults(QList<PairAlignSequences>& res);
+
+protected:
+    QMutex lock;
+    PairwiseAlignmentSmithWatermanTaskSettings* settings;
+    SW_AlgType algType;
+    QList<PairAlignSequences> pairAlignSequences;
+    QList<SmithWatermanResult> resultList;
+    int minScore;
+    int maxScore;
+    QByteArray* sqnc;
+    QByteArray* ptrn;
+    SequenceWalkerTask* t;
+
+    CudaGpuModel * cudaGpu;
+    OpenCLGpuModel * openClGpu;
+};
+
+class PairwiseAlignmentSWResultsPostprocessingTask : public Task {
+    Q_OBJECT
+
+public:
+    PairwiseAlignmentSWResultsPostprocessingTask(SmithWatermanResultFilter* rf, SmithWatermanResultListener* rl, QList<SmithWatermanResult> &_resultList, QList<PairAlignSequences> &_resPAS);
+    ~PairwiseAlignmentSWResultsPostprocessingTask(){}
+
+    void run();
+    void prepare();
+    ReportResult report(){ return ReportResult_Finished; }
+
+private:
+    SmithWatermanResultFilter* rf;
+    SmithWatermanResultListener* rl;
+    QList<SmithWatermanResult> resultList;
+    QList<PairAlignSequences> resPAS;
+};
+
+}   //namespace
+
+#endif  //_U2_SW_ALGORITHM_TASK_H_

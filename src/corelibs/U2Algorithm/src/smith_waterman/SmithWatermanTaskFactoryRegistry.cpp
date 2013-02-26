@@ -55,6 +55,7 @@ SmithWatermanTaskFactory* SmithWatermanTaskFactoryRegistry::getFactory(const QSt
     return factories.value(factoryId, 0);
 }
 
+
 QStringList SmithWatermanTaskFactoryRegistry::getListFactoryNames() {
     return factories.keys();
 }

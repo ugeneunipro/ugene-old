@@ -1,0 +1,86 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#ifndef _U2_PAIRWISE_ALIGNMENT_HIRSCHBERG_TASK_H_
+#define _U2_PAIRWISE_ALIGNMENT_HIRSCHBERG_TASK_H_
+
+#include <U2Algorithm/PairwiseAlignmentTask.h>
+
+#include <U2Core/DNATranslation.h>
+
+namespace U2 {
+
+#define PA_H_GAP_OPEN "H_gapOpen"
+#define PA_H_GAP_EXTD "H_gapExtd"
+#define PA_H_GAP_TERM "H_gapTerm"
+#define PA_H_BONUS_SCORE "H_bonusScore"
+#define PA_H_REALIZATION_NAME "H_realizationName"
+#define PA_H_TRANSLATE_TO_AMINO "H_translateToAmino"
+#define PA_H_TRANSLATION_TABLE_NAME "H_translationTableName"
+#define PA_H_TRANSLATION_TABLE "H_translationTable"
+#define PA_H_DEFAULT_RESULT_FILE_NAME "H_Alignment_Result.aln"
+
+class KalignTask;
+class DNAAlphabet;
+class MAlignment;
+class Project;
+
+class PairwiseAlignmentHirschbergTaskSettings : public PairwiseAlignmentTaskSettings {
+public:
+    PairwiseAlignmentHirschbergTaskSettings(const PairwiseAlignmentTaskSettings &s);
+    virtual ~PairwiseAlignmentHirschbergTaskSettings();
+
+    virtual bool convertCustomSettings();
+
+public:
+    //all settings except translationTable must be set up through customSettings and then must be converted by convertCustomSettings().
+    int gapOpen;
+    int gapExtd;
+    int gapTerm;
+    int bonusScore;
+    bool translateToAmino;
+    QString translationTableName;
+    DNATranslation* translationTable;       //initialized by convertCustomSettings()
+};
+
+
+class PairwiseAlignmentHirschbergTask : public PairwiseAlignmentTask
+{
+public:
+    PairwiseAlignmentHirschbergTask(PairwiseAlignmentHirschbergTaskSettings* _settings);
+    ~PairwiseAlignmentHirschbergTask();
+
+    virtual QList<Task*> onSubTaskFinished(Task *subTask);
+    virtual ReportResult report();
+
+protected:
+    void changeGivenUrlIfDocumentExists(QString & givenUrl, const Project * curProject);
+
+protected:
+    PairwiseAlignmentHirschbergTaskSettings* settings;
+    KalignTask* kalignSubTask;
+    MAlignment* ma;
+    DNAAlphabet* alphabet;
+};
+
+}   //namespace
+
+#endif // _U2_PAIRWISE_ALIGNMENT_HIRSCHBERG_TASK_H_

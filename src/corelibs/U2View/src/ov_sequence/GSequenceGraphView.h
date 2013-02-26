@@ -44,6 +44,10 @@ public:
 
     const QString& getGraphViewName() const {return vName;}
 
+    void getLabelPositions(QList<QVariant> &labelPositions);
+
+    void createLabelsOnPositions(const QList<QVariant>& positions);
+
     void addGraphData(GSequenceGraphData* g);
     
     void setGraphDrawer(GSequenceGraphDrawer* gd);
@@ -54,13 +58,30 @@ public:
 
     void buildPopupMenu(QMenu& m);
 
+    void changeLabelsColor();
+
 protected:
     virtual void pack();
     virtual void addActionsToGraphMenu(QMenu* graphMenu);
+    void leaveEvent(QEvent *le);
+    void mousePressEvent(QMouseEvent* me);
+    void mouseMoveEvent(QMouseEvent* me);
+    void addLabel(float xPos);
+    void moveLabel(float xPos);
+    void hideLabel();
+    void onVisibleRangeChanged(bool signal = true);
 
+signals:
+    void si_labelAdded(GSequenceGraphData*, GraphLabel*, const QRect&);
+    void si_labelMoved(GSequenceGraphData*, GraphLabel*, const QRect&);
+    void si_frameRangeChanged(GSequenceGraphData*, const QRect&);
+    void si_labelsColorChange(GSequenceGraphData*);
 private slots:
     void sl_onShowVisualProperties(bool);
+    void sl_onSelectExtremumPoints();
+    void sl_onDeleteAllLabels();
     void sl_onSaveGraphCutoffs(bool);
+    void sl_graphRectChanged(const QRect&);
 
 private:
     GSequenceLineView*          baseView;
@@ -69,10 +90,13 @@ private:
     GSequenceGraphDrawer*       graphDrawer;
     QAction*                    visualPropertiesAction;
     QAction*                    saveGraphCutoffsAction;
+    QAction*                    deleteAllLabelsAction;
+    QAction*                    selectAllExtremumPoints;
 };
 
 
 class U2VIEW_EXPORT GSequenceGraphViewRA : public GSequenceLineViewRenderArea {
+    Q_OBJECT
 public:
     GSequenceGraphViewRA(GSequenceGraphView* g);
     ~GSequenceGraphViewRA();
@@ -80,10 +104,14 @@ public:
     
     double getCurrentScale() const;
 
+    const QRect& getGraphRect() const { return graphRect;}
+
 protected:
     virtual void drawAll(QPaintDevice* pd);
     virtual void drawHeader(QPainter& p);
     void drawSelection(QPainter& p);
+signals:
+    void si_graphRectChanged(const QRect&);
 private:
 
     QFont *headerFont;

@@ -667,7 +667,7 @@ public:
 };
 
 MAlignment::MAlignment(const QString& _name, DNAAlphabet* al, const QList<MAlignmentRow>& r) 
-: alphabet(al), rows(r)
+: alphabet(al), rows(r), referenceSequence(NULL)
 {
     MAStateCheck check(this);
 
@@ -911,7 +911,12 @@ void MAlignment::removeRow(int rowIndex, U2OpStatus& os) {
     }
     MAStateCheck check(this);
 
+    if(referenceSequence == &rows.at(rowIndex)) {
+        referenceSequence = NULL;
+    }
+
     rows.removeAt(rowIndex);
+
     if (rows.isEmpty()) {
         length = 0;
     }
@@ -1123,7 +1128,7 @@ void MAlignment::moveRowsBlock(int startRow, int numRows, int delta)
     int k = qAbs(delta);
 
     SAFE_POINT(( delta > 0 && startRow + numRows + delta - 1 < rows.length())
-        || (delta < 0 && startRow + delta >= 0 && startRow + qAbs(delta) <= rows.length()),
+        || (delta < 0 && startRow + delta >= 0),
         QString("Incorrect parameters in MAlignment::moveRowsBlock: "
         "startRow: '%1', numRows: '%2', delta: '%3'").arg(startRow).arg(numRows).arg(delta),);
 
@@ -1216,6 +1221,30 @@ void MAlignment::check() const {
         assert(row.getCoreEnd() <= length);
     }
 #endif
+}
+
+void MAlignment::sortRowsByList(const QStringList& order) {
+    assert(getNumRows() == order.size());
+
+    MAStateCheck check(this);
+
+    int size = rows.size();
+    QVector<const MAlignmentRow*> rowsRefs(size);
+
+    for(int i = 0; i < size; i++) {
+        int index = order.indexOf(rows.at(i).getName());
+        if(rowsRefs.contains(&rows.at(i))) {
+            index = 0;
+        }
+        rowsRefs[index] = &rows.at(i);
+    }
+    int num = 0;
+    for (int i = 0; i < size; i++) {
+        int index = rows.indexOf(*rowsRefs[i]);
+        if(index != i) 
+            num++;
+        rows.swap(rows.indexOf(*rowsRefs[i]), i);
+    }
 }
 
 static bool _registerMeta() {

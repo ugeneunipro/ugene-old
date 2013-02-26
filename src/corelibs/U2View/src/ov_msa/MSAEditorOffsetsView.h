@@ -54,6 +54,7 @@ private slots:
     void sl_startChanged(const QPoint& , const QPoint& ) {updateOffsets();}
     void sl_fontChanged() {updateOffsets();}
     void sl_modelChanged() {updateOffsets();}
+    void sl_refSeqChanged(const QString &str) {Q_UNUSED(str);updateOffsets();}
     void sl_showOffsets(bool);
 private:
     void updateOffsets();
@@ -76,6 +77,7 @@ protected:
     void updateView();
     void drawAll(QPainter& p);
     QFont getOffsetsFont();
+    void drawRefSequence(QPainter &p, QRect r);
 
 private:
     MSAEditorSequenceArea*      seqArea;

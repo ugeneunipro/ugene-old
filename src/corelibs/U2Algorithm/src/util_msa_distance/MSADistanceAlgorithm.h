@@ -34,6 +34,7 @@ namespace U2 {
 class MAlignment;
 class MSADistanceAlgorithm;
 class DNAAlphabet;
+class MSADistanceMatrix;
 
 enum DistanceAlgorithmFlag {
     DistanceAlgorithmFlag_Nucleic = 1 << 0,
@@ -73,8 +74,12 @@ protected:
 
 };
 
+typedef QVarLengthArray<QVarLengthArray<int> > varLengthMatrix;
+
 class U2ALGORITHM_EXPORT MSADistanceAlgorithm : public Task {
     Q_OBJECT
+
+    friend class MSADistanceMatrix;
 public:
     MSADistanceAlgorithm(MSADistanceAlgorithmFactory* factory, const MAlignment& ma);
 
@@ -96,12 +101,33 @@ private:
     MSADistanceAlgorithmFactory*    factory;
 
 protected:
+    virtual void fillTable();
+    virtual int calculateSimilarity(int firstSeqIndex, int secondSeqIndex){return 0;}
     MAlignment                                  ma;
-    QVarLengthArray<QVarLengthArray<int> >      distanceTable;
+    varLengthMatrix                             distanceTable;
     QMutex                                      lock;
     bool                                        excludeGaps;
     bool                                        isSimilarity;
 };
+class U2ALGORITHM_EXPORT MSADistanceMatrix : public QObject{
+    Q_OBJECT
+public:
+    MSADistanceMatrix(const MSADistanceAlgorithm *algo, bool _usePercents);
+    ~MSADistanceMatrix() {}
+    bool isEmpty(){ return distanceTable.isEmpty();}
+    int getSimilarity(int row1, int row2);
+    int getSimilarity(const QString& firstSeqName, const QString& secondSeqName);
+    void showSimilarityInPercents(bool _usePercents) {usePercents = _usePercents;}
+    bool areUsePercents() {return usePercents;}
+public slots:
+    void sl_onSequenceNameChanged(QString oldSeqName, QString newSeqName);
+protected:
+    varLengthMatrix                             distanceTable;
+    varLengthMatrix                             percentsTable;
+    bool                                        usePercents;
+    QMap<QString, int>                          namesAndIndexes;
+};
+
 
 }//namespace
 

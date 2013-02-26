@@ -38,7 +38,7 @@ namespace U2 {
 GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qreal angle, GraphicsRectangularBranchItem* from): GraphicsBranchItem(true) {
     setParentItem(parent);
     qreal w = from->getWidth();
-    settings = from->settings;
+    settings = from->getBranchSettings();
     setWidthW(w);
     setDist(from->getDist());
     setPos(w, 0);
@@ -48,7 +48,7 @@ GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qr
 //    setRotation(angle);
 
     if (from->getNameText() != NULL) {
-        nameText = new QGraphicsSimpleTextItem(from->getNameText()->text(), this);
+        nameText = new QGraphicsTextItem(from->getNameText()->toPlainText(), this);
         nameText->setFont(from->getNameText()->font());
         QRectF rect = nameText->boundingRect();
         qreal h = rect.height();
@@ -60,7 +60,7 @@ GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qr
 //            nameText->setRotation(180);
         }
 
-        nameText->setBrush(from->getNameText()->brush());
+        nameText->setDefaultTextColor(from->getNameText()->defaultTextColor());
     }
     if (from->getDistanceText() != NULL) {
         distanceText = new QGraphicsSimpleTextItem(from->getDistanceText()->text(), this);

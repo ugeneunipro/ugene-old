@@ -43,8 +43,12 @@ public:
     GObjectReference getPhyObject() const;
     void setPhyObject(const GObjectReference& ref);
 
-    qreal getZoom() const;
-    void setZoom(qreal s);
+    qreal getVerticalZoom() const;
+    void setVerticalZoom(qreal s);
+
+    qreal getHorizontalZoom() const;
+    void setHorizontalZoom(qreal s);
+
 
     QTransform getTransform() const;
     void setTransform(const QTransform& m);

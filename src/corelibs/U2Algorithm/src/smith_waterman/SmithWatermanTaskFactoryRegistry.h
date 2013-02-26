@@ -30,7 +30,6 @@
 #include <U2Core/global.h>
 #include <U2Algorithm/SmithWatermanTaskFactory.h>
 
-
 namespace U2 {
 
 class U2ALGORITHM_EXPORT SmithWatermanTaskFactoryRegistry: public QObject {

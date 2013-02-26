@@ -29,6 +29,7 @@
 #include "MSAEditorNameList.h"
 #include "MSAEditorStatusBar.h"
 #include "MSAEditorUndoFramework.h"
+#include "MSAEditorDataList.h"
 
 #include <ov_phyltree/TreeViewerTasks.h>
 
@@ -48,13 +49,21 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SequenceUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/GObjectRelationRoles.h>
 
 #include <U2Algorithm/PhyTreeGeneratorTask.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
+#include <U2Algorithm/MSADistanceAlgorithm.h>
+#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
+#include <U2Algorithm/PairwiseAlignmentTask.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/OptionsPanel.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
+
 #include <QtGui/QLabel>
 #include <QtGui/QPainter>
 #include <QtGui/QVBoxLayout>
@@ -68,7 +77,12 @@
 #include <U2Gui/GScrollBar.h>
 #include <QtSvg/QSvgGenerator>
 
+
 #include <U2View/CreatePhyTreeDialogController.h>
+#include <U2View/TreeViewer.h>
+#include <U2View/MSAEditorMultiTreeViewer.h>
+#include <U2View/MSAEditorTreeViewer.h>
+#include <U2View/TreeOptionsWidgetFactory.h>
 
 #include <QtCore/QEvent>
 
@@ -95,7 +109,7 @@ namespace U2 {
 const float MSAEditor::zoomMult = 1.25;
 
 MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
-: GObjectView(MSAEditorFactory::ID, viewName), ui(NULL) {
+: GObjectView(MSAEditorFactory::ID, viewName), ui(NULL), treeManager(this) {
 
     msaObject = qobject_cast<MAlignmentObject*>(obj);
     objects.append(msaObject);
@@ -144,6 +158,9 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     } else {
         resizeMode = ResizeMode_FontAndContent;
     }
+    
+    pairwiseAlignmentWidgetsSettings = new PairwiseAlignmentWidgetsSettings;
+    pairwiseAlignmentWidgetsSettings->customSettings.insert("alphabet", msaObject->getAlphabet()->getId());
 
     updateActions();
 }
@@ -197,7 +214,7 @@ void MSAEditor::sl_zoomOut() {
         font.setPointSize(pSize-1);
         setFont(font);
     } else {
-        Q_ASSERT(zoomMult > 0);
+        SAFE_POINT(zoomMult > 0, QString("Incorrect value of MSAEditor::zoomMult"),);
         zoomFactor /= zoomMult;
         ResizeMode oldMode = resizeMode;
         resizeMode = ResizeMode_OnlyContent;
@@ -244,59 +261,7 @@ void MSAEditor::sl_zoomToSelection()
 }
 
 void MSAEditor::sl_buildTree() {
-    PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
-    QStringList list = registry->getNameList();
-    if (list.size() == 0){
-        QMessageBox::information(ui, tr("Calculate phy tree"),
-            tr("No algorithms for building phylogenetic tree are available.") );
-        return;
-    }        
-
-    CreatePhyTreeDialogController dlg(widget, msaObject, settings);
-
-    int rc = dlg.exec();
-    if (rc != QDialog::Accepted) {
-        return;
-    }
-
-    treeGeneratorTask = new PhyTreeGeneratorLauncherTask(msaObject->getMAlignment(), settings);
-    connect(treeGeneratorTask, SIGNAL(si_stateChanged()), SLOT(sl_openTree()));
-    TaskScheduler* scheduler = AppContext::getTaskScheduler();
-    scheduler->registerTopLevelTask(treeGeneratorTask);
-}
-
-void MSAEditor::sl_openTree() {
-    if (treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasError() || treeGeneratorTask->isCanceled()) {
-        return;
-    }
-
-    const GUrl& msaURL = msaObject->getDocument()->getURL();
-    assert(!msaURL.isEmpty());
-    if (msaURL.isEmpty()) {
-        return;
-    }
-
-    Project* p = AppContext::getProject();
-    QString treeFileName = settings.fileUrl.getURLString();
-    if (treeFileName.isEmpty()) {
-        treeFileName = GUrlUtils::rollFileName(msaURL.dirPath() + "/" + msaURL.baseFileName() + ".nwk", DocumentUtils::getNewDocFileNameExcludesHint());
-    }
-
-    DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::NEWICK);
-    IOAdapterFactory *iof = IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE);
-    U2OpStatus2Log os;
-    Document *d = df->createNewLoadedDocument(iof, treeFileName, os);
-    CHECK_OP(os, );
-
-    PhyTreeObject *newObj = new PhyTreeObject(treeGeneratorTask->getResult(), "Tree");
-    d->addObject(newObj);
-    p->addDocument(d);
-
-    Task* saveTask = new SaveDocumentTask(d);
-    Task* task = new OpenTreeViewerTask(newObj);
-    TaskScheduler* scheduler = AppContext::getTaskScheduler();
-    scheduler->registerTopLevelTask(saveTask);
-    scheduler->registerTopLevelTask(task);
+    treeManager.buildTreeWithDialog();
 }
 
 void MSAEditor::onObjectRenamed(GObject*, const QString&) {
@@ -319,6 +284,7 @@ void MSAEditor::setFont(const QFont& f) {
     font.setPointSize(qBound(MIN_FONT_SIZE, pSize, MAX_FONT_SIZE));
     emit si_fontChanged(f);
     saveFont(font);
+    emit si_sizeChanged(ui->seqArea->getHeight());
 }
 
 void MSAEditor::setFirstVisibleBase(int firstPos) {
@@ -356,6 +322,7 @@ void MSAEditor::sl_resetZoom() {
 }
 
 MSAEditor::~MSAEditor() {
+    delete pairwiseAlignmentWidgetsSettings;
 }
 
 void MSAEditor::buildStaticToolbar(QToolBar* tb) {
@@ -367,6 +334,9 @@ void MSAEditor::buildStaticToolbar(QToolBar* tb) {
     tb->addAction(buildTreeAction);
     tb->addAction(saveScreenshotAction);
     tb->addAction(alignAction);
+
+    toolbar = tb;
+
     GObjectView::buildStaticToolbar(tb);
 }
 
@@ -380,6 +350,7 @@ void MSAEditor::buildStaticMenu(QMenu* m) {
     addViewMenu(m);
     addExportMenu(m);
     addAdvancedMenu(m);
+    //addSNPMenu(m);
 
     GObjectView::buildStaticMenu(m);
 
@@ -450,7 +421,7 @@ QVariantMap MSAEditor::saveState() {
 }
 
 QWidget* MSAEditor::createWidget() {
-    assert(ui == NULL);
+    Q_ASSERT(ui == NULL);
     ui = new MSAEditorUI(this);
 
     QString objName = "msa_editor_" + msaObject->getGObjectName();
@@ -468,6 +439,22 @@ QWidget* MSAEditor::createWidget() {
     alignAction = new QAction(QIcon(":core/images/align.png"), tr("Align"), this);
     alignAction->setObjectName("Align");
     connect(alignAction, SIGNAL(triggered()), this, SLOT(sl_align()));
+
+    setAsRefrenceSequenceAction = new QAction(tr("Set this sequence as refrence"), this);
+    setAsRefrenceSequenceAction->setObjectName("set_seq_as_refrence");
+    connect(setAsRefrenceSequenceAction, SIGNAL(triggered()), SLOT(sl_setSeqAsRefrence()));
+
+    optionsPanel = new OptionsPanel(this);
+    OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
+    QList<OPWidgetFactory*> opWidgetFactoriesForSeqView = opWidgetFactoryRegistry->getRegisteredFactories(ObjViewType_AlignmentEditor);
+    foreach (OPWidgetFactory* factory, opWidgetFactoriesForSeqView) {
+        optionsPanel->addGroup(factory);
+    }
+    connect(ui, SIGNAL(si_showTreeOP()), SLOT(sl_showTreeOP()));
+    connect(ui, SIGNAL(si_hideTreeOP()), SLOT(sl_hideTreeOP()));
+    sl_hideTreeOP();
+
+    treeManager.loadRelatedTrees();
 
     initDragAndDropSupport();
     return ui;
@@ -495,6 +482,12 @@ void MSAEditor::sl_onContextMenuRequested(const QPoint & pos) {
     addViewMenu(&m);
     addExportMenu(&m);
     addAdvancedMenu(&m);
+
+    QPoint curpos = QCursor::pos();
+    m.addSeparator();
+    m.addAction(setAsRefrenceSequenceAction);
+    m.addSeparator();
+    snp.clickPoint = QCursor::pos();
 
     emit si_buildPopupMenu(this, &m);
 
@@ -533,6 +526,34 @@ void MSAEditor::copyRowFromSequence(U2SequenceObject *seqObj, U2OpStatus &os) {
     msaObject->addRow(row, seqObj->getWholeSequence());
 }
 
+void MSAEditor::sl_onSeqOrderChanged( QStringList* order ){
+    msaObject->sortRowsByList(*order);
+}
+
+void MSAEditor::sl_showTreeOP() {
+    OptionsPanelWidget* opWidget = dynamic_cast<OptionsPanelWidget*>(optionsPanel->getMainWidget());
+    if(NULL == opWidget) {
+        return;
+    }
+    QWidget* header = opWidget->findHeaderWidgetByGroupId("OP_MSA_TREES_WIDGET");
+    header->show();
+}
+
+void MSAEditor::sl_hideTreeOP() {
+    OptionsPanelWidget* opWidget = dynamic_cast<OptionsPanelWidget*>(optionsPanel->getMainWidget());
+    if(NULL == opWidget) {
+        return;
+    }
+    QWidget* groupWidget = opWidget->findOptionsWidgetByGroupId("OP_MSA_TREES_WIDGET");
+    if(NULL != groupWidget) {
+        groupWidget->hide();
+        opWidget->closeOptionsPanel();
+    }
+    QWidget* header = opWidget->findHeaderWidgetByGroupId("OP_MSA_TREES_WIDGET");
+    header->hide();
+}
+
+
 bool MSAEditor::eventFilter(QObject*, QEvent* e) {
     if (e->type() == QEvent::DragEnter || e->type() == QEvent::Drop) {
         QDropEvent* de = (QDropEvent*)e;
@@ -562,7 +583,7 @@ bool MSAEditor::eventFilter(QObject*, QEvent* e) {
 
 void MSAEditor::initDragAndDropSupport()
 {
-    assert(ui!= NULL);
+    SAFE_POINT(ui!= NULL, QString("MSAEditor::ui is not initialized in MSAEditor::initDragAndDropSupport"),);
     ui->setAcceptDrops(true);
     ui->installEventFilter(this);
 }
@@ -590,8 +611,43 @@ void MSAEditor::sl_align(){
     mm->exec(QCursor::pos());
 }
 
+void MSAEditor::createDistanceColumn(MSADistanceMatrix* algo) {
+    ui->createDistanceColumn(algo);
+}
+
+void MSAEditor::sl_setSeqAsRefrence(){
+    QPoint  menuCallPos = snp.clickPoint;
+    QPoint  nameMapped = ui->nameList->mapFromGlobal(menuCallPos);
+    if(nameMapped.y() < 0){
+        //clicked on consensus
+        //setRefrence("conaensus");
+    }else{
+        //clicked on sequence
+        QString newName = ui->nameList->sequenceAtPos(nameMapped);
+        if (!newName.isEmpty() && newName != snp.seqName){
+            setRefrence(newName);
+            emit si_refrenceSeqChanged(newName);
+        }        
+    }
+}
+
+void MSAEditor::setRefrence( QString ref ){
+    snp.seqName = ref;
+    emit si_refrenceSeqChanged(ref);
+    //REDRAW OTHER WIDGETS
+}
+
+void MSAEditor::buildTree() {
+    sl_buildTree();
+}
+
+void MSAEditor::addExistingTree() {
+    
+}
+
 //////////////////////////////////////////////////////////////////////////
-MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), offsetsView(NULL), statusWidget(NULL), collapsibleMode(false) {
+MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
+: editor(_editor), seqArea(NULL), offsetsView(NULL), statusWidget(NULL), collapsibleMode(false), multiTreeViewer(NULL), similarityStatistics(NULL) {
     undoFWK = new MSAEditorUndoFramework(this, editor->getMSAObject());
     collapseModel = new MSACollapsibleItemModel(this);
 
@@ -609,9 +665,10 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), of
 
     setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::MULTIPLE_ALIGNMENT).icon);
 
-    QWidget *seqAreaContainer, *nameAreaContainer, *label;
+    QWidget *label;
     GScrollBar* shBar = new GScrollBar(Qt::Horizontal);
     QScrollBar* nhBar = new QScrollBar(Qt::Horizontal);
+    QScrollBar* dhBar = new QScrollBar(Qt::Horizontal);
     GScrollBar* cvBar = new GScrollBar(Qt::Vertical);
 
     seqArea = new MSAEditorSequenceArea(this, shBar, cvBar);
@@ -653,17 +710,8 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), of
     nameAreaContainer = new QWidget();
     nameAreaContainer->setLayout(nameAreaLayout);
 
-    splitter = new QSplitter(Qt::Horizontal);
-    splitter->addWidget(nameAreaContainer);
-    splitter->addWidget(seqAreaContainer);
-    splitter->setStretchFactor(0, 0);
-    splitter->setStretchFactor(1, 0);
-    splitter->setStretchFactor(2, 1);
-    //TODO: make initial namelist size depend on font
-    int baseSize = splitter->width();
-    int nameListSize = baseSize / 5;
-    splitter->setSizes(QList<int>()<< nameListSize << baseSize - nameListSize); 
-    splitter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    view.addObject(nameAreaContainer, 0, 0.1);
+    view.addObject(seqAreaContainer, 1, 3);
 
     label = createLabelWidget();
     label->setMinimumHeight(consArea->height());
@@ -672,7 +720,7 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), of
     QGridLayout *mainLayout = new QGridLayout();
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
-    mainLayout->addWidget(splitter, 0, 0, 2, 1);
+    mainLayout->addWidget(view.getSpliter(), 0, 0, 2, 1);
     mainLayout->addWidget(cvBar, 1, 1);
     mainLayout->addWidget(label, 0, 1);
     mainLayout->addWidget(statusWidget, 2, 0, 1, 2);
@@ -683,7 +731,7 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor): editor(_editor), seqArea(NULL), of
     connect(collapseModel, SIGNAL(toggled()), offsetsView, SLOT(sl_modelChanged()));
 }
 
-QWidget* MSAEditorUI::createLabelWidget(const QString& text, Qt::Alignment ali) const {
+QWidget* MSAEditorUI::createLabelWidget(const QString& text, Qt::Alignment ali){
     return new MSALabelWidget(this, text, ali);
 }
 
@@ -700,7 +748,7 @@ QAction* MSAEditorUI::getRedoAction() const {
 }
 
 void MSAEditorUI::sl_saveScreenshot(){
-    QRect screenRect = splitter->geometry();
+    QRect screenRect = view.getSpliter()->geometry();
     screenRect.setBottom(seqArea->geometry().bottom());
     ExportImageDialog dialog(this, screenRect);
     dialog.exec();
@@ -730,45 +778,213 @@ void MSAEditorUI::sl_saveSvgImage() {
     painter.end();
 
 }
-
-MSALabelWidget::MSALabelWidget(const MSAEditorUI* _ui, const QString & _t, Qt::Alignment _a) 
-: ui(_ui), text(_t), ali(_a)
-{
-    connect(ui->getEditor(), SIGNAL(si_zoomOperationPerformed(bool)), SLOT(sl_fontChanged()));
+void MSAEditorUI::sl_onTabsCountChanged(int curTabsNumber) {
+    if(curTabsNumber < 1) {
+        view.removeObject(multiTreeViewer);
+        delete multiTreeViewer;
+        multiTreeViewer = NULL;
+        emit si_hideTreeOP();
+    }
 }
 
-void MSALabelWidget::paintEvent(QPaintEvent *) {
+void MSAEditorUI::createDistanceColumn(MSADistanceMatrix* algo )
+{
+    //connect(nameList, SIGNAL(si_sequenceNameChanged(QString, QString)), algo, SLOT(sl_onSequenceNameChanged(QString, QString)));
+
+    dataList->setAlgorithm(algo);
+    dataList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+    MSAEditorAlignmentDependentWidget* statisticsWidget = new MSAEditorAlignmentDependentWidget(dataList);
+
+    view.addObject(nameAreaContainer, statisticsWidget, 0.1, 1);
+}
+
+void MSAEditorUI::addTreeView(GObjectViewWindow* treeView) {
+    if(NULL == multiTreeViewer) {
+        multiTreeViewer = new MSAEditorMultiTreeViewer(tr("Tree view"), editor);
+        view.addObject(nameAreaContainer, multiTreeViewer, 0.35);
+        multiTreeViewer->addTreeView(treeView);
+        emit si_showTreeOP();
+        connect(multiTreeViewer, SIGNAL(si_tabsCountChanged(int)), SLOT(sl_onTabsCountChanged(int)));
+    }
+    else {
+        multiTreeViewer->addTreeView(treeView);
+    }
+}
+
+void MSAEditorUI::setSimilaritySettings( const SimilarityStatisticsSettings* settings ) {
+    similarityStatistics->setSettings(settings);
+}
+
+void MSAEditorUI::showSimilarity() {
+    if(NULL == similarityStatistics) {
+        SimilarityStatisticsSettings settings;
+        settings.ma = editor->getMSAObject();
+        settings.algoName = AppContext::getMSADistanceAlgorithmRegistry()->getAlgorithmIds().at(0);
+        settings.ui = this;
+
+        dataList = new MSAEditorSimilarityColumn(this, new QScrollBar(Qt::Horizontal), &settings);
+        dataList->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+        similarityStatistics = new MSAEditorAlignmentDependentWidget(dataList);
+
+        view.addObject(nameAreaContainer, similarityStatistics, 0.1, 1);
+    }
+    else {
+        similarityStatistics->show();
+    }
+
+}
+
+void MSAEditorUI::hideSimilarity() {
+    if(NULL != similarityStatistics) {
+        similarityStatistics->hide();
+    }
+}
+
+MSAEditorTreeViewer* MSAEditorUI::getCurrentTree() const
+{
+    if(NULL == multiTreeViewer) {
+        return NULL;
+    }
+    GObjectViewWindow* page = qobject_cast<GObjectViewWindow*>(multiTreeViewer->getCurrentWidget());
+    if(NULL == page) {
+        return NULL;
+    }
+    return qobject_cast<MSAEditorTreeViewer*>(page->getObjectView());
+}
+
+MSAWidget::MSAWidget(MSAEditorUI* _ui) 
+: ui(_ui), heightMargin(0) {
+    connect(ui->getEditor(), SIGNAL(si_zoomOperationPerformed(bool)), SLOT(sl_fontChanged()));
+    setMinimumHeight(ui->consArea->height() + heightMargin);
+}
+
+void MSAWidget::sl_fontChanged() {
+    update();
+    setMinimumHeight(ui->consArea->height() + heightMargin);
+}
+void MSAWidget::setHeightMargin(int _heightMargin) {
+    heightMargin = _heightMargin;
+    setMinimumHeight(ui->consArea->height() + heightMargin);
+}
+
+void MSAWidget::mousePressEvent( QMouseEvent * )
+{
+    ui->seqArea->cancelSelection();
+}
+void MSAWidget::paintEvent(QPaintEvent *) {
     QPainter p(this);
     p.fillRect(rect(), Qt::white);
+}
+
+MSALabelWidget::MSALabelWidget(MSAEditorUI* _ui, const QString & _t, Qt::Alignment _a) 
+: MSAWidget(_ui), text(_t), ali(_a)
+{
+}
+
+
+void MSALabelWidget::paintEvent(QPaintEvent * e) {
+    MSAWidget::paintEvent(e);
+    QPainter p(this);
     if (!text.isEmpty()) {
-        p.setFont(ui->getEditor()->getFont());
+        p.setFont(getMsaEditorFont());
         p.drawText(rect(), text, ali);
     }
 }
 
-void MSALabelWidget::sl_fontChanged() {
-    update();
-    setMinimumHeight(ui->consArea->height());
+SinchronizedObjectView::SinchronizedObjectView() 
+{
+    spliter = new QSplitter(Qt::Horizontal);
+}
+SinchronizedObjectView::SinchronizedObjectView(QSplitter *_spliter)
+: spliter(_spliter)
+{
 }
 
-void MSALabelWidget::mousePressEvent( QMouseEvent * e )
-{
-    ui->seqArea->cancelSelection();
+QSplitter* SinchronizedObjectView::getSpliter() {
+    return spliter;
+}
+
+void MSALabelWidget::mousePressEvent( QMouseEvent * e ){
+    ui->getSequenceArea()->cancelSelection();
     QMouseEvent eventForSequenceArea(e->type(), QPoint(e->x(), 0), e->globalPos(), e->button(), e->buttons(), e->modifiers());
-    QApplication::instance()->notify(ui->nameList, &eventForSequenceArea);
+    QApplication::instance()->notify(ui->getEditorNameList(), &eventForSequenceArea);
 }
 
 void MSALabelWidget::mouseReleaseEvent( QMouseEvent * e )
 {
     QMouseEvent eventForSequenceArea(e->type(), QPoint(e->x(), e->y() - height()), e->globalPos(), e->button(), e->buttons(), e->modifiers());
-    QApplication::instance()->notify(ui->nameList, &eventForSequenceArea);
+    QApplication::instance()->notify(ui->getEditorNameList(), &eventForSequenceArea);
+}
+
+void SinchronizedObjectView::addObject( QWidget *obj, int index, qreal coef)
+{
+    SAFE_POINT(coef >= 0, QString("Incorrect parameters were passed to SinchronizedObjectView::addObject: coef < 0"),);
+    //if(!objects.isEmpty()) {
+    //    if(objects.contains(obj)) {
+    //        return;
+    //    }
+    //    foreach(QWidget *curObj, objects) {
+    //        bool res1 = connect(obj,     SIGNAL(si_selectionChanged(const QList<QString>&)), curObj, SLOT(sl_selectionChanged(const QList<QString>&)));
+    //        bool res2 = connect(obj,    SIGNAL(si_aligmentChanged(const QList<QString>&)),   curObj, SLOT(sl_aligmentChanged(const QList<QString>&)));
+    //        bool res3 = connect(obj,    SIGNAL(si_zoomChanged(double)),                      curObj, SLOT(sl_zoomChanged(double)));
+    //        bool res4 = connect(curObj, SIGNAL(si_selectionChanged(const QList<QString>&)),  obj,    SLOT(sl_selectionChanged(const QList<QString>&)));
+    //        bool res5 = connect(curObj, SIGNAL(si_aligmentChanged(const QList<QString>&)),   obj,    SLOT(sl_aligmentChanged(const QList<QString>&)));
+    //        bool res6 = connect(curObj, SIGNAL(sl_zoomChanged(double)),                      obj,    SLOT(si_zoomChanged(double)));
+    //    }
+    //}
+    objects.append(obj);
+    int baseSize = spliter->width();
+    widgetSizes.insert(index, qRound(coef * baseSize));
+    int widgetsWidth = 0;
+    foreach(int curSize, widgetSizes) {
+        widgetsWidth += curSize;
+    }
+    for(int i = 0; i < widgetSizes.size(); i++) {
+        widgetSizes[i] = widgetSizes[i] * baseSize / widgetsWidth;
+    }
+    spliter->insertWidget(index, obj);
+    spliter->setSizes(widgetSizes);
+}
+void SinchronizedObjectView::addObject(QWidget *neighboringWidget, QWidget *obj, qreal coef, int neighboringShift) {
+    int index = spliter->indexOf(neighboringWidget) + neighboringShift;
+    addObject(obj, index, coef);
 }
 
 void MSALabelWidget::mouseMoveEvent( QMouseEvent * e )
 {
     QMouseEvent eventForSequenceArea(e->type(), QPoint(e->x(), e->y() - height()), e->globalPos(), e->button(), e->buttons(), e->modifiers());
-    QApplication::instance()->notify(ui->nameList, &eventForSequenceArea);
+    QApplication::instance()->notify(ui->getEditorNameList(), &eventForSequenceArea);
+}
+
+void SinchronizedObjectView::removeObject( QWidget *obj )
+{
+    int widgetsWidth = 0;
+    int baseSize = spliter->width();
+    int index = spliter->indexOf(obj);
+    if(index < 0) {
+        return;
+    }
+    widgetSizes.removeAt(index);
+
+    foreach(int curSize, widgetSizes) {
+        widgetsWidth += curSize;
+    }
+    for(int i = 0; i < widgetSizes.size(); i++) {
+        widgetSizes[i] = widgetSizes[i] * baseSize / widgetsWidth;
+        int curSize = widgetSizes[i];
+        int a = 0;
+    }
+    foreach(QWidget *curObj, objects) {
+        disconnect(obj,     SIGNAL(si_selectionChanged(const QList<QString>&)), curObj, SLOT(sl_selectionChanged(const QList<QString>&)));
+        disconnect(obj,    SIGNAL(si_aligmentChanged(const QList<QString>&)),   curObj, SLOT(sl_aligmentChanged(const QList<QString>&)));
+        disconnect(obj,    SIGNAL(si_zoomChanged(double)),                      curObj, SLOT(sl_zoomChanged(double)));
+        disconnect(curObj, SIGNAL(si_selectionChanged(const QList<QString>&)),  obj,    SLOT(sl_selectionChanged(const QList<QString>&)));
+        disconnect(curObj, SIGNAL(si_aligmentChanged(const QList<QString>&)),   obj,    SLOT(sl_aligmentChanged(const QList<QString>&)));
+        disconnect(curObj, SIGNAL(sl_zoomChanged(double)),                      obj,    SLOT(si_zoomChanged(double)));
+    }
+    objects.removeAll(obj);
+    obj->setParent(NULL);
+    spliter->setSizes(widgetSizes);
 }
 
 }//namespace
-

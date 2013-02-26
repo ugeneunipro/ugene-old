@@ -144,8 +144,18 @@ const int GSequenceGraphDrawer::UNKNOWN_VAL = -1;
 
 GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 
                                            QMap<QString,QColor> colors)
-: QObject(v), view(v), lineColors(colors), wdata(wd)
+: QObject(v), view(v), lineColors(colors), wdata(wd), globalMin(0), globalMax(0)
 {
+    connect(v, SIGNAL(si_frameRangeChanged(GSequenceGraphData*, const QRect&)),
+            this, SLOT(sl_frameRangeChanged(GSequenceGraphData*, const QRect&)));
+    connect(v, SIGNAL(si_visibleRangeChanged()),
+            this, SLOT(sl_labelAdded()));
+    connect(v, SIGNAL(si_labelAdded(GSequenceGraphData*, GraphLabel*, const QRect&)),
+            this, SLOT(sl_labelAdded(GSequenceGraphData*, GraphLabel*, const QRect&)));
+    connect(v, SIGNAL(si_labelMoved(GSequenceGraphData*, GraphLabel*, const QRect&)),
+            this, SLOT(sl_labelMoved(GSequenceGraphData*, GraphLabel*, const QRect&)));
+    connect(v, SIGNAL(si_labelsColorChange(GSequenceGraphData*)),
+            this, SLOT(sl_labelsColorChange(GSequenceGraphData*)));
     defFont = new QFont("Arial", 8);
     if (colors.isEmpty()) {
         lineColors.insert(DEFAULT_COLOR, Qt::black);
@@ -182,6 +192,36 @@ void GSequenceGraphDrawer::draw(QPainter& p, QList<GSequenceGraphData*> graphs, 
          QRect minTextRect(rect.x(), rect.bottom()-12, rect.width(), 12);
          p.drawText(minTextRect, Qt::AlignRight, QString::number((double) globalMin, 'g', 4));
      }
+}
+void GSequenceGraphDrawer::sl_frameRangeChanged(GSequenceGraphData *graph, const QRect &rect)
+{
+    foreach(GraphLabel *label, graph->graphLabels.getLabels()) {
+        int res = updateStaticLabels(graph, label, rect);
+        if(0 == res)
+            label->show();
+    }
+}
+void GSequenceGraphDrawer::sl_labelAdded(GSequenceGraphData *graph, GraphLabel *label, const QRect &rect)
+{
+    updateStaticLabels(graph, label, rect);
+}
+void  GSequenceGraphDrawer::sl_labelMoved(GSequenceGraphData *graph, GraphLabel *label, const QRect &rect)
+{
+    updateMovingLabels(graph, label, rect);
+}
+void  GSequenceGraphDrawer::sl_labelsColorChange(GSequenceGraphData *graph)
+{
+    QColor color;
+
+    if  (lineColors.contains(graph->graphName))
+        color = lineColors.value(graph->graphName);
+    else
+        color = lineColors.value(DEFAULT_COLOR);
+
+    foreach(GraphLabel *label, graph->graphLabels.getLabels())
+        label->setColor(color, color);
+
+    graph->graphLabels.getMovingLabel().setColor(color, Qt::red);
 }
 
 
@@ -225,7 +265,7 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
         ////////cutoff off
         for (int i = 0, n = nPoints; i < n; i++) {
             float fy1 = points.firstPoints[i];
-            if (fy1 == UNKNOWN_VAL) {
+            if (true == isUnknownValue(fy1)) {
                 continue;
             }
             int dy1 = qRound((fy1 - min) * kh);
@@ -240,7 +280,7 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
             prevX = x;
             if (points.useIntervals) {
                 float fy2 = points.secondPoints[i];
-                if (fy2 == UNKNOWN_VAL) {
+                if (true == isUnknownValue(fy2)) {
                     continue;
                 }
                 int dy2 = qRound((fy2 - min) * kh);
@@ -268,7 +308,7 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
                 fy = points.firstPoints[i];
                 rp = false;
                 lp = false;
-                if (fy == UNKNOWN_VAL) {
+                if (true == isUnknownValue(fy)) {
                     continue;
                 }
                 if (fy >= fymax) {
@@ -306,11 +346,11 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
                 fy = points.firstPoints[i], fy2 = points.secondPoints[i];
                 rp = false;
                 lp = false;
-                if (fy == UNKNOWN_VAL) {
+                if (true == isUnknownValue(fy)) {
                     continue;
                 }
                 
-                assert(fy2 != UNKNOWN_VAL);
+                assert(false == isUnknownValue(fy2));
                 
                 if (fy2 >= fymax) {
                     fy2 = fymax;
@@ -360,9 +400,286 @@ void GSequenceGraphDrawer::drawGraph( QPainter& p, GSequenceGraphData* d, const 
 
         }
     }
+}
+const int mLabelCoordY = 20;
 
+void GSequenceGraphDrawer::selectExtremumPoints(GSequenceGraphData *graph, const QRect &graphRect, int windowSize, const U2Region &visibleRange)
+{
+    qint64 sequenceLength = view->getSequenceLength();
+    int startPos = visibleRange.startPos;
+    int endPos = visibleRange.endPos();
+    int maxValue, minValue;
+    int posOfMax, posOfMin;
+
+    PairVector points;
+    if(sequenceLength <= 0)
+        return;
+    calculatePoints(graph, points, globalMin, globalMax, sequenceLength);
+
+    int pos = startPos;
+    QVector<float> &firstPoints = points.firstPoints;
+    endPos = qMin(endPos, firstPoints.size() - 1);
+    while(pos < endPos) {
+        maxValue = firstPoints.at(pos);
+        minValue = globalMax*2;
+        posOfMax = pos;
+        posOfMin = 0;
+        for(int i = 0; i < windowSize; i++, pos++) {
+            if(pos >= endPos)
+                break;
+            if(true == isUnknownValue(firstPoints.at(pos)))
+                continue;
+            if(maxValue < firstPoints.at(pos)) {
+                maxValue = firstPoints.at(pos);
+                posOfMax = pos;
+            }
+            if(minValue > firstPoints.at(pos)) {
+                minValue = firstPoints.at(pos);
+                posOfMin = pos;
+            }
+        }
+        GraphLabel* maxLabel = new GraphLabel(posOfMax, QRect(0,0,0,0), "", view);
+        maxLabel->show();
+        graph->graphLabels.addLabel(maxLabel);
+        updateStaticLabels(graph, maxLabel, graphRect);
+        GraphLabel* minLabel = new GraphLabel(posOfMin, QRect(0,0,0,0), "", view);
+        minLabel->show();
+        graph->graphLabels.addLabel(minLabel);
+        updateStaticLabels(graph, minLabel, graphRect);
+    }
+}
+int GSequenceGraphDrawer::updateStaticLabels(GSequenceGraphData *graph, GraphLabel *label, const QRect &rect)
+{
+    int nPoints = rect.width();
+    PairVector points;
+    if(nPoints <= 0)
+        return 1;
+    calculatePoints(graph, points, globalMin, globalMax, nPoints);
+
+    QColor color;
+    if  (lineColors.contains(graph->graphName))
+        color = lineColors.value(graph->graphName);
+    else
+        color = lineColors.value(DEFAULT_COLOR);
+    label->setColor(color, color);
+
+    qint64 sequenceLength = view->getSequenceLength();
+    int position = label->getPosition() * nPoints / sequenceLength;
+    if(position < 0 || position >= nPoints)
+        return 1;
+
+    int errorCode = calculateLabelData(rect, points, label, color);
+    if(0 != errorCode)
+        return errorCode;
+
+    QRectF boundingRect = label->getHintRect();
+
+    int lineWidth = label->getTextLabel().lineWidth();
+    int height = qRound(boundingRect.height()) + 2*lineWidth;
+    int width = qRound(boundingRect.width()) + 2*lineWidth;
+
+    int x = label->getCoord().x();
+    int y = label->getCoord().y();
+
+    if(x + width/2 - 1 > nPoints - 2)
+        x = nPoints - width - 2;
+    else
+        x = (x > width/2 + 1) ? (x - width/2 - 1) : 2;
+
+    if(rect.top() > y - label->getSize() - height)
+        label->setHintRect(QRect(x, y + label->getSize() + 1, width, height));
+    else
+        label->setHintRect(QRect(x, y - label->getSize() - height, width, height));
+
+    if(NULL != label->attachedLabel)
+        calculatePositionOfLabel(label, nPoints);
+
+    return 0;
+}
+void GSequenceGraphDrawer::calculatePositionOfLabel(GraphLabel *label, int nPoints)
+{
+    GraphLabel *attachedLabel = label;
+
+    int groupWidth = 0;
+    while(NULL != attachedLabel) {
+        groupWidth += attachedLabel->getHintRect().width();
+        attachedLabel = attachedLabel->attachedLabel;
+    }
+    int x = label->getCoord().x();
+    if(x + groupWidth/2 - 1 > nPoints)
+        x = nPoints - groupWidth/2;
+    else
+        x = (x > groupWidth/2) ? x : groupWidth/2;
+
+    attachedLabel = label;
+    while(NULL != attachedLabel) {
+        QRect hintRect = attachedLabel->getHintRect();
+        groupWidth -= 2*hintRect.width();
+        int shift = x + groupWidth/2 - hintRect.left();
+        hintRect.adjust(shift, 0, shift, 0);
+        attachedLabel->setHintRect(hintRect);
+        attachedLabel = attachedLabel->attachedLabel;
+    }
 }
 
+void GSequenceGraphDrawer::updateMovingLabels(GSequenceGraphData *graph, GraphLabel *label, const QRect &rect)
+{
+    int errorCode = updateStaticLabels(graph, label, rect);
+    if(0 != errorCode)
+        return;
+    QRect textRect = label->getHintRect();
+    int height = textRect.height();
+    if(mLabelCoordY + height + label->getSize() > label->getCoord().y()) {
+        textRect.setTop(label->getCoord().y() - height - label->getSize()/2 - 4);
+        textRect.setBottom(label->getCoord().y() - label->getSize()/2 - 4);
+    }
+    else {
+        textRect.setTop(mLabelCoordY);
+        textRect.setBottom(mLabelCoordY + height);
+    }
+
+    label->setColor(label->getFillingColor(), Qt::red);
+
+    label->setHintRect(textRect);
+}
+
+int GSequenceGraphDrawer::calculateLabelData(const QRect &rect, const PairVector &points, GraphLabel *label, QColor textColor)
+{
+    int graphHeight = rect.bottom() - rect.top() - 2;
+    const U2Region& visibleRange = view->getVisibleRange();
+    int xcoordInRect;
+    if(visibleRange.contains(label->getPosition()))
+        xcoordInRect = qRound((label->getPosition() - visibleRange.startPos) * rect.width() / visibleRange.length);
+    else {
+        label->hide();
+        return 1;
+    }
+    if(xcoordInRect >= points.firstPoints.size()) {
+        label->hide();
+        return 1;
+    }
+    int nPoints = rect.width();
+    float value = calculateLabelValue(nPoints, points, label, xcoordInRect);
+    if(2*globalMax == value)
+        return 1;
+    int ycoordInRect;
+    QString text;
+    float heightScalingFactor = (globalMin == globalMax) ? 1 : graphHeight / (globalMax - globalMin);
+    if(points.useIntervals) {
+        float maxValue = points.firstPoints.at(xcoordInRect);
+        float minValue = points.secondPoints.at(xcoordInRect);
+        int pos = qRound(label->getPosition());
+        if(maxValue != minValue)
+            text = GSequenceGraphView::tr("[%2, max:%3, min:%4]").arg(QString::number(pos)).arg(QString::number(maxValue)).arg(QString::number(minValue));
+        else
+            text = GSequenceGraphView::tr("[%2, %3]").arg(QString::number(pos)).arg(QString::number(maxValue));
+    
+        float avgValue = (maxValue + minValue) / 2;
+        label->setValue(avgValue);
+        ycoordInRect = qRound((avgValue - globalMin) * heightScalingFactor);
+    }
+    else
+    {
+        int pos = qRound(label->getPosition());
+        text = GSequenceGraphView::tr("[%2, %3]").arg(QString::number(pos)).arg(QString::number(value));
+        label->setValue(value);
+        ycoordInRect = qRound((value - globalMin) * heightScalingFactor);
+    }
+
+    QPoint labelCoord(xcoordInRect, rect.bottom() - 1 - ycoordInRect);
+    label->setCoord(labelCoord);
+    label->setHintText(text);
+    label->getTextLabel().adjustSize();
+    return 0;
+}
+float GSequenceGraphDrawer::calculateLabelValue(int nPoints, const PairVector &points, GraphLabel *label, int xcoordInRect)
+{
+    float value = points.firstPoints.at(xcoordInRect);
+    float prevValue = value;
+    int prevX;
+    for(prevX = xcoordInRect; true == isUnknownValue(prevValue); prevX--) {
+        if(prevX <= 0) {
+            label->hide();
+            return 2*globalMax;
+        }
+        prevValue = points.firstPoints.at(prevX);
+    }
+    float nextValue = points.firstPoints.at(xcoordInRect);
+    int   nextX;
+    for(nextX = xcoordInRect; true == isUnknownValue(nextValue); nextX++) {
+        if(nextX >= points.firstPoints.size()) {
+            label->hide();
+            return 2*globalMax;
+        }
+        nextValue = points.firstPoints.at(nextX);
+    }
+    if(prevX != nextX)
+        value = prevValue + (nextValue-prevValue)*(xcoordInRect - prevX)/(nextX-prevX);
+
+    const int comparisonWindowSize = 50;
+
+    int startPos = qMax(xcoordInRect, 0);
+    startPos = qMin(startPos, nPoints - comparisonWindowSize/2 - 1);
+    U2Region comparisonWindow(startPos, comparisonWindowSize/2);
+    bool isExtremum = isExtremumPoint(nPoints, points, value, comparisonWindow);
+    if(true == isExtremum)
+        label->mark();
+    else
+        label->unmark();
+
+    return value;
+}
+bool GSequenceGraphDrawer::isExtremumPoint(int npoints, const PairVector& points, float value, U2Region& comparisonWindow)
+{
+    int compareRes = -2;
+    int length = comparisonWindow.length;
+    int counter = 0;
+    const QVector<float> &firstPoints = points.firstPoints;
+    for(int x = comparisonWindow.startPos; counter <= length; x++)
+    {
+        if(x >= npoints - 2)
+            break;
+        if(true == isUnknownValue(firstPoints.at(x)))
+            continue;
+        counter++;
+        float comparedValue = firstPoints.at(x);
+        if(true == qFuzzyCompare(value, comparedValue)) {
+            if(0 == compareRes)
+                return false;
+            compareRes = 0;
+        }
+        else {
+            bool condition = value > comparedValue;
+            if((true == condition && compareRes == -1) || (false == condition && compareRes == 1))
+                return false;
+            compareRes = condition ? 1 : -1;
+        }
+    }
+    counter = 0;
+    for(int x = comparisonWindow.startPos; counter <= length; x--)
+    {
+        if(x <= 0)
+            break;
+        if(true == isUnknownValue(firstPoints.at(x)))
+            continue;
+        counter++;
+        float comparedValue = firstPoints.at(x);
+        if(true == qFuzzyCompare(value, comparedValue)) {
+            if(0 == compareRes)
+                return false;
+            compareRes = 0;
+        }
+        else {
+            bool condition = value > comparedValue;
+             if((true == condition && compareRes == -1) || (false == condition && compareRes == 1))
+                return false;
+            compareRes = condition ? 1 : -1;
+        }
+    }
+    if(0 == compareRes || -2 == compareRes)
+        return false;
+    return true;
+}
 
 static void align(int start, int end, int win, int step, int seqLen, int& alignedFirst, int& alignedLast) {
     int win2 = (win + 1) / 2;
@@ -442,7 +759,7 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
     // Calculate min-max values, ignore unknown values
     bool inited = false; min = 0; max = 0;
     foreach(float p, points.firstPoints) {
-        if (p == UNKNOWN_VAL) {
+        if (true == isUnknownValue(p)) {
             continue;
         }
         if (!inited) {
@@ -457,7 +774,7 @@ void GSequenceGraphDrawer::calculatePoints(GSequenceGraphData* d, PairVector& po
     // If interval based graph -> adjust min-max values with second graph data
     if (points.useIntervals)    {
         foreach(float p, points.secondPoints) {
-            if (p == UNKNOWN_VAL) {
+            if (true == isUnknownValue(p)) {
                 continue;
             }
             min = qMin(p, min);
@@ -571,14 +888,14 @@ void GSequenceGraphDrawer::calculateWithExpand(GSequenceGraphData* d, PairVector
         return;
     }
 
-    if (hasBeforeStep && res[0]!=UNKNOWN_VAL && res[1]!=UNKNOWN_VAL) {
+    if (hasBeforeStep && false == isUnknownValue(res[0]) && false == isUnknownValue(res[1])) {
         assert(firstBaseOffset > 0);
         float k = firstBaseOffset / (float)step;
         float val = res[1] + (res[0]-res[1])*k;
         points.firstPoints[0] = val;
     }
 
-    if (hasAfterStep && res[rn-1]!=UNKNOWN_VAL && res[rn]!=UNKNOWN_VAL) {
+    if (hasAfterStep && false == isUnknownValue(res[rn-1]) &&  false == isUnknownValue(res[rn])) {
         assert(lastBaseOffset > 0);
         float k = lastBaseOffset / (float)step;
         float val = res[rn-1] + (res[rn]-res[rn-1])*k;
@@ -599,7 +916,7 @@ void GSequenceGraphDrawer::showSettingsDialog() {
         commdata.max = dlg.getMinMaxSelector()->getMax();
         lineColors = dlg.getColors();
         view->update();
+        view->changeLabelsColor();
     }
 }
-
 } // namespace

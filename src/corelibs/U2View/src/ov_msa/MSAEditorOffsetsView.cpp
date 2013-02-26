@@ -23,6 +23,7 @@
 #include "MSAEditorBaseOffsetsCache.h"
 #include "MSAEditorSequenceArea.h"
 #include "MSAEditor.h"
+#include "MSAEditorNameList.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
@@ -67,6 +68,7 @@ MSAEditorOffsetsViewController::MSAEditorOffsetsViewController(QObject* p, MSAEd
     viewAction->setCheckable(true);
     viewAction->setChecked(showOffsets);
     connect(viewAction, SIGNAL(triggered(bool)), SLOT(sl_showOffsets(bool)));
+    connect(editor, SIGNAL(si_refrenceSeqChanged(const QString &)), SLOT(sl_refSeqChanged(const QString &)));
 
     updateOffsets();
 }
@@ -170,7 +172,7 @@ void MSAEditorOffsetsViewWidget::drawAll(QPainter& p) {
     int pos = showStartPos ? seqArea->getFirstVisibleBase() : seqArea->getLastVisibleBase(true, true);
 
     QVector<U2Region> visibleRows;
-    const MSAEditorUI* ui = editor->getUI();
+    MSAEditorUI* ui = editor->getUI();
     if (ui->isCollapsibleMode()) {
         MSACollapsibleItemModel* m = ui->getCollapseModel();
         int lastSeq = seqArea->getLastVisibleSequence(true);
@@ -179,7 +181,7 @@ void MSAEditorOffsetsViewWidget::drawAll(QPainter& p) {
         visibleRows.append(U2Region(startSeq, nSeqVisible));
     }
 
-    int i=0;
+    int i=0, refSeq = ui->getEditorNameList()->getRefSeqPos();
     qint64 numRows = (qint64)cache->getMSAObject()->getNumRows();
     foreach(const U2Region& r, visibleRows) {
         int end = qMin(r.endPos(), numRows);;
@@ -191,20 +193,33 @@ void MSAEditorOffsetsViewWidget::drawAll(QPainter& p) {
             if (showStartPos && offs == 0) {
                 p.setPen(Qt::black);
                 QRect lbr(OFFS_WIDGET_BORDER, yRange.startPos, lbw, yRange.length);
+                if(i == refSeq){
+                    drawRefSequence(p, lbr);
+                }
                 p.drawText(lbr, Qt::AlignCenter, "[");
             } else if (!showStartPos && offs == seqSize) {
                 p.setPen(Qt::black);
                 QRect rbr(w - OFFS_WIDGET_BORDER - rbw, yRange.startPos, rbw, yRange.length);
+                if(row == refSeq){
+                    drawRefSequence(p, rbr);
+                }
                 p.drawText(rbr, Qt::AlignCenter, "]");
                 offset = QString::number(offs);
             } else {
                 p.setPen(dg);
             }
             QRect tr(OFFS_WIDGET_BORDER + (showStartPos ? lbw : 0), yRange.startPos, w - 2 * OFFS_WIDGET_BORDER - (showStartPos ? lbw : rbw), yRange.length);
+            if(row == refSeq){
+                drawRefSequence(p, tr);
+            }
             p.drawText(tr, Qt::AlignRight | Qt::AlignVCenter, offset);
             i++;
         }
     }
+}
+
+void MSAEditorOffsetsViewWidget::drawRefSequence(QPainter &p, QRect r){
+    p.fillRect(r, QColor("#9999CC"));
 }
 
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>547</width>
-    <height>295</height>
+    <height>386</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,6 +58,13 @@
         </property>
         <property name="checked">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="groupStatisticsCheck">
+        <property name="text">
+         <string>Show group statistics of multiple alignment</string>
         </property>
        </widget>
       </item>
@@ -165,6 +172,20 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>saveBox</tabstop>
+  <tabstop>countsRB</tabstop>
+  <tabstop>percentsRB</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>groupStatisticsCheck</tabstop>
+  <tabstop>fileEdit</tabstop>
+  <tabstop>fileButton</tabstop>
+  <tabstop>htmlRB</tabstop>
+  <tabstop>csvRB</tabstop>
+  <tabstop>algoCombo</tabstop>
+  <tabstop>okButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

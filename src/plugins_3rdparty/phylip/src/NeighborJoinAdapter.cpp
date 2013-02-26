@@ -59,13 +59,13 @@ void createPhyTreeFromPhylipTree(const MAlignment &ma, node *p, double m, boolea
     if(p){
         if (p->tip) {
             if(bootstrap_repl != 0){
-                current->name = QString::fromAscii(p->nayme);
+                current->setName(QString::fromAscii(p->nayme));
             }else{
                 assert(p->index - 1 < ma.getNumRows());
-                current->name = ma.getRow(p->index - 1).getName();
+                current->setName(QString(ma.getRow(p->index - 1).getName()));
             }
         } else {
-            current->name = QString("node %1").arg(counter++);
+            current->setName(QString("node %1").arg(counter++));
             createPhyTreeFromPhylipTree(ma, p->next->back,  m, njoin, start, current, bootstrap_repl);
             createPhyTreeFromPhylipTree(ma, p->next->next->back, m, njoin, start, current, bootstrap_repl);
             if (p == start && njoin) {
@@ -78,12 +78,12 @@ void createPhyTreeFromPhylipTree(const MAlignment &ma, node *p, double m, boolea
         } else {
             if(bootstrap_repl != 0){
                 if(p->deltav == 0){
-                    PhyNode::addBranch(root, current, bootstrap_repl);
+                    PhyTreeData::addBranch(root, current, bootstrap_repl);
                 }else{
-                    PhyNode::addBranch(root, current, p->deltav );
+                    PhyTreeData::addBranch(root, current, p->deltav );
                 }
             }else{
-                PhyNode::addBranch(root, current, p->v);
+                PhyTreeData::addBranch(root, current, p->v);
             }
             
         }
@@ -222,7 +222,7 @@ void NeighborJoinCalculateTreeTask::run(){
             consens_free_res();
 
             PhyTreeData* data = new PhyTreeData();
-            data->rootNode = rootPhy;
+            data->setRootNode(rootPhy);
 
             phyTree = data;
 
@@ -279,7 +279,7 @@ void NeighborJoinCalculateTreeTask::run(){
             neighbour_free_resources();
 
             PhyTreeData* data = new PhyTreeData();
-            data->rootNode = root;
+            data->setRootNode(root);
 
             phyTree = data;
         } catch (const char* message) {

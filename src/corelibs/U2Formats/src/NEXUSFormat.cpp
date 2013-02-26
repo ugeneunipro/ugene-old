@@ -550,7 +550,7 @@ bool NEXUSParser::readTreesContents(Context&) {
                     }
 
                     PhyNode *top = new PhyNode();
-                    PhyBranch *br = nodeStack.top()->addBranch(nodeStack.top(), top, 1);
+                    PhyBranch *br = PhyTreeData::addBranch(nodeStack.top(), top, 1);
                     nodeStack.push(top);
                     branchStack.push(br);
                 } else if (tok == "," || tok == ")") {
@@ -591,7 +591,7 @@ bool NEXUSParser::readTreesContents(Context&) {
                     }
 
                     name.replace('_', ' ');
-                    nodeStack.top()->name = name;
+                    nodeStack.top()->setName(name);
                     branchStack.top()->distance = weight;
 
                     nodeStack.pop();
@@ -599,7 +599,7 @@ bool NEXUSParser::readTreesContents(Context&) {
 
                     if (tok == ",") {
                         PhyNode *top = new PhyNode();
-                        PhyBranch *br = nodeStack.top()->addBranch(nodeStack.top(), top, 1);
+                        PhyBranch *br = PhyTreeData::addBranch(nodeStack.top(), top, 1);
                         nodeStack.push(top);
                         branchStack.push(br);
                     }
@@ -623,7 +623,7 @@ bool NEXUSParser::readTreesContents(Context&) {
                     }
 
                     name.replace('_', ' ');
-                    nodeStack.top()->name = name;
+                    nodeStack.top()->setName(name);
                     break;
                 } else {
                     assert(0 && "invalid state: all non ops symbols must go to acc");
@@ -648,7 +648,7 @@ bool NEXUSParser::readTreesContents(Context&) {
 
                 // build tree object
                 PhyTree tree(new PhyTreeData());
-                tree->rootNode = nodeStack.pop();
+                tree->setRootNode(nodeStack.pop());
                 addObject(new PhyTreeObject(tree, treeName));
             }
         } else if (cmd == END) {
@@ -792,12 +792,12 @@ void writeMAligment(const MAlignment &ma, IOAdapter *io, U2OpStatus&) {
     line.clear();
 }
 
-static void writeNode(PhyNode* node, IOAdapter* io) {
-    int branches = node->branches.size();
+static void writeNode(const PhyNode* node, IOAdapter* io) {
+    int branches = node->getNumberOfBranches();
 
-    if (branches == 1 && (node->name=="" || node->name=="ROOT")) {
-        assert(node != node->branches[0]->node2);
-        writeNode(node->branches[0]->node2, io);
+    if (branches == 1 && (node->getName()=="" || node->getName()=="ROOT")) {
+        assert(node != node->getSecondNodeOfBranch(0));
+        writeNode(node->getSecondNodeOfBranch(0), io);
         return;
     }
 
@@ -805,25 +805,25 @@ static void writeNode(PhyNode* node, IOAdapter* io) {
         io->writeBlock("(", 1);
         bool first = true;
         for (int i = 0; i < branches; ++i) {
-            if (node->branches[i]->node2 != node) {
+            if (node->getSecondNodeOfBranch(i) != node) {
                 if (first) {
                     first = false;
                 } else {
                     io->writeBlock(",", 1);
                 }
-                writeNode(node->branches[i]->node2, io);
+                writeNode(node->getSecondNodeOfBranch(i), io);
                 io->writeBlock(":", 1);
-                io->writeBlock(QByteArray::number(node->branches[i]->distance));
+                io->writeBlock(QByteArray::number(node->getBranchesDistance(i)));
             }
         }
         io->writeBlock(")", 1);
     } else {
-        bool quotes = node->name.contains(QRegExp("\\s"));
+        bool quotes = node->getName().contains(QRegExp("\\s"));
 
         if (quotes) {
             io->writeBlock("'", 1);
         }
-        io->writeBlock(node->name.toAscii());
+        io->writeBlock(node->getName().toAscii());
         if (quotes) {
             io->writeBlock("'", 1);
         }
@@ -846,7 +846,7 @@ void writePhyTree(const PhyTree &pt, QString name, IOAdapter *io, U2OpStatus&)
     io->writeBlock(line);
     line.clear();
 
-    writeNode(pt->rootNode, io);
+    writeNode(pt->getRootNode(), io);
     io->writeBlock(";\n", 2);
 
     tabs.chop(tab.size());

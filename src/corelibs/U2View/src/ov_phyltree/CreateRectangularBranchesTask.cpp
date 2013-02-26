@@ -30,23 +30,23 @@ namespace U2 {
 
 CreateRectangularBranchesTask::CreateRectangularBranchesTask(PhyNode *n): size(0), current(0), node(n) {}
 
-GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(PhyNode *node) {
+GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const PhyNode *node) {
     if (isCanceled() || stateInfo.hasError())
         return NULL;
 
 
-    int branches = node->branches.size();
-    if (branches == 1 && (node->name=="" || node->name=="ROOT")) {
-        assert(node != node->branches[0]->node2);
-        return getBranch(node->branches[0]->node2);
+    int branches = node->getNumberOfBranches();
+    if (branches == 1 && (node->getName()=="" || node->getName()=="ROOT")) {
+        assert(node != node->getSecondNodeOfBranch(0));
+        return getBranch(node->getSecondNodeOfBranch(0));
     }
     if (branches > 1) {
         stateInfo.progress = 100 * ++size / 100; // <- number of sequences
         QList<GraphicsRectangularBranchItem*> items;
         int ind = -1;
         for (int i = 0; i < branches; ++i) {
-            if (node->branches[i]->node2 != node) {
-                GraphicsRectangularBranchItem *item = getBranch(node->branches[i]->node2);
+            if (node->getSecondNodeOfBranch(i) != node) {
+                GraphicsRectangularBranchItem *item = getBranch(node->getSecondNodeOfBranch(i));
                 items.append(item);
             } else {
                 items.append(NULL);
@@ -59,7 +59,7 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(PhyNode 
             item = new GraphicsRectangularBranchItem();
         }
         else {
-            item = new GraphicsRectangularBranchItem(node->branches[ind]->distance);
+            item = new GraphicsRectangularBranchItem(node->getBranchesDistance(ind));
             item->setPhyBranch(node->branches[ind]);
         }
         int size = items.size();
@@ -88,7 +88,7 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(PhyNode 
                 if (items[i] == NULL) {
                     continue;
                 }
-                qreal dist = qAbs(node->branches[i]->distance);
+                qreal dist = qAbs(node->getBranchesDistance(i));
                 if (minDistance > -1) {
                     minDistance = qMin(minDistance, dist);
                 } else {
@@ -108,10 +108,10 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(PhyNode 
         int y = (current++ + 0.5) * GraphicsRectangularBranchItem::DEFAULT_HEIGHT;
         GraphicsRectangularBranchItem *item = NULL;
         if(branches != 1){
-            item = new GraphicsRectangularBranchItem(0, y, node->name);
+            item = new GraphicsRectangularBranchItem(0, y, node->getName());
         }else{
-            item = new GraphicsRectangularBranchItem(0, y, node->name, node->branches[0]->distance);
-            item->setPhyBranch(node->branches[0]);
+            item = new GraphicsRectangularBranchItem(0, y, node->getName(), node->getBranchesDistance(0));
+            item->setPhyBranch(node->branches.at(0));
         }
         
         return item;

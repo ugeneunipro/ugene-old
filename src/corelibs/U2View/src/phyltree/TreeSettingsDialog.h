@@ -49,13 +49,13 @@ public:
     virtual void accept();
     TreeSettings getSettings() const;
 
+    static QString treePhylogramText() { return tr("Phylogram"); }
+    static QString treeCladogramText() { return tr("Cladogram"); }
+
 protected slots:
    // void sl_colorButton();
 
 private:
-    static QString treePhylogramText() { return tr("Phylogram"); }
-    static QString treeCladogramText() { return tr("Cladogram"); }
-
 
     TreeSettings settings, changedSettings;
 

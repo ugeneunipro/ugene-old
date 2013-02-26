@@ -23,27 +23,44 @@
 #define _U2_SMITH_WATERMAN_ALG_IMPL_H_
 
 #include <U2Algorithm/SmithWatermanTaskFactory.h>
+#include <U2Algorithm/PairwiseAlignmentTask.h>
+#include <U2Algorithm/PairwiseAlignmentTask.h>
 #include <U2Algorithm/SmithWatermanSettings.h>
 #include <U2Core/SequenceWalkerTask.h>
 #include <U2Core/Task.h>
 
 #include "SWAlgorithmTask.h"
 
+#include <QtCore/QByteArray>
+
 
 namespace U2 {
 
-class SWTaskFactory: public SmithWatermanTaskFactory {
+class PairwiseAlignmentTask;
+
+class SWTaskFactory: public SmithWatermanTaskFactory {          //for ADV search only
 public:
     SWTaskFactory(SW_AlgType _algType);
     virtual ~SWTaskFactory();
     virtual Task* getTaskInstance(const SmithWatermanSettings& config, const QString& taskName) const;
 
 private:
-    bool isValidParameters(const SmithWatermanSettings& sWatermanConfig,  SequenceWalkerSubtask* t) const;
+    bool isValidParameters(const SmithWatermanSettings& sWatermanConfig,  SequenceWalkerSubtask* t) const;      //not realized
     SW_AlgType algType;
 
 };
 
+class PairwiseAlignmentSmithWatermanTaskFactory : public PairwiseAlignmentTaskFactory {           //for pairwise alignment only
+public:
+    PairwiseAlignmentSmithWatermanTaskFactory(SW_AlgType _algType);
+    virtual ~PairwiseAlignmentSmithWatermanTaskFactory();
+
+    virtual PairwiseAlignmentTask* getTaskInstance(PairwiseAlignmentTaskSettings* settings) const;
+
+private:
+    SW_AlgType algType;
+};
+
 } // namespace
 
-#endif
+#endif // _U2_SMITH_WATERMAN_ALG_IMPL_H_

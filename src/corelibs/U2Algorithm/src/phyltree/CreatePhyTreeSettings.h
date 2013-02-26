@@ -34,6 +34,7 @@ public:
     CreatePhyTreeSettings();
     QString algorithmId;
     QString matrixId;
+    bool    displayWithAlignmentEditor;
     GUrl    fileUrl;
     bool useGammaDistributionRates;
     double alphaFactor;

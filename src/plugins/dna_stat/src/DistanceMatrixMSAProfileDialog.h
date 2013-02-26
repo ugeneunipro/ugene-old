@@ -34,6 +34,7 @@
 namespace U2 {
 
 class MSAEditor;
+class MSADistanceAlgorithm;
 
 class DistanceMatrixMSAProfileDialog : public QDialog, public Ui_DistanceMatrixMSAProfileDialog {
     Q_OBJECT
@@ -71,8 +72,10 @@ public:
     MAlignment                      ma;
     bool                            usePercents; //report percents but not counts
     bool                            excludeGaps; //exclude gaps when calculate distance
+    bool                            showGroupStatistic;
     DistanceMatrixMSAProfileOutputFormat   outFormat;   
-    QString                         outURL;    
+    QString                         outURL;
+    MSAEditor*                      ctx;
 };
 
 class DistanceMatrixMSAProfileTask : public Task {
@@ -81,6 +84,10 @@ public:
     DistanceMatrixMSAProfileTask(const DistanceMatrixMSAProfileTaskSettings& s);
 
     virtual void prepare();
+
+    void createDistanceTable(MSADistanceAlgorithm* algo, QString &result, const QList<MAlignmentRow> &rows);
+
+    QList<Task*> createStatisticsDocument(Task* subTask);
     
     QList<Task*> onSubTaskFinished(Task* subTask);
     //void run();    

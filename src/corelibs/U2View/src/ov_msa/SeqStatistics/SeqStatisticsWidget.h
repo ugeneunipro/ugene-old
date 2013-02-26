@@ -1,0 +1,71 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2011 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#ifndef _U2_SEQ_STATISTICS_WIDGET_H_
+#define _U2_SEQ_STATISTICS_WIDGET_H_
+
+#include <QtGui/QtGui>
+#include <U2View/MSAEditor.h>
+
+namespace U2 {
+
+class SimilarityStatisticsSettings;
+
+class U2VIEW_EXPORT SeqStatisticsWidget : public QWidget
+{
+    Q_OBJECT
+public:
+
+    SeqStatisticsWidget(MSAEditor* msa);
+
+private slots:
+    void sl_onAlgoChanged(const QString & text);
+    void sl_onGapsChanged(int state);
+    void sl_onUnitsChanged(bool);
+    void sl_onShowStatisticsChanged(int);
+    void sl_onAutoUpdateChanged(int);
+    void sl_onRefSeqChanged(const QString&);
+private:
+    void hideSimilaritySettings();
+    void showSimilaritySettings();
+    void restoreSettings();
+
+    QWidget *createSimilaritySettings();
+
+    MSAEditor*      msa;
+    MSAEditorUI*    ui;
+    
+    QLabel*         algoLabel;
+    QComboBox*      algoCombo;
+    QCheckBox*      excludeGaps;
+    QCheckBox*      autoUpdateCheck;
+    QRadioButton*   countsCheck;
+    QRadioButton*   percentsCheck;
+    QCheckBox*      showStatisticsCheck;
+    QGroupBox*      profileGroup;
+    QLabel*         refSeqWarning;
+
+    SimilarityStatisticsSettings *settings;
+    bool    statisticsIsShown;
+};
+} // namespace
+
+#endif

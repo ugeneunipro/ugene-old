@@ -509,6 +509,16 @@ static bool _registerMeta() {
 
 bool MAlignmentModInfo::registerMeta = _registerMeta();
 
+void MAlignmentObject::sortRowsByList(const QStringList& order) {
+    SAFE_POINT(!isStateLocked(), "Alignment state is locked!", );
+
+    MAlignment msa = getMAlignment();
+
+    msa.sortRowsByList(order);
+
+    setMAlignment(msa);
+}
+
 }//namespace
 
 

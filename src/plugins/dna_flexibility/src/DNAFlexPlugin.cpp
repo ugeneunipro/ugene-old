@@ -133,6 +133,7 @@ void DNAFlexViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* _sequenceWidg
 
     // Otherwise add the "DNA Flexibility" action to the graphs menu
     GraphAction* graphAction = new GraphAction(graphFactory);
+    connect(sequenceWidget, SIGNAL(si_updateGraphView(const QStringList &, const QVariantMap&)), graphAction, SLOT(sl_updateGraphView(const QStringList &, const QVariantMap&)));
     GraphMenuAction::addGraphAction(sequenceWidget->getActiveSequenceContext(), graphAction);
 }
 

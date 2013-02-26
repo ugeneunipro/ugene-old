@@ -55,6 +55,20 @@
       </layout>
      </item>
      <item>
+      <widget class="QRadioButton" name="createNewView">
+       <property name="text">
+        <string>Display tree in new window</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="displayWithAlignmentEditor">
+       <property name="text">
+        <string>Display tree with alignment editor</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="sizeConstraint">
         <enum>QLayout::SetMinimumSize</enum>

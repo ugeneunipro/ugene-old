@@ -93,6 +93,9 @@ void CreatePhyTreeDialogController::sl_okClicked(){
         return;
     }
     settings.fileUrl = ui->fileNameEdit->text();
+    
+    settings.displayWithAlignmentEditor = ui->displayWithAlignmentEditor->isChecked();
+
 
     foreach (CreatePhyTreeWidget* widget, childWidgets) {
         widget->fillSettings(settings);

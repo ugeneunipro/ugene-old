@@ -1,4 +1,5 @@
 # include (sqlite.pri)
+
 include( ../../ugene_globals.pri )
 UGENE_RELATIVE_DESTDIR = ''
 

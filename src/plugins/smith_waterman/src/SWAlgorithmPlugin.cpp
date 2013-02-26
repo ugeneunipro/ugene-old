@@ -23,6 +23,7 @@
 
 #include "SWAlgorithmTask.h"
 #include "SWTaskFactory.h"
+#include "PairwiseAlignmentSmithWatermanGUIExtension.h"
 #include "SmithWatermanTests.h"
 #include "SWQuery.h"
 #include "SWWorker.h"
@@ -31,6 +32,14 @@
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVConstants.h>
 #include <U2Core/AnnotationTableObject.h>
+
+#include <U2View/MSAEditor.h>
+#include <U2Gui/OptionsPanel.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/DNASequence.h>
+#include <U2Algorithm/SubstMatrixRegistry.h>
+#include <U2Algorithm/PairwiseAlignmentRegistry.h>
 
 #include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTest.h>
@@ -91,15 +100,25 @@ SWAlgorithmPlugin::SWAlgorithmPlugin()
         Q_UNUSED(res);
         assert(res);
     }    
+
+    PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
     SmithWatermanTaskFactoryRegistry* swar = AppContext::getSmithWatermanTaskFactoryRegistry();
 
     coreLog.trace("Registering classic SW implementation");
-    swar->registerFactory(new SWTaskFactory(SW_classic), QString("Classic 2"));
+    swar->registerFactory(new SWTaskFactory(SW_classic), QString("Classic 2"));     //ADV search register
+    PairwiseAlignmentAlgorithm* swAlgClassic = new PairwiseAlignmentAlgorithm("Smith-Waterman",
+                                                                              new PairwiseAlignmentSmithWatermanTaskFactory(SW_classic),
+                                                                              new PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_classic),
+                                                                              "SW_classic");
+    par->registerAlgorithm(swAlgClassic);                                           //pairwise alignment register
     regDependedIMPLFromOtherPlugins();
 
 #ifdef SW2_BUILD_WITH_SSE2
     coreLog.trace("Registering SSE2 SW implementation");
     swar->registerFactory(new SWTaskFactory(SW_sse2), QString("SSE2"));
+    par->getAlgorithm("Smith-Waterman")->addAlgorithmRealization(new PairwiseAlignmentSmithWatermanTaskFactory(SW_sse2),
+                                                                 new PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_sse2),
+                                                                 "SSE2");
 #endif    
 
     this->connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(regDependedIMPLFromOtherPlugins()));
@@ -115,12 +134,16 @@ QList<XMLTestFactory*> SWAlgorithmTests::createTestFactories() {
 //SLOT
 void SWAlgorithmPlugin::regDependedIMPLFromOtherPlugins() {
     SmithWatermanTaskFactoryRegistry* swar = AppContext::getSmithWatermanTaskFactoryRegistry();
+    PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
     Q_UNUSED( swar );
 
 #ifdef SW2_BUILD_WITH_CUDA
     if ( !AppContext::getCudaGpuRegistry()->empty() ) {
         coreLog.trace("Registering CUDA SW implementation");        
         swar->registerFactory(new SWTaskFactory(SW_cuda), QString("CUDA"));
+        par->getAlgorithm("Smith-Waterman")->addAlgorithmRealization(new PairwiseAlignmentSmithWatermanTaskFactory(SW_cuda),
+                                                                     new PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_cuda),
+                                                                     "CUDA");
     }
 #endif
 
@@ -128,6 +151,9 @@ void SWAlgorithmPlugin::regDependedIMPLFromOtherPlugins() {
     if ( !AppContext::getOpenCLGpuRegistry()->empty() ) {
         coreLog.trace("Registering OpenCL SW implementation");        
         swar->registerFactory(new SWTaskFactory(SW_opencl), QString("OPENCL"));
+        par->getAlgorithm("Smith-Waterman")->addAlgorithmRealization(new PairwiseAlignmentSmithWatermanTaskFactory(SW_opencl),
+                                                                     new PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_opencl),
+                                                                     "OPENCL");
     }
 #endif
 }
@@ -163,4 +189,3 @@ void SWAlgorithmADVContext::sl_search() {
 }
 
 } //namespace
-

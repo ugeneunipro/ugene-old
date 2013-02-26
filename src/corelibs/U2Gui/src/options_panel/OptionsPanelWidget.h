@@ -27,7 +27,7 @@
 #include "OptionsPanelGroup.h"
 
 #include <QtGui/QtGui>
-
+#include <U2Core/global.h>
 
 namespace U2 {
 
@@ -52,7 +52,7 @@ enum OPMainWidgetState {OPMainWidgetState_Opened, OPMainWidgetState_Closed};
  * Serves as a parent widget for all header image and option widgets.
  * Provides general layout and style of the widgets (but it DOESN'T handle the behavior of selecting a group!).
  */
-class OptionsPanelWidget : public QFrame
+class U2GUI_EXPORT OptionsPanelWidget : public QFrame
 {
     Q_OBJECT
 public:
@@ -81,10 +81,10 @@ public:
     /** Verifies that a widget with the specified ID is present and makes it active */
     void focusOptionsWidget(const QString& groupId);
 
-private:
     /** Returns NULL if not found */
     GroupOptionsWidget* findOptionsWidgetByGroupId(const QString& groupId);
 
+private:
     /** Layouts */
     QVBoxLayout* optionsLayout;
     QVBoxLayout* groupsLayout;

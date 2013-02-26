@@ -29,6 +29,12 @@ GObject* PhyTreeObject::clone(const U2DbiRef&, U2OpStatus&) const {
     return cln;
 }
 
+PhyTreeObject* PhyTreeObject::clone() const {
+    PhyTreeObject* cln = new PhyTreeObject(tree, getGObjectName(), getGHintsMap());
+    cln->setIndexInfo(getIndexInfo());
+    return cln;
+}
+
 bool PhyTreeObject::treesAreAlike( const PhyTree& tree1, const PhyTree& tree2 )
 {
     
@@ -39,14 +45,14 @@ bool PhyTreeObject::treesAreAlike( const PhyTree& tree1, const PhyTree& tree2 )
     }
 
     foreach (const PhyNode* n1, track1) {
-        if (n1->name.isEmpty()) {
+        if (n1->getName().isEmpty()) {
             continue;
         } 
         foreach (const PhyNode* n2, track2) {
-            if (n2->name != n1->name) {
+            if (n2->getName() != n1->getName()) {
                 continue;
             }
-            if (n1->branches.count() != n2->branches.count()) {
+            if (n1->getNumberOfBranches() != n2->getNumberOfBranches()) {
                 return false;
             }
         }
@@ -61,7 +67,7 @@ const PhyNode* PhyTreeObject::findPhyNodeByName( const QString& name )
 {
     QList<const PhyNode*> nodes = tree.constData()->collectNodes();
     foreach (const PhyNode* node, nodes) {
-        if (node->name == name) {
+        if (node->getName() == name) {
             return node;
         }
     }

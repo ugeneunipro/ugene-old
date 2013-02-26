@@ -24,6 +24,9 @@
 #include "KalignConstants.h"
 #include "KalignDialogController.h"
 #include "KalignWorker.h"
+#include "PairwiseAlignmentHirschbergTask.h"
+#include "PairwiseAlignmentHirschbergTaskFactory.h"
+#include "PairwiseAlignmentHirschbergGUIExtensionFactory.h"
 #include "kalign_tests/KalignTests.h"
 
 #include <U2Core/AppContext.h>
@@ -39,6 +42,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 
 #include <U2Algorithm/MSAAlignAlgRegistry.h>
+#include <U2Algorithm/PairwiseAlignmentRegistry.h>
 
 #include <U2Lang/WorkflowSettings.h>
 
@@ -106,6 +110,12 @@ KalignPlugin::KalignPlugin()
         Q_UNUSED(res);
         assert(res);
     }
+
+    PairwiseAlignmentAlgorithm* hirschbergAlgorithm = new PairwiseAlignmentAlgorithm("Hirschberg",
+                                                         new PairwiseAlignmentHirschbergTaskFactory(),
+                                                         new PairwiseAlignmentHirschbergGUIExtensionFactory(),
+                                                         "KAlign");
+    AppContext::getPairwiseAlignmentRegistry()->registerAlgorithm(hirschbergAlgorithm);
 }
 
 void KalignPlugin::sl_runWithExtFileSpecify() {

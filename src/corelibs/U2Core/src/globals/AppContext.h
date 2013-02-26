@@ -54,6 +54,7 @@ class SWMulAlignResultNamesTagsRegistry;
 class MolecularSurfaceFactoryRegistry;
 class SWResultFilterRegistry;
 class MSAColorSchemeRegistry;
+class MSAHighlightingSchemeRegistry;
 class SecStructPredictAlgRegistry;
 class CudaGpuRegistry;
 class OpenCLGpuRegistry;
@@ -84,6 +85,7 @@ class OPWidgetFactoryRegistry;
 class WorkflowScriptRegistry;
 class AppFileStorage;
 class U2DataPathRegistry;
+class PairwiseAlignmentRegistry;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -152,6 +154,8 @@ public:
     static SWResultFilterRegistry* getSWResultFilterRegistry() {return getInstance()->_getSWResultFilterRegistry();}
 
     static MSAColorSchemeRegistry* getMSAColorSchemeRegistry() { return getInstance()->_getMSAColorSchemeRegistry();}
+
+    static MSAHighlightingSchemeRegistry* getMSAHighlightingSchemeRegistry() { return getInstance()->_getMSAHighlightingSchemeRegistry();}
 
     static SecStructPredictAlgRegistry* getSecStructPredictAlgRegistry() { return getInstance()->_getSecStructPredictAlgRegistry(); }
 
@@ -223,7 +227,9 @@ public:
     static GUITestBase *getGUITestBase() {return getInstance()->_getGUITestBase();}
 
     static AppFileStorage *getAppFileStorage() {return getInstance()->_getAppFileStorage();}
-    
+
+    static PairwiseAlignmentRegistry* getPairwiseAlignmentRegistry() { return getInstance()->_getPairwiseAlignmentRegistry(); }
+
 protected:
     static AppContext* getInstance() {assert(instance); return instance;}
 
@@ -256,6 +262,7 @@ protected:
     virtual SWMulAlignResultNamesTagsRegistry * _getSWMulAlignResultNamesTagsRegistry() const = 0;
     virtual SWResultFilterRegistry*     _getSWResultFilterRegistry() const = 0;
     virtual MSAColorSchemeRegistry*     _getMSAColorSchemeRegistry() const = 0;
+    virtual MSAHighlightingSchemeRegistry* _getMSAHighlightingSchemeRegistry() const = 0;
     virtual SecStructPredictAlgRegistry* _getSecStructPredictAlgRegistry() const = 0;
     virtual CudaGpuRegistry *           _getCudaGpuRegistry() const = 0;
     virtual OpenCLGpuRegistry *          _getOpenCLGpuRegistry() const = 0;
@@ -284,6 +291,7 @@ protected:
     virtual OPWidgetFactoryRegistry* _getOPWidgetFactoryRegistry() const = 0;
     virtual WorkflowScriptRegistry* _getWorkflowScriptRegistry() const = 0;
     virtual AppFileStorage *_getAppFileStorage() const = 0;
+    virtual PairwiseAlignmentRegistry* _getPairwiseAlignmentRegistry() const = 0;
     virtual U2DataPathRegistry* _getDataPathRegistry() const = 0; 
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;

@@ -22,6 +22,7 @@
 #include "MSAEditorSequenceArea.h"
 #include "MSAEditor.h"
 #include "MSAColorScheme.h"
+#include "MSAEditorNameList.h"
 #include "CreateSubalignimentDialogController.h"
 #include "ColorSchemaSettingsController.h"
 
@@ -44,6 +45,7 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SequenceUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/ProjectModel.h>
@@ -76,6 +78,8 @@ namespace U2 {
 #define SETTINGS_ROOT QString("msaeditor/")
 #define SETTINGS_COLOR_NUCL     "color_nucl"
 #define SETTINGS_COLOR_AMINO    "color_amino"
+#define SETTINGS_HIGHGHLIGHT_NUCL      "highghlight_nucl"
+#define SETTINGS_HIGHGHLIGHT_AMINO     "highghligh_amino"
 
 MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb)
 : editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb) 
@@ -171,7 +175,6 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     complementAction->setObjectName("replace_selected_rows_with_complement");
     connect(complementAction, SIGNAL(triggered()), SLOT(sl_complementCurrentSelection()));
 
-    
    connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
     connect(editor->getMSAObject(), SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
@@ -182,11 +185,13 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(editor, SIGNAL(si_zoomOperationPerformed(bool)), SLOT(sl_zoomOperationPerformed(bool)));
     connect(editor, SIGNAL(si_fontChanged(QFont)), SLOT(sl_fontChanged(QFont)));
     connect(ui->getCollapseModel(), SIGNAL(toggled()), SLOT(sl_modelChanged()));
+    connect(editor, SIGNAL(si_refrenceSeqChanged(const QString &)), SLOT(sl_refrenceSeqChanged(const QString &)));
     
     addAction(ui->getUndoAction());
     addAction(ui->getRedoAction());
 
     prepareColorSchemeMenuActions();
+    prepareHighlightingMenuActions();
     updateActions();
 }
 
@@ -229,7 +234,40 @@ void MSAEditorSequenceArea::prepareColorSchemeMenuActions() {
     initCustomSchemeActions(csf->getId(), atype);
 }
 
+void MSAEditorSequenceArea::prepareHighlightingMenuActions() {
+    Settings* s = AppContext::getSettings();
+    MAlignmentObject* maObj = editor->getMSAObject();
+    if (maObj == NULL)
+        return;
 
+    DNAAlphabetType atype = maObj->getAlphabet()->getType();
+    MSAHighlightingSchemeRegistry* hsr = AppContext::getMSAHighlightingSchemeRegistry();
+    
+    QString hsid = atype == DNAAlphabet_AMINO ? 
+        s->getValue(SETTINGS_ROOT + SETTINGS_HIGHGHLIGHT_AMINO, MSAHighlightingScheme::EMPTY_AMINO).toString()
+        : s->getValue(SETTINGS_ROOT + SETTINGS_HIGHGHLIGHT_NUCL, MSAHighlightingScheme::EMPTY_NUCL).toString();
+    MSAHighlightingSchemeFactory* hsf = hsr->getMSAHighlightingSchemeFactoryById(hsid);
+    if (hsf == NULL) {
+        hsf = hsr->getMSAHighlightingSchemeFactoryById(atype == DNAAlphabet_AMINO ? MSAHighlightingScheme::EMPTY_AMINO : MSAHighlightingScheme::EMPTY_NUCL);
+    }
+    assert(hsf!=NULL);
+    highlitingScheme = hsf->create(this, maObj);
+
+    QList<MSAHighlightingSchemeFactory*> factories= hsr->getMSAHighlightingSchemes(atype);
+    foreach(MSAHighlightingSchemeFactory* f, factories) {
+        QAction* action = new QAction(f->getName(), this);
+        action->setObjectName(f->getName());
+        action->setCheckable(true);
+        action->setChecked(f == hsf);
+        action->setData(f->getId());
+        connect(action, SIGNAL(triggered()), SLOT(sl_changeHighlightScheme()));
+        highlightingSchemeMenuActions.append(action);
+    }
+    useDotsAction = new QAction(QString("Use dots"), this);
+    useDotsAction->setCheckable(true);
+    useDotsAction->setChecked(false);
+    connect(useDotsAction, SIGNAL(triggered()), SLOT(sl_useDots()));
+}
 
 void MSAEditorSequenceArea::initCustomSchemeActions(const QString& id, DNAAlphabetType atype){
     deleteOldCustomSchemes();
@@ -248,6 +286,26 @@ void MSAEditorSequenceArea::initCustomSchemeActions(const QString& id, DNAAlphab
     }
 }
 
+QStringList MSAEditorSequenceArea::getAvailableColorSchemes() const{
+    QStringList allSchemas;
+    foreach(QAction *a, colorSchemeMenuActions){
+        allSchemas.append(a->text());
+    }
+    
+    foreach(QAction *a, customColorSchemeMenuActions){
+        allSchemas.append(a->text());
+    }
+    return allSchemas;
+}
+
+QStringList MSAEditorSequenceArea::getAvailableHighlightingSchemes() const{
+    QStringList allSchemas;
+    foreach(QAction *a, highlightingSchemeMenuActions){
+        allSchemas.append(a->text());
+    }
+    return allSchemas;
+}
+
 
 void MSAEditorSequenceArea::sl_customColorSettingsChanged(){    
     DNAAlphabetType atype = editor->getMSAObject()->getAlphabet()->getType();
@@ -259,6 +317,7 @@ void MSAEditorSequenceArea::sl_customColorSettingsChanged(){
         if(a){a->setChecked(true);}
     }
     
+    emit si_highlightingChanged();
     sl_changeColorScheme();
 }
 
@@ -267,6 +326,21 @@ void MSAEditorSequenceArea::deleteOldCustomSchemes(){
         delete a;
     }
     customColorSchemeMenuActions.clear();
+}
+
+void MSAEditorSequenceArea::sl_changeColorSchemeOutside( const QString &name ){
+    QAction* a = GUIUtils::findAction(QList<QAction*>() << colorSchemeMenuActions << customColorSchemeMenuActions << highlightingSchemeMenuActions, name);
+    if(a){a->trigger();}
+}
+
+void MSAEditorSequenceArea::sl_useDots(int i){
+    useDotsAction->trigger();
+}
+
+void MSAEditorSequenceArea::sl_useDots(){
+    completeRedraw = true;
+    update();
+    emit si_highlightingChanged();
 }
 
 void MSAEditorSequenceArea::sl_changeColorScheme() {
@@ -293,7 +367,36 @@ void MSAEditorSequenceArea::sl_changeColorScheme() {
 
     completeRedraw = true;
     update();
+    emit si_highlightingChanged();
 }
+
+
+void MSAEditorSequenceArea::sl_changeHighlightScheme(){
+    QAction* a = qobject_cast<QAction*>(sender());
+    if(!a){a = GUIUtils::getCheckedAction(customColorSchemeMenuActions);}
+    if(!a){return;}
+
+    QString id = a->data().toString();
+    MSAHighlightingSchemeFactory* f = AppContext::getMSAHighlightingSchemeRegistry()->getMSAHighlightingSchemeFactoryById(id);
+    delete highlitingScheme;
+    if (ui->editor->getMSAObject() == NULL)
+        return;
+
+    highlitingScheme = f->create(this, ui->editor->getMSAObject());
+    foreach(QAction* action, highlightingSchemeMenuActions) {
+        action->setChecked(action == a);
+    }
+    if (f->getAlphabetType() == DNAAlphabet_AMINO) {
+        AppContext::getSettings()->setValue(SETTINGS_ROOT + SETTINGS_HIGHGHLIGHT_AMINO, id);
+    } else {
+        AppContext::getSettings()->setValue(SETTINGS_ROOT + SETTINGS_HIGHGHLIGHT_NUCL, id);
+    }
+
+    completeRedraw = true;
+    update();
+    emit si_highlightingChanged();
+}
+
 
 
 void MSAEditorSequenceArea::updateActions() {
@@ -370,6 +473,8 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
     } else {
         range.append(U2Region(firstVisibleSeq, lastVisibleSeq - firstVisibleSeq + 1));
     }
+
+    int refSeq = ui->getEditorNameList()->getRefSeqPos()/*, curSeq =0*/;
     
     foreach(const U2Region& region, range) {
         int start = region.startPos;
@@ -380,17 +485,50 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
                 QRect cr(baseXRange.startPos, baseYRange.startPos, baseXRange.length+1, baseYRange.length);
                 assert(cr.left() < w && cr.top() < h); Q_UNUSED(w); Q_UNUSED(h);
                 char c = msa.charAt(seq, pos);
+                
                 QColor color = colorScheme->getColor(seq, pos);
 
-                if (color.isValid()) {
-                    p.fillRect(cr, color);
-                }
+                QString cname = highlitingScheme->metaObject()->className();
 
-                if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
-                    p.drawText(cr, Qt::AlignCenter, QString(c));
+                if(cname == "U2::MSAHighlightingSchemeGaps"){
+                    const char refChar = 'z';              
+                    bool drawColor = false;
+                    highlitingScheme->setUseDots(useDotsAction->isChecked());
+                    highlitingScheme->process(refChar, c, drawColor);
+                    if(cname == "U2::MSAHighlightingSchemeGaps"){
+                        color = QColor(192, 192, 192);
+                    }
+                    if (color.isValid() && drawColor) {
+                        p.fillRect(cr, color);
+                    }
+                    if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
+                        p.drawText(cr, Qt::AlignCenter, QString(c));
+                    }
+                }else if(seq == refSeq || cname == "U2::MSAHighlightingSchemeEmpty" || refSeq == -1){
+                    if (color.isValid()) {
+                        p.fillRect(cr, color);
+                    }
+                    if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
+                        p.drawText(cr, Qt::AlignCenter, QString(c));
+                    }
+                }else{
+                    const char refChar = msa.charAt(refSeq, pos);              
+                    bool drawColor = false;
+                    highlitingScheme->setUseDots(useDotsAction->isChecked());
+                    highlitingScheme->process(refChar, c, drawColor);
+                    if(cname == "U2::MSAHighlightingSchemeGaps"){
+                        color = QColor(192, 192, 192);
+                    }
+                    if (color.isValid() && drawColor) {
+                        p.fillRect(cr, color);
+                    }
+                    if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
+                        p.drawText(cr, Qt::AlignCenter, QString(c));
+                    }
                 }
             }
             baseYRange.startPos += editor->getRowHeight();
+            //curSeq++;
         }
     }
 }
@@ -708,7 +846,7 @@ U2Region MSAEditorSequenceArea::getSequenceYRange(int seq, bool useVirtualCoords
 
 #define SCROLL_STEP 1
 
-void MSAEditorSequenceArea::updateSelection( const QPoint& newPos){
+void MSAEditorSequenceArea::updateSelection( const QPoint& newPos) {
     int width = qAbs(newPos.x() - cursorPos.x()) + 1;
     int height = qAbs(newPos.y() - cursorPos.y()) + 1;
     int left = qMin(newPos.x(), cursorPos.x());
@@ -1132,6 +1270,11 @@ void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s) {
         ui->getCopySelectionAction()->setEnabled(true);
     }
 
+    U2Region selectedRowsRegion = getSelectedRows();
+    selectedRowNames.clear();
+    for(int x = selectedRowsRegion.startPos; x < selectedRowsRegion.endPos(); x++)
+        selectedRowNames.append(editor->getMSAObject()->getRow(x).getName());
+    emit si_selectionChanged(selectedRowNames);
     emit si_selectionChanged(selection, prevSelection);
     update();
 
@@ -1222,7 +1365,6 @@ void MSAEditorSequenceArea::sl_buildContextMenu(GObjectView*, QMenu* m) {
         editMenu->addActions(actions);
         copyMenu->addAction(ui->getCopySelectionAction());
     }
-
 }
 void MSAEditorSequenceArea::sl_showCustomSettings(){
     AppContext::getAppSettingsGUI()->showSettingsDialog(ColorSchemaSettingsPageId);
@@ -1278,8 +1420,18 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     }
 
     colorsSchemeMenu->addMenu(customColorSchemaMenu);
+    m->insertMenu(GUIUtils::findAction(m->actions(), MSAE_MENU_EDIT), colorsSchemeMenu);   
     
-    m->insertMenu(GUIUtils::findAction(m->actions(), MSAE_MENU_EDIT), colorsSchemeMenu);    
+    QMenu* highlightSchemeMenu = new QMenu(tr("Highlighting"), NULL);
+
+    highlightSchemeMenu->menuAction()->setObjectName("Highlighting");
+
+    foreach(QAction* a, highlightingSchemeMenuActions) {
+        highlightSchemeMenu->addAction(a);
+    }
+    highlightSchemeMenu->addSeparator();
+    highlightSchemeMenu->addAction(useDotsAction);
+    m->insertMenu(GUIUtils::findAction(m->actions(), MSAE_MENU_EDIT), highlightSchemeMenu);   
 }
 
 void MSAEditorSequenceArea::sl_fontChanged(QFont font) {
@@ -1418,6 +1570,12 @@ void MSAEditorSequenceArea::sl_modelChanged() {
     }
     completeRedraw = true;
     updateVScrollBar();
+    update();
+}
+
+void MSAEditorSequenceArea::sl_refrenceSeqChanged(const QString &str){
+    Q_UNUSED(str);
+    completeRedraw = true;
     update();
 }
 
@@ -1733,15 +1891,22 @@ void MSAEditorSequenceArea::sl_addSeqFromProject()
 
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings,this);
 
-    foreach(GObject* obj, objects) {
-        if (obj->isUnloaded()) {
-            continue;
-        }
-        U2SequenceObject *seqObj = qobject_cast<U2SequenceObject*>(obj);
-        if (seqObj) {
-            U2OpStatus2Log os;
-            editor->copyRowFromSequence(seqObj, os);
-            cancelSelection();
+    if (!objects.isEmpty()) {
+        foreach(GObject* obj, objects) {
+            if (obj->isUnloaded()) {
+                continue;
+            }
+            U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(obj);
+            if (seqObj) {
+                U2MsaRow rowInDb;
+                rowInDb.rowId = -1; // set the ID automatically
+                rowInDb.sequenceId = seqObj->getEntityRef().entityId;
+                rowInDb.gstart = 0;
+                rowInDb.gend = seqObj->getSequenceLength();
+
+                msaObject->addRow(rowInDb, seqObj->getWholeSequence());
+                cancelSelection();
+            }
         }
     }
 }
@@ -1901,6 +2066,10 @@ void MSAEditorSequenceArea::sl_complementCurrentSelection() {
     reverseComplementModification(type);
 }
 
+void MSAEditorSequenceArea::sl_setSeqAsRefrence(){
+
+}
+
 QPair<QString, int> MSAEditorSequenceArea::getGappedColumnInfo() const{
     const MAlignment& msa = editor->getMSAObject()->getMAlignment();
     const MAlignmentRow& row = msa.getRow(getSelectedRows().startPos);
@@ -1912,6 +2081,33 @@ QPair<QString, int> MSAEditorSequenceArea::getGappedColumnInfo() const{
         int pos = row.getUngappedPosition(selection.topLeft().x());
         return QPair<QString, int>(QString::number(pos + 1),len);
     }
+}
+
+void MSAEditorSequenceArea::sl_setCollapsingRegions(QVector<U2Region>* unitedRows) {
+    MAlignmentObject* msaObject = editor->getMSAObject();
+    if (msaObject == NULL || msaObject->isStateLocked()) {
+        if (viewModeAction->isChecked()) {
+            viewModeAction->setChecked(false);
+        }
+        return;
+    }
+    MSACollapsibleItemModel* m = ui->getCollapseModel();
+    if(ui->isCollapsibleMode()) {
+        MAlignment ma = msaObject->getMAlignment();
+        m->reset(*unitedRows);
+        QVariantMap hint;
+        hint[MODIFIER] = MAROW_SIMILARITY_SORT;
+        MAlignmentModInfo mi;
+        msaObject->setMAlignment(ma, mi, hint);
+    }
+    else {
+        m->reset();
+    }
+    updateVScrollBar();
+}
+
+int MSAEditorSequenceArea::getHeight(){
+    return editor->getRowHeight() * (getNumVisibleSequences(true) - 1);
 }
 
 }//namespace

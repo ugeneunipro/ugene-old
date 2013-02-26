@@ -179,7 +179,6 @@ public:
      * The 'resultChar' can be a gap, gaps model is recalculated in this case.
      */
     void replaceChars(char origChar, char resultChar, U2OpStatus& os);
-
     /** Returns length of the sequence + number of gaps. Doesn't include trailing gaps. */
     qint64 getRowLengthWithoutTrailing() const;
 
@@ -504,6 +503,9 @@ public:
     /** Checks model consistency */
     void check() const;
 
+    /** Arranges rows in lists order*/
+    void sortRowsByList(const QStringList& order);
+
 private:
     /** Helper-method for adding a row to the alignment */
     void addRow(const MAlignmentRow& row, int rowIndex, U2OpStatus& os);
@@ -522,6 +524,8 @@ private:
 
     /** Additional alignment info */
     QVariantMap             info;
+
+    const MAlignmentRow*    referenceSequence;
 
 private:
     static bool registerMeta;

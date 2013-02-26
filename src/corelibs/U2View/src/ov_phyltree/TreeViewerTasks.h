@@ -24,6 +24,8 @@
 
 #include <U2Core/GObjectReference.h>
 #include <U2Gui/ObjectViewTasks.h>
+#include <QtGui/QSplitter>
+#include <U2Algorithm/CreatePhyTreeSettings.h>
 
 namespace U2 {
 
@@ -31,21 +33,44 @@ class PhyTreeObject;
 class UnloadedObject;
 class TreeViewer;
 class CreateRectangularBranchesTask;
+class OpenTreeViewerTask;
+class MSAEditor;
+
+
 
 class OpenTreeViewerTask : public ObjectViewTask {
     Q_OBJECT
 public:
-    OpenTreeViewerTask(PhyTreeObject* obj);
-    OpenTreeViewerTask(UnloadedObject* obj);
-    OpenTreeViewerTask(Document* doc);
-
+    OpenTreeViewerTask(PhyTreeObject* obj, QObject* _parent = NULL);
+    OpenTreeViewerTask(UnloadedObject* obj, QObject* _parent = NULL);
+    OpenTreeViewerTask(Document* doc, QObject* _parent = NULL);
+    virtual ~OpenTreeViewerTask();
+    
     virtual void open();
+
+    virtual void createTreeViewer();
 
     static void updateTitle(TreeViewer* tv);
 
-private:
+protected:
     QPointer<PhyTreeObject>     phyObject;
     GObjectReference            unloadedReference;
+    QObject*                    parent;
+    bool                        createMDIWindow;
+};
+
+class MSAEditorOpenTreeViewerTask : public OpenTreeViewerTask {
+    Q_OBJECT
+public:
+    MSAEditorOpenTreeViewerTask(PhyTreeObject* obj, const CreatePhyTreeSettings* _settings,  QObject* _parent = NULL);
+    MSAEditorOpenTreeViewerTask(UnloadedObject* obj, const CreatePhyTreeSettings* _settings, QObject* _parent = NULL);
+    MSAEditorOpenTreeViewerTask(Document* doc, const CreatePhyTreeSettings* _settings, QObject* _parent = NULL);
+    virtual ~MSAEditorOpenTreeViewerTask(){}
+
+    virtual void createTreeViewer();
+
+private:
+    const CreatePhyTreeSettings* settings;
 };
 
 class OpenSavedTreeViewerTask : public ObjectViewTask {
@@ -62,6 +87,22 @@ class UpdateTreeViewerTask : public ObjectViewTask {
 public:
     UpdateTreeViewerTask(GObjectView* v, const QString& stateName, const QVariantMap& stateData);
     virtual void update();
+};
+
+class CreateMSAEditorTreeViewerTask: public Task {
+    Q_OBJECT
+    QString viewName;
+    QPointer<PhyTreeObject> phyObj;
+    CreateRectangularBranchesTask* subTask;
+    QVariantMap stateData;
+    TreeViewer* view;
+    const CreatePhyTreeSettings* settings;
+public:
+    CreateMSAEditorTreeViewerTask(const QString& name, const QPointer<PhyTreeObject>& obj, const QVariantMap& stateData, const CreatePhyTreeSettings* _settings);
+    virtual void prepare();
+    virtual ReportResult report();
+    TreeViewer* getTreeViewer();
+    const QVariantMap& getStateData();
 };
 
 class CreateTreeViewerTask: public Task {

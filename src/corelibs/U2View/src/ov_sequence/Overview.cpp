@@ -538,7 +538,7 @@ void OverviewRenderArea::drawRuler(QPainter &p) {
         c.singleSideNotches=true;
     }
     c.notchSize = RULER_NOTCH_SIZE;
-    GraphUtils::drawRuler(p, QPoint(firstCharCenter, ANNOTATION_GRAPH_HEIGHT), firstLastWidth, 1, seqLen, rulerFont, c);	
+    GraphUtils::drawRuler(p, QPoint(firstCharCenter, ANNOTATION_GRAPH_HEIGHT), firstLastWidth, 1, seqLen, rulerFont, c);
     p.restore();
 }
 

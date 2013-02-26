@@ -53,6 +53,8 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 
+#include "GSequenceGraphView.h"
+
 namespace U2 {
 #define ADV_HEADER_HEIGHT 24
 #define IMAGE_DIR   "image"
@@ -658,6 +660,8 @@ void ADVSingleSequenceWidget::sl_zoomToRange() {
 #define CUSTOM_R_NAMES          "CUSTOMR_NAMES"
 #define CUSTOM_R_COLORS         "CUSTOMR_COLORS"
 #define CUSTOM_R_OFFSETS        "CUSTOMR_OFFSETS"
+#define SEQUENCE_GRAPH_NAME     "GRAPH_NAME"
+#define GRAPH_LABELS_POSITIONS  "LABELS_POSITIONS"
 
 void ADVSingleSequenceWidget::updateState(const QVariantMap& m) {
     QVariantMap map = m.value(SPLITTER_STATE_MAP_NAME).toMap();
@@ -701,6 +705,9 @@ void ADVSingleSequenceWidget::updateState(const QVariantMap& m) {
             panView->addCustomRuler(RulerInfo(name, offset, color));
         }
     }
+    QStringList graphNames = myData[SEQUENCE_GRAPH_NAME].toStringList();
+
+    emit si_updateGraphView(graphNames, myData);
 }
 
 void ADVSingleSequenceWidget::saveState(QVariantMap& m) {
@@ -726,10 +733,26 @@ void ADVSingleSequenceWidget::saveState(QVariantMap& m) {
     myData[CUSTOM_R_NAMES] = rnames;
     myData[CUSTOM_R_OFFSETS] = roffsets;
     myData[CUSTOM_R_COLORS] = rcolors;
+
+    QStringList graphNames;
+    QList<QVariant> positions;
+    foreach(GSequenceLineView *view, lineViews) {
+        QList<QVariant> positions;
+        GSequenceGraphView *graphView = dynamic_cast<GSequenceGraphView *>(view);
+        if(NULL != graphView) {
+            graphNames.append(graphView->getGraphViewName());
+            graphView->getLabelPositions(positions);
+            myData[graphView->getGraphViewName()] = positions;
+        }
+    }
+    myData[SEQUENCE_GRAPH_NAME] = graphNames;
+    myData[GRAPH_LABELS_POSITIONS] = positions;
+
     
     QString sequenceInProjectId = getActiveSequenceContext()->getSequenceObject()->getGHints()->get(GObjectHint_InProjectId).toString();
     map[sequenceInProjectId] = myData;
     m[SPLITTER_STATE_MAP_NAME] = map;
+
 }
 
 // QT 4.5.0 bug workaround
@@ -993,4 +1016,5 @@ QString ADVSingleSequenceHeaderWidget::getShortAlphabetName(DNAAlphabet* al) {
 }
 
 }//namespace
+
 

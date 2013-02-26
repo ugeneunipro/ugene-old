@@ -53,31 +53,31 @@ Document* NewickFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, cons
     return d;
 }
 
-static void writeNode(IOAdapter* io, PhyNode* node) {
-    int branches = node->branches.size();
-    if (branches == 1 && (node->name == "" || node->name == "ROOT")) {
-        assert(node != node->branches[0]->node2);
-        writeNode(io, node->branches[0]->node2);
+static void writeNode(IOAdapter* io, const PhyNode* node) {
+    int branches = node->getNumberOfBranches();
+    if (branches == 1 && (node->getName() == "" || node->getName() == "ROOT")) {
+        assert(node != node->getSecondNodeOfBranch(0));
+        writeNode(io, node->getSecondNodeOfBranch(0));
         return;
     }
     if (branches > 1) {
         io->writeBlock("(", 1);
         bool first = true;
         for (int i = 0; i < branches; ++i) {
-            if (node->branches[i]->node2 != node) {
+            if (node->getSecondNodeOfBranch(i)!= node) {
                 if (first) {
                     first = false;
                 } else {
                     io->writeBlock(",", 1);
                 }
-                writeNode(io, node->branches[i]->node2);
+                writeNode(io, node->getSecondNodeOfBranch(i));
                 io->writeBlock(":", 1);
-                io->writeBlock(QByteArray::number(node->branches[i]->distance));
+                io->writeBlock(QByteArray::number(node->getBranchesDistance(i)));
             }
         }
         io->writeBlock(")", 1);
     } else {
-        io->writeBlock(node->name.replace(' ', '_').toAscii());
+        io->writeBlock(QString(node->getName()).replace(' ', '_').toAscii());
     }
 }
 
@@ -88,7 +88,7 @@ void NewickFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     foreach(GObject* obj, d->getObjects()) {
         PhyTreeObject* phyObj = qobject_cast<PhyTreeObject*>(obj);
         if (phyObj != NULL) {
-            writeNode(io, phyObj->getTree()->rootNode);
+            writeNode(io, phyObj->getTree()->getRootNode());
             io->writeBlock(";\n", 2);
         }
     }
@@ -190,7 +190,7 @@ static QList<GObject*> parseTrees(IOAdapter *io, U2OpStatus& si) {
             }
             // use cached value
             if (state == RS_NAME) {
-                nodeStack.top()->name = lastStr.replace('_', ' ');
+                nodeStack.top()->setName(lastStr);
             } else {
                 assert(state == RS_WEIGHT);
                 if (!branchStack.isEmpty()) { //ignore root node weight if present
@@ -210,7 +210,7 @@ static QList<GObject*> parseTrees(IOAdapter *io, U2OpStatus& si) {
             if (c == '(') { //new child
                 assert(!nodeStack.isEmpty());
                 PhyNode* pn = new PhyNode();
-                PhyBranch* bd = PhyNode::addBranch(nodeStack.top(),pn, 0);
+                PhyBranch* bd = PhyTreeData::addBranch(nodeStack.top(),pn, 0);
                 nodeStack.push(pn);
                 branchStack.push(bd);
                 state = RS_NAME;
@@ -230,7 +230,7 @@ static QList<GObject*> parseTrees(IOAdapter *io, U2OpStatus& si) {
                 nodeStack.pop();
                 branchStack.pop();
                 PhyNode* pn = new PhyNode();
-                PhyBranch* bd = PhyNode::addBranch(nodeStack.top(), pn, 0);
+                PhyBranch* bd = PhyTreeData::addBranch(nodeStack.top(), pn, 0);
                 nodeStack.push(pn);
                 branchStack.push(bd);
                 state = RS_NAME;
@@ -249,7 +249,7 @@ static QList<GObject*> parseTrees(IOAdapter *io, U2OpStatus& si) {
                     break;
                 }
                 PhyTree tree(new PhyTreeData());
-                tree->rootNode = nodeStack.pop();
+                tree->setRootNode(nodeStack.pop());
                 QString objName = (objects.size() == 0) ? QString("Tree") : QString("Tree%1").arg(objects.size() + 1);
                 objects.append(new PhyTreeObject(tree, objName));
                 nodeStack.push(rd = new PhyNode());
@@ -273,7 +273,7 @@ static QList<GObject*> parseTrees(IOAdapter *io, U2OpStatus& si) {
         if (!done) {
             PhyNode *node = nodeStack.pop();
             PhyTree tree(new PhyTreeData());
-            tree->rootNode = node;
+            tree->setRootNode(node);
             QString objName = (objects.size() == 0) ? QString("Tree") : QString("Tree%1").arg(objects.size() + 1);
             objects.append(new PhyTreeObject(tree, objName));
         } else {

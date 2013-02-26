@@ -31,6 +31,11 @@
 #include <U2View/AssemblySettingsWidget.h>
 #include <U2View/FindPatternWidgetFactory.h>
 #include <U2View/SequenceInfoFactory.h>
+#include <U2View/SeqStatisticsWidgetFactory.h>
+#include <U2View/PairAlignFactory.h>
+#include <U2View/MSAGeneralTabFactory.h>
+#include <U2View/MSAHighlightingTabFactory.h>
+#include <U2View/TreeOptionsWidgetFactory.h>
 
 
 namespace U2 {
@@ -48,6 +53,17 @@ void Init::initOptionsPanels()
     opWidgetFactoryRegistry->registerFactory(new AssemblyNavigationWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new AssemblySettingsWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new AssemblyInfoWidgetFactory());
+
+    //MSA groups
+    opWidgetFactoryRegistry->registerFactory(new MSAGeneralTabFactory());
+    opWidgetFactoryRegistry->registerFactory(new SeqStatisticsWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new PairAlignFactory());
+    opWidgetFactoryRegistry->registerFactory(new MSAHighlightningFactory());
+    opWidgetFactoryRegistry->registerFactory(new MSATreeOptionsWidgetFactory());
+
+    //Tree View groups
+    opWidgetFactoryRegistry->registerFactory(new TreeOptionsWidgetFactory());
+
 }
 
 } // namespace

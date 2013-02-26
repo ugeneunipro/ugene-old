@@ -31,22 +31,26 @@ class PhyNode;
 class PhyBranch;
 class GraphicsButtonItem;
 
-class GraphicsRectangularBranchItem: public GraphicsBranchItem {
+class GraphicsRectangularBranchItem: public QObject, public GraphicsBranchItem  {
+    Q_OBJECT
 public:
     static const qreal DEFAULT_WIDTH;
     static const qreal MAXIMUM_WIDTH;
     static const qreal EPSILON;
     static const int DEFAULT_HEIGHT;
     
-    GraphicsRectangularBranchItem();
+    
     GraphicsRectangularBranchItem(const QString& name, GraphicsRectangularBranchItem* pitem);
+    GraphicsRectangularBranchItem();
     GraphicsRectangularBranchItem(qreal d);
     GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name, qreal d);
     GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name);
-
+    
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setParentItem(QGraphicsItem *item);
+
+   
 
     Direction getDirection() const { return direction; }
     qreal getHeight() const { return height; }
@@ -60,15 +64,18 @@ public:
     void swapSiblings();
     void redrawBranches(int& current, qreal& minDistance, qreal& maxDistance, PhyNode* root);
 
-    void setPhyBranch(PhyBranch* p) {phyBranch = p;}
+    void setPhyBranch(PhyBranch* p);
     const PhyBranch* getPhyBranch() const {return phyBranch;}
+    GraphicsRectangularBranchItem* getChildItemByPhyBranch(const PhyBranch* branch);
+
+private slots:
+    void sl_onAdressChanged(PhyBranch* );
 private:
     qreal height;
     int cur_height_coef;
     Direction direction;
     PhyBranch* phyBranch;
-
-    GraphicsRectangularBranchItem* getChildItemByPhyBranch(const PhyBranch* branch);
+    int treeLevel;
 };
 
 }//namespace;

@@ -31,8 +31,8 @@
 
 namespace U2 {
 
-class PhyBranch;
 class PhyNode;
+class PhyBranch;
 
 class U2CORE_EXPORT PhyTreeData : public QSharedData {
 public:
@@ -42,39 +42,70 @@ public:
     QList<const PhyNode*> collectNodes() const;
     void validate() const;
     void print() const;
+    void update(){}
 
+    void setRootNode(PhyNode* _rootNode) {rootNode = _rootNode;}
+    PhyNode* getRootNode() const { return rootNode;}
+
+    static PhyBranch* addBranch(PhyNode* node1, PhyNode* node2, double distance);
+    static void removeBranch(PhyNode* node1, PhyNode* node2);
+
+private:
     PhyNode* rootNode;
 };
 typedef QSharedDataPointer<PhyTreeData> PhyTree;
 
+class U2CORE_EXPORT PhyBranch : public QObject{
+    Q_OBJECT
+public:
+    PhyBranch();
+
+    void movingToAnotherAddress(PhyBranch* newAdress);
+
+    PhyNode* node1;
+    PhyNode* node2;
+    double   distance;
+signals:
+    void si_onAdressChanged(PhyBranch* );
+};
+
 class U2CORE_EXPORT PhyNode {
+    friend class PhyTreeUtils;
+    friend class PhyTreeData;
 public:
     PhyNode();
     
     void validate(QList<const PhyNode*>& track) const;
     bool isConnected(const PhyNode* node) const;
 
-    static PhyBranch* addBranch(PhyNode* node1, PhyNode* node2, double distance);
-    static void removeBranch(PhyNode* node1, PhyNode* node2);
+    PhyNode* getParentNode();
+
+    void swapBranches(int firstBrunch, int secondBranch){branches.swap(firstBrunch, secondBranch);}
+
+    int getNumberOfBranches() const {return branches.size();}
+
+    PhyNode* getFirstNodeOfBranch(int branchNumber) const {return branches.at(branchNumber)->node1;}
+    PhyNode* getSecondNodeOfBranch(int branchNumber) const {return branches.at(branchNumber)->node2;}
+
+    double getBranchesDistance(int branchNumber) const { return branches.at(branchNumber)->distance;}
+    void setBranchesDistance(int branchNumber, double _distance) { branches.at(branchNumber)->distance = _distance;}
+
+    void removeBrunch(PhyBranch* brunch) {branches.removeAll(brunch);}
 
     PhyNode* clone() const;
     void addToTrack(QSet<const PhyNode*>& track) const;
 
-    QString             name;
-    QList<PhyBranch*>   branches;
+    const QString& getName() const { return name; } 
+    void setName(const QString& _name){ name = _name; }
+
     bool equals(PhyNode* other);
     void print(QList<PhyNode*>& nodes, int distance, int tab);
     void dumpBranches() const;
     ~PhyNode();
-};
 
-class U2CORE_EXPORT PhyBranch {
-public:
-    PhyBranch();
-    
-    PhyNode* node1;
-    PhyNode* node2;
-    double   distance;
+    QList<PhyBranch*>   branches;
+private:
+    QString             name;
 };
 
 class U2CORE_EXPORT PhyTreeUtils {

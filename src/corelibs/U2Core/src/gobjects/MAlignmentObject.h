@@ -115,6 +115,8 @@ public:
     void crop(U2Region window, const QSet<QString>& rowNames);
     bool shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
     void deleteGapsByAbsoluteVal(int val);
+    void updateCachedMAlignment(MAlignmentModInfo mi = MAlignmentModInfo());
+    void MAlignmentObject::sortRowsByList(const QStringList& order);
 
     void saveState();
     void releaseState();
@@ -122,10 +124,8 @@ public:
 signals:
     void si_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
     void si_completeStateChanged(bool complete);
-
+    
 private:
-    void updateCachedMAlignment(MAlignmentModInfo mi = MAlignmentModInfo());
-
     MAlignment cachedMAlignment;
     MSAMemento*     memento;
 };

@@ -72,6 +72,7 @@ void DNAStatMSAEditorContext::initViewContext(GObjectView* v) {
     GObjectViewAction* profileAction = new GObjectViewAction(this, v, tr("Generate grid profile"));
     profileAction->setObjectName("Generate grid profile");
     connect(profileAction, SIGNAL(triggered()), SLOT(sl_showMSAProfileDialog()));
+
     addViewAction(profileAction);
 }
 

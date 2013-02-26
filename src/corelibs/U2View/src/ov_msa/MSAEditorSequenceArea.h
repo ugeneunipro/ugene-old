@@ -41,6 +41,7 @@ class MSAEditor;
 class MSAEditorUI;
 class GObjectView;
 class MSAColorScheme;
+class MSAHighlightingScheme;
 class MAlignment;
 class MAlignmentModInfo;
 class MAlignmentObject;
@@ -214,11 +215,21 @@ public:
 
     void deleteCurrentSelection();
 
+    void addRowToSelection(int rowNumber) {selectedRows.append(rowNumber);}
+    void deleteRowFromSelection(int rowNumber) {selectedRows.removeAll(rowNumber);}
+    void clearSelection() {selectedRows.clear();}
+
     U2Region getSelectedRows() const;
 
     U2Region getRowsAt(int seq) const;
 
     QPair<QString, int> getGappedColumnInfo() const;
+
+    int getHeight();
+
+    QStringList getAvailableColorSchemes() const;
+
+    QStringList getAvailableHighlightingSchemes() const;
 
 private:
     // emulating cursor mode with
@@ -251,10 +262,19 @@ public:
     
     void drawContent(QPainter& p);
 
+    MSAColorScheme* getCurrentColorScheme(){return colorScheme;};
+    MSAHighlightingScheme* getCurrentHighlightingScheme(){return highlitingScheme;};
+    bool getUseDotsCheckedState(){return useDotsAction->isChecked();};
 
 signals:
     void si_startChanged(const QPoint& p, const QPoint& prev);
     void si_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);
+    void si_selectionChanged(const QStringList& selectedRows);
+    void si_highlightingChanged();
+
+public slots:
+    void sl_changeColorSchemeOutside(const QString &name);
+    void sl_useDots(int);
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -290,6 +310,7 @@ private slots:
     void sl_reverseComplementCurrentSelection();
     void sl_reverseCurrentSelection();
     void sl_complementCurrentSelection();
+    void sl_setSeqAsRefrence();
 
     void sl_onPosChangeRequest(int pos);
 
@@ -298,6 +319,7 @@ private slots:
     void sl_saveSequence();
 
     void sl_changeColorScheme();
+    void sl_changeHighlightScheme();
 
     void sl_zoomOperationPerformed(bool resizeModeChanged);
 
@@ -305,6 +327,10 @@ private slots:
 
     void sl_customColorSettingsChanged();
     void sl_showCustomSettings();
+    void sl_refrenceSeqChanged(const QString &str);
+
+    void sl_setCollapsingRegions(QVector<U2Region>* regions);
+    void sl_useDots();
     void sl_fontChanged(QFont font);
 protected:
     virtual void wheelEvent (QWheelEvent * event);
@@ -312,6 +338,7 @@ protected:
 private:
     void buildMenu(QMenu* m);
     void prepareColorSchemeMenuActions();
+    void prepareHighlightingMenuActions();
 
     void initCustomSchemeActions(const QString& id, DNAAlphabetType type);
 
@@ -348,6 +375,8 @@ private:
     QPoint              origin; // global window coordinates
     QPoint              cursorPos; // mouse cursor position in alignment coordinates
     MSAEditorSelection  selection;
+    QList<int>          selectedRows;
+    QStringList         selectedRowNames;
 
     QAction*        copySelectionAction;
     QAction*        delSelectionAction;
@@ -365,15 +394,18 @@ private:
     QAction*        reverseAction;
     QAction*        complementAction;
     QAction*        lookMSASchemesSettingsAction;
+    QAction*        useDotsAction;
     
     QPixmap*        cachedView;
     bool            completeRedraw;
 
     MSAColorScheme* colorScheme;
+    MSAHighlightingScheme* highlitingScheme;
     bool            highlightSelection;
 
     QList<QAction*> colorSchemeMenuActions;
     QList<QAction* > customColorSchemeMenuActions;
+    QList<QAction* > highlightingSchemeMenuActions;
 };
 
 }//namespace

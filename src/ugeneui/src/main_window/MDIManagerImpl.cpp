@@ -243,7 +243,8 @@ QList<MWMDIWindow*> MWMDIManagerImpl::getWindows() const {
 
 bool MWMDIManagerImpl::closeMDIWindow(MWMDIWindow* w) {
 	MDIItem* i = getMDIItem(w);
-	assert(i);
+    if(NULL == i)
+        return false;
 	return i->qw->close();
 }
 

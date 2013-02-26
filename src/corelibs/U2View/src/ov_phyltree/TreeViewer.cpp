@@ -40,12 +40,15 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2Region.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 
 #include <U2Gui/HBar.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/OptionsPanel.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2View/CreatePhyTreeDialogController.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
@@ -109,14 +112,26 @@ QVariantMap TreeViewer::saveState() {
     return TreeViewerState::saveState(this);
 }
 
-qreal TreeViewer::getZoom() const {
-
-    return ui->getZoom();
+//qreal TreeViewer::getZoom() const {
+//
+//    return ui->getZoom();
+//}
+//
+//void TreeViewer::setZoom(qreal z) {
+//
+//    ui->setZoom(z);
+//}
+qreal TreeViewer::getHorizontalZoom() const {
+    return ui->getHorizontalZoom();
 }
-
-void TreeViewer::setZoom(qreal z) {
-
-    ui->setZoom(z);
+void TreeViewer::setHorizontalZoom(qreal z) {
+    ui->setHorizontalZoom(z);
+}
+qreal TreeViewer::getVerticalZoom() const {
+    return ui->getVerticalZoom();
+}
+void TreeViewer::setVerticalZoom(qreal z) {
+    ui->setVerticalZoom(z);
 }
 
 QVariantMap TreeViewer::getSettingsState() const {
@@ -313,6 +328,13 @@ QWidget* TreeViewer::createWidget() {
     assert(ui == NULL);
     ui = new TreeViewerUI(this);
 
+    optionsPanel = new OptionsPanel(this);
+    OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
+    QList<OPWidgetFactory*> opWidgetFactoriesForSeqView = opWidgetFactoryRegistry->getRegisteredFactories(ObjViewType_PhylogeneticTree);
+    foreach (OPWidgetFactory* factory, opWidgetFactoriesForSeqView) {
+        optionsPanel->addGroup(factory);
+    }
+
     return ui;
 }
 
@@ -321,23 +343,29 @@ void TreeViewer::onObjectRenamed(GObject*, const QString&) {
     OpenTreeViewerTask::updateTitle(this);
 }
 
+void TreeViewer::setAlignment( Qt::Alignment alignment ) {
+    ui->setAlignment(alignment);
+}
+
+
 ////////////////////////////
 // TreeViewerUI
 
 const qreal TreeViewerUI::ZOOM_COEF = 1.2;
-const qreal TreeViewerUI::MINIMUM_ZOOM = 1.0;
-const qreal TreeViewerUI::MAXIMUM_ZOOM = 10.0; 
+const qreal TreeViewerUI::MINIMUM_ZOOM = 0.1;
+const qreal TreeViewerUI::MAXIMUM_ZOOM = 100.0; 
 const int TreeViewerUI::MARGIN = 10;
 const qreal TreeViewerUI::SIZE_COEF = 0.1;
 
 
 TreeViewerUI::TreeViewerUI(TreeViewer* treeViewer): phyObject(treeViewer->getPhyObject()), root(treeViewer->getRoot()), rectRoot(treeViewer->getRoot()), layout(TreeLayout_Rectangular), curTreeViewer(NULL) {
     curTreeViewer = treeViewer;
-    contEnabled = false;
-    showDistanceLabels = true;
-    showNameLabels = true;
+    labelsSettings.alignLabels = false;
+    labelsSettings.showDistances = true;
+    labelsSettings.showNames = true;
     maxNameWidth = 0;
-    zoom = 1.0;
+    horizontalScale = 1.0;
+    verticalScale = 1.0;
 
     setWindowIcon(GObjectTypes::getTypeInfo(GObjectTypes::PHYLOGENETIC_TREE).icon);
 
@@ -425,6 +453,26 @@ TreeSettings TreeViewerUI::getTreeSettings() const {
 
     return treeSettings;
 }
+TreeLabelsSettings TreeViewerUI::getLabelsSettings() const {
+    return labelsSettings;
+}
+
+void TreeViewerUI::setTreeLayout(TreeLayout newLayout) {
+    switch(newLayout) {
+        case TreeLayout_Rectangular:
+            sl_rectangularLayoutTriggered();
+            break;
+        case TreeLayout_Circular:
+            sl_circularLayoutTriggered();
+            break;
+        case TreeLayout_Unrooted:
+            sl_unrootedLayoutTriggered();
+            break;
+    }
+}
+TreeViewerUI::TreeLayout TreeViewerUI::getTreeLayout() const {
+    return layout;
+}
 
 void TreeViewerUI::updateSettings(const BranchSettings &settings) {
 
@@ -452,6 +500,12 @@ void TreeViewerUI::updateSettings(const TreeSettings &settings) {
     }else{
         updateTreeSettings();
     }
+}
+
+void TreeViewerUI::updateSettings(const TreeLabelsSettings &settings) {
+    sl_showNameLabelsTriggered(settings.showNames);
+    sl_showDistanceLabelsTriggered(settings.showDistances);
+    sl_contTriggered(settings.alignLabels);
 }
 
 void TreeViewerUI::sl_setSettingsTriggered() {
@@ -582,7 +636,7 @@ void TreeViewerUI::updateTreeSettings(){
     updateRect();
     scene()->update();
 
-    if(contEnabled){
+    if(labelsSettings.alignLabels){
 //         QStack<GraphicsBranchItem*> stack;
 //         stack.push(root);
 //         if (root != rectRoot) {
@@ -602,7 +656,7 @@ void TreeViewerUI::updateTreeSettings(){
 //             }
 //         }
 //         updateRect();
-        updateLabelsAlignment(contEnabled);
+        updateLabelsAlignment(labelsSettings.alignLabels);
     }
 
     defaultZoom();
@@ -621,8 +675,8 @@ QVariantMap TreeViewerUI::getSettingsState() const {
     foreach (QGraphicsItem *graphItem, this->items()) {
         GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
         if (branchItem) {
-            m[BRANCH_COLOR + i] = branchItem->settings.branchColor;
-            m[BRANCH_THICKNESS + i] = branchItem->settings.branchThickness;
+            m[BRANCH_COLOR + i] = branchItem->getBranchSettings().branchColor;
+            m[BRANCH_THICKNESS + i] = branchItem->getBranchSettings().branchThickness;
             i++;
         }
     }
@@ -636,7 +690,7 @@ void TreeViewerUI::setSettingsState(const QVariantMap& m) {
     foreach (QGraphicsItem *graphItem, this->items()) {
         GraphicsBranchItem *branchItem = dynamic_cast<GraphicsBranchItem*>(graphItem);
         if (branchItem) {
-            BranchSettings branchSettings = branchItem->settings;
+            BranchSettings branchSettings = branchItem->getBranchSettings();
 
             QVariant vColor = m[BRANCH_COLOR + i];
             if (vColor.type() == QVariant::Color) {
@@ -679,7 +733,7 @@ void TreeViewerUI::wheelEvent(QWheelEvent *we) {
 }
 
 void TreeViewerUI::zooming(qreal newzoom){
-    if(newzoom < 0){
+   /* if(newzoom < 0){
         return ;
     }
     newzoom = zoom * newzoom;
@@ -687,10 +741,30 @@ void TreeViewerUI::zooming(qreal newzoom){
     newzoom = qMin(MAXIMUM_ZOOM * qMax(treeSettings.width_coef*TreeViewerUI::SIZE_COEF, 1.0), newzoom);
     scale(newzoom / zoom, newzoom / zoom);
     zoom = newzoom;   
+    updateActionsState();*/
+    zooming(newzoom, newzoom);
+}
+
+void TreeViewerUI::zooming(qreal horizontalZoom, qreal verticalZoom) {
+    if(verticalZoom < 0 || horizontalZoom < 0){
+        return ;
+    }
+    verticalZoom = verticalScale * verticalZoom;
+    horizontalZoom = horizontalScale * horizontalZoom;
+    
+    verticalZoom = qMax(MINIMUM_ZOOM, verticalZoom);
+    verticalZoom  = qMin(MAXIMUM_ZOOM * qMax(treeSettings.width_coef*TreeViewerUI::SIZE_COEF, 1.0), verticalZoom);
+    horizontalZoom = qMax(MINIMUM_ZOOM, horizontalZoom);
+    horizontalZoom  = qMin(MAXIMUM_ZOOM * qMax(treeSettings.width_coef*TreeViewerUI::SIZE_COEF, 1.0), horizontalZoom);
+
+    scale(horizontalZoom / horizontalScale, verticalZoom / verticalScale);
+    verticalScale = verticalZoom;
+    horizontalScale = horizontalZoom;
     updateActionsState();
 }
 
 void TreeViewerUI::mousePressEvent(QMouseEvent *e) {
+
     bool shiftPressed = e->modifiers() & Qt::ShiftModifier;
     bool leftButton = e->button() == Qt::LeftButton;
 
@@ -699,6 +773,7 @@ void TreeViewerUI::mousePressEvent(QMouseEvent *e) {
     }
 
     if (leftButton && !shiftPressed) {
+        QList<QString> selection;
         root->setSelectedRecurs(false, true); // clear selection
     }
 
@@ -724,8 +799,8 @@ void TreeViewerUI::mouseReleaseEvent(QMouseEvent *e) {
 
 void TreeViewerUI::resizeEvent(QResizeEvent *e) {
     QRectF rect = scene()->sceneRect();
-    rect.setWidth(rect.width() / zoom);
-    rect.setHeight(rect.height() / zoom);
+    rect.setWidth(rect.width() / horizontalScale);
+    rect.setHeight(rect.height() / verticalScale);
     rect.moveCenter(scene()->sceneRect().center());
     fitInView(rect, Qt::KeepAspectRatio);
     QGraphicsView::resizeEvent(e);
@@ -740,7 +815,7 @@ void TreeViewerUI::paint(QPainter &painter) {
 void TreeViewerUI::updateRect() {
     QRectF rect = root->mapToScene(root->childrenBoundingRect().united(root->boundingRect())).boundingRect();
     rect.setLeft(rect.left() - MARGIN);
-    rect.setRight(rect.right() - (showNameLabels ? 0 : maxNameWidth) + MARGIN);
+    rect.setRight(rect.right() - (labelsSettings.showNames ? 0 : maxNameWidth) + MARGIN);
     rect.setTop(rect.top() - MARGIN);
     rect.setBottom(rect.bottom() + legend->childrenBoundingRect().height() + MARGIN);
     legend->setPos(0, rect.bottom() - MARGIN);
@@ -753,16 +828,15 @@ void TreeViewerUI::sl_chrootTriggered() {
 }
 
 void TreeViewerUI::sl_swapTriggered() {
-
     foreach (QGraphicsItem *graphItem, this->items()) {
         GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
-
         if (buttonItem && buttonItem->isSelectedTop()) {
             buttonItem->swapSiblings();
             break;
         }
     }
-    qreal curZoom = zoom;
+    qreal curHScale = horizontalScale;
+    qreal curVScale = verticalScale;
 
     QTransform curTransform = viewportTransform();
     setTransformationAnchor(NoAnchor);
@@ -772,13 +846,14 @@ void TreeViewerUI::sl_swapTriggered() {
     updateTreeSettings();
 
     setTransform(curTransform);
-    zoom = curZoom;
+    horizontalScale = curHScale;
+    verticalScale = curVScale;
     updateActionsState();
     setTransformationAnchor(AnchorUnderMouse);
 }
 
 void TreeViewerUI::collapseSelected() {
-
+    phyObject->update();
     foreach (QGraphicsItem *graphItem, this->items()) {
         GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
 
@@ -789,6 +864,7 @@ void TreeViewerUI::collapseSelected() {
 }
 
 bool TreeViewerUI::isSelectedCollapsed(){
+    phyObject->update();
     foreach (QGraphicsItem *graphItem, this->items()) {
         GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
 
@@ -800,7 +876,6 @@ bool TreeViewerUI::isSelectedCollapsed(){
 }
 
 void TreeViewerUI::sl_collapseTriggered() {
-
     collapseSelected();
 }
 
@@ -832,16 +907,16 @@ void TreeViewerUI::sl_exportTriggered() {
 }
 
 void TreeViewerUI::sl_contTriggered(bool on) {
-    if (on != contEnabled) {
-        contEnabled = on;
+    if (on != labelsSettings.alignLabels) {
+        labelsSettings.alignLabels = on;
         TreeLayout curLayout = layout;
         QStack<GraphicsBranchItem*> stack;
        
         if (on){
-            contEnabled = false;
+            labelsSettings.alignLabels = false;
             hide();                             //to remove blinking
             sl_rectangularLayoutTriggered();
-            contEnabled = true;
+            labelsSettings.alignLabels = true;
             stack.push(rectRoot);
         }else{
             stack.push(root);
@@ -872,6 +947,7 @@ void TreeViewerUI::sl_contTriggered(bool on) {
 void TreeViewerUI::sl_rectangularLayoutTriggered() {
     if (layout != TreeLayout_Rectangular) {
         swapAction->setEnabled(true);
+        QList<QString> selection;
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Rectangular;
@@ -890,6 +966,7 @@ void TreeViewerUI::sl_rectangularLayoutTriggered() {
 
 void TreeViewerUI::sl_circularLayoutTriggered() {
     if (layout != TreeLayout_Circular) {
+        QList<QString> selection;
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Circular;
@@ -907,6 +984,7 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
 
 void TreeViewerUI::sl_unrootedLayoutTriggered() {
     if (layout != TreeLayout_Unrooted) {
+        QList<QString> selection;
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Unrooted;
@@ -929,12 +1007,12 @@ void TreeViewerUI::sl_layoutRecomputed() {
     defaultZoom();
     updateRect();
 
-    if (!showNameLabels || !showDistanceLabels) {
+    if (!labelsSettings.showNames || !labelsSettings.showDistances) {
         LabelTypes lt;
-        if (!showDistanceLabels) {
+        if (!labelsSettings.showDistances) {
             lt |= LabelType_Distance;
         }
-        if (!showNameLabels) {
+        if (!labelsSettings.showNames) {
             lt |= LabelType_SequnceName;
         }
         showLabels(lt);
@@ -954,12 +1032,12 @@ void TreeViewerUI::showLabels(LabelTypes labelTypes) {
         GraphicsBranchItem *node = stack.pop();
         if (labelTypes.testFlag(LabelType_SequnceName)) {
             if (node->getNameText() != NULL) {
-                node->getNameText()->setVisible(showNameLabels);
+                node->getNameText()->setVisible(labelsSettings.showNames);
             }
         }
         if (labelTypes.testFlag(LabelType_Distance)) {
             if (node->getDistanceText() != NULL) {
-                node->getDistanceText()->setVisible(showDistanceLabels);
+                node->getDistanceText()->setVisible(labelsSettings.showDistances);
             }
         }
         foreach (QGraphicsItem* item, node->childItems()) {
@@ -972,15 +1050,15 @@ void TreeViewerUI::showLabels(LabelTypes labelTypes) {
 }
 
 void TreeViewerUI::sl_showNameLabelsTriggered(bool on) {
-    if (on != showNameLabels) {
+    if (on != labelsSettings.showNames) {
         QRectF rect = sceneRect();
         rect.setWidth(rect.width() + (on ? 1 : -1) * maxNameWidth);
         scene()->setSceneRect(rect);
-        showNameLabels = on;
+        labelsSettings.showNames = on;
         showLabels(LabelType_SequnceName);
         if(curTreeViewer){
-            curTreeViewer->getContAction()->setDisabled(!showNameLabels);
-            if(!showNameLabels){
+            curTreeViewer->getContAction()->setDisabled(!labelsSettings.showNames);
+            if(!labelsSettings.showNames){
                 sl_contTriggered(false);
             }else{
                 if(curTreeViewer->getContAction()->isChecked()){
@@ -992,8 +1070,8 @@ void TreeViewerUI::sl_showNameLabelsTriggered(bool on) {
 }
 
 void TreeViewerUI::sl_showDistanceLabelsTriggered(bool on) {
-    if (on != showDistanceLabels) {
-        showDistanceLabels = on;
+    if (on != labelsSettings.showDistances) {
+        labelsSettings.showDistances = on;
         showLabels(LabelType_Distance);
     }
 }
@@ -1012,7 +1090,7 @@ void TreeViewerUI::sl_textSettingsTriggered(){
     TextSettingsDialog dialog(this, getTextSettings());
     if(dialog.exec()){
          updateSettings( dialog.getSettings() );
-         if(contEnabled){
+         if(labelsSettings.alignLabels){
              QStack<GraphicsBranchItem*> stack;
              stack.push(root);
              if (root != rectRoot) {
@@ -1032,7 +1110,7 @@ void TreeViewerUI::sl_textSettingsTriggered(){
                  }
              }
             updateRect();
-            contEnabled = false;
+            labelsSettings.alignLabels = false;
             sl_contTriggered(true);
          }
     }
@@ -1080,7 +1158,7 @@ void TreeViewerUI::sl_zoomToAll(){
 }
 
 void TreeViewerUI::defaultZoom(){
-    zooming(1.0/zoom);
+    zooming(1.0/horizontalScale, 1.0/verticalScale);
 }
 
 void TreeViewerUI::redrawRectangularLayout(){
@@ -1088,7 +1166,7 @@ void TreeViewerUI::redrawRectangularLayout(){
     qreal minDistance = -2, maxDistance = 0;
     GraphicsRectangularBranchItem* item = rectRoot;
 
-    item->redrawBranches(current, minDistance, maxDistance, phyObject->getTree()->rootNode);
+    item->redrawBranches(current, minDistance, maxDistance, phyObject->getTree()->getRootNode());
 
     item->setWidthW(0);
     item->setDist(0);
@@ -1128,8 +1206,8 @@ qreal TreeViewerUI::avgWidth(){
 
 void TreeViewerUI::updateActionsState(){
 
-    zoomToAction->setEnabled(zoom < MAXIMUM_ZOOM* qMax(treeSettings.width_coef*TreeViewerUI::SIZE_COEF, 1.0));
-    zoomOutAction->setEnabled(zoom > MINIMUM_ZOOM);
+    zoomToAction->setEnabled(horizontalScale < MAXIMUM_ZOOM* qMax(treeSettings.width_coef*TreeViewerUI::SIZE_COEF, 1.0));
+    zoomOutAction->setEnabled(horizontalScale > MINIMUM_ZOOM);
     
     if(isSelectedCollapsed()){
         collapseAction->setText(QObject::tr("Expand"));
@@ -1183,7 +1261,7 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
                 qreal scL = scene()->sceneRect().left();
                 qreal textScPosX = item->getNameText()->scenePos().x();
                 nWidth = scW + scL - textScPosX;
-                if (showNameLabels){
+                if (labelsSettings.showNames){
                     qreal textBRW = item->getNameText()->boundingRect().width();
                     nWidth -= textBRW + GraphicsBranchItem::TextSpace;
                 }

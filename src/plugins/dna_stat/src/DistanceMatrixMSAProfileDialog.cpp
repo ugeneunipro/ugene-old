@@ -38,6 +38,8 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 
+#include <QDateTime>
+
 namespace U2 {
 
 DistanceMatrixMSAProfileDialog::DistanceMatrixMSAProfileDialog(QWidget* p, MSAEditor* _c) : QDialog(p), ctx(_c) {
@@ -45,6 +47,15 @@ DistanceMatrixMSAProfileDialog::DistanceMatrixMSAProfileDialog(QWidget* p, MSAEd
 
     QStringList algo = AppContext::getMSADistanceAlgorithmRegistry()->getAlgorithmIds();
     algoCombo->addItems(algo);
+
+    MAlignmentObject* msaObj = ctx->getMSAObject();
+    if (msaObj != NULL) {
+        QVector<U2Region> unitedRows;
+        MAlignment ma = msaObj->getMAlignment();
+        ma.sortRowsBySimilarity(unitedRows);
+        if(unitedRows.size() < 2)
+            groupStatisticsCheck->setEnabled(false);
+    }
 
     connect(fileButton, SIGNAL(clicked()), SLOT(sl_selectFile()));
     connect(htmlRB, SIGNAL(toggled(bool)), SLOT(sl_formatChanged(bool)));
@@ -98,6 +109,9 @@ void DistanceMatrixMSAProfileDialog::accept() {
     s.algoName = algoCombo->currentText();
     s.ma = msaObj->getMAlignment();
     s.excludeGaps = checkBox->isChecked();
+    s.showGroupStatistic = groupStatisticsCheck->isChecked();
+    s.ctx = ctx;
+
     if (saveBox->isChecked()) {
         s.outURL = fileEdit->text();
         if (s.outURL.isEmpty()) {
@@ -161,50 +175,37 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
             resultText+= "</table>\n";
             resultText+="<br><br>\n";
 
-            resultText+="<table class=tbl>\n";
-            resultText+="<tr><td></td>";
-            for (int i=0; i < s.ma.getNumRows(); i++) {
-                QString name = s.ma.getRow(i).getName();
-                resultText+="<td> " + name + "</td>";
-            }
-            resultText+="</tr>\n";
-
             bool isSimilarity = algo->isSimilarityMeasure();
             int minLen = s.ma.getLength();
 
-            //out char freqs
-            for (int i=0; i < s.ma.getNumRows(); i++) {
-                QString name = s.ma.getRow(i).getName();
-                resultText+="<tr>";
-                resultText+="<td> " + name + "</td>";
-                for (int j=0; j < s.ma.getNumRows(); j++) {
-                    if(s.usePercents && s.excludeGaps){
-                        int len1 = s.ma.getRow(i).getUngappedLength();
-                        int len2 = s.ma.getRow(j).getUngappedLength();
-                        minLen = qMin(len1, len2);
+            createDistanceTable(algo, resultText, s.ma.getRows());
+
+            resultText+="<br><br>\n";
+
+            if(true == s.showGroupStatistic) {
+                resultText+= "<tr><td><b>"+tr("Group statistics of multiple alignment") + "</td></tr>\n";
+                resultText+="<table>\n";
+                QVector<U2Region> unitedRows;
+                s.ma.sortRowsBySimilarity(unitedRows);
+                QList<MAlignmentRow> rows;
+                int i = 1;
+                srand(QDateTime::currentDateTime().toTime_t());
+                foreach(const U2Region &reg, unitedRows) {
+                    MAlignmentRow row = s.ma.getRow(reg.startPos + qrand() % reg.length);
+                    row.setName(QString("Group %1: ").arg(i) + "(" + row.getName() + ")");
+                    rows.append(s.ma.getRow(reg.startPos + qrand() % reg.length));
+
+                    resultText+="<tr><td><b>" + QString("Group %1: ").arg(i) + "</b></td><td>";
+                    for(int x = reg.startPos; x < reg.endPos(); x++)
+                        resultText+= s.ma.getRow(x).getName() + ", ";
+                    resultText += "\n";
+                    i++;
                     }
-                    int val = qRound(algo->getSimilarity(i, j) * (s.usePercents ? (100.0 / minLen) : 1.0));
-                    
-                    QString colorStr = "";
-                    if (i != j) {
-                        int hotness = qRound(100 * double(val) / maxVal);
-                        if ((hotness  >= 90 && isSimilarity) || (hotness <= 10 && !isSimilarity))  {
-                            colorStr = " bgcolor=" + colors[0];
-                        } else if ((hotness  > 70 && isSimilarity) || (hotness <= 25 && !isSimilarity)) {
-                            colorStr = " bgcolor=" + colors[1];
-                        } else if ((hotness  > 50 && isSimilarity) || (hotness <= 50 && !isSimilarity)) {
-                            colorStr = " bgcolor=" + colors[2];
-                        } else if ((hotness  > 25 && isSimilarity) || (hotness <= 70 && !isSimilarity)) {
-                            colorStr = " bgcolor=" + colors[3];
-                        } else if ((hotness  > 10 && isSimilarity) || (hotness < 90 && !isSimilarity)) {
-                            colorStr = " bgcolor=" + colors[4];
+                resultText+= "</table>\n";
+                resultText+="<br><br>\n";
+                createDistanceTable(algo, resultText, rows);
                         }
-                    }         
-                    resultText+="<td"+colorStr+">" + QString::number(val) + (s.usePercents ? "%" : "") + "</td>";
-                }
-                resultText+="</tr>\n";
-            }
-            resultText+="</table>\n";
+
 
             //legend:
             resultText+="<br><br>\n";
@@ -231,7 +232,7 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
                 resultText+= "," + name;
             }
             resultText+="\n";
-            
+
             for (int i=0; i < s.ma.getNumRows(); i++) {
                 QString name = s.ma.getRow(i).getName();
                 TextUtils::wrapForCSV(name);
@@ -255,6 +256,61 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
         }
     }
     return res;
+}
+
+void DistanceMatrixMSAProfileTask::createDistanceTable(MSADistanceAlgorithm* algo, QString &result, const QList<MAlignmentRow> &rows)
+{
+    int maxVal = s.usePercents ? 100 : s.ma.getLength();
+    QString colors[] = {"#ff5555", "#ff9c00", "#60ff00", "#a1d1e5", "#dddddd"};
+    bool isSimilarity = algo->isSimilarityMeasure();
+    int minLen = s.ma.getLength();
+
+    if(rows.size() < 2) {
+        resultText+= "<tr><td><b>"+tr("There is not enough groups to create distance matrix!") + "</td></tr>\n";
+        return;
+    }
+
+    resultText+="<table class=tbl>\n";
+    resultText+="<tr><td></td>";
+    for (int i=0; i < rows.size(); i++) {
+        QString name = rows.at(i).getName();
+        resultText+="<td> " + name + "</td>";
+    }
+    resultText+="</tr>\n";
+
+    //out char freqs
+    for (int i=0; i < rows.size(); i++) {
+        QString name = rows.at(i).getName();
+        resultText+="<tr>";
+        resultText+="<td> " + name + "</td>";
+        for (int j=0; j < rows.size(); j++) {
+            if(s.usePercents && s.excludeGaps){
+                int len1 = rows.at(i).getUngappedLength();
+                int len2 = rows.at(j).getUngappedLength();
+                minLen = qMin(len1, len2);
+            }
+            int val = qRound(algo->getSimilarity(i, j) * (s.usePercents ? (100.0 / minLen) : 1.0));
+
+            QString colorStr = "";
+            if (i != j) {
+                int hotness = qRound(100 * double(val) / maxVal);
+                if ((hotness  >= 90 && isSimilarity) || (hotness <= 10 && !isSimilarity))  {
+                    colorStr = " bgcolor=" + colors[0];
+                } else if ((hotness  > 70 && isSimilarity) || (hotness <= 25 && !isSimilarity)) {
+                    colorStr = " bgcolor=" + colors[1];
+                } else if ((hotness  > 50 && isSimilarity) || (hotness <= 50 && !isSimilarity)) {
+                    colorStr = " bgcolor=" + colors[2];
+                } else if ((hotness  > 25 && isSimilarity) || (hotness <= 70 && !isSimilarity)) {
+                    colorStr = " bgcolor=" + colors[3];
+                } else if ((hotness  > 10 && isSimilarity) || (hotness < 90 && !isSimilarity)) {
+                    colorStr = " bgcolor=" + colors[4];
+                }
+            }         
+            resultText+="<td"+colorStr+">" + QString::number(val) + (s.usePercents ? "%" : "") + "</td>";
+        }
+        resultText+="</tr>\n";
+    }
+    resultText+="</table>\n";
 }
 
 

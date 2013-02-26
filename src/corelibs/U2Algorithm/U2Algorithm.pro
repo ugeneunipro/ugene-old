@@ -87,7 +87,9 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/util_weight_matrix/PWMConversionAlgorithmNLG.h \
            src/util_weight_matrix/PWMConversionAlgorithmRegistry.h \
            src/util_gpu/opencl/OpenCLHelper.h \
-           src/util_gpu/opencl/OpenCLUtils.h
+           src/util_gpu/opencl/OpenCLUtils.h \
+    src/registry/PairwiseAlignmentRegistry.h \
+    src/registry/PairwiseAlignmentTask.h
 SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/misc/BitsTable.cpp \
            src/misc/DnaAssemblyMultiTask.cpp \
@@ -163,6 +165,16 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/util_weight_matrix/PWMConversionAlgorithmNLG.cpp \
            src/util_weight_matrix/PWMConversionAlgorithmRegistry.cpp \
            src/util_gpu/opencl/OpenCLHelper.cpp \
-           src/util_gpu/opencl/OpenCLUtils.cpp
+           src/util_gpu/opencl/OpenCLUtils.cpp \
+    src/registry/PairwiseAlignmentRegistry.cpp \
+    src/registry/PairwiseAlignmentTask.cpp
 RESOURCES += U2Algorithm.qrc
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+
+
+
+
+
+
+
+

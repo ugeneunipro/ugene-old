@@ -40,7 +40,8 @@ namespace U2 {
 GraphAction::GraphAction(GSequenceGraphFactory* _factory)
     : QAction(_factory->getGraphName(), NULL),
       factory(_factory),
-      view(NULL)
+      view(NULL),
+      isBookmarkUpdate(false)
 {
     setObjectName(_factory->getGraphName());
     connect(this, SIGNAL(triggered()), SLOT(sl_handleGraphAction()));
@@ -72,6 +73,10 @@ void GraphAction::sl_handleGraphAction()
             graphAction->view->addGraphData(graph);
         }
         sequenceWidget->addSequenceView(graphAction->view);
+        if(true == isBookmarkUpdate) {
+            graphAction->view->createLabelsOnPositions(positions);
+            isBookmarkUpdate = false;
+    }
     }
     else
     {
@@ -79,6 +84,22 @@ void GraphAction::sl_handleGraphAction()
         delete graphAction->view;
         graphAction->view = NULL;
     }
+}
+void GraphAction::sl_updateGraphView(const QStringList &graphName, const QVariantMap &map)
+{
+    int startIndex = 0;
+    foreach(const QString &name, graphName) {
+        if(name == text()) {
+            if(view == NULL) {
+                isBookmarkUpdate = true;
+                positions = map[name].toList();
+                activate(QAction::Trigger);
+            }
+            return;
+        }
+    }
+    if(view != NULL)
+        activate(QAction::Trigger);
 }
 
 
@@ -119,7 +140,6 @@ GraphMenuAction* GraphMenuAction::findGraphMenuAction(ADVSequenceObjectContext* 
 
     return NULL;
 }
-
 
 /**
  * Adds a graph action to a graphs menu.

@@ -38,6 +38,32 @@ PhyTreeData::~PhyTreeData() {
     }    
 }
 
+PhyBranch* PhyTreeData::addBranch(PhyNode* node1, PhyNode* node2, double distance) {
+    assert(!node1->isConnected(node2));
+
+    PhyBranch* b = new PhyBranch();
+    b->distance = distance;
+    b->node1 = node1;
+    b->node2 = node2;
+
+    node1->branches.append(b);
+    node2->branches.append(b);
+
+    return b;
+}
+
+void PhyTreeData::removeBranch(PhyNode* node1, PhyNode* node2) {
+    foreach(PhyBranch* b, node1->branches) {
+        if (b->node1 == node1 && b->node2 == node2) {
+            node1->branches.removeAll(b);
+            node2->branches.removeAll(b);
+            delete b;
+            return;
+        }
+    }
+    assert(0);
+}
+
 PhyNode::PhyNode() {
 }
 
@@ -93,32 +119,6 @@ bool PhyNode::isConnected(const PhyNode* node) const {
     return false;
 }
 
-PhyBranch* PhyNode::addBranch(PhyNode* node1, PhyNode* node2, double distance) {
-    assert(!node1->isConnected(node2));
-
-    PhyBranch* b = new PhyBranch();
-    b->distance = distance;
-    b->node1 = node1;
-    b->node2 = node2;
-    
-    node1->branches.append(b);
-    node2->branches.append(b);
-    
-    return b;
-}
-
-void PhyNode::removeBranch(PhyNode* node1, PhyNode* node2) {
-    foreach(PhyBranch* b, node1->branches) {
-        if (b->node1 == node1 && b->node2 == node2) {
-            node1->branches.removeAll(b);
-            node2->branches.removeAll(b);
-            delete b;
-            return;
-        }
-    }
-    assert(0);
-}
-
 void PhyNode::dumpBranches() const{
     std::cout<<"Branches are: ";
     for(int i =0; i<branches.size(); i++){
@@ -136,6 +136,14 @@ void PhyNode::dumpBranches() const{
             <<" with distance "<<branches[i]->distance<<std::endl;
     }
 
+}
+
+PhyNode* PhyNode::getParentNode() {
+    foreach(PhyBranch* currentBrunch, branches) {
+        if(currentBrunch->node2 == this)
+            return currentBrunch->node1;
+    }
+    return NULL;
 }
 
 PhyNode::~PhyNode(){
@@ -165,7 +173,7 @@ PhyNode* PhyNode::clone() const {
         PhyNode* node1 = nodeTable[b->node1];
         PhyNode* node2 = nodeTable[b->node2];
         assert(node1!=NULL && node2!=NULL);
-        PhyNode::addBranch(node1, node2, b->distance);
+        PhyTreeData::addBranch(node1, node2, b->distance);
     }
     PhyNode* myClone = nodeTable.value(this);
     assert(myClone!=NULL);
@@ -219,7 +227,7 @@ int PhyTreeUtils::getNumSeqsFromNode(const PhyNode *node, const QSet<QString> &n
         }
         return s;
     } else {
-        QString str = node->name;
+        QString str(node->getName());
         return names.contains(str.replace('_', ' ')) ? 1 : 0;
     }
 }

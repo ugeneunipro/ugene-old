@@ -82,7 +82,6 @@ void GraphicsButtonItem::mousePressEvent(QGraphicsSceneMouseEvent *e) {
         if (shiftPressed) {
             newSelection = !isSelected();
         }
-
         p->setSelectedRecurs(newSelection, true);
 
         e->accept();

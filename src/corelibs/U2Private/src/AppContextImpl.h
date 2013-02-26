@@ -88,6 +88,7 @@ public:
         guiMode = false;
         activeWindow = "";
         tb = NULL;
+        pairwiseAlignmentRegistry = NULL;
         dpr = NULL;
     }
 
@@ -150,6 +151,8 @@ public:
     void setSWMulAlignResultNamesTagsRegistry (SWMulAlignResultNamesTagsRegistry * _swmarntr) { assert( swmarntr == NULL || _swmarntr == NULL ); swmarntr = _swmarntr; }
 
     void setMSAColorSchemeRegistry(MSAColorSchemeRegistry* _mcsr) {assert( mcsr == NULL || _mcsr == NULL ); mcsr = _mcsr;}
+
+    void setMSAHighlightingSchemeRegistry(MSAHighlightingSchemeRegistry* _mhsr) {assert( mhsr == NULL || _mhsr == NULL ); mhsr = _mhsr;}
     
     void setSecStructPedictAlgRegistry(SecStructPredictAlgRegistry* _sspar) {assert( secStructPredictRegistry == NULL || _sspar == NULL ); secStructPredictRegistry = _sspar;}
 
@@ -263,6 +266,11 @@ public:
         appFileStorage = afs;
     }
 
+    void setPairwiseAlignmentRegistry(PairwiseAlignmentRegistry* par) {
+        assert(pairwiseAlignmentRegistry == NULL || par == NULL);
+        pairwiseAlignmentRegistry = par;
+    }
+
     void setGUIMode(bool v) {
         guiMode = v;
     }
@@ -307,6 +315,7 @@ protected:
     virtual SWResultFilterRegistry*     _getSWResultFilterRegistry() const {return swrfr;}
     virtual SWMulAlignResultNamesTagsRegistry * _getSWMulAlignResultNamesTagsRegistry() const {return swmarntr;}
     virtual MSAColorSchemeRegistry*     _getMSAColorSchemeRegistry() const {return mcsr;}
+    virtual MSAHighlightingSchemeRegistry* _getMSAHighlightingSchemeRegistry() const {return mhsr;}
     virtual SecStructPredictAlgRegistry* _getSecStructPredictAlgRegistry() const {return secStructPredictRegistry;}
     virtual CudaGpuRegistry *            _getCudaGpuRegistry() const { return cgr; }
     virtual OpenCLGpuRegistry *          _getOpenCLGpuRegistry() const { return oclgr; }
@@ -335,6 +344,7 @@ protected:
     virtual OPWidgetFactoryRegistry*        _getOPWidgetFactoryRegistry() const { return opWidgetFactoryRegistry; }
     virtual WorkflowScriptRegistry*         _getWorkflowScriptRegistry() const { return workflowScriptRegistry; }
     virtual AppFileStorage*                 _getAppFileStorage() const { return appFileStorage; }
+    virtual PairwiseAlignmentRegistry*      _getPairwiseAlignmentRegistry() const { return pairwiseAlignmentRegistry; }
     virtual U2DataPathRegistry*             _getDataPathRegistry() const { return dpr; }
 
     virtual void _registerGlobalObject(AppGlobalObject* go);
@@ -373,6 +383,7 @@ private:
     SWMulAlignResultNamesTagsRegistry * swmarntr;
     AppSettingsGUI* asg;
     MSAColorSchemeRegistry* mcsr;
+    MSAHighlightingSchemeRegistry *mhsr;
     SecStructPredictAlgRegistry* secStructPredictRegistry;
     CudaGpuRegistry * cgr;   
     OpenCLGpuRegistry * oclgr;
@@ -401,6 +412,7 @@ private:
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry;
     WorkflowScriptRegistry* workflowScriptRegistry;
     AppFileStorage *appFileStorage;
+    PairwiseAlignmentRegistry* pairwiseAlignmentRegistry;
     U2DataPathRegistry *dpr;
     bool guiMode;
     QString activeWindow;

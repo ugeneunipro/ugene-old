@@ -79,7 +79,6 @@ private:
 	void printPhyTree();
 	static void printPhyNode(PhyNode* node, int tab, QList<PhyNode*>& nodes);
 	void printIndex();
-	PhyNode* findParent(PhyNode* node);
 	int getNewIndex(QString name, QPair<int, int> loc, QMap<QString, int>& old_map);
 	void dumpRawData();
 	PhyTreeData* getTree(){return treedata;}

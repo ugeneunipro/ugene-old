@@ -32,7 +32,7 @@
 namespace U2 {
 
 
-enum ObjectViewType {ObjViewType_SequenceView, ObjViewType_AlignmentEditor, ObjViewType_AssemblyBrowser};
+enum ObjectViewType {ObjViewType_SequenceView, ObjViewType_AlignmentEditor, ObjViewType_AssemblyBrowser, ObjViewType_PhylogeneticTree};
 
 struct U2GUI_EXPORT OPGroupParameters
 {

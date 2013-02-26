@@ -99,6 +99,7 @@ void DNAGraphPackViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* _sequenc
             continue;
         }
         GraphAction *action = new GraphAction(factory);
+        connect(sequenceWidget, SIGNAL(si_updateGraphView(const QStringList &, const QVariantMap&)), action, SLOT(sl_updateGraphView(const QStringList &, const QVariantMap&)));
         GraphMenuAction::addGraphAction(sequenceWidget->getActiveSequenceContext(), action);
     }
 }

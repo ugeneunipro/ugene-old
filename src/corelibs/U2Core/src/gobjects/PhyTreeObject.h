@@ -43,6 +43,9 @@ public:
     const PhyNode* findPhyNodeByName(const QString& name);
 
     virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
+    PhyTreeObject* clone() const;
+
+    void update(){ tree->update();}
     
     // Utility functions
     

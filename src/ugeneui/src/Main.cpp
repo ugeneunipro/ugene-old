@@ -66,6 +66,7 @@
 #include <U2Algorithm/StructuralAlignmentAlgorithmRegistry.h>
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
+#include <U2Algorithm/PairwiseAlignmentRegistry.h>
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
@@ -424,6 +425,9 @@ int main(int argc, char **argv)
     MSAColorSchemeRegistry* mcsr = new MSAColorSchemeRegistry();
     appContext->setMSAColorSchemeRegistry(mcsr);
 
+    MSAHighlightingSchemeRegistry* mhsr = new MSAHighlightingSchemeRegistry();
+    appContext->setMSAHighlightingSchemeRegistry(mhsr);
+
     MSAConsensusAlgorithmRegistry* msaConsReg = new MSAConsensusAlgorithmRegistry();
     appContext->setMSAConsensusAlgorithmRegistry(msaConsReg);
     
@@ -529,6 +533,9 @@ int main(int argc, char **argv)
         appContext->setAppFileStorage(appFileStorage);
     }
 
+    PairwiseAlignmentRegistry* pairwiseAlignmentRegistry = new PairwiseAlignmentRegistry();
+    appContext->setPairwiseAlignmentRegistry(pairwiseAlignmentRegistry);
+
     U2DataPathRegistry* dpr = new U2DataPathRegistry();
     appContext->setDataPathRegistry(dpr);
 
@@ -586,6 +593,9 @@ int main(int argc, char **argv)
     Workflow::WorkflowEnv::shutdown();
 
     delete dcu;
+
+    delete pairwiseAlignmentRegistry;
+    appContext->setPairwiseAlignmentRegistry(NULL);
 
     delete splicedAlignmentTaskRegistiry;
     appContext->setSplicedAlignmentTaskRegistry(NULL);

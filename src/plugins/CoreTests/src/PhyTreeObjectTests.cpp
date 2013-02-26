@@ -170,8 +170,8 @@ Task::ReportResult GTest_CheckPhyNodeHasSibling::report()
     const PhyNode* parent = parentBranch->node1 == node ? parentBranch->node2 : parentBranch->node1;
     
     foreach(const PhyBranch* branch, parent->branches) {
-        if ( (parent == branch->node1 && branch->node2->name == siblingName) ||
-             ((branch->node1->name == siblingName) && (node == branch->node1)) )    
+        if ( (parent == branch->node1 && branch->node2->getName() == siblingName) ||
+             ((branch->node1->getName() == siblingName) && (node == branch->node1)) )    
         {
                 foundSibling = true;
                 break;

@@ -20,7 +20,10 @@ HEADERS += src/KalignAdapter.h \
            src/kalign2/kalign2_hirschberg_large.h \
            src/kalign2/kalign2_input.h \
            src/kalign2/kalign2_output.h \
-           src/kalign2/kalign2_profile_alignment.h 
+           src/kalign2/kalign2_profile_alignment.h \ 
+    src/PairwiseAlignmentHirschbergTaskFactory.h \
+    src/PairwiseAlignmentHirschbergGUIExtensionFactory.h \
+    src/PairwiseAlignmentHirschbergTask.h
 
 FORMS += src/ui/KalignDialog.ui
 
@@ -50,7 +53,18 @@ SOURCES += src/KalignAdapter.cpp \
            src/kalign2/kalign2_hirschberg_dna.c \
            src/kalign2/kalign2_output.c \
            src/kalign2/kalign2_string_matching.c \
-           src/kalign2/kalign2_profile_alignment.c
+           src/kalign2/kalign2_profile_alignment.c \
+    src/PairwiseAlignmentHirschbergTaskFactory.cpp \
+    src/PairwiseAlignmentHirschbergGUIExtensionFactory.cpp \
+    src/PairwiseAlignmentHirschbergTask.cpp
 
 RESOURCES += kalign.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts
+
+
+
+
+
+
+
+

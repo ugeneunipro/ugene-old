@@ -27,6 +27,7 @@
 
 #include <QtCore/QVector>
 #include <QtGui/QPixmap>
+#include "GraphLabelModel.h"
 
 namespace U2 {
 
@@ -88,10 +89,14 @@ public:
     
     float getGlobalMin(){return globalMin;};
     float getGlobalMax(){return globalMax;};
+
+    void selectExtremumPoints(GSequenceGraphData *graph, const QRect& graphRect, int windowSize, const U2Region &visibleRange);
     
     const GSequenceGraphWindowData& getWindowData() {return wdata;}
     const GSequenceGraphMinMaxCutOffData& getCutOffData() {return commdata;}
     const ColorMap& getColors() {return lineColors;}
+
+    static bool isUnknownValue(float value) {return qFuzzyCompare(value, UNKNOWN_VAL);}
 
     static const QString DEFAULT_COLOR;
     static const int UNKNOWN_VAL;
@@ -108,6 +113,19 @@ protected:
     void calculateWithExpand(GSequenceGraphData* d, PairVector& points, int alignedStart, int alignedEnd);
 
     void calculateCutoffPoints(GSequenceGraphData* d, PairVector& points, int alignedFirst, int alignedLast);
+
+    int calculateLabelData(const QRect& rect, const PairVector& points, GraphLabel* label, QColor textColor);
+    void calculatePositionOfLabel(GraphLabel *label, int nPoints);
+    float calculateLabelValue(int nPoints, const PairVector &points, GraphLabel *label, int xcoordInRect);
+    int updateStaticLabels(GSequenceGraphData* graph, GraphLabel* label, const QRect& rect);
+    void updateMovingLabels(GSequenceGraphData* graph, GraphLabel* label, const QRect& rect);
+    void updateStaticLabels(MultiLabel& multiLabel, const QRect& rect);
+    bool isExtremumPoint(int npoints, const PairVector& points, float value, U2Region& comparisonWindow);
+protected slots:
+    void sl_frameRangeChanged(GSequenceGraphData*, const QRect&);
+    void sl_labelAdded(GSequenceGraphData*, GraphLabel*, const QRect&);
+    void sl_labelMoved(GSequenceGraphData*, GraphLabel*, const QRect&);
+    void sl_labelsColorChange(GSequenceGraphData*);
 protected:
     GSequenceGraphView*             view;
     QFont*                          defFont;
@@ -130,6 +148,8 @@ public:
     int                         cachedFrom, cachedLen, cachedW, cachedS;
     int                         alignedFC, alignedLC;
     PairVector                  cachedData;
+
+    MultiLabel                  graphLabels;
 };
 
 

@@ -20,6 +20,13 @@
  */
 
 #include "SWTaskFactory.h"
+#include "SWAlgorithmTask.h"
+
+#include <U2Algorithm/SmithWatermanReportCallback.h>
+#include <U2Algorithm/SWResultFilterRegistry.h>
+#include <U2Core/GUrl.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppFileStorage.h>
 
 namespace U2 {
 
@@ -32,6 +39,43 @@ SWTaskFactory::~SWTaskFactory() {
 
 Task* SWTaskFactory::getTaskInstance( const SmithWatermanSettings& config, const QString& taskName) const {            
     return new SWAlgorithmTask(config, taskName, algType);
+}
+
+bool SWTaskFactory::isValidParameters(const SmithWatermanSettings& sWatermanConfig,  SequenceWalkerSubtask* t) const {
+    Q_UNUSED(sWatermanConfig);
+    Q_UNUSED(t);
+    return true;                //not realized
+}
+
+PairwiseAlignmentSmithWatermanTaskFactory::PairwiseAlignmentSmithWatermanTaskFactory(SW_AlgType _algType) :
+    PairwiseAlignmentTaskFactory(), algType(_algType) {
+}
+
+PairwiseAlignmentSmithWatermanTaskFactory::~PairwiseAlignmentSmithWatermanTaskFactory() {
+}
+
+PairwiseAlignmentTask* PairwiseAlignmentSmithWatermanTaskFactory::getTaskInstance(PairwiseAlignmentTaskSettings* _settings) const {
+    PairwiseAlignmentSmithWatermanTaskSettings* settings = new PairwiseAlignmentSmithWatermanTaskSettings(*_settings);
+    if (settings->inNewWindow == true && settings->resultFileName.isEmpty()) {
+        settings->resultFileName = GUrl(AppContext::getAppFileStorage()->getStorageDir() + "/" + PA_SW_DEFAULT_RESULT_FILE_NAME);
+    }
+    if (settings->inNewWindow == true) {
+        settings->reportCallback = new SmithWatermanReportCallbackMAImpl(settings->resultFileName.dirPath() + "/",
+                                                                         settings->resultFileName.fileName(),
+                                                                         settings->firstSequenceRef,
+                                                                         settings->secondSequenceRef,
+                                                                         settings->msaRef);
+    } else {
+        if (settings->msaRef.isValid())
+        settings->reportCallback = new SmithWatermanReportCallbackMAImpl(settings->firstSequenceRef,
+                                                                         settings->secondSequenceRef,
+                                                                         settings->msaRef);
+    }
+    settings->resultListener = new SmithWatermanResultListener;
+    settings->resultFilter = AppContext::getSWResultFilterRegistry()->getFilter(PA_SW_DEFAULT_RESULT_FILTER);
+    settings->percentOfScore = PA_SW_DEFAULT_PERCENT_OF_SCORE;
+    settings->convertCustomSettings();
+    return new PairwiseAlignmentSmithWatermanTask(settings, algType);
 }
 
 } // namespace

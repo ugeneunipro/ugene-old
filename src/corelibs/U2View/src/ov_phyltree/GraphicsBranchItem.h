@@ -47,8 +47,6 @@ public:
     static const int TextSpace;
     static const int SelectedPenWidth;
 
-    BranchSettings settings;
-
 private:
     GraphicsBranchItem* correspondingItem;
     GraphicsButtonItem* buttonItem;
@@ -57,10 +55,11 @@ private:
 protected:
 
     QGraphicsSimpleTextItem* distanceText;
-    QGraphicsSimpleTextItem* nameText;
+    QGraphicsTextItem*       nameText;
     qreal width;
     qreal dist;
     bool collapsed;
+    BranchSettings settings;
 
     GraphicsBranchItem(const QString& name);
     GraphicsBranchItem(qreal d, bool withButton = true);
@@ -70,7 +69,7 @@ public:
 
     GraphicsButtonItem* getButton() const { return buttonItem; }
     QGraphicsSimpleTextItem* getDistanceText() const { return distanceText; }
-    QGraphicsSimpleTextItem* getNameText() const { return nameText; }
+    QGraphicsTextItem* getNameText() const { return nameText; }
     qreal getWidth() const { return width; }
     qreal getDist() const { return dist; }
     void setDistanceText(const QString& text);
@@ -82,10 +81,15 @@ public:
     bool isCollapsed();
 
     void updateSettings(const BranchSettings& branchSettings);
+    void updateChildSettings(const BranchSettings& branchSettings);
     void updateTextSettings(const QFont& font, const QColor& color);
+
+    const BranchSettings& getBranchSettings() {return settings;}
 
     GraphicsBranchItem* getCorrespondingItem() {return correspondingItem;}
     void setCorrespondingItem(GraphicsBranchItem* cItem) {correspondingItem = cItem;}
+
+    const QList<QGraphicsItem*> getChildItems() {return childItems();}
 };
 
 }//namespace;
