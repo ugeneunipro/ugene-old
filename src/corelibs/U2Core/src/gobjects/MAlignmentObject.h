@@ -116,7 +116,7 @@ public:
     bool shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
     void deleteGapsByAbsoluteVal(int val);
     void updateCachedMAlignment(MAlignmentModInfo mi = MAlignmentModInfo());
-    void MAlignmentObject::sortRowsByList(const QStringList& order);
+    void sortRowsByList(const QStringList& order);
 
     void saveState();
     void releaseState();
