@@ -88,11 +88,10 @@ public:
 
     /**
      * Creates a new row and gap model records in the database.
-     * Ignores 'row.length' (recalculates it).
+     * Ignores 'row.length' (recalculates it) and 'row.rowId'. Sets valid to the passed U2MsaRow instance.
      * If 'posInMsa' equals to '-1' the row is appended to the end of the MSA,
      * otherwise it is inserted to the specified position and all positions are updated.
      * Assigns MSA as a parent for the sequence.
-     * If the row ID equals to "-1", sets a valid ID to the passed U2MsaRow instance.
      * Updates the number of rows of the MSA.
      * Updates the alignment length.
      * Increments the alignment version.
@@ -176,13 +175,12 @@ private:
     /**
      * Creates new records in MsaRow and MsaRowGap tables for the added row, and
      * sets the parent of the sequence object to the MSA object.
-     * ID of the row equal to "-1" can be specified. In this case the ID is set automatically.
+     * Sets the assigned ID to the passed U2MsaRow instance.
      */
     void addMsaRowAndGaps(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os);
 
     /**
      * Adds a new MSA row into database.
-     * Sets the assigned id on the passed U2MsaRow instance.
      * To add a gap for the row, use the "createMsaRowGap" method.
      */
     void createMsaRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& msa, U2OpStatus& os);
@@ -232,10 +230,15 @@ private:
     /** Required for store modification track of removed rows  */
     QByteArray getRemovedRowDetails(const U2MsaRow& row);
 
+    /** Get maximum rowId for the MSA */
+    qint64 getMaximumRowId(const U2DataId& msaId, U2OpStatus& os);
+
     /** Replaces the old gap model with a new one, updates msa length */
     void updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, const QList<U2MsaGap> &gapModel, U2OpStatus &os);
     /** Replaces old sequence and gap model, updates msa length */
     void updateRowContentCore(const U2DataId &msaId, qint64 rowId, const QByteArray &seqBytes, const QList<U2MsaGap> &gaps, U2OpStatus &os);
+    void addRowCore(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os);
+    void removeRowCore(const U2DataId& msaId, qint64 rowId, bool removeSequence, U2OpStatus& os);
     void setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64> rowIds, U2OpStatus &os);
 
     ///////////////////////////////////////////////////////////
@@ -291,6 +294,10 @@ public:
     /** Row name details */
     static QByteArray packRowNameDetails(qint64 rowId, const QString &oldName, const QString &newName);
     static bool unpackRowNameDetails(const QByteArray &modDetails, qint64 &rowId, QString &oldName, QString &newName);
+
+    /** Added row */
+    static QByteArray packAddedRow(qint64 posInMsa, const U2MsaRow& row);
+    static bool unpackAddedRow(const QByteArray &modDetails, qint64& posInMsa, U2MsaRow& row);
 };
 
 

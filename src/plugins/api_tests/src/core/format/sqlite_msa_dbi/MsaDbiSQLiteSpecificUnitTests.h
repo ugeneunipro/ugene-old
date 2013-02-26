@@ -44,6 +44,7 @@ public:
 
     static U2DataId createTestMsa(bool enableModTracking, U2OpStatus& os);
     static U2DataId createNotSoSmallTestMsa(bool enableModTracking, U2OpStatus& os);
+    static U2DataId createTestSequence(bool enableModTracking, qint64 seqLength, U2OpStatus& os);
 
     static const QString TEST_MSA_NAME;
 
@@ -93,6 +94,16 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps);
 
 /**
+ * Add a row:
+ *   ^ append_noModTrack - "posInMsa = -1" (the row is appended), modifications track is not enabled.
+ *   ^ append_undo       - the row is appended, modification tracking is enabled, check the "undo" operation.
+ *   ^ append_redo       - the row is appended, modification tracking is enabled, check the "redo" operation.
+ */
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_noModTrack);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_redo);
+
+/**
  * Set new row order of the MSA.
  *   ^ noModTrack - modifications tracking is not enabled for the MSA.
  *   ^ undo       - modifications tracking is enabled, check the "undo" operation.
@@ -111,6 +122,8 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_redo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_severalSteps);
 
 } // namespace
+
+
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateMsaName_undo);
@@ -141,5 +154,10 @@ DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_redo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_severalSteps);
+
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_append_noModTrack);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_append_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_append_redo);
+
 
 #endif

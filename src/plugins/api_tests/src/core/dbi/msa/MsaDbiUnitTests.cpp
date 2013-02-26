@@ -119,7 +119,6 @@ IMPLEMENT_TEST(MsaDbiUnitTests, addRows) {
 
     // Add rows
     U2MsaRow row1;
-    row1.rowId = 0;
     row1.sequenceId = seq1.id;
     row1.gstart = 0;
     row1.gend = 5;
@@ -132,7 +131,6 @@ IMPLEMENT_TEST(MsaDbiUnitTests, addRows) {
     row1.gaps = row1gaps;
 
     U2MsaRow row2;
-    row2.rowId = 1;
     row2.sequenceId = seq2.id;
     row2.gstart = 2;
     row2.gend = 4;
@@ -153,7 +151,7 @@ IMPLEMENT_TEST(MsaDbiUnitTests, addRows) {
     CHECK_EQUAL(2, actualRows.count(), "number of rows");
 
     const U2MsaRow& actualRow1 = actualRows[0];
-    CHECK_EQUAL(0, actualRow1.rowId, "first row id");
+    CHECK_EQUAL(rows.at(0).rowId, actualRow1.rowId, "first row id");
     CHECK_EQUAL(seq1.id, actualRow1.sequenceId, "first row sequence id");
     CHECK_EQUAL(0, actualRow1.gstart, "first row global start");
     CHECK_EQUAL(5, actualRow1.gend, "first row global end");
@@ -166,7 +164,7 @@ IMPLEMENT_TEST(MsaDbiUnitTests, addRows) {
     CHECK_EQUAL(1, actualRow1Gap2.gap, "first row gap2 length");
 
     const U2MsaRow& actualRow2 = actualRows[1];
-    CHECK_EQUAL(1, actualRow2.rowId, "second row id");
+    CHECK_EQUAL(rows.at(1).rowId, actualRow2.rowId, "second row id");
     CHECK_EQUAL(seq2.id, actualRow2.sequenceId, "second row sequence id");
     CHECK_EQUAL(2, actualRow2.gstart, "second row global start");
     CHECK_EQUAL(4, actualRow2.gend, "second row global end");
@@ -208,7 +206,6 @@ IMPLEMENT_TEST(MsaDbiUnitTests, removeRows) {
     row1.gaps = row1gaps;
 
     U2MsaRow row2;
-    row2.rowId = 1;
     row2.sequenceId = seq2.id;
     row2.gstart = 2;
     row2.gend = 4;
@@ -220,7 +217,6 @@ IMPLEMENT_TEST(MsaDbiUnitTests, removeRows) {
     row2.gaps = row2gaps;
 
     U2MsaRow row3;
-    row3.rowId = 2;
     row3.sequenceId = seq3.id;
     row3.gstart = 0;
     row3.gend = 10;
@@ -234,7 +230,7 @@ IMPLEMENT_TEST(MsaDbiUnitTests, removeRows) {
 
     // Remove the rows
     QList<qint64> rowsToRemove;
-    rowsToRemove << row1.rowId << row3.rowId;
+    rowsToRemove << rows.at(0).rowId << rows.at(2).rowId;
 
     msaDbi->removeRows(msaId, rowsToRemove, os);
     CHECK_NO_ERROR(os);
@@ -249,7 +245,7 @@ IMPLEMENT_TEST(MsaDbiUnitTests, removeRows) {
     CHECK_EQUAL(1, actualRows.count(), "number of rows");
 
     const U2MsaRow& actualRow = actualRows[0];
-    CHECK_EQUAL(1, actualRow.rowId, "row id");
+    CHECK_EQUAL(rows.at(1).rowId, actualRow.rowId, "row id");
     CHECK_EQUAL(seq2.id, actualRow.sequenceId, "row sequence id");
     CHECK_EQUAL(2, actualRow.gstart, "row global start");
     CHECK_EQUAL(4, actualRow.gend, "row global end");
