@@ -326,7 +326,6 @@ SOURCES += src/Init.cpp \
            src/util_smith_waterman/SmithWatermanDialog.cpp \
            src/util_smith_waterman/SubstMatrixDialog.cpp \ 
            src/LicenseDialog.cpp \
-           src/util_smith_waterman/SubstMatrixDialog.cpp \ 
            src/ov_msa/PairAlign/PairAlignFactory.cpp \
            src/ov_msa/PairAlign/PairAlign.cpp \
            src/util_msa_align/PairwiseAlignmentGUIExtension.cpp
