@@ -50,6 +50,7 @@ void SQLiteModDbi::initSqlSchema(U2OpStatus& os) {
         " details TEXT NOT NULL,"
         " FOREIGN KEY(object) REFERENCES Object(id) )", db, os).execute();
     SQLiteQuery("CREATE INDEX ModStep_object ON ModStep(object)", db, os).execute();
+    SQLiteQuery("CREATE INDEX ModStep_object_version ON ModStep(object, version)", db, os).execute();
 }
 
 U2ModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os) {

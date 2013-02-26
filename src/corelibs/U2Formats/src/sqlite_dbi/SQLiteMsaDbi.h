@@ -166,7 +166,6 @@ public:
 
     /** Version of description in a ModStep details */
     static const QByteArray CURRENT_MOD_DETAILS_VERSION;
-    static const int CURRENT_MOD_DETAILS_VERSION_NO_TAG;
 
 private:
     /** Returns length stored in Msa table */
@@ -261,45 +260,7 @@ private:
     void redoUpdateRowContent(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
-
-    // Helper modification details parse methods
-    bool parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, U2AlphabetId& oldAlphabet, U2AlphabetId& newAlphabet);
 };
-
-class PackUtils {
-public:
-    /** Gaps */
-    static QByteArray packGaps(const QList<U2MsaGap> &gaps);
-    static bool unpackGaps(const QByteArray &str, QList<U2MsaGap> &gaps);
-
-    /** Gaps details */
-    static QByteArray packGapDetails(qint64 rowId, const QList<U2MsaGap> &oldGaps, const QList<U2MsaGap> &newGaps);
-    static bool unpackGapDetails(const QByteArray &modDetails, qint64 &rowId, QList<U2MsaGap> &oldGaps, QList<U2MsaGap> &newGaps);
-
-    /** Row content details */
-    static QByteArray packRowContentDetails(qint64 rowId, const QByteArray &oldSeq, const QList<U2MsaGap> &oldGaps,
-        const QByteArray &newSeq, const QList<U2MsaGap> &newGaps);
-    static bool unpackRowContentDetails(const QByteArray &modDetails, qint64 &rowId,
-        QByteArray &oldSeq, QList<U2MsaGap> &oldGaps,
-        QByteArray &newSeq, QList<U2MsaGap> &newGaps);
-
-    /** Row order */
-    static QByteArray packRowOrder(const QList<qint64>& rowIds);
-    static bool unpackRowOrder(const QByteArray& str, QList<qint64>& rowsIds);
-
-    /** Row order details */
-    static QByteArray packRowOrderDetails(const QList<qint64>& oldOrder, const QList<qint64>& newOrder);
-    static bool unpackRowOrderDetails(const QByteArray &modDetails, QList<qint64>& oldOrder, QList<qint64>& newOrder);
-
-    /** Row name details */
-    static QByteArray packRowNameDetails(qint64 rowId, const QString &oldName, const QString &newName);
-    static bool unpackRowNameDetails(const QByteArray &modDetails, qint64 &rowId, QString &oldName, QString &newName);
-
-    /** Added row */
-    static QByteArray packAddedRow(qint64 posInMsa, const U2MsaRow& row);
-    static bool unpackAddedRow(const QByteArray &modDetails, qint64& posInMsa, U2MsaRow& row);
-};
-
 
 } //namespace
 

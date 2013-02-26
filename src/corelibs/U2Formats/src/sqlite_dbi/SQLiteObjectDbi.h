@@ -188,10 +188,6 @@ public:
     void ensureParent(const U2DataId& parentId, const U2DataId& childId, U2OpStatus& os);
 
     virtual void initSqlSchema(U2OpStatus& os);
-
-    /** Prepares modification details for updating object name */
-    QByteArray getModDetailsForUpdateObjectName(const QString& oldName, const QString& newName);
-
     void upgrade(U2OpStatus &os);
 
 private:
@@ -222,12 +218,6 @@ private:
     // Redo methods parse the modification details and call the corresponding method
     // (i.e. change version, save further modSteps, etc.)
     void redoUpdateObjectName(const U2DataId& id, const QByteArray& modDetails, U2OpStatus& os);
-
-    // Helper modification details parse methods
-    bool parseUpdateObjectNameDetails(const QByteArray& modDetails, QString& oldName, QString& newName);
-
-    ///////////////////////////////////////////////////////////
-    static const QByteArray CURRENT_MOD_DETAILS_VERSION;
 };
 
 

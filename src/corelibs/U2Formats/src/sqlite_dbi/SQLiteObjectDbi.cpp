@@ -21,13 +21,15 @@
 
 #include "SQLiteMsaDbi.h"
 #include "SQLiteObjectDbi.h"
+#include "SQLitePackUtils.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2SafePoints.h>
 
-
 namespace U2 {
+
+using namespace SQLite;
 
 SQLiteObjectDbi::SQLiteObjectDbi(SQLiteDbi* dbi) : U2ObjectDbi(dbi), SQLiteChildDBICommon(dbi) {
 
@@ -416,14 +418,6 @@ void SQLiteObjectDbi::incrementVersion(const U2DataId& id, U2OpStatus& os) {
     q.update(1);
 }
 
-const QByteArray SQLiteObjectDbi::CURRENT_MOD_DETAILS_VERSION = QByteArray::number(0);
-
-QByteArray SQLiteObjectDbi::getModDetailsForUpdateObjectName(const QString& oldName, const QString& newName) {
-    return CURRENT_MOD_DETAILS_VERSION + "&"
-        + oldName.toLatin1() + "&"
-        + newName.toLatin1();
-}
-
 void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
     QString errorDescr = SQLiteL10N::tr("Can't undo an operation for the object!");
 
@@ -534,7 +528,7 @@ void SQLiteObjectDbi::undoUpdateObjectName(const U2DataId& id, const QByteArray&
     // Parse the input
     QString oldName;
     QString newName;
-    bool ok = parseUpdateObjectNameDetails(modDetails, oldName, newName);
+    bool ok = PackUtils::unpackObjectNameDetails(modDetails, oldName, newName);
     if (!ok) {
         os.setError("An error occurred during updating an object name!");
         return;
@@ -552,7 +546,7 @@ void SQLiteObjectDbi::undoUpdateObjectName(const U2DataId& id, const QByteArray&
 void SQLiteObjectDbi::redoUpdateObjectName(const U2DataId& id, const QByteArray& modDetails, U2OpStatus& os) {
     QString oldName;
     QString newName;
-    bool ok = parseUpdateObjectNameDetails(modDetails, oldName, newName);
+    bool ok = PackUtils::unpackObjectNameDetails(modDetails, oldName, newName);
     if (!ok) {
         os.setError("An error occurred during updating an object name!");
         return;
@@ -565,18 +559,6 @@ void SQLiteObjectDbi::redoUpdateObjectName(const U2DataId& id, const QByteArray&
     obj.visualName = newName;
     updateObjectCore(obj, os);
     CHECK_OP(os, );
-}
-
-bool SQLiteObjectDbi::parseUpdateObjectNameDetails(const QByteArray& modDetails, QString& oldName, QString& newName) {
-    QList<QByteArray> modDetailsParts = modDetails.split('&');
-    SAFE_POINT(3 == modDetailsParts.count(), "Invalid modDetails!", false);
-    SAFE_POINT(QByteArray("0") == modDetailsParts[0], "Invalid modDetails version!", false);
-    SAFE_POINT(!QString(modDetailsParts[1]).isEmpty(), "Invalid modDetails!", false);
-    SAFE_POINT(!QString(modDetailsParts[2]).isEmpty(), "Invalid modDetails!", false);
-
-    oldName = modDetailsParts[1];
-    newName = modDetailsParts[2];
-    return true;
 }
 
 void SQLiteObjectDbi::removeParent(const U2DataId& parentId, const U2DataId& childId, bool removeDeadChild, U2OpStatus& os) {
@@ -885,7 +867,7 @@ void SQLiteObjectDbiUtils::renameObject(DbRef *db, SQLiteDbi *dbi, U2Object &obj
 
     QByteArray modDetails;
     if (TrackOnUpdate == trackMod) {
-        modDetails = objectDbi->getModDetailsForUpdateObjectName(object.visualName, newName);
+        modDetails = PackUtils::packObjectNameDetails(object.visualName, newName);
     }
 
     object.visualName = newName;

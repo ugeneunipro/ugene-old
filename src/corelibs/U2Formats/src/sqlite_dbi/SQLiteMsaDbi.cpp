@@ -21,14 +21,16 @@
 
 #include "SQLiteMsaDbi.h"
 #include "SQLiteObjectDbi.h"
+#include "SQLitePackUtils.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
-const QByteArray SQLiteMsaDbi::CURRENT_MOD_DETAILS_VERSION = QByteArray::number(CURRENT_MOD_DETAILS_VERSION_NO_TAG) + QByteArray("&");
-const int SQLiteMsaDbi::CURRENT_MOD_DETAILS_VERSION_NO_TAG = 0;
+using namespace SQLite;
+
+const QByteArray SQLiteMsaDbi::CURRENT_MOD_DETAILS_VERSION = QByteArray("0&");
 
 SQLiteMsaDbi::SQLiteMsaDbi(SQLiteDbi* dbi) : U2MsaDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
@@ -101,6 +103,7 @@ void SQLiteMsaDbi::updateMsaName(const U2DataId& msaId, const QString& name, U2O
 }
 
 void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& alphabet, U2OpStatus& os) {
+    SQLiteTransaction t(db, os);
     ModTrackAction updateAction(dbi, msaId);
     U2TrackModType trackMod = updateAction.prepareTracking(os);
     CHECK_OP(os, );
@@ -110,12 +113,7 @@ void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& 
     if (TrackOnUpdate == trackMod) {
         U2Msa msaObj = getMsaObject(msaId, os);
         CHECK_OP(os, );
-        U2AlphabetId oldAlphabet = msaObj.alphabet;
-
-        modDetails = CURRENT_MOD_DETAILS_VERSION +
-            oldAlphabet.id.toLatin1() + "&" +
-            alphabet.id.toLatin1();
-
+        modDetails = PackUtils::packAlphabetDetails(msaObj.alphabet, alphabet);
     }
 
     // Update the alphabet
@@ -126,12 +124,12 @@ void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& 
     q.bindDataId(2, msaId);
     q.update(1);
 
+    // Track the modification, if required
+    updateAction.saveTrack(U2ModType::msaUpdatedAlphabet, modDetails, os);
+
     // Increment the alignment version
     SQLiteObjectDbi::incrementVersion(msaId, db, os);
     CHECK_OP(os, );
-
-    // Track the modification, if required
-    updateAction.saveTrack(U2ModType::msaUpdatedAlphabet, modDetails, os);
 }
 
 void SQLiteMsaDbi::updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStatus& os) {
@@ -900,21 +898,6 @@ void SQLiteMsaDbi::redo(const U2DataId& msaId, qint64 modType, const QByteArray&
     }
 }
 
-bool SQLiteMsaDbi::parseUpdateMsaAlphabetDetails(const QByteArray& modDetails, U2AlphabetId& oldAlphabet, U2AlphabetId& newAlphabet) {
-    QList<QByteArray> modDetailsParts = modDetails.split('&');
-    SAFE_POINT(3 == modDetailsParts.count(), QString("Invalid modDetails '%1'!").arg(QString(modDetails)), false);
-    SAFE_POINT(QByteArray("0") == modDetailsParts[0], QString("Invalid modDetails version '%1'").arg(QString(modDetailsParts[0])), false);
-
-    oldAlphabet = QString(modDetailsParts[1]);
-    newAlphabet = QString(modDetailsParts[2]);
-    
-    if (!oldAlphabet.isValid() || !newAlphabet.isValid()) {
-        return false;
-    }
-
-    return true;
-}
-
 /************************************************************************/
 /* Core methods */
 /************************************************************************/
@@ -1049,7 +1032,7 @@ void SQLiteMsaDbi::setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64
 void SQLiteMsaDbi::undoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
     U2AlphabetId oldAlphabet;
     U2AlphabetId newAlphabet;
-    bool ok = parseUpdateMsaAlphabetDetails(modDetails, oldAlphabet, newAlphabet);
+    bool ok = PackUtils::unpackAlphabetDetails(modDetails, oldAlphabet, newAlphabet);
     if (!ok) {
         os.setError("An error occurred during updating an alignment alphabet!");
         return;
@@ -1067,7 +1050,7 @@ void SQLiteMsaDbi::undoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray
 void SQLiteMsaDbi::redoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os) {
     U2AlphabetId oldAlphabet;
     U2AlphabetId newAlphabet;
-    bool ok = parseUpdateMsaAlphabetDetails(modDetails, oldAlphabet, newAlphabet);
+    bool ok = PackUtils::unpackAlphabetDetails(modDetails, oldAlphabet, newAlphabet);
     if (!ok) {
         os.setError("An error occurred during updating an alignment alphabet!");
         return;
@@ -1209,258 +1192,6 @@ void SQLiteMsaDbi::redoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& 
     }
 
     setNewRowsOrderCore(msaId, newOrder, os);
-}
-
-/************************************************************************/
-/* PackUtils */
-/************************************************************************/
-QByteArray PackUtils::packGaps(const QList<U2MsaGap> &gaps) {
-    QByteArray result;
-    foreach (const U2MsaGap &gap, gaps) {
-        if (!result.isEmpty()) {
-            result += ";";
-        }
-        result += QByteArray::number(gap.offset);
-        result += ",";
-        result += QByteArray::number(gap.gap);
-    }
-    return "\"" + result + "\"";
-}
-
-bool PackUtils::unpackGaps(const QByteArray &str, QList<U2MsaGap> &gaps) {
-    CHECK(str.startsWith('\"') && str.endsWith('\"'), false);
-    QByteArray gapsStr = str.mid(1, str.length() - 2);
-    if (gapsStr.isEmpty()) {
-        return true;
-    }
-
-    QList<QByteArray> tokens = gapsStr.split(';');
-    foreach (const QByteArray &t, tokens) {
-        QList<QByteArray> gapTokens = t.split(',');
-        CHECK(2 == gapTokens.size(), false);
-        bool ok = false;
-        U2MsaGap gap;
-        gap.offset = gapTokens[0].toLongLong(&ok);
-        CHECK(ok, false);
-        gap.gap = gapTokens[1].toLongLong(&ok);
-        CHECK(ok, false);
-        gaps << gap;
-    }
-    return true;
-}
-
-QByteArray PackUtils::packGapDetails(qint64 rowId, const QList<U2MsaGap> &oldGaps, const QList<U2MsaGap> &newGaps) {
-    QByteArray result = SQLiteMsaDbi::CURRENT_MOD_DETAILS_VERSION;
-    result += QByteArray::number(rowId);
-    result += "&";
-    result += packGaps(oldGaps);
-    result += "&";
-    result += packGaps(newGaps);
-    return result;
-}
-
-bool PackUtils::unpackGapDetails(const QByteArray &modDetails, qint64 &rowId, QList<U2MsaGap> &oldGaps, QList<U2MsaGap> &newGaps) {
-    QList<QByteArray> tokens = modDetails.split('&');
-    SAFE_POINT(4 == tokens.size(), QString("Invalid gap modDetails string '%1'").arg(QString(modDetails)), false);
-    { // version
-        SAFE_POINT("0" == tokens[0], QString("Invalid modDetails version '%1'").arg(tokens[0].data()), false);
-    }
-    { // rowId
-        bool ok = false;
-        rowId = tokens[1].toLongLong(&ok);
-        SAFE_POINT(ok, QString("Invalid gap modDetails rowId '%1'").arg(tokens[1].data()), false);
-    }
-    { // oldGaps
-        bool ok = unpackGaps(tokens[2], oldGaps);
-        SAFE_POINT(ok, QString("Invalid gap string '%1'").arg(tokens[2].data()), false);
-    }
-    { // newGaps
-        bool ok = unpackGaps(tokens[3], newGaps);
-        SAFE_POINT(ok, QString("Invalid gap string '%1'").arg(tokens[3].data()), false);
-    }
-    return true;
-}
-
-QByteArray PackUtils::packRowContentDetails(qint64 rowId, const QByteArray &oldSeq, const QList<U2MsaGap> &oldGaps,
-    const QByteArray &newSeq, const QList<U2MsaGap> &newGaps) {
-    QByteArray result = SQLiteMsaDbi::CURRENT_MOD_DETAILS_VERSION;
-    result += QByteArray::number(rowId);
-    result += "&";
-    result += oldSeq;
-    result += "&";
-    result += packGaps(oldGaps);
-    result += "&";
-    result += newSeq;
-    result += "&";
-    result += packGaps(newGaps);
-    return result;
-}
-
-bool PackUtils::unpackRowContentDetails(const QByteArray &modDetails, qint64 &rowId,
-    QByteArray &oldSeq, QList<U2MsaGap> &oldGaps,
-    QByteArray &newSeq, QList<U2MsaGap> &newGaps) {
-    QList<QByteArray> tokens = modDetails.split('&');
-    SAFE_POINT(6 == tokens.size(), QString("Invalid row content modDetails string '%1'").arg(QString(modDetails)), false);
-    { // version
-        SAFE_POINT("0" == tokens[0], QString("Invalid modDetails version '%1'").arg(tokens[0].data()), false);
-    }
-    { // rowId
-        bool ok = false;
-        rowId = tokens[1].toLongLong(&ok);
-        SAFE_POINT(ok, QString("Invalid row content modDetails rowId '%1'").arg(tokens[1].data()), false);
-    }
-    { // oldSeq
-        oldSeq = tokens[2];
-    }
-    { // oldGaps
-        bool ok = unpackGaps(tokens[3], oldGaps);
-        SAFE_POINT(ok, QString("Invalid row content string '%1'").arg(tokens[3].data()), false);
-    }
-    { // newSeq
-        newSeq = tokens[4];
-    }
-    { // newGaps
-        bool ok = unpackGaps(tokens[5], newGaps);
-        SAFE_POINT(ok, QString("Invalid row content string '%1'").arg(tokens[5].data()), false);
-    }
-    return true;
-}
-
-QByteArray PackUtils::packRowOrder(const QList<qint64>& rowIds) {
-    QByteArray result;
-    foreach (qint64 rowId, rowIds) {
-        if (!result.isEmpty()) {
-            result += ";";
-        }
-        result += QByteArray::number(rowId);
-    }
-    return "\"" + result + "\"";
-}
-
-bool PackUtils::unpackRowOrder(const QByteArray& str, QList<qint64>& rowsIds) {
-    CHECK(str.startsWith('\"') && str.endsWith('\"'), false);
-    QByteArray orderStr = str.mid(1, str.length() - 2);
-    if (orderStr.isEmpty()) {
-        return true;
-    }
-
-    QList<QByteArray> tokens = orderStr.split(';');
-    foreach (const QByteArray &t, tokens) {
-        bool ok = false;
-        rowsIds << t.toLongLong(&ok);
-        CHECK(ok, false);
-    }
-    return true;
-}
-
-QByteArray PackUtils::packRowOrderDetails(const QList<qint64>& oldOrder, const QList<qint64>& newOrder) {
-    QByteArray result = SQLiteMsaDbi::CURRENT_MOD_DETAILS_VERSION;
-    result += packRowOrder(oldOrder);
-    result += "&";
-    result += packRowOrder(newOrder);
-    return result;
-}
-
-bool PackUtils::unpackRowOrderDetails(const QByteArray &modDetails, QList<qint64>& oldOrder, QList<qint64>& newOrder) {
-    QList<QByteArray> tokens = modDetails.split('&');
-    SAFE_POINT(3 == tokens.size(), QString("Invalid rows order modDetails string '%1'").arg(QString(modDetails)), false);
-    { // vesrion
-        SAFE_POINT("0" == tokens[0], QString("Invalid modDetails version '%1'").arg(tokens[0].data()), false);
-    }
-    { // oldOrder
-        bool ok = unpackRowOrder(tokens[1], oldOrder);
-        SAFE_POINT(ok, QString("Invalid rows order string '%1'").arg(tokens[1].data()), false);
-    }
-    { // newGaps
-        bool ok = unpackRowOrder(tokens[2], newOrder);
-        SAFE_POINT(ok, QString("Invalid rows order string '%1'").arg(tokens[2].data()), false);
-    }
-
-    return true;
-}
-
-QByteArray PackUtils::packRowNameDetails(qint64 rowId, const QString &oldName, const QString &newName) {
-    QByteArray result = QByteArray::number(SQLiteMsaDbi::CURRENT_MOD_DETAILS_VERSION_NO_TAG);
-    result += "\t";
-    result += QByteArray::number(rowId);
-    result += "\t";
-    result += oldName.toLatin1();
-    result += "\t";
-    result += newName.toLatin1();
-    return result;
-}
-
-bool PackUtils::unpackRowNameDetails(const QByteArray &modDetails, qint64 &rowId, QString &oldName, QString &newName) {
-    QList<QByteArray> tokens = modDetails.split('\t');
-    SAFE_POINT(4 == tokens.size(), QString("Invalid row name modDetails string '%1'").arg(QString(modDetails)), false);
-    { // version
-        SAFE_POINT("0" == tokens[0], QString("Invalid modDetails version '%1'").arg(tokens[0].data()), false);
-    }
-    { // rowId
-        bool ok = false;
-        rowId = tokens[1].toLongLong(&ok);
-        SAFE_POINT(ok, QString("Invalid row name modDetails rowId '%1'").arg(tokens[1].data()), false);
-    }
-    { // oldName
-        oldName = tokens[2];
-    }
-    { // newName
-        newName = tokens[3];
-    }
-    return true;
-}
-
-QByteArray PackUtils::packAddedRow(qint64 posInMsa, const U2MsaRow& row) {
-    QByteArray result = QByteArray::number(SQLiteMsaDbi::CURRENT_MOD_DETAILS_VERSION_NO_TAG);
-    result += "\t";
-    result += QByteArray::number(posInMsa);
-    result += "\t";
-    result += QByteArray::number(row.rowId);
-    result += "\t";
-    result += row.sequenceId.toHex();
-    result += "\t";
-    result += QByteArray::number(row.gstart);
-    result += "\t";
-    result += QByteArray::number(row.gend);
-    result += "\t";
-    result += packGaps(row.gaps);
-    return result;
-}
-
-bool PackUtils::unpackAddedRow(const QByteArray &modDetails, qint64& posInMsa, U2MsaRow& row) {
-    QList<QByteArray> tokens = modDetails.split('\t');
-    SAFE_POINT(7 == tokens.size(), QString("Invalid added row modDetails string '%1'").arg(QString(modDetails)), false);
-    { // version
-        SAFE_POINT("0" == tokens[0], QString("Invalid modDetails version '%1'").arg(tokens[0].data()), false);
-    }
-    { // posInMsa
-        bool ok = false;
-        posInMsa = tokens[1].toLongLong(&ok);
-        SAFE_POINT(ok, QString("Invalid added row modDetails posInMsa '%1'").arg(tokens[1].data()), false);
-    }
-    { // rowId
-        bool ok = false;
-        row.rowId = tokens[2].toLongLong(&ok);
-        SAFE_POINT(ok, QString("Invalid added row modDetails rowId '%1'").arg(tokens[2].data()), false);
-    }
-    { // sequenceId
-        row.sequenceId = QByteArray::fromHex(tokens[3]);
-    }
-    { // gstart
-        bool ok = false;
-        row.gstart = tokens[4].toLongLong(&ok);
-        SAFE_POINT(ok, QString("Invalid added row modDetails gstart '%1'").arg(tokens[4].data()), false);
-    }
-    { // gend
-        bool ok = false;
-        row.gend = tokens[5].toLongLong(&ok);
-        SAFE_POINT(ok, QString("Invalid added row modDetails gend '%1'").arg(tokens[5].data()), false);
-    }
-    { // gaps
-        bool ok = unpackGaps(tokens[6], row.gaps);
-        SAFE_POINT(ok, QString("Invalid added row modDetails gaps '%1'").arg(tokens[6].data()), false);
-    }
-    return true;
 }
 
 } //namespace

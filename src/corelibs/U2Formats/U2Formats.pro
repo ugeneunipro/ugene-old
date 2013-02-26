@@ -50,6 +50,7 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/SQLiteModDbi.h \
            src/sqlite_dbi/SQLiteMsaDbi.h \
            src/sqlite_dbi/SQLiteObjectDbi.h \
+           src/sqlite_dbi/SQLitePackUtils.h \
            src/sqlite_dbi/SQLiteSequenceDbi.h \
            src/sqlite_dbi/SQLiteVariantDbi.h \
            src/tasks/ConvertAssemblyToSamTask.h \
@@ -104,6 +105,7 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/SQLiteModDbi.cpp \
            src/sqlite_dbi/SQLiteMsaDbi.cpp \
            src/sqlite_dbi/SQLiteObjectDbi.cpp \
+           src/sqlite_dbi/SQLitePackUtils.cpp \
            src/sqlite_dbi/SQLiteSequenceDbi.cpp \
            src/sqlite_dbi/SQLiteVariantDbi.cpp \
            src/tasks/ConvertAssemblyToSamTask.cpp \
