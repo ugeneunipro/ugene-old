@@ -45,7 +45,8 @@ public:
 private:
     static const int nElementsInVec = 8;
     void printVector(__m128i &toprint, int add);
-    void calculateMatrix();
+    void calculateMatrixForMultipleAlignmentResult();
+    void calculateMatrixForAnnotationsResult();
     int calculateMatrixSSE2(unsigned queryLength, unsigned char *dbSeq, unsigned dbLength, unsigned short gapOpenOrig, unsigned short gapExtend);
 
     ScoreType ** matrix;    
