@@ -30,6 +30,7 @@
 #include <U2Core/DNATranslationImpl.h>
 #include <U2Formats/SCFFormat.h>
 #include <U2Core/Counter.h>
+#include <U2Core/GHints.h>
 #include <U2Core/DNAChromatogramObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/LoadDocumentTask.h>
@@ -47,8 +48,8 @@ namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
 // DNAExportAlignmentTask
-SaveAlignmentTask::SaveAlignmentTask(const MAlignment& _ma, const QString& _fileName, DocumentFormatId _f)
-: Task("", TaskFlag_None), ma(_ma), fileName(_fileName), format(_f)
+SaveAlignmentTask::SaveAlignmentTask(const MAlignment& _ma, const QString& _fileName, DocumentFormatId _f, const QVariantMap& _hints)
+: Task("", TaskFlag_None), ma(_ma), fileName(_fileName), format(_f), hints(_hints)
 {
     GCOUNTER( cvar, tvar, "ExportAlignmentTask" );
     setTaskName(tr("Export alignment to '%1'").arg(QFileInfo(fileName).fileName()));
@@ -65,6 +66,11 @@ void SaveAlignmentTask::run() {
 
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(doc->getDbiRef(), ma, stateInfo);
     CHECK_OP(stateInfo, );
+
+    GHints* docHints = doc->getGHints();
+    foreach(const QString& key, hints.keys()){
+        docHints->set(key, hints[key]);
+    }
 
     MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
     doc->addObject(obj);

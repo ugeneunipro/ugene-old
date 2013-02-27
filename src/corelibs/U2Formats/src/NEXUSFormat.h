@@ -53,7 +53,7 @@ protected:
 
 private:
     QList<GObject*> loadObjects(IOAdapter *io, const U2DbiRef& dbiRef, U2OpStatus &ti);
-    void storeObjects(QList<GObject*> objects, IOAdapter *io, U2OpStatus &ti);
+    void storeObjects(QList<GObject*> objects, bool simpleNames, IOAdapter *io, U2OpStatus &ti);
 
 private:
     QString formatName;

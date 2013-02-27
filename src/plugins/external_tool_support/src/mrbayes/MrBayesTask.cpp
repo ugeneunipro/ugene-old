@@ -27,6 +27,8 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2OpStatusUtils.h>
 
+#include <U2Core/DocumentModel.h>
+
 namespace U2 {
 
 #define TMPFILENAME "tmp.nex"
@@ -39,7 +41,9 @@ MrBayesPrepareDataForCalculation::MrBayesPrepareDataForCalculation(const MAlignm
 }
 void MrBayesPrepareDataForCalculation::prepare(){
     inputFileForMrBayes = tmpDirUrl + "/"+TMPFILENAME;
-    saveDocumentTask=new SaveAlignmentTask(ma, inputFileForMrBayes, BaseDocumentFormats::NEXUS);
+    QVariantMap hints;
+    hints.insert(DocumentWritingMode_SimpleNames, DocumentWritingMode_SimpleNames);
+    saveDocumentTask=new SaveAlignmentTask(ma, inputFileForMrBayes, BaseDocumentFormats::NEXUS, hints);
     saveDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveDocumentTask);
 }

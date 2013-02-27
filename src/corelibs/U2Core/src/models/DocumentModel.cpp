@@ -671,6 +671,9 @@ bool Document::isModificationAllowed(const QString& modType) {
 void Document::setGHints(GHints* newHints) {
     assert(newHints!=NULL);
     //gobjects in document keep states in parent document map -> preserve gobject hints
+    if (newHints == ctxState){
+        return;
+    }
     QList<QVariantMap> objectHints;
     for (int i = 0; i < objects.size(); i++) {
         GObject* obj = objects[i];

@@ -36,7 +36,7 @@ namespace U2 {
 class SaveAlignmentTask : public Task {
     Q_OBJECT
 public:
-    SaveAlignmentTask(const MAlignment& ma, const QString& fileName, DocumentFormatId f);
+    SaveAlignmentTask(const MAlignment& ma, const QString& fileName, DocumentFormatId f, const QVariantMap& hints = QVariantMap());
 
     void run();
 
@@ -45,6 +45,7 @@ public:
 private:
     MAlignment              ma;
     QString                 fileName;
+    QVariantMap             hints;
     DocumentFormatId        format;
     std::auto_ptr<Document> doc;
 };

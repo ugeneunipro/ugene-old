@@ -100,6 +100,9 @@ typedef QFlags<DocumentFormatFlag> DocumentFormatFlags;
 #define DocumentReadingMode_SequenceAsShortReadsHint        "sequences-are-short-reads"
 #define DocumentReadingMode_MaxObjectsInDoc                 "max-objects-in-doc"
 
+/** Set of hints that can be processed during document storing */
+#define DocumentWritingMode_SimpleNames                 "simple-names"
+
 
 class U2CORE_EXPORT DocumentFormat: public QObject {
     Q_OBJECT

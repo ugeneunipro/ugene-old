@@ -710,7 +710,7 @@ void writeHeader(IOAdapter *io, U2OpStatus&) {
     io->writeBlock(line);
 }
 
-void writeMAligment(const MAlignment &ma, IOAdapter *io, U2OpStatus&) {
+void writeMAligment(const MAlignment &ma, bool simpleName, IOAdapter *io, U2OpStatus&) {
     QByteArray line;
     QByteArray tabs, tab(4, ' ');
 
@@ -765,10 +765,16 @@ void writeMAligment(const MAlignment &ma, IOAdapter *io, U2OpStatus&) {
     {
         QString name = row.getName();
         
-        if (name.contains(QRegExp("\\s")))
-        {
-            //name = "'" + name + "'";
-            name.replace(' ','_');
+        if (name.contains(QRegExp("\\s|\\W"))){
+            if (simpleName){
+                name.replace(' ','_');
+                int idx = name.indexOf(QRegExp("\\s|\\W"));
+                if (idx != -1){
+                    name = name.left(idx);
+                }
+            }else{
+                name = "'" + name + "'";
+            }
         }
 
         name = name.leftJustified(nameMaxLen);
@@ -860,7 +866,8 @@ void writePhyTree(const PhyTree &pt, IOAdapter *io, U2OpStatus &ti) {
     writePhyTree(pt, "Tree", io, ti);
 }
 
-void NEXUSFormat::storeObjects(QList<GObject*> objects, IOAdapter *io, U2OpStatus &ti) {
+void NEXUSFormat::storeObjects( QList<GObject*> objects, bool simpleNames, IOAdapter *io, U2OpStatus &ti )
+{
     assert(io && "IO must exist");
     writeHeader(io, ti);
 
@@ -868,7 +875,7 @@ void NEXUSFormat::storeObjects(QList<GObject*> objects, IOAdapter *io, U2OpStatu
         MAlignmentObject *mao = qobject_cast<MAlignmentObject*> (object);
         PhyTreeObject *pto = qobject_cast<PhyTreeObject*> (object);
         if (mao) {
-            writeMAligment(mao->getMAlignment(), io, ti);
+            writeMAligment(mao->getMAlignment(), simpleNames, io, ti);
             io->writeBlock(QByteArray("\n"));
         } else if (pto) {
             writePhyTree(pto->getTree(), pto->getGObjectName(), io, ti);
@@ -882,7 +889,8 @@ void NEXUSFormat::storeObjects(QList<GObject*> objects, IOAdapter *io, U2OpStatu
 
 void NEXUSFormat::storeDocument(Document* d, IOAdapter* io, U2OpStatus& os) {
     QList<GObject*> objects = d->getObjects();
-    storeObjects(objects, io, os);
+    bool simpleNames = d->getGHintsMap().contains(DocumentWritingMode_SimpleNames);
+    storeObjects(objects, simpleNames, io, os);
 }
 
 FormatCheckResult NEXUSFormat::checkRawData(const QByteArray &rawData, const GUrl&) const {
