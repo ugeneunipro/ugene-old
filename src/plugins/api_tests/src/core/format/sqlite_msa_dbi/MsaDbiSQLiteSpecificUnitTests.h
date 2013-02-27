@@ -121,6 +121,21 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_redo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_severalSteps);
 
+/** Remove row */
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow_noModTrack);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow_redo);
+
+/** Remove rows */
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, removeRows_noModTrack);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, removeRows_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, removeRows_redo);
+
+/** Add rows */
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRows_noModTrack);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRows_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRows_redo);
+
 } // namespace
 
 
@@ -158,6 +173,18 @@ DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_severalSteps);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_append_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_append_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_append_redo);
+
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRow_noModTrack);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRow_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRow_redo);
+
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRows_noModTrack);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRows_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRows_redo);
+
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRows_noModTrack);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRows_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRows_redo);
 
 
 #endif

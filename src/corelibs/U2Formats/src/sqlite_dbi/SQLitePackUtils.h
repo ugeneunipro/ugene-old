@@ -59,9 +59,13 @@ public:
     static QByteArray packRowNameDetails(qint64 rowId, const QString &oldName, const QString &newName);
     static bool unpackRowNameDetails(const QByteArray &modDetails, qint64 &rowId, QString &oldName, QString &newName);
 
-    /** Added row */
-    static QByteArray packAddedRow(qint64 posInMsa, const U2MsaRow& row);
-    static bool unpackAddedRow(const QByteArray &modDetails, qint64& posInMsa, U2MsaRow& row);
+    /** Row */
+    static QByteArray packRow(qint64 posInMsa, const U2MsaRow& row);
+    static bool unpackRow(const QByteArray &modDetails, qint64& posInMsa, U2MsaRow& row);
+
+    /** Rows */
+    static QByteArray packRows(const QList<qint64> &posInMsa, const QList<U2MsaRow> &rows);
+    static bool unpackRows(const QByteArray &modDetails, QList<qint64> &posInMsa, QList<U2MsaRow> &rows);
 
     /** Alphabet details*/
     static QByteArray packAlphabetDetails(const U2AlphabetId &oldAlphabet, const U2AlphabetId &newAlphabet);
@@ -73,6 +77,7 @@ public:
 
 private:
     static const char SEP;
+    static const char SECOND_SEP;
 };
 
 } // SQLite

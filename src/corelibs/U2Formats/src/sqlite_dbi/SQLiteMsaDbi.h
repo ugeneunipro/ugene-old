@@ -232,12 +232,20 @@ private:
     /** Get maximum rowId for the MSA */
     qint64 getMaximumRowId(const U2DataId& msaId, U2OpStatus& os);
 
+    qint64 getPosInMsa(const U2DataId &msaId, qint64 rowId, U2OpStatus &os);
+
+    ///////////////////////////////////////////////////////////
+    // Core methods
     /** Replaces the old gap model with a new one, updates msa length */
     void updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, const QList<U2MsaGap> &gapModel, U2OpStatus &os);
     /** Replaces old sequence and gap model, updates msa length */
     void updateRowContentCore(const U2DataId &msaId, qint64 rowId, const QByteArray &seqBytes, const QList<U2MsaGap> &gaps, U2OpStatus &os);
+    void addRowSubcore(const U2DataId &msaId, qint64 numOfRows, qint64 maxRowLength, const QList<qint64> &rowsOrder, U2OpStatus &os);
     void addRowCore(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os);
+    void addRowsCore(const U2DataId &msaId, const QList<qint64> &posInMsa, QList<U2MsaRow> &rows, U2OpStatus &os);
+    void removeRowSubcore(const U2DataId &msaId, qint64 numOfRows, U2OpStatus &os);
     void removeRowCore(const U2DataId& msaId, qint64 rowId, bool removeSequence, U2OpStatus& os);
+    void removeRowsCore(const U2DataId& msaId, const QList<qint64> &rowIds, bool removeSequence, U2OpStatus& os);
     void setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64> rowIds, U2OpStatus &os);
 
     ///////////////////////////////////////////////////////////

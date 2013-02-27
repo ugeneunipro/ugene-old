@@ -28,6 +28,7 @@ namespace SQLite {
 
 const QByteArray PackUtils::VERSION("0");
 const char PackUtils::SEP = '\t';
+const char PackUtils::SECOND_SEP = 11;
 
 QByteArray PackUtils::packGaps(const QList<U2MsaGap> &gaps) {
     QByteArray result;
@@ -228,7 +229,7 @@ bool PackUtils::unpackRowNameDetails(const QByteArray &modDetails, qint64 &rowId
     return true;
 }
 
-QByteArray PackUtils::packAddedRow(qint64 posInMsa, const U2MsaRow& row) {
+QByteArray PackUtils::packRow(qint64 posInMsa, const U2MsaRow& row) {
     QByteArray result = VERSION;
     result += SEP;
     result += QByteArray::number(posInMsa);
@@ -245,7 +246,7 @@ QByteArray PackUtils::packAddedRow(qint64 posInMsa, const U2MsaRow& row) {
     return result;
 }
 
-bool PackUtils::unpackAddedRow(const QByteArray &modDetails, qint64& posInMsa, U2MsaRow& row) {
+bool PackUtils::unpackRow(const QByteArray &modDetails, qint64& posInMsa, U2MsaRow& row) {
     QList<QByteArray> tokens = modDetails.split(SEP);
     SAFE_POINT(7 == tokens.size(), QString("Invalid added row modDetails string '%1'").arg(QString(modDetails)), false);
     { // version
@@ -323,6 +324,32 @@ bool PackUtils::unpackObjectNameDetails(const QByteArray &modDetails, QString &o
 
     oldName = tokens[1];
     newName = tokens[2];
+    return true;
+}
+
+QByteArray PackUtils::packRows(const QList<qint64> &posInMsa, const QList<U2MsaRow> &rows) {
+    SAFE_POINT(posInMsa.size() == rows.size(), "Different lists sizes", "");
+    QByteArray result = VERSION;
+    QList<qint64>::ConstIterator pi = posInMsa.begin();
+    QList<U2MsaRow>::ConstIterator ri = rows.begin();
+    for (; ri != rows.end(); ri++, pi++) {
+        result += SECOND_SEP + packRow(*pi, *ri);
+    }
+    return result;
+}
+
+bool PackUtils::unpackRows(const QByteArray &modDetails, QList<qint64> &posInMsa, QList<U2MsaRow> &rows) {
+    QList<QByteArray> tokens = modDetails.split(SECOND_SEP);
+    SAFE_POINT(tokens.count() > 0, QString("Invalid modDetails '%1'!").arg(QString(modDetails)), false);
+    SAFE_POINT(VERSION == tokens.takeFirst(), QString("Invalid modDetails version '%1'").arg(QString(tokens[0])), false);
+    foreach (const QByteArray &token, tokens) {
+        qint64 pos = 0;
+        U2MsaRow row;
+        bool ok = unpackRow(token, pos, row);
+        CHECK(ok, false);
+        posInMsa << pos;
+        rows << row;
+    }
     return true;
 }
 

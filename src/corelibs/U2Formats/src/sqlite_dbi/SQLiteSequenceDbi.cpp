@@ -189,7 +189,7 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
     QByteArray leftCrop, rightCrop;
     qint64 cropLeftPos = -1;
     if (!emptySequence) {
-        static const QString leftString("SELECT sstart FROM SequenceData WHERE sequence = ?1 AND sstart <= ?2 AND send >= ?2");
+        static const QString leftString("SELECT sstart FROM SequenceData WHERE sequence = ?1 AND send >= ?2 AND sstart <= ?2");
         SQLiteQuery *leftQ = t.getPreparedQuery(leftString, db, os);
         CHECK_OP(os, );
         leftQ->bindDataId(1, sequenceId);
@@ -209,7 +209,7 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
             cropLeftPos = 0;
         }
 
-        static const QString rightString("SELECT send FROM SequenceData WHERE sequence = ?1 AND sstart <= ?2 AND send >= ?2");
+        static const QString rightString("SELECT send FROM SequenceData WHERE sequence = ?1 AND send >= ?2 AND sstart <= ?2");
         SQLiteQuery *rightQ = t.getPreparedQuery(rightString, db, os);
         CHECK_OP(os, );
         rightQ->bindDataId(1, sequenceId);
