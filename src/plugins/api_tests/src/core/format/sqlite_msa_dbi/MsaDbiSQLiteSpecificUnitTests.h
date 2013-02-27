@@ -95,13 +95,29 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps);
 
 /**
  * Add a row:
- *   ^ append_noModTrack - "posInMsa = -1" (the row is appended), modifications track is not enabled.
- *   ^ append_undo       - the row is appended, modification tracking is enabled, check the "undo" operation.
- *   ^ append_redo       - the row is appended, modification tracking is enabled, check the "redo" operation.
+ *   ^ append_noModTrack  - "posInMsa = -1" (the row is appended), modifications track is not enabled.
+ *   ^ append_undo        - the row is appended, modification tracking is enabled, check the "undo" operation.
+ *   ^ append_redo        - the row is appended, modification tracking is enabled, check the "redo" operation.
+ *   ^ zeroPos_undo       -
+ *   ^ zeroPos_redo       -
+ *   ^ middlePos_undo     -
+ *   ^ middlePos_redo     -
+ *   ^ lastRowPos_undo    -
+ *   ^ lastRowPos_redo    -
+ *   ^ child_noModTrack   -
+ *   ^ child_Track        -
  */
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_redo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_zeroPos_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_zeroPos_redo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_middlePos_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_middlePos_redo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_undo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_redo);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_noModTrack);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_Track);
 
 /**
  * Set new row order of the MSA.
@@ -173,6 +189,14 @@ DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, updateRowName_severalSteps);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_append_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_append_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_append_redo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_zeroPos_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_zeroPos_redo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_middlePos_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_middlePos_redo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_undo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_redo);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_child_noModTrack);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_child_Track);
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRow_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRow_undo);

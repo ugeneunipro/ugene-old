@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>548</width>
-    <height>430</height>
+    <width>741</width>
+    <height>496</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>400</width>
-    <height>300</height>
+    <width>741</width>
+    <height>496</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -268,121 +268,94 @@ p, li { white-space: pre-wrap; }
          <property name="title">
           <string>Other parameters</string>
          </property>
-         <widget class="QSpinBox" name="bandExpansionBox">
-          <property name="geometry">
-           <rect>
-            <x>182</x>
-            <y>59</y>
-            <width>51</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="toolTip">
-           <string/>
-          </property>
-          <property name="whatsThis">
-           <string/>
-          </property>
-          <property name="minimum">
-           <number>10</number>
-          </property>
-          <property name="value">
-           <number>20</number>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label_3">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>60</y>
-            <width>131</width>
-            <height>16</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Band expansion size (-a)</string>
-          </property>
-         </widget>
-         <widget class="QSpinBox" name="maxNumWordMatchesBox">
-          <property name="geometry">
-           <rect>
-            <x>182</x>
-            <y>28</y>
-            <width>51</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="minimum">
-           <number>30</number>
-          </property>
-          <property name="maximum">
-           <number>1000</number>
-          </property>
-          <property name="value">
-           <number>300</number>
-          </property>
-         </widget>
-         <widget class="QLabel" name="maxGapLengthInOverlapLabel">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>90</y>
-            <width>171</width>
-            <height>16</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Max gap length in any overlap (-f)</string>
-          </property>
-         </widget>
-         <widget class="QSpinBox" name="maxGapLengthBox">
-          <property name="geometry">
-           <rect>
-            <x>183</x>
-            <y>89</y>
-            <width>50</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>100</number>
-          </property>
-          <property name="value">
-           <number>20</number>
-          </property>
-         </widget>
-         <widget class="QCheckBox" name="reverseReadsBox">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>200</y>
-            <width>161</width>
-            <height>30</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Assembly reverse reads (-r)</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label_7">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>30</y>
-            <width>161</width>
-            <height>16</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Max number of word matches (-t)</string>
-          </property>
-         </widget>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Max number of word matches (-t)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="maxNumWordMatchesBox">
+            <property name="minimum">
+             <number>30</number>
+            </property>
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="value">
+             <number>300</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Band expansion size (-a)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="bandExpansionBox">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string/>
+            </property>
+            <property name="minimum">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>20</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="maxGapLengthInOverlapLabel">
+            <property name="text">
+             <string>Max gap length in any overlap (-f)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="maxGapLengthBox">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>20</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="reverseReadsBox">
+            <property name="text">
+             <string>Assembly reverse reads (-r)</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </widget>
        </item>
        <item row="2" column="0">
