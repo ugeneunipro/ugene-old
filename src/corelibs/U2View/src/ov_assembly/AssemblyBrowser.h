@@ -125,6 +125,10 @@ public:
     QAction * getCoordsOnRulerAction() { return showCoordsOnRulerAction; }
     QAction * getCoverageOnRulerAction() { return showCoverageOnRulerAction; }
 
+    //public utility functions for zooming
+    bool canPerformZoomIn() const {return zoomInAction->isEnabled();}
+    bool canPerformZoomOut() const {return zoomOutAction->isEnabled();}
+
 public slots:
     void sl_zoomIn(const QPoint & pos = QPoint());
     void sl_zoomOut(const QPoint & pos = QPoint());
@@ -161,8 +165,6 @@ private:
     QString tryAddObject(GObject * obj);
 
     // utility functions for zooming
-    bool canPerformZoomIn() const {return zoomInAction->isEnabled();}
-    bool canPerformZoomOut() const {return zoomOutAction->isEnabled();}
     int zoomInFromSize(int oldCellSize);
     int zoomOutFromSize(int oldCellSize);
     void zoomToSize(int reqCellSize);

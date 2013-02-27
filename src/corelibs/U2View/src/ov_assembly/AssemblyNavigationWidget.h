@@ -32,11 +32,19 @@
 namespace U2 {
 
 class AssemblyBrowser;
+class PositionSelector;
 
 class AssemblyNavigationWidget : public QWidget {
     Q_OBJECT
 public:
     AssemblyNavigationWidget(AssemblyBrowser * browser, QWidget *p = NULL);
+
+public slots:
+        void sl_updateZoomingState();
+
+private:
+    AssemblyBrowser * browser;
+    PositionSelector * posSelector;
 };
 
 class CoveredRegionsLabel : public QLabel {

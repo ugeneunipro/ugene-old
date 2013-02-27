@@ -32,8 +32,9 @@
 
 namespace U2 {
 
-AssemblyNavigationWidget::AssemblyNavigationWidget(AssemblyBrowser *browser, QWidget *p)
+AssemblyNavigationWidget::AssemblyNavigationWidget(AssemblyBrowser *_browser, QWidget *p)
     : QWidget(p)
+    ,browser(_browser)
 {
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -44,18 +45,28 @@ AssemblyNavigationWidget::AssemblyNavigationWidget(AssemblyBrowser *browser, QWi
     U2OpStatus2Log os;
     qint64 modelLen = browser->getModel()->getModelLength(os);
     if(!os.isCoR()) {
-        PositionSelector * posSelector = new PositionSelector(this, 1, modelLen, false);
+        posSelector = new PositionSelector(this, 1, modelLen, false);
         connect(posSelector, SIGNAL(si_positionChanged(int)), browser, SLOT(sl_onPosChangeRequest(int)));
         posSelector->setContentsMargins(0,0,10,0);
 
         mainLayout->addWidget(new QLabel(tr("Enter position in assembly:"), this));
         mainLayout->addWidget(posSelector);
+
+        connect(browser, SIGNAL( si_zoomOperationPerformed() ), SLOT( sl_updateZoomingState() ));
+        sl_updateZoomingState();
     }
 
     CoveredRegionsLabel * coveredLabel = new CoveredRegionsLabel(browser, this);
     QWidget * coveredGroup = new ShowHideSubgroupWidget("COVERED", tr("Most Covered Regions"), coveredLabel, true);
     mainLayout->addWidget(coveredGroup);
 }
+
+void AssemblyNavigationWidget::sl_updateZoomingState(){
+    if (browser && posSelector){
+        posSelector->setEnabled(browser->canPerformZoomOut());        
+    }
+}
+
 
 // ----- CoveredRegionsLabel -----
 
