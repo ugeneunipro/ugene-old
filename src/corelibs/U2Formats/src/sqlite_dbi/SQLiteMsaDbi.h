@@ -162,11 +162,6 @@ public:
     /** Redo the operation for the MSA. */
     void redo(const U2DataId& msaId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
 
-    ///////////////////////////////////////////////////////////
-
-    /** Version of description in a ModStep details */
-    static const QByteArray CURRENT_MOD_DETAILS_VERSION;
-
 private:
     /** Returns length stored in Msa table */
     qint64 getMsaLength(const U2DataId& msaId, U2OpStatus& os);
@@ -229,16 +224,15 @@ private:
     /** Required for store modification track of removed rows  */
     QByteArray getRemovedRowDetails(const U2MsaRow& row);
 
-    /** Get maximum rowId for the MSA */
+    /** Gets maximum rowId for the MSA */
     qint64 getMaximumRowId(const U2DataId& msaId, U2OpStatus& os);
 
+    /** Gets position of the row in the msa */
     qint64 getPosInMsa(const U2DataId &msaId, qint64 rowId, U2OpStatus &os);
 
     ///////////////////////////////////////////////////////////
     // Core methods
-    /** Replaces the old gap model with a new one, updates msa length */
     void updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, const QList<U2MsaGap> &gapModel, U2OpStatus &os);
-    /** Replaces old sequence and gap model, updates msa length */
     void updateRowContentCore(const U2DataId &msaId, qint64 rowId, const QByteArray &seqBytes, const QList<U2MsaGap> &gaps, U2OpStatus &os);
     void addRowSubcore(const U2DataId &msaId, qint64 numOfRows, qint64 maxRowLength, const QList<qint64> &rowsOrder, U2OpStatus &os);
     void addRowCore(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row, U2OpStatus& os);
@@ -259,6 +253,7 @@ private:
     void undoUpdateGapModel(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void undoSetNewRowsOrder(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
 
+    ///////////////////////////////////////////////////////////
     // Redo methods
     void redoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);
     void redoAddRows(const U2DataId& msaId, const QByteArray& modDetails, U2OpStatus& os);

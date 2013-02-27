@@ -37,14 +37,14 @@ protected:
 
 public:
     /** Returns a modification step with the specified version for the object */
-    virtual U2ModStep getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os) = 0;
+    virtual U2SingleModStep getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os) = 0;
 
     /**
-     * Adds a record about a single object modification.
-     * Parameter 'step' must contain valid object ID and info about the modification,
-     * the parameter is modified to contain ID of the added record.
+    * Adds records about modifications into the database.
+    * All single modification steps must contain valid object IDs and info about modifications,
+    * the method sets correct IDS for the steps.
      */
-    virtual void createModStep(U2ModStep& step, U2OpStatus& os) = 0;
+    virtual void createMultiModStep(U2MultiModStep& multiStep, U2OpStatus& os) = 0;
 
     /** Removes modification steps for the object with version EQUAL or GREATER than the specified version */
     virtual void removeModsWithGreaterVersion(const U2DataId& objectId, qint64 version, U2OpStatus& os) = 0;

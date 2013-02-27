@@ -41,8 +41,8 @@ public:
     static SQLiteDbi* getSQLiteDbi();
 
     static qint64 getModStepsNum(const U2DataId& objId, U2OpStatus& os);
-    static U2ModStep getLastModStep(const U2DataId& objId, U2OpStatus& os);
-    static QList<U2ModStep> getAllModSteps(const U2DataId& objId, U2OpStatus& os);
+    static U2SingleModStep getLastModStep(const U2DataId& objId, U2OpStatus& os);
+    static QList<U2SingleModStep> getAllModSteps(const U2DataId& objId, U2OpStatus& os);
 
     static U2DataId createTestMsa(bool enableModTracking, U2OpStatus& os);
 

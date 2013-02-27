@@ -48,7 +48,7 @@ public:
 };
 
 /** Single modification of a dbi object */
-class U2CORE_EXPORT U2ModStep {
+class U2CORE_EXPORT U2SingleModStep {
 public:
     /** ID of the modification in the database */
     qint64         id;
@@ -66,12 +66,17 @@ public:
     QByteArray     details;
 };
 
-/** Several subsequent modification of a dbi object */
-class U2CORE_EXPORT U2ModTrack {
+/** Multiple modifications step (a minimal step that can be undo/redo) */
+class U2CORE_EXPORT U2MultiModStep {
 public:
-    QList<U2ModStep> mods;
+    QList<U2SingleModStep> singleSteps;
 };
 
+/** User modifications (e.g. complex modifications from GUI) */
+class U2CORE_EXPORT U2UserModStep {
+public:
+    QList<U2MultiModStep> multiSteps;
+};
 
 } // namespace
 

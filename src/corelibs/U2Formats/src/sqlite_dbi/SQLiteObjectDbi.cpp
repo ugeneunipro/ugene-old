@@ -438,7 +438,7 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
     }
 
     // Get the modification step for the previous version
-    U2ModStep modStep = dbi->getModDbi()->getModStep(objId, obj.version - 1, os);
+    U2SingleModStep modStep = dbi->getModDbi()->getModStep(objId, obj.version - 1, os);
     if (os.hasError()) {
         coreLog.trace("Error getting the modStep for an object: " + os.getError());
         os.setError(errorDescr);
@@ -491,7 +491,7 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
     }
 
     // Get the modification step for the current version
-    U2ModStep modStep = dbi->getModDbi()->getModStep(objId, obj.version, os);
+    U2SingleModStep modStep = dbi->getModDbi()->getModStep(objId, obj.version, os);
     if (os.hasError()) {
         coreLog.trace("Error getting the modStep for an object: " + os.getError());
         os.setError(errorDescr);
@@ -844,13 +844,16 @@ U2TrackModType ModTrackAction::prepareTracking(U2OpStatus& os) {
 void ModTrackAction::saveTrack(qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
     if (TrackOnUpdate == trackMod) {
         SAFE_POINT(!modDetails.isEmpty(), "Empty modification details!", );
-        U2ModStep modStep;
-        modStep.objectId = objectId;
-        modStep.version = objectVersionToTrack;
-        modStep.modType = modType;
-        modStep.details = modDetails;
+        U2SingleModStep singleModStep;
+        singleModStep.objectId = objectId;
+        singleModStep.version = objectVersionToTrack;
+        singleModStep.modType = modType;
+        singleModStep.details = modDetails;
 
-        dbi->getModDbi()->createModStep(modStep, os);
+        U2MultiModStep multiStep;
+        multiStep.singleSteps.append(singleModStep);
+
+        dbi->getModDbi()->createMultiModStep(multiStep, os);
     }
 }
 

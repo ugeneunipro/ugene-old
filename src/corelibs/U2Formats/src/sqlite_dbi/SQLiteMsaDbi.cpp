@@ -30,8 +30,6 @@ namespace U2 {
 
 using namespace SQLite;
 
-const QByteArray SQLiteMsaDbi::CURRENT_MOD_DETAILS_VERSION = QByteArray("0&");
-
 SQLiteMsaDbi::SQLiteMsaDbi(SQLiteDbi* dbi) : U2MsaDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
 
