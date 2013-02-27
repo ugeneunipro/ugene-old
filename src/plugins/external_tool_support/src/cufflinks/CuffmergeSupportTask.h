@@ -59,7 +59,6 @@ public:
 private:
     CuffmergeSettings settings;
     QString workingDir;
-    QString outDir;
     QString listFilePath;
     int fileNum;
     QList<Document*> docs;

@@ -187,7 +187,7 @@ QList<Task*> CufflinksSupportTask::onSubTaskFinished(Task* subTask)
         ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/transcripts.gtf", outputFiles);
         ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/isoforms.fpkm_tracking", outputFiles);
         ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/genes.fpkm_tracking", outputFiles);
-        isoformLevelAnnots = getAnnotationsFromFile("isoforms.fpkm_tracking", CufflinksOutputFpkm);
+        isoformLevelAnnots = getAnnotationsFromFile("transcripts.gtf", CufflinksOutputGtf);
     }
 
     return result;

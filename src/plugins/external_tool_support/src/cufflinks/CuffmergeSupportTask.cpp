@@ -76,7 +76,7 @@ QList<Task*> CuffmergeSupportTask::onSubTaskFinished(Task *subTask) {
 
 void CuffmergeSupportTask::run() {
     result = ExternalToolSupportUtils::getAnnotationsFromFile(
-        outDir + "/merged.gtf",
+        settings.outDir + "/merged.gtf",
         BaseDocumentFormats::GTF,
         CUFFMERGE_TOOL_NAME,
         stateInfo);
@@ -146,8 +146,7 @@ Task * CuffmergeSupportTask::createCuffmergeTask() {
         if (!settings.refSeqUrl.isEmpty()) {
             args << "--ref-sequence" << settings.refSeqUrl;
         }
-        outDir = workingDir + "/out";
-        args << "-o" << outDir;
+        args << "-o" << settings.outDir;
         args << "--min-isoform-fraction" << QString::number(settings.minIsoformFraction);
         args << listFilePath;
     }
