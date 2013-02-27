@@ -23,6 +23,7 @@ HEADERS += src/ActorCfgModel.h \
            src/WorkflowViewController.h \
            src/WorkflowViewItems.h \
            src/cmdline/WorkflowCMDLineTasks.h \
+           src/library/AminoTranslationWorker.h \
            src/library/AssemblyToSequenceWorker.h \
            src/library/BaseDocWorker.h \
            src/library/CDSearchWorker.h \
@@ -51,7 +52,6 @@ HEADERS += src/ActorCfgModel.h \
            src/library/SchemaWorker.h \
            src/library/ScriptWorker.h \
            src/library/SequenceSplitWorker.h \
-           src/library/AminoTranslationWorker.h \
            src/library/SequencesToMSAWorker.h \
            src/library/StatisticWorkers.h \
            src/library/Text2SequenceWorker.h \
@@ -59,7 +59,8 @@ HEADERS += src/ActorCfgModel.h \
            src/library/WriteVariationWorker.h \
            src/tasks/ReadAssemblyTask.h \
            src/util/GrouperActionUtils.h \
-           src/util/SaveSchemaImageUtils.h
+           src/util/SaveSchemaImageUtils.h \
+           src/util/WorkerNameValidator.h
 FORMS += src/ui/ChooseItemDialog.ui \
          src/ui/CreateScriptBlockDialog.ui \
          src/ui/ExternalProcessWorkerDialog.ui \
@@ -93,6 +94,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/WorkflowViewController.cpp \
            src/WorkflowViewItems.cpp \
            src/cmdline/WorkflowCMDLineTasks.cpp \
+           src/library/AminoTranslationWorker.cpp \
            src/library/AssemblyToSequenceWorker.cpp \
            src/library/BaseDocWorker.cpp \
            src/library/CDSearchWorker.cpp \
@@ -121,7 +123,6 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/SchemaWorker.cpp \
            src/library/ScriptWorker.cpp \
            src/library/SequenceSplitWorker.cpp \
-           src/library/AminoTranslationWorker.cpp \
            src/library/SequencesToMSAWorker.cpp \
            src/library/StatisticWorkers.cpp \
            src/library/Text2SequenceWorker.cpp \
@@ -129,6 +130,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/WriteVariationWorker.cpp \
            src/tasks/ReadAssemblyTask.cpp \
            src/util/GrouperActionUtils.cpp \
-           src/util/SaveSchemaImageUtils.cpp
+           src/util/SaveSchemaImageUtils.cpp \
+           src/util/WorkerNameValidator.cpp
 RESOURCES += workflow_designer.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts

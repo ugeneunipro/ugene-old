@@ -21,6 +21,8 @@
 
 #include "CreateExternalProcessDialog.h"
 
+#include "../util/WorkerNameValidator.h"
+
 #include <QtGui/QMessageBox>
 
 #include <U2Core/DocumentModel.h>
@@ -486,7 +488,17 @@ private:
     QVariantMap types;
 };
 
-
+class ExecStringValidator : public QValidator {
+public:
+    ExecStringValidator(QObject *parent = 0)
+        : QValidator(parent) {}
+    State validate(QString &input, int &pos) const {
+        if (input.contains("\"")) {
+            return Invalid;
+        }
+        return Acceptable;
+    }
+};
 
 CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalProcessConfig *cfg, bool lastPage)
 : QWizard(p), initialCfg(NULL), lastPage(lastPage) {
@@ -525,6 +537,8 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     QFontMetrics fm(ui.inputTableView->font());
     ui.inputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
     ui.outputTableView->setColumnWidth(1, fm.width(SEQ_WITH_ANNS)*1.5);
+    ui.templateLineEdit->setValidator(new ExecStringValidator(this));
+    ui.nameLineEdit->setValidator(new WorkerNameValidator(this));
 
     initialCfg = new ExternalProcessConfig(*cfg);
     init(cfg);
@@ -678,6 +692,9 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
     ui.descr4TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
     descr1 = ui.descr1TextEdit->toHtml();
     editing = false;
+
+    ui.templateLineEdit->setValidator(new ExecStringValidator(this));
+    ui.nameLineEdit->setValidator(new WorkerNameValidator(this));
 }
 
 CreateExternalProcessDialog::~CreateExternalProcessDialog() {

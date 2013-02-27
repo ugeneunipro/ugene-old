@@ -22,6 +22,7 @@
 #include "CreateScriptWorker.h"
 #include "WorkflowEditorDelegates.h"
 #include "library/ScriptWorker.h"
+#include "util/WorkerNameValidator.h"
 
 #include <U2Core/Log.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -378,6 +379,8 @@ CreateScriptElementDialog::CreateScriptElementDialog(QWidget *p, ActorPrototype*
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_cancelClicked()));
 
     attributeTable->horizontalHeader()->setStretchLastSection(true);
+
+    nameEdit->setValidator(new WorkerNameValidator(this));
 
     if(proto) {
         fillFields(proto);
