@@ -210,7 +210,10 @@ void MSAEditorNameList::sl_removeCurrentSequence() {
             return;
         }
         assert(!maObj->isStateLocked());
-        maObj->removeRow(n);
+        // UGENE cannot show empty alignment
+        if (maObj->getNumRows() > 1) {
+            maObj->removeRow(n);
+        }
         //MAlignment ma = maObj->getMAlignment();
         //assert(ma.getNumSequences() > 1);
         //ma.alignedSeqs.removeAt(n);
