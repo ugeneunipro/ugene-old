@@ -412,7 +412,7 @@ U2Sequence U2SequenceImporter::finalizeSequence(U2OpStatus& os) {
     _addBuffer2Db(os);
     LOG_OP(os);
     // If sequence is empty, addBlock is never called and alphabet is not set. So set it here to some default value
-    if(! sequence.alphabet.isValid() ) {
+    if(! sequence.alphabet.isValid() && sequence.version != 0) {
         sequence.alphabet.id = BaseDNAAlphabetIds::RAW();
         con.dbi->getSequenceDbi()->updateSequenceObject(sequence, os);
         LOG_OP(os);
