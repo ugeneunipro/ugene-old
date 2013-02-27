@@ -20,6 +20,18 @@
  */
 
 #include "SendReportDialog.h"
+
+#include <QtCore/QBuffer>
+#include <QtCore/QUrl>
+#include <QtCore/QTime>
+#include <QtCore/QDate>
+#include <QtCore/QEventLoop>
+
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkProxy>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+
 #include <QMessageBox>
 #include <QFile>
 #define HOST_URL "http://ugene.unipro.ru"
@@ -78,16 +90,25 @@ void ReportSender::parse(const QString &htmlReport) {
 
 bool ReportSender::send(const QString &additionalInfo) {
     report += additionalInfo;
-    SyncHTTP http(QUrl(HOST_URL).host());
-    QString reportsPath = http.syncGet( DESTINATION_URL_KEEPER_PAGE );
+
+    QNetworkAccessManager* netManager=new QNetworkAccessManager(this);
+    QNetworkProxy proxy = QNetworkProxy::applicationProxy ();
+    netManager->setProxy(proxy);
+
+    connect(netManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(sl_replyFinished(QNetworkReply*)));
+    //check destination availability
+
+    QNetworkReply *reply = netManager->get(QNetworkRequest(QString(HOST_URL)+QString(DESTINATION_URL_KEEPER_PAGE)));
+    loop.exec();
+    QString reportsPath = QString(reply->readAll());
     if( reportsPath.isEmpty() ) {
         return false;
     }
-    if( QHttp::NoError != http.error() ) {
+    if( reply->error() != QNetworkReply::NoError ) {
         return false;
     }
 
-    SyncHTTP http2( QUrl(reportsPath).host() );
+    //prepare report
     report.replace(' ', "_");
     report.replace('\n', "|");
     report.replace('\t', "<t>");
@@ -99,12 +120,17 @@ bool ReportSender::send(const QString &additionalInfo) {
     QString fullPath = reportsPath;
     fullPath += "?data=";
     fullPath += report.toUtf8();
-    QString res = http2.syncGet(fullPath); 
-    if( QHttp::NoError != http.error() ) {
+    //send report
+    QUrl url=QUrl(fullPath);
+    reply = netManager->post(QNetworkRequest(url),url.encodedQuery());
+    loop.exec();
+    if( reply->error() != QNetworkReply::NoError ) {
         return false;
     }
-
     return true;
+}
+void ReportSender::sl_replyFinished(QNetworkReply *){
+    loop.exit();
 }
 
 SendReportDialog::SendReportDialog(const QString &report, QDialog *d): 
@@ -167,32 +193,4 @@ QString ReportSender::getOSVersion() {
 #endif
 
     return result;
-}
-
-
-SyncHTTP::SyncHTTP(const QString& hostName, quint16 port, QObject* 
-parent)
-: QHttp(hostName,port,parent), requestID(-1)
-{
-    connect(this,SIGNAL(requestFinished(int,bool)),SLOT(finished(int,bool)));
-}
-
-QString SyncHTTP::syncGet(const QString& path) {
-    QBuffer to;
-    requestID = get(path, &to);
-    loop.exec();
-    return QString(to.data());
-}
-
-QString SyncHTTP::syncPost(const QString& path, const QByteArray& data) 
-{
-    QBuffer to;
-    requestID = post(path, data, &to);
-    loop.exec();
-    return QString(to.data());
-}
-
-
-void SyncHTTP::finished(int, bool) {
-    loop.exit();
 }

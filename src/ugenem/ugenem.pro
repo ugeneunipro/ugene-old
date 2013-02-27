@@ -5,6 +5,7 @@ QT += xml network webkit
 TEMPLATE = app
 CONFIG +=qt thread debug_and_release
 DEFINES+= QT_DLL QT_FATAL_ASSERT
+INCLUDEPATH += src _tmp
 
 !debug_and_release|build_pass {
 
