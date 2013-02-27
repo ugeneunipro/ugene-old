@@ -37,43 +37,32 @@ SmithWatermanAlgorithm::SmithWatermanAlgorithm() {
     matrixLength = 0;
 }
 
-quint64 SmithWatermanAlgorithm::estimateNeededRamAmount(const qint32 gapOpen, const qint32 gapExtension,
-    const quint32 minScore, const quint32 maxScore,
+quint64 SmithWatermanAlgorithm::estimateNeededRamAmount(const qint32 gapOpen,
+    const qint32 gapExtension, const quint32 minScore, const quint32 maxScore,
     QByteArray const & patternSeq, QByteArray const & searchSeq,
-    const SmithWatermanSettings::SWResultView resultView) {
-        const double b_to_mb_factor = 1048576.0;
+    const SmithWatermanSettings::SWResultView resultView)
+{
+    const double b_to_mb_factor = 1048576.0;
 
-        const quint64 queryLength = patternSeq.length();
-        const quint64 searchLength = searchSeq.length();
-
+    const quint64 queryLength = patternSeq.length();
+    const quint64 searchLength = searchSeq.length();
+ 
+    quint64 memToAllocInBytes = 0;
+    if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
         const qint32 maxGapPenalty = (gapOpen > gapExtension) ? gapOpen : gapExtension;
         assert(0 > maxGapPenalty);
-
-        quint64 matrixLength = queryLength - (maxScore - minScore) / maxGapPenalty + 1;    
-
+        quint64 matrixLength = queryLength - (maxScore - minScore) / maxGapPenalty + 1;
         if (searchLength + 1 < matrixLength) {
             matrixLength = searchLength + 1;
         }
+        memToAllocInBytes = queryLength * (2 * sizeof(int) + 0x80 + matrixLength) + matrixLength;
+    } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+        memToAllocInBytes = queryLength * (3 * sizeof(int) + 0x80);
+    } else {
+        assert(false);
+    }
 
-        const quint64 maxPairSequencesSize = (searchLength + 1) * sizeof(PairAlignSequences);
-        const quint64 matrixSize = matrixLength * (queryLength + 2) * sizeof(int);
-        const quint64 EMatrixSize = (queryLength + 2) * sizeof(int);
-        const quint64 FMatrixSize = (queryLength + 2) * sizeof(int);
-
-        quint64 directionArraySize = 0;
-
-        if(SmithWatermanSettings::ANNOTATIONS == resultView) {
-            directionArraySize = 2 * (queryLength + 2) * sizeof(int);
-        } else if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-            directionArraySize = matrixLength * (queryLength + 2) * sizeof(char);
-        } else {
-            assert(0);
-        }
-
-        const quint64 memToAllocInBytes = (queryLength + 2) * ((sizeof(int) * 3)  + sizeof(char)) +
-            maxPairSequencesSize + matrixSize + EMatrixSize + FMatrixSize + directionArraySize;
-
-        return memToAllocInBytes / b_to_mb_factor;
+    return memToAllocInBytes / b_to_mb_factor;
 }
 
 bool SmithWatermanAlgorithm::calculateMatrixLength() {

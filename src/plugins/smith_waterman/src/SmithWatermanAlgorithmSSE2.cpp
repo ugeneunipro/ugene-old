@@ -30,64 +30,47 @@ using namespace std;
 
 namespace U2 {
     
-quint64 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq,
-                                                                QByteArray const & _searchSeq, const qint32 gapOpen,
-                                                                const qint32 gapExtension, const quint32 minScore,
-                                                                const quint32 maxScore, const SmithWatermanSettings::SWResultView resultView) {
+quint64 SmithWatermanAlgorithmSSE2::estimateNeededRamAmount(const SMatrix& sm, QByteArray
+    const & _patternSeq, QByteArray const & _searchSeq, const qint32 gapOpen,
+    const qint32 gapExtension, const quint32 minScore, const quint32 maxScore,
+    const SmithWatermanSettings::SWResultView resultView)
+{
     const double b_to_mb_factor = 1048576.0;
 
     const quint64 queryLength = _patternSeq.length();
     const quint64 searchLength = _searchSeq.length();
 
-    const quint32 iter = (queryLength + nElementsInVec - 1) / nElementsInVec;
-    const int alphaSize = sm.getAlphabet()->getNumAlphabetChars();
+    const quint32 iter = (queryLength + 7) >> 3;
     
-    const quint64 queryProfSize = 'Z' * alphaSize * iter * sizeof(__m128i);
-
-    const quint64 patternLengthDivisibleByN = queryLength + 1 + nElementsInVec - (queryLength + 1) % nElementsInVec;
-    
-    const quint64 tempSize = nElementsInVec * sizeof(ScoreType);
-    const quint64 eArraySize = (nElementsInVec + patternLengthDivisibleByN) * sizeof(ScoreType);
-    const quint64 fArraySize = (nElementsInVec + patternLengthDivisibleByN) * sizeof(ScoreType);
-    const quint64 maxArraySize = (nElementsInVec + patternLengthDivisibleByN) * sizeof(ScoreType);
-
-    qint32 maxGapPenalty = (gapOpen > gapExtension) ? gapOpen : gapExtension;
-    assert(0 > maxGapPenalty);
-
-    quint64 matrixLength = queryLength - (maxScore - minScore) / maxGapPenalty + 1;    
-    if (searchLength + 1 < matrixLength) {
-        matrixLength = searchLength + 1;
-    }
-
-    const quint64 matrixLengthDivisibleByN = matrixLength + nElementsInVec - matrixLength % nElementsInVec;
-    
-    const quint64 matrixPtrsSize = sizeof(ScoreType *) * matrixLengthDivisibleByN;
-    const quint64 matrixSize = sizeof(ScoreType) * matrixLengthDivisibleByN * patternLengthDivisibleByN;
-
-    quint64 directionArraySize = 0;
+    quint64 memNeeded = 0;
     if(SmithWatermanSettings::MULTIPLE_ALIGNMENT == resultView) {
-        directionArraySize = matrixLength * (queryLength + 2) * sizeof(char);
-    } else if (SmithWatermanSettings::ANNOTATIONS == resultView) {
-        directionArraySize = 2 * sizeof(int) * (patternLengthDivisibleByN + 1);
+        qint32 maxGapPenalty = (gapOpen > gapExtension) ? gapOpen : gapExtension;
+        assert(0 > maxGapPenalty);
+
+        quint64 matrixLength = queryLength - (maxScore - minScore) / maxGapPenalty + 1;    
+        if (searchLength + 1 < matrixLength) {
+            matrixLength = searchLength + 1;
+        }
+
+        memNeeded = iter * (131 + matrixLength) * sizeof(__m128i);
+    } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
+        memNeeded = (5 + iter * 133) * sizeof(__m128i);
     } else {
-        assert(0);
+        assert(false);
     }
-
-    const quint64 MatrixCalculationRequiredSpace = matrixPtrsSize + matrixSize + tempSize + eArraySize + fArraySize +
-                                maxArraySize + queryProfSize + directionArraySize +
-                                (sizeof(int) + sizeof(char)) * (patternLengthDivisibleByN + 1);
-
-    return MatrixCalculationRequiredSpace / b_to_mb_factor;
+    
+    return memNeeded / b_to_mb_factor;
 }
 
 void SmithWatermanAlgorithmSSE2::launch(const SMatrix& _substitutionMatrix, QByteArray const & _patternSeq,
     QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView _resultView) {
     setValues(_substitutionMatrix, _patternSeq, _searchSeq, _gapOpen, _gapExtension, _minScore, _resultView);
-    int maxScor = 0;
+    int maxScore = 0;
     if (isValidParams() && calculateMatrixLength()) {
-        maxScor = calculateMatrixSSE2(patternSeq.length(),(unsigned char *)searchSeq.data(), searchSeq.length(), (-1)*(gapOpen + gapExtension), (-1)*(gapExtension));
+        maxScore = calculateMatrixSSE2(patternSeq.length(), (unsigned char *)searchSeq.data(),
+            searchSeq.length(), (-1)*(gapOpen + gapExtension), (-1)*(gapExtension));
 
-        if (minScore <= maxScor) {
+        if (minScore <= maxScore && 32767 > maxScore) {
             switch(resultView) {
             case SmithWatermanSettings::MULTIPLE_ALIGNMENT:
                 calculateMatrixForMultipleAlignmentResult();
