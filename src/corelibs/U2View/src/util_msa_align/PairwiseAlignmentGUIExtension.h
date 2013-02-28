@@ -41,17 +41,12 @@ class PairwiseAlignmentTaskSettings;
 // These classes are intended for extending pairwise alignment GUIs
 // with options specific to the align algorithm
 
-enum WidgetType {
-    OptionsPanelWidgetType = 0,
-    DialogWidgetType = 1
-};
-
 class U2VIEW_EXPORT PairwiseAlignmentMainWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    PairwiseAlignmentMainWidget(QWidget* parent, QVariantMap* s, WidgetType _widgetType);
+    PairwiseAlignmentMainWidget(QWidget* parent, QVariantMap* s);
     virtual ~PairwiseAlignmentMainWidget();
 
     virtual QVariantMap getPairwiseAlignmentCustomSettings(bool append);
@@ -63,7 +58,6 @@ protected:
     virtual void fillInnerSettings();
 
 protected:
-    WidgetType widgetType;
     QVariantMap innerSettings;        //inner settings
     QVariantMap* externSettings;      //extern settings (from msa)
     bool externSettingsExists;                  //msa editor is alive, pointer externSettings is valid
@@ -73,7 +67,7 @@ class U2VIEW_EXPORT PairwiseAlignmentGUIExtensionFactory : public QObject {
     Q_OBJECT
 
 public:
-    virtual PairwiseAlignmentMainWidget* createMainWidget(QWidget* parent, QVariantMap* s, WidgetType widgetType) = 0;
+    virtual PairwiseAlignmentMainWidget* createMainWidget(QWidget* parent, QVariantMap* s) = 0;
     virtual bool hasMainWidget(const QWidget* parent);
 
 protected slots:

@@ -40,100 +40,56 @@
 
 namespace U2 {
 
-PairwiseAlignmentSmithWatermanMainWidget::PairwiseAlignmentSmithWatermanMainWidget(QWidget* parent, QVariantMap* s, WidgetType widgetType) :
-    PairwiseAlignmentMainWidget(parent, s, widgetType) {
-    switch (widgetType) {
-    //add subwidgets
-    //fill custom settings
-    case OptionsPanelWidgetType: {
-        QVBoxLayout* optionsPanelLayout = new QVBoxLayout;
-        optionsPanelLayout->setContentsMargins(0, 5, 0, 0);
-        optionsPanelLayout->setSpacing(5);
-
-        QLabel* algorithmVersionLabel = new QLabel(tr("Algorithm version:"));
-        algorithmVersion = new QComboBox();
-
-        QLabel* scoringMatrixLabel = new QLabel(tr("Scoring matrix:"));
-        scoringMatrix = new QComboBox();
-
-        QGroupBox* gapGroup = new QGroupBox(tr("Gap penalty"));
-        QFormLayout* gapLayout = new QFormLayout;
-        gapLayout->setContentsMargins(0, 5, 0, 0);
-        gapLayout->setSpacing(0);
-        QLabel* gapOpenLabel = new QLabel(tr("Open:"));
-        QLabel* gapExtdLabel = new QLabel(tr("Extension:"));
-
-        gapOpen = new QDoubleSpinBox;
-        gapOpen->setMinimum(SW_MIN_GAP_OPEN);
-        gapOpen->setMaximum(SW_MAX_GAP_OPEN);
-
-        gapExtd = new QDoubleSpinBox;
-        gapExtd->setMinimum(SW_MIN_GAP_EXTD);
-        gapExtd->setMaximum(SW_MAX_GAP_EXTD);
-
-        gapLayout->addRow(gapOpenLabel, gapOpen);
-        gapLayout->addRow(gapExtdLabel, gapExtd);
-        gapGroup->setLayout(gapLayout);
-
-
-        optionsPanelLayout->addWidget(algorithmVersionLabel);
-        optionsPanelLayout->addWidget(algorithmVersion);
-        optionsPanelLayout->addWidget(scoringMatrixLabel);
-        optionsPanelLayout->addWidget(scoringMatrix);
-        optionsPanelLayout->addWidget(gapGroup);
-        this->setLayout(optionsPanelLayout);
-
-
-        DNAAlphabet* al = U2AlphabetUtils::getById(s->value(PA_ALPHABET, "").toString());
-        SAFE_POINT(NULL != al, "Alphabet not found.", );
-        SubstMatrixRegistry* matrixReg = AppContext::getSubstMatrixRegistry();
-        SAFE_POINT(matrixReg, "SubstMatrixRegistry is NULL.", );
-        QStringList matrixList = matrixReg->selectMatrixNamesByAlphabet(al);
-        scoringMatrix->addItems(matrixList);
-        if (s->contains(PA_SW_SCORING_MATRIX_NAME)) {
-            scoringMatrix->setCurrentIndex(scoringMatrix->findText(s->value(PA_SW_SCORING_MATRIX_NAME, QString()).toString()));
-        }
-
-        QStringList alg_lst = AppContext::getPairwiseAlignmentRegistry()->getAlgorithm("Smith-Waterman")->getRealizationsList();
-        algorithmVersion->addItems(alg_lst);
-        if (s->contains(PA_SW_REALIZATION_NAME)) {
-            algorithmVersion->setCurrentIndex(algorithmVersion->findText(s->value(PA_SW_REALIZATION_NAME, QString()).toString()));
-        }
-
-        if (s->contains(PA_SW_GAP_OPEN) && s->value(PA_SW_GAP_OPEN, 0).toInt() >= SW_MIN_GAP_OPEN && s->value(PA_SW_GAP_OPEN, 0).toInt() <= SW_MAX_GAP_OPEN) {
-            gapOpen->setValue(-s->value(PA_SW_GAP_OPEN, 0).toInt());
-        } else {
-            gapOpen->setValue(SW_DEFAULT_GAP_OPEN);
-        }
-
-        if (s->contains(PA_SW_GAP_EXTD) && s->value(PA_SW_GAP_EXTD, 0).toInt() >= SW_MIN_GAP_EXTD && s->value(PA_SW_GAP_EXTD, 0).toInt() <= SW_MAX_GAP_EXTD) {
-            gapExtd->setValue(-s->value(PA_SW_GAP_EXTD, 0).toInt());
-        } else {
-            gapExtd->setValue(SW_DEFAULT_GAP_EXTD);
-        }
-
-
-        innerSettings.insert(PA_SW_GAP_OPEN, -gapOpen->value());
-        innerSettings.insert(PA_SW_GAP_EXTD, -gapExtd->value());
-        innerSettings.insert(PA_REALIZATION_NAME, algorithmVersion->currentText());
-        innerSettings.insert(PA_SW_REALIZATION_NAME, algorithmVersion->currentText());
-        innerSettings.insert(PA_SW_SCORING_MATRIX_NAME, scoringMatrix->currentText());
-
-
-        break;
-    }
-    case DialogWidgetType: {
-        break;
-    }
-    default: {
-        assert(0);
-        break;
-    }
-    }   //switch (type)
+PairwiseAlignmentSmithWatermanMainWidget::PairwiseAlignmentSmithWatermanMainWidget(QWidget* parent, QVariantMap* s) :
+    PairwiseAlignmentMainWidget(parent, s) {
+    setupUi(this);
+    initParameters();
 }
 
 PairwiseAlignmentSmithWatermanMainWidget::~PairwiseAlignmentSmithWatermanMainWidget() {
     getPairwiseAlignmentCustomSettings(true);
+}
+
+void PairwiseAlignmentSmithWatermanMainWidget::initParameters() {
+    gapOpen->setMinimum(SW_MIN_GAP_OPEN);
+    gapOpen->setMaximum(SW_MAX_GAP_OPEN);
+
+    gapExtd->setMinimum(SW_MIN_GAP_EXTD);
+    gapExtd->setMaximum(SW_MAX_GAP_EXTD);
+
+    DNAAlphabet* al = U2AlphabetUtils::getById(externSettings->value(PairwiseAlignmentTaskSettings::PA_ALPHABET, "").toString());
+    SAFE_POINT(NULL != al, "Alphabet not found.", );
+    SubstMatrixRegistry* matrixReg = AppContext::getSubstMatrixRegistry();
+    SAFE_POINT(matrixReg, "SubstMatrixRegistry is NULL.", );
+    QStringList matrixList = matrixReg->selectMatrixNamesByAlphabet(al);
+    scoringMatrix->addItems(matrixList);
+    if (externSettings->contains(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_SCORING_MATRIX_NAME)) {
+        scoringMatrix->setCurrentIndex(scoringMatrix->findText(externSettings->value(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_SCORING_MATRIX_NAME, QString()).toString()));
+    }
+
+    QStringList alg_lst = AppContext::getPairwiseAlignmentRegistry()->getAlgorithm("Smith-Waterman")->getRealizationsList();
+    algorithmVersion->addItems(alg_lst);
+    if (externSettings->contains(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_REALIZATION_NAME)) {
+        algorithmVersion->setCurrentIndex(algorithmVersion->findText(externSettings->value(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_REALIZATION_NAME, QString()).toString()));
+    }
+
+    if (externSettings->contains(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_OPEN) &&
+            externSettings->value(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_OPEN, 0).toInt() >= SW_MIN_GAP_OPEN &&
+            externSettings->value(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_OPEN, 0).toInt() <= SW_MAX_GAP_OPEN) {
+        gapOpen->setValue(-externSettings->value(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_OPEN, 0).toInt());
+    } else {
+        gapOpen->setValue(SW_DEFAULT_GAP_OPEN);
+    }
+
+    if (externSettings->contains(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_EXTD) &&
+            externSettings->value(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_EXTD, 0).toInt() >= SW_MIN_GAP_EXTD &&
+            externSettings->value(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_EXTD, 0).toInt() <= SW_MAX_GAP_EXTD) {
+        gapExtd->setValue(-externSettings->value(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_EXTD, 0).toInt());
+    } else {
+        gapExtd->setValue(SW_DEFAULT_GAP_EXTD);
+    }
+
+    fillInnerSettings();
 }
 
 QMap<QString, QVariant> PairwiseAlignmentSmithWatermanMainWidget::getPairwiseAlignmentCustomSettings(bool append = false) {
@@ -142,22 +98,22 @@ QMap<QString, QVariant> PairwiseAlignmentSmithWatermanMainWidget::getPairwiseAli
 }
 
 void PairwiseAlignmentSmithWatermanMainWidget::fillInnerSettings() {
-    innerSettings.insert(PA_SW_GAP_OPEN, -gapOpen->value());
-    innerSettings.insert(PA_SW_GAP_EXTD, -gapExtd->value());
-    innerSettings.insert(PA_REALIZATION_NAME, algorithmVersion->currentText());
-    innerSettings.insert(PA_SW_REALIZATION_NAME, algorithmVersion->currentText());
-    innerSettings.insert(PA_SW_SCORING_MATRIX_NAME, scoringMatrix->currentText());
+    innerSettings.insert(PairwiseAlignmentTaskSettings::PA_REALIZATION_NAME, algorithmVersion->currentText());
+    innerSettings.insert(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_OPEN, -gapOpen->value());
+    innerSettings.insert(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_GAP_EXTD, -gapExtd->value());
+    innerSettings.insert(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_REALIZATION_NAME, algorithmVersion->currentText());
+    innerSettings.insert(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_SCORING_MATRIX_NAME, scoringMatrix->currentText());
 }
 
 PairwiseAlignmentSmithWatermanGUIExtensionFactory::PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_AlgType _algType) :
     PairwiseAlignmentGUIExtensionFactory(), algType(_algType) {
 }
 
-PairwiseAlignmentMainWidget* PairwiseAlignmentSmithWatermanGUIExtensionFactory::createMainWidget(QWidget* parent, QVariantMap* s, WidgetType widgetType) {
+PairwiseAlignmentMainWidget* PairwiseAlignmentSmithWatermanGUIExtensionFactory::createMainWidget(QWidget* parent, QVariantMap* s) {
     if (mainWidgets.contains(parent)) {
         return mainWidgets.value(parent, NULL);
     }
-    PairwiseAlignmentSmithWatermanMainWidget* newMainWidget = new PairwiseAlignmentSmithWatermanMainWidget(parent, s, widgetType);
+    PairwiseAlignmentSmithWatermanMainWidget* newMainWidget = new PairwiseAlignmentSmithWatermanMainWidget(parent, s);
     connect(newMainWidget, SIGNAL(destroyed(QObject*)), SLOT(sl_widgetDestroyed(QObject*)));
     mainWidgets.insert(parent, newMainWidget);
     return newMainWidget;

@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -22,11 +22,14 @@
 #include "SWTaskFactory.h"
 #include "SWAlgorithmTask.h"
 
-#include <U2Algorithm/SmithWatermanReportCallback.h>
-#include <U2Algorithm/SWResultFilterRegistry.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/AppFileStorage.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Algorithm/SmithWatermanReportCallback.h>
+#include <U2Algorithm/SWResultFilterRegistry.h>
 
 namespace U2 {
 
@@ -57,7 +60,8 @@ PairwiseAlignmentSmithWatermanTaskFactory::~PairwiseAlignmentSmithWatermanTaskFa
 PairwiseAlignmentTask* PairwiseAlignmentSmithWatermanTaskFactory::getTaskInstance(PairwiseAlignmentTaskSettings* _settings) const {
     PairwiseAlignmentSmithWatermanTaskSettings* settings = new PairwiseAlignmentSmithWatermanTaskSettings(*_settings);
     if (settings->inNewWindow == true && settings->resultFileName.isEmpty()) {
-        settings->resultFileName = GUrl(AppContext::getAppFileStorage()->getStorageDir() + "/" + PA_SW_DEFAULT_RESULT_FILE_NAME);
+        settings->resultFileName = GUrl(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() +
+                                        "/" + PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_DEFAULT_RESULT_FILE_NAME);
     }
     if (settings->inNewWindow == true) {
         settings->reportCallback = new SmithWatermanReportCallbackMAImpl(settings->resultFileName.dirPath() + "/",
@@ -72,8 +76,10 @@ PairwiseAlignmentTask* PairwiseAlignmentSmithWatermanTaskFactory::getTaskInstanc
                                                                          settings->msaRef);
     }
     settings->resultListener = new SmithWatermanResultListener;
-    settings->resultFilter = AppContext::getSWResultFilterRegistry()->getFilter(PA_SW_DEFAULT_RESULT_FILTER);
-    settings->percentOfScore = PA_SW_DEFAULT_PERCENT_OF_SCORE;
+    SWResultFilterRegistry* resFilterReg = AppContext::getSWResultFilterRegistry();
+    SAFE_POINT(NULL != resFilterReg, "SWResultFilterRegistry is NULL.", NULL);
+    settings->resultFilter = resFilterReg->getFilter(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_DEFAULT_RESULT_FILTER);
+    settings->percentOfScore = PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_DEFAULT_PERCENT_OF_SCORE;
     settings->convertCustomSettings();
     return new PairwiseAlignmentSmithWatermanTask(settings, algType);
 }

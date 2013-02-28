@@ -28,7 +28,7 @@ HEADERS += src/Init.h \
            src/ov_assembly/ExportReadsDialog.h \
            src/ov_assembly/ExportConsensusDialog.h \
            src/ov_assembly/ExportConsensusTask.h \
-           src/ov_assembly/ExportConsensusVariationsDialog.h \
+		   src/ov_assembly/ExportConsensusVariationsDialog.h \
            src/ov_assembly/ExportConsensusVariationsTask.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
@@ -52,7 +52,7 @@ HEADERS += src/Init.h \
            src/ov_msa/MSAEditorUndoFramework.h \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.h \
            src/ov_msa/ColorSchemaDialogController.h \
-           src/ov_msa/ColorSchemaSettingsController.h \                      
+		   src/ov_msa/ColorSchemaSettingsController.h \                      
 		   src/ov_msa/SeqStatistics/SeqStatisticsWidget.h \
 		   src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.h \   
 		   src/ov_msa/Display/MSADisplayTab.h \
@@ -149,10 +149,10 @@ HEADERS += src/Init.h \
            src/util_smith_waterman/SmithWatermanDialog.h \
            src/util_smith_waterman/SmithWatermanDialogImpl.h \
            src/util_smith_waterman/SubstMatrixDialog.h \ 
-           src/LicenseDialog.h \ 
-           src/ov_msa/PairAlign/PairAlignFactory.h \
-           src/ov_msa/PairAlign/PairAlign.h \
-           src/util_msa_align/PairwiseAlignmentGUIExtension.h
+    src/LicenseDialog.h \ 
+     	   src/ov_msa/PairAlign/PairAlignFactory.h \
+                   src/ov_msa/PairAlign/PairAlign.h \
+    src/util_msa_align/PairwiseAlignmentGUIExtension.h
 FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_assembly/ui/ExportReadsDialog.ui \
          src/ov_msa/ui/ConsensusSelectorDialog.ui \
@@ -181,7 +181,8 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/util_sec_struct_predict/ui/SecStructDialog.ui \
          src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \
          src/util_smith_waterman/ui/SubstMatrixDialogBase.ui \
-         src/ui/LicenseDialog.ui
+    src/ui/LicenseDialog.ui \ 
+    src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui
 SOURCES += src/Init.cpp \
            src/WebWindow.cpp \
            src/ov_assembly/AssemblyAnnotationsArea.cpp \
@@ -208,7 +209,7 @@ SOURCES += src/Init.cpp \
            src/ov_assembly/CoveredRegionsManager.cpp \
            src/ov_assembly/ExportConsensusDialog.cpp \
            src/ov_assembly/ExportConsensusTask.cpp \
-           src/ov_assembly/ExportConsensusVariationsDialog.cpp \
+		   src/ov_assembly/ExportConsensusVariationsDialog.cpp \
            src/ov_assembly/ExportConsensusVariationsTask.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
@@ -325,11 +326,22 @@ SOURCES += src/Init.cpp \
            src/util_sec_struct_predict/SecStructPredictUtils.cpp \
            src/util_smith_waterman/SmithWatermanDialog.cpp \
            src/util_smith_waterman/SubstMatrixDialog.cpp \ 
-           src/LicenseDialog.cpp \
-           src/ov_msa/PairAlign/PairAlignFactory.cpp \
-           src/ov_msa/PairAlign/PairAlign.cpp \
-           src/util_msa_align/PairwiseAlignmentGUIExtension.cpp
+    src/LicenseDialog.cpp \ 
+    src/ov_msa/PairAlign/PairAlignFactory.cpp \
+    src/ov_msa/PairAlign/PairAlign.cpp \
+    src/util_msa_align/PairwiseAlignmentGUIExtension.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+
+
+
+
+
+
+
+
+
+
+

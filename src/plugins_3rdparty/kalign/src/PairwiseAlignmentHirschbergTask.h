@@ -28,17 +28,8 @@
 
 namespace U2 {
 
-#define PA_H_GAP_OPEN "H_gapOpen"
-#define PA_H_GAP_EXTD "H_gapExtd"
-#define PA_H_GAP_TERM "H_gapTerm"
-#define PA_H_BONUS_SCORE "H_bonusScore"
-#define PA_H_REALIZATION_NAME "H_realizationName"
-#define PA_H_TRANSLATE_TO_AMINO "H_translateToAmino"
-#define PA_H_TRANSLATION_TABLE_NAME "H_translationTableName"
-#define PA_H_TRANSLATION_TABLE "H_translationTable"
-#define PA_H_DEFAULT_RESULT_FILE_NAME "H_Alignment_Result.aln"
-
 class KalignTask;
+class KalignGObjectRunFromSchemaTask;
 class DNAAlphabet;
 class MAlignment;
 class Project;
@@ -56,9 +47,14 @@ public:
     int gapExtd;
     int gapTerm;
     int bonusScore;
-    bool translateToAmino;
-    QString translationTableName;
-    DNATranslation* translationTable;       //initialized by convertCustomSettings()
+
+public:
+    static const QString PA_H_GAP_OPEN;
+    static const QString PA_H_GAP_EXTD;
+    static const QString PA_H_GAP_TERM;
+    static const QString PA_H_BONUS_SCORE;
+    static const QString PA_H_REALIZATION_NAME;
+    static const QString PA_H_DEFAULT_RESULT_FILE_NAME;
 };
 
 
@@ -77,6 +73,7 @@ protected:
 protected:
     PairwiseAlignmentHirschbergTaskSettings* settings;
     KalignTask* kalignSubTask;
+    KalignGObjectRunFromSchemaTask* workflowKalignSubTask;
     MAlignment* ma;
     DNAAlphabet* alphabet;
 };

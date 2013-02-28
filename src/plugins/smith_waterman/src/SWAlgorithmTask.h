@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -98,18 +98,6 @@ private:
     QList<PairAlignSequences> resPAS;
 };
 
-
-//defines for names of Smith-Waterman algorithm settings
-#define PA_SW_GAP_OPEN "SW_gapOpen"
-#define PA_SW_GAP_EXTD "SW_gapExtd"
-#define PA_SW_PERCENT_OF_SCORE "SW_percentOfScore"
-#define PA_SW_SCORING_MATRIX_NAME "SW_scoringMatrix"
-#define PA_SW_RESULT_FILTER "SW_resultFilter"
-#define PA_SW_REALIZATION_NAME "SW_realizationName"
-#define PA_SW_DEFAULT_PERCENT_OF_SCORE 0
-#define PA_SW_DEFAULT_RESULT_FILTER "filter-intersections"
-#define PA_SW_DEFAULT_RESULT_FILE_NAME "SW_Alignment_Result"
-
 class PairwiseAlignmentSmithWatermanTaskSettings : public PairwiseAlignmentTaskSettings {
 public:
     PairwiseAlignmentSmithWatermanTaskSettings(const PairwiseAlignmentTaskSettings &s);
@@ -128,6 +116,17 @@ public:
     int percentOfScore;
     QString sMatrixName;
     SMatrix sMatrix;        //initialized by convertCustomSettings()
+
+public:
+    static const QString PA_SW_GAP_OPEN;
+    static const QString PA_SW_GAP_EXTD;
+    static const QString PA_SW_PERCENT_OF_SCORE;
+    static const QString PA_SW_SCORING_MATRIX_NAME;
+    static const QString PA_SW_RESULT_FILTER;
+    static const QString PA_SW_REALIZATION_NAME;
+    static const qint64 PA_SW_DEFAULT_PERCENT_OF_SCORE = 0;
+    static const QString PA_SW_DEFAULT_RESULT_FILTER;
+    static const QString PA_SW_DEFAULT_RESULT_FILE_NAME;
 };
 
 class PairwiseAlignmentSmithWatermanTask : public PairwiseAlignmentTask, public SequenceWalkerCallback {

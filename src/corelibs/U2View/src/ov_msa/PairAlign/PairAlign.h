@@ -22,6 +22,8 @@
 #ifndef _U2_PAIR_ALIGN_H
 #define _U2_PAIR_ALIGN_H
 
+#include "ui/ui_PairwiseAlignmentOptionsPanelWidget.h"
+
 #include <QtCore/QList>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -47,8 +49,7 @@ class MAlignmentModInfo;
 class ShowHideSubgroupWidget;
 class MSADistanceAlgorithm;
 
-class U2VIEW_EXPORT PairAlign : public QWidget
-{
+class U2VIEW_EXPORT PairAlign : public QWidget, public Ui_PairwiseAlignmentOptionsPanelWidget {
     Q_OBJECT
     Q_DISABLE_COPY(PairAlign)
 
@@ -73,6 +74,7 @@ private slots:
 
     void sl_algorithmSelected(const QString& algorithmName);
     void sl_subwidgetStateChanged(const QString& id);
+    void sl_inNewWindowCheckBoxChangeState(bool newState);
     void sl_selectFileButtonClicked();
     void sl_alignButtonPressed();
 
@@ -87,31 +89,11 @@ private:
     PairwiseAlignmentWidgetsSettings * pairwiseAlignmentWidgetsSettings;
     MSADistanceAlgorithm* distanceCalcTask;
 
-    ShowHideSubgroupWidget* showHideSequenceWidget;
-    QWidget* sequenceWidget;
-    QLineEdit* firstSequenceLineEdit;
-    QLineEdit* secondSequenceLineEdit;
-
-    QToolButton* addFirst;
-    QToolButton* addSecond;
-    QToolButton* deleteFirst;
-    QToolButton* deleteSecond;
-
-    QComboBox* algorithmListComboBox;
-    QWidget* settingsContainerWidget;
     PairwiseAlignmentMainWidget* settingsWidget;       //created by factories on demand
-    QVBoxLayout* settingsContainerWidgetLayout;
+
+    ShowHideSubgroupWidget* showHideSequenceWidget;
     ShowHideSubgroupWidget* showHideSettingsWidget;
-
     ShowHideSubgroupWidget* showHideOutputWidget;
-    QWidget* outputSettingsWidget;
-
-    QCheckBox* inNewWindow;
-    QLineEdit* resultFileNameLineEdit;
-    QToolButton* selectFileButton;
-
-    QLabel* percentOfSimilarityLineEdit;
-    QPushButton* startAlignButton;
 
     bool showSequenceWidget;
     bool showAlgorithmWidget;

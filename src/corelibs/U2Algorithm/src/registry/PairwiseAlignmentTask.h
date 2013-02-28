@@ -40,15 +40,6 @@ class PairwiseAlignmentSettings;
 class PairwiseAlignmentTask;
 class PairwiseAlignmentTaskFactory;
 
-#define PA_DEFAULT_NAME "DefaultName"
-#define PA_RESULT_FILE_NAME "resultFileName"
-#define PA_ALGIRITHM_NAME "algorithmName"
-#define PA_REALIZATION_NAME "realizationName"
-#define PA_FIRST_SEQUENCE_REF "firstSequenceRef"
-#define PA_SECOND_SEQUENCE_REF "secondSequenceRef"
-#define PA_IN_NEW_WINDOW "inNewWindow"
-#define PA_ALPHABET "alphabet"
-
 class U2ALGORITHM_EXPORT PairwiseAlignmentTaskSettings : public QObject {
     Q_OBJECT
 
@@ -79,6 +70,16 @@ public:
 
 protected:
     QVariantMap customSettings;
+
+public:
+    static const QString PA_DEFAULT_NAME;
+    static const QString PA_RESULT_FILE_NAME;
+    static const QString PA_ALGIRITHM_NAME;
+    static const QString PA_REALIZATION_NAME;
+    static const QString PA_FIRST_SEQUENCE_REF;
+    static const QString PA_SECOND_SEQUENCE_REF;
+    static const QString PA_IN_NEW_WINDOW;
+    static const QString PA_ALPHABET;
 };
 
 class U2ALGORITHM_EXPORT PairwiseAlignmentTask : public Task {

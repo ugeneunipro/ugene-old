@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2012 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
  * This program is free software; you can redistribute it and/or
@@ -111,7 +111,7 @@ KalignPlugin::KalignPlugin()
         assert(res);
     }
 
-    PairwiseAlignmentAlgorithm* hirschbergAlgorithm = new PairwiseAlignmentAlgorithm("Hirschberg",
+    PairwiseAlignmentAlgorithm* hirschbergAlgorithm = new PairwiseAlignmentAlgorithm("Hirschberg (KAlign)",
                                                          new PairwiseAlignmentHirschbergTaskFactory(),
                                                          new PairwiseAlignmentHirschbergGUIExtensionFactory(),
                                                          "KAlign");
@@ -171,7 +171,7 @@ void KalignMSAEditorContext::initViewContext(GObjectView* view) {
 void KalignMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
     QList<GObjectViewAction *> actions = getViewActions(v);
     QMenu* alignMenu = GUIUtils::findSubMenu(m, MSAE_MENU_ALIGN);
-    SAFE_POINT(alignMenu != NULL, "alignMenu", );
+    assert(alignMenu!=NULL);
     foreach(GObjectViewAction* a, actions) {
         a->addToMenuWithOrder(alignMenu);
     }    

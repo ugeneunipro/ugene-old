@@ -25,7 +25,8 @@ HEADERS += src/KalignAdapter.h \
     src/PairwiseAlignmentHirschbergGUIExtensionFactory.h \
     src/PairwiseAlignmentHirschbergTask.h
 
-FORMS += src/ui/KalignDialog.ui
+FORMS += src/ui/KalignDialog.ui \
+    src/ui/PairwiseAlignmentHirschbergOptionsPanelMainWidget.ui
 
 SOURCES += src/KalignAdapter.cpp \
            src/KalignDialogController.cpp \
@@ -60,6 +61,7 @@ SOURCES += src/KalignAdapter.cpp \
 
 RESOURCES += kalign.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts
+
 
 
 

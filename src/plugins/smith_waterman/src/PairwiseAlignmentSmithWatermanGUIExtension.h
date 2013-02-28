@@ -23,6 +23,7 @@
 #define _U2_PAIRWISE_ALIGNMENT_SMITH_WATERMAN_GUI_EXTENSION_H_
 
 #include "SWAlgorithmTask.h"
+#include "ui/ui_PairwiseAlignmentSmithWatermanOptionsPanelMainWidget.h"
 
 #include <U2View/PairwiseAlignmentGUIExtension.h>
 
@@ -34,29 +35,26 @@
 
 namespace U2 {
 
-#define SW_MIN_GAP_OPEN 1           //it isn`t the minimum, it may be less
-#define SW_MAX_GAP_OPEN 65535
-#define SW_DEFAULT_GAP_OPEN 10      //http://www.ebi.ac.uk - default value is -10
-#define SW_MIN_GAP_EXTD 1           //it isn`t the minimum, it may be less
-#define SW_MAX_GAP_EXTD 65535
-#define SW_DEFAULT_GAP_EXTD 1       //http://www.ebi.ac.uk - default value is -0.5
-
-class PairwiseAlignmentSmithWatermanMainWidget : public PairwiseAlignmentMainWidget {
+class PairwiseAlignmentSmithWatermanMainWidget : public PairwiseAlignmentMainWidget,
+        public Ui_PairwiseAlignmentSmithWatermanOptionsPanelMainWidget {
     Q_OBJECT
 
 public:
-    PairwiseAlignmentSmithWatermanMainWidget(QWidget* parent, QVariantMap* s, WidgetType widgetType);
+    PairwiseAlignmentSmithWatermanMainWidget(QWidget* parent, QVariantMap* s);
     virtual ~PairwiseAlignmentSmithWatermanMainWidget();
     virtual QVariantMap getPairwiseAlignmentCustomSettings(bool append);
 
 private:
+    void initParameters();
     virtual void fillInnerSettings();
 
-private:
-    QDoubleSpinBox* gapOpen;
-    QDoubleSpinBox* gapExtd;
-    QComboBox* scoringMatrix;
-    QComboBox* algorithmVersion;
+protected:
+    static const qint64 SW_MIN_GAP_OPEN         = 1;
+    static const qint64 SW_MAX_GAP_OPEN         = 65535;
+    static const qint64 SW_DEFAULT_GAP_OPEN     = 10;       //http://www.ebi.ac.uk - default value is 10
+    static const qint64 SW_MIN_GAP_EXTD         = 1;
+    static const qint64 SW_MAX_GAP_EXTD         = 65535;    //it isn`t the maximum, it may be larger
+    static const qint64 SW_DEFAULT_GAP_EXTD     = 1;        //http://www.ebi.ac.uk - default value is 0.5
 };
 
 class PairwiseAlignmentSmithWatermanGUIExtensionFactory : public PairwiseAlignmentGUIExtensionFactory {
@@ -64,7 +62,7 @@ class PairwiseAlignmentSmithWatermanGUIExtensionFactory : public PairwiseAlignme
 
 public:
     PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_AlgType _algType);
-    virtual PairwiseAlignmentMainWidget* createMainWidget(QWidget* parent, QVariantMap* s, WidgetType widgetType);
+    virtual PairwiseAlignmentMainWidget* createMainWidget(QWidget* parent, QVariantMap* s);
 
 private:
     SW_AlgType algType;

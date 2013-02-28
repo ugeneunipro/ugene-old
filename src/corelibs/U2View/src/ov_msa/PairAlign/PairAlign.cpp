@@ -43,6 +43,7 @@
 #include <U2Algorithm/PairwiseAlignmentTask.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>
+#include <U2Algorithm/BuiltInDistanceAlgorithms.h>
 
 #include <U2View/PairwiseAlignmentGUIExtension.h>
 #include <U2View/MSAEditorNameList.h>
@@ -77,6 +78,7 @@ PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSetti
     SAFE_POINT(NULL != msa, "MSA Editor is NULL.", );
     SAFE_POINT(NULL != pairwiseAlignmentWidgetsSettings, "pairwiseAlignmentWidgetsSettings is NULL.", );
 
+    setupUi(this);
     initLayout();
     connectSignals();
     initParameters();
@@ -89,156 +91,13 @@ PairAlign::~PairAlign() {
 }
 
 void PairAlign::initLayout() {
-    QVBoxLayout* mainLayout = new QVBoxLayout();
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->setSpacing(5);
-    mainLayout->setAlignment(Qt::AlignTop);
-    mainLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
-
-    setLayout(mainLayout);
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
-//Sequences
-    sequenceWidget = new QWidget(this);
-    sequenceWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    showHideSequenceWidget = new ShowHideSubgroupWidget("PA_SEQUENCES", tr("Sequences"), sequenceWidget, showSequenceWidget);
-    connect(showHideSequenceWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subwidgetStateChanged(QString)));
-
-    QVBoxLayout* groupSequencesLayout = new QVBoxLayout();
-    groupSequencesLayout->setContentsMargins(0, 0, 0, 0);
-    groupSequencesLayout->setSpacing(5);
-
-    QLabel* firstSequenceLabel= new QLabel(tr("First sequence"));
-
-    QHBoxLayout* firstSequenceLayout = new QHBoxLayout();
-    firstSequenceLayout->setContentsMargins(0, 0, 0, 0);
-    firstSequenceLayout->setSpacing(2);
-
-    firstSequenceLineEdit = new QLineEdit;
-    firstSequenceLineEdit->setPlaceholderText(tr("Select and add"));
-    firstSequenceLineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
-    addFirst = new QToolButton();
-    addFirst->setText(">");
-    addFirst->setCheckable(true);
-    addFirst->resize(20, 20);
-
-    deleteFirst = new QToolButton();
-    deleteFirst->setText("X");
-    deleteFirst->setEnabled(false);
-    deleteFirst->resize(20, 20);
-
-    QLabel* secondSequenceLabel = new QLabel(tr("Second sequence"));
-
-    QHBoxLayout* secondSequenceLayout = new QHBoxLayout();
-    secondSequenceLayout->setContentsMargins(0, 0, 0, 0);
-    secondSequenceLayout->setSpacing(2);
-
-    secondSequenceLineEdit = new QLineEdit;
-    secondSequenceLineEdit->setPlaceholderText(tr("Select and add"));
-    secondSequenceLineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
-    addSecond = new QToolButton();
-    addSecond->setText(">");
-    addSecond->setCheckable(true);
-    addSecond->resize(20, 20);
-
-    deleteSecond = new QToolButton();
-    deleteSecond->setText("X");
-    deleteSecond->setEnabled(false);
-    deleteSecond->resize(20, 20);
-
-    QHBoxLayout* percentOfSimilarityLayout = new QHBoxLayout;
-    percentOfSimilarityLayout->setContentsMargins(0, 0, 0, 0);
-    percentOfSimilarityLayout->setSpacing(2);
-
-    QLabel* percentOfSimilarityLabel = new QLabel(tr("Similarity:"));
-
-    percentOfSimilarityLineEdit = new QLabel(tr("Not defined."));
-//Sequences
-
-    QLabel* algorithmLabel = new QLabel(tr("Algorithm:"));
-    algorithmListComboBox = new QComboBox();
-    algorithmListComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-//Algorithm widget
-    settingsContainerWidget = new QWidget(this);
-    settingsContainerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
-    settingsContainerWidgetLayout = new QVBoxLayout;
-    settingsContainerWidgetLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
-    settingsContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
-    settingsContainerWidgetLayout->setSpacing(5);
-
+    showHideSequenceWidget = new ShowHideSubgroupWidget("PA_SEQUENCES", tr("Sequences"), sequenceContainerWidget, showSequenceWidget);
     showHideSettingsWidget = new ShowHideSubgroupWidget("PA_SETTINGS", tr("Algorithm settings"), settingsContainerWidget, showAlgorithmWidget);
-    //Settings widgets for this groupbox created by plugin
-//Algorithm widget
+    showHideOutputWidget = new ShowHideSubgroupWidget("PA_OUTPUT", tr("Output settings"), outputContainerWidget, showOutputWidget);
 
-//Output settings
-    outputSettingsWidget = new QWidget(this);
-    outputSettingsWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
-    showHideOutputWidget = new ShowHideSubgroupWidget("PA_OUTPUT", tr("Output settings"), outputSettingsWidget, showOutputWidget);
-
-    QVBoxLayout* groupOutputSettingsLayout = new QVBoxLayout;
-    groupOutputSettingsLayout->setContentsMargins(0, 0, 0, 0);
-    groupOutputSettingsLayout->setSpacing(5);
-
-    inNewWindow = new QCheckBox(tr("In new window"));
-
-    QHBoxLayout* outputFileLayout = new QHBoxLayout;
-    outputFileLayout->setContentsMargins(0, 0, 0, 0);
-    outputFileLayout->setSpacing(2);
-
-    QLabel* outputFileLabel = new QLabel(tr("Output file"));
-    resultFileNameLineEdit = new QLineEdit;
-
-    selectFileButton = new QToolButton();
-    selectFileButton->setText("...");
-//Output settings
-
-    startAlignButton = new QPushButton();
-    startAlignButton->setText(tr("Align"));
-    startAlignButton->setEnabled(false);
-
-    firstSequenceLayout->addWidget(addFirst);
-    firstSequenceLayout->addWidget(firstSequenceLineEdit);
-    firstSequenceLayout->addWidget(deleteFirst);
-
-    secondSequenceLayout->addWidget(addSecond);
-    secondSequenceLayout->addWidget(secondSequenceLineEdit);
-    secondSequenceLayout->addWidget(deleteSecond);
-
-    percentOfSimilarityLayout->addWidget(percentOfSimilarityLabel);
-    percentOfSimilarityLayout->addWidget(percentOfSimilarityLineEdit);
-
-    groupSequencesLayout->addWidget(firstSequenceLabel);
-    groupSequencesLayout->addLayout(firstSequenceLayout);
-    groupSequencesLayout->addWidget(secondSequenceLabel);
-    groupSequencesLayout->addLayout(secondSequenceLayout);
-    groupSequencesLayout->addLayout(percentOfSimilarityLayout);
-    groupSequencesLayout->addWidget(algorithmLabel);
-    groupSequencesLayout->addWidget(algorithmListComboBox);
-
-    sequenceWidget->setLayout(groupSequencesLayout);
-
-    settingsContainerWidget->setLayout(settingsContainerWidgetLayout);
-
-    outputFileLayout->addWidget(resultFileNameLineEdit);
-    outputFileLayout->addWidget(selectFileButton);
-
-    groupOutputSettingsLayout->addWidget(inNewWindow);
-    groupOutputSettingsLayout->addWidget(outputFileLabel);
-    groupOutputSettingsLayout->addLayout(outputFileLayout);
-    outputSettingsWidget->setLayout(groupOutputSettingsLayout);
-
-
-    mainLayout->addWidget(showHideSequenceWidget);
-    mainLayout->addWidget(showHideSettingsWidget);
-    mainLayout->addWidget(showHideOutputWidget);
-    mainLayout->addWidget(startAlignButton);
-    setLayout(mainLayout);
+    mainLayout->insertWidget(0, showHideSequenceWidget);
+    mainLayout->insertWidget(1, showHideSettingsWidget);
+    mainLayout->insertWidget(2, showHideOutputWidget);
 }
 
 void PairAlign::initParameters() {
@@ -252,11 +111,11 @@ void PairAlign::initParameters() {
         secondSequenceLineEdit->setText(pairwiseAlignmentWidgetsSettings->secondSequenceName);
     }
 
-    inNewWindow->setChecked(pairwiseAlignmentWidgetsSettings->inNewWindow);
+    inNewWindowCheckBox->setChecked(pairwiseAlignmentWidgetsSettings->inNewWindow);
 
-    resultFileNameLineEdit->setText(pairwiseAlignmentWidgetsSettings->resultFileName);
-    resultFileNameLineEdit->setEnabled(inNewWindow->isChecked());
-    selectFileButton->setEnabled(inNewWindow->isChecked());
+    outputFileLineEdit->setText(pairwiseAlignmentWidgetsSettings->resultFileName);
+    outputFileLineEdit->setEnabled(inNewWindowCheckBox->isChecked());
+    outputFileSelectButton->setEnabled(inNewWindowCheckBox->isChecked());
 
     alphabetIsOk = (msa->getMSAObject()->getAlphabet()->isRNA() == false);
     canDoAlign = false;
@@ -289,11 +148,13 @@ void PairAlign::connectSignals() {
     connect(addSecond, SIGNAL(clicked()), SLOT(sl_addSecondSequence()));
     connect(secondSequenceLineEdit, SIGNAL(textEdited(QString)), SLOT(sl_sequenceNameEdited(QString)));
     connect(deleteSecond, SIGNAL(clicked()), SLOT(sl_deleteSecondSequence()));
+    connect(showHideSequenceWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subwidgetStateChanged(QString)));
     connect(showHideSettingsWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subwidgetStateChanged(QString)));
     connect(showHideOutputWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subwidgetStateChanged(QString)));
     connect(algorithmListComboBox, SIGNAL(currentIndexChanged(QString)), SLOT(sl_algorithmSelected(QString)));
-    connect(startAlignButton, SIGNAL(clicked()), SLOT(sl_alignButtonPressed()));
-    connect(selectFileButton, SIGNAL(clicked()), SLOT(sl_selectFileButtonClicked()));
+    connect(inNewWindowCheckBox, SIGNAL(clicked(bool)), SLOT(sl_inNewWindowCheckBoxChangeState(bool)));
+    connect(alignButton, SIGNAL(clicked()), SLOT(sl_alignButtonPressed()));
+    connect(outputFileSelectButton, SIGNAL(clicked()), SLOT(sl_selectFileButtonClicked()));
 }
 
 void PairAlign::checkState() {
@@ -308,27 +169,26 @@ void PairAlign::checkState() {
     deleteFirst->setEnabled(!firstSequenceLineEdit->text().isEmpty());
     deleteSecond->setEnabled(!secondSequenceLineEdit->text().isEmpty());
 
-    resultFileNameLineEdit->setEnabled(inNewWindow->isChecked());
-    selectFileButton->setEnabled(inNewWindow->isChecked());
+    outputFileLineEdit->setEnabled(inNewWindowCheckBox->isChecked());
+    outputFileSelectButton->setEnabled(inNewWindowCheckBox->isChecked());
 
 
     if (true == sequencesChanged) {
         updatePercentOfSimilarity();
     }
 
-    canDoAlign = (/*(NULL == pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask) &&*/
-                  (false == firstSequenceLineEdit->text().isEmpty()) &&
+    canDoAlign = ((false == firstSequenceLineEdit->text().isEmpty()) &&
                   (false == secondSequenceLineEdit->text().isEmpty()) &&
                   (firstSequenceLineEdit->text() != secondSequenceLineEdit->text()) &&
                   sequenceNamesIsOk && alphabetIsOk);
 
-    startAlignButton->setEnabled(canDoAlign);
+    alignButton->setEnabled(canDoAlign);
 
     pairwiseAlignmentWidgetsSettings->firstSequenceName = firstSequenceLineEdit->text();
     pairwiseAlignmentWidgetsSettings->secondSequenceName = secondSequenceLineEdit->text();
     pairwiseAlignmentWidgetsSettings->algorithmName = algorithmListComboBox->currentText();
-    pairwiseAlignmentWidgetsSettings->inNewWindow = inNewWindow->isChecked();
-    pairwiseAlignmentWidgetsSettings->resultFileName = resultFileNameLineEdit->text();
+    pairwiseAlignmentWidgetsSettings->inNewWindow = inNewWindowCheckBox->isChecked();
+    pairwiseAlignmentWidgetsSettings->resultFileName = outputFileLineEdit->text();
     pairwiseAlignmentWidgetsSettings->showSequenceWidget = showSequenceWidget;
     pairwiseAlignmentWidgetsSettings->showAlgorithmWidget = showAlgorithmWidget;
     pairwiseAlignmentWidgetsSettings->showOutputWidget = showOutputWidget;
@@ -336,7 +196,8 @@ void PairAlign::checkState() {
 }
 
 void PairAlign::updatePercentOfSimilarity() {
-    percentOfSimilarityLineEdit->setText(tr("Not defined"));
+    similarityValueLabel->setText(tr("Not defined"));
+    similarityWidget->setVisible(false);
     sequencesChanged = false;
     if (false == sequenceNamesIsOk) {
         return;
@@ -344,8 +205,8 @@ void PairAlign::updatePercentOfSimilarity() {
 
     MSADistanceAlgorithmRegistry* distanceReg = AppContext::getMSADistanceAlgorithmRegistry();
     SAFE_POINT(NULL != distanceReg, "MSADistanceAlgorithmRegistry is NULL.", );
-    MSADistanceAlgorithmFactory* distanceFactory = distanceReg->getAlgorithmFactory("Simple similarity");
-    SAFE_POINT(NULL != distanceFactory, "Simple similarity algorithm factory not found.", );
+    MSADistanceAlgorithmFactory* distanceFactory = distanceReg->getAlgorithmFactory(BuiltInDistanceAlgorithms::SIMILARITY_ALGO);
+    SAFE_POINT(NULL != distanceFactory, QString("%1 algorithm factory not found.").arg(BuiltInDistanceAlgorithms::SIMILARITY_ALGO), );
 
     U2OpStatusImpl os;
     MAlignment ma;
@@ -427,7 +288,7 @@ void PairAlign::sl_algorithmSelected(const QString& algorithmName) {
 
     PairwiseAlignmentGUIExtensionFactory* algGUIFactory = alg->getGUIExtFactory(firstAlgorithmRealization);
     SAFE_POINT(NULL != algGUIFactory, QString("Algorithm %1 GUI factory not found.").arg(firstAlgorithmRealization), );
-    settingsWidget = algGUIFactory->createMainWidget(this, &pairwiseAlignmentWidgetsSettings->customSettings, OptionsPanelWidgetType);
+    settingsWidget = algGUIFactory->createMainWidget(this, &pairwiseAlignmentWidgetsSettings->customSettings);
     connect(msa, SIGNAL(destroyed()), settingsWidget, SLOT(sl_externSettingsInvalide()));
     settingsContainerWidgetLayout->addWidget(settingsWidget);
 
@@ -447,10 +308,15 @@ void PairAlign::sl_subwidgetStateChanged(const QString &id) {
     checkState();
 }
 
+void PairAlign::sl_inNewWindowCheckBoxChangeState(bool newState) {
+    Q_UNUSED(newState);
+    checkState();
+}
+
 void PairAlign::sl_selectFileButtonClicked() {
     QString fileName = QFileDialog::getSaveFileName(NULL, tr("Save file"), "", tr("Clustal format (*.aln)"));
     if (false == fileName.isEmpty()) {
-        resultFileNameLineEdit->setText(fileName);
+        outputFileLineEdit->setText(fileName);
     }
     checkState();
 }
@@ -485,12 +351,12 @@ void PairAlign::sl_alignButtonPressed() {
     PairwiseAlignmentTaskSettings settings;
     settings.algorithmName = algorithmListComboBox->currentText();
 
-    if (!resultFileNameLineEdit->text().isEmpty()) {
-        settings.resultFileName = GUrl(resultFileNameLineEdit->text());
+    if (!outputFileLineEdit->text().isEmpty()) {
+        settings.resultFileName = GUrl(outputFileLineEdit->text());
     } else {
         settings.resultFileName = GUrl();
     }
-    settings.inNewWindow = inNewWindow->isChecked();
+    settings.inNewWindow = inNewWindowCheckBox->isChecked();
     settings.msaRef = msaRef;
     settings.alphabet = U2AlphabetId(msa->getMSAObject()->getAlphabet()->getId());
     settings.firstSequenceRef = firstSequenceRef;
@@ -517,12 +383,13 @@ void PairAlign::sl_sequenceSelected(const QStringList& sequenceNames) {
     if (true == firstSequenceSelectionOn) {
         firstSequenceLineEdit->setText(sequenceNames.first());
         firstSequenceSelectionOn = false;
+        sequencesChanged = true;
     }
     if (true == secondSequenceSelectionOn) {
         secondSequenceLineEdit->setText(sequenceNames.first());
         secondSequenceSelectionOn = false;
+        sequencesChanged = true;
     }
-    sequencesChanged = true;
     checkState();
 }
 
@@ -547,7 +414,8 @@ void PairAlign::sl_distanceCalculated() {
         return;
     if (true == distanceCalcTask->isFinished()) {
         MSADistanceMatrix distanceMatrix(distanceCalcTask, true);
-        percentOfSimilarityLineEdit->setText(QString::number(distanceMatrix.getSimilarity(0, 1)) + "%");
+        similarityValueLabel->setText(QString::number(distanceMatrix.getSimilarity(0, 1)) + "%");
+        similarityWidget->setVisible(true);
         distanceCalcTask = NULL;
     }
 }

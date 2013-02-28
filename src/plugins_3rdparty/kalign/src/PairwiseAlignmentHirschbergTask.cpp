@@ -29,6 +29,13 @@
 
 namespace U2 {
 
+const QString PairwiseAlignmentHirschbergTaskSettings::PA_H_GAP_OPEN("H_gapOpen");
+const QString PairwiseAlignmentHirschbergTaskSettings::PA_H_GAP_EXTD("H_gapExtd");
+const QString PairwiseAlignmentHirschbergTaskSettings::PA_H_GAP_TERM("H_gapTerm");
+const QString PairwiseAlignmentHirschbergTaskSettings::PA_H_BONUS_SCORE("H_bonusScore");
+const QString PairwiseAlignmentHirschbergTaskSettings::PA_H_REALIZATION_NAME("H_realizationName");
+const QString PairwiseAlignmentHirschbergTaskSettings::PA_H_DEFAULT_RESULT_FILE_NAME("H_Alignment_Result.aln");
+
 PairwiseAlignmentHirschbergTaskSettings::PairwiseAlignmentHirschbergTaskSettings(const PairwiseAlignmentTaskSettings &s) :
     PairwiseAlignmentTaskSettings(s) {
 }
@@ -42,16 +49,13 @@ bool PairwiseAlignmentHirschbergTaskSettings::convertCustomSettings() {
     gapExtd = customSettings.value(PA_H_GAP_EXTD).toInt();
     gapTerm = customSettings.value(PA_H_GAP_TERM).toInt();
     bonusScore = customSettings.value(PA_H_BONUS_SCORE).toInt();
-    translateToAmino = customSettings.value(PA_H_TRANSLATE_TO_AMINO).toBool();
-    translationTableName = customSettings.value(PA_H_TRANSLATION_TABLE_NAME).toString();
-    translationTable = AppContext::getDNATranslationRegistry()->lookupTranslation(translationTableName);
 
     PairwiseAlignmentTaskSettings::convertCustomSettings();
     return true;
 }
 
 PairwiseAlignmentHirschbergTask::PairwiseAlignmentHirschbergTask(PairwiseAlignmentHirschbergTaskSettings* _settings) :
-    PairwiseAlignmentTask(TaskFlag_NoRun), settings(_settings), ma(NULL) {
+    PairwiseAlignmentTask(TaskFlag_NoRun), settings(_settings), kalignSubTask(NULL), workflowKalignSubTask(NULL), ma(NULL) {
 
     SAFE_POINT(settings != NULL, "Task settings are not defined.", );
     SAFE_POINT(settings->convertCustomSettings() && settings->isValid(), "Invalide task settings.", );
@@ -63,20 +67,22 @@ PairwiseAlignmentHirschbergTask::PairwiseAlignmentHirschbergTask(PairwiseAlignme
     CHECK_OP(os, );
     first = con.dbi->getSequenceDbi()->getSequenceData(sequence.id, U2Region(0, sequence.length), os);
     CHECK_OP(os, );
+    QString firstName = sequence.visualName;
 
     sequence = con.dbi->getSequenceDbi()->getSequenceObject(settings->secondSequenceRef.entityId, os);
     CHECK_OP(os, );
     second = con.dbi->getSequenceDbi()->getSequenceData(sequence.id, U2Region(0, sequence.length), os);
     CHECK_OP(os, );
+    QString secondName = sequence.visualName;
     con.close(os);
 
     alphabet = U2AlphabetUtils::getById(settings->alphabet);
     SAFE_POINT(alphabet != NULL, "Albhabet is invalid.", );
 
-    ma = new MAlignment("KAlign_temporary_alignment", alphabet);
-    ma->addRow("firstRow", first, os);
+    ma = new MAlignment(firstName + " vs. " + secondName, alphabet);
+    ma->addRow(firstName, first, os);
     CHECK_OP(os, );
-    ma->addRow("secondRow", second, os);
+    ma->addRow(secondName, second, os);
     CHECK_OP(os, );
 
     KalignTaskSettings kalignSettings;
@@ -87,19 +93,15 @@ PairwiseAlignmentHirschbergTask::PairwiseAlignmentHirschbergTask(PairwiseAlignme
 
     if(WorkflowSettings::runInSeparateProcess() && 0) {
         assert(0);      //not implemented
-//        kalignSubTask = new KalignGObjectRunFromSchemaTask(NULL, kalignSettings);
+//        workflowKalignSubTask = new KalignGObjectRunFromSchemaTask(NULL, kalignSettings);
+        addSubTask(workflowKalignSubTask);
     } else {
         kalignSubTask = new KalignTask(*ma, kalignSettings);
         setUseDescriptionFromSubtask(true);
         setVerboseLogMode(true);
-    }
-
-    if (settings->translateToAmino == true && 0) {
-        assert(0);      //not implemented: Hirschberg algorithm not supposed any translations
-//        addSubTask(new AlignInAminoFormTask(NULL, kalignSubTask, settings->translationTableName));
-    } else {
         addSubTask(kalignSubTask);
     }
+
 }
 
 PairwiseAlignmentHirschbergTask::~PairwiseAlignmentHirschbergTask() {

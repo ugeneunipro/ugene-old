@@ -23,8 +23,8 @@
 
 namespace U2 {
 
-PairwiseAlignmentMainWidget::PairwiseAlignmentMainWidget(QWidget* parent, QVariantMap* s, WidgetType _widgetType) :
-    QWidget(parent), widgetType(_widgetType), externSettings(s), externSettingsExists(s != NULL) {
+PairwiseAlignmentMainWidget::PairwiseAlignmentMainWidget(QWidget* parent, QVariantMap* s) :
+    QWidget(parent), externSettings(s), externSettingsExists(s != NULL) {
 }
 
 PairwiseAlignmentMainWidget::~PairwiseAlignmentMainWidget() {

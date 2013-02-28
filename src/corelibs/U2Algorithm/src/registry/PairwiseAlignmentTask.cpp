@@ -23,6 +23,15 @@
 
 namespace U2 {
 
+const QString PairwiseAlignmentTaskSettings::PA_DEFAULT_NAME("DefaultName");
+const QString PairwiseAlignmentTaskSettings::PA_RESULT_FILE_NAME("resultFileName");
+const QString PairwiseAlignmentTaskSettings::PA_ALGIRITHM_NAME("algorithmName");
+const QString PairwiseAlignmentTaskSettings::PA_REALIZATION_NAME("realizationName");
+const QString PairwiseAlignmentTaskSettings::PA_FIRST_SEQUENCE_REF("firstSequenceRef");
+const QString PairwiseAlignmentTaskSettings::PA_SECOND_SEQUENCE_REF("secondSequenceRef");
+const QString PairwiseAlignmentTaskSettings::PA_IN_NEW_WINDOW("inNewWindow");
+const QString PairwiseAlignmentTaskSettings::PA_ALPHABET("alphabet");
+
 PairwiseAlignmentTaskSettings::PairwiseAlignmentTaskSettings() : inNewWindow(true) {
 }
 

@@ -22,6 +22,8 @@
 #ifndef _U2_PAIRWISE_ALIGNMENT_HIRSCHBERG_GUI_EXTENSION_FACTORY_H_
 #define _U2_PAIRWISE_ALIGNMENT_HIRSCHBERG_GUI_EXTENSION_FACTORY_H_
 
+#include "ui/ui_PairwiseAlignmentHirschbergOptionsPanelMainWidget.h"
+
 #include <U2View/PairwiseAlignmentGUIExtension.h>
 
 #include <QtCore/QObject>
@@ -33,46 +35,38 @@
 
 namespace U2 {
 
-//default values were taken from kalign files
-#define H_MIN_GAP_OPEN 0
-#define H_MAX_GAP_OPEN 65535        //it isn`t the maximum, it may be less
-#define H_DEFAULT_GAP_OPEN_DNA 217  //taken from kalign2_misc.c
-#define H_DEFAULT_GAP_OPEN 54.94941
-#define H_MIN_GAP_EXTD 0
-#define H_MAX_GAP_EXTD 65535        //it isn`t the maximum, it may be less
-#define H_DEFAULT_GAP_EXTD_DNA 39.4 //taken from kalign2_misc.c
-#define H_DEFAULT_GAP_EXTD 8.52492  //taken from kalign2_misc.c
-#define H_MIN_GAP_TERM 0
-#define H_MAX_GAP_TERM 65535        //it isn`t the maximum, it may be less
-#define H_DEFAULT_GAP_TERM_DNA 292.6//taken from kalign2_misc.c
-#define H_DEFAULT_GAP_TERM 4.42410  //taken from kalign2_misc.c
-#define H_MIN_BONUS_SCORE 0
-#define H_MAX_BONUS_SCORE 65535     //it isn`t the maximum, it may be less
-#define H_DEFAULT_BONUS_SCORE_DNA 283//taken from kalign2_misc.c
-#define H_DEFAULT_BONUS_SCORE 0.2   //taken from kalign2_misc.c
-
-class PairwiseAlignmentHirschbergMainWidget : public PairwiseAlignmentMainWidget {
+class PairwiseAlignmentHirschbergMainWidget : public PairwiseAlignmentMainWidget,
+        public Ui_PairwiseAlignmentHirschbergOptionsPanelMainWidget {
     Q_OBJECT
 
 public:
-    PairwiseAlignmentHirschbergMainWidget(QWidget* parent, QVariantMap* s, WidgetType _widgetType);
+    PairwiseAlignmentHirschbergMainWidget(QWidget* parent, QVariantMap* s);
     virtual ~PairwiseAlignmentHirschbergMainWidget();
 
     virtual QVariantMap getPairwiseAlignmentCustomSettings(bool append);
 
-protected slots:
-    void sl_translateToAminoChecked(int newState);
-
 protected:
+    void initParameters();
     virtual void fillInnerSettings();
 
 protected:
-    QDoubleSpinBox* gapOpen;
-    QDoubleSpinBox* gapExtd;
-    QDoubleSpinBox* gapTerm;
-    QDoubleSpinBox* bonusScore;
-    QCheckBox* translateToAminoCheckBox;
-    QComboBox* translationTableComboBox;
+    //default values were taken from kalign files
+    static const qint64 H_MIN_GAP_OPEN            = 0;
+    static const qint64 H_MAX_GAP_OPEN            = 65535;    //it isn`t the maximum, it may be less
+    static const qint64 H_DEFAULT_GAP_OPEN_DNA    = 217;      //taken from kalign2_misc.c
+    static const qint64 H_DEFAULT_GAP_OPEN        = 54.94941;
+    static const qint64 H_MIN_GAP_EXTD            = 0;
+    static const qint64 H_MAX_GAP_EXTD            = 65535;    //it isn`t the maximum, it may be less
+    static const qint64 H_DEFAULT_GAP_EXTD_DNA    = 39.4;     //taken from kalign2_misc.c
+    static const qint64 H_DEFAULT_GAP_EXTD        = 8.52492;  //taken from kalign2_misc.c
+    static const qint64 H_MIN_GAP_TERM            = 0;
+    static const qint64 H_MAX_GAP_TERM            = 65535;    //it isn`t the maximum, it may be less
+    static const qint64 H_DEFAULT_GAP_TERM_DNA    = 292.6;    //taken from kalign2_misc.c
+    static const qint64 H_DEFAULT_GAP_TERM        = 4.42410;  //taken from kalign2_misc.c
+    static const qint64 H_MIN_BONUS_SCORE         = 0;
+    static const qint64 H_MAX_BONUS_SCORE         = 65535;    //it isn`t the maximum, it may be less
+    static const qint64 H_DEFAULT_BONUS_SCORE_DNA = 283;      //taken from kalign2_misc.c
+    static const qint64 H_DEFAULT_BONUS_SCORE     = 0.2;      //taken from kalign2_misc.c
 };
 
 
@@ -83,7 +77,7 @@ public:
     PairwiseAlignmentHirschbergGUIExtensionFactory();
     virtual ~PairwiseAlignmentHirschbergGUIExtensionFactory();
 
-    virtual PairwiseAlignmentMainWidget* createMainWidget(QWidget *parent, QVariantMap *s, WidgetType widgetType);
+    virtual PairwiseAlignmentMainWidget* createMainWidget(QWidget *parent, QVariantMap *s);
 };
 
 }   //namespace
