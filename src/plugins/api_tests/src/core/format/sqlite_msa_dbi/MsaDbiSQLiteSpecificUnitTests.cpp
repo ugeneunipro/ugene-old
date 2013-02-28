@@ -127,10 +127,15 @@ U2DataId MsaSQLiteSpecificTestData::createTestMsa(bool enableModTracking, U2OpSt
     return msaId;
 }
 
-U2DataId MsaSQLiteSpecificTestData::createTestSequence(bool enableModTracking, qint64 seqLength, U2OpStatus& os) {
+U2DataId MsaSQLiteSpecificTestData::createTestSequence(bool enableModTracking, qint64 seqLength, U2OpStatus& os){
     U2Sequence sequence;
     sequence.alphabet = BaseDNAAlphabetIds::NUCL_DNA_DEFAULT();
     sequence.visualName = "Test sequence";
+    if (false == enableModTracking) {
+        sequence.trackModType = NoTrack;
+    } else {
+        sequence.trackModType = TrackOnUpdate;
+    }
     sqliteDbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
     CHECK_OP(os, "");
 
@@ -2264,27 +2269,371 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_zeroPos_redo) {
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_middlePos_undo) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createNotSoSmallTestMsa(true, os);
+    CHECK_NO_ERROR(os);
 
+    // Get current values
+    int baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    U2Msa baseMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseNumOfRows = sqliteDbi->getMsaDbi()->getNumOfRows(msaId, os);
+    QList<qint64> baseRowsOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Prepare test values
+    qint64 seqLength = 100;
+    U2DataId seqId = MsaSQLiteSpecificTestData::createTestSequence(false, seqLength, os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2MsaGap> gaps;
+    qint64 gapLength = 2;
+    gaps << U2MsaGap(1, gapLength);
+
+    U2MsaRow row;
+    row.sequenceId = seqId;
+    row.gstart = 1;
+    row.gend = 20;
+    row.gaps = gaps;
+    qint64 rowLength = row.gend - row.gstart + gapLength;
+
+    qint64 posInMsa = 3;
+
+    // Call test function
+    sqliteDbi->getMsaDbi()->addRow(msaId, posInMsa, row, os);
+    CHECK_NO_ERROR(os);
+
+    // Undo adding the row
+    sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify MSA length
+    U2Msa msaAfterRedo = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseMsa.length, msaAfterRedo.length, "msa length");
+
+    // Verify number of rows
+    qint64 numOfRowsAfterRedo = sqliteDbi->getMsaDbi()->getNumOfRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseNumOfRows, numOfRowsAfterRedo, "number of rows");
+
+    // Verify rows order
+    QList<qint64> rowsOrderAfterRedo = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseRowsOrder.count(), rowsOrderAfterRedo.count(), "rows order items number");
+    CHECK_TRUE(baseRowsOrder == rowsOrderAfterRedo, "other row ids");
+
+    // Verify the version has been incremented
+    int versionAfterRedo = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseVersion, versionAfterRedo, "version");
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_middlePos_redo) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createNotSoSmallTestMsa(true, os);
+    CHECK_NO_ERROR(os);
 
+    // Get current values
+    int baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    U2Msa baseMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseNumOfRows = sqliteDbi->getMsaDbi()->getNumOfRows(msaId, os);
+    QList<qint64> baseRowsOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Prepare test values
+    qint64 seqLength = 100;
+    U2DataId seqId = MsaSQLiteSpecificTestData::createTestSequence(false, seqLength, os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2MsaGap> gaps;
+    qint64 gapLength = 2;
+    gaps << U2MsaGap(1, gapLength);
+
+    U2MsaRow row;
+    row.sequenceId = seqId;
+    row.gstart = 1;
+    row.gend = 20;
+    row.gaps = gaps;
+    qint64 rowLength = row.gend - row.gstart + gapLength;
+
+    qint64 posInMsa = 3;
+
+    // Prepare expected values
+    qint64 expectedMsaLength = qMax(baseMsa.length, rowLength);
+
+    // Call test function
+    sqliteDbi->getMsaDbi()->addRow(msaId, posInMsa, row, os);
+    CHECK_NO_ERROR(os);
+
+    // Undo adding the row
+    sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Redo row addition
+    sqliteDbi->getSQLiteObjectDbi()->redo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify the row
+    U2MsaRow rowAfterRedo = sqliteDbi->getMsaDbi()->getRow(msaId, row.rowId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(row.sequenceId, rowAfterRedo.sequenceId, "sequence id");
+    CHECK_EQUAL(row.gstart, rowAfterRedo.gstart, "gstart");
+    CHECK_EQUAL(row.gend, rowAfterRedo.gend, "gend");
+    CHECK_TRUE(row.gaps == rowAfterRedo.gaps, "gaps");
+    CHECK_EQUAL(rowLength, rowAfterRedo.length, "row length");
+
+    // Verify MSA length
+    U2Msa msaAfterRedo = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(expectedMsaLength, msaAfterRedo.length, "msa length");
+
+    // Verify number of rows
+    qint64 numOfRowsAfterRedo = sqliteDbi->getMsaDbi()->getNumOfRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseNumOfRows + 1, numOfRowsAfterRedo, "number of rows");
+
+    // Verify rows order
+    QList<qint64> rowsOrderAfterRedo = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseRowsOrder.count() + 1, rowsOrderAfterRedo.count(), "rows order items number");
+    CHECK_EQUAL(row.rowId, rowsOrderAfterRedo[posInMsa], "new row id");
+    rowsOrderAfterRedo.removeAt(posInMsa);
+    CHECK_TRUE(baseRowsOrder == rowsOrderAfterRedo, "other row ids");
+
+    // Verify the version has been incremented
+    int versionAfterRedo = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseVersion + 1, versionAfterRedo, "version");
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_undo) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createNotSoSmallTestMsa(true, os);
+    CHECK_NO_ERROR(os);
 
+    // Get current values
+    int baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    U2Msa baseMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseNumOfRows = sqliteDbi->getMsaDbi()->getNumOfRows(msaId, os);
+    QList<qint64> baseRowsOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Prepare test values
+    qint64 seqLength = 100;
+    U2DataId seqId = MsaSQLiteSpecificTestData::createTestSequence(false, seqLength, os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2MsaGap> gaps;
+    qint64 gapLength = 2;
+    gaps << U2MsaGap(1, gapLength);
+
+    U2MsaRow row;
+    row.sequenceId = seqId;
+    row.gstart = 1;
+    row.gend = 20;
+    row.gaps = gaps;
+    qint64 rowLength = row.gend - row.gstart + gapLength;
+
+    qint64 posInMsa = baseNumOfRows;
+
+    // Call test function
+    sqliteDbi->getMsaDbi()->addRow(msaId, posInMsa, row, os);
+    CHECK_NO_ERROR(os);
+
+    // Undo adding the row
+    sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify MSA length
+    U2Msa msaAfterRedo = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseMsa.length, msaAfterRedo.length, "msa length");
+
+    // Verify number of rows
+    qint64 numOfRowsAfterRedo = sqliteDbi->getMsaDbi()->getNumOfRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseNumOfRows, numOfRowsAfterRedo, "number of rows");
+
+    // Verify rows order
+    QList<qint64> rowsOrderAfterRedo = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseRowsOrder.count(), rowsOrderAfterRedo.count(), "rows order items number");
+    CHECK_TRUE(baseRowsOrder == rowsOrderAfterRedo, "other row ids");
+
+    // Verify the version has been incremented
+    int versionAfterRedo = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseVersion, versionAfterRedo, "version");
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_redo) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createNotSoSmallTestMsa(true, os);
+    CHECK_NO_ERROR(os);
 
+    // Get current values
+    int baseVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    U2Msa baseMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    qint64 baseNumOfRows = sqliteDbi->getMsaDbi()->getNumOfRows(msaId, os);
+    QList<qint64> baseRowsOrder = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Prepare test values
+    qint64 seqLength = 100;
+    U2DataId seqId = MsaSQLiteSpecificTestData::createTestSequence(false, seqLength, os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2MsaGap> gaps;
+    qint64 gapLength = 2;
+    gaps << U2MsaGap(1, gapLength);
+
+    U2MsaRow row;
+    row.sequenceId = seqId;
+    row.gstart = 1;
+    row.gend = 20;
+    row.gaps = gaps;
+    qint64 rowLength = row.gend - row.gstart + gapLength;
+
+    qint64 posInMsa = baseNumOfRows;
+
+    // Prepare expected values
+    qint64 expectedMsaLength = qMax(baseMsa.length, rowLength);
+
+    // Call test function
+    sqliteDbi->getMsaDbi()->addRow(msaId, posInMsa, row, os);
+    CHECK_NO_ERROR(os);
+
+    // Undo adding the row
+    sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Redo row addition
+    sqliteDbi->getSQLiteObjectDbi()->redo(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Verify the row
+    U2MsaRow rowAfterRedo = sqliteDbi->getMsaDbi()->getRow(msaId, row.rowId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(row.sequenceId, rowAfterRedo.sequenceId, "sequence id");
+    CHECK_EQUAL(row.gstart, rowAfterRedo.gstart, "gstart");
+    CHECK_EQUAL(row.gend, rowAfterRedo.gend, "gend");
+    CHECK_TRUE(row.gaps == rowAfterRedo.gaps, "gaps");
+    CHECK_EQUAL(rowLength, rowAfterRedo.length, "row length");
+
+    // Verify MSA length
+    U2Msa msaAfterRedo = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(expectedMsaLength, msaAfterRedo.length, "msa length");
+
+    // Verify number of rows
+    qint64 numOfRowsAfterRedo = sqliteDbi->getMsaDbi()->getNumOfRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseNumOfRows + 1, numOfRowsAfterRedo, "number of rows");
+
+    // Verify rows order
+    QList<qint64> rowsOrderAfterRedo = sqliteDbi->getMsaDbi()->getRowsOrder(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseRowsOrder.count() + 1, rowsOrderAfterRedo.count(), "rows order items number");
+    CHECK_EQUAL(row.rowId, rowsOrderAfterRedo[posInMsa], "new row id");
+    rowsOrderAfterRedo.removeAt(posInMsa);
+    CHECK_TRUE(baseRowsOrder == rowsOrderAfterRedo, "other row ids");
+
+    // Verify the version has been incremented
+    int versionAfterRedo = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseVersion + 1, versionAfterRedo, "version");
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_noModTrack) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createNotSoSmallTestMsa(false, os);
+    CHECK_NO_ERROR(os);
 
+    // Prepare test values
+    qint64 seqLength = 100;
+    U2DataId seqId = MsaSQLiteSpecificTestData::createTestSequence(false, seqLength, os);
+    CHECK_NO_ERROR(os);
+    U2TrackModType seqTrackModType = sqliteDbi->getObjectDbi()->getTrackModType(seqId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(NoTrack, seqTrackModType, "sequence base track mod type");
+
+    QList<U2MsaGap> gaps;
+    qint64 gapLength = 2;
+    gaps << U2MsaGap(1, gapLength);
+
+    U2MsaRow row;
+    row.sequenceId = seqId;
+    row.gstart = 1;
+    row.gend = 20;
+    row.gaps = gaps;
+    qint64 rowLength = row.gend - row.gstart + gapLength;
+
+    qint64 posInMsa = 5;
+
+    // Prepare expected values
+    U2TrackModType expectedChildModTrackType = seqTrackModType;
+    CHECK_NO_ERROR(os);
+
+    // Call test function
+    sqliteDbi->getMsaDbi()->addRow(msaId, posInMsa, row, os);
+    CHECK_NO_ERROR(os);
+
+    U2TrackModType finalChildModTrackType = sqliteDbi->getObjectDbi()->getTrackModType(seqId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(expectedChildModTrackType, finalChildModTrackType, "sequence track mod type");
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_Track) {
+    U2OpStatusImpl os;
+    SQLiteDbi* sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createNotSoSmallTestMsa(true, os);
+    CHECK_NO_ERROR(os);
 
+    // Prepare test values
+    qint64 seqLength = 100;
+    U2DataId seqId = MsaSQLiteSpecificTestData::createTestSequence(false, seqLength, os);
+    CHECK_NO_ERROR(os);
+    U2TrackModType seqTrackModType = sqliteDbi->getObjectDbi()->getTrackModType(seqId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(NoTrack, seqTrackModType, "sequence base track mod type");
+
+    QList<U2MsaGap> gaps;
+    qint64 gapLength = 2;
+    gaps << U2MsaGap(1, gapLength);
+
+    U2MsaRow row;
+    row.sequenceId = seqId;
+    row.gstart = 1;
+    row.gend = 20;
+    row.gaps = gaps;
+    qint64 rowLength = row.gend - row.gstart + gapLength;
+
+    qint64 posInMsa = 5;
+
+    // Prepare expected values
+    U2TrackModType expectedChildModTrackType = sqliteDbi->getObjectDbi()->getTrackModType(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Call test function
+    sqliteDbi->getMsaDbi()->addRow(msaId, posInMsa, row, os);
+    CHECK_NO_ERROR(os);
+
+    U2TrackModType finalChildModTrackType = sqliteDbi->getObjectDbi()->getTrackModType(seqId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(expectedChildModTrackType, finalChildModTrackType, "sequence track mod type");
 }
 
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow_noModTrack) {

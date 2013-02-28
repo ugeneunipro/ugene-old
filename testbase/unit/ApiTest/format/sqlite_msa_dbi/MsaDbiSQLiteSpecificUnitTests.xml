@@ -24,6 +24,12 @@ MsaDbiSQLiteSpecificUnitTests
 + addRow_append_redo
 + addRow_zeroPos_undo
 + addRow_zeroPos_redo
++ addRow_middlePos_undo
++ addRow_middlePos_redo
++ addRow_lastRowPos_undo
++ addRow_lastRowPos_redo
++ addRow_child_noModTrack
++ addRow_child_Track
 + setNewRowsOrder_noModTrack
 + setNewRowsOrder_undo
 + setNewRowsOrder_redo

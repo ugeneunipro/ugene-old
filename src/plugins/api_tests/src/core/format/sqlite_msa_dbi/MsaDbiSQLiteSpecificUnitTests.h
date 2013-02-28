@@ -98,14 +98,14 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps);
  *   ^ append_noModTrack  - "posInMsa = -1" (the row is appended), modifications track is not enabled.
  *   ^ append_undo        - the row is appended, modification tracking is enabled, check the "undo" operation.
  *   ^ append_redo        - the row is appended, modification tracking is enabled, check the "redo" operation.
- *   ^ zeroPos_undo       -
- *   ^ zeroPos_redo       -
- *   ^ middlePos_undo     -
- *   ^ middlePos_redo     -
- *   ^ lastRowPos_undo    -
- *   ^ lastRowPos_redo    -
- *   ^ child_noModTrack   -
- *   ^ child_Track        -
+ *   ^ zeroPos_undo       - the row is added to the beginning of the msa, modification tracking is enabled, check the "undo" operation.
+ *   ^ zeroPos_redo       - the row is added to the beginning of the msa, modification tracking is enabled, check the "redo" operation.
+ *   ^ middlePos_undo     - the row is added to the middle of the msa, modification tracking is enabled, check the "undo" operation.
+ *   ^ middlePos_redo     - the row is added to the middle of the msa, modification tracking is enabled, check the "redo" operation.
+ *   ^ lastRowPos_undo    - the row is added to the next position after the last row in the msa, modification tracking is enabled, check the "undo" operation.
+ *   ^ lastRowPos_redo    - the row is added to the next position after the last row in the msa, modification tracking is enabled, check the "redo" operation.
+ *   ^ child_noModTrack   - modification tracking is disabled, check disabled state of the child tracking.
+ *   ^ child_Track        - modification tracking is enabled, check enabled state of the child tracking.
  */
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_undo);
