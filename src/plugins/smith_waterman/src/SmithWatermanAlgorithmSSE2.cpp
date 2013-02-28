@@ -70,7 +70,11 @@ void SmithWatermanAlgorithmSSE2::launch(const SMatrix& _substitutionMatrix, QByt
         maxScore = calculateMatrixSSE2(patternSeq.length(), (unsigned char *)searchSeq.data(),
             searchSeq.length(), (-1)*(gapOpen + gapExtension), (-1)*(gapExtension));
 
-        if (minScore <= maxScore && 32767 > maxScore) {
+        if (minScore <= maxScore) {
+            if (32767 < maxScore || (1 << 16 - 1) < matrixLength) {
+                algoLog.error("SSE2 version of SW algorithm cannot operate with such a long pattern");
+                return;
+            }
             switch(resultView) {
             case SmithWatermanSettings::MULTIPLE_ALIGNMENT:
                 calculateMatrixForMultipleAlignmentResult();

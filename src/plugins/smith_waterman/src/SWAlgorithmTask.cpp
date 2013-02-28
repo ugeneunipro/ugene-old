@@ -115,11 +115,11 @@ void SWAlgorithmTask::setupTask(int maxScore) {
 
     switch(algType) {
         case SW_sse2:
-            computationMatrixSquare = 16195823.0; //this constant is considered to be optimal computation matrix square (square = localSequence.length * pattern.length) for given algorithm realization and the least minimum score value
+            computationMatrixSquare = 1619582300.0; //this constant is considered to be optimal computation matrix square (square = localSequence.length * pattern.length) for given algorithm realization and the least minimum score value
             c.nThreads = idealThreadCount * 2.5;
             break;
         case SW_classic:
-            computationMatrixSquare = 7519489.29; //the same as previous
+            computationMatrixSquare = 751948900.29; //the same as previous
             c.nThreads = idealThreadCount;
             break;
         case SW_cuda:
