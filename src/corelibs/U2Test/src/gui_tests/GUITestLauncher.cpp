@@ -30,7 +30,7 @@
 #include <U2Gui/MainWindow.h>
 #include <QtCore/QMap>
 
-#define TIMEOUT 120000
+#define TIMEOUT 240000
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
 namespace U2 {
