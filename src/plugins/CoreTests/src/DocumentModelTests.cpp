@@ -228,7 +228,9 @@ Task::ReportResult GTest_LoadBrokenDocument::report() {
 }
 
 void GTest_LoadBrokenDocument::cleanup() {
-    QFile::remove(url);
+    if (tempFile) {
+        QFile::remove(url);
+    }
 }
 
 /*******************************
