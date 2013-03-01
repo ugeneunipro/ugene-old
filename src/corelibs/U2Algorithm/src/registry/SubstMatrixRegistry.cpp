@@ -71,7 +71,17 @@ QStringList SubstMatrixRegistry::selectMatrixNamesByAlphabet(DNAAlphabet* al) co
     foreach(const SMatrix& m, matrixByName.values()) {
         DNAAlphabet* mAlpha = m.getAlphabet();
         if (al->getType() == mAlpha->getType() && al->getNumAlphabetChars() <= mAlpha->getNumAlphabetChars()) {
-            result.append(m.getName());
+            QByteArray aChars = al->getAlphabetChars(), mChars = mAlpha->getAlphabetChars();
+            bool addToResult = true;
+            foreach(char c, aChars){
+                if(!mChars.contains(c)){
+                    addToResult = false;
+                    break;
+                }
+            }
+            if(addToResult){
+                result.append(m.getName());
+            }
         }
     }
     result.sort();
