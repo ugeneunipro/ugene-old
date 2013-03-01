@@ -105,14 +105,19 @@ QString Tokenizer::get() {
         if (state == QUOTED) {
             // read quoted string
             buffStream >> quote;
+
+            //check and put back in case of reading the next chunk here
+            if(quote != '"' && quote != '\''){
+                buffStream.seek(buffStream.pos() - 1);
+            }
             buffStream >> c;
 
-            while (c != quote && !c.isNull()) {
+            while (c != '"' && c != '\'' && !c.isNull()) {
                 token += c;
                 buffStream >> c;
             }
 
-            if (c == quote) {
+            if (c == '"' || c == '\'') {
                 // next quoted string may appear 'asd''fgh' == 'asdfgh'
                 buffStream >> c;
                 buffStream.seek(buffStream.pos() - 1);
@@ -403,7 +408,7 @@ bool NEXUSParser::readDataContents(Context &ctx) {
 
                 // Read value
                 QString value = "";
-                value = tz.readUntil(QRegExp("\n|;"));
+                value = tz.readUntil(QRegExp("(;|\\n|\\r)"));
 
                 // Remove spaces
                 value.remove(QRegExp("\\s"));

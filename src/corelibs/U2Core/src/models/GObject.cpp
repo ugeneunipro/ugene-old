@@ -162,6 +162,7 @@ GObjectReference::GObjectReference(const GObject* obj, bool deriveLoadedType) {
     objName = obj->getGObjectName();
     if (obj->isUnloaded() && deriveLoadedType) {
         const UnloadedObject* uo = qobject_cast<const UnloadedObject*>(obj);
+        SAFE_POINT(uo!=NULL, "GObjectReference:: cannot cast UnloadedObject", );
         objType = uo->getLoadedObjectType();
     } else {
         objType = obj->getGObjectType();

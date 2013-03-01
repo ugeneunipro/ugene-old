@@ -332,7 +332,7 @@ Task* BlastAllWorker::tick() {
         cfg.expectValue=actor->getParameter(BLASTALL_EXPECT_VALUE)->getAttributeValue<double>(context);
         cfg.groupName=actor->getParameter(BLASTALL_GROUP_NAME)->getAttributeValue<QString>(context);
         if(cfg.groupName.isEmpty()){
-            cfg.groupName="blast result";
+            cfg.groupName="blast_result";
         }
 
 
