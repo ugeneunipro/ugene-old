@@ -25,6 +25,7 @@
 #include <U2Core/GObject.h>
 #include <U2Core/GHints.h>
 #include <U2Core/GUrl.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -69,6 +70,8 @@ Task::ReportResult GTest_ConvertPath::report() {
 /************************************************************************/
 #define TEMP_DATA_DIR_ENV_ID "TEMP_DATA_DIR" 
 #define URL_ATTR "url"
+#define DATA_ATTR "data"
+#define EXISTS_ATTR "exists"
 void GTest_RemoveTmpDir::init(XMLTestFormat *tf, const QDomElement &el) {
     url = env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/" + el.attribute(URL_ATTR);
 }
@@ -86,11 +89,69 @@ void GTest_RemoveTmpDir::removeDir(const QString &url) {
     foreach (const QFileInfo &entry, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries)) {
         if (entry.isDir()) {
             removeDir(entry.absoluteFilePath());
+            CHECK_OP(stateInfo, );
         } else {
-            QFile::remove(entry.absoluteFilePath());
+            bool removed = QFile::remove(entry.absoluteFilePath());
+            if (!removed) {
+                setError(QString("Can not remove a file: %1").arg(entry.absoluteFilePath()));
+            }
         }
     }
-    dir.rmdir(url);
+    bool removed = dir.rmdir(url);
+    if (!removed) {
+        setError(QString("Can not remove a dir: %1").arg(url));
+    }
+}
+
+/************************************************************************/
+/* GTest_RemoveTmpFile */
+/************************************************************************/
+void GTest_RemoveTmpFile::init(XMLTestFormat *tf, const QDomElement &el) {
+    url = env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/" + el.attribute(URL_ATTR);
+}
+
+Task::ReportResult GTest_RemoveTmpFile::report() {
+    bool removed = QFile::remove(url);
+    if (!removed) {
+        setError(QString("Can not remove a file: %1").arg(url));
+    }
+    return ReportResult_Finished;
+}
+
+/************************************************************************/
+/* GTest_CreateTmpFile */
+/************************************************************************/
+void GTest_CreateTmpFile::init(XMLTestFormat *tf, const QDomElement &el) {
+    url = env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/" + el.attribute(URL_ATTR);
+    data = el.attribute(DATA_ATTR);
+}
+
+Task::ReportResult GTest_CreateTmpFile::report() {
+    QFile file(url);
+    bool created = file.open(QIODevice::WriteOnly);
+    if (!created) {
+        setError(QString("Can not create a file: %1").arg(url));
+        return ReportResult_Finished;
+    }
+    file.write(data.replace("\\n", "\n").toLatin1());
+    file.close();
+    return ReportResult_Finished;
+}
+
+/************************************************************************/
+/* GTest_CheckTmpFile */
+/************************************************************************/
+void GTest_CheckTmpFile::init(XMLTestFormat *tf, const QDomElement &el) {
+    url = env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/" + el.attribute(URL_ATTR);
+    exists = bool(el.attribute(EXISTS_ATTR).toInt());
+}
+
+Task::ReportResult GTest_CheckTmpFile::report() {
+    bool actual = QFile::exists(url);
+    if (exists != actual) {
+        setError(QString("File exist state failed. Expected: %1. Actual: %2").arg(exists).arg(actual));
+    }
+    return ReportResult_Finished;
 }
 
 /*******************************
@@ -100,6 +161,9 @@ QList<XMLTestFactory*> GUrlTests::createTestFactories() {
     QList<XMLTestFactory*> res;
     res.append(GTest_ConvertPath::createFactory());
     res.append(GTest_RemoveTmpDir::createFactory());
+    res.append(GTest_RemoveTmpFile::createFactory());
+    res.append(GTest_CreateTmpFile::createFactory());
+    res.append(GTest_CheckTmpFile::createFactory());
     return res;
 }
 

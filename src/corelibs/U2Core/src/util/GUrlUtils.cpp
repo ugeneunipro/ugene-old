@@ -100,6 +100,12 @@ static void getPreNPost(const QString &originalUrl, QString &pre, QString &post)
     }
 }
 
+QString GUrlUtils::insertSuffix(const QString &originalUrl, const QString &suffix) {
+    QString pre, post;
+    getPreNPost(originalUrl, pre, post);
+    return pre + suffix + post;
+}
+
 QStringList GUrlUtils::getRolledFilesList(const QString& originalUrl, const QString& rolledSuffix) {
     QString pre, post; //pre and post url parts. A number will be placed between
     getPreNPost(originalUrl, pre, post);

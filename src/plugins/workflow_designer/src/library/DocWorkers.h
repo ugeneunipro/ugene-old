@@ -49,6 +49,7 @@ protected:
 
     virtual void takeParameters(U2OpStatus &os);
     virtual QStringList takeUrlList(const QVariantMap &data, U2OpStatus &os);
+    virtual bool isStreamingSupport() const;
 };
 
 class MSAWriter : public BaseDocWriter {
@@ -99,6 +100,7 @@ protected:
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*, int numSplitSequences, int currentSplit);
+    static U2Region getSplitRegion(int numSplitSequences, int currentSplit, qint64 seqLen);
     static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
 };
 

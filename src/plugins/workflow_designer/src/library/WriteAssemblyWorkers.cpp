@@ -102,21 +102,8 @@ bool WriteBAMWorker::isStreamingSupport() const {
     return false;
 }
 
-Task *WriteBAMWorker::processDocs() {
-    if (docs.isEmpty()) {
-        return NULL;
-    }
-
-    QList<Task*> taskList;
-    foreach (const QString &docUrl, docs.keys()) {
-        Document* doc = docs.value(docUrl);
-        ioLog.details(tr("Writing to %1 [%2]").arg(docUrl).arg(format->getFormatName()));
-        WriteBAMTask *t = new WriteBAMTask(doc, buildIndex, SaveDocFlags(fileMode));
-        taskList << t;
-    }
-    docs.clear();
-
-    return taskList.size() == 1 ? taskList.first() : new MultiTask(tr("Save assembly documents"), taskList);
+Task * WriteBAMWorker::getWriteDocTask(Document *doc, const SaveDocFlags &flags) {
+    return new WriteBAMTask(doc, buildIndex, flags);
 }
 
 /************************************************************************/

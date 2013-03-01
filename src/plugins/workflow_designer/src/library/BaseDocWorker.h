@@ -25,6 +25,7 @@
 #include <U2Lang/LocalDomain.h>
 
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/U2OpStatus.h>
 
 namespace U2 {
@@ -76,26 +77,34 @@ protected:
     virtual void data2doc(Document*, const QVariantMap&) = 0;
     virtual bool isStreamingSupport() const;
     virtual void storeEntry(IOAdapter *, const QVariantMap &, int) {}
-    virtual Task* processDocs();
-
-protected:
-    CommunicationChannel *ch;
-    DocumentFormat *format;
-    bool append;
-    QString url;
-    QMap<QString, int> counter;
-    uint fileMode;
-    QStringList outputs;
-
-    QMap<QString, Document*> docs;
-    QMap<QString, IOAdapter*> adapters;
-    QSet<QString> usedUrls;
-
+    virtual Task * getWriteDocTask(Document *doc, const SaveDocFlags &flags);
     virtual void takeParameters(U2OpStatus &os);
     virtual QStringList takeUrlList(const QVariantMap &data, U2OpStatus &os);
 
+protected:
+    DocumentFormat *format;
+
 private:
-    void createAdaptersAndDocs(const QStringList &urls, U2OpStatus &os);
+    CommunicationChannel *ch;
+    bool append;
+    uint fileMode;
+    QSet<QString> usedUrls;
+    QMap<QString, int> counters; // url <-> count suffix
+    QMap<QString, IOAdapter*> adapters;
+    QMap<IOAdapter*, Document*> docs;
+
+private:
+    bool ifCreateAdapter(const QString &url) const;
+    /**
+     * Creates an adapter for @url or returns existing one.
+     * The url of the adapter could be not equal to @url.
+     */
+    IOAdapter * getAdapter(const QString &url, U2OpStatus &os);
+    void openAdapter(IOAdapter *io, const QString &url, const SaveDocFlags &flags, U2OpStatus &os);
+    /** Creates a document for @io or returns existing one. */
+    Document * getDocument(IOAdapter *io, U2OpStatus &os);
+    Task * processDocs();
+    SaveDocFlags getDocFlags() const;
 };
 
 }// Workflow namespace

@@ -198,11 +198,21 @@ void GTest_SaveDocument::prepare(){
 *******************************/
 void GTest_LoadBrokenDocument::init(XMLTestFormat* tf, const QDomElement& el) {
     Q_UNUSED(tf);
-    QString             url = env->getVar("COMMON_DATA_DIR") + "/" + el.attribute("url");
+
+    QString             urlAttr = el.attribute("url");
+    QString             dir = el.attribute("dir");
     IOAdapterId         io = el.attribute("io");
     IOAdapterFactory*   iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(io);
     DocumentFormatId    format = el.attribute("format");
     QVariantMap         fs;
+
+    tempFile = (dir == "temp");
+
+    if (dir == "temp") {
+        url = getTempDir(env) + "/" + urlAttr;
+    } else {
+        url = env->getVar("COMMON_DATA_DIR") + "/" + urlAttr;
+    }
 
     loadTask = new LoadDocumentTask(format, url, iof);
     addSubTask(loadTask);
@@ -217,6 +227,9 @@ Task::ReportResult GTest_LoadBrokenDocument::report() {
     return ReportResult_Finished;
 }
 
+void GTest_LoadBrokenDocument::cleanup() {
+    QFile::remove(url);
+}
 
 /*******************************
 *GTest_DocumentFormat

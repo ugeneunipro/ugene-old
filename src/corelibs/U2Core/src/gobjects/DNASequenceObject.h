@@ -44,6 +44,7 @@ public:
 
     QString getSequenceName() const ;
 
+    DNASequence getSequence(const U2Region &region) const;
     DNASequence getWholeSequence() const;
     
     QByteArray getWholeSequenceData() const;

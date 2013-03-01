@@ -73,7 +73,7 @@ void GTest_RunCMDLine::init(XMLTestFormat *tf, const QDomElement& el) {
     }
 }
 
-void GTest_RunCMDLine::setArgs( const QDomElement & el ) {
+void GTest_RunCMDLine::setArgs(const QDomElement & el) {
     QString commandLine;
     QDomNamedNodeMap map = el.attributes();
     int mapSz = map.length();

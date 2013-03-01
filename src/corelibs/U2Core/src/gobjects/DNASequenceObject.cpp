@@ -103,9 +103,7 @@ QString U2SequenceObject::getSequenceName() const  {
         seqGet = true; \
     }
 
-DNASequence U2SequenceObject::getWholeSequence() const {
-    QByteArray wholeSeq = getWholeSequenceData();
-
+DNASequence U2SequenceObject::getSequence(const U2Region &region) const {
     U2Sequence seq;
     bool seqGet = false;
 
@@ -119,7 +117,7 @@ DNASequence U2SequenceObject::getWholeSequence() const {
         FETCH_SEQUENCE(seqGet, seq, entityRef);
         seqName = cachedName = seq.visualName;
     }
-    DNASequence res(seqName, wholeSeq, alpha);
+    DNASequence res(seqName, getSequenceData(region), alpha);
     if (cachedCircular == TriState_Unknown) {
         FETCH_SEQUENCE(seqGet, seq, entityRef);
         cachedCircular = seq.circular ? TriState_Yes : TriState_No;
@@ -129,6 +127,10 @@ DNASequence U2SequenceObject::getWholeSequence() const {
     res.quality = getQuality();
     res.info = getSequenceInfo();
     return res;
+}
+
+DNASequence U2SequenceObject::getWholeSequence() const {
+    return getSequence(U2_REGION_MAX);
 }
 
 QByteArray U2SequenceObject::getWholeSequenceData() const {

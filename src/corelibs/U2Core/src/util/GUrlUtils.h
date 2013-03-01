@@ -55,6 +55,9 @@ public:
     // returns a list of existing files with rolled @originalUrl
     static QStringList getRolledFilesList(const QString& originalUrl, const QString& rolledSuffix);
 
+    // inserts a suffix before the extension if is exists and returns the new url
+    static QString insertSuffix(const QString &originalUrl, const QString &suffix);
+
     // renames actual file by rolling its name
     static bool renameFileWithNameRoll(const QString& url, TaskStateInfo& ti, const QSet<QString>& excludeList = QSet<QString>(), Logger* log = NULL);
 

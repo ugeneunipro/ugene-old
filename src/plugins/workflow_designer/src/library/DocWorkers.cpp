@@ -205,17 +205,38 @@ void FastaWriter::data2doc(Document* doc, const QVariantMap& data) {
 
 void FastaWriter::storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum) {
     streamingStoreEntry(format, io, data, context, entryNum);
+    currentSplitSequence++;
+}
+
+U2Region FastaWriter::getSplitRegion(int numSplitSequences, int currentSplitSequence, qint64 seqLen) {
+    U2Region result;
+    result.startPos = currentSplitSequence * (seqLen / numSplitSequences);
+    result.length = seqLen / numSplitSequences;
+    if (currentSplitSequence == (numSplitSequences - 1)) {
+        result.length += seqLen % numSplitSequences;
+    }
+    return result;
+}
+
+static U2SequenceObject * getSeqObj(const QVariantMap &data, WorkflowContext *context, U2OpStatus &os) {
+    if (!data.contains(BaseSlots::DNA_SEQUENCE_SLOT().getId())) {
+        os.setError("Fasta writer: no sequence");
+        return NULL;
+    }
+    SharedDbiDataHandler seqId = data[BaseSlots::DNA_SEQUENCE_SLOT().getId()].value<SharedDbiDataHandler>();
+    U2SequenceObject *seqObj = StorageUtils::getSequenceObject(context->getDataStorage(), seqId);
+    if (NULL == seqObj) {
+        os.setError("Fasta writer: NULL sequence object");
+    }
+    return seqObj;
 }
 
 void FastaWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context, int numSplitSequences, int currentSplitSequence ) {
-    CHECK(data.contains(BaseSlots::DNA_SEQUENCE_SLOT().getId()), );
-    SharedDbiDataHandler seqId = data[BaseSlots::DNA_SEQUENCE_SLOT().getId()].value<SharedDbiDataHandler>();
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    SAFE_POINT(NULL != seqObj.get(), tr("Fasta writer: NULL sequence object"), );
-    
-    U2Region splitRegion = U2Region(currentSplitSequence * (seqObj->getSequenceLength() / numSplitSequences), 
-        seqObj->getSequenceLength() / numSplitSequences + ((currentSplitSequence == (numSplitSequences - 1) ) ? seqObj->getSequenceLength() % numSplitSequences  : 0));
+    U2OpStatusImpl os;
+    std::auto_ptr<U2SequenceObject> seqObj(getSeqObj(data, context, os));
+    SAFE_POINT_OP(os, );
 
+    U2Region splitRegion = getSplitRegion(numSplitSequences, currentSplitSequence, seqObj->getSequenceLength());
     QByteArray splitSequence = seqObj->getSequenceData(splitRegion);
 
     DNASequence seq(seqObj->getSequenceName() + ((numSplitSequences == 1) ? QString("%1..%2").arg(splitRegion.startPos + 1, splitRegion.length) : ""), splitSequence, seqObj->getAlphabet());
@@ -236,28 +257,21 @@ void FastaWriter::data2document(Document* doc, const QVariantMap& data, Workflow
     addSeqObject(doc, seq);    
 }
 
-inline static U2SequenceObject *getCopiedSequenceObject(const QVariantMap &data, WorkflowContext *context, U2OpStatus2Log &os) {
-    SAFE_POINT(data.contains(BaseSlots::DNA_SEQUENCE_SLOT().getId()), "Copy sequence error", NULL);
+inline static U2SequenceObject * getCopiedSequenceObject(const QVariantMap &data, WorkflowContext *context, U2OpStatus2Log &os, const U2Region &reg = U2_REGION_MAX) {
+    std::auto_ptr<U2SequenceObject> seqObj(getSeqObj(data, context, os));
+    SAFE_POINT_OP(os, NULL);
 
-    SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()) // here is the first SharedDbiDataHandler using
-                                .value<SharedDbiDataHandler>(); // here is the second one. So, refCount >= 2
-
-    std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-    CHECK_EXT(NULL != seqObj.get(), os.setError("Can't get sequence object"), NULL);
-
-    U2SequenceObject *dna = NULL;
+    SharedDbiDataHandler seqId = data[BaseSlots::DNA_SEQUENCE_SLOT().getId()].value<SharedDbiDataHandler>();
     int refCount = seqId.constData()->getReferenceCount();
     if (refCount > 2) { // need to copy because it is used by another worker
-        DNASequence seq = seqObj->getWholeSequence();
+        DNASequence seq = seqObj->getSequence(reg);
         U2EntityRef seqRef = U2SequenceUtils::import(seqObj->getEntityRef().dbiRef, seq, os);
         CHECK_OP(os, NULL);
 
-        dna = new U2SequenceObject(seqObj->getSequenceName(), seqRef);
+        return new U2SequenceObject(seqObj->getSequenceName(), seqRef);
     } else {
-        dna = seqObj.release();
+        return seqObj.release();
     }
-
-    return dna;
 }
 
 void FastaWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum) {
@@ -639,7 +653,6 @@ QStringList SeqWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) {
     SAFE_POINT_OP(os, urls);
     SAFE_POINT(1 == urls.size(), "Several urls in the output attribute", urls);
 
-    QString anUrl = urls.first();
     SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
     QSharedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
 
@@ -657,19 +670,21 @@ QStringList SeqWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) {
         }
     }
 
-    append &= (1 == numSplitSequences);
-
-    QSet<QString> excluded;
     if (numSplitSequences > 1) {
-        urls.clear();
-        for (int i = 0; i < numSplitSequences; ++i) {
-            QString tmpUrl = GUrlUtils::rollFileName(anUrl, "_split", excluded);                        
-            excluded << tmpUrl;
-            urls << tmpUrl;
+        QString url = urls.takeFirst();
+        for (int i = 0; i < numSplitSequences; i++) {
+            urls << GUrlUtils::insertSuffix(url, "_split" + QString::number(i+1));
         }
     }
 
     return urls;
+}
+
+bool SeqWriter::isStreamingSupport() const {
+    if (numSplitSequences > 1) {
+        return false;
+    }
+    return BaseDocWriter::isStreamingSupport();
 }
 
 /*************************************

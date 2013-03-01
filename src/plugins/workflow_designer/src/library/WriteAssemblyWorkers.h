@@ -42,7 +42,7 @@ public:
 
 protected:
     virtual bool isStreamingSupport() const;
-    virtual Task *processDocs();
+    virtual Task * getWriteDocTask(Document *doc, const SaveDocFlags &flags);
     virtual void takeParameters(U2OpStatus &os);
 
 private:

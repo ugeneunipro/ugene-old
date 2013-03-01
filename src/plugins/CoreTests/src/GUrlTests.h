@@ -53,6 +53,41 @@ private:
     void removeDir(const QString &url);
 };
 
+class GTest_RemoveTmpFile : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_RemoveTmpFile, "remove-temp-file");
+
+    ReportResult report();
+
+private:
+    QString url;
+};
+
+class GTest_CreateTmpFile : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CreateTmpFile, "create-temp-file");
+
+    ReportResult report();
+
+private:
+    QString url;
+    QString data;
+};
+
+class GTest_CheckTmpFile : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckTmpFile, "check-temp-file");
+
+    ReportResult report();
+
+private:
+    QString url;
+    bool exists;
+};
+
 class GUrlTests {
 public:
     static QList<XMLTestFactory*> createTestFactories();

@@ -40,7 +40,6 @@
 #include <U2Core/Log.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -144,7 +143,9 @@ BaseDocWriter::BaseDocWriter( Actor * a )
 
 void BaseDocWriter::cleanup() {
     foreach (IOAdapter *io, adapters.values()) {
-        io->close();
+        if (io->isOpen()) {
+            io->close();
+        }
     }
 }
 
@@ -155,25 +156,9 @@ void BaseDocWriter::init() {
 
 QStringList BaseDocWriter::getOutputFiles(){
     QStringList files = BaseWorker::getOutputFiles();
-    files.append(outputs);
 
-    QSet<QString> urlSet = files.toSet();
-    files = urlSet.toList();
-    return files;
-}
-
-static bool openIOAdapter(IOAdapter *io, const QString &url, SaveDocFlags flags, const QSet<QString> &excludeList) {
-    if (flags.testFlag(SaveDoc_Roll)) {
-        TaskStateInfo ti;
-        if (!GUrlUtils::renameFileWithNameRoll(url, ti, excludeList)) {
-            return false;
-        }
-    }
-    IOAdapterMode mode = IOAdapterMode_Write;
-    if (flags.testFlag(SaveDoc_Append)) {
-        mode = IOAdapterMode_Append;
-    }
-    return io->open(url, mode);
+    QSet<QString> urlSet = files.toSet() + usedUrls;
+    return urlSet.toList();
 }
 
 #define GZIP_SUFFIX ".gz"
@@ -189,10 +174,7 @@ void BaseDocWriter::takeParameters(U2OpStatus &os) {
         return;
     }
 
-    Attribute *urlAttribute = actor->getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
-    url = urlAttribute->getAttributeValue<QString>(context);
-    fileMode = actor->getParameter(BaseAttributes::FILE_MODE_ATTRIBUTE().getId())->getAttributeValue<uint>(context);
-    fileMode |= SaveDoc_DestroyAfter;
+    fileMode = getValue<uint>(BaseAttributes::FILE_MODE_ATTRIBUTE().getId());
     Attribute *a = actor->getParameter(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE().getId());
     if(NULL != a) {
         append = a->getAttributeValue<bool>(context);
@@ -202,7 +184,7 @@ void BaseDocWriter::takeParameters(U2OpStatus &os) {
 }
 
 QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) {
-    QString anUrl = url;
+    QString anUrl = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());;
     {
         if (anUrl.isEmpty()) {
             anUrl = data.value(BaseSlots::URL_SLOT().getId()).toString();
@@ -223,37 +205,75 @@ QStringList BaseDocWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) 
     return urls;
 }
 
-void BaseDocWriter::createAdaptersAndDocs(const QStringList &urls, U2OpStatus &os) {
-    bool streaming = this->isStreamingSupport();
+bool BaseDocWriter::ifCreateAdapter(const QString &url) const {
+    // if the format can contain only one object then adapters must be created for each object
+    if (format->checkFlags(DocumentFormatFlag_SingleObjectFormat)) {
+        return true;
+    }
+    if (format->checkFlags(DocumentFormatFlag_OnlyOneObject)) {
+        return true;
+    }
 
-    foreach (const QString &anUrl, urls) {
-        bool createNewDoc = (!append || !streaming) && !docs.contains(anUrl);
-        bool createNewAdapter = append && streaming && !adapters.contains(anUrl);
+    // if not accumulate object in one file
+    if (!append) {
+        return true;
+    }
 
-        IOAdapterFactory *iof = NULL;
-        if (createNewAdapter || createNewDoc) {
-            iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(anUrl));
-            if (createNewAdapter) {
-                IOAdapter *io = iof->createIOAdapter();
-                if (openIOAdapter(io, anUrl, SaveDocFlags(fileMode), usedUrls)) {
-                    ioLog.details(tr("Creating %1 [%2]").arg(io->getURL().getURLString()).arg(format->getFormatName()));
-                    usedUrls.insert(io->getURL().getURLString());
-                    adapters.insert(anUrl, io);
-                } else {
-                    os.setError(tr("Can not open a file for writing: %1").arg(anUrl));
-                    return;
-                }
-            }
-        }
-        if (createNewDoc) {
-            U2OpStatus2Log os;
-            QVariantMap hints;
-            U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
-            hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
-            Document *doc = format->createNewLoadedDocument(iof, anUrl , os, hints);
-            docs.insert(anUrl, doc);
+    return (!adapters.contains(url));
+}
+
+void BaseDocWriter::openAdapter(IOAdapter *io, const QString &aUrl, const SaveDocFlags &flags, U2OpStatus &os) {
+    QString url = aUrl;
+    if (counters.contains(aUrl)) {
+        url = GUrlUtils::insertSuffix(aUrl, "_" + QString::number(counters[aUrl]));
+    }
+
+    if (flags.testFlag(SaveDoc_Roll)) {
+        TaskStateInfo ti;
+        if (!GUrlUtils::renameFileWithNameRoll(url, ti, usedUrls)) {
+            os.setError(ti.getError());
+            return;
         }
     }
+    IOAdapterMode mode = flags.testFlag(SaveDoc_Append) ? IOAdapterMode_Append : IOAdapterMode_Write;
+    bool opened = io->open(url, mode);
+    if (!opened) {
+        os.setError(tr("Can not open a file for writing: %1").arg(url));
+    }
+
+    int old = counters.value(aUrl, 0);
+    counters[aUrl] = old + 1;
+}
+
+IOAdapter * BaseDocWriter::getAdapter(const QString &url, U2OpStatus &os) {
+    if (!ifCreateAdapter(url)) {
+        return adapters[url];
+    }
+
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
+    openAdapter(io.data(), url, SaveDocFlags(fileMode), os);
+    CHECK_OP(os, NULL);
+
+    adapters[io->getURL().getURLString()] = io.data();
+    usedUrls << io->getURL().getURLString();
+
+    return io.take();
+}
+
+Document * BaseDocWriter::getDocument(IOAdapter *io, U2OpStatus &os) {
+    if (docs.contains(io)) {
+        return docs[io];
+    }
+
+    QVariantMap hints;
+    U2DbiRef dbiRef = context->getDataStorage()->getDbiRef();
+    hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(dbiRef));
+    Document *doc = format->createNewLoadedDocument(io->getFactory(), io->getURL(), os, hints);
+    CHECK_OP(os, NULL);
+
+    docs[io] = doc;
+    return doc;
 }
 
 bool BaseDocWriter::isStreamingSupport() const {
@@ -273,21 +293,17 @@ Task * BaseDocWriter::tick() {
         SAFE_POINT_OP(os, new FailTask(os.getError()));
         QStringList urls = this->takeUrlList(data, os);
         SAFE_POINT_OP(os, new FailTask(os.getError()));
-        this->createAdaptersAndDocs(urls, os);
-        CHECK_OP(os, new FailTask(os.getError()));
 
-        bool streaming = this->isStreamingSupport();
         foreach (const QString &anUrl, urls) {
-            if (streaming && append) {
-                IOAdapter *io = adapters.value(anUrl);
+            IOAdapter *io = getAdapter(anUrl, os);
+            SAFE_POINT_OP(os, new FailTask(os.getError()));
+            if (isStreamingSupport()) {
                 // TODO: make it in separate thread!
                 storeEntry(io, data, ch->takenMessages());
             } else {
-                Document *doc = docs.value(anUrl);
+                Document *doc = getDocument(io, os);
+                SAFE_POINT_OP(os, new FailTask(os.getError()));
                 data2doc(doc, data);
-            }
-            if (!outputs.contains(anUrl)) {
-                outputs << anUrl;
             }
         }
         if (!append) {
@@ -298,7 +314,7 @@ Task * BaseDocWriter::tick() {
     bool done = ch->isEnded() && !ch->hasMessage();
     if (append && !done) {
         return NULL;
-    }    
+    }
     if (done) {
         setDone();
     }
@@ -307,24 +323,35 @@ Task * BaseDocWriter::tick() {
 
 Task* BaseDocWriter::processDocs()
 {
-    if(docs.isEmpty() && adapters.isEmpty()) {
+    if(adapters.isEmpty()) {
         coreLog.error(tr("nothing to write"));
     }
     if (docs.isEmpty()) {
         return NULL;
     }
     QList<Task*> tlist;
-    QMapIterator<QString, Document*> it(docs);
-    while (it.hasNext()) {
-        it.next();
-        Document* doc = it.value();
-        QString anUrl = it.key();
-        ioLog.details(tr("Writing to %1 [%2]").arg(anUrl).arg(format->getFormatName()));
-        tlist << new SaveDocumentTask(doc, SaveDocFlags(fileMode), DocumentUtils::getNewDocFileNameExcludesHint());
+    foreach (IOAdapter *io, docs.keys()) {
+        Document *doc = docs[io];
+        ioLog.details(tr("Writing to %1 [%2]").arg(io->getURL().getURLString()).arg(format->getFormatName()));
+        io->close();
+        tlist << getWriteDocTask(doc, getDocFlags());
     }
     docs.clear();
 
     return tlist.size() == 1 ? tlist.first() : new MultiTask(tr("Save documents"), tlist);
+}
+
+Task * BaseDocWriter::getWriteDocTask(Document *doc, const SaveDocFlags &flags) {
+    return new SaveDocumentTask(doc, flags, DocumentUtils::getNewDocFileNameExcludesHint());
+}
+
+SaveDocFlags BaseDocWriter::getDocFlags() const {
+    SaveDocFlags flags(fileMode);
+    flags |= SaveDoc_DestroyAfter;
+    if (flags.testFlag(SaveDoc_Roll)) {
+        flags ^= SaveDoc_Roll;
+    }
+    return flags;
 }
 
 QString BaseDocWriter::getUniqueObjectName(const Document *doc, const QString &name) {

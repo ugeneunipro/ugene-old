@@ -81,9 +81,12 @@ public:
 
     Document* getDocument() const;
     ReportResult report();
+    void cleanup();
 
 private:
     LoadDocumentTask*   loadTask;
+    QString url;
+    bool tempFile;
 };
 
 class GTest_DocumentNumObjects : public GTest {
