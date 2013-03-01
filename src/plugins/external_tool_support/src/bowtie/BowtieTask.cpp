@@ -297,7 +297,8 @@ void BowtieAssembleTask::LogParser::parseOutput(const QString &partOfLog) {
 void BowtieAssembleTask::LogParser::parseErrOutput(const QString &partOfLog) {
     ExternalToolLogParser::parseErrOutput(partOfLog);
     QRegExp blockRegExp("# reads with at least one reported alignment: (\\d+) \\(\\d+\\.\\d+%\\)");
-    foreach(const QString &buf, lastPartOfLog) {
+    QStringList log = lastPartOfLog;
+    foreach(const QString &buf, log) {
         if(buf.contains(blockRegExp)) {
             if(blockRegExp.cap(1).toInt() > 0) {
                 haveResults = true;
@@ -305,16 +306,14 @@ void BowtieAssembleTask::LogParser::parseErrOutput(const QString &partOfLog) {
         }
     }
 
-    QStringList log = lastPartOfLog;
-    QStringList::iterator i = log.begin();
-    for (; i!=log.end(); i++) {
-        if(i->contains("Out of memory")) {
-            QStringList errors;
-            for (int strings=0; i!=log.end() && strings<2; i++, strings++) {
-                errors << *i;
+    qint64 lineCounter = 0;
+    foreach (const QString &buf, log) {
+        if (buf.contains("Out of memory")) {
+            if (lineCounter < log.size() - 1) {
+                setLastError(buf + " " + log[lineCounter+1]);
             }
-            setLastError(errors.join(" "));
         }
+        lineCounter++;
     }
 }
 
