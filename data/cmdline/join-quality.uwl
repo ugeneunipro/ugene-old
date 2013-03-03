@@ -1,40 +1,59 @@
 #@UGENE_WORKFLOW
 #Adds PHRED quality scores to the sequence and save output to Fastq. For example, one can read a Fasta file, import PHRED quality values from corresponding qualities file and export the result to Fastq.
 
+
+
 workflow "Import PHRED quality scores"{
+
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
-        merge-gap:10;
-        mode:0;
+        url-in {
+            dataset:Dataset;
+        }
     }
     write-fastq {
-        type:write-fastq;
+        type:write-sequence;
         name:"Write FASTQ";
-        accumulate:true;
-        write-mode:2;
+        document-format:fastq;
     }
     import-phred-qualities {
         type:import-phred-qualities;
         name:"Import PHRED qualities";
-        quality-format:Sanger;
+    }
+
+
+    .actor-bindings {
+        import-phred-qualities.out-sequence->write-fastq.in-sequence
+        read-sequence.out-sequence->import-phred-qualities.in-sequence
     }
 
     import-phred-qualities.sequence->write-fastq.in-sequence.sequence
     read-sequence.sequence->import-phred-qualities.in-sequence.sequence
 
     .meta {
-        aliases {
-            read-sequence.url-in:in;
-            write-fastq.url-out:out;
-            import-phred-qualities.url-in:quality;
-        }
-        help {
-            in:"Input sequence";
-            out:"Output file in FASTQ format";
-            quality:"Input file with PHRED quality scores";
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in;
+                description:"Input sequence";
+            }
+            write-fastq.url-out {
+                alias:out;
+                description:"Output file in FASTQ format";
+            }
+            import-phred-qualities.url-in {
+                alias:quality;
+                description:"Input file with PHRED quality scores";
+            }
         }
         visual {
+            import-phred-qualities {
+                pos:"-600 -630";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-sequence.angle:360;
+            }
             read-sequence {
                 pos:"-795 -630";
                 style:ext;
@@ -47,19 +66,13 @@ workflow "Import PHRED quality scores"{
                 bg-color-ext:"0 128 128 64";
                 in-sequence.angle:180;
             }
-            import-phred-qualities {
-                pos:"-600 -630";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-sequence.angle:180;
-                out-sequence.angle:360;
+            import-phred-qualities.out-sequence->write-fastq.in-sequence {
+                text-pos:"-45 -50";
             }
             read-sequence.out-sequence->import-phred-qualities.in-sequence {
                 text-pos:"-27.5 -24";
             }
-            import-phred-qualities.out-sequence->write-fastq.in-sequence {
-                text-pos:"-45 -50";
-            }
         }
     }
 }
+

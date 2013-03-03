@@ -137,6 +137,9 @@ void ImportPhredQualityWorker::init() {
     fileName = actor->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId())->getAttributeValue<QString>(context);
     type = DNAQuality::getDNAQualityTypeByName( actor->getParameter(QUALITY_TYPE_ATTR)->getAttributeValue<QString>(context) );
     format = actor->getParameter(QUALITY_FORMAT_ATTR)->getAttributeValue<QString>(context);
+    if (format.isEmpty()) {
+        format = DNAQuality::QUAL_FORMAT;
+    }
 }
 
 Task* ImportPhredQualityWorker::tick() {

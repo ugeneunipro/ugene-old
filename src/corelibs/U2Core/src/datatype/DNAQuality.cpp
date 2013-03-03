@@ -28,7 +28,7 @@ static const QString SANGER("Sanger");
 static const QString ILLUMINA("Illumina 1.3+");
 static const QString SOLEXA("Solexa/Illumina 1.0");
 
-const QString DNAQuality::QUAL_FORMAT("PHRED qual");
+const QString DNAQuality::QUAL_FORMAT("PHRED");
 const QString DNAQuality::ENCODED("Encoded");
 
 DNAQuality::DNAQuality( const QByteArray& qualScore, DNAQualityType t /* = DNAQualityType_Sanger*/ )
