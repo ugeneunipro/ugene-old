@@ -24,6 +24,8 @@
 
 #include <QtGui/QtGui>
 #include <U2View/MSAEditor.h>
+#include "ui/ui_MSADistancesColumnSettingsWidget.h"
+
 
 namespace U2 {
 
@@ -44,24 +46,21 @@ private slots:
     void sl_onAutoUpdateChanged(int);
     void sl_onRefSeqChanged(const QString&);
 private:
+    void copySettings();
+    void connectSlots();
+
     void hideSimilaritySettings();
     void showSimilaritySettings();
     void restoreSettings();
 
-    QWidget *createSimilaritySettings();
+    void updateWidgetsSettings();
+private:
+    Ui_MSADistanceColumnSettingsForm ui;
 
     MSAEditor*      msa;
-    MSAEditorUI*    ui;
-    
-    QLabel*         algoLabel;
-    QComboBox*      algoCombo;
-    QCheckBox*      excludeGaps;
-    QCheckBox*      autoUpdateCheck;
-    QRadioButton*   countsCheck;
-    QRadioButton*   percentsCheck;
-    QCheckBox*      showStatisticsCheck;
-    QGroupBox*      profileGroup;
-    QLabel*         refSeqWarning;
+    MSAEditorUI*    msaUI;
+
+    QWidget*        distancesStatisticsGroup;
 
     SimilarityStatisticsSettings *settings;
     bool    statisticsIsShown;

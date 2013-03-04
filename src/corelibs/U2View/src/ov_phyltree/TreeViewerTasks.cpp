@@ -71,7 +71,6 @@ OpenTreeViewerTask::OpenTreeViewerTask(Document* doc, QObject* _parent)
 }
 
 OpenTreeViewerTask::~OpenTreeViewerTask(){
-    int res = 0;
 }
 
 void OpenTreeViewerTask::open() {

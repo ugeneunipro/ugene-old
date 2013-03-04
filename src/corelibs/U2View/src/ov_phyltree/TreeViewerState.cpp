@@ -102,7 +102,6 @@ QVariantMap TreeViewerState::saveState(TreeViewer* v) {
 
     ss.stateData[VIEW_ID] = TreeViewerFactory::ID;
 
-    static PhyTreeObject* clone = v->getPhyObject()->clone();
     PhyTreeObject* phyObj = v->getPhyObject();
     if (phyObj) {
         ss.setPhyObject(GObjectReference(phyObj));

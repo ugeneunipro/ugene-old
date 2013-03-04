@@ -306,10 +306,6 @@ private:
     MSAEditorConsensusArea*            consArea;
     MSAEditorOffsetsViewController*    offsetsView;
     MSAEditorStatusWidget*             statusWidget;
-    MSAEditorTreeViewer*               treeViewer;
-    MSAEditorSimilarityColumn*         dataList;
-    MSAEditorMultiTreeViewer*          multiTreeViewer;
-    MSAEditorAlignmentDependentWidget* similarityStatistics;
     QWidget*                           seqAreaContainer;
     QWidget*                           nameAreaContainer;
 
@@ -321,6 +317,11 @@ private:
     MSAEditorUndoFramework*         undoFWK;
     MSACollapsibleItemModel*        collapseModel;
     bool                            collapsibleMode;
+
+    MSAEditorSimilarityColumn*         dataList;
+    MSAEditorMultiTreeViewer*          multiTreeViewer;
+    MSAEditorAlignmentDependentWidget* similarityStatistics;
+    MSAEditorTreeViewer*               treeViewer;
 
     QAction                         *copySelectionAction;
 };
@@ -338,8 +339,8 @@ protected:
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void paintEvent(QPaintEvent *e);
 
-    int heightMargin;
     MSAEditorUI*  ui;
+    int heightMargin;
 };
 
 class MSALabelWidget : public MSAWidget {

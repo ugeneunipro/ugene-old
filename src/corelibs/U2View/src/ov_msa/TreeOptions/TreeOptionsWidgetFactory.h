@@ -30,6 +30,7 @@
 
 #include <QtGui/QPixmap>
 
+#include "TreeOptionsWidget.h"
 
 namespace U2 {
 
@@ -44,10 +45,15 @@ public:
 
     virtual OPGroupParameters getOPGroupParameters();
 
+private slots:
+    void sl_onWidgetViewSaved(const TreeOpWidgetViewSettings& settings);
+
 private:
     static const QString GROUP_ID;
     static const QString GROUP_ICON_STR;
     static const QString GROUP_TITLE;
+
+    TreeOpWidgetViewSettings viewSettings;
 };
 
 class U2VIEW_EXPORT TreeOptionsWidgetFactory : public OPWidgetFactory
@@ -61,10 +67,14 @@ public:
 
     virtual OPGroupParameters getOPGroupParameters();
 
+private slots:
+    void sl_onWidgetViewSaved(const TreeOpWidgetViewSettings& settings);
 private:
     static const QString GROUP_ID;
     static const QString GROUP_ICON_STR;
     static const QString GROUP_TITLE;
+
+    TreeOpWidgetViewSettings viewSettings;
 };
 
 } // namespace

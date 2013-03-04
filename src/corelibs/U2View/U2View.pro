@@ -163,6 +163,8 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_msa/ui/ColorSchemaSettingsWidget.ui \
          src/ov_msa/ui/CreateMSAScheme.ui \
          src/ov_msa/ui/AddPhyTreeDialog.ui \
+         src/ov_msa/ui/TreeOptionsWidget.ui \
+         src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui \
          src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
          src/ov_sequence/find_pattern/ui/FindPatternForm.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \

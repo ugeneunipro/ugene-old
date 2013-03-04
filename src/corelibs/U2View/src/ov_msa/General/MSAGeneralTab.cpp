@@ -86,7 +86,7 @@ void MSAGeneralTab::sl_refSeqChanged( const QString & str){
     refrenceLabel->setText(str);
 }
 
-void MSAGeneralTab::sl_onClearButtonClicked(bool b){
+void MSAGeneralTab::sl_onClearButtonClicked(bool){
     msa->setRefrence("(None)");
 }
 

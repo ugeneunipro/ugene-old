@@ -26,14 +26,24 @@
 
 #include <U2Core/GObject.h>
 #include <U2Core/PhyTree.h>
+#include <U2Algorithm/CreatePhyTreeSettings.h>
+#include <QString>
 
 namespace U2 {
+
+//struct TreeBuildingSettings {
+//    TreeBuildingSettings();
+//    TreeBuildingSettings(const QString& _alignmentName, const CreatePhyTreeSettings& _settings);
+//
+//    QString               alignmentName;
+//    CreatePhyTreeSettings settings;
+//};
 
 class U2CORE_EXPORT PhyTreeObject : public GObject {
     Q_OBJECT
 public:
     PhyTreeObject(const PhyTree& _tree, const QString& objectName, const QVariantMap& hintsMap = QVariantMap()) 
-        : GObject(GObjectTypes::PHYLOGENETIC_TREE, objectName, hintsMap), tree(_tree){};
+        : GObject(GObjectTypes::PHYLOGENETIC_TREE, objectName, hintsMap), tree(_tree) {};
 
     virtual const PhyTree& getTree() const {return tree;}
     
@@ -54,6 +64,8 @@ public:
 
 protected:
     PhyTree tree;
+    QString               alignmentName;
+    //CreatePhyTreeSettings settings;
 };
 
 

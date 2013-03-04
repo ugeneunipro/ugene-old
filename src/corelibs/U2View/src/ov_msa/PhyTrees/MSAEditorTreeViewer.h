@@ -56,9 +56,6 @@ public:
     const CreatePhyTreeSettings* getSettings();
     virtual OptionsPanel* getOptionsPanel(){return 0;}
 
-//    void setTreeSincSettings(const CreatePhyTreeSettings* settings);
-//    const CreatePhyTreeSettings* getTreeSincSettings();
-
     void setSyncSettings(const TreeSynchronizationSettings& settings){syncSettings = settings;}
     const TreeSynchronizationSettings&  getSyncSettings(){return syncSettings;}
 protected:
@@ -110,9 +107,9 @@ private slots:
 private:
     void highlightBranches();
 
-    QGraphicsLineItem* treeLevelSlider;
-    qreal              sliderPos;
-    bool               choiceLevelIsActive;
+    QGraphicsLineItem* subgroupSelector;
+    qreal              subgroupSelectorPos;
+    bool               subgroupSelectionMode;
     GroupColors        groupColors;
 };
 

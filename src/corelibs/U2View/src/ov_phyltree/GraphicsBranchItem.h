@@ -55,7 +55,7 @@ private:
 protected:
 
     QGraphicsSimpleTextItem* distanceText;
-    QGraphicsTextItem*       nameText;
+    QGraphicsSimpleTextItem* nameText;
     qreal width;
     qreal dist;
     bool collapsed;
@@ -69,7 +69,7 @@ public:
 
     GraphicsButtonItem* getButton() const { return buttonItem; }
     QGraphicsSimpleTextItem* getDistanceText() const { return distanceText; }
-    QGraphicsTextItem* getNameText() const { return nameText; }
+    QGraphicsSimpleTextItem* getNameText() const { return nameText; }
     qreal getWidth() const { return width; }
     qreal getDist() const { return dist; }
     void setDistanceText(const QString& text);

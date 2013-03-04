@@ -135,11 +135,11 @@ void MSAEditorSimilarityColumn::setSettings(const UpdatedWidgetSettings* _settin
 void MSAEditorSimilarityColumn::updateDistanceMatrix() {
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     Task* createMatrix = new CreateDistanceMatrixTask(newSettings);
-    bool res = connect(new TaskSignalMapper(createMatrix), SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_createMatrixTaskFinished(Task*)));
+    connect(new TaskSignalMapper(createMatrix), SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_createMatrixTaskFinished(Task*)));
     scheduler->registerTopLevelTask(createMatrix);
 }
 
-void MSAEditorSimilarityColumn::onAlignmentChanged(const MAlignment&, const MAlignmentModInfo& modInfo) {
+void MSAEditorSimilarityColumn::onAlignmentChanged(const MAlignment&, const MAlignmentModInfo&) {
     if(autoUpdate) {
         state = DataIsBeingUpdated;
         updateDistanceMatrix();
@@ -205,7 +205,7 @@ MSAEditorAlignmentDependentWidget::MSAEditorAlignmentDependentWidget(UpdatedWidg
     SAFE_POINT(NULL != _contentWidget, QString("Argument is NULL in constructor MSAEditorAlignmentDependentWidget()"),);
 
     settings = &contentWidget->getSettings();
-    bool res = connect(settings->ma, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
+    connect(settings->ma, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         this, SLOT(sl_onAlignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
     connect(dynamic_cast<QObject*>(contentWidget), SIGNAL(si_dataStateChanged(DataState)),
         this, SLOT(sl_onDataStateChanged(DataState)));
@@ -480,7 +480,7 @@ void TabWidgetArea::paintEvent(QPaintEvent *) {
 }
 
 MSAEditorUpdatedTabWidget::MSAEditorUpdatedTabWidget(MSAEditor* _msa, QWidget* parent)
-:   msa(_msa), UpdatedTabWidget(parent){
+:   UpdatedTabWidget(parent), msa(_msa){
     addTabButton = new QPushButton(QIcon(":/core/images/add_tree.png"), "", this);
     addTabButton->setToolTip(tr("Add existing tree"));
     setCornerWidget(addTabButton);
@@ -513,7 +513,7 @@ void MSAEditorUpdatedTabWidget::addExistingTree() {
 
         const QList<Document *> documents = AppContext::getProject()->getDocuments();
         bool isDocInProject = false;
-        Document *doc;
+        Document *doc = NULL;
         foreach(doc, documents) {
             if(file == doc->getURLString()) {
                 isDocInProject = true;
@@ -525,7 +525,6 @@ void MSAEditorUpdatedTabWidget::addExistingTree() {
         }
 
         Document *d = df->loadDocument(iof, file, QVariantMap(), os);
-        bool res = d->isLoaded();
         if(isDocInProject) {
             AppContext::getProject()->removeDocument(doc);
         }
@@ -552,7 +551,7 @@ UpdatedTabWidget* MSAEditorTabWidgetArea::createTabWidget()
     MSAEditorUpdatedTabWidget* widget = new MSAEditorUpdatedTabWidget(msa, this);
     connect(widget, SIGNAL(si_onTabCloseRequested(QWidget*)), SLOT(sl_onTabCloseRequested(QWidget*)));
     connect(widget, SIGNAL(si_addSplitterTriggered(Qt::Orientation, QWidget*, const QString &)), SLOT(sl_addSplitter(Qt::Orientation, QWidget*, const QString &)));
-    bool res = connect(widget, SIGNAL(si_widgetSelected(UpdatedTabWidget*)), this, SLOT(sl_onWidgetSelected(UpdatedTabWidget*)));
+    connect(widget, SIGNAL(si_widgetSelected(UpdatedTabWidget*)), this, SLOT(sl_onWidgetSelected(UpdatedTabWidget*)));
     tabWidgets << widget;
     return widget;
 }

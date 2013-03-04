@@ -102,7 +102,7 @@ private:
 
 protected:
     virtual void fillTable();
-    virtual int calculateSimilarity(int firstSeqIndex, int secondSeqIndex){return 0;}
+    virtual int calculateSimilarity(int , int ){return 0;}
     MAlignment                                  ma;
     varLengthMatrix                             distanceTable;
     QMutex                                      lock;

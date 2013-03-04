@@ -96,7 +96,7 @@ void GraphicsRectangularBranchItem::collapse() {
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(const QString& name, GraphicsRectangularBranchItem* pitem)
-: GraphicsBranchItem(name), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), treeLevel(0) {
+: GraphicsBranchItem(name), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up) {
     setParentItem(pitem);
     setPos(0, 0);
     height = 0;
@@ -104,24 +104,24 @@ GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(const QString& name
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name)
-: GraphicsBranchItem(false), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), treeLevel(0) {
+: GraphicsBranchItem(false), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up) {
     new GraphicsRectangularBranchItem(name, this);
     setPos(x, y);
     phyBranch = NULL;
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name, qreal d)
-: GraphicsBranchItem(d, false),  cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), treeLevel(0) {
+: GraphicsBranchItem(d, false),  cur_height_coef(1), direction(GraphicsRectangularBranchItem::up) {
     new GraphicsRectangularBranchItem(name, this);
     setPos(x, y);
     phyBranch = NULL;
 }
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem(qreal d)
-: GraphicsBranchItem(d), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL), treeLevel(0) {}
+: GraphicsBranchItem(d), cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL) {}
 
 GraphicsRectangularBranchItem::GraphicsRectangularBranchItem()
-:  cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL), treeLevel(0) {}
+:  cur_height_coef(1), direction(GraphicsRectangularBranchItem::up), phyBranch(NULL) {}
 
 void GraphicsRectangularBranchItem::setParentItem(QGraphicsItem *item) {
     prepareGeometryChange();
@@ -263,15 +263,7 @@ void GraphicsRectangularBranchItem::redrawBranches(int& current, qreal& minDista
 }
 
 void GraphicsRectangularBranchItem::setPhyBranch(PhyBranch* p) {
-    if(NULL != phyBranch) {
-        disconnect(phyBranch, SIGNAL(si_onAdressChanged(PhyBranch*)), this, SLOT(sl_onAdressChanged(PhyBranch*)));
-    }
-    bool res = connect(p, SIGNAL(si_onAdressChanged(PhyBranch*)), this, SLOT(sl_onAdressChanged(PhyBranch*)));
     phyBranch = p;
-}
-
-void GraphicsRectangularBranchItem::sl_onAdressChanged(PhyBranch* newBranch) {
-    phyBranch = newBranch;
 }
 
 GraphicsRectangularBranchItem* GraphicsRectangularBranchItem::getChildItemByPhyBranch(const PhyBranch* branch){

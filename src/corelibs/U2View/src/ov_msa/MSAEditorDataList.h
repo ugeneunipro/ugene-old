@@ -93,11 +93,12 @@ protected:
 signals:
     void si_dataStateChanged(DataState newState);
 private slots:
+
     void onAlignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
     void sl_createMatrixTaskFinished(Task*);
 private:
-    void sl_buildStaticMenu(GObjectView* v, QMenu* m) {}
-    void sl_buildContextMenu(GObjectView* v, QMenu* m) {}
+    void sl_buildStaticMenu(GObjectView*, QMenu*) {}
+    void sl_buildContextMenu(GObjectView*, QMenu*) {}
     void sl_referenceSequenceChanged(const MAlignmentRow&);
     void updateDistanceMatrix();
 

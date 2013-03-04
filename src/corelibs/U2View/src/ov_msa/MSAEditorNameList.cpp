@@ -571,7 +571,6 @@ int MSAEditorNameList::getRefSeqPos() {
         U2Region yRange = ui->seqArea->getSequenceYRange(startSeq, true);
         int numRows = editor->getNumSequences();
 
-        int pos = startSeq;
         foreach(const U2Region& r, range) {
             int end = qMin((qint64)numRows, r.endPos());
             for (int s = r.startPos; s < end; s++) {
@@ -629,7 +628,7 @@ void MSAEditorNameList::drawContent(QPainter& p) {
     }
 }
 
-void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& name, bool selected) {
+void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& , bool selected) {
     p.setPen(Qt::black);
     p.setFont(getFont(selected));
 
@@ -656,7 +655,7 @@ void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& name
     }
 }
 
-void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& name, bool selected, const U2Region& yRange, int pos) {
+void MSAEditorNameList::drawSequenceItem(QPainter& p, int s, const QString& , bool selected, const U2Region& yRange, int pos) {
     p.setPen(Qt::black);
     p.setFont(getFont(selected));
 

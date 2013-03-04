@@ -171,7 +171,7 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
             connect(editor, SIGNAL(si_sizeChanged(int)), treeView->ui, SLOT(sl_onHeightChanged(int)));
 
             connect(treeView->ui, SIGNAL(si_treeZoomedIn()),   editor, SLOT(sl_zoomIn()));
-            bool res = connect(editor, SIGNAL(si_refrenceSeqChanged(const QString &)), treeView->ui, SLOT(sl_onReferenceSeqChanged(const QString &)));
+            connect(editor, SIGNAL(si_refrenceSeqChanged(const QString &)), treeView->ui, SLOT(sl_onReferenceSeqChanged(const QString &)));
             connect(treeView->ui, SIGNAL(si_treeZoomedOut()), editor, SLOT(sl_zoomOut()));
             
         }

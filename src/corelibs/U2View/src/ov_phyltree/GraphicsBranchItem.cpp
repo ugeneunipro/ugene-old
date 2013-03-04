@@ -74,7 +74,7 @@ void GraphicsBranchItem::updateTextSettings(const QFont& font, const QColor& col
     }
     if(nameText){
         nameText->setFont(font);
-        nameText->setDefaultTextColor(color);
+        nameText->setBrush(color);
     }
 }
 
@@ -109,7 +109,6 @@ void GraphicsBranchItem::collapse() {
                 }
             }
         }
-        QList<QString> selection;
         setSelectedRecurs(true,true);
     }
 }
@@ -197,9 +196,9 @@ GraphicsBranchItem::GraphicsBranchItem(const QString& name): correspondingItem(N
     width = 0;
     dist = 0;
 
-    nameText = new QGraphicsTextItem(name);
+    nameText = new QGraphicsSimpleTextItem(name);
     nameText->setFont(TreeViewerUtils::getFont());
-    nameText->setDefaultTextColor(Qt::darkGray);
+    nameText->setBrush(Qt::darkGray);
     QRectF rect = nameText->boundingRect();
     nameText->setPos(GraphicsBranchItem::TextSpace, -rect.height() / 2);
     nameText->setParentItem(this);

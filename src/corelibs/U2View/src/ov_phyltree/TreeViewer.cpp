@@ -112,15 +112,7 @@ QVariantMap TreeViewer::saveState() {
     return TreeViewerState::saveState(this);
 }
 
-//qreal TreeViewer::getZoom() const {
-//
-//    return ui->getZoom();
-//}
-//
-//void TreeViewer::setZoom(qreal z) {
-//
-//    ui->setZoom(z);
-//}
+
 qreal TreeViewer::getHorizontalZoom() const {
     return ui->getHorizontalZoom();
 }
@@ -733,15 +725,6 @@ void TreeViewerUI::wheelEvent(QWheelEvent *we) {
 }
 
 void TreeViewerUI::zooming(qreal newzoom){
-   /* if(newzoom < 0){
-        return ;
-    }
-    newzoom = zoom * newzoom;
-    newzoom = qMax(MINIMUM_ZOOM, newzoom);
-    newzoom = qMin(MAXIMUM_ZOOM * qMax(treeSettings.width_coef*TreeViewerUI::SIZE_COEF, 1.0), newzoom);
-    scale(newzoom / zoom, newzoom / zoom);
-    zoom = newzoom;   
-    updateActionsState();*/
     zooming(newzoom, newzoom);
 }
 
@@ -947,7 +930,6 @@ void TreeViewerUI::sl_contTriggered(bool on) {
 void TreeViewerUI::sl_rectangularLayoutTriggered() {
     if (layout != TreeLayout_Rectangular) {
         swapAction->setEnabled(true);
-        QList<QString> selection;
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Rectangular;
@@ -966,7 +948,6 @@ void TreeViewerUI::sl_rectangularLayoutTriggered() {
 
 void TreeViewerUI::sl_circularLayoutTriggered() {
     if (layout != TreeLayout_Circular) {
-        QList<QString> selection;
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Circular;
@@ -984,7 +965,6 @@ void TreeViewerUI::sl_circularLayoutTriggered() {
 
 void TreeViewerUI::sl_unrootedLayoutTriggered() {
     if (layout != TreeLayout_Unrooted) {
-        QList<QString> selection;
         root->setSelectedRecurs(false, true); // clear selection
 
         layout = TreeLayout_Unrooted;

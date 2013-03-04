@@ -53,7 +53,7 @@ GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qr
     //QPen pen1;
     //pen1.setCosmetic(true);
     if (from->getNameText() != NULL) {
-        nameText = new QGraphicsTextItem(from->getNameText()->toPlainText(), this);
+        nameText = new QGraphicsSimpleTextItem(from->getNameText()->text(), this);
         nameText->setFont(from->getNameText()->font());
         QRectF rect = nameText->boundingRect();
         qreal h = rect.height();
@@ -65,7 +65,7 @@ GraphicsCircularBranchItem::GraphicsCircularBranchItem(QGraphicsItem* parent, qr
 
 //         pen1.setStyle(Qt::DotLine);
 //         pen1.setColor(Qt::darkGray);
-        nameText->setDefaultTextColor(from->getNameText()->defaultTextColor());
+        nameText->setBrush(from->getNameText()->brush());
     }
     if (from->getDistanceText() != NULL) {
         distanceText = new QGraphicsSimpleTextItem(from->getDistanceText()->text(), this);

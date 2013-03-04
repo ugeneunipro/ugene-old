@@ -24,6 +24,7 @@
 #include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include "U2View/MSAEditorDataList.h"
 
@@ -44,8 +45,22 @@ static inline QVBoxLayout * initLayout(QWidget * w) {
 
 SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m):msa(m){
     connect(msa, SIGNAL(si_refrenceSeqChanged(const QString &)), SLOT(sl_refSetChangedOutside(const QString &)));
-    Q_ASSERT(m != NULL);
-    const MSAEditorAlignmentDependentWidget* similarityWidget= m->getUI()->getSimilarityWidget();
+    SAFE_POINT(NULL != m, QString("Invalid parameter were passed into constructor SeqStatisticsWidget"), );
+
+    copySettings();
+   
+    QVBoxLayout* mainLayout = initLayout(this);
+    mainLayout->setSpacing(0);
+
+    distancesStatisticsGroup = new QWidget(this);
+    ui.setupUi(distancesStatisticsGroup);
+    QWidget * similarityGroup = new ShowHideSubgroupWidget("REFRENCE", tr("Distances column"), distancesStatisticsGroup, true);
+    updateWidgetsSettings();
+    mainLayout->addWidget(similarityGroup);
+}
+
+void SeqStatisticsWidget::copySettings() {
+    const MSAEditorAlignmentDependentWidget* similarityWidget= msa->getUI()->getSimilarityWidget();
     statisticsIsShown = false;
     if(NULL != similarityWidget) {
         const SimilarityStatisticsSettings* s = static_cast<const SimilarityStatisticsSettings*>(similarityWidget->getSettings());
@@ -61,78 +76,47 @@ SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m):msa(m){
         settings = new SimilarityStatisticsSettings();
         settings->excludeGaps = false;
         settings->autoUpdate = true;
-        settings->ma = m->getMSAObject();
+        settings->ma = msa->getMSAObject();
         settings->usePercents = true;
-        settings->ui = m->getUI();
+        settings->ui = msa->getUI();
     }
-    ui = settings->ui;
-
-    QVBoxLayout* mainLayout = initLayout(this);
-    mainLayout->setSpacing(0);
-
-    QWidget * similarityGroup = new ShowHideSubgroupWidget("REFRENCE", tr("Sequences similarity"), createSimilaritySettings(), true);
-    mainLayout->addWidget(similarityGroup);
+    msaUI = settings->ui;
 }
 
-QWidget* SeqStatisticsWidget::createSimilaritySettings(){
-    QWidget * group = new QWidget(this);
-    QVBoxLayout * layout = initLayout(group);
-
-    showStatisticsCheck = new QCheckBox(tr("Show similarity statistics"), this);
-    layout->addSpacing(TITLE_SPACING);
-    layout->addWidget(showStatisticsCheck);
-    layout->addSpacing(TITLE_SPACING);
-    algoLabel = new QLabel(tr("Similarity algorithm:"));
-    layout->addWidget(algoLabel);
-    algoCombo = new QComboBox(group);
-    algoCombo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
+void SeqStatisticsWidget::updateWidgetsSettings(){
     QStringList algoList = AppContext::getMSADistanceAlgorithmRegistry()->getAlgorithmIds();
-    algoCombo->addItems(algoList);
-    layout->addWidget(algoCombo);
+    ui.algoComboBox->addItems(algoList);
+    ui.algoComboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
-    autoUpdateCheck = new QCheckBox(tr("Automatic updating"), this);
-    layout->addWidget(autoUpdateCheck);
-    
-    profileGroup = new QGroupBox(tr("Profile mode"));
-    QVBoxLayout * profileLayout = new QVBoxLayout();
-    countsCheck = new QRadioButton(tr("Counts"), this);
-    profileLayout->addWidget(countsCheck);
-    percentsCheck = new QRadioButton(tr("Percents"), this);
-    profileLayout->addWidget(percentsCheck);
-    excludeGaps = new QCheckBox(tr("Exclude gaps"), this);
-    profileLayout->addWidget(excludeGaps);
-    profileGroup->setLayout(profileLayout);
-    layout->addSpacing(ITEMS_SPACING);
-    layout->addWidget(profileGroup);
-    refSeqWarning = new QLabel(QString("<FONT COLOR=#FF0000>%1</FONT>").arg(tr("Please, select reference sequence")));
-    layout->addWidget(refSeqWarning);
-    sl_onRefSeqChanged(msa->getRefSeqName());
+    ui.refSeqWarning->setText(QString("<FONT COLOR=#FF0000>%1</FONT>").arg(tr("Please, select reference sequence")));
 
     restoreSettings();
 
-    connect(algoCombo,            SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_onAlgoChanged(const QString &)));
-    connect(excludeGaps,          SIGNAL(stateChanged (int)),       SLOT(sl_onGapsChanged(int)));
-    connect(countsCheck,          SIGNAL(clicked(bool)),            SLOT(sl_onUnitsChanged(bool)));
-    connect(percentsCheck,        SIGNAL(clicked(bool)),            SLOT(sl_onUnitsChanged(bool)));
-    connect(showStatisticsCheck,  SIGNAL(stateChanged (int)),       SLOT(sl_onShowStatisticsChanged(int)));
-    connect(autoUpdateCheck,      SIGNAL(stateChanged (int)),       SLOT(sl_onAutoUpdateChanged(int)));
-    bool res = connect(msa,                  SIGNAL(si_refrenceSeqChanged(const QString&)), SLOT(sl_onRefSeqChanged(const QString&)));
+    connectSlots();
+}
 
-    return group;
+void SeqStatisticsWidget::connectSlots() {
+    connect(ui.algoComboBox,             SIGNAL(currentIndexChanged(const QString &)),  SLOT(sl_onAlgoChanged(const QString &)));
+    connect(ui.excludeGapsCheckBox,      SIGNAL(stateChanged (int)),                    SLOT(sl_onGapsChanged(int)));
+    connect(ui.countsButton,             SIGNAL(clicked(bool)),                         SLOT(sl_onUnitsChanged(bool)));
+    connect(ui.percentsButton,           SIGNAL(clicked(bool)),                         SLOT(sl_onUnitsChanged(bool)));
+    connect(ui.showDistancesColumnCheck, SIGNAL(stateChanged (int)),                    SLOT(sl_onShowStatisticsChanged(int)));
+    connect(ui.autoUpdateCheck,          SIGNAL(stateChanged (int)),                    SLOT(sl_onAutoUpdateChanged(int)));
+    connect(msa,                         SIGNAL(si_refrenceSeqChanged(const QString&)), SLOT(sl_onRefSeqChanged(const QString&)));
 }
 
 void SeqStatisticsWidget::restoreSettings() {
-    showStatisticsCheck->setCheckState(statisticsIsShown ? Qt::Checked : Qt::Unchecked);
-    percentsCheck->setChecked(settings->usePercents);
-    countsCheck->setChecked(!settings->usePercents);
-    excludeGaps->setCheckState(settings->excludeGaps ? Qt::Checked : Qt::Unchecked);
-    autoUpdateCheck->setCheckState(settings->autoUpdate ? Qt::Checked : Qt::Unchecked);
-    int index = algoCombo->findText(settings->algoName);
+    ui.showDistancesColumnCheck->setCheckState(statisticsIsShown ? Qt::Checked : Qt::Unchecked);
+    ui.percentsButton->setChecked(settings->usePercents);
+    ui.countsButton->setChecked(!settings->usePercents);
+    ui.excludeGapsCheckBox->setCheckState(settings->excludeGaps ? Qt::Checked : Qt::Unchecked);
+    ui.autoUpdateCheck->setCheckState(settings->autoUpdate ? Qt::Checked : Qt::Unchecked);
+    int index = ui.algoComboBox->findText(settings->algoName);
     if(0 <= index) {
-        algoCombo->setCurrentIndex(index);
+        ui.algoComboBox->setCurrentIndex(index);
     }
     else {
-        settings->algoName = algoCombo->currentText();
+        settings->algoName = ui.algoComboBox->currentText();
     }
     if(!statisticsIsShown) {
         hideSimilaritySettings();
@@ -141,62 +125,54 @@ void SeqStatisticsWidget::restoreSettings() {
 
 void SeqStatisticsWidget::sl_onAlgoChanged(const QString &algoName) {
     settings->algoName   = algoName;
-    ui->setSimilaritySettings(settings);
+    msaUI->setSimilaritySettings(settings);
 }
+
 void SeqStatisticsWidget::sl_onGapsChanged(int state) {
     settings->excludeGaps = (Qt::Checked == state);
-    ui->setSimilaritySettings(settings);
+    msaUI->setSimilaritySettings(settings);
 }
+
 void SeqStatisticsWidget::sl_onUnitsChanged( bool ) {
-    settings->usePercents = percentsCheck->isChecked();
-    ui->setSimilaritySettings(settings);
+    settings->usePercents = ui.percentsButton->isChecked();
+    msaUI->setSimilaritySettings(settings);
 }
+
 void SeqStatisticsWidget::sl_onAutoUpdateChanged(int state) {
     settings->autoUpdate = (Qt::Checked == state);
-    ui->setSimilaritySettings(settings);
+    msaUI->setSimilaritySettings(settings);
 }
+
 void SeqStatisticsWidget::sl_onRefSeqChanged(const QString& str) {
     if(str == "(None)") {
-        refSeqWarning->show();
+        ui.refSeqWarning->show();
     }
     else {
-        refSeqWarning->hide();
+        ui.refSeqWarning->hide();
     }
 }
 
-void SeqStatisticsWidget::hideSimilaritySettings()
-{
-    algoLabel->setEnabled(false);
-    algoCombo->setEnabled(false);
-    autoUpdateCheck->setEnabled(false);
-    profileGroup->setEnabled(false);
-    refSeqWarning->hide();
-}
-
-void SeqStatisticsWidget::showSimilaritySettings()
-{
-    algoLabel->setEnabled(true);
-    algoCombo->setEnabled(true);
-    autoUpdateCheck->setEnabled(true);
-    profileGroup->setEnabled(true);
-    refSeqWarning->show();
-}
-
-void SeqStatisticsWidget::sl_onShowStatisticsChanged(int state)
-{
+void SeqStatisticsWidget::sl_onShowStatisticsChanged(int state) {
     if(Qt::Checked == state) {
-        statisticsIsShown = true;
         showSimilaritySettings();
-        ui->showSimilarity();
     }
     else {
-        statisticsIsShown = false;
         hideSimilaritySettings();
-        ui->hideSimilarity();
-        return;
     }
-
 }
 
+void SeqStatisticsWidget::hideSimilaritySettings() {
+    statisticsIsShown = false;
+    ui.optionsWidget->setEnabled(false);
+    ui.refSeqWarning->hide();
+    msaUI->hideSimilarity();
+}
+
+void SeqStatisticsWidget::showSimilaritySettings() {
+    statisticsIsShown = true;
+    ui.optionsWidget->setEnabled(true);
+    ui.refSeqWarning->show();
+    msaUI->showSimilarity();
+}
 
 }

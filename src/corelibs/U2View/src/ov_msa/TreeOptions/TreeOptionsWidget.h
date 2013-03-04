@@ -28,77 +28,83 @@
 #include <U2View/TextSettingsDialog.h>
 #include <ov_phyltree/GraphicsBranchItem.h>
 #include <U2View/MSAEditorTreeViewer.h>
+#include "ui/ui_TreeOptionsWidget.h"
+
 
 namespace U2 {
+
 class TreeViewerUI;
-
 class SimilarityStatisticsSettings;
+class ShowHideSubgroupWidget;
 
-class U2VIEW_EXPORT TreeOptionsWidget : public QWidget
+struct TreeOpWidgetViewSettings {
+    TreeOpWidgetViewSettings() 
+        : openGeneralGroup(true), openLabelsGroup(true), openBranchesGroup(true), showFontSettings(false), showPenSettings(false){}
+    
+    bool openGeneralGroup;
+    bool openLabelsGroup;
+    bool openBranchesGroup;
+
+    bool showFontSettings;
+    bool showPenSettings;
+};
+
+class U2VIEW_EXPORT TreeOptionsWidget : public QWidget, private Ui_TreeOptionWidget
 {
     Q_OBJECT
 public:
-    TreeOptionsWidget(TreeViewer* tree);
-    TreeOptionsWidget(MSAEditor* msa);
+    TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSettings& _viewSettings);
+    TreeOptionsWidget(MSAEditor* msa, const TreeOpWidgetViewSettings& _viewSettings);
+    ~TreeOptionsWidget();
+
+    const TreeOpWidgetViewSettings& getViewSettings();
+signals:
+    void saveViewSettings(const TreeOpWidgetViewSettings&);
 private slots:
     void sl_onSettingsChanged();
     void sl_onLabelsSettingsChanged();
     void sl_onLayoutChanged(int index);
-    void sl_colorButton();
-    void sl_branchColorButton();
+    void sl_labelsColorButton();
+    void sl_branchesColorButton();
     void sl_textSettingsChanged();
     void sl_branchSettingsChanged();
-    void sl_syncSettingsChanged();
+
+    void sl_onLblLinkActivated(const QString& link);
 private:
     void createGroups();
-    QWidget* createTreesSettings();
-    QWidget* createLabelsSettings();
-    QWidget* createBranchSettings();
-    QWidget* createLabelsFormatSettings();
-    QWidget* createButtonSettings();
-    QWidget* createTreeSyncSettings();
+    void updateTreesSettings();
+    void updateLabelsSettingsWidgets();
+    void updateBranchSettings();
+    void createLabelsFormatSettings();
+    void updateAllWidgets();
+    void connectSlots();
 
     void updateButtonColor(QPushButton* button, const QColor& newColor);
+    void updateShowFontOpLabel(QString newText);
+    void updateShowPenOpLabel(QString newText);
 
-    void updateVisualSettings();
-    void updateSyncSettings();
     TreeViewerUI* getTreeViewer();
 
     MSAEditor    *msa;
     TreeViewerUI *treeViewer;
 
-    QComboBox *layoutCombo;
-
-    QSlider *widthSlider;
-    QSlider *heightSlider;
-    QComboBox *treeViewCombo;
-
-    QCheckBox *showNamesCheck;
-    QCheckBox *showDistancesCheck;
-    QCheckBox *alignLabelsCheck;
+    TreeOpWidgetViewSettings viewSettings;
 
     TreeSettings* settings;
-    TreeSettings newSettings;
+    TreeSettings treeSettings;
     TreeLabelsSettings labelsSettings;
     TextSettings textSettings;
     BranchSettings branchSettings;
     TreeSynchronizationSettings syncSettings;
 
-    QPushButton *colorButton;
-    QSpinBox *sizeSpinBox;
-    QFontComboBox *fontComboBox;
-    QToolButton *boldToolButton;
-    QToolButton *italicToolButton;
-    QToolButton *underlineToolButton;
-    QToolButton *overlineToolButton;
+    ShowHideSubgroupWidget* generalOpGroup;
+    ShowHideSubgroupWidget* labelsOpGroup;
+    ShowHideSubgroupWidget* branchesOpGroup;
 
-    QPushButton *branchColorButton;
-    QSpinBox *thicknessSpinBox;
+    bool showFontSettings;
+    bool showPenSettings;
 
-    QComboBox *currentTree;
-    QCheckBox *syncSizesCheck;
-    QCheckBox *sortSeqByTreeCheck;
-    QCheckBox *syncCollapsingCheck;
+    QWidget* contentWidget;
 };
 } // namespace
 

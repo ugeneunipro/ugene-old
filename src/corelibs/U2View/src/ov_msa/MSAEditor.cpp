@@ -668,7 +668,6 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
     QWidget *label;
     GScrollBar* shBar = new GScrollBar(Qt::Horizontal);
     QScrollBar* nhBar = new QScrollBar(Qt::Horizontal);
-    QScrollBar* dhBar = new QScrollBar(Qt::Horizontal);
     GScrollBar* cvBar = new GScrollBar(Qt::Vertical);
 
     seqArea = new MSAEditorSequenceArea(this, shBar, cvBar);
@@ -919,19 +918,7 @@ void MSALabelWidget::mouseReleaseEvent( QMouseEvent * e )
 void SinchronizedObjectView::addObject( QWidget *obj, int index, qreal coef)
 {
     SAFE_POINT(coef >= 0, QString("Incorrect parameters were passed to SinchronizedObjectView::addObject: coef < 0"),);
-    //if(!objects.isEmpty()) {
-    //    if(objects.contains(obj)) {
-    //        return;
-    //    }
-    //    foreach(QWidget *curObj, objects) {
-    //        bool res1 = connect(obj,     SIGNAL(si_selectionChanged(const QList<QString>&)), curObj, SLOT(sl_selectionChanged(const QList<QString>&)));
-    //        bool res2 = connect(obj,    SIGNAL(si_aligmentChanged(const QList<QString>&)),   curObj, SLOT(sl_aligmentChanged(const QList<QString>&)));
-    //        bool res3 = connect(obj,    SIGNAL(si_zoomChanged(double)),                      curObj, SLOT(sl_zoomChanged(double)));
-    //        bool res4 = connect(curObj, SIGNAL(si_selectionChanged(const QList<QString>&)),  obj,    SLOT(sl_selectionChanged(const QList<QString>&)));
-    //        bool res5 = connect(curObj, SIGNAL(si_aligmentChanged(const QList<QString>&)),   obj,    SLOT(sl_aligmentChanged(const QList<QString>&)));
-    //        bool res6 = connect(curObj, SIGNAL(sl_zoomChanged(double)),                      obj,    SLOT(si_zoomChanged(double)));
-    //    }
-    //}
+
     objects.append(obj);
     int baseSize = spliter->width();
     widgetSizes.insert(index, qRound(coef * baseSize));
@@ -971,8 +958,6 @@ void SinchronizedObjectView::removeObject( QWidget *obj )
     }
     for(int i = 0; i < widgetSizes.size(); i++) {
         widgetSizes[i] = widgetSizes[i] * baseSize / widgetsWidth;
-        int curSize = widgetSizes[i];
-        int a = 0;
     }
     foreach(QWidget *curObj, objects) {
         disconnect(obj,     SIGNAL(si_selectionChanged(const QList<QString>&)), curObj, SLOT(sl_selectionChanged(const QList<QString>&)));

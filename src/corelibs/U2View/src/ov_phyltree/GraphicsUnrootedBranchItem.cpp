@@ -48,7 +48,7 @@ GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qr
 //    setRotation(angle);
 
     if (from->getNameText() != NULL) {
-        nameText = new QGraphicsTextItem(from->getNameText()->toPlainText(), this);
+        nameText = new QGraphicsSimpleTextItem(from->getNameText()->text(), this);
         nameText->setFont(from->getNameText()->font());
         QRectF rect = nameText->boundingRect();
         qreal h = rect.height();
@@ -60,7 +60,7 @@ GraphicsUnrootedBranchItem::GraphicsUnrootedBranchItem(QGraphicsItem* parent, qr
 //            nameText->setRotation(180);
         }
 
-        nameText->setDefaultTextColor(from->getNameText()->defaultTextColor());
+        nameText->setBrush(from->getNameText()->brush());
     }
     if (from->getDistanceText() != NULL) {
         distanceText = new QGraphicsSimpleTextItem(from->getDistanceText()->text(), this);

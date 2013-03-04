@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "TreeOptionsWidget.h"
 #include "TreeOptionsWidgetFactory.h"
 
 #include <U2Core/U2SafePoints.h>
@@ -50,24 +49,26 @@ QWidget* MSATreeOptionsWidgetFactory::createWidget(GObjectView* objView)
         QString("Internal error: unable to cast object view to MSAEditor for group '%1'.").arg(GROUP_ID),
         NULL);
 
-    TreeOptionsWidget *TreeOptionsWidgetWidget = new TreeOptionsWidget(msa);
-    return TreeOptionsWidgetWidget;
+    TreeOptionsWidget *treeOpWidget = new TreeOptionsWidget(msa, viewSettings);
+    connect(treeOpWidget, SIGNAL(saveViewSettings(const TreeOpWidgetViewSettings&)), SLOT(sl_onWidgetViewSaved(const TreeOpWidgetViewSettings&)));
+    return treeOpWidget;
 }
-
 
 OPGroupParameters MSATreeOptionsWidgetFactory::getOPGroupParameters(){
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
+}
+
+void MSATreeOptionsWidgetFactory::sl_onWidgetViewSaved(const TreeOpWidgetViewSettings& settings) {
+    viewSettings = settings;
 }
 
 const QString TreeOptionsWidgetFactory::GROUP_ID = "OP_TREES_WIDGET";
 const QString TreeOptionsWidgetFactory::GROUP_ICON_STR = ":core/images/tree.png";
 const QString TreeOptionsWidgetFactory::GROUP_TITLE = QString(tr("Tree settings"));
 
-
 TreeOptionsWidgetFactory::TreeOptionsWidgetFactory(){
     objectViewOfWidget = ObjViewType_PhylogeneticTree;
 }
-
 
 QWidget* TreeOptionsWidgetFactory::createWidget(GObjectView* objView)
 {
@@ -80,13 +81,18 @@ QWidget* TreeOptionsWidgetFactory::createWidget(GObjectView* objView)
         QString("Internal error: unable to cast object view to TreeViewer for group '%1'.").arg(GROUP_ID),
         NULL);
 
-    TreeOptionsWidget *TreeOptionsWidgetWidget = new TreeOptionsWidget(treeView);
-    return TreeOptionsWidgetWidget;
-}
+    TreeOptionsWidget *treeOpWidget = new TreeOptionsWidget(treeView, viewSettings);
+    connect(treeOpWidget, SIGNAL(saveViewSettings(const TreeOpWidgetViewSettings&)), SLOT(sl_onWidgetViewSaved(const TreeOpWidgetViewSettings&)));
 
+    return treeOpWidget;
+}
 
 OPGroupParameters TreeOptionsWidgetFactory::getOPGroupParameters(){
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
+}
+
+void TreeOptionsWidgetFactory::sl_onWidgetViewSaved(const TreeOpWidgetViewSettings& settings) {
+    viewSettings = settings;
 }
 
 } // namespace
