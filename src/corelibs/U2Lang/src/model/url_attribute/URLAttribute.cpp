@@ -58,6 +58,19 @@ const QVariant & URLAttribute::getDefaultPureValue() const {
     return defaultValue;
 }
 
+bool URLAttribute::isEmpty() const {
+    if (Attribute::isEmpty()) {
+        return true;
+    }
+
+    foreach (const Dataset &set, sets) {
+        if (!set.getUrls().isEmpty()) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool URLAttribute::isDefaultValue() const {
     return false;
 }

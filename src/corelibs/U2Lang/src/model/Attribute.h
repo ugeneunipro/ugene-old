@@ -118,14 +118,12 @@ public:
     // reads value and script from variant
     // used in reading schema from xml
     bool fromVariant(const QVariant& variant);
-    
-    bool isEmpty() const;
     bool isEmptyString() const;
     void addRelation(const AttributeRelation *relation);
     QVector<const AttributeRelation*> &getRelations();
 
+    virtual bool isEmpty() const;
     virtual Attribute *clone();
-
     virtual AttributeGroup getGroup();
 
     /**

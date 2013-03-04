@@ -35,6 +35,7 @@ public:
     virtual const QVariant & getAttributePureValue() const;
     virtual const QVariant & getDefaultPureValue() const;
     virtual bool isDefaultValue() const;
+    virtual bool isEmpty() const;
     virtual Attribute * clone();
     virtual bool validate(QStringList &errorList);
 
