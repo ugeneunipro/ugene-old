@@ -1,7 +1,7 @@
 Name:    ugene
 Summary: Integrated bioinformatics toolkit
-Version: 1.11.2
-Release: 1%{?dist}
+Version: 1.11.4
+Release: 2%{?dist}
 #The entire source code is GPLv2+ except:
 #file src/libs_3rdparty/qtbindings_core/src/qtscriptconcurrent.h which is GPLv2
 #files in src/plugins_3rdparty/script_debuger/src/qtscriptdebug/ which are GPLv2
@@ -10,9 +10,11 @@ Group:   Applications/Engineering
 URL:     http://ugene.unipro.ru
 Source0: http://ugene.unipro.ru/downloads/%{name}-%{version}.tar.gz
 
-BuildRequires: qt-devel >= 4.7.0 qt-webkit-devel >= 4.7.0 zlib-devel desktop-file-utils
+BuildRequires: qt4-devel pkgconfig(QtWebKit) zlib-devel desktop-file-utils
 #We need strict versions of qt for correct work of src/libs_3rdparty/qtbindings_*
-Requires:  qt >= 4.7.0 qt-x11 >= 4.7.0 qtwebkit >= 4.7.0
+%{?_qt4_version:Requires: qt4%{?_isa} >= %{_qt4_version}}
+Provides: bundled(sqlite)
+Provides: bundled(samtools)
 
 %description
 Unipro UGENE is a cross-platform visual environment for DNA and protein
@@ -30,8 +32,12 @@ is a designer for custom bioinformatics workflows.
         INSTALL_LIBDIR=%{_libdir} \
         INSTALL_DATADIR=%{_datadir} \
         INSTALL_MANDIR=%{_mandir} \
+%if 0%{?_with_non_free}
+        UGENE_WITHOUT_NON_FREE=0 \
+%else
+        UGENE_WITHOUT_NON_FREE=1 \
+%endif
         UGENE_EXCLUDE_LIST_ENABLED=1
-
 make %{?_smp_mflags}
 
 %install
@@ -45,9 +51,18 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
 %{_datadir}/pixmaps/*
 %{_datadir}/%{name}/
 %{_mandir}/man1/*
-%doc COPYRIGHT LICENSE LISENCE.3rd_party
+%doc COPYRIGHT LICENSE LICENSE.3rd_party 
 
 %changelog
+* Tue Jan 22 2013 Yulia Algaer <yalgaer@unipro.ru> 1.11.4-1
+- Upstream version change
+
+* Tue Nov 27 2012 Rex Dieter <rdieter@fedoraproject.org> 1.11.3-2
+- fix/update qt-related dependencies
+
+* Thu Nov 2 2012 Yulia Algaer <yalgaer@unipro.ru> - 1.11.3-1 
+- Upstream version change
+
 * Mon Oct 3 2012 Yulia Algaer <yalgaer@unipro.ru> - 1.11.2-1 
 - Upstream version change
 
