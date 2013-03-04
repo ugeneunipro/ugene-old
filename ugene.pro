@@ -83,7 +83,10 @@ exclude_list_enabled() {
     SUBDIRS -= src/plugins/perf_monitor
     SUBDIRS -= src/plugins/GUITestBase
 }
-
+without_non_free() {
+    SUBDIRS -= src/plugins_3rdparty/psipred
+    SUBDIRS -= src/plugins_3rdparty/phylip
+}
 CONFIG(x64) {
 	SUBDIRS -= src/plugins_3rdparty/umuscle
 }
