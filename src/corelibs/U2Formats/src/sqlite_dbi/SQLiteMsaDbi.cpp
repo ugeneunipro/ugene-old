@@ -820,7 +820,7 @@ void SQLiteMsaDbi::redo(const U2DataId& msaId, qint64 modType, const QByteArray&
 }
 
 /************************************************************************/
-/* Core methods */
+/* Core methods                                                         */
 /************************************************************************/
 void SQLiteMsaDbi::updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, const QList<U2MsaGap> &gapModel, U2OpStatus &os) {
     SQLiteTransaction t(db, os);

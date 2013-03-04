@@ -21,6 +21,9 @@
 
 #include "U2Mod.h"
 
+#include <U2Core/U2ModDbi.h>
+#include <U2Core/U2SafePoints.h>
+
 namespace U2 {
 
 const qint64 U2ModType::objUpdatedName        = 1;
@@ -33,5 +36,25 @@ const qint64 U2ModType::msaRemovedRow         = 3005;
 const qint64 U2ModType::msaUpdatedRowContent  = 3006;
 const qint64 U2ModType::msaUpdatedGapModel    = 3007;
 const qint64 U2ModType::msaSetNewRowsOrder    = 3008;
+
+
+U2UseCommonUserModStep::U2UseCommonUserModStep(U2Dbi* _dbi, const U2DataId& masterObjId, U2OpStatus& os)
+: dbi(_dbi),
+  valid(false)
+{
+    SAFE_POINT(NULL != dbi, "NULL dbi!", );
+
+    dbi->getModDbi()->startCommonUserModStep(masterObjId, os);
+    if (!os.hasError()) {
+        valid = true;
+    }
+}
+
+U2UseCommonUserModStep::~U2UseCommonUserModStep() {
+    if (valid) {
+        dbi->getModDbi()->endCommonUserModStep();
+    }
+}
+
 
 } // namespace

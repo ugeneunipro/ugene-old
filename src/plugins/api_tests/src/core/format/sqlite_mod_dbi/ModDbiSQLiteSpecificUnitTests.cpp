@@ -23,17 +23,27 @@
 #include "core/util/MsaDbiUtilsUnitTests.h"
 
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2AbstractDbi.h>
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/SQLiteDbi.h>
+#include <U2Formats/SQLiteModDbi.h>
 #include <U2Formats/SQLiteObjectDbi.h>
+#include <U2Formats/SQLitePackUtils.h>
 
+
+#define IMPLEMENT_MOD_TEST(suite, name) \
+    static int _##suite##_##name##_type = qRegisterMetaType<U2::TEST_CLASS(suite, name)>(TEST_CLASS_STR(suite, name)); \
+    void TEST_CLASS(suite, name)::SetUp() { \
+        ModSQLiteSpecificTestData::cleanUpAllModSteps(); \
+    } \
+    void TEST_CLASS(suite, name)::Test()
 
 namespace U2 {
 
 TestDbiProvider ModSQLiteSpecificTestData::dbiProvider = TestDbiProvider();
-const QString& ModSQLiteSpecificTestData::SQLITE_MSA_DB_URL("sqlite-msa-dbi.ugenedb");
+const QString& ModSQLiteSpecificTestData::SQLITE_MSA_DB_URL("sqlite-mod-dbi.ugenedb");
 SQLiteDbi* ModSQLiteSpecificTestData::sqliteDbi = NULL;
 
 const QString ModSQLiteSpecificTestData::TEST_MSA_NAME = "Test alignment";
@@ -72,11 +82,89 @@ void ModSQLiteSpecificTestData::shutdown() {
     }
 }
 
+void ModSQLiteSpecificTestData::cleanUpAllModSteps() {
+    if (NULL != sqliteDbi) {
+        U2OpStatusImpl os;
+        SQLiteQuery qSingle("DELETE FROM SingleModStep", sqliteDbi->getDbRef(), os);
+        SQLiteQuery qMulti("DELETE FROM MultiModStep", sqliteDbi->getDbRef(), os);
+        SQLiteQuery qUser("DELETE FROM UserModStep", sqliteDbi->getDbRef(), os);
+
+        qSingle.execute();
+        qMulti.execute();
+        qUser.execute();
+    }
+}
+
 SQLiteDbi* ModSQLiteSpecificTestData::getSQLiteDbi() {
     if (NULL == sqliteDbi) {
         init();
     }
     return sqliteDbi;
+}
+
+void ModSQLiteSpecificTestData::getAllSteps(QList<U2SingleModStep>& singleSteps, QList<U2MultiModStep4Test>& multiSteps, QList<U2UserModStep4Test>& userSteps, U2OpStatus& os) {
+    singleSteps.clear();
+    multiSteps.clear();
+    userSteps.clear();
+
+    SQLiteQuery qSingle("SELECT id, object, otype, oextra, version, modType, details, multiStepId FROM SingleModStep", sqliteDbi->getDbRef(), os);
+    SAFE_POINT_OP(os, );
+    while (qSingle.step()) {
+        U2SingleModStep singleStep;
+        singleStep.id = qSingle.getInt64(0);
+        singleStep.objectId = qSingle.getDataIdExt(1);
+        singleStep.version = qSingle.getInt64(4);
+        singleStep.modType = qSingle.getInt64(5);
+        singleStep.details = qSingle.getBlob(6);
+        singleStep.multiStepId = qSingle.getInt64(7);
+        singleSteps.append(singleStep);
+    }
+
+    SQLiteQuery qMulti("SELECT id, userStepId FROM MultiModStep", sqliteDbi->getDbRef(), os);
+    SAFE_POINT_OP(os, );
+    while (qMulti.step()) {
+        U2MultiModStep4Test multiStep;
+        multiStep.id = qMulti.getInt64(0);
+        multiStep.userStepId = qMulti.getInt64(1);
+        multiSteps.append(multiStep);
+    }
+
+    SQLiteQuery qUser("SELECT id, object, otype, oextra FROM UserModStep", sqliteDbi->getDbRef(), os);
+    SAFE_POINT_OP(os, );
+    while (qUser.step()) {
+        U2UserModStep4Test userStep;
+        userStep.id = qUser.getInt64(0);
+        userStep.masterObjId = qUser.getDataIdExt(1);
+        userSteps.append(userStep);
+    }
+}
+
+U2SingleModStep ModSQLiteSpecificTestData::prepareSingleStep(qint64 modVersion, U2OpStatus& os) {
+    U2SingleModStep step;
+
+    // Create an object
+    U2DataId objId = createObject(os);
+    SAFE_POINT_OP(os, step);
+
+    // Fill in the step
+    step.objectId = objId;
+    step.version = modVersion;
+    step.modType = U2ModType::objUpdatedName;
+    step.details = SQLite::PackUtils::packObjectNameDetails("Test object", "Test object");
+
+    return step;
+}
+
+U2DataId ModSQLiteSpecificTestData::createObject(U2OpStatus& os) {
+    // Create an object
+    U2Sequence obj; // creates a sequence object to make type U2Type::Sequence
+    obj.dbiId = sqliteDbi->getDbiId();
+    obj.visualName = "Test object";
+
+    sqliteDbi->getSQLiteObjectDbi()->createObject(obj, "", SQLiteDbiObjectRank_TopLevel, os);
+    SAFE_POINT_OP(os, U2DataId());
+
+    return obj.id;
 }
 
 qint64 ModSQLiteSpecificTestData::getModStepsNum(const U2DataId& objId, U2OpStatus& os) {
@@ -103,7 +191,8 @@ U2SingleModStep ModSQLiteSpecificTestData::getLastModStep(const U2DataId& objId,
 
 QList<U2SingleModStep> ModSQLiteSpecificTestData::getAllModSteps(const U2DataId& objId, U2OpStatus& os) {
     QList<U2SingleModStep> res;
-    SQLiteQuery qModStep("SELECT id, object, otype, oextra, version, modType, details FROM SingleModStep WHERE object = ?1 ORDER BY version", sqliteDbi->getDbRef(), os);
+    SQLiteQuery qModStep("SELECT id, object, otype, oextra, version, modType, details"
+        " FROM SingleModStep WHERE object = ?1 ORDER BY version", sqliteDbi->getDbRef(), os);
     CHECK_OP(os, res);
 
     qModStep.bindDataId(1, objId);
@@ -1583,5 +1672,158 @@ IMPLEMENT_TEST(ModDbiSQLiteSpecificUnitTests, updateRowName_severalUndoThenActio
         CHECK_EQUAL(expectedModStepList[i].details, finalModStepList[i].details, "details");
     }
 }
+
+
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_noMultiAndUser) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2SingleModStep singleStep = ModSQLiteSpecificTestData::prepareSingleStep(0, os);
+    CHECK_NO_ERROR(os);
+
+    sqliteDbi->getSQLiteModDbi()->createModStep(singleStep, os);
+    CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(1, actualSingleSteps.count(), "single steps num");
+    CHECK_EQUAL(1, actualMultiSteps.count(), "multi steps num");
+    CHECK_EQUAL(1, actualUserSteps.count(), "user steps num");
+
+    CHECK_EQUAL(actualSingleSteps[0].multiStepId, actualMultiSteps[0].id, "multi step id");
+    CHECK_EQUAL(actualMultiSteps[0].userStepId, actualUserSteps[0].id, "user step id");
+    CHECK_EQUAL(actualSingleSteps[0].objectId, actualUserSteps[0].masterObjId, "user step master object");
+
+    bool multiStepStarted = sqliteDbi->getSQLiteModDbi()->isMultiStepStarted();
+    bool userStepStarted = sqliteDbi->getSQLiteModDbi()->isUserStepStarted();
+    CHECK_FALSE(multiStepStarted, "Multi step must be ended!");
+    CHECK_FALSE(userStepStarted, "User step must be ended!");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_noMultiAndUser2Steps) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2SingleModStep singleStep1 = ModSQLiteSpecificTestData::prepareSingleStep(0, os); CHECK_NO_ERROR(os);
+    U2SingleModStep singleStep2 = ModSQLiteSpecificTestData::prepareSingleStep(1, os); CHECK_NO_ERROR(os);
+
+    sqliteDbi->getSQLiteModDbi()->createModStep(singleStep1, os); CHECK_NO_ERROR(os);
+    sqliteDbi->getSQLiteModDbi()->createModStep(singleStep2, os); CHECK_NO_ERROR(os);
+
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(2, actualSingleSteps.count(), "single steps num");
+    CHECK_EQUAL(2, actualMultiSteps.count(), "multi steps num");
+    CHECK_EQUAL(2, actualUserSteps.count(), "user steps num");
+
+    CHECK_EQUAL(actualSingleSteps[0].multiStepId, actualMultiSteps[0].id, "multi step id 1");
+    CHECK_EQUAL(actualMultiSteps[0].userStepId, actualUserSteps[0].id, "user step id 1");
+    CHECK_EQUAL(actualSingleSteps[0].objectId, actualUserSteps[0].masterObjId, "user step master object 1");
+
+    CHECK_EQUAL(actualSingleSteps[1].multiStepId, actualMultiSteps[1].id, "multi step id 2");
+    CHECK_EQUAL(actualMultiSteps[1].userStepId, actualUserSteps[1].id, "user step id 2");
+    CHECK_EQUAL(actualSingleSteps[1].objectId, actualUserSteps[1].masterObjId, "user step master object 2");
+
+    bool multiStepStarted = sqliteDbi->getSQLiteModDbi()->isMultiStepStarted();
+    bool userStepStarted = sqliteDbi->getSQLiteModDbi()->isUserStepStarted();
+    CHECK_FALSE(multiStepStarted, "Multi step must be ended!");
+    CHECK_FALSE(userStepStarted, "User step must be ended!");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_startMulti) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2SingleModStep singleStep1 = ModSQLiteSpecificTestData::prepareSingleStep(0, os); CHECK_NO_ERROR(os);
+    U2SingleModStep singleStep2 = ModSQLiteSpecificTestData::prepareSingleStep(1, os); CHECK_NO_ERROR(os);
+
+    {
+        U2UseCommonMultiModStep useMultiStep(sqliteDbi, singleStep2.objectId, os); CHECK_NO_ERROR(os);
+        sqliteDbi->getSQLiteModDbi()->createModStep(singleStep1, os); CHECK_NO_ERROR(os);
+        sqliteDbi->getSQLiteModDbi()->createModStep(singleStep2, os); CHECK_NO_ERROR(os);
+    }
+    
+    QList<U2SingleModStep> actualSingleSteps;
+    QList<U2MultiModStep4Test> actualMultiSteps;
+    QList<U2UserModStep4Test> actualUserSteps;
+    ModSQLiteSpecificTestData::getAllSteps(actualSingleSteps, actualMultiSteps, actualUserSteps, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(2, actualSingleSteps.count(), "single steps num");
+    CHECK_EQUAL(1, actualMultiSteps.count(), "multi steps num");
+    CHECK_EQUAL(1, actualUserSteps.count(), "user steps num");
+
+    qint64 multiStepId  = actualMultiSteps[0].id;
+
+    CHECK_EQUAL(multiStepId, actualSingleSteps[0].multiStepId, "multi step id of single1");
+    CHECK_EQUAL(multiStepId, actualSingleSteps[1].multiStepId, "multi step id of single2");
+    CHECK_EQUAL(actualMultiSteps[0].userStepId, actualUserSteps[0].id, "user step of multi");
+    CHECK_EQUAL(actualSingleSteps[1].objectId, actualUserSteps[0].masterObjId, "master object id");
+
+    bool multiStepStarted = sqliteDbi->getSQLiteModDbi()->isMultiStepStarted();
+    bool userStepStarted = sqliteDbi->getSQLiteModDbi()->isUserStepStarted();
+    CHECK_FALSE(multiStepStarted, "Multi step must be ended!");
+    CHECK_FALSE(userStepStarted, "User step must be ended!");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_start2MultiNoUser) {
+    // TODO
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_startUser) {
+    SQLiteDbi *sqliteDbi = ModSQLiteSpecificTestData::getSQLiteDbi();
+    U2OpStatusImpl os;
+
+    U2DataId masterObjId = ModSQLiteSpecificTestData::createObject(os); CHECK_NO_ERROR(os);
+    U2SingleModStep singleStep = ModSQLiteSpecificTestData::prepareSingleStep(0, os); CHECK_NO_ERROR(os);
+
+    {
+        U2UseCommonUserModStep useUserStep(sqliteDbi, masterObjId, os); CHECK_NO_ERROR(os);
+        bool multiStepStarted = sqliteDbi->getSQLiteModDbi()->isMultiStepStarted();
+        bool userStepStarted = sqliteDbi->getSQLiteModDbi()->isUserStepStarted();
+        CHECK_TRUE(userStepStarted, "User step must be started!");
+        CHECK_FALSE(multiStepStarted, "Multi step must be ended!");
+
+        sqliteDbi->getSQLiteModDbi()->createModStep(singleStep, masterObjId, os); CHECK_NO_ERROR(os);
+    }
+
+    QList<U2SingleModStep> single;
+    QList<U2MultiModStep4Test> multi;
+    QList<U2UserModStep4Test> user;
+    ModSQLiteSpecificTestData::getAllSteps(single, multi, user, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_EQUAL(1, single.count(), "single steps num");
+    CHECK_EQUAL(1, multi.count(), "multi steps num");
+    CHECK_EQUAL(1, user.count(), "user steps num");
+
+    U2DataId userActualMasterObjId = user[0].masterObjId;
+    CHECK_EQUAL(multi[0].id, single[0].multiStepId, "multi step id of single");
+    CHECK_EQUAL(user[0].id, multi[0].userStepId, "user step id of multi");
+    CHECK_EQUAL(masterObjId, user[0].masterObjId, "master object id");
+
+    bool multiStepStarted = sqliteDbi->getSQLiteModDbi()->isMultiStepStarted();
+    bool userStepStarted = sqliteDbi->getSQLiteModDbi()->isUserStepStarted();
+    CHECK_FALSE(multiStepStarted, "Multi step must be ended!");
+    CHECK_FALSE(userStepStarted, "User step must be ended!");
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_oneUser2Multi) {
+    // TODO
+}
+
+IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, createStep_severalUser) {
+    // TODO
+}
+
 
 } // namespace

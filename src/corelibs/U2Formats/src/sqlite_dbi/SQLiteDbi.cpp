@@ -111,17 +111,16 @@ U2ModDbi* SQLiteDbi::getModDbi() {
 }
 
 SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
-    return static_cast<SQLiteObjectDbi*>(objectDbi);
-}
-
-SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() {
     return objectDbi;
 }
 
-SQLiteMsaDbi* SQLiteDbi::getSQLiteMsaDbi() {
+SQLiteMsaDbi* SQLiteDbi::getSQLiteMsaDbi() const {
     return msaDbi;
 }
 
+SQLiteModDbi* SQLiteDbi::getSQLiteModDbi() const {
+    return modDbi;
+}
 
 QString SQLiteDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) {
     SQLiteQuery q("SELECT value FROM Meta WHERE name = ?1", db, os);

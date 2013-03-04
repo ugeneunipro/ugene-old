@@ -22,6 +22,7 @@
 #ifndef _U2_MOD_H_
 #define _U2_MOD_H_
 
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/U2Type.h>
 
 
@@ -64,18 +65,29 @@ public:
 
     /** Detailed description of the modification */
     QByteArray     details;
+
+    /** ID of the multiple modifications step */
+    qint64         multiStepId;
 };
 
-/** Multiple modifications step (a minimal step that can be undo/redo) */
-class U2CORE_EXPORT U2MultiModStep {
+/**
+ * Create an instance of this class when it is required to join
+ * different modification into a one user action, i.e. all
+ * these modifications will be undo/redo as a single action.
+ * The user modifications step is finished when the object destructor is called.
+ * Parameter "masterObjId" specifies ID of the object that initiated the changes.
+ * Note that there might be other modified objects (e.g. child objects).
+ *
+ * WARNING!: you should limit the scope of the created instance to as small as possible,
+ * as it "blocks" database!!
+ */
+class U2CORE_EXPORT U2UseCommonUserModStep {
 public:
-    QList<U2SingleModStep> singleSteps;
-};
-
-/** User modifications (e.g. complex modifications from GUI) */
-class U2CORE_EXPORT U2UserModStep {
-public:
-    QList<U2MultiModStep> multiSteps;
+    U2UseCommonUserModStep(U2Dbi* _dbi, const U2DataId& _masterObjId, U2OpStatus& os);
+    ~U2UseCommonUserModStep();
+private:
+    U2Dbi* dbi;
+    bool valid;
 };
 
 } // namespace

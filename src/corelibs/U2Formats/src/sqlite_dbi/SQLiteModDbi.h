@@ -29,7 +29,21 @@
 
 namespace U2 {
 
-class SQLiteModDbi : public U2ModDbi, public SQLiteChildDBICommon {
+class U2FORMATS_EXPORT U2UseCommonMultiModStep {
+public:
+    /**
+     * Master object ID refers to the user modifications step.
+     * WARNING!: If a user step has been already created, the master object must be the same!
+     */
+    U2UseCommonMultiModStep(SQLiteDbi* _sqliteDbi, const U2DataId& _masterObjId, U2OpStatus& os);
+    ~U2UseCommonMultiModStep();
+private:
+    SQLiteDbi* sqliteDbi;
+    bool valid;
+};
+
+
+class U2FORMATS_EXPORT SQLiteModDbi : public U2ModDbi, public SQLiteChildDBICommon {
 public:
     SQLiteModDbi(SQLiteDbi* dbi);
 
@@ -40,17 +54,74 @@ public:
     virtual U2SingleModStep getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os);
 
     /**
-     * Adds records about modifications into the database.
-     * All single modification steps must contain valid object IDs and info about modifications,
-     * the method sets correct IDS for the steps.
+     * Adds a modification step into the database.
+     * The step must contain valid object ID and info about modifications,
+     * the method sets correct ID and multiStepId for the step.
      */
-    virtual void createMultiModStep(U2MultiModStep& multiStep, U2OpStatus& os);
+    void createModStep(U2SingleModStep& step, U2OpStatus& os);
+    void createModStep(U2SingleModStep& step, const U2DataId& masterObjId, U2OpStatus& os);
 
     /** Removes modification steps for the object with version EQUAL or GREATER than the specified version */
     virtual void removeModsWithGreaterVersion(const U2DataId& objectId, qint64 version, U2OpStatus& os);
 
     /** Removes all modification tracks and steps for the object */
     virtual void removeObjectMods(const U2DataId& objectId, U2OpStatus& os);
+
+    /**
+     * Starts a common user modifications step.
+     * Do not use this method, create a "U2UseCommonUserModStep" instance instead!
+     */
+    virtual void startCommonUserModStep(const U2DataId& masterObjId, U2OpStatus& os);
+
+    /**
+     * Ends a common user modifications step.
+     * Do not use this method, use "U2UseCommonUserModStep" instead!
+     */
+    virtual void endCommonUserModStep();
+
+    /**
+     * Starts a common multiple modifications step.
+     * If there is a common user modifications step, verifies that the passed object ID is the same. 
+     * Creates a common user modifications step, if it doesn't exist.
+     * Do not use this method, create a "U2UseCommonMultiModStep" instance instead!
+     */
+    void startCommonMultiModStep(const U2DataId& userMasterObjId, U2OpStatus& os);
+
+    /**
+     * Ends a common multiple modifications step.
+     * Do not use this method, use "U2UseCommonMultiModStep" instead!
+     */
+    void endCommonMultiModStep();
+
+    /** Specifies whether a step has been started */
+    static bool isUserStepStarted() { return currentUserModStepId != -1; }
+    static bool isMultiStepStarted() { return currentMultiModStepId != -1; }
+
+private:
+    /**
+     * Create a record in the UserModStep table.
+     * Sets "currentUserModStepId" to the added record ID.
+     */
+    void createUserModStep(const U2DataId& masterObjId, U2OpStatus& os);
+
+    /**
+     * Creates a record in the MultiModStep table.
+     * Sets "currentMultiModStepId" to the added record ID.
+     * Warning: it is assumed that a user modification step has been started!
+     */
+    void createMultiModStep(U2OpStatus& os);
+
+    /** User modifications step ID if it has been started, or -1 otherwise */
+    static qint64 currentUserModStepId;
+
+    /** Multiple modifications step ID if it has been started, or -1  otherwise */
+    static qint64 currentMultiModStepId;
+
+    /** ID of the master object of the current user modifications step */
+    static U2DataId currentMasterObjId;
+
+    /** Specifies whether user step was created for multiple step only */
+    static bool removeUserStepWithMulti;
 };
 
 } // namespace

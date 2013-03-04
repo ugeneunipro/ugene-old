@@ -39,18 +39,23 @@ public:
     /** Returns a modification step with the specified version for the object */
     virtual U2SingleModStep getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os) = 0;
 
-    /**
-    * Adds records about modifications into the database.
-    * All single modification steps must contain valid object IDs and info about modifications,
-    * the method sets correct IDS for the steps.
-     */
-    virtual void createMultiModStep(U2MultiModStep& multiStep, U2OpStatus& os) = 0;
-
     /** Removes modification steps for the object with version EQUAL or GREATER than the specified version */
     virtual void removeModsWithGreaterVersion(const U2DataId& objectId, qint64 version, U2OpStatus& os) = 0;
 
     /** Removes all modification tracks and steps for the object */
     virtual void removeObjectMods(const U2DataId& objectId, U2OpStatus& os) = 0;
+
+    /**
+     * Starts a common user modifications step (can be only one at a time).
+     * Do not use this method, create a "U2UseCommonUserModStep" instance instead!
+     */
+    virtual void startCommonUserModStep(const U2DataId& masterObjId, U2OpStatus& os) = 0;
+
+    /**
+     * Ends a common user modifications step (can be only one at a time).
+     * Do not use this method, use "U2UseCommonUserModStep" instead!
+     */
+    virtual void endCommonUserModStep() = 0;
 };
 
 } //namespace

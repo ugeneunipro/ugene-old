@@ -131,9 +131,9 @@ public:
 
     SQLiteObjectDbi* getSQLiteObjectDbi() const;
 
-    SQLiteObjectDbi* getSQLiteObjectDbi();
+    SQLiteMsaDbi* getSQLiteMsaDbi() const;
 
-    SQLiteMsaDbi* getSQLiteMsaDbi();
+    SQLiteModDbi* getSQLiteModDbi() const;
 
     /** Returns properties used to initialized the database */
     virtual QHash<QString, QString> getInitProperties() const {return initProperties;}

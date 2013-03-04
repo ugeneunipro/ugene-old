@@ -76,6 +76,7 @@ void UnitTestSuite::prepare() {
 void UnitTestSuite::test_run(const QString& testName){
 	UnitTest* t = (UnitTest*)QMetaType::construct(QMetaType::type(testName.toStdString().c_str()));
 	if (t != NULL) {
+        t->SetUp();
 		t->Test();
 		if (!t->GetError().isEmpty()){
 			taskLog.error(testName + ": " + t->GetError());

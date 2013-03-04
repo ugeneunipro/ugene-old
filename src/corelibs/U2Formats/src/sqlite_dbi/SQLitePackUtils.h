@@ -27,7 +27,7 @@
 namespace U2 {
 namespace SQLite {
 
-class PackUtils {
+class U2FORMATS_EXPORT PackUtils {
 public:
     /** Pack utils version */
     static const QByteArray VERSION;

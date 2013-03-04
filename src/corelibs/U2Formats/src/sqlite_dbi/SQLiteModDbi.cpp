@@ -27,6 +27,31 @@
 
 namespace U2 {
 
+/************************************************************************/
+/* U2UseCommonMultiModStep                                              */
+/************************************************************************/
+U2UseCommonMultiModStep::U2UseCommonMultiModStep(SQLiteDbi* _sqliteDbi, const U2DataId& _masterObjId, U2OpStatus& os)
+: sqliteDbi(_sqliteDbi),
+  valid(false)
+{
+    SAFE_POINT(NULL != sqliteDbi, "NULL sqliteDbi!", );
+
+    sqliteDbi->getSQLiteModDbi()->startCommonMultiModStep(_masterObjId, os);
+    if (!os.hasError()) {
+        valid = true;
+    }
+}
+
+U2UseCommonMultiModStep::~U2UseCommonMultiModStep() {
+    if (valid) {
+        sqliteDbi->getSQLiteModDbi()->endCommonMultiModStep();
+    }
+}
+
+
+/************************************************************************/
+/* SQLiteModDbi                                                         */
+/************************************************************************/
 SQLiteModDbi::SQLiteModDbi(SQLiteDbi* dbi) : U2ModDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
 
@@ -36,11 +61,12 @@ void SQLiteModDbi::initSqlSchema(U2OpStatus& os) {
     }
 
     // SingleModStep - single modification of a dbi object
-    //   id       - id of the modification
-    //   object   - id of the object that was modified
-    //   version  - this is a modification from 'version' to 'version + 1' of the object
-    //   modType  - type of the object modification
-    //   details  - detailed description of the object modification
+    //   id                    - id of the modification
+    //   object, otype, oextra - data id of the object that was modified
+    //   version               - this is a modification from 'version' to 'version + 1' of the object
+    //   modType               - type of the object modification
+    //   details               - detailed description of the object modification
+    //   multiStepId           - id of the multiModStep
     SQLiteQuery("CREATE TABLE SingleModStep (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
         " object INTEGER NOT NULL,"
         " otype INTEGER NOT NULL,"
@@ -62,9 +88,12 @@ void SQLiteModDbi::initSqlSchema(U2OpStatus& os) {
         " FOREIGN KEY(userStepId) REFERENCES UserModStep(id) )", db, os).execute();
 
     // UserModStep - user modification steps
-    //   id          - id of the user modifications step
+    //   id                     - id of the user modifications step
+    //   object, otype, oextra  - data id of the master object (i.e. object for which "undo/redo" was initiated)
     SQLiteQuery("CREATE TABLE UserModStep (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-        " completeState INTEGER NOT NULL )", db, os).execute();
+        " object INTEGER NOT NULL,"
+        " otype INTEGER NOT NULL,"
+        " oextra BLOB NOT NULL)", db, os).execute();
 }
 
 U2SingleModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os) {
@@ -76,7 +105,7 @@ U2SingleModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackV
     q.bindInt64(2, trackVersion);
 
     if (q.step()) {
-        res.id = q.getInt32(0);
+        res.id = q.getInt64(0);
         res.objectId = q.getDataIdExt(1);
         res.version = q.getInt64(4);
         res.modType = q.getInt64(5);
@@ -90,41 +119,36 @@ U2SingleModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackV
     return res;
 }
 
-void SQLiteModDbi::createMultiModStep(U2MultiModStep& multiStep, U2OpStatus& os) {
+void SQLiteModDbi::createModStep(U2SingleModStep& step, U2OpStatus& os) {
+    createModStep(step, step.objectId, os);
+}
+
+void SQLiteModDbi::createModStep(U2SingleModStep& step, const U2DataId& masterObjId, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
-
-    // UserModStep
-    SQLiteQuery qUser("INSERT INTO UserModStep(completeState) VALUES(?1)", db, os);
-    SAFE_POINT_OP(os, );
-
-    qUser.bindInt64(1, 1);
-    qint64 userModStepId = qUser.insert();
-
-    // MultiModSteps
-    SQLiteQuery qMulti("INSERT INTO MultiModStep(userStepId) VALUES (?1)", db, os);
-    SAFE_POINT_OP(os, );
-
-    qMulti.bindInt64(1, userModStepId);
-    qint64 multiModStepId = qMulti.insert();
-
-    // SingleModSteps
+    bool closeMultiStep = false;
+    if (!isMultiStepStarted()) {
+        startCommonMultiModStep(masterObjId, os);
+        SAFE_POINT_OP(os, );
+        SAFE_POINT(isMultiStepStarted(), "A multiple modifications step must have been started!", );
+        closeMultiStep = true;
+    }
+    
     SQLiteQuery qSingle("INSERT INTO SingleModStep(object, otype, oextra, version, modType, details, multiStepId) VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7)", db, os);
     SAFE_POINT_OP(os, );
 
-    for (int i = 0, n = multiStep.singleSteps.count(); i < n; ++i) {
-        U2SingleModStep& singleModStep = multiStep.singleSteps[i];
-        qSingle.reset();
-        qSingle.bindInt64(1, multiModStepId);
+    qSingle.bindDataId(1, step.objectId);
+    qSingle.bindType(2, SQLiteUtils::toType(step.objectId));
+    qSingle.bindBlob(3, SQLiteUtils::toDbExtra(step.objectId));
+    qSingle.bindInt64(4, step.version);
+    qSingle.bindInt64(5, step.modType);
+    qSingle.bindString(6, step.details);
+    qSingle.bindInt64(7, currentMultiModStepId);
 
-        qSingle.bindDataId(1, singleModStep.objectId);
-        qSingle.bindType(2, SQLiteUtils::toType(singleModStep.objectId));
-        qSingle.bindBlob(3, SQLiteUtils::toDbExtra(singleModStep.objectId));
-        qSingle.bindInt64(4, singleModStep.version);
-        qSingle.bindInt64(5, singleModStep.modType);
-        qSingle.bindString(6, singleModStep.details);
-        qSingle.bindInt64(7, multiModStepId);
+    step.id = qSingle.insert();
+    step.multiStepId = currentMultiModStepId;
 
-        singleModStep.id = qSingle.insert();
+    if (closeMultiStep) {
+        endCommonMultiModStep();
     }
 }
 
@@ -143,6 +167,102 @@ void SQLiteModDbi::removeObjectMods(const U2DataId& objectId, U2OpStatus& os) {
 
     q.bindDataId(1, objectId);
     q.execute();
+}
+
+qint64 SQLiteModDbi::currentUserModStepId = -1;
+qint64 SQLiteModDbi::currentMultiModStepId = -1;
+U2DataId SQLiteModDbi::currentMasterObjId;
+bool SQLiteModDbi::removeUserStepWithMulti = true;
+
+
+void SQLiteModDbi::startCommonUserModStep(const U2DataId& masterObjId, U2OpStatus& os) {
+    SQLiteTransaction(db, os);
+
+    // Only one common step at a time
+    if (isUserStepStarted()) {
+        os.setError("Can't create a common user modifications step, previous one is not complete!");
+        return;
+    }
+
+    // Create a new user modifications step in the database
+    createUserModStep(masterObjId, os);
+    SAFE_POINT_OP(os, );
+
+    currentMasterObjId = masterObjId;
+}
+
+void SQLiteModDbi::endCommonUserModStep() {
+    currentMultiModStepId = -1;
+    currentUserModStepId = -1;
+    currentMasterObjId = U2DataId();
+}
+
+void SQLiteModDbi::startCommonMultiModStep(const U2DataId& userMasterObjId, U2OpStatus& os) {
+    SQLiteTransaction(db, os);
+    if (!isUserStepStarted()) {
+        startCommonUserModStep(userMasterObjId, os);
+        SAFE_POINT_OP(os, );
+        SAFE_POINT(isUserStepStarted(), "A user modifications step must have been started!", );
+        removeUserStepWithMulti = true;
+    }
+    else {
+        removeUserStepWithMulti = false;
+
+        // Verify that object ID of the user mod step is the same
+        SAFE_POINT(currentMasterObjId == userMasterObjId, "Incorrect user step master object ID!", );
+    }
+
+    
+    if (isMultiStepStarted()) {
+        os.setError("Can't create a common multiple modifications step, previous one is not complete!");
+        endCommonUserModStep();
+        return;
+    }
+
+    // Create a new multiple modifications step in the database
+    createMultiModStep(os);
+    SAFE_POINT_OP(os, );
+}
+
+void SQLiteModDbi::endCommonMultiModStep() {
+    if (removeUserStepWithMulti) {
+        endCommonUserModStep();
+    }
+    else {
+        currentMultiModStepId = -1;
+    }
+}
+
+
+void SQLiteModDbi::createUserModStep(const U2DataId& masterObjId, U2OpStatus& os) {
+    SQLiteQuery qUser("INSERT INTO UserModStep(object, otype, oextra) VALUES(?1, ?2, ?3)", db, os);
+    SAFE_POINT_OP(os, );
+
+    qUser.bindDataId(1, masterObjId);
+    qUser.bindType(2, SQLiteUtils::toType(masterObjId));
+    qUser.bindBlob(3, SQLiteUtils::toDbExtra(masterObjId));
+
+    currentUserModStepId = qUser.insert();
+    if (-1 == currentUserModStepId) {
+        os.setError("Failed to create a common user modifications step!");
+        return;
+    }
+}
+
+void SQLiteModDbi::createMultiModStep(U2OpStatus& os) {
+    SAFE_POINT(isUserStepStarted(), "A user modifications step must have been started!", );
+
+    SQLiteQuery qMulti("INSERT INTO MultiModStep(userStepId) VALUES(?1)", db, os);
+    SAFE_POINT_OP(os, );
+
+    qMulti.bindInt64(1, currentUserModStepId);
+
+    currentMultiModStepId = qMulti.insert();
+
+    if (-1 == currentMultiModStepId) {
+        os.setError("Failed to create a common multiple modifications step!");
+        return;
+    }
 }
 
 } // namespace

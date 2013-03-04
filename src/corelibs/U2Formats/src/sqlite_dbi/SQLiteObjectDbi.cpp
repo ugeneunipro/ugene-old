@@ -27,6 +27,9 @@
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Formats/SQLiteModDbi.h>
+
+
 namespace U2 {
 
 using namespace SQLite;
@@ -850,10 +853,20 @@ void ModTrackAction::saveTrack(qint64 modType, const QByteArray& modDetails, U2O
         singleModStep.modType = modType;
         singleModStep.details = modDetails;
 
-        U2MultiModStep multiStep;
-        multiStep.singleSteps.append(singleModStep);
+        dbi->getSQLiteModDbi()->createModStep(singleModStep, singleModStep.objectId, os);
+    }
+}
 
-        dbi->getModDbi()->createMultiModStep(multiStep, os);
+void ModTrackAction::saveTrack(qint64 modType, const QByteArray& modDetails, const U2DataId& masterObjId, U2OpStatus& os) {
+    if (TrackOnUpdate == trackMod) {
+        SAFE_POINT(!modDetails.isEmpty(), "Empty modification details!", );
+        U2SingleModStep singleModStep;
+        singleModStep.objectId = objectId;
+        singleModStep.version = objectVersionToTrack;
+        singleModStep.modType = modType;
+        singleModStep.details = modDetails;
+
+        dbi->getSQLiteModDbi()->createModStep(singleModStep, masterObjId, os);
     }
 }
 

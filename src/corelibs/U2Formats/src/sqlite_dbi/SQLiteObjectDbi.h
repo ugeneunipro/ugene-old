@@ -264,6 +264,7 @@ public:
         If modifications tracking is enabled, save a modification step to the database.
      */
     void saveTrack(qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
+    void saveTrack(qint64 modType, const QByteArray& modDetails, const U2DataId& masterObjId, U2OpStatus& os);
 
 private:
     SQLiteDbi* dbi;
