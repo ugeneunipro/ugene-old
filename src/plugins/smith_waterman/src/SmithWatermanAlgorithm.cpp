@@ -55,7 +55,8 @@ quint64 SmithWatermanAlgorithm::estimateNeededRamAmount(const qint32 gapOpen,
         if (searchLength + 1 < matrixLength) {
             matrixLength = searchLength + 1;
         }
-        memToAllocInBytes = queryLength * (2 * sizeof(int) + 0x80 + matrixLength) + matrixLength;
+        memToAllocInBytes = queryLength * (2 * sizeof(int) + 0x80) + matrixLength
+            * ((4 + queryLength + 3) >> 2);
     } else if(SmithWatermanSettings::ANNOTATIONS == resultView) {
         memToAllocInBytes = queryLength * (3 * sizeof(int) + 0x80);
     } else {
@@ -157,29 +158,144 @@ void SmithWatermanAlgorithm::sortByScore( QList<PairAlignSequences> & res) {
 }
 
 void SmithWatermanAlgorithm::calculateMatrixForMultipleAlignmentResult() {
-	int subst, max, max1;
-    int e1, f1, x, xpos;
-	unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length(), i, j, n;
+
+	int subst, max, pos, max1;
+	int i, j, n, e1, f1, x; unsigned int xpos;
+	unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
 	unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
 
-	n = pat_n * 2;
-	int *buf, *matrix = (int*)malloc(n * sizeof(int) + pat_n * 0x80 + matrixLength * (pat_n + 1));
+	n = pat_n * 2; int dirn = (4 + pat_n + 3) >> 2;
+	int *buf, *matrix = (int*)malloc(n * sizeof(int) + pat_n * 0x80 + matrixLength * dirn);
 	char *score, *score1 = (char*)(matrix + n);
-	char *dir, *dir2, *dir1 = score1 + pat_n * 0x80;
+	unsigned char *dir, *dir2, *dir1 = (unsigned char*)score1 + pat_n * 0x80;
 	memset(matrix, 0, n * sizeof(int));
-	memset(dir1, 0, pat_n + 1);
-	dir = dir1 + pat_n + 1;
-	dir2 = dir1 + matrixLength * (pat_n + 1);
+	memset(dir1, 0, dirn);
+	dir = dir1 + dirn;
+	dir2 = dir1 + matrixLength * dirn;
 
-    QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
+	QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
 	char *alphaCharsData = alphaChars.data(); n = alphaChars.size();
 	for(i = 0; i < n; i++) {
 	    unsigned char ch = alphaCharsData[i];
 	    score = score1 + ch * pat_n;
-	    j = 0;
+	    j = 0; do score[j] = substitutionMatrix.getScore(ch, pat[j]); while(++j < pat_n);
+	}
+
+	PairAlignSequences p;
+
+	p.refSubseqInterval.startPos = 0;
+	p.score = 0;
+
+#define SW_LOOP(SWX, N) \
+	    max = subst + *score++; x = 3 << N; \
+	    f1 = buf[1]; \
+	    if(max <= 0) { max = 0; x = 0; } \
+	    if(max >= max1) { max1 = max; xpos = j; } \
+	    if(max < f1) { max = f1; x = 2 << N; } \
+	    if(max < e1) { max = e1; x = 1 << N; } \
+	    subst = buf[0]; \
+	    buf[0] = max; SWX; \
+	    \
+	    e1 += gapExtension; \
+	    max += gapOpen; \
+	    f1 = buf[1] + gapExtension; \
+	    e1 = e1 > max ? e1 : max; \
+	    f1 = f1 > max ? f1 : max; \
+	    buf[1] = f1; \
+	    buf += 2; \
+
+	i = 1;
+    do {
+	    buf = matrix;
+	    score = score1 + src[i - 1] * pat_n;
+	    e1 = 0; max1 = 0;
+	    subst = 0;
+
+	    if(dir == dir2) {
+            dir = dir1;
+        }
+	    *dir++ = 0;
+	    j = pat_n;
         do {
-            score[j] = substitutionMatrix.getScore(ch, pat[j]);
-        } while(++j < pat_n);
+	        SW_LOOP(*dir++ = x, 0);
+	        if(!(--j)) break;
+	        SW_LOOP(dir[-1] |= x, 2);
+	        if(!(--j)) break;
+	        SW_LOOP(dir[-1] |= x, 4);
+	        if(!(--j)) break;
+	        SW_LOOP(dir[-1] |= x, 6);
+	    } while(--j);
+
+        #undef SW_LOOP
+
+    /*
+	    for(j = 0; j < pat_n; j++)
+	    printf(" %02X", matrix[j * 2]);
+	    printf("\n");
+    */
+	    if(max1 >= minScore) {
+	    QByteArray pairAlign;
+	    xpos = pat_n - xpos + 4; j = i;
+	    int xend = xpos - 3;
+	    unsigned char *xdir = (unsigned char*)dir - dirn;
+	    for(;;) {
+	        x = (xdir[xpos >> 2] >> ((xpos & 3) * 2)) & 3;
+	        if(!x) break;
+	        if(x == 1) {
+	            pairAlign.append(PairAlignSequences::LEFT);
+	            xpos--;
+	            continue;
+	        }
+	        if(x == 2) {
+	            pairAlign.append(PairAlignSequences::UP);
+	        } else if(x == 3) {
+	            pairAlign.append(PairAlignSequences::DIAG);
+	            xpos--;
+	        }
+	        if(xdir == dir1) {
+                xdir = dir2;
+            }
+	        if(xdir == dir) {
+                /* printf("#error\n"); */ break;
+            }
+	        xdir -= dirn; j--;
+	    }
+	    xpos -= 3;
+
+	    p.score = max1;
+	    p.refSubseqInterval.startPos = j;
+	    p.refSubseqInterval.length = i - j;
+	    p.ptrnSubseqInterval.startPos = xpos;
+	    p.ptrnSubseqInterval.length = xend - xpos;
+	    p.pairAlignment = pairAlign;
+	    pairAlignmentStrings.append(p);
+
+	    // printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
+	    // printf("#%i-%i %s\n", xpos, xend - xpos, pairAlign.data());
+	    }
+	} while(++i <= src_n);
+
+	free(matrix);
+}
+
+void SmithWatermanAlgorithm::calculateMatrixForAnnotationsResult() {
+
+	int subst, max, pos, max1;
+	int i, j, n, e1, f1, fpos;
+	unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length();
+	unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
+
+	n = pat_n * 3;
+	int *buf, *matrix = (int*)malloc(n * sizeof(int) + pat_n * 0x80);
+	char *score, *score1 = (char*)(matrix + n);
+	memset(matrix, 0, n * sizeof(int));
+
+        QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
+	char *alphaCharsData = alphaChars.data(); n = alphaChars.size();
+	for(i = 0; i < n; i++) {    
+	  unsigned char ch = alphaCharsData[i];
+	  score = score1 + ch * pat_n;
+	  j = 0; do score[j] = substitutionMatrix.getScore(ch, pat[j]); while(++j < pat_n);
 	}
 
 	PairAlignSequences p;
@@ -192,154 +308,61 @@ void SmithWatermanAlgorithm::calculateMatrixForMultipleAlignmentResult() {
 	    buf = matrix;
 	    score = score1 + src[i - 1] * pat_n;
 	    e1 = 0; max1 = 0;
-	    subst = 0;
-
-	    if(dir == dir2) dir = dir1;
-	    *dir++ = 0;
+	    subst = 0; fpos = i - 1;
 	    j = pat_n;
         do {
-	        max = subst + *score++; x = 3; \
-	        f1 = buf[1];
-	        if(max <= 0) { max = 0; x = 0; }
-	        if(max >= max1) { max1 = max; xpos = j; } \
-	        if(max < f1) { max = f1; x = 2; }
-	        if(max < e1) { max = e1; x = 1; }
-	        subst = buf[0];
-	        buf[0] = max; *dir++ = x;
+	        max = subst + *score++; n = fpos; \
+	        f1 = buf[2];
+	        if(max <= 0) { max = 0; n = i; }
+	        if(max >= max1) { max1 = max; pos = n; } \
+	        if(max < f1) { max = f1; n = buf[1]; }
+	        if(max < e1) { max = e1; n = buf[1 - 3]; }
+	        subst = buf[0]; fpos = buf[1];
+	        buf[0] = max; buf[1] = n;
 
 	        e1 += gapExtension;
 	        max += gapOpen;
-	        f1 = buf[1] + gapExtension;
+	        f1 = buf[2] + gapExtension;
 	        e1 = e1 > max ? e1 : max;
 	        f1 = f1 > max ? f1 : max; \
-	        buf[1] = f1; \
-	        buf += 2;
-        } while(--j);
+	        buf[2] = f1; \
+	        buf += 3;
+	    } while(--j);
+
+    // #define SW_FILT
 
 	    if(max1 >= minScore) {
-            QByteArray pairAlign;
-	        xpos = pat_n - xpos + 1; j = i;
-	        int xend = xpos;
-	        char *xdir = dir - (pat_n + 1);
-	        for(;;) {
-	            x = xdir[xpos];
-	            if(!x) break;
-	            if(x == 1) {
-                    pairAlign.append(PairAlignSequences::LEFT);
-	            xpos--;
-	            continue;
+        #ifdef SW_FILT 
+	        if(p.refSubseqInterval.startPos != pos) {
+	            if(p.score) {
+	            pairAlignmentStrings.append(p);
+	            // printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
 	            }
-	            if(x == 2) {
-                    pairAlign.append(PairAlignSequences::UP);
-	            } else if(x == 3) {
-                    pairAlign.append(PairAlignSequences::DIAG);
-	            xpos--;
-	            }
-	            if(xdir == dir1) xdir = dir2;
-	            if(xdir == dir) {
-                    break;
-                }
-	            xdir -= pat_n + 1; j--;
+	            p.refSubseqInterval.startPos = pos;
+	            p.refSubseqInterval.length = i - pos;
+	            p.score = max1;
+	        } else if(p.score < max1) {
+	            p.refSubseqInterval.length = i - pos;
+	            p.score = max1;
 	        }
-
-	        p.refSubseqInterval.startPos = j;
-	        p.refSubseqInterval.length = i - j;
+        #else
+	        p.refSubseqInterval.startPos = pos;
+	        p.refSubseqInterval.length = i - pos;
 	        p.score = max1;
-            p.ptrnSubseqInterval.startPos = xpos;
-            p.ptrnSubseqInterval.length = xend - xpos;
-            p.pairAlignment = pairAlign;
 	        pairAlignmentStrings.append(p);
-        }
+	        // printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
+        #endif
+	    }
 	} while(++i <= src_n);
 
+#ifdef SW_FILT
+	if(p.score) {
+	  pairAlignmentStrings.append(p);
+	  // printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
+	}
+#endif
+
 	free(matrix);
-}
-
-void SmithWatermanAlgorithm::calculateMatrixForAnnotationsResult() {
-    int subst, max, pos, max1;
-    int e1, f1, fpos;
-    unsigned int src_n = searchSeq.length(), pat_n = patternSeq.length(), i, j, n;
-    unsigned char *src = (unsigned char*)searchSeq.data(), *pat = (unsigned char*)patternSeq.data();
-
-    n = pat_n * 3;
-    int *buf, *matrix = (int*)malloc(n * sizeof(int) + pat_n * 0x80);
-    char *score_i, *score = (char*)(matrix + n);
-    memset(matrix, 0, n * sizeof(int));
-
-    QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
-    char *alphaCharsData = alphaChars.data();
-    n = alphaChars.size();
-    for(i = 0; i < n; i++) {    
-        unsigned char ch = alphaCharsData[i];
-        score_i = score + ch * pat_n;
-        j = 0;
-        do {
-            score_i[j] = substitutionMatrix.getScore(ch, pat[j]);
-        } while(++j < pat_n);
-    }
-
-    PairAlignSequences p;
-
-    p.refSubseqInterval.startPos = 0;
-    p.score = 0;
-
-    i = 1;
-    do {
-        buf = matrix;
-        score_i = score + src[i - 1] * pat_n;
-        e1 = 0; max1 = 0;
-        subst = 0; fpos = i - 1;
-        j = pat_n; do {
-            max = subst + *score_i++; n = fpos; \
-                f1 = buf[2];
-            if(max <= 0) { max = 0; n = i; }
-            if(max >= max1) { max1 = max; pos = n; } \
-                if(max < f1) { max = f1; n = buf[1]; }
-                if(max < e1) { max = e1; n = buf[1 - 3]; }
-                subst = buf[0]; fpos = buf[1];
-                buf[0] = max; buf[1] = n;
-
-                e1 += gapExtension;
-                max += gapOpen;
-                f1 = buf[2] + gapExtension;
-                e1 = e1 > max ? e1 : max;
-                f1 = f1 > max ? f1 : max; \
-                    buf[2] = f1; \
-                    buf += 3;
-        } while(--j);
-
-        if(max1 >= minScore) {
-#ifdef SW_FILT
-            if(p.refSubseqInterval.startPos != pos) {
-                if(p.score) {
-                    pairAlignmentStrings.append(p);
-                    //printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
-                }
-                p.refSubseqInterval.startPos = pos;
-                p.refSubseqInterval.length = i - pos;
-                p.score = max1;
-            } else if(p.score < max1) {
-                p.refSubseqInterval.length = i - pos;
-                p.score = max1;
-            }
-#else
-            p.refSubseqInterval.startPos = pos;
-            p.refSubseqInterval.length = i - pos;
-            p.score = max1;
-            pairAlignmentStrings.append(p);
-            //printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
-#endif
-        }
-    } while(++i <= src_n);
-
-#ifdef SW_FILT
-    if(p.score) {
-        pairAlignmentStrings.append(p);
-        //printf("#%i-%i %i\n", (int)p.refSubseqInterval.startPos, (int)p.refSubseqInterval.length, (int)p.score);
-    }
-#endif
-
-    free(matrix);
 }
 
 } // namespace U2
