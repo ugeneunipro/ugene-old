@@ -69,6 +69,7 @@ public:
 
     MAlignment getMAlignment() const;
     void setMAlignment(const MAlignment& ma, MAlignmentModInfo mi = MAlignmentModInfo(), const QVariantMap& hints = QVariantMap());
+    void copyGapModel(const QList<MAlignmentRow> &copyRows);
 
     /** GObject methods */
     virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;

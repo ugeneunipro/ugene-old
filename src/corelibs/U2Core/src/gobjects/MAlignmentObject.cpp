@@ -104,6 +104,21 @@ void MAlignmentObject::setMAlignment(const MAlignment& newMa, MAlignmentModInfo 
     updateCachedMAlignment(mi);
 }
 
+void MAlignmentObject::copyGapModel(const QList<MAlignmentRow> &copyRows) {
+    const QList<MAlignmentRow> &oldRows = getMAlignment().getRows();
+    SAFE_POINT(oldRows.count() == copyRows.count(), "Different rows count", );
+
+    QMap<qint64, QList<U2MsaGap> > newGapModel;
+    QList<MAlignmentRow>::ConstIterator ori = oldRows.begin();
+    QList<MAlignmentRow>::ConstIterator cri = copyRows.begin();
+    for (; ori != oldRows.end(); ori++, cri++) {
+        newGapModel[ori->getRowId()] = cri->getGapModel();
+    }
+
+    U2OpStatus2Log os;
+    updateGapModel(newGapModel, os);
+}
+
 char MAlignmentObject::charAt(int seqNum, int pos) const {
     MAlignment msa = getMAlignment();
     return msa.charAt(seqNum, pos);
@@ -187,11 +202,11 @@ int MAlignmentObject::deleteGap(int seqNum, int pos, int maxGaps) {
     }
     U2OpStatus2Log os;
     msa.removeChars(seqNum, pos, n, os);
+    const MAlignmentRow &row = msa.getRow(seqNum);
+    MsaDbiUtils::updateRowGapModel(entityRef, row.getRowId(), row.getGapModel(), os);
+    SAFE_POINT_OP(os, 0);
 
-    MAlignmentModInfo mi;
-    mi.sequenceListChanged = false;
-    setMAlignment(msa, mi);
-
+    updateCachedMAlignment();
     return n;
 }
 
@@ -221,13 +236,14 @@ int MAlignmentObject::deleteGap(int pos, int maxGaps) {
     U2OpStatus2Log os;
     for (int i = 0, n = msa.getNumRows(); i < n; i++) {
         msa.removeChars(i, pos, nDeleted, os);
+        SAFE_POINT_OP(os, 0);
+
+        const MAlignmentRow &row = msa.getRow(i);
+        MsaDbiUtils::updateRowGapModel(entityRef, row.getRowId(), row.getGapModel(), os);
+        SAFE_POINT_OP(os, 0);
     }
-    msa.setLength(msa.getLength() - nDeleted);
 
-    MAlignmentModInfo mi;
-    mi.sequenceListChanged = false;
-    setMAlignment(msa, mi);
-
+    updateCachedMAlignment();
     return nDeleted;
 }
 
