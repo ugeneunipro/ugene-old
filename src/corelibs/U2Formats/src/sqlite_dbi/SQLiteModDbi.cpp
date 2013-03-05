@@ -99,7 +99,7 @@ void SQLiteModDbi::initSqlSchema(U2OpStatus& os) {
 U2SingleModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os) {
     U2SingleModStep res;
     SQLiteQuery q("SELECT id, object, otype, oextra, version, modType, details, multiStepId FROM SingleModStep WHERE object = ?1 AND version = ?2", db, os);
-    CHECK_OP(os, res);
+    SAFE_POINT_OP(os, res);
 
     q.bindDataId(1, objectId);
     q.bindInt64(2, trackVersion);
@@ -119,11 +119,51 @@ U2SingleModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackV
     return res;
 }
 
-void SQLiteModDbi::createModStep(U2SingleModStep& step, U2OpStatus& os) {
-    createModStep(step, step.objectId, os);
+QList<U2SingleModStep> SQLiteModDbi::getModSteps(const U2DataId& objectId, qint64 version, U2OpStatus& os) {
+    QList<U2SingleModStep> steps;
+    SQLiteTransaction(db, os);
+    qint64 userStepId = -1;
+    SQLiteQuery qGetUserStepId("SELECT userStepId FROM MultiModStep WHERE id = (SELECT multiStepId FROM SingleModStep WHERE object = ?1 AND version = ?2)", db, os);
+    SAFE_POINT_OP(os, QList<U2SingleModStep>());
+
+    qGetUserStepId.bindDataId(1, objectId);
+    qGetUserStepId.bindInt64(2, version);
+
+    if (qGetUserStepId.step()) {
+        userStepId = qGetUserStepId.getInt64(0);
+        qGetUserStepId.ensureDone();
+    }
+    else if (!os.hasError()) {
+        os.setError("Failed to find user step ID by single step ID!");
+        return steps;
+    }
+
+    SQLiteQuery qMultiStepId("SELECT id FROM MultiModStep WHERE userStepId = ?1", db, os);
+    qMultiStepId.bindInt64(1, userStepId);
+
+    SQLiteQuery qSingleStep("SELECT id, object, otype, oextra, version, modType, details, multiStepId FROM SingleModStep WHERE multiStepId = ?1", db, os);
+    while (qMultiStepId.step()) {
+        qint64 multiStepId = qMultiStepId.getInt64(0);
+
+        qSingleStep.reset();
+        qSingleStep.bindInt64(1, multiStepId);
+
+        while (qSingleStep.step()) {
+            U2SingleModStep step;
+            step.id = qSingleStep.getInt64(0);
+            step.objectId = qSingleStep.getDataIdExt(1);
+            step.version = qSingleStep.getInt64(4);
+            step.modType = qSingleStep.getInt64(5);
+            step.details = qSingleStep.getBlob(6);
+
+            SAFE_POINT_OP(os, QList<U2SingleModStep>());
+            steps.append(step);
+        }
+    }
+    return steps;
 }
 
-void SQLiteModDbi::createModStep(U2SingleModStep& step, const U2DataId& masterObjId, U2OpStatus& os) {
+void SQLiteModDbi::createModStep(const U2DataId& masterObjId, U2SingleModStep& step, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     bool closeMultiStep = false;
     if (!isMultiStepStarted()) {

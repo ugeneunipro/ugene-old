@@ -123,7 +123,7 @@ void SQLiteMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& 
     q.update(1);
 
     // Track the modification, if required
-    updateAction.saveTrack(U2ModType::msaUpdatedAlphabet, modDetails, os);
+    updateAction.saveTrack(msaId, U2ModType::msaUpdatedAlphabet, modDetails, os);
 
     // Increment the alignment version
     SQLiteObjectDbi::incrementVersion(msaId, db, os);
@@ -204,7 +204,7 @@ void SQLiteMsaDbi::addRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow& row,
         modDetails = PackUtils::packRow(posInMsa, row);
     }
 
-    updateAction.saveTrack(U2ModType::msaAddedRow, modDetails, os);
+    updateAction.saveTrack(msaId, U2ModType::msaAddedRow, modDetails, os);
     CHECK_OP(os, );
 
     // Update track mod type for child sequence object
@@ -253,7 +253,7 @@ void SQLiteMsaDbi::addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpSta
         }
     }
 
-    updateAction.saveTrack(U2ModType::msaAddedRows, modDetails, os);
+    updateAction.saveTrack(msaId, U2ModType::msaAddedRows, modDetails, os);
     CHECK_OP(os, );
 
     // Increment the alignment version
@@ -291,7 +291,7 @@ void SQLiteMsaDbi::updateRowContent(const U2DataId& msaId, qint64 rowId, const Q
     updateRowContentCore(msaId, rowId, seqBytes, gaps, os);
     CHECK_OP(os, );
 
-    updateAction.saveTrack(U2ModType::msaUpdatedRowContent, modDetails, os);
+    updateAction.saveTrack(msaId, U2ModType::msaUpdatedRowContent, modDetails, os);
     CHECK_OP(os, );
 
     // Increment the alignment version
@@ -334,7 +334,7 @@ void SQLiteMsaDbi::setNewRowsOrder(const U2DataId& msaId, const QList<qint64>& r
     CHECK_OP(os, );
 
     // Save track info
-    updateAction.saveTrack(U2ModType::msaSetNewRowsOrder, modDetails, os);
+    updateAction.saveTrack(msaId, U2ModType::msaSetNewRowsOrder, modDetails, os);
     CHECK_OP(os, );
 
     // Increment the alignment version
@@ -383,7 +383,7 @@ void SQLiteMsaDbi::removeRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os
     removeRowCore(msaId, rowId, removeSequence, os);
     CHECK_OP(os, );
 
-    updateAction.saveTrack(U2ModType::msaRemovedRow, modDetails, os);
+    updateAction.saveTrack(msaId, U2ModType::msaRemovedRow, modDetails, os);
     CHECK_OP(os, );
 
     // Increment the alignment version
@@ -412,7 +412,7 @@ void SQLiteMsaDbi::removeRows(const U2DataId& msaId, const QList<qint64>& rowIds
     bool removeSequence = (TrackOnUpdate == trackMod);
     removeRowsCore(msaId, rowIds, removeSequence, os);
 
-    updateAction.saveTrack(U2ModType::msaRemovedRows, modDetails, os);
+    updateAction.saveTrack(msaId, U2ModType::msaRemovedRows, modDetails, os);
     CHECK_OP(os, );
 
     // Increment the alignment version
@@ -605,7 +605,7 @@ void SQLiteMsaDbi::updateGapModel(const U2DataId& msaId, qint64 msaRowId, const 
     updateGapModelCore(msaId, msaRowId, gapModel, os);
     CHECK_OP(os, );
 
-    updateAction.saveTrack(U2ModType::msaUpdatedGapModel, gapsDetails, os);
+    updateAction.saveTrack(msaId, U2ModType::msaUpdatedGapModel, gapsDetails, os);
     CHECK_OP(os, );
 
     // Increment the alignment version

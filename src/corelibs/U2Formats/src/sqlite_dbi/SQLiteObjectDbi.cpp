@@ -440,37 +440,36 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
         return;
     }
 
-    // Get the modification step for the previous version
-    U2SingleModStep modStep = dbi->getModDbi()->getModStep(objId, obj.version - 1, os);
+    // Get all single modifications steps
+    QList<U2SingleModStep> modSteps = dbi->getSQLiteModDbi()->getModSteps(objId, obj.version - 1, os);
     if (os.hasError()) {
-        coreLog.trace("Error getting the modStep for an object: " + os.getError());
+        coreLog.trace("Error getting modSteps for an object: " + os.getError());
         os.setError(errorDescr);
         return;
     }
-    SAFE_POINT(modStep.version == obj.version - 1, "Unexpected modStep version!", );
 
-    // Call an appropriate "undo" depending on the object type
-    if (U2ModType::isMsaModType(modStep.modType)) {
-        dbi->getSQLiteMsaDbi()->undo(objId, modStep.modType, modStep.details, os);
-    }
-    else if (U2ModType::isObjectModType(modStep.modType)) {
-        if (U2ModType::objUpdatedName == modStep.modType) {
-            undoUpdateObjectName(objId, modStep.details, os);
-            CHECK_OP(os, );
+    foreach (U2SingleModStep modStep, modSteps) {
+        // Call an appropriate "undo" depending on the object type
+        if (U2ModType::isMsaModType(modStep.modType)) {
+            dbi->getSQLiteMsaDbi()->undo(objId, modStep.modType, modStep.details, os);
         }
-        else {
-            coreLog.trace(QString("Can't undo an unknown operation: '%1'!").arg(QString::number(modStep.modType)));
+        else if (U2ModType::isObjectModType(modStep.modType)) {
+            if (U2ModType::objUpdatedName == modStep.modType) {
+                undoUpdateObjectName(objId, modStep.details, os);
+                CHECK_OP(os, );
+            }
+            else {
+                coreLog.trace(QString("Can't undo an unknown operation: '%1'!").arg(QString::number(modStep.modType)));
+                os.setError(errorDescr);
+            }
+        }
+
+        decrementVersion(modStep.objectId, os);
+        if (os.hasError()) {
+            coreLog.trace("Can't decrement an object version!");
             os.setError(errorDescr);
+            return;
         }
-    }
-
-    // Decrement the object version
-    assert(obj.version > 0);
-    decrementVersion(objId, os);
-    if (os.hasError()) {
-        coreLog.trace("Can't decrement an object version!");
-        os.setError(errorDescr);
-        return;
     }
 }
 
@@ -844,7 +843,7 @@ U2TrackModType ModTrackAction::prepareTracking(U2OpStatus& os) {
     return trackMod;
 }
 
-void ModTrackAction::saveTrack(qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
+void ModTrackAction::saveTrack(const U2DataId& masterObjId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
     if (TrackOnUpdate == trackMod) {
         SAFE_POINT(!modDetails.isEmpty(), "Empty modification details!", );
         U2SingleModStep singleModStep;
@@ -853,20 +852,7 @@ void ModTrackAction::saveTrack(qint64 modType, const QByteArray& modDetails, U2O
         singleModStep.modType = modType;
         singleModStep.details = modDetails;
 
-        dbi->getSQLiteModDbi()->createModStep(singleModStep, singleModStep.objectId, os);
-    }
-}
-
-void ModTrackAction::saveTrack(qint64 modType, const QByteArray& modDetails, const U2DataId& masterObjId, U2OpStatus& os) {
-    if (TrackOnUpdate == trackMod) {
-        SAFE_POINT(!modDetails.isEmpty(), "Empty modification details!", );
-        U2SingleModStep singleModStep;
-        singleModStep.objectId = objectId;
-        singleModStep.version = objectVersionToTrack;
-        singleModStep.modType = modType;
-        singleModStep.details = modDetails;
-
-        dbi->getSQLiteModDbi()->createModStep(singleModStep, masterObjId, os);
+        dbi->getSQLiteModDbi()->createModStep(masterObjId, singleModStep, os);
     }
 }
 
@@ -890,7 +876,7 @@ void SQLiteObjectDbiUtils::renameObject(DbRef *db, SQLiteDbi *dbi, U2Object &obj
     objectDbi->updateObject(object, os); // increments the version of object
     CHECK_OP(os, );
 
-    updateAction.saveTrack(U2ModType::objUpdatedName, modDetails, os);
+    updateAction.saveTrack(object.id, U2ModType::objUpdatedName, modDetails, os);
     CHECK_OP(os, );
 }
 
