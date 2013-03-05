@@ -263,7 +263,15 @@ void SQLiteMsaDbi::addRows(const U2DataId& msaId, QList<U2MsaRow>& rows, U2OpSta
 }
 
 void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QString& newName, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
+    SQLiteTransaction(db, os);
+    ModTrackAction updateAction(dbi, msaId);
+    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    CHECK_OP(os, );
+
+    U2UseCommonMultiModStep* multiModStep = NULL;
+    if (TrackOnUpdate == trackMod) {
+        multiModStep = new U2UseCommonMultiModStep(dbi, msaId, os);
+    }
 
     U2DataId sequenceId = getSequenceIdByRowId(msaId, rowId, os);
     CHECK_OP(os, );
@@ -272,6 +280,11 @@ void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QStr
     CHECK_OP(os, );
 
     SQLiteObjectDbiUtils::renameObject(db, dbi, seqObject, newName, os);
+    delete multiModStep;
+
+    // Increment the alignment version
+    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+    CHECK_OP(os, );
 }
 
 void SQLiteMsaDbi::updateRowContent(const U2DataId& msaId, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
@@ -281,25 +294,13 @@ void SQLiteMsaDbi::updateRowContent(const U2DataId& msaId, qint64 rowId, const Q
     CHECK_OP(os, );
 
     U2UseCommonMultiModStep* multiModStep = NULL;
-//    QByteArray modDetails;
     if (TrackOnUpdate == trackMod) {
         multiModStep = new U2UseCommonMultiModStep(dbi, msaId, os);
-    /*    U2MsaRow row = getRow(msaId, rowId, os);
-        CHECK_OP(os, );
-        QByteArray oldSeq = dbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
-        CHECK_OP(os, );
-        modDetails = PackUtils::packRowContentDetails(rowId, oldSeq, row.gaps, seqBytes, gaps);*/
     }
 
     updateRowContentCore(msaId, rowId, seqBytes, gaps, os);
     CHECK_OP(os, );
     delete multiModStep;
-
-//    updateAction.saveTrack(msaId, U2ModType::msaUpdatedRowContent, modDetails, os);
-//    CHECK_OP(os, );
-
-    // Increment the alignment version
-//    SQLiteObjectDbi::incrementVersion(msaId, db, os);
 }
 
 QList<qint64> SQLiteMsaDbi::getRowsOrder(const U2DataId& msaId, U2OpStatus& os) {

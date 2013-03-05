@@ -1640,7 +1640,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_noModTrack) {
     // Verify msa version
     int newMsaVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(oldMsaVersion, newMsaVersion, "msa version");
+    CHECK_EQUAL(oldMsaVersion + 1, newMsaVersion, "msa version");
 
     // Verify seq version
     int newSeqVersion = sqliteDbi->getObjectDbi()->getObjectVersion(oldSeq.id, os);
@@ -1691,7 +1691,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_undo) {
     // Verify msa version
     int newMsaVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(oldMsaVersion, newMsaVersion, "msa version");
+    CHECK_EQUAL(oldMsaVersion + 1, newMsaVersion, "msa version");
 
     // Verify seq version
     int newSeqVersion = sqliteDbi->getObjectDbi()->getObjectVersion(oldSeq.id, os);
@@ -1775,7 +1775,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowName_redo) {
     // Verify msa version
     int redoMsaVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(oldMsaVersion, redoMsaVersion, "msa version after redo");
+    CHECK_EQUAL(oldMsaVersion + 1, redoMsaVersion, "msa version after redo");
 
     // Verify seq version
     int redoSeqVersion = sqliteDbi->getObjectDbi()->getObjectVersion(oldSeq.id, os);
