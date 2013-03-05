@@ -117,7 +117,10 @@ DNASequence U2SequenceObject::getSequence(const U2Region &region) const {
         FETCH_SEQUENCE(seqGet, seq, entityRef);
         seqName = cachedName = seq.visualName;
     }
-    DNASequence res(seqName, getSequenceData(region), alpha);
+    U2OpStatus2Log os;
+    DNASequence res(seqName, getSequenceData(region, os), alpha);
+    CHECK_OP(os, DNASequence());
+
     if (cachedCircular == TriState_Unknown) {
         FETCH_SEQUENCE(seqGet, seq, entityRef);
         cachedCircular = seq.circular ? TriState_Yes : TriState_No;
