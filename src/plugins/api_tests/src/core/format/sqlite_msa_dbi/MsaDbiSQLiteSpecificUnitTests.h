@@ -45,6 +45,7 @@ public:
     static U2DataId createTestMsa(bool enableModTracking, U2OpStatus& os);
     static U2DataId createNotSoSmallTestMsa(bool enableModTracking, U2OpStatus& os);
     static U2DataId createTestSequence(bool enableModTracking, qint64 seqLength, U2OpStatus& os);
+    static U2MsaRow createRow(qint64 seqLength, U2OpStatus &os);
 
     static const QString TEST_MSA_NAME;
 
@@ -106,6 +107,7 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps);
  *   ^ lastRowPos_redo    - the row is added to the next position after the last row in the msa, modification tracking is enabled, check the "redo" operation.
  *   ^ child_noModTrack   - modification tracking is disabled, check disabled state of the child tracking.
  *   ^ child_Track        - modification tracking is enabled, check enabled state of the child tracking.
+ *   ^ several_Steps      - check several undo and redo calls.
  */
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_append_undo);
@@ -118,6 +120,7 @@ DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_undo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_redo);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_noModTrack);
 DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_Track);
+DECLARE_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_several_Steps);
 
 /**
  * Set new row order of the MSA.
@@ -197,6 +200,7 @@ DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_undo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_lastRowPos_redo);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_child_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_child_Track);
+DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, addRow_several_Steps);
 
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRow_noModTrack);
 DECLARE_METATYPE(MsaDbiSQLiteSpecificUnitTests, removeRow_undo);

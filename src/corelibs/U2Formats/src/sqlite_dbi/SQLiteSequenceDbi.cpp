@@ -21,12 +21,15 @@
 
 #include "SQLiteSequenceDbi.h"
 #include "SQLiteObjectDbi.h"
+#include "SQLitePackUtils.h"
 
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
 
 namespace U2 {
+
+using namespace SQLite;
 
 SQLiteSequenceDbi::SQLiteSequenceDbi(SQLiteDbi* dbi) : U2SequenceDbi(dbi), SQLiteChildDBICommon(dbi) {
 }
@@ -177,10 +180,56 @@ static QList<QByteArray> quantify(const QList<QByteArray>& input) {
 
 }
 void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, const QVariantMap &hints, U2OpStatus& os) {
+    SQLiteTransaction(db, os);
+
+    ModTrackAction updateAction(dbi, sequenceId);
+    U2TrackModType trackMod = updateAction.prepareTracking(os);
+    CHECK_OP(os, );
+
+    QByteArray modDetails;
+    if (TrackOnUpdate == trackMod) {
+        QByteArray oldSeq = dbi->getSequenceDbi()->getSequenceData(sequenceId, regionToReplace, os);
+        CHECK_OP(os, );
+        modDetails = PackUtils::packSequenceDataDetails(regionToReplace, oldSeq, dataToInsert, hints);
+    }
+
+    updateSequenceDataCore(sequenceId, regionToReplace, dataToInsert, hints, os);
+
+    updateAction.saveTrack(sequenceId, U2ModType::sequenceUpdatedData, modDetails, os);
+    CHECK_OP(os, );
+
+    SQLiteObjectDbi::incrementVersion(sequenceId, db, os);
+}
+
+void SQLiteSequenceDbi::undo(const U2DataId& seqId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
+    if (U2ModType::sequenceUpdatedData == modType) {
+        undoUpdateSequenceData(seqId, modDetails, os);
+    }
+    else {
+        os.setError(QString("Unexpected modification type '%1'!").arg(QString::number(modType)));
+        return;
+    }
+}
+
+void SQLiteSequenceDbi::redo(const U2DataId& seqId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os) {
+    if (U2ModType::sequenceUpdatedData == modType) {
+        redoUpdateSequenceData(seqId, modDetails, os);
+    }
+    else {
+        os.setError(QString("Unexpected modification type '%1'!").arg(QString::number(modType)));
+        return;
+    }
+}
+
+/************************************************************************/
+/* Core methods */
+/************************************************************************/
+void SQLiteSequenceDbi::updateSequenceDataCore(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, const QVariantMap &hints, U2OpStatus& os) {
     bool updateLenght = hints.value(U2SequenceDbiHints::UPDATE_SEQUENCE_LENGTH, true).toBool();
     bool emptySequence = hints.value(U2SequenceDbiHints::EMPTY_SEQUENCE, false).toBool();
     SQLiteTransaction t(db, os);
-    //algorithm: 
+
+    //algorithm:
         // find all regions affected -> remove them
         // construct new regions from cuts from old regions and new dataToInsert
         // remove affected annotations or adjust their locations if possible
@@ -294,8 +343,43 @@ void SQLiteSequenceDbi::updateSequenceData(const U2DataId& sequenceId, const U2R
             return;
         }
     }
-
-    SQLiteObjectDbi::incrementVersion(sequenceId, db, os);
 }
 
+/************************************************************************/
+/* Undo/redo methods */
+/************************************************************************/
+void SQLiteSequenceDbi::undoUpdateSequenceData(const U2DataId& sequenceId, const QByteArray& modDetails, U2OpStatus& os) {
+    U2Region replacedRegion;
+    U2Region replacedByRegion;
+    QByteArray oldData;
+    QByteArray newData;
+    QVariantMap hints;
+    bool ok = PackUtils::unpackSequenceDataDetails(modDetails, replacedRegion, oldData, newData, hints);
+    if (!ok) {
+        os.setError("An error occurred during reverting replaceing sequence data!");
+        return;
+    }
+    hints.remove(U2SequenceDbiHints::EMPTY_SEQUENCE);
+
+    replacedByRegion = U2Region(replacedRegion.startPos, newData.length());
+
+    updateSequenceDataCore(sequenceId, replacedByRegion, oldData, hints, os);
+}
+
+void SQLiteSequenceDbi::redoUpdateSequenceData(const U2DataId& sequenceId, const QByteArray& modDetails, U2OpStatus& os) {
+    U2Region replacedRegion;
+    U2Region replacedByRegion;
+    QByteArray oldData;
+    QByteArray newData;
+    QVariantMap hints;
+    bool ok = PackUtils::unpackSequenceDataDetails(modDetails, replacedRegion, oldData, newData, hints);
+    if (!ok) {
+        os.setError("An error occurred during replaceing sequence data!");
+        return;
+    }
+
+    replacedByRegion = U2Region(replacedRegion.startPos, newData.length());
+
+    updateSequenceDataCore(sequenceId, replacedRegion, newData, hints, os);
+}
 } //namespace

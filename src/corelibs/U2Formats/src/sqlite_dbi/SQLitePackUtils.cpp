@@ -341,7 +341,8 @@ QByteArray PackUtils::packRows(const QList<qint64> &posInMsa, const QList<U2MsaR
 bool PackUtils::unpackRows(const QByteArray &modDetails, QList<qint64> &posInMsa, QList<U2MsaRow> &rows) {
     QList<QByteArray> tokens = modDetails.split(SECOND_SEP);
     SAFE_POINT(tokens.count() > 0, QString("Invalid modDetails '%1'!").arg(QString(modDetails)), false);
-    SAFE_POINT(VERSION == tokens.takeFirst(), QString("Invalid modDetails version '%1'").arg(QString(tokens[0])), false);
+    QByteArray modDetailsVersion = tokens.takeFirst();
+    SAFE_POINT(VERSION == modDetailsVersion, QString("Invalid modDetails version '%1'").arg(QString(modDetailsVersion)), false);
     foreach (const QByteArray &token, tokens) {
         qint64 pos = 0;
         U2MsaRow row;
@@ -349,6 +350,68 @@ bool PackUtils::unpackRows(const QByteArray &modDetails, QList<qint64> &posInMsa
         CHECK(ok, false);
         posInMsa << pos;
         rows << row;
+    }
+    return true;
+}
+
+QByteArray PackUtils::packSequenceDataDetails(const U2Region &replacedRegion, const QByteArray &oldData,
+                                              const QByteArray &newData, const QVariantMap &hints) {
+    // replacedRegion length is used only for check, it is not storaged.
+    SAFE_POINT(replacedRegion.length >= oldData.length(), "oldData length does not match to the region length.", QByteArray());
+    QByteArray result = VERSION;
+    result += SEP;
+    result += QByteArray::number(replacedRegion.startPos);
+    result += SEP;
+    result += oldData;
+    result += SEP;
+    result += newData;
+    result += SEP;
+    result += packSequenceDataHints(hints);
+    return result;
+}
+
+bool PackUtils::unpackSequenceDataDetails(const QByteArray &modDetails, U2Region &replacedRegion, QByteArray &oldData,
+                                          QByteArray &newData, QVariantMap &hints) {
+    QList<QByteArray> tokens = modDetails.split(SEP);
+    SAFE_POINT(tokens.count() == 5, QString("Invalid modDetails '%1'!").arg(QString(modDetails)), false);
+    SAFE_POINT(VERSION == tokens[0], QString("Invalid modDetails version '%1'").arg(QString(tokens[0])), false);
+
+    SAFE_POINT(!QString(tokens[1]).isEmpty(), "Invalid modDetails!", false);
+
+    bool ok = false;
+    replacedRegion = U2Region(tokens[1].toLongLong(&ok), tokens[2].length());
+    CHECK(ok, false);
+
+    oldData = tokens[2];
+    newData = tokens[3];
+    ok = unpackSequenceDataHints(tokens[4], hints);
+    CHECK(ok, false);
+    return true;
+}
+
+QByteArray PackUtils::packSequenceDataHints(const QVariantMap &hints) {
+    QByteArray result;
+    foreach (QString key, hints.keys()) {
+        if (false == result.isEmpty()) {
+            result += ";";
+        }
+        result += key + "," + hints[key].toByteArray();
+    }
+    return "\"" + result + "\"";
+}
+
+bool PackUtils::unpackSequenceDataHints(const QByteArray &str, QVariantMap &hints) {
+    CHECK(str.startsWith('\"') && str.endsWith('\"'), false);
+    QByteArray hintsStr = str.mid(1, str.length() - 2);
+    if (hintsStr.isEmpty()) {
+        return true;
+    }
+
+    QList<QByteArray> tokens = hintsStr.split(';');
+    foreach (const QByteArray &t, tokens) {
+        QList<QByteArray> hintTokens = t.split(',');
+        CHECK(2 == hintTokens.size(), false);
+        hints.insert(QString(hintTokens[0]), QVariant(hintTokens[1]));
     }
     return true;
 }

@@ -133,6 +133,8 @@ public:
 
     SQLiteMsaDbi* getSQLiteMsaDbi() const;
 
+    SQLiteSequenceDbi* getSQLiteSequenceDbi() const;
+
     SQLiteModDbi* getSQLiteModDbi() const;
 
     /** Returns properties used to initialized the database */

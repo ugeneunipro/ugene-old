@@ -20,6 +20,7 @@
  */
 
 #include "SQLiteMsaDbi.h"
+#include "SQLiteModDbi.h"
 #include "SQLiteObjectDbi.h"
 #include "SQLitePackUtils.h"
 
@@ -274,28 +275,31 @@ void SQLiteMsaDbi::updateRowName(const U2DataId& msaId, qint64 rowId, const QStr
 }
 
 void SQLiteMsaDbi::updateRowContent(const U2DataId& msaId, qint64 rowId, const QByteArray& seqBytes, const QList<U2MsaGap>& gaps, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
+    SQLiteTransaction(db, os);
     ModTrackAction updateAction(dbi, msaId);
     U2TrackModType trackMod = updateAction.prepareTracking(os);
     CHECK_OP(os, );
 
-    QByteArray modDetails;
+    U2UseCommonMultiModStep* multiModStep = NULL;
+//    QByteArray modDetails;
     if (TrackOnUpdate == trackMod) {
-        U2MsaRow row = getRow(msaId, rowId, os);
+        multiModStep = new U2UseCommonMultiModStep(dbi, msaId, os);
+    /*    U2MsaRow row = getRow(msaId, rowId, os);
         CHECK_OP(os, );
         QByteArray oldSeq = dbi->getSequenceDbi()->getSequenceData(row.sequenceId, U2_REGION_MAX, os);
         CHECK_OP(os, );
-        modDetails = PackUtils::packRowContentDetails(rowId, oldSeq, row.gaps, seqBytes, gaps);
+        modDetails = PackUtils::packRowContentDetails(rowId, oldSeq, row.gaps, seqBytes, gaps);*/
     }
 
     updateRowContentCore(msaId, rowId, seqBytes, gaps, os);
     CHECK_OP(os, );
+    delete multiModStep;
 
-    updateAction.saveTrack(msaId, U2ModType::msaUpdatedRowContent, modDetails, os);
-    CHECK_OP(os, );
+//    updateAction.saveTrack(msaId, U2ModType::msaUpdatedRowContent, modDetails, os);
+//    CHECK_OP(os, );
 
     // Increment the alignment version
-    SQLiteObjectDbi::incrementVersion(msaId, db, os);
+//    SQLiteObjectDbi::incrementVersion(msaId, db, os);
 }
 
 QList<qint64> SQLiteMsaDbi::getRowsOrder(const U2DataId& msaId, U2OpStatus& os) {
@@ -847,7 +851,7 @@ void SQLiteMsaDbi::updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, co
 }
 
 void SQLiteMsaDbi::updateRowContentCore(const U2DataId &msaId, qint64 rowId, const QByteArray &seqBytes, const QList<U2MsaGap> &gaps, U2OpStatus &os) {
-    SQLiteTransaction t(db, os);
+    SQLiteTransaction(db, os);
     // Get the row object
     U2MsaRow row = getRow(msaId, rowId, os);
     CHECK_OP(os, );
@@ -857,7 +861,7 @@ void SQLiteMsaDbi::updateRowContentCore(const U2DataId &msaId, qint64 rowId, con
     dbi->getSequenceDbi()->updateSequenceData(row.sequenceId, U2_REGION_MAX, seqBytes, hints, os);
     CHECK_OP(os, );
 
-    // Update the row
+    // Update the row object
     qint64 seqLength = seqBytes.length();
     row.gstart = 0;
     row.gend = seqLength;
@@ -866,7 +870,8 @@ void SQLiteMsaDbi::updateRowContentCore(const U2DataId &msaId, qint64 rowId, con
     updateRecordFromMsaRow(msaId, row, os);
     CHECK_OP(os, );
 
-    updateGapModelCore(msaId, rowId, gaps, os);
+    // Update row gap model
+    updateGapModel(msaId, rowId, gaps, os);
 }
 
 void SQLiteMsaDbi::addRowSubcore(const U2DataId &msaId, qint64 numOfRows, qint64 maxRowLength, const QList<qint64> &rowsOrder, U2OpStatus &os) {

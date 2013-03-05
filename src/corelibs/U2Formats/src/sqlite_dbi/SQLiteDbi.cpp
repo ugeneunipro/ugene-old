@@ -118,6 +118,10 @@ SQLiteMsaDbi* SQLiteDbi::getSQLiteMsaDbi() const {
     return msaDbi;
 }
 
+SQLiteSequenceDbi* SQLiteDbi::getSQLiteSequenceDbi() const {
+    return sequenceDbi;
+}
+
 SQLiteModDbi* SQLiteDbi::getSQLiteModDbi() const {
     return modDbi;
 }

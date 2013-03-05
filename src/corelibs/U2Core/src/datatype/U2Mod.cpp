@@ -28,6 +28,8 @@ namespace U2 {
 
 const qint64 U2ModType::objUpdatedName        = 1;
 
+const qint64 U2ModType::sequenceUpdatedData   = 1001;
+
 const qint64 U2ModType::msaUpdatedAlphabet    = 3001;
 const qint64 U2ModType::msaAddedRows          = 3002;
 const qint64 U2ModType::msaAddedRow           = 3003;

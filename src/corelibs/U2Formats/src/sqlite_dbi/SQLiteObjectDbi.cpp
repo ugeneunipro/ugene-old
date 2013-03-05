@@ -21,6 +21,7 @@
 
 #include "SQLiteMsaDbi.h"
 #include "SQLiteObjectDbi.h"
+#include "SQLiteSequenceDbi.h"
 #include "SQLitePackUtils.h"
 
 #include <U2Core/U2SqlHelpers.h>
@@ -453,6 +454,9 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
         if (U2ModType::isMsaModType(modStep.modType)) {
             dbi->getSQLiteMsaDbi()->undo(objId, modStep.modType, modStep.details, os);
         }
+    	else if (U2ModType::isSequenceModType(modStep.modType)) {
+        	dbi->getSQLiteSequenceDbi()->undo(objId, modStep.modType, modStep.details, os);
+    	}
         else if (U2ModType::isObjectModType(modStep.modType)) {
             if (U2ModType::objUpdatedName == modStep.modType) {
                 undoUpdateObjectName(objId, modStep.details, os);
@@ -504,6 +508,9 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
     // Call an appropriate "redo" depending on the object type
     if (U2ModType::isMsaModType(modStep.modType)) {
         dbi->getSQLiteMsaDbi()->redo(objId, modStep.modType, modStep.details, os);
+    }
+    else if (U2ModType::isSequenceModType(modStep.modType)) {
+        dbi->getSQLiteSequenceDbi()->redo(objId, modStep.modType, modStep.details, os);
     }
     else if (U2ModType::isObjectModType(modStep.modType)) {
         if (U2ModType::objUpdatedName == modStep.modType) {

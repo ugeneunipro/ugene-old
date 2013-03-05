@@ -28,6 +28,7 @@
 
 #include <U2Formats/SQLiteDbi.h>
 #include <U2Formats/SQLiteObjectDbi.h>
+#include <U2Formats/SQLiteModDbi.h>
 
 
 namespace U2 {
@@ -104,6 +105,23 @@ U2MsaRow MsaSQLiteSpecificTestData::addRow(const U2DataId &msaId, const QByteArr
 
     sqliteDbi->getMsaDbi()->addRow(msaId, -1, row, os);
     CHECK_OP(os, U2MsaRow());
+    return row;
+}
+
+U2MsaRow MsaSQLiteSpecificTestData::createRow(qint64 seqLength, U2OpStatus &os) {
+    U2DataId seqId = MsaSQLiteSpecificTestData::createTestSequence(false, seqLength, os);
+    CHECK_OP(os, U2MsaRow());
+
+    QList<U2MsaGap> gaps;
+    qint64 gapLength = 2;
+    gaps << U2MsaGap(1, gapLength);
+
+    U2MsaRow row;
+    row.sequenceId = seqId;
+    row.gstart = 1;
+    row.gend = 20;
+    row.gaps = gaps;
+    row.length = row.gend - row.gstart + gapLength;
     return row;
 }
 
@@ -845,13 +863,13 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo) {
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(oldVersion + 1, newVersion, "version");
 
-    // Verify the modification step
-    QString expectedModDetails = "0\t" + QByteArray::number(newRow.rowId) + "\tTAAGCTACTA\t\"5,2\"\tGGGGGTTTTTCCCCCAAAAA\t\"0,1;2,1\"";
+    // Verify the single modification step
+    QString expectedModDetails = "0\t" + QByteArray::number(newRow.rowId) + "\t\"5,2\"\t\"0,1;2,1\"";
     U2SingleModStep modStep = sqliteDbi->getModDbi()->getModStep(msaId, oldVersion, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(msaId, modStep.objectId, "object id");
     CHECK_EQUAL(oldVersion, modStep.version, "version in mod step");
-    CHECK_EQUAL(U2ModType::msaUpdatedRowContent, modStep.modType, "mod step type");
+    CHECK_EQUAL(U2ModType::msaUpdatedGapModel, modStep.modType, "mod step type");
     CHECK_EQUAL(expectedModDetails, QString(modStep.details), "mod step details");
 
     // Undo
@@ -866,7 +884,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_undo) {
     // Verify seq
     QByteArray undoSeq = sqliteDbi->getSequenceDbi()->getSequenceData(undoRow.sequenceId, U2_REGION_MAX, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(oldSeq, undoSeq, "sequence");
+    CHECK_EQUAL(QString(oldSeq), QString(undoSeq), "sequence");
 
     // Verify msa length
     U2Msa undoMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
@@ -929,12 +947,12 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_redo) {
     CHECK_EQUAL(oldVersion + 1, redoVersion, "version after undo");
 
     // Verify the modification step
-    QString expectedModDetails = "0\t" + QByteArray::number(redoRow.rowId) + "\tTAAGACTTCTA\t\"1,1;7,1\"\t\t\"\"";
+    QString expectedModDetails = "0\t" + QByteArray::number(redoRow.rowId) + "\t\"1,1;7,1\"\t\"\"";
     U2SingleModStep modStep = sqliteDbi->getModDbi()->getModStep(msaId, oldVersion, os);
     CHECK_NO_ERROR(os);
     CHECK_EQUAL(msaId, modStep.objectId, "object id");
     CHECK_EQUAL(oldVersion, modStep.version, "version in mod step");
-    CHECK_EQUAL(U2ModType::msaUpdatedRowContent, modStep.modType, "mod step type");
+    CHECK_EQUAL(U2ModType::msaUpdatedGapModel, modStep.modType, "mod step type");
     CHECK_EQUAL(expectedModDetails, QString(modStep.details), "mod step details");
 }
 
@@ -1014,7 +1032,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, updateRowContent_severalSteps) {
     // Verify seq
     QByteArray finalSeq = sqliteDbi->getSequenceDbi()->getSequenceData(finalRow.sequenceId, U2_REGION_MAX, os);
     CHECK_NO_ERROR(os);
-    CHECK_EQUAL(rowContents[expectedIndex].first, finalSeq, "sequence");
+    CHECK_EQUAL(QString(rowContents[expectedIndex].first), QString(finalSeq), "sequence");
 
     // Verify msa length
     U2Msa finalMsa = sqliteDbi->getMsaDbi()->getMsaObject(msaId, os);
@@ -2636,6 +2654,93 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_child_Track) {
     CHECK_EQUAL(expectedChildModTrackType, finalChildModTrackType, "sequence track mod type");
 }
 
+IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRow_several_Steps) {
+    //6 changes, 5 undo steps, 1 redo steps, 2 undo step, 5 redo steps
+    U2OpStatusImpl os;
+    SQLiteDbi *sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
+    U2DataId msaId = MsaSQLiteSpecificTestData::createTestMsa(true, os);
+    CHECK_NO_ERROR(os);
+
+    // Prepare some base values
+    QList<U2MsaRow> baseRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    int baseMsaVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+
+    // Prepare value list
+    QList<qint64> posInMsa;
+    QList<QByteArray> newSequences;
+    QList<QList<U2MsaRow> > rows;
+    rows << baseRows;
+
+    for (int i = 0; i < 6; ++i) {
+        posInMsa << i + 2;
+        rows << rows[i];
+        rows[i + 1].insert(posInMsa[i], MsaSQLiteSpecificTestData::createRow((i + 1) * 10, os));
+        CHECK_NO_ERROR(os);
+        newSequences << sqliteDbi->getSequenceDbi()->getSequenceData(rows[i + 1][posInMsa[i]].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Steps count
+    int valuesCount = rows.count();     // changes = valuesCount - 1;
+    QList<int> steps;                   // negative - undo steps, positive - redo steps;
+    steps << -5 << 1 << -2 << 5;
+    int expectedIndex = valuesCount - 1;
+    for (int i = 0; i < steps.length(); ++i) {
+        expectedIndex += steps[i];
+    }
+
+    // Call test function
+    for (int i = 1; i < valuesCount; ++i) {
+        sqliteDbi->getMsaDbi()->addRow(msaId, posInMsa[i - 1], rows[i][posInMsa[i - 1]], os);
+        CHECK_NO_ERROR(os);
+    }
+
+    // Undo and redo row order updating
+    int totalUndo = 0;
+    int totalRedo = 0;
+    for (int i  = 0; i < steps.length(); ++i) {
+        if (steps[i] < 0) {
+            for (int j = 0; j < -steps[i]; ++j) {
+                sqliteDbi->getSQLiteObjectDbi()->undo(msaId, os);
+                CHECK_NO_ERROR(os);
+                totalUndo++;
+            }
+        } else {
+            for (int j = 0; j < steps[i]; ++j) {
+                sqliteDbi->getSQLiteObjectDbi()->redo(msaId, os);
+                CHECK_NO_ERROR(os);
+                totalRedo++;
+            }
+        }
+    }
+
+    // Verify version
+    int finalVersion = sqliteDbi->getObjectDbi()->getObjectVersion(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(baseMsaVersion + expectedIndex, finalVersion, "version");
+
+    // Verify rows
+    QList<U2MsaRow> finalRows = sqliteDbi->getMsaDbi()->getRows(msaId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_EQUAL(rows[expectedIndex].count(), finalRows.count(), "rows count");
+    for (int i = 0; i < finalRows.count(); ++i) {
+        CHECK_EQUAL(rows[expectedIndex][i].gstart, finalRows[i].gstart, QString("%1 row gstart").arg(i));
+        CHECK_EQUAL(rows[expectedIndex][i].gend, finalRows[i].gend, QString("%1 row gend").arg(i));
+        CHECK_EQUAL(rows[expectedIndex][i].length, finalRows[i].length, QString("%1 row length").arg(i));
+        CHECK_EQUAL(rows[expectedIndex][i].sequenceId, finalRows[i].sequenceId, QString("%1 row sequenceId").arg(i));
+        CHECK_TRUE(rows[expectedIndex][i].gaps == finalRows[i].gaps, QString("%1 row gaps").arg(i));
+    }
+
+    // Verify added sequences data
+    for (int i = 0; i < expectedIndex; ++i) {
+        QByteArray finalSequence = sqliteDbi->getSequenceDbi()->getSequenceData(finalRows[posInMsa[i]].sequenceId, U2_REGION_MAX, os);
+        CHECK_NO_ERROR(os);
+        CHECK_EQUAL(newSequences[i], finalSequence, QString("sequence data of %1 step").arg(i));
+    }
+}
+
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, removeRow_noModTrack) {
     U2OpStatusImpl os;
     SQLiteDbi *sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
@@ -2948,23 +3053,6 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, removeRows_redo) {
     CHECK_EQUAL(expectedModDetails, QString(modStep.details), "mod step details");
 }
 
-static U2MsaRow createRow(qint64 seqLength, U2OpStatus &os) {
-    U2DataId seqId = MsaSQLiteSpecificTestData::createTestSequence(false, seqLength, os);
-    CHECK_OP(os, U2MsaRow());
-
-    QList<U2MsaGap> gaps;
-    qint64 gapLength = 2;
-    gaps << U2MsaGap(1, gapLength);
-
-    U2MsaRow row;
-    row.sequenceId = seqId;
-    row.gstart = 1;
-    row.gend = 20;
-    row.gaps = gaps;
-    row.length = row.gend - row.gstart + gapLength;
-    return row;
-}
-
 IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRows_noModTrack) {
     U2OpStatusImpl os;
     SQLiteDbi *sqliteDbi = MsaSQLiteSpecificTestData::getSQLiteDbi();
@@ -2976,7 +3064,7 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRows_noModTrack) {
     CHECK_NO_ERROR(os);
 
     // Add rows
-    U2MsaRow row = createRow(100, os);
+    U2MsaRow row = MsaSQLiteSpecificTestData::createRow(100, os);
     CHECK_NO_ERROR(os);
     QList<U2MsaRow> rows; rows << row;
 
@@ -3031,9 +3119,9 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRows_undo) {
     CHECK_NO_ERROR(os);
 
     // Add rows
-    U2MsaRow row1 = createRow(100, os);
+    U2MsaRow row1 = MsaSQLiteSpecificTestData::createRow(100, os);
     CHECK_NO_ERROR(os);
-    U2MsaRow row2 = createRow(200, os);
+    U2MsaRow row2 = MsaSQLiteSpecificTestData::createRow(200, os);
     CHECK_NO_ERROR(os);
     QList<U2MsaRow> rows; rows << row1 << row2;
 
@@ -3122,9 +3210,9 @@ IMPLEMENT_TEST(MsaDbiSQLiteSpecificUnitTests, addRows_redo) {
     CHECK_NO_ERROR(os);
 
     // Add rows
-    U2MsaRow row1 = createRow(100, os);
+    U2MsaRow row1 = MsaSQLiteSpecificTestData::createRow(100, os);
     CHECK_NO_ERROR(os);
-    U2MsaRow row2 = createRow(200, os);
+    U2MsaRow row2 = MsaSQLiteSpecificTestData::createRow(200, os);
     CHECK_NO_ERROR(os);
     QList<U2MsaRow> rows; rows << row1 << row2;
 

@@ -16,9 +16,9 @@ MsaDbiSQLiteSpecificUnitTests
 + updateGapModel_redo
 + updateGapModel_severalSteps
 + updateRowContent_noModTrack
-+ updateRowContent_undo
-+ updateRowContent_redo
-+ updateRowContent_severalSteps
+- updateRowContent_undo
+- updateRowContent_redo
+- updateRowContent_severalSteps
 + addRow_append_noModTrack
 + addRow_append_undo
 + addRow_append_redo
@@ -30,6 +30,7 @@ MsaDbiSQLiteSpecificUnitTests
 + addRow_lastRowPos_redo
 + addRow_child_noModTrack
 + addRow_child_Track
++ addRow_several_Steps
 + setNewRowsOrder_noModTrack
 + setNewRowsOrder_undo
 + setNewRowsOrder_redo

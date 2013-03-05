@@ -75,6 +75,16 @@ public:
     static QByteArray packObjectNameDetails(const QString &oldName, const QString &newName);
     static bool unpackObjectNameDetails(const QByteArray &modDetails, QString &oldName, QString &newName);
 
+    /** Sequence data details */
+    static QByteArray packSequenceDataDetails(const U2Region &replacedRegion, const QByteArray &oldData,
+                                              const QByteArray &newData, const QVariantMap &hints);
+    static bool unpackSequenceDataDetails(const QByteArray &modDetails, U2Region &replacedRegion,
+                                          QByteArray &oldData, QByteArray &newData, QVariantMap& hints);
+
+    /** Sequence data hints */
+    static QByteArray packSequenceDataHints(const QVariantMap &hints);
+    static bool unpackSequenceDataHints(const QByteArray &str, QVariantMap &hints);
+
 private:
     static const char SEP;
     static const char SECOND_SEP;

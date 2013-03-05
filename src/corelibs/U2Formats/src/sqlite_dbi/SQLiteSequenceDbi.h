@@ -67,6 +67,24 @@ public:
 
     virtual void initSqlSchema(U2OpStatus& os);
 
+    /** Undo the operation for the sequence. */
+    void undo(const U2DataId& msaId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
+
+    /** Redo the operation for the sequence. */
+    void redo(const U2DataId& msaId, qint64 modType, const QByteArray& modDetails, U2OpStatus& os);
+
+private:
+    ///////////////////////////////////////////////////////////
+    // Core methods
+    void updateSequenceDataCore(const U2DataId& sequenceId, const U2Region& regionToReplace, const QByteArray& dataToInsert, const QVariantMap &hints, U2OpStatus& os);
+
+    ///////////////////////////////////////////////////////////
+    // Undo methods
+    void undoUpdateSequenceData(const U2DataId& sequenceId, const QByteArray& modDetails, U2OpStatus& os);
+
+    ///////////////////////////////////////////////////////////
+    // Redo methods
+    void redoUpdateSequenceData(const U2DataId& sequenceId, const QByteArray& modDetails, U2OpStatus& os);
 };
 
 

@@ -34,6 +34,9 @@ public:
     /** Object */
     static const qint64 objUpdatedName;
 
+    /** Sequence modification types*/
+    static const qint64 sequenceUpdatedData;
+
     /** MSA modification types */
     static const qint64 msaUpdatedAlphabet;
     static const qint64 msaAddedRows;
@@ -45,6 +48,7 @@ public:
     static const qint64 msaSetNewRowsOrder;
 
     static bool isObjectModType(qint64 modType) { return modType > 0 && modType < 999; }
+    static bool isSequenceModType(qint64 modType) { return modType >= 1000 && modType < 1100; }
     static bool isMsaModType(qint64 modType) { return modType >= 3000 && modType < 3100; }
 };
 
