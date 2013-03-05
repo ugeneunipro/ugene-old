@@ -34,24 +34,25 @@ class SmithWatermanAlgorithmSSE2 : public SmithWatermanAlgorithm {
 public:
     typedef qint16 ScoreType;
 
-    virtual void launch(const SMatrix& substitutionMatrix, QByteArray const & _patternSeq,
-        QByteArray const & _searchSeq, int _gapOpen, int _gapExtension, int _minScore,
-        SmithWatermanSettings::SWResultView resultView);
+    virtual void launch(const SMatrix& substitutionMatrix, QByteArray const & _patternSeq, QByteArray const & _searchSeq,
+        int _gapOpen, int _gapExtension, int _minScore, SmithWatermanSettings::SWResultView resultView);
     
     static quint64 estimateNeededRamAmount(const SMatrix& sm, QByteArray const & _patternSeq,
-        QByteArray const & _searchSeq, const qint32 gapOpen, const qint32 gapExtension,
-        const quint32 minScore, const quint32 maxScore,
-        const SmithWatermanSettings::SWResultView resultView);
+                                            QByteArray const & _searchSeq, const qint32 gapOpen,
+                                            const qint32 gapExtension, const quint32 minScore,
+                                            const quint32 maxScore, const SmithWatermanSettings::SWResultView resultView);
 
 private:
     static const int nElementsInVec = 8;
     void printVector(__m128i &toprint, int add);
-    void calculateMatrixForMultipleAlignmentResultWithShort();
-    void calculateMatrixForAnnotationsResultWithShort();
-    void calculateMatrixForMultipleAlignmentResultWithInt();
-    void calculateMatrixForAnnotationsResultWithInt();
-    int calculateMatrixSSE2(unsigned queryLength, unsigned char *dbSeq, unsigned dbLength,
-        unsigned short gapOpenOrig, unsigned short gapExtend);
+    void calculateMatrixForMultipleAlignmentResult();
+    void calculateMatrixForAnnotationsResult();
+    int calculateMatrixSSE2(unsigned queryLength, unsigned char *dbSeq, unsigned dbLength, unsigned short gapOpenOrig, unsigned short gapExtend);
+
+    ScoreType ** matrix;    
+
+    ScoreType maximumScore;
+    
 };
 
 
