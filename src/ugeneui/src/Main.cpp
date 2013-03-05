@@ -248,6 +248,18 @@ public:
     }
 };
 
+static QString findKey(const QStringList& envList, const QString& key) {
+    QString prefix = key + "=";
+    QString result;
+    foreach(const QString& var, envList) {
+        if (var.startsWith(prefix)) {
+            result = var.mid(prefix.length());
+            break;
+        }
+    }
+    return result;
+}
+
 int main(int argc, char **argv) 
 {
     if (CrashHandler::isEnabled()) {
@@ -294,32 +306,41 @@ int main(int argc, char **argv)
 
     UserAppsSettings* userAppSettings = AppContext::getAppSettings()->getUserAppsSettings();
     
-    // set translations
-    QTranslator translator;
-    QString transFile[] = {
-        userAppSettings->getTranslationFile(),
-        "transl_" + QLocale::system().name().left(2),
-        "transl_en"
-    };
+
     bool trOK = false;
-    for (int i = transFile[0].isEmpty() ? 1 : 0; i < 3; ++i) {
-        if (!translator.load(transFile[i], QCoreApplication::applicationDirPath())) {
-            fprintf(stderr, "Translation not found: %s\n", transFile[i].toAscii().constData());
-        } else {
-            trOK = true;
-            break;
+    QTranslator translator;
+
+    QStringList envList = QProcess::systemEnvironment();
+    QString envTranslation = findKey(envList, "UGENE_TRANSLATION");
+    if (!envTranslation.isEmpty()) {
+        trOK = translator.load(QString("transl_") + envTranslation, QCoreApplication::applicationDirPath());
+    }
+
+    if (!trOK) {
+        // set translations
+        QString transFile[] = {
+            userAppSettings->getTranslationFile(),
+            "transl_" + QLocale::system().name().left(2),
+            "transl_en"
+        };
+        for (int i = transFile[0].isEmpty() ? 1 : 0; i < 3; ++i) {
+            if (!translator.load(transFile[i], QCoreApplication::applicationDirPath())) {
+                fprintf(stderr, "Translation not found: %s\n", transFile[i].toAscii().constData());
+            } else {
+                trOK = true;
+                break;
+            }
+        }
+        if (!trOK) {
+            fprintf(stderr, "No translations found, exiting\n");
+            return 1;   
         }
     }
-    if (!trOK) {
-        fprintf(stderr, "No translations found, exiting\n");
-        return 1;   
-    }
-    
+
     app.installTranslator(&translator);
     updateStaticTranslations();
     
     // 3 create functional components of ugene
-    QStringList envList = QProcess::systemEnvironment();
     LogCacheExt logsCache;
     initLogsCache(logsCache, envList);
     LogCache::setAppGlobalInstance(&logsCache);
