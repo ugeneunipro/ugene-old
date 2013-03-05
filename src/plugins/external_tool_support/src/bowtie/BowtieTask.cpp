@@ -306,14 +306,10 @@ void BowtieAssembleTask::LogParser::parseErrOutput(const QString &partOfLog) {
         }
     }
 
-    qint64 lineCounter = 0;
     foreach (const QString &buf, log) {
         if (buf.contains("Out of memory")) {
-            if (lineCounter < log.size() - 1) {
-                setLastError(buf + " " + log[lineCounter+1]);
-            }
+            setLastError(tr("There is not enough memory on the computer!"));
         }
-        lineCounter++;
     }
 }
 

@@ -144,6 +144,7 @@ ExternalToolRunTaskHelper::ExternalToolRunTaskHelper(ExternalToolRunTask* t)
 }
 
 void ExternalToolRunTaskHelper::sl_onReadyToReadLog(){
+    QMutexLocker locker(&logMutex);
     assert(p->isRunning());
     if (p->externalToolProcess->readChannel() == QProcess::StandardError) {
         p->externalToolProcess->setReadChannel(QProcess::StandardOutput);
@@ -159,6 +160,7 @@ void ExternalToolRunTaskHelper::sl_onReadyToReadLog(){
 }
 
 void ExternalToolRunTaskHelper::sl_onReadyToReadErrLog(){
+    QMutexLocker locker(&logMutex);
     assert(p->isRunning());
     if (p->externalToolProcess->readChannel() == QProcess::StandardOutput) {
         p->externalToolProcess->setReadChannel(QProcess::StandardError);

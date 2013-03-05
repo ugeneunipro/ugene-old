@@ -70,6 +70,7 @@ public slots:
     void sl_onReadyToReadErrLog();
 
 private:
+    QMutex logMutex;
     ExternalToolRunTask*    p;
     QByteArray              logData;
 };
