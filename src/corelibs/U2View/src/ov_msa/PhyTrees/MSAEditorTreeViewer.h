@@ -27,17 +27,20 @@
 #include <U2View/MSAEditorTreeViewer.h>
 #include <QtGui/QGraphicsLineItem>
 #include <QtCore/QMap>
+#include <U2Algorithm/CreatePhyTreeSettings.h>
 
 namespace U2 {
 
 typedef QMap<QString, QColor> GroupColorSchema;
 
-class TreeSynchronizationSettings {
-public:
-    TreeSynchronizationSettings() : syncScale(false), syncSequencesOrder(true), syncCollapsing(true) {}
-    bool syncScale;
-    bool syncSequencesOrder;
-    bool syncCollapsing;
+class MSAEditorTreeViewerUI;
+
+struct PhyTreeBuildSettings {
+    PhyTreeBuildSettings() : alignmentName("(None)") {}
+    PhyTreeBuildSettings(const QString& _alignmentName, const CreatePhyTreeSettings& _algoSettings) 
+        : alignmentName(_alignmentName), algoSettings(_algoSettings) {}
+    QString alignmentName;
+    CreatePhyTreeSettings algoSettings;
 };
 
 class GroupColors {
@@ -56,14 +59,16 @@ public:
     const CreatePhyTreeSettings* getSettings();
     virtual OptionsPanel* getOptionsPanel(){return 0;}
 
-    void setSyncSettings(const TreeSynchronizationSettings& settings){syncSettings = settings;}
-    const TreeSynchronizationSettings&  getSyncSettings(){return syncSettings;}
+    void setTreeBuildSettings(const PhyTreeBuildSettings& _buildSettings) {buildSettings = _buildSettings;}
+    const PhyTreeBuildSettings& getTreeBuildSettings() const;
+
+    void setTreeVerticalSize(int size);
 protected:
     virtual QWidget* createWidget();
 private:
     const CreatePhyTreeSettings* settings;
-    TreeSynchronizationSettings syncSettings;
-    QAction*           sortSeqAction;
+    QAction*             sortSeqAction;
+    PhyTreeBuildSettings buildSettings;
 };
 
 class MSAEditorTreeViewerUI: public TreeViewerUI {
@@ -78,6 +83,7 @@ public:
     QVector<U2Region>* getCollapsingRegions();
 
     U2Region getTreeSize(); 
+    void setTreeVerticalSize(int size);
 
     virtual void setTreeLayout(TreeLayout newLayout);
 protected:

@@ -23,7 +23,6 @@
 
 namespace U2 {
 
-
 GObject* PhyTreeObject::clone(const U2DbiRef&, U2OpStatus&) const {
     PhyTreeObject* cln = new PhyTreeObject(tree, getGObjectName(), getGHintsMap());
     cln->setIndexInfo(getIndexInfo());

@@ -263,9 +263,13 @@ void TreeOptionsWidget::sl_onLabelsSettingsChanged() {
 }
 
 void TreeOptionsWidget::sl_onLayoutChanged(int index) {
+    heightSlider->setEnabled(false);
+    lblHeightSlider->setEnabled(false);
     switch(index) {
         case 0:
             getTreeViewer()->setTreeLayout(TreeViewerUI::TreeLayout_Rectangular);
+            heightSlider->setEnabled(true);
+            lblHeightSlider->setEnabled(true);
             break;
         case 1:
             getTreeViewer()->setTreeLayout(TreeViewerUI::TreeLayout_Circular);

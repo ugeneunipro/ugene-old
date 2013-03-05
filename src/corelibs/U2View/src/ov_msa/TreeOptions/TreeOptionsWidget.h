@@ -95,7 +95,6 @@ private:
     TreeLabelsSettings labelsSettings;
     TextSettings textSettings;
     BranchSettings branchSettings;
-    TreeSynchronizationSettings syncSettings;
 
     ShowHideSubgroupWidget* generalOpGroup;
     ShowHideSubgroupWidget* labelsOpGroup;

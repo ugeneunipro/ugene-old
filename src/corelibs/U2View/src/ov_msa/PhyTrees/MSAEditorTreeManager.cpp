@@ -153,8 +153,9 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
     CreateMSAEditorTreeViewerTask* task = qobject_cast<CreateMSAEditorTreeViewerTask*> (t);
     if(NULL != task) {
         if(settings.displayWithAlignmentEditor) {
-            TreeViewer* treeView = task->getTreeViewer();
-            GObjectViewWindow* w = new GObjectViewWindow(treeView, editor->getName(), !task->getStateData().isEmpty());
+            MSAEditorTreeViewer* treeView = dynamic_cast<MSAEditorTreeViewer*>(task->getTreeViewer());
+            SAFE_POINT(NULL != treeView, tr("Can not convert TreeViewer* to MSAEditorTreeViewer* in function MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t)"),);
+            GObjectViewWindow* w = new GObjectViewWindow(task->getTreeViewer(), editor->getName(), !task->getStateData().isEmpty());
 
             connect(w, SIGNAL(si_windowClosed(GObjectViewWindow*)), this, SLOT(sl_onWindowClosed(GObjectViewWindow*)));
 
@@ -162,12 +163,13 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
             MSAEditorUI* ui = editor->getUI();
             ui->addTreeView(w);
 
+            treeView->setTreeVerticalSize(ui->getSequenceArea()->getHeight());
+
             connect(ui->getSequenceArea(), SIGNAL(si_selectionChanged(const QStringList&)), treeView->ui, SLOT(sl_selectionChanged(const QStringList&)));
             connect(ui->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)), treeView->ui, SLOT(sl_sequenceNameChanged(QString, QString)));
             connect(treeView->ui, SIGNAL(si_seqCollapsed(QVector<U2Region>*)), ui->getSequenceArea(), SLOT(sl_setCollapsingRegions(QVector<U2Region>*)));
             connect(treeView->ui, SIGNAL(si_seqOrderChanged(QStringList*)), editor, SLOT(sl_onSeqOrderChanged(QStringList*)));
             connect(treeView->ui, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), ui->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
-            //treeView->ui->setTreeHeight(ui->getSequenceArea()->getHeight());
             connect(editor, SIGNAL(si_sizeChanged(int)), treeView->ui, SLOT(sl_onHeightChanged(int)));
 
             connect(treeView->ui, SIGNAL(si_treeZoomedIn()),   editor, SLOT(sl_zoomIn()));

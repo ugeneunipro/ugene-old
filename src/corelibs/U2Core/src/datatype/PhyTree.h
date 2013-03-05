@@ -34,7 +34,6 @@ namespace U2 {
 class PhyNode;
 class PhyBranch;
 
-
 class U2CORE_EXPORT PhyTreeData : public QSharedData {
 public:
     PhyTreeData();

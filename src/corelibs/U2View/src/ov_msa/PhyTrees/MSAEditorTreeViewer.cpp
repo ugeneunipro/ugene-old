@@ -59,11 +59,21 @@ QWidget* MSAEditorTreeViewer::createWidget() {
     return view;
 }
 
+void MSAEditorTreeViewer::setTreeVerticalSize(int size) {
+    MSAEditorTreeViewerUI* msaUI = dynamic_cast<MSAEditorTreeViewerUI*>(ui);
+    if(msaUI) {
+        msaUI->setTreeVerticalSize(size);
+    }
+} 
 MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer) 
     : TreeViewerUI(treeViewer), subgroupSelectorPos(0.0){
     connect(scene(), SIGNAL(selectionChanged()), this, SLOT(sl_onSelectionChanged()));
 
     subgroupSelector = scene()->addLine(0.0, 0.0, 0.0, scene()->height(), QPen(Qt::blue));
+}
+
+void MSAEditorTreeViewerUI::setTreeVerticalSize(int size) {
+    sl_onHeightChanged(size);
 }
 
 GroupColors::GroupColors() {
@@ -324,10 +334,8 @@ QVector<U2Region>* MSAEditorTreeViewerUI::getCollapsingRegions() {
 }
 
 void MSAEditorTreeViewerUI::sl_onHeightChanged(int height) {
-    //zooming((float)(height - 5) / getTreeSize().length);
-    //newzoom = zoom * newzoom;
     qreal zoomCoef = (qreal)(height - 5) / getTreeSize().length;
-    zooming(1.0, zoomCoef);
+    zooming(zoomCoef, zoomCoef);
     updateSceneRect(sceneRect());
 }
 
