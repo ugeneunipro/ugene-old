@@ -48,8 +48,8 @@ static inline bool isDirect(StrandOption strand) {
 }
 
 struct GapModel {
-    float scoreGapOpen;
-    float scoreGapExtd;
+    int scoreGapOpen;
+    int scoreGapExtd;
 };
 
 struct SmithWatermanSettings {

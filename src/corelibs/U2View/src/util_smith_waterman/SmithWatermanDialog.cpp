@@ -347,8 +347,8 @@ void SmithWatermanDialog::setParameters()
         radioDirect->setChecked(true);
 
     spinScorePercent->setValue(DEF_PERCENT_OF_SCORE);
-    dblSpinGapOpen->setValue(DEF_GAP_OPEN_SCORE);
-    dblSpinGapExtd->setValue(DEF_GAP_EXTD_SCORE);
+    spinGapOpen->setValue(DEF_GAP_OPEN_SCORE);
+    spinGapExtd->setValue(DEF_GAP_EXTD_SCORE);
 
     resultViewVariants->addItem(tr(SmithWatermanSettings::getResultViewNames()[SmithWatermanSettings::MULTIPLE_ALIGNMENT]));
     resultViewVariants->addItem(tr(SmithWatermanSettings::getResultViewNames()[SmithWatermanSettings::ANNOTATIONS]));
@@ -581,10 +581,10 @@ bool SmithWatermanDialog::readRegion()
 
 bool SmithWatermanDialog::readGapModel()
 {
-    float scoreGapOpen = dblSpinGapOpen->value();
+    float scoreGapOpen = spinGapOpen->value();
     config.gapModel.scoreGapOpen = scoreGapOpen;
     
-    float scoreGapExtd = dblSpinGapExtd->value();
+    float scoreGapExtd = spinGapExtd->value();
     config.gapModel.scoreGapExtd = scoreGapExtd;
 
     return true;
@@ -737,10 +737,10 @@ void SmithWatermanDialog::loadDialogConfig()
     }
 
     const float scoreGapOpen = dialogConfig->gm.scoreGapOpen;
-    dblSpinGapOpen->setValue(scoreGapOpen);
+    spinGapOpen->setValue(scoreGapOpen);
 
     const float scoreGapExtd = dialogConfig->gm.scoreGapExtd;
-    dblSpinGapExtd->setValue(scoreGapExtd);
+    spinGapExtd->setValue(scoreGapExtd);
 
     const QString& prevResultFilter = dialogConfig->resultFilter;
     if (swResultFilterRegistry->isRegistered(prevResultFilter)) {
@@ -786,8 +786,8 @@ void SmithWatermanDialog::saveDialogConfig()
     dialogConfig->algVersion = comboRealization->currentText();
     dialogConfig->scoringMatrix = comboMatrix->currentText();
 
-    dialogConfig->gm.scoreGapOpen = (float)dblSpinGapOpen->value();
-    dialogConfig->gm.scoreGapExtd = (float)dblSpinGapExtd->value();
+    dialogConfig->gm.scoreGapOpen = (float)spinGapOpen->value();
+    dialogConfig->gm.scoreGapExtd = (float)spinGapExtd->value();
     
     dialogConfig->resultFilter = comboResultFilter->currentText();
     dialogConfig->minScoreInPercent = spinScorePercent->value();

@@ -30,8 +30,8 @@ class ADVSequenceObjectContext;
 class CreateAnnotationWidgetController;
 
 #define DEF_PERCENT_OF_SCORE    90
-#define DEF_GAP_OPEN_SCORE      (-10.0f)
-#define DEF_GAP_EXTD_SCORE      (-1.0f)
+#define DEF_GAP_OPEN_SCORE      (-10)
+#define DEF_GAP_EXTD_SCORE      (-1)
 
 enum SmithWatermanRangeType {
     SmithWatermanRangeType_noRange,

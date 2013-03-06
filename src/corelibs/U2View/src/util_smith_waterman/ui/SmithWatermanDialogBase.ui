@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>765</width>
-    <height>418</height>
+    <height>424</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,7 +35,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="SW_params_tab">
       <attribute name="title">
@@ -367,22 +367,25 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="dblSpinGapOpen">
+              <widget class="QSpinBox" name="spinGapOpen">
                <property name="minimum">
-                <double>-4096.000000000000000</double>
+                <number>-4096</number>
                </property>
                <property name="maximum">
-                <double>-0.010000000000000</double>
+                <number>-1</number>
+               </property>
+               <property name="value">
+                <number>-1</number>
                </property>
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="dblSpinGapExtd">
+              <widget class="QSpinBox" name="spinGapExtd">
                <property name="minimum">
-                <double>-4096.000000000000000</double>
+                <number>-4096</number>
                </property>
                <property name="maximum">
-                <double>-0.010000000000000</double>
+                <number>-1</number>
                </property>
               </widget>
              </item>
@@ -807,8 +810,8 @@
   <tabstop>bttnAdvanced</tabstop>
   <tabstop>comboMatrix</tabstop>
   <tabstop>bttnViewMatrix</tabstop>
-  <tabstop>dblSpinGapOpen</tabstop>
-  <tabstop>dblSpinGapExtd</tabstop>
+  <tabstop>spinGapOpen</tabstop>
+  <tabstop>spinGapExtd</tabstop>
   <tabstop>comboResultFilter</tabstop>
   <tabstop>spinScorePercent</tabstop>
   <tabstop>resultViewVariants</tabstop>
