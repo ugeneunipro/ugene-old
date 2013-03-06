@@ -21,7 +21,6 @@
 
 #include "SQLiteMsaDbi.h"
 #include "SQLiteObjectDbi.h"
-#include "SQLiteSequenceDbi.h"
 #include "SQLitePackUtils.h"
 
 #include <U2Core/U2SqlHelpers.h>
@@ -29,6 +28,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/SQLiteModDbi.h>
+#include <U2Formats/SQLiteSequenceDbi.h>
 
 
 namespace U2 {
@@ -449,14 +449,15 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
         return;
     }
 
+    QSet<U2DataId> objectIds;
     foreach (U2SingleModStep modStep, modSteps) {
         // Call an appropriate "undo" depending on the object type
         if (U2ModType::isMsaModType(modStep.modType)) {
             dbi->getSQLiteMsaDbi()->undo(objId, modStep.modType, modStep.details, os);
         }
-    	else if (U2ModType::isSequenceModType(modStep.modType)) {
-        	dbi->getSQLiteSequenceDbi()->undo(objId, modStep.modType, modStep.details, os);
-    	}
+        else if (U2ModType::isSequenceModType(modStep.modType)) {
+            dbi->getSQLiteSequenceDbi()->undo(objId, modStep.modType, modStep.details, os);
+        }
         else if (U2ModType::isObjectModType(modStep.modType)) {
             if (U2ModType::objUpdatedName == modStep.modType) {
                 undoUpdateObjectName(objId, modStep.details, os);
@@ -468,7 +469,13 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
             }
         }
 
-        decrementVersion(modStep.objectId, os);
+        if (!objectIds.contains(modStep.objectId)) {
+            objectIds.insert(modStep.objectId);
+        }
+    }
+
+    foreach (U2DataId objId, objectIds) {
+        decrementVersion(objId, os);
         if (os.hasError()) {
             coreLog.trace("Can't decrement an object version!");
             os.setError(errorDescr);
@@ -496,40 +503,50 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
         return;
     }
 
-    // Get the modification step for the current version
-    U2SingleModStep modStep = dbi->getModDbi()->getModStep(objId, obj.version, os);
+    // Get all single modification steps
+    QList<U2SingleModStep> modSteps = dbi->getSQLiteModDbi()->getModSteps(objId, obj.version - 1, os);
     if (os.hasError()) {
-        coreLog.trace("Error getting the modStep for an object: " + os.getError());
+        coreLog.trace("Error getting modSteps for an object: " + os.getError());
         os.setError(errorDescr);
         return;
     }
-    SAFE_POINT(modStep.version == obj.version, "Unexpected modStep version!", );
 
-    // Call an appropriate "redo" depending on the object type
-    if (U2ModType::isMsaModType(modStep.modType)) {
-        dbi->getSQLiteMsaDbi()->redo(objId, modStep.modType, modStep.details, os);
-    }
-    else if (U2ModType::isSequenceModType(modStep.modType)) {
-        dbi->getSQLiteSequenceDbi()->redo(objId, modStep.modType, modStep.details, os);
-    }
-    else if (U2ModType::isObjectModType(modStep.modType)) {
-        if (U2ModType::objUpdatedName == modStep.modType) {
-            redoUpdateObjectName(objId, modStep.details, os);
-            CHECK_OP(os, );
+    QSet<U2DataId> objectIds;
+    QList<U2SingleModStep>::const_iterator i = modSteps.end();
+    while (i != modSteps.begin()) {
+        --i;
+        U2SingleModStep modStep = *i;
+
+        if (U2ModType::isMsaModType(modStep.modType)) {
+            dbi->getSQLiteMsaDbi()->redo(objId, modStep.modType, modStep.details, os);
         }
-        else {
-            coreLog.trace(QString("Can't redo an unknown operation: '%1'!").arg(QString::number(modStep.modType)));
+        else if (U2ModType::isSequenceModType(modStep.modType)) {
+            dbi->getSQLiteSequenceDbi()->redo(objId, modStep.modType, modStep.details, os);
+        }
+        else if (U2ModType::isObjectModType(modStep.modType)) {
+            if (U2ModType::objUpdatedName == modStep.modType) {
+                redoUpdateObjectName(objId, modStep.details, os);
+                CHECK_OP(os, );
+            }
+            else {
+                coreLog.trace(QString("Can't redo an unknown operation: '%1'!").arg(QString::number(modStep.modType)));
+                os.setError(errorDescr);
+                return;
+            }
+        }
+
+        if (!objectIds.contains(modStep.objectId)) {
+            objectIds.insert(modStep.objectId);
+        }
+    }
+
+    foreach (U2DataId objId, objectIds) {
+        incrementVersion(objId, os);
+        if (os.hasError()) {
+            coreLog.trace("Can't increment an object version!");
             os.setError(errorDescr);
             return;
         }
-    }
-
-    // increment the object version
-    incrementVersion(objId, os);
-    if (os.hasError()) {
-        coreLog.trace("Can't increment an object version!");
-        os.setError(errorDescr);
-        return;
     }
 }
 

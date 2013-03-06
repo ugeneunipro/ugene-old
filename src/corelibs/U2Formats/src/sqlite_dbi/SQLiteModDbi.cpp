@@ -21,9 +21,6 @@
 
 #include "SQLiteModDbi.h"
 
-#include <QCoreApplication>
-
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -38,7 +35,6 @@ U2UseCommonMultiModStep::U2UseCommonMultiModStep(SQLiteDbi* _sqliteDbi, const U2
   valid(false)
 {
     SAFE_POINT(NULL != sqliteDbi, "NULL sqliteDbi!", );
-    QMutexLocker m(&sqliteDbi->getDbRef()->lock);
 
     sqliteDbi->getSQLiteModDbi()->startCommonMultiModStep(_masterObjId, os);
     if (!os.hasError()) {
@@ -47,11 +43,8 @@ U2UseCommonMultiModStep::U2UseCommonMultiModStep(SQLiteDbi* _sqliteDbi, const U2
 }
 
 U2UseCommonMultiModStep::~U2UseCommonMultiModStep() {
-    SAFE_POINT(NULL != sqliteDbi, "NULL sqliteDbi!", );
-    QMutexLocker m(&sqliteDbi->getDbRef()->lock);
     if (valid) {
-        U2OpStatus2Log os;
-        sqliteDbi->getSQLiteModDbi()->endCommonMultiModStep(os);
+        sqliteDbi->getSQLiteModDbi()->endCommonMultiModStep();
     }
 }
 
@@ -105,7 +98,7 @@ void SQLiteModDbi::initSqlSchema(U2OpStatus& os) {
 
 U2SingleModStep SQLiteModDbi::getModStep(const U2DataId& objectId, qint64 trackVersion, U2OpStatus& os) {
     U2SingleModStep res;
-    SQLiteQuery q("SELECT id, object, otype, oextra, version, modType, details, multiStepId FROM SingleModStep WHERE object = ?1 AND version = ?2", db, os);
+    SQLiteQuery q("SELECT id, object, otype, oextra, version, modType, details, multiStepId FROM SingleModStep WHERE object = ?1 AND version = ?2 ORDER BY id", db, os);
     SAFE_POINT_OP(os, res);
 
     q.bindDataId(1, objectId);
@@ -180,7 +173,7 @@ void SQLiteModDbi::createModStep(const U2DataId& masterObjId, U2SingleModStep& s
         closeMultiStep = true;
     }
     
-    SQLiteQuery qSingle("INSERT INTO SingleModStep(object, otype, oextra, version, modType, details, multiStepId) VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7)", db, os);
+    SQLiteQuery qSingle("INSERT INTO SingleModStep(object, otype, oextra, version, modType, details, multiStepId) VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7) ", db, os);
     SAFE_POINT_OP(os, );
 
     qSingle.bindDataId(1, step.objectId);
@@ -195,7 +188,7 @@ void SQLiteModDbi::createModStep(const U2DataId& masterObjId, U2SingleModStep& s
     step.multiStepId = currentMultiModStepId;
 
     if (closeMultiStep) {
-        endCommonMultiModStep(os);
+        endCommonMultiModStep();
     }
 }
 
@@ -221,18 +214,8 @@ qint64 SQLiteModDbi::currentMultiModStepId = -1;
 U2DataId SQLiteModDbi::currentMasterObjId;
 bool SQLiteModDbi::removeUserStepWithMulti = true;
 
-static void checkMainThread(U2OpStatus &os) {
-    QThread *mainThread = QCoreApplication::instance()->thread();
-    QThread *thisThread = QThread::currentThread();
-
-    if (mainThread != thisThread) {
-        os.setError("Not main thread");
-    }
-}
 
 void SQLiteModDbi::startCommonUserModStep(const U2DataId& masterObjId, U2OpStatus& os) {
-    checkMainThread(os);
-    CHECK_OP(os, );
     SQLiteTransaction t(db, os);
 
     // Only one common step at a time
@@ -248,9 +231,7 @@ void SQLiteModDbi::startCommonUserModStep(const U2DataId& masterObjId, U2OpStatu
     currentMasterObjId = masterObjId;
 }
 
-void SQLiteModDbi::endCommonUserModStep(U2OpStatus &os) {
-    checkMainThread(os);
-    CHECK_OP(os, );
+void SQLiteModDbi::endCommonUserModStep() {
     currentMultiModStepId = -1;
     currentUserModStepId = -1;
     currentMasterObjId = U2DataId();
@@ -274,8 +255,7 @@ void SQLiteModDbi::startCommonMultiModStep(const U2DataId& userMasterObjId, U2Op
     
     if (isMultiStepStarted()) {
         os.setError("Can't create a common multiple modifications step, previous one is not complete!");
-        U2OpStatus2Log innerOs;
-        endCommonUserModStep(innerOs);
+        endCommonUserModStep();
         return;
     }
 
@@ -284,9 +264,9 @@ void SQLiteModDbi::startCommonMultiModStep(const U2DataId& userMasterObjId, U2Op
     SAFE_POINT_OP(os, );
 }
 
-void SQLiteModDbi::endCommonMultiModStep(U2OpStatus &os) {
+void SQLiteModDbi::endCommonMultiModStep() {
     if (removeUserStepWithMulti) {
-        endCommonUserModStep(os);
+        endCommonUserModStep();
     }
     else {
         currentMultiModStepId = -1;
